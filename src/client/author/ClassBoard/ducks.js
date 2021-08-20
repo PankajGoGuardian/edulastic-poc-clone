@@ -296,6 +296,7 @@ export function* receiveTestActivitySaga({ payload }) {
     console.log('err is', err)
     const msg = 'Unable to retrieve test activity.'
     if (err.status === 404) {
+      yield put(push(`/author/assignments`))
       notification({ msg: err?.response?.data?.message || msg })
     } else {
       notification({ type: 'error', messageKey: 'receiveTestFailing' })

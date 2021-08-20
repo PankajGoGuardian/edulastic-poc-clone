@@ -338,12 +338,19 @@ const getChartMasteryData = (report = {}, viewBy, leastScale) => {
     })
 
     const metricByMastery = groupBy(metricByViewBy[viewByKey], 'masteryLabel')
+    const percentSum = sumBy(
+      metricByViewBy[viewByKey],
+      (o) => +o.masteryPercentage || 0
+    )
 
     Object.keys(metricByMastery).forEach((key) => {
       // find percentage of current scale records against total records
-      const masteryScorePercentage = +(
-        metricByMastery[key][0].masteryPercentage || 0
-      )
+      const masteryScorePercentage =
+        Math.round(
+          (sumBy(metricByMastery[key], (o) => +o.masteryPercentage || 0) *
+            100) /
+            percentSum
+        ) || 0
       metricByViewByWithMasteryCount[viewByKey][key] =
         metricByMastery[key].length
       // if key is not mastered mark it negative

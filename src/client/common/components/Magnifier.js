@@ -50,9 +50,11 @@ const Magnifier = ({
   const unzoomRef = useRef()
 
   const handleScroll = (e) => {
-    document
-      .getElementsByClassName('test-item-col')[0]
-      ?.scrollTo(0, e.target.scrollTop)
+    if (enable) {
+      document
+        .getElementsByClassName('test-item-col')[1]
+        ?.scrollTo(0, e.target.scrollTop)
+    }
   }
 
   const onMouseMove = (e) => {

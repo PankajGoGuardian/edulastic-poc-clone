@@ -79,6 +79,7 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
           onSelect={onChangeDisplayStyle}
           value={dStyle}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          data-cy="responseTypeDropDown"
         >
           {displayStyleOptions.map((op, index) => (
             <Option value={op.value} key={index}>

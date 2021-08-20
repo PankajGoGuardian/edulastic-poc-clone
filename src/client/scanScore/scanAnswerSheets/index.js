@@ -52,7 +52,7 @@ function canvasToBlob(canvas) {
         resolve(blob)
       },
       'image/jpeg',
-      0.97
+      0.97 // selected 0.97 (97%) for optimum size & quality
     )
   })
 }
@@ -62,8 +62,16 @@ function canvasToBlob(canvas) {
  * @param {HTMLCanvasElement} canvas
  */
 async function uploadCanvasFrame(canvas, uploadProgress) {
+  const { assignmentId } = qs.parse(window.location?.search || '', {
+    ignoreQueryPrefix: true,
+  })
   const blob = await canvasToBlob(canvas)
-  return uploadToS3(blob, aws.s3Folders.DEFAULT, uploadProgress)
+  return uploadToS3(
+    blob,
+    aws.s3Folders.WEBCAM_OMR_UPLOADS,
+    uploadProgress,
+    `${assignmentId}`
+  )
 }
 
 const ScanAnswerSheetsInner = ({

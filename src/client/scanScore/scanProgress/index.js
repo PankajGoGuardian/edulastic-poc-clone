@@ -92,13 +92,6 @@ const ScanProgress = ({
         .catch((e) => {
           console.warn('errr', e)
         })
-    } else {
-      console.log('useFeect', {
-        assignmentId,
-        groupId,
-        sessionId,
-        tempScannedDocs,
-      })
     }
   }, [assignmentId, groupId, sessionId])
 

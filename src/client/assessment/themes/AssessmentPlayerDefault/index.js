@@ -607,6 +607,7 @@ class AssessmentPlayerDefault extends React.Component {
                   blockNavigationToAnsweredQuestions
                 }
                 isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+                toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
               />
             </FeaturesSwitch>
             {!previewPlayer && (

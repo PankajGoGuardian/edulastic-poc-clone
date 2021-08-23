@@ -19,6 +19,7 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
@@ -245,9 +246,11 @@ function* loadTest({ payload }) {
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
-      throw new Error(
-        'Unable to load the test. Please contact Edulastic Support'
+      Sentry.captureMessage(
+        'Unable to load the test. Please contact Edulastic Support',
+        'info'
       )
+      return
     }
 
     // if the assessment player is loaded for showing student work

@@ -896,8 +896,9 @@ function* login({ payload }) {
       ) {
         Sentry.withScope((scope) => {
           scope.setExtra('userId', user._id)
-          Sentry.captureException(
-            new Error('Logged in teacher is a part of multiple districts.')
+          Sentry.captureMessage(
+            'Logged in teacher is a part of multiple districts.',
+            'info'
           )
         })
       }
@@ -1256,8 +1257,9 @@ export function* fetchUser({ payload }) {
     ) {
       Sentry.withScope((scope) => {
         scope.setExtra('userId', user._id)
-        Sentry.captureException(
-          new Error('Logged in teacher is a part of multiple districts.')
+        Sentry.captureMessage(
+          'Logged in teacher is a part of multiple districts.',
+          'info'
         )
       })
     }

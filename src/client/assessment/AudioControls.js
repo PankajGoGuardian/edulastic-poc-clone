@@ -240,16 +240,16 @@ const AudioControls = ({
 
             if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
             else
-              Sentry.captureException(
-                new Error(
-                  `[AudioControls] Option audio missing for choice_${i}`
-                )
+              Sentry.captureMessage(
+                `[AudioControls] Option audio missing for choice_${i}`,
+                'info'
               )
 
             if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
             else
-              Sentry.captureException(
-                new Error(`[AudioControls] Option audio missing for ${item}`)
+              Sentry.captureMessage(
+                `[AudioControls] Option audio missing for ${item}`,
+                'info'
               )
           }
           setCurrentPlayingDetails()

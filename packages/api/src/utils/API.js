@@ -215,10 +215,10 @@ export default class API {
           console.warn('DISTRICTID switched: so reloading')
           const recentReloads = getReloadsHappenedRecently()
           if (recentReloads.length > 2) {
-            const mismatchErr = new Error(
-              `multiple districts mismatch infinite reload`
+            Sentry.captureMessage(
+              `multiple districts mismatch infinite reload`,
+              'info'
             )
-            Sentry.captureException(mismatchErr)
             forceLogout()
             notification({
               type: 'error',
@@ -321,7 +321,7 @@ export default class API {
 
             scope.setLevel('error')
             scope.setTag('ref', data.response?.headers?.['x-server-ref'])
-            Sentry.captureException(err)
+            Sentry.captureMessage('api error', 'debug')
             scope.setTag('issueType', 'UnexpectedErrorAPI')
             scope.setFingerprint(['{{default}}', fingerPrint])
             scope.setContext('api_meta', {
@@ -369,6 +369,10 @@ export default class API {
           data?.response?.status === 409 &&
           data.response.data?.message === 'oldToken'
         ) {
+          // disabling sentry , since the session is no longer valid
+          if (Sentry?.getCurrentHub()?.getClient()?.getOptions()?.enabled) {
+            Sentry.getCurrentHub().getClient().getOptions().enabled = false
+          }
           // returning skeleton reponses to avoid erroring out in Api call
           return Promise.resolve({ data: { result: null } })
         }

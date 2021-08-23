@@ -64,12 +64,13 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
     alignItems: 'flex-start',
   }
 
+  //
   return (
     <AddNewModuleContainer data-cy="create-new-module-form">
       <AddNewModuleForm>
         <FlexContainer {...fieldContatinerProp} width="100%">
           <Title>
-            Module Or Chapter Name{' '}
+            Module Or Chapter Name<sup>*</sup>{' '}
             <Tooltip
               overlayClassName="createModuleTooltip"
               placement="bottom"
@@ -90,7 +91,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
         <FlexContainer width="100%">
           <FlexContainer flex={1} {...fieldContatinerProp}>
             <Title>
-              Unit Number{' '}
+              Unit Number<sup>*</sup>{' '}
               <Tooltip
                 overlayClassName="createModuleTooltip"
                 placement="bottom"
@@ -109,7 +110,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
           </FlexContainer>
           <FlexContainer flex={3} {...fieldContatinerProp} marginLeft="16px">
             <Title>
-              Unit Name{' '}
+              Unit Name<sup>*</sup>{' '}
               <Tooltip
                 overlayClassName="createModuleTooltip"
                 placement="bottom"

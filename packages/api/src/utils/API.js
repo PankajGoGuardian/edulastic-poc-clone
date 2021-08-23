@@ -9,7 +9,13 @@ import notification from '@edulastic/common/src/components/Notification'
 import * as Sentry from '@sentry/browser'
 import { debounce } from 'lodash'
 import config from '../config'
-import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
+import {
+  getAccessToken,
+  getTraceId,
+  initKID,
+  initTID,
+  getCurrentDistrictName,
+} from './Storage'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
@@ -201,6 +207,7 @@ export default class API {
             'originalreferrer'
           )
         }
+        const currentDistrictName = getCurrentDistrictName() || ''
         const token =
           getParentsStudentToken(_config) || defaultToken || getAccessToken()
         const currentUserFromRedux = getUserFromRedux()
@@ -222,7 +229,8 @@ export default class API {
             forceLogout()
             notification({
               type: 'error',
-              msg: 'There is a problem authenticating your account',
+              msg:
+                'There is a problem authenticating your account. Please contact us at support@edulastic.com to resolve the issue',
             })
             setTimeout(() => {
               window.location.href = '/login'
@@ -231,6 +239,10 @@ export default class API {
           }
           // debouncing to prevent concurrent apis to be interpreted as repeated reloads
           debounce(addReloadedEntryToSession, 700)()
+          notification({
+            type: 'info',
+            msg: `We are switching you to ${currentDistrictName} as you can login to only one district at a time`,
+          })
           window.location.href = '/'
         }
         if (token) {

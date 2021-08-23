@@ -1943,9 +1943,9 @@ function* savePassage({ payload }) {
 
     const widget = {
       widgetType: 'resource',
-      type: entity.type,
-      title: entity.title,
-      reference: entity.id,
+      type: entity?.type,
+      title: entity?.title,
+      reference: entity?.id,
       tabIndex,
     }
     const allWidgets = yield select((state) =>

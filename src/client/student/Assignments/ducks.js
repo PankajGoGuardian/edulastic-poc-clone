@@ -724,7 +724,7 @@ function* startAssignment({ payload }) {
     }
 
     if (assignmentId) {
-      const { timedAssignment, restrictNavigationOut } = yield call(
+      const { timedAssignment = false, restrictNavigationOut } = yield call(
         assignmentApi.getById,
         assignmentId
       ) || {}

@@ -81,6 +81,8 @@ const sentryIgnoreErrors = [
   'TokenExpire',
   'expired',
   "Cannot read property 'hasClass' of null",
+  "Cannot set property 'isFullscreen' of undefined",
+  "InvalidStateError: Failed to execute 'transaction' on 'IDBDatabase'",
 ]
 const sentryIgnoreUrls = [
   // Facebook flakiness

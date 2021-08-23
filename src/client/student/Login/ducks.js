@@ -2134,7 +2134,7 @@ function* setInviteDetailsSaga({ payload }) {
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {
-    yield call(message.err, 'Failed to update user details.')
+    yield call(message.error, 'Failed to update user details.')
   }
 }
 

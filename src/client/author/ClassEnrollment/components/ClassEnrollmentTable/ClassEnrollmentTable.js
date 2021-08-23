@@ -260,11 +260,11 @@ class ClassEnrollmentTable extends React.Component {
       formatData.push({
         groupId: key,
         students: value
-          .filter((o) => o.role === 'student')
-          .map((o) => o.user._id),
+          ?.filter?.((o) => o.role === 'student')
+          ?.map?.((o) => o.user._id),
         teachers: value
-          .filter((o) => o.role === 'teacher')
-          .map((o) => o.user._id),
+          ?.filter?.((o) => o.role === 'teacher')
+          ?.map?.((o) => o.user._id),
       })
     })
     const o = {

@@ -906,7 +906,7 @@ function* saveQuestionSaga({
       return
     }
     const stateToFollow =
-      locationState.testAuthoring === false
+      locationState?.testAuthoring === false
         ? { testAuthoring: false, testId: locationState.testId }
         : {}
     const { previousTestId, regradeFlow } = yield select(

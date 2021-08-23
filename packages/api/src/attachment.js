@@ -60,7 +60,7 @@ const loadAllAttachments = (filter) =>
       params: filter,
     })
     .then(async (result) => {
-      const { attachments, users } = result.data.result
+      const { attachments, users } = result?.data?.result || {}
       for (const attachment of attachments) {
         if (
           attachment?.data?.scratchpad &&

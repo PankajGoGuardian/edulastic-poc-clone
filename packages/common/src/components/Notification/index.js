@@ -75,7 +75,7 @@ const notification = (options) => {
     : {
         onClick: handlClickActionButton,
       }
-  if (antNotification[type]) {
+  if (antNotification[type] && config.message) {
     const messageTemplate = (
       <>
         {description ? <Description>{description}</Description> : <></>}
@@ -84,11 +84,12 @@ const notification = (options) => {
         )}
       </>
     )
-    antNotification[type]({
+    const notificationData = {
       description: messageTemplate,
       duration: 6.5, // default notification duration
       ...rest,
-    })
+    }
+    antNotification[type](notificationData)
   }
 }
 

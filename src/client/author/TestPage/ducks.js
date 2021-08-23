@@ -3639,7 +3639,8 @@ function* getRegradeSettingsSaga({ payload }) {
 
 function* fetchSavedTestSettingsListSaga({ payload }) {
   try {
-    const settingsList = yield call(settingsApi.getTestSettingsList, payload)
+    const settingsList = yield call(settingsApi.getTestSettingsList, payload) ||
+      []
     yield put(
       setTestSettingsListAction(settingsList.filter(({ title }) => !!title))
     )

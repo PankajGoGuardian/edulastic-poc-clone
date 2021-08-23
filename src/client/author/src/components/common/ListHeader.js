@@ -58,7 +58,7 @@ const ListHeader = ({
   userRole = '',
   windowWidth,
   titleIcon,
-  userFeatures,
+  userFeatures = {},
   newTest,
   titleWidth,
   history,
@@ -143,7 +143,7 @@ const ListHeader = ({
                 INVITE TEACHERS
               </EduButton>
             )}
-            {userFeatures.gradebook && (
+            {userFeatures?.gradebook && (
               <EduButton isGhost isBlue>
                 <Link to="/author/gradebook">VIEW GRADEBOOK </Link>
               </EduButton>

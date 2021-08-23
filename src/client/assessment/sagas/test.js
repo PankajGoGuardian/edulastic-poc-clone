@@ -421,7 +421,7 @@ function* loadTest({ payload }) {
       // for all limited random group update items as per number of delivery items count
       test = modifyTestDataForPreview(test)
     }
-    test.testItems = test.itemGroups.flatMap(
+    test.testItems = test?.itemGroups?.flatMap?.(
       (itemGroup) => itemGroup.items || []
     )
     const {

@@ -957,6 +957,7 @@ const AssessmentContainer = ({
           timeSpent,
           callback: submitPreviewTest,
           testId,
+          isLastQuestion: true,
         })
       }
       if (demo || _item.isDummyItem) {

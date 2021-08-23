@@ -196,7 +196,10 @@ class TestList extends Component {
     const isSingaporeMath =
       user?.referrer?.includes('singapore') ||
       user?.utm_source?.toLowerCase()?.includes('singapore') ||
-      isSingaporeMathCollectionActive?.length > 0
+      isSingaporeMathCollectionActive?.length > 0 ||
+      collectionSelector.some((itemBank) =>
+        itemBank?.owner?.toLowerCase().includes('singapore')
+      )
 
     this.setState({ isSingaporeMath })
 

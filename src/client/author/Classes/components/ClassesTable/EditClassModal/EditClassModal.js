@@ -30,17 +30,36 @@ class EditClassModal extends Component {
     form.validateFields((err, row) => {
       const {
         selClassData: {
-          _source: { parent, districtId, standardSets, startDate } = {},
+          _source: {
+            parent,
+            districtId,
+            standardSets,
+            startDate,
+            owners,
+            primaryTeacherId,
+          } = {},
         } = {},
         allTagsData,
         saveClass,
       } = this.props
       if (!err) {
+        let ownerIds = owners.map((o) => o.id)
+        let _primaryTeacherId = primaryTeacherId || parent?.id
+        if (row.teacher !== parent?.id) {
+          const isAlreadyAOwner = ownerIds.includes(row.teacher)
+          if (isAlreadyAOwner) {
+            ownerIds = ownerIds.filter((id) => id !== row.teacher)
+          }
+          ownerIds.unshift(row.teacher)
+          Object.assign(parent, { id: row.teacher })
+          _primaryTeacherId = row.teacher
+        }
         const saveClassData = {
           name: row.name,
           type: 'class',
-          owners: [row.teacher],
+          owners: [...ownerIds],
           parent,
+          primaryTeacherId: _primaryTeacherId,
           districtId,
           institutionId: row.institutionId,
           subject: row.subject,

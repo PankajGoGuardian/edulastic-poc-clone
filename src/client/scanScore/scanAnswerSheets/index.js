@@ -33,7 +33,13 @@ import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './scannerUtils'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
-import { IconEye } from '@edulastic/icons'
+import {
+  IconStep1,
+  IconStep2,
+  IconStep3,
+  IconStep4,
+  IconStep5,
+} from './icons/StepsIcons'
 
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
@@ -46,25 +52,25 @@ const videoContstraints = {
 // TODO: replace IconEye once assets available
 const steps = [
   {
-    icon: <IconEye />,
+    icon: <IconStep1 />,
     description: 'Hold your bubble sheets so that they are fully visible.',
   },
   {
-    icon: <IconEye />,
+    icon: <IconStep2 />,
     description:
       'Ensure the bounding boxes of the response section and the QR code are fully visible and aligned vertically.',
   },
   {
-    icon: <IconEye />,
+    icon: <IconStep3 />,
     description: 'Wait for the scanned successful message with a beeper sound.',
   },
   {
-    icon: <IconEye />,
+    icon: <IconStep4 />,
     description:
       'Once the message is shown, you can hold your next response sheet to scan.',
   },
   {
-    icon: <IconEye />,
+    icon: <IconStep5 />,
     description: 'Click Proceed to next step once all responses are scanned.',
   },
 ]

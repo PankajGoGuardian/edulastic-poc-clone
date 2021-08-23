@@ -70,6 +70,7 @@ async function uploadCanvasFrame(canvas, uploadProgress) {
     blob,
     aws.s3Folders.WEBCAM_OMR_UPLOADS,
     uploadProgress,
+    null,
     `${assignmentId}`
   )
 }
@@ -95,7 +96,9 @@ const ScanAnswerSheetsInner = ({
    * uncomment the following line while debugging
    * window.arrAnswersRef = arrAnswersRef
    */
-  const [isHelpModalVisible, setHelpModal] = useState(true)
+  const [isHelpModalVisible, setHelpModal] = useState(
+    !localStorage.getItem('omrUploadHelpVisibility')
+  )
 
   const [answersList, setAnswers] = useState(null)
   const [scannedResponses, setScannedResponses] = useState([])
@@ -144,7 +147,7 @@ const ScanAnswerSheetsInner = ({
                 arrAnswersRef.current.push(result)
                 notification({
                   type: 'success',
-                  msg: 'answers detected. Scanning in progress',
+                  msg: 'Response sheet detected. You can hold the next sheet',
                 })
                 audioRef.play()
                 if (canvasRef.current) {
@@ -166,15 +169,6 @@ const ScanAnswerSheetsInner = ({
                   temp.push(`${index + 1}: ${item}`)
                 })
                 setScannedResponses((x) => x + 1)
-                notification({
-                  msg: `Scan Succesful`,
-                  description: `${
-                    result.qrCode
-                  } \n ${result.answers.toString()}`,
-                  duration: 3,
-                  type: 'success',
-                })
-
                 arrLengthOfAnswer = []
                 console.log(result)
               }

@@ -22,6 +22,7 @@ export const Container = styled(Card)`
   &.ant-card {
     width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
     height: ${(props) => (props.isTestRecommendation ? '190px' : null)};
+    overflow: ${(props) => (props.isTestRecommendation ? 'hidden' : null)};
     transform: ${(props) => (props.isTestCard ? `scale(1)` : null)};
     transition: 0.2s;
     .ant-card-body {

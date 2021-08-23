@@ -14,9 +14,11 @@ const ConfirmationModal = ({
   onCancel,
   cancelText = 'Cancel',
   hideCancelBtn = false,
+  width,
 }) => {
   return (
     <StyledModal
+      width={width}
       visible={visible}
       footer={null}
       onCancel={() => onCancel()}
@@ -62,7 +64,7 @@ export default ConfirmationModal
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
-    width: 630px;
+    width: ${(props) => props.width || '630px'};
     .ant-modal-close {
       display: none;
     }

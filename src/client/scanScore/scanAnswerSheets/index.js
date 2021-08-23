@@ -22,6 +22,8 @@ import {
   dragDropUploadText,
   drcThemeColor,
   white,
+  secondaryTextColor,
+  lightGrey9,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
@@ -31,6 +33,7 @@ import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './scannerUtils'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
+import { IconEye } from '@edulastic/icons'
 
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
@@ -39,6 +42,32 @@ const videoContstraints = {
   height: { ideal: 480 },
   facingMode: { ideal: 'environment' },
 }
+
+// TODO: replace IconEye once assets available
+const steps = [
+  {
+    icon: <IconEye />,
+    description: 'Hold your bubble sheets so that they are fully visible.',
+  },
+  {
+    icon: <IconEye />,
+    description:
+      'Ensure the bounding boxes of the response section and the QR code are fully visible and aligned vertically.',
+  },
+  {
+    icon: <IconEye />,
+    description: 'Wait for the scanned successful message with a beeper sound.',
+  },
+  {
+    icon: <IconEye />,
+    description:
+      'Once the message is shown, you can hold your next response sheet to scan.',
+  },
+  {
+    icon: <IconEye />,
+    description: 'Click Proceed to next step once all responses are scanned.',
+  },
+]
 
 /**
  *
@@ -434,24 +463,23 @@ const ScanAnswerSheetsInner = ({
       )}
       {isHelpModalVisible && (
         <ConfirmationModal
+          width="900px"
           visible={isHelpModalVisible}
           title="Broad Steps Are"
           description={
-            <StyledList>
-              <li>Hold your bubble sheets so that they are fully visible</li>
-              <li>
-                Ensure the bounding boxes of the response section and the QR
-                code are fully visible and aligned vertically{' '}
-              </li>
-              <li>
-                Wait for the scanned successful message with a beeper sound
-              </li>
-              <li>
-                Once the message is shown, you can hold your next response sheet
-                to scan
-              </li>
-              <li>Click Proceed to next step once all responses are scanned</li>
-            </StyledList>
+            <FlexContainer
+              alignItems="center"
+              justifyContent="space-evenly"
+              flexWrap="wrap"
+            >
+              {steps.map((step, index) => (
+                <Step>
+                  {step.icon}
+                  <h3>Step {index + 1}</h3>
+                  <p>{step.description}</p>
+                </Step>
+              ))}
+            </FlexContainer>
           }
           buttonText="CLOSE"
           onCancel={closeHelpModal}
@@ -546,11 +574,29 @@ const HelpIcon = styled.span`
   cursor: pointer;
 `
 
-const StyledList = styled.ol`
-  margin: -20px unset;
+const Step = styled.div`
+  margin: 20px 0px;
+  width: 209px;
+  height: 151px;
 
-  li {
-    margin-top: 20px;
-    font-size: 14px;
+  svg {
+    display: block;
+    margin: 20px auto;
+  }
+
+  h3 {
+    text-align: center;
+    font: normal normal bold 14px/19px Open Sans;
+    letter-spacing: 0px;
+    color: ${secondaryTextColor};
+    opacity: 1;
+  }
+
+  p {
+    text-align: center;
+    font: normal normal normal 11px/18px Open Sans;
+    letter-spacing: 0px;
+    color: ${lightGrey9};
+    opacity: 1;
   }
 `

@@ -26,7 +26,7 @@ const DropzoneUploader = ({ handleDrop, disabled = false }) => (
             isDragActive={isDragActive}
             dropzoneSettings={{
               name: false,
-              allowedFiles: 'PDF',
+              allowedFiles: 'BUBBLE SHEET RESPONSES (PDF, MAX 1MB)',
             }}
             containerHeight="500px"
             containerMargin="40px 40px 40px 0px"

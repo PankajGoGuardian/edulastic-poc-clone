@@ -414,7 +414,6 @@ class QuestionWrapper extends Component {
       premiumCollectionWithoutAccess,
       showStacked,
       isExpandedView,
-      t,
       ...restProps
     } = this.props
 
@@ -619,9 +618,11 @@ class QuestionWrapper extends Component {
                   maxWidth="100%"
                 >
                   {evaluation === 'pending' && (
-                    <Tooltip title={t('component.pendingEvaluation.tooltip')}>
+                    <Tooltip
+                      title={restProps.t('component.pendingEvaluation.tooltip')}
+                    >
                       <EvaluationMessage>
-                        {t('component.pendingEvaluation.text')}
+                        {restProps.t('component.pendingEvaluation.text')}
                       </EvaluationMessage>
                     </Tooltip>
                   )}
@@ -662,7 +663,7 @@ class QuestionWrapper extends Component {
                       fillSections={() => {}}
                       cleanSections={() => {}}
                       studentId={studentId}
-                      t={t}
+                      t={restProps.t}
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isQuestionView={isQuestionView}
@@ -738,7 +739,6 @@ QuestionWrapper.propTypes = {
   saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any,
   permissions: PropTypes.array,
-  t: PropTypes.func,
 }
 
 QuestionWrapper.defaultProps = {
@@ -761,7 +761,6 @@ QuestionWrapper.defaultProps = {
   disableResponse: false,
   isPresentationMode: false,
   permissions: [],
-  t: () => {},
 }
 
 const enhance = compose(

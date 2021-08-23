@@ -555,7 +555,7 @@ class ClassQuestions extends Component {
 
     const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
-        acc[curr.qid] = 'pending'
+        acc[`${curr.testItemId}_${curr.qid}`] = 'pending'
       } else {
         acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
       }

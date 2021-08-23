@@ -51,6 +51,10 @@
     "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "correctItemNotAllowDynamic": "Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually",
+    "pendingEvaluation": {
+      "text": "Evaluation is pending",
+      "tooltip": " App failed to evaluate due to unexpected input format"
+    },
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",

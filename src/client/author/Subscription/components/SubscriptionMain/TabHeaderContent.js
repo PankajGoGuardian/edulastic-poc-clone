@@ -15,7 +15,7 @@ const TabHeaderContent = ({
   }
 
   const openMultiplePurchaseModal = (subType) => {
-    if (!['partial_premium', 'enterprise'].includes(subType)) {
+    if (!['enterprise'].includes(subType)) {
       setShowMultiplePurchaseModal(true)
     }
   }

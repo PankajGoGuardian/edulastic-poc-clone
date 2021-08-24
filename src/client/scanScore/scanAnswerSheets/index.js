@@ -92,6 +92,9 @@ const ScanAnswerSheetsInner = ({
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
+  const hideFailureNotificationsRef = useRef(false)
+  const [uploadingToS3, setUploadingToS3] = useState(false)
+
   /**
    * uncomment the following line while debugging
    * window.arrAnswersRef = arrAnswersRef
@@ -107,6 +110,15 @@ const ScanAnswerSheetsInner = ({
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
+
+  function supressFailureNotifications(time) {
+    hideFailureNotificationsRef.current = true
+    setTimeout(() => {
+      if (hideFailureNotificationsRef?.current) {
+        hideFailureNotificationsRef.current = false
+      }
+    }, time)
+  }
 
   async function processVideo(vc) {
     const arrAnswers = arrAnswersRef.current
@@ -136,13 +148,17 @@ const ScanAnswerSheetsInner = ({
                 (item) => item.qrCode === result.qrCode
               ).length
               if (filterCount > 0) {
-                notification({
-                  msg: `It is already parsed. Please change the bubble sheet and continue.`,
-                  duration: 3,
-                  type: 'warning',
-                  messageKey: 'alreadyParsedAnswerSheet',
-                })
+                if (!hideFailureNotificationsRef.current) {
+                  notification({
+                    msg: `It is already parsed. Please change the bubble sheet and continue.`,
+                    duration: 3,
+                    type: 'warning',
+                    messageKey: 'alreadyParsedAnswerSheet',
+                  })
+                  supressFailureNotifications(3000)
+                }
               } else {
+                supressFailureNotifications(3000)
                 setScanningPercent(0.1)
                 arrAnswersRef.current.push(result)
                 notification({
@@ -150,7 +166,9 @@ const ScanAnswerSheetsInner = ({
                   msg: 'Response sheet detected. You can hold the next sheet',
                 })
                 audioRef.play()
+
                 if (canvasRef.current) {
+                  setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
                     canvasRef.current,
                     (uploadEvent) => {
@@ -159,6 +177,7 @@ const ScanAnswerSheetsInner = ({
                       setScanningPercent(round(percent, 2))
                     }
                   )
+                  setUploadingToS3(false)
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
                   ].imageUri = fileUrl
@@ -393,7 +412,11 @@ const ScanAnswerSheetsInner = ({
             </FlexContainer>
           </CameraModule>
 
-          <EduButton isGhost onClick={triggerCompleteConfirmation}>
+          <EduButton
+            disabled={uploadingToS3}
+            isGhost
+            onClick={triggerCompleteConfirmation}
+          >
             PROCEED TO NEXT STEP
           </EduButton>
         </CameraUploaderWrapper>

@@ -22,6 +22,8 @@ import {
   dragDropUploadText,
   drcThemeColor,
   white,
+  secondaryTextColor,
+  lightGrey9,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
@@ -31,6 +33,13 @@ import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './scannerUtils'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
+import {
+  IconStep1,
+  IconStep2,
+  IconStep3,
+  IconStep4,
+  IconStep5,
+} from './icons/StepsIcons'
 
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
@@ -39,6 +48,32 @@ const videoContstraints = {
   height: { ideal: 480 },
   facingMode: { ideal: 'environment' },
 }
+
+// TODO: replace IconEye once assets available
+const steps = [
+  {
+    icon: <IconStep1 />,
+    description: 'Hold your bubble sheets so that they are fully visible.',
+  },
+  {
+    icon: <IconStep2 />,
+    description:
+      'Ensure the bounding boxes of the response section and the QR code are fully visible and aligned vertically.',
+  },
+  {
+    icon: <IconStep3 />,
+    description: 'Wait for the scanned successful message with a beeper sound.',
+  },
+  {
+    icon: <IconStep4 />,
+    description:
+      'Once the message is shown, you can hold your next response sheet to scan.',
+  },
+  {
+    icon: <IconStep5 />,
+    description: 'Click Proceed to next step once all responses are scanned.',
+  },
+]
 
 /**
  *
@@ -92,6 +127,9 @@ const ScanAnswerSheetsInner = ({
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
+  const hideFailureNotificationsRef = useRef(false)
+  const [uploadingToS3, setUploadingToS3] = useState(false)
+
   /**
    * uncomment the following line while debugging
    * window.arrAnswersRef = arrAnswersRef
@@ -107,6 +145,15 @@ const ScanAnswerSheetsInner = ({
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
+
+  function supressFailureNotifications(time) {
+    hideFailureNotificationsRef.current = true
+    setTimeout(() => {
+      if (hideFailureNotificationsRef?.current) {
+        hideFailureNotificationsRef.current = false
+      }
+    }, time)
+  }
 
   async function processVideo(vc) {
     const arrAnswers = arrAnswersRef.current
@@ -136,13 +183,17 @@ const ScanAnswerSheetsInner = ({
                 (item) => item.qrCode === result.qrCode
               ).length
               if (filterCount > 0) {
-                notification({
-                  msg: `It is already parsed. Please change the bubble sheet and continue.`,
-                  duration: 3,
-                  type: 'warning',
-                  messageKey: 'alreadyParsedAnswerSheet',
-                })
+                if (!hideFailureNotificationsRef.current) {
+                  notification({
+                    msg: `It is already parsed. Please change the bubble sheet and continue.`,
+                    duration: 3,
+                    type: 'warning',
+                    messageKey: 'alreadyParsedAnswerSheet',
+                  })
+                  supressFailureNotifications(3000)
+                }
               } else {
+                supressFailureNotifications(3000)
                 setScanningPercent(0.1)
                 arrAnswersRef.current.push(result)
                 notification({
@@ -150,7 +201,9 @@ const ScanAnswerSheetsInner = ({
                   msg: 'Response sheet detected. You can hold the next sheet',
                 })
                 audioRef.play()
+
                 if (canvasRef.current) {
+                  setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
                     canvasRef.current,
                     (uploadEvent) => {
@@ -159,6 +212,7 @@ const ScanAnswerSheetsInner = ({
                       setScanningPercent(round(percent, 2))
                     }
                   )
+                  setUploadingToS3(false)
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
                   ].imageUri = fileUrl
@@ -393,7 +447,11 @@ const ScanAnswerSheetsInner = ({
             </FlexContainer>
           </CameraModule>
 
-          <EduButton isGhost onClick={triggerCompleteConfirmation}>
+          <EduButton
+            disabled={uploadingToS3}
+            isGhost
+            onClick={triggerCompleteConfirmation}
+          >
             PROCEED TO NEXT STEP
           </EduButton>
         </CameraUploaderWrapper>
@@ -411,24 +469,23 @@ const ScanAnswerSheetsInner = ({
       )}
       {isHelpModalVisible && (
         <ConfirmationModal
+          width="900px"
           visible={isHelpModalVisible}
           title="Broad Steps Are"
           description={
-            <StyledList>
-              <li>Hold your bubble sheets so that they are fully visible</li>
-              <li>
-                Ensure the bounding boxes of the response section and the QR
-                code are fully visible and aligned vertically{' '}
-              </li>
-              <li>
-                Wait for the scanned successful message with a beeper sound
-              </li>
-              <li>
-                Once the message is shown, you can hold your next response sheet
-                to scan
-              </li>
-              <li>Click Proceed to next step once all responses are scanned</li>
-            </StyledList>
+            <FlexContainer
+              alignItems="center"
+              justifyContent="space-evenly"
+              flexWrap="wrap"
+            >
+              {steps.map((step, index) => (
+                <Step>
+                  {step.icon}
+                  <h3>Step {index + 1}</h3>
+                  <p>{step.description}</p>
+                </Step>
+              ))}
+            </FlexContainer>
           }
           buttonText="CLOSE"
           onCancel={closeHelpModal}
@@ -523,11 +580,29 @@ const HelpIcon = styled.span`
   cursor: pointer;
 `
 
-const StyledList = styled.ol`
-  margin: -20px unset;
+const Step = styled.div`
+  margin: 20px 0px;
+  width: 209px;
+  height: 151px;
 
-  li {
-    margin-top: 20px;
-    font-size: 14px;
+  svg {
+    display: block;
+    margin: 20px auto;
+  }
+
+  h3 {
+    text-align: center;
+    font: normal normal bold 14px/19px Open Sans;
+    letter-spacing: 0px;
+    color: ${secondaryTextColor};
+    opacity: 1;
+  }
+
+  p {
+    text-align: center;
+    font: normal normal normal 11px/18px Open Sans;
+    letter-spacing: 0px;
+    color: ${lightGrey9};
+    opacity: 1;
   }
 `

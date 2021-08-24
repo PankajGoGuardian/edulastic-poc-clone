@@ -15,7 +15,13 @@ import {
 
 function parseQr(qrCode) {
   // ${testId}_${assignmentId}_${classId}_${studentId}_${page}
-  const [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
+  let [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
+
+  console.log('stduentId isNan', isNaN(studentId), 'studentId', studentId)
+  if (studentId == 1) {
+    ;[assignmentId, groupId, studentId] = qrCode.split('_')
+  }
+  console.log('qr parse', { assignmentId, groupId, studentId })
   return {
     testId,
     assignmentId,

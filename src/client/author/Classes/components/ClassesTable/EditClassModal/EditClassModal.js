@@ -44,8 +44,8 @@ class EditClassModal extends Component {
       } = this.props
       if (!err) {
         let ownerIds = owners.map((o) => o.id)
-        let _primaryTeacherId = primaryTeacherId || parent?.id
-        if (row.teacher !== parent?.id) {
+        let _primaryTeacherId = primaryTeacherId || parent?.id || owners?.[0].id
+        if (row.teacher !== _primaryTeacherId) {
           const isAlreadyAOwner = ownerIds.includes(row.teacher)
           if (isAlreadyAOwner) {
             ownerIds = ownerIds.filter((id) => id !== row.teacher)

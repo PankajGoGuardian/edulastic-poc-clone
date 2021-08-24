@@ -118,7 +118,7 @@ function* evaluateTestItemSaga({ payload }) {
         qLabel: isEmpty(q.qSubLabel)
           ? q.barLabel
           : `${q.barLabel}.${q.qSubLabel}`,
-        evaluation: evaluations[q.id],
+        evaluation: evaluations?.[q.id],
       }
       if (previewUserWork) {
         activity.userWork = previewUserWork

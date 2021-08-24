@@ -159,7 +159,6 @@ const evaluateAsStudent = (id, data) => {
     .callApi({
       url: `${prefix}/evaluate-as-student/${id}`,
       method: 'post',
-      withCredentials: true,
       data,
     })
     .then((result) => result.data.result)

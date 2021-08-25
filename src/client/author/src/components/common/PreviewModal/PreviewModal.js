@@ -195,46 +195,67 @@ class PreviewModal extends React.Component {
     }
 
     const { _id: currentItem = '' } = item
+
+    const handleCompletePassageClick = () => {
+      duplicateTestItem({
+        data,
+        testId,
+        test,
+        match,
+        isTest,
+        itemId,
+        regradeFlow,
+        passage,
+        duplicateWholePassage: true,
+      })
+      Modal.destroyAll()
+      this.closeModal()
+    }
+
+    const handleCurrentItemClick = () => {
+      duplicateTestItem({
+        data,
+        testId,
+        test,
+        match,
+        isTest,
+        itemId,
+        regradeFlow,
+        passage,
+        currentItem,
+      })
+      Modal.destroyAll()
+      this.closeModal()
+    }
+
+    const bodyContent = (
+      <>
+        <p>
+          This passage has {passage.testItems.length} Items associated with it.
+          Would you like to clone complete passage or a single item?
+        </p>
+        <FlexContainer justifyContent="flex-end" mt="24px">
+          <EduButton
+            isGhost
+            onClick={handleCompletePassageClick}
+            data-cy="completePassageBtn"
+          >
+            Complete Passage
+          </EduButton>
+          <EduButton onClick={handleCurrentItemClick} data-cy="currentItemBtn">
+            Current Item
+          </EduButton>
+        </FlexContainer>
+      </>
+    )
+
     Modal.confirm({
       title: 'Clone Passage Item',
-      content: `This passage has ${passage.testItems.length} Items associated with it. Would you like to clone complete passage or a single item?`,
-      onOk: () => {
-        duplicateTestItem({
-          data,
-          testId,
-          test,
-          match,
-          isTest,
-          itemId,
-          regradeFlow,
-          passage,
-          currentItem,
-        })
-        Modal.destroyAll()
-        this.closeModal()
-      },
-      onCancel: () => {
-        duplicateTestItem({
-          data,
-          testId,
-          test,
-          match,
-          isTest,
-          itemId,
-          regradeFlow,
-          passage,
-          duplicateWholePassage: true,
-        })
-        Modal.destroyAll()
-        this.closeModal()
-      },
-      okText: 'Current Item',
-      cancelText: 'Complete Passage',
+      content: bodyContent,
+      onCancel: () => this.setState({ flag: false }),
       centered: true,
       width: 500,
-      okButtonProps: {
-        style: { background: themeColor, outline: 'none' },
-      },
+      className: 'passage-clone-modal',
     })
 
     // const duplicatedItem = await duplicateTestItem(itemId);

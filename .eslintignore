@@ -4,4 +4,6 @@
 /src/client/public/vendors
 /packages/ext-libs
 /public/testlets
-src/client/scanScore/scanAnswerSheets/scannerUtils.js
+src/client/scanScore/scanAnswerSheets/answer-utils.js
+src/client/scanScore/scanAnswerSheets/parse-qrcode.js
+src/client/scanScore/scanAnswerSheets/process-image.js

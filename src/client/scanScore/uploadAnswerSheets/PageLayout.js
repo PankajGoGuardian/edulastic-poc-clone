@@ -7,8 +7,9 @@ import {
   tagTextColor,
   tagsBgColor,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 import styled from 'styled-components'
-import { IconLogoCompact } from '@edulastic/icons'
+import { IconLogoCompact, IconSettings } from '@edulastic/icons'
 
 import Breadcrumb from '../../author/src/components/Breadcrumb'
 
@@ -20,6 +21,8 @@ const PageLayout = ({
   assignmentTitle,
   classTitle,
   isScanProgressScreen,
+  showCameraSettings,
+  setShowSettings,
 }) => (
   <Layout>
     <StyledHeader>
@@ -27,6 +30,15 @@ const PageLayout = ({
       <h2 className="title">SnapScore</h2>
       <h1 className="assignmentTitle">{assignmentTitle}</h1>
       <h3 className="classTitle">{classTitle}</h3>
+      {showCameraSettings ? (
+        <SettingsButton
+          btnType="primary"
+          isGhost
+          onClick={() => setShowSettings(true)}
+        >
+          <IconSettings /> Settings
+        </SettingsButton>
+      ) : null}
     </StyledHeader>
     <Content style={{ padding: '0 50px' }}>
       <div style={{ padding: '20px 0' }}>
@@ -101,4 +113,9 @@ const StyledTitle = styled.p`
   font: normal normal bold 16px/22px Open Sans;
   margin-top: 20px;
   margin-left: 20px;
+`
+
+const SettingsButton = styled(EduButton)`
+  position: absolute;
+  right: 21px;
 `

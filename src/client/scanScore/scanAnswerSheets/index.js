@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Progress } from 'antd'
+import { Progress, Row, Select } from 'antd'
 import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
 import { round } from 'lodash'
@@ -14,6 +14,10 @@ import {
   FlexContainer,
   notification,
   uploadToS3,
+  CustomModalStyled,
+  FieldLabel,
+  SelectInputStyled,
+  Checkbox,
 } from '@edulastic/common'
 import {
   cardBg,
@@ -30,7 +34,7 @@ import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmMod
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
-import { getAnswersFromVideo } from './scannerUtils'
+import { getAnswersFromVideo } from './answer-utils'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
 import {
@@ -41,11 +45,10 @@ import {
   IconStep5,
 } from './icons/StepsIcons'
 
+const Option = Select.Option
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
 const videoContstraints = {
-  width: { ideal: 640 },
-  height: { ideal: 480 },
   facingMode: { ideal: 'environment' },
 }
 
@@ -141,10 +144,15 @@ const ScanAnswerSheetsInner = ({
   const [answersList, setAnswers] = useState(null)
   const [scannedResponses, setScannedResponses] = useState([])
   const [scanningPercent, setScanningPercent] = useState(0)
+  const [cameraList, setCameraList] = useState([])
+  const [selectedCamera, setSelectedCamera] = useState(null)
+  const [showSettings, setShowSettings] = useState(false)
+  const [isFrontFacing, setIsFrontFacing] = useState(false)
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
+  const isFrontFacingRef = useRef(false)
 
   function supressFailureNotifications(time) {
     hideFailureNotificationsRef.current = true
@@ -158,13 +166,17 @@ const ScanAnswerSheetsInner = ({
   async function processVideo(vc) {
     const arrAnswers = arrAnswersRef.current
     if (vc) {
-      const matSrc = new cv.Mat(480, 640, cv.CV_8UC4)
+      const matSrc = new cv.Mat(
+        videoSetting.height,
+        videoSetting.width,
+        cv.CV_8UC4
+      )
       vc.read(matSrc)
       let result = null
       if (answersList) {
-        cv.imshow('canvas', matSrc)
+        cv.imshow('canvasOutput', matSrc)
       } else {
-        result = getAnswersFromVideo(cv, matSrc)
+        result = getAnswersFromVideo(cv, matSrc, isFrontFacingRef.current)
       }
       matSrc.delete()
       requestAnimationFrame(() => processVideo(vc))
@@ -243,19 +255,34 @@ const ScanAnswerSheetsInner = ({
     getOmrUploadSessions({ assignmentId, groupId, sessionId, fromWebcam: true })
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
-        .getUserMedia({ video: videoContstraints, audio: false })
+        .getUserMedia({
+          video: {
+            ...videoContstraints,
+            ...(selectedCamera ? { deviceId: { exact: selectedCamera } } : {}),
+          },
+          audio: false,
+        })
         .then((stream) => {
           setIsCameraLoad(true)
           setIsError(false)
           const { width, height } = stream.getTracks()[0].getSettings()
           setVideoSettings({ width, height })
-          stream.getTracks().forEach((track) => track.stop())
+          return navigator.mediaDevices.enumerateDevices()
+        })
+        .then((devices) => {
+          const videoDevices = devices
+            .filter((device) => device.kind === 'videoinput')
+            .map(({ deviceId, label }) => ({ id: deviceId, name: label }))
+          setCameraList(videoDevices)
         })
         .catch((err) => {
           setIsError(true)
           console.log(`Error While accessing camera: ${err}`)
         })
     }
+  }, [])
+
+  useEffect(() => {
     return () => {
       if (streamRef.current) {
         streamRef.current.getTracks().forEach((track) => track.stop())
@@ -306,7 +333,11 @@ const ScanAnswerSheetsInner = ({
           console.log(`Error While accessing camera: ${err}`)
         })
     }
-  }, [videoRef, videoRef?.current, cv])
+  }, [videoRef, videoRef?.current, cv, selectedCamera])
+
+  useEffect(() => {
+    isFrontFacingRef.current = isFrontFacing
+  }, [isFrontFacing])
 
   const breadcrumbData = [
     {
@@ -338,7 +369,7 @@ const ScanAnswerSheetsInner = ({
       [255, 255, 255, 255],
       -1
     )
-    cv.imshow('canvas', matSrc)
+    cv.imshow('canvasOutput', matSrc)
     matSrc.delete()
     videoRef.current.pause()
     if (videoRef.current.srcObject !== null) {
@@ -384,12 +415,17 @@ const ScanAnswerSheetsInner = ({
   if (isError) {
     return <h1>Please, Enable Camera Access To Continue</h1>
   }
+  const flipCameraViewStyle = isFrontFacing
+    ? { transform: `scale(-1,1)`, transformOrigin: 'center center' }
+    : {}
 
   return (
     <PageLayout
       assignmentTitle={assignmentTitle}
       classTitle={classTitle}
       breadcrumbData={breadcrumbData}
+      showCameraSettings={!isLoading}
+      setShowSettings={setShowSettings}
     >
       {isLoading ? (
         <Spinner />
@@ -416,26 +452,36 @@ const ScanAnswerSheetsInner = ({
           <CameraModule width={videoSetting.width} height={videoSetting.height}>
             <FlexContainer justifyContent="center">
               <canvas
-                id="canvas"
+                id="canvasOutput"
                 ref={canvasRef}
                 style={{
                   width: videoSetting.width,
                   height: videoSetting.height,
                   border: '2px solid #ececec',
+                  ...flipCameraViewStyle,
                 }}
               />
               <canvas
-                id="cropped"
+                id="workingCanvas"
                 style={{
                   display: 'none',
                   width: 280,
-                  height: 487,
+                  height: 450,
+                  border: '2px solid #ececec',
+                }}
+              />
+              <canvas
+                id="rowCanvas"
+                style={{
+                  display: 'none',
+                  width: 280,
+                  height: 30,
                   border: '2px solid #ececec',
                 }}
               />
               <video
-                id="video"
                 ref={videoRef}
+                id="video"
                 style={{
                   display: 'none',
                   width: videoSetting.width,
@@ -467,6 +513,41 @@ const ScanAnswerSheetsInner = ({
           onProceed={handleScanComplete}
         />
       )}
+      <CustomModalStyled
+        title="Settings"
+        centered
+        visible={showSettings}
+        onCancel={() => setShowSettings(false)}
+        footer={[
+          <EduButton onClick={() => setShowSettings(false)}>CLOSE</EduButton>,
+        ]}
+      >
+        <Row>
+          <FieldLabel>SELECT CAMERA</FieldLabel>
+          <SelectInputStyled
+            disabled={cameraList.length > 1}
+            value={cameraList.length === 1 ? cameraList[0].id : selectedCamera}
+            onChange={(v) => {
+              setSelectedCamera(v)
+            }}
+          >
+            <Option value={null}>Select Camera</Option>
+            {cameraList.map((x) => (
+              <Option value={x.id}>{x.name}</Option>
+            ))}
+          </SelectInputStyled>
+        </Row>
+        <br />
+        <Row>
+          <Checkbox
+            checked={isFrontFacing}
+            onChange={() => {
+              setIsFrontFacing((x) => !x)
+            }}
+            label="CAMERA IS FACING ME"
+          />
+        </Row>
+      </CustomModalStyled>
       {isHelpModalVisible && (
         <ConfirmationModal
           width="900px"
@@ -528,7 +609,6 @@ const enhance = compose(
 export default enhance(ScanAnswerSheets)
 
 const CameraUploaderWrapper = styled.div`
-  width: 800px;
   min-height: 756px;
   background: ${cardBg} 0% 0% no-repeat padding-box;
   border-radius: 10px;
@@ -547,7 +627,6 @@ const Title = styled.h3`
   letter-spacing: -0.9px;
   color: ${greyThemeDark1};
   opacity: 1;
-  margin-bottom: -20px;
 `
 
 const SubTitle = styled.p`

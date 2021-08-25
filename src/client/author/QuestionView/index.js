@@ -340,15 +340,18 @@ class QuestionViewContainer extends Component {
     }
     const { assignmentId, classId } = match.params
     const questionActivitiesGroupedByUserId = groupBy(classQuestion, 'userId')
-    const filteredTestActivities =
-      (!loading &&
-        data.filter(({ testActivityData: student, currentUqas }) => {
+    const testActivitiesGroupedByFilterStatus =
+      !loading &&
+      data.reduce(
+        (acc, cur) => {
+          console.log({ acc, cur })
+          const { testActivityData: student, currentUqas } = cur
           if (
             !student.testActivityId ||
             student.status === 'absent' ||
             student.UTASTATUS === testActivityStatus.NOT_STARTED
           ) {
-            return false
+            return acc
           }
           const qActivities =
             questionActivitiesGroupedByUserId[student.studentId] || []
@@ -366,40 +369,48 @@ class QuestionViewContainer extends Component {
                 filter !== 'skipped' &&
                 filter !== 'unscoredItems'))
           )
-            return false
+            return acc
 
-          if (!filter) return true
+          if (!filter) {
+            acc.all.push(cur)
+          } else {
+            const currentUQA = currentUqas?.[0] || {}
+            if (currentUQA.isPractice) {
+              acc.unscoredItems.push(cur)
+            } else if (currentUQA.skipped) {
+              acc.skipped.push(cur)
+            } else if (currentUQA.graded === false) {
+              acc.notGraded.push(cur)
+            } else if (
+              currentUQA.score === currentUQA.maxScore &&
+              currentUQA.score > 0
+            ) {
+              acc.correct.push(cur)
+            } else if (
+              currentUQA.score > 0 &&
+              currentUQA.score < currentUQA.maxScore
+            ) {
+              acc.partial.push(cur)
+            } else if (currentUQA.score === 0) {
+              acc.wrong.push(cur)
+            }
+          }
+          return acc
+        },
+        {
+          all: [],
+          unscoredItems: [],
+          skipped: [],
+          notGraded: [],
+          correct: [],
+          partial: [],
+          wrong: [],
+        }
+      )
 
-          const currentUQA = currentUqas?.[0] || {}
-
-          if (filter === 'unscoredItems' && currentUQA.isPractice) {
-            return true
-          }
-          if (filter === 'skipped' && currentUQA.skipped) {
-            return true
-          }
-          if (filter === 'notGraded' && currentUQA.graded === false) {
-            return true
-          }
-          if (
-            filter === 'correct' &&
-            currentUQA.score === currentUQA.maxScore &&
-            currentUQA.score > 0
-          ) {
-            return true
-          }
-          if (
-            filter === 'partial' &&
-            currentUQA.score > 0 &&
-            currentUQA.score < currentUQA.maxScore
-          ) {
-            return true
-          }
-          if (filter === 'wrong' && currentUQA.score === 0) {
-            return true
-          }
-          return false
-        })) ||
+    const filteredTestActivities =
+      (filter && testActivitiesGroupedByFilterStatus[filter]) ||
+      testActivitiesGroupedByFilterStatus?.all ||
       []
 
     const shouldShowPagination =

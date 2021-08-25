@@ -615,9 +615,9 @@ export const transformGradeBookResponse = (
         const {
           _id: testActivityId,
           groupId,
-          previouslyRedirected: redirected,
+          previouslyRedirected: redirected = false,
           number,
-          redirect,
+          redirect = false,
         } = testActivity
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId]
@@ -694,20 +694,20 @@ export const transformGradeBookResponse = (
               }
             }
             let {
-              skipped,
-              correct,
-              partiallyCorrect: partialCorrect,
+              skipped = false,
+              correct = false,
+              partiallyCorrect: partialCorrect = false,
             } = currentQuestionActivity
             const {
               timeSpent,
               // eslint-disable-next-line no-shadow
               score,
               // eslint-disable-next-line no-shadow
-              graded,
+              graded = false,
               pendingEvaluation,
               scratchPad,
               userResponse,
-              autoGrade,
+              autoGrade = false,
               ...remainingProps
             } = currentQuestionActivity
             skipped = getSkippedStatusOfQuestion(

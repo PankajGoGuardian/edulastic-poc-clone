@@ -71,6 +71,7 @@ const Bars = ({
             onMouseLeave={handleMouse(null)}
             width={step - 2}
             height={height + margin}
+            data-cy={`bar-${index}`}
           />
           {showAnswer && isRenderIcons && renderValidationIcons(bar, index)}
           <Bar

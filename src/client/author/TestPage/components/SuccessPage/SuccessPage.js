@@ -321,7 +321,7 @@ class SuccessPage extends React.Component {
         const { fromText, toUrl } = this.props.location.state
         data[0] = {
           title: fromText,
-          to: toUrl,
+          to: isPlaylist ? `/author/${toUrl}` : toUrl,
         }
       }
       return data

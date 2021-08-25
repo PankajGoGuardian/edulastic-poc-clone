@@ -916,6 +916,13 @@ const QuestionContainer = styled.div`
       max-width: calc(100% - 55px);
       display: block !important;
       position: relative !important;
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-30606
+       */
+      .katex .halfarrow-left,
+      .katex .halfarrow-right {
+        overflow: hidden !important;
+      }
     }
     .question-wrapper {
       padding: 5px;

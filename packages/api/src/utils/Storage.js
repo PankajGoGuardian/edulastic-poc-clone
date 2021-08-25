@@ -206,6 +206,14 @@ export function removeFromLocalStorage(key) {
   }
 }
 
+export function getCurrentDistrictName() {
+  if (window.localStorage.getItem('ajs_user_traits')) {
+    const currentDistrictName = getFromLocalStorage('ajs_user_traits')
+    const { district } = JSON.parse(currentDistrictName)
+    return district
+  }
+}
+
 // get proxy parent
 // proxy parent is the user who initiated the proxy of another user
 export function getProxyParent(roles = []) {

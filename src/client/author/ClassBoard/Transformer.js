@@ -781,8 +781,8 @@ export const transformGradeBookResponse = (
           (x.qids && x.qids.length && x.testActivityId) || x.qid
         // has own property  then pick it or else default to true
         const {
-          isEnrolled = true,
-          isAssigned = true,
+          isEnrolled = false,
+          isAssigned = false,
           isPaused = false,
           tabNavigationCounter: outNavigationCounter = 0,
           pauseReason,

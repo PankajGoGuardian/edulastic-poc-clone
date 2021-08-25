@@ -344,7 +344,6 @@ class QuestionViewContainer extends Component {
       !loading &&
       data.reduce(
         (acc, cur) => {
-          console.log({ acc, cur })
           const { testActivityData: student, currentUqas } = cur
           if (
             !student.testActivityId ||

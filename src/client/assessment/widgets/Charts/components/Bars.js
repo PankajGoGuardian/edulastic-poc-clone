@@ -101,6 +101,7 @@ const Bars = ({
               deleteMode={deleteMode}
               hoverState={isHovered(index)}
               height={isHovered(index) ? 5 : 1}
+              data-cy={`activeBar-${index}`}
             />
           )}
         </Fragment>

@@ -67,10 +67,6 @@ const comparePlansData = [
         description: 'Reports by standard for students and classes.',
       },
       {
-        title: 'Standards Mastery Tracking',
-        description: 'Reports by standard for students and classes.',
-      },
-      {
         title: 'Assessment Sharing',
         description: 'Share assessments or keep them private. Your choice.',
       },

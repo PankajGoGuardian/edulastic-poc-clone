@@ -371,6 +371,7 @@
       "global": "Global",
       "local": "Local",
       "multipleResponses": "Multiple responses",
+      "maxResponses": "Maximum Responses",
       "areaSelectLabel": "Select Area",
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
@@ -493,6 +494,7 @@
       "questionPlaceholder": "Enter your question",
       "optionPlaceholder": "Option",
       "multipleResponses": "Multiple Responses",
+      "maxResponses": "Maximum Responses",
       "shuffleOptions": "Shuffle options",
       "choice": "Choice"
     },

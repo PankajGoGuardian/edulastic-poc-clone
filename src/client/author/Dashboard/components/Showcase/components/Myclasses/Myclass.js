@@ -100,6 +100,13 @@ const MyClasses = ({
     false
   )
 
+  const isSingaporeMath =
+    user?.referrer?.includes('singapore') ||
+    user?.utm_source?.toLowerCase()?.includes('singapore') ||
+    collections.some((itemBank) =>
+      itemBank?.owner?.toLowerCase().includes('singapore')
+    )
+
   useEffect(() => {
     // fetch clever classes on modal display
     if (showCleverSyncModal) {
@@ -168,13 +175,13 @@ const MyClasses = ({
       if (user?.recommendedContentUpdated) {
         setTimeout(() => {
           configurableTilesApi
-            .fetchRecommendedTest()
+            .fetchRecommendedTest(isSingaporeMath)
             .then((res) => saveRecommendedTests(res))
         }, 6000)
       }
     } else {
       configurableTilesApi
-        .fetchRecommendedTest()
+        .fetchRecommendedTest(isSingaporeMath)
         .then((res) => saveRecommendedTests(res))
     }
   }
@@ -360,13 +367,6 @@ const MyClasses = ({
       ),
     [collections]
   )
-
-  const isSingaporeMath =
-    user?.referrer?.includes('singapore') ||
-    user?.utm_source?.toLowerCase()?.includes('singapore') ||
-    collections.some((itemBank) =>
-      itemBank?.owner?.toLowerCase().includes('singapore')
-    )
 
   const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
 

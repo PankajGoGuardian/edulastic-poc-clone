@@ -22,11 +22,11 @@ const fetchTileById = (id) =>
     })
     .then((result) => result.data)
 
-const fetchRecommendedTest = () =>
+const fetchRecommendedTest = (isSingaporeMath = false) =>
   api
     .callApi({
       useSlowApi: true,
-      url: `${prefix}/recommend/tests`,
+      url: `${prefix}/recommend/tests?isSingaporeMathUser=${isSingaporeMath}`,
       method: 'get',
     })
     .then((result) => {

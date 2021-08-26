@@ -208,7 +208,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return produce(state, (_st) => {
         const userId = payload?.testActivity?.userId
         const testActivityId = payload?.testActivity?._id
-        const attempt = _st.data.recentTestActivitiesGrouped[userId].find(
+        const attempt = _st.data.recentTestActivitiesGrouped[userId]?.find(
           (x) => x._id === testActivityId
         )
         if (attempt) {

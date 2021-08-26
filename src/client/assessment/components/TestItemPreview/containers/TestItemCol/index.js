@@ -161,7 +161,7 @@ class TestItemCol extends Component {
           flexDirection={isStudentReport && 'column'}
           justifyContent="flex-start" // @see EV-29020
         >
-          <FlexItem flexGrow="1">
+          <FlexItem flexGrow="1" maxWidth={isLCBView && '100%'}>
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}
               evaluation={evaluation}

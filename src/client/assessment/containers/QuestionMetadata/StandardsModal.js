@@ -105,11 +105,13 @@ const StandardsModal = ({
 
   const handleChangeGrades = (val) => {
     setState({ ...state, grades: val })
-    getCurriculumStandards({
-      id: state.standard.id,
-      grades: val,
-      searchStr: '',
-    })
+    if (!isPlaylistView) {
+      getCurriculumStandards({
+        id: state.standard.id,
+        grades: val,
+        searchStr: '',
+      })
+    }
     setDefaultInterests({ grades: val })
   }
 

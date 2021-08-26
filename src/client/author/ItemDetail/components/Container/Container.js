@@ -715,10 +715,13 @@ class Container extends Component {
       history,
       match,
       isTestFlow,
+      updateItemDetailById,
+      item,
       location: { state },
     } = this.props
     const { testId } = match.params
     const _id = this.passageItems[page - 1]
+    updateItemDetailById(item._id, item, testId, isTestFlow, state, true, true)
     if (state?.testAuthoring === false) {
       return history.push({
         pathname: `/author/items/${_id}/item-detail`,

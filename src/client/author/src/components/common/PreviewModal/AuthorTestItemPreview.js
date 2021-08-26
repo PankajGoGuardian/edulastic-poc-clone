@@ -320,7 +320,14 @@ class AuthorTestItemPreview extends Component {
   }
 
   renderRightButtons = () => {
-    const { isPassage, item, goToItem, passageTestItems, page } = this.props
+    const {
+      isPassage,
+      item,
+      goToItem,
+      passageTestItems: _passageTestItems,
+      page,
+    } = this.props
+    const passageTestItems = _passageTestItems.filter((el) => el.active)
     const { collapseDirection } = this.state
     const showButtons = collapseDirection !== 'right'
     if (

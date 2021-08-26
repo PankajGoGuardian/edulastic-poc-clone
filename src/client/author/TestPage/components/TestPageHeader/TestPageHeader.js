@@ -438,7 +438,7 @@ const TestPageHeader = ({
           titleMarginTop="10px"
           flexDirection="row"
           alignItems="center"
-          titleMaxWidth={windowWidth >= LARGE_DESKTOP_WIDTH ? '450px' : '250px'}
+          titleMaxWidth={windowWidth >= LARGE_DESKTOP_WIDTH ? '450px' : '290px'}
           headerLeftClassName="headerLeftWrapper"
           containerClassName="tabAlignment"
           hasTestId={hasTestId}

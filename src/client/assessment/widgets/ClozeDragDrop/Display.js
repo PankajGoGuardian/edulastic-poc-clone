@@ -140,7 +140,7 @@ class ClozeDragDropDisplay extends Component {
           newAnswers[index] = temp
         } else {
           newAnswers[index] = options.find(
-            (option) => option.value === sourceData
+            (option) => option?.value === sourceData
           ).value
           for (let i = 0; i < newResponses.length; i++) {
             if (newResponses[i].value === sourceData) {

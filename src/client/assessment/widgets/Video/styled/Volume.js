@@ -5,14 +5,14 @@ import { Slider } from 'antd'
 
 const Volume = ({ style, media }) => {
   const _handleChange = (value) => {
-    media.setVolume((+value).toFixed(4))
+    media?.setVolume?.((+value)?.toFixed(4))
   }
   return (
     <Slider
       min={0}
       max={1}
       step={0.01}
-      value={media.volume}
+      value={media?.volume}
       style={{ width: 100, ...style }}
       onChange={_handleChange}
       tooltipVisible={false}

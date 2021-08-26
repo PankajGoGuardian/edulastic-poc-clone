@@ -1042,7 +1042,7 @@ class Container extends PureComponent {
       if (
         itemGroup.items.some(
           (item) =>
-            item.data.questions.length <= 0 && item.data.resources.length <= 0
+            item.data?.questions?.length <= 0 && item.data.resources.length <= 0
         )
       ) {
         testHasInvalidItem = true

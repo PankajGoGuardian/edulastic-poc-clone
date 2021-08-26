@@ -399,6 +399,13 @@ const TestPageHeader = ({
     isTestContainsDraftItem &&
     (isEdulasticCurator || isCurator) &&
     !isPlaylist
+
+  const headerTitleWidth =
+    windowWidth >= LARGE_DESKTOP_WIDTH
+      ? '450px'
+      : isPlaylist
+      ? '290px'
+      : '250px'
   return (
     <>
       <Upgrade />
@@ -431,14 +438,15 @@ const TestPageHeader = ({
       {windowWidth >= parseInt(tabletWidth, 10) ? (
         <MainHeader
           headingText={
-            title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
+            title ||
+            (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
           }
           Icon={IconTestBank}
           headingSubContent={headingSubContent}
           titleMarginTop="10px"
           flexDirection="row"
           alignItems="center"
-          titleMaxWidth={windowWidth >= LARGE_DESKTOP_WIDTH ? '450px' : '250px'}
+          titleMaxWidth={headerTitleWidth}
           headerLeftClassName="headerLeftWrapper"
           containerClassName="tabAlignment"
           hasTestId={hasTestId}
@@ -455,6 +463,7 @@ const TestPageHeader = ({
             childMarginRight="5"
             justifyContent="flex-end"
             mt="12px"
+            width={isPlaylist ? '100%' : 'auto'}
           >
             {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
               <EduButton

@@ -392,6 +392,7 @@ class TestList extends Component {
       playListFilters,
       sort,
     } = this.props
+    playListFilters.isSingaporeMath = this.state.isSingaporeMath
 
     receivePlaylists({ page, limit, search: playListFilters, sort })
     const urlToPush = this.getUrlToPush(page)
@@ -528,6 +529,7 @@ class TestList extends Component {
     )
     const { filter = '' } = (getMatchingObj.length && getMatchingObj[0]) || {}
     const { history, receivePlaylists, limit, playListFilters } = this.props
+    playListFilters.isSingaporeMath = this.state.isSingaporeMath
     let updatedSearch = { ...playListFilters }
     if (filter === filterMenuItems[0].filter) {
       updatedSearch = {
@@ -564,6 +566,7 @@ class TestList extends Component {
 
   onSelectSortOption = (value, sortDir) => {
     const { playListFilters, limit, sort, receivePlaylists } = this.props
+    playListFilters.isSingaporeMath = this.state.isSingaporeMath
     const updateSort = {
       ...sort,
       sortBy: value,

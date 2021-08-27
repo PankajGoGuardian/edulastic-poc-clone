@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import striptags from 'striptags'
 import cloneDeep from 'lodash/cloneDeep'
 import {
   IconGraphRay as IconRay,
@@ -32,17 +31,25 @@ class DrawingObjects extends Component {
     const type = utils.capitalizeFirstLetter(
       drawingObject.type === 'parabola2' ? 'parabola' : drawingObject.type
     )
-    const objLabel = striptags(drawingObject.label)
-    if (objLabel) {
-      return `${type} ${objLabel}`
+
+    if (drawingObject.label) {
+      return (
+        <span
+          dangerouslySetInnerHTML={{ __html: `${type} ${drawingObject.label}` }}
+        />
+      )
     }
 
     if (drawingObject.pointLabels) {
       const pointLabels = drawingObject.pointLabels
-        .map((item) => striptags(item.label))
+        .map((item) => item.label)
         .join('')
       if (pointLabels) {
-        return `${type} ${pointLabels}`
+        return (
+          <span
+            dangerouslySetInnerHTML={{ __html: `${type} ${pointLabels}` }}
+          />
+        )
       }
     }
 

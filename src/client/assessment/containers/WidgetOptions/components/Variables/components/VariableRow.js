@@ -25,7 +25,8 @@ const VariableRow = ({
   const [isFocused, setIsFocused] = useState(false)
   const isRange = variable.type.includes('RANGE')
   const isFormula = variable.type.includes('FORMULA')
-  const isSet = variable.type.includes('SET')
+  const isSet = variable.type === 'NUMBER_SET'
+  const isTextSet = variable.type === 'TEXT_SET'
   const isNumberSquence = variable.type === 'NUMBER_SEQUENCE'
   const isTextSquence = variable.type === 'TEXT_SEQUENCE'
 
@@ -99,6 +100,16 @@ const VariableRow = ({
             data-cy="variableSet"
             value={variable.set}
             onKeyDown={validations.numSequence}
+            onChange={(e) => onChange(variableName, 'set', e.target.value)}
+            size="large"
+          />
+        </StyledCol>
+      )}
+      {isTextSet && (
+        <StyledCol md={12}>
+          <TextInputStyled
+            data-cy="variableSet"
+            value={variable.set}
             onChange={(e) => onChange(variableName, 'set', e.target.value)}
             size="large"
           />

@@ -265,6 +265,27 @@ const MyClasses = ({
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType, subscriptionData } = config
+
+    /**
+     *  User purchased bank from different premium district
+     *  and trying to access it in a free district
+     */
+    if (
+      !isPremiumUser &&
+      hasAccessToItemBank(config.subscriptionData?.itemBankId)
+    ) {
+      setShowItemBankTrialUsedModal(true)
+      setProductData({
+        productId: config?.subscriptionData?.productId,
+        productName: config?.subscriptionData?.productName,
+        description: config?.subscriptionData?.description,
+        hasTrial: config?.subscriptionData?.hasTrial,
+        itemBankId: config?.subscriptionData?.itemBankId,
+        blockInAppPurchase: config?.subscriptionData?.blockInAppPurchase,
+      })
+      return
+    }
+
     if (isBlocked) {
       handleBlockedClick(config)
       return

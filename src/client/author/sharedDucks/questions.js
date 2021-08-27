@@ -250,6 +250,28 @@ const reSequencedQ = (state, { payload }) => {
   state.byId = updatedQuestions
 }
 
+const changeValidationWhenUnscored = (question, score) => {
+  const isUnscored = score === 0
+
+  if (isUnscored) {
+    return produce(question, (draft) => {
+      draft.validation.validResponse.score = 0
+      draft.validation.altResponses?.forEach((altResp) => {
+        altResp.score = 0
+      })
+      if (draft.validation?.maxScore) {
+        draft.validation.maxScore = 0
+      }
+
+      draft.validation.unscored = isUnscored
+    })
+  }
+  return produce(question, (draft) => {
+    draft.validation.unscored = isUnscored
+    draft.validation.validResponse.score = score
+  })
+}
+
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
 export const SET_QUESTION_SCORE = '[author questions] set question score'
@@ -277,10 +299,11 @@ export default createReducer(initialState, {
   },
   [SET_QUESTION_SCORE]: (state, { payload }) => {
     const { qid, score } = payload
-    if (!(score > 0)) {
+    if (score < 0) {
       return state
     }
-    set(state.byId[qid], 'validation.validResponse.score', score)
+    const _question = changeValidationWhenUnscored(state.byId[qid], score)
+    state.byId[qid] = _question
   },
   [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
     if (!payload) {

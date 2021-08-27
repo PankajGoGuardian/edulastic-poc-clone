@@ -148,7 +148,7 @@ class GraphAnswers extends Component {
   }
 
   handleChangePoints = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
 

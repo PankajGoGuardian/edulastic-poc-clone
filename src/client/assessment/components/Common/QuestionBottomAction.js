@@ -171,7 +171,6 @@ const QuestionBottomAction = ({
       question: questionData,
       proceedRegrade: false,
       lcbView,
-      isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
     }
     updateCorrectItem(payload)

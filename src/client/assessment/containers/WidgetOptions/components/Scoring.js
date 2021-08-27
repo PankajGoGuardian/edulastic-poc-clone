@@ -151,7 +151,7 @@ class Scoring extends Component {
     const questionTitle = item?.title || questionData?.title
 
     const onChange = (value) => {
-      if (!(value > 0)) {
+      if (value < 0) {
         return
       }
       const points = parseFloat(value, 10)
@@ -236,7 +236,7 @@ class Scoring extends Component {
                           value={maxScore}
                           width="20%"
                           onChange={onChange}
-                          min={0.5}
+                          min={0}
                           step={0.5}
                           disabled={
                             (!!questionData.rubrics &&

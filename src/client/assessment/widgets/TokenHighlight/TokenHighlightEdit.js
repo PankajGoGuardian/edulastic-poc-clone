@@ -92,7 +92,7 @@ const TokenHighlightEdit = ({
   }
 
   const handlePointsChange = (val) => {
-    if (!(val > 0)) {
+    if (val < 0) {
       return
     }
     const points = parseFloat(val, 10)

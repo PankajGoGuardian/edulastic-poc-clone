@@ -52,7 +52,7 @@ const SelectUnit = ({
   useEffect(() => {
     if (allBtns.length > 0) {
       // set unit option when changing dropdown mode
-      onChange('unit', allBtns[0]?.handler)
+      onChange('unit', unit || allBtns[0]?.handler)
     }
   }, [keypadMode])
 

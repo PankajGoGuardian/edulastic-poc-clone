@@ -188,12 +188,9 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const { entity, isAuthorPublisher, resetUpdatedState } = this.props
+    const { entity, resetUpdatedState } = this.props
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
-    }
-    if (isAuthorPublisher) {
-      this.updateTestData('testType')(ASSESSMENT)
     }
     if (entity?.safeBrowser) {
       this.updateTestData('safeBrowser')(true)

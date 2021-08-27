@@ -69,7 +69,8 @@ const DropContainer = ({
 
   const mergedStyle = {
     ...style,
-    background: style.background || greyThemeLighter,
+    background:
+      rest.evaluationBackgroundColor || style.background || greyThemeLighter,
   }
 
   const onClickHandler = (e) => {

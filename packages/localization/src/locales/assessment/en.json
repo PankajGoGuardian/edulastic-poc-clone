@@ -1208,6 +1208,18 @@
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
       "files": "Files"
+    },
+    "pictograph": {
+      "composeQuestion": "Question",
+      "enterQuestion": "Enter your question",
+      "enterElements": "Enter elements",
+      "classifications": "Enter class names",
+      "questionLayer": "Question layer",
+      "correctAnswer": "Correct Answer",
+      "showClassName": "Show class name",
+      "answeringStyle": "Answering style",
+      "elementContainers": "Element containers",
+      "clickToSelect": "Click to select"
     }
   }
 }

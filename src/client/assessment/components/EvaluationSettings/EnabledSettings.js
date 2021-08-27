@@ -28,6 +28,8 @@ const EnabledSettings = ({
     label: t(`component.math.${syntax}`),
   }))
 
+  const hasNumber = (text) => /\d/.test(text)
+
   const optionsToShow = useMemo(() => {
     const optionKeys = keys(options)
     const optsLables = optionKeys
@@ -53,15 +55,18 @@ const EnabledSettings = ({
               }
               return x
             })
-            label = `"${labels.join(',')}" ${t(`component.math.${key}`)}`
+            label = `${
+              hasNumber(labels.join(',')) ? labels : `"${labels.join(',')}"`
+            } ${t(`component.math.${key}`)}`
           } else if (isString(options[key])) {
             label = options[key]
             const separator = separators.find((s) => s.value === options[key])
             if (separator) {
               label = separator.label
             }
-
-            label = `"${label}" ${t(`component.math.${key}`)}`
+            label = `${hasNumber(label) ? label : `"${label}"`} ${t(
+              `component.math.${key}`
+            )}`
           } else {
             label = t(`component.math.${key}`)
           }

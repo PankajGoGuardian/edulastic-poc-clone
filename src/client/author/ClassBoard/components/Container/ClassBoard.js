@@ -1336,7 +1336,7 @@ class ClassBoard extends Component {
                           return
                         }
                         getAllTestActivitiesForStudent({
-                          studentId: firstStudentId,
+                          studentId: selectedStudentId || firstStudentId,
                           assignmentId,
                           groupId: classId,
                         })

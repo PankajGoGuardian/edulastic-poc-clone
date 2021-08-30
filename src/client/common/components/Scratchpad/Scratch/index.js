@@ -389,7 +389,11 @@ const Scratchpad = ({
     if (zwibbler) {
       zwibbler.resize()
     }
-    if (isStudentAttempt && !readOnly && zwibblerRef.current) {
+    if (
+      (isStudentAttempt || expressGrader) &&
+      !readOnly &&
+      zwibblerRef.current
+    ) {
       const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
       setScratchpadRect({
         top: zwibblerDomRect.top,

@@ -3,10 +3,17 @@ import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { testActivityApi, attchmentApi as attachmentApi } from '@edulastic/api'
+import { aws } from '@edulastic/constants'
 import { createSelector } from 'reselect'
 import { gradebookTestItemAddAction } from '../src/reducers/testActivity'
 import { SAVE_USER_WORK } from '../../assessment/constants/actions'
 import { updateScratchpadAction } from '../../common/components/Scratchpad/duck'
+import {
+  getFilterAndUpdateForAttachments,
+  getFileNameAndQidMap,
+} from '../../assessment/sagas/items'
+
+const defaultUploadFolder = aws.s3Folders.DEFAULT
 
 export const SUBMIT_RESPONSE = '[expressGraderAnswers] submit'
 
@@ -21,6 +28,9 @@ export const REQUEST_SCRATCH_PAD_ERROR = '[scratchpad] load error'
 export const TOGGLE_SCORE_MODE = '[expressgrader] toggle score/response'
 export const DISABLE_SCORE_MODE = '[expressgrader] enable score mode'
 export const SUBMIT_RESPONSE_COMPLETED = '[expressgrade] completed submitting'
+export const SET_UPDATED_SCRATCHPAD = '[expressgrader] set updated scratchpad'
+export const UPLOAD_DATA_AND_UPDATE_ATTACHMENT =
+  '[expressgrader] upload data and update attachment'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -38,6 +48,10 @@ export const toggleScoreModeAction = createAction(TOGGLE_SCORE_MODE)
 export const disableScoreModeAction = createAction(DISABLE_SCORE_MODE)
 export const submitResponseCompletedAction = createAction(
   SUBMIT_RESPONSE_COMPLETED
+)
+export const setUpdatedScratchPadAction = createAction(SET_UPDATED_SCRATCHPAD)
+export const uploadDataAndUpdateAttachmentAction = createAction(
+  UPLOAD_DATA_AND_UPDATE_ATTACHMENT
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -62,6 +76,12 @@ export const getIsScoringCompletedSelector = createSelector(
   stateSelector,
   (state) => state.isScoring
 )
+
+export const getUpdatedScratchPadSelector = createSelector(
+  stateSelector,
+  (state) => state.updatedScratchPad
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -73,6 +93,7 @@ const initialState = {
   scratchPadLoading: false,
   scoreMode: true,
   isScoring: false,
+  updatedScratchPad: false,
 }
 
 export const expressGraderReducer = createReducer(initialState, {
@@ -103,6 +124,9 @@ export const expressGraderReducer = createReducer(initialState, {
   [SUBMIT_RESPONSE_COMPLETED]: (state) => {
     state.isScoring = false
   },
+  [SET_UPDATED_SCRATCHPAD]: (state, { payload }) => {
+    state.updatedScratchPad = payload
+  },
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -112,7 +136,14 @@ export const expressGraderReducer = createReducer(initialState, {
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
 function* submitResponse({ payload }) {
-  const { testActivityId, itemId, groupId, userResponse, scores } = payload
+  const {
+    testActivityId,
+    itemId,
+    groupId,
+    userResponse,
+    scores,
+    scratchPadData,
+  } = payload
 
   try {
     yield put(removeTeacherEditedScoreAction())
@@ -121,6 +152,7 @@ function* submitResponse({ payload }) {
       itemId,
       groupId,
       userResponse,
+      scratchPadData,
       scores,
     })
     notification({
@@ -181,10 +213,41 @@ function* scratchPadLoadSaga({ payload }) {
   }
 }
 
+function* uploadDataAndUpdateAttachmentSaga({ payload }) {
+  try {
+    const { userWork = {}, uta, itemId, userId } = payload || {}
+
+    const listOfFilenameAndQuestionIdDict = yield all(
+      Object.entries(userWork).map(([qid, scratchpadData]) =>
+        call(getFileNameAndQidMap, qid, scratchpadData, defaultUploadFolder)
+      )
+    )
+
+    yield all(
+      (listOfFilenameAndQuestionIdDict || []).map(({ qId, fileName }) => {
+        const { update, filter } = getFilterAndUpdateForAttachments({
+          uta,
+          itemId,
+          userId,
+          qId,
+          scratchpadUri: fileName,
+        })
+        return call(attachmentApi.updateAttachment, { update, filter })
+      })
+    )
+  } catch (e) {
+    console.error(e)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SUBMIT_RESPONSE, submitResponse),
     yield takeEvery(REQUEST_SCRATCH_PAD_REQUEST, scratchPadLoadSaga),
+    yield takeEvery(
+      UPLOAD_DATA_AND_UPDATE_ATTACHMENT,
+      uploadDataAndUpdateAttachmentSaga
+    ),
   ])
 }
 

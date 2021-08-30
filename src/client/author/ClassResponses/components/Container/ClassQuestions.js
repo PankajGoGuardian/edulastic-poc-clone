@@ -18,7 +18,9 @@ import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import {
   loadScratchPadAction,
   clearUserWorkAction,
+  saveUserWorkAction,
 } from '../../../../assessment/actions/userWork'
+import { setUpdatedScratchPadAction } from '../../../ExpressGrader/ducks'
 
 import AssessmentPlayerModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { getRows } from '../../../sharedDucks/itemDetail'
@@ -304,6 +306,7 @@ const Preview = ({
   testActivityId: utaId,
   currentStudent,
   isExpandedView = false,
+  saveScratchPadData,
 }) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -377,7 +380,7 @@ const Preview = ({
         userWork={scractchPadUsed && userWork} // used to determine show student work button
         highlights={highlights}
         scratchpadDimensions={scratchpadDimensions}
-        saveUserWork={() => {}}
+        saveUserWork={(data) => saveScratchPadData(data)}
         isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
         toggleStudentWorkCollapse={toggleStudentWorkCollapse}
         {...scoringProps}
@@ -498,6 +501,36 @@ class ClassQuestions extends Component {
         }
       }
     )
+  }
+
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-24950
+   * save scratchpad data updated from EG
+   */
+  saveScratchPadData = (data) => {
+    const {
+      saveUserWork,
+      questionActivities,
+      setUpdatedScratchPad,
+    } = this.props
+
+    if (data?.questionId) {
+      const { questionId, userWorkData } = data
+      const userQuestionActivity = (questionActivities || []).find(
+        (qa) => qa?.qid === questionId
+      )
+      // While in EG, userWork in store has uqa id as keys
+      const userWorkId = userQuestionActivity?._id
+      if (userWorkId) {
+        const scratchpadData = {
+          [questionId]: userWorkData,
+        }
+        setUpdatedScratchPad(true)
+        saveUserWork({
+          [userWorkId]: { ...scratchpadData },
+        })
+      }
+    }
   }
 
   render() {
@@ -734,6 +767,7 @@ class ClassQuestions extends Component {
               testActivityId={testActivityId || currentStudent.testActivityId}
               currentStudent={currentStudent}
               isExpandedView={isExpandedView}
+              saveScratchPadData={this.saveScratchPadData}
             />
           )
         })}
@@ -795,6 +829,8 @@ const withConnect = connect(
     setPageNumber: setPageNumberAction,
     setLcbQuestionLoaderState: setLcbQuestionLoaderStateAcion,
     setQuestionIdToScroll: setQuestionIdToScrollAction,
+    saveUserWork: saveUserWorkAction,
+    setUpdatedScratchPad: setUpdatedScratchPadAction,
   }
 )
 

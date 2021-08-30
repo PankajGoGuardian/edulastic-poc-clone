@@ -25,6 +25,7 @@ const TextEntry = ({ styles, userAnswer, onChange, displayStyleOption }) => {
         onChange={handleChange}
         value={localValue}
         isDahsline={isDahsline}
+        data-cy="textInput"
       />
     </TextEntryWrapper>
   )

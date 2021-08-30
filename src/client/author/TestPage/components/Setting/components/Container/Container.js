@@ -2146,8 +2146,8 @@ class Setting extends Component {
                     />
                     <Description>
                       Performance bands are set by district or school admins.
-                      Teachers can modify cut scores/thresholds for class
-                      assignments.
+                      Teachers can choose from the different profiles created by
+                      the admin.
                     </Description>
                   </Block>
 
@@ -2162,9 +2162,8 @@ class Setting extends Component {
                     />
                     <Description>
                       Standards based scales are set by district or school
-                      admins. Teachers can modify performance threshold scores
-                      for class assignments to track mastery by standards
-                      assessed.
+                      admins. Teachers can choose from the different profiles
+                      created by the admin
                     </Description>
                   </Block>
 

@@ -15,29 +15,33 @@ import {
 } from './parse-qrcode'
 
 export const getAnswers = (cv, srcMat, isSingle) => {
-  let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
+  try {
+    let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
 
-  const circleArray = detectCircles(cv, resizedImage)
-  const arrAnswerCircles = groupCirclesByAnswer(circleArray)
-  const arrBoundingRegions = getBoundingRegionsWithCircles(
-    cv,
-    resizedImage,
-    circleArray,
-    arrAnswerCircles
-  )
+    const circleArray = detectCircles(cv, resizedImage)
+    const arrAnswerCircles = groupCirclesByAnswer(circleArray)
+    const arrBoundingRegions = getBoundingRegionsWithCircles(
+      cv,
+      resizedImage,
+      circleArray,
+      arrAnswerCircles
+    )
 
-  let arrAnswers = []
+    let arrAnswers = []
 
-  arrBoundingRegions.forEach((region, index) => {
-    // if(index === 12) {
-    //     const answer = getTrueCirclesInRow(cv, region);
-    //     arrAnswers.push(answer);
-    // }
-    const answer = getTrueCirclesInRow(cv, region)
-    arrAnswers.push(answer)
-  })
-  resizedImage.delete()
-  return arrAnswers
+    arrBoundingRegions.forEach((region, index) => {
+      // if(index === 12) {
+      //     const answer = getTrueCirclesInRow(cv, region);
+      //     arrAnswers.push(answer);
+      // }
+      const answer = getTrueCirclesInRow(cv, region)
+      arrAnswers.push(answer)
+    })
+    resizedImage.delete()
+    return arrAnswers
+  } catch (e) {
+    return []
+  }
 }
 
 export const getAnswersFromVideo = (cv, matSrc, isFronFacing) => {

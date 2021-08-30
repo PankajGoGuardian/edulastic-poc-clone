@@ -28,6 +28,7 @@ import {
   white,
   secondaryTextColor,
   lightGrey9,
+  linkColor,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
@@ -52,29 +53,29 @@ const videoContstraints = {
   facingMode: { ideal: 'environment' },
 }
 
-// TODO: replace IconEye once assets available
 const steps = [
   {
     icon: <IconStep1 />,
-    description: 'Hold your bubble sheets so that they are fully visible.',
+    description: 'Put your bubble sheets so that they are fully visible.',
   },
   {
     icon: <IconStep2 />,
     description:
-      'Ensure the bounding boxes of the response section and the QR code are fully visible and aligned vertically.',
+      'Ensure the bounding boxes of the QR code and the response section are fully visible and aligned vertically.',
   },
   {
     icon: <IconStep3 />,
-    description: 'Wait for the scanned successful message with a beeper sound.',
+    description: 'Wait for the Form detected message with a beeper sound.',
   },
   {
     icon: <IconStep4 />,
     description:
-      'Once the message is shown, you can hold your next response sheet to scan.',
+      'Once the message is shown, you can put your next bubble sheet to scan.',
   },
   {
     icon: <IconStep5 />,
-    description: 'Click Proceed to next step once all responses are scanned.',
+    description:
+      'Click Proceed to next step once all bubble sheets are scanned.',
   },
 ]
 
@@ -197,7 +198,7 @@ const ScanAnswerSheetsInner = ({
               if (filterCount > 0) {
                 if (!hideFailureNotificationsRef.current) {
                   notification({
-                    msg: `It is already parsed. Please change the bubble sheet and continue.`,
+                    msg: `This Form is already scanned. Please change and continue.`,
                     duration: 3,
                     type: 'warning',
                     messageKey: 'alreadyParsedAnswerSheet',
@@ -210,7 +211,7 @@ const ScanAnswerSheetsInner = ({
                 arrAnswersRef.current.push(result)
                 notification({
                   type: 'success',
-                  msg: 'Response sheet detected. You can hold the next sheet',
+                  msg: 'Form detected. You can now scan the next one.',
                 })
                 audioRef.play()
 
@@ -283,14 +284,6 @@ const ScanAnswerSheetsInner = ({
   }, [])
 
   useEffect(() => {
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
-      }
-    }
-  }, [])
-
-  useEffect(() => {
     if (isCameraLoaded && isOpencvLoaded) {
       setIsLoading(false)
     }
@@ -333,7 +326,12 @@ const ScanAnswerSheetsInner = ({
           console.log(`Error While accessing camera: ${err}`)
         })
     }
-  }, [videoRef, videoRef?.current, cv, selectedCamera])
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop())
+      }
+    }
+  }, [videoRef, videoRef?.current, cv, selectedCamera, isOpencvLoaded])
 
   useEffect(() => {
     isFrontFacingRef.current = isFrontFacing
@@ -341,18 +339,17 @@ const ScanAnswerSheetsInner = ({
 
   const breadcrumbData = [
     {
-      title: 'Upload Responses',
-      onClick: () =>
-        history.push({
-          pathname: '/uploadAnswerSheets',
-          search: window.location.search,
-        }),
+      title: 'Scan Bubble Sheets',
+      to: `uploadAnswerSheets${window.location.search || ''}`,
+    },
+    {
+      title: 'Scan Using Camera',
     },
   ]
 
   const triggerCompleteConfirmation = () => {
     if (!arrAnswersRef.current?.length) {
-      notification({ type: 'warning', msg: 'No answer sheets scanned so far' })
+      notification({ type: 'warning', msg: 'No Forms scanned so far.' })
     } else {
       setConfirmScanCompletion(true)
     }
@@ -426,18 +423,19 @@ const ScanAnswerSheetsInner = ({
       breadcrumbData={breadcrumbData}
       showCameraSettings={!isLoading}
       setShowSettings={setShowSettings}
+      hideTitle
     >
       {isLoading ? (
         <Spinner />
       ) : (
         <CameraUploaderWrapper>
           <Title>
-            Hold your bubble sheets in front of the camera{' '}
+            Put your bubble sheets in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
           <SubTitle>
-            Ensure the sheets are fully visible and wait for the scan successful
-            message.
+            Ensure the sheets are fully visible and wait for the Form detected
+            message with a beeper sound.
           </SubTitle>
           <FlexContainer width={`${videoSetting.width}px`}>
             <Progress
@@ -445,9 +443,9 @@ const ScanAnswerSheetsInner = ({
               size="small"
               style={{ visibility: scanningPercent > 0 ? 'visible' : 'hidden' }}
             />
-            <SubTitle width="350px">
-              SCANNED RESPONSES: {scannedResponses.length}
-            </SubTitle>
+            <SubTitleDark width="350px">
+              SCANNED FORMS: {scannedResponses.length}
+            </SubTitleDark>
           </FlexContainer>
           <CameraModule width={videoSetting.width} height={videoSetting.height}>
             <FlexContainer justifyContent="center">
@@ -497,6 +495,7 @@ const ScanAnswerSheetsInner = ({
             disabled={uploadingToS3}
             isGhost
             onClick={triggerCompleteConfirmation}
+            style={{ marginTop: 15 }}
           >
             PROCEED TO NEXT STEP
           </EduButton>
@@ -505,8 +504,8 @@ const ScanAnswerSheetsInner = ({
       {confirmScanCompletion && (
         <ConfirmationModal
           visible={confirmScanCompletion}
-          title="Scan Confirmation"
-          description="Have you scanned all response sheets?"
+          title="Scan Finished Confirmation"
+          description="Have you scanned all Bubble Sheet Forms?"
           buttonText="YES, PROCEED"
           cancelText="NO, LET ME FINISH"
           onCancel={closeScanConfirmationModal}
@@ -552,7 +551,7 @@ const ScanAnswerSheetsInner = ({
         <ConfirmationModal
           width="900px"
           visible={isHelpModalVisible}
-          title="Broad Steps Are"
+          title="Steps to Scan Your Bubble Sheet Forms"
           description={
             <FlexContainer
               alignItems="center"
@@ -611,14 +610,17 @@ export default enhance(ScanAnswerSheets)
 const CameraUploaderWrapper = styled.div`
   min-height: 756px;
   background: ${cardBg} 0% 0% no-repeat padding-box;
+  background: transparent;
   border-radius: 10px;
   margin: 40px auto;
+  margin: 0px auto;
+
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
   padding: 10px;
-  border: 1px dashed ${greyThemeLight};
+  border: 0px dashed ${greyThemeLight};
 `
 
 const Title = styled.h3`
@@ -637,6 +639,11 @@ const SubTitle = styled.p`
   opacity: 1;
   line-height: 20px;
   width: ${({ width }) => width};
+`
+
+const SubTitleDark = styled(SubTitle)`
+  color: ${linkColor};
+  padding-bottom: 15px;
 `
 
 const CameraModule = styled.div`

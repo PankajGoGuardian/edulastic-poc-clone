@@ -1,5 +1,5 @@
-import { EduButton, FlexContainer } from '@edulastic/common'
-import React, { useState, useEffect } from 'react'
+import { EduButton, FlexContainer, FireBaseService } from '@edulastic/common'
+import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
@@ -14,7 +14,6 @@ import {
 import { scannerApi } from '@edulastic/api'
 import { connect } from 'react-redux'
 import qs from 'qs'
-import useRealtimeV2 from '@edulastic/common/src/customHooks/useRealtimeV2'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import { selector } from '../uploadAnswerSheets/ducks'
 
@@ -36,37 +35,33 @@ const Details = ({ label, value, onViewClick, isFailedDetails }) => (
     <Value isFailedDetails={isFailedDetails}>{value}</Value>
   </FlexContainer>
 )
-
+const collectionName = 'WebCamOmrUploadProgress'
 const ScanProgress = ({
   history,
   tempScannedDocs,
   assignmentTitle,
   classTitle,
 }) => {
-  const totalLength = tempScannedDocs.length
-  const [successCount, setSuccessCount] = useState(0)
-  const [failureCount, setFailureCount] = useState(0)
-  const processedCount = successCount + failureCount
-  const percentFinished = round((processedCount / totalLength) * 100, 2)
   const { sessionId, groupId, assignmentId } = qs.parse(
     window.location.search.replace('?', '') || ''
   )
 
-  useRealtimeV2([`session:${sessionId}:classId:${groupId}`], {
-    webCamScanScore: (d) => {
-      if (d.statusCode == 200) {
-        setSuccessCount((c) => c + 1)
-      } else {
-        setFailureCount((c) => c + 1)
-      }
-    },
-  })
+  const totalLength = tempScannedDocs.length
+  const sessionProgress = FireBaseService.useFirestoreRealtimeDocument(
+    (db) => db.collection(collectionName).doc(sessionId),
+    [sessionId]
+  )
+  const { success: successCount = 0, failure: failureCount = 0 } =
+    sessionProgress || {}
+
+  const processedCount = successCount + failureCount
+  const percentFinished = 10 + round((processedCount / totalLength) * 90, 2)
 
   useEffect(() => {
     if (totalLength == processedCount) {
       history.push({
         pathname: '/uploadAnswerSheets',
-        search: `assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}`,
+        search: `assignmentId=${assignmentId}&groupId=${groupId}&sessionId=${sessionId}&done=1`,
       })
     }
   }, [totalLength, processedCount])
@@ -103,8 +98,11 @@ const ScanProgress = ({
 
   const breadcrumbData = [
     {
-      title: 'Upload Responses',
+      title: 'Scan Bubble Sheet',
       to: `/uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`,
+    },
+    {
+      title: 'Scan Summary',
     },
   ]
 
@@ -123,7 +121,7 @@ const ScanProgress = ({
         marginLeft="auto"
         mr="auto"
       >
-        <StyledTitle>Processing Responses...</StyledTitle>
+        <StyledTitle>Processing Forms...</StyledTitle>
         <Progress
           strokeColor={themeColorBlue}
           percent={percentFinished}
@@ -131,10 +129,7 @@ const ScanProgress = ({
           showInfo={false}
         />
         <br />
-        <Details
-          label="Responses Processed"
-          value={successCount + failureCount}
-        />
+        <Details label="Forms Processed" value={successCount + failureCount} />
         <Details label="Success" value={successCount} />
         <Details label="Failed" value={failureCount} isFailedDetails />
         <br />

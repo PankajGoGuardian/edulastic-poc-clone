@@ -26,10 +26,8 @@ const CameraUploader = ({ history }) => {
       <IconWrapper>
         <IconQRCode />
       </IconWrapper>
-      <Title>Start Using Camera</Title>
-      <SubTitle>
-        Scan bubble sheet responses using desktop/laptop camera
-      </SubTitle>
+      <Title>Scan Using Camera</Title>
+      <SubTitle>Scan bubble sheet forms using desktop/laptop camera</SubTitle>
       <EduButton width="180px" isGhost onClick={initCameraUpload}>
         START
       </EduButton>

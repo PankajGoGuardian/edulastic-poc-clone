@@ -37,10 +37,14 @@ const SessionStatus = ({
     }
   }, [pages])
 
+  const isDone = window.location.search.includes('done=1')
+
   return (
     <SessionStatusContainer>
       <div className="inner-container">
-        <div className="scan-progress-text">Responses processed</div>
+        <div className="scan-progress-text">
+          {isDone ? 'Form Processing Done' : 'Form Processing Progress'}
+        </div>
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}
@@ -55,7 +59,7 @@ const SessionStatus = ({
           )}
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">Responses Scanned</div>
+          <div className="scan-result-text-label">Forms Processed</div>
           <div className="scan-result-text-value">{scanned}</div>
         </div>
         <div className="scan-result-text">

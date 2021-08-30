@@ -20,7 +20,6 @@ const PageLayout = ({
   breadcrumbData = [],
   assignmentTitle,
   classTitle,
-  isScanProgressScreen,
   showCameraSettings,
   setShowSettings,
 }) => (
@@ -33,6 +32,7 @@ const PageLayout = ({
       {showCameraSettings ? (
         <SettingsButton
           btnType="primary"
+          isBlue
           isGhost
           onClick={() => setShowSettings(true)}
         >
@@ -44,9 +44,7 @@ const PageLayout = ({
       <div style={{ padding: '20px 0' }}>
         <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
       </div>
-      {!isScanProgressScreen && (
-        <StyledTitle>Scan Student Responses</StyledTitle>
-      )}
+
       {children}
     </Content>
   </Layout>
@@ -107,12 +105,6 @@ const StyledHeader = styled.div`
     margin-top: unset;
     margin-bottom: 2px;
   }
-`
-
-const StyledTitle = styled.p`
-  font: normal normal bold 16px/22px Open Sans;
-  margin-top: 20px;
-  margin-left: 20px;
 `
 
 const SettingsButton = styled(EduButton)`

@@ -71,7 +71,7 @@ const UploadAnswerSheets = ({
 
   const breadcrumbData = useMemo(() => {
     const breadcrumbs = [
-      { title: 'Upload Responses', onClick: () => setResponsePageNumber(0) },
+      { title: 'Scan Bubble Sheet', onClick: () => setResponsePageNumber(0) },
     ]
     if (assignmentId && groupId) {
       breadcrumbs[0].to = `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`

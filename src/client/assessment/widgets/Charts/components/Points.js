@@ -79,6 +79,7 @@ const Points = ({
                   cx={posX}
                   cy={posY}
                   r={5}
+                  data-cy={`circle-${index}`}
                 />
               )}
             </Fragment>

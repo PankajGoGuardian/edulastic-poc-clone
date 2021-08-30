@@ -28,7 +28,12 @@ const CameraUploader = ({ history }) => {
       </IconWrapper>
       <Title>Scan Using Camera</Title>
       <SubTitle>Scan bubble sheet forms using desktop/laptop camera</SubTitle>
-      <EduButton width="180px" isGhost onClick={initCameraUpload}>
+      <EduButton
+        data-cy="startCameraButton"
+        width="180px"
+        isGhost
+        onClick={initCameraUpload}
+      >
         START
       </EduButton>
     </CameraUploaderWrapper>

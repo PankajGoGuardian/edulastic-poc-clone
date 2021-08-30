@@ -1177,6 +1177,17 @@ const Menu = styled(AntMenu)`
       }
     }
   }
+  @media (max-height: 600px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      height: 30px;
+      &[data-cy='library'],
+      &[data-cy='user management'] {
+        height: 18px;
+        font-size: 11px;
+      }
+    }
+  }
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
@@ -1246,6 +1257,14 @@ const Menu = styled(AntMenu)`
   @media (max-height: 720px) {
     height: ${({ isBannerShown }) =>
       isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 215px)'};
+  }
+  @media (max-height: 650px) {
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 205px)' : 'calc(100vh - 175px)'};
+  }
+  @media (max-height: 600px) {
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 165px)' : 'calc(100vh - 135px)'};
   }
 `
 
@@ -1415,6 +1434,9 @@ const QuestionButton = styled.div`
 
   @media (max-height: 720px) {
     margin: 4px 0px 6px;
+  }
+  @media (max-height: 650px) {
+    display: none;
   }
 `
 
@@ -1656,6 +1678,9 @@ const DemoPlaygroundButtonContainer = styled.div`
   }
   @media (max-height: 720px) {
     margin: 4px 0px 6px;
+  }
+  @media (max-height: 600px) {
+    display: none;
   }
 `
 

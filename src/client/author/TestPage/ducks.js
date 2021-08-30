@@ -2014,13 +2014,6 @@ export function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
     yield put(getDefaultTestSettingsAction(entity))
-    yield put(
-      setTestItemsAction(
-        entity.itemGroups
-          .flatMap((itemGroup) => itemGroup.items || [])
-          .map((item) => item._id)
-      )
-    )
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({

@@ -211,6 +211,7 @@ class WorksheetComponent extends React.Component {
     const { pageStructure } = this.props
 
     const lastPageIndex = pageStructure.length
+
     this.addBlankPage(lastPageIndex)
   }
 
@@ -299,15 +300,13 @@ class WorksheetComponent extends React.Component {
           return x
         }
         if (x.page > pageNumber + 1) {
-          return { ...x, page: x.page - 1 }
+          return { ...x, page: x.page - 1, documentId: x.documentId - 1 }
         }
       })
       .filter((x) => x)
 
     const updatedAssessment = {
       pageStructure: updatedPageStructure.map((item, index) => {
-        if (item.URL !== 'blank') return item
-
         return {
           ...item,
           pageNo: index + 1,
@@ -335,7 +334,6 @@ class WorksheetComponent extends React.Component {
     const {
       pageStructure,
       setTestData,
-      annotations = [],
       freeFormNotes = {},
       itemDetail,
       userWork,
@@ -348,15 +346,6 @@ class WorksheetComponent extends React.Component {
       [pageIndex]: freeFormNotes[nextIndex],
     }
 
-    const newAnnotations = annotations.map((annotation) => ({
-      ...annotation,
-      page:
-        annotation.page === pageIndex + 1
-          ? nextIndex + 1
-          : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page,
-    }))
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
 
     const id = itemDetail?._id
@@ -367,7 +356,6 @@ class WorksheetComponent extends React.Component {
     }
     setTestData({
       freeFormNotes: newFreeFormNotes,
-      annotations: newAnnotations,
       pageStructure: updatedPageStructure,
     })
     this.handleChangePage(nextIndex)
@@ -377,7 +365,6 @@ class WorksheetComponent extends React.Component {
     const {
       pageStructure,
       setTestData,
-      annotations = [],
       freeFormNotes = {},
       itemDetail,
       saveUserWork,
@@ -392,15 +379,7 @@ class WorksheetComponent extends React.Component {
       [nextIndex]: freeFormNotes[pageIndex],
       [pageIndex]: freeFormNotes[nextIndex],
     }
-    const newAnnotations = annotations.map((annotation) => ({
-      ...annotation,
-      page:
-        annotation.page === pageIndex + 1
-          ? nextIndex + 1
-          : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page,
-    }))
+
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
 
     const id = itemDetail?._id
@@ -410,7 +389,6 @@ class WorksheetComponent extends React.Component {
       })
     }
     setTestData({
-      annotations: newAnnotations,
       freeFormNotes: newFreeFormNotes,
       pageStructure: updatedPageStructure,
     })
@@ -716,7 +694,7 @@ class WorksheetComponent extends React.Component {
           <PDFViewerContainer width={pdfWidth}>
             <PDFPreview
               page={selectedPage}
-              currentPage={currentPage + 1}
+              currentPage={selectedPage.pageNo}
               annotations={annotations}
               onDragStart={this.onDragStart}
               toggleMinimized={this.toggleMinimized}

@@ -43,16 +43,22 @@ const _3RDPARTYINTEGRATION = {
   none: 5,
 }
 
-function validURL(value) {
+function validURL(value, allowLargeDomains = false) {
   if (value.length == 0)
     return {
       validateStatus: 'success',
       errorMsg: '',
     }
 
-  const pattern = new RegExp(
+  let pattern = new RegExp(
     /^[a-zA-Z0-9][a-zA-Z0-9\-.]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z0-9]{2,})+/
   )
+
+  if (allowLargeDomains) {
+    pattern = new RegExp(
+      /^[a-zA-Z0-9][a-zA-Z0-9\-.]{1,507}[a-zA-Z0-9](?:\.[a-zA-Z0-9]{2,})+/
+    )
+  }
 
   const spiltArray = value.split(/[\s,]+/)
   for (let i = 0; i < spiltArray.length; i++) {
@@ -133,7 +139,7 @@ class DistrictPolicyForm extends Component {
     const districtPolicyData = { ...districtPolicy }
     this.setState({
       allowDomainForTeacherValidate: {
-        ...validURL(e.target.value),
+        ...validURL(e.target.value, true),
       },
     })
 
@@ -149,7 +155,7 @@ class DistrictPolicyForm extends Component {
     const districtPolicyData = { ...districtPolicy }
     this.setState({
       allowDomainForStudentValidate: {
-        ...validURL(e.target.value),
+        ...validURL(e.target.value, true),
       },
     })
 
@@ -546,6 +552,7 @@ class DistrictPolicyForm extends Component {
               <TextInputStyled
                 value={districtPolicy.allowedDomainForTeachers}
                 onChange={this.handleTagTeacherChange}
+                limit={512}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
               />
             </StyledFormItem>
@@ -563,6 +570,7 @@ class DistrictPolicyForm extends Component {
               <TextInputStyled
                 value={districtPolicy.allowedDomainForStudents}
                 onChange={this.handleTagStudentChange}
+                limit={512}
                 placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
               />
             </StyledFormItem>

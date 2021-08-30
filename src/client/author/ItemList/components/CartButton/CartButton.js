@@ -41,7 +41,7 @@ const CartButton = ({
 }
 
 CartButton.propTypes = {
-  selectedItems: PropTypes.number.isRequired,
+  selectedItems: PropTypes.array.isRequired,
   onClick: PropTypes.func.isRequired,
 }
 

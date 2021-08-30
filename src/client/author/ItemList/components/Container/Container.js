@@ -111,6 +111,7 @@ class Contaier extends Component {
       getCurriculumStandards,
       match = {},
       limit,
+      selectedItems,
       setDefaultTestData,
       search: initSearch,
       getAllTags,
@@ -159,7 +160,9 @@ class Contaier extends Component {
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }
-    setDefaultTestData()
+    if (!selectedItems?.length) {
+      setDefaultTestData()
+    }
     getAllTags({ type: 'testitem' })
     if (params.filterType) {
       const getMatchingObj = filterMenuItems.filter(

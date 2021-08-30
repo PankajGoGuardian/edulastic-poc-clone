@@ -140,6 +140,16 @@ export const GENERATE_VARIABLE_FINISHED =
 export const DYNAMIC_PARAMETER_UPDATED =
   '[variable] dynamic parameters settings chagned'
 
+const ADD_ITEM_TO_CART = '[item list] add item to cart'
+
+const addItemToCartAction = (item, showNotification) => ({
+  type: ADD_ITEM_TO_CART,
+  payload: {
+    item,
+    showNotification,
+  },
+})
+
 export const receiveQuestionByIdAction = (id) => ({
   type: RECEIVE_QUESTION_REQUEST,
   payload: {
@@ -704,6 +714,7 @@ function* saveQuestionSaga({
         reqData,
         ...(itemDetail.multipartItem && _testId ? [{ testId: _testId }] : [])
       )
+      yield put(addItemToCartAction(item))
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }

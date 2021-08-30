@@ -47,7 +47,6 @@ import {
 } from '../../../TestList/components/Container/styled'
 import {
   clearFilterStateAction,
-  clearSelectedItemsAction,
   filterMenuItems,
   getSearchFilterStateSelector,
   getTestItemsLoadingSelector,
@@ -190,13 +189,6 @@ class Contaier extends Component {
     }
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, '')
-    }
-  }
-
-  componentWillUnmount() {
-    const { clearSelectedItems, match } = this.props
-    if (!match?.path?.includes('items')) {
-      clearSelectedItems()
     }
   }
 
@@ -677,7 +669,6 @@ const enhance = compose(
       setDefaultTestData: setDefaultTestDataAction,
       udpateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
-      clearSelectedItems: clearSelectedItemsAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
       getAllTags: getAllTagsAction,

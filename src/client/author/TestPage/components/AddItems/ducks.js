@@ -12,7 +12,7 @@ import {
   take,
   race,
 } from 'redux-saga/effects'
-import { push } from 'connected-react-router'
+import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
 import { keyBy } from 'lodash'
 import {
@@ -243,7 +243,7 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
-        // selectedItems: [],
+        selectedItems: [],
         itemsSubjectAndGrade: {
           subjects: [],
           grades: [],
@@ -427,11 +427,23 @@ function* clearSelectedItemsSaga() {
   yield put(setTestDataAction(updatedTest))
 }
 
+function* locationChangedSaga({ payload }) {
+  if (
+    !(
+      payload?.location?.pathname?.includes('/author/items') ||
+      payload?.location?.pathname?.includes('/author/questions')
+    )
+  ) {
+    yield put(clearSelectedItemsAction())
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     yield takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
+    yield takeLatest(LOCATION_CHANGE, locationChangedSaga),
   ])
 }
 

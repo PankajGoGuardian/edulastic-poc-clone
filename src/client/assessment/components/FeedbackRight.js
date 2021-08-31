@@ -1,6 +1,7 @@
 import {
   desktopWidth,
   mobileWidthMax,
+  orange,
   tabGrey,
   themeColor,
   themeColorTagsBg,
@@ -47,6 +48,7 @@ import {
 } from '../../author/src/selectors/user'
 import { getAvatarName } from '../../author/ClassBoard/Transformer'
 import RubricGrading from './RubricGrading'
+import { checkIfCopyPasted } from '../../common/utils/helpers'
 
 const { TextArea } = Input
 
@@ -384,6 +386,11 @@ class FeedbackRight extends Component {
       isPracticeQuestion,
       isAbsolutePos,
     } = this.props
+
+    const plagiarism = checkIfCopyPasted(
+      activity.userResponse || '',
+      activity.qType
+    )
     const {
       score,
       maxScore,
@@ -475,6 +482,7 @@ class FeedbackRight extends Component {
                 ref={this.scoreInput}
                 onKeyDown={this.onKeyDownFeedback}
                 tabIndex={0}
+                plagiarism={plagiarism}
               />
               <TextPara>{_maxScore}</TextPara>
             </ScoreInputWrapper>
@@ -523,6 +531,14 @@ class FeedbackRight extends Component {
                 isShowFeedbackInput={isShowFeedbackInput}
               />
             </FeedbackInputInnerWrapper>
+
+            {plagiarism && (
+              <WarningWrapper>
+                Plagiarism Warning:
+                <br />
+                Detected copying from another window
+              </WarningWrapper>
+            )}
           </FeedbaclInputWrapper>
         )}
       </StyledCardTwo>
@@ -635,13 +651,18 @@ const ScoreInputWrapper = styled.div`
 const ScoreInput = styled(Input)`
   width: 70%;
   height: 47px;
-  border: 0px;
+  border: ${({ plagiarism }) => (plagiarism ? `2px solid ${orange}` : '0px')};
   background-color: #f8f8f8;
   border-radius: 2px;
   font-size: 28px;
   font-weight: 600;
   text-align: center;
   display: inline-block;
+  &:hover,
+  &:focus {
+    ${({ plagiarism }) =>
+      `border: ${plagiarism ? `2px solid ${orange} !important` : ''}`}
+  }
 `
 
 const TextPara = styled.p`
@@ -674,6 +695,13 @@ const TitleDiv = styled.div`
   font-size: 13px;
   display: flex;
   align-items: center;
+`
+
+const WarningWrapper = styled(TitleDiv)`
+  color: orange;
+  margin: 10px 0px;
+  font-size: 11px;
+  font-style: italic;
 `
 
 const FeedbackInput = styled(TextArea)`

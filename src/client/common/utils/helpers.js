@@ -577,3 +577,30 @@ export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
     }
   })
 }
+
+export const checkIfCopyPasted = (data, qType) => {
+  try {
+    if (!['math', 'expressionMultipart'].includes(qType) || isEmpty(data)) {
+      return false
+    }
+    const hasNonAsciiChar = (text) =>
+      [...text].some((char) => char.charCodeAt(0) > 127)
+
+    switch (true) {
+      case typeof data === 'string':
+        return hasNonAsciiChar(data)
+      case Array.isArray(data):
+        return data.some((str) => hasNonAsciiChar(str))
+      case qType === 'expressionMultipart': {
+        const responses = Object.values(data)
+          .flatMap((type) => Object.values(type))
+          .map((res) => res.value)
+        return responses.some((str) => hasNonAsciiChar(str))
+      }
+      default:
+        return false
+    }
+  } catch (error) {
+    console.error({ error, qType })
+  }
+}

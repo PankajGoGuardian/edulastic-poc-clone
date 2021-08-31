@@ -221,7 +221,8 @@ class Graph extends Component {
   }
 
   handleChangeLabel = (id, labelValue) => {
-    labelValue = labelValue.replace(/<p>/g, '').replace(/<\/p>/g, '')
+    // NOTE: DO NOT change object label here.
+    // labelValue = labelValue.replace(/<p>/g, '').replace(/<\/p>/g, '')
 
     const { item, setQuestionData, changeLabel } = this.props
     const { validation, toolbar } = item

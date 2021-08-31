@@ -741,9 +741,18 @@ class Board {
 
   editObjUnderMouse(event) {
     const elementsUnderMouse = getAllObjectsUnderMouse(this, event)
-    const elementsToEdit = this.elements.filter(
-      (el) => elementsUnderMouse.findIndex((eum) => eum.id === el.id) > -1
-    )
+    const elementsToEdit = this.elements
+      .map((el) => {
+        if (el.ancestors) {
+          return [el].concat(Object.values(el.ancestors))
+        }
+        return [el]
+      })
+      .flat()
+      .filter(
+        (el) => elementsUnderMouse.findIndex((eum) => eum.id === el.id) > -1
+      )
+
     if (last(elementsToEdit)) {
       this.events.emit(
         CONSTANT.EVENT_NAMES.CHANGE_LABEL,

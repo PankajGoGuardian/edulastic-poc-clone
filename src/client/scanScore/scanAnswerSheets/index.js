@@ -122,6 +122,7 @@ const ScanAnswerSheetsInner = ({
   setWebCamScannedDocs,
 }) => {
   let arrLengthOfAnswer = []
+  const { cv, loaded: isOpencvLoaded } = useOpenCv()
 
   const [confirmScanCompletion, setConfirmScanCompletion] = useState(false)
   const [videoSetting, setVideoSettings] = useState({ width: 640, height: 480 })
@@ -130,9 +131,9 @@ const ScanAnswerSheetsInner = ({
   const [isError, setIsError] = useState(false)
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
-  const { cv, loaded: isOpencvLoaded } = useOpenCv()
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
+  const [dc, setDc] = useState(0)
 
   /**
    * uncomment the following line while debugging
@@ -287,6 +288,12 @@ const ScanAnswerSheetsInner = ({
     if (isCameraLoaded && isOpencvLoaded) {
       setIsLoading(false)
     }
+    if (isOpencvLoaded) {
+      // to force streaming after openCvloaded & ready
+      // Simply using isOpencvLoaded not working as expected
+      // this is an equivalent of forceRender
+      setDc((c) => c + 1)
+    }
   }, [isCameraLoaded, isOpencvLoaded])
 
   useEffect(() => {
@@ -331,7 +338,7 @@ const ScanAnswerSheetsInner = ({
         streamRef.current.getTracks().forEach((track) => track.stop())
       }
     }
-  }, [videoRef, videoRef?.current, cv, selectedCamera, isOpencvLoaded])
+  }, [videoRef, videoRef?.current, cv, selectedCamera, isOpencvLoaded, dc])
 
   useEffect(() => {
     isFrontFacingRef.current = isFrontFacing
@@ -340,7 +347,7 @@ const ScanAnswerSheetsInner = ({
   const breadcrumbData = [
     {
       title: 'Scan Bubble Sheets',
-      to: `uploadAnswerSheets${window.location.search || ''}`,
+      to: `/uploadAnswerSheets${window.location.search || ''}`,
     },
     {
       title: 'Scan Using Camera',

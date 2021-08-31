@@ -17,8 +17,8 @@ const ScannedResponses = ({
     <ScannedResponsesContainer>
       <div className="scanned-responses-header">
         {statusFilters.includes(omrSheetScanStatus.DONE)
-          ? 'Successfully Scanned Responses'
-          : 'Responses with Scan Errors'}
+          ? 'Successfully Scanned Forms'
+          : 'Forms with Scan Errors'}
       </div>
       <div className="thumbnails-container">
         <Slider

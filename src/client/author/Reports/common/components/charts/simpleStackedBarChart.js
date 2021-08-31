@@ -161,7 +161,8 @@ const SimpleStackedBarChartComponent = ({
       ]
     : []
 
-  const chartData = useMemo(() => [...data], [data])
+  const chartData = useMemo(() => [...data], [pagination])
+
   const scrollLeft = () => {
     let diff
     if (pagination.startIndex > 0) {

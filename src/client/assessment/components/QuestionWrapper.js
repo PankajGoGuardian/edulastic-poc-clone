@@ -630,6 +630,7 @@ class QuestionWrapper extends Component {
                   )}
                   <Question
                     {...restProps}
+                    t={t}
                     item={data}
                     view={view}
                     evaluation={evaluation}

@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "18.2.4",
+  "version": "19.0.0",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -130,7 +130,6 @@
     "react-joyride": "^2.0.5",
     "react-jsx-parser": "1.18.0",
     "react-media-player": "^0.7.7",
-    "react-notifications": "^1.4.3",
     "react-outside-event": "^1.2.7",
     "react-pdf": "^4.1.0",
     "react-perfect-scrollbar": "^1.4.2",
@@ -160,9 +159,7 @@
     "striptags": "^3.1.1",
     "styled-components": "^5.1.0",
     "timm": "^1.7.1",
-    "uuid": "^3.3.2",
-    "web-vitals": "^2.1.0",
-    "web3": "^1.5.1"
+    "uuid": "^3.3.2"
   },
   "devDependencies": {
     "@babel/core": "^7.12.3",

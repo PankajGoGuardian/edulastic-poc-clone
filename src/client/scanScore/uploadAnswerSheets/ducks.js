@@ -15,7 +15,11 @@ import {
 
 function parseQr(qrCode) {
   // ${testId}_${assignmentId}_${classId}_${studentId}_${page}
-  const [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
+  let [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
+
+  if (studentId == 1) {
+    [assignmentId, groupId, studentId] = qrCode.split('_')
+  }
   return {
     testId,
     assignmentId,

@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Progress } from 'antd'
+import { Progress, Row, Select } from 'antd'
 import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
 import { round } from 'lodash'
@@ -14,6 +14,10 @@ import {
   FlexContainer,
   notification,
   uploadToS3,
+  CustomModalStyled,
+  FieldLabel,
+  SelectInputStyled,
+  Checkbox,
 } from '@edulastic/common'
 import {
   cardBg,
@@ -22,23 +26,58 @@ import {
   dragDropUploadText,
   drcThemeColor,
   white,
+  secondaryTextColor,
+  lightGrey9,
+  linkColor,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
-import { getAnswersFromVideo } from './scannerUtils'
+import { getAnswersFromVideo } from './answer-utils'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
+import {
+  IconStep1,
+  IconStep2,
+  IconStep3,
+  IconStep4,
+  IconStep5,
+} from './icons/StepsIcons'
 
+const Option = Select.Option
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
 const videoContstraints = {
-  width: { ideal: 640 },
-  height: { ideal: 480 },
   facingMode: { ideal: 'environment' },
 }
+
+const steps = [
+  {
+    icon: <IconStep1 />,
+    description: 'Put your bubble sheets so that they are fully visible.',
+  },
+  {
+    icon: <IconStep2 />,
+    description:
+      'Ensure the bounding boxes of the QR code and the response section are fully visible and aligned vertically.',
+  },
+  {
+    icon: <IconStep3 />,
+    description: 'Wait for the Form detected message with a beeper sound.',
+  },
+  {
+    icon: <IconStep4 />,
+    description:
+      'Once the message is shown, you can put your next bubble sheet to scan.',
+  },
+  {
+    icon: <IconStep5 />,
+    description:
+      'Click Proceed to next step once all bubble sheets are scanned.',
+  },
+]
 
 /**
  *
@@ -92,6 +131,9 @@ const ScanAnswerSheetsInner = ({
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
+  const hideFailureNotificationsRef = useRef(false)
+  const [uploadingToS3, setUploadingToS3] = useState(false)
+
   /**
    * uncomment the following line while debugging
    * window.arrAnswersRef = arrAnswersRef
@@ -103,21 +145,39 @@ const ScanAnswerSheetsInner = ({
   const [answersList, setAnswers] = useState(null)
   const [scannedResponses, setScannedResponses] = useState([])
   const [scanningPercent, setScanningPercent] = useState(0)
+  const [cameraList, setCameraList] = useState([])
+  const [selectedCamera, setSelectedCamera] = useState(null)
+  const [showSettings, setShowSettings] = useState(false)
+  const [isFrontFacing, setIsFrontFacing] = useState(false)
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
+  const isFrontFacingRef = useRef(false)
+
+  function supressFailureNotifications(time) {
+    hideFailureNotificationsRef.current = true
+    setTimeout(() => {
+      if (hideFailureNotificationsRef?.current) {
+        hideFailureNotificationsRef.current = false
+      }
+    }, time)
+  }
 
   async function processVideo(vc) {
     const arrAnswers = arrAnswersRef.current
     if (vc) {
-      const matSrc = new cv.Mat(480, 640, cv.CV_8UC4)
+      const matSrc = new cv.Mat(
+        videoSetting.height,
+        videoSetting.width,
+        cv.CV_8UC4
+      )
       vc.read(matSrc)
       let result = null
       if (answersList) {
-        cv.imshow('canvas', matSrc)
+        cv.imshow('canvasOutput', matSrc)
       } else {
-        result = getAnswersFromVideo(cv, matSrc)
+        result = getAnswersFromVideo(cv, matSrc, isFrontFacingRef.current)
       }
       matSrc.delete()
       requestAnimationFrame(() => processVideo(vc))
@@ -136,21 +196,27 @@ const ScanAnswerSheetsInner = ({
                 (item) => item.qrCode === result.qrCode
               ).length
               if (filterCount > 0) {
-                notification({
-                  msg: `It is already parsed. Please change the bubble sheet and continue.`,
-                  duration: 3,
-                  type: 'warning',
-                  messageKey: 'alreadyParsedAnswerSheet',
-                })
+                if (!hideFailureNotificationsRef.current) {
+                  notification({
+                    msg: `This Form is already scanned. Please change and continue.`,
+                    duration: 3,
+                    type: 'warning',
+                    messageKey: 'alreadyParsedAnswerSheet',
+                  })
+                  supressFailureNotifications(3000)
+                }
               } else {
+                supressFailureNotifications(3000)
                 setScanningPercent(0.1)
                 arrAnswersRef.current.push(result)
                 notification({
                   type: 'success',
-                  msg: 'Response sheet detected. You can hold the next sheet',
+                  msg: 'Form detected. You can now scan the next one.',
                 })
                 audioRef.play()
+
                 if (canvasRef.current) {
+                  setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
                     canvasRef.current,
                     (uploadEvent) => {
@@ -159,6 +225,7 @@ const ScanAnswerSheetsInner = ({
                       setScanningPercent(round(percent, 2))
                     }
                   )
+                  setUploadingToS3(false)
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
                   ].imageUri = fileUrl
@@ -189,23 +256,30 @@ const ScanAnswerSheetsInner = ({
     getOmrUploadSessions({ assignmentId, groupId, sessionId, fromWebcam: true })
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
-        .getUserMedia({ video: videoContstraints, audio: false })
+        .getUserMedia({
+          video: {
+            ...videoContstraints,
+            ...(selectedCamera ? { deviceId: { exact: selectedCamera } } : {}),
+          },
+          audio: false,
+        })
         .then((stream) => {
           setIsCameraLoad(true)
           setIsError(false)
           const { width, height } = stream.getTracks()[0].getSettings()
           setVideoSettings({ width, height })
-          stream.getTracks().forEach((track) => track.stop())
+          return navigator.mediaDevices.enumerateDevices()
+        })
+        .then((devices) => {
+          const videoDevices = devices
+            .filter((device) => device.kind === 'videoinput')
+            .map(({ deviceId, label }) => ({ id: deviceId, name: label }))
+          setCameraList(videoDevices)
         })
         .catch((err) => {
           setIsError(true)
           console.log(`Error While accessing camera: ${err}`)
         })
-    }
-    return () => {
-      if (streamRef.current) {
-        streamRef.current.getTracks().forEach((track) => track.stop())
-      }
     }
   }, [])
 
@@ -252,22 +326,30 @@ const ScanAnswerSheetsInner = ({
           console.log(`Error While accessing camera: ${err}`)
         })
     }
-  }, [videoRef, videoRef?.current, cv])
+    return () => {
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach((track) => track.stop())
+      }
+    }
+  }, [videoRef, videoRef?.current, cv, selectedCamera, isOpencvLoaded])
+
+  useEffect(() => {
+    isFrontFacingRef.current = isFrontFacing
+  }, [isFrontFacing])
 
   const breadcrumbData = [
     {
-      title: 'Upload Responses',
-      onClick: () =>
-        history.push({
-          pathname: '/uploadAnswerSheets',
-          search: window.location.search,
-        }),
+      title: 'Scan Bubble Sheets',
+      to: `uploadAnswerSheets${window.location.search || ''}`,
+    },
+    {
+      title: 'Scan Using Camera',
     },
   ]
 
   const triggerCompleteConfirmation = () => {
     if (!arrAnswersRef.current?.length) {
-      notification({ type: 'warning', msg: 'No answer sheets scanned so far' })
+      notification({ type: 'warning', msg: 'No Forms scanned so far.' })
     } else {
       setConfirmScanCompletion(true)
     }
@@ -284,7 +366,7 @@ const ScanAnswerSheetsInner = ({
       [255, 255, 255, 255],
       -1
     )
-    cv.imshow('canvas', matSrc)
+    cv.imshow('canvasOutput', matSrc)
     matSrc.delete()
     videoRef.current.pause()
     if (videoRef.current.srcObject !== null) {
@@ -330,24 +412,30 @@ const ScanAnswerSheetsInner = ({
   if (isError) {
     return <h1>Please, Enable Camera Access To Continue</h1>
   }
+  const flipCameraViewStyle = isFrontFacing
+    ? { transform: `scale(-1,1)`, transformOrigin: 'center center' }
+    : {}
 
   return (
     <PageLayout
       assignmentTitle={assignmentTitle}
       classTitle={classTitle}
       breadcrumbData={breadcrumbData}
+      showCameraSettings={!isLoading}
+      setShowSettings={setShowSettings}
+      hideTitle
     >
       {isLoading ? (
         <Spinner />
       ) : (
         <CameraUploaderWrapper>
           <Title>
-            Hold your bubble sheets in front of the camera{' '}
+            Put your bubble sheets in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
           <SubTitle>
-            Ensure the sheets are fully visible and wait for the scan successful
-            message.
+            Ensure the sheets are fully visible and wait for the Form detected
+            message with a beeper sound.
           </SubTitle>
           <FlexContainer width={`${videoSetting.width}px`}>
             <Progress
@@ -355,33 +443,43 @@ const ScanAnswerSheetsInner = ({
               size="small"
               style={{ visibility: scanningPercent > 0 ? 'visible' : 'hidden' }}
             />
-            <SubTitle width="350px">
-              SCANNED RESPONSES: {scannedResponses.length}
-            </SubTitle>
+            <SubTitleDark width="350px">
+              SCANNED FORMS: {scannedResponses.length}
+            </SubTitleDark>
           </FlexContainer>
           <CameraModule width={videoSetting.width} height={videoSetting.height}>
             <FlexContainer justifyContent="center">
               <canvas
-                id="canvas"
+                id="canvasOutput"
                 ref={canvasRef}
                 style={{
                   width: videoSetting.width,
                   height: videoSetting.height,
                   border: '2px solid #ececec',
+                  ...flipCameraViewStyle,
                 }}
               />
               <canvas
-                id="cropped"
+                id="workingCanvas"
                 style={{
                   display: 'none',
                   width: 280,
-                  height: 487,
+                  height: 450,
+                  border: '2px solid #ececec',
+                }}
+              />
+              <canvas
+                id="rowCanvas"
+                style={{
+                  display: 'none',
+                  width: 280,
+                  height: 30,
                   border: '2px solid #ececec',
                 }}
               />
               <video
-                id="video"
                 ref={videoRef}
+                id="video"
                 style={{
                   display: 'none',
                   width: videoSetting.width,
@@ -393,7 +491,12 @@ const ScanAnswerSheetsInner = ({
             </FlexContainer>
           </CameraModule>
 
-          <EduButton isGhost onClick={triggerCompleteConfirmation}>
+          <EduButton
+            disabled={uploadingToS3}
+            isGhost
+            onClick={triggerCompleteConfirmation}
+            style={{ marginTop: 15 }}
+          >
             PROCEED TO NEXT STEP
           </EduButton>
         </CameraUploaderWrapper>
@@ -401,34 +504,68 @@ const ScanAnswerSheetsInner = ({
       {confirmScanCompletion && (
         <ConfirmationModal
           visible={confirmScanCompletion}
-          title="Scan Confirmation"
-          description="Have you scanned all response sheets?"
+          title="Scan Finished Confirmation"
+          description="Have you scanned all Bubble Sheet Forms?"
           buttonText="YES, PROCEED"
           cancelText="NO, LET ME FINISH"
           onCancel={closeScanConfirmationModal}
           onProceed={handleScanComplete}
         />
       )}
+      <CustomModalStyled
+        title="Settings"
+        centered
+        visible={showSettings}
+        onCancel={() => setShowSettings(false)}
+        footer={[
+          <EduButton onClick={() => setShowSettings(false)}>CLOSE</EduButton>,
+        ]}
+      >
+        <Row>
+          <FieldLabel>SELECT CAMERA</FieldLabel>
+          <SelectInputStyled
+            disabled={cameraList.length > 1}
+            value={cameraList.length === 1 ? cameraList[0].id : selectedCamera}
+            onChange={(v) => {
+              setSelectedCamera(v)
+            }}
+          >
+            <Option value={null}>Select Camera</Option>
+            {cameraList.map((x) => (
+              <Option value={x.id}>{x.name}</Option>
+            ))}
+          </SelectInputStyled>
+        </Row>
+        <br />
+        <Row>
+          <Checkbox
+            checked={isFrontFacing}
+            onChange={() => {
+              setIsFrontFacing((x) => !x)
+            }}
+            label="CAMERA IS FACING ME"
+          />
+        </Row>
+      </CustomModalStyled>
       {isHelpModalVisible && (
         <ConfirmationModal
+          width="900px"
           visible={isHelpModalVisible}
-          title="Broad Steps Are"
+          title="Steps to Scan Your Bubble Sheet Forms"
           description={
-            <StyledList>
-              <li>Hold your bubble sheets so that they are fully visible</li>
-              <li>
-                Ensure the bounding boxes of the response section and the QR
-                code are fully visible and aligned vertically{' '}
-              </li>
-              <li>
-                Wait for the scanned successful message with a beeper sound
-              </li>
-              <li>
-                Once the message is shown, you can hold your next response sheet
-                to scan
-              </li>
-              <li>Click Proceed to next step once all responses are scanned</li>
-            </StyledList>
+            <FlexContainer
+              alignItems="center"
+              justifyContent="space-evenly"
+              flexWrap="wrap"
+            >
+              {steps.map((step, index) => (
+                <Step>
+                  {step.icon}
+                  <h3>Step {index + 1}</h3>
+                  <p>{step.description}</p>
+                </Step>
+              ))}
+            </FlexContainer>
           }
           buttonText="CLOSE"
           onCancel={closeHelpModal}
@@ -471,17 +608,19 @@ const enhance = compose(
 export default enhance(ScanAnswerSheets)
 
 const CameraUploaderWrapper = styled.div`
-  width: 800px;
   min-height: 756px;
   background: ${cardBg} 0% 0% no-repeat padding-box;
+  background: transparent;
   border-radius: 10px;
   margin: 40px auto;
+  margin: 0px auto;
+
   display: flex;
   align-items: center;
   justify-content: space-evenly;
   flex-direction: column;
   padding: 10px;
-  border: 1px dashed ${greyThemeLight};
+  border: 0px dashed ${greyThemeLight};
 `
 
 const Title = styled.h3`
@@ -490,7 +629,6 @@ const Title = styled.h3`
   letter-spacing: -0.9px;
   color: ${greyThemeDark1};
   opacity: 1;
-  margin-bottom: -20px;
 `
 
 const SubTitle = styled.p`
@@ -501,6 +639,11 @@ const SubTitle = styled.p`
   opacity: 1;
   line-height: 20px;
   width: ${({ width }) => width};
+`
+
+const SubTitleDark = styled(SubTitle)`
+  color: ${linkColor};
+  padding-bottom: 15px;
 `
 
 const CameraModule = styled.div`
@@ -523,11 +666,29 @@ const HelpIcon = styled.span`
   cursor: pointer;
 `
 
-const StyledList = styled.ol`
-  margin: -20px unset;
+const Step = styled.div`
+  margin: 20px 0px;
+  width: 209px;
+  height: 151px;
 
-  li {
-    margin-top: 20px;
-    font-size: 14px;
+  svg {
+    display: block;
+    margin: 20px auto;
+  }
+
+  h3 {
+    text-align: center;
+    font: normal normal bold 14px/19px Open Sans;
+    letter-spacing: 0px;
+    color: ${secondaryTextColor};
+    opacity: 1;
+  }
+
+  p {
+    text-align: center;
+    font: normal normal normal 11px/18px Open Sans;
+    letter-spacing: 0px;
+    color: ${lightGrey9};
+    opacity: 1;
   }
 `

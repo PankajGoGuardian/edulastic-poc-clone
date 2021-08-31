@@ -124,6 +124,10 @@ const UseExisting = ({
                 isValid = false
                 notification({ messageKey: 'ratingsNameLengthValidation' })
               }
+              if (rating.desc && rating.desc?.length > 2048) {
+                isValid = false
+                notification({ messageKey: 'ratingsDescLengthValidation' })
+              }
             } else {
               isValid = false
               notification({ messageKey: 'ratingNameCannotEmpty' })

@@ -37,10 +37,14 @@ const SessionStatus = ({
     }
   }, [pages])
 
+  const isDone = window.location.search.includes('done=1')
+
   return (
     <SessionStatusContainer>
       <div className="inner-container">
-        <div className="scan-progress-text">Responses processed</div>
+        <div className="scan-progress-text">
+          {isDone ? 'Form Processing Done' : 'Form Processing Progress'}
+        </div>
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}
@@ -55,27 +59,27 @@ const SessionStatus = ({
           )}
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">Responses Scanned</div>
+          <div className="scan-result-text-label">Forms Processed</div>
           <div className="scan-result-text-value">{scanned}</div>
         </div>
         <div className="scan-result-text">
           <div className="scan-result-text-label">
             Success
-            {success && (
+            {success ? (
               <span
                 className="scan-result-text-action"
                 onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
               >
                 View
               </span>
-            )}
+            ) : null}
           </div>
           <div className="scan-result-text-value">{success}</div>
         </div>
         <div className="scan-result-text">
           <div className="scan-result-text-label">
             Failed
-            {failed && (
+            {failed ? (
               <span
                 className="scan-result-text-action"
                 onClick={() =>
@@ -87,7 +91,7 @@ const SessionStatus = ({
               >
                 View
               </span>
-            )}
+            ) : null}
           </div>
           <div className="scan-result-text-value failed">{failed}</div>
         </div>

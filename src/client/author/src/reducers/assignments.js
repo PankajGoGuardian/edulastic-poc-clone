@@ -20,6 +20,7 @@ import {
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_GOOGLE_CLASSROOM_ERROR,
   TOGGLE_STUDENT_REPORT_CARD_SETTINGS,
+  SET_SHARE_WITH_GC_IN_PROGRESS,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_REQUEST,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
   SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
@@ -51,6 +52,7 @@ const initialState = {
   filtering: false,
   isAdvancedView: false,
   syncWithGoogleClassroomInProgress: false,
+  shareWithGCInProgress: false,
   bulkActionInprogress: false,
   bulkActionType: '',
   totalAssignmentsClasses: 0,
@@ -194,6 +196,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         toggleStudentReportCardSettings: payload,
+      }
+    case SET_SHARE_WITH_GC_IN_PROGRESS:
+      return {
+        ...state,
+        shareWithGCInProgress: payload,
       }
     case SET_BULK_ACTION_STATUS:
       return {

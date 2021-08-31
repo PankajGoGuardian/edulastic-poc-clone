@@ -33,7 +33,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { smallDesktopWidth } from '@edulastic/colors'
+import { smallDesktopWidth, themeLightGrayBgColor } from '@edulastic/colors'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { assignmentApi } from '@edulastic/api'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
@@ -85,6 +85,7 @@ import {
   getSchoologyAssignmentSyncInProgress,
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector,
+  getShareWithGCInProgress,
 } from '../../../src/selectors/assignments'
 import {
   getGroupList,
@@ -429,6 +430,7 @@ class ClassHeader extends Component {
       canvasSyncGrades,
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
+      shareWithGCInProgress,
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
@@ -721,9 +723,21 @@ class ClassHeader extends Component {
                 groupId: classId,
               })
             }
-            disabled={syncWithGoogleClassroomInProgress}
+            disabled={
+              syncWithGoogleClassroomInProgress || shareWithGCInProgress
+            }
           >
-            Sync with Google Classroom
+            <Tooltip
+              title={
+                shareWithGCInProgress
+                  ? 'Syncing Assignment with Google Classroom'
+                  : null
+              }
+              placement="right"
+              color={themeLightGrayBgColor}
+            >
+              Sync with Google Classroom
+            </Tooltip>
           </MenuItems>
         )}
         {showSchoologyGradeSyncOption && (
@@ -1078,6 +1092,7 @@ const enhance = compose(
         state
       ),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
+      shareWithGCInProgress: getShareWithGCInProgress(state),
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(
         state
       ),

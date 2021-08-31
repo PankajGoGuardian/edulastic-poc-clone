@@ -22,6 +22,7 @@ import {
 import {
   receiveAssignmentByAssignmentIdAction,
   googleSyncAssignmentAction,
+  setShareWithGCInProgressAction,
 } from '../../../src/actions/assignments'
 import BreadCrumb from '../../../src/components/Breadcrumb'
 import ListHeader from '../../../src/components/common/ListHeader'
@@ -90,6 +91,7 @@ class SuccessPage extends React.Component {
       autoShareGCAssignment,
       history,
       userId,
+      setShareWithGCInProgress,
     } = this.props
     const { id: testId, assignmentId } = match.params
     if (isPlaylist) {
@@ -109,8 +111,10 @@ class SuccessPage extends React.Component {
       const timeLeft = 60000 - (new Date().getTime() - createdAt)
       if (timeLeft > 0) {
         this.toggleShareWithGC() // disable google share button
+        setShareWithGCInProgress(true) // disable sync with GC button in LCB
         this.timer = setTimeout(() => {
           this.toggleShareWithGC()
+          setShareWithGCInProgress(false)
           clearTimeout(this.timer)
         }, timeLeft) // this will enable button after 60 seconds from assignment created.
       }
@@ -644,6 +648,7 @@ const enhance = compose(
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       googleSyncAssignment: googleSyncAssignmentAction,
+      setShareWithGCInProgress: setShareWithGCInProgressAction,
     }
   )
 )

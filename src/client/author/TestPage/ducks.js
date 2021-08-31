@@ -3313,6 +3313,7 @@ function* duplicateTestSaga({ payload }) {
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))
+    notification({ msg: 'You are currently editing a cloned test' })
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data

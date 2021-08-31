@@ -639,6 +639,7 @@ const Settings = ({
                     assignment will be paused and the instructor will need to
                     manually reset.
                   </p>
+                  <p>Please Note: this is not compatible with iPads.</p>
                   {navigationThresholdMoreThan1 ? (
                     <>
                       <br />

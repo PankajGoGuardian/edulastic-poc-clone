@@ -1842,6 +1842,8 @@ class Setting extends Component {
                             number of alerts are exceeded, the student’s
                             assignment will be paused and the instructor will
                             need to manually reset.
+                            <br />
+                            Please Note: this is not compatible with iPads.
                             {navigationThresholdMoreThan1 ? (
                               <>
                                 <br />

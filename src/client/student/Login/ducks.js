@@ -1223,7 +1223,7 @@ export function* fetchUser({ payload }) {
       (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (
       (!firebaseUser && user?.firebaseAuthToken) ||
-      (firebaseUser && firebaseUser !== user._id)
+      (firebaseUser && firebaseUser !== user._id && user?.firebaseAuthToken)
     ) {
       yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken)
     }

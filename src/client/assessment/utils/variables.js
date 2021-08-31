@@ -292,7 +292,7 @@ export const getOptionsForClozeMath = (variables, validations) => {
     return {}
   }
 
-  const mathInputs = validations.validResponse.value
+  const mathInputs = validations.validResponse.value || []
   const mathUnits = validations.validResponse?.mathUnits?.value
   const maths = mathUnits ? mathInputs.concat([mathUnits]) : mathInputs
 
@@ -313,6 +313,7 @@ export const getOptionsForClozeMath = (variables, validations) => {
 /** used the below methods to generate variables */
 export const SEQUENCE_TYPES = ['NUMBER_SEQUENCE', 'TEXT_SEQUENCE']
 export const SET_TYPES = ['NUMBER_SET', 'TEXT_SET']
+export const TEXT_TYPES = ['TEXT_SEQUENCE', 'TEXT_SET']
 
 export const cartesian = (args, combinationsCount) => {
   const r = []
@@ -634,6 +635,19 @@ export const hasMathFormula = (variables) =>
     return type === 'FORMULA'
   })
 
+const getVariableValue = (variables, variableName, example) => {
+  if (variables[variableName].type === 'FORMULA') {
+    return variables[variableName].formula
+  }
+  const value = example
+    ? example[variableName]
+    : variables[variableName].exampleValue
+  if (TEXT_TYPES.includes(variables[variableName].type)) {
+    return `"${value}"`
+  }
+  return value
+}
+
 export const getLatexValuePairs = ({
   id,
   variables,
@@ -658,11 +672,6 @@ export const getLatexValuePairs = ({
     ),
   variables: Object.keys(variables).map((variableName) => ({
     id: variableName,
-    value:
-      variables[variableName].type === 'FORMULA'
-        ? variables[variableName].formula
-        : example
-        ? example[variableName]
-        : variables[variableName].exampleValue,
+    value: getVariableValue(variables, variableName, example),
   })),
 })

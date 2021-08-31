@@ -45,7 +45,7 @@ const Variables = ({
 
   const generate = (newQuestion, shouldNotCheck) => {
     if (shouldNotCheck) {
-      return generateExam({ newQuestion })
+      return generateExam({ newQuestion, shouldNotCheckUpdate: true })
     }
     const updatedVariables = get(newQuestion, 'variable.variables', variables)
     const { invalid, errMessage } = checkDynamicParameters(
@@ -57,7 +57,7 @@ const Variables = ({
     if (invalid) {
       showBlockerPopup(errMessage)
     } else {
-      generateExam({ newQuestion })
+      generateExam({ newQuestion, shouldNotCheckUpdate: true })
     }
   }
 

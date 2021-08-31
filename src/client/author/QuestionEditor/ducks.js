@@ -1119,7 +1119,7 @@ function* generateVariableSaga({ payload }) {
   try {
     const dpUpdated = yield select(getDpUpdatedSelector)
     const currentQues = yield select(getCurrentQuestionSelector)
-    if (!dpUpdated && !payload.newQuestion) {
+    if (!dpUpdated && !payload.newQuestion && !payload.shouldNotCheckUpdate) {
       if (typeof payload.nextAction === 'function') {
         payload.nextAction()
       }

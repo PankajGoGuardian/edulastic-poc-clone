@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
@@ -44,7 +44,7 @@ const Header = ({
   isClassLink,
   history,
 }) => {
-  const { cleverId, isPlayground } = user
+  const { atlasId, cleverId, isPlayground } = user
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -106,6 +106,17 @@ const Header = ({
       state: { type: currentTab },
     })
 
+  // `googleStopSync` is true if all `googleAllowedInstitutions` have `stopSync` enabled
+  const googleStopSync = useMemo(
+    () => googleAllowedInstitutions.every((s) => !!s.stopSync),
+    [googleAllowedInstitutions]
+  )
+  // `canvasStopSync` is true if all `canvasAllowedInstitution` have `stopSync` enabled
+  const canvasStopSync = useMemo(
+    () => canvasAllowedInstitution.every((s) => !!s.stopSync),
+    [canvasAllowedInstitution]
+  )
+
   return (
     <MainHeader Icon={IconManage} headingText={t('common.manageClassTitle')}>
       <FeaturesSwitch
@@ -144,9 +155,10 @@ const Header = ({
           )}
           {!isPlayground &&
             googleAllowedInstitutions?.length > 0 &&
-            !cleverId &&
-            !enableCleverSync &&
-            !isClassLink && (
+            // if stopSync is enabled for all institutions, ignore cleverId/atlasId,
+            // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
+            ((!cleverId && !isClassLink && !atlasId) || googleStopSync) &&
+            !enableCleverSync && (
               <GoogleLogin
                 clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                 buttonText="Sync with Google Classroom"
@@ -165,9 +177,10 @@ const Header = ({
             )}
           {!isPlayground &&
             canvasAllowedInstitution?.length > 0 &&
-            !cleverId &&
-            !enableCleverSync &&
-            !isClassLink && (
+            // if stopSync is enabled for all institutions, ignore cleverId/atlasId,
+            // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
+            ((!cleverId && !isClassLink && !atlasId) || canvasStopSync) &&
+            !enableCleverSync && (
               <EduButton
                 isBlue
                 data-cy="syncCanvas"

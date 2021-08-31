@@ -34,16 +34,7 @@ import { CONSTANT } from '../../Builder/config'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
-const gridOpts = [
-  'xMin',
-  'xMax',
-  'xDistance',
-  'yMin',
-  'yMax',
-  'yDistance',
-  'layoutWidth',
-  'layoutHeight',
-]
+const gridOpts = ['xMin', 'xMax', 'yMin', 'yMax']
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
     super(props)
@@ -100,32 +91,10 @@ class QuadrantsMoreOptions extends Component {
   }
 
   checkGridSettings = (nextAction) => {
-    const {
-      t,
-      graphData: { uiStyle },
-    } = this.props
-    const { layoutWidth, layoutHeight } = uiStyle
-    const { yMax, yMin, xMax, xMin, xDistance, yDistance } = this.state
+    const { t } = this.props
+    const { yMax, yMin, xMax, xMin } = this.state
 
-    let xGirdDistance =
-      (Math.abs(xMin) +
-        Math.abs(xDistance) +
-        Math.abs(xMax) +
-        Math.abs(xDistance)) /
-      xDistance
-    xGirdDistance = parseFloat(layoutWidth) / xGirdDistance
-    xGirdDistance *= Math.abs(xMin) / xDistance + 1
-
-    let yGirdDistance =
-      (Math.abs(yMax) +
-        Math.abs(yDistance) +
-        Math.abs(yMin) +
-        Math.abs(yDistance)) /
-      yDistance
-    yGirdDistance = parseFloat(layoutHeight) / yGirdDistance
-    yGirdDistance *= Math.abs(yMin) / yDistance + 1
-
-    if (xGirdDistance < 28 || yGirdDistance < 28) {
+    if (xMin > 0 || xMax < 0 || yMin > 0 || yMax < 0) {
       Modal.confirm({
         centered: true,
         okCancel: false,

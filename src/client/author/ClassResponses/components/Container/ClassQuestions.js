@@ -812,7 +812,7 @@ const withConnect = connect(
     ),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(
       state,
-      ownProps.currentStudent.studentId
+      ownProps.testActivity
     ),
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),

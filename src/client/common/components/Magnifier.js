@@ -61,13 +61,15 @@ const Magnifier = ({
     if (!setting.dragging) {
       return
     }
-    setSetting({
-      ...setting,
-      pos: {
-        x: e.pageX - setting.rel.x,
-        y: e.pageY - setting.rel.y,
-      },
-    })
+    if (offset.top <= e.pageY - setting.rel.y) {
+      setSetting({
+        ...setting,
+        pos: {
+          x: e.pageX - setting.rel.x,
+          y: e.pageY - setting.rel.y,
+        },
+      })
+    }
     e.stopPropagation()
     e.preventDefault()
   }

@@ -1114,7 +1114,14 @@ const changeValidationWhenUnscored = (payload, oldQuestion) => {
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
-  const _payload = changeValidationWhenUnscored(payload, prevQuestion)
+  const resourceTypes = [
+    questionType.VIDEO,
+    questionType.PASSAGE,
+    questionType.TEXT,
+  ]
+  const _payload = resourceTypes.includes(payload.type)
+    ? payload
+    : changeValidationWhenUnscored(payload, prevQuestion)
 
   yield put({
     type: UPDATE_QUESTION,

@@ -113,3 +113,10 @@ export const BackLink = styled.span`
   max-width: 140px;
   text-align: center;
 `
+
+export const SpinContainer = styled.div`
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  z-index: 1000;
+`

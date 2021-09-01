@@ -186,6 +186,8 @@ export const PROCEED_TO_PUBLISH_ITEM = '[itemDetail] proceed to publish item'
 
 const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
 const ADD_ITEM_TO_CART = '[item list] add item to cart'
+export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
+  '[itemDetail] save current item and paginate'
 
 // actions
 
@@ -274,6 +276,11 @@ export const updateItemDetailByIdAction = (
     redirectOnDeleteQuestion,
     updateScoreInQuestionsAsPerItem,
   },
+})
+
+export const saveCurrentItemAndRoueToOtherAction = (payload) => ({
+  type: SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
+  payload,
 })
 
 export const updateItemDetailSuccess = (item) => ({
@@ -942,6 +949,7 @@ export function reducer(state = initialState, { type, payload }) {
 
     case UPDATE_ITEM_DETAIL_DIMENSION:
       return updateDimension(state, payload)
+    case SAVE_CURRENT_ITEM_MOVE_TO_NEXT:
     case UPDATE_ITEM_DETAIL_REQUEST:
     case UPDATE_ITEM_DOC_BASED_REQUEST:
       return { ...state, updating: true }
@@ -2217,6 +2225,16 @@ function* editPassageWidgetSaga({ payload }) {
   yield put(setDictAlignmentFromQuestion(alignments))
 }
 
+function* saveCurrentItemAndRoueToOtherSaga({ payload }) {
+  try {
+    const { redirectData, updateItemData } = payload
+    yield call(updateItemSaga, { payload: updateItemData })
+    yield put(push(redirectData))
+  } catch (err) {
+    Sentry.captureException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -2239,5 +2257,9 @@ export function* watcherSaga() {
     ),
     yield takeLatest(SAVE_AND_PUBLISH_ITEM, saveAndPublishItemSaga),
     yield takeLatest(EDIT_PASSAGE_WIDGET, editPassageWidgetSaga),
+    yield takeEvery(
+      SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
+      saveCurrentItemAndRoueToOtherSaga
+    ),
   ])
 }

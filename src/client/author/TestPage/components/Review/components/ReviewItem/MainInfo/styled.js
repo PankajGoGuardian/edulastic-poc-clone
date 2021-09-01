@@ -18,9 +18,6 @@ export const NumberInputStyledTestPage = styled(NumberInputStyled)`
     > .ant-input-number-input {
     padding-right: 45%;
   }
-  .ant-input-number-input {
-    text-align: center;
-  }
 `
 export const Stimulus = WithMathFormula(styled.div`
   color: ${(props) => props.theme.questionTextColor};

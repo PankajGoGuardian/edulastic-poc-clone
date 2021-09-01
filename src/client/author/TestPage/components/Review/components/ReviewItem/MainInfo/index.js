@@ -7,7 +7,6 @@ import {
   WithMathFormula,
   FlexContainer,
   CheckboxLabel,
-  NumberInputStyled,
   PremiumItemBanner,
 } from '@edulastic/common'
 import { Stimulus, NumberInputStyledTestPage } from './styled'
@@ -72,6 +71,7 @@ class MainInfo extends React.Component {
                 value={points}
                 margin="0px 0px 0px 5px"
                 padding="0px 4px"
+                textAlign="center"
                 disabled={
                   !owner || !isEditable || isScoringDisabled || groupMinimized
                 }

@@ -26,7 +26,7 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
           ) : (
             <Icon type={item.icon} />
           )}
-          <span className={item.icon === 'folders' ? 'folders' : ''}>
+          <span className={item.text === 'FOLDERS' ? 'folders' : ''}>
             {item.text}
           </span>
         </Item>

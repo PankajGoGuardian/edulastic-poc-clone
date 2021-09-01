@@ -144,9 +144,11 @@ export function* addItemToCartSaga({ payload }) {
   let updatedTestItems = []
   if ((testItems || []).some((o) => o?._id === item?._id)) {
     updatedTestItems = produce(testItems, (draft) => {
-      draft = draft.filter((x) => x._id !== item._id)
-      if (showNotification) {
-        notification({ type: 'success', messageKey: 'itemRemovedTest' })
+      if (!payload.fromQuestionEdit && !payload.fromItemDetail) {
+        draft = draft.filter((x) => x._id !== item._id)
+        if (showNotification) {
+          notification({ type: 'success', messageKey: 'itemRemovedTest' })
+        }
       }
       /**
        * returning because no mutation happened

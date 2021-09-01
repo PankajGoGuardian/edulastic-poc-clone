@@ -379,11 +379,11 @@ export const saveCurrentEditingTestIdAction = (id) => ({
 
 export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
 
-const addItemToCartAction = (item, showNotification) => ({
+const addItemToCartAction = (item) => ({
   type: ADD_ITEM_TO_CART,
   payload: {
     item,
-    showNotification,
+    fromItemDetail: true,
   },
 })
 

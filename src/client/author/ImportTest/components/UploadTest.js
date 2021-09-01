@@ -4,10 +4,11 @@ import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
 import { connect } from 'react-redux'
-import { sumBy } from 'lodash'
+import { sumBy, uniq } from 'lodash'
 
-import { Select, message } from 'antd'
+import { Select } from 'antd'
 import { notification } from '@edulastic/common'
+import tagsApi from '@edulastic/api/src/tags'
 import {
   UploadTitle,
   UploadDescription,
@@ -17,10 +18,15 @@ import {
   FlexContainer,
 } from './styled'
 import { uploadTestRequestAction } from '../ducks'
-import { getAllTagsAction, getAllTagsSelector } from '../../TestPage/ducks'
+import {
+  getAllTagsAction,
+  getAllTagsSelector,
+  addNewTagAction,
+} from '../../TestPage/ducks'
 
-const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
-  const [selectedTags, setselectedTags] = useState([])
+const UploadTest = ({ t, uploadTest, getAllTags, allTagsData, addNewTag }) => {
+  const [searchValue, setSearchValue] = useState('')
+  const [selectedTags, setSelectedTags] = useState([])
   const [contentType, setContentType] = useState('qti')
   useEffect(() => {
     getAllTags({ type: 'testitem' })
@@ -35,8 +41,8 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
 
   const onChange = ({ fileList }) => {
     if (fileList.every(({ status }) => status === 'done')) {
-      sessionStorage.setItem('qtiTags', JSON.stringify(selectedTags))
-      uploadTest({ fileList, contentType })
+      const tags = allTagsData.filter(({ _id }) => selectedTags.includes(_id))
+      uploadTest({ fileList, contentType, tags })
     }
   }
 
@@ -59,19 +65,46 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
     showUploadList: false,
   }
 
-  const testTags = allTagsData.map(({ _id, tagName }) => (
-    <Select.Option key={_id} value={_id} title={tagName}>
-      {tagName}
-    </Select.Option>
-  ))
+  const searchTags = async (_value) => {
+    if (
+      allTagsData?.some(
+        (tag) =>
+          tag?.tagName?.toLowerCase() === _value?.toLowerCase() ||
+          tag?.tagName?.toLowerCase() === _value?.trim().toLowerCase()
+      )
+    ) {
+      setSearchValue('')
+    } else {
+      setSearchValue(_value)
+    }
+  }
 
-  const onTagSelect = (_, selectedItems) => {
-    setselectedTags(
-      selectedItems.map((item) => ({
-        _id: item.props.value,
-        tagName: item.props.title,
-      }))
-    )
+  const selectTags = async (id) => {
+    let newTag = {}
+    const tempSearchValue = searchValue
+    if (id === searchValue) {
+      setSearchValue('')
+      try {
+        const { _id, tagName } = await tagsApi.create({
+          tagName: tempSearchValue,
+          tagType: 'testitem',
+        })
+        newTag = { _id, tagName }
+        addNewTag({ tag: newTag, tagType: 'testitem' })
+      } catch (e) {
+        notification({ messageKey: 'savingTagFailed' })
+      }
+    } else {
+      newTag = allTagsData.find((tag) => tag._id === id)
+    }
+    const newTags = uniq([...selectedTags, newTag._id])
+    setSelectedTags(newTags)
+    setSearchValue('')
+  }
+
+  const deselectTags = (id) => {
+    const newTags = selectedTags.filter((tag) => tag !== id)
+    setSelectedTags([...newTags])
   }
 
   const handleTypeChange = (value) => setContentType(value)
@@ -91,13 +124,30 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData }) => {
         </FlexContainer>
       </StyledUpload>
       <Select
-        mode="tags"
+        data-cy="tagsSelect"
+        mode="multiple"
         style={{ width: '100%' }}
+        optionLabelProp="title"
         placeholder="Select tags"
-        onChange={onTagSelect}
-        allowClear
+        onSearch={searchTags}
+        onSelect={selectTags}
+        onDeselect={deselectTags}
+        filterOption={(input, option) =>
+          option.props.title.toLowerCase().includes(input.trim().toLowerCase())
+        }
       >
-        {testTags}
+        {searchValue.trim() ? (
+          <Select.Option key={0} value={searchValue} title={searchValue}>
+            {`${searchValue} (Create new Tag)`}
+          </Select.Option>
+        ) : (
+          ''
+        )}
+        {allTagsData.map(({ tagName, _id }) => (
+          <Select.Option key={_id} value={_id} title={tagName}>
+            {tagName}
+          </Select.Option>
+        ))}
       </Select>
       <Select onChange={handleTypeChange} value={contentType}>
         <Select.Option value="qti">QTI</Select.Option>
@@ -123,7 +173,11 @@ export default withNamespaces('qtiimport')(
       (state) => ({
         allTagsData: getAllTagsSelector(state, 'testitem'),
       }),
-      { uploadTest: uploadTestRequestAction, getAllTags: getAllTagsAction }
+      {
+        uploadTest: uploadTestRequestAction,
+        getAllTags: getAllTagsAction,
+        addNewTag: addNewTagAction,
+      }
     )(UploadTest)
   )
 )

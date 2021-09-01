@@ -52,13 +52,10 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
    * call update score api only after user moves out of rubric scoring block
    */
   const handleBlur = () => {
-    const selectedRatingsLength = Object.keys(selectedRatings || {}).length
-    if (selectedRatingsLength > 0) {
-      onChange({
-        score: calculateScore(rubricData, selectedRatings),
-        rubricFeedback: selectedRatings,
-      })
-    }
+    onChange({
+      score: calculateScore(rubricData, selectedRatings),
+      rubricFeedback: selectedRatings,
+    })
   }
 
   return (

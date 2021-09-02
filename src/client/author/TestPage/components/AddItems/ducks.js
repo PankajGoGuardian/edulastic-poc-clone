@@ -409,22 +409,29 @@ function* clearSelectedItemsSaga() {
   const itemsToRemove = yield select(
     (state) => state?.testsAddItems?.selectedItems
   )
-  const testItems = test?.itemGroups
-    ?.flatMap((itemGroup) => itemGroup?.items || [])
-    .filter((x) => !itemsToRemove.includes(x._id))
+  const testItems = test?.itemGroups?.flatMap(
+    (itemGroup) => itemGroup?.items || []
+  )
+
+  const filteredItems = testItems.filter((x) => !itemsToRemove.includes(x._id))
 
   const updatedTest = {
     ...test,
     itemGroups: [
       {
         ...test.itemGroups[0],
-        items: testItems,
+        items: filteredItems,
       },
     ],
   }
 
   yield put(setTestItemsAction([]))
-  yield put(setTestDataAction(updatedTest))
+
+  /** This condition is added to check if there are any selected items to be remove
+   * and also to check that there should be atleast 1 item in the test so that test data
+   * doesn't reset unnecessarily */
+  if (itemsToRemove?.length && testItems.length)
+    yield put(setTestDataAction(updatedTest))
 }
 
 function* locationChangedSaga({ payload }) {

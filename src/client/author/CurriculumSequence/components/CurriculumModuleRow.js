@@ -1316,24 +1316,18 @@ class ModuleRow extends Component {
                                       }}
                                     >
                                       <Tooltip
-                                        title={
-                                          testStatus === 'draft'
-                                            ? get(
-                                                assignments,
-                                                '[0].title',
-                                                contentTitle
-                                              )
-                                            : contentTitle
-                                        }
+                                        title={get(
+                                          assignments,
+                                          '[0].title',
+                                          contentTitle
+                                        )}
                                       >
                                         <span data-cy="testName">
-                                          {testStatus === 'draft'
-                                            ? get(
-                                                assignments,
-                                                '[0].title',
-                                                contentTitle
-                                              )
-                                            : contentTitle}
+                                          {get(
+                                            assignments,
+                                            '[0].title',
+                                            contentTitle
+                                          )}
                                         </span>
                                         {testType}
                                       </Tooltip>

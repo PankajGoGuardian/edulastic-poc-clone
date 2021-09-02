@@ -21,6 +21,7 @@ import {
   SET_ALL_TAGS,
   SET_ALL_TAGS_FAILED,
   getTestEntitySelector,
+  getSelectedTestItemsSelector,
   setTestDataAction,
 } from '../../ducks'
 import { DELETE_ITEM_SUCCESS } from '../../../ItemDetail/ducks'
@@ -243,7 +244,6 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
-        selectedItems: [],
         itemsSubjectAndGrade: {
           subjects: [],
           grades: [],
@@ -488,8 +488,8 @@ export const getTestsItemsPageSelector = createSelector(
 )
 
 export const getSelectedItemSelector = createSelector(
-  stateTestItemsSelector,
-  (state) => state.selectedItems
+  getSelectedTestItemsSelector,
+  (testItems) => testItems.map((item) => item._id)
 )
 
 export const getItemsSubjectAndGradeSelector = createSelector(

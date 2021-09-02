@@ -327,7 +327,7 @@ class AuthorTestItemPreview extends Component {
       passageTestItems: _passageTestItems,
       page,
     } = this.props
-    const passageTestItems = _passageTestItems?.filter((el) => el.active)
+    const passageTestItems = _passageTestItems?.filter((el) => el)
     const { collapseDirection } = this.state
     const showButtons = collapseDirection !== 'right'
     if (

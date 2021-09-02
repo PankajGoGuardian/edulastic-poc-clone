@@ -26,7 +26,9 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
           ) : (
             <Icon type={item.icon} />
           )}
-          {item.text}
+          <span className={item.text === 'FOLDERS' ? 'folders' : ''}>
+            {item.text}
+          </span>
         </Item>
       ))}
     </Container>
@@ -74,6 +76,9 @@ const Item = styled(Menu.Item)`
     display: flex;
     align-items: center;
     text-transform: uppercase;
+    .folders:hover {
+      color: ${themeColorBlue};
+    }
 
     @media (max-width: ${smallDesktopWidth}) {
       height: 30px;

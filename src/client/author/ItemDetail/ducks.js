@@ -2074,7 +2074,7 @@ function* savePassage({ payload }) {
           })
         )
       } else {
-        yield put(setCreatedItemToTestAction(item))
+        if (item) yield put(setCreatedItemToTestAction(item))
         yield put(
           push({
             pathname: `/author/tests/${testId}/editItem/${currentItemId}`,

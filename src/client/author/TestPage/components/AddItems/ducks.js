@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { libraryFilters } from '@edulastic/constants'
+import { libraryFilters, test as testConst } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import {
   call,
@@ -15,6 +15,7 @@ import {
 import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
 import { keyBy } from 'lodash'
+import produce from 'immer'
 import {
   getAllTagsSelector,
   TAGS_SAGA_FETCH_STATUS,
@@ -409,29 +410,30 @@ function* clearSelectedItemsSaga() {
   const itemsToRemove = yield select(
     (state) => state?.testsAddItems?.selectedItems
   )
-  const testItems = test?.itemGroups?.flatMap(
-    (itemGroup) => itemGroup?.items || []
-  )
-
-  const filteredItems = testItems.filter((x) => !itemsToRemove.includes(x._id))
-
-  const updatedTest = {
-    ...test,
-    itemGroups: [
-      {
-        ...test.itemGroups[0],
-        items: filteredItems,
-      },
-    ],
+  let hasItemsToRemove = false
+  let updatedTest
+  if (itemsToRemove?.length) {
+    updatedTest = produce(test, (draft) => {
+      draft.itemGroups.forEach((group) => {
+        if (group.type !== testConst.ITEM_GROUP_TYPES.AUTOSELECT) {
+          const filteredItems = group?.items?.filter(
+            (x) => !itemsToRemove.includes(x._id)
+          )
+          if (filteredItems.length < group?.items?.length) {
+            hasItemsToRemove = true
+            group.items = filteredItems
+          }
+        }
+      })
+    })
   }
 
   yield put(setTestItemsAction([]))
 
   /** This condition is added to check if there are any selected items to be remove
-   * and also to check that there should be atleast 1 item in the test so that test data
+   * and also to check that there should be atleast 1 item in the test removed so that test data
    * doesn't reset unnecessarily */
-  if (itemsToRemove?.length && testItems.length)
-    yield put(setTestDataAction(updatedTest))
+  if (hasItemsToRemove) yield put(setTestDataAction(updatedTest))
 }
 
 function* locationChangedSaga({ payload }) {

@@ -102,7 +102,8 @@ export function* getCustomReportRequest({ payload }) {
     return customReportList
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch custom report Please try again...'
+    const msg =
+      'Error getting custom report. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_CUSTOM_REPORT_STATE_REQUEST_ERROR,
@@ -120,7 +121,8 @@ export function* getCustomReportURLRequest({ payload }) {
     })
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch custom report url Please try again...'
+    const msg =
+      'Error getting custom report url. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_CUSTOM_REPORT_URL_REQUEST_ERROR,

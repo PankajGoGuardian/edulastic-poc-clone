@@ -103,7 +103,7 @@ function* getReportsStandardsProgressRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Failed to fetch reports standards progress. Please try again...'
+      'Error getting reports standards progress. Please try again after a few minutes.'
 
     notification({ msg })
     yield put({

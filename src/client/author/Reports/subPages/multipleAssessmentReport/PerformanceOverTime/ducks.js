@@ -102,7 +102,8 @@ function* getReportsPerformanceOverTimeRequest({ payload }) {
     })
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch performance over time Please try again...'
+    const msg =
+      'Error getting performance over time. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_PERFORMANCE_OVER_TIME_REQUEST_ERROR,

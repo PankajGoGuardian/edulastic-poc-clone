@@ -72,7 +72,8 @@ export function* getReportsAssignmentsRequest({ payload }) {
     return assignments
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch assignments Please try again...'
+    const msg =
+      'Error getting assignments. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_ASSIGNMENTS_REQUEST_ERROR,

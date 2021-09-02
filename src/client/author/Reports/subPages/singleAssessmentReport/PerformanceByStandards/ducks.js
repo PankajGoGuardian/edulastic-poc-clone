@@ -105,7 +105,7 @@ export const getPerformanceByStandardsReportSelector = createSelector(
 
 function* getPerformanceByStandardsSaga({ payload }) {
   const errorMessage =
-    'Failed to fetch performance by standards, please try again'
+    'Error getting performance by standards. Please try again after a few minutes.'
 
   try {
     const { data } = yield call(reportsApi.fetchPerformanceByStandard, payload)

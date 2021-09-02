@@ -1995,12 +1995,15 @@ export function* receiveTestByIdSaga({ payload }) {
 
     entity.itemGroups.forEach((itemGroup, groupIndex) => {
       itemGroup.items.forEach((item, itemIndex) => {
-        if (
-          createdItems?.[0]?._id === item._id ||
-          createdItems?.[0]?.previousTestItemId === item._id
-        ) {
-          entity.itemGroups[groupIndex].items[itemIndex] = createdItems[0]
-          createdItems = createdItems?.slice(1) || []
+        const createdItem = createdItems?.find(
+          ({ _id, previousTestItemId }) =>
+            _id === item._id || previousTestItemId === item._id
+        )
+        if (!isEmpty(createdItem)) {
+          entity.itemGroups[groupIndex].items[itemIndex] = createdItem
+          createdItems = createdItems?.filter(
+            ({ _id }) => _id !== createdItem._id
+          )
         }
       })
     })

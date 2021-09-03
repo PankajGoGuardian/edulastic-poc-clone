@@ -1526,6 +1526,8 @@ export function* updateItemSaga({ payload }) {
       }
       yield put(changeViewAction('edit'))
       return
+    } else {
+      yield put(addItemToCartAction(item))
     }
   } catch (err) {
     captureSentryException(err)

@@ -440,7 +440,8 @@ function* locationChangedSaga({ payload }) {
   if (
     !(
       payload?.location?.pathname?.includes('/author/items') ||
-      payload?.location?.pathname?.includes('/author/questions')
+      payload?.location?.pathname?.includes('/author/questions') ||
+      payload?.location?.pathname?.includes('/author/tests')
     )
   ) {
     yield put(clearSelectedItemsAction())

@@ -94,6 +94,7 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import { getTestEntitySelector } from '../../../AssignTest/duck'
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -110,7 +111,6 @@ class Contaier extends Component {
       getCurriculumStandards,
       match = {},
       limit,
-      selectedItems,
       setDefaultTestData,
       search: initSearch,
       getAllTags,
@@ -121,6 +121,7 @@ class Contaier extends Component {
       sort: initSort = {},
       userId,
       districtId,
+      test,
     } = this.props
     const {
       subject = interestedSubjects,
@@ -159,7 +160,7 @@ class Contaier extends Component {
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }
-    if (!selectedItems?.length) {
+    if (test && test._id) {
       setDefaultTestData()
     }
     getAllTags({ type: 'testitem' })
@@ -659,6 +660,7 @@ const enhance = compose(
       selectedItems: getSelectedItemSelector(state),
       userId: getUserId(state),
       districtId: getUserOrgId(state),
+      test: getTestEntitySelector(state),
     }),
     {
       receiveItems: receiveTestItemsAction,

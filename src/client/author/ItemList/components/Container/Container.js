@@ -65,6 +65,7 @@ import {
   getAllTagsAction,
   previewCheckAnswerAction,
   previewShowAnswerAction,
+  removeTestEntityAction,
   setDefaultTestDataAction,
 } from '../../../TestPage/ducks'
 import {
@@ -94,6 +95,7 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import { getTestEntitySelector } from '../../../AssignTest/duck'
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -121,6 +123,8 @@ class Contaier extends Component {
       sort: initSort = {},
       userId,
       districtId,
+      removeTestEntity,
+      test,
     } = this.props
     const {
       subject = interestedSubjects,
@@ -161,6 +165,9 @@ class Contaier extends Component {
     }
     if (!selectedItems?.length) {
       setDefaultTestData()
+    }
+    if (test && test._id) {
+      removeTestEntity()
     }
     getAllTags({ type: 'testitem' })
     if (params.filterType) {
@@ -659,6 +666,7 @@ const enhance = compose(
       selectedItems: getSelectedItemSelector(state),
       userId: getUserId(state),
       districtId: getUserOrgId(state),
+      test: getTestEntitySelector(state),
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -677,6 +685,7 @@ const enhance = compose(
       clearFilterState: clearFilterStateAction,
       approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+      removeTestEntity: removeTestEntityAction,
     }
   )
 )

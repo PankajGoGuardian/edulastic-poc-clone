@@ -107,8 +107,13 @@ export const updateVariables = (item, latexKeys = []) => {
       ...example,
     }))
   })
-  item.variable.examples = newExamples
-  if (Object.keys(newVariables).length) {
+
+  if (!Object.keys(newVariables).length) {
+    item.variable.variables = {}
+    item.variable.examples = []
+    item.variable.enabled = false
+  } else {
+    item.variable.examples = newExamples
     item.variable.variables = newVariables
   }
 }

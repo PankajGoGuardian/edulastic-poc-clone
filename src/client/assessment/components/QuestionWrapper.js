@@ -528,6 +528,18 @@ class QuestionWrapper extends Component {
       )
     }
 
+    let passageRightSpace = {}
+    if (
+      data.type === questionType.PASSAGE &&
+      playerSkinType === test.playerSkinValues.parcc &&
+      canShowPlayer
+    ) {
+      // for not to overlap tts buttons in testNav skin
+      passageRightSpace = {
+        paddingRight: '45px',
+      }
+    }
+
     return (
       <ThemeProvider
         theme={{
@@ -572,6 +584,7 @@ class QuestionWrapper extends Component {
               style={{
                 width: '100%',
                 height: calculatedHeight || (fullHeight ? '100%' : null),
+                ...passageRightSpace,
               }}
             >
               {showQuestionMenu && (

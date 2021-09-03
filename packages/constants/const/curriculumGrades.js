@@ -1,5 +1,9 @@
 const GRADES = [
   {
+    text: 'KINDERGARTEN',
+    value: 'K',
+  },
+  {
     text: '1',
     value: '1',
   },

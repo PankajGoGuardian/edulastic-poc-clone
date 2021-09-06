@@ -8,6 +8,8 @@ import {
   IconScience,
   IconRobot,
   IconWord,
+  IconCPM,
+  IconSparkWriting,
 } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { Tooltip } from 'antd'
@@ -86,6 +88,20 @@ const productsMetaData = {
     grades: 'Grades K-12',
     learnMoreLinks: 'https://edulastic.com/spark-cs',
     filters: 'CS',
+  },
+  CPM: {
+    icon: <IconCPM />,
+    subject: 'math',
+    grades: 'Grades 6-12',
+    learnMoreLinks: 'https://edulastic.com/CPM',
+    filters: 'MATHEMATICS',
+  },
+  SparkWriting: {
+    icon: <IconSparkWriting />,
+    subject: 'ela',
+    grades: 'Grades K-12',
+    learnMoreLinks: 'https://edulastic.com/spark-words',
+    filters: 'ELA',
   },
 }
 
@@ -255,11 +271,7 @@ const SubscriptionMain = ({
       return
     }
 
-    if (
-      !['enterprise'].includes(
-        productIdOrSubType?.toLowerCase()
-      )
-    ) {
+    if (!['enterprise'].includes(productIdOrSubType?.toLowerCase())) {
       setIsTrialModalVisible(true)
     }
   }

@@ -10,6 +10,8 @@ import {
   IconSparkScience,
   IconSpecs,
   IconStemCross,
+  IconCPM,
+  IconSparkWriting,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -73,6 +75,18 @@ const addonsData = [
     title: 'Data Warehousing',
     description:
       'Import state test scores, data from other assessments (MAP, iReady, SAT/ACT) and more for a holistic view of student performance and growth.',
+  },
+  {
+    icon: <IconCPM />,
+    title: 'CPM',
+    description:
+      'Pre-built, customizable assessments for each chapter of your course, from core Connections, Course 1 through Algebra 2 and Integrated 1-3',
+  },
+  {
+    icon: <IconSparkWriting />,
+    title: 'SparkWriting',
+    description:
+      'Practice activities for grammar, conventions, usage, and mechanics for grade 2-12',
   },
 ]
 

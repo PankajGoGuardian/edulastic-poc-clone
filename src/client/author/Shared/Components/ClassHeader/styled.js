@@ -6,6 +6,7 @@ import {
   mobileWidthMax,
   tabletWidth,
   themeColor,
+  themeColorBlue,
   white,
 } from '@edulastic/colors'
 import { Button, Icon, Menu, Popconfirm, Switch } from 'antd'
@@ -257,7 +258,7 @@ export const MenuItems = styled(Menu.Item)`
 
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
     > a {
       color: ${white};
     }

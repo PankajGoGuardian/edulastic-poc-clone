@@ -789,8 +789,8 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: 'fixed',
-                      minWidth: isCollapsed ? '50px' : '220px',
-                      maxWidth: isCollapsed ? '50px' : '0px',
+                      minWidth: isCollapsed ? '70px' : '220px',
+                      maxWidth: isCollapsed ? '70px' : '0px',
                     }}
                     className="footerDropdown"
                     overlay={footerDropdownMenu(isDemoPlaygroundUserProxy)}
@@ -1362,6 +1362,7 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
+          padding-left: 10px;
           &:focus,
           &:hover {
             svg,

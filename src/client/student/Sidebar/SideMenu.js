@@ -339,8 +339,8 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: 'fixed',
-                      minWidth: isSidebarCollapsed ? '50px' : '220px',
-                      maxWidth: isSidebarCollapsed ? '50px' : '0px',
+                      minWidth: isSidebarCollapsed ? '70px' : '220px',
+                      maxWidth: isSidebarCollapsed ? '70px' : '0px',
                     }}
                     className="footerDropdown"
                     overlay={footerDropdownMenu}
@@ -733,8 +733,8 @@ const FooterDropDown = styled.div`
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
-      margin-top: ${(props) => (props.isCollapsed ? '0' : '10px')};
-      margin-left: ${(props) => (props.isCollapsed ? '0' : '8px')};
+      margin-top: ${(props) => (props.isSidebarCollapsed ? '0' : '10px')};
+      margin-left: ${(props) => (props.isSidebarCollapsed ? '0' : '8px')};
       box-shadow: ${(props) =>
         props.isCollapsed ? '0 -3px 5px 0 rgba(0,0,0,0.07)' : 'none'};
 
@@ -765,6 +765,7 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
+          padding-left: 10px;
           &:hover {
             a {
               color: ${white};

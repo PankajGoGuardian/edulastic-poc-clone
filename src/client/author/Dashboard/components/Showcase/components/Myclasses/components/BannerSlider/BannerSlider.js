@@ -74,9 +74,9 @@ const BannerSlider = ({
         <ScrollbarContainer className="scrollbar-container" ref={scrollBarRef}>
           <SlideContainer data-cy="sliderContainer">
             {bannerSlides.map((slide, index) => {
-              const isSparkTile = slide.description
-                ?.toLowerCase()
-                ?.includes('spark')
+              const isSparkTile =
+                slide.description?.toLowerCase()?.includes('spark') ||
+                slide.description?.toLowerCase()?.includes('cpm')
 
               return (
                 <Slides

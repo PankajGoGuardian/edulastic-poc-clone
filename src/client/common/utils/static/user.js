@@ -3,6 +3,7 @@ export const userPickFields = [
   // put it in alphabetical order
   '_id',
   'v1Id',
+  'atlasId',
   'cleverId',
   'currentSignUpState',
   'districtIds',

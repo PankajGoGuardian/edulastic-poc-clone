@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import { pick } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 
@@ -120,15 +121,15 @@ const StudentProfileReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
-    const _requestFilters = {}
-    const requestParams = [
+    const requestFilterKeys = [
       'termId',
       'standardsProficiencyProfileId',
       'reportId',
       'performanceBandProfileId',
       'assignedBy',
     ]
-    requestParams.forEach((filterType) => {
+    const _requestFilters = {}
+    Object.keys(_settings.filters).forEach((filterType) => {
       _requestFilters[filterType] =
         _settings.filters[filterType] === 'All'
           ? ''
@@ -136,12 +137,12 @@ const StudentProfileReportContainer = (props) => {
     })
     setSPRSettings({
       requestFilters: {
-        ..._requestFilters,
+        ...pick(_requestFilters, requestFilterKeys),
         profileId: _requestFilters.standardsProficiencyProfileId,
       },
       standardFilters: {
-        domainIds: _settings.filters.domainId,
-        standardIds: _settings.filters.standardId,
+        domainIds: _requestFilters.domainId,
+        standardIds: _requestFilters.standardId,
       },
       selectedStudent: _settings.selectedStudent,
     })

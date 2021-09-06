@@ -433,11 +433,7 @@ class TestItemCol extends Component {
                 )}
             </>
           )}
-          <WidgetContainer
-            data-cy="widgetContainer"
-            zoomLevel={zoomLevel}
-            responsiveWidth={responsiveWidth}
-          >
+          <WidgetContainer data-cy="widgetContainer" zoomLevel={zoomLevel}>
             {widgetsToRender.map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&

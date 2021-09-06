@@ -364,6 +364,7 @@ class TestItemPreview extends Component {
       itemLevelScoring,
       isPrintPreview,
       isShowStudentWork,
+      responsiveWidth,
     } = restProps
 
     const { isFeedbackVisible, collapseDirection } = this.state
@@ -418,10 +419,8 @@ class TestItemPreview extends Component {
         >
           <Container
             width={windowWidth}
-            style={{
-              ...style,
-              padding: 0,
-            }}
+            responsiveWidth={responsiveWidth}
+            style={style}
             isCollapsed={!!collapseDirection}
             ref={this.containerRef}
             className="test-item-preview"

@@ -19,6 +19,7 @@ const ExternalVideoLink = (props) => {
     setSelectedStandards,
     curriculum = '',
     data,
+    headingText,
   } = props
 
   const [title, setTitle] = useState('')
@@ -109,7 +110,7 @@ const ExternalVideoLink = (props) => {
 
   return (
     <EdulasticResourceModal
-      headerText="Video Link"
+      headerText={headingText}
       okText={id ? 'UPDATE RESOURCE' : 'ADD RESOURCE'}
       submitCallback={submitCallback}
       {...props}
@@ -135,7 +136,11 @@ const ExternalVideoLink = (props) => {
       <FlexRow>
         <FieldLabel>URL</FieldLabel>
         <TextInputStyled
-          placeholder="Enter Youtube URL | Video Embed Code | AWS URL"
+          placeholder={
+            headingText === 'YouTube URL'
+              ? 'Youtube | AWS URL'
+              : 'Video Embed code'
+          }
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           height="36px"

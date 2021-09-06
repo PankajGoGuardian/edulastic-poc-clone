@@ -4,7 +4,6 @@ import {
   tabGrey,
   textColor,
   themeColor,
-  themeColorBlue,
   title,
   white,
   greyThemeDark1,

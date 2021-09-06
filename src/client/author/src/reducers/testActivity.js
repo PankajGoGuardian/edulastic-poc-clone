@@ -551,9 +551,10 @@ const reducer = (state = initialState, { type, payload }) => {
         },
         additionalData: {
           ...state.additionalData,
-          canOpenClass: state.additionalData.canOpenClass.filter(
-            (item) => item !== payload.classId
-          ),
+          canOpenClass:
+            state.additionalData?.canOpenClass?.filter(
+              (item) => item !== payload.classId
+            ) || [],
           open: true,
         },
       }
@@ -571,12 +572,13 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         additionalData: {
           ...state.additionalData,
-          canCloseClass: state.additionalData.canCloseClass.filter(
-            (item) => item !== payload.classId
-          ),
+          canCloseClass:
+            state?.additionalData?.canCloseClass?.filter(
+              (item) => item !== payload.classId
+            ) || [],
           // closed: true,
           classesCanBeMarked: [
-            ...state.additionalData.classesCanBeMarked,
+            ...(state?.additionalData?.classesCanBeMarked || []),
             payload.classId,
           ],
         },

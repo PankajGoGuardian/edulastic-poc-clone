@@ -177,6 +177,7 @@ class SuccessPage extends React.Component {
       history,
       location,
       regradedAssignments,
+      isPlaylist,
     } = this.props
     const { fromText, toUrl } = location.state || {
       fromText: 'Assignments',
@@ -192,7 +193,9 @@ class SuccessPage extends React.Component {
             isBlue
             isGhost
             data-cy="assignButton"
-            onClick={() => history.push(toUrl)}
+            onClick={() =>
+              history.push(isPlaylist ? `/author/${toUrl}` : toUrl)
+            }
           >
             {`Return to ${fromText}`}
           </EduButton>

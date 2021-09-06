@@ -242,6 +242,7 @@ import Path3475 from '../assets/sets/Path3475.svg'
 import Path3476 from '../assets/sets/Path3476.svg'
 import Path3477 from '../assets/sets/Path3477.svg'
 import Path3478 from '../assets/sets/Path3478.svg'
+import Path3479 from '../assets/sets/Path3479.svg'
 import Path3367 from '../assets/sets/Path3367.svg'
 import Path2256 from '../assets/sets/Path2256.svg'
 import Path2253 from '../assets/sets/Path2253.svg'
@@ -2297,7 +2298,7 @@ export const no_subset = {
 
 export const no_subset_eq = {
   handler: '\\nsubseteq',
-  label: <CustomImage src={Path3478} width={14} height={20} />,
+  label: <CustomImage src={Path3479} width={12} height={18} />,
   types: ['all'],
   command: 'cmd',
 }

@@ -27,7 +27,7 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc'
 import { compose } from 'redux'
-import { pick, uniq } from 'lodash'
+import { pick, uniq, get } from 'lodash'
 import { curriculumSequencesApi, testsApi } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
@@ -711,6 +711,7 @@ class ModuleRow extends Component {
                     contentType,
                     hidden,
                     status: testStatus,
+                    contentTitle,
                   } = moduleData
                   const isTestType = contentType === 'test'
                   const statusList = assignments
@@ -1315,11 +1316,18 @@ class ModuleRow extends Component {
                                       }}
                                     >
                                       <Tooltip
-                                        placement="bottomLeft"
-                                        title={moduleData?.contentTitle}
+                                        title={get(
+                                          assignments,
+                                          '[0].title',
+                                          contentTitle
+                                        )}
                                       >
                                         <span data-cy="testName">
-                                          {moduleData?.contentTitle}
+                                          {get(
+                                            assignments,
+                                            '[0].title',
+                                            contentTitle
+                                          )}
                                         </span>
                                         {testType}
                                       </Tooltip>

@@ -142,11 +142,11 @@ export const DYNAMIC_PARAMETER_UPDATED =
 
 const ADD_ITEM_TO_CART = '[item list] add item to cart'
 
-const addItemToCartAction = (item, showNotification) => ({
+const addItemToCartAction = (item) => ({
   type: ADD_ITEM_TO_CART,
   payload: {
     item,
-    showNotification,
+    fromQuestionEdit: true,
   },
 })
 

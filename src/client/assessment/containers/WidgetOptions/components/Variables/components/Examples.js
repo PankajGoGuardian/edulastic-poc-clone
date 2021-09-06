@@ -56,6 +56,10 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
     setQuestionData(newData)
   }
 
+  const handleGenerate = () => {
+    onGenerate(questionData)
+  }
+
   const columns = keys(variables).map((variableName) => ({
     title: variableName,
     dataIndex: variableName,
@@ -125,7 +129,7 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
         <Col md={4}>
           <EduButton
             // don't pass event to generate method
-            onClick={() => onGenerate()}
+            onClick={() => handleGenerate()}
             style={{ float: 'right' }}
             data-cy="generate"
           >

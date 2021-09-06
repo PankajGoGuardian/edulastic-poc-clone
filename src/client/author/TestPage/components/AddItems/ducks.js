@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { libraryFilters } from '@edulastic/constants'
+import { libraryFilters, test as testConst } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import {
   call,
@@ -12,15 +12,17 @@ import {
   take,
   race,
 } from 'redux-saga/effects'
-import { push } from 'connected-react-router'
+import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
 import { keyBy } from 'lodash'
+import produce from 'immer'
 import {
   getAllTagsSelector,
   TAGS_SAGA_FETCH_STATUS,
   SET_ALL_TAGS,
   SET_ALL_TAGS_FAILED,
   getTestEntitySelector,
+  getSelectedTestItemsSelector,
   setTestDataAction,
 } from '../../ducks'
 import { DELETE_ITEM_SUCCESS } from '../../../ItemDetail/ducks'
@@ -243,7 +245,6 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
-        // selectedItems: [],
         itemsSubjectAndGrade: {
           subjects: [],
           grades: [],
@@ -409,22 +410,42 @@ function* clearSelectedItemsSaga() {
   const itemsToRemove = yield select(
     (state) => state?.testsAddItems?.selectedItems
   )
-  const testItems = test?.itemGroups
-    ?.flatMap((itemGroup) => itemGroup?.items || [])
-    .filter((x) => !itemsToRemove.includes(x._id))
-
-  const updatedTest = {
-    ...test,
-    itemGroups: [
-      {
-        ...test.itemGroups[0],
-        items: testItems,
-      },
-    ],
+  let hasItemsToRemove = false
+  let updatedTest
+  if (itemsToRemove?.length) {
+    updatedTest = produce(test, (draft) => {
+      draft.itemGroups.forEach((group) => {
+        if (group.type !== testConst.ITEM_GROUP_TYPES.AUTOSELECT) {
+          const filteredItems = group?.items?.filter(
+            (x) => !itemsToRemove.includes(x._id)
+          )
+          if (filteredItems.length < group?.items?.length) {
+            hasItemsToRemove = true
+            group.items = filteredItems
+          }
+        }
+      })
+    })
   }
 
   yield put(setTestItemsAction([]))
-  yield put(setTestDataAction(updatedTest))
+
+  /** This condition is added to check if there are any selected items to be remove
+   * and also to check that there should be atleast 1 item in the test removed so that test data
+   * doesn't reset unnecessarily */
+  if (hasItemsToRemove) yield put(setTestDataAction(updatedTest))
+}
+
+function* locationChangedSaga({ payload }) {
+  if (
+    !(
+      payload?.location?.pathname?.includes('/author/items') ||
+      payload?.location?.pathname?.includes('/author/questions') ||
+      payload?.location?.pathname?.includes('/author/tests')
+    )
+  ) {
+    yield put(clearSelectedItemsAction())
+  }
 }
 
 export function* watcherSaga() {
@@ -432,6 +453,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     yield takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
+    yield takeLatest(LOCATION_CHANGE, locationChangedSaga),
   ])
 }
 
@@ -476,8 +498,8 @@ export const getTestsItemsPageSelector = createSelector(
 )
 
 export const getSelectedItemSelector = createSelector(
-  stateTestItemsSelector,
-  (state) => state.selectedItems
+  getSelectedTestItemsSelector,
+  (testItems) => testItems.map((item) => item._id)
 )
 
 export const getItemsSubjectAndGradeSelector = createSelector(

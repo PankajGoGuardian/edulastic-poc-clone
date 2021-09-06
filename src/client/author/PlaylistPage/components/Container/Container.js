@@ -31,7 +31,6 @@ import {
 } from '../../ducks'
 import {
   getSelectedItemSelector,
-  clearSelectedItemsAction,
   getItemsSubjectAndGradeAction,
   getItemsSubjectAndGradeSelector,
 } from '../../../TestPage/components/AddItems/ducks'
@@ -74,7 +73,6 @@ class Container extends PureComponent {
     windowWidth: PropTypes.number.isRequired,
     test: PropTypes.object,
     isTestLoading: PropTypes.bool.isRequired,
-    clearSelectedItems: PropTypes.func.isRequired,
     history: PropTypes.object.isRequired,
   }
 
@@ -99,7 +97,6 @@ class Container extends PureComponent {
       receiveTestById,
       setDefaultData,
       history: { location },
-      clearSelectedItems,
       clearTestAssignments,
       editAssigned,
       setRegradeOldId,
@@ -113,7 +110,6 @@ class Container extends PureComponent {
       receiveTestById(match.params.id)
     } else {
       clearTestAssignments([])
-      clearSelectedItems()
       setDefaultData()
     }
 
@@ -578,7 +574,6 @@ const enhance = compose(
       setData: setTestDataAction,
       setDefaultData: setDefaultTestDataAction,
       publishPlaylist: publishPlaylistAction,
-      clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
       saveCurrentEditingTestId: saveCurrentEditingTestIdAction,

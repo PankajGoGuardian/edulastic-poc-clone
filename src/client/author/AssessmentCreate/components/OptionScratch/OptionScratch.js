@@ -7,7 +7,6 @@ import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 import IconWrapper from '../../../AssignmentCreate/common/IconWrapper'
 import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
 import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
-import { clearSelectedItemsAction } from '../../../TestPage/components/AddItems/ducks'
 import {
   clearCreatedItemsAction,
   clearTestDataAction,
@@ -19,16 +18,10 @@ const descriptionBottom = (
   </>
 )
 
-const OptionScratch = ({
-  history,
-  clearTestData,
-  clearCreatedItems,
-  clearSelectedItems,
-}) => {
+const OptionScratch = ({ history, clearTestData, clearCreatedItems }) => {
   const handleCreate = () => {
     clearTestData()
     clearCreatedItems()
-    clearSelectedItems()
     history.push('/author/tests/create')
   }
 
@@ -52,6 +45,5 @@ export default withRouter(
   connect(null, {
     clearTestData: clearTestDataAction,
     clearCreatedItems: clearCreatedItemsAction,
-    clearSelectedItems: clearSelectedItemsAction,
   })(OptionScratch)
 )

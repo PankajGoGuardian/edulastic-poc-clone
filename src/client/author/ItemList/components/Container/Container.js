@@ -47,7 +47,6 @@ import {
 } from '../../../TestList/components/Container/styled'
 import {
   clearFilterStateAction,
-  clearSelectedItemsAction,
   filterMenuItems,
   getSearchFilterStateSelector,
   getTestItemsLoadingSelector,
@@ -95,6 +94,7 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+import { getTestEntitySelector } from '../../../AssignTest/duck'
 
 // container the main entry point to the component
 class Contaier extends Component {
@@ -122,6 +122,7 @@ class Contaier extends Component {
       sort: initSort = {},
       userId,
       districtId,
+      test,
     } = this.props
     const {
       subject = interestedSubjects,
@@ -160,7 +161,7 @@ class Contaier extends Component {
       grades,
       curriculumId: parseInt(curriculumId, 10) || '',
     }
-    if (!selectedItems?.length) {
+    if (test && test._id) {
       setDefaultTestData()
     }
     getAllTags({ type: 'testitem' })
@@ -190,13 +191,6 @@ class Contaier extends Component {
     }
     if (search.curriculumId) {
       getCurriculumStandards(search.curriculumId, search.grades, '')
-    }
-  }
-
-  componentWillUnmount() {
-    const { clearSelectedItems, match } = this.props
-    if (!match?.path?.includes('items')) {
-      clearSelectedItems()
     }
   }
 
@@ -667,6 +661,7 @@ const enhance = compose(
       selectedItems: getSelectedItemSelector(state),
       userId: getUserId(state),
       districtId: getUserOrgId(state),
+      test: getTestEntitySelector(state),
     }),
     {
       receiveItems: receiveTestItemsAction,
@@ -677,7 +672,6 @@ const enhance = compose(
       setDefaultTestData: setDefaultTestDataAction,
       udpateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
-      clearSelectedItems: clearSelectedItemsAction,
       checkAnswer: previewCheckAnswerAction,
       showAnswer: previewShowAnswerAction,
       getAllTags: getAllTagsAction,

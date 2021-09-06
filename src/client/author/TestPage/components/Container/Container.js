@@ -71,7 +71,6 @@ import {
   getTestSettingsListSelector,
 } from '../../ducks'
 import {
-  clearSelectedItemsAction,
   getItemsSubjectAndGradeAction,
   getItemsSubjectAndGradeSelector,
   resetPageStateAction,
@@ -195,7 +194,6 @@ class Container extends PureComponent {
       setDefaultData,
       history,
       history: { location },
-      clearSelectedItems,
       clearTestAssignments,
       // editAssigned,
       createdItems = [],
@@ -262,7 +260,6 @@ class Container extends PureComponent {
         // currently creating test do nothing
         this.gotoTab('description')
         clearTestAssignments([])
-        clearSelectedItems()
         setDefaultData()
         if (
           userRole === roleuser.DISTRICT_ADMIN ||
@@ -1418,7 +1415,6 @@ Container.propTypes = {
   test: PropTypes.object,
   user: PropTypes.object,
   isTestLoading: PropTypes.bool.isRequired,
-  clearSelectedItems: PropTypes.func.isRequired,
   saveCurrentEditingTestId: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   currentTab: PropTypes.string,
@@ -1528,7 +1524,6 @@ const enhance = compose(
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
       updateItemsDocBasedById: updateItemsDocBasedByIdAction,
-      clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
       receiveItemDetailById: getItemDetailByIdAction,

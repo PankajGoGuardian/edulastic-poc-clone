@@ -8,7 +8,7 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { evaluationType, aws } from '@edulastic/constants'
-import { Select, Modal } from 'antd'
+import { Select } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
@@ -33,17 +33,6 @@ import { uploadToS3 } from '../../../../../author/src/utils/upload'
 import { CONSTANT } from '../../Builder/config'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
-
-const gridOpts = [
-  'xMin',
-  'xMax',
-  'xDistance',
-  'yMin',
-  'yMax',
-  'yDistance',
-  'layoutWidth',
-  'layoutHeight',
-]
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
     super(props)
@@ -97,56 +86,6 @@ class QuadrantsMoreOptions extends Component {
       validation.altResponses.some((alt) => !isEmpty(alt.value))
 
     return hasElements
-  }
-
-  checkGridSettings = (nextAction) => {
-    const {
-      t,
-      graphData: { uiStyle },
-    } = this.props
-    const { layoutWidth, layoutHeight } = uiStyle
-    const { yMax, yMin, xMax, xMin, xDistance, yDistance } = this.state
-
-    let xGirdDistance =
-      (Math.abs(xMin) +
-        Math.abs(xDistance) +
-        Math.abs(xMax) +
-        Math.abs(xDistance)) /
-      xDistance
-    xGirdDistance = parseFloat(layoutWidth) / xGirdDistance
-    xGirdDistance *= Math.abs(xMin) / xDistance + 1
-
-    let yGirdDistance =
-      (Math.abs(yMax) +
-        Math.abs(yDistance) +
-        Math.abs(yMin) +
-        Math.abs(yDistance)) /
-      yDistance
-    yGirdDistance = parseFloat(layoutHeight) / yGirdDistance
-    yGirdDistance *= Math.abs(yMin) / yDistance + 1
-
-    if (xGirdDistance < 28 || yGirdDistance < 28) {
-      Modal.confirm({
-        centered: true,
-        okCancel: false,
-        title: 'Warning',
-        maskClosable: true,
-        content: t('component.graphing.settingsPopup.gridCutoff'),
-        okText: 'Confirm',
-        onCancel: () => {
-          if (typeof nextAction === 'function') {
-            nextAction()
-          }
-        },
-        onOk: () => {
-          if (typeof nextAction === 'function') {
-            nextAction()
-          }
-        },
-      })
-    } else if (typeof nextAction === 'function') {
-      nextAction()
-    }
   }
 
   handleGridChange = (event) => {
@@ -209,23 +148,16 @@ class QuadrantsMoreOptions extends Component {
     })
   }
 
-  handleCertainOptsBlur = (evt) => {
+  handleCertainOptsBlur = () => {
     const { changedCertainOpts } = this.state
 
-    const process = () => {
-      const hasElements = this.checkElements()
+    const hasElements = this.checkElements()
 
-      if (hasElements && changedCertainOpts) {
-        this.setState({ showConfirmModal: true })
-      } else {
-        this.handleConfirmOptsChanges()
-      }
+    if (hasElements && changedCertainOpts) {
+      this.setState({ showConfirmModal: true })
+    } else {
+      this.handleConfirmOptsChanges()
     }
-
-    if (gridOpts.includes(evt.target.name) && changedCertainOpts) {
-      return this.checkGridSettings(process)
-    }
-    process()
   }
 
   handleChangeRadians = (name, value) => {
@@ -548,7 +480,6 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutWidth"
                 value={layoutWidth}
                 onChange={this.handleInputChange}
-                onBlur={this.checkGridSettings}
               />
             </Col>
             <Col md={12}>
@@ -559,7 +490,6 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutHeight"
                 value={layoutHeight}
                 onChange={this.handleInputChange}
-                onBlur={this.checkGridSettings}
               />
             </Col>
             <Col md={12}>

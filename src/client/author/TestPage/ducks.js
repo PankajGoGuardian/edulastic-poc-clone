@@ -1995,12 +1995,15 @@ export function* receiveTestByIdSaga({ payload }) {
 
     entity.itemGroups.forEach((itemGroup, groupIndex) => {
       itemGroup.items.forEach((item, itemIndex) => {
-        if (
-          createdItems?.[0]?._id === item._id ||
-          createdItems?.[0]?.previousTestItemId === item._id
-        ) {
-          entity.itemGroups[groupIndex].items[itemIndex] = createdItems[0]
-          createdItems = createdItems?.slice(1) || []
+        const createdItem = createdItems?.find(
+          ({ _id, previousTestItemId }) =>
+            _id === item._id || previousTestItemId === item._id
+        )
+        if (!isEmpty(createdItem)) {
+          entity.itemGroups[groupIndex].items[itemIndex] = createdItem
+          createdItems = createdItems?.filter(
+            ({ _id }) => _id !== createdItem._id
+          )
         }
       })
     })
@@ -2014,13 +2017,6 @@ export function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
     yield put(getDefaultTestSettingsAction(entity))
-    yield put(
-      setTestItemsAction(
-        entity.itemGroups
-          .flatMap((itemGroup) => itemGroup.items || [])
-          .map((item) => item._id)
-      )
-    )
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
@@ -3320,6 +3316,7 @@ function* duplicateTestSaga({ payload }) {
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))
+    notification({ msg: 'You are currently editing a cloned test' })
   } catch (err) {
     const { data = {} } = err.response || {}
     const { message: errorMessage } = data

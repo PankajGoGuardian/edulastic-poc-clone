@@ -379,11 +379,11 @@ export const saveCurrentEditingTestIdAction = (id) => ({
 
 export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
 
-const addItemToCartAction = (item, showNotification) => ({
+const addItemToCartAction = (item) => ({
   type: ADD_ITEM_TO_CART,
   payload: {
     item,
-    showNotification,
+    fromItemDetail: true,
   },
 })
 
@@ -1526,6 +1526,8 @@ export function* updateItemSaga({ payload }) {
       }
       yield put(changeViewAction('edit'))
       return
+    } else {
+      yield put(addItemToCartAction(item))
     }
   } catch (err) {
     captureSentryException(err)

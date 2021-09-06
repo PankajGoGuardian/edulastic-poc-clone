@@ -63,7 +63,7 @@ const SessionStatus = ({
           <div className="scan-result-text-value">{scanned}</div>
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">
+          <div data-cy="success" className="scan-result-text-label">
             Success
             {success ? (
               <span
@@ -77,7 +77,7 @@ const SessionStatus = ({
           <div className="scan-result-text-value">{success}</div>
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">
+          <div data-cy="failed" className="scan-result-text-label">
             Failed
             {failed ? (
               <span
@@ -102,6 +102,7 @@ const SessionStatus = ({
             </div>
             <div className="static-navigation-links">
               <Link
+                data-cy="uploadAgainButton"
                 className="upload-again-link"
                 to={{
                   pathname: '/uploadAnswerSheets',
@@ -111,6 +112,7 @@ const SessionStatus = ({
                 Upload Again
               </Link>
               <Link
+                data-cy="viewLiveClassBoard"
                 className="live-classboard-link"
                 to={{
                   pathname: `/author/classboard/${assignmentId}/${groupId}`,

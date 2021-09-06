@@ -100,7 +100,7 @@ class StudentViewContainer extends Component {
           (student) => student.studentId === selectedStudent
         )
       }
-      const { testActivityId } = studentItems[index]
+      const { testActivityId } = studentItems?.[index] || {}
       if (
         !isUndefined(currentTestActivityId || testActivityId) &&
         !isUndefined(classId)

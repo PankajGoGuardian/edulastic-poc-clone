@@ -84,6 +84,7 @@ class StudentSignup extends React.Component {
     signupError: {},
     showModal: false,
     proceedBtnDisabled: true,
+    submitting: false,
   }
 
   closeModal = () => {
@@ -106,6 +107,7 @@ class StudentSignup extends React.Component {
             const { msoLoginAction } = this.props
             msoLoginAction({ role: 'student', classCode })
           } else {
+            this.setState({ submitting: true })
             signup({
               passwordForExistingUser,
               password,
@@ -200,6 +202,7 @@ class StudentSignup extends React.Component {
     } else {
       notification({ msg: error })
     }
+    this.setState({ submitting: false })
   }
 
   onPasswordChange = (password) => {
@@ -448,7 +451,7 @@ class StudentSignup extends React.Component {
       windowWidth,
     } = this.props
 
-    const { method } = this.state
+    const { method, submitting } = this.state
     const partnerKey = getPartnerKeyFromUrl(location.pathname)
     const partner = Partners[partnerKey]
 
@@ -582,6 +585,7 @@ class StudentSignup extends React.Component {
                                 data-cy="signup"
                                 type="primary"
                                 htmlType="submit"
+                                disabled={submitting}
                               >
                                 {t('component.signup.student.signupstudentbtn')}
                               </RegisterButton>
@@ -591,6 +595,7 @@ class StudentSignup extends React.Component {
                                 data-cy="signup"
                                 type="primary"
                                 htmlType="submit"
+                                disabled={submitting}
                               >
                                 {t('component.signup.student.signupentercode')}
                               </RegisterButton>

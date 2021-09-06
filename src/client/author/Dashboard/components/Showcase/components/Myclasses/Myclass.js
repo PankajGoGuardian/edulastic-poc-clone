@@ -117,21 +117,37 @@ const MyClasses = ({
       return { ...x._source, _id: x._id }
     })
     if (user?.recommendedContentUpdated) {
-      if (data?.length > 0) {
-        notification({
-          msg: 'Recommended content is updated.',
-          type: 'success',
-        })
-      } else {
-        notification({
-          msg:
-            'No recommended content found currently. We will show them when available.',
-          type: 'info',
-        })
+      const isContentUpdatedAutomatically = JSON.parse(
+        localStorage.getItem(
+          `recommendedTest:${user?._id}:isContentUpdatedAutomatically`
+        )
+      )
+      if (!isContentUpdatedAutomatically) {
+        if (data?.length > 0) {
+          notification({
+            msg: 'Recommended content is updated.',
+            type: 'success',
+          })
+        } else {
+          notification({
+            msg:
+              'No recommended content found currently. We will show them when available.',
+            type: 'info',
+          })
+        }
       }
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
       const temp = user
       temp.recommendedContentUpdated = false
       setUser(temp)
+    } else {
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
     }
     if (!_data || !_data.length) {
       return
@@ -220,7 +236,7 @@ const MyClasses = ({
 
   const handleBlockedClick = ({ subscriptionData }) => {
     if (
-      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      usedTrialItemBankIds.includes(subscriptionData.itemBankId) ||
       (isPremiumTrialUsed && !isPremiumUser)
     ) {
       setShowItemBankTrialUsedModal(true)
@@ -249,6 +265,27 @@ const MyClasses = ({
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType, subscriptionData } = config
+
+    /**
+     *  User purchased bank from different premium district
+     *  and trying to access it in a free district
+     */
+    if (
+      !isPremiumUser &&
+      hasAccessToItemBank(config.subscriptionData?.itemBankId)
+    ) {
+      setShowItemBankTrialUsedModal(true)
+      setProductData({
+        productId: config?.subscriptionData?.productId,
+        productName: config?.subscriptionData?.productName,
+        description: config?.subscriptionData?.description,
+        hasTrial: config?.subscriptionData?.hasTrial,
+        itemBankId: config?.subscriptionData?.itemBankId,
+        blockInAppPurchase: config?.subscriptionData?.blockInAppPurchase,
+      })
+      return
+    }
+
     if (isBlocked) {
       handleBlockedClick(config)
       return
@@ -347,7 +384,10 @@ const MyClasses = ({
 
   const isSingaporeMath =
     user?.referrer?.includes('singapore') ||
-    user?.utm_source?.toLowerCase()?.includes('singapore')
+    user?.utm_source?.toLowerCase()?.includes('singapore') ||
+    collections.some((itemBank) =>
+      itemBank?.owner?.toLowerCase().includes('singapore')
+    )
 
   const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
 

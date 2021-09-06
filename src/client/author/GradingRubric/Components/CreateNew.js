@@ -66,6 +66,10 @@ const CreateNew = ({
                 message: 'Rubric name can only be alpha numeric.',
                 pattern: /^[a-z\d\s]+$/i,
               },
+              {
+                max: 100,
+                message: 'Name allowed maximum 100 characters.',
+              },
             ],
           })(
             <Input
@@ -77,13 +81,23 @@ const CreateNew = ({
           )}
         </Form.Item>
         <Form.Item label="DESCRIPTION">
-          <Input
-            value={currentRubricData?.description || ''}
-            placeholder={isEditable ? 'Enter Description' : ''}
-            data-cy="description"
-            onChange={(e) => handleFieldChange('rubricDesc', e)}
-            disabled={!isEditable}
-          />
+          {getFieldDecorator('rubricDesc', {
+            initialValue: currentRubricData?.description || '',
+            rules: [
+              {
+                max: 256,
+                message: 'Description allowed maximum 256 characters.',
+              },
+            ],
+          })(
+            <Input
+              value={currentRubricData?.description || ''}
+              placeholder={isEditable ? 'Enter Description' : ''}
+              data-cy="description"
+              onChange={(e) => handleFieldChange('rubricDesc', e)}
+              disabled={!isEditable}
+            />
+          )}
         </Form.Item>
       </FormContainer>
     )

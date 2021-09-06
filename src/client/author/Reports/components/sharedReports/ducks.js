@@ -132,7 +132,7 @@ export function* getSharedReportsRequest({ payload }) {
       payload: sharedReportList,
     })
   } catch (error) {
-    const msg = 'Failed to fetch shared reports'
+    const msg = 'Error getting shared reports'
     notification({ msg })
     yield put({
       type: GET_SHARED_REPORTS_REQUEST_ERROR,
@@ -151,7 +151,7 @@ function* getCollaborativeGroupsRequest() {
       payload: collaborativeGroupList,
     })
   } catch (err) {
-    const msg = 'Failed to fetch collaboration groups'
+    const msg = 'Error getting collaboration groups'
     notification({ msg })
     yield put({
       type: GET_COLLABORATIVE_GROUPS_REQUEST_ERROR,

@@ -137,7 +137,9 @@ function pauseAssignment({
       }
     })
     .catch((e) => {
-      Fscreen.exitFullscreen()
+      if (Fscreen?.fullscreenEnabled) {
+        Fscreen.exitFullscreen()
+      }
       const errorMsg =
         e?.response?.data?.result?.message ||
         'Pausing Assignment due to Anti Cheating measures'
@@ -957,6 +959,7 @@ const AssessmentContainer = ({
           timeSpent,
           callback: submitPreviewTest,
           testId,
+          isLastQuestion: true,
         })
       }
       if (demo || _item.isDummyItem) {
@@ -1036,6 +1039,7 @@ const AssessmentContainer = ({
         testId,
       }
       if (isLast()) {
+        evalArgs.isLastQuestion = true
         evalArgs.callback = submitPreviewTest
       }
       evaluateForPreview(evalArgs)
@@ -1220,7 +1224,12 @@ const AssessmentContainer = ({
        * message might appear just during unmount.
        * in that case we need to destroy it after
        */
-      setTimeout(() => message?.destroy(), 1500)
+
+      try {
+        setTimeout(() => message?.destroy(), 1500)
+      } catch (e) {
+        console.warn('Error', e)
+      }
     }
   }, [savingResponse])
 

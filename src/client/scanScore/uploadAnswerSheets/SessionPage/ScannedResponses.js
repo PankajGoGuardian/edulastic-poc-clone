@@ -15,10 +15,10 @@ const ScannedResponses = ({
 }) => {
   return statusFilters.length ? (
     <ScannedResponsesContainer>
-      <div className="scanned-responses-header">
+      <div data-cy="scanResultOnView" className="scanned-responses-header">
         {statusFilters.includes(omrSheetScanStatus.DONE)
-          ? 'Successfully Scanned Responses'
-          : 'Responses with Scan Errors'}
+          ? 'Successfully Scanned Forms'
+          : 'Forms with Scan Errors'}
       </div>
       <div className="thumbnails-container">
         <Slider
@@ -30,7 +30,10 @@ const ScannedResponses = ({
           onChange={setThumbnailSize}
           tooltipVisible={false}
         />
-        <div className="thumbnails-inner-container">
+        <div
+          data-cy="studentPdfThumbnail"
+          className="thumbnails-inner-container"
+        >
           {pages.map((page, index) => {
             const name =
               (page.status === omrSheetScanStatus.DONE && page.studentName) ||

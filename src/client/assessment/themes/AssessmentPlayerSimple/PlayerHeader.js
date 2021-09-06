@@ -111,6 +111,7 @@ const PlayerHeader = ({
         changeTool={toggleToolsOpenStatus}
         blockNavigationToAnsweredQuestions={blockNavigationToAnsweredQuestions}
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        toggleUserWorkUploadModal={toggleUserWorkUploadModal}
       />
       <SettingsModal
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}

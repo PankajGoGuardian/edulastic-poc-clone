@@ -20,9 +20,10 @@ const SetCorrectAnswers = ({
   item,
 }) => {
   const handleChangePoint = (score) => {
-    if (score > 0) {
-      onChangePoints(+score)
+    if (score < 0) {
+      return
     }
+    onChangePoints(+score)
   }
 
   const handleCloseAlter = () => {

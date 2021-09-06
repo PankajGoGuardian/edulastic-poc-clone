@@ -10,6 +10,9 @@ export const Container = styled.div`
   flex-grow: 1;
   width: 100%;
   height: 100%;
+  padding: 0;
+  min-width: ${({ responsiveWidth }) =>
+    responsiveWidth && `${responsiveWidth}px`};
 `
 
 export const Divider = styled.div`

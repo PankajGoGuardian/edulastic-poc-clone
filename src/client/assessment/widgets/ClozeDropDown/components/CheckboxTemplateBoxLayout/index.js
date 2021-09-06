@@ -75,6 +75,8 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
     responseIds.every((res) => evaluation[res.id])
   )
 
+  const singleResponseBox = responseIds && responseIds.length === 1
+
   const getContent = (inPopover) => (
     <AnswerBox
       onClick={handleClick}
@@ -85,7 +87,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       style={inPopover ? { maxWidth: response.maxWidth } : _btnStyle}
       inPopover={inPopover}
       lessMinWidth={lessMinWidth}
-      showIndex={(showAnswer || isPrint || isPrintPreview) && !lessMinWidth}
+      showIndex={
+        (showAnswer || isPrint || isPrintPreview) &&
+        !lessMinWidth &&
+        !singleResponseBox
+      }
       indexStr={indexStr}
       isPrintPreview={isPrintPreview || isPrint}
     />

@@ -26,7 +26,7 @@ const ClassSelector = ({
   classList,
   currentGroup,
   changeClass,
-  allClasses,
+  allClasses = [],
   showAllClassesOption,
   setSelectedGroupStatus,
   currentTerm,

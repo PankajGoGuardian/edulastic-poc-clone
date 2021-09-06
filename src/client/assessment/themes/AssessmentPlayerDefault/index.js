@@ -39,6 +39,7 @@ import {
   MAX_MOBILE_WIDTH,
   IPAD_LANDSCAPE_WIDTH,
   LARGE_DESKTOP_WIDTH,
+  MEDIUM_DESKTOP_WIDTH,
 } from '../../constants/others'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { changePreviewAction } from '../../../author/src/actions/view'
@@ -447,7 +448,11 @@ class AssessmentPlayerDefault extends React.Component {
     const isZoomApplied = zoomLevel > '1'
     const showSettingIcon =
       windowWidth < IPAD_LANDSCAPE_WIDTH ||
-      isZoomGreator('md', themeToPass?.zoomLevel)
+      isZoomGreator('md', themeToPass?.zoomLevel) ||
+      (zoomLevel >= '1.75' && windowWidth < MEDIUM_DESKTOP_WIDTH) ||
+      (zoomLevel >= '1.75' &&
+        windowWidth < LARGE_DESKTOP_WIDTH &&
+        settings.maxAnswerChecks > 0)
     let headerZoom = 1
     if (isZoomApplied) {
       headerZoom = zoomLevel >= '1.75' ? '1.35' : '1.25'
@@ -568,6 +573,13 @@ class AssessmentPlayerDefault extends React.Component {
             isShowStudentWork={isShowStudentWork}
             handleReviewOrSubmit={handleReviewOrSubmit}
             isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+            themeForHeader={{
+              ...theme.default,
+              shouldZoom: true,
+              zoomLevel,
+              headerHeight,
+              playerSkinType,
+            }}
           >
             <FeaturesSwitch
               inputFeatures="studentSettings"
@@ -595,6 +607,7 @@ class AssessmentPlayerDefault extends React.Component {
                   blockNavigationToAnsweredQuestions
                 }
                 isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+                toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
               />
             </FeaturesSwitch>
             {!previewPlayer && (

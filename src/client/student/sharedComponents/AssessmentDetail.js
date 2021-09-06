@@ -343,7 +343,7 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${extraDesktopWidth}) {
-    width: 40vw;
+    width: 30vw;
   }
 
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${desktopWidth}) {

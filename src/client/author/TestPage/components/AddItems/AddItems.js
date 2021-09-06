@@ -38,7 +38,6 @@ import {
   getTestsItemsPageSelector,
   receiveTestItemsAction,
   setTestItemsAction,
-  getSelectedItemSelector,
   getSearchFilterStateSelector,
   updateSearchFilterStateAction,
   clearFilterStateAction,
@@ -380,7 +379,7 @@ class AddItems extends PureComponent {
     receiveTestItems(search, sort, page, limit)
   }
 
-  renderItems = () => {
+  renderItems = (selectedItemIds) => {
     const {
       items,
       test,
@@ -392,7 +391,6 @@ class AddItems extends PureComponent {
       testItemsList,
       setDataAndSave,
       setTestItems,
-      selectedRows,
       gotoSummary,
       search,
       setCurrentGroupIndex,
@@ -415,7 +413,9 @@ class AddItems extends PureComponent {
         userId={userId}
         windowWidth={windowWidth}
         onToggleToCart={addItemToCart}
-        selectedToCart={selectedRows ? selectedRows.includes(item._id) : false}
+        selectedToCart={
+          selectedItemIds ? selectedItemIds.includes(item._id) : false
+        }
         interestedCurriculums={interestedCurriculums}
         search={search}
         test={test}
@@ -423,7 +423,7 @@ class AddItems extends PureComponent {
         current={current}
         setDataAndSave={setDataAndSave}
         setTestItems={setTestItems}
-        selectedRows={selectedRows}
+        selectedRows={selectedItemIds}
         gotoSummary={gotoSummary}
         page="addItems"
         openPreviewModal={this.openPreviewModal(index)}
@@ -521,9 +521,10 @@ class AddItems extends PureComponent {
       showGroupItemsBtn = true
     }
 
-    const itemGroupCount =
-      test?.itemGroups?.flatMap((itemGroup) => itemGroup.items || [])?.length ||
-      0
+    const selectedItemIds = test?.itemGroups?.flatMap(
+      (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
+    )
+    const itemGroupCount = selectedItemIds?.length || 0
 
     return (
       <Container>
@@ -619,7 +620,7 @@ class AddItems extends PureComponent {
 
               {!loading && (
                 <ScrollbarContainer>
-                  {this.renderItems()}
+                  {this.renderItems(selectedItemIds)}
                   {count > 10 && (
                     <PaginationContainer>
                       {this.renderPagination()}
@@ -671,7 +672,6 @@ const enhance = compose(
       userId: getUserId(state),
       districtId: getUserOrgId(state),
       testItemsList: getTestItemsSelector(state),
-      selectedRows: getSelectedItemSelector(state),
       search: getSearchFilterStateSelector(state),
       sort: getSortFilterStateSelector(state),
       features: getUserFeatures(state),

@@ -207,9 +207,11 @@ const CanvasBulkAddClass = ({
       })
       return
     }
-    let selectedClasses = classes.filter((c) =>
-      selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`)
-    )
+    let selectedClasses = classes
+      .filter((c) =>
+        selectedRows.includes(`${c.canvasCode}_${c.canvasCourseSectionCode}`)
+      )
+      .map((c) => ({ ...c }))
 
     // setting default grades as Other (O) if grade is not selected by the user.
     selectedClasses = selectedClasses.map((c) => {
@@ -512,6 +514,7 @@ const CanvasBulkAddClass = ({
               : null
           }
           centered
+          onCancel={handleClose}
           maskClosable={false}
         >
           <h4>

@@ -165,6 +165,7 @@ export const FETCH_USER_FAVORITES = '[user] fetch user favorites'
 export const UPDATE_USER_FAVORITES = '[user] update user favorites'
 export const SET_USER_FAVORITES = '[user] set user favorites'
 export const ADD_CLASS_TO_USER = '[user] add class to user'
+export const SET_CLASS_TO_USER = '[user] set class to user'
 export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
@@ -257,6 +258,7 @@ export const updatePowerTeacherAction = createAction(
   UPDATE_POWER_TEACHER_TOOLS_REQUEST
 )
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER)
+export const setClassToUserAction = createAction(SET_CLASS_TO_USER)
 export const addItemBankPermissionAction = createAction(
   ADD_COLLECTION_PERMISSION
 )
@@ -598,7 +600,7 @@ export default createReducer(initialState, {
   },
   [ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
     state.addingSchool = false
-    state.user.institutionIds = payload.institutionIds
+    state.user.institutionIds = payload.institutionIds || []
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
     state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
@@ -611,7 +613,7 @@ export default createReducer(initialState, {
   },
   [CREATE_AND_ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
     state.creatingAddingSchool = false
-    state.user.institutionIds = payload.institutionIds
+    state.user.institutionIds = payload.institutionIds || []
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
     state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
@@ -683,6 +685,9 @@ export default createReducer(initialState, {
   },
   [ADD_CLASS_TO_USER]: (state, { payload }) => {
     state.user.orgData.classList.push(payload)
+  },
+  [SET_CLASS_TO_USER]: (state, { payload }) => {
+    state.user.orgData.classList = payload
   },
   [ADD_COLLECTION_PERMISSION]: (state, { payload }) => {
     const itemBanks = get(state, 'user.orgData.itemBanks', [])
@@ -891,8 +896,9 @@ function* login({ payload }) {
       ) {
         Sentry.withScope((scope) => {
           scope.setExtra('userId', user._id)
-          Sentry.captureException(
-            new Error('Logged in teacher is a part of multiple districts.')
+          Sentry.captureMessage(
+            'Logged in teacher is a part of multiple districts.',
+            'info'
           )
         })
       }
@@ -1217,7 +1223,7 @@ export function* fetchUser({ payload }) {
       (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (
       (!firebaseUser && user?.firebaseAuthToken) ||
-      (firebaseUser && firebaseUser !== user._id)
+      (firebaseUser && firebaseUser !== user._id && user?.firebaseAuthToken)
     ) {
       yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken)
     }
@@ -1251,8 +1257,9 @@ export function* fetchUser({ payload }) {
     ) {
       Sentry.withScope((scope) => {
         scope.setExtra('userId', user._id)
-        Sentry.captureException(
-          new Error('Logged in teacher is a part of multiple districts.')
+        Sentry.captureMessage(
+          'Logged in teacher is a part of multiple districts.',
+          'info'
         )
       })
     }
@@ -1700,7 +1707,12 @@ function* atlasSSOLogin({ payload }) {
         })
       )
     } else {
-      notification({ msg: e?.data?.message || 'Atlas Login failed' })
+      notification({
+        msg:
+          e?.data?.message ||
+          e?.response?.data?.message ||
+          'Atlas Login failed',
+      })
       yield put(push(getSignOutUrl()))
     }
     removeSignOutUrl()
@@ -1914,6 +1926,7 @@ function* resetPasswordRequestSaga({ payload }) {
     yield put(signupSuccessAction(result))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     localStorage.removeItem('loginRedirectUrl')
+    yield put(push(`/`)) // navigate user to dashboard once user password reset success and loaded
   } catch (e) {
     notification({
       msg: e?.response?.data?.message
@@ -2057,7 +2070,7 @@ function* addSchoolSaga({ payload = {} }) {
 function* createAndAddSchoolSaga({ payload = {} }) {
   const createSchoolPayload = payload.createSchool
   const joinSchoolPayload = payload.joinSchool
-  const institutionIds = payload.institutionIds
+  const institutionIds = payload.institutionIds || []
   let isCreateSchoolSuccessful = false
   let result
   try {
@@ -2123,7 +2136,7 @@ function* setInviteDetailsSaga({ payload }) {
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {
-    yield call(message.err, 'Failed to update user details.')
+    yield call(message.error, 'Failed to update user details.')
   }
 }
 

@@ -84,7 +84,7 @@ export const getQuestionIds = (item) => {
   return questions
 }
 
-function getFilterAndUpdateForAttachments({
+export function getFilterAndUpdateForAttachments({
   uta,
   itemId,
   qId,
@@ -112,7 +112,7 @@ function getFilterAndUpdateForAttachments({
   return { update, filter }
 }
 
-async function getFileNameAndQidMap(qId, data, folder) {
+export async function getFileNameAndQidMap(qId, data, folder) {
   const fileName = await uploadToS3(data, folder)
   return { qId, fileName }
 }

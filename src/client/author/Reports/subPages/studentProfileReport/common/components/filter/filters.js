@@ -179,6 +179,10 @@ const StudentProfileReportFilters = ({
     const urlGrades = staticDropDownData.grades.filter(
       (item) => search.grades && search.grades.includes(item.key)
     )
+    const urlAssignedBy =
+      staticDropDownData.assignedBy.find((a) => a.key === search.assignedBy) ||
+      staticDropDownData.assignedBy[0]
+
     const _filters = {
       reportId: reportId || '',
       termId: urlSchoolYear.key,
@@ -188,14 +192,14 @@ const StudentProfileReportFilters = ({
       courseIds: search.courseIds || '',
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
-      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+      assignedBy: urlAssignedBy.key,
     }
     const _tempTagsData = {
       ...tempTagsData,
       termId: urlSchoolYear,
       grades: urlGrades,
       subjects: urlSubjects,
-      assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+      assignedBy: urlAssignedBy,
     }
     setFilters(_filters)
     setTempTagsData(_tempTagsData)

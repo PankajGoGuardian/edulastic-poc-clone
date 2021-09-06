@@ -71,7 +71,6 @@ import {
   getTestSettingsListSelector,
 } from '../../ducks'
 import {
-  clearSelectedItemsAction,
   getItemsSubjectAndGradeAction,
   getItemsSubjectAndGradeSelector,
   resetPageStateAction,
@@ -195,7 +194,6 @@ class Container extends PureComponent {
       setDefaultData,
       history,
       history: { location },
-      clearSelectedItems,
       clearTestAssignments,
       // editAssigned,
       createdItems = [],
@@ -262,7 +260,6 @@ class Container extends PureComponent {
         // currently creating test do nothing
         this.gotoTab('description')
         clearTestAssignments([])
-        clearSelectedItems()
         setDefaultData()
         if (
           userRole === roleuser.DISTRICT_ADMIN ||
@@ -550,6 +547,16 @@ class Container extends PureComponent {
     }
   }
 
+  validateTimedAssignment = () => {
+    const { test } = this.props
+    const { allowedTime, timedAssignment } = test
+    if (timedAssignment && allowedTime === 0) {
+      notification({ messageKey: 'timedAssigmentTimeCanNotBeZero' })
+      return false
+    }
+    return true
+  }
+
   handleAssign = () => {
     const {
       test,
@@ -559,6 +566,10 @@ class Container extends PureComponent {
       collections: orgCollections,
     } = this.props
     const { status, collections } = test
+
+    if (!this.validateTimedAssignment()) {
+      return
+    }
 
     const sparkMathId = orgCollections?.find(
       (x) => x.name.toLowerCase() === 'spark math'
@@ -883,6 +894,9 @@ class Container extends PureComponent {
     } = this.props
     if (!test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
+      return
+    }
+    if (!this.validateTimedAssignment()) {
       return
     }
     const newTest = this.modifyTest()
@@ -1401,7 +1415,6 @@ Container.propTypes = {
   test: PropTypes.object,
   user: PropTypes.object,
   isTestLoading: PropTypes.bool.isRequired,
-  clearSelectedItems: PropTypes.func.isRequired,
   saveCurrentEditingTestId: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
   currentTab: PropTypes.string,
@@ -1511,7 +1524,6 @@ const enhance = compose(
       setDefaultData: setDefaultTestDataAction,
       publishTest: publishTestAction,
       updateItemsDocBasedById: updateItemsDocBasedByIdAction,
-      clearSelectedItems: clearSelectedItemsAction,
       setRegradeOldId: setRegradeOldIdAction,
       clearTestAssignments: loadAssignmentsAction,
       receiveItemDetailById: getItemDetailByIdAction,

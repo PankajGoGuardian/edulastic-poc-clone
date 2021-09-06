@@ -13,6 +13,22 @@ import {
   omrUploadSessionStatus,
 } from './utils'
 
+function parseQr(qrCode) {
+  // ${testId}_${assignmentId}_${classId}_${studentId}_${page}
+  let [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
+
+  if (studentId == 1) {
+    [assignmentId, groupId, studentId] = qrCode.split('_')
+  }
+  return {
+    testId,
+    assignmentId,
+    groupId,
+    studentId,
+    page,
+  }
+}
+
 const slice = createSlice({
   name: 'uploadAnswerSheets',
   initialState: {
@@ -28,6 +44,9 @@ const slice = createSlice({
     showSessions: false,
     responsePageNumber: 0,
     error: '',
+    assignmentTitle: 'Loading...',
+    classTitle: '...',
+    webCamScannedDocs: [],
   },
   reducers: {
     setCancelUpload: (state, { payload }) => {
@@ -61,6 +80,10 @@ const slice = createSlice({
       } else {
         state.omrUploadSessions = payload.omrUploadSessions
       }
+    },
+    setAssignmentAndClassTitle: (state, { payload }) => {
+      state.assignmentTitle = payload.assignmentTitle
+      state.classTitle = payload.classTitle
     },
     setOmrUploadSession: (state, { payload }) => {
       state.currentSession = payload.session || {}
@@ -121,26 +144,33 @@ const slice = createSlice({
     setResponsePageNumber: (state, { payload }) => {
       state.responsePageNumber = payload || 0
     },
+    setWebCamScannedDocs: (state, { payload }) => {
+      state.webCamScannedDocs = payload.map(({ qrCode, ...x }) => ({
+        ...x,
+        ...parseQr(qrCode),
+      }))
+    },
   },
 })
 
 function* getOmrUploadSessionsSaga({ payload }) {
   try {
-    const { sessionId, ..._payload } = payload
-    const omrUploadSessions = yield call(
-      scannerApi.getOmrUploadSessions,
-      _payload
+    const { sessionId, fromWebcam, ..._payload } = payload
+    const result = yield call(scannerApi.getOmrUploadSessions, _payload)
+    const { omrUploadSessions, assignmentTitle, classTitle } = result || {}
+    yield put(
+      slice.actions.setAssignmentAndClassTitle({ assignmentTitle, classTitle })
     )
     const currentSession =
-      omrUploadSessions.find((session) => session._id === sessionId) ||
-      omrUploadSessions.filter(
+      omrUploadSessions?.find((session) => session._id === sessionId) ||
+      omrUploadSessions?.filter(
         ({ status }) =>
           status === omrUploadSessionStatus.SCANNING ||
           status === omrUploadSessionStatus.DONE
       ).lastItem
     if (currentSession) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
-      if (!sessionId) {
+      if (!sessionId && !fromWebcam) {
         yield put(
           push({
             pathname: '/uploadAnswerSheets',
@@ -151,7 +181,7 @@ function* getOmrUploadSessionsSaga({ payload }) {
     }
     yield put(slice.actions.getOmrUploadSessionsDone({ omrUploadSessions }))
   } catch (e) {
-    console.log(e.message)
+    console.log(e)
     notification({
       msg:
         'Error getting last uploaded data. Please try again later or reach us at support@edulastic.com',
@@ -196,7 +226,8 @@ function* createOmrUploadSessionSaga({
       aws.s3Folders.BUBBLE_SHEETS,
       (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
       setCancelUpload,
-      `${assignmentId}/${sessionId}`
+      `${assignmentId}/${sessionId}`,
+      true
     )
     uploadRunner = yield call(
       setInterval,

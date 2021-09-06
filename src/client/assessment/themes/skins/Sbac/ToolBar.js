@@ -11,7 +11,9 @@ import {
   IconMagnify,
   IconLanguage,
   IconCloudUpload,
+  IconCheck,
 } from '@edulastic/icons'
+import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
@@ -40,11 +42,19 @@ const ToolBar = ({
   setSettingsModalVisibility,
   toggleUserWorkUploadModal,
   isPremiumContentWithoutAccess = false,
+  checkAnswerInProgress,
+  checkAnswer,
+  answerChecksUsedForItem,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
-  const { calcType, enableScratchpad, isTeacherPremium } = settings
+  const {
+    calcType,
+    enableScratchpad,
+    isTeacherPremium,
+    maxAnswerChecks,
+  } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -64,8 +74,33 @@ const ToolBar = ({
     setSettingsModalVisibility(true)
   }
 
+  const handleCheckAnswer = () => {
+    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+      return null
+    }
+    checkAnswer()
+  }
+
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
+
   return (
     <Container className="sbac-toolbar">
+      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <StyledButton
+          onClick={handleCheckAnswer}
+          title={
+            checkAnswerInProgress
+              ? 'In progress'
+              : answerChecksUsedForItem >= maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+          data-cy="checkAnswer"
+          disabled={isPremiumContentWithoutAccess}
+        >
+          <IconCheck />
+        </StyledButton>
+      )}
       {calcType !== calculatorTypes.NONE && (
         <Tooltip placement="top" title="Calculator">
           <StyledButton
@@ -182,6 +217,7 @@ const enhance = compose(
   connect(
     (state) => ({
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+      checkAnswerInProgress: state?.test?.checkAnswerInProgress,
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

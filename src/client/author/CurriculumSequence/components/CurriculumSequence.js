@@ -995,7 +995,11 @@ class CurriculumSequence extends Component {
               >
                 <ContentContainer
                   urlHasUseThis={urlHasUseThis}
-                  showRightPanel={showRightPanel && !!activeRightPanel}
+                  showRightPanel={
+                    showRightPanel &&
+                    !!activeRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
                   showBreadCrumb={showBreadCrumb}
                 >
                   <CurriculumSubHeader
@@ -1015,6 +1019,7 @@ class CurriculumSequence extends Component {
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === 'review'}
                     customizeInDraft={customizeInDraft}
+                    blurSubHeader={expandedModules?.length > 0}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
@@ -1068,8 +1073,14 @@ class CurriculumSequence extends Component {
                 </ContentContainer>
 
                 <CurriculumRightPanel
-                  showRightPanel={showRightPanel}
-                  activeRightPanel={activeRightPanel}
+                  showRightPanel={
+                    showRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
+                  activeRightPanel={
+                    activeRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
                   isStudent={isStudent}
                   urlHasUseThis={urlHasUseThis}
                   hideRightpanel={this.hideRightpanel}
@@ -1239,7 +1250,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) =>
-    showRightPanel ? 'calc(100% - 360px)' : '100%'};
+    showRightPanel ? 'calc(100% - 390px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;
@@ -1258,12 +1269,12 @@ export const ContentContainer = styled.div`
 
   @media (min-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 400px)' : '100%'};
+      showRightPanel ? 'calc(100% - 490px)' : '100%'};
   }
 
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 240px)' : '100%'};
+      showRightPanel ? 'calc(100% - 290px)' : '100%'};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
       if (isDifferentiationTab) {
         return 'calc(100vh - 175px)'

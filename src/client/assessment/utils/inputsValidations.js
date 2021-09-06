@@ -26,4 +26,10 @@ export const validations = {
     }
     return /^(0|[1-9]\d*)?$/g.test(value)
   },
+  minorTicks: (value = '') => {
+    if (!value) {
+      return true
+    }
+    return /^\d+$/g.test(value)
+  },
 }

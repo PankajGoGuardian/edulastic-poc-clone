@@ -39,6 +39,7 @@ const EvaluationOption = ({
   onChangeAllowedOptions,
   isNumberFormatDisabled,
   hidePointOnEquation,
+  hasGraphElements,
 }) => {
   if (textStyle.includes(optionKey) || numberStyle.includes(optionKey)) {
     return (
@@ -114,7 +115,7 @@ const EvaluationOption = ({
       <MultipleValues
         optionKey={optionKey}
         options={options}
-        onChange={onChangeOption}
+        onChange={onChangeRadio}
       />
     )
   }
@@ -129,6 +130,7 @@ const EvaluationOption = ({
       <PointsOnAnEquation
         optionKey={optionKey}
         options={options}
+        hasGraphElements={hasGraphElements}
         onChange={onChangeOption}
       />
     )

@@ -76,7 +76,7 @@ const ImportContentModal = ({
   const [testItemStatus, setItemStatus] = useState(TestItemStatus.PUBLISHED)
   const [searchValue, setSearchValue] = useState('')
   const [tags, setSelectedTags] = useState([])
-  const handleUpload = ({ file, fileList }) => {
+  const handleUpload = ({ fileList }) => {
     // TODO: Please uncoment after checking file type for windows
     // if (file.type !== "application/zip") {
     //   return;
@@ -151,7 +151,9 @@ const ImportContentModal = ({
   const searchTags = async (value) => {
     if (
       newAllTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       setSearchValue('')

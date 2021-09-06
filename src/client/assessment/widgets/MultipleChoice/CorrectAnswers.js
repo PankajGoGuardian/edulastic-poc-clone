@@ -75,7 +75,7 @@ class SetCorrectAnswers extends Component {
   }
 
   updateScore = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
     const points = parseFloat(score, 10)

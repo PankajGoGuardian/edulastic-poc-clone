@@ -173,7 +173,8 @@ function* getReportsMARFilterDataRequest({ payload }) {
       payload: { MARFilterData },
     })
   } catch (error) {
-    const msg = 'Failed to fetch filter data Please try again...'
+    const msg =
+      'Error getting filter data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR,

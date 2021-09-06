@@ -9,6 +9,7 @@ const CorrectAnswerBoxLayout = ({
   userAnswers,
   altIndex,
   stemNumeration,
+  singleResponseBox,
   t,
 }) => (
   <CorrectAnswersContainer
@@ -28,6 +29,7 @@ const CorrectAnswerBoxLayout = ({
           answer={answer}
           getStemNumeration={getStemNumeration}
           stemNumeration={stemNumeration}
+          singleResponseBox={singleResponseBox}
         />
       ))}
   </CorrectAnswersContainer>
@@ -37,12 +39,14 @@ CorrectAnswerBoxLayout.propTypes = {
   userAnswers: PropTypes.array,
   altIndex: PropTypes.array,
   stemNumeration: PropTypes.string.isRequired,
+  singleResponseBox: PropTypes.bool,
   t: PropTypes.func.isRequired,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
   userAnswers: [],
   altIndex: 0,
+  singleResponseBox: false,
 }
 
 export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

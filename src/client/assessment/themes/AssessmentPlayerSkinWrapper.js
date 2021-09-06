@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import { test } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
 import { drcThemeColor } from '@edulastic/colors'
@@ -28,6 +28,7 @@ const AssessmentPlayerSkinWrapper = ({
   originalSkinName,
   handleMagnifier,
   enableMagnifier = false,
+  themeForHeader = {},
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
@@ -220,16 +221,16 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '82px' : '68px',
+        marginTop: '82px',
       }
     }
     if (
       playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
       return {
-        paddingLeft: defaultAP ? 0 : '10px',
-        paddingRight: defaultAP ? 0 : '10px',
-        marginTop: defaultAP ? '78px' : '68px',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        marginTop: '85px',
       }
     }
     if (
@@ -239,7 +240,7 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: '48px',
+        marginTop: '65px',
       }
     }
     if (
@@ -329,7 +330,7 @@ const AssessmentPlayerSkinWrapper = ({
 
   return (
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
-      {header()}
+      <ThemeProvider theme={themeForHeader}>{header()}</ThemeProvider>
       <FlexContainer position="relative">
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
@@ -347,7 +348,7 @@ const AssessmentPlayerSkinWrapper = ({
           defaultAP &&
           !isShowStudentWork &&
           navigationBtns()}
-        {footer()}
+        <ThemeProvider theme={themeForHeader}>{footer()}</ThemeProvider>
       </FlexContainer>
     </Magnifier>
   )

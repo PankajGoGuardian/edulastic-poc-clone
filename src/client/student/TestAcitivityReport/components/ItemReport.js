@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { textBlackColor } from '@edulastic/colors'
 import { test as testConstants } from '@edulastic/constants'
 import QuestionWrapper from '../../../assessment/components/QuestionWrapper'
 
@@ -107,8 +108,8 @@ const FeedbackGiven = styled.div`
   overflow-y: scroll;
   line-height: 2.5;
   padding: 0px 0px 0px 28px;
-  color: #878282;
-  font-size: 0.8rem;
+  color: ${textBlackColor};
+  font-size: 16px;
 `
 
 const ReportListWrapper = styled.div`

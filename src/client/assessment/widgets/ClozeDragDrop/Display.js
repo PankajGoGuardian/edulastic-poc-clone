@@ -467,6 +467,7 @@ class ClozeDragDropDisplay extends Component {
             maxWidth: dragItemMaxWidth,
           }}
           stemNumeration={stemNumeration}
+          singleResponseBox={responseIDs?.length === 1}
         />
         {((item.validation && item.validation.altResponses) || []).map(
           (ele, ind) => (
@@ -483,6 +484,7 @@ class ClozeDragDropDisplay extends Component {
                 maxWidth: dragItemMaxWidth,
               }}
               stemNumeration={stemNumeration}
+              singleResponseBox={responseIDs?.length === 1}
             />
           )
         )}

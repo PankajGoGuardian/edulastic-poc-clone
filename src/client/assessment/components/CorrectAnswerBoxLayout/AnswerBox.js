@@ -7,7 +7,14 @@ import { MathSpan, measureTextWithImage } from '@edulastic/common'
 
 import { AnswerBoxItem } from './styled/AnswerBoxItem'
 
-export function AnswerBox({ btnStyle, index, numeration, centerText, label }) {
+export function AnswerBox({
+  btnStyle,
+  index,
+  numeration,
+  centerText,
+  label,
+  singleResponseBox,
+}) {
   const {
     scrollHeight: contentHeight,
     scrollWidth: contentWidth,
@@ -32,9 +39,11 @@ export function AnswerBox({ btnStyle, index, numeration, centerText, label }) {
         maxWidth: inPopover ? response.popoverMaxWidth : response.maxWidth,
       }}
     >
-      <div className="index" style={{ alignSelf: 'stretch' }}>
-        {numeration}
-      </div>
+      {!singleResponseBox && (
+        <div className="index" style={{ alignSelf: 'stretch' }}>
+          {numeration}
+        </div>
+      )}
       <div className="text" style={{ justifyContent: centerText && 'center' }}>
         <MathSpan dangerouslySetInnerHTML={{ __html: label }} />
       </div>
@@ -63,8 +72,10 @@ AnswerBox.propTypes = {
     .isRequired,
   centerText: PropTypes.bool,
   label: PropTypes.string.isRequired,
+  singleResponseBox: PropTypes.bool,
 }
 
 AnswerBox.defaultProps = {
   centerText: false,
+  singleResponseBox: false,
 }

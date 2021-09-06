@@ -181,7 +181,10 @@ class PointsList extends Component {
                 />
               </Col>
               <Col md={isShowFractionField ? 2 : 3}>
-                <IconTrash onClick={() => handleDelete(index)} />
+                <IconTrash
+                  onClick={() => handleDelete(index)}
+                  data-cy="deletePoint"
+                />
               </Col>
             </ColoredRow>
           </Fragment>

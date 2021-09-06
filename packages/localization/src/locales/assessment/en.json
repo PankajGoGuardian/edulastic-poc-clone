@@ -51,6 +51,10 @@
     "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "correctItemNotAllowDynamic": "Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually",
+    "pendingEvaluation": {
+      "text": "Evaluation is pending",
+      "tooltip": " App failed to evaluate due to unexpected input format"
+    },
     "options": {
       "preFilled": "Pre-Filled",
       "highlight": "Highlight",
@@ -367,6 +371,7 @@
       "global": "Global",
       "local": "Local",
       "multipleResponses": "Multiple responses",
+      "maxResponses": "Maximum Responses",
       "areaSelectLabel": "Select Area",
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
@@ -489,6 +494,7 @@
       "questionPlaceholder": "Enter your question",
       "optionPlaceholder": "Option",
       "multipleResponses": "Multiple Responses",
+      "maxResponses": "Maximum Responses",
       "shuffleOptions": "Shuffle options",
       "choice": "Choice"
     },
@@ -848,6 +854,7 @@
       "correctAnswer": "Correct Answer",
       "alternateAnswer": "Alternate Answer",
       "shuffleAnswerChoices": "Shuffle Answer Choices",
+      "pointsOnEquConfirm": "If you choose this option, then the expected answer objects will be cleared. Do you wish to continue?",
       "helperText": {
         "point": "Select any point on the grid to draw a point.",
         "segment": "Select two points on the grid. A line segment will be drawn such that its endpoints coincide with the points selected.",
@@ -857,12 +864,12 @@
         "line": "Select two points on the grid. A line will be drawn through them.<p class=\"mb-8\"/>Example: If you select #{A=(0,0)#}, #{B=(1,1)#}, the line whose equation is #{y=x#} will be plotted.",
         "circle": "Select two points on the grid. A circle will be drawn such that its center coincides with the first point, and it passes through the second point.<p class=\"mb-8\"/>Example: If you select the points #{A = (0,0)#} and #{B = (1,1)#}, a circle whose equation is #{x^2+y^2=1#} will be plotted.",
         "ellipse": "Select three points on the grid. An ellipse will be drawn such that its foci coincide with the first two points plotted, and it passes through the third point.<p class=\"mb-8\"/>Example: If you select the points #{A(-4,0), B(4,0)#} and #{C(0,3)#}, the ellipse whose equation is #{\\frac{x^2}{5^2}+\\frac{y^2}{3^2}=1#} will be plotted.",
-        "parabola": "Select two points on the grid, say #{ A=(x_1,y_1)#}, #{B=(x_2,y_2)#}. A parabola will be drawn through them such that the first point is its vertex and passes through the second point. The orientation of the parabola depends on the following cases:<br />Case 1: #{x_2>x_1#} and #{y_2>y_1#}; the parabola is upward facing<br />Case 2: #{x_2 < x_1#} and #{y_2>y_1#}; the parabola is leftward facing.<br />Case 3: #{x_2 < x_1#} and #{y_2<y_1 #}; the parabola is downward facing.<br />Case 4: #{x_2>x_1#} and #{y_2<y_1#}; the parabola is rightward facing. <p class=\"mb-8\"/>Example: If you select the points #{A=(0,0)#} and #{B=(1,1)#}, the graph of #{y=x^2#} will be plotted.",
+        "parabola": "Select two points on the grid. A parabola will be drawn through them such that its vertex coincides with the first point drawn. Note that you can only draw parabolas whose directrix is parallel to the x-axis using this option. <p class=\"mb-8\"/>Example: If you select the points #{A=(0,0)#} and #{B=(1,1)#}, the graph of #{y=x^2#} will be plotted.",
         "parabola2": "Select three points on the grid. A parabola will be drawn such that its focus is the first point plotted, and its directrix is the line joining the remaining two points.<p class=\"mb-8\"/>Example: If you select #{A = (0,0.25)#}, #{B = (-1,-0.25)#}, #{C = (1,-0.25)#}, the graph of #{y=x^2#} will be plotted.",
         "hyperbola": "Select three points on the grid. A hyperbola will be drawn such that the first two points coincide with its foci and it passes through the third point.<p class=\"mb-8\"/>Example: If you select #{A=(0,-\\sqrt{2})#}, #{B=(0,\\sqrt{2})#} and #{C=(1,0)#}, the graph of #{y^2 - x^2 =1#}, will be plotted.",
         "polynom": "Select n points on the grid that lie on the desired polynomial curve of degree n. The required curve will be drawn through them. Note that you must click on the first point selected to draw the graph.<p class=\"mb-8\"/>Example: If you select the points #{A = (0, 0), B = (1, 1)#} and #{C = (2, 8)#}, the graph of #{y=x^3#} will be plotted.",
         "exp": "Select two points on the grid, say #{A = (x_1, y_1)#}, #{B = (x_2, y_2)#}. The following graph will be drawn: #{y = y_1 + \\frac{y_2-y_1}{x_2-x_1}e^{x-x_1}#}<p class=\"mb-8\"/>Example: If you select #{A = (0,0), B = (1, 1)#}, the graph of #{y=e^x#} will be plotted.",
-        "exponential2": "Select a point on the grid, say #{A = (x_1, y_1)#}. The following graph will be drawn: #{y=\\ln(\\frac{e^y}{x_1})#}<p class=\"mb-8\"/>Example: If you select #{A = (e,1)#} the graph of #{y= \\ln(x)#} will be plotted.",
+        "exponential2": "Select a point on the grid, say #{A = (x_1, y_1)#}.<br />The following graph will be drawn: #{y = e^{x\\frac{ln(y_1)}{x_1}}#}<p class=\"mb-8\"/>Example: If you select #{A = (1,e)#} the graph of #{y=e^x#} will be plotted.",
         "logarithm": "Select two points on the grid, say #{A = (x_1, y_1), B = (x_2, y_2)#}. The following graph will be drawn: #{y = y_1 + \\frac{y_2-y_1}{x_2-x_1}ln(x-x_1)#}<p class=\"mb-8\"/>Example: If you select #{A = (0,0), B = (1, 1)#}, the graph of #{y=\\ln x#} will be plotted.",
         "sine": "Select two points on the grid. A sine curve will be drawn through them such that the first point lies on the midline, and the second point lies on the adjacent crest/trough.<p class=\"mb-8\"/>Example: If you select #{A = (0,0)#} and #{B = (\\frac{\\pi}{2},1)#}, the graph of #{y = \\sin x#} will be plotted.",
         "cos": "Select two points on the grid. A sine curve will be drawn through them such that the first point lies on the midline, and the second point lies on the adjacent crest/trough.<p class=\"mb-8\"/>Example: If you select #{A=(-\\frac{\\pi}{2},0)#} and #{B = (0,1)#}, the graph of #{y = \\cos x#} will be plotted.",
@@ -874,7 +881,9 @@
         "cosecant": "Select two points on the grid, say #{A = (x_1, y_1)#}, #{B = (x_2, y_2)#} the following graph will be drawn: <br />#{y = y_1 + (y_2-y_1)\\csc\\left({\\frac{\\pi}{2(x_2-x_1)}x-\\frac{x_1\\pi}{2(x_2-x_1)}}\\right)#} <br />The geometric meaning is that the difference between the y-coordinates of the two points selected is the \"Amplitude\" and the difference between the x-coordinates is related to the period. The x-coordinate of the first point is related to the phase shift. <p class=\"mb-8\"/>Example: If you select #{A = (0,0)#}, and #{B = }\\left(\\frac{\\pi}{2}, 1\\right)#}, #{y=\\csc x#} will be plotted.",
         "piecewise": "",
         "no_solution": "",
-        "area2": ""
+        "area2": "",
+        "fxWithArea": "You cannot use this functionality after plotting a graph. This option is used solely for the purposes of exploring curves of complicated equations.",
+        "fxHepler": "This is a teacher-only tool for exploring curves of various complex equations like #{y =\\frac{1}{tan(x)}#}. For creating questions for your students, you should only use the predefined graphing objects."
       }
     },
     "math": {
@@ -1197,6 +1206,18 @@
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
       "files": "Files"
+    },
+    "pictograph": {
+      "composeQuestion": "Question",
+      "enterQuestion": "Enter your question",
+      "enterElements": "Enter elements",
+      "classifications": "Enter class names",
+      "questionLayer": "Question layer",
+      "correctAnswer": "Correct Answer",
+      "showClassName": "Show class name",
+      "answeringStyle": "Answering style",
+      "elementContainers": "Element containers",
+      "clickToSelect": "Click to select"
     }
   }
 }

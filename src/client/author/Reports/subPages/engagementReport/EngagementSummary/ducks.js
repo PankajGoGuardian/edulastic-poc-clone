@@ -103,7 +103,7 @@ function* getReportsEngagementSummaryRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Failed to fetch reports engagement summary. Please try again...'
+      'Error getting reports engagement summary. Please try again after a few minutes.'
 
     notification({ msg })
     yield put({

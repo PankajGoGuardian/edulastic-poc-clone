@@ -312,6 +312,7 @@ const Scratchpad = ({
         readOnly,
         setFocus: false, // Zwibbler will be unable to intercept any keyboard commands
         allowZoom: !isStudentAttempt,
+        leaveTextToolOnBlur: true, // Zwibbler text tool data will be saved if user moves out of scratchpad
       })
       newZwibbler.on('node-clicked', (node) => {
         if (isDeleteMode.current) {
@@ -389,7 +390,11 @@ const Scratchpad = ({
     if (zwibbler) {
       zwibbler.resize()
     }
-    if (isStudentAttempt && !readOnly && zwibblerRef.current) {
+    if (
+      (isStudentAttempt || expressGrader) &&
+      !readOnly &&
+      zwibblerRef.current
+    ) {
       const zwibblerDomRect = zwibblerRef.current.getBoundingClientRect()
       setScratchpadRect({
         top: zwibblerDomRect.top,

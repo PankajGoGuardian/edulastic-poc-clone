@@ -185,6 +185,10 @@ export const SAVE_AND_PUBLISH_ITEM =
 export const PROCEED_TO_PUBLISH_ITEM = '[itemDetail] proceed to publish item'
 
 const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
+const ADD_ITEM_TO_CART = '[item list] add item to cart'
+export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
+  '[itemDetail] save current item and paginate'
+
 // actions
 
 //
@@ -272,6 +276,11 @@ export const updateItemDetailByIdAction = (
     redirectOnDeleteQuestion,
     updateScoreInQuestionsAsPerItem,
   },
+})
+
+export const saveCurrentItemAndRoueToOtherAction = (payload) => ({
+  type: SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
+  payload,
 })
 
 export const updateItemDetailSuccess = (item) => ({
@@ -369,6 +378,14 @@ export const saveCurrentEditingTestIdAction = (id) => ({
 })
 
 export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
+
+const addItemToCartAction = (item) => ({
+  type: ADD_ITEM_TO_CART,
+  payload: {
+    item,
+    fromItemDetail: true,
+  },
+})
 
 // selectors
 
@@ -932,6 +949,7 @@ export function reducer(state = initialState, { type, payload }) {
 
     case UPDATE_ITEM_DETAIL_DIMENSION:
       return updateDimension(state, payload)
+    case SAVE_CURRENT_ITEM_MOVE_TO_NEXT:
     case UPDATE_ITEM_DETAIL_REQUEST:
     case UPDATE_ITEM_DOC_BASED_REQUEST:
       return { ...state, updating: true }
@@ -1508,6 +1526,8 @@ export function* updateItemSaga({ payload }) {
       }
       yield put(changeViewAction('edit'))
       return
+    } else {
+      yield put(addItemToCartAction(item))
     }
   } catch (err) {
     captureSentryException(err)
@@ -1771,6 +1791,8 @@ function* publishTestItemSaga({ payload }) {
         yield put(clearRedirectTestAction())
       } else {
         // on publishing redirect to items bank.
+        const item = yield select((state) => get(state, ['itemDetail', 'item']))
+        yield put(addItemToCartAction(item))
         yield put(
           push({ pathname: '/author/items', state: { isAuthoredNow: true } })
         )
@@ -1931,9 +1953,9 @@ function* savePassage({ payload }) {
 
     const widget = {
       widgetType: 'resource',
-      type: entity.type,
-      title: entity.title,
-      reference: entity.id,
+      type: entity?.type,
+      title: entity?.title,
+      reference: entity?.id,
       tabIndex,
     }
     const allWidgets = yield select((state) =>
@@ -2035,16 +2057,41 @@ function* savePassage({ payload }) {
           testId = routerTestId
         }
       }
+      if (!testId || testId === 'undefined') {
+        let passageItems = []
+        if (updatedPassage?._id && updatedPassage?.testItems?.length > 1) {
+          passageItems = yield call(
+            testItemsApi.getPassageItems,
+            updatedPassage._id
+          )
+        }
+        yield put(
+          setTestDataAndUpdateAction({
+            item,
+            passageItems,
+            addToTest: true,
+            fromSaveMultipartItem: true,
+            routerState: currentRouterState,
+            url: `/author/tests/${testId}/editItem/${currentItemId}`,
+          })
+        )
+      } else {
+        if (item) yield put(setCreatedItemToTestAction(item))
+        yield put(
+          push({
+            pathname: `/author/tests/${testId}/editItem/${currentItemId}`,
+            state: currentRouterState,
+          })
+        )
+      }
+    } else {
+      yield put(
+        push({
+          pathname: `/author/items/${currentItemId}/item-detail`,
+          state: currentRouterState,
+        })
+      )
     }
-
-    yield put(
-      push({
-        pathname: isTestFlow
-          ? `/author/tests/${testId}/editItem/${currentItemId}`
-          : `/author/items/${currentItemId}/item-detail`,
-        state: currentRouterState,
-      })
-    )
   } catch (e) {
     Sentry.captureException(e)
     console.log('error: ', e)
@@ -2180,6 +2227,16 @@ function* editPassageWidgetSaga({ payload }) {
   yield put(setDictAlignmentFromQuestion(alignments))
 }
 
+function* saveCurrentItemAndRoueToOtherSaga({ payload }) {
+  try {
+    const { redirectData, updateItemData } = payload
+    yield call(updateItemSaga, { payload: updateItemData })
+    yield put(push(redirectData))
+  } catch (err) {
+    Sentry.captureException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -2202,5 +2259,9 @@ export function* watcherSaga() {
     ),
     yield takeLatest(SAVE_AND_PUBLISH_ITEM, saveAndPublishItemSaga),
     yield takeLatest(EDIT_PASSAGE_WIDGET, editPassageWidgetSaga),
+    yield takeEvery(
+      SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
+      saveCurrentItemAndRoueToOtherSaga
+    ),
   ])
 }

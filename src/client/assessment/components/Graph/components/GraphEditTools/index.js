@@ -1,7 +1,9 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { cloneDeep } from 'lodash'
-import { defaultSymbols } from '@edulastic/constants'
+import { Modal } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
+import { defaultSymbols, graph } from '@edulastic/constants'
 
 import { Overlay, Popup, PopupContent } from '../../common/styled_components'
 
@@ -19,6 +21,7 @@ const SETTINGS_TOOL = 'settingsTool'
 const ANNOTATIONS_TOOL = 'annotationsTool'
 const PLUS_TOOL = 'plusTool'
 const MINUS_TOOL = 'minusTool'
+const { GRAPH_TOOLS } = graph
 
 class GraphEditTools extends Component {
   constructor(props) {
@@ -98,20 +101,39 @@ class GraphEditTools extends Component {
   }
 
   onToolButtonClick(tool) {
-    switch (tool) {
-      case FUNCTIONS_TOOL:
-      case SETTINGS_TOOL:
-      case ANNOTATIONS_TOOL:
-        this.setState({
-          selectedTool: tool,
-        })
-        break
-      case PLUS_TOOL:
-      case MINUS_TOOL:
-        this.changeScale(tool)
-        break
-      default:
-        break
+    const { elements, t } = this.props
+
+    const proceed = () => {
+      switch (tool) {
+        case FUNCTIONS_TOOL:
+        case SETTINGS_TOOL:
+        case ANNOTATIONS_TOOL:
+          this.setState({
+            selectedTool: tool,
+          })
+          break
+        case PLUS_TOOL:
+        case MINUS_TOOL:
+          this.changeScale(tool)
+          break
+        default:
+          break
+      }
+    }
+
+    if (
+      tool === FUNCTIONS_TOOL &&
+      (elements || []).some((element) => element.type === GRAPH_TOOLS.AREA)
+    ) {
+      Modal.confirm({
+        title: 'Warning',
+        content: t('component.graphing.helperText.fxWithArea'),
+        okText: 'Confirm',
+        okCancel: false,
+        maskClosable: true,
+      })
+    } else {
+      proceed()
     }
   }
 
@@ -247,4 +269,4 @@ GraphEditTools.defaultProps = {
   symbols: defaultSymbols,
 }
 
-export default GraphEditTools
+export default withNamespaces('assessment')(GraphEditTools)

@@ -19,6 +19,7 @@ const AxisLabel = ({
           textAnchor={textAnchor}
           verticalAnchor={verticalAnchor}
           width={70}
+          data-cy={`labelIndex-${result.main}`}
         >
           {`${result.main}`}
         </VxText>

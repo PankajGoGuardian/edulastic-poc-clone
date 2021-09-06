@@ -20,7 +20,7 @@ import {
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { cloneDeep, get, uniq, intersection, keyBy } from 'lodash'
-import { Layout, Button, Pagination, Dropdown, Menu } from 'antd'
+import { Layout, Button, Pagination, Dropdown, Menu, Spin } from 'antd'
 import ItemDetailContext, {
   COMPACT,
   DEFAULT,
@@ -41,7 +41,7 @@ import {
 } from '../../../src/actions/testItem'
 import {
   getItemDetailByIdAction,
-  updateItemDetailByIdAction,
+  saveCurrentItemAndRoueToOtherAction,
   setItemDetailDataAction,
   updateItemDetailDimensionAction,
   deleteWidgetAction,
@@ -80,6 +80,7 @@ import {
   PassageNavigation,
   AddRemoveButtonWrapper,
   TestItemCount,
+  SpinContainer,
 } from './styled'
 import { loadQuestionAction } from '../../../QuestionEditor/ducks'
 import ItemDetailRow from '../ItemDetailRow'
@@ -712,21 +713,24 @@ class Container extends Component {
 
   goToItem = (page) => {
     const {
-      history,
       match,
       isTestFlow,
+      saveCurrentItemAndRoueToOther,
+      item,
       location: { state },
     } = this.props
     const { testId } = match.params
     const _id = this.passageItems[page - 1]
+
+    let redirectData = {}
     if (state?.testAuthoring === false) {
-      return history.push({
+      redirectData = {
         pathname: `/author/items/${_id}/item-detail`,
         state: { resetView: false, testAuthoring: false, testId: state.testId },
-      })
+      }
     }
     const { previousTestId, fadeSidebar, regradeFlow } = state || {}
-    history.push({
+    redirectData = {
       // `/author/tests/${tId}/editItem/${item?._id}`
       pathname: isTestFlow
         ? `/author/tests/${testId}/editItem/${_id}`
@@ -738,6 +742,20 @@ class Container extends Component {
         fadeSidebar,
         resetView: false,
         regradeFlow,
+      },
+    }
+
+    saveCurrentItemAndRoueToOther({
+      redirectData,
+      updateItemData: {
+        id: item._id,
+        data: item,
+        testId,
+        addToTest: isTestFlow,
+        locationState: state,
+        redirect: true,
+        redirectOnDeleteQuestion: false,
+        updateScoreInQuestionsAsPerItem: false,
       },
     })
   }
@@ -805,6 +823,11 @@ class Container extends Component {
     const collapseLeft = collapseDirection === 'left'
     const collapseRight = collapseDirection === 'right'
 
+    const passageTestItems = get(passage, 'testItems', [])
+    const widgetLength = get(rows, [0, 'widgets'], []).length
+    const showAddItemButton =
+      (!!widgetLength || passageTestItems.length > 1) && view === EDIT
+
     return (
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <ScrollContext.Provider
@@ -867,6 +890,7 @@ class Container extends Component {
                   isPassageWithQuestions={passageWithQuestions}
                   onShowSettings={this.handleShowSettings}
                   containerType="question"
+                  showAddItemButton={showAddItemButton}
                 />
               </>
             ))}
@@ -1107,6 +1131,11 @@ class Container extends Component {
 
     return (
       <ItemDetailContext.Provider value={{ layoutType }}>
+        {isPassageWithQuestions && updating && (
+          <SpinContainer>
+            <Spin />
+          </SpinContainer>
+        )}
         <ConfirmationModal
           visible={showRemovePassageItemPopup}
           title="Remove Item"
@@ -1214,7 +1243,7 @@ class Container extends Component {
                 )}
                 {view !== 'preview' &&
                   view !== 'auditTrail' &&
-                  (showMultipartAllPartsScore ? (
+                  showMultipartAllPartsScore && (
                     <AllPartsPointsWrapper>
                       {hasNoUnscored ? (
                         <Ctrls.TotalPoints
@@ -1235,16 +1264,7 @@ class Container extends Component {
                         />
                       )}
                     </AllPartsPointsWrapper>
-                  ) : (
-                    <EduButton
-                      ml="8px"
-                      isGhost
-                      height="30px"
-                      id="how-to-author"
-                    >
-                      How to author
-                    </EduButton>
-                  ))}
+                  )}
                 {view === 'preview' && (
                   <RightActionButtons>
                     {this.renderButtons()}
@@ -1363,7 +1383,7 @@ const enhance = compose(
       showAnswer: showAnswerAction,
       checkAnswer: checkAnswerAction,
       getItemDetailById: getItemDetailByIdAction,
-      updateItemDetailById: updateItemDetailByIdAction,
+      saveCurrentItemAndRoueToOther: saveCurrentItemAndRoueToOtherAction,
       setItemDetailData: setItemDetailDataAction,
       updateDimension: updateItemDetailDimensionAction,
       deleteWidget: deleteWidgetAction,

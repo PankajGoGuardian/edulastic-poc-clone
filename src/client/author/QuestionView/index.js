@@ -370,7 +370,7 @@ class QuestionViewContainer extends Component {
 
           if (!filter) return true
 
-          const currentUQA = currentUqas[0]
+          const currentUQA = currentUqas?.[0] || {}
 
           if (filter === 'unscoredItems' && currentUQA.isPractice) {
             return true
@@ -395,7 +395,12 @@ class QuestionViewContainer extends Component {
           ) {
             return true
           }
-          if (filter === 'wrong' && currentUQA.score === 0) {
+          if (
+            filter === 'wrong' &&
+            currentUQA.score === 0 &&
+            !currentUQA.skipped &&
+            currentUQA.graded
+          ) {
             return true
           }
           return false

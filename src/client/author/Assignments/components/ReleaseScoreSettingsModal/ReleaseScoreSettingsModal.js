@@ -35,7 +35,7 @@ const ReleaseScoreSettingsModal = ({
     if (releaseGradeValue !== releaseScore) setReleaseGradeValue(releaseScore)
   }, [releaseScore])
   let _releaseGradeKeys = releaseGradeKeys
-  if (!features.assessmentSuperPowersReleaseScorePremium) {
+  if (!features?.assessmentSuperPowersReleaseScorePremium) {
     _releaseGradeKeys = [releaseGradeKeys[0], releaseGradeKeys[3]]
   }
 
@@ -44,18 +44,27 @@ const ReleaseScoreSettingsModal = ({
     setReleaseGradeValue('')
   }
 
+  const titleText = (
+    <div>
+      Release Scores
+      {releaseGradeValue !== ''
+        ? releaseGradeValue === releaseGradeLabels.DONT_RELEASE
+          ? '[OFF]'
+          : '[ON]'
+        : ''}
+      <p style={{ fontSize: '12px' }}>
+        Selected score policy will be applied to all the classes within
+        assignment
+      </p>
+    </div>
+  )
+
   return (
     <ReleaseModal
       centered
       minWidth="614px"
       visible={showReleaseGradeSettings}
-      title={`Release Scores ${
-        releaseGradeValue !== ''
-          ? releaseGradeValue === releaseGradeLabels.DONT_RELEASE
-            ? '[OFF]'
-            : '[ON]'
-          : ''
-      }`}
+      title={titleText}
       onOk={onCancel}
       onCancel={onCancel}
       destroyOnClose

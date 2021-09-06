@@ -67,10 +67,10 @@ export default function withKeyboard(WrappedComponent) {
           // If sratchpad is enabled than disabling tab key navigation to prevent user from attempting question
           tabIndex={isSratchPadEnabled ? '-1' : '0'}
           onKeyDown={(e) => {
-            if (isSratchPadEnabled) return
+            if (isSratchPadEnabled || fromSetAnswers) return
             const code = e.which || e.keyCode
             // preventing default behavior if any key is pressed other than tab key
-            if (code !== keyboardConst.TAB_KEY && !fromSetAnswers) {
+            if (code !== keyboardConst.TAB_KEY) {
               e.preventDefault()
             }
             if (supportedKeys.includes(code)) {

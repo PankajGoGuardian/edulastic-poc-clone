@@ -22,6 +22,7 @@ export const Container = styled(Card)`
   &.ant-card {
     width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
     height: ${(props) => (props.isTestRecommendation ? '190px' : null)};
+    overflow: ${(props) => (props.isTestRecommendation ? 'hidden' : null)};
     transform: ${(props) => (props.isTestCard ? `scale(1)` : null)};
     transition: 0.2s;
     .ant-card-body {
@@ -391,7 +392,10 @@ export const HeaderThumbnail = styled.img`
   position: absolute;
   left: 0;
   right: 0px;
-  object-fit: contain;
+  object-fit: ${({ isTestRecommendation }) =>
+    isTestRecommendation ? 'fit' : 'contain'};
+  width: ${({ isTestRecommendation }) =>
+    isTestRecommendation ? '100%' : 'auto'};
 `
 
 const playlistStars = css`

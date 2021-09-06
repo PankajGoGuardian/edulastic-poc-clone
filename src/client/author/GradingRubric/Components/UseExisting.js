@@ -119,6 +119,15 @@ const UseExisting = ({
             if (rating.name) {
               if (!uniqueRatings.includes(rating.points))
                 uniqueRatings.push(parseFloat(rating.points))
+
+              if (rating.name?.length > 100) {
+                isValid = false
+                notification({ messageKey: 'ratingsNameLengthValidation' })
+              }
+              if (rating.desc && rating.desc?.length > 2048) {
+                isValid = false
+                notification({ messageKey: 'ratingsDescLengthValidation' })
+              }
             } else {
               isValid = false
               notification({ messageKey: 'ratingNameCannotEmpty' })
@@ -133,6 +142,10 @@ const UseExisting = ({
             isValid = false
             notification({ messageKey: 'ratingPointMustBeMoreThanZero' })
           }
+          if (isValid && criteria.name?.length > 256) {
+            isValid = false
+            notification({ messageKey: 'criteriaNameLengthValidation' })
+          }
         } else {
           isValid = false
           notification({ messageKey: 'criteriaNameCannotBeEmpty' })
@@ -146,6 +159,13 @@ const UseExisting = ({
           notification({ messageKey: 'criteriaNameShouldBeUnique' })
         }
       }
+      // length validation mentioned in BE rubricsValidators
+      if (
+        currentRubricData?.name?.length > 100 ||
+        currentRubricData?.description?.length > 256
+      ) {
+        isValid = false
+      }
     } else {
       isValid = false
       notification({ messageKey: 'rubricNameCannotBeEmpty' })
@@ -156,6 +176,10 @@ const UseExisting = ({
   const handleSaveRubric = (type) => {
     const isValid = validateRubric()
     const { __v, updatedAt, modifiedBy, ...data } = currentRubricData
+
+    if (!isValid) {
+      return
+    }
 
     if (isValid) {
       if (currentRubricData._id) {

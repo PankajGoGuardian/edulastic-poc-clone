@@ -35,7 +35,8 @@ export const MathInputStyles = styled.div`
     padding: ${({ width, noPadding }) =>
       width ? 'unset' : !noPadding && '5px 15px'};
     align-items: center;
-    padding-right: ${({ pr }) => pr || ' 25px'};
+    padding-right: ${({ pr, isMobileDevice }) =>
+      isMobileDevice ? '32px !important' : pr || ' 25px'};
     padding-left: 8px;
 
     &.clear {

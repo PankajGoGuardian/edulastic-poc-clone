@@ -13,6 +13,10 @@ import {
   setShowTestInfoSuccesAction,
   setTestLoadingAction,
 } from '../../../../assessment/actions/test'
+import {
+  setSelectedThemeAction,
+  setZoomLevelAction,
+} from '../../../../student/Sidebar/ducks'
 
 const TestPreviewModal = ({
   isModalVisible,
@@ -33,6 +37,8 @@ const TestPreviewModal = ({
   setTestLoading,
   resetOnClose,
   unmountOnClose = false,
+  setSelectedTheme,
+  setZoomLevel,
   ...restProps
 }) => {
   const [
@@ -72,6 +78,10 @@ const TestPreviewModal = ({
   }
 
   const handleCloseModal = () => {
+    setZoomLevel('1')
+    setSelectedTheme('default')
+    localStorage.removeItem('selectedTheme')
+    localStorage.removeItem('zoomLevel')
     closeTestPreviewModal()
     finishedPreviewTest()
     setShowStudentPerformancePreview(false)
@@ -152,6 +162,8 @@ const enhanced = connect(
     finishedPreviewTest: finishedPreviewTestAction,
     setShowTestInfoSucces: setShowTestInfoSuccesAction,
     setTestLoading: setTestLoadingAction,
+    setZoomLevel: setZoomLevelAction,
+    setSelectedTheme: setSelectedThemeAction,
   }
 )
 

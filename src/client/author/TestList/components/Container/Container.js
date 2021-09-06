@@ -74,10 +74,7 @@ import {
   clearCreatedItemsAction,
   getAllTagsAction,
 } from '../../../TestPage/ducks'
-import {
-  clearSelectedItemsAction,
-  setApproveConfirmationOpenAction,
-} from '../../../TestPage/components/AddItems/ducks'
+import { setApproveConfirmationOpenAction } from '../../../TestPage/components/AddItems/ducks'
 import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
 import {
   clearDictStandardsAction,
@@ -115,6 +112,7 @@ import {
   getDefaultSubjectSelector,
   getUserFeatures,
   getUserOrgId,
+  getCollectionsSelector,
 } from '../../../src/selectors/user'
 import {
   getInterestedStandards,
@@ -179,7 +177,6 @@ class TestList extends Component {
     userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
     clearCreatedItems: PropTypes.func.isRequired,
-    clearSelectedItems: PropTypes.func,
     playlist: PropTypes.object.isRequired,
     mode: PropTypes.string.isRequired,
     getAllTags: PropTypes.func.isRequired,
@@ -187,7 +184,6 @@ class TestList extends Component {
   }
 
   static defaultProps = {
-    clearSelectedItems: () => null,
     clearTestData: () => null,
   }
 
@@ -240,7 +236,6 @@ class TestList extends Component {
       match: params,
       getCurriculumStandards,
       clearCreatedItems,
-      clearSelectedItems,
       getAllTags,
       testFilters,
       clearDictStandards,
@@ -253,6 +248,7 @@ class TestList extends Component {
       user,
       districtId,
       userId,
+      collections,
     } = this.props
 
     const isSingaporeMathCollectionActive = tests.filter(
@@ -265,7 +261,10 @@ class TestList extends Component {
     const isSingaporeMath =
       user?.referrer?.includes('singapore') ||
       user?.utm_source?.toLowerCase()?.includes('singapore') ||
-      isSingaporeMathCollectionActive?.length > 0
+      isSingaporeMathCollectionActive?.length > 0 ||
+      collections.some((itemBank) =>
+        itemBank?.owner?.toLowerCase().includes('singapore')
+      )
 
     this.setState({ isSingaporeMath })
 
@@ -380,7 +379,6 @@ class TestList extends Component {
       getCurriculumStandards(_curriculumId, curriculumGrades, '')
     }
     clearCreatedItems()
-    clearSelectedItems()
   }
 
   updateFilterState = (searchState, sortState, all) => {
@@ -545,19 +543,12 @@ class TestList extends Component {
   }
 
   handleCreate = () => {
-    const {
-      history,
-      clearCreatedItems,
-      clearSelectedItems,
-      clearTestData,
-      mode,
-    } = this.props
+    const { history, clearCreatedItems, clearTestData, mode } = this.props
     if (mode !== 'embedded') {
       history.push('/author/tests/select')
     }
     clearTestData()
     clearCreatedItems()
-    clearSelectedItems()
   }
 
   updateTestList = (page) => {
@@ -1529,6 +1520,7 @@ const enhance = compose(
       sort: getSortFilterStateSelector(state),
       selectedTests: getSelectedTestsSelector(state),
       isDemoAccount: isDemoPlaygroundUser(state),
+      collections: getCollectionsSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1542,7 +1534,6 @@ const enhance = compose(
       addTestToModuleInBulk: addTestToModuleInBulkAction,
       deleteTestFromModuleInBulk: deleteTestFromModuleInBulkAction,
       clearDictStandards: clearDictStandardsAction,
-      clearSelectedItems: clearSelectedItemsAction,
       clearCreatedItems: clearCreatedItemsAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,

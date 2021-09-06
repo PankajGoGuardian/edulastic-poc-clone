@@ -68,6 +68,7 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
   const lessMinWidth =
     parseInt(btnStyle.width, 10) < response.minWidthShowAnswer
   const isDragStyle = displayStyle?.type === displayStyles.DRAG_DROP
+  const singleResponseBox = responseIds && responseIds.length === 1
 
   const getContent = (inPopover) => (
     <AnswerBox
@@ -76,7 +77,11 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       style={inPopover ? { maxWidth: response.maxWidth } : _btnStyle}
       inPopover={inPopover}
       lessMinWidth={lessMinWidth}
-      showIndex={(showAnswer || isPrint || isPrintPreview) && !lessMinWidth}
+      showIndex={
+        (showAnswer || isPrint || isPrintPreview) &&
+        !lessMinWidth &&
+        !singleResponseBox
+      }
       indexStr={indexStr}
       isDragStyle={isDragStyle}
       isPrintPreview={isPrintPreview || isPrint}

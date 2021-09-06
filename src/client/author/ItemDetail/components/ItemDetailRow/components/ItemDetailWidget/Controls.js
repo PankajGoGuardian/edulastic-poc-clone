@@ -106,7 +106,7 @@ const PointInput = ({
   if (!visible) {
     return null
   }
-
+  const isDisabled = itemLevelScoring || isRubricQuestion
   const msgWithLink = (
     <>
       This item is evaluated as a whole, to evaluate parts separately and have
@@ -131,18 +131,18 @@ const PointInput = ({
       <FieldLabel marginBottom="0px" mr="10px">
         Points
       </FieldLabel>
-      {itemLevelScoring && (
+      {isDisabled && (
         <Popover content={desc} placement="bottomRight">
           <IconInfo />
         </Popover>
       )}
       <NumberInputStyled
-        min={0.5}
+        min={0}
         step={0.5}
         width="64px"
         padding="0px 2px"
         margin="0px 0px 0px 10px"
-        disabled={itemLevelScoring}
+        disabled={isDisabled}
         value={disabled && !isRubricQuestion ? '' : value}
         onChange={onChange}
         data-cy="point-update"

@@ -409,35 +409,36 @@ class StudentViewContainer extends Component {
             </FlexContainer>
           </StudentButtonWrapper>
         </StudentResponse>
-
-        {!loading && (
-          <AnswerContext.Provider
-            value={{
-              isAnswerModifiable: false,
-              currentScreen: 'live_class_board',
-            }}
-          >
-            <ClassQuestions
-              currentStudent={currentStudent || {}}
-              questionActivities={studentResponse.questionActivities || []}
-              testActivity={studentResponse.testActivity || {}}
-              classResponse={classResponse}
-              testItemsOrder={testItemsOrder}
-              studentViewFilter={filter}
-              labels={_getquestionLabels(classResponse.testItems)}
-              isPresentationMode={isPresentationMode}
-              showTestletPlayer={showTestletPlayer}
-              closeTestletPlayer={() =>
-                this.setState({ showTestletPlayer: false })
-              }
-              testActivityId={studentResponse?.testActivity?._id}
-              hideCorrectAnswer={hideCorrectAnswer}
-              isLCBView
-              isStudentView
-              MainContentWrapperRef={MainContentWrapperRef}
-            />
-          </AnswerContext.Provider>
-        )}
+        <div>
+          {!loading && (
+            <AnswerContext.Provider
+              value={{
+                isAnswerModifiable: false,
+                currentScreen: 'live_class_board',
+              }}
+            >
+              <ClassQuestions
+                currentStudent={currentStudent || {}}
+                questionActivities={studentResponse.questionActivities || []}
+                testActivity={studentResponse.testActivity || {}}
+                classResponse={classResponse}
+                testItemsOrder={testItemsOrder}
+                studentViewFilter={filter}
+                labels={_getquestionLabels(classResponse.testItems)}
+                isPresentationMode={isPresentationMode}
+                showTestletPlayer={showTestletPlayer}
+                closeTestletPlayer={() =>
+                  this.setState({ showTestletPlayer: false })
+                }
+                testActivityId={studentResponse?.testActivity?._id}
+                hideCorrectAnswer={hideCorrectAnswer}
+                isLCBView
+                isStudentView
+                MainContentWrapperRef={MainContentWrapperRef}
+              />
+            </AnswerContext.Provider>
+          )}
+        </div>
         <ScrollToTopButton
           type="primary"
           icon="arrow-up"

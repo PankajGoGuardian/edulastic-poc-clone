@@ -180,7 +180,6 @@ class FeedbackRight extends Component {
       studentId,
       itemId,
       allAnswers = {},
-      setTeacherEditedScore,
       isExpressGrader,
     } = this.props
 
@@ -227,11 +226,10 @@ class FeedbackRight extends Component {
         if (hasValidAnswers(activity?.qType, allAnswers[id])) {
           payload.userResponse = { [id]: allAnswers[id] }
         } else {
-          const error = new Error('empty response update event')
           Sentry.configureScope((scope) => {
             scope.setExtra('qType', activity?.qType)
             scope.setExtra('userResponse', allAnswers[id])
-            Sentry.captureException(error)
+            Sentry.captureMessage('empty response update event', 'info')
           })
         }
       }

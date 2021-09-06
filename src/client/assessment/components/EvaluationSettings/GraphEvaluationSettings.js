@@ -11,19 +11,25 @@ import withAuthorButton from './components/withAuthorButton'
 const { evaluationSettings, GRAPH_EVALUATION_SETTING } = mathConstants
 const { TabPane } = AntTabs
 
-const tabLabel = (label) => <FieldLabel marginBottom="0px">{label}</FieldLabel>
+const tabLabel = (label) => (
+  <FieldLabel data-cy={label} marginBottom="0px">
+    {label}
+  </FieldLabel>
+)
 
 const RednerOpts = ({
   options,
   hidePointOnEquation,
   onChangeOption,
   evalutionOptions,
+  hasGraphElements,
 }) =>
   evalutionOptions.map((key) => (
     <EvaluationOption
       key={key}
       optionKey={key}
       options={options}
+      hasGraphElements={hasGraphElements}
       hidePointOnEquation={hidePointOnEquation}
       onChangeOption={onChangeOption}
     />
@@ -35,17 +41,19 @@ const GraphEvaluationSettings = ({
   onChangeOption,
   options,
   hidePointOnEquation,
+  hasGraphElements,
 }) => {
   const groupedOptions = evaluationSettings[GRAPH_EVALUATION_SETTING] || []
 
   return (
-    <Tabs>
+    <Tabs data-cy="graphEvaluationSettings">
       {keys(groupedOptions).map((label, index) => (
         <TabPanel tab={tabLabel(label)} key={index}>
           <WithHowToAuthorOpts
             options={options}
             groupKey={label}
             onChangeOption={onChangeOption}
+            hasGraphElements={hasGraphElements}
             evalutionOptions={groupedOptions[label]}
             hidePointOnEquation={hidePointOnEquation}
           />

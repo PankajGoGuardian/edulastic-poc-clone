@@ -6,9 +6,10 @@ import {
   themeColor,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
+import { Popover } from 'antd'
 
 export const ResourceItemWrapper = styled.div`
-  width: 95%;
+  width: 100%;
   display: flex;
   align-items: center;
   padding: 10px;
@@ -63,7 +64,6 @@ export const ResourceTitle = styled.div`
   letter-spacing: 0.19px;
   color: ${({ isAdded }) => (isAdded ? themeColor : playlistTabLink)};
   text-transform: uppercase;
-  width: 250px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -84,12 +84,36 @@ export const ResourceTitle = styled.div`
 
 export const TitleText = styled.div`
   display: inline-block;
-  max-width: ${(props) => (props.noStandards ? 230 : 145)}px;
+  max-width: ${({ isPopup, noStandards }) =>
+    isPopup ? '100%' : noStandards ? '90%' : '85%'}px;
   overflow: hidden;
-  white-space: nowrap;
+  white-space: ${({ isPopup }) => (isPopup ? 'break-spaces' : 'nowrap')};
+  padding-bottom: ${({ isPopup }) => (isPopup ? '10px' : '0')};
   text-overflow: ellipsis;
 
   @media (max-width: ${extraDesktopWidthMax}) {
     font-size: 10px;
   }
+  padding-right: 5px;
+`
+
+export const PopupContainer = styled.div`
+  flex-wrap: wrap;
+  width: 340px;
+  max-height: 200px;
+  overflow: auto;
+  text-overflow: none;
+
+  @media (min-width: ${extraDesktopWidthMax}) {
+    width: 400px;
+  }
+`
+export const StyledPopOver = styled(Popover)`
+  display: flex;
+  max-width: 100%;
+`
+
+export const TitleWrapper = styled.div`
+  display: flex;
+  width: 92%;
 `

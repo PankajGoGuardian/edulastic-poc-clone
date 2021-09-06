@@ -1680,7 +1680,7 @@ export const getReleaseScorePremiumSelector = createSelector(
   (entity, features) => {
     const { subjects, grades } = entity
     return (
-      features.assessmentSuperPowersReleaseScorePremium ||
+      features?.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
@@ -1995,12 +1995,15 @@ export function* receiveTestByIdSaga({ payload }) {
 
     entity.itemGroups.forEach((itemGroup, groupIndex) => {
       itemGroup.items.forEach((item, itemIndex) => {
-        if (
-          createdItems?.[0]?._id === item._id ||
-          createdItems?.[0]?.previousTestItemId === item._id
-        ) {
-          entity.itemGroups[groupIndex].items[itemIndex] = createdItems[0]
-          createdItems = createdItems?.slice(1) || []
+        const createdItem = createdItems?.find(
+          ({ _id, previousTestItemId }) =>
+            _id === item._id || previousTestItemId === item._id
+        )
+        if (!isEmpty(createdItem)) {
+          entity.itemGroups[groupIndex].items[itemIndex] = createdItem
+          createdItems = createdItems?.filter(
+            ({ _id }) => _id !== createdItem._id
+          )
         }
       })
     })
@@ -2014,13 +2017,6 @@ export function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
     yield put(getDefaultTestSettingsAction(entity))
-    yield put(
-      setTestItemsAction(
-        entity.itemGroups
-          .flatMap((itemGroup) => itemGroup.items || [])
-          .map((item) => item._id)
-      )
-    )
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
@@ -2111,6 +2107,8 @@ function* createTest(data) {
   if (dataToSend.settingId === '') {
     dataToSend.settingId = null
   }
+  dataToSend.grades = dataToSend.grades?.filter((el) => !!el) || []
+  dataToSend.subjects = dataToSend.subjects?.filter((el) => !!el) || []
   const entity = yield call(testsApi.create, dataToSend)
   fillAutoselectGoupsWithDummyItems(data)
   yield put({
@@ -2264,6 +2262,8 @@ export function* updateTestSaga({ payload }) {
     if (testData.settingId === '') {
       testData.settingId = null
     }
+    testData.grades = testData.grades?.filter((el) => !!el) || []
+    testData.subjects = testData.subjects?.filter((el) => !!el) || []
     const entity = yield call(testsApi.update, { ...payload, data: testData })
     if (isEmpty(entity)) {
       return
@@ -2452,9 +2452,7 @@ function* updateRegradeDataSaga({ payload: _payload }) {
       })
     }
   } catch (err) {
-    const {
-      data: { message: errorMessage },
-    } = err.response
+    const { data: { message: errorMessage } = {} } = err.response || {}
     captureSentryException(err)
     if (_payload.notify) {
       notification({
@@ -3318,10 +3316,10 @@ function* duplicateTestSaga({ payload }) {
     yield put(push(`/author/tests/tab/${currentTab}/id/${data._id}/old/${_id}`))
     yield put(setTestsLoadingAction(false))
     yield put(receiveTestByIdAction(data._id, true))
+    notification({ msg: 'You are currently editing a cloned test' })
   } catch (err) {
-    const {
-      data: { message: errorMessage },
-    } = err.response
+    const { data = {} } = err.response || {}
+    const { message: errorMessage } = data
     captureSentryException(err)
     yield put(setTestsLoadingAction(false))
     yield put(setEditEnableAction(false))
@@ -3638,7 +3636,8 @@ function* getRegradeSettingsSaga({ payload }) {
 
 function* fetchSavedTestSettingsListSaga({ payload }) {
   try {
-    const settingsList = yield call(settingsApi.getTestSettingsList, payload)
+    const settingsList = yield call(settingsApi.getTestSettingsList, payload) ||
+      []
     yield put(
       setTestSettingsListAction(settingsList.filter(({ title }) => !!title))
     )

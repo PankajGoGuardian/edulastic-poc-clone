@@ -169,7 +169,7 @@ class Setting extends Component {
     const { features, entity } = nextProps
     const { grades, subjects } = entity
     if (
-      features.assessmentSuperPowersReleaseScorePremium ||
+      features?.assessmentSuperPowersReleaseScorePremium ||
       (grades &&
         subjects &&
         isFeatureAccessible({
@@ -188,12 +188,9 @@ class Setting extends Component {
   }
 
   componentDidMount = () => {
-    const { entity, isAuthorPublisher, resetUpdatedState } = this.props
+    const { entity, resetUpdatedState } = this.props
     if (entity?.scoringType === PARTIAL_CREDIT && !entity?.penalty) {
       this.updateTestData('scoringType')(PARTIAL_CREDIT_IGNORE_INCORRECT)
-    }
-    if (isAuthorPublisher) {
-      this.updateTestData('testType')(ASSESSMENT)
     }
     if (entity?.safeBrowser) {
       this.updateTestData('safeBrowser')(true)
@@ -1087,24 +1084,29 @@ class Setting extends Component {
                     testType === COMMON && (
                       <Block id="freeze-settings" smallSize={isSmallSize}>
                         <Row>
-                          <CheckboxLabel
-                            disabled={!owner || !isEditable}
-                            data-cy="freeze-settings"
-                            checked={freezeSettings}
-                            onChange={(e) =>
-                              this.updateTestData('freezeSettings')(
-                                e.target.checked
-                              )
-                            }
-                          >
-                            Freeze Settings
-                          </CheckboxLabel>
-                          <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
-                            <IconInfo
-                              color={lightGrey9}
-                              style={{ cursor: 'pointer' }}
+                          <Title>
+                            <span>Freeze Settings</span>
+                            <EduSwitchStyled
+                              disabled={!owner || !isEditable}
+                              data-cy="freeze-settings"
+                              checked={freezeSettings}
+                              onChange={() =>
+                                this.updateTestData('freezeSettings')(
+                                  !freezeSettings
+                                )
+                              }
                             />
-                          </Tooltip>
+                            <Tooltip title="Instructors won’t be allowed to override the test settings while assigning it.">
+                              <IconInfo
+                                color={lightGrey9}
+                                style={{
+                                  cursor: 'pointer',
+                                  position: 'relative',
+                                  right: '-10px',
+                                }}
+                              />
+                            </Tooltip>
+                          </Title>
                         </Row>
                       </Block>
                     )}
@@ -1373,14 +1375,11 @@ class Setting extends Component {
                                   style={{ margin: '0px 20px 0px 0px' }}
                                   value={
                                     !isNaN(allowedTime)
-                                      ? allowedTime / (60 * 1000)
+                                      ? allowedTime / (60 * 1000) || ''
                                       : 1
                                   }
                                   onChange={(e) => {
-                                    if (
-                                      e.target.value.length <= 3 &&
-                                      e.target.value <= 300
-                                    ) {
+                                    if (e.target.value <= 300) {
                                       this.updateTestData('allowedTime')(
                                         e.target.value * 60 * 1000
                                       )
@@ -1431,7 +1430,6 @@ class Setting extends Component {
                         <DollarPremiumSymbol premium={maxAttemptAllowed} />
                       </Title>
                       <Body>
-                        <FieldLabel>Quantity</FieldLabel>
                         <TextInputStyled
                           type="number"
                           width="100px"
@@ -1478,6 +1476,7 @@ class Setting extends Component {
                                   )
                                 }
                                 size="large"
+                                width="160px"
                                 value={maxAnswerChecks}
                                 type="number"
                                 min={0}
@@ -1843,6 +1842,8 @@ class Setting extends Component {
                             number of alerts are exceeded, the student’s
                             assignment will be paused and the instructor will
                             need to manually reset.
+                            <br />
+                            Please Note: this is not compatible with iPads.
                             {navigationThresholdMoreThan1 ? (
                               <>
                                 <br />
@@ -2144,8 +2145,8 @@ class Setting extends Component {
                     />
                     <Description>
                       Performance bands are set by district or school admins.
-                      Teachers can modify cut scores/thresholds for class
-                      assignments.
+                      Teachers can choose from the different profiles created by
+                      the admin.
                     </Description>
                   </Block>
 
@@ -2160,9 +2161,8 @@ class Setting extends Component {
                     />
                     <Description>
                       Standards based scales are set by district or school
-                      admins. Teachers can modify performance threshold scores
-                      for class assignments to track mastery by standards
-                      assessed.
+                      admins. Teachers can choose from the different profiles
+                      created by the admin
                     </Description>
                   </Block>
 

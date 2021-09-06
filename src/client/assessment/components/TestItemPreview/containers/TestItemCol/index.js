@@ -161,7 +161,7 @@ class TestItemCol extends Component {
           flexDirection={isStudentReport && 'column'}
           justifyContent="flex-start" // @see EV-29020
         >
-          <FlexItem flexGrow="1">
+          <FlexItem flexGrow="1" maxWidth={isLCBView && '100%'}>
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}
               evaluation={evaluation}
@@ -433,12 +433,7 @@ class TestItemCol extends Component {
                 )}
             </>
           )}
-          <WidgetContainer
-            data-cy="widgetContainer"
-            zoomLevel={zoomLevel}
-            responsiveWidth={responsiveWidth}
-            isPassageWithQuestions={isPassageWithQuestions}
-          >
+          <WidgetContainer data-cy="widgetContainer" zoomLevel={zoomLevel}>
             {widgetsToRender.map((widget, i, arr) => (
               <React.Fragment key={i}>
                 {col.tabs &&

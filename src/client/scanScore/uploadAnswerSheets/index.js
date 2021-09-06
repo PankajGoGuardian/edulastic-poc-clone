@@ -36,6 +36,8 @@ const UploadAnswerSheets = ({
   showSessions,
   responsePageNumber,
   setResponsePageNumber,
+  assignmentTitle,
+  classTitle,
 }) => {
   const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
@@ -69,7 +71,7 @@ const UploadAnswerSheets = ({
 
   const breadcrumbData = useMemo(() => {
     const breadcrumbs = [
-      { title: 'Upload Responses', onClick: () => setResponsePageNumber(0) },
+      { title: 'Scan Bubble Sheet', onClick: () => setResponsePageNumber(0) },
     ]
     if (assignmentId && groupId) {
       breadcrumbs[0].to = `uploadAnswerSheets?assignmentId=${assignmentId}&groupId=${groupId}`
@@ -145,7 +147,11 @@ const UploadAnswerSheets = ({
   }, [sessionId, scanInProgress])
 
   return (
-    <PageLayout title="Scan Student Responses" breadcrumbData={breadcrumbData}>
+    <PageLayout
+      assignmentTitle={assignmentTitle}
+      classTitle={classTitle}
+      breadcrumbData={breadcrumbData}
+    >
       {loading ? (
         <Spin />
       ) : showSessions ? (

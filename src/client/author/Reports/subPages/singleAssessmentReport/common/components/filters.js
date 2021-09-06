@@ -275,6 +275,10 @@ const SingleAssessmentReportFilters = ({
       const urlPerformanceBand = performanceBandList.find(
         (item) => item.key === search.performanceBandProfile
       )
+      const urlAssignedBy =
+        staticDropDownData.assignedBy.find(
+          (a) => a.key === search.assignedBy
+        ) || staticDropDownData.assignedBy[0]
 
       const _filters = {
         termId: urlSchoolYear.key,
@@ -291,7 +295,7 @@ const SingleAssessmentReportFilters = ({
         groupIds: search.groupIds || '',
         standardsProficiencyProfile: urlStandardProficiency?.key || '',
         performanceBandProfile: urlPerformanceBand?.key || '',
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+        assignedBy: urlAssignedBy.key,
       }
       if (role === 'teacher') {
         delete _filters.schoolIds
@@ -309,7 +313,7 @@ const SingleAssessmentReportFilters = ({
         subjects: urlSubjects,
         standardsProficiencyProfile: urlStandardProficiency,
         performanceBandProfile: urlPerformanceBand,
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+        assignedBy: urlAssignedBy,
       }
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)

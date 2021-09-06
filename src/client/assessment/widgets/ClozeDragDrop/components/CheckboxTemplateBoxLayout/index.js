@@ -169,7 +169,9 @@ const CheckboxTemplateBoxLayout = ({ resprops, id }) => {
       isPrintPreview={isPrintPreview}
       fillColor={fillColor}
     >
-      {!checkAnswer && <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>}
+      {!checkAnswer && responseIDs?.length !== 1 && (
+        <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>
+      )}
       <AnswerContent
         style={{ width: 'auto' }}
         showIndex={!checkAnswer}

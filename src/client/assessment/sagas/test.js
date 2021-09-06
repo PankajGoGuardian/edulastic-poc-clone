@@ -19,6 +19,7 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
@@ -105,6 +106,10 @@ import { getClassIds } from '../../student/Reports/ducks'
 import { startAssessmentAction } from '../actions/assessment'
 import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
 import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
+import {
+  setSelectedThemeAction,
+  setZoomLevelAction,
+} from '../../student/Sidebar/ducks'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -241,9 +246,11 @@ function* loadTest({ payload }) {
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
-      throw new Error(
-        'Unable to load the test. Please contact Edulastic Support'
+      Sentry.captureMessage(
+        'Unable to load the test. Please contact Edulastic Support',
+        'info'
       )
+      return
     }
 
     // if the assessment player is loaded for showing student work
@@ -307,6 +314,15 @@ function* loadTest({ payload }) {
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
       : call(getPublicTest, testId)
+
+    const previousVisitedTestId = sessionStorage.getItem('currentTestId')
+    if (previousVisitedTestId !== testId) {
+      yield put(setZoomLevelAction('1'))
+      yield put(setSelectedThemeAction('default'))
+      localStorage.setItem('selectedTheme', 'default')
+      localStorage.setItem('zoomLevel', 1)
+      sessionStorage.setItem('currentTestId', testId)
+    }
     const _response = yield all([getTestActivity])
     const testActivity = _response?.[0] || {}
     const isFromSummary = yield select((state) =>
@@ -408,7 +424,7 @@ function* loadTest({ payload }) {
       // for all limited random group update items as per number of delivery items count
       test = modifyTestDataForPreview(test)
     }
-    test.testItems = test.itemGroups.flatMap(
+    test.testItems = test?.itemGroups?.flatMap?.(
       (itemGroup) => itemGroup.items || []
     )
     const {
@@ -986,6 +1002,7 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    yield put(setSelectedThemeAction('default'))
     Fscreen.safeExitfullScreen()
   }
 }

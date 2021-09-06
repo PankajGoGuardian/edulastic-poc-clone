@@ -8,7 +8,7 @@ import uuid from 'uuid/v4'
 import styled from 'styled-components'
 import produce from 'immer'
 import { questionTitle } from '@edulastic/constants'
-import { FlexContainer, PaddingDiv } from '@edulastic/common'
+import { FlexContainer, NumberInputStyled, PaddingDiv } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import {
@@ -33,6 +33,7 @@ import { StyledPaperWrapper } from '../../styled/Widget'
 import { getFontSize } from '../../utils/helpers'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 import { CustomStyleBtn } from '../../styled/ButtonStyles'
+import { Label } from '../../styled/WidgetOptions/Label'
 
 const EmptyWrapper = styled.div``
 
@@ -45,6 +46,9 @@ const MutlChoiceWrapper = styled(StyledPaperWrapper)`
 
 const Divider = styled.div`
   padding: 10px 0;
+`
+const MaxResponses = styled.div`
+  display: flex;
 `
 
 class MultipleChoice extends Component {
@@ -77,6 +81,7 @@ class MultipleChoice extends Component {
       previewDisplayOptions,
       itemForEdit,
       uiStyle: item.uiStyle,
+      maxResponses: item.maxResponses,
       multipleResponses: !!item.multipleResponses,
     }
   }
@@ -100,7 +105,7 @@ class MultipleChoice extends Component {
         const removeIndex = newAnswer.findIndex((el) => el === qid)
         newAnswer.splice(removeIndex, 1)
         saveAnswer(newAnswer)
-      } else {
+      } else if (!item.maxResponses || newAnswer.length < item.maxResponses) {
         saveAnswer([...newAnswer, qid])
       }
     } else {
@@ -187,6 +192,7 @@ class MultipleChoice extends Component {
       itemForEdit,
       uiStyle,
       multipleResponses,
+      maxResponses,
     } = this.getRenderData()
     const isV1Multipart = get(col, 'isV1Multipart', false)
     const fontSize = getFontSize(uiStyle?.fontsize)
@@ -255,6 +261,26 @@ class MultipleChoice extends Component {
                       {t('component.multiplechoice.multipleResponses')}
                     </CheckboxLabel>
                   )}
+                  {item.title !== questionTitle.MCQ_TRUE_OR_FALSE &&
+                    multipleResponses && (
+                      <MaxResponses>
+                        <NumberInputStyled
+                          onChange={(value) =>
+                            this.handleOptionsChange(
+                              'maxResponses',
+                              value || previewDisplayOptions.length
+                            )
+                          }
+                          value={maxResponses || previewDisplayOptions.length}
+                          min={2}
+                          max={previewDisplayOptions.length}
+                          width={60}
+                        />
+                        <Label mt="auto" ml="5px">
+                          {t('component.multiplechoice.maxResponses')}
+                        </Label>
+                      </MaxResponses>
+                    )}
                 </FlexContainer>
               </Question>
 

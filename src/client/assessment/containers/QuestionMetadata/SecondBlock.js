@@ -78,7 +78,11 @@ const SecondBlock = ({
   }
 
   const searchTags = async (value) => {
-    if (newAllTagsData.some((tag) => tag.tagName === value)) {
+    if (
+      newAllTagsData.some(
+        (tag) => tag.tagName.toLowerCase() === value.toLowerCase()
+      )
+    ) {
       setSearchValue('')
     } else {
       setSearchValue(value)

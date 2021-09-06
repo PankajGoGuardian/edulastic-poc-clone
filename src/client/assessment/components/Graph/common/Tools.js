@@ -29,6 +29,7 @@ import {
   IconTrash,
   IconUndo,
   IconPlusCircle,
+  IconEdit,
 } from '@edulastic/icons'
 import ToolsContiner from './ToolsContiner'
 import {
@@ -86,7 +87,7 @@ const toolByGroup = [
       CONSTANT.TOOLS.DASHED,
       CONSTANT.TOOLS.PIECEWISE,
       CONSTANT.TOOLS.NO_SOLUTION,
-      CONSTANT.TOOLS.AREA2,
+      // CONSTANT.TOOLS.AREA2,
     ],
   },
 ]
@@ -143,16 +144,21 @@ const iconsByToolName = {
   ),
   [CONSTANT.TOOLS.AREA2]: <IconArea2 width={29} height={25} />,
   [CONSTANT.TOOLS.PIECEWISE]: <IconPiecewise width={40} height={32} />,
-  undo: <IconUndo width={16} height={15} />,
-  redo: <IconRedo width={16} height={15} />,
-  clear: (
+  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit />,
+  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} />,
+  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} />,
+  [CONSTANT.TOOLS.CLEAR]: (
     <IconEraseText width={13} height={16} stroke="transparent !important" />
   ),
-  reset: (
+  [CONSTANT.TOOLS.RESET]: (
     <IconEraseText width={16} height={15} stroke="transparent !important" />
   ),
-  trash: <IconTrash width={13} height={15} stroke="transparent !important" />,
-  delete: <IconTrash width={13} height={15} stroke="transparent !important" />,
+  [CONSTANT.TOOLS.TRASH]: (
+    <IconTrash width={13} height={15} stroke="transparent !important" />
+  ),
+  [CONSTANT.TOOLS.DELETE]: (
+    <IconTrash width={13} height={15} stroke="transparent !important" />
+  ),
   add: (
     <IconPlusCircle width={16} height={15} stroke="transparent !important" />
   ),
@@ -183,12 +189,13 @@ const labelsByToolName = {
   [CONSTANT.TOOLS.PIECEWISE]: 'Piecewise',
   [CONSTANT.TOOLS.NO_SOLUTION]: 'No Solution',
   [CONSTANT.TOOLS.AREA2]: 'Area',
-  undo: 'Undo',
-  redo: 'Redo',
-  clear: 'Clear',
-  reset: 'Reset',
-  trash: 'Remove',
-  delete: 'Delete',
+  [CONSTANT.TOOLS.EDIT_LABEL]: 'Edit Label',
+  [CONSTANT.TOOLS.UNDO]: 'Undo',
+  [CONSTANT.TOOLS.REDO]: 'Redo',
+  [CONSTANT.TOOLS.CLEAR]: 'Clear',
+  [CONSTANT.TOOLS.RESET]: 'Reset',
+  [CONSTANT.TOOLS.TRASH]: 'Remove',
+  [CONSTANT.TOOLS.DELETE]: 'Delete',
   add: '',
 }
 

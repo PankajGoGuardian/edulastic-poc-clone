@@ -558,7 +558,7 @@ export const Fscreen = {
       if (returnValue?.then) {
         returnValue?.catch((_e) => {
           console.warn('fullscreen error', _e)
-          Sentry.captureException(_e)
+          Sentry.captureMessage('fullScreenIssue', 'debug')
         })
       }
     } catch (e) {

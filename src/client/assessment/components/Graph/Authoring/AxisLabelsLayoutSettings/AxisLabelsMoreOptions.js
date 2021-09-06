@@ -5,6 +5,7 @@ import { Select } from 'antd'
 import { notification, getFormattedAttrId } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
+import LabelWithHelper from '../../components/LabelWithHelper'
 import { fractionStringToNumber } from '../../../../utils/helpers'
 import { FRACTION_FORMATS } from '../../../../constants/constantsForQuestions'
 import { RENDERING_BASE } from '../../Builder/config/constants'
@@ -22,6 +23,7 @@ import {
   SelectInputStyled,
 } from '../../../../styled/InputStyles'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
+import { validations } from '../../../../utils/inputsValidations'
 
 class AxisLabelsMoreOptions extends Component {
   constructor(props) {
@@ -115,8 +117,19 @@ class AxisLabelsMoreOptions extends Component {
     const { graphData, setNumberline } = this.props
     const { numberlineAxis } = graphData
 
+    let valid = true
+    if (validations[name]) {
+      valid = validations[name](value)
+    }
+
+    if (!valid) {
+      return
+    }
+
     if (name !== 'specificPoints' && !value) {
       setNumberline({ ...numberlineAxis, [name]: 0 })
+    } else if (name === 'minorTicks') {
+      setNumberline({ ...numberlineAxis, [name]: +value })
     } else {
       setNumberline({ ...numberlineAxis, [name]: value })
     }
@@ -309,21 +322,6 @@ class AxisLabelsMoreOptions extends Component {
 
             <Col md={12}>
               <Label>
-                {t('component.graphing.layoutoptions.titleposition')}
-              </Label>
-              <TextInputStyled
-                type="text"
-                name="titlePosition"
-                placeholder="0"
-                value={
-                  uiStyle.titlePosition === 0 ? null : uiStyle.titlePosition
-                }
-                onChange={this.handleOptionsInputChange}
-              />
-            </Col>
-
-            <Col md={12}>
-              <Label>
                 {t('component.graphing.layoutoptions.separationdistancex')}
               </Label>
               <TextInputStyled
@@ -357,20 +355,18 @@ class AxisLabelsMoreOptions extends Component {
             </Col>
 
             <Col md={12}>
-              <Label>{t('component.graphing.layoutoptions.fontSize')}</Label>
-              <SelectInputStyled
-                data-cy="fontSize"
-                style={{ width: '100%' }}
-                onChange={this.changeFontSize}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                value={this.getFontSizeItem().label}
-              >
-                {fontSizeList.map((option) => (
-                  <Select.Option data-cy={option.id} key={option.value}>
-                    {t(`component.options.${option.label}`)}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
+              <Label>
+                {t('component.graphing.layoutoptions.titleposition')}
+              </Label>
+              <TextInputStyled
+                type="text"
+                name="titlePosition"
+                placeholder="0"
+                value={
+                  uiStyle.titlePosition === 0 ? null : uiStyle.titlePosition
+                }
+                onChange={this.handleOptionsInputChange}
+              />
             </Col>
 
             <Col md={12}>
@@ -385,6 +381,23 @@ class AxisLabelsMoreOptions extends Component {
                 {responseBoxPositionList.map((option) => (
                   <Select.Option data-cy={option.id} key={option.id}>
                     {option.label}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+
+            <Col md={12}>
+              <Label>{t('component.graphing.layoutoptions.fontSize')}</Label>
+              <SelectInputStyled
+                data-cy="fontSize"
+                style={{ width: '100%' }}
+                onChange={this.changeFontSize}
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                value={this.getFontSizeItem().label}
+              >
+                {fontSizeList.map((option) => (
+                  <Select.Option data-cy={option.id} key={option.value}>
+                    {t(`component.options.${option.label}`)}
                   </Select.Option>
                 ))}
               </SelectInputStyled>
@@ -450,7 +463,9 @@ class AxisLabelsMoreOptions extends Component {
               />
             </Col>
             <Col md={12}>
-              <Label>{t('component.graphing.ticksoptions.minorTicks')}</Label>
+              <LabelWithHelper helperKey="minorTicks">
+                {t('component.graphing.ticksoptions.minorTicks')}
+              </LabelWithHelper>
               <TextInputStyled
                 type="text"
                 name="minorTicks"

@@ -50,22 +50,26 @@ const Magnifier = ({
   const unzoomRef = useRef()
 
   const handleScroll = (e) => {
-    document
-      .getElementsByClassName('test-item-col')[1]
-      ?.scrollTo(0, e.target.scrollTop)
+    if (enable) {
+      document
+        .getElementsByClassName('test-item-col')[1]
+        ?.scrollTo(0, e.target.scrollTop)
+    }
   }
 
   const onMouseMove = (e) => {
     if (!setting.dragging) {
       return
     }
-    setSetting({
-      ...setting,
-      pos: {
-        x: e.pageX - setting.rel.x,
-        y: e.pageY - setting.rel.y,
-      },
-    })
+    if (offset.top <= e.pageY - setting.rel.y) {
+      setSetting({
+        ...setting,
+        pos: {
+          x: e.pageX - setting.rel.x,
+          y: e.pageY - setting.rel.y,
+        },
+      })
+    }
     e.stopPropagation()
     e.preventDefault()
   }

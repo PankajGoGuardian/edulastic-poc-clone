@@ -2,7 +2,7 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { cloneDeep, get, pickBy, identity, isObject } from 'lodash'
+import { cloneDeep, get, pickBy, identity, isObject, isEmpty } from 'lodash'
 import produce from 'immer'
 
 import { TabContainer } from '@edulastic/common'
@@ -148,7 +148,7 @@ class GraphAnswers extends Component {
   }
 
   handleChangePoints = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
 
@@ -184,7 +184,8 @@ class GraphAnswers extends Component {
     }
   }
 
-  handleChangeEvaluationOption = (prop, value) => {
+  // removeAnswers comes from PointOnAnEquation component
+  handleChangeEvaluationOption = (prop, value, removeAnswers) => {
     const { graphData, setQuestionData } = this.props
     const { tab } = this.state
 
@@ -237,11 +238,18 @@ class GraphAnswers extends Component {
       }
       if (tab === 0) {
         draft.validation.validResponse.options = pickBy(draftOptions, identity)
+        if (removeAnswers) {
+          draft.validation.validResponse.value = []
+        }
       } else {
         draft.validation.altResponses[tab - 1].options = pickBy(
           draftOptions,
           identity
         )
+
+        if (removeAnswers) {
+          draft.validation.altResponses[tab - 1].value = []
+        }
       }
     })
     setQuestionData(draftItem)
@@ -276,6 +284,7 @@ class GraphAnswers extends Component {
       tab === 0
         ? validation.validResponse.value
         : validation.altResponses[tab - 1].value
+    const options = this.optionsForEvaluation
 
     return (
       <CorrectAnswers
@@ -304,6 +313,7 @@ class GraphAnswers extends Component {
                 elements={graphData.validation.validResponse.value}
                 disableResponse={false}
                 item={graphData}
+                pointsOnEquEnabled={!!(options?.latex && options?.points)}
                 onChangeKeypad={onChangeKeypad}
                 symbols={symbols}
                 isCorrectAnsTab
@@ -326,6 +336,7 @@ class GraphAnswers extends Component {
                       elements={alter.value}
                       disableResponse={false}
                       onChange={(val) => this.updateAltValidationValue(val, i)}
+                      pointsOnEquEnabled={!!(options?.latex && options?.points)}
                       item={graphData}
                       onChangeKeypad={onChangeKeypad}
                       symbols={symbols}
@@ -337,13 +348,14 @@ class GraphAnswers extends Component {
             })}
         </>
         <EvaluationSettings
+          options={options}
           method={GRAPH_EVALUATION_SETTING}
-          options={this.optionsForEvaluation}
+          hasGraphElements={!isEmpty(elements)}
           hidePointOnEquation={hidePointOnEquation.includes(graphType)}
           changeOptions={this.handleChangeEvaluationOption}
         />
 
-        <GraphMessage options={this.optionsForEvaluation} elements={elements} />
+        <GraphMessage options={options} elements={elements} />
       </CorrectAnswers>
     )
   }

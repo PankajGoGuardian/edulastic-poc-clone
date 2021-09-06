@@ -1,14 +1,15 @@
-/* eslint-disable */
 import JXG from 'jsxgraph'
-import { isNumber, cloneDeep } from 'lodash'
-import getDefaultConfig, { CONSTANT } from './config'
+import { Modal } from 'antd'
+import { isNumber, cloneDeep, last } from 'lodash'
+import { greyThemeDark2 } from '@edulastic/colors'
 import * as Sentry from '@sentry/browser'
+import i18n from '@edulastic/localization'
+import getDefaultConfig, { CONSTANT } from './config'
 import {
   Area,
   Circle,
   DragDrop,
   DrawingObject,
-  EditButton,
   Ellipse,
   Equation,
   Exponent,
@@ -140,6 +141,10 @@ class Board {
 
     this.creatingHandler = () => {}
     this.setCreatingHandler()
+
+    this.inequalities = []
+
+    this.pointOnEquEnabled = false
   }
 
   addDragDropValue(value, x, y, dimensions) {
@@ -298,6 +303,7 @@ class Board {
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
         this.creatingHandler = NumberlineVector.onHandler
         return
+      case CONSTANT.TOOLS.EDIT_LABEL:
       case CONSTANT.TOOLS.TRASH:
       case CONSTANT.TOOLS.DELETE:
         this.creatingHandler = () => {}
@@ -353,6 +359,7 @@ class Board {
     }
   }
 
+  // eslint-disable-next-line
   getTempPoints() {
     return [
       ...Line.getTempPoints(),
@@ -381,6 +388,19 @@ class Board {
         return
       }
 
+      if (this.pointOnEquEnabled) {
+        Modal.confirm({
+          title: 'Warning',
+          content:
+            'You cannot add additional objects if you select the points on the equation feature.',
+          centered: true,
+          okText: 'Confirm',
+          okCancel: false,
+          maskClosable: true,
+        })
+        return
+      }
+
       if (this.creatingHandlerIsDisabled) {
         return
       }
@@ -391,13 +411,36 @@ class Board {
       }
 
       if (
+        this.currentTool === CONSTANT.TOOLS.AREA &&
+        (this.elements || []).some(
+          (element) => element.type === Equation.jxgType
+        )
+      ) {
+        Modal.confirm({
+          title: 'Warning',
+          content: i18n.t(
+            'assessment:component.graphing.helperText.fxWithArea'
+          ),
+          okText: 'Confirm',
+          okCancel: false,
+          maskClosable: true,
+        })
+        return
+      }
+      if (
         this.currentTool === CONSTANT.TOOLS.TRASH ||
         this.currentTool === CONSTANT.TOOLS.DELETE
       ) {
         if (this.removeObjectsUnderMouse(event)) {
           Area.updateShadingsForAreaPoints(this, this.elements)
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE)
+          this.removeIneqalities()
         }
+        return
+      }
+
+      if (this.currentTool === CONSTANT.TOOLS.EDIT_LABEL) {
+        this.editObjUnderMouse(event)
         return
       }
 
@@ -407,7 +450,6 @@ class Board {
       ) {
         return
       }
-
       const newElement = this.creatingHandler(this, event)
       if (newElement) {
         this.elements.push(newElement)
@@ -425,83 +467,87 @@ class Board {
     this.disableResponse = value
   }
 
+  // TODO: remove commented lines after QA
+  // eslint-disable-next-line
   createEditButton(menuHandler) {
-    this.editButton = EditButton.createButton(this, menuHandler)
-    this.editButton.disabled = false
+    // this.editButton = EditButton.createButton(this, menuHandler)
+    // this.editButton.disabled = false
   }
 
+  // eslint-disable-next-line
   setEditButtonStatus(disabled) {
-    this.editButton.disabled = disabled
+    // this.editButton.disabled = disabled
   }
 
+  // eslint-disable-next-line
   checkEditButtonCall(element) {
-    return (
-      this.elements.some((elem) => elem.id === element.id) ||
-      this.elements.some(
-        (elem) =>
-          elem.ancestors &&
-          Object.values(elem.ancestors).some(
-            (ancestor) => ancestor.id === element.id
-          )
-      )
-    )
+    // return (
+    //   this.elements.some((elem) => elem.id === element.id) ||
+    //   this.elements.some(
+    //     (elem) =>
+    //       elem.ancestors &&
+    //       Object.values(elem.ancestors).some(
+    //         (ancestor) => ancestor.id === element.id
+    //       )
+    //   )
+    // )
   }
 
+  // eslint-disable-next-line
   handleElementMouseOver(element, event) {
-    if (this.editButton.disabled || isTouchDevice()) {
-      return
-    }
-    if (this.checkEditButtonCall(element)) {
-      let coords
-      if (JXG.isPoint(element)) {
-        coords = element.coords
-      } else {
-        coords = this.getCoords(event)
-      }
-      EditButton.moveButton(this, coords, element)
-    }
+    // if (this.editButton.disabled || isTouchDevice()) {
+    //   return
+    // }
+    // if (this.checkEditButtonCall(element)) {
+    //   let coords
+    //   if (JXG.isPoint(element)) {
+    //     coords = element.coords
+    //   } else {
+    //     coords = this.getCoords(event)
+    //   }
+    //   EditButton.moveButton(this, coords, element)
+    // }
   }
 
+  // eslint-disable-next-line
   handleElementMouseOut(element) {
-    if (!this.editButton.disabled) {
-      if (this.checkEditButtonCall(element)) {
-        EditButton.hideButton(this, element)
-      }
-    }
+    // if (!this.editButton.disabled) {
+    //   if (this.checkEditButtonCall(element)) {
+    //     EditButton.hideButton(this, element)
+    //   }
+    // }
   }
 
+  // eslint-disable-next-line
   handleStackedElementsMouseEvents(element) {
-    if (this.editButton) {
-      element.on('mouseover', (event) => {
-        if (this.editButton.disabled) {
-          return
-        }
-        if (this.checkEditButtonCall(element)) {
-          const pointsUnderMouse = getAllObjectsUnderMouse(this, event).filter(
-            (mouseElement) => mouseElement.elType === 'point'
-          )
-
-          if (pointsUnderMouse.length === 0) {
-            this.stacksUnderMouse = false
-            this.handleElementMouseOver(element, event)
-          } else {
-            this.stacksUnderMouse = true
-          }
-        }
-      })
-
-      element.on('mouseout', () => {
-        if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
-          this.handleElementMouseOut(element)
-        }
-      })
-
-      element.on('drag', () => {
-        if (this.checkEditButtonCall(element)) {
-          EditButton.cleanButton(this, element)
-        }
-      })
-    }
+    // if (this.editButton) {
+    //   element.on('mouseover', (event) => {
+    //     if (this.editButton.disabled) {
+    //       return
+    //     }
+    //     if (this.checkEditButtonCall(element)) {
+    //       const pointsUnderMouse = getAllObjectsUnderMouse(this, event).filter(
+    //         (mouseElement) => mouseElement.elType === 'point'
+    //       )
+    //       if (pointsUnderMouse.length === 0) {
+    //         this.stacksUnderMouse = false
+    //         this.handleElementMouseOver(element, event)
+    //       } else {
+    //         this.stacksUnderMouse = true
+    //       }
+    //     }
+    //   })
+    //   element.on('mouseout', () => {
+    //     if (!this.stacksUnderMouse && this.checkEditButtonCall(element)) {
+    //       this.handleElementMouseOut(element)
+    //     }
+    //   })
+    //   element.on('drag', () => {
+    //     if (this.checkEditButtonCall(element)) {
+    //       EditButton.cleanButton(this, element)
+    //     }
+    //   })
+    // }
   }
 
   updateNumberlineSettings(canvas, numberlineAxis, layout) {
@@ -670,12 +716,12 @@ class Board {
     this.elements.map(this.removeObject.bind(this))
     this.elements = []
     this.labelForEq = []
-
-    this.bgElements.map((el) => {
+    this.removeIneqalities()
+    this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map((ancestorsEl) => {
+        el.inherits.forEach((ancestorsEl) => {
           this.labelForEq.push(ancestorsEl.labelHTML)
         })
       }
@@ -683,6 +729,7 @@ class Board {
   }
 
   resetAnswers() {
+    this.removeIneqalities()
     this.answers.map(this.removeObject.bind(this))
     this.answers = []
   }
@@ -690,6 +737,28 @@ class Board {
   resetBg() {
     this.bgElements.map(this.removeObject.bind(this))
     this.bgElements = []
+  }
+
+  editObjUnderMouse(event) {
+    const elementsUnderMouse = getAllObjectsUnderMouse(this, event)
+    const elementsToEdit = this.elements
+      .map((el) => {
+        if (el.ancestors) {
+          return [el].concat(Object.values(el.ancestors))
+        }
+        return [el]
+      })
+      .flat()
+      .filter(
+        (el) => elementsUnderMouse.findIndex((eum) => eum.id === el.id) > -1
+      )
+
+    if (last(elementsToEdit)) {
+      this.events.emit(
+        CONSTANT.EVENT_NAMES.CHANGE_LABEL,
+        last(elementsToEdit).id
+      )
+    }
   }
 
   removeObjectsUnderMouse(event) {
@@ -830,7 +899,7 @@ class Board {
         case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
           return NumberlineVector.getConfig(element, this)
         default:
-          break
+          return null
       }
     })
   }
@@ -951,6 +1020,13 @@ class Board {
     )
   }
 
+  removeIneqalities() {
+    this.inequalities.forEach((ineq) => {
+      this.$board.removeObject(ineq)
+    })
+    this.inequalities = []
+  }
+
   loadAnswersFromConfig(flatCfg) {
     const config = flat2nestedConfig(flatCfg)
     this.answers.push(
@@ -964,6 +1040,7 @@ class Board {
   }
 
   loadFromConfig(flatCfg) {
+    this.removeIneqalities()
     const config = flat2nestedConfig(flatCfg)
     this.elements.push(...config.map((element) => this.loadObject(element)))
     Area.updateShadingsForAreaPoints(this, this.elements)
@@ -1049,11 +1126,11 @@ class Board {
   }
 
   loadObject(object, settings = {}) {
-    this.bgElements.map((el) => {
+    this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
       } else {
-        el.inherits.map((ancestorsEl) => {
+        el.inherits.forEach((ancestorsEl) => {
           this.labelForEq.push(ancestorsEl.labelHTML)
         })
       }
@@ -1064,7 +1141,6 @@ class Board {
       checkLabelVisibility = false,
       checkPointVisibility = false,
       fixed = false,
-      bg = false,
     } = settings
 
     switch (object._type) {
@@ -1143,7 +1219,7 @@ class Board {
         )
 
       case JXG.OBJECT_TYPE_POLYGON:
-        object.points.map((point) => {
+        object.points.forEach((point) => {
           this.labelForEq.push(point)
         })
         return Polygon.create(
@@ -1252,9 +1328,11 @@ class Board {
         this.labelForEq.push(object.points[0].label)
         const point = Point.create(this, object.points[0], {
           pointIsVisible:
-            !checkPointVisibility || (showPoints && point.pointIsVisible),
+            !checkPointVisibility ||
+            (showPoints && object.points[0]?.pointIsVisible),
           labelIsVisible:
-            !checkLabelVisibility || (showPoints && point.labelIsVisible),
+            !checkLabelVisibility ||
+            (showPoints && object.points[0]?.labelIsVisible),
           fixed,
         })
         return Exponent2.create(this, object, point, {
@@ -1283,7 +1361,7 @@ class Board {
         )
 
       case Polynom.jxgType:
-        object.points.map((point) => {
+        object.points.forEach((point) => {
           this.labelForEq.push(point)
         })
         return Polynom.create(
@@ -1388,26 +1466,36 @@ class Board {
           }
         )
 
-      case Equation.jxgType:
-        function getPoints(type, res) {
+      case Equation.jxgType: {
+        const getPoints = (type, res) => {
           res = res.split('],')[1]
-          res = res.replace("['" + type + "',[", '').replace(']]', '')
+          res = res.replace(`['${type}',[`, '').replace(']]', '')
           res = res.substring(2, res.length - 2)
           res = res.split('),(')
-          for (var i = 0; i < res.length; i++) {
+          for (let i = 0; i < res.length; i++) {
             res[i] = res[i].split(',')
           }
           return res
         }
+        const result = object.apiLatex
+        let latex = object.latex
 
-        var obj = {
+        const isInequalities = ['>=', '>', '<=', '<'].some((x) =>
+          result.includes(x)
+        )
+        let shouldNotDashed = true
+        let isInverseIneq = false
+        if (isInequalities) {
+          shouldNotDashed = ['>=', '<='].some((x) => result.includes(x))
+          isInverseIneq = ['>=', '>'].some((x) => result.includes(x))
+        }
+
+        const obj = {
           label: false,
           labelIsVisible: false,
           baseColor: '#595e98',
+          dashed: !shouldNotDashed,
         }
-
-        var result = object.apiLatex
-        var latex = object.latex
 
         if (
           latex.substring(1, 6) == 'left(' &&
@@ -1419,9 +1507,9 @@ class Board {
           latex = latex.replace(/\\/g, '')
           latex = latex.split(',')
 
-          var labelPoint1 = getLabel(this.labelForEq)
+          const labelPoint1 = getLabel(this.labelForEq)
 
-          var point = {
+          const point = {
             x: latex[0],
             y: latex[1],
             label: object.label || getLabel(this.labelForEq),
@@ -1438,12 +1526,13 @@ class Board {
           }
 
           return Point.create(this, point, { latex: latexForEqPoint, result })
-        } else if (result.includes('line')) {
-          var coords = getPoints('line', result)
+        }
+        if (result.includes('line')) {
+          const coords = getPoints('line', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: coords[0][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1458,7 +1547,7 @@ class Board {
           )
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1471,25 +1560,37 @@ class Board {
           this.labelForEq.push(
             object.pointsLabel[1] || getLabel(this.labelForEq)
           )
-          var points = [Point.create(this, point1), Point.create(this, point2)]
-          var type = 'line'
+          const points = [
+            Point.create(this, point1),
+            Point.create(this, point2),
+          ]
+          const type = 'line'
 
           if (!object.pointsLabel) {
             object.pointsLabel = [labelPoint1, labelPoint2]
           }
 
-          return Line.create(this, obj, points, type, {
+          const jsxObj = Line.create(this, obj, points, type, {
             latex,
             result,
             pointsLabel: [labelPoint1, labelPoint2],
           })
-        } else if (result.includes('circle')) {
-          var coords = getPoints('circle', result)
+          if (isInequalities) {
+            const ineq = this.$board.create('inequality', [jsxObj], {
+              inverse: isInverseIneq,
+              fillColor: greyThemeDark2,
+            })
+            this.inequalities.push(ineq)
+          }
+          return jsxObj
+        }
+        if (result.includes('circle')) {
+          const coords = getPoints('circle', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          //point1 - center
-          var point1 = {
+          // point1 - center
+          const point1 = {
             x: coords[1][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1504,8 +1605,8 @@ class Board {
           )
           const labelPoint2 = getLabel(this.labelForEq)
 
-          //highest point of circle (top Y)
-          var point2 = {
+          // highest point of circle (top Y)
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1518,7 +1619,10 @@ class Board {
           this.labelForEq.push(
             object.pointsLabel[1] || getLabel(this.labelForEq)
           )
-          var points = [Point.create(this, point1), Point.create(this, point2)]
+          const points = [
+            Point.create(this, point1),
+            Point.create(this, point2),
+          ]
 
           if (!object.pointsLabel) {
             object.pointsLabel = [labelPoint1, labelPoint2]
@@ -1529,12 +1633,13 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2],
           })
-        } else if (result.includes(CONSTANT.TOOLS.ELLIPSE)) {
-          var coords = getPoints(CONSTANT.TOOLS.ELLIPSE, result)
+        }
+        if (result.includes(CONSTANT.TOOLS.ELLIPSE)) {
+          const coords = getPoints(CONSTANT.TOOLS.ELLIPSE, result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: `${coords[2][0]} - ${coords[1][0]}`,
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1547,7 +1652,7 @@ class Board {
           this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1560,7 +1665,7 @@ class Board {
           this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
           const labelPoint3 = getLabel(this.labelForEq)
 
-          var point3 = {
+          const point3 = {
             x: coords[2][0],
             y: coords[2][1],
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
@@ -1571,7 +1676,7 @@ class Board {
           }
 
           this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
-          var points = [
+          const points = [
             Point.create(this, point1),
             Point.create(this, point2),
             Point.create(this, point3),
@@ -1585,12 +1690,13 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2, labelPoint3],
           })
-        } else if (result.includes('hyperbola')) {
-          var coords = getPoints('hyperbola', result)
+        }
+        if (result.includes('hyperbola')) {
+          const coords = getPoints('hyperbola', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: coords[0][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1603,7 +1709,7 @@ class Board {
           this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1615,7 +1721,7 @@ class Board {
           this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
           const labelPoint3 = getLabel(this.labelForEq)
 
-          var point3 = {
+          const point3 = {
             x: coords[2][0],
             y: coords[2][1],
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
@@ -1626,7 +1732,7 @@ class Board {
           }
 
           this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
-          var points = [
+          const points = [
             Point.create(this, point1),
             Point.create(this, point2),
             Point.create(this, point3),
@@ -1640,12 +1746,13 @@ class Board {
             result,
             labelHTML: [labelPoint1, labelPoint2, labelPoint3],
           })
-        } else if (result.includes('parabola2')) {
-          var coords = getPoints('parabola2', result)
+        }
+        if (result.includes('parabola2')) {
+          const coords = getPoints('parabola2', result)
 
           const labelPoint1 = getLabel(this.labelForEq)
 
-          var point1 = {
+          const point1 = {
             x: coords[1][0],
             y: coords[1][1],
             label: object.pointsLabel[1] || getLabel(this.labelForEq),
@@ -1658,7 +1765,7 @@ class Board {
           this.labelForEq.push(object.label[0] || getLabel(this.labelForEq))
           const labelPoint2 = getLabel(this.labelForEq)
 
-          var point2 = {
+          const point2 = {
             x: coords[2][0],
             y: coords[2][1],
             label: object.pointsLabel[2] || getLabel(this.labelForEq),
@@ -1671,7 +1778,7 @@ class Board {
           this.labelForEq.push(object.label[1] || getLabel(this.labelForEq))
           const labelPoint3 = getLabel(this.labelForEq)
 
-          var point3 = {
+          const point3 = {
             x: coords[0][0],
             y: coords[0][1],
             label: object.pointsLabel[0] || getLabel(this.labelForEq),
@@ -1682,7 +1789,7 @@ class Board {
           }
 
           this.labelForEq.push(object.label[2] || getLabel(this.labelForEq))
-          var points = [
+          const points = [
             Point.create(this, point3),
             Point.create(this, point2),
             Point.create(this, point1),
@@ -1696,11 +1803,10 @@ class Board {
             result,
             labelHTML: [labelPoint3, labelPoint2, labelPoint1],
           })
-        } else {
-          object.apiLatex = getEquationFromApiLatex(object.apiLatex)
-          return Equation.create(this, object)
         }
-
+        object.apiLatex = getEquationFromApiLatex(object.apiLatex)
+        return Equation.create(this, object)
+      }
       case Area.jxgType:
         return Area.create(this, object, { fixed })
 
@@ -1746,6 +1852,10 @@ class Board {
 
   removeConnectline() {
     Connectline.remove(this.$board, this.connectline)
+  }
+
+  updatePointOnEquEnabled(value) {
+    this.pointOnEquEnabled = value
   }
 }
 

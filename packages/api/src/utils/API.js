@@ -9,7 +9,13 @@ import notification from '@edulastic/common/src/components/Notification'
 import * as Sentry from '@sentry/browser'
 import { debounce } from 'lodash'
 import config from '../config'
-import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
+import {
+  getAccessToken,
+  getTraceId,
+  initKID,
+  initTID,
+  getCurrentDistrictName,
+} from './Storage'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
@@ -201,6 +207,7 @@ export default class API {
             'originalreferrer'
           )
         }
+        const currentDistrictName = getCurrentDistrictName() || ''
         const token =
           getParentsStudentToken(_config) || defaultToken || getAccessToken()
         const currentUserFromRedux = getUserFromRedux()
@@ -215,14 +222,15 @@ export default class API {
           console.warn('DISTRICTID switched: so reloading')
           const recentReloads = getReloadsHappenedRecently()
           if (recentReloads.length > 2) {
-            const mismatchErr = new Error(
-              `multiple districts mismatch infinite reload`
+            Sentry.captureMessage(
+              `multiple districts mismatch infinite reload`,
+              'info'
             )
-            Sentry.captureException(mismatchErr)
             forceLogout()
             notification({
               type: 'error',
-              msg: 'There is a problem authenticating your account',
+              msg:
+                'There is a problem authenticating your account. Please contact us at support@edulastic.com to resolve the issue',
             })
             setTimeout(() => {
               window.location.href = '/login'
@@ -231,6 +239,10 @@ export default class API {
           }
           // debouncing to prevent concurrent apis to be interpreted as repeated reloads
           debounce(addReloadedEntryToSession, 700)()
+          notification({
+            type: 'info',
+            msg: `We are switching you to ${currentDistrictName} as you can login to only one district at a time`,
+          })
           window.location.href = '/'
         }
         if (token) {
@@ -299,11 +311,16 @@ export default class API {
       },
       (data) => {
         const reqUrl = data.response?.config?.url || 'NA'
-        const err = new Error(
-          `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
-            data.response?.data?.message || 'NA'
-          }`
-        )
+        let err
+        if (data.response?.status === 500) {
+          err = new Error(
+            `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
+              data.response?.data?.message || 'NA'
+            }`
+          )
+        } else {
+          err = new Error(data.response?.data?.message || 'NA')
+        }
 
         // make the response available so anyone can read it.
         err.status = data.response?.status
@@ -316,7 +333,7 @@ export default class API {
 
             scope.setLevel('error')
             scope.setTag('ref', data.response?.headers?.['x-server-ref'])
-            Sentry.captureException(err)
+            Sentry.captureMessage('api error', 'debug')
             scope.setTag('issueType', 'UnexpectedErrorAPI')
             scope.setFingerprint(['{{default}}', fingerPrint])
             scope.setContext('api_meta', {
@@ -364,6 +381,10 @@ export default class API {
           data?.response?.status === 409 &&
           data.response.data?.message === 'oldToken'
         ) {
+          // disabling sentry , since the session is no longer valid
+          if (Sentry?.getCurrentHub()?.getClient()?.getOptions()?.enabled) {
+            Sentry.getCurrentHub().getClient().getOptions().enabled = false
+          }
           // returning skeleton reponses to avoid erroring out in Api call
           return Promise.resolve({ data: { result: null } })
         }

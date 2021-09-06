@@ -91,6 +91,8 @@ const PlayerHeader = ({
   testType,
   isTestPreviewModalVisible,
   isPremiumContentWithoutAccess = false,
+  checkAnswer,
+  answerChecksUsedForItem,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -274,6 +276,8 @@ const PlayerHeader = ({
                 groupId={groupId}
                 header={header}
                 isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+                checkAnswer={checkAnswer}
+                answerChecksUsedForItem={answerChecksUsedForItem}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

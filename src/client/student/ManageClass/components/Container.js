@@ -50,6 +50,7 @@ const ManageClassContainer = ({
   userRole,
   proxyUserRole,
 }) => {
+  const activeClasses = classList.filter((c) => c.active === 1)
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false)
   const [classCode, setClassCode] = useState(null)
   const code = classList.map((_code) => _code.code)
@@ -150,7 +151,10 @@ const ManageClassContainer = ({
 
         {classList.length ? (
           <ClassCardWrapper>
-            <ClassCards classList={classList} t={t} />
+            <ClassCards
+              classList={showClass ? activeClasses : classList}
+              t={t}
+            />
           </ClassCardWrapper>
         ) : (
           <NoDataBoxWrapper>

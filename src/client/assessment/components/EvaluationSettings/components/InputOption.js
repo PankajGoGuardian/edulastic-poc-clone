@@ -4,7 +4,7 @@ import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import { CheckboxLabel, TextInputStyled, FieldLabel } from '@edulastic/common'
 import LabelWithHelper from './LabelWithHelper'
-import { validations } from './inputsValidations'
+import { validations } from '../../../utils/inputsValidations'
 
 const InputOption = ({ t, options, onChange, optionKey, isGraph }) => {
   const [isAllowed, setIsAllowed] = useState(false)

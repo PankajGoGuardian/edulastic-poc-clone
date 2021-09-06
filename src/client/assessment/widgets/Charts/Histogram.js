@@ -221,6 +221,7 @@ const Histogram = ({
             deleteMode={deleteMode}
             color="#bd1f7c"
             onMouseDown={!disableResponse ? onMouseDownActiveBar : () => {}}
+            onTouchStart={!disableResponse ? onMouseDownActiveBar : () => {}}
             ref={activeBarRef}
           />
         )}

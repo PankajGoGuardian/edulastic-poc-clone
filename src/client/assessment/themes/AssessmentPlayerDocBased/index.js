@@ -189,6 +189,7 @@ class AssessmentPlayerDocBased extends React.Component {
             onChangeTool={this.onChangeTool}
             finishTest={this.openExitPopup}
             hidePause={hidePause}
+            themeForHeader={{ ...theme.default, ...assessmentPlayerTheme }}
           >
             {!loading && (
               <WorksheetComponent

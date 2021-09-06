@@ -202,6 +202,7 @@ class LoginContainer extends React.Component {
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
+                        data-cy="cleverLogin"
                         onClick={() => {
                           cleverLogin('teacher')
                         }}

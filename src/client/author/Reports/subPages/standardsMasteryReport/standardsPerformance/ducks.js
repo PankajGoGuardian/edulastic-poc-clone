@@ -115,7 +115,7 @@ function* getReportsStandardsPerformanceSummaryRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Failed to fetch reports standards performance Please try again...'
+      'Error getting reports standards performance. Please try again after a few minutes.'
 
     notification({ msg })
     yield put({

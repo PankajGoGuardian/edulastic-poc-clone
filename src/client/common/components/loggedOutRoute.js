@@ -1,11 +1,12 @@
 import React, { useEffect } from 'react'
 import { Route } from 'react-router-dom'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { isLoggedInForLoggedOutRoute } from '../utils/helpers'
 
 const LoggedOutRoute = ({
   component: Component,
+  notifications: Notifications,
   user,
   redirectPath,
   orgType,
@@ -20,7 +21,12 @@ const LoggedOutRoute = ({
   return (
     <Route
       {...rest}
-      render={(props) => <Component {...props} orgType={orgType} />}
+      render={(props) => [
+        <Component {...props} orgType={orgType} />,
+        !isEmpty(Notifications)
+          ? Notifications.map((Notification) => <Notification />)
+          : null,
+      ]}
     />
   )
 }

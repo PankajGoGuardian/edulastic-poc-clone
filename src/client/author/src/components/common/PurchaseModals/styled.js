@@ -96,6 +96,7 @@ export const CurriculumCard = styled.div`
   border-radius: 6px 6px 0px 0px;
   overflow: hidden;
   cursor: pointer;
+  position: relative;
   &:hover {
     .showHover {
       display: flex;

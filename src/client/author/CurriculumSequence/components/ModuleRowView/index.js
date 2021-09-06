@@ -46,6 +46,7 @@ const ModuleRowView = (props) => {
     isPlaylistDetailsPage,
     isManageContentActive,
     customizeInDraft,
+    blurCurrentModuleRow,
   } = props
 
   const {
@@ -62,7 +63,7 @@ const ModuleRowView = (props) => {
 
   const moduleInlineStyle = {
     'white-space': 'nowrap',
-    opacity: module.hidden ? `.5` : `1`,
+    opacity: module.hidden || blurCurrentModuleRow ? `.5` : `1`,
     pointerEvents: module.hidden ? 'none' : 'all',
     overflow: 'hidden',
   }

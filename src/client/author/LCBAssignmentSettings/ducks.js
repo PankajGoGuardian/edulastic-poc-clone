@@ -8,6 +8,7 @@ import {
   assignmentStatusOptions,
 } from '@edulastic/constants'
 import { receiveTestActivitySaga } from '../ClassBoard/ducks'
+import { updateAdditionalDataAction } from '../src/reducers/testActivity'
 
 const slice = createSlice({
   initialState: {
@@ -335,6 +336,11 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       settings,
     })
     yield put(slice.actions.updateAssignmentClassSettingsSucess())
+    if (typeof settings.answerOnPaper === 'boolean') {
+      yield put(
+        updateAdditionalDataAction({ answerOnPaper: settings.answerOnPaper })
+      )
+    }
     notification({
       type: 'success',
       messageKey: 'settingsUpdatedSuccessfully',

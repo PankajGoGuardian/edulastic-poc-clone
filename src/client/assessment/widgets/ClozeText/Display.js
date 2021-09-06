@@ -214,6 +214,8 @@ class ClozeTextDisplay extends Component {
       </StyledParser>
     )
 
+    const singleResponseBox = responseIds && responseIds.length === 1
+
     const answerBox =
       (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
         <>
@@ -223,6 +225,7 @@ class ClozeTextDisplay extends Component {
               validation.validResponse && validation.validResponse.value
             }
             stemNumeration={uiStyle.stemNumeration}
+            singleResponseBox={singleResponseBox}
           />
           {!isEmpty(item.validation.altResponses) &&
             item.validation.altResponses.map((altAnswers, index) => (
@@ -232,6 +235,7 @@ class ClozeTextDisplay extends Component {
                 altIndex={index + 1}
                 stemNumeration={uiStyle.stemNumeration}
                 userAnswers={altAnswers.value}
+                singleResponseBox={singleResponseBox}
               />
             ))}
         </>

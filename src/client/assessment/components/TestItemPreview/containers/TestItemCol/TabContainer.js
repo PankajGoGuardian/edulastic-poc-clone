@@ -39,6 +39,7 @@ function TabWrapper({
       if (height < feedbackHeight && !tabHeight) {
         // use feedback height for question
         setTabHeight(feedbackHeight)
+        updatePosition({ id: questionId, dimensions: { top, height } })
       } else {
         updatePosition({ id: questionId, dimensions: { top, height } })
       }

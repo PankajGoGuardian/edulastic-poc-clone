@@ -372,7 +372,7 @@ const PerformanceByStudents = ({
               )}
               <StyledDropDownContainer>
                 <ControlDropDown
-                  prefix="Proficiency Band - "
+                  prefix="Performance Band - "
                   data={proficiencyBandData}
                   by={selectedProficiency}
                   selectCB={(e, selected) => setProficiency(selected)}

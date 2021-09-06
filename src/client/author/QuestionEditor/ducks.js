@@ -9,16 +9,7 @@ import {
   select,
   take,
 } from 'redux-saga/effects'
-import {
-  cloneDeep,
-  values,
-  get,
-  omit,
-  set,
-  uniqBy,
-  intersection,
-  uniq,
-} from 'lodash'
+import { cloneDeep, values, get, omit, set, uniqBy, uniq } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
 import {
@@ -98,6 +89,9 @@ import {
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
 import {
+  hasMathFormula,
+  getLatexValuePairs,
+  generateExamples,
   getOptionsForMath,
   getOptionsForClozeMath,
 } from '../../assessment/utils/variables'
@@ -137,10 +131,24 @@ export const SET_IS_GRADING_RUBRIC =
 // actions
 
 // Variable
-export const CALCULATE_FORMULA =
-  '[variable] calculate variable formulation for example value'
-export const CALCULATE_FORMULA_FAILED =
-  '[variable] calculate variable formulation for example value failed'
+export const GENERATE_VARIABLE_REQUEST =
+  '[variable] generate dynamic examples request'
+export const GENERATE_VARIABLE_START =
+  '[variable] generate dynamic examples start'
+export const GENERATE_VARIABLE_FINISHED =
+  '[variable] generate dynamic examples finished'
+export const DYNAMIC_PARAMETER_UPDATED =
+  '[variable] dynamic parameters settings chagned'
+
+const ADD_ITEM_TO_CART = '[item list] add item to cart'
+
+const addItemToCartAction = (item) => ({
+  type: ADD_ITEM_TO_CART,
+  payload: {
+    item,
+    fromQuestionEdit: true,
+  },
+})
 
 export const receiveQuestionByIdAction = (id) => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -188,9 +196,13 @@ export const loadQuestionAction = (
   payload: { data, rowIndex, isPassageWidget },
 })
 
-export const calculateFormulaAction = (data) => ({
-  type: CALCULATE_FORMULA,
-  payload: { data },
+export const generateVariableAction = (data) => ({
+  type: GENERATE_VARIABLE_REQUEST,
+  payload: data,
+})
+
+export const variableSettingsChangedAction = () => ({
+  type: DYNAMIC_PARAMETER_UPDATED,
 })
 
 export const setDictAlignmentFromQuestion = (payload) => ({
@@ -216,6 +228,7 @@ const initialState = {
   error: null,
   saveError: null,
   calculating: false,
+  dpUpdated: false,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -226,17 +239,29 @@ export const reducer = (state = initialState, { type, payload }) => {
         calculating: !!payload,
       }
     }
-    case CALCULATE_FORMULA:
+    case GENERATE_VARIABLE_START:
       return {
         ...state,
         calculating: true,
       }
     case ADD_ITEM_EVALUATION:
-    case CALCULATE_FORMULA_FAILED:
     case UPDATE_QUESTION: {
       return {
         ...state,
         calculating: false,
+      }
+    }
+    case GENERATE_VARIABLE_FINISHED: {
+      return {
+        ...state,
+        calculating: false,
+        dpUpdated: false,
+      }
+    }
+    case DYNAMIC_PARAMETER_UPDATED: {
+      return {
+        ...state,
+        dpUpdated: true,
       }
     }
     case RECEIVE_QUESTION_REQUEST:
@@ -369,6 +394,11 @@ export const getAlignmentFromQuestionSelector = createSelector(
 export const getCalculatingSelector = createSelector(
   stateSelector,
   (state) => state.calculating
+)
+
+export const getDpUpdatedSelector = createSelector(
+  stateSelector,
+  (state) => state.dpUpdated
 )
 
 export const getIsGradingCheckboxState = createSelector(
@@ -684,6 +714,7 @@ function* saveQuestionSaga({
         reqData,
         ...(itemDetail.multipartItem && _testId ? [{ testId: _testId }] : [])
       )
+      yield put(addItemToCartAction(item))
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
@@ -713,14 +744,44 @@ function* saveQuestionSaga({
           tId = routerTestId
         }
       }
-      yield put(
-        push({
-          pathname: isTestFlow
-            ? `/author/tests/${tId}/editItem/${item?._id}`
-            : `/author/items/${item._id}/item-detail`,
-          state: currentRouterState,
-        })
-      )
+      if (isTestFlow) {
+        if (!tId || tId === 'undefined') {
+          const { __v, ...passageData } =
+            (yield select(getPassageSelector)) || {}
+          let passageItems = []
+          if (passageData?._id && passageData?.testItems?.length > 1) {
+            passageItems = yield call(
+              testItemsApi.getPassageItems,
+              passageData._id
+            )
+          }
+          yield put(
+            setTestDataAndUpdateAction({
+              item,
+              passageItems,
+              addToTest: true,
+              fromSaveMultipartItem: true,
+              routerState: currentRouterState,
+              url: `/author/tests/${tId}/editItem/${item?._id}`,
+            })
+          )
+        } else {
+          yield put(setCreatedItemToTestAction(item))
+          yield put(
+            push({
+              pathname: `/author/tests/${tId}/editItem/${item?._id}`,
+              state: currentRouterState,
+            })
+          )
+        }
+      } else {
+        yield put(
+          push({
+            pathname: `/author/items/${item._id}/item-detail`,
+            state: currentRouterState,
+          })
+        )
+      }
       return
     }
 
@@ -856,7 +917,7 @@ function* saveQuestionSaga({
       return
     }
     const stateToFollow =
-      locationState.testAuthoring === false
+      locationState?.testAuthoring === false
         ? { testAuthoring: false, testId: locationState.testId }
         : {}
     const { previousTestId, regradeFlow } = yield select(
@@ -900,55 +961,6 @@ function* saveQuestionSaga({
     })
   }
 }
-
-/**
- *
- * @param {Object} variables
- */
-const containsEmptyField = (variables) => {
-  const _keys = Object.keys(variables)
-  for (const key of _keys) {
-    const {
-      type = '',
-      exampleValue = '',
-      formula = '',
-      set: _set = '',
-      sequence = '',
-      name,
-    } = variables[key]
-    switch (true) {
-      // variables must be set
-      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
-        return {
-          hasEmptyField: true,
-          errMessage: 'dynamic parameters has empty fields',
-        }
-      // formula must be set
-      case type === 'FORMULA' && !formula:
-        return { hasEmptyField: true, errMessage: 'formula is required' }
-      // avoids recursion
-      case !!intersection(_keys, _set.split(',')).length:
-        return {
-          hasEmptyField: true,
-          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
-        }
-      case !!intersection(_keys, sequence.split(',')).length:
-        return {
-          hasEmptyField: true,
-          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
-        }
-      default:
-        break
-    }
-  }
-  return { hasEmptyField: false, errMessage: '' }
-}
-
-const hasMathFormula = (variables) =>
-  Object.keys(variables).some((key) => {
-    const { type } = variables[key] || {}
-    return type === 'FORMULA'
-  })
 
 /**
  *
@@ -1018,61 +1030,133 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 }
 // actions
 
-function* calculateFormulaSaga({ payload }) {
+function* loadQuestionSaga({ payload }) {
   try {
-    const getLatexValuePairs = ({
-      id,
-      variables,
-      example,
-      options,
-      isClozeMath,
-    }) => ({
-      id,
-      latexes: Object.keys(variables)
-        .map((variableName) => variables[variableName])
-        .filter((variable) => variable.type === 'FORMULA')
-        .reduce(
-          (lx, variable) => [
-            ...lx,
-            {
-              id: variable.name,
-              formula: variable.formula,
-              options: isClozeMath ? options[variable.name] || {} : options,
-            },
-          ],
-          []
-        ),
-      variables: Object.keys(variables).map((variableName) => ({
-        id: variableName,
-        value:
-          variables[variableName].type === 'FORMULA'
-            ? variables[variableName].formula
-            : example
-            ? example[variableName]
-            : variables[variableName].exampleValue,
-      })),
-    })
+    const { data, rowIndex, isPassageWidget = false } = payload
+    const pathname = yield select((state) => state.router.location.pathname)
+    const locationState = yield select(
+      (state) => state.router.location?.state || {}
+    )
+    yield put(changeCurrentQuestionAction(data.reference))
+    if (pathname.includes('tests')) {
+      yield put(
+        push({
+          pathname: `${pathname}/questions/edit/${data.type}`,
+          state: {
+            ...locationState,
+            backText: 'question edit',
+            backUrl: pathname,
+            rowIndex,
+            isPassageWithQuestions: isPassageWidget,
+          },
+        })
+      )
+    } else {
+      yield put(
+        push({
+          pathname: `/author/questions/edit/${data.type}`,
+          state: {
+            backText: 'question edit',
+            backUrl: pathname,
+            rowIndex,
+            isPassageWithQuestions: isPassageWidget,
+          },
+        })
+      )
+    }
+    let alignments = yield select(getAlignmentFromQuestionSelector)
+    if (!alignments.length) {
+      alignments = [getNewAlignmentState()]
+    }
+    yield put(setDictAlignmentFromQuestion(alignments))
+  } catch (e) {
+    Sentry.captureException(e)
+    const errorMessage = 'Unable to load the question.'
+    notification({ type: 'error', msg: errorMessage })
+  }
+}
 
-    const question = yield select(getCurrentQuestionSelector)
+const changeValidationWhenUnscored = (payload, oldQuestion) => {
+  let hasZeroInAltScore = false
+  const altResponses = get(payload, 'validation.altResponses', [])
+  const score = get(payload, 'validation.validResponse.score', 0)
+  const oldUnscored = get(oldQuestion, 'validation.unscored', false)
+  if (altResponses.length) {
+    hasZeroInAltScore = altResponses.some((altResp) => {
+      return altResp.score == 0
+    })
+  }
+  const isUnscored = score === 0 || hasZeroInAltScore
+
+  // notify only if unscored checkbox checked or score given is 0
+  if (oldUnscored === false && isUnscored) {
+    notification({ type: 'warn', msg: 'Marked as a practice question' })
+  }
+
+  if (isUnscored) {
+    return produce(payload, (draft) => {
+      draft.validation.validResponse.score = 0
+      draft.validation.altResponses?.forEach((altResp) => {
+        altResp.score = 0
+      })
+      if (draft.validation?.maxScore) {
+        draft.validation.maxScore = 0
+      }
+
+      draft.validation.unscored = isUnscored
+    })
+  }
+  return produce(payload, (draft) => {
+    draft.validation.unscored = isUnscored
+  })
+}
+
+function* updateQuestionSaga({ payload }) {
+  const prevQuestion = yield select(getCurrentQuestionSelector)
+  const currentLanguage = yield select(getCurrentLanguage)
+  const resourceTypes = [
+    questionType.VIDEO,
+    questionType.PASSAGE,
+    questionType.TEXT,
+  ]
+  const _payload = resourceTypes.includes(payload.type)
+    ? payload
+    : changeValidationWhenUnscored(payload, prevQuestion)
+
+  yield put({
+    type: UPDATE_QUESTION,
+    payload: changeDataInPreferredLanguage(
+      currentLanguage,
+      prevQuestion,
+      _payload
+    ),
+  })
+}
+
+function* generateVariableSaga({ payload }) {
+  try {
+    const dpUpdated = yield select(getDpUpdatedSelector)
+    const currentQues = yield select(getCurrentQuestionSelector)
+    if (!dpUpdated && !payload.newQuestion && !payload.shouldNotCheckUpdate) {
+      if (typeof payload.nextAction === 'function') {
+        payload.nextAction()
+      }
+      return
+    }
+
+    const question = payload.newQuestion ? payload.newQuestion : currentQues
 
     if (!question.variable || !question.variable.enabled) {
-      return []
+      return
     }
 
-    const variables =
-      payload.data.variables || question.variable.variables || {}
-    const examples = payload.data.examples || question.variable.examples || {}
+    yield put({
+      type: GENERATE_VARIABLE_START,
+    })
 
-    const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
-      variables
-    )
-    if (hasEmptyField) {
-      yield put({
-        type: CALCULATE_FORMULA_FAILED,
-      })
-      notification({ type: 'warn', msg: errMessage })
-      return true
-    }
+    const variables = get(question, 'variable.variables', {})
+    const count = get(question, 'variable.combinationsCount', 25)
+    const examples = generateExamples(variables, count)
 
     let results = []
     if (hasMathFormula(variables)) {
@@ -1130,73 +1214,21 @@ function* calculateFormulaSaga({ payload }) {
       type: UPDATE_QUESTION_REQUEST,
       payload: newQuestion,
     })
-  } catch (err) {
+
     yield put({
-      type: CALCULATE_FORMULA_FAILED,
+      type: GENERATE_VARIABLE_FINISHED,
+    })
+
+    if (typeof payload.nextAction === 'function') {
+      payload.nextAction()
+    }
+  } catch (error) {
+    yield put({
+      type: GENERATE_VARIABLE_FINISHED,
     })
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
-    console.log(err)
+    console.log(error)
   }
-}
-
-function* loadQuestionSaga({ payload }) {
-  try {
-    const { data, rowIndex, isPassageWidget = false } = payload
-    const pathname = yield select((state) => state.router.location.pathname)
-    const locationState = yield select(
-      (state) => state.router.location?.state || {}
-    )
-    yield put(changeCurrentQuestionAction(data.reference))
-    if (pathname.includes('tests')) {
-      yield put(
-        push({
-          pathname: `${pathname}/questions/edit/${data.type}`,
-          state: {
-            ...locationState,
-            backText: 'question edit',
-            backUrl: pathname,
-            rowIndex,
-            isPassageWithQuestions: isPassageWidget,
-          },
-        })
-      )
-    } else {
-      yield put(
-        push({
-          pathname: `/author/questions/edit/${data.type}`,
-          state: {
-            backText: 'question edit',
-            backUrl: pathname,
-            rowIndex,
-            isPassageWithQuestions: isPassageWidget,
-          },
-        })
-      )
-    }
-    let alignments = yield select(getAlignmentFromQuestionSelector)
-    if (!alignments.length) {
-      alignments = [getNewAlignmentState()]
-    }
-    yield put(setDictAlignmentFromQuestion(alignments))
-  } catch (e) {
-    Sentry.captureException(e)
-    const errorMessage = 'Unable to load the question.'
-    notification({ type: 'error', msg: errorMessage })
-  }
-}
-
-function* updateQuestionSaga({ payload }) {
-  const prevQuestion = yield select(getCurrentQuestionSelector)
-  const currentLanguage = yield select(getCurrentLanguage)
-
-  yield put({
-    type: UPDATE_QUESTION,
-    payload: changeDataInPreferredLanguage(
-      currentLanguage,
-      prevQuestion,
-      payload
-    ),
-  })
 }
 
 export function* watcherSaga() {
@@ -1204,7 +1236,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
     yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
     yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
-    yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga),
+    yield takeLatest(GENERATE_VARIABLE_REQUEST, generateVariableSaga),
     yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga),
     yield takeLatest(UPDATE_QUESTION_REQUEST, updateQuestionSaga),
   ])

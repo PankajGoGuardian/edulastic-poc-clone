@@ -252,7 +252,7 @@ const ChartPreview = ({
             padding={smallSize}
             boxShadow={smallSize ? 'none' : ''}
           >
-            <ChartContainer preview={view === EDIT}>
+            <ChartContainer preview={view === EDIT} data-cy="chartContainer">
               <CurrentChart
                 name={name}
                 data={getPreviewData()}

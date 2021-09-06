@@ -1,7 +1,6 @@
+import { CustomModalStyled, EduButton } from '@edulastic/common'
 import React from 'react'
-import { Modal } from 'antd'
 import styled from 'styled-components'
-import { EduButton } from '@edulastic/common'
 import { ButtonsContainer } from '../../../../common/styled'
 
 const CloneOnUsePlaylistConfirmationModal = ({
@@ -12,14 +11,15 @@ const CloneOnUsePlaylistConfirmationModal = ({
 }) => {
   return (
     <StyledModal
-      title="  "
-      width="480px"
+      title="Use Playlist"
+      modalWidth="480px"
       visible={isVisible}
       onCancel={onCancel}
       footer={[
         <ButtonsContainer>
           <EduButton
             key="1"
+            isGhost
             data-cy="createNewPlaylistCopy"
             onClick={handleCreateNewCopy}
           >
@@ -45,19 +45,19 @@ const CloneOnUsePlaylistConfirmationModal = ({
 
 export default CloneOnUsePlaylistConfirmationModal
 
-const StyledModal = styled(Modal)`
-  .ant-modal-header,
-  .ant-modal-footer {
-    border: none;
-  }
-
-  .ant-modal-body {
-    margin-top: 24px;
+const StyledModal = styled(CustomModalStyled)`
+  .ant-modal-content {
+    .ant-modal-body {
+      margin-top: 24px;
+      p {
+        text-align: center;
+        font-size: 16px;
+        padding: 10px;
+        font-weight: normal;
+        line-height: 1.6;
+      }
+    }
   }
 `
 
-const StyledContent = styled.p`
-  text-align: center;
-  font-size: 16px;
-  padding: 10px;
-`
+const StyledContent = styled.p``

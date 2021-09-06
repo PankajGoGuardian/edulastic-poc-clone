@@ -126,7 +126,9 @@ const Sidebar = ({
   const searchTags = async (value) => {
     if (
       newAllTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       setSearchValue('')
@@ -161,7 +163,7 @@ const Sidebar = ({
       </Col>
       <Row gutter={16}>
         <Col xl={12}>
-          <FieldLabel>Playlist Name</FieldLabel>
+          <FieldLabel isRequired>Playlist Name</FieldLabel>
           <TextInputStyled
             value={title}
             data-cy="testname"
@@ -171,6 +173,9 @@ const Sidebar = ({
             ref={playListTitleInput}
             margin="0px 0px 15px"
           />
+          {title !== undefined && !title.trim().length && (
+            <ErrorWrapper>Playlist should have title</ErrorWrapper>
+          )}
           <FieldLabel>Alignment Info</FieldLabel>
           <TextInputStyled
             value={alignmentInfo}
@@ -180,16 +185,13 @@ const Sidebar = ({
             placeholder="Insert the alignment info"
             margin="0px 0px 15px"
           />
-          {title !== undefined && !title.trim().length && (
-            <ErrorWrapper>Test should have title</ErrorWrapper>
-          )}
           {windowWidth <= IPAD_LANDSCAPE_WIDTH && (
             <PlayListDescription
               onChangeField={onChangeField}
               description={description}
             />
           )}
-          <FieldLabel>Grade</FieldLabel>
+          <FieldLabel isRequired>Grade</FieldLabel>
           <SelectInputStyled
             showArrow
             data-cy="gradeSelect"
@@ -214,7 +216,7 @@ const Sidebar = ({
             ))}
           </SelectInputStyled>
 
-          <FieldLabel>Subject</FieldLabel>
+          <FieldLabel isRequired>Subject</FieldLabel>
           <SelectInputStyled
             showArrow
             data-cy="subjectSelect"

@@ -155,11 +155,50 @@ function* receiveGradeBookSaga({ payload }) {
 export function* receiveTestActivitySaga({ payload }) {
   const { studentResponseParams, ...classResponseParams } = payload || {}
   try {
-    // test, testItemsData, testActivities, studentNames, testQuestionActivities
-    const { additionalData, ...gradebookData } = yield call(
-      classBoardApi.testActivity,
-      classResponseParams
-    )
+    let additionalData = {}
+    const gradebookData = {
+      enrollmentStatus: {},
+      recentTestActivitiesGrouped: {},
+      status: '',
+      students: [],
+      testActivities: [],
+      testQuestionActivities: [],
+    }
+    let isAllDataFetched = false
+    let page = 0
+    let leftOverStudents = []
+    let studentsToFetchData = []
+    while (!isAllDataFetched) {
+      const _data = yield call(classBoardApi.testActivity, {
+        ...classResponseParams,
+        page,
+        leftOverStudents: studentsToFetchData,
+      })
+      const {
+        students,
+        enrollmentStatus,
+        testActivities = [],
+        testQuestionActivities = [],
+        recentTestActivitiesGrouped = [],
+        leftOverStudents: _leftOverStudents = [],
+      } = _data
+      if (page === 0) {
+        leftOverStudents = _leftOverStudents || []
+        additionalData = _data.additionalData
+        gradebookData.status = additionalData.status
+        gradebookData.enrollmentStatus = enrollmentStatus
+        gradebookData.students = students
+      }
+      gradebookData.recentTestActivitiesGrouped = {
+        ...gradebookData.recentTestActivitiesGrouped,
+        ...recentTestActivitiesGrouped,
+      }
+      gradebookData.testActivities.push(...testActivities)
+      gradebookData.testQuestionActivities.push(...testQuestionActivities)
+      studentsToFetchData = leftOverStudents.splice(0, 40)
+      isAllDataFetched = studentsToFetchData.length === 0
+      page++
+    }
     if (!additionalData.recentTestActivitiesGrouped) {
       /**
        * resetting attempts data if not recieved from response
@@ -296,6 +335,7 @@ export function* receiveTestActivitySaga({ payload }) {
     console.log('err is', err)
     const msg = 'Unable to retrieve test activity.'
     if (err.status === 404) {
+      yield put(push(`/author/assignments`))
       notification({ msg: err?.response?.data?.message || msg })
     } else {
       notification({ type: 'error', messageKey: 'receiveTestFailing' })
@@ -743,7 +783,6 @@ function* correctItemUpdateSaga({ payload }) {
       assignmentId,
       proceedRegrade,
       editRegradeChoice,
-      isUnscored,
     } = payload
     const classResponse = yield select((state) => state.classResponse)
     const testItems = get(classResponse, 'data.originalItems', [])
@@ -793,13 +832,6 @@ function* correctItemUpdateSaga({ payload }) {
     }
 
     const { testId: newTestId, isRegradeNeeded } = result
-    if (isUnscored) {
-      notification({
-        type: 'success',
-        messageKey: 'publishCorrectItemSuccess',
-      })
-      return
-    }
 
     if (proceedRegrade) {
       yield put({
@@ -1419,7 +1451,7 @@ export const getCanOpenAssignmentSelector = createSelector(
   getCurrentClassIdSelector,
   getUserRole,
   (additionalData, currentClass, userRole) =>
-    additionalData?.canOpenClass.includes(currentClass) &&
+    additionalData?.canOpenClass?.includes(currentClass) &&
     !(
       additionalData?.openPolicy ===
         assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN &&
@@ -1635,17 +1667,8 @@ export const getClassQuestionSelector = createSelector(
   (state) => state.data
 )
 
-export const getDynamicVariablesSetIdForViewResponse = (state, studentId) => {
-  const testActivities = get(
-    state,
-    'author_classboard_testActivity.data.testActivities',
-    []
-  )
-  const studentTestActivity = testActivities.find((x) => x.userId === studentId)
-  if (!studentTestActivity) {
-    return false
-  }
-  return studentTestActivity.algoVariableSetIds
+export const getDynamicVariablesSetIdForViewResponse = (state, uta) => {
+  return uta.algoVariableSetIds || []
 }
 
 export const getQIdsSelector = createSelector(

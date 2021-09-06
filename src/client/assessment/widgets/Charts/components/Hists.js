@@ -99,6 +99,7 @@ const Hists = ({
         width={bar.width}
         height={height + margin}
         onMouseEnter={handleMouseEnter(index)}
+        onTouchStart={handleMouseEnter(index)}
       />
       {(previewTab === SHOW || previewTab === CHECK) &&
         isRenderIcons &&
@@ -106,6 +107,7 @@ const Hists = ({
       <Bar
         onClick={deleteMode ? () => saveAnswer(index) : () => {}}
         onMouseEnter={handleMouseEnter(index)}
+        onTouchStart={handleMouseEnter(index)}
         x={bar.posX}
         y={bar.posY}
         width={bar.width}

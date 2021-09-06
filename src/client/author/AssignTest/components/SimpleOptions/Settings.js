@@ -639,6 +639,7 @@ const Settings = ({
                     assignment will be paused and the instructor will need to
                     manually reset.
                   </p>
+                  <p>Please Note: this is not compatible with iPads.</p>
                   {navigationThresholdMoreThan1 ? (
                     <>
                       <br />
@@ -832,7 +833,9 @@ const Settings = ({
                       size="large"
                       data-cy="assignment-time"
                       value={
-                        !isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1
+                        !isNaN(allowedTime)
+                          ? allowedTime / (60 * 1000) || ''
+                          : 1
                       }
                       type="number"
                       min={1}

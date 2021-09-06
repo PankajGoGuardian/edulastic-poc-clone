@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { keys } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { getStemNumeration } from '../../../../utils/helpers'
 import { CorrectAnswerBox } from './styled/CorrectAnswerBox'
@@ -14,8 +13,10 @@ const CorrectAnswerBoxLayout = ({
   userAnswers,
   altAnsIndex,
   stemNumeration,
+  responseContainers,
   t,
   width,
+  singleResponseBox,
 }) => (
   <CorrectAnswerBox width={width} fontSize={fontSize}>
     <CorrectAnswerTitle>
@@ -24,9 +25,11 @@ const CorrectAnswerBoxLayout = ({
         : t('component.cloze.correctAnswer')}
     </CorrectAnswerTitle>
     <div>
-      {keys(userAnswers).map((id, index) => (
+      {responseContainers?.map(({ id }, index) => (
         <AnswerBox key={`correct-answer-${index}`}>
-          <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
+          {!singleResponseBox && (
+            <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
+          )}
           <AnswerContent>{userAnswers[id]}</AnswerContent>
         </AnswerBox>
       ))}
@@ -41,6 +44,7 @@ CorrectAnswerBoxLayout.propTypes = {
   altAnsIndex: PropTypes.number,
   stemNumeration: PropTypes.string,
   width: PropTypes.string,
+  singleResponseBox: PropTypes.bool,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -49,6 +53,7 @@ CorrectAnswerBoxLayout.defaultProps = {
   altAnsIndex: 0,
   stemNumeration: 'numerical',
   width: '100%',
+  singleResponseBox: false,
 }
 
 export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

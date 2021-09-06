@@ -6,8 +6,6 @@ import { uploadToS3, notification } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
 import { groupBy } from 'lodash'
 
-import { message } from 'antd'
-
 export const UPLOAD_STATUS = {
   STANDBY: 'STANDBY',
   INITIATE: 'INITIATE',
@@ -97,7 +95,7 @@ export const reducers = createReducer(initialState, {
 })
 
 export function* uploadTestStaga({ payload }) {
-  const { fileList, contentType: type } = payload
+  const { fileList, contentType: type, tags: testItemTags } = payload
   try {
     yield put(uploadTestStatusAction(UPLOAD_STATUS.INITIATE))
     let responseFiles = []
@@ -120,6 +118,7 @@ export function* uploadTestStaga({ payload }) {
       const response = yield call(contentImportApi.contentImport, {
         files: responseFiles,
         type,
+        testItemTags,
       })
       if (response?.jobIds?.length) {
         yield put(setJobIdsAction(response.jobIds))

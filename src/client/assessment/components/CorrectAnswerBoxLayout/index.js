@@ -18,6 +18,7 @@ const CorrectAnswerBoxLayout = ({
   btnStyle,
   stemNumeration,
   centerText,
+  singleResponseBox = false,
   t,
 }) => {
   let results
@@ -84,6 +85,7 @@ const CorrectAnswerBoxLayout = ({
                     numeration={numeration}
                     label={label}
                     centerText={centerText}
+                    singleResponseBox={singleResponseBox}
                   />
                 )
               })}
@@ -106,6 +108,7 @@ const CorrectAnswerBoxLayout = ({
                 numeration={numeration}
                 label={label}
                 centerText={centerText}
+                singleResponseBox={singleResponseBox}
               />
             )
           })}
@@ -125,6 +128,7 @@ CorrectAnswerBoxLayout.propTypes = {
   altAnsIndex: PropTypes.number,
   stemNumeration: PropTypes.string,
   centerText: PropTypes.bool,
+  singleResponseBox: PropTypes.bool,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
@@ -137,6 +141,7 @@ CorrectAnswerBoxLayout.defaultProps = {
   stemNumeration: 'numerical',
   btnStyle: {},
   centerText: false,
+  singleResponseBox: false,
 }
 
 export default React.memo(withNamespaces('assessment')(CorrectAnswerBoxLayout))

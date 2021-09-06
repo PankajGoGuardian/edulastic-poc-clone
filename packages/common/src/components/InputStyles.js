@@ -28,6 +28,15 @@ export const FieldLabel = styled.label`
   padding-bottom: ${(props) => (props.bottom ? `${props.bottom}px` : 0)};
   padding-left: ${(props) => (props.left ? `${props.left}px` : 0)};
   padding-right: ${(props) => (props.right ? `${props.right}px` : 0)};
+  &:after {
+    content: '*';
+    display: ${(props) => (props.isRequired ? 'inline-block' : 'none')};
+    color: red;
+    position: relative;
+    top: -0.5em;
+    font-size: 75%;
+  }
+  ${(props) => props.style};
 `
 
 const inputCommonStyle = {
@@ -101,6 +110,7 @@ export const TextInputStyled = styled((props) => (
   }
   &::placeholder {
     text-align: ${(props) => props.placeHolderAlign};
+    color: ${greyThemeDark2};
   }
   &:focus::placeholder {
     color: transparent;
@@ -136,6 +146,7 @@ export const NumberInputStyled = styled(InputNumber)`
     }
     .ant-input-number-input {
       height: ${(props) => props.height || '32px'};
+      text-align: ${(props) => props.textAlign || 'left'};
       padding: 0px;
     }
   }

@@ -62,6 +62,12 @@ class ToolbarModal extends React.Component {
     onClose()
   }
 
+  handleUploadWork = () => {
+    const { onClose, toggleUserWorkUploadModal } = this.props
+    toggleUserWorkUploadModal()
+    onClose()
+  }
+
   render() {
     const {
       settings,
@@ -184,6 +190,14 @@ class ToolbarModal extends React.Component {
           >
             Procractor Ruler
           </StyledButton>
+          {settings.isTeacherPremium && (
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={this.handleUploadWork}
+            >
+              Upload work
+            </StyledButton>
+          )}
         </Container>
       </Modal>
     )
@@ -194,6 +208,11 @@ ToolbarModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
+  handleMagnifier: PropTypes.func,
+}
+
+ToolbarModal.defaultProps = {
+  handleMagnifier: () => {},
 }
 
 export default ToolbarModal

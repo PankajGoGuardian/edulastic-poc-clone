@@ -1010,7 +1010,7 @@ class ClassesTable extends Component {
             archiveClass={this.archiveClass}
             closeModal={this.closeArchiveModal}
             classNames={selectedArchiveClasses.map((id) => {
-              const { _source = {} } = dataSource[id]
+              const { _source = {} } = dataSource?.[id] || {}
               return <StyledClassName key={id}>{_source.name}</StyledClassName>
             })}
             t={t}

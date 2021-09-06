@@ -1,4 +1,4 @@
-import { delay } from 'redux-saga'
+import { delay, buffers } from 'redux-saga'
 import {
   takeEvery,
   call,
@@ -568,7 +568,10 @@ export function* watcherSaga() {
       receiveFeedbackResponseSaga
     ),
   ])
-  const requestChan = yield actionChannel(UPDATE_STUDENT_ACTIVITY_SCORE)
+  const requestChan = yield actionChannel(
+    UPDATE_STUDENT_ACTIVITY_SCORE,
+    buffers.sliding(20)
+  )
   while (true) {
     const { payload } = yield take(requestChan)
     yield call(updateStudentScore, payload)

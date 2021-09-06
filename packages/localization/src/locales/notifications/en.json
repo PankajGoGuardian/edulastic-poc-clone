@@ -1423,6 +1423,18 @@
     "message": "Rating point must not be empty.",
     "description": ""
   },
+  "criteriaNameLengthValidation": {
+    "message": "Criteria name cannot be more than 256 characters",
+    "description": ""
+  },
+  "ratingsNameLengthValidation": {
+    "message": "Rating name cannot be more than 100 characters",
+    "description": ""
+  },
+  "ratingsDescLengthValidation": {
+    "message": "Rating description cannot be more than 2048 characters",
+    "description": ""
+  },
   "ratingPointMustBeZero": {
     "message": "Rating point must be 0 for at least one rating within a criteria.",
     "description": ""
@@ -1737,6 +1749,10 @@
   },
   "nameFieldRequired": {
     "message": "Name field is required",
+    "description": ""
+  },
+  "timedAssigmentTimeCanNotBeZero": {
+    "message": "Timed test is ON, please add some time limit to proceed",
     "description": ""
   },
   "totalItemsToBeDelivered": {

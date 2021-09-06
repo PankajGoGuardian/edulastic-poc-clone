@@ -12,12 +12,16 @@ const StyledDropZone = ({
   t,
   dropzoneSettings: { name, allowedFiles, maxSize },
   children,
+  containerHeight,
+  containerMargin,
 }) => (
   <Container
     alignItems="center"
     justifyContent="center"
     isDragActive={isDragActive}
     flexDirection="column"
+    height={containerHeight}
+    margin={containerMargin}
   >
     {loading ? (
       <FlexContainer

@@ -25,6 +25,7 @@ import {
 } from '../../../../ducks'
 import { PassageAddNewButton, PassageButtonContainer } from '../AddNew/styled'
 import PassageAddPart from '../AddNew/PassageAddPart'
+import AddNewItem from '../AddNew/AddNewItem'
 
 // src/client/author/ItemDetail/ducks.js
 
@@ -187,6 +188,7 @@ class Container extends Component {
       removeTab,
       isPassageWithQuestions,
       containerType,
+      showAddItemButton,
     } = this.props
     const { tabIndex } = this.state
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
@@ -293,6 +295,10 @@ class Container extends Component {
                 isAddFirstPart={isAddFirstPart}
                 onClick={this.onAddBtnClick({ rowIndex, tabIndex })}
               />
+            )}
+
+            {showAddItemButton && isPassageWithQuestions && (
+              <AddNewItem onClick={this.addNewItemToPassage} />
             )}
           </AddButtonContainer>
         )}

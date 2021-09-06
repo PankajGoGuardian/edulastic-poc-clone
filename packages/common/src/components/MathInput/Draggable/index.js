@@ -1,4 +1,5 @@
 import React from 'react'
+import { createPortal } from 'react-dom'
 import styled from 'styled-components'
 import { boxShadowDefault } from '@edulastic/colors'
 
@@ -128,30 +129,36 @@ class Draggable extends React.Component {
   }
 
   render() {
-    const { children } = this.props
+    const { children, usePortal, transform } = this.props
     const { position = {} } = this.state
 
-    return (
+    const content = (
       <DraggableContainer
         onMouseDown={this.onDragStart}
         onMouseUp={this.onDragStop}
         onTouchEnd={this.onDragStop}
         left={position.x}
         top={position.y}
+        transform={transform}
         ref={this.containerRef}
       >
         {children}
       </DraggableContainer>
     )
+    if (usePortal) {
+      return createPortal(content, document.body)
+    }
+    return content
   }
 }
 
 export default Draggable
 
-const DraggableContainer = styled.div.attrs(({ left, top }) => ({
+const DraggableContainer = styled.div.attrs(({ left, top, transform }) => ({
   style: {
     left,
     top,
+    transform,
   },
 }))`
   box-shadow: ${boxShadowDefault};

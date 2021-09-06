@@ -58,6 +58,7 @@ import {
   getUserOrg,
   getOrgSchools,
   getOrgGroupList,
+  getCleverLibraryUserSelector,
 } from '../../../src/selectors/user'
 
 const { ORG_TYPE } = roleuser
@@ -570,6 +571,7 @@ class ProfileBody extends React.Component {
       hideJoinSchool,
       userOrg,
       orgGroupList,
+      isCleverLibraryUser,
     } = this.props
     const {
       showChangePassword,
@@ -656,16 +658,21 @@ class ProfileBody extends React.Component {
                           <Icon type="edit" theme="filled" />
                           {t('common.title.editProfile')}
                         </EditProfileButton>
-                        <DeleteAccountButton
-                          isGhost
-                          noHover
-                          onClick={() => {
-                            this.setState({ showModal: true })
-                          }}
-                        >
-                          <Icon type="close" />
-                          {t('common.title.deleteAccount')}
-                        </DeleteAccountButton>
+                        {!(
+                          user.atlasId ||
+                          (user.cleverId && !isCleverLibraryUser)
+                        ) && (
+                          <DeleteAccountButton
+                            isGhost
+                            noHover
+                            onClick={() => {
+                              this.setState({ showModal: true })
+                            }}
+                          >
+                            <Icon type="close" />
+                            {t('common.title.deleteAccount')}
+                          </DeleteAccountButton>
+                        )}
                       </>
                     ) : null}
                   </SubHeader>
@@ -988,6 +995,7 @@ const enhance = compose(
       orgSchools: getOrgSchools(state),
       userOrg: getUserOrg(state),
       orgGroupList: getOrgGroupList(state),
+      isCleverLibraryUser: getCleverLibraryUserSelector(state),
     }),
     {
       resetMyPassword: resetMyPasswordAction,

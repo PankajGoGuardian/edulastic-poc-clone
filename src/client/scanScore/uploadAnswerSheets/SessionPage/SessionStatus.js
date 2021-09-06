@@ -37,10 +37,14 @@ const SessionStatus = ({
     }
   }, [pages])
 
+  const isDone = window.location.search.includes('done=1')
+
   return (
     <SessionStatusContainer>
       <div className="inner-container">
-        <div className="scan-progress-text">Scan Progress</div>
+        <div className="scan-progress-text">
+          {isDone ? 'Form Processing Done' : 'Form Processing Progress'}
+        </div>
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}
@@ -55,35 +59,39 @@ const SessionStatus = ({
           )}
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">Responses Scanned</div>
+          <div className="scan-result-text-label">Forms Processed</div>
           <div className="scan-result-text-value">{scanned}</div>
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">
+          <div data-cy="success" className="scan-result-text-label">
             Success
-            <span
-              className="scan-result-text-action"
-              onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
-            >
-              View
-            </span>
+            {success ? (
+              <span
+                className="scan-result-text-action"
+                onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
+              >
+                View
+              </span>
+            ) : null}
           </div>
           <div className="scan-result-text-value">{success}</div>
         </div>
         <div className="scan-result-text">
-          <div className="scan-result-text-label">
+          <div data-cy="failed" className="scan-result-text-label">
             Failed
-            <span
-              className="scan-result-text-action"
-              onClick={() =>
-                toggleStatusFilter(
-                  omrSheetScanStatus.FAILED,
-                  omrSheetScanStatus.ABORTED
-                )
-              }
-            >
-              View
-            </span>
+            {failed ? (
+              <span
+                className="scan-result-text-action"
+                onClick={() =>
+                  toggleStatusFilter(
+                    omrSheetScanStatus.FAILED,
+                    omrSheetScanStatus.ABORTED
+                  )
+                }
+              >
+                View
+              </span>
+            ) : null}
           </div>
           <div className="scan-result-text-value failed">{failed}</div>
         </div>
@@ -94,6 +102,7 @@ const SessionStatus = ({
             </div>
             <div className="static-navigation-links">
               <Link
+                data-cy="uploadAgainButton"
                 className="upload-again-link"
                 to={{
                   pathname: '/uploadAnswerSheets',
@@ -103,6 +112,7 @@ const SessionStatus = ({
                 Upload Again
               </Link>
               <Link
+                data-cy="viewLiveClassBoard"
                 className="live-classboard-link"
                 to={{
                   pathname: `/author/classboard/${assignmentId}/${groupId}`,

@@ -13,7 +13,7 @@ const DropzoneUploader = ({ handleDrop, disabled = false }) => (
     multiple={false}
     disabled={disabled}
   >
-    {({ getRootProps, getInputProps, isDragActive, fileRejections = [] }) => {
+    {({ getRootProps, getInputProps, isDragActive }) => {
       return (
         <DropzoneContentContainer
           {...getRootProps()}
@@ -26,8 +26,10 @@ const DropzoneUploader = ({ handleDrop, disabled = false }) => (
             isDragActive={isDragActive}
             dropzoneSettings={{
               name: false,
-              allowedFiles: 'PDF',
+              allowedFiles: 'BUBBLE SHEET FORMS (PDF, MAX 1MB)',
             }}
+            containerHeight="500px"
+            containerMargin="40px 40px 40px 0px"
           >
             {/* {fileRejections.length ? (
               <Col className="dropzone-list-div" span={24}>
@@ -49,4 +51,6 @@ const DropzoneUploader = ({ handleDrop, disabled = false }) => (
 
 export default DropzoneUploader
 
-const DropzoneContentContainer = styled.div``
+const DropzoneContentContainer = styled.div`
+  width: 100%;
+`

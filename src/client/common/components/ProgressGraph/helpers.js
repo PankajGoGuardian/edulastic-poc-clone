@@ -75,6 +75,7 @@ export const convertData = (
   }
 
   const activitiesByQid = keyBy(questionActivities, 'qid')
+  const testItemById = keyBy(testItems, '_id')
 
   data = testItems
     .reduce((acc, curr) => [...acc, ...get(curr, 'data.questions', [])], [])
@@ -120,6 +121,24 @@ export const convertData = (
       if (testItemId) {
         questionActivity.itemLevelScoring = true
         questionActivity.itemId = testItemId
+        if (skipped === true && testItemById[testItemId]) {
+          const testItemQuestionsIds =
+            testItemById[testItemId].data?.questions?.map(({ id }) => id) || []
+
+          const itemUQAs = testItemQuestionsIds.map(
+            (qId) => activitiesByQid[qId]
+          )
+
+          let skippedUQACount = testItemQuestionsIds.length - itemUQAs.length
+          for (const q of itemUQAs) {
+            if (q.skipped === true) {
+              skippedUQACount++
+            }
+          }
+          if (skippedUQACount !== testItemQuestionsIds.length) {
+            skipped = false
+          }
+        }
       }
 
       if (!notStarted) {

@@ -9,12 +9,14 @@ import {
   IconWrapper,
   ResourceTitle,
   TitleText,
+  PopupContainer,
+  StyledPopOver,
+  TitleWrapper,
 } from './styled'
-import Tags from '../../../src/components/common/Tags'
+import Tags, { Label } from '../../../src/components/common/Tags'
 import WebsiteIcon from './static/WebsiteIcon'
 import VideoIcon from './static/VideoIcon'
 import LTIResourceIcon from './static/LTIResourceIcon'
-import { Tooltip } from '../../../../common/utils/helpers'
 import { getInterestedStandards } from '../../../dataUtils'
 import { IconActionButton, MenuStyled } from '../styled'
 
@@ -217,47 +219,72 @@ const ResourceItem = ({
     </MenuStyled>
   )
 
+  const popup = (
+    <PopupContainer>
+      <ResourceTitle>
+        <TitleText data-cy="titleInPopup" isPopup>
+          {contentTitle}
+        </TitleText>
+      </ResourceTitle>
+      <div>
+        {standardIdentifiers.map((tag, i) => (
+          <Label data-cy={tag} type="primary" key={i}>
+            {tag}
+          </Label>
+        ))}
+      </div>
+    </PopupContainer>
+  )
+
   return (
-    <Tooltip title={contentTitle} placement="left">
-      <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
-        <ResouceIcon type={type} isAdded={isAdded} />
-        <ResourceTitle isAdded={isAdded}>
-          <TitleText
-            data-cy="resourceItemTitle"
-            noStandards={standardIdentifiers.length === 0}
-            title={contentTitle}
-          >
-            {contentTitle}
-          </TitleText>
+    <ResourceItemWrapper data-cy={`${id}`} ref={drag}>
+      <TitleWrapper>
+        <StyledPopOver
+          placement="bottomLeft"
+          content={popup}
+          onClick={(e) => e.stopPropagation()}
+        >
+          <ResouceIcon type={type} isAdded={isAdded} />
+          <ResourceTitle isAdded={isAdded}>
+            <TitleText
+              data-cy="resourceItemTitle"
+              noStandards={standardIdentifiers.length === 0}
+            >
+              {contentTitle}
+            </TitleText>
+          </ResourceTitle>
           <Tags
             margin="0px"
-            tags={standardIdentifiers}
+            tags={
+              standardIdentifiers.length
+                ? [`${standardIdentifiers.length} +`]
+                : []
+            }
             show={1}
-            showTitle
             flexWrap="nowrap"
           />
-        </ResourceTitle>
-        <IconEye
-          className="preview-btn"
-          color={themeColor}
-          width={18}
-          height={16}
-          onClick={previewTest}
-          data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
-        />
-        {type !== 'test' && resource?.userId === userId && (
-          <Dropdown overlay={moreMenu} trigger={['click']} arrow>
-            <IconActionButton data-cy="moreActions">
-              <IconMoreVertical
-                className="more-action-btn"
-                color={themeColor}
-                viewBox="0 0 3.8 14"
-              />
-            </IconActionButton>
-          </Dropdown>
-        )}
-      </ResourceItemWrapper>
-    </Tooltip>
+        </StyledPopOver>
+      </TitleWrapper>
+      <IconEye
+        className="preview-btn"
+        color={themeColor}
+        width={18}
+        height={16}
+        onClick={previewTest}
+        data-cy={type === 'test' ? 'testPreview' : 'resourcePreview'}
+      />
+      {type !== 'test' && resource?.userId === userId && (
+        <Dropdown overlay={moreMenu} trigger={['click']} arrow>
+          <IconActionButton data-cy="moreActions">
+            <IconMoreVertical
+              className="more-action-btn"
+              color={themeColor}
+              viewBox="0 0 3.8 14"
+            />
+          </IconActionButton>
+        </Dropdown>
+      )}
+    </ResourceItemWrapper>
   )
 }
 

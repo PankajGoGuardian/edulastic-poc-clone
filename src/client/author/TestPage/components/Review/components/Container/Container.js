@@ -447,7 +447,7 @@ class Review extends PureComponent {
     }
     resetItemScore()
     this.setState({
-      item: { id: testItems[prevItemIndex]._id },
+      item: { id: testItems?.[prevItemIndex]?._id },
       indexForPreview: prevItemIndex,
     })
   }

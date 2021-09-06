@@ -20,7 +20,7 @@ import styled from 'styled-components'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const ManageContentOuterWrapper = styled.div`
-  width: 400px;
+  width: 450px;
   height: 100%;
   border-radius: 4px;
 
@@ -29,10 +29,10 @@ export const ManageContentOuterWrapper = styled.div`
   }
 
   @media (max-width: ${extraDesktopWidthMax}) {
-    width: 340px;
+    width: 390px;
   }
   @media (max-width: ${smallDesktopWidth}) {
-    width: 240px;
+    width: 290px;
   }
   @media (max-width: ${desktopWidth}) {
     position: fixed;

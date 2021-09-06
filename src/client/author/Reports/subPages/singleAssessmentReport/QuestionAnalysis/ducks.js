@@ -109,7 +109,8 @@ function* getReportsQuestionAnalysisRequest({ payload }) {
     })
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch question analysis Please try again...'
+    const msg =
+      'Error getting question analysis. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_QUESTION_ANALYSIS_REQUEST_ERROR,

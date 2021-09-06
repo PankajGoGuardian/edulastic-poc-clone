@@ -9,13 +9,15 @@ import {
   SelectInputStyled,
   DatePickerStyled,
   TextInputStyled,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { test as testContants } from '@edulastic/constants'
-import { Col, Row, Select } from 'antd'
+import { Col, Row, Select, Tooltip } from 'antd'
 import { some, get } from 'lodash'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { IconInfo } from '@edulastic/icons'
 import { getRedirectEndDate, getUserName } from '../utils'
 import { BodyContainer } from './styled'
 import { getIsSpecificStudents } from '../ducks'
@@ -88,6 +90,7 @@ const RedirectPopUp = ({
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1
   )
+  const [changeAlgo, setChangeAlgo] = useState(false)
   useEffect(() => {
     const setRedirectStudents = {}
     if (type === 'absentStudents') {
@@ -133,7 +136,6 @@ const RedirectPopUp = ({
         )
         _selected = selectedStudentsTestActivity.map((item) => item.studentId)
       }
-
       if (_selected.length) {
         const redirectAssignment = {
           _id: groupId,
@@ -144,6 +146,7 @@ const RedirectPopUp = ({
           timedAssignment: additionalData.timedAssignment,
           allowedTime,
           pauseAllowed: !!additionalData.pauseAllowed,
+          changeAlgo,
         }
         if (additionalData.dueDate) {
           redirectAssignment.dueDate = dueDate.valueOf()
@@ -174,6 +177,7 @@ const RedirectPopUp = ({
     endDate,
     groupId,
     showPrevAttempt,
+    changeAlgo,
     qDeliveryState,
     dueDate,
     allowedTime,
@@ -380,6 +384,17 @@ const RedirectPopUp = ({
                 <span>&nbsp;minutes</span>
               </Col>
             ) : null}
+            <Col span={12}>
+              <CheckboxLabel
+                onChange={() => setChangeAlgo(!changeAlgo)}
+                value={changeAlgo}
+              >
+                Change dynamic parameter values &nbsp;
+                <Tooltip title="Students will get different value for dynamic parameter from their last attempt">
+                  <IconInfo />
+                </Tooltip>
+              </CheckboxLabel>
+            </Col>
           </Row>
         )}
       </BodyContainer>

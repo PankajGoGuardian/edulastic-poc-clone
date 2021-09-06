@@ -133,10 +133,7 @@ class Container extends Component {
   }
 
   handleChangeView = (view) => {
-    const { changeView, showCalculatingSpinner } = this.props
-    if (showCalculatingSpinner) {
-      return
-    }
+    const { changeView } = this.props
     this.setState({
       showHints: false,
     })
@@ -232,14 +229,7 @@ class Container extends Component {
   }
 
   renderQuestion = () => {
-    const {
-      view,
-      question,
-      preview,
-      itemFromState,
-      showCalculatingSpinner,
-      testItemId,
-    } = this.props
+    const { view, question, preview, itemFromState, testItemId } = this.props
     const { saveClicked, clearClicked } = this.state
     const questionType = question && question.type
     if (view === 'metadata') {
@@ -268,7 +258,6 @@ class Container extends Component {
             questionId={question.id}
             saveClicked={saveClicked}
             clearClicked={clearClicked}
-            showCalculatingSpinner={showCalculatingSpinner}
             testItemId={testItemId}
           />
           {/* we may need to bring hint button back */}

@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { get, isEmpty, pickBy, reject } from 'lodash'
+import { get, isEmpty, pickBy, reject, omit } from 'lodash'
 import qs from 'qs'
 
 import { Tabs, Row, Col } from 'antd'
@@ -230,10 +230,10 @@ const StudentProfileReportFilters = ({
     if (!standardFiltersRequired && !firstLoad) {
       setFilters({
         ...filters,
-        domainId: '',
-        standardId: '',
+        domainId: 'All',
+        standardId: 'All',
       })
-      setTempTagsData({ ...tempTagsData, domainId: '', standardId: '' })
+      setTempTagsData(omit({ ...tempTagsData }, ['domainId', 'standardId']))
     }
   }, [loc])
 

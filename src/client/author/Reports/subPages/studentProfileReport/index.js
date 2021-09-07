@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
-import { pick } from 'lodash'
+import { pick, omit } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 
@@ -159,7 +159,7 @@ const StudentProfileReportContainer = (props) => {
           standardIds: '',
         },
       })
-      setSPRTagsData({ ...settings.tagsData, domainId: '', standardId: '' })
+      setSPRTagsData(omit({ ...settings.tagsData }, ['domainId', 'standardId']))
     }
   }, [loc])
 

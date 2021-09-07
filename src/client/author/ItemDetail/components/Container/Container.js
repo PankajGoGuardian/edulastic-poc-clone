@@ -753,7 +753,7 @@ class Container extends Component {
         testId,
         addToTest: isTestFlow,
         locationState: state,
-        redirect: true,
+        redirect: false,
         redirectOnDeleteQuestion: false,
         updateScoreInQuestionsAsPerItem: false,
       },

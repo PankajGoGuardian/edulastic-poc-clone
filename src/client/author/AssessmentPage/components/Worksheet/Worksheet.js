@@ -306,10 +306,9 @@ class WorksheetComponent extends React.Component {
       .filter((x) => x)
 
     const updatedAssessment = {
-      pageStructure: updatedPageStructure.map((item, index) => {
+      pageStructure: updatedPageStructure.map((item) => {
         return {
           ...item,
-          pageNo: index + 1,
         }
       }),
       freeFormNotes: newFreeFormNotes,
@@ -322,7 +321,6 @@ class WorksheetComponent extends React.Component {
         [id]: { ...userWork, scratchpad: newFreeFormNotes },
       })
     }
-
     this.handleChangePage(pageNumber > 0 ? pageNumber - 1 : pageNumber)
     setTestData(updatedAssessment)
   }
@@ -557,7 +555,6 @@ class WorksheetComponent extends React.Component {
       groupId,
       itemDetail,
     } = this.props
-
     const {
       uploadModal,
       highlightedQuestion,
@@ -576,7 +573,6 @@ class WorksheetComponent extends React.Component {
     }
 
     const selectedPage = pageStructure[currentPage] || defaultPage
-
     // WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
     const leftColumnWidth = minimized ? 0 : 180
     const rightColumnWidth = 300

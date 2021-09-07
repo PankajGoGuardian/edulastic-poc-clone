@@ -991,7 +991,7 @@ const initialState = {
   loadingSharedUsers: false,
   allKnownTags: [],
   tagSearchData: {
-    result: {},
+    result: [],
     isLoading: true,
   },
 }
@@ -1169,7 +1169,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         tagSearchData: {
-          result: {},
+          result: [],
           isLoading: true,
         },
       }
@@ -1185,7 +1185,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         tagSearchData: {
-          result: {},
+          result: [],
           isLoading: false,
         },
       }
@@ -1717,13 +1717,7 @@ export const getTagSearchSelector = createSelector(stateSelector, (state) =>
 
 export const getTagSearchListSelector = createSelector(
   getTagSearchSelector,
-  (state) => {
-    const hits = get(state, 'result.hits.hits', [])
-    return hits.map(({ _id, _source }) => ({
-      _id,
-      ..._source,
-    }))
-  }
+  (state) => get(state, 'result', [])
 )
 
 // tags which were searched for previously are cached as allKnownTags
@@ -3130,9 +3124,36 @@ function* getAllTagsSaga({ payload }) {
 function* searchTagsSaga({ payload }) {
   try {
     const result = yield call(tagsApi.searchTags, payload)
+    let tags = []
+    if (result.aggregations) {
+      const tagBuckets = get(result, 'aggregations.tags.buckets', [])
+      tags = tagBuckets.map((bucket) => {
+        const bucketTags = get(bucket, 'docs.hits.hits', [])
+        const bucketTagIds = bucketTags.map((t) => t._id)
+        const bucketTagNames = bucketTags.map((t) =>
+          get(t, '_source.tagName', '')
+        )
+        return {
+          _id: bucketTagIds.join('_'),
+          tagName: bucket.key,
+          tagType: payload?.search?.tagTypes?.[0],
+          tagNamesAssociated: bucketTagNames,
+        }
+      })
+    } else {
+      const hits = get(result, 'hits.hits', [])
+      tags = hits.map(({ _id, _source }) => ({
+        _id,
+        ..._source,
+      }))
+    }
     yield put({
       type: SEARCH_TAG_LIST_SUCCESS,
-      payload: result,
+      payload: tags,
+    })
+    yield put({
+      type: APPEND_KNOWN_TAGS,
+      payload: tags,
     })
   } catch (e) {
     Sentry.captureException(e)
@@ -3152,22 +3173,6 @@ function* searchTagsByIdSaga({ payload: ids }) {
       },
     }
     yield* searchTagsSaga({ payload })
-  } catch (err) {
-    Sentry.captureException(err)
-  }
-}
-
-function* appendKnownTagsSaga({ payload }) {
-  try {
-    const hits = get(payload, 'hits.hits', [])
-    const tags = hits.map(({ _id, _source }) => ({
-      _id,
-      ..._source,
-    }))
-    yield put({
-      type: APPEND_KNOWN_TAGS,
-      payload: tags,
-    })
   } catch (err) {
     Sentry.captureException(err)
   }
@@ -3708,7 +3713,6 @@ export function* watcherSaga() {
     takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
     takeEvery(SEARCH_TAG_LIST_REQUEST, searchTagsSaga),
     takeEvery(SEARCH_TAGS_BY_IDS_REQUEST, searchTagsByIdSaga),
-    takeEvery(SEARCH_TAG_LIST_SUCCESS, appendKnownTagsSaga),
     takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
     takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
     takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),

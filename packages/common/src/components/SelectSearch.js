@@ -14,6 +14,8 @@ const SelectSearch = React.forwardRef(
       options,
       placeholder,
       value,
+      tagsSearch,
+      tagTypes = [],
       ...props
     },
     ref
@@ -34,11 +36,14 @@ const SelectSearch = React.forwardRef(
       [onBlur]
     )
     const dropDownData = useDropdownData(options, {
-      id_key: 'key',
+      id_key: tagsSearch ? 'index' : 'key',
       OptionComponent: Select.Option,
       searchText,
       title_key: 'title',
       value_key: 'key',
+      ...(tagTypes[0] === 'testitem'
+        ? { optionProps: (item) => ({ associatedNames: item.associatedNames }) }
+        : {}),
     })
     return (
       <SelectInputStyled

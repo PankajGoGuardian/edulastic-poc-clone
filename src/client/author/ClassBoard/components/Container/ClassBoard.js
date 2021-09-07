@@ -222,6 +222,7 @@ class ClassBoard extends Component {
       nCountTrue: 0,
       redirectPopup: false,
       selectedStudentId: '',
+      classId: '',
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
       showAddStudentsPopup: false,
@@ -401,6 +402,14 @@ class ClassBoard extends Component {
           selectedStudentId: student.studentId,
           selectedTab: 'Student',
         }
+      }
+    }
+
+    if (state.classId !== props.match.params.classId) {
+      newState = {
+        ...newState,
+        selectedStudentId: '',
+        classId: props.match.params.classId,
       }
     }
 

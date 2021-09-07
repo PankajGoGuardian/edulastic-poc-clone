@@ -223,6 +223,7 @@ const Histogram = ({
             onMouseDown={!disableResponse ? onMouseDownActiveBar : () => {}}
             onTouchStart={!disableResponse ? onMouseDownActiveBar : () => {}}
             ref={activeBarRef}
+            data-cy={`activeBar-${active}`}
           />
         )}
 

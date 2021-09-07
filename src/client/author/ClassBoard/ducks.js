@@ -1667,8 +1667,22 @@ export const getClassQuestionSelector = createSelector(
   (state) => state.data
 )
 
-export const getDynamicVariablesSetIdForViewResponse = (state, uta) => {
-  return uta.algoVariableSetIds || []
+export const getDynamicVariablesSetIdForViewResponse = (
+  state,
+  testActivityId
+) => {
+  const testActivities = get(
+    state,
+    'author_classboard_testActivity.data.testActivities',
+    []
+  )
+  const studentTestActivity = testActivities.find(
+    (x) => x._id === testActivityId
+  )
+  if (!studentTestActivity) {
+    return false
+  }
+  return studentTestActivity.algoVariableSetIds
 }
 
 export const getQIdsSelector = createSelector(

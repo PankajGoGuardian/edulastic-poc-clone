@@ -763,11 +763,7 @@ class Setting extends Component {
       return red
     }
 
-    const categories = [
-      'show-answer-choice',
-      'suffle-question',
-      'check-answer-tries-per-question',
-    ]
+    const categories = ['show-answer-choice', 'suffle-question']
 
     const availableFeatures = {}
     settingsList.slice(0, -5).forEach((category) => {
@@ -1449,50 +1445,48 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {!isDocBased && (
-                    <Block
-                      id="check-answer-tries-per-question"
-                      smallSize={isSmallSize}
-                    >
-                      <SettingContainer>
-                        <Title>
-                          Check Answer Tries Per Question{' '}
-                          <DollarPremiumSymbol
-                            premium={assessmentSuperPowersCheckAnswerTries}
-                          />
-                        </Title>
-                        <Body smallSize={isSmallSize}>
-                          <Row gutter={24}>
-                            <Col span={12}>
-                              <TextInputStyled
-                                disabled={
-                                  !owner ||
-                                  !isEditable ||
-                                  !assessmentSuperPowersCheckAnswerTries
-                                }
-                                onChange={(e) =>
-                                  this.updateTestData('maxAnswerChecks')(
-                                    e.target.value
-                                  )
-                                }
-                                size="large"
-                                width="160px"
-                                value={maxAnswerChecks}
-                                type="number"
-                                min={0}
-                                placeholder="Number of tries"
-                              />
-                            </Col>
-                          </Row>
-                          <Description>
-                            Allow students to check their answer before moving
-                            on to the next question. Enter the number of
-                            attempts allowed per question.
-                          </Description>
-                        </Body>
-                      </SettingContainer>
-                    </Block>
-                  )}
+                  <Block
+                    id="check-answer-tries-per-question"
+                    smallSize={isSmallSize}
+                  >
+                    <SettingContainer>
+                      <Title>
+                        Check Answer Tries Per Question{' '}
+                        <DollarPremiumSymbol
+                          premium={assessmentSuperPowersCheckAnswerTries}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row gutter={24}>
+                          <Col span={12}>
+                            <TextInputStyled
+                              disabled={
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersCheckAnswerTries
+                              }
+                              onChange={(e) =>
+                                this.updateTestData('maxAnswerChecks')(
+                                  e.target.value
+                                )
+                              }
+                              size="large"
+                              width="160px"
+                              value={maxAnswerChecks}
+                              type="number"
+                              min={0}
+                              placeholder="Number of tries"
+                            />
+                          </Col>
+                        </Row>
+                        <Description>
+                          Allow students to check their answer before moving on
+                          to the next question. Enter the number of attempts
+                          allowed per question.
+                        </Description>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
 
                   {(userRole === roleuser.DISTRICT_ADMIN ||
                     userRole === roleuser.SCHOOL_ADMIN) && (

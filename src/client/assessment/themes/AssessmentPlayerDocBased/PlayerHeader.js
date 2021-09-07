@@ -1,7 +1,12 @@
 /* eslint-disable react/prop-types */
 import React, { Fragment } from 'react'
+import { connect } from 'react-redux'
+
 import { test } from '@edulastic/constants'
 import { IconSearch } from '@edulastic/icons'
+import { TokenStorage } from '@edulastic/api'
+import { notification } from '@edulastic/common'
+
 import {
   Header,
   FlexContainer,
@@ -15,6 +20,9 @@ import { Tooltip } from '../../../common/utils/helpers'
 import { Container, ButtonWithStyle, CaculatorIcon } from '../common/ToolBar'
 import { MAX_MOBILE_WIDTH } from '../../constants/others'
 import TimedTestTimer from '../common/TimedTestTimer'
+import { currentItemAnswerChecksSelector } from '../../selectors/test'
+import { checkAnswerEvaluation } from '../../actions/checkanswer'
+import { StyledIconCheck } from '../../../author/ContentBuckets/components/ContentBucketsTable/styled'
 
 const { calculatorTypes } = test
 
@@ -34,6 +42,10 @@ const PlayerHeader = ({
   utaId,
   groupId,
   hidePause,
+  answerChecksUsedForItem,
+  checkAnswer,
+  checkAnswerInProgress,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
   const { calcType } = settings
@@ -53,6 +65,19 @@ const PlayerHeader = ({
     height: '70px',
     justifyContent: 'space-between',
     alignItems: 'center',
+  }
+
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
+
+  const handleCheckAnswer = () => {
+    if (answerChecksUsedForItem >= settings.maxAnswerChecks) {
+      return notification({
+        type: 'warn',
+        messageKey: 'checkAnswerLimitExceededForItem',
+      })
+    }
+
+    checkAnswer(groupId)
   }
 
   return (
@@ -88,6 +113,30 @@ const PlayerHeader = ({
                       </ButtonWithStyle>
                     </Tooltip>
                   )}
+
+                  {settings.maxAnswerChecks > 0 && !hideCheckAnswer && (
+                    <Tooltip
+                      placement="top"
+                      title={
+                        checkAnswerInProgress
+                          ? 'In progress'
+                          : answerChecksUsedForItem >= settings.maxAnswerChecks
+                          ? 'Usage limit exceeded'
+                          : 'Check Answer'
+                      }
+                    >
+                      <ButtonWithStyle
+                        onClick={handleCheckAnswer}
+                        data-cy="checkAnswer"
+                        disabled={
+                          isPremiumContentWithoutAccess || checkAnswerInProgress
+                        }
+                      >
+                        <StyledIconCheck />
+                      </ButtonWithStyle>
+                    </Tooltip>
+                  )}
+
                   {timedAssignment && (
                     <TimedTestTimer utaId={utaId} groupId={groupId} />
                   )}
@@ -106,4 +155,13 @@ PlayerHeader.defaultProps = {
   onSaveProgress: () => {},
 }
 
-export default PlayerHeader
+const mapStateToProps = (state) => ({
+  answerChecksUsedForItem: currentItemAnswerChecksSelector(state),
+  checkAnswerInProgress: state?.test?.checkAnswerInProgress,
+})
+
+const mapDispatchToProps = {
+  checkAnswer: checkAnswerEvaluation,
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(PlayerHeader)

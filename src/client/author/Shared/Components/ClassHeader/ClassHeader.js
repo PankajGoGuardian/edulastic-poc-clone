@@ -455,7 +455,7 @@ class ClassHeader extends Component {
       isPaused = false,
       open,
       closed,
-      canCloseClass,
+      canCloseClass = [],
       dueDate,
       assignedBy = {},
       answerOnPaper,

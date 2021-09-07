@@ -260,6 +260,7 @@ const ClozeMathPreview = ({
           altInputs={allAnswers.altInputs}
           altMathUnitAnswers={allAnswers.altMathUnitAnswers}
           responseIds={responseIds}
+          extraOpts={item.extraOpts}
           isPrintPreview={isPrintPreview}
           singleResponseBox={singleResponseBox}
         />

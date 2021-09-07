@@ -367,7 +367,7 @@ const graphPolygonChecks = [
   'isCongruent',
   'isSimilar',
   'hasRightAngle',
-  'comparePoints',
+  // 'comparePoints',
   'comparePerimeter',
 ]
 const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
@@ -423,7 +423,7 @@ const evaluationSettings = {
       'graphLineChecks',
       'graphPolygonChecks',
       'graphPointsOnAnEquation',
-      'partialCreditScoring',
+      // 'partialCreditScoring',
     ],
     // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
     // MISCELLANEOUS: ['graphMiscellaneous'],

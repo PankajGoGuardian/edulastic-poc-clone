@@ -434,6 +434,7 @@ const PurchaseFlowModals = (props) => {
           totalAmount={totalAmount}
           shouldProrate={shouldProrate}
           subEndDate={subEndDate}
+          isEnterprise={isEnterprise}
         />
       )}
       {showMultiplePurchaseModal && (

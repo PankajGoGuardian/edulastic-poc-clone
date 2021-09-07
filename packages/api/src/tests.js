@@ -99,7 +99,7 @@ const updateBulkTestsStatus = (data) =>
 const getPublicTest = (testId) =>
   api
     .callApi({
-      url: `public/test/${testId}`,
+      url: `/public/test/${testId}`,
       method: 'get',
     })
     .then((result) => result.data.result)

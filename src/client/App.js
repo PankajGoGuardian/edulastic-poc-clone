@@ -1,6 +1,7 @@
 import React, { Component, lazy, Suspense, useEffect } from 'react'
 import { capitalize, get, isEmpty, isUndefined } from 'lodash'
 import qs from 'qs'
+import { ThemeProvider } from 'styled-components'
 import queryString from 'query-string'
 import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
@@ -14,6 +15,7 @@ import { roleuser, signUpState, test } from '@edulastic/constants'
 import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
+import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
@@ -607,206 +609,216 @@ class App extends Component {
                 onButtonClick={logout}
               />
             )}
-            <Switch>
-              {location.pathname.toLocaleLowerCase() !==
-                redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
-                <Redirect exact to={redirectRoute} />
-              ) : null}
-              <PrivateRoute
-                path="/author"
-                component={Author}
-                redirectPath={redirectRoute}
-                notifications={
-                  roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                    ? [
-                        BulkActionNotificationListener,
-                        ReportsNotificationListener,
-                      ]
-                    : roleuser.TEACHER === userRole
-                    ? [ClassSyncNotification, ReportsNotificationListener]
-                    : null
-                }
-              />
-              <PrivateRoute
-                path="/publisher"
-                component={Publisher}
-                redirectPath={redirectRoute}
-              />
-              <PrivateRoute
-                path="/home"
-                component={Dashboard}
-                notifications={[NotificationListener]}
-                redirectPath={redirectRoute}
-              />
-              <PrivateRoute
-                path="/admin"
-                component={Admin}
-                redirectPath={redirectRoute}
-                notifications={
-                  roleuser.EDULASTIC_ADMIN ? [AdminNotificationListener] : null
-                }
-              />
-              <PrivateRoute
-                path={[
-                  '/uploadAnswerSheets',
-                  '/uploadAnswerSheets/cameraScan',
-                  '/uploadAnswerSheets/scanProgress',
-                ]}
-                component={ScanScore}
-                redirectPath={redirectRoute}
-                notifications={[BubbleScanNotificationsListener]}
-              />
-              <Route exact path="/kid" component={Kid} />
-              <LoggedOutRoute
-                exact
-                path="/resetPassword/"
-                component={ResetPassword}
-                redirectPath={defaultRoute}
-              />
-              <Route
-                exact
-                path="/public/parentInvitation/:code"
-                render={() => <SetParentPassword parentInvitation />}
-              />
-              <LoggedOutRoute
-                path="/district/:orgShortName"
-                component={DistrictRoutes}
-                redirectPath={defaultRoute}
-                orgType="district"
-              />
-              <LoggedOutRoute
-                path="/districtLogin/:orgShortName"
-                component={DistrictRoutes}
-                redirectPath={defaultRoute}
-                orgType="districtLogin"
-              />
-              <LoggedOutRoute
-                path="/school/:orgShortName"
-                component={DistrictRoutes}
-                redirectPath={defaultRoute}
-                orgType="school"
-              />
-              <LoggedOutRoute
-                path="/Signup"
-                component={TeacherSignup}
-                redirectPath={defaultRoute}
-                notifications={
-                  roleuser.TEACHER === userRole ? [ClassSyncNotification] : null
-                }
-              />
-              <LoggedOutRoute
-                exact
-                path="/partnerLogin/:partner/Signup"
-                component={TeacherSignup}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                path="/login"
-                component={Auth}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                exact
-                path="/partnerLogin/:partner"
-                component={Auth}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                path="/GetStarted"
-                component={GetStarted}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                exact
-                path="/partnerLogin/:partner/GetStarted"
-                component={GetStarted}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                path="/AdminSignup"
-                component={AdminSignup}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                exact
-                path="/partnerLogin/:partner/AdminSignup"
-                component={AdminSignup}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                path="/StudentSignup"
-                component={StudentSignup}
-                redirectPath={defaultRoute}
-              />
-              <LoggedOutRoute
-                exact
-                path="/partnerLogin/:partner/StudentSignup"
-                component={StudentSignup}
-                redirectPath={defaultRoute}
-              />
-              <PrivateRoute
-                path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
-                component={TestAttemptReview}
-              />
-              <Route
-                path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
-                render={() => <AssessmentPlayer defaultAP />}
-              />
-              <Route
-                path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
-                render={() => <AssessmentPlayer defaultAP />}
-              />
-              <Route
-                path={`/student/${ASSESSMENT}/:id`}
-                render={() => <AssessmentPlayer defaultAP />}
-              />
-              <PrivateRoute
-                path="/student/test-summary"
-                component={TestAttemptReview}
-              />
-              <Route
-                path="/student/seb-quit-confirm"
-                component={SebQuitConfirm}
-              />
-              <Route
-                path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
-                render={() => <AssessmentPlayer defaultAP={false} />}
-              />
-              <Route
-                path={`/student/${PRACTICE}/:id`}
-                render={() => <AssessmentPlayer defaultAP={false} />}
-              />
-              <Route
-                path="/public/test/:id"
-                render={() => <TestDemoPlayer />}
-              />
-              <Route
-                path="/v1/testItem/:id"
-                render={() => <TestItemDemoPlayer />}
-              />
-              <Route exact path="/fwd" render={() => <V1Redirect />} />
-              <Route path="/inviteTeacher" render={() => <Invite />} />
-              <Route path="/auth" render={() => <Auth />} />
-              {testRedirectRoutes.map((route) => {
-                return (
-                  <Route path={route} component={RedirectToTest} key={route} />
-                )
-              })}
-              <Route
-                path="/public/view-test/:testId"
-                render={(props) => <PublicTest {...props} />}
-              />
-              <PrivateRoute
-                path="/assignments/embed/:testId"
-                redirectPath={redirectRoute}
-                component={AssignmentEmbedLink}
-              />
-              <Route
-                path="/audio-test"
-                render={() => <AudioTagPlayer user={user?.user} />}
-              />
-              <Redirect exact to={defaultRoute} />
-            </Switch>
+            <ThemeProvider theme={themes.default}>
+              <Switch>
+                {location.pathname.toLocaleLowerCase() !==
+                  redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
+                  <Redirect exact to={redirectRoute} />
+                ) : null}
+                <PrivateRoute
+                  path="/author"
+                  component={Author}
+                  redirectPath={redirectRoute}
+                  notifications={
+                    roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+                      ? [
+                          BulkActionNotificationListener,
+                          ReportsNotificationListener,
+                        ]
+                      : roleuser.TEACHER === userRole
+                      ? [ClassSyncNotification, ReportsNotificationListener]
+                      : null
+                  }
+                />
+                <PrivateRoute
+                  path="/publisher"
+                  component={Publisher}
+                  redirectPath={redirectRoute}
+                />
+                <PrivateRoute
+                  path="/home"
+                  component={Dashboard}
+                  notifications={[NotificationListener]}
+                  redirectPath={redirectRoute}
+                />
+                <PrivateRoute
+                  path="/admin"
+                  component={Admin}
+                  redirectPath={redirectRoute}
+                  notifications={
+                    roleuser.EDULASTIC_ADMIN
+                      ? [AdminNotificationListener]
+                      : null
+                  }
+                />
+                <PrivateRoute
+                  path={[
+                    '/uploadAnswerSheets',
+                    '/uploadAnswerSheets/cameraScan',
+                    '/uploadAnswerSheets/scanProgress',
+                  ]}
+                  component={ScanScore}
+                  redirectPath={redirectRoute}
+                  notifications={[BubbleScanNotificationsListener]}
+                />
+                <Route exact path="/kid" component={Kid} />
+                <LoggedOutRoute
+                  exact
+                  path="/resetPassword/"
+                  component={ResetPassword}
+                  redirectPath={defaultRoute}
+                />
+                <Route
+                  exact
+                  path="/public/parentInvitation/:code"
+                  render={() => <SetParentPassword parentInvitation />}
+                />
+                <LoggedOutRoute
+                  path="/district/:orgShortName"
+                  component={DistrictRoutes}
+                  redirectPath={defaultRoute}
+                  orgType="district"
+                />
+                <LoggedOutRoute
+                  path="/districtLogin/:orgShortName"
+                  component={DistrictRoutes}
+                  redirectPath={defaultRoute}
+                  orgType="districtLogin"
+                />
+                <LoggedOutRoute
+                  path="/school/:orgShortName"
+                  component={DistrictRoutes}
+                  redirectPath={defaultRoute}
+                  orgType="school"
+                />
+                <LoggedOutRoute
+                  path="/Signup"
+                  component={TeacherSignup}
+                  redirectPath={defaultRoute}
+                  notifications={
+                    roleuser.TEACHER === userRole
+                      ? [ClassSyncNotification]
+                      : null
+                  }
+                />
+                <LoggedOutRoute
+                  exact
+                  path="/partnerLogin/:partner/Signup"
+                  component={TeacherSignup}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  path="/login"
+                  component={Auth}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  exact
+                  path="/partnerLogin/:partner"
+                  component={Auth}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  path="/GetStarted"
+                  component={GetStarted}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  exact
+                  path="/partnerLogin/:partner/GetStarted"
+                  component={GetStarted}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  path="/AdminSignup"
+                  component={AdminSignup}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  exact
+                  path="/partnerLogin/:partner/AdminSignup"
+                  component={AdminSignup}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  path="/StudentSignup"
+                  component={StudentSignup}
+                  redirectPath={defaultRoute}
+                />
+                <LoggedOutRoute
+                  exact
+                  path="/partnerLogin/:partner/StudentSignup"
+                  component={StudentSignup}
+                  redirectPath={defaultRoute}
+                />
+                <PrivateRoute
+                  path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
+                  component={TestAttemptReview}
+                />
+                <Route
+                  path={`/student/${ASSESSMENT}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <Route
+                  path={`/student/${TESTLET}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <Route
+                  path={`/student/${ASSESSMENT}/:id`}
+                  render={() => <AssessmentPlayer defaultAP />}
+                />
+                <PrivateRoute
+                  path="/student/test-summary"
+                  component={TestAttemptReview}
+                />
+                <Route
+                  path="/student/seb-quit-confirm"
+                  component={SebQuitConfirm}
+                />
+                <Route
+                  path={`/student/${PRACTICE}/:id/class/:groupId/uta/:utaId`}
+                  render={() => <AssessmentPlayer defaultAP={false} />}
+                />
+                <Route
+                  path={`/student/${PRACTICE}/:id`}
+                  render={() => <AssessmentPlayer defaultAP={false} />}
+                />
+                <Route
+                  path="/public/test/:id"
+                  render={() => <TestDemoPlayer />}
+                />
+                <Route
+                  path="/v1/testItem/:id"
+                  render={() => <TestItemDemoPlayer />}
+                />
+                <Route exact path="/fwd" render={() => <V1Redirect />} />
+                <Route path="/inviteTeacher" render={() => <Invite />} />
+                <Route path="/auth" render={() => <Auth />} />
+                {testRedirectRoutes.map((route) => {
+                  return (
+                    <Route
+                      path={route}
+                      component={RedirectToTest}
+                      key={route}
+                    />
+                  )
+                })}
+                <Route
+                  path="/public/view-test/:testId"
+                  render={(props) => <PublicTest {...props} />}
+                />
+                <PrivateRoute
+                  path="/assignments/embed/:testId"
+                  redirectPath={redirectRoute}
+                  component={AssignmentEmbedLink}
+                />
+                <Route
+                  path="/audio-test"
+                  render={() => <AudioTagPlayer user={user?.user} />}
+                />
+                <Redirect exact to={defaultRoute} />
+              </Switch>
+            </ThemeProvider>
           </DragDrop.Provider>
           {cliBannerVisible &&
             canShowCliBanner &&

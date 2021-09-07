@@ -207,6 +207,7 @@ const PublicTestPage = ({
       {isPreviewModalVisible && (
         <TestPreviewModal
           isModalVisible
+          showStudentPerformance
           testId={test?._id || testId}
           closeTestPreviewModal={() => setIsTestPreviewVisible(false)}
           demo

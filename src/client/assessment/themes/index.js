@@ -875,7 +875,7 @@ const AssessmentContainer = ({
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
         const _item = items[currentItem]
-        if (!demo && !_item.isDummyItem) {
+        if (!_item.isDummyItem) {
           evaluateForPreview({
             currentItem,
             timeSpent,
@@ -953,7 +953,7 @@ const AssessmentContainer = ({
         })
       }
       const _item = items[currentItem]
-      if (!demo && !_item.isDummyItem) {
+      if (!_item.isDummyItem) {
         evaluateForPreview({
           currentItem,
           timeSpent,
@@ -962,7 +962,7 @@ const AssessmentContainer = ({
           isLastQuestion: true,
         })
       }
-      if (demo || _item.isDummyItem) {
+      if (_item.isDummyItem) {
         submitPreviewTest()
       }
     }
@@ -1029,21 +1029,19 @@ const AssessmentContainer = ({
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
     const _item = items[currentItem]
-    if ((demo || _item.isDummyItem) && isLast()) {
+    if (_item.isDummyItem) {
       return submitPreviewTest()
     }
-    if (!demo && !_item.isDummyItem) {
-      const evalArgs = {
-        currentItem,
-        timeSpent,
-        testId,
-      }
-      if (isLast()) {
-        evalArgs.isLastQuestion = true
-        evalArgs.callback = submitPreviewTest
-      }
-      evaluateForPreview(evalArgs)
+    const evalArgs = {
+      currentItem,
+      timeSpent,
+      testId,
     }
+    if (isLast()) {
+      evalArgs.isLastQuestion = true
+      evalArgs.callback = submitPreviewTest
+    }
+    evaluateForPreview(evalArgs)
   }
 
   // This function is for a direct submit only available in DRC player.

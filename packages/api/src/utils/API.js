@@ -122,6 +122,20 @@ function getParentsStudentToken(_config) {
   }
 }
 
+function getPublicAuthToken(_config) {
+  try {
+    if (
+      ['/public/', '/math/', '/evaluate-as-student/'].find((x) =>
+        _config.url?.includes(x)
+      )
+    ) {
+      return config.publicAuthToken
+    }
+    return false
+  } catch (e) {
+    console.warn('Error public auth token', e)
+  }
+}
 /**
  * A helper to check if the date object is a a valid one
  * @param {Date} d
@@ -209,7 +223,10 @@ export default class API {
         }
         const currentDistrictName = getCurrentDistrictName() || ''
         const token =
-          getParentsStudentToken(_config) || defaultToken || getAccessToken()
+          getParentsStudentToken(_config) ||
+          defaultToken ||
+          getAccessToken() ||
+          getPublicAuthToken(_config)
         const currentUserFromRedux = getUserFromRedux()
         const userDistrictId = currentUserFromRedux?.user?.currentDistrictId
         const districtIdFromToken = token ? parseJwt(token)?.districtId : null

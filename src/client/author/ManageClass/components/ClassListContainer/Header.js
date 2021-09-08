@@ -108,12 +108,12 @@ const Header = ({
 
   // `googleStopSync` is true if all `googleAllowedInstitutions` have `stopSync` enabled
   const googleStopSync = useMemo(
-    () => googleAllowedInstitutions.every((s) => !!s.stopSync),
+    () => googleAllowedInstitutions.every((s) => !!s.institution.stopSync),
     [googleAllowedInstitutions]
   )
   // `canvasStopSync` is true if all `canvasAllowedInstitution` have `stopSync` enabled
   const canvasStopSync = useMemo(
-    () => canvasAllowedInstitution.every((s) => !!s.stopSync),
+    () => canvasAllowedInstitution.every((s) => !!s.institution.stopSync),
     [canvasAllowedInstitution]
   )
 

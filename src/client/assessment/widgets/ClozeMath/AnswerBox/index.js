@@ -21,6 +21,9 @@ const CorrectAnswers = ({
   let validAnswers = []
 
   const extraOptions = (id) => {
+    if (isEmpty(extraOpts)) {
+      return {}
+    }
     const opts = extraOpts[id]
     if (!opts) {
       return {}

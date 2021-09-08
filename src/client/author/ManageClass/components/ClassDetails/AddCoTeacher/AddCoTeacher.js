@@ -6,7 +6,7 @@ import {
   SelectInputStyled,
 } from '@edulastic/common'
 import { Select } from 'antd'
-import { debounce, get, isNull } from 'lodash'
+import { debounce, get, isNull, isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -60,27 +60,34 @@ class AddCoTeacher extends React.Component {
       notification({ messageKey: 'pleaseSelectCoTeacher' })
       return
     }
-    const { handleCancel, selectedClass } = this.props
-    const { _id: classId } = selectedClass
+    const { handleCancel, selectedClass, addCoTeacherToGroups } = this.props
+    if (isArray(selectedClass)) {
+      const groupIds = selectedClass.map(
+        (_selectedClass) => `${_selectedClass._id}`
+      )
+      addCoTeacherToGroups({ groupIds, coTeacherId })
+    } else {
+      const { _id: classId } = selectedClass
 
-    groupApi
-      .addCoTeacher({
-        groupId: classId,
-        coTeacherId,
-      })
-      .then((data) => {
-        if (data.groupData) {
-          setClass(data.groupData)
-          notification({
-            type: 'success',
-            messageKey: 'coTeacherAddedSuccessfully',
-          })
-          handleCancel()
-        }
-      })
-      .catch((err) => {
-        notification({ msg: err.response.data.message })
-      })
+      groupApi
+        .addCoTeacher({
+          groupId: classId,
+          coTeacherId,
+        })
+        .then((data) => {
+          if (data.groupData) {
+            setClass(data.groupData)
+            notification({
+              type: 'success',
+              messageKey: 'coTeacherAddedSuccessfully',
+            })
+            handleCancel()
+          }
+        })
+        .catch((err) => {
+          notification({ msg: err.response.data.message })
+        })
+    }
   }, 1000)
 
   render() {

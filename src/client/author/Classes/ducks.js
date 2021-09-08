@@ -5,6 +5,7 @@ import { push } from 'connected-react-router'
 import { googleApi, groupApi, userApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
+import { showAddCoTeacherModalAction } from '../ManageClass/ducks'
 
 const RECEIVE_CLASSLIST_REQUEST = '[class] receive list request'
 export const RECEIVE_CLASSLIST_SUCCESS = '[class] receive list success'
@@ -19,6 +20,8 @@ const CREATE_CLASS_ERROR = '[class] create data error'
 const DELETE_CLASS_REQUEST = '[class] delete data request'
 const DELETE_CLASS_SUCCESS = '[class] delete data success'
 const DELETE_CLASS_ERROR = '[class] delete data error'
+const ADD_COTEACHER_TO_GROUPS_SUCCESS =
+  '[class] add coTeacher to groups success'
 const SET_BULK_EDIT_VISIBILITY = '[class] SET_BULK_EDIT_VISIBILITY'
 const SET_BULK_EDIT_MODE = '[class] SET_BULK_EDIT_MODE'
 const SET_BULK_EDIT_UPDATE_VIEW = '[class] SET_BULK_EDIT_UPDATE_VIEW'
@@ -40,6 +43,8 @@ const SET_OPEN_HANGOUT_MEETING = '[class] set open hangouts meeting'
 
 const UPDATE_HANGOUT_EVENT_REQUEST = '[class] update hangouts event request'
 
+const ADD_COTEACHER_TO_GROUPS = '[class] add coTeacher to groups'
+
 export const receiveClassListAction = createAction(RECEIVE_CLASSLIST_REQUEST)
 export const receiveClassListSuccessAction = createAction(
   RECEIVE_CLASSLIST_SUCCESS
@@ -55,6 +60,9 @@ export const createClassErrorAction = createAction(CREATE_CLASS_ERROR)
 export const deleteClassAction = createAction(DELETE_CLASS_REQUEST)
 export const deleteClassSuccessAction = createAction(DELETE_CLASS_SUCCESS)
 export const deleteClassErrorAction = createAction(DELETE_CLASS_ERROR)
+export const addCoTeacherToGroupSuccessAction = createAction(
+  ADD_COTEACHER_TO_GROUPS_SUCCESS
+)
 
 export const receiveTeacherListAction = createAction(
   RECEIVE_TEACHERLIST_REQUEST
@@ -98,6 +106,8 @@ export const updateHangoutEventRequestAction = createAction(
 export const setHangoutOpenMeetingAction = createAction(
   SET_OPEN_HANGOUT_MEETING
 )
+
+export const addCoTeacherToGroupsAction = createAction(ADD_COTEACHER_TO_GROUPS)
 
 // selectors
 const stateClassSelector = (state) => state.classesReducer
@@ -214,6 +224,15 @@ export const reducer = createReducer(initialState, {
   [DELETE_CLASS_ERROR]: (state, { payload }) => {
     state.deleting = false
     state.deleteError = payload.error
+  },
+  [ADD_COTEACHER_TO_GROUPS_SUCCESS]: (state, { payload }) => {
+    const groupsData = payload?.groupsData || []
+    for (let i = 0; i < groupsData.length; i++) {
+      state.data[groupsData[i]._id]._source = {
+        ...state.data[groupsData[i]._id]._source,
+        ...groupsData[i],
+      }
+    }
   },
   [RECEIVE_TEACHERLIST_REQUEST]: (state) => {
     state.teacherLoading = true
@@ -335,6 +354,19 @@ function* deleteClassSaga({ payload }) {
     yield put(deleteClassErrorAction({ deleteError: errorMessage }))
   }
 }
+function* addCoTeacherToGroupsSaga({ payload }) {
+  try {
+    const data = yield call(groupApi.addCoTeacher, payload)
+    yield put(addCoTeacherToGroupSuccessAction(data))
+    yield put(showAddCoTeacherModalAction(false))
+    notification({
+      type: 'success',
+      messageKey: 'coTeacherAddedSuccessfully',
+    })
+  } catch (err) {
+    notification({ msg: err.response.data.message })
+  }
+}
 
 function* receiveTeachersListSaga({ payload }) {
   try {
@@ -433,5 +465,8 @@ export function* watcherSaga() {
   yield all([yield takeEvery(SAVE_HANGOUT_EVENT_REQUEST, saveHangoutEventSaga)])
   yield all([
     yield takeEvery(UPDATE_HANGOUT_EVENT_REQUEST, updateHangoutEventSaga),
+  ])
+  yield all([
+    yield takeEvery(ADD_COTEACHER_TO_GROUPS, addCoTeacherToGroupsSaga),
   ])
 }

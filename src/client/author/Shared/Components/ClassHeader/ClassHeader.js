@@ -816,7 +816,13 @@ class ClassHeader extends Component {
       dueOnDate
     ).format('MMM DD, YYYY')}`
 
-    if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_BY_ADMIN) {
+    if (dueDate && endDate) {
+      closeDateTooltipText = `This test is due on ${moment(dueOnDate).format(
+        'MMM DD, YYYY'
+      )}. Late submissions are allowed till ${moment(endDate).format(
+        'MMM DD, YYYY'
+      )}`
+    } else if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_BY_ADMIN) {
       closeDateTooltipText = 'This test is set to be closed manually by admin'
     } else if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_IN_CLASS) {
       closeDateTooltipText = 'This test is set to be closed manually by teacher'

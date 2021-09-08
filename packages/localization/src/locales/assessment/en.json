@@ -832,7 +832,8 @@
         "step": "Step",
         "arrows": "ARROWS",
         "plot": "PLOT",
-        "addText": "ADD TEXT"
+        "addText": "ADD TEXT",
+        "fxText": "Teacher Plotter and Explorer"
       },
       "background_options": {
         "background_image": "Background image",

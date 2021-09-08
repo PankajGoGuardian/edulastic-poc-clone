@@ -362,13 +362,12 @@ const graphSegmentChecks = [
 ]
 const graphLineChecks = ['isParallel', 'isPerpendicular']
 const graphPolygonChecks = [
-  'compareStartPoint',
   'compareArea',
   'isSquare',
   'isCongruent',
   'isSimilar',
   'hasRightAngle',
-  'comparePoints',
+  // 'comparePoints',
   'comparePerimeter',
 ]
 const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
@@ -424,10 +423,10 @@ const evaluationSettings = {
       'graphLineChecks',
       'graphPolygonChecks',
       'graphPointsOnAnEquation',
-      'partialCreditScoring',
+      // 'partialCreditScoring',
     ],
-    'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
-    MISCELLNEOUS: ['graphMiscellaneous'],
+    // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
+    // MISCELLANEOUS: ['graphMiscellaneous'],
   },
 }
 

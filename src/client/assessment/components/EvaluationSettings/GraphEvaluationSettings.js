@@ -74,7 +74,7 @@ const Tabs = styled(AntTabs)`
       > div {
         &:first-child {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           padding: 0px 16px;
         }
       }

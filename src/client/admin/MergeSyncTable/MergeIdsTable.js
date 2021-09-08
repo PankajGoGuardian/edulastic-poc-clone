@@ -20,7 +20,8 @@ const orgTypesCount = [
 ]
 
 const MergeIdsTable = ({
-  eduCounts,
+  totalLmsCounts,
+  edulasticTotalCounts,
   countsInfo,
   uploadCSV,
   districtId,
@@ -232,10 +233,11 @@ const MergeIdsTable = ({
     key: i,
     type: mapCountAsType[item].type,
     fieldName: mapCountAsType[item].name,
-    eduCount: eduCounts[item] || '-',
+    edulasticTotalCount: edulasticTotalCounts[item] || '-',
+    totalLmsCount: totalLmsCounts[item] || '-',
     count: countsInfo[item] || '-',
-    isEmpty: !eduCounts[item] && !countsInfo[item],
-    isMatching: eduCounts[item] === countsInfo[item],
+    isEmpty: !totalLmsCounts[item] && !countsInfo[item],
+    isMatching: totalLmsCounts[item] === countsInfo[item],
   }))
 
   const cleverHeaders = [
@@ -351,25 +353,31 @@ const MergeIdsTable = ({
           title="Fields"
           dataIndex="fieldName"
           key="fieldName"
-          width="15%"
+          width="14%"
         />
         <Column
           title="Edulastic Count"
-          dataIndex="eduCount"
-          key="eduCount"
-          width="15%"
+          dataIndex="edulasticTotalCount"
+          key="edulasticTotalCount"
+          width="12%"
+        />
+        <Column
+          title="Clever Edu Count"
+          dataIndex="totalLmsCount"
+          key="totalLmsCount"
+          width="12%"
         />
         <Column
           title={`${title} Count`}
           dataIndex="count"
           key="count"
-          width="15%"
+          width="12%"
         />
         <Column
           title="Actions"
           dataIndex="isEmpty"
           key="btnName"
-          width="35%"
+          width="30%"
           render={(_, record) => {
             const { type, fieldName } = record
             return fieldName === 'Schools' || fieldName === 'Classes' ? (

@@ -120,6 +120,30 @@ export const mapCountAsType = {
     name: 'District Admins',
     type: 'da',
   },
+  totalSchoolCount: {
+    name: 'Total Schools',
+    type: 'sch',
+  },
+  totalGroupCount: {
+    name: 'Total Classes',
+    type: 'cls',
+  },
+  totalSaCount: {
+    name: 'Total School Admins',
+    type: 'sa',
+  },
+  totalTeacherCount: {
+    name: 'Total Teachers',
+    type: 'tch',
+  },
+  totalStudentCount: {
+    name: 'Total Students',
+    type: 'stu',
+  },
+  totalDaCount: {
+    name: 'Total District Admins',
+    type: 'da',
+  },
 }
 
 export const CLEVER_DISTRICT_ID_REGEX = /^[0-9a-fA-F]{24}$/

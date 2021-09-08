@@ -232,6 +232,7 @@ function MergeSyncTable({
       atlasId,
     } = {},
     cleverCountsInfo = {},
+    eduCountsInfo = {},
     edulasticCountsInfo = {},
     atlasCountsInfo = {},
   } = data
@@ -302,7 +303,8 @@ function MergeSyncTable({
             >
               <MergeIdsTable
                 countsInfo={isClasslink ? atlasCountsInfo : cleverCountsInfo}
-                eduCounts={edulasticCountsInfo}
+                totalLmsCounts={eduCountsInfo}
+                edulasticTotalCounts={edulasticCountsInfo}
                 uploadCSV={uploadCSV}
                 districtId={districtId}
                 cleverId={cleverId}

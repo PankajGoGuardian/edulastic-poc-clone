@@ -82,7 +82,10 @@ function UserCount({
     <FlexColumn>
       {Object.keys(users.data).map((key) => (
         <span key={key}>
-          {mapCountAsType[key].name} : {users.data[key]}
+          {`${
+            !key.includes('total') ? (isClasslink ? 'Atlas ' : 'Clever ') : ''
+          }${mapCountAsType[key].name}`}{' '}
+          : {users.data[key]}
         </span>
       ))}
     </FlexColumn>

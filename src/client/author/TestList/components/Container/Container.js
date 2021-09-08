@@ -74,7 +74,10 @@ import {
   clearCreatedItemsAction,
   getAllTagsAction,
 } from '../../../TestPage/ducks'
-import { setApproveConfirmationOpenAction } from '../../../TestPage/components/AddItems/ducks'
+import {
+  clearSelectedItemsAction,
+  setApproveConfirmationOpenAction,
+} from '../../../TestPage/components/AddItems/ducks'
 import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
 import {
   clearDictStandardsAction,
@@ -249,8 +252,9 @@ class TestList extends Component {
       districtId,
       userId,
       collections,
+      clearSelectedItems,
     } = this.props
-
+    clearSelectedItems()
     const isSingaporeMathCollectionActive = tests.filter(
       (test) =>
         (test.description?.toLowerCase()?.includes('singaporemath') ||
@@ -1547,6 +1551,7 @@ const enhance = compose(
       removeTestFromCart: removeTestFromCartAction,
       approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+      clearSelectedItems: clearSelectedItemsAction,
     }
   )
 )

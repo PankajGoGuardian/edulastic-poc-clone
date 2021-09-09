@@ -19,6 +19,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
+import LineReader from '../../../common/components/LineReader'
 
 const { calculatorTypes } = test
 
@@ -124,6 +125,7 @@ const ToolBar = ({
           onClick={toggleUserWorkUploadModal}
         />
       )}
+      <LineReader />
     </Container>
   )
 }

@@ -64,13 +64,14 @@ import {
   getUserRole,
   getUserSchoolsListSelector,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import {
   isDemoPlaygroundUser,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -92,13 +93,18 @@ class AssignmentAdvanced extends Component {
       location,
       history,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
       userId,
       districtId: _districtId,
     } = this.props
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
+    }
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
     }
     const { districtId, testId } = match.params
     const {
@@ -527,6 +533,7 @@ const enhance = compose(
       assignmentTestList: getAssignmentTestList(state),
       bulkActionType: getBulkActionTypeSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
       districtId: getUserOrgId(state),
@@ -544,7 +551,7 @@ const enhance = compose(
       bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )

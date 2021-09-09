@@ -31,6 +31,7 @@ import {
   getUserOrgId,
   getUserRole,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
   getUserId,
   getUserFeatures,
 } from '../../../src/selectors/user'
@@ -73,7 +74,7 @@ import {
   SavedSettingsContainer,
   DeleteIconContainer,
 } from './styled'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
@@ -125,7 +126,8 @@ class AssignTest extends React.Component {
       testSettings,
       getDefaultTestSettings,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
       history,
       fetchTestSettingsList,
       userId,
@@ -138,7 +140,11 @@ class AssignTest extends React.Component {
 
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
+    }
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
     }
 
     resetStudents()
@@ -856,6 +862,7 @@ const enhance = compose(
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       currentSettingsId: getCurrentSettingsIdSelector(state),
       userId: getUserId(state),
       testSettingsList: getTestSettingsListSelector(state),
@@ -878,7 +885,7 @@ const enhance = compose(
       resetStudents: resetStudentAction,
       updateAssignmentSettings: updateAssingnmentSettingsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       saveTestSettings: saveTestSettingsAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,

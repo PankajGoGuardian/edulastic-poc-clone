@@ -21,6 +21,7 @@ import {
   getUserNameSelector,
   getUserOrgId,
   shouldWatchCollectionUpdates,
+  isSAWithoutSchoolsSelector,
 } from './author/src/selectors/user'
 import {
   fetchUserAction,
@@ -49,7 +50,7 @@ import AppUpdate from './common/components/AppUpdate'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 import SsoAuth from '../ssoAuth'
-import FreeAdminAlertModal from './common/components/FreeAdminAlertModal'
+import AdminAlertModal from './common/components/AdminAlertModal'
 import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
 import CalendlyScheduleModal from './author/Subscription/components/SubscriptionMain/CalendlyScheduleModal'
 import {
@@ -307,6 +308,7 @@ class App extends Component {
       setRequestQuoteModal,
       isRequestOrSubmitSuccessModalVisible,
       districtId,
+      isSAWithoutSchools,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -455,8 +457,11 @@ class App extends Component {
         } else if (role === 'district-admin' || role === 'school-admin') {
           if (features.isCurator) {
             defaultRoute = '/publisher/dashboard'
+          }
+          // redirecting da & sa to assignments after login as their dashboard page is not implemented
+          else if (isSAWithoutSchools) {
+            defaultRoute = '/author/tests'
           } else if (isPremium) {
-            // redirecting da & sa to assignments after login as their dashboard page is not implemented
             defaultRoute = '/author/assignments'
           } else {
             defaultRoute = '/author/reports'
@@ -560,8 +565,9 @@ class App extends Component {
       : 'Stop Acting as User'
     return (
       <div>
-        {!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
-          <FreeAdminAlertModal
+        {(isSAWithoutSchools ||
+          (!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole))) && (
+          <AdminAlertModal
             history={history}
             setRequestQuoteModal={setRequestQuoteModal}
             setShowSelectStates={this.setShowSelectStates}
@@ -840,6 +846,7 @@ const enhance = compose(
       isRequestOrSubmitSuccessModalVisible: getRequestOrSubmitSuccessVisibility(
         { subscription }
       ),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector({ user }),
       districtId: getUserOrgId({ user }),
     }),
     {

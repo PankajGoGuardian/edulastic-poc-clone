@@ -36,10 +36,12 @@ import { StandardsMasteryReportContainer } from './subPages/standardsMasteryRepo
 import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import { EngagementReportContainer } from './subPages/engagementReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
-import { getUserRole } from '../src/selectors/user'
+import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
+import { toggleAdminAlertModalAction } from '../../student/Login/ducks'
 
 const Container = (props) => {
   const {
+    history,
     role,
     isCsvDownloading,
     isPrinting,
@@ -50,6 +52,8 @@ const Container = (props) => {
     sharedReportList,
     reportCsvDocs,
     setCsvModalVisible,
+    isSAWithoutSchools,
+    toggleAdminAlertModal,
   } = props
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
@@ -66,18 +70,19 @@ const Container = (props) => {
     role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN
 
   useEffect(() => {
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal
+    }
     window.onbeforeprint = () => {
       // set 1 so that `isPrinting` dependant useEffect logic doesn't executed
       if (!isPrinting) props.setPrintingStateAction(1)
     }
-
     window.onafterprint = () => {
       props.setPrintingStateAction(false)
     }
-
     props.fetchCollaborationGroups()
     props.fetchSharedReports()
-
     return () => {
       window.onbeforeprint = () => {}
       window.onafterprint = () => {}
@@ -418,6 +423,7 @@ const enhance = connect(
     sharedReportList: getSharedReportList(state),
     loadingSharedReports: getSharedReportsLoader(state),
     reportCsvDocs: getCsvDocs(state),
+    isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
   }),
   {
     setSharingStateAction,
@@ -426,6 +432,7 @@ const enhance = connect(
     fetchSharedReports: getSharedReportsAction,
     fetchCollaborationGroups: getCollaborativeGroupsAction,
     setCsvModalVisible: setCsvModalVisibleAction,
+    toggleAdminAlertModal: toggleAdminAlertModalAction,
   }
 )
 

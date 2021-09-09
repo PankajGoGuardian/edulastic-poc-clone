@@ -49,6 +49,7 @@ import {
   getUserId,
   getCollectionsToAddContent,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
 import {
   approveOrRejectSingleTestRequestAction,
@@ -85,7 +86,7 @@ import {
 } from './styled'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import { sharedTypeMap } from '../Item/Item'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 
@@ -148,10 +149,11 @@ class ListItem extends Component {
     const {
       history,
       item,
-      toggleFreeAdminSubscriptionModal,
+      toggleAdminAlertModal,
       isFreeAdmin,
+      isSAWithoutSchools,
     } = this.props
-    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
     else
       history.push({
         pathname: `/author/assignments/${item._id}`,
@@ -596,12 +598,13 @@ const enhance = compose(
       currentUserId: getUserId(state),
       collectionToWrite: getCollectionsToAddContent(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )

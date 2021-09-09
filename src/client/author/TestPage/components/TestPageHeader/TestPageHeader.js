@@ -26,7 +26,7 @@ import {
   getUserFeatures,
   getUserId,
   getUserRole,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
@@ -52,7 +52,11 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { getIsCurator, isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  getIsCurator,
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import RegradeNotificationListener from '../../../Regrade/RegradeNotificationListener'
@@ -177,7 +181,8 @@ const TestPageHeader = ({
   authorQuestionsById,
   isUpdatingTestForRegrade,
   isFreeAdmin,
-  toggleFreeAdminSubscriptionModal,
+  isSAWithoutSchools,
+  toggleAdminAlertModal,
   showRegradeConfirmPopup,
   setShowRegradeConfirmPopup,
   regradeFirebaseDocId,
@@ -286,7 +291,7 @@ const TestPageHeader = ({
   }
 
   const handleAssign = () => {
-    if (isFreeAdmin) return toggleFreeAdminSubscriptionModal()
+    if (isFreeAdmin || isSAWithoutSchools) return toggleAdminAlertModal()
     onAssign()
   }
 
@@ -438,8 +443,7 @@ const TestPageHeader = ({
       {windowWidth >= parseInt(tabletWidth, 10) ? (
         <MainHeader
           headingText={
-            title ||
-            (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
+            title || (isPlaylist ? 'Untitled Playlist' : 'Untitled Test')
           }
           Icon={IconTestBank}
           headingSubContent={headingSubContent}
@@ -862,6 +866,7 @@ const enhance = compose(
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
       regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
       showUpgradePopup: getShowUpgradePopupSelector(state),
@@ -870,7 +875,7 @@ const enhance = compose(
     {
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
     }
   )

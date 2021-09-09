@@ -180,8 +180,7 @@ export const PERSIST_AUTH_STATE_AND_REDIRECT =
 
 export const TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL =
   '[user] toggle ios restrict navigation modal'
-export const TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL =
-  '[auth] toggle free admin subscription alert modal'
+export const TOGGLE_ADMIN_ALERT_MODAL = '[user] toggle admin alert modal'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -282,8 +281,8 @@ export const toggleIosRestrictNavigationModalAction = createAction(
   TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL
 )
 
-export const toggleFreeAdminSubscriptionModalAction = createAction(
-  TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL
+export const toggleAdminAlertModalAction = createAction(
+  TOGGLE_ADMIN_ALERT_MODAL
 )
 
 const initialState = {
@@ -298,7 +297,7 @@ const initialState = {
   isImageBlockNotification: false,
   isRoleConfirmation: false,
   iosRestrictNavigationModalVisible: false,
-  showAdminSubscriptionModal: false,
+  showAdminAlertModal: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -725,8 +724,8 @@ export default createReducer(initialState, {
       state.email = payload
     }
   },
-  [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
-    state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
+  [TOGGLE_ADMIN_ALERT_MODAL]: (state) => {
+    state.showAdminAlertModal = !state.showAdminAlertModal
   },
 })
 

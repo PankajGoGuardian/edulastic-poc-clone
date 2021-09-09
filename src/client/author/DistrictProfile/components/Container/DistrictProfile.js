@@ -13,16 +13,26 @@ import { Spacer, StyledLayout, SubHeader, DropdownWrapper } from './styled'
 import {
   getUserRole,
   getSaSchoolsSortedSelector,
+  isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
 import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
 import { receiveSchoolProfileAction } from '../../ducks'
 import { getSchoolAdminSettingsAccess } from '../../../DistrictPolicy/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 
 const title = 'Manage District'
 
 class DistrictProfile extends Component {
   state = {
     isInputEnabled: false,
+  }
+
+  componentDidMount() {
+    const { history, isSAWithoutSchools, toggleAdminAlertModal } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
   }
 
   handleEditClick = () => {
@@ -184,9 +194,11 @@ const enhance = compose(
       schoolId: get(state, 'user.saSettingsSchool'),
       schools: getSaSchoolsSortedSelector(state),
       isSAlevelSettingsAccess: getSchoolAdminSettingsAccess(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
     }),
     {
       loadSchoolProfile: receiveSchoolProfileAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
     }
   )
 )

@@ -111,15 +111,14 @@ class Assignments extends Component {
       toggleAdminAlertModal,
       userId,
     } = this.props
-    if (isFreeAdmin) {
-      history.push('/author/reports')
-      return toggleAdminAlertModal()
-    }
     if (isSAWithoutSchools) {
       history.push('/author/tests')
       return toggleAdminAlertModal()
     }
-
+    if (isFreeAdmin) {
+      history.push('/author/reports')
+      return toggleAdminAlertModal()
+    }
     const { defaultTermId, terms } = orgData
     const storedFilters = getFilterFromSession({
       key: 'assignments_filter',

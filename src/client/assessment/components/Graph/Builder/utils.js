@@ -976,7 +976,7 @@ export const toFractionHTML = (value, fractionsFormat) => {
     ''
   )
 
-  return `<span style="${labelStyle}">${main}${space}${fracs}</span>`
+  return `<span style="${labelStyle}" data-cy="label-${main}">${main}${space}${fracs}</span>`
 }
 
 /*

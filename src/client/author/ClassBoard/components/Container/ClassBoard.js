@@ -126,10 +126,13 @@ import {
 } from '../../../src/reducers/testActivity'
 import {
   updateCliUserAction,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
-import { isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
 
@@ -275,11 +278,16 @@ class ClassBoard extends Component {
       history,
       setShowAllStudents,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
     } = this.props
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
+    }
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
     }
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
@@ -2030,6 +2038,7 @@ const enhance = compose(
           ?.recentTestActivitiesGrouped || {},
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
     }),
     {
@@ -2052,7 +2061,7 @@ const enhance = compose(
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setPageNumber: setPageNumberAction,
     }
   )

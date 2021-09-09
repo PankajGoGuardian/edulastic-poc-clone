@@ -182,6 +182,13 @@ export const isFreeAdminSelector = createSelector(
     roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && !userFeatures.premium
 )
 
+export const isSAWithoutSchoolsSelector = createSelector(
+  getUserRole,
+  currentDistrictInstitutionIds,
+  (userRole, institutionIds) =>
+    userRole === roleuser.SCHOOL_ADMIN && !institutionIds.length
+)
+
 export const getUserSignupStatusSelector = createSelector(
   stateSelector,
   (state) => _get(state, 'signupStatus', '')

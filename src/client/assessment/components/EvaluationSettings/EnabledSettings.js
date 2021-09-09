@@ -28,8 +28,6 @@ const EnabledSettings = ({
     label: t(`component.math.${syntax}`),
   }))
 
-  const hasNumber = (text) => /\d/.test(text)
-
   const optionsToShow = useMemo(() => {
     const optionKeys = keys(options)
     const optsLables = optionKeys
@@ -45,7 +43,7 @@ const EnabledSettings = ({
           }
         } else if (key === 'unit' || key === 'latex') {
           const mathHtml = getMathHtml(options[key] || '')
-          label = `${mathHtml} ${t(`component.math.${key}`)}`
+          label = `${t(`component.math.${key}`)}: ${mathHtml}`
         } else if (options[key]) {
           if (isArray(options[key]) && !isEmpty(options[key])) {
             const labels = options[key].map((x) => {
@@ -55,18 +53,15 @@ const EnabledSettings = ({
               }
               return x
             })
-            label = `${
-              hasNumber(labels.join(',')) ? labels : `"${labels.join(',')}"`
-            } ${t(`component.math.${key}`)}`
+            label = `${t(`component.math.${key}`)}: ${labels.join(',')}`
           } else if (isString(options[key])) {
             label = options[key]
             const separator = separators.find((s) => s.value === options[key])
             if (separator) {
               label = separator.label
             }
-            label = `${hasNumber(label) ? label : `"${label}"`} ${t(
-              `component.math.${key}`
-            )}`
+
+            label = `${t(`component.math.${key}`)}: ${label}`
           } else {
             label = t(`component.math.${key}`)
           }
@@ -86,7 +81,7 @@ const EnabledSettings = ({
     if (!isEmpty(allowedVariables)) {
       optsLables.push({
         key: 'allowedVariables',
-        label: `${allowedVariables} ${t('component.math.allowedVariables')}`,
+        label: `${t('component.math.allowedVariables')}: ${allowedVariables}`,
       })
     }
     const evaluationMethod =

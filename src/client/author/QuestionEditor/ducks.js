@@ -714,10 +714,10 @@ function* saveQuestionSaga({
         reqData,
         ...(itemDetail.multipartItem && _testId ? [{ testId: _testId }] : [])
       )
-      yield put(addItemToCartAction(item))
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
+    yield put(addItemToCartAction(item))
     yield put(changeUpdatedFlagAction(false))
 
     if (item.testId) {

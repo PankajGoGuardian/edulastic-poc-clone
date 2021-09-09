@@ -13,6 +13,7 @@ const MathFormulaDisplay = withTheme(
     font-size: ${(props) => props.fontSize || props.theme.fontSize};
     font-weight: ${fonts.previewFontWeight};
     padding-left: ${(props) => props.paddingLeft && '50px'};
+    text-align: ${(props) => props.align};
 
     & * {
       display: inline;

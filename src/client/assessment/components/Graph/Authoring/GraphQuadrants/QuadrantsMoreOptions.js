@@ -27,7 +27,7 @@ import Question from '../../../Question'
 import Tools from '../../common/Tools'
 import GraphToolsParams from '../../components/GraphToolsParams'
 import RadiansDropdown from '../../components/RadiansDropdown'
-import PiSymbol from '../../components/PiSymbol'
+import RadianInput from '../../components/RadianInput'
 import { calcDistance } from '../../common/utils'
 import { uploadToS3 } from '../../../../../author/src/utils/upload'
 import { CONSTANT } from '../../Builder/config'
@@ -693,32 +693,48 @@ class QuadrantsMoreOptions extends Component {
                 />
               </Col>
               <Col md={6} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="xMin"
-                  value={xMin}
-                  suffix={xRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+                {xRadians ? (
+                  <RadianInput
+                    name="xMin"
+                    value={xMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="xMin"
+                    value={xMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
               <Col md={6} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="xMax"
-                  value={xMax}
-                  suffix={xRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+                {xRadians ? (
+                  <RadianInput
+                    name="xMax"
+                    value={xMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="xMax"
+                    value={xMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
               <Col md={4} marginBottom="0px">
                 {xRadians && (
@@ -856,32 +872,48 @@ class QuadrantsMoreOptions extends Component {
                 />
               </Col>
               <Col md={6} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="yMin"
-                  value={yMin}
-                  suffix={yRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+                {yRadians ? (
+                  <RadianInput
+                    name="yMin"
+                    value={yMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="yMin"
+                    value={yMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
               <Col md={6} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="yMax"
-                  value={yMax}
-                  suffix={yRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+                {yRadians ? (
+                  <RadianInput
+                    name="yMax"
+                    value={yMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="yMax"
+                    value={yMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
               <Col md={4} marginBottom="0px">
                 {yRadians && (

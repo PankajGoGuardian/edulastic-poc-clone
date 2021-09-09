@@ -1,4 +1,5 @@
 import React from 'react'
+import styled from 'styled-components'
 import { SelectInputStyled, MathFormulaDisplay } from '@edulastic/common'
 
 const radiansList = [
@@ -23,6 +24,10 @@ const radiansList = [
     label: '\\frac{\\pi}{5}',
   },
   {
+    value: 6,
+    label: '\\frac{\\pi}{6}',
+  },
+  {
     value: 8,
     label: '\\frac{\\pi}{8}',
   },
@@ -36,7 +41,7 @@ const RadiansDropdown = ({ name, value, onSelect }) => {
   }
 
   return (
-    <SelectInputStyled
+    <RadianSelect
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       onChange={handleSelect}
       value={value}
@@ -48,6 +53,7 @@ const RadiansDropdown = ({ name, value, onSelect }) => {
       {radiansList.map((option) => (
         <Option key={option.value} value={option.value}>
           <MathFormulaDisplay
+            align="center"
             fontSize="11px"
             dangerouslySetInnerHTML={{
               __html: `<span class="input__math" data-latex="${option.label}"></span>`,
@@ -55,8 +61,22 @@ const RadiansDropdown = ({ name, value, onSelect }) => {
           />
         </Option>
       ))}
-    </SelectInputStyled>
+    </RadianSelect>
   )
 }
 
 export default RadiansDropdown
+
+const RadianSelect = styled(SelectInputStyled)`
+  &.ant-select {
+    .ant-select-selection {
+      justify-content: center;
+
+      &.ant-select-selection--single {
+        .ant-select-selection__rendered {
+          width: auto;
+        }
+      }
+    }
+  }
+`

@@ -204,6 +204,9 @@ class MathInput extends React.PureComponent {
     (v?.toString() || '')
       .replace(/&amp;/g, '&')
       .replace(/mathbb\{(.*?)\}/g, '$1')
+      .replace(/\\not\\ni/g, '\\notni')
+      .replace(/\\not\\subseteq/g, '\\notsubseteq')
+      .replace(/\\not\\subset/g, '\\notsubset')
 
   handleKeypress = (e) => {
     const {

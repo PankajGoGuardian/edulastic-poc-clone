@@ -184,6 +184,7 @@ const VariableRow = ({
             type="number"
             data-cy="variableStep"
             value={variable.step}
+            min={0}
             step={0.1}
             onKeyDown={validations.step}
             onBlur={(e) =>

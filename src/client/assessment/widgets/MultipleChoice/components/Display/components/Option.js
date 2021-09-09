@@ -25,6 +25,9 @@ import { MultiChoiceContent } from '../styled/MultiChoiceContent'
 import Cross from './Cross'
 import DragHandle from './DragHandle'
 
+const getFocusable = () =>
+  $('#multiplechoice-optionlist [tabindex]:not([tabindex="-1"])')
+
 const Option = (props) => {
   const {
     t,
@@ -206,6 +209,16 @@ const Option = (props) => {
     }
   }
 
+  const handleKeyDown = (evt) => {
+    if (fromSetAnswers && evt.which === 9) {
+      const nextIdx = indx + 1
+      const focusable = getFocusable()
+      if (!isEmpty(focusable) && focusable[nextIdx]) {
+        focusable[nextIdx]?.focus()
+      }
+    }
+  }
+
   const renderCheckbox = () => (
     <StyledOptionsContainer
       uiStyleType={uiStyle.type}
@@ -240,6 +253,7 @@ const Option = (props) => {
             }`}
             toolbarId={`mcq-option-${indx}`}
             onChange={handleChangeLabel}
+            onKeyDown={handleKeyDown}
             backgroundColor
           />
         )}

@@ -707,6 +707,7 @@ const buttonWidthMap = {
 const CustomEditor = ({
   value,
   onChange,
+  onKeyDown,
   toolbarId,
   tag,
   toolbarSize,
@@ -900,6 +901,9 @@ const CustomEditor = ({
               cursorEl.remove()
               return
             }
+          }
+          if (typeof onKeyDown === 'function') {
+            onKeyDown(evt)
           }
         },
         'image.beforeUpload': function (image, clipboardImage) {

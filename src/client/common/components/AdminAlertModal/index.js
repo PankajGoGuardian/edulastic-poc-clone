@@ -14,8 +14,8 @@ import {
 
 const AdminAlertModal = ({
   isVisible,
-  isFreeAdmin,
   isSAWithoutSchools,
+  isFreeAdmin,
   toggleAdminAlertModal,
   setShowSelectStates,
   setRequestQuoteModal,
@@ -30,9 +30,19 @@ const AdminAlertModal = ({
     toggleAdminAlertModal()
   }
 
-  const modalContent = useMemo(
-    () =>
-      isFreeAdmin ? (
+  const modalContent = useMemo(() => {
+    if (isSAWithoutSchools) {
+      return (
+        <div>
+          <p>
+            You are not enrolled in any school, please ask your district admin
+            to enroll.
+          </p>
+        </div>
+      )
+    }
+    if (isFreeAdmin) {
+      return (
         <div>
           <p>
             You are not on a premium plan and administrators are not allowed to
@@ -45,22 +55,20 @@ const AdminAlertModal = ({
             </ScheduleDemo>
           </p>
         </div>
-      ) : isSAWithoutSchools ? (
-        <div>
-          <p>
-            You are not enrolled in any school, please ask your district admin
-            to enroll.
-          </p>
-        </div>
-      ) : null,
-    [isFreeAdmin, isSAWithoutSchools]
-  )
+      )
+    }
+    return null
+  }, [isFreeAdmin, isSAWithoutSchools])
 
   return (
     <StyledModal
       title="Feature Not Available"
       visible={isVisible}
-      onOk={isFreeAdmin ? handleRequestQuote : toggleAdminAlertModal}
+      onOk={
+        !isSAWithoutSchools && isFreeAdmin
+          ? handleRequestQuote
+          : toggleAdminAlertModal
+      }
       onCancel={toggleAdminAlertModal}
       centered
       footer={[
@@ -73,7 +81,7 @@ const AdminAlertModal = ({
           >
             CANCEL
           </EduButton>
-          {isFreeAdmin && (
+          {!isSAWithoutSchools && isFreeAdmin && (
             <EduButton
               height="40px"
               data-cy="request-quote"

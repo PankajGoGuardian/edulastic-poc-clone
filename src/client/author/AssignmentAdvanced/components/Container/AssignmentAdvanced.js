@@ -98,12 +98,12 @@ class AssignmentAdvanced extends Component {
       userId,
       districtId: _districtId,
     } = this.props
-    if (isFreeAdmin) {
-      history.push('/author/reports')
-      return toggleAdminAlertModal()
-    }
     if (isSAWithoutSchools) {
       history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
+    if (isFreeAdmin) {
+      history.push('/author/reports')
       return toggleAdminAlertModal()
     }
     const { districtId, testId } = match.params

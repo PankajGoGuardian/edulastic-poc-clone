@@ -26,6 +26,7 @@ const RednerOpts = ({
 }) =>
   evalutionOptions.map((key) => (
     <EvaluationOption
+      isGraph
       key={key}
       optionKey={key}
       options={options}

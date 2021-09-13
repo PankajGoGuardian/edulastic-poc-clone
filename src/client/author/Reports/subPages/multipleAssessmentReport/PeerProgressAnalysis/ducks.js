@@ -107,7 +107,7 @@ function* getReportsPeerProgressAnalysisRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting peer progress analysis. Please try again after a few minutes.'
+      'Error getting peer progress analysis report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST_ERROR,

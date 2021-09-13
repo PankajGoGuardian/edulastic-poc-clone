@@ -118,7 +118,7 @@ function* getReportsPerformanceByStudentsRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting performance by students. Please try again after a few minutes.'
+      'Error getting performance by students report data. Please try again after a few minutes.'
 
     notification({ msg })
     yield put({

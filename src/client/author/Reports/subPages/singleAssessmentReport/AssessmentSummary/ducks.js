@@ -122,7 +122,7 @@ function* getReportsAssessmentSummaryRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting assessment Summary. Please try again after a few minutes.'
+      'Error getting assessment summary report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_ASSESSMENT_SUMMARY_REQUEST_ERROR,

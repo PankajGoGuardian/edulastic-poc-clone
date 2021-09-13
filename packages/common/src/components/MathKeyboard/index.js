@@ -6,7 +6,11 @@ import { isObject, compact, isEmpty } from 'lodash'
 import { math } from '@edulastic/constants'
 import { lightGrey9 } from '@edulastic/colors'
 import { IconMoveArrows } from '@edulastic/icons'
-import { KEYBOARD_BUTTONS, TAB_BUTTONS } from './constants/keyboardButtons'
+import {
+  KEYBOARD_BUTTONS,
+  TAB_BUTTONS,
+  ADVANCED_MATRICES,
+} from './constants/keyboardButtons'
 import { NUMBER_PAD_ITEMS } from './constants/numberPadItems'
 
 import KeyboardHeader from './components/KeyboardHeader'
@@ -35,6 +39,7 @@ class MathKeyboard extends React.PureComponent {
     math.keyboardMethods.BASIC,
     math.keyboardMethods.INTERMEDIATE,
     math.keyboardMethods.ALL_BUTTONS,
+    math.keyboardMethods.BASIC_MATRICES,
   ]
 
   constructor(props) {
@@ -78,7 +83,7 @@ class MathKeyboard extends React.PureComponent {
 
   setKeyboardButtons(keypadType) {
     const { restrictKeys, customKeys, symbols, customKeypads } = this.props
-    const type = symbols[0] || keypadType || math.keyboardMethods.BASIC
+    const type = symbols[0] || keypadType || math.keyboardMethods.BASIC_MATRICES
 
     const isCustomMode = isObject(type)
 
@@ -139,6 +144,14 @@ class MathKeyboard extends React.PureComponent {
     let numberButtons = null
     if (this.WITH_NUMBERS.includes(type)) {
       numberButtons = NUMBER_PAD_ITEMS
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-23620
+       * BASIC_MATRICES = BASIC + ADVANCED_MATRICES(excluding buttons present in BASIC = 6 btns)
+       * push 3 buttons out of 6 to numbers keypad and rest 3 are included in BASIC_MATRICES
+       */
+      if (type === math.keyboardMethods.BASIC_MATRICES) {
+        numberButtons = numberButtons.concat(ADVANCED_MATRICES.slice(2, 5))
+      }
     }
 
     let selectOptions = math.symbols

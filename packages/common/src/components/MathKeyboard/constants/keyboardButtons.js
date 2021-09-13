@@ -103,8 +103,11 @@ const INTERMEDIATE_WO_NUMBER = [
   buttons.parentheses,
   buttons.brackets,
 ]
-
-const ADVANCED_MATRICES = [
+/**
+ * Note: Buttons from ADVANCED_MATRICES are used to form BASIC_MATRICES | EV-23620
+ * Thus any changes in ADVANCED_MATRICES needs updations in BASIC_MATRICES as well.
+ */
+export const ADVANCED_MATRICES = [
   buttons.fraction,
   buttons.exponent,
   buttons.sqrt,
@@ -112,6 +115,24 @@ const ADVANCED_MATRICES = [
   buttons.bmatrix,
   buttons.bmatrix_three,
   buttons.shift_matrix,
+  buttons.shift_enter_matrix,
+]
+
+const BASIC_MATRICES = [
+  buttons.plusButton,
+  buttons.minusButton,
+  buttons.multiplication,
+  buttons.divide,
+  buttons.bmatrix_three,
+  buttons.strictLess,
+  buttons.strictGreater,
+  buttons.parentheses,
+  buttons.brackets,
+  buttons.shift_matrix,
+  buttons.fraction,
+  buttons.mixedFraction,
+  buttons.exponentBase,
+  buttons.distance,
   buttons.shift_enter_matrix,
 ]
 
@@ -311,6 +332,10 @@ export const KEYBOARD_BUTTONS = [
   ...CHEMISTRY.map((btn) => ({ ...btn, types: [keyboardMethods.CHEMISTRY] })),
   ...UNITS_SI.map((btn) => ({ ...btn, types: [keyboardMethods.UNITS_SI] })),
   ...UNITS_US.map((btn) => ({ ...btn, types: [keyboardMethods.UNITS_US] })),
+  ...BASIC_MATRICES.map((btn) => ({
+    ...btn,
+    types: [keyboardMethods.BASIC_MATRICES],
+  })),
 ]
 
 export const TAB_BUTTONS = [

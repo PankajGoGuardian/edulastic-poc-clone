@@ -61,6 +61,10 @@ const MainKeyboard = ({
       keysPerRow = 4
     }
 
+    if (type === keyboardMethods.BASIC_MATRICES) {
+      keysPerRow = 5
+    }
+
     if (type === keyboardMethods.ADVANCED_TRIGNOMETRY) {
       limitRow = 6
     }

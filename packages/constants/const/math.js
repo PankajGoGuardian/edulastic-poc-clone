@@ -58,6 +58,7 @@ const keyboardMethods = {
   INTERMEDIATE: 'intermediate',
   INTERMEDIATE_WO_NUMBER: 'intermediate_wo_number',
   ADVANCED_MATRICES: 'advanced_matrices',
+  BASIC_MATRICES: 'basic_matrices',
   ADVANCED_TRIGNOMETRY: 'advanced_trignometry',
   GEOMETRY: 'geometry',
   CHEMISTRY: 'chemistry',
@@ -97,6 +98,12 @@ const symbols = [
     label: 'Matrices',
     width: 300,
     height: 190,
+  },
+  {
+    value: keyboardMethods.BASIC_MATRICES,
+    label: 'Basic Matrices',
+    width: 400,
+    height: 320,
   },
   {
     value: keyboardMethods.ADVANCED_TRIGNOMETRY,

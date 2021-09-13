@@ -16,6 +16,7 @@ import { receiveTeachersListAction } from '../../../../Teacher/ducks'
 import { Description, Title } from './styled'
 import { fetchUsersListAction } from '../../../../sharedDucks/userDetails'
 import { getFormattedName } from '../../../../Gradebook/transformers'
+import Tags from '../../../../src/components/common/Tags'
 
 class AddCoTeacher extends React.Component {
   constructor() {
@@ -98,6 +99,7 @@ class AddCoTeacher extends React.Component {
       teachers,
       type,
       userInfo,
+      selectedClass,
     } = this.props
     const { searchText } = this.state
     const coTeachers = teachers.filter(
@@ -140,6 +142,16 @@ class AddCoTeacher extends React.Component {
           {type === 'class' ? 'class' : 'group'}. Co-teachers can manage
           enrollment, assign the Test and view reports of your{' '}
           {type === 'class' ? 'class(es)' : 'group(s)'}.
+          {Array.isArray(selectedClass) ? (
+            <Tags
+              tags={selectedClass.map((_class) => _class._source.name)}
+              showTitle
+              isGrayTags
+              show={5}
+              margin="0px"
+              labelStyle={{ marginBottom: 3 }}
+            />
+          ) : null}
         </Description>
         <SelectInputStyled
           placeholder="Search teacher by name, email or username."

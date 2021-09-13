@@ -249,6 +249,7 @@ export const hasEmptyAnswers = (item) => {
         break
       case questionType.CHOICE_MATRIX:
         if (
+          !item.multipleResponses &&
           correctAnswers.some(
             (el) => Object.keys(el?.value || {}).length !== item.stems?.length
           )

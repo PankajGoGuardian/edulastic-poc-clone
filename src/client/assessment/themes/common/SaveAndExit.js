@@ -149,9 +149,9 @@ const SaveAndExit = ({
           </>
         ))}
       {onSubmit && (
-        <div id="submitTestButton" tabIndex="-1">
+        <StyledDiv id="submitTestButton" tabIndex="-1">
           <EduButton
-            height="40px"
+            height="100%"
             isGhost
             onClick={onSubmit}
             loading={savingResponse}
@@ -159,7 +159,7 @@ const SaveAndExit = ({
             <IconSend />
             SUBMIT
           </EduButton>
-        </div>
+        </StyledDiv>
       )}
     </FlexContainer>
   )
@@ -254,6 +254,7 @@ const StyledButton = styled(Button)`
 
 export const SaveAndExitButton = styled(StyledButton)`
   width: auto;
+  height: 40px !important;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   border: ${({ theme }) =>
     `1px solid ${theme.default.headerRightButtonBgColor}`};
@@ -321,4 +322,7 @@ const ScratchpadVisibilityToggler = styled(SaveAndExitButton)`
 
 const AdjustScratchpad = styled(SaveAndExitButton)`
   padding: 0px 12px;
+`
+const StyledDiv = styled.div`
+  height: 40px;
 `

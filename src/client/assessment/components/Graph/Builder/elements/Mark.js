@@ -68,7 +68,7 @@ const onHandler = (board, value) => {
     content += deleteIconPattern.replace(/{iconId}/g, deleteIconId)
   }
 
-  content = `<div class='mark-content' title='${title}'>${content}</div>`
+  content = `<div class='mark-content' title='${title}' data-cy='answer-label-${x}'>${content}</div>`
 
   const cssClass = `fr-box mark mounted ${
     value.className ? value.className : ''

@@ -1,15 +1,9 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import { compose } from 'redux'
-import { withTheme } from 'styled-components'
 import { videoTypes } from '@edulastic/constants'
-
-import { Input } from 'antd'
-import { FlexContainer, Button } from '@edulastic/common'
 import { updateVariables } from '../../../utils/variables'
 import FileSelectModal from './FileSelectModal'
-
 import Question from '../../../components/Question'
 import { Subtitle } from '../../../styled/Subtitle'
 import { Row } from '../../../styled/WidgetOptions/Row'
@@ -194,6 +188,4 @@ Settings.defaultProps = {
   advancedAreOpen: false,
 }
 
-const enhance = compose(withTheme)
-
-export default enhance(Settings)
+export default Settings

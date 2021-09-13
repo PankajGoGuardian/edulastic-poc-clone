@@ -1,8 +1,6 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import { compose } from 'redux'
-import { withTheme } from 'styled-components'
 
 import { videoTypes } from '@edulastic/constants'
 import { Select } from 'antd'
@@ -32,14 +30,6 @@ const Options = ({ setQuestionData, item, t }) => {
         updateVariables(draft)
       })
     )
-  }
-
-  const cancelModal = () => {
-    const newModalSettings = { editMode: false, modalName: '' }
-    if (modalSettings.editMode)
-      newModalSettings.modalName = modalSettings.modalName
-    else handleChange(modalSettings.modalName, '')
-    setModalSettings(newModalSettings)
   }
 
   const rendererOptions = [
@@ -149,8 +139,6 @@ Options.propTypes = {
     type: PropTypes.string.isRequired,
     videoType: PropTypes.string.isRequired,
     sourceURL: PropTypes.string.isRequired,
-    heading: PropTypes.string.isRequired,
-    summary: PropTypes.string.isRequired,
     transcript: PropTypes.string.isRequired,
     uiStyle: PropTypes.shape({
       width: PropTypes.number.isRequired,
@@ -164,6 +152,4 @@ Options.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
 }
 
-const enhance = compose(withTheme)
-
-export default enhance(Options)
+export default Options

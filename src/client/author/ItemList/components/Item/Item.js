@@ -77,6 +77,7 @@ import {
 } from '../../../TestPage/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import PassageConfirmationModal from '../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal'
+import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
 import Tags from '../../../src/components/common/Tags'
 import appConfig from '../../../../../app-config'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
@@ -763,7 +764,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
-      selectedItems: state?.testsAddItems?.selectedItems || [],
+      selectedItems: getSelectedItemSelector(state),
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

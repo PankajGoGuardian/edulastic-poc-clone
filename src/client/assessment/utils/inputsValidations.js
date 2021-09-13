@@ -6,7 +6,7 @@ export const validations = {
     if (!isGraph) {
       return /^-?(\d*\.?\d*)?%?$/.test(value)
     }
-    return /^-?\d*\.?\d*$/.test(value)
+    return /^-?\d*\.?\d*$/.test(value) && value >= 0 && value <= 100
   },
   isIn: (value = '') => {
     if (!value) {

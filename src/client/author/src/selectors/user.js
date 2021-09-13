@@ -379,6 +379,7 @@ export const getInstitutionPoliciesSelector = createSelector(
         ...schoolPolicy,
         institutionId: s._id,
         institutionName: s.name,
+        institution: s,
       }
     })
 )

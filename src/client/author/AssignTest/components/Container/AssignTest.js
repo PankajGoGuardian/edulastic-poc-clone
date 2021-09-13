@@ -138,12 +138,12 @@ class AssignTest extends React.Component {
       addRecommendedResourcesAction,
     } = this.props
 
-    if (isFreeAdmin) {
-      history.push('/author/reports')
-      return toggleAdminAlertModal()
-    }
     if (isSAWithoutSchools) {
       history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
+    if (isFreeAdmin) {
+      history.push('/author/reports')
       return toggleAdminAlertModal()
     }
 

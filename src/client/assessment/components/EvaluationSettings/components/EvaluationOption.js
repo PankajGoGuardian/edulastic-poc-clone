@@ -30,6 +30,7 @@ const inlineOptions = [
 
 const EvaluationOption = ({
   options,
+  isGraph,
   optionKey,
   useTemplate,
   allowedVariables,
@@ -44,6 +45,7 @@ const EvaluationOption = ({
   if (textStyle.includes(optionKey) || numberStyle.includes(optionKey)) {
     return (
       <InputOption
+        isGraph={isGraph}
         optionKey={optionKey}
         options={options}
         onChange={onChangeOption}

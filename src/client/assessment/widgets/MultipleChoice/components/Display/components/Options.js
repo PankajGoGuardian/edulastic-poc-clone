@@ -63,7 +63,7 @@ const Options = ({
 
   return (
     <OptionsList
-      width={fromSetAnswers && '100%'}
+      width="100%"
       styleType={styleType}
       fontSize={fontSize}
       id="multiplechoice-optionlist"

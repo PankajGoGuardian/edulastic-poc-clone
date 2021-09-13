@@ -36,12 +36,12 @@ class StandardsBasedReport extends Component {
       isSAWithoutSchools,
       toggleAdminAlertModal,
     } = this.props
-    if (isFreeAdmin) {
-      history.push('/author/reports')
-      return toggleAdminAlertModal()
-    }
     if (isSAWithoutSchools) {
       history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
+    if (isFreeAdmin) {
+      history.push('/author/reports')
       return toggleAdminAlertModal()
     }
     if (!size(testActivity) && isEmpty(additionalData)) {

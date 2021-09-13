@@ -129,6 +129,7 @@ export {
   hasMediaDevice,
   isValidUpdate,
   removeTokenFromHtml,
+  getYoutubeId,
 } from './src/helpers'
 
 // contexts

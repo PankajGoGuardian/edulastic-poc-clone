@@ -1067,6 +1067,48 @@ export const removeTokenFromHtml = (str) => {
   return str
 }
 
+export const getYoutubeId = (url, opts) => {
+  if (!opts) {
+    opts = { fuzzy: true }
+  }
+
+  if (/youtu\.?be/.test(url)) {
+    // Look first for known patterns
+    const patterns = [
+      /youtu\.be\/([^#&?]{11})/,
+      /\?v=([^#&?]{11})/,
+      /&v=([^#&?]{11})/,
+      /embed\/([^#&?]{11})/,
+      /\/v\/([^#&?]{11})/,
+    ]
+
+    const embedPattern = /d\/(\w+)\?rel=\d+"/
+
+    for (let i = 0; i < patterns.length; ++i) {
+      if (patterns[i].test(url)) {
+        return patterns[i].exec(url)[1]
+      }
+    }
+
+    if (embedPattern.test(url)) {
+      return embedPattern.exec(url)[1]
+    }
+
+    if (opts.fuzzy) {
+      // If that fails, break it apart by certain characters and look
+      // for the 11 character key
+      const tokens = url.split(/[\/\&\?=#\.\s]/g)
+      for (let i = 0; i < tokens.length; ++i) {
+        if (/^[^#&?]{11}$/.test(tokens[i])) {
+          return tokens[i]
+        }
+      }
+    }
+  }
+
+  return null
+}
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1097,4 +1139,5 @@ export default {
   replaceLatexTemplate,
   hasMediaDevice,
   removeTokenFromHtml,
+  getYoutubeId,
 }

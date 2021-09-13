@@ -9,13 +9,7 @@ import notification from '@edulastic/common/src/components/Notification'
 import * as Sentry from '@sentry/browser'
 import { debounce } from 'lodash'
 import config from '../config'
-import {
-  getAccessToken,
-  getTraceId,
-  initKID,
-  initTID,
-  getCurrentDistrictName,
-} from './Storage'
+import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
@@ -221,7 +215,6 @@ export default class API {
             'originalreferrer'
           )
         }
-        const currentDistrictName = getCurrentDistrictName() || ''
         const token =
           getParentsStudentToken(_config) ||
           defaultToken ||
@@ -254,13 +247,21 @@ export default class API {
             }, 5000)
             return
           }
+          const { user = {} } = currentUserFromRedux || {}
+          const { currentDistrictId = '', orgData = {} } = user
+          const { districts = [] } = orgData
+          const currentDistrictName = districts.find(
+            (x) => x.districtId === currentDistrictId
+          ).districtName
           // debouncing to prevent concurrent apis to be interpreted as repeated reloads
           debounce(addReloadedEntryToSession, 700)()
           notification({
             type: 'info',
             msg: `We are switching you to ${currentDistrictName} as you can login to only one district at a time`,
           })
-          window.location.href = '/'
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 5000)
         }
         if (token) {
           _config.headers.Authorization = token

@@ -55,6 +55,12 @@ const UnitsDropdownPure = ({
     updateOffset(keypadOffset)
   }
 
+  useEffect(() => {
+    if (offset !== keypadOffset && offset === 0) {
+      scrollToKeypad()
+    }
+  }, [keypadOffset])
+
   const symbol = get(item, 'symbols', [])[0] // units_us units_si
 
   // Only for math with units
@@ -81,12 +87,6 @@ const UnitsDropdownPure = ({
 
     return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
   }
-
-  useEffect(() => {
-    if (offset !== keypadOffset && offset === 0) {
-      scrollToKeypad()
-    }
-  }, [keypadOffset])
 
   const dropdownWrapper = useRef(null)
   const menuStyle = {
@@ -123,28 +123,24 @@ const UnitsDropdownPure = ({
         </Row>
       )}
       {item.showDropdown && view !== 'edit' && (
-        <Row>
-          <Col span={12} marginBottom="0px" style={{ height: '100%' }}>
-            <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
-              <SelectInputStyled
-                value={preview ? selected : options ? options.unit : ''}
-                onChange={handleChange}
-                disabled={disabled}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                style={{
-                  visibility: item.showDropdown ? 'visible' : 'hidden',
-                  height: item.showDropdown ? '100%' : 0,
-                }}
-              >
-                {allBtns.map((btn, i) => (
-                  <Option value={btn.handler} key={i}>
-                    {getLabel(btn)}
-                  </Option>
-                ))}
-              </SelectInputStyled>
-            </DropdownWrapper>
-          </Col>
-        </Row>
+        <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
+          <SelectInputStyled
+            value={preview ? selected : options ? options.unit : ''}
+            onChange={handleChange}
+            disabled={disabled}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            style={{
+              visibility: item.showDropdown ? 'visible' : 'hidden',
+              height: item.showDropdown ? '100%' : 0,
+            }}
+          >
+            {allBtns.map((btn, i) => (
+              <Option value={btn.handler} key={i}>
+                {getLabel(btn)}
+              </Option>
+            ))}
+          </SelectInputStyled>
+        </DropdownWrapper>
       )}
     </>
   )
@@ -184,6 +180,8 @@ const DropdownWrapper = styled.div`
   height: 100%;
   .ant-select-dropdown {
     ${({ menuStyle }) => menuStyle};
+    min-width: 100%;
+    width: auto !important;
   }
   .ant-select {
     min-width: 85px;

@@ -46,7 +46,6 @@ import { changePreviewAction } from '../../../author/src/actions/view'
 import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 import { getCurrentGroupWithAllClasses } from '../../../student/Login/ducks'
-import FeaturesSwitch from '../../../features/components/FeaturesSwitch'
 import { setUserAnswerAction } from '../../actions/answers'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
@@ -332,7 +331,6 @@ class AssessmentPlayerDefault extends React.Component {
       answerChecksUsedForItem,
       bookmarksInOrder,
       skippedInOrder,
-      currentGroupId,
       previousQuestionActivities,
       LCBPreviewModal,
       preview,
@@ -581,35 +579,28 @@ class AssessmentPlayerDefault extends React.Component {
               playerSkinType,
             }}
           >
-            <FeaturesSwitch
-              inputFeatures="studentSettings"
-              actionOnInaccessible="hidden"
-              key="studentSettings"
-              groupId={currentGroupId}
-            >
-              <ToolbarModal
-                isVisible={isToolbarModalVisible}
-                onClose={() => this.closeToolbarModal()}
-                checkAnswer={() => this.changeTabItemState('check')}
-                windowWidth={windowWidth}
-                answerChecksUsedForItem={answerChecksUsedForItem}
-                settings={settings}
-                items={items}
-                currentItem={currentItem}
-                isNonAutoGradable={isNonAutoGradable}
-                toggleBookmark={() => toggleBookmark(item._id)}
-                isBookmarked={isBookmarked}
-                handletoggleHints={showHints}
-                changeTool={this.changeTool}
-                handleMagnifier={handleMagnifier}
-                qType={qType}
-                blockNavigationToAnsweredQuestions={
-                  blockNavigationToAnsweredQuestions
-                }
-                isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
-                toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
-              />
-            </FeaturesSwitch>
+            <ToolbarModal
+              isVisible={isToolbarModalVisible}
+              onClose={() => this.closeToolbarModal()}
+              checkAnswer={() => this.changeTabItemState('check')}
+              windowWidth={windowWidth}
+              answerChecksUsedForItem={answerChecksUsedForItem}
+              settings={settings}
+              items={items}
+              currentItem={currentItem}
+              isNonAutoGradable={isNonAutoGradable}
+              toggleBookmark={() => toggleBookmark(item._id)}
+              isBookmarked={isBookmarked}
+              handletoggleHints={showHints}
+              changeTool={this.changeTool}
+              handleMagnifier={handleMagnifier}
+              qType={qType}
+              blockNavigationToAnsweredQuestions={
+                blockNavigationToAnsweredQuestions
+              }
+              isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+              toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
+            />
             {!previewPlayer && (
               <SavePauseModalMobile
                 isVisible={isSavePauseModalVisible}

@@ -132,7 +132,7 @@ export function* getSharedReportsRequest({ payload }) {
       payload: sharedReportList,
     })
   } catch (error) {
-    const msg = 'Error getting shared reports'
+    const msg = 'Error getting shared reports data'
     notification({ msg })
     yield put({
       type: GET_SHARED_REPORTS_REQUEST_ERROR,

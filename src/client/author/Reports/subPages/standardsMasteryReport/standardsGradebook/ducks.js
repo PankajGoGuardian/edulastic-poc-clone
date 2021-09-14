@@ -143,7 +143,7 @@ function* getReportsStandardsGradebookRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting standards gradebook. Please try again after a few minutes.'
+      'Error getting standards gradebook report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,

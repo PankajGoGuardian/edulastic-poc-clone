@@ -103,7 +103,7 @@ function* getReportsStudentProgressRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting student progress. Please try again after a few minutes.'
+      'Error getting student progress report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_STUDENT_PROGRESS_REQUEST_ERROR,

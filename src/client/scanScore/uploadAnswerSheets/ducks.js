@@ -18,7 +18,7 @@ function parseQr(qrCode) {
   let [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
 
   if (studentId == 1) {
-    [assignmentId, groupId, studentId] = qrCode.split('_')
+    ;[assignmentId, groupId, studentId] = qrCode.split('_')
   }
   return {
     testId,

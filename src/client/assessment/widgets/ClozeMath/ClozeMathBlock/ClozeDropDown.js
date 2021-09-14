@@ -4,11 +4,7 @@ import { find, indexOf } from 'lodash'
 import styled from 'styled-components'
 import { Select } from 'antd'
 import { darkBlue, lightGrey12 } from '@edulastic/colors'
-import {
-  ScrollContext,
-  SelectInputStyled,
-  MathFormulaDisplay,
-} from '@edulastic/common'
+import { ScrollContext, SelectInputStyled } from '@edulastic/common'
 import CheckedBlock from './CheckedBlock'
 import { getStemNumeration } from '../../../utils/helpers'
 
@@ -150,10 +146,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
           options[id] &&
           options[id].map((option, respID) => (
             <Option value={option} key={respID}>
-              <MathFormulaDisplay
-                dangerouslySetInnerHTML={{ __html: option }}
-                fontSize={dropdownStyle?.fontSize}
-              />
+              <span>{option}</span>
             </Option>
           ))}
       </Dropdown>

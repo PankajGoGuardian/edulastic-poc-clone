@@ -10,6 +10,9 @@ const EduScientificCalculator = () => {
       $(calcRef.current).showCalculator.resetCalc()
       $(calcRef.current).showCalculator.initiateListeners()
     }
+    return () => {
+      $(calcRef.current).showCalculator.removeListeners()
+    }
   }, [])
 
   return (

@@ -24,12 +24,14 @@ const SnapItemContainers = ({
   backgroundColor,
   onDrop,
   options,
+  noBorder,
 }) => (
   <DropContainer
     index={0}
+    noBorder={noBorder}
     drop={onDrop}
     data-cy="drop-container"
-    style={{ height: '100%' }}
+    style={{ height: '100%', background: 'transparent' }}
   >
     {userAnswers.map((userAnswer, index) =>
       get(userAnswer, 'optionIds', []).map((optionId, answerIndex) => {

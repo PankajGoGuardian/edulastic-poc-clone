@@ -23,9 +23,9 @@ import {
   removeTabAction,
   setItemLevelScoreAction,
 } from '../../../../ducks'
-import AddNewItem from '../AddNew/AddNewItem'
 import { PassageAddNewButton, PassageButtonContainer } from '../AddNew/styled'
 import PassageAddPart from '../AddNew/PassageAddPart'
+import AddNewItem from '../AddNew/AddNewItem'
 
 // src/client/author/ItemDetail/ducks.js
 
@@ -72,7 +72,7 @@ class Container extends Component {
     flowLayout,
     previewTab,
   }) => {
-    const { itemData, isPassageQuestion } = this.props
+    const { itemData, isPassageQuestion, onShowSettings } = this.props
     const { multipartItem } = itemData
 
     return (
@@ -87,6 +87,7 @@ class Container extends Component {
         previewTab={previewTab}
         isPassageQuestion={isPassageQuestion}
         dataCy={multipartItem ? 'item-detail-widget' : 'passage-widget'}
+        onShowSettings={onShowSettings}
       />
     )
   }
@@ -185,13 +186,17 @@ class Container extends Component {
       hideColumn,
       addTabs,
       removeTab,
-      showAddItemButton,
       isPassageWithQuestions,
+      containerType,
+      showAddItemButton,
     } = this.props
     const { tabIndex } = this.state
     const enableAnotherPart = this.canRowHaveAnotherPart(row, rowIndex)
     // adding first part?
     const isAddFirstPart = row.widgets && row.widgets.length === 0
+    const showAddPassageTab =
+      isPassageQuestion && row.tabs?.length === 0 && row?.widgets?.length > 0
+
     return (
       <Content
         value={tabIndex}
@@ -199,7 +204,7 @@ class Container extends Component {
         hide={hideColumn}
         data-cy="itemdetail-content"
       >
-        {isPassageQuestion && row.tabs?.length === 0 && (
+        {showAddPassageTab && (
           <AddTabButton tabsBtn onClick={() => addTabs()} data-cy="addTab">
             <GreenPlusIcon>+</GreenPlusIcon>
             ADD TABS
@@ -229,7 +234,7 @@ class Container extends Component {
                         }
                   }
                   onChange={(e) =>
-                    changeTabTitle(tabIndex, e.target.value, row.widgets)
+                    changeTabTitle(tabIndex, e.target.value, containerType)
                   }
                   editable
                   close
@@ -292,7 +297,6 @@ class Container extends Component {
               />
             )}
 
-            {/* New testItem */}
             {showAddItemButton && isPassageWithQuestions && (
               <AddNewItem onClick={this.addNewItemToPassage} />
             )}
@@ -302,7 +306,7 @@ class Container extends Component {
           <AddButtonContainer justifyContent="center">
             <PassageButtonContainer>
               <PassageAddNewButton
-                onClick={() => handleAddToPassage('video', tabIndex)}
+                onClick={() => handleAddToPassage('video', tabIndex, rowIndex)}
                 data-cy="addVideoButton"
               >
                 <IconPlusCircle />
@@ -311,7 +315,9 @@ class Container extends Component {
             </PassageButtonContainer>
             <PassageButtonContainer>
               <PassageAddNewButton
-                onClick={() => handleAddToPassage('passage', tabIndex)}
+                onClick={() =>
+                  handleAddToPassage('passage', tabIndex, rowIndex)
+                }
                 data-cy="addPassageButton"
               >
                 <IconPlusCircle />

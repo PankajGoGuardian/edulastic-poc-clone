@@ -1,4 +1,8 @@
-import { test as testConst, roleuser } from '@edulastic/constants'
+import {
+  test as testConst,
+  roleuser,
+  assignmentPolicyOptions,
+} from '@edulastic/constants'
 import { Col, Select } from 'antd'
 import * as moment from 'moment'
 import React from 'react'
@@ -7,6 +11,11 @@ import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import { Label, StyledDatePicker, StyledRow, StyledSelect } from './styled'
 import { getIsOverrideFreezeSelector } from '../../../TestPage/ducks'
+
+const {
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+} = assignmentPolicyOptions
 
 const DatePolicySelector = ({
   startDate,
@@ -67,19 +76,26 @@ const DatePolicySelector = ({
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Label>Close Date</Label>
-          <StyledDatePicker
-            allowClear={false}
-            data-cy="closeDate"
-            style={{ width: '100%' }}
-            size="large"
-            disabledDate={disabledEndDate}
-            showTime={{ use12Hours: true, format: 'hh:mm a' }}
-            format="YYYY-MM-DD hh:mm a"
-            value={moment(endDate)}
-            placeholder="Close Date"
-            showToday={false}
-            onChange={changeField('endDate')}
-          />
+          {[
+            POLICY_CLOSE_MANUALLY_BY_ADMIN,
+            POLICY_CLOSE_MANUALLY_IN_CLASS,
+          ].includes(selectedClosePolicy) ? (
+            <span style={{ lineHeight: '40px' }}>Close Manually by User</span>
+          ) : (
+            <StyledDatePicker
+              allowClear={false}
+              data-cy="closeDate"
+              style={{ width: '100%' }}
+              size="large"
+              disabledDate={disabledEndDate}
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
+              value={moment(endDate)}
+              placeholder="Close Date"
+              showToday={false}
+              onChange={changeField('endDate')}
+            />
+          )}
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Label>Open Policy</Label>

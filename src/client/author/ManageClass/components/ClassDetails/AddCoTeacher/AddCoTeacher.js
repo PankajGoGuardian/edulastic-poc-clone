@@ -6,7 +6,7 @@ import {
   SelectInputStyled,
 } from '@edulastic/common'
 import { Select } from 'antd'
-import { debounce, get, isNull } from 'lodash'
+import { debounce, get, isNull, isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -15,6 +15,8 @@ import { getUserIdSelector, getUserOrgId } from '../../../../src/selectors/user'
 import { receiveTeachersListAction } from '../../../../Teacher/ducks'
 import { Description, Title } from './styled'
 import { fetchUsersListAction } from '../../../../sharedDucks/userDetails'
+import { getFormattedName } from '../../../../Gradebook/transformers'
+import Tags from '../../../../src/components/common/Tags'
 
 class AddCoTeacher extends React.Component {
   constructor() {
@@ -59,27 +61,34 @@ class AddCoTeacher extends React.Component {
       notification({ messageKey: 'pleaseSelectCoTeacher' })
       return
     }
-    const { handleCancel, selectedClass } = this.props
-    const { _id: classId } = selectedClass
+    const { handleCancel, selectedClass, addCoTeacherToGroups } = this.props
+    if (isArray(selectedClass)) {
+      const groupIds = selectedClass.map(
+        (_selectedClass) => `${_selectedClass._id}`
+      )
+      addCoTeacherToGroups({ groupIds, coTeacherId })
+    } else {
+      const { _id: classId } = selectedClass
 
-    groupApi
-      .addCoTeacher({
-        groupId: classId,
-        coTeacherId,
-      })
-      .then((data) => {
-        if (data.groupData) {
-          setClass(data.groupData)
-          notification({
-            type: 'success',
-            messageKey: 'coTeacherAddedSuccessfully',
-          })
-          handleCancel()
-        }
-      })
-      .catch((err) => {
-        notification({ msg: err.response.data.message })
-      })
+      groupApi
+        .addCoTeacher({
+          groupId: classId,
+          coTeacherId,
+        })
+        .then((data) => {
+          if (data.groupData) {
+            setClass(data.groupData)
+            notification({
+              type: 'success',
+              messageKey: 'coTeacherAddedSuccessfully',
+            })
+            handleCancel()
+          }
+        })
+        .catch((err) => {
+          notification({ msg: err.response.data.message })
+        })
+    }
   }, 1000)
 
   render() {
@@ -90,6 +99,7 @@ class AddCoTeacher extends React.Component {
       teachers,
       type,
       userInfo,
+      selectedClass,
     } = this.props
     const { searchText } = this.state
     const coTeachers = teachers.filter(
@@ -132,6 +142,16 @@ class AddCoTeacher extends React.Component {
           {type === 'class' ? 'class' : 'group'}. Co-teachers can manage
           enrollment, assign the Test and view reports of your{' '}
           {type === 'class' ? 'class(es)' : 'group(s)'}.
+          {Array.isArray(selectedClass) ? (
+            <Tags
+              tags={selectedClass.map((_class) => _class._source.name)}
+              showTitle
+              isGrayTags
+              show={5}
+              margin="0px"
+              labelStyle={{ marginBottom: 3 }}
+            />
+          ) : null}
         </Description>
         <SelectInputStyled
           placeholder="Search teacher by name, email or username."
@@ -151,7 +171,7 @@ class AddCoTeacher extends React.Component {
                 <Select.Option key={index} value={el._id}>
                   <div>
                     <span style={{ fontSize: '14px' }}>
-                      {`${el.firstName} ${el.lastName || ''}`}
+                      {getFormattedName(el.firstName, el.lastName)}
                     </span>
                     <span style={{ fontSize: '12px' }}>
                       {` (${el.email || el.username})`}

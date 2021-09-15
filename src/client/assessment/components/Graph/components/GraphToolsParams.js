@@ -11,7 +11,8 @@ import { InnerTitle } from '../../../styled/InnerTitle'
 import { RadioLabel } from '../../../styled/RadioWithLabel'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { Label } from '../../../styled/WidgetOptions/Label'
-import { TextInputStyled } from '../../../styled/InputStyles'
+import QuestionTextArea from '../../QuestionTextArea'
+import { WidgetFRInput } from '../../../styled/Widget'
 
 class GraphToolsParams extends Component {
   getDrawingPromptOptions = () => {
@@ -38,9 +39,9 @@ class GraphToolsParams extends Component {
     })
   }
 
-  changeLabel = (e) => {
+  changeLabel = (id) => (value) => {
     const { changeLabel } = this.props
-    changeLabel(e.target.name, e.target.value)
+    changeLabel(id, value)
   }
 
   changeToolbarOption = (prop) => (e) => {
@@ -83,14 +84,26 @@ class GraphToolsParams extends Component {
                   <Col md={24}>
                     <Label>
                       {obj.type.charAt(0).toUpperCase() + obj.type.slice(1)}{' '}
-                      {obj.pointLabels &&
-                        obj.pointLabels.map((point) => point.label)}
+                      <span
+                        dangerouslySetInnerHTML={{
+                          __html: obj.pointLabels
+                            ? obj.pointLabels
+                                .map((point) => point.label)
+                                .join('')
+                            : '',
+                        }}
+                      />
                     </Label>
-                    <TextInputStyled
-                      value={typeof obj.label === 'boolean' ? '' : obj.label}
-                      onChange={this.changeLabel}
-                      name={obj.id}
-                    />
+                    <WidgetFRInput>
+                      <QuestionTextArea
+                        toolbarId={obj.id}
+                        toolbarSize="SM"
+                        border="border"
+                        // placeholder="Enter label text"
+                        onChange={this.changeLabel(obj.id)}
+                        value={typeof obj.label === 'boolean' ? '' : obj.label}
+                      />
+                    </WidgetFRInput>
                   </Col>
                 </Row>
               ))}

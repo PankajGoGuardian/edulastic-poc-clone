@@ -19,6 +19,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
+import LineReader from '../../../common/components/LineReader'
 
 const { calculatorTypes } = test
 
@@ -37,6 +38,7 @@ const ToolBar = ({
   toggleUserWorkUploadModal,
   changeTool,
   hasDrawingResponse,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const {
     calcType,
@@ -53,6 +55,7 @@ const ToolBar = ({
   return (
     <Container>
       <ActionButton
+        disabled={isPremiumContentWithoutAccess}
         title="Pointer"
         icon={<CursorIcon />}
         active={tool.includes(0)}
@@ -60,6 +63,7 @@ const ToolBar = ({
         hidden
       />
       <ActionButton
+        disabled={isPremiumContentWithoutAccess}
         title="Ruler"
         icon={<InRulerIcon />}
         active={tool.includes(1)}
@@ -68,6 +72,7 @@ const ToolBar = ({
       />
       {calcType !== calculatorTypes.NONE && (
         <ActionButton
+          disabled={isPremiumContentWithoutAccess}
           title="Calculator"
           icon={<CaculatorIcon />}
           active={tool.includes(2)}
@@ -83,9 +88,10 @@ const ToolBar = ({
         icon={<CloseIcon />}
         active={tool.includes(3)}
         onClick={toolbarHandler(3)}
-        disabled={isDisableCrossBtn}
+        disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
       />
       <ActionButton
+        disabled={isPremiumContentWithoutAccess}
         title="Protactor"
         icon={<ProtactorIcon />}
         active={tool.includes(4)}
@@ -95,6 +101,7 @@ const ToolBar = ({
 
       {enableScratchpad && !hasDrawingResponse && (
         <ActionButton
+          disabled={isPremiumContentWithoutAccess}
           title="Scratch Pad"
           icon={<ScratchPadIcon />}
           active={tool.includes(5)}
@@ -103,6 +110,7 @@ const ToolBar = ({
       )}
       {showMagnifier && (
         <ActionButton
+          disabled={isPremiumContentWithoutAccess}
           title="Magnify"
           icon={<IconMagnify />}
           active={enableMagnifier}
@@ -111,11 +119,13 @@ const ToolBar = ({
       )}
       {isTeacherPremium && (
         <ActionButton
+          disabled={isPremiumContentWithoutAccess}
           title="Upload work"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />
       )}
+      <LineReader />
     </Container>
   )
 }

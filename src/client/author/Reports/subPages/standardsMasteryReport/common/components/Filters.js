@@ -36,6 +36,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 import {
   getUser,
   getInterestedCurriculumsSelector,
+  currentDistrictInstitutionIds,
 } from '../../../../../src/selectors/user'
 
 import {
@@ -82,7 +83,6 @@ const StandardsMasteryReportFilters = ({
   setShowApply,
   showFilter,
   toggleFilter,
-  firstLoad,
   setFirstLoad,
   reportId,
   standardsPerformanceSummary,
@@ -90,6 +90,7 @@ const StandardsMasteryReportFilters = ({
   standardsProgress,
   loc,
   fetchUpdateTagsData,
+  institutionIds,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
@@ -287,6 +288,10 @@ const StandardsMasteryReportFilters = ({
       const urlStandardProficiency =
         standardProficiencyList.find((item) => item.key === search.profileId) ||
         defaultStandardProficiency
+      const urlAssignedBy =
+        staticDropDownData.assignedBy.find(
+          (a) => a.key === search.assignedBy
+        ) || staticDropDownData.assignedBy[0]
       const _filters = {
         termId: urlSchoolYear.key,
         schoolIds: search.schoolIds || '',
@@ -306,7 +311,7 @@ const StandardsMasteryReportFilters = ({
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
         standardId: search.standardId || '',
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+        assignedBy: urlAssignedBy.key,
       }
       if (role === roleuser.TEACHER) {
         delete _filters.schoolIds
@@ -325,7 +330,7 @@ const StandardsMasteryReportFilters = ({
         curriculumId: urlCurriculum,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
-        assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+        assignedBy: urlAssignedBy,
       }
       // set tempTagsData, filters and testId
       setTempTagsData(_tempTagsData)
@@ -368,7 +373,7 @@ const StandardsMasteryReportFilters = ({
     }
     if (role === roleuser.SCHOOL_ADMIN) {
       settings.filters.schoolIds =
-        settings.filters.schoolIds || get(user, 'institutionIds', []).join(',')
+        settings.filters.schoolIds || institutionIds.join(',')
     }
     setFilters({ ...filters, showApply: false })
     setShowApply(false)
@@ -948,6 +953,7 @@ const enhance = compose(
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
       standardsGradebook: getReportsStandardsGradebook(state),
       standardsProgress: getReportsStandardsProgress(state),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,

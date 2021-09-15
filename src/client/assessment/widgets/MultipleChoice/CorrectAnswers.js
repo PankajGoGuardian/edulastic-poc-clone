@@ -4,6 +4,7 @@ import produce from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 import CorrectAnswers from '../../components/CorrectAnswers'
 import CorrectAnswer from './CorrectAnswer'
+import { updateVariables } from '../../utils/variables'
 
 class SetCorrectAnswers extends Component {
   constructor() {
@@ -74,7 +75,7 @@ class SetCorrectAnswers extends Component {
   }
 
   updateScore = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
     const points = parseFloat(score, 10)
@@ -88,6 +89,52 @@ class SetCorrectAnswers extends Component {
         } else if (currentTab > 0) {
           draft.validation.altResponses[currentTab - 1].score = points
         }
+      })
+    )
+  }
+
+  editOptions = (index, value) => {
+    const { question, setQuestionData } = this.props
+    setQuestionData(
+      produce(question, (draft) => {
+        draft.options[index] = {
+          value: question.options[index].value,
+          label: value,
+        }
+        updateVariables(draft)
+      })
+    )
+  }
+
+  removeOption = (index) => {
+    const { question, setQuestionData } = this.props
+    setQuestionData(
+      produce(question, (draft) => {
+        const [removedOption] = draft.options.splice(index, 1)
+        draft.validation.validResponse.value = draft.validation.validResponse.value.filter(
+          (validOption) => validOption !== removedOption.value
+        )
+
+        for (let i = index + 1; i < draft.options.length; i++) {
+          if (draft.variable && draft.variable.variableStatus) {
+            draft.variable.variableStatus[`option-${i - 1}`] =
+              draft.variable.variableStatus[`option-${i}`]
+          }
+        }
+        updateVariables(draft)
+      })
+    )
+  }
+
+  onSortEnd = ({ oldIndex, newIndex }) => {
+    const { question, setQuestionData } = this.props
+    setQuestionData(
+      produce(question, (draft) => {
+        ;[draft.options[oldIndex], draft.options[newIndex]] = [
+          draft.options[newIndex],
+          draft.options[oldIndex],
+        ]
+        updateVariables(draft)
       })
     )
   }
@@ -144,6 +191,9 @@ class SetCorrectAnswers extends Component {
           fontSize={fontSize}
           title={title}
           response={response}
+          onSortOptions={this.onSortEnd}
+          onChangeOption={this.editOptions}
+          onRemoveOption={this.removeOption}
           onUpdateValidationValue={this.updateAnswers}
         />
       </CorrectAnswers>

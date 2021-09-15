@@ -13,9 +13,15 @@ import {
 } from './styled'
 import {
   submitResponseAction,
+  setUpdatedScratchPadAction,
+  uploadDataAndUpdateAttachmentAction,
   getTeacherEditedScoreSelector,
   getIsScoringCompletedSelector,
+  getUpdatedScratchPadSelector,
+  removeTeacherEditedScoreAction,
 } from '../../ducks'
+import { userWorkSelector } from '../../../../student/sharedDucks/TestItem'
+import { scratchpadDomRectSelector } from '../../../../common/components/Scratchpad/duck'
 import { hasValidAnswers } from '../../../../assessment/utils/answer'
 import {
   getAnswerByQidSelector,
@@ -175,11 +181,17 @@ class QuestionModal extends React.Component {
       teacherEditedScore,
       studentResponseLoading,
       studentQuestionResponseTestActivityId,
+      userWork,
+      setUpdatedScratchPad,
+      updatedScratchPad,
+      uploadDataAndUpdateAttachment,
+      scratchPadDimensions,
+      removeTeacherEditedScore,
     } = this.props
     if (studentResponseLoading) {
       return
     }
-    const { testActivityId, testItemId: itemId } = question
+    const { testActivityId, testItemId: itemId, userId } = question
     if (
       studentQuestionResponseTestActivityId &&
       testActivityId != studentQuestionResponseTestActivityId
@@ -187,7 +199,7 @@ class QuestionModal extends React.Component {
       // TODO: this situation shouldn't happen. but currently happening when switching netween students rapidly. need to fix it
       return
     }
-    if (!isEmpty(_userResponse)) {
+    if (!isEmpty(_userResponse) || (updatedScratchPad && !isEmpty(userWork))) {
       /**
        * allResponse is empty when the questionActivity is empty.
        * In that case only send currenytly attempted _userResponse
@@ -197,24 +209,63 @@ class QuestionModal extends React.Component {
         ? undefined
         : { ...teacherEditedScore }
 
-      const userResponse =
-        allResponse.length > 0
-          ? allResponse.reduce((acc, cur) => {
-              // only if not empty send the responses to server for editing
-              if (hasValidAnswers(cur.qType, cur.userResponse)) {
-                acc[cur.qid] = cur.userResponse
-              } else {
-                const error = new Error('empty response update event')
-                Sentry.configureScope((scope) => {
-                  scope.setExtra('qType', cur?.qType)
-                  scope.setExtra('userResponse', cur?.userResponse)
-                  Sentry.captureException(error)
-                })
-              }
-              return acc
-            }, {})
-          : _userResponse
-      submitResponse({ testActivityId, itemId, groupId, userResponse, scores })
+      let payload = { testActivityId, itemId, groupId, scores }
+      if (!isEmpty(_userResponse)) {
+        const userResponse =
+          allResponse.length > 0
+            ? allResponse.reduce((acc, cur) => {
+                console.log('curr', cur)
+                // only if not empty send the responses to server for editing
+                if (hasValidAnswers(cur.qType, cur.userResponse)) {
+                  acc[cur.qid] = cur.userResponse
+                } else {
+                  const error = new Error('empty response update event')
+                  Sentry.configureScope((scope) => {
+                    scope.setExtra('qType', cur?.qType)
+                    scope.setExtra('userResponse', cur?.userResponse)
+                    Sentry.captureException(error)
+                  })
+                }
+                return acc
+              }, {})
+            : _userResponse
+        payload = {
+          ...payload,
+          userResponse,
+        }
+      }
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-24950
+       * save scratchpad data when edited from EG
+       */
+      if (updatedScratchPad && !isEmpty(userWork) && allResponse?.length > 0) {
+        setUpdatedScratchPad(false)
+        const currentUserWork = {}
+        allResponse.forEach((uqa) => {
+          const uqaId = uqa?._id
+          const qid = uqa?.qid
+          if (userWork?.[uqaId]?.[qid]) {
+            currentUserWork[qid] = userWork?.[uqaId]?.[qid]
+          }
+        })
+        if (!isEmpty(currentUserWork)) {
+          const dimensions = scratchPadDimensions || {}
+          const userWorkData = { scratchpad: true, dimensions }
+          payload = {
+            ...payload,
+            scratchPadData: userWorkData,
+          }
+          uploadDataAndUpdateAttachment({
+            userWork: currentUserWork,
+            uta: testActivityId,
+            itemId,
+            userId,
+          })
+        }
+      }
+      submitResponse(payload)
+    } else {
+      removeTeacherEditedScore()
     }
   }
 
@@ -364,6 +415,14 @@ export default connect(
     isScoringInProgress: getIsScoringCompletedSelector(state),
     studentQuestionResponseTestActivityId:
       state.studentQuestionResponse?.data?.testActivityId,
+    userWork: userWorkSelector(state),
+    updatedScratchPad: getUpdatedScratchPadSelector(state),
+    scratchPadDimensions: scratchpadDomRectSelector(state),
   }),
-  { submitResponse: submitResponseAction }
+  {
+    submitResponse: submitResponseAction,
+    setUpdatedScratchPad: setUpdatedScratchPadAction,
+    uploadDataAndUpdateAttachment: uploadDataAndUpdateAttachmentAction,
+    removeTeacherEditedScore: removeTeacherEditedScoreAction,
+  }
 )(QuestionModal)

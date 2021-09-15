@@ -7,6 +7,7 @@ const getItemBackground = (alpha, hoverBg = false) => ({
   correct,
   locked,
   theme,
+  isEvaluationEmpty,
 }) => {
   const isCheckGreen = checkAnswers && active && !locked && correct
   const isCheckRed = checkAnswers && active && !locked && !correct
@@ -19,24 +20,43 @@ const getItemBackground = (alpha, hoverBg = false) => ({
   const isShowRed = showAnswers && !correct && active && !locked
   const isSimplyActive = !checkAnswers && !showAnswers && active
 
+  if (active && (checkAnswers || showAnswers) && isEvaluationEmpty) {
+    return theme.widgets.shading.lockedLiBgColor
+  }
+
   if (isCheckGreen || isShowGreen) {
     return theme.widgets.shading.correctLiBgColor
   }
+
   if (isCheckRed || isShowRed) {
     return theme.widgets.shading.incorrectLiBgColor
   }
+
   if (isCheckLocked || isShowLocked || isSimplyActive) {
     return theme.widgets.shading.lockedLiBgColor
   }
+
   return hoverBg
     ? theme.widgets.shading.liBgHoverColor
     : theme.widgets.shading.liBgColor
 }
 
-const getBorderWidth = ({ active, checkAnswers, correct, locked, border }) => {
+const getBorderWidth = ({
+  active,
+  checkAnswers,
+  correct,
+  locked,
+  border,
+  isEvaluationEmpty,
+}) => {
   if (border !== 'full') {
     return 0
   }
+
+  if (active && checkAnswers && isEvaluationEmpty) {
+    return '1px'
+  }
+
   const isCheckGreen = checkAnswers && active && !locked && correct
   const isCheckRed = checkAnswers && active && !locked && !correct
 
@@ -50,15 +70,21 @@ const getBorderColor = ({
   locked,
   showAnswers,
   theme,
+  isEvaluationEmpty,
 }) => {
   const isCheckGreen = checkAnswers && active && !locked && correct
   const isCheckRed = checkAnswers && active && !locked && !correct
   const isShowGreen = showAnswers && correct && !locked
   const isShowRed = showAnswers && !correct && active && !locked
 
+  if (active && (checkAnswers || showAnswers) && isEvaluationEmpty) {
+    return 'none'
+  }
+
   if (isCheckGreen || isShowGreen) {
     return theme.widgets.shading.correctLiBorderColor
   }
+
   if (isCheckRed || isShowRed) {
     return theme.widgets.shading.incorrectLiBorderColor
   }

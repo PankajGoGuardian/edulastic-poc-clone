@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { Tooltip } from 'antd'
 import { get, groupBy } from 'lodash'
 import { IconCheck } from '@edulastic/icons'
-import { white } from '@edulastic/colors'
+import { white, textBlackColor } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
 import UnScored from '@edulastic/common/src/components/Unscored'
 import {
@@ -252,8 +252,8 @@ const FeedbackGiven = styled.div`
   overflow-y: auto;
   line-height: 2.5;
   padding: 0px 0px 0px 16px;
-  color: #878282;
-  font-size: 0.8rem;
+  color: ${textBlackColor};
+  font-size: 16px;
 `
 
 const UserImg = styled.div`

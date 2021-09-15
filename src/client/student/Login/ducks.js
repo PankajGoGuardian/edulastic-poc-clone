@@ -36,6 +36,7 @@ import {
   removeSignOutUrl,
   getStartedUrl,
   isHashAssessmentUrl,
+  removeSessionValue,
 } from '../../common/utils/helpers'
 import { userPickFields } from '../../common/utils/static/user'
 import {
@@ -43,7 +44,7 @@ import {
   signupGeneralSettingsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
-import { getUser } from '../../author/src/selectors/user'
+import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
@@ -164,6 +165,7 @@ export const FETCH_USER_FAVORITES = '[user] fetch user favorites'
 export const UPDATE_USER_FAVORITES = '[user] update user favorites'
 export const SET_USER_FAVORITES = '[user] set user favorites'
 export const ADD_CLASS_TO_USER = '[user] add class to user'
+export const SET_CLASS_TO_USER = '[user] set class to user'
 export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
@@ -178,8 +180,7 @@ export const PERSIST_AUTH_STATE_AND_REDIRECT =
 
 export const TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL =
   '[user] toggle ios restrict navigation modal'
-export const TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL =
-  '[auth] toggle free admin subscription alert modal'
+export const TOGGLE_ADMIN_ALERT_MODAL = '[user] toggle admin alert modal'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -256,6 +257,7 @@ export const updatePowerTeacherAction = createAction(
   UPDATE_POWER_TEACHER_TOOLS_REQUEST
 )
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER)
+export const setClassToUserAction = createAction(SET_CLASS_TO_USER)
 export const addItemBankPermissionAction = createAction(
   ADD_COLLECTION_PERMISSION
 )
@@ -279,8 +281,8 @@ export const toggleIosRestrictNavigationModalAction = createAction(
   TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL
 )
 
-export const toggleFreeAdminSubscriptionModalAction = createAction(
-  TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL
+export const toggleAdminAlertModalAction = createAction(
+  TOGGLE_ADMIN_ALERT_MODAL
 )
 
 const initialState = {
@@ -295,7 +297,7 @@ const initialState = {
   isImageBlockNotification: false,
   isRoleConfirmation: false,
   iosRestrictNavigationModalVisible: false,
-  showAdminSubscriptionModal: false,
+  showAdminAlertModal: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -368,8 +370,7 @@ const isPartOfLoginRoutes = (pathname) =>
 
 function* persistAuthStateAndRedirectToSaga({ payload }) {
   const { _redirectRoute, toUrl } = payload || {}
-  const { authorUi, signup: signUp, user } = yield select((_state) => _state) ||
-    {}
+  const { user } = yield select((_state) => _state) || {}
 
   if (!user.user) return
 
@@ -388,11 +389,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
-
-  localStorage.setItem(
-    'authState',
-    JSON.stringify({ authorUi, signup: signUp, user })
-  )
 
   if (redirectRoute) {
     window.location.replace(redirectRoute)
@@ -580,6 +576,20 @@ export default createReducer(initialState, {
     state.user.institutionIds = updatedSchoolIds
     state.user.orgData.institutionIds = updatedSchoolIds
     state.user.orgData.schools = updatedSchools
+    const accountIdx = (state.user.otherAccounts || []).findIndex(
+      (u) => u._id === state.user._id
+    )
+    if (accountIdx !== -1) {
+      const oldData = state.user.otherAccounts[accountIdx]
+      state.user.otherAccounts[
+        accountIdx
+      ].institutionIds = oldData?.institutionIds?.filter((id) => id !== payload)
+      state.user.otherAccounts[
+        accountIdx
+      ].institutions = oldData?.institutions?.filter(
+        (school) => school._id !== payload
+      )
+    }
   },
   [REMOVE_SCHOOL_FAILED]: (state) => {
     state.removingSchool = undefined
@@ -589,9 +599,10 @@ export default createReducer(initialState, {
   },
   [ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
     state.addingSchool = false
-    state.user.institutionIds = payload.institutionIds
+    state.user.institutionIds = payload.institutionIds || []
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [ADD_SCHOOL_FAILED]: (state) => {
     state.addingSchool = undefined
@@ -601,9 +612,10 @@ export default createReducer(initialState, {
   },
   [CREATE_AND_ADD_SCHOOL_SUCCESS]: (state, { payload }) => {
     state.creatingAddingSchool = false
-    state.user.institutionIds = payload.institutionIds
+    state.user.institutionIds = payload.institutionIds || []
     state.user.orgData.institutionIds = payload.orgData.institutionIds
     state.user.orgData.schools = payload.orgData.schools
+    state.user.otherAccounts = payload.otherAccounts || state.user.otherAccounts
   },
   [CREATE_AND_ADD_SCHOOL_FAILED]: (state) => {
     state.creatingAddingSchool = undefined
@@ -673,6 +685,9 @@ export default createReducer(initialState, {
   [ADD_CLASS_TO_USER]: (state, { payload }) => {
     state.user.orgData.classList.push(payload)
   },
+  [SET_CLASS_TO_USER]: (state, { payload }) => {
+    state.user.orgData.classList = payload
+  },
   [ADD_COLLECTION_PERMISSION]: (state, { payload }) => {
     const itemBanks = get(state, 'user.orgData.itemBanks', [])
     const { itemBankId, accessLevel, status } = payload
@@ -709,8 +724,8 @@ export default createReducer(initialState, {
       state.email = payload
     }
   },
-  [TOGGLE_FREE_ADMIN_SUBSCRIPTON_ALERT_MODAL]: (state) => {
-    state.showAdminSubscriptionModal = !state.showAdminSubscriptionModal
+  [TOGGLE_ADMIN_ALERT_MODAL]: (state) => {
+    state.showAdminAlertModal = !state.showAdminAlertModal
   },
 })
 
@@ -880,8 +895,9 @@ function* login({ payload }) {
       ) {
         Sentry.withScope((scope) => {
           scope.setExtra('userId', user._id)
-          Sentry.captureException(
-            new Error('Logged in teacher is a part of multiple districts.')
+          Sentry.captureMessage(
+            'Logged in teacher is a part of multiple districts.',
+            'info'
           )
         })
       }
@@ -1206,7 +1222,7 @@ export function* fetchUser({ payload }) {
       (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (
       (!firebaseUser && user?.firebaseAuthToken) ||
-      (firebaseUser && firebaseUser !== user._id)
+      (firebaseUser && firebaseUser !== user._id && user?.firebaseAuthToken)
     ) {
       yield firebase.auth().signInWithCustomToken(user.firebaseAuthToken)
     }
@@ -1215,6 +1231,7 @@ export function* fetchUser({ payload }) {
 
     if (key.includes('role:undefined') && user.role) {
       TokenStorage.removeAccessToken(user._id, 'undefined')
+      // add last used or current districtId
       TokenStorage.storeAccessToken(user.token, user._id, user.role, true)
       TokenStorage.selectAccessToken(user._id, user.role)
     }
@@ -1239,8 +1256,9 @@ export function* fetchUser({ payload }) {
     ) {
       Sentry.withScope((scope) => {
         scope.setExtra('userId', user._id)
-        Sentry.captureException(
-          new Error('Logged in teacher is a part of multiple districts.')
+        Sentry.captureMessage(
+          'Logged in teacher is a part of multiple districts.',
+          'info'
         )
       })
     }
@@ -1324,10 +1342,15 @@ function* logout() {
           localStorage.removeItem(objKey)
         }
       })
+      const districtId = yield select(getUserOrgId)
       sessionStorage.removeItem('cliBannerShown')
       sessionStorage.removeItem('cliBannerVisible')
       sessionStorage.removeItem('addAccountDetails')
-      sessionStorage.removeItem(`assignments_filter_${user._id}`)
+      removeSessionValue({
+        key: 'assignments_filter',
+        userId: user._id,
+        districtId,
+      })
       sessionStorage.removeItem('temporaryClass')
       TokenStorage.removeKID()
       TokenStorage.initKID()
@@ -1683,7 +1706,12 @@ function* atlasSSOLogin({ payload }) {
         })
       )
     } else {
-      notification({ msg: e?.data?.message || 'Atlas Login failed' })
+      notification({
+        msg:
+          e?.data?.message ||
+          e?.response?.data?.message ||
+          'Atlas Login failed',
+      })
       yield put(push(getSignOutUrl()))
     }
     removeSignOutUrl()
@@ -1897,6 +1925,7 @@ function* resetPasswordRequestSaga({ payload }) {
     yield put(signupSuccessAction(result))
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     localStorage.removeItem('loginRedirectUrl')
+    yield put(push(`/`)) // navigate user to dashboard once user password reset success and loaded
   } catch (e) {
     notification({
       msg: e?.response?.data?.message
@@ -2040,7 +2069,7 @@ function* addSchoolSaga({ payload = {} }) {
 function* createAndAddSchoolSaga({ payload = {} }) {
   const createSchoolPayload = payload.createSchool
   const joinSchoolPayload = payload.joinSchool
-  const institutionIds = payload.institutionIds
+  const institutionIds = payload.institutionIds || []
   let isCreateSchoolSuccessful = false
   let result
   try {
@@ -2106,7 +2135,7 @@ function* setInviteDetailsSaga({ payload }) {
     yield call(fetchUser, {}) // needed to update org and other user data to local store
     yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })
   } catch (e) {
-    yield call(message.err, 'Failed to update user details.')
+    yield call(message.error, 'Failed to update user details.')
   }
 }
 

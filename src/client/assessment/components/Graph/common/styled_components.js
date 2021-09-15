@@ -9,6 +9,7 @@ import {
   secondaryTextColor,
   themeColor,
   extraDesktopWidthMax,
+  greyThemeDark4,
 } from '@edulastic/colors'
 import { TextField } from '@edulastic/common'
 
@@ -431,6 +432,7 @@ export const ToolbarItem = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  text-align: center;
   justify-content: ${({ justifyContent }) => justifyContent || 'flex-end'};
 `
 
@@ -439,62 +441,12 @@ export const ToolbarItemLabel = styled.span`
   text-transform: uppercase;
   font-size: ${({ fontSize }) => fontSize || '10px'};
   line-height: 1;
-  margin-top: 4px;
-  margin-bottom: 6px;
+  margin-top: ${({ noMargin }) => !noMargin && '4px'};
+  margin-bottom: ${({ noMargin }) => !noMargin && '6px'};
 
-  &.icon-point-label {
-    margin-top: 8px;
-  }
-  &.icon-polygon-label {
-    margin-top: 9px;
-  }
-  &.icon-vector-label {
-    margin-top: 4px;
-  }
-  &.icon-ray-label {
-    margin-top: 6px;
-  }
-  &.icon-line-label {
-    margin-top: 6px;
-  }
-  &.icon-ellipse-label {
-    margin-top: 7px;
-  }
-  &.icon-circle-label {
-    margin-top: 7px;
-  }
-  &.icon-parabola2-label {
-    margin-top: 2px;
-  }
-  &.icon-parabola-label {
-    margin-top: 6px;
-  }
-  &.icon-hyperbola-label {
-    margin-top: 0px;
-  }
-  &.icon-sin-label {
-    margin-top: 2px;
-  }
-  &.icon-cos-label {
-    margin-top: 2px;
-  }
-  &.icon-area-label {
-    margin-top: 7px;
-  }
-  &.icon-dashed-label {
-    margin-top: 6px;
-  }
-  &.icon-tan-label {
-    margin-top: 2px;
-  }
-  &.icon-segment-label {
-    margin-top: 6px;
-  }
-  &.icon-secant-label {
-    margin-top: 2px;
-  }
-  &.icon-exponential-label {
-    font-size: 9.5px;
+  &.icon-no_solution-label {
+    max-width: 55px;
+    line-height: 1.6;
   }
 `
 
@@ -526,7 +478,6 @@ export const ToolBtn = styled.li`
 
   > ${ToolbarItem} {
     svg {
-      color: #878a91;
       fill: #878a91;
     }
   }
@@ -539,7 +490,6 @@ export const ToolBtn = styled.li`
 
     > ${ToolbarItem} {
       svg {
-        color: ${(props) => props.theme.containerWhite};
         fill: ${(props) => props.theme.containerWhite};
       }
     }
@@ -597,16 +547,23 @@ export const PopupContent = styled.div`
   font-size: 14px;
 `
 
-export const PopupToolsContainer = styled.div`
-  padding: 20px;
+export const ToolGroup = styled.ul`
+  padding: 0px;
   display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  grid-gap: 10px;
-
-  ${ToolBtn} {
-    margin: 0;
-  }
+  grid-gap: 8px;
+  grid-auto-rows: 60px;
+  grid-template-columns: repeat(auto-fill, 84px);
+  margin-bottom: 24px;
 `
+
+export const ToolGroupLabel = styled.div`
+  color: ${greyThemeDark4};
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  margin-bottom: 12px;
+`
+
 const { Dragger } = Upload
 export const UploadButton = styled(Dragger)`
   &.ant-upload.ant-upload-drag {

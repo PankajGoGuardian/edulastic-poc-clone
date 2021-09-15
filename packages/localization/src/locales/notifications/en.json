@@ -719,6 +719,10 @@
     "message": "Please add resources on the left and all the associated questions on the right.",
     "description": ""
   },
+  "maximumAllowedStudentResources": {
+    "message": "Maximum 5 Student resources allowed",
+    "description": ""
+  },
   "pleaseEnterLisence": {
     "message": "Please enter your license key",
     "description": ""
@@ -1419,6 +1423,18 @@
     "message": "Rating point must not be empty.",
     "description": ""
   },
+  "criteriaNameLengthValidation": {
+    "message": "Criteria name cannot be more than 256 characters",
+    "description": ""
+  },
+  "ratingsNameLengthValidation": {
+    "message": "Rating name cannot be more than 100 characters",
+    "description": ""
+  },
+  "ratingsDescLengthValidation": {
+    "message": "Rating description cannot be more than 2048 characters",
+    "description": ""
+  },
   "ratingPointMustBeZero": {
     "message": "Rating point must be 0 for at least one rating within a criteria.",
     "description": ""
@@ -1461,6 +1477,10 @@
   },
   "CannotSaveWithoutPasses": {
     "message": "Cannot save without passages",
+    "description": ""
+  },
+  "CannotPublishWithoutPassages": {
+    "message": "Cannot publish without passages",
     "description": ""
   },
   "itemIsNotAssociated": {
@@ -1729,6 +1749,10 @@
   },
   "nameFieldRequired": {
     "message": "Name field is required",
+    "description": ""
+  },
+  "timedAssigmentTimeCanNotBeZero": {
+    "message": "Timed test is ON, please add some time limit to proceed",
     "description": ""
   },
   "totalItemsToBeDelivered": {
@@ -2018,5 +2042,17 @@
   "optionRemove": {
     "message": "Answer choice can not be removed during regrade",
     "description": ""
+  },
+  "clozMathDuplicatedParam": {
+    "message": "Same dynamic variable can not be used in two or more input boxes.",
+    "description": ""
+  },
+  "invalidSeqVariableMsg": {
+    "message": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
+    "description": ""
+  },
+  "pointsOnEquWithObjects": {
+    "message": "Please note that the grading for this question will only consider if the points given by the student meet the equation you specified, and not the specific objects that you entered",
+    "description": "You may want to consider using background objects instead to avoid confusion"
   }
 }

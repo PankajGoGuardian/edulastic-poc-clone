@@ -51,6 +51,8 @@ const Expanded = ({
   groupPoints,
   groupMinimized,
   isUnScoredItem,
+  isPremiumContentWithoutAccess,
+  premiumCollectionWithoutAccess,
 }) => {
   /**
    * @type {{item:Object,question:Object}[]}
@@ -136,6 +138,7 @@ const Expanded = ({
                 }
                 value={groupMinimized ? groupPoints : pointsProp}
                 onChange={(value) => onChangePoints(metaInfoData.id, value)}
+                textAlign="center"
               />
             ) : (
               <UnScored
@@ -172,14 +175,21 @@ const Expanded = ({
             windowWidth="100%"
             isReviewTab
             testItem
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
           />
         </AnswerContext.Provider>
       </FlexContainer>
     </FlexContainer>
   ) : (
     items &&
-      items.map(({ item: _item }, index) => {
-        const qId = get(_item, `[0].widgets[0].reference`, null)
+      items.map(({ item: _item = [] }, index) => {
+        const questionWidgets = _item.filter(({ widgets = [] }) =>
+          widgets.find(({ widgetType = '' }) => widgetType === 'question')
+        )
+
+        const qId = get(questionWidgets, `[0].widgets[0].reference`, null)
+
         return (
           <FlexContainer
             className="expanded-rows"
@@ -221,6 +231,12 @@ const Expanded = ({
                     windowWidth="100%"
                     isReviewTab
                     testItem
+                    isPremiumContentWithoutAccess={
+                      isPremiumContentWithoutAccess
+                    }
+                    premiumCollectionWithoutAccess={
+                      premiumCollectionWithoutAccess
+                    }
                   />
                 </div>
               </AnswerContext.Provider>
@@ -248,6 +264,7 @@ const Expanded = ({
                       groupMinimized ? groupPoints : points?.[qId] || points
                     }
                     onChange={handleChangePoint(qId)}
+                    textAlign="center"
                   />
                 ) : (
                   <UnScored

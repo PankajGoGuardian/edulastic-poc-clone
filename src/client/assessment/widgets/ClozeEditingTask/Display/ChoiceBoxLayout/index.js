@@ -81,6 +81,7 @@ const ChoicesBox = ({ resprops, id }) => {
       disableResponse={disableResponse}
       onChange={selectChange}
       displayStyleOption={displayStyle?.option}
+      index={index}
     />
   )
 }

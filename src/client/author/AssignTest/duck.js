@@ -12,6 +12,8 @@ export const UPDATE_ASSIGNMENT_SETTINGS =
   '[assignment settings] update assignment settings'
 export const CLEAR_ASSIGNMENT_SETTINGS =
   '[assignment settings] clear assignment settings'
+export const GET_SELECTED_RECOMMENDED_RESOURCES =
+  '[assignment settings] get selected recommended resources'
 
 export const fetchAssignmentsAction = (payload) => ({
   type: FETCH_ASSIGNMENTS,
@@ -25,6 +27,10 @@ export const updateAssingnmentSettingsAction = (payload) => ({
 export const clearAssignmentSettingsAction = createAction(
   CLEAR_ASSIGNMENT_SETTINGS
 )
+export const getSelectedResourcesAction = (payload) => ({
+  type: GET_SELECTED_RECOMMENDED_RESOURCES,
+  payload,
+})
 
 // selectors
 const _moduld = 'authorTestAssignments'
@@ -140,5 +146,8 @@ export const assignmentSettings = createReducer(initialState, {
   },
   [CLEAR_ASSIGNMENT_SETTINGS]: () => {
     return initialState
+  },
+  [GET_SELECTED_RECOMMENDED_RESOURCES]: (state, { payload }) => {
+    state.resources = payload
   },
 })

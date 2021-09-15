@@ -1,15 +1,17 @@
+import React from 'react'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { put, takeEvery, call, all } from 'redux-saga/effects'
 import { captureSentryException, notification } from '@edulastic/common'
 import { adminApi } from '@edulastic/api'
-import _get from 'lodash.get'
-import { omit } from 'lodash'
+import { get as _get, isEmpty, omit } from 'lodash'
 
 // CONSTANTS
 export const SEARCH_EXISTING_DATA_API = '[admin] SEARCH_EXISTING_DATA_API'
 export const APPLY_DELTA_SYNC_CHANGES = '[admin] APPLY_DELTA_SYNC_CHANGES'
 export const SYNC_SCHOOLS = '[admin] SYNC_SCHOOLS'
+export const SYNC_CLEVER_ORPHAN_USERS = '[admin] SYNC_CLEVER_ORPHAN_USERS'
+export const SYNC_EDLINK_ORPHAN_USERS = '[admin] SYNC_EDLINK_ORPHAN_USERS'
 export const APPLY_CLASSNAMES_SYNC = '[admin] APPLY_CLASSNAMES_SYNC'
 export const ENABLE_DISABLE_SYNC_ACTION = '[admin] ENABLE_DISABLE_SYNC_ACTION'
 export const FETCH_CURRICULUM_DATA_ACTION =
@@ -34,14 +36,36 @@ export const LOGS_DATA_FAILED = '[admin] LOGS_DATA_FAILED'
 export const RECEIVE_MERGED_ID = '[admin] merg ids to edulastic'
 export const CLOSE_MERGE_RESPONSE_TABLE = '[admin] close merge response table'
 export const CLEAR_MERGE_DATA = '[admin] clear merge data'
+export const SET_STOP_SYNC = '[admin] set stop sync'
+export const SET_STOP_SYNC_SAVING_STATUS = '[admin] set stop sync saving status'
+
+export const FETCH_MAPPED_DATA = '[admin] FETCH_MAPPED_DATA'
+export const FETCH_MAPPED_DATA_SUCCESS = '[admin] FETCH_MAPPED_DATA_SUCCESS'
+export const FETCH_MAPPED_DATA_FAILURE = '[admin] FETCH_MAPPED_DATA_FAILURE'
+
+export const SAVE_APPROVED_MAPPING = '[admin] SAVE_APPROVED_MAPPING'
+export const UNSET_MAPPING_DATA = '[admin UNSET_MAPPING_DATA'
+export const GENERATE_MAPPED_DATA = '[admin] GENERATE_MAPPED_DATA'
+export const SAVE_GENERATE_MAPPING_DATE = '[admin] SAVE_GENERATE_MAPPING_DATE'
+export const SAVE_DUPLICATE_MAPPED_DATA = '[admin] SAVE_DUPLICATE_MAPPED_DATA'
+export const UNSET_DUPLICATE_MAPPING_DATA =
+  '[admin UNSET_DUPLICATE_MAPPING_DATA'
+
+export const TOGGLE_APPROVE_MODAL_VISIBLE =
+  '[admin] TOGGLE_APPROVE_MODAL_VISIBLE'
 
 // ACTION CREATORS
 export const searchExistingDataApi = createAction(SEARCH_EXISTING_DATA_API)
 export const fetchExistingDataSuccess = createAction(
   FETCH_EXISTING_DATA_SUCCESS
 )
+export const saveGenerateMappingDateAction = createAction(
+  SAVE_GENERATE_MAPPING_DATE
+)
 export const applyDeltaSyncChanges = createAction(APPLY_DELTA_SYNC_CHANGES)
 export const syncSchools = createAction(SYNC_SCHOOLS)
+export const syncCleverOrphanUsers = createAction(SYNC_CLEVER_ORPHAN_USERS)
+export const syncEdlinkOrphanUsers = createAction(SYNC_EDLINK_ORPHAN_USERS)
 export const applyClassNamesSync = createAction(APPLY_CLASSNAMES_SYNC)
 export const enableDisableSyncAction = createAction(ENABLE_DISABLE_SYNC_ACTION)
 export const fetchCurriculumDataAction = createAction(
@@ -74,6 +98,25 @@ export const clearMergeDataAction = createAction(CLEAR_MERGE_DATA)
 export const uploadCSVAction = createAction(UPLOAD_CSV)
 export const receiveMergeIdsAction = createAction(RECEIVE_MERGED_ID)
 export const closeMergeResponseAction = createAction(CLOSE_MERGE_RESPONSE_TABLE)
+export const setStopSyncAction = createAction(SET_STOP_SYNC)
+
+export const getMappingDataAction = createAction(FETCH_MAPPED_DATA)
+export const saveEntityMappingAction = createAction(SAVE_APPROVED_MAPPING)
+export const getMappingDataSuccessAction = createAction(
+  FETCH_MAPPED_DATA_SUCCESS
+)
+export const getMappingDataFailureAction = createAction(
+  FETCH_MAPPED_DATA_FAILURE
+)
+export const unSetMappingDataAction = createAction(UNSET_MAPPING_DATA)
+export const generateMappedDataAction = createAction(GENERATE_MAPPED_DATA)
+export const saveDuplicateMappedDataAction = createAction(
+  SAVE_DUPLICATE_MAPPED_DATA
+)
+export const unSetDuplicateMappingDataAction = createAction(
+  UNSET_DUPLICATE_MAPPING_DATA
+)
+export const toggleApproveModal = createAction(TOGGLE_APPROVE_MODAL_VISIBLE)
 
 // REDUCERS
 
@@ -89,10 +132,80 @@ const initialState = {
     data: [],
     showData: false,
   },
+  stopSyncSaving: null,
+  mappedData: {},
+  mappingDataLoading: false,
+  loadingData: {
+    dId: {
+      schoolLoading: true,
+      classLoading: false,
+    },
+  },
+  approveModalVisible: false,
+}
+
+const putMappedDataIntoState = (state, payload) => {
+  const { type, districtId, result, page = 1 } = payload.payload
+  const entity = type === 'school' ? 'Schools' : 'Classes'
+  state.mappedData[districtId] = state.mappedData[districtId] || {}
+  state.mappedData[districtId][entity] =
+    state.mappedData[districtId][entity] || {}
+  const { totalCount = 0, mappedData = {} } = result
+  const data = {
+    totalCount,
+  }
+  if (isEmpty(state.mappedData?.[districtId]?.[entity]?.mappedData)) {
+    state.mappedData[districtId][entity].mappedData = {}
+  }
+  Object.assign(data, state.mappedData[districtId][entity])
+  if (type === 'school') {
+    data.mappedData = mappedData
+  } else {
+    if (page === 1) data.mappedData = {}
+    data.mappedData[page] = mappedData
+    if (totalCount) Object.assign(data, { totalCount })
+  }
+  state.mappedData[districtId][entity] = data
+  state.mappingDataLoading = false
+}
+
+const unSetMappingData = (state, payload) => {
+  const { type, districtId } = payload.payload
+  const entity = type === 'school' ? 'Schools' : 'Classes'
+  state.mappedData[districtId] = state.mappedData[districtId] || {}
+  state.mappedData[districtId][entity] = {}
+}
+
+const putDuplicateMappedDataIntoState = (state, payload) => {
+  const { type, result } = payload.payload
+  const entity = type === 'school' ? 'Schools' : 'Classes'
+  if (!state.duplicateData) state.duplicateData = {}
+  state.duplicateData[entity] = result || []
+}
+
+const unSetDuplicateMappedData = (state, payload) => {
+  const { entity } = payload.payload
+  if (state.duplicateData && state.duplicateData[entity])
+    state.duplicateData[entity] = []
 }
 
 const fetchExistingDataReducer = createReducer(initialState, {
   [CLEAR_MERGE_DATA]: () => initialState,
+  [SAVE_GENERATE_MAPPING_DATE]: (state, { payload }) => {
+    const mappedDataInfo = state?.searchData?.data?.mappedDataInfo
+    const { type, modifiedAt } = payload
+    if (mappedDataInfo) {
+      state.searchData.data.mappedDataInfo = mappedDataInfo.map((o) => {
+        if (type === o._id) {
+          return {
+            _id: o._id,
+            createdAt: modifiedAt.seconds * 1000,
+          }
+        }
+        return o
+      })
+    }
+  },
   [FETCH_EXISTING_DATA_SUCCESS]: (state, { payload }) => {
     const { isClasslink, ...dataPayload } = payload
     const subjectStandardMap = _get(
@@ -191,6 +304,25 @@ const fetchExistingDataReducer = createReducer(initialState, {
       showData: false,
     }
   },
+  [FETCH_MAPPED_DATA]: (state) => {
+    state.mappingDataLoading = true
+  },
+  [FETCH_MAPPED_DATA_SUCCESS]: putMappedDataIntoState,
+  [FETCH_MAPPED_DATA_FAILURE]: (state) => {
+    state.mappingDataLoading = false
+  },
+  [SET_STOP_SYNC]: (state) => {
+    state.stopSyncSaving = true
+  },
+  [SET_STOP_SYNC_SAVING_STATUS]: (state, { payload }) => {
+    state.stopSyncSaving = payload
+  },
+  [UNSET_MAPPING_DATA]: unSetMappingData,
+  [SAVE_DUPLICATE_MAPPED_DATA]: putDuplicateMappedDataIntoState,
+  [UNSET_DUPLICATE_MAPPING_DATA]: unSetDuplicateMappedData,
+  [TOGGLE_APPROVE_MODAL_VISIBLE]: (state, { payload }) => {
+    state.approveModalVisible = payload
+  },
 })
 
 // SELECTORS
@@ -209,6 +341,31 @@ export const getSubStandardMapping = createSelector(
 export const mergeResponseSelector = createSelector(
   adminStateSelector,
   ({ mergeData }) => mergeData.mergeResponse
+)
+
+export const getMappedDataSelector = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.mappedData
+)
+
+export const getMappedDataLoading = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.mappingDataLoading
+)
+
+export const stopSyncSavingSelector = createSelector(
+  adminStateSelector,
+  (state) => state.mergeData.stopSyncSaving
+)
+
+export const getDuplicateMappedData = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.duplicateData
+)
+
+export const getIsApproveModalVisible = createSelector(
+  adminStateSelector,
+  ({ mergeData }) => mergeData.approveModalVisible
 )
 
 // SAGAS
@@ -232,6 +389,13 @@ const {
   logsAtlasDataApi,
   selectedAtlasSchoolSyncApi,
   completeAtlasDistrictSync,
+  generateMappedData,
+  getMappingData,
+  saveMappedData,
+  syncCleverOrphanUsersApi,
+  syncEdlinkOrphanUsersApi,
+  cleverStopSyncApi,
+  atlasStopSyncApi,
 } = adminApi
 
 function* fetchExistingData({ payload }) {
@@ -456,17 +620,145 @@ function* fetchLogsData({ payload }) {
   }
 }
 
+function* generateMappingData({ payload }) {
+  try {
+    const result = yield call(generateMappedData, payload)
+    notification({
+      msg: result,
+      type: 'success',
+    })
+  } catch (err) {
+    yield put(getMappingDataFailureAction())
+    notification({ msg: 'Failed to generate mapping data', type: 'error' })
+  }
+}
+
+function* getMappedData({ payload }) {
+  try {
+    const result = yield call(getMappingData, payload)
+    yield put(
+      getMappingDataSuccessAction({
+        type: payload.type,
+        districtId: payload.cleverId || payload.atlasId,
+        result,
+        page: payload.page,
+      })
+    )
+  } catch (err) {
+    yield put(getMappingDataFailureAction())
+    notification({ msg: 'Failed to get mapped data', type: 'error' })
+  }
+}
+
+function* saveMappingData({ payload }) {
+  const { lmsType } = payload
+  const newPayload = omit(payload, ['lmsType'])
+  try {
+    const result = yield call(saveMappedData, { payload: newPayload, lmsType })
+    if (result.statusCode === 409) {
+      notification({
+        msg: result.message,
+        type: 'error',
+        exact: true,
+        duration: 0,
+      })
+      if (result.data) {
+        yield put(
+          saveDuplicateMappedDataAction({
+            result: result.data,
+            type: payload.type,
+          })
+        )
+      }
+    } else {
+      notification({ msg: 'Mapped data successfully saved', type: 'success' })
+      yield put(toggleApproveModal(false))
+    }
+  } catch (err) {
+    notification({ msg: 'Failed to save mapped data', type: 'error' })
+  }
+}
+
+function* fetchSyncCleverOrphanUsers({ payload }) {
+  let result
+  try {
+    result = yield call(syncCleverOrphanUsersApi, payload)
+    notification({ type: 'success', msg: result })
+  } catch (err) {
+    console.error(err)
+    notification({ msg: err?.data?.message || err.message })
+  }
+}
+
+function* fetchSyncEdlinkOrphanUsers({ payload }) {
+  let result
+  try {
+    result = yield call(syncEdlinkOrphanUsersApi, payload)
+    notification({ type: 'success', msg: result })
+  } catch (err) {
+    console.error(err)
+    notification({ msg: err?.data?.message || err.message })
+  }
+}
+
+function* setStopSyncSaga({
+  payload: { isClasslink, stopSyncData, districtId, schools },
+}) {
+  try {
+    const api = isClasslink ? atlasStopSyncApi : cleverStopSyncApi
+    const result = yield call(api, {
+      districtId,
+      schools: schools.flatMap((s) => {
+        return typeof stopSyncData[s.syncKey] === 'undefined'
+          ? []
+          : [
+              {
+                ...s,
+                stopSync: stopSyncData[s.syncKey],
+              },
+            ]
+      }),
+    })
+    if (result.success) {
+      notification({
+        msg: (
+          <>
+            Stop Sync Success
+            <br />
+            Updated: {result.nModified}, Created: {result.nUpserted}
+          </>
+        ),
+        type: 'success',
+      })
+    } else throw new Error(result.message || 'Stop Sync Failed')
+  } catch (err) {
+    captureSentryException(err)
+    notification({ msg: err, type: 'error' })
+  } finally {
+    yield put({
+      type: SET_STOP_SYNC_SAVING_STATUS,
+      payload: false,
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(SEARCH_EXISTING_DATA_API, fetchExistingData),
     yield takeEvery(APPLY_DELTA_SYNC_CHANGES, fetchApplyDeltaSync),
     yield takeEvery(SYNC_SCHOOLS, fetchSchoolsSync),
+    yield takeEvery(SYNC_CLEVER_ORPHAN_USERS, fetchSyncCleverOrphanUsers),
+    yield takeEvery(SYNC_EDLINK_ORPHAN_USERS, fetchSyncEdlinkOrphanUsers),
     yield takeEvery(APPLY_CLASSNAMES_SYNC, fetchClassNamesSync),
     yield takeEvery(ENABLE_DISABLE_SYNC_ACTION, fetchEnableDisableSync),
     yield takeEvery(FETCH_CURRICULUM_DATA_ACTION, fetchCurriculumData),
     yield takeEvery(UPLOAD_CSV, uploadCSVSaga),
     yield takeEvery(UPDATE_SUBJECT_STANDARD_MAP, updateSubjectStandardSaga),
     yield takeEvery(FETCH_LOGS_DATA, fetchLogsData),
+    yield takeEvery(FETCH_MAPPED_DATA, getMappedData),
+    yield takeEvery(SAVE_APPROVED_MAPPING, saveMappingData),
+    takeEvery(SET_STOP_SYNC, setStopSyncSaga),
+    yield takeEvery(GENERATE_MAPPED_DATA, generateMappingData),
   ])
 }
 

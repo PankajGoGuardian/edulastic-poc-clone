@@ -15,7 +15,7 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, PointBlockContext } from '@edulastic/common'
 import UnscoredBlock from '@edulastic/common/src/components/Unscored'
 
 import {
@@ -41,6 +41,7 @@ import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { WidgetFRInput } from '../../../styled/Widget'
 import { PointsInput } from '../../../styled/CorrectAnswerHeader'
+import { setItemLevelScoreFromRubricAction } from '../../../../author/ItemDetail/ducks'
 
 const roundingTypes = [rounding.roundDown, rounding.none]
 
@@ -96,6 +97,7 @@ class Scoring extends Component {
       extraInScoring = null,
       isCorrectAnsTab = true,
       item = {},
+      setItemLevelScoring,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
     const handleChangeValidation = (param, value) => {
@@ -128,6 +130,7 @@ class Scoring extends Component {
           }
         }
         newData.validation[param] = value
+        setItemLevelScoring(false)
       }
 
       setQuestionData(newData)
@@ -148,7 +151,7 @@ class Scoring extends Component {
     const questionTitle = item?.title || questionData?.title
 
     const onChange = (value) => {
-      if (!(value > 0)) {
+      if (value < 0) {
         return
       }
       const points = parseFloat(value, 10)
@@ -213,33 +216,40 @@ class Scoring extends Component {
 
         {isAutomarkChecked && (
           <Row gutter={24} type="flex" wrap="wrap" mb="0">
-            {!isAutoMarkBtnVisible && (
-              <Col md={12}>
-                <FlexContainer flexDirection="column" mt="8px">
-                  <Label>{t('component.options.maxScore')}</Label>
-                  {isPractice ? (
-                    <UnscoredBlock height="50px" width="20%" />
-                  ) : (
-                    <PointsInput
-                      data-cy="maxscore"
-                      id={getFormattedAttrId(
-                        `${questionTitle}-${t('component.options.maxScore')}`
+            <PointBlockContext.Consumer>
+              {(hidingScoringBlock) =>
+                !isAutoMarkBtnVisible &&
+                !hidingScoringBlock && (
+                  <Col md={12}>
+                    <FlexContainer flexDirection="column" mt="8px">
+                      <Label>{t('component.options.maxScore')}</Label>
+                      {isPractice ? (
+                        <UnscoredBlock height="50px" width="20%" />
+                      ) : (
+                        <PointsInput
+                          data-cy="maxscore"
+                          id={getFormattedAttrId(
+                            `${questionTitle}-${t(
+                              'component.options.maxScore'
+                            )}`
+                          )}
+                          value={maxScore}
+                          width="20%"
+                          onChange={onChange}
+                          min={0}
+                          step={0.5}
+                          disabled={
+                            (!!questionData.rubrics &&
+                              userFeatures.gradingrubrics) ||
+                            isGradingCheckboxState
+                          }
+                        />
                       )}
-                      value={maxScore}
-                      width="20%"
-                      onChange={onChange}
-                      min={0.5}
-                      step={0.5}
-                      disabled={
-                        (!!questionData.rubrics &&
-                          userFeatures.gradingrubrics) ||
-                        isGradingCheckboxState
-                      }
-                    />
-                  )}
-                </FlexContainer>
-              </Col>
-            )}
+                    </FlexContainer>
+                  </Col>
+                )
+              }
+            </PointBlockContext.Consumer>
             {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
             {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
@@ -468,6 +478,8 @@ Scoring.defaultProps = {
   showScoringType: true,
 }
 
+Scoring.contextType = PointBlockContext
+
 const enhance = compose(
   withNamespaces('assessment'),
   withTheme,
@@ -482,6 +494,7 @@ const enhance = compose(
       updateRubricData: updateRubricDataAction,
       setIsGradingRubric: setIsGradingRubricAction,
       dissociateRubricFromQuestion: removeRubricIdAction,
+      setItemLevelScoring: setItemLevelScoreFromRubricAction,
     }
   )
 )

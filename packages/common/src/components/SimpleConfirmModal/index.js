@@ -12,9 +12,13 @@ const ConfirmationModal = ({
   visible,
   onProceed,
   onCancel,
+  cancelText = 'Cancel',
+  hideCancelBtn = false,
+  width,
 }) => {
   return (
     <StyledModal
+      width={width}
       visible={visible}
       footer={null}
       onCancel={() => onCancel()}
@@ -31,15 +35,17 @@ const ConfirmationModal = ({
           <StyledDiv color={darkGrey2}>{description}</StyledDiv>
         </StyledCol>
         <StyledCol span={24}>
-          <EduButton
-            height="40px"
-            width="150px"
-            isGhost
-            onClick={() => onCancel()}
-            style={{ 'margin-left': '0px' }}
-          >
-            Cancel
-          </EduButton>
+          {!hideCancelBtn && (
+            <EduButton
+              height="40px"
+              width="150px"
+              isGhost
+              onClick={() => onCancel()}
+              style={{ 'margin-left': '0px' }}
+            >
+              {cancelText}
+            </EduButton>
+          )}
           <EduButton
             height="40px"
             width="150px"
@@ -58,7 +64,7 @@ export default ConfirmationModal
 
 const StyledModal = styled(Modal)`
   .ant-modal-content {
-    width: 630px;
+    width: ${(props) => props.width || '630px'};
     .ant-modal-close {
       display: none;
     }

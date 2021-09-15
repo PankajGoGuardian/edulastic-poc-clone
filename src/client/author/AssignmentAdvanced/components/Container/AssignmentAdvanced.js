@@ -60,19 +60,22 @@ import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignme
 import {
   getGroupList,
   getUserId,
+  getUserOrgId,
   getUserRole,
   getUserSchoolsListSelector,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
 import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import {
   isDemoPlaygroundUser,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const { assignmentStatusBg } = authorAssignment
 
@@ -90,12 +93,18 @@ class AssignmentAdvanced extends Component {
       location,
       history,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
       userId,
+      districtId: _districtId,
     } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
     const { districtId, testId } = match.params
     const {
@@ -107,9 +116,16 @@ class AssignmentAdvanced extends Component {
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', grades = [], assignedBy = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
-    )
+    const {
+      termId = '',
+      grades = [],
+      assignedBy = '',
+      tags = [],
+    } = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId: _districtId,
+    })
     if (isEmpty(assignmentsSummary)) {
       loadAssignmentsSummary({ districtId })
     }
@@ -148,15 +164,23 @@ class AssignmentAdvanced extends Component {
   }
 
   handleListSearch = () => {
-    const { match, location, loadAssignmentsClassList, userId } = this.props
+    const {
+      match,
+      location,
+      loadAssignmentsClassList,
+      userId,
+      districtId: _districtId,
+    } = this.props
     const { districtId, testId } = match.params
     const { pageNo, filterStatus } = this.state
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
-    const { termId = '', tags = [] } = JSON.parse(
-      sessionStorage.getItem(`assignments_filter_${userId}`) || '{}'
-    )
+    const { termId = '', tags = [] } = getFilterFromSession({
+      key: 'assignments_filter',
+      userId,
+      districtId: _districtId,
+    })
     loadAssignmentsClassList({
       districtId,
       testId,
@@ -509,8 +533,10 @@ const enhance = compose(
       assignmentTestList: getAssignmentTestList(state),
       bulkActionType: getBulkActionTypeSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
+      districtId: getUserOrgId(state),
     }),
     {
       setReleaseScore: releaseScoreAction,
@@ -525,7 +551,7 @@ const enhance = compose(
       bulkUnassignAssignmentRequest: bulkUnassignAssignmentAction,
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )

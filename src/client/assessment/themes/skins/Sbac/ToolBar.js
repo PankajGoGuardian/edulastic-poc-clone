@@ -11,7 +11,9 @@ import {
   IconMagnify,
   IconLanguage,
   IconCloudUpload,
+  IconCheck,
 } from '@edulastic/icons'
+import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../../common/utils/helpers'
 import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
@@ -39,11 +41,20 @@ const ToolBar = ({
   multiLanguageEnabled,
   setSettingsModalVisibility,
   toggleUserWorkUploadModal,
+  isPremiumContentWithoutAccess = false,
+  checkAnswerInProgress,
+  checkAnswer,
+  answerChecksUsedForItem,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
 
-  const { calcType, enableScratchpad, isTeacherPremium } = settings
+  const {
+    calcType,
+    enableScratchpad,
+    isTeacherPremium,
+    maxAnswerChecks,
+  } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
   const handleZoomIn = () => {
     if (zoom !== zoomIndex.length - 1) {
@@ -63,13 +74,39 @@ const ToolBar = ({
     setSettingsModalVisibility(true)
   }
 
+  const handleCheckAnswer = () => {
+    if (checkAnswerInProgress || typeof checkAnswer !== 'function') {
+      return null
+    }
+    checkAnswer()
+  }
+
+  const hideCheckAnswer = !TokenStorage.getAccessToken()
+
   return (
     <Container className="sbac-toolbar">
+      {maxAnswerChecks > 0 && !hideCheckAnswer && (
+        <StyledButton
+          onClick={handleCheckAnswer}
+          title={
+            checkAnswerInProgress
+              ? 'In progress'
+              : answerChecksUsedForItem >= maxAnswerChecks
+              ? 'Usage limit exceeded'
+              : 'Check Answer'
+          }
+          data-cy="checkAnswer"
+          disabled={isPremiumContentWithoutAccess}
+        >
+          <IconCheck />
+        </StyledButton>
+      )}
       {calcType !== calculatorTypes.NONE && (
         <Tooltip placement="top" title="Calculator">
           <StyledButton
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
+            disabled={isPremiumContentWithoutAccess}
           >
             <CaculatorIcon />
           </StyledButton>
@@ -87,7 +124,7 @@ const ToolBar = ({
         >
           <StyledButton
             active={tool.indexOf(3) !== -1}
-            disabled={isDisableCrossBtn}
+            disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
           >
             <CloseIcon />
@@ -100,6 +137,7 @@ const ToolBar = ({
           <StyledButton
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
+            disabled={isPremiumContentWithoutAccess}
           >
             <ScratchPadIcon />
           </StyledButton>
@@ -107,35 +145,52 @@ const ToolBar = ({
       )}
       {!isDocbased && (
         <Tooltip placement="top" title="Zoom in">
-          <StyledButton onClick={handleZoomIn}>
+          <StyledButton
+            onClick={handleZoomIn}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <StyledIcon type="zoom-in" />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && (
         <Tooltip placement="top" title="Zoom out">
-          <StyledButton onClick={handleZoomOut}>
+          <StyledButton
+            onClick={handleZoomOut}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <StyledIcon type="zoom-out" />
           </StyledButton>
         </Tooltip>
       )}
       {showMagnifier && (
         <Tooltip placement="top" title="Magnify">
-          <StyledButton onClick={handleMagnifier} active={enableMagnifier}>
+          <StyledButton
+            onClick={handleMagnifier}
+            active={enableMagnifier}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconMagnify />
           </StyledButton>
         </Tooltip>
       )}
       {!isDocbased && isTeacherPremium && (
         <Tooltip placement="top" title="Upload work">
-          <StyledButton onClick={toggleUserWorkUploadModal}>
+          <StyledButton
+            onClick={toggleUserWorkUploadModal}
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconCloudUpload />
           </StyledButton>
         </Tooltip>
       )}
       {multiLanguageEnabled && (
         <Tooltip placement="top" title="Select Language">
-          <StyledButton onClick={showLangSwitchPopUp} data-cy="SBAC_selectLang">
+          <StyledButton
+            onClick={showLangSwitchPopUp}
+            data-cy="SBAC_selectLang"
+            disabled={isPremiumContentWithoutAccess}
+          >
             <IconLanguage />
           </StyledButton>
         </Tooltip>
@@ -162,6 +217,7 @@ const enhance = compose(
   connect(
     (state) => ({
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
+      checkAnswerInProgress: state?.test?.checkAnswerInProgress,
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,

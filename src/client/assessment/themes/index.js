@@ -49,7 +49,11 @@ import {
 import { evaluateAnswer } from '../actions/evaluation'
 import { changePreview as changePreviewAction } from '../actions/view'
 import { getQuestionsByIdSelector } from '../selectors/questions'
-import { testLoadingSelector, playerSkinTypeSelector } from '../selectors/test'
+import {
+  testLoadingSelector,
+  playerSkinTypeSelector,
+  originalPlayerSkinName,
+} from '../selectors/test'
 import {
   getAnswersArraySelector,
   getAnswersListSelector,
@@ -133,7 +137,9 @@ function pauseAssignment({
       }
     })
     .catch((e) => {
-      Fscreen.exitFullscreen()
+      if (Fscreen?.fullscreenEnabled) {
+        Fscreen.exitFullscreen()
+      }
       const errorMsg =
         e?.response?.data?.result?.message ||
         'Pausing Assignment due to Anti Cheating measures'
@@ -209,7 +215,7 @@ export function ForceFullScreenModal({ visible, takeItLaterCb, fullscreenCb }) {
       visible={visible}
     >
       <div className="content">
-        While taking this test, you can not open other web pages. This test can
+        While taking this test, you cannot open other web pages. This test can
         only be taken in fullscreen mode
       </div>
     </StyledModal>
@@ -540,6 +546,7 @@ const AssessmentContainer = ({
   isStudentReport,
   savingResponse,
   playerSkinType,
+  originalSkinName,
   userPrevAnswer,
   testSettings,
   showMagnifier,
@@ -777,7 +784,7 @@ const AssessmentContainer = ({
         case questionType.HISTOGRAM:
         case questionType.DOT_PLOT:
         case questionType.LINE_PLOT: {
-          const initialData = q.chart_data.data
+          const initialData = q?.chart_data?.data || []
           return initialData.every((d, i) => d?.y === qAnswers?.[i]?.y)
         }
         case questionType.MATCH_LIST:
@@ -787,13 +794,13 @@ const AssessmentContainer = ({
         case questionType.HOTSPOT:
           return !qAnswers?.some((ans) => ans?.toString())
         case questionType.ORDER_LIST: {
-          const prevOrder = [...Array(q.list.length).keys()]
+          const prevOrder = [...Array(q?.list?.length || 0).keys()]
           return qAnswers ? isEqual(prevOrder, qAnswers) : true
         }
         case questionType.MATH:
           if (q.title === 'Complete the Equation') {
             if (isArray(qAnswers)) {
-              return !qAnswers.some((ans) => ans?.toString())
+              return !qAnswers?.some((ans) => ans?.toString())
             }
             const ans = (qAnswers || '').replace(/\\ /g, '')
             return isEmpty(ans) || ans === '+='
@@ -830,7 +837,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return (
             keys.length === 0 || keys.every((key) => isEmpty(qAnswers[key]))
           )
@@ -840,7 +847,7 @@ const AssessmentContainer = ({
           if (!isObject(qAnswers)) {
             return true
           }
-          const keys = Object.keys(qAnswers)
+          const keys = Object.keys(qAnswers || {})
           return keys.some((key) => !qAnswers[key])
         }
         default:
@@ -867,7 +874,8 @@ const AssessmentContainer = ({
         hideHints()
         setCurrentItem(index)
         const timeSpent = Date.now() - lastTime.current
-        if (!demo) {
+        const _item = items[currentItem]
+        if (!_item.isDummyItem) {
           evaluateForPreview({
             currentItem,
             timeSpent,
@@ -944,15 +952,17 @@ const AssessmentContainer = ({
           context: value,
         })
       }
-      if (!demo) {
+      const _item = items[currentItem]
+      if (!_item.isDummyItem) {
         evaluateForPreview({
           currentItem,
           timeSpent,
           callback: submitPreviewTest,
           testId,
+          isLastQuestion: true,
         })
       }
-      if (demo) {
+      if (_item.isDummyItem) {
         submitPreviewTest()
       }
     }
@@ -1018,20 +1028,40 @@ const AssessmentContainer = ({
     hideHints()
     setCurrentItem(index)
     const timeSpent = Date.now() - lastTime.current
-    if (demo && isLast()) {
+    const _item = items[currentItem]
+    if (_item.isDummyItem) {
       return submitPreviewTest()
     }
-    if (!demo) {
+    const evalArgs = {
+      currentItem,
+      timeSpent,
+      testId,
+    }
+    if (isLast()) {
+      evalArgs.isLastQuestion = true
+      evalArgs.callback = submitPreviewTest
+    }
+    evaluateForPreview(evalArgs)
+  }
+
+  // This function is for a direct submit only available in DRC player.
+  // take care of changes related to generic submit here as well.
+  const handleReviewOrSubmit = () => {
+    const timeSpent = Date.now() - lastTime.current
+    if (preview) {
+      const _item = items[currentItem]
+      if (demo || _item.isDummyItem) {
+        return submitPreviewTest()
+      }
       const evalArgs = {
         currentItem,
         timeSpent,
         testId,
+        callback: submitPreviewTest,
       }
-      if (isLast()) {
-        evalArgs.callback = submitPreviewTest
-      }
-      evaluateForPreview(evalArgs)
+      return evaluateForPreview(evalArgs)
     }
+    gotoSummary()
   }
 
   const onSkipUnansweredPopup = async () => {
@@ -1165,6 +1195,7 @@ const AssessmentContainer = ({
     passage,
     defaultAP,
     playerSkinType,
+    originalSkinName,
     showMagnifier,
     handleMagnifier,
     enableMagnifier,
@@ -1174,6 +1205,7 @@ const AssessmentContainer = ({
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
+    handleReviewOrSubmit,
     ...restProps,
   }
 
@@ -1190,7 +1222,12 @@ const AssessmentContainer = ({
        * message might appear just during unmount.
        * in that case we need to destroy it after
        */
-      setTimeout(() => message?.destroy(), 1500)
+
+      try {
+        setTimeout(() => message?.destroy(), 1500)
+      } catch (e) {
+        console.warn('Error', e)
+      }
     }
   }, [savingResponse])
 
@@ -1229,9 +1266,9 @@ const AssessmentContainer = ({
      * highlight image default pen should be disabled
      */
     playerComponent = defaultAP ? (
-      <AssessmentPlayerDefault {...props} hidePause={hidePause} />
+      <AssessmentPlayerDefault {...props} test={test} hidePause={hidePause} />
     ) : (
-      <AssessmentPlayerSimple {...props} hidePause={hidePause} />
+      <AssessmentPlayerSimple {...props} test={test} hidePause={hidePause} />
     )
   }
 
@@ -1302,6 +1339,7 @@ const AssessmentContainer = ({
           onSkip={onSkipUnansweredPopup}
           onClose={onCloseUnansweedPopup}
           data={unansweredPopupSetting.qLabels}
+          playerSkinType={playerSkinType}
         />
       )}
       {!preview && !demo && (
@@ -1355,6 +1393,7 @@ const enhance = compose(
       docUrl: state.test.docUrl,
       testType: state.test.testType,
       playerSkinType: playerSkinTypeSelector(state),
+      originalSkinName: originalPlayerSkinName(state),
       testletConfig: state.test?.testletConfig,
       freeFormNotes: state?.test?.freeFormNotes,
       testletState: get(

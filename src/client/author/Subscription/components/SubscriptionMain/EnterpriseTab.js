@@ -10,6 +10,8 @@ import {
   IconSparkScience,
   IconSpecs,
   IconStemCross,
+  IconCPM,
+  IconSparkWriting,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -74,6 +76,18 @@ const addonsData = [
     description:
       'Import state test scores, data from other assessments (MAP, iReady, SAT/ACT) and more for a holistic view of student performance and growth.',
   },
+  {
+    icon: <IconCPM />,
+    title: 'CPM',
+    description:
+      'Pre-built, customizable assessments for each chapter of your course, from core Connections, Course 1 through Algebra 2 and Integrated 1-3',
+  },
+  {
+    icon: <IconSparkWriting />,
+    title: 'SparkWriting',
+    description:
+      'Practice activities for grammar, conventions, usage, and mechanics for grade 2-12',
+  },
 ]
 
 const EnterpriseTab = ({
@@ -83,10 +97,20 @@ const EnterpriseTab = ({
   subEndDate,
   isPremiumUser,
   signUpFlowModalHandler,
+  user,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
 
   const handleSelectStateModal = () => setShowSelectStates(true)
+
+  const { utm_source, openIdProvider } = user
+
+  const isExternalPublisher =
+    utm_source === 'singapore' || openIdProvider === 'CLI'
+
+  const filteredAddonsData = isExternalPublisher
+    ? addonsData.filter((x) => x.title !== 'SparkMath')
+    : addonsData
 
   return (
     <SectionContainer>
@@ -164,13 +188,11 @@ const EnterpriseTab = ({
           student understanding and growth.
         </SectionDescription>
         <CardContainer>
-          {addonsData.map((_, index) => (
+          {filteredAddonsData.map((x, index) => (
             <AddonCard key={index}>
-              <AddonImg>{addonsData[index].icon}</AddonImg>
-              <h3>{addonsData[index].title}</h3>
-              <AddonDescription>
-                {addonsData[index].description}
-              </AddonDescription>
+              <AddonImg>{x.icon}</AddonImg>
+              <h3>{x.title}</h3>
+              <AddonDescription>{x.description}</AddonDescription>
             </AddonCard>
           ))}
         </CardContainer>

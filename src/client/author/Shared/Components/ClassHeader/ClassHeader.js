@@ -25,7 +25,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Dropdown } from 'antd'
+import { Dropdown, Tooltip, message } from 'antd'
 import { get } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -33,8 +33,9 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { smallDesktopWidth } from '@edulastic/colors'
+import { smallDesktopWidth, themeLightGrayBgColor } from '@edulastic/colors'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
+import { assignmentApi } from '@edulastic/api'
 import ConfirmationModal from '../../../../common/components/ConfirmationModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
@@ -84,6 +85,7 @@ import {
   getSchoologyAssignmentSyncInProgress,
   getToggleReleaseGradeStateSelector,
   getToggleStudentReportCardStateSelector,
+  getShareWithGCInProgress,
 } from '../../../src/selectors/assignments'
 import {
   getGroupList,
@@ -106,7 +108,11 @@ import {
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 
-const { POLICY_OPEN_MANUALLY_BY_TEACHER } = assignmentPolicyOptions
+const {
+  POLICY_OPEN_MANUALLY_BY_TEACHER,
+  POLICY_CLOSE_MANUALLY_BY_ADMIN,
+  POLICY_CLOSE_MANUALLY_IN_CLASS,
+} = assignmentPolicyOptions
 const {
   gradingStatus,
   authorAssignmentConstants: { assignmentStatus: assignmentStatusConstants },
@@ -343,6 +349,7 @@ class ClassHeader extends Component {
     }
     cleverSyncAssignmentGrades(data)
   }
+
   componentDidMount() {
     // if redirect is happening for LCB and user did action schoology sync
     const atlasShareOriginUrl =
@@ -376,6 +383,28 @@ class ClassHeader extends Component {
     }
   }
 
+  generateBubbleSheet = (assignmentId, groupId) => {
+    const hideLoading = message.loading('Generating...', 0)
+
+    assignmentApi
+      .getBubbleSheet({ assignmentId, groupId })
+      .then((r) => {
+        hideLoading()
+        if (r.data?.result?.Location) {
+          window.open(r.data?.result?.Location, '_blank').focus()
+        }
+      })
+      .catch((err) => {
+        hideLoading()
+        const errorReason = err?.response?.data?.message || ''
+        notification({
+          type: 'error',
+          msg: `Generating Bubble sheet failed. ${errorReason}`,
+          exact: true,
+        })
+      })
+  }
+
   render() {
     const {
       t,
@@ -396,11 +425,12 @@ class ClassHeader extends Component {
       showPasswordButton,
       isViewPassword,
       hasRandomQuestions,
-      orgClasses,
+      orgClasses = [],
       districtPolicy,
       canvasSyncGrades,
       googleSyncAssignment,
       syncWithGoogleClassroomInProgress,
+      shareWithGCInProgress,
       isShowStudentReportCardSettingPopup,
       toggleStudentReportCardPopUp,
       userId,
@@ -427,7 +457,7 @@ class ClassHeader extends Component {
       isPaused = false,
       open,
       closed,
-      canCloseClass,
+      canCloseClass = [],
       dueDate,
       assignedBy = {},
       answerOnPaper,
@@ -455,7 +485,6 @@ class ClassHeader extends Component {
       googleId: groupGoogleId,
       atlasId: groupAtlasId,
       atlasProviderName = '',
-      cleverId: groupCleverId,
     } = orgClasses.find(({ _id }) => _id === classId) || {}
     const showSyncGradesWithCanvasOption =
       !isDemoPlaygroundUser &&
@@ -546,6 +575,43 @@ class ClassHeader extends Component {
       </OpenCloseWrapper>
     )
 
+    const scanBubbleSheetMenuItem = (() => {
+      const tooltipTitle = canOpen
+        ? 'OPEN Assignment to Scan Responses'
+        : isPaused
+        ? 'RESUME Assignment to Scan Responses'
+        : ''
+      const isMenuItemActive = !canOpen && !isPaused && canClose
+      const menuItemContent = isMenuItemActive ? (
+        <Link
+          to={{
+            pathname: '/uploadAnswerSheets',
+            search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+          }}
+          target="_blank"
+        >
+          Scan Bubble Sheet
+        </Link>
+      ) : (
+        'Scan Bubble Sheet'
+      )
+      return (
+        <MenuItems
+          data-cy="upload-bubble-sheet"
+          key="upload-bubble-sheet"
+          disabled={!isMenuItemActive}
+        >
+          {!isMenuItemActive && tooltipTitle ? (
+            <Tooltip title={tooltipTitle} placement="left">
+              {menuItemContent}
+            </Tooltip>
+          ) : (
+            menuItemContent
+          )}
+        </MenuItems>
+      )
+    })()
+
     const actionsMenu = (
       <DropMenu>
         <CaretUp className="fa fa-caret-up" />
@@ -573,6 +639,26 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          <MenuItems
+            data-cy="download-bubble-sheet"
+            key="download-bubble-sheet"
+            onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+          >
+            Generate Bubble Sheet
+          </MenuItems>
+        </FeaturesSwitch>
+        <FeaturesSwitch
+          inputFeatures="enableOmrSheets"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          {scanBubbleSheetMenuItem}
+        </FeaturesSwitch>
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -582,10 +668,6 @@ class ClassHeader extends Component {
             Unassign ALL Students
           </MenuItems>
         )}
-        {/* TODO temp hiding for UAT */}
-        {/* <MenuItems key="key3" onClick={this.onStudentReportCardsClick}>
-          Generate Bubble Sheet
-        </MenuItems> */}
         {showPasswordButton && (
           <MenuItems
             data-cy="viewPassword"
@@ -598,6 +680,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="shareOnCanvas"
               key="key6"
               onClick={() =>
                 canvasSyncAssignment({ assignmentId, groupId: classId })
@@ -609,6 +692,7 @@ class ClassHeader extends Component {
         {showSyncGradesWithCanvasOption &&
           assignmentStatusForDisplay !== 'NOT OPEN' && (
             <MenuItems
+              data-cy="canvasGradeSync"
               key="key7"
               onClick={() =>
                 canvasSyncGrades({ assignmentId, groupId: classId })
@@ -639,9 +723,21 @@ class ClassHeader extends Component {
                 groupId: classId,
               })
             }
-            disabled={syncWithGoogleClassroomInProgress}
+            disabled={
+              syncWithGoogleClassroomInProgress || shareWithGCInProgress
+            }
           >
-            Sync with Google Classroom
+            <Tooltip
+              title={
+                shareWithGCInProgress
+                  ? 'Syncing Assignment with Google Classroom'
+                  : null
+              }
+              placement="right"
+              color={themeLightGrayBgColor}
+            >
+              Sync with Google Classroom
+            </Tooltip>
           </MenuItems>
         )}
         {showSchoologyGradeSyncOption && (
@@ -715,6 +811,23 @@ class ClassHeader extends Component {
         ))}
       </ClassDropMenu>
     )
+
+    let closeDateTooltipText = `This test is set to be closed automatically on ${moment(
+      dueOnDate
+    ).format('MMM DD, YYYY')}`
+
+    if (dueDate && endDate) {
+      closeDateTooltipText = `This test is due on ${moment(dueOnDate).format(
+        'MMM DD, YYYY'
+      )}. Late submissions are allowed till ${moment(endDate).format(
+        'MMM DD, YYYY'
+      )}`
+    } else if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_BY_ADMIN) {
+      closeDateTooltipText = 'This test is set to be closed manually by admin'
+    } else if (additionalData.closePolicy === POLICY_CLOSE_MANUALLY_IN_CLASS) {
+      closeDateTooltipText = 'This test is set to be closed manually by teacher'
+    }
+
     return (
       <MainHeader hideSideMenu={isCliUser}>
         <TitleWrapper titleMinWidth="unset" titleMaxWidth="22rem">
@@ -753,11 +866,15 @@ class ClassHeader extends Component {
                 {isPaused && assignmentStatusForDisplay !== 'DONE'
                   ? ' (PAUSED)'
                   : ''}
-                <div>
-                  {!!(dueDate || endDate) &&
-                    !isCliUser &&
-                    `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`}
-                </div>
+                {!isCliUser && (
+                  <Tooltip placement="bottom" title={closeDateTooltipText}>
+                    <div>
+                      {dueDate || endDate
+                        ? `(Due on ${moment(dueOnDate).format('MMM DD, YYYY')})`
+                        : '(Close Manually)'}
+                    </div>
+                  </Tooltip>
+                )}
               </StyledParaSecond>
             </div>
           )}
@@ -981,6 +1098,7 @@ const enhance = compose(
         state
       ),
       syncWithGoogleClassroomInProgress: getAssignmentSyncInProgress(state),
+      shareWithGCInProgress: getShareWithGCInProgress(state),
       isShowStudentReportCardSettingPopup: getToggleStudentReportCardStateSelector(
         state
       ),

@@ -334,7 +334,6 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
-
                   <Form.Item label="Subjects">
                     {getFieldDecorator('subjects', {
                       initialValue: subjects,
@@ -369,11 +368,10 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator('standard', {
-                      initialValue: formattedCurriculums?.some((x) =>
-                        standards.includes(x.value)
-                      )
-                        ? standards
-                        : [],
+                      initialValue:
+                        formattedCurriculums
+                          ?.filter((x) => standards.includes(x.value))
+                          ?.map((y) => y.value) || [],
                       rules: [
                         {
                           required: false,
@@ -411,7 +409,6 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
-
                   <Form.Item label="What are you teaching right now? (optional)">
                     {getFieldDecorator('curriculumStandards', {
                       initialValue: curriculumStandards?.elo?.length
@@ -464,7 +461,6 @@ class SubjectGrade extends React.Component {
                       </FilterItemWrapper>
                     )}
                   </Form.Item>
-
                   <ProceedBtn
                     data-cy="getStarted"
                     type="primary"

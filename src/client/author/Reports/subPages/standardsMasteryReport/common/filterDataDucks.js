@@ -142,7 +142,7 @@ function* getReportsStandardsFiltersRequest({ payload }) {
     })
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch standards Please try again...'
+    const msg = 'Error getting standards. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_STANDARDS_FILTERS_REQUEST_ERROR,

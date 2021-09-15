@@ -5,7 +5,13 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Menu } from 'antd'
 import { questionType } from '@edulastic/constants'
-import { PaddingDiv, withWindowSizes, notification } from '@edulastic/common'
+import {
+  PaddingDiv,
+  withWindowSizes,
+  notification,
+  EduButton,
+  FlexContainer,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { withRouter } from 'react-router'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -15,7 +21,6 @@ import {
   IconLayout,
   IconLineChart,
   IconMath,
-  IconMore,
   IconNewList,
   IconSelection,
   IconTarget,
@@ -24,12 +29,13 @@ import {
   IconRead,
   IconWrite,
   IconPlay,
+  IconExpand,
+  IconCollapse,
 } from '@edulastic/icons'
 import CustomPrompt from '@edulastic/common/src/components/CustomPrompt'
 import QuestionTypes from '../QuestionType/QuestionTypes'
 import { getItemSelector } from '../../../src/selectors/items'
 import Header from '../Header/Header'
-import { ButtonClose } from '../../../ItemDetail/components/Container/styled'
 import {
   convertItemToMultipartAction,
   convertItemToPassageWithQuestionsAction,
@@ -79,6 +85,7 @@ class Container extends Component {
       isTestFlow,
       convertToPassageWithQuestions,
       selectedCategory,
+      addQuestionToPassage,
     } = this.props
 
     const { testId, itemId, id } = match.params
@@ -133,6 +140,10 @@ class Container extends Component {
     // add question to the questions store.
     // selecting a question (having default values) type should not update the author question
     addQuestion({ ...question, updated: false })
+
+    if (addQuestionToPassage) {
+      return
+    }
 
     if (modalItemId) {
       navigateToQuestionEdit()
@@ -268,6 +279,9 @@ class Container extends Component {
       location: { pathname = '' },
       history: { push },
       itemDetails = {},
+      addQuestionToPassage,
+      isInModal,
+      onToggleFullModal,
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
@@ -282,7 +296,6 @@ class Container extends Component {
         return <div />
       }
     }
-
     return (
       <div showMobileView={mobileViewShow}>
         <CustomPrompt onUnload />
@@ -290,17 +303,34 @@ class Container extends Component {
           title={t('header:common.selectQuestionWidget')}
           link={this.link}
           noEllipsis
+          addQuestionToPassage={addQuestionToPassage}
           toggleSideBar={toggleSideBar}
+          isInModal={isInModal}
           renderExtra={() =>
-            modalItemId && (
-              <ButtonClose onClick={onModalClose}>
-                <IconClose />
-              </ButtonClose>
+            (modalItemId || addQuestionToPassage) && (
+              <FlexContainer>
+                <EduButton
+                  isBlue
+                  IconBtn
+                  data-cy="closeModal"
+                  onClick={onToggleFullModal}
+                >
+                  {isInModal ? <IconExpand /> : <IconCollapse />}
+                </EduButton>
+                <EduButton
+                  isBlue
+                  IconBtn
+                  data-cy="closeModal"
+                  onClick={onModalClose}
+                >
+                  <IconClose />
+                </EduButton>
+              </FlexContainer>
             )
           }
         />
-        <PickQuestionWrapper>
-          <LeftSide>
+        <PickQuestionWrapper isInModal={isInModal}>
+          <LeftSide isInModal={isInModal}>
             <Menu
               mode="horizontal"
               selectedKeys={[selectedTab]}
@@ -319,8 +349,8 @@ class Container extends Component {
               </Menu.Item>
             </Menu>
             <MenuTitle>{t('component.pickupcomponent.selectAType')}</MenuTitle>
-            <AffixWrapper>
-              <PerfectScrollbar>
+            <AffixWrapper addQuestionToPassage={addQuestionToPassage}>
+              <PerfectScrollbar options={{ suppressScrollX: true }}>
                 <LeftMenuWrapper
                   mode="inline"
                   selectedKeys={[selectedCategory]}
@@ -388,15 +418,17 @@ class Container extends Component {
             </AffixWrapper>
           </LeftSide>
           <RightSide>
-            <Breadcrumb
-              data={this.breadcrumb}
-              style={{
-                position: 'relative',
-                top: 0,
-                padding: '0px 0px 15px',
-                display: windowWidth > SMALL_DESKTOP_WIDTH ? 'block' : 'none',
-              }}
-            />
+            {!addQuestionToPassage && (
+              <Breadcrumb
+                data={this.breadcrumb}
+                style={{
+                  position: 'relative',
+                  top: 0,
+                  padding: '0px 0px 15px',
+                  display: windowWidth > SMALL_DESKTOP_WIDTH ? 'block' : 'none',
+                }}
+              />
+            )}
             <MobileButtons>
               <BackLink
                 to={`/author/items/${

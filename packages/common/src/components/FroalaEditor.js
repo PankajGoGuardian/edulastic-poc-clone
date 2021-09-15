@@ -478,9 +478,10 @@ const NoneDiv = styled.div`
   opacity: 0;
 `
 
-const BackgroundStyleWrapper = styled.div.attrs({
+const BackgroundStyleWrapper = styled.div.attrs(({ toolbarId }) => ({
   className: 'froala-wrapper',
-})`
+  id: `froalaToolbarWrapper-${toolbarId}`,
+}))`
   position: relative;
   width: 100%;
   display: block;
@@ -566,6 +567,16 @@ const BackgroundStyleWrapper = styled.div.attrs({
             overflow-x: auto;
             overflow-y: hidden;
           }
+        }
+      `
+    }
+  }}
+
+  ${({ unsetMaxWidth }) => {
+    if (unsetMaxWidth) {
+      return `
+        &.migrated-question {
+          max-width: unset !important;
         }
       `
     }
@@ -697,6 +708,7 @@ const buttonWidthMap = {
 const CustomEditor = ({
   value,
   onChange,
+  onKeyDown,
   toolbarId,
   tag,
   toolbarSize,
@@ -715,6 +727,7 @@ const CustomEditor = ({
   customCharacters,
   editorHeight,
   allowQuickInsert = true,
+  unsetMaxWidth = false,
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
@@ -786,9 +799,7 @@ const CustomEditor = ({
       tableResizingLimit: 50,
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
-      toolbarContainer: toolbarId
-        ? `#froalaToolbarContainer-${toolbarId}`
-        : undefined,
+      scrollableContainer: `#froalaToolbarWrapper-${toolbarId}`,
       placeholderText: placeholder,
       htmlAllowedEmptyTags: [
         'textarea',
@@ -848,8 +859,8 @@ const CustomEditor = ({
           if (evt.which === 8) {
             const range = this.selection.ranges()[0]
             const parent = range.commonAncestorContainer
+            const cursorEl = parent.childNodes[range.startOffset - 1]
             if (parent && range.startOffset === range.endOffset) {
-              const cursorEl = parent.childNodes[range.startOffset - 1]
               if (!$(cursorEl).length || !cursorEl || !cursorEl.tagName) return
 
               if (
@@ -889,6 +900,9 @@ const CustomEditor = ({
               cursorEl.remove()
               return
             }
+          }
+          if (typeof onKeyDown === 'function') {
+            onKeyDown(evt)
           }
         },
         'image.beforeUpload': function (image, clipboardImage) {
@@ -1466,13 +1480,13 @@ const CustomEditor = ({
         fontSize={fontSize}
         className={className}
         editorHeight={editorHeight}
+        unsetMaxWidth={unsetMaxWidth}
+        toolbarId={toolbarId}
       >
         {toolbarId && (
           <ToolbarContainer
-            toolbarid={toolbarId}
             id={`froalaToolbarContainer-${toolbarId}`}
             ref={toolbarContainerRef}
-            toolbarId={toolbarId}
             toolbarInline={initialConfig.toolbarInline}
           />
         )}
@@ -1512,7 +1526,7 @@ CustomEditor.propTypes = {
 
 CustomEditor.defaultProps = {
   tag: 'textarea',
-  toolbarId: null,
+  toolbarId: undefined,
   initOnClick: true,
   toolbarSize: 'STD',
   customCharacters: [],

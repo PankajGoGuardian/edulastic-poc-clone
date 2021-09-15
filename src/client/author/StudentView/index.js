@@ -26,7 +26,6 @@ import {
 } from '@edulastic/constants'
 import { white } from '@edulastic/colors'
 import {
-  StyledFlexContainer,
   StyledStudentTabButton,
   StudentButtonWrapper,
   StudentButtonDiv,
@@ -61,6 +60,7 @@ import {
   FilterSpan,
 } from '../ClassBoard/components/Container/styled'
 import TestAttachementsModal from './Modals/TestAttachementsModal'
+import StudentResponse from '../QuestionView/component/studentResponses/studentResponse'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -81,27 +81,6 @@ class StudentViewContainer extends Component {
 
   feedbackRef = React.createRef()
 
-  questionsContainerRef = React.createRef()
-
-  handleScroll = () => {
-    const { hasStickyHeader } = this.state
-    const elementTop =
-      this.questionsContainerRef.current?.getBoundingClientRect().top || 0
-    if (elementTop < 100 && !hasStickyHeader) {
-      this.setState({ hasStickyHeader: true })
-    } else if (elementTop > 100 && hasStickyHeader) {
-      this.setState({ hasStickyHeader: false })
-    }
-  }
-
-  componentWillUnmount() {
-    window.removeEventListener('scroll', this.handleScroll)
-  }
-
-  componentDidMount() {
-    window.addEventListener('scroll', this.handleScroll)
-  }
-
   static getDerivedStateFromProps(nextProps, preState) {
     const {
       selectedStudent,
@@ -121,7 +100,7 @@ class StudentViewContainer extends Component {
           (student) => student.studentId === selectedStudent
         )
       }
-      const { testActivityId } = studentItems[index]
+      const { testActivityId } = studentItems?.[index] || {}
       if (
         !isUndefined(currentTestActivityId || testActivityId) &&
         !isUndefined(classId)
@@ -329,11 +308,7 @@ class StudentViewContainer extends Component {
           </StyledModal>
         )}
 
-        <StyledFlexContainer
-          justifyContent="space-between"
-          hasStickyHeader={hasStickyHeader}
-          className="lcb-student-sticky-bar"
-        >
+        <StudentResponse>
           <StudentButtonWrapper>
             <StudentButtonDiv>
               <FilterSpan>FILTER BY STATUS</FilterSpan>
@@ -359,77 +334,82 @@ class StudentViewContainer extends Component {
                   )
                 )}
               </FilterSelect>
+              {showStudentWorkButton && (
+                <StyledStudentTabButton
+                  onClick={() => this.setState({ showTestletPlayer: true })}
+                >
+                  SHOW STUDENT WORK
+                </StyledStudentTabButton>
+              )}
             </StudentButtonDiv>
-            {showStudentWorkButton && (
-              <StyledStudentTabButton
-                onClick={() => this.setState({ showTestletPlayer: true })}
-              >
-                SHOW STUDENT WORK
-              </StyledStudentTabButton>
-            )}
-          </StudentButtonWrapper>
-          <FlexContainer alignItems="center">
-            {attachments.length > 0 && (
+
+            <FlexContainer alignItems="center">
+              {attachments.length > 0 && (
+                <EduButton
+                  isGhost
+                  data-cy="viewAllAttachmentsButton"
+                  height="24px"
+                  fontSize="9px"
+                  mr="10px"
+                  ml="0px"
+                  onClick={this.toggleAttachmentsModal}
+                  title="View all attachments"
+                >
+                  <IconFolder height="11.3px" width="11.3px" />
+                  <span>Attachments</span>
+                </EduButton>
+              )}
               <EduButton
                 isGhost
-                data-cy="viewAllAttachmentsButton"
                 height="24px"
                 fontSize="9px"
                 mr="10px"
                 ml="0px"
-                onClick={this.toggleAttachmentsModal}
-                title="View all attachments"
+                onClick={this.toggleShowCorrectAnswers}
+                title="Minimizing view hides correct answers, maximize to view them"
               >
-                <IconFolder height="11.3px" width="11.3px" />
-                <span>Attachments</span>
-              </EduButton>
-            )}
-            <EduButton
-              isGhost
-              height="24px"
-              fontSize="9px"
-              mr="10px"
-              ml="0px"
-              onClick={this.toggleShowCorrectAnswers}
-              title="Minimizing view hides correct answers, maximize to view them"
-            >
-              {hideCorrectAnswer ? (
-                <IconExpand height="11.3px" width="11.3px" />
-              ) : (
-                <IconCollapse height="11.3px" width="11.3px" />
-              )}
-              <span data-cy="showCorrectAnswer" data-test={!hideCorrectAnswer}>
-                {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
-              </span>
-            </EduButton>
-            {!isCliUser && (
-              <Tooltip
-                title={initFeedbackValue.length ? feedbackButtonToolTip : null}
-                placement={hasStickyHeader ? 'bottom' : 'top'}
-              >
-                <EduButton
-                  data-cy="overallFeedback"
-                  onClick={() => this.handleShowFeedbackPopup(true)}
-                  height="24px"
-                  fontSize="9px"
-                  isGhost
+                {hideCorrectAnswer ? (
+                  <IconExpand height="11.3px" width="11.3px" />
+                ) : (
+                  <IconCollapse height="11.3px" width="11.3px" />
+                )}
+                <span
+                  data-cy="showCorrectAnswer"
+                  data-test={!hideCorrectAnswer}
                 >
-                  <IconFeedback color={white} height="13px" width="14px" />
-                  {initFeedbackValue.length ? (
-                    <span>
-                      {`${initFeedbackValue.slice(0, 30)}
+                  {hideCorrectAnswer ? 'Maximize view' : 'Minimize view'}
+                </span>
+              </EduButton>
+              {!isCliUser && (
+                <Tooltip
+                  title={
+                    initFeedbackValue.length ? feedbackButtonToolTip : null
+                  }
+                  placement={hasStickyHeader ? 'bottom' : 'top'}
+                >
+                  <EduButton
+                    data-cy="overallFeedback"
+                    onClick={() => this.handleShowFeedbackPopup(true)}
+                    height="24px"
+                    fontSize="9px"
+                    isGhost
+                  >
+                    <IconFeedback color={white} height="13px" width="14px" />
+                    {initFeedbackValue.length ? (
+                      <span>
+                        {`${initFeedbackValue.slice(0, 30)}
                       ${initFeedbackValue.length > 30 ? '.....' : ''}`}
-                    </span>
-                  ) : (
-                    'GIVE OVERALL FEEDBACK'
-                  )}
-                </EduButton>
-              </Tooltip>
-            )}
-          </FlexContainer>
-        </StyledFlexContainer>
-
-        <div ref={this.questionsContainerRef}>
+                      </span>
+                    ) : (
+                      'GIVE OVERALL FEEDBACK'
+                    )}
+                  </EduButton>
+                </Tooltip>
+              )}
+            </FlexContainer>
+          </StudentButtonWrapper>
+        </StudentResponse>
+        <div>
           {!loading && (
             <AnswerContext.Provider
               value={{

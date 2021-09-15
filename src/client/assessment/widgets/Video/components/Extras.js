@@ -1,9 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
-import ReactDOM from 'react-dom'
-import { compose } from 'redux'
-import { withTheme } from 'styled-components'
 
 import QuillSortableHintsList from '../../../components/QuillSortableHintsList'
 import QuestionTextArea from '../../../components/QuestionTextArea'
@@ -16,43 +13,9 @@ import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
 
 class Extras extends Component {
-  componentDidMount = () => {
-    const { fillSections, t } = this.props
-    const node = ReactDOM.findDOMNode(this)
-
-    fillSections(
-      'advanced',
-      t('component.options.solution'),
-      node.offsetTop,
-      node.scrollHeight
-    )
-  }
-
-  componentDidUpdate(prevProps) {
-    const { advancedAreOpen, fillSections, t } = this.props
-
-    const node = ReactDOM.findDOMNode(this)
-
-    if (prevProps.advancedAreOpen !== advancedAreOpen) {
-      fillSections(
-        'advanced',
-        t('component.options.solution'),
-        node.offsetTop,
-        node.scrollHeight
-      )
-    }
-  }
-
-  componentWillUnmount() {
-    const { cleanSections } = this.props
-
-    cleanSections()
-  }
-
   render() {
     const {
       t,
-      theme,
       item: { transcript },
       item,
       setQuestionData,
@@ -68,13 +31,6 @@ class Extras extends Component {
       )
     }
 
-    const inputStyle = {
-      minHeight: 35,
-      border: `1px solid ${theme.extras.inputBorderColor}`,
-      padding: '5px 15px',
-      background: theme.extras.inputBgColor,
-    }
-
     return (
       <Widget style={{ display: advancedAreOpen ? 'block' : 'none' }}>
         <Subtitle>{t('component.options.solution')}</Subtitle>
@@ -84,7 +40,6 @@ class Extras extends Component {
             <Label>{t('component.video.transcript')}</Label>
             <QuestionTextArea
               value={transcript}
-              style={inputStyle}
               onChange={(value) => handleChange('transcript', value)}
             />
           </Col>
@@ -116,16 +71,11 @@ Extras.propTypes = {
   }).isRequired,
   t: PropTypes.func.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  theme: PropTypes.object.isRequired,
-  fillSections: PropTypes.func,
-  cleanSections: PropTypes.func,
   advancedAreOpen: PropTypes.bool,
 }
 
 Extras.defaultProps = {
-  fillSections: () => {},
-  cleanSections: () => {},
   advancedAreOpen: false,
 }
 
-export default compose(withTheme)(Extras)
+export default Extras

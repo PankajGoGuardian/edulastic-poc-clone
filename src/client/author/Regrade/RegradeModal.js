@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Radio, Row, Spin } from 'antd'
-import { get } from 'lodash'
 import { FlexContainer, EduButton, notification } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import {
@@ -12,6 +11,7 @@ import {
 import { InputsWrapper, StyledModal } from './styled'
 import { updateCorrectTestItemAction } from '../src/actions/classBoard'
 import RegradeListenerLcb from './RegradeListenerLcb'
+import { getUserOrgId } from '../src/selectors/user'
 
 const ACTIONS = {
   SKIP: 'SKIP',
@@ -153,7 +153,7 @@ const RegradeModal = ({
 export default connect(
   (state) => ({
     modalState: getRegradeModalStateSelector(state),
-    districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
+    districtId: getUserOrgId(state),
     regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
   }),
   {

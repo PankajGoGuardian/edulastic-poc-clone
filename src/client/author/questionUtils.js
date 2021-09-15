@@ -1,19 +1,26 @@
-import { questionType, question, customTags } from '@edulastic/constants'
+import { questionType, question, customTags, math } from '@edulastic/constants'
 import { get, isString, isEmpty, keys, keyBy } from 'lodash'
 import striptags from 'striptags'
-import { templateHasImage } from '@edulastic/common'
+import { templateHasImage, notification } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
 import { hasEmptyAnswers } from './utils/answerValidator'
 
 const {
   EXPRESSION_MULTIPART,
+  CLOZE_DRAG_DROP,
   CLOZE_DROP_DOWN,
+  CLOZE_TEXT,
+  CLOZE_IMAGE_DRAG_DROP,
+  CLOZE_IMAGE_DROP_DOWN,
+  CLOZE_IMAGE_TEXT,
   MULTIPLE_CHOICE,
   VIDEO,
   TEXT,
   PASSAGE,
   EDITING_TASK,
 } = questionType
+
+const { methods } = math
 
 export const isRichTextFieldEmpty = (text) => {
   if (!text) {
@@ -384,6 +391,55 @@ const emptyCorrectAnswerErrMsg = {
     )
   },
 }
+
+const showEmptyAnswerNotification = (item = {}) => {
+  const { validResponse = {}, altResponses = [] } = item?.validation || {}
+  const answers = [validResponse, ...altResponses]
+
+  const hasEmpty = answers.some((answer = {}) => {
+    const textInputs = answer.textinput?.value || []
+    const dropdowns = answer.dropdown?.value || []
+    const mathInputs = (answer.value || []).flatMap((input) => input)
+    const mathUnitInputs = (answer.mathUnits?.value || []).filter(
+      (_answer) => !isEmpty(_answer)
+    )
+    const textInputsAndDropdowns = [...textInputs, ...dropdowns]
+
+    if (!isEmpty(answer.value)) {
+      const hasEmptyMathAnswers = mathInputs.some((mathInput = {}) =>
+        mathInput.method !== methods.EQUIV_SYNTAX
+          ? isEmpty(mathInput?.value)
+          : false
+      )
+      if (hasEmptyMathAnswers) {
+        return true
+      }
+    }
+
+    if (!isEmpty(answer.mathUnits?.value || [])) {
+      const hasEmptyMathUnitInputs = mathUnitInputs.some((input = {}) =>
+        input.method !== methods.EQUIV_SYNTAX ? isEmpty(input?.value) : false
+      )
+      if (hasEmptyMathUnitInputs) {
+        return true
+      }
+    }
+
+    if (!isEmpty(textInputs) || !isEmpty(dropdowns)) {
+      const hasEmptyTextOrDropDown = textInputsAndDropdowns.some((ans) =>
+        isEmpty(ans.value)
+      )
+      if (hasEmptyTextOrDropDown) {
+        return true
+      }
+    }
+
+    return false
+  })
+
+  return hasEmpty
+}
+
 /**
  * does question have enough data !?
  *  This is only the begnning. This func is going to grow to handle
@@ -394,6 +450,9 @@ const emptyCorrectAnswerErrMsg = {
  */
 export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
   // if its a resource type question just return.
+  if (isEmpty(item)) {
+    return [true, 'Question content should not be empty']
+  }
   if (question.resourceTypeQuestions.includes(item.type)) {
     const _hasEmptyFields = hasEmptyFields(item)
     if (_hasEmptyFields) return [true, _hasEmptyFields]
@@ -446,7 +505,7 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
         defaultErrorMessage = getEmptyCorrectAnswerErrMsg(correctAnswers)
       }
       if (item?.type === questionType.GRAPH) {
-        const { points, latex } = item?.validation || {}
+        const { points, latex } = item?.validation?.validResponse?.options || {}
         if ((points || latex) && (!points || !latex)) {
           defaultErrorMessage =
             'Set both inputs for points on equation under evaluation settings'
@@ -454,6 +513,16 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
       }
       return [true, defaultErrorMessage] // [true, msg]
     }
+  }
+
+  if (
+    item?.type === EXPRESSION_MULTIPART &&
+    showEmptyAnswerNotification(item)
+  ) {
+    notification({
+      type: 'warn',
+      msg: 'Saving with an empty correct/alternate answer.',
+    })
   }
 
   return [false]
@@ -484,6 +553,35 @@ export const hasImproperDynamicParamsConfig = (item) => {
   return [false]
 }
 
+const compareResponseIds = (oldQuestionResponses, newQuestionResponses) => {
+  const oldQuestionResponseIds = oldQuestionResponses.map(
+    (responseBox) => responseBox?.id
+  )
+  const newQuestionResponseIds = newQuestionResponses.map(
+    (responseBox) => responseBox?.id
+  )
+  if (
+    !oldQuestionResponseIds.every((id) => newQuestionResponseIds.includes(id))
+  ) {
+    return true
+  }
+  return false
+}
+
+const compareOptionsByIds = (oldQuestionOptions, newQuestionOptions) => {
+  const oldQuestionOptionIds = keys(oldQuestionOptions) || []
+  for (const id of oldQuestionOptionIds) {
+    if (
+      !oldQuestionOptions[id].every((option) =>
+        (newQuestionOptions?.[id] || []).includes(option)
+      )
+    ) {
+      return true
+    }
+  }
+  return false
+}
+
 export const isOptionsRemoved = (originalQuestions, newQuestions) => {
   const oldQuestionsById = keyBy(originalQuestions, 'id')
   for (const _question of newQuestions) {
@@ -497,6 +595,174 @@ export const isOptionsRemoved = (originalQuestions, newQuestions) => {
           if (!oldOptionValues.every((value) => newOptionsByValue[value])) {
             return true
           }
+          break
+        }
+        case EXPRESSION_MULTIPART: {
+          const { responseIds = {} } = _question || {}
+          const oldOptions = oldQuestionsById[id]?.options || {}
+          const oldOptionsIds = keys(oldOptions) || []
+          for (const _id of oldOptionsIds) {
+            if (
+              !oldOptions[_id].every((value) =>
+                (options?.[_id] || []).includes(value)
+              )
+            ) {
+              return true
+            }
+          }
+
+          const oldQuestionResponseIds = oldQuestionsById[id]?.responseIds || {}
+          const oldQuestionResponseBoxes = keys(oldQuestionResponseIds) || []
+          for (const responseBox of oldQuestionResponseBoxes) {
+            const oldQuestionResponseBoxIds = (
+              oldQuestionResponseIds[responseBox] || []
+            ).map(({ id: _id }) => _id)
+            const newQuestionResponseBoxIds = (
+              responseIds?.[responseBox] || []
+            ).map(({ id: _id }) => _id)
+            if (
+              !oldQuestionResponseBoxIds.every((_id) =>
+                newQuestionResponseBoxIds.includes(_id)
+              )
+            ) {
+              return true
+            }
+          }
+          break
+        }
+        case CLOZE_DRAG_DROP: {
+          const { responseIds = [] } = _question || {}
+          const { hasGroupResponses = false, groupResponses = [] } =
+            _question || {}
+          let oldOptions = []
+          let newOptions = []
+
+          if (oldQuestionsById[id]?.hasGroupResponses) {
+            ;(oldQuestionsById[id]?.groupResponses || []).forEach(
+              (response) => {
+                oldOptions = oldOptions.concat(response?.options || [])
+              }
+            )
+          } else {
+            oldOptions = oldOptions.concat(oldQuestionsById[id]?.options || [])
+          }
+          const oldQuestionOptionIds = oldOptions.map((option) => option?.value)
+
+          if (hasGroupResponses) {
+            groupResponses.forEach((response) => {
+              newOptions = newOptions.concat(response?.options || [])
+            })
+          } else {
+            newOptions = newOptions.concat(options || [])
+          }
+          const newQuestionOptionIds = newOptions.map((option) => option?.value)
+
+          if (
+            !oldQuestionOptionIds.every((_id) =>
+              newQuestionOptionIds.includes(_id)
+            )
+          ) {
+            return true
+          }
+
+          if (
+            compareResponseIds(
+              oldQuestionsById[id]?.responseIds || [],
+              responseIds
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case EDITING_TASK:
+        case CLOZE_DROP_DOWN: {
+          const { responseIds = [] } = _question || {}
+          if (
+            compareResponseIds(
+              oldQuestionsById[id]?.responseIds || [],
+              responseIds
+            )
+          ) {
+            return true
+          }
+
+          if (
+            compareOptionsByIds(
+              oldQuestionsById[id]?.options || {},
+              options || {}
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case CLOZE_TEXT: {
+          const { responseIds = [] } = _question || {}
+          if (
+            compareResponseIds(
+              oldQuestionsById[id]?.responseIds || [],
+              responseIds
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case CLOZE_IMAGE_DRAG_DROP: {
+          const { responses = [] } = _question || {}
+          if (
+            compareResponseIds(oldQuestionsById[id]?.responses || [], responses)
+          ) {
+            return true
+          }
+
+          const oldQuestionOptionIds = (
+            oldQuestionsById[id]?.options || []
+          ).map((option) => option?.id)
+          const newQuestionOptionIds = (options || []).map(
+            (option) => option?.id
+          )
+          if (
+            !oldQuestionOptionIds.every((_id) =>
+              newQuestionOptionIds.includes(_id)
+            )
+          ) {
+            return true
+          }
+
+          break
+        }
+        case CLOZE_IMAGE_DROP_DOWN: {
+          const { responses = [] } = _question || {}
+          if (
+            compareResponseIds(oldQuestionsById[id]?.responses || [], responses)
+          ) {
+            return true
+          }
+
+          const oldQuestionOptions = oldQuestionsById[id]?.options || []
+          for (const [index, oldOptions] of oldQuestionOptions.entries()) {
+            if (
+              !oldOptions.every((opt) => (options[index] || []).includes(opt))
+            ) {
+              return true
+            }
+          }
+
+          break
+        }
+        case CLOZE_IMAGE_TEXT: {
+          const { responses = [] } = _question || {}
+          if (
+            compareResponseIds(oldQuestionsById[id]?.responses || [], responses)
+          ) {
+            return true
+          }
+
           break
         }
         default:

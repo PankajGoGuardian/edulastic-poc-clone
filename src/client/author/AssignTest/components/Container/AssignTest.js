@@ -31,6 +31,7 @@ import {
   getUserOrgId,
   getUserRole,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
   getUserId,
   getUserFeatures,
 } from '../../../src/selectors/user'
@@ -73,14 +74,20 @@ import {
   SavedSettingsContainer,
   DeleteIconContainer,
 } from './styled'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
+import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 
 const { ASSESSMENT, COMMON } = testConst.type
-const { evalTypeLabels } = testConst
+const {
+  evalTypeLabels,
+  TEST_SETTINGS_SAVE_LIMIT,
+  testSettingsOptions,
+  docBasedSettingsOptions,
+} = testConst
 
 const parentMenu = {
   assignments: { title: 'Assignments', to: 'assignments' },
@@ -88,76 +95,6 @@ const parentMenu = {
   myPlaylist: { title: 'My playlist', to: 'myPlaylist' },
   testLibrary: { title: 'Test Library', to: 'tests' },
 }
-
-const testSettingsOptions = [
-  'partialScore',
-  'timer',
-  'testType',
-  'hasInstruction',
-  'instruction',
-  'releaseScore',
-  'scoringType',
-  'penalty',
-  'markAsDone',
-  'calcType',
-  'timedAssignment',
-  'pauseAllowed',
-  'maxAttempts',
-  'maxAnswerChecks',
-  'safeBrowser',
-  'shuffleQuestions',
-  'shuffleAnswers',
-  'sebPassword',
-  'blockNavigationToAnsweredQuestions',
-  'restrictNavigationOut',
-  'restrictNavigationOutAttemptsThreshold',
-  'blockSaveAndContinue',
-  'passwordPolicy',
-  'assignmentPassword',
-  'passwordExpireIn',
-  'answerOnPaper',
-  'playerSkinType',
-  'standardGradingScale',
-  'performanceBand',
-  'showMagnifier',
-  'enableScratchpad',
-  'enableSkipAlert',
-  'autoRedirect',
-  'autoRedirectSettings',
-  'keypad',
-  'applyEBSR',
-]
-
-const docBasedSettingsOptions = [
-  'partialScore',
-  'timer',
-  'testType',
-  'hasInstruction',
-  'instruction',
-  'releaseScore',
-  'scoringType',
-  'penalty',
-  'markAsDone',
-  'calcType',
-  'timedAssignment',
-  'pauseAllowed',
-  'maxAttempts',
-  'safeBrowser',
-  'sebPassword',
-  'restrictNavigationOut',
-  'restrictNavigationOutAttemptsThreshold',
-  'blockSaveAndContinue',
-  'passwordPolicy',
-  'assignmentPassword',
-  'passwordExpireIn',
-  'answerOnPaper',
-  'standardGradingScale',
-  'performanceBand',
-  'autoRedirect',
-  'autoRedirectSettings',
-]
-
-const TEST_SETTINGS_SAVE_LIMIT = 20
 
 class AssignTest extends React.Component {
   constructor(props) {
@@ -189,7 +126,8 @@ class AssignTest extends React.Component {
       testSettings,
       getDefaultTestSettings,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
       history,
       fetchTestSettingsList,
       userId,
@@ -197,11 +135,16 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       setCurrentTestSettingsId,
       location,
+      addRecommendedResourcesAction,
     } = this.props
 
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
 
     resetStudents()
@@ -225,7 +168,7 @@ class AssignTest extends React.Component {
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
       })
-      setCurrentTestSettingsId('')
+      setCurrentTestSettingsId(testSettings.settingId || '')
     }
 
     const isAdmin =
@@ -279,6 +222,14 @@ class AssignTest extends React.Component {
     } else if (testId) {
       fetchTestByID(testId)
     }
+
+    const resourceIds = history.location?.state?.resourceIds || []
+    if (testId && resourceIds) {
+      addRecommendedResourcesAction({
+        testId,
+        resourceIds,
+      })
+    }
   }
 
   componentWillUnmount() {
@@ -289,10 +240,16 @@ class AssignTest extends React.Component {
 
   componentDidUpdate(prevProps) {
     const {
-      testSettings: { playerSkinType },
+      testSettings: { playerSkinType, settingId },
+      testSettingsList = [],
+      userFeatures: { premium },
+      setCurrentTestSettingsId,
     } = this.props
     const {
-      testSettings: { playerSkinType: prevPlayerSkinType },
+      testSettings: {
+        playerSkinType: prevPlayerSkinType,
+        settingId: prevSettingId,
+      },
     } = prevProps
     // the initial playerSkinType in reducer is edulastic,
     // but after fetching the test it can be other type like testlet
@@ -300,6 +257,24 @@ class AssignTest extends React.Component {
     if (playerSkinType !== prevPlayerSkinType) {
       this.updateAssignmentNew({ playerSkinType })
     }
+    if (
+      premium &&
+      settingId &&
+      settingId != prevSettingId &&
+      testSettingsList?.some((t) => t._id === settingId)
+    ) {
+      setCurrentTestSettingsId(settingId)
+    }
+  }
+
+  validateTimedAssignment = () => {
+    const { assignmentSettings } = this.props
+    const { allowedTime, timedAssignment } = assignmentSettings
+    if (timedAssignment && allowedTime === 0) {
+      notification({ messageKey: 'timedAssigmentTimeCanNotBeZero' })
+      return false
+    }
+    return true
   }
 
   handleAssign = () => {
@@ -310,6 +285,7 @@ class AssignTest extends React.Component {
     } = this.props
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
+    if (!this.validateTimedAssignment()) return
     if (isAssigning) return
     if (isEmpty(assignment.class)) {
       notification({ messageKey: 'selectClass' })
@@ -430,6 +406,7 @@ class AssignTest extends React.Component {
       currentSettingsId,
       isFreezeSettingsOn,
       totalItems,
+      userRole,
     } = this.props
     if (value === 'save-settings-option') {
       if (currentSettingsId === '')
@@ -477,6 +454,16 @@ class AssignTest extends React.Component {
       } else if (!newSettings.timedAssignment) {
         newSettings.allowedTime = 0
       }
+      if (userRole === roleuser.TEACHER && newSettings.testContentVisibility) {
+        delete newSettings.testContentVisibility
+      }
+      /**
+       *  Test instruction are not available on assign page so avoid sending them in assignment settings from FE,
+       *  BE handles setting instructions from test settings to assignment settings
+       * */
+      delete newSettings.hasInstruction
+      delete newSettings.instruction
+
       setCurrentTestSettingsId(value)
       updateAssignmentSettings(newSettings)
     }
@@ -516,7 +503,13 @@ class AssignTest extends React.Component {
     if (!entity.autoRedirect) {
       delete entity.autoRedirectSettings
     }
-    if (
+    if (!entity.safeBrowser) {
+      delete entity.sebPassword
+    }
+    if (entity.safeBrowser && !entity.sebPassword) {
+      notification({ msg: 'Please enter safe exam browser password' })
+      isValid = false
+    } else if (
       entity.passwordPolicy ===
         testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!entity.assignmentPassword ||
@@ -682,8 +675,12 @@ class AssignTest extends React.Component {
     } = this.props
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
-    if (exactMenu?.to === 'myPlaylist') {
-      exactMenu.to = `playlists/playlist/${_id}/use-this`
+      ? { ...parentMenu[location?.state?.from || from] }
+      : {}
+    if (parentMenu[location?.state?.from || from]?.to === 'myPlaylist') {
+      exactMenu.to = _id
+        ? `playlists/playlist/${_id}/use-this`
+        : location?.state?.toUrl
     }
 
     const moduleId = match.params.moduleId
@@ -691,7 +688,6 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
-
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
@@ -866,6 +862,7 @@ const enhance = compose(
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       currentSettingsId: getCurrentSettingsIdSelector(state),
       userId: getUserId(state),
       testSettingsList: getTestSettingsListSelector(state),
@@ -888,13 +885,15 @@ const enhance = compose(
       resetStudents: resetStudentAction,
       updateAssignmentSettings: updateAssingnmentSettingsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       saveTestSettings: saveTestSettingsAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
       fetchUserCustomKeypads: fetchCustomKeypadAction,
+      addRecommendedResourcesAction:
+        slice.actions?.fetchRecommendedResourcesAction,
     }
   )
 )

@@ -20,9 +20,14 @@ const IndividualSubscriptionModal = ({
   totalAmount,
   shouldProrate,
   subEndDate,
+  isEnterprise,
 }) => {
   const productsToshow = useMemo(() => {
-    if (isPaidPremium && !showRenewalOptions && shouldProrate) {
+    if (
+      isPaidPremium &&
+      !showRenewalOptions &&
+      (shouldProrate || isEnterprise)
+    ) {
       return itemBankProducts
     }
     return [teacherPremium, ...itemBankProducts]

@@ -8,12 +8,11 @@ import {
   titleColor,
   white,
   blue1,
+  greyLight1,
 } from '@edulastic/colors'
 import { Card, MathFormulaDisplay } from '@edulastic/common'
 import { Rate } from 'antd/lib/index'
 import styled, { css } from 'styled-components'
-
-const DEAFULT_TEST_SRC = 'https://i.ibb.co/fY4vpKP/back.png'
 
 export const Container = styled(Card)`
   border: ${(props) => (props.isPlaylist ? 'none' : '1px solid #dfdfdf')};
@@ -23,6 +22,9 @@ export const Container = styled(Card)`
   &.ant-card {
     width: ${(props) => (props.isTestRecommendation ? '240px' : null)};
     height: ${(props) => (props.isTestRecommendation ? '190px' : null)};
+    overflow: ${(props) => (props.isTestRecommendation ? 'hidden' : null)};
+    transform: ${(props) => (props.isTestCard ? `scale(1)` : null)};
+    transition: 0.2s;
     .ant-card-body {
       padding: 16px 12px;
       border: ${(props) => (props.isPlaylist ? '1px solid #dfdfdf' : 'none')};
@@ -34,13 +36,11 @@ export const Container = styled(Card)`
       justify-content: flex-start;
     }
     &:hover {
-      -webkit-box-shadow: ${(props) =>
-        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
-      -moz-box-shadow: ${(props) =>
-        props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
       box-shadow: ${(props) =>
         props.isTestCard ? `0 0 3px 2px ${themeColor}` : null};
       transform: ${(props) => (props.isTestCard ? `scale(1.03)` : null)};
+      border: none;
+      overflow: hidden;
     }
   }
 
@@ -366,7 +366,7 @@ export const Header = styled.div`
     isPlaylist ? '99px' : isTestRecommendation ? '115px' : '135px'};
   // padding: 10px 15px;
   position: relative;
-  background: url(${({ src }) => src || DEAFULT_TEST_SRC});
+  background: url(${({ src }) => src || greyLight1});
   background-repeat: no-repeat;
   background-size: 100% 100%;
   align-items: center;
@@ -386,14 +386,16 @@ export const Header = styled.div`
 Header.displayName = 'CardHeader'
 
 export const HeaderThumbnail = styled.img`
-  width: 99.72%;
-  max-height: ${(props) => (props.isTestRecommendation ? '110px' : '123px')};
+  height: 100%;
   padding: 0px;
   bottom: 0px;
   position: absolute;
   left: 0;
   right: 0px;
-  object-fit: contain;
+  object-fit: ${({ isTestRecommendation }) =>
+    isTestRecommendation ? 'fit' : 'contain'};
+  width: ${({ isTestRecommendation }) =>
+    isTestRecommendation ? '100%' : 'auto'};
 `
 
 const playlistStars = css`

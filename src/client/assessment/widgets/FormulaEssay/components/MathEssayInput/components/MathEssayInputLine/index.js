@@ -44,7 +44,7 @@ const MathEssayInputLine = ({
     if (active) {
       setTimeout(() => {
         if (!isText && inputRef.current) {
-          inputRef.current.setFocus()
+          inputRef?.current?.setFocus?.()
         }
       }, 30)
     }

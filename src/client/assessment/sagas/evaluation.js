@@ -53,7 +53,10 @@ function* evaluateAnswers({ payload: groupId }) {
     const playerSkinType = yield select(playerSkinTypeSelector)
     // if user response is empty show toaster msg.
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (isEmpty(validResponses)) {
       yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
       return notification({
@@ -137,13 +140,28 @@ function* evaluateAnswers({ payload: groupId }) {
     let evaluationObj = {}
     const evaluations = {}
     if (role !== roleuser.STUDENT) {
-      evaluationObj = yield testItemsApi.evaluateAsStudent(testItemId, {
-        answers: allAnswers,
-        testId,
+      const userQuestionActivities = yield testItemsApi.evaluateAsStudent(
+        testItemId,
+        {
+          answers: allAnswers,
+          testId,
+        }
+      )
+      let score = 0
+      let maxScore = 0
+
+      userQuestionActivities.forEach((item) => {
+        score += item.score || 0
+        maxScore += item.maxScore || 0
+        if (item.evaluation) {
+          evaluations[item.qid] = item.evaluation
+        }
       })
-      const { evaluations: _evaluations } = evaluationObj
-      Object.keys(_evaluations).forEach((item) => {
-        evaluations[`${testItemId}_${item}`] = _evaluations[item]
+
+      evaluationObj = { score, maxScore, evaluations }
+
+      Object.keys(evaluations).forEach((item) => {
+        evaluations[`${testItemId}_${item}`] = evaluations[item]
       })
     } else {
       evaluationObj = yield call(testItemsApi.evaluation, testItemId, activity)
@@ -184,7 +202,10 @@ function* evaluateAnswers({ payload: groupId }) {
   } catch (err) {
     const playerSkinType = yield select(playerSkinTypeSelector)
     const config =
-      playerSkinType === playerSkinValues.quester ? { bottom: '64px' } : {}
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+        ? { bottom: '64px' }
+        : {}
     if (err.status === 403)
       notification({
         type: 'warn',

@@ -20,11 +20,13 @@ import {
 } from '../../../ManageClass/ducks'
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
+import { setBulkSyncCanvasStateAction } from '../../../../student/Signup/duck'
 
 const antdNotification = notification
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
 const firestoreGoogleGradesSyncStatusCollection = 'GoogleGradeSyncStatus'
 const firestoreCleverGradesSyncStatusCollection = 'CleverGradeSyncStatus'
+const firestoreCanvasClassSyncStatusCollection = 'CanvasClassSyncStatus'
 
 const firestoreBulkActionCollection = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
@@ -36,12 +38,21 @@ const ClassSyncNotificationListener = ({
   setGroupSyncData,
   fetchGroups,
   setBulkActionStatus,
+  setCanvasBulkSyncStatus,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
       db
         .collection(firestoreGoogleClassSyncStatusCollection)
+        .where('userId', '==', `${user?._id}`),
+    [user?._id]
+  )
+
+  const canvasBulkSyncNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(firestoreCanvasClassSyncStatusCollection)
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
@@ -117,6 +128,37 @@ const ClassSyncNotificationListener = ({
     })
   }
 
+  const showUserNotificationOnCanvasBulkSync = (docs) => {
+    uniqBy(docs, '__id').map((doc) => {
+      const { status, message } = doc
+
+      if (status === 'completed' && !notificationIds.includes(doc.__id)) {
+        setCanvasBulkSyncStatus('SUCCESS')
+        sessionStorage.removeItem('signupFlow')
+        setNotificationIds([...notificationIds, doc.__id])
+        // show sync complete notification
+        notification({
+          msg: message || 'Canvas Class sync task completed.',
+          type: 'success',
+          onClose: () => {
+            deleteNotificationDocument(
+              doc.__id,
+              firestoreCanvasClassSyncStatusCollection
+            )
+          },
+        })
+      }
+      if (status === 'failed') {
+        setCanvasBulkSyncStatus('FAILED')
+        notification({
+          messageKey: 'bulkSyncFailed',
+          msg: message,
+          type: 'error',
+        })
+      }
+    })
+  }
+
   const onNotificationClick = (e, docId) => {
     /**
      * Note: As this function gets invoked on clicking anywhere in the notification.
@@ -141,6 +183,12 @@ const ClassSyncNotificationListener = ({
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])
+
+  useEffect(() => {
+    if (user && user.role === roleuser.TEACHER) {
+      showUserNotificationOnCanvasBulkSync(canvasBulkSyncNotifications)
+    }
+  }, [canvasBulkSyncNotifications])
 
   useEffect(() => {
     uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
@@ -240,6 +288,7 @@ export default compose(
       fetchGroups: fetchGroupsAction,
       setSyncClassLoading: setSyncClassLoadingAction,
       setBulkActionStatus: setAssignmentBulkActionStatus,
+      setCanvasBulkSyncStatus: setBulkSyncCanvasStateAction,
     }
   )
 )(ClassSyncNotificationListener)

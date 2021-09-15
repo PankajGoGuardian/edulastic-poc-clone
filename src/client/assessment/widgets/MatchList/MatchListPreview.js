@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext, useRef } from 'react'
+import React, { useState, useEffect, useContext, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 import { withTheme } from 'styled-components'
@@ -125,7 +125,7 @@ const MatchListPreview = ({
     return groupArrays
   }
 
-  const [ans, setAns] = useState(getInitialAnswer(list))
+  const [ans, setAns] = useState([])
 
   function getInitialDragItems() {
     if (optionsFromStore) {
@@ -197,9 +197,13 @@ const MatchListPreview = ({
     []
   )
 
+  const initialAnswer = useMemo(() => getInitialAnswer(list), [list])
+
   useEffect(() => {
     if (!isEmpty(userAnswer)) {
       setAns(userAnswer)
+    } else {
+      setAns(initialAnswer)
     }
     let newDragItems = duplicatedResponses
       ? getPossibleResponses()
@@ -224,7 +228,13 @@ const MatchListPreview = ({
     if (!isEqual(dragItems, newDragItems)) {
       setDragItems(newDragItems)
     }
-  }, [userAnswer, posResponses, possibleResponseGroups, duplicatedResponses])
+  }, [
+    list,
+    userAnswer,
+    posResponses,
+    possibleResponseGroups,
+    duplicatedResponses,
+  ])
 
   const preview = previewTab === CHECK || previewTab === SHOW
 

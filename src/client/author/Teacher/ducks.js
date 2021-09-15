@@ -32,6 +32,7 @@ export const receiveTeachersListErrorAction = createAction(
 export const createTeacherAction = createAction(CREATE_TEACHER_REQUEST)
 export const createTeacherSuccessAction = createAction(CREATE_TEACHER_SUCCESS)
 export const createTeacherErrorAction = createAction(CREATE_TEACHER_ERROR)
+// never used
 export const updateTeacherAction = createAction(UPDATE_TEACHER_REQUEST)
 export const updateTeacherSuccessAction = createAction(UPDATE_TEACHER_SUCCESS)
 export const updateTeacherErrorAction = createAction(UPDATE_TEACHER_ERROR)

@@ -767,6 +767,14 @@ class CurriculumSequence extends Component {
       currentUserId,
     } = this.props
 
+    const smId = collections
+      .filter((x) => x?.name?.toLowerCase() === 'spark math')
+      .map(({ _id }) => _id)
+    const isSMPlaylist = [
+      ...(destinationCurriculumSequence?.collections || []),
+      ...(destinationCurriculumSequence?.clonedCollections || []),
+    ]?.some((c) => smId?.includes(c?._id))
+
     const isManageContentActive = activeRightPanel === 'manageContent'
     // check Current user's edit permission
     const hasEditAccess = this.checkWritePermission()
@@ -899,7 +907,6 @@ class CurriculumSequence extends Component {
     // should show useThis Notification only two times
     const showUseThisNotification =
       location.state?.fromUseThis && !loading && playlistsToSwitch?.length <= 3
-
     return (
       <>
         <CurriculumSequenceModals
@@ -942,6 +949,7 @@ class CurriculumSequence extends Component {
 
         <CurriculumSequenceWrapper>
           <CurriculumHeader
+            isSMPlaylist={isSMPlaylist}
             role={role}
             mode={mode}
             features={features}
@@ -989,8 +997,8 @@ class CurriculumSequence extends Component {
                   urlHasUseThis={urlHasUseThis}
                   showRightPanel={
                     showRightPanel &&
-                    !shouldHidCustomizeButton &&
-                    !!activeRightPanel
+                    !!activeRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
                   }
                   showBreadCrumb={showBreadCrumb}
                 >
@@ -1011,6 +1019,7 @@ class CurriculumSequence extends Component {
                     shouldHidCustomizeButton={shouldHidCustomizeButton}
                     isAuthoringFlowReview={current === 'review'}
                     customizeInDraft={customizeInDraft}
+                    blurSubHeader={expandedModules?.length > 0}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
@@ -1056,6 +1065,7 @@ class CurriculumSequence extends Component {
                         isPlaylistDetailsPage={isPlaylistDetailsPage}
                         customizeInDraft={customizeInDraft}
                         isSparkMathPlaylist={isSparkMathPlaylist}
+                        isSMPlaylist={isSMPlaylist}
                         toggleUnassignModal={this.toggleUnassignModal}
                       />
                     )}
@@ -1063,8 +1073,14 @@ class CurriculumSequence extends Component {
                 </ContentContainer>
 
                 <CurriculumRightPanel
-                  showRightPanel={showRightPanel}
-                  activeRightPanel={activeRightPanel}
+                  showRightPanel={
+                    showRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
+                  activeRightPanel={
+                    activeRightPanel &&
+                    destinationCurriculumSequence?.modules?.length > 0
+                  }
                   isStudent={isStudent}
                   urlHasUseThis={urlHasUseThis}
                   hideRightpanel={this.hideRightpanel}
@@ -1234,7 +1250,7 @@ const StyledFlexContainer = styled(FlexContainer)`
 
 export const ContentContainer = styled.div`
   width: ${({ showRightPanel }) =>
-    showRightPanel ? 'calc(100% - 360px)' : '100%'};
+    showRightPanel ? 'calc(100% - 390px)' : '100%'};
   padding-right: 5px;
   margin: 0px;
   margin-right: 10px;
@@ -1251,14 +1267,14 @@ export const ContentContainer = styled.div`
     return 'calc(100vh - 124px)'
   }};
 
-  @media (max-width: ${extraDesktopWidthMax}) {
+  @media (min-width: ${extraDesktopWidthMax}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 340px)' : '100%'};
+      showRightPanel ? 'calc(100% - 490px)' : '100%'};
   }
 
   @media (max-width: ${smallDesktopWidth}) {
     width: ${({ showRightPanel }) =>
-      showRightPanel ? 'calc(100% - 240px)' : '100%'};
+      showRightPanel ? 'calc(100% - 290px)' : '100%'};
     height: ${({ showBreadCrumb, isDifferentiationTab }) => {
       if (isDifferentiationTab) {
         return 'calc(100vh - 175px)'

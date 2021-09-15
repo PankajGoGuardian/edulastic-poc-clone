@@ -11,6 +11,8 @@ import {
   MathInput,
   EduButton,
   notification,
+  PortalSpinner,
+  HelpTooltipLabel,
 } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { math, defaultSymbols } from '@edulastic/constants'
@@ -59,6 +61,7 @@ class Equations extends Component {
   }
 
   setApiLatex = (latex, index = null) => {
+    this.setState({ isConverting: true })
     graphEvaluateApi
       .convert({ latex })
       .then(({ result }) => {
@@ -74,6 +77,7 @@ class Equations extends Component {
               })
             })
           )
+          this.setState({ newEquation: '' })
           return
         }
         if (!equations[index]) {
@@ -89,17 +93,17 @@ class Equations extends Component {
       .catch(() => {
         notification({ messageKey: 'equationErr' })
       })
+      .finally(() => {
+        this.setState({ isConverting: false })
+      })
   }
 
   handleAddEquation = (latex = null) => {
-    const { eqs, changedEqs, newEquation } = this.state
+    const { newEquation } = this.state
     if (!newEquation && !latex) {
       return
     }
-    eqs.push(newEquation || latex)
-    changedEqs.push(false)
-    this.setState({ eqs, changedEqs, newEquation: '' })
-    this.setApiLatex(eqs[eqs.length - 1])
+    this.setApiLatex(newEquation || latex)
   }
 
   handleDeleteEquation = (index) => () => {
@@ -172,10 +176,15 @@ class Equations extends Component {
       eqs,
       changedEqs,
       newEquation,
+      isConverting,
     } = this.state
 
     return (
       <Container>
+        <HelpTooltipLabel
+          helperKey="component.graphing.helperText.fxHepler"
+          contentKey="component.graphing.settingsPopup.fxText"
+        />
         {eqs.map((eq, index) => (
           <Wrapper
             key={`equation-wrapper-${index}`}
@@ -231,7 +240,10 @@ class Equations extends Component {
             color={greyThemeDark2}
             onClick={this.toggleMathModal(true)}
           />
-          <StyledEduButton key="eq-add" onClick={this.handleAddEquation}>
+          <StyledEduButton
+            key="eq-add"
+            onClick={() => this.handleAddEquation()}
+          >
             {t('component.graphing.settingsPopup.plot')}
           </StyledEduButton>
         </Wrapper>
@@ -247,6 +259,7 @@ class Equations extends Component {
           onClose={this.toggleMathModal(false)}
           onChangeKeypad={onChangeKeypad}
         />
+        {isConverting && <PortalSpinner />}
       </Container>
     )
   }

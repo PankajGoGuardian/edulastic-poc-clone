@@ -58,6 +58,7 @@ class CardWrapper extends Component {
       return (
         <CardBox
           data-cy={item._id}
+          data-test="card"
           className={`testCard${item._id}`}
           key={item._id}
           style={{ marginBottom: 20 }}

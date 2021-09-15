@@ -62,6 +62,12 @@ class ToolbarModal extends React.Component {
     onClose()
   }
 
+  handleUploadWork = () => {
+    const { onClose, toggleUserWorkUploadModal } = this.props
+    toggleUserWorkUploadModal()
+    onClose()
+  }
+
   render() {
     const {
       settings,
@@ -75,6 +81,7 @@ class ToolbarModal extends React.Component {
       handletoggleHints,
       qType,
       blockNavigationToAnsweredQuestions = false,
+      isPremiumContentWithoutAccess = false,
     } = this.props
     const questions = get(
       items,
@@ -94,49 +101,103 @@ class ToolbarModal extends React.Component {
       >
         <Container>
           {!blockNavigationToAnsweredQuestions && (
-            <StyledButton onClick={toggleBookmark} active={isBookmarked}>
+            <StyledButton
+              onClick={toggleBookmark}
+              active={isBookmarked}
+              disabled={isPremiumContentWithoutAccess}
+            >
               Bookmark
             </StyledButton>
           )}
           {settings.calcType !== calculatorTypes.NONE && (
-            <StyledButton onClick={() => this.toolbarHandler(2)}>
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={() => this.toolbarHandler(2)}
+            >
               Calculator
             </StyledButton>
           )}
           {!isDisableCrossBtn && (
-            <StyledButton onClick={() => this.toolbarHandler(3)}>
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={() => this.toolbarHandler(3)}
+            >
               Crossout
             </StyledButton>
           )}
           {settings.maxAnswerChecks > 0 && !isNonAutoGradable && (
-            <StyledButton onClick={() => this.checkAnswer()}>
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={() => this.checkAnswer()}
+            >
               Check Answer
             </StyledButton>
           )}
           {!!showHintButton(questions) && (
-            <StyledButton onClick={handletoggleHints}>Hint</StyledButton>
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={handletoggleHints}
+            >
+              Hint
+            </StyledButton>
           )}
-          <StyledButton onClick={() => this.toolbarHandler(5)}>
+          <StyledButton
+            disabled={isPremiumContentWithoutAccess}
+            onClick={() => this.toolbarHandler(5)}
+          >
             Scratchpad
           </StyledButton>
           {settings.showMagnifier && (
-            <StyledButton onClick={() => this.magnify()}>Magnify</StyledButton>
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={() => this.magnify()}
+            >
+              Magnify
+            </StyledButton>
           )}
-          <StyledButton onClick={() => this.pointer()} hidden>
+          <StyledButton
+            disabled={isPremiumContentWithoutAccess}
+            onClick={() => this.pointer()}
+            hidden
+          >
             Pointer
           </StyledButton>
-          <StyledButton onClick={() => this.inchRuler()} hidden>
+          <StyledButton
+            disabled={isPremiumContentWithoutAccess}
+            onClick={() => this.inchRuler()}
+            hidden
+          >
             Inch Ruler
           </StyledButton>
-          <StyledButton onClick={() => this.centimeterRuler()} hidden>
+          <StyledButton
+            disabled={isPremiumContentWithoutAccess}
+            onClick={() => this.centimeterRuler()}
+            hidden
+          >
             Centimeter Ruler
           </StyledButton>
-          <StyledButton onClick={() => this.eliminationQuestion()} hidden>
+          <StyledButton
+            disabled={isPremiumContentWithoutAccess}
+            onClick={() => this.eliminationQuestion()}
+            hidden
+          >
             Elimination Question
           </StyledButton>
-          <StyledButton onClick={() => this.procractorRuler()} hidden>
+          <StyledButton
+            disabled={isPremiumContentWithoutAccess}
+            onClick={() => this.procractorRuler()}
+            hidden
+          >
             Procractor Ruler
           </StyledButton>
+          {settings.isTeacherPremium && (
+            <StyledButton
+              disabled={isPremiumContentWithoutAccess}
+              onClick={this.handleUploadWork}
+            >
+              Upload work
+            </StyledButton>
+          )}
         </Container>
       </Modal>
     )
@@ -147,6 +208,11 @@ ToolbarModal.propTypes = {
   isVisible: PropTypes.bool.isRequired,
   onClose: PropTypes.func.isRequired,
   checkAnswer: PropTypes.func.isRequired,
+  handleMagnifier: PropTypes.func,
+}
+
+ToolbarModal.defaultProps = {
+  handleMagnifier: () => {},
 }
 
 export default ToolbarModal

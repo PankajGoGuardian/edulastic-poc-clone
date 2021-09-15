@@ -57,13 +57,15 @@ import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
   isDemoPlaygroundUser,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+  getUserOrgId,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
@@ -177,7 +179,6 @@ class SideMenu extends Component {
       showTrialUsedModal: false,
       showPurchaseModal: false,
       showTrialSubsConfirmation: false,
-      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -300,11 +301,16 @@ class SideMenu extends Component {
       const {
         history,
         isFreeAdmin,
-        toggleFreeAdminSubscriptionModal,
+        isSAWithoutSchools,
+        toggleAdminAlertModal,
       } = this.props
       const { path, label } = this.MenuItems[item.key]
-      if (label === 'Assignments' && isFreeAdmin) {
-        return toggleFreeAdminSubscriptionModal()
+      if (
+        (['Assignments', 'Insights', 'Manage School'].includes(label) &&
+          isSAWithoutSchools) ||
+        (label === 'Assignments' && isFreeAdmin)
+      ) {
+        return toggleAdminAlertModal()
       }
       if (label === 'My Playlist' && !this.props.features.premium) {
         return this.handleBlockedClick()
@@ -407,7 +413,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible, showModal, isExpandedOnHover } = this.state
+    const { broken, isVisible, showModal } = this.state
     let { isSwitchAccountNotification } = this.state
     // For Now we are hiding the switch account notification (Ref: EV-25373)
     // TODO: Remove hiding notification when implementation of "showing notification only once"
@@ -430,6 +436,7 @@ class SideMenu extends Component {
       showUseThisNotification,
       isProxyUser,
       isDemoPlaygroundUserProxy,
+      orgId,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -480,8 +487,7 @@ class SideMenu extends Component {
       _userRole = 'Author'
     }
 
-    const otherAccounts = get(switchDetails, 'otherAccounts', [])
-    const users = otherAccounts.filter((acc) => acc._id !== userId)
+    const users = get(switchDetails, 'switchAccounts', [])
 
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
@@ -518,11 +524,13 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          {users.length ? (
+          {users.length > 1 ? ( // since current user is also in this list
             <Menu.Item key="3" className="removeSelectedBorder">
               <a>
                 <IconSwitchUser />
-                <span>{isCollapsed ? '' : 'Switch Account'} </span>
+                <span data-cy="switch-user">
+                  {isCollapsed ? '' : 'Switch Account'}{' '}
+                </span>
               </a>
             </Menu.Item>
           ) : userRole !== roleuser.EDULASTIC_CURATOR ? (
@@ -572,9 +580,10 @@ class SideMenu extends Component {
           <SwitchUserModal
             userId={userId}
             switchUser={switchUser}
+            orgId={orgId}
             showModal={showModal}
             closeModal={() => this.setState({ showModal: false })}
-            otherAccounts={get(switchDetails, 'otherAccounts', [])}
+            otherAccounts={users}
             personId={get(switchDetails, 'personId')}
             userRole={userRole}
           />
@@ -614,22 +623,16 @@ class SideMenu extends Component {
             </LogoWrapper>
             <MenuWrapper
               onMouseEnter={
-                isCollapsed && !isMobile && !isExpandedOnHover
+                isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: true,
-                      })
                     }
                   : null
               }
               onMouseLeave={
-                !isCollapsed && !isMobile && isExpandedOnHover
+                !isCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: false,
-                      })
                     }
                   : null
               }
@@ -792,8 +795,8 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: 'fixed',
-                      minWidth: isCollapsed ? '50px' : '220px',
-                      maxWidth: isCollapsed ? '50px' : '0px',
+                      minWidth: isCollapsed ? '70px' : '220px',
+                      maxWidth: isCollapsed ? '70px' : '0px',
                     }}
                     className="footerDropdown"
                     overlay={footerDropdownMenu(isDemoPlaygroundUserProxy)}
@@ -899,6 +902,7 @@ const enhance = compose(
       userId: get(state.user, 'user._id', ''),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
+      orgId: getUserOrgId(state),
       features: getUserFeatures(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),
@@ -910,12 +914,13 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
     }
   )
@@ -1066,6 +1071,10 @@ const MenuWrapper = styled.div`
   overflow: hidden;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
 
+  @media (max-height: 720px) {
+    padding: 2px 0px 0px;
+  }
+
   @media (max-width: ${extraDesktopWidthMax}) {
     min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.md}px)`};
   }
@@ -1155,14 +1164,35 @@ const Menu = styled(AntMenu)`
   @media (max-height: 720px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      margin: 4px 0px;
+      height: 34px;
+      margin: 0px 0px 5px;
     }
   }
-  @media (max-height: 650px) {
+  @media (max-height: 680px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 36px;
-      margin: 2px 0px;
+      height: 32px;
+      margin: 0px 0px 4px;
+      &:before {
+        left: 15px;
+        right: 15px;
+      }
+      &[data-cy='library'],
+      &[data-cy='user management'] {
+        height: 28px;
+        font-size: 12px;
+      }
+    }
+  }
+  @media (max-height: 600px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      height: 30px;
+      &[data-cy='library'],
+      &[data-cy='user management'] {
+        height: 18px;
+        font-size: 11px;
+      }
     }
   }
   @media (min-width: ${extraDesktopWidth}) {
@@ -1230,6 +1260,18 @@ const Menu = styled(AntMenu)`
         background: #557390;
       }
     }
+  }
+  @media (max-height: 720px) {
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 215px)'};
+  }
+  @media (max-height: 650px) {
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 205px)' : 'calc(100vh - 175px)'};
+  }
+  @media (max-height: 600px) {
+    height: ${({ isBannerShown }) =>
+      isBannerShown ? 'calc(100vh - 165px)' : 'calc(100vh - 135px)'};
   }
 `
 
@@ -1327,6 +1369,7 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
+          padding-left: 10px;
           &:focus,
           &:hover {
             svg,
@@ -1396,6 +1439,13 @@ const QuestionButton = styled.div`
       fill: ${(props) => props.theme.sideMenu.helpIconHoverColor};
     }
   }
+
+  @media (max-height: 720px) {
+    margin: 4px 0px 6px;
+  }
+  @media (max-height: 650px) {
+    display: none;
+  }
 `
 
 const UserImg = styled.div`
@@ -1432,6 +1482,9 @@ const UserInfoButton = styled.div`
     @media (max-width: ${mobileWidthLarge}) {
       bottom: 75px !important;
     }
+    @media (max-height: 720px) {
+      bottom: 70px !important;
+    }
   }
 
   .footerDropdown {
@@ -1449,6 +1502,9 @@ const UserInfoButton = styled.div`
     font-weight: 600;
     transition: 0.2s;
     -webkit-transition: 0.2s;
+    @media (max-height: 720px) {
+      height: 70px;
+    }
   }
   .ant-select-selection {
     background: transparent;
@@ -1627,6 +1683,12 @@ const DemoPlaygroundButtonContainer = styled.div`
   cursor: pointer;
   span {
     font-weight: 600;
+  }
+  @media (max-height: 720px) {
+    margin: 4px 0px 6px;
+  }
+  @media (max-height: 600px) {
+    display: none;
   }
 `
 

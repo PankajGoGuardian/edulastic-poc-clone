@@ -14,7 +14,10 @@ const graphTypes = [
   'graphLineChecks',
   'graphPolygonChecks',
   'graphMiscellaneous',
+  'partialCreditScoring',
 ]
+const hideheading = ['partialCreditScoring']
+
 const { subEvaluationSettingsGrouped } = mathConstants
 
 const InlineCheckOptions = ({ t, optionKey, options, onChange }) => {
@@ -25,9 +28,11 @@ const InlineCheckOptions = ({ t, optionKey, options, onChange }) => {
 
   return (
     <FlexContainer flexDirection="column">
-      <HeadingLabel isGraph={isGraph}>
-        {t(`component.math.${optionKey}`)}
-      </HeadingLabel>
+      {!hideheading.includes(optionKey) && (
+        <HeadingLabel isGraph={isGraph}>
+          {t(`component.math.${optionKey}`)}
+        </HeadingLabel>
+      )}
       <FlexContainer
         justifyContent="flex-start"
         flexWrap="wrap"
@@ -38,8 +43,16 @@ const InlineCheckOptions = ({ t, optionKey, options, onChange }) => {
           if (optionKey === 'accuracyForms' || optionKey === 'equationForms') {
             width = '50%'
           }
-          if (isVertical) {
+          if (isVertical || optionKey === 'partialCreditScoring') {
             width = ''
+          }
+
+          if (
+            isGraph &&
+            key !== 'tolerance' &&
+            optionKey !== 'partialCreditScoring'
+          ) {
+            width = '25%'
           }
 
           return (
@@ -80,13 +93,15 @@ export const HeadingLabel = styled(FieldLabel)`
   overflow: hidden;
   margin-bottom: 20px;
 
-  &::after {
-    content: ' ';
-    border-bottom: 1px solid #e8e8e8;
-    margin-left: 16px;
-    display: inline-flex;
-    position: absolute;
-    width: 100%;
-    top: 50%;
-  }
+  ${({ isGraph }) =>
+    !isGraph &&
+    ` &::after {
+      content: ' ';
+      border-bottom: 1px solid #e8e8e8;
+      margin-left: 16px;
+      display: inline-flex;
+      position: absolute;
+      width: 100%;
+      top: 50%;
+    }`}
 `

@@ -60,7 +60,7 @@ const Uploader = ({ onCompleted, mt }) => {
   }
 
   const onProgress = (index) => (e) => {
-    if (toHandleUpload.current) {
+    if (toHandleUpload.current[index]) {
       const percent = Math.round((e.loaded * 100) / e.total)
       toHandleUpload.current[index].percent = percent
       setFilesToUpload([...toHandleUpload.current])

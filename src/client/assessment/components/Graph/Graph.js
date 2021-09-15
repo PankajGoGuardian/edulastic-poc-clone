@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { cloneDeep, get, omit, pickBy, identity, isObject } from 'lodash'
+import { cloneDeep } from 'lodash'
 import { produce } from 'immer'
 import {
   CorrectAnswersContainer,
@@ -18,7 +18,7 @@ import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
-import { defaultSymbols, math as mathConstants } from '@edulastic/constants'
+import { defaultSymbols } from '@edulastic/constants'
 import { getFontSize } from '../../utils/helpers'
 import { ContentArea } from '../../styled/ContentArea'
 import {
@@ -50,15 +50,10 @@ import Question from '../Question'
 import { Subtitle } from '../../styled/Subtitle'
 import { Col } from '../../styled/WidgetOptions/Col'
 import { Row } from '../../styled/WidgetOptions/Row'
-import EvaluationSettings from '../EvaluationSettings'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
 import { CONSTANT } from './Builder/config'
-
-const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
-
-const hidePointOnEquation = ['axisSegments', 'axisLabels', 'fractionEditor']
 
 const EmptyWrapper = styled.div``
 
@@ -226,7 +221,8 @@ class Graph extends Component {
   }
 
   handleChangeLabel = (id, labelValue) => {
-    labelValue = labelValue.replace(/<p>/g, '').replace(/<\/p>/g, '')
+    // NOTE: DO NOT change object label here.
+    // labelValue = labelValue.replace(/<p>/g, '').replace(/<\/p>/g, '')
 
     const { item, setQuestionData, changeLabel } = this.props
     const { validation, toolbar } = item
@@ -367,6 +363,9 @@ class Graph extends Component {
       id: `alt-${Math.random().toString(36)}`,
       score: newItem?.validation?.validResponse?.score,
       value: [],
+      options: {
+        ignoreLabels: true,
+      },
     }
 
     if (
@@ -402,58 +401,6 @@ class Graph extends Component {
     saveAnswer(qid)
   }
 
-  handleChangeEvaluationOption = (prop, value) => {
-    const { item, setQuestionData } = this.props
-    const newItem = produce(item, (draft) => {
-      if (!draft.validation) {
-        draft.validation = {}
-      }
-      if (prop === 'ponitsOnAnEquation' && !value) {
-        draft.validation.points = null
-        draft.validation.latex = null
-        draft.showConnect = false
-        // draft.validation.apiLatex = null
-      } else if (prop === 'ponitsOnAnEquation' && isObject(value)) {
-        draft.validation = {
-          ...draft.validation,
-          ...value,
-        }
-      } else if (prop === 'showConnect') {
-        draft.showConnect = value
-      } else {
-        draft.validation[prop] = value
-      }
-      draft.validation.compareStartAndLength =
-        draft.validation.compareLength && draft.validation.compareStartPoint
-
-      const evaluationOptions = [
-        ...subEvaluationSettingsGrouped.graphSegmentChecks,
-        ...subEvaluationSettingsGrouped.graphPolygonChecks,
-      ]
-
-      draft.validation['comparePoints=False'] = Object.keys(draft.validation)
-        .filter((option) => draft.validation[option])
-        .some((option) => evaluationOptions.includes(option))
-
-      draft.validation = pickBy(draft.validation, identity)
-    })
-    setQuestionData(newItem)
-  }
-
-  get optionsForEvaluation() {
-    const { item } = this.props
-    const validation = get(item, 'validation', {})
-
-    return omit(validation, [
-      'altResponses',
-      'scoringType',
-      'validResponse',
-      'rounding',
-      'graphType',
-      'comparePoints=False',
-    ])
-  }
-
   get showBackgroundShapes() {
     const { item } = this.props
     const { graphType } = item
@@ -483,7 +430,7 @@ class Graph extends Component {
       ...restProps
     } = this.props
 
-    const { symbols = defaultSymbols, graphType } = item
+    const { symbols = defaultSymbols } = item
 
     const mapFontName = {
       extra_large: 'xlarge',
@@ -549,12 +496,6 @@ class Graph extends Component {
                   handleNumberlineChange={this.handleNumberlineChange}
                   onChangeKeypad={this.handleKeypadMode}
                   symbols={symbols}
-                />
-                <EvaluationSettings
-                  method={GRAPH_EVALUATION_SETTING}
-                  options={this.optionsForEvaluation}
-                  hidePointOnEquation={hidePointOnEquation.includes(graphType)}
-                  changeOptions={this.handleChangeEvaluationOption}
                 />
               </Question>
 

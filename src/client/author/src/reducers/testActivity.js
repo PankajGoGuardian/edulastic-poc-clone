@@ -68,6 +68,7 @@ export const SET_PAGE_NUMBER = '[lcb] set page number action'
 export const SET_LCB_QUESTION_LOADER_STATE =
   '[lcb] set lcb question loader state'
 export const SET_QUESTION_ID_TO_SCROLL = '[lcb] set question id to scroll'
+export const UPDATE_ADDITIONAL_DATA = '[lcb] update additional data'
 
 export const realtimeGradebookActivityAddAction = createAction(
   REALTIME_GRADEBOOK_TEST_ACTIVITY_ADD
@@ -109,6 +110,7 @@ export const setLcbActionProgress = createAction(LCB_ACTION_PROGRESS)
 export const setShowAllStudentsAction = createAction(SET_SHOW_ALL_STUDENTS)
 export const setAddedStudentsAction = createAction(SET_ADDED_STUDENTS)
 export const updateServerTimeAction = createAction(UPDATE_SERVER_TIME)
+export const updateAdditionalDataAction = createAction(UPDATE_ADDITIONAL_DATA)
 
 const initialState = {
   entities: [],
@@ -208,7 +210,7 @@ const reducer = (state = initialState, { type, payload }) => {
       return produce(state, (_st) => {
         const userId = payload?.testActivity?.userId
         const testActivityId = payload?.testActivity?._id
-        const attempt = _st.data.recentTestActivitiesGrouped[userId].find(
+        const attempt = _st.data.recentTestActivitiesGrouped[userId]?.find(
           (x) => x._id === testActivityId
         )
         if (attempt) {
@@ -549,9 +551,10 @@ const reducer = (state = initialState, { type, payload }) => {
         },
         additionalData: {
           ...state.additionalData,
-          canOpenClass: state.additionalData.canOpenClass.filter(
-            (item) => item !== payload.classId
-          ),
+          canOpenClass:
+            state.additionalData?.canOpenClass?.filter(
+              (item) => item !== payload.classId
+            ) || [],
           open: true,
         },
       }
@@ -569,12 +572,13 @@ const reducer = (state = initialState, { type, payload }) => {
         ...state,
         additionalData: {
           ...state.additionalData,
-          canCloseClass: state.additionalData.canCloseClass.filter(
-            (item) => item !== payload.classId
-          ),
+          canCloseClass:
+            state?.additionalData?.canCloseClass?.filter(
+              (item) => item !== payload.classId
+            ) || [],
           // closed: true,
           classesCanBeMarked: [
-            ...state.additionalData.classesCanBeMarked,
+            ...(state?.additionalData?.classesCanBeMarked || []),
             payload.classId,
           ],
         },
@@ -721,6 +725,14 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         questionId: payload,
+      }
+    case UPDATE_ADDITIONAL_DATA:
+      return {
+        ...state,
+        additionalData: {
+          ...state.additionalData,
+          ...payload,
+        },
       }
     default:
       return state

@@ -34,9 +34,9 @@ const ManageSubscriptionByUserSegments = Form.create({
       districtId,
       schoolId,
       notes,
-      subStartDate,
-      subEndDate,
+      subscription,
     } = partialPremiumData
+    const { subStartDate, subEndDate } = subscription || partialPremiumData
     const [districtIdInput, setDistrictId] = useState()
     const [schoolIdInput, setSchoolId] = useState()
     const handleSubmit = (evt) => {
@@ -107,7 +107,7 @@ const ManageSubscriptionByUserSegments = Form.create({
           }
         }
       )
-      evt.preventDefault()
+      evt?.preventDefault?.()
     }
 
     useUpdateEffect(() => {
@@ -178,7 +178,13 @@ const ManageSubscriptionByUserSegments = Form.create({
               },
             ],
             initialValue: '',
-          })(<Input placeholder="District ID" style={{ width: 300 }} />)}
+          })(
+            <Input.Search
+              onSearch={handleSubmit}
+              placeholder="District ID"
+              style={{ width: 300 }}
+            />
+          )}
         </Form.Item>
         <OrSeparator>-Or-</OrSeparator>
         <Form.Item label={<HeadingSpan>School ID</HeadingSpan>}>
@@ -190,7 +196,13 @@ const ManageSubscriptionByUserSegments = Form.create({
               },
             ],
             initialValue: '',
-          })(<Input placeholder="School ID" style={{ width: 300 }} />)}
+          })(
+            <Input.Search
+              onSearch={handleSubmit}
+              placeholder="School ID"
+              style={{ width: 300 }}
+            />
+          )}
         </Form.Item>
         <Table
           bordered
@@ -223,7 +235,13 @@ const ManageSubscriptionByUserSegments = Form.create({
                 title="Add a row"
                 aria-label="Add a Row"
                 noStyle
-                onClick={addGradeSubjectRow}
+                onClick={(e) => {
+                  if (e) {
+                    e.preventDefault()
+                    e.stopPropagation()
+                  }
+                  addGradeSubjectRow()
+                }}
               >
                 <IconAddItems />
               </Button>

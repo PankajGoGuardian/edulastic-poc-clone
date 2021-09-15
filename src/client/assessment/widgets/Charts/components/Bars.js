@@ -71,6 +71,7 @@ const Bars = ({
             onMouseLeave={handleMouse(null)}
             width={step - 2}
             height={height + margin}
+            data-cy={`bar-${index}`}
           />
           {showAnswer && isRenderIcons && renderValidationIcons(bar, index)}
           <Bar
@@ -101,6 +102,7 @@ const Bars = ({
               deleteMode={deleteMode}
               hoverState={isHovered(index)}
               height={isHovered(index) ? 5 : 1}
+              data-cy={`activeBar-${index}`}
             />
           )}
         </Fragment>

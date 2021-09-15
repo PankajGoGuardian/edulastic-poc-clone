@@ -142,6 +142,7 @@ class Question extends Component {
           qIndex={qIndex}
           isPresentationMode={isPresentationMode}
           testActivityId={record.testActivityId}
+          isExpandedView
         />
       </AnswerContext.Provider>
     )

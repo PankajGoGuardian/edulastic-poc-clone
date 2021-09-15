@@ -277,6 +277,7 @@ class MathFormulaPreview extends Component {
       hideCorrectAnswer,
       answerScore,
       answerContextConfig: { expressGrader },
+      clearClicked,
     } = this.props
     const { innerValues } = this.state
     const isCheckAnswer = previewType === SHOW || previewType === CHECK
@@ -381,7 +382,6 @@ class MathFormulaPreview extends Component {
                         allowNumericOnly={allowNumericOnly}
                         customKeys={customKeys}
                         numberPad={item.numberPad}
-                        hideKeypad={item.isUnits && item.showDropdown}
                         onInput={(latexv) => this.onUserResponse(latexv)}
                         latex={studentTemplate}
                         innerValues={innerValues}
@@ -392,12 +392,12 @@ class MathFormulaPreview extends Component {
                     )}
                     {!this.isStatic && (
                       <MathInput
+                        resetMath={clearClicked}
                         symbols={item.symbols}
                         restrictKeys={this.restrictKeys}
                         allowNumericOnly={allowNumericOnly}
                         customKeys={customKeys}
                         numberPad={item.numberPad}
-                        hideKeypad={item.isUnits && item.showDropdown}
                         value={
                           latex && !Array.isArray(latex)
                             ? latex.replace('\\MathQuillMathField{}', '')

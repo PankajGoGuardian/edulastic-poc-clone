@@ -1,8 +1,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Empty, Select } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
+import { SelectInputStyled, useDropdownData } from '@edulastic/common'
 import { FilterLabel } from '../../styled'
-import useDropdownData from '../../hooks/useDropdownData'
 
 const MultiSelectDropdown = ({
   label,

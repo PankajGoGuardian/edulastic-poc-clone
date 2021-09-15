@@ -1,20 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { withTheme } from 'styled-components'
-import { TextInputStyled } from '../../../../../styled/InputStyles'
+import { MathInput } from '@edulastic/common'
 
-const CustomUnitPure = ({
-  onChange,
-  customUnits,
-  theme: {
-    default: { textFieldHeight = '' },
-  },
-}) => {
+const CustomUnitPure = ({ onChange, customUnits }) => {
   const [keys, updateKeys] = useState(customUnits)
-  const onBlurHandler = (e) => {
-    onChange('customUnits', e.target.value)
-  }
-
+  const [keyboardType, setKeyboardType] = useState([])
   // this will need to restrict special characters in the future.
   // eslint-disable-next-line no-unused-vars
   const onKeyPressHandler = (e) => {
@@ -32,8 +23,16 @@ const CustomUnitPure = ({
     }
   }
 
-  const onChangeHandler = (e) => {
-    updateKeys(e.target.value)
+  const onChangeMathInput = (latex) => {
+    updateKeys(latex)
+  }
+
+  const onBlurMathHandler = () => {
+    onChange('customUnits', keys)
+  }
+
+  const handleChangeKeypad = (keyboard) => {
+    setKeyboardType([keyboard])
   }
 
   useEffect(() => {
@@ -41,14 +40,17 @@ const CustomUnitPure = ({
   }, [customUnits])
 
   return (
-    <TextInputStyled
-      // onKeyPress={onKeyPressHandler}
-      data-cy="custom-unit"
-      size="large"
+    <MathInput
+      fullWidth
+      showDropdown
       value={keys}
-      onChange={onChangeHandler}
-      onBlur={onBlurHandler}
-      height={textFieldHeight}
+      fromCustomUnits
+      showResponse={false}
+      symbols={keyboardType}
+      // onKeyPress={onKeyPressHandler}
+      onInput={onChangeMathInput}
+      onBlur={onBlurMathHandler}
+      onChangeKeypad={handleChangeKeypad}
     />
   )
 }

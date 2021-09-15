@@ -38,7 +38,6 @@ import {
   isPublisherUserSelector,
   getWritableCollectionsSelector,
   getInterestedCurriculumsSelector,
-  getUserSignupStatusSelector,
   getIsCurator,
 } from '../../../src/selectors/user'
 import TestStatusWrapper from '../TestStatusWrapper/testStatusWrapper'
@@ -103,7 +102,7 @@ class ViewModal extends React.Component {
     onDuplicate: PropTypes.func.isRequired,
     item: PropTypes.object.isRequired,
     isPlaylist: PropTypes.bool.isRequired,
-    onDelete: PropTypes.func.isRequired,
+    onDelete: PropTypes.func,
     onReject: PropTypes.func.isRequired,
     onApprove: PropTypes.func.isRequired,
     status: PropTypes.oneOfType([PropTypes.string, PropTypes.number])
@@ -120,6 +119,7 @@ class ViewModal extends React.Component {
     interestedCurriculums: [],
     userId: '',
     collections: [],
+    onDelete: () => {},
   }
 
   state = {
@@ -206,7 +206,6 @@ class ViewModal extends React.Component {
       collectionName,
       interestedCurriculums,
       writableCollections,
-      userSignupStatus,
       isDemoPlaygroundUser,
       isCurator,
     } = this.props
@@ -352,6 +351,7 @@ class ViewModal extends React.Component {
                 fallback={<Progress />}
                 hideOptions={this.hideCloneOptions}
                 onDuplicate={onDuplicate}
+                status={status}
               />
             ) : (
               <>
@@ -749,7 +749,6 @@ class ViewModal extends React.Component {
 
 export default connect(
   (state) => ({
-    userSignupStatus: getUserSignupStatusSelector(state),
     userId: getUserIdSelector(state),
     collections: getCollectionsSelector(state),
     userRole: getUserRole(state),

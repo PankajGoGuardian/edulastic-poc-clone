@@ -113,7 +113,8 @@ function* getReportsStudentAssessmentProfileRequest({ payload }) {
     })
   } catch (error) {
     console.log('err', error.stack)
-    const msg = 'Failed to fetch student assessment profile Please try again...'
+    const msg =
+      'Error getting student assessment profile report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_STUDENT_ASSESSMENT_PROFILE_REQUEST_ERROR,

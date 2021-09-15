@@ -16,6 +16,7 @@ import {
   white,
   greyThemeDark4,
   themeColorBlue,
+  lightRed,
 } from '@edulastic/colors'
 import { Paper, EduTableStyled, SelectInputStyled } from '@edulastic/common'
 import { IconManage } from '@edulastic/icons'
@@ -315,7 +316,7 @@ export const AddStudentDivider = styled.div`
 
 export const CleverInfoBox = styled.div`
   font-size: 14px;
-  background: #dddddd;
+  background: ${(props) => (props.alert ? lightRed : '#dddddd')};
   padding: 5px 20px;
   margin-right: 10px;
   display: flex;

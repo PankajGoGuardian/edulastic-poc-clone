@@ -5,6 +5,7 @@ import {
   mobileWidthMax,
   themeColor,
   white,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
@@ -180,11 +181,7 @@ class ProfileContainer extends React.Component {
                     <SaveButton type="primary" htmlType="submit">
                       {t('common.title.save')}
                     </SaveButton>
-                    <CancelButton
-                      type="primary"
-                      ghost
-                      onClick={this.handleCancel}
-                    >
+                    <CancelButton type="primary" onClick={this.handleCancel}>
                       {t('common.title.cancel')}
                     </CancelButton>
                   </FormButtonsWrapper>
@@ -452,8 +449,9 @@ const ActionButton = styled(Button)`
 const SaveButton = styled(ActionButton)`
   &:hover,
   &:focus {
-    background: ${themeColor};
-    border-color: ${themeColor};
+    background: ${themeColorBlue};
+    color: ${white};
+    border-color: ${themeColorBlue};
   }
 `
 
@@ -463,8 +461,8 @@ const CancelButton = styled(ActionButton)`
   border: 1px solid ${themeColor};
   &:hover,
   &:focus {
-    background: ${white};
-    color: ${themeColor};
-    border: 1px solid ${themeColor};
+    background-color: ${themeColorBlue};
+    color: ${white};
+    border: 1px solid ${themeColorBlue};
   }
 `

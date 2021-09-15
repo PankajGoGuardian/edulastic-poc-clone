@@ -27,7 +27,7 @@ import {
   sortableHandle,
 } from 'react-sortable-hoc'
 import { compose } from 'redux'
-import { pick, uniq } from 'lodash'
+import { pick, uniq, get } from 'lodash'
 import { curriculumSequencesApi, testsApi } from '@edulastic/api'
 import { Tooltip } from '../../../common/utils/helpers'
 import {
@@ -228,20 +228,25 @@ class ModuleRow extends Component {
       state: {
         from: 'myPlaylist',
         fromText: 'My Playlist',
-        toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        toUrl: `playlists/playlist/${playlistId}/use-this`,
       },
     })
   }
 
-  assignTest = (moduleId, testId, testVersionId) => {
-    const { history, playlistId } = this.props
+  assignTest = (moduleId, testId, testVersionId, resources = []) => {
+    const { history, playlistId, isSMPlaylist } = this.props
+    const resourceIds = resources
+      .filter((x) => x.contentSubType === 'STUDENT')
+      .map((x) => x.contentId)
     history.push({
       pathname: `/author/playlists/assignments/${playlistId}/${moduleId}/${testId}`,
       state: {
         from: 'myPlaylist',
         fromText: 'My Playlist',
-        toUrl: `/author/playlists/playlist/${playlistId}/use-this`,
+        toUrl: `playlists/playlist/${playlistId}/use-this`,
         testVersionId,
+        resourceIds,
+        isSparkMathCollection: isSMPlaylist,
       },
     })
   }
@@ -616,6 +621,7 @@ class ModuleRow extends Component {
       currentAssignmentIds,
       toggleAssignments,
       isPreviewModalVisible,
+      blurCurrentModuleRow,
     } = this.props
     const { selectedTest } = this.state
     const { assignTest } = this
@@ -676,6 +682,7 @@ class ModuleRow extends Component {
               hasEditAccess={hasEditAccess}
               moduleStatus={completed}
               collapsed={collapsed}
+              blurCurrentModuleRow={blurCurrentModuleRow}
               removeUnit={removeUnit}
               toggleModule={this.toggleModule}
               assignModule={this.assignModule}
@@ -704,6 +711,7 @@ class ModuleRow extends Component {
                     contentType,
                     hidden,
                     status: testStatus,
+                    contentTitle,
                   } = moduleData
                   const isTestType = contentType === 'test'
                   const statusList = assignments
@@ -795,7 +803,8 @@ class ModuleRow extends Component {
                               assignTest(
                                 _id,
                                 testId,
-                                moduleData.contentVersionId
+                                moduleData.contentVersionId,
+                                moduleData.resources
                               )
                             }}
                           >
@@ -963,7 +972,8 @@ class ModuleRow extends Component {
                                       assignTest(
                                         _id,
                                         moduleData.contentId,
-                                        moduleData.contentVersionId
+                                        moduleData.contentVersionId,
+                                        moduleData.resources
                                       )
                                     }
                                   >
@@ -1221,7 +1231,19 @@ class ModuleRow extends Component {
 
                   return (
                     !(isStudent && moduleData.hidden) && (
-                      <AssignmentRowContainer>
+                      <AssignmentRowContainer
+                        // using currentAssignmentIds to get info about current test (for which show assignments is clicked)
+                        blurCurrentTestRow={
+                          !(
+                            currentAssignmentIds.includes(
+                              moduleData.contentId
+                            ) ||
+                            !contentData.some((item) =>
+                              currentAssignmentIds.includes(item.contentId)
+                            )
+                          )
+                        }
+                      >
                         <ModuleFocused />
                         <DragHandle>
                           <Bullet />
@@ -1294,19 +1316,18 @@ class ModuleRow extends Component {
                                       }}
                                     >
                                       <Tooltip
-                                        placement="bottomLeft"
-                                        title={
-                                          moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.title
-                                            : moduleData?.contentTitle
-                                        }
+                                        title={get(
+                                          assignments,
+                                          '[0].title',
+                                          contentTitle
+                                        )}
                                       >
                                         <span data-cy="testName">
-                                          {moduleData?.assignments?.length
-                                            ? moduleData?.assignments?.[0]
-                                                ?.title
-                                            : moduleData?.contentTitle}
+                                          {get(
+                                            assignments,
+                                            '[0].title',
+                                            contentTitle
+                                          )}
                                         </span>
                                         {testType}
                                       </Tooltip>

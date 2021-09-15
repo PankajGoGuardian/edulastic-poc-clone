@@ -214,6 +214,21 @@ const EssayPlainTextPreview = ({
       ? theme.widgets.essayPlainText.textInputLimitedBgColor
       : theme.widgets.essayPlainText.textInputBgColor
 
+  const convertRemToPixels = (rem) => {
+    const sizeInPixels =
+      parseFloat(rem) *
+      parseFloat(getComputedStyle(document.documentElement).fontSize)
+    return (!Number.isNaN(sizeInPixels) && sizeInPixels) || 16 // 16 is fallback value
+  }
+
+  // conversion to number of rows from min/max height (px) and font size (rem)
+  const minRows = Math.ceil(
+    (parseFloat(minHeight) || 0) / convertRemToPixels(fontSize) || 2 // 2 is fallback value
+  )
+  const maxRows = Math.ceil(
+    (parseFloat(maxHeight) || 0) / convertRemToPixels(fontSize)
+  )
+
   return (
     <StyledPaperWrapper
       isV1Multipart={isV1Multipart}
@@ -295,14 +310,13 @@ const EssayPlainTextPreview = ({
             )}
             {!isPrintPreview && (
               <TextArea
+                autoSize={{ minRows, maxRows }}
                 data-cy="previewBoxContainer"
                 inputRef={(ref) => {
                   node = ref
                 }}
                 noBorder
                 height="auto"
-                minHeight={minHeight}
-                maxHeight={maxHeight}
                 fontSize={fontSize}
                 bg={background}
                 rows={numberOfRows} // textarea number of rows
@@ -412,7 +426,5 @@ const TextArea = styled(TextAreaInputStyled)`
     &:hover {
       border: none !important;
     }
-    min-height: ${({ minHeight }) => minHeight && `${minHeight}px`};
-    max-height: ${({ maxHeight }) => maxHeight && `${maxHeight}px`};
   }
 `

@@ -11,6 +11,7 @@ const FroalaEditor = loadable(() =>
 // TODO: decide what to do with first focus
 const QuestionTextArea = ({
   onChange,
+  onKeyDown,
   value,
   toolbarId,
   placeholder,
@@ -29,6 +30,7 @@ const QuestionTextArea = ({
     fallback={<Progress />}
     placeholder={placeholder}
     onChange={onChange}
+    onKeyDown={onKeyDown}
     value={value}
     centerContent={centerContent}
     toolbarId={toolbarId}

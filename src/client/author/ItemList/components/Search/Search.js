@@ -25,7 +25,6 @@ import {
 } from '../../../src/selectors/user'
 import Folders from '../../../src/components/Folders'
 import selectsData from '../../../TestPage/components/common/selectsData'
-import { getAllTagsSelector } from '../../../TestPage/ducks'
 import StandardsSearchModal from './StandardsSearchModal'
 import {
   Container,
@@ -36,6 +35,7 @@ import {
   MainFilterItems,
 } from './styled'
 import { addItemToCartAction } from '../../ducks'
+import TagField from '../Fields/TagField'
 
 const { SMART_FILTERS } = libraryFilters
 const Search = ({
@@ -53,7 +53,6 @@ const Search = ({
     authoredByIds,
     filter,
   },
-  allTagsData,
   onSearchFieldChange,
   curriculumStandards,
   showStatus = false,
@@ -87,6 +86,8 @@ const Search = ({
     userFeatures.isPublisherAuthor || userFeatures.isCurator
   )
 
+  const isDA = userRole === roleuser.DISTRICT_ADMIN
+
   const collectionDefaultFilter = useMemo(() => {
     if (userRole === roleuser.EDULASTIC_CURATOR) {
       return testsConstants.collectionDefaultFilter.filter(
@@ -104,6 +105,8 @@ const Search = ({
     // engage ny (name same as Edulastic Certified) for publishers
     isPublishers
       ? !['Public Library', 'Edulastic Certified'].includes(cd.text)
+      : isDA
+      ? !['School Library'].includes(cd.text)
       : 1
   )
   const isStandardsDisabled =
@@ -436,28 +439,12 @@ const Search = ({
               <Item>
                 <FieldLabel>Tags</FieldLabel>
                 <ItemBody>
-                  <SelectInputStyled
-                    mode="multiple"
-                    data-cy="selectTags"
-                    size="large"
+                  <TagField
                     onChange={onSearchFieldChange('tags')}
                     value={tags}
-                    filterOption={(input, option) =>
-                      option.props.children
-                        .toLowerCase()
-                        .indexOf(input.toLowerCase()) >= 0
-                    }
-                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                    ref={tagsRef}
-                    onSelect={() => tagsRef?.current?.blur()}
-                    onDeselect={() => tagsRef?.current?.blur()}
-                  >
-                    {allTagsData.map((el) => (
-                      <Select.Option key={el._id} value={el._id}>
-                        {el.tagName}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
+                    tagTypes={['testitem']}
+                    valueKey="key"
+                  />
                 </ItemBody>
               </Item>
             </>
@@ -476,7 +463,6 @@ Search.propTypes = {
 
 export default connect(
   (state, { search = {} }) => ({
-    allTagsData: getAllTagsSelector(state, 'testitem'),
     collections: getCollectionsSelector(state),
     formattedCuriculums: getFormattedCurriculumsSelector(state, search),
     userFeatures: getUserFeatures(state),

@@ -34,4 +34,10 @@ module.exports = {
     '6564756c61737469635f6365': 'Edulastic Certified',
     '536d61727453746172745f44': 'SmartStart Diagnostics',
   },
+
+  types: {
+    FREE: 'free',
+    CUSTOM: 'custom',
+    PREMIUM: 'premium',
+  },
 }

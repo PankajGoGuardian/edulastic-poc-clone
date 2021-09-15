@@ -4,6 +4,7 @@ import { compose } from 'redux'
 import { Link, withRouter } from 'react-router-dom'
 import { IconAssignment, IconManage } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
+import { connect } from 'react-redux'
 import { TextWrapper } from '../../../../../styledComponents'
 
 import {
@@ -18,8 +19,10 @@ import {
   MetaText,
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
+import { getUserOrgId } from '../../../../../../../src/selectors/user'
+import { setFilterInSession } from '../../../../../../../../common/utils/helpers'
 
-const CardImage = ({ data, history, userId }) => {
+const CardImage = ({ data, history, userId, districtId }) => {
   const { name, grades = [], studentCount, subject, thumbnail, _id } = data
 
   const gotoManageClass = (classId = '') => () => {
@@ -32,10 +35,12 @@ const CardImage = ({ data, history, userId }) => {
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${userId}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId,
+      districtId,
+      filter,
+    })
   }
 
   const metaInfo = (
@@ -77,11 +82,7 @@ const CardImage = ({ data, history, userId }) => {
                     <IconManage color={themeColor} width={13} height={13} />
                   </CircleBtn>
                   <Link to="/author/assignments" onClick={applyClassFilter}>
-                    <CircleBtn
-                      bg={themeColor}
-                      style={{ marginLeft: '5px' }}
-                      onClick={gotoManageClass(_id)}
-                    >
+                    <CircleBtn bg={themeColor} style={{ marginLeft: '5px' }}>
                       <IconAssignment color={white} width={11} height={14} />
                     </CircleBtn>
                   </Link>
@@ -113,5 +114,10 @@ const CardImage = ({ data, history, userId }) => {
   )
 }
 
-const enhance = compose(withRouter)
+const enhance = compose(
+  withRouter,
+  connect((state) => ({
+    districtId: getUserOrgId(state),
+  }))
+)
 export default enhance(CardImage)

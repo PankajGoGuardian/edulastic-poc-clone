@@ -8,7 +8,7 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { evaluationType, aws } from '@edulastic/constants'
-import { Select } from 'antd'
+import { Select, Modal } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
@@ -27,11 +27,23 @@ import Question from '../../../Question'
 import Tools from '../../common/Tools'
 import GraphToolsParams from '../../components/GraphToolsParams'
 import RadiansDropdown from '../../components/RadiansDropdown'
-import PiSymbol from '../../components/PiSymbol'
+import RadianInput from '../../components/RadianInput'
 import { calcDistance } from '../../common/utils'
 import { uploadToS3 } from '../../../../../author/src/utils/upload'
+import { CONSTANT } from '../../Builder/config'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
+
+const gridOpts = [
+  'xMin',
+  'xMax',
+  'xDistance',
+  'yMin',
+  'yMax',
+  'yDistance',
+  'layoutWidth',
+  'layoutHeight',
+]
 class QuadrantsMoreOptions extends Component {
   constructor(props) {
     super(props)
@@ -85,6 +97,56 @@ class QuadrantsMoreOptions extends Component {
       validation.altResponses.some((alt) => !isEmpty(alt.value))
 
     return hasElements
+  }
+
+  checkGridSettings = (nextAction) => {
+    const {
+      t,
+      graphData: { uiStyle },
+    } = this.props
+    const { layoutWidth, layoutHeight } = uiStyle
+    const { yMax, yMin, xMax, xMin, xDistance, yDistance } = this.state
+
+    let xGirdDistance =
+      (Math.abs(xMin) +
+        Math.abs(xDistance) +
+        Math.abs(xMax) +
+        Math.abs(xDistance)) /
+      xDistance
+    xGirdDistance = parseFloat(layoutWidth) / xGirdDistance
+    xGirdDistance *= Math.abs(xMin) / xDistance + 1
+
+    let yGirdDistance =
+      (Math.abs(yMax) +
+        Math.abs(yDistance) +
+        Math.abs(yMin) +
+        Math.abs(yDistance)) /
+      yDistance
+    yGirdDistance = parseFloat(layoutHeight) / yGirdDistance
+    yGirdDistance *= Math.abs(yMin) / yDistance + 1
+
+    if (xGirdDistance < 28 || yGirdDistance < 28) {
+      Modal.confirm({
+        centered: true,
+        okCancel: false,
+        title: 'Warning',
+        maskClosable: true,
+        content: t('component.graphing.settingsPopup.gridCutoff'),
+        okText: 'Confirm',
+        onCancel: () => {
+          if (typeof nextAction === 'function') {
+            nextAction()
+          }
+        },
+        onOk: () => {
+          if (typeof nextAction === 'function') {
+            nextAction()
+          }
+        },
+      })
+    } else if (typeof nextAction === 'function') {
+      nextAction()
+    }
   }
 
   handleGridChange = (event) => {
@@ -147,16 +209,23 @@ class QuadrantsMoreOptions extends Component {
     })
   }
 
-  handleCertainOptsBlur = () => {
+  handleCertainOptsBlur = (evt) => {
     const { changedCertainOpts } = this.state
 
-    const hasElements = this.checkElements()
+    const process = () => {
+      const hasElements = this.checkElements()
 
-    if (hasElements && changedCertainOpts) {
-      this.setState({ showConfirmModal: true })
-    } else {
-      this.handleConfirmOptsChanges()
+      if (hasElements && changedCertainOpts) {
+        this.setState({ showConfirmModal: true })
+      } else {
+        this.handleConfirmOptsChanges()
+      }
     }
+
+    if (gridOpts.includes(evt.target.name) && changedCertainOpts) {
+      return this.checkGridSettings(process)
+    }
+    process()
   }
 
   handleChangeRadians = (name, value) => {
@@ -220,44 +289,6 @@ class QuadrantsMoreOptions extends Component {
     }
   }
 
-  handleRatioChange = (event) => {
-    let { value } = event.target
-    const { name } = event.target
-    const {
-      graphData: { canvas },
-      setCanvas,
-    } = this.props
-
-    value = parseFloat(value)
-    if (!isNaN(value)) {
-      value = value > 0 ? value : 1
-      if (name === 'xRatio') {
-        canvas.xMin = +(
-          parseFloat(canvas.xMin) *
-          (value / canvas.xRatio)
-        ).toFixed(4)
-        canvas.xMax = +(
-          parseFloat(canvas.xMax) *
-          (value / canvas.xRatio)
-        ).toFixed(4)
-      } else if (name === 'yRatio') {
-        canvas.yMin = +(
-          parseFloat(canvas.yMin) *
-          (value / canvas.yRatio)
-        ).toFixed(4)
-        canvas.yMax = +(
-          parseFloat(canvas.yMax) *
-          (value / canvas.yRatio)
-        ).toFixed(4)
-      }
-      canvas[name] = value
-      setCanvas(canvas)
-      this.setState({ [name]: value })
-    } else {
-      this.setState({ [name]: canvas[name] })
-    }
-  }
-
   handleSelect = (name, value) => {
     const { graphData, setOptions } = this.props
     const { uiStyle } = graphData
@@ -279,7 +310,13 @@ class QuadrantsMoreOptions extends Component {
     setBgImg({ ...backgroundImage, [name]: value })
   }
 
-  allControls = ['undo', 'redo', 'reset', 'delete']
+  allControls = [
+    CONSTANT.TOOLS.EDIT_LABEL,
+    CONSTANT.TOOLS.UNDO,
+    CONSTANT.TOOLS.REDO,
+    CONSTANT.TOOLS.RESET,
+    CONSTANT.TOOLS.DELETE,
+  ]
 
   onSelectControl = (control) => {
     const { graphData, setControls } = this.props
@@ -333,10 +370,8 @@ class QuadrantsMoreOptions extends Component {
             ...canvas,
             xMin,
             xMax,
-            xRatio: 1,
             yMin,
             yMax,
-            yRatio: 1,
           }
           const newUiStyle = {
             ...uiStyle,
@@ -439,8 +474,6 @@ class QuadrantsMoreOptions extends Component {
       xMin,
       xAxisLabel,
       yAxisLabel,
-      xRatio,
-      yRatio,
       xDistance,
       yDistance,
       xTickDistance,
@@ -515,6 +548,7 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutWidth"
                 value={layoutWidth}
                 onChange={this.handleInputChange}
+                onBlur={this.checkGridSettings}
               />
             </Col>
             <Col md={12}>
@@ -525,6 +559,7 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutHeight"
                 value={layoutHeight}
                 onChange={this.handleInputChange}
+                onBlur={this.checkGridSettings}
               />
             </Col>
             <Col md={12}>
@@ -640,17 +675,17 @@ class QuadrantsMoreOptions extends Component {
           <Row gutter={4} type="flex" align="middle">
             <Col md={11} marginBottom="0px">
               <Row type="flex" align="middle">
-                <Col align="center" md={3} marginBottom="6px">
+                <Col align="center" md={4} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.axes')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={5} marginBottom="6px">
+                <Col align="center" md={6} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.min')}
                   </ColumnLabel>
                 </Col>
-                <Col align="center" md={5} marginBottom="6px">
+                <Col align="center" md={6} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.max')}
                   </ColumnLabel>
@@ -663,11 +698,6 @@ class QuadrantsMoreOptions extends Component {
                 <Col align="center" md={4} marginBottom="6px">
                   <ColumnLabel>
                     {t('component.graphing.grid_options.tick_distance')}
-                  </ColumnLabel>
-                </Col>
-                <Col align="center" md={3} marginBottom="6px">
-                  <ColumnLabel>
-                    {t('component.graphing.grid_options.ratio')}
                   </ColumnLabel>
                 </Col>
               </Row>
@@ -719,7 +749,7 @@ class QuadrantsMoreOptions extends Component {
           </Row>
           <Row center gutter={4} mb="4">
             <Col md={11} marginBottom="0px">
-              <Col md={3} marginBottom="0px">
+              <Col md={4} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   defaultValue="X"
@@ -732,33 +762,49 @@ class QuadrantsMoreOptions extends Component {
                   disabled={false}
                 />
               </Col>
-              <Col md={5} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="xMin"
-                  value={xMin}
-                  suffix={xRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+              <Col md={6} marginBottom="0px">
+                {xRadians ? (
+                  <RadianInput
+                    name="xMin"
+                    value={xMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="xMin"
+                    value={xMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
-              <Col md={5} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="xMax"
-                  value={xMax}
-                  suffix={xRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+              <Col md={6} marginBottom="0px">
+                {xRadians ? (
+                  <RadianInput
+                    name="xMax"
+                    value={xMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="xMax"
+                    value={xMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
               <Col md={4} marginBottom="0px">
                 {xRadians && (
@@ -807,19 +853,6 @@ class QuadrantsMoreOptions extends Component {
                     height="35px"
                   />
                 )}
-              </Col>
-              <Col md={3} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="xRatio"
-                  min={0}
-                  value={xRatio}
-                  align="center"
-                  padding="0px 4px"
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleRatioChange}
-                  disabled={false}
-                />
               </Col>
             </Col>
             <Col md={13} marginBottom="0px">
@@ -895,7 +928,7 @@ class QuadrantsMoreOptions extends Component {
           </Row>
           <Row center gutter={4} mb="0">
             <Col md={11} marginBottom="0px">
-              <Col md={3} marginBottom="0px">
+              <Col md={4} marginBottom="0px">
                 <TextInputStyled
                   type="text"
                   defaultValue="X"
@@ -908,33 +941,49 @@ class QuadrantsMoreOptions extends Component {
                   padding="0px 4px"
                 />
               </Col>
-              <Col md={5} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="yMin"
-                  value={yMin}
-                  suffix={yRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+              <Col md={6} marginBottom="0px">
+                {yRadians ? (
+                  <RadianInput
+                    name="yMin"
+                    value={yMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="yMin"
+                    value={yMin}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
-              <Col md={5} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="yMax"
-                  value={yMax}
-                  suffix={yRadians ? <PiSymbol /> : ''}
-                  onChange={this.handleMinMaxChange}
-                  onBlur={this.handleCertainOptsBlur}
-                  disabled={false}
-                  height="35px"
-                  align="center"
-                  padding="0px 4px"
-                />
+              <Col md={6} marginBottom="0px">
+                {yRadians ? (
+                  <RadianInput
+                    name="yMax"
+                    value={yMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                  />
+                ) : (
+                  <TextInputStyled
+                    type="text"
+                    name="yMax"
+                    value={yMax}
+                    onChange={this.handleMinMaxChange}
+                    onBlur={this.handleCertainOptsBlur}
+                    disabled={false}
+                    height="35px"
+                    align="center"
+                    padding="0px 4px"
+                  />
+                )}
               </Col>
               <Col md={4} marginBottom="0px">
                 {yRadians && (
@@ -983,19 +1032,6 @@ class QuadrantsMoreOptions extends Component {
                     height="32px"
                   />
                 )}
-              </Col>
-              <Col md={3} marginBottom="0px">
-                <TextInputStyled
-                  type="text"
-                  name="yRatio"
-                  min={0}
-                  value={yRatio}
-                  onChange={this.handleGridChange}
-                  onBlur={this.handleRatioChange}
-                  disabled={false}
-                  align="center"
-                  padding="0px 4px"
-                />
               </Col>
             </Col>
             <Col md={13} marginBottom="0px">

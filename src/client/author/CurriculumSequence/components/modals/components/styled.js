@@ -192,7 +192,7 @@ export const ModalContainer = styled.div`
   width: 100%;
   background: ${white};
   .ant-input {
-    margin-bottom: 10px;
+    margin-bottom: 15px;
   }
 `
 

@@ -58,8 +58,10 @@ const keyboardMethods = {
   INTERMEDIATE: 'intermediate',
   INTERMEDIATE_WO_NUMBER: 'intermediate_wo_number',
   ADVANCED_MATRICES: 'advanced_matrices',
+  BASIC_MATRICES: 'basic_matrices',
   ADVANCED_TRIGNOMETRY: 'advanced_trignometry',
   GEOMETRY: 'geometry',
+  CHEMISTRY: 'chemistry',
   UNITS_SI: 'units_si',
   UNITS_US: 'units_us',
   ALL_BUTTONS: 'all',
@@ -98,6 +100,12 @@ const symbols = [
     height: 190,
   },
   {
+    value: keyboardMethods.BASIC_MATRICES,
+    label: 'Basic Matrices',
+    width: 400,
+    height: 320,
+  },
+  {
     value: keyboardMethods.ADVANCED_TRIGNOMETRY,
     label: 'Trignometry',
     width: 400,
@@ -107,6 +115,12 @@ const symbols = [
     value: keyboardMethods.GEOMETRY,
     label: 'Geometry',
     width: 400,
+    height: 250,
+  },
+  {
+    value: keyboardMethods.CHEMISTRY,
+    label: 'Chemistry',
+    width: 520,
     height: 250,
   },
   {
@@ -360,10 +374,13 @@ const graphPolygonChecks = [
   'isCongruent',
   'isSimilar',
   'hasRightAngle',
+  // 'comparePoints',
   'comparePerimeter',
 ]
-const graphMiscellaneous = ['tolerance', 'ignoreLabels']
+const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
+const graphMiscellaneous = ['ignoreLabels']
 const graphPointsOnAnEquation = ['latex', 'points']
+const graphPointsOnAnEquation2 = ['latex', 'points']
 
 const evaluationSettings = {
   [methods.EQUIV_SYMBOLIC]: {
@@ -407,13 +424,18 @@ const evaluationSettings = {
     'ignoreCase',
     'ignoreVariableNames',
   ],
-  [GRAPH_EVALUATION_SETTING]: [
-    'graphSegmentChecks',
-    'graphLineChecks',
-    'graphPolygonChecks',
-    'graphMiscellaneous',
-    'graphPointsOnAnEquation',
-  ],
+  [GRAPH_EVALUATION_SETTING]: {
+    'LINES AND POLYGONS': [
+      'graphSegmentChecks',
+      'graphLineChecks',
+      'graphPolygonChecks',
+      'graphPointsOnAnEquation',
+      'tolerance',
+      // 'partialCreditScoring',
+    ],
+    // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
+    // MISCELLANEOUS: ['graphMiscellaneous'],
+  },
 }
 
 const subEvaluationSettingsGrouped = {
@@ -428,7 +450,9 @@ const subEvaluationSettingsGrouped = {
   graphLineChecks,
   graphPolygonChecks,
   graphMiscellaneous,
+  partialCreditScoring,
   graphPointsOnAnEquation,
+  graphPointsOnAnEquation2,
 }
 
 const characterMapButtons = [

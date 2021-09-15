@@ -42,15 +42,15 @@ export const ModalContainer = styled(Card)`
 `
 
 export const Image = styled.div`
-  width: 100%;
-  height: 150px;
+  width: 400px;
+  height: 200px;
   position: relative;
   background: ${(props) =>
     props.src
       ? `url(${props.src})`
       : `url("https://cdn2.edulastic.com/default/default-test-1.jpg")`};
   background-repeat: no-repeat;
-  background-size: cover;
+  background-size: contain;
   background-position: center center;
   border-radius: 4px;
 `
@@ -292,7 +292,8 @@ export const TestStatus = styled.span`
 `
 
 export const TestTitleWrapper = styled.span`
-  width: 80%;
+  width: 100%;
+  max-width: 700px;
   display: inline-block;
   white-space: nowrap;
   text-overflow: ellipsis;

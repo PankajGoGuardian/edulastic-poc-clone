@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { withTheme } from 'styled-components'
 import produce from 'immer'
+import { cloneDeep } from 'lodash'
 import uuid from 'uuid/v4'
 import { arrayMove } from 'react-sortable-hoc'
 import { Icon } from 'antd'
@@ -167,8 +168,8 @@ class GroupResponses extends React.Component {
     const {
       item: { groupResponses = [] },
     } = this.props
-    groupResponses.splice(index, 1)
-    const newGroupResponses = groupResponses.slice()
+    const newGroupResponses = cloneDeep(groupResponses) // deepclone to avoid changes in original item
+    newGroupResponses.splice(index, 1)
 
     const { item, setQuestionData } = this.props
     setQuestionData(
@@ -252,7 +253,7 @@ class GroupResponses extends React.Component {
     const {
       item: { groupResponses = [] },
     } = this.props
-    const newGroupResponses = groupResponses.slice()
+    const newGroupResponses = cloneDeep(groupResponses) // deepclone to avoid changes in original item
     newGroupResponses[index].options.splice(itemIndex, 1)
 
     const { item, setQuestionData } = this.props

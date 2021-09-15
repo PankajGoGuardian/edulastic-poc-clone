@@ -4,7 +4,8 @@ import styled, { ThemeProvider, withTheme } from 'styled-components'
 import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEqual } from 'lodash'
+import { get, isEqual, isEmpty } from 'lodash'
+import { Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import {
   mobileWidthMax,
@@ -17,6 +18,7 @@ import {
   COMPACT,
   FieldLabel,
   FlexContainer,
+  PremiumItemBanner,
 } from '@edulastic/common'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -82,6 +84,7 @@ import {
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
 import { StyledPaperWrapper } from '../styled/Widget'
+import Pictograph from '../widgets/Pictorgraph'
 
 const DummyQuestion = () => <></>
 
@@ -160,6 +163,8 @@ const getQuestion = (type) => {
     //   return Coding
     case questionType.UPLOAD_FILE:
       return UploadFile
+    case questionType.PICTOGRAPH:
+      return Pictograph
     default:
       return () => null
   }
@@ -321,8 +326,9 @@ class QuestionWrapper extends Component {
       previewMaxScore,
       testPreviewScore,
       data,
+      questions = {},
       multipartItem = false,
-      itemLevelScoring = true,
+      itemLevelScoring = false,
     } = this.props
     let score = previewScore
     let maxScore = previewMaxScore
@@ -331,6 +337,25 @@ class QuestionWrapper extends Component {
       score = data?.activity?.score
       maxScore = data?.activity.maxScore
       isGradedExternally = data?.activity?.isGradedExternally
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-28499
+       * If itemLevelScoring is true score for other questions score is 0
+       * Thus awarding a non-zero score to all other questions
+       * so that correct responses are not marked wrong, if graded externally
+       */
+      if (
+        isGradedExternally &&
+        !isEmpty(questions) &&
+        multipartItem &&
+        itemLevelScoring
+      ) {
+        Object.values(questions).forEach((question) => {
+          if (question?.activity?.maxScore) {
+            score = Math.max(score, question?.activity?.score || 0)
+            maxScore = Math.max(maxScore, question?.activity?.maxScore || 0)
+          }
+        })
+      }
     }
 
     // testPreviewScore is from view as student
@@ -376,7 +401,6 @@ class QuestionWrapper extends Component {
       selectedTheme = 'default',
       isPrintPreview = false,
       evaluation,
-      scrollContainer,
       loadScratchPad,
       saveHintUsage,
       theme,
@@ -388,6 +412,12 @@ class QuestionWrapper extends Component {
       features,
       isItemsVisible,
       permissions,
+      questionNumber,
+      isPremiumContentWithoutAccess,
+      premiumCollectionWithoutAccess,
+      showStacked,
+      isExpandedView,
+      t,
       ...restProps
     } = this.props
 
@@ -485,6 +515,31 @@ class QuestionWrapper extends Component {
     const { rubrics: rubricDetails } = data
     const rubricFeedback = data?.activity?.rubricFeedback
 
+    if (isPremiumContentWithoutAccess) {
+      return (
+        <PremiumItemBanner
+          itemBankName={premiumCollectionWithoutAccess}
+          showStacked={showStacked}
+          data={data}
+          isExpandedView={isExpandedView}
+          isPrintPreview={isPrintPreview}
+          timeSpent={timeSpent}
+        />
+      )
+    }
+
+    let passageRightSpace = {}
+    if (
+      data.type === questionType.PASSAGE &&
+      playerSkinType === test.playerSkinValues.parcc &&
+      canShowPlayer
+    ) {
+      // for not to overlap tts buttons in testNav skin
+      passageRightSpace = {
+        paddingRight: '45px',
+      }
+    }
+
     return (
       <ThemeProvider
         theme={{
@@ -496,22 +551,24 @@ class QuestionWrapper extends Component {
         }}
       >
         <>
-          {canShowPlayer && (!hideVisibility || isShowStudentWork) && (
-            <AudioControls
-              btnWithText={
-                playerSkinType.toLowerCase() ===
-                test.playerSkinValues.edulastic.toLowerCase()
-              }
-              hideVisibility={hideVisibility && !isShowStudentWork}
-              key={data.id}
-              item={data}
-              page={page}
-              qId={data.id}
-              audioSrc={data.tts.titleAudioURL}
-              isPaginated={data.paginated_content}
-              className="question-audio-controller"
-            />
-          )}
+          {canShowPlayer &&
+            (!hideVisibility || isShowStudentWork) &&
+            !isPrintPreview && (
+              <AudioControls
+                btnWithText={
+                  playerSkinType.toLowerCase() ===
+                  test.playerSkinValues.edulastic.toLowerCase()
+                }
+                hideVisibility={hideVisibility && !isShowStudentWork}
+                key={data.id}
+                item={data}
+                page={page}
+                qId={data.id}
+                audioSrc={data.tts.titleAudioURL}
+                isPaginated={data.paginated_content}
+                className="question-audio-controller"
+              />
+            )}
           <div
             className="__print-question-main-wrapper"
             style={{ height: !isStudentReport && '100%' }}
@@ -527,6 +584,7 @@ class QuestionWrapper extends Component {
               style={{
                 width: '100%',
                 height: calculatedHeight || (fullHeight ? '100%' : null),
+                ...passageRightSpace,
               }}
             >
               {showQuestionMenu && (
@@ -537,7 +595,6 @@ class QuestionWrapper extends Component {
                     advanced={advanced}
                     extras={extras}
                     advancedAreOpen={this.advancedAreOpen}
-                    scrollContainer={scrollContainer}
                     questionTitle={data?.title || ''}
                     isPremiumUser={isPremiumUser}
                     isPowerTeacher={_isPowerTeacher}
@@ -578,10 +635,15 @@ class QuestionWrapper extends Component {
                   maxWidth="100%"
                 >
                   {evaluation === 'pending' && (
-                    <EvaluationMessage>Evaluation is pending</EvaluationMessage>
+                    <Tooltip title={t('component.pendingEvaluation.tooltip')}>
+                      <EvaluationMessage>
+                        {t('component.pendingEvaluation.text')}
+                      </EvaluationMessage>
+                    </Tooltip>
                   )}
                   <Question
                     {...restProps}
+                    t={t}
                     item={data}
                     view={view}
                     evaluation={evaluation}
@@ -617,7 +679,7 @@ class QuestionWrapper extends Component {
                       fillSections={() => {}}
                       cleanSections={() => {}}
                       studentId={studentId}
-                      t={restProps.t}
+                      t={t}
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isQuestionView={isQuestionView}
@@ -693,6 +755,7 @@ QuestionWrapper.propTypes = {
   saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any,
   permissions: PropTypes.array,
+  t: PropTypes.func,
 }
 
 QuestionWrapper.defaultProps = {
@@ -715,6 +778,7 @@ QuestionWrapper.defaultProps = {
   disableResponse: false,
   isPresentationMode: false,
   permissions: [],
+  t: () => {},
 }
 
 const enhance = compose(
@@ -869,6 +933,13 @@ const QuestionContainer = styled.div`
       max-width: calc(100% - 55px);
       display: block !important;
       position: relative !important;
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-30606
+       */
+      .katex .halfarrow-left,
+      .katex .halfarrow-right {
+        overflow: hidden !important;
+      }
     }
     .question-wrapper {
       padding: 5px;

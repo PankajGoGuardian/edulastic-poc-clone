@@ -12,6 +12,7 @@ const GRAPH_TOOLS = {
   TANGENT: 'tangent',
   SECANT: 'secant',
   EXPONENT: 'exp',
+  EXPONENTIAL2: 'exponential2',
   LOGARITHM: 'logarithm',
   POLYNOM: 'polynom',
   POLYGON: 'polygon',
@@ -29,14 +30,21 @@ const GRAPH_TOOLS = {
   RAY_RIGHT_DIRECTION: 'ray_right_direction',
   RAY_LEFT_DIRECTION_RIGHT_HOLLOW: 'ray_left_direction_right_hollow',
   RAY_RIGHT_DIRECTION_LEFT_HOLLOW: 'ray_right_direction_left_hollow',
-  TRASH: 'trash',
-  DELETE: 'delete',
   EQUATION: 'equation',
   AREA: 'area',
+  AREA2: 'area2',
   DASHED: 'dashed',
+  PIECEWISE: 'piecewise',
+  NO_SOLUTION: 'no_solution',
 
   // Default
   RESET: 'reset',
+  UNDO: 'undo',
+  REDO: 'redo',
+  TRASH: 'trash',
+  CLEAR: 'clear',
+  DELETE: 'delete',
+  EDIT_LABEL: 'edit_label',
 
   DRAG_DROP: 'drag_drop',
 }
@@ -51,6 +59,7 @@ const EVENT_NAMES = {
   CHANGE_MOVE: 'change.move',
   CHANGE_UPDATE: 'change.update',
   CHANGE_DELETE: 'change.delete',
+  CHANGE_LABEL: 'change.label',
 }
 
 module.exports = {

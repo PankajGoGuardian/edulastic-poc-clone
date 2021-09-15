@@ -1,86 +1,83 @@
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, PointBlockContext } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
-import React, { Component } from 'react'
+import React, { useContext } from 'react'
 import { questionTitle } from '@edulastic/constants'
 import { AlternateAnswerLink } from '../../styled/ButtonStyles'
 import PointBlock from './PointBlock'
 import AnswerTabs from './AnswerTabs'
 import { Subtitle } from '../../styled/Subtitle'
 
-class CorrectAnswers extends Component {
-  get subtitleId() {
-    const { t, questionType } = this.props
-    return getFormattedAttrId(
-      `${questionType}-${t('component.correctanswers.setcorrectanswers')}`
-    )
-  }
+const CorrectAnswers = ({
+  t,
+  onTabChange,
+  onCloseTab,
+  children,
+  correctTab,
+  options,
+  fillSections,
+  cleanSections,
+  validation,
+  onAdd,
+  mixAndMatch,
+  questionType,
+  ...rest
+}) => {
+  const { unscored = false } = validation || {}
+  const hidingScoringBlock = useContext(PointBlockContext)
+  const hidePoint = mixAndMatch && correctTab > 0
 
-  render() {
-    const {
-      t,
-      onTabChange,
-      onCloseTab,
-      children,
-      correctTab,
-      options,
-      fillSections,
-      cleanSections,
-      validation,
-      onAdd,
-      mixAndMatch,
-      questionType,
-      ...rest
-    } = this.props
-    const hidePoint = mixAndMatch && correctTab > 0
-    const { unscored = false } = validation || {}
+  const hideAltScoring = hidingScoringBlock && correctTab > 0
 
-    return (
-      <div
-        section="main"
-        label={t('component.correctanswers.setcorrectanswers')}
-        fillSections={fillSections}
-        cleanSections={cleanSections}
+  return (
+    <div
+      section="main"
+      label={t('component.correctanswers.setcorrectanswers')}
+      fillSections={fillSections}
+      cleanSections={cleanSections}
+    >
+      <Subtitle
+        id={getFormattedAttrId(
+          `${questionType}-${t('component.correctanswers.setcorrectanswers')}`
+        )}
       >
-        <Subtitle id={this.subtitleId}>
-          {t('component.correctanswers.setcorrectanswers')}
-        </Subtitle>
-        <FlexContainer justifyContent="space-between" marginBottom="16px">
-          <FlexContainer flexDirection="column">
-            <AnswerTabs
-              mixAndMatch={mixAndMatch}
-              onTabChange={onTabChange}
-              onCloseTab={onCloseTab}
-              correctTab={correctTab}
-              validation={validation}
+        {t('component.correctanswers.setcorrectanswers')}
+      </Subtitle>
+      <FlexContainer justifyContent="space-between" marginBottom="16px">
+        <FlexContainer flexDirection="column">
+          <AnswerTabs
+            mixAndMatch={mixAndMatch}
+            onTabChange={onTabChange}
+            onCloseTab={onCloseTab}
+            correctTab={correctTab}
+            validation={validation}
+          />
+          {!hidePoint && !hideAltScoring && (
+            <PointBlock
+              {...rest}
+              correctAnsScore={validation?.validResponse?.score}
+              unscored={unscored}
             />
-            {!hidePoint && (
-              <PointBlock
-                {...rest}
-                correctAnsScore={validation?.validResponse?.score}
-                unscored={unscored}
-              />
-            )}
-          </FlexContainer>
-          {questionType !== questionTitle.MCQ_TRUE_OR_FALSE && !hidePoint && (
-            <FlexContainer alignItems="flex-end">
-              <AlternateAnswerLink
-                onClick={onAdd}
-                color="primary"
-                variant="extendedFab"
-                data-cy="alternate"
-              >
-                {`+ ${t('component.correctanswers.alternativeAnswer')}`}
-              </AlternateAnswerLink>
-            </FlexContainer>
           )}
         </FlexContainer>
-        {children}
-        {options}
-      </div>
-    )
-  }
+        {questionType !== questionTitle.MCQ_TRUE_OR_FALSE && !hidePoint && (
+          <FlexContainer alignItems="flex-end">
+            <AlternateAnswerLink
+              onClick={onAdd}
+              color="primary"
+              variant="extendedFab"
+              data-cy="alternate"
+            >
+              {`+ ${t('component.correctanswers.alternativeAnswer')}`}
+            </AlternateAnswerLink>
+          </FlexContainer>
+        )}
+      </FlexContainer>
+      {children}
+      {options}
+    </div>
+  )
 }
 
 CorrectAnswers.propTypes = {

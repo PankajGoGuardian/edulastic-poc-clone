@@ -93,7 +93,7 @@ const ShortTextPreview = ({
 
   const preview = previewTab === CHECK || previewTab === SHOW
   let background // no background highlights initially
-  if (text.length && preview) {
+  if (text.length && preview && typeof evaluation === 'boolean') {
     if (evaluation === true) {
       background = theme.checkbox.rightBgColor
     } else {

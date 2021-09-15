@@ -1,6 +1,6 @@
 import { tagsApi } from '@edulastic/api'
 import { SelectInputStyled, notification } from '@edulastic/common'
-import { message, Select } from 'antd'
+import { Select } from 'antd'
 import { uniq } from 'lodash'
 import React, { useState } from 'react'
 import { FieldLabel } from './index'
@@ -50,7 +50,9 @@ const Tags = (props) => {
   const searchTags = async (value) => {
     if (
       allTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       setSearchValue('')

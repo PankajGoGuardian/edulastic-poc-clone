@@ -366,7 +366,9 @@ const TestBehaviorGroupContainer = ({
                     }}
                     size="large"
                     data-cy="assignment-time"
-                    value={!isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1}
+                    value={
+                      !isNaN(allowedTime) ? allowedTime / (60 * 1000) || '' : 1
+                    }
                     type="number"
                     min={1}
                     max={300}
@@ -401,30 +403,39 @@ const TestBehaviorGroupContainer = ({
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) && (
-        <StyledRow gutter={16} mb="15px">
-          <Col span={10}>
-            <Label>ITEM CONTENT VISIBILITY TO TEACHERS</Label>
-          </Col>
-          <Col span={14}>
-            <AlignRight
-              disabled={freezeSettings}
-              onChange={(e) =>
-                overRideSettings('testContentVisibility', e.target.value)
-              }
-              value={testContentVisibility}
-            >
-              {testContentVisibilityTypes.map((item) => (
-                <RadioBtn
-                  data-cy={`item-visibility-${item.key}`}
-                  value={item.key}
-                  key={item.key}
-                >
-                  {item.value}
-                </RadioBtn>
-              ))}
-            </AlignRight>
-          </Col>
-        </StyledRow>
+        <SettingContainer id="content-visibility">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="TEST CONTENT VISIBILITY"
+            content="Should teachers see the test items? Choose Always Hidden if test security is critical and answers are auto-graded. Hide Prior to Grading allows teachers to manually grade after test is open. Always Visible gives access before and after test window."
+            premium
+            placement="rightTop"
+          />
+          <StyledRow gutter={16} mb="15px">
+            <Col span={10}>
+              <Label>ITEM CONTENT VISIBILITY TO TEACHERS</Label>
+            </Col>
+            <Col span={14}>
+              <AlignRight
+                disabled={freezeSettings}
+                onChange={(e) =>
+                  overRideSettings('testContentVisibility', e.target.value)
+                }
+                value={testContentVisibility}
+              >
+                {testContentVisibilityTypes.map((item) => (
+                  <RadioBtn
+                    data-cy={`item-visibility-${item.key}`}
+                    value={item.key}
+                    key={item.key}
+                  >
+                    {item.value}
+                  </RadioBtn>
+                ))}
+              </AlignRight>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
       )}
       {/* Test Content visibility */}
     </>

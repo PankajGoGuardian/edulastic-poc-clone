@@ -180,6 +180,8 @@ class EditingTypeDisplay extends Component {
       </ContentWrapper>
     )
 
+    const singleResponseBox = responseIds && responseIds.length === 1
+
     return (
       <FlexContainer
         justifyContent="flex-start"
@@ -226,6 +228,7 @@ class EditingTypeDisplay extends Component {
                 }
                 responseIds={item.responseIds}
                 stemNumeration={stemNumeration}
+                singleResponseBox={singleResponseBox}
               />
               {this.hasAltAnswers ? (
                 <CorrectAnswerBoxLayout
@@ -234,6 +237,7 @@ class EditingTypeDisplay extends Component {
                   altResponses={item.validation.altResponses}
                   responseIds={item.responseIds}
                   stemNumeration={stemNumeration}
+                  singleResponseBox={singleResponseBox}
                 />
               ) : null}
             </>

@@ -13,7 +13,9 @@ import {
   green,
   themeColorTagsBg,
 } from '@edulastic/colors'
+import { connect } from 'react-redux'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 const CanvasSyncModal = ({
   visible,
@@ -21,7 +23,7 @@ const CanvasSyncModal = ({
   syncClassLoading,
   getCanvasCourseListRequest,
   getCanvasSectionListRequest,
-  canvasCourseList,
+  canvasCourseList = [],
   canvasSectionList,
   syncClassWithCanvas,
   canvasCode,
@@ -31,12 +33,16 @@ const CanvasSyncModal = ({
   institutionId,
   isFetchingCanvasData,
   syncCanvasCoTeacher,
+  isAutoArchivedClass,
+  districtId,
 }) => {
   const [course, setCourse] = useState(canvasCode)
   const [section, setSection] = useState(canvasCourseSectionCode)
   const [sectionError, setSectionError] = useState(false)
   const [courseError, setCourseError] = useState(false)
-  const [coTeacherFlag, setCoTeacherFlag] = useState(syncCanvasCoTeacher)
+  const isCoTeacherFlagSet =
+    canvasCode && !isAutoArchivedClass ? syncCanvasCoTeacher : true
+  const [coTeacherFlag, setCoTeacherFlag] = useState(isCoTeacherFlagSet)
   const [isDisabled, setIsDisabled] = useState(
     !!canvasCode && !!canvasCourseSectionCode
   )
@@ -78,7 +84,7 @@ const CanvasSyncModal = ({
     getCanvasSectionListRequest({ institutionId, allCourseIds: [value] })
     setCourse(value)
     setSection('')
-    setCoTeacherFlag(false)
+    setCoTeacherFlag(true)
     setCourseError(false)
     setSectionError(false)
   }
@@ -108,10 +114,8 @@ const CanvasSyncModal = ({
       return
     }
 
-    const {
-      id: canvasCourseCode,
-      name: canvasCourseName,
-    } = canvasCourseList.find(({ id }) => id === course)
+    const { id: canvasCourseCode, name: canvasCourseName } =
+      canvasCourseList.find(({ id }) => id === course) || []
 
     const selectedSectionDetails = canvasSectionList.find(
       ({ id }) => id === section
@@ -130,7 +134,7 @@ const CanvasSyncModal = ({
       sectionId,
       sectionName,
       institutionId,
-      districtId: user?.districtIds?.[0],
+      districtId,
       syncCanvasCoTeacher: coTeacherFlag,
     }
     syncClassWithCanvas(data)
@@ -157,6 +161,7 @@ const CanvasSyncModal = ({
       disabled={isSyncDisabled}
       loading={syncClassLoading}
       onClick={handleSync}
+      data-cy="syncCanvasClassSubmit"
     >
       {syncClassLoading ? 'Syncing...' : 'Sync'}
     </EduButton>,
@@ -178,8 +183,9 @@ const CanvasSyncModal = ({
           value={+course || undefined}
           onChange={handleCourseChange}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={isDisabled}
+          disabled={isDisabled && !isAutoArchivedClass}
           isError={courseError}
+          data-cy="selctCourseCanvasClass"
         >
           {canvasCourseList.map((c) => (
             <Select.Option key={c.id} value={+c.id}>
@@ -199,8 +205,9 @@ const CanvasSyncModal = ({
             setCourseError(false)
             setSectionError(false)
           }}
+          data-cy="selctSectionCanvasClass"
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          disabled={isDisabled}
+          disabled={isDisabled && !isAutoArchivedClass}
           isError={sectionError}
           notFoundContent={
             activeCanvasClassSectionCode?.length ? (
@@ -230,8 +237,13 @@ const CanvasSyncModal = ({
     </StyledModal>
   )
 }
+const mapStateToProps = (state) => ({
+  districtId: getUserOrgId(state),
+})
 
-export default CanvasSyncModal
+const mapDispatchToProps = {}
+
+export default connect(mapStateToProps, mapDispatchToProps)(CanvasSyncModal)
 
 const StyledModal = styled(ConfirmationModal)`
   .ant-modal-content {

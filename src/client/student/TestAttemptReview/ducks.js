@@ -18,6 +18,7 @@ export const attemptSummarySelector = createSelector(
     const blocks = {}
     const allQids = []
     const itemWiseQids = {}
+    const partiallyAttemptedItems = []
     const nonQuestionTypes = [
       questionType.VIDEO,
       questionType.PASSAGE,
@@ -70,9 +71,18 @@ export const attemptSummarySelector = createSelector(
         allQids.concat(questions.map((q) => q.id))
         itemWiseQids[item._id] = questions.map((q) => q.id)
       }
+
+      if (questions?.length > 1) {
+        const isPartiallyAttempted = questions.some(
+          (q) => !hasValidAnswers(q.type, answers[`${item._id}_${q.id}`])
+        )
+        if (isPartiallyAttempted) {
+          partiallyAttemptedItems.push(item?._id)
+        }
+      }
     }
     // eslint-enable
-    return { allQids, blocks, itemWiseQids }
+    return { allQids, blocks, itemWiseQids, partiallyAttemptedItems }
   }
 )
 

@@ -1,4 +1,5 @@
 import { takeEvery, all, put, select } from 'redux-saga/effects'
+import { clearEvaluationAction } from '../actions/evaluation'
 import {
   CHANGE_PREVIEW,
   CLEAR_ANSWERS,
@@ -22,6 +23,8 @@ function* clearAnswers() {
   yield put({
     type: REMOVE_ANSWERS,
   })
+
+  yield put(clearEvaluationAction())
 
   yield put({
     type: CHANGE_PREVIEW,

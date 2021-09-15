@@ -2,6 +2,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
+import { pick, omit } from 'lodash'
 import next from 'immer'
 import qs from 'qs'
 
@@ -120,6 +121,13 @@ const StudentProfileReportContainer = (props) => {
   }
 
   const onGoClick = (_settings) => {
+    const requestFilterKeys = [
+      'termId',
+      'standardsProficiencyProfileId',
+      'reportId',
+      'performanceBandProfileId',
+      'assignedBy',
+    ]
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
       _requestFilters[filterType] =
@@ -129,7 +137,7 @@ const StudentProfileReportContainer = (props) => {
     })
     setSPRSettings({
       requestFilters: {
-        ..._requestFilters,
+        ...pick(_requestFilters, requestFilterKeys),
         profileId: _requestFilters.standardsProficiencyProfileId,
       },
       standardFilters: {
@@ -151,7 +159,7 @@ const StudentProfileReportContainer = (props) => {
           standardIds: '',
         },
       })
-      setSPRTagsData({ ...settings.tagsData, domainId: '', standardId: '' })
+      setSPRTagsData(omit({ ...settings.tagsData }, ['domainId', 'standardId']))
     }
   }, [loc])
 

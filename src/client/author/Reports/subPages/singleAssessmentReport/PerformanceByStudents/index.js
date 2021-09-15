@@ -41,6 +41,7 @@ import { getCsvDownloadingState, generateCSVAction } from '../../../ducks'
 import { setPerformanceBandProfileAction } from '../common/filterDataDucks'
 
 import { getColumns } from './util/transformers'
+import { getAssessmentName } from '../../../common/util'
 
 const { downloadCSV } = reportUtils.common
 
@@ -76,11 +77,9 @@ const PerformanceByStudents = ({
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
     [sharedReport]
   )
-  const assessmentName = `${
-    settings.selectedTest.title
-  } (ID:${settings.selectedTest.key.substring(
-    settings.selectedTest.key.length - 5
-  )})`
+  const assessmentName = getAssessmentName(
+    performanceByStudents?.meta?.test || settings.selectedTest
+  )
 
   const { res, proficiencyBandData } = useMemo(() => {
     const bandInfo = get(performanceByStudents, 'bandInfo.performanceBand', [])
@@ -118,7 +117,7 @@ const PerformanceByStudents = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedTest, settings.requestFilters])
+  }, [settings.selectedTest?.key, settings.requestFilters])
 
   useEffect(() => {
     if (
@@ -373,7 +372,7 @@ const PerformanceByStudents = ({
               )}
               <StyledDropDownContainer>
                 <ControlDropDown
-                  prefix="Proficiency Band - "
+                  prefix="Performance Band - "
                   data={proficiencyBandData}
                   by={selectedProficiency}
                   selectCB={(e, selected) => setProficiency(selected)}

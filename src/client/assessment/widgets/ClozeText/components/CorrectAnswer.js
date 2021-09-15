@@ -7,7 +7,12 @@ import { AnswerContent } from '../styled/AnswerContent'
 import { AnswerBox } from '../styled/AnswerBox'
 import { IndexBox } from '../styled/IndexBox'
 
-export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
+export const Answer = ({
+  answer,
+  getStemNumeration,
+  stemNumeration,
+  singleResponseBox,
+}) => {
   const [showPopover, togglePopover] = useState(false)
 
   const content = <AnswerContent>{answer.value}</AnswerContent>
@@ -20,7 +25,9 @@ export const Answer = ({ answer, getStemNumeration, stemNumeration }) => {
       onMouseEnter={() => togglePopover(true)}
       onMouseLeave={() => togglePopover(false)}
     >
-      <IndexBox>{getStemNumeration(stemNumeration, answer.index)}</IndexBox>
+      {!singleResponseBox && (
+        <IndexBox>{getStemNumeration(stemNumeration, answer.index)}</IndexBox>
+      )}
       <Popover content={content} visible={showPopover && answer.value}>
         {content}
       </Popover>
@@ -32,10 +39,12 @@ Answer.propTypes = {
   answer: PropTypes.object,
   stemNumeration: PropTypes.string.isRequired,
   getStemNumeration: PropTypes.func.isRequired,
+  singleResponseBox: PropTypes.bool,
 }
 
 Answer.defaultProps = {
   answer: {},
+  singleResponseBox: false,
 }
 
 const CorrectAnswerBox = styled(AnswerBox)`

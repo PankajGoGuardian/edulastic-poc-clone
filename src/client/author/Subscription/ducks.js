@@ -351,11 +351,24 @@ function* upgradeUserLicense({ payload }) {
   }
 }
 
-function* fetchUserSubscription() {
+function* fetchUserSubscription(...args) {
   try {
+    const { payload } = args[0] || {}
     const apiUserSubscriptionStatus = yield call(
-      subscriptionApi.subscriptionStatus
+      subscriptionApi.subscriptionStatus,
+      payload
     )
+
+    const isCliUser = yield select(
+      (state) => state.user?.user?.openIdProvider === 'CLI'
+    )
+
+    if (isCliUser && apiUserSubscriptionStatus?.result?.products) {
+      apiUserSubscriptionStatus.result.products = apiUserSubscriptionStatus?.result?.products?.filter(
+        (x) => !x?.type?.includes('ITEM_BANK_SPARK_')
+      )
+    }
+
     const { result } = apiUserSubscriptionStatus || {}
     if (result?.subscription?.status === 0) {
       result.subscription = null
@@ -381,7 +394,7 @@ function* fetchUserSubscription() {
         apiUserSubscriptionStatus?.result?.products || []
       )
     )
-    if (apiUserSubscriptionStatus?.result.subscription === -1) {
+    if (apiUserSubscriptionStatus?.result?.subscription === -1) {
       yield put(slice.actions.updateUserSubscriptionExpired(data))
       return
     }

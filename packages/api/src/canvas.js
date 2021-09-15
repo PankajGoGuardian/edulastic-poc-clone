@@ -50,6 +50,7 @@ const canvasSync = (data) =>
 const canvasGradesSync = (data) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/sync-grades-manually`,
       method: 'post',
       data,

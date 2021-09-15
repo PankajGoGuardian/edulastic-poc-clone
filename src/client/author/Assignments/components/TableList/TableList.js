@@ -7,6 +7,12 @@ import { Link, withRouter } from 'react-router-dom'
 import { Dropdown, Tooltip, Spin, Menu } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants, roleuser } from '@edulastic/constants'
+import {
+  IconPresentation,
+  IconAddItem,
+  IconPieChartIcon,
+  IconHourGlass,
+} from '@edulastic/icons'
 
 import {
   FlexContainer,
@@ -14,11 +20,9 @@ import {
   EduButton,
   CheckboxLabel,
 } from '@edulastic/common'
+import { greyThemeDark3 } from '@edulastic/colors'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
-import presentationIcon from '../../assets/presentation.svg'
-import additemsIcon from '../../assets/add-items.svg'
-import piechartIcon from '../../assets/pie-chart.svg'
 import ActionMenu from '../ActionMenu/ActionMenu'
 import {
   getItemsInFolders,
@@ -34,7 +38,6 @@ import {
 
 import {
   Container,
-  Icon,
   TableData,
   TestThumbnail,
   AssignmentTD,
@@ -59,7 +62,6 @@ import {
   getGroupList,
 } from '../../../src/selectors/user'
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
-import { ReactComponent as TimerIcon } from './assets/timer.svg'
 import { canEditTest } from '../../utils'
 import { bulkDownloadGradesAndResponsesAction } from '../../../AssignmentAdvanced/ducks'
 import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
@@ -231,7 +233,7 @@ const TableList = ({
                   }
                   placement="right"
                 >
-                  <TimerIcon />
+                  <IconHourGlass color={greyThemeDark3} />
                 </Tooltip>
               )}
             </TimedTestIndicator>
@@ -322,7 +324,7 @@ const TableList = ({
                 data-cy="lcb"
                 to={`/author/classboard/${row.assignmentId}/${row.classId}`}
               >
-                <Icon src={presentationIcon} alt="Images" />
+                <IconPresentation alt="Images" />
               </Link>
             </Tooltip>
             <FeaturesSwitch
@@ -340,7 +342,7 @@ const TableList = ({
                     to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}
                     disabled={row.hasAutoSelectGroups}
                   >
-                    <Icon src={additemsIcon} alt="Images" />
+                    <IconAddItem alt="Images" />
                   </Link>
                 </Tooltip>
               </WithDisableMessage>
@@ -350,7 +352,7 @@ const TableList = ({
                 data-cy="sbr"
                 to={`/author/standardsBasedReport/${row.assignmentId}/${row.classId}`}
               >
-                <Icon src={piechartIcon} alt="Images" />
+                <IconPieChartIcon alt="Images" />
               </Link>
             </Tooltip>
           </ActionsWrapper>

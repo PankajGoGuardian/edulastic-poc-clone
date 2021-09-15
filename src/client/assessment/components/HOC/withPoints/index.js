@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import React, { useContext } from 'react'
-import { getFormattedAttrId, ItemLevelContext } from '@edulastic/common'
+import { getFormattedAttrId, PointBlockContext } from '@edulastic/common'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import {
   CorrectAnswerHeader,
@@ -22,10 +22,10 @@ export default (WrappedComponent) => {
     ...props
   }) => {
     const { item = {}, isCorrectAnsTab = false } = props
-    const itemLevelScoring = useContext(ItemLevelContext)
+    const hidingScoringBlock = useContext(PointBlockContext)
     return (
       <>
-        {itemLevelScoring || (
+        {!hidingScoringBlock && (
           <CorrectAnswerHeader mb="15px" placement={placement}>
             <Label>{t('component.correctanswers.points')}</Label>
             <PointsInput
@@ -36,9 +36,7 @@ export default (WrappedComponent) => {
               data-cy="points"
               value={points}
               onChange={(score) => {
-                if (score > 0) {
-                  onChangePoints(+score)
-                }
+                onChangePoints(+score)
               }}
               width={width}
               step={0.5}

@@ -13,7 +13,7 @@ import {
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button } from 'antd'
+import { Col, Slider, Table, Button, Menu } from 'antd'
 import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 
@@ -80,7 +80,7 @@ const antSelectStyles = css`
     }
     .ant-select-dropdown-menu-item-selected,
     .ant-select-dropdown-menu-item-active {
-      background-color: ${themeColor};
+      background-color: ${themeColorBlue};
       color: #ffffff;
     }
     .ant-select-dropdown-menu-item,
@@ -525,7 +525,7 @@ export const StyledDropDownContainer = styled(Col)`
       }
       .ant-select-dropdown-menu-item-selected,
       .ant-select-dropdown-menu-item-active {
-        background-color: ${themeColor};
+        background-color: ${themeColorBlue};
         color: #ffffff;
       }
       .ant-select-dropdown-menu-item,
@@ -621,6 +621,11 @@ export const StyledTag = styled.div`
   justify-content: center;
   align-items: center;
 
+  &:hover {
+    background: ${themeColorBlue};
+    color: ${white};
+  }
+
   @media (min-width: ${extraDesktopWidthMax}) {
     width: ${(props) => props.width || 'auto'};
     height: ${(props) => props.height || '24px'};
@@ -630,6 +635,18 @@ export const StyledTag = styled.div`
   @media print {
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
+  }
+`
+
+export const MenuStyled = styled(Menu)`
+  .ant-dropdown-menu-item-active {
+    &:hover {
+      background: ${themeColorBlue};
+      color: ${white};
+      a {
+        color: ${white};
+      }
+    }
   }
 `
 

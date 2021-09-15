@@ -38,12 +38,14 @@ import {
   receiveSearchCourseAction,
 } from '../../../Courses/ducks'
 import UpdateCoTeacher from '../../../ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
+import AddCoTeacher from '../../../ManageClass/components/ClassDetails/AddCoTeacher/AddCoTeacher'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
 } from '../../../Schools/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import {
+  currentDistrictInstitutionIds,
   getUser,
   getUserFeatures,
   getUserOrgId,
@@ -69,6 +71,7 @@ import {
   setBulkEditUpdateViewAction,
   setBulkEditVisibilityAction,
   updateClassAction,
+  addCoTeacherToGroupsAction,
 } from '../../ducks'
 import AddClassModal from './AddClassModal/AddClassModal'
 import ArchiveClassModal from './ArchiveClassModal/ArchiveClassModal'
@@ -78,6 +81,8 @@ import { ClassTable, TeacherSpan } from './styled'
 import {
   getManageCoTeacherModalVisibleStateSelector,
   showUpdateCoTeacherModalAction,
+  getAddCoTeacherModalVisibleStateSelector,
+  showAddCoTeacherModalAction,
 } from '../../../ManageClass/ducks'
 
 const { Option } = Select
@@ -211,6 +216,11 @@ class ClassesTable extends Component {
     showUpdateCoTeacherModal(true)
   }
 
+  onAddCoTeachers = () => {
+    const { showAddCoTeacherModal } = this.props
+    showAddCoTeacherModal(true)
+  }
+
   handleDelete = (key) => {
     // const dataSource = [...this.state.dataSource];
     this.setState({
@@ -297,6 +307,9 @@ class ClassesTable extends Component {
       else if (selectedRowKeys.length > 1)
         notification({ msg: t('class.validations.selectmultipleclass') })
       else notification({ msg: t('class.validations.selectoneclass') })
+    } else if (e.key === 'add co teachers') {
+      if (selectedRowKeys.length) this.onAddCoTeachers()
+      else notification({ msg: t('class.validations.selectclass') })
     } else if (e.key === 'bulk edit') {
       if (!selectedRowKeys.length) {
         notification({ type: 'warn', msg: t('class.validations.selectclass') })
@@ -343,7 +356,7 @@ class ClassesTable extends Component {
 
   archiveClass = () => {
     const { selectedArchiveClasses } = this.state
-    const { userOrgId: districtId, deleteClass, userDetails } = this.props
+    const { userOrgId: districtId, deleteClass, institutionIds } = this.props
 
     this.setState({
       /* here selectedRowKeys is set back to [],
@@ -357,7 +370,7 @@ class ClassesTable extends Component {
       data: {
         groupIds: selectedArchiveClasses,
         districtId,
-        institutionIds: userDetails.institutionIds,
+        institutionIds,
       },
       searchQuery: this.getSearchQuery(),
     }
@@ -370,8 +383,9 @@ class ClassesTable extends Component {
   }
 
   handleCloseModal = (keys) => {
-    const { showUpdateCoTeacherModal } = this.props
+    const { showUpdateCoTeacherModal, showAddCoTeacherModal } = this.props
     if (keys === 'manage co-teacher') showUpdateCoTeacherModal(false)
+    else if (keys === 'add co-teacher') showAddCoTeacherModal(false)
   }
 
   _bulkUpdateClasses = (obj) => {
@@ -527,8 +541,8 @@ class ClassesTable extends Component {
   }
 
   getSearchQuery = () => {
-    const { userOrgId, userDetails } = this.props
-    const { role, institutionIds } = userDetails
+    const { userOrgId, userDetails, institutionIds } = this.props
+    const { role } = userDetails
     const { filtersData, searchByName, currentPage, showActive } = this.state
     const search = { type: ['class'] }
 
@@ -616,6 +630,7 @@ class ClassesTable extends Component {
       t,
       features,
       manageCoTeacherModalVisible,
+      addCoTeacherModalVisible,
     } = this.props
 
     let columnsData = [
@@ -782,6 +797,7 @@ class ClassesTable extends Component {
         <Menu.Item key="manage co teachers">
           {t('class.managecoteachers')}
         </Menu.Item>
+        <Menu.Item key="add co teachers">{t('class.addcoteachers')}</Menu.Item>
       </Menu>
     )
 
@@ -1009,7 +1025,7 @@ class ClassesTable extends Component {
             archiveClass={this.archiveClass}
             closeModal={this.closeArchiveModal}
             classNames={selectedArchiveClasses.map((id) => {
-              const { _source = {} } = dataSource[id]
+              const { _source = {} } = dataSource?.[id] || {}
               return <StyledClassName key={id}>{_source.name}</StyledClassName>
             })}
             t={t}
@@ -1021,6 +1037,16 @@ class ClassesTable extends Component {
             isOpen={manageCoTeacherModalVisible}
             selectedClass={dataSource[selectedRowKeys]}
             handleCancel={() => this.handleCloseModal('manage co-teacher')}
+          />
+        )}
+
+        {addCoTeacherModalVisible && (
+          <AddCoTeacher
+            type="class"
+            isOpen={addCoTeacherModalVisible}
+            selectedClass={selectedRowValues}
+            addCoTeacherToGroups={this.props.addCoTeacherToGroups}
+            handleCancel={() => this.handleCloseModal('add co-teacher')}
           />
         )}
 
@@ -1049,6 +1075,7 @@ const enhance = compose(
     (state) => ({
       userOrgId: getUserOrgId(state),
       userDetails: getUser(state),
+      institutionIds: currentDistrictInstitutionIds(state),
       classList: getClassListSelector(state),
       coursesForDistrictList: getCoursesForDistrictSelector(state),
       totalClassCount: get(state, ['classesReducer', 'totalClassCount'], 0),
@@ -1061,10 +1088,12 @@ const enhance = compose(
       manageCoTeacherModalVisible: getManageCoTeacherModalVisibleStateSelector(
         state
       ),
+      addCoTeacherModalVisible: getAddCoTeacherModalVisibleStateSelector(state),
     }),
     {
       createClass: createClassAction,
       updateClass: updateClassAction,
+      addCoTeacherToGroups: addCoTeacherToGroupsAction,
       deleteClass: deleteClassAction,
       loadClassListData: receiveClassListAction,
       searchCourseList: receiveSearchCourseAction,
@@ -1077,6 +1106,7 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
       showUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
+      showAddCoTeacherModal: showAddCoTeacherModalAction,
     }
   )
 )
@@ -1088,6 +1118,7 @@ ClassesTable.propTypes = {
   loadClassListData: PropTypes.func.isRequired,
   createClass: PropTypes.func.isRequired,
   updateClass: PropTypes.func.isRequired,
+  addCoTeacherToGroups: PropTypes.func.isRequired,
   deleteClass: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   searchCourseList: PropTypes.func.isRequired,

@@ -2,15 +2,17 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, get, pickBy, identity, isObject, isEmpty } from 'lodash'
 import produce from 'immer'
 
 import { TabContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { defaultSymbols } from '@edulastic/constants'
+import { defaultSymbols, math as mathConstants } from '@edulastic/constants'
 
 import CorrectAnswers from '../CorrectAnswers'
 import GraphDisplay from './Display/GraphDisplay'
+import EvaluationSettings from '../EvaluationSettings'
+import GraphMessage from './Authoring/GraphMessage'
 
 import {
   setQuestionDataAction,
@@ -18,6 +20,9 @@ import {
 } from '../../../author/QuestionEditor/ducks'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 import { CONSTANT } from './Builder/config'
+
+const hidePointOnEquation = ['axisSegments', 'axisLabels', 'fractionEditor']
+const { GRAPH_EVALUATION_SETTING, subEvaluationSettingsGrouped } = mathConstants
 
 class GraphAnswers extends Component {
   constructor() {
@@ -143,7 +148,7 @@ class GraphAnswers extends Component {
   }
 
   handleChangePoints = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
 
@@ -179,6 +184,86 @@ class GraphAnswers extends Component {
     }
   }
 
+  // removeAnswers comes from PointOnAnEquation component
+  handleChangeEvaluationOption = (prop, value, removeAnswers) => {
+    const { graphData, setQuestionData } = this.props
+    const { tab } = this.state
+
+    let options = {}
+    if (tab === 0) {
+      options = get(graphData, 'validation.validResponse.options', {})
+    } else {
+      options = get(
+        graphData,
+        `validation.altResponses[${tab - 1}].options`,
+        {}
+      )
+    }
+    const draftOptions = produce(options, (draft) => {
+      if (prop === 'pointsOnAnEquation' && !value) {
+        draft.points = null
+        draft.latex = null
+        draft.showConnect = false
+        // draft.apiLatex = null
+      } else if (prop === 'pointsOnAnEquation' && isObject(value)) {
+        draft = {
+          ...draft,
+          ...value,
+        }
+      } else if (prop === 'showConnect') {
+        // do nothing here
+        // draft.showConnect = value
+      } else {
+        draft[prop] = value
+      }
+      draft.compareStartAndLength =
+        draft.compareLength && draft.compareStartPoint
+
+      const evaluationOptions = [
+        ...subEvaluationSettingsGrouped.graphSegmentChecks,
+        ...subEvaluationSettingsGrouped.graphPolygonChecks,
+      ]
+
+      draft['comparePoints=False'] = Object.keys(draft)
+        .filter((op) => draft[op])
+        .some((op) => evaluationOptions.includes(op))
+    })
+
+    const draftItem = produce(graphData, (draft) => {
+      if (!draft.validation) {
+        draft.validation = {}
+      }
+      if (prop === 'showConnect') {
+        draft.showConnect = value
+      }
+      if (tab === 0) {
+        draft.validation.validResponse.options = pickBy(draftOptions, identity)
+        if (removeAnswers) {
+          draft.validation.validResponse.value = []
+        }
+      } else {
+        draft.validation.altResponses[tab - 1].options = pickBy(
+          draftOptions,
+          identity
+        )
+
+        if (removeAnswers) {
+          draft.validation.altResponses[tab - 1].value = []
+        }
+      }
+    })
+    setQuestionData(draftItem)
+  }
+
+  get optionsForEvaluation() {
+    const { graphData } = this.props
+    const { tab } = this.state
+    if (tab === 0) {
+      return get(graphData, 'validation.validResponse.options', {})
+    }
+    return get(graphData, `validation.altResponses[${tab - 1}].options`, {})
+  }
+
   render() {
     const {
       graphData,
@@ -189,11 +274,17 @@ class GraphAnswers extends Component {
       ...rest
     } = this.props
     const { tab } = this.state
-    const { validation } = graphData
+    const { validation, graphType } = graphData
     const points =
       tab == 0
         ? validation.validResponse.score
         : validation.altResponses[tab - 1].score
+
+    const elements =
+      tab === 0
+        ? validation.validResponse.value
+        : validation.altResponses[tab - 1].value
+    const options = this.optionsForEvaluation
 
     return (
       <CorrectAnswers
@@ -222,6 +313,7 @@ class GraphAnswers extends Component {
                 elements={graphData.validation.validResponse.value}
                 disableResponse={false}
                 item={graphData}
+                pointsOnEquEnabled={!!(options?.latex && options?.points)}
                 onChangeKeypad={onChangeKeypad}
                 symbols={symbols}
                 isCorrectAnsTab
@@ -244,6 +336,7 @@ class GraphAnswers extends Component {
                       elements={alter.value}
                       disableResponse={false}
                       onChange={(val) => this.updateAltValidationValue(val, i)}
+                      pointsOnEquEnabled={!!(options?.latex && options?.points)}
                       item={graphData}
                       onChangeKeypad={onChangeKeypad}
                       symbols={symbols}
@@ -254,6 +347,15 @@ class GraphAnswers extends Component {
               return null
             })}
         </>
+        <EvaluationSettings
+          options={options}
+          method={GRAPH_EVALUATION_SETTING}
+          hasGraphElements={!isEmpty(elements)}
+          hidePointOnEquation={hidePointOnEquation.includes(graphType)}
+          changeOptions={this.handleChangeEvaluationOption}
+        />
+
+        <GraphMessage options={options} elements={elements} />
       </CorrectAnswers>
     )
   }

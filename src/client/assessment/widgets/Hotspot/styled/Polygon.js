@@ -1,23 +1,51 @@
 import styled from 'styled-components'
 import Color from 'color'
 
-const getStroke = ({ stroke, selected, showAnswer, correct, theme }) =>
-  showAnswer
+const getStroke = ({
+  stroke,
+  selected,
+  showAnswer,
+  correct,
+  theme,
+  isEvaluationEmpty,
+}) => {
+  const selectedStrokeColor = Color(stroke).darken(0.3).string()
+
+  if (showAnswer && selected && isEvaluationEmpty) {
+    return selectedStrokeColor
+  }
+
+  return showAnswer
     ? correct
       ? theme.widgets.hotspot.svgMapRightStrokeColor
       : theme.widgets.hotspot.intersectStrokeColor
     : selected
-    ? Color(stroke).darken(0.3).string()
+    ? selectedStrokeColor
     : stroke
+}
 
-const getFill = ({ fill, selected, showAnswer, correct, theme }) =>
-  showAnswer
+const getFill = ({
+  fill,
+  selected,
+  showAnswer,
+  correct,
+  theme,
+  isEvaluationEmpty,
+}) => {
+  const selectedFillColor = Color(fill).darken(0.3).string()
+
+  if (showAnswer && selected && isEvaluationEmpty) {
+    return selectedFillColor
+  }
+
+  return showAnswer
     ? correct
       ? theme.widgets.hotspot.svgMapRightFillColor
       : theme.widgets.hotspot.intersectFillColor
     : selected
-    ? Color(fill).darken(0.3).string()
+    ? selectedFillColor
     : fill
+}
 
 export const Polygon = styled.polygon`
   fill: ${getFill};

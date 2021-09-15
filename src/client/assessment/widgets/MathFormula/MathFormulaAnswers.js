@@ -121,7 +121,7 @@ class MathFormulaAnswers extends React.Component {
   }
 
   handleChangePoints = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
     const points = parseFloat(score, 10)
@@ -259,10 +259,12 @@ class MathFormulaAnswers extends React.Component {
           )
         }
         // change keypad mode and custom keys
+        if (!draft.symbols) {
+          draft.symbols = []
+        }
         if (v) {
-          if (!draft.symbols) {
-            draft.symbols = []
-          }
+          draft.symbols[0] = 'basic'
+        } else {
           draft.symbols[0] = 'units_us'
         }
         updateVariables(draft, latexKeys)

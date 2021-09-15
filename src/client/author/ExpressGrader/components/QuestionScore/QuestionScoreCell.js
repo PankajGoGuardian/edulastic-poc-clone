@@ -64,11 +64,10 @@ const QuestionScoreCell = ({
           if (hasValidAnswers(question?.qType, allAnswers[question.id])) {
             payload.userResponse = { [question.id]: allAnswers[question.id] }
           } else {
-            const error = new Error('empty response update event')
             Sentry.configureScope((scope) => {
               scope.setExtra('qType', question?.qType)
               scope.setExtra('userResponse', allAnswers[question.id])
-              Sentry.captureException(error)
+              Sentry.captureMessage('empty response update event', 'info')
             })
           }
         }

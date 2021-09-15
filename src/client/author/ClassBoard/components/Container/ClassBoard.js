@@ -126,10 +126,13 @@ import {
 } from '../../../src/reducers/testActivity'
 import {
   updateCliUserAction,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
-import { isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
 
@@ -167,7 +170,7 @@ function getStudentFilterCategory(x) {
   if (x.status?.toLowerCase() === 'submitted' && x.graded !== 'GRADED') {
     return 'SUBMITTED'
   }
-  if (x.redirected) {
+  if (x.redirected && x.UTASTATUS === testActivityStatus.NOT_STARTED) {
     return 'REDIRECTED'
   }
   if (x.UTASTATUS === testActivityStatus.NOT_STARTED) {
@@ -222,6 +225,7 @@ class ClassBoard extends Component {
       nCountTrue: 0,
       redirectPopup: false,
       selectedStudentId: '',
+      classId: '',
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
       showAddStudentsPopup: false,
@@ -274,11 +278,16 @@ class ClassBoard extends Component {
       history,
       setShowAllStudents,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
     } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
@@ -404,6 +413,14 @@ class ClassBoard extends Component {
       }
     }
 
+    if (state.classId !== props.match.params.classId) {
+      newState = {
+        ...newState,
+        selectedStudentId: '',
+        classId: props.match.params.classId,
+      }
+    }
+
     if (Object.keys(newState).length) {
       return newState
     }
@@ -492,9 +509,10 @@ class ClassBoard extends Component {
       setPageNumber,
     } = this.props
     const { assignmentId, classId } = match.params
+    const { selectedStudentId: studentId } = this.state
     this.setState({
       selectedTab: name,
-      selectedStudentId,
+      selectedStudentId: selectedStudentId || studentId,
       hasStickyHeader: false,
     })
     setPageNumber(1)
@@ -1328,21 +1346,21 @@ class ClassBoard extends Component {
                       onClick={(e) => {
                         const _testActivityId = this.getActivityId(
                           null,
-                          firstStudentId
+                          selectedStudentId || firstStudentId
                         )
                         setCurrentTestActivityId(_testActivityId)
                         if (!isItemsVisible) {
                           return
                         }
                         getAllTestActivitiesForStudent({
-                          studentId: firstStudentId,
+                          studentId: selectedStudentId || firstStudentId,
                           assignmentId,
                           groupId: classId,
                         })
                         this.onTabChange(
                           e,
                           'Student',
-                          firstStudentId,
+                          selectedStudentId || firstStudentId,
                           _testActivityId
                         )
                       }}
@@ -1378,9 +1396,9 @@ class ClassBoard extends Component {
                           return
                         }
                         this.setState({
-                          selectedQuestion: 0,
-                          selectedQid: firstQuestion._id,
-                          itemId: firstQuestion.testItemId,
+                          selectedQuestion: selectedQuestion || 0,
+                          selectedQid: selectedQid || firstQuestion._id,
+                          itemId: itemId || firstQuestion.testItemId,
                           selectedTab: 'questionView',
                         })
                         setPageNumber(1)
@@ -2020,6 +2038,7 @@ const enhance = compose(
           ?.recentTestActivitiesGrouped || {},
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
     }),
     {
@@ -2042,7 +2061,7 @@ const enhance = compose(
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setPageNumber: setPageNumberAction,
     }
   )

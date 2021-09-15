@@ -39,7 +39,6 @@ export const Label = styled.label`
 
   flex: 1;
   position: relative;
-  display: inline-block;
   border: ${(props) =>
     props.showBorder &&
     (props.styleType === 'primary'
@@ -59,7 +58,6 @@ export const Label = styled.label`
         }`
       : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
 
-  max-width: ${(props) => props.maxWidth || '100%'};
   border-radius: ${(props) =>
     props.styleType === 'primary' || props.uiStyle.type === 'block'
       ? '4px'
@@ -129,4 +127,34 @@ export const QuestionTitleWrapper = styled.div`
 
 export const OptionsLabel = styled.span`
   padding: 0px 10px;
+`
+
+export const OptionLabelDiv = styled.div`
+  flex: 1;
+  position: relative;
+  display: flex;
+  align-items: center;
+  user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
+  margin-right: 12px;
+  margin-bottom: 4px;
+  background: ${({ uiStyle, selected, label }) =>
+    uiStyle.type === 'block' && selected && !label && lightBlue6};
+  border: ${(props) =>
+    props.showBorder &&
+    (props.styleType === 'primary'
+      ? `1px solid ${
+          props.selected && props.uiStyle.type === 'block'
+            ? 'black'
+            : props.theme.widgets.multipleChoice.labelBorderColor
+        }`
+      : `dotted 1px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
+  border-left: ${(props) =>
+    props.uiStyle.type === 'block' &&
+    (props.styleType === 'primary'
+      ? `1px solid ${
+          props.selected && props.uiStyle.type === 'block'
+            ? 'black'
+            : props.theme.widgets.multipleChoice.labelBorderColor
+        }`
+      : `solid 3px ${props.theme.widgets.multipleChoice.labelBorderColor}`)};
 `

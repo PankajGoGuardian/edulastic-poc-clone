@@ -6,7 +6,7 @@ import { cloneDeep, isEqual, sortBy } from 'lodash'
 import produce from 'immer'
 
 import { WithResources, notification, EduButton } from '@edulastic/common'
-import { greyThemeDark3, darkGrey2, partialIconColor } from '@edulastic/colors'
+import { greyThemeDark6, darkGrey2, partialIconColor } from '@edulastic/colors'
 
 import {
   CHECK,
@@ -52,7 +52,7 @@ import AppConfig from '../../../../../../app-config'
 const trueColor = '#1fe3a1'
 const errorColor = '#ee1658'
 const defaultColor = '#434B5D'
-const bgColor = greyThemeDark3
+const bgColor = greyThemeDark6
 
 // TODO: Add support for user-based colorMap to replace these defaults
 
@@ -272,6 +272,7 @@ class GraphContainer extends PureComponent {
       graphData,
       disableResponse,
       view,
+      pointsOnEquEnabled,
     } = this.props
 
     const { tools } = toolbar
@@ -295,13 +296,19 @@ class GraphContainer extends PureComponent {
         this._graph.setTool(tools[0])
       }
 
-      this._graph.createEditButton(this.handleElementSettingsMenuOpen)
+      // this._graph.createEditButton(this.handleElementSettingsMenuOpen)
       this._graph.setDisableResponse(disableResponse)
 
-      if (view === EDIT && !disableResponse) {
-        this._graph.setEditButtonStatus(false)
+      // if (view === EDIT && !disableResponse) {
+      //   this._graph.setEditButtonStatus(false)
+      // } else {
+      //   this._graph.setEditButtonStatus(true)
+      // }
+
+      if (view === EDIT && pointsOnEquEnabled) {
+        this._graph.updatePointOnEquEnabled(true)
       } else {
-        this._graph.setEditButtonStatus(true)
+        this._graph.updatePointOnEquEnabled(false)
       }
 
       this._graph.resizeContainer(layout.width, layout.height)
@@ -342,9 +349,10 @@ class GraphContainer extends PureComponent {
       previewTab,
       changePreviewTab,
       elements,
-      view,
       evaluation,
       showConnect,
+      view,
+      pointsOnEquEnabled,
     } = this.props
 
     const { tools } = toolbar
@@ -360,10 +368,18 @@ class GraphContainer extends PureComponent {
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse)
 
-      if (view === EDIT && !disableResponse) {
-        this._graph.setEditButtonStatus(false)
-      } else {
-        this._graph.setEditButtonStatus(true)
+      // if (view === EDIT && !disableResponse) {
+      //   this._graph.setEditButtonStatus(false)
+      // } else {
+      //   this._graph.setEditButtonStatus(true)
+      // }
+
+      if (prevProps.pointsOnEquEnabled !== pointsOnEquEnabled) {
+        if (view === EDIT && pointsOnEquEnabled) {
+          this._graph.updatePointOnEquEnabled(true)
+        } else {
+          this._graph.updatePointOnEquEnabled(false)
+        }
       }
 
       if (!isEqual(canvas, prevProps.canvas)) {
@@ -530,8 +546,14 @@ class GraphContainer extends PureComponent {
 
   onDelete() {
     this.selectDrawingObject(null)
-    this.setState({ selectedTool: 'delete' })
+    this.setState({ selectedTool: CONSTANT.TOOLS.DELETE })
     this._graph.setTool('trash')
+  }
+
+  onEditLabel() {
+    this.selectDrawingObject(null)
+    this.setState({ selectedTool: CONSTANT.TOOLS.EDIT_LABEL })
+    this._graph.setTool(CONSTANT.TOOLS.EDIT_LABEL)
   }
 
   getStashId() {
@@ -542,14 +564,16 @@ class GraphContainer extends PureComponent {
 
   onSelectControl = (control) => {
     switch (control) {
-      case 'undo':
+      case CONSTANT.TOOLS.UNDO:
         return this.onUndo()
-      case 'redo':
+      case CONSTANT.TOOLS.REDO:
         return this.onRedo()
-      case 'reset':
+      case CONSTANT.TOOLS.RESET:
         return this.onReset()
-      case 'delete':
+      case CONSTANT.TOOLS.DELETE:
         return this.onDelete()
+      case CONSTANT.TOOLS.EDIT_LABEL:
+        return this.onEditLabel()
       default:
         return () => {}
     }
@@ -584,6 +608,10 @@ class GraphContainer extends PureComponent {
     this._graph.events.on(
       CONSTANT.EVENT_NAMES.CHANGE_DELETE,
       this.graphUpdateHandler
+    )
+    this._graph.events.on(
+      CONSTANT.EVENT_NAMES.CHANGE_LABEL,
+      this.handleElementSettingsMenuOpen
     )
   }
 
@@ -629,6 +657,9 @@ class GraphContainer extends PureComponent {
       this._graph.reset()
       this._graph.resetAnswers()
       this._graph.loadFromConfig(coloredElements)
+      if (showConnect) {
+        this._graph.connectPoints(coloredElements)
+      }
       return
     }
 
@@ -659,27 +690,38 @@ class GraphContainer extends PureComponent {
 
   allTools = [
     CONSTANT.TOOLS.POINT,
-    CONSTANT.TOOLS.LINE,
-    CONSTANT.TOOLS.RAY,
     CONSTANT.TOOLS.SEGMENT,
+    CONSTANT.TOOLS.POLYGON,
+    CONSTANT.TOOLS.RAY,
     CONSTANT.TOOLS.VECTOR,
+    CONSTANT.TOOLS.LINE,
     CONSTANT.TOOLS.CIRCLE,
     CONSTANT.TOOLS.ELLIPSE,
-    CONSTANT.TOOLS.SIN,
-    CONSTANT.TOOLS.TANGENT,
-    CONSTANT.TOOLS.SECANT,
-    CONSTANT.TOOLS.EXPONENT,
-    CONSTANT.TOOLS.LOGARITHM,
-    CONSTANT.TOOLS.POLYNOM,
-    CONSTANT.TOOLS.HYPERBOLA,
-    CONSTANT.TOOLS.POLYGON,
     CONSTANT.TOOLS.PARABOLA,
     CONSTANT.TOOLS.PARABOLA2,
+    CONSTANT.TOOLS.HYPERBOLA,
+    CONSTANT.TOOLS.SIN,
+    CONSTANT.TOOLS.COS,
+    CONSTANT.TOOLS.TANGENT,
+    CONSTANT.TOOLS.SECANT,
+    CONSTANT.TOOLS.POLYNOM,
+    CONSTANT.TOOLS.EXPONENT,
+    CONSTANT.TOOLS.EXPONENTIAL2,
+    CONSTANT.TOOLS.LOGARITHM,
     CONSTANT.TOOLS.AREA,
     CONSTANT.TOOLS.DASHED,
+    CONSTANT.TOOLS.PIECEWISE,
+    CONSTANT.TOOLS.NO_SOLUTION,
+    CONSTANT.TOOLS.AREA2,
   ]
 
-  allControls = ['undo', 'redo', 'reset', 'delete']
+  allControls = [
+    CONSTANT.TOOLS.EDIT_LABEL,
+    CONSTANT.TOOLS.UNDO,
+    CONSTANT.TOOLS.REDO,
+    CONSTANT.TOOLS.RESET,
+    CONSTANT.TOOLS.DELETE,
+  ]
 
   get drawingObjectsAreVisible() {
     const { view, toolbar } = this.props
@@ -716,9 +758,17 @@ class GraphContainer extends PureComponent {
   }
 
   get isShowConnectPoints() {
-    const { showConnect, elements, view, disableResponse } = this.props
+    const {
+      showConnect,
+      elements,
+      view,
+      disableResponse,
+      isPrintPreview,
+    } = this.props
+
     return (
       showConnect &&
+      !isPrintPreview &&
       view === PREVIEW &&
       !disableResponse &&
       elements.filter((e) => e.type === CONSTANT.TOOLS.POINT && !e.subElement)
@@ -881,6 +931,7 @@ class GraphContainer extends PureComponent {
                     equations={equations}
                     setEquations={this.setEquations}
                     layout={layout}
+                    elements={elements}
                     margin={{
                       top: layout.margin
                         ? layout.margin
@@ -899,6 +950,7 @@ class GraphContainer extends PureComponent {
                     equations={equations}
                     setEquations={this.setEquations}
                     layout={layout}
+                    elements={elements}
                     margin={{
                       top: layout.margin
                         ? layout.margin

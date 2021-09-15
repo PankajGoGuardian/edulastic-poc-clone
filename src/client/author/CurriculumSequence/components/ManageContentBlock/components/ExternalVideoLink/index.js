@@ -12,16 +12,58 @@ const ExternalVideoLink = (props) => {
   const {
     closeCallback,
     addResource,
+    updateResource,
     alignment,
     setAlignment,
     selectedStandards,
     setSelectedStandards,
     curriculum = '',
+    data,
+    headingText,
   } = props
 
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
   const [url, setUrl] = useState('')
+  const [id, setId] = useState('')
+
+  useEffect(() => {
+    if (data) {
+      setTitle(data?.contentTitle)
+      setDescription(data?.contentDescription)
+      setUrl(data?.contentUrl)
+      setId(data?.contentId)
+      if (data?.alignment) {
+        const allStandards = []
+        const selectedGrades = []
+        const filteredAlignments = data?.alignment?.filter(
+          (a) => !a?.isEquivalentStandard
+        )
+        filteredAlignments?.forEach((alignData) =>
+          alignData?.domains?.forEach((domain) =>
+            domain?.standards?.forEach((standard) => {
+              allStandards.push({
+                identifier: standard.name,
+                _id: standard.id,
+                curriculumId: domain.curriculumId,
+              })
+              standard?.grades?.forEach((grade) => {
+                if (!selectedGrades.includes(grade)) {
+                  selectedGrades.push(grade)
+                }
+              })
+            })
+          )
+        )
+        setAlignment({
+          ...filteredAlignments[0],
+          standards: allStandards,
+          grades: selectedGrades,
+        })
+        setSelectedStandards(allStandards)
+      }
+    }
+  }, [data])
 
   const clearFields = () => {
     setTitle('')
@@ -44,21 +86,32 @@ const ExternalVideoLink = (props) => {
         'recentStandards',
         JSON.stringify({ recentStandards: selectedStandards || [] })
       )
-      addResource({
-        contentTitle: title,
-        contentDescription: description,
-        contentUrl: url,
-        contentType: 'video_resource',
-        standards: selectedStandardIds,
-      })
+      if (id) {
+        updateResource({
+          id,
+          contentTitle: title,
+          contentDescription: description,
+          contentUrl: url,
+          contentType: 'video_resource',
+          standards: selectedStandardIds,
+        })
+      } else {
+        addResource({
+          contentTitle: title,
+          contentDescription: description,
+          contentUrl: url,
+          contentType: 'video_resource',
+          standards: selectedStandardIds,
+        })
+      }
       closeCallback()
     } else notification({ type: 'warn', msg: validationStatus })
   }
 
   return (
     <EdulasticResourceModal
-      headerText="Video Link"
-      okText="ADD RESOURCE"
+      headerText={headingText}
+      okText={id ? 'UPDATE RESOURCE' : 'ADD RESOURCE'}
       submitCallback={submitCallback}
       {...props}
     >
@@ -83,7 +136,11 @@ const ExternalVideoLink = (props) => {
       <FlexRow>
         <FieldLabel>URL</FieldLabel>
         <TextInputStyled
-          placeholder="Enter Youtube URL | Video Embed Code | AWS URL"
+          placeholder={
+            headingText === 'YouTube URL'
+              ? 'Youtube | AWS URL'
+              : 'Video Embed code'
+          }
           value={url}
           onChange={(e) => setUrl(e.target.value)}
           height="36px"
@@ -92,6 +149,7 @@ const ExternalVideoLink = (props) => {
       </FlexRow>
       <FlexRow>
         <ResourcesAlignment
+          selectedStandards={selectedStandards}
           alignment={alignment}
           setAlignment={setAlignment}
           setSelectedStandards={setSelectedStandards}

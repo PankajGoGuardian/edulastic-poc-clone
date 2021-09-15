@@ -12,7 +12,7 @@ import {
   FlexContainer,
   notification,
 } from '@edulastic/common'
-import { themeColor, white, mainTextColor, title } from '@edulastic/colors'
+import { themeColorBlue, white, mainTextColor, title } from '@edulastic/colors'
 
 import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
 import {
@@ -201,6 +201,6 @@ const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
   }
 `

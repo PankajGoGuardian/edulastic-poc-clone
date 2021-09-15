@@ -6,6 +6,7 @@ import SVG from './common/SVG'
 
 const IconUpload = (props) => (
   <SVG
+    data-cy="uploadButton"
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 87.855 77.214"
     {...props}

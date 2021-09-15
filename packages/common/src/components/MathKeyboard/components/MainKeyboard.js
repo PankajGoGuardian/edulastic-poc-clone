@@ -3,8 +3,11 @@ import PropTypes from 'prop-types'
 import chunk from 'lodash/chunk'
 import cloneDeep from 'lodash/cloneDeep'
 import flattenDeep from 'lodash/flattenDeep'
+import isString from 'lodash/isString'
 import { math as mathConstant } from '@edulastic/constants'
 import NumberKeyboard from './NumberKeyboard'
+import CustomKeyLabel from '../../CustomKeyLabel'
+
 import {
   Container,
   SymbolsWrapper,
@@ -13,11 +16,20 @@ import {
   Row,
   Button,
   Label,
+  ButtonLink,
 } from './styled'
 
-const { symbols } = mathConstant
+const { keyboardMethods } = mathConstant
 
-const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
+const MainKeyboard = ({
+  type,
+  btns,
+  onInput,
+  fullKeybord,
+  numbers,
+  showPeriodic,
+  openPeriodic,
+}) => {
   const [boards, updateBoards] = useState({})
   const [current, updateCurrent] = useState(0)
   const numOfKeys = btns.length
@@ -35,7 +47,7 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 6
     }
 
-    if (fullKeybord) {
+    if (fullKeybord || type === keyboardMethods.CHEMISTRY) {
       keysPerRow = 8
       limitRow = 4
     }
@@ -49,16 +61,36 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
       keysPerRow = 4
     }
 
-    if (type === symbols[2].value && numbers) {
+    if (type === keyboardMethods.BASIC_MATRICES) {
+      keysPerRow = 5
+    }
+
+    if (type === keyboardMethods.ADVANCED_TRIGNOMETRY) {
+      limitRow = 6
+    }
+
+    if (type === keyboardMethods.BASIC_WO_NUMBER && numbers) {
       limitRow = 5
     }
-    if (type === symbols[3].value) {
+
+    if (type === keyboardMethods.INTERMEDIATE) {
       limitRow = 4
     }
+
+    if (type === keyboardMethods.INTERMEDIATE_WO_NUMBER) {
+      keysPerRow = 6
+      limitRow = 4
+    }
+
+    if (type === keyboardMethods.GEOMETRY) {
+      keysPerRow = 5
+      limitRow = 4
+    }
+
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)
-  }, [btns, numbers])
+  }, [type, btns, numbers])
 
   const handleClick = (handler, command, numToMove) => () => {
     if (handler && command) {
@@ -87,6 +119,11 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
 
   return (
     <Container>
+      {type === keyboardMethods.CHEMISTRY && (
+        <ButtonLink onClick={openPeriodic}>
+          {showPeriodic ? 'Hide periodic table' : 'Show periodic table'}
+        </ButtonLink>
+      )}
       <PrevButton
         onClick={onClickPrev}
         onTouchEnd={onClickPrev}
@@ -118,7 +155,11 @@ const MainKeyboard = ({ type, btns, onInput, fullKeybord, numbers }) => {
                   onTouchEnd={handleClick(handler, command, numToMove)}
                   data-cy={`virtual-keyboard-${handler}`}
                 >
-                  <Label>{label}</Label>
+                  {isString(label) ? (
+                    <CustomKeyLabel value={label} />
+                  ) : (
+                    <Label>{label}</Label>
+                  )}
                 </Button>
               )
             })}

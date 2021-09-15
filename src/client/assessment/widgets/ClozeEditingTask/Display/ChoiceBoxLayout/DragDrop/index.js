@@ -3,7 +3,7 @@ import { DragDrop, MathFormulaDisplay } from '@edulastic/common'
 
 const { DropContainer } = DragDrop
 
-const EditingDragDrop = ({ onChange, userAnswer, styles }) => {
+const EditingDragDrop = ({ onChange, userAnswer, styles, index }) => {
   const answer = userAnswer
   const containerStyle = {
     borderRadius: 2,
@@ -23,7 +23,7 @@ const EditingDragDrop = ({ onChange, userAnswer, styles }) => {
   }
 
   return (
-    <DropContainer drop={onDrop} style={containerStyle}>
+    <DropContainer drop={onDrop} style={containerStyle} index={index}>
       <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: answer }} />
     </DropContainer>
   )

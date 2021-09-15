@@ -26,7 +26,7 @@ import {
   getUserFeatures,
   getUserId,
   getUserRole,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
@@ -52,13 +52,18 @@ import {
   TestStatus,
 } from './styled'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
-import { getIsCurator, isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  getIsCurator,
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../../../src/selectors/user'
 import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import RegradeNotificationListener from '../../../Regrade/RegradeNotificationListener'
 import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
 import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
+import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
 
 const {
   statusConstants,
@@ -176,7 +181,8 @@ const TestPageHeader = ({
   authorQuestionsById,
   isUpdatingTestForRegrade,
   isFreeAdmin,
-  toggleFreeAdminSubscriptionModal,
+  isSAWithoutSchools,
+  toggleAdminAlertModal,
   showRegradeConfirmPopup,
   setShowRegradeConfirmPopup,
   regradeFirebaseDocId,
@@ -285,7 +291,7 @@ const TestPageHeader = ({
   }
 
   const handleAssign = () => {
-    if (isFreeAdmin) return toggleFreeAdminSubscriptionModal()
+    if (isFreeAdmin || isSAWithoutSchools) return toggleAdminAlertModal()
     onAssign()
   }
 
@@ -398,6 +404,13 @@ const TestPageHeader = ({
     isTestContainsDraftItem &&
     (isEdulasticCurator || isCurator) &&
     !isPlaylist
+
+  const headerTitleWidth =
+    windowWidth >= LARGE_DESKTOP_WIDTH
+      ? '450px'
+      : isPlaylist
+      ? '290px'
+      : '250px'
   return (
     <>
       <Upgrade />
@@ -437,7 +450,10 @@ const TestPageHeader = ({
           titleMarginTop="10px"
           flexDirection="row"
           alignItems="center"
-          titleMaxWidth="250px"
+          titleMaxWidth={headerTitleWidth}
+          headerLeftClassName="headerLeftWrapper"
+          containerClassName="tabAlignment"
+          hasTestId={hasTestId}
         >
           <TestPageNav
             onChange={onChangeNav}
@@ -451,6 +467,7 @@ const TestPageHeader = ({
             childMarginRight="5"
             justifyContent="flex-end"
             mt="12px"
+            width={isPlaylist ? '100%' : 'auto'}
           >
             {hasTestId && !isPlaylist && !isDocBased && !test?.isDocBased && (
               <EduButton
@@ -849,6 +866,7 @@ const enhance = compose(
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
       regradeFirebaseDocId: getRegradeFirebaseDocIdSelector(state),
       showUpgradePopup: getShowUpgradePopupSelector(state),
@@ -857,7 +875,7 @@ const enhance = compose(
     {
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
     }
   )

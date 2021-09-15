@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
@@ -22,6 +22,9 @@ import {
   StyledRow,
   CheckBoxWrapper,
   TimeSpentInput,
+  StyledRadioGroupWrapper,
+  InputNumberStyled,
+  Styled2ndLine,
 } from './styled'
 import {
   getUserRole,
@@ -32,7 +35,7 @@ import {
   getIsOverrideFreezeSelector,
 } from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
-import { SettingContainer } from '../Container/styled'
+import SettingContainer from '../Container/SettingsContainer'
 import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
@@ -85,6 +88,8 @@ const Settings = ({
     message: '',
   })
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
+
+  const numInputRef = useRef()
 
   const passwordValidationStatus = (assignmentPassword) => {
     if (assignmentPassword.split(' ').length > 1) {
@@ -264,6 +269,10 @@ const Settings = ({
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
+    blockSaveAndContinue = tempTestSettings.blockSaveAndContinue,
+    restrictNavigationOut = tempTestSettings.restrictNavigationOut,
+    safeBrowser = tempTestSettings.safeBrowser,
+    restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
   const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
@@ -277,36 +286,47 @@ const Settings = ({
   const showMultiLangSelection =
     allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
 
+  const navigationThresholdMoreThan1 =
+    restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
+    restrictNavigationOutAttemptsThreshold > 1
+
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
         {/* Release score */}
-        <StyledRow gutter={16}>
-          <Col span={12}>
-            <Label>
-              RELEASE SCORES{' '}
-              {releaseScore === releaseGradeLabels.DONT_RELEASE
-                ? '[OFF]'
-                : '[ON]'}
-            </Label>
-          </Col>
-          <Col span={12}>
-            <SelectInputStyled
-              data-cy="selectRelaseScore"
-              placeholder="Please select"
-              cache="false"
-              value={releaseScore}
-              onChange={changeField('releaseScore')}
-              height="30px"
-            >
-              {_releaseGradeKeys.map((item, index) => (
-                <Select.Option data-cy="class" key={index} value={item}>
-                  {releaseGradeTypes[item]}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </Col>
-        </StyledRow>
+        <SettingContainer id="release-score-setting">
+          <DetailsTooltip
+            title="RELEASE SCORES"
+            content="Decide what students immediately get to see upon submitting an assessment."
+            premium
+          />
+          <StyledRow gutter={16}>
+            <Col span={12}>
+              <Label>
+                RELEASE SCORES{' '}
+                {releaseScore === releaseGradeLabels.DONT_RELEASE
+                  ? '[OFF]'
+                  : '[ON]'}
+              </Label>
+            </Col>
+            <Col span={12}>
+              <SelectInputStyled
+                data-cy="selectRelaseScore"
+                placeholder="Please select"
+                cache="false"
+                value={releaseScore}
+                onChange={changeField('releaseScore')}
+                height="30px"
+              >
+                {_releaseGradeKeys.map((item, index) => (
+                  <Select.Option data-cy="class" key={index} value={item}>
+                    {releaseGradeTypes[item]}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
         {/* Release score */}
 
         {/* Show Calculator */}
@@ -441,7 +461,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="Enable Auto Redirect"
-            content="Allow students to take the assignment multiple times to practice and improve their learning."
+            content="When selected, allows students to automatically retake a test when they scored below a set threshold. Enables students to practice and improve learning through multiple self-directed attempts."
             premium={assessmentSuperPowersAutoRedirect}
           />
           <StyledRow gutter={16}>
@@ -459,8 +479,15 @@ const Settings = ({
               />
             </StyledCol>
           </StyledRow>
-          {autoRedirect && (
-            <>
+        </SettingContainer>
+        {autoRedirect && (
+          <>
+            <SettingContainer>
+              <DetailsTooltip
+                title="SCORE THRESHOLD"
+                content="If student scores below the selected percentage score, the student will automatically be given the option to retake the test."
+                premium={assessmentSuperPowersAutoRedirect}
+              />
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>SCORE THRESHOLD</Label>
@@ -479,24 +506,31 @@ const Settings = ({
                   %
                 </StyledCol>
               </StyledRow>
+            </SettingContainer>
 
-              <StyledRow gutter={16}>
-                <StyledCol span={12}>
-                  <Label>EXTRA ATTEMPTS ALLOWED</Label>
-                </StyledCol>
-                <StyledCol span={12}>
-                  <InputNumber
-                    data-cy="auto-redirect-max-attempts"
-                    min={1}
-                    max={3}
-                    value={autoRedirectSettings.maxRedirects || ''}
-                    onChange={(value) =>
-                      handleAutoRedirectSettingsChange('maxRedirects', value)
-                    }
-                  />
-                </StyledCol>
-              </StyledRow>
+            <StyledRow gutter={16}>
+              <StyledCol span={12}>
+                <Label>EXTRA ATTEMPTS ALLOWED</Label>
+              </StyledCol>
+              <StyledCol span={12}>
+                <InputNumber
+                  data-cy="auto-redirect-max-attempts"
+                  min={1}
+                  max={3}
+                  value={autoRedirectSettings.maxRedirects || ''}
+                  onChange={(value) =>
+                    handleAutoRedirectSettingsChange('maxRedirects', value)
+                  }
+                />
+              </StyledCol>
+            </StyledRow>
 
+            <SettingContainer>
+              <DetailsTooltip
+                title="QUESTIONS DELIVERY"
+                content="Choose which questions students should see on redirected tests."
+                premium={assessmentSuperPowersAutoRedirect}
+              />
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>QUESTIONS DELIVERY</Label>
@@ -522,7 +556,15 @@ const Settings = ({
                   </SelectInputStyled>
                 </StyledCol>
               </StyledRow>
+            </SettingContainer>
 
+            <SettingContainer>
+              <DetailsTooltip
+                title="SHOW PREVIOUS ATTEMPT"
+                content="Choose how much information students will see on redirected tests."
+                premium={assessmentSuperPowersAutoRedirect}
+                placement="rightTop"
+              />
               <StyledRow gutter={16}>
                 <StyledCol span={12}>
                   <Label>SHOW PREVIOUS ATTEMPT</Label>
@@ -548,10 +590,167 @@ const Settings = ({
                   </SelectInputStyled>
                 </StyledCol>
               </StyledRow>
-            </>
-          )}
-        </SettingContainer>
+            </SettingContainer>
+          </>
+        )}
         {/* Auto Redirect */}
+
+        {
+          /* BLOCK SAVE AND CONTINUE starts */
+          <SettingContainer id="block-saveandcontinue-setting">
+            <DetailsTooltip
+              title="Complete test in one sitting"
+              content="If ON, then students will not be allowed to exit the test without submitting. In case they close the app they will be paused and the instructor will need to manually resume."
+              placement="rightTop"
+              premium
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>Complete test in one sitting</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  checked={blockSaveAndContinue}
+                  data-cy="bockSaveAndContinueSwitch"
+                  onChange={(value) =>
+                    overRideSettings('blockSaveAndContinue', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+          /* BLOCK SAVE AND CONTINUE ends */
+        }
+
+        {
+          /* Restrict navigation out starts */
+          <SettingContainer id="restrict-nav-out-setting">
+            <DetailsTooltip
+              title="Restrict Navigation Out Of Test"
+              content={
+                <>
+                  <p>
+                    If ON, students must take the test in full screen mode to
+                    prevent opening another browser window. Alert will appear if
+                    student has navigated away for more than 5 seconds. If the
+                    designated number of alerts are exceeded, the student’s
+                    assignment will be paused and the instructor will need to
+                    manually reset.
+                  </p>
+                  <p>Please Note: this is not compatible with iPads.</p>
+                  {navigationThresholdMoreThan1 ? (
+                    <>
+                      <br />
+                      <p>
+                        Alert will appear if student has navigated away for more
+                        than 5 seconds and student will be blocked after{' '}
+                        {restrictNavigationOutAttemptsThreshold * 5} seconds
+                      </p>
+                    </>
+                  ) : (
+                    ''
+                  )}
+                </>
+              }
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>Restrict Navigation Out Of Test</Label>
+              </Col>
+              <Col span={12}>
+                <StyledRadioGroupWrapper
+                  value={!premium ? false : restrictNavigationOut || false}
+                  disabled={freezeSettings || !premium || safeBrowser}
+                  onChange={(e) => {
+                    overRideSettings('restrictNavigationOut', e.target.value)
+                  }}
+                >
+                  <RadioBtn
+                    value={false}
+                    data-cy="restrict-nav-out-disabled"
+                    title={
+                      safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                    }
+                  >
+                    DISABLED
+                  </RadioBtn>
+                  <br />
+                  <RadioBtn
+                    title={
+                      safeBrowser && 'Disabled since Safe Exam Browser Enabled'
+                    }
+                    value="warn-and-report"
+                    data-cy="restrict-nav-out-warn-report"
+                  >
+                    WARN AND REPORT ONLY
+                  </RadioBtn>
+                  <br />
+                  <RadioBtn
+                    value="warn-and-report-after-n-alerts"
+                    data-cy="restrict-nav-out-warn-report-alerts"
+                    title={
+                      safeBrowser
+                        ? 'Disabled since Safe Exam Browser Enabled'
+                        : 'Alert will appear if student has navigated away for more than 5 seconds'
+                    }
+                  >
+                    WARN AND BLOCK TEST AFTER{' '}
+                    <InputNumberStyled
+                      size="small"
+                      ref={numInputRef}
+                      min={1}
+                      value={
+                        !premium
+                          ? undefined
+                          : restrictNavigationOut
+                          ? restrictNavigationOutAttemptsThreshold
+                          : undefined
+                      }
+                      onChange={(v) => {
+                        if (v) {
+                          overRideSettings(
+                            'restrictNavigationOutAttemptsThreshold',
+                            v
+                          )
+                        } else {
+                          numInputRef.current?.blur()
+                          overRideSettings(
+                            'restrictNavigationOut',
+                            'warn-and-report'
+                          )
+                        }
+                      }}
+                      disabled={
+                        !(
+                          restrictNavigationOut ===
+                          'warn-and-report-after-n-alerts'
+                        ) ||
+                        freezeSettings ||
+                        safeBrowser ||
+                        !premium
+                      }
+                    />{' '}
+                    ALERTS
+                    {navigationThresholdMoreThan1 ? (
+                      <Styled2ndLine>
+                        {' '}
+                        {`or maximum of ${
+                          restrictNavigationOutAttemptsThreshold * 5
+                        } sec.`}{' '}
+                      </Styled2ndLine>
+                    ) : (
+                      ''
+                    )}
+                  </RadioBtn>
+                </StyledRadioGroupWrapper>
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+          /* Restrict navigation ends */
+        }
 
         {
           /* Restrict Question Navigation */
@@ -634,7 +833,9 @@ const Settings = ({
                       size="large"
                       data-cy="assignment-time"
                       value={
-                        !isNaN(allowedTime) ? allowedTime / (60 * 1000) : 1
+                        !isNaN(allowedTime)
+                          ? allowedTime / (60 * 1000) || ''
+                          : 1
                       }
                       type="number"
                       min={1}

@@ -1,9 +1,10 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
-
+import { chunk } from 'lodash'
+import { SortableContainer } from 'react-sortable-hoc'
 import { FlexContainer } from '@edulastic/common'
 import { OptionsList } from '../styled/OptionsList'
-import Option from './Option'
+import Option, { SortableOption } from './Option'
 
 const Options = ({
   options,
@@ -43,69 +44,65 @@ const Options = ({
     }
     return res
   }
+
   const mcqOptions =
     uiStyle.orientation !== 'vertical' ? options : updateArrangement(options)
 
-  let _startIndex = 0
-  const optionsIndexMap = {}
-  if (uiStyle.orientation === 'vertical') {
-    options.forEach((data, i) => {
-      optionsIndexMap[data.value] = i
-    })
-  }
+  const OptComponent = fromSetAnswers ? SortableOption : Option
 
-  const getOption = (startIndex, lastIndex) => (
-    <FlexContainer
-      justifyContent="left"
-      className="__prevent-page-break __print-space-reduce-options"
-      width={fromSetAnswers && '100%'}
-    >
-      {mcqOptions.slice(startIndex, lastIndex).map((option, index) => (
-        <Option
-          maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
-          key={option.value}
-          index={
-            uiStyle.orientation !== 'vertical'
-              ? startIndex + index
-              : optionsIndexMap[option.value]
-          }
-          uiStyle={uiStyle}
-          item={option}
-          validation={validation}
-          onChange={() => onChange(option.value)}
-          onRemove={() => onRemove(option.value)}
-          correct={evaluation}
-          styleType={styleType}
-          multipleResponses={multipleResponses}
-          fontSize={fontSize}
-          fromSetAnswers={fromSetAnswers}
-          {...restProps}
-        />
-      ))}
-    </FlexContainer>
+  const indexMap = useMemo(
+    () =>
+      mcqOptions.reduce((acc, curr, i) => {
+        acc[curr.value] = i
+        return acc
+      }, {}),
+    [mcqOptions]
   )
 
-  const renderOptionList = () => {
-    const optionList = []
-    for (let row = 1; row <= noOfRows; row++) {
-      const lastIndex = noOfColumns * row
-      optionList.push(getOption(_startIndex, lastIndex))
-      _startIndex = lastIndex
-    }
-    return optionList
-  }
+  const cols = chunk(mcqOptions, noOfRows)
 
   return (
     <OptionsList
-      width={fromSetAnswers && '100%'}
+      width="100%"
       styleType={styleType}
       fontSize={fontSize}
+      id="multiplechoice-optionlist"
       className="multiplechoice-optionlist"
     >
-      {renderOptionList()}
+      {cols.map((col, colIdx) => (
+        <FlexContainer
+          key={colIdx}
+          width={`calc(${100 / cols.length}% - 15px)`}
+          justifyContent="left"
+          flexDirection="column"
+          className="__prevent-page-break __print-space-reduce-options"
+          data-cy="sortable-list-container"
+        >
+          {col.map((row) => (
+            <OptComponent
+              maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
+              key={row.value}
+              indx={indexMap[row.value]}
+              index={indexMap[row.value]}
+              uiStyle={uiStyle}
+              item={row}
+              validation={validation}
+              onChange={() => onChange(row.value)}
+              onRemove={() => onRemove(row.value)}
+              correct={evaluation}
+              styleType={styleType}
+              multipleResponses={multipleResponses}
+              fontSize={fontSize}
+              fromSetAnswers={fromSetAnswers}
+              {...restProps}
+            />
+          ))}
+        </FlexContainer>
+      ))}
     </OptionsList>
   )
 }
+export const SortableOptions = SortableContainer(Options)
 
 Options.propTypes = {
   showAnswer: PropTypes.bool,

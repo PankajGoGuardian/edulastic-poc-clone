@@ -257,7 +257,7 @@ function* createAssessmentSaga({ payload }) {
         userRole === roleuser.SCHOOL_ADMIN
       const releaseScore =
         userRole === roleuser.TEACHER && isReleaseScorePremium
-          ? testConstant.releaseGradeLabels.WITH_RESPONSE
+          ? testConstant.releaseGradeLabels.WITH_ANSWERS
           : testConstant.releaseGradeLabels.DONT_RELEASE
       const { user } = yield select(getUserSelector)
       const name = without(

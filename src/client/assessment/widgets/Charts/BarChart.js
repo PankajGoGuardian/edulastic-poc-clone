@@ -15,6 +15,7 @@ import {
   displayHorizontalLines,
   displayVerticalLines,
   getGridVariables,
+  normalizeTouchEvent,
 } from './helpers'
 import Bars from './components/Bars'
 import BarsAxises from './components/BarsAxises'
@@ -96,13 +97,6 @@ const BarChart = ({
     setIsMouseDown(false)
     toggleBarDragging(false)
     saveAnswer(localData, active)
-  }
-
-  const normalizeTouchEvent = (e) => {
-    if (e?.nativeEvent?.changedTouches?.length) {
-      e.pageX = e.nativeEvent.changedTouches[0].pageX
-      e.pageY = e.nativeEvent.changedTouches[0].pageY
-    }
   }
 
   const onMouseMove = (e) => {

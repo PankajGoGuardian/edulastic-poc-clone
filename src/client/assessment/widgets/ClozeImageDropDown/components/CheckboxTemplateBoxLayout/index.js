@@ -1,7 +1,8 @@
 /* eslint-disable react/prop-types */
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { smallDesktopWidth } from '@edulastic/colors'
+import isEmpty from 'lodash/isEmpty'
 
 import { withTheme } from 'styled-components'
 import { StyledTemplateBox } from './styled/StyledTemplateBox'
@@ -39,6 +40,13 @@ const CheckboxTemplateBoxLayout = ({
   const allCorrect =
     responseContainers?.length === Object.keys(evaluation)?.length &&
     Object.keys(evaluation)?.every((id) => evaluation[id])
+
+  const isEvaluationEmpty = useMemo(() => {
+    return isEmpty(evaluation)
+  }, [evaluation])
+
+  const singleResponseBox =
+    responseContainers && responseContainers.length === 1
 
   return (
     <StyledTemplateBox fontSize={fontSize}>
@@ -127,6 +135,8 @@ const CheckboxTemplateBoxLayout = ({
               imageHeight={imageHeight}
               allCorrect={allCorrect}
               answerScore={answerScore}
+              isEvaluationEmpty={isEvaluationEmpty}
+              singleResponseBox={singleResponseBox}
             />
           )
         })}

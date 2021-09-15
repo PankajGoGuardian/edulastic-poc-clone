@@ -6,7 +6,7 @@ import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import ReportIssueConfirmaModal from './ReportIssueConfirmaModal'
 import ReportIssue from '../../../author/src/components/common/PreviewModal/ReportIssue'
 
-const ReportIssuePopover = ({ item }) => {
+const ReportIssuePopover = ({ item, playerSkinType }) => {
   const [visible, setVisibility] = useState(false)
   const [showConfirmModal, toggleModal] = useState(false)
   const [confirmationResponse, setResponse] = useState(false)
@@ -25,6 +25,7 @@ const ReportIssuePopover = ({ item }) => {
   return (
     <>
       <Popover
+        isDrc={playerSkinType === 'drc'}
         style={
           visible
             ? { opacity: '1' }
@@ -44,6 +45,7 @@ const ReportIssuePopover = ({ item }) => {
       </Popover>
 
       <StyledButton
+        isDrc={playerSkinType === 'drc'}
         title="Report Issue"
         type="danger"
         onClick={() => toggleVisibility(!visible)}
@@ -63,7 +65,7 @@ export default ReportIssuePopover
 
 const StyledButton = styled(Button)`
   position: fixed;
-  bottom: 20px;
+  bottom: ${(props) => (props.isDrc ? '150px' : '20px')};
   right: 35px;
   border: none;
   font-size: 20px;
@@ -79,8 +81,8 @@ const StyledButton = styled(Button)`
 const Popover = styled.div`
   position: fixed;
   width: 500px;
-  right: 35px;
-  bottom: 70px;
+  right: ${(props) => (props.isDrc ? '85px' : '35px')};
+  bottom: ${(props) => (props.isDrc ? '80px' : '70px')};
   background-color: white;
   border-radius: 10px;
   padding: 0px 15px 10px;

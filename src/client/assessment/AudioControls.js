@@ -47,6 +47,7 @@ const AudioControls = ({
   className,
   page,
   hideVisibility,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -186,7 +187,7 @@ const AudioControls = ({
           )
         } else {
           const pageAudio = questionData.tts.pages
-            .filter((p) => p?.contentAudioUrl)
+            .filter((p) => p?.contentAudioURL)
             .map((p) => audioLoadResolve(p?.contentAudioURL))
 
           if (pageAudio.length) {
@@ -239,16 +240,16 @@ const AudioControls = ({
 
             if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
             else
-              Sentry.captureException(
-                new Error(
-                  `[AudioControls] Option audio missing for choice_${i}`
-                )
+              Sentry.captureMessage(
+                `[AudioControls] Option audio missing for choice_${i}`,
+                'info'
               )
 
             if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
             else
-              Sentry.captureException(
-                new Error(`[AudioControls] Option audio missing for ${item}`)
+              Sentry.captureMessage(
+                `[AudioControls] Option audio missing for ${item}`,
+                'info'
               )
           }
           setCurrentPlayingDetails()
@@ -296,6 +297,7 @@ const AudioControls = ({
             height="40px"
             IconBtn={!btnWithText}
             onClick={handlePlayPauseAudio}
+            disabled={isPremiumContentWithoutAccess}
           >
             {currentPlayingDetails.qId === qId ? (
               <>
@@ -325,7 +327,9 @@ const AudioControls = ({
             height="40px"
             IconBtn={!btnWithText}
             onClick={handleStopAudio}
-            disabled={currentPlayingDetails.qId !== qId}
+            disabled={
+              currentPlayingDetails.qId !== qId || isPremiumContentWithoutAccess
+            }
           >
             <>
               {btnWithText ? (

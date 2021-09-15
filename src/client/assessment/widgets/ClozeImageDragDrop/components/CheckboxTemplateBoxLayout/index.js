@@ -126,7 +126,10 @@ const CheckboxTemplateBox = ({
     </>
   )
 
-  const responseBoxIndex = showAnswer && (
+  const singleResponseBox =
+    responseContainers && responseContainers.length === 1
+
+  const responseBoxIndex = showAnswer && !singleResponseBox && (
     <IndexBox bgColor={indexBgColor}>{indexStr}</IndexBox>
   )
 
@@ -198,6 +201,7 @@ const CheckboxTemplateBoxLayout = (props) => {
     isSnapFitValues,
     showDropItemBorder,
   } = props
+
   return (
     <>
       {annotations}

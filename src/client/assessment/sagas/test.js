@@ -19,6 +19,7 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
+import * as Sentry from '@sentry/browser'
 import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
@@ -91,7 +92,10 @@ import {
   CLEAR_ITEM_EVALUATION,
   CHANGE_VIEW,
 } from '../../author/src/constants/actions'
-import { addAutoselectGroupItems } from '../../author/TestPage/ducks'
+import {
+  addAutoselectGroupItems,
+  fillAutoselectGoupsWithDummyItems,
+} from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
 import {
@@ -102,6 +106,10 @@ import { getClassIds } from '../../student/Reports/ducks'
 import { startAssessmentAction } from '../actions/assessment'
 import { TIME_UPDATE_TYPE } from '../themes/common/TimedTestTimer'
 import { getTestLevelUserWorkSelector } from '../../student/sharedDucks/TestItem'
+import {
+  setSelectedThemeAction,
+  setZoomLevelAction,
+} from '../../student/Sidebar/ducks'
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
@@ -225,7 +233,6 @@ function getScratchpadDataFromAttachments(attachments) {
 function* loadTest({ payload }) {
   const {
     testActivityId,
-    testId,
     preview = false,
     demo = false,
     test: testData = {},
@@ -235,12 +242,16 @@ function* loadTest({ payload }) {
     currentAssignmentId,
     savedUserWork,
   } = payload
+  let { testId } = payload
+  const _testId = testId
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
-      throw new Error(
-        'Unable to load the test. Please contact Edulastic Support'
+      Sentry.captureMessage(
+        'Unable to load the test. Please contact Edulastic Support',
+        'info'
       )
+      return
     }
 
     // if the assessment player is loaded for showing student work
@@ -264,13 +275,6 @@ function* loadTest({ payload }) {
     })
     yield put(setPasswordValidateStatusAction(false))
 
-    yield put({
-      type: SET_TEST_ID,
-      payload: {
-        testId,
-      },
-    })
-
     const studentAssesment = yield select((state) =>
       (state.router.location.pathname || '').match(
         new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
@@ -290,6 +294,18 @@ function* loadTest({ payload }) {
           !!studentAssesment
         )
       : false
+    const _response = yield all([getTestActivity])
+    const testActivity = _response?.[0] || {}
+    if (testActivity?.testActivity?.testId) {
+      testId = testActivity?.testActivity?.testId
+    }
+
+    yield put({
+      type: SET_TEST_ID,
+      payload: {
+        testId,
+      },
+    })
     const userAuthenticated = getAccessToken()
     const getPublicTest = userAuthenticated
       ? testsApi.getById
@@ -304,8 +320,16 @@ function* loadTest({ payload }) {
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api
       : call(getPublicTest, testId)
-    const _response = yield all([getTestActivity])
-    const testActivity = _response?.[0] || {}
+
+    const previousVisitedTestId = sessionStorage.getItem('currentTestId')
+    if (previousVisitedTestId !== _testId) {
+      yield put(setZoomLevelAction('1'))
+      yield put(setSelectedThemeAction('default'))
+      localStorage.setItem('selectedTheme', 'default')
+      localStorage.setItem('zoomLevel', 1)
+      sessionStorage.setItem('currentTestId', testId)
+    }
+
     const isFromSummary = yield select((state) =>
       get(state, 'router.location.state.fromSummary', false)
     )
@@ -393,6 +417,7 @@ function* loadTest({ payload }) {
       )
     ) {
       test = yield addAutoselectGroupItems({ payload: test, preview })
+      fillAutoselectGoupsWithDummyItems(test)
     }
     if (
       preview &&
@@ -404,7 +429,7 @@ function* loadTest({ payload }) {
       // for all limited random group update items as per number of delivery items count
       test = modifyTestDataForPreview(test)
     }
-    test.testItems = test.itemGroups.flatMap(
+    test.testItems = test?.itemGroups?.flatMap?.(
       (itemGroup) => itemGroup.items || []
     )
     const {
@@ -776,7 +801,7 @@ function* loadTest({ payload }) {
           notification({
             msg: errorMessage || 'Something went wrong!',
           })
-          Fscreen.exitFullscreen()
+          Fscreen.safeExitfullScreen()
           return yield put(push('/home/assignments'))
         }
         notification({
@@ -786,7 +811,7 @@ function* loadTest({ payload }) {
     }
     if (userRole === roleuser.STUDENT) {
       notification({ messageKey })
-      Fscreen.exitFullscreen()
+      Fscreen.safeExitfullScreen()
       return yield put(push('/home/assignments'))
     }
   }
@@ -982,6 +1007,7 @@ function* submitTest({ payload }) {
       type: SET_SAVE_USER_RESPONSE,
       payload: false,
     })
+    yield put(setSelectedThemeAction('default'))
     Fscreen.safeExitfullScreen()
   }
 }

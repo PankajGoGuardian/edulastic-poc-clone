@@ -8,7 +8,7 @@ const IconMoreVertical = (props) => (
     xmlns="http://www.w3.org/2000/svg"
     width="3"
     height="14"
-    viewBox="0 0 3 14"
+    viewBox={props?.viewBox ? props?.viewBox : '0 0 3 14'}
     {...props}
   >
     <g transform="translate(-1352.194 -4)">

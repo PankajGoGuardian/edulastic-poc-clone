@@ -1,5 +1,7 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
+import isEmpty from 'lodash/isEmpty'
+
 import { themeColorLight1, lightGrey8, darkRed1 } from '@edulastic/colors/index'
 
 const Circles = ({
@@ -28,6 +30,8 @@ const Circles = ({
 
   const radius = 150
 
+  const isEvaluationEmpty = useMemo(() => isEmpty(evaluation), [evaluation])
+
   return (
     <PieChart width={radius * 2 + 10} height={radius * 2 + 10}>
       <Pie
@@ -46,11 +50,10 @@ const Circles = ({
             fillColor = _selected ? themeColorLight1 : lightGrey8
           } else if (_selected) {
             // show answers with highlighting (correct: green, wrong: darkRed)
-            fillColor = evaluation
-              ? evaluation[sector.index] === true
+            fillColor =
+              isEvaluationEmpty || evaluation[sector.index] === true
                 ? themeColorLight1
                 : darkRed1
-              : themeColorLight1
           }
           if (isExpressGrader && isAnswerModifiable && _selected) {
             // in expressGrader and edit response is on

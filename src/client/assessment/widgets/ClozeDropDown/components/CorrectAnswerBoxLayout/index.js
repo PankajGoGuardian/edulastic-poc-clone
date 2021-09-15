@@ -48,7 +48,9 @@ const CorrectAnswerBoxLayout = ({
     >
       {responseIds.map((response) => (
         <Answer data-cy="correctAnswer">
-          <Label>{getStemNumeration(stemNumeration, response.index)}</Label>
+          {responseIds.length !== 1 && (
+            <Label>{getStemNumeration(stemNumeration, response.index)}</Label>
+          )}
           <Text>
             <Response
               key={response.id}

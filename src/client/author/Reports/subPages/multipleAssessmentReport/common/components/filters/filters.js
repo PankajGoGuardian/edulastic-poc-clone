@@ -38,7 +38,11 @@ import {
   getReportsPrevMARFilterData,
   setPrevMARFilterDataAction,
 } from '../../filterDataDucks'
-import { getUserRole, getUser } from '../../../../../../src/selectors/user'
+import {
+  getUserRole,
+  getUser,
+  currentDistrictInstitutionIds,
+} from '../../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
@@ -77,6 +81,7 @@ const MultipleAssessmentReportFilters = ({
   showFilter,
   toggleFilter,
   fetchUpdateTagsData,
+  institutionIds,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
@@ -120,7 +125,7 @@ const MultipleAssessmentReportFilters = ({
         q.firstLoad = true
       }
       if (role === roleuser.SCHOOL_ADMIN) {
-        q.schoolIds = get(user, 'institutionIds', []).join(',')
+        q.schoolIds = institutionIds.join(',')
       }
       getMARFilterDataRequest(q)
     }
@@ -182,6 +187,10 @@ const MultipleAssessmentReportFilters = ({
         const urlPerformanceBand =
           performanceBandList.find((item) => item.key === search.profileId) ||
           performanceBandList[0]
+        const urlAssignedBy =
+          staticDropDownData.assignedBy.find(
+            (a) => a.key === search.assignedBy
+          ) || staticDropDownData.assignedBy[0]
 
         const _filters = {
           termId: urlSchoolYear.key,
@@ -198,7 +207,7 @@ const MultipleAssessmentReportFilters = ({
           classIds: search.classIds || '',
           groupIds: search.groupIds || '',
           profileId: urlPerformanceBand?.key || '',
-          assignedBy: search.assignedBy || staticDropDownData.assignedBy[0].key,
+          assignedBy: urlAssignedBy.key,
         }
         if (role === roleuser.TEACHER) {
           delete _filters.schoolIds
@@ -215,7 +224,7 @@ const MultipleAssessmentReportFilters = ({
           subjects: urlSubjects,
           grades: urlGrades,
           profileId: urlPerformanceBand,
-          assignedBy: search.assignedBy || staticDropDownData.assignedBy[0],
+          assignedBy: urlAssignedBy,
         }
 
         // set tempTagsData, filters and testId
@@ -688,6 +697,7 @@ const enhance = compose(
       role: getUserRole(state),
       user: getUser(state),
       prevMARFilterData: getReportsPrevMARFilterData(state),
+      institutionIds: currentDistrictInstitutionIds(state),
     }),
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,

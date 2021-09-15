@@ -72,7 +72,7 @@ const Content = ({
   assignments,
   fetchAssignments,
   currentGroup,
-  allClasses,
+  allClasses = [],
   userId,
   addRealtimeAssignment,
   addRealtimeReport,

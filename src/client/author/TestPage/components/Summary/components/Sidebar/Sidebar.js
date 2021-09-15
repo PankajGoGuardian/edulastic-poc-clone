@@ -19,7 +19,7 @@ import { AnalyticsItem, Block, ErrorWrapper, MetaTitle } from './styled'
 export const renderAnalytics = (title, Icon, isLiked = false, cyAttrIndex) => (
   <AnalyticsItem>
     <Icon color={isLiked ? red : '#bbbfc4'} width={15} height={15} />
-    <MetaTitle data-cy={`detail_index-${cyAttrIndex}`}>{title}</MetaTitle>
+    <MetaTitle data-cy={`${cyAttrIndex}`}>{title}</MetaTitle>
   </AnalyticsItem>
 )
 
@@ -94,7 +94,9 @@ const Sidebar = ({
   const searchTags = async (value) => {
     if (
       newAllTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       setSearchValue('')
@@ -211,7 +213,13 @@ const Sidebar = ({
               }
             >
               {collectionsToShow.map((o) => (
-                <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+                <Select.Option
+                  key={o.bucketId}
+                  value={o.bucketId}
+                  _id={o._id}
+                  type={o.type}
+                  collectionName={o.collectionName}
+                >
                   {`${o.collectionName} - ${o.name}`}
                 </Select.Option>
               ))}
@@ -228,7 +236,7 @@ const Sidebar = ({
           size="large"
           margin="0px 0px 15px"
           optionLabelProp="title"
-          placeholder="Please select"
+          placeholder="Please enter"
           value={selectedTags}
           onSearch={searchTags}
           onSelect={selectTags}

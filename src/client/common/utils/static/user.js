@@ -3,6 +3,7 @@ export const userPickFields = [
   // put it in alphabetical order
   '_id',
   'v1Id',
+  'atlasId',
   'cleverId',
   'currentSignUpState',
   'districtIds',
@@ -18,6 +19,7 @@ export const userPickFields = [
   'middleName',
   'msoId',
   'orgData',
+  'otherAccounts',
   'lastSigninSSO',
   'role',
   'permissions',
@@ -39,4 +41,6 @@ export const userPickFields = [
   'sparkPlaylistCollectionsVisited',
   'teachingStandards',
   'referrer',
+  'currentDistrictId',
+  'utm_source',
 ]

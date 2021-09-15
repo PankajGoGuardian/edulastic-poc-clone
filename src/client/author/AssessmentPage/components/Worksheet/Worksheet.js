@@ -211,6 +211,7 @@ class WorksheetComponent extends React.Component {
     const { pageStructure } = this.props
 
     const lastPageIndex = pageStructure.length
+
     this.addBlankPage(lastPageIndex)
   }
 
@@ -292,25 +293,25 @@ class WorksheetComponent extends React.Component {
     const updatedAnnotations = annotations
       // eslint-disable-next-line array-callback-return
       .map((x) => {
-        if (x.page === pageNumber + 1) {
+        const key = x.toolbarMode === 'question' ? 'page' : 'documentId'
+        if (x[key] === pageNumber + 1) {
           return null
         }
-        if (x.page < pageNumber + 1) {
+        if (x[key] < pageNumber + 1) {
           return x
         }
-        if (x.page > pageNumber + 1) {
-          return { ...x, page: x.page - 1 }
+        if (x[key] > pageNumber + 1) {
+          return { ...x, [key]: x[key] - 1 }
         }
       })
       .filter((x) => x)
 
     const updatedAssessment = {
-      pageStructure: updatedPageStructure.map((item, index) => {
+      pageStructure: updatedPageStructure.map((item) => {
         if (item.URL !== 'blank') return item
 
         return {
           ...item,
-          pageNo: index + 1,
         }
       }),
       freeFormNotes: newFreeFormNotes,
@@ -323,7 +324,6 @@ class WorksheetComponent extends React.Component {
         [id]: { ...userWork, scratchpad: newFreeFormNotes },
       })
     }
-
     this.handleChangePage(pageNumber > 0 ? pageNumber - 1 : pageNumber)
     setTestData(updatedAssessment)
   }
@@ -348,15 +348,18 @@ class WorksheetComponent extends React.Component {
       [pageIndex]: freeFormNotes[nextIndex],
     }
 
-    const newAnnotations = annotations.map((annotation) => ({
-      ...annotation,
-      page:
-        annotation.page === pageIndex + 1
-          ? nextIndex + 1
-          : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page,
-    }))
+    const newAnnotations = annotations.map((annotation) => {
+      const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      return {
+        ...annotation,
+        [key]:
+          annotation[key] === pageIndex + 1
+            ? nextIndex + 1
+            : annotation[key] === nextIndex + 1
+            ? pageIndex + 1
+            : annotation[key],
+      }
+    })
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
 
     const id = itemDetail?._id
@@ -392,15 +395,18 @@ class WorksheetComponent extends React.Component {
       [nextIndex]: freeFormNotes[pageIndex],
       [pageIndex]: freeFormNotes[nextIndex],
     }
-    const newAnnotations = annotations.map((annotation) => ({
-      ...annotation,
-      page:
-        annotation.page === pageIndex + 1
-          ? nextIndex + 1
-          : annotation.page === nextIndex + 1
-          ? pageIndex + 1
-          : annotation.page,
-    }))
+    const newAnnotations = annotations.map((annotation) => {
+      const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      return {
+        ...annotation,
+        [key]:
+          annotation[key] === pageIndex + 1
+            ? nextIndex + 1
+            : annotation[key] === nextIndex + 1
+            ? pageIndex + 1
+            : annotation[key],
+      }
+    })
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
 
     const id = itemDetail?._id
@@ -579,7 +585,6 @@ class WorksheetComponent extends React.Component {
       groupId,
       itemDetail,
     } = this.props
-
     const {
       uploadModal,
       highlightedQuestion,
@@ -598,7 +603,6 @@ class WorksheetComponent extends React.Component {
     }
 
     const selectedPage = pageStructure[currentPage] || defaultPage
-
     // WIDTH WHEN MINIMIZED REDUCE width AND USE that space for PDF AREA
     const leftColumnWidth = minimized ? 0 : 180
     const rightColumnWidth = 300

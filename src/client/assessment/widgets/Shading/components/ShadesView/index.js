@@ -20,6 +20,7 @@ const ShadesView = ({
   marginTop,
   lockedCells,
   checkAnswers,
+  isEvaluationEmpty,
 }) => {
   const rowsArray = Array(rowCount).fill(null)
 
@@ -96,6 +97,7 @@ const ShadesView = ({
                 height={cellHeight}
                 width={cellWidth}
                 key={j}
+                isEvaluationEmpty={isEvaluationEmpty}
               />
             )
           })}

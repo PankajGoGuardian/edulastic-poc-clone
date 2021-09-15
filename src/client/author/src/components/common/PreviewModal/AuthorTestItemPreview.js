@@ -228,7 +228,6 @@ class AuthorTestItemPreview extends Component {
     const widgets = cols[colIndex]?.widgets || []
     const borderRadius =
       widgetIndex === 0 || widgetIndex === widgets.length - 1 ? '10px' : '0px'
-
     return (
       <Tabs.TabContainer>
         <QuestionWrapper
@@ -254,6 +253,7 @@ class AuthorTestItemPreview extends Component {
           testItemId={item._id}
           multipartItem={item?.multipartItem || false}
           itemLevelScoring={item?.itemLevelScoring || true}
+          showStacked
         />
       </Tabs.TabContainer>
     )
@@ -320,30 +320,39 @@ class AuthorTestItemPreview extends Component {
   }
 
   renderRightButtons = () => {
-    const { isPassage, item, goToItem, passageTestItems, page } = this.props
+    const {
+      isPassage,
+      item,
+      goToItem,
+      passageTestItems: _passageTestItems,
+      page,
+    } = this.props
+    const passageTestItems = _passageTestItems?.filter((el) => el)
     const { collapseDirection } = this.state
     const showButtons = collapseDirection !== 'right'
-
+    if (
+      !isPassage ||
+      (isPassage && passageTestItems && passageTestItems.length <= 1) ||
+      !showButtons
+    ) {
+      return null
+    }
     return (
-      <>
-        {isPassage &&
-          showButtons &&
-          passageTestItems.length > 1 &&
-          (page === 'addItems' || page === 'itemList') && (
-            <PassageNavigation>
-              <span>PASSAGE ITEMS </span>
-              <Pagination
-                total={passageTestItems.length}
-                pageSize={1}
-                current={
-                  passageTestItems.findIndex((i) => i === item.versionId) + 1
-                }
-                onChange={goToItem}
-                data-cy="questionPagination"
-              />
-            </PassageNavigation>
-          )}
-      </>
+      (page === 'addItems' || page === 'itemList') && (
+        <PassageNavigation>
+          <span>PASSAGE ITEMS </span>
+          <Pagination
+            total={passageTestItems.length}
+            pageSize={1}
+            current={
+              passageTestItems.findIndex((i) => i === item.versionId) + 1
+            }
+            onChange={goToItem}
+            data-cy="questionPagination"
+            showLessItems
+          />
+        </PassageNavigation>
+      )
     )
   }
 
@@ -354,7 +363,7 @@ class AuthorTestItemPreview extends Component {
         overflow: 'auto',
       },
       ref: this.scrollContainer,
-      'data-cy': 'scroll-conteianer',
+      'data-cy': 'scroll-container',
     }
 
     // item preview popup

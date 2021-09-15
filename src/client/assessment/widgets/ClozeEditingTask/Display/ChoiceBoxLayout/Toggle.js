@@ -20,7 +20,7 @@ const Toggle = ({
   const handleChange = ({ target: { value: opIndex } }) =>
     onChange(options[opIndex])
   return (
-    <ToggleWrapper>
+    <ToggleWrapper data-cy="toggleWrapper">
       <AnswerBox isDashedline={isDashedline} style={styles}>
         <AnswerCont
           dangerouslySetInnerHTML={{ __html: answer }}

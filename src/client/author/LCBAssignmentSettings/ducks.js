@@ -8,6 +8,7 @@ import {
   assignmentStatusOptions,
 } from '@edulastic/constants'
 import { receiveTestActivitySaga } from '../ClassBoard/ducks'
+import { updateAdditionalDataAction } from '../src/reducers/testActivity'
 
 const slice = createSlice({
   initialState: {
@@ -88,6 +89,18 @@ const slice = createSlice({
           } else {
             delete state.assignment.autoRedirectSettings
             delete state.updateSettings.autoRedirectSettings
+          }
+        } else if (key === 'restrictNavigationOut') {
+          if (value === 'warn-and-report-after-n-alerts') {
+            state.assignment.restrictNavigationOutAttemptsThreshold = 5
+            state.updateSettings.restrictNavigationOutAttemptsThreshold = 5
+          } else {
+            if (!value) {
+              state.assignment.restrictNavigationOut = null
+              state.updateSettings.restrictNavigationOut = null
+            }
+            delete state.assignment.restrictNavigationOutAttemptsThreshold
+            delete state.updateSettings.restrictNavigationOutAttemptsThreshold
           }
         }
       }
@@ -220,6 +233,9 @@ function getSettingsSelector(state) {
     autoRedirectSettings,
     blockNavigationToAnsweredQuestions,
     multiLanguageEnabled,
+    blockSaveAndContinue,
+    restrictNavigationOut,
+    restrictNavigationOutAttemptsThreshold,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -295,6 +311,9 @@ function getSettingsSelector(state) {
       autoRedirectSettings,
       blockNavigationToAnsweredQuestions,
       multiLanguageEnabled,
+      blockSaveAndContinue,
+      restrictNavigationOut,
+      restrictNavigationOutAttemptsThreshold,
     },
     isUndefined
   )
@@ -317,6 +336,11 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
       settings,
     })
     yield put(slice.actions.updateAssignmentClassSettingsSucess())
+    if (typeof settings.answerOnPaper === 'boolean') {
+      yield put(
+        updateAdditionalDataAction({ answerOnPaper: settings.answerOnPaper })
+      )
+    }
     notification({
       type: 'success',
       messageKey: 'settingsUpdatedSuccessfully',

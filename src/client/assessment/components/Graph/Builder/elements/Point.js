@@ -1,7 +1,7 @@
 import JXG from 'jsxgraph'
 import { CONSTANT } from '../config'
 import { defaultPointParameters, getLabelParameters } from '../settings'
-import EditButton from './EditButton'
+// import EditButton from './EditButton'
 import { setLabel, nameGen, colorGenerator } from '../utils'
 import { Area, Equation } from '.'
 
@@ -66,7 +66,7 @@ function create(board, object, settings = {}) {
 
       point.dragged = true
       board.dragged = true
-      EditButton.cleanButton(board, point)
+      // EditButton.cleanButton(board, point)
     })
 
     point.on('mouseover', (event) => board.handleElementMouseOver(point, event))

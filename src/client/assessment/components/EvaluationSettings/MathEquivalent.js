@@ -103,6 +103,6 @@ const Tabs = styled(AntTabs)`
 `
 const TabPanel = styled(TabPane)`
   padding: 4px 0px 0px 30px;
-  max-height: 78vh;
+  max-height: 75vh;
   overflow: auto;
 `

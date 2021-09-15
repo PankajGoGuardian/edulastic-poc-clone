@@ -1,5 +1,5 @@
 import { createSelector } from 'reselect'
-import { groupBy } from 'lodash'
+import { groupBy, get as _get } from 'lodash'
 import { getUserRole } from './user'
 
 export const stateSelector = (state) => state.author_assignments
@@ -97,15 +97,6 @@ export const getToggleStudentReportCardStateSelector = createSelector(
   (state) => state.toggleStudentReportCardSettings
 )
 
-/**
- * This districtId selector is meant for all role except student
- * @type {OutputSelector<unknown, number, (res: *) => number>}
- */
-export const getDistrictIdSelector = createSelector(
-  userSelector,
-  (state) => state.user.orgData?.districtIds?.[0]
-)
-
 export const getAssignmentViewSelector = createSelector(
   stateSelector,
   getUserRole,
@@ -121,6 +112,11 @@ export const getAssignmentFilterSelector = createSelector(
 export const getAssignmentSyncInProgress = createSelector(
   stateSelector,
   (state) => state.syncWithGoogleClassroomInProgress
+)
+
+export const getShareWithGCInProgress = createSelector(
+  stateSelector,
+  (state) => state.shareWithGCInProgress
 )
 
 export const getSchoologyAssignmentSyncInProgress = createSelector(

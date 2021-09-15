@@ -22,6 +22,7 @@ import {
 import {
   receiveAssignmentByAssignmentIdAction,
   googleSyncAssignmentAction,
+  setShareWithGCInProgressAction,
 } from '../../../src/actions/assignments'
 import BreadCrumb from '../../../src/components/Breadcrumb'
 import ListHeader from '../../../src/components/common/ListHeader'
@@ -89,6 +90,8 @@ class SuccessPage extends React.Component {
       fetchAssignmentsByTestId,
       autoShareGCAssignment,
       history,
+      userId,
+      setShareWithGCInProgress,
     } = this.props
     const { id: testId, assignmentId } = match.params
     if (isPlaylist) {
@@ -108,12 +111,18 @@ class SuccessPage extends React.Component {
       const timeLeft = 60000 - (new Date().getTime() - createdAt)
       if (timeLeft > 0) {
         this.toggleShareWithGC() // disable google share button
+        setShareWithGCInProgress(true) // disable sync with GC button in LCB
         this.timer = setTimeout(() => {
           this.toggleShareWithGC()
+          setShareWithGCInProgress(false)
           clearTimeout(this.timer)
         }, timeLeft) // this will enable button after 60 seconds from assignment created.
       }
     }
+    localStorage.setItem(
+      `recommendedTest:${userId}:isContentUpdatedAutomatically`,
+      true
+    )
   }
 
   componentWillUnmount() {
@@ -168,6 +177,7 @@ class SuccessPage extends React.Component {
       history,
       location,
       regradedAssignments,
+      isPlaylist,
     } = this.props
     const { fromText, toUrl } = location.state || {
       fromText: 'Assignments',
@@ -183,7 +193,9 @@ class SuccessPage extends React.Component {
             isBlue
             isGhost
             data-cy="assignButton"
-            onClick={() => history.push(toUrl)}
+            onClick={() =>
+              history.push(isPlaylist ? `/author/${toUrl}` : toUrl)
+            }
           >
             {`Return to ${fromText}`}
           </EduButton>
@@ -316,7 +328,7 @@ class SuccessPage extends React.Component {
         const { fromText, toUrl } = this.props.location.state
         data[0] = {
           title: fromText,
-          to: toUrl,
+          to: isPlaylist ? `/author/${toUrl}` : toUrl,
         }
       }
       return data
@@ -639,6 +651,7 @@ const enhance = compose(
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       googleSyncAssignment: googleSyncAssignmentAction,
+      setShareWithGCInProgress: setShareWithGCInProgressAction,
     }
   )
 )

@@ -6,9 +6,9 @@ import {
   TextInputStyled,
   FlexContainer,
   FroalaEditor,
+  FieldLabel,
 } from '@edulastic/common'
 import {
-  Title,
   AddNewModuleContainer,
   AddNewModuleForm,
   AddBtnsWrapper,
@@ -64,22 +64,30 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
     alignItems: 'flex-start',
   }
 
+  const labelStyle = {
+    fontSize: '14px',
+    fontWeight: '500',
+    marginRight: '4px',
+  }
+
+  //
   return (
     <AddNewModuleContainer data-cy="create-new-module-form">
       <AddNewModuleForm>
         <FlexContainer {...fieldContatinerProp} width="100%">
-          <Title>
-            Module Or Chapter Name{' '}
+          <FlexContainer alignItems="center">
+            <FieldLabel style={labelStyle} isRequired>
+              Module Or Chapter Name
+            </FieldLabel>
             <Tooltip
               overlayClassName="createModuleTooltip"
               placement="bottom"
               color="#2db7f5"
               title="Module or Chapter Name is a general category within the playlist (e.g. an Earth Science playlist may have Space and Rock modules)."
             >
-              {' '}
               <InfoIcon />
             </Tooltip>
-          </Title>
+          </FlexContainer>
           <TextInputStyled
             data-cy="module-group-name"
             onChange={handleChangeModuleData('moduleGroupName')}
@@ -89,17 +97,18 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
         </FlexContainer>
         <FlexContainer width="100%">
           <FlexContainer flex={1} {...fieldContatinerProp}>
-            <Title>
-              Unit Number{' '}
+            <FlexContainer alignItems="center">
+              <FieldLabel style={labelStyle} isRequired>
+                Unit Number
+              </FieldLabel>
               <Tooltip
                 overlayClassName="createModuleTooltip"
                 placement="bottom"
                 title="Unit Number represents the placement of the module in the playlist."
               >
-                {' '}
                 <InfoIcon />
               </Tooltip>
-            </Title>
+            </FlexContainer>
             <TextInputStyled
               data-cy="module-id"
               maxLength={4}
@@ -108,17 +117,18 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
             />
           </FlexContainer>
           <FlexContainer flex={3} {...fieldContatinerProp} marginLeft="16px">
-            <Title>
-              Unit Name{' '}
+            <FlexContainer alignItems="center">
+              <FieldLabel style={labelStyle} isRequired>
+                Unit Name
+              </FieldLabel>
               <Tooltip
                 overlayClassName="createModuleTooltip"
                 placement="bottom"
                 title="Unit Name is the title of the module."
               >
-                {' '}
-                <InfoIcon />{' '}
+                <InfoIcon />
               </Tooltip>
-            </Title>
+            </FlexContainer>
             <TextInputStyled
               data-cy="module-name"
               value={moduleData.title}
@@ -128,8 +138,8 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
           </FlexContainer>
         </FlexContainer>
         <FlexContainer {...fieldContatinerProp} width="100%">
-          <Title>
-            Description{' '}
+          <FlexContainer alignItems="center">
+            <FieldLabel style={labelStyle}>Description</FieldLabel>
             <Tooltip
               overlayClassName="createModuleTooltip"
               placement="bottom"
@@ -137,7 +147,7 @@ const ModuleForm = ({ module, isEdit, onCancel, onSave }) => {
             >
               <InfoIcon />
             </Tooltip>
-          </Title>
+          </FlexContainer>
           <FroalaEditor
             value={moduleData.description || ''}
             border="border"

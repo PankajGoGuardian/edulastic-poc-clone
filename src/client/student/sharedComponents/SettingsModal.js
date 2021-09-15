@@ -1,9 +1,10 @@
 import {
   lightGreySecondary,
-  tabletWidth,
   themeColor,
   title,
   themeColorBlue,
+  drcThemeColor,
+  drcWhite,
 } from '@edulastic/colors'
 import { AssessmentPlayerContext, EduButton } from '@edulastic/common'
 import { IconSelectCaretDown } from '@edulastic/icons'
@@ -14,10 +15,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
 import { ConfirmationModal } from '../../author/src/components/common/ConfirmationModal'
-import {
-  InitOptions,
-  ModalWrapper,
-} from '../../common/components/ConfirmationModal/styled'
+import { InitOptions } from '../../common/components/ConfirmationModal/styled'
 import { themeColorsMap } from '../../theme'
 import {
   setSelectedThemeAction,
@@ -54,6 +52,7 @@ const SettingsModal = ({
   setPreviewLanguage,
   clearUserWork,
   startAssessment,
+  isPremiumContentWithoutAccess = false,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -109,7 +108,8 @@ const SettingsModal = ({
     playerSkinType === playerSkinValues.parcc ||
     playerSkinType === playerSkinValues.sbac
   return (
-    <ConfirmationModal
+    <ConfirmationModalStyled
+      playerSkinType={playerSkinType}
       maskClosable={false}
       textAlign="left"
       title={showReconfirm ? 'Alert' : 'Test Options'}
@@ -142,6 +142,7 @@ const SettingsModal = ({
             {!hideColorOrZoom && (
               <>
                 <div>
+                  {/* Color contrast switch is a seperate component for parcc skin any change here should be made for 'parcc/changecolor' component as well */}
                   <CustomColumn>COLOR CONTRAST</CustomColumn>
                   <StyledSelect
                     value={selectedTheme}
@@ -149,6 +150,7 @@ const SettingsModal = ({
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
                     style={{ marginBottom: '10px' }}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="default">Default</Select.Option>
                     {Object.keys(themeColorsMap).map((key) => {
@@ -167,6 +169,7 @@ const SettingsModal = ({
                     onChange={setZoomLevel}
                     style={{ marginBottom: '10px' }}
                     suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                    disabled={isPremiumContentWithoutAccess}
                   >
                     <Select.Option value="1">None</Select.Option>
                     <Select.Option value="1.5">1.5X standard</Select.Option>
@@ -186,6 +189,7 @@ const SettingsModal = ({
                   onChange={setChangedLang}
                   value={selectedLang}
                   suffixIcon={<IconSelectCaretDown color={themeColor} />}
+                  disabled={isPremiumContentWithoutAccess}
                 >
                   <Select.Option value="" disabled>
                     Select Language
@@ -202,7 +206,7 @@ const SettingsModal = ({
           </>
         )}
       </InitOptions>
-    </ConfirmationModal>
+    </ConfirmationModalStyled>
   )
 }
 
@@ -230,17 +234,28 @@ const enhance = compose(
   )
 )
 
-export const ModifyModalWrapper = styled(ModalWrapper)`
-  .ant-modal-footer {
-    text-align: center;
+export const ConfirmationModalStyled = styled(ConfirmationModal)`
+  ${(props) =>
+    props.playerSkinType === playerSkinValues.drc
+      ? `
+.ant-modal-footer {
+  button.ant-btn.ant-btn-primary {
+    border-color: ${drcThemeColor};
+    color: ${drcThemeColor};
+    background-color: ${drcWhite};
+    &:hover{
+      border-color: ${drcWhite};
+      color: ${drcWhite};
+      background-color: ${drcThemeColor};
+    }
   }
-  .ant-modal-title {
-    color: ${title};
-    font-size: ${(props) => props.theme.header.headerTitleSecondaryTextSize};
+  button.ant-btn.ant-btn-primary + button {
+    background: ${drcThemeColor};
+    color: ${drcWhite};
   }
-  @media (min-width: ${tabletWidth}) {
-    height: 367px;
-  }
+}
+`
+      : ``}
 `
 
 export const CustomColumn = styled.div`

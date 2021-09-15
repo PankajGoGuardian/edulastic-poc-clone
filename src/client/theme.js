@@ -14,6 +14,8 @@ import {
   lightGrey1,
   greyishBorder,
   lightGrey12,
+  lightBlue7,
+  greyThemeDark6,
 } from '@edulastic/colors'
 
 // all theme variables
@@ -1319,7 +1321,7 @@ export const defaultTheme = {
       wrongBgColor,
       wrongIconColor,
       descriptionColor,
-      backgroundShapes: breadcrumbColor,
+      backgroundShapes: greyThemeDark6,
     },
     quadrants: {
       dragDropTitleFontWeight: bold,
@@ -2542,6 +2544,31 @@ export const themes = {
     },
   },
   default: defaultTheme,
+  scanScore: {
+    ...defaultTheme,
+    styledDropZone: {
+      containerWidth: 'auto',
+      containerMargin: '40px',
+      containerPadding: '50px',
+      containerBorderRadius: '4px',
+      containerBorderColor: '#b9b9b9',
+      containerFocusBorderColor: lightBlue7,
+      containerColor: containerWhite,
+      containerDragActiveColor: actionIconColor,
+      containerBackground: containerGrey,
+      iconUploadWidth: '70px',
+      iconUploadHeight: '60px',
+      iconUploadColor: uploadIcon,
+      iconUploadDragActiveColor: actionIconColor,
+      loadingIconFontSize: questionTexticonFontSize,
+      zoneTitleFontSize: '15px',
+      zoneTitleCommentFontSize: '12px',
+      zoneTitleFontWeight: bold,
+      zoneTitleColor: zoneDropFontColor,
+      zoneTitleAltColor: zoneDropFontColorAlt,
+      underlinedColor: themeColorBlue,
+    },
+  },
   zoomed: (theme) => ({
     headerTitleFontSize: `${theme.size2}px`,
     headerClassTitleFontSize: `${theme.size4}px`,
@@ -2677,6 +2704,35 @@ export const themes = {
       footer: {
         background: '#2f4151',
         border: '#2f4151',
+        textColor: '#fff',
+        textHoverColor: '#ffffff',
+        hover: {
+          color: '#ffffff',
+          background: '#445666',
+        },
+      },
+      review: {
+        filterHoverBg: '#1A73E8',
+        textHoverColor: '#ffffff',
+        textColor: '#1AB394',
+      },
+    },
+    drc: {
+      header1: {
+        background: '#2f4151',
+        border: '#2f4151',
+      },
+      header2: {
+        background: '#3f85e5',
+        textColor: '#ffffff',
+      },
+      button: {
+        background: '#ffffff',
+        textColor: '#3f85e5',
+      },
+      footer: {
+        background: '#3F85E5',
+        border: '#3F85E5',
         textColor: '#fff',
         textHoverColor: '#ffffff',
         hover: {

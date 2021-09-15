@@ -1,9 +1,12 @@
-import React, { Component } from 'react'
+import React, { Component, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Qs from 'qs'
 import { withRouter } from 'react-router-dom'
 import { keyBy as _keyBy, get } from 'lodash'
-import { questionType } from '@edulastic/constants'
+import {
+  questionType,
+  collections as collectionConst,
+} from '@edulastic/constants'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import { getRows } from '../../../sharedDucks/itemDetail'
 import { QuestionDiv, Content } from './styled'
@@ -25,6 +28,16 @@ function Preview({ item, passages, evaluation }) {
   }
 
   const { itemLevelScoring, isPassageWithQuestions, multipartItem } = item
+
+  const premiumCollectionWithoutAccess = useMemo(
+    () =>
+      item?.premiumContentRestriction &&
+      item?.collections
+        ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+        .map(({ name }) => name),
+    [item]
+  )
+
   return (
     <Content key={item._id}>
       <TestItemPreview
@@ -41,6 +54,8 @@ function Preview({ item, passages, evaluation }) {
         isPassageWithQuestions={isPassageWithQuestions}
         itemLevelScoring={itemLevelScoring}
         multipartItem={multipartItem}
+        isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+        premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
       />
     </Content>
   )
@@ -169,13 +184,15 @@ class StudentQuestions extends Component {
       return acc
     }, {})
 
-    const testItemsRender = testItems.map((item, i) => (
-      <div className={i !== 0 && '__print-question-main-wrapper'}>
-        <Preview
-          item={item}
-          passages={passages}
-          evaluation={evaluationStatus}
-        />
+    const testItemsRender = testItems.map((item) => (
+      <div>
+        <div className="__print-question-main-wrapper">
+          <Preview
+            item={item}
+            passages={passages}
+            evaluation={evaluationStatus}
+          />
+        </div>
       </div>
     ))
     return <QuestionDiv>{testItemsRender}</QuestionDiv>

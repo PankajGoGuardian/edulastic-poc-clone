@@ -234,9 +234,9 @@ class PlacementContainer extends PureComponent {
     const bgColor = theme.widgets.graphPlacement.backgroundShapes
 
     if (this._graph) {
-      if (!disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true)
-      }
+      // if (!disableResponse) {
+      //   this._graph.createEditButton(this.handleElementSettingsMenuOpen, true)
+      // }
 
       this._graph.setDisableResponse(disableResponse)
 
@@ -289,9 +289,9 @@ class PlacementContainer extends PureComponent {
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse)
-      if (prevProps.disableResponse && !disableResponse) {
-        this._graph.createEditButton(this.handleElementSettingsMenuOpen, true)
-      }
+      // if (prevProps.disableResponse && !disableResponse) {
+      //   this._graph.createEditButton(this.handleElementSettingsMenuOpen, true)
+      // }
 
       if (
         canvas.xMin !== prevProps.canvas.xMin ||

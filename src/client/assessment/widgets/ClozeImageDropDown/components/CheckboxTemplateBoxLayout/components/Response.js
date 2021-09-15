@@ -1,8 +1,10 @@
 import React from 'react'
 import Proptypes from 'prop-types'
 import { Popover } from 'antd'
+
 import { measureText, MathSpan } from '@edulastic/common'
 import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
+
 import { Pointer } from '../../../../../styled/Pointer'
 import { Point } from '../../../../../styled/Point'
 import { Triangle } from '../../../../../styled/Triangle'
@@ -27,6 +29,8 @@ const Response = ({
   imageWidth,
   allCorrect,
   answerScore,
+  isEvaluationEmpty,
+  singleResponseBox,
 }) => {
   const userAnswer = convertToMathTemplate(answered)
   const { width: contentWidth } = measureText(answered, btnStyle)
@@ -45,7 +49,8 @@ const Response = ({
     answerScore,
     status === 'right',
     userAnswer,
-    allCorrect
+    allCorrect,
+    isEvaluationEmpty
   )
 
   const popoverContent = (
@@ -57,6 +62,7 @@ const Response = ({
       fillColor={fillColor}
       indexBgColor={indexBgColor}
       mark={mark}
+      singleResponseBox={singleResponseBox}
     />
   )
 
@@ -69,7 +75,9 @@ const Response = ({
       indexBgColor={indexBgColor}
       isPrintPreview={isPrintPreview}
     >
-      {showAnswer && <span className="index">{indexStr}</span>}
+      {showAnswer && !singleResponseBox && (
+        <span className="index">{indexStr}</span>
+      )}
       <div className="text">
         <MathSpan dangerouslySetInnerHTML={{ __html: userAnswer }} />
       </div>
@@ -102,6 +110,7 @@ Response.propTypes = {
   onClickHandler: Proptypes.func.isRequired,
   indexStr: Proptypes.string.isRequired,
   isExpressGrader: Proptypes.bool.isRequired,
+  singleResponseBox: Proptypes.bool,
 }
 
 Response.defaultProps = {
@@ -109,6 +118,7 @@ Response.defaultProps = {
   showAnswer: false,
   checkAnswer: false,
   btnStyle: {},
+  singleResponseBox: false,
 }
 
 export default Response

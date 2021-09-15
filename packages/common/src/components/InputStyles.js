@@ -10,7 +10,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 export const FieldLabel = styled.label`
-  font-size: 11px;
+  font-size: ${(props) => props.fs || '11px'};
   font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
   font-style: ${(props) => props.theme.widgetOptions.labelFontStyle};
   font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
@@ -28,6 +28,15 @@ export const FieldLabel = styled.label`
   padding-bottom: ${(props) => (props.bottom ? `${props.bottom}px` : 0)};
   padding-left: ${(props) => (props.left ? `${props.left}px` : 0)};
   padding-right: ${(props) => (props.right ? `${props.right}px` : 0)};
+  &:after {
+    content: '*';
+    display: ${(props) => (props.isRequired ? 'inline-block' : 'none')};
+    color: red;
+    position: relative;
+    top: -0.5em;
+    font-size: 75%;
+  }
+  ${(props) => props.style};
 `
 
 const inputCommonStyle = {
@@ -101,6 +110,7 @@ export const TextInputStyled = styled((props) => (
   }
   &::placeholder {
     text-align: ${(props) => props.placeHolderAlign};
+    color: ${greyThemeDark2};
   }
   &:focus::placeholder {
     color: transparent;
@@ -136,6 +146,7 @@ export const NumberInputStyled = styled(InputNumber)`
     }
     .ant-input-number-input {
       height: ${(props) => props.height || '32px'};
+      text-align: ${(props) => props.textAlign || 'left'};
       padding: 0px;
     }
   }
@@ -272,7 +283,8 @@ export const SelectInputStyled = styled(Select)`
           }
           .ant-select-selection__choice__content {
             font-size: 10px;
-            display: flex;
+            display: ${(props) =>
+              props.tagsEllipsis ? 'inline-block' : 'flex'};
             align-items: center;
             font-weight: bold;
             letter-spacing: 0.2px;

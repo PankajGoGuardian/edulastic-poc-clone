@@ -9,9 +9,10 @@ import {
   withWindowSizes,
   EduButton,
   getFormattedAttrId,
-  ItemLevelContext as HideScoringBlackContext,
+  PointBlockContext,
   CustomPrompt,
   LanguageContext,
+  ScrollContext,
 } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconClose } from '@edulastic/icons'
@@ -69,11 +70,17 @@ import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
 const { useLanguageFeatureQn } = constantsQuestionType
 
 const shouldHideScoringBlock = (item, currentQuestionId) => {
+  const multipartItem = get(item, 'multipartItem')
+  const itemLevelScoring = get(item, 'itemLevelScoring', true)
+
+  if (multipartItem && itemLevelScoring) {
+    return true
+  }
+
   const questions = get(item, 'data.questions', [])
   const newQuestionTobeAdded = !questions.find(
     (x) => x.id === currentQuestionId
   )
-  const itemLevelScoring = get(item, 'itemLevelScoring', true)
   let canHideScoringBlock = true
   if (questions.length === 0) {
     canHideScoringBlock = false
@@ -126,10 +133,7 @@ class Container extends Component {
   }
 
   handleChangeView = (view) => {
-    const { changeView, showCalculatingSpinner } = this.props
-    if (showCalculatingSpinner) {
-      return
-    }
+    const { changeView } = this.props
     this.setState({
       showHints: false,
     })
@@ -172,31 +176,23 @@ class Container extends Component {
   handleSaveQuestion = () => {
     const {
       saveQuestion,
-      savePassage,
       removeAnswers,
       setAuthoredByMeFilter,
       match,
-      history,
       isEditFlow,
       isTestFlow,
+      isPassageWithQuestions,
+      onAddWidgetToPassage,
     } = this.props
     const { testId } = match.params
 
-    const isPassageWithQuestions = get(
-      history,
-      'location.state.isPassageWithQuestions',
-      false
-    )
+    removeAnswers()
     if (isPassageWithQuestions) {
-      return savePassage({
-        isTestFlow,
-        isEditFlow,
-        testId: testId || history?.location?.state?.testId,
-      })
+      onAddWidgetToPassage()
+      return
     }
 
-    saveQuestion(testId, isTestFlow, isEditFlow)
-    removeAnswers()
+    saveQuestion({ testId, isTestFlow, isEditFlow })
     if (setAuthoredByMeFilter) setAuthoredByMeFilter()
   }
 
@@ -233,14 +229,7 @@ class Container extends Component {
   }
 
   renderQuestion = () => {
-    const {
-      view,
-      question,
-      preview,
-      itemFromState,
-      showCalculatingSpinner,
-      testItemId,
-    } = this.props
+    const { view, question, preview, itemFromState, testItemId } = this.props
     const { saveClicked, clearClicked } = this.state
     const questionType = question && question.type
     if (view === 'metadata') {
@@ -257,7 +246,7 @@ class Container extends Component {
         question.id
       )
       return (
-        <HideScoringBlackContext.Provider value={hidingScoringBlock}>
+        <PointBlockContext.Provider value={hidingScoringBlock}>
           <QuestionWrapper
             type={questionType}
             view={view}
@@ -269,13 +258,11 @@ class Container extends Component {
             questionId={question.id}
             saveClicked={saveClicked}
             clearClicked={clearClicked}
-            scrollContainer={this.scrollContainer}
-            showCalculatingSpinner={showCalculatingSpinner}
             testItemId={testItemId}
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}
-        </HideScoringBlackContext.Provider>
+        </PointBlockContext.Provider>
       )
     }
   }
@@ -460,6 +447,9 @@ class Container extends Component {
       saveItem,
       preview,
       question,
+      onCloseEditModal,
+      onToggleFullModal,
+      isInModal,
     } = this.props
 
     const commonProps = {
@@ -469,6 +459,7 @@ class Container extends Component {
       view,
       preview,
       isTestFlow,
+      isInModal,
       showMetaData: question.type !== 'passage',
       withLabels: true,
     }
@@ -487,7 +478,9 @@ class Container extends Component {
         renderRightSide={
           view === 'edit' ? this.renderRightSideButtons : () => {}
         }
+        onToggleFullModal={onToggleFullModal}
         onShowSettings={() => setShowSettings(true)}
+        onCloseEditModal={onCloseEditModal}
         showAuditTrail={!!item}
       />
     ) : (
@@ -502,6 +495,8 @@ class Container extends Component {
         onSaveScrollTop={onSaveScrollTop}
         savedWindowScrollTop={savedWindowScrollTop}
         showAuditTrail={!!item}
+        onToggleFullModal={onToggleFullModal}
+        onCloseEditModal={onCloseEditModal}
         renderExtra={() =>
           modalItemId && (
             <ButtonClose onClick={onModalClose}>
@@ -526,6 +521,8 @@ class Container extends Component {
       showCalculatingSpinner,
       allowedToSelectMultiLanguage,
       t,
+      isPassageWithQuestions,
+      isInModal,
     } = this.props
 
     if (!question) {
@@ -552,7 +549,7 @@ class Container extends Component {
     const questionType = question && question.type
 
     return (
-      <EditorContainer ref={this.innerDiv}>
+      <EditorContainer ref={this.innerDiv} isInModal={isInModal}>
         {/* TODO: message can be seen only when react-router-dom detects changes */}
         <CustomPrompt
           when={!!hasUnsavedChanges}
@@ -570,16 +567,27 @@ class Container extends Component {
             {JSON.stringify(question, null, 4)}
           </SourceModal>
         )}
-        <HeaderContainer>
-          <ItemHeader title={question.title} reference={itemId}>
+        <HeaderContainer isInModal={isInModal}>
+          <ItemHeader
+            title={question.title}
+            reference={itemId}
+            isInModal={isInModal}
+            hideSideMenu={isPassageWithQuestions}
+          >
             {this.header()}
           </ItemHeader>
 
-          <BreadCrumbBar className="sticky-header">
-            {windowWidth > desktopWidth.replace('px', '') ? (
+          <BreadCrumbBar
+            className={isInModal ? '' : 'sticky-header'}
+            isPassageWithQuestions={isPassageWithQuestions}
+          >
+            {windowWidth > desktopWidth.replace('px', '') &&
+            !isPassageWithQuestions ? (
               <SecondHeadBar breadcrumb={this.breadcrumb} />
             ) : (
-              <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              !isPassageWithQuestions && (
+                <BackLink onClick={history.goBack}>Back to Item List</BackLink>
+              )
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
               {allowedToSelectMultiLanguage &&
@@ -600,15 +608,23 @@ class Container extends Component {
             </RightActionButtons>
           </BreadCrumbBar>
         </HeaderContainer>
-        <QuestionContentWrapper
-          data-cy="question-editor-container"
-          ref={this.scrollContainer}
-          zIndex="1"
+        <ScrollContext.Provider
+          value={{
+            getScrollElement: () => this.scrollContainer.current,
+          }}
         >
-          <LanguageContext.Provider value={{ currentLanguage }}>
-            {this.renderQuestion()}
-          </LanguageContext.Provider>
-        </QuestionContentWrapper>
+          <QuestionContentWrapper
+            zIndex="1"
+            isInModal={isInModal}
+            ref={this.scrollContainer}
+            className="question-editor-container"
+            data-cy="question-editor-container"
+          >
+            <LanguageContext.Provider value={{ currentLanguage }}>
+              {this.renderQuestion()}
+            </LanguageContext.Provider>
+          </QuestionContentWrapper>
+        </ScrollContext.Provider>
         <WarningModal visible={showWarningModal} proceedPublish={proceedSave} />
         {showCalculatingSpinner && <Spinner />}
       </EditorContainer>
@@ -701,7 +717,8 @@ export default enhance(Container)
 const BreadCrumbBar = styled.div`
   padding: 10px 30px;
   display: flex;
-  justify-content: space-between;
+  justify-content: ${({ isPassageWithQuestions }) =>
+    isPassageWithQuestions ? 'flex-end' : 'space-between'};
   align-items: center;
 
   &.sticky-header {
@@ -719,10 +736,11 @@ const RightActionButtons = styled.div`
 `
 
 const EditorContainer = styled.div`
-  min-height: 100vh;
+  min-height: ${({ isInModal }) =>
+    isInModal ? 'calc(100vh - 50px)' : '100vh'};
   overflow: hidden;
 `
 
 const HeaderContainer = styled.div`
-  padding-bottom: 50px;
+  padding-bottom: ${({ isInModal }) => (isInModal ? '' : '50px')};
 `

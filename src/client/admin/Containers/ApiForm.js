@@ -73,6 +73,13 @@ const ApiForm = () => {
         .then((res) => {
           notification({ type: res?.type || 'success', msg: res?.message })
         })
+        .catch((e) => {
+          if (e.status === 400) {
+            notification({ type: 'warn', msg: 'Enter a valid groupId' })
+          } else {
+            notification({ type: 'warn', msg: e.message })
+          }
+        })
     } else if (option.id === CREATE_ADMIN) {
       adminApi.searchUpdateDistrict({ id: data.districtId }).then((res) => {
         if (res?.data?.length) {

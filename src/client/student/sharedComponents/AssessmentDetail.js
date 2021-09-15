@@ -1,7 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
-import { Col, Icon, Tooltip } from 'antd'
+import { Col, Tooltip } from 'antd'
 import {
   white,
   testTypeColor,
@@ -11,14 +11,14 @@ import {
   smallDesktopWidth,
   desktopWidth,
   themeColor,
-  black,
+  greyThemeDark3,
 } from '@edulastic/colors'
 import {
   test,
   testActivity as testActivityConstants,
 } from '@edulastic/constants'
 import { FlexContainer, notification } from '@edulastic/common'
-import { IconSchedule } from '@edulastic/icons'
+import { IconSchedule, IconHourGlass } from '@edulastic/icons'
 import { curriculumSequencesApi } from '@edulastic/api'
 import { pick } from 'lodash'
 import { ResouceIcon } from '../../author/CurriculumSequence/components/ResourceItem'
@@ -54,7 +54,6 @@ const AssessmentDetails = ({
   isDueDate,
   serverTimeStamp,
   timedAssignment,
-  timedTestIconType,
   allowedTime,
   setEmbeddedVideoPreviewModal,
   studentResources = [],
@@ -195,11 +194,7 @@ const AssessmentDetails = ({
           <TimeIndicator type={type}>
             {timedAssignment && (
               <>
-                <Icon
-                  className="timerIcon"
-                  color={black}
-                  type={timedTestIconType}
-                />
+                <IconHourGlass color={greyThemeDark3} />
                 <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
               </>
             )}
@@ -343,7 +338,7 @@ const CardDetails = React.memo(styled(Col)`
   }
 
   @media only screen and (min-width: ${smallDesktopWidth}) and (max-width: ${extraDesktopWidth}) {
-    width: 40vw;
+    width: 30vw;
   }
 
   @media only screen and (min-width: ${mobileWidthMax}) and (max-width: ${desktopWidth}) {

@@ -107,7 +107,7 @@ function hideButton(board, element) {
 function cleanButton(board, element) {
   window.clearTimeout(timeoutId)
   buttonIsVisible = false
-  board.editButton.setAttribute({ visible: false })
+  board?.editButton?.setAttribute?.({ visible: false })
 
   if (element.label) {
     element.label.setAttribute({ visible: true })

@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components'
-import { WithMathFormula } from '@edulastic/common'
+import { WithMathFormula, NumberInputStyled } from '@edulastic/common'
 import { smallDesktopWidth } from '@edulastic/colors'
 
 const Style = css`
@@ -12,6 +12,13 @@ const Style = css`
   text-decoration: none;
 `
 
+export const NumberInputStyledTestPage = styled(NumberInputStyled)`
+  .ant-input-number-handler-wrap:hover
+    ~ .ant-input-number-input-wrap
+    > .ant-input-number-input {
+    padding-right: 45%;
+  }
+`
 export const Stimulus = WithMathFormula(styled.div`
   color: ${(props) => props.theme.questionTextColor};
   margin-top: 3px;

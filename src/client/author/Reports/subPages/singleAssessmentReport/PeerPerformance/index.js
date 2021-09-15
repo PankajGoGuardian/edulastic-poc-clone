@@ -36,6 +36,7 @@ import {
 } from './ducks'
 import { idToName, parseData } from './util/transformers'
 import { getColumns } from './util/tableColumns'
+import { getAssessmentName } from '../../../common/util'
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
@@ -74,11 +75,9 @@ const PeerPerformance = ({
     }
     return peerPerf
   }, [_peerPerformance])
-  const assessmentName = `${
-    settings.selectedTest.title
-  } (ID:${settings.selectedTest.key.substring(
-    settings.selectedTest.key.length - 5
-  )})`
+  const assessmentName = getAssessmentName(
+    peerPerformance?.meta?.test || settings.selectedTest
+  )
 
   const bandInfo = useMemo(
     () =>
@@ -119,7 +118,7 @@ const PeerPerformance = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedTest, settings.requestFilters])
+  }, [settings.selectedTest?.key, settings.requestFilters])
 
   useEffect(() => {
     setPerformanceBandProfile(peerPerformance?.bandInfo || {})
@@ -164,7 +163,10 @@ const PeerPerformance = ({
     }
   }, [peerPerformance])
 
-  const res = { ...peerPerformance, bandInfo }
+  const res = useMemo(() => ({ ...peerPerformance, bandInfo }), [
+    peerPerformance,
+    bandInfo,
+  ])
   const parsedData = useMemo(() => {
     return {
       data: parseData(res, ddfilter),

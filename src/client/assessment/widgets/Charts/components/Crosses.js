@@ -106,6 +106,7 @@ const Crosses = ({
               })`}
               fill={greyThemeDark4}
               d="M8.625,0.707106781 L5.75,3.58210678 L2.875,0.707106781 L0.707106781,2.875 L3.58210678,5.75 L0.707106781,8.625 L2.87959354,10.7974868 L5.75,8.00118958 L8.62040646,10.7974868 L10.7928932,8.625 L7.91789322,5.75 L10.7928932,2.875 L8.625,0.707106781 Z"
+              data-cy={`bar-${index}cross-${ind}`}
             />
           ))}
           <Bar
@@ -148,6 +149,7 @@ const Crosses = ({
                 color={dot.y === 0 ? themeColor : 'transparent'}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
+                data-cy={`activeBar-${index}`}
               />
             </>
           )}

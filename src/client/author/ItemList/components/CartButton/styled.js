@@ -9,6 +9,7 @@ import styled from 'styled-components'
 export const Container = styled.div`
   position: relative;
   margin-left: 5px;
+  display: flex;
   opacity: ${(props) => (props.disabled ? 0.5 : 1)};
   pointer-events: ${(props) => (props.disabled ? 'none' : 'all')};
   cursor: ${(props) => (props.disabled ? 'default' : 'pointer')};

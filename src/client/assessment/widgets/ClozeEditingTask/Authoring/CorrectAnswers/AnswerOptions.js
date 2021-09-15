@@ -74,7 +74,13 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
       </CheckboxLabel>
 
       <FlexContainer alignItems="center">
-        <Select width="160px" onSelect={onChangeDisplayStyle} value={dStyle}>
+        <Select
+          width="160px"
+          onSelect={onChangeDisplayStyle}
+          value={dStyle}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          data-cy="responseTypeDropDown"
+        >
           {displayStyleOptions.map((op, index) => (
             <Option value={op.value} key={index}>
               {op.label}

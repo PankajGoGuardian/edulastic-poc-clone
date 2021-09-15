@@ -58,6 +58,7 @@ import {
   ThirdPartyLoginBtn,
 } from '../../styled'
 import PasswordPopup from '../PasswordPopup'
+import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
 
 const FormItem = Form.Item
 
@@ -78,6 +79,7 @@ class Signup extends React.Component {
   closeModal = () => {
     this.setState({
       showModal: false,
+      password: null,
     })
   }
 
@@ -241,7 +243,7 @@ class Signup extends React.Component {
           showModal={this.state.showModal}
           existingUser={this.state.existingUser}
           disabled={this.state.proceedBtnDisabled}
-          closeModal={() => this.setState({ showModal: false })}
+          closeModal={this.closeModal}
           onChange={this.onPasswordChange}
           onClickProceed={this.onClickProceed}
         />
@@ -506,6 +508,7 @@ class Signup extends React.Component {
                                 {t('component.signup.teacher.signupteacher')}
                               </RegisterButton>
                             </FormItem>
+                            <TermsAndPrivacy />
                           </Form>
                         </Col>
                       </FormBody>

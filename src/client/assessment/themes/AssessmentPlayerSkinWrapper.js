@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import styled from 'styled-components'
+import styled, { ThemeProvider } from 'styled-components'
 import { test } from '@edulastic/constants'
 import { FlexContainer } from '@edulastic/common'
+import { drcThemeColor } from '@edulastic/colors'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleRight, faAngleLeft } from '@fortawesome/free-solid-svg-icons'
 import PracticePlayerHeader from './AssessmentPlayerSimple/PlayerHeader'
@@ -14,6 +15,8 @@ import { Nav } from './common'
 import PlayerFooter from './skins/Quester/PlayerFooter'
 import QuesterHeader from './skins/Quester/PlayerHeader'
 import SbacHeader from './skins/Sbac/PlayerHeader'
+import PlayerFooterDrc from './skins/Drc/PlayerFooter'
+import DrcHeader from './skins/Drc/PlayerHeader'
 import Magnifier from '../../common/components/Magnifier'
 import { Tooltip } from '../../common/utils/helpers'
 
@@ -22,8 +25,10 @@ const AssessmentPlayerSkinWrapper = ({
   defaultAP,
   docUrl,
   playerSkinType = test.playerSkinValues.edulastic,
+  originalSkinName,
   handleMagnifier,
   enableMagnifier = false,
+  themeForHeader = {},
   ...restProps
 }) => {
   const [isSidebarVisible, setSidebarVisible] = useState(true)
@@ -35,6 +40,7 @@ const AssessmentPlayerSkinWrapper = ({
     windowWidth,
     toggleToolsOpenStatus,
     hasDrawingResponse,
+    isShowStudentWork,
   } = restProps
 
   const isPadMode = windowWidth < IPAD_LANDSCAPE_WIDTH - 1
@@ -117,6 +123,22 @@ const AssessmentPlayerSkinWrapper = ({
         />
       )
     }
+    if (playerSkinType === 'drc') {
+      const toolToggleFunc = toggleToolsOpenStatus || changeTool
+      const tool = restProps.toolsOpenStatus || restProps.tool
+      return (
+        <DrcHeader
+          {...restProps}
+          options={restProps.options || restProps.dropdownOptions}
+          defaultAP={defaultAP}
+          isDocbased={isDocBased}
+          handleMagnifier={handleMagnifier}
+          enableMagnifier={enableMagnifier}
+          changeTool={toolToggleFunc}
+          tool={tool}
+        />
+      )
+    }
     if (docUrl || docUrl === '') {
       return (
         <DocBasedPlayerHeader
@@ -157,6 +179,9 @@ const AssessmentPlayerSkinWrapper = ({
         />
       )
     }
+    if (playerSkinType === 'drc') {
+      return <PlayerFooterDrc {...restProps} />
+    }
     return null
   }
 
@@ -196,16 +221,16 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: defaultAP ? '82px' : '68px',
+        marginTop: '82px',
       }
     }
     if (
       playerSkinType.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
     ) {
       return {
-        paddingLeft: defaultAP ? 0 : '10px',
-        paddingRight: defaultAP ? 0 : '10px',
-        marginTop: defaultAP ? '78px' : '68px',
+        paddingLeft: '10px',
+        paddingRight: '10px',
+        marginTop: '85px',
       }
     }
     if (
@@ -215,7 +240,15 @@ const AssessmentPlayerSkinWrapper = ({
       return {
         paddingLeft: 0,
         paddingRight: 0,
-        marginTop: '48px',
+        marginTop: '65px',
+      }
+    }
+    if (
+      playerSkinType.toLowerCase() === test.playerSkinValues.drc.toLowerCase()
+    ) {
+      return {
+        paddingLeft: 0,
+        paddingRight: 0,
       }
     }
     return { width: '100%' }
@@ -241,7 +274,8 @@ const AssessmentPlayerSkinWrapper = ({
       playerSkinType.toLowerCase() ===
         test.playerSkinValues.sbac.toLowerCase() ||
       playerSkinType.toLowerCase() ===
-        test.playerSkinValues.quester.toLowerCase()
+        test.playerSkinValues.quester.toLowerCase() ||
+      playerSkinType.toLowerCase() === test.playerSkinValues.drc.toLowerCase()
     ) {
       return {
         width: '100%',
@@ -296,14 +330,14 @@ const AssessmentPlayerSkinWrapper = ({
 
   return (
     <Magnifier enable={enableMagnifier} offset={getTopOffset()}>
-      {header()}
+      <ThemeProvider theme={themeForHeader}>{header()}</ThemeProvider>
       <FlexContainer position="relative">
         <StyledMainContainer
           mainContainerStyle={getMainContainerStyle()}
           style={getStyle()}
           playerSkin={playerSkinType}
           isSidebarVisible={isSidebarVisible}
-          data-cy={test.playerSkinTypes[playerSkinType]}
+          data-cy={test.playerSkinTypes[originalSkinName]}
         >
           {children}
         </StyledMainContainer>
@@ -312,8 +346,9 @@ const AssessmentPlayerSkinWrapper = ({
         {playerSkinType.toLowerCase() ===
           test.playerSkinValues.edulastic.toLowerCase() &&
           defaultAP &&
+          !isShowStudentWork &&
           navigationBtns()}
-        {footer()}
+        <ThemeProvider theme={themeForHeader}>{footer()}</ThemeProvider>
       </FlexContainer>
     </Magnifier>
   )
@@ -380,6 +415,17 @@ const StyledMainContainer = styled.div`
       }
     }
   `
+      : playerSkin.toLowerCase() === test.playerSkinValues.drc.toLowerCase()
+      ? `
+      .question-audio-controller {
+        display: flex;
+        padding: 5px 10px;
+        button.ant-btn.ant-btn-primary{
+          background-color: ${drcThemeColor};
+          border-color: ${drcThemeColor};
+        }
+      }
+      `
       : ``}
 `
 export default AssessmentPlayerSkinWrapper

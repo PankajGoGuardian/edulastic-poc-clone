@@ -12,7 +12,7 @@ const zoomedStyle = css`
       return
     }
 
-    const { shouldZoom, zoomLevel, headerHeight = 90, playerSkinType } = theme
+    const { zoomLevel, headerHeight = 90, playerSkinType } = theme
     const zoomed = zoomLevel > '1' && zoomLevel !== undefined
     const questerFooterHeight = 66
     const practicePlayerFooterHeight = 20
@@ -35,9 +35,13 @@ const zoomedStyle = css`
     const hasFooter =
       viewComponent === 'practicePlayer' &&
       (playerSkinType === playerSkinValues.quester ||
-        playerSkinType === playerSkinValues.edulastic)
+        playerSkinType === playerSkinValues.edulastic ||
+        playerSkinType === playerSkinValues.drc)
     let header = hasFooter ? 180 : headerHeight + paddingTopBottom + 8
-    if (playerSkinType === 'quester') {
+    if (
+      playerSkinType === playerSkinValues.quester ||
+      playerSkinType === playerSkinValues.drc
+    ) {
       // This adjustment was required to fix the practice player with questar skin.
       header += viewComponent === 'practicePlayer' ? -20 : questerFooterHeight
     }
@@ -46,13 +50,6 @@ const zoomedStyle = css`
       playerSkinType === playerSkinValues.edulastic
     ) {
       header += practicePlayerFooterHeight
-    }
-    if (shouldZoom && zoomed) {
-      header /= zoomLevel
-      return `
-        min-height: calc(${100 / zoomLevel}vh - ${header}px);
-        max-height: calc(${100 / zoomLevel}vh - ${header}px);
-      `
     }
     return `
       min-height: calc(100vh - ${header}px);
@@ -88,6 +85,18 @@ export const WidgetContainer = styled.div`
   flex: 1;
   position: relative;
   min-height: max-content; // to fix height issue with safari
+
+  ${({ zoomLevel }) => {
+    const zoomed = zoomLevel > 1 && zoomLevel !== undefined
+    if (!zoomed) {
+      return ''
+    }
+
+    return `
+      transform: ${zoomed ? `scale(${zoomLevel})` : ''};
+      transform-origin: ${zoomed ? `top left` : ''};
+    `
+  }};
 `
 export const FilesViewContainer = styled.div`
   padding: 10px 35px;

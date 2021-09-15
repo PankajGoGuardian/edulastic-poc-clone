@@ -39,9 +39,9 @@ const openIdMap = {
 const ActivateDeactivateUser = (props) => {
   const [selected, setSelected] = useState(0)
   const [loading, setLoading] = useState(false)
-  const { userData, clearUserData } = props
+  const { userData = {}, clearUserData } = props
 
-  const user = userData[selected]
+  const user = userData[selected] || {}
   const activate = user.status !== 1
 
   const updateUser = async () => {

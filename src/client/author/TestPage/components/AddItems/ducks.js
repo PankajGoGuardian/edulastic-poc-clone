@@ -1,6 +1,6 @@
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { libraryFilters } from '@edulastic/constants'
+import { libraryFilters, test as testConst } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import {
   call,
@@ -12,14 +12,18 @@ import {
   take,
   race,
 } from 'redux-saga/effects'
-import { push } from 'connected-react-router'
+import { push, LOCATION_CHANGE } from 'connected-react-router'
 import { testItemsApi, contentErrorApi } from '@edulastic/api'
 import { keyBy } from 'lodash'
+import produce from 'immer'
 import {
   getAllTagsSelector,
   TAGS_SAGA_FETCH_STATUS,
   SET_ALL_TAGS,
   SET_ALL_TAGS_FAILED,
+  getTestEntitySelector,
+  getSelectedTestItemsSelector,
+  setTestDataAction,
 } from '../../ducks'
 import { DELETE_ITEM_SUCCESS } from '../../../ItemDetail/ducks'
 import {
@@ -41,7 +45,7 @@ export const filterMenuItems = [
     icon: 'folder',
     filter: SMART_FILTERS.AUTHORED_BY_ME,
     path: 'by-me',
-    text: 'Authored by me',
+    text: 'Created by me',
   },
   {
     icon: 'share-alt',
@@ -241,7 +245,6 @@ export const reducer = (state = initialState, { type, payload }) => {
     case CLEAR_SELECTED_ITEMS:
       return {
         ...state,
-        selectedItems: [],
         itemsSubjectAndGrade: {
           subjects: [],
           grades: [],
@@ -358,20 +361,27 @@ function* receiveTestItemsSaga({
     )
     yield put(push(`${currentLocation}?page=${page}`))
 
-    // if the tags are still being fetched, wait for it to fetch and complete
-    if (TAGS_SAGA_FETCH_STATUS.isLoading) {
-      yield race({
-        success: take(SET_ALL_TAGS),
-        fail: take(SET_ALL_TAGS_FAILED),
-      })
+    const { tags = [] } = search
+    let searchTags = []
+    if (tags.some((tag) => typeof tag?.title === 'string')) {
+      searchTags = tags
+        .flatMap((tag) => tag.associatedNames || [tag.title])
+        .filter((tag) => !!tag)
+    } else {
+      // if the tags are still being fetched, wait for it to fetch and complete
+      if (TAGS_SAGA_FETCH_STATUS.isLoading) {
+        yield race({
+          success: take(SET_ALL_TAGS),
+          fail: take(SET_ALL_TAGS_FAILED),
+        })
+      }
+      const allTagsData = yield select((state) =>
+        getAllTagsSelector(state, 'testitem')
+      )
+      const allTagsKeyById = keyBy(allTagsData, '_id')
+      searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     }
 
-    const allTagsData = yield select((state) =>
-      getAllTagsSelector(state, 'testitem')
-    )
-    const allTagsKeyById = keyBy(allTagsData, '_id')
-    const { tags = [] } = search
-    const searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
       sort,
@@ -397,10 +407,55 @@ function* reportContentErrorSaga({ payload }) {
   }
 }
 
+function* clearSelectedItemsSaga() {
+  const test = yield select(getTestEntitySelector)
+  const itemsToRemove = yield select(
+    (state) => state?.testsAddItems?.selectedItems
+  )
+  let hasItemsToRemove = false
+  let updatedTest
+  if (itemsToRemove?.length) {
+    updatedTest = produce(test, (draft) => {
+      draft.itemGroups.forEach((group) => {
+        if (group.type !== testConst.ITEM_GROUP_TYPES.AUTOSELECT) {
+          const filteredItems = group?.items?.filter(
+            (x) => !itemsToRemove.includes(x._id)
+          )
+          if (filteredItems.length < group?.items?.length) {
+            hasItemsToRemove = true
+            group.items = filteredItems
+          }
+        }
+      })
+    })
+  }
+
+  yield put(setTestItemsAction([]))
+
+  /** This condition is added to check if there are any selected items to be remove
+   * and also to check that there should be atleast 1 item in the test removed so that test data
+   * doesn't reset unnecessarily */
+  if (hasItemsToRemove) yield put(setTestDataAction(updatedTest))
+}
+
+function* locationChangedSaga({ payload }) {
+  if (
+    !(
+      payload?.location?.pathname?.includes('/author/items') ||
+      payload?.location?.pathname?.includes('/author/questions') ||
+      payload?.location?.pathname?.includes('/author/tests')
+    )
+  ) {
+    yield put(clearSelectedItemsAction())
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
+    yield takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
     yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
+    yield takeLatest(LOCATION_CHANGE, locationChangedSaga),
   ])
 }
 
@@ -445,8 +500,8 @@ export const getTestsItemsPageSelector = createSelector(
 )
 
 export const getSelectedItemSelector = createSelector(
-  stateTestItemsSelector,
-  (state) => state.selectedItems
+  getSelectedTestItemsSelector,
+  (testItems) => testItems.map((item) => item._id)
 )
 
 export const getItemsSubjectAndGradeSelector = createSelector(

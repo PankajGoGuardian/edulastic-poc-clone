@@ -9,7 +9,7 @@ import AllowedVariables from './AllowedVariables'
 import Units from './Units'
 import InlineCheckOptions from './InlineCheckOptions'
 import MultipleValues from './MultipleValues'
-import PonitsOnAnEquation from './PonitsOnAnEquation'
+import PointsOnAnEquation from './PointsOnAnEquation'
 
 const textStyle = ['tolerance', 'isIn', 'satisfies']
 const numberStyle = ['significantDecimalPlaces']
@@ -25,10 +25,12 @@ const inlineOptions = [
   'graphPolygonChecks',
   'graphMiscellaneous',
   'graphPointsOnAnEquation',
+  'partialCreditScoring',
 ]
 
 const EvaluationOption = ({
   options,
+  isGraph,
   optionKey,
   useTemplate,
   allowedVariables,
@@ -38,10 +40,12 @@ const EvaluationOption = ({
   onChangeAllowedOptions,
   isNumberFormatDisabled,
   hidePointOnEquation,
+  hasGraphElements,
 }) => {
   if (textStyle.includes(optionKey) || numberStyle.includes(optionKey)) {
     return (
       <InputOption
+        isGraph={isGraph}
         optionKey={optionKey}
         options={options}
         onChange={onChangeOption}
@@ -113,18 +117,22 @@ const EvaluationOption = ({
       <MultipleValues
         optionKey={optionKey}
         options={options}
-        onChange={onChangeOption}
+        onChange={onChangeRadio}
       />
     )
   }
-  if (optionKey === 'graphPointsOnAnEquation') {
+  if (
+    optionKey === 'graphPointsOnAnEquation' ||
+    optionKey === 'graphPointsOnAnEquation2'
+  ) {
     if (hidePointOnEquation) {
       return null
     }
     return (
-      <PonitsOnAnEquation
+      <PointsOnAnEquation
         optionKey={optionKey}
         options={options}
+        hasGraphElements={hasGraphElements}
         onChange={onChangeOption}
       />
     )

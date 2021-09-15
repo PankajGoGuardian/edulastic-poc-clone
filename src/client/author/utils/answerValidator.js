@@ -60,8 +60,7 @@ const answerValidator = {
   [questionType.CLOZE_DROP_DOWN](answers) {
     const hasEmpty = answers.some(
       (answer) =>
-        isEmpty(answer.value) ||
-        isEmpty(answer.value.filter((ans) => !isEmpty(ans.value)))
+        isEmpty(answer.value) || answer.value.some((ans) => isEmpty(ans.value))
     )
     return hasEmpty
   },
@@ -230,17 +229,35 @@ export const hasEmptyAnswers = (item) => {
     item?.validation?.validResponse,
     ...(item?.validation?.altResponses || []),
   ]
-  if (isPlainObject(item) && item.type === questionType.GRAPH) {
-    const { validation: { points, latex } = {} } = item
-    if (points && latex) {
-      return false
-    }
-    /**
-     * @see https://snapwiz.atlassian.net/browse/EV-26250
-     * Both points and latex for points on equation should be set
-     */
-    if ((points || latex) && (!points || !latex)) {
-      return true
+  if (isPlainObject(item)) {
+    switch (item.type) {
+      case questionType.GRAPH:
+        {
+          const { validation } = item
+          const { points, latex } = validation?.validResponse?.options || {}
+          if (points && latex) {
+            return false
+          }
+          /**
+           * @see https://snapwiz.atlassian.net/browse/EV-26250
+           * Both points and latex for points on equation should be set
+           */
+          if ((points || latex) && (!points || !latex)) {
+            return true
+          }
+        }
+        break
+      case questionType.CHOICE_MATRIX:
+        if (
+          !item.multipleResponses &&
+          correctAnswers.some(
+            (el) => Object.keys(el?.value || {}).length !== item.stems?.length
+          )
+        ) {
+          return true
+        }
+        break
+      default:
     }
   }
   const hasEmpty = answerValidator[item.type]?.(correctAnswers)

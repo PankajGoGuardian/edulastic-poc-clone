@@ -5,17 +5,20 @@ import {
   notification,
   SimpleConfirmModal,
   captureSentryException,
+  DatePickerStyled,
 } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import PropTypes from 'prop-types'
 import withRouter from 'react-router-dom/withRouter'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
+import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import styled from 'styled-components'
 
 // components
-import { Dropdown, Select } from 'antd'
+import { Dropdown, Select, Col } from 'antd'
 
 import GoogleLogin from 'react-google-login'
 import {
@@ -47,6 +50,9 @@ import {
   getManageCoTeacherModalVisibleStateSelector,
   showUpdateCoTeacherModalAction,
 } from '../../ducks'
+import SyncModal from './SyncModal'
+import { getUserOrgId } from '../../../src/selectors/user'
+import { setFilterInSession } from '../../../../common/utils/helpers'
 
 const Option = Select.Option
 
@@ -76,6 +82,7 @@ const Header = ({
   entity,
   showCoteacherModal,
   setUpdateCoTeacherModal,
+  orgId,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -91,6 +98,10 @@ const Header = ({
   const { _id, districtId } = entity
   const [showModal, setShowModal] = useState(false)
   const [showUnarchiveModal, setShowUnarchiveModal] = useState(false)
+  const [
+    showAutomaticUnarchiveModal,
+    setShowAutomaticUnarchiveModal,
+  ] = useState(false)
   const {
     name,
     type,
@@ -100,6 +111,7 @@ const Header = ({
     cleverId,
     active,
     atlasId = '',
+    endDate,
   } = selectedClass
   const { exitPath } = location?.state || {}
   const isDemoPlaygroundUser = user?.isPlayground
@@ -108,6 +120,8 @@ const Header = ({
 
   const [isOpen, setModalStatus] = useState(modalStatus)
   const [sentReq, setReqStatus] = useState(false)
+  const [isClassExpired, setIsClassExpired] = useState(false)
+  const [classEndDate, setClassEndDate] = useState()
 
   const toggleModal = (key) => {
     setModalStatus({ [key]: !isOpen[key] })
@@ -135,9 +149,9 @@ const Header = ({
     try {
       const result = await canvasApi.getCanvasAuthURI(institutionId)
       if (!result.userAuthenticated) {
-        const subscriptionTopic = `canvas:${user?.districtIds?.[0]}_${
-          user._id
-        }_${user.username || user.email || ''}`
+        const subscriptionTopic = `canvas:${orgId}_${user._id}_${
+          user.username || user.email || ''
+        }`
         authorizeCanvas(result.canvasAuthURL, subscriptionTopic)
           .then((res) => {
             syncCanvasModal(res)
@@ -186,10 +200,12 @@ const Header = ({
       testType: '',
       termId: '',
     }
-    sessionStorage.setItem(
-      `assignments_filter_${user._id}`,
-      JSON.stringify(filter)
-    )
+    setFilterInSession({
+      key: 'assignments_filter',
+      userId: user._id,
+      districtId: orgId,
+      filter,
+    })
     history.push('/author/assignments')
   }
 
@@ -211,13 +227,47 @@ const Header = ({
 
   const showDropDown = Object.values(options).filter((o) => o).length > 1
 
+  const disabledEndDate = (current) => current && current < moment()
+
   const handleUnarchiveClass = () => {
-    unarchiveClass({ groupId: _id, exitPath, isGroup: type !== 'class' })
+    if (isClassExpired) {
+      unarchiveClass({
+        groupId: _id,
+        endDate: new Date(classEndDate).getTime(),
+        exitPath,
+        isGroup: type !== 'class',
+      })
+    } else {
+      unarchiveClass({ groupId: _id, exitPath, isGroup: type !== 'class' })
+    }
     setShowUnarchiveModal(false)
   }
   const handleUnarchiveClassCancel = () => {
     setShowUnarchiveModal(false)
+    setShowAutomaticUnarchiveModal(false)
   }
+
+  const handleCanvasAndGoogleSyncButtonClick = (syncType = '') => {
+    if (
+      (selectedClass?.canvasCode &&
+        selectedClass.canvasCode.includes('deactivated')) ||
+      (selectedClass?.googleId &&
+        selectedClass.googleId.includes('deactivated'))
+    ) {
+      setShowAutomaticUnarchiveModal(true)
+    } else if (syncType === 'google') {
+      syncGCModal()
+    } else if (syncType === 'canvas') {
+      handleSyncWithCanvas()
+    }
+  }
+
+  useEffect(() => {
+    const current = moment()
+    if (current.diff(moment(endDate), 'days') >= 1) {
+      setIsClassExpired(true)
+    }
+  }, [endDate])
 
   return (
     <MainHeader
@@ -253,7 +303,9 @@ const Header = ({
                     <Option
                       key={index}
                       data-cy={`sync-option-${index}`}
-                      onClick={syncGCModal}
+                      onClick={() =>
+                        handleCanvasAndGoogleSyncButtonClick('google')
+                      }
                     >
                       <span className="menu-label">
                         Sync with Google Classroom
@@ -289,7 +341,9 @@ const Header = ({
                   <Option
                     key={index}
                     data-cy={`sync-option-${index}`}
-                    onClick={handleSyncWithCanvas}
+                    onClick={() =>
+                      handleCanvasAndGoogleSyncButtonClick('canvas')
+                    }
                   >
                     <span className="menu-label">Sync with Canvas</span>
                     <img
@@ -314,7 +368,11 @@ const Header = ({
             )}
             {showGoogleSyncButton &&
               (isUserGoogleLoggedIn ? (
-                <EduButton isBlue isGhost onClick={syncGCModal}>
+                <EduButton
+                  isBlue
+                  isGhost
+                  onClick={() => handleCanvasAndGoogleSyncButtonClick('google')}
+                >
                   <IconGoogleClassroom />
                   <span>SYNC WITH GOOGLE CLASSROOM</span>
                 </EduButton>
@@ -336,7 +394,12 @@ const Header = ({
                 />
               ))}
             {showCanvasSyncButton && (
-              <EduButton isBlue isGhost onClick={handleSyncWithCanvas}>
+              <EduButton
+                data-cy="syncCanvasClass"
+                isBlue
+                isGhost
+                onClick={() => handleCanvasAndGoogleSyncButtonClick('canvas')}
+              >
                 <img
                   alt="Canvas"
                   src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
@@ -361,20 +424,50 @@ const Header = ({
               <IconAssignment />
               View Assignments
             </EduButton>
-            <EduButton isBlue onClick={() => setShowUnarchiveModal(true)}>
-              UNARCHIVE
-            </EduButton>
+            {!cleverId && !atlasId && (
+              <EduButton isBlue onClick={() => setShowUnarchiveModal(true)}>
+                UNARCHIVE
+              </EduButton>
+            )}
           </>
+        )}
+        {showAutomaticUnarchiveModal && (
+          <SyncModal
+            visible={showAutomaticUnarchiveModal}
+            handleCancel={handleUnarchiveClassCancel}
+            classDetails={selectedClass}
+            history={history}
+            onProceed={
+              selectedClass?.canvasCode ? handleSyncWithCanvas : syncGCModal
+            }
+          />
         )}
         {showUnarchiveModal && (
           <SimpleConfirmModal
             visible={showUnarchiveModal}
             title={`Unarchive ${typeText}`}
             description={
-              <p style={{ margin: '5px 0' }}>
-                Are you sure you want to Unarchive{' '}
-                <LightGreenSpan>{name}</LightGreenSpan>?
-              </p>
+              <>
+                <p style={{ margin: '5px 0' }}>
+                  Are you sure you want to Unarchive{' '}
+                  <LightGreenSpan>{name}</LightGreenSpan>?
+                </p>
+                {isClassExpired && (
+                  <StyledCol>
+                    <p>
+                      The end date of class has already passed. Please update
+                      the new end date to unarchive.
+                    </p>
+                    <DatePickerStyled
+                      data-cy="endDate"
+                      format="DD MMM, YYYY"
+                      placeholder="End Date"
+                      disabledDate={disabledEndDate}
+                      onChange={(date) => setClassEndDate(date)}
+                    />
+                  </StyledCol>
+                )}
+              </>
             }
             buttonText="Unarchive"
             onProceed={handleUnarchiveClass}
@@ -471,6 +564,7 @@ const enhance = compose(
     (state) => ({
       user: state?.user?.user,
       showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
+      orgId: getUserOrgId(state),
     }),
     {
       setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
@@ -478,3 +572,15 @@ const enhance = compose(
   )
 )
 export default enhance(Header)
+
+const StyledCol = styled(Col)`
+  padding: 0px !important;
+  margin-top: 20px;
+
+  p {
+    margin-bottom: 10px;
+  }
+  .ant-calendar-picker {
+    width: 50%;
+  }
+`

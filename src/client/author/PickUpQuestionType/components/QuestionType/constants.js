@@ -1137,7 +1137,49 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: 'classify',
+      firstMount: true,
+      title: 'Pictograph',
       cardImage: CMClassification,
+      data: {
+        title: 'Pictograph',
+        firstMount: true,
+        possibleResponses: [],
+        droppedChoices: [],
+        stimulus: '',
+        type: 'pictograph',
+        duplicateResponses: true,
+        showClassName: true,
+        uiStyle: {
+          rowMinHeight: '100px',
+        },
+        classifications: [
+          {
+            id: uuidsForFill[0],
+            name: 'enter class name 1',
+            status: true,
+          },
+          {
+            id: uuidsForFill[1],
+            name: 'enter class name 2',
+            status: true,
+          },
+        ],
+        validation: {
+          scoringType: EXACT_MATCH,
+          validResponse: {
+            score: 1,
+            value: {},
+          },
+          altResponses: [],
+        },
+        hints: [{ value: uuids[0], label: '' }],
+      },
+      onSelectQuestionType,
+    },
+    {
+      type: 'classify',
+      cardImage: CMClassification,
+
       data: {
         title: questionTitle.CLASSIFICATION,
         firstMount: true,
@@ -1728,7 +1770,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           yRatio: 1,
         },
         controlbar: {
-          controls: ['undo', 'redo', 'reset', 'delete'],
+          controls: ['edit_label', 'undo', 'redo', 'reset', 'delete'],
           defaultControl: 'undo',
         },
         toolbar: {
@@ -1742,9 +1784,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           validResponse: {
             score: 1,
             value: [],
+            options: {
+              ignoreLabels: true,
+            },
           },
           altResponses: [],
-          ignoreLabels: true,
         },
         sampleAnswer: '',
         uiStyle: {
@@ -1808,7 +1852,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           yRatio: 1,
         },
         controlbar: {
-          controls: ['undo', 'redo', 'reset', 'delete'],
+          controls: ['edit_label', 'undo', 'redo', 'reset', 'delete'],
           defaultControl: 'undo',
         },
         toolbar: {
@@ -1822,9 +1866,11 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           validResponse: {
             score: 1,
             value: [],
+            options: {
+              ignoreLabels: true,
+            },
           },
           altResponses: [],
-          ignoreLabels: true,
         },
         sampleAnswer: '',
         uiStyle: {
@@ -2283,7 +2329,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           responseFontScale: 'Normal (100%)',
         },
         numberPad: defaultNumberPad,
-        symbols: ['basic', 'units_us', 'units_si'],
+        symbols: ['basic_matrices', 'units_us', 'units_si'],
         template: EMBED_RESPONSE,
         templateDisplay: false,
         hints: [{ value: uuids[0], label: '' }],
@@ -2323,7 +2369,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           responseFontScale: 'Normal (100%)',
         },
         numberPad: defaultNumberPad,
-        symbols: ['basic', 'qwerty'],
+        symbols: ['basic_matrices', 'qwerty'],
         hints: [{ value: uuids[0], label: '' }],
       },
       onSelectQuestionType,
@@ -2360,7 +2406,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           responseFontScale: 'Normal (100%)',
         },
         numberPad: defaultNumberPad,
-        symbols: ['basic', 'qwerty'],
+        symbols: ['basic_matrices', 'qwerty'],
         hints: [{ value: uuids[0], label: '' }],
       },
       onSelectQuestionType,
@@ -2402,7 +2448,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           responseFontScale: 'Normal (100%)',
         },
         numberPad: defaultNumberPad,
-        symbols: ['basic', 'qwerty'],
+        symbols: ['basic_matrices', 'qwerty'],
         hints: [{ value: uuids[0], label: '' }],
       },
       onSelectQuestionType,
@@ -2582,7 +2628,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         isMath: true,
         responseContainers: [],
-        symbols: ['basic', 'qwerty'],
+        symbols: ['basic_matrices', 'qwerty'],
         numberPad: defaultNumberPad,
         hints: [{ value: uuids[0], label: '' }],
       },

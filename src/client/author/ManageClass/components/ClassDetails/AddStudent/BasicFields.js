@@ -9,6 +9,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { nameValidator } from '../../../../../common/utils/helpers'
+import { getUserOrgId } from '../../../../src/selectors/user'
 import { Field } from './styled'
 
 const BasicFields = ({
@@ -59,7 +60,8 @@ const BasicFields = ({
     {
       // validation so that no white spaces are allowed
       message: 'Please provide valid Username or Email id',
-      pattern: /^\S*$/,
+      // eslint-disable-next-line no-control-regex
+      pattern: /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])|^[A-Za-z0-9._ \\-\\+\\'\\"]+$/,
     },
     { max: 256, message: 'Must less than 256 characters!' },
   ]
@@ -438,7 +440,7 @@ BasicFields.defaultProps = {
 
 export default connect((state) => ({
   students: get(state, 'manageClass.studentsList', []),
-  districtId: state.user.user.orgData.districtIds[0],
+  districtId: getUserOrgId(state),
   classDetails: get(state, 'manageClass.entity', {}),
 }))(BasicFields)
 

@@ -4,6 +4,7 @@ import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
+import { getUserDetails } from '../../student/Login/ducks'
 
 const RECEIVE_TEACHER_DASHBOARD_REQUEST =
   '[dashboard teacher] receive data request'
@@ -112,10 +113,12 @@ function* fetchDashboardTilesSaga() {
     const state = yield select(
       (s) => s.user.user?.orgData?.districts?.[0]?.districtState || ''
     )
+    const user = yield select(getUserDetails) || {}
     const result = yield call(
       configurableTilesApi.fetchTiles,
       +version,
-      state.toUpperCase()
+      state.toUpperCase(),
+      user.utm_source === 'singapore' ? true : undefined
     )
     if (!version || version !== result.version) {
       yield put(setDashboardTiles(result.data))

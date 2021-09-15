@@ -5,7 +5,7 @@ import AppConfig from '../../../../src/app-config'
 
 const tokenKey = (userId, role) => `user:${userId}:role:${role}`
 
-function parseJwt(token) {
+export function parseJwt(token) {
   const base64Url = token.split('.')[1]
   const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   const jsonPayload = decodeURIComponent(
@@ -54,7 +54,10 @@ export function storeAccessToken(token, userId, role, _default = false) {
   window.localStorage.setItem(key, token)
   const tokens = JSON.parse(window.localStorage.getItem('tokens') || '[]')
 
-  window.localStorage.setItem('tokens', JSON.stringify([...tokens, key]))
+  window.localStorage.setItem(
+    'tokens',
+    JSON.stringify([...new Set([...tokens, key])])
+  )
   if (_default) {
     window.sessionStorage.defaultTokenKey = key
   }
@@ -183,7 +186,6 @@ export function removeAllTokens() {
   window.sessionStorage.removeItem('defaultTokenKey')
   window.localStorage.removeItem('defaultTokenKey')
   window.localStorage.removeItem('tokens')
-  window.localStorage.removeItem('authState')
 }
 
 export function storeInLocalStorage(key, value) {

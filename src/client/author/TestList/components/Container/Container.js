@@ -26,6 +26,7 @@ import {
 } from '@edulastic/api/src/utils/Storage'
 import { libraryFilters, sortOptions } from '@edulastic/constants'
 import { withNamespaces } from 'react-i18next'
+import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import {
   ScrollBox,
   Container,
@@ -113,6 +114,8 @@ import {
   getDefaultGradesSelector,
   getDefaultSubjectSelector,
   getUserFeatures,
+  getUserOrgId,
+  getCollectionsSelector,
 } from '../../../src/selectors/user'
 import {
   getInterestedStandards,
@@ -137,6 +140,10 @@ import SideContent from '../../../Dashboard/components/SideContent/Sidecontent'
 import SortMenu from '../../../ItemList/components/SortMenu'
 import FilterToggleBtn from '../../../src/components/common/FilterToggleBtn'
 import ApproveConfirmModal from '../../../ItemList/components/ApproveConfirmModal'
+import {
+  getFilterFromSession,
+  setFilterInSession,
+} from '../../../../common/utils/helpers'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -173,7 +180,6 @@ class TestList extends Component {
     userId: PropTypes.string.isRequired,
     clearTestData: PropTypes.func,
     clearCreatedItems: PropTypes.func.isRequired,
-    clearSelectedItems: PropTypes.func,
     playlist: PropTypes.object.isRequired,
     mode: PropTypes.string.isRequired,
     getAllTags: PropTypes.func.isRequired,
@@ -181,7 +187,6 @@ class TestList extends Component {
   }
 
   static defaultProps = {
-    clearSelectedItems: () => null,
     clearTestData: () => null,
   }
 
@@ -233,8 +238,6 @@ class TestList extends Component {
       mode,
       match: params,
       getCurriculumStandards,
-      clearCreatedItems,
-      clearSelectedItems,
       getAllTags,
       testFilters,
       clearDictStandards,
@@ -245,8 +248,14 @@ class TestList extends Component {
       sort: initSort = {},
       tests,
       user,
+      districtId,
+      userId,
+      collections,
+      clearSelectedItems,
+      clearCreatedItems,
+      clearTestData,
     } = this.props
-
+    clearSelectedItems()
     const isSingaporeMathCollectionActive = tests.filter(
       (test) =>
         (test.description?.toLowerCase()?.includes('singaporemath') ||
@@ -257,7 +266,10 @@ class TestList extends Component {
     const isSingaporeMath =
       user?.referrer?.includes('singapore') ||
       user?.utm_source?.toLowerCase()?.includes('singapore') ||
-      isSingaporeMathCollectionActive?.length > 0
+      isSingaporeMathCollectionActive?.length > 0 ||
+      collections.some((itemBank) =>
+        itemBank?.owner?.toLowerCase().includes('singapore')
+      )
 
     this.setState({ isSingaporeMath })
 
@@ -269,10 +281,16 @@ class TestList extends Component {
         ? firstCurriculum._id
         : '',
     } = getDefaultInterests()
-    const sessionFilters =
-      JSON.parse(sessionStorage.getItem('filters[testList]')) || {}
-    const sessionSort =
-      JSON.parse(sessionStorage.getItem('sortBy[testList]')) || {}
+    const sessionFilters = getFilterFromSession({
+      key: sessionFilterKeys.TEST_FILTER,
+      districtId,
+      userId,
+    })
+    const sessionSort = getFilterFromSession({
+      key: sessionFilterKeys.TEST_SORT,
+      districtId,
+      userId,
+    })
 
     // propagate filter from query params to the store (test.filters)
     let searchParams = qs.parse(location.search, { ignoreQueryPrefix: true })
@@ -365,12 +383,27 @@ class TestList extends Component {
       clearDictStandards()
       getCurriculumStandards(_curriculumId, curriculumGrades, '')
     }
+
+    /**
+     * clear selected items on item bank page on mounting this component.
+     * @see https://snapwiz.atlassian.net/browse/EV-31074
+     * @see https://snapwiz.atlassian.net/browse/EV-30990
+     * we need clear selected items in this component only,
+     * In terms of other pages, we are clearing them in the locationChangedSaga.
+     * @see src/client/author/TestPage/components/AddItems/ducks.js
+     */
+    clearTestData()
     clearCreatedItems()
-    clearSelectedItems()
   }
 
   updateFilterState = (searchState, sortState, all) => {
-    const { updateAllTestFilters, updateTestFilters, testFilters } = this.props
+    const {
+      updateAllTestFilters,
+      updateTestFilters,
+      testFilters,
+      districtId,
+      userId,
+    } = this.props
     const search = all
       ? { ...searchState, isSingaporeMath: this.state.isSingaporeMath }
       : {
@@ -378,8 +411,18 @@ class TestList extends Component {
           [searchState.key]: searchState.value,
           isSingaporeMath: this.state.isSingaporeMath,
         }
-    sessionStorage.setItem('filters[testList]', JSON.stringify(search))
-    sessionStorage.setItem('sortBy[testList]', JSON.stringify(sortState))
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_FILTER,
+      filter: search,
+      districtId,
+      userId,
+    })
+    setFilterInSession({
+      key: sessionFilterKeys.TEST_SORT,
+      filter: sortState,
+      districtId,
+      userId,
+    })
     if (all) {
       return updateAllTestFilters({ search, sort: sortState })
     }
@@ -515,19 +558,10 @@ class TestList extends Component {
   }
 
   handleCreate = () => {
-    const {
-      history,
-      clearCreatedItems,
-      clearSelectedItems,
-      clearTestData,
-      mode,
-    } = this.props
+    const { history, mode } = this.props
     if (mode !== 'embedded') {
       history.push('/author/tests/select')
     }
-    clearTestData()
-    clearCreatedItems()
-    clearSelectedItems()
   }
 
   updateTestList = (page) => {
@@ -1491,6 +1525,7 @@ const enhance = compose(
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       userId: get(state, 'user.user._id', false),
+      districtId: getUserOrgId(state),
       user: get(state, 'user.user', false),
       testFilters: getTestsFilterSelector(state),
       features: getUserFeatures(state),
@@ -1498,6 +1533,7 @@ const enhance = compose(
       sort: getSortFilterStateSelector(state),
       selectedTests: getSelectedTestsSelector(state),
       isDemoAccount: isDemoPlaygroundUser(state),
+      collections: getCollectionsSelector(state),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
@@ -1511,7 +1547,6 @@ const enhance = compose(
       addTestToModuleInBulk: addTestToModuleInBulkAction,
       deleteTestFromModuleInBulk: deleteTestFromModuleInBulkAction,
       clearDictStandards: clearDictStandardsAction,
-      clearSelectedItems: clearSelectedItemsAction,
       clearCreatedItems: clearCreatedItemsAction,
       updateDefaultSubject: updateDefaultSubjectAction,
       updateDefaultGrades: updateDefaultGradesAction,
@@ -1525,6 +1560,7 @@ const enhance = compose(
       removeTestFromCart: removeTestFromCartAction,
       approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+      clearSelectedItems: clearSelectedItemsAction,
     }
   )
 )

@@ -43,6 +43,8 @@ const graphDimensionsMultiplierHashMap = {
   xl: 3,
 }
 
+const MIN_GAP = 30
+
 const safeParseFloat = (val) => {
   if (val) {
     return parseFloat(val)
@@ -104,6 +106,16 @@ class GraphDisplay extends Component {
     if (ifZoomed(zoomLevel)) {
       multiplier = graphDimensionsMultiplierHashMap[zoomLevel]
       fontSize = theme?.fontSize || fontSize
+    }
+
+    // jsxGraph requires number for fontSize
+    if (fontSize?.toString()?.includes('rem')) {
+      const bodyFontSize = window.getComputedStyle(document.body).fontSize
+      fontSize = parseFloat(bodyFontSize) * parseFloat(fontSize)
+    }
+
+    if (fontSize?.toString()?.includes('px')) {
+      fontSize = parseFloat(fontSize)
     }
 
     return {
@@ -264,22 +276,22 @@ class GraphDisplay extends Component {
     }
   }
 
-  getCanvas = () => {
+  getCanvas = (width, height) => {
     const { graphData } = this.props
     const { uiStyle, canvas } = graphData
     const { xRadians, yRadians } = uiStyle
 
     // Canvas Size
-    const xMin = xRadians
+    let xMin = xRadians
       ? round(Math.PI * parseFloat(canvas.xMin), 2)
       : parseFloat(canvas.xMin)
-    const xMax = xRadians
+    let xMax = xRadians
       ? round(Math.PI * parseFloat(canvas.xMax), 2)
       : parseFloat(canvas.xMax)
-    const yMin = yRadians
+    let yMin = yRadians
       ? round(Math.PI * parseFloat(canvas.yMin), 2)
       : parseFloat(canvas.yMin)
-    const yMax = yRadians
+    let yMax = yRadians
       ? round(Math.PI * parseFloat(canvas.yMax), 2)
       : parseFloat(canvas.yMax)
 
@@ -290,6 +302,28 @@ class GraphDisplay extends Component {
     const yDistance = yRadians
       ? round(Math.PI / safeParseFloat(uiStyle.yDistance), 2)
       : safeParseFloat(uiStyle.yDistance)
+
+    if (!xRadians) {
+      const xGap = width / (xMax - xMin)
+      if (xGap >= MIN_GAP) {
+        xMin -= 1
+        xMax += 1
+      } else {
+        xMin -= MIN_GAP / xGap
+        xMax += MIN_GAP / xGap
+      }
+    }
+
+    if (!yRadians) {
+      const yGap = height / (yMax - yMin)
+      if (yGap >= MIN_GAP) {
+        yMin -= 1
+        yMax += 1
+      } else {
+        yMin -= MIN_GAP / yGap
+        yMax += MIN_GAP / yGap
+      }
+    }
 
     return [xMin, xMax, yMin, yMax, xDistance, yDistance]
   }
@@ -311,6 +345,7 @@ class GraphDisplay extends Component {
       setQuestionData,
       onChangeKeypad,
       symbols,
+      pointsOnEquEnabled,
     } = this.props
 
     const {
@@ -334,15 +369,18 @@ class GraphDisplay extends Component {
       yRadians,
     } = uiStyle
 
-    const [xMin, xMax, yMin, yMax, xDistance, yDistance] = this.getCanvas()
     const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle)
+    const [xMin, xMax, yMin, yMax, xDistance, yDistance] = this.getCanvas(
+      width,
+      height
+    )
 
     return {
       canvas: {
-        xMin: xMax - xMin <= 6 ? xMin - xDistance : xMin - 1,
-        xMax: xMax - xMin <= 6 ? xMax + xDistance : xMax + 1,
-        yMin: yMax - yMin <= 6 ? yMin - yDistance : yMin - 1,
-        yMax: yMax - yMin <= 6 ? yMax + yDistance : yMax + 1,
+        xMin: xMin - xDistance,
+        xMax: xMax + xDistance,
+        yMin: yMin - yDistance,
+        yMax: yMax + yDistance,
       },
       layout: {
         width,
@@ -424,6 +462,7 @@ class GraphDisplay extends Component {
       onChangeKeypad,
       symbols,
       showConnect,
+      pointsOnEquEnabled,
     }
   }
 

@@ -1,11 +1,15 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import { Input } from 'antd'
 import get from 'lodash/get'
 import PropTypes from 'prop-types'
 import produce from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-import { FlexContainer, notification } from '@edulastic/common'
+import {
+  FlexContainer,
+  notification,
+  PointBlockContext,
+} from '@edulastic/common'
 import Question from '../../../components/Question/index'
 import { Subtitle } from '../../../styled/Subtitle'
 import Circles from './Circles'
@@ -66,7 +70,7 @@ const CorrectAnswers = ({
   }
 
   const handleCorrectAnswerPointsChange = (score) => {
-    if (!(score > 0)) {
+    if (score < 0) {
       return
     }
     const points = parseFloat(score, 10)
@@ -79,6 +83,8 @@ const CorrectAnswers = ({
       })
     )
   }
+
+  const itemLevelScoring = useContext(PointBlockContext)
 
   return (
     <Question
@@ -94,20 +100,26 @@ const CorrectAnswers = ({
       >
         {t('common.correctAnswers.setCorrectAnswers')}
       </Subtitle>
-      <FlexContainer flexDirection="column" mt="8px" marginBottom="16px">
-        <Label>{t('component.correctanswers.points')}</Label>
-        <PointsInput
-          type="number"
-          min={1}
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.correctanswers.points')}`
-          )}
-          size="default"
-          value={get(item, 'validation.validResponse.score', 1)}
-          onChange={handleCorrectAnswerPointsChange}
-          style={{ width: '140px', marginRight: '25px', background: '#F8F8FB' }}
-        />
-      </FlexContainer>
+      {!itemLevelScoring && (
+        <FlexContainer flexDirection="column" mt="8px" marginBottom="16px">
+          <Label>{t('component.correctanswers.points')}</Label>
+          <PointsInput
+            type="number"
+            min={1}
+            id={getFormattedAttrId(
+              `${item?.title}-${t('component.correctanswers.points')}`
+            )}
+            size="default"
+            value={get(item, 'validation.validResponse.score', 1)}
+            onChange={handleCorrectAnswerPointsChange}
+            style={{
+              width: '140px',
+              marginRight: '25px',
+              background: '#F8F8FB',
+            }}
+          />
+        </FlexContainer>
+      )}
       <FlexContainer justifyContent="flex-start">
         <FlexContainer
           flexDirection="column"

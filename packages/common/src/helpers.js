@@ -185,7 +185,9 @@ export const uploadToS3 = async (
   file,
   folder,
   progressCallback,
-  cancelUpload
+  cancelUpload,
+  subFolder = '',
+  ignoreCDN = false
 ) => {
   if (!file) {
     throw new Error('file is missing')
@@ -204,8 +206,9 @@ export const uploadToS3 = async (
     fileToUpload = convertStringToFile(file)
   }
 
-  const { name: fileName } = fileToUpload
-  const result = await fileApi.getSignedUrl(fileName, folder)
+  let { name: fileName } = fileToUpload
+  fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
+  const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
   const { fields = {}, url } = result
 
@@ -225,7 +228,7 @@ export const uploadToS3 = async (
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
 
   // return CDN url for assets in production
-  if (AppConfig.appEnv === 'production') {
+  if (AppConfig.appEnv === 'production' && !ignoreCDN) {
     return `${AppConfig.cdnURI}/${fields.key}`
   }
   return `${url}/${fields.key}`
@@ -1064,6 +1067,48 @@ export const removeTokenFromHtml = (str) => {
   return str
 }
 
+export const getYoutubeId = (url, opts) => {
+  if (!opts) {
+    opts = { fuzzy: true }
+  }
+
+  if (/youtu\.?be/.test(url)) {
+    // Look first for known patterns
+    const patterns = [
+      /youtu\.be\/([^#&?]{11})/,
+      /\?v=([^#&?]{11})/,
+      /&v=([^#&?]{11})/,
+      /embed\/([^#&?]{11})/,
+      /\/v\/([^#&?]{11})/,
+    ]
+
+    const embedPattern = /d\/(\w+)\?rel=\d+"/
+
+    for (let i = 0; i < patterns.length; ++i) {
+      if (patterns[i].test(url)) {
+        return patterns[i].exec(url)[1]
+      }
+    }
+
+    if (embedPattern.test(url)) {
+      return embedPattern.exec(url)[1]
+    }
+
+    if (opts.fuzzy) {
+      // If that fails, break it apart by certain characters and look
+      // for the 11 character key
+      const tokens = url.split(/[\/\&\?=#\.\s]/g)
+      for (let i = 0; i < tokens.length; ++i) {
+        if (/^[^#&?]{11}$/.test(tokens[i])) {
+          return tokens[i]
+        }
+      }
+    }
+  }
+
+  return null
+}
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1094,4 +1139,5 @@ export default {
   replaceLatexTemplate,
   hasMediaDevice,
   removeTokenFromHtml,
+  getYoutubeId,
 }

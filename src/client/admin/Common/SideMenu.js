@@ -24,7 +24,10 @@ import { LogoCompact } from './StyledComponents'
 import { toggleSideBarAction } from '../../author/src/actions/toggleMenu'
 import SwitchUserModal from '../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser } from '../../author/authUtils'
-import { getAccountSwitchDetails } from '../../author/src/selectors/user'
+import {
+  getAccountSwitchDetails,
+  getUserOrgId,
+} from '../../author/src/selectors/user'
 
 const { Sider } = Layout
 
@@ -81,6 +84,7 @@ const SideMenu = ({
   toggleSideBar,
   userId,
   switchDetails,
+  orgId,
 }) => {
   const [isVisible, toggleIsVisible] = useState(false)
   const [showModal, toggleShowModal] = useState(false)
@@ -129,7 +133,9 @@ const SideMenu = ({
           <Menu.Item key="3" className="removeSelectedBorder">
             <a>
               <IconSwitchUser />
-              <span>{isCollapsed ? '' : 'Switch Account'} </span>
+              <span data-cy="switch-user">
+                {isCollapsed ? '' : 'Switch Account'}{' '}
+              </span>
             </a>
           </Menu.Item>
         )}
@@ -219,8 +225,8 @@ const SideMenu = ({
             onClick={toggleDropdown}
             overlayStyle={{
               position: 'fixed',
-              minWidth: isCollapsed ? '50px' : '220px',
-              maxWidth: isCollapsed ? '50px' : '0px',
+              minWidth: isCollapsed ? '70px' : '220px',
+              maxWidth: isCollapsed ? '70px' : '0px',
             }}
             className="footerDropdown"
             overlay={footerDropdownMenu}
@@ -259,9 +265,10 @@ const SideMenu = ({
       <SwitchUserModal
         userId={userId}
         switchUser={switchUser}
+        orgId={orgId}
         showModal={showModal}
         closeModal={() => toggleShowModal(!showModal)}
-        otherAccounts={get(switchDetails, 'otherAccounts', [])}
+        otherAccounts={get(switchDetails, 'switchAccounts', [])}
         personId={personId}
         userRole={userRole}
       />
@@ -278,6 +285,7 @@ const enhance = compose(
       lastName: get(state.user, 'user.lastName', ''),
       userRole: get(state.user, 'user.role', ''),
       userId: get(state.user, 'user._id', ''),
+      orgId: getUserOrgId(state),
       profileThumbnail: get(state.user, 'user.thumbnail'),
       switchDetails: getAccountSwitchDetails(state),
     }),

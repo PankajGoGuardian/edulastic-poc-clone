@@ -36,6 +36,7 @@ import {
   getTestEntitySelector,
   receiveTestByIdSaga,
   setEditEnableAction,
+  setCurrentTestSettingsIdAction,
 } from '../TestPage/ducks'
 
 const { SMART_FILTERS } = libraryFilters
@@ -50,7 +51,7 @@ export const filterMenuItems = [
     icon: 'folder',
     filter: SMART_FILTERS.AUTHORED_BY_ME,
     path: 'by-me',
-    text: 'Authored by me',
+    text: 'Created by me',
   },
   {
     icon: 'share-alt',
@@ -62,7 +63,7 @@ export const filterMenuItems = [
     icon: 'copy',
     filter: SMART_FILTERS.CO_AUTHOR,
     path: 'co-author',
-    text: 'I am a Co-Author',
+    text: 'I am an author',
   },
 
   // These two filters are to be enabled later so, commented out
@@ -191,7 +192,10 @@ function* receiveTestsSaga({
 }) {
   try {
     const { items, count } = yield call(testsApi.getAll, {
-      search,
+      search: {
+        ...search,
+        tags: search.tags.flatMap((t) => t.split('_')),
+      },
       sort,
       page,
       limit,
@@ -265,6 +269,7 @@ function* deleteTestSaga({ payload }) {
         yield put(setDeleteTestStateAction('DONE'))
       }
     } else yield put(push('/author/tests'))
+    yield put(setCurrentTestSettingsIdAction(''))
     notification({
       type: 'success',
       msg: response || 'Test deleted successfully',

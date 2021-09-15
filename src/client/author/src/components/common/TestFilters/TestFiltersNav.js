@@ -8,6 +8,7 @@ import {
   mainTextColor,
   smallDesktopWidth,
   themeColor,
+  themeColorBlue,
 } from '@edulastic/colors'
 
 const TestFiltersNav = ({ items, onSelect, search = {} }) => {
@@ -25,7 +26,9 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
           ) : (
             <Icon type={item.icon} />
           )}
-          {item.text}
+          <span className={item.text === 'FOLDERS' ? 'folders' : ''}>
+            {item.text}
+          </span>
         </Item>
       ))}
     </Container>
@@ -73,6 +76,9 @@ const Item = styled(Menu.Item)`
     display: flex;
     align-items: center;
     text-transform: uppercase;
+    .folders:hover {
+      color: ${themeColorBlue};
+    }
 
     @media (max-width: ${smallDesktopWidth}) {
       height: 30px;
@@ -90,7 +96,9 @@ const Item = styled(Menu.Item)`
     color: ${themeColor};
     box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
     border-radius: 0px 10px 10px 0px;
-
+    &:hover {
+      color: ${themeColorBlue};
+    }
     svg {
       fill: ${themeColor};
     }

@@ -37,8 +37,7 @@ const ClassSelectModal = ({
   const [classListData, setClassListData] = useState([])
   const [selectedRows, setSelectedRows] = useState([])
   const [institutionId, setInstitutionId] = useState('')
-  const [coTeacherFlag, setCoTeacherFlag] = useState(false)
-
+  const [coTeacherFlag, setCoTeacherFlag] = useState(true)
   // set classListData
   useEffect(() => {
     if (type === 'clever') {
@@ -95,6 +94,7 @@ const ClassSelectModal = ({
       )
       setSelectedRows(classListToSync.map((c, i) => i))
       if (
+        !isEmpty(syncedClassCoTeacherFlag) &&
         !(
           syncedClassCoTeacherFlag.includes(true) &&
           syncedClassCoTeacherFlag.includes(false)

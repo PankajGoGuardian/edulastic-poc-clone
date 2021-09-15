@@ -2,8 +2,10 @@ import React, { useState, Suspense, lazy } from 'react'
 import { EduButton, notification } from '@edulastic/common'
 import { Spin } from 'antd'
 import { fileTypes } from '@edulastic/constants'
+import { connect } from 'react-redux'
 import { Footer } from './styled'
 import useFilesUploader from '../../hooks/useFilesUploader'
+import { playerSkinTypeSelector } from '../../selectors/test'
 
 const Camera = lazy(() =>
   import(
@@ -23,6 +25,7 @@ const CameraWithButtons = ({
   onUploadFinished,
   delayCount,
   cameraImageName,
+  playerSkinType,
   ...rest
 }) => {
   const [isTakingPhoto, setIsTakingPhoto] = useState(false)
@@ -89,7 +92,7 @@ const CameraWithButtons = ({
       />
       {isUploadingFiles && <Spin />}
       {!hasCameraError && (
-        <Footer className>
+        <Footer playerSkinType={playerSkinType}>
           <EduButton
             data-cy="cancelUploadButton"
             height="40px"
@@ -112,4 +115,9 @@ const CameraWithButtons = ({
   )
 }
 
-export default CameraWithButtons
+export default connect(
+  (state) => ({
+    playerSkinType: playerSkinTypeSelector(state),
+  }),
+  null
+)(CameraWithButtons)

@@ -77,6 +77,7 @@ export const WidgetContainer = styled.div`
   display: ${({ flowLayout }) => (flowLayout ? 'flex' : 'block')};
   flex-wrap: wrap;
   align-items: center;
+  width: 100%;
 `
 
 export const CollapseBtn = styled.i`

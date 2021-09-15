@@ -78,7 +78,11 @@ const SecondBlock = ({
   }
 
   const searchTags = async (value) => {
-    if (newAllTagsData.some((tag) => tag.tagName === value)) {
+    if (
+      newAllTagsData.some(
+        (tag) => tag.tagName.toLowerCase() === value.toLowerCase()
+      )
+    ) {
       setSearchValue('')
     } else {
       setSearchValue(value)
@@ -92,6 +96,18 @@ const SecondBlock = ({
     [collections, collectionsToShow]
   )
 
+  const allowedCollectionIds = useMemo(
+    () => collectionsToShow.map(({ _id }) => _id),
+    [collectionsToShow]
+  )
+
+  const recentCollectionsListAccessible = useMemo(() =>
+    recentCollectionsList.filter((r) => allowedCollectionIds.includes(r._id), [
+      recentCollectionsList,
+      allowedCollectionIds,
+    ])
+  )
+
   return (
     <Container padding="20px">
       <Row gutter={24}>
@@ -101,6 +117,7 @@ const SecondBlock = ({
             <SelectInputStyled
               bg="white"
               data-cy="dokSelect"
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               placeholder={t('component.options.selectDOK')}
               onSelect={onQuestionDataSelect('depthOfKnowledge')}
               value={depthOfKnowledge}
@@ -141,6 +158,7 @@ const SecondBlock = ({
               placeholder={t('component.options.selectDifficulty')}
               onSelect={onQuestionDataSelect('authorDifficulty')}
               value={authorDifficulty}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               suffixIcon={<SelectSuffixIcon type="caret-down" />}
             >
               <Select.Option key="Select Difficulty Level" value="">
@@ -181,6 +199,7 @@ const SecondBlock = ({
               placeholder={t('component.options.blooomTaxonomy')}
               onSelect={onQuestionDataSelect('bloomsTaxonomy')}
               value={bloomsTaxonomy}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
               suffixIcon={<SelectSuffixIcon type="caret-down" />}
             >
               <Select.Option key={"Select Bloom's Taxonomy"} value="">
@@ -229,6 +248,7 @@ const SecondBlock = ({
                       .toLowerCase()
                       .indexOf(input.toLowerCase()) >= 0
                   }
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   suffixIcon={<SelectSuffixIcon type="caret-down" />}
                   autoFocus={highlightCollection}
                 >
@@ -237,6 +257,8 @@ const SecondBlock = ({
                       key={o.bucketId}
                       value={o.bucketId}
                       _id={o._id}
+                      type={o.type}
+                      collectionName={o.collectionName}
                     >
                       {`${o.collectionName} - ${o.name}`}
                     </Select.Option>
@@ -244,9 +266,9 @@ const SecondBlock = ({
                 </SelectInputStyled>
               </ItemBody>
             )}
-            {recentCollectionsList?.length > 0 && (
+            {recentCollectionsListAccessible?.length > 0 && (
               <RecentCollectionsList
-                recentCollectionsList={recentCollectionsList}
+                recentCollectionsList={recentCollectionsListAccessible}
                 collections={collections || []}
                 handleCollectionsSelect={handleRecentCollectionsSelect}
               />
@@ -262,12 +284,13 @@ const SecondBlock = ({
                 bg="white"
                 optionLabelProp="title"
                 className="tagsSelect"
-                placeholder="Please select"
+                placeholder="Please enter"
                 filterOption={(input, option) =>
                   option.props.title
                     .toLowerCase()
                     .includes(input.trim().toLowerCase())
                 }
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onSearch={searchTags}
               >
                 <Select.Option key={0} value="invalid" title="invalid" disabled>
@@ -281,7 +304,7 @@ const SecondBlock = ({
                 className="tagsSelect"
                 bg="white"
                 optionLabelProp="title"
-                placeholder="Please select"
+                placeholder="Please enter"
                 value={tags.map((x) => x._id)}
                 onSearch={searchTags}
                 onSelect={selectTags}
@@ -289,6 +312,7 @@ const SecondBlock = ({
                 filterOption={(input, option) =>
                   option.props.title.toLowerCase().includes(input.toLowerCase())
                 }
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
                 {searchValue.trim() ? (
                   <Select.Option

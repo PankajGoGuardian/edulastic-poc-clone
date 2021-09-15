@@ -7,7 +7,7 @@ import { withWindowSizes, notification } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
 import { set, omit } from 'lodash'
-import { getUserId } from '../../src/selectors/user'
+import { getCurrentTerm, getUserId } from '../../src/selectors/user'
 import CurriculumSequence from './CurriculumSequence'
 import {
   getAllCurriculumSequencesAction,
@@ -132,6 +132,7 @@ class CurriculumContainer extends Component {
       isStudent = false,
       history: { location } = {},
       urlHasUseThis,
+      termId,
     } = this.props
 
     const playlistId = match.params.id || match.params.playlistId
@@ -141,9 +142,10 @@ class CurriculumContainer extends Component {
         getCurrentPlaylistMetrics({
           groupId: location?.state?.currentGroupId,
           playlistId,
+          termId,
         })
       } else {
-        getCurrentPlaylistMetrics({ playlistId })
+        getCurrentPlaylistMetrics({ playlistId, termId })
       }
     }
 
@@ -525,6 +527,7 @@ const enhance = compose(
         state.curriculumSequence?.destinationCurriculumSequence,
       isStudent: state.user?.user?.role === userRoles.STUDENT,
       currentUserId: getUserId(state),
+      termId: getCurrentTerm(state),
     }),
     mapDispatchToProps
   )

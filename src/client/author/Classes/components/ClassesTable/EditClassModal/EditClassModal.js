@@ -136,7 +136,9 @@ class EditClassModal extends Component {
     const { allTagsData } = this.props
     if (
       allTagsData.some(
-        (tag) => tag.tagName === value || tag.tagName === value.trim()
+        (tag) =>
+          tag.tagName.toLowerCase() === value.toLowerCase() ||
+          tag.tagName.toLowerCase() === value.trim().toLowerCase()
       )
     ) {
       this.setState({ searchValue: '' })
@@ -179,7 +181,11 @@ class EditClassModal extends Component {
 
     let teacherFinalList = [...teacherList]
     if (owners.length) {
-      teacherFinalList.push({ _id: owners[0]?.id, firstName: owners[0]?.name })
+      teacherFinalList.push({
+        _id: owners[0]?.id,
+        firstName: owners[0]?.name,
+        email: owners[0]?.email,
+      })
       teacherFinalList = uniqBy(teacherFinalList, '_id')
     }
 
@@ -206,7 +212,7 @@ class EditClassModal extends Component {
       teacherFinalList.forEach((row) => {
         const teacherName = row.lastName
           ? `${row.firstName} ${row.lastName}`
-          : `${row.firstName}`
+          : `${row.firstName || 'Anonymous'}`
         teacherOptions.push(<Option value={row._id}>{teacherName}</Option>)
       })
     }

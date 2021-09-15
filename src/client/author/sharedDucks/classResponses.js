@@ -1,4 +1,4 @@
-import { delay } from 'redux-saga'
+import { delay, buffers } from 'redux-saga'
 import {
   takeEvery,
   call,
@@ -400,7 +400,7 @@ function* receiveStudentQuestionSaga({ payload }) {
 
     yield put({
       type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-      payload: feedbackResponse,
+      payload: { qActivities: feedbackResponse },
     })
   } catch (err) {
     console.error(err)
@@ -535,7 +535,7 @@ function* updateStudentScore(payload) {
       if (qAct) {
         yield put({
           type: RECEIVE_STUDENT_QUESTION_SUCCESS,
-          payload: { ...qAct, noAnswerReset: true },
+          payload: { qActivities: qAct, noAnswerReset: true },
         })
       }
     }
@@ -568,7 +568,10 @@ export function* watcherSaga() {
       receiveFeedbackResponseSaga
     ),
   ])
-  const requestChan = yield actionChannel(UPDATE_STUDENT_ACTIVITY_SCORE)
+  const requestChan = yield actionChannel(
+    UPDATE_STUDENT_ACTIVITY_SCORE,
+    buffers.sliding(20)
+  )
   while (true) {
     const { payload } = yield take(requestChan)
     yield call(updateStudentScore, payload)

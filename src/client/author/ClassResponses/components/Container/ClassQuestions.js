@@ -8,14 +8,19 @@ import { keyBy as _keyBy, isEmpty, get, isEqual, groupBy } from 'lodash'
 // components
 import { AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { questionType } from '@edulastic/constants'
+import {
+  questionType,
+  collections as collectionConst,
+} from '@edulastic/constants'
 import produce from 'immer'
 import { Modal, Row, Col, Spin, Pagination } from 'antd'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import {
   loadScratchPadAction,
   clearUserWorkAction,
+  saveUserWorkAction,
 } from '../../../../assessment/actions/userWork'
+import { setUpdatedScratchPadAction } from '../../../ExpressGrader/ducks'
 
 import AssessmentPlayerModal from '../../../Assignments/components/Container/TestPreviewModal'
 import { getRows } from '../../../sharedDucks/itemDetail'
@@ -300,6 +305,8 @@ const Preview = ({
   hideCorrectAnswer,
   testActivityId: utaId,
   currentStudent,
+  isExpandedView = false,
+  saveScratchPadData,
 }) => {
   const rows = getRows(item, false)
   const questions = get(item, ['data', 'questions'], [])
@@ -337,6 +344,12 @@ const Preview = ({
     {}
   )
 
+  const premiumCollectionWithoutAccess =
+    item?.premiumContentRestriction &&
+    item?.collections
+      ?.filter(({ type = '' }) => type === collectionConst.types.PREMIUM)
+      .map(({ name }) => name)
+
   return (
     <StyledFlexContainer
       key={item._id}
@@ -367,7 +380,7 @@ const Preview = ({
         userWork={scractchPadUsed && userWork} // used to determine show student work button
         highlights={highlights}
         scratchpadDimensions={scratchpadDimensions}
-        saveUserWork={() => {}}
+        saveUserWork={(data) => saveScratchPadData(data)}
         isStudentWorkCollapseOpen={isStudentWorkCollapseOpen}
         toggleStudentWorkCollapse={toggleStudentWorkCollapse}
         {...scoringProps}
@@ -379,6 +392,9 @@ const Preview = ({
         testActivityId={utaId}
         hideCorrectAnswer={hideCorrectAnswer}
         currentStudent={currentStudent}
+        isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+        premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+        isExpandedView={isExpandedView}
       />
     </StyledFlexContainer>
   )
@@ -487,6 +503,36 @@ class ClassQuestions extends Component {
     )
   }
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-24950
+   * save scratchpad data updated from EG
+   */
+  saveScratchPadData = (data) => {
+    const {
+      saveUserWork,
+      questionActivities,
+      setUpdatedScratchPad,
+    } = this.props
+
+    if (data?.questionId) {
+      const { questionId, userWorkData } = data
+      const userQuestionActivity = (questionActivities || []).find(
+        (qa) => qa?.qid === questionId
+      )
+      // While in EG, userWork in store has uqa id as keys
+      const userWorkId = userQuestionActivity?._id
+      if (userWorkId) {
+        const scratchpadData = {
+          [questionId]: userWorkData,
+        }
+        setUpdatedScratchPad(true)
+        saveUserWork({
+          [userWorkId]: { ...scratchpadData },
+        })
+      }
+    }
+  }
+
   render() {
     const {
       showPlayerModal,
@@ -521,6 +567,7 @@ class ClassQuestions extends Component {
       isQuestionsLoading,
       setLcbQuestionLoaderState,
       variableSetIds,
+      isExpandedView = false,
     } = this.props
     const { expressGrader: isExpressGrader = false } = this.context
     const testItems = getTestItems({
@@ -541,7 +588,7 @@ class ClassQuestions extends Component {
 
     const evaluationStatus = questionActivities.reduce((acc, curr) => {
       if (curr.pendingEvaluation) {
-        acc[curr.qid] = 'pending'
+        acc[`${curr.testItemId}_${curr.qid}`] = 'pending'
       } else {
         acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
       }
@@ -719,6 +766,8 @@ class ClassQuestions extends Component {
               isStudentView={isStudentView}
               testActivityId={testActivityId || currentStudent.testActivityId}
               currentStudent={currentStudent}
+              isExpandedView={isExpandedView}
+              saveScratchPadData={this.saveScratchPadData}
             />
           )
         })}
@@ -763,7 +812,7 @@ const withConnect = connect(
     ),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(
       state,
-      ownProps.currentStudent.studentId
+      ownProps.testActivityId
     ),
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),
@@ -780,6 +829,8 @@ const withConnect = connect(
     setPageNumber: setPageNumberAction,
     setLcbQuestionLoaderState: setLcbQuestionLoaderStateAcion,
     setQuestionIdToScroll: setQuestionIdToScrollAction,
+    saveUserWork: saveUserWorkAction,
+    setUpdatedScratchPad: setUpdatedScratchPadAction,
   }
 )
 

@@ -2,7 +2,6 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { EduButton } from '@edulastic/common'
-import { get } from 'lodash'
 import { ConfirmationModal } from '../src/components/common/ConfirmationModal'
 import {
   getAvaialbleRegradeSettingsSelector,
@@ -11,6 +10,7 @@ import {
   regradeTestAction,
 } from '../TestPage/ducks'
 import Actions from './Actions'
+import { getUserOrgId } from '../src/selectors/user'
 
 const { AddedItems, EditedItems } = Actions
 
@@ -117,7 +117,7 @@ export default connect(
     creating: state?.tests?.creating,
     availableRegradeSettings: getAvaialbleRegradeSettingsSelector(state),
     test: getTestSelector(state),
-    districtId: get(state, ['user', 'user', 'orgData', 'districtIds', 0]),
+    districtId: getUserOrgId(state),
     isRegrading: getRegradingSelector(state),
   }),
   {

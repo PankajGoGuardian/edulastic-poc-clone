@@ -6,7 +6,7 @@ import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtil
 import { convertNumberToFraction } from '../../../utils/helpers'
 import { CONSTANT, Colors } from './config'
 import { defaultConfig as lineConfig } from './elements/Line'
-import { Area, EditButton } from './elements'
+import { Area } from './elements' // , EditButton
 import rayConfig from './elements/Ray'
 import segmentConfig from './elements/Segment'
 import vectorConfig from './elements/Vector'
@@ -196,6 +196,7 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.HYPERBOLA:
     case CONSTANT.TOOLS.POLYNOM:
     case CONSTANT.TOOLS.PARABOLA2:
+    case CONSTANT.TOOLS.EXPONENTIAL2:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -251,7 +252,7 @@ export const handleSnap = (line, points, board) => {
     point.on('drag', () => {
       point.dragged = true
       board.dragged = true
-      EditButton.cleanButton(board, point)
+      // EditButton.cleanButton(board, point)
     })
   })
 }
@@ -484,7 +485,8 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.ELLIPSE &&
       type !== CONSTANT.TOOLS.HYPERBOLA &&
       type !== CONSTANT.TOOLS.POLYNOM &&
-      type !== CONSTANT.TOOLS.PARABOLA2
+      type !== CONSTANT.TOOLS.PARABOLA2 &&
+      type !== CONSTANT.TOOLS.EXPONENTIAL2
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,
@@ -974,7 +976,7 @@ export const toFractionHTML = (value, fractionsFormat) => {
     ''
   )
 
-  return `<span style="${labelStyle}">${main}${space}${fracs}</span>`
+  return `<span style="${labelStyle}" data-cy="label-${main}">${main}${space}${fracs}</span>`
 }
 
 /*

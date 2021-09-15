@@ -4,7 +4,7 @@ import { Circle, G, Svg } from './styledSVG'
 
 const Fullscreen = ({ media, style }) => {
   const _handleFullscreen = () => {
-    media.fullscreen()
+    media?.fullscreen?.()
   }
   return (
     <Svg
@@ -15,7 +15,7 @@ const Fullscreen = ({ media, style }) => {
       onClick={_handleFullscreen}
     >
       <Circle cx="18" cy="18" r="18" />
-      {!media.isFullscreen ? (
+      {!media?.isFullscreen ? (
         <G>
           <polyline
             strokeWidth="1.75"

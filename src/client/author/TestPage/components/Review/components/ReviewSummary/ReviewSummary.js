@@ -143,7 +143,13 @@ const ReviewSummary = ({
             margin="0px 0px 15px"
           >
             {collectionListToUse?.map((o) => (
-              <Select.Option key={o.bucketId} value={o.bucketId} _id={o._id}>
+              <Select.Option
+                key={o.bucketId}
+                value={o.bucketId}
+                _id={o._id}
+                type={o.type}
+                collectionName={o.collectionName}
+              >
                 {`${o.collectionName} - ${o.name}`}
               </Select.Option>
             ))}
@@ -215,7 +221,7 @@ const ReviewSummary = ({
             <TableHeaderCol span={6}>Q&apos;s</TableHeaderCol>
             <TableHeaderCol span={6}>Points</TableHeaderCol>
           </Row>
-          {summary?.standards?.length &&
+          {!!summary?.standards?.length &&
             summary.standards.map((data) => (
               <TableBodyRow data-cy={data.identifier} key={data.key}>
                 <TableBodyCol span={12}>

@@ -12,6 +12,7 @@ import {
   getUserRole,
   getUserId,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
   isOrganizationDistrictUserSelector,
 } from '../../../src/selectors/user'
 import ViewModal from '../ViewModal'
@@ -39,7 +40,7 @@ import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
@@ -128,9 +129,16 @@ class Item extends Component {
       history,
       item,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
+      orgCollections,
     } = this.props
-    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    const { collections = [] } = item
+    const sparkMathId = orgCollections?.find(
+      (x) => x.name.toLowerCase() === 'spark math'
+    )?._id
+    const selectedCollections = collections.map((x) => x._id)
+    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
     else
       history.push({
         pathname: `/author/assignments/${item._id}`,
@@ -138,6 +146,7 @@ class Item extends Component {
           from: 'testLibrary',
           fromText: 'Test Library',
           toUrl: '/author/tests',
+          isSparkMathCollection: selectedCollections.includes(sparkMathId),
         },
       })
   }
@@ -484,6 +493,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       currentUserId: getUserId(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isUseThisLoading: getIsUseThisLoading(state),
@@ -498,7 +508,7 @@ const enhance = compose(
       toggleTestLikeRequest: toggleTestLikeAction,
       duplicatePlayList: duplicatePlaylistRequestAction,
       duplicateTest: duplicateTestRequestAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       useThisPlayList: useThisPlayListAction,
       cloneThisPlayList: cloneThisPlayListAction,

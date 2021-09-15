@@ -319,32 +319,6 @@ const Gradebook = ({
             </TableContainer>
           ) : (
             <TableContainer showFilter={showFilter}>
-              <TableHeader>
-                <LeftArrow
-                  onClick={() =>
-                    handlePagination({
-                      ...pagination,
-                      assignmentPage: pagination.assignmentPage - 1,
-                    })
-                  }
-                  disabled={pagination.assignmentPage === 1}
-                />
-                <RightArrow
-                  onClick={() =>
-                    handlePagination({
-                      ...pagination,
-                      assignmentPage: pagination.assignmentPage + 1,
-                    })
-                  }
-                  disabled={
-                    assignmentsCount === 0 ||
-                    pagination.assignmentPage ===
-                      Math.ceil(
-                        assignmentsCount / pagination.assignmentPageSize
-                      )
-                  }
-                />
-              </TableHeader>
               <GradebookTable
                 dataSource={curatedData}
                 assessments={assessmentsData}
@@ -353,31 +327,61 @@ const Gradebook = ({
                 windowWidth={windowWidth}
                 windowHeight={windowHeight}
               />
-              <TableFooter>
-                <GradebookStatusColors />
-                {/* NOTE: When status filter is set for Gradebook, assignment pagination is dependent on student pagination */}
-                <Pagination
-                  current={pagination.studentPage}
-                  pageSize={pagination.studentPageSize}
-                  onChange={(studentPage) =>
-                    handlePagination({
-                      ...pagination,
-                      ...(filters.status ? { assignmentPage: 1 } : {}),
-                      studentPage,
-                    })
-                  }
-                  onShowSizeChange={(_, studentPageSize) =>
-                    handlePagination({
-                      ...pagination,
-                      ...(filters.status ? { assignmentPage: 1 } : {}),
-                      studentPage: 1,
-                      studentPageSize,
-                    })
-                  }
-                  total={studentsCount}
-                  showSizeChanger={false}
-                />
-              </TableFooter>
+              {curatedData?.length > 0 && (
+                <>
+                  <TableHeader>
+                    <LeftArrow
+                      onClick={() =>
+                        handlePagination({
+                          ...pagination,
+                          assignmentPage: pagination.assignmentPage - 1,
+                        })
+                      }
+                      disabled={pagination.assignmentPage === 1}
+                    />
+                    <RightArrow
+                      onClick={() =>
+                        handlePagination({
+                          ...pagination,
+                          assignmentPage: pagination.assignmentPage + 1,
+                        })
+                      }
+                      disabled={
+                        assignmentsCount === 0 ||
+                        pagination.assignmentPage ===
+                          Math.ceil(
+                            assignmentsCount / pagination.assignmentPageSize
+                          )
+                      }
+                    />
+                  </TableHeader>
+                  <TableFooter>
+                    <GradebookStatusColors />
+                    {/* NOTE: When status filter is set for Gradebook, assignment pagination is dependent on student pagination */}
+                    <Pagination
+                      current={pagination.studentPage}
+                      pageSize={pagination.studentPageSize}
+                      onChange={(studentPage) =>
+                        handlePagination({
+                          ...pagination,
+                          ...(filters.status ? { assignmentPage: 1 } : {}),
+                          studentPage,
+                        })
+                      }
+                      onShowSizeChange={(_, studentPageSize) =>
+                        handlePagination({
+                          ...pagination,
+                          ...(filters.status ? { assignmentPage: 1 } : {}),
+                          studentPage: 1,
+                          studentPageSize,
+                        })
+                      }
+                      total={studentsCount}
+                      showSizeChanger={false}
+                    />
+                  </TableFooter>
+                </>
+              )}
             </TableContainer>
           )}
         </MainContentWrapper>

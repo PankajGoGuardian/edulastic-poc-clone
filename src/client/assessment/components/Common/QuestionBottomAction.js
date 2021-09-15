@@ -7,7 +7,7 @@ import {
   EduButton,
   AnswerContext,
   ScrollContext,
-  ItemLevelContext as HideScoringBlockContext,
+  PointBlockContext,
   notification,
 } from '@edulastic/common'
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
@@ -74,10 +74,10 @@ export const ShowUserWork = ({ onClick, loading }) => (
 
 export const TimeSpent = ({ time }) => {
   return (
-    <div>
+    <TimeSpentText>
       <IconClockCircularOutline />
       {round(time / 1000, 1)}s
-    </div>
+    </TimeSpentText>
   )
 }
 
@@ -130,7 +130,7 @@ const QuestionBottomAction = ({
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
   const [itemloading, setItemLoading] = useState(false)
-  const [hideScoring, setHideScoring] = useState(false)
+  const [hidingScoringBlock, setHideScoring] = useState(false)
   const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
   const [isPublishedChanges, setIsPublishedChanges] = useState(false)
 
@@ -171,7 +171,6 @@ const QuestionBottomAction = ({
       question: questionData,
       proceedRegrade: false,
       lcbView,
-      isUnscored: item?.validation?.unscored,
       callBack: onCloseQuestionModal,
     }
     updateCorrectItem(payload)
@@ -416,7 +415,7 @@ const QuestionBottomAction = ({
               }}
             >
               <AnswerContext.Provider value={{ isAnswerModifiable: true }}>
-                <HideScoringBlockContext.Provider value={hideScoring}>
+                <PointBlockContext.Provider value={hidingScoringBlock}>
                   <QuestionComp
                     {...questionProps}
                     t={t}
@@ -424,7 +423,7 @@ const QuestionBottomAction = ({
                     view={EDIT}
                     disableResponse={false}
                   />
-                </HideScoringBlockContext.Provider>
+                </PointBlockContext.Provider>
               </AnswerContext.Provider>
             </ScrollContext.Provider>
           </QuestionPreviewModal>
@@ -595,4 +594,7 @@ const CorrectButton = styled(EduButton)`
     left: 22px;
     top: 4px;
   }
+`
+const TimeSpentText = styled.div`
+  margin-bottom: 3px;
 `

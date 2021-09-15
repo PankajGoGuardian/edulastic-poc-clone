@@ -125,7 +125,14 @@ const ManageSubscriptionContainer = ({
 
   useEffect(() => {
     fetchMultipleSubscriptions({ licenseOwnerId })
-    fetchUserSubscriptionStatus()
+    if (userRole === roleuser.EDULASTIC_ADMIN) {
+      fetchUserSubscriptionStatus({
+        licenseOwnerId: userId,
+        ownerDistrictId: userOrgId || districtId,
+      })
+    } else {
+      fetchUserSubscriptionStatus()
+    }
   }, [])
 
   const isSubscribed =

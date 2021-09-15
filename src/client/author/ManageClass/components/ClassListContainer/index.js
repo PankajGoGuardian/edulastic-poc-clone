@@ -21,6 +21,7 @@ import ClassList from './ClassList'
 import ClassSelectModal from './ClassSelectModal'
 import ShowSyncDetailsModal from './ShowSyncDetailsModal'
 import CanvasClassSelectModal from './CanvasClassSelectModal'
+import { currentDistrictInstitutionIds } from '../../../src/selectors/user'
 
 // eslint-disable-next-line max-len
 const ClassListContainer = ({
@@ -67,7 +68,8 @@ const ClassListContainer = ({
   }, [showCleverSyncModal])
 
   useEffect(() => {
-    if (bulkSyncCanvasStatus === 'SUCCESS') fetchGroups()
+    if (bulkSyncCanvasStatus === 'SUCCESS')
+      fetchGroups({ isCanvasClassSync: true })
   }, [bulkSyncCanvasStatus])
 
   const syncedGoogleClassroomIds = groups
@@ -160,7 +162,7 @@ export default connect(
     user: getUserDetails(state),
     canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
     canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
-    institutionIds: get(state, 'user.user.institutionIds', []),
+    institutionIds: currentDistrictInstitutionIds(state),
     bulkSyncCanvasStatus: get(state, 'signup.bulkSyncCanvasStatus', false),
     showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
   }),

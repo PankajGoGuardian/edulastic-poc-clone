@@ -70,11 +70,12 @@ const SubHeader = ({
             Class Code <span>{code}</span>
           </ClassCode>
           <Studentscount lg={6} span={24}>
-            TOTAL STUDENTS <span>{totalStudent || 0}</span>
+            TOTAL STUDENTS{' '}
+            <span data-cy="totalStudents">{totalStudent || 0}</span>
           </Studentscount>
           {primaryTeacher && (
             <CoTeacher lg={12} span={24}>
-              TEACHER <span>{formatPrimaryTeacher}</span>
+              TEACHER <span data-cy="classTeacher">{formatPrimaryTeacher}</span>
             </CoTeacher>
           )}
           <Col lg={24} span={24}>
@@ -86,7 +87,7 @@ const SubHeader = ({
                 gradeSubject={gradeSubject}
               >
                 <CoTeacher>
-                  CO-TEACHER <span>{teacher}</span>
+                  CO-TEACHER <span data-cy="coTeacher">{teacher}</span>
                   {otherTeachers.length >= 1 ? (
                     <Tooltip title={otherTeacherNames} placement="right">
                       <PopCoTeachers>+ {otherTeachers.length}</PopCoTeachers>

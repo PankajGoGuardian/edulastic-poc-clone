@@ -434,9 +434,7 @@ class ClozeDragDropDisplay extends Component {
 
     const responseBoxStyle = {
       height: '100%',
-      width: horizontallyAligned
-        ? dragItemMaxWidth + 62
-        : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
+      width: horizontallyAligned ? 'auto' : answerContainerStyle.maxWidth, // 62 is padding and margin of respose box
       flexShrink: 0,
       borderRadius: smallSize ? 0 : 10,
       marginRight: responsecontainerposition === 'left' ? 15 : null,
@@ -469,6 +467,7 @@ class ClozeDragDropDisplay extends Component {
             maxWidth: dragItemMaxWidth,
           }}
           stemNumeration={stemNumeration}
+          singleResponseBox={responseIDs?.length === 1}
         />
         {((item.validation && item.validation.altResponses) || []).map(
           (ele, ind) => (
@@ -485,6 +484,7 @@ class ClozeDragDropDisplay extends Component {
                 maxWidth: dragItemMaxWidth,
               }}
               stemNumeration={stemNumeration}
+              singleResponseBox={responseIDs?.length === 1}
             />
           )
         )}

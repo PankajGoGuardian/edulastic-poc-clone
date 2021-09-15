@@ -11,6 +11,7 @@ import {
   IconNoVolume,
   IconDynamic,
   IconClose,
+  IconPassage,
 } from '@edulastic/icons'
 import { get } from 'lodash'
 import { Row, Icon } from 'antd'
@@ -25,6 +26,7 @@ import {
   EduButton,
   notification,
   LikeIconStyled,
+  FlexContainer,
 } from '@edulastic/common'
 import { testItemsApi } from '@edulastic/api'
 
@@ -62,6 +64,11 @@ import {
   AddRemoveBtn,
   AddRemoveButton,
   AddRemoveBtnPublisher,
+  PassageTitle,
+  PassageTitleContainer,
+  StyledRow,
+  PassageInfo,
+  PassageIconContainer,
 } from './styled'
 import {
   setAndSavePassageItemsAction,
@@ -70,6 +77,7 @@ import {
 } from '../../../TestPage/ducks'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import PassageConfirmationModal from '../../../TestPage/components/PassageConfirmationModal/PassageConfirmationModal'
+import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
 import Tags from '../../../src/components/common/Tags'
 import appConfig from '../../../../../app-config'
 import SelectGroupModal from '../../../TestPage/components/AddItems/SelectGroupModal'
@@ -114,7 +122,9 @@ class Item extends Component {
   handleToggleItemToCart = (item) => async () => {
     const { onToggleToCart, setPassageItems } = this.props
     if (item.passageId) {
-      const passageItems = await testItemsApi.getPassageItems(item.passageId)
+      let passageItems = await testItemsApi.getPassageItems(item.passageId)
+      // filtering inactive items from passage | EV-29823
+      passageItems = passageItems.filter((testItem) => testItem?.active)
       setPassageItems(passageItems)
 
       if (passageItems.length > 1) {
@@ -173,15 +183,18 @@ class Item extends Component {
         name: 'DOK:',
         text: (questions.find((_item) => _item.depthOfKnowledge) || {})
           .depthOfKnowledge,
+        dataCy: 'itemDok',
       },
       {
         name: getTestItemAuthorIcon(item, collections),
         text: getTestItemAuthorName(item, collections),
+        dataCy: 'authorName',
       },
       {
         name: <IdIcon />,
         text: item._id,
         type: 'id',
+        dataCy: 'itemId',
       },
       {
         name: windowWidth > 1024 ? <ShareIcon /> : '',
@@ -201,6 +214,7 @@ class Item extends Component {
         ),
         text: item?.analytics?.[0]?.likes || '0',
         type: 'like',
+        dataCy: 'likeButton',
       },
     ]
     if (getAllTTS.length) {
@@ -227,7 +241,7 @@ class Item extends Component {
         detail.text && (
           <DetailCategory
             isLiked={isItemLiked}
-            data-cy={`detail_index-${index}`}
+            data-cy={`${detail.dataCy}`}
             key={`DetailCategory_${index}`}
           >
             <CategoryName>{detail.name}</CategoryName>
@@ -400,6 +414,45 @@ class Item extends Component {
     openPreviewModal()
   }
 
+  get getPassageInfo() {
+    const { item } = this.props
+    const Title = item?.passageSource ? (
+      <>
+        <PassageTitle>{item.passageTitle}</PassageTitle> by{' '}
+        <PassageTitle>{item.passageSource}</PassageTitle>
+      </>
+    ) : (
+      <PassageTitle>{item.passageTitle}</PassageTitle>
+    )
+    return (
+      <FlexContainer flexDirection="column">
+        <StyledRow>
+          <PassageIconContainer md={1}>
+            <IconPassage width={15.96} height={19.338} />
+          </PassageIconContainer>
+          <PassageTitleContainer md={23}>{Title}</PassageTitleContainer>
+        </StyledRow>
+        <StyledRow>
+          {item?.passageItemsCount && (
+            <PassageInfo md={7}>
+              TOTAL PASSAGE QUESTIONS: {item.passageItemsCount}
+            </PassageInfo>
+          )}
+          {item?.passageLexileValue && (
+            <PassageInfo md={7}>
+              LEXILE LEVEL: {item.passageLexileValue}
+            </PassageInfo>
+          )}
+          {item?.passageFleschKincaid && (
+            <PassageInfo md={7}>
+              FLESCH-KINCAID: {item.passageFleschKincaid}
+            </PassageInfo>
+          )}
+        </StyledRow>
+      </FlexContainer>
+    )
+  }
+
   render() {
     const {
       item,
@@ -464,6 +517,9 @@ class Item extends Component {
           )}
           <Question>
             <QuestionContent>
+              {item?.isPassageWithQuestions &&
+                item?.passageTitle &&
+                this.getPassageInfo}
               <Stimulus
                 onClickHandler={this.handleStimulusClick}
                 stimulus={get(
@@ -708,7 +764,7 @@ const enhance = compose(
       collections: getCollectionsSelector(state),
       isPublisherUser: isPublisherUserSelector(state),
       userRole: getUserRole(state),
-      selectedItems: state?.testsAddItems?.selectedItems || [],
+      selectedItems: getSelectedItemSelector(state),
     }),
     {
       setAndSavePassageItems: setAndSavePassageItemsAction,

@@ -9,16 +9,7 @@ import {
   select,
   take,
 } from 'redux-saga/effects'
-import {
-  cloneDeep,
-  values,
-  get,
-  omit,
-  set,
-  uniqBy,
-  intersection,
-  uniq,
-} from 'lodash'
+import { cloneDeep, values, get, omit, set, uniqBy, uniq } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
 import {
@@ -97,7 +88,13 @@ import {
   changeDataToPreferredLanguage,
   changeDataInPreferredLanguage,
 } from '../../assessment/utils/question'
-import { getOptionsForMath } from '../../assessment/utils/variables'
+import {
+  hasMathFormula,
+  getLatexValuePairs,
+  generateExamples,
+  getOptionsForMath,
+  getOptionsForClozeMath,
+} from '../../assessment/utils/variables'
 
 // constants
 export const resourceTypeQuestions = {
@@ -134,10 +131,24 @@ export const SET_IS_GRADING_RUBRIC =
 // actions
 
 // Variable
-export const CALCULATE_FORMULA =
-  '[variable] calculate variable formulation for example value'
-export const CALCULATE_FORMULA_FAILED =
-  '[variable] calculate variable formulation for example value failed'
+export const GENERATE_VARIABLE_REQUEST =
+  '[variable] generate dynamic examples request'
+export const GENERATE_VARIABLE_START =
+  '[variable] generate dynamic examples start'
+export const GENERATE_VARIABLE_FINISHED =
+  '[variable] generate dynamic examples finished'
+export const DYNAMIC_PARAMETER_UPDATED =
+  '[variable] dynamic parameters settings chagned'
+
+const ADD_ITEM_TO_CART = '[item list] add item to cart'
+
+const addItemToCartAction = (item) => ({
+  type: ADD_ITEM_TO_CART,
+  payload: {
+    item,
+    fromQuestionEdit: true,
+  },
+})
 
 export const receiveQuestionByIdAction = (id) => ({
   type: RECEIVE_QUESTION_REQUEST,
@@ -146,9 +157,9 @@ export const receiveQuestionByIdAction = (id) => ({
   },
 })
 
-export const saveQuestionAction = (testId, isTestFlow, isEditFlow = false) => ({
+export const saveQuestionAction = (data) => ({
   type: SAVE_QUESTION_REQUEST,
-  payload: { testId, isTestFlow, isEditFlow },
+  payload: data,
 })
 
 export const setQuestionDataAction = (question) => ({
@@ -185,9 +196,13 @@ export const loadQuestionAction = (
   payload: { data, rowIndex, isPassageWidget },
 })
 
-export const calculateFormulaAction = (data) => ({
-  type: CALCULATE_FORMULA,
-  payload: { data },
+export const generateVariableAction = (data) => ({
+  type: GENERATE_VARIABLE_REQUEST,
+  payload: data,
+})
+
+export const variableSettingsChangedAction = () => ({
+  type: DYNAMIC_PARAMETER_UPDATED,
 })
 
 export const setDictAlignmentFromQuestion = (payload) => ({
@@ -213,6 +228,7 @@ const initialState = {
   error: null,
   saveError: null,
   calculating: false,
+  dpUpdated: false,
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -223,17 +239,29 @@ export const reducer = (state = initialState, { type, payload }) => {
         calculating: !!payload,
       }
     }
-    case CALCULATE_FORMULA:
+    case GENERATE_VARIABLE_START:
       return {
         ...state,
         calculating: true,
       }
     case ADD_ITEM_EVALUATION:
-    case CALCULATE_FORMULA_FAILED:
     case UPDATE_QUESTION: {
       return {
         ...state,
         calculating: false,
+      }
+    }
+    case GENERATE_VARIABLE_FINISHED: {
+      return {
+        ...state,
+        calculating: false,
+        dpUpdated: false,
+      }
+    }
+    case DYNAMIC_PARAMETER_UPDATED: {
+      return {
+        ...state,
+        dpUpdated: true,
       }
     }
     case RECEIVE_QUESTION_REQUEST:
@@ -368,6 +396,11 @@ export const getCalculatingSelector = createSelector(
   (state) => state.calculating
 )
 
+export const getDpUpdatedSelector = createSelector(
+  stateSelector,
+  (state) => state.dpUpdated
+)
+
 export const getIsGradingCheckboxState = createSelector(
   stateSelector,
   (state) => state.isGradingRubric
@@ -419,7 +452,15 @@ export const redirectTestIdSelector = (state) =>
   get(state, 'itemDetail.redirectTestId', false)
 
 function* saveQuestionSaga({
-  payload: { testId: tId, isTestFlow, isEditFlow, saveAndPublishFlow = false },
+  payload: {
+    testId: tId,
+    isTestFlow,
+    isEditFlow,
+    saveAndPublishFlow = false,
+    rowIndex: passageQuestionRowIndex,
+    tabIndex: passageQuestionTabIndex,
+    callback,
+  },
 }) {
   try {
     if (isTestFlow) {
@@ -499,9 +540,13 @@ function* saveQuestionSaga({
     const locationState = yield select((state) => state.router.location.state)
     updateItemWithAlignmentDetails(itemDetail, alignments)
     let currentQuestionIds = getQuestionIds(itemDetail)
-    const { rowIndex, tabIndex } = locationState || {
+    let { rowIndex, tabIndex } = locationState || {
       rowIndex: 0,
       tabIndex: 1,
+    }
+    if (callback) {
+      tabIndex = passageQuestionTabIndex
+      rowIndex = passageQuestionRowIndex
     }
     const { id } = question
     const entity = {
@@ -672,13 +717,72 @@ function* saveQuestionSaga({
     } else {
       item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
     }
+    yield put(addItemToCartAction(item))
     yield put(changeUpdatedFlagAction(false))
+
     if (item.testId) {
       yield put(setRedirectTestAction(item.testId))
     }
 
     if (!saveAndPublishFlow) {
       notification({ type: 'success', messageKey: 'itemSavedSuccess' })
+    }
+
+    if (typeof callback === 'function') {
+      yield put({
+        type: UPDATE_ITEM_DETAIL_SUCCESS,
+        payload: { item },
+      })
+      callback()
+      yield put(changeCurrentQuestionAction(''))
+      const currentRouterState = yield select(
+        (state) => state.router.location.state
+      )
+      if (currentRouterState) {
+        const routerTestId = currentRouterState.previousTestId
+        if (routerTestId) {
+          tId = routerTestId
+        }
+      }
+      if (isTestFlow) {
+        if (!tId || tId === 'undefined') {
+          const { __v, ...passageData } =
+            (yield select(getPassageSelector)) || {}
+          let passageItems = []
+          if (passageData?._id && passageData?.testItems?.length > 1) {
+            passageItems = yield call(
+              testItemsApi.getPassageItems,
+              passageData._id
+            )
+          }
+          yield put(
+            setTestDataAndUpdateAction({
+              item,
+              passageItems,
+              addToTest: true,
+              fromSaveMultipartItem: true,
+              routerState: currentRouterState,
+              url: `/author/tests/${tId}/editItem/${item?._id}`,
+            })
+          )
+        } else {
+          yield put(setCreatedItemToTestAction(item))
+          yield put(
+            push({
+              pathname: `/author/tests/${tId}/editItem/${item?._id}`,
+              state: currentRouterState,
+            })
+          )
+        }
+      } else {
+        yield put(
+          push({
+            pathname: `/author/items/${item._id}/item-detail`,
+            state: currentRouterState,
+          })
+        )
+      }
+      return
     }
 
     const { standards = [] } = alignments[0]
@@ -697,7 +801,7 @@ function* saveQuestionSaga({
     if (collections) {
       const { itemBanks } = yield select(getOrgDataSelector)
       let recentCollectionsList = yield select(getRecentCollectionsListSelector)
-      recentCollectionsList = generateRecentlyUsedCollectionsList(
+      recentCollectionsList = yield generateRecentlyUsedCollectionsList(
         collections,
         itemBanks,
         recentCollectionsList
@@ -813,7 +917,7 @@ function* saveQuestionSaga({
       return
     }
     const stateToFollow =
-      locationState.testAuthoring === false
+      locationState?.testAuthoring === false
         ? { testAuthoring: false, testId: locationState.testId }
         : {}
     const { previousTestId, regradeFlow } = yield select(
@@ -857,55 +961,6 @@ function* saveQuestionSaga({
     })
   }
 }
-
-/**
- *
- * @param {Object} variables
- */
-const containsEmptyField = (variables) => {
-  const _keys = Object.keys(variables)
-  for (const key of _keys) {
-    const {
-      type = '',
-      exampleValue = '',
-      formula = '',
-      set: _set = '',
-      sequence = '',
-      name,
-    } = variables[key]
-    switch (true) {
-      // variables must be set
-      case type !== 'FORMULA' && !exampleValue && exampleValue !== 0:
-        return {
-          hasEmptyField: true,
-          errMessage: 'dynamic parameters has empty fields',
-        }
-      // formula must be set
-      case type === 'FORMULA' && !formula:
-        return { hasEmptyField: true, errMessage: 'formula is required' }
-      // avoids recursion
-      case !!intersection(_keys, _set.split(',')).length:
-        return {
-          hasEmptyField: true,
-          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
-        }
-      case !!intersection(_keys, sequence.split(',')).length:
-        return {
-          hasEmptyField: true,
-          errMessage: `Your dynamic parameter "${name}" contains a text entry that is also a parameter name. This is not supported right now. Please rename the impacted parameters or entries so that there is no naming overlap.`,
-        }
-      default:
-        break
-    }
-  }
-  return { hasEmptyField: false, errMessage: '' }
-}
-
-const hasMathFormula = (variables) =>
-  Object.keys(variables).some((key) => {
-    const { type } = variables[key] || {}
-    return type === 'FORMULA'
-  })
 
 /**
  *
@@ -975,110 +1030,6 @@ function* addAuthoredItemsToTestSaga({ payload }) {
 }
 // actions
 
-function* calculateFormulaSaga({ payload }) {
-  try {
-    const getLatexValuePairs = ({ id, variables, example, options }) => ({
-      id,
-      latexes: Object.keys(variables)
-        .map((variableName) => variables[variableName])
-        .filter((variable) => variable.type === 'FORMULA')
-        .reduce(
-          (lx, variable) => [
-            ...lx,
-            {
-              id: variable.name,
-              formula: variable.formula,
-            },
-          ],
-          []
-        ),
-      variables: Object.keys(variables).map((variableName) => ({
-        id: variableName,
-        value:
-          variables[variableName].type === 'FORMULA'
-            ? variables[variableName].formula
-            : example
-            ? example[variableName]
-            : variables[variableName].exampleValue,
-      })),
-      ...options,
-    })
-
-    const question = yield select(getCurrentQuestionSelector)
-
-    if (!question.variable || !question.variable.enabled) {
-      return []
-    }
-
-    const variables =
-      payload.data.variables || question.variable.variables || {}
-    const examples = payload.data.examples || question.variable.examples || {}
-
-    const { hasEmptyField = false, errMessage = '' } = containsEmptyField(
-      variables
-    )
-    if (hasEmptyField) {
-      yield put({
-        type: CALCULATE_FORMULA_FAILED,
-      })
-      notification({ type: 'warn', msg: errMessage })
-      return true
-    }
-
-    let results = []
-    if (hasMathFormula(variables)) {
-      const options = question?.isMath
-        ? getOptionsForMath(get(question, 'validation.validResponse.value', []))
-        : {}
-      const latexValuePairs = [
-        getLatexValuePairs({ id: 'definition', variables, options }),
-      ]
-      if (examples) {
-        for (const example of examples) {
-          const pair = getLatexValuePairs({
-            id: `example${example.key}`,
-            variables,
-            example,
-            options,
-          })
-          if (pair.latexes.length > 0) {
-            latexValuePairs.push(pair)
-          }
-        }
-      }
-      results = yield call(evaluateApi.calculate, latexValuePairs)
-    }
-
-    const variable = { ...question.variable, examples, variables }
-    const newQuestion = { ...cloneDeep(question), variable }
-    for (const result of results) {
-      if (result.id === 'definition') {
-        Object.keys(result.values).forEach((key) => {
-          newQuestion.variable.variables[key].exampleValue = result.values[key]
-        })
-      } else {
-        const idx = newQuestion.variable.examples.findIndex(
-          (example) => `example${example.key}` === result.id
-        )
-        Object.keys(result.values).forEach((key) => {
-          newQuestion.variable.examples[idx][key] = result.values[key]
-        })
-      }
-    }
-
-    yield put({
-      type: UPDATE_QUESTION_REQUEST,
-      payload: newQuestion,
-    })
-  } catch (err) {
-    yield put({
-      type: CALCULATE_FORMULA_FAILED,
-    })
-    notification({ messageKey: 'somethingWentPleaseTryAgain' })
-    console.log(err)
-  }
-}
-
 function* loadQuestionSaga({ payload }) {
   try {
     const { data, rowIndex, isPassageWidget = false } = payload
@@ -1125,18 +1076,159 @@ function* loadQuestionSaga({ payload }) {
   }
 }
 
+const changeValidationWhenUnscored = (payload, oldQuestion) => {
+  let hasZeroInAltScore = false
+  const altResponses = get(payload, 'validation.altResponses', [])
+  const score = get(payload, 'validation.validResponse.score', 0)
+  const oldUnscored = get(oldQuestion, 'validation.unscored', false)
+  if (altResponses.length) {
+    hasZeroInAltScore = altResponses.some((altResp) => {
+      return altResp.score == 0
+    })
+  }
+  const isUnscored = score === 0 || hasZeroInAltScore
+
+  // notify only if unscored checkbox checked or score given is 0
+  if (oldUnscored === false && isUnscored) {
+    notification({ type: 'warn', msg: 'Marked as a practice question' })
+  }
+
+  if (isUnscored) {
+    return produce(payload, (draft) => {
+      draft.validation.validResponse.score = 0
+      draft.validation.altResponses?.forEach((altResp) => {
+        altResp.score = 0
+      })
+      if (draft.validation?.maxScore) {
+        draft.validation.maxScore = 0
+      }
+
+      draft.validation.unscored = isUnscored
+    })
+  }
+  return produce(payload, (draft) => {
+    draft.validation.unscored = isUnscored
+  })
+}
+
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
+  const resourceTypes = [
+    questionType.VIDEO,
+    questionType.PASSAGE,
+    questionType.TEXT,
+  ]
+  const _payload = resourceTypes.includes(payload.type)
+    ? payload
+    : changeValidationWhenUnscored(payload, prevQuestion)
 
   yield put({
     type: UPDATE_QUESTION,
     payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
-      payload
+      _payload
     ),
   })
+}
+
+function* generateVariableSaga({ payload }) {
+  try {
+    const dpUpdated = yield select(getDpUpdatedSelector)
+    const currentQues = yield select(getCurrentQuestionSelector)
+    if (!dpUpdated && !payload.newQuestion && !payload.shouldNotCheckUpdate) {
+      if (typeof payload.nextAction === 'function') {
+        payload.nextAction()
+      }
+      return
+    }
+
+    const question = payload.newQuestion ? payload.newQuestion : currentQues
+
+    if (!question.variable || !question.variable.enabled) {
+      return
+    }
+
+    yield put({
+      type: GENERATE_VARIABLE_START,
+    })
+
+    const variables = get(question, 'variable.variables', {})
+    const count = get(question, 'variable.combinationsCount', 25)
+    const examples = generateExamples(variables, count)
+
+    let results = []
+    if (hasMathFormula(variables)) {
+      const isClozeMath = question.type === questionType.EXPRESSION_MULTIPART
+      const options = question?.isMath
+        ? isClozeMath
+          ? getOptionsForClozeMath(variables, get(question, 'validation', {}))
+          : getOptionsForMath(
+              get(question, 'validation.validResponse.value', [])
+            )
+        : {}
+      const latexValuePairs = [
+        getLatexValuePairs({
+          id: 'definition',
+          variables,
+          options,
+          isClozeMath,
+        }),
+      ]
+      if (examples) {
+        for (const example of examples) {
+          const pair = getLatexValuePairs({
+            id: `example${example.key}`,
+            variables,
+            example,
+            options,
+            isClozeMath,
+          })
+          if (pair.latexes.length > 0) {
+            latexValuePairs.push(pair)
+          }
+        }
+      }
+      results = yield call(evaluateApi.calculate, latexValuePairs)
+    }
+
+    const variable = { ...question.variable, examples, variables }
+    const newQuestion = { ...cloneDeep(question), variable }
+    for (const result of results) {
+      if (result.id === 'definition') {
+        Object.keys(result.values).forEach((key) => {
+          newQuestion.variable.variables[key].exampleValue = result.values[key]
+        })
+      } else {
+        const idx = newQuestion.variable.examples.findIndex(
+          (example) => `example${example.key}` === result.id
+        )
+        Object.keys(result.values).forEach((key) => {
+          newQuestion.variable.examples[idx][key] = result.values[key]
+        })
+      }
+    }
+
+    yield put({
+      type: UPDATE_QUESTION_REQUEST,
+      payload: newQuestion,
+    })
+
+    yield put({
+      type: GENERATE_VARIABLE_FINISHED,
+    })
+
+    if (typeof payload.nextAction === 'function') {
+      payload.nextAction()
+    }
+  } catch (error) {
+    yield put({
+      type: GENERATE_VARIABLE_FINISHED,
+    })
+    notification({ messageKey: 'somethingWentPleaseTryAgain' })
+    console.log(error)
+  }
 }
 
 export function* watcherSaga() {
@@ -1144,7 +1236,7 @@ export function* watcherSaga() {
     yield takeEvery(RECEIVE_QUESTION_REQUEST, receiveQuestionSaga),
     yield takeEvery(SAVE_QUESTION_REQUEST, saveQuestionSaga),
     yield takeEvery(LOAD_QUESTION, loadQuestionSaga),
-    yield takeLatest(CALCULATE_FORMULA, calculateFormulaSaga),
+    yield takeLatest(GENERATE_VARIABLE_REQUEST, generateVariableSaga),
     yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga),
     yield takeLatest(UPDATE_QUESTION_REQUEST, updateQuestionSaga),
   ])

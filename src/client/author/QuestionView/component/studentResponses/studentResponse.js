@@ -8,14 +8,14 @@ const StudentResponse = ({ children }) => {
       const MainContentWrapper = containerRef.current.parentElement
       const setPosition = () => {
         if (
-          MainContentWrapper.scrollTop > 330 &&
+          MainContentWrapper.scrollTop > 395 &&
           !Array.from(containerRef.current.classList).includes(
             'fixed-response-sub-header'
           )
         ) {
           containerRef.current.classList.add('fixed-response-sub-header')
         } else if (
-          MainContentWrapper.scrollTop <= 330 &&
+          MainContentWrapper.scrollTop <= 395 &&
           Array.from(containerRef.current.classList).includes(
             'fixed-response-sub-header'
           )

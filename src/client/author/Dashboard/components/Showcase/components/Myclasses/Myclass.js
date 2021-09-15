@@ -38,7 +38,10 @@ import {
 } from '../../../../../../student/Login/ducks'
 import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
-import { getCollectionsSelector } from '../../../../../src/selectors/user'
+import {
+  getCollectionsSelector,
+  getUserOrgId,
+} from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 
 const ItemPurchaseModal = loadable(() =>
@@ -114,21 +117,37 @@ const MyClasses = ({
       return { ...x._source, _id: x._id }
     })
     if (user?.recommendedContentUpdated) {
-      if (data?.length > 0) {
-        notification({
-          msg: 'Recommended content is updated.',
-          type: 'success',
-        })
-      } else {
-        notification({
-          msg:
-            'No recommended content found currently. We will show them when available.',
-          type: 'info',
-        })
+      const isContentUpdatedAutomatically = JSON.parse(
+        localStorage.getItem(
+          `recommendedTest:${user?._id}:isContentUpdatedAutomatically`
+        )
+      )
+      if (!isContentUpdatedAutomatically) {
+        if (data?.length > 0) {
+          notification({
+            msg: 'Recommended content is updated.',
+            type: 'success',
+          })
+        } else {
+          notification({
+            msg:
+              'No recommended content found currently. We will show them when available.',
+            type: 'info',
+          })
+        }
       }
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
       const temp = user
       temp.recommendedContentUpdated = false
       setUser(temp)
+    } else {
+      localStorage.setItem(
+        `recommendedTest:${user?._id}:isContentUpdatedAutomatically`,
+        false
+      )
     }
     if (!_data || !_data.length) {
       return
@@ -217,7 +236,7 @@ const MyClasses = ({
 
   const handleBlockedClick = ({ subscriptionData }) => {
     if (
-      usedTrialItemBankIds.includes(subscriptionData.productId) ||
+      usedTrialItemBankIds.includes(subscriptionData.itemBankId) ||
       (isPremiumTrialUsed && !isPremiumUser)
     ) {
       setShowItemBankTrialUsedModal(true)
@@ -230,6 +249,7 @@ const MyClasses = ({
       description: subscriptionData.description,
       hasTrial: subscriptionData.hasTrial,
       itemBankId: subscriptionData.itemBankId,
+      blockInAppPurchase: subscriptionData.blockInAppPurchase,
     })
   }
 
@@ -245,6 +265,27 @@ const MyClasses = ({
 
   const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType, subscriptionData } = config
+
+    /**
+     *  User purchased bank from different premium district
+     *  and trying to access it in a free district
+     */
+    if (
+      !isPremiumUser &&
+      hasAccessToItemBank(config.subscriptionData?.itemBankId)
+    ) {
+      setShowItemBankTrialUsedModal(true)
+      setProductData({
+        productId: config?.subscriptionData?.productId,
+        productName: config?.subscriptionData?.productName,
+        description: config?.subscriptionData?.description,
+        hasTrial: config?.subscriptionData?.hasTrial,
+        itemBankId: config?.subscriptionData?.itemBankId,
+        blockInAppPurchase: config?.subscriptionData?.blockInAppPurchase,
+      })
+      return
+    }
+
     if (isBlocked) {
       handleBlockedClick(config)
       return
@@ -309,13 +350,16 @@ const MyClasses = ({
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
       const { subscriptionData } = bundle.config
-      if (!subscriptionData?.productId) {
+      if (
+        !subscriptionData?.productId &&
+        !subscriptionData?.blockInAppPurchase
+      ) {
         return bundle
       }
 
       const { imageUrl: imgUrl, premiumImageUrl } = bundle
       const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
-      const imageUrl = isBlocked ? premiumImageUrl : imgUrl
+      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
 
       return {
         ...bundle,
@@ -338,23 +382,36 @@ const MyClasses = ({
     [collections]
   )
 
-  const isSingaporeMathCollectionActive = featuredBundles.filter(
-    (feature) =>
-      (feature.description?.toLowerCase()?.includes('singaporemath') ||
-        feature.description?.toLowerCase()?.includes('singapore math')) &&
-      feature?.active
-  )
-
   const isSingaporeMath =
     user?.referrer?.includes('singapore') ||
     user?.utm_source?.toLowerCase()?.includes('singapore') ||
-    isSingaporeMathCollectionActive?.length > 0
+    collections.some((itemBank) =>
+      itemBank?.owner?.toLowerCase().includes('singapore')
+    )
+
+  const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
+
+  const isEureka =
+    user?.referrer?.toLowerCase()?.includes('eureka') ||
+    user?.utm_source?.toLowerCase()?.includes('eureka')
 
   let filteredBundles = featuredBundles
 
-  if (isEurekaMathActive) {
+  if (isEurekaMathActive || isEureka) {
     filteredBundles = filteredBundles.filter(
-      (feature) => feature.description !== 'Engage NY'
+      (feature) =>
+        feature.description !== 'Engage NY' &&
+        !(
+          feature?.config?.excludedPublishers?.includes('Eureka') ||
+          feature?.config?.excludedPublishers?.includes('eureka')
+        )
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) =>
+        !(
+          banner?.config?.excludedPublishers?.includes('Eureka') ||
+          banner?.config?.excludedPublishers?.includes('eureka')
+        )
     )
   }
 
@@ -368,31 +425,65 @@ const MyClasses = ({
   }
 
   if (isSingaporeMath) {
+    if (
+      user?.orgData?.defaultGrades?.length > 0 &&
+      user?.orgData?.defaultSubjects?.length > 0
+    ) {
+      filteredBundles = filteredBundles.filter(
+        (feature) =>
+          !(
+            feature?.description?.toLowerCase()?.includes('engage ny') &&
+            feature?.description?.toLowerCase()?.includes('math')
+          ) &&
+          !feature?.description?.toLowerCase()?.includes('sparkmath') &&
+          !feature?.description?.toLowerCase()?.includes('spark math') &&
+          !(
+            feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
+            feature?.config?.excludedPublishers?.includes('Singapore Math')
+          )
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) =>
+          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+          !banner?.description?.toLowerCase()?.includes('spark math') &&
+          !(
+            banner?.description?.toLowerCase()?.includes('engage ny') &&
+            banner?.description?.toLowerCase()?.includes('math')
+          ) &&
+          !(
+            banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
+            banner?.config?.excludedPublishers?.includes('Singapore Math')
+          )
+      )
+    } else {
+      filteredBundles = filteredBundles.filter(
+        (feature) => feature?.config?.isSingaporeMath
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) => banner?.config?.isSingaporeMath
+      )
+    }
+  } else {
+    filteredBundles = filteredBundles.filter(
+      (feature) => !feature?.config?.isSingaporeMath
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) => !banner?.config?.isSingaporeMath
+    )
+  }
+
+  if (isCpm) {
     filteredBundles = filteredBundles.filter(
       (feature) =>
-        !(
-          feature?.description?.toLowerCase()?.includes('engage ny') &&
-          feature?.description?.toLowerCase()?.includes('math')
-        ) &&
         !feature?.description?.toLowerCase()?.includes('sparkmath') &&
         !feature?.description?.toLowerCase()?.includes('spark math') &&
-        !(
-          feature?.config?.excludedPublishers?.includes('SingaporeMath') ||
-          feature?.config?.excludedPublishers?.includes('Singapore Math')
-        )
+        !feature?.config?.excludedPublishers?.includes('CPM')
     )
     bannerSlides = bannerSlides.filter(
       (banner) =>
         !banner?.description?.toLowerCase()?.includes('sparkmath') &&
         !banner?.description?.toLowerCase()?.includes('spark math') &&
-        !(
-          banner?.description?.toLowerCase()?.includes('engage ny') &&
-          banner?.description?.toLowerCase()?.includes('math')
-        ) &&
-        !(
-          banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
-          banner?.config?.excludedPublishers?.includes('Singapore Math')
-        )
+        !banner?.config?.excludedPublishers?.includes('CPM')
     )
   }
 
@@ -650,6 +741,9 @@ const MyClasses = ({
           handlePurchaseFlow={handlePurchaseFlow}
           showTrialButton={showTrialButton}
           isPremiumUser={isPremiumUser}
+          hasTrial={productData.hasTrial}
+          blockInAppPurchase={productData.blockInAppPurchase}
+          hideTitle={isSingaporeMath && productData.blockInAppPurchase}
         />
       )}
       {(isTrialModalVisible || showHeaderTrialModal) && (
@@ -694,7 +788,7 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      districtId: state.user.user?.orgData?.districtIds?.[0],
+      districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),

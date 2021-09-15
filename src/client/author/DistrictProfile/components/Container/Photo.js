@@ -12,9 +12,10 @@ import {
   largeDesktopWidth,
 } from '@edulastic/colors'
 import { beforeUpload, notification } from '@edulastic/common'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { uploadToS3 } from '../../../src/utils/upload'
 import { updateProfileImageAction } from '../../../../student/Login/ducks'
-import { signupStateBykey } from '@edulastic/constants/const/signUpState'
+import { getUserOrgId } from '../../../src/selectors/user'
 
 class Photo extends React.Component {
   state = {
@@ -22,7 +23,7 @@ class Photo extends React.Component {
   }
 
   handleChange = async (info) => {
-    const { user, updateProfileImagePath } = this.props
+    const { user, updateProfileImagePath, orgId } = this.props
     try {
       this.setState({ loading: true })
       const { file } = info
@@ -44,7 +45,7 @@ class Photo extends React.Component {
         data: {
           thumbnail: imageUrl,
           email: user.email,
-          districtId: user?.districtIds?.[0],
+          districtId: orgId,
           currentSignUpState: signupStateBykey[user.currentSignUpState],
         },
         userId: user._id,
@@ -120,8 +121,10 @@ class Photo extends React.Component {
 }
 
 Photo.propTypes = {
+  // eslint-disable-next-line
   owner: PropTypes.bool,
   height: PropTypes.number,
+  // eslint-disable-next-line
   isEditable: PropTypes.bool,
   windowWidth: PropTypes.number.isRequired,
   onChangeField: PropTypes.func,
@@ -135,6 +138,7 @@ Photo.defaultProps = {
 export default connect(
   (state) => ({
     imageUrl: state.user.user.thumbnail,
+    orgId: getUserOrgId(state),
   }),
   { updateProfileImagePath: updateProfileImageAction }
 )(Photo)

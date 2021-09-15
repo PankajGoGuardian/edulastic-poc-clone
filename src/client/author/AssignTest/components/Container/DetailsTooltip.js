@@ -1,6 +1,11 @@
 import React from 'react'
 import styled from 'styled-components'
-import { white, greyThemeDark6, premiumBg } from '@edulastic/colors'
+import {
+  white,
+  greyThemeDark6,
+  premiumBg,
+  mainTextColor,
+} from '@edulastic/colors'
 
 const DetailsTooltip = ({
   title,
@@ -26,7 +31,7 @@ const DetailsTooltip = ({
     >
       <span className="popover-title">{title}</span>
       {!premium && <span className="premium-tag">$ Premium</span>}
-      <span>{content}</span>
+      <span className="popover-body">{content}</span>
     </StyledPopOver>
   )
 }
@@ -66,5 +71,9 @@ const StyledPopOver = styled.div`
     text-transform: uppercase;
     text-align: center;
     margin-bottom: 5px;
+  }
+  > .popover-body {
+    color: ${mainTextColor};
+    font-weight: 500;
   }
 `

@@ -30,6 +30,7 @@ import {
   greyThemeLighter,
   smallDesktopWidth,
   mobileWidthLarge,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { toggleSideBarAction } from './ducks'
 import {
@@ -87,7 +88,6 @@ class SideMenu extends Component {
 
     this.state = {
       isVisible: false,
-      isExpandedOnHover: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -162,7 +162,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible, isExpandedOnHover } = this.state
+    const { broken, isVisible } = this.state
     const {
       windowWidth,
       currentPath,
@@ -258,22 +258,16 @@ class SideMenu extends Component {
             <MenuWrapper
               isSidebarCollapsed={isSidebarCollapsed}
               onMouseEnter={
-                isSidebarCollapsed && !isMobile && !isExpandedOnHover
+                isSidebarCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: true,
-                      })
                     }
                   : null
               }
               onMouseLeave={
-                !isSidebarCollapsed && !isMobile && isExpandedOnHover
+                !isSidebarCollapsed && !isMobile
                   ? () => {
                       this.toggleMenu()
-                      this.setState({
-                        isExpandedOnHover: false,
-                      })
                     }
                   : null
               }
@@ -345,8 +339,8 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: 'fixed',
-                      minWidth: isSidebarCollapsed ? '50px' : '220px',
-                      maxWidth: isSidebarCollapsed ? '50px' : '0px',
+                      minWidth: isSidebarCollapsed ? '70px' : '220px',
+                      maxWidth: isSidebarCollapsed ? '70px' : '0px',
                     }}
                     className="footerDropdown"
                     overlay={footerDropdownMenu}
@@ -589,7 +583,7 @@ const Menu = styled(AntMenu)`
         border: none;
         background-color: ${themeColor};
         &:hover {
-          background-color: #fff;
+          background-color: ${themeColorBlue};
           svg {
             fill: ${themeColor};
           }
@@ -739,8 +733,8 @@ const FooterDropDown = styled.div`
     &.ant-menu-inline-collapsed {
       width: 84px;
       height: auto;
-      margin-top: ${(props) => (props.isCollapsed ? '0' : '10px')};
-      margin-left: ${(props) => (props.isCollapsed ? '0' : '8px')};
+      margin-top: ${(props) => (props.isSidebarCollapsed ? '0' : '10px')};
+      margin-left: ${(props) => (props.isSidebarCollapsed ? '0' : '8px')};
       box-shadow: ${(props) =>
         props.isCollapsed ? '0 -3px 5px 0 rgba(0,0,0,0.07)' : 'none'};
 
@@ -759,11 +753,10 @@ const FooterDropDown = styled.div`
         height: 50px;
         background: ${(props) =>
           props.theme.sideMenu.userInfoDropdownItemBgColor};
-        /* &:hover,
-        &:focus {
-          background: ${(props) =>
-          props.theme.sideMenu.userInfoDropdownItemBgHoverColor};
-        } */
+        &:hover {
+          background-color: ${themeColorBlue};
+          color: ${white};
+        }
         a {
           color: ${(props) =>
             props.theme.sideMenu.userInfoDropdownItemTextColor};
@@ -772,6 +765,7 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
+          padding-left: 10px;
           &:hover {
             a {
               color: ${white};

@@ -49,6 +49,7 @@ import {
   getUserId,
   getCollectionsToAddContent,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
 import {
   approveOrRejectSingleTestRequestAction,
@@ -85,9 +86,10 @@ import {
 } from './styled'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import { sharedTypeMap } from '../Item/Item'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
+import { DeleteItemModal } from '../DeleteItemModal/deleteItemModal'
 
 class ListItem extends Component {
   static propTypes = {
@@ -110,6 +112,7 @@ class ListItem extends Component {
 
   state = {
     isOpenModal: false,
+    isDeleteModalOpen: false,
   }
 
   moveToItem = (e) => {
@@ -148,10 +151,11 @@ class ListItem extends Component {
     const {
       history,
       item,
-      toggleFreeAdminSubscriptionModal,
+      toggleAdminAlertModal,
       isFreeAdmin,
+      isSAWithoutSchools,
     } = this.props
-    if (isFreeAdmin) toggleFreeAdminSubscriptionModal()
+    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
     else
       history.push({
         pathname: `/author/assignments/${item._id}`,
@@ -222,6 +226,15 @@ class ListItem extends Component {
     }
   }
 
+  onDeleteModelCancel = () => {
+    this.setState({ isDeleteModalOpen: false })
+  }
+
+  onDelete = async (e) => {
+    e && e.stopPropagation()
+    this.setState({ isDeleteModalOpen: true })
+  }
+
   render() {
     const {
       item: {
@@ -254,7 +267,6 @@ class ListItem extends Component {
       orgCollections = [],
       currentUserId,
       isTestLiked,
-      collectionToWrite,
       isPreviewModalVisible,
     } = this.props
     const { analytics = [] } = isPlaylist ? _source : item
@@ -263,7 +275,7 @@ class ListItem extends Component {
     const standardsIdentifiers = isPlaylist
       ? flattenPlaylistStandards(_source?.modules)
       : standards.map((_item) => _item.identifier)
-    const { isOpenModal, currentTestId } = this.state
+    const { isOpenModal, currentTestId, isDeleteModalOpen } = this.state
     const thumbnailData = isPlaylist ? _source.thumbnail : thumbnail
     const isInCart = !!selectedTests.find((o) => o._id === item._id)
     const allowDuplicate =
@@ -312,7 +324,7 @@ class ListItem extends Component {
     }
     const cardTitle = (
       <Header src={thumbnailData}>
-        <Stars size="small" />
+        {isPlaylist && <Stars size="small" />}
       </Header>
     )
 
@@ -332,7 +344,7 @@ class ListItem extends Component {
             isPlaylist={isPlaylist}
             windowWidth={windowWidth}
             allowDuplicate={allowDuplicate}
-            onDeletonDuplicatee={this.onDelete}
+            onDelete={this.onDelete}
             previewLink={() => this.showPreviewModal(item._id)}
             isDynamic={isDynamic}
             handleLikeTest={this.handleLikeTest}
@@ -353,6 +365,17 @@ class ListItem extends Component {
             unmountOnClose
           />
         )}
+
+        {isDeleteModalOpen && (
+          <DeleteItemModal
+            isVisible={isDeleteModalOpen}
+            onCancel={this.onDeleteModelCancel}
+            testId={item._id}
+            test={item}
+            view="testLibrary"
+          />
+        )}
+
         <Container>
           <ContentWrapper>
             <Col span={24}>
@@ -449,7 +472,7 @@ class ListItem extends Component {
                   </ViewButtonWrapper>
                 )}
 
-                {isPlaylist && collectionToWrite?.length > 0 && (
+                {isPlaylist && (
                   <ViewButtonContainer
                     onClick={(e) => {
                       e.stopPropagation()
@@ -597,12 +620,13 @@ const enhance = compose(
       currentUserId: getUserId(state),
       collectionToWrite: getCollectionsToAddContent(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )

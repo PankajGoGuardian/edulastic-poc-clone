@@ -409,6 +409,7 @@ const SortListPreview = ({
                         border: !!selectedItem && !isChecked && '2px solid',
                       }}
                       drop={onDropHandler('selected', i)}
+                      index={i}
                     >
                       <DragItem
                         index={i}

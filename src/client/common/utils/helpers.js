@@ -532,3 +532,48 @@ export const getSchoologyTestId = () => {
   }
   return ''
 }
+
+function getFilterKey(key, userId, districtId) {
+  let _key = key
+  if (userId) {
+    _key = `${_key}_${userId}`
+  }
+  if (districtId) {
+    _key = `${_key}_${districtId}`
+  }
+  return _key
+}
+
+export function setFilterInSession({ key, userId, districtId, filter }) {
+  const _key = getFilterKey(key, userId, districtId)
+  const _filter = JSON.stringify(filter)
+  sessionStorage.setItem(_key, _filter)
+  return _filter
+}
+
+export function getFilterFromSession({ key, userId, districtId }) {
+  const _key = getFilterKey(key, userId, districtId)
+  const filter = sessionStorage.getItem(_key)
+  return JSON.parse(filter || '{}')
+}
+
+export function removeSessionValue({ key, userId, districtId }) {
+  const _key = getFilterKey(key, userId, districtId)
+  sessionStorage.removeItem(_key)
+}
+
+export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
+  keys.forEach((key) => {
+    const oldFilter = getFilterFromSession({ key })
+    if (!isEmpty(oldFilter)) {
+      setFilterInSession({
+        key,
+        userId,
+        districtId,
+        filter: oldFilter,
+      })
+      // remove old filter key from session storage
+      removeSessionValue({ key })
+    }
+  })
+}

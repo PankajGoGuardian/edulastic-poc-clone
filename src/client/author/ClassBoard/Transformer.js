@@ -97,9 +97,7 @@ export const getAllQidsAndWeight = (testItemIds, testItemsDataKeyed) => {
           .map((x, index) => ({
             id: x.id,
             maxScore:
-              index === 0
-                ? testItemsDataKeyed[testItemId].itemLevelScore
-                : undefined,
+              index === 0 ? testItemsDataKeyed[testItemId].itemLevelScore : 0,
             weight: questions.length,
             disabled: x.scoringDisabled || index > 0,
             testItemId,
@@ -490,6 +488,7 @@ export function getStandardsForStandardBasedReport(
           desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
           qIds: [q.id],
           ...(std.name ? { identifier: std.name } : {}),
+          ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id
         }
       }
     }
@@ -499,12 +498,12 @@ export function getStandardsForStandardBasedReport(
 
 export const transformGradeBookResponse = (
   {
-    test,
-    testItemsData,
-    students: studentNames,
-    testActivities,
-    testQuestionActivities,
-    passageData,
+    test = {},
+    testItemsData = {},
+    students: studentNames = [],
+    testActivities = [],
+    testQuestionActivities = [],
+    passageData = {},
     status: assignmentStatus,
     endDate,
     ts,
@@ -616,9 +615,9 @@ export const transformGradeBookResponse = (
         const {
           _id: testActivityId,
           groupId,
-          previouslyRedirected: redirected,
+          previouslyRedirected: redirected = false,
           number,
-          redirect,
+          redirect = false,
         } = testActivity
 
         const questionActivitiesRaw = testActivityQuestionActivities[studentId]
@@ -662,7 +661,8 @@ export const transformGradeBookResponse = (
                   _id,
                   testItemsData,
                   currentQuestionActivity?.maxScore
-                )(testItemId))
+                )(testItemId)) ||
+              0
             if (!currentQuestionActivity) {
               return {
                 _id,
@@ -694,20 +694,20 @@ export const transformGradeBookResponse = (
               }
             }
             let {
-              skipped,
-              correct,
-              partiallyCorrect: partialCorrect,
+              skipped = false,
+              correct = false,
+              partiallyCorrect: partialCorrect = false,
             } = currentQuestionActivity
             const {
               timeSpent,
               // eslint-disable-next-line no-shadow
               score,
               // eslint-disable-next-line no-shadow
-              graded,
-              pendingEvaluation,
+              graded = false,
+              pendingEvaluation = false,
               scratchPad,
               userResponse,
-              autoGrade,
+              autoGrade = false,
               ...remainingProps
             } = currentQuestionActivity
             skipped = getSkippedStatusOfQuestion(
@@ -781,8 +781,8 @@ export const transformGradeBookResponse = (
           (x.qids && x.qids.length && x.testActivityId) || x.qid
         // has own property  then pick it or else default to true
         const {
-          isEnrolled = true,
-          isAssigned = true,
+          isEnrolled = false,
+          isAssigned = false,
           isPaused = false,
           tabNavigationCounter: outNavigationCounter = 0,
           pauseReason,

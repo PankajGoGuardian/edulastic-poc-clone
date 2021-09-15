@@ -320,14 +320,7 @@ class AuthorTestItemPreview extends Component {
   }
 
   renderRightButtons = () => {
-    const {
-      isPassage,
-      item,
-      goToItem,
-      passageTestItems: _passageTestItems,
-      page,
-    } = this.props
-    const passageTestItems = _passageTestItems?.filter((el) => el)
+    const { isPassage, item, goToItem, passageTestItems, page } = this.props
     const { collapseDirection } = this.state
     const showButtons = collapseDirection !== 'right'
     if (
@@ -344,9 +337,7 @@ class AuthorTestItemPreview extends Component {
           <Pagination
             total={passageTestItems.length}
             pageSize={1}
-            current={
-              passageTestItems.findIndex((i) => i === item.versionId) + 1
-            }
+            current={passageTestItems.findIndex((i) => i === item?._id) + 1}
             onChange={goToItem}
             data-cy="questionPagination"
             showLessItems

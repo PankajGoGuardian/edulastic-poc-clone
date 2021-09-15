@@ -91,7 +91,7 @@ const productsMetaData = {
   },
   CPM: {
     icon: <IconCPM />,
-    subject: 'math',
+    subject: 'math & cs',
     grades: 'Grades 6-12',
     learnMoreLinks: 'https://edulastic.com/CPM',
     filters: 'MATHEMATICS',

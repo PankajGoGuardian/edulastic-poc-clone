@@ -1409,6 +1409,10 @@ function* googleLogin({ payload }) {
       if (payload.prompt) {
         params.prompt = payload.prompt
       }
+      if (payload.enableCalendar) {
+        params.enableCalendar = true
+        localStorage.setItem('loginRedirectUrl', getCurrentPath())
+      }
     }
 
     if (classCode) {
@@ -1422,6 +1426,9 @@ function* googleLogin({ payload }) {
 
     const res = yield call(authApi.googleLogin, params)
     TokenStorage.removeAllTokens()
+    if (payload?.enableCalendar) {
+      localStorage.setItem('calendarAccess', 'true')
+    }
     window.location.href = res
   } catch (e) {
     notification({
@@ -1436,6 +1443,11 @@ function* googleSSOLogin({ payload }) {
   const _payload = { ...payload }
 
   const isAllowed = localStorage.getItem('studentRoleConfirmation')
+  const calendarAccess = localStorage.getItem('calendarAccess')
+  if (calendarAccess === 'true') {
+    localStorage.removeItem('calendarAccess')
+    _payload.calendarAccess = true
+  }
   if (isAllowed) {
     _payload.isTeacherAllowed = true
     localStorage.removeItem('studentRoleConfirmation')

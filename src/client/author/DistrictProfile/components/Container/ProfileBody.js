@@ -42,6 +42,7 @@ import {
   showJoinSchoolAction,
   hideJoinSchoolAction,
   updatePowerTeacherAction,
+  googleLoginAction,
 } from '../../../../student/Login/ducks'
 import { Wrapper } from '../../../../student/styled/index'
 import StandardSetModal from '../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal'
@@ -79,6 +80,7 @@ class ProfileBody extends React.Component {
     defaultGrades: [],
     defaultSubjects: [],
     autoShareGCAssignment: undefined,
+    autoShareGCalendarAssignment: undefined,
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -86,6 +88,7 @@ class ProfileBody extends React.Component {
       defaultGrades,
       defaultSubjects,
       autoShareGCAssignment,
+      autoShareGCalendarAssignment,
     } = props.user.orgData
     const { interestedCurriculums } = props
     const derivedStateProps = {}
@@ -97,6 +100,9 @@ class ProfileBody extends React.Component {
     }
     if (state.autoShareGCAssignment === undefined) {
       Object.assign(derivedStateProps, { autoShareGCAssignment })
+    }
+    if (state.autoShareGCalendarAssignment === undefined) {
+      Object.assign(derivedStateProps, { autoShareGCalendarAssignment })
     }
     if (
       !state.showSaveStandSetsBtn &&
@@ -259,6 +265,7 @@ class ProfileBody extends React.Component {
       defaultGrades,
       defaultSubjects,
       autoShareGCAssignment,
+      autoShareGCalendarAssignment,
       isPowerTeacher,
     } = this.state
     const { role } = user
@@ -274,6 +281,7 @@ class ProfileBody extends React.Component {
       orgType,
       autoShareGCAssignment,
       isPowerTeacher,
+      autoShareGCalendarAssignment,
     }
 
     if (!isEmpty(defaultSubjects)) {
@@ -285,6 +293,11 @@ class ProfileBody extends React.Component {
     }
 
     updateDefaultSettings(settingsToUpdate)
+  }
+
+  ssoUpdateForCalendarPermission = () => {
+    const { googleLogin } = this.props
+    googleLogin({ enableCalendar: true })
   }
 
   onSettingChange = (value, field) => {
@@ -299,6 +312,14 @@ class ProfileBody extends React.Component {
       }
       case 'autoSync': {
         this.setState({ autoShareGCAssignment: value })
+        break
+      }
+      case 'sso-update': {
+        if (value) {
+          this.ssoUpdateForCalendarPermission(value)
+        } else {
+          this.setState({ autoShareGCalendarAssignment: false })
+        }
         break
       }
       default:
@@ -585,6 +606,7 @@ class ProfileBody extends React.Component {
       defaultGrades = [],
       defaultSubjects = [],
       autoShareGCAssignment = false,
+      autoShareGCalendarAssignment = false,
       interestedCurriculums,
     } = this.state
     // checking if institution policy/ district policy is enabled
@@ -604,12 +626,14 @@ class ProfileBody extends React.Component {
       defaultGrades: userGrades,
       defaultSubjects: userSubjects,
       autoShareGCAssignment: userAutoShareGCAssignment,
+      autoShareGCalendarAssignment: userAutoShareGCalendarAssignment,
     } = get(user, 'orgData')
     let showPowerTools = false
     const showDefaultSettingSave =
       !isEqual(userGrades, defaultGrades) ||
       !isEqual(userSubjects, defaultSubjects) ||
       !isEqual(userAutoShareGCAssignment, autoShareGCAssignment)
+    !isEqual(userAutoShareGCalendarAssignment, autoShareGCalendarAssignment)
 
     if (
       [
@@ -911,6 +935,20 @@ class ProfileBody extends React.Component {
                       />
                     </SwitchWrapper>
                   )}
+                  {user.role === roleuser.TEACHER && googleClassRoomAllowed && (
+                    <SwitchWrapper>
+                      <FieldLabel>
+                        {t('common.title.autoShareWithGCalendar')}
+                      </FieldLabel>
+                      ,
+                      <EduSwitchStyled
+                        defaultChecked={autoShareGCalendarAssignment}
+                        onChange={(checked) =>
+                          this.onSettingChange(checked, 'sso-update')
+                        }
+                      />
+                    </SwitchWrapper>
+                  )}
                   {showPowerTools && (
                     <SwitchWrapper
                       style={{ justifyContent: 'space-between' }}
@@ -1009,6 +1047,7 @@ const enhance = compose(
       showJoinSchool: showJoinSchoolAction,
       hideJoinSchool: hideJoinSchoolAction,
       updatePowerTeacher: updatePowerTeacherAction,
+      googleLogin: googleLoginAction,
     }
   )
 )

@@ -5,7 +5,7 @@ import {
   roleuser,
   test as testConst,
 } from '@edulastic/constants'
-import { Tabs } from 'antd'
+import { Spin, Tabs } from 'antd'
 import produce from 'immer'
 import { curry, get, isBoolean, keyBy } from 'lodash'
 import * as moment from 'moment'
@@ -18,6 +18,7 @@ import { isFeatureAccessible } from '../../../../features/components/FeaturesSwi
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../../CurriculumSequence/ducks'
+import { SpinnerContainer } from '../../../src/MainStyle'
 import {
   getCollectionsSelector,
   getUserRole,
@@ -416,6 +417,7 @@ class SimpleOptions extends React.Component {
       isVideoResourcePreviewModal,
       selectedResourcesAction,
       orgCollections,
+      isAssigning,
     } = this.props
 
     const { collections } = testSettings
@@ -484,6 +486,11 @@ class SimpleOptions extends React.Component {
 
     return (
       <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
+        {isAssigning && (
+          <SpinnerContainer>
+            <Spin />
+          </SpinnerContainer>
+        )}
         <Tabs activeKey={activeTab} onChange={this.onTabChange}>
           <TabPane tab="CLASS/GROUP" key={sectionContants.CLASS_GROUP_SECTION}>
             {isAdvancedView ? (

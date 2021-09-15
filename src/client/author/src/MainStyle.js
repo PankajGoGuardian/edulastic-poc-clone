@@ -8,6 +8,7 @@ import {
   title,
   themeColorBlue,
   white,
+  lightFadedBlack,
 } from '@edulastic/colors'
 import styled from 'styled-components'
 
@@ -271,4 +272,13 @@ export const MainContainer = styled.div`
       }
     }
   }
+`
+export const SpinnerContainer = styled.div`
+  position: fixed;
+  top: 0px;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  z-index: 9999;
+  background: ${lightFadedBlack};
 `

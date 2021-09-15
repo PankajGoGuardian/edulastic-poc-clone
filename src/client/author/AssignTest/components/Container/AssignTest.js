@@ -838,6 +838,7 @@ class AssignTest extends React.Component {
               showAssignModuleContent={
                 match?.params?.playlistId && !match?.params?.testId
               }
+              isAssigning={isAssigning}
             />
           )}
         </Container>

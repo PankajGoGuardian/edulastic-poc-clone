@@ -952,7 +952,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         maxWord: 1000,
         showWordLimit: ON_LIMIT,
         showWordCount: true,
-        uiStyle: { minHeight: 300, numberOfRows: 10 }, // textarea number of rows
+        uiStyle: { minHeight: 300, numberOfRows: 10, max_height: 300 }, // textarea number of rows
         validation: { validResponse: { score: 1 }, maxScore: 1 },
         hints: [{ value: uuids[0], label: '' }],
       },

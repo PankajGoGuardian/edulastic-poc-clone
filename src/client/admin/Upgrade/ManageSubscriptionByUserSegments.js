@@ -34,9 +34,9 @@ const ManageSubscriptionByUserSegments = Form.create({
       districtId,
       schoolId,
       notes,
-      subStartDate,
-      subEndDate,
+      subscription,
     } = partialPremiumData
+    const { subStartDate, subEndDate } = subscription || partialPremiumData
     const [districtIdInput, setDistrictId] = useState()
     const [schoolIdInput, setSchoolId] = useState()
     const handleSubmit = (evt) => {

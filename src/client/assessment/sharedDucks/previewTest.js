@@ -90,7 +90,7 @@ function* evaluateQuestionsSaga({
     ({ userWork }) => userWork.present[testItemId]
   )
   const activities = questions.map((q, i) => {
-    const { score, maxScore, evaluation } = res[i] || {}
+    const { score, maxScore, evaluation, graded } = res[i] || {}
     const isManuallyGradable = defaultManualGradedType.includes(q.type)
     const isSkipped =
       isEmpty(answers[`${testItemId}_${q.id}`]) && !isManuallyGradable
@@ -99,7 +99,7 @@ function* evaluateQuestionsSaga({
       maxScore,
       timeSpent,
       testItemId,
-      graded: true,
+      graded,
       notStarted: false,
       score: score || 0,
       skipped: isSkipped,

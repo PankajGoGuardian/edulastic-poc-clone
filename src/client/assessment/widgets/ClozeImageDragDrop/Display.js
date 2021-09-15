@@ -662,6 +662,7 @@ class Display extends Component {
           showDashedBorder={showDashedBorder}
           showAnswer={showAnswer}
           checkAnswer={checkAnswer}
+          noBorder
           backgroundColor={backgroundColor}
           onDrop={this.onDrop}
           choiceStyle={choiceStyle}

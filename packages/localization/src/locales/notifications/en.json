@@ -31,6 +31,10 @@
     "message": "Max response limit reached",
     "description": ""
   },
+  "allowedOnlyNumber": {
+    "message": "You can only enter numbers here.",
+    "description": ""
+  },
   "fileUploadErr": {
     "message": "File upload failed",
     "description": ""

@@ -215,7 +215,7 @@ class MathInput extends React.PureComponent {
       value = '',
       onKeyPress,
     } = this.props
-    const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
+    const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@:/]/g)
 
     if (e.key === 'Enter') {
       this.addNewline()
@@ -250,6 +250,7 @@ class MathInput extends React.PureComponent {
       if (isNonNumericKey) {
         e.preventDefault()
         e.stopPropagation()
+        notification({ messageKey: 'allowedOnlyNumber', destroyAll: true })
       }
     }
     if (onKeyPress) {

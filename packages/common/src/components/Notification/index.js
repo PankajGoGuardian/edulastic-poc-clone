@@ -31,7 +31,11 @@ const defaultConf = {
  * @param {{type?:String, messageKey: String, showButton?:boolean, msg?:String }} options
  */
 const notification = (options) => {
-  const { messageKey, msg, exact, ...restOptions } = options
+  const { messageKey, msg, exact, destroyAll, ...restOptions } = options
+  // destroy existing notifications before showing new notification
+  if (destroyAll) {
+    antNotification.destroy()
+  }
   // get messages from localization
   let translatedMessage =
     msg ||

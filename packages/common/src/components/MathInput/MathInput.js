@@ -217,6 +217,10 @@ class MathInput extends React.PureComponent {
     } = this.props
     const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
 
+    if (e.key === 'Enter') {
+      this.addNewline()
+    }
+
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g))
       const isArrowOrShift =
@@ -345,6 +349,13 @@ class MathInput extends React.PureComponent {
     if (!hideKeyboardByDefault && !disabled) {
       const keyboardPosition = this.getKeyboardPosition()
       this.setState({ mathFieldFocus: true, keyboardPosition }, this.focus)
+    }
+  }
+
+  addNewline = () => {
+    const { mathField } = this.state
+    if (mathField && mathField.latex()) {
+      mathField.cmd('\\newline')
     }
   }
 

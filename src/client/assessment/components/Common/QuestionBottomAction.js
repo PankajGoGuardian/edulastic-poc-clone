@@ -306,6 +306,7 @@ const QuestionBottomAction = ({
       onClick={showQuestionModal}
       loading={loading || itemloading}
       disabled={isDisableCorrectItem}
+      data-cy="regradeItem"
     >
       Edit / Regrade
     </CorrectButton>

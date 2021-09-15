@@ -28,7 +28,7 @@ import Tools from '../../common/Tools'
 import GraphToolsParams from '../../components/GraphToolsParams'
 import RadiansDropdown from '../../components/RadiansDropdown'
 import RadianInput from '../../components/RadianInput'
-import { calcDistance } from '../../common/utils'
+import { calcDistance, isValidMinMax } from '../../common/utils'
 import { uploadToS3 } from '../../../../../author/src/utils/upload'
 import { CONSTANT } from '../../Builder/config'
 
@@ -210,7 +210,18 @@ class QuadrantsMoreOptions extends Component {
   }
 
   handleCertainOptsBlur = (evt) => {
-    const { changedCertainOpts } = this.state
+    const { xMin, xMax, yMin, yMax, changedCertainOpts } = this.state
+    const { name, value } = evt.target
+
+    if (
+      (name === 'xMin' && !isValidMinMax(value, xMax)) ||
+      (name === 'xMax' && !isValidMinMax(xMin, value)) ||
+      (name === 'yMin' && !isValidMinMax(value, yMax)) ||
+      (name === 'yMax' && !isValidMinMax(yMin, value))
+    ) {
+      this.updateState()
+      return
+    }
 
     const process = () => {
       const hasElements = this.checkElements()

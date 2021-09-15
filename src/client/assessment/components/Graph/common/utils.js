@@ -96,3 +96,5 @@ export const getAdjustedV1AnnotationCoordinatesForDB = (
 }
 
 export const calcDistance = (min, max) => (Math.abs(min) + Math.abs(max)) / 10
+
+export const isValidMinMax = (min, max) => min < max

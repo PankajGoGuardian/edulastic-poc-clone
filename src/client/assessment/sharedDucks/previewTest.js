@@ -83,6 +83,7 @@ function* evaluateQuestionsSaga({
   const res = yield testItemsApi.evaluateAsStudent(testItemId, {
     answers: answersByQids,
     testId,
+    replaceVariable: true,
   })
 
   const previewUserWork = yield select(

@@ -810,10 +810,11 @@ const withConnect = connect(
       ['author_classboard_testActivity', 'data', 'passageData'],
       []
     ),
-    variableSetIds: getDynamicVariablesSetIdForViewResponse(
-      state,
-      ownProps.testActivityId
-    ),
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, {
+      testActivityId: ownProps.testActivityId,
+      questionActivities: ownProps.questionActivities, // question centric has only one element
+      isQuestionView: ownProps.isQuestionView,
+    }),
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),
     pageNumber: getPageNumberSelector(state),

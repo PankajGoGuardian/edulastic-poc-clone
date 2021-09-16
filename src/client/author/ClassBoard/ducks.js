@@ -1669,15 +1669,19 @@ export const getClassQuestionSelector = createSelector(
 
 export const getDynamicVariablesSetIdForViewResponse = (
   state,
-  testActivityId
+  { testActivityId, questionActivities, isQuestionView }
 ) => {
+  const _testActivityId =
+    testActivityId ||
+    (isQuestionView && questionActivities?.[0]?.testActivityId)
+
   const testActivities = get(
     state,
     'author_classboard_testActivity.data.testActivities',
     []
   )
   const studentTestActivity = testActivities.find(
-    (x) => x._id === testActivityId
+    (x) => x._id === _testActivityId
   )
   if (!studentTestActivity) {
     return false

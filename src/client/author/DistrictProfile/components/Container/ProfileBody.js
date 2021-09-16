@@ -942,6 +942,7 @@ class ProfileBody extends React.Component {
                       </FieldLabel>
                       ,
                       <EduSwitchStyled
+                        disabled={!autoShareGCAssignment}
                         defaultChecked={autoShareGCalendarAssignment}
                         onChange={(checked) =>
                           this.onSettingChange(checked, 'sso-update')

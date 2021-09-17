@@ -203,7 +203,6 @@ const EssayPlainTextPreview = ({
       ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
       : {}
 
-  const numberOfRows = get(item, 'uiStyle.numberOfRows', 10)
   const isV1Multipart = get(col, 'isV1Multipart', false)
   const fontSize =
     theme.fontSize || getFontSize(get(item, 'uiStyle.fontsize', 'normal'))
@@ -213,21 +212,6 @@ const EssayPlainTextPreview = ({
     item.maxWord < wordCount
       ? theme.widgets.essayPlainText.textInputLimitedBgColor
       : theme.widgets.essayPlainText.textInputBgColor
-
-  const convertRemToPixels = (rem) => {
-    const sizeInPixels =
-      parseFloat(rem) *
-      parseFloat(getComputedStyle(document.documentElement).fontSize)
-    return (!Number.isNaN(sizeInPixels) && sizeInPixels) || 16 // 16 is fallback value
-  }
-
-  // conversion to number of rows from min/max height (px) and font size (rem)
-  const minRows = Math.ceil(
-    (parseFloat(minHeight) || 0) / convertRemToPixels(fontSize) || 2 // 2 is fallback value
-  )
-  const maxRows = Math.ceil(
-    (parseFloat(maxHeight) || 0) / convertRemToPixels(fontSize)
-  )
 
   return (
     <StyledPaperWrapper
@@ -310,16 +294,16 @@ const EssayPlainTextPreview = ({
             )}
             {!isPrintPreview && (
               <TextArea
-                autoSize={{ minRows, maxRows }}
+                minHeight={minHeight || 10}
+                maxHeight={maxHeight < 47 ? 47 : maxHeight} // default height antd input
+                autoSize
                 data-cy="previewBoxContainer"
                 inputRef={(ref) => {
                   node = ref
                 }}
                 noBorder
-                height="auto"
                 fontSize={fontSize}
                 bg={background}
-                rows={numberOfRows} // textarea number of rows
                 onSelect={handleSelect}
                 value={
                   smallSize ? t('component.essayText.plain.templateText') : text
@@ -426,5 +410,7 @@ const TextArea = styled(TextAreaInputStyled)`
     &:hover {
       border: none !important;
     }
+    min-height: ${({ minHeight }) => minHeight && `${minHeight}px !important`};
+    max-height: ${({ maxHeight }) => maxHeight && `${maxHeight}px !important`};
   }
 `

@@ -23,6 +23,9 @@ class AdminHeader extends Component {
     const { history, role } = this.props
     // eslint-disable-next-line default-case
     switch (key) {
+      case 'administration':
+        history.push(`/author/schools`)
+        return
       case 'users':
         if (role === 'district-admin' || role === 'school-admin') {
           history.push(`/author/users/teacher`)
@@ -53,16 +56,14 @@ class AdminHeader extends Component {
   render() {
     const {
       active,
-      count = 0,
       role,
       schoolLevelAdminSettings,
       manageTabLabel,
       children,
       enableStudentGroups,
     } = this.props
-    const schoolTabtext = count > 0 ? `Schools (${count})` : 'Schools'
     const isDA = role === roleuser.DISTRICT_ADMIN
-    const defaultTab = isDA ? 'District Profile' : 'School Profile'
+    const defaultTab = 'Profile'
     const defaultKey = isDA ? 'districtprofile' : 'schoolprofile'
     const activeKey = (active.mainMenu || '')
       .toLocaleLowerCase()
@@ -83,12 +84,10 @@ class AdminHeader extends Component {
             onTabClick={this.onHeaderTabClick}
           >
             <StyledTabPane tab={defaultTab} key={defaultKey} />
-            <StyledTabPane tab={schoolTabtext} key="schools" />
+            <StyledTabPane tab="Administration" key="administration" />
             <StyledTabPane tab="Users" key="users" />
-            <StyledTabPane tab="Classes" key="classes" />
+            <StyledTabPane tab="Subscriptions" key="subscriptions" />
             {enableStudentGroups && <StyledTabPane tab="Groups" key="groups" />}
-            <StyledTabPane tab="Courses" key="courses" />
-            <StyledTabPane tab="Class Enrollment" key="class-enrollment" />
             {isDA && <StyledTabPane tab="Content" key="content" />}
             {(isDA ||
               (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings)) && (

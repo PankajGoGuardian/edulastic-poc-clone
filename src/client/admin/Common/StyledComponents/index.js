@@ -1,4 +1,4 @@
-import { extraDesktopWidthMax, mobileWidthMax } from '@edulastic/colors'
+import { mobileWidthMax, title } from '@edulastic/colors'
 import { IconLogoCompact } from '@edulastic/icons'
 import {
   Button as AntdButton,
@@ -82,16 +82,28 @@ export const StyledControlDiv = styled.div`
     color: white;
   }
 `
+export const TabTitle = styled.h3`
+  width: 200px;
+  text-transform: capitalize;
+  color: ${title};
+  font-size: 16px;
+  font-weight: bold;
+  margin: 0px;
+  padding-left: 15px;
+`
+
+export const TableFilters = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`
 
 export const StyledFilterDiv = styled.div`
   display: flex;
   justify-content: space-between;
-  background: ${(props) => props.theme.manageDistrict.searchDivBgColor};
-  padding: 1.5rem;
+  padding: 1.5rem 0px 0.75rem;
   align-items: center;
-  margin-bottom: 10px;
-  border-radius: ${(props) => props.theme.manageDistrict.searchDivBorderRadius};
-  box-shadow: ${(props) => props.theme.manageDistrict.searchDivBoxShadow};
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
   }
@@ -228,12 +240,7 @@ export const MainWrapper = styled.div`
 
 export const StyledContent = styled(Content)`
   width: 80%;
-  padding-left: 20px;
-  padding-right: 20px;
-  margin: 80px 20px 20px 20px;
-  @media screen and (min-width: ${extraDesktopWidthMax}) {
-    margin-top: 100px;
-  }
+  padding: 85px 30px 20px;
 `
 
 export const StyledLayout = styled(Layout)`
@@ -252,8 +259,8 @@ export const SpinContainer = styled.div`
   left: 0;
   top: 0;
   z-index: 999;
-  background-color: ${(props) =>
-    props.blur ? 'rgb(255, 255, 255, 0.7)' : 'transparent'};
+  background: ${(props) =>
+    props.loading ? 'rgb(255, 255, 255, 0.7)' : 'transparent'};
 `
 
 export const StyledSpin = styled(Spin)`

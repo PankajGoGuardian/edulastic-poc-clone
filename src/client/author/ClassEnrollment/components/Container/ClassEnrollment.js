@@ -23,9 +23,7 @@ import {
 } from '../../../Student/ducks'
 import { receiveClassEnrollmentListAction } from '../../ducks'
 
-const title = 'Class Enrollment'
-const menuActive = { mainMenu: 'class-enrollment', subMenu: '' }
-
+const menuActive = { mainMenu: 'Administration', subMenu: 'class-enrollment' }
 class ClassEnrollment extends Component {
   render() {
     const {
@@ -39,16 +37,17 @@ class ClassEnrollment extends Component {
       resetClassDetails,
       receiveClassEnrollmentList,
       location,
+      totalSchoolsCount,
     } = this.props
     const showSpin = loading || updating || deleting || creating
     const { state: dataPassedWithRoute } = location
     return (
       <MainWrapper>
-        <AdminHeader title={title} active={menuActive} history={history} />
+        <AdminHeader active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
@@ -58,6 +57,9 @@ class ClassEnrollment extends Component {
               resetClassDetails={resetClassDetails}
               receiveClassEnrollmentList={receiveClassEnrollmentList}
               dataPassedWithRoute={dataPassedWithRoute}
+              menuActive={menuActive}
+              count={totalSchoolsCount}
+              history={history}
             />
           </StyledLayout>
         </StyledContent>
@@ -74,6 +76,7 @@ const enhance = compose(
       creating: get(state, ['classEnrollmentReducer', 'creating'], false),
       deleting: get(state, ['classEnrollmentReducer', 'deleting'], false),
       validatedClassDetails: getValidatedClassDetails(state),
+      totalSchoolsCount: get(state, ['schoolsReducer', 'totalSchoolCount'], 0),
     }),
     {
       fetchClassDetailsUsingCode: fetchClassDetailsUsingCodeAction,

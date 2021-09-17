@@ -16,8 +16,7 @@ import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 
 import CoursesTable from '../CoursesTable/CoursesTable'
 
-const title = 'Manage District'
-const menuActive = { mainMenu: 'Courses', subMenu: '' }
+const menuActive = { mainMenu: 'Administration', subMenu: 'courses' }
 
 class Courses extends Component {
   render() {
@@ -28,20 +27,25 @@ class Courses extends Component {
       creating,
       uploadingCSV,
       history,
+      totalSchoolsCount,
     } = this.props
     const showSpin = loading || updating || deleting || creating || uploadingCSV
 
     return (
       <MainWrapper>
-        <AdminHeader title={title} active={menuActive} history={history} />
+        <AdminHeader active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <CoursesTable />
+            <CoursesTable
+              menuActive={menuActive}
+              count={totalSchoolsCount}
+              history={history}
+            />
           </StyledLayout>
         </StyledContent>
       </MainWrapper>
@@ -56,6 +60,7 @@ const enhance = compose(
     creating: get(state, ['coursesReducer', 'creating'], false),
     deleting: get(state, ['coursesReducer', 'deleting'], false),
     uploadingCSV: get(state, ['coursesReducer', 'uploadingCSV'], false),
+    totalSchoolsCount: get(state, ['schoolsReducer', 'totalSchoolCount'], 0),
   }))
 )
 

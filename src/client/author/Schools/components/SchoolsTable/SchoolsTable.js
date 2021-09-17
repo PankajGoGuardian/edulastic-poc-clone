@@ -16,9 +16,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
 import {
   StyledActionDropDown,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
@@ -55,6 +58,8 @@ import {
   StyledSortIcon,
   StyledSortIconDiv,
 } from './styled'
+
+const menuActive = { mainMenu: 'Administration', subMenu: 'schools' }
 
 const Option = Select.Option
 
@@ -485,7 +490,7 @@ class SchoolsTable extends React.Component {
       refineButtonActive,
     } = this.state
 
-    const { userOrgId, totalSchoolsCount, role, t } = this.props
+    const { userOrgId, totalSchoolsCount, role, t, history, count } = this.props
 
     const breadcrumbData = [
       {
@@ -905,38 +910,42 @@ class SchoolsTable extends React.Component {
             <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
+        <AdminSubHeader count={count} active={menuActive} history={history} />
 
         {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={80}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            {role === roleuser.DISTRICT_ADMIN ? (
-              <EduButton
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
                 height="36px"
-                type="primary"
-                onClick={this.showCreateSchoolModal}
+              />
+              {role === roleuser.DISTRICT_ADMIN ? (
+                <EduButton
+                  height="36px"
+                  type="primary"
+                  onClick={this.showCreateSchoolModal}
+                >
+                  {t('school.createschool')}
+                </EduButton>
+              ) : null}
+            </LeftFilterDiv>
+            <RightFilterDiv width={15}>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+                trigger={['click']}
               >
-                {t('school.createschool')}
-              </EduButton>
-            ) : null}
-          </LeftFilterDiv>
-          <RightFilterDiv width={15}>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-              trigger={['click']}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
-              </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+                <EduButton isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
 
         <TableContainer>

@@ -17,10 +17,13 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
 import {
   StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
@@ -631,6 +634,9 @@ class ClassesTable extends Component {
       features,
       manageCoTeacherModalVisible,
       addCoTeacherModalVisible,
+      history,
+      menuActive,
+      count,
     } = this.props
 
     let columnsData = [
@@ -933,43 +939,47 @@ class ClassesTable extends Component {
             <Icon type={refineButtonActive ? 'up' : 'down'} />
           </StyledButton>
         </SubHeaderWrapper>
+        <AdminSubHeader count={count} active={menuActive} history={history} />
 
         {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={60}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            <EduButton type="primary" onClick={this.showAddClassModal}>
-              {t('class.createnewclass')}
-            </EduButton>
-          </LeftFilterDiv>
-
-          <RightFilterDiv width={35}>
-            <CheckboxLabel
-              checked={this.state.showActive}
-              disabled={
-                !!filtersData.find((item) => item.filtersColumn === 'active')
-              }
-              value={showActive}
-              onChange={this.onChangeShowActive}
-            >
-              {t('class.showactiveclass')}
-            </CheckboxLabel>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-              trigger={['click']}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="36px"
+              />
+              <EduButton type="primary" onClick={this.showAddClassModal}>
+                {t('class.createnewclass')}
               </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+            </LeftFilterDiv>
+
+            <RightFilterDiv width={35}>
+              <CheckboxLabel
+                checked={this.state.showActive}
+                disabled={
+                  !!filtersData.find((item) => item.filtersColumn === 'active')
+                }
+                value={showActive}
+                onChange={this.onChangeShowActive}
+              >
+                {t('class.showactiveclass')}
+              </CheckboxLabel>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+                trigger={['click']}
+              >
+                <EduButton isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
         <TableContainer>
           <ClassTable

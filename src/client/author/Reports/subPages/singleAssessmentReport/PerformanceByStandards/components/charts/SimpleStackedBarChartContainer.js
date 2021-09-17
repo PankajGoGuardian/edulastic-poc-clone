@@ -28,16 +28,15 @@ const SimpleStackedBarChartContainer = ({
   const barDataKey = 'avgScore'
   const ticks = [0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]
 
-  let formattedData = useMemo(() => getChartScoreData(report, viewBy), [
-    report,
-    viewBy,
-  ])
+  const formattedData = useMemo(() => {
+    return getChartScoreData(report, viewBy)
+  }, [report, viewBy])
 
   const data = useMemo(() => {
-    return addColors(formattedData, selectedData, xDataKey)
+    return addColors(formattedData, selectedData, xDataKey).sort(
+      (a, b) => a[xDataKey] - b[xDataKey]
+    )
   }, [formattedData, selectedData, xDataKey])
-
-  formattedData = data.sort((a, b) => a[xDataKey] - b[xDataKey])
 
   const yTickformatLabel = (score) => {
     switch (analyzeBy) {
@@ -49,7 +48,7 @@ const SimpleStackedBarChartContainer = ({
     }
   }
 
-  const barsLabelFormatter = (value, index, startIndex = 0, x, y) => {
+  const barsLabelFormatter = (value, index, startIndex = 0, x) => {
     switch (analyzeBy) {
       case analyzeByMode.SCORE:
         return yTickformatLabel(value)
@@ -57,13 +56,13 @@ const SimpleStackedBarChartContainer = ({
         return (
           <>
             <tspan x={x + 20} dy="-15">
-              {round(formattedData[startIndex + index].rawScore, 2)}
+              {round(data[startIndex + index].rawScore, 2)}
             </tspan>
             <tspan x={x + 20} dy="2">
               _____
             </tspan>
             <tspan x={x + 20} dy="15">
-              {formattedData[startIndex + index].maxScore}
+              {data[startIndex + index].maxScore}
             </tspan>
           </>
         )
@@ -71,9 +70,9 @@ const SimpleStackedBarChartContainer = ({
     }
   }
 
-  const getXTickText = (payload, data) => {
+  const getXTickText = (payload, _data) => {
     const currentBarData =
-      find(data, (item) => item[xDataKey] === payload.value) || {}
+      find(_data, (item) => item[xDataKey] === payload.value) || {}
     return currentBarData.name || ''
   }
 
@@ -131,7 +130,7 @@ const SimpleStackedBarChartContainer = ({
 
   return (
     <SimpleStackedBarChart
-      data={formattedData}
+      data={data}
       xAxisDataKey={xDataKey}
       bottomStackDataKey={barDataKey}
       topStackDataKey="diffScore"

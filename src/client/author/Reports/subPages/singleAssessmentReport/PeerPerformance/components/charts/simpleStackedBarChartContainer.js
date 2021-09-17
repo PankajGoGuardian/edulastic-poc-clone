@@ -37,7 +37,7 @@ export const SimpleStackedBarChartContainer = ({
 
   const getTooltipJSX = (payload) => {
     if (payload && payload.length) {
-      const { districtAvg, compareBy, compareBylabel } = payload[0].payload
+      const { districtAvg, compareBylabel } = payload[0].payload
       return (
         <div>
           <Row className="tooltip-row" type="flex" justify="start">

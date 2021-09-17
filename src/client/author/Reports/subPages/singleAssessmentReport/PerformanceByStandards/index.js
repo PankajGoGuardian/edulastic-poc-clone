@@ -254,6 +254,8 @@ const PerformanceByStandards = ({
 
   const handleCurriculumIdChange = (selected) => {
     setCurriculumId(selected.key)
+    setSelectedStandards([])
+    setSelectedDomains([])
   }
 
   const selectedCurriculumId = standardsDropdownData.find(

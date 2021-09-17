@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   ComposedChart,
   Bar as _Bar,
@@ -122,6 +122,20 @@ const SimpleStackedBarChartComponent = ({
   })
   const [activeLegend, setActiveLegend] = useState(null)
 
+  useEffect(() => {
+    if (data !== copyData) {
+      if (data?.length !== copyData?.length) {
+        setPagination({
+          startIndex: 0,
+          endIndex: pageSize - 1,
+        })
+      } else {
+        setPagination({ ...pagination })
+      }
+      setCopyData(data)
+    }
+  }, [data])
+
   const constants = {
     COLOR_BLACK: '#010101',
     TICK_FILL: { fill: '#010101', fontWeight: 'normal' },
@@ -132,14 +146,6 @@ const SimpleStackedBarChartComponent = ({
       dx: 50,
     },
     INTERVAL: lineChartDataKey ? 0 : 'preserveEnd',
-  }
-
-  if (data !== copyData) {
-    setPagination({
-      startIndex: 0,
-      endIndex: pageSize - 1,
-    })
-    setCopyData(data)
   }
 
   const legendPayload = showLegend
@@ -222,8 +228,7 @@ const SimpleStackedBarChartComponent = ({
     } else {
       content = payload.value
     }
-
-    data = {
+    const _data = {
       visibility: 'visible',
       x: `${calculateXCoordinateOfXAxisToolTip(
         coordinate,
@@ -232,7 +237,7 @@ const SimpleStackedBarChartComponent = ({
       y: `${xTickTooltipPosition}px`,
       content,
     }
-    setXAxisTickTooltipData(data)
+    setXAxisTickTooltipData(_data)
   }
 
   const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)

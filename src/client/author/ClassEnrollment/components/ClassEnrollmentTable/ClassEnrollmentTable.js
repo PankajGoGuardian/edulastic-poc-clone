@@ -524,9 +524,9 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   _onRefineResultsCB = () => {
-    this.setState((prevState) => {
-      !prevState.refineButtonActive
-    })
+    this.setState((prevState) => ({
+      refineButtonActive: !prevState.refineButtonActive,
+    }))
   }
 
   onChangeShowActive = (e) => {

@@ -1,3 +1,4 @@
+import { FieldLabel } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { Col, Form, Icon, Popover } from 'antd'
 import { get } from 'lodash'
@@ -6,6 +7,7 @@ import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { IconShare } from '@edulastic/icons'
 import {
   getSaSchoolsSortedSelector,
   getUserOrgId,
@@ -45,8 +47,6 @@ class DistrictProfileForm extends React.Component {
     super(props)
     this.state = {
       popoverVisible: false,
-      editing: false,
-      districtUrl: '',
       districtProfile: {},
     }
 
@@ -112,7 +112,7 @@ class DistrictProfileForm extends React.Component {
   updateProfileName = (newName) => {
     const districtProfile = { ...this.state.districtProfile }
     districtProfile.name = newName
-    this.setState({ editing: false, districtProfile })
+    this.setState({ districtProfile })
   }
 
   updateProfileValue = (valueName, value) => {
@@ -125,9 +125,6 @@ class DistrictProfileForm extends React.Component {
       valueName === 'School Short Name'
     ) {
       districtProfile.shortName = value
-      this.setState({
-        districtUrl: `${window.location.origin}/district/${value}`,
-      })
     } else if (valueName === 'City') {
       districtProfile.city = value
     } else if (valueName === 'State') {
@@ -137,11 +134,7 @@ class DistrictProfileForm extends React.Component {
     } else if (valueName === 'NCES Code') {
       districtProfile.nces = value
     }
-    this.setState({ editing: false, districtProfile })
-  }
-
-  setEditing = (value) => {
-    this.setState({ editing: value })
+    this.setState({ districtProfile })
   }
 
   changeAnnouncement = (e) => {
@@ -151,7 +144,8 @@ class DistrictProfileForm extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
+    const { form } = this.props
+    const { getFieldDecorator } = form
     const { isInputEnabled, role, schools, schoolId } = this.props
     const { districtProfile } = isInputEnabled ? this.state : this.props
     const { popoverVisible } = this.state
@@ -189,7 +183,7 @@ class DistrictProfileForm extends React.Component {
               labelStr="logo image"
               ref={this.childRefArr[7].component}
               requiredStatus={false}
-              form={this.props.form}
+              form={form}
               isInputEnabled={isInputEnabled}
             />
           </ProfileImgWrapper>
@@ -209,11 +203,10 @@ class DistrictProfileForm extends React.Component {
                         valueName="District Name"
                         maxLength={255}
                         setProfileValue={this.updateProfileValue}
-                        updateEditing={this.setEditing}
                         type="text"
                         ref={this.childRefArr[1].component}
                         isSpaceEnable
-                        form={this.props.form}
+                        form={form}
                         isInputEnabled={isInputEnabled}
                       />
                     </div>
@@ -227,7 +220,7 @@ class DistrictProfileForm extends React.Component {
                   )}
                 </Col>
                 <Col span={12} style={{ textAlign: 'right' }}>
-                  {this.props.districtProfile?.shortName && (
+                  {districtProfile?.shortName && (
                     <Popover
                       trigger="click"
                       visible={popoverVisible}
@@ -236,6 +229,7 @@ class DistrictProfileForm extends React.Component {
                       placement="bottomRight"
                     >
                       <StyledUrlButton type="primary" ghost>
+                        <IconShare />
                         {isDA ? 'District Url' : 'School Url'}
                       </StyledUrlButton>
                     </Popover>
@@ -248,11 +242,11 @@ class DistrictProfileForm extends React.Component {
                   updateImgUrl={this.updateImgSrc}
                   keyName="pageBackground"
                   width="100%"
-                  height="180px"
+                  height="205px"
                   labelStr="page background"
                   ref={this.childRefArr[6].component}
                   requiredStatus={false}
-                  form={this.props.form}
+                  form={form}
                   isInputEnabled={isInputEnabled}
                 />
               </StyledRowLogo>
@@ -267,11 +261,10 @@ class DistrictProfileForm extends React.Component {
                       maxLength={10}
                       requiredStatus
                       setProfileValue={this.updateProfileValue}
-                      updateEditing={this.setEditing}
                       type="text"
                       ref={this.childRefArr[1].component}
                       isSpaceEnable={false}
-                      form={this.props.form}
+                      form={form}
                       isInputEnabled={isInputEnabled}
                       flexGrow={1}
                     />
@@ -282,11 +275,10 @@ class DistrictProfileForm extends React.Component {
                     maxLength={40}
                     requiredStatus={false}
                     setProfileValue={this.updateProfileValue}
-                    updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[2].component}
                     isSpaceEnable
-                    form={this.props.form}
+                    form={form}
                     isInputEnabled={isInputEnabled}
                   />
                   <EditableLabel
@@ -295,12 +287,11 @@ class DistrictProfileForm extends React.Component {
                     maxLength={40}
                     requiredStatus={false}
                     setProfileValue={this.updateProfileValue}
-                    updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[3].component}
                     isSpaceEnable
                     isInputEnabled={isInputEnabled}
-                    form={this.props.form}
+                    form={form}
                   />
                   <EditableLabel
                     value={districtProfile.zip || ''}
@@ -308,12 +299,11 @@ class DistrictProfileForm extends React.Component {
                     maxLength={20}
                     requiredStatus={false}
                     setProfileValue={this.updateProfileValue}
-                    updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[4].component}
                     isSpaceEnable
                     isInputEnabled={isInputEnabled}
-                    form={this.props.form}
+                    form={form}
                   />
                 </FormColumnLeft>
                 <ColumnSpacer />
@@ -324,17 +314,16 @@ class DistrictProfileForm extends React.Component {
                     maxLength={100}
                     requiredStatus={false}
                     setProfileValue={this.updateProfileValue}
-                    updateEditing={this.setEditing}
                     type="text"
                     ref={this.childRefArr[5].component}
                     isSpaceEnable
-                    form={this.props.form}
+                    form={form}
                     isInputEnabled={isInputEnabled}
                   />
                   <EditableLabelDiv>
-                    <label>
+                    <FieldLabel fs="10px" marginBottom="6px">
                       {isDA ? 'District Announcement' : 'School Announcement'}
-                    </label>
+                    </FieldLabel>
                     <StyledFormItem>
                       {getFieldDecorator('announcement', {
                         initialValue: districtProfile.announcement || '',

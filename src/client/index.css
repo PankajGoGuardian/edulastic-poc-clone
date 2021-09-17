@@ -2308,7 +2308,7 @@ div[class*='_pendo'] button {
   color: transparent;
   position: absolute;
   white-space: pre;
-  cursor: text;
+  user-select: none;
   -webkit-transform-origin: 0% 0%;
   -moz-transform-origin: 0% 0%;
   -o-transform-origin: 0% 0%;

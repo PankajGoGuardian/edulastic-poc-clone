@@ -143,13 +143,13 @@ const updateCoTeacher = (data) =>
     })
     .then((result) => result.data.result)
 
-const archiveUnarchiveClasses = ({ archive, groupIds }) =>
+const archiveUnarchiveClasses = (data) =>
   api
     .callApi({
       useSlowApi: true,
       url: 'admin-tool/archive-class',
       method: 'post',
-      data: { archive, groupIds },
+      data,
     })
     .then((result) => result.data.result)
 

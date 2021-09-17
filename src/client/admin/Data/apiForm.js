@@ -354,12 +354,28 @@ export const apiForms = [
     name: 'Archive / Unarchive Classes',
     fields: [
       {
-        name: 'groupIds',
-        displayName: 'Classes',
-        placeholder: 'Enter comma separated Class Ids',
+        name: 'orgType',
+        displayName: 'Org Type',
+        placeholder: 'Select Org Type',
+        defaultValue: 'CLASS',
+        type: 'dropdown',
+        required: true,
+        values: ['CLASS', 'USER', 'SCHOOL', 'DISTRICT'],
+      },
+      {
+        name: 'ids',
+        displayName: 'Id(s)',
+        placeholder: 'Enter comma separated Ids',
         type: 'textarea',
         formatter: (value) => value.split(',')?.map((v) => v.trim()),
         required: true,
+      },
+      {
+        name: 'termIds',
+        displayName: 'Term Id(s)',
+        placeholder: 'Enter comma separated Term Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
       },
       {
         key: 'archive',

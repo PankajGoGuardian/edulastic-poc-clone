@@ -68,7 +68,9 @@ const ApiForm = () => {
       groupApi
         .archiveUnarchiveClasses({
           archive: data.archive,
-          groupIds: data.groupIds,
+          ids: data.ids,
+          ...(data.termIds ? { termIds: data.termIds } : {}),
+          orgType: data.orgType,
         })
         .then((res) => {
           notification({ type: res?.type || 'success', msg: res?.message })

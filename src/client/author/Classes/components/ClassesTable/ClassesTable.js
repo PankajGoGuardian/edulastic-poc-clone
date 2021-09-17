@@ -963,7 +963,7 @@ class ClassesTable extends Component {
               </EduButton>
             </LeftFilterDiv>
 
-            <RightFilterDiv width={35}>
+            <RightFilterDiv>
               <CheckboxLabel
                 checked={this.state.showActive}
                 disabled={

@@ -33,16 +33,23 @@ import {
 import { PerformanceBandTable as PerformanceBandTableDumb } from '../PerformanceBandTable/PerformanceBandTable'
 import {
   ListItemStyled,
-  PerformanceBandDiv,
   RowStyled,
-  SpinContainer,
-  StyledContent,
-  StyledLayout,
   StyledList,
   StyledProfileCol,
   StyledProfileRow,
-  StyledSpin,
 } from './styled'
+import {
+  SettingsWrapper,
+  StyledCol,
+  StyledContent,
+  StyledLayout,
+  StyledRow,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
+import {
+  StyledSpin,
+  SpinContainer,
+} from '../../../../admin/Common/StyledComponents'
+import { TableContainer } from '../../../../common/styled'
 
 const title = 'Manage District'
 const BlueBold = styled.b`
@@ -329,7 +336,7 @@ export function PerformanceBandAlt(props) {
   }
 
   return (
-    <PerformanceBandDiv>
+    <SettingsWrapper>
       <CustomModalStyled
         title="Delete Profile"
         visible={conflictModalVisible}
@@ -364,83 +371,91 @@ export function PerformanceBandAlt(props) {
         <StyledLayout>
           <AdminSubHeader active={menuActive} history={history} />
           {showSpin ? (
-            <SpinContainer>
+            <SpinContainer loading={showSpin}>
               <StyledSpin size="large" />
             </SpinContainer>
           ) : null}
-          <Row type="flex" justify="end">
-            <CustomModalStyled
-              destroyOnClose
-              title="Create New Profile"
-              visible={confirmVisible}
-              onCancel={() => setConfirmVisible(false)}
-              centered
-              footer={[
-                <EduButton isGhost onClick={() => setConfirmVisible(false)}>
-                  CANCEL
-                </EduButton>,
-                <EduButton
-                  disabled={profileName === ''}
+
+          <TableContainer>
+            <StyledList
+              dataSource={profiles}
+              rowKey="_id"
+              renderItem={(profile) => (
+                <ProfileRow
+                  {...profile}
+                  remove={remove}
                   loading={loading}
-                  onClick={addProfile}
+                  update={update}
+                  onDuplicate={() => duplicateProfile(profile)}
+                  setEditable={setEditable}
+                  hideEdit={
+                    props.role != 'district-admin' &&
+                    currentUserId != get(profile, 'createdBy._id')
+                  }
+                  readOnly={
+                    (props.role != 'district-admin' &&
+                      currentUserId != get(profile, 'createdBy._id')) ||
+                    !editable
+                  }
+                  setEditingIndex={setEditingIndex}
+                  active={editingIndex === profile._id}
+                  updatePerformanceBand={props.updateLocal}
+                  setName={setName}
+                  conflict={conflict}
+                  setDeleteProfileName={setDeleteProfileName}
+                  savePerformance={({ _id: id, performanceBand }) => {
+                    props.updateLocal({ id, data: performanceBand })
+                  }}
+                />
+              )}
+            />
+            <StyledRow type="flex" justify="start">
+              <CustomModalStyled
+                destroyOnClose
+                title="Create New Profile"
+                visible={confirmVisible}
+                onCancel={() => setConfirmVisible(false)}
+                centered
+                footer={[
+                  <EduButton isGhost onClick={() => setConfirmVisible(false)}>
+                    CANCEL
+                  </EduButton>,
+                  <EduButton
+                    disabled={profileName === ''}
+                    loading={loading}
+                    onClick={addProfile}
+                  >
+                    CREATE
+                  </EduButton>,
+                ]}
+              >
+                <Row>
+                  <Col span={24}>
+                    <FieldLabel>NAME OF THE PROFILE</FieldLabel>
+                    <TextInputStyled
+                      autoFocus
+                      value={profileName}
+                      onChange={(e) => setProfileName(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </CustomModalStyled>
+              <StyledCol mt="10px">
+                <EduButton
+                  ml="0"
+                  type="primary"
+                  onClick={() =>
+                    handleProfileLimit() && setConfirmVisible(true)
+                  }
                 >
-                  CREATE
-                </EduButton>,
-              ]}
-            >
-              <Row>
-                <Col span={24}>
-                  <FieldLabel>NAME OF THE PROFILE</FieldLabel>
-                  <TextInputStyled
-                    autoFocus
-                    value={profileName}
-                    onChange={(e) => setProfileName(e.target.value)}
-                  />
-                </Col>
-              </Row>
-            </CustomModalStyled>
-            <EduButton
-              type="primary"
-              onClick={() => handleProfileLimit() && setConfirmVisible(true)}
-            >
-              <IconPlusCircle width={19} height={19} /> Create new Profile
-            </EduButton>
-          </Row>
-          <StyledList
-            dataSource={profiles}
-            rowKey="_id"
-            renderItem={(profile) => (
-              <ProfileRow
-                {...profile}
-                remove={remove}
-                loading={loading}
-                update={update}
-                onDuplicate={() => duplicateProfile(profile)}
-                setEditable={setEditable}
-                hideEdit={
-                  props.role != 'district-admin' &&
-                  currentUserId != get(profile, 'createdBy._id')
-                }
-                readOnly={
-                  (props.role != 'district-admin' &&
-                    currentUserId != get(profile, 'createdBy._id')) ||
-                  !editable
-                }
-                setEditingIndex={setEditingIndex}
-                active={editingIndex === profile._id}
-                updatePerformanceBand={props.updateLocal}
-                setName={setName}
-                conflict={conflict}
-                setDeleteProfileName={setDeleteProfileName}
-                savePerformance={({ _id: id, performanceBand }) => {
-                  props.updateLocal({ id, data: performanceBand })
-                }}
-              />
-            )}
-          />
+                  <IconPlusCircle width={19} height={19} /> Create new Profile
+                </EduButton>
+              </StyledCol>
+            </StyledRow>
+          </TableContainer>
         </StyledLayout>
       </StyledContent>
-    </PerformanceBandDiv>
+    </SettingsWrapper>
   )
 }
 

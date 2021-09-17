@@ -1,12 +1,14 @@
+/* eslint-disable max-classes-per-file */
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { DatePicker, Form, Icon, Input, Table } from 'antd'
+import { DatePicker, Form, Icon, Input } from 'antd'
 import { get } from 'lodash'
 import * as moment from 'moment'
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
 // selectors
 import {
   createTermAction,
@@ -18,12 +20,21 @@ import CreateTermModal from './CreateTermModal/CreateTermModal'
 import EditTermModal from './EditTermModal/EditTermModal'
 import {
   DeleteTermModalFooterDiv,
-  StyledAddButton,
   StyledButton,
   StyledDeleteButton,
   StyledPagination,
-  StyledTableContainer,
+  StyledTermTable,
 } from './styled'
+import {
+  LeftFilterDiv,
+  MainContainer,
+  TableContainer,
+} from '../../../../common/styled'
+import {
+  StyledFilterDiv,
+  TableFilters,
+  TabTitle,
+} from '../../../../admin/Common/StyledComponents'
 
 const FormItem = Form.Item
 const EditableContext = React.createContext()
@@ -106,11 +117,7 @@ class TermTable extends React.Component {
         editable: true,
       },
       {
-        title: (
-          <StyledAddButton onClick={this.handleAdd}>
-            + Add School Year
-          </StyledAddButton>
-        ),
+        title: '',
         dataIndex: 'operation',
         render: (text, record) => {
           const toDayDate = moment(new Date(), 'DD MMM YYYY')
@@ -140,7 +147,7 @@ class TermTable extends React.Component {
   }
 
   static getDerivedStateFromProps(nextProps) {
-    if (nextProps.termSetting.length === undefined) {
+    if (nextProps?.termSetting?.length === undefined) {
       return {
         data: [],
       }
@@ -265,25 +272,38 @@ class TermTable extends React.Component {
       currentPage,
     } = this.state
     const selectedTerm = data.find((item) => item.key === selectedKey)
-    const { termSetting: termsData } = this.props
+    const { termSetting: termsData, menuActive, history } = this.props
     return (
-      <StyledTableContainer>
+      <MainContainer>
         <EditableContext.Provider value={this.props.form}>
-          <Table
-            components={components}
-            dataSource={data}
-            columns={columns}
-            rowClassName="editable-row"
-            pagination={false}
-          />
-          <StyledPagination
-            defaultCurrent={1}
-            current={currentPage}
-            pageSize={25}
-            total={termsData ? termsData.length : 0}
-            onChange={this.changePagination}
-            hideOnSinglePage
-          />
+          <AdminSubHeader active={menuActive} history={history} />
+          <StyledFilterDiv>
+            <TabTitle>{menuActive.subMenu}</TabTitle>
+            <TableFilters>
+              <LeftFilterDiv>
+                <EduButton onClick={this.handleAdd}>
+                  + Add School Year
+                </EduButton>
+              </LeftFilterDiv>
+            </TableFilters>
+          </StyledFilterDiv>
+          <TableContainer>
+            <StyledTermTable
+              components={components}
+              dataSource={data}
+              columns={columns}
+              rowClassName="editable-row"
+              pagination={false}
+            />
+            <StyledPagination
+              defaultCurrent={1}
+              current={currentPage}
+              pageSize={25}
+              total={termsData ? termsData.length : 0}
+              onChange={this.changePagination}
+              hideOnSinglePage
+            />
+          </TableContainer>
         </EditableContext.Provider>
         {createTermModalVisible && (
           <CreateTermModal
@@ -346,7 +366,7 @@ class TermTable extends React.Component {
             </CustomModalStyled>
           </div>
         )}
-      </StyledTableContainer>
+      </MainContainer>
     )
   }
 }

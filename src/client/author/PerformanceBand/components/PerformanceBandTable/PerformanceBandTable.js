@@ -1,16 +1,7 @@
+/* eslint-disable max-classes-per-file */
 import { themeColor, white } from '@edulastic/colors'
 import { CheckboxLabel, notification } from '@edulastic/common'
-import {
-  Col,
-  Form,
-  Icon,
-  Input,
-  InputNumber,
-  message,
-  Row,
-  Slider,
-  Table,
-} from 'antd'
+import { Col, Form, Icon, Input, InputNumber, Row, Slider } from 'antd'
 import produce from 'immer'
 import { get } from 'lodash'
 import React from 'react'
@@ -36,6 +27,7 @@ import {
   StyledEnableContainer,
   StyledSaveButton,
   StyledTableContainer,
+  StyledBandTable,
 } from './styled'
 
 function Ellipsify({ children: text, limit }) {
@@ -638,7 +630,7 @@ export class PerformanceBandTable extends React.Component {
 
     return (
       <StyledTableContainer>
-        <Table
+        <StyledBandTable
           components={components}
           rowClassName={() => 'editable-row'}
           dataSource={dataSource}
@@ -658,7 +650,6 @@ export class PerformanceBandTable extends React.Component {
             </StyledSaveButton>
           ) : (
             <StyledSaveButton
-              disabled={this.props.readOnly}
               type="primary"
               onClick={this.updatePerformanceBand}
               disabled={!isChangeState}

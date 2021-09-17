@@ -1,11 +1,23 @@
 import { CheckboxLabel, EduButton } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { Col, Icon, Row } from 'antd'
+import { Icon } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import {
+  ContentWrapper,
+  SettingsWrapper,
+  StyledCol,
+  StyledContent,
+  StyledLayout,
+  StyledRow,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
+import {
+  SpinContainer,
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
 import { getDictCurriculumsAction } from '../../../src/actions/dictionaries'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
@@ -22,11 +34,6 @@ import {
 } from '../../ducks'
 import StandardSetModal from '../StandardSetsModal/StandardSetsModal'
 import {
-  InterestedStandardsDiv,
-  SpinContainer,
-  StyledContent,
-  StyledLayout,
-  StyledSpin,
   StyledSubjectCloseButton,
   StyledSubjectContent,
   StyledSubjectLine,
@@ -188,7 +195,6 @@ class InterestedStandards extends Component {
       showAllStandards,
       includeOtherStandards = false,
     } = interestedStaData
-    let isDisableSaveBtn = true
     const subjectArray = [
       'Mathematics',
       'ELA',
@@ -202,7 +208,6 @@ class InterestedStandards extends Component {
       interestedStaData != null &&
       interestedStaData.hasOwnProperty('curriculums')
     ) {
-      isDisableSaveBtn = interestedStaData.curriculums.length == 0
       for (let i = 0; i < subjectArray.length; i++) {
         const filtedSubject = interestedStaData.curriculums.filter(
           (item) => item.subject === subjectArray[i]
@@ -249,78 +254,76 @@ class InterestedStandards extends Component {
     // show list end
 
     return (
-      <InterestedStandardsDiv>
+      <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <Row>
-              <Col
-                span={12}
-                style={{ display: 'flex', flexDirection: 'column' }}
-              >
-                <CheckboxLabel
-                  onChange={this.updatePreferences}
-                  name="showAllStandards"
-                  checked={showAllStandards}
-                >
-                  Allow teachers to view and use other standards
-                </CheckboxLabel>
-                <CheckboxLabel
-                  onChange={this.updatePreferences}
-                  name="includeOtherStandards"
-                  checked={includeOtherStandards}
-                >
-                  Make the teacher-selected standards visible to all
-                </CheckboxLabel>
-                <EduButton
-                  isGhost
-                  type="primary"
-                  onClick={this.showMyStandardSetsModal}
-                  style={{
-                    marginTop: '10px',
-                    width: '260px',
-                    borderRadius: '15px',
-                  }}
-                >
-                  Select your standard sets
-                </EduButton>
-              </Col>
-              <Col
-                span={12}
-                style={{ display: 'flex', justifyContent: 'flex-end' }}
-              >
-                <SaSchoolSelect onChange={this.handleSchoolSelect} />
-                <EduButton
-                  style={{ marginleft: '10px' }}
-                  type="primary"
-                  onClick={this.saveInterestedStandards}
-                >
-                  Save
-                </EduButton>
-              </Col>
-            </Row>
+            <ContentWrapper>
+              <SaSchoolSelect onChange={this.handleSchoolSelect} />
+              <StyledRow gutter={40} type="flex">
+                <StyledCol>
+                  <CheckboxLabel
+                    onChange={this.updatePreferences}
+                    name="showAllStandards"
+                    checked={showAllStandards}
+                  >
+                    Allow teachers to view and use other standards
+                  </CheckboxLabel>
+                </StyledCol>
+                <StyledCol>
+                  <CheckboxLabel
+                    onChange={this.updatePreferences}
+                    name="includeOtherStandards"
+                    checked={includeOtherStandards}
+                  >
+                    Make the teacher-selected standards visible to all
+                  </CheckboxLabel>
+                </StyledCol>
+              </StyledRow>
 
-            <StyledSubjectContent>
-              <Col span={24}>{standardsList}</Col>
-            </StyledSubjectContent>
-            {standardSetsModalVisible && (
-              <StandardSetModal
-                modalVisible={standardSetsModalVisible}
-                saveMyStandardsSet={this.updateMyStandardSets}
-                closeModal={this.hideMyStandardSetsModal}
-                standardList={curriculums}
-                interestedStaData={interestedStaData}
-              />
-            )}
+              <StyledRow gutter={15} type="flex">
+                <StyledCol>
+                  <EduButton
+                    isGhost
+                    type="primary"
+                    onClick={this.showMyStandardSetsModal}
+                    ml="0px"
+                  >
+                    Select your standard sets
+                  </EduButton>
+                </StyledCol>
+                <StyledCol>
+                  <EduButton
+                    type="primary"
+                    onClick={this.saveInterestedStandards}
+                  >
+                    Save
+                  </EduButton>
+                </StyledCol>
+              </StyledRow>
+
+              <StyledSubjectContent>
+                <StyledCol span={24}>{standardsList}</StyledCol>
+              </StyledSubjectContent>
+              {standardSetsModalVisible && (
+                <StandardSetModal
+                  modalVisible={standardSetsModalVisible}
+                  saveMyStandardsSet={this.updateMyStandardSets}
+                  closeModal={this.hideMyStandardSetsModal}
+                  standardList={curriculums}
+                  interestedStaData={interestedStaData}
+                />
+              )}
+            </ContentWrapper>
           </StyledLayout>
         </StyledContent>
-      </InterestedStandardsDiv>
+      </SettingsWrapper>
     )
   }
 }

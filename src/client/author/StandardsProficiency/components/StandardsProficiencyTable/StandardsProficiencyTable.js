@@ -1,5 +1,5 @@
 import React from 'react'
-import { Form, Icon, Radio, Button, message, Row } from 'antd'
+import { Form, Icon } from 'antd'
 import {
   EduButton,
   notification,
@@ -14,7 +14,6 @@ import StandardsProficiencyEditableCell from './StandardsProficiencyEditableCell
 
 import {
   StyledTableContainer,
-  StyledTable,
   TopDiv,
   InfoDiv,
   SaveButtonDiv,
@@ -25,13 +24,12 @@ import {
   StyledMasterDiv,
   StyledButton,
   StyledAddButton,
-  StyledRadioGroup,
   StyledAverageRadioDiv,
   StyledAverageInput,
   StyledLabel,
   StyledScoreDiv,
   InputOption,
-  RadioWrap,
+  BandStyledTable,
 } from './styled'
 import { ScoreColorSpan } from './StandardsProficiencyEditableCell/styled'
 
@@ -45,6 +43,11 @@ import {
 } from '../../ducks'
 
 import { getUserOrgId } from '../../../src/selectors/user'
+import {
+  StyledCol,
+  StyledRadioGrp,
+  StyledRow,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
 
 const EditableContext = React.createContext()
 
@@ -225,8 +228,7 @@ class StandardsProficiencyTable extends React.Component {
   }
 
   onChangeDomainMastery = (e, key) => {
-    const { checked } = e.target
-    const { data, editingKey } = this.state
+    const { data } = this.state
     const newData = data.map((row) => {
       if (row.key === key) {
         return {
@@ -249,7 +251,6 @@ class StandardsProficiencyTable extends React.Component {
       calcMovingAvrAttr,
       data,
     } = this.state
-    const { standardsProficiencyID } = this.props
 
     const components = {
       body: {
@@ -275,7 +276,6 @@ class StandardsProficiencyTable extends React.Component {
         dataIndex: 'domainMastery',
         width: '15%',
         render: (domainMastery, record) => {
-          const { editingKey } = this.state
           const editable = this.isEditing(record)
           return editable ? (
             <CheckboxLabel
@@ -391,19 +391,19 @@ class StandardsProficiencyTable extends React.Component {
               {isChangeState && (
                 <SaveAlert>You have unsaved changes.</SaveAlert>
               )}
-              <Button
+              <EduButton
                 type="primary"
                 onClick={this.saveScale}
                 disabled={!isChangeState}
               >
                 Save
-              </Button>
+              </EduButton>
             </SaveButtonDiv>
           )}
         </TopDiv>
 
         <EditableContext.Provider value={this.props.form}>
-          <StyledTable
+          <BandStyledTable
             components={components}
             dataSource={data}
             columns={columns}
@@ -426,29 +426,29 @@ class StandardsProficiencyTable extends React.Component {
               mid point between two levels
             </li>
           </StyledUl>
-          <StyledRadioGroup
+          <StyledRadioGrp
             disabled={this.props.readOnly}
             defaultValue={calcType}
             onChange={this.changeCalcType}
             value={calcType}
           >
-            <Row>
-              <RadioWrap xs={24} md={12} lg={8}>
+            <StyledRow mt="20px" gutter={30} type="flex">
+              <StyledCol>
                 <RadioBtn value="MOST_RECENT">Most Recent</RadioBtn>
-              </RadioWrap>
-              <RadioWrap xs={24} md={12} lg={8}>
+              </StyledCol>
+              <StyledCol>
                 <RadioBtn value="AVERAGE">Simple Average</RadioBtn>
-              </RadioWrap>
-              <RadioWrap xs={24} md={12} lg={8}>
+              </StyledCol>
+              <StyledCol>
                 <RadioBtn value="MAX_SCORE">Max Score</RadioBtn>
-              </RadioWrap>
-              <RadioWrap xs={24} md={12} lg={8}>
+              </StyledCol>
+              <StyledCol>
                 <RadioBtn value="POWER_LAW">Power Law</RadioBtn>
-              </RadioWrap>
-              <RadioWrap xs={24} md={12} lg={8}>
+              </StyledCol>
+              <StyledCol>
                 <RadioBtn value="MODE_SCORE">Mode Score</RadioBtn>
-              </RadioWrap>
-              <RadioWrap xs={24} md={12} lg={8}>
+              </StyledCol>
+              <StyledCol>
                 <StyledAverageRadioDiv direction="column">
                   <RadioBtn value="DECAYING_AVERAGE">Decaying Average</RadioBtn>
                   <InputOption
@@ -470,8 +470,8 @@ class StandardsProficiencyTable extends React.Component {
                     )}
                   </InputOption>
                 </StyledAverageRadioDiv>
-              </RadioWrap>
-              <RadioWrap xs={24} md={12} lg={8}>
+              </StyledCol>
+              <StyledCol>
                 <StyledAverageRadioDiv direction="column">
                   <RadioBtn value="MOVING_AVERAGE">Moving Average</RadioBtn>
                   <InputOption
@@ -492,9 +492,9 @@ class StandardsProficiencyTable extends React.Component {
                     )}
                   </InputOption>
                 </StyledAverageRadioDiv>
-              </RadioWrap>
-            </Row>
-          </StyledRadioGroup>
+              </StyledCol>
+            </StyledRow>
+          </StyledRadioGrp>
         </StyledMasterDiv>
       </StyledTableContainer>
     )

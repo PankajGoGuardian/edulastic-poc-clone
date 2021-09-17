@@ -12,8 +12,10 @@ import { green, themeColor } from '@edulastic/colors'
 import { canvasApi } from '@edulastic/api'
 import { connect } from 'react-redux'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
-import { SpinContainer } from '../Container/styled'
-import { StyledSpin } from '../../../../admin/Common/StyledComponents'
+import {
+  SpinContainer,
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
 import { getUserOrgId } from '../../../src/selectors/user'
 
 const ConfigureCanvasModal = ({
@@ -137,7 +139,7 @@ const ConfigureCanvasModal = ({
     >
       <ModalBodyWrapper>
         {isLoading && (
-          <SpinContainer blur>
+          <SpinContainer loading={isLoading}>
             <StyledSpin size="small" />
           </SpinContainer>
         )}

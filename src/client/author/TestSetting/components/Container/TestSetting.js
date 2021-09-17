@@ -1,18 +1,26 @@
-import {
-  EduButton,
-  FieldLabel,
-  RadioBtn,
-  RadioGrp,
-  SelectInputStyled,
-} from '@edulastic/common'
+import { EduButton, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { Col, Row, Select } from 'antd'
+import { Select } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import styled from 'styled-components'
+import {
+  SpinContainer,
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
+import {
+  ContentWrapper,
+  StyledContent,
+  StyledLayout,
+  SettingsWrapper,
+  StyledRow,
+  StyledCol,
+  StyledHeading1,
+  InputLabel,
+  StyledRadioGrp,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
 import { receivePerformanceBandAction } from '../../../PerformanceBand/ducks'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
@@ -27,15 +35,6 @@ import {
   setTestSettingValueAction,
   updateTestSettingAction,
 } from '../../ducks'
-import {
-  SpinContainer,
-  StyledContent,
-  StyledLabel,
-  StyledLayout,
-  StyledRow,
-  StyledSpin,
-  TestSettingDiv,
-} from './styled'
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Test Settings' }
@@ -162,69 +161,63 @@ class TestSetting extends Component {
       )
     )
 
+    const showSpin = updating || loading || creating
+
     return (
-      <TestSettingDiv>
+      <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
-          <StyledLayout
-            loading={updating || loading || creating ? 'true' : 'false'}
-          >
+          <StyledLayout loading={showSpin ? 'true' : 'false'}>
             <AdminSubHeader active={menuActive} history={history} />
-            {(updating || loading || creating) && (
-              <SpinContainer>
+            {showSpin && (
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <SaSchoolSelect />
-            <StyledRow>
-              <>
-                <StyledLabel>Allow Partial Score </StyledLabel>
-                <RadioGrp
-                  defaultValue={testSetting.partialScore}
-                  onChange={(e) => this.changeSetting(e, 'partialScore')}
-                  value={testSetting.partialScore}
-                >
-                  <RadioBtn value>Yes</RadioBtn>
-                  <RadioBtn value={false}>No</RadioBtn>
-                </RadioGrp>
-              </>
-            </StyledRow>
-            <StyledRow>
-              <>
-                <StyledLabel>Show Timer </StyledLabel>
-                <RadioGrp
-                  defaultValue={testSetting.timer}
-                  onChange={(e) => this.changeSetting(e, 'timer')}
-                  value={testSetting.timer}
-                >
-                  <RadioBtn value>Yes</RadioBtn>
-                  <RadioBtn value={false}>No</RadioBtn>
-                </RadioGrp>
-              </>
-            </StyledRow>
-            <StyledRow>
-              <>
-                <StyledLabel>Set Link Sharing ON for new test </StyledLabel>
-                <RadioGrp
-                  onChange={(e) =>
-                    this.changeSetting(e, 'isLinkSharingEnabled')
-                  }
-                  value={!!testSetting.isLinkSharingEnabled}
-                >
-                  <RadioBtn value>Yes</RadioBtn>
-                  <RadioBtn value={false}>No</RadioBtn>
-                </RadioGrp>
-              </>
-            </StyledRow>
-            <StyledRow>
-              <>
-                <StyledLabel>
-                  Default Performance Band <br /> Profiles{' '}
-                </StyledLabel>
-              </>
-              <FlexingRow gutter={20}>
-                <Col span={8}>
-                  <FieldLabel>Common Test</FieldLabel>
+            <ContentWrapper>
+              <SaSchoolSelect />
+              <StyledHeading1>Default Options</StyledHeading1>
+              <StyledRow type="flex" gutter={40}>
+                <StyledCol>
+                  <InputLabel>Allow Partial Score </InputLabel>
+                  <StyledRadioGrp
+                    defaultValue={testSetting.partialScore}
+                    onChange={(e) => this.changeSetting(e, 'partialScore')}
+                    value={testSetting.partialScore}
+                  >
+                    <RadioBtn value>Yes</RadioBtn>
+                    <RadioBtn value={false}>No</RadioBtn>
+                  </StyledRadioGrp>
+                </StyledCol>
+                <StyledCol>
+                  <InputLabel>Show Timer </InputLabel>
+                  <StyledRadioGrp
+                    defaultValue={testSetting.timer}
+                    onChange={(e) => this.changeSetting(e, 'timer')}
+                    value={testSetting.timer}
+                  >
+                    <RadioBtn value>Yes</RadioBtn>
+                    <RadioBtn value={false}>No</RadioBtn>
+                  </StyledRadioGrp>
+                </StyledCol>
+                <StyledCol>
+                  <InputLabel>Set Link Sharing ON for new test </InputLabel>
+                  <StyledRadioGrp
+                    onChange={(e) =>
+                      this.changeSetting(e, 'isLinkSharingEnabled')
+                    }
+                    value={!!testSetting.isLinkSharingEnabled}
+                  >
+                    <RadioBtn value>Yes</RadioBtn>
+                    <RadioBtn value={false}>No</RadioBtn>
+                  </StyledRadioGrp>
+                </StyledCol>
+              </StyledRow>
+
+              <StyledHeading1>Default Performance Band Profiles</StyledHeading1>
+              <StyledRow gutter={40}>
+                <StyledCol span={8}>
+                  <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -243,9 +236,9 @@ class TestSetting extends Component {
                   >
                     {performanceBandOptions}
                   </SelectInputStyled>
-                </Col>
-                <Col span={8}>
-                  <FieldLabel>Class Test</FieldLabel>
+                </StyledCol>
+                <StyledCol span={8}>
+                  <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -264,9 +257,9 @@ class TestSetting extends Component {
                   >
                     {performanceBandOptions}
                   </SelectInputStyled>
-                </Col>
-                <Col span={8}>
-                  <FieldLabel>Practice Test</FieldLabel>
+                </StyledCol>
+                <StyledCol span={8}>
+                  <InputLabel>Practice Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -285,18 +278,15 @@ class TestSetting extends Component {
                   >
                     {performanceBandOptions}
                   </SelectInputStyled>
-                </Col>
-              </FlexingRow>
-            </StyledRow>
-            <StyledRow>
-              <>
-                <StyledLabel>
-                  Default Standard Proficiency <br /> Profiles{' '}
-                </StyledLabel>
-              </>
-              <FlexingRow gutter={20}>
-                <Col span={8}>
-                  <FieldLabel>Common Test</FieldLabel>
+                </StyledCol>
+              </StyledRow>
+
+              <StyledHeading1>
+                Default Standard Proficiency Profiles
+              </StyledHeading1>
+              <StyledRow gutter={40}>
+                <StyledCol span={8}>
+                  <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -315,9 +305,9 @@ class TestSetting extends Component {
                   >
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
-                </Col>
-                <Col span={8}>
-                  <FieldLabel>Class Test</FieldLabel>
+                </StyledCol>
+                <StyledCol span={8}>
+                  <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -336,9 +326,9 @@ class TestSetting extends Component {
                   >
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
-                </Col>
-                <Col span={8}>
-                  <FieldLabel>Practice Test</FieldLabel>
+                </StyledCol>
+                <StyledCol span={8}>
+                  <InputLabel>Practice Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -357,22 +347,22 @@ class TestSetting extends Component {
                   >
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
-                </Col>
-              </FlexingRow>
-            </StyledRow>
+                </StyledCol>
+              </StyledRow>
 
-            <StyledRow
-              type="flex"
-              justify="center"
-              style={{ marginTop: '15px' }}
-            >
-              <EduButton type="primary" onClick={this.updateValue}>
-                {btnSaveStr}
-              </EduButton>
-            </StyledRow>
+              <StyledRow
+                type="flex"
+                justify="center"
+                style={{ marginTop: '15px' }}
+              >
+                <EduButton type="primary" onClick={this.updateValue}>
+                  {btnSaveStr}
+                </EduButton>
+              </StyledRow>
+            </ContentWrapper>
           </StyledLayout>
         </StyledContent>
-      </TestSettingDiv>
+      </SettingsWrapper>
     )
   }
 }
@@ -419,10 +409,6 @@ const enhance = compose(
     }
   )
 )
-
-const FlexingRow = styled(Row)`
-  flex: 1 1;
-`
 
 export default enhance(TestSetting)
 

@@ -1,29 +1,20 @@
+import { themeColorLighter, white } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
+import { Col, Icon, Row } from 'antd'
 import styled from 'styled-components'
-import { Row, Col, Icon } from 'antd'
-import {
-  cardTitleColor,
-  white,
-  sectionBorder,
-  themeColorLighter,
-} from '@edulastic/colors'
-import { ThemeButton } from '../../../src/components/common/ThemeButton'
+import { StyledTable } from '../../../../common/styled'
 
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
+  padding: 10px;
+`
 
+export const StyledBandTable = styled(StyledTable)`
   .ant-table-thead {
     & > tr {
-      border: 1px solid ${sectionBorder};
       & > th {
         text-align: center;
-        text-transform: uppercase;
-        background-color: ${white};
-        font-size: 11px;
-        font-weight: bold;
-        color: ${cardTitleColor};
-        height: 45px;
-        padding: 5px 10px;
         &:nth-child(1) {
           text-align: left;
         }
@@ -37,7 +28,6 @@ export const StyledTableContainer = styled.div`
       }
       & > td {
         padding: 10px;
-        border: 0;
       }
       &:hover > td {
         background-color: ${white};
@@ -62,12 +52,8 @@ export const StyledBottomDiv = styled.div`
   margin-top: 20px;
 `
 
-export const StyledSaveButton = styled(ThemeButton)`
+export const StyledSaveButton = styled(EduButton)`
   margin-bottom: 15px;
-  text-transform: uppercase;
-  font-size: 12px;
-  border-radius: 4px;
-  color: ${white};
 `
 
 export const StyledColFromTo = styled.div`

@@ -3,6 +3,7 @@ import { Select } from 'antd'
 import { get } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
+import { StyledRow } from '../../../../admin/Common/StyledComponents/settingsContent'
 import { setSettingsSaSchoolAction } from '../../../../student/Login/ducks'
 import { getSaSchoolsSortedSelector } from '../../selectors/user'
 
@@ -14,20 +15,22 @@ function SaSchoolSelect({
   onChange = () => {},
 }) {
   return role === 'school-admin' ? (
-    <SelectInputStyled
-      value={selected}
-      onChange={(v) => {
-        setSchool(v)
-        onChange(v)
-      }}
-      width="200px"
-      height="36px"
-      style={{ marginLeft: 'auto' }}
-    >
-      {schools.map((s) => (
-        <Select.Option value={s._id}>{s.name}</Select.Option>
-      ))}
-    </SelectInputStyled>
+    <StyledRow mb="10px" type="flex" justify="flex-end">
+      <SelectInputStyled
+        value={selected}
+        onChange={(v) => {
+          setSchool(v)
+          onChange(v)
+        }}
+        width="200px"
+        height="36px"
+        style={{ marginLeft: 'auto' }}
+      >
+        {schools.map((s) => (
+          <Select.Option value={s._id}>{s.name}</Select.Option>
+        ))}
+      </SelectInputStyled>
+    </StyledRow>
   ) : null
 }
 

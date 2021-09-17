@@ -68,7 +68,6 @@ class SchoolsTable extends React.Component {
     super(props)
 
     this.state = {
-      isAdding: false,
       selectedRowKeys: [],
       createSchoolModalVisible: false,
       editSchoolModaVisible: false,
@@ -260,8 +259,6 @@ class SchoolsTable extends React.Component {
     )
 
     this.setState({
-      isAdding: false,
-      isChangeState: true,
       editSchoolModaVisible: false,
     })
 
@@ -922,11 +919,11 @@ class SchoolsTable extends React.Component {
                 placeholder={t('common.searchbyname')}
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
-                height="36px"
+                height="34px"
               />
               {role === roleuser.DISTRICT_ADMIN ? (
                 <EduButton
-                  height="36px"
+                  height="34px"
                   type="primary"
                   onClick={this.showCreateSchoolModal}
                 >
@@ -940,7 +937,7 @@ class SchoolsTable extends React.Component {
                 overlay={actionMenu}
                 trigger={['click']}
               >
-                <EduButton isGhost>
+                <EduButton height="34px" isGhost>
                   {t('common.actions')} <Icon type="down" />
                 </EduButton>
               </StyledActionDropDown>

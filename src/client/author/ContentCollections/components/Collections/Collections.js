@@ -5,8 +5,12 @@ import { EduButton, SearchInputStyled } from '@edulastic/common'
 import ContentSubHeader from '../../../src/components/common/AdminSubHeader/ContentSubHeader'
 import { CollectionsTable } from './CollectionsTable'
 import { PermissionsTable } from './PermissionsTable'
-import { MainContainer, SubHeaderWrapper } from '../../../../common/styled'
-import { TablesWrapper, CollectionSearchHeader } from '../../styled'
+import {
+  LeftFilterDiv,
+  MainContainer,
+  SubHeaderWrapper,
+  TableContainer,
+} from '../../../../common/styled'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import ImportContentModal from '../Modals/ImportContentModal'
 import AddCollectionModal from '../Modals/AddCollectionModal'
@@ -16,6 +20,11 @@ import {
   importingLoaderSelector,
   importTestToCollectionRequestAction,
 } from '../../ducks'
+import {
+  StyledFilterDiv,
+  TableFilters,
+  TabTitle,
+} from '../../../../admin/Common/StyledComponents'
 
 const menuActive = { mainMenu: 'Content', subMenu: 'Collections' }
 
@@ -68,20 +77,29 @@ const Collections = ({
         </EduButton>
       </SubHeaderWrapper>
       <ContentSubHeader active={menuActive} history={history} />
-      <CollectionSearchHeader>
-        <SearchInputStyled
-          height="36px"
-          placeholder="Search by collection name"
-          onChange={handleCollectionSeach}
-          value={searchValue}
-        />
-        {user.role !== 'edulastic-admin' && (
-          <EduButton onClick={() => setAddCollectionModalVisibility(true)}>
-            Add Collection
-          </EduButton>
-        )}
-      </CollectionSearchHeader>
-      <TablesWrapper>
+      <StyledFilterDiv>
+        <TabTitle>{menuActive.subMenu}</TabTitle>
+        <TableFilters>
+          <LeftFilterDiv width={70}>
+            <SearchInputStyled
+              height="34px"
+              placeholder="Search by collection name"
+              onChange={handleCollectionSeach}
+              value={searchValue}
+            />
+            {user.role !== 'edulastic-admin' && (
+              <EduButton
+                height="34px"
+                onClick={() => setAddCollectionModalVisibility(true)}
+              >
+                Add Collection
+              </EduButton>
+            )}
+          </LeftFilterDiv>
+        </TableFilters>
+      </StyledFilterDiv>
+
+      <TableContainer>
         <CollectionsTable
           handlePermissionClick={(data) => setCollection(data)}
           selectedCollection={selectedCollection}
@@ -90,7 +108,7 @@ const Collections = ({
         {!!selectedCollection && (
           <PermissionsTable selectedCollection={selectedCollection} />
         )}
-      </TablesWrapper>
+      </TableContainer>
       <ImportContentModal
         visible={showImportModal}
         handleResponse={handleImportModalResponse}

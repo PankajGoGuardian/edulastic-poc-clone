@@ -8,7 +8,11 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withTheme } from 'styled-components'
-import { StyledFilterDiv } from '../../../../admin/Common/StyledComponents'
+import {
+  StyledFilterDiv,
+  TabTitle,
+  TableFilters,
+} from '../../../../admin/Common/StyledComponents'
 import {
   LeftFilterDiv,
   MainContainer,
@@ -367,32 +371,29 @@ const ContentBucketsTable = ({
       </SubHeaderWrapper>
       <ContentSubHeader active={menuActive} history={history} />
 
-      <StyledFilterDiv
-        style={{
-          marginBottom: '0px',
-          padding: '20px 10px',
-          boxShadow: 'none',
-        }}
-      >
-        <LeftFilterDiv
-          width={user.role === roleuser.EDULASTIC_ADMIN ? 100 : 89}
-        >
-          <SearchInputStyled
-            placeholder={t('common.searchbyname')}
-            onSearch={handleSearchName}
-            marginRight={user.role === roleuser.EDULASTIC_ADMIN ? 0 : 20}
-            height="36px"
-          />
-        </LeftFilterDiv>
-        {user.role !== roleuser.EDULASTIC_ADMIN && (
-          <RightFilterDiv width={12}>
-            <EduButton type="primary" onClick={toggleCreateBucketModal}>
-              {t('content.buckets.createBuckets')}
-            </EduButton>
-          </RightFilterDiv>
-        )}
+      <StyledFilterDiv>
+        <TabTitle>{menuActive.subMenu}</TabTitle>
+        <TableFilters>
+          <LeftFilterDiv
+            width={user.role === roleuser.EDULASTIC_ADMIN ? 100 : 55}
+          >
+            <SearchInputStyled
+              placeholder={t('common.searchbyname')}
+              onSearch={handleSearchName}
+              marginRight={user.role === roleuser.EDULASTIC_ADMIN ? 0 : 20}
+              height="36px"
+            />
+          </LeftFilterDiv>
+          {user.role !== roleuser.EDULASTIC_ADMIN && (
+            <RightFilterDiv>
+              <EduButton type="primary" onClick={toggleCreateBucketModal}>
+                {t('content.buckets.createBuckets')}
+              </EduButton>
+            </RightFilterDiv>
+          )}
+        </TableFilters>
       </StyledFilterDiv>
-      <TableContainer style={{ boxShadow: 'none' }}>
+      <TableContainer>
         <StyledContentBucketsTable
           rowKey={(record) => record._id}
           dataSource={filteredBuckets()}

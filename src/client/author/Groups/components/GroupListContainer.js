@@ -5,7 +5,11 @@ import { roleuser } from '@edulastic/constants'
 // components
 import { Spin } from 'antd'
 import React, { useState } from 'react'
-import { StyledFilterDiv } from '../../../admin/Common/StyledComponents'
+import {
+  StyledFilterDiv,
+  TableFilters,
+  TabTitle,
+} from '../../../admin/Common/StyledComponents'
 import {
   LeftFilterDiv,
   MainContainer,
@@ -114,34 +118,33 @@ const GroupListContainer = ({
       </SubHeaderWrapper>
       <AdminSubHeader active={menuActive} history={history} />
       <StyledFilterDiv>
-        <LeftFilterDiv width={60}>
-          <SearchInputStyled
-            placeholder={t('common.searchbyname')}
-            onSearch={setSearchName}
-            onChange={(e) => setSearchName(e.target.value.toLowerCase())}
-            height="36px"
-          />
-          <EduButton
-            style={{ fontSize: '11px' }}
-            type="primary"
-            onClick={handleCreateGroup}
-          >
-            {t('group.createGroup')}
-          </EduButton>
-        </LeftFilterDiv>
-        <RightFilterDiv width={35}>
-          <CheckboxLabel
-            checked={showActive}
-            onChange={(e) => setShowActive(e.target.checked)}
-          >
-            {t('group.showActive')}
-          </CheckboxLabel>
-          {/* <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
+        <TabTitle>{menuActive.subMenu}</TabTitle>
+        <TableFilters>
+          <LeftFilterDiv width={60}>
+            <SearchInputStyled
+              placeholder={t('common.searchbyname')}
+              onSearch={setSearchName}
+              onChange={(e) => setSearchName(e.target.value.toLowerCase())}
+              height="34px"
+            />
+            <EduButton height="34px" type="primary" onClick={handleCreateGroup}>
+              {t('group.createGroup')}
+            </EduButton>
+          </LeftFilterDiv>
+          <RightFilterDiv>
+            <CheckboxLabel
+              checked={showActive}
+              onChange={(e) => setShowActive(e.target.checked)}
+            >
+              {t('group.showActive')}
+            </CheckboxLabel>
+            {/* <StyledActionDropDown overlay={actionMenu} trigger={["click"]}>
             <Button>
               {t("common.actions")} <Icon type="down" />
             </Button>
           </StyledActionDropDown> */}
-        </RightFilterDiv>
+          </RightFilterDiv>
+        </TableFilters>
       </StyledFilterDiv>
 
       <TableContainer>

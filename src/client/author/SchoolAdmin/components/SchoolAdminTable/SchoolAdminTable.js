@@ -21,6 +21,8 @@ import {
   StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
@@ -729,45 +731,48 @@ class SchoolAdminTable extends Component {
           </FilterWrapper>
         )}
         <StyledFilterDiv>
-          <LeftFilterDiv width={50}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-              data-cy="searchByName"
-            />
-            <EduButton
-              height="36px"
-              type="primary"
-              onClick={this.showCreateSchoolAdminModal}
-              data-cy="addSchoolAdmin"
-            >
-              {t('users.schooladmin.createschooladmin')}
-            </EduButton>
-          </LeftFilterDiv>
-
-          <RightFilterDiv width={40}>
-            <CheckboxLabel
-              checked={this.state.showActive}
-              onChange={this.onChangeShowActive}
-              disabled={
-                !!filtersData.find((item) => item.filtersColumn === 'status')
-              }
-            >
-              {t('common.showcurrent')}
-            </CheckboxLabel>
-            {role === roleuser.DISTRICT_ADMIN ? (
-              <StyledActionDropDown
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                overlay={actionMenu}
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={50}>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+                data-cy="searchByName"
+              />
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.showCreateSchoolAdminModal}
+                data-cy="addSchoolAdmin"
               >
-                <EduButton isGhost>
-                  {t('common.actions')} <Icon type="down" />
-                </EduButton>
-              </StyledActionDropDown>
-            ) : null}
-          </RightFilterDiv>
+                {t('users.schooladmin.createschooladmin')}
+              </EduButton>
+            </LeftFilterDiv>
+
+            <RightFilterDiv>
+              <CheckboxLabel
+                checked={this.state.showActive}
+                onChange={this.onChangeShowActive}
+                disabled={
+                  !!filtersData.find((item) => item.filtersColumn === 'status')
+                }
+              >
+                {t('common.showcurrent')}
+              </CheckboxLabel>
+              {role === roleuser.DISTRICT_ADMIN ? (
+                <StyledActionDropDown
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  overlay={actionMenu}
+                >
+                  <EduButton height="34px" isGhost>
+                    {t('common.actions')} <Icon type="down" />
+                  </EduButton>
+                </StyledActionDropDown>
+              ) : null}
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
         <TableContainer>
           <StyledSchoolAdminTable

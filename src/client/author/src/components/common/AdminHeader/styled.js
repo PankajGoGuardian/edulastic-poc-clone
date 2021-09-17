@@ -39,12 +39,29 @@ export const AdminHeaderContent = styled.div`
   display: flex;
   justify-content: space-evenly;
   align-items: center;
+  flex: 1;
   margin-left: 10px;
   width: 100%;
   .ant-tabs-bar {
     margin: 0px;
   }
 `
+export const MainWrapper = styled.div`
+  .manage-district-headerLeft {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
+`
+
+export const HeaderRightContainer = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+`
+
 export const Title = styled.span`
   display: inline-block;
   font-size: 18px;
@@ -75,14 +92,14 @@ export const StyledTabs = styled(Tabs)`
     width: 500px;
   }
   &.ant-tabs {
-    height: 52px;
-    margin-bottom: -11px;
+    height: 47px;
+    margin-bottom: -17px;
     padding: 1px 0px;
     &.ant-tabs-card {
       .ant-tabs-card-bar {
         border: none;
         .ant-tabs-nav-container {
-          height: 52px;
+          height: 47px;
           .ant-tabs-nav-wrap,
           .ant-tabs-nav-scroll {
             overflow: visible;
@@ -100,7 +117,7 @@ export const StyledTabs = styled(Tabs)`
         }
         .ant-tabs-tab {
           cursor: pointer;
-          padding: 0 12px;
+          padding: 0 20px;
           text-transform: uppercase;
           font-size: 11px;
           font-weight: 600;
@@ -108,7 +125,7 @@ export const StyledTabs = styled(Tabs)`
           box-shadow: none;
           align-items: center;
           justify-content: center;
-          height: 50px;
+          height: 45px;
           border-radius: 0;
           background: #e5e5e5;
           color: #87929b;
@@ -120,7 +137,7 @@ export const StyledTabs = styled(Tabs)`
           &-active {
             background: ${white};
             color: #2f4151;
-            height: 51px;
+            height: 46px;
             margin-bottom: -1px;
             border: 1px solid #2f4151;
             border-bottom-color: ${white};

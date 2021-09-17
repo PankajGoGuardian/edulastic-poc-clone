@@ -1,17 +1,20 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { get } from 'lodash'
-
 // components
 import { MainHeader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconSettings } from '@edulastic/icons'
-import { AdminHeaderContent, StyledTabPane, StyledTabs } from './styled'
-
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
+import { getSchoolAdminSettingsAccess } from '../../../../DistrictPolicy/ducks'
 // ducks
 import { getManageTabLabelSelector, getUserRole } from '../../../selectors/user'
-import { getSchoolAdminSettingsAccess } from '../../../../DistrictPolicy/ducks'
+import {
+  AdminHeaderContent,
+  HeaderRightContainer,
+  StyledTabPane,
+  StyledTabs,
+} from './styled'
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -74,6 +77,7 @@ class AdminHeader extends Component {
         Icon={IconSettings}
         headingText={manageTabLabel}
         mobileHeaderHeight={100}
+        headerLeftClassName="manage-district-headerLeft"
       >
         <AdminHeaderContent>
           <StyledTabs
@@ -86,7 +90,6 @@ class AdminHeader extends Component {
             <StyledTabPane tab={defaultTab} key={defaultKey} />
             <StyledTabPane tab="Administration" key="administration" />
             <StyledTabPane tab="Users" key="users" />
-            <StyledTabPane tab="Subscriptions" key="subscriptions" />
             {enableStudentGroups && <StyledTabPane tab="Groups" key="groups" />}
             {isDA && <StyledTabPane tab="Content" key="content" />}
             {(isDA ||
@@ -94,8 +97,8 @@ class AdminHeader extends Component {
               <StyledTabPane tab="Settings" key="settings" />
             )}
           </StyledTabs>
-          {children}
         </AdminHeaderContent>
+        <HeaderRightContainer>{children}</HeaderRightContainer>
       </MainHeader>
     )
   }

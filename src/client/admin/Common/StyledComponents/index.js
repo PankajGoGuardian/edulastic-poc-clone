@@ -89,7 +89,8 @@ export const TabTitle = styled.h3`
   font-size: 16px;
   font-weight: bold;
   margin: 0px;
-  padding-left: 15px;
+  padding-left: 10px;
+  align-self: center;
 `
 
 export const TableFilters = styled.div`
@@ -236,6 +237,12 @@ export const StyledPagination = styled(Pagination)`
 export const MainWrapper = styled.div`
   display: flex;
   flex-direction: row;
+  .manage-district-headerLeft {
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+  }
 `
 
 export const StyledContent = styled(Content)`

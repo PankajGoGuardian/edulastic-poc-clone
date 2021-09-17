@@ -23,6 +23,8 @@ import {
   StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import { UserFormModal as EditStudentFormModal } from '../../../../common/components/UserFormModal/UserFormModal'
 import {
@@ -863,38 +865,45 @@ class StudentTable extends Component {
         )}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={50}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            <EduButton type="primary" onClick={this.showInviteStudentModal}>
-              + Add Multiple Students
-            </EduButton>
-          </LeftFilterDiv>
-
-          <RightFilterDiv width={40}>
-            <CheckboxLabel
-              checked={this.state.showActive}
-              onChange={this.onChangeShowActive}
-              disabled={
-                !!filtersData.find((item) => item.filtersColumn === 'status')
-              }
-            >
-              {t('common.showcurrent')}
-            </CheckboxLabel>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-              trigger={['click']}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={50}>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+              />
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.showInviteStudentModal}
+              >
+                + Add Multiple Students
               </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+            </LeftFilterDiv>
+
+            <RightFilterDiv>
+              <CheckboxLabel
+                checked={this.state.showActive}
+                onChange={this.onChangeShowActive}
+                disabled={
+                  !!filtersData.find((item) => item.filtersColumn === 'status')
+                }
+              >
+                {t('common.showcurrent')}
+              </CheckboxLabel>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+                trigger={['click']}
+              >
+                <EduButton height="34px" isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
         <TableContainer>
           <StyledStudentTable

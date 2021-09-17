@@ -659,7 +659,7 @@ class ClassesTable extends Component {
             .join(', ')
             .localeCompare(b._source.grades.join(', ')),
         render: (grades) => <span>{grades.join(', ')}</span>,
-        width: 150,
+        width: 100,
       },
       {
         title: t('class.subject'),
@@ -668,7 +668,7 @@ class ClassesTable extends Component {
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a._source.subject.localeCompare(b._source.subject),
         render: (subject) => <span>{subject}</span>,
-        width: 250,
+        width: 120,
       },
       {
         title: t('class.code'),
@@ -677,7 +677,7 @@ class ClassesTable extends Component {
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a._source.code.localeCompare(b._source.code),
         render: (code) => <span>{code}</span>,
-        width: 200,
+        width: 120,
       },
     ]
     if (features.selectCourse) {
@@ -747,7 +747,7 @@ class ClassesTable extends Component {
         render: (active) => <span>{active ? 'Active' : 'Archived'}</span>,
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a._source.active - b._source.active,
-        width: 200,
+        width: 100,
       },
       {
         dataIndex: '_id',
@@ -770,6 +770,7 @@ class ClassesTable extends Component {
             </StyledTableButton>
           </div>
         ),
+        width: 120,
       },
     ]
     const breadcrumbData = [
@@ -951,9 +952,13 @@ class ClassesTable extends Component {
                 placeholder={t('common.searchbyname')}
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
-                height="36px"
+                height="34px"
               />
-              <EduButton type="primary" onClick={this.showAddClassModal}>
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.showAddClassModal}
+              >
                 {t('class.createnewclass')}
               </EduButton>
             </LeftFilterDiv>
@@ -974,7 +979,7 @@ class ClassesTable extends Component {
                 overlay={actionMenu}
                 trigger={['click']}
               >
-                <EduButton isGhost>
+                <EduButton height="34px" isGhost>
                   {t('common.actions')} <Icon type="down" />
                 </EduButton>
               </StyledActionDropDown>

@@ -5,8 +5,10 @@ import { get } from 'lodash'
 
 import {
   MainWrapper,
+  SpinContainer,
   StyledContent,
   StyledLayout,
+  StyledSpin,
 } from '../../../../admin/Common/StyledComponents'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 import Collections from '../Collections/Collections'
@@ -21,6 +23,8 @@ export const Container = ({
   routeKey,
   uploadStatus = '',
   jobIds = [],
+  loading,
+  upserting,
 }) => {
   useEffect(() => {
     if (uploadStatus !== UPLOAD_STATUS.DONE && jobIds.length) {
@@ -28,11 +32,18 @@ export const Container = ({
     }
   }, [])
 
+  const showSpin = loading || upserting
+
   return (
     <MainWrapper key={routeKey}>
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
         <StyledLayout>
+          {showSpin && (
+            <SpinContainer loading={showSpin}>
+              <StyledSpin size="large" />
+            </SpinContainer>
+          )}
           <Collections history={history} />
         </StyledLayout>
       </StyledContent>

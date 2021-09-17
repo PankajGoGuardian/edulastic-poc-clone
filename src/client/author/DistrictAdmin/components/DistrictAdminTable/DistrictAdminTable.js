@@ -15,6 +15,8 @@ import { compose } from 'redux'
 import {
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
   FilterWrapper,
@@ -623,32 +625,35 @@ class DistrictAdminTable extends Component {
         )}
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={60}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-              data-cy="searchByName"
-            />
-            <EduButton
-              type="primary"
-              onClick={this.showCreateDistrictAdminModal}
-            >
-              {t('users.districtadmin.createdistrictadmin')}
-            </EduButton>
-          </LeftFilterDiv>
-          <RightFilterDiv width={35}>
-            <CheckboxLabel
-              checked={this.state.showActive}
-              onChange={this.onChangeShowActive}
-              disabled={
-                !!filtersData.find((item) => item.filtersColumn === 'status')
-              }
-            >
-              {t('common.showcurrent')}
-            </CheckboxLabel>
-          </RightFilterDiv>
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="36px"
+                data-cy="searchByName"
+              />
+              <EduButton
+                type="primary"
+                onClick={this.showCreateDistrictAdminModal}
+              >
+                {t('users.districtadmin.createdistrictadmin')}
+              </EduButton>
+            </LeftFilterDiv>
+            <RightFilterDiv>
+              <CheckboxLabel
+                checked={this.state.showActive}
+                onChange={this.onChangeShowActive}
+                disabled={
+                  !!filtersData.find((item) => item.filtersColumn === 'status')
+                }
+              >
+                {t('common.showcurrent')}
+              </CheckboxLabel>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
         <TableContainer>
           <StyledDistrictAdminTable

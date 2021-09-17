@@ -820,9 +820,13 @@ class ClassEnrollmentTable extends React.Component {
                 placeholder={t('common.searchbyname')}
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
-                height="36px"
+                height="34px"
               />
-              <EduButton type="primary" onClick={this.onOpenaddNewUserModal}>
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.onOpenaddNewUserModal}
+              >
                 {t('classenrollment.addnewuser')}
               </EduButton>
             </LeftFilterDiv>
@@ -838,7 +842,7 @@ class ClassEnrollmentTable extends React.Component {
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 overlay={actionMenu}
               >
-                <EduButton isGhost>
+                <EduButton height="34px" isGhost>
                   {t('common.actions')} <Icon type="down" />
                 </EduButton>
               </StyledActionDropDown>

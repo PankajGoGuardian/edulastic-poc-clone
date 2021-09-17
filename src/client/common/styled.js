@@ -72,7 +72,7 @@ export const SubHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   .ant-breadcrumb {
     @media (max-width: ${extraDesktopWidth}) {
       .ant-breadcrumb-link,

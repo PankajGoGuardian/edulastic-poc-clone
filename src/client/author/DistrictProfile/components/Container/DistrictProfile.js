@@ -19,6 +19,7 @@ import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
 import { receiveSchoolProfileAction } from '../../ducks'
 import { getSchoolAdminSettingsAccess } from '../../../DistrictPolicy/ducks'
 import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import { MainWrapper } from '../../../src/components/common/AdminHeader/styled'
 
 const title = 'Manage District'
 
@@ -135,44 +136,46 @@ class DistrictProfile extends Component {
         actionOnInaccessible="hidden"
       >
         <Layout>
-          <AdminHeader title={title} active={menuActive} history={history}>
-            {(isSAlevelSettingsAccess || role === roleuser.DISTRICT_ADMIN) &&
-              (!isInputEnabled ? (
-                <>
-                  <EduButton
-                    isBlue
-                    type="primary"
-                    onClick={this.handleEditClick}
-                  >
-                    <IconPencilEdit />
-                    Edit
-                  </EduButton>
-                </>
-              ) : (
-                <div style={{ display: 'flex' }}>
-                  <EduButton isBlue isGhost onClick={this.handleEditClick}>
-                    Cancel
-                  </EduButton>
-                  <EduButton
-                    isBlue
-                    type="primary"
-                    onClick={this.handleFormSubmit}
-                  >
-                    <IconSaveNew /> Save
-                  </EduButton>
-                </div>
-              ))}
-          </AdminHeader>
-          <SubHeader>
-            <Spacer />
-            {this.showButtons()}
-          </SubHeader>
-          <StyledLayout>
-            <DistrictProfileForm
-              isInputEnabled={isInputEnabled}
-              wrappedComponentRef={this.saveFormRef}
-            />
-          </StyledLayout>
+          <MainWrapper>
+            <AdminHeader title={title} active={menuActive} history={history}>
+              {(isSAlevelSettingsAccess || role === roleuser.DISTRICT_ADMIN) &&
+                (!isInputEnabled ? (
+                  <>
+                    <EduButton
+                      isBlue
+                      type="primary"
+                      onClick={this.handleEditClick}
+                    >
+                      <IconPencilEdit />
+                      Edit
+                    </EduButton>
+                  </>
+                ) : (
+                  <div style={{ display: 'flex' }}>
+                    <EduButton isBlue isGhost onClick={this.handleEditClick}>
+                      Cancel
+                    </EduButton>
+                    <EduButton
+                      isBlue
+                      type="primary"
+                      onClick={this.handleFormSubmit}
+                    >
+                      <IconSaveNew /> Save
+                    </EduButton>
+                  </div>
+                ))}
+            </AdminHeader>
+            <SubHeader>
+              <Spacer />
+              {this.showButtons()}
+            </SubHeader>
+            <StyledLayout>
+              <DistrictProfileForm
+                isInputEnabled={isInputEnabled}
+                wrappedComponentRef={this.saveFormRef}
+              />
+            </StyledLayout>
+          </MainWrapper>
         </Layout>
       </FeaturesSwitch>
     )

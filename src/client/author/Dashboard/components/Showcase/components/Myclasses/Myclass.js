@@ -389,7 +389,9 @@ const MyClasses = ({
       itemBank?.owner?.toLowerCase().includes('singapore')
     )
 
-  const isCpm = user?.utm_source?.toLowerCase()?.includes('cpm')
+  const isCpm =
+    user?.utm_source?.toLowerCase()?.includes('cpm') ||
+    user?.referrer?.toLowerCase()?.includes('cpm')
 
   const isEureka =
     user?.referrer?.toLowerCase()?.includes('eureka') ||
@@ -473,18 +475,28 @@ const MyClasses = ({
   }
 
   if (isCpm) {
-    filteredBundles = filteredBundles.filter(
-      (feature) =>
-        !feature?.description?.toLowerCase()?.includes('sparkmath') &&
-        !feature?.description?.toLowerCase()?.includes('spark math') &&
-        !feature?.config?.excludedPublishers?.includes('CPM')
-    )
-    bannerSlides = bannerSlides.filter(
-      (banner) =>
-        !banner?.description?.toLowerCase()?.includes('sparkmath') &&
-        !banner?.description?.toLowerCase()?.includes('spark math') &&
-        !banner?.config?.excludedPublishers?.includes('CPM')
-    )
+    if (
+      user?.orgData?.defaultGrades?.length > 0 &&
+      user?.orgData?.defaultSubjects?.length > 0
+    ) {
+      filteredBundles = filteredBundles.filter(
+        (feature) =>
+          !feature?.description?.toLowerCase()?.includes('sparkmath') &&
+          !feature?.description?.toLowerCase()?.includes('spark math') &&
+          !feature?.config?.excludedPublishers?.includes('CPM')
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) =>
+          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+          !banner?.description?.toLowerCase()?.includes('spark math') &&
+          !banner?.config?.excludedPublishers?.includes('CPM')
+      )
+    } else {
+      filteredBundles = filteredBundles.filter(
+        (feature) => feature?.config?.isCPM
+      )
+      bannerSlides = bannerSlides.filter((banner) => banner?.config?.isCPM)
+    }
   }
 
   const handleInAppRedirect = (filters) => {

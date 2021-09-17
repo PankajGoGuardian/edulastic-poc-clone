@@ -21,6 +21,7 @@ const IndividualSubscriptionModal = ({
   shouldProrate,
   subEndDate,
   isEnterprise,
+  isCpm = false,
 }) => {
   const productsToshow = useMemo(() => {
     if (
@@ -69,6 +70,7 @@ const IndividualSubscriptionModal = ({
       footer={Footer}
       shouldProrate={shouldProrate}
       subEndDate={subEndDate}
+      isCpm={isCpm}
     >
       <ProductsList
         showMultiplePurchaseModal={showMultiplePurchaseModal}

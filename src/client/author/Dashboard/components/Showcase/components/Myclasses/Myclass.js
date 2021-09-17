@@ -732,6 +732,7 @@ const MyClasses = ({
         trialAddOnProductIds={trialAddOnProductIds}
         clickedBundleId={clickedBundleId}
         setClickedBundleId={setClickedBundleId}
+        isCpm={isCpm}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal

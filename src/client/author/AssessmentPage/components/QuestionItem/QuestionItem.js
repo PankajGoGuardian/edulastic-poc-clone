@@ -300,9 +300,10 @@ class QuestionItem extends React.Component {
   }
 
   renderAnswerIndicator = (type) => {
-    const {
-      evaluation = get(this.props, 'data.activity.evaluation'),
-    } = this.props
+    let { evaluation } = this.props
+    if (!evaluation) {
+      evaluation = get(this.props, 'data.activity.evaluation')
+    }
 
     if (isUndefined(evaluation) || type === ESSAY_PLAIN_TEXT) {
       return null
@@ -401,6 +402,13 @@ class QuestionItem extends React.Component {
       viewMode === 'report' ||
       previewTab === 'check' ||
       typeof previousFeedback?.[0]?.score !== 'undefined'
+
+    const showAnswerIndicator =
+      (review || testMode) &&
+      !annotations &&
+      (previewMode !== 'clear' || check) &&
+      typeof answer !== 'undefined'
+
     const canShowAnswer = () => {
       if (reportActivity) {
         if (reportActivity?.releaseScore === releaseGradeLabels.WITH_ANSWERS) {
@@ -453,11 +461,7 @@ class QuestionItem extends React.Component {
           )}
 
           {!review && !pdfPreview && !testMode && this.renderEditButton()}
-          {review &&
-            !annotations &&
-            (previewMode !== 'clear' || check) &&
-            typeof answer !== 'undefined' &&
-            this.renderAnswerIndicator(type)}
+          {showAnswerIndicator && this.renderAnswerIndicator(type)}
         </AnswerForm>
         {canShowAnswer() && !annotations && this.renderCorrectAnswer()}
         {!pdfPreview &&

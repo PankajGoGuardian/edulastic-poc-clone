@@ -536,7 +536,7 @@ class QuestionWrapper extends Component {
     ) {
       // for not to overlap tts buttons in testNav skin
       passageRightSpace = {
-        paddingRight: '45px',
+        paddingRight: '60px',
       }
     }
 

@@ -499,6 +499,8 @@ class Assignments extends Component {
           </FlexContainer>
         </Container>
         <ReleaseScoreSettingsModal
+          subText=" Selected score policy will be applied to all the classes within
+        assignment"
           showReleaseGradeSettings={isShowReleaseSettingsPopup}
           onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
           updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}

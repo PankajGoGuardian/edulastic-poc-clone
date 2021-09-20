@@ -97,6 +97,7 @@ export const CORRECT_ITEM_UPDATE_REQUEST =
 export const SET_CORRECT_ITEM_UPDATE_PROGRESS =
   '[testItem] update correct testItem in LCB success'
 export const TOGGLE_REGRADE_MODAL = '[tests] toggle regrade modal in LCB'
+export const SET_SILENT_CLONING = '[testItem] enable silent cloning'
 
 // Tests
 export const RECEIVE_TESTS_REQUEST = '[tests] receive list request'

@@ -48,6 +48,7 @@ import {
   RELOAD_LCB_DATA_IN_STUDENT_VIEW,
   REPLACE_ORIGINAL_ITEM,
   SET_CORRECT_ITEM_UPDATE_PROGRESS,
+  SET_SILENT_CLONING,
 } from '../constants/actions'
 
 export const receiveClassResponseAction = (data) => ({
@@ -287,3 +288,5 @@ export const replaceOriginalItemAction = createAction(REPLACE_ORIGINAL_ITEM)
 export const correctItemUpdateProgressAction = createAction(
   SET_CORRECT_ITEM_UPDATE_PROGRESS
 )
+
+export const setSilentCloningAction = createAction(SET_SILENT_CLONING)

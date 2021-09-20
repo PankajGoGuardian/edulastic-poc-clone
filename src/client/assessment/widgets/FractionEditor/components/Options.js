@@ -95,6 +95,7 @@ const Options = ({
           <SelectInputStyled
             value={fractionType}
             placeholder="Fraction Type"
+            data-cy="fractionModel"
             onChange={handleFractionTypeChange}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
@@ -109,6 +110,7 @@ const Options = ({
             min={1}
             value={fractionProperties.count}
             placeholder="Fraction count"
+            data-cy="fractionCount"
             onBlur={(value) => handleDimensionChange('count', +value)}
           />
         </Col>
@@ -136,6 +138,7 @@ const Options = ({
               size="default"
               value={fractionProperties.rows}
               placeholder="Rows"
+              data-cy="rows"
               onBlur={(value) => handleDimensionChange('rows', +value)}
               min={1}
             />
@@ -147,6 +150,7 @@ const Options = ({
               size="default"
               value={fractionProperties.columns}
               placeholder="Columns"
+              data-cy="columns"
               onBlur={(value) => handleDimensionChange('columns', +value)}
               min={1}
             />

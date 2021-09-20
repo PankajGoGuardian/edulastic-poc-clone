@@ -248,14 +248,15 @@ export default class API {
             return
           }
           const { user = {} } = currentUserFromRedux || {}
-          const { currentDistrictId = '', orgData = {} } = user
+          const { orgData = {} } = user
           const { districts = [] } = orgData
           const currentDistrictName = districts.find(
-            (x) => x.districtId === currentDistrictId
+            (x) => x.districtId === districtIdFromToken
           ).districtName
           // debouncing to prevent concurrent apis to be interpreted as repeated reloads
           debounce(addReloadedEntryToSession, 700)()
           notification({
+            className: 'showOne-notification customized-notification',
             type: 'info',
             msg: `We are switching you to ${currentDistrictName} as you can login to only one district at a time`,
           })

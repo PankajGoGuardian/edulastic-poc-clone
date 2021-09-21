@@ -248,12 +248,12 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
     itemBankPermissions.forEach((permissions) => {
       const { name, subEndDate } = permissions
       const [pFirstName, pSecondName] = name.split(' ')
-      const productName = `${pFirstName[0]}${pSecondName}`
+      let productName = `${pFirstName[0]}${pSecondName}`
       let eventName = `order ${productName.toLowerCase()} ${eventType}`
       if (name.split(' ').length === 1) {
-        eventName = `order ${pFirstName.toLowerCase()} ${eventType}`
+        productName = `${pFirstName.toLowerCase()}`
+        eventName = `order ${productName.toLowerCase()} ${eventType}`
       }
-
       const data = {
         event: eventName,
         [`${productName}_status`]: eventType,

@@ -133,7 +133,6 @@ class AssignTest extends React.Component {
       userId,
       userFeatures: { premium },
       fetchUserCustomKeypads,
-      setCurrentTestSettingsId,
       location,
       addRecommendedResourcesAction,
     } = this.props
@@ -146,7 +145,6 @@ class AssignTest extends React.Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-
     resetStudents()
 
     const { testId } = match.params
@@ -168,7 +166,6 @@ class AssignTest extends React.Component {
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
       })
-      setCurrentTestSettingsId(testSettings.settingId || '')
     }
 
     const isAdmin =
@@ -249,6 +246,7 @@ class AssignTest extends React.Component {
       testSettings: {
         playerSkinType: prevPlayerSkinType,
         settingId: prevSettingId,
+        testSettingsList: prevTestSettingsList,
       },
     } = prevProps
     // the initial playerSkinType in reducer is edulastic,
@@ -257,13 +255,15 @@ class AssignTest extends React.Component {
     if (playerSkinType !== prevPlayerSkinType) {
       this.updateAssignmentNew({ playerSkinType })
     }
+    const isSettingsListFetchedNow =
+      !prevTestSettingsList?.length && testSettingsList?.length
+
     if (
       premium &&
-      settingId &&
-      settingId != prevSettingId &&
-      testSettingsList?.some((t) => t._id === settingId)
+      (settingId != prevSettingId || isSettingsListFetchedNow) &&
+      (testSettingsList?.some((t) => t._id === settingId) || !settingId)
     ) {
-      setCurrentTestSettingsId(settingId)
+      setCurrentTestSettingsId(settingId || '')
     }
   }
 

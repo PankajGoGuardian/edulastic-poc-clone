@@ -67,7 +67,9 @@ const ConfigureCanvasModal = ({
         msg: 'Please fill all the required fields',
       })
     const data = {
-      ...canvasConfigureData,
+      canvasConsumerKey: canvasConfigureData.canvasConsumerKey.trim(),
+      canvasInstanceUrl: canvasConfigureData.canvasInstanceUrl.trim(),
+      canvasSharedSecret: canvasConfigureData.canvasSharedSecret.trim(),
       orgId,
       orgType,
       id: districtPolicyId,

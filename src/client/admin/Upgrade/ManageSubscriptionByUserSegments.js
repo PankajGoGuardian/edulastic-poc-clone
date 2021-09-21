@@ -39,6 +39,46 @@ const ManageSubscriptionByUserSegments = Form.create({
     const { subStartDate, subEndDate } = subscription || partialPremiumData
     const [districtIdInput, setDistrictId] = useState()
     const [schoolIdInput, setSchoolId] = useState()
+
+    const handleSearch = (e) => {
+      e?.preventDefault?.()
+      validateFields(
+        ['schoolId', 'districtId'],
+        (err, { districtId: districtIdValue, schoolId: schoolIdValue }) => {
+          if (districtIdValue || schoolIdValue) {
+            if (
+              districtIdInput !== districtIdValue ||
+              schoolIdValue !== schoolIdInput
+            ) {
+              getSubscriptionAction({
+                districtId: districtIdValue,
+                schoolId: schoolIdValue,
+              })
+            }
+            setDistrictId(districtIdValue)
+            setSchoolId(schoolIdValue)
+          }
+          if (
+            !err &&
+            ((districtIdValue && schoolIdValue) ||
+              (!districtIdValue && !schoolIdValue))
+          ) {
+            const errorMessage = 'either district or school id is required'
+            setFields({
+              districtId: {
+                value: districtIdValue,
+                errors: [new Error(errorMessage)],
+              },
+              schoolId: {
+                value: schoolIdValue,
+                errors: [new Error(errorMessage)],
+              },
+            })
+          }
+        }
+      )
+    }
+
     const handleSubmit = (evt) => {
       validateFields(
         (
@@ -180,7 +220,7 @@ const ManageSubscriptionByUserSegments = Form.create({
             initialValue: '',
           })(
             <Input.Search
-              onSearch={handleSubmit}
+              onSearch={handleSearch}
               placeholder="District ID"
               style={{ width: 300 }}
             />
@@ -198,7 +238,7 @@ const ManageSubscriptionByUserSegments = Form.create({
             initialValue: '',
           })(
             <Input.Search
-              onSearch={handleSubmit}
+              onSearch={handleSearch}
               placeholder="School ID"
               style={{ width: 300 }}
             />

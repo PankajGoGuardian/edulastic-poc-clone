@@ -1230,11 +1230,11 @@ const FormItemWrapper = styled(FormItem)`
   }
 `
 
-const TitleSelect = styled(Select)`
+export const TitleSelect = styled(Select)`
   min-width: 100px;
 `
 
-const InputItemWrapper = styled(FormItem)`
+export const InputItemWrapper = styled(FormItem)`
   width: 50%;
   display: inline-block;
   margin-bottom: 0 !important;
@@ -1274,7 +1274,7 @@ const FormButtonWrapper = styled.div`
   }
 `
 
-const EditProfileButton = styled(EduButton)`
+export const EditProfileButton = styled(EduButton)`
   margin-left: 15px;
   font-size: 10px;
   float: right;
@@ -1294,7 +1294,7 @@ const EditProfileButton = styled(EduButton)`
   }
 `
 
-const DeleteAccountButton = styled(EditProfileButton)`
+export const DeleteAccountButton = styled(EditProfileButton)`
   background: ${white} !important;
   border: 1px solid ${red} !important;
   color: ${red} !important;
@@ -1316,15 +1316,15 @@ const SelectSetsButton = styled(EditProfileButton)`
 
 const SaveStandardSetsBtn = styled(SelectSetsButton)`
   margin: 5px 0px 5px 15px;
-  :hover{
-    color ${themeColor};
+  &:hover {
+    color: ${themeColor};
   }
 `
 
 const SaveDefaultSettingsBtn = styled(SelectSetsButton)`
   margin: 5px 0px 5px 15px;
-  :hover{
-    color ${themeColor};
+  &:hover {
+    color: ${themeColor};
   }
 `
 

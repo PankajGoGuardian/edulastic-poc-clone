@@ -249,8 +249,13 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
       const { name, subEndDate } = permissions
       const [pFirstName, pSecondName] = name.split(' ')
       const productName = `${pFirstName[0]}${pSecondName}`
+      let eventName = `order ${productName.toLowerCase()} ${eventType}`
+      if (name.split(' ').length === 1) {
+        eventName = `order ${pFirstName.toLowerCase()} ${eventType}`
+      }
+
       const data = {
-        event: `order ${productName.toLowerCase()} ${eventType}`,
+        event: eventName,
         [`${productName}_status`]: eventType,
         [`${productName}_purchase_date`]: purchaseDate,
         [`${productName}_expiry_date`]: new Date(subEndDate),

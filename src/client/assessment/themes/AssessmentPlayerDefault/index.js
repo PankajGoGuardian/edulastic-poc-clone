@@ -56,6 +56,7 @@ import {
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
 import UserWorkUploadModal from '../../components/UserWorkUploadModal'
+import ReferenceDocModal from '../common/ReferenceDocModal'
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -360,6 +361,9 @@ class AssessmentPlayerDefault extends React.Component {
       gotoSummary,
       isShowStudentWork,
       handleReviewOrSubmit,
+      openReferenceModal,
+      isShowReferenceModal,
+      referenceDocAttributes,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -544,6 +548,8 @@ class AssessmentPlayerDefault extends React.Component {
             calcBrands={calcBrands}
             tool={currentToolMode}
             changeCaculateMode={this.handleModeCaculate}
+            openReferenceModal={openReferenceModal}
+            isShowReferenceModal={isShowReferenceModal}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}
@@ -739,6 +745,9 @@ class AssessmentPlayerDefault extends React.Component {
               onUploadFinished={this.saveUserWorkAttachments}
               cameraImageName={cameraImageName}
             />
+            {isShowReferenceModal && referenceDocAttributes && (
+              <ReferenceDocModal attributes={referenceDocAttributes} />
+            )}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

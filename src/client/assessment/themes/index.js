@@ -552,6 +552,7 @@ const AssessmentContainer = ({
   showMagnifier,
   updateTestPlayer,
   enableMagnifier,
+  isShowReferenceModal,
   studentReportModal,
   hideHints,
   demo,
@@ -680,8 +681,8 @@ const AssessmentContainer = ({
 
   useEffect(() => {
     setCurrentItem(Number(qid))
-    if (enableMagnifier) {
-      updateTestPlayer({ enableMagnifier: false })
+    if (enableMagnifier || isShowReferenceModal) {
+      updateTestPlayer({ enableMagnifier: false, isShowReferenceModal: false })
     }
   }, [qid])
 
@@ -884,6 +885,7 @@ const AssessmentContainer = ({
         }
       } else {
         if (!enableSkipAlert) {
+          // eslint-disable-next-line
           return silentSkip({ index, context })
         }
         setUnansweredPopupSetting({
@@ -911,6 +913,7 @@ const AssessmentContainer = ({
         })
       } else {
         if (!enableSkipAlert) {
+          // eslint-disable-next-line
           return silentSkip({ index, context })
         }
         setUnansweredPopupSetting({
@@ -937,6 +940,7 @@ const AssessmentContainer = ({
       const unansweredQs = getUnAnsweredQuestions()
       if (unansweredQs.length && !needsToProceed) {
         if (!enableSkipAlert) {
+          // eslint-disable-next-line
           return silentSkip({
             index: Number(currentItem),
             context: value,
@@ -976,6 +980,7 @@ const AssessmentContainer = ({
         })
       } else {
         if (!enableSkipAlert) {
+          // eslint-disable-next-line
           return silentSkip({
             index: Number(currentItem) + 1,
             context: 'next',
@@ -992,8 +997,8 @@ const AssessmentContainer = ({
         })
       }
     }
-    if (enableMagnifier) {
-      updateTestPlayer({ enableMagnifier: false })
+    if (enableMagnifier || isShowReferenceModal) {
+      updateTestPlayer({ enableMagnifier: false, isShowReferenceModal: false })
     }
   }
 
@@ -1019,8 +1024,8 @@ const AssessmentContainer = ({
   const moveToPrev = (e, needsToProceed = false) => {
     if (!isFirst())
       gotoQuestion(Number(currentItem) - 1, needsToProceed, 'prev')
-    if (enableMagnifier) {
-      updateTestPlayer({ enableMagnifier: false })
+    if (enableMagnifier || isShowReferenceModal) {
+      updateTestPlayer({ enableMagnifier: false, isShowReferenceModal: false })
     }
   }
 
@@ -1117,6 +1122,8 @@ const AssessmentContainer = ({
     (x) => x.type === questionType.HIGHLIGHT_IMAGE
   )
 
+  const { referenceDocAttributes } = test || {}
+
   const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows])
 
   useInterval(() => {
@@ -1168,6 +1175,11 @@ const AssessmentContainer = ({
 
   const handleMagnifier = () =>
     updateTestPlayer({ enableMagnifier: !enableMagnifier })
+
+  const openReferenceModal = () => {
+    updateTestPlayer({ isShowReferenceModal: !isShowReferenceModal })
+  }
+
   const props = {
     saveCurrentAnswer,
     items,
@@ -1199,6 +1211,9 @@ const AssessmentContainer = ({
     showMagnifier,
     handleMagnifier,
     enableMagnifier,
+    openReferenceModal,
+    isShowReferenceModal,
+    referenceDocAttributes,
     studentReportModal,
     hasDrawingResponse,
     questions: questionsById,
@@ -1414,6 +1429,7 @@ const enhance = compose(
       testSettings: state.test?.settings,
       showMagnifier: state.test.showMagnifier,
       enableMagnifier: state.testPlayer.enableMagnifier,
+      isShowReferenceModal: state.testPlayer.isShowReferenceModal,
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),

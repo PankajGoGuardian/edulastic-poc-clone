@@ -1109,6 +1109,19 @@ export const getYoutubeId = (url, opts) => {
   return null
 }
 
+export const formatFileSize = (size) => {
+  if (size < 1024) {
+    return `${size} Byte`
+  }
+  if (size >= 1024 && size < 1024 * 1024) {
+    return `${round(size / 1024, 2)} KB`
+  }
+  if (size >= 1024 * 1024) {
+    return `${round(size / 1024 / 1024, 2)} MB`
+  }
+  return `${round(size / 1024 / 1024 / 1024, 2)} GB`
+}
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1140,4 +1153,5 @@ export default {
   hasMediaDevice,
   removeTokenFromHtml,
   getYoutubeId,
+  formatFileSize,
 }

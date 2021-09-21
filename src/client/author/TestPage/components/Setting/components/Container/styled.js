@@ -14,6 +14,7 @@ import {
   backgroundGrey,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
+import { IconClose } from '@edulastic/icons'
 import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
 import styled from 'styled-components'
 import { SavedSettingsContainer } from '../../../../../AssignTest/components/Container/styled'
@@ -401,4 +402,20 @@ export const SubHeaderContainer = styled.div`
   padding-bottom: 15px;
   display: flex;
   align-items: center;
+`
+
+export const UploadInput = styled.input`
+  display: none;
+`
+
+export const FileName = styled.span`
+  color: ${themeColor};
+  font-size: 13px;
+  font-weight: 600;
+  margin: 0px 24px;
+`
+
+export const CloseIcon = styled(IconClose)`
+  fill: ${linkColor1};
+  margin-left: 24px;
 `

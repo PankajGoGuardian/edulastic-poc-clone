@@ -669,7 +669,7 @@ export const getTestDefaultSettingsSelector = createSelector(
 
 export const getTestSettingsListSelector = createSelector(
   stateSelector,
-  (state) => state.savedTestSettingsList
+  (state) => state.savedTestSettingsList || []
 )
 
 export const getTestStatusSelector = createSelector(
@@ -1056,6 +1056,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         entity: {
           ...payload.entity,
+          settingId: payload.entity.settingId || '',
         },
         updated: state.createdItems.length > 0,
       }

@@ -9,15 +9,15 @@ import {
   SelectInputStyled,
   DatePickerStyled,
   TextInputStyled,
-  // CheckboxLabel,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { test as testContants } from '@edulastic/constants'
-import { Col, Row, Select /* Tooltip */ } from 'antd'
+import { Col, Row, Select, Tooltip } from 'antd'
 import { some, get } from 'lodash'
 import moment from 'moment'
 import React, { useCallback, useEffect, useState } from 'react'
 import { connect } from 'react-redux'
-// import { IconInfo } from '@edulastic/icons'
+import { IconInfo } from '@edulastic/icons'
 import { getRedirectEndDate, getUserName } from '../utils'
 import { BodyContainer } from './styled'
 import { getIsSpecificStudents } from '../ducks'
@@ -90,7 +90,7 @@ const RedirectPopUp = ({
   const [allowedTime, setAllowedTime] = useState(
     additionalData.allowedTime || 1
   )
-  // const [changeAlgo, setChangeAlgo] = useState(false)
+  const [changeAlgo, setChangeAlgo] = useState(false)
   useEffect(() => {
     const setRedirectStudents = {}
     if (type === 'absentStudents') {
@@ -146,7 +146,7 @@ const RedirectPopUp = ({
           timedAssignment: additionalData.timedAssignment,
           allowedTime,
           pauseAllowed: !!additionalData.pauseAllowed,
-          // changeAlgo,
+          changeAlgo,
         }
         if (additionalData.dueDate) {
           redirectAssignment.dueDate = dueDate.valueOf()
@@ -177,7 +177,7 @@ const RedirectPopUp = ({
     endDate,
     groupId,
     showPrevAttempt,
-    // changeAlgo,
+    changeAlgo,
     qDeliveryState,
     dueDate,
     allowedTime,
@@ -384,7 +384,7 @@ const RedirectPopUp = ({
                 <span>&nbsp;minutes</span>
               </Col>
             ) : null}
-            {/* <Col span={12}>
+            <Col span={12}>
               <CheckboxLabel
                 onChange={() => setChangeAlgo(!changeAlgo)}
                 value={changeAlgo}
@@ -395,7 +395,6 @@ const RedirectPopUp = ({
                 </Tooltip>
               </CheckboxLabel>
             </Col>
-            */}
           </Row>
         )}
       </BodyContainer>

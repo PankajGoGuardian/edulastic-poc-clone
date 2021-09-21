@@ -107,6 +107,7 @@ import {
 } from './styled'
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
+import { slice } from '../../../LCBAssignmentSettings/ducks'
 
 const {
   POLICY_OPEN_MANUALLY_BY_TEACHER,
@@ -122,6 +123,7 @@ const classViewRoutesByActiveTabName = {
   classboard: 'classboard',
   expressgrader: 'expressgrader',
   standard_report: 'standardsBasedReport',
+  settings: 'lcb/settings',
 }
 class ClassHeader extends Component {
   constructor(props) {
@@ -144,13 +146,18 @@ class ClassHeader extends Component {
       studentUnselectAll,
       resetView,
       active,
+      loadAssignment,
     } = this.props
     const { assignmentId } = match.params
     if (match.params.classId === classId) return
     if (active === 'classboard') {
       resetView('Both')
     }
-    loadTestActivity(assignmentId, classId)
+    if (active === 'settings') {
+      loadAssignment({ assignmentId, classId })
+    } else {
+      loadTestActivity(assignmentId, classId)
+    }
     studentUnselectAll()
   }
 
@@ -1129,6 +1136,7 @@ const enhance = compose(
       canvasSyncAssignment: canvasSyncAssignmentAction,
       schoologySyncAssignment: schoologySyncAssignmentAction,
       schoologySyncAssignmentGrades: schoologySyncAssignmentGradesAction,
+      loadAssignment: slice.actions.loadAssignment,
     }
   )
 )

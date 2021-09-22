@@ -811,7 +811,7 @@ const withConnect = connect(
       []
     ),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, {
-      isQuestionView: ownProps.isQuestionView,
+      showMultipleAttempts: ownProps.isLCBView && !ownProps.isQuestionView,
       studentId: ownProps.currentStudent.studentId,
     }),
     userWork: get(state, ['userWork', 'present'], {}),

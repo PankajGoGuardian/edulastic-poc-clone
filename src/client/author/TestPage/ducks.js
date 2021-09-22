@@ -2396,7 +2396,9 @@ function* updateTestDocBasedSaga({ payload }) {
       })
       if (Object.keys(versionedQIdMap).length) {
         payload.data.annotations.forEach((annotation) => {
-          annotation.questionId = versionedQIdMap[annotation.questionId]
+          if (versionedQIdMap[annotation.questionId]) {
+            annotation.questionId = versionedQIdMap[annotation.questionId]
+          }
         })
       }
     }

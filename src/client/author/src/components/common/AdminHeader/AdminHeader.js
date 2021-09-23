@@ -8,7 +8,11 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { getSchoolAdminSettingsAccess } from '../../../../DistrictPolicy/ducks'
 // ducks
-import { getManageTabLabelSelector, getUserRole } from '../../../selectors/user'
+import {
+  getManageTabLabelSelector,
+  getUserRole,
+  isOrganizationDistrictSelector,
+} from '../../../selectors/user'
 import {
   AdminHeaderContent,
   HeaderRightContainer,
@@ -23,7 +27,7 @@ class AdminHeader extends Component {
   }
 
   onHeaderTabClick = (key) => {
-    const { history, role } = this.props
+    const { history, role, isOrganizationDistrictAdmin } = this.props
     // eslint-disable-next-line default-case
     switch (key) {
       case 'administration':
@@ -32,6 +36,9 @@ class AdminHeader extends Component {
       case 'users':
         if (role === 'district-admin' || role === 'school-admin') {
           history.push(`/author/users/teacher`)
+        }
+        if (isOrganizationDistrictAdmin) {
+          history.push(`/author/users/district-admin`)
         }
         return
       case 'settings':
@@ -110,6 +117,7 @@ export default connect(
     schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
     manageTabLabel: getManageTabLabelSelector(state),
     enableStudentGroups: get(state, 'user.user.features.studentGroups'),
+    isOrganizationDistrictAdmin: isOrganizationDistrictSelector(state),
   }),
   {}
 )(AdminHeader)

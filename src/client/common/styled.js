@@ -155,8 +155,7 @@ export const StyledButton = styled(Button)`
 export const FilterWrapper = styled.div`
   background: ${(props) => props.theme.manageDistrict.filterDivBgcolor};
   border-radius: ${(props) => props.theme.manageDistrict.filterDivBorderRadius};
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 10px 10px 0px;
 `
 
 export const StyledTable = styled(Table)`
@@ -341,7 +340,7 @@ export const RightFilterDiv = styled.div`
   width: ${(props) => (props.width ? `${props.width}%` : 'auto')};
   justify-content: flex-end;
   align-items: center;
-  margin-left: 15px;
+  margin-left: 10px;
   .ant-checkbox-wrapper {
     .ant-checkbox + span {
       font-size: 10px;

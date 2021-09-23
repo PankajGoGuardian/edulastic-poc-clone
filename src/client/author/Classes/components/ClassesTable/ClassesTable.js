@@ -7,17 +7,21 @@ import {
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconNotes, IconPencilEdit, IconTrash } from '@edulastic/icons'
+import {
+  IconFilter,
+  IconNotes,
+  IconPencilEdit,
+  IconTrash,
+} from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Icon, Menu, Row, Select } from 'antd'
-import { get, isEmpty } from 'lodash'
+import { Col, Icon, Menu, Select } from 'antd'
 import { produce } from 'immer'
+import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
-import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
 import {
   StyledActionDropDown,
   StyledClassName,
@@ -25,12 +29,11 @@ import {
   TableFilters,
   TabTitle,
 } from '../../../../admin/Common/StyledComponents'
+import { StyledRow } from '../../../../admin/Common/StyledComponents/settingsContent'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
@@ -40,13 +43,21 @@ import {
   getCoursesForDistrictSelector,
   receiveSearchCourseAction,
 } from '../../../Courses/ducks'
-import UpdateCoTeacher from '../../../ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 import AddCoTeacher from '../../../ManageClass/components/ClassDetails/AddCoTeacher/AddCoTeacher'
+import UpdateCoTeacher from '../../../ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
+import {
+  getAddCoTeacherModalVisibleStateSelector,
+  getManageCoTeacherModalVisibleStateSelector,
+  showAddCoTeacherModalAction,
+  showUpdateCoTeacherModalAction,
+} from '../../../ManageClass/ducks'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
 } from '../../../Schools/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -64,6 +75,7 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import {
+  addCoTeacherToGroupsAction,
   bulkUpdateClassesAction,
   createClassAction,
   deleteClassAction,
@@ -74,19 +86,12 @@ import {
   setBulkEditUpdateViewAction,
   setBulkEditVisibilityAction,
   updateClassAction,
-  addCoTeacherToGroupsAction,
 } from '../../ducks'
 import AddClassModal from './AddClassModal/AddClassModal'
 import ArchiveClassModal from './ArchiveClassModal/ArchiveClassModal'
 import BulkEditModal from './BulkEditModal'
 import EditClassModal from './EditClassModal/EditClassModal'
 import { ClassTable, TeacherSpan } from './styled'
-import {
-  getManageCoTeacherModalVisibleStateSelector,
-  showUpdateCoTeacherModalAction,
-  getAddCoTeacherModalVisibleStateSelector,
-  showAddCoTeacherModalAction,
-} from '../../../ManageClass/ducks'
 
 const { Option } = Select
 
@@ -841,7 +846,7 @@ class ClassesTable extends Component {
       }
 
       SearchRows.push(
-        <Row gutter={20} style={{ marginbottom: '5px' }}>
+        <StyledRow mb="5px" gutter={20}>
           <Col span={6}>
             <SelectInputStyled
               placeholder={t('common.selectcolumn')}
@@ -923,31 +928,30 @@ class ClassesTable extends Component {
               </EduButton>
             )}
           </Col>
-        </Row>
+        </StyledRow>
       )
     }
     return (
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader count={count} active={menuActive} history={history} />
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
           <TabTitle>{menuActive.subMenu}</TabTitle>
           <TableFilters>
             <LeftFilterDiv width={55}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
+              </EduButton>
               <SearchInputStyled
                 placeholder={t('common.searchbyname')}
                 onSearch={this.handleSearchName}
@@ -986,6 +990,9 @@ class ClassesTable extends Component {
             </RightFilterDiv>
           </TableFilters>
         </StyledFilterDiv>
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
         <TableContainer>
           <ClassTable
             rowKey={(record) => record._id}

@@ -10,7 +10,7 @@ import {
   SelectInputStyled,
 } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Icon, Menu, Row, Select } from 'antd'
 import { get } from 'lodash'
@@ -19,7 +19,6 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
-import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
 import {
   StyledActionDropDown,
   StyledClassName,
@@ -28,17 +27,17 @@ import {
   TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer,
 } from '../../../../common/styled'
 import { receiveAdminDataAction } from '../../../SchoolAdmin/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 import {
   createCourseAction,
@@ -767,24 +766,23 @@ class CoursesTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader count={count} active={menuActive} history={history} />
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
           <TabTitle>{menuActive.subMenu}</TabTitle>
           <TableFilters>
-            <LeftFilterDiv width={50}>
+            <LeftFilterDiv width={55}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
+              </EduButton>
               <SearchInputStyled
                 placeholder={t('common.searchbyname')}
                 onSearch={this.handleSearchName}
@@ -818,6 +816,9 @@ class CoursesTable extends React.Component {
             </RightFilterDiv>
           </TableFilters>
         </StyledFilterDiv>
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
         <TableContainer>
           <StyledCoursesTable
             rowSelection={rowSelection}

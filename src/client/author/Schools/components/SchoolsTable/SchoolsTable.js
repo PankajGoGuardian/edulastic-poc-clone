@@ -7,7 +7,7 @@ import {
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Form, Icon, Menu, Row, Select } from 'antd'
 import { get } from 'lodash'
@@ -24,11 +24,9 @@ import {
   TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
@@ -58,6 +56,7 @@ import {
   StyledSortIcon,
   StyledSortIconDiv,
 } from './styled'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
 
 const menuActive = { mainMenu: 'Administration', subMenu: 'schools' }
 
@@ -896,25 +895,23 @@ class SchoolsTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            isGhost
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader count={count} active={menuActive} history={history} />
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
 
         <StyledFilterDiv>
           <TabTitle>{menuActive.subMenu}</TabTitle>
           <TableFilters>
             <LeftFilterDiv width={55}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
+              </EduButton>
               <SearchInputStyled
                 placeholder={t('common.searchbyname')}
                 onSearch={this.handleSearchName}
@@ -931,7 +928,7 @@ class SchoolsTable extends React.Component {
                 </EduButton>
               ) : null}
             </LeftFilterDiv>
-            <RightFilterDiv width={15}>
+            <RightFilterDiv>
               <StyledActionDropDown
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 overlay={actionMenu}
@@ -944,6 +941,10 @@ class SchoolsTable extends React.Component {
             </RightFilterDiv>
           </TableFilters>
         </StyledFilterDiv>
+
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
 
         <TableContainer>
           <StyledSchoolTable

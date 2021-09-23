@@ -1,4 +1,4 @@
-import { mobileWidthMax, title } from '@edulastic/colors'
+import { greyThemeDark1, mobileWidthMax, title } from '@edulastic/colors'
 import { IconLogoCompact } from '@edulastic/icons'
 import {
   Button as AntdButton,
@@ -275,4 +275,12 @@ export const StyledSpin = styled(Spin)`
   left: 50%;
   top: 35%;
   transform: translate(-50%, -50%);
+`
+
+export const StyledDiv = styled.div`
+  display: inline;
+  text-align: left;
+  font: ${(props) => props.fontStyle || '14px/19px Open Sans'};
+  font-weight: ${(props) => props.fontWeight || 600};
+  color: ${(props) => props.color || greyThemeDark1};
 `

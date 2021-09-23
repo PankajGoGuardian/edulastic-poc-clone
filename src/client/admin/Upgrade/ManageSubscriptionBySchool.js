@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Form, Button, DatePicker, Input, Select, Row } from 'antd'
+import { Form, Button, DatePicker, Input, Select, Row, Checkbox } from 'antd'
 import moment from 'moment'
 import { IconEdit } from '@edulastic/icons'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
@@ -108,6 +108,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       subStartDate: editedStartDate,
       subEndDate: editedEndDate,
       notes: editedNotes,
+      adminPremium: editedAdminPremium,
     },
     setEditableRowFieldValues,
   }) => {
@@ -126,17 +127,20 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
     }, [firstSchoolSubType])
 
     const handleSubmit = (evt) => {
-      validateFields((err, { subStartDate, subEndDate, notes, subType }) => {
-        if (!err) {
-          bulkSchoolsSubscribeAction({
-            subStartDate: subStartDate.valueOf(),
-            subEndDate: subEndDate.valueOf(),
-            notes,
-            schoolIds: selectedSchools,
-            subType,
-          })
+      validateFields(
+        (err, { subStartDate, subEndDate, notes, subType, adminPremium }) => {
+          if (!err) {
+            bulkSchoolsSubscribeAction({
+              subStartDate: subStartDate.valueOf(),
+              subEndDate: subEndDate.valueOf(),
+              notes,
+              schoolIds: selectedSchools,
+              subType,
+              ...(subType === 'partial_premium' ? { adminPremium } : {}),
+            })
+          }
         }
-      })
+      )
       evt.preventDefault()
     }
 
@@ -173,6 +177,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           notes: editedNotes,
           schoolIds: [schoolId],
           subType: subTypeParam,
+          adminPremium: editedAdminPremium,
         })
       }
 
@@ -182,13 +187,14 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           setPartialPremiumDataAction(record)
           changeTab(manageByUserSegmentTabKey)
         } else {
-          const { subEndDate, subStartDate, notes } = subscription
+          const { subEndDate, subStartDate, notes, adminPremium } = subscription
           updateCurrentEditableRow({
             schoolId,
             subEndDate,
             subStartDate,
             notes,
             subType,
+            adminPremium,
           })
         }
       }
@@ -276,6 +282,24 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
       ) : (
         renderSubscriptionType(subscription)
       )
+
+    const renderUpgradeDA = (adminPremium, record) =>
+      record.schoolId === currentEditableRow ? (
+        <Checkbox
+          value={editedAdminPremium}
+          onChange={(evt) =>
+            setEditableRowFieldValues({
+              fieldName: 'adminPremium',
+              value: evt.target.value,
+            })
+          }
+        />
+      ) : adminPremium ? (
+        'Yes'
+      ) : (
+        'No'
+      )
+
     const noOfSelectedSchools = selectedSchools.length
 
     return (
@@ -311,6 +335,12 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             dataIndex="subscription.notes"
             key="notes"
             render={renderNotes}
+          />
+          <Column
+            title="Upgrade DA"
+            dataIndex="subscription.adminPremium"
+            key="adminPremium"
+            render={renderUpgradeDA}
           />
           <Column
             title="Plan"
@@ -373,6 +403,13 @@ const BulkSubscribeForm = ({
       )}
     </Form.Item>
     <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
+    <Form.Item>
+      {getFieldDecorator('adminPremium', { valuePropName: 'checked' })(
+        <Checkbox>
+          <strong>Upgrade DAs</strong>
+        </Checkbox>
+      )}
+    </Form.Item>
     <Form.Item>
       <Button disabled={disabled} type="primary" htmlType="submit">
         {ctaText}

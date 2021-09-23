@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Button as AntdButton, Select, Input } from 'antd'
+import { Form, Button as AntdButton, Select, Input, Checkbox } from 'antd'
 import moment from 'moment'
 import { IconAddItems, IconTrash } from '@edulastic/icons'
 import { notification } from '@edulastic/common'
@@ -36,7 +36,8 @@ const ManageSubscriptionByUserSegments = Form.create({
       notes,
       subscription,
     } = partialPremiumData
-    const { subStartDate, subEndDate } = subscription || partialPremiumData
+    const { subStartDate, subEndDate, adminPremium } =
+      subscription || partialPremiumData
     const [districtIdInput, setDistrictId] = useState()
     const [schoolIdInput, setSchoolId] = useState()
     const handleSubmit = (evt) => {
@@ -44,6 +45,7 @@ const ManageSubscriptionByUserSegments = Form.create({
         (
           err,
           {
+            adminPremium: adminPremiumValue,
             districtId: districtIdValue,
             schoolId: schoolIdValue,
             subStartDate: startDate,
@@ -81,6 +83,7 @@ const ManageSubscriptionByUserSegments = Form.create({
               })
             } else if (gradeSubject[0].grade && gradeSubject[0].subject) {
               const subscriptionData = {
+                adminPremium: adminPremiumValue,
                 subType,
                 subStartDate: startDate.valueOf(),
                 subEndDate: endDate.valueOf(),
@@ -117,8 +120,9 @@ const ManageSubscriptionByUserSegments = Form.create({
         subStartDate: moment(subStartDate),
         subEndDate: moment(subEndDate),
         notes,
+        adminPremium,
       })
-    }, [districtId, schoolId, subStartDate, subEndDate, notes])
+    }, [districtId, schoolId, subStartDate, subEndDate, notes, adminPremium])
 
     const renderGrade = (item, _, index) => (
       <Select
@@ -260,6 +264,13 @@ const ManageSubscriptionByUserSegments = Form.create({
           />
         </Table>
         <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
+        <Form.Item>
+          {getFieldDecorator('adminPremium', { valuePropName: 'checked' })(
+            <Checkbox>
+              <strong>Upgrade DAs</strong>
+            </Checkbox>
+          )}
+        </Form.Item>
         <Form.Item>
           <AntdButton type="primary" htmlType="submit">
             Upgrade to premium

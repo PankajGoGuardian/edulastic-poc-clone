@@ -518,7 +518,7 @@ class PreviewModal extends React.Component {
 
   handleDeleteItem = () => {
     const {
-      item: { _id },
+      item: { _id, isPassageWithQuestions = false },
       deleteItem,
       isEditable,
       page,
@@ -532,6 +532,7 @@ class PreviewModal extends React.Component {
     return deleteItem({
       id: _id,
       isItemPrevew: page === 'addItems' || page === 'itemList',
+      isPassageWithQuestions,
     })
   }
 

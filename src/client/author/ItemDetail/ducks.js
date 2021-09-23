@@ -62,6 +62,8 @@ import {
   setTestDataAction,
   setCreatedItemToTestAction,
   setTestPassageAction,
+  setPassageItemsAction,
+  getPassageItemsSelector,
 } from '../TestPage/ducks'
 import { changeViewAction } from '../src/actions/view'
 
@@ -1148,11 +1150,23 @@ function* receiveItemSaga({ payload }) {
 export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true))
-    const { id, redirectId, isTestFlow, testId, isItemPrevew = false } = payload
+    const {
+      id,
+      redirectId,
+      isTestFlow,
+      testId,
+      isItemPrevew = false,
+      isPassageWithQuestions = false,
+    } = payload
     const hasValidTestId = testId && testId !== 'undefined'
     yield call(testItemsApi.deleteById, id, {
       ...(hasValidTestId && { testId }),
     })
+    if (isItemPrevew && isPassageWithQuestions) {
+      let passageItems = yield select(getPassageItemsSelector)
+      passageItems = (passageItems || []).filter((item) => !(item?._id === id))
+      yield put(setPassageItemsAction(passageItems))
+    }
     yield put(setItemDeletingAction(false))
     yield put(deleteItemSuccesAction(id))
     notification({ type: 'success', messageKey: 'itemDeletedSuccessfully' })

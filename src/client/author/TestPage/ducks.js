@@ -574,6 +574,11 @@ export const getPassageItemsCountSelector = createSelector(
   (state) => state.passageItems.length
 )
 
+export const getPassageItemsSelector = createSelector(
+  stateSelector,
+  (state) => state.passageItems
+)
+
 export const getRegradeFirebaseDocIdSelector = createSelector(
   stateSelector,
   (state) => state.regradeFirestoreDocId

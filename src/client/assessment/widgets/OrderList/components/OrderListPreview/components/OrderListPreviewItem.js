@@ -49,10 +49,11 @@ export const PreviewItem = ({
         style={style}
         correct={correct}
         isPrintPreview={isPrintPreview}
+        styleType={styleType}
       >
         {correct === undefined && showDragHandle && (
           <StyledDragHandle styleType={styleType} smallSize={smallSize}>
-            <DragHandle smallSize={smallSize} />
+            <DragHandle smallSize={smallSize} styleType={styleType} />
           </StyledDragHandle>
         )}
         {(correct !== undefined || showAnswer) && (

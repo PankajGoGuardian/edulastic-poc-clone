@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { white } from '@edulastic/colors'
+import { white, greyThemeLight } from '@edulastic/colors'
 
 export const Container = styled.div`
   display: flex;
@@ -8,10 +8,13 @@ export const Container = styled.div`
   align-items: stretch;
   border-radius: 5px;
   position: relative;
-  ${({ columns, correct, theme, isPrintPreview }) => `
+  ${({ columns, correct, theme, isPrintPreview, styleType }) => `
       width: ${columns === 1 ? `${100 / columns}%` : 'auto'};
       flex: ${columns === 1 ? null : 1};
       margin-right: ${columns === 1 ? null : '16px'};
+      border: ${
+        styleType === 'button' ? `1px solid ${greyThemeLight}` : 'none'
+      };
       background: ${
         isPrintPreview
           ? white

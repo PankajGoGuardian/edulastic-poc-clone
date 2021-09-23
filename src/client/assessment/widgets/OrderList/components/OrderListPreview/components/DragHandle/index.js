@@ -4,8 +4,8 @@ import { FaBars } from 'react-icons/fa'
 
 import { Container } from './styled/Container'
 
-const DragHandle = SortableHandle(({ smallSize }) => (
-  <Container smallSize={smallSize}>
+const DragHandle = SortableHandle(({ smallSize, styleType }) => (
+  <Container smallSize={smallSize} styleType={styleType}>
     <FaBars />
   </Container>
 ))

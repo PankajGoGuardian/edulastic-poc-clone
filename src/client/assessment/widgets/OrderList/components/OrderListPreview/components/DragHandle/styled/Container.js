@@ -5,7 +5,8 @@ export const Container = styled.div`
   height: 100%;
   display: inline-flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: ${(props) =>
+    props.styleType === 'button' ? 'center' : 'flex-start'};
   color: ${(props) =>
     props.theme.widgets.orderList.dragHandleIconContainerColor};
   font-size: ${(props) =>

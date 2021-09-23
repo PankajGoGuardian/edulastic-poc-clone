@@ -188,6 +188,8 @@ const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
 const ADD_ITEM_TO_CART = '[item list] add item to cart'
 export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
   '[itemDetail] save current item and paginate'
+const SET_PASSAGE_UPDATE_IN_PROGRESS =
+  '[itemDetail] set passage update in progress'
 
 // actions
 
@@ -371,6 +373,9 @@ export const setItemLevelScoreAction = createAction(SET_ITEM_DETAIL_SCORE)
 export const incrementItemLevelScore = createAction(INC_ITEM_DETAIL_SCORE)
 export const decrementItemLevelScore = createAction(DEC_ITEM_DETAIL_SCORE)
 export const setItemDeletingAction = createAction(SET_DELETING_ITEM)
+const setPassageUpdateInProgressAction = createAction(
+  SET_PASSAGE_UPDATE_IN_PROGRESS
+)
 
 export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -517,6 +522,11 @@ export const getItemDetailRowsSelector = createSelector(
   }
 )
 
+export const getPassageUpdateInProgressSelector = createSelector(
+  stateSelector,
+  (state) => state.passageUpdateInProgress
+)
+
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   (state) => state.loading
@@ -595,6 +605,7 @@ const initialState = {
   highlightCollection: false,
   loadingAuditLogs: false,
   originalItem: null,
+  passageUpdateInProgress: false,
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -1047,6 +1058,12 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         loadingAuditLogs: false,
+      }
+    }
+    case SET_PASSAGE_UPDATE_IN_PROGRESS: {
+      return {
+        ...state,
+        passageUpdateInProgress: payload,
       }
     }
     default:
@@ -1946,6 +1963,7 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
+    yield put(setPassageUpdateInProgressAction(true))
     const { rowIndex, tabIndex, isEdit, callback, isTestFlow } = payload
     const passage = yield select(getPassageSelector)
     const entity = yield select(getCurrentQuestionSelector)
@@ -2096,6 +2114,8 @@ function* savePassage({ payload }) {
     Sentry.captureException(e)
     console.log('error: ', e)
     notification({ messageKey: 'errorSavingPassage' })
+  } finally {
+    yield put(setPassageUpdateInProgressAction(false))
   }
 }
 

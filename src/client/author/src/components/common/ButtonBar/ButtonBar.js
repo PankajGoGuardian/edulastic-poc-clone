@@ -31,6 +31,7 @@ import { roleuser } from '@edulastic/constants'
 import { clearEvaluationAction } from '../../../../../assessment/actions/evaluation'
 import { Tooltip } from '../../../../../common/utils/helpers'
 import { getCurrentQuestionSelector } from '../../../../sharedDucks/questions'
+import { getPassageUpdateInProgressSelector } from '../../../../ItemDetail/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { MAX_TAB_WIDTH } from '../../../constants/others'
 import {
@@ -158,6 +159,7 @@ class ButtonBar extends Component {
       onCloseEditModal,
       onToggleFullModal,
       isInModal,
+      passageUpdateInProgress = false,
     } = this.props
     return (
       <>
@@ -255,6 +257,7 @@ class ButtonBar extends Component {
                         data-cy="saveButton"
                         onClick={this.handleSave}
                         id={getFormattedAttrId(`${qTitle}-save`)}
+                        loading={passageUpdateInProgress}
                       >
                         <IconSaveNew />
                         SAVE
@@ -429,6 +432,7 @@ ButtonBar.propTypes = {
   showMetaData: PropTypes.bool,
   showAuditTrail: PropTypes.bool,
   permissions: PropTypes.object.isRequired,
+  passageUpdateInProgress: PropTypes.bool,
 }
 
 ButtonBar.defaultProps = {
@@ -441,6 +445,7 @@ ButtonBar.defaultProps = {
   isTestFlow: false,
   withLabels: false,
   hasAuthorPermission: true,
+  passageUpdateInProgress: false,
 }
 
 const enhance = compose(
@@ -469,6 +474,7 @@ const enhance = compose(
         userRole: getUserRole(state),
         multipartItem,
         loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
+        passageUpdateInProgress: getPassageUpdateInProgressSelector(state),
       }
     },
     {

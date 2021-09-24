@@ -5,6 +5,25 @@ const disableStyles = css`
   pointer-events: none;
   user-select: none;
 `
+const staticMathiPadStyles = css`
+  padding-right: 32px;
+  position: relative;
+
+  .StaticMathKeyBoardIcon {
+    top: 50%;
+    right: 0px;
+    padding: 8px;
+    position: absolute;
+    transform: translateY(-50%);
+
+    > * {
+      font-size: 13px;
+      font-style: normal;
+      pointer-events: none;
+    }
+  }
+`
+
 export const MathInputStyles = styled.div`
   min-width: ${({ width, fullWidth }) =>
     width || (fullWidth ? '100%' : 'fit-content')};
@@ -80,6 +99,22 @@ export const MathInputStyles = styled.div`
         box-shadow: none !important;
         border-color: ${greyThemeLight} !important;
         outline: none !important;
+      }
+      ${({ showKeyboardIcon }) => showKeyboardIcon && staticMathiPadStyles}
+    }
+    &.mobile-view {
+      .mq-editable-field {
+        padding-right: 25px;
+        position: relative;
+
+        .keyboardIcon {
+          right: 0px;
+          top: 2px;
+          position: absolute;
+          padding: 8px;
+          font-size: 13px;
+          font-style: normal;
+        }
       }
     }
 

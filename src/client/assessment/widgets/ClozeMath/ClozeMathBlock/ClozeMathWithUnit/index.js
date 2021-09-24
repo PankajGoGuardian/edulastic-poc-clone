@@ -71,7 +71,6 @@ class ClozeMathWithUnit extends React.Component {
       disableResponse = false,
       isPrintPreview,
       allOptions = [],
-      clearClicked,
     } = resprops
     const { keypadMode, customUnits, allowNumericOnly } =
       find(item.responseIds.mathUnits, (res) => res.id === id) || {}
@@ -97,7 +96,7 @@ class ClozeMathWithUnit extends React.Component {
         width={width}
         height={height}
       >
-        <MathInput {...mathInputProps} resetMath={clearClicked} />
+        <MathInput {...mathInputProps} resetMath />
         <SelectUnit
           disabled={disableResponse}
           preview

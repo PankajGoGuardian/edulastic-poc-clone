@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect, useMemo } from 'react'
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { connect } from 'react-redux'
@@ -44,6 +44,46 @@ const getKeyboardPosition = (el, symbols) => {
 
 const getIndex = (el) => parseInt(el.id.replace('inner-', ''), 10)
 
+const generateIcon = (useKeyboard, index) => {
+  const span = document.createElement('span')
+  const icon = document.createElement('i')
+  span.classList.add('StaticMathKeyBoardIcon')
+  if (useKeyboard) {
+    icon.classList.add('fa', 'fa-keyboard-o')
+  } else {
+    icon.classList.add('fa', 'fa-calculator')
+  }
+  span.setAttribute('data-index', index)
+  span.appendChild(icon)
+  return span
+}
+
+const appendIcon = (field, useMathKeyboard, onClick) => {
+  const index = getIndex(field)
+  const newIcon = generateIcon(useMathKeyboard, index)
+  const prevIcons = field.getElementsByClassName('StaticMathKeyBoardIcon')
+  for (const em of prevIcons) {
+    field.removeChild(em)
+  }
+  newIcon.addEventListener('click', onClick)
+  field.appendChild(newIcon)
+
+  const textarea = field.querySelector('.mq-textarea textarea')
+  if (useMathKeyboard) {
+    textarea.setAttribute('readonly', 'readonly')
+  } else {
+    textarea.removeAttribute('readonly')
+  }
+}
+
+const getIconStatus = (latex) => {
+  if (window.isMobileDevice && latex) {
+    const numOfTemplates = latex?.match(/\\MathQuillMathField{}/g)?.length
+    return new Array(numOfTemplates).fill(false)
+  }
+  return []
+}
+
 const StaticMath = ({
   style,
   onInput,
@@ -58,25 +98,25 @@ const StaticMath = ({
   noBorder,
 }) => {
   const [keyboardPosition, setKeyboardPosition] = useState(null)
+  const [changed, setChanged] = useState(null)
+  const iconStatus = useRef([])
   const containerRef = useRef(null)
   const currentField = useRef(null)
   const mathFieldRef = useRef(null)
   const mQuill = useRef(null)
 
-  const handleClickOutside = useMemo(() => {
-    return (e) => {
-      if (
-        e.target.nodeName === 'svg' ||
-        e.target.nodeName === 'path' ||
-        (e.target.nodeName === 'LI' &&
-          e.target.attributes[0]?.nodeValue === 'option')
-      ) {
-        return
-      }
-      if (containerRef.current && !containerRef.current.contains(e.target)) {
-        setKeyboardPosition(null)
-        document.removeEventListener('click', handleClickOutside, false)
-      }
+  const handleClickOutside = useCallback((e) => {
+    if (
+      e.target.nodeName === 'svg' ||
+      e.target.nodeName === 'path' ||
+      (e.target.nodeName === 'LI' &&
+        e.target.attributes[0]?.nodeValue === 'option')
+    ) {
+      return
+    }
+    if (containerRef.current && !containerRef.current.contains(e.target)) {
+      setKeyboardPosition(null)
+      document.removeEventListener('click', handleClickOutside, false)
     }
   }, [])
 
@@ -91,7 +131,7 @@ const StaticMath = ({
     }
   }, [])
 
-  const handleSave = () => {
+  const handleSave = useCallback(() => {
     if (!mQuill.current) {
       return []
     }
@@ -100,9 +140,9 @@ const StaticMath = ({
       reformatMathInputLatex(field.latex())
     )
     onInput(newValues)
-  }
+  }, [])
 
-  const handleFocusInner = (innerField) => {
+  const handleFocusInner = (innerField) => () => {
     const { innerFields = [] } = mQuill.current
     innerFields.forEach((field) => {
       // remove retaining cursors from other input fields
@@ -122,8 +162,14 @@ const StaticMath = ({
         })
       }
     })
-    setKeyboardPosition(getKeyboardPosition(innerField.el(), symbols))
-    onInnerFieldClick(getIndex(innerField.el()))
+    const index = getIndex(innerField.el())
+    if (
+      !window.isMobileDevice ||
+      (window.isMobileDevice && iconStatus.current?.[index])
+    ) {
+      setKeyboardPosition(getKeyboardPosition(innerField.el(), symbols))
+    }
+    onInnerFieldClick(index)
     currentField.current = innerField
     document.addEventListener('click', handleClickOutside, false)
   }
@@ -169,65 +215,68 @@ const StaticMath = ({
     }
   }
 
-  const setInnerFields = () => {
-    if (!mQuill.current) {
-      return
+  const toggleHideKeyboard = (evt) => {
+    const index = evt.target.getAttribute('data-index')
+    if (iconStatus.current && index) {
+      iconStatus.current[index] = !iconStatus.current[index]
+      setChanged(iconStatus.current[index])
     }
-    mQuill.current.latex(sanitizeLatex(latex))
-    const { innerFields = [] } = mQuill.current
-
-    innerFields.forEach((field, indx) => {
-      // TODO: use uuid instead of index ?
-      field.el().id = `inner-${indx}`
-      field.el().addEventListener('click', () => {
-        handleFocusInner(field)
-      })
-      field.el().addEventListener('keyup', handleSave)
-
-      field.config({
-        handlers: {
-          upOutOf(pInnerField) {
-            goTo(getIndex(pInnerField.el()) - 1)
-          },
-          downOutOf(pInnerField) {
-            goTo(getIndex(pInnerField.el()) + 1)
-          },
-          moveOutOf: (dir, pInnerField) => {
-            if (dir === MQ.L) {
-              goTo(getIndex(pInnerField.el()) - 1)
-            } else if (dir === MQ.R) {
-              goTo(getIndex(pInnerField.el()) + 1)
-            }
-          },
-        },
-      })
-
-      field.write('')
-
-      if (innerValues && innerValues[indx]) {
-        field.write(innerValues[indx])
-      }
-    })
   }
 
   useEffect(() => {
     if (mathFieldRef.current && !mQuill.current && MQ) {
       try {
         mQuill.current = MQ.StaticMath(mathFieldRef.current)
+        mQuill.current.latex(sanitizeLatex(latex))
+        const { innerFields = [] } = mQuill.current
+        innerFields.forEach((field, indx) => {
+          field.el().id = `inner-${indx}`
+          field.el().addEventListener('click', handleFocusInner(field))
+          field.el().addEventListener('keyup', handleSave)
+          field.config({
+            handlers: {
+              upOutOf(pInnerField) {
+                goTo(getIndex(pInnerField.el()) - 1)
+              },
+              downOutOf(pInnerField) {
+                goTo(getIndex(pInnerField.el()) + 1)
+              },
+              moveOutOf: (dir, pInnerField) => {
+                if (dir === MQ.L) {
+                  goTo(getIndex(pInnerField.el()) - 1)
+                } else if (dir === MQ.R) {
+                  goTo(getIndex(pInnerField.el()) + 1)
+                }
+              },
+            },
+          })
+          field.latex('')
+        })
+        iconStatus.current = getIconStatus(latex)
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
-  }, [mathFieldRef.current])
+  }, [latex, !mathFieldRef.current])
 
   useEffect(() => {
-    setInnerFields()
-  }, [latex])
-
-  useEffect(() => {
-    if (isEmpty(innerValues)) {
-      setInnerFields()
-    }
+    if (!mQuill.current) return
+    const { innerFields = [] } = mQuill.current
+    innerFields.forEach((field, indx) => {
+      const canWrite = innerValues && !field.latex()
+      if (canWrite) {
+        field.latex(innerValues[indx] || '')
+      }
+    })
   }, [innerValues])
+
+  useEffect(() => {
+    if (window.isMobileDevice && mQuill.current) {
+      const { innerFields = [] } = mQuill.current
+      innerFields.forEach((field, index) => {
+        appendIcon(field.el(), iconStatus.current?.[index], toggleHideKeyboard)
+      })
+    }
+  }, [latex, changed])
 
   return (
     <MathInputStyles
@@ -236,11 +285,16 @@ const StaticMath = ({
       ref={containerRef}
       minWidth={style.width}
       minHeight={style.height}
+      showKeyboardIcon={window.isMobileDevice}
     >
       <div className="input">
         <div className="input__math" data-cy="answer-math-input-style">
           <span
-            className="input__math__field"
+            className={
+              window.isMobileDevice
+                ? 'input__math__field mobile-view'
+                : 'input__math__field'
+            }
             ref={mathFieldRef}
             data-cy="answer-math-input-field"
           />

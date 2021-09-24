@@ -22,7 +22,6 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     isPrintPreview,
     answerScore,
     allCorrects,
-    clearClicked,
   } = resprops
 
   const { maths: userAnswers = [] } = answers
@@ -92,11 +91,7 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
       innerValues={innerValues}
     />
   ) : (
-    <MathInput
-      {...mathInputProps}
-      value={userAnswer?.value}
-      resetMath={clearClicked}
-    />
+    <MathInput {...mathInputProps} value={userAnswer?.value} resetMath />
   )
 
   return checked ? (

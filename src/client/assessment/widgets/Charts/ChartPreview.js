@@ -299,6 +299,7 @@ const ChartPreview = ({
                       item={item}
                       setQuestionData={setQuestionData}
                       showAnswer
+                      correctAnswerView
                     />
                   </ChartContainer>
                 </CorrectAnswersContainer>
@@ -329,6 +330,7 @@ const ChartPreview = ({
                       item={item}
                       setQuestionData={setQuestionData}
                       showAnswer
+                      correctAnswerView
                     />
                   </ChartContainer>
                 </CorrectAnswersContainer>

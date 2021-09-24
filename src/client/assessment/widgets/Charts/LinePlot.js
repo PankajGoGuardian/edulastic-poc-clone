@@ -28,6 +28,7 @@ const LinePlot = ({
   toggleBarDragging,
   deleteMode,
   evaluation,
+  correctAnswerView,
 }) => {
   const { width, height, margin } = gridParams
 
@@ -58,7 +59,7 @@ const LinePlot = ({
       .join(' ')
 
   const getActivePoint = (index) =>
-    active !== null
+    active !== null && !correctAnswerView
       ? +getPolylinePoints().split(' ')[active].split(',')[index]
       : null
 
@@ -79,6 +80,7 @@ const LinePlot = ({
   }
 
   const onMouseMove = (e) => {
+    if (correctAnswerView) return
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
@@ -92,6 +94,7 @@ const LinePlot = ({
   }
 
   const onMouseDown = (index) => (e) => {
+    if (correctAnswerView) return
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     setCursorY(e.pageY)
     setActiveIndex(index)

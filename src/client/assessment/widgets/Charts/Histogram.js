@@ -32,6 +32,7 @@ const Histogram = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
+  correctAnswerView,
   margin = { top: 0, right: 0, left: 0, bottom: 50 },
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams
@@ -67,7 +68,7 @@ const Histogram = ({
   )
 
   const showArrow = useMemo(() => {
-    if (active === null) {
+    if (active === null || correctAnswerView) {
       return false
     }
     if (view !== EDIT && data[active] && !data[active].notInteractive) {
@@ -77,7 +78,7 @@ const Histogram = ({
       return true
     }
     return false
-  }, [active, data, view])
+  }, [active, correctAnswerView, data, view])
 
   const getPolylinePoints = () =>
     bars
@@ -149,6 +150,9 @@ const Histogram = ({
   }
 
   const onMouseDownActiveBar = (e) => {
+    if (correctAnswerView) {
+      return
+    }
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     const svgTop = targetRef.current?.getBoundingClientRect()?.top || 0
     const cBarY = convertPxToUnit(e.clientY - svgTop - gridMargin, gridParams)

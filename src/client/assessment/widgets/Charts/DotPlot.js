@@ -25,6 +25,7 @@ const DotPlot = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
+  correctAnswerView,
 }) => {
   const { width, height, margin, yAxisMax, yAxisMin, stepSize } = gridParams
 
@@ -61,7 +62,7 @@ const DotPlot = ({
       .join(' ')
 
   const getActivePoint = (index) =>
-    active !== null
+    active !== null && !correctAnswerView
       ? +getPolylinePoints().split(' ')[active].split(',')[index]
       : null
 
@@ -82,6 +83,7 @@ const DotPlot = ({
   }
 
   const onMouseMove = (e) => {
+    if (correctAnswerView) return
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     const newLocalData = cloneDeep(localData)
     if (isMouseDown && cursorY && !deleteMode) {
@@ -93,6 +95,7 @@ const DotPlot = ({
   }
 
   const onMouseDown = (index) => (e) => {
+    if (correctAnswerView) return
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     setCursorY(e.pageY)
     setActiveIndex(index)

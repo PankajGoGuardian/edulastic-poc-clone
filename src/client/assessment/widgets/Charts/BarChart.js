@@ -33,6 +33,7 @@ const BarChart = ({
   deleteMode,
   toggleBarDragging,
   showAnswer,
+  correctAnswerView,
   margin = { top: 0, right: 0, left: 0, bottom: 50 },
 }) => {
   const { width, height, margin: gridMargin, showGridlines } = gridParams
@@ -76,7 +77,7 @@ const BarChart = ({
       .join(' ')
 
   const getActivePoint = (index) =>
-    active !== null
+    active !== null && !correctAnswerView
       ? +getPolylinePoints().split(' ')[active].split(',')[index]
       : null
 
@@ -100,6 +101,9 @@ const BarChart = ({
   }
 
   const onMouseMove = (e) => {
+    if (correctAnswerView) {
+      return
+    }
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
@@ -113,6 +117,9 @@ const BarChart = ({
   }
 
   const onMouseDown = (index) => (e) => {
+    if (correctAnswerView) {
+      return
+    }
     if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     setCursorY(e.pageY)
     setActiveIndex(index)

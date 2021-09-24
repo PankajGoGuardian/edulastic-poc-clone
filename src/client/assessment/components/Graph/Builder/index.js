@@ -411,7 +411,6 @@ class Board {
       }
 
       if (
-        this.currentTool === CONSTANT.TOOLS.AREA &&
         (this.elements || []).some(
           (element) => element.type === Equation.jxgType
         )

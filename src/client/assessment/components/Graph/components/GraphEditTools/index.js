@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { cloneDeep } from 'lodash'
+import { cloneDeep, isEmpty } from 'lodash'
 import { Modal } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { defaultSymbols, graph } from '@edulastic/constants'
@@ -123,7 +123,11 @@ class GraphEditTools extends Component {
 
     if (
       tool === FUNCTIONS_TOOL &&
-      (elements || []).some((element) => element.type === GRAPH_TOOLS.AREA)
+      !isEmpty(
+        (elements || []).filter(
+          (element) => element.type !== GRAPH_TOOLS.EQUATION
+        )
+      )
     ) {
       Modal.confirm({
         title: 'Warning',

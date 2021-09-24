@@ -5,8 +5,38 @@ import { Button, Modal } from 'antd'
 import { get } from 'lodash'
 import { test, questionType } from '@edulastic/constants'
 import { showHintButton } from '../../utils/test'
+import LineReader from '../../../common/components/LineReader'
 
 const { calculatorTypes } = test
+
+const Container = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 350px;
+  @media (max-width: 468px) {
+    width: calc(100vw - 100px);
+  }
+`
+
+const StyledButton = styled(Button)`
+  height: 50px;
+  text-transform: uppercase;
+  border: none;
+  border-bottom: 1px solid
+    ${(props) => props.theme.default.headerButtonBorderColor};
+  border-radius: 0px;
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.3px;
+  ${(props) => props.hidden && 'display:none'}
+  &:active,
+  &:focus,
+  &:hover {
+    border-color: ${(props) =>
+      props.theme.default.headerButtonBorderHoverColor};
+    color: ${(props) => props.theme.default.headerButtonBorderHoverColor};
+  }
+`
 
 class ToolbarModal extends React.Component {
   toolbarHandler = (value) => {
@@ -65,6 +95,11 @@ class ToolbarModal extends React.Component {
   handleUploadWork = () => {
     const { onClose, toggleUserWorkUploadModal } = this.props
     toggleUserWorkUploadModal()
+    onClose()
+  }
+
+  hideModal = () => {
+    const { onClose } = this.props
     onClose()
   }
 
@@ -150,42 +185,42 @@ class ToolbarModal extends React.Component {
           {settings.showMagnifier && (
             <StyledButton
               disabled={isPremiumContentWithoutAccess}
-              onClick={() => this.magnify()}
+              onClick={this.magnify}
             >
               Magnify
             </StyledButton>
           )}
           <StyledButton
             disabled={isPremiumContentWithoutAccess}
-            onClick={() => this.pointer()}
+            onClick={this.pointer}
             hidden
           >
             Pointer
           </StyledButton>
           <StyledButton
             disabled={isPremiumContentWithoutAccess}
-            onClick={() => this.inchRuler()}
+            onClick={this.inchRuler}
             hidden
           >
             Inch Ruler
           </StyledButton>
           <StyledButton
             disabled={isPremiumContentWithoutAccess}
-            onClick={() => this.centimeterRuler()}
+            onClick={this.centimeterRuler}
             hidden
           >
             Centimeter Ruler
           </StyledButton>
           <StyledButton
             disabled={isPremiumContentWithoutAccess}
-            onClick={() => this.eliminationQuestion()}
+            onClick={this.eliminationQuestion}
             hidden
           >
             Elimination Question
           </StyledButton>
           <StyledButton
             disabled={isPremiumContentWithoutAccess}
-            onClick={() => this.procractorRuler()}
+            onClick={this.procractorRuler}
             hidden
           >
             Procractor Ruler
@@ -198,6 +233,11 @@ class ToolbarModal extends React.Component {
               Upload work
             </StyledButton>
           )}
+          <LineReader
+            btnComponent={StyledButton}
+            btnText="Line Reader"
+            onClick={this.hideModal}
+          />
         </Container>
       </Modal>
     )
@@ -216,32 +256,3 @@ ToolbarModal.defaultProps = {
 }
 
 export default ToolbarModal
-
-const Container = styled.div`
-  display: flex;
-  flex-direction: column;
-  width: 350px;
-  @media (max-width: 468px) {
-    width: calc(100vw - 100px);
-  }
-`
-
-const StyledButton = styled(Button)`
-  height: 50px;
-  text-transform: uppercase;
-  border: none;
-  border-bottom: 1px solid
-    ${(props) => props.theme.default.headerButtonBorderColor};
-  border-radius: 0px;
-  font-size: 14px;
-  font-weight: 600;
-  letter-spacing: 0.3px;
-  ${(props) => props.hidden && 'display:none'}
-  &:active,
-  &:focus,
-  &:hover {
-    border-color: ${(props) =>
-      props.theme.default.headerButtonBorderHoverColor};
-    color: ${(props) => props.theme.default.headerButtonBorderHoverColor};
-  }
-`

@@ -1,7 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { EduButton } from '@edulastic/common'
-// import lineReader from './components/lineReader'
+import { IconLineReader } from '@edulastic/icons'
 import useLineReader from './components/useLineReader'
 import {
   showLineReaderAction,
@@ -9,8 +9,23 @@ import {
   lineReaderVisible,
 } from './duck'
 
-const LineReader = ({ showLineReader, visible, hideLineReader }) => {
+const LineReader = ({
+  showLineReader,
+  visible,
+  hideLineReader,
+  btnComponent,
+  btnText,
+  onClick,
+}) => {
   const [showReader, destoryReader] = useLineReader(hideLineReader)
+
+  const handleClick = () => {
+    if (typeof onClick === 'function') {
+      onClick()
+    }
+    showLineReader()
+  }
+
   useEffect(() => {
     if (visible) {
       showReader()
@@ -24,16 +39,24 @@ const LineReader = ({ showLineReader, visible, hideLineReader }) => {
     }
   }, [])
 
+  const Button = useMemo(() => {
+    if (!btnComponent) {
+      return EduButton
+    }
+    return btnComponent
+  }, [btnComponent])
+
   return (
-    <EduButton
+    <Button
       isGhost
       height="40px"
+      IconBtn
       disabled={visible}
       data-cy="lineReaderButton"
-      onClick={showLineReader}
+      onClick={handleClick}
     >
-      Line Reader
-    </EduButton>
+      {btnText || <IconLineReader />}
+    </Button>
   )
 }
 

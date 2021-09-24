@@ -301,7 +301,8 @@ class QuestionItem extends React.Component {
 
   renderAnswerIndicator = (type) => {
     let { evaluation } = this.props
-    if (!evaluation) {
+
+    if (isUndefined(evaluation)) {
       evaluation = get(this.props, 'data.activity.evaluation')
     }
 

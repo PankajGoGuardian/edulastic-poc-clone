@@ -246,8 +246,8 @@ class AssignTest extends React.Component {
       testSettings: {
         playerSkinType: prevPlayerSkinType,
         settingId: prevSettingId,
-        testSettingsList: prevTestSettingsList,
       },
+      testSettingsList: prevTestSettingsList,
     } = prevProps
     // the initial playerSkinType in reducer is edulastic,
     // but after fetching the test it can be other type like testlet

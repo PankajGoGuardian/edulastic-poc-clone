@@ -1322,6 +1322,7 @@ function* editPlaylistTestSaga({ payload }) {
           cloneItems: false,
           isInEditAndRegrade: true,
           currentTab: tab,
+          playlistId,
         })
       )
     }

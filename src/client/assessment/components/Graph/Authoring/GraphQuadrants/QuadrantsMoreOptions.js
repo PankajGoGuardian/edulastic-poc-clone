@@ -8,12 +8,11 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { evaluationType, aws } from '@edulastic/constants'
-import { Select, Modal } from 'antd'
+import { Select } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
 import { isNaN, isEqual, isEmpty } from 'lodash'
-import { UploadButton } from '../../common/styled_components'
 import { AnnotationSettings, ScoreSettings } from '..'
 import Extras from '../../../../containers/Extras'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
@@ -31,6 +30,10 @@ import RadianInput from '../../components/RadianInput'
 import { calcDistance, isValidMinMax } from '../../common/utils'
 import { uploadToS3 } from '../../../../../author/src/utils/upload'
 import { CONSTANT } from '../../Builder/config'
+import {
+  UploadButton,
+  GridSettingHelpText,
+} from '../../common/styled_components'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
@@ -99,9 +102,8 @@ class QuadrantsMoreOptions extends Component {
     return hasElements
   }
 
-  checkGridSettings = (nextAction) => {
+  checkGridSettings = () => {
     const {
-      t,
       graphData: { uiStyle },
     } = this.props
     const { layoutWidth, layoutHeight } = uiStyle
@@ -125,28 +127,7 @@ class QuadrantsMoreOptions extends Component {
     yGirdDistance = parseFloat(layoutHeight) / yGirdDistance
     yGirdDistance *= Math.abs(yMin) / yDistance + 1
 
-    if (xGirdDistance < 28 || yGirdDistance < 28) {
-      Modal.confirm({
-        centered: true,
-        okCancel: false,
-        title: 'Warning',
-        maskClosable: true,
-        content: t('component.graphing.settingsPopup.gridCutoff'),
-        okText: 'Confirm',
-        onCancel: () => {
-          if (typeof nextAction === 'function') {
-            nextAction()
-          }
-        },
-        onOk: () => {
-          if (typeof nextAction === 'function') {
-            nextAction()
-          }
-        },
-      })
-    } else if (typeof nextAction === 'function') {
-      nextAction()
-    }
+    return xGirdDistance < 28 || yGirdDistance < 28
   }
 
   handleGridChange = (event) => {
@@ -222,8 +203,7 @@ class QuadrantsMoreOptions extends Component {
       this.updateState()
       return
     }
-
-    const process = () => {
+    if (gridOpts.includes(evt.target.name) && changedCertainOpts) {
       const hasElements = this.checkElements()
 
       if (hasElements && changedCertainOpts) {
@@ -232,11 +212,6 @@ class QuadrantsMoreOptions extends Component {
         this.handleConfirmOptsChanges()
       }
     }
-
-    if (gridOpts.includes(evt.target.name) && changedCertainOpts) {
-      return this.checkGridSettings(process)
-    }
-    process()
   }
 
   handleChangeRadians = (name, value) => {
@@ -494,6 +469,8 @@ class QuadrantsMoreOptions extends Component {
       yRadians,
     } = this.state
 
+    const gridWillCutOff = this.checkGridSettings()
+
     return (
       <>
         {!this.isQuadrantsPlacement() && (
@@ -559,7 +536,6 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutWidth"
                 value={layoutWidth}
                 onChange={this.handleInputChange}
-                onBlur={this.checkGridSettings}
               />
             </Col>
             <Col md={12}>
@@ -570,7 +546,6 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutHeight"
                 value={layoutHeight}
                 onChange={this.handleInputChange}
-                onBlur={this.checkGridSettings}
               />
             </Col>
             <Col md={12}>
@@ -1116,6 +1091,15 @@ class QuadrantsMoreOptions extends Component {
               </Row>
             </Col>
           </Row>
+          {gridWillCutOff && (
+            <Row>
+              <Col md={11} marginBottom="0px">
+                <GridSettingHelpText>
+                  {t('component.graphing.settingsPopup.gridCutoff')}
+                </GridSettingHelpText>
+              </Col>
+            </Row>
+          )}
         </Question>
 
         <Question

@@ -288,6 +288,7 @@ const QuestionBottomAction = ({
           <EduButton
             isBlue
             isGhost
+            data-cy="cancelSave"
             onClick={onCloseQuestionModal}
             width="115px"
             disabled={silentClone}

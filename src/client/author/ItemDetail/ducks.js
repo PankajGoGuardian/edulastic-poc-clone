@@ -186,7 +186,7 @@ export const SAVE_AND_PUBLISH_ITEM =
   '[question, itemDetail] save question and publish item'
 export const PROCEED_TO_PUBLISH_ITEM = '[itemDetail] proceed to publish item'
 
-const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
+const EDIT_MULTIPART_WIDGET = '[itemDetail] edit multipart widget'
 const ADD_ITEM_TO_CART = '[item list] add item to cart'
 export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
   '[itemDetail] save current item and paginate'
@@ -384,7 +384,7 @@ export const saveCurrentEditingTestIdAction = (id) => ({
   payload: id,
 })
 
-export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
+export const editMultipartWidgetAction = createAction(EDIT_MULTIPART_WIDGET)
 
 const addItemToCartAction = (item) => ({
   type: ADD_ITEM_TO_CART,
@@ -2251,7 +2251,7 @@ function* saveAndPublishItemSaga() {
   }
 }
 
-function* editPassageWidgetSaga({ payload }) {
+function* editMultipartWidgetSaga({ payload }) {
   // payload is the question id
   yield put(changeCurrentQuestionAction(payload))
   let alignments = yield select(getAlignmentFromQuestionSelector)
@@ -2292,7 +2292,7 @@ export function* watcherSaga() {
       loadQuestionPreviewAttachmentsSaga
     ),
     yield takeLatest(SAVE_AND_PUBLISH_ITEM, saveAndPublishItemSaga),
-    yield takeLatest(EDIT_PASSAGE_WIDGET, editPassageWidgetSaga),
+    yield takeLatest(EDIT_MULTIPART_WIDGET, editMultipartWidgetSaga),
     yield takeEvery(
       SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
       saveCurrentItemAndRoueToOtherSaga

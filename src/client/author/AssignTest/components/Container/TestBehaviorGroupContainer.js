@@ -70,7 +70,7 @@ const TestBehaviorGroupContainer = ({
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
     .flat()
-    .filter((o) => o.multipartItem).length
+    .some((o) => o?.data?.questions?.length > 1)
   const {
     assessmentSuperPowersMarkAsDone,
     assessmentSuperPowersShowCalculator,

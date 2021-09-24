@@ -452,7 +452,7 @@ class Setting extends Component {
     const multipartItems = itemGroups
       .map((o) => o.items)
       .flat()
-      .filter((o) => o.multipartItem).length
+      .some((o) => o?.data?.questions?.length > 1)
     if (
       newSettings.applyEBSR &&
       (![
@@ -731,7 +731,7 @@ class Setting extends Component {
     const multipartItems = itemGroups
       .map((o) => o.items)
       .flat()
-      .filter((o) => o.multipartItem).length
+      .some((o) => o?.data?.questions?.length > 1)
     const breadcrumbData = [
       {
         title: showCancelButton ? 'ASSIGNMENTS / EDIT TEST' : 'TESTS',

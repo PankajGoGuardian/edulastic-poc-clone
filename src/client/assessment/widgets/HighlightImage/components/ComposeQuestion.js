@@ -25,7 +25,13 @@ import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 import DropZoneToolbar from '../../../components/DropZoneToolbar'
 import StyledDropZone from '../../../components/StyledDropZone'
-import { SOURCE, HEIGHT, WIDTH } from '../../../constants/constantsForQuestions'
+import {
+  SOURCE,
+  HEIGHT,
+  WIDTH,
+  IMAGE_ORIGINAL_HEIGHT,
+  IMAGE_ORIGINAL_WIDTH,
+} from '../../../constants/constantsForQuestions'
 import { CustomStyleBtn } from '../../../styled/ButtonStyles'
 import ResizableImage from './Resizeable'
 import UpdateImageButton from '../styled/UpdateImageButton'
@@ -72,7 +78,10 @@ class ComposeQuestion extends Component {
 
     const width = image ? image.width : maxWidth
     const height = image ? image.height : maxHeight
+    const imageOriginalWidth = image?.imageOriginalWidth || width
+    const imageOriginalHeight = image?.imageOriginalHeight || height
     const altText = image ? image.altText : ''
+    const keepAspectRatio = image?.keepAspectRatio || false
 
     const handleItemChangeChange = (prop, uiStyle) => {
       setQuestionData(
@@ -93,11 +102,27 @@ class ComposeQuestion extends Component {
       setQuestionData(
         produce(item, (draft) => {
           let value = val
+          let _width
+          let _height
 
           if (prop === 'height') {
             value = parseInt(value < maxHeight ? value : maxHeight, 10)
+            if (keepAspectRatio && imageOriginalHeight) {
+              _width = Math.round(
+                (imageOriginalWidth * value) / imageOriginalHeight
+              )
+              draft.image[WIDTH] = _width
+            }
           } else if (prop === 'width') {
             value = parseInt(value < maxWidth ? value : maxWidth, 10)
+            if (keepAspectRatio && imageOriginalWidth) {
+              _height = Math.round(
+                (imageOriginalHeight * value) / imageOriginalWidth
+              )
+              draft.image[HEIGHT] = _height
+            }
+          } else if (prop === 'keepAspectRatio') {
+            value = val?.target?.checked || false
           }
 
           draft.image[prop] = value
@@ -133,6 +158,8 @@ class ComposeQuestion extends Component {
         const obj = {}
         obj[WIDTH] = width
         obj[HEIGHT] = height
+        obj[IMAGE_ORIGINAL_WIDTH] = width
+        obj[IMAGE_ORIGINAL_HEIGHT] = height
         obj[SOURCE] = url
         updateImage(obj)
         setLoading(false)
@@ -222,6 +249,7 @@ class ComposeQuestion extends Component {
           width={+width}
           height={+height}
           altText={altText}
+          keepAspectRatio={keepAspectRatio}
           handleChange={handleImageToolbarChange}
         />
 

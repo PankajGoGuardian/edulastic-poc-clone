@@ -62,7 +62,12 @@ const ClassList = ({
     location?.state?.currentTab || 'class'
   )
 
-  const showClassGroups = filterClass === 'Active' ? groups : archiveGroups
+  const showClassGroups =
+    filterClass === 'Active'
+      ? groups
+      : archiveGroups.sort((a, b) => {
+          return new Date(b.updatedAt) - new Date(a.updatedAt)
+        })
 
   useEffect(() => {
     setClassGroups(showClassGroups)

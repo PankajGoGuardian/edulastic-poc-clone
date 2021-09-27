@@ -6,7 +6,12 @@ import { compose } from 'redux'
 import { trim, isEmpty } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { connect } from 'react-redux'
-import { withWindowSizes, OnDarkBgLogo, notification } from '@edulastic/common'
+import {
+  withWindowSizes,
+  OnDarkBgLogo,
+  notification,
+  CopyRight,
+} from '@edulastic/common'
 import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import {
@@ -551,7 +556,9 @@ class StudentSignup extends React.Component {
                   method !== GOOGLE &&
                   method !== OFFICE && (
                     <DesktopViewCopyright>
-                      <Col span={24}>{t('common.copyright')}</Col>
+                      <Col span={24}>
+                        <CopyRight />
+                      </Col>
                     </DesktopViewCopyright>
                   )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
@@ -649,7 +656,9 @@ class StudentSignup extends React.Component {
             method === GOOGLE ||
             method === OFFICE) && (
             <Copyright sigunpmethod={method}>
-              <Col span={24}>{t('common.copyright')}</Col>
+              <Col span={24}>
+                <CopyRight />
+              </Col>
             </Copyright>
           )}
         </RegistrationWrapper>

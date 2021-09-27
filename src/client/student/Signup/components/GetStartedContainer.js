@@ -6,7 +6,7 @@ import {
   tabletWidth,
   themeColor,
 } from '@edulastic/colors'
-import { OnDarkBgLogo } from '@edulastic/common'
+import { OnDarkBgLogo, CopyRight } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Form, Row } from 'antd'
 import PropTypes from 'prop-types'
@@ -149,7 +149,9 @@ const GetStarted = ({
         </Col>
       </RegistrationBody>
       <Copyright>
-        <Col span={24}>{t('common.copyright')}</Col>
+        <Col span={24}>
+          <CopyRight />
+        </Col>
       </Copyright>
     </RegistrationWrapper>
   )

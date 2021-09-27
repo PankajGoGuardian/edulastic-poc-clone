@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Menu } from 'antd'
+import { CopyRight } from '@edulastic/common'
 import Modal from 'react-responsive-modal'
 import { get } from 'lodash'
 import { logoutAction } from '../../../src/actions/auth'
@@ -17,6 +18,7 @@ import {
   UserInfo,
   UserName,
 } from './styled'
+
 
 const CLIAccessBanner = ({
   visible = false,
@@ -105,7 +107,9 @@ const CLIAccessBanner = ({
       >
         Continue
       </Button>
-      <BaseText>Edulastic @ 2020 - All rights reserved.</BaseText>
+      <BaseText>
+        <CopyRight />
+      </BaseText>
     </Modal>
   )
 }

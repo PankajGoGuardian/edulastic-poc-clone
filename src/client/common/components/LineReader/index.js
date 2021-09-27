@@ -49,7 +49,6 @@ const LineReader = ({
   return (
     <Button
       isGhost
-      height="40px"
       IconBtn
       disabled={visible}
       data-cy="lineReaderButton"

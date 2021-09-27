@@ -472,9 +472,9 @@ class AssessmentPlayerDefault extends React.Component {
           ? zoomLevel >= '1.75'
             ? '11px'
             : '11px 5px'
-          : windowWidth >= LARGE_DESKTOP_WIDTH
-          ? '9px 0px'
-          : '11px 0px'
+          : windowWidth >= MEDIUM_DESKTOP_WIDTH
+          ? '11px 0px'
+          : '12px 0px'
       }`,
       justifyContent: 'space-between',
     }

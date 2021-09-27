@@ -5,7 +5,7 @@ import { Button, Modal } from 'antd'
 import { get } from 'lodash'
 import { test, questionType } from '@edulastic/constants'
 import { showHintButton } from '../../utils/test'
-// import LineReader from '../../../common/components/LineReader'
+import LineReader from '../../../common/components/LineReader'
 
 const { calculatorTypes } = test
 
@@ -233,11 +233,11 @@ class ToolbarModal extends React.Component {
               Upload work
             </StyledButton>
           )}
-          {/* <LineReader
+          <LineReader
             btnComponent={StyledButton}
             btnText="Line Reader"
             onClick={this.hideModal}
-          /> */}
+          />
         </Container>
       </Modal>
     )

@@ -69,6 +69,11 @@ function ScoreInputFocusEffectComponent({
 
 const isInvalidScore = (score) => (!score || isNaN(score)) && score != 0
 
+const InputType = {
+  InputScore: 'inputScore',
+  RubricsScore: 'rubricsScore',
+}
+
 class FeedbackRight extends Component {
   constructor(props) {
     super(props)
@@ -88,6 +93,10 @@ class FeedbackRight extends Component {
       maxScore,
       showFeedbackSaveBtn: false,
       feedbackInputHasFocus: false,
+      clearRubricFeedback: false,
+      isRubricDisabled: false,
+      isScoreInputDisabled: false,
+      showWarningToClear: false,
     }
 
     this.scoreInput = React.createRef()
@@ -106,7 +115,22 @@ class FeedbackRight extends Component {
       prevProps?.widget?.activity?.score !== this.props?.widget?.activity?.score
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ changed: false })
+      this.setState({
+        changed: false,
+        isRubricDisabled: false,
+        isScoreInputDisabled: false,
+      })
+    }
+
+    if (
+      prevProps?.isClassResponseLoading !== this.props?.isClassResponseLoading
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState((prevState) => ({
+        ...prevState,
+        isRubricDisabled: this.props?.isClassResponseLoading,
+        isScoreInputDisabled: this.props?.isClassResponseLoading,
+      }))
     }
   }
 
@@ -300,18 +324,44 @@ class FeedbackRight extends Component {
   }
 
   submitScore = (e) => {
-    const { changed } = this.state
+    const { score } = this.state
     const allowSubmitScore = this.allowToSubmitScore(e?.type)
-    if (changed || allowSubmitScore) {
+    if (
+      parseFloat(this.props?.widget?.activity?.score || 0) !==
+        parseFloat(score || 0) ||
+      allowSubmitScore
+    ) {
       this.onScoreSubmit()
+    } else {
+      this.setState({ isRubricDisabled: false })
     }
+    this.setState({ showWarningToClear: false })
   }
 
-  onChangeScore = (e) => {
-    const value = e.target.value
+  onChangeScore = (showGradingRubricButton) => (value, inputType) => {
     const isValid = this.scoreRegex.test(value)
     if ((isValid && !isNaN(value)) || value === '.') {
       this.setState({ score: value, changed: true })
+    }
+    // Clearing rubric feedback when changing score from input-box/rubrics
+    switch (showGradingRubricButton) {
+      case inputType === InputType.InputScore:
+        this.setState((prevState) => ({
+          ...prevState,
+          clearRubricFeedback: true,
+          isRubricDisabled: true,
+          showWarningToClear: false,
+        }))
+        break
+      case inputType === InputType.RubricsScore:
+        this.setState((prevState) => ({
+          ...prevState,
+          clearRubricFeedback: false,
+          isScoreInputDisabled: true,
+        }))
+        break
+      default:
+        break
     }
   }
 
@@ -321,6 +371,10 @@ class FeedbackRight extends Component {
       feedback: e.target.value,
       showFeedbackSaveBtn: !!e.target.value,
     })
+  }
+
+  enableScoreInput = () => {
+    this.setState({ isScoreInputDisabled: false })
   }
 
   onKeyDownFeedback = ({ keyCode }) => {
@@ -343,6 +397,10 @@ class FeedbackRight extends Component {
     if (path.search('expressgrader') !== -1 && current) {
       current.focus()
     }
+  }
+
+  handleScoreInputFocus = () => {
+    this.setState({ showWarningToClear: true })
   }
 
   handleRubricResponse = (res, isSubmit) => {
@@ -383,6 +441,7 @@ class FeedbackRight extends Component {
       disabled,
       isPracticeQuestion,
       isAbsolutePos,
+      isClassResponseLoading,
     } = this.props
     const {
       score,
@@ -392,6 +451,10 @@ class FeedbackRight extends Component {
       showFeedbackSaveBtn,
       feedbackInputHasFocus,
       isShowFeedbackInput,
+      clearRubricFeedback,
+      isRubricDisabled,
+      isScoreInputDisabled,
+      showWarningToClear,
     } = this.state
     let rubricMaxScore = 0
     if (rubricDetails)
@@ -464,13 +527,21 @@ class FeedbackRight extends Component {
             <ScoreInputWrapper>
               <ScoreInput
                 data-cy="scoreInput"
-                onChange={this.onChangeScore}
+                onChange={(e) =>
+                  this.onChangeScore(showGradingRubricButton)(
+                    e.target.value,
+                    InputType.InputScore
+                  )
+                }
+                onFocus={this.handleScoreInputFocus}
                 onBlur={this.submitScore}
                 value={_score}
                 disabled={
                   isPresentationMode ||
                   isPracticeQuestion ||
-                  studentResponseLoading
+                  studentResponseLoading ||
+                  isClassResponseLoading ||
+                  isScoreInputDisabled
                 }
                 ref={this.scoreInput}
                 onKeyDown={this.onKeyDownFeedback}
@@ -489,6 +560,13 @@ class FeedbackRight extends Component {
             rubricFeedback={rubricFeedback}
             currentScore={activity?.score}
             onRubricResponse={this.handleRubricResponse}
+            isRubricDisabled={isClassResponseLoading || isRubricDisabled}
+            onChangeScore={this.onChangeScore(showGradingRubricButton)}
+            clearRubricFeedback={clearRubricFeedback}
+            InputType={InputType}
+            inputScore={_score}
+            showWarningToClear={showWarningToClear}
+            enableScoreInput={this.enableScoreInput}
           />
         )}
         {!isError && (
@@ -564,6 +642,7 @@ const enhance = compose(
       allAnswers: state?.answers,
       userThumbnail: getUserThumbnail(state),
       userFullName: getUserFullNameSelector(state),
+      isClassResponseLoading: state?.studentResponse?.loading,
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

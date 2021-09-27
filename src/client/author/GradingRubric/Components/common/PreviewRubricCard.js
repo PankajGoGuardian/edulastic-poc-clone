@@ -3,7 +3,12 @@ import { isEmpty } from 'lodash'
 import styled from 'styled-components'
 import { Tooltip } from 'antd'
 import { FlexContainer, FieldLabel } from '@edulastic/common'
-import { themeColorBlue, white, greyThemeDark1 } from '@edulastic/colors'
+import {
+  themeColorBlue,
+  white,
+  greyThemeDark1,
+  darkOrange,
+} from '@edulastic/colors'
 import { calculateScore } from './helper'
 
 const RatingComp = ({ data, selected, onClick }) => (
@@ -23,7 +28,16 @@ const RatingComp = ({ data, selected, onClick }) => (
   </Tooltip>
 )
 
-const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
+const PreviewRubricCard = ({
+  rubricData,
+  rubricFeedback,
+  onChange,
+  onChangeScore,
+  clearRubricFeedback,
+  InputType,
+  inputScore,
+  showWarningToClear,
+}) => {
   const INITIAL_RUB_FEEDBACK = {}
   const [selectedRatings, setSelectedRatings] = useState(INITIAL_RUB_FEEDBACK)
 
@@ -37,6 +51,10 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
       selectedData[criteriaId] = ratingId
     }
     setSelectedRatings(selectedData)
+    onChangeScore(
+      calculateScore(rubricData, selectedData),
+      InputType.RubricsScore
+    )
   }
 
   useEffect(() => {
@@ -47,11 +65,20 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
     }
   }, [rubricFeedback])
 
+  // clears rubric selection on score change by score-input
+  useEffect(() => {
+    if (clearRubricFeedback) {
+      setSelectedRatings(INITIAL_RUB_FEEDBACK)
+    }
+  }, [clearRubricFeedback])
+
   /**
    * @see https://snapwiz.atlassian.net/browse/EV-26319
    * call update score api only after user moves out of rubric scoring block
    */
   const handleBlur = () => {
+    // when input score exists or greater than zero keep the score
+    if (inputScore > 0 && isEmpty(selectedRatings)) return
     onChange({
       score: calculateScore(rubricData, selectedRatings),
       rubricFeedback: selectedRatings,
@@ -60,6 +87,10 @@ const PreviewRubricCard = ({ rubricData, rubricFeedback, onChange }) => {
 
   return (
     <div data-cy="rubric-ratings" onBlur={handleBlur} tabIndex={-1}>
+      {/* show warning to clear rubric when score input is being used */}
+      {showWarningToClear && !isEmpty(selectedRatings) && (
+        <WarningLabel> This will clear the rubric selection. </WarningLabel>
+      )}
       <RubrickName data-cy="rubricName">{name}</RubrickName>
       {(criteria || []).map((c) => (
         <CriteriaRow data-cy="criteriaRow" key={c.id}>
@@ -147,4 +178,11 @@ const RubrickName = styled(FieldLabel)`
   font-size: 14px;
   overflow: hidden;
   text-overflow: ellipsis;
+`
+const WarningLabel = styled.p`
+  font-size: 12px;
+  font-style: italic;
+  color: ${darkOrange};
+  font-weight: 600;
+  margin-bottom: 7px;
 `

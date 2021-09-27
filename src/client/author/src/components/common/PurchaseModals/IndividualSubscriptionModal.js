@@ -37,7 +37,8 @@ const IndividualSubscriptionModal = ({
   useEffect(() => {
     if (
       (!isPaidPremium || showRenewalOptions || !shouldProrate) &&
-      !selectedProductIds.includes(teacherPremium.id)
+      !selectedProductIds.includes(teacherPremium.id) &&
+      !isEnterprise
     ) {
       setSelectedProductIds((ids) => [teacherPremium.id, ...ids])
     }

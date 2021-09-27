@@ -172,10 +172,12 @@ const Total = styled.div`
   font-size: 30px;
   text-align: center;
   color: #434b5d;
+  height: 45px;
 `
 
 const Score = styled(Total)`
   border-bottom: 0.2rem solid #434b5d;
+  height: 45px;
 `
 
 const Feedback = styled.div`
@@ -186,6 +188,7 @@ const ScoreWrapper = styled.div`
   max-width: 80px;
   min-width: 65px;
   padding: 0px 12px;
+  height: 90px;
 `
 
 const FeedbackContainer = styled.div`

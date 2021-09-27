@@ -66,7 +66,6 @@ const Options = ({
       width="100%"
       styleType={styleType}
       fontSize={fontSize}
-      id="multiplechoice-optionlist"
       className="multiplechoice-optionlist"
     >
       {cols.map((col, colIdx) => (

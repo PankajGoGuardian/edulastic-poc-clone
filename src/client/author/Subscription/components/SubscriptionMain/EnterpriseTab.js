@@ -12,6 +12,8 @@ import {
   IconStemCross,
   IconCPM,
   IconSparkWriting,
+  IconSparkBooks,
+  IconSparkPhonics,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
@@ -87,6 +89,17 @@ const addonsData = [
     title: 'SparkWriting',
     description:
       'Practice activities for grammar, conventions, usage, and mechanics for grade 2-12',
+  },
+  {
+    icon: <IconSparkBooks />,
+    title: 'SparkBooks',
+    description: 'Quizzes and activities for the books you teach',
+  },
+  {
+    icon: <IconSparkPhonics />,
+    title: 'SparkPhonics',
+    description:
+      'Diagnostics and weekly practice exercises to strengthen phonemic awareness for early readers',
   },
 ]
 

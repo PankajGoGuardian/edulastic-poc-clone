@@ -952,7 +952,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         maxWord: 1000,
         showWordLimit: ON_LIMIT,
         showWordCount: true,
-        uiStyle: { minHeight: 300, numberOfRows: 10 }, // textarea number of rows
+        uiStyle: { minHeight: 300, numberOfRows: 10, max_height: 300 }, // textarea number of rows
         validation: { validResponse: { score: 1 }, maxScore: 1 },
         hints: [{ value: uuids[0], label: '' }],
       },
@@ -1135,47 +1135,47 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       },
       onSelectQuestionType,
     },
-    {
-      type: 'classify',
-      firstMount: true,
-      title: 'Pictograph',
-      cardImage: CMClassification,
-      data: {
-        title: 'Pictograph',
-        firstMount: true,
-        possibleResponses: [],
-        droppedChoices: [],
-        stimulus: '',
-        type: 'pictograph',
-        duplicateResponses: true,
-        showClassName: true,
-        uiStyle: {
-          rowMinHeight: '100px',
-        },
-        classifications: [
-          {
-            id: uuidsForFill[0],
-            name: 'enter class name 1',
-            status: true,
-          },
-          {
-            id: uuidsForFill[1],
-            name: 'enter class name 2',
-            status: true,
-          },
-        ],
-        validation: {
-          scoringType: EXACT_MATCH,
-          validResponse: {
-            score: 1,
-            value: {},
-          },
-          altResponses: [],
-        },
-        hints: [{ value: uuids[0], label: '' }],
-      },
-      onSelectQuestionType,
-    },
+    // {
+    //   type: 'classify',
+    //   firstMount: true,
+    //   title: 'Pictograph',
+    //   cardImage: CMClassification,
+    //   data: {
+    //     title: 'Pictograph',
+    //     firstMount: true,
+    //     possibleResponses: [],
+    //     droppedChoices: [],
+    //     stimulus: '',
+    //     type: 'pictograph',
+    //     duplicateResponses: true,
+    //     showClassName: true,
+    //     uiStyle: {
+    //       rowMinHeight: '100px',
+    //     },
+    //     classifications: [
+    //       {
+    //         id: uuidsForFill[0],
+    //         name: 'enter class name 1',
+    //         status: true,
+    //       },
+    //       {
+    //         id: uuidsForFill[1],
+    //         name: 'enter class name 2',
+    //         status: true,
+    //       },
+    //     ],
+    //     validation: {
+    //       scoringType: EXACT_MATCH,
+    //       validResponse: {
+    //         score: 1,
+    //         value: {},
+    //       },
+    //       altResponses: [],
+    //     },
+    //     hints: [{ value: uuids[0], label: '' }],
+    //   },
+    //   onSelectQuestionType,
+    // },
     {
       type: 'classify',
       cardImage: CMClassification,

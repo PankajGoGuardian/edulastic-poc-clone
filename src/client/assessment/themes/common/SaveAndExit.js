@@ -68,7 +68,7 @@ const SaveAndExit = ({
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
   const currentVisibilityState = hideData ? 'show' : 'hide'
   return (
-    <FlexContainer marginLeft="30px" alignItems="center">
+    <FlexContainer alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
       {LCBPreviewModal && (
         <>

@@ -49,13 +49,12 @@ export default class FormText extends React.Component {
   }
 
   renderForm = () => {
-    const { answer, view, highlighted = false } = this.props
+    const { answer, highlighted = false } = this.props
     return (
       <Input
         size="large"
         value={answer}
         data-cy="textInput"
-        style={{ width: ['check', 'show'].includes(view) && '210px' }}
         onChange={this.handleChange}
         onBlur={this.handleBlur}
         ref={(el) => highlighted && el?.focus()}

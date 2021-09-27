@@ -112,6 +112,7 @@ const PurchaseFlowModals = (props) => {
     setCartQuantities,
     setProratedProducts,
     setIsTabShouldSwitch,
+    isCpm = false,
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -435,6 +436,7 @@ const PurchaseFlowModals = (props) => {
           shouldProrate={shouldProrate}
           subEndDate={subEndDate}
           isEnterprise={isEnterprise}
+          isCpm={isCpm}
         />
       )}
       {showMultiplePurchaseModal && (

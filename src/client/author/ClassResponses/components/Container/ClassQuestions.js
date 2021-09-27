@@ -811,9 +811,8 @@ const withConnect = connect(
       []
     ),
     variableSetIds: getDynamicVariablesSetIdForViewResponse(state, {
-      testActivityId: ownProps.testActivityId,
-      questionActivities: ownProps.questionActivities, // question centric has only one element
-      isQuestionView: ownProps.isQuestionView,
+      showMultipleAttempts: ownProps.isLCBView && !ownProps.isQuestionView,
+      studentId: ownProps.currentStudent.studentId,
     }),
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),

@@ -40,6 +40,7 @@ const ItemPlayer = ({
         answersByQids,
         KeyBy(questions, 'id'),
         testItem.itemLevelScoring,
+        undefined,
         testItem.itemLevelScore,
         testItem._id
       )

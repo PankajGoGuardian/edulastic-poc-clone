@@ -2968,7 +2968,8 @@ function* getEvaluation(testItemId, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore,
+    newScore,
+    itemLevelScore,
     testItem._id,
     itemGradingType,
     assignPartialCredit
@@ -2993,7 +2994,8 @@ function* getEvaluationFromItem(testItem, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore,
+    newScore,
+    itemLevelScore,
     testItem._id,
     itemGradingType,
     assignPartialCredit

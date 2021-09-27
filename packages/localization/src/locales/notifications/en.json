@@ -807,6 +807,10 @@
     "message": " Please select at least one question to remove",
     "description": ""
   },
+  "altResponseAvailableInItem": {
+    "message": "Score for alternate answers will be proportionally changed",
+    "description": ""
+  },
   "teacherCantRegrade": {
     "message": " Teacher can not regrade author's test",
     "description": ""

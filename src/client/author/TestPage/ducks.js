@@ -2401,7 +2401,9 @@ function* updateTestDocBasedSaga({ payload }) {
       })
       if (Object.keys(versionedQIdMap).length) {
         payload.data.annotations.forEach((annotation) => {
-          annotation.questionId = versionedQIdMap[annotation.questionId]
+          if (versionedQIdMap[annotation.questionId]) {
+            annotation.questionId = versionedQIdMap[annotation.questionId]
+          }
         })
       }
     }
@@ -3027,12 +3029,6 @@ function* checkAnswerSaga({ payload }) {
     }
     const { evaluation, score, maxScore } = evaluationObject
     yield put({
-      type: ADD_ITEM_EVALUATION,
-      payload: {
-        ...evaluation,
-      },
-    })
-    yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: 'check',
@@ -3045,6 +3041,13 @@ function* checkAnswerSaga({ payload }) {
         score: round(score, 2),
         maxScore,
         showScore: true,
+      },
+    })
+
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation,
       },
     })
 

@@ -20,134 +20,9 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
-import LineReader from '../../../common/components/LineReader'
+// import LineReader from '../../../common/components/LineReader'
 
 const { calculatorTypes } = test
-
-const ActionButton = ({ title, icon, ...rest }) => (
-  <Tooltip placement="top" title={title}>
-    <ButtonWithStyle {...rest}>{icon}</ButtonWithStyle>
-  </Tooltip>
-)
-
-const ToolBar = ({
-  settings,
-  tool = [],
-  qType,
-  handleMagnifier,
-  openReferenceModal,
-  isShowReferenceModal,
-  enableMagnifier,
-  toggleUserWorkUploadModal,
-  changeTool,
-  hasDrawingResponse,
-  isPremiumContentWithoutAccess = false,
-}) => {
-  const {
-    calcType,
-    showMagnifier,
-    enableScratchpad,
-    isTeacherPremium,
-  } = settings
-  const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
-
-  const toolbarHandler = (value) => () => {
-    changeTool(value)
-  }
-
-  return (
-    <Container>
-      <ActionButton
-        disabled={isPremiumContentWithoutAccess}
-        title="Pointer"
-        icon={<CursorIcon />}
-        active={tool.includes(0)}
-        onClick={toolbarHandler(0)}
-        hidden
-      />
-      <ActionButton
-        disabled={isPremiumContentWithoutAccess}
-        title="Ruler"
-        icon={<InRulerIcon />}
-        active={tool.includes(1)}
-        onClick={toolbarHandler(1)}
-        hidden
-      />
-      {calcType !== calculatorTypes.NONE && (
-        <ActionButton
-          disabled={isPremiumContentWithoutAccess}
-          title="Calculator"
-          icon={<CaculatorIcon />}
-          active={tool.includes(2)}
-          onClick={toolbarHandler(2)}
-        />
-      )}
-      <ActionButton
-        title={
-          isDisableCrossBtn
-            ? 'This option is available only for multiple choice'
-            : 'Crossout'
-        }
-        icon={<CloseIcon />}
-        active={tool.includes(3)}
-        onClick={toolbarHandler(3)}
-        disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
-      />
-      <ActionButton
-        disabled={isPremiumContentWithoutAccess}
-        title="Protactor"
-        icon={<ProtactorIcon />}
-        active={tool.includes(4)}
-        onClick={toolbarHandler(4)}
-        hidden
-      />
-
-      {enableScratchpad && !hasDrawingResponse && (
-        <ActionButton
-          disabled={isPremiumContentWithoutAccess}
-          title="Scratch Pad"
-          icon={<ScratchPadIcon />}
-          active={tool.includes(5)}
-          onClick={toolbarHandler(5)}
-        />
-      )}
-      {showMagnifier && (
-        <ActionButton
-          disabled={isPremiumContentWithoutAccess}
-          title="Magnify"
-          icon={<IconMagnify />}
-          active={enableMagnifier}
-          onClick={handleMagnifier}
-        />
-      )}
-      {isTeacherPremium && (
-        <ActionButton
-          disabled={isPremiumContentWithoutAccess}
-          title="Upload work"
-          icon={<IconCloudUpload />}
-          onClick={toggleUserWorkUploadModal}
-        />
-      )}
-      <ActionButton
-        disabled={isPremiumContentWithoutAccess}
-        title="Reference Sheet"
-        icon={<IconReferenceSheet />}
-        active={isShowReferenceModal}
-        onClick={openReferenceModal}
-      />
-      <LineReader />
-    </Container>
-  )
-}
-
-ToolBar.propTypes = {
-  tool: PropTypes.array.isRequired,
-  changeTool: PropTypes.func.isRequired,
-  settings: PropTypes.object.isRequired,
-  qType: PropTypes.string.isRequired,
-}
-
-export default ToolBar
 
 export const Container = styled.div`
   margin-left: 0px;
@@ -290,3 +165,119 @@ const ScratchPadIcon = styled(IconScratchPad)`
     height: ${theme.default.headerScratchPadIconHeight};
   `}
 `
+
+const ActionButton = ({ title, icon, ...rest }) => (
+  <Tooltip placement="top" title={title}>
+    <ButtonWithStyle {...rest}>{icon}</ButtonWithStyle>
+  </Tooltip>
+)
+
+const ToolBar = ({
+  settings,
+  tool = [],
+  qType,
+  handleMagnifier,
+  enableMagnifier,
+  toggleUserWorkUploadModal,
+  changeTool,
+  hasDrawingResponse,
+  isPremiumContentWithoutAccess = false,
+}) => {
+  const {
+    calcType,
+    showMagnifier,
+    enableScratchpad,
+    isTeacherPremium,
+  } = settings
+  const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
+
+  const toolbarHandler = (value) => () => {
+    changeTool(value)
+  }
+
+  return (
+    <Container>
+      <ActionButton
+        disabled={isPremiumContentWithoutAccess}
+        title="Pointer"
+        icon={<CursorIcon />}
+        active={tool.includes(0)}
+        onClick={toolbarHandler(0)}
+        hidden
+      />
+      <ActionButton
+        disabled={isPremiumContentWithoutAccess}
+        title="Ruler"
+        icon={<InRulerIcon />}
+        active={tool.includes(1)}
+        onClick={toolbarHandler(1)}
+        hidden
+      />
+      {calcType !== calculatorTypes.NONE && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Calculator"
+          icon={<CaculatorIcon />}
+          active={tool.includes(2)}
+          onClick={toolbarHandler(2)}
+        />
+      )}
+      <ActionButton
+        title={
+          isDisableCrossBtn
+            ? 'This option is available only for multiple choice'
+            : 'Crossout'
+        }
+        icon={<CloseIcon />}
+        active={tool.includes(3)}
+        onClick={toolbarHandler(3)}
+        disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
+      />
+      <ActionButton
+        disabled={isPremiumContentWithoutAccess}
+        title="Protactor"
+        icon={<ProtactorIcon />}
+        active={tool.includes(4)}
+        onClick={toolbarHandler(4)}
+        hidden
+      />
+
+      {enableScratchpad && !hasDrawingResponse && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Scratch Pad"
+          icon={<ScratchPadIcon />}
+          active={tool.includes(5)}
+          onClick={toolbarHandler(5)}
+        />
+      )}
+      {showMagnifier && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Magnify"
+          icon={<IconMagnify />}
+          active={enableMagnifier}
+          onClick={handleMagnifier}
+        />
+      )}
+      {isTeacherPremium && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Upload work"
+          icon={<IconCloudUpload />}
+          onClick={toggleUserWorkUploadModal}
+        />
+      )}
+      {/* <LineReader btnComponent={ButtonWithStyle} /> */}
+    </Container>
+  )
+}
+
+ToolBar.propTypes = {
+  tool: PropTypes.array.isRequired,
+  changeTool: PropTypes.func.isRequired,
+  settings: PropTypes.object.isRequired,
+  qType: PropTypes.string.isRequired,
+}
+
+export default ToolBar

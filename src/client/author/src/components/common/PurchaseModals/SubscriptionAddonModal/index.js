@@ -15,6 +15,7 @@ const SubscriptionAddonModal = ({
   footer = null,
   shouldProrate = true,
   subEndDate = Date.now(),
+  isCpm = false,
 }) => {
   const newExtendingExpiry =
     !shouldProrate && moment(subEndDate + ONE_YEAR).format('DD MMM, YYYY')
@@ -35,18 +36,24 @@ const SubscriptionAddonModal = ({
         ) : (
           <>
             <p>
-              The Spark add-ons bundle premium content with some exciting
-              software features to make it super easy for you to use.
+              {!isCpm
+                ? `The Spark add-ons bundle premium content with some exciting
+              software features to make it super easy for you to use.`
+                : `The CPM Digital Assessment Package offers pre-built, customizable assessments for each chapter of your course, from Core Connections. From Course 1 to Algebra 2 and Integrated 1-2.`}
               <br />
-              <a
-                href="https://edulastic.com/spark-math/"
-                target="_blank"
-                rel="noreferrer"
-                data-cy="sparkContentLink"
-              >
-                Click here
-              </a>{' '}
-              to learn more.
+              {!isCpm ? (
+                <>
+                  <a
+                    href="https://edulastic.com/spark-math/"
+                    target="_blank"
+                    rel="noreferrer"
+                    data-cy="sparkContentLink"
+                  >
+                    Click here
+                  </a>
+                  <span> to learn more.</span>
+                </>
+              ) : null}
             </p>
             {!shouldProrate && (
               <p>

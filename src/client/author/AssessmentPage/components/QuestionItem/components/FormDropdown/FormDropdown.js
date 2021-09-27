@@ -54,14 +54,12 @@ export default class FormDropdown extends React.Component {
     const {
       question: { options },
       answer = [],
-      view,
       clearHighlighted,
     } = this.props
 
     return (
       <Dropdown
         disabled={mode === 'report'}
-        check={['check', 'show'].includes(view)}
         value={(answer[0] && answer[0].value) || ''}
         onChange={this.handleChange}
         data-cy="answerDropdown"

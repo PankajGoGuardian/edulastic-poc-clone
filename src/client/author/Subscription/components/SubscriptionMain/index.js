@@ -10,6 +10,8 @@ import {
   IconWord,
   IconCPM,
   IconSparkWriting,
+  IconSparkBooks,
+  IconSparkPhonics,
 } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { Tooltip } from 'antd'
@@ -91,7 +93,7 @@ const productsMetaData = {
   },
   CPM: {
     icon: <IconCPM />,
-    subject: 'math',
+    subject: 'math & cs',
     grades: 'Grades 6-12',
     learnMoreLinks: 'https://edulastic.com/CPM',
     filters: 'MATHEMATICS',
@@ -101,6 +103,20 @@ const productsMetaData = {
     subject: 'ela',
     grades: 'Grades K-12',
     learnMoreLinks: 'https://edulastic.com/spark-words',
+    filters: 'ELA',
+  },
+  SparkBooks: {
+    icon: <IconSparkBooks />,
+    subject: 'ela',
+    grades: 'Grades 6-12',
+    learnMoreLinks: 'https://edulastic.com/spark-books',
+    filters: 'ELA',
+  },
+  SparkPhonics: {
+    icon: <IconSparkPhonics />,
+    subject: 'ela',
+    grades: 'Grades K-3',
+    learnMoreLinks: 'https://edulastic.com/spark-phonics',
     filters: 'ELA',
   },
 }

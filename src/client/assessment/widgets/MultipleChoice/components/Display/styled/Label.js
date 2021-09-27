@@ -131,6 +131,7 @@ export const OptionsLabel = styled.span`
 
 export const OptionLabelDiv = styled.div`
   flex: 1;
+  z-index: 9999;
   position: relative;
   display: flex;
   align-items: center;

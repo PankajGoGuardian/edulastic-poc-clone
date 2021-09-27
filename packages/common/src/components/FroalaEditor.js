@@ -478,10 +478,9 @@ const NoneDiv = styled.div`
   opacity: 0;
 `
 
-const BackgroundStyleWrapper = styled.div.attrs(({ toolbarId }) => ({
+const BackgroundStyleWrapper = styled.div.attrs({
   className: 'froala-wrapper',
-  id: `froalaToolbarWrapper-${toolbarId}`,
-}))`
+})`
   position: relative;
   width: 100%;
   display: block;
@@ -798,7 +797,9 @@ const CustomEditor = ({
       tableResizingLimit: 50,
       toolbarInline: true,
       toolbarVisibleWithoutSelection: true,
-      scrollableContainer: `#froalaToolbarWrapper-${toolbarId}`,
+      toolbarContainer: toolbarId
+        ? `#froalaToolbarContainer-${toolbarId}`
+        : undefined,
       placeholderText: placeholder,
       htmlAllowedEmptyTags: [
         'textarea',
@@ -1477,12 +1478,13 @@ const CustomEditor = ({
         className={className}
         editorHeight={editorHeight}
         unsetMaxWidth={unsetMaxWidth}
-        toolbarId={toolbarId}
       >
         {toolbarId && (
           <ToolbarContainer
+            toolbarid={toolbarId}
             id={`froalaToolbarContainer-${toolbarId}`}
             ref={toolbarContainerRef}
+            toolbarId={toolbarId}
             toolbarInline={initialConfig.toolbarInline}
           />
         )}
@@ -1522,7 +1524,7 @@ CustomEditor.propTypes = {
 
 CustomEditor.defaultProps = {
   tag: 'textarea',
-  toolbarId: undefined,
+  toolbarId: null,
   initOnClick: true,
   toolbarSize: 'STD',
   customCharacters: [],

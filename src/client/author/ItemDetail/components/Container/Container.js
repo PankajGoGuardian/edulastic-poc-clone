@@ -336,9 +336,19 @@ class Container extends Component {
       return
     }
 
+    const isMultiDimensionalLayout = rows.length > 1
+
     if (item.passageId || item.multipartItem) {
       setCurrentQuestion('')
       this.setState({ showQuestionManageModal: true, rowIndex, tabIndex })
+      if (history?.location) {
+        const updatedState = {
+          ...history.location.state,
+          rowIndex,
+          isMultiDimensionalLayout,
+        }
+        history.replace({ ...history.location, state: updatedState })
+      }
       return
     }
 
@@ -349,7 +359,6 @@ class Container extends Component {
     // there is 2 col layout, only allow to add questions on the right panel
     // can add only resources/instructions in the left
 
-    const isMultiDimensionalLayout = rows.length > 1
     const { multipartItem: isMultipartItem } = item
     if (state?.testAuthoring === false) {
       return history.push({

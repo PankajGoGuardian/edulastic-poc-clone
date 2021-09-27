@@ -11,7 +11,7 @@ import {
   greyLight1,
 } from '@edulastic/colors'
 import { Card, MathFormulaDisplay } from '@edulastic/common'
-import { Rate } from 'antd/lib/index'
+import { Rate, Icon } from 'antd/lib/index'
 import styled, { css } from 'styled-components'
 
 export const Container = styled(Card)`
@@ -557,4 +557,14 @@ export const Grade = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+`
+
+export const StyledIcon = styled(Icon)`
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  font-size: 18px;
+  & > svg {
+    fill: ${white};
+  }
 `

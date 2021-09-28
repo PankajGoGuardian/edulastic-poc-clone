@@ -78,6 +78,7 @@ const Display = ({
               fromSetAnswers={fromSetAnswers}
               item={item}
               distance={10}
+              useDragHandle
               onSortEnd={onSortOptions}
               {...restProps}
             />

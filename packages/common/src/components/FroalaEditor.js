@@ -729,6 +729,7 @@ const CustomEditor = ({
   ...restOptions
 }) => {
   const mathFieldRef = useRef(null)
+  const editorRef = useRef(null)
   const toolbarContainerRef = useRef(null)
   const [showMathModal, setMathModal] = useState(false)
   const [mathModalIsEditable, setMathModalIsEditable] = useState(true)
@@ -1456,6 +1457,13 @@ const CustomEditor = ({
     }
   }, [content])
 
+  useEffect(() => {
+    if (editorRef.current && editorRef.current.editor) {
+      editorRef.current.editor.opts.placeholderText = placeholder
+      editorRef.current.editor.placeholder.refresh()
+    }
+  }, [placeholder])
+
   return (
     <>
       <MathModal
@@ -1493,6 +1501,7 @@ const CustomEditor = ({
           <Editor
             tag={tag}
             model={content}
+            ref={editorRef}
             onModelChange={setChange}
             config={configState}
             onManualControllerReady={manualControl}

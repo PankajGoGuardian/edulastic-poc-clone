@@ -1,6 +1,7 @@
 import styled from 'styled-components'
 import {
   white,
+  green,
   greyThemeDark2,
   greyThemeLight,
   themeColor,
@@ -67,28 +68,29 @@ export const AlternateAnswerLink = styled(Button)`
   &.ant-btn {
     background: transparent;
     color: ${greyThemeDark2};
-    border-radius: 0;
-    padding: 0;
+    padding: 0px 12px;
     box-shadow: none;
     /* margin-left: auto; */
     min-height: 34px;
     text-transform: uppercase;
     font-size: 11px;
-    border: none;
     outline: none;
     font-weight: 600;
     display: flex;
     align-items: center;
+    border: 1px solid transparent !important;
 
-    &:hover,
     &:hover,
     &:active,
     &:visited {
       background: transparent;
       color: ${greyThemeDark2};
-      border: none !important;
       outline: none !important;
       box-shadow: none !important;
+    }
+
+    &:focus {
+      border: 1px solid ${green} !important;
     }
   }
 `

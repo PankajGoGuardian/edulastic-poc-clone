@@ -1076,59 +1076,59 @@ function* loadQuestionSaga({ payload }) {
   }
 }
 
-const changeValidationWhenUnscored = (payload, oldQuestion) => {
-  let hasZeroInAltScore = false
-  const altResponses = get(payload, 'validation.altResponses', [])
-  const score = get(payload, 'validation.validResponse.score', 0)
-  const oldUnscored = get(oldQuestion, 'validation.unscored', false)
-  if (altResponses.length) {
-    hasZeroInAltScore = altResponses.some((altResp) => {
-      return altResp.score == 0
-    })
-  }
-  const isUnscored = score === 0 || hasZeroInAltScore
+// const changeValidationWhenUnscored = (payload, oldQuestion) => {
+//   let hasZeroInAltScore = false
+//   const altResponses = get(payload, 'validation.altResponses', [])
+//   const score = get(payload, 'validation.validResponse.score', 0)
+//   const oldUnscored = get(oldQuestion, 'validation.unscored', false)
+//   if (altResponses.length) {
+//     hasZeroInAltScore = altResponses.some((altResp) => {
+//       return altResp.score == 0
+//     })
+//   }
+//   const isUnscored = score === 0 || hasZeroInAltScore
 
-  // notify only if unscored checkbox checked or score given is 0
-  if (oldUnscored === false && isUnscored) {
-    notification({ type: 'warn', msg: 'Marked as a practice question' })
-  }
+//   // notify only if unscored checkbox checked or score given is 0
+//   if (oldUnscored === false && isUnscored) {
+//     notification({ type: 'warn', msg: 'Marked as a practice question' })
+//   }
 
-  if (isUnscored) {
-    return produce(payload, (draft) => {
-      draft.validation.validResponse.score = 0
-      draft.validation.altResponses?.forEach((altResp) => {
-        altResp.score = 0
-      })
-      if (draft.validation?.maxScore) {
-        draft.validation.maxScore = 0
-      }
+//   if (isUnscored) {
+//     return produce(payload, (draft) => {
+//       draft.validation.validResponse.score = 0
+//       draft.validation.altResponses?.forEach((altResp) => {
+//         altResp.score = 0
+//       })
+//       if (draft.validation?.maxScore) {
+//         draft.validation.maxScore = 0
+//       }
 
-      draft.validation.unscored = isUnscored
-    })
-  }
-  return produce(payload, (draft) => {
-    draft.validation.unscored = isUnscored
-  })
-}
+//       draft.validation.unscored = isUnscored
+//     })
+//   }
+//   return produce(payload, (draft) => {
+//     draft.validation.unscored = isUnscored
+//   })
+// }
 
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
-  const resourceTypes = [
-    questionType.VIDEO,
-    questionType.PASSAGE,
-    questionType.TEXT,
-  ]
-  const _payload = resourceTypes.includes(payload.type)
-    ? payload
-    : changeValidationWhenUnscored(payload, prevQuestion)
+  // const resourceTypes = [
+  //   questionType.VIDEO,
+  //   questionType.PASSAGE,
+  //   questionType.TEXT,
+  // ]
+  // const _payload = resourceTypes.includes(payload.type)
+  //   ? payload
+  //   : changeValidationWhenUnscored(payload, prevQuestion)
 
   yield put({
     type: UPDATE_QUESTION,
     payload: changeDataInPreferredLanguage(
       currentLanguage,
       prevQuestion,
-      _payload
+      payload
     ),
   })
 }

@@ -399,6 +399,7 @@ const QuestionBottomAction = ({
               height="30px"
               isGhost
               onClick={onClickShowSolutionHandler}
+              data-cy="showSolution"
             >
               {showExplanation ? 'Hide solution' : 'Show solution'}
             </EduButton>

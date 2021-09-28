@@ -186,6 +186,7 @@ const Option = (props) => {
       </CheckboxContainer>
       <span
         className="labelOnly"
+        data-cy="label"
         style={{ display: !label && 'none' }}
         onClick={fromSetAnswers && onChangeHandler}
       >

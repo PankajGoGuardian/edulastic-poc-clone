@@ -77,7 +77,7 @@ const Extras = ({
       </Row>
 
       <Row gutter={24}>
-        <Col md={24}>
+        <Col md={24} data-cy="explanation">
           <Label data-cy="sample_answer">
             {t('component.options.explanation')}
           </Label>

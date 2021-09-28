@@ -133,7 +133,7 @@ const PDFViewer = ({
     if (pdfDocument && URL !== pdfDocument?._transport?._params?.url) {
       loadPdf()
     }
-  }, [currentPage])
+  }, [currentPage, URL])
 
   useEffect(() => {
     if (

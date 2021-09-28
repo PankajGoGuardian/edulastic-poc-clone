@@ -550,6 +550,13 @@ class WorksheetComponent extends React.Component {
     })
   }
 
+  handleClearAnnotations = () => {
+    const { setTestData } = this.props
+    setTestData({
+      annotations: [],
+    })
+  }
+
   clearHighlighted = () => this.setState({ highlightedQuestion: null })
 
   render() {
@@ -674,7 +681,10 @@ class WorksheetComponent extends React.Component {
             width={700}
             visible={uploadModal}
             onCancel={() =>
-              this.setState({ uploadModal: false, isAddPdf: false })
+              this.setState({
+                uploadModal: false,
+                isAddPdf: false,
+              })
             }
             footer={null}
           >
@@ -702,6 +712,7 @@ class WorksheetComponent extends React.Component {
             onDeletePage={this.handleDeletePage}
             setDeleteConfirmation={this.setDeleteConfirmation}
             onDeleteSelectedBlankPage={this.handleDeleteSelectedBlankPage}
+            onClearAnnotations={this.handleClearAnnotations}
             onMovePageUp={this.handleMovePageUp}
             onMovePageDown={this.handleMovePageDown}
             onInsertBlankPage={this.handleInsertBlankPage}

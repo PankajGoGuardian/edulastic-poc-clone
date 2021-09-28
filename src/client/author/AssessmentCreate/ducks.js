@@ -233,6 +233,10 @@ function* createAssessmentSaga({ payload }) {
         delete updatedAssessment.freezeSettings
       }
 
+      if (updatedAssessment.settingId === '') {
+        updatedAssessment.settingId = null
+      }
+
       const updatePayload = {
         id: assessment._id,
         data: updatedAssessment,
@@ -240,13 +244,13 @@ function* createAssessmentSaga({ payload }) {
 
       const newTest = yield call(testsApi.update, updatePayload)
 
-      yield put(
-        setTestDataAction({
-          docUrl: fileURI,
-          pageStructure: newPageStructure,
-          version: newTest.version,
-        })
-      )
+      const testData = {
+        docUrl: fileURI,
+        pageStructure: newPageStructure,
+        version: newTest.version,
+      }
+
+      yield put(setTestDataAction(testData))
       yield put(createAssessmentSuccessAction())
       yield put(push(`/author/assessments/${assessment._id}`))
     } else {

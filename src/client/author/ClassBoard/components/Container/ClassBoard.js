@@ -86,6 +86,7 @@ import {
   actionInProgressSelector,
   getAllStudentsList,
   getStudentsPrevSubmittedUtasSelector,
+  getIsDocBasedTestSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -1052,6 +1053,7 @@ class ClassBoard extends Component {
       studentUnselectAll,
       regradeModalState,
       setPageNumber,
+      isDocBasedTest,
     } = this.props
 
     const {
@@ -1076,16 +1078,15 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params
     const studentTestActivity =
       (studentResponse && studentResponse.testActivity) || {}
+    const studentResponseUqas = isDocBasedTest
+      ? studentResponse?.questionActivities
+      : uniqBy(studentResponse?.questionActivities || [], 'testItemId')
     const timeSpent = Math.floor(
-      ((studentResponse &&
-        studentResponse.questionActivities &&
-        uniqBy(studentResponse.questionActivities, 'testItemId').reduce(
-          (acc, qa) => {
-            acc += qa.timeSpent || 0
-            return acc
-          },
-          0
-        )) ||
+      ((studentResponseUqas &&
+        studentResponseUqas.reduce((acc, qa) => {
+          acc += qa.timeSpent || 0
+          return acc
+        }, 0)) ||
         0) / 1000
     )
     const { status } = studentTestActivity
@@ -2040,6 +2041,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
+      isDocBasedTest: getIsDocBasedTestSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

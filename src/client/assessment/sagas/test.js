@@ -233,7 +233,6 @@ function getScratchpadDataFromAttachments(attachments) {
 function* loadTest({ payload }) {
   const {
     testActivityId,
-    testId,
     preview = false,
     demo = false,
     test: testData = {},
@@ -243,6 +242,8 @@ function* loadTest({ payload }) {
     currentAssignmentId,
     savedUserWork,
   } = payload
+  let { testId } = payload
+  const _testId = testId
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
@@ -274,13 +275,6 @@ function* loadTest({ payload }) {
     })
     yield put(setPasswordValidateStatusAction(false))
 
-    yield put({
-      type: SET_TEST_ID,
-      payload: {
-        testId,
-      },
-    })
-
     const studentAssesment = yield select((state) =>
       (state.router.location.pathname || '').match(
         new RegExp('/student/assessment/.*/class/.*/uta/.*/itemId/.*')
@@ -300,6 +294,18 @@ function* loadTest({ payload }) {
           !!studentAssesment
         )
       : false
+    const _response = yield all([getTestActivity])
+    const testActivity = _response?.[0] || {}
+    if (testActivity?.testActivity?.testId) {
+      testId = testActivity?.testActivity?.testId
+    }
+
+    yield put({
+      type: SET_TEST_ID,
+      payload: {
+        testId,
+      },
+    })
     const userAuthenticated = getAccessToken()
     const getPublicTest = userAuthenticated
       ? testsApi.getById
@@ -316,15 +322,14 @@ function* loadTest({ payload }) {
       : call(getPublicTest, testId)
 
     const previousVisitedTestId = sessionStorage.getItem('currentTestId')
-    if (previousVisitedTestId !== testId) {
+    if (previousVisitedTestId !== _testId) {
       yield put(setZoomLevelAction('1'))
       yield put(setSelectedThemeAction('default'))
       localStorage.setItem('selectedTheme', 'default')
       localStorage.setItem('zoomLevel', 1)
       sessionStorage.setItem('currentTestId', testId)
     }
-    const _response = yield all([getTestActivity])
-    const testActivity = _response?.[0] || {}
+
     const isFromSummary = yield select((state) =>
       get(state, 'router.location.state.fromSummary', false)
     )

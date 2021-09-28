@@ -278,6 +278,8 @@ const StaticMath = ({
     }
   }, [latex, changed])
 
+  const noKeypadMode = symbols?.[0] === math.NO_KEYPAD.value
+
   return (
     <MathInputStyles
       noBorder={noBorder}
@@ -299,7 +301,7 @@ const StaticMath = ({
             data-cy="answer-math-input-field"
           />
         </div>
-        {(!isEmpty(keyboardPosition) || alwaysShowKeyboard) && (
+        {(!isEmpty(keyboardPosition) || alwaysShowKeyboard) && !noKeypadMode && (
           <MathKeyboardWrapper
             className="input__keyboard"
             position={keyboardPosition}

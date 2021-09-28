@@ -12,7 +12,7 @@ import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
 import PeriodicTable from '../PeriodicTable'
 
-const { EMBED_RESPONSE, keyboardMethods } = math
+const { EMBED_RESPONSE, keyboardMethods, NO_KEYPAD } = math
 const MAX_CONTENT_LENGTH = 1200
 
 class MathInput extends React.PureComponent {
@@ -438,6 +438,7 @@ class MathInput extends React.PureComponent {
       !alwaysShowKeyboard &&
       mathFieldFocus &&
       !hideKeyboardByDefault
+    const noKeypadMode = symbols?.[0] === NO_KEYPAD.value
 
     const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
@@ -484,7 +485,7 @@ class MathInput extends React.PureComponent {
             )}
           </div>
         </div>
-        {(visibleKeypad || alwaysShowKeyboard) && (
+        {(visibleKeypad || alwaysShowKeyboard) && !noKeypadMode && (
           <MathKeyboardWrapper
             className="input__keyboard"
             position={keyboardPosition}

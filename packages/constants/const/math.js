@@ -143,6 +143,12 @@ const symbols = [
   },
 ]
 
+const NO_KEYPAD = {
+  type: 'no-keypad',
+  value: 'no-keypad',
+  label: 'No Keypad',
+}
+
 const symbolsAll = [
   { value: 'all', label: 'Full' },
   { value: 'qwerty', label: 'Keyboard' },
@@ -560,4 +566,5 @@ module.exports = {
   keyboardMethods,
   GRAPH_EVALUATION_SETTING,
   simplifiedOptions,
+  NO_KEYPAD,
 }

@@ -57,13 +57,14 @@ import { toggleSideBarAction } from '../actions/toggleMenu'
 import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
   isDemoPlaygroundUser,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
   getAccountSwitchDetails,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
   getUserOrgId,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
@@ -300,11 +301,16 @@ class SideMenu extends Component {
       const {
         history,
         isFreeAdmin,
-        toggleFreeAdminSubscriptionModal,
+        isSAWithoutSchools,
+        toggleAdminAlertModal,
       } = this.props
       const { path, label } = this.MenuItems[item.key]
-      if (label === 'Assignments' && isFreeAdmin) {
-        return toggleFreeAdminSubscriptionModal()
+      if (
+        (['Assignments', 'Insights', 'Manage School'].includes(label) &&
+          isSAWithoutSchools) ||
+        (label === 'Assignments' && isFreeAdmin)
+      ) {
+        return toggleAdminAlertModal()
       }
       if (label === 'My Playlist' && !this.props.features.premium) {
         return this.handleBlockedClick()
@@ -789,8 +795,8 @@ class SideMenu extends Component {
                     onClick={this.toggleDropdown}
                     overlayStyle={{
                       position: 'fixed',
-                      minWidth: isCollapsed ? '50px' : '220px',
-                      maxWidth: isCollapsed ? '50px' : '0px',
+                      minWidth: isCollapsed ? '70px' : '220px',
+                      maxWidth: isCollapsed ? '70px' : '0px',
                     }}
                     className="footerDropdown"
                     overlay={footerDropdownMenu(isDemoPlaygroundUserProxy)}
@@ -908,12 +914,13 @@ const enhance = compose(
         false
       ),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
     }
   )
@@ -1362,6 +1369,7 @@ const FooterDropDown = styled.div`
           font-weight: 600;
           display: flex;
           align-items: center;
+          padding-left: 10px;
           &:focus,
           &:hover {
             svg,

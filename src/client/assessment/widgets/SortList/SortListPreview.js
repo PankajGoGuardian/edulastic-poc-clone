@@ -59,6 +59,7 @@ const SortListPreview = ({
   isReviewTab,
   isPrintPreview,
   hideCorrectAnswer,
+  evaluation,
 }) => {
   const previewRef = useRef()
   const answerContextConfig = useContext(AnswerContext)
@@ -415,7 +416,8 @@ const SortListPreview = ({
                         index={i}
                         correct={
                           altRespCorrect.includes(selectedItem) ||
-                          isReviewTab === true
+                          isReviewTab === true ||
+                          evaluation?.[i]
                         }
                         smallSize={smallSize}
                         previewTab={previewTab}

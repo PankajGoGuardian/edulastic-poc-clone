@@ -14,8 +14,7 @@ import {
   StyledSpin,
 } from '../../../../admin/Common/StyledComponents'
 
-const title = 'Manage District'
-const menuActive = { mainMenu: 'Schools', subMenu: '' }
+const menuActive = { mainMenu: 'Administration', subMenu: 'schools' }
 
 class Schools extends Component {
   render() {
@@ -31,21 +30,16 @@ class Schools extends Component {
 
     return (
       <MainWrapper>
-        <AdminHeader
-          title={title}
-          active={menuActive}
-          history={history}
-          count={totalSchoolsCount}
-        />
+        <AdminHeader active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
 
-            <SchoolsTable />
+            <SchoolsTable count={totalSchoolsCount} history={history} />
           </StyledLayout>
         </StyledContent>
       </MainWrapper>

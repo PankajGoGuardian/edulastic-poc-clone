@@ -103,7 +103,7 @@ export function* getCustomReportRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting custom report. Please try again after a few minutes.'
+      'Error getting custom reports data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_CUSTOM_REPORT_STATE_REQUEST_ERROR,

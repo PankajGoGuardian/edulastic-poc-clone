@@ -1,58 +1,13 @@
 import styled from 'styled-components'
-import { Layout, Spin, Input, List, Col, Row } from 'antd'
+import { Input, List, Col, Row } from 'antd'
 import {
   themeColor,
   white,
   lightGreySecondary,
   sectionBorder,
-  mediumDesktopExactWidth,
+  lightGrey3,
+  title,
 } from '@edulastic/colors'
-
-const { Content } = Layout
-
-export const PerformanceBandDiv = styled.div`
-  display: flex;
-  flex-direction: row;
-`
-
-export const StyledContent = styled(Content)`
-  width: 100%;
-  padding: 90px 30px 30px;
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    padding: 126px 30px 30px;
-  }
-`
-
-export const StyledLayout = styled(Layout)`
-  position: relative;
-  box-shadow: 0 3px 10px 0 rgba(0, 0, 0, 0.1);
-  border-radius: 10px;
-  background: #fff;
-  padding: 30px;
-  display: flex;
-  flex-direction: column;
-  pointer-events: ${(props) => (props.loading === 'true' ? 'none' : 'auto')}
-  min-height: 400px;
-`
-
-export const SpinContainer = styled.div`
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  left: 0;
-  top: 0;
-  background: rgba(68, 68, 68, 0.1);
-  z-index: 999;
-  border-radius: 10px;
-`
-
-export const StyledSpin = styled(Spin)`
-  position: absolute;
-  left: 50%;
-  top: 35%;
-  transform: translate(-50%, -50%);
-`
 
 export const ModalInput = styled(Input)`
   background: ${lightGreySecondary};
@@ -76,15 +31,20 @@ export const RowStyled = styled(Row)`
 export const StyledProfileRow = styled(Row)`
   display: block;
   padding: 0px 20px;
-  background-color: ${lightGreySecondary};
-  border: 1px solid ${sectionBorder} !important;
+  background-color: ${lightGrey3};
   margin-bottom: 7px;
   height: 45px;
   display: flex;
   align-items: center;
   justify-content: space-between;
   cursor: pointer;
-  h3,
+  border-radius: 4px;
+  h3 {
+    font-weight: bold;
+    font-size: 12px;
+    color: ${title};
+    margin: 0px;
+  }
   input {
     font-weight: 500;
     font-size: 15px;

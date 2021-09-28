@@ -109,7 +109,7 @@ function* getReportsResponseFrequencyRequest({ payload }) {
     })
   } catch (error) {
     const msg =
-      'Error getting response frequency. Please try again after a few minutes.'
+      'Error getting response frequency report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_RESPONSE_FREQUENCY_REQUEST_ERROR,

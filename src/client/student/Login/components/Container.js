@@ -9,6 +9,7 @@ import {
   themeColor,
 } from '@edulastic/colors'
 import { IconLock, IconMail } from '@edulastic/icons'
+import { CopyRight } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Button, Checkbox, Col, Form, Input, Row } from 'antd'
 import { trim, get } from 'lodash'
@@ -353,7 +354,9 @@ class LoginContainer extends React.Component {
           </Col>
         </Row>
         <Copyright>
-          <Col span={24}>{t('common.copyright')}</Col>
+          <Col span={24}>
+            <CopyRight />
+          </Col>
         </Copyright>
         {forgotPasswordVisible ? (
           <ForgotPasswordPopup

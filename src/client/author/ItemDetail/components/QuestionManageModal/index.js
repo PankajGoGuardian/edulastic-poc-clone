@@ -19,18 +19,19 @@ import {
   saveQuestionAction,
 } from '../../../QuestionEditor/ducks'
 
-const QuestionToPassage = ({
+const QuestionManageModal = ({
   onCancel,
   isTestFlow,
   isEditFlow,
+  isPassage,
   question,
   testId,
   updateQuestion,
   removeQuestion,
   setCurrentQuestion,
   saveWidgetToPassage,
-  saveQuestionToPassage,
-  isEditPassageQuestion,
+  saveQuestionToItem,
+  isEditMultipartQuestion,
   rowIndex,
   tabIndex,
 }) => {
@@ -46,26 +47,26 @@ const QuestionToPassage = ({
     if (question?.id) {
       setCurrentQuestion('')
     }
-    if (isEditPassageQuestion) {
+    if (isEditMultipartQuestion) {
       updateQuestion(prevQuestion)
     }
-    if (!isEditPassageQuestion && question?.id) {
+    if (!isEditMultipartQuestion && question?.id) {
       removeQuestion(question.id)
     }
   }
 
   const handleAddWideget = () => {
-    if (values(resourceTypeQuestions).includes(question.type)) {
+    if (isPassage && values(resourceTypeQuestions).includes(question.type)) {
       saveWidgetToPassage({
         rowIndex,
         tabIndex,
-        isEdit: isEditPassageQuestion,
+        isEdit: isEditMultipartQuestion,
         callback: onCancel,
         isTestFlow,
         testId,
       })
     } else {
-      saveQuestionToPassage({
+      saveQuestionToItem({
         rowIndex,
         tabIndex,
         callback: onCancel,
@@ -76,10 +77,10 @@ const QuestionToPassage = ({
   }
 
   useEffect(() => {
-    if (isEditPassageQuestion && question?.id) {
+    if (isEditMultipartQuestion && question?.id) {
       setPrevQuestion(question)
     }
-  }, [question?.id, isEditPassageQuestion])
+  }, [question?.id, isEditMultipartQuestion])
 
   const [modalWidth, modalHeight, modalStyle] = useMemo(() => {
     if (isFullModal) {
@@ -109,10 +110,10 @@ const QuestionToPassage = ({
           <QuestionEditor
             isTestFlow={isTestFlow}
             isEditFlow={isEditFlow}
-            isPassageWithQuestions
+            isMultipartItem
             isInModal={!isFullModal}
             onToggleFullModal={handleToggleFullModal}
-            onAddWidgetToPassage={handleAddWideget}
+            onAddWidgetToItem={handleAddWideget}
             onCloseEditModal={handleCancel}
           />
         )}
@@ -137,13 +138,13 @@ const enhance = compose(
     {
       removeQuestion: deleteQuestionAction,
       updateQuestion: updateQuestionAction,
-      saveQuestionToPassage: saveQuestionAction,
+      saveQuestionToItem: saveQuestionAction,
       saveWidgetToPassage: savePassageAction,
       setCurrentQuestion: changeCurrentQuestionAction,
     }
   )
 )
-export default enhance(QuestionToPassage)
+export default enhance(QuestionManageModal)
 
 const StyledModal = styled(Modal)`
   .ant-modal-header {

@@ -24,14 +24,25 @@ const CartButton = ({
     )
   }
   return (
-    <Container data-cy={buttonText} disabled={!numberOfSelectedItems}>
+    <Container>
       {numberOfSelectedItems > 0 && (
-        <EduButton isBlue isGhost onClick={clearSelectedItems}>
+        <EduButton
+          data-cy="deselectItems"
+          isBlue
+          isGhost
+          onClick={clearSelectedItems}
+        >
           Deselect all items
         </EduButton>
       )}
 
-      <EduButton isBlue isGhost onClick={onClick}>
+      <EduButton
+        isBlue
+        isGhost
+        onClick={onClick}
+        data-cy="New Test"
+        disabled={!numberOfSelectedItems}
+      >
         <span>{buttonText}</span>
         <ItemsAmount>{numberOfSelectedItems}</ItemsAmount>
         items

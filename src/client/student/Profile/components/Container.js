@@ -9,16 +9,31 @@ import {
 } from '@edulastic/colors'
 import { MainContentWrapper } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Button, Form, Icon, Input, Table, Tag } from 'antd'
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
+import { roleuser } from '@edulastic/constants'
+import { get } from 'lodash'
+import { Button, Form, Icon, Input, Table, Tag, Select } from 'antd'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { resetMyPasswordAction } from '../../Login/ducks'
+import {
+  deleteAccountAction,
+  resetMyPasswordAction,
+  updateUserDetailsAction,
+} from '../../Login/ducks'
 import { Wrapper } from '../../styled'
 import Photo from './Photo'
 import { getFormattedName } from '../../../author/Gradebook/transformers'
+import {
+  DeleteAccountButton,
+  EditProfileButton,
+  InputItemWrapper,
+  TitleSelect,
+} from '../../../author/DistrictProfile/components/Container/ProfileBody'
+import DeleteAccountModal from '../../../author/DistrictProfile/components/DeleteAccountModal/DeleteAccountModal'
+import { getUserOrg } from '../../../author/src/selectors/user'
 
 const FormItem = Form.Item
 class ProfileContainer extends React.Component {
@@ -27,15 +42,56 @@ class ProfileContainer extends React.Component {
     showChangePassword: false,
   }
 
+  handleUpdateDetails(isLogout) {
+    const {
+      form: { getFieldValue },
+      user,
+      updateUserDetails,
+      userInfo: { currentSignUpState },
+      userOrg: { districtId } = {},
+    } = this.props
+    const { showChangePassword, isEditProfile } = this.state
+    // in case of parent only one districtId will exist
+    const data = {
+      districtId,
+      email: user.email,
+      firstName: isEditProfile ? getFieldValue('firstName') : user.firstName,
+      lastName: isEditProfile ? getFieldValue('lastName') : user.lastName,
+      title: isEditProfile ? getFieldValue('title') : user.title,
+      currentSignUpState: signupStateBykey[currentSignUpState],
+    }
+    if (showChangePassword) {
+      data.password = getFieldValue('password')
+    }
+
+    updateUserDetails({
+      data,
+      userId: user._id,
+      isLogout,
+    })
+    this.setState({
+      isEditProfile: false,
+      showChangePassword: false,
+    })
+  }
+
   handleSubmit = (e) => {
     const { form, user, resetMyPassword } = this.props
+    const { isEditProfile } = this.state
     e.preventDefault()
     form.validateFieldsAndScroll((err, { password }) => {
       if (!err) {
-        resetMyPassword({
-          newPassword: password,
-          username: user.email,
-        })
+        if (isEditProfile && user.role === roleuser.PARENT) {
+          this.handleUpdateDetails(false)
+        } else {
+          resetMyPassword({
+            newPassword: password,
+            username: user.email,
+          })
+          this.setState({
+            showChangePassword: false,
+          })
+        }
         form.resetFields()
       }
     })
@@ -45,7 +101,7 @@ class ProfileContainer extends React.Component {
     e.preventDefault()
     const { form } = this.props
     form.resetFields()
-    this.setState({ showChangePassword: false })
+    this.setState({ showChangePassword: false, isEditProfile: false })
   }
 
   handleConfirmBlur = ({ target: { value } }) => {
@@ -74,129 +130,243 @@ class ProfileContainer extends React.Component {
     callback()
   }
 
+  toggleModal = (modalType, value) => {
+    if (modalType === 'DELETE_ACCOUNT') {
+      this.setState({ showModal: value })
+    }
+  }
+
+  deleteProfile = () => {
+    const { deleteAccount, user } = this.props
+    this.setState({ showModal: false })
+    deleteAccount(user._id)
+  }
+
+  getEditProfileContent = () => {
+    const {
+      t,
+      user,
+      form: { getFieldDecorator },
+    } = this.props
+    return (
+      <Details>
+        <DetailRow padding="15px 0px">
+          <DetailTitle>{t('common.title.userTitleLabel')}</DetailTitle>
+          <DetailData>
+            <InputItemWrapper>
+              {getFieldDecorator('title', {
+                initialValue: user.title,
+              })(
+                <TitleSelect>
+                  <Select.Option value="Mr.">Mr.</Select.Option>
+                  <Select.Option value="Mrs.">Mrs.</Select.Option>
+                  <Select.Option value="Ms.">Ms.</Select.Option>
+                  <Select.Option value="Dr.">Dr.</Select.Option>
+                </TitleSelect>
+              )}
+            </InputItemWrapper>{' '}
+          </DetailData>
+        </DetailRow>
+        <DetailRow padding="15px 0px">
+          <DetailTitle>{t('common.title.firstNameInputLabel')}</DetailTitle>
+          <DetailData>
+            <InputItemWrapper>
+              {getFieldDecorator('firstName', {
+                initialValue: user.firstName,
+                rules: [
+                  {
+                    required: true,
+                    message: t('common.title.firstName'),
+                  },
+                ],
+              })(<Input type="text" />)}
+            </InputItemWrapper>{' '}
+          </DetailData>
+        </DetailRow>
+        <DetailRow padding="15px 0px">
+          <DetailTitle>{t('common.title.lastNameInputLabel')}</DetailTitle>
+          <DetailData>
+            <InputItemWrapper>
+              {getFieldDecorator('lastName', {
+                initialValue: user.lastName,
+              })(<Input type="text" />)}
+            </InputItemWrapper>{' '}
+          </DetailData>
+        </DetailRow>
+        <DetailRow>
+          <DetailTitle>{t('common.title.emailUsernameLabel')}</DetailTitle>
+          <DetailData>{user.email}</DetailData>
+        </DetailRow>
+      </Details>
+    )
+  }
+
   render() {
     const {
       form: { getFieldDecorator },
     } = this.props
 
     const { t, user } = this.props
-    const { showChangePassword } = this.state
+    const { showChangePassword, isEditProfile, showModal } = this.state
     return (
-      <MainContentWrapper>
-        <ProfileWrapper display="flex" minHeight="max-content">
-          <ProfileImgWrapper>
-            <Photo height={224} windowWidth={224} />
-          </ProfileImgWrapper>
-          <ProfileContentWrapper>
-            <TitleName>Welcome {user.firstName}</TitleName>
-            <ProfileImgMobileWrapper>
-              <Photo height={224} windowWidth={100} mode="small" />
-            </ProfileImgMobileWrapper>
-            <div>
-              <Title>
-                {user.role === 'parent'
-                  ? t('common.title.parent')
-                  : t('common.title.student')}
-              </Title>
-              <Details>
-                {user.role === 'student' && (
-                  <>
+      <>
+        <MainContentWrapper>
+          <ProfileWrapper display="flex" minHeight="max-content">
+            <ProfileImgWrapper>
+              <Photo height={224} windowWidth={224} />
+            </ProfileImgWrapper>
+            <ProfileContentWrapper>
+              <TitleName>Welcome {user.firstName}</TitleName>
+              <ProfileImgMobileWrapper>
+                <Photo height={224} windowWidth={100} mode="small" />
+              </ProfileImgMobileWrapper>
+              <div>
+                <SubHeader>
+                  <Title>
+                    {user.role === roleuser.PARENT
+                      ? t('common.title.parent')
+                      : t('common.title.student')}
+                  </Title>
+                  {!isEditProfile && user.role === roleuser.PARENT && (
+                    <BtnsWrapper>
+                      <EditProfileButton
+                        data-cy="editMyProfile"
+                        isGhost
+                        type="primary"
+                        onClick={() => {
+                          this.setState({ isEditProfile: true })
+                        }}
+                      >
+                        <Icon type="edit" theme="filled" />
+                        {t('common.title.editProfile')}
+                      </EditProfileButton>
+
+                      <DeleteAccountButton
+                        isGhost
+                        noHover
+                        onClick={() => {
+                          this.setState({ showModal: true })
+                        }}
+                      >
+                        <Icon type="close" />
+                        {t('common.title.deleteAccount')}
+                      </DeleteAccountButton>
+                    </BtnsWrapper>
+                  )}
+                </SubHeader>
+                {!isEditProfile ? (
+                  <Details>
                     <DetailRow>
                       <DetailTitle>
                         {t('common.title.firstNameInputLabel')}
                       </DetailTitle>
                       <DetailData>{user.firstName || 'Anonymous'}</DetailData>
                     </DetailRow>
-                    <DetailRow>
-                      <DetailTitle>
-                        {t('common.title.middleNameInputLabel')}
-                      </DetailTitle>
-                      <DetailData>{user.middleName}</DetailData>
-                    </DetailRow>
+                    {user.role === roleuser.STUDENT && (
+                      <DetailRow>
+                        <DetailTitle>
+                          {t('common.title.middleNameInputLabel')}
+                        </DetailTitle>
+                        <DetailData>{user.middleName}</DetailData>
+                      </DetailRow>
+                    )}
                     <DetailRow>
                       <DetailTitle>
                         {t('common.title.lastNameInputLabel')}
                       </DetailTitle>
                       <DetailData>{user.lastName}</DetailData>
                     </DetailRow>
-                  </>
+                    <DetailRow>
+                      <DetailTitle>
+                        {t('common.title.emailUsernameLabel')}
+                      </DetailTitle>
+                      <DetailData>{user.email}</DetailData>
+                    </DetailRow>
+                  </Details>
+                ) : (
+                  this.getEditProfileContent()
                 )}
-                <DetailRow>
-                  <DetailTitle>
-                    {t('common.title.emailUsernameLabel')}
-                  </DetailTitle>
-                  <DetailData>{user.email}</DetailData>
-                </DetailRow>
-              </Details>
-            </div>
-            <ChangePasswordToggleButton
-              onClick={() => {
-                this.setState({ showChangePassword: !showChangePassword })
-              }}
-            >
-              <span>CHANGE PASSWORD</span>
-              <CaretIcon
-                type={showChangePassword ? 'caret-up' : 'caret-down'}
-              />
-            </ChangePasswordToggleButton>
-
-            {showChangePassword && (
-              <FormWrapper onSubmit={this.handleSubmit}>
-                <FormItemWrapper>
-                  <Label>{t('common.title.newPasswordLabel')}</Label>
-                  {getFieldDecorator('password', {
-                    rules: [
-                      {
-                        required: true,
-                        message: t('common.title.password'),
-                      },
-                      {
-                        validator: this.validateToNextPassword,
-                      },
-                    ],
-                  })(<Input type="password" autoComplete="off" />)}
-                </FormItemWrapper>{' '}
-                <FormItemWrapper>
-                  <Label>{t('common.title.confirmPaswswordLabel')}</Label>
-                  {getFieldDecorator('confirmPassword', {
-                    rules: [
-                      {
-                        required: true,
-                        message: t('common.title.password'),
-                      },
-                      {
-                        validator: this.compareToFirstPassword,
-                      },
-                    ],
-                  })(
-                    <Input
-                      type="password"
-                      autoComplete="off"
-                      onBlur={this.handleConfirmBlur}
-                    />
-                  )}
-                </FormItemWrapper>{' '}
-                <FormButtonWrapper>
-                  <FormButtonsWrapper>
-                    <SaveButton type="primary" htmlType="submit">
-                      {t('common.title.save')}
-                    </SaveButton>
-                    <CancelButton type="primary" onClick={this.handleCancel}>
-                      {t('common.title.cancel')}
-                    </CancelButton>
-                  </FormButtonsWrapper>
-                </FormButtonWrapper>
-              </FormWrapper>
-            )}
-            {user.role === 'parent' && (
-              <div style={{ paddingTop: 25 }}>
-                <Title>Children details</Title>
-                <ChildrenTable childs={user.children} />
               </div>
-            )}
-          </ProfileContentWrapper>
-        </ProfileWrapper>
-      </MainContentWrapper>
+              <ChangePasswordToggleButton
+                onClick={() => {
+                  this.setState({ showChangePassword: !showChangePassword })
+                }}
+              >
+                <span>CHANGE PASSWORD</span>
+                <CaretIcon
+                  type={showChangePassword ? 'caret-up' : 'caret-down'}
+                />
+              </ChangePasswordToggleButton>
+
+              {(isEditProfile || showChangePassword) && (
+                <FormWrapper onSubmit={this.handleSubmit}>
+                  {showChangePassword && (
+                    <>
+                      <FormItemWrapper>
+                        <Label>{t('common.title.newPasswordLabel')}</Label>
+                        {getFieldDecorator('password', {
+                          rules: [
+                            {
+                              required: true,
+                              message: t('common.title.password'),
+                            },
+                            {
+                              validator: this.validateToNextPassword,
+                            },
+                          ],
+                        })(<Input type="password" autoComplete="off" />)}
+                      </FormItemWrapper>{' '}
+                      <FormItemWrapper>
+                        <Label>{t('common.title.confirmPaswswordLabel')}</Label>
+                        {getFieldDecorator('confirmPassword', {
+                          rules: [
+                            {
+                              required: true,
+                              message: t('common.title.password'),
+                            },
+                            {
+                              validator: this.compareToFirstPassword,
+                            },
+                          ],
+                        })(
+                          <Input
+                            type="password"
+                            autoComplete="off"
+                            onBlur={this.handleConfirmBlur}
+                          />
+                        )}
+                      </FormItemWrapper>
+                    </>
+                  )}
+                  <FormButtonWrapper>
+                    <FormButtonsWrapper>
+                      <SaveButton type="primary" htmlType="submit">
+                        {t('common.title.save')}
+                      </SaveButton>
+                      <CancelButton type="primary" onClick={this.handleCancel}>
+                        {t('common.title.cancel')}
+                      </CancelButton>
+                    </FormButtonsWrapper>
+                  </FormButtonWrapper>
+                </FormWrapper>
+              )}
+              {user.role === roleuser.PARENT && (
+                <div style={{ paddingTop: 25 }}>
+                  <Title>Children details</Title>
+                  <ChildrenTable childs={user.children} />
+                </div>
+              )}
+            </ProfileContentWrapper>
+          </ProfileWrapper>
+        </MainContentWrapper>
+        {showModal && (
+          <DeleteAccountModal
+            visible={showModal}
+            toggleModal={this.toggleModal}
+            deleteProfile={this.deleteProfile}
+          />
+        )}
+      </>
     )
   }
 }
@@ -249,9 +419,14 @@ const enhance = compose(
   connect(
     (state) => ({
       user: state.user.user,
+      joinSchoolVisible: state.user.joinSchoolVisible,
+      userInfo: get(state.user, 'user', {}),
+      userOrg: getUserOrg(state),
     }),
     {
       resetMyPassword: resetMyPasswordAction,
+      deleteAccount: deleteAccountAction,
+      updateUserDetails: updateUserDetailsAction,
     }
   )
 )
@@ -465,4 +640,15 @@ const CancelButton = styled(ActionButton)`
     color: ${white};
     border: 1px solid ${themeColorBlue};
   }
+`
+
+const SubHeader = styled.div`
+  overflow: hidden;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+`
+
+const BtnsWrapper = styled.div`
+  margin-left: auto;
 `

@@ -9,13 +9,7 @@ import notification from '@edulastic/common/src/components/Notification'
 import * as Sentry from '@sentry/browser'
 import { debounce } from 'lodash'
 import config from '../config'
-import {
-  getAccessToken,
-  getTraceId,
-  initKID,
-  initTID,
-  getCurrentDistrictName,
-} from './Storage'
+import { getAccessToken, getTraceId, initKID, initTID } from './Storage'
 
 const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
@@ -122,6 +116,20 @@ function getParentsStudentToken(_config) {
   }
 }
 
+function getPublicAuthToken(_config) {
+  try {
+    if (
+      ['/public/', '/math/', '/evaluate-as-student/'].find((x) =>
+        _config.url?.includes(x)
+      )
+    ) {
+      return config.publicAuthToken
+    }
+    return false
+  } catch (e) {
+    console.warn('Error public auth token', e)
+  }
+}
 /**
  * A helper to check if the date object is a a valid one
  * @param {Date} d
@@ -207,9 +215,11 @@ export default class API {
             'originalreferrer'
           )
         }
-        const currentDistrictName = getCurrentDistrictName() || ''
         const token =
-          getParentsStudentToken(_config) || defaultToken || getAccessToken()
+          getParentsStudentToken(_config) ||
+          defaultToken ||
+          getAccessToken() ||
+          getPublicAuthToken(_config)
         const currentUserFromRedux = getUserFromRedux()
         const userDistrictId = currentUserFromRedux?.user?.currentDistrictId
         const districtIdFromToken = token ? parseJwt(token)?.districtId : null
@@ -237,13 +247,22 @@ export default class API {
             }, 5000)
             return
           }
+          const { user = {} } = currentUserFromRedux || {}
+          const { orgData = {} } = user
+          const { districts = [] } = orgData
+          const currentDistrictName = districts.find(
+            (x) => x.districtId === districtIdFromToken
+          ).districtName
           // debouncing to prevent concurrent apis to be interpreted as repeated reloads
           debounce(addReloadedEntryToSession, 700)()
           notification({
+            className: 'showOne-notification customized-notification',
             type: 'info',
             msg: `We are switching you to ${currentDistrictName} as you can login to only one district at a time`,
           })
-          window.location.href = '/'
+          setTimeout(() => {
+            window.location.href = '/'
+          }, 5000)
         }
         if (token) {
           _config.headers.Authorization = token

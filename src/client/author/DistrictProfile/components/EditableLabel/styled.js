@@ -1,16 +1,24 @@
 import styled from 'styled-components'
-import { Form, Input } from 'antd'
+import { Form } from 'antd'
+import { TextInputStyled } from '@edulastic/common'
+import { extraDesktopWidth } from '@edulastic/colors'
 
 export const EditableLabelDiv = styled.div`
   display: flex;
   flex-direction: column;
+  flex-grow: ${({ flexGrow }) => flexGrow || ''};
   .not-editing-input {
     box-shadow: none;
     caret-color: transparent;
   }
   .not-editing-input:focus {
   }
-  flex-grow: ${({ flexGrow }) => flexGrow || ''};
+  label {
+    font-size: 10px;
+    @media only screen and (min-width: ${extraDesktopWidth}) {
+      font-size: 12px;
+    }
+  }
 `
 
 export const StyledFormItem = styled(Form.Item)`
@@ -35,8 +43,10 @@ export const StyledP = styled.p`
   padding-left: 12px;
 `
 
-export const StyledInput = styled(Input)`
-  height: 40px;
+export const StyledInput = styled(TextInputStyled)`
+  &.ant-input {
+    height: 34px;
+  }
   ${(props) => {
     if (props.isItalic === 'true')
       return `::placeholder {

@@ -46,7 +46,6 @@ import { changePreviewAction } from '../../../author/src/actions/view'
 import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 import { getCurrentGroupWithAllClasses } from '../../../student/Login/ducks'
-import FeaturesSwitch from '../../../features/components/FeaturesSwitch'
 import { setUserAnswerAction } from '../../actions/answers'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
@@ -57,6 +56,7 @@ import {
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
 import UserWorkUploadModal from '../../components/UserWorkUploadModal'
+import ReferenceDocModal from '../common/ReferenceDocModal'
 
 class AssessmentPlayerDefault extends React.Component {
   constructor(props) {
@@ -332,7 +332,6 @@ class AssessmentPlayerDefault extends React.Component {
       answerChecksUsedForItem,
       bookmarksInOrder,
       skippedInOrder,
-      currentGroupId,
       previousQuestionActivities,
       LCBPreviewModal,
       preview,
@@ -362,6 +361,9 @@ class AssessmentPlayerDefault extends React.Component {
       gotoSummary,
       isShowStudentWork,
       handleReviewOrSubmit,
+      openReferenceModal,
+      isShowReferenceModal,
+      referenceDocAttributes,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -546,6 +548,8 @@ class AssessmentPlayerDefault extends React.Component {
             calcBrands={calcBrands}
             tool={currentToolMode}
             changeCaculateMode={this.handleModeCaculate}
+            openReferenceModal={openReferenceModal}
+            isShowReferenceModal={isShowReferenceModal}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}
@@ -581,35 +585,28 @@ class AssessmentPlayerDefault extends React.Component {
               playerSkinType,
             }}
           >
-            <FeaturesSwitch
-              inputFeatures="studentSettings"
-              actionOnInaccessible="hidden"
-              key="studentSettings"
-              groupId={currentGroupId}
-            >
-              <ToolbarModal
-                isVisible={isToolbarModalVisible}
-                onClose={() => this.closeToolbarModal()}
-                checkAnswer={() => this.changeTabItemState('check')}
-                windowWidth={windowWidth}
-                answerChecksUsedForItem={answerChecksUsedForItem}
-                settings={settings}
-                items={items}
-                currentItem={currentItem}
-                isNonAutoGradable={isNonAutoGradable}
-                toggleBookmark={() => toggleBookmark(item._id)}
-                isBookmarked={isBookmarked}
-                handletoggleHints={showHints}
-                changeTool={this.changeTool}
-                handleMagnifier={handleMagnifier}
-                qType={qType}
-                blockNavigationToAnsweredQuestions={
-                  blockNavigationToAnsweredQuestions
-                }
-                isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
-                toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
-              />
-            </FeaturesSwitch>
+            <ToolbarModal
+              isVisible={isToolbarModalVisible}
+              onClose={() => this.closeToolbarModal()}
+              checkAnswer={() => this.changeTabItemState('check')}
+              windowWidth={windowWidth}
+              answerChecksUsedForItem={answerChecksUsedForItem}
+              settings={settings}
+              items={items}
+              currentItem={currentItem}
+              isNonAutoGradable={isNonAutoGradable}
+              toggleBookmark={() => toggleBookmark(item._id)}
+              isBookmarked={isBookmarked}
+              handletoggleHints={showHints}
+              changeTool={this.changeTool}
+              handleMagnifier={handleMagnifier}
+              qType={qType}
+              blockNavigationToAnsweredQuestions={
+                blockNavigationToAnsweredQuestions
+              }
+              isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+              toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
+            />
             {!previewPlayer && (
               <SavePauseModalMobile
                 isVisible={isSavePauseModalVisible}
@@ -748,6 +745,9 @@ class AssessmentPlayerDefault extends React.Component {
               onUploadFinished={this.saveUserWorkAttachments}
               cameraImageName={cameraImageName}
             />
+            {isShowReferenceModal && referenceDocAttributes && (
+              <ReferenceDocModal attributes={referenceDocAttributes} />
+            )}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

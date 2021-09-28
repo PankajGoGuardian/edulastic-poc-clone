@@ -7,7 +7,7 @@ import {
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Form, Icon, Menu, Row, Select } from 'antd'
 import { get } from 'lodash'
@@ -16,16 +16,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router-dom'
 import { compose } from 'redux'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
 import {
   StyledActionDropDown,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
@@ -55,6 +56,9 @@ import {
   StyledSortIcon,
   StyledSortIconDiv,
 } from './styled'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
+
+const menuActive = { mainMenu: 'Administration', subMenu: 'schools' }
 
 const Option = Select.Option
 
@@ -63,7 +67,6 @@ class SchoolsTable extends React.Component {
     super(props)
 
     this.state = {
-      isAdding: false,
       selectedRowKeys: [],
       createSchoolModalVisible: false,
       editSchoolModaVisible: false,
@@ -255,8 +258,6 @@ class SchoolsTable extends React.Component {
     )
 
     this.setState({
-      isAdding: false,
-      isChangeState: true,
       editSchoolModaVisible: false,
     })
 
@@ -485,7 +486,7 @@ class SchoolsTable extends React.Component {
       refineButtonActive,
     } = this.state
 
-    const { userOrgId, totalSchoolsCount, role, t } = this.props
+    const { userOrgId, totalSchoolsCount, role, t, history, count } = this.props
 
     const breadcrumbData = [
       {
@@ -894,50 +895,56 @@ class SchoolsTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            isGhost
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+        <AdminSubHeader count={count} active={menuActive} history={history} />
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={80}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            {role === roleuser.DISTRICT_ADMIN ? (
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
               <EduButton
-                height="36px"
-                type="primary"
-                onClick={this.showCreateSchoolModal}
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
               >
-                {t('school.createschool')}
+                <IconFilter />
               </EduButton>
-            ) : null}
-          </LeftFilterDiv>
-          <RightFilterDiv width={15}>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-              trigger={['click']}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
-              </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+              />
+              {role === roleuser.DISTRICT_ADMIN ? (
+                <EduButton
+                  height="34px"
+                  type="primary"
+                  onClick={this.showCreateSchoolModal}
+                >
+                  {t('school.createschool')}
+                </EduButton>
+              ) : null}
+            </LeftFilterDiv>
+            <RightFilterDiv>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+                trigger={['click']}
+              >
+                <EduButton height="34px" isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
+
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
 
         <TableContainer>
           <StyledSchoolTable

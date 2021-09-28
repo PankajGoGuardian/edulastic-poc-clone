@@ -1,30 +1,17 @@
 import styled from 'styled-components'
-import { Radio, Input, Col } from 'antd'
-import { title } from '@edulastic/colors'
-import { StyledTable as Table } from '../../../../common/styled'
+import { Input } from 'antd'
+import { lightGrey9, title } from '@edulastic/colors'
+import { StyledTable } from '../../../../common/styled'
 import { ThemeButton } from '../../../src/components/common/ThemeButton'
-
-const RadioGroup = Radio.Group
 
 export const StyledTableContainer = styled.div`
   display: flex;
   flex-direction: column;
   width: 100%;
-
-  th {
-    border: none !important;
-  }
-
-  .ant-table-wrapper {
-    width: 100%;
-  }
-
-  input {
-    border: 1px solid #d9d9d9;
-  }
+  padding: 10px 20px;
 `
 
-export const StyledTable = styled(Table)`
+export const BandStyledTable = styled(StyledTable)`
   .ant-table-row {
     &: hover {
       a {
@@ -32,13 +19,21 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  th {
+    border: none !important;
+  }
+  .ant-table-wrapper {
+    width: 100%;
+  }
+  input {
+    border: 1px solid #d9d9d9;
+  }
 `
 
 export const TopDiv = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px 15px;
 `
 
 export const InfoDiv = styled.div`
@@ -46,12 +41,16 @@ export const InfoDiv = styled.div`
 `
 
 export const StyledH3 = styled.h3`
-  font-size: 16px;
+  font-size: 15px;
   color: ${title};
+  font-weight: bold;
   margin-bottom: 0px;
 `
 
-export const StyledDescription = styled.p``
+export const StyledDescription = styled.p`
+  font-size: 12px;
+  color: ${lightGrey9};
+`
 
 export const StyledButton = styled.a`
   opacity: 0;
@@ -77,27 +76,21 @@ export const StyledAddButton = styled(ThemeButton)`
 `
 
 export const StyledMasterDiv = styled.div`
-  padding: 25px 15px 15px;
+  padding: 25px 0px 15px;
 `
 
 export const StyledUl = styled.ul`
-  padding-left: 24px;
-`
-
-export const StyledRadioGroup = styled(RadioGroup)`
-  padding: 20px 0px;
-  width: 100%;
-  .ant-radio + span {
+  padding-left: 17px;
+  margin-top: 10px;
+  li {
+    padding-top: 2px;
     font-size: 12px;
+    color: ${lightGrey9};
   }
 `
 
 export const InputOption = styled.div`
   margin-top: ${({ margin }) => margin || '0px'};
-`
-
-export const RadioWrap = styled(Col)`
-  padding-bottom: 20px;
 `
 
 export const StyledAverageRadioDiv = styled.div`

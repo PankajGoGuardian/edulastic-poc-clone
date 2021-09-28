@@ -1,13 +1,14 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Dropdown, Menu } from 'antd'
+import { Popover, Dropdown, Menu } from 'antd'
 import PerfectScrollbar from 'react-perfect-scrollbar'
-
 import {
   ThumbnailsWrapper,
   ReuploadButtonWrapper,
   ReuploadButton,
   ThumbnailsList,
+  MenuItemContainer,
+  InfoIcon,
 } from './styled'
 import ThumbnailsItem from '../ThumbnailsItem/ThumbnailsItem'
 
@@ -16,24 +17,36 @@ const menu = (
   onAddBlank,
   onDeleteBlank,
   pdfPageLength = 1,
-  onAddPdf
+  onAddPdf,
+  onClearAnnotations
 ) => (
   <Menu>
     <Menu.Item onClick={onAddBlank} data-cy="addBlankPage">
-      Add Blank Page
+      <MenuItemContainer>Add Blank Page</MenuItemContainer>
     </Menu.Item>
     <Menu.Item
       disabled={pdfPageLength === 1}
       onClick={onDeleteBlank}
       data-cy="deletePage"
     >
-      Delete Page
+      <MenuItemContainer>Delete Page</MenuItemContainer>
     </Menu.Item>
     <Menu.Item onClick={onAddPdf} data-cy="addAnotherPdf">
-      Add Another PDF
+      <MenuItemContainer>Add Another PDF</MenuItemContainer>
     </Menu.Item>
     <Menu.Item onClick={onReupload} data-cy="reUploadPdf">
-      Reupload PDF
+      <MenuItemContainer>
+        Reupload PDF
+        <Popover
+          placement="topRight"
+          content="Annotations will be carried to uploaded pdf, you can clear it from Clear All option"
+        >
+          <InfoIcon />
+        </Popover>
+      </MenuItemContainer>
+    </Menu.Item>
+    <Menu.Item onClick={onClearAnnotations} data-cy="clearallannotations">
+      <MenuItemContainer>Clear Annotations</MenuItemContainer>
     </Menu.Item>
   </Menu>
 )
@@ -45,6 +58,7 @@ const Thumbnails = ({
   annotations,
   onReupload,
   onAddBlankPage,
+  onClearAnnotations,
   onDeleteSelectedBlankPage,
   onDeletePage,
   onMovePageUp,
@@ -103,7 +117,8 @@ const Thumbnails = ({
                 onAddBlankPage,
                 onDeleteSelectedBlankPage,
                 list.length,
-                onAddPdf
+                onAddPdf,
+                onClearAnnotations
               )}
             >
               <ReuploadButton data-cy="manageDocument">

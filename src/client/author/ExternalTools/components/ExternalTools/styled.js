@@ -1,52 +1,10 @@
-import { Input, List, Row, Col } from 'antd'
+import { white } from '@edulastic/colors'
+import { List } from 'antd'
 import styled from 'styled-components'
-import {
-  themeColor,
-  white,
-  placeholderGray,
-  backgrounds,
-} from '@edulastic/colors'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
-export const ExternalToolsSearchHeader = styled.div`
-  display: flex;
-  padding: 20px 10px;
-  background: white;
-`
-
-export const StyledSearch = styled(Input.Search)`
-  height: 40px;
-  input {
-    padding-left: 15px;
-    background: ${backgrounds.primary};
-    border-radius: 2px;
-    &:placeholder {
-      color: ${placeholderGray};
-    }
-    &:focus,
-    &:active,
-    &:hover {
-      & + span {
-        svg {
-          fill: ${themeColor};
-        }
-      }
-    }
-  }
-`
-
 export const StyledList = styled(List)`
-  padding: 0px 30px;
-`
-
-export const StyledRow = styled(Row)`
-  display: flex;
-  align-items: center;
-`
-
-export const StyledColRight = styled(Col)`
-  display: flex;
-  justify-content: flex-end;
+  padding: 15px 0px;
 `
 
 export const CustomModal = styled(ConfirmationModal)`

@@ -1,24 +1,23 @@
 import styled from 'styled-components'
-import { Table, Input, Tabs } from 'antd'
+import { Tabs } from 'antd'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import {
   white,
   themeColor,
-  darkGrey1,
-  placeholderGray,
-  backgrounds,
   smallDesktopWidth,
   themeColorLight,
   red,
   themeColorBlue,
 } from '@edulastic/colors'
+import { StyledTable as CommonTable } from '../../common/styled'
 
 export const CollectionTableContainer = styled.div`
   width: ${({ isCollectionSelected }) =>
     isCollectionSelected ? '35%' : '100%'};
   background-color: ${white};
   border-radius: 8px;
-  padding: 20px 15px;
+  padding: ${({ isCollectionSelected }) =>
+    isCollectionSelected ? '0px 10px' : '0px'};
   display: inline-block;
   float: left;
   @media (max-width: ${smallDesktopWidth}) {
@@ -33,14 +32,6 @@ export const HeadingContainer = styled.div`
   height: 40px;
   margin-bottom: 10px;
   display: flex;
-`
-
-export const TableHeading = styled.span`
-  font-size: ${(props) => props.theme.headerTitle};
-  font-weight: ${(props) => props.theme.bold};
-  height: 40px;
-  display: inline-block;
-  line-height: 40px;
 `
 
 export const PermissionsButton = styled.span`
@@ -75,38 +66,7 @@ export const PermissionsButton = styled.span`
   }
 `
 
-export const StyledTable = styled(Table)`
-  .ant-table-content {
-    .ant-table-body {
-      th,
-      td {
-        font-weight: ${(props) => props.theme.semiBold};
-      }
-      .ant-table-thead {
-        > tr {
-          > th {
-            background: ${white};
-            color: ${darkGrey1};
-            text-transform: uppercase;
-            border-bottom: 2px solid ${white};
-            font-size: ${(props) => props.theme.bodyFontSize};
-          }
-        }
-      }
-      .ant-table-tbody {
-        > tr {
-          > td {
-            padding: 8px 16px;
-            font-size: ${(props) => props.theme.standardFont};
-            &:last-child {
-              padding: 0px;
-            }
-          }
-        }
-      }
-    }
-  }
-`
+export const StyledTable = styled(CommonTable)``
 
 export const AddCollectionButton = styled.span`
   background: ${themeColor};
@@ -144,39 +104,11 @@ export const ImportButton = styled(AddCollectionButton)`
   }
 `
 
-export const StyledSearch = styled(Input.Search)`
-  height: 40px;
-  input {
-    padding-left: 15px;
-    background: ${backgrounds.primary};
-    border-radius: 2px;
-    &:placeholder {
-      color: ${placeholderGray};
-    }
-    &:focus,
-    &:active,
-    &:hover {
-      & + span {
-        svg {
-          fill: ${themeColor};
-        }
-      }
-    }
-  }
-`
-
 export const BackArrowButton = styled.span`
   cursor: pointer;
   font-size: ${(props) => props.theme.questionTexthugeFontSize};
   svg {
     fill: ${themeColor};
-  }
-`
-
-export const TablesWrapper = styled.div`
-  display: block;
-  @media (max-width: ${smallDesktopWidth}) {
-    flex-wrap: wrap;
   }
 `
 
@@ -199,13 +131,6 @@ export const PermissionTableContainer = styled(CollectionTableContainer)`
   }
 `
 
-export const AddPermissionButton = styled(ImportButton)`
-  height: 40px;
-  line-height: 40px;
-  float: right;
-  margin-left: 0px;
-`
-
 export const StyledTab = styled(Tabs)`
   .ant-tabs-bar {
     border-bottom: 0px;
@@ -216,12 +141,6 @@ export const StyledTab = styled(Tabs)`
       padding-bottom: 20px;
     }
   }
-`
-
-export const CollectionSearchHeader = styled.div`
-  display: flex;
-  padding: 20px 10px;
-  background: white;
 `
 
 export const StatusText = styled.span`

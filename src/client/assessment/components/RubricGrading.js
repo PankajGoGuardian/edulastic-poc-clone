@@ -12,6 +12,13 @@ const RubricGrading = ({
   rubricFeedback,
   currentScore,
   onRubricResponse,
+  isRubricDisabled,
+  onChangeScore,
+  clearRubricFeedback,
+  InputType,
+  inputScore,
+  showWarningToClear,
+  enableScoreInput,
 }) => {
   const [showPreviewRubric, setShowRubricModal] = useState(false)
 
@@ -31,15 +38,22 @@ const RubricGrading = ({
         currentScore !== res.score)
     ) {
       onRubricResponse(res, true)
+    } else {
+      enableScoreInput()
     }
   }
 
   return (
-    <RubricsWrapper>
+    <RubricsWrapper isRubricDisabled={isRubricDisabled}>
       <PreviewRubricCard
         rubricData={rubricData}
         rubricFeedback={rubricFeedback}
         onChange={submitRubricResponse}
+        onChangeScore={onChangeScore}
+        clearRubricFeedback={clearRubricFeedback}
+        InputType={InputType}
+        inputScore={inputScore}
+        showWarningToClear={showWarningToClear}
       />
       <RubricsButton
         data-cy="viewRubricButton"
@@ -69,6 +83,8 @@ export default RubricGrading
 
 const RubricsWrapper = styled.div`
   margin-top: 15px;
+  opacity: ${({ isRubricDisabled }) => isRubricDisabled && 0.5};
+  pointer-events: ${({ isRubricDisabled }) => isRubricDisabled && 'none'};
 `
 
 const RubricsButton = styled(EduButton)`

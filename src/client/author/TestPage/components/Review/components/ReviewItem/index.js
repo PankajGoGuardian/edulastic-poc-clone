@@ -14,6 +14,7 @@ const ReviewItem = ({
   isEditable,
   owner,
   onChangePoints,
+  blur,
   onDelete,
   questions,
   passagesKeyed,
@@ -60,7 +61,7 @@ const ReviewItem = ({
    * if item level scoring is off and all question has been selected as unscored
    * consider item is unscored
    * */
-  const getUnScoredItem = (__questions, __itemLevelScoring) => {
+  const getUnScoredItem = (__questions) => {
     return __questions.every(({ validation }) =>
       get(validation, 'unscored', false)
     )
@@ -157,6 +158,7 @@ const ReviewItem = ({
           checked={checked}
           onDelete={onDelete}
           onChangePoints={onChangePoints}
+          blur={blur}
           isScoringDisabled={data.main.isScoringDisabled}
           expandRow={toggleExpandRow}
           groupMinimized={groupMinimized}

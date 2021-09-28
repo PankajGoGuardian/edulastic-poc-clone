@@ -79,6 +79,7 @@ import {
   getPassageSelector,
   setPrevewItemAction,
   setQuestionsForPassageAction,
+  passageItemIdsSelector,
 } from './ducks'
 import ReportIssue from './ReportIssue'
 import { ButtonsWrapper, RejectButton } from './styled'
@@ -116,6 +117,7 @@ class PreviewModal extends React.Component {
         this.setState({ passageLoading: false })
       })
       testItemsApi.getPassageItems(passageId).then((passageItems) => {
+        passageItems = passageItems.filter((item) => item?.active)
         setPassageTestItems(passageItems)
       })
     } catch (e) {
@@ -366,10 +368,10 @@ class PreviewModal extends React.Component {
       setPrevewItem,
       item,
       testItemPreviewData,
-      passage,
+      passageItemIds = [],
       updateCurrentItemFromPassagePagination,
     } = this.props
-    const itemId = passage.testItems[page - 1]
+    const itemId = passageItemIds[page - 1]
     if (!(testItemPreviewData && testItemPreviewData.data)) {
       setPrevewItem(item)
     }
@@ -516,7 +518,7 @@ class PreviewModal extends React.Component {
 
   handleDeleteItem = () => {
     const {
-      item: { _id },
+      item: { _id, isPassageWithQuestions = false },
       deleteItem,
       isEditable,
       page,
@@ -530,6 +532,7 @@ class PreviewModal extends React.Component {
     return deleteItem({
       id: _id,
       isItemPrevew: page === 'addItems' || page === 'itemList',
+      isPassageWithQuestions,
     })
   }
 
@@ -580,6 +583,7 @@ class PreviewModal extends React.Component {
       writableCollections,
       testStatus = 'draft',
       selectedRows,
+      passageItemIds = [],
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -621,7 +625,7 @@ class PreviewModal extends React.Component {
       item && !!item.passageId && !!passage
         ? [passage.structure, ...rows]
         : rows
-    const passageTestItems = get(passage, 'testItems', [])
+    const passageTestItems = passageItemIds || []
     const isPassage = passage && passageTestItems.length
     const hasPassageItemToAdd = passageTestItems.some(
       (x) => !selectedRows.includes(x)
@@ -1027,6 +1031,7 @@ const enhance = compose(
         passageItems: state.tests.passageItems,
         writableCollections: getWritableCollectionsSelector(state),
         archivedItems: archivedItemsSelector(state),
+        passageItemIds: passageItemIdsSelector(state),
       }
     },
     {

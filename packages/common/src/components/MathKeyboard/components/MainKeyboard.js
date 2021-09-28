@@ -61,6 +61,10 @@ const MainKeyboard = ({
       keysPerRow = 4
     }
 
+    if (type === keyboardMethods.BASIC_MATRICES) {
+      keysPerRow = 5
+    }
+
     if (type === keyboardMethods.ADVANCED_TRIGNOMETRY) {
       limitRow = 6
     }
@@ -72,6 +76,17 @@ const MainKeyboard = ({
     if (type === keyboardMethods.INTERMEDIATE) {
       limitRow = 4
     }
+
+    if (type === keyboardMethods.INTERMEDIATE_WO_NUMBER) {
+      keysPerRow = 6
+      limitRow = 4
+    }
+
+    if (type === keyboardMethods.GEOMETRY) {
+      keysPerRow = 5
+      limitRow = 4
+    }
+
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)

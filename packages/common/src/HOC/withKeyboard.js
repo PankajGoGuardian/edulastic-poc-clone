@@ -55,6 +55,7 @@ export default function withKeyboard(WrappedComponent) {
         onlySpaceKey = false,
         tool = [],
         fromSetAnswers,
+        disableTab,
       } = this.props
       // #5 is for ScratchPad
       const isSratchPadEnabled = tool.includes(5)
@@ -65,7 +66,7 @@ export default function withKeyboard(WrappedComponent) {
           {...this.state}
           {...this.props}
           // If sratchpad is enabled than disabling tab key navigation to prevent user from attempting question
-          tabIndex={isSratchPadEnabled ? '-1' : '0'}
+          tabIndex={isSratchPadEnabled || disableTab ? '-1' : '0'}
           onKeyDown={(e) => {
             if (isSratchPadEnabled || fromSetAnswers) return
             const code = e.which || e.keyCode

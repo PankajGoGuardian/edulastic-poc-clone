@@ -222,6 +222,22 @@ export const changeDataInPreferredLanguage = (
               }
             }
           })
+        } else if (newQuestion.type === questionType.EXPRESSION_MULTIPART) {
+          const { options: newOptions, responseIds } = newQuestion
+          const { options: prevOptions } = prevQuestion
+          const { dropDowns } = responseIds
+          dropDowns.forEach((dropdown) => {
+            const removedIndex = findRemovedIndex(
+              newOptions[dropdown.id],
+              prevOptions[dropdown.id]
+            )
+            if (removedIndex !== -1) {
+              draft.languageFeatures?.[langKey]?.options?.[dropdown.id]?.splice(
+                removedIndex,
+                1
+              )
+            }
+          })
         }
 
         const cleanLangData = {}

@@ -44,7 +44,7 @@ class Teacher extends Component {
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
-              <SpinContainer blur>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}

@@ -62,6 +62,8 @@ import {
   setTestDataAction,
   setCreatedItemToTestAction,
   setTestPassageAction,
+  setPassageItemsAction,
+  getPassageItemsSelector,
 } from '../TestPage/ducks'
 import { changeViewAction } from '../src/actions/view'
 
@@ -184,10 +186,12 @@ export const SAVE_AND_PUBLISH_ITEM =
   '[question, itemDetail] save question and publish item'
 export const PROCEED_TO_PUBLISH_ITEM = '[itemDetail] proceed to publish item'
 
-const EDIT_PASSAGE_WIDGET = '[itemDetail] edit passage widget'
+const EDIT_MULTIPART_WIDGET = '[itemDetail] edit multipart widget'
 const ADD_ITEM_TO_CART = '[item list] add item to cart'
 export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
   '[itemDetail] save current item and paginate'
+const SET_PASSAGE_UPDATE_IN_PROGRESS =
+  '[itemDetail] set passage update in progress'
 
 // actions
 
@@ -371,13 +375,16 @@ export const setItemLevelScoreAction = createAction(SET_ITEM_DETAIL_SCORE)
 export const incrementItemLevelScore = createAction(INC_ITEM_DETAIL_SCORE)
 export const decrementItemLevelScore = createAction(DEC_ITEM_DETAIL_SCORE)
 export const setItemDeletingAction = createAction(SET_DELETING_ITEM)
+const setPassageUpdateInProgressAction = createAction(
+  SET_PASSAGE_UPDATE_IN_PROGRESS
+)
 
 export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
   payload: id,
 })
 
-export const editPassageWidgetAction = createAction(EDIT_PASSAGE_WIDGET)
+export const editMultipartWidgetAction = createAction(EDIT_MULTIPART_WIDGET)
 
 const addItemToCartAction = (item) => ({
   type: ADD_ITEM_TO_CART,
@@ -517,6 +524,11 @@ export const getItemDetailRowsSelector = createSelector(
   }
 )
 
+export const getPassageUpdateInProgressSelector = createSelector(
+  stateSelector,
+  (state) => state.passageUpdateInProgress
+)
+
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   (state) => state.loading
@@ -595,6 +607,7 @@ const initialState = {
   highlightCollection: false,
   loadingAuditLogs: false,
   originalItem: null,
+  passageUpdateInProgress: false,
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -1049,6 +1062,12 @@ export function reducer(state = initialState, { type, payload }) {
         loadingAuditLogs: false,
       }
     }
+    case SET_PASSAGE_UPDATE_IN_PROGRESS: {
+      return {
+        ...state,
+        passageUpdateInProgress: payload,
+      }
+    }
     default:
       return state
   }
@@ -1131,11 +1150,23 @@ function* receiveItemSaga({ payload }) {
 export function* deleteItemSaga({ payload }) {
   try {
     yield put(setItemDeletingAction(true))
-    const { id, redirectId, isTestFlow, testId, isItemPrevew = false } = payload
+    const {
+      id,
+      redirectId,
+      isTestFlow,
+      testId,
+      isItemPrevew = false,
+      isPassageWithQuestions = false,
+    } = payload
     const hasValidTestId = testId && testId !== 'undefined'
     yield call(testItemsApi.deleteById, id, {
       ...(hasValidTestId && { testId }),
     })
+    if (isItemPrevew && isPassageWithQuestions) {
+      let passageItems = yield select(getPassageItemsSelector)
+      passageItems = (passageItems || []).filter((item) => !(item?._id === id))
+      yield put(setPassageItemsAction(passageItems))
+    }
     yield put(setItemDeletingAction(false))
     yield put(deleteItemSuccesAction(id))
     notification({ type: 'success', messageKey: 'itemDeletedSuccessfully' })
@@ -1946,6 +1977,7 @@ function* convertToPassageWithQuestions({ payload }) {
 
 function* savePassage({ payload }) {
   try {
+    yield put(setPassageUpdateInProgressAction(true))
     const { rowIndex, tabIndex, isEdit, callback, isTestFlow } = payload
     const passage = yield select(getPassageSelector)
     const entity = yield select(getCurrentQuestionSelector)
@@ -2096,6 +2128,8 @@ function* savePassage({ payload }) {
     Sentry.captureException(e)
     console.log('error: ', e)
     notification({ messageKey: 'errorSavingPassage' })
+  } finally {
+    yield put(setPassageUpdateInProgressAction(false))
   }
 }
 
@@ -2217,7 +2251,7 @@ function* saveAndPublishItemSaga() {
   }
 }
 
-function* editPassageWidgetSaga({ payload }) {
+function* editMultipartWidgetSaga({ payload }) {
   // payload is the question id
   yield put(changeCurrentQuestionAction(payload))
   let alignments = yield select(getAlignmentFromQuestionSelector)
@@ -2258,7 +2292,7 @@ export function* watcherSaga() {
       loadQuestionPreviewAttachmentsSaga
     ),
     yield takeLatest(SAVE_AND_PUBLISH_ITEM, saveAndPublishItemSaga),
-    yield takeLatest(EDIT_PASSAGE_WIDGET, editPassageWidgetSaga),
+    yield takeLatest(EDIT_MULTIPART_WIDGET, editMultipartWidgetSaga),
     yield takeEvery(
       SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
       saveCurrentItemAndRoueToOtherSaga

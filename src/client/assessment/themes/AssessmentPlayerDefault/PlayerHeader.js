@@ -67,6 +67,8 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions = false,
   isPremiumContentWithoutAccess = false,
+  openReferenceModal,
+  isShowReferenceModal,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -231,6 +233,8 @@ const PlayerHeader = ({
                         utaId={utaId}
                         hasDrawingResponse={hasDrawingResponse}
                         groupId={groupId}
+                        openReferenceModal={openReferenceModal}
+                        isShowReferenceModal={isShowReferenceModal}
                         isPremiumContentWithoutAccess={
                           isPremiumContentWithoutAccess
                         }

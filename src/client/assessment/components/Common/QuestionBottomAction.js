@@ -33,13 +33,16 @@ import {
 } from '../../../author/sharedDucks/questions'
 import {
   correctItemUpdateProgressAction,
+  reloadLcbDataInStudentViewAction,
   replaceOriginalItemAction,
+  setSilentCloningAction,
   updateCorrectTestItemAction,
 } from '../../../author/src/actions/classBoard'
 import {
   getAdditionalDataSelector,
   getIsDocBasedTestSelector,
   getShowCorrectItemButton,
+  getSilentCloneSelector,
 } from '../../../author/ClassBoard/ducks'
 import {
   getUserId,
@@ -57,6 +60,8 @@ import {
 import Explanation from './Explanation'
 import Hints from '../Hints/index'
 import RegradeProgressModal from '../../../author/Regrade/RegradeProgressModal'
+import { getRegradeFirebaseDocIdSelector } from '../../../author/TestPage/ducks'
+import RegradeListenerLcb from '../../../author/Regrade/RegradeListenerLcb'
 
 export const ShowUserWork = ({ onClick, loading }) => (
   <EduButton
@@ -126,6 +131,10 @@ const QuestionBottomAction = ({
   itemIndex,
   currentTerm,
   view,
+  silentClone,
+  firebaseDocId,
+  setSilentCloning,
+  reloadLcbDataInStudentView,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -133,6 +142,7 @@ const QuestionBottomAction = ({
   const [hidingScoringBlock, setHideScoring] = useState(false)
   const [notifyRegradeProgress, setNotifyRegradeProgress] = useState(false)
   const [isPublishedChanges, setIsPublishedChanges] = useState(false)
+  const [testItemData, setTestItemData] = useState({})
 
   const [showExplanation, updateShowExplanation] = useState(isGrade)
 
@@ -146,6 +156,32 @@ const QuestionBottomAction = ({
     removeQuestion(item.id)
     toggleQuestionModal(false)
     correctItemUpdateProgress(false)
+    if (silentClone) {
+      let lcbView = 'student-report'
+      if (updating) {
+        return
+      }
+      if (isExpressGrader) {
+        lcbView = 'express-grader'
+      }
+      if (isQuestionView) {
+        lcbView = 'question-view'
+      }
+      const payload = {
+        studentId,
+        assignmentId: match?.params?.assignmentId,
+        classId: match?.params?.classId || item?.activity?.groupId,
+        groupId: match?.params?.classId || item?.activity?.groupId,
+        testActivityId:
+          item?.activity?.testActivityId || match?.params?.testActivityId,
+        lcbView,
+        modalState: {
+          item: testItemData,
+        },
+      }
+      reloadLcbDataInStudentView(payload)
+      setSilentCloning(false)
+    }
   }
 
   const onSaveAndPublish = () => {
@@ -214,6 +250,7 @@ const QuestionBottomAction = ({
       setCurrentQuestion(question.id)
       setCurrentStudentId(studentId)
       setEditingItemId(testItem._id)
+      setTestItemData(testItem)
     } catch (e) {
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
@@ -251,8 +288,10 @@ const QuestionBottomAction = ({
           <EduButton
             isBlue
             isGhost
+            data-cy="cancelSave"
             onClick={onCloseQuestionModal}
             width="115px"
+            disabled={silentClone}
           >
             CANCEL
           </EduButton>
@@ -306,6 +345,7 @@ const QuestionBottomAction = ({
       onClick={showQuestionModal}
       loading={loading || itemloading}
       disabled={isDisableCorrectItem}
+      data-cy="regradeItem"
     >
       Edit / Regrade
     </CorrectButton>
@@ -359,6 +399,7 @@ const QuestionBottomAction = ({
               height="30px"
               isGhost
               onClick={onClickShowSolutionHandler}
+              data-cy="showSolution"
             >
               {showExplanation ? 'Hide solution' : 'Show solution'}
             </EduButton>
@@ -407,6 +448,7 @@ const QuestionBottomAction = ({
             visible={openQuestionModal}
             wrapClassName="edit-regrade-modal"
             onCancel={onCloseQuestionModal}
+            maskClosable={false}
           >
             <ScrollContext.Provider
               value={{
@@ -423,6 +465,9 @@ const QuestionBottomAction = ({
                     view={EDIT}
                     disableResponse={false}
                   />
+                  {firebaseDocId && silentClone && (
+                    <RegradeListenerLcb onCloseModal={onCloseQuestionModal} />
+                  )}
                 </PointBlockContext.Provider>
               </AnswerContext.Provider>
             </ScrollContext.Provider>
@@ -477,7 +522,7 @@ const getPermissionToEdit = (state, props) => {
     isOwner ||
     userRole === roleuser.EDULASTIC_CURATOR ||
     (hasCollectionAccess && userFeatures.isCurator) ||
-    (isOwner && allowDuplicate)
+    allowDuplicate
   )
 
   const isDisableDuplicate = !(
@@ -503,6 +548,8 @@ const enhance = compose(
       isDocBasedTest: getIsDocBasedTestSelector(state),
       updating: get(state, ['classResponse', 'updating'], false),
       currentTerm: getCurrentTerm(state),
+      silentClone: getSilentCloneSelector(state),
+      firebaseDocId: getRegradeFirebaseDocIdSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,
@@ -514,6 +561,8 @@ const enhance = compose(
       setCurrentStudentId: setCurrentStudentIdAction,
       replaceOriginalItem: replaceOriginalItemAction,
       correctItemUpdateProgress: correctItemUpdateProgressAction,
+      setSilentCloning: setSilentCloningAction,
+      reloadLcbDataInStudentView: reloadLcbDataInStudentViewAction,
     }
   )
 )

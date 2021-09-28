@@ -30,6 +30,7 @@ const ReviewItems = ({
   isPublishers,
   isFetchingAutoselectItems = false,
   userRole,
+  blur,
   isPowerPremiumAccount,
   showGroupsPanel,
 }) => {
@@ -87,6 +88,7 @@ const ReviewItems = ({
         useDragHandle
         passagesKeyed={passagesKeyed}
         onChangePoints={onChangePoints}
+        blur={blur}
         handlePreview={handlePreview}
         isEditable={isEditable}
         isCollapse={isCollapse}

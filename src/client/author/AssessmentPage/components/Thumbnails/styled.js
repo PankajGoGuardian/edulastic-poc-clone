@@ -1,10 +1,12 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
+import { IconCharInfo } from '@edulastic/icons'
 import {
   extraDesktopWidthMax,
   borders,
   tabGrey,
   backgrounds,
+  greyThemeDark1,
 } from '@edulastic/colors'
 
 export const ThumbnailsWrapper = styled.div`
@@ -63,4 +65,20 @@ export const ToolBarToggleBtn = styled(Button)`
   height: 34px;
   border-radius: 4px;
   padding: 0;
+`
+
+export const MenuItemContainer = styled.span`
+  position: relative;
+  color: ${greyThemeDark1};
+  margin-bottom: 8px;
+  display: inline-block;
+`
+
+export const InfoIcon = styled(IconCharInfo)`
+  width: 6px;
+  height: 10px;
+  position: absolute;
+  top: -5px;
+  right: -12px;
+  cursor: pointer;
 `

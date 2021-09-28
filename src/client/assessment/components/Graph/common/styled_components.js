@@ -10,6 +10,7 @@ import {
   themeColor,
   extraDesktopWidthMax,
   greyThemeDark4,
+  redDark,
 } from '@edulastic/colors'
 import { TextField } from '@edulastic/common'
 
@@ -572,4 +573,10 @@ export const UploadButton = styled(Dragger)`
       padding: 0px;
     }
   }
+`
+
+export const GridSettingHelpText = styled.span`
+  color: ${redDark};
+  font-size: 11px;
+  max-width: 100%;
 `

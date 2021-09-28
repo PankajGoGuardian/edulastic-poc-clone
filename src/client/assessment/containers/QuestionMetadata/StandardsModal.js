@@ -111,6 +111,8 @@ const StandardsModal = ({
         grades: val,
         searchStr: '',
       })
+    } else {
+      getCurriculumStandards(state.standard.id, val, '')
     }
     setDefaultInterests({ grades: val })
   }

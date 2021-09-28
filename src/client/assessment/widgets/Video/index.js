@@ -45,12 +45,12 @@ const Video = ({
         {advancedLink}
 
         <AdvancedOptions
-          setQuestionData={setQuestionData}
-          item={item}
           t={t}
+          item={item}
           fillSections={fillSections}
           cleanSections={cleanSections}
           advancedAreOpen={advancedAreOpen}
+          setQuestionData={setQuestionData}
         />
       </ContentArea>
     )

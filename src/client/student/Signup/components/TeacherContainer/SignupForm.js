@@ -1,5 +1,10 @@
 import { themeColor, white } from '@edulastic/colors'
-import { OnDarkBgLogo, withWindowSizes, notification } from '@edulastic/common'
+import {
+  OnDarkBgLogo,
+  withWindowSizes,
+  notification,
+  CopyRight,
+} from '@edulastic/common'
 import { IconLock, IconMail, IconUser } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Form, Input, message } from 'antd'
@@ -311,7 +316,9 @@ class Signup extends React.Component {
                 </BannerText>
                 {windowWidth >= MAX_TAB_WIDTH && (
                   <DesktopViewCopyright>
-                    <Col span={24}>{t('common.copyright')}</Col>
+                    <Col span={24}>
+                      <CopyRight />
+                    </Col>
                   </DesktopViewCopyright>
                 )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
@@ -554,7 +561,9 @@ class Signup extends React.Component {
           <CircleDiv size={32} right={72} top={500} />
           {windowWidth < MAX_TAB_WIDTH && (
             <Copyright>
-              <Col span={24}>{t('common.copyright')}</Col>
+              <Col span={24}>
+                <CopyRight />
+              </Col>
             </Copyright>
           )}
         </RegistrationWrapper>

@@ -28,7 +28,7 @@ class Bucket extends Component {
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}

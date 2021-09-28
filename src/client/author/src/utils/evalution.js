@@ -41,7 +41,8 @@ export const evaluateItem = async (
   answers,
   validations,
   itemLevelScoring = false,
-  itemLevelScore = 0,
+  newScore,
+  itemScore = 0,
   itemId = '',
   itemGradingType,
   assignPartialCredit,
@@ -51,6 +52,7 @@ export const evaluateItem = async (
   const results = {}
   const errors = new Set()
   let totalScore = 0
+  const itemLevelScore = newScore || itemScore
   let totalMaxScore = itemLevelScoring ? itemLevelScore : 0
   const numberOfQuestions = Object.keys(validations).filter(
     (x) => validations?.[x]?.validation
@@ -151,7 +153,9 @@ export const evaluateItem = async (
         achievedScore = 0
       }
     }
-
+    if (newScore) {
+      achievedScore *= newScore / itemScore
+    }
     return {
       evaluation: results,
       maxScore: itemLevelScore,
@@ -177,6 +181,9 @@ export const evaluateItem = async (
       })
     Array.from(errors).forEach(showNotificationForError)
   }
-
+  if (newScore) {
+    totalScore *= newScore / totalMaxScore
+    totalMaxScore *= newScore / totalMaxScore
+  }
   return { evaluation: results, maxScore: totalMaxScore, score: totalScore }
 }

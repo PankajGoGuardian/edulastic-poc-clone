@@ -26,6 +26,7 @@ import {
   Collection,
   CollectionNameWrapper,
   DynamicIconWrapper,
+  StyledIcon,
 } from './styled'
 import Tags from '../../../src/components/common/Tags'
 import { TestStatus } from '../ListItem/styled'
@@ -122,6 +123,7 @@ const TestItemCard = ({
             getAuthorCollectionMap(false, 30, 30).edulastic_certified.icon}
           {/* hiding premium tag temporarily as per CR */}
           {/* {showPremiumTag && <PremiumLabel> PREMIUM</PremiumLabel>} */}
+          {isDocBased ? <StyledIcon type="file-pdf" /> : ''}
         </Header>
       }
     >

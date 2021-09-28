@@ -574,6 +574,11 @@ export const getPassageItemsCountSelector = createSelector(
   (state) => state.passageItems.length
 )
 
+export const getPassageItemsSelector = createSelector(
+  stateSelector,
+  (state) => state.passageItems
+)
+
 export const getRegradeFirebaseDocIdSelector = createSelector(
   stateSelector,
   (state) => state.regradeFirestoreDocId
@@ -669,7 +674,7 @@ export const getTestDefaultSettingsSelector = createSelector(
 
 export const getTestSettingsListSelector = createSelector(
   stateSelector,
-  (state) => state.savedTestSettingsList
+  (state) => state.savedTestSettingsList || []
 )
 
 export const getTestStatusSelector = createSelector(
@@ -991,7 +996,7 @@ const initialState = {
   loadingSharedUsers: false,
   allKnownTags: [],
   tagSearchData: {
-    result: {},
+    result: [],
     isLoading: true,
   },
 }
@@ -1056,6 +1061,7 @@ export const reducer = (state = initialState, { type, payload }) => {
         loading: false,
         entity: {
           ...payload.entity,
+          settingId: payload.entity.settingId || '',
         },
         updated: state.createdItems.length > 0,
       }
@@ -1169,7 +1175,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         tagSearchData: {
-          result: {},
+          result: [],
           isLoading: true,
         },
       }
@@ -1185,7 +1191,7 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         tagSearchData: {
-          result: {},
+          result: [],
           isLoading: false,
         },
       }
@@ -1717,13 +1723,7 @@ export const getTagSearchSelector = createSelector(stateSelector, (state) =>
 
 export const getTagSearchListSelector = createSelector(
   getTagSearchSelector,
-  (state) => {
-    const hits = get(state, 'result.hits.hits', [])
-    return hits.map(({ _id, _source }) => ({
-      _id,
-      ..._source,
-    }))
-  }
+  (state) => get(state, 'result', [])
 )
 
 // tags which were searched for previously are cached as allKnownTags
@@ -2401,7 +2401,9 @@ function* updateTestDocBasedSaga({ payload }) {
       })
       if (Object.keys(versionedQIdMap).length) {
         payload.data.annotations.forEach((annotation) => {
-          annotation.questionId = versionedQIdMap[annotation.questionId]
+          if (versionedQIdMap[annotation.questionId]) {
+            annotation.questionId = versionedQIdMap[annotation.questionId]
+          }
         })
       }
     }
@@ -2968,7 +2970,8 @@ function* getEvaluation(testItemId, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore,
+    newScore,
+    itemLevelScore,
     testItem._id,
     itemGradingType,
     assignPartialCredit
@@ -2993,7 +2996,8 @@ function* getEvaluationFromItem(testItem, newScore) {
     answersByQids,
     questions,
     itemLevelScoring,
-    newScore || itemLevelScore,
+    newScore,
+    itemLevelScore,
     testItem._id,
     itemGradingType,
     assignPartialCredit
@@ -3027,12 +3031,6 @@ function* checkAnswerSaga({ payload }) {
     }
     const { evaluation, score, maxScore } = evaluationObject
     yield put({
-      type: ADD_ITEM_EVALUATION,
-      payload: {
-        ...evaluation,
-      },
-    })
-    yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: 'check',
@@ -3045,6 +3043,13 @@ function* checkAnswerSaga({ payload }) {
         score: round(score, 2),
         maxScore,
         showScore: true,
+      },
+    })
+
+    yield put({
+      type: ADD_ITEM_EVALUATION,
+      payload: {
+        ...evaluation,
       },
     })
 
@@ -3130,9 +3135,36 @@ function* getAllTagsSaga({ payload }) {
 function* searchTagsSaga({ payload }) {
   try {
     const result = yield call(tagsApi.searchTags, payload)
+    let tags = []
+    if (result.aggregations) {
+      const tagBuckets = get(result, 'aggregations.tags.buckets', [])
+      tags = tagBuckets.map((bucket) => {
+        const bucketTags = get(bucket, 'docs.hits.hits', [])
+        const bucketTagIds = bucketTags.map((t) => t._id)
+        const bucketTagNames = bucketTags.map((t) =>
+          get(t, '_source.tagName', '')
+        )
+        return {
+          _id: bucketTagIds.join('_'),
+          tagName: bucket.key,
+          tagType: payload?.search?.tagTypes?.[0],
+          tagNamesAssociated: bucketTagNames,
+        }
+      })
+    } else {
+      const hits = get(result, 'hits.hits', [])
+      tags = hits.map(({ _id, _source }) => ({
+        _id,
+        ..._source,
+      }))
+    }
     yield put({
       type: SEARCH_TAG_LIST_SUCCESS,
-      payload: result,
+      payload: tags,
+    })
+    yield put({
+      type: APPEND_KNOWN_TAGS,
+      payload: tags,
     })
   } catch (e) {
     Sentry.captureException(e)
@@ -3152,22 +3184,6 @@ function* searchTagsByIdSaga({ payload: ids }) {
       },
     }
     yield* searchTagsSaga({ payload })
-  } catch (err) {
-    Sentry.captureException(err)
-  }
-}
-
-function* appendKnownTagsSaga({ payload }) {
-  try {
-    const hits = get(payload, 'hits.hits', [])
-    const tags = hits.map(({ _id, _source }) => ({
-      _id,
-      ..._source,
-    }))
-    yield put({
-      type: APPEND_KNOWN_TAGS,
-      payload: tags,
-    })
   } catch (err) {
     Sentry.captureException(err)
   }
@@ -3302,8 +3318,15 @@ function* duplicateTestSaga({ payload }) {
       isInEditAndRegrade = false,
       redirectToNewTest = false,
       cloneItems = false,
+      playlistId,
     } = payload
-    const queryParams = { _id, title, isInEditAndRegrade, cloneItems }
+    const queryParams = {
+      _id,
+      title,
+      isInEditAndRegrade,
+      cloneItems,
+      playlistId,
+    }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)
@@ -3708,7 +3731,6 @@ export function* watcherSaga() {
     takeEvery(GET_ALL_TAGS_IN_DISTRICT, getAllTagsSaga),
     takeEvery(SEARCH_TAG_LIST_REQUEST, searchTagsSaga),
     takeEvery(SEARCH_TAGS_BY_IDS_REQUEST, searchTagsByIdSaga),
-    takeEvery(SEARCH_TAG_LIST_SUCCESS, appendKnownTagsSaga),
     takeEvery(PREVIEW_SHOW_ANSWER, showAnswerSaga),
     takeEvery(RECEIVE_DEFAULT_TEST_SETTINGS, getDefaultTestSettingsSaga),
     takeEvery(PUBLISH_FOR_REGRADE, publishForRegrade),

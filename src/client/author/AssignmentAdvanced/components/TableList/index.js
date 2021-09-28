@@ -12,12 +12,13 @@ import {
   IconPresentation,
   IconAddItem,
   IconPieChartIcon,
+  IconHourGlass,
 } from '@edulastic/icons'
+import { greyThemeLight } from '@edulastic/colors'
 import ReleaseScoreSettingsModal from '../../../Assignments/components/ReleaseScoreSettingsModal/ReleaseScoreSettingsModal'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import {
   Container,
-  Icon,
   TableData,
   TypeIcon,
   BtnStatus,
@@ -30,7 +31,6 @@ import {
 } from './styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
-import { ReactComponent as TimerIcon } from '../../../Assignments/components/TableList/assets/timer.svg'
 
 export const testTypeToolTip = {
   assessment: 'Class Assessment',
@@ -77,7 +77,7 @@ const columns = [
             }
           >
             <TimedTestIndicator data-cy="type" type="p">
-              <TimerIcon />
+              <IconHourGlass color={greyThemeLight} />
             </TimedTestIndicator>
           </Tooltip>
         )}

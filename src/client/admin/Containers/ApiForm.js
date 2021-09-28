@@ -158,6 +158,7 @@ const ApiForm = () => {
   return (
     <div>
       <Select
+        showSearch
         placeholder="Select"
         size="large"
         style={{

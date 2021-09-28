@@ -350,7 +350,7 @@ const TableHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 24px;
+  margin-bottom: 12px;
 `
 
 const TableAction = styled.div`

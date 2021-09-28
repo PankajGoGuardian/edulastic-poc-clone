@@ -31,6 +31,7 @@ import {
   getUserOrgId,
   getUserRole,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
   getUserId,
   getUserFeatures,
 } from '../../../src/selectors/user'
@@ -73,7 +74,7 @@ import {
   SavedSettingsContainer,
   DeleteIconContainer,
 } from './styled'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
@@ -125,22 +126,25 @@ class AssignTest extends React.Component {
       testSettings,
       getDefaultTestSettings,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
       history,
       fetchTestSettingsList,
       userId,
       userFeatures: { premium },
       fetchUserCustomKeypads,
-      setCurrentTestSettingsId,
       location,
       addRecommendedResourcesAction,
     } = this.props
 
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
-
     resetStudents()
 
     const { testId } = match.params
@@ -162,7 +166,6 @@ class AssignTest extends React.Component {
         orgId: userId,
         orgType: roleuser.ORG_TYPE.USER,
       })
-      setCurrentTestSettingsId(testSettings.settingId || '')
     }
 
     const isAdmin =
@@ -244,6 +247,7 @@ class AssignTest extends React.Component {
         playerSkinType: prevPlayerSkinType,
         settingId: prevSettingId,
       },
+      testSettingsList: prevTestSettingsList,
     } = prevProps
     // the initial playerSkinType in reducer is edulastic,
     // but after fetching the test it can be other type like testlet
@@ -251,13 +255,15 @@ class AssignTest extends React.Component {
     if (playerSkinType !== prevPlayerSkinType) {
       this.updateAssignmentNew({ playerSkinType })
     }
+    const isSettingsListFetchedNow =
+      !prevTestSettingsList?.length && testSettingsList?.length
+
     if (
       premium &&
-      settingId &&
-      settingId != prevSettingId &&
-      testSettingsList?.some((t) => t._id === settingId)
+      (settingId != prevSettingId || isSettingsListFetchedNow) &&
+      (testSettingsList?.some((t) => t._id === settingId) || !settingId)
     ) {
-      setCurrentTestSettingsId(settingId)
+      setCurrentTestSettingsId(settingId || '')
     }
   }
 
@@ -832,6 +838,7 @@ class AssignTest extends React.Component {
               showAssignModuleContent={
                 match?.params?.playlistId && !match?.params?.testId
               }
+              isAssigning={isAssigning}
             />
           )}
         </Container>
@@ -856,6 +863,7 @@ const enhance = compose(
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       currentSettingsId: getCurrentSettingsIdSelector(state),
       userId: getUserId(state),
       testSettingsList: getTestSettingsListSelector(state),
@@ -878,7 +886,7 @@ const enhance = compose(
       resetStudents: resetStudentAction,
       updateAssignmentSettings: updateAssingnmentSettingsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       saveTestSettings: saveTestSettingsAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,

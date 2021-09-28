@@ -74,7 +74,10 @@ import {
   clearCreatedItemsAction,
   getAllTagsAction,
 } from '../../../TestPage/ducks'
-import { setApproveConfirmationOpenAction } from '../../../TestPage/components/AddItems/ducks'
+import {
+  clearSelectedItemsAction,
+  setApproveConfirmationOpenAction,
+} from '../../../TestPage/components/AddItems/ducks'
 import { getCurriculumsListSelector } from '../../../src/selectors/dictionaries'
 import {
   clearDictStandardsAction,
@@ -235,7 +238,6 @@ class TestList extends Component {
       mode,
       match: params,
       getCurriculumStandards,
-      clearCreatedItems,
       getAllTags,
       testFilters,
       clearDictStandards,
@@ -249,8 +251,11 @@ class TestList extends Component {
       districtId,
       userId,
       collections,
+      clearSelectedItems,
+      clearCreatedItems,
+      clearTestData,
     } = this.props
-
+    clearSelectedItems()
     const isSingaporeMathCollectionActive = tests.filter(
       (test) =>
         (test.description?.toLowerCase()?.includes('singaporemath') ||
@@ -378,6 +383,16 @@ class TestList extends Component {
       clearDictStandards()
       getCurriculumStandards(_curriculumId, curriculumGrades, '')
     }
+
+    /**
+     * clear selected items on item bank page on mounting this component.
+     * @see https://snapwiz.atlassian.net/browse/EV-31074
+     * @see https://snapwiz.atlassian.net/browse/EV-30990
+     * we need clear selected items in this component only,
+     * In terms of other pages, we are clearing them in the locationChangedSaga.
+     * @see src/client/author/TestPage/components/AddItems/ducks.js
+     */
+    clearTestData()
     clearCreatedItems()
   }
 
@@ -543,12 +558,10 @@ class TestList extends Component {
   }
 
   handleCreate = () => {
-    const { history, clearCreatedItems, clearTestData, mode } = this.props
+    const { history, mode } = this.props
     if (mode !== 'embedded') {
       history.push('/author/tests/select')
     }
-    clearTestData()
-    clearCreatedItems()
   }
 
   updateTestList = (page) => {
@@ -1547,6 +1560,7 @@ const enhance = compose(
       removeTestFromCart: removeTestFromCartAction,
       approveOrRejectMultipleTestsRequest: approveOrRejectMultipleTestsRequestAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+      clearSelectedItems: clearSelectedItemsAction,
     }
   )
 )

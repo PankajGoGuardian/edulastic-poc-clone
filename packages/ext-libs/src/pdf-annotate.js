@@ -1,7 +1,7 @@
 // eslint-disable-next-line
 var pdfjsViewer = require('pdfjs-dist/web/pdf_viewer.js') // pdfjs-dist - v2.1.266
 var { aws } = require('@edulastic/constants')
-var { uploadToS3 } = require('@edulastic/common')
+var { uploadToS3, getYoutubeId } = require('@edulastic/common')
 const { themeColor } = require('@edulastic/colors')
 ;(function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === 'object' && typeof module === 'object')
@@ -5279,12 +5279,13 @@ const { themeColor } = require('@edulastic/colors')
             <div class="ant-popover-inner" role="tooltip">
               <div class="ant-popover-inner-content">
             <div class="ant-popover-message">
-            
+
+            <div id="edu-annoate-video-view"></div>
 
             <span>Copy and paste the video embed code
             <a href="https://support.google.com/youtube/answer/171780?hl=en" target="_blank">Help</a>:
             </span><br/><br/>
-              <input id="pdf-annotate-point-input" type="url" placeholder="Paste video embed code here" type="text" class="ant-input" value="">
+              <input id="video-edit-input" type="url" placeholder="Paste video embed code here" class="ant-input" value="">
             </div>
             
             <div class="ant-popover-buttons">
@@ -5293,7 +5294,7 @@ const { themeColor } = require('@edulastic/colors')
             </div>
             
             </div></div></div></div>
-      `
+            `
 
           container.style.position = 'absolute'
           container.style.width = '100%'
@@ -5307,17 +5308,42 @@ const { themeColor } = require('@edulastic/colors')
           cancel.addEventListener('click', closeInput)
 
           var submit = document.getElementById('edu-annotate-submit')
-          submit.addEventListener('click', savePoint)
+          submit.addEventListener('click', saveVideo)
 
-          input = document.getElementById('pdf-annotate-point-input')
+          input = document.getElementById('video-edit-input')
+          input.addEventListener('keyup', handleChangeInput)
+
           input.focus()
+        }
+        /**
+         * Handle input.keyup event
+         */
+        function handleChangeInput() {
+          var videoInput = document.getElementById('video-edit-input')
+          var videoView = document.getElementById('edu-annoate-video-view')
+          var value = videoInput.value
+
+          if (value) {
+            var youtubeId = getYoutubeId(value)
+            if (youtubeId) {
+              var videoContent =
+                '<iframe width="560" height="315" src="//www.youtube.com/embed/' +
+                youtubeId +
+                '?rel=0" frameborder="0" allowfullscreen></iframe>'
+              videoView.innerHTML = videoContent
+            } else {
+              videoView.innerHTML = ''
+            }
+          } else {
+            videoView.innerHTML = ''
+          }
         }
 
         /**
          * Handle input.blur event
          */
         function handleInputBlur() {
-          savePoint()
+          saveVideo()
         }
         /**
          * Handle input.keyup event
@@ -5328,18 +5354,36 @@ const { themeColor } = require('@edulastic/colors')
           if (e.keyCode === 27) {
             closeInput()
           } else if (e.keyCode === 13) {
-            savePoint()
+            saveVideo()
           }
         }
         /**
-         * Save a new point annotation from input
+         * Save a new video annotation from input
          */
-        function savePoint() {
+        function saveVideo() {
           if (input.value.trim().length > 0) {
             var _ret = (function () {
+              var content = input.value.trim()
+              if (!content) {
+                return {
+                  v: void 0,
+                }
+              }
+              var youtubeId = getYoutubeId(content)
+
+              if (!youtubeId) {
+                return {
+                  v: void 0,
+                }
+              }
+
+              var videoContent =
+                '<iframe width="560" height="315" src="//www.youtube.com/embed/' +
+                youtubeId +
+                '?rel=0" frameborder="0" allowfullscreen></iframe>'
+
               var clientX = parseInt(container.style.left, 10)
               var clientY = parseInt(container.style.top, 10)
-              var content = input.value.trim()
               var svg = (0, _utils.findSVGAtPoint)(clientX, clientY)
               if (!svg) {
                 return {
@@ -5365,7 +5409,7 @@ const { themeColor } = require('@edulastic/colors')
                 .then((annotation) => {
                   _PDFJSAnnotate2.default
                     .getStoreAdapter()
-                    .addVideo(documentId, annotation.uuid, content)
+                    .addVideo(documentId, annotation.uuid, videoContent)
                   ;(0, _appendChild2.default)(svg, annotation)
                 })
             })()
@@ -5390,7 +5434,7 @@ const { themeColor } = require('@edulastic/colors')
           }
         }
         /**
-         * Enable point annotation behavior
+         * Enable video annotation behavior
          */
         function enableVideoPoint() {
           if (_enabledVideo) {
@@ -5400,7 +5444,7 @@ const { themeColor } = require('@edulastic/colors')
           document.addEventListener('mouseup', handleDocumentMouseup)
         }
         /**
-         * Disable point annotation behavior
+         * Disable video annotation behavior
          */
         function disableVideoPoint() {
           if (!_enabledVideo) {
@@ -5840,22 +5884,43 @@ const { themeColor } = require('@edulastic/colors')
           var videoInput = document.getElementById('video-edit-input')
           var videoView = document.getElementById('edu-annoate-video-view')
 
-          var updatedContent = videoInput.value
-          videoView.innerHTML = updatedContent
+          var value = videoInput.value
+          if (value) {
+            var youtubeId = getYoutubeId(value)
+            if (youtubeId) {
+              var updatedContent =
+                '<iframe width="560" height="315" src="//www.youtube.com/embed/' +
+                youtubeId +
+                '?rel=0" frameborder="0" allowfullscreen></iframe>'
+              videoView.innerHTML = updatedContent
+            } else {
+              videoView.innerHTML = ''
+            }
+          } else {
+            videoView.innerHTML = ''
+          }
         }
 
         function handleUpdateVideo(annotation, documentId) {
           var videoInput = document.getElementById('video-edit-input')
-          var updatedContent = videoInput.value
+          var updatedValue = videoInput.value
+          if (updatedValue && annotation) {
+            var youtubeId = getYoutubeId(updatedValue)
+            if (youtubeId) {
+              var updatedContent =
+                '<iframe width="560" height="315" src="//www.youtube.com/embed/' +
+                youtubeId +
+                '?rel=0" frameborder="0" allowfullscreen></iframe>'
 
-          if (updatedContent && annotation) {
-            var updatedAnnotation = {
-              ...annotation,
-              content: updatedContent,
+              var updatedAnnotation = {
+                ...annotation,
+                content: updatedContent,
+              }
+
+              _PDFJSAnnotate2.default
+                .getStoreAdapter()
+                .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
             }
-            _PDFJSAnnotate2.default
-              .getStoreAdapter()
-              .editAnnotation(documentId, annotation.uuid, updatedAnnotation)
           }
         }
 

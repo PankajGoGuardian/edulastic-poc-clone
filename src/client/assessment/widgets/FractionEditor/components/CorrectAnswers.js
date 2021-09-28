@@ -130,6 +130,7 @@ const CorrectAnswers = ({
             type="number"
             min={1}
             placeholder="Correct answer"
+            data-cy="correctAnswer"
             size="default"
             value={selected.length}
             onChange={handleCorrectAnswerChange}

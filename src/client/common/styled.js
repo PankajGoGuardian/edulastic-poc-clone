@@ -1,4 +1,5 @@
 import {
+  extraDesktopWidth,
   fadedGrey,
   mobileWidthMax,
   smallDesktopWidth,
@@ -64,19 +65,25 @@ export const StyledCard = styled(Card)`
 export const MainContainer = styled.div``
 
 export const TableContainer = styled.div`
-  background: ${(props) => props.theme.manageDistrict.tableContainerBgColor};
-  padding: 1rem;
-  border-radius: ${(props) =>
-    props.theme.manageDistrict.tableContainerBorderRadius};
-  box-shadow: ${(props) => props.theme.manageDistrict.tableContainerBoxShadow};
+  padding: 1rem 0;
 `
 
 export const SubHeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 0.5rem;
-  margin-bottom: 5px;
+  margin-bottom: 15px;
+  .ant-breadcrumb {
+    @media (max-width: ${extraDesktopWidth}) {
+      .ant-breadcrumb-link,
+      .ant-breadcrumb-separator {
+        font-size: 9px;
+        a {
+          font-size: 9px;
+        }
+      }
+    }
+  }
 `
 
 export const StyledSchoolSearch = styled(Input.Search)`
@@ -148,8 +155,7 @@ export const StyledButton = styled(Button)`
 export const FilterWrapper = styled.div`
   background: ${(props) => props.theme.manageDistrict.filterDivBgcolor};
   border-radius: ${(props) => props.theme.manageDistrict.filterDivBorderRadius};
-  padding: 10px;
-  margin-bottom: 15px;
+  padding: 10px 10px 0px;
 `
 
 export const StyledTable = styled(Table)`
@@ -158,7 +164,7 @@ export const StyledTable = styled(Table)`
     &-thead {
       & > tr > th {
         color: ${(props) => props.theme.manageDistrict.tableHeaderTxtColor};
-        font-size: ${(props) => props.theme.manageDistrict.tableHeaderTxtSize};
+        font-size: 10px;
         font-weight: bold;
         padding: 20px 10px;
         text-transform: uppercase;
@@ -188,15 +194,19 @@ export const StyledTable = styled(Table)`
             }
           }
         }
+        @media (min-width: ${extraDesktopWidth}) {
+          font-size: ${(props) =>
+            props.theme.manageDistrict.tableHeaderTxtSize};
+        }
       }
     }
     &-tbody {
       & > tr {
-        background: ${(props) => props.theme.manageDistrict.tableRowColor};
+        background: ${white};
         font-family: Open Sans;
         letter-spacing: 0.26px;
         color: ${(props) => props.theme.manageDistrict.tableRowTxtColor};
-        font-size: ${(props) => props.theme.manageDistrict.tableRowTxtSize};
+        font-size: 11px;
         font-weight: 600;
         cursor: pointer;
         border-bottom: 15px solid white;
@@ -206,6 +216,9 @@ export const StyledTable = styled(Table)`
             background: none;
           }
           font-weight: 550;
+        }
+        @media (min-width: ${extraDesktopWidth}) {
+          font-size: ${(props) => props.theme.manageDistrict.tableRowTxtSize};
         }
       }
     }
@@ -327,6 +340,15 @@ export const RightFilterDiv = styled.div`
   width: ${(props) => (props.width ? `${props.width}%` : 'auto')};
   justify-content: flex-end;
   align-items: center;
+  margin-left: 10px;
+  .ant-checkbox-wrapper {
+    .ant-checkbox + span {
+      font-size: 10px;
+      @media (min-width: ${extraDesktopWidth}) {
+        font-size: 12px;
+      }
+    }
+  }
   @media (max-width: ${mobileWidthMax}) {
     width: 90%;
     justify-content: space-between;

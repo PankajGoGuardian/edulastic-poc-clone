@@ -63,7 +63,7 @@ import {
   getPassageSelector,
   addWidgetToPassageAction,
   deleteItemAction,
-  editPassageWidgetAction,
+  editMultipartWidgetAction,
 } from '../../ducks'
 import {
   changeCurrentQuestionAction,
@@ -106,7 +106,7 @@ import {
   allowedToSelectMultiLanguageInTest,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
-import QuestionToPassage from '../QuestionToPassage'
+import QuestionManageModal from '../QuestionManageModal'
 import PassageDivider from '../Divider'
 import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 
@@ -139,7 +139,7 @@ class Container extends Component {
       collapseDirection: '',
       showHints: false,
       showQuestionManageModal: false,
-      isEditPassageQuestion: false,
+      isEditMultipartQuestion: false,
     }
   }
 
@@ -336,9 +336,19 @@ class Container extends Component {
       return
     }
 
-    if (item.passageId) {
+    const isMultiDimensionalLayout = rows.length > 1
+
+    if (item.passageId || item.multipartItem) {
       setCurrentQuestion('')
       this.setState({ showQuestionManageModal: true, rowIndex, tabIndex })
+      if (history?.location) {
+        const updatedState = {
+          ...history.location.state,
+          rowIndex,
+          isMultiDimensionalLayout,
+        }
+        history.replace({ ...history.location, state: updatedState })
+      }
       return
     }
 
@@ -349,7 +359,6 @@ class Container extends Component {
     // there is 2 col layout, only allow to add questions on the right panel
     // can add only resources/instructions in the left
 
-    const isMultiDimensionalLayout = rows.length > 1
     const { multipartItem: isMultipartItem } = item
     if (state?.testAuthoring === false) {
       return history.push({
@@ -429,7 +438,7 @@ class Container extends Component {
 
     this.setState({
       showQuestionManageModal: false,
-      isEditPassageQuestion: false,
+      isEditMultipartQuestion: false,
     })
   }
 
@@ -454,14 +463,14 @@ class Container extends Component {
     const {
       loadQuestion,
       changeView,
-      editPassageWidget,
-      item: { isPassageWithQuestions },
+      editMultipartWidget,
+      item: { isPassageWithQuestions, multipartItem },
     } = this.props
-    if (isPassageWithQuestions) {
-      editPassageWidget(widget.reference)
+    if (isPassageWithQuestions || multipartItem) {
+      editMultipartWidget(widget.reference)
       this.setState({
         showQuestionManageModal: true,
-        isEditPassageQuestion: true,
+        isEditMultipartQuestion: true,
       })
       return
     }
@@ -481,7 +490,7 @@ class Container extends Component {
       this.setState({
         rowIndex,
         showQuestionManageModal: true,
-        isEditPassageQuestion: true,
+        isEditMultipartQuestion: true,
       })
       return
     }
@@ -753,7 +762,7 @@ class Container extends Component {
         testId,
         addToTest: isTestFlow,
         locationState: state,
-        redirect: true,
+        redirect: false,
         redirectOnDeleteQuestion: false,
         updateScoreInQuestionsAsPerItem: false,
       },
@@ -1036,7 +1045,7 @@ class Container extends Component {
       rowIndex,
       showRemovePassageItemPopup,
       showQuestionManageModal,
-      isEditPassageQuestion,
+      isEditMultipartQuestion,
     } = this.state
     const {
       match,
@@ -1278,13 +1287,14 @@ class Container extends Component {
           </ContentWrapper>
         </Layout>
         {showQuestionManageModal && (
-          <QuestionToPassage
+          <QuestionManageModal
             isTestFlow={isTestFlow}
             isEditFlow={isEditFlow}
             tabIndex={tabIndex}
             rowIndex={rowIndex}
             testId={testId}
-            isEditPassageQuestion={isEditPassageQuestion}
+            isPassage={isPassageWithQuestions}
+            isEditMultipartQuestion={isEditMultipartQuestion}
             onCancel={this.handleCancelQuestionToPassage}
           />
         )}
@@ -1406,7 +1416,7 @@ const enhance = compose(
       deleteWidgetFromPassage: deleteWidgetFromPassageAction,
       setCreatedItemToTest: setCreatedItemToTestAction,
       setCurrentQuestion: changeCurrentQuestionAction,
-      editPassageWidget: editPassageWidgetAction,
+      editMultipartWidget: editMultipartWidgetAction,
     }
   )
 )

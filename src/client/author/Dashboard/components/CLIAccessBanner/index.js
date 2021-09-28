@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { Dropdown, Menu } from 'antd'
+import { CopyRight } from '@edulastic/common'
 import Modal from 'react-responsive-modal'
 import { get } from 'lodash'
 import { logoutAction } from '../../../src/actions/auth'
@@ -17,6 +18,7 @@ import {
   UserInfo,
   UserName,
 } from './styled'
+
 
 const CLIAccessBanner = ({
   visible = false,
@@ -87,23 +89,27 @@ const CLIAccessBanner = ({
         </Dropdown>
       </StyledSignOut>
       <StyledLogo src={CLILogo} />
-      <StyledText margin="50px auto 20px auto">
-        Welcome{' '}
-        <HighlightedText>
+      <StyledText data-cy="cliBannerTitle" margin="50px auto 20px auto">
+        Welcome to Edulastic
+        {/* <HighlightedText>
           {firstName || lastName ? `${firstName} ${lastName}` : 'Anonymous'}!
-        </HighlightedText>
+        </HighlightedText> */}
       </StyledText>
-      <StyledText fontSize="16px">
-        You now have access to <br /> CLI collection.
+      <StyledText data-cy="cliBannerDesc" fontSize="16px">
+        Your account has been created and you have access to Carnegie Learning
+        content in the library.
       </StyledText>
       <Button
         onClick={() => {
           onClose()
         }}
+        data-cy="cliBannerBtn"
       >
         Continue
       </Button>
-      <BaseText>Edulastic @ 2020 - All rights reserved.</BaseText>
+      <BaseText>
+        <CopyRight />
+      </BaseText>
     </Modal>
   )
 }

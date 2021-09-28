@@ -1,17 +1,24 @@
-import React, { Component } from 'react'
-import { connect } from 'react-redux'
-import PropTypes from 'prop-types'
-import { get } from 'lodash'
-
 // components
 import { MainHeader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { IconSettings } from '@edulastic/icons'
-import { AdminHeaderContent, StyledTabPane, StyledTabs } from './styled'
-
-// ducks
-import { getManageTabLabelSelector, getUserRole } from '../../../selectors/user'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 import { getSchoolAdminSettingsAccess } from '../../../../DistrictPolicy/ducks'
+// ducks
+import {
+  getManageTabLabelSelector,
+  getUserRole,
+  isOrganizationDistrictSelector,
+} from '../../../selectors/user'
+import {
+  AdminHeaderContent,
+  HeaderRightContainer,
+  StyledTabPane,
+  StyledTabs,
+} from './styled'
 
 class AdminHeader extends Component {
   static propTypes = {
@@ -20,12 +27,18 @@ class AdminHeader extends Component {
   }
 
   onHeaderTabClick = (key) => {
-    const { history, role } = this.props
+    const { history, role, isOrganizationDistrictAdmin } = this.props
     // eslint-disable-next-line default-case
     switch (key) {
+      case 'administration':
+        history.push(`/author/schools`)
+        return
       case 'users':
         if (role === 'district-admin' || role === 'school-admin') {
           history.push(`/author/users/teacher`)
+        }
+        if (isOrganizationDistrictAdmin) {
+          history.push(`/author/users/district-admin`)
         }
         return
       case 'settings':
@@ -53,16 +66,14 @@ class AdminHeader extends Component {
   render() {
     const {
       active,
-      count = 0,
       role,
       schoolLevelAdminSettings,
       manageTabLabel,
       children,
       enableStudentGroups,
     } = this.props
-    const schoolTabtext = count > 0 ? `Schools (${count})` : 'Schools'
     const isDA = role === roleuser.DISTRICT_ADMIN
-    const defaultTab = isDA ? 'District Profile' : 'School Profile'
+    const defaultTab = 'Profile'
     const defaultKey = isDA ? 'districtprofile' : 'schoolprofile'
     const activeKey = (active.mainMenu || '')
       .toLocaleLowerCase()
@@ -73,6 +84,7 @@ class AdminHeader extends Component {
         Icon={IconSettings}
         headingText={manageTabLabel}
         mobileHeaderHeight={100}
+        headerLeftClassName="manage-district-headerLeft"
       >
         <AdminHeaderContent>
           <StyledTabs
@@ -83,20 +95,17 @@ class AdminHeader extends Component {
             onTabClick={this.onHeaderTabClick}
           >
             <StyledTabPane tab={defaultTab} key={defaultKey} />
-            <StyledTabPane tab={schoolTabtext} key="schools" />
+            <StyledTabPane tab="Administration" key="administration" />
             <StyledTabPane tab="Users" key="users" />
-            <StyledTabPane tab="Classes" key="classes" />
             {enableStudentGroups && <StyledTabPane tab="Groups" key="groups" />}
-            <StyledTabPane tab="Courses" key="courses" />
-            <StyledTabPane tab="Class Enrollment" key="class-enrollment" />
             {isDA && <StyledTabPane tab="Content" key="content" />}
             {(isDA ||
               (role === roleuser.SCHOOL_ADMIN && schoolLevelAdminSettings)) && (
               <StyledTabPane tab="Settings" key="settings" />
             )}
           </StyledTabs>
-          {children}
         </AdminHeaderContent>
+        <HeaderRightContainer>{children}</HeaderRightContainer>
       </MainHeader>
     )
   }
@@ -108,6 +117,7 @@ export default connect(
     schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
     manageTabLabel: getManageTabLabelSelector(state),
     enableStudentGroups: get(state, 'user.user.features.studentGroups'),
+    isOrganizationDistrictAdmin: isOrganizationDistrictSelector(state),
   }),
   {}
 )(AdminHeader)

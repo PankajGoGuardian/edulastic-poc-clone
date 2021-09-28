@@ -133,7 +133,10 @@ const SegmentsTools = ({
               key={`segments-tool-btn-${i}`}
             >
               <SegmentsToolbarItem>
-                <ToolbarItemIcon className="tool-btn-icon">
+                <ToolbarItemIcon
+                  className="tool-btn-icon"
+                  data-cy={uiTool.name}
+                >
                   {getIconTemplate(uiTool.name)}
                 </ToolbarItemIcon>
               </SegmentsToolbarItem>

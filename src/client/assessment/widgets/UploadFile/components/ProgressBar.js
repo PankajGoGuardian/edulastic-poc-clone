@@ -1,59 +1,14 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import styled from 'styled-components'
 import { Progress } from 'antd'
 import PropTypes from 'prop-types'
-import { round } from 'lodash'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, FileIcon, formatFileSize } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { greyThemeDark1, greyDarken } from '@edulastic/colors'
-
-import CustomImage from './CustomImage'
-import docIcon from '../icons/doc.svg'
-import jpgIcon from '../icons/jpg.svg'
-import gifIcon from '../icons/gif.svg'
-import pdfIcon from '../icons/pdf.svg'
-import pngIcon from '../icons/png.svg'
-import xlsIcon from '../icons/xls.svg'
-import htmlIcon from '../icons/html.svg'
-import mp3Icon from '../icons/mp3.svg'
-import mp4Icon from '../icons/mp4.svg'
-import pptIcon from '../icons/ppt.svg'
-import swfICon from '../icons/swf.svg'
-import zipIcon from '../icons/zip.svg'
-import {
-  JPEG,
-  PNG,
-  GIF,
-  DOC,
-  DOCX,
-  PDF,
-  XLS,
-  XLSX,
-  HTML,
-  MP3,
-  MP4,
-  PPT,
-  PPTX,
-  SWF,
-  ZIP,
-} from './constants'
 
 const Link = styled.a`
   color: ${greyThemeDark1};
 `
-
-const getFileSize = (size) => {
-  if (size < 1024) {
-    return `${size} Byte`
-  }
-  if (size >= 1024 && size < 1024 * 1024) {
-    return `${round(size / 1024, 2)} KB`
-  }
-  if (size >= 1024 * 1024) {
-    return `${round(size / 1024 / 1024, 2)} MB`
-  }
-  return `${round(size / 1024 / 1024 / 1024, 2)} GB`
-}
 
 const ProgressBar = ({
   index,
@@ -69,40 +24,6 @@ const ProgressBar = ({
     return null
   }
   const { type, size, name, percent, source } = data
-
-  const icon = useMemo(() => {
-    switch (type) {
-      case JPEG:
-        return jpgIcon
-      case PNG:
-        return pngIcon
-      case GIF:
-        return pdfIcon
-      case PDF:
-        return gifIcon
-      case DOC:
-      case DOCX:
-        return docIcon
-      case XLS:
-      case XLSX:
-        return xlsIcon
-      case HTML:
-        return htmlIcon
-      case MP3:
-        return mp3Icon
-      case MP4:
-        return mp4Icon
-      case PPT:
-      case PPTX:
-        return pptIcon
-      case SWF:
-        return swfICon
-      case ZIP:
-        return zipIcon
-      default:
-        break
-    }
-  }, [type])
 
   const handleCancel = () => {
     if (onCancel) {
@@ -122,9 +43,8 @@ const ProgressBar = ({
       marginLeft={index % cols !== 0 ? '18px' : null}
       justifyContent="space-between"
     >
-      <CustomImage
-        src={icon}
-        role="presentation"
+      <FileIcon
+        type={type}
         onClick={() =>
           openAttachmentViewModal && openAttachmentViewModal(index)
         }
@@ -144,7 +64,7 @@ const ProgressBar = ({
           </FileName>
 
           <FlexContainer alignItems="center">
-            <FileSize>{getFileSize(size)}</FileSize>
+            <FileSize>{formatFileSize(size)}</FileSize>
             {!hideDelete && (
               <CloseIcon
                 data-cy="removeStudentAttachment"

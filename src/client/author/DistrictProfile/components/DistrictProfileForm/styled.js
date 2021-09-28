@@ -1,8 +1,12 @@
+import {
+  extraDesktopWidth,
+  tabletWidth,
+  themeColor,
+  white,
+} from '@edulastic/colors'
+import { TextAreaInputStyled } from '@edulastic/common'
+import { Button, Form, Row } from 'antd'
 import styled from 'styled-components'
-import { Row, Input, Button, Form } from 'antd'
-import { white, tabletWidth } from '@edulastic/colors'
-
-const { TextArea } = Input
 
 export const StyledFormDiv = styled.div`
   display: flex;
@@ -17,9 +21,12 @@ export const StyledFormDiv = styled.div`
 export const HeaderRow = styled(Row)`
   padding: 0px 0px 10px;
   h3 {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: bold;
     margin: 0px;
+    @media only screen and (min-width: ${extraDesktopWidth}) {
+      font-size: 20px;
+    }
   }
   .hide-label {
     label {
@@ -39,9 +46,7 @@ export const StyledDivBg = styled.div`
 export const StyledDivMain = styled.div`
   width: 100%;
   background-color: ${white};
-  border: 1px solid #b6b6cc;
-  border-radius: 10px;
-  padding: 15px 25px;
+  padding: 10px 25px;
   overflow: hidden;
 `
 
@@ -51,7 +56,7 @@ export const StyledRow = styled(Row)`
 `
 
 export const StyledRowLogo = styled(StyledRow)`
-  margin-bottom: 20px;
+  margin-bottom: 30px;
 `
 
 export const StyledRowAnn = styled(StyledRow)`
@@ -66,7 +71,7 @@ export const DistrictUrl = styled.p`
   align-self: center;
 `
 
-export const StyledTextArea = styled(TextArea)`
+export const StyledTextArea = styled(TextAreaInputStyled)`
   width: 100%;
   height: 100%;
   border: 1px solid #d9d9d9;
@@ -79,8 +84,26 @@ export const SaveButton = styled(Button)`
 export const StyledUrlButton = styled(Button)`
   border: none;
   box-shadow: none;
-  align-self: center;
   padding-right: 0px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.19px;
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+
+  svg {
+    margin-right: 10px;
+    transform: rotate(180deg);
+    fill: ${themeColor};
+    &:hover {
+      fill: ${themeColor};
+    }
+  }
+  @media only screen and (min-width: ${extraDesktopWidth}) {
+    font-size: 12px;
+  }
 `
 
 export const StyledPopoverContent = styled.div`
@@ -130,7 +153,7 @@ export const ColumnSpacer = styled.div`
 `
 
 export const StyledFormItem = styled(Form.Item)`
-  height: 209px;
+  height: 200px;
   .ant-input {
     width: 100%;
     height: 100%;
@@ -153,6 +176,12 @@ export const EditableLabelDiv = styled.div`
   }
   .not-editing-input:focus {
     box-shadow: none;
+  }
+  label {
+    font-size: 10px;
+    @media only screen and (min-width: ${extraDesktopWidth}) {
+      font-size: 12px;
+    }
   }
 `
 

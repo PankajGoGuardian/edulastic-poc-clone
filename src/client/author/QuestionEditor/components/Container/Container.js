@@ -181,14 +181,14 @@ class Container extends Component {
       match,
       isEditFlow,
       isTestFlow,
-      isPassageWithQuestions,
-      onAddWidgetToPassage,
+      isMultipartItem,
+      onAddWidgetToItem,
     } = this.props
     const { testId } = match.params
 
     removeAnswers()
-    if (isPassageWithQuestions) {
-      onAddWidgetToPassage()
+    if (isMultipartItem) {
+      onAddWidgetToItem()
       return
     }
 
@@ -521,7 +521,7 @@ class Container extends Component {
       showCalculatingSpinner,
       allowedToSelectMultiLanguage,
       t,
-      isPassageWithQuestions,
+      isMultipartItem,
       isInModal,
     } = this.props
 
@@ -572,20 +572,20 @@ class Container extends Component {
             title={question.title}
             reference={itemId}
             isInModal={isInModal}
-            hideSideMenu={isPassageWithQuestions}
+            hideSideMenu={isMultipartItem}
           >
             {this.header()}
           </ItemHeader>
 
           <BreadCrumbBar
             className={isInModal ? '' : 'sticky-header'}
-            isPassageWithQuestions={isPassageWithQuestions}
+            isMultipartItem={isMultipartItem}
           >
             {windowWidth > desktopWidth.replace('px', '') &&
-            !isPassageWithQuestions ? (
+            !isMultipartItem ? (
               <SecondHeadBar breadcrumb={this.breadcrumb} />
             ) : (
-              !isPassageWithQuestions && (
+              !isMultipartItem && (
                 <BackLink onClick={history.goBack}>Back to Item List</BackLink>
               )
             )}
@@ -717,8 +717,8 @@ export default enhance(Container)
 const BreadCrumbBar = styled.div`
   padding: 10px 30px;
   display: flex;
-  justify-content: ${({ isPassageWithQuestions }) =>
-    isPassageWithQuestions ? 'flex-end' : 'space-between'};
+  justify-content: ${({ isMultipartItem }) =>
+    isMultipartItem ? 'flex-end' : 'space-between'};
   align-items: center;
 
   &.sticky-header {

@@ -1,7 +1,6 @@
 import {
   CheckboxLabel,
   RadioBtn,
-  RadioGrp,
   notification,
   TextInputStyled,
   EduButton,
@@ -24,16 +23,18 @@ import {
   updateDistrictPolicyAction,
   saveCanvasKeysRequestAction,
 } from '../../ducks'
+import ConfigureCanvasModal from './ConfigureCanvasModal'
 import {
+  InputLabel,
+  StyledCol,
+  StyledHeading1,
+  StyledRow,
   HelperText,
   StyledElementDiv,
-  StyledFormDiv,
   StyledFormItem,
-  StyledLabel,
-  StyledRow,
   ConfigureButton,
-} from './styled'
-import ConfigureCanvasModal from './ConfigureCanvasModal'
+  StyledRadioGrp,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -423,266 +424,267 @@ class DistrictPolicyForm extends Component {
     const isSchoolLevel = role === 'school-admin'
 
     return (
-      <StyledFormDiv>
+      <>
         <Form>
-          <StyledRow>
-            <StyledLabel>
-              {isSchoolLevel ? 'School' : 'District'} Signon Policy:
-            </StyledLabel>
-            <StyledElementDiv>
-              <CheckboxLabel
-                checked={districtPolicy.userNameAndPassword}
-                onChange={(e) => this.change(e, 'userNameAndPassword')}
-              >
-                Username and password
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.googleSignOn}
-                onChange={(e) => this.change(e, 'googleSignOn')}
-              >
-                Google Single signon
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.office365SignOn}
-                onChange={(e) => this.change(e, 'office365SignOn')}
-              >
-                Office365 Single signon
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.atlasSignOn}
-                onChange={(e) => this.change(e, 'atlasSignOn')}
-              >
-                Classlink Single signon
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.schoologySignOn}
-                onChange={(e) => this.change(e, 'schoologySignOn')}
-              >
-                Schoology Single signon
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.cleverSignOn}
-                onChange={(e) => this.change(e, 'cleverSignOn')}
-              >
-                Clever instance signon
-              </CheckboxLabel>
-            </StyledElementDiv>
-          </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              {' '}
-              {isSchoolLevel ? 'School' : 'District'} Sign-up Policy:
-            </StyledLabel>
-            <StyledElementDiv>
-              <CheckboxLabel
-                checked={districtPolicy.teacherSignUp}
-                onChange={(e) => this.change(e, 'teacherSignUp')}
-              >
-                Allow Teachers to sign-up
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.studentSignUp}
-                onChange={(e) => this.change(e, 'studentSignUp')}
-              >
-                Allow Students to sign-up
-              </CheckboxLabel>
-            </StyledElementDiv>
-          </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              Student Enrollment <br />
-              Policy:
-            </StyledLabel>
-            <StyledElementDiv>
-              <CheckboxLabel
-                checked={districtPolicy.searchAndAddStudents}
-                onChange={(e) => this.change(e, 'searchAndAddStudents')}
-              >
-                Allow Teachers to search and enroll
-              </CheckboxLabel>
-            </StyledElementDiv>
-          </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              Allow student addition <br />
-              with:
-            </StyledLabel>
-            <StyledElementDiv>
-              <CheckboxLabel
-                checked={districtPolicy.googleUsernames}
-                onChange={(e) => this.change(e, 'googleUsernames')}
-              >
-                Google Usernames
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.office365Usernames}
-                onChange={(e) => this.change(e, 'office365Usernames')}
-              >
-                Office 365 Usernames
-              </CheckboxLabel>
-              <CheckboxLabel
-                checked={districtPolicy.firstNameAndLastName}
-                onChange={(e) => this.change(e, 'firstNameAndLastName')}
-              >
-                Firstname and Lastname
-              </CheckboxLabel>
-            </StyledElementDiv>
-          </StyledRow>
-          {isSchoolLevel ? null : (
-            <StyledRow>
-              <StyledLabel>Allow School Level Admin</StyledLabel>
+          <StyledRow mb="10px" type="flex" justify="space-between">
+            <StyledCol mb="10px" sm={24} md={12} xl={6}>
+              <StyledHeading1>
+                {isSchoolLevel ? 'School' : 'District'} Signon Policy
+              </StyledHeading1>
               <StyledElementDiv>
+                <CheckboxLabel
+                  checked={districtPolicy.userNameAndPassword}
+                  onChange={(e) => this.change(e, 'userNameAndPassword')}
+                >
+                  Username and password
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.googleSignOn}
+                  onChange={(e) => this.change(e, 'googleSignOn')}
+                >
+                  Google Single signon
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.office365SignOn}
+                  onChange={(e) => this.change(e, 'office365SignOn')}
+                >
+                  Office365 Single signon
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.atlasSignOn}
+                  onChange={(e) => this.change(e, 'atlasSignOn')}
+                >
+                  Classlink Single signon
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.schoologySignOn}
+                  onChange={(e) => this.change(e, 'schoologySignOn')}
+                >
+                  Schoology Single signon
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.cleverSignOn}
+                  onChange={(e) => this.change(e, 'cleverSignOn')}
+                >
+                  Clever instance signon
+                </CheckboxLabel>
+              </StyledElementDiv>
+            </StyledCol>
+            <StyledCol mb="10px" sm={24} md={12} xl={6}>
+              <StyledHeading1>
+                {isSchoolLevel ? 'School' : 'District'} Sign-up Policy
+              </StyledHeading1>
+              <StyledElementDiv>
+                <CheckboxLabel
+                  checked={districtPolicy.teacherSignUp}
+                  onChange={(e) => this.change(e, 'teacherSignUp')}
+                >
+                  Allow Teachers to sign-up
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.studentSignUp}
+                  onChange={(e) => this.change(e, 'studentSignUp')}
+                >
+                  Allow Students to sign-up
+                </CheckboxLabel>
+              </StyledElementDiv>
+            </StyledCol>
+            <StyledCol mb="10px" sm={24} md={12} xl={6}>
+              <StyledHeading1>Student Enrollment Policy</StyledHeading1>
+              <StyledElementDiv>
+                <CheckboxLabel
+                  checked={districtPolicy.searchAndAddStudents}
+                  onChange={(e) => this.change(e, 'searchAndAddStudents')}
+                >
+                  Allow Teachers to search and enroll
+                </CheckboxLabel>
+              </StyledElementDiv>
+            </StyledCol>
+            <StyledCol mb="10px" sm={24} md={12} xl={6}>
+              <StyledHeading1>Allow student addition with</StyledHeading1>
+              <StyledElementDiv>
+                <CheckboxLabel
+                  checked={districtPolicy.googleUsernames}
+                  onChange={(e) => this.change(e, 'googleUsernames')}
+                >
+                  Google Usernames
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.office365Usernames}
+                  onChange={(e) => this.change(e, 'office365Usernames')}
+                >
+                  Office 365 Usernames
+                </CheckboxLabel>
+                <CheckboxLabel
+                  checked={districtPolicy.firstNameAndLastName}
+                  onChange={(e) => this.change(e, 'firstNameAndLastName')}
+                >
+                  Firstname and Lastname
+                </CheckboxLabel>
+              </StyledElementDiv>
+            </StyledCol>
+          </StyledRow>
+
+          {isSchoolLevel ? null : (
+            <StyledRow gutter={40} type="flex">
+              <StyledCol mt="0px" sm={24} xl={12}>
                 <CheckboxLabel
                   checked={districtPolicy.schoolAdminSettingsAccess}
                   onChange={(e) => this.change(e, 'schoolAdminSettingsAccess')}
-                />
-              </StyledElementDiv>
+                >
+                  Allow School Level Admin
+                </CheckboxLabel>
+              </StyledCol>
             </StyledRow>
           )}
-          <StyledRow>
-            <StyledLabel>
-              Allowed Domain for
-              <br />
-              Teachers:
-            </StyledLabel>
-            <StyledFormItem
-              validateStatus={allowDomainForTeacherValidate.validateStatus}
-              help={allowDomainForTeacherValidate.errorMsg}
-            >
-              <TextInputStyled
-                value={districtPolicy.allowedDomainForTeachers}
-                onChange={this.handleTagTeacherChange}
-                limit={512}
-                placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
-              />
-            </StyledFormItem>
+
+          <StyledHeading1>Domains</StyledHeading1>
+          <StyledRow gutter={40} type="flex" justify="space-between">
+            <StyledCol sm={24} md={12}>
+              <InputLabel>Allowed Domain for Teachers</InputLabel>
+              <StyledFormItem
+                validateStatus={allowDomainForTeacherValidate.validateStatus}
+                help={allowDomainForTeacherValidate.errorMsg}
+              >
+                <TextInputStyled
+                  value={districtPolicy.allowedDomainForTeachers}
+                  onChange={this.handleTagTeacherChange}
+                  limit={512}
+                  placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
+                />
+              </StyledFormItem>
+            </StyledCol>
+            <StyledCol sm={24} md={12}>
+              <InputLabel>Domain for recommending Schools</InputLabel>
+              <StyledFormItem
+                validateStatus={allowDomainForSchoolValidate.validateStatus}
+                help={allowDomainForSchoolValidate.errorMsg}
+              >
+                <TextInputStyled
+                  value={districtPolicy.allowedDomainsForDistrict}
+                  onChange={this.handleTagSchoolChange}
+                  placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
+                />
+              </StyledFormItem>
+            </StyledCol>
           </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              Allowed Domain for
-              <br />
-              Students:
-            </StyledLabel>
-            <StyledFormItem
-              validateStatus={allowDomainForStudentValidate.validateStatus}
-              help={allowDomainForStudentValidate.errorMsg}
-            >
-              <TextInputStyled
-                value={districtPolicy.allowedDomainForStudents}
-                onChange={this.handleTagStudentChange}
-                limit={512}
-                placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
-              />
-            </StyledFormItem>
+
+          <StyledRow gutter={40} type="flex" justify="space-between">
+            <StyledCol md={24} xl={12}>
+              <InputLabel>Allowed Domain for Students</InputLabel>
+              <StyledFormItem
+                validateStatus={allowDomainForStudentValidate.validateStatus}
+                help={allowDomainForStudentValidate.errorMsg}
+              >
+                <TextInputStyled
+                  value={districtPolicy.allowedDomainForStudents}
+                  onChange={this.handleTagStudentChange}
+                  limit={512}
+                  placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
+                />
+              </StyledFormItem>
+            </StyledCol>
+            <StyledCol md={24} xl={12}>
+              <InputLabel>3rd-party integrations</InputLabel>
+              <StyledRadioGrp
+                onChange={this.thirdpartyIntegration}
+                value={thirdPartyValue}
+              >
+                <RadioBtn mb="10px" value={1}>
+                  Google Classroom
+                </RadioBtn>
+                <RadioBtn mb="10px" value={2}>
+                  <span>Canvas</span>{' '}
+                  {isSchoolLevel ? null : (
+                    <ConfigureButton
+                      onClick={(e) => {
+                        e.preventDefault()
+                        if (thirdPartyValue === _3RDPARTYINTEGRATION.canvas)
+                          this.setState({ showCanvasConfigrationModal: true })
+                      }}
+                    >
+                      (Configure)
+                    </ConfigureButton>
+                  )}
+                </RadioBtn>
+                <RadioBtn mb="10px" value={3}>
+                  Schoology
+                </RadioBtn>
+                <RadioBtn mb="10px" value={4}>
+                  ClassLink
+                </RadioBtn>
+                <RadioBtn mb="10px" value={5}>
+                  None
+                </RadioBtn>
+                {/* None signifies that no 3rd party integration is enabled */}
+              </StyledRadioGrp>
+            </StyledCol>
           </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              Domain for
-              <br />
-              recommending Schools:
-            </StyledLabel>
-            <StyledFormItem
-              validateStatus={allowDomainForSchoolValidate.validateStatus}
-              help={allowDomainForSchoolValidate.errorMsg}
-            >
-              <TextInputStyled
-                value={districtPolicy.allowedDomainsForDistrict}
-                onChange={this.handleTagSchoolChange}
-                placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
-              />
-            </StyledFormItem>
-          </StyledRow>
-          <StyledRow>
-            <StyledLabel>3rd-party integrations:</StyledLabel>
-            <RadioGrp
-              onChange={this.thirdpartyIntegration}
-              value={thirdPartyValue}
-              style={{ display: 'flex', flexDirection: 'column' }}
-            >
-              <RadioBtn mb="10px" value={1}>
-                Google Classroom
-              </RadioBtn>
-              <RadioBtn mb="10px" value={2}>
-                <span>Canvas</span>{' '}
-                {isSchoolLevel ? null : (
-                  <ConfigureButton
-                    onClick={(e) => {
-                      e.preventDefault()
-                      if (thirdPartyValue === _3RDPARTYINTEGRATION.canvas)
-                        this.setState({ showCanvasConfigrationModal: true })
-                    }}
+
+          <StyledRow gutter={40} type="flex" justify="space-between">
+            <StyledCol sm={24} md={12}>
+              <InputLabel>
+                Allowed IP for password controlled assessments
+              </InputLabel>
+              <StyledFormItem
+                validateStatus={allowIpForAssignmentValidate.validateStatus}
+                help={allowIpForAssignmentValidate.errorMsg}
+              >
+                <TextInputStyled
+                  value={districtPolicy.allowedIpForAssignments}
+                  onChange={this.handleInputIpAddresses}
+                  placeholder="Enter allowed ip(s), example - 127.0.*.1, 187.0.*.*"
+                />
+                <HelperText>
+                  Enter allowed IP(s) for controlled assignments. Range allowed
+                  eg: 22.32.0-255.0-255. Wild chars allowed eg: 127.0.*.1,
+                  187.0.*.* etc.
+                </HelperText>
+              </StyledFormItem>
+            </StyledCol>
+            <StyledCol sm={24} md={12}>
+              <StyledRow mb="0" gutter={40} type="flex">
+                <StyledCol mt="0px">
+                  <InputLabel>Disable Student Login</InputLabel>
+                  <StyledRadioGrp
+                    onChange={this.disableStudentLogin}
+                    value={districtPolicy?.disableStudentLogin ? 'yes' : 'no'}
                   >
-                    (Configure)
-                  </ConfigureButton>
-                )}
-              </RadioBtn>
-              <RadioBtn mb="10px" value={3}>
-                Schoology
-              </RadioBtn>
-              <RadioBtn mb="10px" value={4}>
-                ClassLink
-              </RadioBtn>
-              <RadioBtn mb="10px" value={5}>
-                None
-              </RadioBtn>
-              {/* None signifies that no 3rd party integration is enabled */}
-            </RadioGrp>
+                    <RadioBtn value="yes">Yes</RadioBtn>
+                    <RadioBtn value="no">No</RadioBtn>
+                  </StyledRadioGrp>
+                </StyledCol>
+                <StyledCol mt="0px">
+                  <InputLabel>Enable Google Meet</InputLabel>
+                  <StyledRadioGrp
+                    onChange={this.enableGoogleMeet}
+                    value={
+                      districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'
+                    }
+                  >
+                    <RadioBtn value="yes">Yes</RadioBtn>
+                    <RadioBtn value="no">No</RadioBtn>
+                  </StyledRadioGrp>
+                </StyledCol>
+              </StyledRow>
+            </StyledCol>
           </StyledRow>
-          <StyledRow>
-            <StyledLabel>Disable Student Login: </StyledLabel>
-            <RadioGrp
-              onChange={this.disableStudentLogin}
-              value={districtPolicy?.disableStudentLogin ? 'yes' : 'no'}
-            >
-              <RadioBtn value="yes">Yes</RadioBtn>
-              <RadioBtn value="no">No</RadioBtn>
-            </RadioGrp>
+
+          <StyledRow gutter={40} type="flex">
+            <StyledCol sm={24} md={12}>
+              <InputLabel>Enforced District Sign-On policy</InputLabel>
+              <StyledRadioGrp
+                onChange={this.enforceDistrictSignonPolicy}
+                value={
+                  districtPolicy?.enforceDistrictSignonPolicy ? 'yes' : 'no'
+                }
+              >
+                <RadioBtn value="yes">Yes</RadioBtn>
+                <RadioBtn value="no">No</RadioBtn>
+              </StyledRadioGrp>
+            </StyledCol>
           </StyledRow>
-          <StyledRow>
-            <StyledLabel>Enable Google Meet: </StyledLabel>
-            <RadioGrp
-              onChange={this.enableGoogleMeet}
-              value={districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'}
-            >
-              <RadioBtn value="yes">Yes</RadioBtn>
-              <RadioBtn value="no">No</RadioBtn>
-            </RadioGrp>
-          </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              Enforced District Sign-On
-              <br /> policy:{' '}
-            </StyledLabel>
-            <RadioGrp
-              onChange={this.enforceDistrictSignonPolicy}
-              value={districtPolicy?.enforceDistrictSignonPolicy ? 'yes' : 'no'}
-            >
-              <RadioBtn value="yes">Yes</RadioBtn>
-              <RadioBtn value="no">No</RadioBtn>
-            </RadioGrp>
-          </StyledRow>
-          <StyledRow>
-            <StyledLabel>
-              Allowed IP for password
-              <br />
-              controlled assessments:
-            </StyledLabel>
-            <StyledFormItem
-              validateStatus={allowIpForAssignmentValidate.validateStatus}
-              help={allowIpForAssignmentValidate.errorMsg}
-            >
-              <TextInputStyled
-                value={districtPolicy.allowedIpForAssignments}
-                onChange={this.handleInputIpAddresses}
-                placeholder="Enter allowed ip(s), example - 127.0.*.1, 187.0.*.*"
-              />
-              <HelperText>
-                Enter allowed IP(s) for controlled assignments. Range allowed
-                eg: 22.32.0-255.0-255. Wild chars allowed eg: 127.0.*.1,
-                187.0.*.* etc.
-              </HelperText>
-            </StyledFormItem>
-          </StyledRow>
+
           <StyledRow type="flex" justify="center">
             <EduButton onClick={this.onSave}>{saveBtnStr}</EduButton>
           </StyledRow>
@@ -705,7 +707,7 @@ class DistrictPolicyForm extends Component {
             user={user}
           />
         )}
-      </StyledFormDiv>
+      </>
     )
   }
 }

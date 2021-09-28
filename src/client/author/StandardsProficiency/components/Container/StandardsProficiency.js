@@ -33,15 +33,22 @@ import StandardsProficiencyTable from '../StandardsProficiencyTable/StandardsPro
 import {
   ListItemStyled,
   RowStyled,
-  SpinContainer,
-  StandardsProficiencyDiv,
-  StyledContent,
-  StyledLayout,
   StyledList,
   StyledProfileCol,
   StyledProfileRow,
-  StyledSpin,
 } from './styled'
+import {
+  SettingsWrapper,
+  StyledCol,
+  StyledContent,
+  StyledLayout,
+  StyledRow,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
+import {
+  SpinContainer,
+  StyledSpin,
+} from '../../../../admin/Common/StyledComponents'
+import { TableContainer } from '../../../../common/styled'
 
 const BlueBold = styled.b`
   color: #1774f0;
@@ -157,7 +164,7 @@ function ProfileRow(props) {
         </Row>
       </CustomModalStyled>
 
-      <StyledProfileRow onClick={(e) => setEditing(index)} type="flex">
+      <StyledProfileRow onClick={() => setEditing(index)} type="flex">
         <Col span={12}>
           {active && !readOnly ? (
             <Input
@@ -171,7 +178,7 @@ function ProfileRow(props) {
               }}
             />
           ) : (
-            profileName
+            <h3>{profileName}</h3>
           )}
         </Col>
         <StyledProfileCol span={12}>
@@ -335,7 +342,7 @@ function StandardsProficiency(props) {
   }, [])
 
   return (
-    <StandardsProficiencyDiv>
+    <SettingsWrapper>
       <CustomModalStyled
         title="Delete Profile"
         visible={conflictModalVisible}
@@ -373,82 +380,88 @@ function StandardsProficiency(props) {
               <StyledSpin size="large" />
             </SpinContainer>
           )}
+          <TableContainer>
+            <StyledList
+              dataSource={props.profiles}
+              bordered
+              rowKey="_id"
+              renderItem={(profile, index) => (
+                <ProfileRow
+                  readOnly={
+                    (props.role === 'school-admin' &&
+                      get(profile, 'createdBy._id') != props.userId) ||
+                    !editable
+                  }
+                  hideEdit={
+                    props.role === 'school-admin' &&
+                    get(profile, 'createdBy._id') != props.userId
+                  }
+                  setEditable={setEditable}
+                  onDuplicate={() => duplicateProfile(profile)}
+                  setName={setName}
+                  setEditing={setEditingIndex}
+                  index={index}
+                  profile={profile}
+                  _id={profile._id}
+                  active={index === editingIndex}
+                  deleteRow={remove}
+                  loading={showSpin}
+                  decay={get(profile, 'decay', '')}
+                  setDeleteProficiencyName={setDeleteProficiencyName}
+                  conflict={conflict}
+                  noOfAssessments={get(profile, 'noOfAssessments', '')}
+                />
+              )}
+            />
 
-          <Row type="flex" justify="end">
-            <CustomModalStyled
-              destroyOnClose
-              title="Create New Profile"
-              visible={confirmVisible}
-              onCancel={() => setConfirmVisible(false)}
-              centered
-              footer={[
-                <EduButton isGhost onClick={() => setConfirmVisible(false)}>
-                  CANCEL
-                </EduButton>,
+            <StyledRow type="flex" justify="start">
+              <CustomModalStyled
+                destroyOnClose
+                title="Create New Profile"
+                visible={confirmVisible}
+                onCancel={() => setConfirmVisible(false)}
+                centered
+                footer={[
+                  <EduButton isGhost onClick={() => setConfirmVisible(false)}>
+                    CANCEL
+                  </EduButton>,
+                  <EduButton
+                    disabled={profileName === ''}
+                    loading={loading}
+                    onClick={() => createStandardProficiency()}
+                  >
+                    CREATE
+                  </EduButton>,
+                ]}
+              >
+                <Row>
+                  <Col span={24}>
+                    <FieldLabel>
+                      PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY
+                    </FieldLabel>
+                    <TextInputStyled
+                      value={profileName}
+                      onChange={(e) => setProfileName(e.target.value)}
+                    />
+                  </Col>
+                </Row>
+              </CustomModalStyled>
+              <StyledCol mt="10px">
                 <EduButton
-                  disabled={profileName === ''}
-                  loading={loading}
-                  onClick={() => createStandardProficiency()}
+                  ml="0px"
+                  type="primary"
+                  onClick={() =>
+                    handleProfileLimit() && setConfirmVisible(true)
+                  }
                 >
-                  CREATE
-                </EduButton>,
-              ]}
-            >
-              <Row>
-                <Col span={24}>
-                  <FieldLabel>
-                    PLEASE ENTER THE NAME OF THE STANDARD PROFICIENCY
-                  </FieldLabel>
-                  <TextInputStyled
-                    value={profileName}
-                    onChange={(e) => setProfileName(e.target.value)}
-                  />
-                </Col>
-              </Row>
-            </CustomModalStyled>
-            <EduButton
-              type="primary"
-              onClick={() => handleProfileLimit() && setConfirmVisible(true)}
-            >
-              <IconPlusCircle width={19} height={19} /> Create new Profile
-            </EduButton>
-          </Row>
-
-          <StyledList
-            dataSource={props.profiles}
-            bordered
-            rowKey="_id"
-            renderItem={(profile, index) => (
-              <ProfileRow
-                readOnly={
-                  (props.role === 'school-admin' &&
-                    get(profile, 'createdBy._id') != props.userId) ||
-                  !editable
-                }
-                hideEdit={
-                  props.role === 'school-admin' &&
-                  get(profile, 'createdBy._id') != props.userId
-                }
-                setEditable={setEditable}
-                onDuplicate={() => duplicateProfile(profile)}
-                setName={setName}
-                setEditing={setEditingIndex}
-                index={index}
-                profile={profile}
-                _id={profile._id}
-                active={index === editingIndex}
-                deleteRow={remove}
-                loading={showSpin}
-                decay={get(profile, 'decay', '')}
-                setDeleteProficiencyName={setDeleteProficiencyName}
-                conflict={conflict}
-                noOfAssessments={get(profile, 'noOfAssessments', '')}
-              />
-            )}
-          />
+                  <IconPlusCircle width={19} height={19} /> Create new Profile
+                </EduButton>
+              </StyledCol>
+            </StyledRow>
+          </TableContainer>
         </StyledLayout>
       </StyledContent>
-    </StandardsProficiencyDiv>
+    </SettingsWrapper>
   )
 }
 

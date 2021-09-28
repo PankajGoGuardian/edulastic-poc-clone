@@ -41,6 +41,7 @@ export const TagField = React.forwardRef(
 
     const query = useMemo(
       () => ({
+        aggregate: true,
         limit: 25,
         page: 1,
         search: {
@@ -93,6 +94,9 @@ export const TagField = React.forwardRef(
       const _selectedValues = selectedElements.map(({ props: elProps }) => ({
         title: elProps.title,
         key: elProps.value,
+        ...(tagTypes[0] === 'testitem'
+          ? { associatedNames: elProps.associatedNames }
+          : {}),
       }))
       setValue(_selectedValues.map((val) => val.key))
       _onChange(_selectedValues)
@@ -101,14 +105,17 @@ export const TagField = React.forwardRef(
 
     const options = useMemo(
       () =>
-        tagSearchList.map((tag) => ({
+        tagSearchList.map((tag, index) => ({
           key: tag._id,
           title: tag.tagName,
+          index,
+          associatedNames: tag.tagNamesAssociated,
         })),
       [tagSearchList]
     )
     return (
       <SelectSearch
+        tagsSearch
         onChange={onChange}
         onSearch={onSearch}
         value={value}
@@ -119,6 +126,7 @@ export const TagField = React.forwardRef(
         size="large"
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         ref={tagsRef}
+        tagTypes={tagTypes}
         {...props}
       />
     )

@@ -16,8 +16,7 @@ import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 
 import ClassesTable from '../ClassesTable/ClassesTable'
 
-const title = 'Manage District'
-const menuActive = { mainMenu: 'Classes', subMenu: '' }
+const menuActive = { mainMenu: 'Administration', subMenu: 'classes' }
 
 class Classes extends Component {
   render() {
@@ -28,21 +27,27 @@ class Classes extends Component {
       creating,
       history,
       location,
+      totalSchoolsCount,
     } = this.props
     const { state: dataPassedWithRoute } = location
     const showSpin = loading || updating || deleting || creating
 
     return (
       <MainWrapper>
-        <AdminHeader title={title} active={menuActive} history={history} />
+        <AdminHeader active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <ClassesTable dataPassedWithRoute={dataPassedWithRoute} />
+            <ClassesTable
+              menuActive={menuActive}
+              history={history}
+              dataPassedWithRoute={dataPassedWithRoute}
+              count={totalSchoolsCount}
+            />
           </StyledLayout>
         </StyledContent>
       </MainWrapper>
@@ -56,6 +61,7 @@ const enhance = compose(
     updating: get(state, ['classesReducer', 'updating'], false),
     creating: get(state, ['classesReducer', 'creating'], false),
     deleting: get(state, ['classesReducer', 'deleting'], false),
+    totalSchoolsCount: get(state, ['schoolsReducer', 'totalSchoolCount'], 0),
   }))
 )
 

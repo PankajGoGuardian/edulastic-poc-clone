@@ -28,6 +28,15 @@ const copyDomOnBlurOfElements = ['ant-input']
 
 const copyDomOnScrollOfElements = ['froala-wrapper .fr-wrapper']
 
+const normalizeTouchEvent = (e) => {
+  if (e?.targetTouches) {
+    e.pageX = e.targetTouches[0].pageX
+    e.pageY = e.targetTouches[0].pageY
+    e.clientX = e.targetTouches[0].clientX
+    e.clientY = e.targetTouches[0].clientY
+  }
+}
+
 const Magnifier = ({
   children,
   windowWidth,
@@ -61,6 +70,7 @@ const Magnifier = ({
     if (!setting.dragging) {
       return
     }
+    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     if (offset.top <= e.pageY - setting.rel.y) {
       setSetting({
         ...setting,
@@ -87,6 +97,7 @@ const Magnifier = ({
     if (e.button !== 0) {
       return
     }
+    if (window.isIOS || window.isMobileDevice) normalizeTouchEvent(e)
     const pos = magnifierRef.current.getBoundingClientRect()
     setSetting({
       ...setting,
@@ -98,6 +109,7 @@ const Magnifier = ({
     })
     // add Mouse move and up event on clicking the magnifier wrapper
     document.addEventListener('mousemove', onMouseMove)
+    document.addEventListener('touchmove', onMouseMove, { passive: false })
     document.addEventListener('mouseup', onMouseUp)
 
     e.stopPropagation()
@@ -360,6 +372,7 @@ const Magnifier = ({
   useEffect(() => {
     if (setting.dragging) {
       document.addEventListener('mousemove', onMouseMove)
+      document.addEventListener('touchmove', onMouseMove, { passive: false })
       document.addEventListener('mouseup', onMouseUp)
       handleSidebarScroll({
         target: document.getElementsByClassName('scrollbar-container')[0],
@@ -387,6 +400,9 @@ const Magnifier = ({
 
     return () => {
       document?.removeEventListener('mousemove', onMouseMove)
+      document?.removeEventListener('touchmove', onMouseMove, {
+        passive: false,
+      })
       document?.removeEventListener('mouseup', onMouseUp)
     }
   })
@@ -442,6 +458,7 @@ const Magnifier = ({
         <ZoomedWrapper
           ref={magnifierRef}
           onMouseDown={onMouseDown}
+          onTouchStart={onMouseDown}
           id="magnifier-wrapper"
           magnifierWidth={width}
           magnifierHeight={height}

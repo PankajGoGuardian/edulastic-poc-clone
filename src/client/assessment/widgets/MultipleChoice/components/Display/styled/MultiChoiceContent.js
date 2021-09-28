@@ -16,6 +16,10 @@ export const MultiChoiceContent = styled.div`
       ? '52px'
       : '8px'};
   position: relative;
+
+  .fr-placeholder {
+    font-weight: 400;
+  }
 `
 
 export const MultipleChoiceLabelContainer = styled.div`

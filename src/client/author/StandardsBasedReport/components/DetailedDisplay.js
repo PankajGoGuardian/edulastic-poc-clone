@@ -59,8 +59,11 @@ const columns = [
     title: 'Performance',
     dataIndex: 'performance',
     className: 'performance-column',
-    sorter: (a, b) =>
-      sortAlphaNum(a.performance.split('@')[1], b.performance.split('@')[1]),
+    sorter: (a, b) => {
+      const num1 = parseFloat(a.performance.split('(')[1], 10)
+      const num2 = parseFloat(b.performance.split('(')[1], 10)
+      return sortAlphaNum(num1, num2)
+    },
     key: 'performance',
     render: (text) => {
       const strArr = text.split('@')

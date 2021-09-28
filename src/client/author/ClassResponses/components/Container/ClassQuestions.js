@@ -810,10 +810,10 @@ const withConnect = connect(
       ['author_classboard_testActivity', 'data', 'passageData'],
       []
     ),
-    variableSetIds: getDynamicVariablesSetIdForViewResponse(
-      state,
-      ownProps.testActivity
-    ),
+    variableSetIds: getDynamicVariablesSetIdForViewResponse(state, {
+      showMultipleAttempts: ownProps.isLCBView && !ownProps.isQuestionView,
+      studentId: ownProps.currentStudent.studentId,
+    }),
     userWork: get(state, ['userWork', 'present'], {}),
     ttsUserIds: ttsUserIdSelector(state),
     pageNumber: getPageNumberSelector(state),

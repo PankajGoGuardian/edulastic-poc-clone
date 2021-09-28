@@ -364,7 +364,9 @@ function* receiveTestItemsSaga({
     const { tags = [] } = search
     let searchTags = []
     if (tags.some((tag) => typeof tag?.title === 'string')) {
-      searchTags = tags.map((tag) => tag.title).filter((tag) => !!tag)
+      searchTags = tags
+        .flatMap((tag) => tag.associatedNames || [tag.title])
+        .filter((tag) => !!tag)
     } else {
       // if the tags are still being fetched, wait for it to fetch and complete
       if (TAGS_SAGA_FETCH_STATUS.isLoading) {

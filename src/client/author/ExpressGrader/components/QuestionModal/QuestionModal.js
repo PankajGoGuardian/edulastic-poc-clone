@@ -18,6 +18,7 @@ import {
   getTeacherEditedScoreSelector,
   getIsScoringCompletedSelector,
   getUpdatedScratchPadSelector,
+  removeTeacherEditedScoreAction,
 } from '../../ducks'
 import { userWorkSelector } from '../../../../student/sharedDucks/TestItem'
 import { scratchpadDomRectSelector } from '../../../../common/components/Scratchpad/duck'
@@ -185,6 +186,7 @@ class QuestionModal extends React.Component {
       updatedScratchPad,
       uploadDataAndUpdateAttachment,
       scratchPadDimensions,
+      removeTeacherEditedScore,
     } = this.props
     if (studentResponseLoading) {
       return
@@ -262,6 +264,8 @@ class QuestionModal extends React.Component {
         }
       }
       submitResponse(payload)
+    } else {
+      removeTeacherEditedScore()
     }
   }
 
@@ -419,5 +423,6 @@ export default connect(
     submitResponse: submitResponseAction,
     setUpdatedScratchPad: setUpdatedScratchPadAction,
     uploadDataAndUpdateAttachment: uploadDataAndUpdateAttachmentAction,
+    removeTeacherEditedScore: removeTeacherEditedScoreAction,
   }
 )(QuestionModal)

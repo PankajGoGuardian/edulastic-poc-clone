@@ -82,7 +82,9 @@ const TimedTestTimer = ({
       unsubscribe = db
         .collection(firestoreCollectionName)
         .doc(utaId || 'NONEXISTENT')
-        .onSnapshot((_doc) => setUpstreamUta(_doc.data()))
+        .onSnapshot({ includeMetadataChanges: true }, (_doc) =>
+          _doc.metadata.fromCache ? null : setUpstreamUta(_doc.data())
+        )
     }
     if (isAuthorPreview) {
       setCurrentAssignmentTime(allowedTime)

@@ -160,7 +160,7 @@ const ReportListContent = ({
           isModalVisible={isPreviewModalVisible}
           closeTestPreviewModal={closeModal}
           passages={passages}
-          test={{ itemGroups: [{ items: [item] }] }}
+          test={{ itemGroups: [{ items: [item] }], passages }}
           showScratchPad={userWork && isPreviewModalVisible}
           isShowStudentWork
           LCBPreviewModal

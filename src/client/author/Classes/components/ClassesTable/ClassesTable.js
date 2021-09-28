@@ -7,11 +7,16 @@ import {
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconNotes, IconPencilEdit, IconTrash } from '@edulastic/icons'
+import {
+  IconFilter,
+  IconNotes,
+  IconPencilEdit,
+  IconTrash,
+} from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Icon, Menu, Row, Select } from 'antd'
-import { get, isEmpty } from 'lodash'
+import { Col, Icon, Menu, Select } from 'antd'
 import { produce } from 'immer'
+import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -21,13 +26,14 @@ import {
   StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
+import { StyledRow } from '../../../../admin/Common/StyledComponents/settingsContent'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
@@ -37,12 +43,21 @@ import {
   getCoursesForDistrictSelector,
   receiveSearchCourseAction,
 } from '../../../Courses/ducks'
+import AddCoTeacher from '../../../ManageClass/components/ClassDetails/AddCoTeacher/AddCoTeacher'
 import UpdateCoTeacher from '../../../ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
+import {
+  getAddCoTeacherModalVisibleStateSelector,
+  getManageCoTeacherModalVisibleStateSelector,
+  showAddCoTeacherModalAction,
+  showUpdateCoTeacherModalAction,
+} from '../../../ManageClass/ducks'
 import {
   getSchoolsSelector,
   receiveSchoolsAction,
 } from '../../../Schools/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -60,6 +75,7 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import {
+  addCoTeacherToGroupsAction,
   bulkUpdateClassesAction,
   createClassAction,
   deleteClassAction,
@@ -76,10 +92,6 @@ import ArchiveClassModal from './ArchiveClassModal/ArchiveClassModal'
 import BulkEditModal from './BulkEditModal'
 import EditClassModal from './EditClassModal/EditClassModal'
 import { ClassTable, TeacherSpan } from './styled'
-import {
-  getManageCoTeacherModalVisibleStateSelector,
-  showUpdateCoTeacherModalAction,
-} from '../../../ManageClass/ducks'
 
 const { Option } = Select
 
@@ -212,6 +224,11 @@ class ClassesTable extends Component {
     showUpdateCoTeacherModal(true)
   }
 
+  onAddCoTeachers = () => {
+    const { showAddCoTeacherModal } = this.props
+    showAddCoTeacherModal(true)
+  }
+
   handleDelete = (key) => {
     // const dataSource = [...this.state.dataSource];
     this.setState({
@@ -298,6 +315,9 @@ class ClassesTable extends Component {
       else if (selectedRowKeys.length > 1)
         notification({ msg: t('class.validations.selectmultipleclass') })
       else notification({ msg: t('class.validations.selectoneclass') })
+    } else if (e.key === 'add co teachers') {
+      if (selectedRowKeys.length) this.onAddCoTeachers()
+      else notification({ msg: t('class.validations.selectclass') })
     } else if (e.key === 'bulk edit') {
       if (!selectedRowKeys.length) {
         notification({ type: 'warn', msg: t('class.validations.selectclass') })
@@ -371,8 +391,9 @@ class ClassesTable extends Component {
   }
 
   handleCloseModal = (keys) => {
-    const { showUpdateCoTeacherModal } = this.props
+    const { showUpdateCoTeacherModal, showAddCoTeacherModal } = this.props
     if (keys === 'manage co-teacher') showUpdateCoTeacherModal(false)
+    else if (keys === 'add co-teacher') showAddCoTeacherModal(false)
   }
 
   _bulkUpdateClasses = (obj) => {
@@ -617,6 +638,10 @@ class ClassesTable extends Component {
       t,
       features,
       manageCoTeacherModalVisible,
+      addCoTeacherModalVisible,
+      history,
+      menuActive,
+      count,
     } = this.props
 
     let columnsData = [
@@ -639,7 +664,7 @@ class ClassesTable extends Component {
             .join(', ')
             .localeCompare(b._source.grades.join(', ')),
         render: (grades) => <span>{grades.join(', ')}</span>,
-        width: 150,
+        width: 100,
       },
       {
         title: t('class.subject'),
@@ -648,7 +673,7 @@ class ClassesTable extends Component {
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a._source.subject.localeCompare(b._source.subject),
         render: (subject) => <span>{subject}</span>,
-        width: 250,
+        width: 120,
       },
       {
         title: t('class.code'),
@@ -657,7 +682,7 @@ class ClassesTable extends Component {
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a._source.code.localeCompare(b._source.code),
         render: (code) => <span>{code}</span>,
-        width: 200,
+        width: 120,
       },
     ]
     if (features.selectCourse) {
@@ -727,7 +752,7 @@ class ClassesTable extends Component {
         render: (active) => <span>{active ? 'Active' : 'Archived'}</span>,
         sortDirections: ['descend', 'ascend'],
         sorter: (a, b) => a._source.active - b._source.active,
-        width: 200,
+        width: 100,
       },
       {
         dataIndex: '_id',
@@ -750,6 +775,7 @@ class ClassesTable extends Component {
             </StyledTableButton>
           </div>
         ),
+        width: 120,
       },
     ]
     const breadcrumbData = [
@@ -783,6 +809,7 @@ class ClassesTable extends Component {
         <Menu.Item key="manage co teachers">
           {t('class.managecoteachers')}
         </Menu.Item>
+        <Menu.Item key="add co teachers">{t('class.addcoteachers')}</Menu.Item>
       </Menu>
     )
 
@@ -819,7 +846,7 @@ class ClassesTable extends Component {
       }
 
       SearchRows.push(
-        <Row gutter={20} style={{ marginbottom: '5px' }}>
+        <StyledRow mb="5px" gutter={20}>
           <Col span={6}>
             <SelectInputStyled
               placeholder={t('common.selectcolumn')}
@@ -901,61 +928,71 @@ class ClassesTable extends Component {
               </EduButton>
             )}
           </Col>
-        </Row>
+        </StyledRow>
       )
     }
     return (
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+        <AdminSubHeader count={count} active={menuActive} history={history} />
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={60}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            <EduButton type="primary" onClick={this.showAddClassModal}>
-              {t('class.createnewclass')}
-            </EduButton>
-          </LeftFilterDiv>
-
-          <RightFilterDiv width={35}>
-            <CheckboxLabel
-              checked={this.state.showActive}
-              disabled={
-                !!filtersData.find((item) => item.filtersColumn === 'active')
-              }
-              value={showActive}
-              onChange={this.onChangeShowActive}
-            >
-              {t('class.showactiveclass')}
-            </CheckboxLabel>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-              trigger={['click']}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
               </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+              />
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.showAddClassModal}
+              >
+                {t('class.createnewclass')}
+              </EduButton>
+            </LeftFilterDiv>
+
+            <RightFilterDiv>
+              <CheckboxLabel
+                checked={this.state.showActive}
+                disabled={
+                  !!filtersData.find((item) => item.filtersColumn === 'active')
+                }
+                value={showActive}
+                onChange={this.onChangeShowActive}
+              >
+                {t('class.showactiveclass')}
+              </CheckboxLabel>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+                trigger={['click']}
+              >
+                <EduButton height="34px" isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
         <TableContainer>
           <ClassTable
             rowKey={(record) => record._id}
@@ -1025,6 +1062,16 @@ class ClassesTable extends Component {
           />
         )}
 
+        {addCoTeacherModalVisible && (
+          <AddCoTeacher
+            type="class"
+            isOpen={addCoTeacherModalVisible}
+            selectedClass={selectedRowValues}
+            addCoTeacherToGroups={this.props.addCoTeacherToGroups}
+            handleCancel={() => this.handleCloseModal('add co-teacher')}
+          />
+        )}
+
         <BulkEditModal
           bulkEditData={bulkEditData}
           districtId={userOrgId}
@@ -1063,10 +1110,12 @@ const enhance = compose(
       manageCoTeacherModalVisible: getManageCoTeacherModalVisibleStateSelector(
         state
       ),
+      addCoTeacherModalVisible: getAddCoTeacherModalVisibleStateSelector(state),
     }),
     {
       createClass: createClassAction,
       updateClass: updateClassAction,
+      addCoTeacherToGroups: addCoTeacherToGroupsAction,
       deleteClass: deleteClassAction,
       loadClassListData: receiveClassListAction,
       searchCourseList: receiveSearchCourseAction,
@@ -1079,6 +1128,7 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       addNewTag: addNewTagAction,
       showUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
+      showAddCoTeacherModal: showAddCoTeacherModalAction,
     }
   )
 )
@@ -1090,6 +1140,7 @@ ClassesTable.propTypes = {
   loadClassListData: PropTypes.func.isRequired,
   createClass: PropTypes.func.isRequired,
   updateClass: PropTypes.func.isRequired,
+  addCoTeacherToGroups: PropTypes.func.isRequired,
   deleteClass: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   searchCourseList: PropTypes.func.isRequired,

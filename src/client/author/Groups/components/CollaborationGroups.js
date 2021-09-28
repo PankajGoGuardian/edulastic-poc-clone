@@ -11,7 +11,11 @@ import { roleuser } from '@edulastic/constants'
 import { EduButton, TypeToConfirmModal } from '@edulastic/common'
 import { LightGreenSpan } from '@edulastic/common/src/components/TypeToConfirmModal/styled'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
-import { StyledFilterDiv } from '../../../admin/Common/StyledComponents'
+import {
+  StyledFilterDiv,
+  TableFilters,
+  TabTitle,
+} from '../../../admin/Common/StyledComponents'
 import {
   LeftFilterDiv,
   MainContainer,
@@ -97,23 +101,26 @@ const CollaborationGroups = ({
       )}
       <AdminSubHeader active={menuActive} history={history} />
       <StyledFilterDiv>
-        <LeftFilterDiv width={60}>
-          <SearchInputStyled
-            placeholder={t('common.searchbyname')}
-            onSearch={setSearchName}
-            onChange={(e) => setSearchName(e.target.value.toLowerCase())}
-            height="36px"
-          />
-          {!hideEditableInstances && (
-            <EduButton
-              style={{ fontSize: '11px' }}
-              type="primary"
-              onClick={handleShowCreateGroup}
-            >
-              {t('group.createGroup')}
-            </EduButton>
-          )}
-        </LeftFilterDiv>
+        <TabTitle>{menuActive.subMenu}</TabTitle>
+        <TableFilters>
+          <LeftFilterDiv width={60}>
+            <SearchInputStyled
+              placeholder={t('common.searchbyname')}
+              onSearch={setSearchName}
+              onChange={(e) => setSearchName(e.target.value.toLowerCase())}
+              height="34px"
+            />
+            {!hideEditableInstances && (
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={handleShowCreateGroup}
+              >
+                {t('group.createGroup')}
+              </EduButton>
+            )}
+          </LeftFilterDiv>
+        </TableFilters>
       </StyledFilterDiv>
 
       <TableContainer>

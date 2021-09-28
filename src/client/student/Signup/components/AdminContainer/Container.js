@@ -6,7 +6,12 @@ import { compose } from 'redux'
 import { trim } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { connect } from 'react-redux'
-import { withWindowSizes, OnDarkBgLogo, notification } from '@edulastic/common'
+import {
+  withWindowSizes,
+  OnDarkBgLogo,
+  notification,
+  CopyRight,
+} from '@edulastic/common'
 import { IconLock, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import {
@@ -198,7 +203,9 @@ class AdminSignup extends React.Component {
                 </BannerText>
                 {windowWidth >= MAX_TAB_WIDTH && (
                   <DesktopViewCopyright>
-                    <Col span={24}>{t('common.copyright')}</Col>
+                    <Col span={24}>
+                      <CopyRight />
+                    </Col>
                   </DesktopViewCopyright>
                 )}
                 <Col xs={24} sm={14} md={11} lg={12} xl={10}>
@@ -355,7 +362,9 @@ class AdminSignup extends React.Component {
           <CircleDiv size={32} right={72} top={500} />
           {windowWidth < MAX_TAB_WIDTH && (
             <Copyright>
-              <Col span={24}>{t('common.copyright')}</Col>
+              <Col span={24}>
+                <CopyRight />
+              </Col>
             </Copyright>
           )}
         </RegistrationWrapper>

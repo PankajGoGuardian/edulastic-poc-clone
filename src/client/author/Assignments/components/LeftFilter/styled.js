@@ -5,6 +5,7 @@ import {
   tabGrey,
   textColor,
   themeColor,
+  themeColorBlue,
   title,
   white,
   mediumDesktopExactWidth,
@@ -196,7 +197,7 @@ export const MenuItems = styled(Menu.Item)`
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {
     color: ${white};
-    background-color: ${themeColor};
+    background-color: ${themeColorBlue};
     svg,
     i {
       fill: ${white};

@@ -2649,3 +2649,7 @@ div[class*='_pendo'] button {
 .ant-modal-confirm.passage-clone-modal .ant-modal-close {
   display: block;
 }
+
+.showOne-notification:not(:first-of-type) {
+  display: none;
+}

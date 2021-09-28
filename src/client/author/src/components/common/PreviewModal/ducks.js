@@ -90,10 +90,16 @@ export const getItemDetailSelectorForPreview = (state, id, page) => {
 }
 
 const itemPreviewSelector = (state) => get(state, 'testItemPreview.item', {})
+const passageItemsSelector = (state) => get(state, 'tests.passageItems', [])
 
 export const itemInPreviewModalSelector = createSelector(
   itemPreviewSelector,
   (item) => item
+)
+
+export const passageItemIdsSelector = createSelector(
+  passageItemsSelector,
+  (passageItems) => (passageItems || []).map((item) => String(item?._id))
 )
 
 // reducer

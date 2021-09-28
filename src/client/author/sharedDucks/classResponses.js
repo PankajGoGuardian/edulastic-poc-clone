@@ -18,7 +18,7 @@ import {
 import { questionType } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import { notification } from '@edulastic/common'
-import { get, isEmpty, groupBy, isPlainObject } from 'lodash'
+import { get, isEmpty, groupBy, isPlainObject, isNil } from 'lodash'
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -478,12 +478,20 @@ function* updateStudentScore(payload) {
       shouldReceiveStudentResponse = false,
     } = payload
 
+    /** Todo: making score consistent same structure for both score input and rubric score
+     * need to unset rubricFeedback when empty else it will create extra field
+     */
+    const scoreObj = {
+      score: !isNil(score.score) ? score.score : score,
+      rubricFeedback: !isNil(score.rubricFeedback) ? score.rubricFeedback : {},
+    }
+
     const scoreRes = yield call(testActivityApi.updateResponseEntryAndScore, {
       testActivityId,
       itemId,
       groupId,
       userResponse,
-      scores: { [questionId]: score },
+      scores: { [questionId]: scoreObj },
     })
 
     const { questionActivities, testActivity } = scoreRes

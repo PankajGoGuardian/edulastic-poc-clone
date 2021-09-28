@@ -113,6 +113,7 @@ const Hists = ({
         width={bar.width}
         height={getBarHeight(bar.y)}
         color={getColorForIndex(index)}
+        data-cy="bar"
       />
       {labelIsVisible(index) && (
         <Text

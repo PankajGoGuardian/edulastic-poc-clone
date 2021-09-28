@@ -22,7 +22,7 @@ const Rectangles = ({
   const isEvaluationEmpty = useMemo(() => isEmpty(evaluation), [evaluation])
 
   return (
-    <RectangleWrapper rows={rows} columns={columns}>
+    <RectangleWrapper data-cy="rectangles" rows={rows} columns={columns}>
       {Array(total)
         .fill()
         .map((_, index) => {
@@ -52,6 +52,7 @@ const Rectangles = ({
               selected={selected.includes(index + 1 + offset)}
               fillColor={fillColor}
               previewTab={previewTab}
+              data-cy="rectangle"
             />
           )
         })}

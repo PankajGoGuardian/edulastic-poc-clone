@@ -411,7 +411,6 @@ class Board {
       }
 
       if (
-        this.currentTool === CONSTANT.TOOLS.AREA &&
         (this.elements || []).some(
           (element) => element.type === Equation.jxgType
         )
@@ -1487,7 +1486,7 @@ class Board {
         let isInverseIneq = false
         if (isInequalities) {
           shouldNotDashed = ['>=', '<='].some((x) => result.includes(x))
-          isInverseIneq = ['>=', '>'].some((x) => result.includes(x))
+          isInverseIneq = ['<=', '<'].some((x) => result.includes(x))
         }
 
         const obj = {

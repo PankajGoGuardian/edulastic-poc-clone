@@ -20,9 +20,15 @@ const IndividualSubscriptionModal = ({
   totalAmount,
   shouldProrate,
   subEndDate,
+  isEnterprise,
+  isCpm = false,
 }) => {
   const productsToshow = useMemo(() => {
-    if (isPaidPremium && !showRenewalOptions && shouldProrate) {
+    if (
+      isPaidPremium &&
+      !showRenewalOptions &&
+      (shouldProrate || isEnterprise)
+    ) {
       return itemBankProducts
     }
     return [teacherPremium, ...itemBankProducts]
@@ -31,7 +37,8 @@ const IndividualSubscriptionModal = ({
   useEffect(() => {
     if (
       (!isPaidPremium || showRenewalOptions || !shouldProrate) &&
-      !selectedProductIds.includes(teacherPremium.id)
+      !selectedProductIds.includes(teacherPremium.id) &&
+      !isEnterprise
     ) {
       setSelectedProductIds((ids) => [teacherPremium.id, ...ids])
     }
@@ -64,6 +71,7 @@ const IndividualSubscriptionModal = ({
       footer={Footer}
       shouldProrate={shouldProrate}
       subEndDate={subEndDate}
+      isCpm={isCpm}
     >
       <ProductsList
         showMultiplePurchaseModal={showMultiplePurchaseModal}

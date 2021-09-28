@@ -86,6 +86,7 @@ import {
   actionInProgressSelector,
   getAllStudentsList,
   getStudentsPrevSubmittedUtasSelector,
+  getIsDocBasedTestSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -126,10 +127,13 @@ import {
 } from '../../../src/reducers/testActivity'
 import {
   updateCliUserAction,
-  toggleFreeAdminSubscriptionModalAction,
+  toggleAdminAlertModalAction,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
-import { isFreeAdminSelector } from '../../../src/selectors/user'
+import {
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
 
@@ -222,6 +226,7 @@ class ClassBoard extends Component {
       nCountTrue: 0,
       redirectPopup: false,
       selectedStudentId: '',
+      classId: '',
       showMarkAbsentPopup: false,
       showRemoveStudentsPopup: false,
       showAddStudentsPopup: false,
@@ -274,11 +279,16 @@ class ClassBoard extends Component {
       history,
       setShowAllStudents,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
     } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
@@ -401,6 +411,14 @@ class ClassBoard extends Component {
           selectedStudentId: student.studentId,
           selectedTab: 'Student',
         }
+      }
+    }
+
+    if (state.classId !== props.match.params.classId) {
+      newState = {
+        ...newState,
+        selectedStudentId: '',
+        classId: props.match.params.classId,
       }
     }
 
@@ -1035,6 +1053,7 @@ class ClassBoard extends Component {
       studentUnselectAll,
       regradeModalState,
       setPageNumber,
+      isDocBasedTest,
     } = this.props
 
     const {
@@ -1059,16 +1078,15 @@ class ClassBoard extends Component {
     const { assignmentId, classId } = match.params
     const studentTestActivity =
       (studentResponse && studentResponse.testActivity) || {}
+    const studentResponseUqas = isDocBasedTest
+      ? studentResponse?.questionActivities
+      : uniqBy(studentResponse?.questionActivities || [], 'testItemId')
     const timeSpent = Math.floor(
-      ((studentResponse &&
-        studentResponse.questionActivities &&
-        uniqBy(studentResponse.questionActivities, 'testItemId').reduce(
-          (acc, qa) => {
-            acc += qa.timeSpent || 0
-            return acc
-          },
-          0
-        )) ||
+      ((studentResponseUqas &&
+        studentResponseUqas.reduce((acc, qa) => {
+          acc += qa.timeSpent || 0
+          return acc
+        }, 0)) ||
         0) / 1000
     )
     const { status } = studentTestActivity
@@ -2021,7 +2039,9 @@ const enhance = compose(
           ?.recentTestActivitiesGrouped || {},
       studentsPrevSubmittedUtas: getStudentsPrevSubmittedUtasSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
+      isDocBasedTest: getIsDocBasedTestSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
@@ -2043,7 +2063,7 @@ const enhance = compose(
       canvasSyncAssignment: canvasSyncAssignmentAction,
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       setPageNumber: setPageNumberAction,
     }
   )

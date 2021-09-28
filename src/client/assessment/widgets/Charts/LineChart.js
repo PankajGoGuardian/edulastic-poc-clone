@@ -57,6 +57,7 @@ const LineChart = ({
   disableResponse,
   toggleBarDragging,
   deleteMode,
+  correctAnswerView,
   margin = { top: 0, right: 0, left: 0, bottom: 50 },
 }) => {
   const { width, height, showGridlines, margin: gridMargin } = gridParams
@@ -97,7 +98,7 @@ const LineChart = ({
       .join(' ')
 
   const getActivePoint = (index) =>
-    active !== null
+    active !== null && !correctAnswerView
       ? +getPolylinePoints().split(' ')[active].split(',')[index]
       : null
 
@@ -121,6 +122,7 @@ const LineChart = ({
   }
 
   const onMouseMove = (e) => {
+    if (correctAnswerView) return
     normalizeTouchEvent(e)
     if (isMouseDown && cursorY && !deleteMode) {
       const newPxY = convertUnitToPx(initY, gridParams) + e.pageY - cursorY
@@ -133,6 +135,7 @@ const LineChart = ({
   }
 
   const onMouseDown = (index) => (e) => {
+    if (correctAnswerView) return
     normalizeTouchEvent(e)
     setCursorY(e.pageY)
     setActiveIndex(index)

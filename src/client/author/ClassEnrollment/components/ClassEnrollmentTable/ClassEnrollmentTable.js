@@ -10,9 +10,9 @@ import {
   SelectInputStyled,
 } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconTrash } from '@edulastic/icons'
+import { IconFilter, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Col, Icon, Menu, Row, Select } from 'antd'
+import { Col, Icon, Menu, Select } from 'antd'
 import { get, identity, isEmpty, pickBy, uniqBy, unset } from 'lodash'
 import moment from 'moment'
 import React from 'react'
@@ -23,13 +23,14 @@ import {
   StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
+import { StyledRow } from '../../../../admin/Common/StyledComponents/settingsContent'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
@@ -44,6 +45,8 @@ import {
   removeUserEnrollmentsAction,
 } from '../../../SchoolAdmin/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -524,9 +527,8 @@ class ClassEnrollmentTable extends React.Component {
   }
 
   _onRefineResultsCB = () => {
-    this.setState((prevState) => {
-      !prevState.refineButtonActive
-    })
+    const { refineButtonActive } = this.state
+    this.setState({ refineButtonActive: !refineButtonActive })
   }
 
   onChangeShowActive = (e) => {
@@ -567,6 +569,9 @@ class ClassEnrollmentTable extends React.Component {
       t,
       location,
       enableStudentGroups,
+      menuActive,
+      count,
+      history,
     } = this.props
 
     const tableDataSource = classEnrollmentData.map((item) => {
@@ -707,7 +712,7 @@ class ClassEnrollmentTable extends React.Component {
       }
 
       SearchRows.push(
-        <Row gutter={20}>
+        <StyledRow gutter={20} mb="5px">
           <Col span={6}>
             <SelectInputStyled
               placeholder={t('common.selectcolumn')}
@@ -775,7 +780,7 @@ class ClassEnrollmentTable extends React.Component {
             {((filtersData.length === 1 && filtersData[0].filterAdded) ||
               filtersData.length > 1) && (
               <EduButton
-                height="36px"
+                height="32px"
                 width="50%"
                 type="primary"
                 onClick={(e) => this.removeFilter(e, i)}
@@ -784,7 +789,7 @@ class ClassEnrollmentTable extends React.Component {
               </EduButton>
             )}
           </Col>
-        </Row>
+        </StyledRow>
       )
     }
 
@@ -792,49 +797,60 @@ class ClassEnrollmentTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+        <AdminSubHeader count={count} active={menuActive} history={history} />
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={50}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            <EduButton type="primary" onClick={this.onOpenaddNewUserModal}>
-              {t('classenrollment.addnewuser')}
-            </EduButton>
-          </LeftFilterDiv>
-
-          <RightFilterDiv width={50}>
-            <CheckboxLabel
-              defaultChecked={showActive}
-              onChange={this.onChangeShowActive}
-            >
-              {t('classenrollment.showactiveenrollments')}
-            </CheckboxLabel>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={50}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
               </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+              />
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.onOpenaddNewUserModal}
+              >
+                {t('classenrollment.addnewuser')}
+              </EduButton>
+            </LeftFilterDiv>
+
+            <RightFilterDiv>
+              <CheckboxLabel
+                defaultChecked={showActive}
+                onChange={this.onChangeShowActive}
+              >
+                {t('classenrollment.showactiveenrollments')}
+              </CheckboxLabel>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+              >
+                <EduButton height="34px" isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
+
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
 
         <TableContainer>
           <StyledTable

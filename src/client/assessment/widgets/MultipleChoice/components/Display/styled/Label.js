@@ -138,6 +138,7 @@ export const OptionLabelDiv = styled.div`
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
   margin-right: 12px;
   margin-bottom: 4px;
+  z-index: 99999;
   background: ${({ uiStyle, selected, label }) =>
     uiStyle.type === 'block' && selected && !label && lightBlue6};
   border: ${(props) =>

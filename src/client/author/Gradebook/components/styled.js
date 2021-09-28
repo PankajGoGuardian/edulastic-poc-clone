@@ -17,6 +17,8 @@ import {
   smallDesktopWidth,
   extraDesktopWidthMax,
   filterIconColor,
+  darkGrey,
+  greyishDarker2,
 } from '@edulastic/colors'
 
 export const StudentLabel = styled.div`
@@ -204,6 +206,27 @@ export const AssignmentTD = styled.div`
 `
 
 export const StyledTable = styled(Table)`
+  .ant-table-body::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+  .ant-table-body::-webkit-scrollbar-track {
+    border: 2px solid ${white};
+    border-radius: 6px;
+    background: transparent;
+    &:hover {
+      box-shadow: inset 0 0 6px 1px ${fadedGrey};
+    }
+  }
+  .ant-table-body::-webkit-scrollbar-thumb {
+    border: 2px solid ${white};
+    border-radius: 6px;
+    background-clip: padding-box;
+    background: ${greyishDarker2};
+    &:hover {
+      background: ${darkGrey};
+    }
+  }
   .ant-table {
     .ant-table-content {
       .ant-table-scroll {

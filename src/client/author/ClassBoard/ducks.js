@@ -55,6 +55,7 @@ import {
   receiveStudentResponseAction,
   reloadLcbDataInStudentViewAction,
   correctItemUpdateProgressAction,
+  setSilentCloningAction,
 } from '../src/actions/classBoard'
 
 import { createFakeData, hasRandomQuestions } from './utils'
@@ -826,6 +827,14 @@ function* correctItemUpdateSaga({ payload }) {
       editRegradeChoice,
     })
     yield put(correctItemUpdateProgressAction(false))
+    if (!proceedRegrade && !result.isRegradeNeeded && result.firestoreDocId) {
+      yield put(setRegradeFirestoreDocId(result.firestoreDocId))
+      yield put(setSilentCloningAction(true))
+      return notification({
+        type: 'info',
+        msg: 'Changes made to the question is being published',
+      })
+    }
     if (typeof callBack === 'function') {
       // close correct item edit modal here
       callBack()
@@ -959,6 +968,11 @@ const getTestItemsData = createSelector(
 export const getClassResponseSelector = createSelector(
   stateClassResponseSelector,
   (state) => state?.data || {}
+)
+
+export const getSilentCloneSelector = createSelector(
+  stateClassResponseSelector,
+  (state) => state?.silentClone
 )
 
 export const ttsUserIdSelector = createSelector(
@@ -1667,8 +1681,27 @@ export const getClassQuestionSelector = createSelector(
   (state) => state.data
 )
 
-export const getDynamicVariablesSetIdForViewResponse = (state, uta) => {
-  return uta.algoVariableSetIds || []
+export const getDynamicVariablesSetIdForViewResponse = (
+  state,
+  { showMultipleAttempts, studentId }
+) => {
+  let studentTestActivity = null
+  if (!showMultipleAttempts) {
+    const testActivities = get(
+      state,
+      'author_classboard_testActivity.data.testActivities',
+      []
+    )
+    studentTestActivity = testActivities.find(
+      ({ userId }) => userId === studentId
+    )
+  } else {
+    studentTestActivity = get(state, 'studentResponse.data.testActivity', {})
+  }
+  if (isEmpty(studentTestActivity)) {
+    return false
+  }
+  return studentTestActivity.algoVariableSetIds
 }
 
 export const getQIdsSelector = createSelector(

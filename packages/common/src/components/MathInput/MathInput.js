@@ -12,7 +12,7 @@ import { MathInputStyles, EmptyDiv, KeyboardIcon } from './MathInputStyles'
 import Draggable from './Draggable'
 import PeriodicTable from '../PeriodicTable'
 
-const { EMBED_RESPONSE, keyboardMethods } = math
+const { EMBED_RESPONSE, keyboardMethods, NO_KEYPAD } = math
 const MAX_CONTENT_LENGTH = 1200
 
 class MathInput extends React.PureComponent {
@@ -204,6 +204,9 @@ class MathInput extends React.PureComponent {
     (v?.toString() || '')
       .replace(/&amp;/g, '&')
       .replace(/mathbb\{(.*?)\}/g, '$1')
+      .replace(/\\not\\ni/g, '\\notni')
+      .replace(/\\not\\subseteq/g, '\\notsubseteq')
+      .replace(/\\not\\subset/g, '\\notsubset')
 
   handleKeypress = (e) => {
     const {
@@ -212,7 +215,11 @@ class MathInput extends React.PureComponent {
       value = '',
       onKeyPress,
     } = this.props
-    const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@/]/g)
+    const isNonNumericKey = e.key && !e.key.match(/[0-9+-.%^@:/]/g)
+
+    if (e.key === 'Enter') {
+      this.addNewline()
+    }
 
     if (!isEmpty(restrictKeys)) {
       const isSpecialChar = !!(e.key.length > 1 || e.key.match(/[^a-zA-Z]/g))
@@ -243,6 +250,7 @@ class MathInput extends React.PureComponent {
       if (isNonNumericKey) {
         e.preventDefault()
         e.stopPropagation()
+        notification({ messageKey: 'allowedOnlyNumber', destroyAll: true })
       }
     }
     if (onKeyPress) {
@@ -345,6 +353,13 @@ class MathInput extends React.PureComponent {
     }
   }
 
+  addNewline = () => {
+    const { mathField } = this.state
+    if (mathField && mathField.latex()) {
+      mathField.cmd('\\newline')
+    }
+  }
+
   focus = () => {
     const { onFocus, onInnerFieldClick } = this.props
     const { mathField } = this.state
@@ -423,6 +438,7 @@ class MathInput extends React.PureComponent {
       !alwaysShowKeyboard &&
       mathFieldFocus &&
       !hideKeyboardByDefault
+    const noKeypadMode = symbols?.[0] === NO_KEYPAD.value
 
     const MathKeyboardWrapper = alwaysShowKeyboard ? EmptyDiv : Draggable
 
@@ -469,7 +485,7 @@ class MathInput extends React.PureComponent {
             )}
           </div>
         </div>
-        {(visibleKeypad || alwaysShowKeyboard) && (
+        {(visibleKeypad || alwaysShowKeyboard) && !noKeypadMode && (
           <MathKeyboardWrapper
             className="input__keyboard"
             position={keyboardPosition}

@@ -103,7 +103,7 @@ function* getReportsActivityByTeacherRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting reports activity by teacher. Please try again after a few minutes.'
+      'Error getting activity by teacher report data. Please try again after a few minutes.'
 
     notification({ msg })
     yield put({

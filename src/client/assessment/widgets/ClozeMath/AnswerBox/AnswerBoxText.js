@@ -26,4 +26,5 @@ const Text = styled.div`
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
   font-weight: 600;
+  flex: 1;
 `

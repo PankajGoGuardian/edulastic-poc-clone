@@ -6,13 +6,11 @@ import moment from 'moment'
 import { themeColor } from '@edulastic/colors'
 import { IconPencilEdit } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
+import { EduButton, SearchInputStyled } from '@edulastic/common'
 import { ContentBucketTable } from './ContentBucketsTable'
 import {
   PermissionTableContainer,
   HeadingContainer,
-  TableHeading,
-  StyledSearch,
-  AddPermissionButton,
   StyledTab,
   StyledTable,
   StyledScollBar,
@@ -32,6 +30,11 @@ import {
 import { getUserRole, getUserOrgId } from '../../../src/selectors/user'
 
 import { caluculateOffset } from '../../util'
+import {
+  TableFilters,
+  TabTitle,
+} from '../../../../admin/Common/StyledComponents'
+import { LeftFilterDiv } from '../../../../common/styled'
 
 const { TabPane } = Tabs
 
@@ -222,24 +225,25 @@ const PermissionsTable = ({
       <StyledTab defaultActiveKey="1">
         <TabPane tab="PERMISSIONS" key="1">
           <HeadingContainer className="heading-container">
-            <div>
-              <TableHeading>Permissions</TableHeading>
-            </div>
-            <div>
-              <StyledSearch
-                placeholder="Search for District, School or User"
-                onChange={(e) => {
-                  handlePermissionSearch(e?.target?.value)
-                }}
-              />
-            </div>
-            <div>
-              <AddPermissionButton
-                onClick={() => setPermissionModalVisibility(true)}
-              >
-                Add Permission
-              </AddPermissionButton>
-            </div>
+            <TabTitle>Permissions</TabTitle>
+            <TableFilters>
+              <LeftFilterDiv width={80}>
+                <SearchInputStyled
+                  height="34px"
+                  placeholder="Search for District, School or User"
+                  onChange={(e) => {
+                    handlePermissionSearch(e?.target?.value)
+                  }}
+                />
+                <EduButton
+                  isGhost
+                  height="34px"
+                  onClick={() => setPermissionModalVisibility(true)}
+                >
+                  Add Permission
+                </EduButton>
+              </LeftFilterDiv>
+            </TableFilters>
           </HeadingContainer>
           <StyledScollBar
             table="permissionTable"
@@ -263,9 +267,7 @@ const PermissionsTable = ({
         </TabPane>
         <TabPane tab="CONTENT BUCKETS" key="2">
           <HeadingContainer>
-            <div>
-              <TableHeading>Content Buckets</TableHeading>
-            </div>
+            <TabTitle>Content Buckets</TabTitle>
           </HeadingContainer>
           <ContentBucketTable buckets={selectedCollection.buckets} />
         </TabPane>

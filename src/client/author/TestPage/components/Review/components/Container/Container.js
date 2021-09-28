@@ -371,6 +371,27 @@ class Review extends PureComponent {
     )
   }
 
+  handleBlur = (testItemId) => {
+    const { test } = this.props
+
+    let item = null
+    test?.itemGroups?.forEach((itemGroup) => {
+      if (!item) {
+        item = itemGroup.items?.find(({ _id }) => _id === testItemId)
+      }
+    })
+    if (
+      item?.data?.questions.some(
+        (question) => question?.validation?.altResponses?.length
+      )
+    ) {
+      notification({
+        type: 'info',
+        messageKey: 'altResponseAvailableInItem',
+      })
+    }
+  }
+
   handleChangePoints = (testItemId, itemScore, questionLevelScore) => {
     /**
      * prevent zero or less
@@ -643,6 +664,7 @@ class Review extends PureComponent {
                 rows={rows}
                 isSmallSize={isSmallSize}
                 onChangePoints={this.handleChangePoints}
+                blur={this.handleBlur}
                 handlePreview={this.handlePreviewTestItem}
                 moveTestItems={this.moveTestItems}
                 onCompleteMoveItem={this.completeMoveTestItems}

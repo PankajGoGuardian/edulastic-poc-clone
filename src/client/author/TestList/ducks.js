@@ -192,7 +192,10 @@ function* receiveTestsSaga({
 }) {
   try {
     const { items, count } = yield call(testsApi.getAll, {
-      search,
+      search: {
+        ...search,
+        tags: search.tags.flatMap((t) => t.split('_')),
+      },
       sort,
       page,
       limit,

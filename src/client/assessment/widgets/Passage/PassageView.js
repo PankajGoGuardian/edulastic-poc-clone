@@ -15,15 +15,18 @@ import {
   highlightSelectedText,
 } from '@edulastic/common'
 
+import { removeHTMLTags } from '@edulastic/common/src/helpers'
 import { InstructorStimulus } from './styled/InstructorStimulus'
 import { Heading } from './styled/Heading'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
 import ColorPicker from './ColorPicker'
 import { ColorPickerContainer, Overlay } from './styled/ColorPicker'
+import { PassageTitleWrapper } from './styled/PassageTitleWrapper'
 import AppConfig from '../../../../app-config'
 import { CLEAR } from '../../constants/constantsForQuestions'
 
 import HighlightPopover from './HighlightPopover'
+import { PassageTitle } from '../../../author/ItemList/components/Item/styled'
 
 const ContentsTitle = Heading
 const highlightTag = 'my-highlight'
@@ -83,6 +86,15 @@ const PassageView = ({
     viewComponent === 'editQuestion' ||
     viewComponent === 'authorPreviewPopup' ||
     viewComponent === 'ItemDetail'
+
+  const passageTitle = item?.source ? (
+    <>
+      <PassageTitle>{removeHTMLTags(item.contentsTitle)}</PassageTitle> by{' '}
+      <PassageTitle>{removeHTMLTags(item.source)}</PassageTitle>
+    </>
+  ) : (
+    <PassageTitle>{removeHTMLTags(item.contentsTitle)}</PassageTitle>
+  )
 
   const _highlights = isAuthorPreviewMode
     ? get(userWork, `resourceId[${widgetIndex || 0}][${authLanguage}]`, '')
@@ -234,11 +246,15 @@ const PassageView = ({
           )}
         </QuestionTitleWrapper>
       )}
-      {item.contentsTitle && !flowLayout && (
-        <ContentsTitle
-          dangerouslySetInnerHTML={{ __html: item.contentsTitle }}
-        />
-      )}
+      {item.contentsTitle &&
+        !flowLayout &&
+        (item?.type !== 'passage' ? (
+          <ContentsTitle
+            dangerouslySetInnerHTML={{ __html: item.contentsTitle }}
+          />
+        ) : (
+          <PassageTitleWrapper>{passageTitle}</PassageTitleWrapper>
+        ))}
       {!item.paginated_content && item.content && (
         <div
           id={item.id}

@@ -26,6 +26,7 @@ const RednerOpts = ({
 }) =>
   evalutionOptions.map((key) => (
     <EvaluationOption
+      isGraph
       key={key}
       optionKey={key}
       options={options}
@@ -74,7 +75,7 @@ const Tabs = styled(AntTabs)`
       > div {
         &:first-child {
           display: flex;
-          justify-content: space-between;
+          justify-content: flex-start;
           padding: 0px 16px;
         }
       }

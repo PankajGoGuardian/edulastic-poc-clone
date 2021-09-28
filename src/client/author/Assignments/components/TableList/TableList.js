@@ -11,6 +11,7 @@ import {
   IconPresentation,
   IconAddItem,
   IconPieChartIcon,
+  IconHourGlass,
 } from '@edulastic/icons'
 
 import {
@@ -19,6 +20,7 @@ import {
   EduButton,
   CheckboxLabel,
 } from '@edulastic/common'
+import { greyThemeDark3 } from '@edulastic/colors'
 
 import arrowUpIcon from '../../assets/arrow-up.svg'
 import ActionMenu from '../ActionMenu/ActionMenu'
@@ -60,7 +62,6 @@ import {
   getGroupList,
 } from '../../../src/selectors/user'
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
-import { ReactComponent as TimerIcon } from './assets/timer.svg'
 import { canEditTest } from '../../utils'
 import { bulkDownloadGradesAndResponsesAction } from '../../../AssignmentAdvanced/ducks'
 import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
@@ -232,7 +233,7 @@ const TableList = ({
                   }
                   placement="right"
                 >
-                  <TimerIcon />
+                  <IconHourGlass color={greyThemeDark3} />
                 </Tooltip>
               )}
             </TimedTestIndicator>

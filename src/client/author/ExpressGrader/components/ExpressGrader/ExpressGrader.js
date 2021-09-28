@@ -43,8 +43,11 @@ import {
 } from '../../../ClassBoard/ducks'
 import { toggleScoreModeAction, disableScoreModeAction } from '../../ducks'
 import { getFeedbackResponseSelector } from '../../../src/selectors/feedback'
-import { isFreeAdminSelector } from '../../../src/selectors/user'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import {
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../../../src/selectors/user'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 
 /**
@@ -131,11 +134,16 @@ class ExpressGrader extends Component {
       authorClassBoard,
       history,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
     } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
     const { assignmentId, classId } = match.params
     let shouldLoadTestActivity = false
@@ -337,6 +345,7 @@ const enhance = compose(
       authorClassBoard: get(state, ['author_classboard_testActivity'], {}),
       scoreMode: state?.expressGraderReducer?.scoreMode,
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
     }),
     {
@@ -345,7 +354,7 @@ const enhance = compose(
       clearEgAnswers: clearAnswersAction,
       toggleScoreMode: toggleScoreModeAction,
       disableScoreMode: disableScoreModeAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
     }
   )
 )

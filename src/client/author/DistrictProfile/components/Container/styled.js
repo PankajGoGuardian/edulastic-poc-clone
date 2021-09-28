@@ -6,6 +6,7 @@ import {
   largeDesktopWidth,
   mobileWidthMax,
   green,
+  backgrounds,
 } from '@edulastic/colors'
 
 const { Content } = Layout
@@ -39,10 +40,9 @@ export const StyledSpin = styled(Spin)`
 
 export const ProfileImgWrapper = styled.div`
   width: 350px;
-  height: 350px;
+  height: 320px;
   position: relative;
-  background-color: ${white};
-  border: 1px solid #b6b6cc;
+  background-color: ${backgrounds?.default};
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -84,7 +84,7 @@ export const TwoColumnFormContainer = styled.div`
 export const SubHeader = styled.div`
   display: flex;
   align-items: center;
-  padding: 12px 30px;
+  padding: 15px 30px;
 `
 
 export const Spacer = styled.span`

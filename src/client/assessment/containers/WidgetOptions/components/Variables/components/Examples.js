@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -27,19 +27,26 @@ import { Label } from '../../../../../styled/WidgetOptions/Label'
 import { getMathTemplate } from '../../../../../utils/variables'
 
 const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
+  const [count, setCount] = useState(0)
   const examples = get(questionData, 'variable.examples', [])
   const variables = get(questionData, 'variable.variables', {})
   const combinationsCount = get(questionData, 'variable.combinationsCount', 25)
 
-  const onChange = (param, value) => {
-    const newData = cloneDeep(questionData)
-
-    if (!newData.variable) {
-      newData.variable = {}
+  const handleChangeCount = (evt) => {
+    if (/^\d+$/.test(evt.target.value) || !evt.target.value) {
+      setCount(+evt.target.value)
     }
+  }
 
-    newData.variable[param] = value
-    onGenerate(newData)
+  const handleBlurCount = () => {
+    if (+count !== combinationsCount) {
+      const newData = cloneDeep(questionData)
+      if (!newData.variable) {
+        newData.variable = {}
+      }
+      newData.variable.combinationsCount = +count
+      onGenerate(newData)
+    }
   }
 
   const clearExamples = (exam) => () => {
@@ -76,6 +83,10 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
       )
     },
   }))
+
+  useEffect(() => {
+    setCount(combinationsCount)
+  }, [combinationsCount])
 
   if (!isEmpty(examples)) {
     columns.push({
@@ -114,13 +125,14 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
             {t('component.options.beforeCombinationCount')}
           </InlineLabel>
           <TextInputStyled
-            type="number"
-            data-cy="combinationCount"
-            value={combinationsCount}
-            onChange={(e) => onChange('combinationsCount', +e.target.value)}
-            size="large"
             width="70px"
+            type="number"
+            value={count}
+            size="large"
             style={{ margin: '0px 15px' }}
+            data-cy="combinationCount"
+            onChange={handleChangeCount}
+            onBlur={handleBlurCount}
           />
           <InlineLabel>
             {t('component.options.afterCombinationCount')}

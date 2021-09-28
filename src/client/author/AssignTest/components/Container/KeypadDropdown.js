@@ -10,8 +10,9 @@ import { math } from '@edulastic/constants'
 import { StyledSelectContainer } from '../../../../assessment/components/KeyPadOptions/styled/StyledSelectContainer'
 import { customKeypadSelector } from '../../../../assessment/components/KeyPadOptions/ducks'
 
-const { symbols } = math
+const { symbols, NO_KEYPAD } = math
 const predefinedKeypads = [
+  NO_KEYPAD,
   ...symbols,
   {
     type: 'item-level',

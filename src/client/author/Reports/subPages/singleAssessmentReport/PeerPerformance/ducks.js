@@ -112,7 +112,7 @@ function* getReportsPeerPerformanceRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting sub-group performance. Please try again after a few minutes.'
+      'Error getting sub-group performance report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_PEER_PERFORMANCE_REQUEST_ERROR,

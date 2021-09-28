@@ -106,6 +106,7 @@ const Circles = ({
               cx={getCenterX(index) + step / 2 + 2}
               cy={height - margin - ind * yAxisStep - yAxisStep / 2 + 20}
               r={5}
+              data-cy={`bar-${index}circle-${ind}`}
             />
           ))}
           <Bar
@@ -147,6 +148,7 @@ const Circles = ({
                 color={dot.y === 0 ? themeColor : 'transparent'}
                 hoverState={isHovered(index)}
                 height={isHovered(index) ? 5 : 1}
+                data-cy={`activeBar-${index}`}
               />
             </>
           )}

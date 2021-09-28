@@ -21,6 +21,7 @@ class MainInfo extends React.Component {
       isEditable,
       owner,
       onChangePoints,
+      blur,
       expandRow,
       onDelete,
       onSelect,
@@ -76,6 +77,7 @@ class MainInfo extends React.Component {
                   !owner || !isEditable || isScoringDisabled || groupMinimized
                 }
                 onChange={(value) => onChangePoints(data.id, value)}
+                onBlur={() => blur(data.id)}
               />
             ) : (
               <UnScored

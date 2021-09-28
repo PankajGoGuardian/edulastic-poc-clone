@@ -5,25 +5,22 @@ import { compose } from 'redux'
 import { get } from 'lodash'
 
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
-import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
 import TermTable from '../TermTable/TermTable'
 
 import {
-  TermDiv,
-  StyledContent,
-  StyledLayout,
   SpinContainer,
   StyledSpin,
-} from './styled'
+} from '../../../../admin/Common/StyledComponents'
+import {
+  SettingsWrapper,
+  StyledContent,
+  StyledLayout,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Term' }
 
 class Term extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   deleteTerm = (deletedTermId) => {
     const { deleteTermSetting, userOrgId } = this.props
     deleteTermSetting({ body: { termId: deletedTermId, orgId: userOrgId } })
@@ -40,20 +37,23 @@ class Term extends Component {
     } = this.props
     const showSpin = loading || creating || updating || deleting
     return (
-      <TermDiv>
+      <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
-            <AdminSubHeader active={menuActive} history={history} />
             {showSpin && (
-              <SpinContainer>
+              <SpinContainer loading={showSpin}>
                 <StyledSpin size="large" />
               </SpinContainer>
             )}
-            <TermTable termSetting={termSetting} />
+            <TermTable
+              menuActive={menuActive}
+              history={history}
+              termSetting={termSetting}
+            />
           </StyledLayout>
         </StyledContent>
-      </TermDiv>
+      </SettingsWrapper>
     )
   }
 }

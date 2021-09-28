@@ -1,10 +1,17 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
+import styled from 'styled-components'
+import uuid from 'uuid/v4'
+import { max } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
+import { FlexContainer, EduButton } from '@edulastic/common'
+import { questionTitle } from '@edulastic/constants'
+import Question from '../../components/Question'
 import CorrectAnswers from '../../components/CorrectAnswers'
 import CorrectAnswer from './CorrectAnswer'
 import { updateVariables } from '../../utils/variables'
+import MaxResponses from './components/MaxResponses'
 
 class SetCorrectAnswers extends Component {
   constructor() {
@@ -143,6 +150,18 @@ class SetCorrectAnswers extends Component {
     this.setState({ currentTab: value })
   }
 
+  addNewChoiceBtn = () => {
+    const { question, setQuestionData } = this.props
+    setQuestionData(
+      produce(question, (draft) => {
+        draft.options.push({
+          value: uuid(),
+          label: '',
+        })
+      })
+    )
+  }
+
   get response() {
     const { validation } = this.props
     const { currentTab } = this.state
@@ -152,10 +171,24 @@ class SetCorrectAnswers extends Component {
     return validation.altResponses[currentTab - 1]
   }
 
+  get maxResponsesMin() {
+    const { validation, multipleResponses } = this.props
+    if (!multipleResponses) {
+      return null
+    }
+    const { validResponse, altResponses } = validation
+    const answers = [validResponse]
+      .concat(altResponses)
+      .map((answer) => answer?.value?.length)
+    return max(answers)
+  }
+
   render() {
     const {
+      t,
       stimulus,
       options,
+      onChangeOption,
       multipleResponses,
       uiStyle,
       styleType,
@@ -166,37 +199,67 @@ class SetCorrectAnswers extends Component {
     } = this.props
     const { currentTab } = this.state
     const title = currentTab === 0 ? 'correct' : 'alternative'
-    const { response } = this
+    const isTrueFalse = question.title === questionTitle.MCQ_TRUE_OR_FALSE
 
     return (
-      <CorrectAnswers
-        correctTab={currentTab}
+      <Question
+        section="main"
+        label={t('component.correctanswers.setcorrectanswers')}
         fillSections={fillSections}
         cleanSections={cleanSections}
-        validation={question.validation}
-        questionType={question?.title}
-        onAdd={this.handleAddAltResponses}
-        onCloseTab={this.handleRemoveAltResponses}
-        onTabChange={this.handleTabChange}
-        onChangePoints={this.updateScore}
-        points={response.score}
-        isCorrectAnsTab={currentTab === 0}
       >
-        <CorrectAnswer
-          uiStyle={uiStyle}
-          stimulus={stimulus}
-          multipleResponses={multipleResponses}
-          options={options}
-          styleType={styleType}
-          fontSize={fontSize}
-          title={title}
-          response={response}
-          onSortOptions={this.onSortEnd}
-          onChangeOption={this.editOptions}
-          onRemoveOption={this.removeOption}
-          onUpdateValidationValue={this.updateAnswers}
-        />
-      </CorrectAnswers>
+        <CorrectAnswers
+          correctTab={currentTab}
+          fillSections={fillSections}
+          cleanSections={cleanSections}
+          validation={question.validation}
+          questionType={question?.title}
+          onAdd={this.handleAddAltResponses}
+          onCloseTab={this.handleRemoveAltResponses}
+          onTabChange={this.handleTabChange}
+          onChangePoints={this.updateScore}
+          points={this.response.score}
+          isCorrectAnsTab={currentTab === 0}
+        >
+          <CorrectAnswer
+            uiStyle={uiStyle}
+            stimulus={stimulus}
+            multipleResponses={multipleResponses}
+            options={options}
+            styleType={styleType}
+            fontSize={fontSize}
+            title={title}
+            response={this.response}
+            onSortOptions={this.onSortEnd}
+            onChangeOption={this.editOptions}
+            onRemoveOption={this.removeOption}
+            onUpdateValidationValue={this.updateAnswers}
+          />
+        </CorrectAnswers>
+        <Divider />
+        <FlexContainer justifyContent="flex-start" alignItems="center">
+          {(!isTrueFalse || question?.options?.length < 2) && (
+            <EduButton
+              ml="0px"
+              mr="8px"
+              height="28px"
+              data-cy="add-new-ch"
+              onClick={this.addNewChoiceBtn}
+            >
+              {t('component.multiplechoice.addnewchoice')}
+            </EduButton>
+          )}
+          {!isTrueFalse && (
+            <MaxResponses
+              max={options?.length}
+              min={this.maxResponsesMin}
+              value={question.maxResponses}
+              multipleResponses={multipleResponses}
+              onChangeOption={onChangeOption}
+            />
+          )}
+        </FlexContainer>
+      </Question>
     )
   }
 }
@@ -222,3 +285,7 @@ CorrectAnswers.defaultProps = {
 }
 
 export default withNamespaces('assessment')(SetCorrectAnswers)
+
+const Divider = styled.div`
+  padding: 10px 0;
+`

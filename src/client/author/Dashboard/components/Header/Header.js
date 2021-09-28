@@ -205,7 +205,7 @@ const HeaderSection = ({
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
         {(currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
-          (isSignupComplete && isEmpty(institutionIds))) && (
+          isEmpty(institutionIds)) && (
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
               <StyledLink data-cy="completeSignup" onClick={handleClick}>

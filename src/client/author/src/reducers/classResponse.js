@@ -4,6 +4,7 @@ import {
   UPDATE_STUDENT_TEST_ITEMS,
   SET_CORRECT_ITEM_UPDATE_PROGRESS,
   REPLACE_ORIGINAL_ITEM,
+  SET_SILENT_CLONING,
 } from '../constants/actions'
 
 const initialState = {
@@ -11,6 +12,7 @@ const initialState = {
   error: null,
   loading: true,
   updating: false,
+  silentClone: false,
 }
 
 const reducer = (state = initialState, { type, payload }) => {
@@ -36,6 +38,11 @@ const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         updating: payload,
+      }
+    case SET_SILENT_CLONING:
+      return {
+        ...state,
+        silentClone: payload,
       }
     case REPLACE_ORIGINAL_ITEM:
       return {

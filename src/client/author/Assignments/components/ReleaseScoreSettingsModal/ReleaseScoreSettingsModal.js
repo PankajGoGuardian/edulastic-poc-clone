@@ -28,6 +28,7 @@ const ReleaseScoreSettingsModal = ({
   updateReleaseScoreSettings,
   releaseScore = '',
   features,
+  subText,
 }) => {
   const [releaseGradeValue, setReleaseGradeValue] = useState(releaseScore)
   useEffect(() => {
@@ -52,10 +53,7 @@ const ReleaseScoreSettingsModal = ({
           ? '[OFF]'
           : '[ON]'
         : ''}
-      <p style={{ fontSize: '12px' }}>
-        Selected score policy will be applied to all the classes within
-        assignment
-      </p>
+      <p style={{ fontSize: '12px' }}>{subText}</p>
     </div>
   )
 

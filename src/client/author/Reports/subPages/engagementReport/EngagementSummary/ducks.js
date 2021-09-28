@@ -103,7 +103,7 @@ function* getReportsEngagementSummaryRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting reports engagement summary. Please try again after a few minutes.'
+      'Error getting engagement summary report data. Please try again after a few minutes.'
 
     notification({ msg })
     yield put({

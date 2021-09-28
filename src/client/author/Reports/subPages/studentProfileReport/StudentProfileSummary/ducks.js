@@ -108,7 +108,7 @@ function* getReportsStudentProfileSummaryRequest({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error getting student profile summary. Please try again after a few minutes.'
+      'Error getting student profile summary report data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
       type: GET_REPORTS_STUDENT_PROFILE_SUMMARY_REQUEST_ERROR,

@@ -1,17 +1,21 @@
 import React, { Component } from 'react'
-import { Col } from 'antd'
 import { EduButton, SearchInputStyled } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { set, cloneDeep } from 'lodash'
-import { MainContainer, SubHeaderWrapper } from '../../../../common/styled'
-import ContentSubHeader from '../../../src/components/common/AdminSubHeader/ContentSubHeader'
 import {
-  ExternalToolsSearchHeader,
-  StyledList,
-  StyledRow,
-  StyledColRight,
-} from './styled'
+  MainContainer,
+  SubHeaderWrapper,
+  LeftFilterDiv,
+  RightFilterDiv,
+} from '../../../../common/styled'
+import ContentSubHeader from '../../../src/components/common/AdminSubHeader/ContentSubHeader'
+import { StyledList } from './styled'
+import {
+  StyledFilterDiv,
+  TabTitle,
+  TableFilters,
+} from '../../../../admin/Common/StyledComponents'
 import { ToolForm } from '../ToolForm/ToolForm'
 import {
   getFormData,
@@ -29,19 +33,6 @@ import Breadcrumb from '../../../src/components/Breadcrumb'
 import ExternalToolsModal from '../ExternalToolsModalContent/ExternalToolsModalContent'
 
 const menuActive = { mainMenu: 'Content', subMenu: 'ExternalTools' }
-
-const ETPHeader = ({ addExternalTool }) => (
-  <StyledRow>
-    <Col span={12}>
-      <h4>External Tool Provider</h4>
-    </Col>
-    <StyledColRight span={12}>
-      <EduButton height="40px" isGhost onClick={addExternalTool}>
-        Add Provider
-      </EduButton>
-    </StyledColRight>
-  </StyledRow>
-)
 
 const initialState = {
   isModalVisible: false,
@@ -147,17 +138,30 @@ class ExternalTools extends Component {
           )}
         </SubHeaderWrapper>
         <ContentSubHeader active={menuActive} history={history} />
-        <ExternalToolsSearchHeader>
-          <SearchInputStyled
-            placeholder="Search External Tools"
-            value={searchTerm}
-            onChange={(e) => this.setState({ searchTerm: e.target.value })}
-            height="36px"
-          />
-          <EduButton onClick={() => this.setState({ searchTerm })}>
-            Search
-          </EduButton>
-        </ExternalToolsSearchHeader>
+        <StyledFilterDiv>
+          <TabTitle>External Tool Provider</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={60}>
+              <SearchInputStyled
+                placeholder="Search External Tools"
+                value={searchTerm}
+                onChange={(e) => this.setState({ searchTerm: e.target.value })}
+                height="34px"
+              />
+              <EduButton
+                height="34px"
+                onClick={() => this.setState({ searchTerm })}
+              >
+                Search
+              </EduButton>
+            </LeftFilterDiv>
+            <RightFilterDiv>
+              <EduButton height="34px" isGhost onClick={this.addExternalTool}>
+                Add Provider
+              </EduButton>
+            </RightFilterDiv>
+          </TableFilters>
+        </StyledFilterDiv>
         <ExternalToolsModal
           isModalVisible={isModalVisible}
           data={data}
@@ -167,7 +171,6 @@ class ExternalTools extends Component {
         />
         <StyledList
           split={false}
-          header={ETPHeader({ addExternalTool: this.addExternalTool })}
           dataSource={dataSource}
           renderItem={(tool, i) => (
             <ToolForm

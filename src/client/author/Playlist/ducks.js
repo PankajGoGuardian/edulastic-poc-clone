@@ -113,7 +113,10 @@ function* receivePlaylistsSaga({
     const result = yield call(
       curriculumSequencesApi.searchCurriculumSequences,
       {
-        search,
+        search: {
+          ...search,
+          tags: search.tags.flatMap((t) => t.split('_')),
+        },
         sort,
         page,
         limit,

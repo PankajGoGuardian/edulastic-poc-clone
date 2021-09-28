@@ -147,7 +147,6 @@ const StyledButton = styled(Button)`
     font-size: 16px;
   }
 
-  &:focus,
   &:hover {
     &.ant-btn.ant-btn-primary {
       background-color: ${({ noHover }) =>
@@ -161,6 +160,31 @@ const StyledButton = styled(Button)`
     svg {
       fill: ${({ btnType, noHover }) =>
         getColor({ btnType, isGhost: noHover || false })} !important;
+      &:focus,
+      &:hover {
+        fill: ${({ btnType, noHover }) =>
+          getColor({ btnType, isGhost: noHover || false })};
+      }
+    }
+  }
+
+  &:focus,
+  &:active {
+    &.ant-btn.ant-btn-primary {
+      background-color: ${({ isGhost, isBlue }) =>
+        isGhost ? white : isBlue ? themeColorBlue : themeColor};
+      border-color: ${({ isBlue }) => (isBlue ? themeColorBlue : themeColor)};
+      color: ${({ isBlue, isGhost }) =>
+        isGhost && isBlue ? themeColorBlue : isGhost ? themeColor : white};
+    }
+
+    svg {
+      fill: ${({ isBlue, isGhost }) =>
+        isGhost && isBlue
+          ? themeColorBlue
+          : isGhost
+          ? themeColor
+          : white} !important;
       &:focus,
       &:hover {
         fill: ${({ btnType, noHover }) =>

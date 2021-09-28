@@ -5,7 +5,6 @@ import React from 'react'
 import connect from 'react-redux/lib/connect/connect'
 import withRouter from 'react-router-dom/withRouter'
 import { compose } from 'redux'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { setAssignmentFiltersAction } from '../../../src/actions/assignments'
 import { getUserRole } from '../../../src/selectors/user'
 import {
@@ -22,7 +21,6 @@ const SubHeader = ({
   code,
   type,
   owners = [],
-  gradeSubject,
   studentsList,
   lastTeacher,
   userRole,
@@ -80,21 +78,14 @@ const SubHeader = ({
           )}
           <Col lg={24} span={24}>
             {coTeachers && coTeachers.length ? (
-              <FeaturesSwitch
-                inputFeatures="addCoTeacher"
-                actionOnInaccessible="hidden"
-                key="addCoTeacher"
-                gradeSubject={gradeSubject}
-              >
-                <CoTeacher>
-                  CO-TEACHER <span data-cy="coTeacher">{teacher}</span>
-                  {otherTeachers.length >= 1 ? (
-                    <Tooltip title={otherTeacherNames} placement="right">
-                      <PopCoTeachers>+ {otherTeachers.length}</PopCoTeachers>
-                    </Tooltip>
-                  ) : null}
-                </CoTeacher>
-              </FeaturesSwitch>
+              <CoTeacher>
+                CO-TEACHER <span data-cy="coTeacher">{teacher}</span>
+                {otherTeachers.length >= 1 ? (
+                  <Tooltip title={otherTeacherNames} placement="right">
+                    <PopCoTeachers>+ {otherTeachers.length}</PopCoTeachers>
+                  </Tooltip>
+                ) : null}
+              </CoTeacher>
             ) : (
               ''
             )}

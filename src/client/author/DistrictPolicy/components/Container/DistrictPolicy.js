@@ -1,34 +1,28 @@
+import { roleuser } from '@edulastic/constants'
+import { get } from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
-
-import { roleuser } from '@edulastic/constants'
-
-import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
-
-import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
-
-import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
-
-import DistrictPolicyForm from '../DistrictPolicyForm/DistrictPolicyForm'
 import {
-  DistrictPolicyDiv,
-  StyledContent,
-  StyledLayout,
   SpinContainer,
   StyledSpin,
-} from './styled'
+} from '../../../../admin/Common/StyledComponents'
+import {
+  ContentWrapper,
+  SettingsWrapper,
+  StyledContent,
+  StyledLayout,
+} from '../../../../admin/Common/StyledComponents/settingsContent'
+import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
+import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
 import { getUserRole } from '../../../src/selectors/user'
 import { getSchoolAdminSettingsAccess } from '../../ducks'
+import DistrictPolicyForm from '../DistrictPolicyForm/DistrictPolicyForm'
 
 const title = 'Manage District'
 
 class DistrictPolicy extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     const {
       loading,
@@ -51,23 +45,25 @@ class DistrictPolicy extends Component {
     }
 
     return (
-      <DistrictPolicyDiv>
+      <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
         <StyledContent>
           {showSettings && (
             <StyledLayout showSpin={loading ? 'true' : 'false'}>
               <AdminSubHeader active={menuActive} history={history} />
               {showSpin && (
-                <SpinContainer>
+                <SpinContainer loading={showSpin}>
                   <StyledSpin size="large" />
                 </SpinContainer>
               )}
-              <SaSchoolSelect />
-              <DistrictPolicyForm />
+              <ContentWrapper>
+                <SaSchoolSelect />
+                <DistrictPolicyForm />
+              </ContentWrapper>
             </StyledLayout>
           )}
         </StyledContent>
-      </DistrictPolicyDiv>
+      </SettingsWrapper>
     )
   }
 }

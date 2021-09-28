@@ -1,13 +1,10 @@
-import React, { Component } from 'react'
-
+import { FieldLabel } from '@edulastic/common'
+import React from 'react'
 import { EditableLabelDiv, StyledFormItem, StyledInput } from './styled'
-
 class EditableLabel extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
-      editing: false,
-      value: this.props.value,
       validateStatus: 'success',
       validateMsg: '',
     }
@@ -48,7 +45,6 @@ class EditableLabel extends React.Component {
       this.setState({
         validateStatus: 'error',
         validateMsg: `Please input your ${valueName}`,
-        editing: true,
       })
     }
   }
@@ -89,10 +85,6 @@ class EditableLabel extends React.Component {
       isSpaceEnable,
     } = this.props
 
-    this.setState({
-      editing: false,
-    })
-
     if (validateStatus === 'error') return
     if ((!value || value.length == 0) && requiredStatus) {
       this.setState({
@@ -126,14 +118,6 @@ class EditableLabel extends React.Component {
     }
   }
 
-  onClickLabel = () => {
-    this.setState({
-      editing: true,
-    })
-    this.props.updateEditing(true)
-    this.inputRef.current.focus()
-  }
-
   render() {
     const { validateStatus, validateMsg } = this.state
     const {
@@ -142,12 +126,15 @@ class EditableLabel extends React.Component {
       isInputEnabled,
       flexGrow = '',
       value,
+      form,
     } = this.props
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator } = form
 
     return (
       <EditableLabelDiv flexGrow={flexGrow}>
-        <label>{valueName}</label>
+        <FieldLabel fs="10px" marginBottom="4px">
+          {valueName}
+        </FieldLabel>
         <StyledFormItem
           validateStatus={validateStatus}
           help={validateMsg}

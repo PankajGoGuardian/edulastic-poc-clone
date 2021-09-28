@@ -6,7 +6,12 @@ import { compose } from 'redux'
 import { trim, isEmpty } from 'lodash'
 import { withNamespaces } from '@edulastic/localization'
 import { connect } from 'react-redux'
-import { withWindowSizes, OnDarkBgLogo, notification } from '@edulastic/common'
+import {
+  withWindowSizes,
+  OnDarkBgLogo,
+  notification,
+  CopyRight,
+} from '@edulastic/common'
 import { IconLock, IconHash, IconUser, IconMail } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import {
@@ -84,6 +89,7 @@ class StudentSignup extends React.Component {
     signupError: {},
     showModal: false,
     proceedBtnDisabled: true,
+    submitting: false,
   }
 
   closeModal = () => {
@@ -106,6 +112,7 @@ class StudentSignup extends React.Component {
             const { msoLoginAction } = this.props
             msoLoginAction({ role: 'student', classCode })
           } else {
+            this.setState({ submitting: true })
             signup({
               passwordForExistingUser,
               password,
@@ -200,6 +207,7 @@ class StudentSignup extends React.Component {
     } else {
       notification({ msg: error })
     }
+    this.setState({ submitting: false })
   }
 
   onPasswordChange = (password) => {
@@ -448,7 +456,7 @@ class StudentSignup extends React.Component {
       windowWidth,
     } = this.props
 
-    const { method } = this.state
+    const { method, submitting } = this.state
     const partnerKey = getPartnerKeyFromUrl(location.pathname)
     const partner = Partners[partnerKey]
 
@@ -548,7 +556,9 @@ class StudentSignup extends React.Component {
                   method !== GOOGLE &&
                   method !== OFFICE && (
                     <DesktopViewCopyright>
-                      <Col span={24}>{t('common.copyright')}</Col>
+                      <Col span={24}>
+                        <CopyRight />
+                      </Col>
                     </DesktopViewCopyright>
                   )}
                 <Col xs={24} sm={14} md={13} lg={12} xl={10}>
@@ -582,6 +592,7 @@ class StudentSignup extends React.Component {
                                 data-cy="signup"
                                 type="primary"
                                 htmlType="submit"
+                                disabled={submitting}
                               >
                                 {t('component.signup.student.signupstudentbtn')}
                               </RegisterButton>
@@ -591,6 +602,7 @@ class StudentSignup extends React.Component {
                                 data-cy="signup"
                                 type="primary"
                                 htmlType="submit"
+                                disabled={submitting}
                               >
                                 {t('component.signup.student.signupentercode')}
                               </RegisterButton>
@@ -644,7 +656,9 @@ class StudentSignup extends React.Component {
             method === GOOGLE ||
             method === OFFICE) && (
             <Copyright sigunpmethod={method}>
-              <Col span={24}>{t('common.copyright')}</Col>
+              <Col span={24}>
+                <CopyRight />
+              </Col>
             </Copyright>
           )}
         </RegistrationWrapper>

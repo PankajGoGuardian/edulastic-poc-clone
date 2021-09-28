@@ -90,6 +90,8 @@ export { default as HelpTooltipLabel } from './src/components/HelpTooltipLabel'
 export { default as SelectSearch } from './src/components/SelectSearch'
 export { default as CustomKeyLabel } from './src/components/CustomKeyLabel'
 export { default as PortalSpinner } from './src/components/PortalSpinner'
+export { default as FileIcon } from './src/components/FileIcon'
+export { default as CopyRight } from './src/components/CopyRight'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'
@@ -129,6 +131,8 @@ export {
   hasMediaDevice,
   isValidUpdate,
   removeTokenFromHtml,
+  getYoutubeId,
+  formatFileSize,
 } from './src/helpers'
 
 // contexts

@@ -58,6 +58,7 @@ const keyboardMethods = {
   INTERMEDIATE: 'intermediate',
   INTERMEDIATE_WO_NUMBER: 'intermediate_wo_number',
   ADVANCED_MATRICES: 'advanced_matrices',
+  BASIC_MATRICES: 'basic_matrices',
   ADVANCED_TRIGNOMETRY: 'advanced_trignometry',
   GEOMETRY: 'geometry',
   CHEMISTRY: 'chemistry',
@@ -99,6 +100,12 @@ const symbols = [
     height: 190,
   },
   {
+    value: keyboardMethods.BASIC_MATRICES,
+    label: 'Basic Matrices',
+    width: 400,
+    height: 320,
+  },
+  {
     value: keyboardMethods.ADVANCED_TRIGNOMETRY,
     label: 'Trignometry',
     width: 400,
@@ -135,6 +142,12 @@ const symbols = [
     height: 190,
   },
 ]
+
+const NO_KEYPAD = {
+  type: 'no-keypad',
+  value: 'no-keypad',
+  label: 'No Keypad',
+}
 
 const symbolsAll = [
   { value: 'all', label: 'Full' },
@@ -362,17 +375,16 @@ const graphSegmentChecks = [
 ]
 const graphLineChecks = ['isParallel', 'isPerpendicular']
 const graphPolygonChecks = [
-  'compareStartPoint',
   'compareArea',
   'isSquare',
   'isCongruent',
   'isSimilar',
   'hasRightAngle',
-  'comparePoints',
+  // 'comparePoints',
   'comparePerimeter',
 ]
 const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
-const graphMiscellaneous = ['tolerance', 'ignoreLabels']
+const graphMiscellaneous = ['ignoreLabels']
 const graphPointsOnAnEquation = ['latex', 'points']
 const graphPointsOnAnEquation2 = ['latex', 'points']
 
@@ -424,10 +436,11 @@ const evaluationSettings = {
       'graphLineChecks',
       'graphPolygonChecks',
       'graphPointsOnAnEquation',
-      'partialCreditScoring',
+      'tolerance',
+      // 'partialCreditScoring',
     ],
-    'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
-    MISCELLNEOUS: ['graphMiscellaneous'],
+    // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
+    // MISCELLANEOUS: ['graphMiscellaneous'],
   },
 }
 
@@ -553,4 +566,5 @@ module.exports = {
   keyboardMethods,
   GRAPH_EVALUATION_SETTING,
   simplifiedOptions,
+  NO_KEYPAD,
 }

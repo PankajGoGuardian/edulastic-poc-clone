@@ -14,6 +14,7 @@ import {
 } from '../TestPage/ducks'
 
 import { reloadLcbDataInStudentViewAction } from '../src/actions/classBoard'
+import { getSilentCloneSelector } from '../ClassBoard/ducks'
 
 const collectionName = 'RegradeAssignments'
 
@@ -24,6 +25,7 @@ const NotificationListener = ({
   modalState,
   studentResponseData,
   reloadLcbDataInStudentView,
+  silentClone,
 }) => {
   const userNotification = Fbs.useFirestoreRealtimeDocument(
     (db) => db.collection(collectionName).doc(docId),
@@ -42,6 +44,9 @@ const NotificationListener = ({
     if (userNotification) {
       const { error, processStatus } = userNotification
       if (processStatus === 'DONE' && !error) {
+        if (silentClone) {
+          return onCloseModal()
+        }
         const { assignmentId, groupId, lcbView } = modalState.itemData
         reloadLcbDataInStudentView({
           assignmentId,
@@ -85,6 +90,7 @@ export default compose(
       docId: getRegradeFirebaseDocIdSelector(state),
       modalState: getRegradeModalStateSelector(state),
       studentResponseData: get(state, 'studentResponse.data.testActivity', {}),
+      silentClone: getSilentCloneSelector(state),
     }),
     {
       setEditEnable: setEditEnableAction,

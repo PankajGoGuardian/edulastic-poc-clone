@@ -2,12 +2,11 @@ import {
   CheckboxLabel,
   EduButton,
   notification,
-  TypeToConfirmModal,
   SearchInputStyled,
-  SelectInputStyled,
+  TypeToConfirmModal,
 } from '@edulastic/common'
+import { IconFilter } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { Icon, Select, Row, Col } from 'antd'
 import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'
@@ -16,13 +15,13 @@ import { compose } from 'redux'
 import {
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../admin/Common/StyledComponents'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledPagination,
   StyledTableButton,
   SubHeaderWrapper,
@@ -52,14 +51,13 @@ import {
 } from '../../SchoolAdmin/ducks'
 import Breadcrumb from '../../src/components/Breadcrumb'
 import AdminSubHeader from '../../src/components/common/AdminSubHeader/UserSubHeader'
+import TableFiltersView from '../../src/components/common/TableFilters'
 import { getUserOrgId } from '../../src/selectors/user'
 import CreateContentAuthorModal from './CreateContentAuthorModal'
 import EditContentAuthorModal from './EditContentAuthorModal'
 import { StyledContentAuthorTable } from './styled'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'Content Authors' }
-
-const { Option } = Select
 
 const filterStrDD = {
   status: {
@@ -524,170 +522,75 @@ class ContentAuthorTable extends Component {
         to: '',
       },
     ]
-    console.log(t('users.contentAuthor'))
+
+    const firstColData = [
+      t('users.contentAuthor.username'),
+      t('users.contentAuthor.email'),
+      t('users.contentAuthor.status'),
+    ]
+
     return (
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
         <AdminSubHeader active={menuActive} history={history} />
-
-        {refineButtonActive && (
-          <FilterWrapper>
-            {filtersData.map((item, i) => {
-              const {
-                filtersColumn,
-                filtersValue,
-                filterStr,
-                filterAdded,
-              } = item
-              const isFilterTextDisable =
-                filtersColumn === '' || filtersValue === ''
-              const isAddFilterDisable =
-                filtersColumn === '' ||
-                filtersValue === '' ||
-                filterStr === '' ||
-                !filterAdded
-
-              return (
-                <Row gutter={20} style={{ marginBottom: '5px' }} key={i}>
-                  <Col span={6}>
-                    <SelectInputStyled
-                      placeholder={t('common.selectcolumn')}
-                      onChange={(e) => this.changeFilterColumn(e, i)}
-                      value={filtersColumn || undefined}
-                      height="32px"
-                    >
-                      <Option value="other" disabled>
-                        {t('common.selectcolumn')}
-                      </Option>
-                      <Option value="username">
-                        {t('users.contentAuthor.username')}
-                      </Option>
-                      <Option value="email">
-                        {t('users.contentAuthor.email')}
-                      </Option>
-                      <Option value="status">
-                        {t('users.contentAuthor.status')}
-                      </Option>
-                    </SelectInputStyled>
-                  </Col>
-                  <Col span={6}>
-                    <SelectInputStyled
-                      placeholder={t('common.selectvalue')}
-                      onChange={(e) => this.changeFilterValue(e, i)}
-                      value={filtersValue || undefined}
-                      height="32px"
-                    >
-                      <Option value="" disabled>
-                        {t('common.selectvalue')}
-                      </Option>
-                      <Option value="eq">{t('common.equals')}</Option>
-                      {!filterStrDD[filtersColumn] ? (
-                        <Option value="cont">{t('common.contains')}</Option>
-                      ) : null}
-                    </SelectInputStyled>
-                  </Col>
-                  <Col span={6}>
-                    {!filterStrDD[filtersColumn] ? (
-                      <SearchInputStyled
-                        placeholder={t('common.entertext')}
-                        onChange={(e) => this.changeFilterText(e, i)}
-                        onSearch={(v, e) => this.onSearchFilter(v, e, i)}
-                        onBlur={(e) => this.onBlurFilterText(e, i)}
-                        value={filterStr || undefined}
-                        disabled={isFilterTextDisable}
-                        ref={this.filterTextInputRef[i]}
-                        height="32px"
-                      />
-                    ) : (
-                      <SelectInputStyled
-                        placeholder={filterStrDD[filtersColumn].placeholder}
-                        onChange={(v) => this.changeStatusValue(v, i)}
-                        value={filterStr !== '' ? filterStr : undefined}
-                        height="32px"
-                      >
-                        {filterStrDD[filtersColumn].list.map((item) => (
-                          <Option
-                            key={item.title}
-                            value={item.value}
-                            disabled={item.disabled}
-                          >
-                            {item.title}
-                          </Option>
-                        ))}
-                      </SelectInputStyled>
-                    )}
-                  </Col>
-                  <Col span={6} style={{ display: 'flex' }}>
-                    {i < 2 && (
-                      <EduButton
-                        height="32px"
-                        width="50%"
-                        type="primary"
-                        onClick={(e) => this.addFilter(e, i)}
-                        disabled={
-                          isAddFilterDisable || i < filtersData.length - 1
-                        }
-                      >
-                        {t('common.addfilter')}
-                      </EduButton>
-                    )}
-                    {((filtersData.length === 1 &&
-                      filtersData[0].filterAdded) ||
-                      filtersData.length > 1) && (
-                      <EduButton
-                        height="32px"
-                        width="50%"
-                        type="primary"
-                        onClick={(e) => this.removeFilter(e, i)}
-                      >
-                        {t('common.removefilter')}
-                      </EduButton>
-                    )}
-                  </Col>
-                </Row>
-              )
-            })}
-          </FilterWrapper>
-        )}
-
         <StyledFilterDiv>
-          <LeftFilterDiv width={50}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            <EduButton
-              type="primary"
-              onClick={this.showCreateDistrictAdminModal}
-            >
-              {t('users.contentAuthor.createContentAuthor')}
-            </EduButton>
-          </LeftFilterDiv>
-          <RightFilterDiv width={35}>
-            <CheckboxLabel
-              checked={this.state.showActive}
-              onChange={this.onChangeShowActive}
-              disabled={
-                !!filtersData.find((item) => item.filtersColumn === 'status')
-              }
-            >
-              {t('common.showcurrent')}
-            </CheckboxLabel>
-          </RightFilterDiv>
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
+              </EduButton>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+              />
+              <EduButton
+                type="primary"
+                height="34px"
+                onClick={this.showCreateDistrictAdminModal}
+              >
+                {t('users.contentAuthor.createContentAuthor')}
+              </EduButton>
+            </LeftFilterDiv>
+            <RightFilterDiv>
+              <CheckboxLabel
+                checked={this.state.showActive}
+                onChange={this.onChangeShowActive}
+                disabled={
+                  !!filtersData.find((item) => item.filtersColumn === 'status')
+                }
+              >
+                {t('common.showcurrent')}
+              </CheckboxLabel>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
+        <TableFiltersView
+          filtersData={filtersData}
+          filterStrDD={filterStrDD}
+          showFilters={refineButtonActive}
+          filterRef={this.filterTextInputRef}
+          handleFilterColumn={this.changeFilterColumn}
+          handleFilterValue={this.changeFilterValue}
+          handleFilterText={this.changeFilterText}
+          handleSearchFilter={this.onSearchFilter}
+          handleBlurFilterText={this.onBlurFilterText}
+          handleStatusValue={this.changeStatusValue}
+          handleAddFilter={this.addFilter}
+          handleRemoveFilter={this.removeFilter}
+          firstColData={firstColData}
+        />
         <TableContainer>
           <StyledContentAuthorTable
             rowKey={(record) => record._id}
@@ -714,7 +617,6 @@ class ContentAuthorTable extends Component {
             t={t}
           />
         )}
-
         {editDistrictAdminModaVisible && (
           <EditContentAuthorModal
             districtAdminData={result[editDistrictAdminKey]}

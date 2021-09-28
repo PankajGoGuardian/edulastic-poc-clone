@@ -38,6 +38,7 @@ import {
   getUserOrgId,
   getUserRole,
   isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
   getUserId,
 } from '../../../src/selectors/user'
 
@@ -69,7 +70,7 @@ import {
   getToggleDeleteAssignmentModalState,
 } from '../../../sharedDucks/assignments'
 import { DeleteAssignmentModal } from '../DeleteAssignmentModal/deleteAssignmentModal'
-import { toggleFreeAdminSubscriptionModalAction } from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import EditTagsModal from '../EditTagsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -105,15 +106,19 @@ class Assignments extends Component {
       userRole,
       orgData,
       isFreeAdmin,
+      isSAWithoutSchools,
       history,
-      toggleFreeAdminSubscriptionModal,
+      toggleAdminAlertModal,
       userId,
     } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
-
     const { defaultTermId, terms } = orgData
     const storedFilters = getFilterFromSession({
       key: 'assignments_filter',
@@ -494,6 +499,8 @@ class Assignments extends Component {
           </FlexContainer>
         </Container>
         <ReleaseScoreSettingsModal
+          subText=" Selected score policy will be applied to all the classes within
+        assignment"
           showReleaseGradeSettings={isShowReleaseSettingsPopup}
           onCloseReleaseScoreSettings={() => toggleReleaseGradePopUp(false)}
           updateReleaseScoreSettings={this.onUpdateReleaseScoreSettings}
@@ -545,6 +552,7 @@ const enhance = compose(
         state
       ),
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       tagsUpdatingState: getTagsUpdatingStateSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       userId: getUserId(state),
@@ -559,7 +567,7 @@ const enhance = compose(
       setAssignmentFilters: setAssignmentFiltersAction,
       toggleAssignmentView: toggleAssignmentViewAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
       editTagsRequest: editTagsRequestAction,
       setTagsUpdatingState: setTagsUpdatingStateAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,

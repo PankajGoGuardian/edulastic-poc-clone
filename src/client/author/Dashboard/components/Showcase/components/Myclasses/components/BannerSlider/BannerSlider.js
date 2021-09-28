@@ -78,6 +78,10 @@ const BannerSlider = ({
                 ?.toLowerCase()
                 ?.includes('spark')
 
+              const isCPMTile = slide.description
+                ?.toLowerCase()
+                ?.includes('cpm')
+
               return (
                 <Slides
                   data-cy="banners"
@@ -88,7 +92,7 @@ const BannerSlider = ({
                     handleBannerClick(
                       slide.config,
                       slide.description,
-                      isSparkTile
+                      isSparkTile || isCPMTile
                     )
                   }
                 >
@@ -96,6 +100,14 @@ const BannerSlider = ({
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
                     ) && <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
+                  ) : isCPMTile ? (
+                    !accessibleItembankProductIds?.includes(
+                      slide.config?.subscriptionData?.productId
+                    ) && (
+                      <LearnMore data-cy="tryItFree">
+                        Start a Free Trial
+                      </LearnMore>
+                    )
                   ) : (
                     <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   )}

@@ -10,7 +10,7 @@ import {
   SelectInputStyled,
 } from '@edulastic/common/src/components/InputStyles'
 import { roleuser } from '@edulastic/constants'
-import { IconPencilEdit, IconTrash } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Icon, Menu, Row, Select } from 'antd'
 import { get } from 'lodash'
@@ -23,19 +23,21 @@ import {
   StyledActionDropDown,
   StyledClassName,
   StyledFilterDiv,
+  TableFilters,
+  TabTitle,
 } from '../../../../admin/Common/StyledComponents'
 import {
-  FilterWrapper,
   LeftFilterDiv,
   MainContainer,
   RightFilterDiv,
-  StyledButton,
   StyledTableButton,
   SubHeaderWrapper,
   TableContainer,
 } from '../../../../common/styled'
 import { receiveAdminDataAction } from '../../../SchoolAdmin/ducks'
 import Breadcrumb from '../../../src/components/Breadcrumb'
+import AdminSubHeader from '../../../src/components/common/AdminSubHeader/AdministratorSubHeader'
+import { FilterWrapper } from '../../../src/components/common/TableFilters/styled'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 import {
   createCourseAction,
@@ -507,6 +509,9 @@ class CoursesTable extends React.Component {
       role,
       t,
       schoolAdmins = {},
+      menuActive,
+      count,
+      history,
     } = this.props
     const isSchoolAdmin = role === roleuser.SCHOOL_ADMIN
     const schoolAdminIds = isSchoolAdmin ? Object.keys(schoolAdmins) : []
@@ -586,7 +591,7 @@ class CoursesTable extends React.Component {
           return (
             <Link
               to={{
-                pathname: '/author/Classes',
+                pathname: '/author/classes',
                 state: {
                   filtersColumn: 'courses',
                   filtersValue: 'eq',
@@ -761,49 +766,59 @@ class CoursesTable extends React.Component {
       <MainContainer>
         <SubHeaderWrapper>
           <Breadcrumb data={breadcrumbData} style={{ position: 'unset' }} />
-          <StyledButton
-            type="default"
-            shape="round"
-            icon="filter"
-            onClick={this._onRefineResultsCB}
-          >
-            {t('common.refineresults')}
-            <Icon type={refineButtonActive ? 'up' : 'down'} />
-          </StyledButton>
         </SubHeaderWrapper>
-
-        {refineButtonActive && <FilterWrapper>{SearchRows}</FilterWrapper>}
+        <AdminSubHeader count={count} active={menuActive} history={history} />
 
         <StyledFilterDiv>
-          <LeftFilterDiv width={50}>
-            <SearchInputStyled
-              placeholder={t('common.searchbyname')}
-              onSearch={this.handleSearchName}
-              onChange={this.onChangeSearch}
-              height="36px"
-            />
-            <EduButton type="primary" onClick={this.showAddCourseModal}>
-              {t('course.createcourse')}
-            </EduButton>
-          </LeftFilterDiv>
-          <RightFilterDiv>
-            <CheckboxLabel
-              defaultChecked={showActive}
-              onChange={this.onChangeShowActive}
-            >
-              {t('course.showactivecourse')}
-            </CheckboxLabel>
-            <StyledActionDropDown
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              overlay={actionMenu}
-              trigger={['click']}
-            >
-              <EduButton isGhost>
-                {t('common.actions')} <Icon type="down" />
+          <TabTitle>{menuActive.subMenu}</TabTitle>
+          <TableFilters>
+            <LeftFilterDiv width={55}>
+              <EduButton
+                isBlue={refineButtonActive}
+                isGhost={!refineButtonActive}
+                onClick={this._onRefineResultsCB}
+                IconBtn
+                height="34px"
+                mr="10px"
+              >
+                <IconFilter />
               </EduButton>
-            </StyledActionDropDown>
-          </RightFilterDiv>
+              <SearchInputStyled
+                placeholder={t('common.searchbyname')}
+                onSearch={this.handleSearchName}
+                onChange={this.onChangeSearch}
+                height="34px"
+              />
+              <EduButton
+                height="34px"
+                type="primary"
+                onClick={this.showAddCourseModal}
+              >
+                {t('course.createcourse')}
+              </EduButton>
+            </LeftFilterDiv>
+            <RightFilterDiv>
+              <CheckboxLabel
+                defaultChecked={showActive}
+                onChange={this.onChangeShowActive}
+              >
+                {t('course.showactivecourse')}
+              </CheckboxLabel>
+              <StyledActionDropDown
+                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                overlay={actionMenu}
+                trigger={['click']}
+              >
+                <EduButton height="34px" isGhost>
+                  {t('common.actions')} <Icon type="down" />
+                </EduButton>
+              </StyledActionDropDown>
+            </RightFilterDiv>
+          </TableFilters>
         </StyledFilterDiv>
+        <FilterWrapper showFilters={refineButtonActive}>
+          {SearchRows}
+        </FilterWrapper>
         <TableContainer>
           <StyledCoursesTable
             rowSelection={rowSelection}

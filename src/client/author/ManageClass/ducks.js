@@ -75,6 +75,11 @@ export const getManageCoTeacherModalVisibleStateSelector = createSelector(
   (state) => state.showUpdateCoTeachersModal
 )
 
+export const getAddCoTeacherModalVisibleStateSelector = createSelector(
+  manageClassSelector,
+  (state) => state.showAddCoTeachersModal
+)
+
 export const getGoogleAuthRequiredSelector = createSelector(
   manageClassSelector,
   (state) => state.googleAuthenticationRequired
@@ -186,6 +191,8 @@ export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
 
 export const SET_UPDATE_COTEACHER_MODAL =
   '[manageClass] set coteacher update modal'
+
+export const SET_ADD_COTEACHER_MODAL = '[manageClass] set coteacher add modal'
 
 export const UPDATE_CO_TEACHER_REQUEST =
   '[manageClass] update co-teacher request'
@@ -322,6 +329,8 @@ export const showUpdateCoTeacherModalAction = createAction(
   SET_UPDATE_COTEACHER_MODAL
 )
 
+export const showAddCoTeacherModalAction = createAction(SET_ADD_COTEACHER_MODAL)
+
 export const setGoogleAuthenticationRequiredAction = createAction(
   SET_GOOGLE_AUTHENTICATION_REQUIRED
 )
@@ -372,6 +381,10 @@ const setShowCleverSyncModal = (state, { payload }) => {
 
 const setshowUpdateCoTeachersModal = (state, { payload }) => {
   state.showUpdateCoTeachersModal = payload
+}
+
+const setshowAddCoTeachersModal = (state, { payload }) => {
+  state.showAddCoTeachersModal = payload
 }
 
 const setGoogleCourseList = (state, { payload }) => {
@@ -615,6 +628,7 @@ export default createReducer(initialState, {
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
   [SET_FILTER_CLASS]: setFilterClass,
   [SET_UPDATE_COTEACHER_MODAL]: setshowUpdateCoTeachersModal,
+  [SET_ADD_COTEACHER_MODAL]: setshowAddCoTeachersModal,
   [SET_GOOGLE_AUTHENTICATION_REQUIRED]: (state) => {
     state.googleAuthenticationRequired = !state.googleAuthenticationRequired
   },

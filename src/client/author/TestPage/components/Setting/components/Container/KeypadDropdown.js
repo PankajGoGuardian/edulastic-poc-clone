@@ -27,6 +27,7 @@ const KeypadDropdown = ({
 
   const predefinedKeypads = useMemo(() => {
     const keypadList = [
+      math.NO_KEYPAD,
       ...math.symbols,
       {
         type: 'item-level',

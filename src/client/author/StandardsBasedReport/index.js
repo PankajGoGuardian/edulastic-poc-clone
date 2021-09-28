@@ -18,8 +18,11 @@ import {
 } from '../ClassBoard/ducks'
 import { StyledFlexContainer, DivWrapper } from './components/styled'
 import ClassBreadBrumb from '../Shared/Components/ClassBreadCrumb'
-import { isFreeAdminSelector } from '../src/selectors/user'
-import { toggleFreeAdminSubscriptionModalAction } from '../../student/Login/ducks'
+import {
+  isFreeAdminSelector,
+  isSAWithoutSchoolsSelector,
+} from '../src/selectors/user'
+import { toggleAdminAlertModalAction } from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
@@ -30,11 +33,16 @@ class StandardsBasedReport extends Component {
       additionalData,
       history,
       isFreeAdmin,
-      toggleFreeAdminSubscriptionModal,
+      isSAWithoutSchools,
+      toggleAdminAlertModal,
     } = this.props
+    if (isSAWithoutSchools) {
+      history.push('/author/tests')
+      return toggleAdminAlertModal()
+    }
     if (isFreeAdmin) {
       history.push('/author/reports')
-      return toggleFreeAdminSubscriptionModal()
+      return toggleAdminAlertModal()
     }
     if (!size(testActivity) && isEmpty(additionalData)) {
       const { assignmentId, classId } = match.params
@@ -112,10 +120,11 @@ const enhance = compose(
         state.classResponse?.data?.reportStandards?.length || 0,
       reportStandards: state.classResponse?.data?.reportStandards || [],
       isFreeAdmin: isFreeAdminSelector(state),
+      isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
-      toggleFreeAdminSubscriptionModal: toggleFreeAdminSubscriptionModalAction,
+      toggleAdminAlertModal: toggleAdminAlertModalAction,
     }
   )
 )

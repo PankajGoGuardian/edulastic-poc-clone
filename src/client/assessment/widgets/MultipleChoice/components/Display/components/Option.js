@@ -209,6 +209,7 @@ const Option = (props) => {
 
   const renderCheckbox = () => (
     <StyledOptionsContainer
+      data-cy="anwer-labels"
       uiStyleType={uiStyle.type}
       isSelected={isSelected}
       multipleResponses={multipleResponses}

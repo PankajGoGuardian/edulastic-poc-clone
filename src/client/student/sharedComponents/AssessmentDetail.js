@@ -194,7 +194,7 @@ const AssessmentDetails = ({
           <TimeIndicator type={type}>
             {timedAssignment && (
               <>
-                <IconHourGlass color={greyThemeDark3} />
+                <IconHourGlass data-cy="timerIcon" color={greyThemeDark3} />
                 <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
               </>
             )}

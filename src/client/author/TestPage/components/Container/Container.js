@@ -268,10 +268,14 @@ class Container extends PureComponent {
           setData({
             testType: testContants.type.COMMON,
             freezeSettings: !isOrganizationDA,
+            updated: false,
           })
         }
         if (userRole === roleuser.TEACHER && isReleaseScorePremium) {
-          setData({ releaseScore: releaseGradeLabels.WITH_ANSWERS })
+          setData({
+            releaseScore: releaseGradeLabels.WITH_ANSWERS,
+            updated: false,
+          })
         }
       }
       if (showCancelButton) {
@@ -380,7 +384,6 @@ class Container extends PureComponent {
         isOwner && (editEnable || testStatus === statusConstants.DRAFT)
       if (
         test._id &&
-        isEditable &&
         !isTestLoading &&
         testLoaded &&
         testSettingsList.length &&
@@ -390,7 +393,7 @@ class Container extends PureComponent {
       ) {
         const isSettingsEqual = this.isTestSettingsEqual(test.settingId)
         if (!isSettingsEqual) {
-          setData({ settingId: '' })
+          setData({ settingId: '', updated: isEditable })
         }
       }
       if (

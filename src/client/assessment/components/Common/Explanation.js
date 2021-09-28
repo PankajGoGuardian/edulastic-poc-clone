@@ -1,15 +1,24 @@
 import React from 'react'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { get } from 'lodash'
 import { MathFormulaDisplay } from '@edulastic/common'
 import { mainTextColor, backgroundGrey, lightGrey9 } from '@edulastic/colors'
+import { test as testConstants } from '@edulastic/constants'
 import { getFontSize } from '../../utils/helpers'
 
 const Explanation = (props) => {
-  const { question = {}, show, isStudentReport } = props
+  const { question = {}, show, isStudentReport, releaseScore } = props
   const { uiStyle: { fontsize = '' } = {} } = question
 
   const { sampleAnswer } = question
+  if (
+    isStudentReport &&
+    releaseScore !== testConstants.releaseGradeLabels.WITH_ANSWERS
+  ) {
+    return null
+  }
 
   return (
     <div
@@ -43,7 +52,9 @@ Explanation.propTypes = {
   question: PropTypes.object.isRequired,
 }
 
-export default Explanation
+export default connect((state) => ({
+  releaseScore: get(state, `[studentReport][testActivity][releaseScore]`, null),
+}))(Explanation)
 
 const QuestionLabel = styled.div`
   color: ${mainTextColor};

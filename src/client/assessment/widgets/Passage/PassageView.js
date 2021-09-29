@@ -75,6 +75,7 @@ const PassageView = ({
   page,
   setPage,
   authLanguage,
+  isStudentAttempt,
 }) => {
   const mainContentsRef = useRef()
   const rangRef = useRef()
@@ -293,7 +294,7 @@ const PassageView = ({
         )}
       {/* when the user is selecting text, 
       will show color picker within a Popover. */}
-      {previewTab === CLEAR && (
+      {(isStudentAttempt || previewTab === CLEAR) && (
         <HighlightPopover
           getContainer={() => mainContentsRef.current}
           isOpen={isOpen && !selectHighlight && !disableResponse}

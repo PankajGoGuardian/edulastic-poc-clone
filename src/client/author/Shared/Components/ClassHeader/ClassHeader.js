@@ -965,14 +965,16 @@ class ClassHeader extends Component {
                   okText="Yes"
                   cancelText="No"
                 />
-                <ReleaseScoreSettingsModal
-                  showReleaseGradeSettings={isShowReleaseSettingsPopup}
-                  onCloseReleaseScoreSettings={() =>
-                    toggleReleaseGradePopUp(false)
-                  }
-                  updateReleaseScoreSettings={this.handleReleaseScore}
-                  releaseScore={releaseScore}
-                />
+                {isShowReleaseSettingsPopup && (
+                  <ReleaseScoreSettingsModal
+                    showReleaseGradeSettings={isShowReleaseSettingsPopup}
+                    onCloseReleaseScoreSettings={() =>
+                      toggleReleaseGradePopUp(false)
+                    }
+                    updateReleaseScoreSettings={this.handleReleaseScore}
+                    releaseScore={releaseScore}
+                  />
+                )}
                 <DeleteAssignmentModal
                   testName={additionalData?.testName}
                   testId={additionalData?.testId}

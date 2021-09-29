@@ -110,6 +110,7 @@ import {
   setLcbActionProgress,
   setProgressStatusAction,
   updateServerTimeAction,
+  updateAdditionalDataAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
@@ -355,6 +356,9 @@ function* releaseScoreSaga({ payload }) {
       type: 'success',
       msg: 'Successfully updated the release score settings',
     })
+    yield put(
+      updateAdditionalDataAction({ releaseScore: payload.releaseScore })
+    )
   } catch (err) {
     captureSentryException(err)
     const {

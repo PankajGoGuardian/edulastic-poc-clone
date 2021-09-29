@@ -3311,8 +3311,15 @@ function* duplicateTestSaga({ payload }) {
       isInEditAndRegrade = false,
       redirectToNewTest = false,
       cloneItems = false,
+      playlistId,
     } = payload
-    const queryParams = { _id, title, isInEditAndRegrade, cloneItems }
+    const queryParams = {
+      _id,
+      title,
+      isInEditAndRegrade,
+      cloneItems,
+      playlistId,
+    }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {
       // cloning from test review page or test library (non-regrade flow)

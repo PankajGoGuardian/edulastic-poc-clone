@@ -126,6 +126,7 @@ const duplicateAssignment = ({
   title,
   isInEditAndRegrade = false,
   cloneItems = false,
+  playlistId,
 }) =>
   api
     .callApi({
@@ -136,6 +137,7 @@ const duplicateAssignment = ({
           : `${title}-${moment().format('MM/DD/YYYY HH:mm')}`,
         isInEditAndRegrade,
         cloneItems,
+        playlistId,
       },
       method: 'post',
     })

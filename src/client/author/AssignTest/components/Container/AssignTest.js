@@ -158,6 +158,20 @@ class AssignTest extends React.Component {
       },
       page: 1,
       limit: 4000,
+      includes: [
+        'name',
+        'studentCount',
+        'subject',
+        'grades',
+        'termId',
+        'type',
+        'tags',
+        'description',
+        'owners',
+        'primaryTeacherId',
+        'parent',
+        'institutionId',
+      ],
     })
 
     if (premium) {

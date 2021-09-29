@@ -122,6 +122,7 @@ const SimpleStackedBarChartComponent = ({
   })
   const [activeLegend, setActiveLegend] = useState(null)
 
+  // NOTE: updating pagination triggers chartData update
   useEffect(() => {
     if (data !== copyData) {
       if (data?.length !== copyData?.length) {
@@ -135,6 +136,9 @@ const SimpleStackedBarChartComponent = ({
       setCopyData(data)
     }
   }, [data])
+
+  // NOTE: updating chart data triggers re-render of graph
+  const chartData = useMemo(() => [...data], [pagination])
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -166,8 +170,6 @@ const SimpleStackedBarChartComponent = ({
         },
       ]
     : []
-
-  const chartData = useMemo(() => [...data], [pagination])
 
   const scrollLeft = () => {
     let diff

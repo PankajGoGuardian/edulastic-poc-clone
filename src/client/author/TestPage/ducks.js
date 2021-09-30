@@ -3136,21 +3136,15 @@ function* searchTagsSaga({ payload }) {
   try {
     const result = yield call(tagsApi.searchTags, payload)
     let tags = []
-    if (result.aggregations) {
-      const tagBuckets = get(result, 'aggregations.tags.buckets', [])
-      tags = tagBuckets.map((bucket) => {
-        const bucketTags = get(bucket, 'docs.hits.hits', [])
-        const bucketTagIds = bucketTags.map((t) => t._id)
-        const bucketTagNames = bucketTags.map((t) =>
-          get(t, '_source.tagName', '')
-        )
-        return {
-          _id: bucketTagIds.join('_'),
-          tagName: bucket.key,
+    if (payload.aggregate) {
+      for (const [key, value] of Object.entries(result)) {
+        tags.push({
+          _id: key,
+          tagName: key,
           tagType: payload?.search?.tagTypes?.[0],
-          tagNamesAssociated: bucketTagNames,
-        }
-      })
+          tagNamesAssociated: value,
+        })
+      }
     } else {
       const hits = get(result, 'hits.hits', [])
       tags = hits.map(({ _id, _source }) => ({

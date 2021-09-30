@@ -110,7 +110,8 @@ const ClassSyncNotificationListener = ({
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, studentsSaved, counter, groupId, message } = doc
-
+      // should not append `Please try again later, or email support@edulastic.com.`
+      const exact = message?.includes('No google class found')
       if (
         (status === 'completed' || counter === 0) &&
         !notificationIds.includes(doc.__id)
@@ -120,6 +121,7 @@ const ClassSyncNotificationListener = ({
         notification({
           msg: message || 'Class sync task completed.',
           type: message ? 'error' : 'success',
+          exact,
           onClose: () => {
             closeNotification(event, doc.__id, { groupId, studentsSaved })
           },

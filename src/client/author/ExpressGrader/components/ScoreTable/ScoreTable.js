@@ -23,7 +23,10 @@ class ScoreTable extends Component {
       isGridEditOn,
       groupId,
       t,
+      testActivity,
     } = this.props
+
+    const columnsLength = testActivity?.[0]?.questionActivities?.length || 0
 
     const columns = [
       {
@@ -141,6 +144,7 @@ class ScoreTable extends Component {
             dataIndex: key,
             title: questionAvarageScore,
             className: 'sub-thead-th th-border-bottom',
+            width: columnsLength > 15 ? 120 : '',
             render: (record) => {
               const isTest = record && record.testActivityId
 

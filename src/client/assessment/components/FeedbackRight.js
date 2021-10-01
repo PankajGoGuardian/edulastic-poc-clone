@@ -344,24 +344,26 @@ class FeedbackRight extends Component {
       this.setState({ score: value, changed: true })
     }
     // Clearing rubric feedback when changing score from input-box/rubrics
-    switch (showGradingRubricButton) {
-      case inputType === InputType.InputScore:
-        this.setState((prevState) => ({
-          ...prevState,
-          clearRubricFeedback: true,
-          isRubricDisabled: true,
-          showWarningToClear: false,
-        }))
-        break
-      case inputType === InputType.RubricsScore:
-        this.setState((prevState) => ({
-          ...prevState,
-          clearRubricFeedback: false,
-          isScoreInputDisabled: true,
-        }))
-        break
-      default:
-        break
+    if (showGradingRubricButton) {
+      switch (inputType) {
+        case InputType.InputScore:
+          this.setState((prevState) => ({
+            ...prevState,
+            clearRubricFeedback: true,
+            isRubricDisabled: true,
+            showWarningToClear: false,
+          }))
+          break
+        case InputType.RubricsScore:
+          this.setState((prevState) => ({
+            ...prevState,
+            clearRubricFeedback: false,
+            isScoreInputDisabled: true,
+          }))
+          break
+        default:
+          break
+      }
     }
   }
 

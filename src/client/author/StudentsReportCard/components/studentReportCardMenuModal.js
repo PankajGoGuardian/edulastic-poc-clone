@@ -75,7 +75,7 @@ const StudentReportCardMenuModal = (props) => {
       <div>
         <p>
           Print report card for all students that can be shared with their
-          parentes. Only those students who are in "Graded" status would be
+          parents. Only those students who are in "Graded" status would be
           included.
         </p>
         <p>Select information you would like to print in the report card.</p>

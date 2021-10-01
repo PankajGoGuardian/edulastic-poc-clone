@@ -250,6 +250,9 @@ const transformTestItems = (props) => {
               return false
             }
           }
+          const scoringType = currentStudent.questionActivities.find(
+            (ele) => ele.testItemId === item._id
+          )?.scoringType
           qActivities = qActivities.map((q) => {
             const userQuestion = userQActivities.find(
               ({ _id }) => _id === q.qid
@@ -258,7 +261,7 @@ const transformTestItems = (props) => {
               q.timespent = userQuestion.timeSpent
               q.disabled = userQuestion.disabled
             }
-
+            q.scoringType = scoringType
             return { ...q }
           })
           const [activity] = qActivities.length > 0 ? qActivities : [{}]

@@ -11,7 +11,11 @@ import {
   every,
   cloneDeep,
 } from 'lodash'
-import { testActivityStatus, questionType } from '@edulastic/constants'
+import {
+  testActivityStatus,
+  questionType,
+  test as testContants,
+} from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
@@ -20,6 +24,7 @@ import { getFormattedName } from '../Gradebook/transformers'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
+const { evalTypeLabels, evalTypeValues } = testContants
 /**
  *
  * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}
@@ -446,6 +451,22 @@ export function getResponseTobeDisplayed(
   return userResponse ? 'TEI' : ''
 }
 
+export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
+  if (gradingPolicy && gradingPolicy != evalTypeLabels.ITEM_LEVEL_EVALUATION) {
+    return evalTypeValues[gradingPolicy]
+  }
+  for (const testItem of testItemsData) {
+    const questions = get(testItem, ['data', 'questions'], [])
+    const questionNeeded = questions.find(
+      (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
+    )
+    if (questionNeeded) {
+      return evalTypeValues[questionNeeded.validation.scoringType]
+    }
+  }
+  return 'NA'
+}
+
 export function getStandardsForStandardBasedReport(
   testItems,
   standardsDescriptions
@@ -507,6 +528,7 @@ export const transformGradeBookResponse = (
     status: assignmentStatus,
     endDate,
     ts,
+    gradingPolicy,
   },
   studentResponse
 ) => {
@@ -654,6 +676,12 @@ export const transformGradeBookResponse = (
             const _id = el
             const currentQuestionActivity =
               questionActivitiesIndexed[`${testItemId}_${el}`]
+            const scoringType = getScoringType(
+              _id,
+              testItemsData,
+              testItemId,
+              gradingPolicy
+            )
             const questionMaxScore =
               maxScore ||
               (maxScore == 0 &&
@@ -752,6 +780,7 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               userId: studentId,
               qActId: currentQuestionActivity._id,
+              scoringType,
               scratchPad,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],

@@ -304,6 +304,7 @@ export function* receiveTestActivitySaga({ payload }) {
           ...gradebookData,
           testItemsData: studentData.items,
           ts: additionalData.ts,
+          gradingPolicy: additionalData.scoringType,
         })
         return studentActivityData.find(
           (sa) => sa.studentId === studentData.studentId
@@ -313,6 +314,7 @@ export function* receiveTestActivitySaga({ payload }) {
       entities = transformGradeBookResponse({
         ...gradebookData,
         ts: additionalData.ts,
+        gradingPolicy: additionalData.scoringType,
       })
     }
 

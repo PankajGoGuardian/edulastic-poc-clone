@@ -550,6 +550,12 @@ class FeedbackRight extends Component {
                 tabIndex={0}
               />
               <TextPara>{_maxScore}</TextPara>
+              <GradingPolicy>
+                <p>
+                  <b>GRADING POLICY</b>
+                </p>
+                <p>{activity.scoringType}</p>
+              </GradingPolicy>
             </ScoreInputWrapper>
           </StyledDivSec>
         ) : (
@@ -714,7 +720,7 @@ const ScoreInputWrapper = styled.div`
 `
 
 const ScoreInput = styled(Input)`
-  width: 70%;
+  width: 50%;
   height: 47px;
   border: 0px;
   background-color: #f8f8f8;
@@ -734,6 +740,18 @@ const TextPara = styled.p`
   background-color: #ececec;
   height: 47px;
   width: 30%;
+  border-radius: 0px 2px 2px 0px;
+  display: inline-block;
+`
+const GradingPolicy = styled.p`
+  text-transform: capitalize;
+  padding-left: 10px;
+  padding-right: 15px;
+  font-size: 9px;
+  font-weight: 600;
+  line-height: 12px;
+  height: 47px;
+  width: 40%;
   border-radius: 0px 2px 2px 0px;
   display: inline-block;
 `

@@ -140,6 +140,12 @@ module.exports = {
     PARTIAL_CREDIT_IGNORE_INCORRECT: 'PARTIAL_CREDIT_IGNORE_INCORRECT', // Bakecnd doesn't require this key value
     ITEM_LEVEL_EVALUATION: 'ITEM_LEVEL_EVALUATION',
   },
+  evalTypeValues: {
+    ALL_OR_NOTHING: 'All or Nothing',
+    PARTIAL_CREDIT: 'Partial Credit',
+    partialMatch: 'Partial Match',
+    exactMatch: 'Exact Match',
+  },
   accessibilities: {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",
     // SHOW_FONT_SIZE: "Show Font Size",

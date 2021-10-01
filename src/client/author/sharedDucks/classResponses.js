@@ -217,12 +217,20 @@ function* receiveStudentResponseSaga({ payload }) {
     const serverTimeStamp = yield select((state) =>
       get(state, 'author_classboard_testActivity.additionalData.ts', Date.now())
     )
+    const gradingPolicy = yield select((state) =>
+      get(
+        state,
+        'author_classboard_testActivity.additionalData.scoringType',
+        ''
+      )
+    )
     const transformed = transformGradeBookResponse(
       {
         ...originalData,
         testActivities: [studentResponse.testActivity],
         testQuestionActivities: studentResponse.questionActivities,
         ts: serverTimeStamp,
+        gradingPolicy,
       },
       true
     )

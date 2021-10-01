@@ -34,6 +34,13 @@ export const HeadingContainer = styled.div`
   display: flex;
 `
 
+export const EditPencilBtn = styled.span`
+  height: 23px;
+  width: 25px;
+  display: inline-block;
+  text-align: center;
+`
+
 export const PermissionsButton = styled.span`
   color: ${themeColor};
   border: 1px solid ${themeColor};

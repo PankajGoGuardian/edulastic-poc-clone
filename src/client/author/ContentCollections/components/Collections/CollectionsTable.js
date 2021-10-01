@@ -12,6 +12,7 @@ import {
   StyledTable,
   BackArrowButton,
   StatusText,
+  EditPencilBtn,
 } from '../../styled'
 import AddCollectionModal from '../Modals/AddCollectionModal'
 import {
@@ -164,7 +165,7 @@ const CollectionsTable = ({
     {
       title: selectedCollection ? '' : 'Permissions',
       key: 'permissions',
-      width: selectedCollection ? 20 : 150,
+      width: selectedCollection ? 30 : 250,
       align: 'left',
       render: (_, record) =>
         selectedCollection ? (
@@ -190,7 +191,7 @@ const CollectionsTable = ({
             </PermissionsButton>
             {userRole !== roleuser.EDULASTIC_ADMIN &&
               record.districtId === userDistrictId && (
-                <span
+                <EditPencilBtn
                   onClick={() => {
                     setEditCollectionData(record)
                     setAddCollectionModalVisibility(true)
@@ -198,7 +199,7 @@ const CollectionsTable = ({
                   style={{ cursor: 'pointer' }}
                 >
                   <IconPencilEdit color={themeColor} />
-                </span>
+                </EditPencilBtn>
               )}
           </>
         ),

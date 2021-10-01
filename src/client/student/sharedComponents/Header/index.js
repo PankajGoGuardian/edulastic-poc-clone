@@ -3,7 +3,9 @@ import { MainHeader, EduButton, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React, { memo } from 'react'
+import { get } from 'lodash'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Row } from 'antd'
 import ClassSelect, { StudentSlectCommon } from '../ClassSelector'
@@ -27,6 +29,7 @@ const Header = ({
   reviewResponses,
   onExit,
   previewModal,
+  isCliUser,
   ...rest
 }) => (
   <MainHeader
@@ -64,7 +67,7 @@ const Header = ({
               Review Responses
             </EduButton>
           )}
-          {showExit && !showReviewResponses && (
+          {showExit && !showReviewResponses && !isCliUser && (
             <EduButton data-cy="finishTest" onClick={onExit}>
               EXIT
             </EduButton>
@@ -91,7 +94,16 @@ Header.defaultProps = {
   attempts: [],
 }
 
-const enhance = compose(memo, withNamespaces('header'))
+const enhance = compose(
+  memo,
+  withNamespaces('header'),
+  connect(
+    (state) => ({
+      isCliUser: get(state, 'user.isCliUser', false),
+    }),
+    null
+  )
+)
 
 export default enhance(Header)
 

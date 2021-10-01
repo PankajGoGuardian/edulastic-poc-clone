@@ -429,6 +429,7 @@ class ClassList extends React.Component {
               mode="multiple"
               placeholder="All Course"
               onChange={changeField('courseIds')}
+              autoClearSearchValue={false}
               showSearch
               filterOption={(input, option) =>
                 option.props.children

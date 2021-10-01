@@ -511,6 +511,7 @@ class NumberLinePlotContainer extends PureComponent {
               id={this._graphId}
               margin={layout.margin}
               className="jxgbox __prevent-page-break"
+              data-cy="jsxBox"
             />
             {view === EDIT && !disableResponse && (
               <>

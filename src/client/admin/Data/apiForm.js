@@ -764,29 +764,6 @@ export const apiForms = [
     ],
   },
   {
-    id: 'restore-student-count-in-groups',
-    name: 'Student Count Update',
-    endPoint: 'admin-tool/restore-student-count-in-groups',
-    method: 'post',
-    slowApi: true,
-    fields: [
-      {
-        name: 'districtId',
-        displayName: 'DistrictId',
-        placeholder: 'Enter the districtId',
-        type: 'string',
-        required: true,
-      },
-      {
-        name: 'groupIds',
-        displayName: 'Group Id(s)',
-        placeholder: 'Enter comma separated group Ids',
-        type: 'textarea',
-        required: false,
-      },
-    ],
-  },
-  {
     id: 'upload-standard',
     name: 'Upload standards',
     endPoint: 'admin-tool/fetch-standard',
@@ -813,6 +790,23 @@ export const apiForms = [
         accept: '.xlsx',
         multiple: false,
         required: true,
+      },
+    ],
+  },
+  {
+    id: 'assessment',
+    name: 'Assessment Restore',
+    endPoint: 'admin-tool/assessment',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'assessmentIds',
+        displayName: 'Assessment Id(s)',
+        placeholder: 'Enter comma separated assessment Ids',
+        type: 'textarea',
+        required: true,
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
       },
     ],
   },

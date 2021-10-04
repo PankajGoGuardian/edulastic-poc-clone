@@ -190,7 +190,7 @@ class WorksheetComponent extends React.Component {
     const newAnnotations = [...annotations]
 
     const annotationIndex = newAnnotations.findIndex(
-      (item) => item.questionId === question.questionId
+      (item) => `${item.questionId}` === `${question.questionId}`
     )
 
     if (annotationIndex > -1) {

@@ -1,7 +1,7 @@
 import React from 'react'
 
 const ScrollContext = React.createContext({
-  getScrollElement: () => window,
+  getScrollElement: () => document.body,
 })
 
 export default ScrollContext

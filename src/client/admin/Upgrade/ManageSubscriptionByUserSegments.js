@@ -123,7 +123,10 @@ const ManageSubscriptionByUserSegments = Form.create({
               })
             } else if (gradeSubject[0].grade && gradeSubject[0].subject) {
               const subscriptionData = {
-                adminPremium: adminPremiumValue,
+                adminPremium:
+                  subType === 'partial_premium'
+                    ? adminPremiumValue || false
+                    : undefined,
                 subType,
                 subStartDate: startDate.valueOf(),
                 subEndDate: endDate.valueOf(),
@@ -131,10 +134,8 @@ const ManageSubscriptionByUserSegments = Form.create({
                 gradeSubject,
               }
               if (districtIdValue) {
-                schoolIdValue = ['all']
                 Object.assign(subscriptionData, {
                   districtId: districtIdValue,
-                  schoolIds: ['all'],
                 })
               } else {
                 Object.assign(subscriptionData, {

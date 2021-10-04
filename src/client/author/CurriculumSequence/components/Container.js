@@ -132,7 +132,7 @@ class CurriculumContainer extends Component {
       isStudent = false,
       history: { location } = {},
       urlHasUseThis,
-      termId
+      termId,
     } = this.props
 
     const playlistId = match.params.id || match.params.playlistId
@@ -142,7 +142,7 @@ class CurriculumContainer extends Component {
         getCurrentPlaylistMetrics({
           groupId: location?.state?.currentGroupId,
           playlistId,
-          termId
+          termId,
         })
       } else {
         getCurrentPlaylistMetrics({ playlistId, termId })
@@ -527,7 +527,7 @@ const enhance = compose(
         state.curriculumSequence?.destinationCurriculumSequence,
       isStudent: state.user?.user?.role === userRoles.STUDENT,
       currentUserId: getUserId(state),
-      termId: getCurrentTerm(state)
+      termId: getCurrentTerm(state),
     }),
     mapDispatchToProps
   )

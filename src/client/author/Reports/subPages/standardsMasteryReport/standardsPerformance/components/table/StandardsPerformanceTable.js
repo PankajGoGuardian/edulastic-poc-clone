@@ -101,7 +101,7 @@ export const getColumns = (
   selectedDomains,
   selectedTermId,
   t,
-  isSharedReport,
+  isSharedReport
 ) => {
   const filteredDomains = filter(
     domains,

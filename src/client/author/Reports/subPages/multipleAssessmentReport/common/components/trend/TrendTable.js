@@ -144,16 +144,34 @@ const getCellAttributes = (test = {}, analyseBy = {}, masteryScale = {}) => {
   let color = 'transparent'
   switch (analyseBy.key) {
     case 'proficiencyBand':
-      if (test.proficiencyBand) {
+      value = formatText(test, analyseBy.key)
+      if (
+        !isEmpty(value) &&
+        value !== 'Absent' &&
+        value !== 'Not Started' &&
+        value !== 'In Progress' &&
+        value !== '-'
+      ) {
         value = test.proficiencyBand.name || value
         color = test.proficiencyBand.color || color
       }
       break
     case 'standard':
-      value = test.proficiencyBand.aboveStandard
-        ? 'Above Standard'
-        : 'Below Standard'
-      color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100)
+      value = formatText(test, 'proficiencyBand')
+      if (
+        !isEmpty(value) &&
+        value !== 'Absent' &&
+        value !== 'Not Started' &&
+        value !== 'In Progress' &&
+        value !== '-'
+      ) {
+        value = test.proficiencyBand.aboveStandard
+          ? 'Above Standard'
+          : 'Below Standard'
+        color = getHSLFromRange1(
+          (test.proficiencyBand.aboveStandard || 0) * 100
+        )
+      }
       break
     case 'masteryScore':
       value = test.fm
@@ -221,6 +239,10 @@ const getColumns = (
 
         if (value === 'Absent') {
           return getCol('Absent', '#cccccc')
+        }
+
+        if (value === 'In Progress' || value === 'Not Started') {
+          return getCol(value, 'transparent')
         }
 
         const toolTipText = () => (

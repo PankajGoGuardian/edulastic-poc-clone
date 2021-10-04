@@ -766,7 +766,7 @@ export const apiForms = [
   {
     id: 'upload-standard',
     name: 'Upload standards',
-    endPoint: 'admin-tool/fetch-standard',
+    endPoint: 'admin-tool/standards-xls',
     method: 'post',
     slowApi: true,
     fields: [
@@ -782,6 +782,7 @@ export const apiForms = [
           'Social Studies',
           'Computer Science',
           'Other Subjects',
+          'Science',
         ],
       },
       {

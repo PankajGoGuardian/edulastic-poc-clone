@@ -66,6 +66,7 @@ import {
   transformTestItems,
   transformGradeBookResponse,
   getStandardsForStandardBasedReport,
+  getScoringType,
 } from './Transformer'
 
 import {
@@ -1281,6 +1282,11 @@ export const getAdditionalDataSelector = createSelector(
   (state) => state.additionalData
 )
 
+export const getScoringTypeSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'scoringType', '')
+)
+
 export const getCurrentClassIdSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'classId', '')
@@ -1668,14 +1674,22 @@ export const getFeedbackResponseSelector = createSelector(
 export const getStudentQuestionSelector = createSelector(
   stateStudentAnswerSelector,
   getAnswerByQidSelector,
-  (state, egAnswers) => {
+  getScoringTypeSelector,
+  getTestItemsDataSelector,
+  (state, egAnswers, gradingPolicy, testItems) => {
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data]
       return data.map((x) => {
+        const scoringType = getScoringType(
+          x.qid,
+          testItems,
+          x.testItemId,
+          gradingPolicy
+        )
         if (!isNullOrUndefined(egAnswers[x.qid])) {
-          return { ...x, userResponse: egAnswers[x.qid] }
+          return { ...x, userResponse: egAnswers[x.qid], scoringType }
         }
-        return x
+        return { ...x, scoringType }
       })
     }
     return []

@@ -250,7 +250,7 @@ const transformTestItems = (props) => {
               return false
             }
           }
-          const scoringType = currentStudent.questionActivities.find(
+          const scoringType = currentStudent.questionActivities?.find(
             (ele) => ele.testItemId === item._id
           )?.scoringType
           qActivities = qActivities.map((q) => {
@@ -261,7 +261,9 @@ const transformTestItems = (props) => {
               q.timespent = userQuestion.timeSpent
               q.disabled = userQuestion.disabled
             }
-            q.scoringType = scoringType
+            if (isQuestionView) {
+              q.scoringType = scoringType
+            }
             return { ...q }
           })
           const [activity] = qActivities.length > 0 ? qActivities : [{}]

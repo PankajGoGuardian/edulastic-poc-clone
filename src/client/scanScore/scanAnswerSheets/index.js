@@ -36,6 +36,7 @@ import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
+import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
 import {
@@ -175,16 +176,34 @@ const ScanAnswerSheetsInner = ({
       )
       vc.read(matSrc)
       let result = null
+      const parentRectangle = detectParentRectangle(cv, matSrc)
+      let rectanglePosition
+      let qrCodeData
+      if (parentRectangle) {
+        rectanglePosition = parentRectangle.rectanglePosition
+        qrCodeData = parentRectangle.qrCodeData
+      } else {
+        cv.imshow('canvasOutput', matSrc)
+        matSrc.delete()
+        requestAnimationFrame(() => processVideo(vc))
+        return
+      }
       if (answersList) {
         cv.imshow('canvasOutput', matSrc)
       } else {
-        result = getAnswersFromVideo(cv, matSrc, isFrontFacingRef.current)
+        result = getAnswersFromVideo(
+          cv,
+          matSrc,
+          rectanglePosition,
+          qrCodeData.location
+        )
       }
       matSrc.delete()
       requestAnimationFrame(() => processVideo(vc))
       if (!result) {
         return
       }
+      result.qrCode = qrCodeData.data
       const { answers } = result
       if (answers) {
         if (answers.length > 0) {

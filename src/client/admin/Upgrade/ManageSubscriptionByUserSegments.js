@@ -47,15 +47,10 @@ const ManageSubscriptionByUserSegments = Form.create({
         ['schoolId', 'districtId'],
         (err, { districtId: districtIdValue, schoolId: schoolIdValue }) => {
           if (districtIdValue || schoolIdValue) {
-            if (
-              districtIdInput !== districtIdValue ||
-              schoolIdValue !== schoolIdInput
-            ) {
-              getSubscriptionAction({
-                districtId: districtIdValue,
-                schoolId: schoolIdValue,
-              })
-            }
+            getSubscriptionAction({
+              districtId: districtIdValue,
+              schoolId: schoolIdValue,
+            })
             setDistrictId(districtIdValue)
             setSchoolId(schoolIdValue)
           }

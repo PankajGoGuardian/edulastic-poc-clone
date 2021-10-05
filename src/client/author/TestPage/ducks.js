@@ -2000,6 +2000,15 @@ export function* receiveTestByIdSaga({ payload }) {
             _id === item._id || previousTestItemId === item._id
         )
         if (!isEmpty(createdItem)) {
+          // update standards with updated db data for testitems
+          createdItem.data?.questions?.forEach((createdQuestion) => {
+            const question = item?.data?.questions.find(
+              ({ id }) => id === createdQuestion.id
+            )
+            if (!isEmpty(question)) {
+              createdQuestion.alignment = [...(question.alignment || [])]
+            }
+          })
           entity.itemGroups[groupIndex].items[itemIndex] = createdItem
           createdItems = createdItems?.filter(
             ({ _id }) => _id !== createdItem._id

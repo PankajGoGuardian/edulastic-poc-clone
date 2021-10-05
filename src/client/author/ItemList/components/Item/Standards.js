@@ -24,7 +24,7 @@ const Standards = ({
         (_item) =>
           (!_item.isEquivalentStandard ||
             interestedCurriculums.some(
-              (interested) => interested._id === _item.curriculumId
+              (interested) => interested._id == _item.curriculumId
             )) &&
           _item.curriculumId
       )
@@ -32,14 +32,14 @@ const Standards = ({
       // pick alignments matching with interested curriculums
       let interestedAlignments = authorAlignments.filter((alignment) =>
         interestedCurriculums.some(
-          (interested) => interested._id === alignment.curriculumId
+          (interested) => interested._id == alignment.curriculumId
         )
       )
 
       // pick alignments based on search if interested alignments is empty
       if (!interestedAlignments.length) {
         interestedAlignments = authorAlignments.filter(
-          (alignment) => alignment.curriculumId === curriculumId
+          (alignment) => alignment.curriculumId == curriculumId
         )
       }
       interestedAlignments.map((el) =>

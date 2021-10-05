@@ -1,5 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Row as AntdRow, Col, Form, Select, Button, AutoComplete } from 'antd'
+import {
+  Row as AntdRow,
+  Col,
+  Form,
+  Select,
+  Button,
+  AutoComplete,
+  Checkbox,
+} from 'antd'
 import moment from 'moment'
 import styled from 'styled-components'
 import SearchDistrictByIdName from '../Common/Form/SearchDistrictByIdName'
@@ -90,6 +98,8 @@ const ManageDistrictPrimaryForm = Form.create({
       opportunityId,
       licenceCount,
       _id: subscriptionId,
+      adminPremium,
+      gradeSubject,
     } = subscription
     const { subType: currentSubType = 'free' } = getFieldsValue(['subType'])
 
@@ -110,6 +120,7 @@ const ManageDistrictPrimaryForm = Form.create({
         customerSuccessManager,
         opportunityId,
         licenceCount,
+        adminPremium,
       })
     }, [
       subType,
@@ -119,10 +130,14 @@ const ManageDistrictPrimaryForm = Form.create({
       customerSuccessManager,
       opportunityId,
       licenceCount,
+      adminPremium,
     ])
 
     useUpdateEffect(() => {
-      if (currentSubType !== subType) {
+      if (
+        currentSubType !== subType &&
+        SUBSCRIPTION_TYPE_CONFIG[subType][currentSubType]
+      ) {
         setCtaSubscriptionState(
           SUBSCRIPTION_TYPE_CONFIG[subType][currentSubType].label
         )
@@ -146,6 +161,7 @@ const ManageDistrictPrimaryForm = Form.create({
               districtId,
               subStartDate: startDate.valueOf(),
               subEndDate: endDate.valueOf(),
+              ...(subType === 'partial_premium' ? { gradeSubject } : {}),
               ...rest,
             })
           }
@@ -230,6 +246,13 @@ const ManageDistrictPrimaryForm = Form.create({
           getFieldDecorator={getFieldDecorator}
           showAdditionalDetails
         />
+        <Form.Item>
+          {getFieldDecorator('adminPremium', { valuePropName: 'checked' })(
+            <Checkbox disabled={subType !== 'partial_premium'}>
+              <strong>Upgrade DAs</strong>
+            </Checkbox>
+          )}
+        </Form.Item>
         <Form.Item>
           <Button type="primary" htmlType="submit">
             {ctaSubscriptionState}

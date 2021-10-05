@@ -216,16 +216,12 @@ class DisneyCardContainer extends Component {
           ) : (
             ''
           )
-        const isAcitveStudentUnassigned =
-          student.isAssigned === false && student.isEnrolled
-        const unAssignedMessage = isAcitveStudentUnassigned ? (
+        const unAssignedMessage = (
           <Tooltip title="Unassigned from Assignment">
             <span>
               <ExclamationMark />
             </span>
           </Tooltip>
-        ) : (
-          ''
         )
 
         const canShowResponse =
@@ -335,8 +331,9 @@ class DisneyCardContainer extends Component {
                           }
                         }}
                       >
-                        {enrollMentFlag}
-                        {unAssignedMessage}
+                        {student.isAssigned === false
+                          ? unAssignedMessage
+                          : enrollMentFlag}
                         <PauseToolTip
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}

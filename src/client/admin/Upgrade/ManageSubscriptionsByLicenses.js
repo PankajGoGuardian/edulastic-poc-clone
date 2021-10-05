@@ -1,15 +1,17 @@
+import { userApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
 import {
   CustomModalStyled,
   EduButton,
   FlexContainer,
-  SelectInputStyled,
+  notification,
 } from '@edulastic/common'
 import { IconEye, IconTrash } from '@edulastic/icons'
 import loadable from '@loadable/component'
-import { Form, Pagination, Table, Tooltip } from 'antd'
+import { Pagination, Table, Tooltip } from 'antd'
+import { debounce } from 'lodash'
 import moment from 'moment'
-import React, { useState, useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import connect from 'react-redux/lib/connect/connect'
 import styled from 'styled-components'
 import {
@@ -17,25 +19,16 @@ import {
   getFetchOrganizationStateSelector,
   searchOrgaizationRequestAction,
 } from '../../author/ContentCollections/ducks'
+import { getUsersSelector } from '../../author/ManageSubscription/ducks'
 import ArchiveLicenseModal from './ArchiveLicenseModal'
 import { manageSubscriptionsByLicenses } from './ducks'
+import SearchFilters from './ManageSubsSearchFilters'
 
 const ManageSubscription = loadable(() =>
   import('../../author/ManageSubscription')
 )
 const SubsLicenseViewModal = loadable(() => import('./SubsLicenseViewModal'))
 const AddSubscriptionModal = loadable(() => import('./AddSubscriptionModal'))
-
-const MANAGE_SUBSCRIPTION_SEARCH_TYPE = [
-  {
-    type: 'BULK_LICENSES',
-    name: 'Multiple Licenses',
-  },
-  {
-    type: 'TRIAL_LICENSES',
-    name: 'Trial Premium & Trial SparkMath Licenses',
-  },
-]
 
 const IconStyles = { width: '20px', cursor: 'pointer' }
 
@@ -127,67 +120,17 @@ const LicensesInvoiceTable = ({
   ) : null
 }
 
-const SearchFilters = Form.create({
-  name: 'searchLicensesByType',
-})(
-  ({
-    form: { getFieldDecorator, validateFields },
-    setPage,
-    fetchLicensesBySearchType,
-    setSearchType,
-  }) => {
-    // TODO: replace submit btn click handler with onChange handler
-    const handleSubmit = (evt) => {
-      evt.preventDefault()
-      validateFields((err, { searchType }) => {
-        if (!err) {
-          setSearchType(searchType)
-          setPage(1)
-          fetchLicensesBySearchType({
-            type: searchType,
-            page: 1,
-            limit: 10,
-          })
-        }
-      })
-    }
-    return (
-      <Form onSubmit={handleSubmit}>
-        <FlexContainer
-          justifyContent="space-between"
-          alignItems="center"
-          width="400px"
-        >
-          <Form.Item
-            data-cy="searchByLicenseTypeDropDown"
-            style={{ width: '350px' }}
-          >
-            {getFieldDecorator('searchType', {
-              rules: [{ required: true }],
-              initialValue: MANAGE_SUBSCRIPTION_SEARCH_TYPE[0].type,
-            })(
-              <SelectInputStyled
-                height="36px"
-                placeholder="Select a filter to search"
-              >
-                {MANAGE_SUBSCRIPTION_SEARCH_TYPE.map(({ type, name }) => (
-                  <SelectInputStyled.Option key={type}>
-                    {name}
-                  </SelectInputStyled.Option>
-                ))}
-              </SelectInputStyled>
-            )}
-          </Form.Item>
-          <Form.Item>
-            <EduButton data-cy="searchButton" isBlue htmlType="submit">
-              Search
-            </EduButton>
-          </Form.Item>
-        </FlexContainer>
-      </Form>
-    )
-  }
-)
+const sanitizeSearchResult = (users = []) => {
+  const result =
+    users.map((x) => {
+      const { _source = {} } = x
+      return {
+        username: _source.username,
+        userId: x._id,
+      }
+    }) || []
+  return result
+}
 
 const ManageSubscriptionsByLicenses = ({
   fetchLicensesBySearchType,
@@ -215,9 +158,59 @@ const ManageSubscriptionsByLicenses = ({
   )
   const [showLicenseViewModal, setShowLicenseViewModal] = useState(false)
 
+  const [usersList, setUsersList] = useState([])
+  const [isFetchingUsers, setIsFetchingUsers] = useState(false)
+  const [fieldData, setFieldData] = useState({
+    districtId: '',
+    districtName: '',
+    orgType: 'user',
+    managerEmail: [],
+    subStartDate: moment().valueOf(),
+    subEndDate: moment().add(1, 'years').valueOf(),
+    customerSuccessManager: '',
+    opportunityId: '',
+    notes: '',
+  })
+
   useEffect(() => {
     fetchProducts()
+    fetchLicensesBySearchType({
+      type: 'BULK_LICENSES',
+      page: 1,
+      limit: 10,
+    })
   }, [])
+
+  const fetchUsers = async (searchString) => {
+    try {
+      if (!searchString) return
+      const searchData = {
+        districtId: fieldData?.districtId,
+        search: {
+          email: [{ type: 'cont', value: searchString }],
+        },
+        limit: 25,
+        page: 1,
+        role: 'teacher',
+        status: 1,
+      }
+      const { result } = await userApi.fetchUsers(searchData)
+      const _users = sanitizeSearchResult(result)
+      setUsersList(_users)
+    } catch (e) {
+      setUsersList([])
+      console.warn(e)
+    } finally {
+      setIsFetchingUsers(false)
+    }
+  }
+
+  const handleUsersFetch = debounce(fetchUsers, 800)
+
+  const handleUsersSearch = (searchString) => {
+    setIsFetchingUsers(true)
+    handleUsersFetch(searchString)
+  }
 
   const handlePageChange = (pageNo) => {
     setPage(pageNo)
@@ -272,6 +265,32 @@ const ManageSubscriptionsByLicenses = ({
     setShowArchiveAlert(false)
   }
 
+  const handleSelectDistrict = (value, option) => {
+    const { value: districtId, name: districtName } = option.props
+
+    // resetting all the org fields as we are changing the organization(district)
+    setFieldData({
+      ...fieldData,
+      districtId,
+      districtName,
+      managerEmail: [],
+    })
+  }
+
+  const handleSearch = (searchString, _searchType, size) => {
+    if (!fieldData.districtId && _searchType !== 'DISTRICT')
+      return notification({ messageKey: 'pleaseSelectDistrict' })
+    const data = {
+      orgType: _searchType,
+      searchString,
+    }
+    if (size) {
+      data.size = size
+    }
+    if (_searchType !== 'DISTRICT') data.districtId = fieldData.districtId
+    searchRequest(data)
+  }
+
   return (
     <>
       <ManageSubscriptinModal
@@ -302,6 +321,15 @@ const ManageSubscriptionsByLicenses = ({
           fetchLicensesBySearchType={fetchLicensesBySearchType}
           setSearchType={setSearchType}
           setPage={setPage}
+          usersList={usersList}
+          setUsersList={setUsersList}
+          isFetchingOrganization={isFetchingOrganization}
+          districtList={districtList}
+          handleSelectDistrict={handleSelectDistrict}
+          handleSearch={handleSearch}
+          fieldData={fieldData}
+          handleUsersSearch={handleUsersSearch}
+          isFetchingUsers={isFetchingUsers}
         />
         <EduButton
           data-cy="addSubscriptionButton"
@@ -343,6 +371,10 @@ const ManageSubscriptionsByLicenses = ({
           searchRequest={searchRequest}
           addSubscription={addSubscription}
           products={products}
+          handleSelectDistrict={handleSelectDistrict}
+          handleSearch={handleSearch}
+          fieldData={fieldData}
+          setFieldData={setFieldData}
         />
       )}
     </>
@@ -353,6 +385,7 @@ export default connect(
   (state) => ({
     districtList: getDistrictListSelector(state),
     isFetchingOrganization: getFetchOrganizationStateSelector(state),
+    users: getUsersSelector(state),
   }),
   {
     searchRequest: searchOrgaizationRequestAction,

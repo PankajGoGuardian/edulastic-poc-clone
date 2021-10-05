@@ -24,6 +24,7 @@ import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
 import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
+import CreateClassCard from './components/CreateClassCard/CreateClassCard'
 
 // ducks
 import { slice } from '../../../../../Subscription/ducks'
@@ -699,6 +700,7 @@ const MyClasses = ({
           accessibleItembankProductIds={accessibleItembankProductIds}
         />
       )}
+      {classData.length === 0 && <CreateClassCard history={history} />}
       <Classes
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}

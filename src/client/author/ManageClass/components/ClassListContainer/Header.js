@@ -30,6 +30,7 @@ import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const Header = ({
+  classGroups,
   fetchGoogleClassList,
   googleAllowedInstitutions,
   isUserGoogleLoggedIn,
@@ -43,6 +44,10 @@ const Header = ({
   handleCanvasBulkSync,
   isClassLink,
   history,
+  syncClassWithAtlas,
+  syncCleverClassList,
+  refreshPage,
+  isCleverDistrict,
 }) => {
   const { atlasId, cleverId, isPlayground } = user
 
@@ -85,6 +90,19 @@ const Header = ({
           : { messageKey: 'errorWhileGettingAuthUri' }
       )
     }
+  }
+
+  const handleSyncWithAtlas = () => {
+    const groupIds = classGroups
+      .filter((_group) => _group.atlasId)
+      .map((_group) => _group._id)
+    syncClassWithAtlas({ groupIds })
+  }
+  const handleSyncWithClever = () => {
+    const classList = classGroups
+      .filter((_group) => _group.cleverId)
+      .map((_group) => ({ ..._group, course: _group?.course?.id }))
+    syncCleverClassList({ classList, refreshPage })
   }
 
   const pageNavButtons = [
@@ -196,6 +214,16 @@ const Header = ({
                 <span>SYNC WITH CANVAS</span>
               </EduButton>
             )}
+          {!isPlayground && atlasId && (
+            <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
+              <span>RESYNC CLASS</span>
+            </EduButton>
+          )}
+          {!isPlayground && isCleverDistrict && (
+            <EduButton isBlue isGhost onClick={handleSyncWithClever}>
+              <span>RESYNC CLASS</span>
+            </EduButton>
+          )}
         </>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (

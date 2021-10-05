@@ -39,7 +39,11 @@ const ClassList = ({
   setShowCleverSyncModal,
   canvasAllowedInstitution,
   handleCanvasBulkSync,
+  syncClassWithAtlas,
+  syncCleverClassList,
+  refreshPage,
   isCleverUser,
+  isCleverDistrict,
   studentsList,
   setFilterClass,
   filterClass,
@@ -192,16 +196,21 @@ const ClassList = ({
     <>
       <Header
         groups={groups}
+        classGroups={classGroups}
         setShowDetails={setShowDetails}
         archiveGroups={archiveGroups}
         currentTab={currentTab}
         onClickHandler={onClickHandler}
         isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+        isCleverDistrict={isCleverDistrict}
         googleAllowedInstitutions={googleAllowedInstitutions}
         canvasAllowedInstitution={canvasAllowedInstitution}
         fetchGoogleClassList={fetchClassList}
         setShowCleverSyncModal={setShowCleverSyncModal}
         enableCleverSync={isCleverUser}
+        syncClassWithAtlas={syncClassWithAtlas}
+        syncCleverClassList={syncCleverClassList}
+        refreshPage={refreshPage}
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
         isClassLink={isClassLink}
@@ -272,6 +281,7 @@ const enhance = compose(
   connect(
     (state) => ({
       institutions: get(state, 'user.user.orgData.schools'),
+      isCleverDistrict: get(state, 'user.user.orgData.isCleverDistrict', false),
       user: getUserDetails(state),
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
       googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(

@@ -32,6 +32,7 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   syncClassWithCanvasAction,
+  syncClassWithAtlasAction,
   syncClassesWithCleverAction,
   getClassNotFoundError,
   setClassNotFoundErrorAction,
@@ -64,8 +65,10 @@ const ClassDetails = ({
   getCanvasSectionListRequest,
   canvasCourseList,
   canvasSectionList,
+  isCleverDistrict,
   syncClassWithCanvas,
   syncClassesWithClever,
+  syncClassWithAtlas,
   user,
   classCodeError = false,
   setClassNotFoundError,
@@ -348,7 +351,9 @@ const ClassDetails = ({
               syncGCModal={() => setOpenGCModal(true)}
               isUserGoogleLoggedIn={isUserGoogleLoggedIn}
               enableCleverSync={enableCleverSync}
+              isCleverDistrict={isCleverDistrict}
               syncClassesWithClever={syncClassesWithClever}
+              syncClassWithAtlas={syncClassWithAtlas}
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
@@ -407,6 +412,7 @@ const enhance = compose(
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn', false),
       allowCanvasLogin: get(state, 'user.user.orgData.allowCanvas', false),
+      isCleverDistrict: get(state, 'user.user.orgData.isCleverDistrict', false),
       syncClassLoading: get(state, 'manageClass.syncClassLoading'),
       classLoaded: get(state, 'manageClass.classLoaded'),
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
@@ -427,6 +433,7 @@ const enhance = compose(
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       syncClassWithCanvas: syncClassWithCanvasAction,
+      syncClassWithAtlas: syncClassWithAtlasAction,
       syncClassesWithClever: syncClassesWithCleverAction,
       setClassNotFoundError: setClassNotFoundErrorAction,
       unarchiveClass: unarchiveClassAction,

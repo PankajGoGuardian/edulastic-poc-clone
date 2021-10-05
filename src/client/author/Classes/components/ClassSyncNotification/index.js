@@ -27,6 +27,7 @@ const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
 const firestoreGoogleGradesSyncStatusCollection = 'GoogleGradeSyncStatus'
 const firestoreCleverGradesSyncStatusCollection = 'CleverGradeSyncStatus'
 const firestoreCanvasClassSyncStatusCollection = 'CanvasClassSyncStatus'
+const firestoreAtlasClassSyncStatusCollection = 'AtlasClassSyncStatus'
 
 const firestoreBulkActionCollection = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
@@ -53,6 +54,14 @@ const ClassSyncNotificationListener = ({
     (db) =>
       db
         .collection(firestoreCanvasClassSyncStatusCollection)
+        .where('userId', '==', `${user?._id}`),
+    [user?._id]
+  )
+
+  const atlasClassSyncNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(firestoreAtlasClassSyncStatusCollection)
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
@@ -161,6 +170,39 @@ const ClassSyncNotificationListener = ({
     })
   }
 
+  const showUserNotificationOnAtlasClassSync = (docs) => {
+    uniqBy(docs, '__id').map((doc) => {
+      const { status, message, counter } = doc
+
+      if (
+        status === 'completed' &&
+        counter === 0 &&
+        !notificationIds.includes(doc.__id)
+      ) {
+        setNotificationIds([...notificationIds, doc.__id])
+        // show sync complete notification
+        notification({
+          msg: message || 'Atlas Class sync task completed.',
+          type: 'success',
+          onClose: () => {
+            deleteNotificationDocument(
+              doc.__id,
+              firestoreAtlasClassSyncStatusCollection
+            )
+          },
+        })
+        fetchGroups()
+      }
+      if (status === 'failed' && counter === 0) {
+        notification({
+          messageKey: message || 'classSyncWithAtlasFailed',
+          type: 'error',
+        })
+      }
+      setSyncClassLoading(false)
+    })
+  }
+
   const onNotificationClick = (e, docId) => {
     /**
      * Note: As this function gets invoked on clicking anywhere in the notification.
@@ -191,6 +233,12 @@ const ClassSyncNotificationListener = ({
       showUserNotificationOnCanvasBulkSync(canvasBulkSyncNotifications)
     }
   }, [canvasBulkSyncNotifications])
+
+  useEffect(() => {
+    if (user && user.role === roleuser.TEACHER) {
+      showUserNotificationOnAtlasClassSync(atlasClassSyncNotifications)
+    }
+  }, [atlasClassSyncNotifications])
 
   useEffect(() => {
     uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {

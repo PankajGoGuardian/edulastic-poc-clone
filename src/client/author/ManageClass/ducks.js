@@ -18,6 +18,7 @@ import {
   userApi,
   canvasApi,
   cleverApi,
+  atlasApi,
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
@@ -168,6 +169,8 @@ export const GET_CANVAS_SECTION_LIST_FAILED =
   '[manageClass] get canvas section list failed'
 export const SYNC_CLASS_WITH_CANVAS = '[manageClass] sync class with canvas'
 
+export const SYNC_CLASS_WITH_ATLAS = '[manageClass] sync class with atlas'
+
 export const FETCH_CLEVER_CLASS_LIST_REQUEST =
   '[manageclass] get class list from clever request'
 export const FETCH_CLEVER_CLASS_LIST_SUCCESS =
@@ -290,6 +293,8 @@ export const getCanvasSectionListFailedAction = createAction(
   GET_CANVAS_SECTION_LIST_FAILED
 )
 export const syncClassWithCanvasAction = createAction(SYNC_CLASS_WITH_CANVAS)
+
+export const syncClassWithAtlasAction = createAction(SYNC_CLASS_WITH_ATLAS)
 
 export const fetchCleverClassListRequestAction = createAction(
   FETCH_CLEVER_CLASS_LIST_REQUEST
@@ -943,6 +948,22 @@ function* syncClassWithCanvasSaga({ payload }) {
   }
 }
 
+function* syncClassWithAtlasSaga({ payload }) {
+  try {
+    yield put(setSyncClassLoadingAction(true))
+    const data = yield call(atlasApi.syncClassesWithAtlas, payload)
+    if (data.data.result.success)
+      notification({ type: 'success', messageKey: 'atlasClassSyncInProgress' })
+    if (!data.data.result.success)
+      notification({ messageKey: 'classSyncWithAtlasFailed' })
+  } catch (err) {
+    captureSentryException(err)
+    console.error(err)
+    notification({ messageKey: 'classSyncWithAtlasFailed' })
+    yield put(setSyncClassLoadingAction(false))
+  }
+}
+
 function* fetchCleverClassListRequestSaga() {
   try {
     const cleverClassList = yield call(cleverApi.fetchCleverClasses)
@@ -1102,6 +1123,7 @@ export function* watcherSaga() {
       getCanvasSectionListRequestSaga
     ),
     yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
+    yield takeLatest(SYNC_CLASS_WITH_ATLAS, syncClassWithAtlasSaga),
     yield takeLatest(
       FETCH_CLEVER_CLASS_LIST_REQUEST,
       fetchCleverClassListRequestSaga

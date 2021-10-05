@@ -951,12 +951,20 @@
     "message": "Google class sync is in progress",
     "description": ""
   },
+  "atlasClassSyncInProgress": {
+    "message": "Atlas class sync is in progress",
+    "description": ""
+  },
   "syncWithCanvasIsComplete": {
     "message": "Sync with Canvas is Complete.",
     "description": ""
   },
   "syncWithCleverIsComplete": {
     "message": "Sync with Clever is complete.",
+    "description": ""
+  },
+  "syncWithAtlasIsComplete": {
+    "message": "Sync with Atlas is complete.",
     "description": ""
   },
   "classSuccessfullyUnarchived": {
@@ -1561,6 +1569,10 @@
   },
   "classSyncWithCanvasFailed": {
     "message": "Class sync with Canvas failed",
+    "description": ""
+  },
+  "classSyncWithAtlasFailed": {
+    "message": "Class sync with Atlas failed",
     "description": ""
   },
   "failedToFetchCleverClasses": {

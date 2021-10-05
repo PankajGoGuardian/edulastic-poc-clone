@@ -59,6 +59,8 @@ const Option = Select.Option
 const CANVAS = 'canvas'
 const GOOGLE = 'google'
 const CLEVER = 'clever'
+const ATLAS = 'atlas'
+const CLEVER_RESYNC = 'clever resync'
 
 const modalStatus = {}
 
@@ -83,6 +85,8 @@ const Header = ({
   showCoteacherModal,
   setUpdateCoTeacherModal,
   orgId,
+  syncClassWithAtlas,
+  isCleverDistrict,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -214,11 +218,15 @@ const Header = ({
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId
   const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
+  const showAtlasReSyncButton = showSyncButtons && atlasId
+  const showCleverReSyncButton = showSyncButtons && cleverId && isCleverDistrict
 
   const options = {
     [CLEVER]: showCleverSyncButton,
     [GOOGLE]: showGoogleSyncButton,
     [CANVAS]: showCanvasSyncButton,
+    [ATLAS]: showAtlasReSyncButton,
+    [CLEVER_RESYNC]: showCleverReSyncButton,
   }
 
   Object.keys(options).forEach((o) => {
@@ -260,6 +268,10 @@ const Header = ({
     } else if (syncType === 'canvas') {
       handleSyncWithCanvas()
     }
+  }
+
+  const handleAtlasSync = () => {
+    syncClassWithAtlas({ groupIds: [selectedClass._id] })
   }
 
   useEffect(() => {
@@ -355,6 +367,28 @@ const Header = ({
                   </Option>
                 )
               }
+              if (option === ATLAS) {
+                return (
+                  <Option
+                    key={index}
+                    data-cy={`sync-option-${index}`}
+                    onClick={handleAtlasSync}
+                  >
+                    <span className="menu-label">Resync Class</span>
+                  </Option>
+                )
+              }
+              if (option === CLEVER_RESYNC) {
+                return (
+                  <Option
+                    key={index}
+                    data-cy={`sync-option-${index}`}
+                    onClick={handleCleverSync}
+                  >
+                    <span className="menu-label">Resync Class</span>
+                  </Option>
+                )
+              }
               return null
             })}
           </SelectStyled>
@@ -408,6 +442,26 @@ const Header = ({
                   style={{ marginRight: '10px' }}
                 />
                 <span>Sync with Canvas Classroom</span>
+              </EduButton>
+            )}
+            {showAtlasReSyncButton && (
+              <EduButton
+                data-cy="syncAtlasClass"
+                isBlue
+                isGhost
+                onClick={handleAtlasSync}
+              >
+                <span>RESYNC CLASS</span>
+              </EduButton>
+            )}
+            {showCleverReSyncButton && (
+              <EduButton
+                data-cy="syncCleverClass"
+                isBlue
+                isGhost
+                onClick={handleCleverSync}
+              >
+                <span>RESYNC CLASS</span>
               </EduButton>
             )}
           </>

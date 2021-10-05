@@ -8,6 +8,7 @@ import {
   getCleverClassListSelector,
   fetchCleverClassListRequestAction,
   syncClassesWithCleverAction,
+  syncClassWithAtlasAction,
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   setShowCleverSyncModalAction,
@@ -44,6 +45,7 @@ const ClassListContainer = ({
   cleverClassList,
   fetchCleverClassList,
   syncCleverClassList,
+  syncClassWithAtlas,
   getStandardsListBySubject,
   defaultGrades = [],
   defaultSubjects = [],
@@ -138,6 +140,9 @@ const ClassListContainer = ({
         showBanner={showBanner}
         setShowCleverSyncModal={setShowCleverSyncModal}
         handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+        syncClassWithAtlas={syncClassWithAtlas}
+        syncCleverClassList={syncCleverClassList}
+        refreshPage="manageClass"
       />
     </>
   )
@@ -169,6 +174,7 @@ export default connect(
   {
     fetchCleverClassList: fetchCleverClassListRequestAction,
     syncCleverClassList: syncClassesWithCleverAction,
+    syncClassWithAtlas: syncClassWithAtlasAction,
     getCanvasCourseListRequest: getCanvasCourseListRequestAction,
     getCanvasSectionListRequest: getCanvasSectionListRequestAction,
     fetchGroups: fetchGroupsAction,

@@ -53,6 +53,7 @@ import {
   deleteTestSettingRequestAction,
   updateTestSettingRequestAction,
   getIsOverrideFreezeSelector,
+  setTestSettingsListAction,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -244,9 +245,14 @@ class AssignTest extends React.Component {
   }
 
   componentWillUnmount() {
-    const { clearAssignmentSettings, setAssignments } = this.props
+    const {
+      clearAssignmentSettings,
+      setAssignments,
+      setTestSettingsList,
+    } = this.props
     clearAssignmentSettings()
     setAssignments([])
+    setTestSettingsList([])
   }
 
   componentDidUpdate(prevProps) {
@@ -909,6 +915,7 @@ const enhance = compose(
       fetchUserCustomKeypads: fetchCustomKeypadAction,
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
+      setTestSettingsList: setTestSettingsListAction,
     }
   )
 )

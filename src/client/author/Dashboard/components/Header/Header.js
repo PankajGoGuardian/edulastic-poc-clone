@@ -377,7 +377,9 @@ const HeaderSection = ({
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
-                  {!isPremiumTrialUsed ? 'Free Trial' : 'Upgrade'}
+                  {!isPremiumUser && !isPremiumTrialUsed
+                    ? 'Free Trial'
+                    : 'Upgrade'}
                 </EduButton>
               )}
             </Popover>

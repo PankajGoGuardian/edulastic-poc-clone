@@ -1582,20 +1582,14 @@ class ClassBoard extends Component {
                             </MenuItems>
                           </FeaturesSwitch>
                           {showResume && (
-                            <FeaturesSwitch
-                              inputFeatures="premium"
-                              actionOnInaccessible="hidden"
-                              groupId={classId}
+                            <MenuItems
+                              data-cy="resumeStudents"
+                              onClick={this.handleTogglePauseStudents(false)}
+                              disabled={disableMarkAbsent}
                             >
-                              <MenuItems
-                                data-cy="resumeStudents"
-                                onClick={this.handleTogglePauseStudents(false)}
-                                disabled={disableMarkAbsent}
-                              >
-                                <IconPlay />
-                                <span>Resume Students</span>
-                              </MenuItems>
-                            </FeaturesSwitch>
+                              <IconPlay />
+                              <span>Resume Students</span>
+                            </MenuItems>
                           )}
 
                           <MenuItems

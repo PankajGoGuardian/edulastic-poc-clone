@@ -208,7 +208,7 @@ class DisneyCardContainer extends Component {
          */
         const enrollMentFlag =
           student.isEnrolled === false ? (
-            <Tooltip title="Not Enrolled">
+            <Tooltip title="Unenrolled from class">
               <span>
                 <ExclamationMark />
               </span>
@@ -219,7 +219,7 @@ class DisneyCardContainer extends Component {
         const isAcitveStudentUnassigned =
           student.isAssigned === false && student.isEnrolled
         const unAssignedMessage = isAcitveStudentUnassigned ? (
-          <Tooltip title="Unassigned">
+          <Tooltip title="Unassigned from Assignment">
             <span>
               <ExclamationMark />
             </span>

@@ -1175,14 +1175,15 @@ export const getAggregateByQuestion = (entities, studentId) => {
   if (!entities) {
     return {}
   }
-  const total = entities.filter((x) => x.isAssigned && x.isEnrolled).length
+  const total = entities.filter((x) => x.isAssigned).length
   const submittedEntities = entities.filter(
     (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
   )
   const activeEntities = entities.filter(
     (x) =>
-      x.UTASTATUS === testActivityStatus.START ||
-      x.UTASTATUS === testActivityStatus.SUBMITTED
+      (x.UTASTATUS === testActivityStatus.START ||
+        x.UTASTATUS === testActivityStatus.SUBMITTED) &&
+      x.isAssigned
   )
   let questionsOrder = {}
   if (entities.length > 0) {
@@ -1218,7 +1219,6 @@ export const getAggregateByQuestion = (entities, studentId) => {
       : scorePercentagePerStudent[mid - 1]
   const submittedScoresAverage =
     activeEntities.length > 0 ? scores / activeEntities.length : 0
-  // const startedEntities = entities.filter(x => x.status !== "notStarted");
   if (studentId) {
     entities = entities.filter((x) => x.studentId === studentId)
   }
@@ -1313,7 +1313,7 @@ export const getTestActivitySelector = createSelector(
           redirectedDates[`class_${classId}`] ||
           null,
       }))
-      .filter((item) => (item.isAssigned && item.isEnrolled) || showAll)
+      .filter((item) => item.isAssigned || showAll)
 )
 
 export const getLCBStudentsList = createSelector(

@@ -156,9 +156,6 @@ function capitalizeIt(str) {
 }
 
 function getStudentFilterCategory(x) {
-  if (x.isEnrolled === false) {
-    return 'UNASSIGNED'
-  }
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
   }
@@ -193,8 +190,8 @@ function filterStudentsByStatus(selectedStatus) {
     if (selectedStatus === 'ALL') {
       return true
     }
-    if (selectedStatus === 'ALL ACTIVE') {
-      return x.isAssigned && x.isEnrolled
+    if (selectedStatus === 'ALL ASSIGNED') {
+      return x.isAssigned
     }
     return getStudentFilterCategory(x) === selectedStatus
   }
@@ -236,7 +233,7 @@ class ClassBoard extends Component {
       showScoreImporvement: false,
       hasStickyHeader: false,
       toggleBackTopIcon: false,
-      studentFilter: 'ALL ACTIVE',
+      studentFilter: 'ALL ASSIGNED',
     }
   }
 
@@ -1465,7 +1462,7 @@ class ClassBoard extends Component {
                         height="24px"
                       >
                         {[
-                          'ALL ACTIVE',
+                          'ALL ASSIGNED',
                           'NOT STARTED',
                           'IN PROGRESS',
                           'SUBMITTED',
@@ -1482,10 +1479,9 @@ class ClassBoard extends Component {
                             style={{ fontSize: 11 }}
                           >
                             {capitalizeIt(x)} (
-                            {x === 'ALL ACTIVE'
-                              ? testActivity.filter(
-                                  (_x) => _x.isAssigned && _x.isEnrolled
-                                ).length
+                            {x === 'ALL ASSIGNED'
+                              ? testActivity.filter((_x) => _x.isAssigned)
+                                  .length
                               : studentFilterCategoryCounts[x] || 0}
                             )
                           </FilterSelect.Option>

@@ -28,7 +28,7 @@ export const CreateClassTitle = styled.p`
   color: ${greyThemeDark1};
 `
 export const InfoText = styled.p`
-  font-size: 16px;
+  font-size: 15px;
   max-width: 270px;
   color: ${greyThemeDark1};
 `

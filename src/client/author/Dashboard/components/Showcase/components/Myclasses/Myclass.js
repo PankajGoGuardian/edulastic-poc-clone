@@ -17,6 +17,7 @@ import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import notification from '@edulastic/common/src/components/Notification'
 import { segmentApi } from '@edulastic/api'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
+import { signUpState } from '@edulastic/constants'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
@@ -111,6 +112,9 @@ const MyClasses = ({
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const { currentSignUpState } = user
+  const isSignupCompleted = currentSignUpState === signUpState.DONE
 
   const saveRecommendedTests = (_data) => {
     const data = _data.map((x) => {
@@ -695,8 +699,10 @@ const MyClasses = ({
           handleBannerModalClose={() => setShowBannerModal(null)}
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
+          setShowBannerModal={setShowBannerModal}
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
+          isSignupCompleted={isSignupCompleted}
         />
       )}
       <Classes

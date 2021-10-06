@@ -1814,6 +1814,11 @@ class Board {
           fixed,
         })
 
+      case NumberLineDotPlotPoint.jxgType: {
+        return NumberLineDotPlotPoint.render(this, object, {
+          fixed,
+        })
+      }
       default:
         throw new Error('Unknown element:', object)
     }

@@ -513,7 +513,10 @@ export function flat2nestedConfig(config) {
             dimensions = {},
           } = element
 
-          if (type === CONSTANT.TOOLS.EQUATION) {
+          if (
+            type === CONSTANT.TOOLS.EQUATION ||
+            type === CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT
+          ) {
             acc[id] = element
             return acc
           }

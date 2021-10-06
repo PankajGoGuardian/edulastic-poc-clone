@@ -605,9 +605,17 @@ class GraphDisplay extends Component {
       disableResponse,
       elementsIsCorrect,
       setQuestionData,
+      bgShapes,
     } = this.props
 
-    const { uiStyle, canvas, toolbar, numberlineAxis } = graphData
+    const {
+      uiStyle,
+      canvas,
+      toolbar,
+      numberlineAxis,
+      background_shapes,
+      backgroundImage,
+    } = graphData
 
     return {
       canvas: {
@@ -704,10 +712,15 @@ class GraphDisplay extends Component {
         gridX: safeParseFloat(uiStyle.xDistance),
         showGrid: uiStyle.showGrid ? uiStyle.showGrid : true,
       },
+      backgroundShapes: {
+        values: bgShapes ? [] : background_shapes || [],
+        showPoints: !!backgroundImage.showShapePoints,
+      },
       evaluation,
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
       elements,
+      bgShapes,
       altAnswerId,
       view,
       previewTab,

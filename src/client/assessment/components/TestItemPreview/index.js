@@ -413,7 +413,6 @@ class TestItemPreview extends Component {
             width: '100%',
             overflow: !isStudentAttempt && !isPrintPreview && 'auto', // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             background: isExpressGrader && hasDrawingResponse ? white : null,
-            'margin-bottom': hasDrawingResponse && '10px',
           }}
           className="__print-item-fix-width"
         >

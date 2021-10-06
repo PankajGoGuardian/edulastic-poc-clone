@@ -34,7 +34,6 @@ const { releaseGradeLabels } = testConstants
 
 const ReportListContent = ({
   item = {},
-  flag,
   test,
   testActivityById,
   hasUserWork,
@@ -120,41 +119,41 @@ const ReportListContent = ({
   }
 
   return (
-    <AssignmentsContent flag={flag} hasCollapseButtons={hasCollapseButtons}>
+    <AssignmentsContent>
       <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
         <AssignmentContentWrapper hasCollapseButtons={hasCollapseButtons}>
-          <Wrapper>
-            {hasUserWork && (
-              <Button onClick={handleShowStudentWork}> Show My Work </Button>
-            )}
+          {hasUserWork && (
+            <ShowStudentWorkButton onClick={handleShowStudentWork}>
+              Show My Work
+            </ShowStudentWorkButton>
+          )}
 
-            <TestItemPreview
-              view="preview"
-              preview={preview}
-              cols={itemRows || []}
-              questions={allWidgets}
-              verticalDivider={item.verticalDivider}
-              scrolling={item.scrolling}
-              releaseScore={releaseScore}
-              showFeedback
-              isGrade
-              showCollapseBtn
-              disableResponse
-              isStudentReport
-              viewComponent="studentReport"
-              evaluation={evaluation}
-              highlights={highlights}
-              userWork={userWork}
-              attachments={attachments}
-              scratchpadDimensions={dimensions}
-              itemLevelScoring={item?.itemLevelScoring}
-              multipartItem={item?.multipartItem || false}
-            />
-            {/* we may need to bring hint button back */}
-            {/* <PaddingDiv>
+          <TestItemPreview
+            view="preview"
+            preview={preview}
+            cols={itemRows || []}
+            questions={allWidgets}
+            verticalDivider={item.verticalDivider}
+            scrolling={item.scrolling}
+            releaseScore={releaseScore}
+            showFeedback
+            isGrade
+            showCollapseBtn
+            disableResponse
+            isStudentReport
+            viewComponent="studentReport"
+            evaluation={evaluation}
+            highlights={highlights}
+            userWork={userWork}
+            attachments={attachments}
+            scratchpadDimensions={dimensions}
+            itemLevelScoring={item?.itemLevelScoring}
+            multipartItem={item?.multipartItem || false}
+          />
+          {/* we may need to bring hint button back */}
+          {/* <PaddingDiv>
               <Hints questions={get(item, [`data`, `questions`], [])} />
             </PaddingDiv> */}
-          </Wrapper>
         </AssignmentContentWrapper>
         <TestPreviewModal
           isModalVisible={isPreviewModalVisible}
@@ -203,14 +202,13 @@ ReportListContent.defaultProps = {
   item: [],
 }
 
-const Wrapper = styled.div`
-  padding: 5px;
+const ShowStudentWorkButton = styled(Button)`
+  margin: 0px 16px;
 `
 
 const AssignmentsContent = styled.div`
   border-radius: 10px;
   z-index: 0;
   position: relative;
-  margin: ${(props) =>
-    props.hasCollapseButtons ? '0px 30px 30px 45px' : '0px 0px 20px'};
+  margin: 0px 0px 20px;
 `

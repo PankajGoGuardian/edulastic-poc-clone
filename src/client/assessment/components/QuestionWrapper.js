@@ -998,7 +998,7 @@ const getPadding = ({
     return '8px 35px'
   }
   if (isStudentReport) {
-    return '8px 100px 8px 16px'
+    return '8px 16px'
   }
   if (isLCBView) {
     return '8px 28px 8px'

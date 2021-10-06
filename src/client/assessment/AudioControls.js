@@ -295,6 +295,7 @@ const AudioControls = ({
             title={!btnWithText ? playPauseToolTip : ''}
             loading={loading}
             height="40px"
+            ml="0px"
             IconBtn={!btnWithText}
             onClick={handlePlayPauseAudio}
             disabled={isPremiumContentWithoutAccess}
@@ -369,7 +370,7 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   ${({ btnWithText, hideVisibility }) => {
     const visibility = hideVisibility ? 'hidden' : 'visible'
     const display = btnWithText ? 'flex' : 'block'

@@ -44,6 +44,8 @@ import {
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
+import { getTestsSelector } from '../../../../../src/selectors/assignments'
+import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -81,6 +83,8 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
+  tests,
+  loadAssignments,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -109,6 +113,7 @@ const MyClasses = ({
   }, [showCleverSyncModal])
   useEffect(() => {
     getTeacherDashboard()
+    loadAssignments()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
@@ -688,6 +693,8 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
+  const showRecommendedTests = tests.length > 0 && recommendedTests?.length > 0
+
   return (
     <MainContentWrapper padding="30px 25px">
       {!loading && allActiveClasses?.length === 0 && (
@@ -706,7 +713,7 @@ const MyClasses = ({
         emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
       />
-      {recommendedTests?.length > 0 && (
+      {showRecommendedTests && (
         <TestRecommendations
           recommendations={recommendedTests}
           setShowTestCustomizerModal={setShowTestCustomizerModal}
@@ -818,6 +825,7 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       isDemoPlayground: isDemoPlaygroundUser(state),
+      tests: getTestsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -829,6 +837,7 @@ export default compose(
       startTrialAction: slice.actions.startTrialAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
       setUser: setUserAction,
+      loadAssignments: receiveAssignmentsAction,
     }
   )
 )(MyClasses)

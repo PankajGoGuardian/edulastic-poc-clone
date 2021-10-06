@@ -65,6 +65,7 @@ const SearchFilters = Form.create({
                 height="36px"
                 width="250px"
                 margin="0px 5px 0px 0px"
+                data-cy="selectSubscriptionType"
                 placeholder="Select a filter to search"
               >
                 {MANAGE_SUBSCRIPTION_SEARCH_TYPE.map(({ type, name }) => (
@@ -80,7 +81,7 @@ const SearchFilters = Form.create({
               initialValue: undefined,
             })(
               <SelectInputStyled
-                data-cy="searchOrganisation"
+                data-cy="searchForOrganisation"
                 height="36px"
                 width="250px"
                 margin="0px 5px 0px 0px"
@@ -121,7 +122,7 @@ const SearchFilters = Form.create({
               initialValue: !usersList || undefined,
             })(
               <SelectInputStyled
-                data-cy="addUsersInputField"
+                data-cy="searchByUsername"
                 placeholder="Search by username"
                 size="large"
                 notFoundContent={null}

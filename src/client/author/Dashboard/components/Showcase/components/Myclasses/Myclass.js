@@ -693,7 +693,7 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const showRecommendedTests = tests.length > 0 && recommendedTests?.length > 0
+  const showRecommendedTests = tests.length >= 5 && recommendedTests?.length > 0
 
   return (
     <MainContentWrapper padding="30px 25px">

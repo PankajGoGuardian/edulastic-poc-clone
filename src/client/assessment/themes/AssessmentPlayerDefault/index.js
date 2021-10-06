@@ -511,6 +511,7 @@ class AssessmentPlayerDefault extends React.Component {
         }}
       >
         <Container
+          id="assessment-player-wrapper"
           scratchPadMode={scratchPadMode}
           data-cy="assessment-player-default-wrapper"
         >

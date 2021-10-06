@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { greenDark } from '@edulastic/colors'
 import { IconDemoAccGreen, IconPlayButton } from '@edulastic/icons'
@@ -11,11 +11,21 @@ import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 const EdulasticOverviewModel = ({
   handleBannerModalClose,
   isBannerModalVisible,
+  setShowBannerModal,
 }) => {
   const [isVideoPreview, setIsVideoPreview] = useState(false)
   const handleVideoClick = () => {
     setIsVideoPreview(true)
   }
+
+  const { title } = isBannerModalVisible || {}
+  const showVideoModal = title === 'Quick Start Guide'
+
+  useEffect(() => {
+    if (showVideoModal) {
+      setIsVideoPreview(true)
+    }
+  }, [])
 
   const handleDemoClick = (event) => {
     event.stopPropagation()
@@ -24,6 +34,9 @@ const EdulasticOverviewModel = ({
 
   const handlePreviewModalClose = () => {
     setIsVideoPreview(false)
+    if (showVideoModal) {
+      setShowBannerModal(null)
+    }
   }
   return isVideoPreview ? (
     <EmbeddedVideoPreviewModal
@@ -36,7 +49,7 @@ const EdulasticOverviewModel = ({
       headerText="Getting Started"
       closeCallback={handleBannerModalClose}
       hideFooter
-      isVisible={!isVideoPreview}
+      isVisible={isBannerModalVisible}
     >
       <ModalBody>
         <ContentHeaderDiv>

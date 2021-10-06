@@ -4,6 +4,7 @@ import { debounce } from 'lodash'
 // components
 import { white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
+import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import {
   ScrollbarContainer,
   Slides,
@@ -23,6 +24,8 @@ const BannerSlider = ({
   isBannerModalVisible,
   handleSparkClick,
   accessibleItembankProductIds = [],
+  isSignupCompleted,
+  setShowBannerModal,
 }) => {
   const [showArrow, setShowArrow] = useState(false)
   const scrollBarRef = useRef(null)
@@ -50,13 +53,75 @@ const BannerSlider = ({
 
   const bannerLength = bannerSlides.length
 
-  const handleBannerClick = (config, description, isSparkBannerTile) => {
+  const handleBannerClick = (
+    evt,
+    config,
+    description,
+    isSparkBannerTile,
+    isDemoPlaygroundTile
+  ) => {
     if (isSparkBannerTile) {
       handleSparkClick(config.subscriptionData.productId)
       return
     }
+    if (isDemoPlaygroundTile) {
+      evt.stopPropagation()
+      const elementClasses = evt.currentTarget.getAttribute('class')
+      proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
+      return
+    }
     bannerActionHandler(config.filters[0], description)
   }
+
+  const startupBannerTiles = [
+    {
+      config: {
+        filters: [
+          {
+            action: '0',
+            data: {
+              title: 'Quick Start Guide',
+              url: 'https://youtu.be/5UENLg2_Nw4',
+              contentType: 'tests',
+            },
+          },
+        ],
+        order: 1,
+      },
+      tags: ['FREE'],
+      states: [],
+      imageUrl:
+        'https://cdn.edulastic.com/default/dashboard-assets/get-started.png',
+      type: 'BANNER',
+      description: '2 Min Overview',
+      _id: '6135d26f002c7b4720011111',
+    },
+    {
+      config: {
+        filters: [
+          {
+            action: '2',
+            data: {
+              title: 'Get Started Video',
+              externalUrl: 'https://www.google.com',
+              contentType: 'tests',
+            },
+          },
+        ],
+        order: 1,
+      },
+      tags: ['FREE'],
+      states: [],
+      imageUrl:
+        'https://cdn.edulastic.com/default/dashboard-assets/get-started.png',
+      type: 'BANNER',
+      description: 'Demo Playground',
+      _id: '6135d26f002c7b4720022222',
+    },
+  ]
+
+  const formattedBannerTiles =
+    (isSignupCompleted ? bannerSlides : startupBannerTiles) || []
 
   return (
     <>
@@ -73,7 +138,7 @@ const BannerSlider = ({
         )}
         <ScrollbarContainer className="scrollbar-container" ref={scrollBarRef}>
           <SlideContainer data-cy="sliderContainer">
-            {bannerSlides.map((slide, index) => {
+            {formattedBannerTiles.map((slide, index) => {
               const isSparkTile = slide.description
                 ?.toLowerCase()
                 ?.includes('spark')
@@ -82,17 +147,23 @@ const BannerSlider = ({
                 ?.toLowerCase()
                 ?.includes('cpm')
 
+              const isDemoPlaygroundTile = slide.description
+                ?.toLowerCase()
+                ?.includes('playground')
+
               return (
                 <Slides
                   data-cy="banners"
                   className={bannerLength === index + 1 ? 'last' : ''}
                   bgImage={slide.imageUrl}
                   key={slide._id}
-                  onClick={() =>
+                  onClick={(evt) =>
                     handleBannerClick(
+                      evt,
                       slide.config,
                       slide.description,
-                      isSparkTile || isCPMTile
+                      isSparkTile || isCPMTile,
+                      isDemoPlaygroundTile
                     )
                   }
                 >
@@ -108,6 +179,8 @@ const BannerSlider = ({
                         Start a Free Trial
                       </LearnMore>
                     )
+                  ) : isDemoPlaygroundTile ? (
+                    <LearnMore data-cy="explore">Explore</LearnMore>
                   ) : (
                     <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   )}
@@ -124,6 +197,7 @@ const BannerSlider = ({
         <EdulasticOverviewModel
           handleBannerModalClose={handleBannerModalClose}
           isBannerModalVisible={isBannerModalVisible}
+          setShowBannerModal={setShowBannerModal}
         />
       )}
     </>

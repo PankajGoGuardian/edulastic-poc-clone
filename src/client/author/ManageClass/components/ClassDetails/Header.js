@@ -472,6 +472,12 @@ const Header = ({
             Add Co-Teacher
           </EduButton>
         )}
+        {active === 1 && (
+          <EduButton isBlue onClick={() => history.push('/author/tests')}>
+            <IconAssignment />
+            ASSIGN A TEST
+          </EduButton>
+        )}
         {active !== 1 && (
           <>
             <EduButton isBlue onClick={() => getAssignmentsByClass(_id)()}>

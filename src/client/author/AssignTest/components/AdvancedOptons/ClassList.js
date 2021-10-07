@@ -460,6 +460,7 @@ class ClassList extends React.Component {
               mode="multiple"
               placeholder="All Course"
               onChange={changeField('courseIds')}
+              autoClearSearchValue={false}
               showSearch
               tagsEllipsis
               onSearch={this.handleCourseSearch}

@@ -70,7 +70,7 @@ const EdulasticOverviewModel = ({
           <StyledExtraResourceContentDiv>
             <ExtraResourceSpan>
               <a
-                href="https://www.youtube.com/watch?v=A5785Ai_ARI"
+                href="https://www.youtube.com/watch?v=A5785Ai_ARI&utm_source=Application&utm_medium=Clicks&utm_campaign=Dashboard_Quick_Start_Overview"
                 target="_blank"
                 rel="noreferrer"
                 data-cy="edu-tutorials"
@@ -110,7 +110,7 @@ const EdulasticOverviewModel = ({
             </ExtraResourceSpan>{' '}
             <ExtraResourceSpan width="42%">
               <a
-                href="https://www.youtube.com/channel/UC0K2OzIBLWfFvRNXX0ts3_A"
+                href="https://www.youtube.com/channel/UC0K2OzIBLWfFvRNXX0ts3_A?utm_source=Application&utm_medium=Clicks&utm_campaign=Dashboard_Quick_Start_Overview"
                 target="_blank"
                 rel="noreferrer"
                 data-cy="edu-talk-vid"

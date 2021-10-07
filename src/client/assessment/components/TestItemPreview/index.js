@@ -330,6 +330,25 @@ class TestItemPreview extends Component {
     return (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
   }
 
+  get isPassageInExpandedView() {
+    const {
+      cols,
+      isExpandedView = false,
+      isPassageWithMultipleQuestions = false,
+    } = this.props
+    return isPassageWithMultipleQuestions && isExpandedView && cols.length === 1
+  }
+
+  get colWidthValue() {
+    const { collapseDirection } = this.state
+    const { cols } = this.props
+
+    if (this.isPassageInExpandedView) {
+      return '50%'
+    }
+    return collapseDirection || cols.length == 1 ? '100%' : '50%'
+  }
+
   render() {
     const {
       cols,
@@ -431,6 +450,7 @@ class TestItemPreview extends Component {
                 display: 'flex',
                 flexDirection:
                   this.showStackedView || isPrintPreview ? 'column' : 'row',
+                justifyContent: this.isPassageInExpandedView ? 'flex-end' : '',
               }}
             >
               {dataSource.map((col, i) => {
@@ -458,9 +478,7 @@ class TestItemPreview extends Component {
                       metaData={metaData}
                       preview={preview}
                       scratchPadMode={scratchPadMode}
-                      colWidth={
-                        collapseDirection || cols.length == 1 ? '100%' : '50%'
-                      } // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
+                      colWidth={this.colWidthValue} // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
                       multiple={cols.length > 1}
                       style={this.getStyle(i !== cols.length - 1)}
                       windowWidth={windowWidth}
@@ -527,6 +545,8 @@ TestItemPreview.propTypes = {
   style: PropTypes.object,
   questions: PropTypes.object.isRequired,
   student: PropTypes.object,
+  isExpandedView: PropTypes.bool,
+  isPassageWithMultipleQuestions: PropTypes.bool,
 }
 
 TestItemPreview.defaultProps = {
@@ -535,6 +555,8 @@ TestItemPreview.defaultProps = {
   scrolling: false,
   style: { padding: 0, display: 'flex' },
   student: {},
+  isExpandedView: false,
+  isPassageWithMultipleQuestions: false,
 }
 
 const enhance = compose(

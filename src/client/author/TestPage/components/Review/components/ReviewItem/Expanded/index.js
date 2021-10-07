@@ -83,6 +83,13 @@ const Expanded = ({
     get(scoring, testItem._id, 0)
   )
 
+  const testItemQuestions = get(testItem, 'data.questions', [])
+  const isPassageWithMultipleQuestions =
+    (testItem?.isPassageWithQuestions &&
+      testItemQuestions.length > 1 &&
+      !testItem?.itemLevelScoring) ||
+    false
+
   if (testItem.itemLevelScoring || mobile) {
     points = get(scoring, testItem._id, itemLevelScoring)
   } else {
@@ -237,6 +244,10 @@ const Expanded = ({
                     premiumCollectionWithoutAccess={
                       premiumCollectionWithoutAccess
                     }
+                    isPassageWithMultipleQuestions={
+                      isPassageWithMultipleQuestions
+                    }
+                    isExpandedView
                   />
                 </div>
               </AnswerContext.Provider>

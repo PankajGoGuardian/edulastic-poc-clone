@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { debounce } from 'lodash'
 
 // components
-import { white } from '@edulastic/colors'
+import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
 import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import {
@@ -16,6 +16,7 @@ import {
   SlideDescription,
 } from './styled'
 import EdulasticOverviewModel from '../EdulasticOverview/EdulasticOverviewModel'
+import { TextWrapper } from '../../../../../styledComponents'
 
 const BannerSlider = ({
   bannerSlides,
@@ -24,7 +25,6 @@ const BannerSlider = ({
   isBannerModalVisible,
   handleSparkClick,
   accessibleItembankProductIds = [],
-  isSignupCompleted,
   setShowBannerModal,
 }) => {
   const [showArrow, setShowArrow] = useState(false)
@@ -73,58 +73,16 @@ const BannerSlider = ({
     bannerActionHandler(config.filters[0], description)
   }
 
-  const startupBannerTiles = [
-    {
-      config: {
-        filters: [
-          {
-            action: '0',
-            data: {
-              title: 'Quick Start Guide',
-              url: 'https://youtu.be/5UENLg2_Nw4',
-              contentType: 'tests',
-            },
-          },
-        ],
-        order: 1,
-      },
-      tags: ['FREE'],
-      states: [],
-      imageUrl:
-        'https://cdn.edulastic.com/default/dashboard-assets/get-started.png',
-      type: 'BANNER',
-      description: '2 Min Overview',
-      _id: '6135d26f002c7b4720011111',
-    },
-    {
-      config: {
-        filters: [
-          {
-            action: '2',
-            data: {
-              title: 'Get Started Video',
-              externalUrl: 'https://www.google.com',
-              contentType: 'tests',
-            },
-          },
-        ],
-        order: 1,
-      },
-      tags: ['FREE'],
-      states: [],
-      imageUrl:
-        'https://cdn.edulastic.com/default/dashboard-assets/get-started.png',
-      type: 'BANNER',
-      description: 'Demo Playground',
-      _id: '6135d26f002c7b4720022222',
-    },
-  ]
-
-  const formattedBannerTiles =
-    (isSignupCompleted ? bannerSlides : startupBannerTiles) || []
-
   return (
     <>
+      <TextWrapper
+        fw="bold"
+        size="16px"
+        color={title}
+        style={{ marginBottom: '1rem' }}
+      >
+        Quick Introduction to Edulastic
+      </TextWrapper>
       <SliderContainer>
         {showArrow && (
           <>
@@ -138,7 +96,7 @@ const BannerSlider = ({
         )}
         <ScrollbarContainer className="scrollbar-container" ref={scrollBarRef}>
           <SlideContainer data-cy="sliderContainer">
-            {formattedBannerTiles.map((slide, index) => {
+            {bannerSlides.map((slide, index) => {
               const isSparkTile = slide.description
                 ?.toLowerCase()
                 ?.includes('spark')
@@ -167,6 +125,9 @@ const BannerSlider = ({
                     )
                   }
                 >
+                  <SlideDescription data-cy={slide.description}>
+                    {slide.description}
+                  </SlideDescription>
                   {isSparkTile ? (
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
@@ -184,9 +145,6 @@ const BannerSlider = ({
                   ) : (
                     <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   )}
-                  <SlideDescription data-cy={slide.description}>
-                    {slide.description}
-                  </SlideDescription>
                 </Slides>
               )
             })}

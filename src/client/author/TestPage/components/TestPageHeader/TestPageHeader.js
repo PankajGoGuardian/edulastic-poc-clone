@@ -847,6 +847,11 @@ TestPageHeader.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   editEnable: PropTypes.bool.isRequired,
   onAssign: PropTypes.func.isRequired,
+  setDisableAlert: PropTypes.func,
+}
+
+TestPageHeader.defaultProps = {
+  setDisableAlert: () => {},
 }
 
 const enhance = compose(

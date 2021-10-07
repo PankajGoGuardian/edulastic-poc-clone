@@ -456,6 +456,7 @@ class Container extends React.Component {
           // onShowSource={this.handleNavChange("source")}
           onAssign={this.handleAssign}
           updated={updated}
+          validateTest={this.validateTest}
         />
         {this.renderContent()}
       </>

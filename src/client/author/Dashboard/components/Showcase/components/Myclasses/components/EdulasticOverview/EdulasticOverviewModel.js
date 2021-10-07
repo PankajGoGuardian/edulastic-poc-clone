@@ -34,9 +34,7 @@ const EdulasticOverviewModel = ({
 
   const handlePreviewModalClose = () => {
     setIsVideoPreview(false)
-    if (showVideoModal) {
-      setShowBannerModal(null)
-    }
+    setShowBannerModal(null)
   }
   return isVideoPreview ? (
     <EmbeddedVideoPreviewModal

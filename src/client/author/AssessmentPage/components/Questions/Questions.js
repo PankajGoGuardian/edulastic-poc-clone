@@ -171,7 +171,7 @@ const mathData = {
     type: 'floating-keyboard',
   },
   numberPad: defaultNumberPad,
-  symbols: ['basic', 'units_si', 'units_us'],
+  symbols: ['basic_matrices', 'units_si', 'units_us'],
   template: '',
 }
 

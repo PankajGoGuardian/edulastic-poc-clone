@@ -560,7 +560,7 @@ class App extends Component {
     const { showAppUpdate, canShowCliBanner, showSelectStates } = this.state
     // changing banner if demo playgoud account
     const bannerText = isDemoAccountProxy
-      ? 'This is a demo account. Feel free to explore all the features. Any data modification will be reset at the end of day.'
+      ? 'This is a demo account. Feel free to explore all the features. Any data modification will be reset shortly.'
       : `You are currently acting as ${fullName} (${_userRole})`
     const bannerButtonText = isDemoAccountProxy
       ? 'Close demo account'

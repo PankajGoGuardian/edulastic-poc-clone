@@ -330,8 +330,9 @@ const Preview = ({
   const answerContextConfig = useContext(AnswerContext)
   const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
+  const isV1Multipart = (rows || []).some((row) => row.isV1Multipart)
   const scoringProps = {
-    multipartItem,
+    multipartItem: multipartItem || isV1Multipart,
     itemLevelScoring,
     isPassageWithQuestions,
   }

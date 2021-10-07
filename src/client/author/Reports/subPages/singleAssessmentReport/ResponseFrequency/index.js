@@ -188,7 +188,10 @@ const ResponseFrequency = ({
             </Col>
             <Col className="question-container">
               <p>What items are misunderstood?</p>
-              <p>Highlight response in yellow if incorrect choice% is above:</p>
+              <p>
+                Highlight incorrect answer choices with gray if response% is
+                above:
+              </p>
               <Row type="flex" justify="start" align="middle">
                 <Col className="answer-slider-percentage">
                   <span>{misunderstoodItems}%</span>

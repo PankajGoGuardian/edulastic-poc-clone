@@ -166,7 +166,7 @@ export const StyledTable = styled(Table)`
 `
 
 export const StyledResponseTagContainer = styled(Col)`
-  flex-grow: 1;
+  flex-basis: 20%;
   @media print {
     margin-bottom: 10px;
   }

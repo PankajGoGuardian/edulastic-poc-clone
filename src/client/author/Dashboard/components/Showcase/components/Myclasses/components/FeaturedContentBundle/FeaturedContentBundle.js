@@ -11,10 +11,27 @@ const FeaturedContentBundle = ({
   featuredBundles,
   handleFeatureClick,
   emptyBoxCount,
+  testLists,
+  isSignupCompleted,
 }) => {
   if (!featuredBundles.length) {
     return null
   }
+
+  const showFreebundles = !(isSignupCompleted && testLists?.length >= 3)
+
+  const getFreeBundles = featuredBundles.filter(
+    (x) => !x.config.subscriptionData
+  )
+
+  const getPremiumBundles = featuredBundles.filter(
+    (x) => x.config.subscriptionData
+  )
+
+  const filteredfeaturedBundles =
+    (showFreebundles
+      ? getFreeBundles
+      : [...getFreeBundles, ...getPremiumBundles]) || []
 
   return (
     <FeatureContentWrapper>
@@ -24,10 +41,10 @@ const FeaturedContentBundle = ({
         color={title}
         style={{ marginBottom: '1rem' }}
       >
-        Featured Content Bundles
+        Pre-built Tests you can use
       </TextWrapper>
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
-        {featuredBundles.map((bundle) => (
+        {filteredfeaturedBundles.map((bundle) => (
           <Bundle handleClick={handleFeatureClick} bundle={bundle} />
         ))}
         {emptyBoxCount.map((index) => (

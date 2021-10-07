@@ -145,6 +145,7 @@ const PointInput = ({
         disabled={isDisabled}
         value={disabled && !isRubricQuestion ? '' : value}
         onChange={onChange}
+        onBlur={(e) => onChange(parseFloat(e?.target?.value, 10), true)}
         data-cy="point-update"
       />
     </PointsInputWrapper>

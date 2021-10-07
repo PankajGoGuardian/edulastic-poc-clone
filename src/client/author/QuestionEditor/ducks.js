@@ -9,7 +9,16 @@ import {
   select,
   take,
 } from 'redux-saga/effects'
-import { cloneDeep, values, get, omit, set, uniqBy, uniq } from 'lodash'
+import {
+  cloneDeep,
+  values,
+  get,
+  omit,
+  set,
+  uniqBy,
+  uniq,
+  isEmpty,
+} from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
 import {
@@ -49,6 +58,7 @@ import {
   SET_RUBRIC_ID,
   UPDATE_QUESTION,
   UPDATE_QUESTION_REQUEST,
+  UPDATE_SCORE_AND_VALIDATION,
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
   getQuestionsArraySelector,
@@ -165,6 +175,11 @@ export const saveQuestionAction = (data) => ({
 export const setQuestionDataAction = (question) => ({
   type: UPDATE_QUESTION_REQUEST,
   payload: question,
+})
+
+export const updateScoreAndValidationAction = (score) => ({
+  type: UPDATE_SCORE_AND_VALIDATION,
+  payload: { score },
 })
 
 export const setFirstMountAction = (id) => ({
@@ -1076,52 +1091,51 @@ function* loadQuestionSaga({ payload }) {
   }
 }
 
-// const changeValidationWhenUnscored = (payload, oldQuestion) => {
-//   let hasZeroInAltScore = false
-//   const altResponses = get(payload, 'validation.altResponses', [])
-//   const score = get(payload, 'validation.validResponse.score', 0)
-//   const oldUnscored = get(oldQuestion, 'validation.unscored', false)
-//   if (altResponses.length) {
-//     hasZeroInAltScore = altResponses.some((altResp) => {
-//       return altResp.score == 0
-//     })
-//   }
-//   const isUnscored = score === 0 || hasZeroInAltScore
+const changeValidationWhenUnscored = (score, currentQuestion) => {
+  const isUnscored = score === 0
+  if (isUnscored) {
+    return produce(currentQuestion, (draft) => {
+      draft.validation.validResponse.score = 0
+      draft.validation.altResponses?.forEach((altResp) => {
+        altResp.score = 0
+      })
+      if (draft.validation?.maxScore) {
+        draft.validation.maxScore = 0
+      }
 
-//   // notify only if unscored checkbox checked or score given is 0
-//   if (oldUnscored === false && isUnscored) {
-//     notification({ type: 'warn', msg: 'Marked as a practice question' })
-//   }
+      draft.validation.unscored = isUnscored
+    })
+  }
+  return produce(currentQuestion, (draft) => {
+    draft.validation.unscored = isUnscored
+  })
+}
 
-//   if (isUnscored) {
-//     return produce(payload, (draft) => {
-//       draft.validation.validResponse.score = 0
-//       draft.validation.altResponses?.forEach((altResp) => {
-//         altResp.score = 0
-//       })
-//       if (draft.validation?.maxScore) {
-//         draft.validation.maxScore = 0
-//       }
+function* updateScoreAndValidationSaga({ payload }) {
+  const { score } = payload || {}
+  const currentQuestion = yield select(getCurrentQuestionSelector)
+  const resourceTypes = [
+    questionType.VIDEO,
+    questionType.PASSAGE,
+    questionType.TEXT,
+  ]
 
-//       draft.validation.unscored = isUnscored
-//     })
-//   }
-//   return produce(payload, (draft) => {
-//     draft.validation.unscored = isUnscored
-//   })
-// }
+  if (
+    typeof score === 'number' &&
+    !resourceTypes.includes(currentQuestion?.type) &&
+    !isEmpty(currentQuestion)
+  ) {
+    const newQuestion = changeValidationWhenUnscored(score, currentQuestion)
+    yield put({
+      type: UPDATE_QUESTION_REQUEST,
+      payload: newQuestion,
+    })
+  }
+}
 
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
   const currentLanguage = yield select(getCurrentLanguage)
-  // const resourceTypes = [
-  //   questionType.VIDEO,
-  //   questionType.PASSAGE,
-  //   questionType.TEXT,
-  // ]
-  // const _payload = resourceTypes.includes(payload.type)
-  //   ? payload
-  //   : changeValidationWhenUnscored(payload, prevQuestion)
 
   yield put({
     type: UPDATE_QUESTION,
@@ -1239,5 +1253,6 @@ export function* watcherSaga() {
     yield takeLatest(GENERATE_VARIABLE_REQUEST, generateVariableSaga),
     yield takeEvery(ADD_AUTHORED_ITEMS_TO_TEST, addAuthoredItemsToTestSaga),
     yield takeLatest(UPDATE_QUESTION_REQUEST, updateQuestionSaga),
+    yield takeEvery(UPDATE_SCORE_AND_VALIDATION, updateScoreAndValidationSaga),
   ])
 }

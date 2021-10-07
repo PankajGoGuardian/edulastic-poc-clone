@@ -36,6 +36,8 @@ export const DELETE_QUESTION = '[author questions] delete question by id'
 export const SET_RUBRIC_ID = '[author questions] set rubric id'
 export const REMOVE_RUBRIC_ID = '[author questions] remove rubricId'
 export const CHANGE_UPDATE_FLAG = '[authorQuestions] update the updated flag'
+export const UPDATE_SCORE_AND_VALIDATION =
+  '[authorQuestions] update score and validation'
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS)
 export const addItemsQuestionAction = createAction(ADD_ITEMS_QUESTION)
@@ -250,27 +252,27 @@ const reSequencedQ = (state, { payload }) => {
   state.byId = updatedQuestions
 }
 
-// const changeValidationWhenUnscored = (question, score) => {
-//   const isUnscored = score === 0
+const changeValidationWhenUnscored = (question, score) => {
+  const isUnscored = score === 0
 
-//   if (isUnscored) {
-//     return produce(question, (draft) => {
-//       draft.validation.validResponse.score = 0
-//       draft.validation.altResponses?.forEach((altResp) => {
-//         altResp.score = 0
-//       })
-//       if (draft.validation?.maxScore) {
-//         draft.validation.maxScore = 0
-//       }
+  if (isUnscored) {
+    return produce(question, (draft) => {
+      draft.validation.validResponse.score = 0
+      draft.validation.altResponses?.forEach((altResp) => {
+        altResp.score = 0
+      })
+      if (draft.validation?.maxScore) {
+        draft.validation.maxScore = 0
+      }
 
-//       draft.validation.unscored = isUnscored
-//     })
-//   }
-//   return produce(question, (draft) => {
-//     draft.validation.unscored = isUnscored
-//     draft.validation.validResponse.score = score
-//   })
-// }
+      draft.validation.unscored = isUnscored
+    })
+  }
+  return produce(question, (draft) => {
+    draft.validation.unscored = isUnscored
+    draft.validation.validResponse.score = score
+  })
+}
 
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
@@ -298,15 +300,16 @@ export default createReducer(initialState, {
     state.updated = false
   },
   [SET_QUESTION_SCORE]: (state, { payload }) => {
-    const { qid, score } = payload
-    // if (score < 0) {
-    if (!(score > 0)) {
+    const { qid, score, isOnBlur = false } = payload
+    if (score < 0) {
       return state
     }
-    set(state.byId[qid], 'validation.validResponse.score', score)
-
-    // const _question = changeValidationWhenUnscored(state.byId[qid], score)
-    // state.byId[qid] = _question
+    if (isOnBlur) {
+      const _question = changeValidationWhenUnscored(state.byId[qid], score)
+      state.byId[qid] = _question
+    } else {
+      set(state.byId[qid], 'validation.validResponse.score', score)
+    }
   },
   [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
     if (!payload) {

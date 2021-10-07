@@ -213,6 +213,33 @@ export const manageSubscriptionsByLicenses = createSlice({
   },
 })
 
+export const bulkUpgrade = createSlice({
+  slice: 'bulkUpgrade',
+  initialState: {
+    loading: false,
+    data: [],
+    error: '',
+    processedFile: null,
+  },
+  reducers: {
+    upgradeByCSV: (state) => {
+      state.loading = true
+      state.data = []
+      state.error = ''
+      state.processedFile = null
+    },
+    upgradeByCSVSuccess: (state, { payload }) => {
+      state.loading = false
+      state.data = payload.data
+      state.processedFile = payload.processedFile
+    },
+    upgradeByCSVError: (state, { payload }) => {
+      state.loading = false
+      state.error = payload
+    },
+  },
+})
+
 // SELECTORS
 const upGradeStateSelector = (state) => state.admin.upgradeData
 
@@ -241,6 +268,11 @@ export const getManageSubscriptionByLicensesData = createSelector(
   ({ manageLicensesData }) => manageLicensesData
 )
 
+export const getBulkUpgradeData = createSelector(
+  upGradeStateSelector,
+  ({ bulkUpgradeData }) => bulkUpgradeData
+)
+
 // REDUCERS
 const reducer = combineReducers({
   districtSearchData: manageSubscriptionsBydistrict.reducer,
@@ -248,6 +280,7 @@ const reducer = combineReducers({
   manageSchoolsData: manageSubscriptionsBySchool.reducer,
   manageUserSegmentData: manageSubscriptionsByUserSegments.reducer,
   manageLicensesData: manageSubscriptionsByLicenses.reducer,
+  bulkUpgradeData: bulkUpgrade.reducer,
 })
 
 // API's
@@ -260,6 +293,7 @@ const {
   saveOrgPermissionsApi,
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
+  bulkUpgradeCSVSubscriptionApi,
 } = adminApi
 
 // SAGAS
@@ -523,6 +557,24 @@ function* addSubscriptionSaga({ payload }) {
   }
 }
 
+function* bulkUpgradeByCSVSaga({ payload }) {
+  try {
+    const result = yield call(bulkUpgradeCSVSubscriptionApi, payload)
+    yield put(
+      bulkUpgrade.actions.upgradeByCSVSuccess({
+        data: result || [],
+        processedFile: payload,
+      })
+    )
+  } catch (err) {
+    yield put(bulkUpgrade.actions.upgradeByCSVError(err))
+    notification({
+      type: 'error',
+      msg: 'Failed to upgrade by CSV.',
+    })
+  }
+}
+
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -554,6 +606,7 @@ function* watcherSaga() {
       manageSubscriptionsByLicenses.actions.addSubscription,
       addSubscriptionSaga
     ),
+    yield takeEvery(bulkUpgrade.actions.upgradeByCSV, bulkUpgradeByCSVSaga),
   ])
 }
 

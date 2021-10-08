@@ -811,4 +811,45 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'merge-school',
+    name: 'School Merge',
+    endPoint: 'admin-tool/merge-school',
+    method: 'post',
+    slowApi: true,
+    note: {
+      text:
+        'Note: select this checkbox only if all the schools from the district getting merged.',
+      parentField: 'deleteDistrict',
+      position: 'bottom',
+      style: {
+        width: '100%',
+        padding: '5px 0px',
+        display: 'inline-block',
+      },
+    },
+    fields: [
+      {
+        name: 'srcSchoolIds',
+        displayName: 'Source School Id(s)',
+        placeholder: 'Enter Source School Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'desSchoolIds',
+        displayName: 'Destination School Id(s)',
+        placeholder: 'Enter Destination School Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'deleteDistrict',
+        type: 'checkbox',
+        required: false,
+      },
+    ],
+  },
 ]

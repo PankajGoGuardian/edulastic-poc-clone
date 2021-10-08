@@ -36,6 +36,7 @@ import {
   copyOldFiltersWithNewKey,
   getFilterFromSession,
   getWordsInURLPathName,
+  PendoHelper,
   removeSessionValue,
   setFilterInSession,
 } from './common/utils/helpers'
@@ -275,6 +276,46 @@ class App extends Component {
         showAppUpdate: true,
       })
     })
+    this.handlePendoGuide()
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location } = this.props
+    if (location !== prevProps.location) {
+      this.handlePendoGuide()
+    }
+  }
+
+  handlePendoGuide() {
+    let retries = 0
+    const cb = () => {
+      if (!window.pendo) return
+      window.removeEventListener('load', cb)
+
+      // Issue:
+      //   pendo doesn't know URL has changed as soon as React knows.
+      // fix: retry until pendo.getCurrentUrl updates
+      const pendoUrl = window.pendo.getCurrentUrl()
+      if (
+        new URL(pendoUrl).pathname.replace(/\/$|^\//g, '') ===
+          this.props.location.pathname.replace(/\/$|^\//g, '') &&
+        window.pendo.guides
+      ) {
+        PendoHelper.showAvailableGuides()
+        return
+      }
+      retries += 1
+      if (retries > 10) return
+      setTimeout(cb, 100)
+    }
+    if (document.readyState !== 'complete') {
+      // Issue:
+      //   window.pendo becomes available after this react script executes
+      // fix: execute after window.onload
+      window.addEventListener('load', cb)
+    } else {
+      cb()
+    }
   }
 
   setShowSelectStates = (value) => {

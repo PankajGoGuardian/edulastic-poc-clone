@@ -8,17 +8,34 @@ const trackingParameters = {
   CATEGORY_WEB_APPLICATION: 'Web Application',
 }
 
-const getUserDetails = ({
-  email,
-  username,
-  role,
-  orgData,
-  clever = false,
-  clever_district = false,
-  gm = false,
-  orgData: { districts = [] },
-  isAdmin = false,
-}) => {
+const getUserDetails = (user) => {
+  const {
+    clever = false,
+    clever_district = false,
+    email,
+    gm = false,
+    isAdmin = false,
+    orgData,
+    orgData: { districts = [] },
+    referrer = '',
+    role,
+    username,
+    utm_source = '',
+  } = user
+
+  const extraProps = {
+    isSingaporeMath:
+      utm_source.toLowerCase().includes('singapore') ||
+      referrer.includes('singapore') ||
+      orgData?.itemBanks?.some(
+        (itemBank) =>
+          itemBank.owner?.toLowerCase().includes('singapore') &&
+          itemBank.status === 1
+      ),
+    isCpm:
+      utm_source.toLowerCase().includes('cpm') ||
+      referrer.toLowerCase().includes('cpm'),
+  }
   // setting first district details for student other user role will have only one district
   const {
     districtId = '',
@@ -48,6 +65,7 @@ const getUserDetails = ({
     state,
     country,
     isAdmin,
+    ...extraProps,
   }
 }
 

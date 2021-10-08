@@ -84,7 +84,7 @@ const getLoggedOutUrl = () => {
   return '/login'
 }
 
-function getUserFromRedux() {
+export function getUserFromRedux() {
   return window?.getStore()?.getState()?.user || {}
 }
 

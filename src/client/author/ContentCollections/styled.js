@@ -35,10 +35,8 @@ export const HeadingContainer = styled.div`
 `
 
 export const EditPencilBtn = styled.span`
-  height: 23px;
-  width: 25px;
   display: inline-block;
-  text-align: center;
+  width: 25px;
 `
 
 export const PermissionsButton = styled.span`
@@ -73,7 +71,15 @@ export const PermissionsButton = styled.span`
   }
 `
 
-export const StyledTable = styled(CommonTable)``
+export const StyledTable = styled(CommonTable)`
+  .ant-table {
+    &-thead {
+      & > tr > th:last-child {
+        text-align: center !important;
+      }
+    }
+  }
+`
 
 export const AddCollectionButton = styled.span`
   background: ${themeColor};

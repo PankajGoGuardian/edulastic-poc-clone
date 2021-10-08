@@ -166,7 +166,7 @@ const CollectionsTable = ({
       title: selectedCollection ? '' : 'Permissions',
       key: 'permissions',
       width: selectedCollection ? 30 : 250,
-      align: 'left',
+      align: 'right',
       render: (_, record) =>
         selectedCollection ? (
           selectedCollection.bankId === record._id ? (
@@ -189,18 +189,20 @@ const CollectionsTable = ({
             >
               <span>Permissions</span>
             </PermissionsButton>
-            {userRole !== roleuser.EDULASTIC_ADMIN &&
-              record.districtId === userDistrictId && (
-                <EditPencilBtn
-                  onClick={() => {
-                    setEditCollectionData(record)
-                    setAddCollectionModalVisibility(true)
-                  }}
-                  style={{ cursor: 'pointer' }}
-                >
-                  <IconPencilEdit color={themeColor} />
-                </EditPencilBtn>
-              )}
+            <EditPencilBtn>
+              {userRole !== roleuser.EDULASTIC_ADMIN &&
+                record.districtId === userDistrictId && (
+                  <span
+                    onClick={() => {
+                      setEditCollectionData(record)
+                      setAddCollectionModalVisibility(true)
+                    }}
+                    style={{ cursor: 'pointer' }}
+                  >
+                    <IconPencilEdit color={themeColor} />
+                  </span>
+                )}
+            </EditPencilBtn>
           </>
         ),
     },

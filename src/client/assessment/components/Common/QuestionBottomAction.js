@@ -16,7 +16,7 @@ import styled from 'styled-components'
 import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, test as testConstants } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
@@ -123,6 +123,7 @@ const QuestionBottomAction = ({
   isDocBasedTest,
   replaceOriginalItem,
   updating,
+  releaseScore,
   correctItemUpdateProgress,
   data,
   enableMagnifier,
@@ -357,7 +358,8 @@ const QuestionBottomAction = ({
     (isLCBView ||
       isExpressGrader ||
       previewTab === 'show' ||
-      isStudentReport) &&
+      (isStudentReport &&
+        releaseScore === testConstants.releaseGradeLabels.WITH_ANSWERS)) &&
     !isPrintPreview &&
     !(
       !sampleAnswer ||
@@ -550,6 +552,11 @@ const enhance = compose(
       currentTerm: getCurrentTerm(state),
       silentClone: getSilentCloneSelector(state),
       firebaseDocId: getRegradeFirebaseDocIdSelector(state),
+      releaseScore: get(
+        state,
+        `[studentReport][testActivity][releaseScore]`,
+        null
+      ),
     }),
     {
       setQuestionData: setQuestionDataAction,

@@ -1,11 +1,54 @@
 import { get, without } from 'lodash'
 import { createHmac } from 'crypto-browserify'
 import AppConfig from '../../../src/app-config'
-
+import { getAccessToken, parseJwt } from '../src/utils/Storage';
+import { getUserFromRedux } from '../src/utils/API';
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
 
 const trackingParameters = {
   CATEGORY_WEB_APPLICATION: 'Web Application',
+}
+
+const getCommonUserDetailsForSegmentEvents = ()=>{
+  const accessToken = getAccessToken();
+  const tokenParsed = parseJwt(accessToken);
+  const userFromRedux = getUserFromRedux();
+  const {itemBankSubscriptions,subscription} = window?.getStore()?.getState()?.subscription?.subscriptionData||{};
+  const {products} = window.getStore().getState().subscription||{};
+  console.log('tokenParsed',tokenParsed);
+  const subscriptionName = subscription?.subType||"free";
+  const subscriptionType = subscription?.subType?.startsWith("TRIAL")?"trial":"purchased";
+  let subscriptionStatus = null;
+  if(subscription?.subType){
+    if(subscription?.status==1){
+      subscriptionStatus = "active";
+    } else  {
+      subscriptionStatus = "expired";
+    }
+  }
+  const {_id: userId,role,districtId} = tokenParsed;
+  const {institutionIds=[]} = userFromRedux?.user||{};
+
+  const data = {
+    lastLogin: tokenParsed?.iat*1000,
+    userId,
+    subscriptionName,
+    ...(institutionIds.length===1?{schoolId: institutionIds[0]}:{schoolIds: institutionIds}),
+    districtId,
+    subscriptionType,
+    subscriptionStatus,
+    role
+  }
+  console.log('data',data);
+  return data;
+}
+
+window.ggggt = getCommonUserDetailsForSegmentEvents;
+
+const delay = (ms)=>{
+  return new Promise((res)=>{
+    setTimeout(()=> res(),ms);
+  })
 }
 
 const getUserDetails = ({
@@ -29,6 +72,7 @@ const getUserDetails = ({
   } = districts?.[0] || {}
   const schoolId =
     get(orgData, 'schools[0].v1Id', '') || get(orgData, 'schools[0]._id', '')
+    console.log('userDetails',getCommonUserDetailsForSegmentEvents());
   return {
     domain: window.document.domain,
     email,
@@ -48,6 +92,7 @@ const getUserDetails = ({
     state,
     country,
     isAdmin,
+    ...(getCommonUserDetailsForSegmentEvents()),
   }
 }
 
@@ -164,10 +209,11 @@ const trackUserClick = ({ user, data }) => {
   }
 }
 
-const trackTeacherSignUp = ({ user }) => {
+const trackTeacherSignUp = async ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
     return
   }
+  await delay(1000);
   if (user) {
     const { role = '', _id, v1Id, isAdmin } = user
     const event = isAdmin ? 'Administrator Signed Up' : 'Teacher Signed Up'

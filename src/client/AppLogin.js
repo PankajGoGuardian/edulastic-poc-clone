@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { Spin } from 'antd'
+import { UrlChangeListener } from '@edulastic/common';
 
 if (
   window.location.hash.includes('#renderResource/close/') ||
@@ -48,6 +49,8 @@ const AdminSignup = loadable(
 )
 
 const AppLogin = () => (
+  <>
+      <UrlChangeListener />
   <Switch>
     <Route exact path="/login" component={Auth} />
     <Route exact path="/resetPassword/" component={ResetPassword} />
@@ -90,6 +93,7 @@ const AppLogin = () => (
     />
     <Route exact path="/" component={Auth} />
   </Switch>
+  </>
 )
 
 export default AppLogin

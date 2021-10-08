@@ -13,7 +13,7 @@ export const LearnMore = styled.span`
   padding: 5px 10px;
   color: #3f85e5;
   border-radius: 4px;
-  transform: translateX(50px);
+  transform: translateX(40px);
   text-transform: uppercase;
 
   &:hover {

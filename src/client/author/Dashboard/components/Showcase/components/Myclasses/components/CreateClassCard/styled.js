@@ -23,12 +23,12 @@ export const CreateClassCardWrapper = styled.div`
 `
 
 export const CreateClassTitle = styled.p`
-  font-size: 18px;
+  font-size: 14px;
   font-weight: bold;
   color: ${greyThemeDark1};
 `
 export const InfoText = styled.p`
-  font-size: 15px;
+  font-size: 13px;
   max-width: 270px;
   color: ${greyThemeDark1};
 `

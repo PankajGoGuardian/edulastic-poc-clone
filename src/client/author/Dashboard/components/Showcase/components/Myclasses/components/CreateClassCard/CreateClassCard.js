@@ -17,12 +17,7 @@ const CreateClassCard = ({ history }) => {
 
   return (
     <>
-      <TextWrapper
-        fw="bold"
-        rfs="18px"
-        color={title}
-        style={{ marginTop: '1rem' }}
-      >
+      <TextWrapper fw="bold" color={title} mt="1.5rem">
         Get Started with Edulastic
       </TextWrapper>
       <CreateClassCardWrapper>

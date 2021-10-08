@@ -67,6 +67,7 @@ const KeyboardHeader = ({
           <ResponseBtn
             onClick={handleClickResponseButton}
             onTouchEnd={handleClickResponseButton}
+            data-cy="keyboard-response"
           >
             <span className="response-embed">
               <span className="response-embed__char">R</span>

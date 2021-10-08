@@ -327,6 +327,7 @@ class FeedbackRight extends Component {
     const { score } = this.state
     const allowSubmitScore = this.allowToSubmitScore(e?.type)
     if (
+      !this.props?.widget?.activity?.graded ||
       parseFloat(this.props?.widget?.activity?.score || 0) !==
         parseFloat(score || 0) ||
       allowSubmitScore

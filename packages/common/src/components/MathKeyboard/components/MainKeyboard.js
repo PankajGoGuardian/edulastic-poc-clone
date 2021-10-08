@@ -140,29 +140,31 @@ const MainKeyboard = ({
             data-cy={`button-row-${rowIndex}`}
             isVertical={!!showNumbers}
           >
-            {row.map(({ label, handler, command = 'cmd', numToMove }, i) => {
-              let fontRate = 1
-              if (typeof label === 'string' && label.length > 4) {
-                fontRate = 4.5 / label.length
-              }
+            {row.map(
+              ({ label, handler, dataCy, command = 'cmd', numToMove }, i) => {
+                let fontRate = 1
+                if (typeof label === 'string' && label.length > 4) {
+                  fontRate = 4.5 / label.length
+                }
 
-              return (
-                <Button
-                  key={i}
-                  fontSizeRate={fontRate}
-                  isVertical={!!showNumbers}
-                  onClick={handleClick(handler, command, numToMove)}
-                  onTouchEnd={handleClick(handler, command, numToMove)}
-                  data-cy={`virtual-keyboard-${handler}`}
-                >
-                  {isString(label) ? (
-                    <CustomKeyLabel value={label} />
-                  ) : (
-                    <Label>{label}</Label>
-                  )}
-                </Button>
-              )
-            })}
+                return (
+                  <Button
+                    key={i}
+                    fontSizeRate={fontRate}
+                    isVertical={!!showNumbers}
+                    onClick={handleClick(handler, command, numToMove)}
+                    onTouchEnd={handleClick(handler, command, numToMove)}
+                    data-cy={`virtual-keyboard-${dataCy}`}
+                  >
+                    {isString(label) ? (
+                      <CustomKeyLabel value={label} />
+                    ) : (
+                      <Label>{label}</Label>
+                    )}
+                  </Button>
+                )
+              }
+            )}
           </Row>
         ))}
       </SymbolsWrapper>

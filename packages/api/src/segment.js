@@ -15,7 +15,6 @@ const getCommonUserDetailsForSegmentEvents = ()=>{
   const userFromRedux = getUserFromRedux();
   const {itemBankSubscriptions,subscription} = window?.getStore()?.getState()?.subscription?.subscriptionData||{};
   const {products} = window.getStore().getState().subscription||{};
-  console.log('tokenParsed',tokenParsed);
   const subscriptionName = subscription?.subType||"free";
   const subscriptionType = subscription?.subType?.startsWith("TRIAL")?"trial":"purchased";
   let subscriptionStatus = null;
@@ -39,7 +38,6 @@ const getCommonUserDetailsForSegmentEvents = ()=>{
     subscriptionStatus,
     role
   }
-  console.log('data',data);
   return data;
 }
 
@@ -61,6 +59,8 @@ const getUserDetails = ({
   gm = false,
   orgData: { districts = [] },
   isAdmin = false,
+  currentSignUpState,
+  isUserGoogleLoggedIn,
 }) => {
   // setting first district details for student other user role will have only one district
   const {
@@ -72,7 +72,6 @@ const getUserDetails = ({
   } = districts?.[0] || {}
   const schoolId =
     get(orgData, 'schools[0].v1Id', '') || get(orgData, 'schools[0]._id', '')
-    console.log('userDetails',getCommonUserDetailsForSegmentEvents());
   return {
     domain: window.document.domain,
     email,
@@ -81,6 +80,8 @@ const getUserDetails = ({
     clever,
     clever_district,
     gm,
+    currentSignUpState,
+    isUserGoogleLoggedIn,
     // this is not Groups._id
     // https://segment.com/docs/connections/spec/group/
     // its districtId
@@ -255,6 +256,12 @@ const trackProductPurchase = ({ user, data }) => {
   }
 }
 
+const genericEventTrack = (event,details) => {
+  if(window?.analytics?.track){
+    window?.analytics?.track(event,details);
+  }
+}
+
 export default {
   unloadIntercom,
   analyticsIdentify,
@@ -263,4 +270,5 @@ export default {
   trackUserClick,
   trackingParameters,
   trackProductPurchase,
+  genericEventTrack
 }

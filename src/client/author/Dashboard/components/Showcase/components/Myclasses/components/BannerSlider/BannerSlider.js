@@ -4,6 +4,7 @@ import { debounce } from 'lodash'
 // components
 import { white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
+import { segmentApi } from '@edulastic/api';
 import {
   ScrollbarContainer,
   Slides,
@@ -50,12 +51,12 @@ const BannerSlider = ({
 
   const bannerLength = bannerSlides.length
 
-  const handleBannerClick = (config, description, isSparkBannerTile) => {
+  const handleBannerClick = (config, description, isSparkBannerTile,slide) => {
     if (isSparkBannerTile) {
       handleSparkClick(config.subscriptionData.productId)
       return
     }
-    bannerActionHandler(config.filters[0], description)
+    bannerActionHandler(config.filters[0], description,slide)
   }
 
   return (
@@ -92,7 +93,8 @@ const BannerSlider = ({
                     handleBannerClick(
                       slide.config,
                       slide.description,
-                      isSparkTile || isCPMTile
+                      isSparkTile || isCPMTile,
+                      slide
                     )
                   }
                 >

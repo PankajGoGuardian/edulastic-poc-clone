@@ -1212,9 +1212,9 @@
     "pictograph": {
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
-      "enterElements": "Enter elements",
-      "classifications": "Enter class names",
-      "questionLayer": "Question layer",
+      "enterElements": "Enter Elements",
+      "classifications": "Enter Class Names",
+      "questionLayer": "Question Layer",
       "correctAnswer": "Correct Answer",
       "showClassName": "Show class name",
       "showElementValues": "Show element values",

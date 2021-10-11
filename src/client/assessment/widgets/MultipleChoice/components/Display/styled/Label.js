@@ -131,14 +131,14 @@ export const OptionsLabel = styled.span`
 
 export const OptionLabelDiv = styled.div`
   flex: 1;
-  z-index: 9999;
+  z-index: ${({ focusedOptionIndex, indx }) =>
+    focusedOptionIndex == indx ? '9999' : '9998'};
   position: relative;
   display: flex;
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
   margin-right: 12px;
   margin-bottom: 4px;
-  z-index: 99999;
   background: ${({ uiStyle, selected, label }) =>
     uiStyle.type === 'block' && selected && !label && lightBlue6};
   border: ${(props) =>

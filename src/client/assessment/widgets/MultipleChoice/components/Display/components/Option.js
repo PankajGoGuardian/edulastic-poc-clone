@@ -53,6 +53,8 @@ const Option = (props) => {
     tool = [],
     onChangeOption,
     onRemoveOption,
+    setFocusedOptionIndex,
+    focusedOptionIndex,
   } = props
   let className = ''
   let correctAnswers = []
@@ -275,6 +277,8 @@ const Option = (props) => {
       isPrintPreview={isPrintPreview}
       showBorder={showBorder}
       label={label}
+      focusedOptionIndex={focusedOptionIndex}
+      indx={indx}
       onMouseEnter={() => {
         if (setCrossAction && !isTouchDevice()) {
           toggleHover(true)
@@ -285,6 +289,7 @@ const Option = (props) => {
           toggleHover(false)
         }
       }}
+      onFocus={() => setFocusedOptionIndex(indx)}
     >
       {renderCheckbox()}
       {showIcon && (
@@ -400,6 +405,8 @@ Option.propTypes = {
   isReviewTab: PropTypes.bool.isRequired,
   setCrossAction: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
   fontSize: PropTypes.string.isRequired,
+  setFocusedOptionIndex: PropTypes.func,
+  focusedOptionIndex: PropTypes.number,
 }
 
 Option.defaultProps = {
@@ -411,6 +418,8 @@ Option.defaultProps = {
   styleType: 'default',
   setCrossAction: false,
   crossAction: {},
+  setFocusedOptionIndex: () => {},
+  focusedOptionIndex: 0,
 }
 const OptionComponent = withNamespaces('assessment')(Option)
 

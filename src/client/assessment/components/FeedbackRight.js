@@ -324,17 +324,16 @@ class FeedbackRight extends Component {
   }
 
   submitScore = (e) => {
-    const { score } = this.state
+    const { changed } = this.state
     const allowSubmitScore = this.allowToSubmitScore(e?.type)
-    if (
-      !this.props?.widget?.activity?.graded ||
-      parseFloat(this.props?.widget?.activity?.score || 0) !==
-        parseFloat(score || 0) ||
-      allowSubmitScore
-    ) {
+    if (changed || allowSubmitScore) {
       this.onScoreSubmit()
-    } else {
-      this.setState({ isRubricDisabled: false })
+    }
+    if (changed) {
+      this.setState((prevState) => ({
+        ...prevState,
+        isRubricDisabled: false,
+      }))
     }
     this.setState({ showWarningToClear: false })
   }

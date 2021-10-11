@@ -1217,6 +1217,7 @@
       "questionLayer": "Question layer",
       "correctAnswer": "Correct Answer",
       "showClassName": "Show class name",
+      "showElementValues": "Show element values",
       "answeringStyle": "Answering style",
       "elementContainers": "Element containers",
       "clickToSelect": "Click to select"

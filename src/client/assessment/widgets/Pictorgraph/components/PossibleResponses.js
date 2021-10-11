@@ -18,6 +18,7 @@ import { Subtitle } from '../../../styled/Subtitle'
 import { TextInputStyled } from '../../../styled/InputStyles'
 import { SelectWrapper } from '../../../components/Graph/common/styled_components'
 import { Label } from '../../../styled/WidgetOptions/Label'
+import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 
 const PossibleResponses = ({
   t,
@@ -132,7 +133,7 @@ const PossibleResponses = ({
     )
   }
 
-  const { answeringStyle, elementContainers } = item
+  const { answeringStyle, elementContainers, showElementValues } = item
 
   const handleOptionChange = (option) => (val) =>
     setQuestionData(
@@ -250,6 +251,19 @@ const PossibleResponses = ({
             />
           </Col>
         )}
+      </Row>
+      <Row style={rowStyle}>
+        <CheckboxLabel
+          className="additional-options"
+          onChange={(event) =>
+            handleOptionChange('showElementValues')(event.target.checked)
+          }
+          checked={!!showElementValues}
+          mt="20px"
+          data-cy="showElementValues"
+        >
+          {t('component.pictograph.showElementValues')}
+        </CheckboxLabel>
       </Row>
     </>
   )

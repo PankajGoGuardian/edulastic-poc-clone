@@ -220,7 +220,7 @@ class WorksheetComponent extends React.Component {
   }
 
   addBlankPage = (index) => {
-    const { pageStructure, setTestData } = this.props
+    const { pageStructure, setTestData, annotations = [] } = this.props
 
     if (index < 0 || index > pageStructure.length) return
 
@@ -228,10 +228,19 @@ class WorksheetComponent extends React.Component {
     const blankPage = createPage(pageNumber)
 
     const updatedPageStructure = [...pageStructure]
+    const newAnnotations = annotations.map((annotation) => {
+      const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      return {
+        ...annotation,
+        [key]:
+          annotation[key] > pageNumber ? annotation[key] + 1 : annotation[key],
+      }
+    })
 
     updatedPageStructure.splice(pageNumber, 0, blankPage)
 
     setTestData({
+      annotations: newAnnotations,
       pageStructure: updatedPageStructure,
     })
     this.handleChangePage(pageNumber)

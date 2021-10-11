@@ -58,7 +58,8 @@ const BannerSlider = ({
     config,
     description,
     isSparkBannerTile,
-    isDemoPlaygroundTile
+    isDemoPlaygroundTile,
+    slide
   ) => {
     if (isSparkBannerTile) {
       handleSparkClick(config.subscriptionData.productId)
@@ -70,7 +71,7 @@ const BannerSlider = ({
       proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
       return
     }
-    bannerActionHandler(config.filters[0], description)
+    bannerActionHandler(config.filters[0], description, slide)
   }
 
   return (
@@ -121,7 +122,8 @@ const BannerSlider = ({
                       slide.config,
                       slide.description,
                       isSparkTile || isCPMTile,
-                      isDemoPlaygroundTile
+                      isDemoPlaygroundTile,
+                      slide
                     )
                   }
                 >

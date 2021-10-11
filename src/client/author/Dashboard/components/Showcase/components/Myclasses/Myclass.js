@@ -567,13 +567,9 @@ const MyClasses = ({
     }
   }
 
-  const bannerActionHandler = (filter = {}, description) => {
+  const bannerActionHandler = (filter = {}, description, slide) => {
     const { action, data = {} } = filter
-    segmentApi.trackUserClick({
-      user,
-      data: { event: `dashboard:banner-${description}:click` },
-    })
-
+    segmentApi.genericEventTrack('bannerClick', { _id: slide._id, description })
     const content = data?.contentType?.toLowerCase() || 'tests_library'
     if (content === 'tests_library') {
       data.contentType = 'tests'

@@ -1239,7 +1239,9 @@ export function* fetchUser({ payload }) {
     const searchParam = yield select((state) => state.router.location.search)
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
+    console.log('user', user)
     yield put(setUserAction(user))
+    yield call(segmentApi.analyticsIdentify, { user })
     yield put(
       updateInitSearchStateAction({
         grades: user?.orgData?.defaultGrades,

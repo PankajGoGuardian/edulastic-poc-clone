@@ -646,6 +646,7 @@ class ClassQuestions extends Component {
         questionsById,
         questions,
         studentWorkAnswersById,
+        testItemId: testItemsData?.[0]?._id,
       }
     }
 

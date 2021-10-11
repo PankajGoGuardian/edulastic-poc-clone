@@ -21,8 +21,11 @@ import { IconCheck } from '../styled/IconCheck'
 import { IconClose } from '../styled/IconClose'
 import { IconWrapper } from '../styled/IconWrapper'
 import { Label, OptionLabelDiv } from '../styled/Label'
-import { MultiChoiceContent } from '../styled/MultiChoiceContent'
-import Cross from './Cross'
+import {
+  MultiChoiceContent,
+  CrossOutContainer,
+} from '../styled/MultiChoiceContent'
+import CrossIcon from '../../../../../components/CrossIcon'
 import DragHandle from './DragHandle'
 
 const Option = (props) => {
@@ -230,12 +233,6 @@ const Option = (props) => {
         uiStyleType={uiStyle.type}
         label={label}
       >
-        {!fromSetAnswers && (
-          <MathFormulaDisplay
-            fontSize={fontSize}
-            dangerouslySetInnerHTML={{ __html: item.label }}
-          />
-        )}
         {fromSetAnswers && (
           <QuestionTextArea
             value={item.label}
@@ -248,9 +245,17 @@ const Option = (props) => {
             backgroundColor
           />
         )}
-        {(isCrossAction || hovered) && (
-          <Cross hovered={hovered} isCrossAction={isCrossAction} />
-        )}
+        <CrossOutContainer>
+          {!fromSetAnswers && (
+            <MathFormulaDisplay
+              fontSize={fontSize}
+              dangerouslySetInnerHTML={{ __html: item.label }}
+            />
+          )}
+          {(isCrossAction || hovered) && (
+            <CrossIcon hovered={hovered} isCrossAction={isCrossAction} />
+          )}
+        </CrossOutContainer>
       </MultiChoiceContent>
       {uiStyle.type === 'radioBelow' && container}
     </StyledOptionsContainer>

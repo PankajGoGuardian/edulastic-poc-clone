@@ -23,6 +23,10 @@ const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
   POLICY_CLOSE_MANUALLY_IN_CLASS,
   POLICY_AUTO_ON_STARTDATE,
+  POLICY_AUTO_ON_DUEDATE,
+  POLICY_OPEN_MANUALLY_BY_ADMIN,
+  POLICY_OPEN_MANUALLY_BY_TEACHER,
+  POLICY_OPEN_MANUALLY_IN_CLASS,
 } = assignmentPolicyOptions
 
 const DateSelector = ({
@@ -40,7 +44,8 @@ const DateSelector = ({
   hasStartDate,
   tootltipWidth,
   paddingTop,
-  closePolicy = POLICY_AUTO_ON_STARTDATE,
+  closePolicy = POLICY_AUTO_ON_DUEDATE,
+  openPolicy = POLICY_AUTO_ON_STARTDATE,
 }) => {
   const disabledStartDate = (_startDate) => {
     if (!_startDate || !endDate) {
@@ -119,35 +124,43 @@ const DateSelector = ({
               <FieldLabel>{t('common.assignTest.openDateTitle')}</FieldLabel>
             </StyledCol>
             <StyledCol span={forClassLevel ? 12 : 14}>
-              <Tooltip
-                placement="top"
-                title={
-                  passwordPolicy ===
-                  testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-                    ? 'To modify set Dynamic Password as OFF'
-                    : null
-                }
-              >
-                <DatePickerStyled
-                  allowClear={false}
-                  data-cy="startDate"
-                  size="large"
-                  style={{ width: '100%' }}
-                  disabledDate={disabledStartDate}
-                  showTime={{ use12Hours: true, format: 'hh:mm a' }}
-                  format="YYYY-MM-DD hh:mm a"
-                  value={startDate}
-                  placeholder={t('common.assignTest.openDatePlaceholder')}
-                  onChange={changeField('startDate')}
-                  disabled={
+              {[
+                POLICY_OPEN_MANUALLY_BY_ADMIN,
+                POLICY_OPEN_MANUALLY_BY_TEACHER,
+                POLICY_OPEN_MANUALLY_IN_CLASS,
+              ].includes(openPolicy) ? (
+                'Open Manually by User'
+              ) : (
+                <Tooltip
+                  placement="top"
+                  title={
                     passwordPolicy ===
-                      testConst.passwordPolicy
-                        .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                    (forClassLevel &&
-                      status !== assignmentStatusOptions.NOT_OPEN)
+                    testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+                      ? 'To modify set Dynamic Password as OFF'
+                      : null
                   }
-                />
-              </Tooltip>
+                >
+                  <DatePickerStyled
+                    allowClear={false}
+                    data-cy="startDate"
+                    size="large"
+                    style={{ width: '100%' }}
+                    disabledDate={disabledStartDate}
+                    showTime={{ use12Hours: true, format: 'hh:mm a' }}
+                    format="YYYY-MM-DD hh:mm a"
+                    value={startDate}
+                    placeholder={t('common.assignTest.openDatePlaceholder')}
+                    onChange={changeField('startDate')}
+                    disabled={
+                      passwordPolicy ===
+                        testConst.passwordPolicy
+                          .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                      (forClassLevel &&
+                        status !== assignmentStatusOptions.NOT_OPEN)
+                    }
+                  />
+                </Tooltip>
+              )}
             </StyledCol>
           </StyledRow>
         </SettingContainer>

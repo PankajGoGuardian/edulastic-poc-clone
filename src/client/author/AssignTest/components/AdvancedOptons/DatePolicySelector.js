@@ -15,6 +15,9 @@ import { getIsOverrideFreezeSelector } from '../../../TestPage/ducks'
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
   POLICY_CLOSE_MANUALLY_IN_CLASS,
+  POLICY_OPEN_MANUALLY_BY_ADMIN,
+  POLICY_OPEN_MANUALLY_BY_TEACHER,
+  POLICY_OPEN_MANUALLY_IN_CLASS,
 } = assignmentPolicyOptions
 
 const DatePolicySelector = ({
@@ -57,22 +60,30 @@ const DatePolicySelector = ({
       <StyledRow gutter={24}>
         <Col xs={24} md={12} lg={6}>
           <Label>Open Date</Label>
-          <StyledDatePicker
-            allowClear={false}
-            data-cy="startDate"
-            style={{ width: '100%' }}
-            size="large"
-            disabledDate={disabledStartDate}
-            showTime={{ use12Hours: true, format: 'hh:mm a' }}
-            format="YYYY-MM-DD hh:mm a"
-            value={moment(startDate)}
-            placeholder="Open Date"
-            onChange={changeField('startDate')}
-            disabled={
-              passwordPolicy ===
-              testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-            }
-          />
+          {[
+            POLICY_OPEN_MANUALLY_BY_ADMIN,
+            POLICY_OPEN_MANUALLY_BY_TEACHER,
+            POLICY_OPEN_MANUALLY_IN_CLASS,
+          ].includes(selectedOpenPolicy) ? (
+            <span style={{ lineHeight: '40px' }}>Open Manually by User</span>
+          ) : (
+            <StyledDatePicker
+              allowClear={false}
+              data-cy="startDate"
+              style={{ width: '100%' }}
+              size="large"
+              disabledDate={disabledStartDate}
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
+              value={moment(startDate)}
+              placeholder="Open Date"
+              onChange={changeField('startDate')}
+              disabled={
+                passwordPolicy ===
+                testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+              }
+            />
+          )}
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Label>Close Date</Label>

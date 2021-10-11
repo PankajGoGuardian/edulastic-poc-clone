@@ -91,6 +91,7 @@ const ClassGroupContainer = ({
         showOpenDueAndCloseDate={showOpenDueAndCloseDate}
         tootltipWidth={tootltipWidth}
         closePolicy={assignment.closePolicy}
+        openPolicy={assignment.openPolicy}
       />
 
       <SettingContainer id="open-policy-setting">

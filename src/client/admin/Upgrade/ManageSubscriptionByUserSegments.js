@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Form, Button as AntdButton, Select, Input, Checkbox } from 'antd'
 import moment from 'moment'
 import { IconAddItems, IconTrash } from '@edulastic/icons'
-import { notification } from '@edulastic/common'
+import { FlexContainer, notification } from '@edulastic/common'
 import { grades } from '@edulastic/constants'
 import {
   HeadingSpan,
@@ -28,6 +28,7 @@ const ManageSubscriptionByUserSegments = Form.create({
     addGradeSubjectRow,
     deleteGradeSubjectRow,
     getSubscriptionAction,
+    revokePartialPremiumSubscriptionAction,
   }) => {
     const {
       subType = 'partial_premium',
@@ -36,8 +37,15 @@ const ManageSubscriptionByUserSegments = Form.create({
       notes,
       subscription,
     } = partialPremiumData
-    const { subStartDate, subEndDate, adminPremium } =
-      subscription || partialPremiumData
+    const {
+      subStartDate,
+      subEndDate,
+      adminPremium,
+      customerSuccessManager,
+      opportunityId,
+      licenceCount,
+      _id: subscriptionId,
+    } = subscription || partialPremiumData
     const [districtIdInput, setDistrictId] = useState()
     const [schoolIdInput, setSchoolId] = useState()
 
@@ -46,19 +54,6 @@ const ManageSubscriptionByUserSegments = Form.create({
       validateFields(
         ['schoolId', 'districtId'],
         (err, { districtId: districtIdValue, schoolId: schoolIdValue }) => {
-          if (districtIdValue || schoolIdValue) {
-            if (
-              districtIdInput !== districtIdValue ||
-              schoolIdValue !== schoolIdInput
-            ) {
-              getSubscriptionAction({
-                districtId: districtIdValue,
-                schoolId: schoolIdValue,
-              })
-            }
-            setDistrictId(districtIdValue)
-            setSchoolId(schoolIdValue)
-          }
           if (
             !err &&
             ((districtIdValue && schoolIdValue) ||
@@ -76,11 +71,33 @@ const ManageSubscriptionByUserSegments = Form.create({
               },
             })
           }
+          if (districtIdValue || schoolIdValue) {
+            getSubscriptionAction({
+              districtId: districtIdValue,
+              schoolId: schoolIdValue,
+            })
+            setSchoolId(schoolIdValue)
+            setDistrictId(districtIdValue)
+          }
         }
       )
     }
 
+    const handleRevoke = (e) => {
+      e?.preventDefault?.()
+      revokePartialPremiumSubscriptionAction({
+        subscriptionId,
+        districtId: schoolId ? undefined : districtId,
+        schoolId: schoolId,
+      })
+      if (districtId || schoolId) {
+        setSchoolId(schoolId)
+        setDistrictId(districtId)
+      }
+    }
+
     const handleSubmit = (evt) => {
+      evt?.preventDefault?.()
       validateFields(
         (
           err,
@@ -93,18 +110,6 @@ const ManageSubscriptionByUserSegments = Form.create({
             ...rest
           }
         ) => {
-          if (districtIdValue || schoolIdValue) {
-            if (
-              districtIdInput !== districtIdValue ||
-              schoolIdValue !== schoolIdInput
-            )
-              getSubscriptionAction({
-                districtId: districtIdValue,
-                schoolId: schoolIdValue,
-              })
-            setDistrictId(districtIdValue)
-            setSchoolId(schoolIdValue)
-          }
           if (!err) {
             if (
               (districtIdValue && schoolIdValue) ||
@@ -149,21 +154,50 @@ const ManageSubscriptionByUserSegments = Form.create({
               notification({ messageKey: 'selectGradeAndSubject' })
             }
           }
+
+          if (districtIdValue || schoolIdValue) {
+            if (
+              districtIdInput !== districtIdValue ||
+              schoolIdValue !== schoolIdInput
+            )
+              getSubscriptionAction({
+                districtId: districtIdValue,
+                schoolId: schoolIdValue,
+              })
+            setDistrictId(districtIdValue)
+            setSchoolId(schoolIdValue)
+          }
         }
       )
-      evt?.preventDefault?.()
     }
 
     useUpdateEffect(() => {
-      setFieldsValue({
-        districtId,
-        schoolId,
+      const data = {
         subStartDate: moment(subStartDate),
         subEndDate: moment(subEndDate),
         notes,
         adminPremium,
-      })
-    }, [districtId, schoolId, subStartDate, subEndDate, notes, adminPremium])
+        customerSuccessManager,
+        opportunityId,
+        licenceCount,
+      }
+      if (schoolId) {
+        Object.assign(data, { schoolId })
+      } else {
+        Object.assign(data, { districtId, schoolId })
+      }
+      setFieldsValue(data)
+    }, [
+      districtId,
+      schoolId,
+      subStartDate,
+      subEndDate,
+      notes,
+      adminPremium,
+      customerSuccessManager,
+      opportunityId,
+      licenceCount,
+    ])
 
     const renderGrade = (item, _, index) => (
       <Select
@@ -255,6 +289,15 @@ const ManageSubscriptionByUserSegments = Form.create({
           dataSource={gradeSubject}
           pagination={false}
         >
+          <Column
+            title="Org Type"
+            key="orgType"
+            render={() => (
+              <strong>
+                {schoolId ? 'SCHOOL' : districtId ? 'DISTRICT' : '-'}
+              </strong>
+            )}
+          />
           <Column title="Grade" key="grade" render={renderGrade} />
           <Column
             title="Subject"
@@ -304,7 +347,29 @@ const ManageSubscriptionByUserSegments = Form.create({
             )}
           />
         </Table>
-        <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
+        <DatesNotesFormItem getFieldDecorator={getFieldDecorator}>
+          <Form.Item label={<HeadingSpan>CS Manager</HeadingSpan>}>
+            {getFieldDecorator('customerSuccessManager')(
+              <Input
+                placeholder="Customer Success Manager Name"
+                style={{ width: 300 }}
+              />
+            )}
+          </Form.Item>
+
+          <Form.Item label={<HeadingSpan>Opportunity Id</HeadingSpan>}>
+            {getFieldDecorator('opportunityId')(
+              <Input placeholder="Opportunity Id" style={{ width: 300 }} />
+            )}
+          </Form.Item>
+
+          <Form.Item label={<HeadingSpan>License Count</HeadingSpan>}>
+            {getFieldDecorator('licenceCount')(
+              <Input placeholder="License Count" style={{ width: 300 }} />
+            )}
+          </Form.Item>
+        </DatesNotesFormItem>
+
         <Form.Item>
           {getFieldDecorator('adminPremium', { valuePropName: 'checked' })(
             <Checkbox>
@@ -312,11 +377,27 @@ const ManageSubscriptionByUserSegments = Form.create({
             </Checkbox>
           )}
         </Form.Item>
-        <Form.Item>
-          <AntdButton type="primary" htmlType="submit">
-            Upgrade to premium
-          </AntdButton>
-        </Form.Item>
+        <FlexContainer
+          width="265px"
+          justifyContent="space-between"
+          alignItems="center"
+        >
+          <Form.Item>
+            <AntdButton type="primary" htmlType="submit">
+              Upgrade to premium
+            </AntdButton>
+          </Form.Item>
+          <Form.Item>
+            <AntdButton
+              disabled={!subStartDate && !subEndDate}
+              type="primary"
+              htmlType="button"
+              onClick={handleRevoke}
+            >
+              Revoke
+            </AntdButton>
+          </Form.Item>
+        </FlexContainer>
       </Form>
     )
   }

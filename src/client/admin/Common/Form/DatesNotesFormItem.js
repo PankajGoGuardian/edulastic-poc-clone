@@ -106,6 +106,7 @@ const DatesNotesFormItem = ({
   opportunityId,
   licenceCount,
   showAdditionalDetails = false,
+  children,
 }) => (
   <>
     <DatesFormItem
@@ -123,6 +124,8 @@ const DatesNotesFormItem = ({
     ) : (
       ''
     )}
+
+    {children}
 
     <NotesFormItem
       getFieldDecorator={getFieldDecorator}

@@ -31,6 +31,7 @@ import {
   getSubscriptionAction,
   bulkUpgrade,
   getBulkUpgradeData,
+  revokePartialPremiumSubscriptionAction,
 } from '../Upgrade/ducks'
 
 const { TabPane } = Tabs
@@ -64,6 +65,7 @@ function UpgradeUser({
   extendTrialLicense,
   bulkUpgradeByCSV,
   bulkUpgradeData,
+  revokePartialPremiumSubscriptionAction,
 }) {
   const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
   const onChangeTab = (tabKey) => setActiveTab(tabKey)
@@ -110,6 +112,9 @@ function UpgradeUser({
           setGradeSubjectValue={setGradeSubjectValue}
           addGradeSubjectRow={addGradeSubjectRow}
           deleteGradeSubjectRow={deleteGradeSubjectRow}
+          revokePartialPremiumSubscriptionAction={
+            revokePartialPremiumSubscriptionAction
+          }
         />
       </TabPane>
       <TabPane
@@ -157,6 +162,7 @@ const withConnect = connect(mapStateToProps, {
   setPartialPremiumDataAction:
     manageSubscriptionsByUserSegments.actions.setPartialPremiumData,
   upgradePartialPremiumUserAction,
+  revokePartialPremiumSubscriptionAction,
   getSubscriptionAction,
   updateCurrentEditableRow:
     manageSubscriptionsBySchool.actions.updateCurrentEditableRow,

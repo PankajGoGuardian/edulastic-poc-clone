@@ -23,6 +23,8 @@ const UPGRADE_PARTIAL_PREMIUM_USER =
   '[admin-upgrade] UPGRADE_PARTIAL_PREMIUM_USER'
 const SAVE_ORG_PERMISSIONS = '[admin] save org permissions'
 const GET_SUBSCRIPTION = '[admin] get subscription'
+const REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION =
+  '[admin] revoke pp sub from user segment'
 
 // ACTION CREATORS
 export const getDistrictDataAction = createAction(GET_DISTRICT_DATA)
@@ -42,6 +44,9 @@ export const upgradePartialPremiumUserAction = createAction(
 )
 export const saveOrgPermissionsAction = createAction(SAVE_ORG_PERMISSIONS)
 export const getSubscriptionAction = createAction(GET_SUBSCRIPTION)
+export const revokePartialPremiumSubscriptionAction = createAction(
+  REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION
+)
 
 // SLICE's
 export const manageSubscriptionsBydistrict = createSlice({
@@ -341,6 +346,22 @@ function* upgradeDistrict({ payload }) {
   }
 }
 
+function* revokePartialPremiumSub({ payload }) {
+  try {
+    const { subscriptionId, districtId, schoolId } = payload
+    const result = yield call(updateSubscriptionApi, {
+      data: { status: 0 },
+      subscriptionId,
+    })
+    if (result.success) {
+      notification({ type: 'success', msg: result.message })
+      yield put(getSubscriptionAction({ districtId, schoolId }))
+    }
+  } catch (err) {
+    console.error(err)
+  }
+}
+
 function* searchUsersByEmailIds({ payload }) {
   try {
     const item = yield call(searchUsersByEmailsOrIdsApi, payload)
@@ -586,6 +607,10 @@ function* watcherSaga() {
     yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
     yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
     yield takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga),
+    yield takeEvery(
+      REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION,
+      revokePartialPremiumSub
+    ),
     yield takeEvery(
       manageSubscriptionsByLicenses.actions.fetchLicenses,
       fetchLicensesByTypeSaga

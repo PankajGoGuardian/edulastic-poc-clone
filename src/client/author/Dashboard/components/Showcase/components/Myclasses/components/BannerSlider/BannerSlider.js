@@ -4,7 +4,6 @@ import { debounce } from 'lodash'
 // components
 import { white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
-import { segmentApi } from '@edulastic/api';
 import {
   ScrollbarContainer,
   Slides,

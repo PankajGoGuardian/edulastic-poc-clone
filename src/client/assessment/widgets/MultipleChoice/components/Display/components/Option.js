@@ -312,14 +312,13 @@ const IconTrash = styled(Icon)`
   width: 10px;
   height: 14px;
   cursor: pointer;
-  margin: 0px -30px 0px 16px;
+  margin: 0px -32px 0px 16px;
 `
 
 const StyledOptionsContainer = withKeyboard(styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
-  padding: 5px 12px;
   flex-direction: ${({ uiStyleType }) =>
     uiStyleType === 'radioBelow' ? 'column' : 'row'};
   align-items: ${({ uiStyleType }) =>
@@ -373,6 +372,10 @@ const StyledOptionsContainer = withKeyboard(styled.div`
       color: ${white};
       border-color: ${themeColorHoverBlue};
     }
+  }
+
+  .froala-wrapper {
+    padding: 5px 0px;
   }
 `)
 

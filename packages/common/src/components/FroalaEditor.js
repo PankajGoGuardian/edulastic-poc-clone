@@ -908,8 +908,11 @@ const CustomEditor = ({
             !canInsert(this.selection.element()) ||
             !canInsert(this.selection.endElement()) ||
             !beforeUpload(image[0])
-          )
+          ) {
+            clipboardImage.remove()
+            this.popups.hideAll()
             return false
+          }
           this.image.showProgressBar()
           // TODO: pass folder as props
           uploadToS3(image[0], aws.s3Folders.DEFAULT)
@@ -918,6 +921,7 @@ const CustomEditor = ({
             })
             .catch((e) => {
               console.error(e)
+              clipboardImage.remove()
               this.popups.hideAll()
               notification({ messageKey: 'imageUploadErr' })
             })

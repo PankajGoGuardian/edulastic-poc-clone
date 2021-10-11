@@ -30,6 +30,7 @@ import {
   cloneDeep,
   set,
   isEmpty,
+  isUndefined,
 } from 'lodash'
 import produce from 'immer'
 import {
@@ -163,7 +164,9 @@ const getSettings = (test, testActivity, preview) => {
     ? test.playerSkinType
     : assignmentSettings.playerSkinType
   const showMagnifier = preview
-    ? test.showMagnifier
+    ? isUndefined(test.showMagnifier)
+      ? true
+      : test.showMagnifier
     : assignmentSettings.showMagnifier
   const timedAssignment = preview
     ? test.timedAssignment
@@ -175,7 +178,9 @@ const getSettings = (test, testActivity, preview) => {
     ? test.pauseAllowed
     : assignmentSettings.pauseAllowed
   const enableScratchpad = preview
-    ? test.enableScratchpad
+    ? isUndefined(test.enableScratchpad)
+      ? true
+      : test.enableScratchpad
     : assignmentSettings.enableScratchpad
   const releaseScore = preview
     ? test.releaseScore

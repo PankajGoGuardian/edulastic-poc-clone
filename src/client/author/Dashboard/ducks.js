@@ -1,6 +1,6 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { dashboardApi, curriculumSequencesApi } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { captureSentryException, notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
@@ -19,6 +19,8 @@ const SET_DASHBOARD_TILES = '[dashboard teacher] set tiles data'
 const SET_TRIAL = '[dashboard teacher] set trial'
 const FETCH_PLAYLIST = '[dashboard teacher] fetch playlists'
 const FETCH_PLAYLIST_SUCCESS = '[dashboard teacher] fetch playlists success'
+const UPDATE_FAVORITE_CLASSES = '[dashboard teacher] update favorite classes'
+const TOGGLE_FAVORITE_CLASS = '[dashboard teacher] toggle favorite classes'
 
 export const receiveTeacherDashboardAction = createAction(
   RECEIVE_TEACHER_DASHBOARD_REQUEST
@@ -40,6 +42,9 @@ export const setTrial = createAction(SET_TRIAL)
 export const fetchPlaylistsAction = createAction(FETCH_PLAYLIST)
 export const fetchPlaylistsSuccessAction = createAction(FETCH_PLAYLIST_SUCCESS)
 
+export const updatefavoriteClassesAction = createAction(UPDATE_FAVORITE_CLASSES)
+export const togglefavoriteClassAction = createAction(TOGGLE_FAVORITE_CLASS)
+
 export const stateSelector = (state) => state.dashboardTeacher
 
 export const getLaunchHangoutStatus = createSelector(
@@ -56,6 +61,11 @@ export const getDashboardPlaylists = createSelector(
   (state) => state.playlists
 )
 
+export const getDashboardClasses = createSelector(
+  stateSelector,
+  (state) => state.data
+)
+
 const initialState = {
   data: [],
   error: null,
@@ -68,8 +78,8 @@ const initialState = {
 }
 
 export const reducer = createReducer(initialState, {
-  [RECEIVE_TEACHER_DASHBOARD_REQUEST]: (state) => {
-    state.loading = true
+  [RECEIVE_TEACHER_DASHBOARD_REQUEST]: (state, { payload }) => {
+    state.loading = !payload?.background
   },
   [RECEIVE_TEACHER_DASHBOARD_SUCCESS]: (state, { payload }) => {
     state.loading = false
@@ -94,16 +104,68 @@ export const reducer = createReducer(initialState, {
   [FETCH_PLAYLIST_SUCCESS]: (state, { payload }) => {
     state.playlists = payload
   },
+  [UPDATE_FAVORITE_CLASSES]: (state, { payload }) => {
+    state.data = state.data.map((item) => {
+      if (item._id === payload.groupId) {
+        item.isFavourite = payload.isFavourite
+      }
+      return item
+    })
+  },
 })
 
-function* receiveTeacherDashboardSaga() {
+function* receiveTeacherDashboardSaga({ payload }) {
   try {
-    const { classDetails } = yield call(dashboardApi.getTeacherDashboardDetails)
+    const { classDetails } = yield call(
+      dashboardApi.getTeacherDashboardDetails,
+      localStorage.getItem('author:dashboard:classFilter')
+    )
     yield put(receiveTeacherDashboardSuccessAction(classDetails))
+    payload?.setClassType?.()
   } catch (err) {
     const errorMessage = 'Unable to fetch dashboard details.'
     notification({ type: 'error', msg: errorMessage })
     yield put(receiveTeacherDashboardErrorAction({ error: errorMessage }))
+  }
+}
+
+function* toggleFavoriteClassSaga({ payload }) {
+  try {
+    yield put(
+      updatefavoriteClassesAction({
+        groupId: payload.groupId,
+        isFavourite: payload.toggleValue,
+      })
+    )
+    const result = yield call(dashboardApi.toggleFavouriteClass, payload)
+    if (result.success) {
+      notification({ type: 'success', duration: 1.5, msg: result.message })
+    } else {
+      yield put(
+        updatefavoriteClassesAction({
+          groupId: payload.groupId,
+          isFavourite: !payload.toggleValue,
+        })
+      )
+      notification({
+        type: 'error',
+        duration: 1.5,
+        msg: 'Failed to mark class as favourite.',
+      })
+    }
+  } catch (e) {
+    captureSentryException(e)
+    yield put(
+      updatefavoriteClassesAction({
+        groupId: payload.groupId,
+        isFavourite: !payload.toggleValue,
+      })
+    )
+    notification({
+      type: 'error',
+      duration: 1.5,
+      msg: 'Failed to mark class as favourite.',
+    })
   }
 }
 
@@ -156,5 +218,6 @@ export function* watcherSaga() {
     ),
     yield takeEvery(FETCH_DASHBOARD_TILES, fetchDashboardTilesSaga),
     yield takeEvery(FETCH_PLAYLIST, fetchPlaylistsSaga),
+    yield takeEvery(TOGGLE_FAVORITE_CLASS, toggleFavoriteClassSaga),
   ])
 }

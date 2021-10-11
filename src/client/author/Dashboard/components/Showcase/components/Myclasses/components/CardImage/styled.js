@@ -1,7 +1,18 @@
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import { Row } from 'antd'
-import { white } from '@edulastic/colors'
+import { white, themeColor } from '@edulastic/colors'
 import { TextWrapper } from '../../../../../styledComponents'
+
+const CircleBtnStyle = css`
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: ${(props) => props.bg || white};
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+`
 
 export const Image = styled.img`
   width: 100%;
@@ -28,15 +39,24 @@ export const IconWrapper = styled.div`
   display: flex;
 `
 export const CircleBtn = styled.div`
-  width: 24px;
-  height: 24px;
-  border-radius: 50%;
-  background: ${(props) => props.bg || white};
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  ${CircleBtnStyle}
 `
+
+export const FavCircleBtn = styled.div`
+  ${CircleBtnStyle}
+  position:absolute;
+  right: 10px;
+  bottom: 5px;
+  &:hover {
+    svg {
+      transform: scale(1.15);
+    }
+  }
+  & > i > svg {
+    fill: ${(props) => (props.isFavorite ? '#ca481e' : themeColor)};
+  }
+`
+
 export const TextDiv = styled.p`
   font-size: 13px;
   margin-top: 2px;

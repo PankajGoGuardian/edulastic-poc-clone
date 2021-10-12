@@ -112,7 +112,11 @@ const CardImage = ({
         })
       }
     }
-    toggleFavoriteClass(payload)
+    toggleFavoriteClass({
+      ...payload,
+      removeClassFromList:
+        !payload.toggleValue && currentFilter === 'MY_FAVORITES',
+    })
   }
 
   return (

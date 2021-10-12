@@ -88,7 +88,7 @@ const Classes = ({
                 {key === 'MY_FAVORITES' &&
                 !activeClasses.some((x) => x.isFavourite) ? (
                   <Tooltip
-                    title="Mark atleast 1 class as favorite"
+                    title="No class marked as favorite"
                     placement="right"
                   >
                     {myClassFilters[key]}

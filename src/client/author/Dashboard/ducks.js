@@ -137,9 +137,20 @@ function* toggleFavoriteClassSaga({ payload }) {
         isFavourite: payload.toggleValue,
       })
     )
-    const result = yield call(dashboardApi.toggleFavouriteClass, payload)
+    const result = yield call(dashboardApi.toggleFavouriteClass, {
+      groupId: payload.groupId,
+      toggleValue: payload.toggleValue,
+    })
     if (result.success) {
       notification({ type: 'success', duration: 1.5, msg: result.message })
+      if (payload.removeClassFromList) {
+        const dashboardClasses = yield select(getDashboardClasses)
+        yield put(
+          receiveTeacherDashboardSuccessAction(
+            dashboardClasses.filter((x) => x._id !== payload.groupId)
+          )
+        )
+      }
     } else {
       yield put(
         updatefavoriteClassesAction({

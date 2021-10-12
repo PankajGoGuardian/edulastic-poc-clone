@@ -35,6 +35,7 @@ const CustomGroup = ({ onChange, value, customKeys, buttonStyle, t }) => {
       allKeyButtons.map((button) => ({
         value: button.handler,
         label: button.label,
+        dataCy: button.dataCy,
       }))
     )
   }, [customKeys])

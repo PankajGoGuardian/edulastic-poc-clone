@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
+import { segmentApi } from '@edulastic/api'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -321,7 +322,10 @@ class AssignTest extends React.Component {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
       }
       const isValid = this.validateSettings(updatedAssignment)
-      if (isValid) saveAssignment(updatedAssignment)
+      if (isValid) {
+        segmentApi.genericEventTrack('testAssignSubmit', updatedAssignment)
+        saveAssignment(updatedAssignment)
+      }
     }
   }
 

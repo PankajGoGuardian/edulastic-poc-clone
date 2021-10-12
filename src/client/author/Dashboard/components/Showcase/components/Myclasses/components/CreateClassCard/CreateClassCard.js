@@ -13,7 +13,12 @@ import AuthorCompleteSignupButton from '../../../../../../../../common/component
 import { TextWrapper } from '../../../../../styledComponents'
 
 const CreateClassCard = ({ history }) => {
-  const createNewClass = () => history.push('/author/manageClass/createClass')
+  const createNewClass = () => {
+    history.push({
+      pathname: '/author/manageClass/createClass',
+      state: { fromDashboard: true },
+    })
+  }
 
   return (
     <>

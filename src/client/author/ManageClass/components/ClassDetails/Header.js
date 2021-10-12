@@ -16,7 +16,7 @@ import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-
+import { segmentApi, canvasApi } from '@edulastic/api'
 // components
 import { Dropdown, Select, Col } from 'antd'
 
@@ -31,7 +31,7 @@ import {
   IconRemove,
 } from '@edulastic/icons'
 import IconArchive from '@edulastic/icons/src/IconArchive'
-import { canvasApi } from '@edulastic/api'
+
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import {
   Institution,
@@ -256,6 +256,7 @@ const Header = ({
   }
 
   const handleCanvasAndGoogleSyncButtonClick = (syncType = '') => {
+    segmentApi.genericEventTrack('syncButtonClicked', { syncType })
     if (
       (selectedClass?.canvasCode &&
         selectedClass.canvasCode.includes('deactivated')) ||
@@ -473,7 +474,13 @@ const Header = ({
           </EduButton>
         )}
         {active === 1 && (
-          <EduButton isBlue onClick={() => history.push('/author/tests')}>
+          <EduButton
+            isBlue
+            onClick={() => {
+              segmentApi.genericEventTrack('AssignATestButtonClick', {})
+              history.push('/author/tests')
+            }}
+          >
             <IconAssignment />
             ASSIGN A TEST
           </EduButton>

@@ -4,6 +4,7 @@ import { debounce } from 'lodash'
 // components
 import { title, white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
+import { segmentApi } from '@edulastic/api'
 import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import {
   ScrollbarContainer,
@@ -61,6 +62,7 @@ const BannerSlider = ({
     isDemoPlaygroundTile,
     slide
   ) => {
+    segmentApi.genericEventTrack('bannerClick', { _id: slide._id, description })
     if (isSparkBannerTile) {
       handleSparkClick(config.subscriptionData.productId)
       return
@@ -71,7 +73,7 @@ const BannerSlider = ({
       proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
       return
     }
-    bannerActionHandler(config.filters[0], description, slide)
+    bannerActionHandler(config.filters[0], description)
   }
 
   return (

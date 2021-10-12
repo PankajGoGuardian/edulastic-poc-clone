@@ -273,8 +273,18 @@ const MyClasses = ({
     setShowItemBankTrialUsedModal(false)
   }
 
-  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
+  const handleFeatureClick = ({
+    config = {},
+    tags = [],
+    isBlocked,
+    ...rest
+  }) => {
     const { filters, contentType, subscriptionData } = config
+    segmentApi.genericEventTrack('FeaturedBundleClick', {
+      ...rest,
+      config,
+      tags,
+    })
 
     /**
      *  User purchased bank from different premium district
@@ -567,9 +577,8 @@ const MyClasses = ({
     }
   }
 
-  const bannerActionHandler = (filter = {}, description, slide) => {
+  const bannerActionHandler = (filter = {}) => {
     const { action, data = {} } = filter
-    segmentApi.genericEventTrack('bannerClick', { _id: slide._id, description })
     const content = data?.contentType?.toLowerCase() || 'tests_library'
     if (content === 'tests_library') {
       data.contentType = 'tests'

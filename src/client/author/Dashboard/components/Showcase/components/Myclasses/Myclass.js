@@ -704,9 +704,11 @@ const MyClasses = ({
 
   const showRecommendedTests = tests.length >= 5 && recommendedTests?.length > 0
 
+  const showBannerSlide = !loading && tests.length < 2
+
   return (
     <MainContentWrapper padding="30px 25px">
-      {!loading && allActiveClasses?.length === 0 && (
+      {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}
           handleBannerModalClose={() => setShowBannerModal(null)}

@@ -5,6 +5,7 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
 import { getUserDetails } from '../../student/Login/ducks'
+import { getUserId } from '../src/selectors/user'
 
 const RECEIVE_TEACHER_DASHBOARD_REQUEST =
   '[dashboard teacher] receive data request'
@@ -116,9 +117,10 @@ export const reducer = createReducer(initialState, {
 
 function* receiveTeacherDashboardSaga({ payload }) {
   try {
+    const userId = yield select(getUserId)
     const { classDetails } = yield call(
       dashboardApi.getTeacherDashboardDetails,
-      localStorage.getItem('author:dashboard:classFilter')
+      localStorage.getItem(`author:dashboard:classFilter:${userId}`)
     )
     yield put(receiveTeacherDashboardSuccessAction(classDetails))
     payload?.setClassType?.()

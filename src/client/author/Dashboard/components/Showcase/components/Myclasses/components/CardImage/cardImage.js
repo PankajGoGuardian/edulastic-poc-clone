@@ -92,7 +92,9 @@ const CardImage = ({
   )
 
   const handleToggle = (payload) => {
-    const currentFilter = localStorage.getItem('author:dashboard:classFilter')
+    const currentFilter = localStorage.getItem(
+      `author:dashboard:classFilter:${userId}`
+    )
     if (!payload.toggleValue && currentFilter === 'MY_FAVORITES') {
       // If no favourites and the current filter is MY_FAVORITES then change to default filter
       const noFavouriteClasses = !activeClasses.some(
@@ -100,7 +102,10 @@ const CardImage = ({
       )
       if (noFavouriteClasses) {
         toggleFavoriteClass(payload)
-        localStorage.setItem('author:dashboard:classFilter', 'ALL_CLASSES')
+        localStorage.setItem(
+          `author:dashboard:classFilter:${userId}`,
+          'ALL_CLASSES'
+        )
         getTeacherDashboard({
           background: true,
           setClassType: () => setClassType('All Classes'),

@@ -37,7 +37,8 @@ const Classes = ({
 }) => {
   const [classType, setClassType] = useState(
     myClassFilters[
-      localStorage.getItem('author:dashboard:classFilter') || 'ALL_CLASSES'
+      localStorage.getItem(`author:dashboard:classFilter:${userId}`) ||
+        'ALL_CLASSES'
     ]
   )
 
@@ -65,7 +66,10 @@ const Classes = ({
             value={classType}
             onChange={(value = '') => {
               const key = value.split(' ').join('_').toUpperCase()
-              localStorage.setItem('author:dashboard:classFilter', key)
+              localStorage.setItem(
+                `author:dashboard:classFilter:${userId}`,
+                key
+              )
               getTeacherDashboard({
                 background: true,
                 setClassType: () => setClassType(value),

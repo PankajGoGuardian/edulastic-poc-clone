@@ -1338,7 +1338,10 @@ function* logout() {
       }
       // localStorage.clear()
       forIn(localStorage, (value, objKey) => {
-        if (!startsWith(objKey, 'recommendedTest:')) {
+        if (
+          !startsWith(objKey, 'recommendedTest:') &&
+          !startsWith(objKey, 'author:dashboard:classFilter:')
+        ) {
           localStorage.removeItem(objKey)
         }
       })

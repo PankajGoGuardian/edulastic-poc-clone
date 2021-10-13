@@ -384,7 +384,7 @@ const graphPolygonChecks = [
   'comparePerimeter',
 ]
 const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
-const graphMiscellaneous = ['ignoreLabels']
+const graphMiscellaneous = ['tolerance', 'ignoreLabels']
 const graphPointsOnAnEquation = ['latex', 'points']
 const graphPointsOnAnEquation2 = ['latex', 'points']
 
@@ -440,7 +440,7 @@ const evaluationSettings = {
       // 'partialCreditScoring',
     ],
     // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
-    // MISCELLANEOUS: ['graphMiscellaneous'],
+    MISCELLANEOUS: ['graphMiscellaneous'],
   },
 }
 

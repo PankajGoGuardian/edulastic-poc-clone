@@ -10,7 +10,7 @@ import { appLanguages } from '@edulastic/constants'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useState, useContext } from 'react'
+import React, { useState, useContext, useMemo } from 'react'
 import styled from 'styled-components'
 import { IconTrash as Icon } from '@edulastic/icons'
 import QuestionTextArea from '../../../../../components/QuestionTextArea'
@@ -143,35 +143,33 @@ const Option = (props) => {
     }
   }
 
-  const getLabel = (inx) => {
+  const label = useMemo(() => {
     if (uiStyle.type === 'block') {
       switch (uiStyle.choiceLabel) {
         case 'none':
           return ''
         case 'number':
-          return inx + 1
+          return indx + 1
         case 'lower-alpha':
-          return (ALPHABET[inx] || '').toLowerCase()
+          return (ALPHABET[indx] || '').toLowerCase()
         case 'upper-alpha':
         default:
-          return (ALPHABET[inx] || '').toUpperCase()
+          return (ALPHABET[indx] || '').toUpperCase()
       }
-    } else if (uiStyle.type === 'standard') {
+    }
+    if (uiStyle.type === 'standard') {
       switch (uiStyle.stemNumeration) {
         case 'number':
-          return inx + 1
+          return indx + 1
         case 'lower-alpha':
-          return (ALPHABET[inx] || '').toLowerCase()
+          return (ALPHABET[indx] || '').toLowerCase()
         case 'upper-alpha':
         default:
-          return (ALPHABET[inx] || '').toUpperCase()
+          return (ALPHABET[indx] || '').toUpperCase()
       }
-    } else {
-      return (ALPHABET[inx] || '').toUpperCase()
     }
-  }
-
-  const label = getLabel(indx)
+    return (ALPHABET[indx] || '').toUpperCase()
+  }, [uiStyle, indx])
 
   const container = (
     <>

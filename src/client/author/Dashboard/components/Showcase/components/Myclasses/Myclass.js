@@ -716,9 +716,19 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const showRecommendedTests = tests.length >= 5 && recommendedTests?.length > 0
+  const sumOfCounts = (arr) => {
+    let sum = 0
+    for (let i = 0; i < arr.length; i++) sum += arr[i]
+    return sum
+  }
 
-  const showBannerSlide = !loading && tests.length < 2
+  const totalAssignemntCount = sumOfCounts(
+    allActiveClasses.map((x) => x.totalAssignment || 0) || 0
+  )
+
+  const showBannerSlide = !loading && totalAssignemntCount < 2
+  const showRecommendedTests =
+    totalAssignemntCount >= 5 && recommendedTests?.length > 0
 
   return (
     <MainContentWrapper padding="30px 25px">

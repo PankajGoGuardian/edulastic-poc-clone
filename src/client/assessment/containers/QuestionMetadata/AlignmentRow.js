@@ -307,7 +307,6 @@ const AlignmentRow = ({
                 <ItemBody data-cy="subjectItem">
                   <FieldLabel>{t('component.options.subject')}</FieldLabel>
                   <SelectInputStyled
-                    getPopupContainer={(trigger) => trigger.parentNode}
                     data-cy="subjectSelect"
                     value={subject}
                     onChange={setSubject}
@@ -331,7 +330,6 @@ const AlignmentRow = ({
                     filterOption
                     value={curriculum}
                     onChange={handleChangeStandard}
-                    getPopupContainer={(trigger) => trigger.parentNode}
                   >
                     {formattedCuriculums.map(({ value, text, disabled }) => (
                       <Select.Option
@@ -352,7 +350,6 @@ const AlignmentRow = ({
                     showSearch
                     value={grades}
                     onChange={setGrades}
-                    getPopupContainer={(trigger) => trigger.parentNode}
                   >
                     {selectsData.allGrades.map(({ text, value }) => (
                       <Select.Option key={text} value={value}>
@@ -379,7 +376,6 @@ const AlignmentRow = ({
                 onSearch={handleSearchStandard}
                 onSelect={handleStandardSelect}
                 onDeselect={handleStandardDeselect}
-                getPopupContainer={(trigger) => trigger.parentNode}
               >
                 {!curriculumStandardsLoading &&
                   curriculumStandardsELO &&

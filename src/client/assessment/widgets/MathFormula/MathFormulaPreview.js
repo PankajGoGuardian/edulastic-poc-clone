@@ -295,17 +295,17 @@ class MathFormulaPreview extends Component {
     const allowNumericOnly = get(item, 'allowNumericOnly', false)
 
     // in Units type, this need when the show dropdown option is true
-    let correctUnit = get(
+    const correctUnit = get(
       item,
       'validation.validResponse.value[0].options.unit',
       ''
     )
-    if (
-      (correctUnit.search('text{') === -1 && correctUnit.search('f') !== -1) ||
-      correctUnit.search(/\s/g) !== -1
-    ) {
-      correctUnit = `\\text{${correctUnit}}`
-    }
+    // if (
+    //   (correctUnit.search('text{') === -1 && correctUnit.search('f') !== -1) ||
+    //   correctUnit.search(/\s/g) !== -1
+    // ) {
+    //   correctUnit = `\\text{${correctUnit}}`
+    // }
 
     return (
       <div>
@@ -460,14 +460,14 @@ class MathFormulaPreview extends Component {
                 answer = ans?.value?.[0]?.value
 
                 if (item.isUnits && item.showDropdown) {
-                  let altUnit = get(ans, 'value[0].options.unit', '')
-                  if (
-                    (altUnit.search('text{') === -1 &&
-                      altUnit.search('f') !== -1) ||
-                    altUnit.search(/\s/g) !== -1
-                  ) {
-                    altUnit = `\\text{${altUnit}}`
-                  }
+                  const altUnit = get(ans, 'value[0].options.unit', '')
+                  // if (
+                  //   (altUnit.search('text{') === -1 &&
+                  //     altUnit.search('f') !== -1) ||
+                  //   altUnit.search(/\s/g) !== -1
+                  // ) {
+                  //   altUnit = `\\text{${altUnit}}`
+                  // }
 
                   answer =
                     ans.value[0].value.search('=') === -1

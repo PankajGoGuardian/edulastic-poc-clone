@@ -88,6 +88,12 @@ class Signup extends React.Component {
     })
   }
 
+  componentDidMount(){
+    if(window?.analytics?.track){
+      window.analytics.track("SignupLanded",{role:"teacher",referrer:window.document.referrer});
+    }
+  }
+
   regExp = new RegExp('^[A-Za-z0-9 ]+$')
 
   handleSubmit = (e) => {

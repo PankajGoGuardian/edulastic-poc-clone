@@ -12,7 +12,7 @@ import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { roleuser, signUpState, test } from '@edulastic/constants'
-import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
+import { DragDrop, notification, OfflineNotifier, UrlChangeListener } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
 import { themes } from './theme'
@@ -642,6 +642,7 @@ class App extends Component {
         )}
         <StudentSessionExpiredModal />
         <AppUpdate visible={showAppUpdate} />
+        <UrlChangeListener />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

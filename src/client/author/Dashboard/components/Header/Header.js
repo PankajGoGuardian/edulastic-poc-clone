@@ -30,6 +30,7 @@ import {
   PopoverWrapper,
   UpgradeBtn,
   StyledLink,
+  CloseButton,
 } from './styled'
 import { launchHangoutOpen } from '../../ducks'
 import {
@@ -57,16 +58,33 @@ import CanvasClassSelectModal from '../../../ManageClass/components/ClassListCon
 import ClassSelectModal from '../../../ManageClass/components/ClassListContainer/ClassSelectModal'
 import { getFormattedCurriculumsSelector } from '../../../src/selectors/dictionaries'
 
-const getContent = ({ setvisible, needsRenewal }) => (
-  <FlexContainer width="475px" alignItems="flex-start">
-    <img src={IMG} width="165" height="135" alt="" />
-    <FlexContainer flexDirection="column" width="280px" padding="15px 0 0 6px">
-      <PopoverTitle>Access Additional Features</PopoverTitle>
-      <PopoverDetail>
-        Get additional reports, options to assist students, collaborate with
-        colleagues, anti-cheating tools and more.
-      </PopoverDetail>
-      <FlexContainer padding="15px 0 15px 0" width="100%">
+const getContent = ({
+  setvisible,
+  needsRenewal,
+  isPremiumUser,
+  isPremiumTrialUsed,
+  handleShowTrialModal,
+}) => {
+  const Content = () => {
+    if (!isPremiumUser && !isPremiumTrialUsed) {
+      return (
+        <>
+          <Link to="/author/subscription">
+            <PopoverCancel>UPGRADE NOW</PopoverCancel>
+          </Link>
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick) => (
+              <UpgradeBtn data-cy="freeTrialButton" onClick={handleClick}>
+                TRY FOR FREE
+              </UpgradeBtn>
+            )}
+            onClick={handleShowTrialModal}
+          />
+        </>
+      )
+    }
+    return (
+      <>
         <PopoverCancel onClick={() => setvisible(false)}>
           {' '}
           NO, THANKS
@@ -74,10 +92,31 @@ const getContent = ({ setvisible, needsRenewal }) => (
         <Link to="/author/subscription">
           <UpgradeBtn>{needsRenewal ? 'RENEW NOW' : 'UPGRADE NOW'}</UpgradeBtn>
         </Link>
+      </>
+    )
+  }
+
+  return (
+    <FlexContainer width="475px" alignItems="flex-start">
+      <CloseButton onClick={() => setvisible(false)}>x</CloseButton>
+      <img src={IMG} width="165" height="135" alt="" />
+      <FlexContainer
+        flexDirection="column"
+        width="280px"
+        padding="15px 0 0 6px"
+      >
+        <PopoverTitle>Access Additional Features</PopoverTitle>
+        <PopoverDetail>
+          Get additional reports, options to assist students, collaborate with
+          colleagues, anti-cheating tools and more.
+        </PopoverDetail>
+        <FlexContainer padding="15px 0 15px 0" width="100%">
+          {Content()}
+        </FlexContainer>
       </FlexContainer>
     </FlexContainer>
-  </FlexContainer>
-)
+  )
+}
 
 const ONE_MONTH = 30 * 24 * 60 * 60 * 1000
 const TEN_DAYS = 10 * 24 * 60 * 60 * 1000
@@ -215,16 +254,6 @@ const HeaderSection = ({
             trackClick={trackClick('dashboard:complete-sign-up:click')}
           />
         )}
-        {!isPremiumUser && !isPremiumTrialUsed && (
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <StyledLink data-cy="freeTrialButton" onClick={handleClick}>
-                Free Trial
-              </StyledLink>
-            )}
-            onClick={handleShowTrialModal}
-          />
-        )}
         {showManageClass && (
           <>
             <Tooltip title="Manage Class">
@@ -314,7 +343,13 @@ const HeaderSection = ({
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               trigger="click"
               placement="bottomRight"
-              content={getContent({ setvisible, needsRenewal })}
+              content={getContent({
+                setvisible,
+                needsRenewal,
+                isPremiumUser,
+                isPremiumTrialUsed,
+                handleShowTrialModal,
+              })}
               onClick={() => setvisible(true)}
               visible={visible}
             >
@@ -342,7 +377,9 @@ const HeaderSection = ({
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
-                  Upgrade
+                  {!isPremiumUser && !isPremiumTrialUsed
+                    ? 'TRY PREMIUM FOR FREE'
+                    : 'Upgrade'}
                 </EduButton>
               )}
             </Popover>

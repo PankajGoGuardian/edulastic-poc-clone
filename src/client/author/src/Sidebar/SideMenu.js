@@ -51,6 +51,7 @@ import {
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { helpCenterUrl } from '@edulastic/constants/const/common'
+import { segmentApi } from '@edulastic/api'
 import { getLastPlayListSelector } from '../../Playlist/ducks'
 import { logoutAction } from '../actions/auth'
 import { toggleSideBarAction } from '../actions/toggleMenu'
@@ -305,6 +306,7 @@ class SideMenu extends Component {
         toggleAdminAlertModal,
       } = this.props
       const { path, label } = this.MenuItems[item.key]
+      segmentApi.genericEventTrack('mainMenuClick', { label, path })
       if (
         (['Assignments', 'Insights', 'Manage School'].includes(label) &&
           isSAWithoutSchools) ||

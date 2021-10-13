@@ -1,11 +1,57 @@
 import { get, without } from 'lodash'
 import { createHmac } from 'crypto-browserify'
 import AppConfig from '../../../src/app-config'
+import { getAccessToken, parseJwt } from './utils/Storage'
+import { getUserFromRedux } from './utils/API'
 
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
 
 const trackingParameters = {
   CATEGORY_WEB_APPLICATION: 'Web Application',
+}
+
+const getCommonUserDetailsForSegmentEvents = () => {
+  const accessToken = getAccessToken()
+  const tokenParsed = parseJwt(accessToken)
+  const userFromRedux = getUserFromRedux()
+  const { subscription } =
+    window?.getStore()?.getState()?.subscription?.subscriptionData || {}
+  // const {products} = window.getStore().getState().subscription||{};
+  const subscriptionName = subscription?.subType || 'free'
+  const subscriptionType = subscription?.subType?.startsWith('TRIAL')
+    ? 'trial'
+    : 'purchased'
+  let subscriptionStatus = null
+  if (subscription?.subType) {
+    if (subscription?.status == 1) {
+      subscriptionStatus = 'active'
+    } else {
+      subscriptionStatus = 'expired'
+    }
+  }
+  const { _id: userId, role, districtId } = tokenParsed
+  const { institutionIds = [] } = userFromRedux?.user || {}
+
+  const data = {
+    lastLogin: tokenParsed?.iat * 1000,
+    userId,
+    subscriptionName,
+    ...(institutionIds.length === 1
+      ? { schoolId: institutionIds[0] }
+      : { schoolIds: institutionIds }),
+    districtId,
+    subscriptionType,
+    subscriptionStatus,
+    role,
+  }
+  return data
+}
+
+
+const delay = (ms) => {
+  return new Promise((res) => {
+    setTimeout(() => res(), ms)
+  })
 }
 
 const getUserDetails = (user) => {
@@ -21,6 +67,8 @@ const getUserDetails = (user) => {
     role,
     username,
     utm_source = '',
+    currentSignUpState,
+    isUserGoogleLoggedIn,
   } = user
 
   const extraProps = {
@@ -54,6 +102,8 @@ const getUserDetails = (user) => {
     clever,
     clever_district,
     gm,
+    currentSignUpState,
+    isUserGoogleLoggedIn,
     // this is not Groups._id
     // https://segment.com/docs/connections/spec/group/
     // its districtId
@@ -65,6 +115,7 @@ const getUserDetails = (user) => {
     state,
     country,
     isAdmin,
+    ...getCommonUserDetailsForSegmentEvents(),
     ...extraProps,
   }
 }
@@ -182,10 +233,11 @@ const trackUserClick = ({ user, data }) => {
   }
 }
 
-const trackTeacherSignUp = ({ user }) => {
+const trackTeacherSignUp = async ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
     return
   }
+  await delay(1000)
   if (user) {
     const { role = '', _id, v1Id, isAdmin } = user
     const event = isAdmin ? 'Administrator Signed Up' : 'Teacher Signed Up'
@@ -227,6 +279,12 @@ const trackProductPurchase = ({ user, data }) => {
   }
 }
 
+const genericEventTrack = (event, details) => {
+  if (window?.analytics?.track) {
+    window?.analytics?.track(event, details)
+  }
+}
+
 export default {
   unloadIntercom,
   analyticsIdentify,
@@ -235,4 +293,5 @@ export default {
   trackUserClick,
   trackingParameters,
   trackProductPurchase,
+  genericEventTrack,
 }

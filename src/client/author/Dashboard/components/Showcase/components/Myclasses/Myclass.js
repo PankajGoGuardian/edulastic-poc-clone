@@ -17,12 +17,14 @@ import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import notification from '@edulastic/common/src/components/Notification'
 import { segmentApi } from '@edulastic/api'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
+import { signUpState } from '@edulastic/constants'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
+import { productsMetaData } from '../../../../../src/components/common/PurchaseModals/ProductsMetaData'
 import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
@@ -40,9 +42,12 @@ import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import {
   getCollectionsSelector,
+  getInterestedSubjectsSelector,
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
+import { getTestsSelector } from '../../../../../src/selectors/assignments'
+import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -80,6 +85,9 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
+  tests,
+  loadAssignments,
+  interestedSubjects,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -108,9 +116,13 @@ const MyClasses = ({
   }, [showCleverSyncModal])
   useEffect(() => {
     getTeacherDashboard()
+    loadAssignments()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
+
+  const { currentSignUpState } = user
+  const isSignupCompleted = currentSignUpState === signUpState.DONE
 
   const saveRecommendedTests = (_data) => {
     const data = _data.map((x) => {
@@ -263,8 +275,18 @@ const MyClasses = ({
     setShowItemBankTrialUsedModal(false)
   }
 
-  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
+  const handleFeatureClick = ({
+    config = {},
+    tags = [],
+    isBlocked,
+    ...rest
+  }) => {
     const { filters, contentType, subscriptionData } = config
+    segmentApi.genericEventTrack('FeaturedBundleClick', {
+      ...rest,
+      config,
+      tags,
+    })
 
     /**
      *  User purchased bank from different premium district
@@ -557,13 +579,8 @@ const MyClasses = ({
     }
   }
 
-  const bannerActionHandler = (filter = {}, description) => {
+  const bannerActionHandler = (filter = {}) => {
     const { action, data = {} } = filter
-    segmentApi.trackUserClick({
-      user,
-      data: { event: `dashboard:banner-${description}:click` },
-    })
-
     const content = data?.contentType?.toLowerCase() || 'tests_library'
     if (content === 'tests_library') {
       data.contentType = 'tests'
@@ -634,9 +651,21 @@ const MyClasses = ({
       ...usedTrialItemBankIds,
     ])
 
+    const subjects = interestedSubjects.map((x) => x.toUpperCase())
+
+    const getProductsKeysByInterestedSubject = Object.keys(
+      Object.fromEntries(
+        Object.entries(productsMetaData).filter(([keys, values]) =>
+          subjects.includes(values.filters)
+        )
+      )
+    )
+
     const allAvailableItemProductIds = map(
-      products.filter((product) =>
-        allAvailableTrialItemBankIds.includes(product.linkedProductId)
+      products.filter(
+        (product) =>
+          allAvailableTrialItemBankIds.includes(product.linkedProductId) &&
+          getProductsKeysByInterestedSubject.includes(product.name)
       ),
       'id'
     )
@@ -687,14 +716,19 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
+  const showRecommendedTests = tests.length >= 5 && recommendedTests?.length > 0
+
+  const showBannerSlide = !loading && tests.length < 2
+
   return (
     <MainContentWrapper padding="30px 25px">
-      {!loading && allActiveClasses?.length === 0 && (
+      {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}
           handleBannerModalClose={() => setShowBannerModal(null)}
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
+          setShowBannerModal={setShowBannerModal}
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
         />
@@ -703,8 +737,10 @@ const MyClasses = ({
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
+        classData={classData}
+        history={history}
       />
-      {recommendedTests?.length > 0 && (
+      {showRecommendedTests && (
         <TestRecommendations
           recommendations={recommendedTests}
           setShowTestCustomizerModal={setShowTestCustomizerModal}
@@ -719,6 +755,8 @@ const MyClasses = ({
           featuredBundles={filteredBundles}
           handleFeatureClick={handleFeatureClick}
           emptyBoxCount={featureEmptyBoxCount}
+          isSignupCompleted={isSignupCompleted}
+          testLists={tests}
         />
       )}
       <Launch />
@@ -733,6 +771,7 @@ const MyClasses = ({
         clickedBundleId={clickedBundleId}
         setClickedBundleId={setClickedBundleId}
         isCpm={isCpm}
+        interestedSubjects={interestedSubjects}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
@@ -816,6 +855,8 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       isDemoPlayground: isDemoPlaygroundUser(state),
+      tests: getTestsSelector(state),
+      interestedSubjects: getInterestedSubjectsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -827,6 +868,7 @@ export default compose(
       startTrialAction: slice.actions.startTrialAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
       setUser: setUserAction,
+      loadAssignments: receiveAssignmentsAction,
     }
   )
 )(MyClasses)

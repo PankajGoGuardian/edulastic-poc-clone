@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { TextWrapper } from '../../../../../styledComponents'
 import Card from '../Card'
+import CreateClassCard from '../CreateClassCard/CreateClassCard'
 import { CardContainer, EmptyBoxes } from './styled'
 import { getUserDetails } from '../../../../../../../../student/Login/ducks'
 import { receiveTeacherDashboardAction } from '../../../../../../ducks'
@@ -47,21 +48,26 @@ const Classes = ({
 
   const isPremiumUser = user?.features?.premium
 
+
+const Classes = ({
+  activeClasses,
+  emptyBoxCount,
+  userId,
+  classData,
+  history,
+}) => {
+  const showCreateClassCard = classData.length < 4
+  const allowEmptyBoxes = classData.length > 3
+  
   if (activeClasses.length === 0) {
     return null
   }
 
   return (
     <>
-      <div>
-        <TextWrapper
-          fw="bold"
-          size="16px"
-          color={title}
-          style={{ marginBottom: '1rem' }}
-        >
-          My Classes
-        </TextWrapper>
+      <TextWrapper fw="bold" size="16px" color={title} mt="1.5rem" mb="1rem">
+        {classData.length < 1 ? 'Get Started with Edulastic' : ' My Classes '}
+      </TextWrapper>
         {isPremiumUser && (
           <SelectInputStyled
             data-cy="favouritesDropdown"
@@ -123,9 +129,14 @@ const Classes = ({
             />
           </CardContainer>
         ))}
-        {emptyBoxCount.map((index) => (
-          <EmptyBoxes key={index} />
-        ))}
+        {showCreateClassCard && (
+          <CreateClassCard
+            newCreateClassCard={classData.length < 1}
+            history={history}
+          />
+        )}
+        {allowEmptyBoxes &&
+          emptyBoxCount.map((index) => <EmptyBoxes key={index} />)}
       </FlexContainer>
     </>
   )

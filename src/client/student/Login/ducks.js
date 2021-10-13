@@ -1240,6 +1240,7 @@ export function* fetchUser({ payload }) {
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
     yield put(setUserAction(user))
+    yield call(segmentApi.analyticsIdentify, { user })
     yield put(
       updateInitSearchStateAction({
         grades: user?.orgData?.defaultGrades,

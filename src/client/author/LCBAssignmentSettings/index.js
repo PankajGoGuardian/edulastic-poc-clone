@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Col, Row, Select, Spin } from 'antd'
+import { Col, Row, Select, Spin, Tooltip } from 'antd'
 import moment from 'moment'
 import {
   test as testConst,
@@ -161,26 +161,41 @@ function LCBAssignmentSettings({
                     </InputLabelContainer>
                   </Col>
                   <Col span={12}>
-                    <SelectInputStyled
-                      data-cy="selectOpenPolicy"
-                      placeholder="Please select"
-                      cache="false"
-                      value={assignment?.openPolicy}
-                      onChange={changeField('openPolicy')}
-                      disabled={
+                    <Tooltip
+                      placement="top"
+                      title={
                         assignment?.passwordPolicy ===
-                          testConst.passwordPolicy
-                            .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
-                        status !== assignmentStatusOptions.NOT_OPEN
+                        testConst.passwordPolicy
+                          .REQUIRED_PASSWORD_POLICY_DYNAMIC
+                          ? 'To modify set Dynamic Password as OFF'
+                          : null
                       }
-                      height="30px"
                     >
-                      {openPolicy.map(({ value, text }, index) => (
-                        <Select.Option key={index} value={value} data-cy="open">
-                          {text}
-                        </Select.Option>
-                      ))}
-                    </SelectInputStyled>
+                      <SelectInputStyled
+                        data-cy="selectOpenPolicy"
+                        placeholder="Please select"
+                        cache="false"
+                        value={assignment?.openPolicy}
+                        onChange={changeField('openPolicy')}
+                        disabled={
+                          assignment?.passwordPolicy ===
+                            testConst.passwordPolicy
+                              .REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+                          status !== assignmentStatusOptions.NOT_OPEN
+                        }
+                        height="30px"
+                      >
+                        {openPolicy.map(({ value, text }, index) => (
+                          <Select.Option
+                            key={index}
+                            value={value}
+                            data-cy="open"
+                          >
+                            {text}
+                          </Select.Option>
+                        ))}
+                      </SelectInputStyled>
+                    </Tooltip>
                   </Col>
                 </StyledRow>
               </SettingContainer>

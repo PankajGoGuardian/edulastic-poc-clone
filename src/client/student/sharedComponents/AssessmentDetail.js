@@ -168,7 +168,7 @@ const AssessmentDetails = ({
               <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow>
             )}
           </StatusWrapper>
-          {!!(endDate || dueDate) && (
+          {!!((endDate && type !== 'assignment') || dueDate) && (
             <CardDate>
               <IconSchedule />
               <DueDetails data-cy="date">

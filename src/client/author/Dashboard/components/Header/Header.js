@@ -240,10 +240,6 @@ const HeaderSection = ({
       ? true
       : schoolPolicy?.[0]?.enableGoogleMeet === true
 
-  if (loading) {
-    return null
-  }
-
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">

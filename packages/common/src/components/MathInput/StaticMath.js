@@ -143,25 +143,6 @@ const StaticMath = ({
   }, [])
 
   const handleFocusInner = (innerField) => () => {
-    const { innerFields = [] } = mQuill.current
-    innerFields.forEach((field) => {
-      // remove retaining cursors from other input fields
-      if (field.id !== innerField.id) {
-        field?.__controller?.cursor?.hide()?.parent?.blur()
-      }
-
-      // check current input field.
-      //  when there are more than two cursors,
-      // remove them except that last one.
-      const cursors = field?.el()?.querySelectorAll('.mq-cursor')
-      if (cursors.length > 1) {
-        cursors.forEach((cursor, index) => {
-          if (index < cursors.length - 1) {
-            cursor.remove()
-          }
-        })
-      }
-    })
     const index = getIndex(innerField.el())
     if (
       !window.isMobileDevice ||
@@ -173,6 +154,33 @@ const StaticMath = ({
     currentField.current = innerField
     document.addEventListener('click', handleClickOutside, false)
   }
+
+  const handleClickMath = (evt) => {
+    if (mQuill.current) {
+      const { innerFields = [] } = mQuill.current
+      const hasFocused = innerFields
+        .map((ee) => ee?.__controller?.blurred)
+        .some((x) => !x)
+
+      if (!hasFocused) {
+        const t = mQuill.current?.__controller.cursor.hide()?.parent?.parent
+        if (t) {
+          if (t?.jQ?.length > 0) {
+            const index = getIndex(t.jQ[0])
+            const innerField = innerFields[index]
+            innerField.clickAt(evt.clientX, evt.clientY, evt.target)
+            innerField.el().click()
+          } else {
+            t.controller.textarea.focus()
+          }
+        }
+      }
+    }
+  }
+
+  const handleBlur = useCallback(() => {
+    mQuill.current?.__controller?.cursor?.hide()
+  }, [])
 
   const onInputKeyboard = (key, command = 'cmd') => {
     if (!currentField.current) {
@@ -251,6 +259,8 @@ const StaticMath = ({
             },
           })
           field.latex('')
+          const textarea = field.el().querySelector('.mq-textarea textarea')
+          textarea.addEventListener('blur', handleBlur, false)
         })
         iconStatus.current = getIconStatus(latex)
         // eslint-disable-next-line no-empty
@@ -288,6 +298,7 @@ const StaticMath = ({
       minWidth={style.width}
       minHeight={style.height}
       showKeyboardIcon={window.isMobileDevice}
+      onClick={handleClickMath}
     >
       <div className="input">
         <div className="input__math" data-cy="answer-math-input-style">

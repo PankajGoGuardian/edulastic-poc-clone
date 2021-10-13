@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form, Button as AntdButton, Select, Input, Checkbox } from 'antd'
 import moment from 'moment'
 import { IconAddItems, IconTrash } from '@edulastic/icons'
@@ -10,7 +10,6 @@ import {
 } from '../Common/StyledComponents/upgradePlan'
 import DatesNotesFormItem from '../Common/Form/DatesNotesFormItem'
 import { SUBJECTS_LIST, CLEVER_DISTRICT_ID_REGEX } from '../Data'
-import { useUpdateEffect } from '../Common/Utils'
 import { Button, Table } from '../Common/StyledComponents'
 
 const { Option } = Select
@@ -88,7 +87,7 @@ const ManageSubscriptionByUserSegments = Form.create({
       revokePartialPremiumSubscriptionAction({
         subscriptionId,
         districtId: schoolId ? undefined : districtId,
-        schoolId: schoolId,
+        schoolId,
       })
       if (districtId || schoolId) {
         setSchoolId(schoolId)
@@ -171,7 +170,7 @@ const ManageSubscriptionByUserSegments = Form.create({
       )
     }
 
-    useUpdateEffect(() => {
+    useEffect(() => {
       const data = {
         subStartDate: moment(subStartDate),
         subEndDate: moment(subEndDate),
@@ -181,7 +180,7 @@ const ManageSubscriptionByUserSegments = Form.create({
         opportunityId,
         licenceCount,
       }
-      if (schoolId) {
+      if (schoolId && schoolIdInput) {
         Object.assign(data, { schoolId })
       } else {
         Object.assign(data, { districtId, schoolId })
@@ -197,6 +196,7 @@ const ManageSubscriptionByUserSegments = Form.create({
       customerSuccessManager,
       opportunityId,
       licenceCount,
+      schoolIdInput,
     ])
 
     const renderGrade = (item, _, index) => (

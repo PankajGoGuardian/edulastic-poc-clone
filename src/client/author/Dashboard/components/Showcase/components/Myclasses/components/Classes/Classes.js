@@ -37,7 +37,12 @@ const Classes = ({
   user,
   getTeacherDashboard,
   districtId,
+  classData,
+  history,
 }) => {
+  const showCreateClassCard = classData.length < 4
+  const allowEmptyBoxes = classData.length > 3
+
   const [classType, setClassType] = useState(
     myClassFilters[
       localStorage.getItem(
@@ -48,17 +53,6 @@ const Classes = ({
 
   const isPremiumUser = user?.features?.premium
 
-
-const Classes = ({
-  activeClasses,
-  emptyBoxCount,
-  userId,
-  classData,
-  history,
-}) => {
-  const showCreateClassCard = classData.length < 4
-  const allowEmptyBoxes = classData.length > 3
-  
   if (activeClasses.length === 0) {
     return null
   }
@@ -68,52 +62,48 @@ const Classes = ({
       <TextWrapper fw="bold" size="16px" color={title} mt="1.5rem" mb="1rem">
         {classData.length < 1 ? 'Get Started with Edulastic' : ' My Classes '}
       </TextWrapper>
-        {isPremiumUser && (
-          <SelectInputStyled
-            data-cy="favouritesDropdown"
-            defaultValue={myClassFilters.ALL_CLASSES}
-            value={classType}
-            onChange={(value = '') => {
-              const key = value.split(' ').join('_').toUpperCase()
-              localStorage.setItem(
-                `author:dashboard:classFilter:${userId}:${districtId}`,
-                key
-              )
-              getTeacherDashboard({
-                background: true,
-                setClassType: () => setClassType(value),
-              })
-            }}
-            width="150px"
-            height="25px"
-            margin="0px 10px"
-          >
-            {Object.keys(myClassFilters).map((key) => (
-              <Option
-                data-cy={key}
-                key={key}
-                value={myClassFilters[key]}
-                disabled={
-                  key === 'MY_FAVORITES' &&
-                  !activeClasses.some((x) => x.isFavourite)
-                }
-              >
-                {key === 'MY_FAVORITES' &&
-                !activeClasses.some((x) => x.isFavourite) ? (
-                  <Tooltip
-                    title="No class marked as favorite"
-                    placement="right"
-                  >
-                    {myClassFilters[key]}
-                  </Tooltip>
-                ) : (
-                  myClassFilters[key]
-                )}
-              </Option>
-            ))}
-          </SelectInputStyled>
-        )}
-      </div>
+      {isPremiumUser && (
+        <SelectInputStyled
+          data-cy="favouritesDropdown"
+          defaultValue={myClassFilters.ALL_CLASSES}
+          value={classType}
+          onChange={(value = '') => {
+            const key = value.split(' ').join('_').toUpperCase()
+            localStorage.setItem(
+              `author:dashboard:classFilter:${userId}:${districtId}`,
+              key
+            )
+            getTeacherDashboard({
+              background: true,
+              setClassType: () => setClassType(value),
+            })
+          }}
+          width="150px"
+          height="25px"
+          margin="0px 10px"
+        >
+          {Object.keys(myClassFilters).map((key) => (
+            <Option
+              data-cy={key}
+              key={key}
+              value={myClassFilters[key]}
+              disabled={
+                key === 'MY_FAVORITES' &&
+                !activeClasses.some((x) => x.isFavourite)
+              }
+            >
+              {key === 'MY_FAVORITES' &&
+              !activeClasses.some((x) => x.isFavourite) ? (
+                <Tooltip title="No class marked as favorite" placement="right">
+                  {myClassFilters[key]}
+                </Tooltip>
+              ) : (
+                myClassFilters[key]
+              )}
+            </Option>
+          ))}
+        </SelectInputStyled>
+      )}
       <FlexContainer
         data-cy="myclasses-list"
         justifyContent="flex-start"

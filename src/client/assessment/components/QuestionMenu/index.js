@@ -6,6 +6,7 @@ import { Collapse } from 'antd'
 import {
   themeColor,
   lightBlue10,
+  desktopWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
@@ -149,11 +150,12 @@ class QuestionMenu extends Component {
       questionTitle,
       isPremiumUser,
       isPowerTeacher,
+      isInModal,
     } = this.props
     const { activeTab, isVideoModalVisible } = this.state
 
     return (
-      <Menu>
+      <Menu isInModal={isInModal}>
         <VideoThumbnailWapper onClick={this.openModal}>
           <VideoThumbnail
             questionTitle={questionTitle}
@@ -177,7 +179,7 @@ class QuestionMenu extends Component {
           expandIconPosition="right"
         >
           <Panel key="1" header="QUICK JUMP">
-            <ScrollbarContainer height="auto" mt="12px">
+            <ScrollbarContainer mt="12px" isInModal={isInModal}>
               <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
                 {this.menuOptions.map((option, index) => (
                   <Option
@@ -226,8 +228,26 @@ export { default as AdvancedOptionsLink } from './AdvancedOptionsLink'
 const Menu = styled.div`
   position: fixed;
   width: 230px;
-  padding: 50px 0px 30px 0px;
-  height: 100%;
+  padding-top: 24px;
+  padding-bottom: 24px;
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
+    height: ${({ theme, isInModal }) =>
+      `calc(100vh - ${theme.HeaderHeight.md + 55 + (isInModal ? 32 : 0)}px)`};
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
+    height: ${({ theme, isInModal }) =>
+      `calc(100vh - ${theme.HeaderHeight.xl + 55 + (isInModal ? 32 : 0)}px)`};
+  }
+  @media (max-width: ${desktopWidth}) {
+    /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */
+    height: ${({ isInModal }) =>
+      `calc(100vh - ${185 + (isInModal ? 32 : 0)}}px)`};
+  }
+
+  height: ${({ isInModal }) => `calc(100vh - ${115 + (isInModal ? 32 : 0)}px)`};
 `
 
 const StyledCollapse = styled(Collapse)`
@@ -249,17 +269,17 @@ const ScrollbarContainer = styled(PerfectScrollbar)`
   padding-left: 10px;
   height: ${({ height }) => height || ''};
   margin-top: ${({ mt }) => mt || ''};
-  max-height: ${(props) =>
-    `calc(100vh - ${props.theme.HeaderHeight.xs + 110}px)`};
+  max-height: ${({ theme, isInModal }) =>
+    `calc(100vh - ${theme.HeaderHeight.xs + 340 + (isInModal ? 16 : 0)}px)`};
   /* 110px is for top-Bottom padding(60) and breadcrumbs height(50) */
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    max-height: ${(props) =>
-      `calc(100vh - ${props.theme.HeaderHeight.md + 110}px)`};
+    max-height: ${({ theme, isInModal }) =>
+      `calc(100vh - ${theme.HeaderHeight.md + 340 + (isInModal ? 16 : 0)}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    max-height: ${(props) =>
-      `calc(100vh - ${props.theme.HeaderHeight.xl + 110}px)`};
+    max-height: ${({ theme, isInModal }) =>
+      `calc(100vh - ${theme.HeaderHeight.xl + 340 + (isInModal ? 16 : 0)}px)`};
   }
 `
 

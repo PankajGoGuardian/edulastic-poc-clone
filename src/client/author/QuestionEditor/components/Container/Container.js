@@ -7,8 +7,6 @@ import { withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
 import {
   withWindowSizes,
-  EduButton,
-  getFormattedAttrId,
   PointBlockContext,
   CustomPrompt,
   LanguageContext,
@@ -229,7 +227,14 @@ class Container extends Component {
   }
 
   renderQuestion = () => {
-    const { view, question, preview, itemFromState, testItemId } = this.props
+    const {
+      view,
+      question,
+      preview,
+      itemFromState,
+      testItemId,
+      isInModal,
+    } = this.props
     const { saveClicked, clearClicked } = this.state
     const questionType = question && question.type
     if (view === 'metadata') {
@@ -259,6 +264,7 @@ class Container extends Component {
             saveClicked={saveClicked}
             clearClicked={clearClicked}
             testItemId={testItemId}
+            isInModal={isInModal}
           />
           {/* we may need to bring hint button back */}
           {/* {showHints && <Hints questions={[question]} />} */}
@@ -594,16 +600,6 @@ class Container extends Component {
                 useLanguageFeatureQn.includes(questionType) && (
                   <LanguageSelector />
                 )}
-              {view !== 'preview' && view !== 'auditTrail' && (
-                <EduButton
-                  isGhost
-                  height="30px"
-                  id={getFormattedAttrId(`${question?.title}-how-to-author`)}
-                  style={{ float: 'right' }}
-                >
-                  How to author
-                </EduButton>
-              )}
               <div>{view === 'preview' && this.renderButtons()}</div>
             </RightActionButtons>
           </BreadCrumbBar>

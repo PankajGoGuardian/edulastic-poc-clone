@@ -51,7 +51,6 @@ const LineReader = ({
     <Tooltip placement="top" title="Line Reader">
       <Button
         isGhost
-        height="40px"
         IconBtn
         disabled={visible}
         data-cy="lineReaderButton"

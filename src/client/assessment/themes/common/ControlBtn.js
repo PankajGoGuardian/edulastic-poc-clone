@@ -1,11 +1,11 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
-import { themeColorBlue } from '@edulastic/colors'
+import { themeColorBlue, mediumDesktopExactWidth } from '@edulastic/colors'
 
 const Back = styled(Button)`
   width: ${(props) => (props.next ? (props.skin ? '58px' : '187px') : '58px')};
-  height: 40px;
-  width: 40px;
+  height: 36px;
+  width: 36px;
   border-radius: 4px;
   background: ${({ theme, skin }) =>
     skin
@@ -129,12 +129,15 @@ const Back = styled(Button)`
     width: ${(props) =>
       props.next
         ? props.skin
-          ? '40px'
+          ? '36px'
           : '187px'
         : props.skin
-        ? '40px'
+        ? '36px'
         : '50px'};
-    height: ${(props) => (props.skin ? '40px' : '50px')};
+    height: ${(props) => (props.skin ? '36px' : '50px')};
+  }
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
   }
   @media (max-width: 767px) {
     width: 40px;
@@ -169,7 +172,7 @@ const Next = styled(Button)`
     theme.widgets.assessmentPlayers.controlBtnPrimaryColor};
   border: ${({ theme }) =>
     `1px solid ${theme.widgets.assessmentPlayers.mainContentBgColor}`};
-  height: 40px;
+  height: 36px;
   width: 100px;
   margin-left: 5px;
   display: flex;
@@ -195,6 +198,10 @@ const Next = styled(Button)`
     border: none;
     outline: 0;
     box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
+
+  @media (min-width: ${mediumDesktopExactWidth}) {
+    height: 40px;
   }
 `
 export default {

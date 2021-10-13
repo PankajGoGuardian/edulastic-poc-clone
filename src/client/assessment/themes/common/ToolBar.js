@@ -1,8 +1,4 @@
-import {
-  extraDesktopWidthMax,
-  mediumDesktopExactWidth,
-  themeColorBlue,
-} from '@edulastic/colors'
+import { mediumDesktopExactWidth, themeColorBlue } from '@edulastic/colors'
 import { questionType, test } from '@edulastic/constants'
 import {
   IconCalculator,
@@ -20,14 +16,14 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
-// import LineReader from '../../../common/components/LineReader'
+import LineReader from '../../../common/components/LineReader'
 
 const { calculatorTypes } = test
 
 export const Container = styled.div`
   margin-left: 0px;
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   align-items: center;
   span {
     line-height: 11px;
@@ -38,7 +34,7 @@ export const ButtonWithStyle = styled(Button)`
   border: 1px solid #ffffff;
   margin-right: 5px;
   border-radius: 5px;
-  ${(props) => props.hidden && 'display:none'}
+  ${(props) => props.hidden && 'display:none;'}
   ${({ theme, active }) => `
     background: ${
       active
@@ -114,9 +110,6 @@ ${({ theme, active }) =>
     height: 40px;
     width: 40px;
   }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    margin-right: 10px;
-  }
 
   &:focus {
     outline: 0;
@@ -182,6 +175,8 @@ const ToolBar = ({
   tool = [],
   qType,
   handleMagnifier,
+  openReferenceModal,
+  isShowReferenceModal,
   enableMagnifier,
   toggleUserWorkUploadModal,
   changeTool,
@@ -273,7 +268,14 @@ const ToolBar = ({
           onClick={toggleUserWorkUploadModal}
         />
       )}
-      {/* <LineReader btnComponent={ButtonWithStyle} /> */}
+      <ActionButton
+        disabled={isPremiumContentWithoutAccess}
+        title="Reference Sheet"
+        icon={<IconReferenceSheet />}
+        active={isShowReferenceModal}
+        onClick={openReferenceModal}
+      />
+      <LineReader btnComponent={ButtonWithStyle} />
     </Container>
   )
 }

@@ -210,7 +210,6 @@ const PlayerHeader = ({
                         <ToolButton
                           next
                           skin
-                          size="large"
                           type="primary"
                           icon="tool"
                           data-cy="setting"

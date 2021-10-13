@@ -571,11 +571,7 @@ const compareResponseIds = (oldQuestionResponses, newQuestionResponses) => {
 const compareOptionsByIds = (oldQuestionOptions, newQuestionOptions) => {
   const oldQuestionOptionIds = keys(oldQuestionOptions) || []
   for (const id of oldQuestionOptionIds) {
-    if (
-      !oldQuestionOptions[id].every((option) =>
-        (newQuestionOptions?.[id] || []).includes(option)
-      )
-    ) {
+    if (oldQuestionOptions[id]?.length > newQuestionOptions?.[id]?.length) {
       return true
     }
   }

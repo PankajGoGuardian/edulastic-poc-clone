@@ -26,7 +26,7 @@ const getUserDetails = (user) => {
   const extraProps = {
     isSingaporeMath:
       utm_source.toLowerCase().includes('singapore') ||
-      referrer.includes('singapore') ||
+      `${referrer}`.includes('singapore') ||
       orgData?.itemBanks?.some(
         (itemBank) =>
           itemBank.owner?.toLowerCase().includes('singapore') &&
@@ -34,7 +34,7 @@ const getUserDetails = (user) => {
       ),
     isCpm:
       utm_source.toLowerCase().includes('cpm') ||
-      referrer.toLowerCase().includes('cpm'),
+      `${referrer}`.toLowerCase().includes('cpm'),
   }
   // setting first district details for student other user role will have only one district
   const {

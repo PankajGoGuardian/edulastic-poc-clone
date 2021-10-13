@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { chunk } from 'lodash'
 import { SortableContainer } from 'react-sortable-hoc'
@@ -20,6 +20,7 @@ const Options = ({
   fromSetAnswers,
   ...restProps
 }) => {
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0)
   const noOfColumns = uiStyle.columns || 1
   const noOfRows = Math.ceil(options.length / noOfColumns)
   const updateArrangement = (arr) => {
@@ -93,6 +94,8 @@ const Options = ({
               multipleResponses={multipleResponses}
               fontSize={fontSize}
               fromSetAnswers={fromSetAnswers}
+              setFocusedOptionIndex={setFocusedOptionIndex}
+              focusedOptionIndex={focusedOptionIndex}
               {...restProps}
             />
           ))}

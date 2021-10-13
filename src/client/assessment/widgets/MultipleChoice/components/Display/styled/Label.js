@@ -131,7 +131,8 @@ export const OptionsLabel = styled.span`
 
 export const OptionLabelDiv = styled.div`
   flex: 1;
-  z-index: 9999;
+  z-index: ${({ focusedOptionIndex, indx }) =>
+    focusedOptionIndex == indx ? '9999' : '9998'};
   position: relative;
   display: flex;
   align-items: center;

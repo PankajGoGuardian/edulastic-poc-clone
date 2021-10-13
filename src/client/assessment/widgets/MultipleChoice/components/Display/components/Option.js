@@ -53,6 +53,8 @@ const Option = (props) => {
     tool = [],
     onChangeOption,
     onRemoveOption,
+    setFocusedOptionIndex,
+    focusedOptionIndex,
   } = props
   let className = ''
   let correctAnswers = []
@@ -208,6 +210,7 @@ const Option = (props) => {
 
   const renderCheckbox = () => (
     <StyledOptionsContainer
+      data-cy="anwer-labels"
       uiStyleType={uiStyle.type}
       isSelected={isSelected}
       multipleResponses={multipleResponses}
@@ -257,49 +260,50 @@ const Option = (props) => {
 
   return (
     // TODO setup label background color for each option
-    <span data-cy="quillSortableItem">
-      <LableComp
-        data-cy="anwer-labels"
-        maxWidth={maxWidth}
-        smallSize={smallSize}
-        className={className}
-        showAnswer={showAnswer}
-        uiStyle={uiStyle}
-        showIcon={showIcon}
-        styleType={styleType}
-        selected={isSelected}
-        checkAnswer={checkAnswer}
-        userSelect={!!setCrossAction}
-        isPrintPreview={isPrintPreview}
-        showBorder={showBorder}
-        label={label}
-        onMouseEnter={() => {
-          if (setCrossAction && !isTouchDevice()) {
-            toggleHover(true)
-          }
-        }}
-        onMouseLeave={() => {
-          if (setCrossAction && !isTouchDevice()) {
-            toggleHover(false)
-          }
-        }}
-      >
-        {renderCheckbox()}
-        {showIcon && (
-          <IconWrapper>
-            {className === 'right' && <IconCheck />}
-            {className === 'wrong' && <IconClose />}
-          </IconWrapper>
-        )}
-        {fromSetAnswers && !hideDelete && (
-          <IconTrash
-            data-cypress="deleteButton"
-            data-cy={`deleteprefix${indx}`}
-            onClick={handleRemoveOp}
-          />
-        )}
-      </LableComp>
-    </span>
+    <LableComp
+      data-cy="quillSortableItem"
+      maxWidth={maxWidth}
+      smallSize={smallSize}
+      className={className}
+      showAnswer={showAnswer}
+      uiStyle={uiStyle}
+      showIcon={showIcon}
+      styleType={styleType}
+      selected={isSelected}
+      checkAnswer={checkAnswer}
+      userSelect={!!setCrossAction}
+      isPrintPreview={isPrintPreview}
+      showBorder={showBorder}
+      label={label}
+      focusedOptionIndex={focusedOptionIndex}
+      indx={indx}
+      onMouseEnter={() => {
+        if (setCrossAction && !isTouchDevice()) {
+          toggleHover(true)
+        }
+      }}
+      onMouseLeave={() => {
+        if (setCrossAction && !isTouchDevice()) {
+          toggleHover(false)
+        }
+      }}
+      onFocus={() => setFocusedOptionIndex(indx)}
+    >
+      {renderCheckbox()}
+      {showIcon && (
+        <IconWrapper>
+          {className === 'right' && <IconCheck />}
+          {className === 'wrong' && <IconClose />}
+        </IconWrapper>
+      )}
+      {fromSetAnswers && !hideDelete && (
+        <IconTrash
+          data-cypress="deleteButton"
+          data-cy={`deleteprefix${indx}`}
+          onClick={handleRemoveOp}
+        />
+      )}
+    </LableComp>
   )
 }
 
@@ -396,6 +400,8 @@ Option.propTypes = {
   isReviewTab: PropTypes.bool.isRequired,
   setCrossAction: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
   fontSize: PropTypes.string.isRequired,
+  setFocusedOptionIndex: PropTypes.func,
+  focusedOptionIndex: PropTypes.number,
 }
 
 Option.defaultProps = {
@@ -407,6 +413,8 @@ Option.defaultProps = {
   styleType: 'default',
   setCrossAction: false,
   crossAction: {},
+  setFocusedOptionIndex: () => {},
+  focusedOptionIndex: 0,
 }
 const OptionComponent = withNamespaces('assessment')(Option)
 

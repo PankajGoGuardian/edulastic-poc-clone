@@ -53,10 +53,6 @@ const Classes = ({
 
   const isPremiumUser = user?.features?.premium
 
-  if (activeClasses.length === 0) {
-    return null
-  }
-
   return (
     <>
       <TextWrapper fw="bold" size="16px" color={title} mt="1.5rem" mb="1rem">

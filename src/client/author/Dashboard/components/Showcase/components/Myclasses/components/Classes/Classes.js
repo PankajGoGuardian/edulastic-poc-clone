@@ -8,6 +8,7 @@ import { CardContainer, EmptyBoxes } from './styled'
 import { getUserDetails } from '../../../../../../../../student/Login/ducks'
 import { receiveTeacherDashboardAction } from '../../../../../../ducks'
 import { Tooltip } from '../../../../../../../../common/utils/helpers'
+import { getUserOrgId } from '../../../../../../../src/selectors/user'
 
 const myClassFilters = {
   ALL_CLASSES: 'All Classes',
@@ -34,11 +35,13 @@ const Classes = ({
   userId,
   user,
   getTeacherDashboard,
+  districtId,
 }) => {
   const [classType, setClassType] = useState(
     myClassFilters[
-      localStorage.getItem(`author:dashboard:classFilter:${userId}`) ||
-        'ALL_CLASSES'
+      localStorage.getItem(
+        `author:dashboard:classFilter:${userId}:${districtId}`
+      ) || 'ALL_CLASSES'
     ]
   )
 
@@ -67,7 +70,7 @@ const Classes = ({
             onChange={(value = '') => {
               const key = value.split(' ').join('_').toUpperCase()
               localStorage.setItem(
-                `author:dashboard:classFilter:${userId}`,
+                `author:dashboard:classFilter:${userId}:${districtId}`,
                 key
               )
               getTeacherDashboard({
@@ -131,6 +134,7 @@ const Classes = ({
 export default connect(
   (state) => ({
     user: getUserDetails(state),
+    districtId: getUserOrgId(state),
   }),
   {
     getTeacherDashboard: receiveTeacherDashboardAction,

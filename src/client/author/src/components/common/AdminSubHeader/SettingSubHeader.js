@@ -35,6 +35,10 @@ class AdminSubHeader extends Component {
         return
       case 'Interested Standards':
         history.push(`/author/settings/interested-standards`)
+        return
+      case 'Roster Import':
+        history.push(`/author/settings/roster-import`)
+        return
     }
   }
 
@@ -73,6 +77,7 @@ class AdminSubHeader extends Component {
               tab="Standards Proficiency"
               key="Standards Proficiency"
             />
+            <StyledTabPane tab="Roster Import" key="Roster Import" />
           </StyledSubMenu>
         )}
       </SubHeaderWrapper>

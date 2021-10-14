@@ -407,6 +407,26 @@ const cleverStopSyncApi = (data) => stopSyncApi({ _prefix: prefix, ...data })
 const atlasStopSyncApi = (data) =>
   stopSyncApi({ _prefix: atlasPrefix, ...data })
 
+const rosterImportFileUploadApi = (payload) => {
+  const formData = new FormData()
+  for (const file of payload) {
+    formData.append(file.name, file)
+  }
+  for (const f of formData.values()) {
+    console.log(f)
+  }
+  api
+    .callApi({
+      method: 'post',
+      url: '/districts/roster-import',
+      data: formData,
+      config: {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    })
+    .then((result) => result.data.result)
+}
+
 export default {
   getSubscription,
   searchUpdateDistrict,
@@ -452,4 +472,5 @@ export default {
   cleverStopSyncApi,
   stopSyncApi,
   bulkUpgradeCSVSubscriptionApi,
+  rosterImportFileUploadApi,
 }

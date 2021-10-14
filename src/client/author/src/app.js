@@ -160,6 +160,9 @@ const PerformanceBand = loadable(() => import('../PerformanceBand'), {
 const StandardsProficiency = loadable(() => import('../StandardsProficiency'), {
   fallback: <Progress />,
 })
+const RosterImport = loadable(() => import('../RosterImport'), {
+  fallback: <Progress />,
+})
 const Schools = loadable(() => import('../Schools'), {
   fallback: <Progress />,
 })
@@ -773,6 +776,11 @@ const Author = ({
                   exact
                   path="/author/settings/standards-proficiency"
                   component={StandardsProficiency}
+                />
+                <Route
+                  exact
+                  path="/author/settings/roster-import"
+                  component={RosterImport}
                 />
                 <Route exact path="/author/schools" component={Schools} />
                 <Route exact path="/author/users/student" component={Student} />

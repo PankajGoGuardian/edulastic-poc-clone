@@ -29,7 +29,7 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
           renderButton={(handleClick) => (
             <StyledEduButton
               isBlue
-              data-cy="createNewClass"
+              data-cy="createNewClassFromCard"
               onClick={handleClick}
             >
               <IconPlusCircle width={16} height={16} />{' '}

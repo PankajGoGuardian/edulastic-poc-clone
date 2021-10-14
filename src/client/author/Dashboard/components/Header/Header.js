@@ -70,7 +70,7 @@ const getContent = ({
       return (
         <>
           <Link to="/author/subscription">
-            <PopoverCancel>UPGRADE NOW</PopoverCancel>
+            <PopoverCancel data-cy="upgradeButton">UPGRADE NOW</PopoverCancel>
           </Link>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -373,7 +373,7 @@ const HeaderSection = ({
                 <EduButton
                   isBlue
                   style={{ marginLeft: '5px' }}
-                  data-cy="upgradeButton"
+                  data-cy="tryPremiumForFree"
                   onClick={trackClick('dashboard:upgrade:click')}
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />

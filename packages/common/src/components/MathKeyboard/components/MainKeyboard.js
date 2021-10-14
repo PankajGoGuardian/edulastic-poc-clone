@@ -128,6 +128,7 @@ const MainKeyboard = ({
         onClick={onClickPrev}
         onTouchEnd={onClickPrev}
         hidden={current <= 0}
+        data-cy="prevButton"
       />
       {showNumbers && <NumberKeyboard buttons={numbers} onInput={onInput} />}
       <SymbolsWrapper
@@ -172,6 +173,7 @@ const MainKeyboard = ({
         onClick={onClickNext}
         onTouchEnd={onClickNext}
         hidden={boards.length <= 0 || current >= boards.length - 1}
+        data-cy="nextButton"
       />
     </Container>
   )

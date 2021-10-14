@@ -1,5 +1,3 @@
-import { groupCirclesByAnswer } from './answer-utils'
-
 export const resizeImage = (cv, matSrc, isSingle) => {
   let resizedImg = new cv.Mat()
   let sz
@@ -15,17 +13,14 @@ export const resizeImage = (cv, matSrc, isSingle) => {
 }
 
 export const detectCircles = (cv, matSrc) => {
-  const imgMat = matSrc.clone()
-  // cv.medianBlur(matSrc, imgMat, 1);
+  const imgMat = new cv.Mat()
+  cv.medianBlur(matSrc, imgMat, 3)
   cv.threshold(imgMat, imgMat, 250, 255, cv.THRESH_OTSU)
-
   let kernel = cv.Mat.ones(1, 1, cv.CV_8U)
   cv.erode(imgMat, imgMat, kernel)
 
-  cv.imshow('workingCanvas', imgMat)
-
   let circles = new cv.Mat()
-  cv.HoughCircles(imgMat, circles, cv.HOUGH_GRADIENT, 1, 20, 15, 11, 7.5, 15)
+  cv.HoughCircles(imgMat, circles, cv.HOUGH_GRADIENT, 1, 17, 15, 11, 7, 15)
   let circleArray = []
 
   let totalX = 0
@@ -42,7 +37,7 @@ export const detectCircles = (cv, matSrc) => {
     let radius = circles.data32F[i * 3 + 2]
     let center = new cv.Point(x, y)
 
-    if (x > average - 60) {
+    if (x > average - 62) {
       circleArray.push({ center: center, radius: radius })
     }
   }
@@ -56,7 +51,7 @@ export const detectCircles = (cv, matSrc) => {
   return circleArray
 }
 
-export const detectRectangles = (cv, matSrc, inchUnit) => {
+export const detectRectangles = (cv, matSrc, widthOfQR) => {
   let contours = new cv.MatVector()
   let hierarchy = new cv.Mat()
   cv.findContours(
@@ -64,7 +59,7 @@ export const detectRectangles = (cv, matSrc, inchUnit) => {
     contours,
     hierarchy,
     cv.RETR_CCOMP,
-    cv.CHAIN_APPROX_NONE
+    cv.CHAIN_APPROX_SIMPLE
   )
 
   let poly = new cv.MatVector()
@@ -77,12 +72,11 @@ export const detectRectangles = (cv, matSrc, inchUnit) => {
 
     let rect = cv.boundingRect(tmp)
     if (
-      rect.width > inchUnit * 5 &&
-      rect.width < inchUnit * 8 &&
-      rect.height > inchUnit * 4 &&
+      rect.width > widthOfQR * 2 &&
+      rect.width < widthOfQR * 3.3 &&
+      rect.height > widthOfQR &&
       rect.x > 0 &&
-      rect.y > 0 &&
-      rect.y < 50
+      rect.y > 0
     ) {
       rectArray.push(rect)
     }
@@ -105,6 +99,7 @@ export const getBoundingRegionsWithCircles = (
   arrCircles.sort(
     (firstItem, secondItem) => firstItem.center.x - secondItem.center.x
   )
+
   const leftPointX = arrCircles[0].center.x
   const rightPointX = arrCircles[arrCircles.length - 1].center.x
   arrCircles.sort(
@@ -113,15 +108,6 @@ export const getBoundingRegionsWithCircles = (
 
   let arrRectangularBoundingRegions = []
 
-  let sumOfRadius = 0
-  let circleCount = 0
-  arrAnswerCircles.forEach((circlesOfAnswer) => {
-    circlesOfAnswer.forEach((circle) => {
-      circleCount = circleCount + 1
-      sumOfRadius = sumOfRadius + circle.radius
-    })
-  })
-  const radius = parseInt(sumOfRadius / circleCount)
   arrAnswerCircles.forEach((circlesOfAnswer) => {
     if (circlesOfAnswer.length === 0) {
       return
@@ -129,20 +115,14 @@ export const getBoundingRegionsWithCircles = (
     if (circlesOfAnswer[0].center.y - 10 < 0 || leftPointX - 10 < 0) {
       return
     }
-    let temp = circlesOfAnswer
-    temp.sort(
-      (firstItem, secondItem) => firstItem.center.y - secondItem.center.y
-    )
-
-    const topCircle = temp[temp.length - 1]
     const leftCircle = circlesOfAnswer[0]
     const rightCircle = circlesOfAnswer[circlesOfAnswer.length - 1]
-
-    let width = rightPointX + radius - (leftPointX - radius)
-    let height = radius * 2
+    let width =
+      rightPointX + rightCircle.radius - (leftPointX - leftCircle.radius)
+    let height = rightCircle.radius + leftCircle.radius
     let rect = new cv.Rect(
-      leftPointX - radius,
-      topCircle.center.y - radius,
+      leftPointX - leftCircle.radius,
+      leftCircle.center.y - leftCircle.radius,
       width,
       height
     )
@@ -159,7 +139,6 @@ export const getBoundingRegionsWithCircles = (
       return
     }
     arrRectangularBoundingRegions.push(croppedImg)
-    // arrRectangularBoundingRegions.push(rect);
   })
 
   return arrRectangularBoundingRegions
@@ -172,36 +151,27 @@ export const getTrueCirclesInRow = (cv, croppedImg) => {
   let result = ''
   let copyForMark = new cv.Mat()
   croppedImg.copyTo(copyForMark)
+  cv.blur(copyForMark, copyForMark, new cv.Size(11, 11))
   let circlesInCropped = new cv.Mat()
-
-  // cv.medianBlur(croppedImg, croppedImg, 3);
-  // let kernel = cv.Mat.ones(1 , 1, cv.CV_8U);
-  // cv.erode(copyForMark, copyForMark, kernel);
-  // cv.threshold(copyForMark, copyForMark, 140, 255, cv.THRESH_OTSU);
-
-  let kernel = cv.Mat.ones(1, 1, cv.CV_8U)
-  cv.erode(croppedImg, croppedImg, kernel)
-
   cv.HoughCircles(
     croppedImg,
     circlesInCropped,
     cv.HOUGH_GRADIENT,
     1,
-    20,
-    13,
-    14,
-    7.5,
+    17,
+    15,
+    11,
+    7,
     15
   )
 
   let circleArray = []
-
   for (let i = 0; i < circlesInCropped.cols; i++) {
     const x = circlesInCropped.data32F[i * 3]
-    const y = circlesInCropped.data32F[i * 3 + 1]
-    // const y = height / 2;
+    // const y = circlesInCropped.data32F[i * 3 + 1];
+    const y = height / 2
     const center = new cv.Point(x, y)
-    // cv.circle(croppedImg, {x: x, y: y}, radius, [0 ,0 ,0, 255], -1);
+
     circleArray.push({ center: center })
   }
 
@@ -233,12 +203,11 @@ export const getTrueCirclesInRow = (cv, croppedImg) => {
     } else {
       heightOfCropped = radius * 2
     }
-
+    // cv.circle(croppedImg, item.center, radius, new cv.Scalar(255, 0, 0), -1);
     const rect = new cv.Rect(starPtX, starPtY, widthOfCropped, heightOfCropped)
     let cropped = new cv.Mat()
     cv.threshold(croppedImg, croppedImg, 130, 255, cv.THRESH_OTSU)
     cropped = croppedImg.roi(rect).clone()
-
     let whiteCount = 0
     let blackCount = 0
     for (let y1 = 0; y1 < cropped.size().height; y1++) {
@@ -266,9 +235,11 @@ export const getTrueCirclesInRow = (cv, croppedImg) => {
       letter: letter,
       confidence: blackCount / (blackCount + whiteCount),
     })
+    // cv.imshow('rowCanvas', croppedImg);
     cropped.delete()
   })
 
+  // console.log(arrCirclesInfo);
   arrCirclesInfo.forEach((item, index) => {
     if (maxConfidence > 0.37) {
       if (maxConfidence - item.confidence < 0.08 || item.confidence > 0.5) {

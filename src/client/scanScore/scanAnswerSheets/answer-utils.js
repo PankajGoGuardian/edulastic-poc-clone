@@ -1,80 +1,140 @@
 import {
   detectCircles,
+  detectRectangles,
   getBoundingRegionsWithCircles,
   getTrueCirclesInRow,
   resizeImage,
 } from './process-image'
-import { getAngleOfQR, getWidthOfQR } from './parse-qrcode'
-import { forwardRef } from 'react'
+import {
+  detectQRCode,
+  drawRegionOfQR,
+  getAngleOfQR,
+  getWidthOfQR,
+  qrRectWidth,
+  rectPadding,
+} from './parse-qrcode'
 
 export const getAnswers = (cv, srcMat, isSingle) => {
-  let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
-  const circleArray = detectCircles(cv, resizedImage)
+  try {
+    let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
 
-  // circleArray.forEach(item => {
-  //     cv.circle(resizedImage, item.center, item.radius, [0, 0, 0, 255], -1);
-  // });
+    const circleArray = detectCircles(cv, resizedImage)
+    const arrAnswerCircles = groupCirclesByAnswer(circleArray)
+    const arrBoundingRegions = getBoundingRegionsWithCircles(
+      cv,
+      resizedImage,
+      circleArray,
+      arrAnswerCircles
+    )
 
-  let arrAnswers = []
+    let arrAnswers = []
 
-  if (circleArray.length === 0) {
+    arrBoundingRegions.forEach((region, index) => {
+      // if(index === 12) {
+      //     const answer = getTrueCirclesInRow(cv, region);
+      //     arrAnswers.push(answer);
+      // }
+      const answer = getTrueCirclesInRow(cv, region)
+      arrAnswers.push(answer)
+    })
+    resizedImage.delete()
     return arrAnswers
+  } catch (e) {
+    return []
   }
-
-  const arrAnswerCircles = groupCirclesByAnswer(circleArray)
-
-  // arrAnswerCircles.forEach(rowArray => {
-  //     rowArray.forEach(item => {
-  //         cv.circle(resizedImage, item.center, item.radius, [255, 255, 255, 255], -1);
-  //     })
-  // });
-
-  cv.imshow('workingCanvas', resizedImage)
-
-  const arrBoundingRegions = getBoundingRegionsWithCircles(
-    cv,
-    resizedImage,
-    circleArray,
-    arrAnswerCircles
-  )
-
-  arrBoundingRegions.forEach((region, index) => {
-    // if(index === 0) {
-    //     cv.imshow('rowCanvas', region);
-    // }
-    const answer = getTrueCirclesInRow(cv, region)
-    arrAnswers.push(answer)
-  })
-  resizedImage.delete()
-  return arrAnswers
 }
 
-export const getAnswersFromVideo = (
-  cv,
-  matSrc,
-  parentRectangle,
-  qrCodePosition
-) => {
+export const getAnswersFromVideo = (cv, matSrc, isFronFacing) => {
+  let matImg = new cv.Mat()
+  cv.cvtColor(matSrc, matImg, cv.COLOR_RGBA2GRAY, 0)
+  cv.blur(matImg, matImg, new cv.Size(1, 1))
+
+  cv.threshold(matImg, matImg, 115, 255, cv.THRESH_TOZERO)
+  cv.threshold(matImg, matImg, 115, 255, cv.THRESH_OTSU)
+
+  let kernel = cv.Mat.ones(7, 7, cv.CV_8U)
+  cv.erode(matImg, matImg, kernel)
+
   let angleOfQR = 0
-  let center = new cv.Point(matSrc.cols / 2, matSrc.rows / 2)
-  let resultOfAnswers = {}
-  if (parentRectangle && qrCodePosition) {
+  let widthOfQR = 0
+
+  let qrCodeData = detectQRCode(cv, matSrc)
+  let startPtQR = null
+  let inchUnit = 0
+  let center = new cv.Point(matImg.cols / 2, matImg.rows / 2)
+
+  if (qrCodeData) {
     angleOfQR = getAngleOfQR(
-      qrCodePosition.bottomRightCorner,
-      qrCodePosition.bottomLeftCorner,
+      qrCodeData.location.bottomRightCorner,
+      qrCodeData.location.bottomLeftCorner,
       {
-        x: qrCodePosition.bottomLeftCorner.x,
-        y: qrCodePosition.bottomRightCorner.y,
+        x: qrCodeData.location.bottomLeftCorner.x,
+        y: qrCodeData.location.bottomRightCorner.y,
       }
     )
+
+    widthOfQR = getWidthOfQR(
+      qrCodeData.location.bottomRightCorner,
+      qrCodeData.location.bottomLeftCorner
+    )
+    startPtQR = new cv.Point(
+      qrCodeData.location.topLeftCorner.x + matSrc.size().width - qrRectWidth,
+      qrCodeData.location.topLeftCorner.y
+    )
+
+    const angleOfTopLeftPt = getAngleOfQR(startPtQR, center, {
+      x: center.x,
+      y: startPtQR.y,
+    })
+    const lengthToPt = Math.sqrt(
+      (startPtQR.x - center.x) * (startPtQR.x - center.x) +
+        (startPtQR.y - center.y) * (startPtQR.y - center.y)
+    )
+    const realAngle = angleOfTopLeftPt - angleOfQR
+
+    startPtQR = new cv.Point(
+      parseInt(Math.cos((realAngle * Math.PI) / 180) * lengthToPt) + center.x,
+      parseInt(Math.sin((realAngle * Math.PI) / 180) * lengthToPt)
+    )
+
+    inchUnit = widthOfQR / 2.75
   } else {
-    resultOfAnswers = { answers: [], qrCode: '', isQRCodeDetected: false }
+    // if(isShowNotification) {
+    //     return;
+    // }
+    // isShowNotification = true;
+    // store.addNotification({
+    //     id: "notification",
+    //     title: "Please QR code in blue rectangle region.",
+    //     message: " ",
+    //     type: "danger",
+    //     insert: "top",
+    //     container: "top-right",
+    //     animationIn: ["animate__animated", "animate__fadeIn"],
+    //     animationOut: ["animate__animated", "animate__fadeOut"],
+    //     dismiss: {
+    //         duration: 5000,
+    //         onScreen: true
+    //     },
+    //     onRemoval: () => {
+    //         isShowNotification = false;
+    //     }
+    // });
   }
 
   // rotate the image to detect parent rectangle of bubbles.
-  let dSize = new cv.Size(matSrc.cols, matSrc.rows)
+  let dSize = new cv.Size(matImg.cols, matImg.rows)
   let M = cv.getRotationMatrix2D(center, angleOfQR * -1, 1)
 
+  cv.warpAffine(
+    matImg,
+    matImg,
+    M,
+    dSize,
+    cv.INTER_LINEAR,
+    cv.BORDER_CONSTANT,
+    new cv.Scalar()
+  )
   cv.warpAffine(
     matSrc,
     matSrc,
@@ -85,137 +145,76 @@ export const getAnswersFromVideo = (
     new cv.Scalar()
   )
 
-  if (parentRectangle) {
-    let startRectanglePt = new cv.Point(
-      parentRectangle.topLeftCorner.x,
-      parentRectangle.topLeftCorner.y
+  let resultOfAnswers = []
+  if (inchUnit > 0) {
+    let lRectangleRect = new cv.Rect(
+      parseInt(startPtQR.x - inchUnit * 16.75),
+      parseInt(0),
+      parseInt(9 * inchUnit),
+      parseInt(matSrc.size().height)
+    )
+    let rRectangleRect = new cv.Rect(
+      parseInt(startPtQR.x - inchUnit * 8.75),
+      parseInt(0),
+      parseInt(9 * inchUnit),
+      parseInt(matSrc.size().height)
     )
 
-    const angleOfTopLeftPt = getAngleOfQR(startRectanglePt, center, {
-      x: center.x,
-      y: startRectanglePt.y,
-    })
-    const lengthToPt = Math.sqrt(
-      (startRectanglePt.x - center.x) * (startRectanglePt.x - center.x) +
-        (startRectanglePt.y - center.y) * (startRectanglePt.y - center.y)
-    )
-    const realAngle = angleOfTopLeftPt + angleOfQR
-
-    startRectanglePt = new cv.Point(
-      center.x - parseInt(Math.cos((realAngle * Math.PI) / 180) * lengthToPt),
-      center.y - parseInt(Math.sin((realAngle * Math.PI) / 180) * lengthToPt)
-    )
-
-    const width = getWidthOfQR(
-      parentRectangle.bottomRightCorner,
-      parentRectangle.bottomLeftCorner
-    )
-    const height = getWidthOfQR(
-      parentRectangle.topLeftCorner,
-      parentRectangle.bottomLeftCorner
-    )
-
-    let arrCroppedParentRect = []
-
-    if (width > height) {
-      // multi
-      const leftRect = new cv.Rect(
-        startRectanglePt.x,
-        startRectanglePt.y,
-        parseInt(width / 2),
-        parseInt(height)
-      )
-      const rightRect = new cv.Rect(
-        startRectanglePt.x + parseInt(width / 2),
-        startRectanglePt.y,
-        parseInt(width / 2),
-        parseInt(height)
-      )
-
-      const croppedLeftRect = matSrc.roi(leftRect)
-      const croppedRightRect = matSrc.roi(rightRect)
-
-      croppedLeftRect.convertTo(croppedLeftRect, -1, 1, 30)
-      croppedRightRect.convertTo(croppedRightRect, -1, 1, 30)
-
-      arrCroppedParentRect.push(croppedLeftRect)
-      arrCroppedParentRect.push(croppedRightRect)
-    } else {
-      // single
-      const leftRect = new cv.Rect(
-        startRectanglePt.x,
-        startRectanglePt.y,
-        parseInt(width),
-        parseInt(height)
-      )
-      const croppedLeftRect = matSrc.roi(leftRect)
-      croppedLeftRect.convertTo(croppedLeftRect, -1, 1, 30)
-      arrCroppedParentRect.push(croppedLeftRect)
+    if (lRectangleRect.x < 0) {
+      lRectangleRect.x = 0
     }
-    // const arrCroppedParentRect =  getTrulyRectangles(cv, matSrc, rectArray, true);
-    if (arrCroppedParentRect) {
+    if (lRectangleRect.y < 0) {
+      lRectangleRect.y = 0
+    }
+    if (lRectangleRect.y + lRectangleRect.height > matSrc.size().height) {
+      lRectangleRect.height = matSrc.size().height - lRectangleRect.y
+    }
+    if (rRectangleRect.y < 0) {
+      rRectangleRect.y = 0
+    }
+    if (rRectangleRect.y + rRectangleRect.height > matSrc.size().height) {
+      rRectangleRect.height = matSrc.size().height - rRectangleRect.y
+    }
+
+    if (
+      lRectangleRect.x >= 0 &&
+      lRectangleRect.y >= 0 &&
+      lRectangleRect.x + lRectangleRect.width <= matSrc.size().width &&
+      lRectangleRect.y + lRectangleRect.height <= matSrc.size().height
+    ) {
+      const lRectCropped = matImg.roi(lRectangleRect)
+      const rRectCropped = matImg.roi(rRectangleRect)
+      // cv.imshow('workingCanvas', rRectCropped);
+      const leftRectArray = detectRectangles(cv, lRectCropped, widthOfQR)
+      const rightRectArray = detectRectangles(cv, rRectCropped, widthOfQR)
+      leftRectArray.forEach((item) => {
+        item.x = item.x + lRectangleRect.x
+        item.y = item.y + lRectangleRect.y
+      })
+      rightRectArray.forEach((item) => {
+        item.x = item.x + rRectangleRect.x
+        item.y = item.y + rRectangleRect.y
+      })
+      let isSingle = false
+      if (rightRectArray.length === 0) {
+        isSingle = true
+      }
+      const rectArray = [...leftRectArray, ...rightRectArray]
+      const arrCroppedParentRect = getTrulyRectangles(
+        cv,
+        matSrc,
+        rectArray,
+        isSingle
+      )
       resultOfAnswers = getAnswersFromRect(
         cv,
         arrCroppedParentRect,
         matSrc,
-        parentRectangle
+        qrCodeData
       )
     }
   }
 
-  // M = cv.getRotationMatrix2D(center, angleOfQR, 1);
-  // cv.warpAffine(matSrc, matSrc, M, dSize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
-
-  // if(inchUnit > 0) {
-  //
-  //     // let lRectangleRect = new cv.Rect(parseInt(startPtQR.x) + parseInt(inchUnit * 14.5), parseInt(startPtQR.y) - parseInt(inchUnit * 1), parseInt(8 * inchUnit), parseInt(inchUnit * 12.5));
-  //     // let rRectangleRect = new cv.Rect(parseInt(startPtQR.x) + parseInt(inchUnit * 8), parseInt(startPtQR.y) - parseInt(inchUnit * 1), parseInt(8 * inchUnit), parseInt(inchUnit * 12.5));
-  //     //
-  //     // if(lRectangleRect.x < 0) {
-  //     //     lRectangleRect.x = 0;
-  //     // }
-  //     // if(lRectangleRect.y < 0) {
-  //     //     lRectangleRect.y = 0;
-  //     // }
-  //     // if(lRectangleRect.y + lRectangleRect.height > matSrc.size().height) {
-  //     //     lRectangleRect.height = matSrc.size().height - lRectangleRect.y;
-  //     // }
-  //     // if(rRectangleRect.y < 0) {
-  //     //     rRectangleRect.y = 0;
-  //     // }
-  //     // if(rRectangleRect.y + rRectangleRect.height > matSrc.size().height) {
-  //     //     rRectangleRect.height = matSrc.size().height - rRectangleRect.y;
-  //     // }
-  //     //
-  //     // if(lRectangleRect.x >= 0 && lRectangleRect.y >= 0 && lRectangleRect.x + lRectangleRect.width <= matSrc.size().width && lRectangleRect.y + lRectangleRect.height <= matSrc.size().height) {
-  //     //     const lRectCropped = matSrc.roi(lRectangleRect);
-  //     //     const rRectCropped = matSrc.roi(rRectangleRect);
-  //     //
-  //     //     cv.imshow('workingCanvas', lRectCropped);
-  //     //
-  //     //     const leftRectArray = detectRectangles(cv, lRectCropped, inchUnit);
-  //     //     const rightRectArray = detectRectangles(cv, rRectCropped, inchUnit);
-  //     //     lRectCropped.delete();
-  //     //     rRectCropped.delete();
-  //     //     leftRectArray.forEach((item) => {
-  //     //         item.x = item.x + lRectangleRect.x;
-  //     //         item.y = item.y + lRectangleRect.y;
-  //     //     });
-  //     //     rightRectArray.forEach((item) => {
-  //     //         item.x = item.x + rRectangleRect.x;
-  //     //         item.y = item.y + rRectangleRect.y;
-  //     //     });
-  //     //     let isSingle = false;
-  //     //     if(rightRectArray.length === 0) {
-  //     //         isSingle = true;
-  //     //     }
-  //     //     const rectArray = [...leftRectArray, ...rightRectArray];
-  //     //     const arrCroppedParentRect =  getTrulyRectangles(cv, matSrc, rectArray, isSingle, inchUnit);
-  //     //     if(arrCroppedParentRect) {
-  //     //         resultOfAnswers = getAnswersFromRect(cv, arrCroppedParentRect, matSrc, parentRectangle);
-  //     //     }
-  //     // }
-  // }
   M = cv.getRotationMatrix2D(center, angleOfQR, 1)
   cv.warpAffine(
     matSrc,
@@ -227,18 +226,26 @@ export const getAnswersFromVideo = (
     new cv.Scalar()
   )
 
-  cv.imshow('canvasOutput', matSrc)
+  drawRegionOfQR(cv, matSrc, isFronFacing)
+  try {
+    cv.imshow('canvasOutput', matSrc)
+  } catch (e) {
+    if (
+      !e?.message?.startsWith('Please input the valid canvas element or id')
+    ) {
+      throw e
+    }
+  }
 
   M.delete()
+  matImg.delete()
   return resultOfAnswers
 }
 
-export const groupCirclesByAnswer = (circleArray) => {
+const groupCirclesByAnswer = (circleArray) => {
   let arrAnswerCircles = []
   let currentPosY = 0
-  circleArray.sort(
-    (firstItem, secondItem) => firstItem.center.y - secondItem.center.y
-  )
+
   if (circleArray.length > 0) {
     currentPosY = circleArray[0].center.y
   } else {
@@ -247,14 +254,13 @@ export const groupCirclesByAnswer = (circleArray) => {
 
   let rowCircles = []
   circleArray.forEach((circle) => {
-    if (Math.abs(circle.center.y - currentPosY) < 10) {
+    if (Math.abs(circle.center.y - currentPosY) < 5) {
       rowCircles.push(circle)
     } else {
       if (circleArray.length > 0) {
         arrAnswerCircles.push(rowCircles)
         rowCircles = []
         currentPosY = circle.center.y
-        rowCircles.push(circle)
       }
     }
   })
@@ -263,6 +269,7 @@ export const groupCirclesByAnswer = (circleArray) => {
     arrAnswerCircles.push(rowCircles)
     rowCircles = []
   }
+
   return arrAnswerCircles
 }
 
@@ -283,8 +290,6 @@ const getTrulyRectangles = (cv, matSrc, rectArray, isSingle) => {
         1
       )
       let croppedRectangle = matSrc.roi(rectArray[0])
-
-      croppedRectangle.convertTo(croppedRectangle, -1, 1, 40)
       resultOfCroppedParentRect.push(croppedRectangle)
     } else {
       if (rectArray.length > 1) {
@@ -298,13 +303,8 @@ const getTrulyRectangles = (cv, matSrc, rectArray, isSingle) => {
         if (arrCroppedParentRect.length > 1) {
           let croppedLeft = matSrc.roi(arrCroppedParentRect[0])
           let croppedRight = matSrc.roi(rectArray[rectArray.length - 1])
-
-          croppedLeft.convertTo(croppedLeft, -1, 1, 40)
-          croppedRight.convertTo(croppedRight, -1, 1, 40)
-
           resultOfCroppedParentRect.push(croppedLeft)
           resultOfCroppedParentRect.push(croppedRight)
-
           arrCroppedParentRect.forEach((item) => {
             cv.rectangle(
               matSrc,
@@ -358,11 +358,7 @@ const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
     if (!answers) {
       return
     }
-    resultOfAnswers = {
-      answers: answers,
-      qrCode: qrCodeData.data,
-      isQRCodeDetected: true,
-    }
+    resultOfAnswers = { answers: answers, qrCode: qrCodeData.data }
     arrCroppedParentRect[0].delete()
   } else if (arrCroppedParentRect.length === 2) {
     // multi
@@ -370,7 +366,6 @@ const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
     const rightRectangle = arrCroppedParentRect[1]
     const leftAnswers = getAnswers(cv, leftRectangle, false)
     const rightAnswers = getAnswers(cv, rightRectangle, false)
-
     if (!leftAnswers || !rightAnswers) {
       return
     }
@@ -382,7 +377,6 @@ const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
     resultOfAnswers = {
       answers: [...leftAnswers, ...rightAnswers],
       qrCode: qrCodeData.data,
-      isQRCodeDetected: true,
     }
   }
   return resultOfAnswers

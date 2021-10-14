@@ -1313,45 +1313,18 @@ function* editPlaylistTestSaga({ payload }) {
 
     // Clone the test and redirect user to edit page of cloned test.
     if (isDuplicateAllowed) {
-      const userWantsToDuplicate = yield call(
-        () =>
-          new Promise((res) => {
-            Modal.confirm({
-              title: 'Warning',
-              content:
-                'Editing the test will create a clone and progress would be tracked separately. Do you still want to edit the test?',
-              zIndex: 1500,
-              centered: true,
-              okButtonProps: {
-                style: { background: themeColor, outline: 'none' },
-              },
-              okText: 'Yes, Proceed',
-              cancelText: 'No, Cancel',
-              onOk() {
-                res(true)
-                Modal.destroyAll()
-              },
-              onCancel() {
-                res(false)
-                Modal.destroyAll()
-              },
-            })
-          })
+      yield put(
+        duplicateTestRequestAction({
+          _id: testId,
+          title: test?.title || '',
+          redirectToNewTest: false,
+          // By default we keep reference to all the items in test in cloned test.
+          cloneItems: false,
+          isInEditAndRegrade: true,
+          currentTab: tab,
+          playlistId,
+        })
       )
-      if (userWantsToDuplicate) {
-        yield put(
-          duplicateTestRequestAction({
-            _id: testId,
-            title: test?.title || '',
-            redirectToNewTest: false,
-            // By default we keep reference to all the items in test in cloned test.
-            cloneItems: false,
-            isInEditAndRegrade: true,
-            currentTab: tab,
-            playlistId,
-          })
-        )
-      }
     }
   } catch (e) {
     notification({ messageKey: 'commonErr' })

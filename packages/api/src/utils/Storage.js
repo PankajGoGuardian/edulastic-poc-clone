@@ -151,17 +151,8 @@ export const getFromSessionStorage = (key) => {
 }
 
 // Trace id -- a way to connect client requests(on ALB) to consumer(lambda)
-export const getTraceId = () =>{
-  const user = window?.getStore()?.getState()?.user?.user;
-  if(user?._id){
-    const {_id,role,districtIds,currentDistrictId}= user;
-    const districtId = currentDistrictId||districtIds[0];
-    return `tid=${window.sessionStorage.tid};kid=${window.sessionStorage.kid};uid=${_id};did=${districtId};role=${role}`
-  } else {
-    return `tid=${window.sessionStorage.tid};kid=${window.sessionStorage.kid}`
-  }
-}
-
+export const getTraceId = () =>
+  `tid=${window.sessionStorage.tid};kid=${window.sessionStorage.kid}`
 
 export function getAccessToken() {
   let _tokenKey = window.sessionStorage.tokenKey

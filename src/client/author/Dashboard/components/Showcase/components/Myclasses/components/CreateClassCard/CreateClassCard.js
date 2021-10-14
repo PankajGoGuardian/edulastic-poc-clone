@@ -1,6 +1,5 @@
 import React from 'react'
 import { IconPlusCircle } from '@edulastic/icons'
-import { title } from '@edulastic/colors'
 
 import {
   CreateClassCardWrapper,
@@ -10,7 +9,6 @@ import {
   Text,
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton/index'
-import { TextWrapper } from '../../../../../styledComponents'
 
 const CreateClassCard = ({ history, newCreateClassCard }) => {
   const createNewClass = () => {
@@ -25,7 +23,7 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
       <CreateClassCardWrapper newCreateClassCard={newCreateClassCard}>
         <CreateClassTitle>Create Class</CreateClassTitle>
         <InfoText>
-          Create class and add students or import your classes
+          Create class and add students to start assigning tests
         </InfoText>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (

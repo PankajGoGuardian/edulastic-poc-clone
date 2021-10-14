@@ -70,8 +70,8 @@ const ScanProgress = ({
     if (tempScannedDocs.length && assignmentId && groupId && sessionId) {
       scannerApi
         .scoreWebCamScans({
-          assignmentId,
-          groupId,
+          assignmentId: tempScannedDocs[0].assignmentId,
+          groupId: tempScannedDocs[0].groupId,
           sessionId,
           responses: tempScannedDocs.map(
             ({ imageUri, studentId, answers }) => ({

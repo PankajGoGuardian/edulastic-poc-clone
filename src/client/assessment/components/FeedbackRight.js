@@ -117,11 +117,21 @@ class FeedbackRight extends Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         changed: false,
+      })
+    }
+    // Express grader
+    if (
+      prevProps?.studentQuestionResponseUpdatedAt !==
+      this.props?.studentQuestionResponseUpdatedAt
+    ) {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
         isRubricDisabled: false,
         isScoreInputDisabled: false,
       })
     }
 
+    // Student view
     if (
       prevProps?.isClassResponseLoading !== this.props?.isClassResponseLoading
     ) {
@@ -328,12 +338,6 @@ class FeedbackRight extends Component {
     const allowSubmitScore = this.allowToSubmitScore(e?.type)
     if (changed || allowSubmitScore) {
       this.onScoreSubmit()
-    }
-    if (changed) {
-      this.setState((prevState) => ({
-        ...prevState,
-        isRubricDisabled: false,
-      }))
     }
     this.setState({ showWarningToClear: false })
   }
@@ -651,6 +655,8 @@ const enhance = compose(
       userThumbnail: getUserThumbnail(state),
       userFullName: getUserFullNameSelector(state),
       isClassResponseLoading: state?.studentResponse?.loading,
+      studentQuestionResponseUpdatedAt:
+        state?.studentQuestionResponse?.data?.updatedAt,
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

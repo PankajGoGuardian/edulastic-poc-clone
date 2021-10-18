@@ -40,9 +40,6 @@ const Classes = ({
   classData,
   history,
 }) => {
-  const showCreateClassCard = classData.length < 4
-  const allowEmptyBoxes = classData.length > 3
-
   const [classType, setClassType] = useState(
     myClassFilters[
       localStorage.getItem(
@@ -50,6 +47,10 @@ const Classes = ({
       ) || 'ALL_CLASSES'
     ]
   )
+
+  const showCreateClassCard =
+    classType !== 'My Favorites' && classData.length < 4
+  const allowEmptyBoxes = classData.length > 3
 
   const isPremiumUser = user?.features?.premium
 

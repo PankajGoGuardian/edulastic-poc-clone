@@ -1127,6 +1127,23 @@ export const formatFileSize = (size) => {
   return `${round(size / 1024 / 1024 / 1024, 2)} GB`
 }
 
+export const triggerEvent = (el, eventName, options) => {
+  try {
+    if (el && eventName) {
+      var event
+      if (window.CustomEvent) {
+        event = new CustomEvent(eventName, options)
+      } else {
+        event = document.createEvent('CustomEvent')
+        event.initCustomEvent(eventName, true, true, options)
+      }
+      el.dispatchEvent(event)
+    }
+  } catch (e) {
+    console.error('Error while triggering event ', eventName, el)
+  }
+}
+
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1159,4 +1176,5 @@ export default {
   removeTokenFromHtml,
   getYoutubeId,
   formatFileSize,
+  triggerEvent,
 }

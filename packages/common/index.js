@@ -134,6 +134,7 @@ export {
   removeTokenFromHtml,
   getYoutubeId,
   formatFileSize,
+  triggerEvent,
 } from './src/helpers'
 
 // contexts

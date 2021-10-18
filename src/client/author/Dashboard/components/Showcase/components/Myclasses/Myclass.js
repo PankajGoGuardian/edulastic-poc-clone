@@ -682,7 +682,7 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
+  const widthOfTilesWithMargin = 240 + 8 // 240 is width of tile and 8 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
     (windowWidth - 120) / widthOfTilesWithMargin

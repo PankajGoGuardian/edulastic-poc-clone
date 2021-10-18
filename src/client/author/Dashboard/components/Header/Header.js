@@ -70,7 +70,7 @@ const getContent = ({
       return (
         <>
           <Link to="/author/subscription">
-            <PopoverCancel data-cy="upgradeButton">UPGRADE NOW</PopoverCancel>
+            <PopoverCancel data-cy="upgradeButton">UPGRADE</PopoverCancel>
           </Link>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
@@ -90,7 +90,7 @@ const getContent = ({
           NO, THANKS
         </PopoverCancel>
         <Link to="/author/subscription">
-          <UpgradeBtn>{needsRenewal ? 'RENEW NOW' : 'UPGRADE NOW'}</UpgradeBtn>
+          <UpgradeBtn>{needsRenewal ? 'RENEW NOW' : 'UPGRADE'}</UpgradeBtn>
         </Link>
       </>
     )

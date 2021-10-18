@@ -191,10 +191,6 @@ const MyClasses = ({
     }
   }
 
-  useEffect(() => {
-    checkLocalRecommendedTests()
-  }, [user?.recommendedContentUpdated])
-
   const isPremiumUser = user?.features?.premium
 
   /**
@@ -224,6 +220,22 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
+
+  const sumOfCounts = (arr) => {
+    let sum = 0
+    for (let i = 0; i < arr.length; i++) sum += arr[i]
+    return sum
+  }
+
+  const totalAssignemntCount = sumOfCounts(
+    allActiveClasses.map((x) => x.totalAssignment || 0) || 0
+  )
+
+  useEffect(() => {
+    if (totalAssignemntCount >= 5) {
+      checkLocalRecommendedTests()
+    }
+  }, [user?.recommendedContentUpdated, totalAssignemntCount])
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
@@ -715,16 +727,6 @@ const MyClasses = ({
   const defaultSelectedProductIds = productData.productId
     ? [productData.productId]
     : []
-
-  const sumOfCounts = (arr) => {
-    let sum = 0
-    for (let i = 0; i < arr.length; i++) sum += arr[i]
-    return sum
-  }
-
-  const totalAssignemntCount = sumOfCounts(
-    allActiveClasses.map((x) => x.totalAssignment || 0) || 0
-  )
 
   const showBannerSlide = !loading && totalAssignemntCount < 2
   const showRecommendedTests =

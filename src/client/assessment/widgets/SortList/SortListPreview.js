@@ -338,7 +338,9 @@ const SortListPreview = ({
               >
                 <FullWidthContainer isVertical={isVertical}>
                   {!smallSize && (
-                    <Title smallSize={smallSize}>{sourceLabel}</Title>
+                    <Title data-cy="sourceTitle" smallSize={smallSize}>
+                      {sourceLabel}
+                    </Title>
                   )}
                   {items.map((draggableItem, i) => (
                     <DragDrop.DropContainer
@@ -399,7 +401,9 @@ const SortListPreview = ({
 
                 <FullWidthContainer isVertical={isVertical}>
                   {!smallSize && (
-                    <Title smallSize={smallSize}>{targetLabel}</Title>
+                    <Title data-cy="targetTitle" smallSize={smallSize}>
+                      {targetLabel}
+                    </Title>
                   )}
                   {selected.map((selectedItem, i) => (
                     <DragDrop.DropContainer

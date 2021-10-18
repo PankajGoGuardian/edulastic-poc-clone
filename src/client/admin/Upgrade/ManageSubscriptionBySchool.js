@@ -282,7 +282,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
     const renderSubscription = (subscription, record) =>
       record.schoolId === currentEditableRow ? (
         <Select
-          style={{ width: 120 }}
+          style={{ width: '100%' }}
           value={editedSubType || 'free'}
           onChange={(value) =>
             setEditableRowFieldValues({
@@ -355,6 +355,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             title="Upgrade DA"
             dataIndex="subscription.adminPremium"
             key="adminPremium"
+            width="100px"
             render={renderUpgradeDA}
           />
           <Column

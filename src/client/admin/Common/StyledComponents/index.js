@@ -58,6 +58,12 @@ export const Table = styled(AntdTable)`
   .ant-table table {
     table-layout: fixed;
     word-break: break-word;
+    .ant-select-selection-selected-value {
+      font-size: 12px;
+    }
+    .ant-calendar-picker-input.ant-input {
+      font-size: 12px;
+    }
   }
 `
 

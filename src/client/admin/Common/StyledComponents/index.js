@@ -290,3 +290,9 @@ export const StyledDiv = styled.div`
   font-weight: ${(props) => props.fontWeight || 600};
   color: ${(props) => props.color || greyThemeDark1};
 `
+export const HeaderSaveButton = styled.div`
+  position: fixed;
+  top: 15px;
+  right: 30px;
+  z-index: 999;
+`

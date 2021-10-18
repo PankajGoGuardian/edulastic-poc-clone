@@ -749,6 +749,7 @@ class ClassHeader extends Component {
         )}
         {showSchoologyGradeSyncOption && (
           <MenuItems
+          data-cy="schoologySyncGrades"
             key="key10"
             onClick={() =>
               this.handleSchoologyAssignmentGradesSync({
@@ -764,6 +765,7 @@ class ClassHeader extends Component {
           groupAtlasId &&
           atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
             <MenuItems
+            data-cy="schoologySyncAssignment"
               key="key11"
               onClick={() =>
                 schoologySyncAssignment({

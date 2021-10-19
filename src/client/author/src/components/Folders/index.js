@@ -116,33 +116,29 @@ const Folders = ({
 
   return (
     <>
-      {(openCreateModal || isOpenRename) && (
-        <AddModal
-          folder={selectedFolder}
-          closeModal={hideCreateOrUpdateModal}
-          folderType={folderType}
-          isRename={isOpenRename}
-        />
-      )}
-      {isOpenConfirm && (
-        <ConfirmDelete
-          folder={selectedFolder}
-          closeModal={hideDeleteConfirm}
-          folderType={folderType}
-        />
-      )}
-      {isOpenAddModal && !isEmptyFolders && (
-        <MoveModal
-          folderType={folderType}
-          removeItemFromCart={removeItemFromCart}
-        />
-      )}
-      {isOpenRemovalModal && (
-        <RemovalModal
-          folderType={folderType}
-          removeItemFromCart={removeItemFromCart}
-        />
-      )}
+      <AddModal
+        visible={openCreateModal || isOpenRename}
+        folder={selectedFolder}
+        closeModal={hideCreateOrUpdateModal}
+        folderType={folderType}
+        isRename={isOpenRename}
+      />
+      <ConfirmDelete
+        visible={isOpenConfirm}
+        folder={selectedFolder}
+        closeModal={hideDeleteConfirm}
+        folderType={folderType}
+      />
+      <MoveModal
+        visible={isOpenAddModal && !isEmptyFolders}
+        folderType={folderType}
+        removeItemFromCart={removeItemFromCart}
+      />
+      <RemovalModal
+        visible={isOpenRemovalModal}
+        folderType={folderType}
+        removeItemFromCart={removeItemFromCart}
+      />
 
       {showAllItems && (
         <FolderListItem data-cy="FOLDERS" leftBorder active>
@@ -161,14 +157,12 @@ const Folders = ({
       {isActive && (
         <FoldersListWrapper data-cy="folder-list">
           {!showAllItems && (
-            <AddFolderButton
-              data-cy="addFolderButton"
-              onClick={showCreateModal}
-              right="6px"
-              top="-38px"
-            >
-              <IconPlusCircle />
-            </AddFolderButton>
+            <FolderListItem active data-cy="addFolderButton">
+              <FolderListItemTitle onClick={showCreateModal}>
+                <IconPlusCircle />
+                <span>CREATE NEW FOLDER</span>
+              </FolderListItemTitle>
+            </FolderListItem>
           )}
           <FolderList
             ellipsis

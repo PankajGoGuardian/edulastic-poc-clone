@@ -105,7 +105,8 @@
         "filters": "Filters",
         "clearAll": "Clear all",
         "showFilters": "Show filters",
-        "hideFilters": "Hide filters"
+        "hideFilters": "Hide filters",
+        "source": "Source"
       }
     },
     "itemAdd": {

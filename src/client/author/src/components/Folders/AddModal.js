@@ -49,6 +49,7 @@ const AddModal = ({
   renameFolder,
   createFolderRequest,
   isRename,
+  visible = true,
 }) => {
   const isEdit = !!folder?._id && isRename
   const initFolderName = isEdit ? folder?.folderName : ''
@@ -91,7 +92,7 @@ const AddModal = ({
   return (
     <CustomModalStyled
       centered
-      visible
+      visible={visible}
       title={
         <ModalTitle>{isEdit ? 'Rename' : 'Create a New Folder'}</ModalTitle>
       }

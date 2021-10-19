@@ -17,6 +17,7 @@ const RemovalModal = ({
   removeItems,
   closeModal,
   removeItemFromCart,
+  visible = true,
 }) => {
   const [selected, setFolderToRemoveItems] = useState({})
 
@@ -81,7 +82,7 @@ const RemovalModal = ({
   return (
     <Modal
       centered
-      visible
+      visible={visible}
       title={
         <ModalTitle>{`Remove ${selectedItems.length} item(s) from…`}</ModalTitle>
       }

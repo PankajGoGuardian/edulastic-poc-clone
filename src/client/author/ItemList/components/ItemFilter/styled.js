@@ -221,7 +221,7 @@ export const MainFilterHeader = styled.div`
 `
 
 export const Title = styled.span`
-  font-size: 14px;
+  font-size: 11px;
   letter-spacing: 0.3px;
   color: ${secondaryTextColor};
   font-weight: 600;

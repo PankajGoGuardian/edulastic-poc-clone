@@ -85,12 +85,14 @@ const getContent = ({
     }
     return (
       <>
-        <PopoverCancel onClick={() => setvisible(false)}>
+        <PopoverCancel data-cy="cancelButton" onClick={() => setvisible(false)}>
           {' '}
           NO, THANKS
         </PopoverCancel>
         <Link to="/author/subscription">
-          <UpgradeBtn>{needsRenewal ? 'RENEW NOW' : 'UPGRADE NOW'}</UpgradeBtn>
+          <UpgradeBtn data-cy="upgradeButton">
+            {needsRenewal ? 'RENEW NOW' : 'UPGRADE NOW'}
+          </UpgradeBtn>
         </Link>
       </>
     )
@@ -105,8 +107,10 @@ const getContent = ({
         width="280px"
         padding="15px 0 0 6px"
       >
-        <PopoverTitle>Access Additional Features</PopoverTitle>
-        <PopoverDetail>
+        <PopoverTitle data-cy="upgradeTitle">
+          Access Additional Features
+        </PopoverTitle>
+        <PopoverDetail data-cy="upgradeDescription">
           Get additional reports, options to assist students, collaborate with
           colleagues, anti-cheating tools and more.
         </PopoverDetail>

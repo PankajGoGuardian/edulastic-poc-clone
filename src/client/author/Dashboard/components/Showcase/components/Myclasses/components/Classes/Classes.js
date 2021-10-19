@@ -56,7 +56,14 @@ const Classes = ({
 
   return (
     <>
-      <TextWrapper fw="bold" size="16px" color={title} mt="1.5rem" mb="1rem">
+      <TextWrapper
+        data-cy="classSectionTitle"
+        fw="bold"
+        size="16px"
+        color={title}
+        mt="1.5rem"
+        mb="1rem"
+      >
         {classData.length < 1 ? 'Get Started with Edulastic' : ' My Classes '}
       </TextWrapper>
       {isPremiumUser && (

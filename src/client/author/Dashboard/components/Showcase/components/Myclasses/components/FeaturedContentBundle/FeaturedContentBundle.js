@@ -36,7 +36,14 @@ const FeaturedContentBundle = ({
 
   return (
     <FeatureContentWrapper>
-      <TextWrapper fw="bold" size="16px" color={title} mt=".5rem" mb="1rem">
+      <TextWrapper
+        data-cy="featuredBundlesTitle"
+        fw="bold"
+        size="16px"
+        color={title}
+        mt=".5rem"
+        mb="1rem"
+      >
         Pre-built Tests you can use{' '}
       </TextWrapper>
       {!isSignupCompleted ? (

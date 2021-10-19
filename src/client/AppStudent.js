@@ -144,6 +144,7 @@ class App extends Component {
 
   componentDidMount() {
     const { fetchUser, location } = this.props
+    console.log('INSIDE DID MOUNT OF AppStudent')
     fetchUser({ addAccount: query.addAccount, userId: query.userId })
     window.addEventListener('request-client-update', () => {
       this.setState({

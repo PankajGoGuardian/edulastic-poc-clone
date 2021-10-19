@@ -260,7 +260,23 @@ class App extends Component {
       location.pathname.includes('/fwd') ||
       isLocationInTestRedirectRoutes(location)
     const kidPath = location.pathname.includes('/kid')
+    console.log(
+      'Inside Did Mount --> ',
+      JSON.stringify(
+        {
+          publicPath,
+          ssoPath,
+          partnerPath,
+          isV1Redirect,
+          kidPath,
+          location,
+        },
+        null,
+        2
+      )
+    )
     if (!publicPath && !ssoPath && !partnerPath && !isV1Redirect && !kidPath) {
+      console.log("Inside Did Mount's if and calling fetch User")
       fetchUser({ addAccount: query.addAccount, userId: query.userId })
     } else if (
       publicPath &&
@@ -268,6 +284,7 @@ class App extends Component {
         isLocationInTestRedirectRoutes(location)) &&
       TokenStorage.getAccessToken()
     ) {
+      console.log("Inside Did Mount's else if and calling fetch User")
       fetchUser()
     }
     window.addEventListener('request-client-update', () => {

@@ -390,6 +390,19 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
 
+  console.log(
+    'Inside persistAuthStateAndRedirectToSaga -> ',
+    JSON.stringify(
+      {
+        payload,
+        redirectRoute,
+        appRedirectPath,
+      },
+      null,
+      2
+    )
+  )
+
   if (redirectRoute) {
     window.location.replace(redirectRoute)
   }
@@ -856,7 +869,7 @@ function* login({ payload }) {
       _payload.districtName = generalSettings.name
     }
   }
-
+  console.log('INSIDE LOGIN SAGA -> ', JSON.stringify({ payload }, null, 2))
   try {
     const addAccount = yield select(getAddAccount)
     const addAccountTo = yield select(getAddAccountUserId)
@@ -864,6 +877,7 @@ function* login({ payload }) {
       _payload.addAccountTo = addAccountTo
     }
     const result = yield call(authApi.login, _payload)
+    console.log('LOGIN API RESULT -> ', JSON.stringify({ result }, null, 2))
     if (result.needClassCode) {
       yield put(toggleClassCodeModalAction(true))
     } else {
@@ -911,6 +925,18 @@ function* login({ payload }) {
       )
 
       const isAuthUrl = /signup|login/gi.test(redirectUrl)
+      console.log(
+        JSON.stringify(
+          {
+            redirectUrl,
+            isAuthUrl,
+            user,
+            publicUrlAccess: localStorage.getItem('publicUrlAccess'),
+          },
+          null,
+          2
+        )
+      )
       if (redirectUrl && !isAuthUrl) {
         if (
           user.role === roleuser.STUDENT &&
@@ -918,6 +944,7 @@ function* login({ payload }) {
         ) {
           const publicUrl = localStorage.getItem('publicUrlAccess')
           localStorage.removeItem('publicUrlAccess')
+          console.log('PUSHING TO -> ', publicUrl)
           yield put(push({ pathname: publicUrl, state: { isLoading: true } }))
         }
       }
@@ -931,6 +958,7 @@ function* login({ payload }) {
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
     const { status, data = {} } = err
+    console.log('ERROR IN LOGIN SAGA -> ', { err })
     console.error(err)
     let errorMessage = 'You have entered an invalid email/username or password.'
     if (
@@ -1184,6 +1212,10 @@ const getLoggedOutUrl = () => {
 
 export function* fetchUser({ payload }) {
   try {
+    console.log(
+      'INSIDE FETCH USER SAGA => ',
+      JSON.stringify({ payload }, null, 2)
+    )
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
       if (
@@ -1199,6 +1231,10 @@ export function* fetchUser({ payload }) {
       if (!window.localStorage.getItem('originalreferrer') && referrer) {
         window.localStorage.setItem('originalreferrer', referrer)
       }
+      console.log('Returning 1 -> ', {
+        accessToken: TokenStorage.getAccessToken(),
+        loggedOutUrl: getLoggedOutUrl(),
+      })
       return
     }
     if (payload && payload.addAccount === 'true') {
@@ -1215,11 +1251,15 @@ export function* fetchUser({ payload }) {
       ) {
         yield put(push('/login'))
       }
+      console.log('Returning 2')
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
+    console.log(JSON.stringify({ firebaseUser }, null, 2))
+    console.log('CALLING ME API')
     const user =
       (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
+    console.log('RESULT FROM ME API -> ', JSON.stringify({ user }, null, 2))
     if (
       (!firebaseUser && user?.firebaseAuthToken) ||
       (firebaseUser && firebaseUser !== user._id && user?.firebaseAuthToken)
@@ -1263,6 +1303,7 @@ export function* fetchUser({ payload }) {
       })
     }
   } catch (error) {
+    console.log('ERROR IN FETCH USER SAGA -> ', { error })
     console.log('err', error, error)
     if (
       error?.response &&

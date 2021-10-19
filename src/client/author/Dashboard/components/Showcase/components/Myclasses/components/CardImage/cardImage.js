@@ -83,7 +83,9 @@ const CardImage = ({
       {subject ? (
         <>
           {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ''}
-          <SpanLeftMargin data-cy="subject">{subject}</SpanLeftMargin>
+          <SpanLeftMargin data-cy="subjectInClassCard">
+            {subject}
+          </SpanLeftMargin>
         </>
       ) : (
         ''

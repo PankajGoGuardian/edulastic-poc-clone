@@ -48,7 +48,7 @@ const SearchFilters = Form.create({
             type: searchType,
             page: 1,
             limit: 10,
-            ...(username && { userId: [username] }),
+            ...(username && { userId: username }),
           })
         }
       })

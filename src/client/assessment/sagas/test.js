@@ -721,7 +721,9 @@ function* loadTest({ payload }) {
           test.multiLanguageEnabled ||
           test.hasInstruction ||
           test.timedAssignment
-        )
+        ) ||
+        demo ||
+        preview
       ) {
         yield put(setShowTestInfoSuccesAction(true))
       }

@@ -185,6 +185,7 @@ const ClassSyncNotificationListener = ({
           msg: message || 'Atlas Class sync task completed.',
           type: 'success',
           onClose: () => {
+            setNotificationIds([...pull(notificationIds, [doc.__id])])
             deleteNotificationDocument(
               doc.__id,
               firestoreAtlasClassSyncStatusCollection
@@ -193,10 +194,22 @@ const ClassSyncNotificationListener = ({
         })
         fetchGroups()
       }
-      if (status === 'failed' && counter === 0) {
+      if (
+        status === 'failed' &&
+        counter === 0 &&
+        !notificationIds.includes(doc.__id)
+      ) {
+        setNotificationIds([...notificationIds, doc.__id])
         notification({
-          messageKey: message || 'classSyncWithAtlasFailed',
+          messageKey: 'classSyncWithAtlasFailed',
           type: 'error',
+          onClose: () => {
+            setNotificationIds([...pull(notificationIds, [doc.__id])])
+            deleteNotificationDocument(
+              doc.__id,
+              firestoreAtlasClassSyncStatusCollection
+            )
+          },
         })
       }
       setSyncClassLoading(false)

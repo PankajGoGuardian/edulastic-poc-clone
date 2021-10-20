@@ -1,4 +1,9 @@
-import { EduButton, FlexContainer, FireBaseService } from '@edulastic/common'
+import {
+  EduButton,
+  FlexContainer,
+  FireBaseService,
+  notification,
+} from '@edulastic/common'
 import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
@@ -85,6 +90,17 @@ const ScanProgress = ({
           console.log('r', r)
         })
         .catch((e) => {
+          if (e?.response?.data?.message) {
+            notification({
+              type: 'warning',
+              msg: e?.response?.data?.message,
+              duration: 10,
+            })
+            history.push({
+              pathname: '/uploadAnswerSheets',
+              search: window.location.search,
+            })
+          }
           console.warn('errr', e)
         })
     }

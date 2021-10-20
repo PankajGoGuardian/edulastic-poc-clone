@@ -639,26 +639,26 @@ class ClassHeader extends Component {
         >
           Release Score
         </MenuItems>
-        <FeaturesSwitch
+        {/* <FeaturesSwitch
           inputFeatures="enableOmrSheets"
           actionOnInaccessible="hidden"
           groupId={classId}
+        > */}
+        <MenuItems
+          data-cy="download-bubble-sheet"
+          key="download-bubble-sheet"
+          onClick={() => this.generateBubbleSheet(assignmentId, classId)}
         >
-          <MenuItems
-            data-cy="download-bubble-sheet"
-            key="download-bubble-sheet"
-            onClick={() => this.generateBubbleSheet(assignmentId, classId)}
-          >
-            Generate Bubble Sheet
-          </MenuItems>
-        </FeaturesSwitch>
-        <FeaturesSwitch
+          Generate Bubble Sheet
+        </MenuItems>
+        {/* </FeaturesSwitch> */}
+        {/* <FeaturesSwitch
           inputFeatures="enableOmrSheets"
           actionOnInaccessible="hidden"
           groupId={classId}
-        >
-          {scanBubbleSheetMenuItem}
-        </FeaturesSwitch>
+        > */}
+        {scanBubbleSheetMenuItem}
+        {/* </FeaturesSwitch> */}
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"

@@ -20,6 +20,8 @@ const MatrixCell = ({
   tool,
   showCrossIcon,
   hovered,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   let input
 
@@ -30,26 +32,26 @@ const MatrixCell = ({
   }
 
   return (
-    <>
-      <Wrapper
-        smallSize={smallSize}
-        correct={checked && correct}
-        isPrintPreview={isPrintPreview}
-        onClick={onChange}
-        onlySpaceKey
-        tool={tool}
-      >
-        {input}
-        {type === 'inline' && (
-          <InlineLabel
-            dangerouslySetInnerHTML={{ __html: label }}
-            className="inline-label"
-          />
-        )}
-        {children}
-      </Wrapper>
+    <Wrapper
+      smallSize={smallSize}
+      correct={checked && correct}
+      isPrintPreview={isPrintPreview}
+      onClick={onChange}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
+      onlySpaceKey
+      tool={tool}
+    >
+      {input}
+      {type === 'inline' && (
+        <InlineLabel
+          dangerouslySetInnerHTML={{ __html: label }}
+          className="inline-label"
+        />
+      )}
+      {children}
       {showCrossIcon && <CrossIcon hovered={hovered} />}
-    </>
+    </Wrapper>
   )
 }
 

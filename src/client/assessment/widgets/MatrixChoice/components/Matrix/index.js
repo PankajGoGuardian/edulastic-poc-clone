@@ -29,11 +29,15 @@ const Matrix = (props) => {
     onCrossOut,
     crossToolEnabled,
   } = props
-  const [hoverRowIndex, setHoverRowIndex] = useState(null)
+  const [hoveredCell, setHoveredCell] = useState(null)
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
     return null
+  }
+
+  const onCellMouseLeave = () => {
+    setHoveredCell(null)
   }
 
   const getCell = (columnIndex, data) => {
@@ -42,7 +46,10 @@ const Matrix = (props) => {
     const rowIndex = data.index
     const responseId = responseIds?.[rowIndex]?.[columnIndex]
 
-    const showCrossIcon = columnIndex === 0 && crossAction?.includes(rowIndex)
+    const hovered = crossToolEnabled && hoveredCell === responseId
+    const showCrossIcon =
+      crossAction?.includes(responseId) ||
+      (crossToolEnabled && hoveredCell === responseId)
 
     if (evaluation) {
       correct = evaluation[responseId] ? true : 'incorrect'
@@ -53,7 +60,7 @@ const Matrix = (props) => {
     }
 
     const handleChange = () => {
-      if (!crossAction?.includes(rowIndex)) {
+      if (!crossToolEnabled && !crossAction?.includes(responseId)) {
         const checkData = {
           columnIndex,
           rowIndex,
@@ -61,12 +68,20 @@ const Matrix = (props) => {
         }
 
         onCheck(checkData)
+      } else if (crossToolEnabled && typeof onCrossOut === 'function') {
+        onCrossOut(responseId)
       }
+    }
+
+    const handleHoverCell = () => {
+      setHoveredCell(responseId)
     }
 
     return (
       <MatrixCell
         onChange={handleChange}
+        onMouseEnter={handleHoverCell}
+        onMouseLeave={onCellMouseLeave}
         checked={checked}
         correct={correct}
         type={uiStyle.type}
@@ -75,10 +90,8 @@ const Matrix = (props) => {
         smallSize={smallSize}
         isPrintPreview={isPrintPreview}
         tool={tool}
-        hovered={crossToolEnabled && hoverRowIndex === rowIndex}
-        showCrossIcon={
-          showCrossIcon || (crossToolEnabled && hoverRowIndex === rowIndex)
-        }
+        hovered={hovered}
+        showCrossIcon={showCrossIcon}
       >
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
@@ -176,18 +189,6 @@ const Matrix = (props) => {
 
   const showHead = isTable || hasStemTitle || hasOptionRow
 
-  const onRowMouseEnter = (rowIndex) => () => {
-    setHoverRowIndex(rowIndex)
-  }
-
-  const onRowMouseLeave = () => {
-    setHoverRowIndex(null)
-  }
-
-  const onRowClick = (rowIndex) => () => {
-    onCrossOut(rowIndex)
-  }
-
   return (
     <StyledTable
       evaluated={evaluation && evaluation.length > 0}
@@ -201,11 +202,6 @@ const Matrix = (props) => {
       hasOptionRow={hasOptionRow}
       isTable={isTable}
       showHead={showHead}
-      onRow={(_, rowIndex) => ({
-        onClick: onRowClick(rowIndex),
-        onMouseLeave: onRowMouseLeave,
-        onMouseEnter: onRowMouseEnter(rowIndex),
-      })}
     />
   )
 }

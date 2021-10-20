@@ -53,12 +53,10 @@ const Preview = ({
     saveAnswer(newAnswer)
   }
 
-  const handleSetCrossAction = (rowIndex) => {
+  const handleSetCrossAction = (responseId) => {
     if (typeof setCrossAction === 'function') {
-      const { responseIds = [], id: qId } = item || {}
-      const rowIds = responseIds?.[rowIndex]
+      const { id: qId } = item || {}
       const newAnswer = cloneDeep(userAnswer)
-
       setCrossAction(
         produce(crossAction, (draft) => {
           if (!draft) {
@@ -67,21 +65,15 @@ const Preview = ({
           if (!draft[qId]) {
             draft[qId] = []
           }
-          if (draft[qId].includes(rowIndex)) {
-            draft[qId] = draft[qId].filter((x) => x !== rowIndex)
+          if (draft[qId].includes(responseId)) {
+            draft[qId] = draft[qId].filter((x) => x !== responseId)
           } else {
-            draft[qId].push(rowIndex)
+            draft[qId].push(responseId)
           }
         })
       )
-      let shouldUpdateAnswer = false
-      rowIds.forEach((responseId) => {
-        if (newAnswer.value[responseId]) {
-          shouldUpdateAnswer = true
-          delete newAnswer.value[responseId]
-        }
-      })
-      if (shouldUpdateAnswer) {
+      if (newAnswer?.value?.[responseId]) {
+        delete newAnswer.value[responseId]
         saveAnswer(newAnswer)
       }
     }

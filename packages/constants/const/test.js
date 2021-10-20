@@ -145,6 +145,7 @@ module.exports = {
     PARTIAL_CREDIT: 'Partial Credit',
     partialMatch: 'Partial Match',
     exactMatch: 'Exact Match',
+    ManualGrading: 'Manual Grading',
   },
   accessibilities: {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",

@@ -461,7 +461,16 @@ export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
       (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
     )
     if (questionNeeded) {
-      return evalTypeValues[questionNeeded.validation.scoringType]
+      if (questionNeeded?.validation?.scoringType) {
+        return evalTypeValues[questionNeeded.validation.scoringType]
+      }
+      if (
+        Object.values(questionType.manuallyGradableQn).includes(
+          questionNeeded?.type
+        )
+      ) {
+        return evalTypeValues.ManualGrading
+      }
     }
   }
   return 'NA'

@@ -133,6 +133,7 @@ const ClassListContainer = ({
         close={() => setShowDetails(false)}
       />
       <ClassList
+        user={user}
         groups={groups}
         setShowDetails={setShowDetails}
         archiveGroups={archiveGroups}

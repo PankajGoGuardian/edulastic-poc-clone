@@ -1829,7 +1829,8 @@ function* getUserData({ payload: res }) {
       if (
         !(
           user?.role === roleuser.STUDENT &&
-          redirectUrl.includes('author/tests/verid') &&
+          (redirectUrl.includes('author/tests/verid') ||
+            redirectUrl.includes('/author/tests/tab/review/id/')) &&
           window.location.pathname.includes('/auth')
         )
       ) {

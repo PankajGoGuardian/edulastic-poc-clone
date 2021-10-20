@@ -116,6 +116,7 @@ const Header = ({
     active,
     atlasId = '',
     endDate,
+    atlasProviderName = '',
   } = selectedClass
   const { exitPath } = location?.state || {}
   const isDemoPlaygroundUser = user?.isPlayground
@@ -368,14 +369,20 @@ const Header = ({
                   </Option>
                 )
               }
-              if (option === ATLAS) {
+              if (option === ATLAS && atlasProviderName) {
                 return (
                   <Option
                     key={index}
                     data-cy={`sync-option-${index}`}
                     onClick={handleAtlasSync}
                   >
-                    <span className="menu-label">Resync Class</span>
+                    <span className="menu-label">
+                      Resync{' '}
+                      {atlasProviderName.toLowerCase() === 'schoology'
+                        ? 'Schoology'
+                        : 'Classlink'}{' '}
+                      Class
+                    </span>
                   </Option>
                 )
               }
@@ -386,7 +393,7 @@ const Header = ({
                     data-cy={`sync-option-${index}`}
                     onClick={handleCleverSync}
                   >
-                    <span className="menu-label">Resync Class</span>
+                    <span className="menu-label">Resync Clever Class</span>
                   </Option>
                 )
               }
@@ -445,14 +452,20 @@ const Header = ({
                 <span>Sync with Canvas Classroom</span>
               </EduButton>
             )}
-            {showAtlasReSyncButton && (
+            {showAtlasReSyncButton && atlasProviderName && (
               <EduButton
                 data-cy="syncAtlasClass"
                 isBlue
                 isGhost
                 onClick={handleAtlasSync}
               >
-                <span>RESYNC CLASS</span>
+                <span>
+                  RESYNC{' '}
+                  {atlasProviderName.toLowerCase() === 'schoology'
+                    ? 'SCHOOLOGY'
+                    : 'CLASSLINK'}{' '}
+                  CLASS
+                </span>
               </EduButton>
             )}
             {showCleverReSyncButton && (
@@ -462,7 +475,7 @@ const Header = ({
                 isGhost
                 onClick={handleCleverSync}
               >
-                <span>RESYNC CLASS</span>
+                <span>RESYNC CLEVER CLASS</span>
               </EduButton>
             )}
           </>

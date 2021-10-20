@@ -529,39 +529,41 @@ class FeedbackRight extends Component {
           />
         )}
         {!isPracticeQuestion ? (
-          <StyledDivSec>
-            <ScoreInputWrapper>
-              <ScoreInput
-                data-cy="scoreInput"
-                onChange={(e) =>
-                  this.onChangeScore(showGradingRubricButton)(
-                    e.target.value,
-                    InputType.InputScore
-                  )
-                }
-                onFocus={this.handleScoreInputFocus}
-                onBlur={this.submitScore}
-                value={_score}
-                disabled={
-                  isPresentationMode ||
-                  isPracticeQuestion ||
-                  studentResponseLoading ||
-                  isClassResponseLoading ||
-                  isScoreInputDisabled
-                }
-                ref={this.scoreInput}
-                onKeyDown={this.onKeyDownFeedback}
-                tabIndex={0}
-              />
-              <TextPara>{_maxScore}</TextPara>
-              <GradingPolicy>
-                <p>
-                  <b>GRADING POLICY</b>
-                </p>
-                <p>{activity.scoringType}</p>
-              </GradingPolicy>
-            </ScoreInputWrapper>
-          </StyledDivSec>
+          <>
+            <StyledDivSec>
+              <ScoreInputWrapper>
+                <ScoreInput
+                  data-cy="scoreInput"
+                  onChange={(e) =>
+                    this.onChangeScore(showGradingRubricButton)(
+                      e.target.value,
+                      InputType.InputScore
+                    )
+                  }
+                  onFocus={this.handleScoreInputFocus}
+                  onBlur={this.submitScore}
+                  value={_score}
+                  disabled={
+                    isPresentationMode ||
+                    isPracticeQuestion ||
+                    studentResponseLoading ||
+                    isClassResponseLoading ||
+                    isScoreInputDisabled
+                  }
+                  ref={this.scoreInput}
+                  onKeyDown={this.onKeyDownFeedback}
+                  tabIndex={0}
+                />
+                <TextPara>{_maxScore}</TextPara>
+              </ScoreInputWrapper>
+            </StyledDivSec>
+            <GradingPolicy>
+              <p>
+                <b>GRADING POLICY</b>
+              </p>
+              <p>{activity.scoringType}</p>
+            </GradingPolicy>
+          </>
         ) : (
           <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />
         )}
@@ -726,7 +728,7 @@ const ScoreInputWrapper = styled.div`
 `
 
 const ScoreInput = styled(Input)`
-  width: 50%;
+  width: 70%;
   height: 47px;
   border: 0px;
   background-color: #f8f8f8;
@@ -751,15 +753,18 @@ const TextPara = styled.p`
 `
 const GradingPolicy = styled.p`
   text-transform: capitalize;
+  margin-top: 5px;
   padding-left: 10px;
   padding-right: 15px;
-  font-size: 9px;
+  font-size: 14px;
   font-weight: 600;
-  line-height: 12px;
+  line-height: 20px;
   height: 47px;
-  width: 40%;
-  border-radius: 0px 2px 2px 0px;
+  width: 100%;
+  border-radius: 2px;
   display: inline-block;
+  text-align: center;
+  background-color: #f8f8f8;
 `
 
 const LeaveDiv = styled.div`

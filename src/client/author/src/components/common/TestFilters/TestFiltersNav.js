@@ -17,7 +17,7 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
   )
   return (
     <SelectInputStyled
-      data-cy="selectqType"
+      data-cy="selectSource"
       size="large"
       optionFilterProp="children"
       filterOption={(input, option) =>

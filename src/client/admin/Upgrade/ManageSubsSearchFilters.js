@@ -48,11 +48,17 @@ const SearchFilters = Form.create({
             type: searchType,
             page: 1,
             limit: 10,
-            ...(username && { userId: [username] }),
+            ...(username && { userId: username }),
           })
         }
       })
     }
+
+    const handleSelectLicense = () => {
+      resetFields(['organisation'])
+      resetFields(['username'])
+    }
+
     return (
       <Form onSubmit={handleSubmit}>
         <FlexContainer justifyContent="space-between" alignItems="center">
@@ -67,6 +73,7 @@ const SearchFilters = Form.create({
                 margin="0px 5px 0px 0px"
                 data-cy="selectSubscriptionType"
                 placeholder="Select a filter to search"
+                onChange={handleSelectLicense}
               >
                 {MANAGE_SUBSCRIPTION_SEARCH_TYPE.map(({ type, name }) => (
                   <SelectInputStyled.Option key={type}>
@@ -97,6 +104,7 @@ const SearchFilters = Form.create({
                   !fieldData.districtName && handleSearch('', 'DISTRICT', 50)
                 }
                 onChange={handleSelectDistrict}
+                allowClear
               >
                 {(isFetchingOrganization ? [] : districtList)
                   .sort((a, b) => {
@@ -119,12 +127,11 @@ const SearchFilters = Form.create({
           </Form.Item>
           <Form.Item>
             {getFieldDecorator('username', {
-              initialValue: !usersList || undefined,
+              initialValue: undefined,
             })(
               <SelectInputStyled
                 data-cy="searchByUsername"
                 placeholder="Search by username"
-                size="large"
                 notFoundContent={null}
                 filterOption={false}
                 onSearch={handleUsersSearch}
@@ -133,6 +140,7 @@ const SearchFilters = Form.create({
                 height="36px"
                 width="250px"
                 disabled={!fieldData?.districtId}
+                allowClear
               >
                 {isFetchingUsers ? (
                   <SelectInputStyled.Option key="loader" style={loaderStyles}>

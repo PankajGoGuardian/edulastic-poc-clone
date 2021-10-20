@@ -266,7 +266,7 @@ const ManageSubscriptionsByLicenses = ({
   }
 
   const handleSelectDistrict = (value, option) => {
-    const { value: districtId, name: districtName } = option.props
+    const { value: districtId, name: districtName } = option?.props || {}
 
     // resetting all the org fields as we are changing the organization(district)
     setFieldData({

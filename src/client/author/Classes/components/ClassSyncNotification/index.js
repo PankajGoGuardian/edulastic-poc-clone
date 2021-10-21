@@ -17,6 +17,7 @@ import {
   removeClassSyncNotificationAction,
   setGroupSyncDataAction,
   setSyncClassLoadingAction,
+  getClassSyncLoadingStatus,
 } from '../../../ManageClass/ducks'
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
@@ -36,6 +37,7 @@ const ClassSyncNotificationListener = ({
   removeClassSyncDetails,
   fetchStudentsById,
   setSyncClassLoading,
+  getClassSyncLoading,
   setGroupSyncData,
   fetchGroups,
   setBulkActionStatus,
@@ -172,7 +174,7 @@ const ClassSyncNotificationListener = ({
 
   const showUserNotificationOnAtlasClassSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
-      const { status, message, counter } = doc
+      const { status, message, counter, groupIds } = doc
 
       if (
         status === 'completed' &&
@@ -192,6 +194,10 @@ const ClassSyncNotificationListener = ({
             )
           },
         })
+        if (getClassSyncLoading) {
+          fetchStudentsById({ classId: groupIds?.[0] })
+          setSyncClassLoading(false)
+        }
         fetchGroups()
       }
       if (
@@ -211,8 +217,8 @@ const ClassSyncNotificationListener = ({
             )
           },
         })
+        setSyncClassLoading(false)
       }
-      setSyncClassLoading(false)
     })
   }
 
@@ -343,6 +349,7 @@ export default compose(
   connect(
     (state) => ({
       user: getUser(state),
+      getClassSyncLoading: getClassSyncLoadingStatus(state),
     }),
     {
       removeClassSyncDetails: removeClassSyncNotificationAction,

@@ -41,6 +41,12 @@ export const getSelectedSubject = createSelector(
   manageClassSelector,
   (state) => state.selectedSubject
 )
+
+export const getClassSyncLoadingStatus = createSelector(
+  manageClassSelector,
+  (state) => state.syncClassLoading
+)
+
 export const getSelectedClassName = createSelector(
   manageClassSelector,
   (state) => state.entity.name
@@ -950,7 +956,6 @@ function* syncClassWithCanvasSaga({ payload }) {
 
 function* syncClassWithAtlasSaga({ payload }) {
   try {
-    yield put(setSyncClassLoadingAction(true))
     const data = yield call(atlasApi.syncClassesWithAtlas, payload)
     if (data.data.result.success)
       notification({ type: 'success', messageKey: 'atlasClassSyncInProgress' })
@@ -1001,6 +1006,11 @@ function* syncClassListWithCleverSaga({ payload }) {
     }))
     yield call(cleverApi.syncCleverClasses, filteredPayload)
     notification({ type: 'success', messageKey: 'syncWithCleverIsComplete' })
+    const classSyncLoadingStatus = yield select(getClassSyncLoadingStatus)
+    if (classSyncLoadingStatus) {
+      fetchStudentsByIdAction({ classId: classList?.[0]?._id })
+      yield put(setSyncClassLoadingAction(false))
+    }
     switch (refreshPage) {
       case 'dashboard':
         yield put(receiveTeacherDashboardAction())
@@ -1012,6 +1022,7 @@ function* syncClassListWithCleverSaga({ payload }) {
       // no default
     }
   } catch (err) {
+    yield put(setSyncClassLoadingAction(false))
     captureSentryException(err)
     console.error(err)
     const errorMessage = err?.response?.data?.message

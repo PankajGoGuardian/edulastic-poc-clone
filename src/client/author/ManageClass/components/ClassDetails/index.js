@@ -41,6 +41,7 @@ import {
   getGoogleAuthRequiredSelector,
   setGoogleAuthenticationRequiredAction,
   saveGoogleTokensAndRetrySyncAction,
+  setSyncClassLoadingAction,
 } from '../../ducks'
 import {
   getCleverLibraryUserSelector,
@@ -69,6 +70,7 @@ const ClassDetails = ({
   syncClassWithCanvas,
   syncClassesWithClever,
   syncClassWithAtlas,
+  setSyncClassLoading,
   user,
   classCodeError = false,
   setClassNotFoundError,
@@ -354,6 +356,7 @@ const ClassDetails = ({
               isCleverDistrict={isCleverDistrict}
               syncClassesWithClever={syncClassesWithClever}
               syncClassWithAtlas={syncClassWithAtlas}
+              setSyncClassLoading={setSyncClassLoading}
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
@@ -434,6 +437,7 @@ const enhance = compose(
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       syncClassWithCanvas: syncClassWithCanvasAction,
       syncClassWithAtlas: syncClassWithAtlasAction,
+      setSyncClassLoading: setSyncClassLoadingAction,
       syncClassesWithClever: syncClassesWithCleverAction,
       setClassNotFoundError: setClassNotFoundErrorAction,
       unarchiveClass: unarchiveClassAction,

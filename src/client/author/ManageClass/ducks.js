@@ -1008,7 +1008,7 @@ function* syncClassListWithCleverSaga({ payload }) {
     notification({ type: 'success', messageKey: 'syncWithCleverIsComplete' })
     const classSyncLoadingStatus = yield select(getClassSyncLoadingStatus)
     if (classSyncLoadingStatus) {
-      fetchStudentsByIdAction({ classId: classList?.[0]?._id })
+      yield put(fetchStudentsByIdAction({ classId: classList?.[0]?._id }))
       yield put(setSyncClassLoadingAction(false))
     }
     switch (refreshPage) {

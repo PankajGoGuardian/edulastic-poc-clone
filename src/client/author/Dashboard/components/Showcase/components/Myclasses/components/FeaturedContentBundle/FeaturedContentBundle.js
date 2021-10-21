@@ -14,6 +14,7 @@ const FeaturedContentBundle = ({
   emptyBoxCount,
   testLists,
   isSignupCompleted,
+  boughtItemBankIds,
 }) => {
   if (!featuredBundles.length) {
     return null
@@ -25,14 +26,24 @@ const FeaturedContentBundle = ({
     (x) => !x.config.subscriptionData
   )
 
-  const getPremiumBundles = featuredBundles.filter(
-    (x) => x.config.subscriptionData
+  const getNotAvailedPremiumBundles = featuredBundles.filter(
+    (x) =>
+      x.config.subscriptionData &&
+      !boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
+  )
+
+  const getAvailedBundles = featuredBundles.filter((x) =>
+    boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
   )
 
   const filteredfeaturedBundles =
     (showFreebundles
-      ? getFreeBundles
-      : [...getFreeBundles, ...getPremiumBundles]) || []
+      ? [...getFreeBundles, ...getAvailedBundles]
+      : [
+          ...getFreeBundles,
+          ...getNotAvailedPremiumBundles,
+          ...getAvailedBundles,
+        ]) || []
 
   return (
     <FeatureContentWrapper>

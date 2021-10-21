@@ -732,6 +732,8 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignemntCount >= 5 && recommendedTests?.length > 0
 
+  const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
+
   return (
     <MainContentWrapper padding="30px 25px">
       {showBannerSlide && (
@@ -769,6 +771,7 @@ const MyClasses = ({
           emptyBoxCount={featureEmptyBoxCount}
           isSignupCompleted={isSignupCompleted}
           testLists={tests}
+          boughtItemBankIds={boughtItemBankIds}
         />
       )}
       <Launch />

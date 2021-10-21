@@ -159,7 +159,6 @@ const ClassList = ({
               </Tooltip>
             )
         }
-        if (syncIconList.length === 0) syncIconList.push(<p>-</p>)
         return { ..._group, syncedWith: syncIconList }
       })
       return classGroupObjWithSyncedInfo
@@ -262,7 +261,11 @@ const ClassList = ({
       dataIndex: 'syncedWith',
       render: (syncedIconList) => (
         <FlexContainer justify-content="space-between" align-items="center">
-          {syncedIconList.map((icons) => icons)}
+          {syncedIconList?.length ? (
+            syncedIconList.map((icons) => icons)
+          ) : (
+            <p>-</p>
+          )}
         </FlexContainer>
       ),
     },

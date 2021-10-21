@@ -824,6 +824,9 @@ function* correctItemUpdateSaga({ payload }) {
     cloneItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
+    if (question.validation.unscored) {
+      cloneItem.itemLevelScoring = false
+    }
     yield put(correctItemUpdateProgressAction(true))
     const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,

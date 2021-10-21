@@ -58,7 +58,7 @@ const Header = ({
         _group.atlasProviderName.toLowerCase()
       )
   )
-  const atlasProviderName = atlasGroup?.atlasProviderName || ''
+  const atlasProviderName = atlasGroup?.atlasProviderName
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -223,7 +223,7 @@ const Header = ({
                 <span>SYNC WITH CANVAS</span>
               </EduButton>
             )}
-          {!isPlayground && atlasId && atlasProviderName.length && (
+          {!isPlayground && atlasId && atlasProviderName?.length && (
             <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
               <span>
                 RESYNC{' '}

@@ -223,7 +223,7 @@ export function* receiveTestActivitySaga({ payload }) {
     const originalItems = cloneDeep(testItems)
     const reportStandards = getStandardsForStandardBasedReport(
       testItems,
-      classResponse?.summary?.standardsDescriptions || {}
+      additionalData?.standards || {}
     )
     markQuestionLabel(testItems)
     yield put({

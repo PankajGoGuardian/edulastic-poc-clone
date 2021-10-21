@@ -64,12 +64,13 @@ export const Label = styled.label`
       : '0px 10px 10px 0px'};
   min-height: ${(props) =>
     props.styleType === 'primary' || props.uiStyle.type === 'block'
-      ? '35px'
+      ? 'max-content'
       : 'auto'};
   box-shadow: ${(props) =>
     props.styleType === 'primary' || props.uiStyle.type === 'block'
       ? 'none'
       : 'none'};
+  margin-top: 10px;
   display: flex;
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};

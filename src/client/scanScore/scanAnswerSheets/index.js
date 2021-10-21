@@ -7,7 +7,7 @@ import { compose } from 'redux'
 import { Progress, Row, Select } from 'antd'
 import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
-import { round } from 'lodash'
+import { round , keyBy} from 'lodash'
 
 import {
   EduButton,
@@ -46,6 +46,9 @@ import {
   IconStep4,
   IconStep5,
 } from './icons/StepsIcons'
+import { videoDatas } from './testData';
+
+const videoDatasKeyed = keyBy(videoDatas,'url');
 
 const Option = Select.Option
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
@@ -98,6 +101,31 @@ function canvasToBlob(canvas) {
 }
 
 /**
+ Returns the dimensions of a video asynchrounsly.
+ @param {String} url Url of the video to get dimensions from.
+ @return {Promise} Promise which returns the dimensions of the video in 'width' and 'height' properties.
+ */
+ function getVideoDimensionsOf(url){
+  return new Promise(resolve => {
+      // create the video element
+      const video = document.createElement('video');
+
+      // place a listener on it
+      video.addEventListener( "loadedmetadata", function () {
+          // retrieve dimensions
+          const height = this.videoHeight;
+          const width = this.videoWidth;
+          // send back result
+          resolve({height, width});
+      }, false );
+
+      // start download meta-datas
+      video.src = url;
+  });
+}
+
+
+/**
  *
  * @param {HTMLCanvasElement} canvas
  */
@@ -114,6 +142,16 @@ async function uploadCanvasFrame(canvas, uploadProgress) {
     `${assignmentId}`
   )
 }
+
+function isTestMode(){
+  const { assignmentId, groupId,test } = qs.parse(
+    window.location?.search || '',
+    { ignoreQueryPrefix: true }
+  )
+  return assignmentId === 'test' && groupId ==='test' &&  test === 'true';
+}
+
+const testMode = isTestMode();
 
 const ScanAnswerSheetsInner = ({
   history,
@@ -135,7 +173,13 @@ const ScanAnswerSheetsInner = ({
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
+  const videoSettingsRef = useRef(videoSetting);
 
+  useEffect(()=>{
+    videoSettingsRef.current.width = videoSetting.width;
+    videoSettingsRef.current.height = videoSetting.height;
+  },[videoSetting.width,videoSetting.height]);
+  console.log('videoSettings',videoSetting);
   /**
    * uncomment the following line while debugging
    * window.arrAnswersRef = arrAnswersRef
@@ -151,6 +195,7 @@ const ScanAnswerSheetsInner = ({
   const [selectedCamera, setSelectedCamera] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [isFrontFacing, setIsFrontFacing] = useState(false)
+  const [currentVideoUrl,setCurrentVideoUrl] = useState(null);
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
@@ -170,11 +215,13 @@ const ScanAnswerSheetsInner = ({
     const arrAnswers = arrAnswersRef.current
     if (vc) {
       const matSrc = new cv.Mat(
-        videoSetting.height,
-        videoSetting.width,
+        videoSettingsRef.current.height,
+        videoSettingsRef.current.width,
         cv.CV_8UC4
       )
       vc.read(matSrc)
+      //console.log('processvideo videoSetting',videoSettingsRef.current,vc);
+
       let result = null
       const parentRectangle = detectParentRectangle(cv, matSrc)
       let rectanglePosition
@@ -235,7 +282,7 @@ const ScanAnswerSheetsInner = ({
                 })
                 audioRef.play()
 
-                if (canvasRef.current) {
+                if (canvasRef.current && !testMode) {
                   setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
                     canvasRef.current,
@@ -273,7 +320,10 @@ const ScanAnswerSheetsInner = ({
       window.location?.search || '',
       { ignoreQueryPrefix: true }
     )
-    getOmrUploadSessions({ assignmentId, groupId, sessionId, fromWebcam: true })
+    if(!testMode){
+      getOmrUploadSessions({ assignmentId, groupId, sessionId, fromWebcam: true })
+    }
+
     if (navigator.mediaDevices.getUserMedia) {
       navigator.mediaDevices
         .getUserMedia({
@@ -316,11 +366,12 @@ const ScanAnswerSheetsInner = ({
   }, [isCameraLoaded, isOpencvLoaded])
 
   useEffect(() => {
+    console.log('useEffect props',{isStart,currentVideoUrl});
     if (
       navigator.mediaDevices.getUserMedia &&
       videoRef &&
       videoRef.current &&
-      !isStart
+      ((!isStart)|| testMode)
     ) {
       navigator.mediaDevices
         .getUserMedia({ video: videoContstraints, audio: false })
@@ -328,20 +379,50 @@ const ScanAnswerSheetsInner = ({
           setIsStart(true)
           setIsError(false)
           streamRef.current = stream
-          // start receiving stream from webcam
-          videoRef.current.srcObject = stream
-          videoRef.current.play()
+          if(testMode && currentVideoUrl){
+            videoRef.current.srcObject=null;
+            videoRef.current.src = currentVideoUrl;
+            videoRef.current.pause();
+            videoRef.current.load();
+          } else {
+            // start receiving stream from webcam
+            videoRef.current.src=null;
+            videoRef.current.srcObject = stream
+          }
+          const videoPlayPromise = videoRef.current.play();
+          if(videoPlayPromise && videoPlayPromise?.catch){
+            videoPlayPromise.catch((e)=>{
+              console.log('err',e.message);
+            })
+          }
           videoRef.current.addEventListener(
-            'canplay',
+            testMode && currentVideoUrl?'canplaythrough': 'canplay',
             function () {
               if (cv) {
                 const { videoWidth, videoHeight } = videoRef.current || {}
                 videoRef.current.setAttribute('width', videoWidth)
                 videoRef.current.setAttribute('height', videoHeight)
-                // Start Video Processing
+                if(testMode && currentVideoUrl){
+                  getVideoDimensionsOf(currentVideoUrl).then((videoDimensions)=>{
+                    // Start Video Processing
+                setVideoSettings(videoDimensions);
+                videoRef.current.setAttribute('width', videoDimensions.width);
+                videoRef.current.setAttribute('height', videoDimensions.height);
                 requestAnimationFrame(() =>
-                  processVideo(new cv.VideoCapture(videoRef.current))
-                )
+                processVideo(new cv.VideoCapture(videoRef.current)).catch(e=>{
+                  console.log('e',e.message);
+                })
+              )
+                  });
+                } else {
+                  // Start Video Processing
+                requestAnimationFrame(() =>
+                processVideo(new cv.VideoCapture(videoRef.current)).catch(e=>{
+                  console.log('e',e.message);
+                })
+              )
+                }
+                
               }
             },
             false
@@ -357,7 +438,7 @@ const ScanAnswerSheetsInner = ({
         streamRef.current.getTracks().forEach((track) => track.stop())
       }
     }
-  }, [videoRef, videoRef?.current, cv, selectedCamera, isOpencvLoaded, dc])
+  }, [videoRef, videoRef?.current, cv, selectedCamera, isOpencvLoaded, dc, currentVideoUrl])
 
   useEffect(() => {
     isFrontFacingRef.current = isFrontFacing
@@ -463,6 +544,7 @@ const ScanAnswerSheetsInner = ({
             Ensure the sheets are fully visible and wait for the Form detected
             message with a beeper sound.
           </SubTitle>
+          {testMode? <div> {videoDatas.map((v,index)=> <StyledVideoButton onClick={()=> setCurrentVideoUrl(v.url)} type={currentVideoUrl && currentVideoUrl === v.url?'primary':'default'}>Video {index+1}</StyledVideoButton>)}</div> :null}
           <FlexContainer width={`${videoSetting.width}px`}>
             <Progress
               percent={scanningPercent}
@@ -505,6 +587,7 @@ const ScanAnswerSheetsInner = ({
               />
               <video
                 ref={videoRef}
+                crossOrigin="anonymous"
                 id="video"
                 style={{
                   display: 'none',
@@ -512,7 +595,7 @@ const ScanAnswerSheetsInner = ({
                   height: videoSetting.height,
                   border: '2px solid #ececec',
                 }}
-                autoPlay
+                controls
               />
             </FlexContainer>
           </CameraModule>
@@ -718,3 +801,6 @@ const Step = styled.div`
     opacity: 1;
   }
 `
+const StyledVideoButton = styled(EduButton)`
+  display: inline-block;
+`;

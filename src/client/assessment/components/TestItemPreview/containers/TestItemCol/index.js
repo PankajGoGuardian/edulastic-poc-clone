@@ -94,6 +94,7 @@ class TestItemCol extends Component {
       LCBPreviewModal,
       isStudentAttempt,
       isLCBView,
+      isReviewTab,
       isExpressGrader,
       isFeedbackVisible,
       hideCorrectAnswer,
@@ -161,7 +162,10 @@ class TestItemCol extends Component {
           flexDirection={isStudentReport && 'column'}
           justifyContent="flex-start" // @see EV-29020
         >
-          <FlexItem flexGrow="1" maxWidth={isLCBView && '100%'}>
+          <FlexItem
+            flexGrow="1"
+            maxWidth={(isLCBView || isReviewTab) && '100%'}
+          >
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}
               evaluation={evaluation}

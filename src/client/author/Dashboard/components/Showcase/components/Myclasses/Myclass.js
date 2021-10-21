@@ -771,6 +771,8 @@ const MyClasses = ({
           emptyBoxCount={featureEmptyBoxCount}
           isSignupCompleted={isSignupCompleted}
           testLists={tests}
+          isSingaporeMath={isSingaporeMath}
+          isCpm={isCpm}
           boughtItemBankIds={boughtItemBankIds}
         />
       )}

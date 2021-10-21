@@ -14,6 +14,8 @@ const FeaturedContentBundle = ({
   emptyBoxCount,
   testLists,
   isSignupCompleted,
+  isSingaporeMath,
+  isCpm,
   boughtItemBankIds,
 }) => {
   if (!featuredBundles.length) {
@@ -36,9 +38,17 @@ const FeaturedContentBundle = ({
     boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
   )
 
+  let defaultBundles = []
+
+  if(isSingaporeMath || isCpm){
+    defaultBundles = [...getNotAvailedPremiumBundles.filter(
+      (x) => x?.config[isSingaporeMath ? 'isSingaporeMath' : 'isCPM']
+    )]
+  }
+
   const filteredfeaturedBundles =
     (showFreebundles
-      ? [...getFreeBundles, ...getAvailedBundles]
+      ? [...getFreeBundles, ...getAvailedBundles, ...defaultBundles]
       : [
           ...getFreeBundles,
           ...getNotAvailedPremiumBundles,

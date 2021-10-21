@@ -86,6 +86,7 @@ const Header = ({
   setUpdateCoTeacherModal,
   orgId,
   syncClassWithAtlas,
+  setSyncClassLoading,
   isCleverDistrict,
 }) => {
   const handleLoginSuccess = (data) => {
@@ -195,6 +196,7 @@ const Header = ({
 
   const handleCleverSync = () => {
     const classList = [{ ...selectedClass, course: selectedClass?.course?.id }]
+    setSyncClassLoading(true)
     syncClassesWithClever({ classList })
   }
 
@@ -272,6 +274,7 @@ const Header = ({
   }
 
   const handleAtlasSync = () => {
+    setSyncClassLoading(true)
     syncClassWithAtlas({ groupIds: [selectedClass._id] })
   }
 

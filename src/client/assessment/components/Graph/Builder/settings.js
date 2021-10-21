@@ -1,7 +1,15 @@
 import JXG from 'jsxgraph'
 import { isObject, round } from 'lodash'
 import { tickLabel, radianTickLabel } from './utils'
-import { Tangent, Logarithm, Sin, Cos, Parabola, Parabola2 } from './elements'
+import {
+  Tangent,
+  Logarithm,
+  Sin,
+  Cos,
+  Parabola,
+  Parabola2,
+  PiecewiseLine,
+} from './elements'
 
 /**
  * Graph parameters
@@ -153,6 +161,13 @@ export const getLabelPositionParameters = (elementType) => {
         position: 'top',
         offset: [0, -10],
         anchorX: 'middle',
+        anchorY: 'middle',
+      }
+    case PiecewiseLine.jxgType:
+      return {
+        position: 'lft',
+        offset: [10, 0],
+        anchorX: 'left',
         anchorY: 'middle',
       }
     default:

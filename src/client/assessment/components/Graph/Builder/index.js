@@ -35,6 +35,8 @@ import {
   Dashed,
   NumberLineDotPlotPoint,
   Connectline,
+  PiecewiseLine,
+  LineCut,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -285,6 +287,12 @@ class Board {
       case CONSTANT.TOOLS.DASHED:
         this.creatingHandler = Dashed.onHandler()
         return
+      case CONSTANT.TOOLS.PIECEWISE_LINE:
+        this.creatingHandler = PiecewiseLine.onHandler()
+        return
+      case CONSTANT.TOOLS.LINE_CUT:
+        this.creatingHandler = LineCut.onHandler()
+        return
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.creatingHandler = NumberlinePoint.onHandler
         return
@@ -354,6 +362,8 @@ class Board {
         return Tangent.clean(this)
       case CONSTANT.TOOLS.SECANT:
         return Secant.clean(this)
+      case CONSTANT.TOOLS.PIECEWISE_LINE:
+        return PiecewiseLine.clean(this)
       default:
         return false
     }
@@ -376,6 +386,7 @@ class Board {
       ...Polynom.getTempPoints(),
       ...Tangent.getTempPoints(),
       ...Secant.getTempPoints(),
+      ...PiecewiseLine.getTempPoints(),
     ]
   }
 
@@ -869,6 +880,8 @@ class Board {
             return Area.getConfig(e)
           case DragDrop.jxgType:
             return DragDrop.getConfig(e)
+          case PiecewiseLine.jxgType:
+            return PiecewiseLine.getConfig(e)
           default:
             throw new Error('Unknown element type:', e.name, e.type)
         }
@@ -1423,23 +1436,10 @@ class Board {
 
       case Parabola.jxgType:
         this.labelForEq.push(object.points[0].label, object.points[1].label)
-        return Parabola.create(
-          this,
-          object,
-          object.points.map((point) =>
-            Point.create(this, point, {
-              pointIsVisible:
-                !checkPointVisibility || (showPoints && point.pointIsVisible),
-              labelIsVisible:
-                !checkLabelVisibility || (showPoints && point.labelIsVisible),
-              fixed,
-            })
-          ),
-          {
-            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-            fixed,
-          }
-        )
+        return Parabola.create(this, object, {
+          labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
+          fixed,
+        })
 
       case Parabola2.jxgType:
         this.labelForEq.push(
@@ -1813,6 +1813,9 @@ class Board {
         return DragDrop.create(this, object, {
           fixed,
         })
+      case PiecewiseLine.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
+        return PiecewiseLine.create(this, object)
 
       case NumberLineDotPlotPoint.jxgType: {
         return NumberLineDotPlotPoint.render(this, object, {

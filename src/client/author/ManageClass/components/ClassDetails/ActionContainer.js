@@ -90,10 +90,15 @@ const ActionContainer = ({
   const [isAutoArchivedClass, setIsAutoArchivedClass] = useState(false)
 
   const { textToSpeech } = features
-  const { _id: classId, active } = selectedClass
+  const { _id: classId, active, atlasId } = selectedClass
   let formRef = null
 
-  const checkForAddStudent = !!(active && !cleverId && type === 'class')
+  const checkForAddStudent = !!(
+    active &&
+    !cleverId &&
+    !atlasId &&
+    type === 'class'
+  )
 
   const toggleModal = (key) => {
     setModalStatus({ [key]: !isOpen[key] })
@@ -335,13 +340,8 @@ const ActionContainer = ({
       '_blank'
     )
   }
-  const {
-    atlasId,
-    atlasProviderName,
-    googleId,
-    canvasCode,
-    active: classStatus,
-  } = selectedClass || {}
+  const { atlasProviderName, googleId, canvasCode, active: classStatus } =
+    selectedClass || {}
 
   const getFormattedData = (arr) => {
     return arr.length > 1

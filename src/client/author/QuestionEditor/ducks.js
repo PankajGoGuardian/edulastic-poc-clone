@@ -738,12 +738,7 @@ function* saveQuestionSaga({
       const currentRouterState = yield select(
         (state) => state.router.location.state
       )
-      if (currentRouterState) {
-        const routerTestId = currentRouterState.previousTestId
-        if (routerTestId) {
-          tId = routerTestId
-        }
-      }
+
       if (isTestFlow) {
         if (!tId || tId === 'undefined') {
           const { __v, ...passageData } =

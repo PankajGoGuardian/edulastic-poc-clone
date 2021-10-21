@@ -42,6 +42,7 @@ import {
   showJoinSchoolAction,
   hideJoinSchoolAction,
   updatePowerTeacherAction,
+  setUserAction,
 } from '../../../../student/Login/ducks'
 import { Wrapper } from '../../../../student/styled/index'
 import StandardSetModal from '../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal'
@@ -221,6 +222,13 @@ class ProfileBody extends React.Component {
     this.setState({ showStandardSetsModal: false })
   }
 
+  updateRecommendations = (doUpdate = true) => {
+    const { setUser, user } = this.props
+    const temp = user
+    temp.recommendedContentUpdated = doUpdate
+    setUser(temp)
+  }
+
   updateMyStandardSets = (updatedStandards) => {
     const { curriculums, updateInterestedCurriculums, user } = this.props
     const { role } = user
@@ -250,6 +258,7 @@ class ProfileBody extends React.Component {
     }
 
     updateInterestedCurriculums(standardsData)
+    this.updateRecommendations(true)
     this.hideMyStandardSetsModal()
   }
 
@@ -285,6 +294,7 @@ class ProfileBody extends React.Component {
     }
 
     updateDefaultSettings(settingsToUpdate)
+    this.updateRecommendations(true)
   }
 
   onSettingChange = (value, field) => {
@@ -328,6 +338,7 @@ class ProfileBody extends React.Component {
 
     updateInterestedCurriculums(standardsData)
     this.setState({ showSaveStandSetsBtn: false })
+    this.updateRecommendations(true)
   }
 
   removeStandardSet = (id) => {
@@ -1009,6 +1020,7 @@ const enhance = compose(
       showJoinSchool: showJoinSchoolAction,
       hideJoinSchool: hideJoinSchoolAction,
       updatePowerTeacher: updatePowerTeacherAction,
+      setUser: setUserAction,
     }
   )
 )

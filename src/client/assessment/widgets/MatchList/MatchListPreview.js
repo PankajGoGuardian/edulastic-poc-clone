@@ -453,6 +453,7 @@ const MatchListPreview = ({
                   key={`shuffleOptions_${item.shuffleOptions}`}
                   onChange={handleShuffleChange}
                   checked={item.shuffleOptions}
+                  data-cy="shuffleOptions"
                 >
                   {t('component.cloze.dragDrop.shuffleoptions')}
                 </CheckboxLabel>
@@ -461,6 +462,7 @@ const MatchListPreview = ({
                   key="duplicatedResponses"
                   onChange={handleDuplicatedResponsesChange}
                   checked={!!item.duplicatedResponses}
+                  data-cy="duplicatedResponses"
                 >
                   {t('component.matchList.duplicatedResponses')}
                 </CheckboxLabel>

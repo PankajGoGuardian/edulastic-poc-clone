@@ -69,6 +69,7 @@ export const getDashboardClasses = createSelector(
 
 const initialState = {
   data: [],
+  filteredClasses: [],
   error: null,
   loading: false,
   isLaunchHangoutOpen: false,
@@ -84,7 +85,8 @@ export const reducer = createReducer(initialState, {
   },
   [RECEIVE_TEACHER_DASHBOARD_SUCCESS]: (state, { payload }) => {
     state.loading = false
-    state.data = payload
+    state.data = payload.classDetails
+    state.filteredClasses = payload.filteredClasses
   },
   [RECEIVE_TEACHER_DASHBOARD_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -106,7 +108,7 @@ export const reducer = createReducer(initialState, {
     state.playlists = payload
   },
   [UPDATE_FAVORITE_CLASSES]: (state, { payload }) => {
-    state.data = state.data.map((item) => {
+    state.filteredClasses = state.filteredClasses.map((item) => {
       if (item._id === payload.groupId) {
         item.isFavourite = payload.isFavourite
       }
@@ -119,13 +121,16 @@ function* receiveTeacherDashboardSaga({ payload }) {
   try {
     const userId = yield select(getUserId)
     const districtId = yield select(getUserOrgId)
-    const { classDetails } = yield call(
+    const { classDetails } = yield call(dashboardApi.getTeacherDashboardDetails)
+    const { classDetails: filteredClasses } = yield call(
       dashboardApi.getTeacherDashboardDetails,
       localStorage.getItem(
         `author:dashboard:classFilter:${userId}:${districtId}`
       )
     )
-    yield put(receiveTeacherDashboardSuccessAction(classDetails))
+    yield put(
+      receiveTeacherDashboardSuccessAction({ classDetails, filteredClasses })
+    )
     payload?.setClassType?.()
   } catch (err) {
     const errorMessage = 'Unable to fetch dashboard details.'

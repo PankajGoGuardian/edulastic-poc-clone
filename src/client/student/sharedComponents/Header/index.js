@@ -11,6 +11,7 @@ import { Row } from 'antd'
 import ClassSelect, { StudentSlectCommon } from '../ClassSelector'
 import ShowActiveClass from '../ShowActiveClasses'
 import AttemptSelect from './AttemptSelect'
+import { getUserDetails } from '../../Login/ducks'
 
 const Header = ({
   t,
@@ -30,53 +31,57 @@ const Header = ({
   onExit,
   previewModal,
   isCliUser,
+  user,
   ...rest
-}) => (
-  <MainHeader
-    Icon={titleIcon}
-    headingText={titleText}
-    headingSubContent={titleSubContent}
-    {...rest}
-  >
-    <Row type="flex" align="middle">
-      {!showReviewResponses && <StudentSlectCommon />}
-      {classSelect && (
-        <ClassSelect
-          t={t}
-          classList={classList}
-          showAllClassesOption={showAllClassesOption}
-        />
-      )}
-      {showActiveClass && (
-        <ShowActiveClass
-          t={t}
-          classList={classList}
-          setClassList={setClassList}
-          setShowClass={setShowClass}
-        />
-      )}
-      {(attempts.length > 1 || showReviewResponses || previewModal) && (
-        <FlexContainer>
-          {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
-          {showReviewResponses && (
-            <EduButton
-              data-cy="view-response-in-header"
-              onClick={reviewResponses}
-              isBlue
-            >
-              Review Responses
-            </EduButton>
-          )}
-          {showExit && !showReviewResponses && !isCliUser && (
-            <EduButton data-cy="finishTest" onClick={onExit}>
-              EXIT
-            </EduButton>
-          )}
-        </FlexContainer>
-      )}
-    </Row>
-  </MainHeader>
-)
+}) => {
+  const cliUser = isCliUser || user?.openIdProvider === 'CLI'
+  return (
+    <MainHeader
+      Icon={titleIcon}
+      headingText={titleText}
+      headingSubContent={titleSubContent}
+      {...rest}
+    >
+      <Row type="flex" align="middle">
+        {!showReviewResponses && <StudentSlectCommon />}
+        {classSelect && (
+          <ClassSelect
+            t={t}
+            classList={classList}
+            showAllClassesOption={showAllClassesOption}
+          />
+        )}
+        {showActiveClass && (
+          <ShowActiveClass
+            t={t}
+            classList={classList}
+            setClassList={setClassList}
+            setShowClass={setShowClass}
+          />
+        )}
+        {(attempts.length > 1 || showReviewResponses || previewModal) && (
+          <FlexContainer>
+            {attempts.length > 1 && <AttemptSelect attempts={attempts} />}
+            {showReviewResponses && (
+              <EduButton
+                data-cy="view-response-in-header"
+                onClick={reviewResponses}
+                isBlue
+              >
+                Review Responses
+              </EduButton>
+            )}
+            {showExit && !showReviewResponses && !cliUser && (
+              <EduButton data-cy="finishTest" onClick={onExit}>
+                EXIT
+              </EduButton>
+            )}
+          </FlexContainer>
+        )}
+      </Row>
+    </MainHeader>
+  )
+}
 
 Header.propTypes = {
   t: PropTypes.func.isRequired,
@@ -100,6 +105,7 @@ const enhance = compose(
   connect(
     (state) => ({
       isCliUser: get(state, 'user.isCliUser', false),
+      user: getUserDetails(state),
     }),
     null
   )

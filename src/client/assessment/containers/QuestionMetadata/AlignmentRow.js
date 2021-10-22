@@ -309,6 +309,7 @@ const AlignmentRow = ({
                   <SelectInputStyled
                     data-cy="subjectSelect"
                     value={subject}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     onChange={setSubject}
                   >
                     {selectsData.allSubjects.map(({ text, value }) =>
@@ -329,6 +330,8 @@ const AlignmentRow = ({
                     showSearch
                     filterOption
                     value={curriculum}
+                    dropdownClassName="custom-antd-select"
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     onChange={handleChangeStandard}
                   >
                     {formattedCuriculums.map(({ value, text, disabled }) => (
@@ -348,6 +351,7 @@ const AlignmentRow = ({
                     data-cy="gradeSelect"
                     mode="multiple"
                     showSearch
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     value={grades}
                     onChange={setGrades}
                   >
@@ -372,6 +376,7 @@ const AlignmentRow = ({
                 filterOption={false}
                 value={standardsArr}
                 optionLabelProp="title"
+                getPopupContainer={(trigger) => trigger.parentNode}
                 onFocus={handleStandardFocus}
                 onSearch={handleSearchStandard}
                 onSelect={handleStandardSelect}

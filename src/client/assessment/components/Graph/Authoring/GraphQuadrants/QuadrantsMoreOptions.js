@@ -536,6 +536,7 @@ class QuadrantsMoreOptions extends Component {
                 name="layoutWidth"
                 value={layoutWidth}
                 onChange={this.handleInputChange}
+                data-cy="width"
               />
             </Col>
             <Col md={12}>

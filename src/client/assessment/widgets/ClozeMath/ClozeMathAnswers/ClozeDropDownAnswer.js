@@ -126,6 +126,7 @@ class ClozeDropDownAnswer extends Component {
                   width={width}
                   height={height}
                   minWidth={minWidth}
+                  data-cy="textDropdown"
                 >
                   {option &&
                     option.map((op, opIndex) => (

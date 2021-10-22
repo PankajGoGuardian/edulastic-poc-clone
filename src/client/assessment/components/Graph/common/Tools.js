@@ -144,20 +144,30 @@ const iconsByToolName = {
   ),
   [CONSTANT.TOOLS.AREA2]: <IconArea2 width={29} height={25} />,
   [CONSTANT.TOOLS.PIECEWISE]: <IconPiecewise width={40} height={32} />,
-  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit />,
-  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} />,
-  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} />,
+  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
+  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
+  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
     <IconEraseText width={13} height={16} stroke="transparent !important" />
   ),
   [CONSTANT.TOOLS.RESET]: (
-    <IconEraseText width={16} height={15} stroke="transparent !important" />
+    <IconEraseText
+      width={16}
+      height={15}
+      stroke="transparent !important"
+      data-cy="reset"
+    />
   ),
   [CONSTANT.TOOLS.TRASH]: (
     <IconTrash width={13} height={15} stroke="transparent !important" />
   ),
   [CONSTANT.TOOLS.DELETE]: (
-    <IconTrash width={13} height={15} stroke="transparent !important" />
+    <IconTrash
+      width={13}
+      height={15}
+      stroke="transparent !important"
+      data-cy="delete"
+    />
   ),
   add: (
     <IconPlusCircle width={16} height={15} stroke="transparent !important" />

@@ -174,6 +174,7 @@ const ScanAnswerSheetsInner = ({
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
   const videoSettingsRef = useRef(videoSetting);
+  const testModeVideoPlaying = useRef(false);
 
   useEffect(()=>{
     videoSettingsRef.current.width = videoSetting.width;
@@ -223,6 +224,12 @@ const ScanAnswerSheetsInner = ({
       //console.log('processvideo videoSetting',videoSettingsRef.current,vc);
 
       let result = null
+      if(testMode && !testModeVideoPlaying.current){
+        cv.imshow('canvasOutput', matSrc)
+        matSrc.delete()
+        requestAnimationFrame(() => processVideo(vc))
+        return
+      }
       const parentRectangle = detectParentRectangle(cv, matSrc)
       let rectanglePosition
       let qrCodeData
@@ -383,6 +390,9 @@ const ScanAnswerSheetsInner = ({
             videoRef.current.srcObject=null;
             videoRef.current.src = currentVideoUrl;
             videoRef.current.pause();
+            videoRef.current.addEventListener('ended',function(){
+              testModeVideoPlaying.current = false;
+            });
             videoRef.current.load();
           } else {
             // start receiving stream from webcam
@@ -399,6 +409,7 @@ const ScanAnswerSheetsInner = ({
             testMode && currentVideoUrl?'canplaythrough': 'canplay',
             function () {
               if (cv) {
+                testModeVideoPlaying.current = true;
                 const { videoWidth, videoHeight } = videoRef.current || {}
                 videoRef.current.setAttribute('width', videoWidth)
                 videoRef.current.setAttribute('height', videoHeight)
@@ -546,6 +557,8 @@ const ScanAnswerSheetsInner = ({
           </SubTitle>
           {testMode? <div> {videoDatas.map((v,index)=> <StyledVideoButton onClick={()=> setCurrentVideoUrl(v.url)} type={currentVideoUrl && currentVideoUrl === v.url?'primary':'default'}>Video {index+1}</StyledVideoButton>)}</div> :null}
           <FlexContainer width={`${videoSetting.width}px`}>
+            {testMode? null: (
+            <>
             <Progress
               percent={scanningPercent}
               size="small"
@@ -554,6 +567,8 @@ const ScanAnswerSheetsInner = ({
             <SubTitleDark width="350px">
               SCANNED FORMS: {scannedResponses.length}
             </SubTitleDark>
+            </>)}
+            
           </FlexContainer>
           <CameraModule width={videoSetting.width} height={videoSetting.height}>
             <FlexContainer justifyContent="center">

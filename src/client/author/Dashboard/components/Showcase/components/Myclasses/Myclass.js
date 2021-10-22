@@ -227,15 +227,13 @@ const MyClasses = ({
     return sum
   }
 
-  const totalAssignemntCount = sumOfCounts(
-    allActiveClasses.map((x) => x.totalAssignment || 0) || 0
-  )
+  const { totalAssignmentCount } = user
 
   useEffect(() => {
-    if (totalAssignemntCount >= 5) {
+    if (totalAssignmentCount >= 5) {
       checkLocalRecommendedTests()
     }
-  }, [user?.recommendedContentUpdated, totalAssignemntCount])
+  }, [user?.recommendedContentUpdated, totalAssignmentCount])
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
@@ -728,9 +726,9 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const showBannerSlide = !loading && totalAssignemntCount < 2
+  const showBannerSlide = !loading && totalAssignmentCount < 2
   const showRecommendedTests =
-    totalAssignemntCount >= 5 && recommendedTests?.length > 0
+    totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 

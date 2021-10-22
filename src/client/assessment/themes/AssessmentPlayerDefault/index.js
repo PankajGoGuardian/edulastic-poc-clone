@@ -231,11 +231,11 @@ class AssessmentPlayerDefault extends React.Component {
     })
   }
 
-  toggleUserWorkUploadModal = () => 
+  toggleUserWorkUploadModal = () =>
     this.setState(({ isUserWorkUploadModalVisible }) => ({
       isUserWorkUploadModalVisible: !isUserWorkUploadModalVisible,
     }))
-  
+
   closeUserWorkUploadModal = () => {
     window.sessionStorage.removeItem('isRequestingCameraAccess')
     this.setState({ isUserWorkUploadModalVisible: false })

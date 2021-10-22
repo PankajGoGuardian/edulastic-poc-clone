@@ -14,7 +14,7 @@ import { takeLatest, call, put, select } from 'redux-saga/effects'
 // } from '@edulastic/api'
 import schoolApi from '@edulastic/api/src/school'
 import userApi from '@edulastic/api/src/user'
-import segmentApi from '@edulastic/api/src/segment';
+import segmentApi from '@edulastic/api/src/segment'
 import settingsApi from '@edulastic/api/src/settings'
 import canvasApi from '@edulastic/api/src/canvas'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'

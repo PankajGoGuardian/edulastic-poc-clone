@@ -17,8 +17,11 @@ import {
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
 } from '../src/constants/actions'
-import { getUserFeatures, getCurrentActiveTerms } from '../src/selectors/user'
-import { toggleManageContentActiveAction } from '../CurriculumSequence/ducks'
+import { getUserFeatures, getCurrentActiveTermIds } from '../src/selectors/user'
+import {
+  getCurrentPlaylistTermId,
+  toggleManageContentActiveAction,
+} from '../CurriculumSequence/ducks'
 
 // constants
 const playlistStatusConstants = {
@@ -830,7 +833,13 @@ export const getTestItemsRowsSelector = createSelector(
 // saga
 function* receivePlaylistByIdSaga({ payload }) {
   try {
-    const activeTermIds = yield select(getCurrentActiveTerms)
+    let activeTermIds = []
+    const selectedPlaylistTermId = yield select(getCurrentPlaylistTermId)
+    if (!selectedPlaylistTermId) {
+      activeTermIds = yield select(getCurrentActiveTermIds)
+    } else {
+      activeTermIds = [selectedPlaylistTermId]
+    }
 
     const entity = yield call(curriculumSequencesApi.getCurriculums, {
       id: payload.id,

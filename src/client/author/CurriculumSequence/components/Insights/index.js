@@ -62,6 +62,9 @@ const Insights = ({
   getStudentProgressRequestAction: _getStudentProgressRequestAction,
   loading,
   loadingProgress,
+  userTerms,
+  currentTermId,
+  setCurrentUserTerm,
 }) => {
   const { _id: playlistId, modules } = currentPlaylist
 
@@ -77,30 +80,31 @@ const Insights = ({
   }, [playlistId])
 
   // fetch student progress data
-  const termId = useMemo(() => {
-    return (
-      get(user, 'orgData.defaultTermId', '') ||
-      get(user, 'orgData.terms', [])?.[0]?._id
-    )
-  }, [user])
 
   useEffect(() => {
-    if (overallProgressCheck && termId) {
-      _getStudentProgressRequestAction({ termId, insights: true })
-    } else if (playlistId && termId) {
+    if (overallProgressCheck && currentTermId) {
+      _getStudentProgressRequestAction({
+        termId: currentTermId,
+        insights: true,
+      })
+    } else if (playlistId && currentTermId) {
       if (filters.modules.length) {
         const playlistModuleIds = filters.modules.map((i) => i.key).join(',')
         _getStudentProgressRequestAction({
-          termId,
+          termId: currentTermId,
           playlistId,
           playlistModuleIds,
           insights: true,
         })
       } else {
-        _getStudentProgressRequestAction({ termId, playlistId, insights: true })
+        _getStudentProgressRequestAction({
+          termId: currentTermId,
+          playlistId,
+          insights: true,
+        })
       }
     }
-  }, [overallProgressCheck, playlistId, filters.modules, termId])
+  }, [overallProgressCheck, playlistId, filters.modules, currentTermId])
 
   const { metricInfo: progressInfo } = get(studentProgress, 'data.result', {})
   const [trendData] = useGetBandData(
@@ -136,6 +140,8 @@ const Insights = ({
     setShowFilter(!showFilter)
   }
 
+  const setCurrentUserTermId = (data) => setCurrentUserTerm(data?.key)
+
   return loading ? (
     <Spin />
   ) : (
@@ -149,6 +155,9 @@ const Insights = ({
             overallProgressCheck={overallProgressCheck}
             setOverallProgressCheck={setOverallProgressCheck}
             clearFilter={clearFilter}
+            userTerms={userTerms}
+            currentTermId={currentTermId}
+            setCurrentUserTermId={setCurrentUserTermId}
           />
         </FilterColumn>
       )}
@@ -184,7 +193,7 @@ const Insights = ({
             studData={curatedMetrics}
             groupsData={filterData?.groupsData}
             highlighted={highlighted}
-            termId={termId}
+            termId={currentTermId}
           />
         </Row>
       </RightContainer>

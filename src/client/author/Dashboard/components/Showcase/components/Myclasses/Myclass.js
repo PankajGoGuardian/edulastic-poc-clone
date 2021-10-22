@@ -768,6 +768,7 @@ const MyClasses = ({
         />
       )}
       <Classes
+        showBannerSlide={showBannerSlide}
         activeClasses={favouriteActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}

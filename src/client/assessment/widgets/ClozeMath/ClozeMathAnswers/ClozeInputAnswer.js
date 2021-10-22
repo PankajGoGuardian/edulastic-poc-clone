@@ -69,6 +69,7 @@ class ClozeInputAnswer extends Component {
                 key={`${answer.id}-${tabIndex}`}
               >
                 <TextInputStyled
+                  data-cy="textInput"
                   style={{
                     width,
                     height,

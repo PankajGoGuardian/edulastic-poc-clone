@@ -25,12 +25,12 @@ const FeaturedContentBundle = ({
   const showFreebundles = !(isSignupCompleted && testLists?.length >= 3)
 
   const getFreeBundles = featuredBundles.filter(
-    (x) => !x.config.subscriptionData
+    (x) => !x?.config?.subscriptionData
   )
 
   const getNotAvailedPremiumBundles = featuredBundles.filter(
     (x) =>
-      x.config.subscriptionData &&
+      x?.config?.subscriptionData &&
       !boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
   )
 
@@ -40,10 +40,12 @@ const FeaturedContentBundle = ({
 
   let defaultBundles = []
 
-  if(isSingaporeMath || isCpm){
-    defaultBundles = [...getNotAvailedPremiumBundles.filter(
-      (x) => x?.config[isSingaporeMath ? 'isSingaporeMath' : 'isCPM']
-    )]
+  if (isSingaporeMath || isCpm) {
+    defaultBundles = [
+      ...getNotAvailedPremiumBundles.filter(
+        (x) => x?.config[isSingaporeMath ? 'isSingaporeMath' : 'isCPM']
+      ),
+    ]
   }
 
   const filteredfeaturedBundles =

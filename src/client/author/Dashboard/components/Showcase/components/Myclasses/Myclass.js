@@ -381,7 +381,7 @@ const MyClasses = ({
 
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
-      const { subscriptionData } = bundle.config
+      const { subscriptionData } = bundle?.config
       if (
         !subscriptionData?.productId &&
         !subscriptionData?.blockInAppPurchase
@@ -389,9 +389,24 @@ const MyClasses = ({
         return bundle
       }
 
-      const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
-      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
+      const { imageUrl: imgUrl, premiumImageUrl, trialImageUrl } = bundle
+      const isBlocked = !hasAccessToItemBank(subscriptionData?.itemBankId)
+      let isTrialExpired = false
+      if (usedTrialItemBankIds.includes(subscriptionData?.itemBankId)) {
+        isTrialExpired =
+          itemBankSubscriptions.length > 0
+            ? itemBankSubscriptions.filter(
+                (x) => subscriptionData?.itemBankId === x.itemBankId
+              ).length === 0
+            : true
+      }
+
+      const imageUrl =
+        isBlocked && !isTrialExpired
+          ? trialImageUrl
+          : isTrialExpired
+          ? premiumImageUrl
+          : imgUrl
 
       return {
         ...bundle,

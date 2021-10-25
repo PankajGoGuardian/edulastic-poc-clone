@@ -88,7 +88,6 @@ const MyClasses = ({
   tests,
   loadAssignments,
   interestedSubjects,
-  filteredClasses,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -210,23 +209,17 @@ const MyClasses = ({
 
   const isCliUser = user.openIdProvider === 'CLI'
 
-  const getActiveClasses = (_classData) => {
-    const sortableClasses = _classData
-      .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
-      .sort((a, b) => b.asgnStartDate - a.asgnStartDate)
-    const unSortableClasses = _classData.filter(
-      (d) => d.asgnStartDate === null || d.asgnStartDate === undefined
-    )
+  const sortableClasses = classData
+    .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
+    .sort((a, b) => b.asgnStartDate - a.asgnStartDate)
+  const unSortableClasses = classData.filter(
+    (d) => d.asgnStartDate === null || d.asgnStartDate === undefined
+  )
 
-    const allClasses = [...sortableClasses, ...unSortableClasses]
-    const activeClasses = allClasses.filter(
-      (c) => c.active === 1 && c.type === 'class'
-    )
-    return activeClasses
-  }
-
-  const allActiveClasses = getActiveClasses(classData)
-  const favouriteActiveClasses = getActiveClasses(filteredClasses)
+  const allClasses = [...sortableClasses, ...unSortableClasses]
+  const allActiveClasses = allClasses.filter(
+    (c) => c.active === 1 && c.type === 'class'
+  )
 
   const sumOfCounts = (arr) => {
     let sum = 0
@@ -769,7 +762,7 @@ const MyClasses = ({
       )}
       <Classes
         showBannerSlide={showBannerSlide}
-        activeClasses={favouriteActiveClasses}
+        activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
         classData={classData}
@@ -878,7 +871,6 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      filteredClasses: state.dashboardTeacher.filteredClasses,
       districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),

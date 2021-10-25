@@ -852,4 +852,53 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'unsync-teachers',
+    name: 'Unsync Teacher',
+    endPoint: 'admin-tool/unsync-teachers',
+    method: 'post',
+    slowApi: true,
+    note: {
+      text:
+        'Note: select this checkbox if clever students must be unsynced and removed.',
+      parentField: 'ssoType',
+      position: 'bottom',
+      style: {
+        width: '100%',
+        padding: '5px 0px',
+        display: 'inline-block',
+      },
+    },
+    fields: [
+      {
+        name: 'teacherIds',
+        displayName: 'Teacher Id(s)',
+        placeholder: 'Enter Teacher Ids',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'ssoType',
+        displayName: 'SsoType',
+        placeholder: 'Select SSO',
+        type: 'dropdown',
+        required: true,
+        values: [
+          'atlas',
+          'canvas',
+          'clever',
+          'cli',
+          'google',
+          'mso',
+          'newsela',
+        ],
+      },
+      {
+        name: 'cleverStudentRemoval',
+        type: 'checkbox',
+        required: false,
+      },
+    ],
+  },
 ]

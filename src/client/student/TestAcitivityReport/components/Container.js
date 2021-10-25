@@ -107,6 +107,8 @@ const ReportListContent = ({
   const { scratchPad: { attachments, dimensions } = {} } =
     questionActivity?.[0] || {}
 
+  const isV1Multipart = (itemRows || []).some((row) => row.isV1Multipart)
+
   const handleShowStudentWork = () => {
     const hasDrawingResponse = (item?.data?.questions || []).some(
       (question) => question?.type === questionType.HIGHLIGHT_IMAGE
@@ -156,7 +158,7 @@ const ReportListContent = ({
             attachments={attachments}
             scratchpadDimensions={dimensions}
             itemLevelScoring={item?.itemLevelScoring}
-            multipartItem={item?.multipartItem || false}
+            multipartItem={item?.multipartItem || isV1Multipart || false}
           />
           {/* we may need to bring hint button back */}
           {/* <PaddingDiv>

@@ -172,6 +172,14 @@ class ClassesTable extends Component {
     getAllTags({ type: 'group' })
   }
 
+  shouldComponentUpdate(nextProps, nextState) {
+    if (nextState.renderComponent === false) {
+      delete nextState.renderComponent
+      return false
+    }
+    return true
+  }
+
   // onHeaderCell = colName => {
   //   const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
   //   if (sortedInfo.columnKey === colName) {
@@ -643,7 +651,17 @@ class ClassesTable extends Component {
       menuActive,
       count,
     } = this.props
-
+    // Getting fresh data for selected keys with updated values like enddate or whatever values edited
+    if (!isEmpty(selectedRowKeys)) {
+      const selectedNewValues = []
+      selectedRowKeys.forEach((v) => {
+        selectedNewValues.push(dataSource[v])
+      })
+      this.setState({
+        selectedRowValues: selectedNewValues,
+        renderComponent: false,
+      })
+    }
     let columnsData = [
       {
         title: t('class.name'),

@@ -39,7 +39,7 @@ import {
   getUserRole,
   getCollectionsSelector,
   getWritableCollectionsSelector,
-  getCurrentActiveTerms,
+  getCurrentActiveTermIds,
   getCurrentTerm,
   getUserOrgId,
 } from '../src/selectors/user'
@@ -253,6 +253,8 @@ export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
 export const EDIT_PLAYLIST_TEST = '[playlist] edit playlist test'
 export const SET_USE_THIS_LOADER =
   '[playlist] set/unset loader while using playlist'
+export const SET_CURRENT_TERM =
+  '[playlist] set/unset user selected ter to load assignments and summary'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -409,6 +411,8 @@ export const duplicatePlaylistRequestAction = createAction(
 )
 export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
 
+export const setCurrentUserTermAction = createAction(SET_CURRENT_TERM)
+
 export const setIsUsedModalVisibleAction = createAction(
   SET_IS_USED_MODAL_VISIBLE
 )
@@ -558,6 +562,11 @@ export const getIsUseThisLoading = createSelector(
   (curriculumSequence) => curriculumSequence.isUseThisLoading
 )
 
+export const getCurrentPlaylistTermId = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.currentTermId
+)
+
 function* makeApiRequest(
   idsForFetch = [],
   showNotification = false,
@@ -566,7 +575,13 @@ function* makeApiRequest(
   try {
     const pathname = yield select((state) => state.router.location.pathname)
     const isMyPlaylist = pathname.includes('use-this')
-    const activeTermIds = yield select(getCurrentActiveTerms)
+    let activeTermIds = []
+    const selectedPlaylistTermId = yield select(getCurrentPlaylistTermId)
+    if (!selectedPlaylistTermId) {
+      activeTermIds = yield select(getCurrentActiveTermIds)
+    } else {
+      activeTermIds = [selectedPlaylistTermId]
+    }
     const unflattenedItems = yield all(
       idsForFetch.map((id) =>
         call(curriculumSequencesApi.getCurriculums, {
@@ -1699,7 +1714,10 @@ function* cloneThisPlayListSaga({ payload }) {
     yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
-    const termId = yield select(getCurrentTerm)
+    let termId = yield select(getCurrentPlaylistTermId)
+    if (!termId) {
+      termId = yield select(getCurrentTerm)
+    }
     if (isStudent && onChange) {
       yield put(
         push({
@@ -3357,5 +3375,8 @@ export default createReducer(initialState, {
   },
   [SET_USE_THIS_LOADER]: (state, { payload }) => {
     state.isUseThisLoading = payload
+  },
+  [SET_CURRENT_TERM]: (state, { payload }) => {
+    state.currentTermId = payload
   },
 })

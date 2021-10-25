@@ -9,7 +9,7 @@ import { AnswerContext } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import questionType from '@edulastic/constants/const/questionType'
 
-import Worksheet from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
+import Work from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
 import AssignmentContentWrapper from '../../styled/assignmentContentWrapper'
 import TestItemPreview from '../../../assessment/components/TestItemPreview'
 import {
@@ -65,15 +65,7 @@ const ReportListContent = ({
       pageStructure,
     }
 
-    return (
-      <Worksheet
-        key="review"
-        review
-        {...props}
-        viewMode="report"
-        testItemId={item._id}
-      />
-    )
+    return <Work key="review" review {...props} viewMode="report" />
   }
 
   const { releaseScore = '' } = testActivityById

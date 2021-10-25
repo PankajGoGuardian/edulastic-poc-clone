@@ -165,11 +165,6 @@ const ActionButton = ({ title, icon, ...rest }) => (
   </Tooltip>
 )
 
-const CROSS_OUT_QUES = [
-  questionType.MULTIPLE_CHOICE,
-  questionType.CHOICE_MATRIX,
-]
-
 const ToolBar = ({
   settings,
   tool = [],
@@ -189,7 +184,7 @@ const ToolBar = ({
     enableScratchpad,
     isTeacherPremium,
   } = settings
-  const isDisableCrossBtn = !CROSS_OUT_QUES.includes(qType)
+  const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const toolbarHandler = (value) => () => {
     changeTool(value)
@@ -225,7 +220,7 @@ const ToolBar = ({
       <ActionButton
         title={
           isDisableCrossBtn
-            ? 'This option is available only for multiple choice and matching questions'
+            ? 'This option is available only for multiple choice'
             : 'Crossout'
         }
         icon={<CloseIcon />}

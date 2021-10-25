@@ -141,6 +141,7 @@ class Layout extends Component {
             <Label>{t('component.options.templateFontScale')}</Label>
             <SelectInputStyled
               size="large"
+              data-cy="templateFontScale"
               value={
                 uiStyle.responseFontScale ||
                 math.templateFontScaleOption[0].value
@@ -163,6 +164,7 @@ class Layout extends Component {
               size="large"
               defaultValue={widthpx || uiStyle.widthpx || uiStyle.minWidth}
               onBlur={this.handleDefaultWidthBlur}
+              data-cy="defaultResponseBoxWidth"
               max={maxWidth}
               min={minWidth}
             />
@@ -175,6 +177,7 @@ class Layout extends Component {
               value={heightpx || uiStyle.heightpx || minHeight}
               onChange={this.onChangeHeightPx}
               onBlur={this.handleDefaultHeightBlur}
+              data-cy="defaultResponseBoxHeight"
               max={maxHeight}
               min={minHeight}
             />

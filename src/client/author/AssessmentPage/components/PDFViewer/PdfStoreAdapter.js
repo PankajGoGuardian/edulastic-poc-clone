@@ -25,11 +25,22 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
       const state = this.store.getState()
       let annotations = []
       if (!this.reportMode && !this.testMode) {
+        // authoring mode
         annotations =
           state.tests?.entity?.annotations || state.test?.annotations || []
       } else if ((this.testMode || this.reportMode) && this.testItemId) {
-        annotations =
+        const stdWork =
           state?.userWork?.present?.[this.testItemId]?.freeNotesStd || []
+        annotations = stdWork.concat(
+          (
+            state.tests?.entity?.annotations ||
+            state.test?.annotations ||
+            []
+          ).map((a) => ({
+            ...a,
+            protected: true,
+          }))
+        )
       }
       return documentId
         ? annotations.filter((a) => a.documentId == documentId)
@@ -60,8 +71,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
             [this.testItemId]: {
               ...userWork,
               freeNotesStd: [
-                ...(userWork?.freeNotesStd || []),
-                ...annotations.filter((x) => !x.questionId),
+                ...annotations.filter((x) => !x.questionId && !x.protected),
               ],
             },
           })
@@ -149,7 +159,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
   }
 
   getComments(documentId, annotationId) {
-    return this._findByName((documentId, annotationId, 'Comment'))
+    return this._findByName(documentId, annotationId, 'Comment')
   }
 
   addComment(documentId, annotationId, content) {

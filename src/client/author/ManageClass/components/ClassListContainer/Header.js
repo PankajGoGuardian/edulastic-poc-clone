@@ -61,6 +61,8 @@ const Header = ({
   )
   const atlasProviderName = atlasGroup?.atlasProviderName
 
+  const isCleverGroupPresent = classGroups.find((_group) => !!_group.cleverId)
+
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
   }
@@ -240,7 +242,7 @@ const Header = ({
             )}
           {!isPlayground &&
             isCleverDistrict &&
-            classGroups?.length > 0 &&
+            isCleverGroupPresent &&
             filterClass === 'Active' && (
               <EduButton isBlue isGhost onClick={handleSyncWithClever}>
                 <span>RESYNC CLEVER CLASSES</span>

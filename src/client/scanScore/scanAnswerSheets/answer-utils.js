@@ -2,6 +2,7 @@ import {
   detectCircles,
   getBoundingRegionsWithCircles,
   getTrueCirclesInRow,
+  getTrueCirclesInRowDuplicate,
   resizeImage,
 } from './process-image'
 import { getAngleOfQR, getWidthOfQR } from './parse-qrcode'
@@ -10,6 +11,9 @@ import { forwardRef } from 'react'
 export const getAnswers = (cv, srcMat, isSingle) => {
   let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
   const circleArray = detectCircles(cv, resizedImage)
+
+  const scaleX = srcMat.size().height / resizedImage.size().height
+  const scaleY = srcMat.size().height / resizedImage.size().height
 
   // circleArray.forEach(item => {
   //     cv.circle(resizedImage, item.center, item.radius, [0, 0, 0, 255], -1);
@@ -31,22 +35,37 @@ export const getAnswers = (cv, srcMat, isSingle) => {
 
   cv.imshow('workingCanvas', resizedImage)
 
-  const arrBoundingRegions = getBoundingRegionsWithCircles(
+  const [
+    arrBoundingRegions,
+    arrBoundingRegionsPoints,
+  ] = getBoundingRegionsWithCircles(
     cv,
     resizedImage,
     circleArray,
     arrAnswerCircles
   )
 
+  const arrAnswersPoints = []
+
   arrBoundingRegions.forEach((region, index) => {
-    // if(index === 0) {
-    //     cv.imshow('rowCanvas', region);
-    // }
-    const answer = getTrueCirclesInRow(cv, region)
+    cv.imshow('rowCanvas', region)
+    const [answer, items] = getTrueCirclesInRow(cv, region)
+    items.forEach((item) => {
+      arrAnswersPoints.push({
+        x: (item.center.x + arrBoundingRegionsPoints[index].x) * scaleX,
+        y: (item.center.y + arrBoundingRegionsPoints[index].y) * scaleY,
+        radius: item.radius * scaleX,
+      })
+    })
     arrAnswers.push(answer)
   })
+  // arrAnswersPoints.forEach(points => {
+  //   let center = new cv.Point(points.x, points.y)
+  //   cv.circle(resizedImage, center, points.radius, [0, 0, 0, 255], 3);
+  // })
+  cv.imshow('workingCanvas', resizedImage)
   resizedImage.delete()
-  return arrAnswers
+  return [arrAnswers, arrAnswersPoints]
 }
 
 export const getAnswersFromVideo = (
@@ -58,6 +77,9 @@ export const getAnswersFromVideo = (
   let angleOfQR = 0
   let center = new cv.Point(matSrc.cols / 2, matSrc.rows / 2)
   let resultOfAnswers = {}
+  let resultOfAnswersPoints = []
+  let rectStartPointX = 0
+  let rectStartPointY = 0
   if (parentRectangle && qrCodePosition) {
     angleOfQR = getAngleOfQR(
       qrCodePosition.bottomRightCorner,
@@ -151,10 +173,12 @@ export const getAnswersFromVideo = (
       const croppedLeftRect = matSrc.roi(leftRect)
       croppedLeftRect.convertTo(croppedLeftRect, -1, 1, 30)
       arrCroppedParentRect.push(croppedLeftRect)
+      rectStartPointX = leftRect.x
+      rectStartPointY = leftRect.y
     }
     // const arrCroppedParentRect =  getTrulyRectangles(cv, matSrc, rectArray, true);
     if (arrCroppedParentRect) {
-      resultOfAnswers = getAnswersFromRect(
+      ;[resultOfAnswers, resultOfAnswersPoints] = getAnswersFromRect(
         cv,
         arrCroppedParentRect,
         matSrc,
@@ -226,6 +250,15 @@ export const getAnswersFromVideo = (
     cv.BORDER_CONSTANT,
     new cv.Scalar()
   )
+
+  resultOfAnswersPoints.forEach((points) => {
+    let center = new cv.Point(
+      points.x + rectStartPointX,
+      points.y + rectStartPointY
+    )
+    cv.circle(matSrc, center, points.radius + 2, [255, 255, 0, 128], 2)
+  })
+  // matSrc = cv.addWeighted(matSrc, 1.0, overlayImg, 0.25, 1, addWeightedMat)
 
   cv.imshow('canvasOutput', matSrc)
 
@@ -352,9 +385,12 @@ const getTrulyRectangles = (cv, matSrc, rectArray, isSingle) => {
 
 const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
   let resultOfAnswers
+  let answerPoints = []
   if (arrCroppedParentRect.length === 1) {
     // single
-    const answers = getAnswers(cv, arrCroppedParentRect[0], true)
+    const arrAnswers = getAnswers(cv, arrCroppedParentRect[0], true)
+    const answers = arrAnswers[0]
+    answerPoints = arrAnswers[1]
     if (!answers) {
       return
     }
@@ -385,5 +421,5 @@ const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
       isQRCodeDetected: true,
     }
   }
-  return resultOfAnswers
+  return [resultOfAnswers, answerPoints]
 }

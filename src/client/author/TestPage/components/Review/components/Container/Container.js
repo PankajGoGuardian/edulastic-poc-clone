@@ -723,6 +723,7 @@ class Review extends PureComponent {
             prevItem={this.prevItem}
             nextItem={this.nextItem}
             showEvaluationButtons
+            isPlaylistTestReview={isPlaylistTestReview}
           />
         )}
         <TestPreviewModal

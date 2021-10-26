@@ -584,6 +584,7 @@ class PreviewModal extends React.Component {
       testStatus = 'draft',
       selectedRows,
       passageItemIds = [],
+      isPlaylistTestReview,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -805,7 +806,11 @@ class PreviewModal extends React.Component {
                       : 'Edit item'
                   }
                   noHover={isDisableEdit}
-                  disabled={isDisableEdit || !!premiumCollectionWithoutAccess}
+                  disabled={
+                    isPlaylistTestReview ||
+                    isDisableEdit ||
+                    !!premiumCollectionWithoutAccess
+                  }
                   onClick={this.editTestItem}
                 >
                   <IconPencilEdit color={themeColor} title="Edit item" />

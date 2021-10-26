@@ -1148,6 +1148,8 @@ const AssessmentContainer = ({
     // When stduent session expired, no need to show `unsaved data` alert on closing/switching page
     window.addEventListener('student-session-expired', removeBeforeUnloadCB)
 
+    window.addEventListener('user-token-expired', removeBeforeUnloadCB)
+
     const unloadCb = () => {
       if (blockSaveAndContinue) {
         pauseAssignment({
@@ -1170,6 +1172,7 @@ const AssessmentContainer = ({
         'student-session-expired',
         removeBeforeUnloadCB
       )
+      window.removeEventListener('user-token-expired', removeBeforeUnloadCB)
     }
   }, [qid])
 

@@ -20,7 +20,10 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
-import { getAccessToken } from '@edulastic/api/src/utils/Storage'
+import {
+  getAccessToken,
+  tokenExpireInHours,
+} from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
   keyBy as _keyBy,
@@ -249,6 +252,7 @@ function* loadTest({ payload }) {
   } = payload
   let { testId } = payload
   const _testId = testId
+  const userRole = yield select(getUserRole)
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
@@ -257,6 +261,15 @@ function* loadTest({ payload }) {
         'info'
       )
       return
+    }
+
+    if (userRole === roleuser.STUDENT) {
+      const tokenExpireIn = tokenExpireInHours()
+      // consider less than zero as valid so that the client side time adjust wont impact.
+      const isValidSpan = tokenExpireIn > 12 || tokenExpireIn < 0
+      if (!isValidSpan) {
+        return window.dispatchEvent(new Event('user-token-expired'))
+      }
     }
 
     // if the assessment player is loaded for showing student work
@@ -794,7 +807,6 @@ function* loadTest({ payload }) {
     }
 
     let messageKey = 'failedLoadingTest'
-    const userRole = yield select(getUserRole)
 
     if (err.status) {
       if (err.status === 400) {

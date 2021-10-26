@@ -840,10 +840,7 @@ function* correctItemUpdateSaga({ payload }) {
     if (!proceedRegrade && !result.isRegradeNeeded && result.firestoreDocId) {
       yield put(setRegradeFirestoreDocId(result.firestoreDocId))
       yield put(setSilentCloningAction(true))
-      return notification({
-        type: 'info',
-        msg: 'Changes made to the question is being published',
-      })
+      return
     }
     if (typeof callBack === 'function') {
       // close correct item edit modal here

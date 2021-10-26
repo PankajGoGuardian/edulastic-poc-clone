@@ -185,7 +185,11 @@ const ScanAnswerSheetsInner = ({
       } else {
         cv.imshow('canvasOutput', matSrc)
         matSrc.delete()
-        requestAnimationFrame(() => processVideo(vc))
+        requestAnimationFrame(() =>
+          processVideo(vc).catch(() => {
+            console.log('process video opencv error')
+          })
+        )
         return
       }
       if (answersList) {
@@ -199,7 +203,11 @@ const ScanAnswerSheetsInner = ({
         )
       }
       matSrc.delete()
-      requestAnimationFrame(() => processVideo(vc))
+      requestAnimationFrame(() =>
+        processVideo(vc).catch(() => {
+          console.log('process video opencv error')
+        })
+      )
       if (!result) {
         return
       }
@@ -301,7 +309,7 @@ const ScanAnswerSheetsInner = ({
           console.log(`Error While accessing camera: ${err}`)
         })
     }
-  }, [])
+  }, [selectedCamera])
 
   useEffect(() => {
     if (isCameraLoaded && isOpencvLoaded) {
@@ -340,7 +348,11 @@ const ScanAnswerSheetsInner = ({
                 videoRef.current.setAttribute('height', videoHeight)
                 // Start Video Processing
                 requestAnimationFrame(() =>
-                  processVideo(new cv.VideoCapture(videoRef.current))
+                  processVideo(new cv.VideoCapture(videoRef.current)).catch(
+                    () => {
+                      console.log('process video opencv error')
+                    }
+                  )
                 )
               }
             },
@@ -550,7 +562,7 @@ const ScanAnswerSheetsInner = ({
         <Row>
           <FieldLabel>SELECT CAMERA</FieldLabel>
           <SelectInputStyled
-            disabled={cameraList.length > 1}
+            disabled={cameraList.length === 1}
             value={cameraList.length === 1 ? cameraList[0].id : selectedCamera}
             onChange={(v) => {
               setSelectedCamera(v)

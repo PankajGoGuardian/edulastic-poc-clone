@@ -17,6 +17,17 @@ import qs from 'qs'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import { selector } from '../uploadAnswerSheets/ducks'
 
+function AutoProgress() {
+  return (
+    <Progress
+      strokeColor={themeColorBlue}
+      percent={100}
+      status="active"
+      showInfo={false}
+    />
+  )
+}
+
 const Details = ({ label, value, onViewClick, isFailedDetails }) => (
   <FlexContainer marginTop="10px" alignItems="center" width="100%">
     <FlexContainer
@@ -122,12 +133,16 @@ const ScanProgress = ({
         mr="auto"
       >
         <StyledTitle>Processing Forms...</StyledTitle>
-        <Progress
-          strokeColor={themeColorBlue}
-          percent={percentFinished}
-          status="active"
-          showInfo={false}
-        />
+        {processedCount > 0 ? (
+          <Progress
+            strokeColor={themeColorBlue}
+            percent={percentFinished}
+            status="active"
+            showInfo={false}
+          />
+        ) : (
+          <AutoProgress />
+        )}
         <br />
         <Details label="Forms Processed" value={successCount + failureCount} />
         <Details label="Success" value={successCount} />

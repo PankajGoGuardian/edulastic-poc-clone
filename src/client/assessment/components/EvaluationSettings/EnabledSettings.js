@@ -33,7 +33,12 @@ const EnabledSettings = ({
     const optsLables = optionKeys
       .map((key) => {
         let label = ''
-        if (key === 'apiLatex' || key === 'isSimplified' || key === 'penalty') {
+        if (
+          key === 'specialPointOpts' ||
+          key === 'apiLatex' ||
+          key === 'isSimplified' ||
+          key === 'penalty'
+        ) {
           return false
         }
         if (key === 'syntax') {

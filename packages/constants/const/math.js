@@ -435,11 +435,11 @@ const evaluationSettings = {
       'graphSegmentChecks',
       'graphLineChecks',
       'graphPolygonChecks',
-      'graphPointsOnAnEquation',
+      // 'graphPointsOnAnEquation',
       'tolerance',
       // 'partialCreditScoring',
     ],
-    // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
+    'GENERAL GRAPHING': ['graphPointsOnAnEquation'],
     MISCELLANEOUS: ['graphMiscellaneous'],
   },
 }

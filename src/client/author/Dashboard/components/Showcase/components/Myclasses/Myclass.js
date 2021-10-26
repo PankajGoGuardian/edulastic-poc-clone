@@ -88,6 +88,7 @@ const MyClasses = ({
   tests,
   loadAssignments,
   interestedSubjects,
+  totalAssignmentCount,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -220,14 +221,6 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-
-  const sumOfCounts = (arr) => {
-    let sum = 0
-    for (let i = 0; i < arr.length; i++) sum += arr[i]
-    return sum
-  }
-
-  const { totalAssignmentCount } = user
 
   useEffect(() => {
     if (totalAssignmentCount >= 5) {
@@ -871,6 +864,7 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
+      totalAssignmentCount: state.dashboardTeacher?.allAssignmentCount,
       districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),

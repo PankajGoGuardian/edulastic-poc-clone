@@ -12,6 +12,7 @@ const RECEIVE_TEACHER_DASHBOARD_REQUEST =
 const RECEIVE_TEACHER_DASHBOARD_SUCCESS =
   '[dashboard teacher] receive data success'
 const RECEIVE_TEACHER_DASHBOARD_ERROR = '[dashboard teacher] receive data error'
+const SET_TOTAL_ASSIGNMENT_COUNT = '[dashboard teacher] set total assignment count'
 const LAUNCH_HANGOUT_OPEN = '[dashboard teacher] launch hangouts open'
 const LAUNCH_HANGOUT_CLOSE = '[dashboard teacher] launch hangouts close'
 
@@ -31,6 +32,9 @@ export const receiveTeacherDashboardSuccessAction = createAction(
 )
 export const receiveTeacherDashboardErrorAction = createAction(
   RECEIVE_TEACHER_DASHBOARD_ERROR
+)
+export const setTotalAssignmentConutAction = createAction(
+  SET_TOTAL_ASSIGNMENT_COUNT
 )
 export const launchHangoutOpen = createAction(LAUNCH_HANGOUT_OPEN)
 export const launchHangoutClose = createAction(LAUNCH_HANGOUT_CLOSE)
@@ -76,6 +80,7 @@ const initialState = {
   configurableTiles: JSON.parse(
     localStorage.getItem('author:dashboard:tiles') || '[]'
   ),
+  allAssignmentCount: 0,
 }
 
 export const reducer = createReducer(initialState, {
@@ -85,6 +90,10 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_TEACHER_DASHBOARD_SUCCESS]: (state, { payload }) => {
     state.loading = false
     state.data = payload
+  },
+  [SET_TOTAL_ASSIGNMENT_COUNT]: (state, { payload }) => {
+    state.loading = false
+    state.allAssignmentCount = payload
   },
   [RECEIVE_TEACHER_DASHBOARD_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -119,13 +128,14 @@ function* receiveTeacherDashboardSaga({ payload }) {
   try {
     const userId = yield select(getUserId)
     const districtId = yield select(getUserOrgId)
-    const { classDetails } = yield call(
+    const { classDetails, totalAssignmentCount = 0 } = yield call(
       dashboardApi.getTeacherDashboardDetails,
       localStorage.getItem(
         `author:dashboard:classFilter:${userId}:${districtId}`
       )
     )
     yield put(receiveTeacherDashboardSuccessAction(classDetails))
+    yield put(setTotalAssignmentConutAction(totalAssignmentCount))
     payload?.setClassType?.()
   } catch (err) {
     const errorMessage = 'Unable to fetch dashboard details.'

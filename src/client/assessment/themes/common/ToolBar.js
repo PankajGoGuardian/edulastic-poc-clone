@@ -172,6 +172,7 @@ const ToolBar = ({
   handleMagnifier,
   openReferenceModal,
   isShowReferenceModal,
+  hasReferenceDoc,
   enableMagnifier,
   toggleUserWorkUploadModal,
   changeTool,
@@ -263,13 +264,15 @@ const ToolBar = ({
           onClick={toggleUserWorkUploadModal}
         />
       )}
-      <ActionButton
-        disabled={isPremiumContentWithoutAccess}
-        title="Reference Sheet"
-        icon={<IconReferenceSheet />}
-        active={isShowReferenceModal}
-        onClick={openReferenceModal}
-      />
+      {hasReferenceDoc && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Reference Sheet"
+          icon={<IconReferenceSheet />}
+          active={isShowReferenceModal}
+          onClick={openReferenceModal}
+        />
+      )}
       <LineReader btnComponent={ButtonWithStyle} />
     </Container>
   )

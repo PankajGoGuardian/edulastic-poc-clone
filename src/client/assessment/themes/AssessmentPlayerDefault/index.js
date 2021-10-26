@@ -231,11 +231,11 @@ class AssessmentPlayerDefault extends React.Component {
     })
   }
 
-  toggleUserWorkUploadModal = () => 
+  toggleUserWorkUploadModal = () =>
     this.setState(({ isUserWorkUploadModalVisible }) => ({
       isUserWorkUploadModalVisible: !isUserWorkUploadModalVisible,
     }))
-  
+
   closeUserWorkUploadModal = () => {
     window.sessionStorage.removeItem('isRequestingCameraAccess')
     this.setState({ isUserWorkUploadModalVisible: false })
@@ -553,6 +553,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             openReferenceModal={openReferenceModal}
             isShowReferenceModal={isShowReferenceModal}
+            hasReferenceDoc={!!referenceDocAttributes}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}

@@ -34,7 +34,10 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
 
   const handleChangeCount = (evt) => {
     if (/^\d+$/.test(evt.target.value) || !evt.target.value) {
-      setCount(+evt.target.value)
+      const countValue = !evt.target.value ? '' : +evt.target.value
+      if (countValue <= 200) {
+        setCount(countValue)
+      }
     }
   }
 
@@ -46,6 +49,8 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
       }
       newData.variable.combinationsCount = +count
       onGenerate(newData)
+    } else if (!count) {
+      setCount(0)
     }
   }
 

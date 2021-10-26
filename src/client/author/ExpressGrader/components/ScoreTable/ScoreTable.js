@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, createRef } from 'react'
 import PropTypes from 'prop-types'
 import { round } from 'lodash'
 import { greenThird } from '@edulastic/colors'
@@ -27,13 +27,11 @@ class ScoreTable extends Component {
       windowWidth,
     } = this.props
 
+    this.tableRef = createRef()
+
     const columnsLength = testActivity?.[0]?.questionActivities?.length || 0
     const colWidth =
-      windowWidth > 1600 && columnsLength > 8
-        ? 150
-        : windowWidth > 1366 && columnsLength > 6
-        ? 150
-        : ''
+      columnsLength >= 5 ? (windowWidth - 600) / columnsLength : '' // here 600 is the assumed width, apart from table content body
 
     const columns = [
       {
@@ -41,14 +39,14 @@ class ScoreTable extends Component {
         className: 'main-heading',
         // Make score grid column fixed when more than 10 questions data exist
         fixed: 'left',
-        width: 320,
+        width: 370,
         children: [
           {
             key: 'students',
             title: <StudentsTitle>students</StudentsTitle>,
             dataIndex: 'students',
             className: 'th-border-bottom student-names',
-            width: 220,
+            width: 250,
             render: (record) => {
               const studentName = isPresentationMode
                 ? record.fakeName
@@ -79,7 +77,7 @@ class ScoreTable extends Component {
             title: <ScoreTitle>score</ScoreTitle>,
             className: 'th-border-bottom score-title',
             dataIndex: 'score',
-            width: 100,
+            width: 120,
             render: (record) => {
               const { score = 0, maxScore = 0 } = record
               const percent =
@@ -208,6 +206,7 @@ class ScoreTable extends Component {
             y: showY ? scrollY : false,
           }}
           rowKey={(record, i) => i}
+          ref={this.tableRef}
         />
       </StyledCard>
     )

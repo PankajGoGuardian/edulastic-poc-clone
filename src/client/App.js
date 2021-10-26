@@ -62,6 +62,7 @@ import {
   slice as subscriptionSlice,
 } from './author/Subscription/ducks'
 import AdminNotificationListener from './admin/Components/AdminNotification'
+import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -641,6 +642,7 @@ class App extends Component {
           />
         )}
         <StudentSessionExpiredModal />
+        <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
         <UrlChangeListener />
         <OfflineNotifier />

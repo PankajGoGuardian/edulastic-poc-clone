@@ -178,7 +178,7 @@ function getReloadsHappenedRecently() {
   return reloads.filter((x) => now - x.time < 15 * 1000) // assuming 5 seconds for each reload
 }
 
-function forceLogout() {
+export function forceLogout() {
   const loginRedirectUrl = localStorage.getItem('loginRedirectUrl')
   localStorage.clear()
   localStorage.setItem('loginRedirectUrl', loginRedirectUrl)
@@ -377,10 +377,9 @@ export default class API {
             Sentry.withScope((scope) => {
               scope.setTag('issueType', 'ForcedRedirection')
             })
-            // Needs proper fixing, patching it to fix infinite reload
-            forceLogout()
-            window.location.href = '/login'
-          } else if (
+            return window.dispatchEvent(new Event('user-token-expired'))
+          }
+          if (
             data.response.status === 409 &&
             data.response.data?.message === 'oldToken'
           ) {

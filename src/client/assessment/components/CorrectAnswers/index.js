@@ -12,6 +12,7 @@ import PointBlock from './PointBlock'
 import AnswerTabs from './AnswerTabs'
 import { Subtitle } from '../../styled/Subtitle'
 import { updateScoreAndValidationAction } from '../../../author/QuestionEditor/ducks'
+import { isPremiumUserSelector } from '../../../author/src/selectors/user'
 
 const CorrectAnswers = ({
   t,
@@ -27,6 +28,7 @@ const CorrectAnswers = ({
   mixAndMatch,
   questionType,
   updateScoreAndValidation,
+  isPremiumUser,
   ...rest
 }) => {
   const { unscored = false } = validation || {}
@@ -72,6 +74,7 @@ const CorrectAnswers = ({
               correctAnsScore={validation?.validResponse?.score}
               unscored={unscored}
               updateScoreOnBlur={updateScoreOnBlur}
+              isPremiumUser={isPremiumUser}
             />
           )}
           {unscored && <UnscoredHelperText />}
@@ -121,9 +124,14 @@ CorrectAnswers.defaultProps = {
 
 const enhance = compose(
   withNamespaces('assessment'),
-  connect(null, {
-    updateScoreAndValidation: updateScoreAndValidationAction,
-  })
+  connect(
+    (state) => ({
+      isPremiumUser: isPremiumUserSelector(state),
+    }),
+    {
+      updateScoreAndValidation: updateScoreAndValidationAction,
+    }
+  )
 )
 
 export default enhance(CorrectAnswers)

@@ -175,18 +175,20 @@ const CurriculumSubHeader = ({
               </ButtonWrapper>
             </RightColumnTop>
 
-           {!isStudent && urlHasUseThis && !isAuthoringFlowReview && <Select
-              value={currentTermId}
-              style={{ width: 150, marginTop: '10px' }}
-              onChange={setCurrentUserTermId}
-              disabled={!userTerms.length}
-            >
-              {userTerms.map((term) => (
-                <Select.Option key={term._id} value={term._id}>
-                  {term.name}
-                </Select.Option>
-              ))}
-            </Select>}
+            {!isStudent && urlHasUseThis && !isAuthoringFlowReview && (
+              <Select
+                value={currentTermId}
+                style={{ width: 150, marginTop: '10px' }}
+                onChange={setCurrentUserTermId}
+                disabled={!userTerms.length}
+              >
+                {userTerms.map((term) => (
+                  <Select.Option key={term._id} value={term._id}>
+                    {term.name}
+                  </Select.Option>
+                ))}
+              </Select>
+            )}
           </FlexContainer>
         </CurriculumSubHeaderRow>
       </SubTopBarContainer>

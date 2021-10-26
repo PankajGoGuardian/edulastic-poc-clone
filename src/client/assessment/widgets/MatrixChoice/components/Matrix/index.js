@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -25,11 +25,7 @@ const Matrix = (props) => {
     smallSize,
     isPrintPreview,
     tool,
-    crossAction,
-    onCrossOut,
-    crossToolEnabled,
   } = props
-  const [hoverRowIndex, setHoverRowIndex] = useState(null)
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
@@ -42,8 +38,6 @@ const Matrix = (props) => {
     const rowIndex = data.index
     const responseId = responseIds?.[rowIndex]?.[columnIndex]
 
-    const showCrossIcon = columnIndex === 0 && crossAction?.includes(rowIndex)
-
     if (evaluation) {
       correct = evaluation[responseId] ? true : 'incorrect'
     }
@@ -53,15 +47,13 @@ const Matrix = (props) => {
     }
 
     const handleChange = () => {
-      if (!crossAction?.includes(rowIndex)) {
-        const checkData = {
-          columnIndex,
-          rowIndex,
-          checked: !checked,
-        }
-
-        onCheck(checkData)
+      const checkData = {
+        columnIndex,
+        rowIndex,
+        checked: !checked,
       }
+
+      onCheck(checkData)
     }
 
     return (
@@ -75,10 +67,6 @@ const Matrix = (props) => {
         smallSize={smallSize}
         isPrintPreview={isPrintPreview}
         tool={tool}
-        hovered={crossToolEnabled && hoverRowIndex === rowIndex}
-        showCrossIcon={
-          showCrossIcon || (crossToolEnabled && hoverRowIndex === rowIndex)
-        }
       >
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
@@ -176,18 +164,6 @@ const Matrix = (props) => {
 
   const showHead = isTable || hasStemTitle || hasOptionRow
 
-  const onRowMouseEnter = (rowIndex) => () => {
-    setHoverRowIndex(rowIndex)
-  }
-
-  const onRowMouseLeave = () => {
-    setHoverRowIndex(null)
-  }
-
-  const onRowClick = (rowIndex) => () => {
-    onCrossOut(rowIndex)
-  }
-
   return (
     <StyledTable
       evaluated={evaluation && evaluation.length > 0}
@@ -201,11 +177,6 @@ const Matrix = (props) => {
       hasOptionRow={hasOptionRow}
       isTable={isTable}
       showHead={showHead}
-      onRow={(_, rowIndex) => ({
-        onClick: onRowClick(rowIndex),
-        onMouseLeave: onRowMouseLeave,
-        onMouseEnter: onRowMouseEnter(rowIndex),
-      })}
     />
   )
 }

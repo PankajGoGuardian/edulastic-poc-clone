@@ -24,9 +24,16 @@ class ScoreTable extends Component {
       groupId,
       t,
       testActivity,
+      windowWidth,
     } = this.props
 
     const columnsLength = testActivity?.[0]?.questionActivities?.length || 0
+    const colWidth =
+      windowWidth > 1600 && columnsLength > 8
+        ? 150
+        : windowWidth > 1366 && columnsLength > 6
+        ? 150
+        : ''
 
     const columns = [
       {
@@ -144,7 +151,7 @@ class ScoreTable extends Component {
             dataIndex: key,
             title: questionAvarageScore,
             className: 'sub-thead-th th-border-bottom',
-            width: columnsLength > 15 ? 120 : '',
+            width: colWidth,
             render: (record) => {
               const isTest = record && record.testActivityId
 

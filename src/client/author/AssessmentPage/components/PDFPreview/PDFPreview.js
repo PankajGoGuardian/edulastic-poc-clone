@@ -176,10 +176,7 @@ const PDFPreview = ({
               annotationToolsProperties={annotationToolsProperties}
               annotations={annotations}
               currentPage={currentPage}
-              testItemId={itemId}
-              reportMode={reportMode}
-              testMode={testMode}
-              authoringMode={viewMode === 'edit' || testMode}
+              authoringMode={viewMode === 'edit'}
             />
           )}
 

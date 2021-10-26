@@ -39,6 +39,7 @@ const Classes = ({
   districtId,
   classData,
   history,
+  showBannerSlide,
 }) => {
   const [classType, setClassType] = useState(
     myClassFilters[
@@ -61,7 +62,7 @@ const Classes = ({
         fw="bold"
         size="16px"
         color={title}
-        mt="1.5rem"
+        mt={showBannerSlide ? '1.5rem' : ''}
         mb="1rem"
       >
         {classData.length < 1 ? 'Get Started with Edulastic' : ' My Classes '}

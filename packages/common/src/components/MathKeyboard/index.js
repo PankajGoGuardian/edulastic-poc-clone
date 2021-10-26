@@ -94,17 +94,17 @@ class MathKeyboard extends React.PureComponent {
       command: 'write',
     }))
 
-    let allBtns = customKeys
-      .map((key) => ({
-        handler: key,
-        label: key,
-        types: [isCustomMode ? type.label : type],
-        command: 'write',
-      }))
-      .concat(KEYBOARD_BUTTONS)
+    let allBtns = KEYBOARD_BUTTONS
 
     if (isCustomMode) {
-      allBtns = allBtns
+      allBtns = customKeys
+        .map((key) => ({
+          handler: key,
+          label: key,
+          types: [isCustomMode ? type.label : type],
+          command: 'write',
+        }))
+        .concat(allBtns)
         .concat(
           TAB_BUTTONS.reduce((acc, curr) => [...acc, ...curr.buttons], [])
         )
@@ -155,7 +155,7 @@ class MathKeyboard extends React.PureComponent {
     }
 
     let selectOptions = math.symbols
-    if (isObject(type)) {
+    if (isCustomMode) {
       /**
        * avoid duplication of active keypad (item.symbols[0]) and user's custom keypads
        * if previously saved custom keypad is chosen, it should not add to options

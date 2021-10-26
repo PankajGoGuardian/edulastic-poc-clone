@@ -11,7 +11,7 @@ export const WorksheetWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   overflow: auto;
-  padding-top: ${({ showTools }) => showTools && '40px'};
+  padding-top: ${({ editMode }) => editMode && '40px'};
   background: #f3f3f4;
   height: ${(props) =>
     `calc(100vh - 65px - ${

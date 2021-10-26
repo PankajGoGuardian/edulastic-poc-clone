@@ -67,9 +67,13 @@ const AuthorCompleteSignupButton = ({
   }, [isOpenSignupModal])
 
   const handleClick = () => {
+    const hasNoPreferences =
+      roleuser.TEACHER === user.role &&
+      interestedSubjects.length === 0 &&
+      interestedGrades.length === 0
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
-      (interestedSubjects.length === 0 && interestedGrades.length === 0) ||
+      hasNoPreferences ||
       isSchoolSignupOnly
     ) {
       trackClick()

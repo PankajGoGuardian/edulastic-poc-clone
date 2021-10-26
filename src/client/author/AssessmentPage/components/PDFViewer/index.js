@@ -1,9 +1,9 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { Spin } from 'antd'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 
 import { BLANK_URL } from '../Worksheet/Worksheet'
-import { PdfStoreAdapter } from './PdfStoreAdapter'
+import PdfStoreAdapter from './PdfStoreAdapter'
 
 const pdfjsLib = require('pdfjs-dist')
 
@@ -23,19 +23,11 @@ const PDFViewer = ({
   annotations,
   currentPage,
   authoringMode,
-  reportMode,
-  testMode,
-  testItemId,
 }) => {
   const { pageNo, URL, rotate } = page
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
   const viewerRef = useRef(null)
   const [pdfDocument, setPdfDocument] = useState(null)
-
-  const adapter = useMemo(() => {
-    // create store adapter for student attempt or teachor authoring
-    return new PdfStoreAdapter(testMode, reportMode, testItemId)
-  }, [testMode, reportMode])
 
   const clearAllTools = () => {
     UI.disableUpdate()
@@ -130,7 +122,7 @@ const PDFViewer = ({
     if (!pdfDocument) {
       loadPdf()
     }
-    PDFJSAnnotate.setStoreAdapter(adapter)
+    PDFJSAnnotate.setStoreAdapter(PdfStoreAdapter)
   }, [])
 
   useEffect(() => {

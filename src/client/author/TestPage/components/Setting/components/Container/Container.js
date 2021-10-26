@@ -88,7 +88,7 @@ import {
   StyledRow,
 } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
-import ReferenceMaterial from './ReferenceMaterial'
+// import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
 import { skinTypesOrder } from '../../../../utils'
@@ -715,7 +715,7 @@ class Setting extends Component {
       applyEBSR = false,
       enableSkipAlert = false,
       settingId: currentSettingsId = '',
-      referenceDocAttributes,
+      // referenceDocAttributes,
     } = entity
 
     let isSettingPresent = false
@@ -1291,14 +1291,14 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  <Block id="reference-material" smallSize={isSmallSize}>
+                  {/* <Block id="reference-material" smallSize={isSmallSize}>
                     <ReferenceMaterial
                       owner={owner}
                       isEditable={isEditable}
                       isSmallSize={isSmallSize}
                       referenceDocAttributes={referenceDocAttributes}
                     />
-                  </Block>
+                  </Block> */}
 
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>

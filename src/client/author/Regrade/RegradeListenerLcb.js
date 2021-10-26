@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import {
   FireBaseService as Fbs,
   notification as antdNotification,
+  notification,
 } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -45,7 +46,11 @@ const NotificationListener = ({
       const { error, processStatus } = userNotification
       if (processStatus === 'DONE' && !error) {
         if (silentClone) {
-          return onCloseModal()
+          onCloseModal()
+          return notification({
+            type: 'success',
+            messageKey: 'publishCorrectItemSuccess',
+          })
         }
         const { assignmentId, groupId, lcbView } = modalState.itemData
         reloadLcbDataInStudentView({

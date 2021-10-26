@@ -227,15 +227,13 @@ const MyClasses = ({
     return sum
   }
 
-  const totalAssignemntCount = sumOfCounts(
-    allActiveClasses.map((x) => x.totalAssignment || 0) || 0
-  )
+  const { totalAssignmentCount } = user
 
   useEffect(() => {
-    if (totalAssignemntCount >= 5) {
+    if (totalAssignmentCount >= 5) {
       checkLocalRecommendedTests()
     }
-  }, [user?.recommendedContentUpdated, totalAssignemntCount])
+  }, [user?.recommendedContentUpdated, totalAssignmentCount])
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
@@ -383,7 +381,7 @@ const MyClasses = ({
 
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
-      const { subscriptionData } = bundle.config
+      const { subscriptionData } = bundle?.config
       if (
         !subscriptionData?.productId &&
         !subscriptionData?.blockInAppPurchase
@@ -391,9 +389,24 @@ const MyClasses = ({
         return bundle
       }
 
-      const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
-      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
+      const { imageUrl: imgUrl, premiumImageUrl, trialImageUrl } = bundle
+      const isBlocked = !hasAccessToItemBank(subscriptionData?.itemBankId)
+      let isTrialExpired = false
+      if (usedTrialItemBankIds.includes(subscriptionData?.itemBankId)) {
+        isTrialExpired =
+          itemBankSubscriptions.length > 0
+            ? itemBankSubscriptions.filter(
+                (x) => subscriptionData?.itemBankId === x.itemBankId
+              ).length === 0
+            : true
+      }
+
+      const imageUrl =
+        isBlocked && !isTrialExpired
+          ? trialImageUrl
+          : isTrialExpired
+          ? premiumImageUrl
+          : imgUrl
 
       return {
         ...bundle,
@@ -694,7 +707,7 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
+  const widthOfTilesWithMargin = 240 + 8 // 240 is width of tile and 8 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
     (windowWidth - 120) / widthOfTilesWithMargin
@@ -728,9 +741,9 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const showBannerSlide = !loading && totalAssignemntCount < 2
+  const showBannerSlide = !loading && totalAssignmentCount < 2
   const showRecommendedTests =
-    totalAssignemntCount >= 5 && recommendedTests?.length > 0
+    totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
@@ -748,6 +761,7 @@ const MyClasses = ({
         />
       )}
       <Classes
+        showBannerSlide={showBannerSlide}
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}

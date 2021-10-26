@@ -322,6 +322,7 @@ const ClassList = ({
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
         isClassLink={isClassLink}
+        filterClass={filterClass}
       />
       <MainContentWrapper>
         <SubHeader>

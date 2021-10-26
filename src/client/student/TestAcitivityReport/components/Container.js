@@ -9,7 +9,7 @@ import { AnswerContext } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import questionType from '@edulastic/constants/const/questionType'
 
-import Worksheet from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
+import Work from '../../../author/AssessmentPage/components/Worksheet/Worksheet'
 import AssignmentContentWrapper from '../../styled/assignmentContentWrapper'
 import TestItemPreview from '../../../assessment/components/TestItemPreview'
 import {
@@ -65,15 +65,7 @@ const ReportListContent = ({
       pageStructure,
     }
 
-    return (
-      <Worksheet
-        key="review"
-        review
-        {...props}
-        viewMode="report"
-        testItemId={item._id}
-      />
-    )
+    return <Work key="review" review {...props} viewMode="report" />
   }
 
   const { releaseScore = '' } = testActivityById
@@ -106,6 +98,8 @@ const ReportListContent = ({
 
   const { scratchPad: { attachments, dimensions } = {} } =
     questionActivity?.[0] || {}
+
+  const isV1Multipart = (itemRows || []).some((row) => row.isV1Multipart)
 
   const handleShowStudentWork = () => {
     const hasDrawingResponse = (item?.data?.questions || []).some(
@@ -156,7 +150,7 @@ const ReportListContent = ({
             attachments={attachments}
             scratchpadDimensions={dimensions}
             itemLevelScoring={item?.itemLevelScoring}
-            multipartItem={item?.multipartItem || false}
+            multipartItem={item?.multipartItem || isV1Multipart || false}
           />
           {/* we may need to bring hint button back */}
           {/* <PaddingDiv>

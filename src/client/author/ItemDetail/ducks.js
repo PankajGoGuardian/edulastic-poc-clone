@@ -1981,6 +1981,10 @@ function* savePassage({ payload }) {
     const { rowIndex, tabIndex, isEdit, callback, isTestFlow } = payload
     const passage = yield select(getPassageSelector)
     const entity = yield select(getCurrentQuestionSelector)
+    // EV-31379 | additional check to avoid adding empty passage
+    if (isEmpty(entity)) {
+      return
+    }
     const currentItem = yield select(getItemDetailSelector)
 
     const widget = {

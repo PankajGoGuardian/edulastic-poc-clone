@@ -37,8 +37,6 @@ export const StyledTable = styled(Table)`
     }
 
     tr {
-      position: relative;
-
       &:hover:not(.ant-table-expanded-row):not(.ant-table-row-selected) > td {
         background: none;
       }

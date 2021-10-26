@@ -1,107 +1,101 @@
-import { findIndex } from 'lodash'
 import { helpers } from '@edulastic/common'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { setTestDataAction, setUndoStackAction } from '../../../TestPage/ducks'
-import { saveUserWorkAction } from '../../../../assessment/actions/userWork'
 import { getStore } from '../../../../configureStore'
 
-export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
-  constructor(testMode, reportMode, testItemId) {
-    super()
-    this.testMode = testMode
-    this.reportMode = reportMode
-    this.testItemId = testItemId
+const loadStore = () => {
+  const _store = getStore()
+  if (_store) {
+    return _store
+  }
+  if (typeof window.getStore === 'function') {
+    return window.getStore()
+  }
+}
 
-    const _store = getStore()
-    if (_store) {
-      this.store = _store
-    } else if (typeof window.getStore === 'function') {
-      this.store = window.getStore()
-    }
+const getAnnotations = (documentId) => {
+  const store = loadStore()
+  if (store && store.getState) {
+    const state = store.getState()
+    const storedAnnotations =
+      state.tests?.entity?.annotations || state.test?.annotations || []
+    const annotations = storedAnnotations.filter((a) => !a.questionId)
+    return documentId
+      ? annotations.filter((a) => a.documentId == documentId)
+      : annotations
   }
 
-  _findFromStore(documentId) {
-    if (this.store && this.store.getState) {
-      const state = this.store.getState()
-      let annotations = []
-      if (!this.reportMode && !this.testMode) {
-        annotations =
-          state.tests?.entity?.annotations || state.test?.annotations || []
-      } else if ((this.testMode || this.reportMode) && this.testItemId) {
-        annotations =
-          state?.userWork?.present?.[this.testItemId]?.freeNotesStd || []
-      }
-      return documentId
-        ? annotations.filter((a) => a.documentId == documentId)
-        : annotations
-    }
-    return []
-  }
+  return []
+}
 
-  _updateStore(documentId, annotations = []) {
-    if (this.store && this.store.getState) {
-      const state = this.store.getState()
-      if (!this.reportMode && !this.testMode) {
-        const questionAnnotations = (
-          state.tests?.entity?.annotations ||
-          state.test?.annotations ||
-          []
-        )?.filter((a) => a.questionId)
-        this.store.dispatch(setUndoStackAction()) // reset redo stack logic
-        this.store.dispatch(
-          setTestDataAction({
-            annotations: [...questionAnnotations, ...annotations],
-          })
-        )
-      } else if (this.testItemId && this.testMode) {
-        const userWork = state?.userWork?.present?.[this.testItemId]
-        this.store.dispatch(
-          saveUserWorkAction({
-            [this.testItemId]: {
-              ...userWork,
-              freeNotesStd: [
-                ...(userWork?.freeNotesStd || []),
-                ...annotations.filter((x) => !x.questionId),
-              ],
-            },
-          })
-        )
-      }
-    }
-  }
+const updateAnnotations = (documentId, annotations = []) => {
+  const store = loadStore()
 
-  _remove(documentId, annotationId) {
-    const annotations = this._findFromStore().filter(
-      ({ uuid }) => uuid !== annotationId
+  if (store && store.getState) {
+    const state = store.getState()
+    store.dispatch(setUndoStackAction()) // reset redo stack logic
+    const storedAnnotations =
+      state.tests?.entity?.annotations || state.test?.annotations || []
+    const questionAnnotations = storedAnnotations?.filter((a) => a.questionId)
+    store.dispatch(
+      setTestDataAction({
+        annotations: [...questionAnnotations, ...annotations],
+      })
     )
-    this._updateStore(documentId, annotations)
-    return Promise.resolve(true)
   }
+}
 
-  _findByName(documentId, annotationId, className) {
-    const annotations = this._findFromStore(documentId).filter(
-      (a) => a.class === className && a.annotation === annotationId
+const findAnnotation = (documentId, annotationId) => {
+  let index = -1
+  const annotations = getAnnotations(documentId)
+  for (let i = 0, l = annotations.length; i < l; i++) {
+    if (annotations[i].uuid === annotationId) {
+      index = i
+      break
+    }
+  }
+  return index
+}
+
+const generalGetHandler = (documentId, annotationId, className) =>
+  new Promise((resolve) => {
+    resolve(
+      getAnnotations(documentId).filter(
+        (i) => i.class === className && i.annotation === annotationId
+      )
     )
-    return Promise.resolve(annotations)
-  }
+  })
 
-  _add(documentId, annotationId, content, className) {
+const generalAddHandler = (documentId, annotationId, content, className) =>
+  new Promise((resolve) => {
     const annotation = {
-      content,
       documentId,
       class: className,
       uuid: helpers.uuid(),
       annotation: annotationId,
+      content,
     }
-    const annotations = this._findFromStore()
-    this._updateStore(documentId, [...annotations, annotation])
+    const annotations = getAnnotations()
+    annotations.push(annotation)
+    updateAnnotations(documentId, annotations)
+    resolve(annotation)
+  })
 
-    return Promise.resolve(annotation)
-  }
+const generalDeleteHandler = (documentId, annotationId) =>
+  new Promise((resolve) => {
+    const annotations = getAnnotations()
+    updateAnnotations(
+      documentId,
+      annotations.filter(({ uuid }) => uuid != annotationId)
+    )
+    resolve(true)
+  })
 
+// StoreAdapter for working with redux-store
+const PdfStoreAdapter = new PDFJSAnnotate.StoreAdapter({
   getAnnotations(documentId, pageNumber) {
     return new Promise((resolve) => {
-      const annotations = this._findFromStore(documentId).filter(
+      const annotations = getAnnotations(documentId).filter(
         (i) => i.page === pageNumber && i.class === 'Annotation'
       )
       resolve({
@@ -110,77 +104,57 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
         annotations,
       })
     })
-  }
+  },
 
-  getAnnotation(documentId, annotationId) {
-    const annotations = this._findFromStore(documentId)
-    const annotationIndex = findIndex(
-      annotations,
-      (annotation) => annotation.uuid === annotationId
-    )
-    return Promise.resolve(annotations[annotationIndex])
-  }
+  getAnnotation: (documentId, annotationId) =>
+    Promise.resolve(
+      getAnnotations(documentId)[findAnnotation(documentId, annotationId)]
+    ),
 
-  addAnnotation(documentId, pageNumber, annotation = {}) {
-    const newAnnotation = {
-      ...annotation,
-      documentId,
-      class: 'Annotation',
-      uuid: helpers.uuid(),
-      page: pageNumber,
-    }
-    const annotations = this._findFromStore()
+  addAnnotation(documentId, pageNumber, annotation) {
+    return new Promise((resolve) => {
+      annotation.class = 'Annotation'
+      annotation.uuid = helpers.uuid()
+      annotation.page = pageNumber
+      annotation.documentId = documentId
 
-    this._updateStore(documentId, [...annotations, newAnnotation])
-    return Promise.resolve(newAnnotation)
-  }
+      const annotations = getAnnotations()
+      annotations.push(annotation)
+      updateAnnotations(documentId, annotations)
 
-  editAnnotation(documentId, annotationId, annotation) {
-    const annotations = this._findFromStore().map((a) =>
-      a.uuid === annotationId ? annotation : a
-    )
+      resolve(annotation)
+    })
+  },
 
-    this._updateStore(documentId, annotations)
-    return Promise.resolve(annotation)
-  }
+  editAnnotation: (documentId, annotationId, annotation) =>
+    new Promise((resolve) => {
+      const annotations = getAnnotations()
+      updateAnnotations(
+        documentId,
+        annotations.map((a) => (a.uuid == annotationId ? annotation : a))
+      )
+      resolve(annotation)
+    }),
 
-  deleteAnnotation(documentId, annotationId) {
-    return this._remove(documentId, annotationId)
-  }
+  deleteAnnotation: generalDeleteHandler,
 
-  getComments(documentId, annotationId) {
-    return this._findByName((documentId, annotationId, 'Comment'))
-  }
+  getComments: (documentId, annotationId) =>
+    generalGetHandler(documentId, annotationId, 'Comment'),
+  addComment: (documentId, annotationId, content) =>
+    generalAddHandler(documentId, annotationId, content, 'Comment'),
+  deleteComment: generalDeleteHandler,
 
-  addComment(documentId, annotationId, content) {
-    return this._add(documentId, annotationId, content, 'Comment')
-  }
+  getVideos: (documentId, annotationId) =>
+    generalGetHandler(documentId, annotationId, 'Video'),
+  addVideo: (documentId, annotationId, content) =>
+    generalAddHandler(documentId, annotationId, content, 'Video'),
+  deleteVideo: generalDeleteHandler,
 
-  deleteComment(documentId, annotationId) {
-    return this._remove(documentId, annotationId)
-  }
+  getImages: (documentId, annotationId) =>
+    generalGetHandler(documentId, annotationId, 'Image'),
+  addImage: (documentId, annotationId, content) =>
+    generalAddHandler(documentId, annotationId, content, 'Image'),
+  deleteImage: generalDeleteHandler,
+})
 
-  getVideos(documentId, annotationId) {
-    return this._findByName(documentId, annotationId, 'Video')
-  }
-
-  addVideo(documentId, annotationId, content) {
-    return this._add(documentId, annotationId, content, 'Video')
-  }
-
-  deleteVideo(documentId, annotationId) {
-    return this._remove(documentId, annotationId)
-  }
-
-  getImages(documentId, annotationId) {
-    return this._findByName(documentId, annotationId, 'Image')
-  }
-
-  addImage(documentId, annotationId, content) {
-    this._add(documentId, annotationId, content, 'Image')
-  }
-
-  deleteImage(documentId, annotationId) {
-    return this._remove(documentId, annotationId)
-  }
-}
+export default PdfStoreAdapter

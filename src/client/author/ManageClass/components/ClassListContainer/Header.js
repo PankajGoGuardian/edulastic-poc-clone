@@ -48,6 +48,7 @@ const Header = ({
   syncCleverClassList,
   refreshPage,
   isCleverDistrict,
+  filterClass,
 }) => {
   const { atlasId, cleverId, isPlayground } = user
 
@@ -59,6 +60,8 @@ const Header = ({
       )
   )
   const atlasProviderName = atlasGroup?.atlasProviderName
+
+  const isCleverGroupPresent = classGroups.find((_group) => !!_group.cleverId)
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -223,22 +226,28 @@ const Header = ({
                 <span>SYNC WITH CANVAS</span>
               </EduButton>
             )}
-          {!isPlayground && atlasId && atlasProviderName?.length && (
-            <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
-              <span>
-                RESYNC{' '}
-                {atlasProviderName.toLowerCase() === 'schoology'
-                  ? 'SCHOOLOGY'
-                  : 'CLASSLINK'}{' '}
-                CLASSES
-              </span>
-            </EduButton>
-          )}
-          {!isPlayground && isCleverDistrict && (
-            <EduButton isBlue isGhost onClick={handleSyncWithClever}>
-              <span>RESYNC CLEVER CLASSES</span>
-            </EduButton>
-          )}
+          {!isPlayground &&
+            atlasId &&
+            atlasProviderName?.length &&
+            filterClass === 'Active' && (
+              <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
+                <span>
+                  RESYNC{' '}
+                  {atlasProviderName.toLowerCase() === 'schoology'
+                    ? 'SCHOOLOGY'
+                    : 'CLASSLINK'}{' '}
+                  CLASSES
+                </span>
+              </EduButton>
+            )}
+          {!isPlayground &&
+            isCleverDistrict &&
+            isCleverGroupPresent &&
+            filterClass === 'Active' && (
+              <EduButton isBlue isGhost onClick={handleSyncWithClever}>
+                <span>RESYNC CLEVER CLASSES</span>
+              </EduButton>
+            )}
         </>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (

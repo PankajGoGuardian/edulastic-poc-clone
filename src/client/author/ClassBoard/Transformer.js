@@ -452,28 +452,24 @@ export function getResponseTobeDisplayed(
 }
 
 export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
-  if (gradingPolicy && gradingPolicy != evalTypeLabels.ITEM_LEVEL_EVALUATION) {
-    return evalTypeValues[gradingPolicy]
-  }
   for (const testItem of testItemsData) {
     const questions = get(testItem, ['data', 'questions'], [])
     const questionNeeded = questions.find(
       (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
     )
     if (questionNeeded) {
-      if (questionNeeded?.validation?.scoringType) {
-        return evalTypeValues[questionNeeded.validation.scoringType]
+      if (questionType.manuallyGradableQn.includes(questionNeeded?.type)) {
+        return evalTypeValues.ManualGrading
       }
       if (
-        Object.values(questionType.manuallyGradableQn).includes(
-          questionNeeded?.type
-        )
+        questionNeeded?.validation?.scoringType &&
+        gradingPolicy === evalTypeLabels.ITEM_LEVEL_EVALUATION
       ) {
-        return evalTypeValues.ManualGrading
+        return evalTypeValues[questionNeeded.validation.scoringType]
       }
     }
   }
-  return 'NA'
+  return evalTypeValues[gradingPolicy]
 }
 
 export function getStandardsForStandardBasedReport(

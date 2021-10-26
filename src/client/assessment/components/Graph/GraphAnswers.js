@@ -204,6 +204,7 @@ class GraphAnswers extends Component {
         draft.points = null
         draft.latex = null
         draft.showConnect = false
+        draft.specialPointOpts = null
         // draft.apiLatex = null
       } else if (prop === 'pointsOnAnEquation' && isObject(value)) {
         draft = {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
@@ -20,6 +20,14 @@ const SessionStatus = ({
   handleAbortClick,
   toggleStatusFilter,
 }) => {
+  const [fakeProgress, setFakeProgress] = useState(0)
+
+  useEffect(() => {
+    if (fakeProgress < 80) {
+      setTimeout(() => setFakeProgress(fakeProgress + 1), fakeProgress * 500)
+    }
+  }, [fakeProgress])
+
   const { success, failed, scanned, scanProgress } = useMemo(() => {
     const _success = pages.filter((p) => p.status === omrSheetScanStatus.DONE)
       .length
@@ -48,7 +56,11 @@ const SessionStatus = ({
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}
-            percent={scanProgress}
+            percent={
+              pages.length && fakeProgress > scanProgress
+                ? fakeProgress
+                : scanProgress
+            }
             status="active"
             showInfo={false}
           />

@@ -398,7 +398,7 @@ const MatchListPreview = ({
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper>
+            <QuestionTitleWrapper data-cy="questionTitle">
               {!smallSize && view === PREVIEW && (
                 <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
               )}

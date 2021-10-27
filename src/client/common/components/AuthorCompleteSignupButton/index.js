@@ -6,6 +6,8 @@ import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
 import { roleuser, signUpState } from '@edulastic/constants'
 import {
+  getInterestedGradesSelector,
+  getInterestedSubjectsSelector,
   getOrgSchools,
   getUser,
   getUserOrgId,
@@ -30,6 +32,8 @@ const AuthorCompleteSignupButton = ({
   userOrgId,
   privateParams,
   subType,
+  interestedSubjects,
+  interestedGrades,
 }) => {
   const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
@@ -63,8 +67,13 @@ const AuthorCompleteSignupButton = ({
   }, [isOpenSignupModal])
 
   const handleClick = () => {
+    const hasNoPreferences =
+      roleuser.TEACHER === user.role &&
+      interestedSubjects.length === 0 &&
+      interestedGrades.length === 0
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
+      hasNoPreferences ||
       isSchoolSignupOnly
     ) {
       trackClick()
@@ -74,6 +83,7 @@ const AuthorCompleteSignupButton = ({
 
     return onClick(subType)
   }
+
   const _privateParams = useMemo(() =>
     signupStatus !== signUpState.ACCESS_WITHOUT_SCHOOL ? privateParams : {}
   )
@@ -117,6 +127,8 @@ const enhance = compose(
     user: getUser(state),
     orgSchools: getOrgSchools(state),
     userOrgId: getUserOrgId(state),
+    interestedSubjects: getInterestedSubjectsSelector(state),
+    interestedGrades: getInterestedGradesSelector(state),
   }))
 )
 

@@ -268,6 +268,7 @@ const sanitizeSelfClosingTags = (inputString) => {
       )
       .replace(/<meta[\s\S]*?>/g, '') // removes meta tag
       .replace(/(<col(?!group)[^/>]*)(>)/g, '$1/$2') // replace <col> tag with self closing col tag | EV-26330
+      .replace(/controls=""/g, 'controls')
   return removeStyleTags(removeCommentsFromHtml(sanitizedString))
 }
 

@@ -491,6 +491,7 @@ const Header = ({
         )}
         {active === 1 && (
           <EduButton
+            data-cy="assignTestFromClass"
             isBlue
             onClick={() => {
               segmentApi.genericEventTrack('AssignATestButtonClick', {})

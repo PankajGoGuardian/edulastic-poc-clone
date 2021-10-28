@@ -458,7 +458,13 @@ export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
       (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
     )
     if (questionNeeded) {
-      if (questionType.manuallyGradableQn.includes(questionNeeded?.type)) {
+      const containsManualGrad = questions.some((ques) =>
+        questionType.manuallyGradableQn.includes(ques.type)
+      )
+      if (
+        (containsManualGrad && testItem.itemLevelScoring) ||
+        questionType.manuallyGradableQn.includes(questionNeeded.type)
+      ) {
         return evalTypeValues.ManualGrading
       }
       if (gradingPolicy === evalTypeLabels.ITEM_LEVEL_EVALUATION) {

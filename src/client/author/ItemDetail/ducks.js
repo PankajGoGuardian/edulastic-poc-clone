@@ -2083,12 +2083,6 @@ function* savePassage({ payload }) {
     if (isTestFlow) {
       // testId = yield select((state) => state.tests?.entity?._id)
 
-      if (currentRouterState) {
-        const routerTestId = currentRouterState.previousTestId
-        if (routerTestId) {
-          testId = routerTestId
-        }
-      }
       if (!testId || testId === 'undefined') {
         let passageItems = []
         if (updatedPassage?._id && updatedPassage?.testItems?.length > 1) {

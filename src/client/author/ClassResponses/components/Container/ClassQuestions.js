@@ -10,7 +10,6 @@ import { AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   questionType,
-  test as testContants,
   collections as collectionConst,
 } from '@edulastic/constants'
 import produce from 'immer'
@@ -46,8 +45,6 @@ import {
   setQuestionIdToScrollAction,
 } from '../../../src/reducers/testActivity'
 import { _scrollTo } from '../../../ClassBoard/components/BarGraph/BarGraph'
-
-const { evalTypeValues } = testContants
 
 const transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
   produce(testItems, (draft) => {
@@ -253,8 +250,9 @@ const transformTestItems = (props) => {
               return false
             }
           }
-          const scoringType = currentStudent.questionActivities?.find(
-            (ele) => ele.testItemId === item._id
+
+          const scoringType = currentStudent.questionActivities?.find((ele) =>
+            item.data.questions.some((i) => i.id === ele._id)
           )?.scoringType
           qActivities = qActivities.map((q) => {
             const userQuestion = userQActivities.find(
@@ -265,9 +263,7 @@ const transformTestItems = (props) => {
               q.disabled = userQuestion.disabled
             }
             if (isQuestionView) {
-              q.scoringType = questionType.manuallyGradableQn.includes(q.qType)
-                ? evalTypeValues.ManualGrading
-                : scoringType
+              q.scoringType = scoringType
             }
             return { ...q }
           })

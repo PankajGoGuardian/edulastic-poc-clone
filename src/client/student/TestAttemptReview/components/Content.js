@@ -59,6 +59,7 @@ class SummaryTest extends Component {
           testActivityId,
           groupId: match.params.groupId,
           savedUserWork,
+          summary: true,
         })
       }
       sessionStorage.setItem('testAttemptReviewVistedId', testActivityId)

@@ -553,6 +553,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             openReferenceModal={openReferenceModal}
             isShowReferenceModal={isShowReferenceModal}
+            hasReferenceDoc={!!referenceDocAttributes}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}

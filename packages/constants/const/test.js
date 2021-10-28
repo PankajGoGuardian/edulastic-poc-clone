@@ -146,6 +146,9 @@ module.exports = {
     partialMatch: 'Partial Match',
     exactMatch: 'Exact Match',
     ManualGrading: 'Manual Grading',
+    anyCorrect: 'Any can be Correct',
+    firstCorrectMust: 'First must be Correct',
+    allCorrectMust: 'All must be Correct',
   },
   accessibilities: {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",

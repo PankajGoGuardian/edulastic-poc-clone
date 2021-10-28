@@ -6,7 +6,10 @@ import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { Tooltip } from 'antd'
 
-import { MainContentWrapper } from '@edulastic/common'
+import { MainContentWrapper, FlexContainer } from '@edulastic/common'
+import { IconGoogleClassroom, IconClever } from '@edulastic/icons'
+import classlinkIcon from '../../../../student/assets/classlink-icon.png'
+import schoologyIcon from '../../../../student/assets/schoology.png'
 import ClassSelector from './ClassSelector'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import ClassCreatePage from './ClassCreatePage'
@@ -73,12 +76,104 @@ const ClassList = ({
           return new Date(b.updatedAt) - new Date(a.updatedAt)
         })
 
+  const getSyncedInfo = (classGroupObj) => {
+    if (currentTab === 'class') {
+      const classGroupObjWithSyncedInfo = classGroupObj.map((_group) => {
+        const {
+          cleverId,
+          atlasId = '',
+          institutionId,
+          atlasProviderName,
+        } = _group
+        const policy =
+          user?.orgData?.policies?.institutions?.find(
+            (i) => i.institutionId === institutionId
+          ) ||
+          user?.orgData?.policies?.district ||
+          {}
+        const {
+          allowGoogleClassroom: allowGoogleLogin,
+          allowCanvas: allowCanvasLogin,
+          allowSchoology,
+          allowClasslink,
+        } = policy
+        const showCleverSyncButton =
+          (isCleverUser || isCleverDistrict) && cleverId
+        const showGoogleSyncButton = allowGoogleLogin !== false
+        const showCanvasSyncButton = allowCanvasLogin
+        const showAtlasReSyncButton = atlasId
+        const syncIconList = []
+        if (showCleverSyncButton)
+          syncIconList.push(
+            <Tooltip title="Clever" placement="bottom">
+              <IconClever height={18} width={18} />
+            </Tooltip>
+          )
+        if (showGoogleSyncButton)
+          syncIconList.push(
+            <Tooltip title="Google Classroom" placement="bottom">
+              <IconGoogleClassroom height={18} width={18} />
+            </Tooltip>
+          )
+        if (showCanvasSyncButton)
+          syncIconList.push(
+            <Tooltip title="Canvas" placement="bottom">
+              <img
+                src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                alt="Canvas"
+                height="18"
+                width="18"
+              />
+            </Tooltip>
+          )
+        if (
+          showAtlasReSyncButton &&
+          (atlasProviderName || allowClasslink || allowSchoology)
+        ) {
+          if (
+            atlasProviderName?.toLowerCase() === 'schoology' ||
+            allowSchoology
+          )
+            syncIconList.push(
+              <Tooltip title="Schoology" placement="bottom">
+                <img
+                  src={schoologyIcon}
+                  alt="Schoology"
+                  width="18"
+                  height="18"
+                />
+              </Tooltip>
+            )
+          if (
+            atlasProviderName?.toLowerCase() === 'classlink' ||
+            allowClasslink
+          )
+            syncIconList.push(
+              <Tooltip title="Classlink" placement="bottom">
+                <img
+                  src={classlinkIcon}
+                  alt="Classlink"
+                  height="18"
+                  width="18"
+                />
+              </Tooltip>
+            )
+        }
+        return { ..._group, syncedWith: syncIconList }
+      })
+      return classGroupObjWithSyncedInfo
+    }
+    return classGroupObj
+  }
+
   useEffect(() => {
-    setClassGroups(showClassGroups)
+    const classGroupsInfo = getSyncedInfo(showClassGroups)
+    setClassGroups(classGroupsInfo)
   }, [showClassGroups])
 
   useEffect(() => {
-    setClassGroups(showClassGroups)
+    const classGroupsInfo = getSyncedInfo(showClassGroups)
+    setClassGroups(classGroupsInfo)
   }, [currentTab])
 
   const columns = [
@@ -104,7 +199,7 @@ const ClassList = ({
           {classcode}
         </Tooltip>
       ),
-      width: 200,
+      width: 180,
     },
     {
       title: 'Grades',
@@ -162,6 +257,19 @@ const ClassList = ({
       },
     },
     {
+      title: 'Sync with',
+      dataIndex: 'syncedWith',
+      render: (syncedIconList) => (
+        <FlexContainer justify-content="space-between" align-items="center">
+          {syncedIconList?.length ? (
+            syncedIconList.map((icons) => icons)
+          ) : (
+            <p>-</p>
+          )}
+        </FlexContainer>
+      ),
+    },
+    {
       title: 'Students',
       dataIndex: 'studentCount',
       sortDirections: ['descend', 'ascend'],
@@ -214,6 +322,7 @@ const ClassList = ({
         user={user}
         handleCanvasBulkSync={handleCanvasBulkSync}
         isClassLink={isClassLink}
+        filterClass={filterClass}
       />
       <MainContentWrapper>
         <SubHeader>

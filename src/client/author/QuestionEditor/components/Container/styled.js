@@ -51,20 +51,21 @@ export const QuestionContentWrapper = styled.div`
   @media (min-width: ${mediumDesktopExactWidth}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
     height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.md + 55 + (isInModal ? 55 : 0)}px)`};
+      `calc(100vh - ${theme.HeaderHeight.md + 55 + (isInModal ? 110 : 0)}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
     /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
     height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.xl + 55 + (isInModal ? 55 : 0)}px)`};
+      `calc(100vh - ${theme.HeaderHeight.xl + 55 + (isInModal ? 110 : 0)}px)`};
   }
   @media (max-width: ${desktopWidth}) {
     /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */
     height: ${({ isInModal }) =>
-      `calc(100vh - ${185 + (isInModal ? 55 : 0)}}px)`};
+      `calc(100vh - ${185 + (isInModal ? 110 : 0)}}px)`};
   }
 
-  height: ${({ isInModal }) => `calc(100vh - ${115 + (isInModal ? 55 : 0)}px)`};
+  height: ${({ isInModal }) =>
+    `calc(100vh - ${115 + (isInModal ? 110 : 0)}px)`};
 
   @media (max-width: ${mobileWidth}) {
     padding: 0px 25px;

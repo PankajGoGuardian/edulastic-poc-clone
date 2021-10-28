@@ -15,6 +15,7 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
   smallDesktopWidth,
+  largeDesktopWidth,
 } from '@edulastic/colors'
 
 export const FlexWrapper = styled(Row)`
@@ -367,4 +368,7 @@ export const TermsPrivacy = styled.p`
   line-height: 1.8;
   font-size: 9px;
   text-align: ${(props) => (props.align ? props.align : 'center')};
+  @media (min-width: ${largeDesktopWidth}) {
+    min-width: ${({ minWidth }) => minWidth || ' '}};
+  }
 `

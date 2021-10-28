@@ -18,7 +18,7 @@ UnscoredHelperText.propTypes = {
 
 UnscoredHelperText.defaultProps = {
   fontSize: '11px',
-  text: 'Z or Zero point (This is practice question)',
+  text: 'Z or Zero point (Marked as practice question)',
   fontWeight: '600',
   margin: '10px 0px 0px 0px',
 }

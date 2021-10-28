@@ -1,13 +1,12 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import styled from 'styled-components'
 import { camelCase } from 'lodash'
 
 import { HeaderTabs } from '@edulastic/common'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
 
 const HeaderNavigation = ({ navigationItems, activeItemKey }) => (
-  <StyledNavigationTabs>
+  <StyledTabs>
     {navigationItems.map((item) => {
       const isActive = activeItemKey === item.key
       return (
@@ -19,7 +18,7 @@ const HeaderNavigation = ({ navigationItems, activeItemKey }) => (
         />
       )
     })}
-  </StyledNavigationTabs>
+  </StyledTabs>
 )
 
 HeaderNavigation.propTypes = {
@@ -33,7 +32,3 @@ HeaderNavigation.defaultProps = {
 }
 
 export default HeaderNavigation
-
-const StyledNavigationTabs = styled(StyledTabs)`
-  padding-right: 30px;
-`

@@ -557,12 +557,12 @@ class FeedbackRight extends Component {
                 <TextPara>{_maxScore}</TextPara>
               </ScoreInputWrapper>
             </StyledDivSec>
-            <GradingPolicy>
-              <p>
-                <b>GRADING POLICY</b>
-              </p>
-              <p>{activity.scoringType}</p>
-            </GradingPolicy>
+            <GradingPolicyWrapper>
+              GRADING POLICY &nbsp;
+              <GradingPolicy data-cy="gradingPolicyType">
+                {activity.scoringType}
+              </GradingPolicy>
+            </GradingPolicyWrapper>
           </>
         ) : (
           <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />
@@ -751,20 +751,19 @@ const TextPara = styled.p`
   border-radius: 0px 2px 2px 0px;
   display: inline-block;
 `
-const GradingPolicy = styled.p`
-  text-transform: capitalize;
-  margin-top: 5px;
-  padding-left: 10px;
-  padding-right: 15px;
-  font-size: 14px;
+const GradingPolicyWrapper = styled.p`
+  text-transform: uppercase;
+  margin-top: 10px;
+  font-size: 9px;
   font-weight: 600;
-  line-height: 20px;
-  height: 47px;
   width: 100%;
-  border-radius: 2px;
   display: inline-block;
   text-align: center;
   background-color: #f8f8f8;
+`
+
+const GradingPolicy = styled.span`
+  color: ${tabGrey};
 `
 
 const LeaveDiv = styled.div`

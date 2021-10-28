@@ -52,8 +52,12 @@ class SubjectGrade extends React.Component {
     this.standardRef = createRef()
     this.standardsRef = createRef()
     const { userInfo } = this.props
-    const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
-    let { interestedCurriculums } = get(props.user, 'user.orgData')
+    const { defaultGrades, defaultSubjects } = get(
+      props.user,
+      'user.orgData',
+      {}
+    )
+    let { interestedCurriculums } = get(props.user, 'user.orgData', {})
 
     interestedCurriculums = interestedCurriculums.filter(
       (x) => x.orgType === userInfo?.role
@@ -104,7 +108,7 @@ class SubjectGrade extends React.Component {
     const { currentStandardSetStandards } = user?.user || {}
     const curriculumIds = Object.keys(currentStandardSetStandards || {})
     if (curriculumIds.length) {
-      const { defaultGrades = [] } = get(this.props.user, 'user.orgData')
+      const { defaultGrades = [] } = get(user, 'user.orgData', {})
       getDictStandardsForCurriculum(curriculumIds, defaultGrades, '')
 
       const curriculumStandard = curriculumIds.flatMap((cid) =>

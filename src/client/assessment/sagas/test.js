@@ -249,6 +249,9 @@ function* loadTest({ payload }) {
     playlistId,
     currentAssignmentId,
     savedUserWork,
+    summary = false,
+    isStudentReport = false,
+    regrade = false,
   } = payload
   let { testId } = payload
   const _testId = testId
@@ -261,6 +264,27 @@ function* loadTest({ payload }) {
         'info'
       )
       return
+    }
+    const isFromSummary = yield select((state) =>
+      get(state, 'router.location.state.fromSummary', false)
+    )
+    const _switchLanguage = yield select((state) =>
+      get(state, 'router.location.state.switchLanguage', false)
+    )
+    if (
+      userRole === roleuser.STUDENT &&
+      !summary &&
+      !isStudentReport &&
+      !regrade &&
+      !isFromSummary &&
+      !_switchLanguage
+    ) {
+      const tokenExpireIn = tokenExpireInHours()
+      // consider less than zero as valid so that the client side time adjust wont impact.
+      const isValidSpan = tokenExpireIn > 12 || tokenExpireIn < 0
+      if (!isValidSpan) {
+        return window.dispatchEvent(new Event('user-token-expired'))
+      }
     }
 
     if (userRole === roleuser.STUDENT) {
@@ -348,12 +372,6 @@ function* loadTest({ payload }) {
       sessionStorage.setItem('currentTestId', testId)
     }
 
-    const isFromSummary = yield select((state) =>
-      get(state, 'router.location.state.fromSummary', false)
-    )
-    const _switchLanguage = yield select((state) =>
-      get(state, 'router.location.state.switchLanguage', false)
-    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse

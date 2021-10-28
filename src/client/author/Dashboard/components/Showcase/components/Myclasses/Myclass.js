@@ -88,6 +88,7 @@ const MyClasses = ({
   tests,
   loadAssignments,
   interestedSubjects,
+  totalAssignmentCount,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -221,21 +222,11 @@ const MyClasses = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
-  const sumOfCounts = (arr) => {
-    let sum = 0
-    for (let i = 0; i < arr.length; i++) sum += arr[i]
-    return sum
-  }
-
-  const totalAssignemntCount = sumOfCounts(
-    allActiveClasses.map((x) => x.totalAssignment || 0) || 0
-  )
-
   useEffect(() => {
-    if (totalAssignemntCount >= 5) {
+    if (totalAssignmentCount >= 5) {
       checkLocalRecommendedTests()
     }
-  }, [user?.recommendedContentUpdated, totalAssignemntCount])
+  }, [user?.recommendedContentUpdated, totalAssignmentCount])
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
@@ -383,7 +374,7 @@ const MyClasses = ({
 
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
-      const { subscriptionData } = bundle.config
+      const { subscriptionData } = bundle?.config
       if (
         !subscriptionData?.productId &&
         !subscriptionData?.blockInAppPurchase
@@ -391,9 +382,24 @@ const MyClasses = ({
         return bundle
       }
 
-      const { imageUrl: imgUrl, premiumImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
-      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
+      const { imageUrl: imgUrl, premiumImageUrl, trialImageUrl } = bundle
+      const isBlocked = !hasAccessToItemBank(subscriptionData?.itemBankId)
+      let isTrialExpired = false
+      if (usedTrialItemBankIds.includes(subscriptionData?.itemBankId)) {
+        isTrialExpired =
+          itemBankSubscriptions.length > 0
+            ? itemBankSubscriptions.filter(
+                (x) => subscriptionData?.itemBankId === x.itemBankId
+              ).length === 0
+            : true
+      }
+
+      const imageUrl =
+        isBlocked && !isTrialExpired
+          ? trialImageUrl
+          : isTrialExpired
+          ? premiumImageUrl
+          : imgUrl
 
       return {
         ...bundle,
@@ -728,9 +734,11 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const showBannerSlide = !loading && totalAssignemntCount < 2
+  const showBannerSlide = !loading && totalAssignmentCount < 2
   const showRecommendedTests =
-    totalAssignemntCount >= 5 && recommendedTests?.length > 0
+    totalAssignmentCount >= 5 && recommendedTests?.length > 0
+
+  const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
   return (
     <MainContentWrapper padding="30px 25px">
@@ -746,6 +754,7 @@ const MyClasses = ({
         />
       )}
       <Classes
+        showBannerSlide={showBannerSlide}
         activeClasses={allActiveClasses}
         emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
@@ -769,6 +778,9 @@ const MyClasses = ({
           emptyBoxCount={featureEmptyBoxCount}
           isSignupCompleted={isSignupCompleted}
           testLists={tests}
+          isSingaporeMath={isSingaporeMath}
+          isCpm={isCpm}
+          boughtItemBankIds={boughtItemBankIds}
         />
       )}
       <Launch />
@@ -852,6 +864,7 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
+      totalAssignmentCount: state.dashboardTeacher?.allAssignmentCount,
       districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),

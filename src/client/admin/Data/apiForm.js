@@ -901,4 +901,29 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 'merge-student',
+    name: 'Student Merge',
+    endPoint: 'admin-tool/merge-student',
+    method: 'post',
+    slowApi: true,
+    fields: [
+      {
+        name: 'studentIdsSource',
+        displayName: 'Source Student Id',
+        placeholder: 'Enter Source Student Id',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+      {
+        name: 'studentIdsDestination',
+        displayName: 'Destination Student Id',
+        placeholder: 'Enter Destination Student Id',
+        type: 'textarea',
+        formatter: (value) => value.split(',').map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
 ]

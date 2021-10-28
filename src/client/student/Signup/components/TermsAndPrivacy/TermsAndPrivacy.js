@@ -44,7 +44,7 @@ const TermsAndPrivacy = ({ signIn }) => {
           Product Privacy Policy
         </a>; AND
       </TermsPrivacy>
-      <TermsPrivacy align="left" style={{ minWidth: '350px' }}>
+      <TermsPrivacy align="left" minWidth="330px">
         2. You are agreeing that you are authorized to act for your school and you
         consent to Edulastic's collection of student data in the{' '}
         <a

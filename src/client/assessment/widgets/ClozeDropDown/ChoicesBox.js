@@ -128,7 +128,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
       dropdownMenuStyle={dropdownMenuStyle}
       ref={selectWrapperRef}
       uiStyle={uiStyle}
-      zIndex={999}
+      zIndex={1000}
     >
       <Select
         value={convertToMathTemplate(userAnswer?.value)}
@@ -136,7 +136,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
           ...styles,
           overflow: 'hidden',
         }}
-        zIndex={999}
+        zIndex={1000}
         height={heightpx || btnStyle.height}
         placeholder={individualPlacholder || placeholder}
         getPopupContainer={getPopupContainer}

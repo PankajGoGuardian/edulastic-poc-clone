@@ -461,11 +461,16 @@ export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
       if (questionType.manuallyGradableQn.includes(questionNeeded?.type)) {
         return evalTypeValues.ManualGrading
       }
-      if (
-        questionNeeded?.validation?.scoringType &&
-        gradingPolicy === evalTypeLabels.ITEM_LEVEL_EVALUATION
-      ) {
-        return evalTypeValues[questionNeeded.validation.scoringType]
+      if (gradingPolicy === evalTypeLabels.ITEM_LEVEL_EVALUATION) {
+        if (testItem.multipartItem && questions.length > 1) {
+          return (
+            evalTypeValues[testItem.itemGradingType] ||
+            evalTypeValues.anyCorrect
+          )
+        }
+        if (questionNeeded?.validation?.scoringType) {
+          return evalTypeValues[questionNeeded.validation.scoringType]
+        }
       }
     }
   }

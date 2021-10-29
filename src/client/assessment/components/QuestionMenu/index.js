@@ -2,15 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { throttle, isUndefined } from 'lodash'
-import { Collapse } from 'antd'
 import {
   themeColor,
-  lightBlue10,
-  desktopWidth,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { IconCaretDown } from '@edulastic/icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withWindowSizes, ScrollContext } from '@edulastic/common'
 import VideoThumbnail from '@edulastic/common/src/components/VideoThumbnail'
@@ -18,7 +14,6 @@ import IframeVideoModal from '@edulastic/common/src/components/IframeVideoModal'
 
 import AdvancedOptionsLink from './AdvancedOptionsLink'
 
-const { Panel } = Collapse
 class QuestionMenu extends Component {
   state = {
     activeTab: 0,
@@ -150,12 +145,30 @@ class QuestionMenu extends Component {
       questionTitle,
       isPremiumUser,
       isPowerTeacher,
-      isInModal,
     } = this.props
     const { activeTab, isVideoModalVisible } = this.state
 
     return (
-      <Menu isInModal={isInModal}>
+      <Menu>
+        <ScrollbarContainer height="auto" mb="10px">
+          <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
+            {this.menuOptions.map((option, index) => (
+              <Option
+                key={index}
+                onClick={(e) => this.goToSection(option, e)}
+                className={`option ${index === activeTab && 'active'}`}
+              >
+                {option.label}
+              </Option>
+            ))}
+          </MainOptions>
+          {!isPowerTeacher && (
+            <AdvancedOptionsLink
+              handleAdvancedOpen={handleAdvancedOpen}
+              isPremiumUser={isPremiumUser}
+            />
+          )}
+        </ScrollbarContainer>
         <VideoThumbnailWapper onClick={this.openModal}>
           <VideoThumbnail
             questionTitle={questionTitle}
@@ -170,36 +183,6 @@ class QuestionMenu extends Component {
           visible={isVideoModalVisible}
           closeModal={this.closeModal}
         />
-        <StyledCollapse
-          defaultActiveKey={['1']}
-          bordered={false}
-          expandIcon={({ isActive }) => (
-            <CaretDownIcon rotate={isActive ? 0 : -90} color={lightBlue10} />
-          )}
-          expandIconPosition="right"
-        >
-          <Panel key="1" header="QUICK JUMP">
-            <ScrollbarContainer mt="12px" isInModal={isInModal}>
-              <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
-                {this.menuOptions.map((option, index) => (
-                  <Option
-                    key={index}
-                    onClick={(e) => this.goToSection(option, e)}
-                    className={`option ${index === activeTab && 'active'}`}
-                  >
-                    {option.label}
-                  </Option>
-                ))}
-              </MainOptions>
-              {!isPowerTeacher && (
-                <AdvancedOptionsLink
-                  handleAdvancedOpen={handleAdvancedOpen}
-                  isPremiumUser={isPremiumUser}
-                />
-              )}
-            </ScrollbarContainer>
-          </Panel>
-        </StyledCollapse>
       </Menu>
     )
   }
@@ -228,58 +211,26 @@ export { default as AdvancedOptionsLink } from './AdvancedOptionsLink'
 const Menu = styled.div`
   position: fixed;
   width: 230px;
-  padding-top: 24px;
-  padding-bottom: 24px;
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
-    height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.md + 55 + (isInModal ? 32 : 0)}px)`};
-  }
-  @media (min-width: ${extraDesktopWidthMax}) {
-    /** 50px is height of BreadCrumbBar and 5px is height of scrollbar(horizontal) */
-    height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.xl + 55 + (isInModal ? 32 : 0)}px)`};
-  }
-  @media (max-width: ${desktopWidth}) {
-    /** 155px is height of BreadCrumbBar and Header and 5px is height of scrollbar(horizontal) */
-    height: ${({ isInModal }) =>
-      `calc(100vh - ${185 + (isInModal ? 32 : 0)}}px)`};
-  }
-
-  height: ${({ isInModal }) => `calc(100vh - ${115 + (isInModal ? 32 : 0)}px)`};
-`
-
-const StyledCollapse = styled(Collapse)`
-  background: transparent;
-  margin-top: 24px;
-
-  .ant-collapse-item {
-    border-bottom: 0px;
-  }
-`
-
-const CaretDownIcon = styled(IconCaretDown)`
-  transform: ${({ rotate }) =>
-    `translateY(-50%) rotate(${rotate}deg) !important`};
+  padding: 50px 0px 30px 0px;
+  height: 100%;
 `
 
 const ScrollbarContainer = styled(PerfectScrollbar)`
   padding-top: 10px;
   padding-left: 10px;
   height: ${({ height }) => height || ''};
-  margin-top: ${({ mt }) => mt || ''};
-  max-height: ${({ theme, isInModal }) =>
-    `calc(100vh - ${theme.HeaderHeight.xs + 340 + (isInModal ? 16 : 0)}px)`};
+  margin-bottom: ${({ mb }) => mb || ''};
+  max-height: ${(props) =>
+    `calc(100vh - ${props.theme.HeaderHeight.xs + 110}px)`};
   /* 110px is for top-Bottom padding(60) and breadcrumbs height(50) */
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    max-height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.md + 340 + (isInModal ? 16 : 0)}px)`};
+    max-height: ${(props) =>
+      `calc(100vh - ${props.theme.HeaderHeight.md + 110}px)`};
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    max-height: ${({ theme, isInModal }) =>
-      `calc(100vh - ${theme.HeaderHeight.xl + 340 + (isInModal ? 16 : 0)}px)`};
+    max-height: ${(props) =>
+      `calc(100vh - ${props.theme.HeaderHeight.xl + 110}px)`};
   }
 `
 

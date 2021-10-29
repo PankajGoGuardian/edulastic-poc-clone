@@ -1341,6 +1341,12 @@ span.token.active-word {
   z-index: 998; /*  header has z-index 999 */
 }
 
+@media screen and (max-height: 700px) {
+  .custom-antd-select.ant-select-dropdown .ant-select-dropdown-menu {
+    max-height: 210px;
+  }
+}
+
 .template_box .ant-select-selection {
   border-color: #fff;
 }

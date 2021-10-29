@@ -439,7 +439,6 @@ class QuestionWrapper extends Component {
       studentId,
       isQuestionView,
       isShowStudentWork,
-      isInModal,
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -593,7 +592,6 @@ class QuestionWrapper extends Component {
                   <QuestionMenu
                     activeTab={activeTab}
                     main={main}
-                    isInModal={isInModal}
                     advanced={advanced}
                     extras={extras}
                     advancedAreOpen={this.advancedAreOpen}

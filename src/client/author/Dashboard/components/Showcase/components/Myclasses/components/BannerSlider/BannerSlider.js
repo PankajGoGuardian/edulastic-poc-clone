@@ -79,6 +79,7 @@ const BannerSlider = ({
   return (
     <>
       <TextWrapper
+        data-cy="bannerTitle"
         fw="bold"
         size="16px"
         color={title}

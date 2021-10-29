@@ -111,7 +111,6 @@ class WorksheetComponent extends React.Component {
 
   componentDidMount() {
     const {
-      userWork,
       saveUserWork,
       itemDetail,
       freeFormNotes,
@@ -136,13 +135,7 @@ class WorksheetComponent extends React.Component {
           }
         }
       }
-      const stdAnnotations = userWork?.freeNotesStd || []
-      saveUserWork({
-        [itemDetail._id]: {
-          freeNotesStd: stdAnnotations,
-          scratchpad: freeFormNotes || {},
-        },
-      })
+      saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } })
     }
     isImagesBlockedByBrowser().then((flag) => {
       if (flag && !isImageBlockNotification) {
@@ -607,7 +600,6 @@ class WorksheetComponent extends React.Component {
       currentPage: _currentPageInProps,
       groupId,
       itemDetail,
-      testItemId,
     } = this.props
     const {
       uploadModal,
@@ -634,7 +626,6 @@ class WorksheetComponent extends React.Component {
 
     const reportMode = viewMode && viewMode === 'report'
     const editMode = viewMode === 'edit'
-    const showAnnotationTools = editMode || testMode
 
     const assesmentMetadata = {
       assessmentId,
@@ -644,7 +635,7 @@ class WorksheetComponent extends React.Component {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {showAnnotationTools && (
+        {editMode && (
           <PDFAnnotationToolsWrapper>
             <PDFAnnotationTools
               setCurrentTool={setCurrentAnnotationTool}
@@ -657,7 +648,6 @@ class WorksheetComponent extends React.Component {
               isAnnotationsEmpty={
                 pdfAnnotations.filter((a) => !a?.questionId)?.length === 0
               }
-              testMode={testMode}
               undoAnnotationsOperation={undoAnnotationsOperation}
               redoAnnotationsOperation={redoAnnotationsOperation}
             />
@@ -665,10 +655,11 @@ class WorksheetComponent extends React.Component {
         )}
 
         <WorksheetWrapper
-          showTools={showAnnotationTools}
           reportMode={reportMode}
           testMode={testMode}
           extraPaddingTop={extraPaddingTop}
+          editMode={editMode}
+          editModePadding={editMode ? '65px' : '0px'}
         >
           <Modal
             visible={deleteConfirmation}
@@ -774,7 +765,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
               toggleIntercomDisplay={toggleIntercomDisplay}
-              itemId={itemDetail?._id || testItemId}
+              itemId={itemDetail?._id}
             />
           </PDFViewerContainer>
 

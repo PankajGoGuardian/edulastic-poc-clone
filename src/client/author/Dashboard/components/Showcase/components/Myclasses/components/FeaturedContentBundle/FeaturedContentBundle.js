@@ -14,6 +14,9 @@ const FeaturedContentBundle = ({
   emptyBoxCount,
   testLists,
   isSignupCompleted,
+  isSingaporeMath,
+  isCpm,
+  boughtItemBankIds,
 }) => {
   if (!featuredBundles.length) {
     return null
@@ -22,22 +25,42 @@ const FeaturedContentBundle = ({
   const showFreebundles = !(isSignupCompleted && testLists?.length >= 3)
 
   const getFreeBundles = featuredBundles.filter(
-    (x) => !x.config.subscriptionData
+    (x) => !x?.config?.subscriptionData
   )
 
-  const getPremiumBundles = featuredBundles.filter(
-    (x) => x.config.subscriptionData
+  const getNotAvailedPremiumBundles = featuredBundles.filter(
+    (x) =>
+      x?.config?.subscriptionData &&
+      !boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
   )
+
+  const getAvailedBundles = featuredBundles.filter((x) =>
+    boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
+  )
+
+  let defaultBundles = []
+
+  if (isSingaporeMath || isCpm) {
+    defaultBundles = [
+      ...getNotAvailedPremiumBundles.filter(
+        (x) => x?.config[isSingaporeMath ? 'isSingaporeMath' : 'isCPM']
+      ),
+    ]
+  }
 
   const filteredfeaturedBundles =
     (showFreebundles
-      ? getFreeBundles
-      : [...getFreeBundles, ...getPremiumBundles]) || []
+      ? [...getFreeBundles, ...getAvailedBundles, ...defaultBundles]
+      : [
+          ...getFreeBundles,
+          ...getNotAvailedPremiumBundles,
+          ...getAvailedBundles,
+        ]) || []
 
   return (
     <FeatureContentWrapper>
       <TextWrapper fw="bold" size="16px" color={title} mt=".5rem" mb="1rem">
-        Pre-built Test Collection{' '}
+        Pre-built Test Collections{' '}
       </TextWrapper>
       {!isSignupCompleted ? (
         <>

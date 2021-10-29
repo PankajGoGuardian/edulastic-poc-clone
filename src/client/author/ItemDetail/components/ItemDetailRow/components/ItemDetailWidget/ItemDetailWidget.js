@@ -17,6 +17,7 @@ import {
   getQuestionByIdSelector,
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
+import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 import Ctrls from './Controls'
 import { Container, WidgetContainer, ButtonsContainer } from './styled'
 
@@ -38,6 +39,7 @@ const ItemDetailWidget = ({
   itemEditDisabled,
   dataCy,
   onShowSettings,
+  isPremiumUser,
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout)
 
@@ -132,6 +134,7 @@ const ItemDetailWidget = ({
                 isRubricQuestion={!!question.rubrics && !itemLevelScoring}
                 itemLevelScoring={itemLevelScoring}
                 onShowSettings={onShowSettings}
+                isPremiumUser={isPremiumUser}
               />
 
               {unscored && <UnscoredHelperText margin="0px 0px 10px 0px" />}
@@ -218,6 +221,7 @@ const enhance = compose(
     (state, { widget }) => ({
       question: getQuestionByIdSelector(state, widget.reference),
       itemEditDisabled: getIsEditDisbledSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setItemDetailDragging: setItemDetailDraggingAction,

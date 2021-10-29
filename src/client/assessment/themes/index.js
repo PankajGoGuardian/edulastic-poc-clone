@@ -710,6 +710,7 @@ const AssessmentContainer = ({
         test,
         groupId,
         isStudentReport,
+        regrade: true,
       })
     }
     history.push(

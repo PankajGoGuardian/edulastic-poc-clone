@@ -23,7 +23,7 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
       <CreateClassCardWrapper newCreateClassCard={newCreateClassCard}>
         <CreateClassTitle>Create Class</CreateClassTitle>
         <InfoText>
-          Create class and add students to start assigning tests
+          Use <b> Google Classroom </b> to import class(es) or create manually
         </InfoText>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (

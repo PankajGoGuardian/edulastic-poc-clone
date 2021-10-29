@@ -513,7 +513,7 @@ const ActionContainer = ({
                     <span>Disable Text to Speech</span>
                   </MenuItems>
                 )}
-                {!cleverId && (
+                {!cleverId && !atlasId && (
                   <MenuItems key="deleteStudent">
                     <IconRemove />
                     <span>Remove Students</span>
@@ -523,7 +523,7 @@ const ActionContainer = ({
                   <IconCircle />
                   <span>Reset Password</span>
                 </MenuItems>
-                {!cleverId && (
+                {!cleverId && !atlasId && (
                   <MenuItems key="editStudent">
                     <IconPencilEdit />
                     <span>Edit Student</span>

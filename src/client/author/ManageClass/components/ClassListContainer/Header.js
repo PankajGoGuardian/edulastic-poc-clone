@@ -48,8 +48,20 @@ const Header = ({
   syncCleverClassList,
   refreshPage,
   isCleverDistrict,
+  filterClass,
 }) => {
   const { atlasId, cleverId, isPlayground } = user
+
+  const atlasGroup = classGroups.find(
+    (_group) =>
+      _group.atlasProviderName &&
+      ['schoology', 'classlink'].includes(
+        _group.atlasProviderName.toLowerCase()
+      )
+  )
+  const atlasProviderName = atlasGroup?.atlasProviderName
+
+  const isCleverGroupPresent = classGroups.find((_group) => !!_group.cleverId)
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -214,16 +226,28 @@ const Header = ({
                 <span>SYNC WITH CANVAS</span>
               </EduButton>
             )}
-          {!isPlayground && atlasId && (
-            <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
-              <span>RESYNC CLASS</span>
-            </EduButton>
-          )}
-          {!isPlayground && isCleverDistrict && (
-            <EduButton isBlue isGhost onClick={handleSyncWithClever}>
-              <span>RESYNC CLASS</span>
-            </EduButton>
-          )}
+          {!isPlayground &&
+            atlasId &&
+            atlasProviderName?.length &&
+            filterClass === 'Active' && (
+              <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
+                <span>
+                  RESYNC{' '}
+                  {atlasProviderName.toLowerCase() === 'schoology'
+                    ? 'SCHOOLOGY'
+                    : 'CLASSLINK'}{' '}
+                  CLASSES
+                </span>
+              </EduButton>
+            )}
+          {!isPlayground &&
+            isCleverDistrict &&
+            isCleverGroupPresent &&
+            filterClass === 'Active' && (
+              <EduButton isBlue isGhost onClick={handleSyncWithClever}>
+                <span>RESYNC CLEVER CLASSES</span>
+              </EduButton>
+            )}
         </>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (

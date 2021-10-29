@@ -241,5 +241,5 @@ export function tokenExpireInHours() {
   const token = getAccessToken()
   const tokenParsed = parseJwt(token)
   const timeDiff = (tokenParsed.exp * 1000 - currentTime) / 3600000
-  return Math.round(timeDiff)
+  return timeDiff
 }

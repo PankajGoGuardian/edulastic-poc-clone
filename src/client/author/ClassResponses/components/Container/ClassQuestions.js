@@ -250,8 +250,9 @@ const transformTestItems = (props) => {
               return false
             }
           }
-          const scoringType = currentStudent.questionActivities?.find(
-            (ele) => ele.testItemId === item._id
+
+          const scoringType = currentStudent.questionActivities?.find((ele) =>
+            item.data.questions.some((i) => i.id === ele._id)
           )?.scoringType
           qActivities = qActivities.map((q) => {
             const userQuestion = userQActivities.find(
@@ -646,7 +647,6 @@ class ClassQuestions extends Component {
         questionsById,
         questions,
         studentWorkAnswersById,
-        testItemId: testItemsData?.[0]?._id,
       }
     }
 

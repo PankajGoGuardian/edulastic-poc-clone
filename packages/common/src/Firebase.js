@@ -2,8 +2,8 @@ import firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
 import { useState, useEffect } from 'react'
-import { firebaseConfig } from '../../../src/app-config'
 import * as Sentry from '@sentry/browser'
+import { firebaseConfig } from '../../../src/app-config'
 
 firebase.initializeApp({
   apiKey: firebaseConfig.apiKey,
@@ -11,7 +11,12 @@ firebase.initializeApp({
   projectId: firebaseConfig.projectId,
 })
 
-export const db = firebase.firestore()
+const _firestore = firebase.firestore()
+
+// Avoids incompatibility issues with certain proxies, antivirus software, etc. that incorrectly buffer traffic indefinitely.
+_firestore.settings({ experimentalForceLongPolling: true })
+
+export const db = _firestore
 
 /**
  * we can only enable firebase offline , right after initialisation

@@ -102,6 +102,7 @@ const PointInput = ({
   itemLevelScoring,
   visible,
   onShowSettings = () => {},
+  isPremiumUser,
 }) => {
   if (!visible) {
     return null
@@ -137,7 +138,7 @@ const PointInput = ({
         </Popover>
       )}
       <NumberInputStyled
-        min={0}
+        min={isPremiumUser ? 0 : 0.5}
         step={0.5}
         width="64px"
         padding="0px 2px"

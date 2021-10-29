@@ -67,5 +67,4 @@ export const SelectContainer = styled.div`
     height: 52px;
     width: 188px;
   }
-  z-index: 1000;
 `

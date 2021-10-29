@@ -31,6 +31,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     allOptions,
     answerScore,
     allCorrects,
+    setDropDownInUse,
   } = resprops
   const { getScrollElement } = useContext(ScrollContext)
 
@@ -78,6 +79,16 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       return document.body
     }
     return scrollEl
+  }
+
+  const handleEvent = (event) => {
+    if (typeof setDropDownInUse === 'function') {
+      if (event === 'focus') {
+        setDropDownInUse(true)
+      } else if (event === 'blur') {
+        setDropDownInUse(false)
+      }
+    }
   }
 
   if (isPrintPreview) {
@@ -144,6 +155,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={getPopupContainer}
         value={val}
+        onFocus={() => handleEvent('focus')}
+        onBlur={() => handleEvent('blur')}
         {...dropdownStyle}
       >
         {options &&

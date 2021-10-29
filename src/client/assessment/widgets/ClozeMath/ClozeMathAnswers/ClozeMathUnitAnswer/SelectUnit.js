@@ -192,4 +192,5 @@ const DropDownWrapper = styled.div`
       }
     }
   }
+  z-index: 1000;
 `

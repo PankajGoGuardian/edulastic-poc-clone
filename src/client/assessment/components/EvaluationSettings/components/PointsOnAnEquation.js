@@ -188,7 +188,7 @@ const PointsOnAnEquation = ({
                 value={options?.specialPointOpts?.globalMaximumPoints}
               />
             </SpecialOptRow>
-            <SpecialOptRow>
+            {/* <SpecialOptRow>
               <FieldLabel marginBottom="0px">Local Minima</FieldLabel>
               <TextInputStyled
                 min={1}
@@ -207,7 +207,7 @@ const PointsOnAnEquation = ({
                 onChange={handleChangeSpecOpts}
                 value={options?.specialPointOpts?.localMaxima}
               />
-            </SpecialOptRow>
+            </SpecialOptRow> */}
             <SpecialOptRow>
               <FieldLabel marginBottom="0px">
                 Symmetric Points About X

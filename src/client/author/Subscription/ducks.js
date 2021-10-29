@@ -8,6 +8,7 @@ import {
   paymentApi,
   segmentApi,
   userApi,
+  hubSpotApi,
 } from '@edulastic/api'
 import { createSlice } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
@@ -652,9 +653,63 @@ function* bulkInviteBookKeepersSaga({ payload }) {
   }
 }
 
+function* pushRequestQuoteDateToHubSpot(payload) {
+  try {
+    const { user } = yield select(getUserSelector)
+    const { firstName, lastName, role, orgData } = user
+    const { districtCountry } = orgData?.districts?.[0] || {}
+    const bodyFormData = []
+    const {
+      cartProducts,
+      documentType,
+      licenseType,
+      otherInfo,
+      schoolOrDistrict = {},
+      studentLicenseCount,
+      userEmail,
+    } = payload
+
+    let districtName = ''
+    let schoolName = ''
+    const { name, state, type } = schoolOrDistrict
+    if (type === 'DISTRICT') {
+      districtName = name
+    } else {
+      schoolName = name
+    }
+
+    const obj = {
+      email: userEmail,
+      firstname: firstName,
+      lastname: lastName || 'NONE',
+      job_title_2: role || 'NONE',
+      company: districtName || 'NONE',
+      school_name: schoolName || 'NONE',
+      country_region_2: districtCountry || 'NONE',
+      state_region_2: state || 'NONE',
+      which_version_of_edulastic_would_you_like_a_quote_for_: licenseType,
+      number_of_students__c: studentLicenseCount || 0,
+      notes__c: otherInfo || 'NONE',
+      lead_source_level_2__c: documentType || '',
+      hubspot_form_fill_tag: documentType || '',
+      primary_products_interest: 'Edulastic',
+      hubspot_sync__c: true,
+    }
+    Object.entries(obj).forEach((x) =>
+      bodyFormData.push({ name: x[0], value: x[1] })
+    )
+    const result = yield call(hubSpotApi.submitRequestQuote, bodyFormData)
+    console.log('result', result)
+  } catch (err) {
+    console.log('err', err)
+    captureSentryException(err)
+  }
+}
+
 function* requestInvoiceSaga({ payload }) {
   try {
     const { closeCallback = () => {}, reqPayload } = payload
+    yield call(pushRequestQuoteDateToHubSpot, reqPayload)
     const result = yield call(subscriptionApi.requestInvoice, reqPayload)
     if (result?.result?.success) {
       closeCallback()

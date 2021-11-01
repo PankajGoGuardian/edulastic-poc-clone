@@ -573,22 +573,13 @@ class SideMenu extends Component {
             isCurrentItemBankUsed
           />
         )}
+
         <FixedSidebar
           className={`${!isCollapsed ? 'full' : ''} ${className}`}
           onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
           isCollapsed={isCollapsed}
           ref={this.sideMenuRef}
         >
-          <SwitchUserModal
-            userId={userId}
-            switchUser={switchUser}
-            orgId={orgId}
-            showModal={showModal}
-            closeModal={() => this.setState({ showModal: false })}
-            otherAccounts={users}
-            personId={get(switchDetails, 'personId')}
-            userRole={userRole}
-          />
           <SideBar
             collapsed={isCollapsed}
             collapsible
@@ -865,6 +856,16 @@ class SideMenu extends Component {
             </MenuWrapper>
           </SideBar>
         </FixedSidebar>
+        <SwitchUserModal
+          userId={userId}
+          switchUser={switchUser}
+          orgId={orgId}
+          showModal={showModal}
+          closeModal={() => this.setState({ showModal: false })}
+          otherAccounts={users}
+          personId={get(switchDetails, 'personId')}
+          userRole={userRole}
+        />
       </>
     )
   }

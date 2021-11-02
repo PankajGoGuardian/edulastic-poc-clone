@@ -12,7 +12,7 @@ const FeaturedContentBundle = ({
   featuredBundles,
   handleFeatureClick,
   emptyBoxCount,
-  testLists,
+  totalAssignmentCount,
   isSignupCompleted,
   isSingaporeMath,
   isCpm,
@@ -22,7 +22,7 @@ const FeaturedContentBundle = ({
     return null
   }
 
-  const showFreebundles = !(isSignupCompleted && testLists?.length >= 3)
+  const showFreebundles = !(isSignupCompleted && totalAssignmentCount >= 3)
 
   const getFreeBundles = featuredBundles.filter(
     (x) => !x?.config?.subscriptionData

@@ -295,14 +295,14 @@ class App extends Component {
   handlePendoGuide() {
     let retries = 0
     const cb = () => {
-      if (!window.pendo) return
       window.removeEventListener('load', cb)
 
       // Issue:
       //   pendo doesn't know URL has changed as soon as React knows.
       // fix: retry until pendo.getCurrentUrl updates
-      const pendoUrl = window.pendo.getCurrentUrl()
+      const pendoUrl = window.pendo?.getCurrentUrl?.()
       if (
+        pendoUrl &&
         new URL(pendoUrl).pathname.replace(/\/$|^\//g, '') ===
           this.props.location.pathname.replace(/\/$|^\//g, '') &&
         window.pendo.guides

@@ -46,7 +46,6 @@ import {
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
-import { getTestsSelector } from '../../../../../src/selectors/assignments'
 import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 
 const ItemPurchaseModal = loadable(() =>
@@ -85,7 +84,6 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
-  tests,
   loadAssignments,
   interestedSubjects,
   totalAssignmentCount,
@@ -777,7 +775,7 @@ const MyClasses = ({
           handleFeatureClick={handleFeatureClick}
           emptyBoxCount={featureEmptyBoxCount}
           isSignupCompleted={isSignupCompleted}
-          testLists={tests}
+          totalAssignmentCount={totalAssignmentCount}
           isSingaporeMath={isSingaporeMath}
           isCpm={isCpm}
           boughtItemBankIds={boughtItemBankIds}
@@ -880,7 +878,6 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       isDemoPlayground: isDemoPlaygroundUser(state),
-      tests: getTestsSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
     }),
     {

@@ -22,6 +22,8 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     isPrintPreview,
     answerScore,
     allCorrects,
+    answersById,
+    isLCBView,
   } = resprops
 
   const { maths: userAnswers = [] } = answers
@@ -106,6 +108,8 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
       isMath
       answerScore={answerScore}
       allCorrects={allCorrects}
+      answersById={answersById}
+      isLCBView={isLCBView}
     />
   ) : (
     <MathInputWrapper

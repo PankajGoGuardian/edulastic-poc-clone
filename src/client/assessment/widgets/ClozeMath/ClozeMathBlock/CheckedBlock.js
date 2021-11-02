@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { find, isUndefined, isEmpty } from 'lodash'
 import { Popover } from 'antd'
@@ -7,7 +7,7 @@ import { response as responseConstant } from '@edulastic/constants'
 import { getEvalautionColor } from '../../../utils/evaluation'
 
 import { IconWrapper } from './styled/IconWrapper'
-import { CheckBox } from './styled/CheckBox'
+import { CheckBox, AnswerList } from './styled/CheckBox'
 
 /**
  *
@@ -45,6 +45,130 @@ CheckBoxedMathBox.propTypes = {
   style: PropTypes.object.isRequired,
 }
 
+const IndexItem = ({ index }) => (
+  <span className="index" style={{ alignSelf: 'stretch', height: 'auto' }}>
+    {index + 1}
+  </span>
+)
+
+const AnswerItem = ({ answer, isMath, altIndex, isCorrectAnswer }) => {
+  const answerContent = useMemo(() => {
+    if (!answer) {
+      return null
+    }
+    if (isMath) {
+      let ans = answer.value
+      const unit = answer.options?.unit
+      if (unit) {
+        ans = combineUnitAndValue({ value: ans, unit }, isMath, unit)
+      }
+      return (
+        <CheckBoxedMathBox
+          value={ans}
+          style={{
+            minWidth: 'unset',
+            display: 'flex',
+            alignItems: 'center',
+            textAlign: 'left',
+            padding: '4px 0px',
+          }}
+        />
+      )
+    }
+    return answer.value
+  }, [answer, isMath])
+
+  return (
+    <div className="answer-item">
+      {isCorrectAnswer ? (
+        <div className="answer-item-label">Correct Answer</div>
+      ) : (
+        <div className="answer-item-label">Alternate Answers {altIndex}</div>
+      )}
+      <div className="answer-item-value">{answerContent}</div>
+    </div>
+  )
+}
+
+const InnerContent = ({
+  fillColor,
+  isPrintPreview,
+  indexBgColor,
+  index,
+  onInnerClick,
+  width,
+  isPopover,
+  showIndex,
+  isMath,
+  answer,
+  userAnswer,
+  mark,
+  id,
+  evaluation,
+  answersById,
+  isLCBView,
+}) => {
+  return (
+    <>
+      <CheckBox
+        fillColor={fillColor}
+        isPrintPreview={isPrintPreview}
+        indexBgColor={indexBgColor}
+        key={`input_${index}`}
+        onClick={onInnerClick}
+        width={isPopover ? null : width}
+      >
+        {showIndex && <IndexItem index={index} />}
+        <span
+          className="value"
+          style={{
+            alignItems: 'center',
+            fontWeight: 'normal',
+            textAlign: 'left',
+            paddingLeft: '11px',
+          }}
+        >
+          {isMath ? (
+            <CheckBoxedMathBox
+              value={answer}
+              style={{
+                minWidth: 'unset',
+                display: 'flex',
+                alignItems: 'center',
+                textAlign: 'left',
+                maxHeight: !isPopover && mathInputMaxHeight,
+                padding: isPopover && '4px 0px',
+              }}
+            />
+          ) : (
+            answer
+          )}
+        </span>
+        {userAnswer && !isUndefined(evaluation[id]) && (
+          <IconWrapper>{mark}</IconWrapper>
+        )}
+      </CheckBox>
+      {isPopover && isLCBView && (
+        <AnswerList>
+          <AnswerItem
+            isMath={isMath}
+            isCorrectAnswer
+            answer={answersById?.correctAnswers?.[id]}
+          />
+          {answersById?.altAnswers?.map((altAns, altIndex) => (
+            <AnswerItem
+              key={`${id}-${altIndex}`}
+              isMath={isMath}
+              altIndex={altIndex + 1}
+              answer={altAns?.[id]}
+            />
+          ))}
+        </AnswerList>
+      )}
+    </>
+  )
+}
+
 const CheckedBlock = ({
   item,
   evaluation,
@@ -58,6 +182,8 @@ const CheckedBlock = ({
   isPrintPreview = false,
   answerScore,
   allCorrects,
+  answersById,
+  isLCBView,
 }) => {
   const { responseIds } = item
   const { index } = find(responseIds[type], (res) => res.id === id)
@@ -91,60 +217,34 @@ const CheckedBlock = ({
    * passing latex string to the function would give incorrect dimensions
    * as latex might have extra special characters for rendering math
    */
-  const showPopover = !!answer // show popover when answer is provided
+  const showPopover = !!answer || isLCBView // show popover when answer is provided
 
-  const popoverContent = (isPopover) => (
-    <CheckBox
-      fillColor={fillColor}
-      isPrintPreview={isPrintPreview}
-      indexBgColor={indexBgColor}
-      key={`input_${index}`}
-      onClick={onInnerClick}
-      width={isPopover ? null : width}
-    >
-      {showIndex && (
-        <span
-          className="index"
-          style={{ alignSelf: 'stretch', height: 'auto' }}
-        >
-          {index + 1}
-        </span>
-      )}
-      <span
-        className="value"
-        style={{
-          alignItems: 'center',
-          fontWeight: 'normal',
-          textAlign: 'left',
-          paddingLeft: '11px',
-        }}
-      >
-        {isMath ? (
-          <CheckBoxedMathBox
-            value={answer}
-            style={{
-              minWidth: 'unset',
-              display: 'flex',
-              alignItems: 'center',
-              textAlign: 'left',
-              maxHeight: !isPopover && mathInputMaxHeight,
-              padding: isPopover && '4px 0px',
-            }}
-          />
-        ) : (
-          answer
-        )}
-      </span>
-      {userAnswer && !isUndefined(evaluation[id]) && (
-        <IconWrapper>{mark}</IconWrapper>
-      )}
-    </CheckBox>
-  )
+  const contentProps = {
+    fillColor,
+    isPrintPreview,
+    indexBgColor,
+    index,
+    onInnerClick,
+    width,
+    showIndex,
+    isMath,
+    answer,
+    userAnswer,
+    mark,
+    id,
+    evaluation,
+    answersById,
+    isLCBView,
+  }
 
   return showPopover ? (
-    <Popover content={popoverContent(true)}>{popoverContent()}</Popover>
+    <Popover content={<InnerContent {...contentProps} isPopover />}>
+      <span>
+        <InnerContent {...contentProps} />
+      </span>
+    </Popover>
   ) : (
-    popoverContent()
+    <InnerContent {...contentProps} />
   )
 }
 

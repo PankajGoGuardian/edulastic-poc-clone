@@ -27,6 +27,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     allOptions,
     answerScore,
     allCorrects,
+    answersById,
+    isLCBView,
   } = resprops
 
   const { dropDowns: _dropDownAnswers = [] } = answers
@@ -123,6 +125,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
+      answersById={answersById}
+      isLCBView={isLCBView}
     />
   ) : (
     <DropdownWrapper

@@ -79,6 +79,10 @@ const RemovalModal = ({
     })
   }
 
+  if (!visible) {
+    return null
+  }
+
   return (
     <Modal
       centered

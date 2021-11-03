@@ -107,6 +107,10 @@ const MoveModal = ({
     })
   }
 
+  if (!visible) {
+    return null
+  }
+
   return (
     <Modal
       centered

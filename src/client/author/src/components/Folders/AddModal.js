@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { find, lowerCase } from 'lodash'
 import { Input } from 'antd'
@@ -51,9 +51,18 @@ const AddModal = ({
   isRename,
   visible = true,
 }) => {
-  const isEdit = !!folder?._id && isRename
-  const initFolderName = isEdit ? folder?.folderName : ''
-  const [folderName, setFolderName] = useState(initFolderName)
+  const [isEdit, setIsEdit] = useState(false)
+  const [folderName, setFolderName] = useState('')
+
+  useEffect(() => {
+    if (!!folder?._id && isRename) {
+      setIsEdit(true)
+      setFolderName(folder?.folderName)
+    } else {
+      setIsEdit(false)
+      setFolderName('')
+    }
+  }, [folder, isRename])
 
   const handleCloseModal = () => {
     if (isOpenAddModal) {
@@ -87,6 +96,10 @@ const AddModal = ({
     if (e.keyCode === 13 && folderName?.length) {
       handleAddClick()
     }
+  }
+
+  if (!visible) {
+    return null
   }
 
   return (

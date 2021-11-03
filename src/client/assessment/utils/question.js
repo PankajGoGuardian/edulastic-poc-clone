@@ -1,4 +1,4 @@
-import { isObject, get, set, isEmpty, keys, isString } from 'lodash'
+import { isObject, get, set, isEmpty, keys, isString, isArray } from 'lodash'
 import { produce } from 'immer'
 import { appLanguages, questionType } from '@edulastic/constants'
 import { isValidUpdate } from '@edulastic/common'
@@ -226,18 +226,19 @@ export const changeDataInPreferredLanguage = (
           const { options: newOptions, responseIds } = newQuestion
           const { options: prevOptions } = prevQuestion
           const { dropDowns } = responseIds
-          dropDowns.forEach((dropdown) => {
-            const removedIndex = findRemovedIndex(
-              newOptions[dropdown.id],
-              prevOptions[dropdown.id]
-            )
-            if (removedIndex !== -1) {
-              draft.languageFeatures?.[langKey]?.options?.[dropdown.id]?.splice(
-                removedIndex,
-                1
+          if (isArray(dropDowns)) {
+            dropDowns.forEach((dropdown) => {
+              const removedIndex = findRemovedIndex(
+                newOptions[dropdown.id],
+                prevOptions[dropdown.id]
               )
-            }
-          })
+              if (removedIndex !== -1) {
+                draft.languageFeatures?.[langKey]?.options?.[
+                  dropdown.id
+                ]?.splice(removedIndex, 1)
+              }
+            })
+          }
         }
 
         const cleanLangData = {}

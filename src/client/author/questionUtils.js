@@ -1,5 +1,5 @@
 import { questionType, question, customTags, math } from '@edulastic/constants'
-import { get, isString, isEmpty, keys, keyBy } from 'lodash'
+import { get, isString, isEmpty, keys, keyBy, isNil, isNaN } from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage, notification } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
@@ -448,7 +448,7 @@ const showEmptyAnswerNotification = (item = {}) => {
  *  @returns {Array} - returns a tuple containing a boolean, which flags
  *  a question as complete or incomplete, and if incomplete, teh reason is the second element
  */
-export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
+export const isIncompleteQuestion = (item) => {
   // if its a resource type question just return.
   if (isEmpty(item)) {
     return [true, 'Question content should not be empty']
@@ -473,22 +473,16 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
   if (item.options && hasEmptyOptions(item)) {
     return [true, 'Answer choices should not be empty']
   }
-  // if not yet returned with an error, then it should be a fine question!
 
   if (!questionType.manuallyGradableQn.includes(item.type)) {
     const { score } = item?.validation?.validResponse || {}
     const { unscored = false } = item?.validation
 
-    // when item level scoring is on score is removed from the validation object
-    // so we should not validate question level score
-    const validateQuestionScore = itemLevelScoring === false
-    if (validateQuestionScore) {
-      if (score === undefined) {
-        return [true, 'Score needs to be set']
-      }
-      if (!unscored && parseFloat(score, 10) === 0) {
-        return [true, 'Score cannot be zero']
-      }
+    if (isNil(score) || isNaN(score)) {
+      return [true, 'Score needs to be set']
+    }
+    if (!unscored && parseFloat(score, 10) === 0) {
+      return [true, 'Score cannot be zero']
     }
   }
 
@@ -524,6 +518,8 @@ export const isIncompleteQuestion = (item, itemLevelScoring = false) => {
       msg: 'Saving with an empty correct/alternate answer.',
     })
   }
+
+  // if not yet returned with an error, then it should be a fine question!
 
   return [false]
 }

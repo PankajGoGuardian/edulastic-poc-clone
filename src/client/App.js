@@ -296,6 +296,7 @@ class App extends Component {
     let retries = 0
     const cb = () => {
       if (!window.pendo) return
+      if (typeof window.pendo.getCurrentUrl !== 'function') return
       window.removeEventListener('load', cb)
 
       // Issue:

@@ -77,6 +77,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
         disabled={disableResponse}
         onChange={(e) => save({ value: e.target.value, index }, 'inputs', id)}
         value={val}
+        data-cy='textInput'
         {...inputBoxStyle}
       />
     </InputDiv>

@@ -117,6 +117,7 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
       disableResponse={disableResponse}
       height={height}
       fontSize={uiStyles?.fontSize}
+      data-cy="mathInput"
     >
       {staticOrMathInput}
     </MathInputWrapper>

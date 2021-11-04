@@ -340,8 +340,22 @@ const ActionContainer = ({
       '_blank'
     )
   }
-  const { atlasProviderName, googleId, canvasCode, active: classStatus } =
-    selectedClass || {}
+  const { googleId, canvasCode, active: classStatus } = selectedClass || {}
+
+  const orgPolicy =
+    orgData?.policies?.institutions?.find(
+      (i) => i.institutionId === selectedClass.institutionId
+    ) ||
+    orgData?.policies?.district ||
+    {}
+  const { allowSchoology, allowClasslink } = orgPolicy
+  const atlasProviderName = selectedClass.atlasProviderName
+    ? selectedClass.atlasProviderName
+    : allowSchoology || allowClasslink
+    ? allowSchoology
+      ? 'Schoology'
+      : 'Classlink'
+    : null
 
   const getFormattedData = (arr) => {
     return arr.length > 1

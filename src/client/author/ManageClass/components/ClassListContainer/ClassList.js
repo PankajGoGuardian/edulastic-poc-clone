@@ -50,6 +50,9 @@ const ClassList = ({
   studentsList,
   setFilterClass,
   filterClass,
+  fetchCleverClassList,
+  cleverClassList,
+  loadingCleverClassList,
 }) => {
   const recentInstitute = institutions[institutions.length - 1]
   const findGrade = (_grade = []) =>
@@ -323,6 +326,9 @@ const ClassList = ({
         handleCanvasBulkSync={handleCanvasBulkSync}
         isClassLink={isClassLink}
         filterClass={filterClass}
+        fetchCleverClassList={fetchCleverClassList}
+        cleverClassList={cleverClassList}
+        loadingCleverClassList={loadingCleverClassList}
       />
       <MainContentWrapper>
         <SubHeader>

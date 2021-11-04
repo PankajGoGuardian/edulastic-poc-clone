@@ -957,9 +957,11 @@ function* syncClassWithCanvasSaga({ payload }) {
 function* syncClassWithAtlasSaga({ payload }) {
   try {
     const data = yield call(atlasApi.syncClassesWithAtlas, payload)
-    if (data.data.result.success)
+    if (data.data?.result?.success)
       notification({ type: 'success', messageKey: 'atlasClassSyncInProgress' })
-    if (!data.data.result.success)
+    else if (data.data?.message === 'No classes found in Atlas Account')
+      notification({ type: 'success', msg: data.data.message })
+    else if (!data.data?.result?.success)
       notification({ messageKey: 'classSyncWithAtlasFailed' })
   } catch (err) {
     captureSentryException(err)

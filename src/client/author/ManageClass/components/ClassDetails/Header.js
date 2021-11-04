@@ -117,7 +117,6 @@ const Header = ({
     active,
     atlasId = '',
     endDate,
-    atlasProviderName = '',
   } = selectedClass
   const { exitPath } = location?.state || {}
   const isDemoPlaygroundUser = user?.isPlayground
@@ -128,6 +127,21 @@ const Header = ({
   const [sentReq, setReqStatus] = useState(false)
   const [isClassExpired, setIsClassExpired] = useState(false)
   const [classEndDate, setClassEndDate] = useState()
+
+  const policy =
+    user?.orgData?.policies?.institutions?.find(
+      (i) => i.institutionId === institutionId
+    ) ||
+    user?.orgData?.policies?.district ||
+    {}
+  const { allowSchoology, allowClasslink } = policy
+
+  const atlasProviderName =
+    selectedClass?.atlasProviderName || allowSchoology || allowClasslink
+      ? allowSchoology
+        ? 'schoology'
+        : 'classlink'
+      : ''
 
   const toggleModal = (key) => {
     setModalStatus({ [key]: !isOpen[key] })
@@ -276,7 +290,7 @@ const Header = ({
 
   const handleAtlasSync = () => {
     setSyncClassLoading(true)
-    syncClassWithAtlas({ groupIds: [selectedClass._id] })
+    syncClassWithAtlas({ groupId: selectedClass._id })
   }
 
   useEffect(() => {

@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect, useState } from 'react'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
@@ -32,6 +32,9 @@ import AuthorCompleteSignupButton from '../../../../common/components/AuthorComp
 const Header = ({
   classGroups,
   fetchGoogleClassList,
+  fetchCleverClassList,
+  cleverClassList,
+  loadingCleverClassList,
   googleAllowedInstitutions,
   isUserGoogleLoggedIn,
   setShowCleverSyncModal,
@@ -50,6 +53,8 @@ const Header = ({
   isCleverDistrict,
   filterClass,
 }) => {
+  const [isCleverSyncEnabled, setIsCleverSyncEnabled] = useState(false)
+
   const { atlasId, cleverId, isPlayground } = user
 
   const atlasGroup = classGroups.find(
@@ -59,7 +64,20 @@ const Header = ({
         _group.atlasProviderName.toLowerCase()
       )
   )
+  const policy =
+    user?.orgData?.policies?.institutions?.find(
+      (i) => i.allowClasslink || i.allowSchoology
+    ) ||
+    user?.orgData?.policies?.district ||
+    {}
+  const { allowSchoology, allowClasslink } = policy
   const atlasProviderName = atlasGroup?.atlasProviderName
+    ? atlasGroup?.atlasProviderName
+    : allowSchoology || allowClasslink
+    ? allowSchoology
+      ? 'Schoology'
+      : 'Classlink'
+    : null
 
   const isCleverGroupPresent = classGroups.find((_group) => !!_group.cleverId)
 
@@ -105,17 +123,24 @@ const Header = ({
   }
 
   const handleSyncWithAtlas = () => {
-    const groupIds = classGroups
-      .filter((_group) => _group.atlasId)
-      .map((_group) => _group._id)
-    syncClassWithAtlas({ groupIds })
+    syncClassWithAtlas()
   }
   const handleSyncWithClever = () => {
-    const classList = classGroups
-      .filter((_group) => _group.cleverId)
-      .map((_group) => ({ ..._group, course: _group?.course?.id }))
-    syncCleverClassList({ classList, refreshPage })
+    setIsCleverSyncEnabled(true)
+    fetchCleverClassList()
   }
+
+  useEffect(() => {
+    if (!loadingCleverClassList && isCleverSyncEnabled) {
+      setIsCleverSyncEnabled(false)
+      if (cleverClassList.length) {
+        const classList = cleverClassList
+          .filter((_group) => _group.cleverId)
+          .map((_group) => ({ ..._group, course: _group?.course?.id }))
+        syncCleverClassList({ classList, refreshPage })
+      }
+    }
+  }, [loadingCleverClassList])
 
   const pageNavButtons = [
     {

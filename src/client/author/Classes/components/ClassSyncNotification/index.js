@@ -174,7 +174,7 @@ const ClassSyncNotificationListener = ({
 
   const showUserNotificationOnAtlasClassSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
-      const { status, message, counter, groupIds } = doc
+      const { status, message, counter, groupId } = doc
 
       if (
         status === 'completed' &&
@@ -194,8 +194,8 @@ const ClassSyncNotificationListener = ({
             )
           },
         })
-        if (getClassSyncLoading) {
-          fetchStudentsById({ classId: groupIds?.[0] })
+        if (getClassSyncLoading && groupId) {
+          fetchStudentsById({ classId: groupId })
           setSyncClassLoading(false)
         }
         fetchGroups()

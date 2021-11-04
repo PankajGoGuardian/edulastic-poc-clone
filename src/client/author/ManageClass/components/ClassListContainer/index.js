@@ -144,6 +144,9 @@ const ClassListContainer = ({
         syncClassWithAtlas={syncClassWithAtlas}
         syncCleverClassList={syncCleverClassList}
         refreshPage="manageClass"
+        fetchCleverClassList={fetchCleverClassList}
+        cleverClassList={cleverClassList}
+        loadingCleverClassList={loadingCleverClassList}
       />
     </>
   )

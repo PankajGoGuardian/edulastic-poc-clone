@@ -574,7 +574,7 @@ class QuestionWrapper extends Component {
             style={{ height: !isStudentReport && '100%' }}
           >
             <QuestionContainer
-              className={`fr-view question-container question-container-id-${data.id}`}
+              className={`fr-view question-container question-container-id-${data.testItemId}_${data.id}`}
               disabled={disabled}
               noPadding={noPadding}
               isFlex

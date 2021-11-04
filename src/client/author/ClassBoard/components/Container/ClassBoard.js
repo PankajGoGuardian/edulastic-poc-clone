@@ -529,9 +529,9 @@ class ClassBoard extends Component {
   getQuestions = () => {
     const { classResponse: { testItems = [] } = {} } = this.props
     let totalQuestions = []
-    testItems.forEach(({ data: { questions = [] } = {} }) =>
+    testItems.forEach(({ _id, data: { questions = [] } = {} }) =>
       questions.forEach((q) => {
-        totalQuestions = [...totalQuestions, q]
+        totalQuestions = [...totalQuestions, { ...q, itemId: _id }]
       })
     )
     return totalQuestions
@@ -603,7 +603,9 @@ class ClassBoard extends Component {
     }
     const { assignmentId, classId } = match.params
     const questions = this.getQuestions()
-    const index = questions.findIndex((x) => x.id === data.qid)
+    const index = questions.findIndex(
+      (x) => x.itemId === data.itemId && x.id === data.qid
+    )
 
     this.setState({
       selectedQuestion: index,

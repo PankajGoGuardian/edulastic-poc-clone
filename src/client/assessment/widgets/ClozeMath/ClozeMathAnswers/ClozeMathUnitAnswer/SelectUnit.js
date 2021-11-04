@@ -31,6 +31,7 @@ const SelectUnit = ({
   isPrintPreview,
   allOptions,
   id,
+  handleEvent,
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
     btn.types.includes(keypadMode)
@@ -102,6 +103,8 @@ const SelectUnit = ({
         onDropdownVisibleChange={onDropdownVisibleChange}
         dropdownStyle={dropdownStyle}
         ref={forwardedRef}
+        onFocus={() => handleEvent('focus')}
+        onBlur={() => handleEvent('blur')}
       >
         {allBtns.map((btn, i) => {
           return (
@@ -128,6 +131,7 @@ SelectUnit.propTypes = {
   width: PropTypes.string,
   disabled: PropTypes.bool.isRequired,
   getPopupContainer: PropTypes.func,
+  handleEvent: PropTypes.func,
 }
 
 SelectUnit.defaultProps = {
@@ -138,6 +142,7 @@ SelectUnit.defaultProps = {
   forwardedRef: {},
   width: '120px',
   getPopupContainer: (trigger) => trigger.parentNode,
+  handleEvent: () => {},
 }
 
 export default SelectUnit

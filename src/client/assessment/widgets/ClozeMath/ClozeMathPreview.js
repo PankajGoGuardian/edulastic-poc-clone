@@ -39,6 +39,7 @@ const ClozeMathPreview = ({
   enableMagnifier = false,
   hideCorrectAnswer,
   answerScore,
+  setDropDownInUse,
 }) => {
   const [newHtml, setNewHtml] = useState('')
   const { isAnswerModifiable } = useContext(AnswerContext)
@@ -267,6 +268,7 @@ const ClozeMathPreview = ({
             allOptions,
             answerScore,
             allCorrects,
+            setDropDownInUse,
             isLCBView,
             answersById,
           },

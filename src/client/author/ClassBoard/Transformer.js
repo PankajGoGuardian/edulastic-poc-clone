@@ -155,7 +155,7 @@ export const getQuestionLabels = (testItemsData = []) => {
       continue
     }
     if (item.data.questions.length === 1) {
-      result[item.data.questions[0].id] = {
+      result[`${item._id}_${item.data.questions[0].id}`] = {
         qLabel: i + 1,
         barLabel: `Q${i + 1}`,
       }
@@ -164,12 +164,12 @@ export const getQuestionLabels = (testItemsData = []) => {
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex]
         if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
-          result[q.id] = {
+          result[`${item._id}_${q.id}`] = {
             qLabel: `Q${qLabelCount}`,
             barLabel: `Q${qLabelCount++}`,
           }
         } else {
-          result[q.id] = {
+          result[`${item._id}_${q.id}`] = {
             qLabel: qIndex === 0 ? i + 1 : null,
             qSubLabel: alphabets[qIndex],
             barLabel: item.itemLevelScoring
@@ -494,14 +494,19 @@ export function getStandardsForStandardBasedReport(
   const standardsQuestionsMap = {}
   const items = cloneDeep(testItems)
   const questions = []
-  items.forEach(({ itemLevelScoring, data }) => {
+  items.forEach(({ itemLevelScoring, data, _id }) => {
     if (itemLevelScoring && data?.questions?.length) {
       const alignment = []
       data.questions.forEach((question) => {
         alignment.push(...(question.alignment || []))
         question.alignment = []
+        question.itemId = _id
       })
       data.questions[0].alignment = alignment
+    } else {
+      data.questions.forEach((question) => {
+        question.itemId = _id
+      })
     }
     questions.push(...data.questions)
   })
@@ -523,7 +528,7 @@ export function getStandardsForStandardBasedReport(
         standardsQuestionsMap[`${std.id}`] = {
           ...std,
           desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
-          qIds: [q.id],
+          qIds: [`${q.itemId}_${q.id}`],
           ...(std.name ? { identifier: std.name } : {}),
           ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id
         }

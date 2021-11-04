@@ -393,7 +393,7 @@ const MyClasses = ({
       }
 
       const imageUrl =
-        isBlocked && !isTrialExpired
+        isBlocked && !isTrialExpired && premiumImageUrl
           ? trialImageUrl
           : isTrialExpired
           ? premiumImageUrl

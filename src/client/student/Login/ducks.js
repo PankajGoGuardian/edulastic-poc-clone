@@ -1077,7 +1077,7 @@ function* signup({ payload }) {
         notification({ msg: _responseMsg })
       }
     } else {
-      if (result.existingUser && result.existingUser.passwordMatch) {
+      if (!result.existingUser) {
         notification({ type: 'info', messageKey: 'weAlreadyHaveAccount' })
       }
       const user = pick(result, userPickFields)

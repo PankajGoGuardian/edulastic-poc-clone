@@ -1038,7 +1038,15 @@ const removeImageTags = (text = '') => {
 
 export const removeHTMLTags = (text = '') => {
   if (typeof text !== 'string') return text
-  return text.trim().replace(/(<([^>]+)>)/gi, '')
+  return text
+    .trim()
+    .replace(/(<([^>]+)>)/gi, '')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&apos;/g, "'")
+    .replace(/&amp;/g, '&')
 }
 
 export const replaceLatexTemplate = (str) => {

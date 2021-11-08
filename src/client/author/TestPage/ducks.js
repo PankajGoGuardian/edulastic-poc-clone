@@ -117,6 +117,18 @@ const testItemStatusConstants = {
   ARCHIVED: 'archived',
 }
 
+export const testTypes = {
+  ASSESSMENT: 'assessment',
+  COMMON: 'common assessment',
+  PRACTICE: 'practice',
+  TESTLET: 'testlet',
+}
+
+export const testTypesToTestSettings = {
+  [testTypes.ASSESSMENT]: 'class',
+  [testTypes.COMMON]: 'common',
+  [testTypes.PRACTICE]: 'practice',
+}
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: 'Group 1' /* For now, auto-generated. */,
@@ -417,10 +429,22 @@ export const receiveTestByIdAction = (
   requestLatest,
   editAssigned,
   isPlaylist = false,
-  playlistId = undefined
+  playlistId = undefined,
+  options = {}
 ) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
-  payload: { id, requestLatest, editAssigned, isPlaylist, playlistId },
+  payload: {
+    id,
+    requestLatest,
+    editAssigned,
+    isPlaylist,
+    playlistId,
+    options: {
+      assigningNew: false,
+      from: null,
+      ...options,
+    },
+  },
 })
 
 export const receiveTestByIdSuccess = (entity) => ({
@@ -2033,6 +2057,15 @@ export function* receiveTestByIdSaga({ payload }) {
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
     yield put(getDefaultTestSettingsAction(entity))
+    yield take(SET_DEFAULT_SETTINGS_LOADING)
+    yield take(SET_DEFAULT_SETTINGS_LOADING)
+    const state = yield select((s) =>
+      pick(s, [
+        'performanceBandReducer',
+        'standardsProficiencyReducer',
+        'tests',
+      ])
+    )
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
@@ -2070,6 +2103,31 @@ export function* receiveTestByIdSaga({ payload }) {
       'closePolicy',
       'resources',
     ])
+    let assignmentSettings = yield select((s) => s.assignmentSettings)
+    if (payload.options?.assigningNew) {
+      const performanceBandId =
+        state.tests.defaultTestTypeProfiles.performanceBand[
+          testTypesToTestSettings[entity.testType]
+        ]
+      const standardProficiencyId =
+        state.tests.defaultTestTypeProfiles.standardProficiency[
+          testTypesToTestSettings[entity.testType]
+        ]
+      assignmentSettings = { ...assignmentSettings }
+      assignmentSettings.performanceBand = pick(
+        (state.performanceBandReducer?.profiles || []).find(
+          (pb) => pb._id === performanceBandId
+        ) || entity.performanceBand,
+        ['_id', 'name']
+      )
+      assignmentSettings.standardGradingScale = pick(
+        (state.standardsProficiencyReducer?.data || []).find(
+          (sp) => sp._id === standardProficiencyId
+        ) || entity.standardGradingScale,
+        ['_id', 'name']
+      )
+    }
+    yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {
     captureSentryException(err)

@@ -522,7 +522,7 @@ export function getStandardsForStandardBasedReport(
       if (standardsQuestionsMap[`${std.id}`]) {
         standardsQuestionsMap[`${std.id}`].qIds = uniq([
           ...standardsQuestionsMap[`${std.id}`].qIds,
-          q.id,
+          `${q.itemId}_${q.id}`,
         ])
       } else {
         standardsQuestionsMap[`${std.id}`] = {

@@ -1598,8 +1598,7 @@ class Setting extends Component {
                             {'If set to '}
                             <BlueText>ON</BlueText>, answer choices for multiple
                             choice and multiple select questions will be
-                            randomly shuffled for students. Text to speech does
-                            not work when the answer choices are shuffled.
+                            randomly shuffled for students.
                           </Description>
                         </Body>
                       </SettingContainer>

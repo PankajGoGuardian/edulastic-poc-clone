@@ -393,7 +393,7 @@ const MyClasses = ({
       }
 
       const imageUrl =
-        isBlocked && !isTrialExpired
+        isBlocked && !isTrialExpired && premiumImageUrl
           ? trialImageUrl
           : isTrialExpired
           ? premiumImageUrl
@@ -535,6 +535,11 @@ const MyClasses = ({
       )
       bannerSlides = bannerSlides.filter((banner) => banner?.config?.isCPM)
     }
+  } else {
+    filteredBundles = filteredBundles.filter(
+      (feature) => !feature?.config?.isCPM
+    )
+    bannerSlides = bannerSlides.filter((banner) => !banner?.config?.isCPM)
   }
 
   const handleInAppRedirect = (filters) => {

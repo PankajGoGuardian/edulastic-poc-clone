@@ -376,8 +376,26 @@ export default class API {
           if (data.response.status === 401) {
             Sentry.withScope((scope) => {
               scope.setTag('issueType', 'ForcedRedirection')
+              const token = getAccessToken()
+              if (token) {
+                const { _id: userId, exp, iat } = parseJwt(token)
+                scope.setExtra('tokenExpiryDetails', {
+                  exp,
+                  iat,
+                  userId,
+                })
+              }
             })
-            return window.dispatchEvent(new Event('user-token-expired'))
+            forceLogout()
+            const message = data?.response?.data?.message || ''
+            if (
+              message.includes('jwt must be provided') ||
+              message.includes('jwt expired')
+            ) {
+              window.dispatchEvent(new Event('user-token-expired'))
+              return Promise.resolve({ data: { result: null } })
+            }
+            window.location.href = '/login'
           }
           if (
             data.response.status === 409 &&

@@ -10,7 +10,12 @@ import { updateScratchpadAction, updateEditModeAction } from '../duck'
 import { ToolBoxContainer } from './styled'
 
 const Tools = (props) => {
-  const { scratchData, updateScratchpad, editScratchpad } = props
+  const {
+    scratchData,
+    updateScratchpad,
+    editScratchpad,
+    isDropDownInUse,
+  } = props
   const {
     fillColor,
     lineWidth,
@@ -60,7 +65,11 @@ const Tools = (props) => {
   }
 
   return (
-    <ToolBoxContainer alignItems="stretch" flexDirection="column">
+    <ToolBoxContainer
+      alignItems="stretch"
+      flexDirection="column"
+      isDropDownInUse={isDropDownInUse}
+    >
       <PerfectScrollbar options={{ suppressScrollY: true }}>
         <MainToolBox
           onChangeTool={onChangeTool}
@@ -88,11 +97,17 @@ const Tools = (props) => {
 
 Tools.propTypes = {
   scratchData: PropTypes.object.isRequired,
+  isDropDownInUse: PropTypes.bool,
+}
+
+Tools.defaultProps = {
+  isDropDownInUse: false,
 }
 
 export default connect(
   (state) => ({
     scratchData: state.scratchpad,
+    isDropDownInUse: state.ui.isDropDownInUse,
   }),
   {
     updateScratchpad: updateScratchpadAction,

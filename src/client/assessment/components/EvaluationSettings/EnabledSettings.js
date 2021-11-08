@@ -99,7 +99,7 @@ const EnabledSettings = ({
 
   return (
     <Container>
-      <ul>
+      <ul data-cy="enabledSettings">
         {optionsToShow.map((op) => (
           <li key={op.key}>
             <Desc text={replaceLatexTemplate(op.label)} />

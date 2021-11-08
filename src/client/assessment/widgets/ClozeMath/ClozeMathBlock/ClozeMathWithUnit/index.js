@@ -61,6 +61,17 @@ class ClozeMathWithUnit extends React.Component {
     save({ ...this.userAnswer, value: newValue, index }, 'mathUnits', id)
   }
 
+  handleEvent = (event) => {
+    const { resprops: { setDropDownInUse } = {} } = this.props || {}
+    if (typeof setDropDownInUse === 'function') {
+      if (event === 'focus') {
+        setDropDownInUse(true)
+      } else if (event === 'blur') {
+        setDropDownInUse(false)
+      }
+    }
+  }
+
   render() {
     const { resprops = {}, id } = this.props
     const {
@@ -95,6 +106,7 @@ class ClozeMathWithUnit extends React.Component {
         fontSize={btnStyle.fontSize}
         width={width}
         height={height}
+        data-cy='mathUnitInput'
       >
         <MathInput {...mathInputProps} resetMath />
         <SelectUnit
@@ -110,6 +122,7 @@ class ClozeMathWithUnit extends React.Component {
           allOptions={allOptions}
           id={id}
           height={height}
+          handleEvent={this.handleEvent}
         />
       </MathInputWrapper>
     )
@@ -127,6 +140,8 @@ const MathWithUnit = ({ resprops = {}, id }) => {
     showIndex,
     answerScore,
     allCorrects,
+    answersById,
+    isLCBView,
   } = resprops
   const { mathUnits = {} } = answers
 
@@ -163,6 +178,8 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       isPrintPreview={resprops.isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
+      answersById={answersById}
+      isLCBView={isLCBView}
     />
   ) : (
     <ClozeMathWithUnit resprops={{ ...resprops, height, width }} id={id} />

@@ -796,10 +796,7 @@ function* correctItemUpdateSaga({ payload }) {
     const testItems = get(classResponse, 'data.originalItems', [])
     const studentResponse = yield select((state) => state.studentResponse)
     const testItem = testItems.find((t) => t._id === testItemId) || {}
-    const [isIncomplete, errMsg] = isIncompleteQuestion(
-      question,
-      testItem.itemLevelScoring
-    )
+    const [isIncomplete, errMsg] = isIncompleteQuestion(question)
 
     if (isIncomplete) {
       notification({ msg: errMsg })
@@ -1101,12 +1098,12 @@ export const getItemSummary = (
         pendingEvaluation,
         isPractice,
       } = _activity
-
+      const itemQuestionKey = `${testItemId}_${_id}`
       let { notStarted, skipped } = _activity
 
       let skippedx = false
-      if (!questionMap[_id]) {
-        questionMap[_id] = {
+      if (!questionMap[itemQuestionKey]) {
+        questionMap[itemQuestionKey] = {
           _id,
           qLabel,
           barLabel,
@@ -1125,41 +1122,41 @@ export const getItemSummary = (
         }
       }
       if (testItemId) {
-        questionMap[_id].itemLevelScoring = true
-        questionMap[_id].itemId = testItemId
+        questionMap[itemQuestionKey].itemLevelScoring = true
+        questionMap[itemQuestionKey].itemId = testItemId
       }
 
       if (!notStarted) {
-        questionMap[_id].attemptsNum += 1
+        questionMap[itemQuestionKey].attemptsNum += 1
       } else if (score > 0) {
         notStarted = false
       } else {
-        questionMap[_id].notStartedNum += 1
+        questionMap[itemQuestionKey].notStartedNum += 1
       }
 
       if (skipped && score === 0 && !isPractice) {
-        questionMap[_id].skippedNum += 1
+        questionMap[itemQuestionKey].skippedNum += 1
         skippedx = true
       }
       if (score > 0) {
         skipped = false
       }
       if (isPractice) {
-        questionMap[_id].unscoredItems += 1
+        questionMap[itemQuestionKey].unscoredItems += 1
       } else if (
         (graded === false && !notStarted && !skipped && !score) ||
         pendingEvaluation
       ) {
-        questionMap[_id].manualGradedNum += 1
+        questionMap[itemQuestionKey].manualGradedNum += 1
       } else if (score === maxScore && !notStarted && score > 0) {
-        questionMap[_id].correctNum += 1
+        questionMap[itemQuestionKey].correctNum += 1
       } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
-        questionMap[_id].wrongNum += 1
+        questionMap[itemQuestionKey].wrongNum += 1
       } else if (score > 0 && score < maxScore) {
-        questionMap[_id].partialNum += 1
+        questionMap[itemQuestionKey].partialNum += 1
       }
       if (timeSpent && !notStarted) {
-        questionMap[_id].timeSpent += timeSpent
+        questionMap[itemQuestionKey].timeSpent += timeSpent
       }
     }
   }

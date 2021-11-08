@@ -35,7 +35,8 @@ const AuthorCompleteSignupButton = ({
   interestedSubjects = [],
   interestedGrades = [],
 }) => {
-  const { currentSignUpState: signupStatus } = user
+  const { currentSignUpState: signupStatus, orgData = {} } = user
+  const { classList = [] } = orgData
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
 
@@ -70,7 +71,8 @@ const AuthorCompleteSignupButton = ({
     const hasNoPreferences =
       roleuser.TEACHER === user.role &&
       interestedSubjects.length === 0 &&
-      interestedGrades.length === 0
+      interestedGrades.length === 0 &&
+      classList.length === 0
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
       hasNoPreferences ||

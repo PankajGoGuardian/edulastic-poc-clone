@@ -201,7 +201,7 @@ const transformTestItems = (props) => {
             icon: currentStudent.icon,
             color: currentStudent.color,
           }))
-          const label = labels[id] || {}
+          const label = labels[`${item._id}_${id}`] || {}
           if (!item.itemLevelScoring && qActivities[0]) {
             if (filter === 'unscoredItems' && !qActivities[0].isPractice) {
               return false

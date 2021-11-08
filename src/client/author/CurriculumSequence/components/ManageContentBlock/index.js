@@ -328,11 +328,31 @@ const ManageContentBlock = (props) => {
     deleteResource(payload)
   }
 
+  let filteredListToShow = []
+  const removeDuplicates = (list) => {
+    if (searchResourceBy === 'resources') {
+      filteredListToShow = list.reduce((unique, o) => {
+        if (!unique.some((obj) => obj.contentId === o.contentId)) {
+          unique.push(o)
+        }
+        return unique
+      }, [])
+    } else {
+      filteredListToShow = list.reduce((unique, o) => {
+        if (!unique.some((obj) => obj._id === o._id)) {
+          unique.push(o)
+        }
+        return unique
+      }, [])
+    }
+  }
+
   const renderList = () => {
     const listToRender = []
     if (searchResourceBy === 'resources') {
-      if (resources.length) {
-        resources.forEach((resource, idx) => {
+      removeDuplicates(resources)
+      if (filteredListToShow.length) {
+        filteredListToShow.forEach((resource, idx) => {
           if (idx === fetchCall) {
             listToRender.push(
               <div style={{ height: '1px' }} ref={lastResourceItemRef} />
@@ -368,8 +388,9 @@ const ManageContentBlock = (props) => {
       }
     }
     if (searchResourceBy === 'tests') {
-      if (tests.length) {
-        tests.forEach((test, idx) => {
+      removeDuplicates(tests)
+      if (filteredListToShow.length) {
+        filteredListToShow.forEach((test, idx) => {
           if (idx === fetchCall) {
             listToRender.push(
               <div style={{ height: '1px' }} ref={lastResourceItemRef} />

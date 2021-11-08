@@ -148,6 +148,7 @@ export const USE_FLOW_LAYOUT = '[itemDetail] is use flow layout'
 export const MOVE_WIDGET = '[itemDetail] move widget'
 export const ITEM_DETAIL_PUBLISH = '[itemDetail] publish test item'
 export const UPDATE_TESTITEM_STATUS = '[itemDetail] update test item status'
+export const UPDATE_COMPLETED = '[itemDetail] item update completed'
 export const ITEM_SET_REDIRECT_TEST = '[itemDetail] set redirect test id'
 export const ITEM_CLEAR_REDIRECT_TEST = '[itemDetail] clear redirect test id'
 export const DELETE_ITEM_DETAIL_WIDGET_APPLY =
@@ -393,6 +394,8 @@ const addItemToCartAction = (item) => ({
     fromItemDetail: true,
   },
 })
+
+export const itemUpdateCompletedAction = createAction(UPDATE_COMPLETED)
 
 // selectors
 
@@ -938,6 +941,7 @@ export function reducer(state = initialState, { type, payload }) {
     case DELETE_WIDGET_FROM_PASSAGE:
       return produce(state, (draft) => {
         draft.passage.structure.widgets.splice(payload, 1)
+        draft.passage.data.splice(payload, 1)
       })
 
     case UPDATE_TAB_TITLE:
@@ -981,6 +985,11 @@ export function reducer(state = initialState, { type, payload }) {
           ...state.item,
           status: payload,
         },
+      }
+    case UPDATE_COMPLETED:
+      return {
+        ...state,
+        updating: false,
       }
     case SAVE_CURRENT_EDITING_TEST_ID:
       return {
@@ -1248,6 +1257,7 @@ export function* updateItemSaga({ payload }) {
 
     if (isPassageWithQuestions && !questions.length) {
       notification({ messageKey: 'CannotSaveWithoutQuestions' })
+      yield put(itemUpdateCompletedAction())
       return null
     }
 
@@ -2087,12 +2097,6 @@ function* savePassage({ payload }) {
     if (isTestFlow) {
       // testId = yield select((state) => state.tests?.entity?._id)
 
-      if (currentRouterState) {
-        const routerTestId = currentRouterState.previousTestId
-        if (routerTestId) {
-          testId = routerTestId
-        }
-      }
       if (!testId || testId === 'undefined') {
         let passageItems = []
         if (updatedPassage?._id && updatedPassage?.testItems?.length > 1) {

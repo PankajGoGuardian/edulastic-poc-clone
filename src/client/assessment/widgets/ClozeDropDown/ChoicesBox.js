@@ -83,6 +83,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     cAnswers,
     responsecontainerindividuals,
     userSelections,
+    setDropDownInUse,
   } = resprops
 
   if (!id) return null
@@ -119,6 +120,16 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     return node.parentNode
   }
 
+  const handleEvent = (event) => {
+    if (typeof setDropDownInUse === 'function') {
+      if (event === 'focus') {
+        setDropDownInUse(true)
+      } else if (event === 'blur') {
+        setDropDownInUse(false)
+      }
+    }
+  }
+
   const dropdownMenuStyle = {
     top: styles?.height ? `${styles.height}px !important` : null,
     left: `0px !important`,
@@ -143,6 +154,8 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
         data-cy="drop_down_select"
         disabled={disableResponse}
         onChange={selectChange}
+        onFocus={() => handleEvent('focus')}
+        onBlur={() => handleEvent('blur')}
       >
         {options &&
           options[id] &&

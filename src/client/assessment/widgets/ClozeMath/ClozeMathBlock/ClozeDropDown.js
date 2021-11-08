@@ -27,6 +27,9 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     allOptions,
     answerScore,
     allCorrects,
+    setDropDownInUse,
+    answersById,
+    isLCBView,
   } = resprops
 
   const { dropDowns: _dropDownAnswers = [] } = answers
@@ -69,6 +72,16 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
 
   const getPopupContainer = (node) => {
     return node.parentNode
+  }
+
+  const handleEvent = (event) => {
+    if (typeof setDropDownInUse === 'function') {
+      if (event === 'focus') {
+        setDropDownInUse(true)
+      } else if (event === 'blur') {
+        setDropDownInUse(false)
+      }
+    }
   }
 
   if (isPrintPreview) {
@@ -123,6 +136,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
+      answersById={answersById}
+      isLCBView={isLCBView}
     />
   ) : (
     <DropdownWrapper
@@ -131,10 +146,13 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
     >
       <Dropdown
+        data-cy= 'textDropDown'
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={getPopupContainer}
         value={val}
+        onFocus={() => handleEvent('focus')}
+        onBlur={() => handleEvent('blur')}
         {...dropdownStyle}
       >
         {options &&

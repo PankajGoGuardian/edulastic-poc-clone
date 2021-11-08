@@ -15,6 +15,7 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { toggleAdvancedSections } from '../../../../../actions/questions'
+import { setDropDownInUseAction } from '../../../../../../student/Sidebar/ducks'
 import { Row } from '../../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../../styled/WidgetOptions/Col'
 
@@ -32,6 +33,7 @@ const UnitsDropdownPure = ({
   disabled,
   keypadMode = 'units_us',
   view,
+  setDropDownInUse,
 }) => {
   const [offset, updateOffset] = useState(keypadOffset)
 
@@ -133,6 +135,8 @@ const UnitsDropdownPure = ({
               visibility: item.showDropdown ? 'visible' : 'hidden',
               height: item.showDropdown ? '100%' : 0,
             }}
+            onFocus={() => setDropDownInUse(true)}
+            onBlur={() => setDropDownInUse(false)}
           >
             {allBtns.map((btn, i) => (
               <Option value={btn.handler} key={i}>
@@ -156,6 +160,7 @@ UnitsDropdownPure.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func,
   disabled: PropTypes.bool,
+  setDropDownInUse: PropTypes.func,
 }
 
 UnitsDropdownPure.defaultProps = {
@@ -164,12 +169,14 @@ UnitsDropdownPure.defaultProps = {
   disabled: false,
   selected: '',
   onChangeShowDropdown: () => null,
+  setDropDownInUse: () => {},
 }
 
 const enhance = compose(
   withNamespaces('assessment'),
   connect(null, {
     handleAdvancedOpen: toggleAdvancedSections,
+    setDropDownInUse: setDropDownInUseAction,
   })
 )
 

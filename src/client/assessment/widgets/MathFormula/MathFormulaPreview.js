@@ -324,7 +324,7 @@ class MathFormulaPreview extends Component {
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper>
+            <QuestionTitleWrapper data-cy="questionTitleWrapper">
               <MathFormulaDisplay
                 data-cy="preview-header"
                 style={{ marginBottom: 15 }}

@@ -21,6 +21,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
     isPrintPreview,
     answerScore,
     allCorrects,
+    answersById,
+    isLCBView,
   } = resprops
   const { inputs: _inputsAnwers = [] } = answers
   const {
@@ -66,6 +68,8 @@ const ClozeInput = ({ id, resprops = {} }) => {
       isPrintPreview={isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
+      answersById={answersById}
+      isLCBView={isLCBView}
     />
   ) : (
     <InputDiv>
@@ -73,6 +77,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
         disabled={disableResponse}
         onChange={(e) => save({ value: e.target.value, index }, 'inputs', id)}
         value={val}
+        data-cy='textInput'
         {...inputBoxStyle}
       />
     </InputDiv>

@@ -680,15 +680,39 @@ function* startAssignment({ payload }) {
       isPlaylist = false,
       studentRecommendation,
       safeBrowser,
+      lastAttemptId,
     } = payload
+
+    const institutionId = yield select(getCurrentSchool)
     const languagePreference = yield select(getSelectedLanguageSelector)
+    const groupType = 'class'
+    let testActivityId = null
+
     if (safeBrowser && !isSEB()) {
+      const testData = {
+        assignmentId,
+        groupId: classId,
+        institutionId,
+        groupType,
+        testId,
+      }
+      if (languagePreference) {
+        testData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(testData)
+      if (lastAttemptId) {
+        testActivityId = lastAttemptId
+      } else {
+        testActivityId = _id
+      }
       const sebUrl = getSebUrl({
         testId,
         testType,
         assignmentId,
+        testActivityId,
         groupId: classId,
       })
+
       yield put(push(`/home/assignments`))
       if (!handleChromeOsSEB()) {
         yield call(redirectToUrl(sebUrl))
@@ -717,7 +741,6 @@ function* startAssignment({ payload }) {
     // const classIds = yield select(getClassIds);
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
-    const institutionId = yield select(getCurrentSchool)
     const { isLoading } = yield select(getLoadAssignmentSelector)
     if (isLoading) {
       return
@@ -738,8 +761,6 @@ function* startAssignment({ payload }) {
       }
     }
 
-    const groupType = 'class'
-    let testActivityId = null
     if (studentRecommendation) {
       yield put(
         setIsActivityCreatingAction({

@@ -83,36 +83,39 @@ const ClozeMathPreview = ({
   }, [item?.validation, type, isExpressGrader])
 
   const answersById = useMemo(() => {
-    const validResponse = values(
-      omit(get(item, 'validation.validResponse', {}), ['score'])
-    )
-      .map((ans) => {
-        if (Array.isArray(ans)) {
-          return ans[0]
+    // this is required only in LCB view (in popover)
+    if (isLCBView) {
+      const validResponse = values(
+        omit(get(item, 'validation.validResponse', {}), ['score'])
+      )
+        .map((ans) => {
+          if (Array.isArray(ans)) {
+            return ans[0]
+          }
+          return ans.value
+        })
+        .map((ans) => ans[0])
+
+      const altResponses = get(item, 'validation.altResponses', []).map(
+        (altResponse) => {
+          const altAnswers = values(omit(altResponse, 'score'))
+            .map((ans) => {
+              if (Array.isArray(ans)) {
+                return ans[0]
+              }
+              return ans.value
+            })
+            .map((ans) => ans[0])
+          return keyBy(altAnswers, 'id')
         }
-        return ans.value
-      })
-      .map((ans) => ans[0])
+      )
 
-    const altResponses = get(item, 'validation.altResponses', []).map(
-      (altResponse) => {
-        const altAnswers = values(omit(altResponse, 'score'))
-          .map((ans) => {
-            if (Array.isArray(ans)) {
-              return ans[0]
-            }
-            return ans.value
-          })
-          .map((ans) => ans[0])
-        return keyBy(altAnswers, 'id')
+      return {
+        correctAnswers: keyBy(validResponse, 'id'),
+        altAnswers: altResponses,
       }
-    )
-
-    return {
-      correctAnswers: keyBy(validResponse, 'id'),
-      altAnswers: altResponses,
     }
-  }, [item?.validation])
+  }, [item?.validation, isLCBView])
 
   const uiStyles = useMemo(() => {
     const styles = {}

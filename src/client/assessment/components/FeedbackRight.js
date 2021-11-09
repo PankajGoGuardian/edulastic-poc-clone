@@ -516,6 +516,7 @@ class FeedbackRight extends Component {
 
     return (
       <StyledCardTwo
+        data-cy="feedbackContainer"
         bordered={isStudentName}
         disabled={disabled}
         showCollapseBtn={showCollapseBtn}
@@ -758,8 +759,6 @@ const GradingPolicyWrapper = styled.p`
   font-weight: 600;
   width: 100%;
   display: inline-block;
-  text-align: center;
-  background-color: #f8f8f8;
 `
 
 const GradingPolicy = styled.span`

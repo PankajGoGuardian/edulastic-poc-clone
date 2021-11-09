@@ -2,7 +2,7 @@ import React, { useState, useEffect, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
-
+import { EduButton } from '@edulastic/common'
 import {
   themeColor,
   themeColorBlue,
@@ -11,6 +11,8 @@ import {
   red,
   white,
 } from '@edulastic/colors'
+import UploadAgainConfirmationModal from './confirmation'
+
 import { omrSheetScanStatus } from '../utils'
 
 const SessionStatus = ({
@@ -28,6 +30,7 @@ const SessionStatus = ({
     }
   }, [fakeProgress])
 
+  const [showConfirmationModal, setShowConfirmationModal] = useState(false)
   const { success, failed, scanned, scanProgress } = useMemo(() => {
     const _success = pages.filter((p) => p.status === omrSheetScanStatus.DONE)
       .length
@@ -113,16 +116,16 @@ const SessionStatus = ({
               Successfully scanned responses have been recorded on Edulastic.
             </div>
             <div className="static-navigation-links">
-              <Link
+              <EduButton
                 data-cy="uploadAgainButton"
                 className="upload-again-link"
-                to={{
-                  pathname: '/uploadAnswerSheets',
-                  search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
-                }}
+                onClick={() => setShowConfirmationModal(true)}
+                isGhost
+                height="34px"
+                width="180px"
               >
                 Upload Again
-              </Link>
+              </EduButton>
               <Link
                 data-cy="viewLiveClassBoard"
                 className="live-classboard-link"
@@ -137,6 +140,13 @@ const SessionStatus = ({
           </>
         )}
       </div>
+      {showConfirmationModal && (
+        <UploadAgainConfirmationModal
+          assignmentId={assignmentId}
+          groupId={groupId}
+          setShowConfirmationModal={setShowConfirmationModal}
+        />
+      )}
     </SessionStatusContainer>
   )
 }
@@ -205,6 +215,9 @@ const SessionStatusContainer = styled.div`
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
+    button {
+      margin: 2.5px;
+    }
     a {
       color: ${themeColor};
       background-color: transparent;

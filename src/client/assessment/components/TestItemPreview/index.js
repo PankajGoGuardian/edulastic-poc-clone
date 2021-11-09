@@ -16,7 +16,6 @@ import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
-import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 import {
   getPageNumberSelector,
@@ -25,6 +24,7 @@ import {
 } from '../../../author/ClassBoard/ducks'
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 import { getUser } from '../../../author/src/selectors/user'
+import PassageDivider from '../../../common/components/PassageDivider'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -65,10 +65,7 @@ class TestItemPreview extends Component {
   setCollapseView = (dir) => {
     this.setState(
       (prevState) => ({
-        collapseDirection:
-          !prevState.toggleCollapseMode && prevState.collapseDirection
-            ? ''
-            : dir,
+        collapseDirection: !prevState.toggleCollapseMode ? dir : '',
       }),
       () => {
         const { changedPlayerContent } = this.props
@@ -78,15 +75,15 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
-    const { isLCBView, isStudentReport } = this.props
+    const { isReviewTab } = this.props
     const { collapseDirection } = this.state
+    if (isReviewTab) {
+      return null
+    }
     return (
-      <Divider
+      <PassageDivider
+        onChange={this.setCollapseView}
         collapseDirection={collapseDirection}
-        setCollapseView={this.setCollapseView}
-        hideMiddle={isLCBView}
-        isStudentReport={isStudentReport}
-        stackedView={this.showStackedView}
       />
     )
   }
@@ -460,50 +457,43 @@ class TestItemPreview extends Component {
                 if (hideColumn && showCollapseButtons) return ''
 
                 return (
-                  <>
-                    {(i > 0 || collapseDirection === 'left') &&
-                      showCollapseButtons &&
-                      this.renderCollapseButtons(i)}
-                    <TestItemCol
-                      {...restProps}
-                      showCollapseBtn={showCollapseButtons}
-                      evaluation={evaluation}
-                      key={i}
-                      colCount={cols.length}
-                      colIndex={i}
-                      col={
-                        collapseDirection ? { ...col, dimension: '100%' } : col
-                      }
-                      view="preview"
-                      metaData={metaData}
-                      preview={preview}
-                      scratchPadMode={scratchPadMode}
-                      colWidth={this.colWidthValue} // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
-                      multiple={cols.length > 1}
-                      style={this.getStyle(i !== cols.length - 1)}
-                      windowWidth={windowWidth}
-                      showFeedback={showFeedback}
-                      questions={questions}
-                      student={student}
-                      previewTab={previewTab}
-                      isSingleQuestionView={isSingleQuestionView}
-                      hideInternalOverflow={hideInternalOverflow}
-                      showStackedView={this.showStackedView}
-                      teachCherFeedBack={this.renderFeedback}
-                      hasDrawingResponse={hasDrawingResponse}
-                      isStudentAttempt={isStudentAttempt}
-                      isFeedbackVisible={isFeedbackVisible}
-                      testActivityId={testActivityId}
-                      studentData={studentData}
-                      currentStudent={currentStudent}
-                    />
-                    {collapseDirection === 'right' &&
-                      showCollapseButtons &&
-                      this.renderCollapseButtons(i)}
-                  </>
+                  <TestItemCol
+                    {...restProps}
+                    showCollapseBtn={showCollapseButtons}
+                    evaluation={evaluation}
+                    key={i}
+                    colCount={cols.length}
+                    colIndex={i}
+                    col={
+                      collapseDirection ? { ...col, dimension: '100%' } : col
+                    }
+                    view="preview"
+                    metaData={metaData}
+                    preview={preview}
+                    scratchPadMode={scratchPadMode}
+                    colWidth={this.colWidthValue} // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
+                    multiple={cols.length > 1}
+                    style={this.getStyle(i !== cols.length - 1)}
+                    windowWidth={windowWidth}
+                    showFeedback={showFeedback}
+                    questions={questions}
+                    student={student}
+                    previewTab={previewTab}
+                    isSingleQuestionView={isSingleQuestionView}
+                    hideInternalOverflow={hideInternalOverflow}
+                    showStackedView={this.showStackedView}
+                    teachCherFeedBack={this.renderFeedback}
+                    hasDrawingResponse={hasDrawingResponse}
+                    isStudentAttempt={isStudentAttempt}
+                    isFeedbackVisible={isFeedbackVisible}
+                    testActivityId={testActivityId}
+                    studentData={studentData}
+                    currentStudent={currentStudent}
+                  />
                 )
               })}
             </div>
+            {this.renderCollapseButtons()}
           </Container>
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}

@@ -107,7 +107,7 @@ import {
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import QuestionManageModal from '../QuestionManageModal'
-import PassageDivider from '../Divider'
+import PassageDivider from '../../../../common/components/PassageDivider'
 import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 
 const testItemStatusConstants = {
@@ -800,9 +800,9 @@ class Container extends Component {
   }
 
   handleCollapse = (dir) => {
-    this.setState((state) => ({
-      collapseDirection: state.collapseDirection ? '' : dir,
-    }))
+    this.setState({
+      collapseDirection: dir,
+    })
   }
 
   renderCollapseButtons = () => {

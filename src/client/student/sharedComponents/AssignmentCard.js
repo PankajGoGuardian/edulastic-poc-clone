@@ -281,7 +281,7 @@ const AssignmentCard = memo(
       if (!resume && attempted && !retakeConfirmation) {
         setShowRetakeModal(true)
       } else {
-        startTest()
+        safeBrowser ? startSEBTest() : startTest()
       }
     }
 
@@ -303,7 +303,7 @@ const AssignmentCard = memo(
             data-cy="start"
             btnName={t('common.startAssignment')}
             t={t}
-            startTest={startSEBTest}
+            startTest={checkRetakeOrStart}
             attempted={attempted}
             resume={resume}
           />
@@ -341,7 +341,11 @@ const AssignmentCard = memo(
     const onRetakeModalConfirm = () => {
       setShowRetakeModal(false)
       setRetakeConfirmation(true)
-      startTest()
+      if (safeBrowser) {
+        startSEBTest()
+      } else {
+        startTest()
+      }
     }
 
     let btnWrapperSize = 24

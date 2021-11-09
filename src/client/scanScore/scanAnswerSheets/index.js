@@ -565,6 +565,7 @@ const ScanAnswerSheetsInner = ({
             onChange={(v) => {
               setSelectedCamera(v)
             }}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <Option value={null}>Select Camera</Option>
             {cameraList.map((x) => (

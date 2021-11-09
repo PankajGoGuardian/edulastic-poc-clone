@@ -51,6 +51,16 @@
     "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "correctItemNotAllowDynamic": "Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually",
+    "helperText": {
+      "variableType": "Variables such as @a or @x can represent text, expressions or numbers.",
+      "combinationCount": "Enter the desired number of combinations of the parameters.",
+      "NUMBER_RANGE": "Here a random value is generated between the ranges specified. Specify the range using the min and max option. You can also specify the number of decimal places",
+      "NUMBER_SET": "You can specify a set of numbers, and the values generated are numbers that are randomly assigned from the set",
+      "NUMBER_SEQUENCE": "This option is useful with other dynamic parameters of sequence type. All variables of sequence type need to have the same number of items. The values generated are numbers/text picked out from each position in the sequence",
+      "TEXT_SET": "You can specify a set of words (or any text), and the values generated are words that are randomly assigned from the set",
+      "TEXT_SEQUENCE": "This option is useful with other dynamic parameters of sequence type. All variables of sequence type need to have the same number of items. The values generated are numbers/text picked out from each position in the sequence",
+      "FORMULA": "You can specify a formula using other dynamic variables generated earlier. We recommened you use this as the variable in the input box because you can use the advanced math settings to control the formula output. Example: if you want the student's answer to be a fraction, decimal, etc."
+    },
     "pendingEvaluation": {
       "text": "Evaluation is pending",
       "tooltip": " App failed to evaluate due to unexpected input format"
@@ -269,9 +279,12 @@
         "fraction": "Fraction",
         "mixedFraction": "Mixed Fraction"
       },
+      "cancel": "Cancel",
+      "confirm": "Confirm",
       "graphControls": "Graph Controls",
       "standardKeypadLabel": "Standard Keypads",
-      "keepAspectRatio": "Keep Aspect Ratio"
+      "keepAspectRatio": "Keep Aspect Ratio",
+      "removePrevDynamicValues": "This will clear all previously generated values. Do you wish to proceed?"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",

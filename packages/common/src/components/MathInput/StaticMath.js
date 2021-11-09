@@ -271,8 +271,9 @@ const StaticMath = ({
   useEffect(() => {
     if (!mQuill.current) return
     const { innerFields = [] } = mQuill.current
+    const hasNoInnerValues = isEmpty(innerValues)
     innerFields.forEach((field, indx) => {
-      const canWrite = innerValues && !field.latex()
+      const canWrite = (innerValues && !field.latex()) || hasNoInnerValues
       if (canWrite) {
         field.latex(innerValues[indx] || '')
       }

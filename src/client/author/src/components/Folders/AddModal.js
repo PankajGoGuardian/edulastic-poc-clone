@@ -64,6 +64,10 @@ const AddModal = ({
     }
   }, [folder, isRename])
 
+  useEffect(() => {
+    if (!visible) setFolderName('')
+  }, [visible])
+
   const handleCloseModal = () => {
     if (isOpenAddModal) {
       closeMoveModal({

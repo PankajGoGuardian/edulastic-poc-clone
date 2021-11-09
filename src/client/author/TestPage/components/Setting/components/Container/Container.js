@@ -36,6 +36,7 @@ import {
   getUserRole,
   getUserId,
 } from '../../../../../../student/Login/ducks'
+import { testTypesToTestSettings } from '../../../../../TestPage/ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 import {
   defaultTestTypeProfilesSelector,
@@ -674,6 +675,9 @@ class Setting extends Component {
       isEtsDistrict,
       t,
       testSettingsList = [],
+      performanceBandsData,
+      standardsData,
+      defaultTestTypeProfiles,
     } = this.props
     const {
       isDocBased,
@@ -694,8 +698,6 @@ class Setting extends Component {
       maxAttempts,
       grades,
       subjects,
-      performanceBand,
-      standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
@@ -717,6 +719,27 @@ class Setting extends Component {
       settingId: currentSettingsId = '',
       // referenceDocAttributes,
     } = entity
+
+    const performanceBand = pick(
+      performanceBandsData.find(
+        (pb) =>
+          pb._id ===
+          defaultTestTypeProfiles.performanceBand[
+            testTypesToTestSettings[testType]
+          ]
+      ),
+      ['_id', 'name']
+    )
+    const standardGradingScale = pick(
+      standardsData.find(
+        (sp) =>
+          sp._id ===
+          defaultTestTypeProfiles.standardProficiency[
+            testTypesToTestSettings[testType]
+          ]
+      ),
+      ['_id', 'name']
+    )
 
     let isSettingPresent = false
     if (

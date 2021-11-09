@@ -7,7 +7,7 @@ import {
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, isBoolean, keyBy } from 'lodash'
+import { curry, get, isBoolean, keyBy, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -28,6 +28,7 @@ import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
+  testTypesToTestSettings,
 } from '../../../TestPage/ducks'
 import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
@@ -144,6 +145,9 @@ class SimpleOptions extends React.Component {
       isReleaseScorePremium,
       userRole,
       features: { free, premium },
+      defaultTestTypeProfiles,
+      performanceBands,
+      standardsProficiencies,
     } = this.props
     let { assignment } = this.props
     if (field === 'class') {
@@ -214,6 +218,26 @@ class SimpleOptions extends React.Component {
             state.maxAttempts = 1
             state.maxAnswerChecks = 3
           }
+          state.performanceBand = pick(
+            performanceBands.find(
+              (pb) =>
+                pb._id ===
+                defaultTestTypeProfiles.performanceBand[
+                  testTypesToTestSettings[state.testType]
+                ]
+            ),
+            ['_id', 'name']
+          )
+          state.standardGradingScale = pick(
+            standardsProficiencies.find(
+              (sp) =>
+                sp._id ===
+                defaultTestTypeProfiles.standardProficiency[
+                  testTypesToTestSettings[state.testType]
+                ]
+            ),
+            ['_id', 'name']
+          )
           break
         }
         case 'passwordPolicy': {
@@ -691,6 +715,13 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
+      defaultTestTypeProfiles: get(state, 'tests.defaultTestTypeProfiles', {}),
+      performanceBands: get(state, 'performanceBandReducer.profiles', []),
+      standardsProficiencies: get(
+        state,
+        'standardsProficiencyReducer.data',
+        []
+      ),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

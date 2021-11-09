@@ -223,7 +223,7 @@ class SimpleOptions extends React.Component {
               (pb) =>
                 pb._id ===
                 defaultTestTypeProfiles.performanceBand[
-                  testTypesToTestSettings[state.testType]
+                  testTypesToTestSettings[value]
                 ]
             ),
             ['_id', 'name']
@@ -233,7 +233,7 @@ class SimpleOptions extends React.Component {
               (sp) =>
                 sp._id ===
                 defaultTestTypeProfiles.standardProficiency[
-                  testTypesToTestSettings[state.testType]
+                  testTypesToTestSettings[value]
                 ]
             ),
             ['_id', 'name']

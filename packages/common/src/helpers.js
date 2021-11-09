@@ -608,12 +608,13 @@ export const getRangeAtFirst = () => {
 }
 
 /**
- *
+ * @param {string | null} parent container class name
  * @param {string} className class name of new element, default is 'token active-word
  * @param {string} tag new element tag name, default is span
  * @returns {boolean}
  */
 export const highlightSelectedText = (
+  parentClass,
   className = 'token active-word',
   tag = 'span',
   style,
@@ -661,6 +662,14 @@ export const highlightSelectedText = (
     (startContainer && startContainer.parentNode.className === className)
   ) {
     notification({ messageKey: 'selectionError' })
+    clearSelection()
+    return
+  }
+
+  if (
+    (parentClass && !startContainer.parentNode.classList.contains(parentClass),
+    !endContainer.parentNode.classList.contains(parentClass))
+  ) {
     clearSelection()
     return
   }

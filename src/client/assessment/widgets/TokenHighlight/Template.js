@@ -118,7 +118,7 @@ const Template = ({
   }
 
   const handleCustomTokenize = () => {
-    if (highlightSelectedText()) {
+    if (highlightSelectedText('edu-highlight-token')) {
       updateCount(customTokenCount + 1)
     }
   }
@@ -150,7 +150,7 @@ const Template = ({
           _token += childNodes[i].outerHTML
         }
       }
-      tokens.push({ value: _token, active: false })
+      tokens.push({ value: removeTokenFromHtml(_token), active: false })
       setQuestionData(
         produce(item, (draft) => {
           draft.templeWithTokens = tokens
@@ -231,7 +231,7 @@ const Template = ({
                   dangerouslySetInnerHTML={{
                     __html: customTokenTemplate,
                   }}
-                  className="token"
+                  className="token edu-highlight-token"
                 />
               </RefContext.Provider>
             )}

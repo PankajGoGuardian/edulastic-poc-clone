@@ -186,6 +186,7 @@ const PassageView = ({
   const onSelectColor = (color) => {
     if (color !== 'remove') {
       highlightSelectedText(
+        null, // parent container class, needed in token highlight type
         'text-heighlight',
         highlightTag,
         {

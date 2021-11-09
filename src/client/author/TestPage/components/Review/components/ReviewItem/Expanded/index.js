@@ -70,7 +70,7 @@ const Expanded = ({
   }
   const widgetsWithResource = {
     ...questions,
-    ...keyBy(testItem?.data?.resources || [], 'id'),
+    ...keyBy(testItem?.data?.resources || [], (r) => `${testItem._id}_${r.id}`),
     ...passageContent,
   }
   let points = 0
@@ -184,6 +184,7 @@ const Expanded = ({
             testItem
             isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
             premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            itemIdKey={testItem._id}
           />
         </AnswerContext.Provider>
       </FlexContainer>
@@ -248,6 +249,7 @@ const Expanded = ({
                       isPassageWithMultipleQuestions
                     }
                     isExpandedView
+                    itemIdKey={testItem._id}
                   />
                 </div>
               </AnswerContext.Provider>
@@ -260,7 +262,11 @@ const Expanded = ({
               <FlexContainer flexDirection="column" style={{ margin: 0 }}>
                 <PointsLabel>Points</PointsLabel>
                 {!isUnScoredItem &&
-                !get(questions, `${qId}.validation.unscored`, false) ? (
+                !get(
+                  questions,
+                  `${testItem._id}_${qId}.validation.unscored`,
+                  false
+                ) ? (
                   <NumberInputStyled
                     min={0}
                     width="108px"

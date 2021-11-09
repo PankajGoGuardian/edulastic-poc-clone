@@ -200,7 +200,9 @@ class AuthorTestItemPreview extends Component {
 
     // const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
     const question = changeDataToPreferredLanguage(
-      questions[widget.reference] || {},
+      questions[`${item._id}_${widget.reference}`] ||
+        questions[widget.reference] ||
+        {},
       authorLanguage
     )
     // if (isMultiPart || resourceCount > 0) {

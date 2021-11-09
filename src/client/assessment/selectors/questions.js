@@ -26,6 +26,8 @@ export const getQuestionsByIdSelector = createSelector(
       question.customKeys = allCustomKeys
     })
 
-    return keyBy(convertedInPreferredLang, 'id')
+    return keyBy(convertedInPreferredLang, (q) =>
+      q.type === 'passage' ? q.id : `${q.testItemId}_${q.id}`
+    )
   }
 )

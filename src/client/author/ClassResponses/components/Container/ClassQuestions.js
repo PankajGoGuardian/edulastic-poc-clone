@@ -318,8 +318,8 @@ const Preview = ({
   const questions = get(item, ['data', 'questions'], [])
   const resources = get(item, ['data', 'resources'], [])
   let questionsKeyed = {
-    ..._keyBy(questions, 'id'),
-    ..._keyBy(resources, 'id'),
+    ..._keyBy(questions, (q) => `${item._id}_${q.id}`),
+    ..._keyBy(resources, (r) => `${item._id}_${r.id}`),
   }
   let passage = {}
   if (item.passageId && passages.length) {

@@ -138,7 +138,12 @@ const getQuestions = (testItems = []) => {
   testItems.forEach((item) => {
     if (item.data) {
       const { questions = [], resources = [] } = item.data
-      allQuestions.push(...questions, ...resources)
+      allQuestions.push(
+        ...[...questions, ...resources].map((q) => ({
+          ...q,
+          testItemId: item._id,
+        }))
+      )
     }
   })
 
@@ -709,7 +714,13 @@ function* loadTest({ payload }) {
       const passageItems = test.passages.map((passage) => passage.data || [])
       questions = [...flatten(passageItems), ...questions]
     }
-    yield put(loadQuestionsAction(_keyBy(questions, 'id')))
+    yield put(
+      loadQuestionsAction(
+        _keyBy(questions, (q) =>
+          q.type === 'passage' ? q.id : `${q.testItemId}_${q.id}`
+        )
+      )
+    )
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!

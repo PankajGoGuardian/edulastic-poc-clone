@@ -602,7 +602,10 @@ class PreviewModal extends React.Component {
       fullModal,
       isRejectMode,
     } = this.state
-    const resources = keyBy(get(item, 'data.resources', []), 'id')
+    const resources = keyBy(
+      get(item, 'data.resources', []),
+      (r) => `${item._id}_${r.id}`
+    )
 
     let allWidgets = { ...questions, ...resources }
     const { authors = [], rows, data = {} } = item || {}

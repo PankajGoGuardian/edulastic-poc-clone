@@ -186,7 +186,7 @@ const CheckedBlock = ({
   isLCBView,
 }) => {
   const { responseIds } = item
-  const { index } = find(responseIds[type], (res) => res.id === id)
+  const { index = '' } = find(responseIds[type], (res) => res.id === id) || {}
   const { unit = '' } = userAnswer || {}
   /**
    * certain keys already have the \text{} format, like \text{ft}^{2}

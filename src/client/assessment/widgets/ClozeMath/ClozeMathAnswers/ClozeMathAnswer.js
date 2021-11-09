@@ -97,7 +97,11 @@ class ClozeMathAnswer extends Component {
           bordered={false}
           expandIconPosition="right"
           expandIcon={({ isActive }) =>
-            isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />
+            isActive ? (
+              <Icon type="caret-up" />
+            ) : (
+              <Icon type="caret-down" data-cy="clozeMathAnswer" />
+            )
           }
         >
           {answers.map((answer) => {

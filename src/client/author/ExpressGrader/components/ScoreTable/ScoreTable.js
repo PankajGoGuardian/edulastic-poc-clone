@@ -178,7 +178,7 @@ class ScoreTable extends Component {
 
   render() {
     let columnInfo = []
-    const { testActivity, tableData } = this.props
+    const { testActivity, tableData, isDemoProxy } = this.props
     const columnsLength =
       testActivity && testActivity.length !== 0
         ? testActivity[0].questionActivities.length
@@ -189,7 +189,8 @@ class ScoreTable extends Component {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength)
     }
 
-    const scrollY = window.innerHeight - 250
+    const whiteSpace = isDemoProxy ? 290 : 250
+    const scrollY = window.innerHeight - whiteSpace
     // 40 sice of each cell in table + 3 overlapped padding
     const showY = tableData.length * 43 > scrollY
 

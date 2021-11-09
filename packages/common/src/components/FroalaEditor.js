@@ -260,7 +260,7 @@ const CustomEditor = ({
             !canInsert(this.selection.endElement()) ||
             !beforeUpload(image[0])
           ) {
-            clipboardImage.remove()
+            clipboardImage?.remove()
             this.popups.hideAll()
             return false
           }
@@ -272,7 +272,7 @@ const CustomEditor = ({
             })
             .catch((e) => {
               console.error(e)
-              clipboardImage.remove()
+              clipboardImage?.remove()
               this.popups.hideAll()
               notification({ messageKey: 'imageUploadErr' })
             })

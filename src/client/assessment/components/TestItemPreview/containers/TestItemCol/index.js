@@ -87,6 +87,7 @@ class TestItemCol extends Component {
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
       colIndex,
+      itemIdKey,
       ...restProps
     } = this.props
     const {
@@ -98,9 +99,12 @@ class TestItemCol extends Component {
       isFeedbackVisible,
       hideCorrectAnswer,
       isShowStudentWork,
+      itemId,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
-    const question = questions[widget.reference]
+    const question =
+      questions[`${itemId || itemIdKey}_${widget.reference}`] ||
+      questions[widget.reference]
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question.id
     )

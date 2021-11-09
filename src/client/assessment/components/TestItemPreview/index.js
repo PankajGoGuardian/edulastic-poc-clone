@@ -166,6 +166,7 @@ class TestItemPreview extends Component {
       itemLevelScoring,
       t,
       isQuestionView,
+      itemIdKey,
     } = this.props
 
     const [
@@ -176,7 +177,9 @@ class TestItemPreview extends Component {
       colIndex,
       stackedView,
     })
-    const question = questions[widget.reference]
+    const question =
+      questions[`${itemId || itemIdKey}_${widget.reference}`] ||
+      questions[widget.reference]
     const isPracticeQuestion = itemLevelScoring
       ? every(questions, ({ validation }) => validation && validation.unscored)
       : get(question, 'validation.unscored', false)

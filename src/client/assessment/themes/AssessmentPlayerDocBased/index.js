@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
-import { isEmpty, sortBy } from 'lodash'
+import { isEmpty, sortBy, keyBy } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 
@@ -141,7 +141,7 @@ class AssessmentPlayerDocBased extends React.Component {
       t,
       docUrl,
       annotations,
-      questionsById,
+      questionsById: _questionsById,
       answers,
       answersById,
       loading,
@@ -156,6 +156,7 @@ class AssessmentPlayerDocBased extends React.Component {
       hidePause,
     } = this.props
 
+    const questionsById = keyBy(Object.values(_questionsById), 'id')
     const item = items[0]
     const dropdownOptions = item?.data?.questions
       ?.filter((q) => q.type !== questionType.SECTION_LABEL)

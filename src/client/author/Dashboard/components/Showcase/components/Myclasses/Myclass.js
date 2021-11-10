@@ -464,8 +464,6 @@ const MyClasses = ({
     )
   }
 
-  const startupBannerTiles = ['2 min overview', 'demo playground']
-
   if (isSingaporeMath) {
     if (
       user?.orgData?.defaultGrades?.length > 0 &&
@@ -502,9 +500,7 @@ const MyClasses = ({
         (feature) => feature?.config?.isSingaporeMath
       )
       bannerSlides = bannerSlides.filter(
-        (banner) =>
-          banner?.config?.isSingaporeMath ||
-          startupBannerTiles?.includes(banner?.description?.toLowerCase())
+        (banner) => banner?.config?.isSingaporeMath
       )
     }
   } else {
@@ -537,11 +533,7 @@ const MyClasses = ({
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isCPM
       )
-      bannerSlides = bannerSlides.filter(
-        (banner) =>
-          banner?.config?.isCPM ||
-          startupBannerTiles?.includes(banner?.description?.toLowerCase())
-      )
+      bannerSlides = bannerSlides.filter((banner) => banner?.config?.isCPM)
     }
   } else {
     filteredBundles = filteredBundles.filter(

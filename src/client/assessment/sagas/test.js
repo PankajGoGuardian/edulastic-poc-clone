@@ -708,7 +708,9 @@ function* loadTest({ payload }) {
     yield put(
       loadQuestionsAction(
         _keyBy(questions, (q) =>
-          q.type === 'passage' ? q.id : `${q.testItemId}_${q.id}`
+          q.type === 'passage' || q.type === 'video'
+            ? q.id
+            : `${q.testItemId}_${q.id}`
         )
       )
     )

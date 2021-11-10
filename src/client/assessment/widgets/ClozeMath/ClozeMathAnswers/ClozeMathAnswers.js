@@ -747,6 +747,7 @@ const ClozeMathAnswers = ({
         </Row>
       </CorrectAnswerContainer>
       <CheckboxLabel
+        data-cy="ignoreCase"
         onChange={() =>
           handleValidationOptionsChange(
             'ignoreCase',
@@ -758,6 +759,7 @@ const ClozeMathAnswers = ({
         {t('component.multipart.ignoreCase')}
       </CheckboxLabel>
       <CheckboxLabel
+        data-cy="allowSingleLetterMistake"
         onChange={() =>
           handleValidationOptionsChange(
             'allowSingleLetterMistake',
@@ -769,6 +771,7 @@ const ClozeMathAnswers = ({
         {t('component.multipart.allowsinglelettermistake')}
       </CheckboxLabel>
       <CheckboxLabel
+        data-cy="mixAndMatchAltAnswer"
         onChange={() =>
           handleValidationOptionsChange(
             'mixAndMatch',

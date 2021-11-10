@@ -88,7 +88,6 @@ class TestItemCol extends Component {
       toggleStudentWorkCollapse,
       colIndex,
       itemIdKey,
-      testItemId,
       ...restProps
     } = this.props
     const {
@@ -101,6 +100,7 @@ class TestItemCol extends Component {
       hideCorrectAnswer,
       isShowStudentWork,
       itemId,
+      testItemId,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question =

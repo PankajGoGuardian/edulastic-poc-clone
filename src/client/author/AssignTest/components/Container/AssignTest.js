@@ -137,6 +137,7 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       location,
       addRecommendedResourcesAction,
+      setAssignments,
     } = this.props
 
     if (isSAWithoutSchools) {
@@ -150,6 +151,7 @@ class AssignTest extends React.Component {
     resetStudents()
 
     const { testId } = match.params
+    setAssignments([])
     loadClassList({
       districtId: userOrgId,
       search: {

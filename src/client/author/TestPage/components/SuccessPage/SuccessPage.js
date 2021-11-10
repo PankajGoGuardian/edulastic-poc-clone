@@ -36,6 +36,7 @@ import {
   getTestSelector,
   getUserListSelector as getTestSharedListSelector,
   receiveTestByIdAction,
+  removeTestEntityAction,
 } from '../../ducks'
 import {
   Container,
@@ -132,7 +133,9 @@ class SuccessPage extends React.Component {
   }
 
   componentWillUnmount() {
+    const { isAssignSuccess, removeTestEntity } = this.props
     this.timer && clearTimeout(this.timer)
+    if (isAssignSuccess) removeTestEntity()
   }
 
   handleAssign = () => {
@@ -660,6 +663,7 @@ const enhance = compose(
       googleSyncAssignment: googleSyncAssignmentAction,
       setShareWithGCInProgress: setShareWithGCInProgressAction,
       setUser: setUserAction,
+      removeTestEntity: removeTestEntityAction,
     }
   )
 )

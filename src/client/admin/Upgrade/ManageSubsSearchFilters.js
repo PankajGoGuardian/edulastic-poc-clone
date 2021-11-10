@@ -54,7 +54,8 @@ const SearchFilters = Form.create({
       })
     }
 
-    const handleSelectLicense = () => {
+    const handleSelectLicense = (searchType) => {
+      setSearchType(searchType)
       resetFields(['organisation'])
       resetFields(['username'])
     }

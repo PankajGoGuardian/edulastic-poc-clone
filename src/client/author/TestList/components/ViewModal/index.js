@@ -149,19 +149,27 @@ class ViewModal extends React.Component {
     this.setState({ showCloneOptions: false })
   }
 
-  componentDidMount() {
-    const { item } = this.props
+  componentDidUpdate(prevProps) {
+    const { item, isShow } = this.props
+    const { prevItem } = prevProps
     if (item?.cw || item?.sharedType === 'PUBLIC') {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState({ summaryLoading: true, summary: null })
-      TestsApi.getSummary(item._id)
-        .then((summary) => {
-          this.setState({ summary, summaryLoading: false })
-        })
-        .catch((e) => {
-          console.warn('error loading tests', e)
-          this.setState({ summaryLoading: false })
-        })
+      if (
+        isShow != prevProps?.isShow &&
+        isShow &&
+        item?._id != prevItem?._id &&
+        item?._id
+      ) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({ summaryLoading: true, summary: null })
+        TestsApi.getSummary(item._id)
+          .then((summary) => {
+            this.setState({ summary, summaryLoading: false })
+          })
+          .catch((e) => {
+            console.warn('error loading tests', e)
+            this.setState({ summaryLoading: false })
+          })
+      }
     }
   }
 

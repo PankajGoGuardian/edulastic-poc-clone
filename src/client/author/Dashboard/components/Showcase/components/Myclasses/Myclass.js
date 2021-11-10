@@ -482,33 +482,14 @@ const MyClasses = ({
             feature?.config?.excludedPublishers?.includes('Singapore Math')
           )
       )
-      bannerSlides = bannerSlides.filter(
-        (banner) =>
-          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
-          !banner?.description?.toLowerCase()?.includes('spark math') &&
-          !(
-            banner?.description?.toLowerCase()?.includes('engage ny') &&
-            banner?.description?.toLowerCase()?.includes('math')
-          ) &&
-          !(
-            banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
-            banner?.config?.excludedPublishers?.includes('Singapore Math')
-          )
-      )
     } else {
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isSingaporeMath
-      )
-      bannerSlides = bannerSlides.filter(
-        (banner) => banner?.config?.isSingaporeMath
       )
     }
   } else {
     filteredBundles = filteredBundles.filter(
       (feature) => !feature?.config?.isSingaporeMath
-    )
-    bannerSlides = bannerSlides.filter(
-      (banner) => !banner?.config?.isSingaporeMath
     )
   }
 
@@ -523,23 +504,15 @@ const MyClasses = ({
           !feature?.description?.toLowerCase()?.includes('spark math') &&
           !feature?.config?.excludedPublishers?.includes('CPM')
       )
-      bannerSlides = bannerSlides.filter(
-        (banner) =>
-          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
-          !banner?.description?.toLowerCase()?.includes('spark math') &&
-          !banner?.config?.excludedPublishers?.includes('CPM')
-      )
     } else {
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isCPM
       )
-      bannerSlides = bannerSlides.filter((banner) => banner?.config?.isCPM)
     }
   } else {
     filteredBundles = filteredBundles.filter(
       (feature) => !feature?.config?.isCPM
     )
-    bannerSlides = bannerSlides.filter((banner) => !banner?.config?.isCPM)
   }
 
   const handleInAppRedirect = (filters) => {

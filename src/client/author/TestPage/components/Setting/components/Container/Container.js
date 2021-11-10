@@ -2143,7 +2143,7 @@ class Setting extends Component {
                       setSettingsData={(val) =>
                         this.updateTestData('performanceBand')(val)
                       }
-                      performanceBand={performanceBand}
+                      performanceBand={performanceBand || {}}
                       disabled={!owner || !isEditable || !performanceBands}
                       isFeatureAvailable={performanceBands}
                     />
@@ -2156,7 +2156,7 @@ class Setting extends Component {
 
                   <Block id="standards-proficiency" smallSize={isSmallSize}>
                     <StandardProficiencyTable
-                      standardGradingScale={standardGradingScale}
+                      standardGradingScale={standardGradingScale || {}}
                       setSettingsData={(val) =>
                         this.updateTestData('standardGradingScale')(val)
                       }

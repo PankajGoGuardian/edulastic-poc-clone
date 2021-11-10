@@ -183,7 +183,7 @@ const MiscellaneousGroupContainer = ({
           <PeformanceBand
             disabled={freezeSettings || !performanceBands}
             setSettingsData={(val) => overRideSettings('performanceBand', val)}
-            performanceBand={performanceBand}
+            performanceBand={performanceBand || {}}
             isFeatureAvailable={performanceBands}
             fromAssignments
           />
@@ -204,7 +204,7 @@ const MiscellaneousGroupContainer = ({
         <DivBlock>
           <StandardProficiencyTable
             disabled={freezeSettings || !premium}
-            standardGradingScale={standardGradingScale}
+            standardGradingScale={standardGradingScale || {}}
             setSettingsData={(val) =>
               overRideSettings('standardGradingScale', val)
             }

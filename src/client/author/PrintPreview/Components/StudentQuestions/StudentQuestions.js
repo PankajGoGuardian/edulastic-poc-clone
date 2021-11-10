@@ -56,6 +56,7 @@ function Preview({ item, passages, evaluation }) {
         multipartItem={multipartItem}
         isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+        itemIdKey={item._id}
       />
     </Content>
   )

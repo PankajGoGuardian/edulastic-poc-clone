@@ -18,6 +18,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import AppConfig from '../../app-config'
+import { getTextToSpeechPlaybackSpeed } from '../author/sharedDucks/testPlayer'
 import { setCurrentAudioDetailsAction } from './actions/test'
 import { curentPlayerDetailsSelector } from './selectors/test'
 
@@ -48,6 +49,7 @@ const AudioControls = ({
   page,
   hideVisibility,
   isPremiumContentWithoutAccess = false,
+  ttsPlaybackSpeed,
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -70,6 +72,7 @@ const AudioControls = ({
         src: srcArr,
         preload: false,
         html5: true,
+        rate: parseFloat(ttsPlaybackSpeed),
       })
 
       resolve(sound)
@@ -209,7 +212,7 @@ const AudioControls = ({
       stopAllAudios()
       Howler.unload()
     }
-  }, [qId])
+  }, [qId, ttsPlaybackSpeed])
 
   const handlePlayPauseAudio = () => {
     if (loading || !currentHowl) {
@@ -362,6 +365,7 @@ const AudioControls = ({
 export default connect(
   (state) => ({
     currentPlayingDetails: curentPlayerDetailsSelector(state),
+    ttsPlaybackSpeed: getTextToSpeechPlaybackSpeed(state),
   }),
   {
     setCurrentPlayingDetails: setCurrentAudioDetailsAction,

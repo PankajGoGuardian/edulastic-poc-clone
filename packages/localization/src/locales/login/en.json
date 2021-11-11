@@ -55,7 +55,7 @@
         "shortpassword": "Password is too short - must be at least 4 characters.",
         "validemail": "Please provide a valid Email id.",
         "joinschool": "Join your school",
-        "collaboratetext": "Collaborate with your colleagues and more",
+        "collaboratetext": "To find your school or district, enter the US zip code. International schools, please enter your city first.",
         "searchschool": "Search by Zip, Name or City",
         "requestnewschool": "REQUEST A NEW SCHOOL",
         "request": "Request",

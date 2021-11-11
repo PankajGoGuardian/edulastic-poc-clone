@@ -566,6 +566,10 @@ class App extends Component {
         }
 
         if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          localStorage.setItem(
+            'schoologyAssignmentRedirectUrl',
+            location.pathname
+          )
           redirectRoute = `/district/${urlSearch.get('shortName')}`
         } else if (!user.authenticating) {
           redirectRoute = '/login'

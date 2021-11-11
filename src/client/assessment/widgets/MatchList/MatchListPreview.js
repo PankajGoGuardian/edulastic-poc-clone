@@ -16,10 +16,11 @@ import {
   QuestionSubLabel,
   QuestionContentWrapper,
   AssessmentPlayerContext,
+  withWindowSizes,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { ChoiceDimensions } from '@edulastic/constants'
-import { white } from '@edulastic/colors'
+import { tabletWidth, white } from '@edulastic/colors'
 
 import Instructions from '../../components/Instructions'
 import {
@@ -81,6 +82,7 @@ const MatchListPreview = ({
   updateOptionsToStore,
   optionsFromStore,
   hideCorrectAnswer,
+  windowWidth,
 }) => {
   const {
     possibleResponses: posResponses,
@@ -341,7 +343,8 @@ const MatchListPreview = ({
     fontWeight: theme.widgets.matchList.dragItemFontWeight,
     color: theme.widgets.matchList.dragItemColor,
     minWidth: dragItemMinWidth,
-    maxWidth: 335,
+    maxWidth:
+      (windowWidth > parseInt(tabletWidth, 10) && dragItemMaxWidth) || 335,
     overflow: 'hidden',
     transform: 'translate3d(0px, 0px, 0px)',
     minHeight: flag !== 'ans' ? choiceMinHeight : '100%',
@@ -506,6 +509,7 @@ MatchListPreview.propTypes = {
   setQuestionData: PropTypes.func.isRequired,
   changePreview: PropTypes.func.isRequired,
   changePreviewTab: PropTypes.func.isRequired,
+  windowWidth: PropTypes.string.isRequired,
   evaluation: PropTypes.object,
   isReviewTab: PropTypes.bool,
 }
@@ -522,6 +526,7 @@ MatchListPreview.defaultProps = {
 
 const enhance = compose(
   withNamespaces('assessment'),
+  withWindowSizes,
   withTheme,
   connect(
     (state, ownProps) => ({

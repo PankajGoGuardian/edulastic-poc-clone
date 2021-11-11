@@ -229,14 +229,14 @@ const MathFormulaAnswerMethod = ({
       {/* This needs only for Math w/Units in ClozMath type */}
       {(item.showDropdown || (isClozeMathWithUnit && showDefaultMode)) && (
         <StyledRow gutter={24}>
-          <Col span={6}>
+          <Col span={6} data-cy="unitType">
             <Label data-cy="unit-dropdown-default-mode">
               {t('component.options.defaultMode')}
             </Label>
             <DefaultKeyPadMode onChange={onChange} keypadMode={keypadMode} />
           </Col>
           {keypadMode === 'custom' && (
-            <Col span={8}>
+            <Col span={8} data-cy="customKey">
               <CustomUnit onChange={onChange} customUnits={customUnits} />
             </Col>
           )}

@@ -68,7 +68,7 @@ const ClozeMathUnitAnswer = ({
     </div>
   )
   return (
-    <AnswerContainer>
+    <AnswerContainer data-cy="answerContainer">
       <StyledCollapse
         onChange={() => {}}
         bordered={false}

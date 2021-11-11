@@ -105,10 +105,11 @@ const SelectUnit = ({
         ref={forwardedRef}
         onFocus={() => handleEvent('focus')}
         onBlur={() => handleEvent('blur')}
+        data-cy="selectUnitDropdown"
       >
         {allBtns.map((btn, i) => {
           return (
-            <Option value={btn.handler} key={i}>
+            <Option value={btn.handler} key={i} data-cy={btn.dataCy}>
               {getLabel(btn)}
             </Option>
           )

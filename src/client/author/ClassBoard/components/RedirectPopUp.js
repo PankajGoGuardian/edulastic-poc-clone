@@ -132,7 +132,10 @@ const RedirectPopUp = ({
         const selectedStudentsTestActivity = testActivity.filter(
           (item) =>
             studentsToRedirect[item.studentId] &&
-            some(item.questionActivities, (o) => o.skipped || !o.correct)
+            some(
+              item.questionActivities.filter((o) => o.maxScore != 0),
+              (o) => o.skipped || !o.correct
+            )
         )
         _selected = selectedStudentsTestActivity.map((item) => item.studentId)
       }

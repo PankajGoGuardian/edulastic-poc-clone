@@ -23,6 +23,7 @@ import {
   toNumber,
   isNaN,
   isEmpty,
+  isEqual,
 } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component, useEffect } from 'react'
@@ -107,6 +108,17 @@ class FeedbackRight extends Component {
   static contextType = AnswerContext
 
   componentDidUpdate(prevProps) {
+    const {
+      studentQuestionResponseUpdatedAt: prevStudentQuestionResponseUpdatedAt,
+      isClassResponseLoading: prevIsClassResponseLoading,
+      classQuestionResponseData: prevClassQuestionResponseData,
+    } = prevProps
+    const {
+      studentQuestionResponseUpdatedAt,
+      isClassResponseLoading,
+      classQuestionResponseData,
+    } = this.props
+
     if (prevProps?.widget?.activity && !this.props?.widget?.activity) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ score: 0 })
@@ -119,28 +131,22 @@ class FeedbackRight extends Component {
         changed: false,
       })
     }
-    // Express grader
+
+    /**
+     * Express grader, Question Centric, Student Centric
+     * Enable inputs after score gets updated
+     */
     if (
-      prevProps?.studentQuestionResponseUpdatedAt !==
-      this.props?.studentQuestionResponseUpdatedAt
+      prevStudentQuestionResponseUpdatedAt !==
+        studentQuestionResponseUpdatedAt ||
+      prevIsClassResponseLoading !== isClassResponseLoading ||
+      !isEqual(prevClassQuestionResponseData, classQuestionResponseData)
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         isRubricDisabled: false,
         isScoreInputDisabled: false,
       })
-    }
-
-    // Student view
-    if (
-      prevProps?.isClassResponseLoading !== this.props?.isClassResponseLoading
-    ) {
-      // eslint-disable-next-line react/no-did-update-set-state
-      this.setState((prevState) => ({
-        ...prevState,
-        isRubricDisabled: this.props?.isClassResponseLoading,
-        isScoreInputDisabled: this.props?.isClassResponseLoading,
-      }))
     }
   }
 
@@ -447,7 +453,6 @@ class FeedbackRight extends Component {
       disabled,
       isPracticeQuestion,
       isAbsolutePos,
-      isClassResponseLoading,
     } = this.props
     const {
       score,
@@ -547,8 +552,6 @@ class FeedbackRight extends Component {
                   disabled={
                     isPresentationMode ||
                     isPracticeQuestion ||
-                    studentResponseLoading ||
-                    isClassResponseLoading ||
                     isScoreInputDisabled
                   }
                   ref={this.scoreInput}
@@ -575,7 +578,7 @@ class FeedbackRight extends Component {
             rubricFeedback={rubricFeedback}
             currentScore={activity?.score}
             onRubricResponse={this.handleRubricResponse}
-            isRubricDisabled={isClassResponseLoading || isRubricDisabled}
+            isRubricDisabled={isRubricDisabled}
             onChangeScore={this.onChangeScore(showGradingRubricButton)}
             clearRubricFeedback={clearRubricFeedback}
             InputType={InputType}
@@ -660,6 +663,7 @@ const enhance = compose(
       isClassResponseLoading: state?.studentResponse?.loading,
       studentQuestionResponseUpdatedAt:
         state?.studentQuestionResponse?.data?.updatedAt,
+      classQuestionResponseData: state.classQuestionResponse.data,
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

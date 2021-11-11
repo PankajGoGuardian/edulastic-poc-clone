@@ -23,7 +23,7 @@ import {
   IconClose,
 } from '@edulastic/icons'
 import { Icon, Select, Tooltip, Col, Row, Spin } from 'antd'
-import { find } from 'lodash'
+import { find, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
@@ -150,8 +150,8 @@ class ViewModal extends React.Component {
   }
 
   componentDidMount() {
-    const { item } = this.props
-    if (item?.cw || item?.sharedType === 'PUBLIC') {
+    const { item, userId } = this.props
+    if (!isEmpty(userId) && (item?.cw || item?.sharedType === 'PUBLIC')) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ summaryLoading: true, summary: null })
       TestsApi.getSummary(item._id)
@@ -284,6 +284,7 @@ class ViewModal extends React.Component {
       alignment,
       interestedCurriculums
     )
+    const standards = interestedStandards?.map((x) => x.identifier)
     const owner = authors.some((o) => o._id === userId)
     const contanier = (
       <>
@@ -649,9 +650,6 @@ class ViewModal extends React.Component {
                 {summary?.groupSummary?.length > 1 ||
                 itemGroups?.[0]?.type === 'AUTOSELECT' ? (
                   summary?.groupSummary?.map((group, i) => {
-                    const standards = interestedStandards?.map(
-                      (x) => x.identifier
-                    )
                     return (
                       <>
                         <GroupName>{itemGroups[i]?.groupName}</GroupName>
@@ -682,15 +680,18 @@ class ViewModal extends React.Component {
                       <ListHeaderCell>POINTS</ListHeaderCell>
                     </ListHeader>
                     {!!summary?.standards?.length &&
-                      summary.standards.map((data) => (
-                        <ListRow data-cy={data.identifier}>
-                          <ListCell>
-                            <SammaryMark>{data.identifier}</SammaryMark>
-                          </ListCell>
-                          <ListCell>{data.totalQuestions}</ListCell>
-                          <ListCell>{data.totalPoints}</ListCell>
-                        </ListRow>
-                      ))}
+                      summary.standards.map(
+                        (data) =>
+                          standards.includes(data.identifier) && (
+                            <ListRow data-cy={data.identifier}>
+                              <ListCell>
+                                <SammaryMark>{data.identifier}</SammaryMark>
+                              </ListCell>
+                              <ListCell>{data.totalQuestions}</ListCell>
+                              <ListCell>{data.totalPoints}</ListCell>
+                            </ListRow>
+                          )
+                      )}
                     {summary?.noStandards?.totalQuestions > 0 && (
                       <ListRow>
                         <ListCell>

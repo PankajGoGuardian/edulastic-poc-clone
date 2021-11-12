@@ -98,6 +98,7 @@ import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
 import { answersByQId } from '../../assessment/selectors/test'
+import { multiFind } from '../../common/utils/main'
 
 const {
   ITEM_GROUP_TYPES,
@@ -2059,13 +2060,6 @@ export function* receiveTestByIdSaga({ payload }) {
     yield put(getDefaultTestSettingsAction(entity))
     yield take(SET_DEFAULT_SETTINGS_LOADING)
     yield take(SET_DEFAULT_SETTINGS_LOADING)
-    const state = yield select((s) =>
-      pick(s, [
-        'performanceBandReducer',
-        'standardsProficiencyReducer',
-        'tests',
-      ])
-    )
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
@@ -2103,27 +2097,39 @@ export function* receiveTestByIdSaga({ payload }) {
       'closePolicy',
       'resources',
     ])
+    const state = yield select((s) => ({
+      performanceBands: get(s, 'performanceBandReducer.profiles', []),
+      standardsProficiencies: get(s, 'standardsProficiencyReducer.data', []),
+      defaultTestTypeProfiles: get(s, 'tests.defaultTestTypeProfiles', {}),
+    }))
     let assignmentSettings = yield select((s) => s.assignmentSettings)
     if (payload.options?.assigningNew) {
       const performanceBandId =
-        state.tests.defaultTestTypeProfiles.performanceBand[
+        state.defaultTestTypeProfiles.performanceBand?.[
           testTypesToTestSettings[entity.testType]
         ]
       const standardProficiencyId =
-        state.tests.defaultTestTypeProfiles.standardProficiency[
+        state.defaultTestTypeProfiles.standardProficiency?.[
           testTypesToTestSettings[entity.testType]
         ]
       assignmentSettings = { ...assignmentSettings }
       assignmentSettings.performanceBand = pick(
-        (state.performanceBandReducer?.profiles || []).find(
-          (pb) => pb._id === performanceBandId
-        ) || entity.performanceBand,
+        multiFind(
+          state.performanceBands,
+          [{ _id: entity.performanceBand._id }, { _id: performanceBandId }],
+          entity.performanceBand
+        ),
         ['_id', 'name']
       )
       assignmentSettings.standardGradingScale = pick(
-        (state.standardsProficiencyReducer?.data || []).find(
-          (sp) => sp._id === standardProficiencyId
-        ) || entity.standardGradingScale,
+        multiFind(
+          state.standardsProficiencies,
+          [
+            { _id: entity.standardGradingScale._id },
+            { _id: standardProficiencyId },
+          ],
+          entity.standardGradingScale
+        ),
         ['_id', 'name']
       )
     }

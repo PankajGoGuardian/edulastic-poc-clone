@@ -14,6 +14,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import { multiFind } from '../../../../common/utils/main'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -219,22 +220,32 @@ class SimpleOptions extends React.Component {
             state.maxAnswerChecks = 3
           }
           state.performanceBand = pick(
-            performanceBands.find(
-              (pb) =>
-                pb._id ===
-                defaultTestTypeProfiles.performanceBand[
-                  testTypesToTestSettings[value]
-                ]
+            multiFind(
+              performanceBands,
+              [
+                {
+                  _id:
+                    defaultTestTypeProfiles.performanceBand[
+                      testTypesToTestSettings[value]
+                    ],
+                },
+              ],
+              state.performanceBand
             ),
             ['_id', 'name']
           )
           state.standardGradingScale = pick(
-            standardsProficiencies.find(
-              (sp) =>
-                sp._id ===
-                defaultTestTypeProfiles.standardProficiency[
-                  testTypesToTestSettings[value]
-                ]
+            multiFind(
+              standardsProficiencies,
+              [
+                {
+                  _id:
+                    defaultTestTypeProfiles.standardProficiency[
+                      testTypesToTestSettings[value]
+                    ],
+                },
+              ],
+              state.standardGradingScale
             ),
             ['_id', 'name']
           )

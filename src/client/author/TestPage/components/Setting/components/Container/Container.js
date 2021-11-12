@@ -97,6 +97,7 @@ import { skinTypesOrder } from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
+import { multiFind } from '../../../../../../common/utils/main'
 
 const {
   settingCategories,
@@ -256,6 +257,7 @@ class Setting extends Component {
       defaultTestTypeProfiles,
       isReleaseScorePremium,
       disableAnswerOnPaper,
+      entity: { testType },
     } = this.props
     switch (key) {
       case 'testType': {
@@ -357,6 +359,42 @@ class Setting extends Component {
           notification({ messageKey: 'answerOnPaperNotSupportedForThisTest' })
           return
         }
+        break
+      case 'performanceBand':
+        value = pick(
+          multiFind(
+            performanceBandsData,
+            [
+              { _id: value._id },
+              {
+                _id:
+                  defaultTestTypeProfiles.performanceBand[
+                    testTypesToTestSettings[testType]
+                  ],
+              },
+            ],
+            value
+          ),
+          ['_id', 'name']
+        )
+        break
+      case 'standardGradingScale':
+        value = pick(
+          multiFind(
+            standardsData,
+            [
+              { _id: value._id },
+              {
+                _id:
+                  defaultTestTypeProfiles.standardProficiency[
+                    testTypesToTestSettings[testType]
+                  ],
+              },
+            ],
+            value
+          ),
+          ['_id', 'name']
+        )
         break
       default:
         break
@@ -865,30 +903,38 @@ class Setting extends Component {
       (testStatus === 'draft' || editEnable)
     const disabled = !owner || !isEditable
 
-    const performanceBand = disabled
-      ? pick(
-          performanceBandsData.find(
-            (pb) =>
-              pb._id ===
+    const performanceBand = pick(
+      multiFind(
+        performanceBandsData,
+        [
+          { _id: _performanceBand._id },
+          {
+            _id:
               defaultTestTypeProfiles.performanceBand[
                 testTypesToTestSettings[testType]
-              ]
-          ),
-          ['_id', 'name']
-        )
-      : _performanceBand
-    const standardGradingScale = disabled
-      ? pick(
-          standardsData.find(
-            (sp) =>
-              sp._id ===
+              ],
+          },
+        ],
+        _performanceBand
+      ),
+      ['_id', 'name']
+    )
+    const standardGradingScale = pick(
+      multiFind(
+        standardsData,
+        [
+          { _id: _standardGradingScale._id },
+          {
+            _id:
               defaultTestTypeProfiles.standardProficiency[
                 testTypesToTestSettings[testType]
-              ]
-          ),
-          ['_id', 'name']
-        )
-      : _standardGradingScale
+              ],
+          },
+        ],
+        _standardGradingScale
+      ),
+      ['_id', 'name']
+    )
 
     const applyEBSRComponent = () => {
       return (

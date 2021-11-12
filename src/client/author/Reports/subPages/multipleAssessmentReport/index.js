@@ -280,6 +280,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                pageTitle={pageTitle}
               />
             )
           }}

@@ -166,6 +166,7 @@ export {
   getInnerValuesForStatic,
   reformatMathInputLatex,
   getMathHtml,
+  removeLeadingAndTrailingNewlineChars,
 } from './src/utils/mathUtils'
 
 export {

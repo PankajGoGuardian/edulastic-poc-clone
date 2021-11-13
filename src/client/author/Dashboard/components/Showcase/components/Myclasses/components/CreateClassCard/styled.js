@@ -15,6 +15,7 @@ export const CreateClassCardWrapper = styled.div`
   border-style: dashed;
   margin-top: ${({ newCreateClassCard }) => (newCreateClassCard ? '10px' : '')};
   text-align: center;
+  margin-right: 10px;
   & > .ClassSyncActionButton > p {
     margin-left: 4px;
     & > svg {
@@ -24,12 +25,12 @@ export const CreateClassCardWrapper = styled.div`
 `
 
 export const CreateClassTitle = styled.p`
-  font-size: 14px;
+  font-size: 16px;
   font-weight: bold;
   color: ${greyThemeDark1};
 `
 export const InfoText = styled.p`
-  font-size: 13px;
+  font-size: 14px;
   max-width: 270px;
   color: ${greyThemeDark1};
 `

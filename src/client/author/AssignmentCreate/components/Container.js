@@ -1,5 +1,5 @@
 import { EduButton, MainContentWrapper, MainHeader } from '@edulastic/common'
-import { IconPlaylist, IconTestBank } from '@edulastic/icons'
+import { IconNewFile, IconPlaylist, IconTestBank } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
@@ -13,10 +13,8 @@ import { SecondHeader } from '../../TestPage/components/Summary/components/Conta
 import BodyWrapper from '../common/BodyWrapper'
 import CardComponent from '../common/CardComponent'
 import CountWrapper from '../common/CountWrapper'
-import Divider from '../common/Divider'
 import FlexWrapper from '../common/FlexWrapper'
 import IconWrapper from '../common/IconWrapper'
-import LinkWrapper from '../common/LinkWrapper'
 import TextWrapper from '../common/TextWrapper'
 import TextWrapperBold from '../common/TextWrapperBold'
 import { AlignMiddle } from '../common/Title'
@@ -61,52 +59,57 @@ class Container extends Component {
               >
                 <CardComponent>
                   <IconWrapper marginBottom="0px">
-                    <IconPlaylist style={{ height: '40px', width: '40px' }} />
+                    <IconPlaylist height="20" width="20" />
                   </IconWrapper>
                   <TitleWrapper>Choose From Playlist</TitleWrapper>
                   <TextWrapper>
-                    Select pre built tests from the Curriculum aligned
+                    Select pre built tests from the Curriculum <br /> aligned
                     assessment playlist
                   </TextWrapper>
-                  <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
-                    <EduButton isGhost width="234px">
-                      PLAYLIST
-                    </EduButton>
-                  </Link>
-                  <Divider />
                   <CountWrapper>191</CountWrapper>
                   <TextWrapperBold>
                     Pre-built Assessment in Playlist
                   </TextWrapperBold>
+                  <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
+                    <EduButton isGhost width="180px">
+                      PLAYLIST
+                    </EduButton>
+                  </Link>
                 </CardComponent>
               </FeaturesSwitch>
-              <CardComponent ml="25px">
+              <CardComponent>
                 <IconWrapper marginBottom="0px">
-                  <IconTestBank style={{ height: '40px', width: '40px' }} />
+                  <IconTestBank height="20" width="20" />
                 </IconWrapper>
                 <TitleWrapper>Choose From Library</TitleWrapper>
                 <TextWrapper>
                   Select pre built assessment from the <br /> Edulastic Library
                 </TextWrapper>
-                <Link to="/author/tests">
-                  <EduButton isGhost width="234px">
-                    BROWSE ALL
-                  </EduButton>
-                </Link>
-                <Divider />
                 <CountWrapper>191211</CountWrapper>
                 <TextWrapperBold>
                   Pre-built assessment in Library
                 </TextWrapperBold>
+                <Link to="/author/tests">
+                  <EduButton isGhost width="180px">
+                    BROWSE ALL
+                  </EduButton>
+                </Link>
               </CardComponent>
-            </FlexWrapper>
-            <FlexWrapper justifyContent="center" marginBottom="0px">
-              <Link to="/author/tests/select">
-                <LinkWrapper marginBottom="0px">
-                  {' '}
-                  Or Author a Test &gt;&gt;
-                </LinkWrapper>
-              </Link>
+              <CardComponent>
+                <IconWrapper marginBottom="0px">
+                  <IconNewFile height="22" width="18" />
+                </IconWrapper>
+                <TitleWrapper>Author a Test</TitleWrapper>
+                <TextWrapper>
+                  Create test using questions from the <br /> library or author
+                  your own.
+                </TextWrapper>
+                <Link to="/author/tests/select">
+                  <EduButton isGhost width="180px">
+                    Create Test
+                  </EduButton>
+                </Link>
+              </CardComponent>
             </FlexWrapper>
           </BodyWrapper>
         </MainContentWrapper>

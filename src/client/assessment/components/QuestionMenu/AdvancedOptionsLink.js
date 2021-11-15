@@ -11,7 +11,7 @@ const AdvancedOptionsLink = ({ bottom, isPremiumUser }) => (
       <FieldLabel nowrap="normal">
         Enable
         <Link to="/author/profile" replace>
-          <span className="power-use">&nbsp;power use&nbsp;</span>
+          <span className="power-use">&nbsp;Power User&nbsp;</span>
         </Link>
         mode for advanced authoring options
       </FieldLabel>

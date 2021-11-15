@@ -543,6 +543,22 @@ const defaultNumberPad = [
   '\\div',
 ]
 
+const dynamicVarChecks = [
+  'isSimplifiedFraction',
+  'isImproperFraction',
+  'isMixedFraction',
+  'isRationalized',
+  'isSimplifiedExpression',
+  'isFactorised',
+  'isExpanded',
+  'integerType',
+  'scientificType',
+  'isDecimal',
+  'isExponentialForm',
+  'tolerance',
+  'significantDecimalPlaces',
+]
+
 module.exports = {
   methods,
   methodOptions,
@@ -567,4 +583,5 @@ module.exports = {
   GRAPH_EVALUATION_SETTING,
   simplifiedOptions,
   NO_KEYPAD,
+  dynamicVarChecks,
 }

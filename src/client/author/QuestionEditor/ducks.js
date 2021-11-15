@@ -1215,6 +1215,10 @@ function* generateVariableSaga({ payload }) {
       }
     }
 
+    if (newQuestion.rdv) {
+      delete newQuestion.rdv
+    }
+
     yield put({
       type: UPDATE_QUESTION_REQUEST,
       payload: newQuestion,

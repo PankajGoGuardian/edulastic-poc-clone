@@ -81,8 +81,16 @@ function LCBAssignmentSettings({
     }
   }, [additionalData])
 
-  const { startDate, endDate, status, dueDate } =
+  const { startDate, endDate, status, dueDate, allowedOpenDate } =
     assignment?.['class']?.[0] || {}
+
+  const showAllowedOpenDate =
+    status === assignmentStatusOptions.NOT_OPEN &&
+    openPolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE &&
+    allowedOpenDate
+
+  const startDateToShow = showAllowedOpenDate ? allowedOpenDate : startDate
+
   const changeField = (key) => (value) => {
     if (key === 'scoringType') {
       return
@@ -96,6 +104,14 @@ function LCBAssignmentSettings({
         messageKey: 'pleaseSelectYourPreferedStartDate',
       })
     } else if (
+      key === 'openPolicy' &&
+      value !== assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+    ) {
+      notification({
+        type: 'info',
+        messageKey: 'pleaseSelectYourPreferedOpenDate',
+      })
+    } else if (
       key === 'closePolicy' &&
       value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
     ) {
@@ -103,6 +119,8 @@ function LCBAssignmentSettings({
         type: 'info',
         messageKey: 'pleaseSelectYourPreferedDueDate  ',
       })
+    } else if (key === 'startDate' && showAllowedOpenDate) {
+      return changeAttrs({ key: 'allowedOpenDate', value })
     }
     changeAttrs({ key, value })
   }
@@ -138,7 +156,7 @@ function LCBAssignmentSettings({
                 Settings for <span>{className}</span>
               </ClassHeading>
               <DateSelector
-                startDate={moment(startDate)}
+                startDate={moment(startDateToShow)}
                 endDate={moment(endDate)}
                 dueDate={dueDate ? moment(dueDate) : undefined}
                 changeField={changeField}

@@ -2592,7 +2592,10 @@ function* publishTestSaga({ payload }) {
       notification({ type: 'success', messageKey: 'publishedPlaylist' })
     }
     if (assignFlow) {
-      let update = { timedAssignment: _test?.timedAssignment }
+      let update = {
+        timedAssignment: _test?.timedAssignment,
+        showRubricToStudents: _test.showRubricToStudents,
+      }
       if (_test?.timedAssignment) {
         update = {
           ...update,

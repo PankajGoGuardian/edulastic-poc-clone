@@ -198,6 +198,10 @@ const getSettings = (test, testActivity, preview) => {
     ? test.enableSkipAlert
     : assignmentSettings.enableSkipAlert
 
+  const showRubricToStudents = preview
+    ? test.showRubricToStudents
+    : assignmentSettings.showRubricToStudents
+
   return {
     testType,
     calcProvider,
@@ -208,6 +212,7 @@ const getSettings = (test, testActivity, preview) => {
     pauseAllowed,
     enableScratchpad,
     enableSkipAlert,
+    showRubricToStudents,
     calcType: calcType || testContants.calculatorTypes.NONE,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:

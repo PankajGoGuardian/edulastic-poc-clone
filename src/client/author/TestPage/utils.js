@@ -16,6 +16,8 @@ import {
   question as questionConstants,
 } from '@edulastic/constants'
 
+import { getQuestions } from './ducks'
+
 const { TOP_ORDER_SKINS } = testConstants
 
 const roundOff = (number) =>
@@ -248,6 +250,14 @@ export const skinTypesOrder = (skinTypes = {}) => {
   _skinTypes.sort()
   const excludePulledSkins = difference(_skinTypes, TOP_ORDER_SKINS)
   return [...TOP_ORDER_SKINS, 'devider', ...excludePulledSkins]
+}
+
+export const showRubricToStudentsSetting = (itemGroups = []) => {
+  const allQuestions = getQuestions(itemGroups)
+  if (allQuestions?.length) {
+    return allQuestions.some((question) => question?.rubrics)
+  }
+  return false
 }
 
 export default {

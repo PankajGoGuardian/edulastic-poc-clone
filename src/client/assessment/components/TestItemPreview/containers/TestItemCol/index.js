@@ -169,7 +169,12 @@ class TestItemCol extends Component {
         >
           <FlexItem
             flexGrow="1"
-            maxWidth={(isLCBView || isReviewTab) && '100%'}
+            maxWidth={
+              (isLCBView ||
+                isReviewTab ||
+                (isStudentAttempt && isPassageWithQuestions)) &&
+              '100%'
+            }
           >
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}

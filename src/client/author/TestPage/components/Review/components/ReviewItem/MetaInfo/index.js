@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { get } from 'lodash'
 import { FlexContainer, PremiumTag, LikeIconStyled } from '@edulastic/common'
 import { darkGrey } from '@edulastic/colors'
 import {
@@ -10,6 +11,7 @@ import {
   IconNoVolume,
   IconHeart,
   IconShare,
+  IconRubric,
 } from '@edulastic/icons'
 import CollectionTag from '@edulastic/common/src/components/CollectionTag/CollectionTag'
 import { isPublisherUserSelector } from '../../../../../../src/selectors/user'
@@ -41,6 +43,9 @@ const MetaInfo = ({
   toggleTestItemLikeRequest,
 }) => {
   const isItemLiked = item?.alreadyLiked || false
+
+  const questions = get(item, 'data.questions', [])
+  const isRubricAttached = questions.some((q) => q?.rubrics)
 
   const handleItemLike = () => {
     toggleTestItemLikeRequest({
@@ -96,6 +101,8 @@ const MetaInfo = ({
       </FlexContainer>
       <FlexContainer justifyContent="flex-end" alignItems="flex-end">
         {dok && <DokStyled data-cy="itemDok">{`DOK:${dok}`}</DokStyled>}
+        {isRubricAttached &&
+          renderAnalytics(' ', IconRubric, false, 'rubricIcon')}
         {renderAnalytics(by, IconUser, false, 'authorName')}
         {renderAnalytics(id && id.substring(18), IconHash, false, 'itemId')}
         <AnalyticsItem>

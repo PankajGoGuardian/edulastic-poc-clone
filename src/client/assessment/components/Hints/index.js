@@ -21,7 +21,51 @@ import {
 
 import { getFontSize } from '../../utils/helpers'
 import { Label } from '../../styled/WidgetOptions/Label'
+import {
+  getRubricByIdRequestAction,
+  getRubricDataLoadingSelector,
+  getCurrentRubricDataSelector,
+} from '../../../author/GradingRubric/ducks'
+import PreviewRubricModal from '../../../author/GradingRubric/Components/common/PreviewRubricModal'
 
+const InfoButtons = ({
+  showHintHandler,
+  toggleHints,
+  isStudentReport,
+  hintCount,
+  isStudent,
+  handleShowRubricClick,
+  displayRubricInfoButton,
+}) => {
+  return (
+    <FlexContainer justifyContent="flex-start" mt="20px">
+      {!isStudentReport && hintCount > 0 && (
+        <ShowHint
+          height="30px"
+          isGhost
+          onClick={showHintHandler}
+          isStudent={isStudent}
+          tabIndex="-1"
+        >
+          {toggleHints ? 'Show' : 'Hide'} Hint
+        </ShowHint>
+      )}
+
+      {displayRubricInfoButton && (
+        <ShowRubricButton
+          onClick={handleShowRubricClick}
+          height="30px"
+          data-cy="show-rubric-button"
+          isGhost
+        >
+          SHOW RUBRIC
+        </ShowRubricButton>
+      )}
+    </FlexContainer>
+  )
+}
+
+// TODO: rename this file and use it as a miscellaneous component as it is not being used only for Hints
 const Hints = ({
   question,
   showHints,
@@ -32,11 +76,26 @@ const Hints = ({
   isLCBView,
   isExpressGrader,
   isStudentReport,
+  displayRubricInfoButton,
+  rubricDetails,
+  getRubricById,
+  rubricDataLoading,
+  storeRubricData,
 }) => {
   const { id } = question
   const validHints = useMemo(() => {
     return (question?.hints || []).filter((hint) => hint?.label)
   }, [question])
+
+  const currentRubricData = useMemo(() => {
+    if (rubricDetails?.criteria) {
+      return rubricDetails
+    }
+    if (rubricDetails?._id === storeRubricData?._id) {
+      return storeRubricData
+    }
+    return {}
+  }, [rubricDetails, storeRubricData])
 
   const hintCount = validHints.length
   const fontSize = getFontSize(get(question, 'uiStyle.fontsize'))
@@ -45,6 +104,7 @@ const Hints = ({
 
   const [showCount, updateShowCount] = useState(0)
   const [toggleHints, setToggleHints] = useState(true)
+  const [showRubricInfoModal, setShowRubricInfoModal] = useState(false)
 
   const showHintHandler = (e) => {
     e.stopPropagation()
@@ -59,6 +119,23 @@ const Hints = ({
   const showMoreHints = (e) => {
     e.stopPropagation()
     updateShowCount(showCount + 1)
+  }
+
+  /**
+   * In 'view as student' view question data doesn't have complete rubric details,
+   * thus call rubric api to fetch the rubric data and use the same
+   * In student attempt complete rubric details are present in question data and use the same
+   */
+  const handleShowRubricClick = () => {
+    if (
+      rubricDetails?.criteria ||
+      rubricDetails?._id === storeRubricData?._id
+    ) {
+      setShowRubricInfoModal(true)
+    } else if (rubricDetails?._id && !rubricDetails?.criteria) {
+      setShowRubricInfoModal(true)
+      getRubricById(rubricDetails._id)
+    }
   }
 
   useEffect(() => {
@@ -107,7 +184,6 @@ const Hints = ({
   }, [id])
 
   if (
-    !hintCount ||
     question.type === 'passage' ||
     question.type === 'passageWithQuestions' ||
     question.type === 'video' ||
@@ -119,6 +195,15 @@ const Hints = ({
 
   return (
     <>
+      <InfoButtons
+        showHintHandler={showHintHandler}
+        toggleHints={toggleHints}
+        isStudentReport={isStudentReport}
+        hintCount={hintCount}
+        isStudent={isStudent}
+        handleShowRubricClick={handleShowRubricClick}
+        displayRubricInfoButton={displayRubricInfoButton}
+      />
       {!isStudentReport && hintCount > 0 && (
         <HintsContainer toggleHints={toggleHints}>
           <HintCont
@@ -126,15 +211,6 @@ const Hints = ({
             className="hint-container"
             ref={hintContRef}
           >
-            <ShowHint
-              height="30px"
-              isGhost
-              onClick={showHintHandler}
-              isStudent={isStudent}
-              tabIndex="-1"
-            >
-              {toggleHints ? 'Show' : 'Hide'} Hint
-            </ShowHint>
             {!!showCount && !toggleHints && (
               <>
                 <QuestionLabel>Hint(s)</QuestionLabel>
@@ -209,24 +285,52 @@ const Hints = ({
           ))}
         </HintCont>
       )}
+
+      {showRubricInfoModal && (
+        <PreviewRubricModal
+          visible={showRubricInfoModal}
+          toggleModal={() => setShowRubricInfoModal(false)}
+          currentRubricData={currentRubricData}
+          shouldValidate={false}
+          rubricDataLoading={rubricDataLoading}
+          isDisabled
+          hideTotalPoints
+        />
+      )}
     </>
   )
 }
 
 Hints.propTypes = {
   question: PropTypes.object,
-  //
+  displayRubricInfoButton: PropTypes.bool,
+  rubricDetails: PropTypes.object,
+  getRubricById: PropTypes.func,
+  rubricDataLoading: PropTypes.bool,
+  storeRubricData: PropTypes.object,
 }
 
 Hints.defaultProps = {
   question: {
     hints: [],
   },
+  displayRubricInfoButton: false,
+  rubricDetails: {},
+  getRubricById: () => {},
+  rubricDataLoading: false,
+  storeRubricData: {},
 }
 
-export default connect((state) => ({
-  showHints: state.test.showHints,
-}))(Hints)
+export default connect(
+  (state) => ({
+    showHints: state.test.showHints,
+    rubricDataLoading: getRubricDataLoadingSelector(state),
+    storeRubricData: getCurrentRubricDataSelector(state),
+  }),
+  {
+    getRubricById: getRubricByIdRequestAction,
+  }
+)(Hints)
 
 const HintCont = styled.div`
   margin-top: 10px;
@@ -278,6 +382,9 @@ const HintContent = styled.div`
 const ShowHint = styled(EduButton)`
   margin-left: ${({ isStudent }) => `${isStudent ? 50 : 0}px`};
   position: relative;
+  z-index: 998; /* header has z-index 999 */
+`
+const ShowRubricButton = styled(EduButton)`
   z-index: 998; /* header has z-index 999 */
 `
 

@@ -1,7 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { ThemeProvider, withTheme } from 'styled-components'
-import { questionType, test, roleuser } from '@edulastic/constants'
+import {
+  questionType,
+  test,
+  roleuser,
+  test as testContants,
+} from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, isEqual, isEmpty } from 'lodash'
@@ -71,6 +76,7 @@ import {
   getIsPreviewModalVisibleSelector,
   playerSkinTypeSelector,
 } from '../selectors/test'
+import { assignmentLevelSettingsSelector } from '../selectors/answers'
 import {
   isItemVisibiltySelector,
   ttsUserIdSelector,
@@ -376,6 +382,51 @@ class QuestionWrapper extends Component {
       multipartItem,
       itemLevelScoring,
     }
+  }
+
+  // @see EV-25152 | need to display show rubric button in student attempt and test review modal
+  get showRubricToStudentsButton() {
+    const {
+      assignmentLevelSettings: {
+        releaseScore,
+        showRubricToStudents = false,
+      } = {},
+      isTestPreviewModalVisible = false,
+      isTestDemoPlayer = false,
+      userRole,
+      view,
+      testLevelSettings: {
+        releaseScore: testLevelReleaseScore,
+        showRubricToStudents: testLevelShowRubricToStudents = false,
+      } = {},
+      data: { rubrics } = {},
+    } = this.props
+
+    const { releaseGradeLabels } = testContants
+
+    // return if rubric is not attached to the question
+    if (isEmpty(rubrics)) {
+      return false
+    }
+
+    // if test is being viewed in 'view as student' or public test view
+    if (
+      userRole === roleuser.TEACHER &&
+      (isTestPreviewModalVisible || isTestDemoPlayer)
+    ) {
+      return (
+        testLevelReleaseScore !== releaseGradeLabels.DONT_RELEASE &&
+        testLevelShowRubricToStudents
+      )
+    }
+
+    // if its a student attempt
+    return (
+      userRole === roleuser.STUDENT &&
+      view === 'preview' &&
+      releaseScore !== releaseGradeLabels.DONT_RELEASE &&
+      showRubricToStudents
+    )
   }
 
   render() {
@@ -719,6 +770,8 @@ class QuestionWrapper extends Component {
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isStudentReport={isStudentReport}
+                      displayRubricInfoButton={this.showRubricToStudentsButton}
+                      rubricDetails={rubricDetails}
                     />
                   )}
                 </StyledFlexContainer>
@@ -756,6 +809,7 @@ QuestionWrapper.propTypes = {
   saveHintUsage: PropTypes.func,
   LCBPreviewModal: PropTypes.any,
   permissions: PropTypes.array,
+  isTestDemoPlayer: PropTypes.bool,
   t: PropTypes.func,
 }
 
@@ -779,6 +833,7 @@ QuestionWrapper.defaultProps = {
   disableResponse: false,
   isPresentationMode: false,
   permissions: [],
+  isTestDemoPlayer: false,
   t: () => {},
 }
 
@@ -812,6 +867,8 @@ const enhance = compose(
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       previewScore: state?.itemScore?.score, // this used only in the author preview
       previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
+      assignmentLevelSettings: assignmentLevelSettingsSelector(state),
+      testLevelSettings: get(state, ['test', 'settings'], {}),
     }),
     {
       loadScratchPad: requestScratchPadAction,

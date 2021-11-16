@@ -15,6 +15,7 @@ import view from './author/src/reducers/view'
 import { reducer as assessmentCreate } from './author/AssessmentCreate/ducks'
 import { reducer as itemDetail } from './author/ItemDetail/ducks'
 import { reportReducer } from './author/Reports/ducks'
+import { rubricReducer } from './author/GradingRubric'
 
 export const studentReducers = combineReducers({
   ...allStudentReducers,
@@ -33,4 +34,5 @@ export const studentReducers = combineReducers({
   assessmentCreate,
   feedbackResponse,
   itemDetail,
+  rubricReducer,
 })

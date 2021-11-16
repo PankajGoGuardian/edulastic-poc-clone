@@ -366,6 +366,7 @@ class AssessmentPlayerDefault extends React.Component {
       openReferenceModal,
       isShowReferenceModal,
       referenceDocAttributes,
+      isTestDemoPlayer,
       canShowPlaybackOptionTTS,
     } = this.props
     const { firstName = '', lastName = '' } = user
@@ -684,6 +685,7 @@ class AssessmentPlayerDefault extends React.Component {
                     premiumCollectionWithoutAccess={
                       premiumCollectionWithoutAccess
                     }
+                    isTestDemoPlayer={isTestDemoPlayer}
                     isExpandedView
                   />
                 )}
@@ -730,6 +732,7 @@ class AssessmentPlayerDefault extends React.Component {
                     premiumCollectionWithoutAccess={
                       premiumCollectionWithoutAccess
                     }
+                    isTestDemoPlayer={isTestDemoPlayer}
                     isExpandedView
                   />
                 )}
@@ -792,11 +795,13 @@ AssessmentPlayerDefault.propTypes = {
   previewPlayer: PropTypes.bool.isRequired,
   saveUserWork: PropTypes.func.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
+  isTestDemoPlayer: PropTypes.bool,
   canShowPlaybackOptionTTS: PropTypes.string,
 }
 
 AssessmentPlayerDefault.defaultProps = {
   theme: themes,
+  isTestDemoPlayer: false,
   canShowPlaybackOptionTTS: false,
 }
 

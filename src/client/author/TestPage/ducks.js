@@ -1824,6 +1824,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     calcType: entity.calcType,
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
+    showRubricToStudents: entity.showRubricToStudents,
   }
 
   if (entity.safeBrowser) {
@@ -1866,6 +1867,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.blockSaveAndContinue = false
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
+    settings.showRubricToStudents = false
     delete settings.keypad
   }
 

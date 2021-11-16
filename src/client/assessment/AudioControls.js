@@ -243,9 +243,11 @@ const AudioControls = ({
   }
 
   useEffect(() => {
-    stopAllAudios()
-    setCurrentPlayingDetails()
-  }, [ttsPlaybackSpeed])
+    const findAllPlayingHowls = Howler._howls.filter((item) => item.playing())
+    if (findAllPlayingHowls.length) {
+      findAllPlayingHowls.forEach((item) => item.rate(ttsAudioPlaybackRate))
+    }
+  }, [ttsAudioPlaybackRate])
 
   const handlePlayPauseAudio = () => {
     if (loading || !currentHowl) {

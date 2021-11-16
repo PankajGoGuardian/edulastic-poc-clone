@@ -93,7 +93,7 @@ import KeypadDropdown from './KeypadDropdown'
 // import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
-import { skinTypesOrder } from '../../../../utils'
+import { skinTypesOrder, showRubricToStudentsSetting } from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
@@ -757,6 +757,7 @@ class Setting extends Component {
       enableSkipAlert = false,
       settingId: currentSettingsId = '',
       // referenceDocAttributes,
+      showRubricToStudents = false,
       performanceBand: _performanceBand,
       standardGradingScale: _standardGradingScale,
     } = entity
@@ -787,6 +788,10 @@ class Setting extends Component {
         to: '',
       },
     ]
+
+    const isShowRubricToStudentsSettingVisible = showRubricToStudentsSetting(
+      itemGroups
+    )
 
     const isSmallSize = windowWidth < 993 ? 1 : 0
 
@@ -1498,6 +1503,36 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
+
+                  {!isDocBased && isShowRubricToStudentsSettingVisible && (
+                    <Block id="show-rubric-to-students" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>Show Rubric to Students </span>
+                          <DollarPremiumSymbol premium={premium} />
+                          <Tooltip title={t('showRubricToStudents.info')}>
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ marginLeft: '10px', cursor: 'pointer' }}
+                            />
+                          </Tooltip>
+                          <EduSwitchStyled
+                            disabled={!owner || !isEditable || !premium}
+                            checked={showRubricToStudents}
+                            data-cy="show-rubric-to-students-switch"
+                            onChange={this.updateTestData(
+                              'showRubricToStudents'
+                            )}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description style={{ marginTop: '10px' }}>
+                            {t('showRubricToStudents.info')}
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
 
                   <Block id="maximum-attempts-allowed">
                     <SettingContainer>

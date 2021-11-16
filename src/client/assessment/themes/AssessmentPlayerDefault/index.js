@@ -366,6 +366,7 @@ class AssessmentPlayerDefault extends React.Component {
       openReferenceModal,
       isShowReferenceModal,
       referenceDocAttributes,
+      canShowPlaybackOptionTTS,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -588,6 +589,7 @@ class AssessmentPlayerDefault extends React.Component {
               headerHeight,
               playerSkinType,
             }}
+            canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
           >
             <ToolbarModal
               isVisible={isToolbarModalVisible}
@@ -629,6 +631,7 @@ class AssessmentPlayerDefault extends React.Component {
             <Main skin headerHeight={headerHeight} padding="20px 30px">
               <SettingsModal
                 isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
+                canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
               />
               <MainWrapper
                 ref={this.scrollContainer}
@@ -789,10 +792,12 @@ AssessmentPlayerDefault.propTypes = {
   previewPlayer: PropTypes.bool.isRequired,
   saveUserWork: PropTypes.func.isRequired,
   LCBPreviewModal: PropTypes.any.isRequired,
+  canShowPlaybackOptionTTS: PropTypes.string,
 }
 
 AssessmentPlayerDefault.defaultProps = {
   theme: themes,
+  canShowPlaybackOptionTTS: false,
 }
 
 function getScratchpadWork(questions = [], userWorkData = {}, target) {

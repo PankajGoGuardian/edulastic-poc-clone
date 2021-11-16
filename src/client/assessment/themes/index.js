@@ -53,6 +53,7 @@ import {
   testLoadingSelector,
   playerSkinTypeSelector,
   originalPlayerSkinName,
+  getIsPreviewModalVisibleSelector,
 } from '../selectors/test'
 import {
   getAnswersArraySelector,
@@ -572,6 +573,8 @@ const AssessmentContainer = ({
   saveBlurTime,
   savedBlurTime: blurTimeAlreadySaved,
   loadTest,
+  showUserTTS,
+  isTestPreviewModalVisible,
   ...restProps
 }) => {
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
@@ -1184,6 +1187,24 @@ const AssessmentContainer = ({
     updateTestPlayer({ isShowReferenceModal: !isShowReferenceModal })
   }
 
+  /**
+   * Visible when user is tts user or current view is author view
+   * @returns {boolean}
+   */
+  const ttsVisibility =
+    (userRole === roleuser.STUDENT && showUserTTS === 'yes') ||
+    isTestPreviewModalVisible
+
+  /**
+   * Checks for at least one tts is completed in a test
+   * @returns {boolean}
+   */
+  const testItemHasAtLeastOneTTS = items.some(({ data }) =>
+    data.questions.some((que) => que.tts && que.tts.taskStatus === 'COMPLETED')
+  )
+
+  const canShowPlaybackOptionTTS = ttsVisibility && testItemHasAtLeastOneTTS
+
   const props = {
     saveCurrentAnswer,
     items,
@@ -1225,6 +1246,7 @@ const AssessmentContainer = ({
     userWork,
     gotoSummary,
     handleReviewOrSubmit,
+    canShowPlaybackOptionTTS,
     ...restProps,
   }
 
@@ -1437,6 +1459,7 @@ const enhance = compose(
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),
+      showUserTTS: get(state, 'user.user.tts', 'no'),
       userWork: userWorkSelector(state),
       assignmentById: get(state, 'studentAssignment.byId'),
       currentAssignment: get(state, 'studentAssignment.current'),
@@ -1447,6 +1470,7 @@ const enhance = compose(
       restrictNavigationOutAttemptsThreshold:
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
+      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       saveUserResponse,

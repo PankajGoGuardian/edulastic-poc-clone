@@ -44,6 +44,7 @@ const QuestionAnalysis = ({
   settings,
   sharedReport,
   toggleFilter,
+  demographicFilters,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -63,7 +64,7 @@ const QuestionAnalysis = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters },
+        requestFilters: { ...settings.requestFilters, ...demographicFilters },
         testId: settings.selectedTest.key,
       }
       getQuestionAnalysis(q)

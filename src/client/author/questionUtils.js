@@ -509,6 +509,10 @@ export const isIncompleteQuestion = (item) => {
     }
   }
 
+  if (item.variable?.enabled && item.rdv) {
+    return [true, 'Generate dynamic variables to apply evaluation settings']
+  }
+
   if (
     item?.type === EXPRESSION_MULTIPART &&
     showEmptyAnswerNotification(item)

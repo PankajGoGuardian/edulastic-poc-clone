@@ -47,7 +47,9 @@ const slice = createSlice({
     },
     changeAttribute: (state, { payload }) => {
       const { key, value } = payload
-      if (['startDate', 'endDate', 'dueDate'].includes(key)) {
+      if (
+        ['startDate', 'endDate', 'dueDate', 'allowedOpenDate'].includes(key)
+      ) {
         state.assignment = state.assignment || {}
         state.assignment.class = state.assignment.class || []
         if (value) {
@@ -63,6 +65,12 @@ const slice = createSlice({
         ) {
           set(state.assignment, 'class[0].startDate', Date.now())
           state.updateSettings.startDate = Date.now()
+        } else if (
+          key === 'openPolicy' &&
+          value !== assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+        ) {
+          set(state.assignment, 'class[0].allowedOpenDate', Date.now())
+          state.updateSettings.allowedOpenDate = Date.now()
         } else if (
           key === 'closePolicy' &&
           value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
@@ -236,6 +244,7 @@ function getSettingsSelector(state) {
     blockSaveAndContinue,
     restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold,
+    allowedOpenDate,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -314,6 +323,7 @@ function getSettingsSelector(state) {
       blockSaveAndContinue,
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
+      allowedOpenDate,
     },
     isUndefined
   )

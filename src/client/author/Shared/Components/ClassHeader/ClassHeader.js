@@ -15,6 +15,7 @@ import {
   test as testContants,
   testActivityStatus,
   testActivity as testActivityConstants,
+  roleuser,
 } from '@edulastic/constants'
 import {
   IconBookMarkButton,
@@ -90,6 +91,7 @@ import {
 import {
   getGroupList,
   getCanvasAllowedInstitutionPoliciesSelector,
+  getUserRole,
 } from '../../../src/selectors/user'
 import {
   CaretUp,
@@ -214,6 +216,19 @@ class ClassHeader extends Component {
   handleOpenAssignment = () => {
     const { openAssignment, match, additionalData, userRole } = this.props
     const { classId, assignmentId } = match.params
+    if (
+      additionalData.openPolicy === POLICY_OPEN_MANUALLY_BY_TEACHER &&
+      userRole === roleuser.TEACHER &&
+      additionalData.allowedOpenDate > additionalData.ts
+    ) {
+      return notification({
+        type: 'warn',
+        msg: `You cannot open the assessment before ${moment(
+          additionalData.allowedOpenDate
+        ).format('lll')}.
+      `,
+      })
+    }
     if (
       additionalData.openPolicy !== POLICY_OPEN_MANUALLY_BY_TEACHER &&
       additionalData.testType === 'common assessment' &&
@@ -1120,6 +1135,7 @@ const enhance = compose(
       syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
         state
       ),
+      userRole: getUserRole(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

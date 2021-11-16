@@ -93,6 +93,7 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
   checkAnswer,
   answerChecksUsedForItem,
+  canShowPlaybackOptionTTS,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -128,6 +129,7 @@ const PlayerHeader = ({
       {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+          canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
         />
       )}
       <Header ref={headerRef} style={headerStyle}>

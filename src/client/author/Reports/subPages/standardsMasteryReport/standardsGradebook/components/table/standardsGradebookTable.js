@@ -91,6 +91,129 @@ const compareByStudentsColumns = [
   },
 ]
 
+const getStandardColumnAverage = (analyseBy, standardsData, standardId) => {
+  const standard = standardsData.find((s) => s.standardId === standardId)
+  return analyseBy === 'score(%)' ? `${standard.score}%` : standard[analyseBy]
+}
+
+const getStandardColumnValue = (item, analyseBy) => {
+  let colValue = ''
+  if (!item) {
+    colValue = 'N/A'
+  } else if (analyseBy === 'score(%)') {
+    colValue = `${item.scorePercent}%`
+  } else if (analyseBy === 'rawScore') {
+    colValue = `${item.totalTotalScore.toFixed(2)}/${item.totalMaxScore}`
+  } else if (analyseBy === 'masteryLevel') {
+    colValue = item.masteryName
+  } else if (analyseBy === 'masteryScore') {
+    colValue = item.fm.toFixed(2)
+  }
+  return colValue
+}
+
+const getStandardColumnRender = (
+  t,
+  compareBy,
+  analyseBy,
+  standardId,
+  standardName,
+  filters,
+  handleOnClickStandard
+) => (data, record) => {
+  const standardToRender = record.standardsInfo.find(
+    (std) => std.standardId === standardId
+  )
+  const bgColor =
+    (analyseBy === 'masteryLevel' || analyseBy === 'masteryScore') &&
+    standardToRender?.color
+  // colValue is 'N/A', if standardToRender is undefined
+  const colValue = getStandardColumnValue(standardToRender, analyseBy)
+
+  const tooltipText = (
+    <div>
+      <Row type="flex" justify="start">
+        <Col className="custom-table-tooltip-key">{idToName[compareBy]}: </Col>
+        <Col className="custom-table-tooltip-value">
+          {record.compareByLabel || t('common.anonymous')}
+        </Col>
+      </Row>
+      <Row type="flex" justify="start">
+        <Col className="custom-table-tooltip-key">Standard: </Col>
+        <Col className="custom-table-tooltip-value">{standardName}</Col>
+      </Row>
+      <Row type="flex" justify="start">
+        <Col className="custom-table-tooltip-key">
+          {analyseByToName[analyseBy]}:{' '}
+        </Col>
+        <Col className="custom-table-tooltip-value">{colValue}</Col>
+      </Row>
+    </div>
+  )
+
+  const filtersObj = {
+    termId: filters.termId,
+    studentId: record.studentId,
+    standardId,
+    profileId: filters.profileId,
+    assessmentTypes:
+      filters.assessmentTypes !== 'All' ? filters.assessmentTypes : '',
+  }
+  const handleOnClick = () =>
+    compareBy === 'studentId' && standardToRender
+      ? handleOnClickStandard(filtersObj, standardName, record.compareByLabel)
+      : null
+
+  return (
+    <CustomTableTooltip
+      placement="top"
+      title={tooltipText}
+      getCellContents={() => (
+        <ColoredCell bgColor={bgColor} onClick={handleOnClick}>
+          {colValue}
+        </ColoredCell>
+      )}
+    />
+  )
+}
+
+const getColumnSorter = (analyseBy, standardId) => (a, b) => {
+  // sort by score(%), if analyseBy rawScore / score(%)
+  // sort by masteryScore, if analyseBy masteryScore / masteryLevel
+  const _analyseBy =
+    analyseBy === 'rawScore'
+      ? 'score(%)'
+      : analyseBy === 'masteryLevel'
+      ? 'masteryScore'
+      : analyseBy
+  const _analyseByKey = analyseByToKeyToRender[_analyseBy]
+
+  // result for avg. standard performance
+  const colAvgA = a[_analyseByKey]
+  const colAvgB = b[_analyseByKey]
+  let result = (parseFloat(colAvgA) || 0) - (parseFloat(colAvgB) || 0)
+
+  // for avg. performance column, standardId is undefined
+  if (standardId) {
+    const colValueA = getStandardColumnValue(
+      a.standardsInfo.find((std) => std.standardId === standardId),
+      _analyseBy
+    )
+    const colValueB = getStandardColumnValue(
+      b.standardsInfo.find((std) => std.standardId === standardId),
+      _analyseBy
+    )
+    // for result, consider 'N/A' as -1 (lower precedence than 0)
+    const _result =
+      (colValueA === 'N/A' ? -1 : parseFloat(colValueA) || 0) -
+      (colValueB === 'N/A' ? -1 : parseFloat(colValueB) || 0)
+    // for standard column, if values are equal, sort by avg. performance column
+    result = _result || result
+  }
+
+  return result
+}
+
 const StandardsGradebookTableComponent = ({
   filteredDenormalizedData,
   masteryScale,
@@ -134,290 +257,164 @@ const StandardsGradebookTableComponent = ({
     [filteredDenormalizedData, masteryScale, tableDdFilters]
   )
 
-  const getCurrentStandard = (standardId, analyseBy) => {
-    const currentStandard = standardsData.find(
-      (s) => s.standardId === standardId
-    )
-    if (analyseBy === 'score(%)') return `${currentStandard.score}%`
-    return currentStandard[analyseBy]
-  }
-
-  const getFilteredTableData = () =>
-    next(tableData, (arr) => {
-      arr.map((item) => {
-        const tempArr = item.standardsInfo.filter((_item) => {
-          if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
-            return {
-              ..._item,
-            }
+  const filteredTableData = next(tableData, (arr) => {
+    arr.map((item) => {
+      const tempArr = item.standardsInfo.filter((_item) => {
+        if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
+          return {
+            ..._item,
           }
-        })
-        item.standardsInfo = tempArr
+        }
       })
+      item.standardsInfo = tempArr
     })
+  })
 
-  const filteredTableData = getFilteredTableData()
-
-  const getDisplayValue = (item, _analyseBy) => {
-    let printData
-    if (!item) {
-      return 'N/A'
-    }
-
-    if (_analyseBy === 'score(%)') {
-      printData = `${item.scorePercent}%`
-    } else if (_analyseBy === 'rawScore') {
-      printData = `${item.totalTotalScore.toFixed(2)}/${item.totalMaxScore}`
-    } else if (_analyseBy === 'masteryLevel') {
-      printData = item.masteryName
-    } else if (_analyseBy === 'masteryScore') {
-      printData = item.fm.toFixed(2)
-    }
-    return printData
-  }
-
-  const renderStandardIdColumns = (
-    index,
-    _compareBy,
-    _analyseBy,
-    standardName,
-    standardId
-  ) => (data, record) => {
-    const standardToRender =
-      record.standardsInfo[index]?.standardId === standardId
-        ? record.standardsInfo[index]
-        : record.standardsInfo.find((std) => std.standardId === standardId)
-    const tooltipText = (
-      <div>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">
-            {idToName[_compareBy]}:{' '}
-          </Col>
-          <Col className="custom-table-tooltip-value">
-            {record.compareByLabel}
-          </Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">Standard: </Col>
-          <Col className="custom-table-tooltip-value">
-            {standardToRender?.standardName}
-          </Col>
-        </Row>
-
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">
-            {analyseByToName[_analyseBy]}:{' '}
-          </Col>
-          {_analyseBy === 'rawScore' ? (
-            <Col className="custom-table-tooltip-value">
-              {standardToRender?.totalTotalScore}/
-              {standardToRender?.totalMaxScore}
-            </Col>
-          ) : (
-            <Col className="custom-table-tooltip-value">
-              {standardToRender?.[analyseByToKeyToRender[_analyseBy]]}
-              {_analyseBy === 'score(%)' ? '%' : ''}
-            </Col>
-          )}
-        </Row>
-      </div>
-    )
-
-    const obj = {
-      termId: filters.termId,
-      studentId: record.studentId,
-      standardId,
-      profileId: filters.profileId,
-      assessmentTypes:
-        filters.assessmentTypes !== 'All' ? filters.assessmentTypes : '',
-    }
-    const getCellContents = (props) => {
-      const { printData } = props
-      const bgColor =
-        (_analyseBy === 'masteryLevel' || _analyseBy === 'masteryScore') &&
-        standardToRender?.color
-      return _compareBy === 'studentId' && printData !== 'N/A' ? (
-        <ColoredCell
-          bgColor={bgColor}
-          onClick={() =>
-            handleOnClickStandard(obj, standardName, record.compareByLabel)
-          }
+  const columns = [
+    {
+      title: idToName[tableDdFilters.compareBy],
+      dataIndex: tableDdFilters.compareBy,
+      key: tableDdFilters.compareBy,
+      width: 200,
+      fixed: 'left',
+      sorter: (a, b) =>
+        a.compareByLabel
+          .toLowerCase()
+          .localeCompare(b.compareByLabel.toLowerCase()),
+      render: (data, record) =>
+        record.compareBy === 'studentId' && !isSharedReport ? (
+          <Link
+            to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}
+          >
+            {record.compareByLabel || t('common.anonymous')}
+          </Link>
+        ) : (
+          record.compareByLabel || t('common.anonymous')
+        ),
+    },
+    {
+      title: (
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            textAlign: 'center',
+          }}
         >
-          {printData}
-        </ColoredCell>
-      ) : (
-        <ColoredCell bgColor={bgColor}>{printData}</ColoredCell>
-      )
-    }
-
-    const printData = getDisplayValue(
-      standardToRender,
-      _analyseBy,
-      data,
-      record
-    )
-
-    return (
-      <CustomTableTooltip
-        printData={printData}
-        placement="top"
-        title={tooltipText}
-        getCellContents={getCellContents}
-      />
-    )
-  }
-
-  const getColumnsData = () => {
-    let result = [
-      {
-        title: idToName[tableDdFilters.compareBy],
-        dataIndex: tableDdFilters.compareBy,
-        key: tableDdFilters.compareBy,
-        width: 200,
-        fixed: 'left',
-        sorter: (a, b) =>
-          a.compareByLabel
-            .toLowerCase()
-            .localeCompare(b.compareByLabel.toLowerCase()),
-        render: (data, record) =>
-          record.compareBy === 'studentId' && !isSharedReport ? (
-            <Link
-              to={`/author/reports/student-profile-summary/student/${data}?termId=${filters?.termId}`}
-            >
-              {record.compareByLabel || t('common.anonymous')}
-            </Link>
-          ) : (
-            record.compareByLabel || t('common.anonymous')
-          ),
-      },
-      {
-        title: (
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              textAlign: 'center',
+          <span>Avg. Standard Performance</span>
+          <Tooltip title="This is the average performance across all the standards assessed">
+            <IconInfo height={10} />
+          </Tooltip>
+        </div>
+      ),
+      dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
+      key: analyseByToKeyToRender[tableDdFilters.analyseBy],
+      width: 150,
+      render: (data, record) => {
+        const dataToRender =
+          tableDdFilters.analyseBy === 'score(%)'
+            ? `${data}%`
+            : tableDdFilters.analyseBy === 'rawScore'
+            ? `${data}/${record.totalMaxScore}`
+            : data
+        return !isSharedReport ? (
+          <Link
+            style={{ color: reportLinkColor }}
+            to={{
+              pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
+              state: {
+                // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
+                breadCrumb: [
+                  {
+                    title: 'INSIGHTS',
+                    to: '/author/reports',
+                  },
+                  {
+                    title: pageTitle,
+                    to: `${location.pathname}${location.search}`,
+                  },
+                ],
+              },
             }}
           >
-            <span>Avg. Standard Performance</span>
-            <Tooltip title="This is the average performance across all the standards assessed">
-              <IconInfo height={10} />
-            </Tooltip>
-          </div>
-        ),
-        dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        key: analyseByToKeyToRender[tableDdFilters.analyseBy],
-        width: 150,
-        sorter: (a, b) => {
-          const key = analyseByToKeyToRender[tableDdFilters.analyseBy]
-          return tableDdFilters.analyseBy === 'masteryLevel'
-            ? a.fm - b.fm
-            : a[key] - b[key]
-        },
-        render: (data, record) => {
-          const dataToRender =
-            tableDdFilters.analyseBy === 'score(%)'
-              ? `${data}%`
-              : tableDdFilters.analyseBy === 'rawScore'
-              ? `${data}/${record.totalMaxScore}`
-              : data
-          return !isSharedReport ? (
-            <Link
-              style={{ color: reportLinkColor }}
-              to={{
-                pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`,
-                state: {
-                  // this will be consumed in /src/client/author/Shared/Components/ClassBreadCrumb.js
-                  breadCrumb: [
-                    {
-                      title: 'INSIGHTS',
-                      to: '/author/reports',
-                    },
-                    {
-                      title: pageTitle,
-                      to: `${location.pathname}${location.search}`,
-                    },
-                  ],
-                },
-              }}
-            >
-              {dataToRender}
-            </Link>
-          ) : (
-            dataToRender
-          )
-        },
+            {dataToRender}
+          </Link>
+        ) : (
+          dataToRender
+        )
       },
-    ]
-
-    if (tableDdFilters.compareBy === 'studentId') {
-      let index = 1
-      for (const column of compareByStudentsColumns) {
-        result.splice(index++, 0, column)
+      sorter: getColumnSorter(tableDdFilters.analyseBy),
+    },
+    // standard columns
+    ...Object.values(
+      keyBy(
+        flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
+        'standardId'
+      )
+    ).map((item) => {
+      const standardProgressNav = !isSharedReport
+        ? getStandardProgressNav(
+            navigationItems,
+            item.standardId,
+            tableDdFilters.compareBy
+          )
+        : null
+      const standardColumnAverage = getStandardColumnAverage(
+        tableDdFilters.analyseBy,
+        standardsData,
+        item.standardId
+      )
+      const titleComponent = (
+        <>
+          <span>{item.standardName}</span>
+          <br />
+          <span>{standardColumnAverage}</span>
+        </>
+      )
+      return {
+        title: standardProgressNav ? (
+          <Link to={standardProgressNav}>{titleComponent}</Link>
+        ) : (
+          titleComponent
+        ),
+        dataIndex: item.standardId,
+        key: item.standardId,
+        align: 'center',
+        render: getStandardColumnRender(
+          t,
+          tableDdFilters.compareBy,
+          tableDdFilters.analyseBy,
+          item.standardId,
+          item.standardName,
+          filters,
+          handleOnClickStandard
+        ),
+        sorter: getColumnSorter(tableDdFilters.analyseBy, item.standardId),
       }
+    }),
+  ]
+
+  // for compare by student, insert student info columns to table
+  if (tableDdFilters.compareBy === 'studentId') {
+    let index = 1
+    for (const column of compareByStudentsColumns) {
+      columns.splice(index++, 0, column)
     }
-
-    result = [
-      ...result,
-      ...Object.values(
-        keyBy(
-          flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
-          'standardId'
-        )
-      ).map((item, index) => {
-        const standardProgressNav = !isSharedReport
-          ? getStandardProgressNav(
-              navigationItems,
-              item.standardId,
-              tableDdFilters.compareBy
-            )
-          : null
-        const titleComponent = (
-          <>
-            <span>{item.standardName}</span>
-            <br />
-            <span>
-              {getCurrentStandard(item.standardId, tableDdFilters.analyseBy)}
-            </span>
-          </>
-        )
-        return {
-          title: standardProgressNav ? (
-            <Link to={standardProgressNav}>{titleComponent}</Link>
-          ) : (
-            titleComponent
-          ),
-          dataIndex: item.standardId,
-          key: item.standardId,
-          align: 'center',
-          render: renderStandardIdColumns(
-            index,
-            tableDdFilters.compareBy,
-            tableDdFilters.analyseBy,
-            item.standardName,
-            item.standardId
-          ),
-        }
-      }),
-    ]
-
-    return result
   }
 
-  const columnsData = getColumnsData()
-
   const scrollX = useMemo(() => {
-    const visibleColumns = columnsData.filter((column) => !column.visibleOn)
+    const visibleColumns = columns.filter((column) => !column.visibleOn)
     return visibleColumns.length * 180 || '100%'
-  }, [columnsData])
+  }, [columns])
 
-  const compareByDropDownData = next(
-    dropDownFormat.compareByDropDownData,
-    (arr) => {
-      if (role === 'teacher') {
-        arr.splice(0, 2)
-      }
-    }
+  const compareByDropDownData = useMemo(
+    () =>
+      next(dropDownFormat.compareByDropDownData, (arr) => {
+        if (role === 'teacher') {
+          arr.splice(0, 2)
+        }
+      }),
+    [role]
   )
 
   const tableFilterDropDownCB = (event, _selected, comData) => {
@@ -470,7 +467,7 @@ const StandardsGradebookTableComponent = ({
         </Row>
         <Row>
           <CsvTable
-            columns={columnsData}
+            columns={columns}
             dataSource={filteredTableData}
             rowKey={tableDdFilters.compareBy}
             tableToRender={GradebookTable}

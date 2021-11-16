@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-import { sumBy, includes, filter, isEmpty } from 'lodash'
+import { includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
@@ -25,39 +25,37 @@ const {
   getMasteryScoreColor,
   getAnalyseByTitle,
   getOverallValue,
-  getRecordMasteryLevel,
   getColValue,
 } = reportUtils.standardsPerformanceSummary
 
-const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
-  const domain = record.domainData[domainId] || {}
-  const colValue = getColValue(record, domainId, analyseByKey, scaleInfo)
-  if (colValue === 'N/A') {
-    return colValue
-  }
-  const bgColor =
-    (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
-    getMasteryScoreColor(domain, scaleInfo)
-  return <ColoredCell bgColor={bgColor}>{colValue}</ColoredCell>
-}
-
-const getColorCell = (
+const getDomainColumnRender = (
+  t,
   domainId,
   domainName,
   compareBy,
   analyseByKey,
   scaleInfo
 ) => (_, record) => {
-  const toolTipText = (rec) => (
+  const domain = record.domainData[domainId] || {}
+  const colValue = getColValue(record, domainId, analyseByKey, scaleInfo)
+  const bgColor =
+    (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
+    getMasteryScoreColor(domain, scaleInfo)
+
+  const tooltipTitle = (
     <div>
       <TableTooltipRow
         title={`${compareBy.title}: `}
-        value={rec.name === '' || rec.name === 'undefined' ? '-' : rec.name}
+        value={
+          record.name && record.name !== 'undefined'
+            ? record.name
+            : t('common.anonymous')
+        }
       />
       <TableTooltipRow title="Domain: " value={domainName} />
       <TableTooltipRow
         title={`${getAnalyseByTitle(analyseByKey)}: `}
-        value={getColValue(rec, domainId, analyseByKey, scaleInfo)}
+        value={colValue}
       />
     </div>
   )
@@ -65,32 +63,46 @@ const getColorCell = (
   return (
     <CustomTableTooltip
       placement="top"
-      title={toolTipText(record)}
-      getCellContents={() => getCol(record, domainId, analyseByKey, scaleInfo)}
+      title={tooltipTitle}
+      getCellContents={() =>
+        colValue === 'N/A' ? (
+          colValue
+        ) : (
+          <ColoredCell bgColor={bgColor}>{colValue}</ColoredCell>
+        )
+      }
     />
   )
 }
 
-const getOverallColSorter = (_analyseByKey, _scaleInfo) => (a, b) => {
-  const aRecords = Object.values(a.domainData || {})
-  const bRecords = Object.values(b.domainData || {})
-  switch (_analyseByKey) {
-    case 'score':
-    case 'masteryScore':
-      return (
-        parseFloat(getOverallValue(a, _analyseByKey, _scaleInfo)) -
-        parseFloat(getOverallValue(b, _analyseByKey, _scaleInfo))
-      )
-    case 'rawScore':
-      return sumBy(aRecords, 'totalScore') - sumBy(bRecords, 'totalScore')
-    case 'masteryLevel':
-      return (
-        getRecordMasteryLevel(aRecords, _scaleInfo).score -
-        getRecordMasteryLevel(bRecords, _scaleInfo).score
-      )
-    default:
-      return 0
+const getColumnSorter = (analyseByKey, scaleInfo, domainId) => (a, b) => {
+  // sort by score(%), if analyseBy rawScore / score(%)
+  // sort by masteryScore, if analyseBy masteryScore / masteryLevel
+  const _analyseByKey =
+    analyseByKey === 'rawScore'
+      ? 'score'
+      : analyseByKey === 'masteryLevel'
+      ? 'masteryScore'
+      : analyseByKey
+
+  // result for avg. domain performance
+  const colAvgA = getOverallValue(a, _analyseByKey, scaleInfo)
+  const colAvgB = getOverallValue(b, _analyseByKey, scaleInfo)
+  let result = (parseFloat(colAvgA) || 0) - (parseFloat(colAvgB) || 0)
+
+  // for avg. performance column, domainId is undefined
+  if (domainId) {
+    const colValueA = getColValue(a, domainId, _analyseByKey, scaleInfo)
+    const colValueB = getColValue(b, domainId, _analyseByKey, scaleInfo)
+    // for result, consider 'N/A' as -1 (lower precedence than 0)
+    const _result =
+      (colValueA === 'N/A' ? -1 : parseFloat(colValueA) || 0) -
+      (colValueB === 'N/A' ? -1 : parseFloat(colValueB) || 0)
+    // for domain column, if values are equal, sort by avg. performance column
+    result = _result || result
   }
+
+  return result
 }
 
 export const getColumns = (
@@ -120,13 +132,15 @@ export const getColumns = (
     ),
     dataIndex: domain.domainName,
     key: domain.domainName,
-    render: getColorCell(
+    render: getDomainColumnRender(
+      t,
       domain.domainId,
       domain.domainName,
       compareBy,
       analyseByKey,
       scaleInfo
     ),
+    sorter: getColumnSorter(analyseByKey, scaleInfo, domain.domainId),
   }))
 
   const cols = [
@@ -164,8 +178,8 @@ export const getColumns = (
       dataIndex: 'overall',
       key: 'overall',
       width: 140,
-      sorter: getOverallColSorter(analyseByKey, scaleInfo),
       render: (_, record) => getOverallValue(record, analyseByKey, scaleInfo),
+      sorter: getColumnSorter(analyseByKey, scaleInfo),
     },
     ...domainCols,
     {

@@ -12,6 +12,7 @@ import {
   IconDynamic,
   IconClose,
   IconPassage,
+  IconRubric,
 } from '@edulastic/icons'
 import { get } from 'lodash'
 import { Row, Icon } from 'antd'
@@ -174,6 +175,7 @@ class Item extends Component {
   renderDetails = () => {
     const { item, windowWidth, collections, isPublisherUser } = this.props
     const questions = get(item, 'data.questions', [])
+    const isRubricAttached = questions.some((q) => q?.rubrics)
     const getAllTTS = questions
       .filter((_item) => _item.tts)
       .map((_item) => _item.tts)
@@ -226,6 +228,10 @@ class Item extends Component {
         text: ' ',
       }
       details.push(ttsStatusSuccess)
+    }
+
+    if (isRubricAttached) {
+      details.unshift({ name: <IconRubric />, text: ' ', dataCy: 'rubricIcon' })
     }
 
     if (

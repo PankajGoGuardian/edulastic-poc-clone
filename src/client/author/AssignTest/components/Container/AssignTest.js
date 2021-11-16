@@ -233,9 +233,13 @@ class AssignTest extends React.Component {
       }
     }
     if (testId && isPlaylist) {
-      fetchTestByID(testId, null, null, true, match.params.playlistId)
+      fetchTestByID(testId, null, null, true, match.params.playlistId, {
+        assigningNew: true,
+      })
     } else if (testId) {
-      fetchTestByID(testId)
+      fetchTestByID(testId, undefined, undefined, undefined, undefined, {
+        assigningNew: true,
+      })
     }
 
     const resourceIds = history.location?.state?.resourceIds || []

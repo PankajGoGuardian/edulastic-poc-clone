@@ -7,13 +7,14 @@ import {
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, isBoolean, keyBy } from 'lodash'
+import { curry, get, isBoolean, keyBy, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
+import { multiFind } from '../../../../common/utils/main'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -28,6 +29,7 @@ import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
+  testTypesToTestSettings,
 } from '../../../TestPage/ducks'
 import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
@@ -144,6 +146,9 @@ class SimpleOptions extends React.Component {
       isReleaseScorePremium,
       userRole,
       features: { free, premium },
+      defaultTestTypeProfiles,
+      performanceBands,
+      standardsProficiencies,
     } = this.props
     let { assignment } = this.props
     if (field === 'class') {
@@ -214,6 +219,36 @@ class SimpleOptions extends React.Component {
             state.maxAttempts = 1
             state.maxAnswerChecks = 3
           }
+          state.performanceBand = pick(
+            multiFind(
+              performanceBands,
+              [
+                {
+                  _id:
+                    defaultTestTypeProfiles.performanceBand[
+                      testTypesToTestSettings[value]
+                    ],
+                },
+              ],
+              state.performanceBand
+            ),
+            ['_id', 'name']
+          )
+          state.standardGradingScale = pick(
+            multiFind(
+              standardsProficiencies,
+              [
+                {
+                  _id:
+                    defaultTestTypeProfiles.standardProficiency[
+                      testTypesToTestSettings[value]
+                    ],
+                },
+              ],
+              state.standardGradingScale
+            ),
+            ['_id', 'name']
+          )
           break
         }
         case 'passwordPolicy': {
@@ -691,6 +726,13 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
+      defaultTestTypeProfiles: get(state, 'tests.defaultTestTypeProfiles', {}),
+      performanceBands: get(state, 'performanceBandReducer.profiles', []),
+      standardsProficiencies: get(
+        state,
+        'standardsProficiencyReducer.data',
+        []
+      ),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

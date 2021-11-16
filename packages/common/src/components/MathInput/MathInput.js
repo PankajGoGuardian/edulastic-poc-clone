@@ -2,6 +2,7 @@ import {
   MathKeyboard,
   reformatMathInputLatex,
   notification,
+  removeLeadingAndTrailingNewlineChars,
 } from '@edulastic/common'
 import { math } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
@@ -258,7 +259,18 @@ class MathInput extends React.PureComponent {
     }
   }
 
+  sanitizeLatexOnBlur = () => {
+    const { mathField } = this.state
+    const { onInput: saveAnswer } = this.props
+
+    if (mathField && mathField.latex()) {
+      const mathLatex = removeLeadingAndTrailingNewlineChars(mathField.latex())
+      saveAnswer(reformatMathInputLatex(mathLatex))
+    }
+  }
+
   handleBlur = (ev) => {
+    this.sanitizeLatexOnBlur()
     const { onBlur } = this.props
     if (onBlur) {
       onBlur(ev)

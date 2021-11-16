@@ -2,7 +2,6 @@ import firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
 import { useState, useEffect } from 'react'
-import * as Sentry from '@sentry/browser'
 import { firebaseConfig } from '../../../src/app-config'
 
 firebase.initializeApp({
@@ -17,18 +16,6 @@ const _firestore = firebase.firestore()
 _firestore.settings({ experimentalForceLongPolling: true })
 
 export const db = _firestore
-
-/**
- * we can only enable firebase offline , right after initialisation
- * Enabling firebase offline only if student app loaded for now to
- * limit the impacts
- */
-if (window.studentsApp) {
-  db.enablePersistence().catch((e) => {
-    console.warn('error enabling firebase offline', e)
-    Sentry.captureException(e)
-  })
-}
 
 // for debugging purposes if needed
 if (process?.env?.NODE_ENV === 'development') {

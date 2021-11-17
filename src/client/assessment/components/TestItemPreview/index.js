@@ -167,6 +167,7 @@ class TestItemPreview extends Component {
       t,
       isQuestionView,
       itemIdKey,
+      testItemId,
     } = this.props
 
     const [
@@ -178,7 +179,7 @@ class TestItemPreview extends Component {
       stackedView,
     })
     const question =
-      questions[`${itemId || itemIdKey}_${widget.reference}`] ||
+      questions[`${itemId || itemIdKey || testItemId}_${widget.reference}`] ||
       questions[widget.reference]
     const isPracticeQuestion = itemLevelScoring
       ? every(questions, ({ validation }) => validation && validation.unscored)
@@ -202,7 +203,7 @@ class TestItemPreview extends Component {
         shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
-        itemId={itemId}
+        itemId={itemId || itemIdKey || testItemId}
         key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
       />

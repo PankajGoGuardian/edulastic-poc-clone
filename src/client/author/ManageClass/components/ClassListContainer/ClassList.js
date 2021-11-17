@@ -82,40 +82,24 @@ const ClassList = ({
         const {
           cleverId,
           atlasId = '',
-          institutionId,
           atlasProviderName,
+          googleCode,
+          canvasCode,
         } = _group
-        const policy =
-          user?.orgData?.policies?.institutions?.find(
-            (i) => i.institutionId === institutionId
-          ) ||
-          user?.orgData?.policies?.district ||
-          {}
-        const {
-          allowGoogleClassroom: allowGoogleLogin,
-          allowCanvas: allowCanvasLogin,
-          allowSchoology,
-          allowClasslink,
-        } = policy
-        const showCleverSyncButton =
-          (isCleverUser || isCleverDistrict) && cleverId
-        const showGoogleSyncButton = allowGoogleLogin !== false
-        const showCanvasSyncButton = allowCanvasLogin
-        const showAtlasReSyncButton = atlasId
         const syncIconList = []
-        if (showCleverSyncButton)
+        if (cleverId) {
           syncIconList.push(
             <Tooltip title="Clever" placement="bottom">
               <IconClever height={18} width={18} />
             </Tooltip>
           )
-        if (showGoogleSyncButton)
+        } else if (googleCode) {
           syncIconList.push(
             <Tooltip title="Google Classroom" placement="bottom">
               <IconGoogleClassroom height={18} width={18} />
             </Tooltip>
           )
-        if (showCanvasSyncButton)
+        } else if (canvasCode) {
           syncIconList.push(
             <Tooltip title="Canvas" placement="bottom">
               <img
@@ -126,38 +110,26 @@ const ClassList = ({
               />
             </Tooltip>
           )
-        if (
-          showAtlasReSyncButton &&
-          (atlasProviderName || allowClasslink || allowSchoology)
+        } else if (
+          atlasId &&
+          (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
+            'schoology'
         ) {
-          if (
-            atlasProviderName?.toLowerCase() === 'schoology' ||
-            allowSchoology
+          syncIconList.push(
+            <Tooltip title="Schoology" placement="bottom">
+              <img src={schoologyIcon} alt="Schoology" width="18" height="18" />
+            </Tooltip>
           )
-            syncIconList.push(
-              <Tooltip title="Schoology" placement="bottom">
-                <img
-                  src={schoologyIcon}
-                  alt="Schoology"
-                  width="18"
-                  height="18"
-                />
-              </Tooltip>
-            )
-          if (
-            atlasProviderName?.toLowerCase() === 'classlink' ||
-            allowClasslink
+        } else if (
+          atlasId &&
+          (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
+            'classlink'
+        ) {
+          syncIconList.push(
+            <Tooltip title="Classlink" placement="bottom">
+              <img src={classlinkIcon} alt="Classlink" height="18" width="18" />
+            </Tooltip>
           )
-            syncIconList.push(
-              <Tooltip title="Classlink" placement="bottom">
-                <img
-                  src={classlinkIcon}
-                  alt="Classlink"
-                  height="18"
-                  width="18"
-                />
-              </Tooltip>
-            )
         }
         return { ..._group, syncedWith: syncIconList }
       })
@@ -257,7 +229,7 @@ const ClassList = ({
       },
     },
     {
-      title: 'Sync with',
+      title: 'Synced with',
       dataIndex: 'syncedWith',
       render: (syncedIconList) => (
         <FlexContainer justify-content="space-between" align-items="center">

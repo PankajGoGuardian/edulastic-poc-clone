@@ -162,17 +162,28 @@ export const isDistrictPolicyAllowed = (
 export const isDistrictPolicyAvailable = (isSignupUsingDaURL, districtPolicy) =>
   isSignupUsingDaURL && typeof districtPolicy === 'object'
 
-export const isEmailValid = (rule, value, callback, checks, message) => {
-  const userNameRegExp = new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`)
+export const isEmailValid = (
+  rule,
+  value,
+  callback,
+  checks,
+  message,
+  allowComma
+) => {
+  const userNameRegExp = allowComma
+    ? new RegExp(`^[A-Za-z0-9._,\\-\\+\\'\\"]+$`) // Comma Allowed To SignIn For Users Come From LMS Sync,Edulastic Doesn't Allow Creation of Username with Comma.
+    : new RegExp(`^[A-Za-z0-9._ \\-\\+\\'\\"]+$`)
 
   let flag = false
 
   if (checks === 'email') {
-    flag = emailRegex.test(value.trim())
+    flag = emailRegex.test(value.trim()) && !value.trim(' ').includes(',')
   } else if (checks === 'username') {
     flag = userNameRegExp.test(value.trim())
   } else if (checks === 'both' || !checks) {
-    flag = emailRegex.test(value.trim()) || userNameRegExp.test(value.trim())
+    flag =
+      (emailRegex.test(value.trim()) && !value.trim(' ').includes(',')) ||
+      userNameRegExp.test(value.trim())
   }
 
   if (flag) {

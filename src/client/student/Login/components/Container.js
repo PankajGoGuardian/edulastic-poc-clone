@@ -288,7 +288,8 @@ class LoginContainer extends React.Component {
                                       value,
                                       callback,
                                       'both',
-                                      t('common.validation.validemail')
+                                      t('common.validation.validemail'),
+                                      'allowCommaForSignIn'
                                     ),
                                 },
                               ],

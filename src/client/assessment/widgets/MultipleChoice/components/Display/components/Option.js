@@ -226,6 +226,7 @@ const Option = (props) => {
       {fromSetAnswers && <DragHandle />}
       {uiStyle.type !== 'radioBelow' && container}
       <MultiChoiceContent
+        data-cy="multiChoiceContent"
         fontSize={fontSize}
         smallSize={smallSize}
         uiStyleType={uiStyle.type}

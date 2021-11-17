@@ -39,6 +39,7 @@ export const initializeSegment = (forceEnable = false) => {
   ]
   analytics.factory = function (method) {
     return function () {
+      // eslint-disable-next-line prefer-rest-params
       const args = Array.prototype.slice.call(arguments)
       args.unshift(method)
       analytics.push(args)
@@ -100,7 +101,7 @@ export const initializeSegment = (forceEnable = false) => {
  * @param {defaultType} _default default value to return if no match found
  * @returns {arrayElement | defaultType}
  */
-export function multiFind(arr, queries, _default=undefined) {
+export function multiFind(arr, queries, _default = undefined) {
   for (const query of queries) {
     const findFunc =
       typeof query === 'function'

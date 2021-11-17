@@ -46,6 +46,7 @@ const InfoButtons = ({
           onClick={showHintHandler}
           isStudent={isStudent}
           tabIndex="-1"
+          data-cy="hints-button"
         >
           {toggleHints ? 'Show' : 'Hide'} Hint
         </ShowHint>

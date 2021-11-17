@@ -76,9 +76,14 @@ const AudioControls = ({
   const ttsAudioPlaybackRateRef = useRef(ttsAudioPlaybackRate)
 
   useEffect(() => {
+    const findAllPlayingHowls = Howler._howls.filter((item) => item.playing())
     /** Ref is needed to change audio rate for already loaded audio */
     if (ttsAudioPlaybackRateRef?.current) {
       ttsAudioPlaybackRateRef.current = ttsAudioPlaybackRate
+    }
+
+    if (findAllPlayingHowls.length) {
+      findAllPlayingHowls.forEach((item) => item.rate(ttsAudioPlaybackRate))
     }
   }, [ttsAudioPlaybackRate])
 
@@ -242,18 +247,12 @@ const AudioControls = ({
     setCurrentPlayingDetails()
   }
 
-  useEffect(() => {
-    const findAllPlayingHowls = Howler._howls.filter((item) => item.playing())
-    if (findAllPlayingHowls.length) {
-      findAllPlayingHowls.forEach((item) => item.rate(ttsAudioPlaybackRate))
-    }
-  }, [ttsAudioPlaybackRate])
-
   const handlePlayPauseAudio = () => {
     if (loading || !currentHowl) {
       return
     }
 
+    currentHowl.rate(ttsAudioPlaybackRateRef?.current)
     if (currentHowl?.playing()) {
       currentHowl.pause()
       currentHowl.isPaused = true

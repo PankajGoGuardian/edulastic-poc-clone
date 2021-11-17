@@ -130,7 +130,7 @@ const AudioControls = ({
   // Playing audio
   const audioPlayResolve = (_howl) => {
     if (!_howl) return
-    _howl.rate(ttsAudioPlaybackRateRef?.current || '1')
+    _howl.rate(ttsAudioPlaybackRateRef?.current || 1)
     const _prom = new Promise((resolve, reject) => {
       _howl?.load()
       if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {

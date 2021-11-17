@@ -63,7 +63,7 @@ const QuestionPreviewDetails = ({
           <label>Bloom’s Taxonomy</label>
           <span data-cy="tax-on-preview">{bloomsTaxonomy || '--'}</span>
         </DetailRow>
-        <DetailRow direction="column">
+        <DetailRow direction="column" alignItems="flex-start">
           <label>Rubric</label>
           <span>
             {allRubricNames.length ? allRubricNames.join(', ') : '--'}

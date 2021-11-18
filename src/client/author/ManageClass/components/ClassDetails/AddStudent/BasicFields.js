@@ -167,6 +167,14 @@ const BasicFields = ({
     }
   }
 
+  const validateUserNameEmail = (rule, value, callback) => {
+    if (value.trim(' ').includes('@') && value.trim(' ').includes(',')) {
+      callback('Please provide valid Username or Email id')
+    } else {
+      callback()
+    }
+  }
+
   useEffect(() => {
     resetClassDetails()
   }, [])
@@ -219,7 +227,11 @@ const BasicFields = ({
           <Form.Item>
             {getFieldDecorator('email', {
               validateTrigger: ['onBlur'],
-              rules: [{ validator: checkUser }, ...commonEmailValidations],
+              rules: [
+                { validator: checkUser },
+                ...commonEmailValidations,
+                validateUserNameEmail,
+              ],
             })(
               <TextInputStyled
                 padding="0px 15px 0px 30px"

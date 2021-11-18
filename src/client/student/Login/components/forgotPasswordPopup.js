@@ -146,7 +146,8 @@ const ForgotPasswordForm = (props) => {
                   value,
                   callback,
                   'both',
-                  t('common.forgotpassworderror')
+                  t('common.forgotpassworderror'),
+                  'allowCommaForSignIn'
                 ),
             },
           ],

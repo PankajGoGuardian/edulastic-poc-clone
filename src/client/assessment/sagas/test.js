@@ -687,7 +687,7 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary) {
+      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary && !summary) {
         if (loadFromLast && testType !== testContants.type.TESTLET) {
           const itemId = testItemIds[lastAttendedQuestion]
           yield put(
@@ -786,7 +786,7 @@ function* loadTest({ payload }) {
 
     if (
       settings.blockNavigationToAnsweredQuestions &&
-      testActivity.questionActivities.length &&
+      testActivity.questionActivities.length && (!summary) &&
       !test.isDocBased
     ) {
       const testItemIds = testItems.map((i) => i._id)

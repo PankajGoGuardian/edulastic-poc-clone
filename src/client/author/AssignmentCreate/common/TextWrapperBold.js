@@ -1,11 +1,12 @@
 import styled from 'styled-components'
-import { darkGrey } from '@edulastic/colors'
+import { title } from '@edulastic/colors'
 
 const TextWrapper = styled.div`
-  margin-bottom: 5px;
-  font-weight: 400;
+  margin-bottom: 15px;
+  font-weight: 600;
+  font-size: 10px;
   text-transform: uppercase;
-  color: ${darkGrey};
+  color: ${title};
   text-align: center;
 `
 export default TextWrapper

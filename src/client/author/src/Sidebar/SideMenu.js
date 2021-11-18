@@ -500,6 +500,7 @@ class SideMenu extends Component {
         <Menu
           onClick={this.onClickFooterDropDownMenu}
           style={{ height: 'auto' }}
+          isCollapsed={isCollapsed}
         >
           <Menu.Item
             key="1"
@@ -645,6 +646,7 @@ class SideMenu extends Component {
                 mode="inline"
                 onClick={(item) => this.handleMenu(item)}
                 isBannerShown={isProxyUser || isDemoPlaygroundUserProxy}
+                isCollapsed={isCollapsed}
               >
                 {this.MenuItems.map((menu, index) => {
                   if (menu.divider) {
@@ -760,6 +762,7 @@ class SideMenu extends Component {
                       <DemoPlaygroundButton
                         data-cy="demo-palyground-item"
                         onClick={this.handlePlayGround}
+                        isCollapsed={isCollapsed}
                         title={isCollapsed ? 'Demo Playground' : ''}
                       >
                         <IconContainer className={isCollapsed ? 'active' : ''}>
@@ -1157,23 +1160,30 @@ const Menu = styled(AntMenu)`
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
     text-align: center;
+    flex-direction: column;
     justify-content: center;
     margin: 8px 0px;
     padding: 0px 10px !important;
-    height: 38px;
+    height: 55px;
+    font-size: 10px;
     width: 100%;
+    &[data-cy='library'],
+    &[data-cy='user management'] {
+      height: 28px;
+      font-size: 12px;
+    }
   }
   @media (max-height: 720px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 34px;
+      height: 40px;
       margin: 0px 0px 5px;
     }
   }
   @media (max-height: 680px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 32px;
+      height: 38px;
       margin: 0px 0px 4px;
       &:before {
         left: 15px;
@@ -1189,7 +1199,7 @@ const Menu = styled(AntMenu)`
   @media (max-height: 600px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 30px;
+      height: 50px;
       &[data-cy='library'],
       &[data-cy='user management'] {
         height: 18px;
@@ -1212,9 +1222,10 @@ const Menu = styled(AntMenu)`
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 14px;
-      right: 14px;
-      border-radius: 4px;
+      border-radius: ${(props) =>
+        props.isCollapsed ? '0px' : '4px'} !important;
+      left: ${(props) => (props.isCollapsed ? '0px' : '14px')} !important;
+      right: ${(props) => (props.isCollapsed ? '0px' : '14px')} !important;
       background: ${(props) => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
@@ -1278,6 +1289,8 @@ const Menu = styled(AntMenu)`
 `
 
 const MenuItem = styled(AntMenu.Item)`
+  width: ${({ isCollapsed }) => (isCollapsed ? '100%' : '')};
+  height: ${({ isCollapsed }) => (isCollapsed ? '35px' : '')};
   font-family: Open Sans;
   font-size: 14px;
   font-weight: 600;
@@ -1578,7 +1591,12 @@ const LabelMenuItem = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: ${({ isCollapsed }) => (isCollapsed ? 'none' : 'block')};
+  display: block;
+  line-height: ${({ isCollapsed }) => (isCollapsed ? '10px' : '')} !important;
+  font-size: ${({ isCollapsed }) => (isCollapsed ? '9px' : '')};
+  margin-top: ${({ isCollapsed }) => (isCollapsed ? '4px' : '')};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '2px' : '')};
+  text-align: center;
 `
 
 const Hr = styled.div`
@@ -1696,6 +1714,7 @@ const DemoPlaygroundButtonContainer = styled.div`
 
 const DemoPlaygroundButton = styled.div`
   display: inline-flex;
+  flex-direction: ${({ isCollapsed }) => (isCollapsed ? 'column' : '')};
   color: #7c93a7;
   &:hover {
     svg path {

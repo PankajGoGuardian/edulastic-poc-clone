@@ -8,6 +8,7 @@ const BodyWrapper = styled.div`
   justify-content: center;
   align-items: center;
   background-color: ${white};
+  height: ${({ height }) => height || ''};
 `
 
 export default BodyWrapper

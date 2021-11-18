@@ -120,7 +120,8 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const { currentSignUpState } = user
+  const { currentSignUpState, orgData = {} } = user
+  const { classList = [] } = orgData
   const isSignupCompleted = currentSignUpState === signUpState.DONE
 
   const saveRecommendedTests = (_data) => {
@@ -649,7 +650,7 @@ const MyClasses = ({
 
     const getProductsKeysByInterestedSubject = Object.keys(
       Object.fromEntries(
-        Object.entries(productsMetaData).filter(([keys, values]) =>
+        Object.values(productsMetaData).filter(([values]) =>
           subjects.includes(values.filters)
         )
       )
@@ -682,11 +683,6 @@ const MyClasses = ({
     (windowWidth - 120) / widthOfTilesWithMargin
   ) // here 120 is width of side-menu 70px and padding of container 50px
 
-  const getClassCardModular = allActiveClasses.length % GridCountInARow
-  const classEmptyBoxCount = getClassCardModular
-    ? new Array(GridCountInARow - getClassCardModular).fill(1)
-    : []
-
   const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
@@ -714,6 +710,9 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
+  const hideGetStartedSection =
+    classList.length > 0 && totalAssignmentCount >= 1
+
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
   return (
@@ -732,10 +731,10 @@ const MyClasses = ({
       <Classes
         showBannerSlide={showBannerSlide}
         activeClasses={allActiveClasses}
-        emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
         classData={classData}
         history={history}
+        hideGetStartedSection={hideGetStartedSection}
       />
       {showRecommendedTests && (
         <TestRecommendations

@@ -295,11 +295,13 @@ class SideMenu extends Component {
                       data-cy={menu.label}
                       onClick={this.toggleMenu}
                       title={isSidebarCollapsed ? menu.label : ''}
+                      isCollapsed={isSidebarCollapsed}
                     >
                       <MenuIcon />
-                      {!isSidebarCollapsed && (
-                        <LabelMenuItem>{menu.label}</LabelMenuItem>
-                      )}
+
+                      <LabelMenuItem isCollapsed={isSidebarCollapsed}>
+                        {menu.label}
+                      </LabelMenuItem>
                     </MenuItem>
                   )
                 })}
@@ -636,12 +638,19 @@ const Menu = styled(AntMenu)`
   }
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
+    flex-direction: column;
     text-align: center;
     justify-content: center;
     margin: 8px 0px;
     padding: 0px 10px !important;
-    height: 38px;
+    height: 55px;
+    font-size: 10px;
     width: 100%;
+    &[data-cy='library'],
+    &[data-cy='user management'] {
+      height: 28px;
+      font-size: 12px;
+    }
   }
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
@@ -658,9 +667,12 @@ const Menu = styled(AntMenu)`
       position: absolute;
       top: 0;
       bottom: 0;
-      left: 14px;
-      right: 14px;
-      border-radius: 4px;
+      border-radius: ${(props) =>
+        props.isSidebarCollapsed ? '0px' : '4px'} !important;
+      left: ${(props) =>
+        props.isSidebarCollapsed ? '0px' : '14px'} !important;
+      right: ${(props) =>
+        props.isSidebarCollapsed ? '0px' : '14px'} !important;
       background: ${(props) => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
@@ -684,6 +696,8 @@ const Menu = styled(AntMenu)`
 `
 
 const MenuItem = styled(AntMenu.Item)`
+  width: ${({ isCollapsed }) => (isCollapsed ? '100%' : '')};
+  height: ${({ isCollapsed }) => (isCollapsed ? '35px' : '')};
   font-family: Open Sans;
   font-size: 14px;
   font-weight: 600;
@@ -964,8 +978,12 @@ const LabelMenuItem = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: ${({ isSidebarCollapsed }) =>
-    isSidebarCollapsed ? 'none' : 'block'};
+  display: block;
+  line-height: ${({ isCollapsed }) => (isCollapsed ? '10px' : '')} !important;
+  font-size: ${({ isCollapsed }) => (isCollapsed ? '10px' : '')};
+  margin-top: ${({ isCollapsed }) => (isCollapsed ? '4px' : '')};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '2px' : '')};
+  text-align: center;
 `
 
 const IconBars = styled(AntIcon)`

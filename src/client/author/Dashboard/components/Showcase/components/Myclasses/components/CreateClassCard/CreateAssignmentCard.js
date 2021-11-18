@@ -10,10 +10,10 @@ import {
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton/index'
 
-const CreateClassCard = ({ history, newCreateClassCard }) => {
-  const createNewClass = () => {
+const CreateAssignmentCard = ({ history, newCreateClassCard }) => {
+  const createNewAssignment = () => {
     history.push({
-      pathname: '/author/manageClass/createClass',
+      pathname: '/author/assignments/select',
       state: { fromDashboard: true },
     })
   }
@@ -21,28 +21,29 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
   return (
     <>
       <CreateClassCardWrapper newCreateClassCard={newCreateClassCard}>
-        <CreateClassTitle data-cy="classCreationTitle">
-          Create Class
+        <CreateClassTitle data-cy="asignmentCreationTitle">
+          Create Assignment
         </CreateClassTitle>
         <InfoText>
-          Use <b> Google Classroom </b> to import class(es) or create manually
+          Select from a library of <b> 200K pre-built assessment </b> or create
+          your own
         </InfoText>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <StyledEduButton
               isBlue
-              data-cy="createNewClassFromCard"
+              data-cy="createNewAssignment"
               onClick={handleClick}
             >
               <IconPlusCircle width={16} height={16} />{' '}
-              <Text>CREATE A CLASS </Text>
+              <Text>CREATE ASSIGNMENT </Text>
             </StyledEduButton>
           )}
-          onClick={createNewClass}
+          onClick={createNewAssignment}
         />
       </CreateClassCardWrapper>
     </>
   )
 }
 
-export default CreateClassCard
+export default CreateAssignmentCard

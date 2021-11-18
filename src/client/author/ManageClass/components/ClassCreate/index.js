@@ -288,7 +288,10 @@ class ClassCreate extends React.Component {
     const { defaultSchool, schools } = userOrgData
     const { submitted } = this.state
     if (!creating && submitted && isEmpty(error)) {
-      history.push(exitPath || `/author/manageClass/${classId}`)
+      history.push({
+        pathname: exitPath || `/author/manageClass/${classId}`,
+        state: location?.state,
+      })
     }
     return (
       <Form onSubmit={this.handleSubmit}>

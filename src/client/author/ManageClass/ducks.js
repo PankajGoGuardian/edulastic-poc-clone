@@ -34,6 +34,7 @@ import {
   addLoadingComponentAction,
   removeLoadingComponentAction,
 } from '../src/actions/authorUi'
+import { getOrgGroupList } from '../src/selectors/user'
 import { slice } from '../Subscription/ducks'
 // selectors
 const manageClassSelector = (state) => state.manageClass
@@ -95,6 +96,11 @@ export const getGoogleAuthRequiredSelector = createSelector(
 export const getGoogleClassCodeSelector = createSelector(
   manageClassSelector,
   (state) => state.googleClassCode
+)
+
+export const getIsCreateAssignmentModalVisible = createSelector(
+  manageClassSelector,
+  (state) => state.isCreateAssignmentModalVisible
 )
 // action types
 
@@ -215,6 +221,9 @@ export const SET_GOOGLE_CLASS_CODE = '[manageClass] set google class_code'
 
 export const SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC =
   '[manageClass] save google tokens and retry sync'
+
+export const TOGGLE_CREATE_ASSIGNMENT_MODAL =
+  '[manageClass] toggle create assignment modal on first class creation'
 
 // action creators
 
@@ -352,6 +361,10 @@ export const saveGoogleTokensAndRetrySyncAction = createAction(
   SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC
 )
 
+export const toggleCreateAssignmentModalAction = createAction(
+  TOGGLE_CREATE_ASSIGNMENT_MODAL
+)
+
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -380,6 +393,7 @@ const initialState = {
   showUpdateCoTeachersModal: false,
   googleAuthenticationRequired: false,
   googleClassCode: '',
+  isCreateAssignmentModalVisible: 0, // 0 - false, 1 - pending (still false), 2 - true
 }
 
 const setFilterClass = (state, { payload }) => {
@@ -646,6 +660,9 @@ export default createReducer(initialState, {
   [SET_GOOGLE_CLASS_CODE]: (state, { payload }) => {
     state.googleClassCode = payload
   },
+  [TOGGLE_CREATE_ASSIGNMENT_MODAL]: (state, { payload }) => {
+    state.isCreateAssignmentModalVisible = payload
+  },
 })
 
 function* fetchClassList({ payload }) {
@@ -669,10 +686,37 @@ function* fetchClassList({ payload }) {
 function* fetchStudentsByClassId({ payload }) {
   try {
     const { classId } = payload
+    const studentsPrevState = yield select(
+      (state) => state.manageClass.studentsList
+    )
     const result = yield call(enrollmentApi.fetch, classId)
     const { group, students } = result
     yield put(fetchStudentsByIdSuccessAction(students))
     yield put(setClassAction(group))
+    const userClasses = yield select(getOrgGroupList)
+    const assignmentCount = yield select(
+      (state) => state.dashboardTeacher?.allAssignmentCount
+    )
+    const testRedirectUrl = yield select(
+      (state) => state.router?.location?.state?.testRedirectUrl
+    )
+    /**
+     *  show create assignment modal in my class
+     *  if user has created only one class &&
+     *  atleast 1 student is being added &&
+     *  no asignments are created yet by user &&
+     *  user is not landing from dashboard
+     */
+    if (
+      userClasses?.length === 1 &&
+      studentsPrevState?.length === 0 &&
+      assignmentCount === 0 &&
+      students?.length > 0 &&
+      !testRedirectUrl
+    ) {
+      // Set "Create Assignment" modal visibility to intermediate state
+      yield put(toggleCreateAssignmentModalAction(1))
+    }
   } catch (error) {
     Sentry.captureException(error)
     yield put(fetchStudentsByIdErrorAction(error))
@@ -746,6 +790,9 @@ function* receiveUpdateClass({ payload }) {
 
 function* receiveAddStudentRequest({ payload }) {
   try {
+    const studentsPrevState = yield select(
+      (state) => state.manageClass.studentsList
+    )
     const result = yield call(enrollmentApi.addStudent, payload)
     const student = get(result, 'data.result')
     if (student) {
@@ -757,6 +804,30 @@ function* receiveAddStudentRequest({ payload }) {
       yield put(addStudentSuccessAction(newStudent))
       const successMsg = 'Student added to class successfully.'
       notification({ type: 'success', msg: successMsg })
+
+      const userClasses = yield select(getOrgGroupList)
+      const assignmentCount = yield select(
+        (state) => state.dashboardTeacher?.allAssignmentCount
+      )
+      const testRedirectUrl = yield select(
+        (state) => state.router?.location?.state?.testRedirectUrl
+      )
+      /**
+       *  show create assignment modal in my class
+       *  if user has created only one class &&
+       *  atleast 1 student is being added &&
+       *  no asignments are created yet by user &&
+       *  user is not landing from dashboard
+       */
+      if (
+        userClasses?.length === 1 &&
+        studentsPrevState?.length === 0 &&
+        assignmentCount === 0 &&
+        !testRedirectUrl
+      ) {
+        // Show "Create Assignment" modal
+        yield put(toggleCreateAssignmentModalAction(2))
+      }
     } else {
       const msg = get(
         result,

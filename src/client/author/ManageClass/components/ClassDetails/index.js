@@ -42,12 +42,15 @@ import {
   setGoogleAuthenticationRequiredAction,
   saveGoogleTokensAndRetrySyncAction,
   setSyncClassLoadingAction,
+  toggleCreateAssignmentModalAction,
+  getIsCreateAssignmentModalVisible,
 } from '../../ducks'
 import {
   getCleverLibraryUserSelector,
   getUserOrgId,
 } from '../../../src/selectors/user'
 import ReauthenticateModal from './ReauthenticateModal'
+import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
 
 const ClassDetails = ({
   location,
@@ -81,6 +84,8 @@ const ClassDetails = ({
   setGoogleAuthenticationRequired,
   saveGoogleTokensAndRetrySync,
   userDistrictId,
+  isCreateAssignmentModalVisible,
+  toggleCreateAssignmentModal,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -219,6 +224,11 @@ const ClassDetails = ({
 
   const syncCanvasModal = () => {
     setCanvasSyncModalVisibility(true)
+  }
+
+  const handleCreateNewAssignmentClick = () => {
+    toggleCreateAssignmentModal(false)
+    history.push('/author/assignments/select')
   }
 
   useEffect(() => {
@@ -395,6 +405,13 @@ const ClassDetails = ({
               allowCanvasLogin={allowCanvasLogin}
             />
           </MainContentWrapper>
+          {isCreateAssignmentModalVisible === 2 && (
+            <CreateNewAssignmentModal
+              visible={isCreateAssignmentModalVisible}
+              onConfirm={handleCreateNewAssignmentClick}
+              onCancel={() => toggleCreateAssignmentModal(0)}
+            />
+          )}
         </>
       )}
     </>
@@ -426,6 +443,7 @@ const enhance = compose(
       isFetchingCanvasData: getCanvasFetchingStateSelector(state),
       isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
       userDistrictId: getUserOrgId(state),
+      isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -443,6 +461,7 @@ const enhance = compose(
       unarchiveClass: unarchiveClassAction,
       setGoogleAuthenticationRequired: setGoogleAuthenticationRequiredAction,
       saveGoogleTokensAndRetrySync: saveGoogleTokensAndRetrySyncAction,
+      toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
     }
   )
 )

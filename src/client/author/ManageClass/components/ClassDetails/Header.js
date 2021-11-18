@@ -18,7 +18,7 @@ import { compose } from 'redux'
 import styled from 'styled-components'
 import { segmentApi, canvasApi } from '@edulastic/api'
 // components
-import { Dropdown, Select, Col } from 'antd'
+import { Dropdown, Select, Col, Tooltip } from 'antd'
 
 import GoogleLogin from 'react-google-login'
 import {
@@ -63,6 +63,13 @@ const ATLAS = 'atlas'
 const CLEVER_RESYNC = 'clever resync'
 
 const modalStatus = {}
+
+const WithTooltip = ({ title, children }) =>
+  title ? (
+    <Tooltip title={`Assign "${title}"`}>{children}</Tooltip>
+  ) : (
+    <>{children}</>
+  )
 
 const Header = ({
   user,
@@ -490,17 +497,23 @@ const Header = ({
           </EduButton>
         )}
         {active === 1 && (
-          <EduButton
-            data-cy="assignTestFromClass"
-            isBlue
-            onClick={() => {
-              segmentApi.genericEventTrack('AssignATestButtonClick', {})
-              history.push('/author/tests')
-            }}
-          >
-            <IconAssignment />
-            ASSIGN A TEST
-          </EduButton>
+          <WithTooltip title={history?.location?.state?.testTitle}>
+            <EduButton
+              data-cy="assignTestFromClass"
+              isBlue
+              onClick={() => {
+                segmentApi.genericEventTrack('AssignTestButtonClick', {
+                  ...history?.location?.state,
+                })
+                history.push(
+                  history?.location?.state?.testRedirectUrl || '/author/tests'
+                )
+              }}
+            >
+              <IconAssignment />
+              ASSIGN TEST
+            </EduButton>
+          </WithTooltip>
         )}
         {active !== 1 && (
           <>

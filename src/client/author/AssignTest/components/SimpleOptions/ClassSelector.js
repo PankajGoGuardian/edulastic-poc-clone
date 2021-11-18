@@ -3,15 +3,36 @@ import React from 'react'
 import { Select, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
-import { IconGroup, IconClass } from '@edulastic/icons'
-import { lightGrey10 } from '@edulastic/colors'
+import { IconGroup, IconClass, IconPlus } from '@edulastic/icons'
+import {
+  lightGrey10,
+  themeColorBlue,
+  themeColorHoverBlue,
+  white,
+} from '@edulastic/colors'
 import { StyledRow, StyledCol } from './styled'
 
 const dropdownStyle = {
   boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.1)',
 }
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
+const CreateNewClassBtn = ({ createClassHandler }) => (
+  <CreateNewClassButtonWrapper
+    data-cy="createNewClass"
+    onMouseDown={(e) => e.preventDefault()}
+    onClick={createClassHandler}
+  >
+    <IconPlus /> <span>Create New Class</span>
+  </CreateNewClassButtonWrapper>
+)
+
+const ClassSelector = ({
+  onChange,
+  fetchStudents,
+  selectedGroups,
+  group,
+  createClassHandler,
+}) => (
   <StyledRow gutter={16}>
     <StyledCol span={10}>
       <FieldLabel>CLASS/GROUP</FieldLabel>
@@ -34,6 +55,13 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
         value={selectedGroups}
         getPopupContainer={(trigger) => trigger.parentNode}
         dropdownStyle={dropdownStyle}
+        dropdownRender={(menu) =>
+          group?.length > 0 ? (
+            menu
+          ) : (
+            <CreateNewClassBtn createClassHandler={createClassHandler} />
+          )
+        }
       >
         {group.map((data) => (
           <Select.Option
@@ -78,4 +106,31 @@ const OptionWrapper = styled.div`
   display: inline-flex;
   width: 100%;
   align-items: center;
+`
+const CreateNewClassButtonWrapper = styled.div`
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${themeColorBlue};
+
+  svg {
+    fill: ${themeColorBlue};
+  }
+
+  span {
+    display: block;
+    font-weight: 600;
+    padding-left: 10px;
+  }
+
+  &:hover {
+    color: ${white};
+    background: ${themeColorHoverBlue};
+
+    svg {
+      fill: ${white};
+    }
+  }
 `

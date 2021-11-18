@@ -91,6 +91,7 @@ class SimpleOptions extends React.Component {
       features: { free, premium },
       testSettings = {},
       assignment,
+      group,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -118,6 +119,9 @@ class SimpleOptions extends React.Component {
       isBoolean(applyEBSR)
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
+    }
+    if (group?.length === 1) {
+      this.onChange('class', [group[0]._id])
     }
   }
 
@@ -519,6 +523,13 @@ class SimpleOptions extends React.Component {
       tootltipWidth = this?.containerRef?.current?.offsetWidth * 0.2 || 0
     }
 
+    const createClassHandler = () => {
+      history.push({
+        pathname: '/author/manageClass/createClass',
+        state: { testRedirectUrl: match?.url, testTitle: testSettings?.title },
+      })
+    }
+
     return (
       <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
         {isAssigning && (
@@ -576,6 +587,7 @@ class SimpleOptions extends React.Component {
                   isVideoResourcePreviewModal={isVideoResourcePreviewModal}
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
+                  createClassHandler={createClassHandler}
                 />
               </TabContentContainer>
             )}

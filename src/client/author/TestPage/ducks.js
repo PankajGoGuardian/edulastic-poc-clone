@@ -81,6 +81,7 @@ import {
   getUserSignupStatusSelector,
   getUserOrgId,
   currentDistrictInstitutionIds,
+  getOrgGroupList,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -2087,6 +2088,11 @@ export function* receiveTestByIdSaga({ payload }) {
       isPlaylist: payload.isPlaylist,
       features,
     })
+    const loadedGroups = yield select((state) => state.assignmentSettings.class)
+    const userClassList = yield select(getOrgGroupList)
+    if (loadedGroups?.length && userClassList?.length === 1) {
+      assignSettings.class = loadedGroups
+    }
     yield put(updateAssingnmentSettingsAction(assignSettings))
     let defaultTestSettings = yield select(
       ({ assignmentSettings }) => assignmentSettings

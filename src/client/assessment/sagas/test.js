@@ -71,6 +71,7 @@ import {
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
+  RESET_TEST_ITEMS,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -1047,6 +1048,9 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
+    yield put({
+      type: RESET_TEST_ITEMS,
+    })
     Fscreen.safeExitfullScreen()
   }
 }

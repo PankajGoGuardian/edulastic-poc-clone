@@ -408,7 +408,7 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Timed TEST */}
 
-      {!testSettings?.isDocBased && isShowRubricToStudentsSettingVisible && (
+      {!testSettings?.isDocBased && (
         <SettingContainer id="show-rubric-to-students">
           <DetailsTooltip
             width={tootltipWidth}
@@ -435,7 +435,11 @@ const TestBehaviorGroupContainer = ({
                   data-cy="show-rubric-to-students-switch"
                   size="small"
                   defaultChecked={false}
-                  disabled={freezeSettings || !premium}
+                  disabled={
+                    !isShowRubricToStudentsSettingVisible ||
+                    freezeSettings ||
+                    !premium
+                  }
                   checked={showRubricToStudents}
                   onChange={(value) =>
                     overRideSettings('showRubricToStudents', value)

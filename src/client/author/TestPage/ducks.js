@@ -52,7 +52,7 @@ import {
   Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
-import { createGroupSummary } from './utils'
+import { createGroupSummary, showRubricToStudentsSetting } from './utils'
 import {
   SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
@@ -2248,6 +2248,20 @@ const cleanTestItemGroups = (_test) => {
   })
 }
 
+/**
+ * update the showRubricToStudents setting if it was set to true
+ * and later items with rubric attached are removed from the test
+ */
+const updateTestSettings = (testItemGroups, testData) => {
+  if (
+    testItemGroups?.length &&
+    !showRubricToStudentsSetting(testItemGroups) &&
+    testData.showRubricToStudents
+  ) {
+    testData.showRubricToStudents = false
+  }
+}
+
 export function* updateTestSaga({ payload }) {
   try {
     if (!validateRestrictNavigationOut(payload.data)) {
@@ -2320,6 +2334,8 @@ export function* updateTestSaga({ payload }) {
       return yield put(setTestsLoadingAction(false))
     }
 
+    const testItemGroups = payload.data.itemGroups
+
     payload.data.itemGroups = transformItemGroupsUIToMongo(
       payload.data.itemGroups,
       scoring
@@ -2339,6 +2355,7 @@ export function* updateTestSaga({ payload }) {
 
     const testData = omit(payload.data, testFieldsToOmit)
     cleanTestItemGroups(testData)
+    updateTestSettings(testItemGroups, testData)
     if (hasInvalidItem(testData)) {
       console.warn('test data has invalid item', testData)
       Sentry.configureScope((scope) => {

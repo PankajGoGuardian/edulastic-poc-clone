@@ -1504,7 +1504,7 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {!isDocBased && isShowRubricToStudentsSettingVisible && (
+                  {!isDocBased && (
                     <Block id="show-rubric-to-students" smallSize={isSmallSize}>
                       <SettingContainer>
                         <Title>
@@ -1517,7 +1517,12 @@ class Setting extends Component {
                             />
                           </Tooltip>
                           <EduSwitchStyled
-                            disabled={!owner || !isEditable || !premium}
+                            disabled={
+                              !isShowRubricToStudentsSettingVisible ||
+                              !owner ||
+                              !isEditable ||
+                              !premium
+                            }
                             checked={showRubricToStudents}
                             data-cy="show-rubric-to-students-switch"
                             onChange={this.updateTestData(

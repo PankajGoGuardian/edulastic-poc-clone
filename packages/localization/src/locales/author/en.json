@@ -174,6 +174,6 @@
     "warning": "You are setting this keypad to all items on the test. This action will override any keypad setting that was assigned at an item-level"
   },
   "showRubricToStudents": {
-    "info": "Choose if the students should be able to view the grading rubric while attempting any question which has grading rubric associated."
+    "info": "Choose if the students should be able to view the grading rubric while attempting any question which has grading rubric associated. This setting will only be enabled if any of the question in the test has rubric attached to it."
   }
 }

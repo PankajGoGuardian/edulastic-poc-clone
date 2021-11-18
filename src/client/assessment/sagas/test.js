@@ -651,6 +651,7 @@ function* loadTest({ payload }) {
       // if not the last question in the test or wasn't skipped then land on next Q
       if (
         lastAttendedQuestion !== test.testItems.length - 1 &&
+        questionActivities.length &&
         !lastAttemptedQuestion.skipped
       ) {
         lastAttendedQuestion++

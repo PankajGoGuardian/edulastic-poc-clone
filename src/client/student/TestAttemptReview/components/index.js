@@ -104,7 +104,6 @@ const SummaryContainer = (props) => {
     closeUserWorkUploadModal()
   }
 
-
   return (
     <ThemeProvider theme={themes.default}>
       <Header>

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { Row, Col, Input } from 'antd'
 import { CustomModalStyled, EduButton, notification } from '@edulastic/common'
 import { report } from '@edulastic/constants'
-import { themeColor, lightGreySecondary } from '@edulastic/colors'
+import { themeColor, lightGreySecondary, red } from '@edulastic/colors'
 import { MultipleSelect } from '../widgets/MultipleSelect'
 
 import {
@@ -16,6 +16,7 @@ import {
 const ShareReportModal = ({
   reportType,
   reportFilters,
+  showDemographicFilterWarning = false,
   showModal,
   setShowModal,
   collaborativeGroups,
@@ -127,6 +128,11 @@ const ShareReportModal = ({
               dropdownStyle={{ zIndex: '1025' }}
             />
           </DropdownContainer>
+          {showDemographicFilterWarning && (
+            <InfoText>
+              * Please note demographics filters will not be shared.
+            </InfoText>
+          )}
         </Col>
       </Row>
     </CustomModalStyled>
@@ -182,4 +188,9 @@ const DropdownContainer = styled.div`
       }
     }
   }
+`
+const InfoText = styled.span`
+  display: block;
+  color: ${red};
+  margin: 10px 0px 0px 0px;
 `

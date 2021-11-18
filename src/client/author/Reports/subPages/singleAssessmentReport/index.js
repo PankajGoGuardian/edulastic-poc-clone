@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
+import { isEmpty } from 'lodash'
 
 import { Spin, Col } from 'antd'
 import { SubHeader } from '../../common/components/Header'
@@ -272,6 +273,11 @@ const SingleAssessmentReportContainer = (props) => {
     return _ddFilter
   }, [tempDdFilter])
 
+  const showDemographicFilterWarning = useMemo(
+    () => !isEmpty(Object.values(demographicFilters).filter((val) => !!val)),
+    [demographicFilters]
+  )
+
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
@@ -286,6 +292,7 @@ const SingleAssessmentReportContainer = (props) => {
               testId: settings.selectedTest.key,
             }}
             showModal={sharingState}
+            showDemographicFilterWarning={showDemographicFilterWarning}
             setShowModal={setSharingState}
           />
         )}

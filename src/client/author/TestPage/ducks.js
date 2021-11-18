@@ -622,7 +622,7 @@ export const getPlaylistSelector = createSelector(
 
 export const defaultTestTypeProfilesSelector = createSelector(
   stateSelector,
-  (state) => state.defaultTestTypeProfiles
+  (state) => state.defaultTestTypeProfiles || {}
 )
 
 export const getDefaultThumbnailSelector = createSelector(

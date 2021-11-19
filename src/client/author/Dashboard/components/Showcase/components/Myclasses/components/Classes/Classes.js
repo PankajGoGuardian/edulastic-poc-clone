@@ -51,7 +51,8 @@ const Classes = ({
   )
 
   const showCreateClassCard =
-    classType !== 'My Favorites' && classData.length === 0
+    (classType !== 'My Favorites' && classData.length === 0) ||
+    (hideGetStartedSection && classData.length < 5)
 
   const isPremiumUser = user?.features?.premium
 
@@ -124,7 +125,7 @@ const Classes = ({
             />
           </CardContainer>
         ))}
-        {(showCreateClassCard || hideGetStartedSection) && (
+        {showCreateClassCard && (
           <CreateClassCard
             newCreateClassCard={classData.length < 1}
             history={history}

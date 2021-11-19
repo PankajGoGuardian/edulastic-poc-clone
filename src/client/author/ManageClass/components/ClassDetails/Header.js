@@ -511,7 +511,9 @@ const Header = ({
               }}
             >
               <IconAssignment />
-              ASSIGN TEST
+              {history?.location?.state?.testTitle
+                ? 'ASSIGN TEST'
+                : 'ASSIGN A TEST'}
             </EduButton>
           </WithTooltip>
         )}

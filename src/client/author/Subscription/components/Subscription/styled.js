@@ -28,6 +28,21 @@ export const CompareModal = styled(CustomModalStyled)`
   }
 `
 
+export const MessageContainer = styled.div`
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+  background: rgba(255, 255, 255, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  letter-spacing: 1px;
+  font-weight: 600;
+`
+
 export const PlanCard = styled.div`
   width: 380px;
   background: ${white};

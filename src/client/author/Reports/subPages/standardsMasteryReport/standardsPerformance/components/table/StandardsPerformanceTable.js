@@ -1,6 +1,6 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Link } from 'react-router-dom'
-import { includes, filter, isEmpty } from 'lodash'
+import { includes, map, filter, isEmpty } from 'lodash'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
@@ -33,13 +33,13 @@ const getDomainColumnRender = (
   domainId,
   domainName,
   compareBy,
-  analyseByKey,
   scaleInfo
 ) => (_, record) => {
   const domain = record.domainData[domainId] || {}
-  const colValue = getColValue(record, domainId, analyseByKey, scaleInfo)
+  const colValue = getColValue(record, domainId, record.analyseByKey, scaleInfo)
   const bgColor =
-    (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
+    (record.analyseByKey === 'masteryLevel' ||
+      record.analyseByKey === 'masteryScore') &&
     getMasteryScoreColor(domain, scaleInfo)
 
   const tooltipTitle = (
@@ -54,7 +54,7 @@ const getDomainColumnRender = (
       />
       <TableTooltipRow title="Domain: " value={domainName} />
       <TableTooltipRow
-        title={`${getAnalyseByTitle(analyseByKey)}: `}
+        title={`${getAnalyseByTitle(record.analyseByKey)}: `}
         value={colValue}
       />
     </div>
@@ -75,15 +75,16 @@ const getDomainColumnRender = (
   )
 }
 
-const getColumnSorter = (analyseByKey, scaleInfo, domainId) => (a, b) => {
+const getColumnSorter = (scaleInfo, domainId) => (a, b) => {
   // sort by score(%), if analyseBy rawScore / score(%)
   // sort by masteryScore, if analyseBy masteryScore / masteryLevel
+  // use augmented analyseByKey for sorter (same for all records)
   const _analyseByKey =
-    analyseByKey === 'rawScore'
+    a.analyseByKey === 'rawScore'
       ? 'score'
-      : analyseByKey === 'masteryLevel'
+      : a.analyseByKey === 'masteryLevel'
       ? 'masteryScore'
-      : analyseByKey
+      : a.analyseByKey
 
   // result for avg. domain performance
   const colAvgA = getOverallValue(a, _analyseByKey, scaleInfo)
@@ -105,22 +106,15 @@ const getColumnSorter = (analyseByKey, scaleInfo, domainId) => (a, b) => {
   return result
 }
 
-export const getColumns = (
-  compareBy,
-  analyseByKey,
-  domains,
-  scaleInfo,
-  selectedDomains,
-  selectedTermId,
+const getColumns = (
   t,
-  isSharedReport
+  { compareBy, analyseBy: { key: analyseByKey } },
+  scaleInfo,
+  isSharedReport,
+  selectedTermId,
+  selectedDomains
 ) => {
-  const filteredDomains = filter(
-    domains,
-    (domain) =>
-      includes(selectedDomains, domain.domainId) || !selectedDomains.length
-  )
-  const domainCols = filteredDomains.map((domain) => ({
+  const domainColumns = map(selectedDomains, (domain) => ({
     title: (
       <>
         <span>{domain.domainName}</span>
@@ -137,13 +131,12 @@ export const getColumns = (
       domain.domainId,
       domain.domainName,
       compareBy,
-      analyseByKey,
       scaleInfo
     ),
-    sorter: getColumnSorter(analyseByKey, scaleInfo, domain.domainId),
+    sorter: getColumnSorter(scaleInfo, domain.domainId),
   }))
 
-  const cols = [
+  const columns = [
     {
       title: compareBy.title,
       dataIndex: 'name',
@@ -179,9 +172,9 @@ export const getColumns = (
       key: 'overall',
       width: 140,
       render: (_, record) => getOverallValue(record, analyseByKey, scaleInfo),
-      sorter: getColumnSorter(analyseByKey, scaleInfo),
+      sorter: getColumnSorter(scaleInfo),
     },
-    ...domainCols,
+    ...domainColumns,
     {
       title: 'SIS ID',
       dataIndex: 'sisId',
@@ -191,13 +184,15 @@ export const getColumns = (
     },
   ]
 
-  return cols
+  return columns
 }
 
 const onCsvConvert = (data) => downloadCSV(`Mastery By Domain.csv`, data)
 
 const StandardsPerformanceTable = ({
+  t,
   className,
+  tableData,
   tableFilters,
   tableFiltersOptions,
   onFilterChange,
@@ -206,19 +201,31 @@ const StandardsPerformanceTable = ({
   selectedDomains,
   isCsvDownloading,
   selectedTermId,
-  t,
   isSharedReport,
-  ...tableProps
 }) => {
-  const columns = getColumns(
-    tableFilters.compareBy,
-    tableFilters.analyseBy.key,
+  // augment analyseByKey to tableData records for conditional sorting
+  const augmentedTableData = useMemo(
+    () =>
+      map(tableData, (record) => ({
+        ...record,
+        analyseByKey: tableFilters.analyseBy.key,
+      })),
+    [tableData, tableFilters.analyseBy]
+  )
+
+  const selectedDomainsData = filter(
     domainsData,
-    scaleInfo,
-    selectedDomains,
-    selectedTermId,
+    (domain) =>
+      includes(selectedDomains, domain.domainId) || !selectedDomains.length
+  )
+
+  const columns = getColumns(
     t,
-    isSharedReport
+    tableFilters,
+    scaleInfo,
+    isSharedReport,
+    selectedTermId,
+    selectedDomainsData
   )
 
   const { analyseByData, compareByData } = tableFiltersOptions
@@ -281,7 +288,7 @@ const StandardsPerformanceTable = ({
       <Row type="flex" justify="start">
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <CsvTable
-            {...tableProps}
+            dataSource={augmentedTableData}
             colouredCellsNo={domainsData.length}
             centerAligned={domainsData.length}
             columns={columns}

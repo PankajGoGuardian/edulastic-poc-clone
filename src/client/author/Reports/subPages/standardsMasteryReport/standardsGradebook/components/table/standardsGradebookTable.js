@@ -2,7 +2,7 @@
 import React, { useState, useMemo } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col, Tooltip } from 'antd'
-import { isEmpty, flatMap, keyBy } from 'lodash'
+import { isEmpty, map, filter, flatMap, uniqBy } from 'lodash'
 import styled from 'styled-components'
 import next from 'immer'
 import { withNamespaces } from '@edulastic/localization'
@@ -115,7 +115,6 @@ const getStandardColumnValue = (item, analyseBy) => {
 const getStandardColumnRender = (
   t,
   compareBy,
-  analyseBy,
   standardId,
   standardName,
   filters,
@@ -125,10 +124,11 @@ const getStandardColumnRender = (
     (std) => std.standardId === standardId
   )
   const bgColor =
-    (analyseBy === 'masteryLevel' || analyseBy === 'masteryScore') &&
+    (record.analyseBy === 'masteryLevel' ||
+      record.analyseBy === 'masteryScore') &&
     standardToRender?.color
   // colValue is 'N/A', if standardToRender is undefined
-  const colValue = getStandardColumnValue(standardToRender, analyseBy)
+  const colValue = getStandardColumnValue(standardToRender, record.analyseBy)
 
   const tooltipText = (
     <div>
@@ -144,7 +144,7 @@ const getStandardColumnRender = (
       </Row>
       <Row type="flex" justify="start">
         <Col className="custom-table-tooltip-key">
-          {analyseByToName[analyseBy]}:{' '}
+          {analyseByToName[record.analyseBy]}:{' '}
         </Col>
         <Col className="custom-table-tooltip-value">{colValue}</Col>
       </Row>
@@ -177,15 +177,16 @@ const getStandardColumnRender = (
   )
 }
 
-const getColumnSorter = (analyseBy, standardId) => (a, b) => {
+const getColumnSorter = (standardId) => (a, b) => {
   // sort by score(%), if analyseBy rawScore / score(%)
   // sort by masteryScore, if analyseBy masteryScore / masteryLevel
+  // use augmented analyseBy for sorter (same for all records)
   const _analyseBy =
-    analyseBy === 'rawScore'
+    a.analyseBy === 'rawScore'
       ? 'score(%)'
-      : analyseBy === 'masteryLevel'
+      : a.analyseBy === 'masteryLevel'
       ? 'masteryScore'
-      : analyseBy
+      : a.analyseBy
   const _analyseByKey = analyseByToKeyToRender[_analyseBy]
 
   // result for avg. standard performance
@@ -246,29 +247,29 @@ const StandardsGradebookTableComponent = ({
     })
   }
 
-  const tableData = useMemo(
-    () =>
-      getTableData(
-        filteredDenormalizedData,
-        masteryScale,
-        tableDdFilters.compareBy,
-        tableDdFilters.masteryLevel
-      ),
-    [filteredDenormalizedData, masteryScale, tableDdFilters]
-  )
+  const augmentedTableData = useMemo(() => {
+    const tableData = getTableData(
+      filteredDenormalizedData,
+      masteryScale,
+      tableDdFilters.compareBy,
+      tableDdFilters.masteryLevel
+    )
+    // augment analyseBy to tableData records for conditional sorting
+    return map(tableData, (record) => ({
+      ...record,
+      analyseBy: tableDdFilters.analyseBy,
+    }))
+  }, [filteredDenormalizedData, masteryScale, tableDdFilters])
 
-  const filteredTableData = next(tableData, (arr) => {
-    arr.map((item) => {
-      const tempArr = item.standardsInfo.filter((_item) => {
-        if (chartFilter[_item.standardName] || isEmpty(chartFilter)) {
-          return {
-            ..._item,
-          }
-        }
-      })
-      item.standardsInfo = tempArr
-    })
-  })
+  const selectedStandards = filter(
+    // one standardsInfo record for each standard id
+    uniqBy(
+      flatMap(augmentedTableData, ({ standardsInfo }) => standardsInfo),
+      'standardId'
+    ),
+    // filter standardsInfo for selected standard ids
+    (s) => chartFilter[s.standardName] || isEmpty(chartFilter)
+  )
 
   const columns = [
     {
@@ -343,15 +344,10 @@ const StandardsGradebookTableComponent = ({
           dataToRender
         )
       },
-      sorter: getColumnSorter(tableDdFilters.analyseBy),
+      sorter: getColumnSorter(),
     },
     // standard columns
-    ...Object.values(
-      keyBy(
-        flatMap(filteredTableData, ({ standardsInfo }) => standardsInfo),
-        'standardId'
-      )
-    ).map((item) => {
+    ...map(selectedStandards, (item) => {
       const standardProgressNav = !isSharedReport
         ? getStandardProgressNav(
             navigationItems,
@@ -383,13 +379,12 @@ const StandardsGradebookTableComponent = ({
         render: getStandardColumnRender(
           t,
           tableDdFilters.compareBy,
-          tableDdFilters.analyseBy,
           item.standardId,
           item.standardName,
           filters,
           handleOnClickStandard
         ),
-        sorter: getColumnSorter(tableDdFilters.analyseBy, item.standardId),
+        sorter: getColumnSorter(item.standardId),
       }
     }),
   ]
@@ -402,10 +397,9 @@ const StandardsGradebookTableComponent = ({
     }
   }
 
-  const scrollX = useMemo(() => {
-    const visibleColumns = columns.filter((column) => !column.visibleOn)
-    return visibleColumns.length * 180 || '100%'
-  }, [columns])
+  // x-axis scroll length for visible columns
+  const scrollX =
+    filter(columns, (column) => !column.visibleOn).length * 180 || '100%'
 
   const compareByDropDownData = useMemo(
     () =>
@@ -468,7 +462,7 @@ const StandardsGradebookTableComponent = ({
         <Row>
           <CsvTable
             columns={columns}
-            dataSource={filteredTableData}
+            dataSource={augmentedTableData}
             rowKey={tableDdFilters.compareBy}
             tableToRender={GradebookTable}
             onCsvConvert={onCsvConvert}

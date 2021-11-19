@@ -159,9 +159,10 @@ const getStandardColumnRender = (
     assessmentTypes:
       filters.assessmentTypes !== 'All' ? filters.assessmentTypes : '',
   }
-  const handleOnClick = () =>
+  const handleOnClick =
     compareBy === 'studentId' && standardToRender
-      ? handleOnClickStandard(filtersObj, standardName, record.compareByLabel)
+      ? () =>
+          handleOnClickStandard(filtersObj, standardName, record.compareByLabel)
       : null
 
   return (

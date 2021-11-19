@@ -2090,7 +2090,10 @@ export function* receiveTestByIdSaga({ payload }) {
     })
     const loadedGroups = yield select((state) => state.assignmentSettings.class)
     const userClassList = yield select(getOrgGroupList)
-    if (loadedGroups?.length && userClassList?.length === 1) {
+    if (
+      loadedGroups?.length &&
+      userClassList?.filter((x) => x?.active === 1)?.length === 1
+    ) {
       assignSettings.class = loadedGroups
     }
     yield put(updateAssingnmentSettingsAction(assignSettings))

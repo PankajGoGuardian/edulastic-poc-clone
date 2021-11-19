@@ -438,20 +438,34 @@ const StandardsGradebookTableComponent = ({
           </Col>
           <Col xs={24} sm={24} md={14} lg={14} xl={12}>
             <Row className="control-dropdown-row">
-              <StyledDropDownContainer xs={24} sm={24} md={11} lg={11} xl={8}>
+              <StyledDropDownContainer
+                data-cy="compareBy"
+                xs={24}
+                sm={24}
+                md={11}
+                lg={11}
+                xl={8}
+              >
                 <ControlDropDown
                   data={compareByDropDownData}
                   by={tableDdFilters.compareBy}
-                  prefix="Compare By"
+                  prefix="Compare by "
                   selectCB={tableFilterDropDownCB}
                   comData="compareBy"
                 />
               </StyledDropDownContainer>
-              <StyledDropDownContainer xs={24} sm={24} md={12} lg={12} xl={8}>
+              <StyledDropDownContainer
+                data-cy="analyzeBy"
+                xs={24}
+                sm={24}
+                md={12}
+                lg={12}
+                xl={8}
+              >
                 <ControlDropDown
                   data={dropDownFormat.analyseByDropDownData}
                   by={tableDdFilters.analyseBy}
-                  prefix="Analyze By"
+                  prefix="Analyze by "
                   selectCB={tableFilterDropDownCB}
                   comData="analyseBy"
                 />

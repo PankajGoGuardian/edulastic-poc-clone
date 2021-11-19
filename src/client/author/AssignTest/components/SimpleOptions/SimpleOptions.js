@@ -92,6 +92,7 @@ class SimpleOptions extends React.Component {
       testSettings = {},
       assignment,
       group,
+      fetchStudents,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -122,6 +123,7 @@ class SimpleOptions extends React.Component {
     }
     if (group?.length === 1) {
       this.onChange('class', [group[0]._id])
+      fetchStudents({ classId: group[0]._id })
     }
   }
 

@@ -110,12 +110,12 @@ const UnitsDropdownPure = ({
               onChange={onChnageRadioGroup}
               value={item.showDropdown ? 'dropdown' : 'keypad'}
             >
-              <RadioBtn value="dropdown">
+              <RadioBtn value="dropdown" data-cy="dropdown">
                 <FieldLabel display="inline-block">
                   {t('component.math.dropdown')}
                 </FieldLabel>
               </RadioBtn>
-              <RadioBtn value="keypad">
+              <RadioBtn value="keypad" data-cy="keypad">
                 <FieldLabel display="inline-block">
                   {t('component.math.keypad')}
                 </FieldLabel>

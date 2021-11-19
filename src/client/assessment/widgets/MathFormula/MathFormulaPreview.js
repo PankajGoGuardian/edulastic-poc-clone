@@ -416,6 +416,7 @@ class MathFormulaPreview extends Component {
                       item={item}
                       preview
                       onChange={this.selectUnitFromDropdown}
+                      data-cy="selectUnitDropdown"
                       selected={this.selectedUnit}
                       disabled={disableResponse}
                       keypadMode={item?.keypadMode} // to get selected keypadMode on student side

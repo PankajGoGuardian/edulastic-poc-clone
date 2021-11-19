@@ -497,7 +497,10 @@ const Header = ({
           </EduButton>
         )}
         {active === 1 && (
-          <WithTooltip title={history?.location?.state?.testTitle}>
+          <WithTooltip
+            data-cy="testNameInToolTip"
+            title={history?.location?.state?.testTitle}
+          >
             <EduButton
               data-cy="assignTestFromClass"
               isBlue

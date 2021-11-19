@@ -912,10 +912,10 @@ class Setting extends Component {
       multiFind(
         performanceBandsData,
         [
-          { _id: _performanceBand._id },
+          { _id: _performanceBand?._id },
           {
             _id:
-              defaultTestTypeProfiles.performanceBand[
+              defaultTestTypeProfiles.performanceBand?.[
                 testTypesToTestSettings[testType]
               ],
           },
@@ -928,10 +928,10 @@ class Setting extends Component {
       multiFind(
         standardsData,
         [
-          { _id: _standardGradingScale._id },
+          { _id: _standardGradingScale?._id },
           {
             _id:
-              defaultTestTypeProfiles.standardProficiency[
+              defaultTestTypeProfiles.standardProficiency?.[
                 testTypesToTestSettings[testType]
               ],
           },

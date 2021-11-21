@@ -1,6 +1,5 @@
 import { takeLatest, call, all, select, put } from 'redux-saga/effects'
 import { testItemActivityApi, attchmentApi } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import {
   SAVE_TEST_LEVEL_USER_WORK,
@@ -8,6 +7,7 @@ import {
   SAVE_TESTLET_LOG_SUCCESS,
   SAVE_TESTLET_LOG_FAILURE,
 } from '../constants/actions'
+import { captureSentryException } from '../../common/utils/helpers'
 
 function* saveTestletState() {
   try {
@@ -27,7 +27,7 @@ function* saveTestletState() {
     }
   } catch (error) {
     console.log(error)
-    Sentry.captureException(error)
+    captureSentryException(error)
   }
 }
 
@@ -52,7 +52,7 @@ function* saveTestletLog({ payload }) {
       })
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureSentryException(error)
     yield put({
       type: SAVE_TESTLET_LOG_FAILURE,
       payload: error,

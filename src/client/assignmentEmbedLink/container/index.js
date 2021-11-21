@@ -2,7 +2,6 @@ import React, { useEffect } from 'react'
 import { Spin } from 'antd'
 import { connect } from 'react-redux'
 import { get } from 'lodash'
-import * as Sentry from '@sentry/browser'
 import { roleuser } from '@edulastic/constants'
 import notfification from '@edulastic/common/src/components/Notification'
 import { testsApi } from '@edulastic/api'
@@ -19,6 +18,7 @@ import {
 } from '../../student/Assignments/ducks'
 import { redirectToStudentPage } from '../../publicTest/utils'
 import { setSelectedLanguageAction } from '../../student/sharedDucks/AssignmentModule/ducks'
+import { captureSentryException } from '../../common/utils/helpers'
 
 const { STUDENT, TEACHER, DISTRICT_ADMIN, SCHOOL_ADMIN } = roleuser
 
@@ -49,7 +49,7 @@ const AssignmentEmbedLink = ({
             fetchAssignmentsForStudent({ testId: latestTest.testId })
           } catch (err) {
             if (!err?.response) {
-              Sentry.captureException(err)
+              captureSentryException(err)
             }
             history.push('/home/assignments')
             notfification({

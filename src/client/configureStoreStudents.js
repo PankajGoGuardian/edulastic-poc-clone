@@ -2,18 +2,18 @@ import { createStore, applyMiddleware, compose } from 'redux'
 import createSagaMiddleware from 'redux-saga'
 import { createBrowserHistory } from 'history'
 import { connectRouter, routerMiddleware } from 'connected-react-router'
-import * as Sentry from '@sentry/browser'
 import reduxReset from 'redux-reset'
 
 import { studentReducers } from './studentReducers'
 import { studentsSagas } from './studentSagas'
+import { captureSentryException } from './common/utils/helpers'
 
 export const history = createBrowserHistory()
 
 const sagaMiddleware = createSagaMiddleware({
   onError(error) {
     // treat the errors of the sagas here
-    Sentry.captureException(error)
+    captureSentryException(error)
   },
 })
 

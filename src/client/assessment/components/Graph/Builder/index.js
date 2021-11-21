@@ -2,7 +2,6 @@ import JXG from 'jsxgraph'
 import { Modal } from 'antd'
 import { isNumber, cloneDeep, last } from 'lodash'
 import { greyThemeDark2 } from '@edulastic/colors'
-import * as Sentry from '@sentry/browser'
 import i18n from '@edulastic/localization'
 import getDefaultConfig, { CONSTANT } from './config'
 import {
@@ -67,6 +66,7 @@ import '../common/Label.css'
 import '../common/Mark.css'
 import '../common/EditButton.css'
 import '../common/DragDrop.css'
+import { captureSentryException } from '@edulastic/common'
 
 /**
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard
@@ -319,10 +319,10 @@ class Board {
       default:
         if (!tool) {
           console.warn('No tool present', tool)
-          Sentry.captureException(new Error('noToolException'))
+          captureSentryException(new Error('noToolException'))
         } else {
           console.warn('unknown tool', tool)
-          Sentry.captureException(new Error('unknownToolException'))
+          captureSentryException(new Error('unknownToolException'))
         }
     }
   }

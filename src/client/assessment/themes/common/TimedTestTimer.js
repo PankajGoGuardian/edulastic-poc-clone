@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import * as Sentry from '@sentry/browser'
 import firebase from 'firebase/app'
 // Required for side-effects
 import 'firebase/firestore'
@@ -18,6 +17,7 @@ import { roleuser } from '@edulastic/constants'
 import AssignmentTimeEndedAlert from './AssignmentTimeEndedAlert'
 import { utaStartTimeUpdateRequired } from '../../../student/sharedDucks/AssignmentModule/ducks'
 import { getUserRole } from '../../../author/src/selectors/user'
+import { captureSentryException } from '../../../common/utils/helpers'
 
 export const TIME_UPDATE_TYPE = {
   START: 'start',
@@ -185,14 +185,14 @@ const TimedTestTimer = ({
           })
         })
       } else {
-        Sentry.captureException(
+        captureSentryException(
           new Error(
             `[Timed Assignment] Missing Doc Ref at time ${currentAssignmentTime}ms on uta ${utaId} and group ${groupId}`
           )
         )
       }
     } else if (currentAssignmentTime > 0 && !isAuthorPreview) {
-      Sentry.captureException(
+      captureSentryException(
         new Error(
           `[Timed Assignment] Unable to Sync time ${currentAssignmentTime} on uta ${utaId} and group ${groupId}`
         )

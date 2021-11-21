@@ -20,6 +20,7 @@ import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import AppConfig from '../../app-config'
 import { getTextToSpeechPlaybackSpeed } from '../author/sharedDucks/testPlayer'
+import { captureSentryException } from '../common/utils/helpers'
 import { setCurrentAudioDetailsAction } from './actions/test'
 import {
   curentPlayerDetailsSelector,
@@ -118,7 +119,7 @@ const AudioControls = ({
       Sentry.withScope((scope) => {
         scope.setExtra('error', err)
         notification({ type: 'error', messageKey: 'ttsErrorMessage' })
-        Sentry.captureException(
+        captureSentryException(
           new Error('[AudioControls] audio load failure.')
         )
       })
@@ -154,7 +155,7 @@ const AudioControls = ({
       Sentry.withScope((scope) => {
         scope.setExtra('error', err)
         notification({ type: 'error', messageKey: 'ttsErrorMessage' })
-        Sentry.captureException(
+        captureSentryException(
           new Error('[AudioControls] audio playing failure.')
         )
       })
@@ -176,7 +177,7 @@ const AudioControls = ({
 
     if (!isSupported) {
       notification({ type: 'error', msg: 'Audio format is not supported.' })
-      Sentry.captureException(new Error('[AudioControls] Mp3 not supported.'))
+      captureSentryException(new Error('[AudioControls] Mp3 not supported.'))
     }
   }, [])
 
@@ -278,14 +279,14 @@ const AudioControls = ({
 
             if (choiceAudioHowl) await audioPlayResolve(choiceAudioHowl)
             else
-              Sentry.captureMessage(
+              captureSentryException(
                 `[AudioControls] Option audio missing for choice_${i}`,
                 'info'
               )
 
             if (optionHowl[item]) await audioPlayResolve(optionHowl[item])
             else
-              Sentry.captureMessage(
+              captureSentryException(
                 `[AudioControls] Option audio missing for ${item}`,
                 'info'
               )

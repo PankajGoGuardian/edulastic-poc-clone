@@ -1,5 +1,6 @@
 import React from 'react'
 import * as Sentry from '@sentry/browser'
+import { captureSentryException } from '../../../common/utils/helpers'
 
 class ErrorBoundary extends React.Component {
   state = { hasError: false }
@@ -12,7 +13,7 @@ class ErrorBoundary extends React.Component {
   componentDidCatch(error, info) {
     // log the error to an error reporting service
     Sentry.withScope((scope) => {
-      Sentry.captureException(error)
+      captureSentryException(error)
       scope.setExtra('componentStack', info)
       scope.setTag('issueType', 'UnexpectedErrorRuntime')
     })

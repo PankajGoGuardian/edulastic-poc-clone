@@ -3,6 +3,7 @@ import questionType from '@edulastic/constants/const/questionType'
 import * as Sentry from '@sentry/browser'
 
 import { FRACTION_FORMATS } from '../constants/constantsForQuestions'
+import { captureSentryException } from '../../common/utils/helpers'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
@@ -563,7 +564,7 @@ export const Fscreen = {
       }
     } catch (e) {
       console.warn('fullscreen error')
-      Sentry.captureException(e)
+      captureSentryException(e)
     }
   },
   requestFullscreenFunction: (element) =>

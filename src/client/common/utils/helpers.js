@@ -580,21 +580,10 @@ export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
 
 export function captureSentryException(e){
   try{
-    const toggleSentry = localStorage.getItem('captureSentry')
-    if(toggleSentry){
-      const toggleSentryArray = toggleSentry.split('::')
-      if(toggleSentryArray[0]==='disable'){
-        if((Date.now()-parseInt(toggleSentryArray[1])) > 10000){
-          Sentry.captureException(e)
-          localStorage.removeItem('captureSentry')
-        }
-      }else{
-        Sentry.captureException(e)
-        localStorage.removeItem('captureSentry')
-      }
-    }else{
+    const toggleSentry = window.captureSentry
+    if(toggleSentry !== 'disable'){
       if(e.response.status === 401 || e.response.status === 409){
-        localStorage.setItem('captureSentry', `disable::${Date.now()}`)
+        window.captureSentry = 'disable'
       }
       Sentry.captureException(e)
     }

@@ -15,6 +15,12 @@ const MainContent = ({ dashboardTiles, getDashboardTiles, user }) => {
     }
   }, [user?.recommendedContentUpdated])
 
+  useEffect(() => {
+    if (window) {
+      window.captureSentry = 'disable'
+    }
+  }, [window])
+
   return <MyClasses dashboardTiles={dashboardTiles} />
 }
 

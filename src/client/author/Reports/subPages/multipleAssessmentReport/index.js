@@ -227,6 +227,14 @@ const MultipleAssessmentReportContainer = (props) => {
         ))
       : []
 
+  const showDemographicFilterWarning = useMemo(() => {
+    const _ddFilter = {}
+    Object.keys(ddfilter).forEach((k) => {
+      _ddFilter[k] = ddfilter[k] === 'all' ? '' : ddfilter[k]
+    })
+    return !isEmpty(Object.values(_ddFilter).filter((val) => !!val))
+  }, [ddfilter])
+
   return (
     <>
       {sharingState && (
@@ -234,9 +242,9 @@ const MultipleAssessmentReportContainer = (props) => {
           reportType={pageTitle}
           reportFilters={{
             ...settings.requestFilters,
-            ddfilter,
           }}
           showModal={sharingState}
+          showDemographicFilterWarning={showDemographicFilterWarning}
           setShowModal={setSharingState}
         />
       )}

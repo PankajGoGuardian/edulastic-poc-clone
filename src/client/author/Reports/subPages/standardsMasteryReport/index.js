@@ -260,6 +260,14 @@ const StandardsMasteryReportContainer = (props) => {
     )
   }
 
+  const showDemographicFilterWarning = useMemo(() => {
+    const _ddFilter = {}
+    Object.keys(ddfilter).forEach((k) => {
+      _ddFilter[k] = ddfilter[k] === 'all' ? '' : ddfilter[k]
+    })
+    return !isEmpty(Object.values(_ddFilter).filter((val) => !!val))
+  }, [ddfilter])
+
   return (
     <>
       {sharingState && (
@@ -267,10 +275,10 @@ const StandardsMasteryReportContainer = (props) => {
           reportType={loc}
           reportFilters={{
             ...settings.requestFilters,
-            ddfilter,
           }}
           showModal={sharingState}
           setShowModal={setSharingState}
+          showDemographicFilterWarning={showDemographicFilterWarning}
         />
       )}
       <SubHeader

@@ -1,4 +1,5 @@
 import {
+  RESET_TEST_ITEMS,
   LOAD_TEST_ITEMS,
   GOTO_ITEM,
   SET_TEST_ACTIVITY_ID,
@@ -62,6 +63,8 @@ const initialState = {
 
 const test = (state = initialState, { payload, type }) => {
   switch (type) {
+    case RESET_TEST_ITEMS:
+      return initialState
     case LOAD_TEST_ITEMS:
       return {
         ...state,

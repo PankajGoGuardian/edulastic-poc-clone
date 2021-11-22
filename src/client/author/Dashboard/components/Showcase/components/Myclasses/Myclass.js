@@ -648,13 +648,14 @@ const MyClasses = ({
 
     const subjects = interestedSubjects.map((x) => x.toUpperCase())
 
-    const getProductsKeysByInterestedSubject = Object.keys(
-      Object.fromEntries(
-        Object.values(productsMetaData).filter(([values]) =>
-          subjects.includes(values.filters)
-        )
-      )
-    )
+    const getProductsKeysByInterestedSubject = Object.entries(
+      productsMetaData
+    ).reduce((a, [_key, _value]) => {
+      if (subjects.includes(_value.filters)) {
+        return a.concat(_key)
+      }
+      return a
+    }, [])
 
     const allAvailableItemProductIds = map(
       products.filter(

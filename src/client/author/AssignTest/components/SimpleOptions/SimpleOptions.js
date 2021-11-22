@@ -528,7 +528,11 @@ class SimpleOptions extends React.Component {
     const createClassHandler = () => {
       history.push({
         pathname: '/author/manageClass/createClass',
-        state: { testRedirectUrl: match?.url, testTitle: testSettings?.title },
+        state: {
+          testRedirectUrl: match?.url,
+          testTitle: testSettings?.title,
+          ...history?.location?.state,
+        },
       })
     }
 

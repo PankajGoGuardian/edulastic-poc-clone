@@ -17,7 +17,7 @@ const MainContent = ({ dashboardTiles, getDashboardTiles, user }) => {
 
   useEffect(() => {
     if (window) {
-      window.captureSentry = 'disable'
+      window.captureSentry = null
     }
   }, [window])
 

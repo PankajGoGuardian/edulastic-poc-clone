@@ -2,7 +2,7 @@ import {
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import React from 'react'
+import React, { useEffect } from 'react'
 import styled from 'styled-components'
 import SideContent from '../../../author/Dashboard/components/SideContent/Sidecontent'
 import { StyledCard } from '../../../author/Reports/common/styled'
@@ -12,6 +12,13 @@ import { Collections } from './components/Collections'
 import { Usage } from './components/Usage'
 
 const Dashboard = () => {
+
+  useEffect(() => {
+    if (window) {
+      window.captureSentry = null
+    }
+  }, [window])
+
   return (
     <FeaturesSwitch inputFeatures="isCurator" actionOnInaccessible="redirect">
       <DashboardContainer>

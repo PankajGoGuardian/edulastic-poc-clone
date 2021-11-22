@@ -47,6 +47,12 @@ const StudentApp = ({
     }
   }, [])
 
+  useEffect(() => {
+    if (window) {
+      window.captureSentry = null
+    }
+  }, [window])
+
   return (
     <ThemeProvider theme={globalThemes.default}>
       <StyledLayout isProxyUser={isProxyUser}>

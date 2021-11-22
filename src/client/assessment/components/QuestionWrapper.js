@@ -411,7 +411,8 @@ class QuestionWrapper extends Component {
 
     // if test is being viewed in 'view as student' or public test view
     if (
-      userRole === roleuser.TEACHER &&
+      (userRole === roleuser.TEACHER ||
+        roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) &&
       (isTestPreviewModalVisible || isTestDemoPlayer)
     ) {
       return (

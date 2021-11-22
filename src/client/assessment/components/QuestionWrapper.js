@@ -24,6 +24,7 @@ import {
   FieldLabel,
   FlexContainer,
   PremiumItemBanner,
+  EduButton,
 } from '@edulastic/common'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
@@ -188,10 +189,14 @@ class QuestionWrapper extends Component {
       activeTab: 0,
       shuffledOptsOrder: [],
       page: 1,
+      showRubricDetails: false,
     }
   }
 
   setPage = (page) => this.setState({ page })
+
+  setShowRubricDetails = () =>
+    this.setState((state) => ({ showRubricDetails: !state.showRubricDetails }))
 
   handleShuffledOptions = (shuffledOptsOrder) => {
     this.setState({ shuffledOptsOrder })
@@ -494,7 +499,14 @@ class QuestionWrapper extends Component {
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const timeSpent = get(data, 'activity.timeSpent', false)
-    const { main, advanced, extras, activeTab, page } = this.state
+    const {
+      main,
+      advanced,
+      extras,
+      activeTab,
+      page,
+      showRubricDetails,
+    } = this.state
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
     const { layoutType } = this.context
@@ -746,19 +758,31 @@ class QuestionWrapper extends Component {
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
-                    <RubricTableWrapper>
-                      <FieldLabel className="rubric-title">
-                        Graded Rubric
-                      </FieldLabel>
-                      <FieldLabel className="rubric-name">
-                        {rubricDetails.name}
-                      </FieldLabel>
-                      <PreviewRubricTable
-                        data={rubricDetails}
-                        rubricFeedback={rubricFeedback}
-                        isDisabled
-                      />
-                    </RubricTableWrapper>
+                    <>
+                      <ShowRubricDetailsButton
+                        onClick={this.setShowRubricDetails}
+                        height="30px"
+                        data-cy="show-rubric-details-button"
+                        isGhost
+                      >
+                        {showRubricDetails ? 'HIDE' : 'VIEW'} RUBRIC DETAILS
+                      </ShowRubricDetailsButton>
+                      {showRubricDetails && (
+                        <RubricTableWrapper data-cy="rubric-details-container">
+                          <FieldLabel className="rubric-title">
+                            Graded Rubric
+                          </FieldLabel>
+                          <FieldLabel className="rubric-name">
+                            {rubricDetails.name}
+                          </FieldLabel>
+                          <PreviewRubricTable
+                            data={rubricDetails}
+                            rubricFeedback={rubricFeedback}
+                            isDisabled
+                          />
+                        </RubricTableWrapper>
+                      )}
+                    </>
                   )}
                   {view === 'preview' && !isPrintPreview && !showFeedback && (
                     <Hints
@@ -1073,4 +1097,10 @@ export const PaperWrapper = styled(StyledPaperWrapper)`
     padding: ${({ flowLayout }) => (flowLayout ? '0px' : '8px')};
     margin-bottom: 15px;
   }
+`
+
+const ShowRubricDetailsButton = styled(EduButton)`
+  width: 150px;
+  align-self: flex-end;
+  margin-top: 15px;
 `

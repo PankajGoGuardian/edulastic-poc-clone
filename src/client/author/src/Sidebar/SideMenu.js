@@ -1178,7 +1178,7 @@ const Menu = styled(AntMenu)`
     width: 100%;
     &[data-cy='library'],
     &[data-cy='user management'] {
-      height: 28px;
+      height: 20px;
       font-size: 12px;
     }
   }
@@ -1186,7 +1186,7 @@ const Menu = styled(AntMenu)`
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
       height: 40px;
-      margin: 0px 0px 5px;
+      margin: 0px 0px 6px;
     }
   }
   @media (max-height: 680px) {
@@ -1200,7 +1200,7 @@ const Menu = styled(AntMenu)`
       }
       &[data-cy='library'],
       &[data-cy='user management'] {
-        height: 28px;
+        height: 20px;
         font-size: 12px;
       }
     }
@@ -1285,11 +1285,11 @@ const Menu = styled(AntMenu)`
   }
   @media (max-height: 720px) {
     height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 215px)'};
+      isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 225px)'};
   }
   @media (max-height: 650px) {
     height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 205px)' : 'calc(100vh - 175px)'};
+      isBannerShown ? 'calc(100vh - 205px)' : 'calc(100vh - 185px)'};
   }
   @media (max-height: 600px) {
     height: ${({ isBannerShown }) =>
@@ -1444,7 +1444,7 @@ const QuestionButton = styled.div`
   position: relative;
   overflow: hidden;
   align-items: center;
-  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '4px 0px' : '5px 25px')};
   justify-content: ${({ isCollapsed }) =>
     isCollapsed ? 'center' : 'flex-start'};
   font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
@@ -1465,7 +1465,7 @@ const QuestionButton = styled.div`
   }
 
   @media (max-height: 720px) {
-    margin: 4px 0px 6px;
+    margin: 4px 0px;
   }
   @media (max-height: 650px) {
     display: none;
@@ -1473,8 +1473,8 @@ const QuestionButton = styled.div`
 `
 
 const UserImg = styled.div`
-  width: 50px;
-  height: 50px;
+  width: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
+  height: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
   background: url(${(props) => props.src});
   background-position: center center;
   background-size: cover;
@@ -1490,7 +1490,7 @@ const UserInfoButton = styled.div`
     padding: 0;
     background: transparent;
     border-radius: 50%;
-    width: 50px;
+    width: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
     margin: 0 auto;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
@@ -1513,7 +1513,8 @@ const UserInfoButton = styled.div`
 
   .footerDropdown {
     width: 100%;
-    height: 80px;
+    height: ${({ isCollapsed }) => (isCollapsed ? '70px' : '80px')};
+    padding: ${({ isCollapsed }) => (isCollapsed ? '10px 0px' : '15px 0px')};
     background-color: ${({ theme, isCollapsed, isVisible }) =>
       isCollapsed
         ? ''
@@ -1527,7 +1528,8 @@ const UserInfoButton = styled.div`
     transition: 0.2s;
     -webkit-transition: 0.2s;
     @media (max-height: 720px) {
-      height: 70px;
+      height: ${({ isCollapsed }) => (isCollapsed ? '60px' : '70px')};
+      padding: ${({ isCollapsed }) => (isCollapsed ? '7px 0px' : '10px 0px')};
     }
   }
   .ant-select-selection {
@@ -1546,18 +1548,17 @@ const UserInfoButton = styled.div`
 `
 
 const PseudoDiv = styled.div`
-  width: 50px;
-  height: 50px;
+  width: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
+  height: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
+  line-height: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   font-size: 22px;
   font-weight: bold;
-  line-height: 50px;
   text-align: center;
   text-transform: uppercase;
-  margin: ${({ isCollapsed }) =>
-    isCollapsed ? '0px auto' : '10px 10px 15px 20px'};
+  margin: ${({ isCollapsed }) => (isCollapsed ? '0px auto' : '0px 15px')};
 `
 
 const LogoCompact = styled(IconLogoCompact)`
@@ -1705,7 +1706,7 @@ const DemoPlaygroundButtonContainer = styled.div`
   position: relative;
   overflow: hidden;
   align-items: center;
-  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '4px 0px' : '5px 25px')};
   justify-content: ${({ isCollapsed }) =>
     isCollapsed ? 'center' : 'flex-start'};
   font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
@@ -1714,7 +1715,7 @@ const DemoPlaygroundButtonContainer = styled.div`
     font-weight: 600;
   }
   @media (max-height: 720px) {
-    margin: 4px 0px 6px;
+    margin: 4px 0px;
   }
   @media (max-height: 600px) {
     display: none;

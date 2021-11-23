@@ -1,11 +1,21 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
+import {
+  takeLatest,
+  takeEvery,
+  call,
+  put,
+  all,
+  select,
+} from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { googleApi, groupApi, userApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
+import { roleuser } from '@edulastic/constants'
 import { showAddCoTeacherModalAction } from '../ManageClass/ducks'
+import { fetchUserAction } from '../../student/Login/ducks'
+import { getUserRole } from '../src/selectors/user'
 
 const RECEIVE_CLASSLIST_REQUEST = '[class] receive list request'
 export const RECEIVE_CLASSLIST_SUCCESS = '[class] receive list success'
@@ -403,6 +413,10 @@ function* archiveClassSaga({ payload }) {
     yield put(archiveClassSuccessAction({ archiveSuccess: successMessage }))
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
+    const role = yield select(getUserRole)
+    if (role === roleuser.TEACHER) {
+      yield put(fetchUserAction({ background: true }))
+    }
   } catch (err) {
     captureSentryException(err)
     const errorMessage = `Unable to archive ${groupTypeText}.`

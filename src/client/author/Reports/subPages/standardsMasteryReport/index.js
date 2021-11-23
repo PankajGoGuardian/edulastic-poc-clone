@@ -260,6 +260,17 @@ const StandardsMasteryReportContainer = (props) => {
     )
   }
 
+  const showDemographicFilterWarning = useMemo(() => {
+    const _ddFilter = {}
+    Object.keys(ddfilter).forEach((k) => {
+      _ddFilter[k] = ddfilter[k] === 'all' ? '' : ddfilter[k]
+    })
+    return (
+      !isEmpty(Object.values(_ddFilter).filter((val) => !!val)) &&
+      ['standards-gradebook'].includes(loc)
+    )
+  }, [ddfilter, loc])
+
   return (
     <>
       {sharingState && (
@@ -271,6 +282,7 @@ const StandardsMasteryReportContainer = (props) => {
           }}
           showModal={sharingState}
           setShowModal={setSharingState}
+          showDemographicFilterWarning={showDemographicFilterWarning}
         />
       )}
       <SubHeader

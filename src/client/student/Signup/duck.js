@@ -579,7 +579,10 @@ function* saveSubjectGradeSaga({ payload }) {
 
   if (!isTestRecommendationCustomizer) {
     // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
-    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
+    if (
+      initialUser.currentSignUpState &&
+      initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL
+    ) {
       yield put(persistAuthStateAndRedirectToAction())
     }
   }

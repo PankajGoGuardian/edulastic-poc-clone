@@ -185,7 +185,7 @@ class TestItemPreview extends Component {
       ? every(questions, ({ validation }) => validation && validation.unscored)
       : get(question, 'validation.unscored', false)
     const prevQActivityForQuestion = previousQuestionActivity.find(
-      (qa) => qa.qid === question.id
+      (qa) => qa.qid === question?.id
     )
     const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (

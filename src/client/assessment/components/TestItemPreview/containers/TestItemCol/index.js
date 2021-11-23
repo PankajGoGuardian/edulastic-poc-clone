@@ -107,7 +107,7 @@ class TestItemCol extends Component {
       questions[`${itemId || testItemId || itemIdKey}_${widget.reference}`] ||
       questions[widget.reference]
     const prevQActivityForQuestion = previousQuestionActivity.find(
-      (qa) => qa.qid === question.id
+      (qa) => qa.qid === question?.id
     )
     const { fullHeight } = restProps
     if (!question) {

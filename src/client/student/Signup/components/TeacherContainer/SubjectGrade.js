@@ -251,6 +251,7 @@ class SubjectGrade extends React.Component {
       isTestRecommendationCustomizer,
       curriculumStandards,
       userInfo,
+      onMouseDown,
     } = this.props
     let { interestedCurriculums } = this.props
 
@@ -470,6 +471,7 @@ class SubjectGrade extends React.Component {
                     type="primary"
                     htmlType="submit"
                     loading={saveSubjectGradeloading}
+                    onMouseDown={onMouseDown}
                   >
                     {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>

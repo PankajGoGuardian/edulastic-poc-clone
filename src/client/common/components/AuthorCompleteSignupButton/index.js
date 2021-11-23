@@ -34,6 +34,7 @@ const AuthorCompleteSignupButton = ({
   subType,
   interestedSubjects = [],
   interestedGrades = [],
+  onMouseDown = () => {},
 }) => {
   const { currentSignUpState: signupStatus, orgData = {} } = user
   const { classList = [] } = orgData
@@ -98,6 +99,7 @@ const AuthorCompleteSignupButton = ({
           handleCancel={() => handleCanel(false)}
           isVisible={isSchoolModalVisible}
           isSchoolSignupOnly={isSchoolSignupOnly}
+          onMouseDown={onMouseDown}
         />
       )}
     </>

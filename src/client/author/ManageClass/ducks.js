@@ -756,6 +756,7 @@ function* receiveCreateClassRequest({ payload }) {
     yield put(createClassSuccessAction(result))
     yield put(addGroupAction(result))
     yield put(addClassToUserAction(result))
+    yield put(clearClassListAction())
   } catch (err) {
     const {
       data: { message: errorMessage },

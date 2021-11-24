@@ -400,6 +400,7 @@ class QuestionWrapper extends Component {
         showRubricToStudents: testLevelShowRubricToStudents = false,
       } = {},
       data: { rubrics } = {},
+      isPremiumUser,
     } = this.props
 
     const { releaseGradeLabels } = testContants
@@ -413,7 +414,8 @@ class QuestionWrapper extends Component {
     if (
       (userRole === roleuser.TEACHER ||
         roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) &&
-      (isTestPreviewModalVisible || isTestDemoPlayer)
+      (isTestPreviewModalVisible || isTestDemoPlayer) &&
+      isPremiumUser
     ) {
       return (
         testLevelReleaseScore !== releaseGradeLabels.DONT_RELEASE &&

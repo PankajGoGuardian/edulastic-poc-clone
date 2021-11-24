@@ -1080,7 +1080,7 @@ const MenuWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  padding: 8px 0px 0px;
+  padding: 0;
   position: relative;
   overflow: hidden;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
@@ -1102,6 +1102,9 @@ const MenuWrapper = styled.div`
 
 const Menu = styled(AntMenu)`
   background: transparent;
+  overflow: auto;
+  height: ${({ isBannerShown }) =>
+    isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
       color: ${white};
@@ -1158,7 +1161,7 @@ const Menu = styled(AntMenu)`
     text-align: left;
     display: flex;
     align-items: center;
-    margin: 8px 0px;
+    margin: 0 0 8px;
     height: 38px;
     padding: 5px 25px !important;
     max-width: 100%;
@@ -1171,7 +1174,7 @@ const Menu = styled(AntMenu)`
     text-align: center;
     flex-direction: column;
     justify-content: center;
-    margin: 8px 0px;
+    margin: 0 0 8px;
     padding: 0px 10px !important;
     height: 55px;
     font-size: 10px;
@@ -1182,18 +1185,22 @@ const Menu = styled(AntMenu)`
       font-size: 12px;
     }
   }
-  @media (max-height: 720px) {
-    &.ant-menu-inline-collapsed > .ant-menu-item,
-    &.ant-menu-inline .ant-menu-item {
-      height: 40px;
+  @media (max-height: 780px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item {
+      height: 45px;
       margin: 0px 0px 6px;
     }
   }
-  @media (max-height: 680px) {
+  @media (max-height: 720px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 38px;
       margin: 0px 0px 4px;
+    }
+  }
+  @media (max-height: 650px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      height: 40px;
       &:before {
         left: 15px;
         right: 15px;
@@ -1219,7 +1226,7 @@ const Menu = styled(AntMenu)`
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      margin: 10px 0px;
+      margin: 0 0 10px;
     }
   }
   .ant-menu-item {
@@ -1257,10 +1264,6 @@ const Menu = styled(AntMenu)`
   }
 
   @media (max-height: 780px) {
-    overflow: auto;
-    height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
-
     &::-webkit-scrollbar {
       width: 4px;
     }
@@ -1426,9 +1429,10 @@ const FooterDropDown = styled.div`
 `
 
 const MenuFooter = styled.div`
-  position: static;
+  position: absolute;
   width: 100%;
-  margin-top: auto;
+  left: 0;
+  bottom: 0;
 `
 
 const HelpText = styled.span`
@@ -1439,7 +1443,7 @@ const HelpText = styled.span`
 `
 
 const QuestionButton = styled.div`
-  margin: 8px 0px;
+  margin: 0 0 6px;
   display: flex;
   position: relative;
   overflow: hidden;
@@ -1701,7 +1705,7 @@ const CloseIconWrapper = styled.div`
 `
 
 const DemoPlaygroundButtonContainer = styled.div`
-  margin: 8px 0px;
+  margin: 0 0 6px;
   display: flex;
   position: relative;
   overflow: hidden;

@@ -193,7 +193,9 @@ class QuadrantsMoreOptions extends Component {
   handleCertainOptsBlur = (evt) => {
     const { xMin, xMax, yMin, yMax, changedCertainOpts } = this.state
     const { name, value } = evt.target
-
+    if (isNaN(parseFloat(value))) {
+      return this.updateState()
+    }
     if (
       (name === 'xMin' && !isValidMinMax(value, xMax)) ||
       (name === 'xMax' && !isValidMinMax(xMin, value)) ||

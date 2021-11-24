@@ -10,6 +10,13 @@ const RequestModal = ({
 }) => {
   useEffect(() => {
     if (window.hbspt) {
+      window.jQuery =
+        window.jQuery ||
+        ((elm) => {
+          elm.change = () => {}
+          elm.trigger = () => {}
+          return elm
+        })
       if (
         !document?.getElementById('requestQuoteForm') ||
         document?.getElementById('requestQuoteForm')?.innerHTML === ''

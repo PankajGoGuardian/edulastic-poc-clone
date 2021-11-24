@@ -120,4 +120,27 @@ export const PDFViewerContainer = styled.div`
   .pdfViewer .page canvas[hidden] {
     display: none;
   }
+
+  .pdfViewer {
+    .ant-modal-header {
+      display: block;
+    }
+
+    .ant-modal-content {
+      height: auto;
+      padding-top: initial;
+
+      .ant-modal-body {
+        padding: 0px 12px 12px 12px;
+      }
+
+      .ant-modal-close-x {
+        display: flex;
+        height: 30px;
+        width: 30px;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
 `

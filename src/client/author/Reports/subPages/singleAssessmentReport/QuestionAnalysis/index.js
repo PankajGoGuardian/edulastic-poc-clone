@@ -173,7 +173,7 @@ const QuestionAnalysis = ({
                     | {assessmentName}
                   </StyledH3>
                 </Col>
-                <Col>
+                <Col data-cy="compareBy">
                   {userRole !== roleuser.TEACHER ? (
                     <ControlDropDown
                       prefix="Compare by"

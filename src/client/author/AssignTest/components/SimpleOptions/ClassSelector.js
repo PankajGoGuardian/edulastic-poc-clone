@@ -25,6 +25,7 @@ const CreateNewClassBtn = ({ createClassHandler }) => (
     )}
     onMouseDown={(e) => e.preventDefault()}
     onClick={createClassHandler}
+    onSuccessCallback={createClassHandler}
   />
 )
 

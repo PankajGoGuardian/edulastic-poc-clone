@@ -35,6 +35,7 @@ const AuthorCompleteSignupButton = ({
   interestedSubjects = [],
   interestedGrades = [],
   onMouseDown = () => {},
+  onSuccessCallback,
 }) => {
   const { currentSignUpState: signupStatus, orgData = {} } = user
   const { classList = [] } = orgData
@@ -100,6 +101,7 @@ const AuthorCompleteSignupButton = ({
           isVisible={isSchoolModalVisible}
           isSchoolSignupOnly={isSchoolSignupOnly}
           onMouseDown={onMouseDown}
+          onSuccessCallback={onSuccessCallback}
         />
       )}
     </>
@@ -113,6 +115,7 @@ AuthorCompleteSignupButton.propTypes = {
   trackClick: PropTypes.func,
   setShowCompleteSignupModal: PropTypes.func,
   setCallFunctionAfterSignup: PropTypes.func,
+  onSuccessCallback: PropTypes.func,
   privateParams: PropTypes.object,
 }
 
@@ -122,6 +125,7 @@ AuthorCompleteSignupButton.defaultProps = {
   renderButton: () => null,
   setShowCompleteSignupModal: () => null,
   setCallFunctionAfterSignup: () => null,
+  onSuccessCallback: () => null,
   privateParams: {},
 }
 

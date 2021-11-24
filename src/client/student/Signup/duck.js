@@ -522,8 +522,10 @@ function* updateUserSignupStateSaga() {
 function* saveSubjectGradeSaga({ payload }) {
   const isTestRecommendationCustomizer = payload?.isTestRecommendationCustomizer
   const setShowTestCustomizerModal = payload?.setShowTestCustomizerModal
+  const onSuccessCallback = payload?.onSuccessCallback
   delete payload.isTestRecommendationCustomizer
   delete payload.setShowTestCustomizerModal
+  delete payload.onSuccessCallback
   let isSaveSubjectGradeSuccessful = false
   const initialUser = yield select(getUser)
   try {
@@ -574,6 +576,9 @@ function* saveSubjectGradeSaga({ payload }) {
     yield put(fetchDashboardTiles())
     if (isTestRecommendationCustomizer) {
       setShowTestCustomizerModal(false)
+    }
+    if (onSuccessCallback) {
+      onSuccessCallback()
     }
   }
 

@@ -232,7 +232,7 @@ const StaticMath = ({
   }
 
   useEffect(() => {
-    if (mathFieldRef.current && MQ) {
+    if (mathFieldRef.current && !mQuill.current && MQ) {
       try {
         mQuill.current = MQ.StaticMath(mathFieldRef.current)
         mQuill.current.latex(sanitizeLatex(latex))

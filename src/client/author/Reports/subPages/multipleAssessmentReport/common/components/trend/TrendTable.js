@@ -159,7 +159,7 @@ const getCellAttributes = (
   let color = 'transparent'
   switch (analyseBy.key) {
     case 'proficiencyBand':
-      value = formatText(test, analyseBy.key)
+      value = formatText(test, analyseBy.key, pageTitle)
       if (
         !isEmpty(value) &&
         value !== 'Absent' &&
@@ -172,7 +172,7 @@ const getCellAttributes = (
       }
       break
     case 'standard':
-      value = formatText(test, 'proficiencyBand')
+      value = formatText(test, 'proficiencyBand', pageTitle)
       if (
         !isEmpty(value) &&
         value !== 'Absent' &&

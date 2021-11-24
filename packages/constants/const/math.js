@@ -436,7 +436,7 @@ const evaluationSettings = {
       'graphLineChecks',
       'graphPolygonChecks',
       // 'graphPointsOnAnEquation',
-      'tolerance',
+      // 'tolerance',
       // 'partialCreditScoring',
     ],
     'GENERAL GRAPHING': ['graphPointsOnAnEquation'],

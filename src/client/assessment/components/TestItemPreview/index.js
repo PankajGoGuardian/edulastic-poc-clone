@@ -497,7 +497,7 @@ class TestItemPreview extends Component {
                 )
               })}
             </div>
-            {this.renderCollapseButtons()}
+            {showCollapseButtons && this.renderCollapseButtons()}
           </Container>
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}

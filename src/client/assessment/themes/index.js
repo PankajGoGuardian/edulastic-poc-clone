@@ -703,25 +703,6 @@ const AssessmentContainer = ({
     }
   }, [regradedAssignment?.newTestId])
 
-  const onRegradedModalOk = () => {
-    if (regradedAssignment.newTestId === testId) {
-      loadTest({
-        testId,
-        testActivityId: restProps.utaId,
-        preview,
-        demo,
-        test,
-        groupId,
-        isStudentReport,
-        regrade: true,
-      })
-    }
-    history.push(
-      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
-    )
-    clearRegradeAssignment()
-    setShowRegradedModal(false)
-  }
   const saveCurrentAnswer = (payload) => {
     const timeSpent = Date.now() - lastTime.current
     saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
@@ -1154,6 +1135,8 @@ const AssessmentContainer = ({
 
     window.addEventListener('user-token-expired', removeBeforeUnloadCB)
 
+    window.addEventListener('assignment-regraded', removeBeforeUnloadCB)
+
     const unloadCb = () => {
       if (blockSaveAndContinue) {
         pauseAssignment({
@@ -1177,8 +1160,14 @@ const AssessmentContainer = ({
         removeBeforeUnloadCB
       )
       window.removeEventListener('user-token-expired', removeBeforeUnloadCB)
+      window.removeEventListener('assignment-regraded', removeBeforeUnloadCB)
     }
   }, [qid])
+
+  const onRegradedModalOk = () => {
+    window.dispatchEvent(new Event('assignment-regraded'))
+    window.location.href = `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
+  }
 
   const handleMagnifier = () =>
     updateTestPlayer({ enableMagnifier: !enableMagnifier })

@@ -397,6 +397,7 @@ module.exports = {
     'keypad',
     'applyEBSR',
     'testContentVisibility',
+    'showRubricToStudents',
   ],
   docBasedSettingsOptions: [
     'partialScore',

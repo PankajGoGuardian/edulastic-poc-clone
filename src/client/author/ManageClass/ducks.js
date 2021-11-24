@@ -22,20 +22,23 @@ import {
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
+import { roleuser } from '@edulastic/constants'
 import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
   fetchUserAction,
+  setClassToUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
 import {
   addLoadingComponentAction,
   removeLoadingComponentAction,
 } from '../src/actions/authorUi'
-import { getOrgGroupList } from '../src/selectors/user'
+import { getOrgGroupList, getUserRole } from '../src/selectors/user'
 import { slice } from '../Subscription/ducks'
+import { clearClassListAction } from '../Classes/ducks'
 // selectors
 const manageClassSelector = (state) => state.manageClass
 export const getSelectedSubject = createSelector(
@@ -1117,6 +1120,19 @@ function* unarchiveClass({ payload }) {
     })
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
+    const role = yield select(getUserRole)
+    if (role === roleuser.TEACHER) {
+      const userClassList = yield select(getOrgGroupList)
+      // update unarchived class in user orgdata
+      const updatedUserClassList = userClassList.map((c) => {
+        if (c._id === restPayload.groupId) {
+          c.active = 1
+        }
+        return c
+      })
+      yield put(setClassToUserAction(updatedUserClassList))
+      yield put(clearClassListAction())
+    }
   } catch (err) {
     captureSentryException(err)
     console.error(err)

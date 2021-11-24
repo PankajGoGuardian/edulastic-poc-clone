@@ -424,6 +424,7 @@ function* archiveClassSaga({ payload }) {
         return c
       })
       yield put(setClassToUserAction(updatedUserClassList))
+      yield put(clearClassListAction())
     }
   } catch (err) {
     captureSentryException(err)

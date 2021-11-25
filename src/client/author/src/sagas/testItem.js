@@ -185,6 +185,7 @@ function* evaluateAnswers({ payload }) {
         undefined,
         undefined,
         undefined,
+        undefined,
         item._id,
         item.itemGradingType,
         item.assignPartialCredit
@@ -240,6 +241,7 @@ function* evaluateAnswers({ payload }) {
         answersByQids,
         questions,
         itemLevelScoring,
+        undefined,
         undefined,
         itemLevelScore,
         _item._id,

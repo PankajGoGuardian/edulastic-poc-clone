@@ -179,7 +179,11 @@ const AssignmentCard = memo(
     const { maxScore = 0, score = 0 } = first(newReports) || {}
     const attempted = !!(newReports && newReports.length)
     const attemptCount = newReports && newReports.length
-    const scorePercentage = (score / maxScore) * 100 || 0
+    let scorePercentage = (score / maxScore) * 100 || 0
+    if (!Number.isFinite(scorePercentage)) {
+      scorePercentage = 0
+    }
+
     const arrow = showAttempts ? '\u2191' : '\u2193'
     // To handle regrade reduce max attempt settings.
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {

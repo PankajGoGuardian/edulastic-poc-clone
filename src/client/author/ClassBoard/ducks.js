@@ -1205,7 +1205,13 @@ export const getAggregateByQuestion = (entities, studentId) => {
     .reduce((prev, cur) => prev + cur, 0)
 
   const scorePercentagePerStudent = activeEntities
-    .map(({ score, maxScore }) => (score / maxScore) * 100)
+    .map(({ score, maxScore }) => {
+      let percentage = (score / maxScore) * 100
+      if (Number.isNaN(percentage) || !Number.isFinite(percentage)) {
+        percentage = 0
+      }
+      return percentage
+    })
     .sort((a, b) => a - b)
   const numberOfActivities = scorePercentagePerStudent.length
   const mid = Math.ceil(numberOfActivities / 2)

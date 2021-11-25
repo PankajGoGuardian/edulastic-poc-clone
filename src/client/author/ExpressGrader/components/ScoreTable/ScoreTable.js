@@ -122,7 +122,9 @@ class ScoreTable extends Component {
             const { score = 0, maxScore = 0 } =
               student.questionActivities[index] || {}
             const uqaAvg = score / maxScore
-            successScore += Number.isNaN(uqaAvg) ? 0 : uqaAvg
+            // in case of practice questions, it becomes infinite
+            successScore +=
+              Number.isNaN(uqaAvg) || !Number.isFinite(uqaAvg) ? 0 : uqaAvg
           }
         })
       const averageScore = successScore

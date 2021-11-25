@@ -1,7 +1,7 @@
 import { themeColor, white } from '@edulastic/colors'
 import { withWindowSizes } from '@edulastic/common'
 import { IconCloseFilter, IconFilter } from '@edulastic/icons'
-import { Col, Row, Spin } from 'antd'
+import { Col, Row, Spin, Switch } from 'antd'
 import { get } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -71,6 +71,7 @@ const Insights = ({
   const [filters, updateFilters] = useState(initialFilters)
   const [highlighted, setHighlighted] = useState({})
   const [overallProgressCheck, setOverallProgressCheck] = useState(false)
+  const [showTrends, setShowTrends] = useState(false)
 
   // fetch playlist insights
   useEffect(() => {
@@ -182,6 +183,7 @@ const Insights = ({
               data={curatedMetrics}
               highlighted={highlighted}
               setHighlighted={setHighlighted}
+              showTrends={showTrends}
             />
           )}
         </StyledCol>
@@ -196,6 +198,9 @@ const Insights = ({
             termId={currentTermId}
           />
         </Row>
+        <TrendToggleContainer>
+            Show Trend Arrows <Switch className={'trendsToggle'} checked={showTrends} onChange={(checked) => setShowTrends(checked)}></Switch>
+        </TrendToggleContainer>
       </RightContainer>
     </InsightsContainer>
   )
@@ -247,4 +252,15 @@ const StyledCol = styled(Col)`
   display: flex;
   justify-content: center;
   height: 100%;
+`
+const TrendToggleContainer = styled.div`
+  padding: 10px;
+  margin-top: 15px;
+  text-transform: uppercase;
+  font: 11px/15px Open Sans;
+  font-weight: 600;
+  .trendsToggle{
+    margin-left: 10px;
+    margin-top: -2px;
+  }
 `

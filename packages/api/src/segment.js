@@ -138,10 +138,10 @@ const analyticsIdentify = ({ user }) => {
         defaultGrades: [grade = '', ,] = [],
         defaultSubjects: [subject = '', ,] = [],
       },
-      isPlayground = false,
+      isProxy = false,
     } = user
     const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics && !isPlayground) {
+    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
       // Passing user_hash to have secure communication
       window.analytics.identify(
         userId,
@@ -174,9 +174,9 @@ const unloadIntercom = ({ user }) => {
     return
   }
   if (user) {
-    const { role = '', _id, v1Id, isPlayground = false } = user
+    const { role = '', _id, v1Id, isProxy = false } = user
     const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics && !isPlayground) {
+    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
       window.analytics.identify(
         userId,
         {},

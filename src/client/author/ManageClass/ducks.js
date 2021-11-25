@@ -10,7 +10,7 @@ import {
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { get, findIndex, keyBy } from 'lodash'
+import { get, findIndex, keyBy, isEmpty, capitalize } from 'lodash'
 import {
   googleApi,
   groupApi,
@@ -1030,16 +1030,32 @@ function* syncClassWithCanvasSaga({ payload }) {
 }
 
 function* syncClassWithAtlasSaga({ payload }) {
+  const districts = yield select(
+    (state) => state?.user?.user?.orgData?.districts || []
+  )
+  const providerName =
+    districts.find((o) => !isEmpty(o.atlasProviderName))?.atlasProviderName ||
+    'Atlas'
   try {
     const data = yield call(atlasApi.syncClassesWithAtlas, payload)
     if (data.data.result.success)
-      notification({ type: 'success', messageKey: 'atlasClassSyncInProgress' })
-    if (!data.data.result.success)
-      notification({ messageKey: 'classSyncWithAtlasFailed' })
+      notification({
+        type: 'success',
+        msg: `${capitalize(providerName)} class sync is in progress`,
+      })
+    if (!data.data.result.success) {
+      notification({
+        type: 'error',
+        msg: `Class sync with ${capitalize(providerName)} failed`,
+      })
+    }
   } catch (err) {
     captureSentryException(err)
     console.error(err)
-    notification({ messageKey: 'classSyncWithAtlasFailed' })
+    notification({
+      type: 'error',
+      msg: `Class sync with ${capitalize(providerName)} failed`,
+    })
     yield put(setSyncClassLoadingAction(false))
   }
 }

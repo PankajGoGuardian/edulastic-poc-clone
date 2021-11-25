@@ -172,14 +172,6 @@ class ClassesTable extends Component {
     getAllTags({ type: 'group' })
   }
 
-  shouldComponentUpdate(nextProps, nextState) {
-    if (nextState.renderComponent === false) {
-      delete nextState.renderComponent
-      return false
-    }
-    return true
-  }
-
   // onHeaderCell = colName => {
   //   const { filtersData, sortedInfo, searchByName, currentPage } = this.state;
   //   if (sortedInfo.columnKey === colName) {
@@ -196,8 +188,16 @@ class ClassesTable extends Component {
   //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   // };
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const { selectedRowKeys } = prevState
+    const selectedNewValues = []
+    if (selectedRowKeys) {
+      selectedRowKeys.forEach((v) => {
+        selectedNewValues.push(nextProps.classList[v])
+      })
+    }
     return {
+      selectedRowValues: selectedNewValues,
       dataSource: nextProps.classList,
     }
   }
@@ -652,16 +652,6 @@ class ClassesTable extends Component {
       count,
     } = this.props
     // Getting fresh data for selected keys with updated values like enddate or whatever values edited
-    if (!isEmpty(selectedRowKeys)) {
-      const selectedNewValues = []
-      selectedRowKeys.forEach((v) => {
-        selectedNewValues.push(dataSource[v])
-      })
-      this.setState({
-        selectedRowValues: selectedNewValues,
-        renderComponent: false,
-      })
-    }
     let columnsData = [
       {
         title: t('class.name'),

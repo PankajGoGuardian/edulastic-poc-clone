@@ -503,7 +503,10 @@ const MyClasses = ({
         (feature) =>
           !feature?.description?.toLowerCase()?.includes('sparkmath') &&
           !feature?.description?.toLowerCase()?.includes('spark math') &&
-          !feature?.config?.excludedPublishers?.includes('CPM')
+          !(
+            feature?.config?.excludedPublishers?.includes('CPM') ||
+            feature?.config?.excludedPublishers?.includes('cpm')
+          )
       )
     } else {
       filteredBundles = filteredBundles.filter(

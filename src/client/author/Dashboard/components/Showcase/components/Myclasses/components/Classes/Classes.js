@@ -51,8 +51,8 @@ const Classes = ({
   )
 
   const showCreateClassCard =
-    (classType !== 'My Favorites' && classData.length === 0) ||
-    (hideGetStartedSection && classData.length < 5)
+    classType !== 'My Favorites' &&
+    (classData.length === 0 || (hideGetStartedSection && classData.length < 5))
 
   const isPremiumUser = user?.features?.premium
 

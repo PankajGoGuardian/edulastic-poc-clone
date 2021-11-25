@@ -3432,6 +3432,7 @@ function* duplicateTestSaga({ payload }) {
       redirectToNewTest = false,
       cloneItems = false,
       playlistId,
+      updatePlaylist = false,
     } = payload
     const queryParams = {
       _id,
@@ -3439,6 +3440,7 @@ function* duplicateTestSaga({ payload }) {
       isInEditAndRegrade,
       cloneItems,
       playlistId,
+      updatePlaylist,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {

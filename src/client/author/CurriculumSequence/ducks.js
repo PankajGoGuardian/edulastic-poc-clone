@@ -1364,6 +1364,7 @@ function* editPlaylistTestSaga({ payload }) {
             isInEditAndRegrade: true,
             currentTab: tab,
             playlistId,
+            updatePlaylist: true,
           })
         )
       }

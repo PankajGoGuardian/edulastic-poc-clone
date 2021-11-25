@@ -1186,21 +1186,22 @@ const Menu = styled(AntMenu)`
     }
   }
   @media (max-height: 780px) {
-    &.ant-menu-inline-collapsed > .ant-menu-item {
-      height: 45px;
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
       margin: 0px 0px 6px;
     }
   }
-  @media (max-height: 720px) {
+  @media (max-height: 730px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
+      height: 34px;
       margin: 0px 0px 4px;
     }
   }
-  @media (max-height: 650px) {
+  @media (max-height: 680px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 40px;
+      height: 32px;
       &:before {
         left: 15px;
         right: 15px;
@@ -1209,17 +1210,6 @@ const Menu = styled(AntMenu)`
       &[data-cy='user management'] {
         height: 20px;
         font-size: 12px;
-      }
-    }
-  }
-  @media (max-height: 600px) {
-    &.ant-menu-inline-collapsed > .ant-menu-item,
-    &.ant-menu-inline .ant-menu-item {
-      height: 50px;
-      &[data-cy='library'],
-      &[data-cy='user management'] {
-        height: 18px;
-        font-size: 11px;
       }
     }
   }
@@ -1710,7 +1700,7 @@ const DemoPlaygroundButtonContainer = styled.div`
   position: relative;
   overflow: hidden;
   align-items: center;
-  padding: ${({ isCollapsed }) => (isCollapsed ? '4px 0px' : '5px 25px')};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
   justify-content: ${({ isCollapsed }) =>
     isCollapsed ? 'center' : 'flex-start'};
   font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
@@ -1719,7 +1709,7 @@ const DemoPlaygroundButtonContainer = styled.div`
     font-weight: 600;
   }
   @media (max-height: 720px) {
-    margin: 4px 0px;
+    margin: 5px 0px;
   }
   @media (max-height: 600px) {
     display: none;

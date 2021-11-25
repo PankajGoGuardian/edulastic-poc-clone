@@ -21,6 +21,7 @@ import { Field, UnitsDropdown, DefaultKeyPadMode, CustomUnit } from './options'
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
 import EvaluationSettings from '../../../../components/EvaluationSettings'
+import { getStylesFromUiStyleToCssStyle } from '../../../../utils/helpers'
 
 const {
   methods: methodsConst,
@@ -104,6 +105,7 @@ const MathFormulaAnswerMethod = ({
     onChange('options', newOptions)
   }
 
+  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
   const methodOptions = methodOptionsConst && methodOptionsConst[method]
   const restrictKeys = allowedVariables
     ? allowedVariables.split(',').map((segment) => segment.trim())
@@ -160,6 +162,8 @@ const MathFormulaAnswerMethod = ({
                   ALLOW
                   TOLERANCE
                   showDropdown
+                  minHeight={cssStyles.height}
+                  minWidth={cssStyles.width}
                   value={isClozeMath && useTemplate ? template : value}
                   onInput={handleChangeMathInput}
                   isDocbasedSection={isDocbasedSection}

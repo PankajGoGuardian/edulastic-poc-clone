@@ -427,7 +427,8 @@ class MathInput extends React.PureComponent {
       symbols,
       numberPad,
       fullWidth,
-      height,
+      minHeight,
+      minWidth,
       background,
       className,
       restrictKeys,
@@ -465,9 +466,9 @@ class MathInput extends React.PureComponent {
             ? 'normal'
             : 'italic'
         }
-        width={style.width}
+        minWidth={minWidth || style.width}
+        minHeight={minHeight}
         maxWidth={maxWidth}
-        height={height}
         pr={paddingRight}
         background={background}
         fontSize={style.fontSize}

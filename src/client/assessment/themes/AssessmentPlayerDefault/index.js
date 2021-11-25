@@ -368,6 +368,7 @@ class AssessmentPlayerDefault extends React.Component {
       referenceDocAttributes,
       isTestDemoPlayer,
       canShowPlaybackOptionTTS,
+      passage,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -590,6 +591,7 @@ class AssessmentPlayerDefault extends React.Component {
               headerHeight,
               playerSkinType,
             }}
+            passage={passage}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
           >
             <ToolbarModal

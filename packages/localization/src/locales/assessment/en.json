@@ -59,7 +59,12 @@
       "NUMBER_SEQUENCE": "This option is useful with other dynamic parameters of sequence type. All variables of sequence type need to have the same number of items. The values generated are numbers/text picked out from each position in the sequence",
       "TEXT_SET": "You can specify a set of words (or any text), and the values generated are words that are randomly assigned from the set",
       "TEXT_SEQUENCE": "This option is useful with other dynamic parameters of sequence type. All variables of sequence type need to have the same number of items. The values generated are numbers/text picked out from each position in the sequence",
-      "FORMULA": "You can specify a formula using other dynamic variables generated earlier. We recommened you use this as the variable in the input box because you can use the advanced math settings to control the formula output. Example: if you want the student's answer to be a fraction, decimal, etc."
+      "FORMULA": "You can specify a formula using other dynamic variables generated earlier. We recommened you use this as the variable in the input box because you can use the advanced math settings to control the formula output. Example: if you want the student's answer to be a fraction, decimal, etc.",
+      "automarkable": "Scores automatically. Uncheck to mark as manually gradable.",
+      "scoringType": "Exact Match - Students must answer all parts of the question correctly to get a score.#{\\newline[0.5em]#}Partial Match - Each correct response element will be awarded an individual score.",
+      "unscored": "Check to mark as a practice question.",
+      "rounding": "Choose round down to remove decimal part of score.",
+      "penalty": "Awards negative score for wrong attempt."
     },
     "pendingEvaluation": {
       "text": "Evaluation is pending",

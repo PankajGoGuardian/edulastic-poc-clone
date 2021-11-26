@@ -73,7 +73,6 @@ const PlayerContentArea = ({
             attachments={attachments}
             viewComponent="practicePlayer"
             enableMagnifier={enableMagnifier}
-            updateScratchpadtoStore
             testItemId={item._id}
             tool={tool}
             zoomLevel={zoomLevel}

@@ -837,7 +837,7 @@ class QuadrantsMoreOptions extends Component {
                     name="xTickDistance"
                     value={xTickDistance}
                     onChange={this.handleGridChange}
-                    onBlur={this.handleCertainOptsBlur}
+                    onBlur={this.handleInputChange}
                     disabled={false}
                     height="35px"
                   />
@@ -1016,7 +1016,7 @@ class QuadrantsMoreOptions extends Component {
                     name="yTickDistance"
                     value={yTickDistance}
                     onChange={this.handleGridChange}
-                    onBlur={this.handleCertainOptsBlur}
+                    onBlur={this.handleInputChange}
                     disabled={false}
                     height="32px"
                   />

@@ -836,7 +836,7 @@ export const getUserListSelector = createSelector(
               email: user.email || '',
               _userId: user._id,
               sharedType,
-              permission,
+              permission: permission || user.permission,
               sharedId,
             })
           })
@@ -844,7 +844,7 @@ export const getUserListSelector = createSelector(
           const shareData = {
             userName: sharedType,
             sharedType,
-            permission,
+            permission: permission || sharedWith?.[0]?.permission,
             sharedId,
             v1LinkShareEnabled,
           }
@@ -2157,11 +2157,19 @@ export function* receiveTestByIdSaga({ payload }) {
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
       yield put(push('/author/tests'))
-      notification({
-        type: 'error',
-        messageKey: 'curriculumMakeApiErr',
-        exact: true,
-      })
+      if (payload.editAssigned) {
+        notification({
+          type: 'error',
+          msg: 'You do not have the permission to edit/clone the test/item.',
+          exact: true,
+        })
+      } else {
+        notification({
+          type: 'error',
+          messageKey: 'curriculumMakeApiErr',
+          exact: true,
+        })
+      }
     } else {
       notification({ msg: errorMessage })
     }
@@ -3461,11 +3469,16 @@ function* duplicateTestSaga({ payload }) {
     captureSentryException(err)
     yield put(setTestsLoadingAction(false))
     yield put(setEditEnableAction(false))
-    if (onRegrade === true && err?.status === 403) {
-      yield put(setTestDataAction({ isUsed: false }))
-      yield put(setCreateSuccessAction())
+    if (err?.status === 403) {
+      if (onRegrade === true) {
+        yield put(setTestDataAction({ isUsed: false }))
+        yield put(setCreateSuccessAction())
+        return notification({
+          msg: 'Duplicating the test permission denied and failed to regrade',
+        })
+      }
       return notification({
-        msg: 'Duplicating the test permission denied and failed to regrade',
+        msg: 'You do not have the permission to clone the test.',
       })
     }
     return notification({ msg: errorMessage || 'Failed to duplicate test' })

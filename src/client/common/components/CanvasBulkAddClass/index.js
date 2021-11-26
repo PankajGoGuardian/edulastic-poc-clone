@@ -219,7 +219,11 @@ const CanvasBulkAddClass = ({
         c.syncCanvasCoTeacher = coTeacherFlag
       }
       delete c.alreadySynced
-      return { ...c, grades: c.grades.length > 0 ? c.grades : ['O'] }
+      return {
+        ...c,
+        grades: c.grades.length > 0 ? c.grades : ['O'],
+        subject: c.subject ? c.subject : 'Other Subjects',
+      }
     })
 
     bulkSyncCanvasClass({ bulkSyncData: selectedClasses })

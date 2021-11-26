@@ -235,8 +235,8 @@ class ShareModal extends React.Component {
   }
 
   removeHandler = (data) => {
-    const { deleteShared, testId, test, isPlaylist } = this.props
-    const { sharedId, _userId: sharedWith, v1LinkShareEnabled } = data
+    const { deleteShared, testId, testVersionId, isPlaylist } = this.props
+    const { sharedId, _userId: sharedWith, v1Id, v1LinkShareEnabled } = data
     const unSharePayload = {
       contentId: testId,
       sharedId,
@@ -244,8 +244,8 @@ class ShareModal extends React.Component {
       contentType: isPlaylist ? 'PLAYLIST' : 'TEST',
     }
     if (v1LinkShareEnabled === 1) {
-      unSharePayload.versionId = test.versionId
-      unSharePayload.v1Id = test.v1Id
+      unSharePayload.versionId = testVersionId
+      unSharePayload.v1Id = v1Id
       unSharePayload.v1LinkShareEnabled = 1
     }
     deleteShared(unSharePayload)

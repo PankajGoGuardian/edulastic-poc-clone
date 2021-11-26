@@ -821,6 +821,7 @@ export const getUserListSelector = createSelector(
         sharedType,
         sharedWith,
         sharedId,
+        v1Id,
         v1LinkShareEnabled = 0,
       }) => {
         if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
@@ -846,6 +847,7 @@ export const getUserListSelector = createSelector(
             sharedType,
             permission,
             sharedId,
+            v1Id,
             v1LinkShareEnabled,
           }
           if (sharedType === 'DISTRICT') {
@@ -857,6 +859,7 @@ export const getUserListSelector = createSelector(
             })
           }
           if (sharedType === 'LINK') {
+            shareData.v1Id = v1Id
             shareData.v1LinkShareEnabled = v1LinkShareEnabled
             shareData.userName = 'Anyone with link'
           }
@@ -2810,17 +2813,28 @@ function* receiveSharedWithListSaga({ payload }) {
       })
     )
     const testData = yield select(getTestEntitySelector)
+
+    const testList = yield select((state) => state.testList.entities)
+    const getTest = testList.find(
+      (testItem) => testItem._id === payload.contentId
+    )
+    const v1LinkShareEnabled = testData._id
+      ? testData.v1Attributes?.v1LinkShareEnabled === 1
+      : getTest?.v1Attributes?.v1LinkShareEnabled === 1
+    const v1Id = testData._id ? testData.v1Id : getTest?.v1Id
+
     if (
       (!coAuthors.length ||
         !coAuthors.some((item) => item.sharedType === 'LINK')) &&
-      testData.v1Attributes?.v1LinkShareEnabled === 1
+      v1LinkShareEnabled
     ) {
       coAuthors.push({
         permission: 'VIEW',
         sharedWith: [],
         sharedType: 'LINK',
-        sharedId: testData._id,
+        sharedId: payload.contentId,
         v1LinkShareEnabled: 1,
+        v1Id,
       })
     }
     yield put(updateSharedWithListAction(coAuthors))
@@ -2836,7 +2850,14 @@ function* deleteSharedUserSaga({ payload }) {
     yield call(contentSharingApi.deleteSharedUser, payload)
     if (payload.v1LinkShareEnabled === 1) {
       const testData = yield select(getTestEntitySelector)
-      const { v1Attributes, ...rest } = testData
+      const testList = yield select((state) => state.testList.entities)
+      const getTest = testList.find(
+        (testItem) => testItem._id === payload.contentId
+      )
+
+      const updateTest = testData._id ? testData : getTest
+      const { v1Attributes, ...rest } = updateTest
+
       yield put(replaceTestDataAction(rest))
     }
     yield put(

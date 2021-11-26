@@ -1105,6 +1105,7 @@ function* syncClassListWithCleverSaga({ payload }) {
     switch (refreshPage) {
       case 'dashboard':
         yield put(receiveTeacherDashboardAction())
+        yield put(setClassToUserAction(classList))
         break
       case 'manageClass':
         yield put(fetchGroupsAction())

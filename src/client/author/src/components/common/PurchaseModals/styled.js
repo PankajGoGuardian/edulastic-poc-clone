@@ -60,7 +60,7 @@ export const ModalTitle = styled.div`
   .expire-on {
     font-size: 14px;
     font-weight: 500;
-    padding-right: 10px;
+    padding-right: 35px;
   }
 `
 export const StyledTag = styled.span`

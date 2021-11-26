@@ -69,11 +69,12 @@ import { RadioInputWrapper } from '../RadioInput'
 const { Paragraph } = Typography
 
 const permissions = {
-  EDIT: 'Can Edit, Add/Remove Items',
-  VIEW: 'Can View & Duplicate',
+  EDIT: `All Actions (edit, duplicate, assign)`,
+  VIEW: 'All actions (duplicate, assign)',
+  ASSIGN: 'Only View and Assign',
 }
 
-const permissionKeys = ['EDIT', 'VIEW']
+const permissionKeys = ['EDIT', 'VIEW', 'ASSIGN']
 
 const shareTypes = {
   PUBLIC: 'Everyone',
@@ -120,9 +121,13 @@ const SharedRow = ({ data, index, getEmail, getUserName, removeHandler }) => {
       </Col>
       <Col span={11}>
         <span>
-          {data.permission === 'EDIT' && 'Can Edit, Add/Remove Items'}
+          {data.permission === 'EDIT' &&
+            'All Actions (edit, duplicate, assign)'}
         </span>
-        <span>{data.permission === 'VIEW' && 'Can View & Duplicate'}</span>
+        <span>
+          {data.permission === 'VIEW' && 'All actions (duplicate, assign)'}
+        </span>
+        <span>{data.permission === 'ASSIGN' && 'Only View and Assign'}</span>
       </Col>
       <Col span={1}>
         <a data-cy="share-button-close" onClick={() => removeHandler()}>
@@ -153,15 +158,17 @@ class ShareModal extends React.Component {
           : props.features.editPermissionOnTestSharing &&
             props.hasPlaylistEditAccess
       )
-        ? permissionKeys
-        : [permissionKeys[1]],
+        ? props.isPlaylist
+          ? permissionKeys.slice(0, 2)
+          : permissionKeys
+        : permissionKeys.slice(1, props.isPlaylist ? 2 : 3),
       showWarning: false,
     }
     this.handleSearch = this.handleSearch.bind(this)
   }
 
   static getDerivedStateFromProps(nextProps) {
-    const { features, gradeSubject } = nextProps
+    const { features, gradeSubject, isPlaylist } = nextProps
     const { grades, subjects } = gradeSubject || {}
     if (
       features.editPermissionOnTestSharing === false &&
@@ -175,13 +182,15 @@ class ShareModal extends React.Component {
     ) {
       return {
         permission: 'EDIT',
-        _permissionKeys: permissionKeys,
+        _permissionKeys: isPlaylist
+          ? permissionKeys.slice(0, 2)
+          : permissionKeys,
       }
     }
     if (!features.editPermissionOnTestSharing) {
       return {
         permission: 'VIEW',
-        _permissionKeys: [permissionKeys[1]],
+        _permissionKeys: permissionKeys.slice(1, isPlaylist ? 2 : 3),
       }
     }
   }
@@ -218,14 +227,22 @@ class ShareModal extends React.Component {
       sharedType: e.target.value,
     })
     const { hasPlaylistEditAccess, updateEmailNotificationData } = this.props
+    const { _permissionKeys } = this.state
     updateEmailNotificationData({
       sendEmailNotification: false,
       showMessageBody: false,
       notificationMessage: '',
     })
-    if (e.target.value !== sharedKeysObj.INDIVIDUAL || !hasPlaylistEditAccess) {
+    if ([sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(e.target.value)) {
       this.setState({
         permission: 'VIEW',
+      })
+    } else if (
+      e.target.value !== sharedKeysObj.INDIVIDUAL ||
+      !hasPlaylistEditAccess
+    ) {
+      this.setState({
+        permission: _permissionKeys[_permissionKeys.length - 1],
       })
     } else {
       this.setState({
@@ -674,21 +691,33 @@ class ShareModal extends React.Component {
               )}
               <IndividualSelectInputStyled
                 style={
-                  sharedType === sharedKeysObj.INDIVIDUAL
+                  [
+                    sharedKeysObj.INDIVIDUAL,
+                    sharedKeysObj.SCHOOL,
+                    sharedKeysObj.DISTRICT,
+                  ].includes(sharedType)
                     ? { marginLeft: '0px' }
                     : { display: 'none' }
                 }
                 onChange={this.permissionHandler}
                 data-cy="permission-button-pop"
-                disabled={sharedType !== sharedKeysObj.INDIVIDUAL}
+                disabled={[sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(
+                  sharedType
+                )}
                 value={permission}
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
-                {_permissionKeys.map((item) => (
-                  <Select.Option value={item} key={permissions[item]}>
-                    {permissions[item]}
-                  </Select.Option>
-                ))}
+                {_permissionKeys.map((item) =>
+                  (!isPublished && item === 'ASSIGN') ||
+                  (item === 'EDIT' &&
+                    [sharedKeysObj.SCHOOL, sharedKeysObj.DISTRICT].includes(
+                      sharedType
+                    )) ? null : (
+                    <Select.Option value={item} key={permissions[item]}>
+                      {permissions[item]}
+                    </Select.Option>
+                  )
+                )}
               </IndividualSelectInputStyled>
             </FlexContainer>
           </PeopleBlock>
@@ -833,6 +862,7 @@ const ShareMessageWrapper = styled.div`
   text-transform: uppercase;
   height: 35px;
   line-height: 35px;
+  width: 100%;
 `
 
 const ShareList = styled.div`

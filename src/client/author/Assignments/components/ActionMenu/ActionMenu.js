@@ -92,6 +92,11 @@ const ActionMenu = ({
           data: { message: errorMessage },
         } = err.response
         captureSentryException(err)
+        if (err?.status === 403) {
+          return notification({
+            msg: 'You do not have the permission to clone the test.',
+          })
+        }
         notification({
           msg: errorMessage || 'User does not have duplicate permission.',
         })

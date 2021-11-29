@@ -714,8 +714,7 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
-  const hideGetStartedSection =
-    classList.length > 0 && totalAssignmentCount >= 1
+  const hideGetStartedSection = totalAssignmentCount >= 1
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 

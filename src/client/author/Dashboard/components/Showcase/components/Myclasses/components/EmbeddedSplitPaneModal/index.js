@@ -20,7 +20,7 @@ const getEmbedCodeWithParams = (url) => {
 }
 
 const EmbeddedSplitPaneModal = (props) => {
-  const { isVisible: data } = props
+  const { isVisible: data, windowWidth } = props
   const { sections = [] } = data || {}
 
   const menuItems = sections.map((x) => x.title)
@@ -50,8 +50,8 @@ const EmbeddedSplitPaneModal = (props) => {
             <iframe
               data-cy="videoLink"
               title="Edulastic Overview"
-              width="750"
-              height="422"
+              width={windowWidth <= 1024 ? '625' : '750'}
+              height={windowWidth <= 1024 ? '352' : '422'}
               src={`https://www.youtube.com/embed/${getEmbedCodeWithParams(
                 activeItem.url
               )}`}
@@ -116,7 +116,7 @@ const RightPane = styled.div`
   display: flex;
   align-items: flex-start;
   justify-content: flex-start;
-  padding: 0px 0px 20px 0px;
+  padding: 0px 25px 20px 25px;
 `
 
 const ListItems = styled.div`

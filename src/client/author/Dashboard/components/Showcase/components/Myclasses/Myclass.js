@@ -729,6 +729,7 @@ const MyClasses = ({
           setShowBannerModal={setShowBannerModal}
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
+          windowWidth={windowWidth}
         />
       )}
       <Classes

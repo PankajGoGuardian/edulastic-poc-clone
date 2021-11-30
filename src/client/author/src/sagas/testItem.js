@@ -1,5 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { get as _get, round, isEmpty, cloneDeep } from 'lodash'
+import { get as _get, round, isEmpty, cloneDeep, pick, keyBy } from 'lodash'
 import { testItemsApi } from '@edulastic/api'
 import { LOCATION_CHANGE, push } from 'connected-react-router'
 import { questionType } from '@edulastic/constants'
@@ -43,6 +43,7 @@ import {
 } from '../../sharedDucks/questions'
 import { getQuestionDataSelector } from '../../QuestionEditor/ducks'
 import { answersByQId } from '../../../assessment/selectors/test'
+import { hasValidResponse } from '../../questionUtils'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -163,7 +164,11 @@ function* evaluateAnswers({ payload }) {
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
       const answersByQids = answersByQId(answers, item._id)
-      if (isEmpty(answersByQids)) {
+      if (
+        !hasValidResponse(answersByQids, {
+          [question?.id]: question,
+        })
+      ) {
         if (payload?.mode !== 'show') {
           notification({
             type: 'warn',
@@ -223,7 +228,7 @@ function* evaluateAnswers({ payload }) {
         }
       })
       const answersByQids = answersByQId(answers, _item?._id)
-      if (isEmpty(answersByQids)) {
+      if (!hasValidResponse(answersByQids, questions)) {
         if (payload?.mode !== 'show') {
           notification({
             type: 'warn',

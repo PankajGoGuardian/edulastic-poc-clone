@@ -768,3 +768,39 @@ export const isOptionsRemoved = (originalQuestions, newQuestions) => {
   }
   return false
 }
+
+const validateUserResponse = (answer) => {
+  if (!isEmpty(answer)) {
+    let isValid = false
+    const dropDowns = answer.dropDowns
+    const inputs = answer.inputs
+    const mathUnits = answer.mathUnits
+    const mathInputs = answer.maths
+
+    if (dropDowns || inputs || mathInputs) {
+      isValid = true
+    } else if (mathUnits) {
+      isValid = Object.keys(mathUnits).some(
+        (responseId) =>
+          mathUnits[responseId]?.value && mathUnits[responseId]?.unit
+      )
+    }
+    return isValid
+  }
+  return false
+}
+
+export const hasValidResponse = (userResponse, questions) => {
+  if (!isEmpty(userResponse) && !isEmpty(questions)) {
+    const qids = Object.keys(userResponse) || []
+    return qids.some((qid) => {
+      const qType = questions[qid]?.type
+      const answer = userResponse[qid]
+      if (qType === EXPRESSION_MULTIPART) {
+        return validateUserResponse(answer)
+      }
+      return !isEmpty(answer)
+    })
+  }
+  return false
+}

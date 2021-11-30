@@ -53,6 +53,7 @@ import { setTeacherEditedScore } from '../ExpressGrader/ducks'
 import { setCurrentTestActivityIdAction } from '../src/actions/classBoard'
 import { hasRandomQuestions } from '../ClassBoard/utils'
 import { SAVE_USER_WORK } from '../../assessment/constants/actions'
+import { getEBSRSelector, getScoringTypeSelector } from '../ClassBoard/ducks'
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE =
@@ -217,13 +218,9 @@ function* receiveStudentResponseSaga({ payload }) {
     const serverTimeStamp = yield select((state) =>
       get(state, 'author_classboard_testActivity.additionalData.ts', Date.now())
     )
-    const gradingPolicy = yield select((state) =>
-      get(
-        state,
-        'author_classboard_testActivity.additionalData.scoringType',
-        ''
-      )
-    )
+    const applyEBSR = yield select(getEBSRSelector)
+    const gradingPolicy = yield select(getScoringTypeSelector)
+
     const transformed = transformGradeBookResponse(
       {
         ...originalData,
@@ -231,6 +228,7 @@ function* receiveStudentResponseSaga({ payload }) {
         testQuestionActivities: studentResponse.questionActivities,
         ts: serverTimeStamp,
         gradingPolicy,
+        applyEBSR,
       },
       true
     )

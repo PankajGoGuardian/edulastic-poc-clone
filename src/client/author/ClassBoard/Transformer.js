@@ -451,7 +451,13 @@ export function getResponseTobeDisplayed(
   return userResponse ? 'TEI' : ''
 }
 
-export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
+export function getScoringType(
+  qid,
+  testItemsData,
+  testItemId,
+  gradingPolicy,
+  applyEBSR
+) {
   for (const testItem of testItemsData) {
     const questions = get(testItem, ['data', 'questions'], [])
     const questionNeeded = questions.find(
@@ -480,7 +486,9 @@ export function getScoringType(qid, testItemsData, testItemId, gradingPolicy) {
       }
     }
   }
-  return evalTypeValues[gradingPolicy]
+  return applyEBSR
+    ? evalTypeValues.PARTIAL_CREDIT_EBSR
+    : evalTypeValues[gradingPolicy]
 }
 
 export function getStandardsForStandardBasedReport(
@@ -550,6 +558,7 @@ export const transformGradeBookResponse = (
     endDate,
     ts,
     gradingPolicy,
+    applyEBSR,
   },
   studentResponse
 ) => {
@@ -701,7 +710,8 @@ export const transformGradeBookResponse = (
               _id,
               testItemsData,
               testItemId,
-              gradingPolicy
+              gradingPolicy,
+              applyEBSR
             )
             const questionMaxScore =
               maxScore ||

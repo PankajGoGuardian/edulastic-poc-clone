@@ -306,6 +306,7 @@ export function* receiveTestActivitySaga({ payload }) {
           testItemsData: studentData.items,
           ts: additionalData.ts,
           gradingPolicy: additionalData.scoringType,
+          applyEBSR: additionalData.applyEBSR,
         })
         return studentActivityData.find(
           (sa) => sa.studentId === studentData.studentId
@@ -316,6 +317,7 @@ export function* receiveTestActivitySaga({ payload }) {
         ...gradebookData,
         ts: additionalData.ts,
         gradingPolicy: additionalData.scoringType,
+        applyEBSR: additionalData.applyEBSR,
       })
     }
 
@@ -1290,6 +1292,11 @@ export const getScoringTypeSelector = createSelector(
   (state) => get(state, 'scoringType', '')
 )
 
+export const getEBSRSelector = createSelector(
+  getAdditionalDataSelector,
+  (state) => get(state, 'applyEBSR', false)
+)
+
 export const getCurrentClassIdSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'classId', '')
@@ -1679,7 +1686,8 @@ export const getStudentQuestionSelector = createSelector(
   getAnswerByQidSelector,
   getScoringTypeSelector,
   getTestItemsDataSelector,
-  (state, egAnswers, gradingPolicy, testItems) => {
+  getEBSRSelector,
+  (state, egAnswers, gradingPolicy, testItems, applyEBSR) => {
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data]
       return data.map((x) => {
@@ -1687,7 +1695,8 @@ export const getStudentQuestionSelector = createSelector(
           x.qid,
           testItems,
           x.testItemId,
-          gradingPolicy
+          gradingPolicy,
+          applyEBSR
         )
         if (!isNullOrUndefined(egAnswers[x.qid])) {
           return { ...x, userResponse: egAnswers[x.qid], scoringType }

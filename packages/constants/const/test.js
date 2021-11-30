@@ -149,6 +149,7 @@ module.exports = {
     anyCorrect: 'Any can be Correct',
     firstCorrectMust: 'First must be Correct',
     allCorrectMust: 'All must be Correct',
+    PARTIAL_CREDIT_EBSR: 'Partial Credit (EBSR)',
   },
   accessibilities: {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",

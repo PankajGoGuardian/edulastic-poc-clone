@@ -87,6 +87,7 @@ import {
   getAllStudentsList,
   getStudentsPrevSubmittedUtasSelector,
   getIsDocBasedTestSelector,
+  getOriginalEnrollmentStatus,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
 import BarGraph from '../BarGraph/BarGraph'
@@ -730,7 +731,12 @@ class ClassBoard extends Component {
   }
 
   handleShowRemoveStudentsModal = () => {
-    const { selectedStudents, testActivity, assignmentStatus } = this.props
+    const {
+      selectedStudents,
+      testActivity,
+      assignmentStatus,
+      originalEnrollmentStatus,
+    } = this.props
 
     if (assignmentStatus.toLowerCase() === 'done') {
       return notification({
@@ -760,7 +766,9 @@ class ClassBoard extends Component {
       selectedStudentKeys.includes(item.studentId)
     )
     const isAnyBodyInProgress = selectedStudentsEntity.some(
-      (item) => item.UTASTATUS === testActivityStatus.START
+      (item) =>
+        item.UTASTATUS === testActivityStatus.START &&
+        originalEnrollmentStatus[item.studentId] === 1
     )
     if (isAnyBodyInProgress) {
       return notification({
@@ -771,7 +779,8 @@ class ClassBoard extends Component {
     const isAnyBodyGraded = selectedStudentsEntity.some(
       (item) =>
         item.UTASTATUS === testActivityStatus.SUBMITTED &&
-        item.graded === 'GRADED'
+        item.graded === 'GRADED' &&
+        originalEnrollmentStatus[item.studentId] === 1
     )
     if (isAnyBodyGraded) {
       return notification({
@@ -2005,6 +2014,7 @@ const enhance = compose(
       disableMarkAbsent: getDisableMarkAsAbsentSelector(state),
       assignmentStatus: getAssignmentStatusSelector(state),
       enrollmentStatus: getEnrollmentStatus(state),
+      originalEnrollmentStatus: getOriginalEnrollmentStatus(state),
       isPresentationMode: get(
         state,
         ['author_classboard_testActivity', 'presentationMode'],

@@ -1270,6 +1270,11 @@ export const getEnrollmentStatus = createSelector(
   }
 )
 
+export const getOriginalEnrollmentStatus = createSelector(
+  stateTestActivitySelector,
+  (state) => state?.data?.enrollmentStatus
+)
+
 export const getIsShowAllStudents = createSelector(
   stateTestActivitySelector,
   (state) => get(state, 'isShowAllStudents', false)

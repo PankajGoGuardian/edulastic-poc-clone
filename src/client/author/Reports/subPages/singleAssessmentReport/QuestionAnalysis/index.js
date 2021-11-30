@@ -96,6 +96,13 @@ const QuestionAnalysis = ({
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
 
+  const selectedCompareByOption = useMemo(
+    () =>
+      compareByDropDownData.find(({ key }) => key === compareBy) ||
+      compareByDropDownData[0],
+    [compareBy]
+  )
+
   const updateCompareByCB = (event, selected) => {
     setCompareBy(selected.key)
   }
@@ -177,7 +184,7 @@ const QuestionAnalysis = ({
                   {userRole !== roleuser.TEACHER ? (
                     <ControlDropDown
                       prefix="Compare by"
-                      by={compareByDropDownData[0]}
+                      by={selectedCompareByOption}
                       selectCB={updateCompareByCB}
                       data={compareByDropDownData}
                     />

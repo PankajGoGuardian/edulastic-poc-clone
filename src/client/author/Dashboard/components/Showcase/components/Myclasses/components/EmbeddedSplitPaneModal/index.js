@@ -38,7 +38,9 @@ const EmbeddedSplitPaneModal = (props) => {
               onClick={() => setActiveItem({ ...sections[i], index: i })}
               active={i === activeItem.index}
             >
-              {label}
+              {label === 'Track Student Performance Data'
+                ? 'Track Student Performance'
+                : label}
             </LeftPaneItem>
           ))}
         </LeftPane>
@@ -48,8 +50,8 @@ const EmbeddedSplitPaneModal = (props) => {
             <iframe
               data-cy="videoLink"
               title="Edulastic Overview"
-              width="560"
-              height="340"
+              width="750"
+              height="422"
               src={`https://www.youtube.com/embed/${getEmbedCodeWithParams(
                 activeItem.url
               )}`}
@@ -104,7 +106,7 @@ const LeftPaneItem = styled.div`
 `
 
 const LeftPane = styled.div`
-  width: 430px;
+  width: 330px;
   border-right: 1px solid ${lightGrey4};
 `
 

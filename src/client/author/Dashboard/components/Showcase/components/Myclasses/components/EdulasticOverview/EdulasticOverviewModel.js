@@ -40,7 +40,7 @@ const EdulasticOverviewModel = ({
     <EmbeddedSplitPaneModal
       closeCallback={handlePreviewModalClose}
       isVisible={isBannerModalVisible} // isBannerModalVisible will have the video preview title and url
-      modalWidth="1000px"
+      modalWidth="1140px"
       titleFontSize="22px"
       padding="25px 0px 25px 45px"
     />

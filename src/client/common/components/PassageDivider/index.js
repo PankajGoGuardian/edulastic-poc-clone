@@ -13,6 +13,8 @@ const PassageDivider = ({ viewComponent, collapseDirection, onChange }) => {
     <Container
       dir={collapseDirection}
       isInModal={viewComponent === 'authorPreviewPopup'}
+      data-cy="dividerButton"
+      data-test={collapseDirection}
     >
       <div className="collapse left" onClick={handleOnClick('left')}>
         <IconChevronLeft />

@@ -2156,11 +2156,12 @@ export function* receiveTestByIdSaga({ payload }) {
     console.log({ err })
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
+      yield put(resetUpdatedStateAction())
       yield put(push('/author/tests'))
       if (payload.editAssigned) {
         notification({
           type: 'error',
-          msg: 'You do not have the permission to edit/clone the test/item.',
+          msg: 'You do not have the permission to clone/edit the test.',
           exact: true,
         })
       } else {

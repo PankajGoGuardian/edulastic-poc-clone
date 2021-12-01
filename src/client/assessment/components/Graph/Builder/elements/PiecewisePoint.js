@@ -3,7 +3,7 @@ import { CONSTANT } from '../config'
 import { getAllObjectsUnderMouse } from '../utils'
 
 function onHandler() {
-  return (board, evt, elements) => {
+  return (board, evt, id, elements) => {
     const underPoint = getAllObjectsUnderMouse(board, evt)
     const point = underPoint.find(
       (x) => x.type === Jsx.OBJECT_TYPE_POINT && x.subElement

@@ -15,7 +15,13 @@ import {
 import * as Sentry from '@sentry/browser'
 import { Tooltip } from 'antd'
 import { Howl, Howler } from 'howler'
-import React, { useEffect, useMemo, useRef, useState } from 'react'
+import React, {
+  useImperativeHandle,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import AppConfig from '../../app-config'
@@ -59,6 +65,7 @@ const AudioControls = ({
   ttsPlaybackSpeed,
   playerSkinType,
   isStudentReport,
+  controlRef,
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -310,6 +317,11 @@ const AudioControls = ({
       audioPlayResolve(stimulusHowl).then(() => setCurrentPlayingDetails())
     }
   }
+
+  useImperativeHandle(controlRef, () => ({
+    play: handlePlayPauseAudio,
+    stop: handleStopAudio,
+  }))
 
   const isSupported = Howler.codecs('mp3')
 

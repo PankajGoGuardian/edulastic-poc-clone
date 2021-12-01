@@ -181,8 +181,12 @@ class DisneyCardContainer extends Component {
           serverTimeStamp,
           closed
         )
+        const { questionActivities = [] } = student
+        const isAllPractice =
+          questionActivities.length &&
+          questionActivities.every((q) => q.isPractice)
 
-        const hasUsedScratchPad = student?.questionActivities.some(
+        const hasUsedScratchPad = (questionActivities || []).some(
           (questionActivity) =>
             questionActivity?.scratchPad?.scratchpad === true
         )
@@ -195,6 +199,7 @@ class DisneyCardContainer extends Component {
           if (attemptScore >= 0) {
             return <span>{round(attemptScore, 2) || 0}</span>
           }
+
           return <span>{round(student.score, 2) || 0}</span>
         }
 
@@ -408,7 +413,9 @@ class DisneyCardContainer extends Component {
                       <StyledParaFF>Performance</StyledParaFF>
                       <StyledParaSSS data-cy="studentPerformance">
                         {student.status !== 'absent'
-                          ? student.score > 0 && student.status !== 'redirected'
+                          ? student.score > 0 &&
+                            student.status !== 'redirected' &&
+                            !isAllPractice
                             ? `${round(
                                 (student.score / student.maxScore) * 100,
                                 2

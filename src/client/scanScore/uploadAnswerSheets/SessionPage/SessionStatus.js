@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useMemo } from 'react'
-import { Link } from 'react-router-dom'
+import { withRouter, Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
 
@@ -11,7 +11,22 @@ import {
   red,
   white,
 } from '@edulastic/colors'
+import { getUserConfirmation } from '../../../common/utils/helpers'
 import { omrSheetScanStatus } from '../utils'
+
+const uploadAgainHandler = (assignmentId, groupId, history) => {
+  getUserConfirmation(
+    'Sheets for this class is already scanned. Do you want to replace?',
+    (ok) => {
+      if (ok) {
+        history.push({
+          pathname: '/uploadAnswerSheets',
+          search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+        })
+      }
+    }
+  )
+}
 
 const SessionStatus = ({
   assignmentId,
@@ -19,6 +34,7 @@ const SessionStatus = ({
   pages = [],
   handleAbortClick,
   toggleStatusFilter,
+  history,
 }) => {
   const [fakeProgress, setFakeProgress] = useState(0)
 
@@ -113,16 +129,15 @@ const SessionStatus = ({
               Successfully scanned responses have been recorded on Edulastic.
             </div>
             <div className="static-navigation-links">
-              <Link
+              <a
                 data-cy="uploadAgainButton"
                 className="upload-again-link"
-                to={{
-                  pathname: '/uploadAnswerSheets',
-                  search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
+                onClick={() => {
+                  uploadAgainHandler(assignmentId, groupId, history)
                 }}
               >
                 Upload Again
-              </Link>
+              </a>
               <Link
                 data-cy="viewLiveClassBoard"
                 className="live-classboard-link"
@@ -141,7 +156,7 @@ const SessionStatus = ({
   )
 }
 
-export default SessionStatus
+export default withRouter(SessionStatus)
 
 const SessionStatusContainer = styled.div`
   margin: 0 40px;

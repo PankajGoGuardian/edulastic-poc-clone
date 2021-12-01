@@ -127,6 +127,15 @@ class SimpleOptions extends React.Component {
     }
   }
 
+  componentDidUpdate(prevProps) {
+    const { group, fetchStudents } = this.props
+    // no class available yet in assign module flow initial render
+    if (group?.length === 1 && prevProps.group?.length === 0) {
+      this.onChange('class', [group[0]._id])
+      fetchStudents({ classId: group[0]._id })
+    }
+  }
+
   toggleSettings = () => {
     const { freezeSettings } = this.props
     const { showSettings } = this.state
@@ -528,7 +537,11 @@ class SimpleOptions extends React.Component {
     const createClassHandler = () => {
       history.push({
         pathname: '/author/manageClass/createClass',
-        state: { testRedirectUrl: match?.url, testTitle: testSettings?.title },
+        state: {
+          testRedirectUrl: match?.url,
+          testTitle: testSettings?.title,
+          ...history?.location?.state,
+        },
       })
     }
 

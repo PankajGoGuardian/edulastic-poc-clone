@@ -503,7 +503,10 @@ const MyClasses = ({
         (feature) =>
           !feature?.description?.toLowerCase()?.includes('sparkmath') &&
           !feature?.description?.toLowerCase()?.includes('spark math') &&
-          !feature?.config?.excludedPublishers?.includes('CPM')
+          !(
+            feature?.config?.excludedPublishers?.includes('CPM') ||
+            feature?.config?.excludedPublishers?.includes('cpm')
+          )
       )
     } else {
       filteredBundles = filteredBundles.filter(
@@ -648,13 +651,14 @@ const MyClasses = ({
 
     const subjects = interestedSubjects.map((x) => x.toUpperCase())
 
-    const getProductsKeysByInterestedSubject = Object.keys(
-      Object.fromEntries(
-        Object.values(productsMetaData).filter(([values]) =>
-          subjects.includes(values.filters)
-        )
-      )
-    )
+    const getProductsKeysByInterestedSubject = Object.entries(
+      productsMetaData
+    ).reduce((a, [_key, _value]) => {
+      if (subjects.includes(_value.filters)) {
+        return a.concat(_key)
+      }
+      return a
+    }, [])
 
     const allAvailableItemProductIds = map(
       products.filter(
@@ -710,8 +714,7 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
-  const hideGetStartedSection =
-    classList.length > 0 && totalAssignmentCount >= 1
+  const hideGetStartedSection = totalAssignmentCount >= 1
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
@@ -726,6 +729,7 @@ const MyClasses = ({
           setShowBannerModal={setShowBannerModal}
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
+          windowWidth={windowWidth}
         />
       )}
       <Classes

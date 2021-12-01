@@ -55,11 +55,18 @@ function create(board, object, settings = {}) {
     pointConf.highlightFillColor = settings.highlightFillColor
   }
 
+  if (object.opened) {
+    pointConf.fillColor = '#fff'
+    pointConf.highlightFillColor = '#fff'
+  }
+
   const point = board?.$board?.create('point', [x, y], pointConf)
 
   point.pointIsVisible = object.pointIsVisible
   point.labelIsVisible = object.labelIsVisible
   point.baseColor = baseColor
+  point.opened = object.opened
+  point.subElement = object.subElement
 
   if (!fixed && attchEvent) {
     point.on('up', () => {
@@ -130,6 +137,7 @@ function getConfig(point) {
     labelIsVisible: point.labelIsVisible,
     pointIsVisible: point.pointIsVisible,
     baseColor: point.baseColor,
+    opened: point.opened,
   }
 }
 

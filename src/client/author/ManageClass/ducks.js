@@ -10,7 +10,7 @@ import {
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { get, findIndex, keyBy } from 'lodash'
+import { get, findIndex, keyBy, isEmpty, capitalize } from 'lodash'
 import {
   googleApi,
   groupApi,
@@ -22,20 +22,23 @@ import {
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
+import { roleuser } from '@edulastic/constants'
 import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
   fetchUserAction,
+  setClassToUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
 import {
   addLoadingComponentAction,
   removeLoadingComponentAction,
 } from '../src/actions/authorUi'
-import { getOrgGroupList } from '../src/selectors/user'
+import { getOrgGroupList, getUserRole } from '../src/selectors/user'
 import { slice } from '../Subscription/ducks'
+import { clearClassListAction } from '../Classes/ducks'
 // selectors
 const manageClassSelector = (state) => state.manageClass
 export const getSelectedSubject = createSelector(
@@ -753,6 +756,7 @@ function* receiveCreateClassRequest({ payload }) {
     yield put(createClassSuccessAction(result))
     yield put(addGroupAction(result))
     yield put(addClassToUserAction(result))
+    yield put(clearClassListAction())
   } catch (err) {
     const {
       data: { message: errorMessage },
@@ -1026,16 +1030,32 @@ function* syncClassWithCanvasSaga({ payload }) {
 }
 
 function* syncClassWithAtlasSaga({ payload }) {
+  const districts = yield select(
+    (state) => state?.user?.user?.orgData?.districts || []
+  )
+  const providerName =
+    districts.find((o) => !isEmpty(o.atlasProviderName))?.atlasProviderName ||
+    'Atlas'
   try {
     const data = yield call(atlasApi.syncClassesWithAtlas, payload)
     if (data.data.result.success)
-      notification({ type: 'success', messageKey: 'atlasClassSyncInProgress' })
-    if (!data.data.result.success)
-      notification({ messageKey: 'classSyncWithAtlasFailed' })
+      notification({
+        type: 'success',
+        msg: `${capitalize(providerName)} class sync is in progress`,
+      })
+    if (!data.data.result.success) {
+      notification({
+        type: 'error',
+        msg: `Class sync with ${capitalize(providerName)} failed`,
+      })
+    }
   } catch (err) {
     captureSentryException(err)
     console.error(err)
-    notification({ messageKey: 'classSyncWithAtlasFailed' })
+    notification({
+      type: 'error',
+      msg: `Class sync with ${capitalize(providerName)} failed`,
+    })
     yield put(setSyncClassLoadingAction(false))
   }
 }
@@ -1084,7 +1104,7 @@ function* syncClassListWithCleverSaga({ payload }) {
     }
     switch (refreshPage) {
       case 'dashboard':
-        yield put(receiveTeacherDashboardAction())
+        yield put(receiveTeacherDashboardAction({ updateUserClassList: true }))
         break
       case 'manageClass':
         yield put(fetchGroupsAction())
@@ -1117,6 +1137,19 @@ function* unarchiveClass({ payload }) {
     })
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
+    const role = yield select(getUserRole)
+    if (role === roleuser.TEACHER) {
+      const userClassList = yield select(getOrgGroupList)
+      // update unarchived class in user orgdata
+      const updatedUserClassList = userClassList.map((c) => {
+        if (c._id === restPayload.groupId) {
+          c.active = 1
+        }
+        return c
+      })
+      yield put(setClassToUserAction(updatedUserClassList))
+      yield put(clearClassListAction())
+    }
   } catch (err) {
     captureSentryException(err)
     console.error(err)

@@ -119,6 +119,10 @@ const StyledButton = styled(Button)`
     background-color: ${getBgColor};
     border-color: ${getBorderColor};
     color: ${getColor};
+    &.focus-visible {
+      outline: 0;
+      box-shadow: 0 0 0 1.5px ${themeColorBlue};
+    }
   }
 
   &.ant-btn[disabled] {

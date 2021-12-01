@@ -500,7 +500,6 @@ class SideMenu extends Component {
         <Menu
           onClick={this.onClickFooterDropDownMenu}
           style={{ height: 'auto' }}
-          isCollapsed={isCollapsed}
         >
           <Menu.Item
             key="1"
@@ -655,7 +654,6 @@ class SideMenu extends Component {
                 mode="inline"
                 onClick={(item) => this.handleMenu(item)}
                 isBannerShown={isProxyUser || isDemoPlaygroundUserProxy}
-                isCollapsed={isCollapsed}
               >
                 {this.MenuItems.map((menu, index) => {
                   if (menu.divider) {
@@ -771,7 +769,6 @@ class SideMenu extends Component {
                       <DemoPlaygroundButton
                         data-cy="demo-palyground-item"
                         onClick={this.handlePlayGround}
-                        isCollapsed={isCollapsed}
                         title={isCollapsed ? 'Demo Playground' : ''}
                       >
                         <IconContainer className={isCollapsed ? 'active' : ''}>
@@ -1080,7 +1077,7 @@ const MenuWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: space-between;
   flex-direction: column;
-  padding: 8px 0px 0px;
+  padding: 0;
   position: relative;
   overflow: hidden;
   min-height: ${({ theme }) => `calc(100% - ${theme.HeaderHeight.xl}px)`};
@@ -1102,6 +1099,9 @@ const MenuWrapper = styled.div`
 
 const Menu = styled(AntMenu)`
   background: transparent;
+  overflow: auto;
+  height: ${({ isBannerShown }) =>
+    isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
   &:not(.ant-menu-horizontal) {
     .ant-menu-item-selected {
       color: ${white};
@@ -1158,7 +1158,7 @@ const Menu = styled(AntMenu)`
     text-align: left;
     display: flex;
     align-items: center;
-    margin: 8px 0px;
+    margin: 0 0 8px;
     height: 38px;
     padding: 5px 25px !important;
     max-width: 100%;
@@ -1169,57 +1169,44 @@ const Menu = styled(AntMenu)`
   &.ant-menu-inline-collapsed > .ant-menu-item {
     display: flex;
     text-align: center;
-    flex-direction: column;
     justify-content: center;
-    margin: 8px 0px;
+    margin: 0 0 8px;
     padding: 0px 10px !important;
-    height: 55px;
-    font-size: 10px;
+    height: 38px;
     width: 100%;
-    &[data-cy='library'],
-    &[data-cy='user management'] {
-      height: 28px;
-      font-size: 12px;
-    }
   }
-  @media (max-height: 720px) {
+  @media (max-height: 780px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 40px;
-      margin: 0px 0px 5px;
+      margin: 0px 0px 6px;
+    }
+  }
+  @media (max-height: 730px) {
+    &.ant-menu-inline-collapsed > .ant-menu-item,
+    &.ant-menu-inline .ant-menu-item {
+      height: 34px;
+      margin: 0px 0px 4px;
     }
   }
   @media (max-height: 680px) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      height: 38px;
-      margin: 0px 0px 4px;
+      height: 32px;
       &:before {
         left: 15px;
         right: 15px;
       }
       &[data-cy='library'],
       &[data-cy='user management'] {
-        height: 28px;
+        height: 20px;
         font-size: 12px;
-      }
-    }
-  }
-  @media (max-height: 600px) {
-    &.ant-menu-inline-collapsed > .ant-menu-item,
-    &.ant-menu-inline .ant-menu-item {
-      height: 50px;
-      &[data-cy='library'],
-      &[data-cy='user management'] {
-        height: 18px;
-        font-size: 11px;
       }
     }
   }
   @media (min-width: ${extraDesktopWidth}) {
     &.ant-menu-inline-collapsed > .ant-menu-item,
     &.ant-menu-inline .ant-menu-item {
-      margin: 10px 0px;
+      margin: 0 0 10px;
     }
   }
   .ant-menu-item {
@@ -1231,10 +1218,9 @@ const Menu = styled(AntMenu)`
       position: absolute;
       top: 0;
       bottom: 0;
-      border-radius: ${(props) =>
-        props.isCollapsed ? '0px' : '4px'} !important;
-      left: ${(props) => (props.isCollapsed ? '0px' : '14px')} !important;
-      right: ${(props) => (props.isCollapsed ? '0px' : '14px')} !important;
+      left: 14px;
+      right: 14px;
+      border-radius: 4px;
       background: ${(props) => props.theme.sideMenu.menuSelectedItemBgColor};
       z-index: -1;
       opacity: 0;
@@ -1257,10 +1243,6 @@ const Menu = styled(AntMenu)`
   }
 
   @media (max-height: 780px) {
-    overflow: auto;
-    height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 270px)' : 'calc(100vh - 235px)'};
-
     &::-webkit-scrollbar {
       width: 4px;
     }
@@ -1285,11 +1267,11 @@ const Menu = styled(AntMenu)`
   }
   @media (max-height: 720px) {
     height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 215px)'};
+      isBannerShown ? 'calc(100vh - 250px)' : 'calc(100vh - 225px)'};
   }
   @media (max-height: 650px) {
     height: ${({ isBannerShown }) =>
-      isBannerShown ? 'calc(100vh - 205px)' : 'calc(100vh - 175px)'};
+      isBannerShown ? 'calc(100vh - 205px)' : 'calc(100vh - 185px)'};
   }
   @media (max-height: 600px) {
     height: ${({ isBannerShown }) =>
@@ -1298,8 +1280,6 @@ const Menu = styled(AntMenu)`
 `
 
 const MenuItem = styled(AntMenu.Item)`
-  width: ${({ isCollapsed }) => (isCollapsed ? '100%' : '')};
-  height: ${({ isCollapsed }) => (isCollapsed ? '35px' : '')};
   font-family: Open Sans;
   font-size: 14px;
   font-weight: 600;
@@ -1426,9 +1406,10 @@ const FooterDropDown = styled.div`
 `
 
 const MenuFooter = styled.div`
-  position: static;
+  position: absolute;
   width: 100%;
-  margin-top: auto;
+  left: 0;
+  bottom: 0;
 `
 
 const HelpText = styled.span`
@@ -1439,12 +1420,12 @@ const HelpText = styled.span`
 `
 
 const QuestionButton = styled.div`
-  margin: 8px 0px;
+  margin: 0 0 6px;
   display: flex;
   position: relative;
   overflow: hidden;
   align-items: center;
-  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  padding: ${({ isCollapsed }) => (isCollapsed ? '4px 0px' : '5px 25px')};
   justify-content: ${({ isCollapsed }) =>
     isCollapsed ? 'center' : 'flex-start'};
   font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
@@ -1465,7 +1446,7 @@ const QuestionButton = styled.div`
   }
 
   @media (max-height: 720px) {
-    margin: 4px 0px 6px;
+    margin: 4px 0px;
   }
   @media (max-height: 650px) {
     display: none;
@@ -1473,8 +1454,8 @@ const QuestionButton = styled.div`
 `
 
 const UserImg = styled.div`
-  width: 50px;
-  height: 50px;
+  width: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
+  height: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
   background: url(${(props) => props.src});
   background-position: center center;
   background-size: cover;
@@ -1490,7 +1471,7 @@ const UserInfoButton = styled.div`
     padding: 0;
     background: transparent;
     border-radius: 50%;
-    width: 50px;
+    width: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
     margin: 0 auto;
     box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
 
@@ -1513,7 +1494,8 @@ const UserInfoButton = styled.div`
 
   .footerDropdown {
     width: 100%;
-    height: 80px;
+    height: ${({ isCollapsed }) => (isCollapsed ? '70px' : '80px')};
+    padding: ${({ isCollapsed }) => (isCollapsed ? '10px 0px' : '15px 0px')};
     background-color: ${({ theme, isCollapsed, isVisible }) =>
       isCollapsed
         ? ''
@@ -1527,7 +1509,8 @@ const UserInfoButton = styled.div`
     transition: 0.2s;
     -webkit-transition: 0.2s;
     @media (max-height: 720px) {
-      height: 70px;
+      height: ${({ isCollapsed }) => (isCollapsed ? '60px' : '70px')};
+      padding: ${({ isCollapsed }) => (isCollapsed ? '7px 0px' : '10px 0px')};
     }
   }
   .ant-select-selection {
@@ -1546,18 +1529,17 @@ const UserInfoButton = styled.div`
 `
 
 const PseudoDiv = styled.div`
-  width: 50px;
-  height: 50px;
+  width: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
+  height: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
+  line-height: ${({ isCollapsed }) => (isCollapsed ? '45px' : '50px')};
   border-radius: 50%;
   background: #dddddd;
   box-shadow: 0 2px 5px 0 rgba(0, 0, 0, 0.07);
   font-size: 22px;
   font-weight: bold;
-  line-height: 50px;
   text-align: center;
   text-transform: uppercase;
-  margin: ${({ isCollapsed }) =>
-    isCollapsed ? '0px auto' : '10px 10px 15px 20px'};
+  margin: ${({ isCollapsed }) => (isCollapsed ? '0px auto' : '0px 15px')};
 `
 
 const LogoCompact = styled(IconLogoCompact)`
@@ -1600,12 +1582,7 @@ const LabelMenuItem = styled.span`
   max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
-  display: block;
-  line-height: ${({ isCollapsed }) => (isCollapsed ? '10px' : '')} !important;
-  font-size: ${({ isCollapsed }) => (isCollapsed ? '9px' : '')};
-  margin-top: ${({ isCollapsed }) => (isCollapsed ? '4px' : '')};
-  padding: ${({ isCollapsed }) => (isCollapsed ? '2px' : '')};
-  text-align: center;
+  display: ${({ isCollapsed }) => (isCollapsed ? 'none' : 'block')};
 `
 
 const Hr = styled.div`
@@ -1700,7 +1677,7 @@ const CloseIconWrapper = styled.div`
 `
 
 const DemoPlaygroundButtonContainer = styled.div`
-  margin: 8px 0px;
+  margin: 0 0 6px;
   display: flex;
   position: relative;
   overflow: hidden;
@@ -1714,7 +1691,7 @@ const DemoPlaygroundButtonContainer = styled.div`
     font-weight: 600;
   }
   @media (max-height: 720px) {
-    margin: 4px 0px 6px;
+    margin: 5px 0px;
   }
   @media (max-height: 600px) {
     display: none;
@@ -1723,7 +1700,6 @@ const DemoPlaygroundButtonContainer = styled.div`
 
 const DemoPlaygroundButton = styled.div`
   display: inline-flex;
-  flex-direction: ${({ isCollapsed }) => (isCollapsed ? 'column' : '')};
   color: #7c93a7;
   &:hover {
     svg path {

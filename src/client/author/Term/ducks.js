@@ -61,8 +61,10 @@ export const reducer = createReducer(initialState, {
       name: payload.data.name,
       startDate: payload.data.startDate,
       endDate: payload.data.endDate,
-      startDateVisible: moment(payload.data.startDate).format('DD MMM YYYY'),
-      endDateVisible: moment(payload.data.endDate).format('DD MMM YYYY'),
+      startDateVisible: moment(payload.data.startDate)
+        .utc()
+        .format('DD MMM YYYY'),
+      endDateVisible: moment(payload.data.endDate).utc().format('DD MMM YYYY'),
       _id: payload.data._id,
     })
     state.data = createdData.concat(state.data)
@@ -83,8 +85,10 @@ export const reducer = createReducer(initialState, {
         name: payload[i].name,
         startDate: payload[i].startDate,
         endDate: payload[i].endDate,
-        startDateVisible: moment(payload[i].startDate).format('DD MMM YYYY'),
-        endDateVisible: moment(payload[i].endDate).format('DD MMM YYYY'),
+        startDateVisible: moment(payload[i].startDate)
+          .utc()
+          .format('DD MMM YYYY'),
+        endDateVisible: moment(payload[i].endDate).utc().format('DD MMM YYYY'),
         _id: payload[i]._id,
       })
     }

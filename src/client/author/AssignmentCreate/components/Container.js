@@ -1,13 +1,10 @@
 import { EduButton, MainContentWrapper, MainHeader } from '@edulastic/common'
-import { IconNewFile, IconPlaylist, IconTestBank } from '@edulastic/icons'
+import { IconNewFile, IconTestBank } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
-import { connect } from 'react-redux'
 import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import FeaturesSwitch from '../../../features/components/FeaturesSwitch'
-import { getLastPlayListSelector } from '../../Playlist/ducks'
 import BreadCrumb from '../../src/components/Breadcrumb'
 import { SecondHeader } from '../../TestPage/components/Summary/components/Container/styled'
 import BodyWrapper from '../common/BodyWrapper'
@@ -33,13 +30,7 @@ class Container extends Component {
       },
     ]
 
-    const { lastPlayList = {}, t } = this.props
-    let toLinkForPlaylist = '/author/playlists'
-    let from = 'playlistLibrary'
-    if (lastPlayList && lastPlayList.value && lastPlayList.value._id) {
-      toLinkForPlaylist = `/author/playlists/playlist/${lastPlayList.value._id}/use-this`
-      from = 'myPlaylist'
-    }
+    const { t } = this.props
 
     return (
       <div>
@@ -52,31 +43,6 @@ class Container extends Component {
           </SecondHeader>
           <BodyWrapper height="calc(100% - 30px)">
             <FlexWrapper>
-              <FeaturesSwitch
-                inputFeatures="playlist"
-                actionOnInaccessible="hidden"
-                key="playlist"
-              >
-                <CardComponent>
-                  <IconWrapper marginBottom="0px">
-                    <IconPlaylist height="20" width="20" />
-                  </IconWrapper>
-                  <TitleWrapper>Choose From Playlist</TitleWrapper>
-                  <TextWrapper>
-                    Select pre built tests from the Curriculum <br /> aligned
-                    assessment playlist
-                  </TextWrapper>
-                  <CountWrapper>191</CountWrapper>
-                  <TextWrapperBold>
-                    Pre-built Assessment in Playlist
-                  </TextWrapperBold>
-                  <Link to={{ pathname: toLinkForPlaylist, state: { from } }}>
-                    <EduButton isGhost width="180px">
-                      PLAYLIST
-                    </EduButton>
-                  </Link>
-                </CardComponent>
-              </FeaturesSwitch>
               <CardComponent>
                 <IconWrapper marginBottom="0px">
                   <IconTestBank height="20" width="20" />
@@ -119,14 +85,8 @@ class Container extends Component {
 }
 
 Container.propTypes = {
-  lastPlayList: PropTypes.object.isRequired,
+  t: PropTypes.func.isRequired,
 }
 
-const enhance = compose(
-  withRouter,
-  withNamespaces('header'),
-  connect((state) => ({
-    lastPlayList: getLastPlayListSelector(state),
-  }))
-)
+const enhance = compose(withRouter, withNamespaces('header'))
 export default enhance(Container)

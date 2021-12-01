@@ -71,6 +71,7 @@ import {
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
+  RESET_TEST_ITEMS,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -665,6 +666,7 @@ function* loadTest({ payload }) {
       // if not the last question in the test or wasn't skipped then land on next Q
       if (
         lastAttendedQuestion !== test.testItems.length - 1 &&
+        questionActivities.length &&
         !lastAttemptedQuestion.skipped
       ) {
         lastAttendedQuestion++
@@ -687,7 +689,11 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary) {
+      if (
+        !settings.blockNavigationToAnsweredQuestions &&
+        !isFromSummary &&
+        !summary
+      ) {
         if (loadFromLast && testType !== testContants.type.TESTLET) {
           const itemId = testItemIds[lastAttendedQuestion]
           yield put(
@@ -787,6 +793,7 @@ function* loadTest({ payload }) {
     if (
       settings.blockNavigationToAnsweredQuestions &&
       testActivity.questionActivities.length &&
+      !summary &&
       !test.isDocBased
     ) {
       const testItemIds = testItems.map((i) => i._id)
@@ -1063,6 +1070,9 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
+    yield put({
+      type: RESET_TEST_ITEMS,
+    })
     Fscreen.safeExitfullScreen()
   }
 }

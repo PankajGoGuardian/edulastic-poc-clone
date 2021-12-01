@@ -33,7 +33,7 @@ const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
     <StyledRow type="flex" justify="center">
       <Col span={24}>
         <StyledSpan fontStyle="12px/17px" weight="Bold">
-          Groups
+          Classes & Groups
         </StyledSpan>
       </Col>
       {!['district-admin', 'school-admin'].find((x) => x === userRole) && (

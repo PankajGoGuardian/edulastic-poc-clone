@@ -5,9 +5,9 @@ export const validations = {
     }
     if (!isGraph) {
       return (
-        /^(0|[1-9]\d*)?%?$/.test(value) &&
-        parseInt(value, 10) >= 0 &&
-        parseInt(value, 10) <= 100
+        /^(0(\.\d*)?|[1-9]\d*\.?\d*)?%?$/.test(value) &&
+        parseFloat(value, 10) >= 0 &&
+        parseFloat(value, 10) <= 100
       )
     }
     return /^-?\d*\.?\d*$/.test(value) && value >= 0 && value <= 100

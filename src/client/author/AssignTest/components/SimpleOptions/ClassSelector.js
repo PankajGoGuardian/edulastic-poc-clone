@@ -4,26 +4,29 @@ import { Select, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass, IconPlus } from '@edulastic/icons'
-import {
-  lightGrey10,
-  themeColorBlue,
-  themeColorHoverBlue,
-  white,
-} from '@edulastic/colors'
+import { lightGrey10, themeColor, white } from '@edulastic/colors'
 import { StyledRow, StyledCol } from './styled'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const dropdownStyle = {
   boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.1)',
 }
 
 const CreateNewClassBtn = ({ createClassHandler }) => (
-  <CreateNewClassButtonWrapper
-    data-cy="createNewClass"
+  <AuthorCompleteSignupButton
+    renderButton={(handleClick) => (
+      <CreateNewClassButtonWrapper
+        data-cy="createNewClass"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={handleClick}
+      >
+        <IconPlus /> <span>Create New Class</span>
+      </CreateNewClassButtonWrapper>
+    )}
     onMouseDown={(e) => e.preventDefault()}
     onClick={createClassHandler}
-  >
-    <IconPlus /> <span>Create New Class</span>
-  </CreateNewClassButtonWrapper>
+    onSuccessCallback={createClassHandler}
+  />
 )
 
 const ClassSelector = ({
@@ -113,24 +116,19 @@ const CreateNewClassButtonWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  color: ${themeColorBlue};
+  color: ${themeColor};
 
   svg {
-    fill: ${themeColorBlue};
+    fill: ${white};
+    background: ${themeColor};
+    padding: 3px;
+    border-radius: 50%;
+    transform: scale(1.1);
   }
 
   span {
     display: block;
     font-weight: 600;
     padding-left: 10px;
-  }
-
-  &:hover {
-    color: ${white};
-    background: ${themeColorHoverBlue};
-
-    svg {
-      fill: ${white};
-    }
   }
 `

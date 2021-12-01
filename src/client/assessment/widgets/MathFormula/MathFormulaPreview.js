@@ -397,6 +397,8 @@ class MathFormulaPreview extends Component {
                         allowNumericOnly={allowNumericOnly}
                         customKeys={customKeys}
                         numberPad={item.numberPad}
+                        minHeight={cssStyles.height}
+                        minWidth={cssStyles.width}
                         value={
                           latex && !Array.isArray(latex)
                             ? latex.replace('\\MathQuillMathField{}', '')

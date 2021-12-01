@@ -36,6 +36,7 @@ import {
   Connectline,
   PiecewiseLine,
   LineCut,
+  PiecewisePoint,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -290,6 +291,9 @@ class Board {
       case CONSTANT.TOOLS.PIECEWISE_LINE:
         this.creatingHandler = PiecewiseLine.onHandler()
         return
+      case CONSTANT.TOOLS.PIECEWISE_POINT:
+        this.creatingHandler = PiecewisePoint.onHandler()
+        return
       case CONSTANT.TOOLS.LINE_CUT:
         this.creatingHandler = LineCut.onHandler()
         return
@@ -460,7 +464,7 @@ class Board {
       ) {
         return
       }
-      const newElement = this.creatingHandler(this, event)
+      const newElement = this.creatingHandler(this, event, this.elements)
       if (newElement) {
         this.elements.push(newElement)
         Area.updateShadingsForAreaPoints(this, this.elements)

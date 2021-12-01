@@ -88,6 +88,7 @@ class SubjectGrade extends React.Component {
     isModal: PropTypes.bool,
     isTestRecommendationCustomizer: PropTypes.bool,
     setShowTestCustomizerModal: PropTypes.func,
+    onSuccessCallback: PropTypes.func,
     user: PropTypes.object.isRequired,
   }
 
@@ -95,6 +96,7 @@ class SubjectGrade extends React.Component {
     isModal: false,
     isTestRecommendationCustomizer: false,
     setShowTestCustomizerModal: () => {},
+    onSuccessCallback: () => {},
   }
 
   componentDidMount() {
@@ -145,7 +147,11 @@ class SubjectGrade extends React.Component {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
-        const { curriculums, curriculumStandards = {} } = this.props
+        const {
+          curriculums,
+          curriculumStandards = {},
+          onSuccessCallback,
+        } = this.props
 
         const data = {
           orgId: userInfo._id,
@@ -158,6 +164,7 @@ class SubjectGrade extends React.Component {
           defaultSubjects,
           isTestRecommendationCustomizer,
           setShowTestCustomizerModal,
+          onSuccessCallback,
         }
 
         map(values.standard, (id) => {
@@ -251,6 +258,7 @@ class SubjectGrade extends React.Component {
       isTestRecommendationCustomizer,
       curriculumStandards,
       userInfo,
+      onMouseDown,
     } = this.props
     let { interestedCurriculums } = this.props
 
@@ -470,6 +478,7 @@ class SubjectGrade extends React.Component {
                     type="primary"
                     htmlType="submit"
                     loading={saveSubjectGradeloading}
+                    onMouseDown={onMouseDown}
                   >
                     {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>

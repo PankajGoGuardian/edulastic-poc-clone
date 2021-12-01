@@ -66,7 +66,9 @@ const modalStatus = {}
 
 const WithTooltip = ({ title, children }) =>
   title ? (
-    <Tooltip title={`Assign "${title}"`}>{children}</Tooltip>
+    <Tooltip data-cy="testNameInToolTip" title={`Assign "${title}"`}>
+      {children}
+    </Tooltip>
   ) : (
     <>{children}</>
   )
@@ -496,11 +498,8 @@ const Header = ({
             Add Co-Teacher
           </EduButton>
         )}
-        {active === 1 && (
-          <WithTooltip
-            data-cy="testNameInToolTip"
-            title={history?.location?.state?.testTitle}
-          >
+        {active === 1 && !history?.location?.state?.isAssignPlaylistModule && (
+          <WithTooltip title={history?.location?.state?.testTitle}>
             <EduButton
               data-cy="assignTestFromClass"
               isBlue
@@ -508,15 +507,18 @@ const Header = ({
                 segmentApi.genericEventTrack('AssignTestButtonClick', {
                   ...history?.location?.state,
                 })
-                history.push(
-                  history?.location?.state?.testRedirectUrl || '/author/tests'
-                )
+                history.push({
+                  pathname:
+                    history?.location?.state?.testRedirectUrl ||
+                    '/author/tests',
+                  state: {
+                    ...history?.location?.state,
+                  },
+                })
               }}
             >
               <IconAssignment />
-              {history?.location?.state?.testTitle
-                ? 'ASSIGN TEST'
-                : 'ASSIGN A TEST'}
+              ASSIGN TEST
             </EduButton>
           </WithTooltip>
         )}

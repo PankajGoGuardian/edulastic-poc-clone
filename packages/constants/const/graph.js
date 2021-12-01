@@ -36,6 +36,7 @@ const GRAPH_TOOLS = {
   DASHED: 'dashed',
   PIECEWISE: 'piecewise',
   PIECEWISE_LINE: 'piecewise_line',
+  PIECEWISE_POINT: 'piecewise_point',
   NO_SOLUTION: 'no_solution',
   LINE_CUT: 'line_cut',
 

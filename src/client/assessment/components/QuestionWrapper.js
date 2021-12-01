@@ -400,6 +400,7 @@ class QuestionWrapper extends Component {
         showRubricToStudents: testLevelShowRubricToStudents = false,
       } = {},
       data: { rubrics } = {},
+      isPremiumUser,
     } = this.props
 
     const { releaseGradeLabels } = testContants
@@ -411,8 +412,10 @@ class QuestionWrapper extends Component {
 
     // if test is being viewed in 'view as student' or public test view
     if (
-      userRole === roleuser.TEACHER &&
-      (isTestPreviewModalVisible || isTestDemoPlayer)
+      (userRole === roleuser.TEACHER ||
+        roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) &&
+      (isTestPreviewModalVisible || isTestDemoPlayer) &&
+      isPremiumUser
     ) {
       return (
         testLevelReleaseScore !== releaseGradeLabels.DONT_RELEASE &&
@@ -745,21 +748,23 @@ class QuestionWrapper extends Component {
                       itemIndex={itemIndex}
                     />
                   )}
-                  {rubricDetails && studentReportFeedbackVisible && (
-                    <RubricTableWrapper>
-                      <FieldLabel className="rubric-title">
-                        Graded Rubric
-                      </FieldLabel>
-                      <FieldLabel className="rubric-name">
-                        {rubricDetails.name}
-                      </FieldLabel>
-                      <PreviewRubricTable
-                        data={rubricDetails}
-                        rubricFeedback={rubricFeedback}
-                        isDisabled
-                      />
-                    </RubricTableWrapper>
-                  )}
+                  {rubricDetails &&
+                    studentReportFeedbackVisible &&
+                    isPremiumUser && (
+                      <RubricTableWrapper>
+                        <FieldLabel className="rubric-title">
+                          Graded Rubric
+                        </FieldLabel>
+                        <FieldLabel className="rubric-name">
+                          {rubricDetails.name}
+                        </FieldLabel>
+                        <PreviewRubricTable
+                          data={rubricDetails}
+                          rubricFeedback={rubricFeedback}
+                          isDisabled
+                        />
+                      </RubricTableWrapper>
+                    )}
                   {view === 'preview' && !isPrintPreview && !showFeedback && (
                     <Hints
                       question={data}

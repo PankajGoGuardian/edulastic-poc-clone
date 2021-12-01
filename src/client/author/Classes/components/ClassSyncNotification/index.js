@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
-import { uniqBy, pull } from 'lodash'
+import { uniqBy, pull, isEmpty, capitalize } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import {
   destroyNotificationMessage,
@@ -175,7 +175,9 @@ const ClassSyncNotificationListener = ({
   const showUserNotificationOnAtlasClassSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, message, counter, groupIds } = doc
-
+      const providerName =
+        user?.orgData?.districts?.find((o) => !isEmpty(o.atlasProviderName))
+          .atlasProviderName || 'Atlas'
       if (
         status === 'completed' &&
         counter === 0 &&
@@ -184,7 +186,9 @@ const ClassSyncNotificationListener = ({
         setNotificationIds([...notificationIds, doc.__id])
         // show sync complete notification
         notification({
-          msg: message || 'Atlas Class sync task completed.',
+          msg:
+            message ||
+            `${capitalize(providerName)} class sync task completed.`,
           type: 'success',
           onClose: () => {
             setNotificationIds([...pull(notificationIds, [doc.__id])])
@@ -207,7 +211,7 @@ const ClassSyncNotificationListener = ({
       ) {
         setNotificationIds([...notificationIds, doc.__id])
         notification({
-          messageKey: 'classSyncWithAtlasFailed',
+          msg: `Class sync with ${capitalize(providerName)} failed`,
           type: 'error',
           onClose: () => {
             setNotificationIds([...pull(notificationIds, [doc.__id])])

@@ -23,6 +23,10 @@ import {
   withWindowSizes,
   notification,
   MainContentWrapper,
+  CustomModalStyled,
+  RadioBtn,
+  FlexContainer,
+  EduButton,
 } from '@edulastic/common'
 import { test as testConstants, roleuser } from '@edulastic/constants'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
@@ -71,6 +75,7 @@ import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
 import { groupTestItemsByPassageId } from '../helper'
 import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
+import { StyledRadioGroup } from '../../../Setting/components/Container/styled'
 
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
@@ -89,6 +94,8 @@ class Review extends PureComponent {
       currentTestId: '',
       hasStickyHeader: false,
       indexForPreview: 0,
+      isScoreModalVisible: false,
+      scoreCriteria: 'itemScore',
     }
   }
 
@@ -396,9 +403,10 @@ class Review extends PureComponent {
         (question) => question?.validation?.altResponses?.length
       )
     ) {
-      notification({
-        type: 'info',
-        messageKey: 'altResponseAvailableInItem',
+      this.setState({
+        isScoreModalVisible: true,
+        item: { id: testItemId },
+        scoreCriteria: item.scoreCriteria || 'itemScore',
       })
     }
   }
@@ -531,6 +539,33 @@ class Review extends PureComponent {
     setIsTestPreviewVisible(false)
   }
 
+  closeScoreModal = () => {
+    this.setState({ isScoreModalVisible: false })
+  }
+
+  handleOnOkScoreClick = () => {
+    const { test, setData } = this.props
+    const {
+      item: { id },
+      scoreCriteria,
+    } = this.state
+
+    const data = cloneDeep(test)
+    data.itemGroups.forEach((itemGroup) => {
+      itemGroup.items.forEach((item) => {
+        if (item._id === id) {
+          item.scoreCriteria = scoreCriteria
+        }
+      })
+    })
+    setData(data)
+    this.setState({ isScoreModalVisible: false })
+  }
+
+  setScoreCriteria = (ev) => {
+    this.setState({ scoreCriteria: ev.target.value })
+  }
+
   render() {
     const {
       test,
@@ -566,6 +601,8 @@ class Review extends PureComponent {
       item,
       currentTestId,
       hasStickyHeader,
+      isScoreModalVisible,
+      scoreCriteria,
     } = this.state
 
     // when redirected from other pages, sometimes, test will only be having
@@ -715,6 +752,56 @@ class Review extends PureComponent {
             </ReviewSummaryWrapper>
           )}
         </ReviewContentWrapper>
+        <CustomModalStyled
+          visible={isScoreModalVisible}
+          onOk={this.handleOnOkScoreClick}
+          title={<p>ITEM SCORE CRITERIA</p>}
+          footer={
+            <FlexContainer justifyContent="flex-end">
+              <EduButton
+                isBlue
+                isGhost
+                onClick={this.closeScoreModal}
+                width="145px"
+                height="36px"
+              >
+                CANCEL
+              </EduButton>
+              <EduButton
+                isBlue
+                width="145px"
+                height="36px"
+                data-cy="scoreCriteria"
+                onClick={this.handleOnOkScoreClick}
+              >
+                ADD CRITERIA
+              </EduButton>
+            </FlexContainer>
+          }
+          onCancel={this.closeScoreModal}
+        >
+          <Row>
+            <p>
+              This question has alternate answer scores. Select an option to
+              propagate score change to alternate answer scores.
+            </p>
+            <StyledRadioGroup
+              onChange={this.setScoreCriteria}
+              value={scoreCriteria}
+            >
+              <RadioBtn value="itemScore">
+                Set score only for the correct answer.
+              </RadioBtn>
+              <RadioBtn value="proportionalScore">
+                Set score for current answer and change alternate answer scores
+                proportionally.
+              </RadioBtn>
+              <RadioBtn value="testScore">
+                Set score for correct and alternate answers.
+              </RadioBtn>
+            </StyledRadioGroup>
+          </Row>
+        </CustomModalStyled>
         {isModalVisible && (
           <PreviewModal
             testId={get(this.props, 'match.params.id', false)}

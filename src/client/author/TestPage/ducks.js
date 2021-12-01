@@ -176,6 +176,9 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
                 scoring[o._id]
               )
             : {},
+          ...(['proportionalScore', 'testScore'].includes(o.scoreCriteria)
+            ? { scoreCriteria: o.scoreCriteria }
+            : {}),
         }))
       } else itemGroup.items = []
     }
@@ -623,7 +626,7 @@ export const getPlaylistSelector = createSelector(
 
 export const defaultTestTypeProfilesSelector = createSelector(
   stateSelector,
-  (state) => state.defaultTestTypeProfiles
+  (state) => state.defaultTestTypeProfiles || {}
 )
 
 export const getDefaultThumbnailSelector = createSelector(
@@ -833,7 +836,7 @@ export const getUserListSelector = createSelector(
               email: user.email || '',
               _userId: user._id,
               sharedType,
-              permission,
+              permission: permission || user.permission,
               sharedId,
             })
           })
@@ -841,7 +844,7 @@ export const getUserListSelector = createSelector(
           const shareData = {
             userName: sharedType,
             sharedType,
-            permission,
+            permission: permission || sharedWith?.[0]?.permission,
             sharedId,
             v1LinkShareEnabled,
           }
@@ -2090,9 +2093,11 @@ export function* receiveTestByIdSaga({ payload }) {
     })
     const loadedGroups = yield select((state) => state.assignmentSettings.class)
     const userClassList = yield select(getOrgGroupList)
+    const activeGroups = yield select((state) => state.authorGroups.groups)
     if (
       loadedGroups?.length &&
-      userClassList?.filter((x) => x?.active === 1)?.length === 1
+      (userClassList?.filter((x) => x?.active === 1)?.length === 1 ||
+        activeGroups?.length === 1)
     ) {
       assignSettings.class = loadedGroups
     }
@@ -2151,12 +2156,21 @@ export function* receiveTestByIdSaga({ payload }) {
     console.log({ err })
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
+      yield put(resetUpdatedStateAction())
       yield put(push('/author/tests'))
-      notification({
-        type: 'error',
-        messageKey: 'curriculumMakeApiErr',
-        exact: true,
-      })
+      if (payload.editAssigned) {
+        notification({
+          type: 'error',
+          msg: 'You do not have the permission to clone/edit the test.',
+          exact: true,
+        })
+      } else {
+        notification({
+          type: 'error',
+          messageKey: 'curriculumMakeApiErr',
+          exact: true,
+        })
+      }
     } else {
       notification({ msg: errorMessage })
     }
@@ -3070,6 +3084,7 @@ function* getEvaluation(testItemId, newScore) {
     itemLevelScoring = false,
     itemGradingType,
     assignPartialCredit,
+    scoreCriteria,
   } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
@@ -3082,6 +3097,7 @@ function* getEvaluation(testItemId, newScore) {
     questions,
     itemLevelScoring,
     newScore,
+    scoreCriteria,
     itemLevelScore,
     testItem._id,
     itemGradingType,
@@ -3108,6 +3124,7 @@ function* getEvaluationFromItem(testItem, newScore) {
     questions,
     itemLevelScoring,
     newScore,
+    undefined,
     itemLevelScore,
     testItem._id,
     itemGradingType,
@@ -3424,6 +3441,7 @@ function* duplicateTestSaga({ payload }) {
       redirectToNewTest = false,
       cloneItems = false,
       playlistId,
+      updatePlaylist = false,
     } = payload
     const queryParams = {
       _id,
@@ -3431,6 +3449,7 @@ function* duplicateTestSaga({ payload }) {
       isInEditAndRegrade,
       cloneItems,
       playlistId,
+      updatePlaylist,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {
@@ -3451,11 +3470,16 @@ function* duplicateTestSaga({ payload }) {
     captureSentryException(err)
     yield put(setTestsLoadingAction(false))
     yield put(setEditEnableAction(false))
-    if (onRegrade === true && err?.status === 403) {
-      yield put(setTestDataAction({ isUsed: false }))
-      yield put(setCreateSuccessAction())
+    if (err?.status === 403) {
+      if (onRegrade === true) {
+        yield put(setTestDataAction({ isUsed: false }))
+        yield put(setCreateSuccessAction())
+        return notification({
+          msg: 'Duplicating the test permission denied and failed to regrade',
+        })
+      }
       return notification({
-        msg: 'Duplicating the test permission denied and failed to regrade',
+        msg: 'You do not have the permission to clone the test.',
       })
     }
     return notification({ msg: errorMessage || 'Failed to duplicate test' })

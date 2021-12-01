@@ -367,7 +367,9 @@ const CurriculumHeader = ({
               )}
 
             {urlHasUseThis &&
-              isTeacher &&
+              (role === 'teacher' ||
+                role === 'district-admin' ||
+                role === 'school-admin') &&
               !isPublisherUser &&
               !customizeInDraft && (
                 <>

@@ -182,7 +182,7 @@ class TestItemPreview extends Component {
       ? every(questions, ({ validation }) => validation && validation.unscored)
       : get(question, 'validation.unscored', false)
     const prevQActivityForQuestion = previousQuestionActivity.find(
-      (qa) => qa.qid === question.id
+      (qa) => qa.qid === question?.id
     )
     const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (
@@ -497,7 +497,7 @@ class TestItemPreview extends Component {
                 )
               })}
             </div>
-            {this.renderCollapseButtons()}
+            {showCollapseButtons && this.renderCollapseButtons()}
           </Container>
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}

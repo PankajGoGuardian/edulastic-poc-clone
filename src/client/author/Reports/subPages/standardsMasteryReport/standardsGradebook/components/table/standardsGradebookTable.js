@@ -1,5 +1,4 @@
-/* eslint-disable array-callback-return */
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col, Tooltip } from 'antd'
 import { isEmpty, map, filter, flatMap, uniqBy } from 'lodash'
@@ -237,16 +236,13 @@ const StandardsGradebookTableComponent = ({
     compareBy: role === 'teacher' ? 'studentId' : 'schoolId',
   })
 
-  const [prevMasteryScale, setPrevMasteryScale] = useState(null)
-
-  if (prevMasteryScale !== masteryScale) {
+  useEffect(() => {
     const masteryDropDownData = getMasteryDropDown(masteryScale)
-    setPrevMasteryScale(masteryScale)
-    setTableDdFilters({
-      ...tableDdFilters,
+    setTableDdFilters((prevState) => ({
+      ...prevState,
       masteryLevel: masteryDropDownData[0].key,
-    })
-  }
+    }))
+  }, [masteryScale])
 
   const augmentedTableData = useMemo(() => {
     const tableData = getTableData(
@@ -262,15 +258,16 @@ const StandardsGradebookTableComponent = ({
     }))
   }, [filteredDenormalizedData, masteryScale, tableDdFilters])
 
-  const selectedStandards = filter(
+  const selectedStandards =
     // one standardsInfo record for each standard id
     uniqBy(
-      flatMap(augmentedTableData, ({ standardsInfo }) => standardsInfo),
+      filter(
+        flatMap(augmentedTableData, 'standardsInfo'),
+        // filter standardsInfo for selected standard ids
+        (s) => chartFilter[s.standardName] || isEmpty(chartFilter)
+      ),
       'standardId'
-    ),
-    // filter standardsInfo for selected standard ids
-    (s) => chartFilter[s.standardName] || isEmpty(chartFilter)
-  )
+    )
 
   const columns = [
     {
@@ -310,7 +307,7 @@ const StandardsGradebookTableComponent = ({
         </div>
       ),
       dataIndex: analyseByToKeyToRender[tableDdFilters.analyseBy],
-      key: analyseByToKeyToRender[tableDdFilters.analyseBy],
+      key: 'average-standard-progress',
       width: 150,
       render: (data, record) => {
         const dataToRender =
@@ -392,15 +389,13 @@ const StandardsGradebookTableComponent = ({
 
   // for compare by student, insert student info columns to table
   if (tableDdFilters.compareBy === 'studentId') {
-    let index = 1
-    for (const column of compareByStudentsColumns) {
-      columns.splice(index++, 0, column)
-    }
+    columns.splice(1, 0, ...compareByStudentsColumns)
   }
 
   // x-axis scroll length for visible columns
   const scrollX =
-    filter(columns, (column) => !column.visibleOn).length * 180 || '100%'
+    columns.reduce((count, col) => count + (col.visibleOn ? 0 : 1), 0) * 180 ||
+    '100%'
 
   const compareByDropDownData = useMemo(
     () =>
@@ -414,15 +409,15 @@ const StandardsGradebookTableComponent = ({
 
   const tableFilterDropDownCB = (event, _selected, comData) => {
     if (comData === 'compareBy') {
-      setTableDdFilters({
-        ...tableDdFilters,
+      setTableDdFilters((prevState) => ({
+        ...prevState,
         compareBy: _selected.key,
-      })
+      }))
     } else if (comData === 'analyseBy') {
-      setTableDdFilters({
-        ...tableDdFilters,
+      setTableDdFilters((prevState) => ({
+        ...prevState,
         analyseBy: _selected.key,
-      })
+      }))
     }
   }
 

@@ -328,6 +328,7 @@ const StyledOptionsContainer = withKeyboard(styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
+  min-height: 35px;
   flex-direction: ${({ uiStyleType }) =>
     uiStyleType === 'radioBelow' ? 'column' : 'row'};
   align-items: ${({ uiStyleType }) =>

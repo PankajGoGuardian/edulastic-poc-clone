@@ -193,7 +193,9 @@ class QuadrantsMoreOptions extends Component {
   handleCertainOptsBlur = (evt) => {
     const { xMin, xMax, yMin, yMax, changedCertainOpts } = this.state
     const { name, value } = evt.target
-
+    if (isNaN(parseFloat(value))) {
+      return this.updateState()
+    }
     if (
       (name === 'xMin' && !isValidMinMax(value, xMax)) ||
       (name === 'xMax' && !isValidMinMax(xMin, value)) ||
@@ -835,7 +837,7 @@ class QuadrantsMoreOptions extends Component {
                     name="xTickDistance"
                     value={xTickDistance}
                     onChange={this.handleGridChange}
-                    onBlur={this.handleCertainOptsBlur}
+                    onBlur={this.handleInputChange}
                     disabled={false}
                     height="35px"
                   />
@@ -1014,7 +1016,7 @@ class QuadrantsMoreOptions extends Component {
                     name="yTickDistance"
                     value={yTickDistance}
                     onChange={this.handleGridChange}
-                    onBlur={this.handleCertainOptsBlur}
+                    onBlur={this.handleInputChange}
                     disabled={false}
                     height="32px"
                   />

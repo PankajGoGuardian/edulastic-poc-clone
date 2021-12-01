@@ -17,8 +17,8 @@ import { get, flatten, cloneDeep, isEmpty, omit, uniqBy, sumBy } from 'lodash'
 import { v4 } from 'uuid'
 import { normalize, schema } from 'normalizr'
 import { push } from 'connected-react-router'
-import * as Sentry from '@sentry/browser'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../common/utils/helpers'
 import { roleuser } from '@edulastic/constants'
 import {
   curriculumSequencesApi,
@@ -1261,7 +1261,7 @@ function* duplicatePlayListSaga({ payload }) {
   } catch (e) {
     console.error(e)
     notification({ messageKey: 'commonErr' })
-    Sentry.captureException(e)
+    captureException(e)
   }
 }
 
@@ -2176,7 +2176,7 @@ function* deletePlaylistSaga({ payload: id }) {
     message.destroy()
     console.error('delete playlist failed -e ', e)
     notification({ messageKey: 'playlistDeleteFailed' })
-    Sentry.captureException(e)
+    captureException(e)
   }
 }
 
@@ -2207,7 +2207,7 @@ function* removeFromUseSaga({ payload: id }) {
   } catch (e) {
     console.error('delete playlist failed -e ', e)
     notification({ messageKey: 'playlistRemoveFromUseFailed' })
-    Sentry.captureException(e)
+    captureException(e)
   }
 }
 

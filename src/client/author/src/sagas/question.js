@@ -1,8 +1,8 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
 import { questionsApi, testItemsApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../../common/utils/helpers'
 import { get } from 'lodash'
-import * as Sentry from '@sentry/browser'
 import { history } from '../../../configureStore'
 import {
   RECEIVE_QUESTION_REQUEST,
@@ -148,7 +148,7 @@ function* loadQuestionSaga({ payload }) {
     })
   } catch (e) {
     console.error(e)
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'Unable to load the question.'
     notification({ type: 'error', msg: errorMessage })
   }

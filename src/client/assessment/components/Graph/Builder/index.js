@@ -67,7 +67,7 @@ import '../common/Label.css'
 import '../common/Mark.css'
 import '../common/EditButton.css'
 import '../common/DragDrop.css'
-import { captureSentryException } from '@edulastic/common'
+import { captureSentryException } from '../../../../common/utils/helpers'
 
 /**
  * @see https://jsxgraph.org/docs/symbols/JXG.JSXGraph.html#.initBoard

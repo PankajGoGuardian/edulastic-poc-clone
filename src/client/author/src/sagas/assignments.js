@@ -11,8 +11,8 @@ import { push } from 'connected-react-router'
 import { assignmentApi, atlasApi, googleApi, cleverApi } from '@edulastic/api'
 import { get, identity, omit, pickBy, set, unset } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../../common/utils/helpers'
 import { roleuser } from '@edulastic/constants'
-import * as Sentry from '@sentry/browser'
 
 import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import realtimeApi from '@edulastic/api/src/realtime'
@@ -174,7 +174,7 @@ function* receiveAssignmentByIdSaga({ payload }) {
       payload: true,
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
       payload: {},
@@ -191,7 +191,7 @@ function* receiveAssignmentByAssignmentIdSaga({ payload }) {
       payload: data,
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     yield put({
       type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
       payload: {},
@@ -230,7 +230,7 @@ function* updateAssignmetSaga({ payload }) {
     const successMessage = 'Successfully updated release score settings'
     notification({ type: 'success', msg: successMessage })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'Unable to update release score settings.'
     yield put({
       type: TOGGLE_RELEASE_GRADE_SETTINGS,

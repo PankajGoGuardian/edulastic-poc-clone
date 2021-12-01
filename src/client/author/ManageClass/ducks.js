@@ -10,6 +10,7 @@ import {
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../common/utils/helpers'
 import { get, findIndex, keyBy, isEmpty, capitalize } from 'lodash'
 import {
   googleApi,
@@ -20,7 +21,6 @@ import {
   cleverApi,
   atlasApi,
 } from '@edulastic/api'
-import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
 import { roleuser } from '@edulastic/constants'
 import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
@@ -678,7 +678,7 @@ function* fetchClassList({ payload }) {
     yield put(fetchClassListStatusAction(false))
     yield put(setFilterClassAction(data.filterClass))
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'fetching classlist failed'
     notification({ msg: errorMessage })
     yield put(fetchClassListStatusAction(false))
@@ -721,7 +721,7 @@ function* fetchStudentsByClassId({ payload }) {
       yield put(toggleCreateAssignmentModalAction(1))
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     yield put(fetchStudentsByIdErrorAction(error))
   }
 }
@@ -842,7 +842,7 @@ function* receiveAddStudentRequest({ payload }) {
       yield put(addStudentFailedAction('add student to class failed'))
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     const {
       data: { message: errorMessage },
     } = error.response
@@ -871,7 +871,7 @@ function* changeUserTTSRequest({ payload }) {
     yield put(userTTSRequestSuccessAction(newStdList))
     notification({ type: 'success', msg })
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     notification({
       type: 'error',
       messageKey: 'errorOccurredWhileEnablingOrDisablingTextToSpeech',
@@ -886,7 +886,7 @@ function* resetPasswordRequest({ payload }) {
     notification({ type: 'success', msg })
     yield put(resetPasswordSuccessAction(result.data))
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     notification({ messageKey: 'resetPasswordRequestFailing' })
     yield put(resetPasswordFaildedAction())
   }
@@ -899,7 +899,7 @@ function* removeStudentsRequest({ payload }) {
     notification({ type: 'success', msg })
     yield put(removeStudentsSuccessAction(payload.studentIds))
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     yield put(removeStudentsFaildedAction(error))
   }
 }
@@ -916,7 +916,7 @@ function* updateStudentRequest({ payload }) {
     const msg = 'Successfully Updated student.'
     notification({ type: 'success', msg })
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     notification({ messageKey: 'updateAstudentRequestFailing' })
     yield put(updateStudentFaildedAction())
   }
@@ -936,7 +936,7 @@ function* syncClass({ payload }) {
       messageKey: 'googleClassImportInProgress',
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     yield put(setSyncClassLoadingAction(false))
     notification({ messageKey: 'classSyncFailed' })
     console.log(e)
@@ -1167,7 +1167,7 @@ function* removeClassSyncNotification() {
     yield call(googleApi.removeClassSyncNotification)
     console.log(`Class sync notification removed.`)
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.log(e)
   }
 }
@@ -1180,7 +1180,7 @@ function* saveGoogleTokensAndRetrySyncSaga({ payload }) {
     const googleCode = yield select(getGoogleClassCodeSelector)
     yield put(syncClassUsingCodeAction({ ...classSyncData, googleCode }))
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
     notification({
       msg: err?.response?.data?.message || `Class Sync failed`,
     })
@@ -1209,7 +1209,7 @@ function* updateGroupTeachers({ payload }) {
       type: 'error',
       msg: 'Failed to updated group teachers.',
     })
-    Sentry.captureException(e)
+    captureException(e)
   } finally {
     yield put(removeLoadingComponentAction({ componentName: 'updateButton' }))
   }

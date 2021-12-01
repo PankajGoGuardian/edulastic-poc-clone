@@ -23,6 +23,7 @@ import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
 import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
+import { captureSentryException } from '../../../../common/utils/helpers'
 
 const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 
@@ -295,7 +296,7 @@ function* saveAssignment({ payload }) {
     }
     // Missing termId notify
     if (!assignmentSettings.termId) {
-      Sentry.captureException(
+      captureSentryException(
         new Error('[Assignments] missing termId in assigned assignment.')
       )
       Sentry.withScope((scope) => {

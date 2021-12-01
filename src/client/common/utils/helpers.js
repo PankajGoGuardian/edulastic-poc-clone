@@ -418,6 +418,22 @@ export const reSequenceQuestionsWithWidgets = (
   return reSequencedQ.length ? reSequencedQ : questions
 }
 
+export function captureSentryException(e){
+  try{
+    const toggleSentry = window.captureSentry
+    if(toggleSentry !== 'disable'){
+      if(e.response.status === 401 || e.response.status === 409){
+        window.captureSentry = 'disable'
+      }
+      Sentry.captureException(e)
+    }
+  }catch(err){
+    console.error(err)
+    Sentry.captureException(e)
+  }
+  
+}
+
 export const validateEmail = (email = '') =>
   emailRegex.test(String(email).toLowerCase())
 
@@ -442,15 +458,15 @@ export const checkClientTime = (meta = {}) => {
               scope.setTag('issueType', 'clientTypeMismatchError')
               scope.setExtra('message', new Date().toISOString())
               scope.setExtras(meta)
-              Sentry.captureException(error)
+              captureSentryException(error)
             })
           }
         } catch (e) {
-          Sentry.captureException(e)
+          captureSentryException(e)
         }
       }
     } catch (e) {
-      Sentry.captureException(e)
+      captureSentryException(e)
     }
   })
 }
@@ -576,22 +592,6 @@ export function copyOldFiltersWithNewKey({ keys, userId, districtId }) {
       removeSessionValue({ key })
     }
   })
-}
-
-export function captureSentryException(e){
-  try{
-    const toggleSentry = window.captureSentry
-    if(toggleSentry !== 'disable'){
-      if(e.response.status === 401 || e.response.status === 409){
-        window.captureSentry = 'disable'
-      }
-      Sentry.captureException(e)
-    }
-  }catch(err){
-    console.error(err)
-    Sentry.captureException(e)
-  }
-  
 }
 
 export class PendoHelper {

@@ -28,6 +28,7 @@ import {
   round,
 } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../common/utils/helpers'
 import {
   test,
   testActivity,
@@ -36,7 +37,6 @@ import {
   testActivityStatus,
 } from '@edulastic/constants'
 import { isNullOrUndefined } from 'util'
-import * as Sentry from '@sentry/browser'
 import {
   updateAssignmentStatusAction,
   updateCloseAssignmentsAction,
@@ -659,7 +659,7 @@ function* regeneratePasswordSaga({ payload }) {
       })
     )
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.log(e)
     yield call(notification, { msg: 'Regenerate password failed' })
   }

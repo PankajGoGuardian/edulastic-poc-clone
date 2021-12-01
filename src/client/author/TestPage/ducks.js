@@ -51,6 +51,7 @@ import {
   notification,
   Effects,
 } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../common/utils/helpers'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { createGroupSummary, showRubricToStudentsSetting } from './utils'
 import {
@@ -2377,7 +2378,7 @@ export function* updateTestSaga({ payload }) {
       console.warn('test data has invalid item', testData)
       Sentry.configureScope((scope) => {
         scope.setExtra('testData', testData)
-        Sentry.captureException(new Error('testDataHasInvalidException'))
+        captureException(new Error('testDataHasInvalidException'))
       })
       return
     }
@@ -2732,7 +2733,7 @@ function* publishTestSaga({ payload }) {
       }
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     console.error(error)
     notification({
       type: 'success',
@@ -2795,7 +2796,7 @@ function* publishForRegrade({ payload }) {
       })
     }
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     console.error(error)
     notification({ msg: error?.data?.message || 'publish failed.' })
   } finally {
@@ -2834,7 +2835,7 @@ function* receiveSharedWithListSaga({ payload }) {
     }
     yield put(updateSharedWithListAction(coAuthors))
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'Unable to retrieve shared list.'
     notification({ type: 'error', msg: errorMessage })
   }
@@ -2855,7 +2856,7 @@ function* deleteSharedUserSaga({ payload }) {
       })
     )
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'Unable to remove the user.'
     notification({ type: 'error', msg: errorMessage })
   }
@@ -3183,7 +3184,7 @@ function* checkAnswerSaga({ payload }) {
 
     // message.success(`score: ${+score.toFixed(2)}/${maxScore}`);
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     notification({ messageKey: 'checkAnswerFailed' })
     console.log('error checking answer', e)
   }
@@ -3226,7 +3227,7 @@ function* showAnswerSaga({ payload = {} }) {
       },
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     notification({ messageKey: 'loadAnswerFailed' })
     console.log('error showing answer', e)
   }
@@ -3249,7 +3250,7 @@ function* getAllTagsSaga({ payload }) {
       payload: { tags, tagType },
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     yield put({
       type: SET_ALL_TAGS_FAILED,
       payload: { tagType },
@@ -3289,7 +3290,7 @@ function* searchTagsSaga({ payload }) {
       payload: tags,
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     yield put({
       type: SEARCH_TAG_LIST_ERROR,
     })
@@ -3307,7 +3308,7 @@ function* searchTagsByIdSaga({ payload: ids }) {
     }
     yield* searchTagsSaga({ payload })
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
   }
 }
 
@@ -3423,7 +3424,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       yield put(setDefaultTestSettingsAction(defaultSettings))
     }
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     notification({ messageKey: 'getDeafultSettingsFailed' })
     yield put(setDefaultSettingsLoadingAction(false))
   }
@@ -3532,7 +3533,7 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
     // update the test data wth testItems, and passage if needed.
     yield put(setTestDataAction(newPayload))
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     notification({ messageKey: 'errorAddingPassageItems' })
     console.error('error', e, e.stack)
   }
@@ -3585,7 +3586,7 @@ function* updateTestAndNavigate({ payload }) {
       })
     )
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     notification({ messageKey: 'errorUpdatingTest' })
     console.error('err', e)
   }
@@ -3615,7 +3616,7 @@ function* approveOrRejectSingleTestSaga({ payload }) {
     })
     yield put(push('/author/tests'))
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     console.error(error)
     notification({
       msg:
@@ -3737,7 +3738,7 @@ function* toggleTestLikeSaga({ payload }) {
     else yield put(updateTestItemLikeCountAction(payload))
     yield call(analyticsApi.toggleLike, payload)
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.error(e)
     payload = {
       ...payload,
@@ -3757,7 +3758,7 @@ function* getTestIdFromVersionIdSaga({ payload }) {
       yield put(receiveTestByIdAction(testId, true, false))
     }
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
     console.error(err)
     yield put(resetUpdatedStateAction())
     const errorMessage =
@@ -3781,7 +3782,7 @@ function* getRegradeSettingsSaga({ payload }) {
     const result = yield call(assignmentApi.fetchRegradeSettings, payload)
     yield put(setAvailableRegradeAction(result))
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
     console.error(err)
   }
 }
@@ -3794,7 +3795,7 @@ function* fetchSavedTestSettingsListSaga({ payload }) {
       setTestSettingsListAction(settingsList.filter(({ title }) => !!title))
     )
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
   }
 }
 
@@ -3808,7 +3809,7 @@ function* saveTestSettingsSaga({ payload }) {
     yield put(addTestSettingInList(result))
     notification({ type: 'success', msg: 'Test settings saved successfully' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
     const errorMessage =
       err?.response?.data?.message || 'Failed to save test settings'
     notification({ type: 'error', msg: errorMessage })
@@ -3821,7 +3822,7 @@ function* deleteTestSettingRequestSaga({ payload }) {
     yield put(removeTestSettingFromList(payload))
     notification({ type: 'success', msg: 'Test setting removed successfully' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
     const errorMessage =
       err?.response?.data?.message || 'Failed to delete test setting'
     notification({ type: 'error', msg: errorMessage })
@@ -3834,7 +3835,7 @@ function* updateTestSettingRequestSaga({ payload }) {
     yield put(updateTestSettingInList(result))
     notification({ type: 'success', msg: 'Test setting updated successfully' })
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
     const errorMessage =
       err?.response?.data?.message || 'Failed to udate test setting'
     notification({ type: 'error', msg: errorMessage })

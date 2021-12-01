@@ -82,6 +82,7 @@ import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
+import { captureSentryException } from '../../../../common/utils/helpers'
 
 const { ASSESSMENT, COMMON } = testConst.type
 const {
@@ -387,7 +388,7 @@ class AssignTest extends React.Component {
       termId = groupById[initialClassId]?.termId
       if (!termId) {
         // Missing termId notify
-        Sentry.captureException(
+        captureSentryException(
           new Error('[Assignments] missing termId in assigned assignment.')
         )
         Sentry.withScope((scope) => {

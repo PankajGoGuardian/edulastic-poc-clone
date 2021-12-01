@@ -28,6 +28,7 @@ import {
   getStudentQuestionSelector,
 } from '../../../ClassBoard/ducks'
 import BottomNavigation from '../BottomNavigation/BottomNavigation'
+import { captureSentryException } from '../../../../common/utils/helpers'
 
 const QuestionWrapper = React.forwardRef((props, ref) => (
   <QuestionWrapperStyled {...props} ref={ref} />
@@ -223,7 +224,7 @@ class QuestionModal extends React.Component {
                   Sentry.configureScope((scope) => {
                     scope.setExtra('qType', cur?.qType)
                     scope.setExtra('userResponse', cur?.userResponse)
-                    Sentry.captureException(error)
+                    captureSentryException(error)
                   })
                 }
                 return acc

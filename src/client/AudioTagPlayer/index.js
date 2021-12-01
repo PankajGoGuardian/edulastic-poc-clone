@@ -13,6 +13,7 @@ import {
   PlayerBtn,
   PlayerTimer,
 } from './styled'
+import { captureSentryException } from '../common/utils/helpers'
 
 const PLAY = 'Audio Playing'
 const PAUSE = 'Audio Paused'
@@ -86,7 +87,7 @@ const AudioTagPlayer = ({ user }) => {
             tid: window.sessionStorage.tid,
             kid: kid || window.sessionStorage.kid,
           })
-          Sentry.captureException(
+          captureSentryException(
             new Error('[Audio Test - Howler] Loading Audio Failed.')
           )
         })
@@ -117,7 +118,7 @@ const AudioTagPlayer = ({ user }) => {
             tid: window.sessionStorage.tid,
             kid: kid || window.sessionStorage.kid,
           })
-          Sentry.captureException(
+          captureSentryException(
             new Error('[Audio Test - HTML5] Loading Audio Failed.')
           )
         })

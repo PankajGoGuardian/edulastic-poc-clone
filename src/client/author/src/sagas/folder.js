@@ -1,8 +1,8 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { folderApi } from '@edulastic/api'
 import { get, omit } from 'lodash'
-import * as Sentry from '@sentry/browser'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../../common/utils/helpers'
 import { folderTypes } from '@edulastic/constants'
 import {
   RECEIVE_FOLDER_REQUEST,
@@ -33,7 +33,7 @@ function* receiveGetFoldersRequest({ payload }) {
       payload: { entities },
     })
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     const errorMessage = 'Receive folder list failing'
     notification({ msg: errorMessage })
     yield put({
@@ -54,7 +54,7 @@ function* receiveCreateFolderRequest({ payload }) {
       payload: { entity },
     })
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     const errorMessage = 'Create folder failing'
     notification({ msg: errorMessage })
     yield put({
@@ -104,7 +104,7 @@ function* receiveAddMoveFolderRequest({ payload }) {
 
     notification({ type: 'success', msg: successMsg }) // TODO:Can't be moved to message file since dynamic values wont be supported.
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     const errorMessage = 'Add or Move content to folder failing'
     notification({ msg: errorMessage })
     yield put({
@@ -149,7 +149,7 @@ function* receiveRenameFolderRequest({ payload }) {
       payload: get(success, 'data.result', null),
     })
   } catch (error) {
-    Sentry.captureException(error)
+    captureException(error)
     const errorMessage = 'Rename folder failing'
     notification({ msg: errorMessage })
     yield put({

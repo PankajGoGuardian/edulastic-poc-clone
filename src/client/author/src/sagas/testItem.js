@@ -8,7 +8,7 @@ import {
   Effects,
   notification,
 } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
+import { captureSentryException as captureException } from '../../../common/utils/helpers'
 import { resourceTypeQuestions } from '@edulastic/constants/const/question'
 
 import { evaluateItem } from '../utils/evalution'
@@ -296,7 +296,7 @@ function* setAnswerSaga({ payload }) {
     }
   } catch (e) {
     console.log('error:', e)
-    Sentry.captureException(e)
+    captureException(e)
   }
 }
 

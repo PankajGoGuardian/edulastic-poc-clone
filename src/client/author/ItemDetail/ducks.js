@@ -31,6 +31,7 @@ import { createAction } from 'redux-starter-kit'
 import { replace, push } from 'connected-react-router'
 import produce from 'immer'
 import { captureSentryException, notification } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../common/utils/helpers'
 import * as Sentry from '@sentry/browser'
 import {
   loadQuestionsAction,
@@ -1197,7 +1198,7 @@ export function* deleteItemSaga({ payload }) {
       yield put(push(`/author/items`))
     }
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     yield put(setItemDeletingAction(false))
     console.error(e)
     if (e.status === 403) {
@@ -1558,7 +1559,7 @@ export function* updateItemSaga({ payload }) {
                 'message',
                 `old test Id = ${oldTestId}, new test Id = ${payload.testId}, testItemId = ${item._id}`
               )
-              Sentry.captureException(
+              captureException(
                 new Error('[test edit] item edit failure on test update')
               )
             })
@@ -1846,7 +1847,7 @@ function* publishTestItemSaga({ payload }) {
       notification({ messageKey: 'itemIsNotAssociated' })
     }
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.warn('publish error', e)
     const { message: errorMessage = 'Failed to publish item' } =
       e?.response?.data || {}
@@ -1909,7 +1910,7 @@ function* convertToMultipartSaga({ payload }) {
     yield put(setQuestionCategory('multiple-choice'))
     yield put(push(nextPageUrl))
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.log('error', e)
     notification({ msg: e })
   }
@@ -1979,7 +1980,7 @@ function* convertToPassageWithQuestions({ payload }) {
     yield put(setQuestionCategory('multiple-choice'))
     yield put(push(url))
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.log('error', e)
     notification({ msg: e })
   }
@@ -2133,7 +2134,7 @@ function* savePassage({ payload }) {
       )
     }
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.log('error: ', e)
     notification({ messageKey: 'errorSavingPassage' })
   } finally {
@@ -2200,7 +2201,7 @@ function* addWidgetToPassage({ payload }) {
     //   })
     // )
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     console.log('error:', e)
     notification({ messageKey: 'failedAddingContent' })
   }
@@ -2214,7 +2215,7 @@ function* loadQuestionPreviewAttachmentsSaga({ payload }) {
       payload: result,
     })
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'Loading audit trail logs failed'
     notification({ msg: errorMessage })
     yield put({
@@ -2250,7 +2251,7 @@ function* saveAndPublishItemSaga() {
     }
     yield put(publishTestItemAction(publishData))
   } catch (error) {
-    Sentry.captureException(e)
+    captureException(e)
   } finally {
     yield put(
       removeLoadingComponentAction({ componentName: 'saveAndPublishItem' })
@@ -2275,7 +2276,7 @@ function* saveCurrentItemAndRoueToOtherSaga({ payload }) {
     yield call(updateItemSaga, { payload: updateItemData })
     yield put(push(redirectData))
   } catch (err) {
-    Sentry.captureException(err)
+    captureException(err)
   }
 }
 

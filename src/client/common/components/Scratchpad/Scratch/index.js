@@ -28,6 +28,7 @@ import protractorImg from './assets/protractor.svg'
 import centimeterImg from './assets/centimeter.svg'
 
 import AppConfig from '../../../../../app-config'
+import { captureSentryException } from '../../../utils/helpers'
 
 const lineTypes = [
   drawTools.FREE_DRAW,
@@ -47,7 +48,7 @@ function safeZwibblerLoad(zwibbler, data) {
     } catch (e2) {
       Sentry.withScope((scope) => {
         scope.setExtra('zwibbler-data', data)
-        Sentry.captureException(e2)
+        captureSentryException(e2)
       })
     }
   }

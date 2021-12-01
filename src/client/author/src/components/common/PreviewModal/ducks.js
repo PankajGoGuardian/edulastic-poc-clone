@@ -12,13 +12,13 @@ import { push } from 'connected-react-router'
 import { get, last } from 'lodash'
 import { testItemsApi, passageApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
 import {
   updateTestAndNavigateAction,
   updateTestSaga,
   getTestSelector,
   setTestsLoadingAction,
 } from '../../../../TestPage/ducks'
+import { captureSentryException } from '../../../../../common/utils/helpers'
 
 export const SET_QUESTIONS_IN_PASSAGE =
   '[testItemPreview] set questions to passage'
@@ -222,7 +222,7 @@ function* duplicateItemRequestSaga({ payload }) {
       yield put(push(`/author/items/${duplicatedItem._id}/item-detail`))
     }
   } catch (e) {
-    Sentry.captureException(e)
+    captureSentryException(e)
     console.error('duplicateItemrequest error - ', e)
     notification({ messageKey: 'duplicationItemError' })
   }
@@ -274,7 +274,7 @@ function* editNonAuthoredItemSaga({ payload }) {
     yield put(setTestsLoadingAction(false))
   } catch (e) {
     yield put(setTestsLoadingAction(false))
-    Sentry.captureException(e)
+    captureSentryException(e)
     notification({ messageKey: 'errorUpdatingTest' })
     console.error('err', e)
   }

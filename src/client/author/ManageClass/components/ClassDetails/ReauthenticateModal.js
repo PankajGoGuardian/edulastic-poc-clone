@@ -1,16 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
 import { Modal, Row, Col } from 'antd'
-import * as Sentry from '@sentry/browser'
 import { EduButton, notification } from '@edulastic/common'
 import { darkGrey2 } from '@edulastic/colors'
 import GoogleLogin from 'react-google-login'
 import { scopes } from '../ClassListContainer/ClassCreatePage'
+import { captureSentryException } from '../../../../common/utils/helpers'
 
 const ReauthenticateModal = ({ visible, handleLoginSuccess, toggle }) => {
   const handleError = (err) => {
     notification({ messageKey: 'googleLoginFailed' })
-    Sentry.captureException(err)
+    captureSentryException(err)
     toggle()
   }
   return (

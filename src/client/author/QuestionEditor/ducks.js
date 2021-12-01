@@ -26,8 +26,8 @@ import {
   notification,
   captureSentryException,
 } from '@edulastic/common'
+import { captureSentryException as captureException } from '../../common/utils/helpers'
 import { push } from 'connected-react-router'
-import * as Sentry from '@sentry/browser'
 import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from '../../assessment/utils/helpers'
 
@@ -1076,7 +1076,7 @@ function* loadQuestionSaga({ payload }) {
     }
     yield put(setDictAlignmentFromQuestion(alignments))
   } catch (e) {
-    Sentry.captureException(e)
+    captureException(e)
     const errorMessage = 'Unable to load the question.'
     notification({ type: 'error', msg: errorMessage })
   }

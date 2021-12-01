@@ -16,7 +16,6 @@ import {
   curriculumSequencesApi,
 } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import * as Sentry from '@sentry/browser'
 import { omit } from 'lodash'
 import { getSelectedResourcesAction } from '../../../AssignTest/duck'
 import {
@@ -25,6 +24,7 @@ import {
 } from '../../../src/selectors/user'
 import { updateCurriculumSequenceAction } from '../../ducks'
 import { updatePlaylistAction } from '../../../PlaylistPage/ducks'
+import { captureSentryException } from '../../../../common/utils/helpers'
 
 export const sliceName = 'playlistTestBox'
 const LIMIT = 20
@@ -360,7 +360,7 @@ function* updateResourceSaga({ payload }) {
     notification({ type: 'success', msg: 'Resource Updated Successfully' })
   } catch (e) {
     console.error('Error Occured: updateResourceSaga ', e)
-    Sentry.captureException(e)
+    captureSentryException(e)
   }
 }
 
@@ -384,7 +384,7 @@ function* deleteResourceSaga({ payload }) {
     notification({ type: 'success', msg: 'Resource Deleted Successfully' })
   } catch (e) {
     console.error('Error Occured: deleteResourceSaga ', e)
-    Sentry.captureException(e)
+    captureSentryException(e)
   }
 }
 

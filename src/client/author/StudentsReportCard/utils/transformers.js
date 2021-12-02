@@ -270,10 +270,7 @@ export const getChartAndStandardTableData = (
       const allStandards = questions.flatMap((q) => {
         // finding all doamins from question alignment which are not multistandard mapped
         const domains = (q.alignment || [])
-          .filter(
-            (el) =>
-              !el.isEquivalentStandard && interestedCrclmById[el.curriculumId]
-          )
+          .filter((el) => interestedCrclmById[el.curriculumId])
           .map((ali) => ali.domains || [])
           .flat()
         const questionId = item.itemLevelScoring

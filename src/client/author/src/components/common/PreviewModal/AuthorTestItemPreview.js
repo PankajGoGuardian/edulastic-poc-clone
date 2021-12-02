@@ -615,6 +615,7 @@ class AuthorTestItemPreview extends Component {
           width={
             !collapseDirection ? col.dimension : hideColumn ? '0px' : '100%'
           }
+          data-cy="columnContentArea"
         >
           <ColumnContentArea>
             {i === 0

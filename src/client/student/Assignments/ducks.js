@@ -688,7 +688,7 @@ function* startAssignment({ payload }) {
 
       yield put(push(`/home/assignments`))
       if (!handleChromeOsSEB()) {
-        yield call(redirectToUrl(sebUrl))
+        yield call(redirectToUrl, sebUrl)
       }
       return
     }

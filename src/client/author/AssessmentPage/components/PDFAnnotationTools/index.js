@@ -22,6 +22,8 @@ const PDFAnnotationTools = ({
   redoAnnotationsOperation,
   isAnnotationsStackEmpty = false,
   isAnnotationsEmpty = false,
+  undoUserWork,
+  redoUserWork,
 }) => {
   const handleClick = (key) => {
     if (key === 'thumbnails') {
@@ -31,12 +33,20 @@ const PDFAnnotationTools = ({
     }
 
     if (key == 'undo') {
-      if (!isAnnotationsEmpty) undoAnnotationsOperation()
+      if (!isAnnotationsEmpty && !testMode) {
+        undoAnnotationsOperation()
+      } else if (!isAnnotationsEmpty && testMode) {
+        undoUserWork()
+      }
       return
     }
 
     if (key == 'redo') {
-      if (!isAnnotationsStackEmpty) redoAnnotationsOperation()
+      if (!isAnnotationsStackEmpty && !testMode) {
+        redoAnnotationsOperation()
+      } else if (!isAnnotationsStackEmpty && testMode) {
+        redoUserWork()
+      }
       return
     }
 

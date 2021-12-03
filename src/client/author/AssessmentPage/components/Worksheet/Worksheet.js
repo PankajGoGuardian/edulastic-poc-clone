@@ -602,12 +602,14 @@ class WorksheetComponent extends React.Component {
       undoAnnotationsOperation,
       redoAnnotationsOperation,
       isAnnotationsStackEmpty = false,
-      pdfAnnotations = [],
       isEditable,
       currentPage: _currentPageInProps,
       groupId,
       itemDetail,
       testItemId,
+      annotationsStack,
+      undoUserWork,
+      redoUserWork,
     } = this.props
     const {
       uploadModal,
@@ -654,12 +656,12 @@ class WorksheetComponent extends React.Component {
               annotationToolsProperties={annotationToolsProperties}
               updateToolProperties={updateToolProperties}
               isAnnotationsStackEmpty={isAnnotationsStackEmpty}
-              isAnnotationsEmpty={
-                pdfAnnotations.filter((a) => !a?.questionId)?.length === 0
-              }
+              isAnnotationsEmpty={annotationsStack?.length === 0}
               testMode={testMode}
               undoAnnotationsOperation={undoAnnotationsOperation}
               redoAnnotationsOperation={redoAnnotationsOperation}
+              undoUserWork={undoUserWork}
+              redoUserWork={redoUserWork}
             />
           </PDFAnnotationToolsWrapper>
         )}
@@ -751,6 +753,7 @@ class WorksheetComponent extends React.Component {
               page={selectedPage}
               currentPage={currentPage + 1}
               annotations={annotations}
+              annotationsCount={annotationsStack?.length} // need to update annotations on redo and undo action
               onDragStart={this.onDragStart}
               toggleMinimized={this.toggleMinimized}
               onDropAnnotation={this.handleAddAnnotation}
@@ -849,6 +852,25 @@ const Worksheet = withForwardedRef(WorksheetComponent)
 
 export { Worksheet }
 
+const annotationsStackSelector = (state, ownProps) => {
+  const { testMode } = ownProps
+
+  if (!testMode) {
+    const pdfAnnotations = state.tests.entity?.annotations || []
+    return pdfAnnotations.filter((a) => !a?.questionId)
+  }
+
+  return state?.userWork?.past || []
+}
+
+const isAnnotationsStackEmptySelector = (state, ownProps) => {
+  const { testMode } = ownProps
+  if (!testMode) {
+    return state.tests.annotationsStack?.length === 0
+  }
+  return state?.userWork?.future?.length === 0
+}
+
 const enhance = compose(
   withWindowSizes,
   withRouter,
@@ -882,16 +904,16 @@ const enhance = compose(
       answersById: state.answers,
       currentAnnotationTool: state.tests.currentAnnotationTool,
       annotationToolsProperties: state.tests.annotationToolsProperties,
-      isAnnotationsStackEmpty: state.tests.annotationsStack?.length === 0,
-      pdfAnnotations: state.tests.entity?.annotations,
+      isAnnotationsStackEmpty: isAnnotationsStackEmptySelector(state, ownProps),
+      annotationsStack: annotationsStackSelector(state, ownProps),
       isImageBlockNotification: state.user.isImageBlockNotification,
     }),
     {
       saveUserWork: saveUserWorkAction,
       createAssessment: createAssessmentRequestAction,
       setPercentUploaded: setPercentUploadedAction,
-      undoScratchPad: ActionCreators.undo,
-      redoScratchPad: ActionCreators.redo,
+      undoUserWork: ActionCreators.undo,
+      redoUserWork: ActionCreators.redo,
       setTestData: setTestDataAction,
       setQuestionsById: loadQuestionsAction,
       uploadToDrive: uploadToDriveAction,

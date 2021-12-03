@@ -804,7 +804,7 @@ class Review extends PureComponent {
         </CustomModalStyled>
         {isModalVisible && (
           <PreviewModal
-            testId={get(this.props, 'match.params.id', false)}
+            testId={test?._id || get(this.props, 'match.params.id', false)}
             isTest={!!test}
             isVisible={isModalVisible}
             onClose={this.closeModal}

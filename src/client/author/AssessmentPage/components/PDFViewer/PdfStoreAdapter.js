@@ -6,11 +6,12 @@ import { saveUserWorkAction } from '../../../../assessment/actions/userWork'
 import { getStore } from '../../../../configureStore'
 
 export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
-  constructor(testMode, reportMode, testItemId) {
+  constructor(testMode, reportMode, testItemId, annotations) {
     super()
     this.testMode = testMode
     this.reportMode = reportMode
     this.testItemId = testItemId
+    this.annotations = annotations || []
 
     const _store = getStore()
     if (_store) {
@@ -35,6 +36,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
           (
             state.tests?.entity?.annotations ||
             state.test?.annotations ||
+            this.annotations ||
             []
           ).map((a) => ({
             ...a,

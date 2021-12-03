@@ -35,7 +35,7 @@ const PDFViewer = ({
 
   const adapter = useMemo(() => {
     // create store adapter for student attempt or teachor authoring
-    return new PdfStoreAdapter(testMode, reportMode, testItemId)
+    return new PdfStoreAdapter(testMode, reportMode, testItemId, annotations)
   }, [testMode, reportMode])
 
   const disableAllTools = () => {

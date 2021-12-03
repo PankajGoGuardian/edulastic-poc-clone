@@ -45,7 +45,7 @@ const SessionStatus = ({
     }
   }, [pages])
 
-  const isDone = !window.location.search.includes('scanning=1')
+  const isDone = scanProgress === 100
 
   return (
     <SessionStatusContainer>

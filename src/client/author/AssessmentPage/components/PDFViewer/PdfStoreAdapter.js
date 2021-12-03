@@ -1,4 +1,4 @@
-import { findIndex } from 'lodash'
+import { findIndex, uniqBy } from 'lodash'
 import { helpers } from '@edulastic/common'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { setTestDataAction, setUndoStackAction } from '../../../TestPage/ducks'
@@ -61,7 +61,10 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
         this.store.dispatch(setUndoStackAction()) // reset redo stack logic
         this.store.dispatch(
           setTestDataAction({
-            annotations: [...questionAnnotations, ...annotations],
+            annotations: uniqBy(
+              [...questionAnnotations, ...annotations],
+              'uuid'
+            ),
           })
         )
       } else if (this.testItemId && this.testMode) {

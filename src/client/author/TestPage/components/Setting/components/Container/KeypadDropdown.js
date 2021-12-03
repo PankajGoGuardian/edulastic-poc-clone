@@ -78,17 +78,20 @@ const KeypadDropdown = ({
         onChange={handleChange}
         getPopupContainer={(trigger) => trigger.parentNode}
       >
-        {customKeypads.length > 0 &&
-          customKeypads.map((keypad) => {
-            return (
-              <Select.Option
-                key={keypad._id || keypad.value}
-                value={keypad._id || keypad.value}
-              >
-                {keypad.label}
-              </Select.Option>
-            )
-          })}
+        {customKeypads.length > 0 && (
+          <Select.OptGroup label="My custom keypads">
+            {customKeypads.map((keypad) => {
+              return (
+                <Select.Option
+                  key={keypad._id || keypad.value}
+                  value={keypad._id || keypad.value}
+                >
+                  {keypad.label}
+                </Select.Option>
+              )
+            })}
+          </Select.OptGroup>
+        )}
         <Select.OptGroup label="Standard keypads">
           {predefinedKeypads.map((keypad) => {
             return (

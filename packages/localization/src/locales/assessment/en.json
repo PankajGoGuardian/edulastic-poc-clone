@@ -288,6 +288,7 @@
       "confirm": "Confirm",
       "graphControls": "Graph Controls",
       "standardKeypadLabel": "Standard Keypads",
+      "customKeypadLabel": "My Custom Keypads",
       "keepAspectRatio": "Keep Aspect Ratio",
       "removePrevDynamicValues": "This will clear all previously generated values. Do you wish to proceed?"
     },

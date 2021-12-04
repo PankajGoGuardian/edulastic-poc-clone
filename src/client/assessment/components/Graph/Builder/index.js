@@ -38,6 +38,8 @@ import {
   PiecewiseLine,
   LineCut,
   PiecewisePoint,
+  Grid,
+  Rose,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -89,6 +91,10 @@ class Board {
      * Static unitX
      */
     this.staticUnitX = null
+    /**
+     *  Polar grids or Complex
+     */
+    this.grids = []
     /**
      * Answers
      */
@@ -148,6 +154,8 @@ class Board {
     this.inequalities = []
 
     this.pointOnEquEnabled = false
+
+    this.switchGrid = Grid.switchGrid.bind(this)
   }
 
   addDragDropValue(value, x, y, dimensions) {
@@ -314,6 +322,9 @@ class Board {
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
         this.creatingHandler = NumberlineVector.onHandler
+        return
+      case CONSTANT.TOOLS.ROSE:
+        this.creatingHandler = Rose.onHandler
         return
       case CONSTANT.TOOLS.EDIT_LABEL:
       case CONSTANT.TOOLS.TRASH:
@@ -978,8 +989,19 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#setBoundingBox
    */
   setGridParameters(gridParameters) {
+    this.gridParameters = gridParameters
     updateGrid(this.$board.grids, gridParameters)
     this.$board.fullUpdate()
+  }
+
+  /**
+   * update grid and axes based on grid type
+   * @param {string} gridType retangular | polar | complex
+   * @param {object} polarGridParams grid options for polar
+   */
+  updateGridAndAxes(gridType, polarGridParams) {
+    this.gridType = gridType
+    this.switchGrid(polarGridParams)
   }
 
   /**

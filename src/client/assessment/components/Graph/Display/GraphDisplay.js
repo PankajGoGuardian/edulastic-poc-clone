@@ -361,6 +361,7 @@ class GraphDisplay extends Component {
       drawLabelZero = true,
       xRadians,
       yRadians,
+      gridType,
     } = uiStyle
 
     const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle)
@@ -418,9 +419,22 @@ class GraphDisplay extends Component {
         useRadians: yRadians,
       },
       gridParams: {
+        showGrid,
         gridX: xDistance,
         gridY: yDistance,
-        showGrid,
+      },
+      polarGridParams: {
+        tMin: uiStyle.tMin,
+        tMax: uiStyle.tMax,
+        tDist: uiStyle.tDist,
+        rMin: uiStyle.rMin,
+        rMax: uiStyle.rMax,
+        rDist: uiStyle.rDist,
+        rShowAxis: uiStyle.rShowAxis,
+        tShowAxis: uiStyle.tShowAxis,
+        rDrawLabel: uiStyle.rDrawLabel,
+        tDrawLabel: uiStyle.tDrawLabel,
+        tRadians: uiStyle.tRadians,
       },
       bgImgOptions: {
         urlImg: backgroundImage.src,
@@ -454,6 +468,7 @@ class GraphDisplay extends Component {
       setQuestionData,
       graphData,
       onChangeKeypad,
+      gridType,
       symbols,
       showConnect,
       pointsOnEquEnabled,

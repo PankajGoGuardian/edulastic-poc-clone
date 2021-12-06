@@ -6,14 +6,27 @@ import { FieldLabel } from '@edulastic/common'
 import AnswerBoxText from './AnswerBoxText'
 import EnabledSettings from '../../../components/EvaluationSettings/EnabledSettings'
 
-const AnswerBox = ({ singleResponseBox, answer, t }) => {
+const AnswerBox = ({ singleResponseBox, answer, t, uiStyles }) => {
   const [showOpts, setShowOpts] = useState(false)
+  console.log(uiStyles)
 
   return (
     <Container>
       <Answer>
-        {!singleResponseBox && <Label>{answer.index + 1}</Label>}
-        <AnswerBoxText>{answer.value}</AnswerBoxText>
+        {!singleResponseBox && (
+          <Label
+            fontSize={uiStyles?.fontSize}
+            fontWeight={uiStyles?.fontWeight}
+          >
+            {answer.index + 1}
+          </Label>
+        )}
+        <AnswerBoxText
+          fontSize={uiStyles?.fontSize}
+          fontWeight={uiStyles?.fontWeight}
+        >
+          {answer.value}
+        </AnswerBoxText>
       </Answer>
       {answer.isMath && (
         <OptionsContainer>
@@ -73,7 +86,8 @@ const Label = styled.div`
   align-items: center;
   align-self: stretch;
   justify-content: center;
-  font-weight: 700;
+  font-size: ${({ fontSize }) => fontSize};
+  font-weight: ${({ fontWeight }) => fontWeight};
 `
 
 const OptionsContainer = styled.div`

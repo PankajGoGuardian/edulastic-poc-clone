@@ -4,9 +4,13 @@ import styled from 'styled-components'
 import { white } from '@edulastic/colors'
 import MathSpanWrapper from '../../../components/MathSpanWrapper'
 
-const AnswerBoxText = ({ children }) => (
+const AnswerBoxText = ({ children, fontSize, fontWeight }) => (
   <Text data-cy="correct-answer-box">
-    <MathSpanWrapper latex={children} />
+    <MathSpanWrapper
+      latex={children}
+      fontSize={fontSize}
+      fontWeight={fontWeight}
+    />
   </Text>
 )
 
@@ -25,6 +29,7 @@ const Text = styled.div`
   min-width: 80px;
   border-top-right-radius: 5px;
   border-bottom-right-radius: 5px;
-  font-weight: 600;
+  font-size: ${({ fontSize }) => fontSize};
+  font-weight: ${({ fontWeight }) => fontWeight};
   flex: 1;
 `

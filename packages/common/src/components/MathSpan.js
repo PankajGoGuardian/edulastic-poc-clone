@@ -23,6 +23,10 @@ const MathSpan = withMathFormula(styled.span`
   img.fr-dii {
     vertical-align: top;
   }
+
+  .katex {
+    font-weight: ${({ fontWeight }) => fontWeight};
+  }
 `)
 
 export default MathSpan

@@ -63,10 +63,14 @@ class TestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
+    const { toggleCollapseMode } = this.state
+    if (!dir && toggleCollapseMode) {
+      return
+    }
     this.setState(
-      (prevState) => ({
-        collapseDirection: !prevState.toggleCollapseMode ? dir : '',
-      }),
+      {
+        collapseDirection: dir,
+      },
       () => {
         const { changedPlayerContent } = this.props
         changedPlayerContent()
@@ -75,14 +79,16 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
-    const { isReviewTab } = this.props
+    const { isReviewTab, viewComponent } = this.props
     const { collapseDirection } = this.state
-    if (isReviewTab) {
+
+    if (isReviewTab || viewComponent === 'studentReport') {
       return null
     }
     return (
       <PassageDivider
         onChange={this.setCollapseView}
+        viewComponent={viewComponent}
         collapseDirection={collapseDirection}
       />
     )

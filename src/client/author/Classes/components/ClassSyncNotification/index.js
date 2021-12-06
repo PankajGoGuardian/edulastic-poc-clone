@@ -187,8 +187,7 @@ const ClassSyncNotificationListener = ({
         // show sync complete notification
         notification({
           msg:
-            message ||
-            `${capitalize(providerName)} class sync task completed.`,
+            message || `${capitalize(providerName)} class sync task completed.`,
           type: 'success',
           onClose: () => {
             setNotificationIds([...pull(notificationIds, [doc.__id])])

@@ -199,7 +199,12 @@ const Insights = ({
           />
         </Row>
         <TrendToggleContainer>
-            Show Trend Arrows <Switch className={'trendsToggle'} checked={showTrends} onChange={(checked) => setShowTrends(checked)}></Switch>
+          Show Trend Arrows{' '}
+          <Switch
+            className={'trendsToggle'}
+            checked={showTrends}
+            onChange={(checked) => setShowTrends(checked)}
+          ></Switch>
         </TrendToggleContainer>
       </RightContainer>
     </InsightsContainer>
@@ -259,7 +264,7 @@ const TrendToggleContainer = styled.div`
   text-transform: uppercase;
   font: 11px/15px Open Sans;
   font-weight: 600;
-  .trendsToggle{
+  .trendsToggle {
     margin-left: 10px;
     margin-top: -2px;
   }

@@ -42,7 +42,14 @@ const toggleActiveData = ({
 
 // custom label shape for scatter plot
 const ScatterLabel = (props) => {
-  const { cx, cy, handleArrowClick, handleCircleClick, showTrends, ...item } = props
+  const {
+    cx,
+    cy,
+    handleArrowClick,
+    handleCircleClick,
+    showTrends,
+    ...item
+  } = props
   const {
     studentId,
     name,
@@ -79,11 +86,18 @@ const ScatterLabel = (props) => {
       >
         {name}
       </text>
-      {showTrends ? (hasTrend ? (
-        <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
-      ) : (
-      <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
-      )) : null}
+      {showTrends ? (
+        hasTrend ? (
+          <TrendArrow
+            cx={cx}
+            cy={arrowY}
+            color={color}
+            trendAngle={trendAngle}
+          />
+        ) : (
+          <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
+        )
+      ) : null}
     </g>
   )
 }

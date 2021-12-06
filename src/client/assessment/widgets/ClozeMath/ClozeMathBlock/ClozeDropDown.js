@@ -146,7 +146,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
     >
       <Dropdown
-        data-cy= 'textDropDown'
+        data-cy="textDropDown"
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={getPopupContainer}

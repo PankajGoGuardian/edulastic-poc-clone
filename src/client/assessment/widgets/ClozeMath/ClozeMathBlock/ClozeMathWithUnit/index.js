@@ -106,7 +106,7 @@ class ClozeMathWithUnit extends React.Component {
         fontSize={btnStyle.fontSize}
         width={width}
         height={height}
-        data-cy='mathUnitInput'
+        data-cy="mathUnitInput"
       >
         <MathInput {...mathInputProps} resetMath />
         <SelectUnit

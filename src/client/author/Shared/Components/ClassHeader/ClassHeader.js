@@ -675,7 +675,7 @@ class ClassHeader extends Component {
             disabled={!!isAssignmentDone}
           >
             <Tooltip
-              title={isAssignmentDone ? 'assignment is not open' : null}
+              title={isAssignmentDone ? 'Assignment is not open' : null}
               placement="right"
             >
               Generate Bubble Sheet

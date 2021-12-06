@@ -117,7 +117,7 @@ function LCBAssignmentSettings({
     ) {
       notification({
         type: 'info',
-        messageKey: 'pleaseSelectYourPreferedDueDate  ',
+        messageKey: 'pleaseSelectYourPreferedDueDate',
       })
     } else if (key === 'startDate' && showAllowedOpenDate) {
       return changeAttrs({ key: 'allowedOpenDate', value })

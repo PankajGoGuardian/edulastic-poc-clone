@@ -172,6 +172,7 @@ const Search = ({
   const subjectRef = useRef()
   const standardsRef = useRef()
   const collectionRef = useRef()
+  const tagsRef = useRef()
 
   return (
     <MainFilterItems>

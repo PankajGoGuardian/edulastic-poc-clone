@@ -111,6 +111,7 @@ class Contaier extends Component {
       getCurriculumStandards,
       match = {},
       limit,
+      selectedItems,
       setDefaultTestData,
       search: initSearch,
       getAllTags,

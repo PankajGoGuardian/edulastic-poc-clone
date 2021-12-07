@@ -8,7 +8,6 @@ const ConfirmDeleteFolder = ({
   folderType,
   closeModal,
   deleteFolder,
-  visible = true,
 }) => {
   const handleProceed = () => {
     if (deleteFolder) {
@@ -28,7 +27,7 @@ const ConfirmDeleteFolder = ({
 
   return (
     <CustomModalStyled
-      visible={visible}
+      visible
       title="Delete Folder"
       onCancel={closeModal}
       footer={[

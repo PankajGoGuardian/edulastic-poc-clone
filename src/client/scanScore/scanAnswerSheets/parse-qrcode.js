@@ -1,4 +1,5 @@
 import jsQR from 'jsqr'
+import log from './log'
 
 // export const qrRectWidth = 110;
 // export const qrCodeResizeWidth = qrRectWidth * 2;
@@ -39,7 +40,7 @@ export const detectQRCode = (cv, matSrc, qrRect) => {
   let result = null
   const sz = new cv.Size(qrRect.width * 2, qrRect.height * 2)
   cv.resize(croppedQR, croppedQR, sz)
-
+  log('croppedQr', croppedQR)
   let qrCodeData = jsQR(
     croppedQR.data,
     croppedQR.size().width,
@@ -145,13 +146,14 @@ export const findParentRectangle = (cv, matSrc) => {
 
     let width = getWidthOfQR(topLeftCorner, topRightCorner)
     let height = getWidthOfQR(topLeftCorner, bottomLeftCorner)
-
+    const screenWidth = matSrc.size().width
+    const screenHeight = matSrc.size().width
     if (width > height) {
       if (
         width / height < 1.25 &&
         width / height > 1.15 &&
-        width > 200 &&
-        height > 200
+        width > screenWidth / 5 &&
+        height > screenHeight / 5
       ) {
         rectangles.push([
           topLeftCorner,
@@ -164,8 +166,8 @@ export const findParentRectangle = (cv, matSrc) => {
       if (
         height / width > 1.8 &&
         height / width < 2 &&
-        width > 100 &&
-        height > 100
+        width > screenWidth / 5 &&
+        height > screenHeight / 5
       ) {
         rectangles.push([
           topLeftCorner,
@@ -176,7 +178,12 @@ export const findParentRectangle = (cv, matSrc) => {
       }
     }
 
-    if (Math.abs(width - height) < 3 && width > 50 && height > 50) {
+    if (
+      width / height < 1.1 &&
+      width / height > 0.9 &&
+      width > screenWidth / 10 &&
+      height > screenHeight / 10
+    ) {
       vertices = [
         topLeftCorner,
         topRightCorner,

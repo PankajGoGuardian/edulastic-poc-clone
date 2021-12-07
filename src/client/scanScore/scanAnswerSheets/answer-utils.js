@@ -5,7 +5,8 @@ import {
   resizeImage,
 } from './process-image'
 import { getAngleOfQR, getWidthOfQR } from './parse-qrcode'
-import { forwardRef } from 'react'
+import { imShow } from './isomorphic'
+import log from './log'
 
 export const getAnswers = (cv, srcMat, isSingle) => {
   let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
@@ -28,9 +29,9 @@ export const getAnswers = (cv, srcMat, isSingle) => {
   //         cv.circle(resizedImage, item.center, item.radius, [255, 255, 255, 255], -1);
   //     })
   // });
-
-  cv.imshow('workingCanvas', resizedImage)
-
+  //
+  // cv.imshow('workingCanvas', resizedImage);
+  log('resized image', resizedImage)
   const arrBoundingRegions = getBoundingRegionsWithCircles(
     cv,
     resizedImage,
@@ -53,18 +54,18 @@ export const getAnswersFromVideo = (
   cv,
   matSrc,
   parentRectangle,
-  qrCodePosition
+  qrCodeData
 ) => {
   let angleOfQR = 0
   let center = new cv.Point(matSrc.cols / 2, matSrc.rows / 2)
   let resultOfAnswers = {}
-  if (parentRectangle && qrCodePosition) {
+  if (parentRectangle && qrCodeData) {
     angleOfQR = getAngleOfQR(
-      qrCodePosition.bottomRightCorner,
-      qrCodePosition.bottomLeftCorner,
+      qrCodeData.location.bottomRightCorner,
+      qrCodeData.location.bottomLeftCorner,
       {
-        x: qrCodePosition.bottomLeftCorner.x,
-        y: qrCodePosition.bottomRightCorner.y,
+        x: qrCodeData.location.bottomLeftCorner.x,
+        y: qrCodeData.location.bottomRightCorner.y,
       }
     )
   } else {
@@ -74,7 +75,6 @@ export const getAnswersFromVideo = (
   // rotate the image to detect parent rectangle of bubbles.
   let dSize = new cv.Size(matSrc.cols, matSrc.rows)
   let M = cv.getRotationMatrix2D(center, angleOfQR * -1, 1)
-
   cv.warpAffine(
     matSrc,
     matSrc,
@@ -158,64 +158,11 @@ export const getAnswersFromVideo = (
         cv,
         arrCroppedParentRect,
         matSrc,
-        parentRectangle
+        qrCodeData
       )
     }
   }
 
-  // M = cv.getRotationMatrix2D(center, angleOfQR, 1);
-  // cv.warpAffine(matSrc, matSrc, M, dSize, cv.INTER_LINEAR, cv.BORDER_CONSTANT, new cv.Scalar());
-
-  // if(inchUnit > 0) {
-  //
-  //     // let lRectangleRect = new cv.Rect(parseInt(startPtQR.x) + parseInt(inchUnit * 14.5), parseInt(startPtQR.y) - parseInt(inchUnit * 1), parseInt(8 * inchUnit), parseInt(inchUnit * 12.5));
-  //     // let rRectangleRect = new cv.Rect(parseInt(startPtQR.x) + parseInt(inchUnit * 8), parseInt(startPtQR.y) - parseInt(inchUnit * 1), parseInt(8 * inchUnit), parseInt(inchUnit * 12.5));
-  //     //
-  //     // if(lRectangleRect.x < 0) {
-  //     //     lRectangleRect.x = 0;
-  //     // }
-  //     // if(lRectangleRect.y < 0) {
-  //     //     lRectangleRect.y = 0;
-  //     // }
-  //     // if(lRectangleRect.y + lRectangleRect.height > matSrc.size().height) {
-  //     //     lRectangleRect.height = matSrc.size().height - lRectangleRect.y;
-  //     // }
-  //     // if(rRectangleRect.y < 0) {
-  //     //     rRectangleRect.y = 0;
-  //     // }
-  //     // if(rRectangleRect.y + rRectangleRect.height > matSrc.size().height) {
-  //     //     rRectangleRect.height = matSrc.size().height - rRectangleRect.y;
-  //     // }
-  //     //
-  //     // if(lRectangleRect.x >= 0 && lRectangleRect.y >= 0 && lRectangleRect.x + lRectangleRect.width <= matSrc.size().width && lRectangleRect.y + lRectangleRect.height <= matSrc.size().height) {
-  //     //     const lRectCropped = matSrc.roi(lRectangleRect);
-  //     //     const rRectCropped = matSrc.roi(rRectangleRect);
-  //     //
-  //     //     cv.imshow('workingCanvas', lRectCropped);
-  //     //
-  //     //     const leftRectArray = detectRectangles(cv, lRectCropped, inchUnit);
-  //     //     const rightRectArray = detectRectangles(cv, rRectCropped, inchUnit);
-  //     //     lRectCropped.delete();
-  //     //     rRectCropped.delete();
-  //     //     leftRectArray.forEach((item) => {
-  //     //         item.x = item.x + lRectangleRect.x;
-  //     //         item.y = item.y + lRectangleRect.y;
-  //     //     });
-  //     //     rightRectArray.forEach((item) => {
-  //     //         item.x = item.x + rRectangleRect.x;
-  //     //         item.y = item.y + rRectangleRect.y;
-  //     //     });
-  //     //     let isSingle = false;
-  //     //     if(rightRectArray.length === 0) {
-  //     //         isSingle = true;
-  //     //     }
-  //     //     const rectArray = [...leftRectArray, ...rightRectArray];
-  //     //     const arrCroppedParentRect =  getTrulyRectangles(cv, matSrc, rectArray, isSingle, inchUnit);
-  //     //     if(arrCroppedParentRect) {
-  //     //         resultOfAnswers = getAnswersFromRect(cv, arrCroppedParentRect, matSrc, parentRectangle);
-  //     //     }
-  //     // }
-  // }
   M = cv.getRotationMatrix2D(center, angleOfQR, 1)
   cv.warpAffine(
     matSrc,
@@ -227,8 +174,8 @@ export const getAnswersFromVideo = (
     new cv.Scalar()
   )
 
-  cv.imshow('canvasOutput', matSrc)
-
+  imShow('canvasOutput', matSrc, cv)
+  log('matsrc 1', matSrc)
   M.delete()
   return resultOfAnswers
 }
@@ -266,89 +213,66 @@ export const groupCirclesByAnswer = (circleArray) => {
   return arrAnswerCircles
 }
 
-const getTrulyRectangles = (cv, matSrc, rectArray, isSingle) => {
-  let resultOfCroppedParentRect = []
-  if (rectArray.length > 0) {
-    // parse: paper is single or multi rectangle
-    rectArray.sort((firstItem, secondItem) => firstItem.x - secondItem.x)
-    if (isSingle) {
-      cv.rectangle(
-        matSrc,
-        { x: rectArray[0].x, y: rectArray[0].y },
-        {
-          x: rectArray[0].x + rectArray[0].width,
-          y: rectArray[0].y + rectArray[0].height,
-        },
-        [0, 255, 0, 255],
-        1
-      )
-      let croppedRectangle = matSrc.roi(rectArray[0])
-
-      croppedRectangle.convertTo(croppedRectangle, -1, 1, 40)
-      resultOfCroppedParentRect.push(croppedRectangle)
-    } else {
-      if (rectArray.length > 1) {
-        let arrCroppedParentRect = []
-        arrCroppedParentRect.push(rectArray[0])
-        for (let i = 0; i < rectArray.length - 1; i++) {
-          if (rectArray[i + 1].x - rectArray[i].x > 150) {
-            arrCroppedParentRect.push(rectArray[i + 1])
-          }
-        }
-        if (arrCroppedParentRect.length > 1) {
-          let croppedLeft = matSrc.roi(arrCroppedParentRect[0])
-          let croppedRight = matSrc.roi(rectArray[rectArray.length - 1])
-
-          croppedLeft.convertTo(croppedLeft, -1, 1, 40)
-          croppedRight.convertTo(croppedRight, -1, 1, 40)
-
-          resultOfCroppedParentRect.push(croppedLeft)
-          resultOfCroppedParentRect.push(croppedRight)
-
-          arrCroppedParentRect.forEach((item) => {
-            cv.rectangle(
-              matSrc,
-              { x: item.x, y: item.y },
-              {
-                x: item.x + item.width,
-                y: item.y + item.height,
-              },
-              [0, 255, 0, 255],
-              1
-            )
-          })
-        } else {
-          arrCroppedParentRect.forEach((item) => {
-            cv.rectangle(
-              matSrc,
-              { x: item.x, y: item.y },
-              {
-                x: item.x + item.width,
-                y: item.y + item.height,
-              },
-              [255, 0, 0, 255],
-              1
-            )
-          })
-        }
-      } else {
-        rectArray.forEach((item) => {
-          cv.rectangle(
-            matSrc,
-            { x: item.x, y: item.y },
-            {
-              x: item.x + item.width,
-              y: item.y + item.height,
-            },
-            [255, 0, 0, 255],
-            1
-          )
-        })
-      }
-    }
-  }
-  return resultOfCroppedParentRect
-}
+// const getTrulyRectangles = (cv, matSrc, rectArray, isSingle) => {
+//
+//     let resultOfCroppedParentRect = [];
+//     if (rectArray.length > 0) {
+//         // parse: paper is single or multi rectangle
+//         rectArray.sort((firstItem, secondItem) => firstItem.x - secondItem.x);
+//         if (isSingle) {
+//             cv.rectangle(matSrc, {x: rectArray[0].x, y: rectArray[0].y}, {
+//                 x: rectArray[0].x + rectArray[0].width,
+//                 y: rectArray[0].y + rectArray[0].height
+//             }, [0, 255, 0, 255], 1);
+//             let croppedRectangle = matSrc.roi(rectArray[0]);
+//
+//             croppedRectangle.convertTo(croppedRectangle, -1, 1, 40);
+//             resultOfCroppedParentRect.push(croppedRectangle);
+//         } else {
+//             if (rectArray.length > 1) {
+//                 let arrCroppedParentRect = []
+//                 arrCroppedParentRect.push(rectArray[0]);
+//                 for (let i = 0; i < rectArray.length - 1; i++) {
+//                     if (rectArray[i + 1].x - rectArray[i].x > 150) {
+//                         arrCroppedParentRect.push(rectArray[i + 1]);
+//                     }
+//                 }
+//                 if (arrCroppedParentRect.length > 1) {
+//                     let croppedLeft = matSrc.roi(arrCroppedParentRect[0]);
+//                     let croppedRight = matSrc.roi(rectArray[rectArray.length - 1]);
+//
+//                     croppedLeft.convertTo(croppedLeft, -1, 1, 40);
+//                     croppedRight.convertTo(croppedRight, -1, 1, 40);
+//
+//                     resultOfCroppedParentRect.push(croppedLeft);
+//                     resultOfCroppedParentRect.push(croppedRight);
+//
+//                     arrCroppedParentRect.forEach(item => {
+//                         cv.rectangle(matSrc, {x: item.x, y: item.y}, {
+//                             x: item.x + item.width,
+//                             y: item.y + item.height
+//                         }, [0, 255, 0, 255], 1);
+//                     });
+//                 } else {
+//                     arrCroppedParentRect.forEach(item => {
+//                         cv.rectangle(matSrc, {x: item.x, y: item.y}, {
+//                             x: item.x + item.width,
+//                             y: item.y + item.height
+//                         }, [255, 0, 0, 255], 1);
+//                     });
+//                 }
+//             } else {
+//                 rectArray.forEach(item => {
+//                     cv.rectangle(matSrc, {x: item.x, y: item.y}, {
+//                         x: item.x + item.width,
+//                         y: item.y + item.height
+//                     }, [255, 0, 0, 255], 1);
+//                 });
+//             }
+//         }
+//     }
+//     return resultOfCroppedParentRect;
+// }
 
 const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
   let resultOfAnswers

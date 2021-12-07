@@ -61,11 +61,11 @@ export const getAnswersFromVideo = (
   let resultOfAnswers = {}
   if (parentRectangle && qrCodeData) {
     angleOfQR = getAngleOfQR(
-      qrCodeData.location.bottomRightCorner,
-      qrCodeData.location.bottomLeftCorner,
+      qrCodeData.bottomRightCorner,
+      qrCodeData.bottomLeftCorner,
       {
-        x: qrCodeData.location.bottomLeftCorner.x,
-        y: qrCodeData.location.bottomRightCorner.y,
+        x: qrCodeData.bottomLeftCorner.x,
+        y: qrCodeData.bottomRightCorner.y,
       }
     )
   } else {

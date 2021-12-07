@@ -186,8 +186,9 @@ const ScanAnswerSheetsInner = ({
         cv.imshow('canvasOutput', matSrc)
         matSrc.delete()
         requestAnimationFrame(() =>
-          processVideo(vc).catch(() => {
+          processVideo(vc).catch((e) => {
             console.log('process video opencv error')
+            console.warn('err', e)
           })
         )
         return

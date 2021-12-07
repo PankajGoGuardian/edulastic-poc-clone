@@ -11,6 +11,6 @@ const isDebugTool =
 
 export function imShow(canvas, data, cv) {
   if (isBrowser) {
-    cv.imShow(canvas, data)
+    cv.imshow(canvas, data)
   }
 }

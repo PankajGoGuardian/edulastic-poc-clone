@@ -29,6 +29,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
         // authoring mode
         annotations =
           state.tests?.entity?.annotations || state.test?.annotations || []
+        annotations = annotations.filter((a) => !a.questionId)
       } else if ((this.testMode || this.reportMode) && this.testItemId) {
         const stdWork =
           state?.userWork?.present?.[this.testItemId]?.freeNotesStd || []

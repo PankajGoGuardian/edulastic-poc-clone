@@ -176,9 +176,6 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
                 scoring[o._id]
               )
             : {},
-          ...(['proportionalScore', 'testScore'].includes(o.scoreCriteria)
-            ? { scoreCriteria: o.scoreCriteria }
-            : {}),
         }))
       } else itemGroup.items = []
     }
@@ -3084,7 +3081,6 @@ function* getEvaluation(testItemId, newScore) {
     itemLevelScoring = false,
     itemGradingType,
     assignPartialCredit,
-    scoreCriteria,
   } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
@@ -3097,7 +3093,6 @@ function* getEvaluation(testItemId, newScore) {
     questions,
     itemLevelScoring,
     newScore,
-    scoreCriteria,
     itemLevelScore,
     testItem._id,
     itemGradingType,
@@ -3124,7 +3119,6 @@ function* getEvaluationFromItem(testItem, newScore) {
     questions,
     itemLevelScoring,
     newScore,
-    undefined,
     itemLevelScore,
     testItem._id,
     itemGradingType,

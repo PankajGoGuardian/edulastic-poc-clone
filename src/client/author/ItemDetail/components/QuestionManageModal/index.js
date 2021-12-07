@@ -5,7 +5,6 @@ import { connect } from 'react-redux'
 import { Modal } from 'antd'
 import { values } from 'lodash'
 import { ScrollContext } from '@edulastic/common'
-import { themeColor } from '@edulastic/colors'
 import QuestionEditor from '../../../QuestionEditor'
 import PickUpQuestionType from '../../../PickUpQuestionType'
 import {
@@ -19,23 +18,6 @@ import {
   resourceTypeQuestions,
   saveQuestionAction,
 } from '../../../QuestionEditor/ducks'
-
-const showConfirmPopup = (okCallbak) => {
-  Modal.confirm({
-    centered: true,
-    title: 'Alert',
-    okText: 'Yes, Continue',
-    onOk: okCallbak,
-    content: (
-      <div className="blocker-popup-text">
-        There are unsaved changes. Are you sure you want to leave?
-      </div>
-    ),
-    okButtonProps: {
-      style: { background: themeColor },
-    },
-  })
-}
 
 const QuestionManageModal = ({
   onCancel,
@@ -52,7 +34,6 @@ const QuestionManageModal = ({
   isEditMultipartQuestion,
   rowIndex,
   tabIndex,
-  hasUnsavedChanges,
 }) => {
   const [prevQuestion, setPrevQuestion] = useState()
   const [isFullModal, setIsFullModal] = useState(false)
@@ -61,7 +42,7 @@ const QuestionManageModal = ({
     setIsFullModal(!isFullModal)
   }
 
-  const closePopup = () => {
+  const handleCancel = () => {
     onCancel()
     if (question?.id) {
       setCurrentQuestion('')
@@ -71,14 +52,6 @@ const QuestionManageModal = ({
     }
     if (!isEditMultipartQuestion && question?.id) {
       removeQuestion(question.id)
-    }
-  }
-
-  const handleCancel = () => {
-    if (hasUnsavedChanges) {
-      showConfirmPopup(closePopup)
-    } else {
-      closePopup()
     }
   }
 
@@ -161,7 +134,6 @@ const enhance = compose(
   connect(
     (state) => ({
       question: getCurrentQuestionSelector(state),
-      hasUnsavedChanges: state?.authorQuestions?.updated || false,
     }),
     {
       removeQuestion: deleteQuestionAction,

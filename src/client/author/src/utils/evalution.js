@@ -76,7 +76,6 @@ export const evaluateItem = async (
   validations,
   itemLevelScoring = false,
   newScore,
-  scoreCriteria,
   itemScore = 0,
   itemId = '',
   itemGradingType,
@@ -118,10 +117,7 @@ export const evaluateItem = async (
           set(validationData, 'validResponse.score', questionScore)
           if (
             Array.isArray(validationData.altResponses) &&
-            (numberOfQuestions > 1 ||
-              (scoreCriteria === 'testScore' &&
-                newScore &&
-                newScore !== itemScore))
+            numberOfQuestions > 1
           ) {
             validationData.altResponses.forEach((altResp) => {
               altResp.score = questionScore
@@ -192,7 +188,7 @@ export const evaluateItem = async (
         achievedScore = 0
       }
     }
-    if (scoreCriteria === 'proportionalScore' && newScore) {
+    if (newScore) {
       achievedScore *= newScore / itemScore
     }
     return {
@@ -220,7 +216,7 @@ export const evaluateItem = async (
       })
     Array.from(errors).forEach(showNotificationForError)
   }
-  if (scoreCriteria === 'proportionalScore' && newScore) {
+  if (newScore) {
     totalScore *= newScore / totalMaxScore
     totalMaxScore *= newScore / totalMaxScore
   }

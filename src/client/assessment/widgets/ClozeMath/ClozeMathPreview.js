@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { cloneDeep, get, isEmpty, omit, values, keyBy } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 import { helpers, AnswerContext } from '@edulastic/common'
 import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
@@ -29,7 +29,6 @@ const ClozeMathPreview = ({
   options,
   responseIds,
   isExpressGrader,
-  isLCBView,
   changePreviewTab, // Question level
   changePreview, // Item level,
   isV1Migrated,

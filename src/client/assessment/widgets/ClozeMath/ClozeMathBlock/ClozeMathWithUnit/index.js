@@ -106,7 +106,7 @@ class ClozeMathWithUnit extends React.Component {
         fontSize={btnStyle.fontSize}
         width={width}
         height={height}
-        data-cy='mathUnitInput'
+        data-cy="mathUnitInput"
       >
         <MathInput {...mathInputProps} resetMath />
         <SelectUnit
@@ -140,8 +140,6 @@ const MathWithUnit = ({ resprops = {}, id }) => {
     showIndex,
     answerScore,
     allCorrects,
-    answersById,
-    isLCBView,
   } = resprops
   const { mathUnits = {} } = answers
 
@@ -178,8 +176,6 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       isPrintPreview={resprops.isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
-      answersById={answersById}
-      isLCBView={isLCBView}
     />
   ) : (
     <ClozeMathWithUnit resprops={{ ...resprops, height, width }} id={id} />

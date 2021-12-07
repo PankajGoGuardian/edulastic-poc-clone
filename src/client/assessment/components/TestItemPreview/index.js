@@ -82,7 +82,7 @@ class TestItemPreview extends Component {
     const { isReviewTab, viewComponent } = this.props
     const { collapseDirection } = this.state
 
-    if (isReviewTab || viewComponent === 'studentReport') {
+    if (isReviewTab) {
       return null
     }
     return (

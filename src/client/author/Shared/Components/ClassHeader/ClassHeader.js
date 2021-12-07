@@ -551,6 +551,8 @@ class ClassHeader extends Component {
           uta.UTASTATUS === testActivityStatus.SUBMITTED
       )
 
+    const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
+
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -670,8 +672,14 @@ class ClassHeader extends Component {
             data-cy="download-bubble-sheet"
             key="download-bubble-sheet"
             onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+            disabled={!!isAssignmentDone}
           >
-            Generate Bubble Sheet
+            <Tooltip
+              title={isAssignmentDone ? 'Assignment is not open' : null}
+              placement="right"
+            >
+              Generate Bubble Sheet
+            </Tooltip>
           </MenuItems>
         </FeaturesSwitch>
         <FeaturesSwitch

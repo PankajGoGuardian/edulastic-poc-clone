@@ -26,6 +26,7 @@ const PDFViewer = ({
   reportMode,
   testMode,
   testItemId,
+  annotationsCount,
 }) => {
   const { pageNo, URL, rotate } = page
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
@@ -172,6 +173,7 @@ const PDFViewer = ({
     pdfScale,
     rotate,
     annotations,
+    annotationsCount,
   ])
 
   if (docLoading) {

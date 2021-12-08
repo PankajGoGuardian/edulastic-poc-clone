@@ -13,7 +13,6 @@ const HelpTooltipLabel = ({
   helperKey,
   zIndex = 1500,
   placement = 'topRight',
-  mb = '8px',
 }) => {
   const helpText = useMemo(() => {
     if (helperKey) {
@@ -32,7 +31,7 @@ const HelpTooltipLabel = ({
   }, [contentKey])
 
   return (
-    <Container className={className} mb={mb}>
+    <Container className={className}>
       {labelText}
       {helpText && (
         <Popover
@@ -53,7 +52,7 @@ export default withNamespaces('assessment')(HelpTooltipLabel)
 const Container = styled.span`
   position: relative;
   color: ${greyThemeDark1};
-  margin-bottom: ${(props) => props?.mb || '8px'};
+  margin-bottom: 8px;
   display: inline-block;
 `
 

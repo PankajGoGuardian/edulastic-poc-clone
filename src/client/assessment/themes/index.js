@@ -418,6 +418,7 @@ export function useTabNavigationCounterEffect({
       onTimeInBlurChange(totalTimeInBlur.current)
       inFocusRef.current = true
       window.sessionStorage.removeItem('totalTimeInBlur')
+      window.sessionStorage.setItem('isFindOpen', false)
       console.log('on focus ', new Date())
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
@@ -440,7 +441,7 @@ export function useTabNavigationCounterEffect({
           totalTimeInBlur.current += 1
         }
         window.sessionStorage.totalTimeInBlur = totalTimeInBlur.current
-        if (enabled && threshold > 1) {
+        if (enabled && threshold > 1 && !window.sessionStorage.getItem('isFindOpen')) {
           const maximumTimeLimit = threshold * 5
           if (totalTimeInBlur.current >= maximumTimeLimit) {
             if (totalBlurTimeCounterIntervalRef.current) {
@@ -460,7 +461,7 @@ export function useTabNavigationCounterEffect({
         }
       }, 1000)
       idleTimeoutRef.current = setTimeout(() => {
-        if (!inFocusRef.current && enabled) {
+        if (!inFocusRef.current && enabled && !window.sessionStorage.getItem('isFindOpen')) {
           console.info('too much time away from screen!!!!!!!', new Date())
           incrementNavigationCounter({ history, testActivityId })
         }
@@ -628,6 +629,37 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
+
+  useEffect(() => {
+    if(document && window){
+      document.onkeydown = function(e) {
+
+        // for IE
+        e = e || event;
+        var keyCode = (window.event) ? e.which : e.keyCode;
+
+        // check ctrl + f and command + f key
+        if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 70){
+            handleSearchBoxOpen()
+        }
+      }
+    }
+    return () => {
+      document.onkeydown = function(e) {
+
+        // for IE
+        e = e || event;
+        var keyCode = (window.event) ? e.which : e.keyCode;
+
+        // check ctrl + f and command + f key
+        if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 70){            
+            return true;
+        }
+      }
+    }
+
+  }, [restrictNavigationOut, document, window])
+  
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
@@ -702,6 +734,10 @@ const AssessmentContainer = ({
       setShowRegradedModal(true)
     }
   }, [regradedAssignment?.newTestId])
+
+  const handleSearchBoxOpen = () => {
+    window.sessionStorage.setItem('isFindOpen', true)
+  }
 
   const saveCurrentAnswer = (payload) => {
     const timeSpent = Date.now() - lastTime.current

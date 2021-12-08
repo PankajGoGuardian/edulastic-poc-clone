@@ -5,6 +5,7 @@ import { MathInput, reformatMathInputLatex } from '@edulastic/common'
 import CheckedBlock from '../CheckedBlock'
 import SelectUnit from '../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit'
 import { MathInputWrapper } from '../styled/MathInputWrapper'
+import { getStylesFromUiStyleToCssStyle } from '../../../../utils/helpers'
 
 class ClozeMathWithUnit extends React.Component {
   static propTypes = {
@@ -98,6 +99,7 @@ class ClozeMathWithUnit extends React.Component {
       numberPad: item.numberPad,
       onInput: this.handleSaveAnswer,
       showResponse: false,
+      style: getStylesFromUiStyleToCssStyle(item.uiStyle),
     }
 
     return (
@@ -106,7 +108,7 @@ class ClozeMathWithUnit extends React.Component {
         fontSize={btnStyle.fontSize}
         width={width}
         height={height}
-        data-cy='mathUnitInput'
+        data-cy="mathUnitInput"
       >
         <MathInput {...mathInputProps} resetMath />
         <SelectUnit

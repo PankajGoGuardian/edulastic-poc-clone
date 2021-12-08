@@ -407,6 +407,7 @@ class MathFormulaPreview extends Component {
                         onInput={(latexv) => this.onUserResponse(latexv)}
                         onBlur={(latexv) => this.onBlur(latexv)}
                         onInnerFieldClick={() => this.onInnerFieldClick()}
+                        style={cssStyles}
                       />
                     )}
                   </MathInputWrapper>

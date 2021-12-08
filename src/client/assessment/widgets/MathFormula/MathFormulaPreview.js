@@ -306,7 +306,6 @@ class MathFormulaPreview extends Component {
     // ) {
     //   correctUnit = `\\text{${correctUnit}}`
     // }
-
     return (
       <div>
         <FlexContainer
@@ -386,6 +385,7 @@ class MathFormulaPreview extends Component {
                         innerValues={innerValues}
                         onInnerFieldClick={() => this.onInnerFieldClick()}
                         isPrintPreview={isPrintPreview}
+                        style={cssStyles}
                         noBorder
                       />
                     )}

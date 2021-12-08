@@ -418,7 +418,7 @@ export function useTabNavigationCounterEffect({
       onTimeInBlurChange(totalTimeInBlur.current)
       inFocusRef.current = true
       window.sessionStorage.removeItem('totalTimeInBlur')
-      window.sessionStorage.setItem('isFindOpen', false)
+      window.sessionStorage.removeItem('isFindOpen')
       console.log('on focus ', new Date())
       if (idleTimeoutRef.current) {
         clearTimeout(idleTimeoutRef.current)
@@ -645,6 +645,7 @@ const AssessmentContainer = ({
       }
     }
     return () => {
+      window.sessionStorage.removeItem('isFindOpen')
       document.onkeydown = function(e) {
 
         // for IE

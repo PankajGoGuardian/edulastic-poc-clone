@@ -28,8 +28,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     answerScore,
     allCorrects,
     setDropDownInUse,
-    answersById,
-    isLCBView,
   } = resprops
 
   const { dropDowns: _dropDownAnswers = [] } = answers
@@ -136,8 +134,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
-      answersById={answersById}
-      isLCBView={isLCBView}
     />
   ) : (
     <DropdownWrapper
@@ -146,7 +142,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
     >
       <Dropdown
-        data-cy= 'textDropDown'
+        data-cy="textDropDown"
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={getPopupContainer}

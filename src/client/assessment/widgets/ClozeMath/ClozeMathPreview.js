@@ -1,7 +1,7 @@
 import React, { useEffect, useState, useContext, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { cloneDeep, get, isEmpty, omit, values, keyBy } from 'lodash'
+import { cloneDeep, get, isEmpty } from 'lodash'
 import { helpers, AnswerContext } from '@edulastic/common'
 import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 import { SHOW, CHECK, CLEAR, EDIT } from '../../constants/constantsForQuestions'
@@ -29,7 +29,6 @@ const ClozeMathPreview = ({
   options,
   responseIds,
   isExpressGrader,
-  isLCBView,
   changePreviewTab, // Question level
   changePreview, // Item level,
   isV1Migrated,
@@ -81,41 +80,6 @@ const ClozeMathPreview = ({
     }
     return {}
   }, [item?.validation, type, isExpressGrader])
-
-  const answersById = useMemo(() => {
-    // this is required only in LCB view (in popover)
-    if (isLCBView) {
-      const validResponse = values(
-        omit(get(item, 'validation.validResponse', {}), ['score'])
-      )
-        .map((ans) => {
-          if (Array.isArray(ans)) {
-            return ans[0]
-          }
-          return ans.value
-        })
-        .map((ans) => ans[0])
-
-      const altResponses = get(item, 'validation.altResponses', []).map(
-        (altResponse) => {
-          const altAnswers = values(omit(altResponse, 'score'))
-            .map((ans) => {
-              if (Array.isArray(ans)) {
-                return ans[0]
-              }
-              return ans.value
-            })
-            .map((ans) => ans[0])
-          return keyBy(altAnswers, 'id')
-        }
-      )
-
-      return {
-        correctAnswers: keyBy(validResponse, 'id'),
-        altAnswers: altResponses,
-      }
-    }
-  }, [item?.validation, isLCBView])
 
   const uiStyles = useMemo(() => {
     const styles = {}
@@ -272,8 +236,6 @@ const ClozeMathPreview = ({
             answerScore,
             allCorrects,
             setDropDownInUse,
-            isLCBView,
-            answersById,
           },
         }}
         showWarnings

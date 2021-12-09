@@ -21,10 +21,6 @@ const ConfirmDeleteFolder = ({
     conentName = 'items'
   }
 
-  if (!visible) {
-    return null
-  }
-
   return (
     <CustomModalStyled
       visible

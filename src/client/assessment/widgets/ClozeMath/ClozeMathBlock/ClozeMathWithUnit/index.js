@@ -119,7 +119,7 @@ class ClozeMathWithUnit extends React.Component {
           isPrintPreview={isPrintPreview}
           onChange={this.onChangeUnit}
           keypadMode={keypadMode}
-          dropdownStyle={{}}
+          dropdownStyle={{ fontSize: btnStyle.fontSize }}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           allOptions={allOptions}
           id={id}

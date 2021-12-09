@@ -399,6 +399,7 @@ class MathFormulaPreview extends Component {
                         numberPad={item.numberPad}
                         minHeight={cssStyles.height}
                         minWidth={cssStyles.width}
+                        fontSize={cssStyles.fontSize}
                         value={
                           latex && !Array.isArray(latex)
                             ? latex.replace('\\MathQuillMathField{}', '')
@@ -407,7 +408,6 @@ class MathFormulaPreview extends Component {
                         onInput={(latexv) => this.onUserResponse(latexv)}
                         onBlur={(latexv) => this.onBlur(latexv)}
                         onInnerFieldClick={() => this.onInnerFieldClick()}
-                        style={cssStyles}
                       />
                     )}
                   </MathInputWrapper>

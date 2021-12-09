@@ -89,7 +89,7 @@ class ClozeMathWithUnit extends React.Component {
     const { unit = '', value } = this.userAnswer
     const btnStyle = this.getStyles(uiStyles)
     const customKeys = get(item, 'customKeys', [])
-
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
     const mathInputProps = {
       value,
       customKeys,
@@ -99,7 +99,7 @@ class ClozeMathWithUnit extends React.Component {
       numberPad: item.numberPad,
       onInput: this.handleSaveAnswer,
       showResponse: false,
-      style: getStylesFromUiStyleToCssStyle(item.uiStyle),
+      style: cssStyles,
     }
 
     return (
@@ -119,11 +119,13 @@ class ClozeMathWithUnit extends React.Component {
           isPrintPreview={isPrintPreview}
           onChange={this.onChangeUnit}
           keypadMode={keypadMode}
-          dropdownStyle={{ fontSize: btnStyle.fontSize }}
+          dropdownStyle={{}}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           allOptions={allOptions}
           id={id}
-          height={height}
+          height={cssStyles?.height || height}
+          width={cssStyles?.width || width}
+          fontSize={cssStyles?.fontSize}
           handleEvent={this.handleEvent}
         />
       </MathInputWrapper>

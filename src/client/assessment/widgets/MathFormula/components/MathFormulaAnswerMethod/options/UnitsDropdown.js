@@ -18,6 +18,7 @@ import { toggleAdvancedSections } from '../../../../../actions/questions'
 import { setDropDownInUseAction } from '../../../../../../student/Sidebar/ducks'
 import { Row } from '../../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../../styled/WidgetOptions/Col'
+import { getStylesFromUiStyleToCssStyle } from '../../../../../utils/helpers'
 
 const { Option } = Select
 
@@ -82,12 +83,18 @@ const UnitsDropdownPure = ({
       command: 'write',
     }))
 
+  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
   const getLabel = (btn) => {
     const label = `<span class="input__math" data-latex="${
       btn.handler || ''
     }"></span>`
 
-    return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+    return (
+      <MathFormulaDisplay
+        dangerouslySetInnerHTML={{ __html: label }}
+        fontSize={cssStyles.fontSize}
+      />
+    )
   }
 
   const dropdownWrapper = useRef(null)
@@ -133,7 +140,8 @@ const UnitsDropdownPure = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             style={{
               visibility: item.showDropdown ? 'visible' : 'hidden',
-              height: item.showDropdown ? '100%' : 0,
+              height: item.showDropdown ? cssStyles.height || '100%' : 0,
+              width: item.showDropdown ? cssStyles.width : 0,
             }}
             onFocus={() => setDropDownInUse(true)}
             onBlur={() => setDropDownInUse(false)}

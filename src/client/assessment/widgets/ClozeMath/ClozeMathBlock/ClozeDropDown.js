@@ -6,7 +6,10 @@ import { Select } from 'antd'
 import { darkBlue, lightGrey12 } from '@edulastic/colors'
 import { SelectInputStyled, MathFormulaDisplay } from '@edulastic/common'
 import CheckedBlock from './CheckedBlock'
-import { getStemNumeration } from '../../../utils/helpers'
+import {
+  getStemNumeration,
+  getStylesFromUiStyleToCssStyle,
+} from '../../../utils/helpers'
 
 const { Option } = Select
 
@@ -40,6 +43,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   const { index } = find(dropDowns, (res) => res.id === id) || {}
   const response = find(responseContainers || [], (cont) => cont.id === id)
 
+  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
+
   const dropdownStyle = useMemo(() => {
     const individualWidth = response?.widthpx || 0
     const individualHeight = response?.heightpx || 0
@@ -61,6 +66,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       ...uiStyles,
       width: `${width}px`,
       height: `${height}px`,
+      ...cssStyles,
     }
   }, [item])
 
@@ -146,7 +152,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
     >
       <Dropdown
-        data-cy= 'textDropDown'
+        data-cy="textDropDown"
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={getPopupContainer}

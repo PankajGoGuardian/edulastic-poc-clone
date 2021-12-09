@@ -70,7 +70,6 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10))
 
   const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
-  console.log({ cssStyles })
 
   const handleSaveAnswer = (latex) => {
     const value = reformatMathInputLatex(latex)

@@ -299,7 +299,10 @@ function BulkEditModal({
                     },
                     {
                       title: CONFIG[updateMode],
-                      dataIndex: `_source.${updateMode}`,
+                      dataIndex:
+                        updateMode === 'course'
+                          ? `_source.${updateMode}.name`
+                          : `_source.${updateMode}`,
                     },
                   ]
             }

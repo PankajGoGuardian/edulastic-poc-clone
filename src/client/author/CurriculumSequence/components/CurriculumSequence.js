@@ -710,6 +710,27 @@ class CurriculumSequence extends Component {
   handleCloseCustomTitleModal = () =>
     this.props.setCustomTitleModalVisible(false)
 
+  setCurrentUserTermAndFetchPlaylist = (_termId) => {
+    const {
+      destinationCurriculumSequence = {},
+      getAllCurriculumSequences,
+      getCurrentPlaylistMetrics,
+      isStudent,
+      urlHasUseThis,
+      setCurrentUserTerm,
+    } = this.props
+    setCurrentUserTerm(_termId)
+    const playlistId = destinationCurriculumSequence._id
+    if (playlistId) {
+      getAllCurriculumSequences(
+        [playlistId],
+        !isStudent && !urlHasUseThis,
+        true
+      )
+      getCurrentPlaylistMetrics({ playlistId, termId: _termId })
+    }
+  }
+
   render() {
     const {
       handleRemoveTest,
@@ -1119,7 +1140,7 @@ class CurriculumSequence extends Component {
                 currentPlaylist={destinationCurriculumSequence}
                 userTerms={userTerms}
                 currentTermId={currentTermId}
-                setCurrentUserTerm={setCurrentUserTerm}
+                setCurrentUserTerm={this.setCurrentUserTermAndFetchPlaylist}
               />
             )}
             {currentTab === 'differentiation' &&

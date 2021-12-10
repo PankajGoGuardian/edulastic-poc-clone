@@ -127,9 +127,10 @@ export const convertData = (
       if (testItemId) {
         questionActivity.itemLevelScoring = true
         questionActivity.itemId = testItemId
-        if (skipped === true && testItemById[testItemId]) {
+        const testItem = testItemById[testItemId]
+        if (skipped === true && testItem && !testItem.isDocBased) {
           const testItemQuestionsIds =
-            testItemById[testItemId].data?.questions?.map(({ id }) => id) || []
+            testItem.data?.questions?.map(({ id }) => id) || []
 
           const itemUQAs = testItemQuestionsIds.map(
             (qId) => activitiesByQid[`${testItemId}_${qId}`]

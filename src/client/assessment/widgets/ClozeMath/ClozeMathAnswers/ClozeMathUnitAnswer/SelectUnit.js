@@ -24,6 +24,7 @@ const SelectUnit = ({
   preview,
   height,
   width,
+  fontSize,
   dropdownStyle,
   disabled,
   forwardedRef,
@@ -81,7 +82,12 @@ const SelectUnit = ({
       btn.handler || ''
     }"></span>`
 
-    return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
+    return (
+      <MathFormulaDisplay
+        dangerouslySetInnerHTML={{ __html: label }}
+        fontSize={fontSize}
+      />
+    )
   }
 
   return (

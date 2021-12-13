@@ -164,6 +164,7 @@ const MathFormulaAnswerMethod = ({
                   showDropdown
                   minHeight={cssStyles.height}
                   minWidth={cssStyles.width}
+                  fontSize={cssStyles.fontSize}
                   value={isClozeMath && useTemplate ? template : value}
                   onInput={handleChangeMathInput}
                   isDocbasedSection={isDocbasedSection}

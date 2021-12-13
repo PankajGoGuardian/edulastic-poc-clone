@@ -261,7 +261,8 @@ export function useFullScreenListener({
           if (
             !_path.includes('/uta/') &&
             _disableSave &&
-            !window.sessionStorage.getItem('paused')
+            !window.sessionStorage.getItem('paused') &&
+            window.sessionStorage.getItem('submitted') === 'no'
           ) {
             pauseAssignment({
               history,

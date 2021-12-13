@@ -789,7 +789,7 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_STATUS,
       payload: false,
     })
-
+    sessionStorage.setItem('submitted', 'no')
     if (
       settings.blockNavigationToAnsweredQuestions &&
       testActivity.questionActivities.length &&
@@ -1035,6 +1035,8 @@ function* submitTest({ payload }) {
     if (!maxAttempt) {
       maxAttempt = assignment.maxAttempts || 1
     }
+
+    sessionStorage.setItem('submitted', 'yes')
 
     if (attempts.length >= maxAttempt) {
       if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {

@@ -3446,6 +3446,7 @@ const { themeColor } = require('@edulastic/colors')
           disableRect: _rect.disableRect,
           enableRect: _rect.enableRect,
           disableText: _text.disableText,
+          removeTextInput: _text.removeTextInput,
           enableText: _text.enableText,
           setText: _text.setText,
           createPage: _page.createPage,
@@ -4709,6 +4710,7 @@ const { themeColor } = require('@edulastic/colors')
         exports.setText = setText
         exports.enableText = enableText
         exports.disableText = disableText
+        exports.removeTextInput = removeTextInput
 
         var _PDFJSAnnotate = __webpack_require__(1)
 
@@ -4748,7 +4750,7 @@ const { themeColor } = require('@edulastic/colors')
           input.style.top = e.clientY + 'px'
           input.style.left = e.clientX + 'px'
           input.style.fontSize = _textSize + 'px'
-          input.style.zIndex = 1
+          input.style.zIndex = 9999
 
           input.addEventListener('blur', handleInputBlur)
           input.addEventListener('keyup', handleInputKeyup)
@@ -4885,6 +4887,13 @@ const { themeColor } = require('@edulastic/colors')
 
           _enabled = false
           document.removeEventListener('mouseup', handleDocumentMouseup)
+        }
+
+        /**
+         * Remove text input
+         */
+        function removeTextInput() {
+          closeInput()
         }
 
         /***/

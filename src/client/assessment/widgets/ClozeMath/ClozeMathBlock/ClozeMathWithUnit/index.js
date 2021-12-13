@@ -140,8 +140,6 @@ const MathWithUnit = ({ resprops = {}, id }) => {
     showIndex,
     answerScore,
     allCorrects,
-    answersById,
-    isLCBView,
   } = resprops
   const { mathUnits = {} } = answers
 
@@ -178,8 +176,6 @@ const MathWithUnit = ({ resprops = {}, id }) => {
       isPrintPreview={resprops.isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
-      answersById={answersById}
-      isLCBView={isLCBView}
     />
   ) : (
     <ClozeMathWithUnit resprops={{ ...resprops, height, width }} id={id} />

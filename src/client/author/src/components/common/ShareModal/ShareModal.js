@@ -70,7 +70,7 @@ const { Paragraph } = Typography
 
 const permissions = {
   EDIT: `All Actions (edit, duplicate, assign)`,
-  VIEW: 'All actions (duplicate, assign)',
+  VIEW: 'Limited Actions (duplicate, assign)',
   ASSIGN: 'Only View and Assign',
 }
 
@@ -125,7 +125,7 @@ const SharedRow = ({ data, index, getEmail, getUserName, removeHandler }) => {
             'All Actions (edit, duplicate, assign)'}
         </span>
         <span>
-          {data.permission === 'VIEW' && 'All actions (duplicate, assign)'}
+          {data.permission === 'VIEW' && 'Limited Actions (duplicate, assign)'}
         </span>
         <span>{data.permission === 'ASSIGN' && 'Only View and Assign'}</span>
       </Col>

@@ -153,13 +153,13 @@ function* evaluateAnswers({ payload: groupId }) {
       userQuestionActivities.forEach((item) => {
         score += item.score || 0
         maxScore += item.maxScore || 0
-        if (item.evaluation) {
+
+        if (item.evaluation !== undefined) {
           evaluations[item.qid] = item.evaluation
         }
       })
 
       evaluationObj = { score, maxScore, evaluations }
-
       Object.keys(evaluations).forEach((item) => {
         evaluations[`${testItemId}_${item}`] = evaluations[item]
       })

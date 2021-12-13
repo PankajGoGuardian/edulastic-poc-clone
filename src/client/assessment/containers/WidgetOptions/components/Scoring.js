@@ -15,11 +15,7 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
-import {
-  FlexContainer,
-  PointBlockContext,
-  HelpTooltipLabel,
-} from '@edulastic/common'
+import { FlexContainer, PointBlockContext } from '@edulastic/common'
 import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 
 import {
@@ -184,11 +180,6 @@ class Scoring extends Component {
         disabled={!isCorrectAnsTab}
       >
         {t('component.options.unscored')}
-        <HelpTooltipLabel
-          helperKey={t('component.helperText.unscored')}
-          mb="15px"
-          placement="topLeft"
-        />
       </CheckboxLabel>
     )
 
@@ -228,11 +219,6 @@ class Scoring extends Component {
                 disabled={!isCorrectAnsTab}
               >
                 {t('component.options.automarkable')}
-                <HelpTooltipLabel
-                  helperKey={t('component.helperText.automarkable')}
-                  mb="15px"
-                  placement="topLeft"
-                />
               </CheckboxLabel>
             </Col>
             {isAutomarkChecked && <Col md={12}>{unscoredCheckBox}</Col>}
@@ -274,14 +260,7 @@ class Scoring extends Component {
             {/* showScoringType(default is true), hides  scoring type dropdown for few question types (eg: Short Text) */}
             {showScoringType && scoringTypes.length > 1 && showSelect && (
               <Col md={12}>
-                <Label>
-                  {t('component.options.scoringType')}
-                  <HelpTooltipLabel
-                    helperKey={t('component.helperText.scoringType')}
-                    mb="15px"
-                    placement="topLeft"
-                  />
-                </Label>
+                <Label>{t('component.options.scoringType')}</Label>
                 <SelectInputStyled
                   size="large"
                   data-cy="scoringType"
@@ -303,14 +282,7 @@ class Scoring extends Component {
               evaluationType.PARTIAL_MATCH && (
               <>
                 <Col md={12}>
-                  <Label>
-                    {t('component.options.rounding')}
-                    <HelpTooltipLabel
-                      helperKey={t('component.helperText.rounding')}
-                      mb="15px"
-                      placement="topLeft"
-                    />
-                  </Label>
+                  <Label>{t('component.options.rounding')}</Label>
                   <SelectInputStyled
                     data-cy="rounding"
                     size="large"
@@ -328,14 +300,7 @@ class Scoring extends Component {
                   </SelectInputStyled>
                 </Col>
                 <Col md={12}>
-                  <Label>
-                    {t('component.options.penalty')}
-                    <HelpTooltipLabel
-                      helperKey={t('component.helperText.penalty')}
-                      mb="15px"
-                      placement="topLeft"
-                    />
-                  </Label>
+                  <Label>{t('component.options.penalty')}</Label>
                   <FormGroup center>
                     <TextInputStyled
                       type="number"

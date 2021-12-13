@@ -496,6 +496,7 @@ class QuestionWrapper extends Component {
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
+    const isSkipped = get(data, 'activity.skipped', false)
     const timeSpent = get(data, 'activity.timeSpent', false)
     const { main, advanced, extras, activeTab, page } = this.state
     const disabled =
@@ -518,7 +519,7 @@ class QuestionWrapper extends Component {
 
     const isV1Multipart = get(this.props, 'col.isV1Multipart', false)
     const userAnswerProps = {}
-    if (userAnswer) {
+    if (userAnswer && !isSkipped) {
       userAnswerProps.userAnswer = userAnswer
     }
 

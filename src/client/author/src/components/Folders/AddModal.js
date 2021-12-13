@@ -1,4 +1,4 @@
-import React, { useState, useRef, useLayoutEffect, useEffect } from 'react'
+import React, { useState, useRef, useLayoutEffect } from 'react'
 import { connect } from 'react-redux'
 import { find, lowerCase } from 'lodash'
 import { Input } from 'antd'
@@ -49,25 +49,10 @@ const AddModal = ({
   renameFolder,
   createFolderRequest,
   isRename,
-  visible = true,
 }) => {
-  const [isEdit, setIsEdit] = useState(false)
-  const [folderName, setFolderName] = useState('')
-
-  useEffect(() => {
-    if (!!folder?._id && isRename) {
-      setIsEdit(true)
-      setFolderName(folder?.folderName)
-    } else {
-      setIsEdit(false)
-      setFolderName('')
-    }
-  }, [folder, isRename])
-
-  useEffect(() => {
-    if (!visible) setFolderName('')
-  }, [visible])
-
+  const isEdit = !!folder?._id && isRename
+  const initFolderName = isEdit ? folder?.folderName : ''
+  const [folderName, setFolderName] = useState(initFolderName)
   const handleCloseModal = () => {
     if (isOpenAddModal) {
       closeMoveModal({
@@ -102,14 +87,10 @@ const AddModal = ({
     }
   }
 
-  if (!visible) {
-    return null
-  }
-
   return (
     <CustomModalStyled
       centered
-      visible={visible}
+      visible
       title={
         <ModalTitle>{isEdit ? 'Rename' : 'Create a New Folder'}</ModalTitle>
       }

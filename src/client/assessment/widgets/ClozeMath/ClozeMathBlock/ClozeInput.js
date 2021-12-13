@@ -21,8 +21,6 @@ const ClozeInput = ({ id, resprops = {} }) => {
     isPrintPreview,
     answerScore,
     allCorrects,
-    answersById,
-    isLCBView,
   } = resprops
   const { inputs: _inputsAnwers = [] } = answers
   const {
@@ -68,8 +66,6 @@ const ClozeInput = ({ id, resprops = {} }) => {
       isPrintPreview={isPrintPreview}
       answerScore={answerScore}
       allCorrects={allCorrects}
-      answersById={answersById}
-      isLCBView={isLCBView}
     />
   ) : (
     <InputDiv>

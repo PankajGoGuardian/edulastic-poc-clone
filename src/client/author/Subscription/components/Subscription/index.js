@@ -15,7 +15,6 @@ import SubscriptionMain from '../SubscriptionMain'
 import PurchaseFlowModals from '../../../src/components/common/PurchaseModals'
 import {
   CompareModal,
-  MessageContainer,
   PlanCard,
   PlanContent,
   PlanDescription,
@@ -36,7 +35,6 @@ import FREEIMG from '../../static/free-forever-bg.png'
 import PREMIUMIMG from '../../static/premium-teacher-bg.png'
 import ENTERPRISEIMG from '../../static/enterprise-bg.png'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
 
 const RequestInvoiceModal = loadable(() => import('../RequestInvoviceModal'))
 
@@ -219,7 +217,6 @@ const Subscription = (props) => {
     setRequestQuoteModal,
     proratedProducts,
     isLoading,
-    isDemoPlaygroundUserProxy,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -396,11 +393,7 @@ const Subscription = (props) => {
     }
   }
 
-  return isDemoPlaygroundUserProxy ? (
-    <MessageContainer>
-      This feature is not available for demo playground users
-    </MessageContainer>
-  ) : (
+  return (
     <Wrapper>
       <SubscriptionHeader
         openComparePlanModal={openComparePlanModal}
@@ -590,7 +583,6 @@ export default compose(
       cartQuantities: state.subscription?.cartQuantities,
       proratedProducts: state.subscription?.proratedProducts,
       isLoading: getLoadingStateSelector(state),
-      isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

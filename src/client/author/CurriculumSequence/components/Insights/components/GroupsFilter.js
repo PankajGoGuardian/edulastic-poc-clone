@@ -4,11 +4,7 @@ import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
 
 import { greyThemeDark1, fadedGrey, themeColor } from '@edulastic/colors'
-import {
-  IconFolderAll,
-  IconFolderDeactive,
-  IconFolderNew,
-} from '@edulastic/icons'
+import { IconClass, IconFolderAll, IconGroup } from '@edulastic/icons'
 import { getUserRole } from '../../../../src/selectors/user'
 
 const GroupContainer = ({ id, name, Icon, onClickAction, isActive }) => (
@@ -46,7 +42,13 @@ const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
       {options.map((item) => (
         <GroupContainer
           {...item}
-          Icon={(props) => <IconFolderDeactive {...props} />}
+          Icon={(props) =>
+            item.type === 'class' ? (
+              <IconClass {...props} />
+            ) : (
+              <IconGroup {...props} />
+            )
+          }
           isActive={current[0] && current[0].id === item.id}
           onClickAction={() => onClickAction([item])}
         />

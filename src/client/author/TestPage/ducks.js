@@ -176,9 +176,6 @@ const transformItemGroupsUIToMongo = (itemGroups, scoring = {}) =>
                 scoring[o._id]
               )
             : {},
-          ...(['proportionalScore', 'testScore'].includes(o.scoreCriteria)
-            ? { scoreCriteria: o.scoreCriteria }
-            : {}),
         }))
       } else itemGroup.items = []
     }
@@ -2159,11 +2156,12 @@ export function* receiveTestByIdSaga({ payload }) {
     console.log({ err })
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
+      yield put(resetUpdatedStateAction())
       yield put(push('/author/tests'))
       if (payload.editAssigned) {
         notification({
           type: 'error',
-          msg: 'You do not have the permission to edit/clone the test/item.',
+          msg: 'You do not have the permission to clone/edit the test.',
           exact: true,
         })
       } else {
@@ -3104,7 +3102,6 @@ function* getEvaluation(testItemId, newScore) {
     itemLevelScoring = false,
     itemGradingType,
     assignPartialCredit,
-    scoreCriteria,
   } = testItem
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
@@ -3117,7 +3114,6 @@ function* getEvaluation(testItemId, newScore) {
     questions,
     itemLevelScoring,
     newScore,
-    scoreCriteria,
     itemLevelScore,
     testItem._id,
     itemGradingType,
@@ -3144,7 +3140,6 @@ function* getEvaluationFromItem(testItem, newScore) {
     questions,
     itemLevelScoring,
     newScore,
-    undefined,
     itemLevelScore,
     testItem._id,
     itemGradingType,

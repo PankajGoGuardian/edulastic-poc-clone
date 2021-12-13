@@ -27,6 +27,7 @@ const BannerSlider = ({
   handleSparkClick,
   accessibleItembankProductIds = [],
   setShowBannerModal,
+  windowWidth,
 }) => {
   const [showArrow, setShowArrow] = useState(false)
   const scrollBarRef = useRef(null)
@@ -161,6 +162,7 @@ const BannerSlider = ({
           handleBannerModalClose={handleBannerModalClose}
           isBannerModalVisible={isBannerModalVisible}
           setShowBannerModal={setShowBannerModal}
+          windowWidth={windowWidth}
         />
       )}
     </>

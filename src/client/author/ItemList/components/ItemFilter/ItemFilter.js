@@ -53,7 +53,7 @@ const ItemFilter = ({
             <MainFilter>
               <div>
                 <MainFilterHeader>
-                  <Title>{t('component.itemlist.filter.source')}</Title>
+                  <Title>{t('component.itemlist.filter.filters')}</Title>
                   <Clear data-cy="clearAll" onClick={onClearSearch}>
                     {t('component.itemlist.filter.clearAll')}
                   </Clear>

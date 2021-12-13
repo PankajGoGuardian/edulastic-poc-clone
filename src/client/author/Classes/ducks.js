@@ -395,7 +395,9 @@ function* bulkUpdateClassesSaga({ payload }) {
     const { result } = yield call(groupApi.bulkUpdateClasses, payload.data)
     yield put(receiveClassListAction(payload.searchQuery))
     yield put(bulkUpdateClassesSuccessAction(result))
-    notification({ type: 'success', msg: result.message })
+    const successMessage =
+      'Bulk update request is submitted successfully! New changes will start reflecting soon.'
+    notification({ type: 'success', msg: successMessage })
   } catch (err) {
     captureSentryException(err)
     const errorMessage = 'Something went wrong.'

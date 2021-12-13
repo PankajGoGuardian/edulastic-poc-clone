@@ -362,6 +362,10 @@ export const DetailCategory = styled.div`
     }
   }
 
+  .rubric-icon {
+    cursor: pointer;
+  }
+
   @media (max-width: ${smallDesktopWidth}) {
     margin-left: 10px;
   }

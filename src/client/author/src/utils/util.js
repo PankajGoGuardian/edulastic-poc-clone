@@ -1,3 +1,5 @@
+import { get } from 'lodash'
+
 export const convertCollectionOptionsToArray = (options = []) => {
   const data = {}
   options.forEach((o) => {
@@ -14,4 +16,20 @@ export const convertCollectionOptionsToArray = (options = []) => {
   })
 
   return Object.values(data)
+}
+
+export const getAllRubricNames = (item = {}) => {
+  const questions = get(item, 'data.questions', [])
+  let rubricNames = []
+  if (questions.length === 1 && questions[0]?.rubrics?.name) {
+    rubricNames = [questions[0].rubrics.name]
+  } else {
+    rubricNames = questions.map((q, index) => {
+      if (q?.rubrics?.name) {
+        return `Q${index + 1}: ${q.rubrics.name}`
+      }
+      return ''
+    })
+  }
+  return rubricNames.filter((name) => name)
 }

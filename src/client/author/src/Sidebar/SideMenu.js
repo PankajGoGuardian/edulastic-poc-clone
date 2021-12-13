@@ -517,16 +517,7 @@ class SideMenu extends Component {
             </Link>
           </Menu.Item>
           {!isPublisher && (
-            <Menu.Item
-              key="2"
-              className="removeSelectedBorder"
-              disabled={isDemoAccount}
-              title={
-                isDemoAccount
-                  ? 'This feature is not available in demo account.'
-                  : ''
-              }
-            >
+            <Menu.Item key="2" className="removeSelectedBorder">
               <Link to="/author/subscription">
                 <IconSubscriptionHighlight />{' '}
                 <span data-cy="subscription">

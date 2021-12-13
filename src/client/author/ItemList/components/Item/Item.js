@@ -15,7 +15,7 @@ import {
   IconRubric,
 } from '@edulastic/icons'
 import { get } from 'lodash'
-import { Row, Icon } from 'antd'
+import { Row, Icon, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { question, test as testContants, roleuser } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
@@ -94,6 +94,7 @@ import {
 import { toggleTestItemLikeAction } from '../../ducks'
 import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/testStatusWrapper'
 import { WithToolTip } from './AddOrRemove'
+import { getAllRubricNames } from '../../../src/utils/util'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants
 
@@ -150,6 +151,19 @@ class Item extends Component {
       question.DEFAULT_STIMULUS
     )
     return helpers.sanitizeForReview(stimulus)
+  }
+
+  get getRubricNames() {
+    const { item } = this.props
+    const allRubricNames = getAllRubricNames(item)
+    const namesCount = allRubricNames.length
+    if (namesCount) {
+      if (namesCount > 3) {
+        return `${allRubricNames.slice(0, 3).join(', ')} +${namesCount - 3}`
+      }
+      return allRubricNames.join(', ')
+    }
+    return ''
   }
 
   handleStimulusClick = () => {
@@ -231,7 +245,15 @@ class Item extends Component {
     }
 
     if (isRubricAttached) {
-      details.unshift({ name: <IconRubric />, text: ' ', dataCy: 'rubricIcon' })
+      details.unshift({
+        name: (
+          <Tooltip title={this.getRubricNames}>
+            <IconRubric className="rubric-icon" />
+          </Tooltip>
+        ),
+        text: ' ',
+        dataCy: 'rubricIcon',
+      })
     }
 
     if (

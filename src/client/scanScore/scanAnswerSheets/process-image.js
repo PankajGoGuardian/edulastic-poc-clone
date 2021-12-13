@@ -1,4 +1,4 @@
-import { groupCirclesByAnswer } from './answer-utils'
+import log from './log'
 
 export const resizeImage = (cv, matSrc, isSingle) => {
   let resizedImg = new cv.Mat()
@@ -17,12 +17,14 @@ export const resizeImage = (cv, matSrc, isSingle) => {
 export const detectCircles = (cv, matSrc) => {
   const imgMat = matSrc.clone()
   // cv.medianBlur(matSrc, imgMat, 1);
-  cv.threshold(imgMat, imgMat, 250, 255, cv.THRESH_OTSU)
+  cv.threshold(imgMat, imgMat, 130, 255, cv.THRESH_OTSU)
 
   let kernel = cv.Mat.ones(1, 1, cv.CV_8U)
   cv.erode(imgMat, imgMat, kernel)
 
-  cv.imshow('workingCanvas', imgMat)
+  // cv.imshow('workingCanvas', imgMat);
+
+  log('imgMat', imgMat)
 
   let circles = new cv.Mat()
   cv.HoughCircles(imgMat, circles, cv.HOUGH_GRADIENT, 1, 20, 15, 11, 7.5, 15)
@@ -34,7 +36,7 @@ export const detectCircles = (cv, matSrc) => {
     totalX += x
   }
 
-  const average = totalX / circles.cols
+  const averageX = totalX / circles.cols
 
   for (let i = 0; i < circles.cols; i++) {
     let x = circles.data32F[i * 3]
@@ -42,7 +44,7 @@ export const detectCircles = (cv, matSrc) => {
     let radius = circles.data32F[i * 3 + 2]
     let center = new cv.Point(x, y)
 
-    if (x > average - 60) {
+    if (x > averageX - 68) {
       circleArray.push({ center: center, radius: radius })
     }
   }
@@ -135,8 +137,8 @@ export const getBoundingRegionsWithCircles = (
     )
 
     const topCircle = temp[temp.length - 1]
-    const leftCircle = circlesOfAnswer[0]
-    const rightCircle = circlesOfAnswer[circlesOfAnswer.length - 1]
+    // const leftCircle = circlesOfAnswer[0];
+    // const rightCircle = circlesOfAnswer[circlesOfAnswer.length - 1];
 
     let width = rightPointX + radius - (leftPointX - radius)
     let height = radius * 2

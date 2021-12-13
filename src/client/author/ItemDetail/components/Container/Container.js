@@ -809,6 +809,7 @@ class Container extends Component {
     const { collapseDirection } = this.state
     return (
       <PassageDivider
+        viewComponent="itemDetail"
         collapseDirection={collapseDirection}
         onChange={this.handleCollapse}
       />

@@ -35,10 +35,10 @@ const PDFViewer = ({
 
   const adapter = useMemo(() => {
     // create store adapter for student attempt or teachor authoring
-    return new PdfStoreAdapter(testMode, reportMode, testItemId)
+    return new PdfStoreAdapter(testMode, reportMode, testItemId, annotations)
   }, [testMode, reportMode])
 
-  const clearAllTools = () => {
+  const disableAllTools = () => {
     UI.disableUpdate()
     UI.disableEdit()
     UI.disablePen()
@@ -119,7 +119,7 @@ const PDFViewer = ({
   }
 
   useEffect(() => {
-    clearAllTools()
+    disableAllTools()
     if (!authoringMode) {
       UI.enableUpdate()
       return
@@ -132,6 +132,10 @@ const PDFViewer = ({
       loadPdf()
     }
     PDFJSAnnotate.setStoreAdapter(adapter)
+
+    return () => {
+      UI.removeTextInput()
+    }
   }, [])
 
   useEffect(() => {

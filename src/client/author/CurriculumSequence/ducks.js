@@ -424,7 +424,11 @@ export const setPreviouslyUsedPlaylistClone = createAction(
   SET_PREVIOUSLY_USED_PLAYLIST_CLONE
 )
 
-export const getAllCurriculumSequencesAction = (ids, showNotification) => {
+export const getAllCurriculumSequencesAction = (
+  ids,
+  showNotification,
+  backgroundFetch = false
+) => {
   if (!ids) {
     return {
       type: FETCH_CURRICULUM_SEQUENCES_ERROR,
@@ -432,7 +436,7 @@ export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   }
   return {
     type: FETCH_CURRICULUM_SEQUENCES,
-    payload: { ids, showNotification },
+    payload: { ids, showNotification, backgroundFetch },
   }
 }
 export const approveOrRejectSinglePlaylistRequestAction = createAction(
@@ -3310,8 +3314,8 @@ export default createReducer(initialState, {
       }
     })
   },
-  [FETCH_CURRICULUM_SEQUENCES]: (state) => {
-    state.loading = true
+  [FETCH_CURRICULUM_SEQUENCES]: (state, { payload }) => {
+    state.loading = !payload.backgroundFetch
   },
   [FETCH_CURRICULUM_SEQUENCES_ERROR]: (state) => {
     state.loading = false

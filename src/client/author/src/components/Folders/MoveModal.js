@@ -18,7 +18,6 @@ const MoveModal = ({
   removeItemFromCart,
   closeMoveModal,
   folders,
-  visible = true,
 }) => {
   const [selected, setFolderToAdd] = useState({})
 
@@ -107,14 +106,10 @@ const MoveModal = ({
     })
   }
 
-  if (!visible) {
-    return null
-  }
-
   return (
     <Modal
       centered
-      visible={visible}
+      visible
       title={
         <ModalTitle>{`Add ${selectedItems.length} item(s) to…`}</ModalTitle>
       }

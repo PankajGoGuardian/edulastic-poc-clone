@@ -75,10 +75,10 @@ const Insights = ({
 
   // fetch playlist insights
   useEffect(() => {
-    if (playlistId) {
-      _fetchPlaylistInsightsAction({ playlistId })
+    if (playlistId && currentTermId) {
+      _fetchPlaylistInsightsAction({ playlistId, termId: currentTermId })
     }
-  }, [playlistId])
+  }, [playlistId, currentTermId])
 
   // fetch student progress data
 

@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
-import { get } from 'lodash'
 import { QuestionDetails, DetailRow, FlexWrap } from './styled'
 import Standards from '../../../../ItemList/components/Item/Standards'
+import { getAllRubricNames } from '../../../utils/util'
 
 const QuestionPreviewDetails = ({
   id,
@@ -14,19 +14,7 @@ const QuestionPreviewDetails = ({
   item,
 }) => {
   const allRubricNames = useMemo(() => {
-    const questions = get(item, 'data.questions', [])
-    let rubricNames = []
-    if (questions.length === 1 && questions[0]?.rubrics?.name) {
-      rubricNames = [questions[0].rubrics.name]
-    } else {
-      rubricNames = questions.map((q, index) => {
-        if (q?.rubrics?.name) {
-          return `Q${index + 1}: ${q.rubrics.name}`
-        }
-        return ''
-      })
-    }
-    return rubricNames.filter((name) => name)
+    return getAllRubricNames(item)
   }, [item])
 
   return (

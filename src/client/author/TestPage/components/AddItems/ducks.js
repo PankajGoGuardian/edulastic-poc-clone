@@ -66,7 +66,7 @@ export const filterMenuItems = [
     icon: 'folders',
     filter: SMART_FILTERS.FOLDERS,
     path: 'folders',
-    text: 'Folders',
+    text: 'FOLDERS',
   },
 ]
 

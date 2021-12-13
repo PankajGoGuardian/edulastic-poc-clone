@@ -23,11 +23,11 @@ const backgrounds = {
 export const Container = styled.div`
   width: 48px;
   height: 48px;
-  position: ${({ isInModal }) => (isInModal ? 'absolute' : 'fixed')};
   background: #8a9dac;
   border-radius: 50px;
   bottom: 24px;
-  left: ${({ isInModal }) => (isInModal ? 'calc(50% - 24px)' : '50%')};
+  position: ${({ isFixed }) => (isFixed ? 'fixed' : 'absolute')};
+  left: ${({ isFixed }) => (isFixed ? '50%' : 'calc(50% - 24px)')};
   z-index: 1100;
   display: flex;
   align-items: stretch;

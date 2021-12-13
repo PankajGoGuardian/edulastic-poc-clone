@@ -100,6 +100,7 @@ import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
 import { answersByQId } from '../../assessment/selectors/test'
 import { multiFind } from '../../common/utils/main'
+import { hasValidResponse } from '../questionUtils'
 
 const {
   ITEM_GROUP_TYPES,
@@ -3106,7 +3107,7 @@ function* getEvaluation(testItemId, newScore) {
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
-  if (isEmpty(answersByQids)) {
+  if (!hasValidResponse(answersByQids, questions)) {
     return
   }
   const evaluation = yield evaluateItem(
@@ -3132,7 +3133,7 @@ function* getEvaluationFromItem(testItem, newScore) {
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
-  if (isEmpty(answersByQids)) {
+  if (!hasValidResponse(answersByQids, questions)) {
     return
   }
   const evaluation = yield evaluateItem(

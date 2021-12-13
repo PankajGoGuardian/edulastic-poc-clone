@@ -157,44 +157,18 @@ function* evaluateAnswers({ payload }) {
         payload: question?.type === questionType.MATH,
       })
     }
-
-    const attemptTheQuestonToCheckAnswer = () => {
-      notification({
-        type: 'warn',
-        messageKey: 'attemptTheQuestonToCheckAnswer',
-      })
-    }
-
-    const hasOnlyUnitsWithoutValues = (answersById) => {
-      if (question.type === 'expressionMultipart') {
-        const answer = answersById?.[question.id] || {}
-        const typeOfResponses = Object.keys(answer)
-        if (!typeOfResponses.length) {
-          return true
-        }
-        if (
-          typeOfResponses.length === 1 &&
-          typeOfResponses[0] === 'mathUnits'
-        ) {
-          const units = Object.values(answer?.mathUnits) || []
-          if (units.length && units.every((obj) => obj.unit && !obj.value)) {
-            return true
-          }
-        }
-        return false
-      }
-    }
-
     if (
       (payload === 'question' || (payload?.mode === 'show' && question)) &&
       !item.isDocBased
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
       const answersByQids = answersByQId(answers, item._id)
-
-      if (isEmpty(answersByQids) || hasOnlyUnitsWithoutValues(answersByQids)) {
+      if (isEmpty(answersByQids)) {
         if (payload?.mode !== 'show') {
-          yield attemptTheQuestonToCheckAnswer()
+          notification({
+            type: 'warn',
+            messageKey: 'attemptTheQuestonToCheckAnswer',
+          })
         }
         // set loading to false
         yield put({

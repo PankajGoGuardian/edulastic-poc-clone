@@ -5,6 +5,7 @@ import { MathInput, reformatMathInputLatex } from '@edulastic/common'
 import CheckedBlock from '../CheckedBlock'
 import SelectUnit from '../../ClozeMathAnswers/ClozeMathUnitAnswer/SelectUnit'
 import { MathInputWrapper } from '../styled/MathInputWrapper'
+import { getStylesFromUiStyleToCssStyle } from '../../../../utils/helpers'
 
 class ClozeMathWithUnit extends React.Component {
   static propTypes = {
@@ -88,7 +89,7 @@ class ClozeMathWithUnit extends React.Component {
     const { unit = '', value } = this.userAnswer
     const btnStyle = this.getStyles(uiStyles)
     const customKeys = get(item, 'customKeys', [])
-
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
     const mathInputProps = {
       value,
       customKeys,
@@ -98,6 +99,7 @@ class ClozeMathWithUnit extends React.Component {
       numberPad: item.numberPad,
       onInput: this.handleSaveAnswer,
       showResponse: false,
+      style: cssStyles,
     }
 
     return (
@@ -121,7 +123,9 @@ class ClozeMathWithUnit extends React.Component {
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           allOptions={allOptions}
           id={id}
-          height={height}
+          height={cssStyles?.height || height}
+          width={cssStyles?.width || width}
+          fontSize={cssStyles?.fontSize}
           handleEvent={this.handleEvent}
         />
       </MathInputWrapper>

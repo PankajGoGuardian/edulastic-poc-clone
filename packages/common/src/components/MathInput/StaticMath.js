@@ -298,6 +298,7 @@ const StaticMath = ({
       ref={containerRef}
       minWidth={style.width}
       minHeight={style.height}
+      fontSize={style.fontSize}
       showKeyboardIcon={window.isMobileDevice}
       onClick={handleClickMath}
     >

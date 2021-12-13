@@ -429,6 +429,7 @@ class MathInput extends React.PureComponent {
       fullWidth,
       minHeight,
       minWidth,
+      fontSize,
       background,
       className,
       restrictKeys,
@@ -471,7 +472,7 @@ class MathInput extends React.PureComponent {
         maxWidth={maxWidth}
         pr={paddingRight}
         background={background}
-        fontSize={style.fontSize}
+        fontSize={style.fontSize || fontSize}
         ref={this.containerRef}
         onKeyUp={onKeyUp}
         disabled={disabled}

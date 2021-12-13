@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Collapse, Select, Icon } from 'antd'
+import { MathFormulaDisplay } from '@edulastic/common'
 
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -11,6 +12,7 @@ import {
 } from '@edulastic/colors'
 import { response } from '@edulastic/constants'
 import { SelectInputStyled } from '../../../styled/InputStyles'
+import { getStylesFromUiStyleToCssStyle } from '../../../utils/helpers'
 
 const { Panel } = Collapse
 const { Option } = Select
@@ -41,11 +43,14 @@ const AnswerSelect = styled(SelectInputStyled)`
     height: ${response.minHeight}px;
     min-width: ${({ minWidth }) => `${minWidth || 140}px`};
   }
-
   .ant-select-selection__rendered {
     min-height: ${response.minHeight}px;
     max-width: 100%;
     min-width: ${({ minWidth }) => `${minWidth || 140}px`};
+    .ant-select-selection-selected-value {
+      font-size: ${({ fontSize }) => fontSize};
+      max-height: ${({ height }) => (!height ? null : `${height}`)};
+    }
   }
 `
 
@@ -93,6 +98,8 @@ class ClozeDropDownAnswer extends Component {
     const { options, responseContainers = [] } = item
     const minWidthMap = this.minWidthForOptions
 
+    const cssStyles = getStylesFromUiStyleToCssStyle(item?.uiStyle)
+
     return (
       <AnswerContainer>
         <Collapse
@@ -127,15 +134,19 @@ class ClozeDropDownAnswer extends Component {
                   value={answer.value}
                   onChange={(text) => this.selectChange(text, answer.id)}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  width={width}
-                  height={height}
+                  width={cssStyles.width || width}
+                  height={cssStyles.height || height}
+                  fontSize={cssStyles.fontSize}
                   minWidth={minWidth}
                   data-cy="textDropdown"
                 >
                   {option &&
                     option.map((op, opIndex) => (
                       <Option value={op} key={opIndex}>
-                        {op}
+                        <MathFormulaDisplay
+                          dangerouslySetInnerHTML={{ __html: op }}
+                          fontSize={cssStyles?.fontSize}
+                        />
                       </Option>
                     ))}
                 </AnswerSelect>

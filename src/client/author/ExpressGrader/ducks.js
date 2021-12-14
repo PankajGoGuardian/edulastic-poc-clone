@@ -11,6 +11,7 @@ import {
   getFilterAndUpdateForAttachments,
   getFileNameAndQidMap,
 } from '../../assessment/sagas/items'
+import { toggleStudentWorkModalVisibilityAction } from '../../assessment/sharedDucks/previewTest'
 
 const defaultUploadFolder = aws.s3Folders.DEFAULT
 
@@ -175,7 +176,13 @@ function* submitResponse({ payload }) {
 
 function* scratchPadLoadSaga({ payload }) {
   try {
-    const { testActivityId, testItemId, qActId, callback } = payload
+    const {
+      testActivityId,
+      testItemId,
+      qActId,
+      callback,
+      toggleStudentWorkModalVisibility = false,
+    } = payload
     const userWork = yield select((state) => state.userWork.present)
     if (!userWork[qActId] && testActivityId && testItemId) {
       yield put(updateScratchpadAction({ loading: true }))
@@ -197,6 +204,9 @@ function* scratchPadLoadSaga({ payload }) {
 
     if (callback) {
       yield call(callback)
+    }
+    if (toggleStudentWorkModalVisibility) {
+      yield put(toggleStudentWorkModalVisibilityAction(true))
     }
   } catch (e) {
     console.error(e)

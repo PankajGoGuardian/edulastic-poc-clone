@@ -2,7 +2,12 @@ import React from 'react'
 import { IconGraphRightArrow, IconChevronLeft } from '@edulastic/icons'
 import { Container } from './styled'
 
-const PassageDivider = ({ viewComponent, collapseDirection, onChange }) => {
+const PassageDivider = ({
+  viewComponent,
+  collapseDirection,
+  onChange,
+  isStudentWorkModalVisibile,
+}) => {
   const handleOnClick = (dir) => () => {
     if (dir !== collapseDirection) {
       onChange(dir)
@@ -15,6 +20,7 @@ const PassageDivider = ({ viewComponent, collapseDirection, onChange }) => {
       isFixed={viewComponent === 'itemDetail'}
       data-cy="dividerButton"
       data-test={collapseDirection}
+      isStudentWorkModalVisibile={isStudentWorkModalVisibile}
     >
       <div className="collapse left" onClick={handleOnClick('left')}>
         <IconChevronLeft />

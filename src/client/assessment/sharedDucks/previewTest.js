@@ -18,12 +18,17 @@ export const EVALUATE_CURRENT_ANSWERS =
 export const UPDATE_PREVIEW_TEST_ACTIVITIES =
   '[test preview] update question activities for preview'
 export const FINISHED_PREVIEW_TEST = '[test preview] finished test preview'
+export const TOGGLE_STUDENT_WORK_MODAL_VISIBILITY =
+  '[test preview] toggle student work modal visibility'
 
 // actions
 export const evaluateCurrentAnswersForPreviewAction = createAction(
   EVALUATE_CURRENT_ANSWERS
 )
 export const finishedPreviewTestAction = createAction(FINISHED_PREVIEW_TEST)
+export const toggleStudentWorkModalVisibilityAction = createAction(
+  TOGGLE_STUDENT_WORK_MODAL_VISIBILITY
+)
 
 // selectors
 export const previewTestStateSelector = (state) => state.previewTest
@@ -53,10 +58,16 @@ export const previewTestQuestionActivities = createSelector(
   }
 )
 
+export const getStudentWorkModalVisibilitySelector = createSelector(
+  previewTestStateSelector,
+  (state) => state?.isStudentWorkModalVisible
+)
+
 // reducer
 const initialState = {
   questionActivities: {},
   itemScores: {},
+  isStudentWorkModalVisible: false,
 }
 
 const updateQuestionActivities = (state, { payload }) => ({
@@ -70,6 +81,9 @@ const finishedPreview = () => initialState
 export default createReducer(initialState, {
   [UPDATE_PREVIEW_TEST_ACTIVITIES]: updateQuestionActivities,
   [FINISHED_PREVIEW_TEST]: finishedPreview,
+  [TOGGLE_STUDENT_WORK_MODAL_VISIBILITY]: (state, { payload }) => {
+    state.isStudentWorkModalVisible = payload
+  },
 })
 
 function* evaluateQuestionsSaga({

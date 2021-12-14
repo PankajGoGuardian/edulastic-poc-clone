@@ -121,6 +121,7 @@ const ReportListContent = ({
         testActivityId: testActivityById?._id,
         testItemId: item?._id,
         qActId: questionActivity?.[0]?._id,
+        toggleStudentWorkModalVisibility: true,
         callback: () => {
           setIsTestPreviewVisible(true)
         },

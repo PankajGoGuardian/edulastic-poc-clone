@@ -28,7 +28,8 @@ export const Container = styled.div`
   bottom: 24px;
   position: ${({ isFixed }) => (isFixed ? 'fixed' : 'absolute')};
   left: ${({ isFixed }) => (isFixed ? '50%' : 'calc(50% - 24px)')};
-  z-index: 1100;
+  z-index: ${({ isStudentWorkModalVisibile }) =>
+    isStudentWorkModalVisibile ? 1002 : 1100}; // z-index of modal is 1003
   display: flex;
   align-items: stretch;
   justify-content: center;

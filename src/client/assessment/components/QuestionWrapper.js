@@ -295,6 +295,7 @@ class QuestionWrapper extends Component {
       testActivityId: data?.activity?.testActivityId,
       testItemId: data?.activity?.testItemId,
       qActId: data?.activity?.qActId || data?.activity?._id,
+      toggleStudentWorkModalVisibility: true,
       callback: () => showStudentWork(),
     })
   }

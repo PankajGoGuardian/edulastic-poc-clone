@@ -24,6 +24,7 @@ import {
 } from '../../../author/ClassBoard/ducks'
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 import { getUser } from '../../../author/src/selectors/user'
+import { getStudentWorkModalVisibilitySelector } from '../../sharedDucks/previewTest'
 import PassageDivider from '../../../common/components/PassageDivider'
 
 class TestItemPreview extends Component {
@@ -79,7 +80,11 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
-    const { isReviewTab, viewComponent } = this.props
+    const {
+      isReviewTab,
+      viewComponent,
+      isStudentWorkModalVisibile = false,
+    } = this.props
     const { collapseDirection } = this.state
 
     if (isReviewTab) {
@@ -90,6 +95,7 @@ class TestItemPreview extends Component {
         onChange={this.setCollapseView}
         viewComponent={viewComponent}
         collapseDirection={collapseDirection}
+        isStudentWorkModalVisibile={isStudentWorkModalVisibile}
       />
     )
   }
@@ -575,6 +581,7 @@ const enhance = compose(
       pageNumber: getPageNumberSelector(state),
       testActivityId: get(state, 'test.testActivityId', ''),
       studentData: getUser(state),
+      isStudentWorkModalVisibile: getStudentWorkModalVisibilitySelector(state),
     }),
     {
       changedPlayerContent: changedPlayerContentAction,

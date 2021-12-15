@@ -430,16 +430,16 @@ function* openAssignmentSaga({ payload }) {
   } catch (err) {
     captureSentryException(err)
     let {
-      data: { message: errorMessage, allowedOpenDate },
+      data: {
+        message: errorMessage,
+        allowedOpenDate,
+        teacherDeniedToOpenBeforeOpenDate,
+      },
     } = err.response
     if (errorMessage === 'Assignment does not exist anymore') {
       yield put(redirectToAssignmentsAction(''))
     }
-    if (
-      errorMessage ===
-        'You cannot open the assessment before allowed open date.' &&
-      allowedOpenDate
-    ) {
+    if (teacherDeniedToOpenBeforeOpenDate && allowedOpenDate) {
       errorMessage = `You cannot open the assessment before ${moment(
         allowedOpenDate
       ).format('lll')}`

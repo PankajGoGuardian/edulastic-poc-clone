@@ -413,6 +413,7 @@ class AxisLabelsMoreOptions extends Component {
                   )
                 }
                 name="leftArrow"
+                data-cy="checkLeftArrow"
                 checked={numberlineAxis.leftArrow}
               >
                 {t('component.graphing.layoutoptions.showleftarrow')}
@@ -422,6 +423,7 @@ class AxisLabelsMoreOptions extends Component {
             <Col md={12}>
               <CheckboxLabel
                 name="rightArrow"
+                data-cy="checkRightArrow"
                 onChange={() =>
                   this.handleNumberlineCheckboxChange(
                     'rightArrow',

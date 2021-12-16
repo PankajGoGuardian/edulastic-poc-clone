@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Col, Row, Select, Spin, Tooltip } from 'antd'
 import moment from 'moment'
@@ -6,6 +6,7 @@ import {
   test as testConst,
   assignmentPolicyOptions,
   assignmentStatusOptions,
+  roleuser,
 } from '@edulastic/constants'
 import {
   MainContentWrapper,
@@ -41,6 +42,7 @@ import { getDefaultTestSettingsAction } from '../TestPage/ducks'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { InputLabel, InputLabelContainer, ClassHeading } from './styled'
 import { allowedSettingPageToDisplay } from '../Shared/Components/ClassHeader/utils/transformers'
+import { getUserRole } from '../src/selectors/user'
 
 export const releaseGradeKeys = [
   'DONT_RELEASE',
@@ -64,8 +66,9 @@ function LCBAssignmentSettings({
   userId,
   isDocBased,
   loading,
+  userRole,
 }) {
-  const { openPolicy, closePolicy } = selectsData
+  const { openPolicy, closePolicy, openPolicyForAdmin } = selectsData
   const { assignmentId, classId } = match.params || {}
   useEffect(() => {
     loadAssignment({ assignmentId, classId })
@@ -81,12 +84,24 @@ function LCBAssignmentSettings({
     }
   }, [additionalData])
 
+  const isAdmin = roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+
+  const openPolicyOptions = useMemo(() => {
+    if (isAdmin) {
+      return openPolicyForAdmin.filter(
+        (o) => o.value !== assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_ADMIN
+      )
+    }
+    return openPolicy
+  }, [isAdmin, openPolicy, openPolicyForAdmin])
+
   const { startDate, endDate, status, dueDate, allowedOpenDate } =
     assignment?.['class']?.[0] || {}
 
   const showAllowedOpenDate =
     status === assignmentStatusOptions.NOT_OPEN &&
-    openPolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE &&
+    assignment?.openPolicy !==
+      assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE &&
     allowedOpenDate
 
   const startDateToShow = showAllowedOpenDate ? allowedOpenDate : startDate
@@ -122,7 +137,7 @@ function LCBAssignmentSettings({
     } else if (key === 'startDate' && showAllowedOpenDate) {
       return changeAttrs({ key: 'allowedOpenDate', value })
     }
-    changeAttrs({ key, value })
+    changeAttrs({ key, value, isAdmin, status })
   }
   const gradeSubject = {
     grades: assignment?.grades,
@@ -203,7 +218,7 @@ function LCBAssignmentSettings({
                         }
                         height="30px"
                       >
-                        {openPolicy.map(({ value, text }, index) => (
+                        {openPolicyOptions.map(({ value, text }, index) => (
                           <Select.Option
                             key={index}
                             value={value}
@@ -306,6 +321,7 @@ export default connect(
     testActivity: getTestActivitySelector(state),
     userId: state?.user?.user?._id,
     isDocBased: getIsDocBasedTestSelector(state),
+    userRole: getUserRole(state),
   }),
   {
     loadAssignment: slice.actions.loadAssignment,

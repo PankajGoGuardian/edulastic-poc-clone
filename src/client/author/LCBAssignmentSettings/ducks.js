@@ -266,7 +266,10 @@ function getSettingsSelector(state) {
 
   const passWordPolicySettings = { passwordPolicy }
 
-  if (passwordPolicy === 1 || passwordExpireIn) {
+  if (
+    passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+    passwordExpireIn
+  ) {
     passWordPolicySettings.passwordExpireIn =
       existingSettings.passwordExpireIn === undefined
         ? 900
@@ -277,7 +280,10 @@ function getSettingsSelector(state) {
       return false
     }
   }
-  if (passwordPolicy === 2 || assignmentPassword) {
+  if (
+    passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC ||
+    assignmentPassword
+  ) {
     passWordPolicySettings.assignmentPassword =
       existingSettings.assignmentPassword
     passWordPolicySettings.passwordPolicy = existingSettings.passwordPolicy
@@ -285,6 +291,14 @@ function getSettingsSelector(state) {
       notification({ msg: 'Please set the assignment password' })
       return false
     }
+  }
+  if (
+    existingSettings.passwordPolicy ===
+      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+    !existingSettings.assignmentPassword
+  ) {
+    notification({ msg: 'Please set the assignment password' })
+    return false
   }
 
   if (autoRedirect === true) {
@@ -351,9 +365,11 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
   try {
     const settings = yield select(getSettingsSelector)
     if (settings === false) {
+      yield put(slice.actions.updateAssignmentClassSettingsSucess())
       return
     }
     if (isEmpty(settings)) {
+      yield put(slice.actions.updateAssignmentClassSettingsSucess())
       notification({ messageKey: 'noChangesToBeSaved' })
       return
     }

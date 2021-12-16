@@ -53,7 +53,11 @@ import { setTeacherEditedScore } from '../ExpressGrader/ducks'
 import { setCurrentTestActivityIdAction } from '../src/actions/classBoard'
 import { hasRandomQuestions } from '../ClassBoard/utils'
 import { SAVE_USER_WORK } from '../../assessment/constants/actions'
-import { getEBSRSelector, getScoringTypeSelector } from '../ClassBoard/ducks'
+import {
+  getEBSRSelector,
+  getScoringTypeSelector,
+  getClassQuestionSelector,
+} from '../ClassBoard/ducks'
 
 // action
 export const UPDATE_STUDENT_ACTIVITY_SCORE =
@@ -317,6 +321,7 @@ function* receiveFeedbackResponseSaga({ payload }) {
       studentId,
       questionId,
       body: { groupId, feedback },
+      isQuestionView = false,
     } = payload
 
     const feedbackResponse = yield call(
@@ -338,6 +343,22 @@ function* receiveFeedbackResponseSaga({ payload }) {
       type: RECEIVE_STUDENT_RESPONSE_REQUEST,
       payload: { testActivityId, groupId, studentId },
     })
+    if (isQuestionView) {
+      const classQuestionResponse = yield select(getClassQuestionSelector)
+      const questionResponse = classQuestionResponse.map((qResponse) => {
+        if (studentId === qResponse.userId) {
+          return {
+            ...qResponse,
+            feedback,
+          }
+        }
+        return { ...qResponse }
+      })
+      yield put({
+        type: RECEIVE_CLASS_QUESTION_SUCCESS,
+        payload: questionResponse,
+      })
+    }
     notification({ type: 'success', messageKey: 'feedbackSuccessfullyUpdate' })
   } catch (err) {
     console.error(err)

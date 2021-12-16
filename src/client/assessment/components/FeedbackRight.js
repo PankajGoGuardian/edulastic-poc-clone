@@ -288,6 +288,7 @@ class FeedbackRight extends Component {
       userThumbnail,
       itemId,
       userFullName,
+      isQuestionView,
     } = this.props
     const {
       testActivityId,
@@ -312,6 +313,7 @@ class FeedbackRight extends Component {
       testActivityId: testActivityId || this.getTestActivityId(),
       questionId: id,
       itemId: testItemId || itemId,
+      isQuestionView,
     })
   }
 

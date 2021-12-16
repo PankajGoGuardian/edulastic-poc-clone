@@ -631,36 +631,39 @@ const AssessmentContainer = ({
   })
 
   useEffect(() => {
-    if(document && window){
-      document.onkeydown = function(e) {
-
+    if (document && window) {
+      document.onkeydown = function (e) {
         // for IE
-        e = e || event;
-        var keyCode = (window.event) ? e.which : e.keyCode;
-    
+        e = e || event
+        var keyCode = window.event ? e.which : e.keyCode
+
         // check ctrl + f and command + f key
-        if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 70){
-            e.preventDefault();            
-            return false;
+        if (
+          (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+          e.keyCode == 70
+        ) {
+          e.preventDefault()
+          return false
         }
-    }
+      }
     }
     return () => {
-      document.onkeydown = function(e) {
-
+      document.onkeydown = function (e) {
         // for IE
-        e = e || event;
-        var keyCode = (window.event) ? e.which : e.keyCode;
-    
+        e = e || event
+        var keyCode = window.event ? e.which : e.keyCode
+
         // check ctrl + f and command + f key
-        if ((window.navigator.platform.match("Mac") ? e.metaKey : e.ctrlKey)  && e.keyCode == 70){            
-            return true;
+        if (
+          (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+          e.keyCode == 70
+        ) {
+          return true
         }
+      }
     }
-    }
-    
   }, [restrictNavigationOut, document, window])
-  
+
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {

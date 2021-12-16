@@ -6,9 +6,12 @@ import { omitBy, isUndefined, isEmpty, invert, set, get, maxBy } from 'lodash'
 import {
   assignmentPolicyOptions,
   assignmentStatusOptions,
+  test,
 } from '@edulastic/constants'
 import { receiveTestActivitySaga } from '../ClassBoard/ducks'
 import { updateAdditionalDataAction } from '../src/reducers/testActivity'
+
+const { passwordPolicy: passwordPolicyValues } = test
 
 const slice = createSlice({
   initialState: {
@@ -46,7 +49,8 @@ const slice = createSlice({
       Object.assign(state.assignment, payload)
     },
     changeAttribute: (state, { payload }) => {
-      const { key, value } = payload
+      let { key, value } = payload
+      const { isAdmin, status } = payload
       if (
         ['startDate', 'endDate', 'dueDate', 'allowedOpenDate'].includes(key)
       ) {
@@ -59,6 +63,19 @@ const slice = createSlice({
       } else {
         state.assignment[key] = value
         state.updateSettings[key] = value
+        if (
+          key === 'passwordPolicy' &&
+          value === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
+          status === assignmentStatusOptions.NOT_OPEN
+        ) {
+          key = 'openPolicy'
+          value = isAdmin
+            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+            : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+
+          state.assignment[key] = value
+          state.updateSettings[key] = value
+        }
         if (
           key === 'openPolicy' &&
           value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE

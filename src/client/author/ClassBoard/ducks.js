@@ -15,6 +15,7 @@ import {
   utilityApi,
   testItemsApi,
 } from '@edulastic/api'
+import moment from 'moment'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
 import {
@@ -428,14 +429,23 @@ function* openAssignmentSaga({ payload }) {
     yield call(notification, { type: 'success', msg: 'Success' })
   } catch (err) {
     captureSentryException(err)
-    const {
-      data: { message: errorMessage },
+    let {
+      data: {
+        message: errorMessage,
+        allowedOpenDate,
+        teacherDeniedToOpenBeforeOpenDate,
+      },
     } = err.response
     if (errorMessage === 'Assignment does not exist anymore') {
       yield put(redirectToAssignmentsAction(''))
     }
+    if (teacherDeniedToOpenBeforeOpenDate && allowedOpenDate) {
+      errorMessage = `You cannot open the assessment before ${moment(
+        allowedOpenDate
+      ).format('lll')}`
+    }
     yield call(notification, {
-      msg: err.response.data?.message || 'Failed to open',
+      msg: errorMessage || 'Failed to open',
     })
   }
 }

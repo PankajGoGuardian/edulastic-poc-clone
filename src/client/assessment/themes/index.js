@@ -80,6 +80,7 @@ import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
+import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
 
 const { playerSkinValues } = testConstants
 
@@ -576,8 +577,23 @@ const AssessmentContainer = ({
   loadTest,
   showUserTTS,
   isTestPreviewModalVisible,
+  testKeypad,
   ...restProps
 }) => {
+  const _questionsById = useMemo(() => {
+    if (preview && questionsById) {
+      Object.values(questionsById).forEach((question) => {
+        if (
+          Array.isArray(question.symbols) &&
+          testKeypad !== 'item-level-keypad'
+        ) {
+          question.symbols[0] = testKeypad
+        }
+      })
+    }
+    return questionsById
+  }, [questionsById, preview, testKeypad])
+
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
   const itemIndex =
     itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
@@ -1266,7 +1282,7 @@ const AssessmentContainer = ({
     referenceDocAttributes,
     studentReportModal,
     hasDrawingResponse,
-    questions: questionsById,
+    questions: _questionsById,
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
@@ -1308,7 +1324,7 @@ const AssessmentContainer = ({
         docUrl={docUrl}
         hidePause={hidePause}
         annotations={annotations}
-        questionsById={questionsById}
+        questionsById={_questionsById}
         answers={answers}
         answersById={answersById}
         saveProgress={saveProgress}
@@ -1472,6 +1488,7 @@ const enhance = compose(
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
+      testKeypad: testKeypadSelector(state),
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),
       loading: testLoadingSelector(state),

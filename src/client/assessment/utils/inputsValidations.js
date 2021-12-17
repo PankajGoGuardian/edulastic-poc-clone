@@ -16,13 +16,13 @@ export const validations = {
     if (!value) {
       return true
     }
-    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+    return /^[0-9]\d*$/.test(value) && value <= 9 && value >= 0
   },
   satisfies: (value = '') => {
     if (!value) {
       return true
     }
-    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+    return /^[0-9]\d*$/.test(value) && value <= 9 && value >= 0
   },
   significantDecimalPlaces: (value = '') => {
     if (!value) {

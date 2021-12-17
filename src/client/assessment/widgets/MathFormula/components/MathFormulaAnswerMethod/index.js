@@ -98,6 +98,10 @@ const MathFormulaAnswerMethod = ({
       }
     }
 
+    if (prop === 'isSimplifiedExpression' && newOptions.isExpanded) {
+      delete newOptions.isExpanded
+    }
+
     if (!val) {
       delete newOptions[prop]
     }

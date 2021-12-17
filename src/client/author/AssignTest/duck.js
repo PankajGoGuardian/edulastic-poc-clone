@@ -1,7 +1,6 @@
 import * as moment from 'moment'
 import { get, groupBy, keyBy } from 'lodash'
 import { createSelector } from 'reselect'
-import produce from 'immer'
 import { createReducer, createAction } from 'redux-starter-kit'
 import {
   test as testConst,
@@ -127,8 +126,6 @@ export const performanceBandSelector = createSelector(
   (performanceBandDistrict) => get(performanceBandDistrict, 'profiles', [])
 )
 
-const assignmentSettingsStateSelector = (state) => state.assignmentSettings
-
 // ======================assingnment settings========================//
 
 const initialState = {
@@ -137,7 +134,30 @@ const initialState = {
 }
 
 export const assignmentSettings = createReducer(initialState, {
-  [UPDATE_ASSIGNMENT_SETTINGS_STATE]: (state, { payload }) => payload,
+  [UPDATE_ASSIGNMENT_SETTINGS_STATE]: (state, { payload }) => {
+    const { userRole, ...rest } = payload
+    Object.assign(state, rest)
+    if (
+      state.passwordPolicy &&
+      state.passwordPolicy ===
+        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+    ) {
+      state.openPolicy = roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+        ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+        : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+    }
+    if (
+      state.scoringType === testConst.evalTypeLabels.PARTIAL_CREDIT &&
+      !state.penalty
+    ) {
+      state.scoringType =
+        testConst.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    }
+    if (!state.autoRedirect) {
+      delete state.autoRedirect
+      delete state.autoRedirectSettings
+    }
+  },
   [CLEAR_ASSIGNMENT_SETTINGS]: () => {
     return initialState
   },
@@ -148,30 +168,7 @@ export const assignmentSettings = createReducer(initialState, {
 
 function* updateAssignmentSettingsSaga({ payload }) {
   const userRole = yield select(getUserRole)
-  const _state = yield select(assignmentSettingsStateSelector)
-  const state = produce({ ..._state, ...payload }, (draft) => {
-    if (
-      draft.passwordPolicy &&
-      draft.passwordPolicy ===
-        testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-    ) {
-      draft.openPolicy = roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-        ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
-        : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
-    }
-    if (
-      draft.scoringType === testConst.evalTypeLabels.PARTIAL_CREDIT &&
-      !draft.penalty
-    ) {
-      draft.scoringType =
-        testConst.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
-    }
-    if (!draft.autoRedirect) {
-      delete draft.autoRedirect
-      delete draft.autoRedirectSettings
-    }
-  })
-  yield put(updateAssingnmentSettingsStateAction(state))
+  yield put(updateAssingnmentSettingsStateAction({ ...payload, userRole }))
 }
 
 export function* watcherSaga() {

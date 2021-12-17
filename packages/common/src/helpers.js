@@ -666,8 +666,9 @@ export const highlightSelectedText = (
   }
 
   if (
-    (parentClass && !startContainer.parentNode.classList.contains(parentClass),
-    !endContainer.parentNode.classList.contains(parentClass))
+    parentClass &&
+    !startContainer.parentNode.classList.contains(parentClass) &&
+    !endContainer.parentNode.classList.contains(parentClass)
   ) {
     clearSelection()
     return

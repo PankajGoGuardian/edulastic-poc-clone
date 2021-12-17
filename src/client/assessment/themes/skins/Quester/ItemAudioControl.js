@@ -40,14 +40,14 @@ const QuestionSelect = ({ questions, onSelect, selected }) => {
   const menu = (
     <StyledMenu onClick={handleSelect}>
       {questions.map((q, i) => {
-        if (q.type === 'passage') {
+        if (q.type === 'passage' || q.type === 'video') {
           passageIndex += 1
         } else {
           questionIndex += 1
         }
         return (
           <Menu.Item key={i} disabled={selected.id === q.id}>
-            {q.type === 'passage'
+            {q.type === 'passage' || q.type === 'video'
               ? `Play Passage ${passageIndex}`
               : `Play Question ${questionIndex}`}
           </Menu.Item>

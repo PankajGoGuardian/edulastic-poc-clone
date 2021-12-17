@@ -34,12 +34,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
         const stdWork =
           state?.userWork?.present?.[this.testItemId]?.freeNotesStd || []
         annotations = stdWork.concat(
-          (
-            state.tests?.entity?.annotations ||
-            state.test?.annotations ||
-            this.annotations ||
-            []
-          ).map((a) => ({
+          (this.annotations || []).map((a) => ({
             ...a,
             protected: true,
           }))

@@ -57,6 +57,7 @@ const PDFPreview = ({
   isEditable,
   toggleIntercomDisplay,
   itemId,
+  stdAnnotations,
   annotationsCount,
 }) => {
   const previewContainer = useRef()
@@ -181,6 +182,7 @@ const PDFPreview = ({
               testItemId={itemId}
               reportMode={reportMode}
               testMode={testMode}
+              stdAnnotations={stdAnnotations}
               authoringMode={viewMode === 'edit' || testMode}
             />
           )}

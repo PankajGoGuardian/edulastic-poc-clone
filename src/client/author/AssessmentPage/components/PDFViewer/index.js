@@ -26,6 +26,7 @@ const PDFViewer = ({
   reportMode,
   testMode,
   testItemId,
+  stdAnnotations,
   annotationsCount,
 }) => {
   const { pageNo, URL, rotate } = page
@@ -177,6 +178,7 @@ const PDFViewer = ({
     pdfScale,
     rotate,
     annotations,
+    stdAnnotations,
     annotationsCount,
   ])
 

@@ -612,6 +612,7 @@ class WorksheetComponent extends React.Component {
       annotationsStack,
       undoUserWork,
       redoUserWork,
+      stdAnnotations,
     } = this.props
     const {
       uploadModal,
@@ -755,6 +756,7 @@ class WorksheetComponent extends React.Component {
               page={selectedPage}
               currentPage={currentPage + 1}
               annotations={annotations}
+              stdAnnotations={stdAnnotations}
               annotationsCount={annotationsStack?.length} // need to update annotations on redo and undo action
               onDragStart={this.onDragStart}
               toggleMinimized={this.toggleMinimized}

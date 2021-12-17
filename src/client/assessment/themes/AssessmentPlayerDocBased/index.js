@@ -154,6 +154,7 @@ class AssessmentPlayerDocBased extends React.Component {
       playerSkinType,
       groupId,
       hidePause,
+      userWork,
     } = this.props
 
     const questionsById = keyBy(Object.values(_questionsById), 'id')
@@ -169,6 +170,8 @@ class AssessmentPlayerDocBased extends React.Component {
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme }
     const extraPaddingTop =
       playerSkinType === 'parcc' ? 35 : playerSkinType === 'sbac' ? 29 : 0
+
+    const stdWork = userWork?.[item._id]?.freeNotesStd
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -198,6 +201,7 @@ class AssessmentPlayerDocBased extends React.Component {
                 isAssessmentPlayer
                 item={item}
                 annotations={annotations}
+                stdAnnotations={stdWork}
                 questions={questions}
                 freeFormNotes={freeFormNotes}
                 questionsById={questionsById}

@@ -94,7 +94,10 @@ import {
 import { saveUserWorkAction } from '../../assessment/actions/userWork'
 import { isFeatureAccessible } from '../../features/components/FeaturesSwitch'
 import { getDefaultSettings } from '../../common/utils/helpers'
-import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
+import {
+  updateAssingnmentSettingsAction,
+  UPDATE_ASSIGNMENT_SETTINGS_STATE,
+} from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
@@ -2099,6 +2102,7 @@ export function* receiveTestByIdSaga({ payload }) {
       assignSettings.class = loadedGroups
     }
     yield put(updateAssingnmentSettingsAction(assignSettings))
+    yield take(UPDATE_ASSIGNMENT_SETTINGS_STATE)
     let defaultTestSettings = yield select(
       ({ assignmentSettings }) => assignmentSettings
     )

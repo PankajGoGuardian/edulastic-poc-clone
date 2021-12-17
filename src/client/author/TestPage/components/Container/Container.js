@@ -335,9 +335,10 @@ class Container extends PureComponent {
       match,
       testStatus,
       testSettingsList,
+      testAssignments,
       setData,
     } = this.props
-
+    const { isUsed } = test
     const { testLoaded, studentRedirected, isSettingsChecked } = this.state
 
     if (userRole !== roleuser.STUDENT) {
@@ -409,6 +410,30 @@ class Container extends PureComponent {
       ) {
         getDefaultTestSettings(test)
       }
+
+      /* simulate
+      useEffect(() => {
+        if (bubbleSheetWarningCheck) {
+          ...
+        }
+      }, [bubbleSheetWarningCheck])
+      */
+      const bubbleSheetWarningCheck =
+        editEnable &&
+        isUsed &&
+        testAssignments.length > 0 &&
+        testAssignments.some((ta) => ta.bubbleSheetTestId)
+      if (
+        bubbleSheetWarningCheck &&
+        this.prevBubbleSheetWarningCheck != bubbleSheetWarningCheck
+      ) {
+        notification({
+          type: 'warn',
+          messageKey: 'editWarnBubblesheetGeneratedForThisTest',
+          duration: 12,
+        })
+      }
+      this.prevBubbleSheetWarningCheck = bubbleSheetWarningCheck
     } else if (userRole === roleuser.STUDENT) {
       if (
         prevProps.loadingAssignments &&

@@ -1327,6 +1327,10 @@
     "message": "Selected items count in a group should be more than the delivered items count.",
     "description": ""
   },
+  "editWarnBubblesheetGeneratedForThisTest": {
+    "message": "Please note bubble sheet is already generated with this test. If you edit the test, you can not use the generated bubble sheet and have to regenerate it and take a new test.",
+    "description": ""
+  },
   "pickedDateCannotBeLesseThanCurrentDate": {
     "message": "Picked date cannot be lesser than the current date",
     "description": ""

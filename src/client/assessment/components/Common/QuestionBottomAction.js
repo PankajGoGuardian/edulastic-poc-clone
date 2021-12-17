@@ -216,6 +216,13 @@ const QuestionBottomAction = ({
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
+      if (additionalData.bubbleSheetTestId) {
+        notification({
+          type: 'warn',
+          messageKey: 'editWarnBubblesheetGeneratedForThisTest',
+          duration: 12,
+        })
+      }
       const latestTest = await testsApi.getById(additionalData?.testId, {
         data: true,
         requestLatest: true,

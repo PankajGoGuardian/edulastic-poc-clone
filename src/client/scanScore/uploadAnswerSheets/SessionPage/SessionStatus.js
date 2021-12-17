@@ -62,12 +62,17 @@ const SessionStatus = ({
   }, [pages])
 
   const isDone = scanProgress === 100
+  const progressMessage = isDone
+    ? 'Form Processing Done'
+    : 'Form Processing In Progress...'
+  const progressHint = isDone ? '' : '(please wait, do not refresh the page)'
 
   return (
     <SessionStatusContainer>
       <div className="inner-container">
         <div className="scan-progress-text">
-          {isDone ? 'Form Processing Done' : 'Form Processing Progress'}
+          <p>{progressMessage}</p>
+          <p style={{ color: 'GrayText', fontSize: '0.5em' }}>{progressHint}</p>
         </div>
         <div className="scan-progress">
           <Progress

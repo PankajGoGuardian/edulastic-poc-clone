@@ -1,8 +1,8 @@
 import { isEmpty, range, cloneDeep } from 'lodash'
 import { greyThemeDark1, someGreyColor1 } from '@edulastic/colors'
-import { getMathHtml } from '@edulastic/common'
 import { angleAxesParams } from '../settings'
 import { CONSTANT } from '../config'
+import mathstrings from '../config/mathstrings.json'
 
 const xAxis = [0, 180]
 const yAxis = [90, 270]
@@ -30,32 +30,6 @@ const labelOpts = {
   },
 }
 
-const THETA_IN_RADIANS = {
-  15: '\\frac{\\pi}{12}',
-  30: '\\frac{\\pi}{6}',
-  45: '\\frac{\\pi}{4}',
-  60: '\\frac{\\pi}{3}',
-  75: '\\frac{5}{12}\\pi',
-  90: '\\frac{\\pi}{2}',
-  105: '\\frac{7}{12}\\pi',
-  120: '\\frac{2}{3}\\pi',
-  135: '\\frac{3}{4}\\pi',
-  150: '\\frac{5}{6}\\pi',
-  165: '\\frac{11}{12}\\pi',
-  180: '\\pi',
-  195: '\\frac{13}{12}\\pi',
-  210: '\\frac{7}{6}\\pi',
-  225: '\\frac{5}{4}\\pi',
-  240: '\\frac{4}{3}\\pi',
-  255: '\\frac{17}{12}\\pi',
-  270: '\\frac{3}{2}\\pi',
-  285: '\\frac{19}{12}\\pi',
-  300: '\\frac{5}{3}\\pi',
-  315: '\\frac{7}{4}\\pi',
-  330: '\\frac{11}{6}\\pi',
-  345: '\\frac{23}{12}\\pi',
-}
-
 const angleDelta = 0.8
 
 const mergeAngleAxisParams = (options = {}) => {
@@ -73,14 +47,14 @@ const generatePolarLabel = (theta, tRadians) => {
   return () => {
     if (theta === 0) {
       if (tRadians) {
-        return getMathHtml(`0\\,\\&\\,2\\pi`)
+        return mathstrings.radians_0
       }
-      return getMathHtml(`0\\degree/\\,360\\degree`)
+      return mathstrings.degree_0
     }
     if (tRadians) {
-      return getMathHtml(THETA_IN_RADIANS[theta])
+      return mathstrings[`radians_${theta}`]
     }
-    return getMathHtml(`${theta}\\degree`)
+    return mathstrings[`degree_${theta}`]
   }
 }
 
@@ -99,13 +73,14 @@ function drawTheta(board, theta, gridParams, radiusArr) {
   const x = Math.cos(thetaRadian)
   const y = Math.sin(thetaRadian)
 
-  p2[0] = x * Math.abs(rMax + angleDelta)
-  p2[1] = y * Math.abs(rMax + angleDelta)
-
   let flag = true
   if (theta > 90 && theta < 275) {
     flag = false
   }
+
+  p2[0] = x * Math.abs(rMax + angleDelta)
+  p2[1] = y * Math.abs(rMax + angleDelta)
+
   const points = flag ? [p1, p2] : [p2, p1]
 
   let offset = [10 + x, 10 + y]
@@ -128,7 +103,7 @@ function drawTheta(board, theta, gridParams, radiusArr) {
   const axis = board.create('axis', points, params)
 
   if (tDrawLabel) {
-    const ticks = flag ? [rMax + angleDelta] : [-rMax - angleDelta]
+    const ticks = [rMax + angleDelta, -rMax - angleDelta]
     board.create('ticks', [axis, ticks], {
       strokeColor: '#ff0000',
       majorHeight: 0,
@@ -143,9 +118,8 @@ function drawTheta(board, theta, gridParams, radiusArr) {
     })
   }
 
-  if (rDrawLabel && (xAxis.includes(theta) || yAxis.includes(theta))) {
-    const rTickts = theta <= 90 ? radiusArr : radiusArr.map((r) => -r)
-    board.create('ticks', [axis, rTickts], {
+  if (rDrawLabel && [0, 90].includes(theta)) {
+    board.create('ticks', [axis, radiusArr], {
       strokeColor: '#ff0000',
       majorHeight: 0,
       drawLabels: true, // TODO: add option setting
@@ -208,7 +182,7 @@ function addPolarGrid(board, gridParams = {}) {
   board.setBoundingBox([-rMax - 2.5, rMax + 2.5, rMax + 2.5, -rMax - 2.5])
 
   // drawing angle axes based on theta
-  const thetaArr = range(tMin, tMax, tDist)
+  const thetaArr = range(tMin, tMax, tDist) // .filter((x) => x < 180)
   const radiusArr = range(rMin + rDist, rMax + rDist, rDist)
 
   const circles = rShowAxis ? radiusArr.map((r) => drawCircle(board, r)) : []

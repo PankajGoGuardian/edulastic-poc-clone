@@ -70,7 +70,7 @@ const EVENT_NAMES = {
 const RECT_GRID = 'rectangular'
 const COMPLEX_GRID = 'complex'
 const POLAR_GRID = 'polar'
-const GRID_TYPES = [RECT_GRID, COMPLEX_GRID, POLAR_GRID]
+const GRID_TYPES = [RECT_GRID, POLAR_GRID] // COMPLEX_GRID,
 
 module.exports = {
   GRAPH_TOOLS,

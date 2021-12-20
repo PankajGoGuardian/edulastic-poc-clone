@@ -29,7 +29,7 @@ import {
   Checkbox,
   Input,
 } from 'antd'
-import { debounce, get as _get, isUndefined } from 'lodash'
+import { debounce, get as _get, isEqual, isUndefined, sortBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -167,10 +167,26 @@ class ShareModal extends React.Component {
     this.handleSearch = this.handleSearch.bind(this)
   }
 
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, state) {
     const { features, gradeSubject, isPlaylist } = nextProps
     const { grades, subjects } = gradeSubject || {}
+    const isEditPermissionNotEqual = !isEqual(
+      state?.editPermissionOnTestSharing,
+      features?.editPermissionOnTestSharing
+    )
+
+    const isGradesNotEqual = !isEqual(
+      sortBy(state?.gradeSubject?.grades || []),
+      sortBy(grades || [])
+    )
+    const isSubjectsNotEqual = !isEqual(
+      sortBy(state?.gradeSubject?.subjects || []),
+      sortBy(subjects || [])
+    )
+    const isGradesAndSubjectsNotEqual = isGradesNotEqual || isSubjectsNotEqual
+
     if (
+      (isEditPermissionNotEqual || isGradesAndSubjectsNotEqual) &&
       features.editPermissionOnTestSharing === false &&
       grades &&
       subjects &&
@@ -185,12 +201,15 @@ class ShareModal extends React.Component {
         _permissionKeys: isPlaylist
           ? permissionKeys.slice(0, 2)
           : permissionKeys,
+        editPermissionOnTestSharing: features?.editPermissionOnTestSharing,
+        gradeSubject,
       }
     }
-    if (!features.editPermissionOnTestSharing) {
+    if (isEditPermissionNotEqual && !features.editPermissionOnTestSharing) {
       return {
         permission: 'VIEW',
         _permissionKeys: permissionKeys.slice(1, isPlaylist ? 2 : 3),
+        editPermissionOnTestSharing: features?.editPermissionOnTestSharing,
       }
     }
   }

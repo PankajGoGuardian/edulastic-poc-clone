@@ -250,7 +250,7 @@ const Header = ({
   const disabledEndDate = (current) => current && current < moment()
 
   const handleUnarchiveClass = () => {
-    if (isClassExpired) {
+    if (isClassExpired && type === 'class') {
       unarchiveClass({
         groupId: _id,
         endDate: new Date(classEndDate).getTime(),
@@ -556,7 +556,7 @@ const Header = ({
                   Are you sure you want to Unarchive{' '}
                   <LightGreenSpan>{name}</LightGreenSpan>?
                 </p>
-                {isClassExpired && (
+                {isClassExpired && type === 'class' && (
                   <StyledCol>
                     <p>
                       The end date of class has already passed. Please update

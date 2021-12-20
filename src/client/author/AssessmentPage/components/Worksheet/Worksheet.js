@@ -240,7 +240,7 @@ class WorksheetComponent extends React.Component {
       return {
         ...annotation,
         [key]:
-          annotation[key] > pageNumber ? annotation[key] + 1 : annotation[key],
+          annotation[key] > pageNumber ? +annotation[key] + 1 : annotation[key],
       }
     })
 
@@ -366,14 +366,15 @@ class WorksheetComponent extends React.Component {
 
     const newAnnotations = annotations.map((annotation) => {
       const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      const annIndex = +annotation[key]
       return {
         ...annotation,
         [key]:
-          annotation[key] === pageIndex + 1
+          annIndex === pageIndex + 1
             ? nextIndex + 1
-            : annotation[key] === nextIndex + 1
+            : annIndex === nextIndex + 1
             ? pageIndex + 1
-            : annotation[key],
+            : annIndex,
       }
     })
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
@@ -413,14 +414,15 @@ class WorksheetComponent extends React.Component {
     }
     const newAnnotations = annotations.map((annotation) => {
       const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      const annIndex = +annotation[key]
       return {
         ...annotation,
         [key]:
-          annotation[key] === pageIndex + 1
+          annIndex === pageIndex + 1
             ? nextIndex + 1
-            : annotation[key] === nextIndex + 1
+            : annIndex === nextIndex + 1
             ? pageIndex + 1
-            : annotation[key],
+            : annIndex,
       }
     })
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)

@@ -50,7 +50,7 @@ export const markQuestionLabel = (testItems) => {
           qIndex++
           return {
             ...q,
-            qLabel: `Q${qIndex}`,
+            qLabel: qIndex,
             barLabel: `Q${qIndex}`,
           }
         })

@@ -547,6 +547,7 @@ class Review extends PureComponent {
       isPowerPremiumAccount,
       showGroupsPanel,
       isPreviewModalVisible,
+      playlistId,
     } = this.props
     const {
       isCollapse,
@@ -723,6 +724,8 @@ class Review extends PureComponent {
             prevItem={this.prevItem}
             nextItem={this.nextItem}
             showEvaluationButtons
+            isPlaylistTestReview={isPlaylistTestReview}
+            playlistId={playlistId}
           />
         )}
         <TestPreviewModal

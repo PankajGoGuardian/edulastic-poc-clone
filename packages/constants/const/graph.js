@@ -36,6 +36,9 @@ const GRAPH_TOOLS = {
   DASHED: 'dashed',
   PIECEWISE: 'piecewise',
   NO_SOLUTION: 'no_solution',
+  LINE_CUT: 'line_cut',
+  ROSE: 'rose',
+  CARDIOID: 'Cardioid',
 
   // Default
   RESET: 'reset',

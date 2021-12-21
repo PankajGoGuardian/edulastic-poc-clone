@@ -22,6 +22,7 @@ import {
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 import { setBulkSyncCanvasStateAction } from '../../../../student/Signup/duck'
+import { withRouter } from 'react-router-dom'
 
 const antdNotification = notification
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
@@ -42,6 +43,7 @@ const ClassSyncNotificationListener = ({
   fetchGroups,
   setBulkActionStatus,
   setCanvasBulkSyncStatus,
+  history,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
@@ -108,7 +110,10 @@ const ClassSyncNotificationListener = ({
     removeClassSyncDetails()
     const { groupId, studentsSaved } = data
     if (groupId) {
-      fetchStudentsById({ classId: groupId })
+      const pathName = window.location.pathname
+      if (/manageClass\/([a-z0-9])\w*/g.test(pathName)) {
+        history.push(`/author/manageClass/${groupId}`)
+      }
     } else {
       if (studentsSaved) {
         setGroupSyncData(studentsSaved)
@@ -350,6 +355,7 @@ const ClassSyncNotificationListener = ({
 }
 
 export default compose(
+  withRouter,
   connect(
     (state) => ({
       user: getUser(state),

@@ -39,12 +39,7 @@ const UploadAnswerSheets = ({
   assignmentTitle,
   classTitle,
 }) => {
-  const {
-    assignmentId = '',
-    groupId = '',
-    sessionId = '',
-    fromWebcam,
-  } = useMemo(
+  const { assignmentId = '', groupId = '', sessionId = '' } = useMemo(
     () => qs.parse(location?.search || '', { ignoreQueryPrefix: true }),
     [location?.search]
   )
@@ -129,12 +124,7 @@ const UploadAnswerSheets = ({
   )
 
   useEffect(() => {
-    getOmrUploadSessions({
-      assignmentId,
-      groupId,
-      sessionId,
-      fromWebcam: fromWebcam === 'true',
-    })
+    getOmrUploadSessions({ assignmentId, groupId, sessionId })
   }, [])
 
   useEffect(() => {

@@ -17,11 +17,8 @@ import {
   UPDATE_TEST_IMAGE,
   SET_SAFE_BROWSE_PASSWORD,
 } from '../src/constants/actions'
-import { getUserFeatures, getCurrentActiveTermIds } from '../src/selectors/user'
-import {
-  getCurrentPlaylistTermId,
-  toggleManageContentActiveAction,
-} from '../CurriculumSequence/ducks'
+import { getUserFeatures, getCurrentActiveTerms } from '../src/selectors/user'
+import { toggleManageContentActiveAction } from '../CurriculumSequence/ducks'
 
 // constants
 const playlistStatusConstants = {
@@ -236,7 +233,6 @@ const initialState = {
   loading: false,
   creating: false,
   sharedUsersList: [],
-  updated: false,
 }
 
 const createNewModuleState = (
@@ -555,38 +551,37 @@ export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case PLAYLIST_ADD_SUBRESOURCE: {
       const newEntity = addSubresource(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case PLAYLIST_REMOVE_SUBRESOURCE: {
       const newEntity = removeSubResource(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ADD_MODULE: {
       const newEntity = addModuleToPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case UPDATE_MODULE: {
       const newEntity = updateModuleInPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case DELETE_MODULE: {
       const newEntity = deleteModuleFromPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ORDER_MODULES: {
       const newEntity = resequenceModulesInPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ORDER_TESTS: {
       const newEntity = resequenceTestsInModule(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case ADD_TEST_IN_PLAYLIST: {
       const newEntity = addTestToModule(state.entity, payload)
       return {
         ...state,
         entity: newEntity,
-        updated: true,
       }
     }
     case ADD_TEST_IN_PLAYLIST_BULK: {
@@ -594,24 +589,23 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         entity: newEntity,
-        updated: true,
       }
     }
     case DELETE_TEST_FROM_PLAYLIST_BULK: {
       const newEntity = removeTestFromPlaylistBulk(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case REMOVE_TEST_FROM_MODULE: {
       const newEntity = removeTestFromPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case MOVE_CONTENT: {
       const newEntity = moveContentInPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case REMOVE_TEST_FROM_PLAYLIST: {
       const newEntity = removeTestFromPlaylist(state.entity, payload)
-      return { ...state, entity: newEntity, updated: true }
+      return { ...state, entity: newEntity }
     }
     case UPDATE_PLAYLIST: {
       return { ...state, entity: payload.updatedModule }
@@ -645,7 +639,6 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         entity: { ...state.entity, ...entity },
         creating: false,
-        updated: false,
       }
     }
     case UPDATE_ENTITY_DATA: {
@@ -730,7 +723,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           customize: payload,
         },
-        updated: true,
       }
     case CHANGE_PLAYLIST_THEME: {
       const { bgColor = themeColor, textColor = white } = payload
@@ -741,7 +733,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           bgColor,
           textColor,
         },
-        updated: true,
       }
     }
     case UPDATE_DEFAULT_PLAYLIST_THUMBNAIL: {
@@ -752,7 +743,6 @@ export const reducer = (state = initialState, { type, payload }) => {
           ...state.entity,
           thumbnail,
         },
-        updated: true,
       }
     }
     default:
@@ -833,13 +823,7 @@ export const getTestItemsRowsSelector = createSelector(
 // saga
 function* receivePlaylistByIdSaga({ payload }) {
   try {
-    let activeTermIds = []
-    const selectedPlaylistTermId = yield select(getCurrentPlaylistTermId)
-    if (!selectedPlaylistTermId) {
-      activeTermIds = yield select(getCurrentActiveTermIds)
-    } else {
-      activeTermIds = [selectedPlaylistTermId]
-    }
+    const activeTermIds = yield select(getCurrentActiveTerms)
 
     const entity = yield call(curriculumSequencesApi.getCurriculums, {
       id: payload.id,

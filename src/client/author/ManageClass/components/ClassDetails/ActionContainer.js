@@ -42,9 +42,7 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
-  getIsCreateAssignmentModalVisible,
   selectStudentAction,
-  toggleCreateAssignmentModalAction,
   updateStudentRequestAction,
 } from '../../ducks'
 import { getUserOrgData, getUserOrgId } from '../../../src/selectors/user'
@@ -78,8 +76,6 @@ const ActionContainer = ({
   searchAndAddStudents,
   enableStudentGroups,
   districtId,
-  isCreateAssignmentModalVisible,
-  toggleCreateAssignmentModal,
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus)
   const [sentReq, setReqStatus] = useState(false)
@@ -94,15 +90,10 @@ const ActionContainer = ({
   const [isAutoArchivedClass, setIsAutoArchivedClass] = useState(false)
 
   const { textToSpeech } = features
-  const { _id: classId, active, atlasId } = selectedClass
+  const { _id: classId, active } = selectedClass
   let formRef = null
 
-  const checkForAddStudent = !!(
-    active &&
-    !cleverId &&
-    !atlasId &&
-    type === 'class'
-  )
+  const checkForAddStudent = !!(active && !cleverId && type === 'class')
 
   const toggleModal = (key) => {
     setModalStatus({ [key]: !isOpen[key] })
@@ -344,8 +335,13 @@ const ActionContainer = ({
       '_blank'
     )
   }
-  const { atlasProviderName, googleId, canvasCode, active: classStatus } =
-    selectedClass || {}
+  const {
+    atlasId,
+    atlasProviderName,
+    googleId,
+    canvasCode,
+    active: classStatus,
+  } = selectedClass || {}
 
   const getFormattedData = (arr) => {
     return arr.length > 1
@@ -400,8 +396,6 @@ const ActionContainer = ({
           setinfoModelVisible={setinfoModelVisible}
           infoModalData={infoModalData}
           setInfoModalData={setInfoModalData}
-          isCreateAssignmentModalVisible={isCreateAssignmentModalVisible}
-          toggleCreateAssignmentModal={toggleCreateAssignmentModal}
         />
       )}
 
@@ -519,7 +513,7 @@ const ActionContainer = ({
                     <span>Disable Text to Speech</span>
                   </MenuItems>
                 )}
-                {!cleverId && !atlasId && (
+                {!cleverId && (
                   <MenuItems key="deleteStudent">
                     <IconRemove />
                     <span>Remove Students</span>
@@ -529,7 +523,7 @@ const ActionContainer = ({
                   <IconCircle />
                   <span>Reset Password</span>
                 </MenuItems>
-                {!cleverId && !atlasId && (
+                {!cleverId && (
                   <MenuItems key="editStudent">
                     <IconPencilEdit />
                     <span>Edit Student</span>
@@ -605,7 +599,6 @@ export default connect(
     features: getUserFeatures(state),
     policy: getSchoolPolicy(state),
     enableStudentGroups: get(state, 'user.user.features.studentGroups'),
-    isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
   }),
   {
     addStudentRequest: addStudentRequestAction,
@@ -613,6 +606,5 @@ export default connect(
     changeTTS: changeTTSRequestAction,
     setSelectedStudents: selectStudentAction,
     loadSchoolPolicy: receiveSchoolPolicyAction,
-    toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
   }
 )(ActionContainer)

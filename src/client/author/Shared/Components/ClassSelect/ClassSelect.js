@@ -1,10 +1,16 @@
 import React from 'react'
 import { Select } from 'antd'
 import { FlexContainer } from '@edulastic/common'
-import { Container, StyledSelect } from './styled'
+import { Container, StyledSelect, StyledClassID } from './styled'
 
 // eslint-disable-next-line react/prop-types
-const ClassSelect = ({ classname, selected, handleChange, justifyContent }) => {
+const ClassSelect = ({
+  classname,
+  selected,
+  handleChange,
+  classid = '',
+  justifyContent,
+}) => {
   if (classname.length === 0) {
     return null
   }

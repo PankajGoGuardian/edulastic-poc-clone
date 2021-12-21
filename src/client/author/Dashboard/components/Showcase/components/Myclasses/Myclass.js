@@ -17,14 +17,12 @@ import { bannerActions } from '@edulastic/constants/const/bannerActions'
 import notification from '@edulastic/common/src/components/Notification'
 import { segmentApi } from '@edulastic/api'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
-import { signUpState } from '@edulastic/constants'
 import BannerSlider from './components/BannerSlider/BannerSlider'
 import FeaturedContentBundle from './components/FeaturedContentBundle/FeaturedContentBundle'
 import ItemBankTrialUsedModal from './components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import Classes from './components/Classes/Classes'
 import Launch from '../../../LaunchHangout/Launch'
 import PurchaseFlowModals from '../../../../../src/components/common/PurchaseModals'
-import { productsMetaData } from '../../../../../src/components/common/PurchaseModals/ProductsMetaData'
 import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
@@ -42,11 +40,9 @@ import { resetTestFiltersAction } from '../../../../../TestList/ducks'
 import { clearPlaylistFiltersAction } from '../../../../../Playlist/ducks'
 import {
   getCollectionsSelector,
-  getInterestedSubjectsSelector,
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
-import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -84,9 +80,6 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
-  loadAssignments,
-  interestedSubjects,
-  totalAssignmentCount,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -115,14 +108,9 @@ const MyClasses = ({
   }, [showCleverSyncModal])
   useEffect(() => {
     getTeacherDashboard()
-    loadAssignments()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
-
-  const { currentSignUpState, orgData = {} } = user
-  const { classList = [] } = orgData
-  const isSignupCompleted = currentSignUpState === signUpState.DONE
 
   const saveRecommendedTests = (_data) => {
     const data = _data.map((x) => {
@@ -191,6 +179,10 @@ const MyClasses = ({
     }
   }
 
+  useEffect(() => {
+    checkLocalRecommendedTests()
+  }, [user?.recommendedContentUpdated])
+
   const isPremiumUser = user?.features?.premium
 
   /**
@@ -220,12 +212,6 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-
-  useEffect(() => {
-    if (totalAssignmentCount >= 5) {
-      checkLocalRecommendedTests()
-    }
-  }, [user?.recommendedContentUpdated, totalAssignmentCount])
 
   const handleContentRedirect = (filters, contentType) => {
     const entries = filters.reduce((a, c) => ({ ...a, ...c }), {
@@ -277,18 +263,8 @@ const MyClasses = ({
     setShowItemBankTrialUsedModal(false)
   }
 
-  const handleFeatureClick = ({
-    config = {},
-    tags = [],
-    isBlocked,
-    ...rest
-  }) => {
+  const handleFeatureClick = ({ config = {}, tags = [], isBlocked }) => {
     const { filters, contentType, subscriptionData } = config
-    segmentApi.genericEventTrack('FeaturedBundleClick', {
-      ...rest,
-      config,
-      tags,
-    })
 
     /**
      *  User purchased bank from different premium district
@@ -373,7 +349,7 @@ const MyClasses = ({
 
   const getFeatureBundles = (bundles) =>
     bundles.map((bundle) => {
-      const { subscriptionData } = bundle?.config
+      const { subscriptionData } = bundle.config
       if (
         !subscriptionData?.productId &&
         !subscriptionData?.blockInAppPurchase
@@ -381,24 +357,9 @@ const MyClasses = ({
         return bundle
       }
 
-      const { imageUrl: imgUrl, premiumImageUrl, trialImageUrl } = bundle
-      const isBlocked = !hasAccessToItemBank(subscriptionData?.itemBankId)
-      let isTrialExpired = false
-      if (usedTrialItemBankIds.includes(subscriptionData?.itemBankId)) {
-        isTrialExpired =
-          itemBankSubscriptions.length > 0
-            ? itemBankSubscriptions.filter(
-                (x) => subscriptionData?.itemBankId === x.itemBankId
-              ).length === 0
-            : true
-      }
-
-      const imageUrl =
-        isBlocked && !isTrialExpired && premiumImageUrl
-          ? trialImageUrl
-          : isTrialExpired
-          ? premiumImageUrl
-          : imgUrl
+      const { imageUrl: imgUrl, premiumImageUrl } = bundle
+      const isBlocked = !hasAccessToItemBank(subscriptionData.itemBankId)
+      const imageUrl = isBlocked ? premiumImageUrl || imgUrl : imgUrl
 
       return {
         ...bundle,
@@ -483,14 +444,33 @@ const MyClasses = ({
             feature?.config?.excludedPublishers?.includes('Singapore Math')
           )
       )
+      bannerSlides = bannerSlides.filter(
+        (banner) =>
+          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+          !banner?.description?.toLowerCase()?.includes('spark math') &&
+          !(
+            banner?.description?.toLowerCase()?.includes('engage ny') &&
+            banner?.description?.toLowerCase()?.includes('math')
+          ) &&
+          !(
+            banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
+            banner?.config?.excludedPublishers?.includes('Singapore Math')
+          )
+      )
     } else {
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isSingaporeMath
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) => banner?.config?.isSingaporeMath
       )
     }
   } else {
     filteredBundles = filteredBundles.filter(
       (feature) => !feature?.config?.isSingaporeMath
+    )
+    bannerSlides = bannerSlides.filter(
+      (banner) => !banner?.config?.isSingaporeMath
     )
   }
 
@@ -503,20 +483,20 @@ const MyClasses = ({
         (feature) =>
           !feature?.description?.toLowerCase()?.includes('sparkmath') &&
           !feature?.description?.toLowerCase()?.includes('spark math') &&
-          !(
-            feature?.config?.excludedPublishers?.includes('CPM') ||
-            feature?.config?.excludedPublishers?.includes('cpm')
-          )
+          !feature?.config?.excludedPublishers?.includes('CPM')
+      )
+      bannerSlides = bannerSlides.filter(
+        (banner) =>
+          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
+          !banner?.description?.toLowerCase()?.includes('spark math') &&
+          !banner?.config?.excludedPublishers?.includes('CPM')
       )
     } else {
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isCPM
       )
+      bannerSlides = bannerSlides.filter((banner) => banner?.config?.isCPM)
     }
-  } else {
-    filteredBundles = filteredBundles.filter(
-      (feature) => !feature?.config?.isCPM
-    )
   }
 
   const handleInAppRedirect = (filters) => {
@@ -577,8 +557,13 @@ const MyClasses = ({
     }
   }
 
-  const bannerActionHandler = (filter = {}) => {
+  const bannerActionHandler = (filter = {}, description) => {
     const { action, data = {} } = filter
+    segmentApi.trackUserClick({
+      user,
+      data: { event: `dashboard:banner-${description}:click` },
+    })
+
     const content = data?.contentType?.toLowerCase() || 'tests_library'
     if (content === 'tests_library') {
       data.contentType = 'tests'
@@ -649,22 +634,9 @@ const MyClasses = ({
       ...usedTrialItemBankIds,
     ])
 
-    const subjects = interestedSubjects.map((x) => x.toUpperCase())
-
-    const getProductsKeysByInterestedSubject = Object.entries(
-      productsMetaData
-    ).reduce((a, [_key, _value]) => {
-      if (subjects.includes(_value.filters)) {
-        return a.concat(_key)
-      }
-      return a
-    }, [])
-
     const allAvailableItemProductIds = map(
-      products.filter(
-        (product) =>
-          allAvailableTrialItemBankIds.includes(product.linkedProductId) &&
-          getProductsKeysByInterestedSubject.includes(product.name)
+      products.filter((product) =>
+        allAvailableTrialItemBankIds.includes(product.linkedProductId)
       ),
       'id'
     )
@@ -681,11 +653,16 @@ const MyClasses = ({
     return <Spin style={{ marginTop: '80px' }} />
   }
 
-  const widthOfTilesWithMargin = 240 + 8 // 240 is width of tile and 8 is margin-right for each tile
+  const widthOfTilesWithMargin = 240 + 2 // 240 is width of tile and 2 is margin-right for each tile
 
   const GridCountInARow = Math.floor(
     (windowWidth - 120) / widthOfTilesWithMargin
   ) // here 120 is width of side-menu 70px and padding of container 50px
+
+  const getClassCardModular = allActiveClasses.length % GridCountInARow
+  const classEmptyBoxCount = getClassCardModular
+    ? new Array(GridCountInARow - getClassCardModular).fill(1)
+    : []
 
   const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
@@ -710,37 +687,24 @@ const MyClasses = ({
     ? [productData.productId]
     : []
 
-  const showBannerSlide = !loading && totalAssignmentCount < 2
-  const showRecommendedTests =
-    totalAssignmentCount >= 5 && recommendedTests?.length > 0
-
-  const hideGetStartedSection = totalAssignmentCount >= 1
-
-  const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
-
   return (
     <MainContentWrapper padding="30px 25px">
-      {showBannerSlide && (
+      {!loading && allActiveClasses?.length === 0 && (
         <BannerSlider
           bannerSlides={bannerSlides}
           handleBannerModalClose={() => setShowBannerModal(null)}
           bannerActionHandler={bannerActionHandler}
           isBannerModalVisible={showBannerModal}
-          setShowBannerModal={setShowBannerModal}
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
-          windowWidth={windowWidth}
         />
       )}
       <Classes
-        showBannerSlide={showBannerSlide}
         activeClasses={allActiveClasses}
+        emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
-        classData={classData}
-        history={history}
-        hideGetStartedSection={hideGetStartedSection}
       />
-      {showRecommendedTests && (
+      {recommendedTests?.length > 0 && (
         <TestRecommendations
           recommendations={recommendedTests}
           setShowTestCustomizerModal={setShowTestCustomizerModal}
@@ -755,11 +719,6 @@ const MyClasses = ({
           featuredBundles={filteredBundles}
           handleFeatureClick={handleFeatureClick}
           emptyBoxCount={featureEmptyBoxCount}
-          isSignupCompleted={isSignupCompleted}
-          totalAssignmentCount={totalAssignmentCount}
-          isSingaporeMath={isSingaporeMath}
-          isCpm={isCpm}
-          boughtItemBankIds={boughtItemBankIds}
         />
       )}
       <Launch />
@@ -774,7 +733,6 @@ const MyClasses = ({
         clickedBundleId={clickedBundleId}
         setClickedBundleId={setClickedBundleId}
         isCpm={isCpm}
-        interestedSubjects={interestedSubjects}
       />
       {showItemBankTrialUsedModal && (
         <ItemBankTrialUsedModal
@@ -843,7 +801,6 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
-      totalAssignmentCount: state.dashboardTeacher?.allAssignmentCount,
       districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
@@ -859,7 +816,6 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       isDemoPlayground: isDemoPlaygroundUser(state),
-      interestedSubjects: getInterestedSubjectsSelector(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,
@@ -871,7 +827,6 @@ export default compose(
       startTrialAction: slice.actions.startTrialAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
       setUser: setUserAction,
-      loadAssignments: receiveAssignmentsAction,
     }
   )
 )(MyClasses)

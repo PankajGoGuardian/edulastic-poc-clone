@@ -23,8 +23,6 @@ const UPGRADE_PARTIAL_PREMIUM_USER =
   '[admin-upgrade] UPGRADE_PARTIAL_PREMIUM_USER'
 const SAVE_ORG_PERMISSIONS = '[admin] save org permissions'
 const GET_SUBSCRIPTION = '[admin] get subscription'
-const REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION =
-  '[admin] revoke pp sub from user segment'
 
 // ACTION CREATORS
 export const getDistrictDataAction = createAction(GET_DISTRICT_DATA)
@@ -44,9 +42,6 @@ export const upgradePartialPremiumUserAction = createAction(
 )
 export const saveOrgPermissionsAction = createAction(SAVE_ORG_PERMISSIONS)
 export const getSubscriptionAction = createAction(GET_SUBSCRIPTION)
-export const revokePartialPremiumSubscriptionAction = createAction(
-  REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION
-)
 
 // SLICE's
 export const manageSubscriptionsBydistrict = createSlice({
@@ -184,7 +179,7 @@ export const manageSubscriptionsByLicenses = createSlice({
     loading: false,
     licenses: [],
     count: 0,
-    searchType: 'BULK_LICENSES',
+    searchType: null,
   },
   reducers: {
     fetchLicenses: (state) => {
@@ -218,33 +213,6 @@ export const manageSubscriptionsByLicenses = createSlice({
   },
 })
 
-export const bulkUpgrade = createSlice({
-  slice: 'bulkUpgrade',
-  initialState: {
-    loading: false,
-    data: [],
-    error: '',
-    processedFile: null,
-  },
-  reducers: {
-    upgradeByCSV: (state) => {
-      state.loading = true
-      state.data = []
-      state.error = ''
-      state.processedFile = null
-    },
-    upgradeByCSVSuccess: (state, { payload }) => {
-      state.loading = false
-      state.data = payload.data
-      state.processedFile = payload.processedFile
-    },
-    upgradeByCSVError: (state, { payload }) => {
-      state.loading = false
-      state.error = payload
-    },
-  },
-})
-
 // SELECTORS
 const upGradeStateSelector = (state) => state.admin.upgradeData
 
@@ -273,11 +241,6 @@ export const getManageSubscriptionByLicensesData = createSelector(
   ({ manageLicensesData }) => manageLicensesData
 )
 
-export const getBulkUpgradeData = createSelector(
-  upGradeStateSelector,
-  ({ bulkUpgradeData }) => bulkUpgradeData
-)
-
 // REDUCERS
 const reducer = combineReducers({
   districtSearchData: manageSubscriptionsBydistrict.reducer,
@@ -285,7 +248,6 @@ const reducer = combineReducers({
   manageSchoolsData: manageSubscriptionsBySchool.reducer,
   manageUserSegmentData: manageSubscriptionsByUserSegments.reducer,
   manageLicensesData: manageSubscriptionsByLicenses.reducer,
-  bulkUpgradeData: bulkUpgrade.reducer,
 })
 
 // API's
@@ -298,7 +260,6 @@ const {
   saveOrgPermissionsApi,
   updateSubscriptionApi,
   bulkUpdateSubscriptionApi,
-  bulkUpgradeCSVSubscriptionApi,
 } = adminApi
 
 // SAGAS
@@ -340,22 +301,6 @@ function* upgradeDistrict({ payload }) {
           )
         )
       }
-    }
-  } catch (err) {
-    console.error(err)
-  }
-}
-
-function* revokePartialPremiumSub({ payload }) {
-  try {
-    const { subscriptionId, districtId, schoolId } = payload
-    const result = yield call(updateSubscriptionApi, {
-      data: { status: 0 },
-      subscriptionId,
-    })
-    if (result.success) {
-      notification({ type: 'success', msg: result.message })
-      yield put(getSubscriptionAction({ districtId, schoolId }))
     }
   } catch (err) {
     console.error(err)
@@ -578,24 +523,6 @@ function* addSubscriptionSaga({ payload }) {
   }
 }
 
-function* bulkUpgradeByCSVSaga({ payload }) {
-  try {
-    const result = yield call(bulkUpgradeCSVSubscriptionApi, payload)
-    yield put(
-      bulkUpgrade.actions.upgradeByCSVSuccess({
-        data: result || [],
-        processedFile: payload,
-      })
-    )
-  } catch (err) {
-    yield put(bulkUpgrade.actions.upgradeByCSVError(err))
-    notification({
-      type: 'error',
-      msg: 'Failed to upgrade by CSV.',
-    })
-  }
-}
-
 function* watcherSaga() {
   yield all([
     yield takeEvery(GET_DISTRICT_DATA, getDistrictData),
@@ -607,10 +534,6 @@ function* watcherSaga() {
     yield takeEvery(UPGRADE_PARTIAL_PREMIUM_USER, upgradePartialPremiumUser),
     yield takeEvery(SAVE_ORG_PERMISSIONS, saveOrgPermissionsSaga),
     yield takeEvery(GET_SUBSCRIPTION, getSubscriptionSaga),
-    yield takeEvery(
-      REVOKE_PARTIAL_PREMIUM_SUBSCRIPTION,
-      revokePartialPremiumSub
-    ),
     yield takeEvery(
       manageSubscriptionsByLicenses.actions.fetchLicenses,
       fetchLicensesByTypeSaga
@@ -631,7 +554,6 @@ function* watcherSaga() {
       manageSubscriptionsByLicenses.actions.addSubscription,
       addSubscriptionSaga
     ),
-    yield takeEvery(bulkUpgrade.actions.upgradeByCSV, bulkUpgradeByCSVSaga),
   ])
 }
 

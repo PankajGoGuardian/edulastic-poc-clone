@@ -1,18 +1,13 @@
 import { FlexContainer, PointBlockContext } from '@edulastic/common'
-import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import React, { useContext } from 'react'
-import { connect } from 'react-redux'
-import { compose } from 'redux'
 import { questionTitle } from '@edulastic/constants'
 import { AlternateAnswerLink } from '../../styled/ButtonStyles'
 import PointBlock from './PointBlock'
 import AnswerTabs from './AnswerTabs'
 import { Subtitle } from '../../styled/Subtitle'
-import { updateScoreAndValidationAction } from '../../../author/QuestionEditor/ducks'
-import { isPremiumUserSelector } from '../../../author/src/selectors/user'
 
 const CorrectAnswers = ({
   t,
@@ -27,8 +22,6 @@ const CorrectAnswers = ({
   onAdd,
   mixAndMatch,
   questionType,
-  updateScoreAndValidation,
-  isPremiumUser,
   ...rest
 }) => {
   const { unscored = false } = validation || {}
@@ -36,14 +29,6 @@ const CorrectAnswers = ({
   const hidePoint = mixAndMatch && correctTab > 0
 
   const hideAltScoring = hidingScoringBlock && correctTab > 0
-
-  const updateScoreOnBlur = (score) => {
-    if (score < 0) {
-      return
-    }
-    const points = parseFloat(score, 10)
-    updateScoreAndValidation(points)
-  }
 
   return (
     <div
@@ -73,11 +58,8 @@ const CorrectAnswers = ({
               {...rest}
               correctAnsScore={validation?.validResponse?.score}
               unscored={unscored}
-              updateScoreOnBlur={updateScoreOnBlur}
-              isPremiumUser={isPremiumUser}
             />
           )}
-          {unscored && <UnscoredHelperText />}
         </FlexContainer>
         {questionType !== questionTitle.MCQ_TRUE_OR_FALSE && !hidePoint && (
           <FlexContainer alignItems="flex-end">
@@ -122,16 +104,4 @@ CorrectAnswers.defaultProps = {
   questionType: '',
 }
 
-const enhance = compose(
-  withNamespaces('assessment'),
-  connect(
-    (state) => ({
-      isPremiumUser: isPremiumUserSelector(state),
-    }),
-    {
-      updateScoreAndValidation: updateScoreAndValidationAction,
-    }
-  )
-)
-
-export default enhance(CorrectAnswers)
+export default withNamespaces('assessment')(CorrectAnswers)

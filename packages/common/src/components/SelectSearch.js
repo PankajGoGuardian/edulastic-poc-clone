@@ -15,6 +15,7 @@ const SelectSearch = React.forwardRef(
       placeholder,
       value,
       tagsSearch,
+      tagTypes = [],
       ...props
     },
     ref
@@ -40,7 +41,9 @@ const SelectSearch = React.forwardRef(
       searchText,
       title_key: 'title',
       value_key: 'key',
-      optionProps: (item) => ({ associatedNames: item.associatedNames }),
+      ...(tagTypes[0] === 'testitem'
+        ? { optionProps: (item) => ({ associatedNames: item.associatedNames }) }
+        : {}),
     })
     return (
       <SelectInputStyled

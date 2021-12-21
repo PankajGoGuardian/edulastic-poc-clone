@@ -2,15 +2,7 @@ import React, { Fragment, Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
-import {
-  omit,
-  cloneDeep,
-  get,
-  pickBy,
-  identity,
-  isObject,
-  isEmpty,
-} from 'lodash'
+import { cloneDeep, get, pickBy, identity, isObject, isEmpty } from 'lodash'
 import produce from 'immer'
 
 import { TabContainer } from '@edulastic/common'
@@ -212,7 +204,6 @@ class GraphAnswers extends Component {
         draft.points = null
         draft.latex = null
         draft.showConnect = false
-        draft.specialPointOpts = null
         // draft.apiLatex = null
       } else if (prop === 'pointsOnAnEquation' && isObject(value)) {
         draft = {
@@ -267,18 +258,10 @@ class GraphAnswers extends Component {
   get optionsForEvaluation() {
     const { graphData } = this.props
     const { tab } = this.state
-    let options = {}
     if (tab === 0) {
-      options = get(graphData, 'validation.validResponse.options', {})
-    } else {
-      options = get(
-        graphData,
-        `validation.altResponses[${tab - 1}].options`,
-        {}
-      )
+      return get(graphData, 'validation.validResponse.options', {})
     }
-
-    return omit(options, ['comparePoints=False'])
+    return get(graphData, `validation.altResponses[${tab - 1}].options`, {})
   }
 
   render() {

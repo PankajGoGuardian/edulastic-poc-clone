@@ -30,9 +30,7 @@ function Modal({ visible, toggleVisibility, handleDuplicateTest }) {
     <EduButton isGhost onClick={handleClose}>
       Close
     </EduButton>,
-    <EduButton onClick={handleOk} data-cy="continueToClone">
-      Continue to clone
-    </EduButton>,
+    <EduButton onClick={handleOk}>Continue to clone</EduButton>,
   ]
 
   return (

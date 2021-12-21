@@ -93,20 +93,6 @@ export const getFilteredAnswerData = (answer) => {
 }
 
 export const normalizeTouchEvent = (e) => {
-  Object.defineProperties(e, {
-    pageX: {
-      writable: true,
-    },
-    pageY: {
-      writable: true,
-    },
-    clientX: {
-      writable: true,
-    },
-    clientY: {
-      writable: true,
-    },
-  })
   if (e?.nativeEvent?.changedTouches?.length) {
     e.pageX = e.nativeEvent.changedTouches[0].pageX
     e.pageY = e.nativeEvent.changedTouches[0].pageY

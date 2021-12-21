@@ -53,7 +53,6 @@ import {
   testLoadingSelector,
   playerSkinTypeSelector,
   originalPlayerSkinName,
-  getIsPreviewModalVisibleSelector,
 } from '../selectors/test'
 import {
   getAnswersArraySelector,
@@ -80,7 +79,6 @@ import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
-import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
 
 const { playerSkinValues } = testConstants
 
@@ -262,8 +260,7 @@ export function useFullScreenListener({
           if (
             !_path.includes('/uta/') &&
             _disableSave &&
-            !window.sessionStorage.getItem('paused') &&
-            window.sessionStorage.getItem('submitted') === 'no'
+            !window.sessionStorage.getItem('paused')
           ) {
             pauseAssignment({
               history,
@@ -575,25 +572,8 @@ const AssessmentContainer = ({
   saveBlurTime,
   savedBlurTime: blurTimeAlreadySaved,
   loadTest,
-  showUserTTS,
-  isTestPreviewModalVisible,
-  testKeypad,
   ...restProps
 }) => {
-  const _questionsById = useMemo(() => {
-    if (preview && questionsById) {
-      Object.values(questionsById).forEach((question) => {
-        if (
-          Array.isArray(question.symbols) &&
-          testKeypad !== 'item-level-keypad'
-        ) {
-          question.symbols[0] = testKeypad
-        }
-      })
-    }
-    return questionsById
-  }, [questionsById, preview, testKeypad])
-
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
   const itemIndex =
     itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
@@ -645,41 +625,6 @@ const AssessmentContainer = ({
     },
     blurTimeAlreadySaved,
   })
-
-  useEffect(() => {
-    if (document && window) {
-      document.onkeydown = function (e) {
-        // for IE
-        e = e || event
-        var keyCode = window.event ? e.which : e.keyCode
-
-        // check ctrl + f and command + f key
-        if (
-          (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
-          e.keyCode == 70
-        ) {
-          e.preventDefault()
-          return false
-        }
-      }
-    }
-    return () => {
-      document.onkeydown = function (e) {
-        // for IE
-        e = e || event
-        var keyCode = window.event ? e.which : e.keyCode
-
-        // check ctrl + f and command + f key
-        if (
-          (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
-          e.keyCode == 70
-        ) {
-          return true
-        }
-      }
-    }
-  }, [restrictNavigationOut, document, window])
-
   useEffect(() => {
     if (assignmentObj) {
       if (assignmentObj.safeBrowser && !isSEB() && restProps.utaId) {
@@ -755,6 +700,24 @@ const AssessmentContainer = ({
     }
   }, [regradedAssignment?.newTestId])
 
+  const onRegradedModalOk = () => {
+    if (regradedAssignment.newTestId === testId) {
+      loadTest({
+        testId,
+        testActivityId: restProps.utaId,
+        preview,
+        demo,
+        test,
+        groupId,
+        isStudentReport,
+      })
+    }
+    history.push(
+      `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
+    )
+    clearRegradeAssignment()
+    setShowRegradedModal(false)
+  }
   const saveCurrentAnswer = (payload) => {
     const timeSpent = Date.now() - lastTime.current
     saveUserAnswer(currentItem, timeSpent, false, groupId, payload)
@@ -1185,10 +1148,6 @@ const AssessmentContainer = ({
     // When stduent session expired, no need to show `unsaved data` alert on closing/switching page
     window.addEventListener('student-session-expired', removeBeforeUnloadCB)
 
-    window.addEventListener('user-token-expired', removeBeforeUnloadCB)
-
-    window.addEventListener('assignment-regraded', removeBeforeUnloadCB)
-
     const unloadCb = () => {
       if (blockSaveAndContinue) {
         pauseAssignment({
@@ -1211,15 +1170,8 @@ const AssessmentContainer = ({
         'student-session-expired',
         removeBeforeUnloadCB
       )
-      window.removeEventListener('user-token-expired', removeBeforeUnloadCB)
-      window.removeEventListener('assignment-regraded', removeBeforeUnloadCB)
     }
   }, [qid])
-
-  const onRegradedModalOk = () => {
-    window.dispatchEvent(new Event('assignment-regraded'))
-    window.location.href = `/student/assessment/${regradedAssignment.newTestId}/class/${groupId}/uta/${restProps.utaId}/itemId/${items[currentItem]._id}`
-  }
 
   const handleMagnifier = () =>
     updateTestPlayer({ enableMagnifier: !enableMagnifier })
@@ -1227,24 +1179,6 @@ const AssessmentContainer = ({
   const openReferenceModal = () => {
     updateTestPlayer({ isShowReferenceModal: !isShowReferenceModal })
   }
-
-  /**
-   * Visible when user is tts user or current view is author view
-   * @returns {boolean}
-   */
-  const ttsVisibility =
-    (userRole === roleuser.STUDENT && showUserTTS === 'yes') ||
-    isTestPreviewModalVisible
-
-  /**
-   * Checks for at least one tts is completed in a test
-   * @returns {boolean}
-   */
-  const testItemHasAtLeastOneTTS = items.some(({ data }) =>
-    data.questions.some((que) => que.tts && que.tts.taskStatus === 'COMPLETED')
-  )
-
-  const canShowPlaybackOptionTTS = ttsVisibility && testItemHasAtLeastOneTTS
 
   const props = {
     saveCurrentAnswer,
@@ -1282,12 +1216,11 @@ const AssessmentContainer = ({
     referenceDocAttributes,
     studentReportModal,
     hasDrawingResponse,
-    questions: _questionsById,
+    questions: questionsById,
     uploadToS3: uploadFile,
     userWork,
     gotoSummary,
     handleReviewOrSubmit,
-    canShowPlaybackOptionTTS,
     ...restProps,
   }
 
@@ -1324,7 +1257,7 @@ const AssessmentContainer = ({
         docUrl={docUrl}
         hidePause={hidePause}
         annotations={annotations}
-        questionsById={_questionsById}
+        questionsById={questionsById}
         answers={answers}
         answersById={answersById}
         saveProgress={saveProgress}
@@ -1488,7 +1421,6 @@ const enhance = compose(
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
-      testKeypad: testKeypadSelector(state),
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),
       loading: testLoadingSelector(state),
@@ -1501,7 +1433,6 @@ const enhance = compose(
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),
-      showUserTTS: get(state, 'user.user.tts', 'no'),
       userWork: userWorkSelector(state),
       assignmentById: get(state, 'studentAssignment.byId'),
       currentAssignment: get(state, 'studentAssignment.current'),
@@ -1512,7 +1443,6 @@ const enhance = compose(
       restrictNavigationOutAttemptsThreshold:
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
-      isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
     {
       saveUserResponse,

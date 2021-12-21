@@ -147,7 +147,6 @@ class ClozeDropDownDisplay extends Component {
       isPrintPreview,
       hideCorrectAnswer,
       answerScore,
-      setDropDownInUse,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -225,7 +224,6 @@ class ClozeDropDownDisplay extends Component {
           ? item.activity.evaluation
           : evaluation,
       answerScore,
-      setDropDownInUse,
     }
     const displayOptions = orderBy(item.responseIds, ['index']).map(
       (option) => options[option.id]

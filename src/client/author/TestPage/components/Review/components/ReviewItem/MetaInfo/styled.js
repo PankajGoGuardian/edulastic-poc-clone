@@ -2,7 +2,6 @@ import styled from 'styled-components'
 import { Tag } from 'antd'
 
 import { greenDark, greyDarken, themeLightGrayBgColor } from '@edulastic/colors'
-import { IconRubric } from '@edulastic/icons'
 
 export const FirstText = styled.span`
   font-size: 13px;
@@ -52,7 +51,4 @@ export const DokStyled = styled.div`
   font-weight: 600;
   color: #bbbfc4;
   margin-right: 15px;
-`
-export const StyledRubricIcon = styled(IconRubric)`
-  cursor: pointer;
 `

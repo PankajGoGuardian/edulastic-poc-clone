@@ -2,20 +2,15 @@ import React, { Component, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import Qs from 'qs'
 import { withRouter } from 'react-router-dom'
-import { keyBy as _keyBy, get, isEqual } from 'lodash'
-import produce from 'immer'
+import { keyBy as _keyBy, get } from 'lodash'
 import {
   questionType,
   collections as collectionConst,
 } from '@edulastic/constants'
-import memoizeOne from 'memoize-one'
-import connect from 'react-redux/es/connect/connect'
-import { compose } from 'redux'
 import TestItemPreview from '../../../../assessment/components/TestItemPreview'
 import { getRows } from '../../../sharedDucks/itemDetail'
 import { QuestionDiv, Content } from './styled'
 import { formatQuestionLists } from '../../../PrintAssessment/utils'
-import { getDynamicVariablesSetIdForViewResponse } from '../../../ClassBoard/ducks'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -61,7 +56,6 @@ function Preview({ item, passages, evaluation }) {
         multipartItem={multipartItem}
         isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
-        itemIdKey={item._id}
       />
     </Content>
   )
@@ -72,47 +66,8 @@ Preview.propTypes = {
 }
 
 class StudentQuestions extends Component {
-  transformTestItemsForAlgoVariables = (testItems, variablesSetIds) =>
-    produce(testItems, (draft) => {
-      if (!draft) {
-        return
-      }
-
-      const qidSetIds = _keyBy(variablesSetIds, 'qid')
-      for (const [idxItem, item] of draft.entries()) {
-        if (!item.algoVariablesEnabled) {
-          continue
-        }
-        const questions = get(item, 'data.questions', [])
-        for (const [idxQuestion, question] of questions.entries()) {
-          const qid = question.id
-          const setIds = qidSetIds[qid]
-          if (!setIds) {
-            continue
-          }
-          const setKeyId = setIds.setId
-          const examples = get(question, 'variable.examples', [])
-          const variables = get(question, 'variable.variables', {})
-          const example = examples.find((x) => x.key === +setKeyId)
-          if (!example) {
-            continue
-          }
-          for (const variable of Object.keys(variables)) {
-            draft[idxItem].data.questions[idxQuestion].variable.variables[
-              variable
-            ].exampleValue = example[variable]
-          }
-        }
-      }
-    })
-
-  transformTestItems() {
-    const {
-      currentStudent,
-      questionActivities,
-      location,
-      variableSetIds,
-    } = this.props
+  getTestItems() {
+    const { currentStudent, questionActivities, location } = this.props
     const { type, qs } = Qs.parse(location.search, { ignoreQueryPrefix: true })
     // convert query string to array format
     const formattedFilteredQs = formatQuestionLists(qs)
@@ -212,13 +167,8 @@ class StudentQuestions extends Component {
       }
       return [...acc, item]
     }, [])
-    return this.transformTestItemsForAlgoVariables(
-      [...testItems],
-      variableSetIds
-    )
+    return [...testItems]
   }
-
-  getTestItems = memoizeOne(this.transformTestItems, isEqual)
 
   render() {
     const testItems = this.getTestItems()
@@ -249,14 +199,7 @@ class StudentQuestions extends Component {
   }
 }
 
-const withConnect = connect((state, ownProps) => ({
-  variableSetIds: getDynamicVariablesSetIdForViewResponse(state, {
-    showMultipleAttempts: ownProps.isLCBView && !ownProps.isQuestionView,
-    studentId: ownProps.currentStudent.studentId,
-  }),
-}))
-
-export default compose(withConnect, withRouter)(React.memo(StudentQuestions))
+export default withRouter(React.memo(StudentQuestions))
 
 StudentQuestions.propTypes = {
   classResponse: PropTypes.object.isRequired,

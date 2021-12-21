@@ -64,13 +64,12 @@ export const Label = styled.label`
       : '0px 10px 10px 0px'};
   min-height: ${(props) =>
     props.styleType === 'primary' || props.uiStyle.type === 'block'
-      ? 'max-content'
+      ? '35px'
       : 'auto'};
   box-shadow: ${(props) =>
     props.styleType === 'primary' || props.uiStyle.type === 'block'
       ? 'none'
       : 'none'};
-  margin-top: 10px;
   display: flex;
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
@@ -132,14 +131,14 @@ export const OptionsLabel = styled.span`
 
 export const OptionLabelDiv = styled.div`
   flex: 1;
-  z-index: ${({ focusedOptionIndex, indx }) =>
-    focusedOptionIndex == indx ? '9999' : '9998'};
+  z-index: 9999;
   position: relative;
   display: flex;
   align-items: center;
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
   margin-right: 12px;
   margin-bottom: 4px;
+  z-index: 99999;
   background: ${({ uiStyle, selected, label }) =>
     uiStyle.type === 'block' && selected && !label && lightBlue6};
   border: ${(props) =>

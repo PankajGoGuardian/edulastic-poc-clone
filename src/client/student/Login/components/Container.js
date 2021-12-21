@@ -38,7 +38,6 @@ import {
 } from '../ducks'
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
-import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
 
 const FormItem = Form.Item
 
@@ -346,7 +345,6 @@ class LoginContainer extends React.Component {
                             </LoginButton>
                           </FormItem>
                         </Form>
-                        <TermsAndPrivacy signIn />
                       </Col>
                     </FormBody>
                   ) : null}

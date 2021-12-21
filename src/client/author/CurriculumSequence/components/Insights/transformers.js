@@ -37,7 +37,7 @@ export const getFilterData = (modules = [], selectedModules = []) => {
       standards.push(...(ele.standards || []))
       ;(ele.assignments || []).forEach((assignment) =>
         assignment.class?.forEach((cl) =>
-          groups.push({ id: cl._id, name: cl.name, type: cl.type })
+          groups.push({ id: cl._id, name: cl.name })
         )
       )
     })

@@ -438,24 +438,6 @@ function* clearSelectedItemsSaga() {
   if (hasItemsToRemove) yield put(setTestDataAction(updatedTest))
 }
 
-function* removeItemFromTest({ payload }) {
-  const test = yield select(getTestEntitySelector)
-  const selectedItems = yield select(
-    (state) => state?.testsAddItems?.selectedItems
-  )
-
-  const updatedTest = produce(test, (draft) => {
-    draft.itemGroups.forEach((group) => {
-      group.items = group?.items?.filter((x) => x._id !== payload)
-    })
-  })
-
-  yield put(setTestDataAction(updatedTest))
-  yield put(
-    setTestItemsAction((selectedItems || []).filter((x) => x._id !== payload))
-  )
-}
-
 function* locationChangedSaga({ payload }) {
   if (
     !(
@@ -472,7 +454,6 @@ export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_TEST_ITEMS_REQUEST, receiveTestItemsSaga),
     yield takeEvery(CLEAR_SELECTED_ITEMS, clearSelectedItemsSaga),
-    yield takeEvery(DELETE_ITEM_SUCCESS, removeItemFromTest),
     yield takeLatest(REPORT_CONTENT_ERROR_REQUEST, reportContentErrorSaga),
     yield takeLatest(LOCATION_CHANGE, locationChangedSaga),
   ])

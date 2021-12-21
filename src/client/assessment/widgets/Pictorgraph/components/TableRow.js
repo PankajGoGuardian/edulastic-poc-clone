@@ -226,7 +226,6 @@ const TableRow = ({
                     item={resp}
                     fromColumnId={column.id}
                     disableDrag
-                    showElementValues={item.showElementValues}
                   />
                 )
               }
@@ -250,7 +249,6 @@ const TableRow = ({
                   from="column"
                   item={resp}
                   fromColumnId={column.id}
-                  showElementValues={item.showElementValues}
                 />
               )
             })}

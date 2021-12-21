@@ -630,7 +630,6 @@ export const TAB_BUTTONS = [
       buttons.overline_r_arrow,
       buttons.overline_l_r_arrow,
       buttons.over_arc,
-      buttons.hat,
       buttons.under_sim,
       buttons.parentheses,
       buttons.brackets,

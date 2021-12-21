@@ -12,7 +12,6 @@ import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { IconSaveNew } from '@edulastic/icons'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 // actions
 import {
@@ -36,7 +35,6 @@ import {
   ConfigureButton,
   StyledRadioGrp,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
-import { HeaderSaveButton } from '../../../../admin/Common/StyledComponents'
 
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
@@ -418,7 +416,10 @@ class DistrictPolicyForm extends Component {
       : districtPolicy.classlink
       ? _3RDPARTYINTEGRATION.classlink
       : _3RDPARTYINTEGRATION.none
-
+    let saveBtnStr = 'Save'
+    if (Object.prototype.hasOwnProperty.call(districtPolicy, '_id')) {
+      saveBtnStr = 'Save'
+    }
     const { role, saveCanvasKeysRequest, user } = this.props
     const isSchoolLevel = role === 'school-admin'
 
@@ -684,11 +685,9 @@ class DistrictPolicyForm extends Component {
             </StyledCol>
           </StyledRow>
 
-          <HeaderSaveButton>
-            <EduButton isBlue onClick={this.onSave}>
-              <IconSaveNew /> Save
-            </EduButton>
-          </HeaderSaveButton>
+          <StyledRow type="flex" justify="center">
+            <EduButton onClick={this.onSave}>{saveBtnStr}</EduButton>
+          </StyledRow>
         </Form>
 
         {showCanvasConfigrationModal && (

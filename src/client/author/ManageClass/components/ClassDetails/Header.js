@@ -16,9 +16,9 @@ import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { segmentApi, canvasApi } from '@edulastic/api'
+
 // components
-import { Dropdown, Select, Col, Tooltip } from 'antd'
+import { Dropdown, Select, Col } from 'antd'
 
 import GoogleLogin from 'react-google-login'
 import {
@@ -31,7 +31,7 @@ import {
   IconRemove,
 } from '@edulastic/icons'
 import IconArchive from '@edulastic/icons/src/IconArchive'
-
+import { canvasApi } from '@edulastic/api'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import {
   Institution,
@@ -59,19 +59,8 @@ const Option = Select.Option
 const CANVAS = 'canvas'
 const GOOGLE = 'google'
 const CLEVER = 'clever'
-const ATLAS = 'atlas'
-const CLEVER_RESYNC = 'clever resync'
 
 const modalStatus = {}
-
-const WithTooltip = ({ title, children }) =>
-  title ? (
-    <Tooltip data-cy="testNameInToolTip" title={`Assign "${title}"`}>
-      {children}
-    </Tooltip>
-  ) : (
-    <>{children}</>
-  )
 
 const Header = ({
   user,
@@ -94,9 +83,6 @@ const Header = ({
   showCoteacherModal,
   setUpdateCoTeacherModal,
   orgId,
-  syncClassWithAtlas,
-  setSyncClassLoading,
-  isCleverDistrict,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -126,7 +112,6 @@ const Header = ({
     active,
     atlasId = '',
     endDate,
-    atlasProviderName = '',
   } = selectedClass
   const { exitPath } = location?.state || {}
   const isDemoPlaygroundUser = user?.isPlayground
@@ -206,7 +191,6 @@ const Header = ({
 
   const handleCleverSync = () => {
     const classList = [{ ...selectedClass, course: selectedClass?.course?.id }]
-    setSyncClassLoading(true)
     syncClassesWithClever({ classList })
   }
 
@@ -230,15 +214,11 @@ const Header = ({
   const showCleverSyncButton = showSyncButtons && enableCleverSync && cleverId
   const showGoogleSyncButton = showSyncButtons && allowGoogleLogin !== false
   const showCanvasSyncButton = showSyncButtons && allowCanvasLogin
-  const showAtlasReSyncButton = showSyncButtons && atlasId
-  const showCleverReSyncButton = showSyncButtons && cleverId && isCleverDistrict
 
   const options = {
     [CLEVER]: showCleverSyncButton,
     [GOOGLE]: showGoogleSyncButton,
     [CANVAS]: showCanvasSyncButton,
-    [ATLAS]: showAtlasReSyncButton,
-    [CLEVER_RESYNC]: showCleverReSyncButton,
   }
 
   Object.keys(options).forEach((o) => {
@@ -250,7 +230,7 @@ const Header = ({
   const disabledEndDate = (current) => current && current < moment()
 
   const handleUnarchiveClass = () => {
-    if (isClassExpired && type === 'class') {
+    if (isClassExpired) {
       unarchiveClass({
         groupId: _id,
         endDate: new Date(classEndDate).getTime(),
@@ -268,7 +248,6 @@ const Header = ({
   }
 
   const handleCanvasAndGoogleSyncButtonClick = (syncType = '') => {
-    segmentApi.genericEventTrack('syncButtonClicked', { syncType })
     if (
       (selectedClass?.canvasCode &&
         selectedClass.canvasCode.includes('deactivated')) ||
@@ -281,11 +260,6 @@ const Header = ({
     } else if (syncType === 'canvas') {
       handleSyncWithCanvas()
     }
-  }
-
-  const handleAtlasSync = () => {
-    setSyncClassLoading(true)
-    syncClassWithAtlas({ groupIds: [selectedClass._id] })
   }
 
   useEffect(() => {
@@ -381,34 +355,6 @@ const Header = ({
                   </Option>
                 )
               }
-              if (option === ATLAS && atlasProviderName) {
-                return (
-                  <Option
-                    key={index}
-                    data-cy={`sync-option-${index}`}
-                    onClick={handleAtlasSync}
-                  >
-                    <span className="menu-label">
-                      Resync{' '}
-                      {atlasProviderName.toLowerCase() === 'schoology'
-                        ? 'Schoology'
-                        : 'Classlink'}{' '}
-                      Class
-                    </span>
-                  </Option>
-                )
-              }
-              if (option === CLEVER_RESYNC) {
-                return (
-                  <Option
-                    key={index}
-                    data-cy={`sync-option-${index}`}
-                    onClick={handleCleverSync}
-                  >
-                    <span className="menu-label">Resync Clever Class</span>
-                  </Option>
-                )
-              }
               return null
             })}
           </SelectStyled>
@@ -464,32 +410,6 @@ const Header = ({
                 <span>Sync with Canvas Classroom</span>
               </EduButton>
             )}
-            {showAtlasReSyncButton && atlasProviderName && (
-              <EduButton
-                data-cy="syncAtlasClass"
-                isBlue
-                isGhost
-                onClick={handleAtlasSync}
-              >
-                <span>
-                  RESYNC{' '}
-                  {atlasProviderName.toLowerCase() === 'schoology'
-                    ? 'SCHOOLOGY'
-                    : 'CLASSLINK'}{' '}
-                  CLASS
-                </span>
-              </EduButton>
-            )}
-            {showCleverReSyncButton && (
-              <EduButton
-                data-cy="syncCleverClass"
-                isBlue
-                isGhost
-                onClick={handleCleverSync}
-              >
-                <span>RESYNC CLEVER CLASS</span>
-              </EduButton>
-            )}
           </>
         )}
         {active === 1 && (
@@ -497,30 +417,6 @@ const Header = ({
             <IconPlusCircle />
             Add Co-Teacher
           </EduButton>
-        )}
-        {active === 1 && !history?.location?.state?.isAssignPlaylistModule && (
-          <WithTooltip title={history?.location?.state?.testTitle}>
-            <EduButton
-              data-cy="assignTestFromClass"
-              isBlue
-              onClick={() => {
-                segmentApi.genericEventTrack('AssignTestButtonClick', {
-                  ...history?.location?.state,
-                })
-                history.push({
-                  pathname:
-                    history?.location?.state?.testRedirectUrl ||
-                    '/author/tests',
-                  state: {
-                    ...history?.location?.state,
-                  },
-                })
-              }}
-            >
-              <IconAssignment />
-              ASSIGN TEST
-            </EduButton>
-          </WithTooltip>
         )}
         {active !== 1 && (
           <>
@@ -556,7 +452,7 @@ const Header = ({
                   Are you sure you want to Unarchive{' '}
                   <LightGreenSpan>{name}</LightGreenSpan>?
                 </p>
-                {isClassExpired && type === 'class' && (
+                {isClassExpired && (
                   <StyledCol>
                     <p>
                       The end date of class has already passed. Please update

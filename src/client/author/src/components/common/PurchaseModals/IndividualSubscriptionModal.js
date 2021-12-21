@@ -22,31 +22,16 @@ const IndividualSubscriptionModal = ({
   subEndDate,
   isEnterprise,
   isCpm = false,
-  productsMetaData,
-  interestedSubjects = [],
 }) => {
   const productsToshow = useMemo(() => {
-    const subjects = interestedSubjects.map((x) => x.toUpperCase())
-
-    const getProductsKeysByInterestedSubject = Object.keys(
-      Object.fromEntries(
-        Object.entries(productsMetaData).filter(([keys, values]) =>
-          subjects.includes(values.filters)
-        )
-      )
-    )
-
-    const allAvailableItemProduct = itemBankProducts.filter((product) =>
-      getProductsKeysByInterestedSubject.includes(product.name)
-    )
     if (
       isPaidPremium &&
       !showRenewalOptions &&
       (shouldProrate || isEnterprise)
     ) {
-      return allAvailableItemProduct
+      return itemBankProducts
     }
-    return [teacherPremium, ...allAvailableItemProduct]
+    return [teacherPremium, ...itemBankProducts]
   }, [itemBankProducts, isPaidPremium, showRenewalOptions, shouldProrate])
 
   useEffect(() => {

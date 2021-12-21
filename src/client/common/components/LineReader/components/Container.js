@@ -7,7 +7,6 @@ import {
   MaskRight,
   MaskBottom,
   InnerMask,
-  CloseButton,
   InnerMaskDragHandler,
 } from './styled'
 
@@ -98,9 +97,7 @@ const Container = ({ destory }) => {
       enableResizing={{ bottomRight: true }}
       dragHandleClassName="lineReader-dragHandler"
     >
-      <CloseButton onClick={destory}>
-        <IconClose width={10} height={10} />
-      </CloseButton>
+      <IconClose onClick={destory} width={10} height={10} />
 
       <MaskTop height={inner.y} />
       <MaskLeft width={inner.x} />

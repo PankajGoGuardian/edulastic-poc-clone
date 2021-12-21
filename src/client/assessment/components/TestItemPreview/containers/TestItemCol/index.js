@@ -87,7 +87,6 @@ class TestItemCol extends Component {
       isStudentWorkCollapseOpen,
       toggleStudentWorkCollapse,
       colIndex,
-      itemIdKey,
       ...restProps
     } = this.props
     const {
@@ -95,20 +94,15 @@ class TestItemCol extends Component {
       LCBPreviewModal,
       isStudentAttempt,
       isLCBView,
-      isReviewTab,
       isExpressGrader,
       isFeedbackVisible,
       hideCorrectAnswer,
       isShowStudentWork,
-      itemId,
-      testItemId,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
-    const question =
-      questions[`${itemId || testItemId || itemIdKey}_${widget.reference}`] ||
-      questions[widget.reference]
+    const question = questions[widget.reference]
     const prevQActivityForQuestion = previousQuestionActivity.find(
-      (qa) => qa.qid === question?.id
+      (qa) => qa.qid === question.id
     )
     const { fullHeight } = restProps
     if (!question) {
@@ -167,15 +161,7 @@ class TestItemCol extends Component {
           flexDirection={isStudentReport && 'column'}
           justifyContent="flex-start" // @see EV-29020
         >
-          <FlexItem
-            flexGrow="1"
-            maxWidth={
-              (isLCBView ||
-                isReviewTab ||
-                (isStudentAttempt && isPassageWithQuestions)) &&
-              '100%'
-            }
-          >
+          <FlexItem flexGrow="1" maxWidth={isLCBView && '100%'}>
             <QuestionWrapper
               showFeedback={showFeedback && widget?.widgetType !== 'resource'}
               evaluation={evaluation}

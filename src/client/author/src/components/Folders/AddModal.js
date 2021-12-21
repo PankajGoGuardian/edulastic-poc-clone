@@ -53,6 +53,7 @@ const AddModal = ({
   const isEdit = !!folder?._id && isRename
   const initFolderName = isEdit ? folder?.folderName : ''
   const [folderName, setFolderName] = useState(initFolderName)
+
   const handleCloseModal = () => {
     if (isOpenAddModal) {
       closeMoveModal({

@@ -4,7 +4,6 @@ import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import { roleuser, test } from '@edulastic/constants'
 import { evalTypeLabels } from '@edulastic/constants/const/test'
-import { withNamespaces } from '@edulastic/localization'
 import Styled from 'styled-components'
 import {
   AlignRight,
@@ -19,7 +18,6 @@ import TestTypeSelector from '../SimpleOptions/TestTypeSelector'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
-import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 
 const {
   calculatorKeys,
@@ -55,7 +53,6 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  t,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -69,7 +66,6 @@ const TestBehaviorGroupContainer = ({
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
     applyEBSR = false,
-    showRubricToStudents = testSettings.showRubricToStudents,
   } = assignmentSettings
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
@@ -80,10 +76,6 @@ const TestBehaviorGroupContainer = ({
     assessmentSuperPowersShowCalculator,
     assessmentSuperPowersTimedTest,
   } = featuresAvailable
-
-  const isShowRubricToStudentsSettingVisible = showRubricToStudentsSetting(
-    testSettings.itemGroups
-  )
 
   const scoringType =
     assignmentSettings?.scoringType ||
@@ -408,49 +400,6 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Timed TEST */}
 
-      {!testSettings?.isDocBased && (
-        <SettingContainer id="show-rubric-to-students">
-          <DetailsTooltip
-            width={tootltipWidth}
-            title="SHOW RUBRIC TO STUDENTS"
-            content={t('showRubricToStudents.info')}
-            premium={premium}
-            placement="rightTop"
-          />
-          <StyledRow
-            data-cy="show-rubric-to-students-container"
-            gutter={16}
-            mb="15px"
-            height="40"
-          >
-            <Col span={10}>
-              <Label>
-                <span>SHOW RUBRIC TO STUDENTS</span>
-                <DollarPremiumSymbol premium={premium} />
-              </Label>
-            </Col>
-            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
-              <Row style={{ display: 'flex', alignItems: 'center' }}>
-                <AlignSwitchRight
-                  data-cy="show-rubric-to-students-switch"
-                  size="small"
-                  defaultChecked={false}
-                  disabled={
-                    !isShowRubricToStudentsSettingVisible ||
-                    freezeSettings ||
-                    !premium
-                  }
-                  checked={showRubricToStudents}
-                  onChange={(value) =>
-                    overRideSettings('showRubricToStudents', value)
-                  }
-                />
-              </Row>
-            </Col>
-          </StyledRow>
-        </SettingContainer>
-      )}
-
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) && (
@@ -493,7 +442,7 @@ const TestBehaviorGroupContainer = ({
   )
 }
 
-export default withNamespaces('author')(TestBehaviorGroupContainer)
+export default TestBehaviorGroupContainer
 
 const StyledSpan = Styled.span`
   font-weight: ${(props) => props.theme.semiBold};

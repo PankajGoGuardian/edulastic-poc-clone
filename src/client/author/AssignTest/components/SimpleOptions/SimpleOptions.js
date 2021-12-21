@@ -7,14 +7,13 @@ import {
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, isBoolean, keyBy, pick } from 'lodash'
+import { curry, get, isBoolean, keyBy } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { multiFind } from '../../../../common/utils/main'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -29,7 +28,6 @@ import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
-  testTypesToTestSettings,
 } from '../../../TestPage/ducks'
 import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
@@ -91,8 +89,6 @@ class SimpleOptions extends React.Component {
       features: { free, premium },
       testSettings = {},
       assignment,
-      group,
-      fetchStudents,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -121,19 +117,6 @@ class SimpleOptions extends React.Component {
     ) {
       this.overRideSettings('applyEBSR', applyEBSR)
     }
-    if (group?.length === 1) {
-      this.onChange('class', [group[0]._id])
-      fetchStudents({ classId: group[0]._id })
-    }
-  }
-
-  componentDidUpdate(prevProps) {
-    const { group, fetchStudents } = this.props
-    // no class available yet in assign module flow initial render
-    if (group?.length === 1 && prevProps.group?.length === 0) {
-      this.onChange('class', [group[0]._id])
-      fetchStudents({ classId: group[0]._id })
-    }
   }
 
   toggleSettings = () => {
@@ -161,9 +144,6 @@ class SimpleOptions extends React.Component {
       isReleaseScorePremium,
       userRole,
       features: { free, premium },
-      defaultTestTypeProfiles,
-      performanceBands,
-      standardsProficiencies,
     } = this.props
     let { assignment } = this.props
     if (field === 'class') {
@@ -234,36 +214,6 @@ class SimpleOptions extends React.Component {
             state.maxAttempts = 1
             state.maxAnswerChecks = 3
           }
-          state.performanceBand = pick(
-            multiFind(
-              performanceBands,
-              [
-                {
-                  _id:
-                    defaultTestTypeProfiles.performanceBand[
-                      testTypesToTestSettings[value]
-                    ],
-                },
-              ],
-              state.performanceBand
-            ),
-            ['_id', 'name']
-          )
-          state.standardGradingScale = pick(
-            multiFind(
-              standardsProficiencies,
-              [
-                {
-                  _id:
-                    defaultTestTypeProfiles.standardProficiency[
-                      testTypesToTestSettings[value]
-                    ],
-                },
-              ],
-              state.standardGradingScale
-            ),
-            ['_id', 'name']
-          )
           break
         }
         case 'passwordPolicy': {
@@ -534,17 +484,6 @@ class SimpleOptions extends React.Component {
       tootltipWidth = this?.containerRef?.current?.offsetWidth * 0.2 || 0
     }
 
-    const createClassHandler = () => {
-      history.push({
-        pathname: '/author/manageClass/createClass',
-        state: {
-          testRedirectUrl: match?.url,
-          testTitle: testSettings?.title,
-          ...history?.location?.state,
-        },
-      })
-    }
-
     return (
       <OptionConationer isAdvancedView={isAdvancedView} ref={this.containerRef}>
         {isAssigning && (
@@ -602,7 +541,6 @@ class SimpleOptions extends React.Component {
                   isVideoResourcePreviewModal={isVideoResourcePreviewModal}
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
-                  createClassHandler={createClassHandler}
                 />
               </TabContentContainer>
             )}
@@ -753,13 +691,6 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
-      defaultTestTypeProfiles: get(state, 'tests.defaultTestTypeProfiles', {}),
-      performanceBands: get(state, 'performanceBandReducer.profiles', []),
-      standardsProficiencies: get(
-        state,
-        'standardsProficiencyReducer.data',
-        []
-      ),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

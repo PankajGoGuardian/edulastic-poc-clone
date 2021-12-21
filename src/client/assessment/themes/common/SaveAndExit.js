@@ -245,10 +245,16 @@ const StyledButton = styled(Button)`
     height: 40px;
     width: 40px;
   }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    margin-left: 5px;
+    height: 45px;
+    width: 45px;
+  }
 `
 
 export const SaveAndExitButton = styled(StyledButton)`
   width: auto;
+  height: 40px !important;
   background: ${({ theme }) => theme.default.headerRightButtonBgColor};
   border: ${({ theme }) =>
     `1px solid ${theme.default.headerRightButtonBgColor}`};

@@ -13,7 +13,6 @@ import { report as reportTypes, reportUtils } from '@edulastic/constants'
 import { EduButton, SpinLoader, notification } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 
-import { ABSENT } from '@edulastic/constants/const/testActivityStatus'
 import CsvTable from '../../../common/components/tables/CsvTable'
 import { StyledH3, StyledCard, NoDataContainer } from '../../../common/styled'
 import {
@@ -163,13 +162,8 @@ const PerformanceByStudents = ({
     demographicFilters,
   ])
 
-  // Ref: https://snapwiz.atlassian.net/browse/EV-32647
-  // We need to filter absent students data for pie chart calculation based on proficiency bands.
   const pieChartData = useMemo(
-    () =>
-      getTableData(res, demographicFilters, range).filter(
-        (d) => d.progressStatus !== ABSENT
-      ),
+    () => getTableData(res, demographicFilters, range),
     [res, demographicFilters]
   )
 

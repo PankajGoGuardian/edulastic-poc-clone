@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { isEqual } from 'lodash'
 import next from 'immer'
-import { greyThemeDark6 } from '@edulastic/colors'
 import {
   CHECK,
   CLEAR,
@@ -39,7 +38,6 @@ const v1Dimenstions = {
   v1Height: 432,
   v1Width: 750,
 }
-const bgColor = greyThemeDark6
 
 const getColoredElems = (elements, compareResult) => {
   if (
@@ -161,7 +159,6 @@ class NumberLinePlotContainer extends PureComponent {
       layout,
       gridParams,
       graphData,
-      backgroundShapes,
       setElementsStash,
       setQuestionData,
       disableResponse,
@@ -218,17 +215,6 @@ class NumberLinePlotContainer extends PureComponent {
         adjustedHeightWidth.height
       )
 
-      if (backgroundShapes?.values) {
-        const bgShapeValues = backgroundShapes.values.map((el) => ({
-          ...el,
-          colors: {
-            strokeColor: bgColor,
-            fillColor: bgColor,
-          },
-        }))
-        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
-      }
-
       this.setElementsToGraph()
     }
 
@@ -250,7 +236,6 @@ class NumberLinePlotContainer extends PureComponent {
       graphData,
       setQuestionData,
       pointParameters,
-      backgroundShapes,
       view,
     } = this.props
 
@@ -311,20 +296,6 @@ class NumberLinePlotContainer extends PureComponent {
           ...defaultGridParameters(),
           ...gridParams,
         })
-      }
-
-      if (
-        !isEqual(backgroundShapes.values, prevProps.backgroundShapes.values)
-      ) {
-        this._graph.resetBg()
-        const bgShapeValues = backgroundShapes.values.map((el) => ({
-          ...el,
-          colors: {
-            strokeColor: bgColor,
-            fillColor: bgColor,
-          },
-        }))
-        this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
       }
 
       this.setElementsToGraph(prevProps)
@@ -540,7 +511,6 @@ class NumberLinePlotContainer extends PureComponent {
               id={this._graphId}
               margin={layout.margin}
               className="jxgbox __prevent-page-break"
-              data-cy="jsxBox"
             />
             {view === EDIT && !disableResponse && (
               <>

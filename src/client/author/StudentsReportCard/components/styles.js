@@ -261,10 +261,6 @@ export const StyledTable = styled(Table)`
             text-align: center;
             font-weight: 900;
             border: 0;
-            ${({ tdPadding }) =>
-              tdPadding
-                ? `padding-top: ${tdPadding};padding-bottom: ${tdPadding};`
-                : ''}
           }
         }
       }

@@ -13,7 +13,6 @@ const Circles = ({
   evaluation,
   isExpressGrader,
   isAnswerModifiable,
-  isStudentResponseEdited = false,
 }) => {
   const _sectors = []
   const offset = fractionNumber * sectors
@@ -56,12 +55,7 @@ const Circles = ({
                 ? themeColorLight1
                 : darkRed1
           }
-          if (
-            isExpressGrader &&
-            (isAnswerModifiable ||
-              (!isAnswerModifiable && isStudentResponseEdited)) &&
-            _selected
-          ) {
+          if (isExpressGrader && isAnswerModifiable && _selected) {
             // in expressGrader and edit response is on
             // override default highlighting with darkBlue color when selected
             fillColor = themeColorLight1

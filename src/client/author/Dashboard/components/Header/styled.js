@@ -92,11 +92,3 @@ export const StyledLink = styled.span`
   text-transform: uppercase;
   margin-right: 20px;
 `
-
-export const CloseButton = styled.div`
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 18px;
-  cursor: pointer;
-`

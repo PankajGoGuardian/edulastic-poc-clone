@@ -16,7 +16,7 @@ export const attemptSummarySelector = createSelector(
   userWorkSelector,
   (items, answers, bookmarks, userWork) => {
     const blocks = {}
-    let allQids = []
+    const allQids = []
     const itemWiseQids = {}
     const partiallyAttemptedItems = []
     const nonQuestionTypes = [
@@ -68,7 +68,7 @@ export const attemptSummarySelector = createSelector(
             blocks[q.id] = userWorkUsed || attempted ? 1 : 0
           }
         })
-        allQids = allQids.concat(questions.map((q) => q.id))
+        allQids.concat(questions.map((q) => q.id))
         itemWiseQids[item._id] = questions.map((q) => q.id)
       }
 

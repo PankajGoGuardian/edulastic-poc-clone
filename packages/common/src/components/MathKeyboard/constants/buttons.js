@@ -233,7 +233,6 @@ import Group6104 from '../assets/decorations/6104.svg'
 import Group6102 from '../assets/decorations/6102.svg'
 import Group6103 from '../assets/decorations/6103.svg'
 import Group1053 from '../assets/decorations/1053.svg'
-import Group1055 from '../assets/decorations/1055.svg'
 import Group1052 from '../assets/decorations/1052.svg'
 import Group1023 from '../assets/decorations/1023.svg'
 import Group1025 from '../assets/decorations/1025.svg'
@@ -315,76 +314,65 @@ export const one = {
   handler: '1',
   command: 'write',
   label: <CustomImage src={number1} width={6} height={14} />,
-  dataCy: 'no1',
 }
 export const two = {
   value: '2',
   handler: '2',
   command: 'write',
   label: <CustomImage src={number2} width={8} height={14} />,
-  dataCy: 'no2',
 }
 export const three = {
   value: '3',
   handler: '3',
   command: 'write',
   label: <CustomImage src={number3} width={8} height={14} />,
-  dataCy: 'no3',
 }
 export const four = {
   value: '4',
   handler: '4',
   command: 'write',
   label: <CustomImage src={number4} width={10} height={15} />,
-  dataCy: 'no4',
 }
 export const five = {
   value: '5',
   handler: '5',
   command: 'write',
   label: <CustomImage src={number5} width={8} height={14} />,
-  dataCy: 'no5',
 }
 export const six = {
   value: '6',
   handler: '6',
   command: 'write',
   label: <CustomImage src={number6} width={8} height={14} />,
-  dataCy: 'no6',
 }
 export const seven = {
   value: '7',
   handler: '7',
   command: 'write',
   label: <CustomImage src={number7} width={8} height={14} />,
-  dataCy: 'no7',
 }
 export const eight = {
   value: '8',
   handler: '8',
   command: 'write',
   label: <CustomImage src={number8} width={8} height={14} />,
-  dataCy: 'no8',
 }
 export const nine = {
   value: '9',
   handler: '9',
   command: 'write',
   label: <CustomImage src={number9} width={8} height={14} />,
-  dataCy: 'no9',
 }
 export const zero = {
   value: '0',
   handler: '0',
   command: 'write',
   label: <CustomImage src={number0} width={8} height={14} />,
-  dataCy: 'no0',
 }
 export const dotDecimal = {
   value: '.',
   handler: '.',
   label: <CustomImage src={decimal} width={35} height={25} />,
-  dataCy: 'dotDecimal',
 }
 export const equalSymbol = {
   value: '=',
@@ -392,7 +380,6 @@ export const equalSymbol = {
   label: <CustomImage src={equal} width={12} height={8} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'equalSymbol',
 }
 
 export const notEqual = {
@@ -400,7 +387,6 @@ export const notEqual = {
   label: <CustomImage src={Group3527} width={12} height={32} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'notEqual',
 }
 
 export const plusButton = {
@@ -408,7 +394,6 @@ export const plusButton = {
   label: <CustomImage src={Group2735} width={14} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'plusButton',
 }
 
 export const minusButton = {
@@ -416,7 +401,6 @@ export const minusButton = {
   label: <CustomImage src={Group2737} width={12} height={8} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'minusButton',
 }
 
 export const asterisk = {
@@ -424,7 +408,6 @@ export const asterisk = {
   label: <CustomImage src={Group2734} width={14} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'asterisk',
 }
 
 export const divide = {
@@ -432,7 +415,6 @@ export const divide = {
   label: <CustomImage src={Group2788} width={12} height={12} />,
   command: 'cmd',
   types: ['all'],
-  dataCy: 'divide',
 }
 
 export const multiplication = {
@@ -440,7 +422,6 @@ export const multiplication = {
   label: <CustomImage src={Group2736} width={18} height={18} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'multiplication',
 }
 
 export const fraction = {
@@ -450,7 +431,6 @@ export const fraction = {
   label: <CustomImage src={fractionIcon} width={25} height={40} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'fraction',
 }
 
 export const slashDivide = {
@@ -460,7 +440,6 @@ export const slashDivide = {
   label: <CustomImage src={Group3341} width={10} height={20} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'slashDivide',
 }
 
 export const parentheses = {
@@ -469,7 +448,6 @@ export const parentheses = {
   label: <CustomImage src={Group944} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'parentheses',
 }
 
 export const parentheses_start = {
@@ -477,7 +455,6 @@ export const parentheses_start = {
   label: '(',
   types: ['all'],
   command: 'write',
-  dataCy: 'parentheses_start',
 }
 
 export const parentheses_end = {
@@ -485,7 +462,6 @@ export const parentheses_end = {
   label: ')',
   types: ['all'],
   command: 'write',
-  dataCy: 'parentheses_end',
 }
 
 export const slash = {
@@ -494,7 +470,6 @@ export const slash = {
   label: <CustomImage src={Group3341} width={10} height={20} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'slash',
 }
 
 export const timesDot = {
@@ -502,7 +477,6 @@ export const timesDot = {
   label: <CustomImage src={dot} width={6} height={6} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'timesDot',
 }
 
 export const brackets = {
@@ -510,7 +484,6 @@ export const brackets = {
   label: <CustomImage src={Group944v2} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'brackets',
 }
 
 export const brackets_start = {
@@ -518,7 +491,6 @@ export const brackets_start = {
   label: '[',
   types: ['all'],
   command: 'write',
-  dataCy: 'brackets_start',
 }
 
 export const brackets_end = {
@@ -526,7 +498,6 @@ export const brackets_end = {
   label: ']',
   types: ['all'],
   command: 'write',
-  dataCy: 'brackets_end',
 }
 
 export const mixedFraction = {
@@ -537,7 +508,6 @@ export const mixedFraction = {
   types: ['all'],
   numToMove: 3,
   command: 'write',
-  dataCy: 'mixedFraction',
 }
 
 export const exponent = {
@@ -546,7 +516,6 @@ export const exponent = {
   label: <CustomImage src={Group942} width={30} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'exponent',
 }
 
 export const exponentBase = {
@@ -556,7 +525,6 @@ export const exponentBase = {
   types: ['all'],
   command: 'write',
   numToMove: 2,
-  dataCy: 'exponentBase',
 }
 
 export const subscriptBase = {
@@ -566,7 +534,6 @@ export const subscriptBase = {
   types: ['all'],
   command: 'write',
   numToMove: 2,
-  dataCy: 'subscriptBase',
 }
 
 export const sqrt = {
@@ -575,7 +542,6 @@ export const sqrt = {
   label: <CustomImage src={sqrtIcon} width={25} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sqrt',
 }
 
 export const mixedSqrt = {
@@ -584,7 +550,6 @@ export const mixedSqrt = {
   types: ['all'],
   numToMove: 2,
   command: 'write',
-  dataCy: 'mixedSqrt',
 }
 
 export const mixedSqrtTree = {
@@ -594,7 +559,6 @@ export const mixedSqrtTree = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'mixedSqrtTree',
 }
 
 export const plusMinus = {
@@ -602,7 +566,6 @@ export const plusMinus = {
   label: <CustomImage src={Group2475} width={11} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'plusMinus',
 }
 
 export const greaterEqual = {
@@ -610,7 +573,6 @@ export const greaterEqual = {
   label: <CustomImage src={Group6199} width={12} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'greaterEqual',
 }
 
 export const strictGreater = {
@@ -618,7 +580,6 @@ export const strictGreater = {
   label: <CustomImage src={GreaterThan} width={11} height={11} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'strictGreater',
 }
 
 export const lessEqual = {
@@ -626,7 +587,6 @@ export const lessEqual = {
   label: <CustomImage src={Group4065} width={12} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'lessEqual',
 }
 
 export const strictLess = {
@@ -634,7 +594,6 @@ export const strictLess = {
   label: <CustomImage src={LessThan} width={11} height={11} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'strictLess',
 }
 
 export const distance = {
@@ -643,7 +602,6 @@ export const distance = {
   label: <CustomImage src={Group993} width={30} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'distance',
 }
 
 export const degree = {
@@ -652,7 +610,6 @@ export const degree = {
   labelcy: 'degree',
   types: ['all'],
   command: 'cmd',
-  dataCy: 'degree',
 }
 
 export const imaginaryUnit = {
@@ -660,7 +617,6 @@ export const imaginaryUnit = {
   label: <CustomImage src={Group2715} width={8} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'imaginaryUnit',
 }
 
 export const eulerNumber = {
@@ -669,7 +625,6 @@ export const eulerNumber = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'eulerNumber',
 }
 
 export const infinity = {
@@ -677,7 +632,6 @@ export const infinity = {
   label: <CustomImage src={Path3367} width={14} height={8} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'infinity',
 }
 
 export const logSymbol = {
@@ -685,7 +639,6 @@ export const logSymbol = {
   label: <CustomImage src={log} width={24} height={24} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'logSymbol',
 }
 
 export const sine = {
@@ -694,7 +647,6 @@ export const sine = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'sine',
 }
 
 export const arcsine = {
@@ -703,7 +655,6 @@ export const arcsine = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'arcsine',
 }
 
 export const cosine = {
@@ -712,7 +663,6 @@ export const cosine = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'cosine',
 }
 
 export const arccosine = {
@@ -721,7 +671,6 @@ export const arccosine = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'arccosine',
 }
 
 export const tangent = {
@@ -730,7 +679,6 @@ export const tangent = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'tangent',
 }
 
 export const arctangent = {
@@ -739,7 +687,6 @@ export const arctangent = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'arctangent',
 }
 
 export const cotangent = {
@@ -748,7 +695,6 @@ export const cotangent = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'cotangent',
 }
 
 export const arccot = {
@@ -756,7 +702,6 @@ export const arccot = {
   label: <CustomImage src={Trig2248} width={33} height={18} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'arccot',
 }
 
 export const arcsecant = {
@@ -765,7 +710,6 @@ export const arcsecant = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'arcsecant',
 }
 
 export const arccosecant = {
@@ -774,7 +718,6 @@ export const arccosecant = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'arccosecant',
 }
 
 export const secant = {
@@ -783,7 +726,6 @@ export const secant = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'secant',
 }
 
 export const cosecant = {
@@ -792,7 +734,6 @@ export const cosecant = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'cosecant',
 }
 
 export const sinh = {
@@ -801,7 +742,6 @@ export const sinh = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'sinh',
 }
 
 export const inverse_sinh = {
@@ -810,7 +750,6 @@ export const inverse_sinh = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'inverse_sinh',
 }
 
 export const cosh = {
@@ -819,7 +758,6 @@ export const cosh = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'cosh',
 }
 
 export const inverse_cosh = {
@@ -828,7 +766,6 @@ export const inverse_cosh = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'inverse_cosh',
 }
 
 export const sech = {
@@ -837,7 +774,6 @@ export const sech = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'sech',
 }
 
 export const inverse_sech = {
@@ -846,7 +782,6 @@ export const inverse_sech = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'inverse_sech',
 }
 
 export const csch = {
@@ -855,7 +790,6 @@ export const csch = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'csch',
 }
 
 export const inverse_csch = {
@@ -864,7 +798,6 @@ export const inverse_csch = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'inverse_csch',
 }
 
 export const tanh = {
@@ -873,7 +806,6 @@ export const tanh = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'tanh',
 }
 
 export const inverse_tanh = {
@@ -882,7 +814,6 @@ export const inverse_tanh = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'inverse_tanh',
 }
 
 export const coth = {
@@ -891,7 +822,6 @@ export const coth = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'coth',
 }
 
 export const inverse_coth = {
@@ -900,7 +830,6 @@ export const inverse_coth = {
   types: ['all'],
   command: 'write',
   numToMove: 1,
-  dataCy: 'inverse_coth',
 }
 
 export const gmol_inverse = {
@@ -908,7 +837,6 @@ export const gmol_inverse = {
   label: <CustomImage src={Group1054} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'gmol_inverse',
 }
 
 export const mm2 = {
@@ -916,7 +844,6 @@ export const mm2 = {
   label: <CustomImage src={Group8395} width={39} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'mm2',
 }
 
 export const cm2 = {
@@ -924,7 +851,6 @@ export const cm2 = {
   label: <CustomImage src={Group8396} width={31} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'cm2',
 }
 
 export const m2 = {
@@ -932,7 +858,6 @@ export const m2 = {
   label: <CustomImage src={Group8394} width={23} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'm2',
 }
 
 export const km2 = {
@@ -940,7 +865,6 @@ export const km2 = {
   label: <CustomImage src={Group8393} width={32} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'km2',
 }
 
 export const si_ug = {
@@ -948,7 +872,6 @@ export const si_ug = {
   label: <CustomImage src={Group8860} width={18} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_ug',
 }
 
 export const si_mg = {
@@ -956,7 +879,6 @@ export const si_mg = {
   label: <CustomImage src={Group8861} width={24} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_mg',
 }
 
 export const si_g = {
@@ -964,7 +886,6 @@ export const si_g = {
   label: <CustomImage src={Group3378} width={10} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_g',
 }
 
 export const si_kg = {
@@ -972,7 +893,6 @@ export const si_kg = {
   label: <CustomImage src={Group8862} width={19} height={18} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_kg',
 }
 
 export const si_m = {
@@ -980,7 +900,6 @@ export const si_m = {
   label: <CustomImage src={Group8397} width={14} height={10} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_m',
 }
 
 export const si_km = {
@@ -988,7 +907,6 @@ export const si_km = {
   label: <CustomImage src={Group8398} width={24} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_km',
 }
 
 export const si_um = {
@@ -996,7 +914,6 @@ export const si_um = {
   label: <CustomImage src={Group8870} width={24} height={20} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_um',
 }
 
 export const si_us = {
@@ -1004,7 +921,6 @@ export const si_us = {
   label: <CustomImage src={Group8863} width={18} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_us',
 }
 
 export const si_ms = {
@@ -1012,7 +928,6 @@ export const si_ms = {
   label: <CustomImage src={Group8864} width={25} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_ms',
 }
 
 export const si_s = {
@@ -1020,7 +935,6 @@ export const si_s = {
   label: <CustomImage src={Path3530} width={8} height={20} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_s',
 }
 
 export const si_ml = {
@@ -1028,7 +942,6 @@ export const si_ml = {
   label: <CustomImage src={Path3532} width={26} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_ml',
 }
 
 export const si_l = {
@@ -1036,7 +949,6 @@ export const si_l = {
   label: <CustomImage src={Path3531} width={8} height={20} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_l',
 }
 
 export const si_per_ms = {
@@ -1044,7 +956,6 @@ export const si_per_ms = {
   label: <CustomImage src={Group8865} width={32} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_per_ms',
 }
 
 export const si_per_ms2 = {
@@ -1052,7 +963,6 @@ export const si_per_ms2 = {
   label: <CustomImage src={Group8866} width={38} height={25} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_per_ms2',
 }
 
 export const si_mm = {
@@ -1060,7 +970,6 @@ export const si_mm = {
   label: <CustomImage src={Group8871} width={30} height={10} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_mm',
 }
 
 export const si_cm = {
@@ -1068,7 +977,6 @@ export const si_cm = {
   label: <CustomImage src={Group8872} width={23} height={10} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_cm',
 }
 
 export const si_mm3 = {
@@ -1076,7 +984,6 @@ export const si_mm3 = {
   label: <CustomImage src={Group8867} width={42} height={28} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_mm3',
 }
 
 export const si_cm3 = {
@@ -1084,7 +991,6 @@ export const si_cm3 = {
   label: <CustomImage src={Group8868} width={32} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_cm3',
 }
 
 export const si_cm_sec = {
@@ -1092,7 +998,6 @@ export const si_cm_sec = {
   label: <CustomImage src={Group8873} width={40} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_cm_sec',
 }
 
 export const si_m3 = {
@@ -1100,7 +1005,6 @@ export const si_m3 = {
   label: <CustomImage src={Group8869} width={23} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_m3',
 }
 
 export const si_km3 = {
@@ -1108,7 +1012,6 @@ export const si_km3 = {
   label: <CustomImage src={Group8878} width={30} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_km3',
 }
 
 export const si_kgm3 = {
@@ -1116,7 +1019,6 @@ export const si_kgm3 = {
   label: <CustomImage src={Group8558} width={40} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_kgm3',
 }
 
 export const si_km_sec = {
@@ -1124,7 +1026,6 @@ export const si_km_sec = {
   label: <CustomImage src={Group8874} width={40} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_km_sec',
 }
 
 export const si_gcm3 = {
@@ -1132,7 +1033,6 @@ export const si_gcm3 = {
   label: <CustomImage src={Group8559} width={40} height={20} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'si_gcm3',
 }
 
 export const us_in2 = {
@@ -1140,7 +1040,6 @@ export const us_in2 = {
   label: <CustomImage src={Group8557} width={22} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_in2',
 }
 
 export const us_oz = {
@@ -1148,7 +1047,6 @@ export const us_oz = {
   label: <CustomImage src={Path3534} width={19} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_oz',
 }
 
 export const us_lb = {
@@ -1156,7 +1054,6 @@ export const us_lb = {
   label: <CustomImage src={Path3535} width={16} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_lb',
 }
 
 export const us_in = {
@@ -1164,14 +1061,12 @@ export const us_in = {
   label: <CustomImage src={Path3536} width={16} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_in',
 }
 export const us_ft = {
   handler: '\\text{ft}',
   label: <CustomImage src={Path3537} width={14} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_ft',
 }
 
 export const us_ft2 = {
@@ -1179,7 +1074,6 @@ export const us_ft2 = {
   label: <CustomImage src={Group8877} width={20} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_ft2',
 }
 
 export const us_feet = {
@@ -1187,7 +1081,6 @@ export const us_feet = {
   label: 'feet',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_feet',
 }
 
 export const us_sq_mi = {
@@ -1195,7 +1088,6 @@ export const us_sq_mi = {
   label: 'sq mi',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_sq_mi',
 }
 
 export const us_yard = {
@@ -1203,7 +1095,6 @@ export const us_yard = {
   label: 'yard',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_yard',
 }
 
 export const us_acre = {
@@ -1211,7 +1102,6 @@ export const us_acre = {
   label: <CustomImage src={GroupAcre} width={38} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_acre',
 }
 
 export const us_cup = {
@@ -1219,7 +1109,6 @@ export const us_cup = {
   label: 'cup',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_cup',
 }
 
 export const us_qt = {
@@ -1227,7 +1116,6 @@ export const us_qt = {
   label: 'qt',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_qt',
 }
 
 export const us_tbsp = {
@@ -1235,7 +1123,6 @@ export const us_tbsp = {
   label: 'tbsp',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_tbsp',
 }
 
 export const us_ton = {
@@ -1243,7 +1130,6 @@ export const us_ton = {
   label: 'ton',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_ton',
 }
 
 export const us_tsp = {
@@ -1251,7 +1137,6 @@ export const us_tsp = {
   label: 'tsp',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_tsp',
 }
 
 export const us_mph = {
@@ -1259,7 +1144,6 @@ export const us_mph = {
   label: 'mph',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_mph',
 }
 
 export const us_fps = {
@@ -1267,7 +1151,6 @@ export const us_fps = {
   label: 'fps',
   types: ['all'],
   command: 'write',
-  dataCy: 'us_fps',
 }
 
 export const us_ft_2 = {
@@ -1279,7 +1162,6 @@ export const us_ft_2 = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'us_ft_2',
 }
 
 export const us_in_3 = {
@@ -1291,7 +1173,6 @@ export const us_in_3 = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'us_in_3',
 }
 
 export const us_mi_3 = {
@@ -1303,7 +1184,6 @@ export const us_mi_3 = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'us_mi_3',
 }
 
 export const us_ft_3 = {
@@ -1315,7 +1195,6 @@ export const us_ft_3 = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'us_ft_3',
 }
 
 export const us_mi = {
@@ -1323,7 +1202,6 @@ export const us_mi = {
   label: <CustomImage src={Path3538} width={22} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_mi',
 }
 
 export const us_mi2 = {
@@ -1331,7 +1209,6 @@ export const us_mi2 = {
   label: <CustomImage src={Group8876} width={30} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_mi2',
 }
 
 export const us_fl_oz = {
@@ -1339,7 +1216,6 @@ export const us_fl_oz = {
   label: <CustomImage src={Path3539} width={34} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_fl_oz',
 }
 
 export const us_pt = {
@@ -1347,7 +1223,6 @@ export const us_pt = {
   label: <CustomImage src={Path3540} width={18} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_pt',
 }
 
 export const us_gal = {
@@ -1355,7 +1230,6 @@ export const us_gal = {
   label: <CustomImage src={Path3541} width={24} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_gal',
 }
 
 export const us_second = {
@@ -1363,7 +1237,6 @@ export const us_second = {
   label: <CustomImage src={Path3512} width={40} height={9} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_second',
 }
 
 export const us_minutes = {
@@ -1371,7 +1244,6 @@ export const us_minutes = {
   label: <CustomImage src={Path3548} width={32} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_minutes',
 }
 
 export const us_hour = {
@@ -1379,7 +1251,6 @@ export const us_hour = {
   label: <CustomImage src={Path3549} width={40} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'us_hour',
 }
 
 export const similarity = {
@@ -1387,7 +1258,6 @@ export const similarity = {
   label: <CustomImage src={Group3167} width={16} height={5} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'similarity',
 }
 
 export const equivalence = {
@@ -1395,7 +1265,6 @@ export const equivalence = {
   label: <CustomImage src={Group2751} width={14} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'equivalence',
 }
 
 export const approximation = {
@@ -1403,7 +1272,6 @@ export const approximation = {
   label: <CustomImage src={Group2745} width={16} height={12} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'approximation',
 }
 
 export const simeq = {
@@ -1411,7 +1279,6 @@ export const simeq = {
   label: <CustomImage src={Group2752} width={16} height={12} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'simeq',
 }
 
 export const congruent = {
@@ -1419,7 +1286,6 @@ export const congruent = {
   label: <CustomImage src={Group3168} width={16} height={12} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'congruent',
 }
 
 export const lneq = {
@@ -1427,7 +1293,6 @@ export const lneq = {
   label: <CustomImage src={Group8360} width={11} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'lneq',
 }
 
 export const gnep = {
@@ -1435,7 +1300,6 @@ export const gnep = {
   label: <CustomImage src={Group8380} width={11} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'gnep',
 }
 
 export const strictSubset = {
@@ -1443,7 +1307,6 @@ export const strictSubset = {
   label: <CustomImage src={Path2256} width={12} height={12} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'strictSubset',
 }
 
 export const strictSuperset = {
@@ -1451,7 +1314,6 @@ export const strictSuperset = {
   label: <CustomImage src={Path2253} width={12} height={12} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'strictSuperset',
 }
 
 export const subset = {
@@ -1459,7 +1321,6 @@ export const subset = {
   label: <CustomImage src={Path2263} width={12} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'subset',
 }
 
 export const nesubset = {
@@ -1467,7 +1328,6 @@ export const nesubset = {
   label: <CustomImage src={Path2263} width={12} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'nesubset',
 }
 
 export const superset = {
@@ -1475,7 +1335,6 @@ export const superset = {
   label: <CustomImage src={Path2261} width={12} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'superset',
 }
 
 export const belongsTo = {
@@ -1483,7 +1342,6 @@ export const belongsTo = {
   label: <CustomImage src={Group2267} width={14} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'belongsTo',
 }
 
 export const notBelongsTo = {
@@ -1491,7 +1349,6 @@ export const notBelongsTo = {
   label: <CustomImage src={Path2266} width={14} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'notBelongsTo',
 }
 
 export const union = {
@@ -1499,7 +1356,6 @@ export const union = {
   label: <CustomImage src={Path2252} width={12} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'union',
 }
 
 export const intersection = {
@@ -1507,7 +1363,6 @@ export const intersection = {
   label: <CustomImage src={Path2254} width={12} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'intersection',
 }
 
 export const square = {
@@ -1515,7 +1370,6 @@ export const square = {
   label: <CustomImage src={Group3180} width={14} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'square',
 }
 
 export const triangle = {
@@ -1523,7 +1377,6 @@ export const triangle = {
   label: <CustomImage src={Group3169} width={12} height={15} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'triangle',
 }
 
 export const bigcirc = {
@@ -1531,7 +1384,6 @@ export const bigcirc = {
   label: <CustomImage src={Group3177} width={12} height={12} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'bigcirc',
 }
 
 export const o_dot = {
@@ -1539,7 +1391,6 @@ export const o_dot = {
   label: <CustomImage src={Group3170} width={16} height={16} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'o_dot',
 }
 
 export const parallelogram = {
@@ -1547,7 +1398,6 @@ export const parallelogram = {
   label: <CustomImage src={Group3172} width={31} height={11} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'parallelogram',
 }
 
 export const parallel = {
@@ -1555,7 +1405,6 @@ export const parallel = {
   label: <CustomImage src={Group3163} width={7} height={21} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'parallel',
 }
 
 export const perp = {
@@ -1563,7 +1412,6 @@ export const perp = {
   label: <CustomImage src={Group3171} width={16} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'perp',
 }
 
 export const mathbb_c = {
@@ -1571,7 +1419,6 @@ export const mathbb_c = {
   label: <CustomImage src={Path3362} width={13} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_c',
 }
 
 export const mathbb_q = {
@@ -1579,7 +1426,6 @@ export const mathbb_q = {
   label: <CustomImage src={Path3357} width={16} height={20} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_q',
 }
 
 export const mathbb_r = {
@@ -1587,7 +1433,6 @@ export const mathbb_r = {
   label: <CustomImage src={Path3358} width={13} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_r',
 }
 
 export const mathbb_n = {
@@ -1595,7 +1440,6 @@ export const mathbb_n = {
   label: <CustomImage src={Path3504} width={13} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_n',
 }
 
 export const mathbb_u = {
@@ -1603,7 +1447,6 @@ export const mathbb_u = {
   label: <CustomImage src={Path3505} width={14} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_u',
 }
 
 export const mathbb_w = {
@@ -1611,7 +1454,6 @@ export const mathbb_w = {
   label: <CustomImage src={Path3360} width={22} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_w',
 }
 
 export const mathbb_z = {
@@ -1619,7 +1461,6 @@ export const mathbb_z = {
   label: <CustomImage src={Path3359} width={12} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mathbb_z',
 }
 
 export const angle = {
@@ -1627,7 +1468,6 @@ export const angle = {
   label: <CustomImage src={Path2744} width={14} height={12} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'angle',
 }
 
 export const m_angle = {
@@ -1635,7 +1475,6 @@ export const m_angle = {
   label: <CustomImage src={Group6101} width={29} height={10} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'm_angle',
 }
 
 export const nparallel = {
@@ -1643,7 +1482,6 @@ export const nparallel = {
   label: <CustomImage src={Group3181} width={10} height={20} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'nparallel',
 }
 
 export const ni_symbole = {
@@ -1651,7 +1489,6 @@ export const ni_symbole = {
   label: <CustomImage src={Path2262} width={12} height={12} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'ni_symbole',
 }
 
 export const not_ni_symbole = {
@@ -1659,7 +1496,6 @@ export const not_ni_symbole = {
   label: <CustomImage src={Path2743} width={12} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'not_ni_symbole',
 }
 
 export const forall = {
@@ -1667,7 +1503,6 @@ export const forall = {
   label: <CustomImage src={Path2792} width={13} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'forall',
 }
 
 export const diamond = {
@@ -1675,7 +1510,6 @@ export const diamond = {
   label: <CustomImage src={Path3526} width={17} height={20} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'diamond',
 }
 
 export const diamondsuit = {
@@ -1683,7 +1517,6 @@ export const diamondsuit = {
   label: <CustomImage src={Path3523} width={17} height={20} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'diamondsuit',
 }
 
 export const star = {
@@ -1691,7 +1524,6 @@ export const star = {
   label: <CustomImage src={Path3529} width={24} height={37} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'star',
 }
 
 export const clubsuit = {
@@ -1699,7 +1531,6 @@ export const clubsuit = {
   label: <CustomImage src={Path3522} width={21} height={21} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'clubsuit',
 }
 
 export const spadesuit = {
@@ -1707,7 +1538,6 @@ export const spadesuit = {
   label: <CustomImage src={Path3524} width={21} height={21} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'spadesuit',
 }
 
 export const heartsuit = {
@@ -1715,7 +1545,6 @@ export const heartsuit = {
   label: <CustomImage src={Path3525} width={21} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'heartsuit',
 }
 
 export const backslash = {
@@ -1723,7 +1552,6 @@ export const backslash = {
   label: <CustomImage src={Path3521} width={10} height={38} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'backslash',
 }
 
 export const flat = {
@@ -1731,7 +1559,6 @@ export const flat = {
   label: <CustomImage src={Path3501} width={10} height={34} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'flat',
 }
 
 export const natural = {
@@ -1739,7 +1566,6 @@ export const natural = {
   label: <CustomImage src={Path3502} width={10} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'natural',
 }
 
 export const sharp = {
@@ -1747,7 +1573,6 @@ export const sharp = {
   label: <CustomImage src={Path3503} width={10} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sharp',
 }
 
 export const leftarrow = {
@@ -1755,7 +1580,6 @@ export const leftarrow = {
   label: <CustomImage src={Group8879} width={23} height={11} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'leftarrow',
 }
 
 export const rightarrow = {
@@ -1763,7 +1587,6 @@ export const rightarrow = {
   label: <CustomImage src={Group8880} width={23} height={11} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'rightarrow',
 }
 
 export const uparrow = {
@@ -1771,7 +1594,6 @@ export const uparrow = {
   label: <CustomImage src={Group8881} width={10} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'uparrow',
 }
 
 export const downarrow = {
@@ -1779,7 +1601,6 @@ export const downarrow = {
   label: <CustomImage src={Group8882} width={10} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'downarrow',
 }
 
 export const longleftrightarrow = {
@@ -1787,7 +1608,6 @@ export const longleftrightarrow = {
   label: <CustomImage src={Group8883} width={24} height={10} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'longleftrightarrow',
 }
 
 export const rightleftharpoons = {
@@ -1795,7 +1615,6 @@ export const rightleftharpoons = {
   label: <CustomImage src={Group8854} width={19} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'rightleftharpoons',
 }
 
 export const rightleftarrows = {
@@ -1803,7 +1622,6 @@ export const rightleftarrows = {
   label: <CustomImage src={Chem520} width={19} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'rightleftarrows',
 }
 
 export const lceil = {
@@ -1811,7 +1629,6 @@ export const lceil = {
   label: <CustomImage src={Group8885} width={8} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'lceil',
 }
 
 export const rceil = {
@@ -1819,7 +1636,6 @@ export const rceil = {
   label: <CustomImage src={Group8886} width={8} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'rceil',
 }
 
 export const big_rightarrow = {
@@ -1827,7 +1643,6 @@ export const big_rightarrow = {
   label: <CustomImage src={Group8887} width={20} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'big_rightarrow',
 }
 
 export const v_dot = {
@@ -1836,7 +1651,6 @@ export const v_dot = {
   types: ['all'],
   command: 'cmd',
   name: 'vdots',
-  dataCy: 'v_dot',
 }
 
 export const l_dots = {
@@ -1845,7 +1659,6 @@ export const l_dots = {
   types: ['all'],
   command: 'cmd',
   name: 'ldots',
-  dataCy: 'l_dots',
 }
 
 export const d_dots = {
@@ -1854,7 +1667,6 @@ export const d_dots = {
   types: ['all'],
   command: 'cmd',
   name: 'ldoddotsts',
-  dataCy: 'd_dots',
 }
 
 export const therefore = {
@@ -1862,7 +1674,6 @@ export const therefore = {
   label: <CustomImage src={Group8891} width={17} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'therefore',
 }
 
 export const because = {
@@ -1870,7 +1681,6 @@ export const because = {
   label: <CustomImage src={Group8892} width={17} height={16} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'because',
 }
 
 export const v_two_dots = {
@@ -1878,7 +1688,6 @@ export const v_two_dots = {
   label: <CustomImage src={Group8893} width={6} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'v_two_dots',
 }
 
 export const neg = {
@@ -1893,7 +1702,6 @@ export const neg = {
   ),
   types: ['all'],
   command: 'cmd',
-  dataCy: 'neg',
 }
 
 export const nrightarrow = {
@@ -1901,7 +1709,6 @@ export const nrightarrow = {
   label: <CustomImage src={Group8896} width={25} height={11} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'nrightarrow',
 }
 
 export const nleftrightarrow = {
@@ -1909,7 +1716,6 @@ export const nleftrightarrow = {
   label: <CustomImage src={Group8895} width={25} height={11} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'nleftrightarrow',
 }
 
 export const alpha = {
@@ -1917,7 +1723,6 @@ export const alpha = {
   label: <CustomImage src={Path3391} width={14} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'alpha',
 }
 
 export const beta = {
@@ -1925,7 +1730,6 @@ export const beta = {
   label: <CustomImage src={Path3399} width={13} height={24} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'beta',
 }
 
 export const gamma = {
@@ -1933,7 +1737,6 @@ export const gamma = {
   label: <CustomImage src={Path3405} width={13} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'gamma',
 }
 
 export const delta = {
@@ -1941,7 +1744,6 @@ export const delta = {
   label: <CustomImage src={Path3411} width={13} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'natudeltaral',
 }
 
 export const varepsilon = {
@@ -1949,7 +1751,6 @@ export const varepsilon = {
   label: <CustomImage src={Path3417} width={14} height={14} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'varepsilon',
 }
 
 export const zeta = {
@@ -1957,7 +1758,6 @@ export const zeta = {
   label: <CustomImage src={Path3423} width={14} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'zeta',
 }
 
 export const eta = {
@@ -1965,7 +1765,6 @@ export const eta = {
   label: <CustomImage src={Path3429} width={12} height={19} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'eta',
 }
 
 export const theta = {
@@ -1973,7 +1772,6 @@ export const theta = {
   label: <CustomImage src={Path3436} width={12} height={19} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'theta',
 }
 
 export const vartheta = {
@@ -1981,7 +1779,6 @@ export const vartheta = {
   label: <CustomImage src={Path3444} width={16} height={19} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'vartheta',
 }
 
 export const iota = {
@@ -1989,7 +1786,6 @@ export const iota = {
   label: <CustomImage src={Path3392} width={8} height={15} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'iota',
 }
 
 export const kappa = {
@@ -1997,7 +1793,6 @@ export const kappa = {
   label: <CustomImage src={Path3400} width={12} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'kappa',
 }
 
 export const lambda = {
@@ -2005,7 +1800,6 @@ export const lambda = {
   label: <CustomImage src={Path3406} width={13} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'lambda',
 }
 
 export const mu = {
@@ -2013,7 +1807,6 @@ export const mu = {
   label: <CustomImage src={Path3412} width={13} height={19} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'mu',
 }
 
 export const nu = {
@@ -2021,7 +1814,6 @@ export const nu = {
   label: <CustomImage src={Path3418} width={13} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'nu',
 }
 
 export const xi = {
@@ -2029,7 +1821,6 @@ export const xi = {
   label: <CustomImage src={Path3424} width={11} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'xi',
 }
 
 export const greek_o = {
@@ -2037,7 +1828,6 @@ export const greek_o = {
   label: <CustomImage src={Path3430} width={13} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'greek_o',
 }
 
 export const piSymbol = {
@@ -2045,7 +1835,6 @@ export const piSymbol = {
   label: <CustomImage src={Path3437} width={15} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'piSymbol',
 }
 
 export const varpi = {
@@ -2053,7 +1842,6 @@ export const varpi = {
   label: <CustomImage src={Path3395} width={21} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'varpi',
 }
 
 export const rho = {
@@ -2061,7 +1849,6 @@ export const rho = {
   label: <CustomImage src={Path3394} width={12} height={19} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'rho',
 }
 
 export const varsigma = {
@@ -2069,7 +1856,6 @@ export const varsigma = {
   label: <CustomImage src={Path3401} width={10} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'varsigma',
 }
 
 export const sigma = {
@@ -2077,7 +1863,6 @@ export const sigma = {
   label: <CustomImage src={Path3407} width={13} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sigma',
 }
 
 export const tau = {
@@ -2085,7 +1870,6 @@ export const tau = {
   label: <CustomImage src={Path3413} width={11} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'tau',
 }
 
 export const upsilon = {
@@ -2093,7 +1877,6 @@ export const upsilon = {
   label: <CustomImage src={Path3419} width={12} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upsilon',
 }
 
 export const varphi = {
@@ -2101,7 +1884,6 @@ export const varphi = {
   label: <CustomImage src={Path3425} width={16} height={19} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'varphi',
 }
 
 export const phi = {
@@ -2109,7 +1891,6 @@ export const phi = {
   label: <CustomImage src={Path3432} width={18} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'phi',
 }
 
 export const chi = {
@@ -2117,7 +1898,6 @@ export const chi = {
   label: <CustomImage src={Path3431} width={14} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'chi',
 }
 
 export const psi = {
@@ -2125,7 +1905,6 @@ export const psi = {
   label: <CustomImage src={Path3438} width={16} height={24} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'psi',
 }
 
 export const omega = {
@@ -2133,7 +1912,6 @@ export const omega = {
   label: <CustomImage src={Path3396} width={17} height={13} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'omega',
 }
 
 export const upper_alpha = {
@@ -2141,7 +1919,6 @@ export const upper_alpha = {
   label: <CustomImage src={Path3402} width={16} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_alpha',
 }
 
 export const upper_beta = {
@@ -2149,7 +1926,6 @@ export const upper_beta = {
   label: <CustomImage src={Path3408} width={12} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_beta',
 }
 
 export const upper_gamma = {
@@ -2157,7 +1933,6 @@ export const upper_gamma = {
   label: <CustomImage src={Path3414} width={10} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_gamma',
 }
 
 export const upper_delta = {
@@ -2165,7 +1940,6 @@ export const upper_delta = {
   label: <CustomImage src={Path3420} width={14} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_delta',
 }
 
 export const upper_epsilon = {
@@ -2173,7 +1947,6 @@ export const upper_epsilon = {
   label: <CustomImage src={Path3426} width={10} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_epsilon',
 }
 
 export const upper_zeta = {
@@ -2181,7 +1954,6 @@ export const upper_zeta = {
   label: <CustomImage src={Path3433} width={12} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_zeta',
 }
 
 export const upper_eta = {
@@ -2189,7 +1961,6 @@ export const upper_eta = {
   label: <CustomImage src={Path3441} width={14} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_eta',
 }
 
 export const upper_theta = {
@@ -2197,7 +1968,6 @@ export const upper_theta = {
   label: <CustomImage src={Path3439} width={16} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_theta',
 }
 
 export const upper_iota = {
@@ -2205,7 +1975,6 @@ export const upper_iota = {
   label: <CustomImage src={Path3397} width={4} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_iota',
 }
 
 export const upper_kappa = {
@@ -2213,7 +1982,6 @@ export const upper_kappa = {
   label: <CustomImage src={Path3403} width={13} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_kappa',
 }
 
 export const upper_lambda = {
@@ -2221,7 +1989,6 @@ export const upper_lambda = {
   label: <CustomImage src={Path3409} width={15} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_lambda',
 }
 
 export const upper_mu = {
@@ -2230,7 +1997,6 @@ export const upper_mu = {
   types: ['all'],
   command: 'cmd',
   name: 'Mu',
-  dataCy: 'upper_mu',
 }
 
 export const upper_nu = {
@@ -2239,7 +2005,6 @@ export const upper_nu = {
   types: ['all'],
   command: 'cmd',
   name: 'Nu',
-  dataCy: 'upper_nu',
 }
 
 export const upper_xi = {
@@ -2247,7 +2012,6 @@ export const upper_xi = {
   label: <CustomImage src={Path3427} width={12} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_xi',
 }
 
 export const upper_omicron = {
@@ -2256,7 +2020,6 @@ export const upper_omicron = {
   types: ['all'],
   command: 'cmd',
   name: 'Omicron',
-  dataCy: 'upper_omicron',
 }
 
 export const upper_pi = {
@@ -2264,7 +2027,6 @@ export const upper_pi = {
   label: <CustomImage src={Path3442} width={13} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_pi',
 }
 
 export const upper_rho = {
@@ -2272,7 +2034,6 @@ export const upper_rho = {
   label: <CustomImage src={Path3454} width={11} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_rho',
 }
 
 export const upper_sigma = {
@@ -2280,7 +2041,6 @@ export const upper_sigma = {
   label: <CustomImage src={Path3455} width={12} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_sigma',
 }
 
 export const upper_tau = {
@@ -2288,7 +2048,6 @@ export const upper_tau = {
   label: <CustomImage src={Path3456} width={13} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_tau',
 }
 
 export const upper_upsilon = {
@@ -2296,7 +2055,6 @@ export const upper_upsilon = {
   label: <CustomImage src={Path3457} width={14} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_upsilon',
 }
 
 export const upper_phi = {
@@ -2304,7 +2062,6 @@ export const upper_phi = {
   label: <CustomImage src={Path3458} width={17} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_phi',
 }
 
 export const upper_chi = {
@@ -2312,7 +2069,6 @@ export const upper_chi = {
   label: <CustomImage src={Path3459} width={15} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_chi',
 }
 
 export const upper_psi = {
@@ -2320,7 +2076,6 @@ export const upper_psi = {
   label: <CustomImage src={Path3460} width={18} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_psi',
 }
 
 export const upper_omega = {
@@ -2328,7 +2083,6 @@ export const upper_omega = {
   label: <CustomImage src={Path3461} width={17} height={17} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'upper_omega',
 }
 
 export const bmatrix = {
@@ -2337,7 +2091,6 @@ export const bmatrix = {
   types: ['all'],
   command: 'cmd',
   name: 'bmatrix',
-  dataCy: 'bmatrix',
 }
 
 export const bmatrix_v_one = {
@@ -2346,7 +2099,6 @@ export const bmatrix_v_one = {
   types: ['all'],
   command: 'write',
   name: 'bmatrix',
-  dataCy: 'bmatrix_v_one',
 }
 
 export const bmatrix_h_one = {
@@ -2355,7 +2107,6 @@ export const bmatrix_h_one = {
   types: ['all'],
   command: 'write',
   name: 'bmatrix',
-  dataCy: 'bmatrix_h_one',
 }
 
 export const bmatrix_three = {
@@ -2364,7 +2115,6 @@ export const bmatrix_three = {
   types: ['all'],
   command: 'write',
   name: 'tripleMatrix',
-  dataCy: 'bmatrix_three',
 }
 
 export const vmatrix = {
@@ -2372,7 +2122,6 @@ export const vmatrix = {
   label: <CustomImage src={Group1015} width={38} height={22} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'vmatrix',
 }
 
 export const shift_matrix = {
@@ -2381,7 +2130,6 @@ export const shift_matrix = {
   types: ['all'],
   command: 'keystroke',
   name: 'shiftSpacebar',
-  dataCy: 'shift_matrix',
 }
 
 export const shift_enter_matrix = {
@@ -2390,7 +2138,6 @@ export const shift_enter_matrix = {
   types: ['all'],
   command: 'keystroke',
   name: 'shiftEnter',
-  dataCy: 'shift_enter_matrix',
 }
 
 export const left_matrix = {
@@ -2398,7 +2145,6 @@ export const left_matrix = {
   label: <CustomImage src={Group1016} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'left_matrix',
 }
 
 export const left_matrix_two = {
@@ -2407,7 +2153,6 @@ export const left_matrix_two = {
   types: ['all'],
   command: 'write',
   numToMove: 4,
-  dataCy: 'left_matrix_two',
 }
 
 export const right_matrix = {
@@ -2415,7 +2160,6 @@ export const right_matrix = {
   label: <CustomImage src={Group1017} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'right_matrix',
 }
 
 // TODO: implement this command
@@ -2424,7 +2168,6 @@ export const sq_matrix = {
   label: <CustomImage src={Group1018} width={32} height={37} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'sq_matrix',
 }
 
 export const plus_matrix = {
@@ -2432,7 +2175,6 @@ export const plus_matrix = {
   label: <CustomImage src={Group1019} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'plus_matrix',
 }
 
 export const line_matrix = {
@@ -2440,7 +2182,6 @@ export const line_matrix = {
   label: <CustomImage src={Group1021} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'line_matrix',
 }
 
 export const minus_matrix = {
@@ -2448,7 +2189,6 @@ export const minus_matrix = {
   label: <CustomImage src={Group1003} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'minus_matrix',
 }
 
 export const time_matrix = {
@@ -2456,7 +2196,6 @@ export const time_matrix = {
   label: <CustomImage src={Group1002} width={30} height={39.5} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'time_matrix',
 }
 
 export const xrightarrow = {
@@ -2464,7 +2203,6 @@ export const xrightarrow = {
   label: <CustomImage src={Group1022} width={23} height={37} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'xrightarrow',
 }
 
 export const overline = {
@@ -2472,7 +2210,6 @@ export const overline = {
   label: <CustomImage src={Group6104} width={16} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'overline',
 }
 
 export const overline_r_arrow = {
@@ -2480,7 +2217,6 @@ export const overline_r_arrow = {
   label: <CustomImage src={Group6102} width={18} height={31} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'overline_r_arrow',
 }
 
 export const overline_l_r_arrow = {
@@ -2488,7 +2224,6 @@ export const overline_l_r_arrow = {
   label: <CustomImage src={Group6103} width={20} height={31} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'overline_l_r_arrow',
 }
 
 export const over_arc = {
@@ -2496,15 +2231,6 @@ export const over_arc = {
   label: <CustomImage src={Group1053} width={14} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'over_arc',
-}
-
-export const hat = {
-  handler: '\\hat',
-  label: <CustomImage src={Group1055} width={14} height={28} />,
-  types: ['all'],
-  command: 'cmd',
-  dataCy: 'hat_symbole',
 }
 
 export const under_sim = {
@@ -2512,7 +2238,6 @@ export const under_sim = {
   label: <CustomImage src={Group1052} width={14} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'under_sim',
 }
 
 export const braces = {
@@ -2520,7 +2245,6 @@ export const braces = {
   label: <CustomImage src={Group1023} width={34} height={22} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'braces',
 }
 
 export const left_bracket = {
@@ -2528,7 +2252,6 @@ export const left_bracket = {
   label: <CustomImage src={Group1025} width={30} height={22} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'left_bracket',
 }
 
 export const right_bracket = {
@@ -2536,7 +2259,6 @@ export const right_bracket = {
   label: <CustomImage src={Group1045} width={30} height={22} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'right_bracket',
 }
 
 export const sum = {
@@ -2544,7 +2266,6 @@ export const sum = {
   label: <CustomImage src={Group1030} width={11} height={38} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sum',
 }
 
 export const sum_symbol = {
@@ -2552,7 +2273,6 @@ export const sum_symbol = {
   label: <CustomImage src={Group1031} width={11} height={38} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sum_symbol',
 }
 
 export const sum_bottom = {
@@ -2560,7 +2280,6 @@ export const sum_bottom = {
   label: <CustomImage src={Group1032} width={11} height={38} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sum_bottom',
 }
 
 export const sum_upper = {
@@ -2568,7 +2287,6 @@ export const sum_upper = {
   label: <CustomImage src={Group1033} width={11} height={38} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'sum_upper',
 }
 
 export const no_subset = {
@@ -2576,7 +2294,6 @@ export const no_subset = {
   label: <CustomImage src={Path3478} width={14} height={20} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'no_subset',
 }
 
 export const no_subset_eq = {
@@ -2584,7 +2301,6 @@ export const no_subset_eq = {
   label: <CustomImage src={Path3479} width={12} height={18} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'no_subset_eq',
 }
 
 export const empty_set = {
@@ -2592,7 +2308,6 @@ export const empty_set = {
   label: <CustomImage src={Path3476} width={13} height={15} />,
   types: ['all', 'sets'],
   command: 'cmd',
-  dataCy: 'empty_set',
 }
 
 export const exist_set = {
@@ -2600,7 +2315,6 @@ export const exist_set = {
   label: <CustomImage src={Path3475} width={8} height={14} />,
   types: ['all', 'discrete'],
   command: 'cmd',
-  dataCy: 'exist_set',
 }
 
 export const circle_plus = {
@@ -2608,7 +2322,6 @@ export const circle_plus = {
   label: <CustomImage src={Path3477} width={14} height={14} />,
   types: ['all', 'discrete'],
   command: 'cmd',
-  dataCy: 'circle_plus',
 }
 
 export const derivative = {
@@ -2616,7 +2329,6 @@ export const derivative = {
   label: <CustomImage src={Group6105} width={35} height={39} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'derivative',
 }
 
 export const derivative_alpha = {
@@ -2624,7 +2336,6 @@ export const derivative_alpha = {
   label: <CustomImage src={Group6106} width={35} height={39} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'derivative_alpha',
 }
 
 export const integral = {
@@ -2632,7 +2343,6 @@ export const integral = {
   label: <CustomImage src={Group1029} width={28} height={39} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'integral',
 }
 
 export const limit = {
@@ -2640,7 +2350,6 @@ export const limit = {
   label: <CustomImage src={Group1058} width={34} height={26} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'limit',
 }
 
 export const frac_H = {
@@ -2648,7 +2357,6 @@ export const frac_H = {
   label: <CustomImage src={Group1012} width={24} height={40} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'frac_H',
 }
 
 export const mathrm_H = {
@@ -2656,7 +2364,6 @@ export const mathrm_H = {
   label: <CustomImage src={Group1013} width={29} height={40} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'mathrm_H',
 }
 
 export const mathrm = {
@@ -2665,7 +2372,6 @@ export const mathrm = {
   types: ['all'],
   command: 'write',
   numToMove: 3,
-  dataCy: 'kamathrmppa',
 }
 
 export const mathrm_under = {
@@ -2674,7 +2380,6 @@ export const mathrm_under = {
   types: ['all'],
   command: 'write',
   numToMove: 3,
-  dataCy: 'mathrm_under',
 }
 
 export const mathrm_both = {
@@ -2683,7 +2388,6 @@ export const mathrm_both = {
   types: ['all'],
   command: 'write',
   numToMove: 4,
-  dataCy: 'mathrm_both',
 }
 
 export const mathrm_both_l = {
@@ -2692,7 +2396,6 @@ export const mathrm_both_l = {
   types: ['all'],
   command: 'write',
   numToMove: 4,
-  dataCy: 'mathrm_both_l',
 }
 
 export const mathrm_braces = {
@@ -2701,7 +2404,6 @@ export const mathrm_braces = {
   types: ['all'],
   command: 'write',
   numToMove: 2,
-  dataCy: 'mathrm_braces',
 }
 
 export const mathrm_parentheses = {
@@ -2710,7 +2412,6 @@ export const mathrm_parentheses = {
   types: ['all'],
   command: 'write',
   numToMove: 2,
-  dataCy: 'mathrm_parentheses',
 }
 
 export const mathrm_brackets = {
@@ -2719,7 +2420,6 @@ export const mathrm_brackets = {
   types: ['all'],
   command: 'write',
   numToMove: 2,
-  dataCy: 'mathrm_brackets',
 }
 
 export const mathrm_mol = {
@@ -2727,7 +2427,6 @@ export const mathrm_mol = {
   label: <CustomImage src={Chem820} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'mathrm_mol',
 }
 
 export const overset_H = {
@@ -2735,7 +2434,6 @@ export const overset_H = {
   label: <CustomImage src={Group1014} width={14} height={31} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'overset_H',
 }
 
 export const log_under = {
@@ -2743,7 +2441,6 @@ export const log_under = {
   label: <CustomImage src={Group8507} width={34} height={26} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'log_under',
 }
 
 export const ln_left = {
@@ -2751,7 +2448,6 @@ export const ln_left = {
   label: <CustomImage src={Group3497} width={13} height={13} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'ln_left',
 }
 
 export const e_number = {
@@ -2759,7 +2455,6 @@ export const e_number = {
   label: 'e',
   types: ['all'],
   command: 'cmd',
-  dataCy: 'e_number',
 }
 
 export const nabla = {
@@ -2767,7 +2462,6 @@ export const nabla = {
   label: <CustomImage src={Group8819} width={27} height={13} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'nabla',
 }
 
 export const nabla_times = {
@@ -2775,7 +2469,6 @@ export const nabla_times = {
   label: <CustomImage src={Group8820} width={35} height={13} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'nabla_times',
 }
 
 export const delta_value = {
@@ -2783,7 +2476,6 @@ export const delta_value = {
   label: <CustomImage src={Group8821} width={27} height={13} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'delta_value',
 }
 
 export const delta_multiple = {
@@ -2791,7 +2483,6 @@ export const delta_multiple = {
   label: <CustomImage src={Group8822} width={34} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'delta_multiple',
 }
 
 export const integral_single = {
@@ -2799,7 +2490,6 @@ export const integral_single = {
   label: <CustomImage src={Group3521} width={10} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'integral_single',
 }
 
 // TODO: implement iint command in mathQuill
@@ -2808,7 +2498,6 @@ export const integral_double = {
   label: <CustomImage src={Group8823} width={24} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'integral_double',
 }
 
 export const closed_contour = {
@@ -2816,7 +2505,6 @@ export const closed_contour = {
   label: <CustomImage src={Group8824} width={20} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'closed_contour',
 }
 
 // TODO: implement surfintegral command in mathQuill
@@ -2825,7 +2513,6 @@ export const closed_surface = {
   label: <CustomImage src={Group8825} width={26} height={28} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'closed_surface',
 }
 
 export const prod_symbol = {
@@ -2833,7 +2520,6 @@ export const prod_symbol = {
   label: <CustomImage src={Group8826} width={12.5} height={20.8} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'prod_symbol',
 }
 
 export const prod = {
@@ -2841,7 +2527,6 @@ export const prod = {
   label: <CustomImage src={Group8827} width={10.8} height={42} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'prod',
 }
 
 export const prod_bottom = {
@@ -2849,7 +2534,6 @@ export const prod_bottom = {
   label: <CustomImage src={Group8828} width={11} height={31} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'prod_bottom',
 }
 
 export const prod_upper = {
@@ -2857,7 +2541,6 @@ export const prod_upper = {
   label: <CustomImage src={Group8829} width={11} height={31} />,
   types: ['all'],
   command: 'cmd',
-  dataCy: 'prod_upper',
 }
 
 export const n_a = {
@@ -2865,7 +2548,6 @@ export const n_a = {
   label: <CustomImage src={Chem720} width={24} height={25} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'n_a',
 }
 
 export const k_b = {
@@ -2873,7 +2555,6 @@ export const k_b = {
   label: <CustomImage src={Chem620} width={24} height={25} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'k_b',
 }
 
 export const bytes = {
@@ -2888,7 +2569,6 @@ export const bytes = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'bytes',
 }
 
 export const megabyte = {
@@ -2896,7 +2576,6 @@ export const megabyte = {
   label: <CustomImage src={GroupMegabyte} width={26} height={22} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'megabyte',
 }
 
 export const gigabit = {
@@ -2904,7 +2583,6 @@ export const gigabit = {
   label: <CustomImage src={GroupGigabit} width={26} height={22} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'gigabit',
 }
 
 export const mol = {
@@ -2912,7 +2590,6 @@ export const mol = {
   label: <CustomImage src={GroupMol} width={34} height={24} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'mol',
 }
 
 export const gmol = {
@@ -2927,7 +2604,6 @@ export const gmol = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'gmol',
 }
 
 export const gmliter = {
@@ -2942,7 +2618,6 @@ export const gmliter = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'gmliter',
 }
 
 export const fog = {
@@ -2950,7 +2625,6 @@ export const fog = {
   label: <CustomImage src={Group9295} width={32} height={18} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'fog',
 }
 
 export const percent = {
@@ -2958,7 +2632,6 @@ export const percent = {
   label: <CustomImage src={Group3528} width={15} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'percent',
 }
 
 export const vdash = {
@@ -2973,7 +2646,6 @@ export const vdash = {
   ),
   types: ['all'],
   command: 'cmd',
-  dataCy: 'vdash',
 }
 
 export const circ = {
@@ -2988,7 +2660,6 @@ export const circ = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'circ',
 }
 
 export const vee = {
@@ -3003,7 +2674,6 @@ export const vee = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'vee',
 }
 
 export const barvee = {
@@ -3011,7 +2681,6 @@ export const barvee = {
   label: <CustomImage src={Group9298} width={11} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'barvee',
 }
 
 export const wedge = {
@@ -3026,7 +2695,6 @@ export const wedge = {
   ),
   types: ['all'],
   command: 'write',
-  dataCy: 'wedge',
 }
 
 export const barwedge = {
@@ -3034,5 +2702,4 @@ export const barwedge = {
   label: <CustomImage src={Group9297} width={11} height={14} />,
   types: ['all'],
   command: 'write',
-  dataCy: 'barwedge',
 }

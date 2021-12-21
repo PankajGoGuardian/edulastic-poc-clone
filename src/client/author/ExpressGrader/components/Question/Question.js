@@ -90,8 +90,7 @@ class Question extends Component {
     } = this.props
 
     let selectedItems = testItems.filter(
-      ({ _id, data: { questions = [] } = {} }) =>
-        _id === record.testItemId &&
+      ({ data: { questions = [] } = {} }) =>
         questions.filter(({ id }) => id === record._id).length > 0
     )
 

@@ -229,7 +229,6 @@ class ModuleRow extends Component {
         from: 'myPlaylist',
         fromText: 'My Playlist',
         toUrl: `playlists/playlist/${playlistId}/use-this`,
-        isAssignPlaylistModule: true,
       },
     })
   }

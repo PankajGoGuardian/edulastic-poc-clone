@@ -63,7 +63,6 @@ const PlayerHeader = ({
   blockNavigationToAnsweredQuestions,
   LCBPreviewModal = false,
   isPremiumContentWithoutAccess = false,
-  canShowPlaybackOptionTTS,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -116,7 +115,6 @@ const PlayerHeader = ({
       />
       <SettingsModal
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-        canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
       />
       <Header ref={headerRef}>
         <HeaderMainMenu skinb="true">

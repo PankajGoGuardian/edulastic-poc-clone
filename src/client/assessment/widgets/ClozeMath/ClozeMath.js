@@ -23,7 +23,6 @@ import ClozeMathPreview from './ClozeMathPreview'
 import MathFormulaOptions from '../MathFormula/components/MathFormulaOptions'
 import { checkAnswerAction } from '../../../author/src/actions/testItem'
 import { setQuestionDataAction } from '../../../author/src/actions/question'
-import { setDropDownInUseAction } from '../../../student/Sidebar/ducks'
 import { changePreviewAction } from '../../../author/src/actions/view'
 import { ContentArea } from '../../styled/ContentArea'
 
@@ -290,7 +289,6 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       checkAnswer: checkAnswerAction,
       changePreview: changePreviewAction,
-      setDropDownInUse: setDropDownInUseAction,
     }
   )
 )

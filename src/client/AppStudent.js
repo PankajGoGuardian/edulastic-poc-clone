@@ -33,7 +33,6 @@ import AppUpdate from './common/components/AppUpdate'
 import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
-import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
@@ -195,7 +194,6 @@ class App extends Component {
         )}
         <AppUpdate visible={showAppUpdate} />
         <StudentSessionExpiredModal />
-        <UserTokenExpiredModal />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
@@ -213,12 +211,14 @@ class App extends Component {
                 redirectRoute.toLocaleLowerCase() && redirectRoute !== '' ? (
                 <Redirect exact to={redirectRoute} />
               ) : null} */}
+
               <PrivateRoute
                 path="/home"
                 component={Dashboard}
                 notifications={[NotificationListener]}
                 redirectPath={redirectRoute}
               />
+
               <PrivateRoute
                 path="/student/:assessmentType/:id/class/:groupId/uta/:utaId/test-summary"
                 component={TestAttemptReview}

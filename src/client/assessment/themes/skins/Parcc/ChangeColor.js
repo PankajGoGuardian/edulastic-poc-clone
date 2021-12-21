@@ -62,15 +62,10 @@ const SettingsModal = ({
       onCancel={handleCancel}
       destroyOnClose
       footer={[
-        <EduButton tabindex="0" isGhost key="cancel" onClick={handleCancel}>
+        <EduButton isGhost key="cancel" onClick={handleCancel}>
           CANCEL
         </EduButton>,
-        <EduButton
-          tabindex="0"
-          data-cy="apply"
-          key="submit"
-          onClick={handleApply}
-        >
+        <EduButton data-cy="apply" key="submit" onClick={handleApply}>
           APPLY
         </EduButton>,
       ]}
@@ -84,7 +79,6 @@ const SettingsModal = ({
             suffixIcon={<IconSelectCaretDown color={themeColor} />}
             style={{ marginBottom: '10px' }}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            autoFocus
           >
             <Select.Option value="default">Default</Select.Option>
             {Object.keys(themeColorsMap).map((key) => {

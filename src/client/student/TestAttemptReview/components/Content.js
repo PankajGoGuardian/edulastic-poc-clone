@@ -59,7 +59,6 @@ class SummaryTest extends Component {
           testActivityId,
           groupId: match.params.groupId,
           savedUserWork,
-          summary: true,
         })
       }
       sessionStorage.setItem('testAttemptReviewVistedId', testActivityId)
@@ -75,7 +74,7 @@ class SummaryTest extends Component {
     this.setState({ buttonIdx })
   }
 
-  goToQuestion = (testId, testActivityId, q, itemId) => () => {
+  goToQuestion = (testId, testActivityId, q) => () => {
     const { history, items, match, test, submitingResponse } = this.props
     if (submitingResponse) {
       return
@@ -93,9 +92,7 @@ class SummaryTest extends Component {
 
     if (test.testType !== TESTLET) {
       history.push(
-        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${
-          itemId || items[targetItemIndex]._id
-        }`,
+        `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${items[targetItemIndex]._id}`,
         {
           fromSummary: true,
           question: q,
@@ -281,8 +278,7 @@ class SummaryTest extends Component {
                                 : this.goToQuestion(
                                     test?.testId,
                                     test?.testActivityId,
-                                    q,
-                                    item
+                                    q
                                   )
                             }
                             cursor={

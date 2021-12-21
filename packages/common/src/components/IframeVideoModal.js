@@ -26,7 +26,7 @@ const IframeVideoModal = ({ visible, closeModal, questionTitle = '' }) => {
         title={title}
         width={width}
         height={height}
-        src={`https://www.youtube.com/embed/${videoId}?autoplay=1&utm_source=Application&utm_medium=Clicks&utm_campaign=Dashboard_Quick_Start_Overview`}
+        src={`https://www.youtube.com/embed/${videoId}?autoplay=1`}
         frameBorder="0"
         allowFullScreen
       />

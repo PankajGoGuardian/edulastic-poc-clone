@@ -1,8 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { get } from 'lodash'
-import { Tooltip } from 'antd'
 import { FlexContainer, PremiumTag, LikeIconStyled } from '@edulastic/common'
 import { darkGrey } from '@edulastic/colors'
 import {
@@ -22,11 +20,10 @@ import {
   AnalyticsItem,
   MetaTitle,
 } from '../../../../Summary/components/Sidebar/styled'
-import { MetaTag, DokStyled, StyledRubricIcon } from './styled'
+import { MetaTag, DokStyled } from './styled'
 import { toggleTestLikeAction } from '../../../../../ducks'
 import TestStatusWrapper from '../../../../../../TestList/components/TestStatusWrapper/testStatusWrapper'
 import { TestStatus } from '../../../../../../TestList/components/ListItem/styled'
-import { getAllRubricNames } from '../../../../../../src/utils/util'
 
 const MetaInfo = ({
   data: {
@@ -44,20 +41,6 @@ const MetaInfo = ({
   toggleTestItemLikeRequest,
 }) => {
   const isItemLiked = item?.alreadyLiked || false
-
-  const questions = get(item, 'data.questions', [])
-  const isRubricAttached = questions.some((q) => q?.rubrics)
-  const rubricNames = useMemo(() => {
-    const allRubricNames = getAllRubricNames(item)
-    const namesCount = allRubricNames.length
-    if (namesCount) {
-      if (namesCount > 3) {
-        return `${allRubricNames.slice(0, 3).join(', ')} +${namesCount - 3}`
-      }
-      return allRubricNames.join(', ')
-    }
-    return ''
-  }, [item])
 
   const handleItemLike = () => {
     toggleTestItemLikeRequest({
@@ -113,11 +96,6 @@ const MetaInfo = ({
       </FlexContainer>
       <FlexContainer justifyContent="flex-end" alignItems="flex-end">
         {dok && <DokStyled data-cy="itemDok">{`DOK:${dok}`}</DokStyled>}
-        {isRubricAttached && (
-          <Tooltip title={rubricNames}>
-            <StyledRubricIcon />
-          </Tooltip>
-        )}
         {renderAnalytics(by, IconUser, false, 'authorName')}
         {renderAnalytics(id && id.substring(18), IconHash, false, 'itemId')}
         <AnalyticsItem>

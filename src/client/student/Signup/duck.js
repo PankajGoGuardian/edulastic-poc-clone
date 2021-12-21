@@ -14,7 +14,6 @@ import { takeLatest, call, put, select } from 'redux-saga/effects'
 // } from '@edulastic/api'
 import schoolApi from '@edulastic/api/src/school'
 import userApi from '@edulastic/api/src/user'
-import segmentApi from '@edulastic/api/src/segment'
 import settingsApi from '@edulastic/api/src/settings'
 import canvasApi from '@edulastic/api/src/canvas'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
@@ -445,7 +444,6 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
       }
       const user = pick(_result, userPickFields)
       yield put(signupSuccessAction(user))
-      yield call(segmentApi.trackTeacherSignUp, { user: result })
       window.localStorage.setItem('author:dashboard:version', 0)
       yield put(hideJoinSchoolAction())
       yield put(fetchDashboardTiles())
@@ -469,7 +467,6 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
-    yield call(segmentApi.trackTeacherSignUp, { user: result })
     window.localStorage.setItem('author:dashboard:version', 0)
     yield put(hideJoinSchoolAction())
     yield put(fetchDashboardTiles())
@@ -508,7 +505,6 @@ function* updateUserSignupStateSaga() {
       }
       // setting user in store to put updated currentSignupState in store
       yield put(signupSuccessAction(finalUser))
-      yield call(segmentApi.trackTeacherSignUp, { user: finalUser })
     } else {
       // call user/me to update user in store
       yield put(fetchUserAction({ background: true }))
@@ -522,10 +518,8 @@ function* updateUserSignupStateSaga() {
 function* saveSubjectGradeSaga({ payload }) {
   const isTestRecommendationCustomizer = payload?.isTestRecommendationCustomizer
   const setShowTestCustomizerModal = payload?.setShowTestCustomizerModal
-  const onSuccessCallback = payload?.onSuccessCallback
   delete payload.isTestRecommendationCustomizer
   delete payload.setShowTestCustomizerModal
-  delete payload.onSuccessCallback
   let isSaveSubjectGradeSuccessful = false
   const initialUser = yield select(getUser)
   try {
@@ -544,7 +538,6 @@ function* saveSubjectGradeSaga({ payload }) {
     })
     // setting user in store to put orgData in store
     yield put(signupSuccessAction(newUser))
-    yield call(segmentApi.trackTeacherSignUp, { user: result })
     yield put(
       updateInitSearchStateAction({
         grades: result?.defaultGrades,
@@ -577,17 +570,11 @@ function* saveSubjectGradeSaga({ payload }) {
     if (isTestRecommendationCustomizer) {
       setShowTestCustomizerModal(false)
     }
-    if (onSuccessCallback) {
-      onSuccessCallback()
-    }
   }
 
   if (!isTestRecommendationCustomizer) {
     // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
-    if (
-      initialUser.currentSignUpState &&
-      initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL
-    ) {
+    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
       yield put(persistAuthStateAndRedirectToAction())
     }
   }

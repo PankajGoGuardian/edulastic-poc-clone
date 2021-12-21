@@ -74,17 +74,11 @@ export const convertData = (
     return [maxAttemps, maxTimeSpent, data]
   }
 
-  const activitiesByQid = keyBy(
-    questionActivities,
-    (a) => `${a.testItemId}_${a.qid}`
-  )
+  const activitiesByQid = keyBy(questionActivities, 'qid')
   const testItemById = keyBy(testItems, '_id')
 
   data = testItems
-    .reduce((acc, curr) => {
-      const questions = get(curr, 'data.questions', [])
-      return [...acc, ...questions.map((q) => ({ ...q, testItemId: curr._id }))]
-    }, [])
+    .reduce((acc, curr) => [...acc, ...get(curr, 'data.questions', [])], [])
     .filter((x) => !x.scoringDisabled && x.type !== questionType.SECTION_LABEL)
     .map((question, index) => {
       const { barLabel } = question
@@ -107,7 +101,7 @@ export const convertData = (
         unscoredItems: 0,
       }
 
-      const activity = activitiesByQid[`${question.testItemId}_${question.id}`]
+      const activity = activitiesByQid[question.id]
       if (isEmpty(activity)) {
         questionActivity.skippedNum = testActivityStatus === SUBMITTED ? 1 : 0
         return questionActivity
@@ -127,13 +121,12 @@ export const convertData = (
       if (testItemId) {
         questionActivity.itemLevelScoring = true
         questionActivity.itemId = testItemId
-        const testItem = testItemById[testItemId]
-        if (skipped === true && testItem && !testItem.isDocBased) {
+        if (skipped === true && testItemById[testItemId]) {
           const testItemQuestionsIds =
-            testItem.data?.questions?.map(({ id }) => id) || []
+            testItemById[testItemId].data?.questions?.map(({ id }) => id) || []
 
           const itemUQAs = testItemQuestionsIds.map(
-            (qId) => activitiesByQid[`${testItemId}_${qId}`]
+            (qId) => activitiesByQid[qId]
           )
 
           let skippedUQACount = testItemQuestionsIds.length - itemUQAs.length

@@ -210,7 +210,7 @@ export const uploadToS3 = async (
   fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
   const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
-  const { fields = {}, url, cdnUrl } = result
+  const { fields = {}, url } = result
 
   Object.keys(fields).forEach((item) => {
     formData.append(item, fields[item])
@@ -227,10 +227,11 @@ export const uploadToS3 = async (
 
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
 
-  if (ignoreCDN) {
-    return `${url}/${fields.key}`
+  // return CDN url for assets in production
+  if (AppConfig.appEnv === 'production' && !ignoreCDN) {
+    return `${AppConfig.cdnURI}/${fields.key}`
   }
-  return `${cdnUrl}/${fields.key}`
+  return `${url}/${fields.key}`
 }
 
 function addProps() {
@@ -267,7 +268,6 @@ const sanitizeSelfClosingTags = (inputString) => {
       )
       .replace(/<meta[\s\S]*?>/g, '') // removes meta tag
       .replace(/(<col(?!group)[^/>]*)(>)/g, '$1/$2') // replace <col> tag with self closing col tag | EV-26330
-      .replace(/controls=""/g, 'controls')
   return removeStyleTags(removeCommentsFromHtml(sanitizedString))
 }
 
@@ -607,13 +607,12 @@ export const getRangeAtFirst = () => {
 }
 
 /**
- * @param {string | null} parent container class name
+ *
  * @param {string} className class name of new element, default is 'token active-word
  * @param {string} tag new element tag name, default is span
  * @returns {boolean}
  */
 export const highlightSelectedText = (
-  parentClass,
   className = 'token active-word',
   tag = 'span',
   style,
@@ -661,15 +660,6 @@ export const highlightSelectedText = (
     (startContainer && startContainer.parentNode.className === className)
   ) {
     notification({ messageKey: 'selectionError' })
-    clearSelection()
-    return
-  }
-
-  if (
-    parentClass &&
-    !startContainer.parentNode.classList.contains(parentClass) &&
-    !endContainer.parentNode.classList.contains(parentClass)
-  ) {
     clearSelection()
     return
   }
@@ -1047,15 +1037,7 @@ const removeImageTags = (text = '') => {
 
 export const removeHTMLTags = (text = '') => {
   if (typeof text !== 'string') return text
-  return text
-    .trim()
-    .replace(/(<([^>]+)>)/gi, '')
-    .replace(/&lt;|&#60;/g, '<')
-    .replace(/&gt;|&#62;/g, '>')
-    .replace(/&quot;|&#34;/g, '"')
-    .replace(/&nbsp;|&#160;/g, ' ')
-    .replace(/&apos;|&#39;/g, "'")
-    .replace(/&amp;|&#38;/g, '&')
+  return text.trim().replace(/(<([^>]+)>)/gi, '')
 }
 
 export const replaceLatexTemplate = (str) => {
@@ -1145,23 +1127,6 @@ export const formatFileSize = (size) => {
   return `${round(size / 1024 / 1024 / 1024, 2)} GB`
 }
 
-export const triggerEvent = (el, eventName, options) => {
-  try {
-    if (el && eventName) {
-      var event
-      if (window.CustomEvent) {
-        event = new CustomEvent(eventName, options)
-      } else {
-        event = document.createEvent('CustomEvent')
-        event.initCustomEvent(eventName, true, true, options)
-      }
-      el.dispatchEvent(event)
-    }
-  } catch (e) {
-    console.error('Error while triggering event ', eventName, el)
-  }
-}
-
 export default {
   removeImageTags,
   sanitizeSelfClosingTags,
@@ -1194,5 +1159,4 @@ export default {
   removeTokenFromHtml,
   getYoutubeId,
   formatFileSize,
-  triggerEvent,
 }

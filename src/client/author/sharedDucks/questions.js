@@ -36,8 +36,6 @@ export const DELETE_QUESTION = '[author questions] delete question by id'
 export const SET_RUBRIC_ID = '[author questions] set rubric id'
 export const REMOVE_RUBRIC_ID = '[author questions] remove rubricId'
 export const CHANGE_UPDATE_FLAG = '[authorQuestions] update the updated flag'
-export const UPDATE_SCORE_AND_VALIDATION =
-  '[authorQuestions] update score and validation'
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS)
 export const addItemsQuestionAction = createAction(ADD_ITEMS_QUESTION)
@@ -300,16 +298,12 @@ export default createReducer(initialState, {
     state.updated = false
   },
   [SET_QUESTION_SCORE]: (state, { payload }) => {
-    const { qid, score, isOnBlur = false } = payload
+    const { qid, score } = payload
     if (score < 0) {
       return state
     }
-    if (isOnBlur) {
-      const _question = changeValidationWhenUnscored(state.byId[qid], score)
-      state.byId[qid] = _question
-    } else {
-      set(state.byId[qid], 'validation.validResponse.score', score)
-    }
+    const _question = changeValidationWhenUnscored(state.byId[qid], score)
+    state.byId[qid] = _question
   },
   [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
     if (!payload) {
@@ -363,10 +357,10 @@ export const getQuestionsSelectorForReview = createSelector(
       const questions = get(item, 'data.questions', [])
       const resources = get(item, 'data.resources', [])
       for (const question of questions) {
-        acc[`${item._id}_${question.id}`] = question
+        acc[question.id] = question
       }
       for (const resource of resources) {
-        acc[`${item._id}_${resource.id}`] = resource
+        acc[resource.id] = resource
       }
       return acc
     }, {})

@@ -115,9 +115,7 @@ function* receivePlaylistsSaga({
       {
         search: {
           ...search,
-          tags: search.tags
-            .flatMap((tag) => tag.associatedNames || [tag.title])
-            .filter((tag) => !!tag),
+          tags: search.tags.flatMap((t) => t.split('_')),
         },
         sort,
         page,

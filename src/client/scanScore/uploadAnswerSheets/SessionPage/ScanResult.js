@@ -45,7 +45,7 @@ const ScanResult = ({
           }}
           target="_blank"
         >
-          Adjust Grades
+          Fix Grade
         </Link>
         {/* TODO: support for redirecting to testActivity in LCB without testActivityId is required */}
         {/* <Link

@@ -228,9 +228,9 @@ const SingleAssessmentReportFilters = ({
     setTagsData({
       ...tagsData,
       performanceBandProfile:
-        selectedPerformanceBand || tagsData.performanceBandProfile,
+        tagsData.performanceBandProfile || selectedPerformanceBand,
       standardsProficiencyProfile:
-        selectedStandardProficiency || tagsData.standardsProficiencyProfile,
+        tagsData.standardsProficiencyProfile || selectedStandardProficiency,
     })
   }, [assessmentPerformanceBandProfile, assessmentStandardMasteryScale])
 

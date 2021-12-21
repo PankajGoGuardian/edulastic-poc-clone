@@ -27,13 +27,17 @@ const FiltersSidebar = ({
         <TagField
           data-cy={filterItem.title}
           mode={filterItem.mode}
-          onChange={(tags) => onChange(filterItem.onChange, tags)}
+          onChange={(tags) =>
+            onChange(
+              filterItem.onChange,
+              tags.map((tag) => tag.key)
+            )
+          }
           placeholder={filterItem.placeholder}
           ref={selectRef}
           size={filterItem.size}
           tagTypes={filterItem.tagTypes || []}
           value={search[filterItem.onChange]}
-          valueKey="key"
         />
       </>
     )

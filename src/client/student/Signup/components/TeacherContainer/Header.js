@@ -76,7 +76,6 @@ export default connect((state) => ({
 }))(Header)
 
 const HeaderWrapper = styled(Row)`
-  display: none;
   padding: 16px 24px;
   border-bottom: 1px ${lightGrey4} solid;
   background: ${white};

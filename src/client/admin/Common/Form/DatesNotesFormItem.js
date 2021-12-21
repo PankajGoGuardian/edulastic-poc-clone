@@ -83,7 +83,7 @@ const NotesFormItem = ({
         {getFieldDecorator(notesFieldName, {
           rules: [{ required: true, max }],
           initialValue,
-        })(<TextArea data-cy="addNotes" rows={2} placeholder={placeholder} />)}
+        })(<TextArea rows={2} placeholder={placeholder} />)}
       </Form.Item>
     </OuterDiv>
   )
@@ -106,7 +106,6 @@ const DatesNotesFormItem = ({
   opportunityId,
   licenceCount,
   showAdditionalDetails = false,
-  children,
 }) => (
   <>
     <DatesFormItem
@@ -124,8 +123,6 @@ const DatesNotesFormItem = ({
     ) : (
       ''
     )}
-
-    {children}
 
     <NotesFormItem
       getFieldDecorator={getFieldDecorator}

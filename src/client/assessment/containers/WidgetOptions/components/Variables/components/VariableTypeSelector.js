@@ -1,14 +1,11 @@
 import React from 'react'
-import { Modal, Popover } from 'antd'
-import styled from 'styled-components'
-import { withNamespaces } from '@edulastic/localization'
+import { Modal } from 'antd'
 import { variableTypes } from '@edulastic/constants'
 import { SelectInputStyled } from '@edulastic/common'
 
 const { Option } = SelectInputStyled
 
 const VariableTypeSelector = ({
-  t,
   value,
   variableName,
   hasExamples,
@@ -19,10 +16,11 @@ const VariableTypeSelector = ({
   const handleSelect = (v) => {
     if (hasExamples) {
       Modal.confirm({
-        title: t('component.options.confirm'),
-        content: t('component.options.removePrevDynamicValues'),
-        okText: t('component.options.confirm'),
-        cancelText: t('component.options.cancel'),
+        title: 'Confirm',
+        content:
+          'This will clear all previously generated values. Do you wish to proceed?',
+        okText: 'Confirm',
+        cancelText: 'Cancel',
         onOk: () => onSelect(variableName, 'type', v),
       })
     } else {
@@ -31,7 +29,7 @@ const VariableTypeSelector = ({
   }
 
   return (
-    <Select
+    <SelectInputStyled
       size="large"
       data-cy="variableType"
       value={value}
@@ -41,37 +39,11 @@ const VariableTypeSelector = ({
     >
       {types.map((key) => (
         <Option data-cy={key} key={key} value={key}>
-          <Popover
-            content={
-              <ContentWrapper>
-                {t(`component.helperText.${key}`)}
-              </ContentWrapper>
-            }
-            placement="right"
-          >
-            <Wrapper>{variableTypes[key]}</Wrapper>
-          </Popover>
+          {variableTypes[key]}
         </Option>
       ))}
-    </Select>
+    </SelectInputStyled>
   )
 }
 
-export default withNamespaces('assessment')(VariableTypeSelector)
-
-const Wrapper = styled.div`
-  position: relative;
-  width: 100%;
-`
-
-const ContentWrapper = styled.div`
-  max-width: 320px;
-`
-const Select = styled(SelectInputStyled)`
-  &.ant-select {
-    .ant-select-selection-selected-value {
-      /** In order to disable help text popover */
-      pointer-events: none;
-    }
-  }
-`
+export default VariableTypeSelector

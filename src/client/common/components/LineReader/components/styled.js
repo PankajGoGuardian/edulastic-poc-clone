@@ -1,7 +1,6 @@
 import styled, { css } from 'styled-components'
 import { Rnd } from 'react-rnd'
-import { Button } from 'antd'
-import { greyThemeDark4, white, red } from '@edulastic/colors'
+import { greyThemeDark4, white } from '@edulastic/colors'
 
 export const Mask = styled(Rnd)`
   background: transparent;
@@ -34,29 +33,6 @@ export const Mask = styled(Rnd)`
     left: 50% !important;
     bottom: 0px !important;
   }
-`
-
-export const CloseButton = styled(Button)`
-  top: 12px;
-  right: 12px;
-  z-index: 10000;
-  position: absolute;
-  pointer-events: auto;
-  background: transparent;
-  padding: 0px;
-  height: 24px;
-  width: 24px;
-
-  &:hover,
-  &:active,
-  &:focus {
-    background: transparent;
-    border-color: ${red};
-
-    svg {
-      fill: ${red};
-    }
-  }
 
   svg {
     fill: ${white};
@@ -64,6 +40,8 @@ export const CloseButton = styled(Button)`
     right: 12px;
     z-index: 10000;
     cursor: pointer;
+    position: absolute;
+    pointer-events: auto;
 
     &:hover {
       fill: ${white};

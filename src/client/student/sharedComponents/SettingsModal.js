@@ -33,10 +33,6 @@ import {
 import { playerSkinTypeSelector } from '../../assessment/selectors/test'
 import { clearUserWorkAction } from '../../assessment/actions/userWork'
 import { startAssessmentAction } from '../../assessment/actions/assessment'
-import {
-  getTextToSpeechPlaybackSpeed,
-  updateTestPlayerAction,
-} from '../../author/sharedDucks/testPlayer'
 
 const { languageCodes, playerSkinValues } = testConstants
 
@@ -57,9 +53,6 @@ const SettingsModal = ({
   clearUserWork,
   startAssessment,
   isPremiumContentWithoutAccess = false,
-  ttsPlaybackSpeed,
-  updateTestPlayer,
-  canShowPlaybackOptionTTS,
 }) => {
   const bodyStyle = {
     padding: '20px',
@@ -80,10 +73,6 @@ const SettingsModal = ({
   const [showReconfirm, setShowReconfirm] = useState(false)
   const { setCurrentItem } = useContext(AssessmentPlayerContext)
 
-  const [selectedPlaybackSpeed, setSelectedPlaybackSpeed] = useState(
-    ttsPlaybackSpeed
-  )
-
   useEffect(() => {
     setChangedLang(languagePreference)
     setShowReconfirm(false)
@@ -94,10 +83,6 @@ const SettingsModal = ({
   const handleApply = () => {
     localStorage.setItem('selectedTheme', selectedTheme)
     localStorage.setItem('zoomLevel', zoomLevel)
-
-    localStorage.setItem('ttsPlaybackSpeed', selectedPlaybackSpeed)
-    updateTestPlayer({ ttsPlaybackSpeed: selectedPlaybackSpeed })
-
     if (selectedLang !== languagePreference && !showReconfirm) {
       return setShowReconfirm(true)
     }
@@ -117,7 +102,6 @@ const SettingsModal = ({
   const handleCancel = () => {
     setSelectedTheme(localStorage.getItem('selectedTheme') || 'default')
     setZoomLevel(localStorage.getItem('zoomLevel') || '1')
-    setSelectedPlaybackSpeed(ttsPlaybackSpeed)
     closeModal()
   }
   const hideColorOrZoom =
@@ -219,24 +203,6 @@ const SettingsModal = ({
                 </StyledSelect>
               </div>
             )}
-            {canShowPlaybackOptionTTS && (
-              <div>
-                <CustomColumn>PLAYBACK SPEED (TEXT TO SPEECH)</CustomColumn>
-                <StyledSelect
-                  data-cy="playBackSpeedPref"
-                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                  onChange={setSelectedPlaybackSpeed}
-                  value={selectedPlaybackSpeed}
-                  suffixIcon={<IconSelectCaretDown color={themeColor} />}
-                >
-                  <Select.Option value="0.5">0.5X</Select.Option>
-                  <Select.Option value="0.75">0.75X</Select.Option>
-                  <Select.Option value="1">Normal</Select.Option>
-                  <Select.Option value="1.5">1.5X</Select.Option>
-                  <Select.Option value="2">2X</Select.Option>
-                </StyledSelect>
-              </div>
-            )}
           </>
         )}
       </InitOptions>
@@ -255,7 +221,6 @@ const enhance = compose(
       multiLanguageEnabled: getIsMultiLanguageEnabled(state),
       playerSkinType: playerSkinTypeSelector(state),
       isPreview: state.test.isTestPreviewModalVisible,
-      ttsPlaybackSpeed: getTextToSpeechPlaybackSpeed(state),
     }),
     {
       setSelectedTheme: setSelectedThemeAction,
@@ -265,7 +230,6 @@ const enhance = compose(
       setPreviewLanguage: setPreviewLanguageAction,
       clearUserWork: clearUserWorkAction,
       startAssessment: startAssessmentAction,
-      updateTestPlayer: updateTestPlayerAction,
     }
   )
 )

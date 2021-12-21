@@ -1,4 +1,4 @@
-import React, { Component, createRef } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { round } from 'lodash'
 import { greenThird } from '@edulastic/colors'
@@ -23,15 +23,7 @@ class ScoreTable extends Component {
       isGridEditOn,
       groupId,
       t,
-      testActivity,
-      windowWidth,
     } = this.props
-
-    this.tableRef = createRef()
-
-    const columnsLength = testActivity?.[0]?.questionActivities?.length || 0
-    const colWidth =
-      columnsLength >= 5 ? (windowWidth - 600) / columnsLength : '' // here 600 is the assumed width, apart from table content body
 
     const columns = [
       {
@@ -39,14 +31,14 @@ class ScoreTable extends Component {
         className: 'main-heading',
         // Make score grid column fixed when more than 10 questions data exist
         fixed: 'left',
-        width: 370,
+        width: 320,
         children: [
           {
             key: 'students',
             title: <StudentsTitle>students</StudentsTitle>,
             dataIndex: 'students',
             className: 'th-border-bottom student-names',
-            width: 250,
+            width: 220,
             render: (record) => {
               const studentName = isPresentationMode
                 ? record.fakeName
@@ -77,7 +69,7 @@ class ScoreTable extends Component {
             title: <ScoreTitle>score</ScoreTitle>,
             className: 'th-border-bottom score-title',
             dataIndex: 'score',
-            width: 120,
+            width: 100,
             render: (record) => {
               const { score = 0, maxScore = 0 } = record
               const percent =
@@ -122,9 +114,7 @@ class ScoreTable extends Component {
             const { score = 0, maxScore = 0 } =
               student.questionActivities[index] || {}
             const uqaAvg = score / maxScore
-            // in case of practice questions, it becomes infinite
-            successScore +=
-              Number.isNaN(uqaAvg) || !Number.isFinite(uqaAvg) ? 0 : uqaAvg
+            successScore += Number.isNaN(uqaAvg) ? 0 : uqaAvg
           }
         })
       const averageScore = successScore
@@ -151,7 +141,6 @@ class ScoreTable extends Component {
             dataIndex: key,
             title: questionAvarageScore,
             className: 'sub-thead-th th-border-bottom',
-            width: colWidth,
             render: (record) => {
               const isTest = record && record.testActivityId
 
@@ -180,7 +169,7 @@ class ScoreTable extends Component {
 
   render() {
     let columnInfo = []
-    const { testActivity, tableData, isDemoProxy } = this.props
+    const { testActivity, tableData } = this.props
     const columnsLength =
       testActivity && testActivity.length !== 0
         ? testActivity[0].questionActivities.length
@@ -191,8 +180,7 @@ class ScoreTable extends Component {
       columnInfo = this.getColumnsForTable(columnsLength, submittedLength)
     }
 
-    const whiteSpace = isDemoProxy ? 290 : 250
-    const scrollY = window.innerHeight - whiteSpace
+    const scrollY = window.innerHeight - 250
     // 40 sice of each cell in table + 3 overlapped padding
     const showY = tableData.length * 43 > scrollY
 
@@ -209,7 +197,6 @@ class ScoreTable extends Component {
             y: showY ? scrollY : false,
           }}
           rowKey={(record, i) => i}
-          ref={this.tableRef}
         />
       </StyledCard>
     )

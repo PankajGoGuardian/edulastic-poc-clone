@@ -35,11 +35,6 @@ import {
   Dashed,
   NumberLineDotPlotPoint,
   Connectline,
-  PiecewiseLine,
-  LineCut,
-  PiecewisePoint,
-  Grid,
-  Rose,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -91,10 +86,6 @@ class Board {
      * Static unitX
      */
     this.staticUnitX = null
-    /**
-     *  Polar grids or Complex
-     */
-    this.grids = []
     /**
      * Answers
      */
@@ -154,8 +145,6 @@ class Board {
     this.inequalities = []
 
     this.pointOnEquEnabled = false
-
-    this.switchGrid = Grid.switchGrid.bind(this)
   }
 
   addDragDropValue(value, x, y, dimensions) {
@@ -296,15 +285,6 @@ class Board {
       case CONSTANT.TOOLS.DASHED:
         this.creatingHandler = Dashed.onHandler()
         return
-      case CONSTANT.TOOLS.PIECEWISE_LINE:
-        this.creatingHandler = PiecewiseLine.onHandler()
-        return
-      case CONSTANT.TOOLS.PIECEWISE_POINT:
-        this.creatingHandler = PiecewisePoint.onHandler()
-        return
-      case CONSTANT.TOOLS.LINE_CUT:
-        this.creatingHandler = LineCut.onHandler()
-        return
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.creatingHandler = NumberlinePoint.onHandler
         return
@@ -322,9 +302,6 @@ class Board {
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
         this.creatingHandler = NumberlineVector.onHandler
-        return
-      case CONSTANT.TOOLS.ROSE:
-        this.creatingHandler = Rose.onHandler
         return
       case CONSTANT.TOOLS.EDIT_LABEL:
       case CONSTANT.TOOLS.TRASH:
@@ -377,8 +354,6 @@ class Board {
         return Tangent.clean(this)
       case CONSTANT.TOOLS.SECANT:
         return Secant.clean(this)
-      case CONSTANT.TOOLS.PIECEWISE_LINE:
-        return PiecewiseLine.clean(this)
       default:
         return false
     }
@@ -401,7 +376,6 @@ class Board {
       ...Polynom.getTempPoints(),
       ...Tangent.getTempPoints(),
       ...Secant.getTempPoints(),
-      ...PiecewiseLine.getTempPoints(),
     ]
   }
 
@@ -475,7 +449,7 @@ class Board {
       ) {
         return
       }
-      const newElement = this.creatingHandler(this, event, this.elements)
+      const newElement = this.creatingHandler(this, event)
       if (newElement) {
         this.elements.push(newElement)
         Area.updateShadingsForAreaPoints(this, this.elements)
@@ -895,8 +869,6 @@ class Board {
             return Area.getConfig(e)
           case DragDrop.jxgType:
             return DragDrop.getConfig(e)
-          case PiecewiseLine.jxgType:
-            return PiecewiseLine.getConfig(e)
           default:
             throw new Error('Unknown element type:', e.name, e.type)
         }
@@ -989,19 +961,8 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#setBoundingBox
    */
   setGridParameters(gridParameters) {
-    this.gridParameters = gridParameters
     updateGrid(this.$board.grids, gridParameters)
     this.$board.fullUpdate()
-  }
-
-  /**
-   * update grid and axes based on grid type
-   * @param {string} gridType retangular | polar | complex
-   * @param {object} polarGridParams grid options for polar
-   */
-  updateGridAndAxes(gridType, polarGridParams) {
-    this.gridType = gridType
-    this.switchGrid(polarGridParams)
   }
 
   /**
@@ -1462,10 +1423,23 @@ class Board {
 
       case Parabola.jxgType:
         this.labelForEq.push(object.points[0].label, object.points[1].label)
-        return Parabola.create(this, object, {
-          labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
-          fixed,
-        })
+        return Parabola.create(
+          this,
+          object,
+          object.points.map((point) =>
+            Point.create(this, point, {
+              pointIsVisible:
+                !checkPointVisibility || (showPoints && point.pointIsVisible),
+              labelIsVisible:
+                !checkLabelVisibility || (showPoints && point.labelIsVisible),
+              fixed,
+            })
+          ),
+          {
+            labelIsVisible: !checkLabelVisibility || object.labelIsVisible,
+            fixed,
+          }
+        )
 
       case Parabola2.jxgType:
         this.labelForEq.push(
@@ -1839,15 +1813,7 @@ class Board {
         return DragDrop.create(this, object, {
           fixed,
         })
-      case PiecewiseLine.jxgType:
-        this.labelForEq.push(object.points[0].label, object.points[1].label)
-        return PiecewiseLine.create(this, object)
 
-      case NumberLineDotPlotPoint.jxgType: {
-        return NumberLineDotPlotPoint.render(this, object, {
-          fixed,
-        })
-      }
       default:
         throw new Error('Unknown element:', object)
     }

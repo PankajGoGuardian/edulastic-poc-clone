@@ -43,7 +43,6 @@ import {
 } from '../../sharedDucks/questions'
 import { getQuestionDataSelector } from '../../QuestionEditor/ducks'
 import { answersByQId } from '../../../assessment/selectors/test'
-import { hasValidResponse } from '../../questionUtils'
 
 function* createTestItemSaga({
   payload: { data, testFlow, testId, newPassageItem = false, testName },
@@ -164,11 +163,7 @@ function* evaluateAnswers({ payload }) {
     ) {
       const answers = yield select((state) => _get(state, 'answers', []))
       const answersByQids = answersByQId(answers, item._id)
-      if (
-        !hasValidResponse(answersByQids, {
-          [question?.id]: question,
-        })
-      ) {
+      if (isEmpty(answersByQids)) {
         if (payload?.mode !== 'show') {
           notification({
             type: 'warn',
@@ -227,7 +222,7 @@ function* evaluateAnswers({ payload }) {
         }
       })
       const answersByQids = answersByQId(answers, _item?._id)
-      if (!hasValidResponse(answersByQids, questions)) {
+      if (isEmpty(answersByQids)) {
         if (payload?.mode !== 'show') {
           notification({
             type: 'warn',

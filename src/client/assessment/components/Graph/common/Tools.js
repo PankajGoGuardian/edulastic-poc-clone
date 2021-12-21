@@ -42,8 +42,55 @@ import {
   ToolbarItemLabel,
   ToolGroupLabel,
 } from './styled_components'
-import { CONSTANT, getToolOptsByGrid } from '../Builder/config'
+import { CONSTANT } from '../Builder/config'
 import HelpTooltip from './HelpTooltip'
+
+const toolByGroup = [
+  {
+    title: 'Basic object',
+    items: [
+      CONSTANT.TOOLS.POINT,
+      CONSTANT.TOOLS.SEGMENT,
+      CONSTANT.TOOLS.POLYGON,
+      CONSTANT.TOOLS.RAY,
+      CONSTANT.TOOLS.VECTOR,
+      CONSTANT.TOOLS.LINE,
+    ],
+  },
+  {
+    title: 'Conics',
+    items: [
+      CONSTANT.TOOLS.CIRCLE,
+      CONSTANT.TOOLS.ELLIPSE,
+      CONSTANT.TOOLS.PARABOLA,
+      CONSTANT.TOOLS.PARABOLA2,
+      CONSTANT.TOOLS.HYPERBOLA,
+    ],
+  },
+  {
+    title: 'Trigonometry',
+    items: [
+      CONSTANT.TOOLS.SIN,
+      CONSTANT.TOOLS.COS,
+      CONSTANT.TOOLS.TANGENT,
+      CONSTANT.TOOLS.SECANT,
+    ],
+  },
+  {
+    title: 'Miscellaneous',
+    items: [
+      CONSTANT.TOOLS.POLYNOM,
+      CONSTANT.TOOLS.EXPONENT,
+      // CONSTANT.TOOLS.EXPONENTIAL2,
+      CONSTANT.TOOLS.LOGARITHM,
+      CONSTANT.TOOLS.AREA,
+      CONSTANT.TOOLS.DASHED,
+      // CONSTANT.TOOLS.PIECEWISE,
+      // CONSTANT.TOOLS.NO_SOLUTION,
+      // CONSTANT.TOOLS.AREA2,
+    ],
+  },
+]
 
 const iconsByToolName = {
   [CONSTANT.TOOLS.POINT]: <IconPoint width={11} height={11} data-cy="point" />,
@@ -97,35 +144,20 @@ const iconsByToolName = {
   ),
   [CONSTANT.TOOLS.AREA2]: <IconArea2 width={29} height={25} />,
   [CONSTANT.TOOLS.PIECEWISE]: <IconPiecewise width={40} height={32} />,
-  [CONSTANT.TOOLS.PIECEWISE_LINE]: <IconPiecewise width={40} height={32} />,
-  [CONSTANT.TOOLS.PIECEWISE_POINT]: <IconPoint width={11} height={11} />,
-  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
-  [CONSTANT.TOOLS.LINE_CUT]: <span>cut</span>,
-  [CONSTANT.TOOLS.ROSE]: <span>Rose</span>,
-  [CONSTANT.TOOLS.CARDOID]: <span>Cardoid</span>,
-  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
-  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
+  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit />,
+  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} />,
+  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} />,
   [CONSTANT.TOOLS.CLEAR]: (
     <IconEraseText width={13} height={16} stroke="transparent !important" />
   ),
   [CONSTANT.TOOLS.RESET]: (
-    <IconEraseText
-      width={16}
-      height={15}
-      stroke="transparent !important"
-      data-cy="reset"
-    />
+    <IconEraseText width={16} height={15} stroke="transparent !important" />
   ),
   [CONSTANT.TOOLS.TRASH]: (
     <IconTrash width={13} height={15} stroke="transparent !important" />
   ),
   [CONSTANT.TOOLS.DELETE]: (
-    <IconTrash
-      width={13}
-      height={15}
-      stroke="transparent !important"
-      data-cy="delete"
-    />
+    <IconTrash width={13} height={15} stroke="transparent !important" />
   ),
   add: (
     <IconPlusCircle width={16} height={15} stroke="transparent !important" />
@@ -155,13 +187,8 @@ const labelsByToolName = {
   [CONSTANT.TOOLS.AREA]: 'Area',
   [CONSTANT.TOOLS.DASHED]: 'Dashed',
   [CONSTANT.TOOLS.PIECEWISE]: 'Piecewise',
-  [CONSTANT.TOOLS.PIECEWISE_LINE]: 'Piecewise Line',
-  [CONSTANT.TOOLS.PIECEWISE_POINT]: 'Piecewise Point',
   [CONSTANT.TOOLS.NO_SOLUTION]: 'No Solution',
-  [CONSTANT.TOOLS.LINE_CUT]: 'Line Cut',
   [CONSTANT.TOOLS.AREA2]: 'Area',
-  [CONSTANT.TOOLS.ROSE]: 'Rose',
-  [CONSTANT.TOOLS.CARDOID]: 'Cardoid',
   [CONSTANT.TOOLS.EDIT_LABEL]: 'Edit Label',
   [CONSTANT.TOOLS.UNDO]: 'Undo',
   [CONSTANT.TOOLS.REDO]: 'Redo',
@@ -184,7 +211,6 @@ const Tools = ({
   fontSize,
   setTools,
   canEditTools,
-  gridType,
 }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
 
@@ -265,7 +291,7 @@ const Tools = ({
 
       {isOpenDrawer && canEditTools && toolsAreVisible && (
         <ToolsContiner visible={isOpenDrawer} onClose={hideDrawer}>
-          {getToolOptsByGrid(gridType).map((group, groupIdx) => (
+          {toolByGroup.map((group, groupIdx) => (
             <div key={groupIdx}>
               <ToolGroupLabel>{group.title}</ToolGroupLabel>
               <ToolGroup>

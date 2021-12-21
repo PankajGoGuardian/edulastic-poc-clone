@@ -4,6 +4,7 @@ import { delay } from 'redux-saga'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 
 import { courseApi } from '@edulastic/api'
+import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { groupBy, get } from 'lodash'
 
@@ -40,9 +41,6 @@ const SET_UPDATEMODAL_PAGE_STATUS = '[course] set update modal page status'
 const SET_COURSE_SHOWACTIVE_STATUS = '[course] set show active course status'
 
 const RESET_COURSE_UPLOADMODAL_STATUS = '[course] reset upload modal status'
-
-const RECEIVE_AGGREGATE_COURSE_LIST_SUCCESS =
-  '[course] receive aggregate course list success'
 
 export const receiveCourseListAction = createAction(RECEIVE_COURSE_REQUEST)
 export const receiveCourseListSuccessAction = createAction(
@@ -90,20 +88,11 @@ export const resetUploadModalStatusAction = createAction(
   RESET_COURSE_UPLOADMODAL_STATUS
 )
 
-export const receiveAggregateCourseListSuccessAction = createAction(
-  RECEIVE_AGGREGATE_COURSE_LIST_SUCCESS
-)
-
 // selectors
 const stateCourseSelector = (state) => state.coursesReducer
 export const getCourseListSelector = createSelector(
   stateCourseSelector,
   (state) => state.data
-)
-
-export const getAggregateCourseListSelector = createSelector(
-  stateCourseSelector,
-  (state) => state.aggregateCourseList || []
 )
 
 export const getCoursesForDistrictSelector = createSelector(
@@ -114,11 +103,6 @@ export const getCoursesForDistrictSelector = createSelector(
 export const getCourseLoading = createSelector(
   stateCourseSelector,
   (state) => state.searching
-)
-
-export const getCourseLoadingState = createSelector(
-  stateCourseSelector,
-  (state) => state.loading
 )
 
 // reducers
@@ -145,7 +129,6 @@ const initialState = {
   totalCourseCount: 0,
   isShowActive: true,
   courseSearchData: {},
-  aggregateCourseList: [],
 }
 
 export const reducer = createReducer(initialState, {
@@ -175,8 +158,7 @@ export const reducer = createReducer(initialState, {
       }
       return course
     })
-    state.updating = false
-    state.data = courseData
+    ;(state.updating = false), (state.data = courseData)
   },
   [UPDATE_COURSE_ERROR]: (state, { payload }) => {
     state.updating = false
@@ -272,7 +254,7 @@ export const reducer = createReducer(initialState, {
   },
   [UPLOAD_COURSE_CSV_SUCCESS]: (state, { payload }) => {
     state.uploadingCSV = false
-    payload.forEach((row, index) => {
+    payload.map((row, index) => {
       row.key = index
     })
     state.uploadCSV = payload
@@ -303,7 +285,7 @@ export const reducer = createReducer(initialState, {
   [SAVE_BULK_COURSE_REQUEST]: (state) => {
     state.saveingBulkCourse = true
   },
-  [SAVE_BULK_COURSE_SUCCESS]: (state) => {
+  [SAVE_BULK_COURSE_SUCCESS]: (state, { payload }) => {
     state.saveingBulkCourse = false
     state.uploadModalPageStatus = 'bulk-success'
   },
@@ -325,28 +307,13 @@ export const reducer = createReducer(initialState, {
     state.uploadingCSV = false
     state.uploadCSVError = null
   },
-  [RECEIVE_AGGREGATE_COURSE_LIST_SUCCESS]: (state, { payload }) => {
-    state.loading = false
-    state.aggregateCourseList = payload
-  },
 })
 
 // sagas
 function* receiveCourseListSaga({ payload }) {
   try {
-    const response = yield call(courseApi.searchCourse, payload)
-    if (payload.aggregate) {
-      const courses = []
-      for (const [key, value] of Object.entries(response.result)) {
-        courses.push({
-          _id: value.join('_'),
-          name: key,
-        })
-      }
-      yield put(receiveAggregateCourseListSuccessAction(courses))
-    } else {
-      yield put(receiveCourseListSuccessAction(response))
-    }
+    const course = yield call(courseApi.searchCourse, payload)
+    yield put(receiveCourseListSuccessAction(course))
   } catch (err) {
     const errorMessage = 'Unable to retrieve course list.'
     notification({ type: 'error', msg: errorMessage })

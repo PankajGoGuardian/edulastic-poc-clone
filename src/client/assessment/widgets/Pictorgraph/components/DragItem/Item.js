@@ -26,7 +26,6 @@ const Item = ({
   isPrintPreview,
   count,
   unit,
-  showElementValues,
 }) => {
   const { questionId } = useContext(QuestionContext)
 
@@ -59,7 +58,7 @@ const Item = ({
               dangerouslySetInnerHTML={{ __html: image }}
             />
           </span>
-          {showElementValues && count && unit && (
+          {count && unit && (
             <span>
               {count} {unit}
             </span>

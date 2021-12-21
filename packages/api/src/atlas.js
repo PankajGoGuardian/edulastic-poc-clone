@@ -12,14 +12,6 @@ const syncGradesWithSchoologyClassroom = (data) =>
     })
     .then((result) => result.data)
 
-const syncClassesWithAtlas = (data) =>
-  api.callApi({
-    url: `${prefix}/atlas-class-sync`,
-    method: 'POST',
-    data,
-  })
-
 export default {
   syncGradesWithSchoologyClassroom,
-  syncClassesWithAtlas,
 }

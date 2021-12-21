@@ -1,15 +1,7 @@
 import JXG from 'jsxgraph'
 import { isObject, round } from 'lodash'
 import { tickLabel, radianTickLabel } from './utils'
-import {
-  Tangent,
-  Logarithm,
-  Sin,
-  Cos,
-  Parabola,
-  Parabola2,
-  PiecewiseLine,
-} from './elements'
+import { Tangent, Logarithm, Sin, Cos, Parabola, Parabola2 } from './elements'
 
 /**
  * Graph parameters
@@ -48,11 +40,6 @@ const pointParameters = {
 }
 
 const axesParameters = {
-  /**
-   * Set the ticks type. Possible values are 'linear' or 'polar'.
-   * @see https://jsxgraph.org/docs/symbols/Ticks.html#type
-   */
-  type: 'linear',
   /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#ticksDistance
    */
@@ -108,23 +95,6 @@ const bgImageParameters = {
   coords: [0, 0],
   size: [100, 100],
   opacity: 0.5,
-}
-
-export const angleAxesParams = {
-  strokeWidth: 1,
-  strokeColor: '#C0C0C0',
-  highlightStrokeColor: '#C0C0C0',
-  straightFirst: false,
-  straightLast: false,
-  firstArrow: {
-    size: 0,
-  },
-  lastArrow: {
-    size: 0,
-  },
-  ticks: {
-    visible: false, // important: should be false, due to performace issue
-  },
 }
 
 export const labelParameters = {
@@ -183,13 +153,6 @@ export const getLabelPositionParameters = (elementType) => {
         position: 'top',
         offset: [0, -10],
         anchorX: 'middle',
-        anchorY: 'middle',
-      }
-    case PiecewiseLine.jxgType:
-      return {
-        position: 'lft',
-        offset: [10, 0],
-        anchorX: 'left',
         anchorY: 'middle',
       }
     default:

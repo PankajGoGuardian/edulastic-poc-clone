@@ -7,7 +7,7 @@ export const ScratchpadContainer = styled.div`
   width: 100%;
   /* froalar z-index is 998 */
   /* @see https://snapwiz.atlassian.net/browse/EV-19269 */
-  z-index: ${({ isDropDownInUse }) => (isDropDownInUse ? '990' : '999')};
+  z-index: 999;
   top: 0px;
   left: 0px;
   display: ${({ hideData }) => (hideData ? 'none' : 'block')};

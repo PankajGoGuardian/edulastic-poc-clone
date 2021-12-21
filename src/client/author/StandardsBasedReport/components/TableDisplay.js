@@ -223,8 +223,8 @@ class TableDisplay extends Component {
         question: [
           ...new Set(
             std.qIds
-              .filter((qid) => qids.indexOf(qid.split('_')[1]) > -1)
-              .map((id) => labels[id]?.barLabel)
+              .filter((qid) => qids.indexOf(qid) > -1)
+              .map((id) => labels[id].barLabel)
           ),
         ].join(','),
         masterySummary: _perfomancePercentage,

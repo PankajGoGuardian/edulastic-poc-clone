@@ -29,7 +29,6 @@ import {
 } from '../../../../Dashboard/ducks'
 import { useThisPlayListAction } from '../../../../CurriculumSequence/ducks'
 import CartModal from '../../../../Subscription/components/CartModal'
-import { productsMetaData } from './ProductsMetaData'
 
 const MultipleLicensePurchase = loadable(() =>
   import('./MultipleLicensePurchase')
@@ -114,7 +113,6 @@ const PurchaseFlowModals = (props) => {
     setProratedProducts,
     setIsTabShouldSwitch,
     isCpm = false,
-    interestedSubjects = [],
   } = props
 
   const [payWithPoModal, setPayWithPoModal] = useState(false)
@@ -439,8 +437,6 @@ const PurchaseFlowModals = (props) => {
           subEndDate={subEndDate}
           isEnterprise={isEnterprise}
           isCpm={isCpm}
-          productsMetaData={productsMetaData}
-          interestedSubjects={interestedSubjects}
         />
       )}
       {showMultiplePurchaseModal && (

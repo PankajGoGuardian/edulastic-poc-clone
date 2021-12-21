@@ -4,7 +4,7 @@ import { Container, Text } from './styled'
 import SettingsBarIcon from '../SettingsBarIcon/SettingsBarIcon'
 
 const SettingsBarItem = ({ item, onSelect, selected }) => (
-  <Container selected={selected} onClick={onSelect} data-cy={item.value}>
+  <Container selected={selected} onClick={onSelect}>
     <SettingsBarIcon active={selected} type={item.value} />
     <Text>{item.text}</Text>
   </Container>

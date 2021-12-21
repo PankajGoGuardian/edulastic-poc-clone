@@ -70,7 +70,7 @@ const Expanded = ({
   }
   const widgetsWithResource = {
     ...questions,
-    ...keyBy(testItem?.data?.resources || [], (r) => `${testItem._id}_${r.id}`),
+    ...keyBy(testItem?.data?.resources || [], 'id'),
     ...passageContent,
   }
   let points = 0
@@ -82,13 +82,6 @@ const Expanded = ({
     itemLevelScoring,
     get(scoring, testItem._id, 0)
   )
-
-  const testItemQuestions = get(testItem, 'data.questions', [])
-  const isPassageWithMultipleQuestions =
-    (testItem?.isPassageWithQuestions &&
-      testItemQuestions.length > 1 &&
-      !testItem?.itemLevelScoring) ||
-    false
 
   if (testItem.itemLevelScoring || mobile) {
     points = get(scoring, testItem._id, itemLevelScoring)
@@ -184,7 +177,6 @@ const Expanded = ({
             testItem
             isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
             premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
-            itemIdKey={testItem._id}
           />
         </AnswerContext.Provider>
       </FlexContainer>
@@ -245,11 +237,6 @@ const Expanded = ({
                     premiumCollectionWithoutAccess={
                       premiumCollectionWithoutAccess
                     }
-                    isPassageWithMultipleQuestions={
-                      isPassageWithMultipleQuestions
-                    }
-                    isExpandedView
-                    itemIdKey={testItem._id}
                   />
                 </div>
               </AnswerContext.Provider>
@@ -262,11 +249,7 @@ const Expanded = ({
               <FlexContainer flexDirection="column" style={{ margin: 0 }}>
                 <PointsLabel>Points</PointsLabel>
                 {!isUnScoredItem &&
-                !get(
-                  questions,
-                  `${testItem._id}_${qId}.validation.unscored`,
-                  false
-                ) ? (
+                !get(questions, `${qId}.validation.unscored`, false) ? (
                   <NumberInputStyled
                     min={0}
                     width="108px"

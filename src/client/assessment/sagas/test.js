@@ -20,10 +20,7 @@ import {
   captureSentryException,
 } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
-import {
-  getAccessToken,
-  tokenExpireInHours,
-} from '@edulastic/api/src/utils/Storage'
+import { getAccessToken } from '@edulastic/api/src/utils/Storage'
 import { push } from 'react-router-redux'
 import {
   keyBy as _keyBy,
@@ -33,7 +30,6 @@ import {
   cloneDeep,
   set,
   isEmpty,
-  isUndefined,
 } from 'lodash'
 import produce from 'immer'
 import {
@@ -71,7 +67,6 @@ import {
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
-  RESET_TEST_ITEMS,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -139,12 +134,7 @@ const getQuestions = (testItems = []) => {
   testItems.forEach((item) => {
     if (item.data) {
       const { questions = [], resources = [] } = item.data
-      allQuestions.push(
-        ...[...questions, ...resources].map((q) => ({
-          ...q,
-          testItemId: item._id,
-        }))
-      )
+      allQuestions.push(...questions, ...resources)
     }
   })
 
@@ -173,9 +163,7 @@ const getSettings = (test, testActivity, preview) => {
     ? test.playerSkinType
     : assignmentSettings.playerSkinType
   const showMagnifier = preview
-    ? isUndefined(test.showMagnifier)
-      ? true
-      : test.showMagnifier
+    ? test.showMagnifier
     : assignmentSettings.showMagnifier
   const timedAssignment = preview
     ? test.timedAssignment
@@ -187,9 +175,7 @@ const getSettings = (test, testActivity, preview) => {
     ? test.pauseAllowed
     : assignmentSettings.pauseAllowed
   const enableScratchpad = preview
-    ? isUndefined(test.enableScratchpad)
-      ? true
-      : test.enableScratchpad
+    ? test.enableScratchpad
     : assignmentSettings.enableScratchpad
   const releaseScore = preview
     ? test.releaseScore
@@ -198,10 +184,6 @@ const getSettings = (test, testActivity, preview) => {
   const enableSkipAlert = preview
     ? test.enableSkipAlert
     : assignmentSettings.enableSkipAlert
-
-  const showRubricToStudents = preview
-    ? test.showRubricToStudents
-    : assignmentSettings.showRubricToStudents
 
   return {
     testType,
@@ -213,7 +195,6 @@ const getSettings = (test, testActivity, preview) => {
     pauseAllowed,
     enableScratchpad,
     enableSkipAlert,
-    showRubricToStudents,
     calcType: calcType || testContants.calculatorTypes.NONE,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:
@@ -260,13 +241,9 @@ function* loadTest({ payload }) {
     playlistId,
     currentAssignmentId,
     savedUserWork,
-    summary = false,
-    isStudentReport = false,
-    regrade = false,
   } = payload
   let { testId } = payload
   const _testId = testId
-  const userRole = yield select(getUserRole)
   try {
     if (!preview && !testActivityId) {
       // we don't have a testActivityId for non-preview, lets throw error to short circuit
@@ -275,36 +252,6 @@ function* loadTest({ payload }) {
         'info'
       )
       return
-    }
-    const isFromSummary = yield select((state) =>
-      get(state, 'router.location.state.fromSummary', false)
-    )
-    const _switchLanguage = yield select((state) =>
-      get(state, 'router.location.state.switchLanguage', false)
-    )
-    if (
-      userRole === roleuser.STUDENT &&
-      !summary &&
-      !isStudentReport &&
-      !regrade &&
-      !isFromSummary &&
-      !_switchLanguage
-    ) {
-      const tokenExpireIn = tokenExpireInHours()
-      // consider less than zero as valid so that the client side time adjust wont impact.
-      const isValidSpan = tokenExpireIn > 12 || tokenExpireIn < 0
-      if (!isValidSpan) {
-        return window.dispatchEvent(new Event('user-token-expired'))
-      }
-    }
-
-    if (userRole === roleuser.STUDENT) {
-      const tokenExpireIn = tokenExpireInHours()
-      // consider less than zero as valid so that the client side time adjust wont impact.
-      const isValidSpan = tokenExpireIn > 12 || tokenExpireIn < 0
-      if (!isValidSpan) {
-        return window.dispatchEvent(new Event('user-token-expired'))
-      }
     }
 
     // if the assessment player is loaded for showing student work
@@ -383,6 +330,12 @@ function* loadTest({ payload }) {
       sessionStorage.setItem('currentTestId', testId)
     }
 
+    const isFromSummary = yield select((state) =>
+      get(state, 'router.location.state.fromSummary', false)
+    )
+    const _switchLanguage = yield select((state) =>
+      get(state, 'router.location.state.switchLanguage', false)
+    )
     if (!preview) {
       /**
        * src/client/assessment/sagas/items.js:saveUserResponse
@@ -666,7 +619,6 @@ function* loadTest({ payload }) {
       // if not the last question in the test or wasn't skipped then land on next Q
       if (
         lastAttendedQuestion !== test.testItems.length - 1 &&
-        questionActivities.length &&
         !lastAttemptedQuestion.skipped
       ) {
         lastAttendedQuestion++
@@ -689,11 +641,7 @@ function* loadTest({ payload }) {
       ) || {}
 
       // move to last attended question
-      if (
-        !settings.blockNavigationToAnsweredQuestions &&
-        !isFromSummary &&
-        !summary
-      ) {
+      if (!settings.blockNavigationToAnsweredQuestions && !isFromSummary) {
         if (loadFromLast && testType !== testContants.type.TESTLET) {
           const itemId = testItemIds[lastAttendedQuestion]
           yield put(
@@ -725,15 +673,7 @@ function* loadTest({ payload }) {
       const passageItems = test.passages.map((passage) => passage.data || [])
       questions = [...flatten(passageItems), ...questions]
     }
-    yield put(
-      loadQuestionsAction(
-        _keyBy(questions, (q) =>
-          q.type === 'passage' || q.type === 'video'
-            ? q.id
-            : `${q.testItemId}_${q.id}`
-        )
-      )
-    )
+    yield put(loadQuestionsAction(_keyBy(questions, 'id')))
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!
@@ -776,9 +716,7 @@ function* loadTest({ payload }) {
           test.multiLanguageEnabled ||
           test.hasInstruction ||
           test.timedAssignment
-        ) ||
-        demo ||
-        preview
+        )
       ) {
         yield put(setShowTestInfoSuccesAction(true))
       }
@@ -789,11 +727,10 @@ function* loadTest({ payload }) {
       type: SET_TEST_LOADING_STATUS,
       payload: false,
     })
-    sessionStorage.setItem('submitted', 'no')
+
     if (
       settings.blockNavigationToAnsweredQuestions &&
       testActivity.questionActivities.length &&
-      !summary &&
       !test.isDocBased
     ) {
       const testItemIds = testItems.map((i) => i._id)
@@ -850,6 +787,7 @@ function* loadTest({ payload }) {
     }
 
     let messageKey = 'failedLoadingTest'
+    const userRole = yield select(getUserRole)
 
     if (err.status) {
       if (err.status === 400) {
@@ -1036,8 +974,6 @@ function* submitTest({ payload }) {
       maxAttempt = assignment.maxAttempts || 1
     }
 
-    sessionStorage.setItem('submitted', 'yes')
-
     if (attempts.length >= maxAttempt) {
       if (test.settings?.releaseScore === releaseGradeLabels.DONT_RELEASE) {
         return yield put(push(`/home/grades`))
@@ -1072,9 +1008,6 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
-    yield put({
-      type: RESET_TEST_ITEMS,
-    })
     Fscreen.safeExitfullScreen()
   }
 }

@@ -160,10 +160,8 @@ const CustomizedHeaderWrapper = ({
 
   return (
     <MainHeader
-      headerLeftClassName="headerLeftWrapper"
       mobileHeaderHeight={activeNavigationKey !== 'standard-reports' ? 100 : ''}
       headingText={t('common.reports')}
-      titleMinWidth="100px"
       Icon={IconBarChart}
       hideSideMenu={hideSideMenu}
     >
@@ -192,8 +190,6 @@ export default withNamespaces('header')(
 )
 
 const StyledCol = styled(Col)`
-  align-self: flex-end;
-  display: flex;
-  padding-bottom: 5px;
   text-align: right;
+  display: flex;
 `

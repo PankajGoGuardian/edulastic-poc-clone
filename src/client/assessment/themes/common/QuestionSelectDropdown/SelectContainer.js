@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { themeColorBlue, mediumDesktopExactWidth } from '@edulastic/colors'
+import { themeColorBlue } from '@edulastic/colors'
 
 const SelectContainer = styled.div`
   position: relative;
@@ -12,16 +12,12 @@ const SelectContainer = styled.div`
   }
 
   .ant-select {
-    height: 36px;
+    height: 40px;
     width: 100%;
     &-focused {
       border: none;
       outline: 0;
       box-shadow: 0 0 0 2px ${themeColorBlue};
-    }
-
-    @media (min-width: ${mediumDesktopExactWidth}) {
-      height: 40px;
     }
   }
   .ant-select-selection {

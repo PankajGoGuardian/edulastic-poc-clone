@@ -52,12 +52,8 @@ class SubjectGrade extends React.Component {
     this.standardRef = createRef()
     this.standardsRef = createRef()
     const { userInfo } = this.props
-    const { defaultGrades, defaultSubjects } = get(
-      props.user,
-      'user.orgData',
-      {}
-    )
-    let { interestedCurriculums } = get(props.user, 'user.orgData', {})
+    const { defaultGrades, defaultSubjects } = get(props.user, 'user.orgData')
+    let { interestedCurriculums } = get(props.user, 'user.orgData')
 
     interestedCurriculums = interestedCurriculums.filter(
       (x) => x.orgType === userInfo?.role
@@ -88,7 +84,6 @@ class SubjectGrade extends React.Component {
     isModal: PropTypes.bool,
     isTestRecommendationCustomizer: PropTypes.bool,
     setShowTestCustomizerModal: PropTypes.func,
-    onSuccessCallback: PropTypes.func,
     user: PropTypes.object.isRequired,
   }
 
@@ -96,7 +91,6 @@ class SubjectGrade extends React.Component {
     isModal: false,
     isTestRecommendationCustomizer: false,
     setShowTestCustomizerModal: () => {},
-    onSuccessCallback: () => {},
   }
 
   componentDidMount() {
@@ -110,7 +104,7 @@ class SubjectGrade extends React.Component {
     const { currentStandardSetStandards } = user?.user || {}
     const curriculumIds = Object.keys(currentStandardSetStandards || {})
     if (curriculumIds.length) {
-      const { defaultGrades = [] } = get(user, 'user.orgData', {})
+      const { defaultGrades = [] } = get(this.props.user, 'user.orgData')
       getDictStandardsForCurriculum(curriculumIds, defaultGrades, '')
 
       const curriculumStandard = curriculumIds.flatMap((cid) =>
@@ -147,11 +141,7 @@ class SubjectGrade extends React.Component {
     e.preventDefault()
     form.validateFields((err, values) => {
       if (!err) {
-        const {
-          curriculums,
-          curriculumStandards = {},
-          onSuccessCallback,
-        } = this.props
+        const { curriculums, curriculumStandards = {} } = this.props
 
         const data = {
           orgId: userInfo._id,
@@ -164,7 +154,6 @@ class SubjectGrade extends React.Component {
           defaultSubjects,
           isTestRecommendationCustomizer,
           setShowTestCustomizerModal,
-          onSuccessCallback,
         }
 
         map(values.standard, (id) => {
@@ -258,7 +247,6 @@ class SubjectGrade extends React.Component {
       isTestRecommendationCustomizer,
       curriculumStandards,
       userInfo,
-      onMouseDown,
     } = this.props
     let { interestedCurriculums } = this.props
 
@@ -478,7 +466,6 @@ class SubjectGrade extends React.Component {
                     type="primary"
                     htmlType="submit"
                     loading={saveSubjectGradeloading}
-                    onMouseDown={onMouseDown}
                   >
                     {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
                   </ProceedBtn>

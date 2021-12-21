@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import { smallDesktopWidth, mediumDesktopExactWidth } from '@edulastic/colors'
+import { smallDesktopWidth } from '@edulastic/colors'
 import { IconBookmark, IconCheck } from '@edulastic/icons'
 import { withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
@@ -160,10 +160,6 @@ const StyledButton = withKeyboard(styled.div`
     svg {
       margin-right: 0px;
     }
-  }
-
-  @media (min-width: ${mediumDesktopExactWidth}) {
-    height: 40px;
   }
 `)
 

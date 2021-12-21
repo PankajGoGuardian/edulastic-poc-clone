@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { debounce, get } from 'lodash'
 import { white } from '@edulastic/colors'
 import {
   HeaderTabs,
@@ -124,9 +124,13 @@ class ButtonBar extends Component {
     this.handleDynamicParameter(onPublishTestItem)
   }
 
-  handleSave = () => {
+  debounceSave = debounce(() => {
     const { onSave } = this.props
-    this.handleDynamicParameter(onSave)
+    onSave()
+  }, 1000)
+
+  handleSave = () => {
+    this.handleDynamicParameter(this.debounceSave)
   }
 
   render() {

@@ -92,7 +92,7 @@ const TableFiltersView = ({
                 <SelectInputStyled
                   placeholder={filterStrDD[filtersColumn].placeholder}
                   onChange={(v) => handleStatusValue(v, i)}
-                  value={filterStr !== '' ? filterStr : undefined}
+                  value={filterStr || undefined}
                   height="32px"
                 >
                   {filterStrDD[filtersColumn].list.map((x) => (

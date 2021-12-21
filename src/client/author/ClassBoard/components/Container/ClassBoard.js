@@ -156,6 +156,9 @@ function capitalizeIt(str) {
 }
 
 function getStudentFilterCategory(x) {
+  if (x.isEnrolled === false) {
+    return 'UNASSIGNED'
+  }
   if (x.isAssigned === false) {
     return 'UNASSIGNED'
   }
@@ -190,8 +193,8 @@ function filterStudentsByStatus(selectedStatus) {
     if (selectedStatus === 'ALL') {
       return true
     }
-    if (selectedStatus === 'ALL ASSIGNED') {
-      return x.isAssigned
+    if (selectedStatus === 'ALL ACTIVE') {
+      return x.isAssigned && x.isEnrolled
     }
     return getStudentFilterCategory(x) === selectedStatus
   }
@@ -233,7 +236,7 @@ class ClassBoard extends Component {
       showScoreImporvement: false,
       hasStickyHeader: false,
       toggleBackTopIcon: false,
-      studentFilter: 'ALL ASSIGNED',
+      studentFilter: 'ALL ACTIVE',
     }
   }
 
@@ -529,9 +532,9 @@ class ClassBoard extends Component {
   getQuestions = () => {
     const { classResponse: { testItems = [] } = {} } = this.props
     let totalQuestions = []
-    testItems.forEach(({ _id, data: { questions = [] } = {} }) =>
+    testItems.forEach(({ data: { questions = [] } = {} }) =>
       questions.forEach((q) => {
-        totalQuestions = [...totalQuestions, { ...q, itemId: _id }]
+        totalQuestions = [...totalQuestions, q]
       })
     )
     return totalQuestions
@@ -603,9 +606,7 @@ class ClassBoard extends Component {
     }
     const { assignmentId, classId } = match.params
     const questions = this.getQuestions()
-    const index = questions.findIndex(
-      (x) => x.itemId === data.itemId && x.id === data.qid
-    )
+    const index = questions.findIndex((x) => x.id === data.qid)
 
     this.setState({
       selectedQuestion: index,
@@ -1464,7 +1465,7 @@ class ClassBoard extends Component {
                         height="24px"
                       >
                         {[
-                          'ALL ASSIGNED',
+                          'ALL ACTIVE',
                           'NOT STARTED',
                           'IN PROGRESS',
                           'SUBMITTED',
@@ -1481,9 +1482,10 @@ class ClassBoard extends Component {
                             style={{ fontSize: 11 }}
                           >
                             {capitalizeIt(x)} (
-                            {x === 'ALL ASSIGNED'
-                              ? testActivity.filter((_x) => _x.isAssigned)
-                                  .length
+                            {x === 'ALL ACTIVE'
+                              ? testActivity.filter(
+                                  (_x) => _x.isAssigned && _x.isEnrolled
+                                ).length
                               : studentFilterCategoryCounts[x] || 0}
                             )
                           </FilterSelect.Option>
@@ -1580,14 +1582,20 @@ class ClassBoard extends Component {
                             </MenuItems>
                           </FeaturesSwitch>
                           {showResume && (
-                            <MenuItems
-                              data-cy="resumeStudents"
-                              onClick={this.handleTogglePauseStudents(false)}
-                              disabled={disableMarkAbsent}
+                            <FeaturesSwitch
+                              inputFeatures="premium"
+                              actionOnInaccessible="hidden"
+                              groupId={classId}
                             >
-                              <IconPlay />
-                              <span>Resume Students</span>
-                            </MenuItems>
+                              <MenuItems
+                                data-cy="resumeStudents"
+                                onClick={this.handleTogglePauseStudents(false)}
+                                disabled={disableMarkAbsent}
+                              >
+                                <IconPlay />
+                                <span>Resume Students</span>
+                              </MenuItems>
+                            </FeaturesSwitch>
                           )}
 
                           <MenuItems

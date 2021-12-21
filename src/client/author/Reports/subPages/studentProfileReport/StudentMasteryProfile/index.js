@@ -14,7 +14,6 @@ import { withNamespaces } from '@edulastic/localization'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { roleuser } from '@edulastic/constants'
 import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import BarTooltipRow from '../../../common/components/tooltip/BarTooltipRow'
 import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
@@ -106,11 +105,6 @@ const StudentMasteryProfile = ({
         ? { ...sharedReport.filters, reportId: sharedReport?._id }
         : null,
     [sharedReport]
-  )
-
-  const isStudentOrParent = useMemo(
-    () => [roleuser.STUDENT, roleuser.PARENT].includes(userRole),
-    [userRole]
   )
 
   const { scaleInfo: scales = [] } = get(SPRFilterData, 'data.result', {})
@@ -307,7 +301,7 @@ const StudentMasteryProfile = ({
       <ReStyledCard>
         <FilterRow justifyContent="space-between">
           <DropdownContainer>
-            {!isStudentOrParent && (
+            {userRole !== 'student' && (
               <ControlDropDown
                 by={selectedGrade}
                 selectCB={onGradeSelect}

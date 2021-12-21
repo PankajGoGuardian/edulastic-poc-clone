@@ -66,7 +66,6 @@ const PlayerHeader = ({
   grades,
   subjects,
   isPremiumContentWithoutAccess = false,
-  canShowPlaybackOptionTTS,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -100,7 +99,6 @@ const PlayerHeader = ({
       {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-          canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
         />
       )}
       <ReviewQuestionsModal

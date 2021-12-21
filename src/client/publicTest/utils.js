@@ -300,10 +300,13 @@ const redirectToAssessmentPlayer = (
   } = assignment
   // if assignment is graded, then redirected to assignment review page
   const activeAssignments = assignment.class.filter(
-    (item) => item._id === classId && item.status !== 'ARCHIVED'
+    (item) =>
+      item._id === classId &&
+      item.status !== 'DONE' &&
+      item.status !== 'ARCHIVED'
   )
   const { maxAttempts = 1 } =
-    maxBy(activeAssignments, 'maxAttempts') || assignment
+    maxBy(activeAssignments, 'maxAttempts') || assignment.maxAttempts
   let isExpired = true
   if (activeAssignments.length) {
     const currentTime = assignment.ts

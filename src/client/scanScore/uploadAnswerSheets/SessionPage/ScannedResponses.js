@@ -61,25 +61,25 @@ const ScannedResponses = ({
 export default ScannedResponses
 
 const ScannedResponsesContainer = styled.div`
-  .scanned-responses-header {
-    text-align: center;
-    font-size: 18px;
-    font-weight: 700;
-  }
-  .thumbnails-container {
-    position: relative;
-    margin: 0 40px 80px 40px;
-    .thumbnails-size-slider {
-      display: inline-block;
-      position: absolute;
-      right: -30px;
-      height: 120px;
-    }
-    .thumbnails-inner-container {
-      margin: 20px 0;
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-  }
+	.scanned-responses-header {
+		text-align: center;
+		font-size: 18px;
+		font-weight: 700;
+	}
+	.thumbnails-container {
+		position: relative;
+		margin: 0 40px 80px 40px;
+		.thumbnails-size-slider {
+			display: inline-block;
+			position: absolute;
+			right: -30px;
+			height: 120px;
+		}
+		.thumbnails-inner-container {
+			margin: 20px 0;
+			display: flex;
+			flex-wrap: wrap,
+			justify-content: center;
+		}
+	}
 `

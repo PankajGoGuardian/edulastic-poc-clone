@@ -1,121 +1,62 @@
-import React, { useRef, useEffect } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
-import { Select, Tooltip } from 'antd'
-import { IconBookmark, IconSend } from '@edulastic/icons'
-import styled from 'styled-components'
-import { withNamespaces } from '@edulastic/localization'
-import SelectContainer from '../../common/QuestionSelectDropdown/SelectContainer'
+import { Menu } from 'antd'
+import { withKeyboard } from '@edulastic/common'
+import { StyledDropdown, StyledIcon } from './styled'
+
+const MenuItem = withKeyboard(Menu.Item)
 
 const QuestionList = ({
-  gotoQuestion,
   options = [],
-  currentItem,
-  skinb,
-  t,
-  bookmarks = [],
-  skipped = [],
-  dropdownStyle = {},
-  moveToNext,
-  utaId,
-  blockNavigationToAnsweredQuestions,
-  zoomLevel,
+  currentItem = 0,
+  gotoQuestion,
+  blockNavigationToAnsweredQuestions = false,
 }) => {
-  const dropdownWrapper = useRef(null)
+  const handleQuestionCLick = (e) =>
+    e && gotoQuestion(options[parseInt(e.key, 10)])
 
-  useEffect(() => {
-    if (dropdownWrapper?.current?.clientWidth) {
-      const zoomValue = parseFloat(zoomLevel)
-      const effectiveClientWidth =
-        zoomValue * dropdownWrapper.current?.clientWidth
-
-      const interval = setInterval(() => {
-        const ele1 = document.getElementsByClassName(
-          'question-select-list-dropdown'
-        )
-        const ele = ele1[0]
-        if (ele) {
-          const childEle = ele.childNodes[0]
-          ele.style.minWidth = `${effectiveClientWidth}px`
-          childEle.style.zoom = zoomLevel
-          clearInterval(interval)
-        }
-      }, 2000)
-      return () => clearInterval(interval)
-    }
-  }, [dropdownWrapper, zoomLevel])
-
-  const showSubmit =
-    sessionStorage.getItem('testAttemptReviewVistedId') === utaId
-  return (
-    <SelectContainer
-      ref={dropdownWrapper}
-      style={dropdownStyle}
-      skinb={skinb}
-      className="question-select-dropdown"
-    >
-      <Tooltip
-        placement="bottom"
-        title={
-          blockNavigationToAnsweredQuestions
-            ? 'This assignment is restricted from navigating back to the previous question.'
-            : null
-        }
-      >
-        <Select
-          dropdownStyle={{
-            zIndex: 1100,
-          }}
-          dropdownClassName="question-select-list-dropdown"
-          value={currentItem}
-          data-cy="options"
-          onChange={(value) => {
-            value === 'SUBMIT'
-              ? moveToNext(null, true, value)
-              : gotoQuestion(parseInt(value, 10))
-          }}
+  const menu = (
+    <Menu onClick={handleQuestionCLick}>
+      <Menu.Item disabled>
+        Select question <StyledIcon type="down" />
+      </Menu.Item>
+      {options.map((option) => (
+        <MenuItem
+          key={option}
+          data-cy="questionSelectOptions"
           disabled={blockNavigationToAnsweredQuestions}
+          onClick={() => {
+            handleQuestionCLick({ key: option })
+          }}
         >
-          {options.map((item, index) => (
-            <Select.Option
-              data-cy="questionSelectOptions"
-              key={index}
-              value={item}
-            >
-              {`${t('common.layout.selectbox.question')} ${index + 1}/${
-                options.length
-              }`}
-              {bookmarks[index] ? (
-                <IconBookmark color="#f8c165" height={16} />
-              ) : skipped[index] ? (
-                <SkippedIcon className="fa fa-exclamation-circle" />
-              ) : (
-                ''
-              )}
-            </Select.Option>
-          ))}
-          {showSubmit && (
-            <Select.Option key={options.length} value="SUBMIT">
-              Submit <IconSend />
-            </Select.Option>
-          )}
-        </Select>
-      </Tooltip>
-    </SelectContainer>
+          Question&nbsp;&nbsp;&nbsp;{`0${option + 1}`.slice(-2)}
+        </MenuItem>
+      ))}
+    </Menu>
+  )
+
+  return (
+    <StyledDropdown
+      overlay={menu}
+      getPopupContainer={(triggerNode) => triggerNode.parentNode}
+      trigger={['hover', 'click']}
+    >
+      <button
+        type="button"
+        className="ant-dropdown-link"
+        onClick={(e) => e.preventDefault()}
+        data-cy="options"
+      >
+        Question {`0${currentItem + 1}`.slice(-2)} <StyledIcon type="down" />
+      </button>
+    </StyledDropdown>
   )
 }
 
 QuestionList.propTypes = {
-  options: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired,
-  gotoQuestion: PropTypes.func.isRequired,
+  options: PropTypes.arrayOf(PropTypes.number).isRequired,
   currentItem: PropTypes.number.isRequired,
-  bookmarks: PropTypes.array.isRequired,
-  skipped: PropTypes.array.isRequired,
+  gotoQuestion: PropTypes.func.isRequired,
 }
 
-export default withNamespaces('student')(QuestionList)
-
-const SkippedIcon = styled.i`
-  color: #b1b1b1;
-  font-size: 18px;
-`
+export default QuestionList

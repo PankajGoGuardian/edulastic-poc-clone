@@ -2,6 +2,7 @@ import {
   IconMinusRounded,
   IconPlus,
   IconScratchPad,
+  IconMore,
   IconCloudUpload,
   IconMagnify,
   IconQuester,
@@ -11,23 +12,35 @@ import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { test as testConstants, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
 import { compose } from 'redux'
+import { get } from 'lodash'
 import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
+import { Rnd } from 'react-rnd'
 import { withWindowSizes, withKeyboard } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
+import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
+import AudioControls from '../../../AudioControls'
 import { getUserRole } from '../../../../author/src/selectors/user'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
-import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import { themes } from '../../../../theme'
-import ItemAudioControl from './ItemAudioControl'
 
 const { IconAnswerEliminator, IconBookMark, IconCalculator } = IconQuester
 
 const {
   playerSkin: { quester },
 } = themes
+
+const style = {
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  border: 'solid 1px #ddd',
+  background: '#334049',
+  padding: '10px',
+  borderRadius: '5px',
+  zIndex: 999,
+}
 
 const { footer, button } = quester
 
@@ -63,7 +76,6 @@ const PlayerFooter = ({
   checkAnswerInProgress,
   checkAnswer,
   isPremiumContentWithoutAccess = false,
-  passage,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -96,11 +108,14 @@ const PlayerFooter = ({
     checkAnswer()
   }
 
+  const showAudioControls = userRole === 'teacher' && !!LCBPreviewModal
+  const data = items[currentItem]?.data?.questions[0]
   const canShowPlayer =
-    (showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
-    (userRole !== roleuser.STUDENT &&
-      (!!LCBPreviewModal || isTestPreviewModalVisible))
-
+    ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
+      (userRole !== roleuser.STUDENT &&
+        (!!LCBPreviewModal || isTestPreviewModalVisible))) &&
+    data?.tts &&
+    data?.tts?.taskStatus === 'COMPLETED'
   const hideCheckAnswer = !TokenStorage.getAccessToken()
 
   return (
@@ -268,12 +283,30 @@ const PlayerFooter = ({
       )}
 
       {canShowPlayer && windowWidth && (
-        <ItemAudioControl
-          passage={passage}
-          item={items[currentItem]}
-          windowWidth={windowWidth}
-          isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-        />
+        <Rnd
+          style={style}
+          default={{
+            x: windowWidth - 300,
+            y: -80,
+            width: '200px',
+            height: '60',
+          }}
+        >
+          Play All
+          <AudioControls
+            showAudioControls={showAudioControls}
+            key={data.id}
+            item={data}
+            qId={data.id}
+            audioSrc={data?.tts?.titleAudioURL}
+            className="quester-question-audio-controller"
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+          />
+          <IconMoreVertical
+            color={footer.textColor}
+            hoverColor={footer.textColor}
+          />
+        </Rnd>
       )}
     </MainFooter>
   )
@@ -350,6 +383,12 @@ const MainFooter = styled.div`
       }
     }
   }
+`
+
+const IconMoreVertical = styled(IconMore)`
+  transform: rotate(90deg);
+  position: absolute;
+  right: 10px;
 `
 
 const ActionContainer = withKeyboard(styled.div`

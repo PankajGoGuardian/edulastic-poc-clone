@@ -38,7 +38,6 @@ const getOmrUploadSessions = ({ assignmentId, groupId, archived, aborted }) =>
 const splitScanOmrSheets = (payload) =>
   api
     .callApi({
-      useSlowApi: true,
       url: `${prefix}/scan-omr`,
       data: payload,
       method: 'post',

@@ -3,7 +3,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
-import { Table, Popover, Popconfirm } from 'antd'
+import { Table, Popconfirm } from 'antd'
 import { keys, cloneDeep, get, isEmpty } from 'lodash'
 
 import {
@@ -12,7 +12,7 @@ import {
   EduButton,
 } from '@edulastic/common'
 import { redDark } from '@edulastic/colors'
-import { IconTrash, IconCharInfo } from '@edulastic/icons'
+import { IconTrash } from '@edulastic/icons'
 
 import {
   getQuestionDataSelector,
@@ -34,10 +34,7 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
 
   const handleChangeCount = (evt) => {
     if (/^\d+$/.test(evt.target.value) || !evt.target.value) {
-      const countValue = !evt.target.value ? '' : +evt.target.value
-      if (countValue <= 200) {
-        setCount(countValue)
-      }
+      setCount(+evt.target.value)
     }
   }
 
@@ -49,8 +46,6 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
       }
       newData.variable.combinationsCount = +count
       onGenerate(newData)
-    } else if (!count) {
-      setCount(0)
     }
   }
 
@@ -140,25 +135,7 @@ const Examples = ({ t, onGenerate, questionData, setQuestionData }) => {
             onBlur={handleBlurCount}
           />
           <InlineLabel>
-            <PopoverWrapper>
-              {t('component.options.afterCombinationCount')}
-              <Popover
-                content={
-                  <ContentWrapper>
-                    <span>{t('component.helperText.combinationCount')}</span>
-                    <a
-                      target="_blank"
-                      rel="noreferrer"
-                      href="https://edulastic.com/help-center/questions-with-dynamic-content-602"
-                    >
-                      <span> Read more</span>
-                    </a>
-                  </ContentWrapper>
-                }
-              >
-                <InfoIcon />
-              </Popover>
-            </PopoverWrapper>
+            {t('component.options.afterCombinationCount')}
           </InlineLabel>
         </Col>
         <Col md={4}>
@@ -230,20 +207,4 @@ const TrashIcon = styled(IconTrash)`
   fill: ${redDark};
   cursor: pointer;
   margin-top: 2px;
-`
-
-const PopoverWrapper = styled.span`
-  position: relative;
-`
-
-const InfoIcon = styled(IconCharInfo)`
-  width: 6px;
-  height: 10px;
-  position: absolute;
-  top: -4px;
-  right: -16px;
-  cursor: pointer;
-`
-const ContentWrapper = styled.div`
-  max-width: 320px;
 `

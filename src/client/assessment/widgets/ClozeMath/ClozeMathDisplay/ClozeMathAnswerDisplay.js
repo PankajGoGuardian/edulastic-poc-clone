@@ -8,15 +8,15 @@ const ClozeMathAnswerDisplay = ({ resprops, id }) => {
   const { maths = {}, mathUnits = {} } = answers
   const userAnswers = { ...maths, ...mathUnits }
   const { value = '', options = {} } = userAnswers[id] || {}
-  const { unit } = options
+  let { unit } = options
 
-  // if (
-  //   unit &&
-  //   unit.search('text{') === -1 &&
-  //   (unit.search('f') !== -1 || unit.search(/\s/g) !== -1)
-  // ) {
-  //   unit = `\\text{${unit}}`
-  // }
+  if (
+    unit &&
+    unit.search('text{') === -1 &&
+    (unit.search('f') !== -1 || unit.search(/\s/g) !== -1)
+  ) {
+    unit = `\\text{${unit}}`
+  }
 
   return (
     <MathDisplay

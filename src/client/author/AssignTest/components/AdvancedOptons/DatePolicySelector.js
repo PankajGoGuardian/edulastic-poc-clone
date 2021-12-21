@@ -3,7 +3,7 @@ import {
   roleuser,
   assignmentPolicyOptions,
 } from '@edulastic/constants'
-import { Col, Select, Tooltip } from 'antd'
+import { Col, Select } from 'antd'
 import * as moment from 'moment'
 import React from 'react'
 import { connect } from 'react-redux'
@@ -57,32 +57,22 @@ const DatePolicySelector = ({
       <StyledRow gutter={24}>
         <Col xs={24} md={12} lg={6}>
           <Label>Open Date</Label>
-          <Tooltip
-            placement="top"
-            title={
+          <StyledDatePicker
+            allowClear={false}
+            data-cy="startDate"
+            style={{ width: '100%' }}
+            size="large"
+            disabledDate={disabledStartDate}
+            showTime={{ use12Hours: true, format: 'hh:mm a' }}
+            format="YYYY-MM-DD hh:mm a"
+            value={moment(startDate)}
+            placeholder="Open Date"
+            onChange={changeField('startDate')}
+            disabled={
               passwordPolicy ===
               testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-                ? 'To modify set Dynamic Password as OFF'
-                : null
             }
-          >
-            <StyledDatePicker
-              allowClear={false}
-              data-cy="startDate"
-              style={{ width: '100%' }}
-              size="large"
-              disabledDate={disabledStartDate}
-              showTime={{ use12Hours: true, format: 'hh:mm a' }}
-              format="YYYY-MM-DD hh:mm a"
-              value={moment(startDate)}
-              placeholder="Open Date"
-              onChange={changeField('startDate')}
-              disabled={
-                passwordPolicy ===
-                testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-              }
-            />
-          </Tooltip>
+          />
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Label>Close Date</Label>
@@ -109,33 +99,23 @@ const DatePolicySelector = ({
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Label>Open Policy</Label>
-          <Tooltip
-            placement="top"
-            title={
+          <StyledSelect
+            data-cy="selectOpenPolicy"
+            placeholder="Please select"
+            cache="false"
+            value={selectedOpenPolicy}
+            onChange={changeField('openPolicy')}
+            disabled={
               passwordPolicy ===
               testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-                ? 'To modify set Dynamic Password as OFF'
-                : null
             }
           >
-            <StyledSelect
-              data-cy="selectOpenPolicy"
-              placeholder="Please select"
-              cache="false"
-              value={selectedOpenPolicy}
-              onChange={changeField('openPolicy')}
-              disabled={
-                passwordPolicy ===
-                testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-              }
-            >
-              {openPolicy.map(({ value, text }, index) => (
-                <Select.Option key={index} value={value} data-cy="open">
-                  {text}
-                </Select.Option>
-              ))}
-            </StyledSelect>
-          </Tooltip>
+            {openPolicy.map(({ value, text }, index) => (
+              <Select.Option key={index} value={value} data-cy="open">
+                {text}
+              </Select.Option>
+            ))}
+          </StyledSelect>
         </Col>
         <Col xs={24} md={12} lg={6}>
           <Label>Close Policy</Label>

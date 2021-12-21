@@ -27,7 +27,7 @@ const EmbeddedVideoPreviewModal = (props) => {
         <iframe
           width="560"
           height="315"
-          src={`https://www.youtube.com/embed/${match[1]}?utm_source=Application&utm_medium=Clicks&utm_campaign=Dashboard_Quick_Start_Overview`}
+          src={`https://www.youtube.com/embed/${match[1]}`}
           frameBorder="0"
           allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
           style={{ margin: 'auto' }}

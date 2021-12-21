@@ -20,7 +20,7 @@ import * as Sentry from '@sentry/browser'
 import { omit } from 'lodash'
 import { getSelectedResourcesAction } from '../../../AssignTest/duck'
 import {
-  getCurrentActiveTermIds,
+  getCurrentActiveTerms,
   getOrgItemBanksSelector,
 } from '../../../src/selectors/user'
 import { updateCurriculumSequenceAction } from '../../ducks'
@@ -345,7 +345,7 @@ function* updateResourceSaga({ payload }) {
     delete payload.playlistId
     yield call(resourcesApi.updateResource, payload)
     yield put(slice.actions.resetSelectedStandards())
-    const activeTermIds = yield select(getCurrentActiveTermIds)
+    const activeTermIds = yield select(getCurrentActiveTerms)
     // delay reources fetch so that the added resource gets indexed in ES
     notification({ type: 'info', msg: 'Updating the resource' })
     yield delay(8000)
@@ -369,7 +369,7 @@ function* deleteResourceSaga({ payload }) {
   try {
     yield call(resourcesApi.deleteResource, id)
     yield put(slice.actions.resetSelectedStandards())
-    const activeTermIds = yield select(getCurrentActiveTermIds)
+    const activeTermIds = yield select(getCurrentActiveTerms)
     // delay reources fetch so that the added resource gets indexed in ES
     notification({ type: 'info', msg: 'Deleting the resource' })
     yield delay(8000)

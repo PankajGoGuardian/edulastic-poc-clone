@@ -227,17 +227,6 @@ const MultipleAssessmentReportContainer = (props) => {
         ))
       : []
 
-  const showDemographicFilterWarning = useMemo(() => {
-    const _ddFilter = {}
-    Object.keys(ddfilter).forEach((k) => {
-      _ddFilter[k] = ddfilter[k] === 'all' ? '' : ddfilter[k]
-    })
-    return (
-      !isEmpty(Object.values(_ddFilter).filter((val) => !!val)) &&
-      ['performance-over-time', 'student-progress'].includes(pageTitle)
-    )
-  }, [ddfilter, pageTitle])
-
   return (
     <>
       {sharingState && (
@@ -248,7 +237,6 @@ const MultipleAssessmentReportContainer = (props) => {
             ddfilter,
           }}
           showModal={sharingState}
-          showDemographicFilterWarning={showDemographicFilterWarning}
           setShowModal={setSharingState}
         />
       )}
@@ -292,7 +280,6 @@ const MultipleAssessmentReportContainer = (props) => {
                 MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
-                pageTitle={pageTitle}
               />
             )
           }}

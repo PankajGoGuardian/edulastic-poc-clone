@@ -6,12 +6,8 @@ import { Input } from 'antd'
 import { Container } from './styled'
 
 class Prompt extends Component {
-  constructor(props) {
-    super(props)
-    const { minValue } = this.props
-    this.state = {
-      position: minValue,
-    }
+  state = {
+    position: 1,
   }
 
   handleChange = (e) => {
@@ -33,7 +29,7 @@ class Prompt extends Component {
 
   render() {
     const { position } = this.state
-    const { style, minValue, maxValue } = this.props
+    const { style, maxValue } = this.props
     return (
       <Container style={style}>
         <FlexContainer style={{ marginBottom: 10 }}>
@@ -41,7 +37,7 @@ class Prompt extends Component {
             placeholder="Position"
             type="number"
             value={position}
-            min={minValue}
+            min={1}
             max={maxValue}
             onChange={this.handleChange}
           />
@@ -58,13 +54,11 @@ class Prompt extends Component {
 
 Prompt.propTypes = {
   style: PropTypes.object,
-  minValue: PropTypes.number,
   maxValue: PropTypes.number,
   onSuccess: PropTypes.func.isRequired,
 }
 
 Prompt.defaultProps = {
-  minValue: 1,
   maxValue: 1,
   style: {},
 }

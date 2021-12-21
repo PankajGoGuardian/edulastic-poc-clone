@@ -232,22 +232,6 @@ export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
   return []
 }
 
-/**
- * removes leading and trailing newline characters
- * eg: "  \\newline1\\newline2\\newline  " -> "1\\newline2"
- * @param {string} latex user response or expected answer
- * @returns {string} returns latex without leading and trailing newline characters
- */
-export const removeLeadingAndTrailingNewlineChars = (latex) => {
-  const newlineCharRegex = /^(\\ )*(\\newline)+|(\\newline)+(\\ )*$/g
-
-  while (newlineCharRegex.test(latex)) {
-    latex = latex.replace(newlineCharRegex, '')
-  }
-
-  return latex
-}
-
 // Adding any character after '/square' box
 // mathQuill does't added extra space after '/square' key, which is needed to inerpret as square box
 // it might be a bug for MathQuill lib

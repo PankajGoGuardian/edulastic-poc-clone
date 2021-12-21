@@ -20,38 +20,14 @@ class CreateTermModal extends React.Component {
     let defaultSchoolYear
 
     if (dataSource.length > 0) {
-      startDate = moment(dataSource[0].endDate)
-        .utc()
-        .add(1, 'day')
-        .set('hour', 0)
-        .set('minute', 0)
-        .set('second', 0)
-        .set('millisecond', 0)
-      endDate = moment(dataSource[0].endDate)
-        .utc()
-        .add(1, 'years')
-        .set('hour', 23)
-        .set('minute', 59)
-        .set('second', 59)
-        .set('millisecond', 999)
+      startDate = moment(dataSource[0].endDate).add(1, 'days')
+      endDate = moment(dataSource[0].endDate).add(1, 'years')
       defaultSchoolYear = `${startDate.format('YYYY')}-${endDate.format(
         'YYYY'
       )}`
     } else {
-      startDate = moment(new Date())
-        .utc()
-        .add(1, 'day')
-        .set('hour', 0)
-        .set('minute', 0)
-        .set('second', 0)
-        .set('millisecond', 0)
-      endDate = moment(new Date())
-        .utc()
-        .add(1, 'years')
-        .set('hour', 23)
-        .set('minute', 59)
-        .set('second', 59)
-        .set('millisecond', 999)
+      startDate = moment(new Date()).add(1, 'days')
+      endDate = moment(new Date()).add(1, 'years')
       defaultSchoolYear = `${startDate.format('YYYY')}-${endDate.format(
         'YYYY'
       )}`

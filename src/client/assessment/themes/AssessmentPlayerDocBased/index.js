@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { ThemeProvider } from 'styled-components'
-import { isEmpty, sortBy, keyBy } from 'lodash'
+import { isEmpty, sortBy } from 'lodash'
 
 import { withNamespaces } from '@edulastic/localization'
 
@@ -141,7 +141,7 @@ class AssessmentPlayerDocBased extends React.Component {
       t,
       docUrl,
       annotations,
-      questionsById: _questionsById,
+      questionsById,
       answers,
       answersById,
       loading,
@@ -154,10 +154,8 @@ class AssessmentPlayerDocBased extends React.Component {
       playerSkinType,
       groupId,
       hidePause,
-      userWork,
     } = this.props
 
-    const questionsById = keyBy(Object.values(_questionsById), 'id')
     const item = items[0]
     const dropdownOptions = item?.data?.questions
       ?.filter((q) => q.type !== questionType.SECTION_LABEL)
@@ -170,8 +168,6 @@ class AssessmentPlayerDocBased extends React.Component {
     themeToPass = { ...themeToPass, ...assessmentPlayerTheme }
     const extraPaddingTop =
       playerSkinType === 'parcc' ? 35 : playerSkinType === 'sbac' ? 29 : 0
-
-    const stdWork = userWork?.[item._id]?.freeNotesStd
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -201,7 +197,6 @@ class AssessmentPlayerDocBased extends React.Component {
                 isAssessmentPlayer
                 item={item}
                 annotations={annotations}
-                stdAnnotations={stdWork}
                 questions={questions}
                 freeFormNotes={freeFormNotes}
                 questionsById={questionsById}

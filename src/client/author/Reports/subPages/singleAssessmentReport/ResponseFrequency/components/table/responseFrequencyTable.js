@@ -180,13 +180,8 @@ export const ResponseFrequencyTable = ({
     (data, record) => {
       const numToAlp = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
       let arr = []
-      const {
-        corr_cnt = 0,
-        incorr_cnt = 0,
-        part_cnt = 0,
-        skip_cnt = 0,
-      } = record
-      let sum = corr_cnt + incorr_cnt + part_cnt + skip_cnt
+      const { corr_cnt = 0, incorr_cnt = 0, part_cnt = 0 } = record
+      let sum = corr_cnt + incorr_cnt + part_cnt
       if (sum == 0) sum = 1
       // V1 migrated UQA doesn't have user answer data
       let hasChoiceData = false

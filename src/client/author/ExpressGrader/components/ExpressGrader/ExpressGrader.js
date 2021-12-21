@@ -47,10 +47,7 @@ import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
-import {
-  isProxyUser as isProxyUserSelector,
-  toggleAdminAlertModalAction,
-} from '../../../../student/Login/ducks'
+import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 
 /**
@@ -234,7 +231,6 @@ class ExpressGrader extends Component {
       scoreMode,
       authorClassBoard,
       regradeModalState,
-      isProxyUser,
     } = this.props
     const { isVisibleModal, record, isGridEditOn, columnData } = this.state
     const { assignmentId, classId, testActivityId } = match.params
@@ -299,7 +295,6 @@ class ExpressGrader extends Component {
                       isPresentationMode={isPresentationMode}
                       windowWidth={windowWidth}
                       groupId={classId}
-                      isDemoProxy={isProxyUser}
                     />
                     <ExpressGraderScoreColors />
                   </>
@@ -352,7 +347,6 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
-      isProxyUser: isProxyUserSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

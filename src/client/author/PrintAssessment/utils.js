@@ -32,25 +32,7 @@ export const getOrderedQuestionsAndAnswers = (
 
     let qs = [...resources, ...ques]
     if (type === 'custom') {
-      if (ques.length === 1) {
-        qs = qs.filter((q) => filterQs.includes(q.qLabel))
-      } else {
-        /**
-         * @see https://snapwiz.atlassian.net/browse/EV-32474
-         * In item with more than one questions qLabel is only present for question at 1st index.
-         * All other questions have qLabel null. Thus filter multipart item questions based on number from barLabel
-         */
-        qs = qs.filter((q) => {
-          const { barLabel = '' } = q
-          const charIndex = barLabel.indexOf('.')
-          let questionqLabel = barLabel.substring(
-            1,
-            charIndex === -1 ? barLabel.length : charIndex
-          )
-          questionqLabel = parseInt(questionqLabel)
-          return filterQs.includes(questionqLabel)
-        })
-      }
+      qs = qs.filter((q) => filterQs.includes(q.qLabel))
     } else if (type === 'manualGraded') {
       if (item.multipartItem || item.itemLevelScoring) {
         qs =

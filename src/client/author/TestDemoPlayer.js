@@ -104,7 +104,6 @@ const DemoPlayer = ({
             closeTestPreviewModal={closeTestPreviewModal}
             submitPreviewTest={submitPreviewTest}
             defaultAP={testType !== testConstants.type.PRACTICE}
-            isTestDemoPlayer
           />
         </WithResources>
       )}

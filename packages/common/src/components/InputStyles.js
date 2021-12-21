@@ -181,18 +181,6 @@ export const SelectInputStyled = styled(Select)`
         cursor: not-allowed;
       }
     }
-    &.ant-select-allow-clear {
-      .ant-select-selection {
-        &.ant-select-selection--single {
-          .ant-select-selection__rendered {
-            padding-right: 40px;
-          }
-          .ant-select-selection__clear {
-            right: 30px;
-          }
-        }
-      }
-    }
     &.ant-select-open {
       .ant-select-selection {
         border-color: ${themeColorBlue};

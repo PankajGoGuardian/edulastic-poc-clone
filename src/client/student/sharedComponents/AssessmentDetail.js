@@ -168,7 +168,7 @@ const AssessmentDetails = ({
               <StatusRow data-cy="pastDueTag">{pastDueTag}</StatusRow>
             )}
           </StatusWrapper>
-          {!!((endDate && type !== 'assignment') || dueDate) && (
+          {!!(endDate || dueDate) && (
             <CardDate>
               <IconSchedule />
               <DueDetails data-cy="date">
@@ -194,7 +194,7 @@ const AssessmentDetails = ({
           <TimeIndicator type={type}>
             {timedAssignment && (
               <>
-                <IconHourGlass data-cy="timerIcon" color={greyThemeDark3} />
+                <IconHourGlass color={greyThemeDark3} />
                 <StyledLabel>{allowedTime / (60 * 1000)} minutes</StyledLabel>
               </>
             )}

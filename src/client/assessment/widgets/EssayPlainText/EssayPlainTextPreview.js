@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
@@ -61,9 +61,6 @@ const EssayPlainTextPreview = ({
   isPrintPreview,
   isStudentAttempt,
   isFeedbackVisible,
-  isLCBView,
-  isExpressGrader,
-  isStudentReport,
 }) => {
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : '')
 
@@ -76,15 +73,6 @@ const EssayPlainTextPreview = ({
   const reviewTab = isReviewTab && testItem
 
   let node
-  const { max_height: maxHeight = '' } = item?.uiStyle || {} // Todo: Field name needs to be corrected in DB
-
-  const maxHeightPreview = useMemo(() => {
-    if (isLCBView || isExpressGrader || isStudentReport) {
-      return 'auto'
-    }
-
-    return Math.max(47, maxHeight)
-  }, [isLCBView, isExpressGrader, isStudentReport, maxHeight])
 
   useEffect(() => {
     if (isString(userAnswer)) {
@@ -219,6 +207,7 @@ const EssayPlainTextPreview = ({
   const fontSize =
     theme.fontSize || getFontSize(get(item, 'uiStyle.fontsize', 'normal'))
   const { minHeight = '' } = item?.uiStyle || {}
+  const { max_height: maxHeight = '' } = item?.uiStyle || {} // Todo: Field name needs to be corrected in DB
   const background =
     item.maxWord < wordCount
       ? theme.widgets.essayPlainText.textInputLimitedBgColor
@@ -306,7 +295,7 @@ const EssayPlainTextPreview = ({
             {!isPrintPreview && (
               <TextArea
                 minHeight={minHeight || 10}
-                maxHeight={maxHeightPreview} // default height antd input
+                maxHeight={maxHeight < 47 ? 47 : maxHeight} // default height antd input
                 autoSize
                 data-cy="previewBoxContainer"
                 inputRef={(ref) => {

@@ -14,7 +14,9 @@ export const ThumbnailsWrapper = styled.div`
   overflow-y: auto;
   display: ${({ minimized }) => (minimized ? 'none' : 'block')};
   padding: ${(props) =>
-    props.reportMode ? '0px 0px 16px 16px' : '16px 0px 50px 16px'};
+    props.testMode || props.reportMode
+      ? '0px 0px 16px 16px'
+      : '16px 0px 50px 16px'};
   background: ${backgrounds.primary};
   min-width: 155px;
   max-width: 155px;

@@ -379,7 +379,6 @@ class AxisSegmentsMoreOptions extends Component {
                   )
                 }
                 name="leftArrow"
-                data-cy="checkLeftArrow"
                 checked={numberlineAxis.leftArrow}
               >
                 {t('component.graphing.layoutoptions.showMinArrow')}
@@ -394,7 +393,6 @@ class AxisSegmentsMoreOptions extends Component {
                   )
                 }
                 name="rightArrow"
-                data-cy="checkRightArrow"
                 checked={numberlineAxis.rightArrow}
               >
                 {t('component.graphing.layoutoptions.showMaxArrow')}

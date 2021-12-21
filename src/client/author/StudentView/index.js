@@ -249,12 +249,7 @@ class StudentViewContainer extends Component {
         <p>
           <b>Overall feedback</b>
         </p>
-        <p>
-          {' '}
-          {`${initFeedbackValue.slice(0, 250)}${
-            initFeedbackValue.length > 250 ? '.....' : ''
-          }`}
-        </p>
+        <p>{initFeedbackValue}</p>
       </div>
     )
 
@@ -307,7 +302,7 @@ class StudentViewContainer extends Component {
               rows={6}
               defaultValue={initFeedbackValue}
               ref={this.feedbackRef}
-              maxlength="2048"
+              maxlength="250"
               autoFocus
             />
           </StyledModal>

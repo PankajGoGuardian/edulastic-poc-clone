@@ -68,11 +68,6 @@ export const ModalColumn = styled.div`
     width: 100%;
     max-height: calc(100% - 120px);
   }
-  .public-access-btn-wrapper {
-    width: 60%;
-    position: absolute;
-    right: -19px;
-  }
 `
 
 export const SummaryScrollbar = styled.div``

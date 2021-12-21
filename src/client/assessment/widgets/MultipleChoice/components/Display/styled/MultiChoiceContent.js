@@ -26,8 +26,4 @@ export const MultipleChoiceLabelContainer = styled.div`
   display: block;
 `
 
-export const CrossOutContainer = styled.div`
-  position: relative;
-`
-
 MultiChoiceContent.displayName = 'MultiChoiceContent'

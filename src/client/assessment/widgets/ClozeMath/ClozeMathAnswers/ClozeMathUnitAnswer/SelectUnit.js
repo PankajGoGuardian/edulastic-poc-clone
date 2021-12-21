@@ -24,7 +24,6 @@ const SelectUnit = ({
   preview,
   height,
   width,
-  fontSize,
   dropdownStyle,
   disabled,
   forwardedRef,
@@ -32,7 +31,6 @@ const SelectUnit = ({
   isPrintPreview,
   allOptions,
   id,
-  handleEvent,
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
     btn.types.includes(keypadMode)
@@ -82,12 +80,7 @@ const SelectUnit = ({
       btn.handler || ''
     }"></span>`
 
-    return (
-      <MathFormulaDisplay
-        dangerouslySetInnerHTML={{ __html: label }}
-        fontSize={fontSize}
-      />
-    )
+    return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
   }
 
   return (
@@ -109,13 +102,10 @@ const SelectUnit = ({
         onDropdownVisibleChange={onDropdownVisibleChange}
         dropdownStyle={dropdownStyle}
         ref={forwardedRef}
-        onFocus={() => handleEvent('focus')}
-        onBlur={() => handleEvent('blur')}
-        data-cy="selectUnitDropdown"
       >
         {allBtns.map((btn, i) => {
           return (
-            <Option value={btn.handler} key={i} data-cy={btn.dataCy}>
+            <Option value={btn.handler} key={i}>
               {getLabel(btn)}
             </Option>
           )
@@ -138,7 +128,6 @@ SelectUnit.propTypes = {
   width: PropTypes.string,
   disabled: PropTypes.bool.isRequired,
   getPopupContainer: PropTypes.func,
-  handleEvent: PropTypes.func,
 }
 
 SelectUnit.defaultProps = {
@@ -149,7 +138,6 @@ SelectUnit.defaultProps = {
   forwardedRef: {},
   width: '120px',
   getPopupContainer: (trigger) => trigger.parentNode,
-  handleEvent: () => {},
 }
 
 export default SelectUnit

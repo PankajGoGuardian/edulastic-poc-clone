@@ -10,8 +10,7 @@ export const TextWrapper = styled(Text)`
   font-size: ${(props) => (props.rfs ? props.rfs : '16px')};
   text-align: ${(props) => (props.textalign ? props.textalign : 'left')};
   display: inline-block;
-  margin-bottom: ${(props) => props.mb || ''};
-  margin-top: ${(props) => props.mt || ''};
+  margin-bottom: ${(props) => (props.mb ? props.mb : '')};
   font-weight: ${(props) => (props.fw ? props.fw : 'normal')};
   padding: ${(props) => props.padding};
   line-height: ${(props) => props.lh || 'normal'};

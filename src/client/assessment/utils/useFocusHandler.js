@@ -159,40 +159,10 @@ export default function useFocusHandler({ onFocus, onBlur, enabled }) {
                     o.onFocusCallback()
                   }, 300)
                 }
-
-                var forceBlurCb = function (event) {
-                  // when calling force blur execute callback only if document is out of focus
+                var blurCb = function (event) {
+                  // tween pause() code goes
                   if (!hasFocus()) {
                     o.onBlurCallback()
-                    // remove once blur cb is executed
-                    window.document.removeEventListener(
-                      'forceBlur',
-                      forceBlurCb,
-                      false
-                    )
-                  }
-                }
-
-                var blurCb = function (event) {
-                  const isRequestingCameraAccess = window.sessionStorage.getItem(
-                    'isRequestingCameraAccess'
-                  )
-
-                  // tween pause() code goes
-                  if (!hasFocus() && !isRequestingCameraAccess) {
-                    o.onBlurCallback()
-                  }
-
-                  if (isRequestingCameraAccess) {
-                    window.document.addEventListener(
-                      'forceBlur',
-                      forceBlurCb,
-                      false
-                    )
-                    // cleanup in case the event was never called
-                    cleanupCallbacks.push(() =>
-                      window.removeEventListener('forceBlur', focusCb, false)
-                    )
                   }
                 }
                 window.addEventListener('focus', focusCb, false)

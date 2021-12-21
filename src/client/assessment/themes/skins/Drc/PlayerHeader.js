@@ -74,7 +74,6 @@ const PlayerHeader = ({
   handleMagnifier,
   tool,
   isPremiumContentWithoutAccess = false,
-  canShowPlaybackOptionTTS,
 }) => {
   const {
     calcType,
@@ -104,7 +103,6 @@ const PlayerHeader = ({
       {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-          canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
         />
       )}
       <Header

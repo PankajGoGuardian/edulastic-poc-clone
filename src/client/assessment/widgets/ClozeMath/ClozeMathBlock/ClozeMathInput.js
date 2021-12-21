@@ -9,7 +9,6 @@ import {
 } from '@edulastic/common'
 import CheckedBlock from './CheckedBlock'
 import { MathInputWrapper } from './styled/MathInputWrapper'
-import { getStylesFromUiStyleToCssStyle } from '../../../utils/helpers'
 
 const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
   const {
@@ -67,8 +66,6 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     individualHeight ||
     Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10))
 
-  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
-
   const handleSaveAnswer = (latex) => {
     const value = reformatMathInputLatex(latex)
     if (save) {
@@ -115,8 +112,7 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
       width={width}
       disableResponse={disableResponse}
       height={height}
-      fontSize={cssStyles?.fontSize || uiStyles?.fontSize}
-      data-cy="mathInput"
+      fontSize={uiStyles?.fontSize}
     >
       {staticOrMathInput}
     </MathInputWrapper>

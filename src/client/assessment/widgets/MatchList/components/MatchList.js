@@ -85,7 +85,6 @@ const MatchList = ({
             key={i}
             className="__prevent-page-break"
             style={{ width: '100%' }}
-            data-cy="listItem"
           >
             <AnswerItem
               key={i}

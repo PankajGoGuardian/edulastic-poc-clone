@@ -93,13 +93,8 @@ export const getCurrentActiveTerms = createSelector(stateSelector, (state) => {
   const currentTerms = terms.filter(
     (o) => o.startDate <= currentTime && o.endDate >= currentTime
   )
-  return currentTerms
+  return currentTerms.map((x) => x._id)
 })
-
-export const getCurrentActiveTermIds = createSelector(
-  getCurrentActiveTerms,
-  (state) => state.map((x) => x._id)
-)
 
 export const getInterestedCurriculumsSelector = createSelector(
   getOrgDataSelector,
@@ -509,9 +504,7 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
       '6023834b7e63eb0007a54234', // vvk@approver.com - Content Editor
       '5ee90bb54e6a8b000713dae9', // QA testing author account
       '5e3138446247305142d94332', // QA testing publisher account
-      '5ec422aabdde150007764df1', // "Edulastic Premium Content",
-      '60af953c3b51956dbb99b4cb', // Bharat-access-lausd-mulitlingual-content (PRD)
-      '5f48a498db9eaf900d7abfde', // Swetha-access-lausd-mulitlingual-content (PRO)
+      '5ec422aabdde150007764df1', // "Edulastic Premium Content"
     ]
     return allowedUserIds.includes(state)
   }

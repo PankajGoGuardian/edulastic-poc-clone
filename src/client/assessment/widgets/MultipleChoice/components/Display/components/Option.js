@@ -10,7 +10,7 @@ import { appLanguages } from '@edulastic/constants'
 import produce from 'immer'
 import { flatten, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useState, useContext, useMemo } from 'react'
+import React, { useState, useContext } from 'react'
 import styled from 'styled-components'
 import { IconTrash as Icon } from '@edulastic/icons'
 import QuestionTextArea from '../../../../../components/QuestionTextArea'
@@ -21,11 +21,8 @@ import { IconCheck } from '../styled/IconCheck'
 import { IconClose } from '../styled/IconClose'
 import { IconWrapper } from '../styled/IconWrapper'
 import { Label, OptionLabelDiv } from '../styled/Label'
-import {
-  MultiChoiceContent,
-  CrossOutContainer,
-} from '../styled/MultiChoiceContent'
-import CrossIcon from '../../../../../components/CrossIcon'
+import { MultiChoiceContent } from '../styled/MultiChoiceContent'
+import Cross from './Cross'
 import DragHandle from './DragHandle'
 
 const Option = (props) => {
@@ -56,8 +53,6 @@ const Option = (props) => {
     tool = [],
     onChangeOption,
     onRemoveOption,
-    setFocusedOptionIndex,
-    focusedOptionIndex,
   } = props
   let className = ''
   let correctAnswers = []
@@ -143,33 +138,35 @@ const Option = (props) => {
     }
   }
 
-  const label = useMemo(() => {
+  const getLabel = (inx) => {
     if (uiStyle.type === 'block') {
       switch (uiStyle.choiceLabel) {
         case 'none':
           return ''
         case 'number':
-          return indx + 1
+          return inx + 1
         case 'lower-alpha':
-          return (ALPHABET[indx] || '').toLowerCase()
+          return (ALPHABET[inx] || '').toLowerCase()
         case 'upper-alpha':
         default:
-          return (ALPHABET[indx] || '').toUpperCase()
+          return (ALPHABET[inx] || '').toUpperCase()
       }
-    }
-    if (uiStyle.type === 'standard') {
+    } else if (uiStyle.type === 'standard') {
       switch (uiStyle.stemNumeration) {
         case 'number':
-          return indx + 1
+          return inx + 1
         case 'lower-alpha':
-          return (ALPHABET[indx] || '').toLowerCase()
+          return (ALPHABET[inx] || '').toLowerCase()
         case 'upper-alpha':
         default:
-          return (ALPHABET[indx] || '').toUpperCase()
+          return (ALPHABET[inx] || '').toUpperCase()
       }
+    } else {
+      return (ALPHABET[inx] || '').toUpperCase()
     }
-    return (ALPHABET[indx] || '').toUpperCase()
-  }, [uiStyle, indx])
+  }
+
+  const label = getLabel(indx)
 
   const container = (
     <>
@@ -226,12 +223,17 @@ const Option = (props) => {
       {fromSetAnswers && <DragHandle />}
       {uiStyle.type !== 'radioBelow' && container}
       <MultiChoiceContent
-        data-cy="multiChoiceContent"
         fontSize={fontSize}
         smallSize={smallSize}
         uiStyleType={uiStyle.type}
         label={label}
       >
+        {!fromSetAnswers && (
+          <MathFormulaDisplay
+            fontSize={fontSize}
+            dangerouslySetInnerHTML={{ __html: item.label }}
+          />
+        )}
         {fromSetAnswers && (
           <QuestionTextArea
             value={item.label}
@@ -244,17 +246,9 @@ const Option = (props) => {
             backgroundColor
           />
         )}
-        <CrossOutContainer>
-          {!fromSetAnswers && (
-            <MathFormulaDisplay
-              fontSize={fontSize}
-              dangerouslySetInnerHTML={{ __html: item.label }}
-            />
-          )}
-          {(isCrossAction || hovered) && (
-            <CrossIcon hovered={hovered} isCrossAction={isCrossAction} />
-          )}
-        </CrossOutContainer>
+        {(isCrossAction || hovered) && (
+          <Cross hovered={hovered} isCrossAction={isCrossAction} />
+        )}
       </MultiChoiceContent>
       {uiStyle.type === 'radioBelow' && container}
     </StyledOptionsContainer>
@@ -281,8 +275,6 @@ const Option = (props) => {
       isPrintPreview={isPrintPreview}
       showBorder={showBorder}
       label={label}
-      focusedOptionIndex={focusedOptionIndex}
-      indx={indx}
       onMouseEnter={() => {
         if (setCrossAction && !isTouchDevice()) {
           toggleHover(true)
@@ -293,7 +285,6 @@ const Option = (props) => {
           toggleHover(false)
         }
       }}
-      onFocus={() => setFocusedOptionIndex(indx)}
     >
       {renderCheckbox()}
       {showIcon && (
@@ -321,14 +312,14 @@ const IconTrash = styled(Icon)`
   width: 10px;
   height: 14px;
   cursor: pointer;
-  margin: 0px -32px 0px 16px;
+  margin: 0px -30px 0px 16px;
 `
 
 const StyledOptionsContainer = withKeyboard(styled.div`
   flex: 1;
   display: flex;
   justify-content: flex-start;
-  min-height: 35px;
+  padding: 5px 12px;
   flex-direction: ${({ uiStyleType }) =>
     uiStyleType === 'radioBelow' ? 'column' : 'row'};
   align-items: ${({ uiStyleType }) =>
@@ -383,10 +374,6 @@ const StyledOptionsContainer = withKeyboard(styled.div`
       border-color: ${themeColorHoverBlue};
     }
   }
-
-  .froala-wrapper {
-    padding: 5px 0px;
-  }
 `)
 
 Option.propTypes = {
@@ -410,8 +397,6 @@ Option.propTypes = {
   isReviewTab: PropTypes.bool.isRequired,
   setCrossAction: PropTypes.oneOfType([PropTypes.func, PropTypes.bool]),
   fontSize: PropTypes.string.isRequired,
-  setFocusedOptionIndex: PropTypes.func,
-  focusedOptionIndex: PropTypes.number,
 }
 
 Option.defaultProps = {
@@ -423,8 +408,6 @@ Option.defaultProps = {
   styleType: 'default',
   setCrossAction: false,
   crossAction: {},
-  setFocusedOptionIndex: () => {},
-  focusedOptionIndex: 0,
 }
 const OptionComponent = withNamespaces('assessment')(Option)
 

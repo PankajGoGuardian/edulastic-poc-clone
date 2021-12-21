@@ -386,9 +386,6 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
     localStorage.removeItem('loginRedirectUrl')
   } else if (toUrl && !isPartOfLoginRoutes(toUrl) && toUrl != '/') {
     redirectRoute = toUrl
-  } else if (localStorage.getItem('schoologyAssignmentRedirectUrl')) {
-    redirectRoute = localStorage.getItem('schoologyAssignmentRedirectUrl')
-    localStorage.removeItem('schoologyAssignmentRedirectUrl')
   } else if (!window.location.pathname.includes('home/group')) {
     redirectRoute = getRouteByGeneralRoute(user)
   }
@@ -1243,7 +1240,6 @@ export function* fetchUser({ payload }) {
     if (searchParam.includes('showCliBanner=1'))
       localStorage.setItem('showCLIBanner', true)
     yield put(setUserAction(user))
-    yield call(segmentApi.analyticsIdentify, { user })
     yield put(
       updateInitSearchStateAction({
         grades: user?.orgData?.defaultGrades,
@@ -1342,10 +1338,7 @@ function* logout() {
       }
       // localStorage.clear()
       forIn(localStorage, (value, objKey) => {
-        if (
-          !startsWith(objKey, 'recommendedTest:') &&
-          !startsWith(objKey, 'author:dashboard:classFilter:')
-        ) {
+        if (!startsWith(objKey, 'recommendedTest:')) {
           localStorage.removeItem(objKey)
         }
       })
@@ -1683,7 +1676,6 @@ function* atlasLogin({ payload }) {
     TokenStorage.removeAllTokens()
     window.location.href = res
   } catch (e) {
-    localStorage.removeItem('schoologyAssignmentRedirectUrl')
     notification({ messageKey: 'atlasLoginFailed' })
   }
 }
@@ -1833,8 +1825,7 @@ function* getUserData({ payload: res }) {
       if (
         !(
           user?.role === roleuser.STUDENT &&
-          (redirectUrl.includes('author/tests/verid') ||
-            redirectUrl.includes('/author/tests/tab/review/id/')) &&
+          redirectUrl.includes('author/tests/verid') &&
           window.location.pathname.includes('/auth')
         )
       ) {
@@ -1850,7 +1841,6 @@ function* getUserData({ payload: res }) {
   } catch (e) {
     console.log(e)
     notification({ messageKey: 'failedToFetchUserData' })
-    localStorage.removeItem('schoologyAssignmentRedirectUrl')
 
     yield put(push(getSignOutUrl()))
     removeSignOutUrl()

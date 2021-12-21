@@ -1,15 +1,16 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useEffect, useState, useMemo, useContext } from 'react'
 import PropTypes from 'prop-types'
 import { find, indexOf } from 'lodash'
 import styled from 'styled-components'
 import { Select } from 'antd'
 import { darkBlue, lightGrey12 } from '@edulastic/colors'
-import { SelectInputStyled, MathFormulaDisplay } from '@edulastic/common'
-import CheckedBlock from './CheckedBlock'
 import {
-  getStemNumeration,
-  getStylesFromUiStyleToCssStyle,
-} from '../../../utils/helpers'
+  ScrollContext,
+  SelectInputStyled,
+  MathFormulaDisplay,
+} from '@edulastic/common'
+import CheckedBlock from './CheckedBlock'
+import { getStemNumeration } from '../../../utils/helpers'
 
 const { Option } = Select
 
@@ -30,8 +31,8 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     allOptions,
     answerScore,
     allCorrects,
-    setDropDownInUse,
   } = resprops
+  const { getScrollElement } = useContext(ScrollContext)
 
   const { dropDowns: _dropDownAnswers = [] } = answers
   let val = _dropDownAnswers[id] ? _dropDownAnswers[id].value : ''
@@ -40,8 +41,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   } = item
   const { index } = find(dropDowns, (res) => res.id === id) || {}
   const response = find(responseContainers || [], (cont) => cont.id === id)
-
-  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
 
   const dropdownStyle = useMemo(() => {
     const individualWidth = response?.widthpx || 0
@@ -64,7 +63,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       ...uiStyles,
       width: `${width}px`,
       height: `${height}px`,
-      ...cssStyles,
     }
   }, [item])
 
@@ -74,18 +72,12 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     left: `0px !important`,
   })
 
-  const getPopupContainer = (node) => {
-    return node.parentNode
-  }
-
-  const handleEvent = (event) => {
-    if (typeof setDropDownInUse === 'function') {
-      if (event === 'focus') {
-        setDropDownInUse(true)
-      } else if (event === 'blur') {
-        setDropDownInUse(false)
-      }
+  const getPopupContainer = () => {
+    const scrollEl = getScrollElement()
+    if (!scrollEl || (scrollEl === window && 'location' in scrollEl)) {
+      return document.body
     }
+    return scrollEl
   }
 
   if (isPrintPreview) {
@@ -148,13 +140,10 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       isPrintPreview={isPrintPreview}
     >
       <Dropdown
-        data-cy="textDropDown"
         disabled={disableResponse}
         onChange={(text) => save({ value: text, index }, 'dropDowns', id)}
         getPopupContainer={getPopupContainer}
         value={val}
-        onFocus={() => handleEvent('focus')}
-        onBlur={() => handleEvent('blur')}
         {...dropdownStyle}
       >
         {options &&

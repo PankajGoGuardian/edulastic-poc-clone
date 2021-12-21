@@ -18,7 +18,7 @@ DragHandle.propTypes = {
 export default DragHandle
 
 export const DragIcon = styled.div`
-  padding: 8px;
+  padding-right: 8px;
   display: flex;
   flex-direction: column;
   justify-content: center;

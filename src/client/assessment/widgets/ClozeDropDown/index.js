@@ -10,7 +10,6 @@ import { WithResources, AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
-import { setDropDownInUseAction } from '../../../student/Sidebar/ducks'
 import { EDIT } from '../../constants/constantsForQuestions'
 
 import { CorrectAnswerOptions } from '../../styled/CorrectAnswerOptions'
@@ -269,10 +268,7 @@ const enhance = compose(
   withRouter,
   withNamespaces('assessment'),
   withTheme,
-  connect(null, {
-    setQuestionData: setQuestionDataAction,
-    setDropDownInUse: setDropDownInUseAction,
-  })
+  connect(null, { setQuestionData: setQuestionDataAction })
 )
 
 const ClozeDropDownContainer = enhance(ClozeDropDown)

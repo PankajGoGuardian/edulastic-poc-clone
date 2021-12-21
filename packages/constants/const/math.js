@@ -384,7 +384,7 @@ const graphPolygonChecks = [
   'comparePerimeter',
 ]
 const partialCreditScoring = ['enablePartialCredit', 'applyPenaltyForWrong']
-const graphMiscellaneous = ['tolerance', 'ignoreLabels']
+const graphMiscellaneous = ['ignoreLabels']
 const graphPointsOnAnEquation = ['latex', 'points']
 const graphPointsOnAnEquation2 = ['latex', 'points']
 
@@ -435,12 +435,12 @@ const evaluationSettings = {
       'graphSegmentChecks',
       'graphLineChecks',
       'graphPolygonChecks',
-      // 'graphPointsOnAnEquation',
+      'graphPointsOnAnEquation',
       'tolerance',
       // 'partialCreditScoring',
     ],
-    'GENERAL GRAPHING': ['graphPointsOnAnEquation'],
-    MISCELLANEOUS: ['graphMiscellaneous'],
+    // 'GENERAL GRAPHING': ['graphPointsOnAnEquation2'],
+    // MISCELLANEOUS: ['graphMiscellaneous'],
   },
 }
 
@@ -543,22 +543,6 @@ const defaultNumberPad = [
   '\\div',
 ]
 
-const dynamicVarChecks = [
-  'isSimplifiedFraction',
-  'isImproperFraction',
-  'isMixedFraction',
-  'isRationalized',
-  'isSimplifiedExpression',
-  'isFactorised',
-  'isExpanded',
-  'integerType',
-  'scientificType',
-  'isDecimal',
-  'isExponentialForm',
-  'tolerance',
-  'significantDecimalPlaces',
-]
-
 module.exports = {
   methods,
   methodOptions,
@@ -583,5 +567,4 @@ module.exports = {
   GRAPH_EVALUATION_SETTING,
   simplifiedOptions,
   NO_KEYPAD,
-  dynamicVarChecks,
 }

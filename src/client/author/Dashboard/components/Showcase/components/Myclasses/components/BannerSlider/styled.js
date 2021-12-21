@@ -3,8 +3,7 @@ import { themeColor, white } from '@edulastic/colors'
 
 export const LearnMore = styled.span`
   height: auto;
-  min-width: 90px;
-  text-align: center;
+  width: auto;
   position: absolute;
   top: 140px;
   font-size: 9px;
@@ -13,8 +12,7 @@ export const LearnMore = styled.span`
   padding: 5px 10px;
   color: #3f85e5;
   border-radius: 4px;
-  transform: translateX(40px);
-  text-transform: uppercase;
+  transform: translateX(50px);
 
   &:hover {
     cursor: pointer;

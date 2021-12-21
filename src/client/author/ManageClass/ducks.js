@@ -10,7 +10,7 @@ import {
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { get, findIndex, keyBy, isEmpty, capitalize } from 'lodash'
+import { get, findIndex, keyBy } from 'lodash'
 import {
   googleApi,
   groupApi,
@@ -18,39 +18,28 @@ import {
   userApi,
   canvasApi,
   cleverApi,
-  atlasApi,
 } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
-import { roleuser } from '@edulastic/constants'
 import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
   fetchUserAction,
-  setClassToUserAction,
 } from '../../student/Login/ducks'
 import { requestEnrolExistingUserToClassAction } from '../ClassEnrollment/ducks'
 import {
   addLoadingComponentAction,
   removeLoadingComponentAction,
 } from '../src/actions/authorUi'
-import { getOrgGroupList, getUserRole } from '../src/selectors/user'
 import { slice } from '../Subscription/ducks'
-import { clearClassListAction } from '../Classes/ducks'
 // selectors
 const manageClassSelector = (state) => state.manageClass
 export const getSelectedSubject = createSelector(
   manageClassSelector,
   (state) => state.selectedSubject
 )
-
-export const getClassSyncLoadingStatus = createSelector(
-  manageClassSelector,
-  (state) => state.syncClassLoading
-)
-
 export const getSelectedClassName = createSelector(
   manageClassSelector,
   (state) => state.entity.name
@@ -99,11 +88,6 @@ export const getGoogleAuthRequiredSelector = createSelector(
 export const getGoogleClassCodeSelector = createSelector(
   manageClassSelector,
   (state) => state.googleClassCode
-)
-
-export const getIsCreateAssignmentModalVisible = createSelector(
-  manageClassSelector,
-  (state) => state.isCreateAssignmentModalVisible
 )
 // action types
 
@@ -184,8 +168,6 @@ export const GET_CANVAS_SECTION_LIST_FAILED =
   '[manageClass] get canvas section list failed'
 export const SYNC_CLASS_WITH_CANVAS = '[manageClass] sync class with canvas'
 
-export const SYNC_CLASS_WITH_ATLAS = '[manageClass] sync class with atlas'
-
 export const FETCH_CLEVER_CLASS_LIST_REQUEST =
   '[manageclass] get class list from clever request'
 export const FETCH_CLEVER_CLASS_LIST_SUCCESS =
@@ -224,9 +206,6 @@ export const SET_GOOGLE_CLASS_CODE = '[manageClass] set google class_code'
 
 export const SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC =
   '[manageClass] save google tokens and retry sync'
-
-export const TOGGLE_CREATE_ASSIGNMENT_MODAL =
-  '[manageClass] toggle create assignment modal on first class creation'
 
 // action creators
 
@@ -312,8 +291,6 @@ export const getCanvasSectionListFailedAction = createAction(
 )
 export const syncClassWithCanvasAction = createAction(SYNC_CLASS_WITH_CANVAS)
 
-export const syncClassWithAtlasAction = createAction(SYNC_CLASS_WITH_ATLAS)
-
 export const fetchCleverClassListRequestAction = createAction(
   FETCH_CLEVER_CLASS_LIST_REQUEST
 )
@@ -364,10 +341,6 @@ export const saveGoogleTokensAndRetrySyncAction = createAction(
   SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC
 )
 
-export const toggleCreateAssignmentModalAction = createAction(
-  TOGGLE_CREATE_ASSIGNMENT_MODAL
-)
-
 // initial State
 const initialState = {
   googleCourseList: [],
@@ -396,7 +369,6 @@ const initialState = {
   showUpdateCoTeachersModal: false,
   googleAuthenticationRequired: false,
   googleClassCode: '',
-  isCreateAssignmentModalVisible: 0, // 0 - false, 1 - pending (still false), 2 - true
 }
 
 const setFilterClass = (state, { payload }) => {
@@ -663,9 +635,6 @@ export default createReducer(initialState, {
   [SET_GOOGLE_CLASS_CODE]: (state, { payload }) => {
     state.googleClassCode = payload
   },
-  [TOGGLE_CREATE_ASSIGNMENT_MODAL]: (state, { payload }) => {
-    state.isCreateAssignmentModalVisible = payload
-  },
 })
 
 function* fetchClassList({ payload }) {
@@ -689,37 +658,10 @@ function* fetchClassList({ payload }) {
 function* fetchStudentsByClassId({ payload }) {
   try {
     const { classId } = payload
-    const studentsPrevState = yield select(
-      (state) => state.manageClass.studentsList
-    )
     const result = yield call(enrollmentApi.fetch, classId)
     const { group, students } = result
     yield put(fetchStudentsByIdSuccessAction(students))
     yield put(setClassAction(group))
-    const userClasses = yield select(getOrgGroupList)
-    const assignmentCount = yield select(
-      (state) => state.dashboardTeacher?.allAssignmentCount
-    )
-    const testRedirectUrl = yield select(
-      (state) => state.router?.location?.state?.testRedirectUrl
-    )
-    /**
-     *  show create assignment modal in my class
-     *  if user has created only one class &&
-     *  atleast 1 student is being added &&
-     *  no asignments are created yet by user &&
-     *  user is not landing from dashboard
-     */
-    if (
-      userClasses?.length === 1 &&
-      studentsPrevState?.length === 0 &&
-      assignmentCount === 0 &&
-      students?.length > 0 &&
-      !testRedirectUrl
-    ) {
-      // Set "Create Assignment" modal visibility to intermediate state
-      yield put(toggleCreateAssignmentModalAction(1))
-    }
   } catch (error) {
     Sentry.captureException(error)
     yield put(fetchStudentsByIdErrorAction(error))
@@ -756,7 +698,6 @@ function* receiveCreateClassRequest({ payload }) {
     yield put(createClassSuccessAction(result))
     yield put(addGroupAction(result))
     yield put(addClassToUserAction(result))
-    yield put(clearClassListAction())
   } catch (err) {
     const {
       data: { message: errorMessage },
@@ -794,9 +735,6 @@ function* receiveUpdateClass({ payload }) {
 
 function* receiveAddStudentRequest({ payload }) {
   try {
-    const studentsPrevState = yield select(
-      (state) => state.manageClass.studentsList
-    )
     const result = yield call(enrollmentApi.addStudent, payload)
     const student = get(result, 'data.result')
     if (student) {
@@ -808,30 +746,6 @@ function* receiveAddStudentRequest({ payload }) {
       yield put(addStudentSuccessAction(newStudent))
       const successMsg = 'Student added to class successfully.'
       notification({ type: 'success', msg: successMsg })
-
-      const userClasses = yield select(getOrgGroupList)
-      const assignmentCount = yield select(
-        (state) => state.dashboardTeacher?.allAssignmentCount
-      )
-      const testRedirectUrl = yield select(
-        (state) => state.router?.location?.state?.testRedirectUrl
-      )
-      /**
-       *  show create assignment modal in my class
-       *  if user has created only one class &&
-       *  atleast 1 student is being added &&
-       *  no asignments are created yet by user &&
-       *  user is not landing from dashboard
-       */
-      if (
-        userClasses?.length === 1 &&
-        studentsPrevState?.length === 0 &&
-        assignmentCount === 0 &&
-        !testRedirectUrl
-      ) {
-        // Show "Create Assignment" modal
-        yield put(toggleCreateAssignmentModalAction(2))
-      }
     } else {
       const msg = get(
         result,
@@ -1029,37 +943,6 @@ function* syncClassWithCanvasSaga({ payload }) {
   }
 }
 
-function* syncClassWithAtlasSaga({ payload }) {
-  const districts = yield select(
-    (state) => state?.user?.user?.orgData?.districts || []
-  )
-  const providerName =
-    districts.find((o) => !isEmpty(o.atlasProviderName))?.atlasProviderName ||
-    'Atlas'
-  try {
-    const data = yield call(atlasApi.syncClassesWithAtlas, payload)
-    if (data.data.result.success)
-      notification({
-        type: 'success',
-        msg: `${capitalize(providerName)} class sync is in progress`,
-      })
-    if (!data.data.result.success) {
-      notification({
-        type: 'error',
-        msg: `Class sync with ${capitalize(providerName)} failed`,
-      })
-    }
-  } catch (err) {
-    captureSentryException(err)
-    console.error(err)
-    notification({
-      type: 'error',
-      msg: `Class sync with ${capitalize(providerName)} failed`,
-    })
-    yield put(setSyncClassLoadingAction(false))
-  }
-}
-
 function* fetchCleverClassListRequestSaga() {
   try {
     const cleverClassList = yield call(cleverApi.fetchCleverClasses)
@@ -1097,14 +980,9 @@ function* syncClassListWithCleverSaga({ payload }) {
     }))
     yield call(cleverApi.syncCleverClasses, filteredPayload)
     notification({ type: 'success', messageKey: 'syncWithCleverIsComplete' })
-    const classSyncLoadingStatus = yield select(getClassSyncLoadingStatus)
-    if (classSyncLoadingStatus) {
-      yield put(fetchStudentsByIdAction({ classId: classList?.[0]?._id }))
-      yield put(setSyncClassLoadingAction(false))
-    }
     switch (refreshPage) {
       case 'dashboard':
-        yield put(receiveTeacherDashboardAction({ updateUserClassList: true }))
+        yield put(receiveTeacherDashboardAction())
         break
       case 'manageClass':
         yield put(fetchGroupsAction())
@@ -1113,7 +991,6 @@ function* syncClassListWithCleverSaga({ payload }) {
       // no default
     }
   } catch (err) {
-    yield put(setSyncClassLoadingAction(false))
     captureSentryException(err)
     console.error(err)
     const errorMessage = err?.response?.data?.message
@@ -1137,19 +1014,6 @@ function* unarchiveClass({ payload }) {
     })
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
-    const role = yield select(getUserRole)
-    if (role === roleuser.TEACHER) {
-      const userClassList = yield select(getOrgGroupList)
-      // update unarchived class in user orgdata
-      const updatedUserClassList = userClassList.map((c) => {
-        if (c._id === restPayload.groupId) {
-          c.active = 1
-        }
-        return c
-      })
-      yield put(setClassToUserAction(updatedUserClassList))
-      yield put(clearClassListAction())
-    }
   } catch (err) {
     captureSentryException(err)
     console.error(err)
@@ -1238,7 +1102,6 @@ export function* watcherSaga() {
       getCanvasSectionListRequestSaga
     ),
     yield takeLatest(SYNC_CLASS_WITH_CANVAS, syncClassWithCanvasSaga),
-    yield takeLatest(SYNC_CLASS_WITH_ATLAS, syncClassWithAtlasSaga),
     yield takeLatest(
       FETCH_CLEVER_CLASS_LIST_REQUEST,
       fetchCleverClassListRequestSaga

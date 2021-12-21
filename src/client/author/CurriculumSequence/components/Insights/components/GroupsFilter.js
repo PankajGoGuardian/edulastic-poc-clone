@@ -4,7 +4,11 @@ import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
 
 import { greyThemeDark1, fadedGrey, themeColor } from '@edulastic/colors'
-import { IconClass, IconFolderAll, IconGroup } from '@edulastic/icons'
+import {
+  IconFolderAll,
+  IconFolderDeactive,
+  IconFolderNew,
+} from '@edulastic/icons'
 import { getUserRole } from '../../../../src/selectors/user'
 
 const GroupContainer = ({ id, name, Icon, onClickAction, isActive }) => (
@@ -29,7 +33,7 @@ const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
     <StyledRow type="flex" justify="center">
       <Col span={24}>
         <StyledSpan fontStyle="12px/17px" weight="Bold">
-          Classes & Groups
+          Groups
         </StyledSpan>
       </Col>
       {!['district-admin', 'school-admin'].find((x) => x === userRole) && (
@@ -42,13 +46,7 @@ const GroupsFilter = ({ current, options, onClickAction, userRole }) => {
       {options.map((item) => (
         <GroupContainer
           {...item}
-          Icon={(props) =>
-            item.type === 'class' ? (
-              <IconClass {...props} />
-            ) : (
-              <IconGroup {...props} />
-            )
-          }
+          Icon={(props) => <IconFolderDeactive {...props} />}
           isActive={current[0] && current[0].id === item.id}
           onClickAction={() => onClickAction([item])}
         />

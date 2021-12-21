@@ -53,20 +53,16 @@ const SearchUsersByEmailIdsForm = Form.create({
             initialValue: '',
           })(
             <TextArea
-              data-cy="emailInput"
               rows={4}
               placeholder="Enter Comma separated User Email IDs or User IDs..."
             />
           )}
         </Form.Item>
         <Form.Item>
-          <Button data-cy="validate" type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit">
             Validate
           </Button>
-          <span
-            data-cy="validator"
-            style={{ margin: '0 10px', fontWeight: '600' }}
-          >
+          <span style={{ margin: '0 10px', fontWeight: '600' }}>
             {getValidatedIdsStr(
               getIdsStrToList(getFieldValue('emailIds')),
               validEmailIdsList || []
@@ -104,7 +100,7 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       title: 'Start Date',
       dataIndex: 'subscription',
       render: (subscription) => (
-        <span data-cy="userSubscriptionStartDate">
+        <span>
           {subscription?.subStartDate
             ? moment(subscription.subStartDate).format('DD MMM, YYYY')
             : subscription?.subRenewalDate
@@ -117,7 +113,7 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       title: 'End Date',
       dataIndex: 'subscription',
       render: (subscription) => (
-        <span data-cy="userSubscriptionEndDate">
+        <span>
           {subscription?.subEndDate
             ? moment(subscription?.subEndDate).format('DD MMM, YYYY')
             : '-'}
@@ -138,7 +134,6 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
     <>
       <h2>The list of validated Users are :</h2>
       <Table
-        data-cy="userDetailsTable"
         columns={columns}
         rowKey={(record) => record._id}
         dataSource={validEmailIdsList.map((el, index) => ({ ...el, index }))}
@@ -199,7 +194,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
               })(
                 <RadioGroup name="upgradeRevokeOptions">
                   {radioButtonUserData.list.map((item) => (
-                    <Radio data-cy={item} key={item} id={item} value={item}>
+                    <Radio key={item} id={item} value={item}>
                       {item}
                     </Radio>
                   ))}
@@ -209,7 +204,7 @@ const SubmitUserForm = Form.create({ name: 'submitUserForm' })(
           </Col>
         </Row>
         <Form.Item>
-          <Button data-cy="submitButton" type="primary" htmlType="submit">
+          <Button type="primary" htmlType="submit">
             Submit
           </Button>
         </Form.Item>

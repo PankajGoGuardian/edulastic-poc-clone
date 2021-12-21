@@ -170,25 +170,21 @@ class EditClassModal extends Component {
         tags,
         endDate,
         course = {},
-        primaryTeacherId,
-        parent,
       } = {},
     } = selClassData
 
     let courseFinalList = [...coursesForDistrictList]
-    const ownerId = primaryTeacherId || parent?.id
     if (course?.id) {
       courseFinalList.push({ _id: course.id, name: course.name })
       courseFinalList = uniqBy(courseFinalList, '_id')
     }
 
     let teacherFinalList = [...teacherList]
-    const owner = owners?.find((o) => o.id == ownerId)
     if (owners.length) {
       teacherFinalList.push({
-        _id: owner?.id,
-        firstName: owner?.name,
-        email: owner?.email,
+        _id: owners[0]?.id,
+        firstName: owners[0]?.name,
+        email: owners[0]?.email,
       })
       teacherFinalList = uniqBy(teacherFinalList, '_id')
     }
@@ -199,6 +195,7 @@ class EditClassModal extends Component {
       schoolsFinalList = uniqBy(schoolsFinalList, '_id')
     }
 
+    const ownersData = owners?.[0]?.id
     const schoolsOptions = []
     if (schoolsFinalList.length) {
       schoolsFinalList.forEach((row) => {
@@ -387,7 +384,7 @@ class EditClassModal extends Component {
                     message: t('class.components.addclass.validation.teacher'),
                   },
                 ],
-                initialValue: ownerId,
+                initialValue: ownersData,
               })(
                 <SelectInputStyled
                   placeholder="Search by Username"

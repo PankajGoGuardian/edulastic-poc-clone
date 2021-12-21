@@ -43,5 +43,4 @@ export const userPickFields = [
   'referrer',
   'currentDistrictId',
   'utm_source',
-  'isProxy',
 ]

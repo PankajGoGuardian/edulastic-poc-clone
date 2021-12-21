@@ -34,12 +34,6 @@ const sortAlphaNum = (a, b) => {
   return 0
 }
 
-const covertStringPercentageToFloatAndSort = (a, b) => {
-  const num1 = parseFloat(a.performance.split('(')[1], 10)
-  const num2 = parseFloat(b.performance.split('(')[1], 10)
-  return sortAlphaNum(num1, num2)
-}
-
 const columns = [
   {
     title: 'Student',
@@ -54,7 +48,7 @@ const columns = [
     dataIndex: 'mastery',
     key: 'mastery',
     className: 'mastery-column',
-    sorter: (a, b) => covertStringPercentageToFloatAndSort(a, b),
+    sorter: (a, b) => sortAlphaNum(a.performance, b.performance),
     render: (mastery) => (
       <MasteryCell title={mastery.masteryLevel}>
         <span style={{ color: mastery.color }}>{mastery.shortName}</span>
@@ -65,7 +59,11 @@ const columns = [
     title: 'Performance',
     dataIndex: 'performance',
     className: 'performance-column',
-    sorter: (a, b) => covertStringPercentageToFloatAndSort(a, b),
+    sorter: (a, b) => {
+      const num1 = parseFloat(a.performance.split('(')[1], 10)
+      const num2 = parseFloat(b.performance.split('(')[1], 10)
+      return sortAlphaNum(num1, num2)
+    },
     key: 'performance',
     render: (text) => {
       const strArr = text.split('@')

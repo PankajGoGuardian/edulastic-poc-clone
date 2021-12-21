@@ -250,7 +250,6 @@ const ChartPreview = ({
             className="chart-wrapper"
             style={{ fontSize }}
             padding={smallSize}
-            overflowProps={disableResponse ? { maxWidth: '100%' } : {}}
             boxShadow={smallSize ? 'none' : ''}
           >
             <ChartContainer preview={view === EDIT} data-cy="chartContainer">

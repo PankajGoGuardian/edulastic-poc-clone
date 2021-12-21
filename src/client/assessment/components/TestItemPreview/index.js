@@ -16,6 +16,7 @@ import TestItemCol from './containers/TestItemCol'
 import { Container, RenderFeedBack } from './styled/Container'
 import FeedbackWrapper from '../FeedbackWrapper'
 import { IPAD_LANDSCAPE_WIDTH } from '../../constants/others'
+import Divider from './Divider'
 import { changedPlayerContentAction } from '../../../author/sharedDucks/testPlayer'
 import {
   getPageNumberSelector,
@@ -24,7 +25,6 @@ import {
 } from '../../../author/ClassBoard/ducks'
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 import { getUser } from '../../../author/src/selectors/user'
-import PassageDivider from '../../../common/components/PassageDivider'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -63,14 +63,13 @@ class TestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
-    const { toggleCollapseMode } = this.state
-    if (!dir && toggleCollapseMode) {
-      return
-    }
     this.setState(
-      {
-        collapseDirection: dir,
-      },
+      (prevState) => ({
+        collapseDirection:
+          !prevState.toggleCollapseMode && prevState.collapseDirection
+            ? ''
+            : dir,
+      }),
       () => {
         const { changedPlayerContent } = this.props
         changedPlayerContent()
@@ -79,17 +78,15 @@ class TestItemPreview extends Component {
   }
 
   renderCollapseButtons = () => {
-    const { isReviewTab, viewComponent } = this.props
+    const { isLCBView, isStudentReport } = this.props
     const { collapseDirection } = this.state
-
-    if (isReviewTab) {
-      return null
-    }
     return (
-      <PassageDivider
-        onChange={this.setCollapseView}
-        viewComponent={viewComponent}
+      <Divider
         collapseDirection={collapseDirection}
+        setCollapseView={this.setCollapseView}
+        hideMiddle={isLCBView}
+        isStudentReport={isStudentReport}
+        stackedView={this.showStackedView}
       />
     )
   }
@@ -169,8 +166,6 @@ class TestItemPreview extends Component {
       itemLevelScoring,
       t,
       isQuestionView,
-      itemIdKey,
-      testItemId,
     } = this.props
 
     const [
@@ -181,14 +176,12 @@ class TestItemPreview extends Component {
       colIndex,
       stackedView,
     })
-    const question =
-      questions[`${itemId || itemIdKey || testItemId}_${widget.reference}`] ||
-      questions[widget.reference]
+    const question = questions[widget.reference]
     const isPracticeQuestion = itemLevelScoring
       ? every(questions, ({ validation }) => validation && validation.unscored)
       : get(question, 'validation.unscored', false)
     const prevQActivityForQuestion = previousQuestionActivity.find(
-      (qa) => qa.qid === question?.id
+      (qa) => qa.qid === question.id
     )
     const testActivityId = question?.activity?.testActivityId
     return displayFeedback ? (
@@ -206,7 +199,7 @@ class TestItemPreview extends Component {
         shouldTakeDimensionsFromStore={shouldTakeDimensionsFromStore}
         studentId={studentId}
         studentName={studentName || t('common.anonymous')}
-        itemId={itemId || itemIdKey || testItemId}
+        itemId={itemId}
         key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
       />
@@ -337,25 +330,6 @@ class TestItemPreview extends Component {
     return (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
   }
 
-  get isPassageInExpandedView() {
-    const {
-      cols,
-      isExpandedView = false,
-      isPassageWithMultipleQuestions = false,
-    } = this.props
-    return isPassageWithMultipleQuestions && isExpandedView && cols.length === 1
-  }
-
-  get colWidthValue() {
-    const { collapseDirection } = this.state
-    const { cols } = this.props
-
-    if (this.isPassageInExpandedView) {
-      return '50%'
-    }
-    return collapseDirection || cols.length == 1 ? '100%' : '50%'
-  }
-
   render() {
     const {
       cols,
@@ -439,6 +413,7 @@ class TestItemPreview extends Component {
             width: '100%',
             overflow: !isStudentAttempt && !isPrintPreview && 'auto', // dont give auto for student attempt causes https://snapwiz.atlassian.net/browse/EV-12598
             background: isExpressGrader && hasDrawingResponse ? white : null,
+            'margin-bottom': hasDrawingResponse && '10px',
           }}
           className="__print-item-fix-width"
         >
@@ -457,7 +432,6 @@ class TestItemPreview extends Component {
                 display: 'flex',
                 flexDirection:
                   this.showStackedView || isPrintPreview ? 'column' : 'row',
-                justifyContent: this.isPassageInExpandedView ? 'flex-end' : '',
               }}
             >
               {dataSource.map((col, i) => {
@@ -467,43 +441,52 @@ class TestItemPreview extends Component {
                 if (hideColumn && showCollapseButtons) return ''
 
                 return (
-                  <TestItemCol
-                    {...restProps}
-                    showCollapseBtn={showCollapseButtons}
-                    evaluation={evaluation}
-                    key={i}
-                    colCount={cols.length}
-                    colIndex={i}
-                    col={
-                      collapseDirection ? { ...col, dimension: '100%' } : col
-                    }
-                    view="preview"
-                    metaData={metaData}
-                    preview={preview}
-                    scratchPadMode={scratchPadMode}
-                    colWidth={this.colWidthValue} // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
-                    multiple={cols.length > 1}
-                    style={this.getStyle(i !== cols.length - 1)}
-                    windowWidth={windowWidth}
-                    showFeedback={showFeedback}
-                    questions={questions}
-                    student={student}
-                    previewTab={previewTab}
-                    isSingleQuestionView={isSingleQuestionView}
-                    hideInternalOverflow={hideInternalOverflow}
-                    showStackedView={this.showStackedView}
-                    teachCherFeedBack={this.renderFeedback}
-                    hasDrawingResponse={hasDrawingResponse}
-                    isStudentAttempt={isStudentAttempt}
-                    isFeedbackVisible={isFeedbackVisible}
-                    testActivityId={testActivityId}
-                    studentData={studentData}
-                    currentStudent={currentStudent}
-                  />
+                  <>
+                    {(i > 0 || collapseDirection === 'left') &&
+                      showCollapseButtons &&
+                      this.renderCollapseButtons(i)}
+                    <TestItemCol
+                      {...restProps}
+                      showCollapseBtn={showCollapseButtons}
+                      evaluation={evaluation}
+                      key={i}
+                      colCount={cols.length}
+                      colIndex={i}
+                      col={
+                        collapseDirection ? { ...col, dimension: '100%' } : col
+                      }
+                      view="preview"
+                      metaData={metaData}
+                      preview={preview}
+                      scratchPadMode={scratchPadMode}
+                      colWidth={
+                        collapseDirection || cols.length == 1 ? '100%' : '50%'
+                      } // reverting layout changes as passage/multipart layout options view is broken in student view, LCB, EG | EV-28080
+                      multiple={cols.length > 1}
+                      style={this.getStyle(i !== cols.length - 1)}
+                      windowWidth={windowWidth}
+                      showFeedback={showFeedback}
+                      questions={questions}
+                      student={student}
+                      previewTab={previewTab}
+                      isSingleQuestionView={isSingleQuestionView}
+                      hideInternalOverflow={hideInternalOverflow}
+                      showStackedView={this.showStackedView}
+                      teachCherFeedBack={this.renderFeedback}
+                      hasDrawingResponse={hasDrawingResponse}
+                      isStudentAttempt={isStudentAttempt}
+                      isFeedbackVisible={isFeedbackVisible}
+                      testActivityId={testActivityId}
+                      studentData={studentData}
+                      currentStudent={currentStudent}
+                    />
+                    {collapseDirection === 'right' &&
+                      showCollapseButtons &&
+                      this.renderCollapseButtons(i)}
+                  </>
                 )
               })}
             </div>
-            {showCollapseButtons && this.renderCollapseButtons()}
           </Container>
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
@@ -545,8 +528,6 @@ TestItemPreview.propTypes = {
   style: PropTypes.object,
   questions: PropTypes.object.isRequired,
   student: PropTypes.object,
-  isExpandedView: PropTypes.bool,
-  isPassageWithMultipleQuestions: PropTypes.bool,
 }
 
 TestItemPreview.defaultProps = {
@@ -555,8 +536,6 @@ TestItemPreview.defaultProps = {
   scrolling: false,
   style: { padding: 0, display: 'flex' },
   student: {},
-  isExpandedView: false,
-  isPassageWithMultipleQuestions: false,
 }
 
 const enhance = compose(

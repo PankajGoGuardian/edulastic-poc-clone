@@ -1,6 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { Link } from 'react-router-dom'
-import { includes, map, filter, isEmpty } from 'lodash'
+import { sumBy, includes, filter, isEmpty } from 'lodash'
 import next from 'immer'
 import { Row, Col, Tooltip } from 'antd'
 import styled from 'styled-components'
@@ -25,37 +25,39 @@ const {
   getMasteryScoreColor,
   getAnalyseByTitle,
   getOverallValue,
+  getRecordMasteryLevel,
   getColValue,
 } = reportUtils.standardsPerformanceSummary
 
-const getDomainColumnRender = (
-  t,
+const getCol = (record = {}, domainId, analyseByKey, scaleInfo) => {
+  const domain = record.domainData[domainId] || {}
+  const colValue = getColValue(record, domainId, analyseByKey, scaleInfo)
+  if (colValue === 'N/A') {
+    return colValue
+  }
+  const bgColor =
+    (analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore') &&
+    getMasteryScoreColor(domain, scaleInfo)
+  return <ColoredCell bgColor={bgColor}>{colValue}</ColoredCell>
+}
+
+const getColorCell = (
   domainId,
   domainName,
   compareBy,
+  analyseByKey,
   scaleInfo
 ) => (_, record) => {
-  const domain = record.domainData[domainId] || {}
-  const colValue = getColValue(record, domainId, record.analyseByKey, scaleInfo)
-  const bgColor =
-    (record.analyseByKey === 'masteryLevel' ||
-      record.analyseByKey === 'masteryScore') &&
-    getMasteryScoreColor(domain, scaleInfo)
-
-  const tooltipTitle = (
+  const toolTipText = (rec) => (
     <div>
       <TableTooltipRow
         title={`${compareBy.title}: `}
-        value={
-          record.name && record.name !== 'undefined'
-            ? record.name
-            : t('common.anonymous')
-        }
+        value={rec.name === '' || rec.name === 'undefined' ? '-' : rec.name}
       />
       <TableTooltipRow title="Domain: " value={domainName} />
       <TableTooltipRow
-        title={`${getAnalyseByTitle(record.analyseByKey)}: `}
-        value={colValue}
+        title={`${getAnalyseByTitle(analyseByKey)}: `}
+        value={getColValue(rec, domainId, analyseByKey, scaleInfo)}
       />
     </div>
   )
@@ -63,58 +65,50 @@ const getDomainColumnRender = (
   return (
     <CustomTableTooltip
       placement="top"
-      title={tooltipTitle}
-      getCellContents={() =>
-        colValue === 'N/A' ? (
-          colValue
-        ) : (
-          <ColoredCell bgColor={bgColor}>{colValue}</ColoredCell>
-        )
-      }
+      title={toolTipText(record)}
+      getCellContents={() => getCol(record, domainId, analyseByKey, scaleInfo)}
     />
   )
 }
 
-const getColumnSorter = (scaleInfo, domainId) => (a, b) => {
-  // sort by score(%), if analyseBy rawScore / score(%)
-  // sort by masteryScore, if analyseBy masteryScore / masteryLevel
-  // use augmented analyseByKey for sorter (same for all records)
-  const _analyseByKey =
-    a.analyseByKey === 'rawScore'
-      ? 'score'
-      : a.analyseByKey === 'masteryLevel'
-      ? 'masteryScore'
-      : a.analyseByKey
-
-  // result for avg. domain performance
-  const colAvgA = getOverallValue(a, _analyseByKey, scaleInfo)
-  const colAvgB = getOverallValue(b, _analyseByKey, scaleInfo)
-  let result = (parseFloat(colAvgA) || 0) - (parseFloat(colAvgB) || 0)
-
-  // for avg. performance column, domainId is undefined
-  if (domainId) {
-    const colValueA = getColValue(a, domainId, _analyseByKey, scaleInfo)
-    const colValueB = getColValue(b, domainId, _analyseByKey, scaleInfo)
-    // for result, consider 'N/A' as -1 (lower precedence than 0)
-    const _result =
-      (colValueA === 'N/A' ? -1 : parseFloat(colValueA) || 0) -
-      (colValueB === 'N/A' ? -1 : parseFloat(colValueB) || 0)
-    // for domain column, if values are equal, sort by avg. performance column
-    result = _result || result
+const getOverallColSorter = (_analyseByKey, _scaleInfo) => (a, b) => {
+  const aRecords = Object.values(a.domainData || {})
+  const bRecords = Object.values(b.domainData || {})
+  switch (_analyseByKey) {
+    case 'score':
+    case 'masteryScore':
+      return (
+        parseFloat(getOverallValue(a, _analyseByKey, _scaleInfo)) -
+        parseFloat(getOverallValue(b, _analyseByKey, _scaleInfo))
+      )
+    case 'rawScore':
+      return sumBy(aRecords, 'totalScore') - sumBy(bRecords, 'totalScore')
+    case 'masteryLevel':
+      return (
+        getRecordMasteryLevel(aRecords, _scaleInfo).score -
+        getRecordMasteryLevel(bRecords, _scaleInfo).score
+      )
+    default:
+      return 0
   }
-
-  return result
 }
 
-const getColumns = (
-  t,
-  { compareBy, analyseBy: { key: analyseByKey } },
+export const getColumns = (
+  compareBy,
+  analyseByKey,
+  domains,
   scaleInfo,
-  isSharedReport,
+  selectedDomains,
   selectedTermId,
-  selectedDomains
+  t,
+  isSharedReport
 ) => {
-  const domainColumns = map(selectedDomains, (domain) => ({
+  const filteredDomains = filter(
+    domains,
+    (domain) =>
+      includes(selectedDomains, domain.domainId) || !selectedDomains.length
+  )
+  const domainCols = filteredDomains.map((domain) => ({
     title: (
       <>
         <span>{domain.domainName}</span>
@@ -126,17 +120,16 @@ const getColumns = (
     ),
     dataIndex: domain.domainName,
     key: domain.domainName,
-    render: getDomainColumnRender(
-      t,
+    render: getColorCell(
       domain.domainId,
       domain.domainName,
       compareBy,
+      analyseByKey,
       scaleInfo
     ),
-    sorter: getColumnSorter(scaleInfo, domain.domainId),
   }))
 
-  const columns = [
+  const cols = [
     {
       title: compareBy.title,
       dataIndex: 'name',
@@ -171,10 +164,10 @@ const getColumns = (
       dataIndex: 'overall',
       key: 'overall',
       width: 140,
+      sorter: getOverallColSorter(analyseByKey, scaleInfo),
       render: (_, record) => getOverallValue(record, analyseByKey, scaleInfo),
-      sorter: getColumnSorter(scaleInfo),
     },
-    ...domainColumns,
+    ...domainCols,
     {
       title: 'SIS ID',
       dataIndex: 'sisId',
@@ -184,15 +177,13 @@ const getColumns = (
     },
   ]
 
-  return columns
+  return cols
 }
 
 const onCsvConvert = (data) => downloadCSV(`Mastery By Domain.csv`, data)
 
 const StandardsPerformanceTable = ({
-  t,
   className,
-  tableData,
   tableFilters,
   tableFiltersOptions,
   onFilterChange,
@@ -201,31 +192,19 @@ const StandardsPerformanceTable = ({
   selectedDomains,
   isCsvDownloading,
   selectedTermId,
+  t,
   isSharedReport,
+  ...tableProps
 }) => {
-  // augment analyseByKey to tableData records for conditional sorting
-  const augmentedTableData = useMemo(
-    () =>
-      map(tableData, (record) => ({
-        ...record,
-        analyseByKey: tableFilters.analyseBy.key,
-      })),
-    [tableData, tableFilters.analyseBy]
-  )
-
-  const selectedDomainsData = filter(
-    domainsData,
-    (domain) =>
-      includes(selectedDomains, domain.domainId) || !selectedDomains.length
-  )
-
   const columns = getColumns(
-    t,
-    tableFilters,
+    tableFilters.compareBy,
+    tableFilters.analyseBy.key,
+    domainsData,
     scaleInfo,
-    isSharedReport,
+    selectedDomains,
     selectedTermId,
-    selectedDomainsData
+    t,
+    isSharedReport
   )
 
   const { analyseByData, compareByData } = tableFiltersOptions
@@ -288,7 +267,7 @@ const StandardsPerformanceTable = ({
       <Row type="flex" justify="start">
         <Col xs={24} sm={24} md={24} lg={24} xl={24}>
           <CsvTable
-            dataSource={augmentedTableData}
+            {...tableProps}
             colouredCellsNo={domainsData.length}
             centerAligned={domainsData.length}
             columns={columns}

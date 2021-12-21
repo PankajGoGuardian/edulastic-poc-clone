@@ -15,6 +15,7 @@ import {
   highlightSelectedText,
 } from '@edulastic/common'
 
+import { removeHTMLTags } from '@edulastic/common/src/helpers'
 import { InstructorStimulus } from './styled/InstructorStimulus'
 import { Heading } from './styled/Heading'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
@@ -74,7 +75,6 @@ const PassageView = ({
   page,
   setPage,
   authLanguage,
-  isStudentAttempt,
 }) => {
   const mainContentsRef = useRef()
   const rangRef = useRef()
@@ -89,11 +89,11 @@ const PassageView = ({
 
   const passageTitle = item?.source ? (
     <>
-      <PassageTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />{' '}
-      by <PassageTitle dangerouslySetInnerHTML={{ __html: item.source }} />
+      <PassageTitle>{removeHTMLTags(item.contentsTitle)}</PassageTitle> by{' '}
+      <PassageTitle>{removeHTMLTags(item.source)}</PassageTitle>
     </>
   ) : (
-    <PassageTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />
+    <PassageTitle>{removeHTMLTags(item.contentsTitle)}</PassageTitle>
   )
 
   const _highlights = isAuthorPreviewMode
@@ -185,8 +185,7 @@ const PassageView = ({
   const onSelectColor = (color) => {
     if (color !== 'remove') {
       highlightSelectedText(
-        null, // parent container class, needed in token highlight type
-        'text-highlight',
+        'text-heighlight',
         highlightTag,
         {
           background: color,
@@ -294,7 +293,7 @@ const PassageView = ({
         )}
       {/* when the user is selecting text, 
       will show color picker within a Popover. */}
-      {(isStudentAttempt || previewTab === CLEAR) && (
+      {previewTab === CLEAR && (
         <HighlightPopover
           getContainer={() => mainContentsRef.current}
           isOpen={isOpen && !selectHighlight && !disableResponse}

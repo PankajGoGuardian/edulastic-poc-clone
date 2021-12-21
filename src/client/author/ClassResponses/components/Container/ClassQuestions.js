@@ -201,7 +201,7 @@ const transformTestItems = (props) => {
             icon: currentStudent.icon,
             color: currentStudent.color,
           }))
-          const label = labels[`${item._id}_${id}`] || {}
+          const label = labels[id] || {}
           if (!item.itemLevelScoring && qActivities[0]) {
             if (filter === 'unscoredItems' && !qActivities[0].isPractice) {
               return false
@@ -250,10 +250,6 @@ const transformTestItems = (props) => {
               return false
             }
           }
-
-          const scoringType = currentStudent.questionActivities?.find((ele) =>
-            item.data.questions.some((i) => i.id === ele._id)
-          )?.scoringType
           qActivities = qActivities.map((q) => {
             const userQuestion = userQActivities.find(
               ({ _id }) => _id === q.qid
@@ -262,9 +258,7 @@ const transformTestItems = (props) => {
               q.timespent = userQuestion.timeSpent
               q.disabled = userQuestion.disabled
             }
-            if (isQuestionView) {
-              q.scoringType = scoringType
-            }
+
             return { ...q }
           })
           const [activity] = qActivities.length > 0 ? qActivities : [{}]
@@ -318,8 +312,8 @@ const Preview = ({
   const questions = get(item, ['data', 'questions'], [])
   const resources = get(item, ['data', 'resources'], [])
   let questionsKeyed = {
-    ..._keyBy(questions, (q) => `${item._id}_${q.id}`),
-    ..._keyBy(resources, (r) => `${item._id}_${r.id}`),
+    ..._keyBy(questions, 'id'),
+    ..._keyBy(resources, 'id'),
   }
   let passage = {}
   if (item.passageId && passages.length) {
@@ -331,9 +325,8 @@ const Preview = ({
   const answerContextConfig = useContext(AnswerContext)
   const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
   const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
-  const isV1Multipart = (rows || []).some((row) => row.isV1Multipart)
   const scoringProps = {
-    multipartItem: multipartItem || isV1Multipart,
+    multipartItem,
     itemLevelScoring,
     isPassageWithQuestions,
   }
@@ -647,7 +640,6 @@ class ClassQuestions extends Component {
         questionsById,
         questions,
         studentWorkAnswersById,
-        testItemId: testItemsData?.[0]?._id,
       }
     }
 

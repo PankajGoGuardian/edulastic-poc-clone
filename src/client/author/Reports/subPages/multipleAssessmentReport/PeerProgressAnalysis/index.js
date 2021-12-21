@@ -84,7 +84,6 @@ const PeerProgressAnalysis = ({
   sharedReport,
   toggleFilter,
   MARFilterData,
-  pageTitle,
 }) => {
   const [userRole, sharedReportFilters] = useMemo(
     () => [
@@ -211,6 +210,7 @@ const PeerProgressAnalysis = ({
       </NoDataContainer>
     )
   }
+
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
@@ -250,7 +250,6 @@ const PeerProgressAnalysis = ({
         ddfilter={ddfilter}
         rawMetric={metricInfo}
         customColumns={[studentColumn]}
-        pageTitle={pageTitle}
         backendPagination={{
           ...pageFilters,
           itemsCount: testsCount,

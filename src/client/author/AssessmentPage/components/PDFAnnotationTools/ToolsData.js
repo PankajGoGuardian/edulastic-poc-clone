@@ -8,6 +8,7 @@ const {
   EditIcon,
   ImageIcon,
   LayoutIcon,
+  ListIcon,
   MessageIcon,
   MoveIcon,
   NextIcon,
@@ -53,7 +54,6 @@ export const ANNOTATION_TOOLS = [
   {
     key: 'mask',
     title: 'White mask',
-    authorOnly: true,
     icon: <CleanIcon data-cy="mask" />,
   },
   {
@@ -85,7 +85,6 @@ export const ANNOTATION_TOOLS = [
   {
     key: 'video',
     title: 'Add Video',
-    authorOnly: true,
     icon: <Videoicon data-cy="vedio" />,
   },
   {

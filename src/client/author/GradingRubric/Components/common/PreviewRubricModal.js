@@ -3,7 +3,6 @@ import styled from 'styled-components'
 import { white, title, themeColorLighter } from '@edulastic/colors'
 import { sumBy, maxBy } from 'lodash'
 import { notification } from '@edulastic/common'
-import { Spin } from 'antd'
 import PreviewRubricTable from './PreviewRubricTable'
 import { ModalBody } from './ConfirmModal'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
@@ -17,9 +16,6 @@ const PreviewRubricModal = ({
   maxScore,
   rubricFeedback,
   shouldValidate = true,
-  isDisabled = false,
-  hideTotalPoints = false,
-  rubricDataLoading = false,
 }) => {
   const [obtained, setObtained] = useState(0)
   const [rubricResponse, setRubricResponse] = useState({})
@@ -39,12 +35,10 @@ const PreviewRubricModal = ({
   const titleContent = (
     <HeaderWrapper key="rubric-header">
       <span data-cy="rubricNameInPreview">{currentRubricData.name}</span>
-      {!hideTotalPoints && (
-        <span data-cy="totalRating">
-          <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;
-          <span>{maxScore || localMaxScore}</span>
-        </span>
-      )}
+      <span data-cy="totalRating">
+        <span>{obtained}</span>&nbsp;<span>/</span>&nbsp;
+        <span>{maxScore || localMaxScore}</span>
+      </span>
     </HeaderWrapper>
   )
 
@@ -90,17 +84,12 @@ const PreviewRubricModal = ({
       width="80%"
     >
       <StyledModalBody>
-        {rubricDataLoading ? (
-          <Spin />
-        ) : (
-          <PreviewRubricTable
-            data={currentRubricData}
-            handleChange={handleChange}
-            rubricFeedback={rubricFeedback}
-            validateRubricResponse={validateRubricResponse}
-            isDisabled={isDisabled}
-          />
-        )}
+        <PreviewRubricTable
+          data={currentRubricData}
+          handleChange={handleChange}
+          rubricFeedback={rubricFeedback}
+          validateRubricResponse={validateRubricResponse}
+        />
       </StyledModalBody>
     </StyledModal>
   )

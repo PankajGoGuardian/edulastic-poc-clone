@@ -243,7 +243,7 @@ const StandardsPerformance = ({
       </StyledCard>
       <StyledCard>
         <StandardsPerformanceTable
-          tableData={tableData}
+          dataSource={tableData}
           onFilterChange={setTableFilters}
           tableFilters={tableFilters}
           tableFiltersOptions={tableFiltersOptions}

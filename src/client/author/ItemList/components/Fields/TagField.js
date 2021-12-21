@@ -94,7 +94,9 @@ export const TagField = React.forwardRef(
       const _selectedValues = selectedElements.map(({ props: elProps }) => ({
         title: elProps.title,
         key: elProps.value,
-        associatedNames: elProps.associatedNames,
+        ...(tagTypes[0] === 'testitem'
+          ? { associatedNames: elProps.associatedNames }
+          : {}),
       }))
       setValue(_selectedValues.map((val) => val.key))
       _onChange(_selectedValues)
@@ -104,7 +106,7 @@ export const TagField = React.forwardRef(
     const options = useMemo(
       () =>
         tagSearchList.map((tag, index) => ({
-          key: tag.tagName,
+          key: tag._id,
           title: tag.tagName,
           index,
           associatedNames: tag.tagNamesAssociated,

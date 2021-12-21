@@ -1,17 +1,11 @@
 import React from 'react'
-import { Row, Col, Tooltip, Icon } from 'antd'
+import { Row, Col, Tooltip } from 'antd'
 import { compose } from 'redux'
 import { Link, withRouter } from 'react-router-dom'
 import { IconAssignment, IconManage } from '@edulastic/icons'
 import { themeColor, white } from '@edulastic/colors'
 import { connect } from 'react-redux'
-import { notification } from '@edulastic/common'
-import { getUserDetails } from '../../../../../../../../student/Login/ducks'
 import { TextWrapper } from '../../../../../styledComponents'
-import {
-  receiveTeacherDashboardAction,
-  togglefavoriteClassAction,
-} from '../../../../../../ducks'
 
 import {
   Image,
@@ -23,34 +17,13 @@ import {
   StyledRow,
   CircleBtn,
   MetaText,
-  FavCircleBtn,
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
 import { setFilterInSession } from '../../../../../../../../common/utils/helpers'
 
-const CardImage = ({
-  data,
-  history,
-  userId,
-  districtId,
-  toggleFavoriteClass,
-  user,
-  activeClasses = [],
-  getTeacherDashboard,
-  setClassType,
-}) => {
-  const {
-    name,
-    grades = [],
-    studentCount,
-    subject,
-    thumbnail,
-    _id,
-    isFavourite,
-  } = data
-
-  const isPremiumUser = user?.features?.premium
+const CardImage = ({ data, history, userId, districtId }) => {
+  const { name, grades = [], studentCount, subject, thumbnail, _id } = data
 
   const gotoManageClass = (classId = '') => () => {
     history.push(`/author/manageClass/${classId}`)
@@ -83,48 +56,13 @@ const CardImage = ({
       {subject ? (
         <>
           {grades.length ? <SpanLeftMargin>|</SpanLeftMargin> : ''}
-          <SpanLeftMargin data-cy="subjectInClassCard">
-            {subject}
-          </SpanLeftMargin>
+          <SpanLeftMargin data-cy="subject">{subject}</SpanLeftMargin>
         </>
       ) : (
         ''
       )}
     </>
   )
-
-  const handleToggle = (payload) => {
-    const currentFilter = localStorage.getItem(
-      `author:dashboard:classFilter:${userId}:${districtId}`
-    )
-    if (!payload.toggleValue && currentFilter === 'MY_FAVORITES') {
-      // If no favourites and the current filter is MY_FAVORITES then change to default filter
-      const noFavouriteClasses = !activeClasses.some(
-        (x) => x.isFavourite && x._id !== payload.groupId
-      )
-      if (noFavouriteClasses) {
-        toggleFavoriteClass(payload)
-        localStorage.setItem(
-          `author:dashboard:classFilter:${userId}:${districtId}`,
-          'ALL_CLASSES'
-        )
-        getTeacherDashboard({
-          background: true,
-          setClassType: () => setClassType('All Classes'),
-        })
-        return notification({
-          type: 'info',
-          msg: `Switching to 'All Classes', since no favorite classes found.`,
-          duration: 3,
-        })
-      }
-    }
-    toggleFavoriteClass({
-      ...payload,
-      removeClassFromList:
-        !payload.toggleValue && currentFilter === 'MY_FAVORITES',
-    })
-  }
 
   return (
     <>
@@ -171,28 +109,6 @@ const CardImage = ({
             </RowWrapperGrade>
           </Col>
         </Row>
-        {isPremiumUser && (
-          <Tooltip
-            title="Mark class as Favorite to organize your classes"
-            placement="bottom"
-          >
-            <FavCircleBtn
-              isFavorite={isFavourite}
-              onClick={() =>
-                handleToggle({
-                  groupId: _id,
-                  toggleValue: !isFavourite,
-                })
-              }
-            >
-              <Icon
-                data-cy="classFavourite"
-                type="heart"
-                theme={isFavourite ? 'filled' : undefined}
-              />
-            </FavCircleBtn>
-          </Tooltip>
-        )}
       </OverlayText>
     </>
   )
@@ -200,15 +116,8 @@ const CardImage = ({
 
 const enhance = compose(
   withRouter,
-  connect(
-    (state) => ({
-      user: getUserDetails(state),
-      districtId: getUserOrgId(state),
-    }),
-    {
-      toggleFavoriteClass: togglefavoriteClassAction,
-      getTeacherDashboard: receiveTeacherDashboardAction,
-    }
-  )
+  connect((state) => ({
+    districtId: getUserOrgId(state),
+  }))
 )
 export default enhance(CardImage)

@@ -356,26 +356,15 @@ class Review extends PureComponent {
       produce(test, (draft) => {
         draft.itemGroups = draft.itemGroups.map((itemGroup) => {
           const groupedItems = groupTestItemsByPassageId(itemGroup.items)
-          const selectedItemIndex = groupedItems.findIndex((item) => {
+          const oldIndex = groupedItems.findIndex((item) => {
             if (isArray(item)) {
               return item.some((ite) => ite.selected)
             }
             return item.selected
           })
-          if (selectedItemIndex > -1) {
-            const totalItemsInAboveGrp = draft.itemGroups.reduce(
-              (acc, curr) => {
-                if (curr.index < itemGroup.index) {
-                  return acc + curr.items.length
-                }
-                return acc + 0
-              },
-              0
-            )
-            const [removed] = groupedItems.splice(selectedItemIndex, 1)
-            groupedItems.splice(newIndex - totalItemsInAboveGrp, 0, removed)
-            itemGroup.items = flatten(groupedItems)
-          }
+          const [removed] = groupedItems.splice(oldIndex, 1)
+          groupedItems.splice(newIndex, 0, removed)
+          itemGroup.items = flatten(groupedItems)
           return itemGroup
         })
       })
@@ -717,7 +706,7 @@ class Review extends PureComponent {
         </ReviewContentWrapper>
         {isModalVisible && (
           <PreviewModal
-            testId={test?._id || get(this.props, 'match.params.id', false)}
+            testId={get(this.props, 'match.params.id', false)}
             isTest={!!test}
             isVisible={isModalVisible}
             onClose={this.closeModal}
@@ -734,7 +723,6 @@ class Review extends PureComponent {
             prevItem={this.prevItem}
             nextItem={this.nextItem}
             showEvaluationButtons
-            isPlaylistTestReview={isPlaylistTestReview}
           />
         )}
         <TestPreviewModal

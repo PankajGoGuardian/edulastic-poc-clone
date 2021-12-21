@@ -44,7 +44,6 @@ const QuestionAnalysis = ({
   settings,
   sharedReport,
   toggleFilter,
-  demographicFilters,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -64,7 +63,7 @@ const QuestionAnalysis = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters, ...demographicFilters },
+        requestFilters: { ...settings.requestFilters },
         testId: settings.selectedTest.key,
       }
       getQuestionAnalysis(q)
@@ -95,13 +94,6 @@ const QuestionAnalysis = ({
   ])
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
-
-  const selectedCompareByOption = useMemo(
-    () =>
-      compareByDropDownData.find(({ key }) => key === compareBy) ||
-      compareByDropDownData[0],
-    [compareBy]
-  )
 
   const updateCompareByCB = (event, selected) => {
     setCompareBy(selected.key)
@@ -180,11 +172,11 @@ const QuestionAnalysis = ({
                     | {assessmentName}
                   </StyledH3>
                 </Col>
-                <Col data-cy="compareBy">
+                <Col>
                   {userRole !== roleuser.TEACHER ? (
                     <ControlDropDown
                       prefix="Compare by"
-                      by={selectedCompareByOption}
+                      by={compareByDropDownData[0]}
                       selectCB={updateCompareByCB}
                       data={compareByDropDownData}
                     />

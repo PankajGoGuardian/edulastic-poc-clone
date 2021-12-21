@@ -51,16 +51,6 @@
     "addNewDistractor": "Add a new distractor",
     "enterHintForTheProblem": "Enter a hint for the problem",
     "correctItemNotAllowDynamic": "Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually",
-    "helperText": {
-      "variableType": "Variables such as @a or @x can represent text, expressions or numbers.",
-      "combinationCount": "Enter the desired number of combinations of the parameters.",
-      "NUMBER_RANGE": "Here a random value is generated between the ranges specified. Specify the range using the min and max option. You can also specify the number of decimal places",
-      "NUMBER_SET": "You can specify a set of numbers, and the values generated are numbers that are randomly assigned from the set",
-      "NUMBER_SEQUENCE": "This option is useful with other dynamic parameters of sequence type. All variables of sequence type need to have the same number of items. The values generated are numbers/text picked out from each position in the sequence",
-      "TEXT_SET": "You can specify a set of words (or any text), and the values generated are words that are randomly assigned from the set",
-      "TEXT_SEQUENCE": "This option is useful with other dynamic parameters of sequence type. All variables of sequence type need to have the same number of items. The values generated are numbers/text picked out from each position in the sequence",
-      "FORMULA": "You can specify a formula using other dynamic variables generated earlier. We recommened you use this as the variable in the input box because you can use the advanced math settings to control the formula output. Example: if you want the student's answer to be a fraction, decimal, etc."
-    },
     "pendingEvaluation": {
       "text": "Evaluation is pending",
       "tooltip": " App failed to evaluate due to unexpected input format"
@@ -279,13 +269,9 @@
         "fraction": "Fraction",
         "mixedFraction": "Mixed Fraction"
       },
-      "cancel": "Cancel",
-      "confirm": "Confirm",
       "graphControls": "Graph Controls",
       "standardKeypadLabel": "Standard Keypads",
-      "customKeypadLabel": "My Custom Keypads",
-      "keepAspectRatio": "Keep Aspect Ratio",
-      "removePrevDynamicValues": "This will clear all previously generated values. Do you wish to proceed?"
+      "keepAspectRatio": "Keep Aspect Ratio"
     },
     "dropZone": {
       "dragDrop": "Drag & Drop",
@@ -835,10 +821,7 @@
         "x_distance": "X distance ",
         "y_distance": "Y distance",
         "show_axis_label": "Show axis label",
-        "show_grid": "Show grid",
-        "rectangular": "Rectangular",
-        "complex": "Complex",
-        "polar": "Polar"
+        "show_grid": "Show grid"
       },
       "settingsPopup": {
         "xAxis": "X-AXIS",
@@ -894,7 +877,7 @@
         "cos": "Select two points on the grid. A sine curve will be drawn through them such that the first point lies on the midline, and the second point lies on the adjacent crest/trough.<p class=\"mb-8\"/>Example: If you select #{A=(-\\frac{\\pi}{2},0)#} and #{B = (0,1)#}, the graph of #{y = \\cos x#} will be plotted.",
         "tangent": "Select two points on the grid. A tangent curve will be drawn such that the first point lies on a point of inflection, the value of the x-coordinate of the second point is the asymptote, and the y-coordinate representing the vertical stretching or \"Amplitude\" of the tangent function.<p class=\"mb-8\"/>Example: If you select #{A=(0,0)#} and #{B=(\\frac{\\pi}{2},1)#}, the graph of #{y=\\tan x#} will be plotted.",
         "area": "Select any point in a \"closed\" region of the graph that you require to be shaded (representing an inequality). This area will be shaded.",
-        "dashed": "This is used to represent dashed inequalities.<br />Example, to represent #{y < x#}, draw the line #{y = x#}, and select the appropriate shaded area. Then click on the line to  make it dashed.",
+        "dashed": "After selecting the shaded area, select parts of the curves enclosing the space that are not part of the desired inequality.",
         "secant": "Select two points on the grid, say #{A=(x_1, y_1)#}, #{B = (x_2, y_2)#}. The following graph will be drawn: #{y = y_1 + (y_2-y_1)\\sec\\left({\\frac{\\pi}{2(x_2-x_1)}x-\\frac{x_1\\pi}{2(x_2-x_1)}}\\right)#}<br />The geometric meaning is that the difference between the y-coordinates of the two points selected is the \"Amplitude\" and the difference between the x-coordinates is related to the period. The x-coordinate of the first point is related to the phase shift.<p class=\"mb-8\"/>Example: If you select #{A = (0,0), B = (\\frac{\\pi}{2}, 1)#} will be plotted.",
         "cotangent": "Select two points on the grid, say #{A = (x_1, y_1), B=(x_2, y_2)#}, the following graph will be drawn: #{y = y_1 + (y_2-y_1)\\cot\\left({\\frac{\\pi}{2(x_2-x_1)}x-\\frac{x_1\\pi}{2(x_2-x_1)}}\\right)#}<br /> The geometric meaning is that the difference between the y-coordinates of the two points selected is the \"Amplitude\" and the difference between the x-coordinates is related to the period. The x-coordinate of the first point is related to the phase shift.<p class=\"mb-8\"/>Example: If you select #{A = (0,0)#}, #{B=(\\frac{\\pi}{2}#},1)#}, #{y=\\cot x#} will be plotted.",
         "cosecant": "Select two points on the grid, say #{A = (x_1, y_1)#}, #{B = (x_2, y_2)#} the following graph will be drawn: <br />#{y = y_1 + (y_2-y_1)\\csc\\left({\\frac{\\pi}{2(x_2-x_1)}x-\\frac{x_1\\pi}{2(x_2-x_1)}}\\right)#} <br />The geometric meaning is that the difference between the y-coordinates of the two points selected is the \"Amplitude\" and the difference between the x-coordinates is related to the period. The x-coordinate of the first point is related to the phase shift. <p class=\"mb-8\"/>Example: If you select #{A = (0,0)#}, and #{B = }\\left(\\frac{\\pi}{2}, 1\\right)#}, #{y=\\csc x#} will be plotted.",
@@ -1082,8 +1065,8 @@
         "isDecimal": "A whole number and a fractional part separated by a decimal point.#{\\newline[1em]\\text{Correct:\\enspace}1.5,\\quad\\text{Incorrect:\\enspace}1#}",
         "scientificType": "Way to write a very large or small number using powers of ten.#{\\newline[1em]\\text{Correct:\\enspace}7.11E+2,\\quad\\text{Incorrect:\\enspace}711\\newline[1em]\\text{Correct:\\enspace}7.01\\times 10^2,\\quad\\text{Incorrect:\\enspace}701#}",
         "significantDecimalPlaces": "A number expressed with sufficient digits that express the required precision. Please note that your Expected Answer must normally meet the same required decimal places and rounding as the students, except in the case of Dynamic Parameter formulas - here the system will do the implementation of the rounding and required decimal places in the expected answer. #{\\newline[1em]\\text{Expected:\\enspace}0.20,\\quad\\text{Decimal places:\\enspace}2\\newline[0.5em]\\text{Correct:\\enspace}0.20,\\quad\\text{Incorect:\\enspace}0.2\\newline[1em]#}Use alternate answers if you want to accept #{0.2#}, #{0.200#}, etc. Also, consider using tolerance if a range of answers is acceptable.",
-        "isIn": "The student's answer needs to lie within a specified interval or set. Enter the number of unique items the student needs to return. Put the required interval or set in the EXPECTED ANSWER field.#{\\newline[1em]\\text{Expected:\\enspace}[0.3,0.6]\\newline[0.5em]#} and with \"#{1#}\" in the box.#{\\newline[0.5em]\\text{Correct:\\enspace}0.4,\\quad\\text{Incorrect:\\enspace}0.2\\newline[0.5em]#} If the student needs to return #{2#} numbers, then a possible valid answer would be #{0.35,\\enspace 0.45#}",
-        "satisfies": "The Student's answer needs to meet the given in/equality or equation. Enter the number of items that the students needs to return. Put the condition in the EXPECTED ANSWER field. Note that you can only use one variable, e.g. x.#{\\newline[0.5em]\\text{Expected:\\enspace}x>2\\newline[0.5em] \\text{Correct:\\enspace}3,\\quad\\text{Incorrect:\\enspace}1\\newline[0.5em]#} If the student needs to return 2 numbers, then a possible valid answer would be #{3,4#}",
+        "isIn": "Student's answer needs to lie within a specified interval or set. Enter the number of unique items the student needs to return.#{\\newline[1em]\\text{Expected:\\enspace}[0.3,0.6]\\newline[0.5em]#} and with \"#{1#}\" in the box.#{\\newline[0.5em]\\text{Correct:\\enspace}0.4,\\quad\\text{Incorrect:\\enspace}0.2\\newline[0.5em]#} If the student needs to return #{2#} numbers, then a possible valid answer would be #{0.35,\\enspace 0.45#}",
+        "satisfies": "Student's answer needs to meet the given in/equality or equation. Enter the number of items that the students needs to return. Put the condition in the EXPECTED ANSWER field. Note that you can only use one variable, e.g. x.#{\\newline[0.5em]\\text{Expected:\\enspace}x>2\\newline[0.5em] \\text{Correct:\\enspace}3,\\quad\\text{Incorrect:\\enspace}1\\newline[0.5em]#} If the student needs to return 2 numbers, then a possible valid answer would be #{3,4#}",
         "isLineStandardForm": "#{ax+by=c\\newline[0.4em]\\text{Correct:\\enspace}x+y=2,\\quad\\text{Incorrect:\\enspace}x+y-2=0#}",
         "isLineSlopeInterceptForm": "#{y=ax+b\\newline[0.35em]\\text{Correct:\\enspace}y=-x+1,\\quad\\text{Incorrect:\\enspace}x+y=1#}",
         "isLinePointSlopeForm": "#{y-b=c(x-a)\\newline[0.35em]\\text{Correct:\\enspace}y - 1 = 2(x+3),\\quad\\text{Incorrect:\\enspace}y=2x+7#}",
@@ -1229,12 +1212,11 @@
     "pictograph": {
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",
-      "enterElements": "Enter Elements",
-      "classifications": "Enter Class Names",
-      "questionLayer": "Question Layer",
+      "enterElements": "Enter elements",
+      "classifications": "Enter class names",
+      "questionLayer": "Question layer",
       "correctAnswer": "Correct Answer",
       "showClassName": "Show class name",
-      "showElementValues": "Show element values",
       "answeringStyle": "Answering style",
       "elementContainers": "Element containers",
       "clickToSelect": "Click to select"

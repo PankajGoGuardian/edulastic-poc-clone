@@ -1,5 +1,4 @@
 import { createAction, createReducer } from 'redux-starter-kit'
-import { createSelector } from 'reselect'
 
 // constants
 
@@ -16,7 +15,6 @@ export const changedPlayerContentAction = createAction(CHANGED_PLAYER_CONTENT)
 const initialState = {
   enableMagnifier: false,
   contentChanged: '',
-  ttsPlaybackSpeed: localStorage.getItem('ttsPlaybackSpeed') || '1',
 }
 
 const updateTestPlayerReducer = (state, { payload }) => ({
@@ -33,10 +31,3 @@ export default createReducer(initialState, {
   [UPDATE_TEST_PLAYER]: updateTestPlayerReducer,
   [CHANGED_PLAYER_CONTENT]: changedPlayerContent,
 })
-
-export const testPlayerSelector = (state) => state.testPlayer
-
-export const getTextToSpeechPlaybackSpeed = createSelector(
-  testPlayerSelector,
-  (testPlayer) => testPlayer?.ttsPlaybackSpeed || '1'
-)

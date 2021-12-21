@@ -20,8 +20,8 @@ export const ResponseContainer = styled.div`
 				background-repeat: no-repeat;
         background-size: ${imageOptions.width}px ${imageOptions.height}px;
         background-position: ${imageOptions.x}px ${imageOptions.y}px;
-        min-width: ${imageOptions.x + imageOptions.width}px;
-        min-height: ${imageOptions.y + imageOptions.height}px;
+        min-width: ${imageOptions.width}px;
+        min-height: ${imageOptions.height}px;
 				zoom: ${theme.widgets.classification.imageZoom}
       `
     } else {

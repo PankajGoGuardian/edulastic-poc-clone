@@ -307,9 +307,9 @@ const AlignmentRow = ({
                 <ItemBody data-cy="subjectItem">
                   <FieldLabel>{t('component.options.subject')}</FieldLabel>
                   <SelectInputStyled
+                    getPopupContainer={(trigger) => trigger.parentNode}
                     data-cy="subjectSelect"
                     value={subject}
-                    getPopupContainer={(trigger) => trigger.parentNode}
                     onChange={setSubject}
                   >
                     {selectsData.allSubjects.map(({ text, value }) =>
@@ -330,9 +330,8 @@ const AlignmentRow = ({
                     showSearch
                     filterOption
                     value={curriculum}
-                    dropdownClassName="custom-antd-select"
-                    getPopupContainer={(trigger) => trigger.parentNode}
                     onChange={handleChangeStandard}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                   >
                     {formattedCuriculums.map(({ value, text, disabled }) => (
                       <Select.Option
@@ -351,9 +350,9 @@ const AlignmentRow = ({
                     data-cy="gradeSelect"
                     mode="multiple"
                     showSearch
-                    getPopupContainer={(trigger) => trigger.parentNode}
                     value={grades}
                     onChange={setGrades}
+                    getPopupContainer={(trigger) => trigger.parentNode}
                   >
                     {selectsData.allGrades.map(({ text, value }) => (
                       <Select.Option key={text} value={value}>
@@ -376,11 +375,11 @@ const AlignmentRow = ({
                 filterOption={false}
                 value={standardsArr}
                 optionLabelProp="title"
-                getPopupContainer={(trigger) => trigger.parentNode}
                 onFocus={handleStandardFocus}
                 onSearch={handleSearchStandard}
                 onSelect={handleStandardSelect}
                 onDeselect={handleStandardDeselect}
+                getPopupContainer={(trigger) => trigger.parentNode}
               >
                 {!curriculumStandardsLoading &&
                   curriculumStandardsELO &&

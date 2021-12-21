@@ -128,19 +128,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
 
     const handleSubmit = (evt) => {
       validateFields(
-        (
-          err,
-          {
-            subStartDate,
-            subEndDate,
-            notes,
-            subType,
-            adminPremium,
-            customerSuccessManager,
-            opportunityId,
-            licenceCount,
-          }
-        ) => {
+        (err, { subStartDate, subEndDate, notes, subType, adminPremium }) => {
           if (!err) {
             bulkSchoolsSubscribeAction({
               subStartDate: subStartDate.valueOf(),
@@ -149,9 +137,6 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
               schoolIds: selectedSchools,
               subType,
               ...(subType === 'partial_premium' ? { adminPremium } : {}),
-              customerSuccessManager,
-              opportunityId,
-              licenceCount,
             })
           }
         }
@@ -282,7 +267,7 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
     const renderSubscription = (subscription, record) =>
       record.schoolId === currentEditableRow ? (
         <Select
-          style={{ width: '100%' }}
+          style={{ width: 120 }}
           value={editedSubType || 'free'}
           onChange={(value) =>
             setEditableRowFieldValues({
@@ -355,7 +340,6 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
             title="Upgrade DA"
             dataIndex="subscription.adminPremium"
             key="adminPremium"
-            width="100px"
             render={renderUpgradeDA}
           />
           <Column
@@ -395,7 +379,7 @@ const BulkSubscribeForm = ({
   disabled,
   firstSchoolSubType,
 }) => (
-  <Form labelAlign="left" labelCol={{ span: 3 }} onSubmit={handleSubmit}>
+  <Form onSubmit={handleSubmit}>
     <Form.Item
       label={<HeadingSpan>Change Plan</HeadingSpan>}
       labelAlign="left"
@@ -418,34 +402,10 @@ const BulkSubscribeForm = ({
         </Select>
       )}
     </Form.Item>
-    <DatesNotesFormItem getFieldDecorator={getFieldDecorator}>
-      <Form.Item label={<HeadingSpan>CS Manager</HeadingSpan>}>
-        {getFieldDecorator('customerSuccessManager')(
-          <Input
-            placeholder="Customer Success Manager Name"
-            style={{ width: 300 }}
-          />
-        )}
-      </Form.Item>
-
-      <Form.Item label={<HeadingSpan>Opportunity Id</HeadingSpan>}>
-        {getFieldDecorator('opportunityId')(
-          <Input placeholder="Opportunity Id" style={{ width: 300 }} />
-        )}
-      </Form.Item>
-
-      <Form.Item label={<HeadingSpan>License Count</HeadingSpan>}>
-        {getFieldDecorator('licenceCount')(
-          <Input placeholder="License Count" style={{ width: 300 }} />
-        )}
-      </Form.Item>
-    </DatesNotesFormItem>
-
+    <DatesNotesFormItem getFieldDecorator={getFieldDecorator} />
     <Form.Item>
-      {getFieldDecorator('adminPremium', {
-        valuePropName: 'checked',
-      })(
-        <Checkbox disabled={firstSchoolSubType !== 'partial_premium'}>
+      {getFieldDecorator('adminPremium', { valuePropName: 'checked' })(
+        <Checkbox>
           <strong>Upgrade DAs</strong>
         </Checkbox>
       )}

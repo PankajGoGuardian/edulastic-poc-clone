@@ -6,8 +6,6 @@ import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
 import { roleuser, signUpState } from '@edulastic/constants'
 import {
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
   getOrgSchools,
   getUser,
   getUserOrgId,
@@ -32,13 +30,8 @@ const AuthorCompleteSignupButton = ({
   userOrgId,
   privateParams,
   subType,
-  interestedSubjects = [],
-  interestedGrades = [],
-  onMouseDown = () => {},
-  onSuccessCallback,
 }) => {
-  const { currentSignUpState: signupStatus, orgData = {} } = user
-  const { classList = [] } = orgData
+  const { currentSignUpState: signupStatus } = user
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
 
@@ -70,14 +63,8 @@ const AuthorCompleteSignupButton = ({
   }, [isOpenSignupModal])
 
   const handleClick = () => {
-    const hasNoPreferences =
-      roleuser.TEACHER === user.role &&
-      interestedSubjects.length === 0 &&
-      interestedGrades.length === 0 &&
-      classList.length === 0
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
-      hasNoPreferences ||
       isSchoolSignupOnly
     ) {
       trackClick()
@@ -100,8 +87,6 @@ const AuthorCompleteSignupButton = ({
           handleCancel={() => handleCanel(false)}
           isVisible={isSchoolModalVisible}
           isSchoolSignupOnly={isSchoolSignupOnly}
-          onMouseDown={onMouseDown}
-          onSuccessCallback={onSuccessCallback}
         />
       )}
     </>
@@ -115,7 +100,6 @@ AuthorCompleteSignupButton.propTypes = {
   trackClick: PropTypes.func,
   setShowCompleteSignupModal: PropTypes.func,
   setCallFunctionAfterSignup: PropTypes.func,
-  onSuccessCallback: PropTypes.func,
   privateParams: PropTypes.object,
 }
 
@@ -125,7 +109,6 @@ AuthorCompleteSignupButton.defaultProps = {
   renderButton: () => null,
   setShowCompleteSignupModal: () => null,
   setCallFunctionAfterSignup: () => null,
-  onSuccessCallback: () => null,
   privateParams: {},
 }
 
@@ -134,8 +117,6 @@ const enhance = compose(
     user: getUser(state),
     orgSchools: getOrgSchools(state),
     userOrgId: getUserOrgId(state),
-    interestedSubjects: getInterestedSubjectsSelector(state),
-    interestedGrades: getInterestedGradesSelector(state),
   }))
 )
 

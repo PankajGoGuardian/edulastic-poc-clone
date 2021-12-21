@@ -956,7 +956,7 @@ class SchoolsTable extends React.Component {
           <StyledPagination
             current={currentPage}
             defaultCurrent={1}
-            pageSize={25}
+            pageSize={10}
             total={totalSchoolsCount}
             onChange={this.changePagination}
             hideOnSinglePage

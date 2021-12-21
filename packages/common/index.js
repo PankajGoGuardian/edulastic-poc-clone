@@ -18,7 +18,6 @@ export { default as Button } from './src/components/Button'
 export { default as EduButton } from './src/components/EduButton'
 export { default as Checkbox } from './src/components/Checkbox'
 export { default as SpinLoader } from './src/components/Spinner'
-export { default as UrlChangeListener } from './src/components/UrlChangeListener';
 export {
   default as CheckboxLabel,
   CheckBoxGrp,
@@ -134,7 +133,6 @@ export {
   removeTokenFromHtml,
   getYoutubeId,
   formatFileSize,
-  triggerEvent,
 } from './src/helpers'
 
 // contexts
@@ -166,7 +164,6 @@ export {
   getInnerValuesForStatic,
   reformatMathInputLatex,
   getMathHtml,
-  removeLeadingAndTrailingNewlineChars,
 } from './src/utils/mathUtils'
 
 export {

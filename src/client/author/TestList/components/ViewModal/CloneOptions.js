@@ -56,9 +56,7 @@ function CloneOptions({ hideOptions, onDuplicate, status }) {
         <EduButton isGhost onClick={handleCancel}>
           Cancel
         </EduButton>
-        <EduButton onClick={proceedToClone} data-cy="continueToClone">
-          Continue to clone
-        </EduButton>
+        <EduButton onClick={proceedToClone}>Continue to clone</EduButton>
       </FlexContainer>
     </CloneOptionsWrapper>
   )

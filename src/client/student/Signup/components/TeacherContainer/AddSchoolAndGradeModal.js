@@ -17,8 +17,6 @@ const AddSchoolAndGradeModal = ({
   isVisible,
   handleCancel,
   isSchoolSignupOnly = false,
-  onMouseDown,
-  onSuccessCallback = () => {},
 }) => {
   const userInfo = get(user, 'user', {})
 
@@ -54,8 +52,6 @@ const AddSchoolAndGradeModal = ({
         <SubjectGradeForm
           userInfo={userInfo}
           districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
-          onMouseDown={onMouseDown}
-          onSuccessCallback={onSuccessCallback}
           isModal
         />
       )}
@@ -67,12 +63,6 @@ AddSchoolAndGradeModal.propTypes = {
   user: PropTypes.object.isRequired,
   isVisible: PropTypes.bool.isRequired,
   handleCancel: PropTypes.func.isRequired,
-  onMouseDown: PropTypes.func.isRequired,
-  onSuccessCallback: PropTypes.func,
-}
-
-AddSchoolAndGradeModal.defaultProps = {
-  onSuccessCallback: () => {},
 }
 
 const enhance = compose(

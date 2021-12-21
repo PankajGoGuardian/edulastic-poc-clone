@@ -18,7 +18,6 @@ import {
   keyboard as keyboardConst,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
-import { IconBookmark } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -94,12 +93,6 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
   checkAnswer,
   answerChecksUsedForItem,
-  canShowPlaybackOptionTTS,
-  toggleBookmark,
-  isBookmarked,
-  bookmarks = [],
-  defaultAP,
-  t,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -135,7 +128,6 @@ const PlayerHeader = ({
       {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-          canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
         />
       )}
       <Header ref={headerRef} style={headerStyle}>
@@ -156,13 +148,6 @@ const PlayerHeader = ({
                   blockNavigationToAnsweredQuestions={
                     blockNavigationToAnsweredQuestions
                   }
-                  bookmarks={bookmarks}
-                  skipped={skipped}
-                  t={t}
-                  dropdownStyle={{ marginRight: '15px', height: '32px' }}
-                  moveToNext={moveToNext}
-                  utaId={utaId}
-                  zoomLevel={zoomLevel}
                 />
                 <div style={{ width: 136, display: 'flex' }}>
                   <StyledProgress
@@ -243,23 +228,6 @@ const PlayerHeader = ({
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>
-                  {!blockNavigationToAnsweredQuestions && (
-                    <Tooltip placement="top" title="Bookmark">
-                      <StyledButton
-                        data-cy="bookmark"
-                        onClick={
-                          defaultAP
-                            ? toggleBookmark
-                            : () => toggleBookmark(items[currentItem]?._id)
-                        }
-                        active={isBookmarked}
-                        disabled={isPremiumContentWithoutAccess}
-                      >
-                        <StyledIconBookmark />
-                      </StyledButton>
-                    </Tooltip>
-                  )}
-
                   {showPause && (
                     <Tooltip
                       placement="top"
@@ -381,10 +349,4 @@ const HeaderSbacPlayer = styled(FlexContainer)`
   @media (max-width: ${MAX_MOBILE_WIDTH}px) {
     padding: 0px;
   }
-`
-const StyledIconBookmark = styled(IconBookmark)`
-  ${({ theme }) => `
-    width: ${theme.default.headerBookmarkIconWidth};
-    height: ${theme.default.headerBookmarkIconHeight};
-  `}
 `

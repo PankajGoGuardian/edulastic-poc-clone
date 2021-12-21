@@ -18,7 +18,6 @@ import AppConfig from './app-config'
 import { loginReducer } from './client/loginReducers'
 import { loginSaga } from './client/loginSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
-import { initializeSegment } from './client/common/utils/main'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -33,8 +32,6 @@ if (AppConfig.sentryURI) {
   })
   updateSentryScope()
 }
-
-initializeSegment()
 
 // login - redux store
 const { store } = configureStore({}, loginReducer, loginSaga)

@@ -28,9 +28,9 @@ export const playersZoomTheme = (theme) => {
       headerExitButtonFontIconHeight: `${
         theme.size2 > 64 ? 64 : theme.size2
       }px`,
-      headerToolbarButtonWidth: `${36 * assessmentZoomMap[theme?.zoomLevel]}px`,
+      headerToolbarButtonWidth: `${40 * assessmentZoomMap[theme?.zoomLevel]}px`,
       headerToolbarButtonHeight: `${
-        36 * assessmentZoomMap[theme?.zoomLevel]
+        40 * assessmentZoomMap[theme?.zoomLevel]
       }px`,
     },
     header: {

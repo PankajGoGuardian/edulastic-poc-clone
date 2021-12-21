@@ -16,12 +16,11 @@ import {
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
 import { FlexContainer, PointBlockContext } from '@edulastic/common'
-import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
+import UnscoredBlock from '@edulastic/common/src/components/Unscored'
 
 import {
   getQuestionDataSelector,
   setQuestionDataAction,
-  updateScoreAndValidationAction,
   setIsGradingRubricAction,
   getIsGradingCheckboxState,
 } from '../../../../author/QuestionEditor/ducks'
@@ -74,15 +73,6 @@ class Scoring extends Component {
       updateRubricData(res[0])
       this.handleRubricAction('VIEW RUBRIC')
     })
-  }
-
-  updateScoreOnBlur = (score) => {
-    if (score < 0) {
-      return
-    }
-    const { updateScoreAndValidation } = this.props
-    const points = parseFloat(score, 10)
-    updateScoreAndValidation(points)
   }
 
   render() {
@@ -157,7 +147,6 @@ class Scoring extends Component {
     const questionType = get(questionData, 'type', '')
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType)
     const isPractice = get(questionData, 'validation.unscored', false)
-    const isPremiumUser = get(userFeatures, ['premium'], false)
 
     const questionTitle = item?.title || questionData?.title
 
@@ -234,24 +223,28 @@ class Scoring extends Component {
                   <Col md={12}>
                     <FlexContainer flexDirection="column" mt="8px">
                       <Label>{t('component.options.maxScore')}</Label>
-                      <PointsInput
-                        data-cy="maxscore"
-                        id={getFormattedAttrId(
-                          `${questionTitle}-${t('component.options.maxScore')}`
-                        )}
-                        value={maxScore}
-                        width="20%"
-                        onChange={onChange}
-                        onBlur={(e) => this.updateScoreOnBlur(e?.target?.value)}
-                        min={isPremiumUser ? 0 : 0.5}
-                        step={0.5}
-                        disabled={
-                          (!!questionData.rubrics &&
-                            userFeatures.gradingrubrics) ||
-                          isGradingCheckboxState
-                        }
-                      />
-                      {isPractice && <UnscoredHelperText />}
+                      {isPractice ? (
+                        <UnscoredBlock height="50px" width="20%" />
+                      ) : (
+                        <PointsInput
+                          data-cy="maxscore"
+                          id={getFormattedAttrId(
+                            `${questionTitle}-${t(
+                              'component.options.maxScore'
+                            )}`
+                          )}
+                          value={maxScore}
+                          width="20%"
+                          onChange={onChange}
+                          min={0}
+                          step={0.5}
+                          disabled={
+                            (!!questionData.rubrics &&
+                              userFeatures.gradingrubrics) ||
+                            isGradingCheckboxState
+                          }
+                        />
+                      )}
                     </FlexContainer>
                   </Col>
                 )
@@ -502,7 +495,6 @@ const enhance = compose(
       setIsGradingRubric: setIsGradingRubricAction,
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
-      updateScoreAndValidation: updateScoreAndValidationAction,
     }
   )
 )

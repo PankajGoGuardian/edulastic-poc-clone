@@ -65,8 +65,8 @@ const TestActivityPreview = ({
       isPassageWithQuestions,
     }
     let questionsKeyed = {
-      ...keyBy(questions, (q) => `${testItem._id}_${q.id}`),
-      ...keyBy(resources, (r) => `${testItem._id}_${r.id}`),
+      ...keyBy(questions, 'id'),
+      ...keyBy(resources, 'id'),
     }
     let itemRows = testItem.rows
     let passage = {}

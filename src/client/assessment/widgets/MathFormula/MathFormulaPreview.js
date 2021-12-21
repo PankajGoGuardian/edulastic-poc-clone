@@ -295,17 +295,18 @@ class MathFormulaPreview extends Component {
     const allowNumericOnly = get(item, 'allowNumericOnly', false)
 
     // in Units type, this need when the show dropdown option is true
-    const correctUnit = get(
+    let correctUnit = get(
       item,
       'validation.validResponse.value[0].options.unit',
       ''
     )
-    // if (
-    //   (correctUnit.search('text{') === -1 && correctUnit.search('f') !== -1) ||
-    //   correctUnit.search(/\s/g) !== -1
-    // ) {
-    //   correctUnit = `\\text{${correctUnit}}`
-    // }
+    if (
+      (correctUnit.search('text{') === -1 && correctUnit.search('f') !== -1) ||
+      correctUnit.search(/\s/g) !== -1
+    ) {
+      correctUnit = `\\text{${correctUnit}}`
+    }
+
     return (
       <div>
         <FlexContainer
@@ -323,7 +324,7 @@ class MathFormulaPreview extends Component {
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper data-cy="questionTitleWrapper">
+            <QuestionTitleWrapper>
               <MathFormulaDisplay
                 data-cy="preview-header"
                 style={{ marginBottom: 15 }}
@@ -385,7 +386,6 @@ class MathFormulaPreview extends Component {
                         innerValues={innerValues}
                         onInnerFieldClick={() => this.onInnerFieldClick()}
                         isPrintPreview={isPrintPreview}
-                        style={cssStyles}
                         noBorder
                       />
                     )}
@@ -397,9 +397,6 @@ class MathFormulaPreview extends Component {
                         allowNumericOnly={allowNumericOnly}
                         customKeys={customKeys}
                         numberPad={item.numberPad}
-                        minHeight={cssStyles.height}
-                        minWidth={cssStyles.width}
-                        fontSize={cssStyles.fontSize}
                         value={
                           latex && !Array.isArray(latex)
                             ? latex.replace('\\MathQuillMathField{}', '')
@@ -419,7 +416,6 @@ class MathFormulaPreview extends Component {
                       item={item}
                       preview
                       onChange={this.selectUnitFromDropdown}
-                      data-cy="selectUnitDropdown"
                       selected={this.selectedUnit}
                       disabled={disableResponse}
                       keypadMode={item?.keypadMode} // to get selected keypadMode on student side
@@ -464,14 +460,14 @@ class MathFormulaPreview extends Component {
                 answer = ans?.value?.[0]?.value
 
                 if (item.isUnits && item.showDropdown) {
-                  const altUnit = get(ans, 'value[0].options.unit', '')
-                  // if (
-                  //   (altUnit.search('text{') === -1 &&
-                  //     altUnit.search('f') !== -1) ||
-                  //   altUnit.search(/\s/g) !== -1
-                  // ) {
-                  //   altUnit = `\\text{${altUnit}}`
-                  // }
+                  let altUnit = get(ans, 'value[0].options.unit', '')
+                  if (
+                    (altUnit.search('text{') === -1 &&
+                      altUnit.search('f') !== -1) ||
+                    altUnit.search(/\s/g) !== -1
+                  ) {
+                    altUnit = `\\text{${altUnit}}`
+                  }
 
                   answer =
                     ans.value[0].value.search('=') === -1

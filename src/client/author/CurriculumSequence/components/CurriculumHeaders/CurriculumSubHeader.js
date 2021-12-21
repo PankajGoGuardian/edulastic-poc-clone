@@ -2,7 +2,7 @@ import React from 'react'
 import { withRouter } from 'react-router-dom'
 import { isNumber } from 'lodash'
 import styled from 'styled-components'
-import { MathFormulaDisplay, EduButton, FlexContainer } from '@edulastic/common'
+import { MathFormulaDisplay, EduButton } from '@edulastic/common'
 import { removeCommentsFromHtml } from '@edulastic/common/src/helpers'
 import {
   mobileWidthLarge,
@@ -14,7 +14,6 @@ import {
   extraDesktopWidthMax,
 } from '@edulastic/colors'
 import { IconBook, IconGraduationCap } from '@edulastic/icons'
-import { Select } from 'antd'
 
 const CurriculumSubHeader = ({
   isStudent,
@@ -32,14 +31,8 @@ const CurriculumSubHeader = ({
   customizeInDraft = false,
   urlHasUseThis = false,
   blurSubHeader = false,
-  userTerms = [],
-  currentTermId,
-  setCurrentUserTerm,
-  getAllCurriculumSequences,
-  getCurrentPlaylistMetrics,
 }) => {
   const {
-    _id: playlistId,
     description,
     subjects = [],
     grades = [],
@@ -90,14 +83,6 @@ const CurriculumSubHeader = ({
     )
   }
 
-  const setCurrentUserTermId = (id) => {
-    setCurrentUserTerm(id)
-    if (playlistId) {
-      getAllCurriculumSequences([playlistId], !isStudent && !urlHasUseThis)
-      getCurrentPlaylistMetrics({ playlistId, termId: id })
-    }
-  }
-
   const assigned = summaryData?.filter((d) => isNumber(d.classes))?.length || 0
   return (
     <SubTopBar>
@@ -131,65 +116,42 @@ const CurriculumSubHeader = ({
               }}
             />
           </SubHeaderTitleContainer>
+          <RightColumn>
+            <SubHeaderInfoCardWrapper>
+              {subHeaderIcon1}
+              {subHeaderIcon2}
+            </SubHeaderInfoCardWrapper>
+            <ButtonWrapper>
+              {(!isManageContentActive || !showRightPanel) &&
+                enableCustomize &&
+                destinationCurriculumSequence?.modules?.length > 0 &&
+                !shouldHidCustomizeButton && (
+                  <CustomizeButton
+                    isGhost
+                    isBlue
+                    onClick={toggleManageContentClick('manageContent')}
+                    data-cy="customizeContent"
+                  >
+                    Customize Content
+                  </CustomizeButton>
+                )}
 
-          <FlexContainer
-            flexDirection="column"
-            width="50%"
-            height="120px"
-            alignItems="flex-end"
-          >
-            <RightColumnTop>
-              <SubHeaderInfoCardWrapper>
-                {subHeaderIcon1}
-                {subHeaderIcon2}
-              </SubHeaderInfoCardWrapper>
-              <ButtonWrapper>
-                {(!isManageContentActive || !showRightPanel) &&
-                  enableCustomize &&
-                  destinationCurriculumSequence?.modules?.length > 0 &&
-                  !shouldHidCustomizeButton && (
-                    <CustomizeButton
-                      isGhost
-                      isBlue
-                      onClick={toggleManageContentClick('manageContent')}
-                      data-cy="customizeContent"
-                    >
-                      Customize Content
-                    </CustomizeButton>
-                  )}
-
-                {(isManageContentActive ||
-                  !showRightPanel ||
-                  (!enableCustomize && isStudent)) &&
-                  !isAuthoringFlowReview &&
-                  !customizeInDraft &&
-                  urlHasUseThis && (
-                    <StyledButton
-                      isGhost
-                      onClick={toggleManageContentClick('summary')}
-                      data-cy="viewSummary"
-                    >
-                      View Summary
-                    </StyledButton>
-                  )}
-              </ButtonWrapper>
-            </RightColumnTop>
-
-            {!isStudent && urlHasUseThis && !isAuthoringFlowReview && (
-              <Select
-                value={currentTermId}
-                style={{ width: 150, marginTop: '10px' }}
-                onChange={setCurrentUserTermId}
-                disabled={!userTerms.length}
-              >
-                {userTerms.map((term) => (
-                  <Select.Option key={term._id} value={term._id}>
-                    {term.name}
-                  </Select.Option>
-                ))}
-              </Select>
-            )}
-          </FlexContainer>
+              {(isManageContentActive ||
+                !showRightPanel ||
+                (!enableCustomize && isStudent)) &&
+                !isAuthoringFlowReview &&
+                !customizeInDraft &&
+                urlHasUseThis && (
+                  <StyledButton
+                    isGhost
+                    onClick={toggleManageContentClick('summary')}
+                    data-cy="viewSummary"
+                  >
+                    View Summary
+                  </StyledButton>
+                )}
+            </ButtonWrapper>
+          </RightColumn>
         </CurriculumSubHeaderRow>
       </SubTopBarContainer>
     </SubTopBar>
@@ -365,8 +327,9 @@ const SubHeaderDescription = styled(MathFormulaDisplay)`
   }
 `
 
-const RightColumnTop = styled.div`
+const RightColumn = styled.div`
   display: flex;
+  max-width: 50%;
   justify-content: flex-end;
   align-items: center;
 

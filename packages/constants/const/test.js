@@ -140,17 +140,6 @@ module.exports = {
     PARTIAL_CREDIT_IGNORE_INCORRECT: 'PARTIAL_CREDIT_IGNORE_INCORRECT', // Bakecnd doesn't require this key value
     ITEM_LEVEL_EVALUATION: 'ITEM_LEVEL_EVALUATION',
   },
-  evalTypeValues: {
-    ALL_OR_NOTHING: 'All or Nothing',
-    PARTIAL_CREDIT: 'Partial Credit',
-    partialMatch: 'Partial Match',
-    exactMatch: 'Exact Match',
-    ManualGrading: 'Manual Grading',
-    anyCorrect: 'Any can be Correct',
-    firstCorrectMust: 'First must be Correct',
-    allCorrectMust: 'All must be Correct',
-    PARTIAL_CREDIT_EBSR: 'Partial Credit (EBSR)',
-  },
   accessibilities: {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",
     // SHOW_FONT_SIZE: "Show Font Size",
@@ -398,7 +387,6 @@ module.exports = {
     'keypad',
     'applyEBSR',
     'testContentVisibility',
-    'showRubricToStudents',
   ],
   docBasedSettingsOptions: [
     'partialScore',

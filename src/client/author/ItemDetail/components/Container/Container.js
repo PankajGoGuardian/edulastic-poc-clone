@@ -107,7 +107,7 @@ import {
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import QuestionManageModal from '../QuestionManageModal'
-import PassageDivider from '../../../../common/components/PassageDivider'
+import PassageDivider from '../Divider'
 import Ctrls from '../ItemDetailRow/components/ItemDetailWidget/Controls'
 
 const testItemStatusConstants = {
@@ -800,16 +800,15 @@ class Container extends Component {
   }
 
   handleCollapse = (dir) => {
-    this.setState({
-      collapseDirection: dir,
-    })
+    this.setState((state) => ({
+      collapseDirection: state.collapseDirection ? '' : dir,
+    }))
   }
 
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state
     return (
       <PassageDivider
-        viewComponent="itemDetail"
         collapseDirection={collapseDirection}
         onChange={this.handleCollapse}
       />

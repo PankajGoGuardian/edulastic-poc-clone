@@ -139,7 +139,7 @@ const AntiCheatingGroupContainer = ({
             <DetailsTooltip
               width={tootltipWidth}
               title="SHUFFLE ANSWER CHOICE"
-              content="If set to ON, answer choices for multiple choice and multiple select questions will be randomly shuffled for students."
+              content="If set to ON, answer choices for multiple choice and multiple select questions will be randomly shuffled for students. Text to speech does not work when the answer choices are shuffled."
               premium={assessmentSuperPowersShuffleAnswerChoice}
             />
             <StyledRow gutter={16} mb="15px">

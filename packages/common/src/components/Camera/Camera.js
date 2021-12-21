@@ -1,5 +1,4 @@
 import React, { useEffect, useState, useRef } from 'react'
-import connect from 'react-redux/es/connect/connect'
 import PropTypes from 'prop-types'
 import { FACING_MODES, IMAGE_TYPES } from 'jslib-html5-camera-photo'
 import { isFunction } from 'lodash'
@@ -51,12 +50,6 @@ function Camera({
   onCameraStop,
   isTakingPhoto,
   delayCount,
-  testSettings: {
-    blockNavigationToAnsweredQuestions,
-    blockSaveAndContinue,
-    restrictNavigationOut,
-    restrictNavigationOutAttemptsThreshold,
-  } = {},
 }) {
   const [dataUri, setDataUri] = useState('')
   const [isVideoVisible, setIsVideoVisible] = useState(true)
@@ -65,12 +58,6 @@ function Camera({
   const [isDelayCounterVisible, setIsDelayCounterVisible] = useState(false)
   const [cameraStartDisplayError, setCameraStartDisplayError] = useState('')
   const videoRef = useRef(null)
-
-  const isAntiCheatingFeaturesEnabled =
-    blockNavigationToAnsweredQuestions ||
-    blockSaveAndContinue ||
-    restrictNavigationOut ||
-    restrictNavigationOutAttemptsThreshold > 0
 
   const [
     mediaStream,
@@ -81,8 +68,7 @@ function Camera({
     videoRef,
     idealFacingMode,
     idealResolution,
-    isMaxResolution,
-    isAntiCheatingFeaturesEnabled
+    isMaxResolution
   )
 
   const playClickAudio = () => {
@@ -103,7 +89,6 @@ function Camera({
 
   useEffect(() => {
     if (cameraStartError) {
-      window.sessionStorage.removeItem('isRequestingCameraAccess')
       setCameraStartDisplayError(
         `${cameraStartError.name} ${cameraStartError.message}`
       )
@@ -115,7 +100,6 @@ function Camera({
 
   useEffect(() => {
     if (cameraStopError) {
-      window.sessionStorage.removeItem('isRequestingCameraAccess')
       console.info('Camera Stop Error:', cameraStopError.message)
     }
   }, [cameraStopError])
@@ -295,6 +279,4 @@ Camera.defaultProps = {
 
 export { Camera, FACING_MODES, IMAGE_TYPES, IMAGE_DATA_TYPE }
 
-export default connect((state) => ({
-  testSettings: state.test?.settings,
-}))(Camera)
+export default Camera

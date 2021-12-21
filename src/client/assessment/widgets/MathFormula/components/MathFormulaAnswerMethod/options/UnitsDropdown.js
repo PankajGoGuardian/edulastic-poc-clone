@@ -15,10 +15,8 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { toggleAdvancedSections } from '../../../../../actions/questions'
-import { setDropDownInUseAction } from '../../../../../../student/Sidebar/ducks'
 import { Row } from '../../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../../styled/WidgetOptions/Col'
-import { getStylesFromUiStyleToCssStyle } from '../../../../../utils/helpers'
 
 const { Option } = Select
 
@@ -34,7 +32,6 @@ const UnitsDropdownPure = ({
   disabled,
   keypadMode = 'units_us',
   view,
-  setDropDownInUse,
 }) => {
   const [offset, updateOffset] = useState(keypadOffset)
 
@@ -83,18 +80,12 @@ const UnitsDropdownPure = ({
       command: 'write',
     }))
 
-  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
   const getLabel = (btn) => {
     const label = `<span class="input__math" data-latex="${
       btn.handler || ''
     }"></span>`
 
-    return (
-      <MathFormulaDisplay
-        dangerouslySetInnerHTML={{ __html: label }}
-        fontSize={cssStyles.fontSize}
-      />
-    )
+    return <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: label }} />
   }
 
   const dropdownWrapper = useRef(null)
@@ -117,12 +108,12 @@ const UnitsDropdownPure = ({
               onChange={onChnageRadioGroup}
               value={item.showDropdown ? 'dropdown' : 'keypad'}
             >
-              <RadioBtn value="dropdown" data-cy="dropdown">
+              <RadioBtn value="dropdown">
                 <FieldLabel display="inline-block">
                   {t('component.math.dropdown')}
                 </FieldLabel>
               </RadioBtn>
-              <RadioBtn value="keypad" data-cy="keypad">
+              <RadioBtn value="keypad">
                 <FieldLabel display="inline-block">
                   {t('component.math.keypad')}
                 </FieldLabel>
@@ -140,15 +131,11 @@ const UnitsDropdownPure = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             style={{
               visibility: item.showDropdown ? 'visible' : 'hidden',
-              height: item.showDropdown ? cssStyles.height || '100%' : 0,
-              width: item.showDropdown ? cssStyles.width : 0,
+              height: item.showDropdown ? '100%' : 0,
             }}
-            onFocus={() => setDropDownInUse(true)}
-            onBlur={() => setDropDownInUse(false)}
-            data-cy="selectUnitDropdown"
           >
             {allBtns.map((btn, i) => (
-              <Option value={btn.handler} key={i} data-cy={btn.dataCy}>
+              <Option value={btn.handler} key={i}>
                 {getLabel(btn)}
               </Option>
             ))}
@@ -169,7 +156,6 @@ UnitsDropdownPure.propTypes = {
   t: PropTypes.func.isRequired,
   onChangeShowDropdown: PropTypes.func,
   disabled: PropTypes.bool,
-  setDropDownInUse: PropTypes.func,
 }
 
 UnitsDropdownPure.defaultProps = {
@@ -178,14 +164,12 @@ UnitsDropdownPure.defaultProps = {
   disabled: false,
   selected: '',
   onChangeShowDropdown: () => null,
-  setDropDownInUse: () => {},
 }
 
 const enhance = compose(
   withNamespaces('assessment'),
   connect(null, {
     handleAdvancedOpen: toggleAdvancedSections,
-    setDropDownInUse: setDropDownInUseAction,
   })
 )
 

@@ -371,7 +371,7 @@ const OrderList = ({
             </QuestionLabelWrapper>
 
             <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-              <QuestionTitleWrapper data-cy="questionTitleWrapper">
+              <QuestionTitleWrapper>
                 <QuestionHeader
                   qIndex={qIndex}
                   smallSize={smallSize}

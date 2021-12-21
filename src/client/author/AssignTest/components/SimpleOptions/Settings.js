@@ -30,13 +30,13 @@ import {
   getUserRole,
   allowedToSelectMultiLanguageInTest,
 } from '../../../src/selectors/user'
-import { getDisableAnswerOnPaperSelector } from '../../../TestPage/ducks'
 import {
+  getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
-  getmultiLanguageEnabled,
-} from '../../../ClassBoard/ducks'
+} from '../../../TestPage/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
+import { getmultiLanguageEnabled } from '../../../ClassBoard/ducks'
 
 const {
   calculatorKeys,

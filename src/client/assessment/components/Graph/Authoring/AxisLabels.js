@@ -164,7 +164,6 @@ class GraphAxisLabels extends Component {
                 onBlur={(event) => this.handleCanvasBlur(event, 0)}
                 step={1}
                 disabled={false}
-                data-cy="xMin"
               />
             </Col>
             <Col md={12}>
@@ -177,7 +176,6 @@ class GraphAxisLabels extends Component {
                 onBlur={(event) => this.handleCanvasBlur(event, 10)}
                 step={1}
                 disabled={false}
-                data-cy="xMax"
               />
             </Col>
           </Row>

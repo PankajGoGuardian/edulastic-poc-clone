@@ -583,7 +583,7 @@ const BannerText = styled(Col)`
     margin-bottom: 15px;
   }
   h5 {
-    font-size: 14px;
+    font-size: 16px;
     margin-top: 10px;
     color: ${title};
   }

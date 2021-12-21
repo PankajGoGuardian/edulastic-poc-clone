@@ -5,7 +5,6 @@ import { find } from 'lodash'
 import { lightGrey12 } from '@edulastic/colors'
 import { TextInputStyled } from '@edulastic/common'
 import CheckedBlock from './CheckedBlock'
-import { getStylesFromUiStyleToCssStyle } from '../../../utils/helpers'
 
 const ClozeInput = ({ id, resprops = {} }) => {
   const {
@@ -30,8 +29,6 @@ const ClozeInput = ({ id, resprops = {} }) => {
   const val = _inputsAnwers[id]?.value || ''
   const { index } = find(inputs, (res) => res.id === id) || {}
 
-  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
-
   const inputBoxStyle = useMemo(() => {
     const response = find(responseContainers, (cont) => cont.id === id)
     const individualWidth = response?.widthpx || 0
@@ -52,7 +49,6 @@ const ClozeInput = ({ id, resprops = {} }) => {
       ...uiStyles,
       width: !width ? 'auto' : `${width}px`,
       height: !height ? 'auto' : `${height}px`,
-      ...cssStyles,
     }
   }, [uiStyles, item])
 
@@ -77,7 +73,6 @@ const ClozeInput = ({ id, resprops = {} }) => {
         disabled={disableResponse}
         onChange={(e) => save({ value: e.target.value, index }, 'inputs', id)}
         value={val}
-        data-cy="textInput"
         {...inputBoxStyle}
       />
     </InputDiv>

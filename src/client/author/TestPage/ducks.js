@@ -28,7 +28,6 @@ import {
   differenceBy,
   round,
   pick,
-  isUndefined,
 } from 'lodash'
 import {
   testsApi,
@@ -52,7 +51,7 @@ import {
   Effects,
 } from '@edulastic/common'
 import signUpState from '@edulastic/constants/const/signUpState'
-import { createGroupSummary, showRubricToStudentsSetting } from './utils'
+import { createGroupSummary } from './utils'
 import {
   SET_MAX_ATTEMPT,
   UPDATE_TEST_IMAGE,
@@ -81,7 +80,6 @@ import {
   getUserSignupStatusSelector,
   getUserOrgId,
   currentDistrictInstitutionIds,
-  getOrgGroupList,
 } from '../src/selectors/user'
 import { receivePerformanceBandSuccessAction } from '../PerformanceBand/ducks'
 import { receiveStandardsProficiencySuccessAction } from '../StandardsProficiency/ducks'
@@ -94,16 +92,11 @@ import {
 import { saveUserWorkAction } from '../../assessment/actions/userWork'
 import { isFeatureAccessible } from '../../features/components/FeaturesSwitch'
 import { getDefaultSettings } from '../../common/utils/helpers'
-import {
-  updateAssingnmentSettingsAction,
-  UPDATE_ASSIGNMENT_SETTINGS_STATE,
-} from '../AssignTest/duck'
+import { updateAssingnmentSettingsAction } from '../AssignTest/duck'
 import { SET_ITEM_SCORE } from '../src/ItemScore/ducks'
 import { getIsloadingAssignmentSelector } from './components/Assign/ducks'
 import { sortTestItemQuestions } from '../dataUtils'
 import { answersByQId } from '../../assessment/selectors/test'
-import { multiFind } from '../../common/utils/main'
-import { hasValidResponse } from '../questionUtils'
 
 const {
   ITEM_GROUP_TYPES,
@@ -123,18 +116,6 @@ const testItemStatusConstants = {
   ARCHIVED: 'archived',
 }
 
-export const testTypes = {
-  ASSESSMENT: 'assessment',
-  COMMON: 'common assessment',
-  PRACTICE: 'practice',
-  TESTLET: 'testlet',
-}
-
-export const testTypesToTestSettings = {
-  [testTypes.ASSESSMENT]: 'class',
-  [testTypes.COMMON]: 'common',
-  [testTypes.PRACTICE]: 'practice',
-}
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: 'Group 1' /* For now, auto-generated. */,
@@ -435,22 +416,10 @@ export const receiveTestByIdAction = (
   requestLatest,
   editAssigned,
   isPlaylist = false,
-  playlistId = undefined,
-  options = {}
+  playlistId = undefined
 ) => ({
   type: RECEIVE_TEST_BY_ID_REQUEST,
-  payload: {
-    id,
-    requestLatest,
-    editAssigned,
-    isPlaylist,
-    playlistId,
-    options: {
-      assigningNew: false,
-      from: null,
-      ...options,
-    },
-  },
+  payload: { id, requestLatest, editAssigned, isPlaylist, playlistId },
 })
 
 export const receiveTestByIdSuccess = (entity) => ({
@@ -627,7 +596,7 @@ export const getPlaylistSelector = createSelector(
 
 export const defaultTestTypeProfilesSelector = createSelector(
   stateSelector,
-  (state) => state.defaultTestTypeProfiles || {}
+  (state) => state.defaultTestTypeProfiles
 )
 
 export const getDefaultThumbnailSelector = createSelector(
@@ -822,7 +791,6 @@ export const getUserListSelector = createSelector(
         sharedType,
         sharedWith,
         sharedId,
-        v1Id,
         v1LinkShareEnabled = 0,
       }) => {
         if (sharedType === 'INDIVIDUAL' || sharedType === 'SCHOOL') {
@@ -838,7 +806,7 @@ export const getUserListSelector = createSelector(
               email: user.email || '',
               _userId: user._id,
               sharedType,
-              permission: permission || user.permission,
+              permission,
               sharedId,
             })
           })
@@ -846,9 +814,8 @@ export const getUserListSelector = createSelector(
           const shareData = {
             userName: sharedType,
             sharedType,
-            permission: permission || sharedWith?.[0]?.permission,
+            permission,
             sharedId,
-            v1Id,
             v1LinkShareEnabled,
           }
           if (sharedType === 'DISTRICT') {
@@ -860,7 +827,6 @@ export const getUserListSelector = createSelector(
             })
           }
           if (sharedType === 'LINK') {
-            shareData.v1Id = v1Id
             shareData.v1LinkShareEnabled = v1LinkShareEnabled
             shareData.userName = 'Anyone with link'
           }
@@ -1814,12 +1780,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     penalty: entity.penalty,
     blockNavigationToAnsweredQuestions:
       entity.blockNavigationToAnsweredQuestions || false,
-    showMagnifier: isUndefined(entity.showMagnifier)
-      ? true
-      : entity.showMagnifier,
-    enableScratchpad: isUndefined(entity.enableScratchpad)
-      ? true
-      : entity.enableScratchpad,
+    showMagnifier: !!entity.showMagnifier,
+    enableScratchpad: !!entity.enableScratchpad,
     enableSkipAlert: !!entity.enableSkipAlert,
     keypad: entity.keypad,
     testType: entity.testType,
@@ -1832,7 +1794,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     calcType: entity.calcType,
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
-    showRubricToStudents: entity.showRubricToStudents,
   }
 
   if (entity.safeBrowser) {
@@ -1875,7 +1836,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.blockSaveAndContinue = false
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
-    settings.showRubricToStudents = false
     delete settings.keypad
   }
 
@@ -2040,15 +2000,6 @@ export function* receiveTestByIdSaga({ payload }) {
             _id === item._id || previousTestItemId === item._id
         )
         if (!isEmpty(createdItem)) {
-          // update standards with updated db data for testitems
-          createdItem.data?.questions?.forEach((createdQuestion) => {
-            const question = item?.data?.questions.find(
-              ({ id }) => id === createdQuestion.id
-            )
-            if (!isEmpty(question)) {
-              createdQuestion.alignment = [...(question.alignment || [])]
-            }
-          })
           entity.itemGroups[groupIndex].items[itemIndex] = createdItem
           createdItems = createdItems?.filter(
             ({ _id }) => _id !== createdItem._id
@@ -2057,19 +2008,15 @@ export function* receiveTestByIdSaga({ payload }) {
       })
     })
 
-    const createdItemskeyedById = _keyBy(createdItems, '_id')
     entity.itemGroups[currentGroupIndex].items = uniqBy(
       [...entity.itemGroups[currentGroupIndex]?.items, ...createdItems],
-      (x) =>
-        createdItemskeyedById[x._id] ? x.previousTestItemId || x._id : x._id
+      (x) => x.previousTestItemId || x._id
     )
 
     const questions = getQuestions(entity.itemGroups)
     yield put(loadQuestionsAction(_keyBy(questions, 'id')))
     yield put(receiveTestByIdSuccess(entity))
     yield put(getDefaultTestSettingsAction(entity))
-    yield take(SET_DEFAULT_SETTINGS_LOADING)
-    yield take(SET_DEFAULT_SETTINGS_LOADING)
     if (!isEmpty(entity.freeFormNotes)) {
       yield put(
         saveUserWorkAction({
@@ -2095,18 +2042,7 @@ export function* receiveTestByIdSaga({ payload }) {
       isPlaylist: payload.isPlaylist,
       features,
     })
-    const loadedGroups = yield select((state) => state.assignmentSettings.class)
-    const userClassList = yield select(getOrgGroupList)
-    const activeGroups = yield select((state) => state.authorGroups.groups)
-    if (
-      loadedGroups?.length &&
-      (userClassList?.filter((x) => x?.active === 1)?.length === 1 ||
-        activeGroups?.length === 1)
-    ) {
-      assignSettings.class = loadedGroups
-    }
     yield put(updateAssingnmentSettingsAction(assignSettings))
-    yield take(UPDATE_ASSIGNMENT_SETTINGS_STATE)
     let defaultTestSettings = yield select(
       ({ assignmentSettings }) => assignmentSettings
     )
@@ -2118,64 +2054,18 @@ export function* receiveTestByIdSaga({ payload }) {
       'closePolicy',
       'resources',
     ])
-    const state = yield select((s) => ({
-      performanceBands: get(s, 'performanceBandReducer.profiles', []),
-      standardsProficiencies: get(s, 'standardsProficiencyReducer.data', []),
-      defaultTestTypeProfiles: get(s, 'tests.defaultTestTypeProfiles', {}),
-    }))
-    let assignmentSettings = yield select((s) => s.assignmentSettings)
-    if (payload.options?.assigningNew) {
-      const performanceBandId =
-        state.defaultTestTypeProfiles.performanceBand?.[
-          testTypesToTestSettings[entity.testType]
-        ]
-      const standardProficiencyId =
-        state.defaultTestTypeProfiles.standardProficiency?.[
-          testTypesToTestSettings[entity.testType]
-        ]
-      assignmentSettings = { ...assignmentSettings }
-      assignmentSettings.performanceBand = pick(
-        multiFind(
-          state.performanceBands,
-          [{ _id: entity.performanceBand._id }, { _id: performanceBandId }],
-          entity.performanceBand
-        ),
-        ['_id', 'name']
-      )
-      assignmentSettings.standardGradingScale = pick(
-        multiFind(
-          state.standardsProficiencies,
-          [
-            { _id: entity.standardGradingScale._id },
-            { _id: standardProficiencyId },
-          ],
-          entity.standardGradingScale
-        ),
-        ['_id', 'name']
-      )
-    }
-    yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
     const errorMessage = 'Unable to retrieve test info.'
     if (err.status === 403) {
-      yield put(resetUpdatedStateAction())
       yield put(push('/author/tests'))
-      if (payload.editAssigned) {
-        notification({
-          type: 'error',
-          msg: 'You do not have the permission to clone/edit the test.',
-          exact: true,
-        })
-      } else {
-        notification({
-          type: 'error',
-          messageKey: 'curriculumMakeApiErr',
-          exact: true,
-        })
-      }
+      notification({
+        type: 'error',
+        messageKey: 'curriculumMakeApiErr',
+        exact: true,
+      })
     } else {
       notification({ msg: errorMessage })
     }
@@ -2270,20 +2160,6 @@ const cleanTestItemGroups = (_test) => {
   })
 }
 
-/**
- * update the showRubricToStudents setting if it was set to true
- * and later items with rubric attached are removed from the test
- */
-const updateTestSettings = (testItemGroups, testData) => {
-  if (
-    testItemGroups?.length &&
-    !showRubricToStudentsSetting(testItemGroups) &&
-    testData.showRubricToStudents
-  ) {
-    testData.showRubricToStudents = false
-  }
-}
-
 export function* updateTestSaga({ payload }) {
   try {
     if (!validateRestrictNavigationOut(payload.data)) {
@@ -2356,8 +2232,6 @@ export function* updateTestSaga({ payload }) {
       return yield put(setTestsLoadingAction(false))
     }
 
-    const testItemGroups = payload.data.itemGroups
-
     payload.data.itemGroups = transformItemGroupsUIToMongo(
       payload.data.itemGroups,
       scoring
@@ -2377,7 +2251,6 @@ export function* updateTestSaga({ payload }) {
 
     const testData = omit(payload.data, testFieldsToOmit)
     cleanTestItemGroups(testData)
-    updateTestSettings(testItemGroups, testData)
     if (hasInvalidItem(testData)) {
       console.warn('test data has invalid item', testData)
       Sentry.configureScope((scope) => {
@@ -2703,10 +2576,7 @@ function* publishTestSaga({ payload }) {
       notification({ type: 'success', messageKey: 'publishedPlaylist' })
     }
     if (assignFlow) {
-      let update = {
-        timedAssignment: _test?.timedAssignment,
-        showRubricToStudents: _test.showRubricToStudents,
-      }
+      let update = { timedAssignment: _test?.timedAssignment }
       if (_test?.timedAssignment) {
         update = {
           ...update,
@@ -2824,28 +2694,17 @@ function* receiveSharedWithListSaga({ payload }) {
       })
     )
     const testData = yield select(getTestEntitySelector)
-
-    const testList = yield select((state) => state.testList.entities)
-    const getTest = testList.find(
-      (testItem) => testItem._id === payload.contentId
-    )
-    const v1LinkShareEnabled = testData._id
-      ? testData.v1Attributes?.v1LinkShareEnabled === 1
-      : getTest?.v1Attributes?.v1LinkShareEnabled === 1
-    const v1Id = testData._id ? testData.v1Id : getTest?.v1Id
-
     if (
       (!coAuthors.length ||
         !coAuthors.some((item) => item.sharedType === 'LINK')) &&
-      v1LinkShareEnabled
+      testData.v1Attributes?.v1LinkShareEnabled === 1
     ) {
       coAuthors.push({
         permission: 'VIEW',
         sharedWith: [],
         sharedType: 'LINK',
-        sharedId: payload.contentId,
+        sharedId: testData._id,
         v1LinkShareEnabled: 1,
-        v1Id,
       })
     }
     yield put(updateSharedWithListAction(coAuthors))
@@ -2861,14 +2720,7 @@ function* deleteSharedUserSaga({ payload }) {
     yield call(contentSharingApi.deleteSharedUser, payload)
     if (payload.v1LinkShareEnabled === 1) {
       const testData = yield select(getTestEntitySelector)
-      const testList = yield select((state) => state.testList.entities)
-      const getTest = testList.find(
-        (testItem) => testItem._id === payload.contentId
-      )
-
-      const updateTest = testData._id ? testData : getTest
-      const { v1Attributes, ...rest } = updateTest
-
+      const { v1Attributes, ...rest } = testData
       yield put(replaceTestDataAction(rest))
     }
     yield put(
@@ -3111,7 +2963,7 @@ function* getEvaluation(testItemId, newScore) {
   const questions = _keyBy(testItem?.data?.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
-  if (!hasValidResponse(answersByQids, questions)) {
+  if (isEmpty(answersByQids)) {
     return
   }
   const evaluation = yield evaluateItem(
@@ -3137,7 +2989,7 @@ function* getEvaluationFromItem(testItem, newScore) {
   const questions = _keyBy(testItem.data.questions, 'id')
   const answers = yield select((state) => get(state, 'answers', {}))
   const answersByQids = answersByQId(answers, testItem._id)
-  if (!hasValidResponse(answersByQids, questions)) {
+  if (isEmpty(answersByQids)) {
     return
   }
   const evaluation = yield evaluateItem(
@@ -3284,15 +3136,21 @@ function* searchTagsSaga({ payload }) {
   try {
     const result = yield call(tagsApi.searchTags, payload)
     let tags = []
-    if (payload.aggregate) {
-      for (const [key, value] of Object.entries(result)) {
-        tags.push({
-          _id: key,
-          tagName: key,
+    if (result.aggregations) {
+      const tagBuckets = get(result, 'aggregations.tags.buckets', [])
+      tags = tagBuckets.map((bucket) => {
+        const bucketTags = get(bucket, 'docs.hits.hits', [])
+        const bucketTagIds = bucketTags.map((t) => t._id)
+        const bucketTagNames = bucketTags.map((t) =>
+          get(t, '_source.tagName', '')
+        )
+        return {
+          _id: bucketTagIds.join('_'),
+          tagName: bucket.key,
           tagType: payload?.search?.tagTypes?.[0],
-          tagNamesAssociated: value,
-        })
-      }
+          tagNamesAssociated: bucketTagNames,
+        }
+      })
     } else {
       const hits = get(result, 'hits.hits', [])
       tags = hits.map(({ _id, _source }) => ({
@@ -3461,7 +3319,6 @@ function* duplicateTestSaga({ payload }) {
       redirectToNewTest = false,
       cloneItems = false,
       playlistId,
-      updatePlaylist = false,
     } = payload
     const queryParams = {
       _id,
@@ -3469,7 +3326,6 @@ function* duplicateTestSaga({ payload }) {
       isInEditAndRegrade,
       cloneItems,
       playlistId,
-      updatePlaylist,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {
@@ -3490,16 +3346,11 @@ function* duplicateTestSaga({ payload }) {
     captureSentryException(err)
     yield put(setTestsLoadingAction(false))
     yield put(setEditEnableAction(false))
-    if (err?.status === 403) {
-      if (onRegrade === true) {
-        yield put(setTestDataAction({ isUsed: false }))
-        yield put(setCreateSuccessAction())
-        return notification({
-          msg: 'Duplicating the test permission denied and failed to regrade',
-        })
-      }
+    if (onRegrade === true && err?.status === 403) {
+      yield put(setTestDataAction({ isUsed: false }))
+      yield put(setCreateSuccessAction())
       return notification({
-        msg: 'You do not have the permission to clone the test.',
+        msg: 'Duplicating the test permission denied and failed to regrade',
       })
     }
     return notification({ msg: errorMessage || 'Failed to duplicate test' })

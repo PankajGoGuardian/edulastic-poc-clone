@@ -608,6 +608,7 @@ class StudentSignup extends React.Component {
                               </RegisterButton>
                             )}
                           </FormItem>
+                          <TermsAndPrivacy />
                         </Form>
                       </Col>
                     </FormBody>

@@ -115,15 +115,18 @@ class QuestionViewContainer extends Component {
       loadClassQuestionResponses,
       assignmentIdClassId: { assignmentId, classId } = {},
       question,
-      itemId,
     } = nextProps
-    const { question: _question = {}, itemId: _itemId } = preState || {}
-    if (question.id !== _question.id || itemId !== _itemId) {
-      loadClassQuestionResponses(assignmentId, classId, question.id, itemId)
+    const { question: _question = {} } = preState || {}
+    if (question.id !== _question.id) {
+      loadClassQuestionResponses(
+        assignmentId,
+        classId,
+        question.id,
+        nextProps.itemId
+      )
     }
     return {
       question,
-      itemId,
       loading: question.id !== _question.id,
     }
   }
@@ -215,10 +218,8 @@ class QuestionViewContainer extends Component {
       setPageNumber,
     } = this.props
     const { loading, hideCorrectAnswer, showQuestionLoader } = this.state
-    let filteredItems = testItems?.filter(
-      (item) =>
-        item._id === itemId &&
-        item.data.questions.some((q) => q.id === question.id)
+    let filteredItems = testItems?.filter((item) =>
+      item.data.questions.some((q) => q.id === question.id)
     )
 
     filteredItems = produce(filteredItems, (draft) => {
@@ -273,9 +274,7 @@ class QuestionViewContainer extends Component {
             avatarName: getAvatarName(name),
 
             avgTimeSpent: this.calcTimeSpentAsSec(
-              st.questionActivities.filter(
-                (x) => x._id === question.id && x.testItemId === itemId
-              )
+              st.questionActivities.filter((x) => x._id === question.id)
             ),
             attempts: st.questionActivities.length,
             correct: 0,
@@ -289,8 +288,7 @@ class QuestionViewContainer extends Component {
             currentUqas: [],
           }
           const uqas = st.questionActivities.filter(
-            ({ notStarted, _id, testItemId }) =>
-              !notStarted && _id === question.id && testItemId === itemId
+            ({ notStarted, _id }) => !notStarted && _id === question.id
           )
           stData.currentUqas = uqas
           uqas.forEach(({ skipped, graded, score, maxScore, isPractice }) => {

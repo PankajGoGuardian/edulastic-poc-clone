@@ -57,13 +57,13 @@ const CreateUpload = ({
   return (
     <Container childMarginRight="0">
       <IconWrapper>
-        <IconUpload width="22" height="22" />
+        <IconUpload width="34px" height="44px" />
       </IconWrapper>
       <TitleWrapper>Upload Files to Get Started</TitleWrapper>
       <TextWrapper>
         Select questions from the library or <br /> author your own.
       </TextWrapper>
-      <ButtonsContainer width="180px">
+      <ButtonsContainer width="234px">
         <UploadDragger
           UploadDragger
           name="file"

@@ -20,14 +20,6 @@ import {
 } from './helpers'
 
 function normalizeTouchEvent(e) {
-  Object.defineProperties(e, {
-    pageX: {
-      writable: true,
-    },
-    pageY: {
-      writable: true,
-    },
-  })
   if (e?.nativeEvent?.changedTouches?.length) {
     // e.preventDefault();
     // e.clientX = e.nativeEvent.changedTouches[0].clientX;

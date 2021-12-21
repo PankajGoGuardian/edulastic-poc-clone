@@ -10,7 +10,7 @@ import {
   YAxis,
 } from 'recharts'
 
-import { white, lightGrey7, lightBlue10 } from '@edulastic/colors'
+import { white, lightGrey7 } from '@edulastic/colors'
 import {
   domainRange,
   scaleFactor,
@@ -42,14 +42,7 @@ const toggleActiveData = ({
 
 // custom label shape for scatter plot
 const ScatterLabel = (props) => {
-  const {
-    cx,
-    cy,
-    handleArrowClick,
-    handleCircleClick,
-    showTrends,
-    ...item
-  } = props
+  const { cx, cy, handleArrowClick, handleCircleClick, ...item } = props
   const {
     studentId,
     name,
@@ -82,27 +75,20 @@ const ScatterLabel = (props) => {
         fontSize="12"
         fontWeight="bold"
         textAnchor="end"
-        fill={lightBlue10}
+        fill={color}
       >
         {name}
       </text>
-      {showTrends ? (
-        hasTrend ? (
-          <TrendArrow
-            cx={cx}
-            cy={arrowY}
-            color={color}
-            trendAngle={trendAngle}
-          />
-        ) : (
-          <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
-        )
-      ) : null}
+      {/* {hasTrend ? (
+        <TrendArrow cx={cx} cy={arrowY} color={color} trendAngle={trendAngle} />
+      ) : ( */}
+      <circle cx={cx + 5} cy={cy - 6} r={3} fill={color} />
+      {/* )} */}
     </g>
   )
 }
 
-const InsightsChart = ({ data, highlighted, setHighlighted, showTrends }) => {
+const InsightsChart = ({ data, highlighted, setHighlighted }) => {
   // active state of the display data (labels)
   const [activeData, setActiveData] = useState([])
   const [allActive, setAllActive] = useState(false)
@@ -187,7 +173,6 @@ const InsightsChart = ({ data, highlighted, setHighlighted, showTrends }) => {
                           : { ids: studentIds, color }
                       )
                     }}
-                    showTrends={showTrends}
                   />
                 }
               />

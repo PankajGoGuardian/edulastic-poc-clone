@@ -33,12 +33,7 @@ const EnabledSettings = ({
     const optsLables = optionKeys
       .map((key) => {
         let label = ''
-        if (
-          key === 'specialPointOpts' ||
-          key === 'apiLatex' ||
-          key === 'isSimplified' ||
-          key === 'penalty'
-        ) {
+        if (key === 'apiLatex' || key === 'isSimplified' || key === 'penalty') {
           return false
         }
         if (key === 'syntax') {
@@ -99,7 +94,7 @@ const EnabledSettings = ({
 
   return (
     <Container>
-      <ul data-cy="enabledSettings">
+      <ul>
         {optionsToShow.map((op) => (
           <li key={op.key}>
             <Desc text={replaceLatexTemplate(op.label)} />

@@ -1,21 +1,11 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import {
-  takeLatest,
-  takeEvery,
-  call,
-  put,
-  all,
-  select,
-} from 'redux-saga/effects'
+import { takeLatest, takeEvery, call, put, all } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import { googleApi, groupApi, userApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { keyBy } from 'lodash'
-import { roleuser } from '@edulastic/constants'
 import { showAddCoTeacherModalAction } from '../ManageClass/ducks'
-import { setClassToUserAction } from '../../student/Login/ducks'
-import { getOrgGroupList, getUserRole } from '../src/selectors/user'
 
 const RECEIVE_CLASSLIST_REQUEST = '[class] receive list request'
 export const RECEIVE_CLASSLIST_SUCCESS = '[class] receive list success'
@@ -395,9 +385,7 @@ function* bulkUpdateClassesSaga({ payload }) {
     const { result } = yield call(groupApi.bulkUpdateClasses, payload.data)
     yield put(receiveClassListAction(payload.searchQuery))
     yield put(bulkUpdateClassesSuccessAction(result))
-    const successMessage =
-      'Bulk update request is submitted successfully! New changes will start reflecting soon.'
-    notification({ type: 'success', msg: successMessage })
+    notification({ type: 'success', msg: result.message })
   } catch (err) {
     captureSentryException(err)
     const errorMessage = 'Something went wrong.'
@@ -415,19 +403,6 @@ function* archiveClassSaga({ payload }) {
     yield put(archiveClassSuccessAction({ archiveSuccess: successMessage }))
     if (exitPath) yield put(push('/'))
     yield put(push(exitPath || '/author/manageClass'))
-    const role = yield select(getUserRole)
-    if (role === roleuser.TEACHER) {
-      const userClassList = yield select(getOrgGroupList)
-      // update archived class in user orgdata
-      const updatedUserClassList = userClassList.map((c) => {
-        if (c._id === restPayload._id) {
-          c.active = 0
-        }
-        return c
-      })
-      yield put(setClassToUserAction(updatedUserClassList))
-      yield put(clearClassListAction())
-    }
   } catch (err) {
     captureSentryException(err)
     const errorMessage = `Unable to archive ${groupTypeText}.`

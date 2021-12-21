@@ -1,6 +1,5 @@
 import styled from 'styled-components'
 import { themeColor, white } from '@edulastic/colors'
-import { EduButton } from '@edulastic/common'
 
 export const FeatureContentWrapper = styled.div`
   margin-top: 20px;
@@ -41,10 +40,4 @@ export const Bottom = styled.div`
   height: 40px;
   overflow: hidden;
   font-weight: 600;
-`
-export const UnlockButton = styled(EduButton)`
-  display: inline-flex;
-  align-items: flex-start;
-  margin-left: 10px;
-  top: -2px;
 `

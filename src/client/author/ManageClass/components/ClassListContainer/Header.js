@@ -30,7 +30,6 @@ import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const Header = ({
-  classGroups,
   fetchGoogleClassList,
   googleAllowedInstitutions,
   isUserGoogleLoggedIn,
@@ -44,24 +43,8 @@ const Header = ({
   handleCanvasBulkSync,
   isClassLink,
   history,
-  syncClassWithAtlas,
-  syncCleverClassList,
-  refreshPage,
-  isCleverDistrict,
-  filterClass,
 }) => {
   const { atlasId, cleverId, isPlayground } = user
-
-  const atlasGroup = classGroups.find(
-    (_group) =>
-      _group.atlasProviderName &&
-      ['schoology', 'classlink'].includes(
-        _group.atlasProviderName.toLowerCase()
-      )
-  )
-  const atlasProviderName = atlasGroup?.atlasProviderName
-
-  const isCleverGroupPresent = classGroups.find((_group) => !!_group.cleverId)
 
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
@@ -102,19 +85,6 @@ const Header = ({
           : { messageKey: 'errorWhileGettingAuthUri' }
       )
     }
-  }
-
-  const handleSyncWithAtlas = () => {
-    const groupIds = classGroups
-      .filter((_group) => _group.atlasId)
-      .map((_group) => _group._id)
-    syncClassWithAtlas({ groupIds })
-  }
-  const handleSyncWithClever = () => {
-    const classList = classGroups
-      .filter((_group) => _group.cleverId)
-      .map((_group) => ({ ..._group, course: _group?.course?.id }))
-    syncCleverClassList({ classList, refreshPage })
   }
 
   const pageNavButtons = [
@@ -224,28 +194,6 @@ const Header = ({
                   height={18}
                 />
                 <span>SYNC WITH CANVAS</span>
-              </EduButton>
-            )}
-          {!isPlayground &&
-            atlasId &&
-            atlasProviderName?.length &&
-            filterClass === 'Active' && (
-              <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
-                <span>
-                  RESYNC{' '}
-                  {atlasProviderName.toLowerCase() === 'schoology'
-                    ? 'SCHOOLOGY'
-                    : 'CLASSLINK'}{' '}
-                  CLASSES
-                </span>
-              </EduButton>
-            )}
-          {!isPlayground &&
-            isCleverDistrict &&
-            isCleverGroupPresent &&
-            filterClass === 'Active' && (
-              <EduButton isBlue isGhost onClick={handleSyncWithClever}>
-                <span>RESYNC CLEVER CLASSES</span>
               </EduButton>
             )}
         </>

@@ -45,8 +45,8 @@ export default {
     const pressedKey = String.fromCharCode(
       !evt.charCode ? evt.which : evt.charCode
     )
-    // allow arrow keys, backspace, delete, tab, minus, dot, and comma
-    const allowedKeys = [8, 9, 37, 38, 39, 40, 46, 188, 189, 190]
+    // allow arrow keys, backspace, tab, and comma
+    const allowedKeys = [8, 9, 37, 38, 39, 40, 188]
     if (
       !(
         allowedKeys.includes(evt?.which || evt?.charCode) ||

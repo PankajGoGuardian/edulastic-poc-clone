@@ -18,24 +18,12 @@ const AnswerDropdown = ({
   placeholder,
   fontSize,
   isPrintPreview,
-  setDropDownInUse,
 }) => {
   const dropdownContainerRef = useRef(null)
   const menuStyle = {
     top: `${dropdownContainerRef.current?.clientHeight}px !important` || 'auto',
     left: '0 !important',
   }
-
-  const handleEvent = (event) => {
-    if (typeof setDropDownInUse === 'function') {
-      if (event === 'focus') {
-        setDropDownInUse(true)
-      } else if (event === 'blur') {
-        setDropDownInUse(false)
-      }
-    }
-  }
-
   return (
     <SelectContainer
       menuStyle={menuStyle}
@@ -57,8 +45,6 @@ const AnswerDropdown = ({
         onChange={(value) => {
           onChange(value)
         }}
-        onFocus={() => handleEvent('focus')}
-        onBlur={() => handleEvent('blur')}
       >
         {options.map((item, index) => (
           <Select.Option

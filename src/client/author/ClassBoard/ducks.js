@@ -15,7 +15,6 @@ import {
   utilityApi,
   testItemsApi,
 } from '@edulastic/api'
-import moment from 'moment'
 import { createSelector } from 'reselect'
 import { push } from 'connected-react-router'
 import {
@@ -67,7 +66,6 @@ import {
   transformTestItems,
   transformGradeBookResponse,
   getStandardsForStandardBasedReport,
-  getScoringType,
 } from './Transformer'
 
 import {
@@ -112,7 +110,6 @@ import {
   setLcbActionProgress,
   setProgressStatusAction,
   updateServerTimeAction,
-  updateAdditionalDataAction,
 } from '../src/reducers/testActivity'
 import { getServerTs } from '../../student/utils'
 import { setShowCanvasShareAction } from '../src/reducers/gradeBook'
@@ -306,8 +303,6 @@ export function* receiveTestActivitySaga({ payload }) {
           ...gradebookData,
           testItemsData: studentData.items,
           ts: additionalData.ts,
-          gradingPolicy: additionalData.scoringType,
-          applyEBSR: additionalData.applyEBSR,
         })
         return studentActivityData.find(
           (sa) => sa.studentId === studentData.studentId
@@ -317,8 +312,6 @@ export function* receiveTestActivitySaga({ payload }) {
       entities = transformGradeBookResponse({
         ...gradebookData,
         ts: additionalData.ts,
-        gradingPolicy: additionalData.scoringType,
-        applyEBSR: additionalData.applyEBSR,
       })
     }
 
@@ -362,9 +355,6 @@ function* releaseScoreSaga({ payload }) {
       type: 'success',
       msg: 'Successfully updated the release score settings',
     })
-    yield put(
-      updateAdditionalDataAction({ releaseScore: payload.releaseScore })
-    )
   } catch (err) {
     captureSentryException(err)
     const {
@@ -431,22 +421,14 @@ function* openAssignmentSaga({ payload }) {
     yield call(notification, { type: 'success', msg: 'Success' })
   } catch (err) {
     captureSentryException(err)
-    let {
-      data: { message: errorMessage },
-    } = err.response
     const {
-      data: { allowedOpenDate, teacherDeniedToOpenBeforeOpenDate },
+      data: { message: errorMessage },
     } = err.response
     if (errorMessage === 'Assignment does not exist anymore') {
       yield put(redirectToAssignmentsAction(''))
     }
-    if (teacherDeniedToOpenBeforeOpenDate && allowedOpenDate) {
-      errorMessage = `You cannot open the assessment before ${moment(
-        allowedOpenDate
-      ).format('lll')}`
-    }
     yield call(notification, {
-      msg: errorMessage || 'Failed to open',
+      msg: err.response.data?.message || 'Failed to open',
     })
   }
 }
@@ -807,7 +789,10 @@ function* correctItemUpdateSaga({ payload }) {
     const testItems = get(classResponse, 'data.originalItems', [])
     const studentResponse = yield select((state) => state.studentResponse)
     const testItem = testItems.find((t) => t._id === testItemId) || {}
-    const [isIncomplete, errMsg] = isIncompleteQuestion(question)
+    const [isIncomplete, errMsg] = isIncompleteQuestion(
+      question,
+      testItem.itemLevelScoring
+    )
 
     if (isIncomplete) {
       notification({ msg: errMsg })
@@ -832,9 +817,6 @@ function* correctItemUpdateSaga({ payload }) {
     cloneItem.data.questions = testItem.data.questions.map((q) =>
       q.id === question.id ? question : q
     )
-    if (question.validation.unscored) {
-      cloneItem.itemLevelScoring = false
-    }
     yield put(correctItemUpdateProgressAction(true))
     const result = yield call(testItemsApi.updateCorrectItemById, {
       testItemId,
@@ -848,7 +830,10 @@ function* correctItemUpdateSaga({ payload }) {
     if (!proceedRegrade && !result.isRegradeNeeded && result.firestoreDocId) {
       yield put(setRegradeFirestoreDocId(result.firestoreDocId))
       yield put(setSilentCloningAction(true))
-      return
+      return notification({
+        type: 'info',
+        msg: 'Changes made to the question is being published',
+      })
     }
     if (typeof callBack === 'function') {
       // close correct item edit modal here
@@ -1109,12 +1094,12 @@ export const getItemSummary = (
         pendingEvaluation,
         isPractice,
       } = _activity
-      const itemQuestionKey = `${testItemId}_${_id}`
+
       let { notStarted, skipped } = _activity
 
       let skippedx = false
-      if (!questionMap[itemQuestionKey]) {
-        questionMap[itemQuestionKey] = {
+      if (!questionMap[_id]) {
+        questionMap[_id] = {
           _id,
           qLabel,
           barLabel,
@@ -1133,41 +1118,41 @@ export const getItemSummary = (
         }
       }
       if (testItemId) {
-        questionMap[itemQuestionKey].itemLevelScoring = true
-        questionMap[itemQuestionKey].itemId = testItemId
+        questionMap[_id].itemLevelScoring = true
+        questionMap[_id].itemId = testItemId
       }
 
       if (!notStarted) {
-        questionMap[itemQuestionKey].attemptsNum += 1
+        questionMap[_id].attemptsNum += 1
       } else if (score > 0) {
         notStarted = false
       } else {
-        questionMap[itemQuestionKey].notStartedNum += 1
+        questionMap[_id].notStartedNum += 1
       }
 
       if (skipped && score === 0 && !isPractice) {
-        questionMap[itemQuestionKey].skippedNum += 1
+        questionMap[_id].skippedNum += 1
         skippedx = true
       }
       if (score > 0) {
         skipped = false
       }
       if (isPractice) {
-        questionMap[itemQuestionKey].unscoredItems += 1
+        questionMap[_id].unscoredItems += 1
       } else if (
         (graded === false && !notStarted && !skipped && !score) ||
         pendingEvaluation
       ) {
-        questionMap[itemQuestionKey].manualGradedNum += 1
+        questionMap[_id].manualGradedNum += 1
       } else if (score === maxScore && !notStarted && score > 0) {
-        questionMap[itemQuestionKey].correctNum += 1
+        questionMap[_id].correctNum += 1
       } else if (score === 0 && !notStarted && maxScore > 0 && !skippedx) {
-        questionMap[itemQuestionKey].wrongNum += 1
+        questionMap[_id].wrongNum += 1
       } else if (score > 0 && score < maxScore) {
-        questionMap[itemQuestionKey].partialNum += 1
+        questionMap[_id].partialNum += 1
       }
       if (timeSpent && !notStarted) {
-        questionMap[itemQuestionKey].timeSpent += timeSpent
+        questionMap[_id].timeSpent += timeSpent
       }
     }
   }
@@ -1183,15 +1168,14 @@ export const getAggregateByQuestion = (entities, studentId) => {
   if (!entities) {
     return {}
   }
-  const total = entities.filter((x) => x.isAssigned).length
+  const total = entities.filter((x) => x.isAssigned && x.isEnrolled).length
   const submittedEntities = entities.filter(
     (x) => x.UTASTATUS === testActivityStatus.SUBMITTED
   )
   const activeEntities = entities.filter(
     (x) =>
-      (x.UTASTATUS === testActivityStatus.START ||
-        x.UTASTATUS === testActivityStatus.SUBMITTED) &&
-      x.isAssigned
+      x.UTASTATUS === testActivityStatus.START ||
+      x.UTASTATUS === testActivityStatus.SUBMITTED
   )
   let questionsOrder = {}
   if (entities.length > 0) {
@@ -1216,13 +1200,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
     .reduce((prev, cur) => prev + cur, 0)
 
   const scorePercentagePerStudent = activeEntities
-    .map(({ score, maxScore }) => {
-      let percentage = (score / maxScore) * 100
-      if (Number.isNaN(percentage) || !Number.isFinite(percentage)) {
-        percentage = 0
-      }
-      return percentage
-    })
+    .map(({ score, maxScore }) => (score / maxScore) * 100)
     .sort((a, b) => a - b)
   const numberOfActivities = scorePercentagePerStudent.length
   const mid = Math.ceil(numberOfActivities / 2)
@@ -1233,6 +1211,7 @@ export const getAggregateByQuestion = (entities, studentId) => {
       : scorePercentagePerStudent[mid - 1]
   const submittedScoresAverage =
     activeEntities.length > 0 ? scores / activeEntities.length : 0
+  // const startedEntities = entities.filter(x => x.status !== "notStarted");
   if (studentId) {
     entities = entities.filter((x) => x.studentId === studentId)
   }
@@ -1296,16 +1275,6 @@ export const getAdditionalDataSelector = createSelector(
   (state) => state.additionalData
 )
 
-export const getScoringTypeSelector = createSelector(
-  getAdditionalDataSelector,
-  (state) => get(state, 'scoringType', '')
-)
-
-export const getEBSRSelector = createSelector(
-  getAdditionalDataSelector,
-  (state) => get(state, 'applyEBSR', false)
-)
-
 export const getCurrentClassIdSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'classId', '')
@@ -1314,26 +1283,6 @@ export const getCurrentClassIdSelector = createSelector(
 export const getRedirectedDatesSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'redirectedDates', {})
-)
-
-export const getTestDataSelector = createSelector(
-  stateTestActivitySelector,
-  (state) => get(state, 'data.test', {})
-)
-
-export const getIsOverrideFreezeSelector = createSelector(
-  getAdditionalDataSelector,
-  getTestDataSelector,
-  getUserIdSelector,
-  (additionalData, testData, userId) => {
-    if (!testData.freezeSettings) {
-      return false
-    }
-    if (additionalData?.testAuthors?.some((author) => author._id === userId)) {
-      return false
-    }
-    return true
-  }
 )
 
 export const getTestActivitySelector = createSelector(
@@ -1352,7 +1301,7 @@ export const getTestActivitySelector = createSelector(
           redirectedDates[`class_${classId}`] ||
           null,
       }))
-      .filter((item) => item.isAssigned || showAll)
+      .filter((item) => (item.isAssigned && item.isEnrolled) || showAll)
 )
 
 export const getLCBStudentsList = createSelector(
@@ -1713,24 +1662,14 @@ export const getFeedbackResponseSelector = createSelector(
 export const getStudentQuestionSelector = createSelector(
   stateStudentAnswerSelector,
   getAnswerByQidSelector,
-  getScoringTypeSelector,
-  getTestItemsDataSelector,
-  getEBSRSelector,
-  (state, egAnswers, gradingPolicy, testItems, applyEBSR) => {
+  (state, egAnswers) => {
     if (!isEmpty(state.data)) {
       const data = Array.isArray(state.data) ? state.data : [state.data]
       return data.map((x) => {
-        const scoringType = getScoringType(
-          x.qid,
-          testItems,
-          x.testItemId,
-          gradingPolicy,
-          applyEBSR
-        )
         if (!isNullOrUndefined(egAnswers[x.qid])) {
-          return { ...x, userResponse: egAnswers[x.qid], scoringType }
+          return { ...x, userResponse: egAnswers[x.qid] }
         }
-        return { ...x, scoringType }
+        return x
       })
     }
     return []

@@ -16,8 +16,11 @@ class EditTermModal extends React.Component {
     const toDayDate = moment(new Date(), 'DD MMM YYYY')
     toDayDate.set({ hour: 0, minute: 0, second: 0, millisecond: 0 })
 
+    const isSchoolStart = toDayDate.valueOf() > this.props.termData.startDate
+
     this.state = {
       ...this.props.termData,
+      isSchoolStart,
     }
   }
 
@@ -50,7 +53,7 @@ class EditTermModal extends React.Component {
 
     const { endDate } = this.state
 
-    if (startValue.valueOf() < toDayDate.valueOf()) return true
+    if (startValue.valueOf() < toDayDate.valueOf) return true
     if (startValue.valueOf() > endDate) return true
     return false
   }
@@ -84,7 +87,7 @@ class EditTermModal extends React.Component {
   render() {
     const { getFieldDecorator } = this.props.form
     const { modalVisible } = this.props
-    const { startDate, endDate, name } = this.state
+    const { startDate, endDate, name, isSchoolStart } = this.state
     const isOverlap = startDate >= endDate
 
     return (
@@ -136,13 +139,13 @@ class EditTermModal extends React.Component {
                 rules: [
                   { required: true, message: 'Please Select Start Date' },
                 ],
-                initialValue: moment(new Date(startDate), 'DD MMM YYYY').utc(),
+                initialValue: moment(new Date(startDate), 'DD MMM YYYY'),
               })(
                 <DatePickerStyled
                   disabledDate={this.disableStartDate}
                   format="DD MMM YYYY"
                   onChange={this.handleStartDateChange}
-                  disabled
+                  disabled={isSchoolStart}
                 />
               )}
             </ModalFormItem>
@@ -154,7 +157,7 @@ class EditTermModal extends React.Component {
               <FieldLabel>End Date</FieldLabel>
               {getFieldDecorator('endDate', {
                 rules: [{ required: true, message: 'Please Select End Date' }],
-                initialValue: moment(new Date(endDate), 'DD MMM YYYY').utc(),
+                initialValue: moment(new Date(endDate), 'DD MMM YYYY'),
               })(
                 <DatePickerStyled
                   format="DD MMM YYYY"

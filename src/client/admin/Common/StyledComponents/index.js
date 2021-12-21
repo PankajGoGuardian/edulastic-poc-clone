@@ -58,12 +58,6 @@ export const Table = styled(AntdTable)`
   .ant-table table {
     table-layout: fixed;
     word-break: break-word;
-    .ant-select-selection-selected-value {
-      font-size: 12px;
-    }
-    .ant-calendar-picker-input.ant-input {
-      font-size: 12px;
-    }
   }
 `
 
@@ -289,10 +283,4 @@ export const StyledDiv = styled.div`
   font: ${(props) => props.fontStyle || '14px/19px Open Sans'};
   font-weight: ${(props) => props.fontWeight || 600};
   color: ${(props) => props.color || greyThemeDark1};
-`
-export const HeaderSaveButton = styled.div`
-  position: fixed;
-  top: 15px;
-  right: 30px;
-  z-index: 999;
 `

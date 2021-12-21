@@ -39,14 +39,15 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
 
   const convertedBandData = map(metricInfo, (metric) => {
     const scaleData = { ...defaultScaleData }
-    const totalGraded = sumBy(metric.records, (el) =>
-      parseInt(el.totalGraded, 10)
-    )
 
     forEach(metric.records, (record) => {
       scaleData[record.bandName] = parseInt(record.totalAssigned, 10)
       const calculatedPercentage = round(
-        percentage(parseInt(record.totalGraded, 10), totalGraded)
+        percentage(
+          parseInt(record.totalGraded, 10),
+          sumBy(metric.records, (el) => parseFloat(el.totalAssigned)) -
+            sumBy(metric.records, (el) => parseFloat(el.totalAbsent))
+        )
       )
       scaleData[`${record.bandName} Percentage`] =
         record.bandName == leastProficiency.name
@@ -54,17 +55,23 @@ export const convertToBandData = (metricInfo = [], bandInfo = []) => {
           : calculatedPercentage
 
       if (parseInt(record.aboveStandard, 10) > 0) {
-        scaleData.aboveStandard += parseInt(record.totalGraded, 10)
+        scaleData.aboveStandard += parseInt(record.totalAssigned, 10)
       } else {
-        scaleData.belowStandard += parseInt(record.totalGraded, 10)
+        scaleData.belowStandard += parseInt(record.totalAssigned, 10)
       }
     })
 
     scaleData['aboveStandard Percentage'] = round(
-      percentage(scaleData.aboveStandard, totalGraded)
+      percentage(
+        scaleData.aboveStandard,
+        sumBy(metric.records, (el) => parseFloat(el.totalAssigned))
+      )
     )
     scaleData['belowStandard Percentage'] = -round(
-      percentage(scaleData.belowStandard, totalGraded)
+      percentage(
+        scaleData.belowStandard,
+        sumBy(metric.records, (el) => parseFloat(el.totalAssigned))
+      )
     )
 
     return {

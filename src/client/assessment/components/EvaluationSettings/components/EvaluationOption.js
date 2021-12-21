@@ -121,7 +121,10 @@ const EvaluationOption = ({
       />
     )
   }
-  if (optionKey === 'graphPointsOnAnEquation') {
+  if (
+    optionKey === 'graphPointsOnAnEquation' ||
+    optionKey === 'graphPointsOnAnEquation2'
+  ) {
     if (hidePointOnEquation) {
       return null
     }

@@ -3,6 +3,7 @@ import { withRouter } from 'react-router'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
+import { Spin } from 'antd'
 import { isEmpty, get } from 'lodash'
 import { white } from '@edulastic/colors'
 import {
@@ -354,6 +355,7 @@ class Container extends React.Component {
 
   render() {
     const {
+      loading,
       assessment: {
         _id: testId,
         authors,
@@ -393,6 +395,10 @@ class Container extends React.Component {
     )
 
     const gradeSubject = { grades, subjects }
+
+    if (loading) {
+      return <Spin />
+    }
 
     return (
       <>
@@ -450,7 +456,6 @@ class Container extends React.Component {
           // onShowSource={this.handleNavChange("source")}
           onAssign={this.handleAssign}
           updated={updated}
-          validateTest={this.validateTest}
         />
         {this.renderContent()}
       </>

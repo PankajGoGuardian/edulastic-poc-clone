@@ -28,13 +28,13 @@ const OptionScratch = ({ history, clearTestData, clearCreatedItems }) => {
   return (
     <CardComponent>
       <IconWrapper>
-        <IconNewFile height="22" width="18" />
+        <IconNewFile style={{ height: '43px', width: '34px' }} />
       </IconWrapper>
       <TitleWrapper>Create from Scratch</TitleWrapper>
       <TextWrapper style={{ padding: '0 40px' }}>
         {descriptionBottom}
       </TextWrapper>
-      <EduButton width="180px" isGhost onClick={handleCreate}>
+      <EduButton width="234px" isGhost onClick={handleCreate}>
         CREATE TEST
       </EduButton>
     </CardComponent>

@@ -3,7 +3,6 @@ import { connect } from 'react-redux'
 import { EduButton } from '@edulastic/common'
 import { IconLineReader } from '@edulastic/icons'
 import useLineReader from './components/useLineReader'
-import { Tooltip } from '../../utils/helpers'
 import {
   showLineReaderAction,
   hideLineReaderAction,
@@ -48,17 +47,16 @@ const LineReader = ({
   }, [btnComponent])
 
   return (
-    <Tooltip placement="top" title="Line Reader">
-      <Button
-        isGhost
-        IconBtn
-        disabled={visible}
-        data-cy="lineReaderButton"
-        onClick={handleClick}
-      >
-        {btnText || <IconLineReader />}
-      </Button>
-    </Tooltip>
+    <Button
+      isGhost
+      height="40px"
+      IconBtn
+      disabled={visible}
+      data-cy="lineReaderButton"
+      onClick={handleClick}
+    >
+      {btnText || <IconLineReader />}
+    </Button>
   )
 }
 

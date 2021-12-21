@@ -2,10 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { debounce } from 'lodash'
 
 // components
-import { title, white } from '@edulastic/colors'
+import { white } from '@edulastic/colors'
 import { IconChevronLeft } from '@edulastic/icons'
-import { segmentApi } from '@edulastic/api'
-import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import {
   ScrollbarContainer,
   Slides,
@@ -17,7 +15,6 @@ import {
   SlideDescription,
 } from './styled'
 import EdulasticOverviewModel from '../EdulasticOverview/EdulasticOverviewModel'
-import { TextWrapper } from '../../../../../styledComponents'
 
 const BannerSlider = ({
   bannerSlides,
@@ -26,8 +23,6 @@ const BannerSlider = ({
   isBannerModalVisible,
   handleSparkClick,
   accessibleItembankProductIds = [],
-  setShowBannerModal,
-  windowWidth,
 }) => {
   const [showArrow, setShowArrow] = useState(false)
   const scrollBarRef = useRef(null)
@@ -55,23 +50,9 @@ const BannerSlider = ({
 
   const bannerLength = bannerSlides.length
 
-  const handleBannerClick = (
-    evt,
-    config,
-    description,
-    isSparkBannerTile,
-    isDemoPlaygroundTile,
-    slide
-  ) => {
-    segmentApi.genericEventTrack('bannerClick', { _id: slide._id, description })
+  const handleBannerClick = (config, description, isSparkBannerTile) => {
     if (isSparkBannerTile) {
       handleSparkClick(config.subscriptionData.productId)
-      return
-    }
-    if (isDemoPlaygroundTile) {
-      evt.stopPropagation()
-      const elementClasses = evt.currentTarget.getAttribute('class')
-      proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
       return
     }
     bannerActionHandler(config.filters[0], description)
@@ -79,15 +60,6 @@ const BannerSlider = ({
 
   return (
     <>
-      <TextWrapper
-        data-cy="bannerTitle"
-        fw="bold"
-        size="16px"
-        color={title}
-        style={{ marginBottom: '1rem' }}
-      >
-        Quick Introduction to Edulastic
-      </TextWrapper>
       <SliderContainer>
         {showArrow && (
           <>
@@ -110,30 +82,20 @@ const BannerSlider = ({
                 ?.toLowerCase()
                 ?.includes('cpm')
 
-              const isDemoPlaygroundTile = slide.description
-                ?.toLowerCase()
-                ?.includes('playground')
-
               return (
                 <Slides
                   data-cy="banners"
                   className={bannerLength === index + 1 ? 'last' : ''}
                   bgImage={slide.imageUrl}
                   key={slide._id}
-                  onClick={(evt) =>
+                  onClick={() =>
                     handleBannerClick(
-                      evt,
                       slide.config,
                       slide.description,
-                      isSparkTile || isCPMTile,
-                      isDemoPlaygroundTile,
-                      slide
+                      isSparkTile || isCPMTile
                     )
                   }
                 >
-                  <SlideDescription data-cy={slide.description}>
-                    {slide.description}
-                  </SlideDescription>
                   {isSparkTile ? (
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
@@ -146,11 +108,12 @@ const BannerSlider = ({
                         Start a Free Trial
                       </LearnMore>
                     )
-                  ) : isDemoPlaygroundTile ? (
-                    <LearnMore data-cy="explore">Explore</LearnMore>
                   ) : (
                     <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   )}
+                  <SlideDescription data-cy={slide.description}>
+                    {slide.description}
+                  </SlideDescription>
                 </Slides>
               )
             })}
@@ -161,8 +124,6 @@ const BannerSlider = ({
         <EdulasticOverviewModel
           handleBannerModalClose={handleBannerModalClose}
           isBannerModalVisible={isBannerModalVisible}
-          setShowBannerModal={setShowBannerModal}
-          windowWidth={windowWidth}
         />
       )}
     </>

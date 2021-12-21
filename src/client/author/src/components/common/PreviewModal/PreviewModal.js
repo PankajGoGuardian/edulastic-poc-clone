@@ -584,7 +584,6 @@ class PreviewModal extends React.Component {
       testStatus = 'draft',
       selectedRows,
       passageItemIds = [],
-      isPlaylistTestReview,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -603,10 +602,7 @@ class PreviewModal extends React.Component {
       fullModal,
       isRejectMode,
     } = this.state
-    const resources = keyBy(
-      get(item, 'data.resources', []),
-      (r) => `${item._id}_${r.id}`
-    )
+    const resources = keyBy(get(item, 'data.resources', []), 'id')
 
     let allWidgets = { ...questions, ...resources }
     const { authors = [], rows, data = {} } = item || {}
@@ -809,11 +805,7 @@ class PreviewModal extends React.Component {
                       : 'Edit item'
                   }
                   noHover={isDisableEdit}
-                  disabled={
-                    isPlaylistTestReview ||
-                    isDisableEdit ||
-                    !!premiumCollectionWithoutAccess
-                  }
+                  disabled={isDisableEdit || !!premiumCollectionWithoutAccess}
                   onClick={this.editTestItem}
                 >
                   <IconPencilEdit color={themeColor} title="Edit item" />
@@ -1083,7 +1075,7 @@ const PreviewModalWrapper = styled(Modal)`
   top: 30px;
   padding: 0px;
   position: relative;
-  overflow-y: auto;
+
   .ant-modal-content {
     background: transparent;
     box-shadow: none;

@@ -94,7 +94,7 @@ const columnsBase = next(tableColumnsData.questionTable, (arr) => {
 })
 
 export function QuestionTableContainer(props) {
-  const { dataSource, columnsFlags, tdPadding } = props
+  const { dataSource, columnsFlags } = props
 
   dataSource.forEach((data) => {
     const { validation, maxScore } = data
@@ -136,7 +136,6 @@ export function QuestionTableContainer(props) {
       dataSource={dataSource}
       rowKey="_id"
       pagination={false}
-      tdPadding={tdPadding}
     />
   )
 }

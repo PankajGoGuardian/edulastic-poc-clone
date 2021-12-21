@@ -1,8 +1,6 @@
 import { get, without } from 'lodash'
 import { createHmac } from 'crypto-browserify'
 import AppConfig from '../../../src/app-config'
-import { getAccessToken, parseJwt } from './utils/Storage'
-import { getUserFromRedux } from './utils/API'
 
 const allowedRoles = ['teacher', 'school-admin', 'district-admin']
 
@@ -10,82 +8,17 @@ const trackingParameters = {
   CATEGORY_WEB_APPLICATION: 'Web Application',
 }
 
-const getCommonUserDetailsForSegmentEvents = () => {
-  const accessToken = getAccessToken()
-  if (accessToken) {
-    const tokenParsed = parseJwt(accessToken)
-    const userFromRedux = getUserFromRedux()
-    const { subscription } =
-      window?.getStore()?.getState()?.subscription?.subscriptionData || {}
-    // const {products} = window.getStore().getState().subscription||{};
-    const subscriptionName = subscription?.subType || 'free'
-    const subscriptionType = subscription?.subType?.startsWith('TRIAL')
-      ? 'trial'
-      : 'purchased'
-    let subscriptionStatus = null
-    if (subscription?.subType) {
-      if (subscription?.status == 1) {
-        subscriptionStatus = 'active'
-      } else {
-        subscriptionStatus = 'expired'
-      }
-    }
-    const { _id: userId, role, districtId } = tokenParsed
-    const { institutionIds = [] } = userFromRedux?.user || {}
-
-    const data = {
-      lastLogin: tokenParsed?.iat * 1000,
-      userId,
-      subscriptionName,
-      ...(institutionIds.length === 1
-        ? { schoolId: institutionIds[0] }
-        : { schoolIds: institutionIds }),
-      districtId,
-      subscriptionType,
-      subscriptionStatus,
-      role,
-    }
-    return data
-  }
-  return {}
-}
-
-const delay = (ms) => {
-  return new Promise((res) => {
-    setTimeout(() => res(), ms)
-  })
-}
-
-const getUserDetails = (user) => {
-  const {
-    clever = false,
-    clever_district = false,
-    email,
-    gm = false,
-    isAdmin = false,
-    orgData,
-    orgData: { districts = [] },
-    referrer = '',
-    role,
-    username,
-    utm_source = '',
-    currentSignUpState,
-    isUserGoogleLoggedIn,
-  } = user
-
-  const extraProps = {
-    isSingaporeMath:
-      utm_source.toLowerCase().includes('singapore') ||
-      `${referrer}`.includes('singapore') ||
-      orgData?.itemBanks?.some(
-        (itemBank) =>
-          itemBank.owner?.toLowerCase().includes('singapore') &&
-          itemBank.status === 1
-      ),
-    isCpm:
-      utm_source.toLowerCase().includes('cpm') ||
-      `${referrer}`.toLowerCase().includes('cpm'),
-  }
+const getUserDetails = ({
+  email,
+  username,
+  role,
+  orgData,
+  clever = false,
+  clever_district = false,
+  gm = false,
+  orgData: { districts = [] },
+  isAdmin = false,
+}) => {
   // setting first district details for student other user role will have only one district
   const {
     districtId = '',
@@ -104,8 +37,6 @@ const getUserDetails = (user) => {
     clever,
     clever_district,
     gm,
-    currentSignUpState,
-    isUserGoogleLoggedIn,
     // this is not Groups._id
     // https://segment.com/docs/connections/spec/group/
     // its districtId
@@ -117,8 +48,6 @@ const getUserDetails = (user) => {
     state,
     country,
     isAdmin,
-    ...getCommonUserDetailsForSegmentEvents(),
-    ...extraProps,
   }
 }
 
@@ -138,10 +67,9 @@ const analyticsIdentify = ({ user }) => {
         defaultGrades: [grade = '', ,] = [],
         defaultSubjects: [subject = '', ,] = [],
       },
-      isProxy = false,
     } = user
     const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
+    if (allowedRoles.includes(role) && window.analytics) {
       // Passing user_hash to have secure communication
       window.analytics.identify(
         userId,
@@ -174,9 +102,9 @@ const unloadIntercom = ({ user }) => {
     return
   }
   if (user) {
-    const { role = '', _id, v1Id, isProxy = false } = user
+    const { role = '', _id, v1Id } = user
     const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
+    if (allowedRoles.includes(role) && window.analytics) {
       window.analytics.identify(
         userId,
         {},
@@ -236,11 +164,10 @@ const trackUserClick = ({ user, data }) => {
   }
 }
 
-const trackTeacherSignUp = async ({ user }) => {
+const trackTeacherSignUp = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
     return
   }
-  await delay(1000)
   if (user) {
     const { role = '', _id, v1Id, isAdmin } = user
     const event = isAdmin ? 'Administrator Signed Up' : 'Teacher Signed Up'
@@ -282,12 +209,6 @@ const trackProductPurchase = ({ user, data }) => {
   }
 }
 
-const genericEventTrack = (event, details) => {
-  if (window?.analytics?.track) {
-    window?.analytics?.track(event, details)
-  }
-}
-
 export default {
   unloadIntercom,
   analyticsIdentify,
@@ -296,5 +217,4 @@ export default {
   trackUserClick,
   trackingParameters,
   trackProductPurchase,
-  genericEventTrack,
 }

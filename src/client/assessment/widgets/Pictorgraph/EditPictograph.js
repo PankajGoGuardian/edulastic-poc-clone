@@ -1,12 +1,9 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
+import { withNamespaces } from '@edulastic/localization'
 import { withTheme } from 'styled-components'
 import { connect } from 'react-redux'
 import produce from 'immer'
 import { compose } from 'redux'
-
-import { withNamespaces } from '@edulastic/localization'
-import { clozeImage } from '@edulastic/constants'
-
 import PossibleResponses from './components/PossibleResponses'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import Question from '../../components/Question'
@@ -18,34 +15,6 @@ import Options from './components/Options'
 import ComposeQuestion from '../OrderList/ComposeQuestion'
 import Classifications from './components/Classifications'
 import { EDIT } from '../../constants/constantsForQuestions'
-import AddBackgroundImage from './components/AddBackgroundImage'
-import BackgroundImage from './components/BackgroundImage'
-
-function getImageDimensions(that) {
-  const { maxHeight, maxWidth } = clozeImage
-  let height
-  let width
-  if (that.naturalHeight > maxHeight || that.naturalWidth > maxWidth) {
-    const fitHeight = Math.floor(
-      maxWidth * (that.naturalHeight / that.naturalWidth)
-    )
-    const fitWidth = Math.floor(
-      maxHeight * (that.naturalWidth / that.naturalHeight)
-    )
-    if (fitWidth > maxWidth) {
-      width = maxWidth
-      height = fitHeight
-    } else {
-      height = maxHeight
-      width = fitWidth
-    }
-  } else {
-    width = that.naturalWidth
-    height = that.naturalHeight
-  }
-
-  return [height, width]
-}
 
 const EditPictograph = ({
   t,
@@ -56,20 +25,9 @@ const EditPictograph = ({
   advancedLink,
   advancedAreOpen,
 }) => {
-  const { classifications, uiStyle, showClassName, imageOptions } = item
   const [correctTab, setCorrectTab] = useState(0)
-  const [dragItem, setDragItem] = useState(
-    imageOptions || { width: 0, height: 0, x: 0, y: 0 }
-  )
-  const { width: dragItemWidth, height: dragItemHeight } = dragItem
 
-  useEffect(() => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.imageOptions = { ...imageOptions, ...dragItem }
-      })
-    )
-  }, [dragItemWidth, dragItemHeight])
+  const { classifications, uiStyle, showClassName } = item
 
   const getInitalAnswerMap = () => {
     const initalAnswerMap = {}
@@ -169,28 +127,6 @@ const EditPictograph = ({
     )
   }
 
-  const setImageDimensions = (url, isNew) => {
-    const img = new Image()
-    // eslint-disable-next-line func-names
-    img.addEventListener('load', function () {
-      const [height, width] = getImageDimensions(this)
-      console.log({ height, width })
-      setQuestionData(
-        produce(item, (draft) => {
-          if (isNew) {
-            draft.imageHeight = undefined
-            draft.imageWidth = undefined
-          }
-          draft.imageUrl = url
-          draft.imageOriginalHeight = height
-          draft.imageOriginalWidth = width
-        })
-      )
-      setDragItem({ ...dragItem, width, height })
-    })
-    img.src = url
-  }
-
   const correctAnswers =
     correctTab === 0
       ? item.validation.validResponse.value
@@ -222,51 +158,6 @@ const EditPictograph = ({
     />
   )
 
-  const handleDrag = (e, d) => {
-    setDragItem({ ...dragItem, x: d.x, y: d.y })
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.imageOptions = { ...{ ...dragItem, x: d.x, y: d.y } }
-      })
-    )
-  }
-
-  const handleResize = (e, direction, ref, delta, position) => {
-    const width =
-      typeof ref.style.width === 'number'
-        ? ref.style.width
-        : parseInt(ref.style.width.split('px')[0], 10)
-
-    const height =
-      typeof ref.style.height === 'number'
-        ? ref.style.height
-        : parseInt(ref.style.height.split('px')[0], 10)
-
-    setDragItem({
-      width: width >= 700 ? 700 : width,
-      height: height >= 600 ? 600 : height,
-      ...position,
-    })
-  }
-
-  const handleDragAndResizeStop = () => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.imageOptions = { ...dragItem }
-      })
-    )
-  }
-
-  const deleteBgImg = () => {
-    setDragItem({ x: 0, y: 0, width: 0, height: 0 })
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.imageOptions = { x: 0, y: 0, width: 0, height: 0 }
-        draft.imageUrl = ''
-      })
-    )
-  }
-
   return (
     <>
       <ComposeQuestion
@@ -274,33 +165,6 @@ const EditPictograph = ({
         fillSections={fillSections}
         cleanSections={cleanSections}
       />
-
-      <Question
-        section="main"
-        label="Background Image"
-        fillSections={fillSections}
-        cleanSections={cleanSections}
-      >
-        {item.imageUrl ? (
-          <BackgroundImage
-            dragItem={dragItem}
-            imageOptions={imageOptions}
-            t={t}
-            handleDrag={handleDrag}
-            handleResize={handleResize}
-            handleDragAndResizeStop={handleDragAndResizeStop}
-            imageUrl={item.imageUrl}
-            deleteBgImg={deleteBgImg}
-          />
-        ) : (
-          <AddBackgroundImage
-            t={t}
-            title={item?.title}
-            setImageDimensions={setImageDimensions}
-          />
-        )}
-      </Question>
-
       <Question
         section="main"
         label={t('component.pictograph.classifications')}

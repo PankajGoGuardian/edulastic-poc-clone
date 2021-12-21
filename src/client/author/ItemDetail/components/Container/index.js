@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import { compose } from 'redux'
 import { Spin } from 'antd'
 import { connect } from 'react-redux'
-import { get, isEmpty, debounce } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { withRouter } from 'react-router-dom'
 import MultipleQuestionView from './Container'
 import QuestionView from '../../../QuestionEditor'
@@ -70,7 +70,7 @@ const ItemDetailContainer = ({
     }
   }, [itemId])
 
-  const saveItem = debounce((shouldRedirectOnPassageRemove = true) => {
+  const saveItem = (shouldRedirectOnPassageRemove = true) => {
     /**
      * using same data while deleting questions
      * src/client/author/ItemDetail/components/Container/Container.js
@@ -84,7 +84,7 @@ const ItemDetailContainer = ({
       true,
       shouldRedirectOnPassageRemove
     )
-  }, 1000)
+  }
 
   const publishItem = () => {
     const status = userFeatures.isPublisherAuthor ? 'inreview' : 'published'

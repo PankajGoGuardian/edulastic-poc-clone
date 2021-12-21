@@ -30,8 +30,6 @@ const ChoiceBoxes = ({
   isQuestionLayer,
   onClick,
 }) => {
-  const { showElementValues } = item
-
   const onDropHandler = ({ data }) => {
     onDrop(data, { flag: 'dragItems' })
   }
@@ -75,11 +73,9 @@ const ChoiceBoxes = ({
                 alignItems="center"
               >
                 <AnswerBox dangerouslySetInnerHTML={{ __html: image }} />
-                {showElementValues && (
-                  <span>
-                    {count} {unit}
-                  </span>
-                )}
+                <span>
+                  {count} {unit}
+                </span>
               </FlexContainer>
             </BorderedContainer>
           ))}
@@ -138,7 +134,6 @@ const ChoiceBoxes = ({
                         item={ite}
                         renderIndex={possibleResponses.indexOf(ite)}
                         disableResponse={disableResponse || !isAnswerModifiable}
-                        showElementValues={showElementValues}
                       />
                     ))}
                   </FlexContainer>

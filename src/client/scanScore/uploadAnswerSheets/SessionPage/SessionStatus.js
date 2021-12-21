@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useMemo } from 'react'
-import { withRouter, Link } from 'react-router-dom'
+import React, { useMemo } from 'react'
+import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
 
@@ -11,22 +11,7 @@ import {
   red,
   white,
 } from '@edulastic/colors'
-import { getUserConfirmation } from '../../../common/utils/helpers'
 import { omrSheetScanStatus } from '../utils'
-
-const uploadAgainHandler = (assignmentId, groupId, history) => {
-  getUserConfirmation(
-    'Sheets for this class is already scanned. Do you want to replace?',
-    (ok) => {
-      if (ok) {
-        history.push({
-          pathname: '/uploadAnswerSheets',
-          search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
-        })
-      }
-    }
-  )
-}
 
 const SessionStatus = ({
   assignmentId,
@@ -34,16 +19,7 @@ const SessionStatus = ({
   pages = [],
   handleAbortClick,
   toggleStatusFilter,
-  history,
 }) => {
-  const [fakeProgress, setFakeProgress] = useState(0)
-
-  useEffect(() => {
-    if (fakeProgress < 80) {
-      setTimeout(() => setFakeProgress(fakeProgress + 1), fakeProgress * 500)
-    }
-  }, [fakeProgress])
-
   const { success, failed, scanned, scanProgress } = useMemo(() => {
     const _success = pages.filter((p) => p.status === omrSheetScanStatus.DONE)
       .length
@@ -61,27 +37,18 @@ const SessionStatus = ({
     }
   }, [pages])
 
-  const isDone = scanProgress === 100
-  const progressMessage = isDone
-    ? 'Form Processing Done'
-    : 'Form Processing In Progress...'
-  const progressHint = isDone ? '' : '(please wait, do not refresh the page)'
+  const isDone = window.location.search.includes('done=1')
 
   return (
     <SessionStatusContainer>
       <div className="inner-container">
         <div className="scan-progress-text">
-          <p>{progressMessage}</p>
-          <p style={{ color: 'GrayText', fontSize: '0.5em' }}>{progressHint}</p>
+          {isDone ? 'Form Processing Done' : 'Form Processing Progress'}
         </div>
         <div className="scan-progress">
           <Progress
             strokeColor={themeColorBlue}
-            percent={
-              pages.length && fakeProgress > scanProgress
-                ? fakeProgress
-                : scanProgress
-            }
+            percent={scanProgress}
             status="active"
             showInfo={false}
           />
@@ -134,15 +101,16 @@ const SessionStatus = ({
               Successfully scanned responses have been recorded on Edulastic.
             </div>
             <div className="static-navigation-links">
-              <a
+              <Link
                 data-cy="uploadAgainButton"
                 className="upload-again-link"
-                onClick={() => {
-                  uploadAgainHandler(assignmentId, groupId, history)
+                to={{
+                  pathname: '/uploadAnswerSheets',
+                  search: `?assignmentId=${assignmentId}&groupId=${groupId}`,
                 }}
               >
                 Upload Again
-              </a>
+              </Link>
               <Link
                 data-cy="viewLiveClassBoard"
                 className="live-classboard-link"
@@ -161,7 +129,7 @@ const SessionStatus = ({
   )
 }
 
-export default withRouter(SessionStatus)
+export default SessionStatus
 
 const SessionStatusContainer = styled.div`
   margin: 0 40px;

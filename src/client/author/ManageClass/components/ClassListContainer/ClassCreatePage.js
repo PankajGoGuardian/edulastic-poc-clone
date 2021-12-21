@@ -3,7 +3,6 @@ import { withRouter } from 'react-router-dom'
 import { IconGoogleClassroom } from '@edulastic/icons'
 import GoogleLogin from 'react-google-login'
 import { EduButton } from '@edulastic/common'
-import { segmentApi } from '@edulastic/api'
 import NoClassNotification from '../NoClassNotification'
 import { ClassCreateContainer, ButtonsContainer } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
@@ -86,12 +85,7 @@ const ClassCreatePage = ({
                             <span>SYNC WITH GOOGLE CLASSROOM</span>
                           </EduButton>
                         )}
-                        onClick={(e) => {
-                          segmentApi.genericEventTrack('syncButtonClicked', {
-                            syncType: 'google',
-                          })
-                          renderProps.onClick(e)
-                        }}
+                        onClick={renderProps.onClick}
                       />
                     )}
                     scope={scopes}

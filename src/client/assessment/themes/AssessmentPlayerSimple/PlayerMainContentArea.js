@@ -52,46 +52,64 @@ const PlayerContentArea = ({
     zoomLevel,
   })
 
-  const extraTestItemProps =
-    testItemState === 'check'
-      ? {
-          evaluation,
-          previewTab: 'check',
-          preview: 'check',
-          changePreviewTab: changePreview,
-        }
-      : {
-          previewTab,
-          crossAction,
-          setCrossAction,
-          setHighlights,
-        }
-
   return (
     <Main>
       <MainContent>
-        <TestItemPreview
-          isExpandedView
-          showCollapseBtn
-          cols={itemRows}
-          questions={questions}
-          highlights={highlights}
-          previousQuestionActivity={previousQuestionActivity}
-          scratchPadMode={scratchPadMode}
-          saveUserWork={saveUserWork}
-          userWork={history}
-          saveAttachments={saveAttachments}
-          attachments={attachments}
-          viewComponent="practicePlayer"
-          enableMagnifier={enableMagnifier}
-          testItemId={item._id}
-          tool={tool}
-          zoomLevel={zoomLevel}
-          responsiveWidth={responsiveWidth}
-          isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
-          premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
-          {...extraTestItemProps}
-        />
+        {testItemState === '' && (
+          <TestItemPreview
+            crossAction={crossAction}
+            setCrossAction={setCrossAction}
+            setHighlights={setHighlights}
+            cols={itemRows}
+            previewTab={previewTab}
+            questions={questions}
+            previousQuestionActivity={previousQuestionActivity}
+            showCollapseBtn
+            highlights={highlights}
+            scratchPadMode={scratchPadMode}
+            saveUserWork={saveUserWork}
+            userWork={history}
+            saveAttachments={saveAttachments}
+            attachments={attachments}
+            viewComponent="practicePlayer"
+            enableMagnifier={enableMagnifier}
+            updateScratchpadtoStore
+            testItemId={item._id}
+            tool={tool}
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            isExpandedView
+          />
+        )}
+        {testItemState === 'check' && (
+          <TestItemPreview
+            cols={itemRows}
+            previewTab="check"
+            preview="check"
+            questions={questions}
+            highlights={highlights}
+            previousQuestionActivity={previousQuestionActivity}
+            showCollapseBtn
+            scratchPadMode={scratchPadMode}
+            saveUserWork={saveUserWork}
+            userWork={history}
+            saveAttachments={saveAttachments}
+            attachments={attachments}
+            viewComponent="practicePlayer"
+            evaluation={evaluation}
+            enableMagnifier={enableMagnifier}
+            changePreviewTab={changePreview}
+            testItemId={item._id}
+            tool={tool}
+            zoomLevel={zoomLevel}
+            responsiveWidth={responsiveWidth}
+            isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+            premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+            isExpandedView
+          />
+        )}
       </MainContent>
       {playerSkinType.toLowerCase() ===
         test.playerSkinValues.edulastic.toLowerCase() && (

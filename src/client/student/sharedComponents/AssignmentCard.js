@@ -1,6 +1,6 @@
 import React, { useState, memo, useEffect, useRef } from 'react'
 import { withRouter } from 'react-router-dom'
-import { notification, EduButton } from '@edulastic/common'
+import { notification, EduButton, handleChromeOsSEB } from '@edulastic/common'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
@@ -33,21 +33,39 @@ import { ConfirmationModal } from '../../author/src/components/common/Confirmati
 import {
   startAssignmentAction,
   resumeAssignmentAction,
+  getSebUrl,
 } from '../Assignments/ducks'
 import { proxyRole } from '../Login/ducks'
 import { showTestInfoModal } from '../../publicTest/utils'
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
-const SafeBrowserButton = ({ t, attempted, resume, startTest }) => {
+const SafeBrowserButton = ({
+  testId,
+  testType,
+  assignmentId,
+  testActivityId,
+  t,
+  attempted,
+  resume,
+  classId,
+}) => {
   const startButtonText = resume
     ? t('common.resume')
     : attempted
     ? t('common.retake')
     : t('common.startAssignment')
 
+  const url = getSebUrl({
+    testId,
+    testType,
+    assignmentId,
+    testActivityId,
+    groupId: classId,
+  })
+
   return (
-    <SafeStartAssignButton onClick={startTest} assessment>
+    <SafeStartAssignButton href={url} onClick={handleChromeOsSEB} assessment>
       {startButtonText}
     </SafeStartAssignButton>
   )
@@ -179,11 +197,7 @@ const AssignmentCard = memo(
     const { maxScore = 0, score = 0 } = first(newReports) || {}
     const attempted = !!(newReports && newReports.length)
     const attemptCount = newReports && newReports.length
-    let scorePercentage = (score / maxScore) * 100 || 0
-    if (!Number.isFinite(scorePercentage)) {
-      scorePercentage = 0
-    }
-
+    const scorePercentage = (score / maxScore) * 100 || 0
     const arrow = showAttempts ? '\u2191' : '\u2193'
     // To handle regrade reduce max attempt settings.
     if (maxAttempts < reports.length && !isNaN(maxAttempts)) {
@@ -247,36 +261,6 @@ const AssignmentCard = memo(
           testType,
           classId,
           languagePreference,
-          safeBrowser,
-        })
-      }
-    }
-
-    const startSEBTest = () => {
-      // On start check if assignment is expired or not
-      if (endDate && serverTimeStamp > endDate) {
-        notification({ messageKey: 'testIsExpired' })
-        return
-      }
-
-      if (resume) {
-        startAssignment({
-          testId,
-          assignmentId,
-          testType,
-          classId,
-          languagePreference,
-          safeBrowser,
-          lastAttemptId: lastAttempt._id,
-        })
-      } else if (attemptCount < maxAttempts) {
-        startAssignment({
-          testId,
-          assignmentId,
-          testType,
-          classId,
-          languagePreference,
-          safeBrowser,
         })
       }
     }
@@ -305,11 +289,17 @@ const AssignmentCard = memo(
         !isSEB() ? (
           <SafeBrowserButton
             data-cy="start"
+            testId={testId}
+            testType={testType}
+            testActivityId={lastAttempt._id}
+            assignmentId={assignmentId}
             btnName={t('common.startAssignment')}
+            startDate={startDate}
             t={t}
-            startTest={startSEBTest}
+            startTest={startTest}
             attempted={attempted}
             resume={resume}
+            classId={classId}
           />
         ) : (
           <StartButton

@@ -16,7 +16,7 @@ import styled from 'styled-components'
 import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
-import { roleuser, test as testConstants } from '@edulastic/constants'
+import { roleuser } from '@edulastic/constants'
 import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
@@ -123,7 +123,6 @@ const QuestionBottomAction = ({
   isDocBasedTest,
   replaceOriginalItem,
   updating,
-  releaseScore,
   correctItemUpdateProgress,
   data,
   enableMagnifier,
@@ -216,13 +215,6 @@ const QuestionBottomAction = ({
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
-      if (additionalData.bubbleSheetTestId) {
-        notification({
-          type: 'warn',
-          messageKey: 'editWarnBubblesheetGeneratedForThisTest',
-          duration: 12,
-        })
-      }
       const latestTest = await testsApi.getById(additionalData?.testId, {
         data: true,
         requestLatest: true,
@@ -263,9 +255,6 @@ const QuestionBottomAction = ({
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
       setEditingItemId(item.testItemId)
-      notification({
-        msg: e?.response?.data?.message || 'Unable to retrieve item',
-      })
     } finally {
       toggleQuestionModal(true)
       setItemLoading(false)
@@ -368,8 +357,7 @@ const QuestionBottomAction = ({
     (isLCBView ||
       isExpressGrader ||
       previewTab === 'show' ||
-      (isStudentReport &&
-        releaseScore === testConstants.releaseGradeLabels.WITH_ANSWERS)) &&
+      isStudentReport) &&
     !isPrintPreview &&
     !(
       !sampleAnswer ||
@@ -562,11 +550,6 @@ const enhance = compose(
       currentTerm: getCurrentTerm(state),
       silentClone: getSilentCloneSelector(state),
       firebaseDocId: getRegradeFirebaseDocIdSelector(state),
-      releaseScore: get(
-        state,
-        `[studentReport][testActivity][releaseScore]`,
-        null
-      ),
     }),
     {
       setQuestionData: setQuestionDataAction,

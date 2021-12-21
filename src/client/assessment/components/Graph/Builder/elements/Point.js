@@ -22,14 +22,13 @@ function create(board, object, settings = {}) {
     snapToGrid = true,
     latex = false,
     result = false,
-    attchEvent = true,
   } = settings
 
   const { x, y, id = null, label, baseColor, priorityColor } = object
 
   const hideColor = pointIsVisible ? null : 'transparent'
 
-  const pointConf = {
+  const point = board?.$board?.create('point', [x, y], {
     ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
     ...getColorParams(
       hideColor || priorityColor || board.priorityColor || baseColor
@@ -41,34 +40,13 @@ function create(board, object, settings = {}) {
     fixed,
     snapToGrid,
     id,
-  }
-
-  if ('size' in settings) {
-    pointConf.size = settings.size
-  }
-
-  if ('fillColor' in settings) {
-    pointConf.fillColor = settings.fillColor
-  }
-
-  if ('highlightFillColor' in settings) {
-    pointConf.highlightFillColor = settings.highlightFillColor
-  }
-
-  if (object.opened) {
-    pointConf.fillColor = '#fff'
-    pointConf.highlightFillColor = '#fff'
-  }
-
-  const point = board?.$board?.create('point', [x, y], pointConf)
+  })
 
   point.pointIsVisible = object.pointIsVisible
   point.labelIsVisible = object.labelIsVisible
   point.baseColor = baseColor
-  point.opened = object.opened
-  point.subElement = object.subElement
 
-  if (!fixed && attchEvent) {
+  if (!fixed) {
     point.on('up', () => {
       if (point.dragged) {
         point.dragged = false
@@ -137,7 +115,6 @@ function getConfig(point) {
     labelIsVisible: point.labelIsVisible,
     pointIsVisible: point.pointIsVisible,
     baseColor: point.baseColor,
-    opened: point.opened,
   }
 }
 

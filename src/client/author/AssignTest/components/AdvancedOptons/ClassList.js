@@ -8,7 +8,7 @@ import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { test as testConst } from '@edulastic/constants'
-import { get, curry, isEmpty, find, uniq, debounce } from 'lodash'
+import { get, curry, isEmpty, find, uniq } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getAssignedClassesByIdSelector,
@@ -21,8 +21,7 @@ import {
 import { receiveSchoolsAction } from '../../../Schools/ducks'
 import {
   receiveCourseListAction,
-  getAggregateCourseListSelector,
-  getCourseLoadingState,
+  getCourseListSelector,
 } from '../../../Courses/ducks'
 import {
   ClassListFilter,
@@ -95,27 +94,17 @@ class ClassList extends React.Component {
       schools,
       test,
       loadSchoolsData,
+      courseList,
       loadCourseListData,
       userOrgId,
       getAllTags,
-      courseList,
     } = this.props
 
     if (isEmpty(schools)) {
       loadSchoolsData({ districtId: userOrgId })
     }
     if (isEmpty(courseList)) {
-      loadCourseListData({
-        limit: 25,
-        page: 1,
-        districtId: userOrgId,
-        active: 1,
-        aggregate: true,
-        includes: ['name'],
-        search: {
-          name: [{ type: 'cont', value: '' }],
-        },
-      })
+      loadCourseListData({ districtId: userOrgId, active: 1 })
     }
 
     getAllTags({ type: 'group' })
@@ -170,27 +159,12 @@ class ClassList extends React.Component {
       search: searchTerms,
       page: 1,
       limit: 4000,
-      includes: [
-        'name',
-        'studentCount',
-        'subject',
-        'grades',
-        'termId',
-        'type',
-        'tags',
-        'description',
-        'owners',
-        'primaryTeacherId',
-        'parent',
-        'institutionId',
-      ],
     })
   }
 
   changeFilter = (key, value) => {
     const { searchTerms } = this.state
-    searchTerms[key] =
-      key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
+    searchTerms[key] = value
     this.setState({ searchTerms }, this.loadClassList)
   }
 
@@ -236,24 +210,6 @@ class ClassList extends React.Component {
     )
   }
 
-  courseSearch = (searchString) => {
-    const { loadCourseListData, userOrgId } = this.props
-    const q = {
-      limit: 25,
-      page: 1,
-      districtId: userOrgId,
-      active: 1,
-      aggregate: true,
-      includes: ['name'],
-      search: {
-        name: [{ type: 'cont', value: searchString }],
-      },
-    }
-    loadCourseListData(q)
-  }
-
-  handleCourseSearch = debounce(this.courseSearch, 200)
-
   render() {
     const {
       classList,
@@ -264,7 +220,6 @@ class ClassList extends React.Component {
       tagList,
       assignedClassesById,
       testType,
-      isCoursesLoading,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -460,14 +415,13 @@ class ClassList extends React.Component {
               mode="multiple"
               placeholder="All Course"
               onChange={changeField('courseIds')}
-              autoClearSearchValue={false}
               showSearch
+              filterOption={(input, option) =>
+                option.props.children
+                  .toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0
+              }
               tagsEllipsis
-              onSearch={this.handleCourseSearch}
-              onFocus={() => this.handleCourseSearch('')}
-              filterOption={false}
-              defaultActiveFirstOption={false}
-              loading={isCoursesLoading}
             >
               {courseList.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
@@ -591,11 +545,10 @@ const enhance = compose(
       classList: getClassListSelector(state),
       userOrgId: getUserOrgId(state),
       schools: getSchoolsByUserRoleSelector(state),
-      courseList: getAggregateCourseListSelector(state),
+      courseList: getCourseListSelector(state),
       test: getTestSelector(state),
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
-      isCoursesLoading: getCourseLoadingState(state),
     }),
     {
       loadClassListData: receiveClassListAction,

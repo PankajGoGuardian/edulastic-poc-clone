@@ -12,7 +12,6 @@ import {
   isObject,
 } from 'lodash'
 import { math } from '@edulastic/constants'
-import { dynamicVarChecks } from '@edulastic/constants/const/math'
 import CorrectAnswers from '../../../components/CorrectAnswers'
 import MathFormulaAnswer from './ClozeMathAnswer'
 import MathUnitAnswer from './ClozeMathUnitAnswer'
@@ -129,19 +128,9 @@ const ClozeMathAnswers = ({
     )
   }
 
-  const changeExtraOptions = (draft, value, oldOptions, answerId) => {
+  const changeExtraOptions = (draft, value, answerId) => {
     let hasSimplified = false
     Object.keys(value).forEach((optkey) => {
-      if (
-        draft.variable?.enabled &&
-        !(
-          oldOptions?.[optkey] === value[optkey] ||
-          draft.extraOpts?.[optkey] === value[optkey]
-        ) &&
-        dynamicVarChecks.includes(optkey)
-      ) {
-        draft.rdv = true
-      }
       if (simplifiedOptions.includes(optkey)) {
         hasSimplified = true
         value.isSimplified = true
@@ -179,7 +168,6 @@ const ClozeMathAnswers = ({
               const [extraOpts, updatedValue] = changeExtraOptions(
                 draft,
                 _value,
-                answer[methodIndex][prop],
                 methodId
               )
               if (extraOpts) {
@@ -316,7 +304,6 @@ const ClozeMathAnswers = ({
               const [extraOpts, updatedValue] = changeExtraOptions(
                 draft,
                 _value,
-                answer[methodIndex][prop],
                 methodId
               )
               if (extraOpts) {
@@ -458,14 +445,10 @@ const ClozeMathAnswers = ({
     setQuestionData(
       produce(item, (draft) => {
         let _value = value
-        const mathUnitAnswer = draft.validation.validResponse.mathUnits.value.find(
-          (el) => el.id === answerId
-        )
         if (prop === 'options') {
           const [extraOpts, updatedValue] = changeExtraOptions(
             draft,
             _value,
-            mathUnitAnswer,
             answerId
           )
           if (extraOpts) {
@@ -764,7 +747,6 @@ const ClozeMathAnswers = ({
         </Row>
       </CorrectAnswerContainer>
       <CheckboxLabel
-        data-cy="ignoreCase"
         onChange={() =>
           handleValidationOptionsChange(
             'ignoreCase',
@@ -776,7 +758,6 @@ const ClozeMathAnswers = ({
         {t('component.multipart.ignoreCase')}
       </CheckboxLabel>
       <CheckboxLabel
-        data-cy="allowSingleLetterMistake"
         onChange={() =>
           handleValidationOptionsChange(
             'allowSingleLetterMistake',
@@ -788,7 +769,6 @@ const ClozeMathAnswers = ({
         {t('component.multipart.allowsinglelettermistake')}
       </CheckboxLabel>
       <CheckboxLabel
-        data-cy="mixAndMatchAltAnswer"
         onChange={() =>
           handleValidationOptionsChange(
             'mixAndMatch',

@@ -6,7 +6,6 @@ import {
   premiumBg,
   mainTextColor,
 } from '@edulastic/colors'
-import { IconStar } from '@edulastic/icons'
 
 const DetailsTooltip = ({
   title,
@@ -31,14 +30,7 @@ const DetailsTooltip = ({
       width={width}
     >
       <span className="popover-title">{title}</span>
-      {!premium && (
-        <span className="premium-tag">
-          <span className="premium-icon">
-            <IconStar />
-          </span>
-          <span className="premium-text">Premium</span>
-        </span>
-      )}
+      {!premium && <span className="premium-tag">$ Premium</span>}
       <span className="popover-body">{content}</span>
     </StyledPopOver>
   )
@@ -73,17 +65,12 @@ const StyledPopOver = styled.div`
     display: inline-block;
     color: ${white};
     background: ${premiumBg};
-    width: 80px;
+    width: 77px;
     height: 22px;
     border-radius: 5px;
     text-transform: uppercase;
-    text-align: left;
+    text-align: center;
     margin-bottom: 5px;
-  }
-  > .premium-icon,
-  .premium-text {
-    vertical-align: top;
-    display: inline-block;
   }
   > .popover-body {
     color: ${mainTextColor};

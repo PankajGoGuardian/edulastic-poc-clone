@@ -30,7 +30,6 @@ const SettingMenu = ({
   hidePause,
   multiLanguageEnabled,
   isPremiumContentWithoutAccess = false,
-  canShowPlaybackOptionTTS,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
@@ -39,12 +38,7 @@ const SettingMenu = ({
   const menu = (
     <StyledMenu onClick={handleSettingsChange}>
       {Object.keys(menuItems)
-        .filter(
-          (item) =>
-            (item === 'testOptions' && canShowPlaybackOptionTTS) ||
-            item !== 'testOptions' ||
-            multiLanguageEnabled
-        )
+        .filter((item) => item !== 'testOptions' || multiLanguageEnabled)
         .map((key) => (
           <MenuItem
             key={key}

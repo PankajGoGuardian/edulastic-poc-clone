@@ -64,11 +64,9 @@ const CreateAdminForm = ({
   const fetchSchool = async (value) => {
     setFetching(true)
     setSchoolList([])
-    const isSchoolId = (value || '').match(/^[0-9a-fA-F]{24}$/)
-    let searchParam = {}
-    if (value && !isSchoolId) {
-      searchParam = { search: { name: [{ type: 'cont', value }] } }
-    }
+    const searchParam = value
+      ? { search: { name: [{ type: 'cont', value }] } }
+      : {}
     const schoolListData = await schoolApi.getSchools({
       districtId,
       limit: 25,
@@ -76,7 +74,6 @@ const CreateAdminForm = ({
       sortField: 'name',
       order: 'asc',
       ...searchParam,
-      schoolIds: isSchoolId ? [value] : [],
     })
     setSchoolList(schoolListData.data)
     setFetching(false)
@@ -255,18 +252,10 @@ const CreateAdminForm = ({
                     onChange={handleChange}
                     onFocus={fetchSchool}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                    optionLabelProp="label"
                   >
                     {schoolList.map((school) => (
-                      <Option
-                        key={school._id}
-                        value={school._id}
-                        label={school._source.name}
-                      >
-                        <p>
-                          {school._source.name}{' '}
-                          <span style={{ color: 'red' }}> ({school._id}) </span>
-                        </p>
+                      <Option key={school._id} value={school._id}>
+                        {school._source.name}
                       </Option>
                     ))}
                   </StyledSelect>

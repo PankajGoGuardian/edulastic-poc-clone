@@ -15,7 +15,6 @@ const Rectangles = ({
   evaluation,
   isExpressGrader,
   isAnswerModifiable,
-  isStudentResponseEdited = false,
 }) => {
   const total = rows * columns
   const offset = fractionNumber * total
@@ -39,12 +38,7 @@ const Rectangles = ({
                 ? themeColor
                 : darkRed1
           }
-          if (
-            isExpressGrader &&
-            (isAnswerModifiable ||
-              (!isAnswerModifiable && isStudentResponseEdited)) &&
-            _selected
-          ) {
+          if (isExpressGrader && isAnswerModifiable && _selected) {
             // in expressGrader and edit response is on
             // override default highlighting with darkBlue color when selected
             fillColor = themeColor

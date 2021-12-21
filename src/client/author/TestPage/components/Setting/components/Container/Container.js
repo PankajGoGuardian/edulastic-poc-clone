@@ -36,8 +36,8 @@ import {
   getUserRole,
   getUserId,
 } from '../../../../../../student/Login/ducks'
+import Breadcrumb from '../../../../../src/components/Breadcrumb'
 import {
-  testTypesToTestSettings,
   defaultTestTypeProfilesSelector,
   getDisableAnswerOnPaperSelector,
   getReleaseScorePremiumSelector,
@@ -52,8 +52,6 @@ import {
   deleteTestSettingRequestAction,
   updateTestSettingRequestAction,
 } from '../../../../ducks'
-import Breadcrumb from '../../../../../src/components/Breadcrumb'
-
 import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
 import {
   allowedToSelectMultiLanguageInTest,
@@ -90,14 +88,13 @@ import {
   StyledRow,
 } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
-// import ReferenceMaterial from './ReferenceMaterial'
+import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
-import { skinTypesOrder, showRubricToStudentsSetting } from '../../../../utils'
+import { skinTypesOrder } from '../../../../utils'
 import SaveSettingsModal from '../../../../../AssignTest/components/Container/SaveSettingsModal'
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
-import { multiFind } from '../../../../../../common/utils/main'
 
 const {
   settingCategories,
@@ -257,7 +254,6 @@ class Setting extends Component {
       defaultTestTypeProfiles,
       isReleaseScorePremium,
       disableAnswerOnPaper,
-      entity: { testType },
     } = this.props
     switch (key) {
       case 'testType': {
@@ -359,42 +355,6 @@ class Setting extends Component {
           notification({ messageKey: 'answerOnPaperNotSupportedForThisTest' })
           return
         }
-        break
-      case 'performanceBand':
-        value = pick(
-          multiFind(
-            performanceBandsData,
-            [
-              { _id: value._id },
-              {
-                _id:
-                  defaultTestTypeProfiles.performanceBand[
-                    testTypesToTestSettings[testType]
-                  ],
-              },
-            ],
-            value
-          ),
-          ['_id', 'name']
-        )
-        break
-      case 'standardGradingScale':
-        value = pick(
-          multiFind(
-            standardsData,
-            [
-              { _id: value._id },
-              {
-                _id:
-                  defaultTestTypeProfiles.standardProficiency[
-                    testTypesToTestSettings[testType]
-                  ],
-              },
-            ],
-            value
-          ),
-          ['_id', 'name']
-        )
         break
       default:
         break
@@ -714,9 +674,6 @@ class Setting extends Component {
       isEtsDistrict,
       t,
       testSettingsList = [],
-      performanceBandsData,
-      standardsData,
-      defaultTestTypeProfiles,
     } = this.props
     const {
       isDocBased,
@@ -737,12 +694,14 @@ class Setting extends Component {
       maxAttempts,
       grades,
       subjects,
+      performanceBand,
+      standardGradingScale,
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
-      showMagnifier = true,
+      showMagnifier = false,
       timedAssignment,
       allowedTime,
-      enableScratchpad = true,
+      enableScratchpad = false,
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
@@ -756,10 +715,7 @@ class Setting extends Component {
       applyEBSR = false,
       enableSkipAlert = false,
       settingId: currentSettingsId = '',
-      // referenceDocAttributes,
-      showRubricToStudents = false,
-      performanceBand: _performanceBand,
-      standardGradingScale: _standardGradingScale,
+      referenceDocAttributes,
     } = entity
 
     let isSettingPresent = false
@@ -788,10 +744,6 @@ class Setting extends Component {
         to: '',
       },
     ]
-
-    const isShowRubricToStudentsSettingVisible = showRubricToStudentsSetting(
-      itemGroups
-    )
 
     const isSmallSize = windowWidth < 993 ? 1 : 0
 
@@ -906,46 +858,12 @@ class Setting extends Component {
       !isEdulasticCurator &&
       !isCurator &&
       (testStatus === 'draft' || editEnable)
-    const disabled = !owner || !isEditable
-
-    const performanceBand = pick(
-      multiFind(
-        performanceBandsData,
-        [
-          { _id: _performanceBand?._id },
-          {
-            _id:
-              defaultTestTypeProfiles.performanceBand?.[
-                testTypesToTestSettings[testType]
-              ],
-          },
-        ],
-        _performanceBand
-      ),
-      ['_id', 'name']
-    )
-    const standardGradingScale = pick(
-      multiFind(
-        standardsData,
-        [
-          { _id: _standardGradingScale?._id },
-          {
-            _id:
-              defaultTestTypeProfiles.standardProficiency?.[
-                testTypesToTestSettings[testType]
-              ],
-          },
-        ],
-        _standardGradingScale
-      ),
-      ['_id', 'name']
-    )
 
     const applyEBSRComponent = () => {
       return (
         <CheckBoxWrapper>
           <CheckboxLabel
-            disabled={disabled}
+            disabled={!owner || !isEditable}
             data-cy="applyEBSR"
             checked={applyEBSR}
             onChange={this.handleApplyEBSR}
@@ -1000,7 +918,7 @@ class Setting extends Component {
                     onChange={this.handleSettingsSelection}
                     optionLabelProp="label"
                     data-cy="select-save-test-settings"
-                    disabled={disabled}
+                    disabled={!owner || !isEditable}
                   >
                     <Select.Option
                       key="1"
@@ -1121,7 +1039,7 @@ class Setting extends Component {
                           <Col span={12}>
                             <SelectInputStyled
                               value={testType}
-                              disabled={disabled}
+                              disabled={!owner || !isEditable}
                               onChange={this.updateTestData('testType')}
                               getPopupContainer={(trigger) =>
                                 trigger.parentNode
@@ -1167,7 +1085,7 @@ class Setting extends Component {
                           <Title>
                             <span>Freeze Settings</span>
                             <EduSwitchStyled
-                              disabled={disabled}
+                              disabled={!owner || !isEditable}
                               data-cy="freeze-settings"
                               checked={freezeSettings}
                               onChange={() =>
@@ -1197,7 +1115,7 @@ class Setting extends Component {
                       <Title>
                         <span>Test Instructions</span>
                         <EduSwitchStyled
-                          disabled={disabled}
+                          disabled={!owner || !isEditable}
                           data-cy="add-test-instruction"
                           checked={hasInstruction}
                           onChange={() =>
@@ -1220,7 +1138,7 @@ class Setting extends Component {
                             size="SM"
                             updateTestData={this.updateTestData}
                             instruction={instruction}
-                            disabled={disabled}
+                            disabled={!owner || !isEditable}
                           />
                         )}
                       </Body>
@@ -1236,7 +1154,7 @@ class Setting extends Component {
                     </Title>
                     <Body smallSize={isSmallSize}>
                       <StyledRadioGroup
-                        disabled={disabled}
+                        disabled={!owner || !isEditable}
                         onChange={this.updateFeatures('releaseScore')}
                         value={releaseScore}
                       >
@@ -1260,7 +1178,7 @@ class Setting extends Component {
                         <Row>
                           <Col span={8}>
                             <StyledRadioGroup
-                              disabled={disabled}
+                              disabled={!owner || !isEditable}
                               onChange={(e) =>
                                 this.updateTestData('scoringType')(
                                   e.target.value
@@ -1341,7 +1259,9 @@ class Setting extends Component {
                           <Col span={8}>
                             <StyledRadioGroup
                               disabled={
-                                disabled || !assessmentSuperPowersMarkAsDone
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersMarkAsDone
                               }
                               onChange={this.updateFeatures('markAsDone')}
                               value={markAsDone}
@@ -1371,14 +1291,14 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {/* <Block id="reference-material" smallSize={isSmallSize}>
+                  <Block id="reference-material" smallSize={isSmallSize}>
                     <ReferenceMaterial
                       owner={owner}
                       isEditable={isEditable}
                       isSmallSize={isSmallSize}
                       referenceDocAttributes={referenceDocAttributes}
                     />
-                  </Block> */}
+                  </Block>
 
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>
@@ -1393,7 +1313,9 @@ class Setting extends Component {
                           <Col span={8}>
                             <StyledRadioGroup
                               disabled={
-                                disabled || !assessmentSuperPowersShowCalculator
+                                !owner ||
+                                !isEditable ||
+                                !assessmentSuperPowersShowCalculator
                               }
                               onChange={this.updateFeatures('calcType')}
                               value={calcType}
@@ -1436,7 +1358,11 @@ class Setting extends Component {
                           />
                         </Tooltip>
                         <EduSwitchStyled
-                          disabled={disabled || !assessmentSuperPowersTimedTest}
+                          disabled={
+                            !owner ||
+                            !isEditable ||
+                            !assessmentSuperPowersTimedTest
+                          }
                           checked={timedAssignment}
                           data-cy="assignment-time-switch"
                           onChange={this.updateTimedTest('timedAssignment')}
@@ -1479,7 +1405,7 @@ class Setting extends Component {
                             {timedAssignment && (
                               <CheckboxLabel
                                 checked={pauseAllowed}
-                                disabled={disabled}
+                                disabled={!owner || !isEditable}
                                 data-cy="exit-allowed"
                                 onChange={(e) =>
                                   this.updateTestData('pauseAllowed')(
@@ -1504,41 +1430,6 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {!isDocBased && (
-                    <Block id="show-rubric-to-students" smallSize={isSmallSize}>
-                      <SettingContainer>
-                        <Title>
-                          <span>Show Rubric to Students </span>
-                          <DollarPremiumSymbol premium={premium} />
-                          <Tooltip title={t('showRubricToStudents.info')}>
-                            <IconInfo
-                              color={lightGrey9}
-                              style={{ marginLeft: '10px', cursor: 'pointer' }}
-                            />
-                          </Tooltip>
-                          <EduSwitchStyled
-                            disabled={
-                              !isShowRubricToStudentsSettingVisible ||
-                              !owner ||
-                              !isEditable ||
-                              !premium
-                            }
-                            checked={showRubricToStudents}
-                            data-cy="show-rubric-to-students-switch"
-                            onChange={this.updateTestData(
-                              'showRubricToStudents'
-                            )}
-                          />
-                        </Title>
-                        <Body smallSize={isSmallSize}>
-                          <Description style={{ marginTop: '10px' }}>
-                            {t('showRubricToStudents.info')}
-                          </Description>
-                        </Body>
-                      </SettingContainer>
-                    </Block>
-                  )}
-
                   <Block id="maximum-attempts-allowed">
                     <SettingContainer>
                       <Title>
@@ -1549,7 +1440,7 @@ class Setting extends Component {
                         <TextInputStyled
                           type="number"
                           width="100px"
-                          disabled={disabled || !maxAttemptAllowed}
+                          disabled={!owner || !isEditable || !maxAttemptAllowed}
                           size="large"
                           value={maxAttempts}
                           onChange={this.updateAttempt}
@@ -1581,7 +1472,8 @@ class Setting extends Component {
                           <Col span={12}>
                             <TextInputStyled
                               disabled={
-                                disabled ||
+                                !owner ||
+                                !isEditable ||
                                 !assessmentSuperPowersCheckAnswerTries
                               }
                               onChange={(e) =>
@@ -1613,7 +1505,7 @@ class Setting extends Component {
                       <Title>Item content visibility to Teachers</Title>
                       <Body smallSize={isSmallSize}>
                         <StyledRadioGroup
-                          disabled={disabled}
+                          disabled={!owner || !isEditable}
                           onChange={this.updateFeatures(
                             'testContentVisibility'
                           )}
@@ -1660,7 +1552,9 @@ class Setting extends Component {
                           </span>
                           <EduSwitchStyled
                             disabled={
-                              disabled || !assessmentSuperPowersShuffleQuestions
+                              !owner ||
+                              !isEditable ||
+                              !assessmentSuperPowersShuffleQuestions
                             }
                             checked={shuffleQuestions}
                             data-cy="shuffleQuestions"
@@ -1690,7 +1584,8 @@ class Setting extends Component {
                           </span>
                           <EduSwitchStyled
                             disabled={
-                              disabled ||
+                              !owner ||
+                              !isEditable ||
                               !assessmentSuperPowersShuffleAnswerChoice
                             }
                             checked={shuffleAnswers}
@@ -1703,7 +1598,8 @@ class Setting extends Component {
                             {'If set to '}
                             <BlueText>ON</BlueText>, answer choices for multiple
                             choice and multiple select questions will be
-                            randomly shuffled for students.
+                            randomly shuffled for students. Text to speech does
+                            not work when the answer choices are shuffled.
                           </Description>
                         </Body>
                       </SettingContainer>
@@ -1726,7 +1622,8 @@ class Setting extends Component {
                                 value={passwordPolicy}
                                 data-cy={passwordPolicy}
                                 disabled={
-                                  disabled ||
+                                  !owner ||
+                                  !isEditable ||
                                   !assessmentSuperPowersRequirePassword
                                 }
                                 onChange={this.updateTestData('passwordPolicy')}
@@ -1754,7 +1651,8 @@ class Setting extends Component {
                                     required
                                     color={isPasswordValid()}
                                     disabled={
-                                      disabled ||
+                                      !owner ||
+                                      !isEditable ||
                                       !assessmentSuperPowersRequirePassword
                                     }
                                     onBlur={this.handleBlur}
@@ -1783,7 +1681,8 @@ class Setting extends Component {
                                     required
                                     type="number"
                                     disabled={
-                                      disabled ||
+                                      !owner ||
+                                      !isEditable ||
                                       !assessmentSuperPowersRequirePassword
                                     }
                                     onChange={this.handleUpdatePasswordExpireIn}
@@ -1846,7 +1745,7 @@ class Setting extends Component {
                         <DollarPremiumSymbol premium={premium} />
                       </span>
                       <EduSwitchStyled
-                        disabled={disabled || !premium}
+                        disabled={!owner || !isEditable || !premium}
                         checked={blockSaveAndContinue}
                         data-cy="bockSaveAndContinueSwitch"
                         onChange={(v) =>
@@ -1873,7 +1772,9 @@ class Setting extends Component {
                       <Row>
                         <Col span={11}>
                           <StyledRadioGroup
-                            disabled={disabled || !premium || safeBrowser}
+                            disabled={
+                              !owner || !isEditable || !premium || safeBrowser
+                            }
                             onChange={this.updateFeatures(
                               'restrictNavigationOut'
                             )}
@@ -1915,7 +1816,8 @@ class Setting extends Component {
                                     restrictNavigationOut ===
                                     'warn-and-report-after-n-alerts'
                                   ) ||
-                                  disabled ||
+                                  !owner ||
+                                  !isEditable ||
                                   safeBrowser
                                 }
                               />{' '}
@@ -1980,7 +1882,8 @@ class Setting extends Component {
                         </span>
                         <EduSwitchStyled
                           disabled={
-                            disabled ||
+                            !owner ||
+                            !isEditable ||
                             !assessmentSuperPowersRestrictQuestionBackNav ||
                             isDocBased
                           }
@@ -2034,7 +1937,8 @@ class Setting extends Component {
                         </Tooltip>
                         <EduSwitchStyled
                           disabled={
-                            disabled ||
+                            !owner ||
+                            !isEditable ||
                             !assessmentSuperPowersRequireSafeExamBrowser
                           }
                           checked={safeBrowser}
@@ -2052,7 +1956,8 @@ class Setting extends Component {
                                     : ' dirty'
                                 }`}
                                 disabled={
-                                  disabled ||
+                                  !owner ||
+                                  !isEditable ||
                                   !assessmentSuperPowersRequireSafeExamBrowser
                                 }
                                 ref={sebPasswordRef}
@@ -2121,7 +2026,8 @@ class Setting extends Component {
                         </span>
                         <EduSwitchStyled
                           disabled={
-                            disabled ||
+                            !owner ||
+                            !isEditable ||
                             disableAnswerOnPaper ||
                             !assessmentSuperPowersAnswerOnPaper
                           }
@@ -2164,7 +2070,9 @@ class Setting extends Component {
                                   ? edulastic
                                   : playerSkinType
                               }
-                              disabled={disabled || !selectPlayerSkinType}
+                              disabled={
+                                !owner || !isEditable || !selectPlayerSkinType
+                              }
                               onChange={this.updateTestData('playerSkinType')}
                               getPopupContainer={(trigger) =>
                                 trigger.parentNode
@@ -2210,7 +2118,7 @@ class Setting extends Component {
                         <Title>
                           <span>Multi-Language</span>
                           <EduSwitchStyled
-                            disabled={disabled}
+                            disabled={!owner || !isEditable}
                             data-cy="multi-language-enabled"
                             checked={multiLanguageEnabled}
                             onChange={() =>
@@ -2236,8 +2144,8 @@ class Setting extends Component {
                       setSettingsData={(val) =>
                         this.updateTestData('performanceBand')(val)
                       }
-                      performanceBand={performanceBand || {}}
-                      disabled={disabled || !performanceBands}
+                      performanceBand={performanceBand}
+                      disabled={!owner || !isEditable || !performanceBands}
                       isFeatureAvailable={performanceBands}
                     />
                     <Description>
@@ -2249,11 +2157,11 @@ class Setting extends Component {
 
                   <Block id="standards-proficiency" smallSize={isSmallSize}>
                     <StandardProficiencyTable
-                      standardGradingScale={standardGradingScale || {}}
+                      standardGradingScale={standardGradingScale}
                       setSettingsData={(val) =>
                         this.updateTestData('standardGradingScale')(val)
                       }
-                      disabled={disabled || !premium}
+                      disabled={!owner || !isEditable || !premium}
                       isFeatureAvailable={premium}
                     />
                     <Description>
@@ -2268,7 +2176,7 @@ class Setting extends Component {
                       Accessibility <DollarPremiumSymbol premium={premium} />
                     </Title>
                     <RadioWrapper
-                      disabled={disabled}
+                      disabled={!owner || !isEditable}
                       style={{
                         marginTop: '20px',
                         marginBottom: 0,
@@ -2295,7 +2203,9 @@ class Setting extends Component {
                             </Col>
                             <Col span={12}>
                               <StyledRadioGroup
-                                disabled={disabled || !features[o.key]}
+                                disabled={
+                                  !owner || !isEditable || !features[o.key]
+                                }
                                 onChange={(e) =>
                                   this.updateTestData(o.key)(e.target.value)
                                 }
@@ -2320,7 +2230,7 @@ class Setting extends Component {
                         ))}
                     </RadioWrapper>
                     <RadioWrapper
-                      disabled={disabled}
+                      disabled={!owner || !isEditable}
                       style={{
                         marginTop: '5px',
                         marginBottom: 0,
@@ -2346,7 +2256,7 @@ class Setting extends Component {
                             onChangeHandler={(value) => {
                               this.keypadSelection(value)
                             }}
-                            disabled={disabled || !premium}
+                            disabled={!owner || !isEditable || !premium}
                           />
                         </Col>
                         <Col span={24}>

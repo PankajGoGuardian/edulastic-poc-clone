@@ -432,11 +432,10 @@ function* openAssignmentSaga({ payload }) {
   } catch (err) {
     captureSentryException(err)
     let {
-      data: {
-        message: errorMessage,
-        allowedOpenDate,
-        teacherDeniedToOpenBeforeOpenDate,
-      },
+      data: { message: errorMessage },
+    } = err.response
+    const {
+      data: { allowedOpenDate, teacherDeniedToOpenBeforeOpenDate },
     } = err.response
     if (errorMessage === 'Assignment does not exist anymore') {
       yield put(redirectToAssignmentsAction(''))
@@ -1315,6 +1314,26 @@ export const getCurrentClassIdSelector = createSelector(
 export const getRedirectedDatesSelector = createSelector(
   getAdditionalDataSelector,
   (state) => get(state, 'redirectedDates', {})
+)
+
+export const getTestDataSelector = createSelector(
+  stateTestActivitySelector,
+  (state) => get(state, 'data.test', {})
+)
+
+export const getIsOverrideFreezeSelector = createSelector(
+  getAdditionalDataSelector,
+  getTestDataSelector,
+  getUserIdSelector,
+  (additionalData, testData, userId) => {
+    if (!testData.freezeSettings) {
+      return false
+    }
+    if (additionalData?.testAuthors?.some((author) => author._id === userId)) {
+      return false
+    }
+    return true
+  }
 )
 
 export const getTestActivitySelector = createSelector(

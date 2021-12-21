@@ -54,8 +54,11 @@ const PossibleResponses = ({
                   alignItems="center"
                   justifyContent="flex-start"
                   width="100%"
+                  data-cy="groupPossibleResponses"
                 >
-                  <StyledSubTitle>{i.title}</StyledSubTitle>
+                  <StyledSubTitle data-cy="groupTitle">
+                    {i.title}
+                  </StyledSubTitle>
                   <FlexContainer
                     width="100%"
                     justifyContent="center"
@@ -83,7 +86,10 @@ const PossibleResponses = ({
                   </FlexContainer>
                 </FlexContainer>
                 {index !== possibleResponseGroups.length - 1 && (
-                  <GroupsSeparator horizontallyAligned={horizontallyAligned} />
+                  <GroupsSeparator
+                    horizontallyAligned={horizontallyAligned}
+                    data-cy="groupSeparator"
+                  />
                 )}
               </Fragment>
             ))

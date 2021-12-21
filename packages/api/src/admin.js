@@ -333,6 +333,22 @@ const bulkUpdateSubscriptionApi = (data) =>
     })
     .then(({ data: response }) => response.result)
 
+const bulkUpgradeCSVSubscriptionApi = (file) => {
+  const formData = new FormData()
+  formData.append('file', file)
+
+  return api
+    .callApi({
+      method: 'post',
+      url: '/subscription/bulk-upgrade-csv',
+      data: formData,
+      config: {
+        headers: { 'Content-Type': 'multipart/form-data' },
+      },
+    })
+    .then((result) => result.data.result)
+}
+
 const getMappingData = (payload) =>
   api
     .callApi({
@@ -435,4 +451,5 @@ export default {
   atlasStopSyncApi,
   cleverStopSyncApi,
   stopSyncApi,
+  bulkUpgradeCSVSubscriptionApi,
 }

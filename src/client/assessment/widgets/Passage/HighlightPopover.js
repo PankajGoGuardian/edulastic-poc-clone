@@ -14,7 +14,7 @@ const getStyles = ({
   selectionHeight,
 }) => {
   // Adding zIndex to color picker
-  const style = { position: 'fixed', zIndex: 1 }
+  const style = { position: 'fixed', zIndex: 9999 }
 
   style.left = selectionLeft + selectionWidth / 2 - pickerWidth / 2
   style.top = selectionTop - 50 // - 50 is height of picker

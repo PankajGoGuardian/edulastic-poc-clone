@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
@@ -25,11 +25,19 @@ const Matrix = (props) => {
     smallSize,
     isPrintPreview,
     tool,
+    crossAction,
+    onCrossOut,
+    crossToolEnabled,
   } = props
+  const [hoveredCell, setHoveredCell] = useState(null)
 
   // We expect stems to be an array, otherwise don't render
   if (!stems || !Array.isArray(stems)) {
     return null
+  }
+
+  const onCellMouseLeave = () => {
+    setHoveredCell(null)
   }
 
   const getCell = (columnIndex, data) => {
@@ -37,6 +45,11 @@ const Matrix = (props) => {
     let correct = false
     const rowIndex = data.index
     const responseId = responseIds?.[rowIndex]?.[columnIndex]
+
+    const hovered = crossToolEnabled && hoveredCell === responseId
+    const showCrossIcon =
+      crossAction?.includes(responseId) ||
+      (crossToolEnabled && hoveredCell === responseId)
 
     if (evaluation) {
       correct = evaluation[responseId] ? true : 'incorrect'
@@ -47,18 +60,28 @@ const Matrix = (props) => {
     }
 
     const handleChange = () => {
-      const checkData = {
-        columnIndex,
-        rowIndex,
-        checked: !checked,
-      }
+      if (!crossToolEnabled && !crossAction?.includes(responseId)) {
+        const checkData = {
+          columnIndex,
+          rowIndex,
+          checked: !checked,
+        }
 
-      onCheck(checkData)
+        onCheck(checkData)
+      } else if (crossToolEnabled && typeof onCrossOut === 'function') {
+        onCrossOut(responseId)
+      }
+    }
+
+    const handleHoverCell = () => {
+      setHoveredCell(responseId)
     }
 
     return (
       <MatrixCell
         onChange={handleChange}
+        onMouseEnter={handleHoverCell}
+        onMouseLeave={onCellMouseLeave}
         checked={checked}
         correct={correct}
         type={uiStyle.type}
@@ -67,6 +90,8 @@ const Matrix = (props) => {
         smallSize={smallSize}
         isPrintPreview={isPrintPreview}
         tool={tool}
+        hovered={hovered}
+        showCrossIcon={showCrossIcon}
       >
         {evaluation && checked && (
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>

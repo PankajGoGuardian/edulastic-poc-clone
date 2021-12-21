@@ -322,23 +322,19 @@ const getOverallValue = (record = {}, analyseByKey, scaleInfo) => {
 
 const getColValue = (record = {}, domainId, analyseByKey, scaleInfo) => {
   const domain = record.domainData[domainId]
-
-  switch (analyseByKey) {
-    case 'masteryScore':
-      return domain ? getMasteryScore(domain) : 'N/A'
-    case 'score':
-      return domain ? `${getScore(domain)}%` : 'N/A'
-    case 'rawScore':
-      return domain
-        ? `${(domain.totalScore || 0).toFixed(2)} / ${domain.maxScore}`
-        : 0
-    case 'masteryLevel':
-      return domain
-        ? getMasteryLevel(getMasteryScore(domain), scaleInfo).masteryLabel
-        : 'N/A'
-    default:
-      return ''
+  let colValue = ''
+  if (!domain) {
+    colValue = 'N/A'
+  } else if (analyseByKey === 'masteryScore') {
+    colValue = getMasteryScore(domain)
+  } else if (analyseByKey === 'score') {
+    colValue = `${getScore(domain)}%`
+  } else if (analyseByKey === 'rawScore') {
+    colValue = `${(domain.totalScore || 0).toFixed(2)} / ${domain.maxScore}`
+  } else if (analyseByKey === 'masteryLevel') {
+    colValue = getMasteryLevel(getMasteryScore(domain), scaleInfo).masteryLabel
   }
+  return colValue
 }
 
 // -----|-----|-----|-----| TABLE TRANSFORMERS |-----|-----|-----|----- //

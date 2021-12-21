@@ -1,6 +1,5 @@
 import { takeEvery, call, put, all } from 'redux-saga/effects'
 import { settingsApi } from '@edulastic/api'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import * as moment from 'moment'
@@ -61,8 +60,10 @@ export const reducer = createReducer(initialState, {
       name: payload.data.name,
       startDate: payload.data.startDate,
       endDate: payload.data.endDate,
-      startDateVisible: moment(payload.data.startDate).format('DD MMM YYYY'),
-      endDateVisible: moment(payload.data.endDate).format('DD MMM YYYY'),
+      startDateVisible: moment(payload.data.startDate)
+        .utc()
+        .format('DD MMM YYYY'),
+      endDateVisible: moment(payload.data.endDate).utc().format('DD MMM YYYY'),
       _id: payload.data._id,
     })
     state.data = createdData.concat(state.data)
@@ -83,14 +84,14 @@ export const reducer = createReducer(initialState, {
         name: payload[i].name,
         startDate: payload[i].startDate,
         endDate: payload[i].endDate,
-        startDateVisible: moment(payload[i].startDate).format('DD MMM YYYY'),
-        endDateVisible: moment(payload[i].endDate).format('DD MMM YYYY'),
+        startDateVisible: moment(payload[i].startDate)
+          .utc()
+          .format('DD MMM YYYY'),
+        endDateVisible: moment(payload[i].endDate).utc().format('DD MMM YYYY'),
         _id: payload[i]._id,
       })
     }
-    state.data = state.data = receivedTerm.sort(
-      (a, b) => b.startDate - a.startDate
-    )
+    state.data = receivedTerm.sort((a, b) => b.startDate - a.startDate)
   },
   [RECEIVE_TERM_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -104,8 +105,8 @@ export const reducer = createReducer(initialState, {
       name: payload.name,
       startDate: payload.startDate,
       endDate: payload.endDate,
-      startDateVisible: moment(payload.startDate).format('DD MMM YYYY'),
-      endDateVisible: moment(payload.endDate).format('DD MMM YYYY'),
+      startDateVisible: moment(payload.startDate).utc().format('DD MMM YYYY'),
+      endDateVisible: moment(payload.endDate).utc().format('DD MMM YYYY'),
       _id: payload._id,
     }
     const termData = []

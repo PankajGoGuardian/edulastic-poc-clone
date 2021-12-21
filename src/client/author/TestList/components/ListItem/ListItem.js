@@ -1,4 +1,3 @@
-import { assignmentApi } from '@edulastic/api'
 import { uniqBy } from 'lodash'
 import {
   cardTitleColor,
@@ -90,6 +89,7 @@ import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { DeleteItemModal } from '../DeleteItemModal/deleteItemModal'
+import { duplicateTestRequestAction } from '../../../TestPage/ducks'
 
 class ListItem extends Component {
   static propTypes = {
@@ -132,14 +132,17 @@ class ListItem extends Component {
     }
   }
 
-  duplicate = async (cloneOption) => {
-    const { history, item } = this.props
-    const duplicateTest = await assignmentApi.duplicateAssignment({
-      ...item,
-      redirectToNewTest: true,
-      cloneItems: cloneOption,
-    })
-    history.push(`/author/tests/${duplicateTest._id}`)
+  duplicate = (cloneOption) => {
+    const { item, duplicateTest } = this.props
+    const { _id, title } = item || {}
+    if (_id && title) {
+      duplicateTest({
+        _id,
+        title,
+        redirectToNewTest: true,
+        cloneItems: cloneOption,
+      })
+    }
   }
 
   closeModal = () => {
@@ -628,6 +631,7 @@ const enhance = compose(
       toggleTestLikeRequest: toggleTestLikeAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      duplicateTest: duplicateTestRequestAction,
     }
   )
 )

@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { groupBy, isEqual, uniqueId, pick } from 'lodash'
+import { groupBy, isEqual, uniqueId, pick, get } from 'lodash'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import * as moment from 'moment'
@@ -62,6 +62,8 @@ import {
   setIsUsedModalVisibleAction,
   setCustomTitleModalVisibleAction,
   cloneThisPlayListAction,
+  setCurrentUserTermAction,
+  getCurrentPlaylistTermId,
 } from '../ducks'
 import { getSummaryData } from '../util'
 /* eslint-enable */
@@ -264,7 +266,14 @@ class CurriculumSequence extends Component {
   }
 
   handlePlaylistChange = ({ _id, title, grades, subjects, groupId }) => {
-    const { useThisPlayList, isStudent, classId } = this.props
+    const {
+      useThisPlayList,
+      isStudent,
+      classId,
+      defaultTermId,
+      setCurrentUserTerm,
+    } = this.props
+    setCurrentUserTerm(defaultTermId)
     this.handleGuideCancel()
     useThisPlayList({
       _id,
@@ -638,6 +647,8 @@ class CurriculumSequence extends Component {
       setActiveRightPanelView,
       urlHasUseThis,
       setShowRightPanel,
+      defaultTermId,
+      setCurrentUserTerm,
     } = this.props
     const isAuthoringFlowReview = current === 'review'
     if (isAuthoringFlowReview) {
@@ -646,6 +657,7 @@ class CurriculumSequence extends Component {
       setShowRightPanel(!!urlHasUseThis)
       setActiveRightPanelView('summary')
     }
+    setCurrentUserTerm(defaultTermId)
   }
 
   checkWritePermission = () => {
@@ -697,6 +709,27 @@ class CurriculumSequence extends Component {
 
   handleCloseCustomTitleModal = () =>
     this.props.setCustomTitleModalVisible(false)
+
+  setCurrentUserTermAndFetchPlaylist = (_termId) => {
+    const {
+      destinationCurriculumSequence = {},
+      getAllCurriculumSequences,
+      getCurrentPlaylistMetrics,
+      isStudent,
+      urlHasUseThis,
+      setCurrentUserTerm,
+    } = this.props
+    setCurrentUserTerm(_termId)
+    const playlistId = destinationCurriculumSequence._id
+    if (playlistId) {
+      getAllCurriculumSequences(
+        [playlistId],
+        !isStudent && !urlHasUseThis,
+        true
+      )
+      getCurrentPlaylistMetrics({ playlistId, termId: _termId })
+    }
+  }
 
   render() {
     const {
@@ -765,6 +798,11 @@ class CurriculumSequence extends Component {
       isUsedModalVisible = false,
       customTitleModalVisible = false,
       currentUserId,
+      userTerms,
+      currentTermId,
+      setCurrentUserTerm,
+      getAllCurriculumSequences,
+      getCurrentPlaylistMetrics,
     } = this.props
 
     const smId = collections
@@ -1020,6 +1058,11 @@ class CurriculumSequence extends Component {
                     isAuthoringFlowReview={current === 'review'}
                     customizeInDraft={customizeInDraft}
                     blurSubHeader={expandedModules?.length > 0}
+                    userTerms={userTerms}
+                    currentTermId={currentTermId}
+                    setCurrentUserTerm={setCurrentUserTerm}
+                    getAllCurriculumSequences={getAllCurriculumSequences}
+                    getCurrentPlaylistMetrics={getCurrentPlaylistMetrics}
                   />
                   <Wrapper active={isContentExpanded}>
                     {destinationCurriculumSequence && (
@@ -1093,7 +1136,12 @@ class CurriculumSequence extends Component {
               </StyledFlexContainer>
             )}
             {currentTab === 'insights' && !loading && (
-              <Insights currentPlaylist={destinationCurriculumSequence} />
+              <Insights
+                currentPlaylist={destinationCurriculumSequence}
+                userTerms={userTerms}
+                currentTermId={currentTermId}
+                setCurrentUserTerm={this.setCurrentUserTermAndFetchPlaylist}
+              />
             )}
             {currentTab === 'differentiation' &&
               !loading &&
@@ -1163,6 +1211,9 @@ const enhance = compose(
         state.curriculumSequence?.customTitleModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,
+      userTerms: get(state, 'user.user.orgData.terms', []),
+      currentTermId: getCurrentPlaylistTermId(state),
+      defaultTermId: get(state, 'user.user.orgData.defaultTermId', ''),
     }),
     {
       onGuideChange: changeGuideAction,
@@ -1196,6 +1247,7 @@ const enhance = compose(
       duplicatePlayList: duplicatePlaylistRequestAction,
       setIsUsedModalVisible: setIsUsedModalVisibleAction,
       setCustomTitleModalVisible: setCustomTitleModalVisibleAction,
+      setCurrentUserTerm: setCurrentUserTermAction,
     }
   )
 )

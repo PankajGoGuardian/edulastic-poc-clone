@@ -39,6 +39,7 @@ const ResponseFrequency = ({
   settings,
   sharedReport,
   toggleFilter,
+  demographicFilters,
 }) => {
   const isSharedReport = !!sharedReport?._id
   const [difficultItems, setDifficultItems] = useState(40)
@@ -54,7 +55,7 @@ const ResponseFrequency = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters },
+        requestFilters: { ...settings.requestFilters, ...demographicFilters },
         testId: settings.selectedTest.key,
       }
       getResponseFrequency(q)
@@ -188,7 +189,10 @@ const ResponseFrequency = ({
             </Col>
             <Col className="question-container">
               <p>What items are misunderstood?</p>
-              <p>Highlight response in yellow if incorrect choice% is above:</p>
+              <p>
+                Highlight incorrect answer choices with gray if response% is
+                above:
+              </p>
               <Row type="flex" justify="start" align="middle">
                 <Col className="answer-slider-percentage">
                   <span>{misunderstoodItems}%</span>

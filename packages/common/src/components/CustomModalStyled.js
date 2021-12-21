@@ -23,10 +23,10 @@ const StyledModal = styled(Modal)`
     .ant-modal-close {
       color: ${title};
       top: 10px;
-      right: 10px;
+      right: 30px;
       svg {
-        width: 20px;
-        height: 20px;
+        width: 24px;
+        height: 24px;
       }
     }
     .ant-modal-header {

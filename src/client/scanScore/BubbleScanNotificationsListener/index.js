@@ -21,7 +21,11 @@ const BubbleScanNotificationsListener = ({ user, setOmrSheetDocs }) => {
   useEffect(() => {
     if (
       user &&
-      [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
+      [
+        ...roleuser.DA_SA_ROLE_ARRAY,
+        roleuser.TEACHER,
+        roleuser.EDULASTIC_ADMIN,
+      ].includes(user.role)
     ) {
       const uniqDocs = uniqBy(userNotifications, '__id')
       // group docs by assignmentId

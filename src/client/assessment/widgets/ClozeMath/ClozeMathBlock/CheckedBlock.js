@@ -61,19 +61,20 @@ const CheckedBlock = ({
 }) => {
   const { responseIds } = item
   const { index } = find(responseIds[type], (res) => res.id === id)
-  let { unit = '' } = userAnswer || {}
+  const { unit = '' } = userAnswer || {}
   /**
    * certain keys already have the \text{} format, like \text{ft}^{2}
    * wrap inside \text{} only if its not already beginning with \text{
    * @see https://snapwiz.atlassian.net/browse/EV-15169
    */
-  const unitWrappedInTextFormat = unit.match(/^\\text{/)
-  if (
-    (unit.search('f') !== -1 || unit.search(/\s/g) !== -1) &&
-    !unitWrappedInTextFormat
-  ) {
-    unit = `\\text{${unit}}`
-  }
+
+  // const unitWrappedInTextFormat = unit.match(/^\\text{/)
+  // if (
+  //   (unit.search('f') !== -1 || unit.search(/\s/g) !== -1) &&
+  //   !unitWrappedInTextFormat
+  // ) {
+  //   unit = `\\text{${unit}}`
+  // }
 
   const answer = combineUnitAndValue(userAnswer, isMath, unit)
 

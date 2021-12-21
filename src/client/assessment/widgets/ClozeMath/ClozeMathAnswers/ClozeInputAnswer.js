@@ -9,6 +9,7 @@ import {
 } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
 import { TextInputStyled } from '../../../styled/InputStyles'
+import { getStylesFromUiStyleToCssStyle } from '../../../utils/helpers'
 
 const { Panel } = Collapse
 
@@ -43,6 +44,8 @@ class ClozeInputAnswer extends Component {
       tabIndex,
     } = this.props
 
+    const cssStyles = getStylesFromUiStyleToCssStyle(uiStyle)
+
     return (
       <AnswerContainer>
         <Collapse
@@ -50,7 +53,11 @@ class ClozeInputAnswer extends Component {
           bordered={false}
           expandIconPosition="right"
           expandIcon={({ isActive }) =>
-            isActive ? <Icon type="caret-up" /> : <Icon type="caret-down" />
+            isActive ? (
+              <Icon type="caret-up" />
+            ) : (
+              <Icon type="caret-down" data-cy="clozeInputAnswer" />
+            )
           }
         >
           {answers.map((answer) => {
@@ -69,9 +76,11 @@ class ClozeInputAnswer extends Component {
                 key={`${answer.id}-${tabIndex}`}
               >
                 <TextInputStyled
+                  data-cy="textInput"
                   style={{
-                    width,
-                    height,
+                    width: cssStyles.width || width,
+                    height: cssStyles.height || height,
+                    fontSize: cssStyles.fontSize,
                     minWidth: '140px',
                     minHeight: '35px',
                   }}

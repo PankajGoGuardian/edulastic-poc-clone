@@ -16,6 +16,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
+import { segmentApi } from '@edulastic/api'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -53,6 +54,7 @@ import {
   deleteTestSettingRequestAction,
   updateTestSettingRequestAction,
   getIsOverrideFreezeSelector,
+  setTestSettingsListAction,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -135,6 +137,7 @@ class AssignTest extends React.Component {
       fetchUserCustomKeypads,
       location,
       addRecommendedResourcesAction,
+      setAssignments,
     } = this.props
 
     if (isSAWithoutSchools) {
@@ -148,6 +151,7 @@ class AssignTest extends React.Component {
     resetStudents()
 
     const { testId } = match.params
+    setAssignments([])
     loadClassList({
       districtId: userOrgId,
       search: {
@@ -158,6 +162,20 @@ class AssignTest extends React.Component {
       },
       page: 1,
       limit: 4000,
+      includes: [
+        'name',
+        'studentCount',
+        'subject',
+        'grades',
+        'termId',
+        'type',
+        'tags',
+        'description',
+        'owners',
+        'primaryTeacherId',
+        'parent',
+        'institutionId',
+      ],
     })
 
     if (premium) {
@@ -215,9 +233,13 @@ class AssignTest extends React.Component {
       }
     }
     if (testId && isPlaylist) {
-      fetchTestByID(testId, null, null, true, match.params.playlistId)
+      fetchTestByID(testId, null, null, true, match.params.playlistId, {
+        assigningNew: true,
+      })
     } else if (testId) {
-      fetchTestByID(testId)
+      fetchTestByID(testId, undefined, undefined, undefined, undefined, {
+        assigningNew: true,
+      })
     }
 
     const resourceIds = history.location?.state?.resourceIds || []
@@ -230,9 +252,14 @@ class AssignTest extends React.Component {
   }
 
   componentWillUnmount() {
-    const { clearAssignmentSettings, setAssignments } = this.props
+    const {
+      clearAssignmentSettings,
+      setAssignments,
+      setTestSettingsList,
+    } = this.props
     clearAssignmentSettings()
     setAssignments([])
+    setTestSettingsList([])
   }
 
   componentDidUpdate(prevProps) {
@@ -301,7 +328,10 @@ class AssignTest extends React.Component {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
       }
       const isValid = this.validateSettings(updatedAssignment)
-      if (isValid) saveAssignment(updatedAssignment)
+      if (isValid) {
+        segmentApi.genericEventTrack('testAssignSubmit', updatedAssignment)
+        saveAssignment(updatedAssignment)
+      }
     }
   }
 
@@ -895,6 +925,7 @@ const enhance = compose(
       fetchUserCustomKeypads: fetchCustomKeypadAction,
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
+      setTestSettingsList: setTestSettingsListAction,
     }
   )
 )

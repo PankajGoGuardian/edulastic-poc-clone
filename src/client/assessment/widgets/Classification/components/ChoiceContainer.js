@@ -8,7 +8,7 @@ import { Subtitle } from '@edulastic/common'
 
 function useLayoutEffectDebounced(func, values, time) {
   useLayoutEffect(() => {
-    let db = setTimeout(() => {
+    const db = setTimeout(() => {
       func()
     }, time)
 
@@ -62,8 +62,7 @@ ChoiceContainer.defaultProps = {
 export default ChoiceContainer
 
 const Container = styled.div`
-  padding: 22px 12px;
-  min-height: ${({ minHeight }) => (minHeight ? `${minHeight}px` : '140px')};
+  padding: 8px 12px 22px;
   background-color: ${lightGrey1};
 
   ${({ direction, choiceWidth }) => {
@@ -71,6 +70,8 @@ const Container = styled.div`
       return `
         margin-left: 16px;
         max-width: ${choiceWidth}px;
+        min-height: ${({ minHeight }) =>
+          minHeight ? `${minHeight}px` : '140px'};
         border-radius: 0px 10px 10px 0px;
         & .choice-items-wrapper {
           flex-direction: column;
@@ -82,6 +83,8 @@ const Container = styled.div`
       return `
         margin-right: 16px;
         max-width: ${choiceWidth}px;
+        min-height: ${({ minHeight }) =>
+          minHeight ? `${minHeight}px` : '140px'};
         border-radius: 10px 0px 0px 10px;
         & .choice-items-wrapper {
           flex-direction: column;
@@ -90,7 +93,6 @@ const Container = styled.div`
       `
     }
     return `
-      width: max-content;
       border-radius: 10px;
       margin-top: 16px;
       & .choice-items-wrapper {

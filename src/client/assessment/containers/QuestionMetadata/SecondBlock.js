@@ -199,6 +199,7 @@ const SecondBlock = ({
               placeholder={t('component.options.blooomTaxonomy')}
               onSelect={onQuestionDataSelect('bloomsTaxonomy')}
               value={bloomsTaxonomy}
+              dropdownClassName="custom-antd-select"
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
               suffixIcon={<SelectSuffixIcon type="caret-down" />}
             >
@@ -239,6 +240,7 @@ const SecondBlock = ({
                   data-cy="collectionsSelect"
                   bg="white"
                   placeholder="Please select"
+                  dropdownClassName="custom-antd-select"
                   value={filteredCollections.flatMap((c) => c.bucketIds)}
                   onChange={(value, options) =>
                     handleCollectionsSelect(value, options, collectionsToShow)
@@ -309,6 +311,7 @@ const SecondBlock = ({
                 onSearch={searchTags}
                 onSelect={selectTags}
                 onDeselect={deselectTags}
+                dropdownClassName="custom-antd-select"
                 filterOption={(input, option) =>
                   option.props.title.toLowerCase().includes(input.toLowerCase())
                 }

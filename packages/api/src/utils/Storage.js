@@ -63,6 +63,22 @@ export function storeAccessToken(token, userId, role, _default = false) {
   }
 }
 
+export function selectAccessToken(userId, role) {
+  window.sessionStorage.tokenKey = tokenKey(userId, role)
+}
+
+/**
+ * Update kid after user authentication
+ * and sets the same to sentry scope
+ * @param {*} user
+ */
+export function updateKID({ _id, role, districtId, kid }) {
+  if (window.sessionStorage) {
+    window.sessionStorage.kid = kid
+    updateSentryScope({ _id, role, districtId, kid })
+  }
+}
+
 export function updateUserToken(token, kid) {
   try {
     const { _id: userId, role, districtId } = parseJwt(token)
@@ -74,10 +90,6 @@ export function updateUserToken(token, kid) {
   } catch (e) {
     captureException(e)
   }
-}
-
-export function selectAccessToken(userId, role) {
-  window.sessionStorage.tokenKey = tokenKey(userId, role)
 }
 
 export function removeAccessToken(userId, role) {
@@ -121,18 +133,6 @@ export const initKID = () => {
   ) {
     window.sessionStorage.kid = uuid.v4()
     updateSentryScope()
-  }
-}
-
-/**
- * Update kid after user authentication
- * and sets the same to sentry scope
- * @param {*} user
- */
-export function updateKID({ _id, role, districtId, kid }) {
-  if (window.sessionStorage) {
-    window.sessionStorage.kid = kid
-    updateSentryScope({ _id, role, districtId, kid })
   }
 }
 
@@ -234,4 +234,12 @@ export function addPlaylistIdToDeleted(id) {
 
 export function getDeletedPlaylistIds() {
   return JSON.parse(getFromSessionStorage('deletedPlaylists') || '[]')
+}
+
+export function tokenExpireInHours() {
+  const currentTime = new Date().getTime()
+  const token = getAccessToken()
+  const tokenParsed = parseJwt(token)
+  const timeDiff = (tokenParsed.exp * 1000 - currentTime) / 3600000
+  return timeDiff
 }

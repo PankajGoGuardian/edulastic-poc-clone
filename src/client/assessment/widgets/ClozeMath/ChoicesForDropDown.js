@@ -186,6 +186,7 @@ class ChoicesForDropDown extends Component {
 
               <div>
                 <CustomStyleBtn
+                  data-cy="addNewChoice"
                   onClick={() => this.addNewChoiceBtn(dropdown.id)}
                 >
                   {t('component.cloze.dropDown.addnewchoice')}

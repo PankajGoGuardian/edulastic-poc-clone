@@ -22,6 +22,7 @@ export const ADD_RUBRIC_TO_RECENTLY_USED =
 export const UPDATE_RUBRIC_IN_RECENTLY_USED_LIST =
   '[rubric] update rubric in recently used list'
 export const SET_RECENTLY_USED_LIST = '[rubric] set recently used list'
+export const SET_RUBRIC_DATA_LOADING = '[rubric] set rubric data loading'
 
 // actions
 export const updateRubricDataAction = createAction(UPDATE_RUBRIC_DATA)
@@ -40,6 +41,7 @@ export const updateRubricInRecentlyUsedAction = createAction(
   UPDATE_RUBRIC_IN_RECENTLY_USED_LIST
 )
 export const setRecentlyUsedList = createAction(SET_RECENTLY_USED_LIST)
+export const setRubricDataLoadingAction = createAction(SET_RUBRIC_DATA_LOADING)
 
 // reducer
 const initialState = {
@@ -47,6 +49,7 @@ const initialState = {
   currentRubric: null,
   searchingRubrics: false,
   totalSearchedCount: 0,
+  rubricDataLoading: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -67,10 +70,14 @@ export const reducer = createReducer(initialState, {
     state.searchingRubrics = false
   },
   [GET_RUBRIC_BY_ID_SUCCESS]: (state, { payload }) => {
+    state.rubricDataLoading = false
     state.currentRubric = payload[0]
   },
   [SET_RECENTLY_USED_LIST]: (state, { payload }) => {
     state.recentlyUsedRubrics = payload
+  },
+  [SET_RUBRIC_DATA_LOADING]: (state, { payload }) => {
+    state.rubricDataLoading = payload
   },
 })
 
@@ -160,11 +167,14 @@ function* deleteRubricSaga({ payload }) {
 
 function* getRubricByIdSaga({ payload }) {
   try {
+    yield put(setRubricDataLoadingAction(true))
     const rubric = yield call(rubricsApi.getRubricsById, payload)
     yield put(getRubricByIdSuccessAction(rubric))
   } catch (err) {
     console.error(err)
     notification({ messageKey: 'failedToFetchRubric' })
+  } finally {
+    yield put(setRubricDataLoadingAction(false))
   }
 }
 
@@ -263,4 +273,9 @@ export const getRecentlyUsedRubricsSelector = createSelector(
       return []
     }
   }
+)
+
+export const getRubricDataLoadingSelector = createSelector(
+  getStateSelector,
+  (state) => state.rubricDataLoading
 )

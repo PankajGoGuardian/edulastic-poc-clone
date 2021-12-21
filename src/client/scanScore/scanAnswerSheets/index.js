@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Progress, Row, Select } from 'antd'
+import { Progress, Row, Select, Tooltip } from 'antd'
 import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
 import { round } from 'lodash'
@@ -36,6 +36,7 @@ import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
+import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
 import {
@@ -175,16 +176,43 @@ const ScanAnswerSheetsInner = ({
       )
       vc.read(matSrc)
       let result = null
+      const parentRectangle = detectParentRectangle(cv, matSrc)
+      let rectanglePosition
+      let qrCodeData
+      if (parentRectangle) {
+        rectanglePosition = parentRectangle.rectanglePosition
+        qrCodeData = parentRectangle.qrCodeData
+      } else {
+        cv.imshow('canvasOutput', matSrc)
+        matSrc.delete()
+        requestAnimationFrame(() =>
+          processVideo(vc).catch((e) => {
+            console.log('process video opencv error')
+            console.warn('err', e)
+          })
+        )
+        return
+      }
       if (answersList) {
         cv.imshow('canvasOutput', matSrc)
       } else {
-        result = getAnswersFromVideo(cv, matSrc, isFrontFacingRef.current)
+        result = getAnswersFromVideo(
+          cv,
+          matSrc,
+          rectanglePosition,
+          qrCodeData.location
+        )
       }
       matSrc.delete()
-      requestAnimationFrame(() => processVideo(vc))
+      requestAnimationFrame(() =>
+        processVideo(vc).catch(() => {
+          console.log('process video opencv error')
+        })
+      )
       if (!result) {
         return
       }
+      result.qrCode = qrCodeData.data
       const { answers } = result
       if (answers) {
         if (answers.length > 0) {
@@ -212,7 +240,7 @@ const ScanAnswerSheetsInner = ({
                 arrAnswersRef.current.push(result)
                 notification({
                   type: 'success',
-                  msg: 'Form detected. You can now scan the next one.',
+                  msg: 'Form successfully scanned. Please scan the next one.',
                 })
                 audioRef.play()
 
@@ -282,7 +310,7 @@ const ScanAnswerSheetsInner = ({
           console.log(`Error While accessing camera: ${err}`)
         })
     }
-  }, [])
+  }, [selectedCamera])
 
   useEffect(() => {
     if (isCameraLoaded && isOpencvLoaded) {
@@ -321,7 +349,9 @@ const ScanAnswerSheetsInner = ({
                 videoRef.current.setAttribute('height', videoHeight)
                 // Start Video Processing
                 requestAnimationFrame(() =>
-                  processVideo(new cv.VideoCapture(videoRef.current))
+                  processVideo(
+                    new cv.VideoCapture(videoRef.current)
+                  ).catch(() => console.warn('opencv error'))
                 )
               }
             },
@@ -437,11 +467,11 @@ const ScanAnswerSheetsInner = ({
       ) : (
         <CameraUploaderWrapper>
           <Title>
-            Put your bubble sheets in front of the camera{' '}
+            Put your bubble sheet forms in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
           <SubTitle>
-            Ensure the sheets are fully visible and wait for the Form detected
+            Ensure the forms are fully visible and wait for the Form detected
             message with a beeper sound.
           </SubTitle>
           <FlexContainer width={`${videoSetting.width}px`}>
@@ -504,7 +534,7 @@ const ScanAnswerSheetsInner = ({
             onClick={triggerCompleteConfirmation}
             style={{ marginTop: 15 }}
           >
-            PROCEED TO NEXT STEP
+            Proceed to Scan Results
           </EduButton>
         </CameraUploaderWrapper>
       )}
@@ -514,7 +544,7 @@ const ScanAnswerSheetsInner = ({
           title="Scan Finished Confirmation"
           description="Have you scanned all Bubble Sheet Forms?"
           buttonText="YES, PROCEED"
-          cancelText="NO, LET ME FINISH"
+          cancelText="No, I have more to scan"
           onCancel={closeScanConfirmationModal}
           onProceed={handleScanComplete}
         />
@@ -531,11 +561,12 @@ const ScanAnswerSheetsInner = ({
         <Row>
           <FieldLabel>SELECT CAMERA</FieldLabel>
           <SelectInputStyled
-            disabled={cameraList.length > 1}
+            disabled={cameraList.length === 1}
             value={cameraList.length === 1 ? cameraList[0].id : selectedCamera}
             onChange={(v) => {
               setSelectedCamera(v)
             }}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <Option value={null}>Select Camera</Option>
             {cameraList.map((x) => (
@@ -545,13 +576,15 @@ const ScanAnswerSheetsInner = ({
         </Row>
         <br />
         <Row>
-          <Checkbox
-            checked={isFrontFacing}
-            onChange={() => {
-              setIsFrontFacing((x) => !x)
-            }}
-            label="CAMERA IS FACING ME"
-          />
+          <Tooltip title="Check this option if the camera is facing you. This will mirror the image horizontally so that you can scan more easily.">
+            <Checkbox
+              checked={isFrontFacing}
+              onChange={() => {
+                setIsFrontFacing((x) => !x)
+              }}
+              label="CAMERA IS FACING ME"
+            />
+          </Tooltip>
         </Row>
       </CustomModalStyled>
       {isHelpModalVisible && (

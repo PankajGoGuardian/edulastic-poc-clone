@@ -27,6 +27,8 @@ const CONFIG = {
   course: 'Course',
   tags: 'Tags',
   endDate: 'End Date',
+  grades: 'Grade',
+  subject: 'Subject',
 }
 
 function BulkEditModal({
@@ -299,7 +301,10 @@ function BulkEditModal({
                     },
                     {
                       title: CONFIG[updateMode],
-                      dataIndex: `_source.${updateMode}`,
+                      dataIndex:
+                        updateMode === 'course'
+                          ? `_source.${updateMode}.name`
+                          : `_source.${updateMode}`,
                     },
                   ]
             }

@@ -44,9 +44,9 @@ export const uploadFile = (file, endPoint) => {
     .then((result) => result.data.result)
 }
 
-export const saveStandard = (subject) =>
+export const saveStandard = (subject, standardData) =>
   api.callApi({
-    url: `admin-tool/save-standard`,
+    url: `admin-tool/standards`,
     method: 'post',
-    data: { subject },
+    data: { subject, standardData },
   })

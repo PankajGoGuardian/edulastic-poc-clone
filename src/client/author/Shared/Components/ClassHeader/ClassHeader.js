@@ -90,6 +90,7 @@ import {
 import {
   getGroupList,
   getCanvasAllowedInstitutionPoliciesSelector,
+  getUserRole,
 } from '../../../src/selectors/user'
 import {
   CaretUp,
@@ -536,6 +537,8 @@ class ClassHeader extends Component {
           uta.UTASTATUS === testActivityStatus.SUBMITTED
       )
 
+    const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
+
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -655,8 +658,14 @@ class ClassHeader extends Component {
             data-cy="download-bubble-sheet"
             key="download-bubble-sheet"
             onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+            disabled={!!isAssignmentDone}
           >
-            Generate Bubble Sheet
+            <Tooltip
+              title={isAssignmentDone ? 'Assignment is not open' : null}
+              placement="right"
+            >
+              Generate Bubble Sheet
+            </Tooltip>
           </MenuItems>
         </FeaturesSwitch>
         <FeaturesSwitch
@@ -749,6 +758,7 @@ class ClassHeader extends Component {
         )}
         {showSchoologyGradeSyncOption && (
           <MenuItems
+            data-cy="schoologySyncGrades"
             key="key10"
             onClick={() =>
               this.handleSchoologyAssignmentGradesSync({
@@ -764,6 +774,7 @@ class ClassHeader extends Component {
           groupAtlasId &&
           atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
             <MenuItems
+              data-cy="schoologySyncAssignment"
               key="key11"
               onClick={() =>
                 schoologySyncAssignment({
@@ -965,14 +976,16 @@ class ClassHeader extends Component {
                   okText="Yes"
                   cancelText="No"
                 />
-                <ReleaseScoreSettingsModal
-                  showReleaseGradeSettings={isShowReleaseSettingsPopup}
-                  onCloseReleaseScoreSettings={() =>
-                    toggleReleaseGradePopUp(false)
-                  }
-                  updateReleaseScoreSettings={this.handleReleaseScore}
-                  releaseScore={releaseScore}
-                />
+                {isShowReleaseSettingsPopup && (
+                  <ReleaseScoreSettingsModal
+                    showReleaseGradeSettings={isShowReleaseSettingsPopup}
+                    onCloseReleaseScoreSettings={() =>
+                      toggleReleaseGradePopUp(false)
+                    }
+                    updateReleaseScoreSettings={this.handleReleaseScore}
+                    releaseScore={releaseScore}
+                  />
+                )}
                 <DeleteAssignmentModal
                   testName={additionalData?.testName}
                   testId={additionalData?.testId}
@@ -1116,6 +1129,7 @@ const enhance = compose(
       syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
         state
       ),
+      userRole: getUserRole(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

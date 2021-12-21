@@ -7,6 +7,7 @@ import { withRouter } from 'react-router-dom'
 import { capitalize, isEmpty, find, get, pickBy, identity } from 'lodash'
 import { Form, Spin, Row } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
+import { segmentApi } from '@edulastic/api'
 // actions
 import { getDictCurriculumsAction } from '../../../src/actions/dictionaries'
 import {
@@ -80,7 +81,9 @@ class ClassCreate extends React.Component {
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums, getAllTags } = this.props
+    const { curriculums, getCurriculums, getAllTags, location } = this.props
+    const { fromDashboard, type } = location?.state || {}
+    segmentApi.genericEventTrack('createClassStart', { fromDashboard, type })
 
     if (isEmpty(curriculums)) {
       getCurriculums()
@@ -95,7 +98,6 @@ class ClassCreate extends React.Component {
       userId,
       userOrgData,
       allTagsData,
-      location,
       userFeatures,
       districtId,
     } = this.props
@@ -104,7 +106,7 @@ class ClassCreate extends React.Component {
 
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { createClass, curriculums } = this.props
+        const { createClass, curriculums, location } = this.props
         const {
           standardSets,
           endDate,
@@ -159,7 +161,14 @@ class ClassCreate extends React.Component {
         if (!isEmpty(premiumGradeSubject)) {
           callUserMeApi = true
         }
-        createClass({ ...pickBy(values, identity), callUserMeApi })
+        const submitValues = pickBy(values, identity)
+        createClass({ ...submitValues, callUserMeApi })
+        const { fromDashboard, type } = location?.state || {}
+        segmentApi.genericEventTrack('createClassSubmit', {
+          ...submitValues,
+          fromDashboard,
+          type,
+        })
       }
     })
   }
@@ -279,7 +288,10 @@ class ClassCreate extends React.Component {
     const { defaultSchool, schools } = userOrgData
     const { submitted } = this.state
     if (!creating && submitted && isEmpty(error)) {
-      history.push(exitPath || `/author/manageClass/${classId}`)
+      history.push({
+        pathname: exitPath || `/author/manageClass/${classId}`,
+        state: location?.state,
+      })
     }
     return (
       <Form onSubmit={this.handleSubmit}>

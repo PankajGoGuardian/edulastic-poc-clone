@@ -181,8 +181,12 @@ class DisneyCardContainer extends Component {
           serverTimeStamp,
           closed
         )
+        const { questionActivities = [] } = student
+        const isAllPractice =
+          questionActivities.length &&
+          questionActivities.every((q) => q.isPractice)
 
-        const hasUsedScratchPad = student?.questionActivities.some(
+        const hasUsedScratchPad = (questionActivities || []).some(
           (questionActivity) =>
             questionActivity?.scratchPad?.scratchpad === true
         )
@@ -195,6 +199,7 @@ class DisneyCardContainer extends Component {
           if (attemptScore >= 0) {
             return <span>{round(attemptScore, 2) || 0}</span>
           }
+
           return <span>{round(student.score, 2) || 0}</span>
         }
 
@@ -208,7 +213,7 @@ class DisneyCardContainer extends Component {
          */
         const enrollMentFlag =
           student.isEnrolled === false ? (
-            <Tooltip title="Not Enrolled">
+            <Tooltip title="Unenrolled from class">
               <span>
                 <ExclamationMark />
               </span>
@@ -216,16 +221,12 @@ class DisneyCardContainer extends Component {
           ) : (
             ''
           )
-        const isAcitveStudentUnassigned =
-          student.isAssigned === false && student.isEnrolled
-        const unAssignedMessage = isAcitveStudentUnassigned ? (
-          <Tooltip title="Unassigned">
+        const unAssignedMessage = (
+          <Tooltip title="Unassigned from Assignment">
             <span>
               <ExclamationMark />
             </span>
           </Tooltip>
-        ) : (
-          ''
         )
 
         const canShowResponse =
@@ -335,8 +336,9 @@ class DisneyCardContainer extends Component {
                           }
                         }}
                       >
-                        {enrollMentFlag}
-                        {unAssignedMessage}
+                        {student.isAssigned === false
+                          ? unAssignedMessage
+                          : enrollMentFlag}
                         <PauseToolTip
                           outNavigationCounter={student.outNavigationCounter}
                           pauseReason={student.pauseReason}
@@ -410,10 +412,16 @@ class DisneyCardContainer extends Component {
                     <StyledFlexDiv>
                       <StyledParaFF>Performance</StyledParaFF>
                       <StyledParaSSS data-cy="studentPerformance">
-                        {student.score > 0 && student.status !== 'redirected'
-                          ? round((student.score / student.maxScore) * 100, 2)
-                          : 0}
-                        %
+                        {student.status !== 'absent'
+                          ? student.score > 0 &&
+                            student.status !== 'redirected' &&
+                            !isAllPractice
+                            ? `${round(
+                                (student.score / student.maxScore) * 100,
+                                2
+                              )}%`
+                            : `0%`
+                          : null}
                       </StyledParaSSS>
                     </StyledFlexDiv>
                     <StyledFlexDiv>
@@ -484,7 +492,8 @@ class DisneyCardContainer extends Component {
                         <StyledParaFF>{responseLink}</StyledParaFF>
                       </StyledFlexDiv>
                       <StyledFlexDiv style={{ justifyContent: 'flex-start' }}>
-                        {student.UTASTATUS === NOT_STARTED ? (
+                        {student.UTASTATUS === NOT_STARTED ||
+                        student.UTASTATUS === ABSENT ? (
                           <AttemptDiv data-cy="attempt-container">
                             <CenteredStyledParaSS>
                               -&nbsp;/ {round(student.maxScore, 2) || 0}
@@ -495,7 +504,9 @@ class DisneyCardContainer extends Component {
                                 justifyContent: 'center',
                               }}
                             >
-                              Not Started
+                              {student.UTASTATUS === NOT_STARTED
+                                ? `Not Started`
+                                : `Absent`}
                             </StyledParaSS>
                             <p style={{ fontSize: '12px' }}>
                               Attempt{' '}
@@ -565,15 +576,28 @@ class DisneyCardContainer extends Component {
                                   2
                                 ) || 0}
                               </CenteredStyledParaSS>
-                              <StyledParaSSS>
-                                {attempt.score > 0
-                                  ? round(
-                                      (attempt.score / attempt.maxScore) * 100,
-                                      2
-                                    )
-                                  : 0}
-                                %
-                              </StyledParaSSS>
+
+                              {attempt.status === ABSENT ? (
+                                <StyledParaSS
+                                  style={{
+                                    fontSize: '12px',
+                                    justifyContent: 'center',
+                                  }}
+                                >
+                                  Absent
+                                </StyledParaSS>
+                              ) : (
+                                <StyledParaSSS>
+                                  {attempt.score > 0
+                                    ? round(
+                                        (attempt.score / attempt.maxScore) *
+                                          100,
+                                        2
+                                      )
+                                    : 0}
+                                  %
+                                </StyledParaSSS>
+                              )}
                               <p style={{ fontSize: '12px' }}>
                                 Attempt {attempt.number}
                               </p>

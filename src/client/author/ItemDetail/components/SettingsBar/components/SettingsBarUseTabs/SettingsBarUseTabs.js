@@ -15,7 +15,7 @@ const SettingsBarUseTabs = ({
 }) => (
   <Container>
     <FlexContainer justifyContent="flex-start">
-      <Heading>{t('component.settingsBar.useTabs')}</Heading>
+      <Heading data-cy="useTabs">{t('component.settingsBar.useTabs')}</Heading>
       <HelperToolTip
         optionKey="useTabs"
         placement="topLeft"
@@ -23,13 +23,18 @@ const SettingsBarUseTabs = ({
       />
     </FlexContainer>
     <FlexContainer justifyContent="space-between">
-      <CheckboxLabel onChange={onChangeLeft} checked={checkedLeft}>
+      <CheckboxLabel
+        onChange={onChangeLeft}
+        checked={checkedLeft}
+        data-cy="leftColumn"
+      >
         {t('component.settingsBar.leftColumn')}
       </CheckboxLabel>
       <CheckboxLabel
         onChange={onChangeRight}
         checked={checkedRight}
         disabled={disableRight}
+        data-cy="rightColumn"
       >
         {t('component.settingsBar.rightColumn')}
       </CheckboxLabel>

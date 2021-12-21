@@ -12,6 +12,7 @@ import { assignmentApi, reportsApi } from '@edulastic/api'
 import {
   testActivity as testActivityConstants,
   testActivityStatus,
+  assignmentStatusOptions,
 } from '@edulastic/constants'
 import {
   assignmentSchema,
@@ -23,6 +24,37 @@ import {
   reportSchema,
 } from '../sharedDucks/ReportsModule/ducks'
 import { getServerTs } from '../utils'
+
+const { DONE, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
+
+export const getAssignmentClassStatus = (assignment, classId) => {
+  const statusMap = {
+    'NOT OPEN': 0,
+    'IN PROGRESS': 1,
+    'IN GRADING': 2,
+    DONE: 3,
+    ARCHIVED: 4,
+  }
+  let currentStatus = 'ARCHIVED'
+  let currentStatusValue = 4
+  for (const clazz of assignment.class) {
+    if (clazz._id === classId) {
+      const { startDate } = clazz
+      const isStartDateElapsed = startDate && startDate < Date.now()
+      const statusValue = statusMap[clazz.status]
+      if (statusValue < currentStatusValue) {
+        currentStatusValue = statusValue
+        currentStatus = clazz.status
+        if (isStartDateElapsed && clazz.status === NOT_OPEN) {
+          currentStatus = IN_PROGRESS
+          currentStatusValue = statusMap[IN_PROGRESS]
+        }
+      }
+    }
+  }
+
+  return currentStatus
+}
 
 // constants
 export const getCurrentGroup = createSelectorator(
@@ -144,6 +176,10 @@ const isReport = (assignment, classIds, userId) => {
   let { endDate } = assignment
   const serverTimeStamp = getServerTs(assignment)
   const { class: groups = [], classId: currentGroup } = assignment
+  const assignmentStatus = getAssignmentClassStatus(assignment, currentGroup)
+  if (assignmentStatus === DONE) {
+    return true
+  }
   if (!endDate) {
     const currentUserGroups = groups.filter(
       (clazz) =>

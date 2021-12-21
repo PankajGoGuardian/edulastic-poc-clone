@@ -282,6 +282,7 @@ class AssessmentPlayerSimple extends React.Component {
       uploadToS3,
       user: { firstName = '', lastName = '' },
       playerSkinType,
+      canShowPlaybackOptionTTS,
     } = this.props
     const {
       showExitPopup,
@@ -352,6 +353,7 @@ class AssessmentPlayerSimple extends React.Component {
               ...assessmentPlayerTheme,
               playerSkinType,
             }}
+            canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
           >
             {toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
               <CalculatorContainer

@@ -167,11 +167,13 @@ const ApiForm = () => {
         onChange={handleOnChange}
         value={id}
       >
-        {apiForms.map((each) => (
-          <Select.Option key={each.id} value={each.id}>
-            {each.name}
-          </Select.Option>
-        ))}
+        {apiForms
+          .sort((a, b) => a.name.localeCompare(b.name))
+          .map((each) => (
+            <Select.Option key={each.id} value={each.id}>
+              {each.name}
+            </Select.Option>
+          ))}
       </Select>
       {id && (
         <ApiFormsMain

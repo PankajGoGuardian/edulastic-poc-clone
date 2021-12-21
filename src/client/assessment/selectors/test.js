@@ -124,3 +124,8 @@ export const getIsPreviewModalVisibleSelector = createSelector(
   stateSelector,
   (state) => state.isTestPreviewModalVisible
 )
+
+export const checkAnswerInProgressSelector = createSelector(
+  stateSelector,
+  (test) => test.checkAnswerInProgress
+)

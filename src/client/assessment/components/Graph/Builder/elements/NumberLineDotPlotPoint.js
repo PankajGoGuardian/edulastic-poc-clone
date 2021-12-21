@@ -2,6 +2,8 @@ import { getClosestTick, calcNumberlinePosition } from '../utils'
 import { Colors, CONSTANT } from '../config'
 import { defaultPointParameters } from '../settings'
 
+const jxgType = CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT
+
 const getPointCount = (board, y, isDelete) => {
   const {
     layout: { yDistance },
@@ -52,23 +54,28 @@ const removeDuplicatePoints = (board, x) => {
   return true
 }
 
-const drawPoint = (board, point1, point2, colors = null) => {
-  const removeResult = removeDuplicatePoints(board, point1)
-
-  const pointOptions = {
-    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+function getColorParams(currentTool, colors) {
+  return {
     ...Colors.gray[CONSTANT.TOOLS.POINT],
     highlightStrokeColor: () =>
-      board.currentTool === CONSTANT.TOOLS.TRASH ||
-      board.currentTool === CONSTANT.TOOLS.DELETE
+      currentTool === CONSTANT.TOOLS.TRASH ||
+      currentTool === CONSTANT.TOOLS.DELETE
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightStrokeColor
         : Colors.gray[CONSTANT.TOOLS.POINT].highlightStrokeColor,
     highlightFillColor: () =>
-      board.currentTool === CONSTANT.TOOLS.TRASH ||
-      board.currentTool === CONSTANT.TOOLS.DELETE
+      currentTool === CONSTANT.TOOLS.TRASH ||
+      currentTool === CONSTANT.TOOLS.DELETE
         ? Colors.red[CONSTANT.TOOLS.POINT].highlightFillColor
         : Colors.gray[CONSTANT.TOOLS.POINT].highlightFillColor,
-    ...colors,
+    ...(colors || {}),
+  }
+}
+
+const drawPoint = (board, point1, point2, colors = null) => {
+  const removeResult = removeDuplicatePoints(board, point1)
+  const pointOptions = {
+    ...(board.getParameters(CONSTANT.TOOLS.POINT) || defaultPointParameters()),
+    ...getColorParams(board.currentTool, colors),
     fixed: true,
     snapToGrid: false,
     size: 5,
@@ -106,6 +113,7 @@ const onHandler = (board, coord) => {
 
 const getConfig = (segment) => ({
   id: segment.id,
+  _type: segment.segmentType,
   type: segment.segmentType,
   point1: segment.ancestors[0].X(),
   point2: segment.ancestors.length,
@@ -144,6 +152,7 @@ const removeElementUnderMouse = (board, elementsUnderMouse) => {
 }
 
 export default {
+  jxgType,
   onHandler,
   getConfig,
   render,

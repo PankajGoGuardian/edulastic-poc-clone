@@ -44,12 +44,15 @@ const KeyboardHeader = ({
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             minWidth="204px" // width when full keypad mode is selected
           >
-            {hasCustomKeypads &&
-              customKeypads.map((keypad) => (
-                <Option key={keypad._id} value={keypad._id}>
-                  {keypad.label}
-                </Option>
-              ))}
+            {hasCustomKeypads && (
+              <OptGroup label="My custom keypads">
+                {customKeypads.map((keypad) => (
+                  <Option key={keypad._id} value={keypad._id}>
+                    {keypad.label}
+                  </Option>
+                ))}
+              </OptGroup>
+            )}
             <OptGroup label="Standard Keypads">
               {options.map(({ value, label }, index) => (
                 <Option
@@ -67,6 +70,7 @@ const KeyboardHeader = ({
           <ResponseBtn
             onClick={handleClickResponseButton}
             onTouchEnd={handleClickResponseButton}
+            data-cy="keyboard-response"
           >
             <span className="response-embed">
               <span className="response-embed__char">R</span>

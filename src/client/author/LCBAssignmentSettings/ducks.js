@@ -6,9 +6,12 @@ import { omitBy, isUndefined, isEmpty, invert, set, get, maxBy } from 'lodash'
 import {
   assignmentPolicyOptions,
   assignmentStatusOptions,
+  test,
 } from '@edulastic/constants'
 import { receiveTestActivitySaga } from '../ClassBoard/ducks'
 import { updateAdditionalDataAction } from '../src/reducers/testActivity'
+
+const { passwordPolicy: passwordPolicyValues } = test
 
 const slice = createSlice({
   initialState: {
@@ -46,8 +49,11 @@ const slice = createSlice({
       Object.assign(state.assignment, payload)
     },
     changeAttribute: (state, { payload }) => {
-      const { key, value } = payload
-      if (['startDate', 'endDate', 'dueDate'].includes(key)) {
+      let { key, value } = payload
+      const { isAdmin, status } = payload
+      if (
+        ['startDate', 'endDate', 'dueDate', 'allowedOpenDate'].includes(key)
+      ) {
         state.assignment = state.assignment || {}
         state.assignment.class = state.assignment.class || []
         if (value) {
@@ -58,11 +64,30 @@ const slice = createSlice({
         state.assignment[key] = value
         state.updateSettings[key] = value
         if (
+          key === 'passwordPolicy' &&
+          value === passwordPolicyValues.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
+          status === assignmentStatusOptions.NOT_OPEN
+        ) {
+          key = 'openPolicy'
+          value = isAdmin
+            ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+            : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+
+          state.assignment[key] = value
+          state.updateSettings[key] = value
+        }
+        if (
           key === 'openPolicy' &&
           value === assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
         ) {
           set(state.assignment, 'class[0].startDate', Date.now())
           state.updateSettings.startDate = Date.now()
+        } else if (
+          key === 'openPolicy' &&
+          value !== assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+        ) {
+          set(state.assignment, 'class[0].allowedOpenDate', Date.now())
+          state.updateSettings.allowedOpenDate = Date.now()
         } else if (
           key === 'closePolicy' &&
           value === assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
@@ -236,11 +261,15 @@ function getSettingsSelector(state) {
     blockSaveAndContinue,
     restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold,
+    allowedOpenDate,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
 
-  if (passwordPolicy === 1 || passwordExpireIn) {
+  if (
+    passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ||
+    passwordExpireIn
+  ) {
     passWordPolicySettings.passwordExpireIn =
       existingSettings.passwordExpireIn === undefined
         ? 900
@@ -251,7 +280,10 @@ function getSettingsSelector(state) {
       return false
     }
   }
-  if (passwordPolicy === 2 || assignmentPassword) {
+  if (
+    passwordPolicy === test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC ||
+    assignmentPassword
+  ) {
     passWordPolicySettings.assignmentPassword =
       existingSettings.assignmentPassword
     passWordPolicySettings.passwordPolicy = existingSettings.passwordPolicy
@@ -259,6 +291,14 @@ function getSettingsSelector(state) {
       notification({ msg: 'Please set the assignment password' })
       return false
     }
+  }
+  if (
+    existingSettings.passwordPolicy ===
+      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+    !existingSettings.assignmentPassword
+  ) {
+    notification({ msg: 'Please set the assignment password' })
+    return false
   }
 
   if (autoRedirect === true) {
@@ -314,6 +354,7 @@ function getSettingsSelector(state) {
       blockSaveAndContinue,
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
+      allowedOpenDate,
     },
     isUndefined
   )
@@ -324,9 +365,11 @@ function* updateAssignmentClassSettingsSaga({ payload }) {
   try {
     const settings = yield select(getSettingsSelector)
     if (settings === false) {
+      yield put(slice.actions.updateAssignmentClassSettingsSucess())
       return
     }
     if (isEmpty(settings)) {
+      yield put(slice.actions.updateAssignmentClassSettingsSucess())
       notification({ messageKey: 'noChangesToBeSaved' })
       return
     }

@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { triggerEvent } from '@edulastic/common'
 import LibCameraPhoto from 'jslib-html5-camera-photo'
 
 /*
@@ -15,7 +16,8 @@ export function useLibCameraPhoto(
   videoRef,
   idealFacingMode,
   idealResolution,
-  isMaxResolution
+  isMaxResolution,
+  isAntiCheatingFeaturesEnabled
 ) {
   const [mediaStream, setMediaStream] = useState(null)
   const [cameraStartError, setCameraStartError] = useState(null)
@@ -32,6 +34,16 @@ export function useLibCameraPhoto(
       needToClean = true
       try {
         let _mediaStream = null
+        if (isAntiCheatingFeaturesEnabled) {
+          // set a flag to bypass blur callback execution
+          window.sessionStorage.setItem('isRequestingCameraAccess', true)
+
+          // Clear indefinitely after 5 secs
+          setTimeout(() => {
+            window.sessionStorage.removeItem('isRequestingCameraAccess')
+            triggerEvent(window.document, 'forceBlur')
+          }, 5000)
+        }
         if (isMaxResolution) {
           _mediaStream = await libCameraPhoto.startCameraMaxResolution(
             idealFacingMode
@@ -45,6 +57,7 @@ export function useLibCameraPhoto(
         setMediaStream(_mediaStream)
         setCameraStartError(null)
       } catch (error) {
+        window.sessionStorage.removeItem('isRequestingCameraAccess')
         setCameraStartError(error)
       }
     }
@@ -66,6 +79,7 @@ export function useLibCameraPhoto(
             setCameraStopError(null)
           }
         } catch (error) {
+          window.sessionStorage.removeItem('isRequestingCameraAccess')
           setCameraStopError(error)
         }
       }

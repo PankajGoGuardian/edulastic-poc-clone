@@ -1,21 +1,32 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 
 import { greenDark } from '@edulastic/colors'
 import { IconDemoAccGreen, IconPlayButton } from '@edulastic/icons'
 
 import styled from 'styled-components'
-import EmbeddedVideoPreviewModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 import EdulasticResourceModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/common/EdulasticResourceModal'
 import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
+import EmbeddedSplitPaneModal from '../EmbeddedSplitPaneModal'
 
 const EdulasticOverviewModel = ({
   handleBannerModalClose,
   isBannerModalVisible,
+  setShowBannerModal,
+  windowWidth,
 }) => {
   const [isVideoPreview, setIsVideoPreview] = useState(false)
   const handleVideoClick = () => {
     setIsVideoPreview(true)
   }
+
+  const { title } = isBannerModalVisible || {}
+  const showVideoModal = title === 'Quick Start Guide'
+
+  useEffect(() => {
+    if (showVideoModal) {
+      setIsVideoPreview(true)
+    }
+  }, [])
 
   const handleDemoClick = (event) => {
     event.stopPropagation()
@@ -24,19 +35,23 @@ const EdulasticOverviewModel = ({
 
   const handlePreviewModalClose = () => {
     setIsVideoPreview(false)
+    setShowBannerModal(null)
   }
   return isVideoPreview ? (
-    <EmbeddedVideoPreviewModal
+    <EmbeddedSplitPaneModal
       closeCallback={handlePreviewModalClose}
       isVisible={isBannerModalVisible} // isBannerModalVisible will have the video preview title and url
-      modalWidth="650px"
+      modalWidth={windowWidth < 1200 ? '94%' : '1140px'}
+      titleFontSize="22px"
+      padding="25px 0px 25px 45px"
+      windowWidth={windowWidth}
     />
   ) : (
     <EdulasticResourceModal
       headerText="Getting Started"
       closeCallback={handleBannerModalClose}
       hideFooter
-      isVisible={!isVideoPreview}
+      isVisible={isBannerModalVisible}
     >
       <ModalBody>
         <ContentHeaderDiv>
@@ -70,7 +85,7 @@ const EdulasticOverviewModel = ({
           <StyledExtraResourceContentDiv>
             <ExtraResourceSpan>
               <a
-                href="https://www.youtube.com/watch?v=A5785Ai_ARI"
+                href="https://www.youtube.com/watch?v=A5785Ai_ARI&utm_source=Application&utm_medium=Clicks&utm_campaign=Dashboard_Quick_Start_Overview"
                 target="_blank"
                 rel="noreferrer"
                 data-cy="edu-tutorials"
@@ -110,7 +125,7 @@ const EdulasticOverviewModel = ({
             </ExtraResourceSpan>{' '}
             <ExtraResourceSpan width="42%">
               <a
-                href="https://www.youtube.com/channel/UC0K2OzIBLWfFvRNXX0ts3_A"
+                href="https://www.youtube.com/channel/UC0K2OzIBLWfFvRNXX0ts3_A?utm_source=Application&utm_medium=Clicks&utm_campaign=Dashboard_Quick_Start_Overview"
                 target="_blank"
                 rel="noreferrer"
                 data-cy="edu-talk-vid"

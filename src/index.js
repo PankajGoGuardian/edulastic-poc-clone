@@ -23,6 +23,7 @@ import configureStore, { history } from './client/configureStore'
 import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
+import { initializeSegment } from './client/common/utils/main'
 
 document.addEventListener('DOMContentLoaded', function () {
   const codeInUrl =
@@ -67,63 +68,7 @@ window.isIOS = isIOS()
 keyboardEventKeyPolyfill.polyfill()
 smoothscroll.polyfill()
 
-if (AppConfig.isSegmentEnabled) {
-  !(() => {
-    window.analytics = window.analytics || []
-    const { analytics } = window
-    if (!analytics.initialize)
-      if (analytics.invoked)
-        window.console &&
-          console.error &&
-          console.error('Segment snippet included twice.')
-      else {
-        analytics.invoked = !0
-        analytics.methods = [
-          'trackSubmit',
-          'trackClick',
-          'trackLink',
-          'trackForm',
-          'pageview',
-          'identify',
-          'reset',
-          'group',
-          'track',
-          'ready',
-          'alias',
-          'debug',
-          'page',
-          'once',
-          'off',
-          'on',
-        ]
-        analytics.factory = function (t) {
-          return function (...args) {
-            const e = Array.prototype.slice.call(args)
-            e.unshift(t)
-            analytics.push(e)
-            return analytics
-          }
-        }
-        for (let t = 0; t < analytics.methods.length; t++) {
-          const e = analytics.methods[t]
-          analytics[e] = analytics.factory(e)
-        }
-        analytics.load = function (t, e) {
-          const n = document.createElement('script')
-          n.type = 'text/javascript'
-          n.async = !0
-          // download the file from by passing the key https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js
-          // and upload it to s3
-          n.src = AppConfig.segmentURI
-          const a = document.getElementsByTagName('script')[0]
-          a.parentNode.insertBefore(n, a)
-          analytics._loadOptions = e
-        }
-        analytics.SNIPPET_VERSION = AppConfig.segmentVersion
-        analytics.load()
-      }
-  })()
-}
+initializeSegment()
 
 // redux store
 const { store } = configureStore({})

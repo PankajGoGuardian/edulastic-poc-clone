@@ -35,6 +35,20 @@ const _idToName = {
   iepStatus: 'IEP Status',
   hispanicEthnicity: 'Hispanic Ethnicity',
 }
+
+const compareByKeyToSortKey = {
+  schoolId: 'schoolName',
+  teacherId: 'teacherName',
+  groupId: 'className',
+  group: 'className',
+  race: 'race',
+  gender: 'gender',
+  frlStatus: 'frlStatus',
+  ellStatus: 'ellStatus',
+  iepStatus: 'iepStatus',
+  hispanicEthnicity: 'hispanicEthnicity',
+}
+
 export const idToName = (id) => _idToName[id] || startCase(id)
 
 export const analyseByToName = {
@@ -370,7 +384,11 @@ export const parseData = (rawData, filter) => {
     output = analyseByProficiencyBand(rawData, groupedData, compareBy)
   }
   if (output) {
-    return output
+    return output.sort((a, b) =>
+      (a[compareByKeyToSortKey[compareBy]] || '').localeCompare(
+        b[compareByKeyToSortKey[compareBy]] || ''
+      )
+    )
   }
   return []
 }

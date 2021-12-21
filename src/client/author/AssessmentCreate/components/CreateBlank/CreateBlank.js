@@ -15,9 +15,7 @@ const handleDrop = (event) => {
 const CreateBlank = ({ onCreate, loading }) => (
   <CardComponent childMarginRight="0" onDrop={handleDrop} blank>
     <IconWrapper>
-      <IconNewFile
-        style={{ height: '44px', width: '34px', transform: 'scaleY(-1)' }}
-      />
+      <IconNewFile width="18" height="22" style={{ transform: 'scaleY(-1)' }} />
     </IconWrapper>
     <TitleWrapper>Answer Only Assessment</TitleWrapper>
     <TextWrapper style={{ padding: '0 40px' }}>

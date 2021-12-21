@@ -36,6 +36,7 @@ import {
   getTestSelector,
   getUserListSelector as getTestSharedListSelector,
   receiveTestByIdAction,
+  removeTestEntityAction,
 } from '../../ducks'
 import {
   Container,
@@ -62,6 +63,7 @@ import {
 import ImageCard from './ImageCard'
 import { getAssignmentsSelector, fetchAssignmentsAction } from '../Assign/ducks'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { setUserAction } from '../../../../student/Login/ducks'
 
 const { statusConstants, passwordPolicy, type: _testTypes } = TEST
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
@@ -92,6 +94,8 @@ class SuccessPage extends React.Component {
       history,
       userId,
       setShareWithGCInProgress,
+      user,
+      setUser,
     } = this.props
     const { id: testId, assignmentId } = match.params
     if (isPlaylist) {
@@ -123,10 +127,15 @@ class SuccessPage extends React.Component {
       `recommendedTest:${userId}:isContentUpdatedAutomatically`,
       true
     )
+    const temp = user
+    temp.recommendedContentUpdated = true
+    setUser(temp)
   }
 
   componentWillUnmount() {
+    const { isAssignSuccess, removeTestEntity } = this.props
     this.timer && clearTimeout(this.timer)
+    if (isAssignSuccess) removeTestEntity()
   }
 
   handleAssign = () => {
@@ -632,6 +641,7 @@ const enhance = compose(
       playlist: getPlaylistSelector(state),
       test: getTestSelector(state),
       userId: get(state, 'user.user._id', ''),
+      user: get(state, 'user.user', {}),
       autoShareGCAssignment: get(
         state,
         'user.user.orgData.autoShareGCAssignment',
@@ -652,6 +662,8 @@ const enhance = compose(
       fetchTestByID: receiveTestByIdAction,
       googleSyncAssignment: googleSyncAssignmentAction,
       setShareWithGCInProgress: setShareWithGCInProgressAction,
+      setUser: setUserAction,
+      removeTestEntity: removeTestEntityAction,
     }
   )
 )

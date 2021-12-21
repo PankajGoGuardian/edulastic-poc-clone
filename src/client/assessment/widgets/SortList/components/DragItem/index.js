@@ -21,8 +21,10 @@ const DragItem = ({
   style,
   isPrintPreview,
   flag,
+  checkAnswerInProgress,
 }) => {
-  const showPreview = previewTab === CHECK || previewTab === SHOW
+  const showPreview =
+    (previewTab === CHECK || previewTab === SHOW) && !checkAnswerInProgress
 
   const clickHandler = () => {
     if (disableResponse) {

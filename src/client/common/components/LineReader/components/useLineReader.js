@@ -25,7 +25,15 @@ const useLineReader = (close) => {
     div.style.zIndex = '1300'
     div.style.position = 'fixed'
 
-    document.body.appendChild(div)
+    const assessmentWrapper = document.getElementById(
+      'assessment-player-wrapper'
+    )
+
+    if (assessmentWrapper) {
+      assessmentWrapper.appendChild(div)
+    } else {
+      document.body.appendChild(div)
+    }
 
     ReactDOM.render(<Container destory={destroy} />, div)
   }

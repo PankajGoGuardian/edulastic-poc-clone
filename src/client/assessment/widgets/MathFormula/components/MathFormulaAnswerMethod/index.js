@@ -21,6 +21,7 @@ import { Field, UnitsDropdown, DefaultKeyPadMode, CustomUnit } from './options'
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
 import EvaluationSettings from '../../../../components/EvaluationSettings'
+import { getStylesFromUiStyleToCssStyle } from '../../../../utils/helpers'
 
 const {
   methods: methodsConst,
@@ -97,6 +98,10 @@ const MathFormulaAnswerMethod = ({
       }
     }
 
+    if (prop === 'isSimplifiedExpression' && newOptions.isExpanded) {
+      delete newOptions.isExpanded
+    }
+
     if (!val) {
       delete newOptions[prop]
     }
@@ -104,6 +109,7 @@ const MathFormulaAnswerMethod = ({
     onChange('options', newOptions)
   }
 
+  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
   const methodOptions = methodOptionsConst && methodOptionsConst[method]
   const restrictKeys = allowedVariables
     ? allowedVariables.split(',').map((segment) => segment.trim())
@@ -160,6 +166,9 @@ const MathFormulaAnswerMethod = ({
                   ALLOW
                   TOLERANCE
                   showDropdown
+                  minHeight={cssStyles.height}
+                  minWidth={cssStyles.width}
+                  fontSize={cssStyles.fontSize}
                   value={isClozeMath && useTemplate ? template : value}
                   onInput={handleChangeMathInput}
                   isDocbasedSection={isDocbasedSection}
@@ -229,14 +238,14 @@ const MathFormulaAnswerMethod = ({
       {/* This needs only for Math w/Units in ClozMath type */}
       {(item.showDropdown || (isClozeMathWithUnit && showDefaultMode)) && (
         <StyledRow gutter={24}>
-          <Col span={6}>
+          <Col span={6} data-cy="unitType">
             <Label data-cy="unit-dropdown-default-mode">
               {t('component.options.defaultMode')}
             </Label>
             <DefaultKeyPadMode onChange={onChange} keypadMode={keypadMode} />
           </Col>
           {keypadMode === 'custom' && (
-            <Col span={8}>
+            <Col span={8} data-cy="customKey">
               <CustomUnit onChange={onChange} customUnits={customUnits} />
             </Col>
           )}

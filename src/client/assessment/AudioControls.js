@@ -3,6 +3,7 @@
 import { white, themeColorBlue } from '@edulastic/colors'
 import { EduButton, notification } from '@edulastic/common'
 import { questionType } from '@edulastic/constants'
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import {
   IconAudioPause,
   IconExclamationMark,
@@ -14,12 +15,22 @@ import {
 import * as Sentry from '@sentry/browser'
 import { Tooltip } from 'antd'
 import { Howl, Howler } from 'howler'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, {
+  useImperativeHandle,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import AppConfig from '../../app-config'
+import { getTextToSpeechPlaybackSpeed } from '../author/sharedDucks/testPlayer'
 import { setCurrentAudioDetailsAction } from './actions/test'
-import { curentPlayerDetailsSelector } from './selectors/test'
+import {
+  curentPlayerDetailsSelector,
+  playerSkinTypeSelector,
+} from './selectors/test'
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
@@ -37,6 +48,8 @@ const AudioButton = styled(EduButton)`
   }
 `
 
+const { edulastic, drc, parcc, cmas } = playerSkinValues
+
 const AudioControls = ({
   item: questionData = {},
   btnWithText = false,
@@ -48,6 +61,10 @@ const AudioControls = ({
   page,
   hideVisibility,
   isPremiumContentWithoutAccess = false,
+  ttsPlaybackSpeed,
+  playerSkinType,
+  isStudentReport,
+  controlRef,
 }) => {
   const [loading, setLoading] = useState(true)
   const [stimulusHowl, setStimulusHowl] = useState({})
@@ -56,6 +73,26 @@ const AudioControls = ({
   const [pageHowls, setPageHowls] = useState([])
 
   const qId = useMemo(() => targetQId, [targetQId])
+
+  const ttsAudioPlaybackRate = parseFloat(
+    [edulastic, drc, cmas, parcc].includes(playerSkinType) && !isStudentReport
+      ? ttsPlaybackSpeed
+      : '1'
+  )
+
+  const ttsAudioPlaybackRateRef = useRef(ttsAudioPlaybackRate)
+
+  useEffect(() => {
+    const findAllPlayingHowls = Howler._howls.filter((item) => item.playing())
+    /** Ref is needed to change audio rate for already loaded audio */
+    if (ttsAudioPlaybackRateRef?.current) {
+      ttsAudioPlaybackRateRef.current = ttsAudioPlaybackRate
+    }
+
+    if (findAllPlayingHowls.length) {
+      findAllPlayingHowls.forEach((item) => item.rate(ttsAudioPlaybackRate))
+    }
+  }, [ttsAudioPlaybackRate])
 
   // Loading audio
   const audioLoadResolve = (url) => {
@@ -70,6 +107,7 @@ const AudioControls = ({
         src: srcArr,
         preload: false,
         html5: true,
+        rate: ttsAudioPlaybackRateRef.current || 1,
       })
 
       resolve(sound)
@@ -99,7 +137,7 @@ const AudioControls = ({
   // Playing audio
   const audioPlayResolve = (_howl) => {
     if (!_howl) return
-
+    _howl.rate(ttsAudioPlaybackRateRef?.current || 1)
     const _prom = new Promise((resolve, reject) => {
       _howl?.load()
       if (_howl?.state() === 'loading' || _howl?.state() === 'unloaded') {
@@ -211,11 +249,17 @@ const AudioControls = ({
     }
   }, [qId])
 
+  const handleStopAudio = () => {
+    currentHowl?.stop()
+    setCurrentPlayingDetails()
+  }
+
   const handlePlayPauseAudio = () => {
     if (loading || !currentHowl) {
       return
     }
 
+    currentHowl.rate(ttsAudioPlaybackRateRef?.current)
     if (currentHowl?.playing()) {
       currentHowl.pause()
       currentHowl.isPaused = true
@@ -226,6 +270,7 @@ const AudioControls = ({
       currentHowl.isPaused = false
       return setCurrentPlayingDetails(qId)
     }
+    handleStopAudio()
     stopAllAudios()
     setCurrentPlayingDetails(qId)
 
@@ -272,17 +317,19 @@ const AudioControls = ({
     }
   }
 
+  useImperativeHandle(controlRef, () => ({
+    play: handlePlayPauseAudio,
+    stop: handleStopAudio,
+  }))
+
   const isSupported = Howler.codecs('mp3')
 
-  const handleStopAudio = () => {
-    currentHowl?.stop()
-    setCurrentPlayingDetails()
-  }
   const playPauseToolTip = loading
     ? 'We are still processing the audio file for this question. Please return back to this question after some time.'
     : currentPlayingDetails.qId === qId
     ? 'Pause'
     : 'Play'
+
   return (
     <AudioButtonsWrapper
       btnWithText={btnWithText}
@@ -295,6 +342,7 @@ const AudioControls = ({
             title={!btnWithText ? playPauseToolTip : ''}
             loading={loading}
             height="40px"
+            ml="0px"
             IconBtn={!btnWithText}
             onClick={handlePlayPauseAudio}
             disabled={isPremiumContentWithoutAccess}
@@ -361,6 +409,8 @@ const AudioControls = ({
 export default connect(
   (state) => ({
     currentPlayingDetails: curentPlayerDetailsSelector(state),
+    ttsPlaybackSpeed: getTextToSpeechPlaybackSpeed(state),
+    playerSkinType: playerSkinTypeSelector(state),
   }),
   {
     setCurrentPlayingDetails: setCurrentAudioDetailsAction,
@@ -369,7 +419,7 @@ export default connect(
 
 const AudioButtonsWrapper = styled.div`
   top: 0px;
-  padding: 8px 20px;
+  padding: 8px 16px;
   ${({ btnWithText, hideVisibility }) => {
     const visibility = hideVisibility ? 'hidden' : 'visible'
     const display = btnWithText ? 'flex' : 'block'

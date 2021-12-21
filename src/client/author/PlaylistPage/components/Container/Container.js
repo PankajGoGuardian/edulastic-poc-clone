@@ -5,7 +5,7 @@ import PropTypes from 'prop-types'
 import { Spin } from 'antd'
 import { withRouter } from 'react-router-dom'
 import { isObject as _isObject, uniq as _uniq, get, omit } from 'lodash'
-import { withWindowSizes, notification } from '@edulastic/common'
+import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { themeColor, white } from '@edulastic/colors'
 import { testsApi } from '@edulastic/api'
@@ -480,6 +480,7 @@ class Container extends PureComponent {
       userId,
       location: { state } = {},
       useRole,
+      updated,
     } = this.props
     const {
       showShareModal,
@@ -502,6 +503,24 @@ class Container extends PureComponent {
 
     return (
       <>
+        <CustomPrompt
+          when={!!updated}
+          onUnload
+          message={(loc = {}) => {
+            const { pathname = '' } = loc
+
+            const playlistFlowPath = RegExp('/author/playlists/\\w*')
+            const allow =
+              playlistFlowPath.test(pathname) ||
+              pathname.startsWith('/author/playlists/')
+
+            if (allow) {
+              return true
+            }
+
+            return 'There are unsaved changes in your playlist. Are you sure you want to leave?'
+          }}
+        />
         {this.renderModal()}
         <CollectionsSelectModal
           isVisible={showSelectCollectionsModal}
@@ -558,6 +577,7 @@ const enhance = compose(
       selectedRows: getSelectedItemSelector(state),
       user: getUserSelector(state),
       userId: get(state, 'user.user._id', ''),
+      updated: get(state, 'playlist.updated', false),
       isTestLoading: getTestsLoadingSelector(state),
       testStatus: getTestStatusSelector(state),
       itemsSubjectAndGrade: getItemsSubjectAndGradeSelector(state),

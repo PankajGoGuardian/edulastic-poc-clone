@@ -641,7 +641,9 @@ class PreviewModal extends React.Component {
 
     const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH
 
-    const isTestInRegrade = !!test?._id && testAssignments.length && test.isUsed
+    const isTestInRegrade =
+      !!test?._id &&
+      (test.isInEditAndRegrade || (testAssignments.length && test.isUsed))
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||

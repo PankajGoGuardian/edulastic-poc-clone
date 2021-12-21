@@ -103,6 +103,7 @@ const ClassDetails = ({
     googleId && !isAutoArchivedClass ? syncGoogleCoTeacher : true
   const [coTeacherFlag, setCoTeacherFlag] = useState(isCoTeacherFlagSet)
   const typeText = type !== 'class' ? 'group' : 'class'
+  const { classId } = match.params
 
   // sync checks for institution
   const {
@@ -127,9 +128,13 @@ const ClassDetails = ({
   )
   const [showCanvasSyncModal, setCanvasSyncModalVisibility] = useState(false)
   const [openGCModal, setOpenGCModal] = useState(false)
+  const [gCode, setGCode] = useState(selectedClass.googleCode)
 
   useEffect(() => {
-    if (!fetchClassListLoading) setOpenGCModal(true)
+    if (!fetchClassListLoading) {
+      setGCode(selectedClass.googleCode)
+      setOpenGCModal(true)
+    }
   }, [fetchClassListLoading])
 
   useEffect(() => {
@@ -140,15 +145,16 @@ const ClassDetails = ({
   }, [syncClassLoading])
 
   useEffect(() => {
-    const { classId } = match.params
-    loadStudents({ classId })
+    if (selectedClass._id !== classId) {
+      loadStudents({ classId })
+    }
     setOpenGCModal(false)
-  }, [])
+  }, [classId])
 
   const handleEditClick = () => {
-    const classId = selectedClass._id || match.params.classId
+    const currentClassId = selectedClass._id || match.params.classId
     history.push({
-      pathname: editPath || `/author/manageClass/${classId}/edit`,
+      pathname: editPath || `/author/manageClass/${currentClassId}/edit`,
       state: {
         type: typeText,
         exitPath,
@@ -241,6 +247,11 @@ const ClassDetails = ({
     }
   }, [googleId, canvasCode])
 
+  const openGoogleSyncModal = () => {
+    setGCode(selectedClass.googleCode)
+    setOpenGCModal(true)
+  }
+
   return (
     <>
       {!classLoaded ? (
@@ -286,7 +297,7 @@ const ClassDetails = ({
             }
           >
             <Input
-              defaultValue={isAutoArchivedClass ? '' : selectedClass.googleCode}
+              value={isAutoArchivedClass ? '' : gCode}
               ref={googleCode}
               disabled={
                 selectedClass &&
@@ -294,6 +305,7 @@ const ClassDetails = ({
                 disabled &&
                 !isAutoArchivedClass
               }
+              onChange={(e) => setGCode(e.target.value)}
             />
             {classCodeError && (
               <div style={{ 'margin-top': '10px', color: red }}>
@@ -360,7 +372,7 @@ const ClassDetails = ({
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
               allowGoogleLogin={allowGoogleLogin}
-              syncGCModal={() => setOpenGCModal(true)}
+              syncGCModal={openGoogleSyncModal}
               isUserGoogleLoggedIn={isUserGoogleLoggedIn}
               enableCleverSync={enableCleverSync}
               isCleverDistrict={isCleverDistrict}

@@ -181,6 +181,8 @@ class PreviewModal extends React.Component {
       isTest = !!testId,
       passage,
       item = {},
+      isPlaylistTestReview,
+      playlistId,
     } = this.props
     const itemId = data.id
     const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
@@ -193,6 +195,8 @@ class PreviewModal extends React.Component {
         isTest,
         itemId,
         regradeFlow,
+        isPlaylistTestReview,
+        playlistId,
       })
     }
 
@@ -209,6 +213,8 @@ class PreviewModal extends React.Component {
         regradeFlow,
         passage,
         duplicateWholePassage: true,
+        isPlaylistTestReview,
+        playlistId,
       })
       Modal.destroyAll()
       this.closeModal()
@@ -225,6 +231,8 @@ class PreviewModal extends React.Component {
         regradeFlow,
         passage,
         currentItem,
+        isPlaylistTestReview,
+        playlistId,
       })
       Modal.destroyAll()
       this.closeModal()

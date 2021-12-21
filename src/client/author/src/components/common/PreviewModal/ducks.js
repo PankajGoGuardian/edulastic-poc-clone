@@ -150,6 +150,8 @@ function* duplicateItemRequestSaga({ payload }) {
       regradeFlow,
       duplicateWholePassage,
       currentItem,
+      isPlaylistTestReview,
+      playlistId,
     } = payload
     const { passage } = payload
     const itemId = data.id
@@ -202,7 +204,12 @@ function* duplicateItemRequestSaga({ payload }) {
       return yield put(
         push({
           pathname: `/author/items/${duplicatedItem._id}/item-detail`,
-          state: { testAuthoring: false, testId },
+          state: {
+            testAuthoring: false,
+            testId,
+            isPlaylistTestReview,
+            playlistId,
+          },
         })
       )
     }

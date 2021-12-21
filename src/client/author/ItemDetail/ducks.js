@@ -1810,12 +1810,24 @@ function* publishTestItemSaga({ payload }) {
         payload.locationState?.testAuthoring === false &&
         payload.locationState?.testId
       ) {
-        yield put(
-          push({
-            pathname: `/author/tests/tab/review/id/${payload.locationState.testId}`,
-            state: { isAuthoredNow: true },
-          })
-        )
+        if (
+          payload.locationState?.isPlaylistTestReview &&
+          payload.locationState?.playlistId
+        ) {
+          yield put(
+            push({
+              pathname: `/author/playlists/playlist/${payload.locationState.playlistId}/use-this`,
+              state: { isAuthoredNow: true },
+            })
+          )
+        } else {
+          yield put(
+            push({
+              pathname: `/author/tests/tab/review/id/${payload.locationState.testId}`,
+              state: { isAuthoredNow: true },
+            })
+          )
+        }
         return notification({
           type: 'success',
           msg: 'Item is saved in item bank',

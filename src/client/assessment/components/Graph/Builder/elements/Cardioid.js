@@ -2,7 +2,7 @@ import { CONSTANT } from '../config'
 import { Point } from '.'
 import { colorGenerator } from '../utils'
 
-const jxgType = 106
+const jxgType = 107
 
 let tempPoints = []
 
@@ -15,21 +15,19 @@ function getColorParams(color) {
   }
 }
 
-function drawRose(board, obj, settings = {}) {
-  const k = 2
-  const l = 2
+function drawCardioidObj(board, obj, settings = {}) {
   const { priorityColor, points, baseColor, dashed = false } = obj
   const [point1, point2] = points
 
   const { fixed = false } = settings
 
-  const rose = board.$board.create(
+  const cardioid = board.$board.create(
     'curve',
     [
-      (phi) => (point2.X() - point1.X()) * Math.cos(k * phi),
+      (phi) => (-(point2.X() - point1.X()) / 2) * (1 - Math.cos(phi)),
       [point1.X(), point1.Y()],
       0,
-      () => l * Math.PI,
+      2 * Math.PI,
     ],
     {
       fixed,
@@ -39,17 +37,17 @@ function drawRose(board, obj, settings = {}) {
     }
   )
 
-  rose.on('drag', () => {
+  cardioid.on('drag', () => {
     board.dragged = true
   })
 
-  rose.type = jxgType
-  rose.ancestors = {
+  cardioid.type = jxgType
+  cardioid.ancestors = {
     [point1.id]: point1,
     [point2.id]: point2,
   }
-  rose.addParents(points)
-  return rose
+  cardioid.addParents(points)
+  return cardioid
 }
 
 function onHandler(board, event) {
@@ -69,9 +67,9 @@ function onHandler(board, event) {
       baseColor: colorGenerator(board.elements.length),
     }
 
-    const roseObj = drawRose(board, obj)
+    const cardioidObj = drawCardioidObj(board, obj)
     tempPoints = []
-    return roseObj
+    return cardioidObj
   }
 }
 
@@ -82,21 +80,21 @@ function loadObject(board, object, settings) {
     ...object,
     points: pointObjs,
   }
-  const roseObj = drawRose(board, obj, settings)
-  return roseObj
+  const cardioidObj = drawCardioidObj(board, obj, settings)
+  return cardioidObj
 }
 
-function getConfig(roseObj) {
+function getConfig(cardioidObj) {
   return {
-    _type: roseObj.type,
-    id: roseObj.id,
-    type: CONSTANT.TOOLS.ROSE,
-    label: roseObj.labelHTML || false,
-    baseColor: roseObj.baseColor,
-    dashed: roseObj.dashed,
-    labelIsVisible: roseObj.labelIsVisible,
-    points: Object.keys(roseObj.ancestors).map((n) =>
-      Point.getConfig(roseObj.ancestors[n])
+    _type: cardioidObj.type,
+    id: cardioidObj.id,
+    type: CONSTANT.TOOLS.CARDIOID,
+    label: cardioidObj.labelHTML || false,
+    baseColor: cardioidObj.baseColor,
+    dashed: cardioidObj.dashed,
+    labelIsVisible: cardioidObj.labelIsVisible,
+    points: Object.keys(cardioidObj.ancestors).map((n) =>
+      Point.getConfig(cardioidObj.ancestors[n])
     ),
   }
 }

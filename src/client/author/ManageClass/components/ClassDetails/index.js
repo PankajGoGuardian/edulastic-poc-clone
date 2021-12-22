@@ -145,7 +145,7 @@ const ClassDetails = ({
   }, [syncClassLoading])
 
   useEffect(() => {
-    if (selectedClass._id !== classId) {
+    if (classId) {
       loadStudents({ classId })
     }
     setOpenGCModal(false)

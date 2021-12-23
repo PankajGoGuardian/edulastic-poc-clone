@@ -150,10 +150,19 @@ export function* addItemToCartSaga({ payload }) {
           notification({ type: 'success', messageKey: 'itemRemovedTest' })
         }
       }
-      /**
-       * returning because no mutation happened
-       */
-      return draft
+
+      if (payload.fromQuestionEdit) {
+        for (const index in draft) {
+          if (draft[index]._id === item._id) {
+            draft[index] = item
+          }
+        }
+      } else {
+        /**
+         * returning because no mutation happened
+         */
+        return draft
+      }
     })
   } else {
     updatedTestItems = produce(testItems, (draft) => {
@@ -193,7 +202,7 @@ export function* addItemToCartSaga({ payload }) {
       },
     ],
   }
-
+  console.log('updatedTest', JSON.parse(JSON.stringify(updatedTest)))
   yield put(setTestItemsAction(updatedTestItems.map((o) => o._id)))
   yield put(setTestDataAction(updatedTest))
 }

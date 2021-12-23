@@ -202,7 +202,6 @@ export function* addItemToCartSaga({ payload }) {
       },
     ],
   }
-  console.log('updatedTest', JSON.parse(JSON.stringify(updatedTest)))
   yield put(setTestItemsAction(updatedTestItems.map((o) => o._id)))
   yield put(setTestDataAction(updatedTest))
 }

@@ -15,6 +15,7 @@ import {
 import { setUserAnswerAction } from '../../actions/answers'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { finishTestAcitivityAction } from '../../actions/test'
+import { saveTestletUserResponse } from '../../actions/items'
 
 // components
 import {
@@ -203,5 +204,6 @@ export default connect(
     saveTestletLog: saveTestletLogAction, // save logs to db
     updateTestPlayer: updateTestPlayerAction,
     submitTest: finishTestAcitivityAction,
+    saveUserAnswer: saveTestletUserResponse, // store user response to db,
   }
 )(withNamespaces('common')(AssessmentPlayerTestlet))

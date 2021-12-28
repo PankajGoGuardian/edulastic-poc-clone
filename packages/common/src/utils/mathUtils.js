@@ -62,6 +62,7 @@ const sanitizeLatex = (latex) => {
     .replace(/\\summationSymbol/g, '\\sum')
     .replace(/\\summationLower/g, '\\sum')
     .replace(/\\summationUpper/g, '\\sum')
+    .replace(/\\newline/g, '\\newline ')
 
   if (_latex.substr(-1) === '\\') {
     _latex = _latex.slice(0, -1)

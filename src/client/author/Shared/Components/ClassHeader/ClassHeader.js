@@ -111,7 +111,6 @@ import { allowedSettingPageToDisplay } from './utils/transformers'
 import { slice } from '../../../LCBAssignmentSettings/ducks'
 
 const {
-  POLICY_OPEN_MANUALLY_BY_TEACHER,
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
   POLICY_CLOSE_MANUALLY_IN_CLASS,
 } = assignmentPolicyOptions
@@ -213,21 +212,8 @@ class ClassHeader extends Component {
   }
 
   handleOpenAssignment = () => {
-    const { openAssignment, match, additionalData, userRole } = this.props
+    const { openAssignment, match, additionalData } = this.props
     const { classId, assignmentId } = match.params
-    if (
-      additionalData.openPolicy !== POLICY_OPEN_MANUALLY_BY_TEACHER &&
-      additionalData.testType === 'common assessment' &&
-      userRole === 'teacher'
-    ) {
-      return notification({
-        type: 'warn',
-        msg: `You can open the assessment once the Open time ${moment(
-          additionalData.endDate
-        )} has passed.
-      `,
-      })
-    }
     openAssignment(assignmentId, classId, additionalData.testId)
   }
 

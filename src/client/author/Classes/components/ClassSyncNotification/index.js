@@ -111,7 +111,7 @@ const ClassSyncNotificationListener = ({
     const { groupId, studentsSaved } = data
     if (groupId) {
       const pathName = window.location.pathname
-      if (/manageClass\/([a-z0-9])\w*/g.test(pathName)) {
+      if (/manageClass\/([a-f0-9])\w*/g.test(pathName)) {
         history.push(`/author/manageClass/${groupId}`)
       }
     } else {

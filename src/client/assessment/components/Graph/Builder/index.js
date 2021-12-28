@@ -485,7 +485,7 @@ class Board {
       ) {
         return
       }
-      const newElement = this.creatingHandler(this, event, this.elements)
+      const newElement = this.creatingHandler(this, event, null, this.elements)
       if (newElement) {
         this.elements.push(newElement)
         Area.updateShadingsForAreaPoints(this, this.elements)

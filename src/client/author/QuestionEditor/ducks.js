@@ -41,6 +41,7 @@ import {
   getPassageSelector,
   generateRecentlyUsedCollectionsList,
   proceedToPublishItemAction,
+  setTestItemsSavingAction,
 } from '../ItemDetail/ducks'
 import {
   setTestDataAndUpdateAction,
@@ -478,6 +479,8 @@ function* saveQuestionSaga({
   },
 }) {
   try {
+    yield put(setTestItemsSavingAction(true))
+
     if (isTestFlow) {
       const questions = Object.values(
         yield select((state) => get(state, ['authorQuestions', 'byId'], {}))
@@ -965,6 +968,8 @@ function* saveQuestionSaga({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage },
     })
+  } finally {
+    yield put(setTestItemsSavingAction(false))
   }
 }
 

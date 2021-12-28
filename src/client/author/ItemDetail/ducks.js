@@ -193,6 +193,7 @@ export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
   '[itemDetail] save current item and paginate'
 const SET_PASSAGE_UPDATE_IN_PROGRESS =
   '[itemDetail] set passage update in progress'
+const SET_TEST_ITEMS_SAVING = '[itemDetail] set test item saving in progress'
 
 // actions
 
@@ -379,6 +380,7 @@ export const setItemDeletingAction = createAction(SET_DELETING_ITEM)
 const setPassageUpdateInProgressAction = createAction(
   SET_PASSAGE_UPDATE_IN_PROGRESS
 )
+export const setTestItemsSavingAction = createAction(SET_TEST_ITEMS_SAVING)
 
 export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -532,6 +534,11 @@ export const getPassageUpdateInProgressSelector = createSelector(
   (state) => state.passageUpdateInProgress
 )
 
+export const getTestItemsSavingSelector = createSelector(
+  stateSelector,
+  (state) => state.testItemSavingInProgress
+)
+
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   (state) => state.loading
@@ -611,6 +618,7 @@ const initialState = {
   loadingAuditLogs: false,
   originalItem: null,
   passageUpdateInProgress: false,
+  testItemSavingInProgress: false,
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -1077,6 +1085,12 @@ export function reducer(state = initialState, { type, payload }) {
         passageUpdateInProgress: payload,
       }
     }
+    case SET_TEST_ITEMS_SAVING: {
+      return {
+        ...state,
+        testItemSavingInProgress: payload,
+      }
+    }
     default:
       return state
   }
@@ -1209,6 +1223,8 @@ export function* deleteItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
+    yield put(setTestItemsSavingAction(true))
+
     const { addToTest, updateScoreInQuestionsAsPerItem } = payload
     const oldTestId = payload?.locationState?.previousTestId
     if (!payload.keepData) {
@@ -1579,6 +1595,8 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage },
     })
+  } finally {
+    yield put(setTestItemsSavingAction(false))
   }
 }
 

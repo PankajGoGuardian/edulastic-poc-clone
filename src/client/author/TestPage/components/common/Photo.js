@@ -71,7 +71,7 @@ class Photo extends React.Component {
       <UploadWrapper>
         <Upload disabled={!owner || !isEditable} {...props}>
           <Container height={height}>
-            <ImageContainer height={height}>
+            <ImageContainer height={height} data-cy="imageContainer">
               {loading ? (
                 <ImageLoading />
               ) : imageUrl ? (

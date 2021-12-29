@@ -334,7 +334,7 @@ class ViewModal extends React.Component {
           )}
         </ModalHeader>
         <ModalContainer>
-          <ModalColumn>
+          <ModalColumn data-cy="modalColumn">
             <Image src={thumbnail} />
           </ModalColumn>
 

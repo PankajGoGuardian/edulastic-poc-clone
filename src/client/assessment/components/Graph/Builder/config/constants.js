@@ -62,7 +62,7 @@ export const ALL_TOLLS = {
     GRAPH_TOOLS.CIRCLE,
     GRAPH_TOOLS.RAY,
     GRAPH_TOOLS.ROSE,
-    GRAPH_TOOLS.CARDIOID,
+    GRAPH_TOOLS.CARDOID,
     GRAPH_TOOLS.AREA,
     GRAPH_TOOLS.DASHED,
   ],
@@ -129,7 +129,7 @@ export const TOOLS_BY_GROUP = {
         GRAPH_TOOLS.CIRCLE,
         GRAPH_TOOLS.RAY,
         GRAPH_TOOLS.ROSE,
-        GRAPH_TOOLS.CARDIOID,
+        GRAPH_TOOLS.CARDOID,
       ],
     },
     {

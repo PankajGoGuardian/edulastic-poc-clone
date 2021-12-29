@@ -40,7 +40,6 @@ import {
   PiecewisePoint,
   Grid,
   Rose,
-  Cardioid,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -327,9 +326,6 @@ class Board {
       case CONSTANT.TOOLS.ROSE:
         this.creatingHandler = Rose.onHandler
         return
-      case CONSTANT.TOOLS.CARDIOID:
-        this.creatingHandler = Cardioid.onHandler
-        return
       case CONSTANT.TOOLS.EDIT_LABEL:
       case CONSTANT.TOOLS.TRASH:
       case CONSTANT.TOOLS.DELETE:
@@ -383,10 +379,6 @@ class Board {
         return Secant.clean(this)
       case CONSTANT.TOOLS.PIECEWISE_LINE:
         return PiecewiseLine.clean(this)
-      case CONSTANT.TOOLS.ROSE:
-        return Rose.clean(this)
-      case CONSTANT.TOOLS.CARDIOID:
-        return Cardioid.clean(this)
       default:
         return false
     }
@@ -410,8 +402,6 @@ class Board {
       ...Tangent.getTempPoints(),
       ...Secant.getTempPoints(),
       ...PiecewiseLine.getTempPoints(),
-      ...Rose.getTempPoints(),
-      ...Cardioid.getTempPoints(),
     ]
   }
 
@@ -907,10 +897,6 @@ class Board {
             return DragDrop.getConfig(e)
           case PiecewiseLine.jxgType:
             return PiecewiseLine.getConfig(e)
-          case Rose.jxgType:
-            return Rose.getConfig(e)
-          case Cardioid.jxgType:
-            return Cardioid.getConfig(e)
           default:
             throw new Error('Unknown element type:', e.name, e.type)
         }
@@ -1862,10 +1848,6 @@ class Board {
           fixed,
         })
       }
-      case Rose.jxgType:
-        return Rose.create(this, object, { fixed })
-      case Cardioid.jxgType:
-        return Cardioid.create(this, object, { fixed })
       default:
         throw new Error('Unknown element:', object)
     }

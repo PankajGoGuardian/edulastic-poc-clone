@@ -102,7 +102,7 @@ const iconsByToolName = {
   [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
   [CONSTANT.TOOLS.LINE_CUT]: <span>cut</span>,
   [CONSTANT.TOOLS.ROSE]: <span>Rose</span>,
-  [CONSTANT.TOOLS.CARDIOID]: <span>Cardoid</span>,
+  [CONSTANT.TOOLS.CARDOID]: <span>Cardoid</span>,
   [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
   [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
@@ -161,7 +161,7 @@ const labelsByToolName = {
   [CONSTANT.TOOLS.LINE_CUT]: 'Line Cut',
   [CONSTANT.TOOLS.AREA2]: 'Area',
   [CONSTANT.TOOLS.ROSE]: 'Rose',
-  [CONSTANT.TOOLS.CARDIOID]: 'Cardioid',
+  [CONSTANT.TOOLS.CARDOID]: 'Cardoid',
   [CONSTANT.TOOLS.EDIT_LABEL]: 'Edit Label',
   [CONSTANT.TOOLS.UNDO]: 'Undo',
   [CONSTANT.TOOLS.REDO]: 'Redo',

@@ -29,7 +29,7 @@ export const getStandardWisePerformance = (testActivities, std) => {
     )
     // check if any of the filtered question activities match the qIds from standard
     const checkForStdQids = filteredQuestionActivities.some((qAct) =>
-      std.qIds.includes(qAct._id)
+      std.qIds.includes(`${qAct.testItemId}_${qAct._id}`)
     )
     // if the above check fails, flatMap qIds from filtered questionActivities
     if (!checkForStdQids) {
@@ -40,13 +40,16 @@ export const getStandardWisePerformance = (testActivities, std) => {
       )
     }
 
-    const questionActivitiesByQid = groupBy(filteredQuestionActivities, '_id')
+    const questionActivitiesByQid = groupBy(
+      filteredQuestionActivities,
+      (qAct) => `${qAct.testItemId}_${qAct._id}`
+    )
 
     for (const qid of std.qIds) {
       let questionActs = questionActivitiesByQid[qid] || []
       if (!questionActs.length) {
         questionActs = filteredQuestionActivities.filter(({ qids }) =>
-          qids.includes(qid)
+          qids.includes(qid.split('_')[1])
         )
       }
       for (const qAct of questionActs) {
@@ -108,7 +111,7 @@ export const getStandardWisePerformanceDetail = (
   )
   // check if any of the filtered question activities match the qIds from standard
   const checkForStdQids = filteredQuestionActivities.some((qAct) =>
-    std.qIds.includes(qAct._id)
+    std.qIds.includes(`${qAct.testItemId}_${qAct._id}`)
   )
   // if the above check fails, flatMap qIds from filtered questionActivities
   if (!checkForStdQids) {
@@ -119,13 +122,16 @@ export const getStandardWisePerformanceDetail = (
     )
   }
 
-  const questionActivitiesByQid = groupBy(filteredQuestionActivities, '_id')
+  const questionActivitiesByQid = groupBy(
+    filteredQuestionActivities,
+    (qAct) => `${qAct.testItemId}_${qAct._id}`
+  )
 
   for (const qid of std.qIds) {
     let questionActs = questionActivitiesByQid[qid] || []
     if (!questionActs.length) {
       questionActs = filteredQuestionActivities.filter(({ qids }) =>
-        qids.includes(qid)
+        qids.includes(qid.split('_')[1])
       )
     }
     for (const qAct of questionActs) {

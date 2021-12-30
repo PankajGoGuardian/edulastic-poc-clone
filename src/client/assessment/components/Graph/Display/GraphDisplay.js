@@ -304,22 +304,16 @@ class GraphDisplay extends Component {
       : safeParseFloat(uiStyle.yDistance)
 
     if (!xRadians) {
-      const xGap = width / (xMax - xMin)
-      if (xGap >= MIN_GAP) {
-        xMin -= 1
-        xMax += 1
-      } else {
+      const xGap = width / ((xMax - xMin) / xDistance)
+      if (xGap < MIN_GAP) {
         xMin -= MIN_GAP / xGap
         xMax += MIN_GAP / xGap
       }
     }
 
     if (!yRadians) {
-      const yGap = height / (yMax - yMin)
-      if (yGap >= MIN_GAP) {
-        yMin -= 1
-        yMax += 1
-      } else {
+      const yGap = height / ((yMax - yMin) / yDistance)
+      if (yGap < MIN_GAP) {
         yMin -= MIN_GAP / yGap
         yMax += MIN_GAP / yGap
       }
@@ -367,6 +361,7 @@ class GraphDisplay extends Component {
       drawLabelZero = true,
       xRadians,
       yRadians,
+      gridType,
     } = uiStyle
 
     const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle)
@@ -424,9 +419,22 @@ class GraphDisplay extends Component {
         useRadians: yRadians,
       },
       gridParams: {
+        showGrid,
         gridX: xDistance,
         gridY: yDistance,
-        showGrid,
+      },
+      polarGridParams: {
+        tMin: uiStyle.tMin,
+        tMax: uiStyle.tMax,
+        tDist: uiStyle.tDist,
+        rMin: uiStyle.rMin,
+        rMax: uiStyle.rMax,
+        rDist: uiStyle.rDist,
+        rShowAxis: uiStyle.rShowAxis,
+        tShowAxis: uiStyle.tShowAxis,
+        rDrawLabel: uiStyle.rDrawLabel,
+        tDrawLabel: uiStyle.tDrawLabel,
+        tRadians: uiStyle.tRadians,
       },
       bgImgOptions: {
         urlImg: backgroundImage.src,
@@ -460,6 +468,7 @@ class GraphDisplay extends Component {
       setQuestionData,
       graphData,
       onChangeKeypad,
+      gridType,
       symbols,
       showConnect,
       pointsOnEquEnabled,
@@ -605,9 +614,17 @@ class GraphDisplay extends Component {
       disableResponse,
       elementsIsCorrect,
       setQuestionData,
+      bgShapes,
     } = this.props
 
-    const { uiStyle, canvas, toolbar, numberlineAxis } = graphData
+    const {
+      uiStyle,
+      canvas,
+      toolbar,
+      numberlineAxis,
+      background_shapes,
+      backgroundImage,
+    } = graphData
 
     return {
       canvas: {
@@ -704,10 +721,15 @@ class GraphDisplay extends Component {
         gridX: safeParseFloat(uiStyle.xDistance),
         showGrid: uiStyle.showGrid ? uiStyle.showGrid : true,
       },
+      backgroundShapes: {
+        values: bgShapes ? [] : background_shapes || [],
+        showPoints: !!backgroundImage.showShapePoints,
+      },
       evaluation,
       tools: toolbar ? toolbar.tools : [],
       setValue: onChange,
       elements,
+      bgShapes,
       altAnswerId,
       view,
       previewTab,

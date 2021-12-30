@@ -3,15 +3,39 @@ import React from 'react'
 import { Select, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
-import { IconGroup, IconClass } from '@edulastic/icons'
-import { lightGrey10 } from '@edulastic/colors'
+import { IconGroup, IconClass, IconPlus } from '@edulastic/icons'
+import { lightGrey10, themeColor, white } from '@edulastic/colors'
 import { StyledRow, StyledCol } from './styled'
+import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 
 const dropdownStyle = {
   boxShadow: '0 3px 10px 0 rgba(0, 0, 0, 0.1)',
 }
 
-const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
+const CreateNewClassBtn = ({ createClassHandler }) => (
+  <AuthorCompleteSignupButton
+    renderButton={(handleClick) => (
+      <CreateNewClassButtonWrapper
+        data-cy="createNewClass"
+        onMouseDown={(e) => e.preventDefault()}
+        onClick={handleClick}
+      >
+        <IconPlus /> <span>Create New Class</span>
+      </CreateNewClassButtonWrapper>
+    )}
+    onMouseDown={(e) => e.preventDefault()}
+    onClick={createClassHandler}
+    onSuccessCallback={createClassHandler}
+  />
+)
+
+const ClassSelector = ({
+  onChange,
+  fetchStudents,
+  selectedGroups,
+  group,
+  createClassHandler,
+}) => (
   <StyledRow gutter={16}>
     <StyledCol span={10}>
       <FieldLabel>CLASS/GROUP</FieldLabel>
@@ -34,6 +58,13 @@ const ClassSelector = ({ onChange, fetchStudents, selectedGroups, group }) => (
         value={selectedGroups}
         getPopupContainer={(trigger) => trigger.parentNode}
         dropdownStyle={dropdownStyle}
+        dropdownRender={(menu) =>
+          group?.length > 0 ? (
+            menu
+          ) : (
+            <CreateNewClassBtn createClassHandler={createClassHandler} />
+          )
+        }
       >
         {group.map((data) => (
           <Select.Option
@@ -78,4 +109,26 @@ const OptionWrapper = styled.div`
   display: inline-flex;
   width: 100%;
   align-items: center;
+`
+const CreateNewClassButtonWrapper = styled.div`
+  cursor: pointer;
+  padding: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: ${themeColor};
+
+  svg {
+    fill: ${white};
+    background: ${themeColor};
+    padding: 3px;
+    border-radius: 50%;
+    transform: scale(1.1);
+  }
+
+  span {
+    display: block;
+    font-weight: 600;
+    padding-left: 10px;
+  }
 `

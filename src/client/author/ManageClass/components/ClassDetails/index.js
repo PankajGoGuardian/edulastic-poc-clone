@@ -32,6 +32,7 @@ import {
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   syncClassWithCanvasAction,
+  syncClassWithAtlasAction,
   syncClassesWithCleverAction,
   getClassNotFoundError,
   setClassNotFoundErrorAction,
@@ -40,12 +41,16 @@ import {
   getGoogleAuthRequiredSelector,
   setGoogleAuthenticationRequiredAction,
   saveGoogleTokensAndRetrySyncAction,
+  setSyncClassLoadingAction,
+  toggleCreateAssignmentModalAction,
+  getIsCreateAssignmentModalVisible,
 } from '../../ducks'
 import {
   getCleverLibraryUserSelector,
   getUserOrgId,
 } from '../../../src/selectors/user'
 import ReauthenticateModal from './ReauthenticateModal'
+import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
 
 const ClassDetails = ({
   location,
@@ -64,8 +69,11 @@ const ClassDetails = ({
   getCanvasSectionListRequest,
   canvasCourseList,
   canvasSectionList,
+  isCleverDistrict,
   syncClassWithCanvas,
   syncClassesWithClever,
+  syncClassWithAtlas,
+  setSyncClassLoading,
   user,
   classCodeError = false,
   setClassNotFoundError,
@@ -76,6 +84,8 @@ const ClassDetails = ({
   setGoogleAuthenticationRequired,
   saveGoogleTokensAndRetrySync,
   userDistrictId,
+  isCreateAssignmentModalVisible,
+  toggleCreateAssignmentModal,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -93,6 +103,7 @@ const ClassDetails = ({
     googleId && !isAutoArchivedClass ? syncGoogleCoTeacher : true
   const [coTeacherFlag, setCoTeacherFlag] = useState(isCoTeacherFlagSet)
   const typeText = type !== 'class' ? 'group' : 'class'
+  const { classId } = match.params
 
   // sync checks for institution
   const {
@@ -117,9 +128,13 @@ const ClassDetails = ({
   )
   const [showCanvasSyncModal, setCanvasSyncModalVisibility] = useState(false)
   const [openGCModal, setOpenGCModal] = useState(false)
+  const [gCode, setGCode] = useState(selectedClass.googleCode)
 
   useEffect(() => {
-    if (!fetchClassListLoading) setOpenGCModal(true)
+    if (!fetchClassListLoading) {
+      setGCode(selectedClass.googleCode)
+      setOpenGCModal(true)
+    }
   }, [fetchClassListLoading])
 
   useEffect(() => {
@@ -130,15 +145,16 @@ const ClassDetails = ({
   }, [syncClassLoading])
 
   useEffect(() => {
-    const { classId } = match.params
-    loadStudents({ classId })
+    if (classId) {
+      loadStudents({ classId })
+    }
     setOpenGCModal(false)
-  }, [])
+  }, [classId])
 
   const handleEditClick = () => {
-    const classId = selectedClass._id || match.params.classId
+    const currentClassId = selectedClass._id || match.params.classId
     history.push({
-      pathname: editPath || `/author/manageClass/${classId}/edit`,
+      pathname: editPath || `/author/manageClass/${currentClassId}/edit`,
       state: {
         type: typeText,
         exitPath,
@@ -216,6 +232,11 @@ const ClassDetails = ({
     setCanvasSyncModalVisibility(true)
   }
 
+  const handleCreateNewAssignmentClick = () => {
+    toggleCreateAssignmentModal(false)
+    history.push('/author/assignments/select')
+  }
+
   useEffect(() => {
     if (
       (googleId && googleId.includes('.deactivated')) ||
@@ -225,6 +246,11 @@ const ClassDetails = ({
       setCoTeacherFlag(true)
     }
   }, [googleId, canvasCode])
+
+  const openGoogleSyncModal = () => {
+    setGCode(selectedClass.googleCode)
+    setOpenGCModal(true)
+  }
 
   return (
     <>
@@ -271,7 +297,7 @@ const ClassDetails = ({
             }
           >
             <Input
-              defaultValue={isAutoArchivedClass ? '' : selectedClass.googleCode}
+              value={isAutoArchivedClass ? '' : gCode}
               ref={googleCode}
               disabled={
                 selectedClass &&
@@ -279,6 +305,7 @@ const ClassDetails = ({
                 disabled &&
                 !isAutoArchivedClass
               }
+              onChange={(e) => setGCode(e.target.value)}
             />
             {classCodeError && (
               <div style={{ 'margin-top': '10px', color: red }}>
@@ -345,10 +372,13 @@ const ClassDetails = ({
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
               allowGoogleLogin={allowGoogleLogin}
-              syncGCModal={() => setOpenGCModal(true)}
+              syncGCModal={openGoogleSyncModal}
               isUserGoogleLoggedIn={isUserGoogleLoggedIn}
               enableCleverSync={enableCleverSync}
+              isCleverDistrict={isCleverDistrict}
               syncClassesWithClever={syncClassesWithClever}
+              syncClassWithAtlas={syncClassWithAtlas}
+              setSyncClassLoading={setSyncClassLoading}
               unarchiveClass={unarchiveClass}
               archiveClass={archiveClass}
               entity={selectedClass}
@@ -387,6 +417,13 @@ const ClassDetails = ({
               allowCanvasLogin={allowCanvasLogin}
             />
           </MainContentWrapper>
+          {isCreateAssignmentModalVisible === 2 && (
+            <CreateNewAssignmentModal
+              visible={isCreateAssignmentModalVisible}
+              onConfirm={handleCreateNewAssignmentClick}
+              onCancel={() => toggleCreateAssignmentModal(0)}
+            />
+          )}
         </>
       )}
     </>
@@ -407,6 +444,7 @@ const enhance = compose(
       fetchClassListLoading: state.manageClass.fetchClassListLoading,
       isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn', false),
       allowCanvasLogin: get(state, 'user.user.orgData.allowCanvas', false),
+      isCleverDistrict: get(state, 'user.user.orgData.isCleverDistrict', false),
       syncClassLoading: get(state, 'manageClass.syncClassLoading'),
       classLoaded: get(state, 'manageClass.classLoaded'),
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
@@ -417,6 +455,7 @@ const enhance = compose(
       isFetchingCanvasData: getCanvasFetchingStateSelector(state),
       isGoogleAuthRequired: getGoogleAuthRequiredSelector(state),
       userDistrictId: getUserOrgId(state),
+      isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
     }),
     {
       syncClassUsingCode: syncClassUsingCodeAction,
@@ -427,11 +466,14 @@ const enhance = compose(
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       syncClassWithCanvas: syncClassWithCanvasAction,
+      syncClassWithAtlas: syncClassWithAtlasAction,
+      setSyncClassLoading: setSyncClassLoadingAction,
       syncClassesWithClever: syncClassesWithCleverAction,
       setClassNotFoundError: setClassNotFoundErrorAction,
       unarchiveClass: unarchiveClassAction,
       setGoogleAuthenticationRequired: setGoogleAuthenticationRequiredAction,
       saveGoogleTokensAndRetrySync: saveGoogleTokensAndRetrySyncAction,
+      toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
     }
   )
 )

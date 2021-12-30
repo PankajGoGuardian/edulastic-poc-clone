@@ -21,7 +21,7 @@ import {
 } from '../../../../actions/graphTools'
 
 import { makeBorder } from '../../Builder'
-import { CONSTANT } from '../../Builder/config'
+import { CONSTANT, ALL_CONTROLS, getToolOptsByGrid } from '../../Builder/config'
 import {
   defaultGraphParameters,
   defaultPointParameters,
@@ -273,6 +273,8 @@ class GraphContainer extends PureComponent {
       disableResponse,
       view,
       pointsOnEquEnabled,
+      gridType,
+      polarGridParams,
     } = this.props
 
     const { tools } = toolbar
@@ -328,6 +330,8 @@ class GraphContainer extends PureComponent {
         }))
         this._graph.setBgObjects(bgShapeValues, backgroundShapes.showPoints)
       }
+
+      this._graph.updateGridAndAxes(gridType, polarGridParams)
     }
 
     this.setGraphUpdateEventHandler()
@@ -353,6 +357,8 @@ class GraphContainer extends PureComponent {
       showConnect,
       view,
       pointsOnEquEnabled,
+      gridType,
+      polarGridParams,
     } = this.props
 
     const { tools } = toolbar
@@ -413,6 +419,13 @@ class GraphContainer extends PureComponent {
             ...yAxesParameters,
           },
         })
+      }
+
+      if (
+        gridType !== prevProps.gridType ||
+        !isEqual(polarGridParams, prevProps.polarGridParams)
+      ) {
+        this._graph.updateGridAndAxes(gridType, polarGridParams)
       }
 
       if (!isEqual(layout, prevProps.layout)) {
@@ -688,41 +701,6 @@ class GraphContainer extends PureComponent {
     setElementsStash(newElements, this.getStashId())
   }
 
-  allTools = [
-    CONSTANT.TOOLS.POINT,
-    CONSTANT.TOOLS.SEGMENT,
-    CONSTANT.TOOLS.POLYGON,
-    CONSTANT.TOOLS.RAY,
-    CONSTANT.TOOLS.VECTOR,
-    CONSTANT.TOOLS.LINE,
-    CONSTANT.TOOLS.CIRCLE,
-    CONSTANT.TOOLS.ELLIPSE,
-    CONSTANT.TOOLS.PARABOLA,
-    CONSTANT.TOOLS.PARABOLA2,
-    CONSTANT.TOOLS.HYPERBOLA,
-    CONSTANT.TOOLS.SIN,
-    CONSTANT.TOOLS.COS,
-    CONSTANT.TOOLS.TANGENT,
-    CONSTANT.TOOLS.SECANT,
-    CONSTANT.TOOLS.POLYNOM,
-    CONSTANT.TOOLS.EXPONENT,
-    CONSTANT.TOOLS.EXPONENTIAL2,
-    CONSTANT.TOOLS.LOGARITHM,
-    CONSTANT.TOOLS.AREA,
-    CONSTANT.TOOLS.DASHED,
-    CONSTANT.TOOLS.PIECEWISE,
-    CONSTANT.TOOLS.NO_SOLUTION,
-    CONSTANT.TOOLS.AREA2,
-  ]
-
-  allControls = [
-    CONSTANT.TOOLS.EDIT_LABEL,
-    CONSTANT.TOOLS.UNDO,
-    CONSTANT.TOOLS.REDO,
-    CONSTANT.TOOLS.RESET,
-    CONSTANT.TOOLS.DELETE,
-  ]
-
   get drawingObjectsAreVisible() {
     const { view, toolbar } = this.props
     const { drawingPrompt } = toolbar
@@ -829,6 +807,7 @@ class GraphContainer extends PureComponent {
       isPrintPreview,
       onChangeKeypad,
       symbols,
+      gridType,
     } = this.props
     const { tools, drawingPrompt } = toolbar
     const {
@@ -871,13 +850,14 @@ class GraphContainer extends PureComponent {
                 canEditTools={view === EDIT && !bgShapes}
                 tools={
                   bgShapes
-                    ? this.allTools
+                    ? getToolOptsByGrid(gridType, bgShapes)
                     : this.drawingObjectsAreVisible
                     ? []
                     : tools
                 }
                 setTools={this.setTools}
-                controls={bgShapes ? this.allControls : controls}
+                gridType={gridType}
+                controls={bgShapes ? ALL_CONTROLS : controls}
                 selected={[selectedTool]}
                 onSelectControl={this.onSelectControl}
                 onSelect={this.onSelectTool}
@@ -1020,7 +1000,7 @@ GraphContainer.propTypes = {
   setStashIndex: PropTypes.func.isRequired,
   stash: PropTypes.object,
   stashIndex: PropTypes.object,
-  graphData: PropTypes.string.isRequired,
+  graphData: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
   altAnswerId: PropTypes.string,
   disableResponse: PropTypes.bool,

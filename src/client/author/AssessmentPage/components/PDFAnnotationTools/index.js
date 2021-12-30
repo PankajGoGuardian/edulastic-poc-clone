@@ -14,6 +14,7 @@ const PDFAnnotationTools = ({
   currentTool,
   setCurrentTool,
   minimized,
+  testMode,
   togglePdfThumbnails,
   annotationToolsProperties,
   updateToolProperties,
@@ -21,6 +22,8 @@ const PDFAnnotationTools = ({
   redoAnnotationsOperation,
   isAnnotationsStackEmpty = false,
   isAnnotationsEmpty = false,
+  undoUserWork,
+  redoUserWork,
 }) => {
   const handleClick = (key) => {
     if (key === 'thumbnails') {
@@ -30,12 +33,20 @@ const PDFAnnotationTools = ({
     }
 
     if (key == 'undo') {
-      if (!isAnnotationsEmpty) undoAnnotationsOperation()
+      if (!isAnnotationsEmpty && !testMode) {
+        undoAnnotationsOperation()
+      } else if (!isAnnotationsEmpty && testMode) {
+        undoUserWork()
+      }
       return
     }
 
     if (key == 'redo') {
-      if (!isAnnotationsStackEmpty) redoAnnotationsOperation()
+      if (!isAnnotationsStackEmpty && !testMode) {
+        redoAnnotationsOperation()
+      } else if (!isAnnotationsStackEmpty && testMode) {
+        redoUserWork()
+      }
       return
     }
 
@@ -52,8 +63,19 @@ const PDFAnnotationTools = ({
 
   return (
     <FlexContainer justifyContent="flex-start" alignItems="center">
-      {ANNOTATION_TOOLS.map(
-        ({ key, title, icon, showColorPicker, showSizeSelection }, index) => (
+      {ANNOTATION_TOOLS.map((tool, index) => {
+        const {
+          key,
+          title,
+          icon,
+          showColorPicker,
+          showSizeSelection,
+          authorOnly,
+        } = tool
+        if (testMode && authorOnly) {
+          return null
+        }
+        return (
           <ToolsWrapper border={['draw', 'text'].includes(key)}>
             <ToolWrapper
               key={key || title}
@@ -95,7 +117,7 @@ const PDFAnnotationTools = ({
             )}
           </ToolsWrapper>
         )
-      )}
+      })}
     </FlexContainer>
   )
 }

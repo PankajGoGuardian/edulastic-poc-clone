@@ -25,9 +25,9 @@ const staticMathiPadStyles = css`
 `
 
 export const MathInputStyles = styled.div`
-  min-width: ${({ width, fullWidth }) =>
-    width || (fullWidth ? '100%' : 'fit-content')};
-  min-height: ${({ height }) => height || 'auto'};
+  min-width: ${({ minWidth, fullWidth }) =>
+    minWidth || (fullWidth ? '100%' : 'fit-content')};
+  min-height: ${({ minHeight }) => minHeight || 'auto'};
   background: ${({ background }) => background};
   position: relative;
   text-indent: 0
@@ -43,8 +43,8 @@ export const MathInputStyles = styled.div`
   .input__math {
     width: 100%;
     height: 100%;
-    min-width: ${({ width }) => width || '40px'};
-    min-height: ${({ height }) => height || '32px'};
+    min-width: ${({ minWidth }) => minWidth || '40px'};
+    min-height: ${({ minHeight }) => minHeight || '32px'};
     max-width: ${({ maxWidth }) => maxWidth || '100%'};
     display: inline-flex;
     position: relative;

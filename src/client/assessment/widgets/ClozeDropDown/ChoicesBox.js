@@ -1,8 +1,8 @@
-import React, { useRef, useContext } from 'react'
+import React, { useRef } from 'react'
 import PropTypes from 'prop-types'
 import { find } from 'lodash'
 import styled from 'styled-components'
-import { ScrollContext, MathSpan, SelectInputStyled } from '@edulastic/common'
+import { MathSpan, SelectInputStyled } from '@edulastic/common'
 import { convertToMathTemplate } from '@edulastic/common/src/utils/mathUtils'
 
 const { Option } = SelectInputStyled
@@ -29,6 +29,7 @@ const SelectWrapper = styled.span`
   display: inline-flex;
   .ant-select-dropdown {
     ${({ dropdownMenuStyle }) => dropdownMenuStyle};
+    z-index: ${({ zIndex }) => zIndex};
   }
 
   .ant-select-dropdown-menu-item {
@@ -82,8 +83,9 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     cAnswers,
     responsecontainerindividuals,
     userSelections,
+    setDropDownInUse,
   } = resprops
-  const { getScrollElement } = useContext(ScrollContext)
+
   if (!id) return null
   const { responseIds, uiStyle = {} } = item
   const { index } = find(responseIds, (response) => response.id === id)
@@ -118,6 +120,16 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
     return node.parentNode
   }
 
+  const handleEvent = (event) => {
+    if (typeof setDropDownInUse === 'function') {
+      if (event === 'focus') {
+        setDropDownInUse(true)
+      } else if (event === 'blur') {
+        setDropDownInUse(false)
+      }
+    }
+  }
+
   const dropdownMenuStyle = {
     top: styles?.height ? `${styles.height}px !important` : null,
     left: `0px !important`,
@@ -127,6 +139,7 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
       dropdownMenuStyle={dropdownMenuStyle}
       ref={selectWrapperRef}
       uiStyle={uiStyle}
+      zIndex={999}
     >
       <Select
         value={convertToMathTemplate(userAnswer?.value)}
@@ -134,12 +147,15 @@ const ChoicesBox = ({ style = {}, resprops, id }) => {
           ...styles,
           overflow: 'hidden',
         }}
+        zIndex={999}
         height={heightpx || btnStyle.height}
         placeholder={individualPlacholder || placeholder}
         getPopupContainer={getPopupContainer}
         data-cy="drop_down_select"
         disabled={disableResponse}
         onChange={selectChange}
+        onFocus={() => handleEvent('focus')}
+        onBlur={() => handleEvent('blur')}
       >
         {options &&
           options[id] &&

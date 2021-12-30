@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { isEqual, get } from 'lodash'
 import produce from 'immer'
+import { connect } from 'react-redux'
 
 import {
   FlexContainer,
@@ -37,6 +38,7 @@ import { getFontSize } from '../../utils/helpers'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import { Container } from './styled/Container'
+import { checkAnswerInProgressSelector } from '../../selectors/test'
 
 const {
   maxWidth: choiceDefaultMaxW,
@@ -60,6 +62,7 @@ const SortListPreview = ({
   isPrintPreview,
   hideCorrectAnswer,
   evaluation,
+  checkAnswerInProgress,
 }) => {
   const previewRef = useRef()
   const answerContextConfig = useContext(AnswerContext)
@@ -299,6 +302,10 @@ const SortListPreview = ({
         currentAns ? source.indexOf(currentAns) : null
       )
     )
+
+    if (previewTab !== CLEAR) {
+      changePreviewTab(CLEAR)
+    }
   }
 
   return (
@@ -338,7 +345,9 @@ const SortListPreview = ({
               >
                 <FullWidthContainer isVertical={isVertical}>
                   {!smallSize && (
-                    <Title smallSize={smallSize}>{sourceLabel}</Title>
+                    <Title data-cy="sourceTitle" smallSize={smallSize}>
+                      {sourceLabel}
+                    </Title>
                   )}
                   {items.map((draggableItem, i) => (
                     <DragDrop.DropContainer
@@ -399,7 +408,9 @@ const SortListPreview = ({
 
                 <FullWidthContainer isVertical={isVertical}>
                   {!smallSize && (
-                    <Title smallSize={smallSize}>{targetLabel}</Title>
+                    <Title data-cy="targetTitle" smallSize={smallSize}>
+                      {targetLabel}
+                    </Title>
                   )}
                   {selected.map((selectedItem, i) => (
                     <DragDrop.DropContainer
@@ -438,6 +449,7 @@ const SortListPreview = ({
                         changePreviewTab={changePreviewTab}
                         stemNumeration={stemNumeration}
                         isPrintPreview={isPrintPreview}
+                        checkAnswerInProgress={checkAnswerInProgress}
                       />
                     </DragDrop.DropContainer>
                   ))}
@@ -499,6 +511,12 @@ SortListPreview.defaultProps = {
   isReviewTab: false,
 }
 
-const enhance = compose(withNamespaces('assessment'), withTheme)
+const enhance = compose(
+  withNamespaces('assessment'),
+  withTheme,
+  connect((state) => ({
+    checkAnswerInProgress: checkAnswerInProgressSelector(state),
+  }))
+)
 
 export default enhance(SortListPreview)

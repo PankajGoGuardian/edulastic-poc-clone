@@ -58,6 +58,7 @@ class ListLabels extends Component {
                   source: e.target.value,
                 })
               }
+              data-cy="sourceLabel"
             />
           </Col>
           <Col md={12}>
@@ -72,6 +73,7 @@ class ListLabels extends Component {
                   target: e.target.value,
                 })
               }
+              data-cy="targetLabel"
             />
           </Col>
         </Row>

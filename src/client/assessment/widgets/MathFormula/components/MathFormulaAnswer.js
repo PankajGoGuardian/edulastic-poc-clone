@@ -43,8 +43,9 @@ class MathFormulaAnswer extends Component {
 
     const dropdownUnit = (changeOptions) => (
       <SelectUnit
-        height="36px"
-        width="140px"
+        height={cssStyles.height || '36px'}
+        width={cssStyles.width || '140px'}
+        fontSize={cssStyles.fontSize}
         customUnits={customUnits}
         onChange={changeOptions}
         unit={unit}

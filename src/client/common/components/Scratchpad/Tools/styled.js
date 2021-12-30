@@ -6,7 +6,7 @@ import icons from './assets/images/icons.png'
 
 export const ToolBoxContainer = styled.div`
   position: relative;
-  z-index: 999;
+  z-index: ${({ isDropDownInUse }) => (isDropDownInUse ? 990 : 999)};
 `
 
 export const MainToolBoxContainer = styled(FlexContainer)`

@@ -1,4 +1,3 @@
-/* eslint-disable react/jsx-props-no-spreading */
 import {
   EduButton,
   ScrollContext,
@@ -17,7 +16,6 @@ import { ThemeProvider } from 'styled-components'
 
 import QuestionWrapper from '../../../../../assessment/components/QuestionWrapper'
 import { MAX_MOBILE_WIDTH } from '../../../../../assessment/constants/others'
-import Divider from '../../../../../assessment/components/TestItemPreview/Divider'
 import { themes } from '../../../../../theme'
 import {
   deleteItemAction,
@@ -53,6 +51,7 @@ import {
   ScratchpadTool,
   Scratchpad,
 } from '../../../../../common/components/Scratchpad'
+import PassageDivider from '../../../../../common/components/PassageDivider'
 import { getCurrentLanguage } from '../../../../../common/components/LanguageSelector/duck'
 import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
 
@@ -128,9 +127,9 @@ class AuthorTestItemPreview extends Component {
   }
 
   setCollapseView = (dir) => {
-    this.setState((prevState) => ({
-      collapseDirection: prevState.collapseDirection ? '' : dir,
-    }))
+    this.setState({
+      collapseDirection: dir,
+    })
   }
 
   getSubIndex = (colIndex, widget, sectionQue, subCount) => {
@@ -201,7 +200,9 @@ class AuthorTestItemPreview extends Component {
 
     // const subIndex = this.getSubIndex(colIndex, widget, sectionQue, subCount);
     const question = changeDataToPreferredLanguage(
-      questions[widget.reference] || {},
+      questions[`${item._id}_${widget.reference}`] ||
+        questions[widget.reference] ||
+        {},
       authorLanguage
     )
     // if (isMultiPart || resourceCount > 0) {
@@ -549,11 +550,13 @@ class AuthorTestItemPreview extends Component {
   }
 
   get collapseButtons() {
+    const { viewComponent } = this.props
     const { collapseDirection } = this.state
     return (
-      <Divider
+      <PassageDivider
+        viewComponent={viewComponent}
         collapseDirection={collapseDirection}
-        setCollapseView={this.setCollapseView}
+        onChange={this.setCollapseView}
       />
     )
   }
@@ -612,6 +615,7 @@ class AuthorTestItemPreview extends Component {
           width={
             !collapseDirection ? col.dimension : hideColumn ? '0px' : '100%'
           }
+          data-cy="columnContentArea"
         >
           <ColumnContentArea>
             {i === 0

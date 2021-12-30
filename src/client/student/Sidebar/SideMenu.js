@@ -72,7 +72,7 @@ const getIndex = (page, items, isReports = false) => {
     /*
      *  change the return value to the index of "home/grades" route in the menuItems
      */
-    return 2
+    return 1
   }
   items.forEach((item, i) => {
     if (item.path && item.path.includes(page)) {
@@ -295,6 +295,7 @@ class SideMenu extends Component {
                       data-cy={menu.label}
                       onClick={this.toggleMenu}
                       title={isSidebarCollapsed ? menu.label : ''}
+                      isCollapsed={isSidebarCollapsed}
                     >
                       <MenuIcon />
                       {!isSidebarCollapsed && (

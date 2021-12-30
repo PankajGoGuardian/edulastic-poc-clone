@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
 import { chunk } from 'lodash'
 import { SortableContainer } from 'react-sortable-hoc'
@@ -20,46 +20,35 @@ const Options = ({
   fromSetAnswers,
   ...restProps
 }) => {
-  const noOfColumns = uiStyle.columns || 1
+  const [focusedOptionIndex, setFocusedOptionIndex] = useState(0)
+  const noOfColumns = parseInt(uiStyle.columns || 1, 10)
   const noOfRows = Math.ceil(options.length / noOfColumns)
-  const updateArrangement = (arr) => {
-    const res = []
-    let colPtr = 1
-    let rowPtr = 0
-    let index = 0
-    const delta = noOfRows * noOfColumns - arr.length
-    let count = 0
-    while (count < arr.length) {
-      res.push(arr[index])
-      // eslint-disable-next-line no-unused-expressions
-      colPtr > noOfColumns - delta && noOfColumns - delta !== 0
-        ? (index += noOfRows - 1)
-        : (index += noOfRows)
-      ++colPtr
-      if (index >= arr.length) {
-        index = ++rowPtr
-        colPtr = 1
-      }
-      count++
-    }
-    return res
-  }
-
-  const mcqOptions =
-    uiStyle.orientation !== 'vertical' ? options : updateArrangement(options)
 
   const OptComponent = fromSetAnswers ? SortableOption : Option
 
   const indexMap = useMemo(
     () =>
-      mcqOptions.reduce((acc, curr, i) => {
+      options.reduce((acc, curr, i) => {
         acc[curr.value] = i
         return acc
       }, {}),
-    [mcqOptions]
+    [options]
   )
-
-  const cols = chunk(mcqOptions, noOfRows)
+  const cols = useMemo(() => {
+    if (uiStyle.orientation === 'horizontal') {
+      const bump = chunk(options, noOfColumns)
+      return new Array(noOfRows)
+        .fill(true)
+        .map((_, i) => {
+          if (noOfColumns > i) {
+            return bump.map((col) => col[i]).filter((x) => x)
+          }
+          return null
+        })
+        .filter((x) => x)
+    }
+    return chunk(options, noOfRows)
+  }, [options, noOfColumns, noOfRows, uiStyle.orientation])
 
   return (
     <OptionsList
@@ -93,6 +82,8 @@ const Options = ({
               multipleResponses={multipleResponses}
               fontSize={fontSize}
               fromSetAnswers={fromSetAnswers}
+              setFocusedOptionIndex={setFocusedOptionIndex}
+              focusedOptionIndex={focusedOptionIndex}
               {...restProps}
             />
           ))}

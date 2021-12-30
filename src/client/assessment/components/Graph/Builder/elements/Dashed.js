@@ -13,6 +13,7 @@ import {
   Tangent,
   Exponent2,
 } from '.'
+import PiecewiseLine from './PiecewiseLine'
 import { CONSTANT } from '../config'
 import { getAllObjectsUnderMouse } from '../utils'
 
@@ -30,6 +31,7 @@ const availableTypes = [
   Polynom.jxgType,
   Sin.jxgType,
   Cos.jxgType,
+  PiecewiseLine.jxgType,
 ]
 
 function onHandler() {

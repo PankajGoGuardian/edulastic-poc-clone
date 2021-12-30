@@ -12,7 +12,7 @@ const CardComponent = styled.div`
   border-radius: 10px;
   height: 446px;
   background-color: ${backgrounds.default};
-  margin-left: ${(props) => props.ml || '25px'};
+  margin: 0px 12px;
   @media (max-width: ${mobileWidthMax}) {
     min-height: unset;
     flex-basis: 100%;

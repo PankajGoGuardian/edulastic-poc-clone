@@ -7,7 +7,7 @@ import {
 import { roleuser } from '@edulastic/constants'
 import { IconCorrect } from '@edulastic/icons'
 import { Col, Form, Row, Select } from 'antd'
-import { get } from 'lodash'
+import { get, keyBy } from 'lodash'
 import React, { Component } from 'react'
 import { withNamespaces } from 'react-i18next'
 import PerfectScrollbar from 'react-perfect-scrollbar'
@@ -185,6 +185,7 @@ class InviteMultipleStudentModal extends Component {
 
   handleSearch = async (e) => {
     const { userOrgId } = this.props
+    const { studentsToEnroll } = this.state
     const searchKey = e.target?.value.trim() || e
     const searchData = {
       districtId: userOrgId,
@@ -202,7 +203,16 @@ class InviteMultipleStudentModal extends Component {
       })
     if (searchKey.length > 0) {
       const result = await userApi.fetchUsers(searchData)
-      this.setState({ allStudents: result.result })
+      if (result.result.length) {
+        const studentsToEnrollById = keyBy(studentsToEnroll, '_id')
+        this.setState({
+          allStudents: result.result.filter(
+            (item) => !studentsToEnrollById[item._id]
+          ),
+        })
+      } else {
+        this.setState({ allStudents: result.result })
+      }
     } else {
       this.setState({
         allStudents: [],
@@ -293,24 +303,27 @@ class InviteMultipleStudentModal extends Component {
       searchViewVisible,
     } = this.state
     const { schools = [] } = orgData || {}
+    const studentsToEnrollById = keyBy(studentsToEnroll, '_id')
     const allLists =
       allStudents.length > 0
-        ? allStudents.map((item) => {
-            const isEnrolled =
-              studentsList.filter(
-                (student) =>
-                  student.email === item._source.email &&
-                  student.enrollmentStatus == 1
-              ).length > 0
-            return (
-              <Item
-                key={item._id}
-                item={item}
-                moveItem={this.moveItem}
-                isEnrolled={isEnrolled}
-              />
-            )
-          })
+        ? allStudents
+            .filter((item) => !studentsToEnrollById?.[item._id])
+            .map((item) => {
+              const isEnrolled =
+                studentsList.filter(
+                  (student) =>
+                    student.email === item._source.email &&
+                    student.enrollmentStatus == 1
+                ).length > 0
+              return (
+                <Item
+                  key={item._id}
+                  item={item}
+                  moveItem={this.moveItem}
+                  isEnrolled={isEnrolled}
+                />
+              )
+            })
         : null
 
     const toEnrollLists =

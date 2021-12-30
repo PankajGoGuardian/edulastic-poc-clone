@@ -64,6 +64,30 @@ import ConfirmRegradeModal from '../../../Regrade/ConfirmRegradeModal'
 import Upgrade from '../../../Regrade/Upgrade'
 import { DeleteItemModal } from '../../../TestList/components/DeleteItemModal/deleteItemModal'
 import { LARGE_DESKTOP_WIDTH } from '../../../../assessment/constants/others'
+import { deletePlaylistRequestAction } from '../../../CurriculumSequence/ducks'
+
+/**
+ *
+ * @param {string} id
+ * @param {string} title
+ * @param {Function} deletePlaylist
+ */
+function handleConfirmForDeletePlaylist(id, title, deletePlaylist) {
+  Modal.confirm({
+    title: 'Do you want to delete ?',
+    content: `Are you sure you want to Delete the Playlist "${title}"?`,
+    onOk: () => {
+      deletePlaylist(id)
+      Modal.destroyAll()
+    },
+    okText: 'Continue',
+    centered: true,
+    width: 500,
+    okButtonProps: {
+      style: { background: themeColor, outline: 'none' },
+    },
+  })
+}
 
 const {
   statusConstants,
@@ -188,6 +212,7 @@ const TestPageHeader = ({
   regradeFirebaseDocId,
   showUpgradePopup,
   isDemoPlayground = false,
+  deletePlaylist,
 }) => {
   let navButtons =
     buttons ||
@@ -202,6 +227,7 @@ const TestPageHeader = ({
 
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor)
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
+  const playlistId = match?.params?.id
 
   useEffect(() => {
     // TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
@@ -357,8 +383,12 @@ const TestPageHeader = ({
     )
   }
 
-  const onDelete = () => {
-    setIsDeleteModalOpen(true)
+  const onDelete = (id, _title, _deletePlaylist) => {
+    if (isPlaylist) {
+      handleConfirmForDeletePlaylist(id, _title, _deletePlaylist)
+    } else {
+      setIsDeleteModalOpen(true)
+    }
   }
 
   const onDeleteModelCancel = () => {
@@ -510,7 +540,7 @@ const TestPageHeader = ({
                     : 'Delete'
                 }
                 data-cy="delete-test"
-                onClick={onDelete}
+                onClick={() => onDelete(playlistId, title, deletePlaylist)}
                 disabled={disableButtons || isDemoPlayground}
               >
                 <IconTrashAlt />
@@ -847,6 +877,11 @@ TestPageHeader.propTypes = {
   windowWidth: PropTypes.number.isRequired,
   editEnable: PropTypes.bool.isRequired,
   onAssign: PropTypes.func.isRequired,
+  setDisableAlert: PropTypes.func,
+}
+
+TestPageHeader.defaultProps = {
+  setDisableAlert: () => {},
 }
 
 const enhance = compose(
@@ -877,6 +912,7 @@ const enhance = compose(
       fetchAssignments: fetchAssignmentsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
+      deletePlaylist: deletePlaylistRequestAction,
     }
   )
 )

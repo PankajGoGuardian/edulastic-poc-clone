@@ -14,6 +14,8 @@ const EdulasticResourceModal = ({
   hideFooter = false,
   modalWidth = '',
   children,
+  titleFontSize,
+  padding,
 }) => {
   const footer = (
     <>
@@ -42,6 +44,8 @@ const EdulasticResourceModal = ({
       centered
       footer={footer}
       modalWidth={modalWidth}
+      titleFontSize={titleFontSize}
+      padding={padding}
     >
       {children}
     </CustomModalStyled>

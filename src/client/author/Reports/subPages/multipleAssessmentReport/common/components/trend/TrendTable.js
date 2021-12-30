@@ -6,6 +6,7 @@ import qs from 'qs'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { extraDesktopWidthMax } from '@edulastic/colors'
+import { testActivityStatus, report as reportTypes } from '@edulastic/constants'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
@@ -74,14 +75,23 @@ const StyledTable = styled(Table)`
   }
 `
 
-const formatText = (test, type) => {
+const formatText = (test, type, pageTitle) => {
   if (test[type] === null || typeof test[type] === 'undefined') return '-'
 
-  if (test.records[0].progressStatus === 2) return 'Absent'
+  if (testActivityStatus.ABSENT === test.records[0].progressStatus)
+    return 'Absent'
 
-  if (test.records[0].progressStatus === 3) return 'Not Started'
+  if (testActivityStatus.NOT_STARTED === test.records[0].progressStatus)
+    return 'Not Started'
+  // for Peer Progress Analysis report, show the score instead of In Progress
+  // for Student progress reprot in MAR , show In Progrss status
 
-  if (test.records[0].progressStatus === 0) return 'In Progress'
+  if (
+    pageTitle !== reportTypes.reportNavType.PEER_PROGRESS_ANALYSIS &&
+    testActivityStatus.START === test.records[0].progressStatus
+  ) {
+    return 'In Progress'
+  }
 
   if (type == 'score') {
     return `${test[type]}%`
@@ -139,21 +149,44 @@ const getCol = (
   )
 }
 
-const getCellAttributes = (test = {}, analyseBy = {}, masteryScale = {}) => {
+const getCellAttributes = (
+  test = {},
+  analyseBy = {},
+  masteryScale = {},
+  pageTitle
+) => {
   let value = '-'
   let color = 'transparent'
   switch (analyseBy.key) {
     case 'proficiencyBand':
-      if (test.proficiencyBand) {
+      value = formatText(test, analyseBy.key, pageTitle)
+      if (
+        !isEmpty(value) &&
+        value !== 'Absent' &&
+        value !== 'Not Started' &&
+        value !== 'In Progress' &&
+        value !== '-'
+      ) {
         value = test.proficiencyBand.name || value
         color = test.proficiencyBand.color || color
       }
       break
     case 'standard':
-      value = test.proficiencyBand.aboveStandard
-        ? 'Above Standard'
-        : 'Below Standard'
-      color = getHSLFromRange1((test.proficiencyBand.aboveStandard || 0) * 100)
+      value = formatText(test, 'proficiencyBand', pageTitle)
+      if (
+        !isEmpty(value) &&
+        value !== 'Absent' &&
+        value !== 'Not Started' &&
+        value !== 'In Progress' &&
+        value !== '-'
+      ) {
+        value = test.proficiencyBand.aboveStandard
+          ? 'Above Standard'
+          : 'Below Standard'
+        color = getHSLFromRange1(
+          (test.proficiencyBand.aboveStandard || 0) * 100
+        )
+      }
       break
     case 'masteryScore':
       value = test.fm
@@ -170,7 +203,7 @@ const getCellAttributes = (test = {}, analyseBy = {}, masteryScale = {}) => {
         'transparent'
       break
     default:
-      value = formatText(test, analyseBy.key)
+      value = formatText(test, analyseBy.key, pageTitle)
       if (value !== 'Absent' && value !== 'Not Started') {
         color = getHSLFromRange1(test.score)
       }
@@ -216,11 +249,16 @@ const getColumns = (
         const { color, value } = getCellAttributes(
           currentTest,
           analyseBy,
-          masteryScale
+          masteryScale,
+          pageTitle
         )
 
         if (value === 'Absent') {
           return getCol('Absent', '#cccccc')
+        }
+
+        if (value === 'In Progress' || value === 'Not Started') {
+          return getCol(value, 'transparent')
         }
 
         const toolTipText = () => (

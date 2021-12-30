@@ -1,6 +1,5 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
 import { testActivityApi, attchmentApi as attachmentApi } from '@edulastic/api'
 import { aws } from '@edulastic/constants'
@@ -100,7 +99,7 @@ export const expressGraderReducer = createReducer(initialState, {
   [SET_TEACHER_EDITED_SCORE]: (state, { payload }) => {
     state.teacherEditedScore = payload
   },
-  [REMOVE_TEACHER_EDITED_SCORE]: (state, { payload }) => {
+  [REMOVE_TEACHER_EDITED_SCORE]: (state) => {
     state.teacherEditedScore = {}
   },
   [REQUEST_SCRATCH_PAD_REQUEST]: (state) => {
@@ -141,10 +140,8 @@ function* submitResponse({ payload }) {
     itemId,
     groupId,
     userResponse,
-    scores,
     scratchPadData,
   } = payload
-
   try {
     yield put(removeTeacherEditedScoreAction())
     const scoreRes = yield call(testActivityApi.updateResponseEntryAndScore, {
@@ -153,7 +150,6 @@ function* submitResponse({ payload }) {
       groupId,
       userResponse,
       scratchPadData,
-      scores,
     })
     notification({
       type: 'success',
@@ -162,15 +158,11 @@ function* submitResponse({ payload }) {
     const { questionActivities } = scoreRes
     yield put(
       gradebookTestItemAddAction(
-        questionActivities.map(
-          ({ qid: _id, score, maxScore, testActivityId, ...question }) => ({
-            testActivityId,
-            score,
-            maxScore,
-            ...question,
-            _id,
-          })
-        )
+        questionActivities.map(({ qid: _id, maxScore, ...question }) => ({
+          maxScore,
+          ...question,
+          _id,
+        }))
       )
     )
   } catch (e) {

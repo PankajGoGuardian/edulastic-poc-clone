@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
-import { uniqBy, pull } from 'lodash'
+import { uniqBy, pull, isEmpty, capitalize } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import {
   destroyNotificationMessage,
@@ -17,16 +17,19 @@ import {
   removeClassSyncNotificationAction,
   setGroupSyncDataAction,
   setSyncClassLoadingAction,
+  getClassSyncLoadingStatus,
 } from '../../../ManageClass/ducks'
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 import { setBulkSyncCanvasStateAction } from '../../../../student/Signup/duck'
+import { withRouter } from 'react-router-dom'
 
 const antdNotification = notification
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
 const firestoreGoogleGradesSyncStatusCollection = 'GoogleGradeSyncStatus'
 const firestoreCleverGradesSyncStatusCollection = 'CleverGradeSyncStatus'
 const firestoreCanvasClassSyncStatusCollection = 'CanvasClassSyncStatus'
+const firestoreAtlasClassSyncStatusCollection = 'AtlasClassSyncStatus'
 
 const firestoreBulkActionCollection = 'AssignmentBulkActionEvents'
 const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
@@ -35,10 +38,12 @@ const ClassSyncNotificationListener = ({
   removeClassSyncDetails,
   fetchStudentsById,
   setSyncClassLoading,
+  getClassSyncLoading,
   setGroupSyncData,
   fetchGroups,
   setBulkActionStatus,
   setCanvasBulkSyncStatus,
+  history,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
@@ -53,6 +58,14 @@ const ClassSyncNotificationListener = ({
     (db) =>
       db
         .collection(firestoreCanvasClassSyncStatusCollection)
+        .where('userId', '==', `${user?._id}`),
+    [user?._id]
+  )
+
+  const atlasClassSyncNotifications = Fbs.useFirestoreRealtimeDocuments(
+    (db) =>
+      db
+        .collection(firestoreAtlasClassSyncStatusCollection)
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
@@ -97,7 +110,10 @@ const ClassSyncNotificationListener = ({
     removeClassSyncDetails()
     const { groupId, studentsSaved } = data
     if (groupId) {
-      fetchStudentsById({ classId: groupId })
+      const pathName = window.location.pathname
+      if (/manageClass\/([a-f0-9])\w*/g.test(pathName)) {
+        history.push(`/author/manageClass/${groupId}`)
+      }
     } else {
       if (studentsSaved) {
         setGroupSyncData(studentsSaved)
@@ -110,7 +126,8 @@ const ClassSyncNotificationListener = ({
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, studentsSaved, counter, groupId, message } = doc
-
+      // should not append `Please try again later, or email support@edulastic.com.`
+      const exact = message?.includes('No google class found')
       if (
         (status === 'completed' || counter === 0) &&
         !notificationIds.includes(doc.__id)
@@ -120,6 +137,7 @@ const ClassSyncNotificationListener = ({
         notification({
           msg: message || 'Class sync task completed.',
           type: message ? 'error' : 'success',
+          exact,
           onClose: () => {
             closeNotification(event, doc.__id, { groupId, studentsSaved })
           },
@@ -159,6 +177,59 @@ const ClassSyncNotificationListener = ({
     })
   }
 
+  const showUserNotificationOnAtlasClassSync = (docs) => {
+    uniqBy(docs, '__id').map((doc) => {
+      const { status, message, counter, groupIds } = doc
+      const providerName =
+        user?.orgData?.districts?.find((o) => !isEmpty(o.atlasProviderName))
+          .atlasProviderName || 'Atlas'
+      if (
+        status === 'completed' &&
+        counter === 0 &&
+        !notificationIds.includes(doc.__id)
+      ) {
+        setNotificationIds([...notificationIds, doc.__id])
+        // show sync complete notification
+        notification({
+          msg:
+            message || `${capitalize(providerName)} class sync task completed.`,
+          type: 'success',
+          onClose: () => {
+            setNotificationIds([...pull(notificationIds, [doc.__id])])
+            deleteNotificationDocument(
+              doc.__id,
+              firestoreAtlasClassSyncStatusCollection
+            )
+          },
+        })
+        if (getClassSyncLoading) {
+          fetchStudentsById({ classId: groupIds?.[0] })
+          setSyncClassLoading(false)
+        }
+        fetchGroups()
+      }
+      if (
+        status === 'failed' &&
+        counter === 0 &&
+        !notificationIds.includes(doc.__id)
+      ) {
+        setNotificationIds([...notificationIds, doc.__id])
+        notification({
+          msg: `Class sync with ${capitalize(providerName)} failed`,
+          type: 'error',
+          onClose: () => {
+            setNotificationIds([...pull(notificationIds, [doc.__id])])
+            deleteNotificationDocument(
+              doc.__id,
+              firestoreAtlasClassSyncStatusCollection
+            )
+          },
+        })
+        setSyncClassLoading(false)
+      }
+    })
+  }
+
   const onNotificationClick = (e, docId) => {
     /**
      * Note: As this function gets invoked on clicking anywhere in the notification.
@@ -189,6 +260,12 @@ const ClassSyncNotificationListener = ({
       showUserNotificationOnCanvasBulkSync(canvasBulkSyncNotifications)
     }
   }, [canvasBulkSyncNotifications])
+
+  useEffect(() => {
+    if (user && user.role === roleuser.TEACHER) {
+      showUserNotificationOnAtlasClassSync(atlasClassSyncNotifications)
+    }
+  }, [atlasClassSyncNotifications])
 
   useEffect(() => {
     uniqBy(gradesSyncNotifications, '__id').forEach((doc) => {
@@ -277,9 +354,11 @@ const ClassSyncNotificationListener = ({
 }
 
 export default compose(
+  withRouter,
   connect(
     (state) => ({
       user: getUser(state),
+      getClassSyncLoading: getClassSyncLoadingStatus(state),
     }),
     {
       removeClassSyncDetails: removeClassSyncNotificationAction,

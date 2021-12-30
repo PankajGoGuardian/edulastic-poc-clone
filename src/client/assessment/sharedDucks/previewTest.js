@@ -92,8 +92,7 @@ function* evaluateQuestionsSaga({
   const activities = questions.map((q, i) => {
     const { score, maxScore, evaluation, graded } = res[i] || {}
     const isManuallyGradable = defaultManualGradedType.includes(q.type)
-    const isSkipped =
-      isEmpty(answers[`${testItemId}_${q.id}`]) && !isManuallyGradable
+    const isSkipped = isEmpty(answers[`${testItemId}_${q.id}`])
     const activity = {
       qid: q.id,
       maxScore,
@@ -118,7 +117,7 @@ function* evaluateQuestionsSaga({
   yield put({
     type: UPDATE_PREVIEW_TEST_ACTIVITIES,
     payload: {
-      activities: keyBy(activities, 'qid'),
+      activities: keyBy(activities, (a) => `${a.testItemId}_${a.qid}`),
       itemScores: {
         [testItemId]: {
           score: res.reduce(
@@ -144,7 +143,7 @@ function* createTestActiviesForSkippedQuestions({
       .flatMap((x) => x?.widgets)
       .filter((x) => !isEmpty(x) && x.widgetType === 'question')
       .reduce((acc, curr) => [...acc, curr.reference], [])
-      .map((qid) => allQuestionsById[qid])
+      .map((qid) => allQuestionsById[`${testItemId}_${qid}`])
     // const qById = keyBy(questions, 'id')
     const answersByQids = answersByQId(answers, testItemId)
     // on Submit evaluate for empty answer one time
@@ -179,7 +178,7 @@ function* evaluateTestItemSaga({ payload }) {
       .flatMap((x) => x?.widgets)
       .filter((x) => !isEmpty(x) && x.widgetType === 'question')
       .reduce((acc, curr) => [...acc, curr.reference], [])
-      .map((qid) => allQuestionsById[qid])
+      .map((qid) => allQuestionsById[`${testItem._id}_${qid}`])
     // const qById = keyBy(questions, 'id')
     const answersByQids = answersByQId(answers, testItem._id)
 

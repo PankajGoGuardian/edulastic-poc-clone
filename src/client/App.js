@@ -12,7 +12,12 @@ import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { roleuser, signUpState, test } from '@edulastic/constants'
-import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
+import {
+  DragDrop,
+  notification,
+  OfflineNotifier,
+  UrlChangeListener,
+} from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
 import { themes } from './theme'
@@ -36,6 +41,7 @@ import {
   copyOldFiltersWithNewKey,
   getFilterFromSession,
   getWordsInURLPathName,
+  PendoHelper,
   removeSessionValue,
   setFilterInSession,
 } from './common/utils/helpers'
@@ -61,6 +67,7 @@ import {
   slice as subscriptionSlice,
 } from './author/Subscription/ducks'
 import AdminNotificationListener from './admin/Components/AdminNotification'
+import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -275,6 +282,47 @@ class App extends Component {
         showAppUpdate: true,
       })
     })
+    this.handlePendoGuide()
+  }
+
+  componentDidUpdate(prevProps) {
+    const { location } = this.props
+    if (location !== prevProps.location) {
+      this.handlePendoGuide()
+    }
+  }
+
+  handlePendoGuide() {
+    let retries = 0
+    const cb = () => {
+      if (!window.pendo) return
+      if (typeof window.pendo.getCurrentUrl !== 'function') return
+      window.removeEventListener('load', cb)
+
+      // Issue:
+      //   pendo doesn't know URL has changed as soon as React knows.
+      // fix: retry until pendo.getCurrentUrl updates
+      const pendoUrl = window.pendo.getCurrentUrl()
+      if (
+        new URL(pendoUrl).pathname.replace(/\/$|^\//g, '') ===
+          this.props.location.pathname.replace(/\/$|^\//g, '') &&
+        window.pendo.guides
+      ) {
+        PendoHelper.showAvailableGuides()
+        return
+      }
+      retries += 1
+      if (retries > 10) return
+      setTimeout(cb, 100)
+    }
+    if (document.readyState !== 'complete') {
+      // Issue:
+      //   window.pendo becomes available after this react script executes
+      // fix: execute after window.onload
+      window.addEventListener('load', cb)
+    } else {
+      cb()
+    }
   }
 
   setShowSelectStates = (value) => {
@@ -518,6 +566,10 @@ class App extends Component {
         }
 
         if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          localStorage.setItem(
+            'schoologyAssignmentRedirectUrl',
+            location.pathname
+          )
           redirectRoute = `/district/${urlSearch.get('shortName')}`
         } else if (!user.authenticating) {
           redirectRoute = '/login'
@@ -560,7 +612,7 @@ class App extends Component {
     const { showAppUpdate, canShowCliBanner, showSelectStates } = this.state
     // changing banner if demo playgoud account
     const bannerText = isDemoAccountProxy
-      ? 'This is a demo account. Feel free to explore all the features. Any data modification will be reset at the end of day.'
+      ? 'This is a demo account. Feel free to explore all the features. Any data modification will be reset shortly.'
       : `You are currently acting as ${fullName} (${_userRole})`
     const bannerButtonText = isDemoAccountProxy
       ? 'Close demo account'
@@ -600,7 +652,9 @@ class App extends Component {
           />
         )}
         <StudentSessionExpiredModal />
+        <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
+        <UrlChangeListener />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

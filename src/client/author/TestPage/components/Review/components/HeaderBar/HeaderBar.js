@@ -9,6 +9,7 @@ import {
   IconEye,
   IconMoveTo,
 } from '@edulastic/icons'
+import { isArray } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
 import Prompt from '../Prompt/Prompt'
@@ -29,10 +30,12 @@ const HeaderBar = ({
   setCollapse,
   isShowSummary,
   onShowTestPreview,
-  hasStickyHeader,
   itemGroups,
 }) => {
   const [showPrompt, setShowPrompt] = useState(false)
+  const [minimum, setMinimum] = useState(1)
+  const [maximum, setMaximum] = useState(1)
+
   const disableRMbtns = itemGroups.some(
     (group) => group.type === ITEM_GROUP_TYPES.AUTOSELECT
   )
@@ -49,8 +52,38 @@ const HeaderBar = ({
     }
   }
 
+  const setMinAndMaxRange = () => {
+    let selectedGrpLength = 0
+    let groupIndex = 0
+    itemGroups.forEach((itemGroup) => {
+      const selectedItemIndex = itemGroup.items.findIndex((item) => {
+        if (isArray(item)) {
+          return item.some((ite) => ite.selected)
+        }
+        return item.selected
+      })
+      if (selectedItemIndex > -1) {
+        selectedGrpLength = itemGroup.items.length
+        groupIndex = itemGroup.index
+      }
+    })
+
+    const totalItemsInAboveGrp = itemGroups.reduce((acc, curr) => {
+      if (curr.index < groupIndex) {
+        return acc + curr.items.length
+      }
+      return acc + 0
+    }, 0)
+
+    setMinimum(totalItemsInAboveGrp + 1)
+    setMaximum(totalItemsInAboveGrp + selectedGrpLength)
+  }
+
   const handleMoveTo = () => {
     if (disableRMbtns) return
+
+    setMinAndMaxRange()
+
     if (selectedItems.length === 1) {
       setShowPrompt(!showPrompt)
     } else {
@@ -119,7 +152,8 @@ const HeaderBar = ({
             {showPrompt && (
               <Prompt
                 style={{ position: 'absolute', left: 0, top: 32, zIndex: 2 }}
-                maxValue={itemTotal}
+                minValue={minimum}
+                maxValue={maximum}
                 onSuccess={handleSuccess}
                 setShowPrompt={setShowPrompt}
               />

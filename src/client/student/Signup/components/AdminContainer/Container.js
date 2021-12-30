@@ -73,6 +73,14 @@ class AdminSignup extends React.Component {
     confirmDirty: false,
     signupError: {},
   }
+  componentDidMount() {
+    if (window?.analytics?.track) {
+      window.analytics.track('SignupLanded', {
+        role: 'admin',
+        referrer: window.document.referrer,
+      })
+    }
+  }
 
   handleSubmit = (e) => {
     const { form, signup } = this.props

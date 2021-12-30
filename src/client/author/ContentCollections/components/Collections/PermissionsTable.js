@@ -151,7 +151,7 @@ const PermissionsTable = ({
             <div>
               <Tooltip placement="topLeft" title="Edit Permission">
                 <span
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', marginLeft: '6px' }}
                   onClick={() => handleEditPermission(record)}
                 >
                   <IconPencilEdit color={themeColor} />

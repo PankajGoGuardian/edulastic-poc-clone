@@ -86,6 +86,7 @@ const Tab = ({
       type={type}
       borderRadius={borderRadius}
       onClick={onClick}
+      data-cy="tabContainer"
     >
       {editable ? inputTab : labelBar}
       {close && closeButton}

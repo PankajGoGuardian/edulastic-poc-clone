@@ -84,7 +84,6 @@ const CorrectAnswers = ({
       '\\$': '\\$',
       '%': '\\%',
       '&': '\\&',
-      _: '\\_',
     }
     const { index, id, allowedVariables, allowNumericOnly } = find(
       mathUnits,

@@ -233,15 +233,20 @@ const KeyPadOptions = ({
               onChange={handleSymbolsChange}
               data-cy="text-formatting-options-select"
             >
-              {storedKeypads.length > 0 &&
-                storedKeypads.map((ite, index) => (
-                  <Select.Option
-                    key={item._id}
-                    value={symbolsData.length + index}
-                  >
-                    {ite.label}
-                  </Select.Option>
-                ))}
+              {storedKeypads.length > 0 && (
+                <Select.OptGroup
+                  label={t('component.options.customKeypadLabel')}
+                >
+                  {storedKeypads.map((ite, index) => (
+                    <Select.Option
+                      key={item._id}
+                      value={symbolsData.length + index}
+                    >
+                      {ite.label}
+                    </Select.Option>
+                  ))}
+                </Select.OptGroup>
+              )}
               <Select.OptGroup
                 label={t('component.options.standardKeypadLabel')}
               >

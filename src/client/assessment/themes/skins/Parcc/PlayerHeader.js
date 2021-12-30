@@ -88,6 +88,7 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
   checkAnswer,
   answerChecksUsedForItem,
+  canShowPlaybackOptionTTS,
 }) => {
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
@@ -130,6 +131,7 @@ const PlayerHeader = ({
       {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+          canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
         />
       )}
       {showChangeColor && (
@@ -267,6 +269,7 @@ const PlayerHeader = ({
                   enableMagnifier={enableMagnifier}
                   hidePause={hidePause}
                   isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+                  canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
                 />
               </FlexContainer>
             </HeaderWrapper>

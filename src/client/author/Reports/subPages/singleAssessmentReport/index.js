@@ -3,6 +3,7 @@ import { Route } from 'react-router-dom'
 import next from 'immer'
 import qs from 'qs'
 import { connect } from 'react-redux'
+import { isEmpty } from 'lodash'
 
 import { Spin, Col } from 'antd'
 import { SubHeader } from '../../common/components/Header'
@@ -215,6 +216,8 @@ const SingleAssessmentReportContainer = (props) => {
     'peer-performance',
     'performance-by-standards',
     'performance-by-students',
+    'question-analysis',
+    'response-frequency',
   ].includes(loc)
 
   useEffect(() => {
@@ -255,6 +258,26 @@ const SingleAssessmentReportContainer = (props) => {
     return _ddFilter
   }, [ddfilter])
 
+  /** @todo
+   * Demographic filters and settings are not updated together
+   * so there will either be duplicate requests or request won't have updated filters
+   * We need to combine both in a single object to make sure all filters are updated at the same time
+   * Note: Below function should be used only when demographic filters are required for the backend query and
+   * not for other purpose.
+   */
+  const demographicFilters2 = useMemo(() => {
+    const _ddFilter = {}
+    Object.keys(tempDdFilter).forEach((k) => {
+      _ddFilter[k] = tempDdFilter[k] === 'all' ? '' : tempDdFilter[k]
+    })
+    return _ddFilter
+  }, [tempDdFilter])
+
+  const showDemographicFilterWarning = useMemo(
+    () => !isEmpty(Object.values(demographicFilters).filter((val) => !!val)),
+    [demographicFilters]
+  )
+
   return (
     <FeaturesSwitch
       inputFeatures="singleAssessmentReport"
@@ -269,6 +292,7 @@ const SingleAssessmentReportContainer = (props) => {
               testId: settings.selectedTest.key,
             }}
             showModal={sharingState}
+            showDemographicFilterWarning={showDemographicFilterWarning}
             setShowModal={setSharingState}
           />
         )}
@@ -338,6 +362,7 @@ const SingleAssessmentReportContainer = (props) => {
                 settings={settings}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                demographicFilters={demographicFilters2}
               />
             )}
           />
@@ -350,6 +375,7 @@ const SingleAssessmentReportContainer = (props) => {
                 settings={settings}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                demographicFilters={demographicFilters2}
               />
             )}
           />

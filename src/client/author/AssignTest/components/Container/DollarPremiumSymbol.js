@@ -1,13 +1,16 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 import styled from 'styled-components'
-import { white, premiumBg } from '@edulastic/colors'
+import { white } from '@edulastic/colors'
+import { IconStar } from '@edulastic/icons'
 
 const DollarPremiumSymbol = ({ premium }) => {
   if (premium) return null
   return (
     <Link to="/author/subscription">
-      <DollarSymbolWrapper>$</DollarSymbolWrapper>
+      <DollarSymbolWrapper>
+        <IconStar />
+      </DollarSymbolWrapper>
     </Link>
   )
 }
@@ -18,8 +21,6 @@ const DollarSymbolWrapper = styled.span`
   display: ${({ premium }) => (!premium ? 'inline-block' : 'none')};
   color: ${white};
   margin-left: 10px;
-  background: ${premiumBg};
-  font-size: 13px;
   height: 22px;
   width: 22px;
   text-align: center;

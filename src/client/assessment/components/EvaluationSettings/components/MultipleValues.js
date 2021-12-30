@@ -5,9 +5,11 @@ import { math as mathConstants } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import { HeadingLabel } from './InlineCheckOptions'
 import LabelWithHelper from './LabelWithHelper'
+import { validations } from '../../../utils/inputsValidations'
 
 const textStyle = ['isIn', 'satisfies']
 const { subEvaluationSettingsGrouped } = mathConstants
+
 const MultipleValues = ({ t, optionKey, options, onChange }) => {
   const settings = subEvaluationSettingsGrouped[optionKey]
   const [selected, setSelected] = useState('')
@@ -42,7 +44,14 @@ const MultipleValues = ({ t, optionKey, options, onChange }) => {
 
   const onChangeInput = (key) => (e) => {
     const { value } = e.target
-    setInputs({ ...inputs, [key]: value })
+    let valid = true
+
+    if (validations[key]) {
+      valid = validations[key](value)
+    }
+    if (valid) {
+      setInputs({ ...inputs, [key]: value })
+    }
   }
 
   const onBlurInput = (key) => () => {

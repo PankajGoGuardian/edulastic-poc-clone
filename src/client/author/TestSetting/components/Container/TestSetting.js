@@ -1,5 +1,6 @@
 import { EduButton, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { IconSaveNew } from '@edulastic/icons'
 import { Select } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
@@ -7,6 +8,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import {
+  HeaderSaveButton,
   SpinContainer,
   StyledSpin,
 } from '../../../../admin/Common/StyledComponents'
@@ -145,8 +147,6 @@ class TestSetting extends Component {
     } = this.props
 
     const { testSetting } = this.state
-    const btnSaveStr = 'Save'
-
     const performanceBandOptions = performanceBandProfiles.map((x) => (
       <Select.Option key={x._id} value={x._id}>
         {x.name}
@@ -355,9 +355,11 @@ class TestSetting extends Component {
                 justify="center"
                 style={{ marginTop: '15px' }}
               >
-                <EduButton type="primary" onClick={this.updateValue}>
-                  {btnSaveStr}
-                </EduButton>
+                <HeaderSaveButton>
+                  <EduButton isBlue onClick={this.updateValue}>
+                    <IconSaveNew /> Save
+                  </EduButton>
+                </HeaderSaveButton>
               </StyledRow>
             </ContentWrapper>
           </StyledLayout>

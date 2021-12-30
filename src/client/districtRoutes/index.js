@@ -8,6 +8,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { isDistrictPolicyAllowed } from '../common/utils/helpers'
 
 import { getOrgDetailsByShortNameAndOrgTypeAction } from '../student/Signup/duck'
+import { atlasLoginAction } from '../student/Login/ducks'
 
 const TeacherSignup = lazy(() =>
   import('../student/Signup/components/TeacherContainer/Container')
@@ -23,6 +24,7 @@ const StudentSignup = lazy(() =>
 const DistrictRoutes = ({
   match,
   getOrgDetailsByShortNameAndOrgType,
+  atlasLogin,
   generalSettings,
   districtPolicy,
   districtUrlLoading,
@@ -41,9 +43,16 @@ const DistrictRoutes = ({
     })
   }, [])
 
+  const schoologyAssignmentRedirectUrl = localStorage.getItem(
+    'schoologyAssignmentRedirectUrl'
+  )
+  if (!districtUrlLoading && schoologyAssignmentRedirectUrl) {
+    atlasLogin()
+  }
+
   return (
     <>
-      {districtUrlLoading ? (
+      {districtUrlLoading || schoologyAssignmentRedirectUrl ? (
         'Loading Please Wait...'
       ) : (
         <Switch>
@@ -146,6 +155,7 @@ const enhance = compose(
     }),
     {
       getOrgDetailsByShortNameAndOrgType: getOrgDetailsByShortNameAndOrgTypeAction,
+      atlasLogin: atlasLoginAction,
     }
   )
 )

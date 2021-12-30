@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Col, Radio } from 'antd'
 import { test } from '@edulastic/constants'
-
+import { isUndefined } from 'lodash'
 import { EduButton } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -183,7 +183,7 @@ const MiscellaneousGroupContainer = ({
           <PeformanceBand
             disabled={freezeSettings || !performanceBands}
             setSettingsData={(val) => overRideSettings('performanceBand', val)}
-            performanceBand={performanceBand}
+            performanceBand={performanceBand || {}}
             isFeatureAvailable={performanceBands}
             fromAssignments
           />
@@ -204,7 +204,7 @@ const MiscellaneousGroupContainer = ({
         <DivBlock>
           <StandardProficiencyTable
             disabled={freezeSettings || !premium}
-            standardGradingScale={standardGradingScale}
+            standardGradingScale={standardGradingScale || {}}
             setSettingsData={(val) =>
               overRideSettings('standardGradingScale', val)
             }
@@ -249,7 +249,7 @@ const MiscellaneousGroupContainer = ({
                             onChange={(e) =>
                               overRideSettings(key, e.target.value)
                             }
-                            value={value}
+                            value={isUndefined(value) ? true : value}
                           >
                             <Radio value data-cy={`${key}-enable`}>
                               ENABLE

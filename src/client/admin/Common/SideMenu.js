@@ -182,6 +182,7 @@ const SideMenu = ({
         className="main-menu"
         defaultSelectedKeys={[location.pathname]}
         mode="inline"
+        isCollapsed={isCollapsed}
         onMouseEnter={
           isCollapsed && !isExpandedOnHover
             ? () => {

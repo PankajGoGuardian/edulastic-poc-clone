@@ -15,7 +15,8 @@ import {
   IconSparkBooks,
   IconSparkPhonics,
 } from '@edulastic/icons'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { segmentApi } from '@edulastic/api'
 import CalendlyScheduleModal from './CalendlyScheduleModal'
 import {
   AddonCard,
@@ -31,6 +32,7 @@ import {
   SectionTitle,
   TopSection,
 } from './styled'
+import RequestModal from './RequestModals'
 
 const addonsData = [
   {
@@ -106,17 +108,27 @@ const addonsData = [
 const EnterpriseTab = ({
   isPremium,
   subType,
-  requestQuote,
   subEndDate,
   isPremiumUser,
-  signUpFlowModalHandler,
   user,
 }) => {
   const [showSelectStates, setShowSelectStates] = useState(false)
-
-  const handleSelectStateModal = () => setShowSelectStates(true)
+  const [showSubscriptionsForms, setShowSubscriptionsForms] = useState(false)
+  const [subscriptionFormType, setSubscriptionFormType] = useState('request')
 
   const { utm_source, openIdProvider } = user
+
+  const showSubscriptionFormsModal = (type = 'request') => {
+    setSubscriptionFormType(type)
+    setShowSubscriptionsForms(true)
+    segmentApi.genericEventTrack(`${type}FormButtonClick`, {})
+  }
+
+  useEffect(() => {
+    const script = document.createElement('script')
+    script.src = 'https://js.hsforms.net/forms/v2.js'
+    document.body.appendChild(script)
+  }, [])
 
   const isExternalPublisher =
     utm_source === 'singapore' || openIdProvider === 'CLI'
@@ -127,6 +139,11 @@ const EnterpriseTab = ({
 
   return (
     <SectionContainer>
+      <RequestModal
+        showSubscriptionsForms={showSubscriptionsForms}
+        setShowSubscriptionsForms={setShowSubscriptionsForms}
+        formType={subscriptionFormType}
+      />
       <TopSection>
         <h1>Edulastic Enterprise & Add-ons to supercharge instruction.</h1>
         <p>
@@ -168,7 +185,7 @@ const EnterpriseTab = ({
             <EduButton
               data-cy="requestQuote"
               style={{ margin: '10px 0px' }}
-              onClick={() => signUpFlowModalHandler(requestQuote)}
+              onClick={() => showSubscriptionFormsModal('request')}
               height="32px"
               width="180px"
               isBlue
@@ -176,7 +193,7 @@ const EnterpriseTab = ({
               request a quote
             </EduButton>
             <EduButton
-              onClick={() => signUpFlowModalHandler(handleSelectStateModal)}
+              onClick={() => showSubscriptionFormsModal('demo')}
               height="32px"
               width="180px"
               isGhost

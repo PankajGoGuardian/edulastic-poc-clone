@@ -2,14 +2,11 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { withTheme } from 'styled-components'
 import { throttle, isUndefined } from 'lodash'
-import { Collapse } from 'antd'
 import {
   themeColor,
-  lightBlue10,
   extraDesktopWidthMax,
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
-import { IconCaretDown } from '@edulastic/icons'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import { withWindowSizes, ScrollContext } from '@edulastic/common'
 import VideoThumbnail from '@edulastic/common/src/components/VideoThumbnail'
@@ -17,7 +14,6 @@ import IframeVideoModal from '@edulastic/common/src/components/IframeVideoModal'
 
 import AdvancedOptionsLink from './AdvancedOptionsLink'
 
-const { Panel } = Collapse
 class QuestionMenu extends Component {
   state = {
     activeTab: 0,
@@ -154,6 +150,25 @@ class QuestionMenu extends Component {
 
     return (
       <Menu>
+        <ScrollbarContainer height="auto" mb="10px">
+          <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
+            {this.menuOptions.map((option, index) => (
+              <Option
+                key={index}
+                onClick={(e) => this.goToSection(option, e)}
+                className={`option ${index === activeTab && 'active'}`}
+              >
+                {option.label}
+              </Option>
+            ))}
+          </MainOptions>
+          {!isPowerTeacher && (
+            <AdvancedOptionsLink
+              handleAdvancedOpen={handleAdvancedOpen}
+              isPremiumUser={isPremiumUser}
+            />
+          )}
+        </ScrollbarContainer>
         <VideoThumbnailWapper onClick={this.openModal}>
           <VideoThumbnail
             questionTitle={questionTitle}
@@ -168,36 +183,6 @@ class QuestionMenu extends Component {
           visible={isVideoModalVisible}
           closeModal={this.closeModal}
         />
-        <StyledCollapse
-          defaultActiveKey={['1']}
-          bordered={false}
-          expandIcon={({ isActive }) => (
-            <CaretDownIcon rotate={isActive ? 0 : -90} color={lightBlue10} />
-          )}
-          expandIconPosition="right"
-        >
-          <Panel key="1" header="QUICK JUMP">
-            <ScrollbarContainer height="auto" mt="12px">
-              <MainOptions activeTab={activeTab} windowWidth={windowWidth}>
-                {this.menuOptions.map((option, index) => (
-                  <Option
-                    key={index}
-                    onClick={(e) => this.goToSection(option, e)}
-                    className={`option ${index === activeTab && 'active'}`}
-                  >
-                    {option.label}
-                  </Option>
-                ))}
-              </MainOptions>
-              {!isPowerTeacher && (
-                <AdvancedOptionsLink
-                  handleAdvancedOpen={handleAdvancedOpen}
-                  isPremiumUser={isPremiumUser}
-                />
-              )}
-            </ScrollbarContainer>
-          </Panel>
-        </StyledCollapse>
       </Menu>
     )
   }
@@ -230,25 +215,11 @@ const Menu = styled.div`
   height: 100%;
 `
 
-const StyledCollapse = styled(Collapse)`
-  background: transparent;
-  margin-top: 24px;
-
-  .ant-collapse-item {
-    border-bottom: 0px;
-  }
-`
-
-const CaretDownIcon = styled(IconCaretDown)`
-  transform: ${({ rotate }) =>
-    `translateY(-50%) rotate(${rotate}deg) !important`};
-`
-
 const ScrollbarContainer = styled(PerfectScrollbar)`
   padding-top: 10px;
   padding-left: 10px;
   height: ${({ height }) => height || ''};
-  margin-top: ${({ mt }) => mt || ''};
+  margin-bottom: ${({ mb }) => mb || ''};
   max-height: ${(props) =>
     `calc(100vh - ${props.theme.HeaderHeight.xs + 110}px)`};
   /* 110px is for top-Bottom padding(60) and breadcrumbs height(50) */

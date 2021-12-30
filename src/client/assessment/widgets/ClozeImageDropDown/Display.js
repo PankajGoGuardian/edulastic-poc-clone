@@ -194,6 +194,7 @@ class Display extends Component {
       view,
       hideCorrectAnswer,
       answerScore,
+      setDropDownInUse,
     } = this.props
 
     const { shuffleOptions } = configureOptions
@@ -388,6 +389,7 @@ class Display extends Component {
                           : userSelectedAnswers[responseId]
                       }
                       isPrintPreview={isPrint || isPrintPreview}
+                      setDropDownInUse={setDropDownInUse}
                     />
                   )}
                   <Pointer

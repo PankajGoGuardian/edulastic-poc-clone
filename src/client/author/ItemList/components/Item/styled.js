@@ -362,6 +362,10 @@ export const DetailCategory = styled.div`
     }
   }
 
+  .rubric-icon {
+    cursor: pointer;
+  }
+
   @media (max-width: ${smallDesktopWidth}) {
     margin-left: 10px;
   }
@@ -603,6 +607,7 @@ export const PassageTitle = styled.span`
   text-align: left;
   font: normal normal bold 14px/19px Open Sans;
   opacity: 1;
+  display: inline-block;
 `
 export const StyledRow = styled(Row)`
   margin-bottom: 10px;

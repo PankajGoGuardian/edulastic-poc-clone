@@ -333,6 +333,7 @@ const StudentReportPage = ({
                     questionEnd
                   )}
                   columnsFlags={sections}
+                  tdPadding="12px"
                 />
                 <LegendContainer />
               </StyledTableWrapper>

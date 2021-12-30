@@ -358,7 +358,7 @@ class ClassEnrollmentTable extends React.Component {
       }
       return item
     })
-    this.setState({ filtersData: _filtersData })
+    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList)
   }
 
   changeFilterValue = (value, key) => {
@@ -373,7 +373,7 @@ class ClassEnrollmentTable extends React.Component {
       return item
     })
 
-    this.setState({ filtersData: _filtersData })
+    this.setState({ filtersData: _filtersData }, this.loadClassEnrollmentList)
   }
 
   changeRoleValue = (value, key) => {

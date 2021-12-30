@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import UnScored from '@edulastic/common/src/components/Unscored'
+import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -17,6 +17,7 @@ import {
   getQuestionByIdSelector,
   setQuestionScoreAction,
 } from '../../../../../sharedDucks/questions'
+import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 import Ctrls from './Controls'
 import { Container, WidgetContainer, ButtonsContainer } from './styled'
 
@@ -38,6 +39,7 @@ const ItemDetailWidget = ({
   itemEditDisabled,
   dataCy,
   onShowSettings,
+  isPremiumUser,
 }) => {
   const [showButtons, setShowButtons] = useState(!flowLayout)
 
@@ -49,8 +51,12 @@ const ItemDetailWidget = ({
     if (flowLayout) setShowButtons(false)
   }
 
-  const onChangeQuestionLevelPoint = (score) => {
-    setQuestionScore({ score: +score, qid: question.id })
+  const onChangeQuestionLevelPoint = (score, isOnBlur = false) => {
+    setQuestionScore({
+      score: +score,
+      qid: question.id,
+      isOnBlur,
+    })
   }
 
   const onChangeItemLevelPoint = (score) => {
@@ -119,24 +125,19 @@ const ItemDetailWidget = ({
 
           {(!flowLayout || showButtons) && (
             <ButtonsContainer unscored={unscored}>
-              {!(unscored && showPoints) ? (
-                <Ctrls.Point
-                  value={partScore}
-                  onChange={scoreChangeHandler}
-                  data-cy="pointUpdate"
-                  visible={isPointsBlockVisible}
-                  disabled={isEditDisabled}
-                  isRubricQuestion={!!question.rubrics && !itemLevelScoring}
-                  itemLevelScoring={itemLevelScoring}
-                  onShowSettings={onShowSettings}
-                />
-              ) : (
-                <UnScored
-                  width="50px"
-                  height="50px"
-                  top={`${itemLevelScoring ? -80 : -50}px`}
-                />
-              )}
+              <Ctrls.Point
+                value={partScore}
+                onChange={scoreChangeHandler}
+                data-cy="pointUpdate"
+                visible={isPointsBlockVisible}
+                disabled={isEditDisabled}
+                isRubricQuestion={!!question.rubrics && !itemLevelScoring}
+                itemLevelScoring={itemLevelScoring}
+                onShowSettings={onShowSettings}
+                isPremiumUser={isPremiumUser}
+              />
+
+              {unscored && <UnscoredHelperText margin="0px 0px 10px 0px" />}
 
               {isEditDisabled ? (
                 <div>
@@ -220,6 +221,7 @@ const enhance = compose(
     (state, { widget }) => ({
       question: getQuestionByIdSelector(state, widget.reference),
       itemEditDisabled: getIsEditDisbledSelector(state),
+      isPremiumUser: isPremiumUserSelector(state),
     }),
     {
       setItemDetailDragging: setItemDetailDraggingAction,

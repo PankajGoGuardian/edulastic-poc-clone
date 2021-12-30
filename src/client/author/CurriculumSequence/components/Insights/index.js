@@ -1,7 +1,7 @@
 import { themeColor, white } from '@edulastic/colors'
 import { withWindowSizes } from '@edulastic/common'
 import { IconCloseFilter, IconFilter } from '@edulastic/icons'
-import { Col, Row, Spin } from 'antd'
+import { Col, Row, Spin, Switch } from 'antd'
 import { get } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
@@ -62,45 +62,50 @@ const Insights = ({
   getStudentProgressRequestAction: _getStudentProgressRequestAction,
   loading,
   loadingProgress,
+  userTerms,
+  currentTermId,
+  setCurrentUserTerm,
 }) => {
   const { _id: playlistId, modules } = currentPlaylist
 
   const [filters, updateFilters] = useState(initialFilters)
   const [highlighted, setHighlighted] = useState({})
   const [overallProgressCheck, setOverallProgressCheck] = useState(false)
+  const [showTrends, setShowTrends] = useState(false)
 
   // fetch playlist insights
   useEffect(() => {
-    if (playlistId) {
-      _fetchPlaylistInsightsAction({ playlistId })
+    if (playlistId && currentTermId) {
+      _fetchPlaylistInsightsAction({ playlistId, termId: currentTermId })
     }
-  }, [playlistId])
+  }, [playlistId, currentTermId])
 
   // fetch student progress data
-  const termId = useMemo(() => {
-    return (
-      get(user, 'orgData.defaultTermId', '') ||
-      get(user, 'orgData.terms', [])?.[0]?._id
-    )
-  }, [user])
 
   useEffect(() => {
-    if (overallProgressCheck && termId) {
-      _getStudentProgressRequestAction({ termId, insights: true })
-    } else if (playlistId && termId) {
+    if (overallProgressCheck && currentTermId) {
+      _getStudentProgressRequestAction({
+        termId: currentTermId,
+        insights: true,
+      })
+    } else if (playlistId && currentTermId) {
       if (filters.modules.length) {
         const playlistModuleIds = filters.modules.map((i) => i.key).join(',')
         _getStudentProgressRequestAction({
-          termId,
+          termId: currentTermId,
           playlistId,
           playlistModuleIds,
           insights: true,
         })
       } else {
-        _getStudentProgressRequestAction({ termId, playlistId, insights: true })
+        _getStudentProgressRequestAction({
+          termId: currentTermId,
+          playlistId,
+          insights: true,
+        })
       }
     }
-  }, [overallProgressCheck, playlistId, filters.modules, termId])
+  }, [overallProgressCheck, playlistId, filters.modules, currentTermId])
 
   const { metricInfo: progressInfo } = get(studentProgress, 'data.result', {})
   const [trendData] = useGetBandData(
@@ -136,6 +141,8 @@ const Insights = ({
     setShowFilter(!showFilter)
   }
 
+  const setCurrentUserTermId = (data) => setCurrentUserTerm(data?.key)
+
   return loading ? (
     <Spin />
   ) : (
@@ -149,6 +156,9 @@ const Insights = ({
             overallProgressCheck={overallProgressCheck}
             setOverallProgressCheck={setOverallProgressCheck}
             clearFilter={clearFilter}
+            userTerms={userTerms}
+            currentTermId={currentTermId}
+            setCurrentUserTermId={setCurrentUserTermId}
           />
         </FilterColumn>
       )}
@@ -173,6 +183,7 @@ const Insights = ({
               data={curatedMetrics}
               highlighted={highlighted}
               setHighlighted={setHighlighted}
+              showTrends={showTrends}
             />
           )}
         </StyledCol>
@@ -184,9 +195,17 @@ const Insights = ({
             studData={curatedMetrics}
             groupsData={filterData?.groupsData}
             highlighted={highlighted}
-            termId={termId}
+            termId={currentTermId}
           />
         </Row>
+        <TrendToggleContainer>
+          Show Trend Arrows{' '}
+          <Switch
+            className={'trendsToggle'}
+            checked={showTrends}
+            onChange={(checked) => setShowTrends(checked)}
+          ></Switch>
+        </TrendToggleContainer>
       </RightContainer>
     </InsightsContainer>
   )
@@ -238,4 +257,15 @@ const StyledCol = styled(Col)`
   display: flex;
   justify-content: center;
   height: 100%;
+`
+const TrendToggleContainer = styled.div`
+  padding: 10px;
+  margin-top: 15px;
+  text-transform: uppercase;
+  font: 11px/15px Open Sans;
+  font-weight: 600;
+  .trendsToggle {
+    margin-left: 10px;
+    margin-top: -2px;
+  }
 `

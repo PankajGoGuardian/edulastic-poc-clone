@@ -213,7 +213,7 @@ class TermTable extends React.Component {
     const { updateTermSetting, userOrgId } = this.props
     termData.districtId = userOrgId
     updateTermSetting({ body: termData })
-    this.setState({ selectedKey: -1 })
+    this.setState({ selectedKey: -1, editTermModalVisible: false })
   }
 
   showEditTermModal = (key) => {

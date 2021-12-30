@@ -85,6 +85,10 @@ const Tabs = styled(AntTabs)`
     font-weight: bold;
     margin: 0px;
     position: relative;
+    width: 50%;
+    label {
+      text-align: center;
+    }
   }
 
   .ant-tabs-ink-bar {

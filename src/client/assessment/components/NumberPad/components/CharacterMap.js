@@ -21,7 +21,7 @@ const CharacterMap = ({ onClick, buttonStyle }) => {
           data_cy={
             isEmpty(item.label)
               ? `custom-keypad-popover-${item.label}`
-              : `custom-keypad-popover-${item.value}`
+              : `custom-keypad-popover-${item.dataCy}`
           }
         >
           {isEmpty(item.label) ? (

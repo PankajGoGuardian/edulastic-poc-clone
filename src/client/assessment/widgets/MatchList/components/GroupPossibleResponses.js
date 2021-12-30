@@ -44,6 +44,7 @@ class GroupPossibleResponses extends Component {
             <CheckboxLabel
               defaultChecked={checkboxVal}
               onChange={checkboxChange}
+              data-cy="groupPossibleResponses"
             >
               {t('component.matchList.groupPossibleRespTitle')}
             </CheckboxLabel>

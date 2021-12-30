@@ -57,7 +57,7 @@ const CustomUnitPure = ({ onChange, customUnits }) => {
 
 CustomUnitPure.propTypes = {
   onChange: PropTypes.func.isRequired,
-  customUnits: PropTypes.func.isRequired,
+  customUnits: PropTypes.string.isRequired,
 }
 
 export const CustomUnit = withTheme(CustomUnitPure)

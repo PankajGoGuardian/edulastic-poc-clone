@@ -23,6 +23,7 @@ import {
   toNumber,
   isNaN,
   isEmpty,
+  isEqual,
 } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component, useEffect } from 'react'
@@ -107,6 +108,17 @@ class FeedbackRight extends Component {
   static contextType = AnswerContext
 
   componentDidUpdate(prevProps) {
+    const {
+      studentQuestionResponseUpdatedAt: prevStudentQuestionResponseUpdatedAt,
+      isClassResponseLoading: prevIsClassResponseLoading,
+      classQuestionResponseData: prevClassQuestionResponseData,
+    } = prevProps
+    const {
+      studentQuestionResponseUpdatedAt,
+      isClassResponseLoading,
+      classQuestionResponseData,
+    } = this.props
+
     if (prevProps?.widget?.activity && !this.props?.widget?.activity) {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({ score: 0 })
@@ -117,20 +129,24 @@ class FeedbackRight extends Component {
       // eslint-disable-next-line react/no-did-update-set-state
       this.setState({
         changed: false,
-        isRubricDisabled: false,
-        isScoreInputDisabled: false,
       })
     }
 
+    /**
+     * Express grader, Question Centric, Student Centric
+     * Enable inputs after score gets updated
+     */
     if (
-      prevProps?.isClassResponseLoading !== this.props?.isClassResponseLoading
+      prevStudentQuestionResponseUpdatedAt !==
+        studentQuestionResponseUpdatedAt ||
+      prevIsClassResponseLoading !== isClassResponseLoading ||
+      !isEqual(prevClassQuestionResponseData, classQuestionResponseData)
     ) {
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState((prevState) => ({
-        ...prevState,
-        isRubricDisabled: this.props?.isClassResponseLoading,
-        isScoreInputDisabled: this.props?.isClassResponseLoading,
-      }))
+      this.setState({
+        isRubricDisabled: false,
+        isScoreInputDisabled: false,
+      })
     }
   }
 
@@ -272,6 +288,7 @@ class FeedbackRight extends Component {
       userThumbnail,
       itemId,
       userFullName,
+      isQuestionView,
     } = this.props
     const {
       testActivityId,
@@ -296,6 +313,7 @@ class FeedbackRight extends Component {
       testActivityId: testActivityId || this.getTestActivityId(),
       questionId: id,
       itemId: testItemId || itemId,
+      isQuestionView,
     })
   }
 
@@ -324,16 +342,10 @@ class FeedbackRight extends Component {
   }
 
   submitScore = (e) => {
-    const { score } = this.state
+    const { changed } = this.state
     const allowSubmitScore = this.allowToSubmitScore(e?.type)
-    if (
-      parseFloat(this.props?.widget?.activity?.score || 0) !==
-        parseFloat(score || 0) ||
-      allowSubmitScore
-    ) {
+    if (changed || allowSubmitScore) {
       this.onScoreSubmit()
-    } else {
-      this.setState({ isRubricDisabled: false })
     }
     this.setState({ showWarningToClear: false })
   }
@@ -344,24 +356,26 @@ class FeedbackRight extends Component {
       this.setState({ score: value, changed: true })
     }
     // Clearing rubric feedback when changing score from input-box/rubrics
-    switch (showGradingRubricButton) {
-      case inputType === InputType.InputScore:
-        this.setState((prevState) => ({
-          ...prevState,
-          clearRubricFeedback: true,
-          isRubricDisabled: true,
-          showWarningToClear: false,
-        }))
-        break
-      case inputType === InputType.RubricsScore:
-        this.setState((prevState) => ({
-          ...prevState,
-          clearRubricFeedback: false,
-          isScoreInputDisabled: true,
-        }))
-        break
-      default:
-        break
+    if (showGradingRubricButton) {
+      switch (inputType) {
+        case InputType.InputScore:
+          this.setState((prevState) => ({
+            ...prevState,
+            clearRubricFeedback: true,
+            isRubricDisabled: true,
+            showWarningToClear: false,
+          }))
+          break
+        case InputType.RubricsScore:
+          this.setState((prevState) => ({
+            ...prevState,
+            clearRubricFeedback: false,
+            isScoreInputDisabled: true,
+          }))
+          break
+        default:
+          break
+      }
     }
   }
 
@@ -441,7 +455,6 @@ class FeedbackRight extends Component {
       disabled,
       isPracticeQuestion,
       isAbsolutePos,
-      isClassResponseLoading,
     } = this.props
     const {
       score,
@@ -510,6 +523,7 @@ class FeedbackRight extends Component {
 
     return (
       <StyledCardTwo
+        data-cy="feedbackContainer"
         bordered={isStudentName}
         disabled={disabled}
         showCollapseBtn={showCollapseBtn}
@@ -523,33 +537,39 @@ class FeedbackRight extends Component {
           />
         )}
         {!isPracticeQuestion ? (
-          <StyledDivSec>
-            <ScoreInputWrapper>
-              <ScoreInput
-                data-cy="scoreInput"
-                onChange={(e) =>
-                  this.onChangeScore(showGradingRubricButton)(
-                    e.target.value,
-                    InputType.InputScore
-                  )
-                }
-                onFocus={this.handleScoreInputFocus}
-                onBlur={this.submitScore}
-                value={_score}
-                disabled={
-                  isPresentationMode ||
-                  isPracticeQuestion ||
-                  studentResponseLoading ||
-                  isClassResponseLoading ||
-                  isScoreInputDisabled
-                }
-                ref={this.scoreInput}
-                onKeyDown={this.onKeyDownFeedback}
-                tabIndex={0}
-              />
-              <TextPara>{_maxScore}</TextPara>
-            </ScoreInputWrapper>
-          </StyledDivSec>
+          <>
+            <StyledDivSec>
+              <ScoreInputWrapper>
+                <ScoreInput
+                  data-cy="scoreInput"
+                  onChange={(e) =>
+                    this.onChangeScore(showGradingRubricButton)(
+                      e.target.value,
+                      InputType.InputScore
+                    )
+                  }
+                  onFocus={this.handleScoreInputFocus}
+                  onBlur={this.submitScore}
+                  value={_score}
+                  disabled={
+                    isPresentationMode ||
+                    isPracticeQuestion ||
+                    isScoreInputDisabled
+                  }
+                  ref={this.scoreInput}
+                  onKeyDown={this.onKeyDownFeedback}
+                  tabIndex={0}
+                />
+                <TextPara>{_maxScore}</TextPara>
+              </ScoreInputWrapper>
+            </StyledDivSec>
+            <GradingPolicyWrapper>
+              GRADING POLICY &nbsp;
+              <GradingPolicy data-cy="gradingPolicyType">
+                {activity.scoringType}
+              </GradingPolicy>
+            </GradingPolicyWrapper>
+          </>
         ) : (
           <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />
         )}
@@ -560,7 +580,7 @@ class FeedbackRight extends Component {
             rubricFeedback={rubricFeedback}
             currentScore={activity?.score}
             onRubricResponse={this.handleRubricResponse}
-            isRubricDisabled={isClassResponseLoading || isRubricDisabled}
+            isRubricDisabled={isRubricDisabled}
             onChangeScore={this.onChangeScore(showGradingRubricButton)}
             clearRubricFeedback={clearRubricFeedback}
             InputType={InputType}
@@ -643,6 +663,9 @@ const enhance = compose(
       userThumbnail: getUserThumbnail(state),
       userFullName: getUserFullNameSelector(state),
       isClassResponseLoading: state?.studentResponse?.loading,
+      studentQuestionResponseUpdatedAt:
+        state?.studentQuestionResponse?.data?.updatedAt,
+      classQuestionResponseData: state.classQuestionResponse.data,
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,
@@ -734,6 +757,18 @@ const TextPara = styled.p`
   width: 30%;
   border-radius: 0px 2px 2px 0px;
   display: inline-block;
+`
+const GradingPolicyWrapper = styled.p`
+  text-transform: uppercase;
+  margin-top: 10px;
+  font-size: 9px;
+  font-weight: 600;
+  width: 100%;
+  display: inline-block;
+`
+
+const GradingPolicy = styled.span`
+  color: ${tabGrey};
 `
 
 const LeaveDiv = styled.div`

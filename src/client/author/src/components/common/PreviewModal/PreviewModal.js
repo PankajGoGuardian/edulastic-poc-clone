@@ -181,6 +181,8 @@ class PreviewModal extends React.Component {
       isTest = !!testId,
       passage,
       item = {},
+      isPlaylistTestReview,
+      playlistId,
     } = this.props
     const itemId = data.id
     const regradeFlow = match.params.oldId && match.params.oldId !== 'undefined'
@@ -193,6 +195,8 @@ class PreviewModal extends React.Component {
         isTest,
         itemId,
         regradeFlow,
+        isPlaylistTestReview,
+        playlistId,
       })
     }
 
@@ -209,6 +213,8 @@ class PreviewModal extends React.Component {
         regradeFlow,
         passage,
         duplicateWholePassage: true,
+        isPlaylistTestReview,
+        playlistId,
       })
       Modal.destroyAll()
       this.closeModal()
@@ -225,6 +231,8 @@ class PreviewModal extends React.Component {
         regradeFlow,
         passage,
         currentItem,
+        isPlaylistTestReview,
+        playlistId,
       })
       Modal.destroyAll()
       this.closeModal()
@@ -584,6 +592,7 @@ class PreviewModal extends React.Component {
       testStatus = 'draft',
       selectedRows,
       passageItemIds = [],
+      isPlaylistTestReview,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -602,7 +611,10 @@ class PreviewModal extends React.Component {
       fullModal,
       isRejectMode,
     } = this.state
-    const resources = keyBy(get(item, 'data.resources', []), 'id')
+    const resources = keyBy(
+      get(item, 'data.resources', []),
+      (r) => `${item._id}_${r.id}`
+    )
 
     let allWidgets = { ...questions, ...resources }
     const { authors = [], rows, data = {} } = item || {}
@@ -637,7 +649,9 @@ class PreviewModal extends React.Component {
 
     const isSmallSize = windowWidth <= SMALL_DESKTOP_WIDTH
 
-    const isTestInRegrade = !!test?._id && testAssignments.length && test.isUsed
+    const isTestInRegrade =
+      !!test?._id &&
+      (test.isInEditAndRegrade || (testAssignments.length && test.isUsed))
     const isDisableEdit = !(
       (isEditable && isOwner) ||
       userRole === roleuser.EDULASTIC_CURATOR ||
@@ -805,7 +819,11 @@ class PreviewModal extends React.Component {
                       : 'Edit item'
                   }
                   noHover={isDisableEdit}
-                  disabled={isDisableEdit || !!premiumCollectionWithoutAccess}
+                  disabled={
+                    isPlaylistTestReview ||
+                    isDisableEdit ||
+                    !!premiumCollectionWithoutAccess
+                  }
                   onClick={this.editTestItem}
                 >
                   <IconPencilEdit color={themeColor} title="Edit item" />
@@ -1075,7 +1093,7 @@ const PreviewModalWrapper = styled(Modal)`
   top: 30px;
   padding: 0px;
   position: relative;
-
+  overflow-y: auto;
   .ant-modal-content {
     background: transparent;
     box-shadow: none;

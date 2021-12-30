@@ -39,7 +39,7 @@ import {
   getUserRole,
   getCollectionsSelector,
   getWritableCollectionsSelector,
-  getCurrentActiveTerms,
+  getCurrentActiveTermIds,
   getCurrentTerm,
   getUserOrgId,
 } from '../src/selectors/user'
@@ -253,6 +253,8 @@ export const SET_PREVIOUSLY_USED_PLAYLIST_CLONE =
 export const EDIT_PLAYLIST_TEST = '[playlist] edit playlist test'
 export const SET_USE_THIS_LOADER =
   '[playlist] set/unset loader while using playlist'
+export const SET_CURRENT_TERM =
+  '[playlist] set/unset user selected ter to load assignments and summary'
 
 // Actions
 export const updateCurriculumSequenceList = createAction(
@@ -409,6 +411,8 @@ export const duplicatePlaylistRequestAction = createAction(
 )
 export const setUseThisLoading = createAction(SET_USE_THIS_LOADER)
 
+export const setCurrentUserTermAction = createAction(SET_CURRENT_TERM)
+
 export const setIsUsedModalVisibleAction = createAction(
   SET_IS_USED_MODAL_VISIBLE
 )
@@ -420,7 +424,11 @@ export const setPreviouslyUsedPlaylistClone = createAction(
   SET_PREVIOUSLY_USED_PLAYLIST_CLONE
 )
 
-export const getAllCurriculumSequencesAction = (ids, showNotification) => {
+export const getAllCurriculumSequencesAction = (
+  ids,
+  showNotification,
+  backgroundFetch = false
+) => {
   if (!ids) {
     return {
       type: FETCH_CURRICULUM_SEQUENCES_ERROR,
@@ -428,7 +436,7 @@ export const getAllCurriculumSequencesAction = (ids, showNotification) => {
   }
   return {
     type: FETCH_CURRICULUM_SEQUENCES,
-    payload: { ids, showNotification },
+    payload: { ids, showNotification, backgroundFetch },
   }
 }
 export const approveOrRejectSinglePlaylistRequestAction = createAction(
@@ -558,6 +566,11 @@ export const getIsUseThisLoading = createSelector(
   (curriculumSequence) => curriculumSequence.isUseThisLoading
 )
 
+export const getCurrentPlaylistTermId = createSelector(
+  getCurriculumSequenceState,
+  (curriculumSequence) => curriculumSequence.currentTermId
+)
+
 function* makeApiRequest(
   idsForFetch = [],
   showNotification = false,
@@ -566,7 +579,13 @@ function* makeApiRequest(
   try {
     const pathname = yield select((state) => state.router.location.pathname)
     const isMyPlaylist = pathname.includes('use-this')
-    const activeTermIds = yield select(getCurrentActiveTerms)
+    let activeTermIds = []
+    const selectedPlaylistTermId = yield select(getCurrentPlaylistTermId)
+    if (!selectedPlaylistTermId) {
+      activeTermIds = yield select(getCurrentActiveTermIds)
+    } else {
+      activeTermIds = [selectedPlaylistTermId]
+    }
     const unflattenedItems = yield all(
       idsForFetch.map((id) =>
         call(curriculumSequencesApi.getCurriculums, {
@@ -1313,18 +1332,46 @@ function* editPlaylistTestSaga({ payload }) {
 
     // Clone the test and redirect user to edit page of cloned test.
     if (isDuplicateAllowed) {
-      yield put(
-        duplicateTestRequestAction({
-          _id: testId,
-          title: test?.title || '',
-          redirectToNewTest: false,
-          // By default we keep reference to all the items in test in cloned test.
-          cloneItems: false,
-          isInEditAndRegrade: true,
-          currentTab: tab,
-          playlistId,
-        })
+      const userWantsToDuplicate = yield call(
+        () =>
+          new Promise((res) => {
+            Modal.confirm({
+              title: 'Warning',
+              content:
+                'Editing the test will create a clone and progress would be tracked separately. Do you still want to edit the test?',
+              zIndex: 1500,
+              centered: true,
+              okButtonProps: {
+                style: { background: themeColor, outline: 'none' },
+              },
+              okText: 'Yes, Proceed',
+              cancelText: 'No, Cancel',
+              onOk() {
+                res(true)
+                Modal.destroyAll()
+              },
+              onCancel() {
+                res(false)
+                Modal.destroyAll()
+              },
+            })
+          })
       )
+      if (userWantsToDuplicate) {
+        yield put(
+          duplicateTestRequestAction({
+            _id: testId,
+            title: test?.title || '',
+            redirectToNewTest: false,
+            // By default we keep reference to all the items in test in cloned test.
+            cloneItems: false,
+            isInEditAndRegrade: true,
+            currentTab: tab,
+            playlistId,
+            updatePlaylist: true,
+          })
+        )
+      }
     }
   } catch (e) {
     notification({ messageKey: 'commonErr' })
@@ -1672,7 +1719,10 @@ function* cloneThisPlayListSaga({ payload }) {
     yield put(setIsUsedModalVisibleAction(false))
     const location = yield select((state) => state.router.location.pathname)
     const urlHasUseThis = location.match(/use-this/g)
-    const termId = yield select(getCurrentTerm)
+    let termId = yield select(getCurrentPlaylistTermId)
+    if (!termId) {
+      termId = yield select(getCurrentTerm)
+    }
     if (isStudent && onChange) {
       yield put(
         push({
@@ -3264,8 +3314,8 @@ export default createReducer(initialState, {
       }
     })
   },
-  [FETCH_CURRICULUM_SEQUENCES]: (state) => {
-    state.loading = true
+  [FETCH_CURRICULUM_SEQUENCES]: (state, { payload }) => {
+    state.loading = !payload.backgroundFetch
   },
   [FETCH_CURRICULUM_SEQUENCES_ERROR]: (state) => {
     state.loading = false
@@ -3330,5 +3380,8 @@ export default createReducer(initialState, {
   },
   [SET_USE_THIS_LOADER]: (state, { payload }) => {
     state.isUseThisLoading = payload
+  },
+  [SET_CURRENT_TERM]: (state, { payload }) => {
+    state.currentTermId = payload
   },
 })

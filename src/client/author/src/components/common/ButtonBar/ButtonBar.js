@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { debounce, get } from 'lodash'
+import { get } from 'lodash'
 import { white } from '@edulastic/colors'
 import {
   HeaderTabs,
@@ -31,7 +31,10 @@ import { roleuser } from '@edulastic/constants'
 import { clearEvaluationAction } from '../../../../../assessment/actions/evaluation'
 import { Tooltip } from '../../../../../common/utils/helpers'
 import { getCurrentQuestionSelector } from '../../../../sharedDucks/questions'
-import { getPassageUpdateInProgressSelector } from '../../../../ItemDetail/ducks'
+import {
+  getPassageUpdateInProgressSelector,
+  getTestItemsSavingSelector,
+} from '../../../../ItemDetail/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { MAX_TAB_WIDTH } from '../../../constants/others'
 import {
@@ -124,13 +127,9 @@ class ButtonBar extends Component {
     this.handleDynamicParameter(onPublishTestItem)
   }
 
-  debounceSave = debounce(() => {
-    const { onSave } = this.props
-    onSave()
-  }, 1000)
-
   handleSave = () => {
-    this.handleDynamicParameter(this.debounceSave)
+    const { onSave } = this.props
+    this.handleDynamicParameter(onSave)
   }
 
   render() {
@@ -160,6 +159,7 @@ class ButtonBar extends Component {
       onToggleFullModal,
       isInModal,
       passageUpdateInProgress = false,
+      testItemSavingInProgress = false,
     } = this.props
     return (
       <>
@@ -237,6 +237,9 @@ class ButtonBar extends Component {
                           disabled={disableSave}
                           data-cy="saveButton"
                           onClick={this.handleSave}
+                          loading={
+                            passageUpdateInProgress || testItemSavingInProgress
+                          }
                         >
                           <IconSaveNew />
                           SAVE
@@ -257,7 +260,9 @@ class ButtonBar extends Component {
                         data-cy="saveButton"
                         onClick={this.handleSave}
                         id={getFormattedAttrId(`${qTitle}-save`)}
-                        loading={passageUpdateInProgress}
+                        loading={
+                          passageUpdateInProgress || testItemSavingInProgress
+                        }
                       >
                         <IconSaveNew />
                         SAVE
@@ -433,6 +438,7 @@ ButtonBar.propTypes = {
   showAuditTrail: PropTypes.bool,
   permissions: PropTypes.object.isRequired,
   passageUpdateInProgress: PropTypes.bool,
+  testItemSavingInProgress: PropTypes.bool,
 }
 
 ButtonBar.defaultProps = {
@@ -446,6 +452,7 @@ ButtonBar.defaultProps = {
   withLabels: false,
   hasAuthorPermission: true,
   passageUpdateInProgress: false,
+  testItemSavingInProgress: false,
 }
 
 const enhance = compose(
@@ -475,6 +482,7 @@ const enhance = compose(
         multipartItem,
         loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
         passageUpdateInProgress: getPassageUpdateInProgressSelector(state),
+        testItemSavingInProgress: getTestItemsSavingSelector(state),
       }
     },
     {

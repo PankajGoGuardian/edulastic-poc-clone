@@ -42,6 +42,7 @@ const Display = ({
   const answerContext = useContext(AnswerContext)
   const hasAnnotations = annotations.length > 0
   const [showAnnotations, toggleAnnotationsVibility] = useState(hasAnnotations)
+  const [isStudentResponseEdited, setStudentResponseEdited] = useState(false)
   const handleSelect = (index) => {
     if (
       previewTab === 'check' ||
@@ -59,6 +60,15 @@ const Display = ({
     } else {
       _userAnswer.push(index)
     }
+
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-30495
+     * avoid showing red highlight if user response edited from EG and updated response is not evaluated
+     */
+    if (answerContext.expressGrader && answerContext.isAnswerModifiable) {
+      setStudentResponseEdited(true)
+    }
+
     saveAnswer(_userAnswer)
   }
   return (
@@ -117,6 +127,7 @@ const Display = ({
                     isAnswerModifiable={answerContext.isAnswerModifiable}
                     evaluation={evaluation}
                     isReviewTab={isReviewTab}
+                    isStudentResponseEdited={isStudentResponseEdited}
                   />
                 ) : (
                   <Rectangles
@@ -130,6 +141,7 @@ const Display = ({
                     isAnswerModifiable={answerContext.isAnswerModifiable}
                     evaluation={evaluation}
                     isReviewTab={isReviewTab}
+                    isStudentResponseEdited={isStudentResponseEdited}
                   />
                 )
               )}

@@ -2116,7 +2116,7 @@ const { themeColor } = require('@edulastic/colors')
             // Set attributes
             child.setAttribute('data-pdf-annotate-id', annotation.uuid)
             child.setAttribute('data-pdf-annotate-type', annotation.type)
-            if (authoringMode) {
+            if (!annotation.protected && authoringMode) {
               child.setAttribute('data-view-mode', 'edit')
             }
             child.setAttribute('aria-hidden', true)
@@ -3446,6 +3446,7 @@ const { themeColor } = require('@edulastic/colors')
           disableRect: _rect.disableRect,
           enableRect: _rect.enableRect,
           disableText: _text.disableText,
+          removeTextInput: _text.removeTextInput,
           enableText: _text.enableText,
           setText: _text.setText,
           createPage: _page.createPage,
@@ -3554,6 +3555,9 @@ const { themeColor } = require('@edulastic/colors')
          */
         function createEditOverlay(target) {
           destroyEditOverlay()
+          if (target.getAttribute('data-view-mode') !== 'edit') {
+            return
+          }
 
           overlay = document.createElement('div')
           var anchor = document.createElement('a')
@@ -4706,6 +4710,7 @@ const { themeColor } = require('@edulastic/colors')
         exports.setText = setText
         exports.enableText = enableText
         exports.disableText = disableText
+        exports.removeTextInput = removeTextInput
 
         var _PDFJSAnnotate = __webpack_require__(1)
 
@@ -4745,7 +4750,7 @@ const { themeColor } = require('@edulastic/colors')
           input.style.top = e.clientY + 'px'
           input.style.left = e.clientX + 'px'
           input.style.fontSize = _textSize + 'px'
-          input.style.zIndex = 1
+          input.style.zIndex = 9999
 
           input.addEventListener('blur', handleInputBlur)
           input.addEventListener('keyup', handleInputKeyup)
@@ -4882,6 +4887,13 @@ const { themeColor } = require('@edulastic/colors')
 
           _enabled = false
           document.removeEventListener('mouseup', handleDocumentMouseup)
+        }
+
+        /**
+         * Remove text input
+         */
+        function removeTextInput() {
+          closeInput()
         }
 
         /***/
@@ -5839,7 +5851,7 @@ const { themeColor } = require('@edulastic/colors')
 
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
-              <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
+              <button id="edu-annotate-close" type="button" aria-label="Close" class="ant-modal-close">
                 <span class="ant-modal-close-x">
                   <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
                     <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true" fill="#434B5D">
@@ -5988,7 +6000,7 @@ const { themeColor } = require('@edulastic/colors')
 
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
-              <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
+              <button id="edu-annotate-close" type="button" aria-label="Close" class="ant-modal-close">
                 <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
                   <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
                     <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">
@@ -6110,7 +6122,7 @@ const { themeColor } = require('@edulastic/colors')
 
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
-              <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
+              <button id="edu-annotate-close" type="button" aria-label="Close" class="ant-modal-close">
                 <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
                   <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
                     <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">
@@ -6231,7 +6243,7 @@ const { themeColor } = require('@edulastic/colors')
 
               overlay.innerHTML = `
               <div class="ant-modal-content" style="border-radius: 10px; overflow: hidden">
-              <button id="edu-annotate-close" onclick="" type="button" aria-label="Close" class="ant-modal-close">
+              <button id="edu-annotate-close" type="button" aria-label="Close" class="ant-modal-close">
                 <span class="ant-modal-close-x" style="height: 30px;", width: 30x; line-height: 30px;>
                   <span role="img" aria-label="close" class="anticon anticon-close ant-modal-close-icon">
                     <svg viewBox="64 64 896 896" focusable="false" class="" data-icon="close" width="1em" height="1em" fill="currentColor" aria-hidden="true">

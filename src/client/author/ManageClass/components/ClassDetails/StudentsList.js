@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { get, isEmpty, pullAt } from 'lodash'
@@ -53,6 +53,10 @@ const StudentsList = ({
 
   const { _id: groupId, type, active } = selectedClass
   const typeText = type !== 'class' ? 'group' : 'class'
+
+  useEffect(() => {
+    setShowCurrentStudents(!!active)
+  }, [active])
 
   const rowSelection = {
     onChange: (_, selectedRows) => {

@@ -30,7 +30,7 @@ const handleGroupsChange = (selected, prevFilters, updateFilters) =>
     groups: selected,
   })
 
-const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
+const FilterDropdown = ({ onChange, value, options, label, dataCy, mode }) => (
   <StyledRow type="flex" style={{ marginBottom: '20px' }}>
     <Col span={24}>
       <FieldLabel>{label}</FieldLabel>
@@ -38,7 +38,7 @@ const FilterDropdown = ({ onChange, value, options, label, dataCy }) => (
         showArrow
         data-cy={dataCy}
         placeholder={`All ${label}`}
-        mode="tags"
+        mode={mode}
         onChange={onChange}
         value={value}
         labelInValue
@@ -62,6 +62,9 @@ const InsightsFilters = ({
   overallProgressCheck,
   setOverallProgressCheck,
   clearFilter,
+  currentTermId,
+  userTerms,
+  setCurrentUserTermId,
 }) => {
   const { modulesData, standardsData, groupsData, masteryData } = data
 
@@ -74,6 +77,13 @@ const InsightsFilters = ({
         </ClearAll>
       </FilterHeading>
       <FilterDropdown
+        label="Terms"
+        onChange={setCurrentUserTermId}
+        value={{ key: currentTermId }}
+        options={userTerms.map((x) => ({ ...x, id: x._id }))}
+      />
+      <FilterDropdown
+        mode="tags"
         label="Modules"
         onChange={(selected) =>
           handleModulesChange(selected, prevFilters, updateFilters)
@@ -82,6 +92,7 @@ const InsightsFilters = ({
         options={modulesData}
       />
       <FilterDropdown
+        mode="tags"
         label="Standards"
         onChange={(selected) =>
           handleStandardsChange(selected, prevFilters, updateFilters)
@@ -90,6 +101,7 @@ const InsightsFilters = ({
         options={standardsData}
       />
       <FilterDropdown
+        mode="tags"
         label="Mastery"
         onChange={(selected) =>
           handleMasteryListChange(selected, prevFilters, updateFilters)

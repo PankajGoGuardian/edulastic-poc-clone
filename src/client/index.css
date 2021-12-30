@@ -1287,6 +1287,10 @@ span.token.active-word.answer {
   background: #fdcc3b80;
 }
 
+span.token.active-word > * {
+  pointer-events: none;
+}
+
 span.token.active-word {
   background: #93d8f780;
 }
@@ -1339,6 +1343,12 @@ span.token.active-word {
 .ant-select-dropdown,
 .ant-dropdown {
   z-index: 998; /*  header has z-index 999 */
+}
+
+@media screen and (max-height: 700px) {
+  .custom-antd-select.ant-select-dropdown .ant-select-dropdown-menu {
+    max-height: 210px;
+  }
 }
 
 .template_box .ant-select-selection {

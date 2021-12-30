@@ -1,5 +1,5 @@
 import { takeEvery, put, all, select, call } from 'redux-saga/effects'
-import { isEmpty, values } from 'lodash'
+import { isEmpty, keyBy } from 'lodash'
 
 import { testItemsApi, attchmentApi as attachmentApi } from '@edulastic/api'
 import {
@@ -27,6 +27,7 @@ import { CHANGE_PREVIEW, CHANGE_VIEW } from '../../author/src/constants/actions'
 import { getTypeAndMsgBasedOnScore } from '../../common/utils/helpers'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
 import { getUserRole } from '../../author/src/selectors/user'
+import { hasValidResponse } from '../../author/questionUtils'
 
 const { playerSkinValues } = testConstants
 
@@ -49,7 +50,6 @@ function* evaluateAnswers({ payload: groupId }) {
       }
     })
 
-    const validResponses = values(userResponse).filter((item) => !!item)
     const playerSkinType = yield select(playerSkinTypeSelector)
     // if user response is empty show toaster msg.
     const config =
@@ -57,7 +57,13 @@ function* evaluateAnswers({ payload: groupId }) {
       playerSkinType === playerSkinValues.drc
         ? { bottom: '64px' }
         : {}
-    if (isEmpty(validResponses)) {
+
+    const { items, currentItem, testId } = yield select((state) => state.test)
+    const testItemId = items[currentItem]._id
+    const shuffledOptions = yield select((state) => state.shuffledOptions)
+    const questions = getQuestionIds(items[currentItem])
+    const allQuestions = keyBy(items[currentItem]?.data?.questions, 'id')
+    if (!hasValidResponse(userResponse, allQuestions)) {
       yield put({ type: SET_CHECK_ANSWER_PROGRESS_STATUS, payload: false })
       return notification({
         type: 'warn',
@@ -65,10 +71,6 @@ function* evaluateAnswers({ payload: groupId }) {
         ...config,
       })
     }
-    const { items, currentItem, testId } = yield select((state) => state.test)
-    const testItemId = items[currentItem]._id
-    const shuffledOptions = yield select((state) => state.shuffledOptions)
-    const questions = getQuestionIds(items[currentItem])
     const shuffles = {}
     questions.forEach((question) => {
       if (shuffledOptions[question]) {
@@ -153,13 +155,13 @@ function* evaluateAnswers({ payload: groupId }) {
       userQuestionActivities.forEach((item) => {
         score += item.score || 0
         maxScore += item.maxScore || 0
-        if (item.evaluation) {
+
+        if (item.evaluation !== undefined) {
           evaluations[item.qid] = item.evaluation
         }
       })
 
       evaluationObj = { score, maxScore, evaluations }
-
       Object.keys(evaluations).forEach((item) => {
         evaluations[`${testItemId}_${item}`] = evaluations[item]
       })

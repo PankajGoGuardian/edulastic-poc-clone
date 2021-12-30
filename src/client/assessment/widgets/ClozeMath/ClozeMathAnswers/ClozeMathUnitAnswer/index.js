@@ -9,6 +9,7 @@ import MathFormulaAnswerMethod from '../../../MathFormula/components/MathFormula
 import SelectUnit from './SelectUnit'
 import { AnswerContainer } from './AnswerContainer'
 import { StyledCollapse } from '../ClozeMathAnswer'
+import { getStylesFromUiStyleToCssStyle } from '../../../../utils/helpers'
 
 const { Panel } = Collapse
 
@@ -36,6 +37,8 @@ const ClozeMathUnitAnswer = ({
       ? `${response.heightpx}px`
       : `${defaultResponse.minHeight}px`
 
+  const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
+
   const _changeValue = (answerId) => (prop, val) => {
     onChange({ answerId, prop, value: val })
   }
@@ -56,8 +59,9 @@ const ClozeMathUnitAnswer = ({
   const dropdownUnit = (
     <div style={{ position: 'relative' }}>
       <SelectUnit
-        height={height}
-        width={width}
+        height={cssStyles.height || height}
+        width={cssStyles.width || width}
+        fontSize={cssStyles.fontSize}
         customUnits={answer.customUnits}
         onChange={_changeValue(answer.id)}
         unit={get(answer, 'options.unit', '')}
@@ -68,7 +72,7 @@ const ClozeMathUnitAnswer = ({
     </div>
   )
   return (
-    <AnswerContainer>
+    <AnswerContainer data-cy="answerContainer">
       <StyledCollapse
         onChange={() => {}}
         bordered={false}

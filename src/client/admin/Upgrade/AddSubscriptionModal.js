@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import { userApi } from '@edulastic/api'
 import {
   CustomModalStyled,
   DatePickerStyled,
@@ -11,10 +11,10 @@ import {
   TextInputStyled,
 } from '@edulastic/common'
 import { Col, Row, Spin } from 'antd'
-import styled from 'styled-components'
+import { debounce, isNumber, omitBy } from 'lodash'
 import moment from 'moment'
-import { debounce, identity, isNumber, omitBy } from 'lodash'
-import { userApi } from '@edulastic/api'
+import React, { useEffect, useState } from 'react'
+import styled from 'styled-components'
 
 const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
 
@@ -23,24 +23,16 @@ const AddSubscriptionModal = ({
   closeModal,
   isFetchingOrganization,
   districtList,
-  searchRequest,
   addSubscription,
   products,
+  handleSelectDistrict,
+  handleSearch,
+  setFieldData,
+  fieldData,
 }) => {
   const [isFetchingUsers, setIsFetchingUsers] = useState(false)
   const [usersList, setUsersList] = useState([])
   const [startDate, setStartDate] = useState(moment())
-  const [fieldData, setFieldData] = useState({
-    districtId: '',
-    districtName: '',
-    orgType: 'user',
-    managerEmail: [],
-    subStartDate: moment().valueOf(),
-    subEndDate: moment().add(1, 'years').valueOf(),
-    customerSuccessManager: '',
-    opportunityId: '',
-    notes: '',
-  })
 
   const disabledStartDate = (current) =>
     current && current < moment().subtract(1, 'day')
@@ -95,32 +87,6 @@ const AddSubscriptionModal = ({
   const handleUsersSearch = (searchString) => {
     setIsFetchingUsers(true)
     handleUsersFetch(searchString)
-  }
-
-  const handleSelectDistrict = (value, option) => {
-    const { value: districtId, name: districtName } = option.props
-
-    // resetting all the org fields as we are changing the organization(district)
-    setFieldData({
-      ...fieldData,
-      districtId,
-      districtName,
-      managerEmail: [],
-    })
-  }
-
-  const handleSearch = (searchString, searchType, size) => {
-    if (!fieldData.districtId && searchType !== 'DISTRICT')
-      return notification({ messageKey: 'pleaseSelectDistrict' })
-    const data = {
-      orgType: searchType,
-      searchString,
-    }
-    if (size) {
-      data.size = size
-    }
-    if (searchType !== 'DISTRICT') data.districtId = fieldData.districtId
-    searchRequest(data)
   }
 
   const handleValidateFields = () => {

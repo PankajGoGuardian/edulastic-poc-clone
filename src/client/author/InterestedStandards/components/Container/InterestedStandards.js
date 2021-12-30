@@ -15,6 +15,7 @@ import {
   StyledRow,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
 import {
+  HeaderSaveButton,
   SpinContainer,
   StyledSpin,
 } from '../../../../admin/Common/StyledComponents'
@@ -39,6 +40,7 @@ import {
   StyledSubjectLine,
   StyledSubjectTitle,
 } from './styled'
+import { IconSaveNew } from '@edulastic/icons'
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Interested Standards' }
@@ -255,7 +257,13 @@ class InterestedStandards extends Component {
 
     return (
       <SettingsWrapper>
-        <AdminHeader title={title} active={menuActive} history={history} />
+        <AdminHeader title={title} active={menuActive} history={history}>
+          <HeaderSaveButton>
+            <EduButton isBlue onClick={this.saveInterestedStandards}>
+              <IconSaveNew /> Save
+            </EduButton>
+          </HeaderSaveButton>
+        </AdminHeader>
         <StyledContent>
           <StyledLayout loading={showSpin ? 'true' : 'false'}>
             <AdminSubHeader active={menuActive} history={history} />
@@ -296,14 +304,6 @@ class InterestedStandards extends Component {
                     ml="0px"
                   >
                     Select your standard sets
-                  </EduButton>
-                </StyledCol>
-                <StyledCol>
-                  <EduButton
-                    type="primary"
-                    onClick={this.saveInterestedStandards}
-                  >
-                    Save
                   </EduButton>
                 </StyledCol>
               </StyledRow>

@@ -5,6 +5,7 @@ import { Checkbox, Radio } from 'antd'
 
 import { Wrapper } from './styled/Wrapper'
 import { InlineLabel } from './styled/InlineLabel'
+import CrossIcon from '../../../../components/CrossIcon'
 
 const MatrixCell = ({
   label,
@@ -17,6 +18,10 @@ const MatrixCell = ({
   isPrintPreview,
   children,
   tool,
+  showCrossIcon,
+  hovered,
+  onMouseEnter,
+  onMouseLeave,
 }) => {
   let input
 
@@ -32,6 +37,8 @@ const MatrixCell = ({
       correct={checked && correct}
       isPrintPreview={isPrintPreview}
       onClick={onChange}
+      onMouseEnter={onMouseEnter}
+      onMouseLeave={onMouseLeave}
       onlySpaceKey
       tool={tool}
     >
@@ -43,6 +50,7 @@ const MatrixCell = ({
         />
       )}
       {children}
+      {showCrossIcon && <CrossIcon hovered={hovered} />}
     </Wrapper>
   )
 }

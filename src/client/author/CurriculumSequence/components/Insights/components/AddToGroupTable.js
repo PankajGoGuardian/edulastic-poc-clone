@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom'
 import styled from 'styled-components'
 import { Col, Table } from 'antd'
 import { round } from 'lodash'
-import { themeColor, greyThemeDark1 } from '@edulastic/colors'
+import { themeColor, greyThemeDark1, lightBlue10 } from '@edulastic/colors'
 import TrendArrow from '../assets/TrendArrow'
 import { calcArrowPosition } from '../transformers'
 // import { getCommonGroups } from "../transformers";
@@ -66,15 +66,15 @@ const getColumns = (
   {
     // title: <GroupsDropdown groups={groupsData} onChange={handleAddGroupChangeLocal} checkedGroups={checkedGroups} />,
     title: 'Performance',
-    colSpan: 2,
+    colSpan: 1,
     align: 'left',
     key: 'percentScore',
     dataIndex: 'percentScore',
     render: (data) => `${round(data * 100)}%`,
   },
   {
-    title: 'TrendAngle',
-    colSpan: 0,
+    title: 'Trends',
+    colSpan: 1,
     key: 'trendAngle',
     dataIndex: 'trendAngle',
     render: (data, record) => {
@@ -228,10 +228,13 @@ export const StyledTable = styled(Table)`
             /* TODO: Revert the temporary changes by referring to EV-12639 */
           }}
           td:nth-child(1) {
-            min-width: 120px;
-            max-width: 120px;
+            min-width: 100px;
+            max-width: 100px;
             overflow: hidden;
             text-overflow: ellipsis;
+            a {
+              color: ${lightBlue10};
+            }
           }
         }
         ${(props) => {

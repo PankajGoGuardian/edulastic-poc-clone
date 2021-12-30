@@ -1,4 +1,8 @@
-export { default as CONSTANT } from './constants'
+export {
+  ALL_CONTROLS,
+  getToolOptsByGrid,
+  default as CONSTANT,
+} from './constants'
 export { default as Colors } from './colors'
 
 const quadrantsDefaultConfig = {

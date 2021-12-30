@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
@@ -57,6 +57,12 @@ const DropdownArray = ({ t, options, onChange, optionKey }) => {
   //   const newOtps = dropdownOptions.filter((_, i) => !i !== ind)
   //   onChange('setThousandsSeparator', newOtps)
   // }
+
+  useEffect(() => {
+    if (options[optionKey]) {
+      setIsAllowed(true)
+    }
+  }, [])
 
   return (
     <DropdownOptionWrapper>

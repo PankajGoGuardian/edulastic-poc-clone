@@ -78,6 +78,7 @@ const Scratchpad = ({
   setScratchpadRect,
   conatinerWidth,
   dimensionsPercent,
+  isDropDownInUse,
 }) => {
   const [zwibbler, setZwibbler] = useState()
   const [clipBoard, updateClipBoard] = useState()
@@ -407,7 +408,11 @@ const Scratchpad = ({
   }, [width, height, conatinerWidth])
 
   return (
-    <ScratchpadContainer ref={zwibblerContainer} hideData={hideData}>
+    <ScratchpadContainer
+      ref={zwibblerContainer}
+      hideData={hideData}
+      isDropDownInUse={isDropDownInUse}
+    >
       {!hideToolBar && <ToolBox />}
       <ZwibblerMain
         deleteMode={deleteMode}
@@ -447,6 +452,7 @@ const EnhancedComponent = compose(
       editMode: state.scratchpad.editMode,
       hideData: state.scratchpad.hideData,
       dimensionsPercent: state.scratchpad.dimensionsPercent,
+      isDropDownInUse: state.ui.isDropDownInUse,
     }),
     {
       toggleButtons: toggleButtonsAction,
@@ -464,6 +470,7 @@ Scratchpad.propTypes = {
   data: PropTypes.string,
   hideTools: PropTypes.bool,
   readOnly: PropTypes.bool,
+  isDropDownInUse: PropTypes.bool,
 }
 
 Scratchpad.defaultProps = {
@@ -471,6 +478,7 @@ Scratchpad.defaultProps = {
   readOnly: false,
   hideTools: false,
   data: '',
+  isDropDownInUse: false,
 }
 
 /**

@@ -78,7 +78,6 @@ const Thumbnails = ({
   return (
     <ThumbnailsWrapper
       reportMode={reportMode}
-      testMode={testMode}
       review={review}
       minimized={minimized}
     >

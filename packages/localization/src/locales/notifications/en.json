@@ -568,11 +568,15 @@
     "description": ""
   },
   "pleaseSelectYourPreferedStartDate": {
-    "message": " Please select your prefered start date",
+    "message": " Please select your preferred start date",
+    "description": ""
+  },
+  "pleaseSelectYourPreferedOpenDate": {
+    "message": " Please select your preferred open date",
     "description": ""
   },
   "pleaseSelectYourPreferedDueDate": {
-    "message": " Please select your prefered due date",
+    "message": " Please select your preferred due date",
     "description": ""
   },
   "noCourseFound": {
@@ -951,12 +955,20 @@
     "message": "Google class sync is in progress",
     "description": ""
   },
+  "atlasClassSyncInProgress": {
+    "message": "Atlas class sync is in progress",
+    "description": ""
+  },
   "syncWithCanvasIsComplete": {
     "message": "Sync with Canvas is Complete.",
     "description": ""
   },
   "syncWithCleverIsComplete": {
     "message": "Sync with Clever is complete.",
+    "description": ""
+  },
+  "syncWithAtlasIsComplete": {
+    "message": "Sync with Atlas is complete.",
     "description": ""
   },
   "classSuccessfullyUnarchived": {
@@ -1315,6 +1327,10 @@
     "message": "Selected items count in a group should be more than the delivered items count.",
     "description": ""
   },
+  "editWarnBubblesheetGeneratedForThisTest": {
+    "message": "Please note bubble sheet is already generated with this test. If you edit the test, you can not use the generated bubble sheet and have to regenerate it and take a new test.",
+    "description": ""
+  },
   "pickedDateCannotBeLesseThanCurrentDate": {
     "message": "Picked date cannot be lesser than the current date",
     "description": ""
@@ -1561,6 +1577,10 @@
   },
   "classSyncWithCanvasFailed": {
     "message": "Class sync with Canvas failed",
+    "description": ""
+  },
+  "classSyncWithAtlasFailed": {
+    "message": "Class sync with Atlas failed",
     "description": ""
   },
   "failedToFetchCleverClasses": {

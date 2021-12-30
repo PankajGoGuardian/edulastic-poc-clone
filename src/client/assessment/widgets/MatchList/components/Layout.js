@@ -78,14 +78,14 @@ class LayoutWrapper extends Component {
           </Row>
 
           <Row gutter={36}>
-            <Col md={12}>
+            <Col md={12} data-cy="choiceMinWidth">
               <NumberInput
                 label={t('component.options.choiceMinWidth')}
                 onChange={(val) => changeUIStyle('choiceMinWidth', +val)}
                 value={get(item, 'uiStyle.choiceMinWidth', choiceMinW)}
               />
             </Col>
-            <Col md={12}>
+            <Col md={12} data-cy="choiceMaxWidth">
               <NumberInput
                 label={t('component.options.choiceMaxWidth')}
                 onChange={(val) => changeUIStyle('choiceMaxWidth', +val)}

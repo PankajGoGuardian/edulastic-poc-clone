@@ -5,11 +5,16 @@ import { createReducer, createAction } from 'redux-starter-kit'
 import {
   test as testConst,
   assignmentPolicyOptions,
+  roleuser,
 } from '@edulastic/constants'
+import { takeEvery, all, select, put } from 'redux-saga/effects'
+import { getUserRole } from '../src/selectors/user'
 
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
 export const UPDATE_ASSIGNMENT_SETTINGS =
   '[assignment settings] update assignment settings'
+export const UPDATE_ASSIGNMENT_SETTINGS_STATE =
+  '[assignment settings] update assignment settings state'
 export const CLEAR_ASSIGNMENT_SETTINGS =
   '[assignment settings] clear assignment settings'
 export const GET_SELECTED_RECOMMENDED_RESOURCES =
@@ -24,6 +29,12 @@ export const updateAssingnmentSettingsAction = (payload) => ({
   type: UPDATE_ASSIGNMENT_SETTINGS,
   payload,
 })
+
+export const updateAssingnmentSettingsStateAction = (payload) => ({
+  type: UPDATE_ASSIGNMENT_SETTINGS_STATE,
+  payload,
+})
+
 export const clearAssignmentSettingsAction = createAction(
   CLEAR_ASSIGNMENT_SETTINGS
 )
@@ -123,14 +134,17 @@ const initialState = {
 }
 
 export const assignmentSettings = createReducer(initialState, {
-  [UPDATE_ASSIGNMENT_SETTINGS]: (state, { payload }) => {
-    Object.assign(state, payload)
+  [UPDATE_ASSIGNMENT_SETTINGS_STATE]: (state, { payload }) => {
+    const { userRole, ...rest } = payload
+    Object.assign(state, rest)
     if (
       state.passwordPolicy &&
       state.passwordPolicy ===
         testConst.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
-      state.openPolicy = assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
+      state.openPolicy = roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+        ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
+        : assignmentPolicyOptions.POLICY_OPEN_MANUALLY_IN_CLASS
     }
     if (
       state.scoringType === testConst.evalTypeLabels.PARTIAL_CREDIT &&
@@ -151,3 +165,14 @@ export const assignmentSettings = createReducer(initialState, {
     state.resources = payload
   },
 })
+
+function* updateAssignmentSettingsSaga({ payload }) {
+  const userRole = yield select(getUserRole)
+  yield put(updateAssingnmentSettingsStateAction({ ...payload, userRole }))
+}
+
+export function* watcherSaga() {
+  yield all([
+    takeEvery(UPDATE_ASSIGNMENT_SETTINGS, updateAssignmentSettingsSaga),
+  ])
+}

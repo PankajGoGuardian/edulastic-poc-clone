@@ -197,6 +197,10 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.POLYNOM:
     case CONSTANT.TOOLS.PARABOLA2:
     case CONSTANT.TOOLS.EXPONENTIAL2:
+    case CONSTANT.TOOLS.PIECEWISE_LINE:
+    case CONSTANT.TOOLS.PARABOLA:
+    case CONSTANT.TOOLS.ROSE:
+    case CONSTANT.TOOLS.CARDIOID:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -486,7 +490,11 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.HYPERBOLA &&
       type !== CONSTANT.TOOLS.POLYNOM &&
       type !== CONSTANT.TOOLS.PARABOLA2 &&
-      type !== CONSTANT.TOOLS.EXPONENTIAL2
+      type !== CONSTANT.TOOLS.EXPONENTIAL2 &&
+      type !== CONSTANT.TOOLS.PIECEWISE_LINE &&
+      type !== CONSTANT.TOOLS.PARABOLA &&
+      type !== CONSTANT.TOOLS.ROSE &&
+      type !== CONSTANT.TOOLS.CARDIOID
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,
@@ -513,7 +521,10 @@ export function flat2nestedConfig(config) {
             dimensions = {},
           } = element
 
-          if (type === CONSTANT.TOOLS.EQUATION) {
+          if (
+            type === CONSTANT.TOOLS.EQUATION ||
+            type === CONSTANT.TOOLS.NUMBERLINE_PLOT_POINT
+          ) {
             acc[id] = element
             return acc
           }
@@ -547,7 +558,11 @@ export function flat2nestedConfig(config) {
                 acc[id].dimensions = dimensions
               }
             } else {
-              if (type === CONSTANT.TOOLS.POLYGON && !element.subElementsIds) {
+              if (
+                !element.subElementsIds &&
+                (type === CONSTANT.TOOLS.POLYGON ||
+                  type === CONSTANT.TOOLS.PIECEWISE_LINE)
+              ) {
                 element.subElementsIds = {}
               }
               acc[id].points = getPointsFromFlatConfig(
@@ -998,4 +1013,12 @@ export const canAddElementToBoard = (board, x, y) => {
     return false
   }
   return coords
+}
+
+export const getClosest = (points, n) => {
+  const closest = points.reduce(
+    (prev, curr) => (Math.abs(curr.y - n) < Math.abs(prev.y - n) ? curr : prev),
+    points[0]
+  )
+  return closest
 }

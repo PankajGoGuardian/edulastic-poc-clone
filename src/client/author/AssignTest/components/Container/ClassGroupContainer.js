@@ -39,6 +39,7 @@ const ClassGroupContainer = ({
   isVideoResourcePreviewModal,
   showRecommendedResources,
   selectedResourcesAction,
+  createClassHandler,
 }) => {
   const { tags = testSettings.tags } = assignment
   return (
@@ -57,6 +58,7 @@ const ClassGroupContainer = ({
               fetchStudents={fetchStudents}
               selectedGroups={classIds}
               group={group}
+              createClassHandler={createClassHandler}
             />
           </SettingContainer>
 

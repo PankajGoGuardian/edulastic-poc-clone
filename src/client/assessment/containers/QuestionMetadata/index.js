@@ -139,9 +139,9 @@ const QuestionMetadata = ({
   }
 
   const handleUpdateQuestionAlignment = (index, _alignment, updated = true) => {
-    const newAlignments = (questionData.alignment || []).map((c, i) =>
-      i === index ? _alignment : c
-    )
+    const newAlignments = (questionData.alignment || [])
+      .filter((el) => !el.isEquivalentStandard)
+      .map((c, i) => (i === index ? _alignment : c))
     if (!newAlignments.length) {
       newAlignments.push(_alignment)
     }

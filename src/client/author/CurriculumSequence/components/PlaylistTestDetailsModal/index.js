@@ -100,6 +100,7 @@ const PlaylistTestDetailsModal = ({
             showCancelButton
             {...defaultPropsForReview}
             isPlaylistTestReview
+            playlistId={playlistId}
           />
         )}
       </Wrapper>

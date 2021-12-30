@@ -1,8 +1,12 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
 import styled from 'styled-components'
-import { MathSpan, measureTextWithImage } from '@edulastic/common'
+import {
+  MathSpan,
+  ScrollContext,
+  measureTextWithImage,
+} from '@edulastic/common'
 
 const AnswerContainer = ({
   answer,
@@ -19,7 +23,7 @@ const AnswerContainer = ({
     targetChild: 'p',
     childStyle: { display: 'inline' },
   })
-
+  const { getScrollElement } = useContext(ScrollContext)
   const widthOverflow = contentWidth > parseInt(containerWidth, 10) - 10
   const heightOveflow = contentHeight >= parseInt(containerHeight, 10)
   const showPopover = widthOverflow || heightOveflow
@@ -37,12 +41,20 @@ const AnswerContainer = ({
     />
   )
 
+  const getPopupContainer = (triggerNode) => {
+    const scrollEl = getScrollElement()
+    if (scrollEl) {
+      return scrollEl
+    }
+    return triggerNode.parentNode
+  }
+
   if (showPopover) {
     return (
       <Popover
         placement="bottomLeft"
         content={<PopoverWrapper>{content}</PopoverWrapper>}
-        getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        getPopupContainer={getPopupContainer}
       >
         {content}
       </Popover>

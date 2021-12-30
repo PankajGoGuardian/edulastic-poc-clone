@@ -9,7 +9,7 @@ import {
   darkGrey,
   themeColorLighter,
   incorrect,
-  yellow1,
+  greyLight1,
 } from '@edulastic/colors'
 import { StyledResponseTagContainer } from '../styled'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
@@ -68,11 +68,10 @@ export class ResponseTag extends Component {
     const modifiedStyle = next(exisitingStyle, (styleDraft) => {
       if (data.isCorrect) {
         styleDraft.color = themeColorLighter
+        styleDraft.backgroundColor = 'transparent'
       } else if (value > incorrectFrequencyThreshold) {
-        styleDraft.color = yellow1
+        styleDraft.backgroundColor = greyLight1
       }
-
-      styleDraft.backgroundColor = 'transparent'
     })
 
     return (
@@ -90,7 +89,7 @@ export class ResponseTag extends Component {
     const style = data.isCorrect
       ? { borderColor: themeColorLighter, color: themeColorLighter }
       : value > incorrectFrequencyThreshold
-      ? { borderColor: yellow1, color: yellow1 }
+      ? { borderColor: incorrect, backgroundColor: greyLight1 }
       : { borderColor: incorrect }
 
     if (isPrinting) {
@@ -131,7 +130,7 @@ const StyledTag = styled.div`
   flex-direction: column;
   p {
     &:nth-child(1) {
-      flex-grow: 0;
+      flex-grow: 1;
     }
     &:nth-child(2) {
       flex-grow: 1;

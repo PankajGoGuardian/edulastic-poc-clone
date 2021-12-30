@@ -1,5 +1,10 @@
-import { EduButton, FlexContainer, FireBaseService } from '@edulastic/common'
-import React, { useEffect } from 'react'
+import {
+  EduButton,
+  FlexContainer,
+  FireBaseService,
+  notification,
+} from '@edulastic/common'
+import React, { useEffect, useState } from 'react'
 import { withRouter } from 'react-router-dom'
 import styled from 'styled-components'
 import { Progress } from 'antd'
@@ -46,6 +51,14 @@ const ScanProgress = ({
     window.location.search.replace('?', '') || ''
   )
 
+  const [fakeProgress, setFakeProgress] = useState(0)
+
+  useEffect(() => {
+    if (fakeProgress < 80) {
+      setTimeout(() => setFakeProgress(fakeProgress + 1), fakeProgress * 500)
+    }
+  }, [fakeProgress])
+
   const totalLength = tempScannedDocs.length
   const sessionProgress = FireBaseService.useFirestoreRealtimeDocument(
     (db) => db.collection(collectionName).doc(sessionId),
@@ -70,8 +83,8 @@ const ScanProgress = ({
     if (tempScannedDocs.length && assignmentId && groupId && sessionId) {
       scannerApi
         .scoreWebCamScans({
-          assignmentId,
-          groupId,
+          assignmentId: tempScannedDocs[0].assignmentId,
+          groupId: tempScannedDocs[0].groupId,
           sessionId,
           responses: tempScannedDocs.map(
             ({ imageUri, studentId, answers }) => ({
@@ -85,6 +98,17 @@ const ScanProgress = ({
           console.log('r', r)
         })
         .catch((e) => {
+          if (e?.response?.data?.message) {
+            notification({
+              msg: e?.response?.data?.message,
+              type: 'error',
+              duration: 7000,
+            })
+            history.push({
+              pathname: '/uploadAnswerSheets',
+              search: `assignmentId=${assignmentId}&groupId=${groupId}&fromWebcam=true`,
+            })
+          }
           console.warn('errr', e)
         })
     }
@@ -124,7 +148,9 @@ const ScanProgress = ({
         <StyledTitle>Processing Forms...</StyledTitle>
         <Progress
           strokeColor={themeColorBlue}
-          percent={percentFinished}
+          percent={
+            fakeProgress > percentFinished ? fakeProgress : percentFinished
+          }
           status="active"
           showInfo={false}
         />

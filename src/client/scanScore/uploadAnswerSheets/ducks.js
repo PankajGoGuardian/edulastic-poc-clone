@@ -14,12 +14,22 @@ import {
 } from './utils'
 
 function parseQr(qrCode) {
-  // ${testId}_${assignmentId}_${classId}_${studentId}_${page}
-  let [testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
+  let testId
+  let assignmentId
+  let groupId
+  let studentId
+  let page
+  if (qrCode.includes('_')) {
+    // ${testId}_${assignmentId}_${classId}_${studentId}_${page}
+    ;[testId, assignmentId, groupId, studentId, page] = qrCode.split('_')
 
-  if (studentId == 1) {
-    ;[assignmentId, groupId, studentId] = qrCode.split('_')
+    if (studentId == 1) {
+      ;[assignmentId, groupId, studentId] = qrCode.split('_')
+    }
+  } else if (qrCode.includes('.')) {
+    ;[assignmentId, groupId, studentId] = qrCode.split('.')
   }
+
   return {
     testId,
     assignmentId,

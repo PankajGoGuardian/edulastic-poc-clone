@@ -7,10 +7,15 @@ const AddMultipleStudentsInfoModal = ({
   setinfoModelVisible,
   infoModalData,
   setInfoModalData,
+  isCreateAssignmentModalVisible,
+  toggleCreateAssignmentModal,
 }) => {
   const handleCancel = () => {
     setinfoModelVisible(false)
     setInfoModalData([])
+    if (isCreateAssignmentModalVisible === 1) {
+      toggleCreateAssignmentModal(2)
+    }
   }
 
   const newInfoModalData = infoModalData.map((user) => ({

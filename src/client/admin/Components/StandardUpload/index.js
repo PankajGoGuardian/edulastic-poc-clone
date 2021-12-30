@@ -10,7 +10,7 @@ const columns = [
     dataIndex: 'curriculum',
     key: 'curriculum',
     render: (curriculum, row) => (
-      <div style={{ color: row.curriculumExits ? '#ff3333' : '#33cc33' }}>
+      <div style={{ color: row.existingCurriculum ? '#ff3333' : '#33cc33' }}>
         {curriculum}
       </div>
     ),
@@ -21,7 +21,9 @@ const columns = [
     key: 'grade',
     render: (grade, row) => (
       <div
-        style={{ color: row.tloExists || row.eloExits ? '#ff3333' : '#33cc33' }}
+        style={{
+          color: row.existingTlo || row.eloExits ? '#ff3333' : '#33cc33',
+        }}
       >
         {grade}
       </div>
@@ -32,7 +34,7 @@ const columns = [
     dataIndex: 'tloIdentifier',
     key: 'tloIdentifier',
     render: (tloIdentifier, row) => (
-      <div style={{ color: row.tloExists ? '#ff3333' : '#33cc33' }}>
+      <div style={{ color: row.existingTlo ? '#ff3333' : '#33cc33' }}>
         {tloIdentifier}
       </div>
     ),
@@ -56,7 +58,7 @@ const columns = [
     dataIndex: 'eloIdentifier',
     key: 'eloIdentifier',
     render: (eloIdentifier, row) => (
-      <div style={{ color: row.eloExists ? '#ff3333' : '#33cc33' }}>
+      <div style={{ color: row.existingElo ? '#ff3333' : '#33cc33' }}>
         {eloIdentifier}
       </div>
     ),
@@ -79,9 +81,9 @@ const columns = [
 
 const UploadStandard = (props) => {
   const { standardData, clearStandardData, subject } = props
-  const uploadStandard = async (subjects) => {
+  const uploadStandard = async (subjects, standardData) => {
     try {
-      const result = await saveStandard(subjects)
+      const result = await saveStandard(subjects, standardData)
       notification({
         type: 'success',
         msg: result.data.result.message,
@@ -98,7 +100,7 @@ const UploadStandard = (props) => {
         {standardData ? (
           <EduButton
             onClick={() => {
-              uploadStandard(subject)
+              uploadStandard(subject, standardData)
               clearStandardData()
             }}
           >

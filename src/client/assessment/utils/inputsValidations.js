@@ -4,7 +4,11 @@ export const validations = {
       return true
     }
     if (!isGraph) {
-      return /^-?(\d*\.?\d*)?%?$/.test(value)
+      return (
+        /^(0(\.\d*)?|[1-9]\d*\.?\d*)?%?$/.test(value) &&
+        parseFloat(value, 10) >= 0 &&
+        parseFloat(value, 10) <= 100
+      )
     }
     return /^-?\d*\.?\d*$/.test(value) && value >= 0 && value <= 100
   },
@@ -12,13 +16,13 @@ export const validations = {
     if (!value) {
       return true
     }
-    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+    return /^[0-9]\d*$/.test(value) && value <= 9 && value >= 0
   },
   satisfies: (value = '') => {
     if (!value) {
       return true
     }
-    return /^-?\+?(0|[1-9]\d*)?%?$/.test(value)
+    return /^[0-9]\d*$/.test(value) && value <= 9 && value >= 0
   },
   significantDecimalPlaces: (value = '') => {
     if (!value) {

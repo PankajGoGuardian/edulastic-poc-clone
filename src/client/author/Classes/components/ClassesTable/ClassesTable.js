@@ -187,9 +187,15 @@ class ClassesTable extends Component {
   //   this.setState({ sortedInfo });
   //   this.loadFilteredList(filtersData, sortedInfo, searchByName, currentPage);
   // };
-
-  static getDerivedStateFromProps(nextProps) {
+  static getDerivedStateFromProps(nextProps, prevState) {
+    const classListIds = Object.keys(nextProps.classList || {})
+    const selectedRowKeys = (prevState.selectedRowKeys || []).filter((k) =>
+      classListIds.includes(k)
+    )
+    const selectedRowValues = selectedRowKeys.map((k) => nextProps.classList[k])
     return {
+      selectedRowKeys,
+      selectedRowValues,
       dataSource: nextProps.classList,
     }
   }

@@ -69,6 +69,7 @@ import {
   setCurrentTestSettingsIdAction,
   fetchTestSettingsListAction,
   getTestSettingsListSelector,
+  setTestSettingsListAction,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -154,6 +155,7 @@ class Container extends PureComponent {
       testLoaded: false,
       disableAlert: false,
       showCloneModal: false,
+      isSettingsChecked: false,
     }
   }
 
@@ -302,12 +304,14 @@ class Container extends PureComponent {
       removeTestEntity,
       resetPageState,
       setEditEnable,
+      setTestSettingsList,
     } = this.props
     // disable edit on unmount
     setEditEnable(false)
     // clear test entity only on edit and regrade flow
     if (match.params.id) removeTestEntity()
     resetPageState()
+    setTestSettingsList([])
   }
 
   componentDidUpdate(prevProps) {
@@ -331,10 +335,11 @@ class Container extends PureComponent {
       match,
       testStatus,
       testSettingsList,
+      testAssignments,
       setData,
     } = this.props
-
-    const { testLoaded, studentRedirected } = this.state
+    const { isUsed } = test
+    const { testLoaded, studentRedirected, isSettingsChecked } = this.state
 
     if (userRole !== roleuser.STUDENT) {
       if (
@@ -378,30 +383,57 @@ class Container extends PureComponent {
         // eslint-disable-next-line react/no-did-update-set-state
         this.setState({ testLoaded: true })
       }
-      const isOwner =
-        test?.authors?.some((x) => x._id === userId) || !match?.params?.id
-      const isEditable =
-        isOwner && (editEnable || testStatus === statusConstants.DRAFT)
-      if (
-        test._id &&
-        !isTestLoading &&
-        testLoaded &&
-        testSettingsList.length &&
-        testSettingsList.some((t) => t._id === test.settingId) &&
-        prevProps.testSettingsList.length !== testSettingsList.length &&
-        !!test.settingId
-      ) {
-        const isSettingsEqual = this.isTestSettingsEqual(test.settingId)
-        if (!isSettingsEqual) {
-          setData({ settingId: '', updated: isEditable })
+
+      if (!isSettingsChecked) {
+        const isTestAndSettingsListFetched =
+          test._id && !isTestLoading && testLoaded && testSettingsList.length
+        if (isTestAndSettingsListFetched) {
+          if (
+            !!test.settingId &&
+            testSettingsList.some((t) => t._id === test.settingId) &&
+            !this.isTestSettingsEqual(test.settingId)
+          ) {
+            const isOwner =
+              test?.authors?.some((x) => x._id === userId) || !match?.params?.id
+            const isEditable =
+              isOwner && (editEnable || testStatus === statusConstants.DRAFT)
+            setData({ settingId: '', updated: isEditable })
+          }
+          // eslint-disable-next-line react/no-did-update-set-state
+          this.setState({ isSettingsChecked: true })
         }
       }
+
       if (
         userRole === roleuser.EDULASTIC_CURATOR &&
         prevProps?.test?._id !== test?._id
       ) {
         getDefaultTestSettings(test)
       }
+
+      /* simulate
+      useEffect(() => {
+        if (bubbleSheetWarningCheck) {
+          ...
+        }
+      }, [bubbleSheetWarningCheck])
+      */
+      const bubbleSheetWarningCheck =
+        editEnable &&
+        isUsed &&
+        testAssignments.length > 0 &&
+        testAssignments.some((ta) => ta.bubbleSheetTestId)
+      if (
+        bubbleSheetWarningCheck &&
+        this.prevBubbleSheetWarningCheck != bubbleSheetWarningCheck
+      ) {
+        notification({
+          type: 'warn',
+          messageKey: 'editWarnBubblesheetGeneratedForThisTest',
+          duration: 12,
+        })
+      }
+      this.prevBubbleSheetWarningCheck = bubbleSheetWarningCheck
     } else if (userRole === roleuser.STUDENT) {
       if (
         prevProps.loadingAssignments &&
@@ -1549,6 +1581,7 @@ const enhance = compose(
       receiveTestByIdSuccess: receiveTestByIdSuccessAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
+      setTestSettingsList: setTestSettingsListAction,
     }
   )
 )

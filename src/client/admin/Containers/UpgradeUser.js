@@ -8,6 +8,7 @@ import {
   ManageSubscriptionBySchool,
   ManageSubscriptionByUserSegments,
   ManageSubscriptionsByLicenses,
+  BulkUpgrade,
 } from '../Upgrade/Tabs'
 import {
   getDistrictDataAction,
@@ -28,6 +29,9 @@ import {
   getManageSubscriptionByLicensesData,
   saveOrgPermissionsAction,
   getSubscriptionAction,
+  bulkUpgrade,
+  getBulkUpgradeData,
+  revokePartialPremiumSubscriptionAction,
 } from '../Upgrade/ducks'
 
 const { TabPane } = Tabs
@@ -59,6 +63,9 @@ function UpgradeUser({
   manageLicensesData,
   setSearchType,
   extendTrialLicense,
+  bulkUpgradeByCSV,
+  bulkUpgradeData,
+  revokePartialPremiumSubscriptionAction,
 }) {
   const [activeTab, setActiveTab] = useState('manageSubscriptionByDistrict')
   const onChangeTab = (tabKey) => setActiveTab(tabKey)
@@ -105,6 +112,9 @@ function UpgradeUser({
           setGradeSubjectValue={setGradeSubjectValue}
           addGradeSubjectRow={addGradeSubjectRow}
           deleteGradeSubjectRow={deleteGradeSubjectRow}
+          revokePartialPremiumSubscriptionAction={
+            revokePartialPremiumSubscriptionAction
+          }
         />
       </TabPane>
       <TabPane
@@ -122,6 +132,12 @@ function UpgradeUser({
           extendTrialLicense={extendTrialLicense}
         />
       </TabPane>
+      <TabPane tab="Bulk Upgrade" key="bulkUpgrade">
+        <BulkUpgrade
+          bulkUpgradeByCSV={bulkUpgradeByCSV}
+          bulkUpgradeData={bulkUpgradeData}
+        />
+      </TabPane>
     </Tabs>
   )
 }
@@ -132,6 +148,7 @@ const mapStateToProps = (state) => ({
   manageSchoolData: getManageSubscriptionBySchoolData(state),
   manageUserSegmentsData: getManageSubscriptionByUserSegmentsData(state),
   manageLicensesData: getManageSubscriptionByLicensesData(state),
+  bulkUpgradeData: getBulkUpgradeData(state),
 })
 
 const withConnect = connect(mapStateToProps, {
@@ -145,6 +162,7 @@ const withConnect = connect(mapStateToProps, {
   setPartialPremiumDataAction:
     manageSubscriptionsByUserSegments.actions.setPartialPremiumData,
   upgradePartialPremiumUserAction,
+  revokePartialPremiumSubscriptionAction,
   getSubscriptionAction,
   updateCurrentEditableRow:
     manageSubscriptionsBySchool.actions.updateCurrentEditableRow,
@@ -162,6 +180,7 @@ const withConnect = connect(mapStateToProps, {
   viewLicense: manageSubscriptionsByLicenses.actions.viewLicense,
   deleteLicense: manageSubscriptionsByLicenses.actions.deleteLicense,
   extendTrialLicense: manageSubscriptionsByLicenses.actions.extendTrialLicense,
+  bulkUpgradeByCSV: bulkUpgrade.actions.upgradeByCSV,
 })
 
 export default compose(withConnect)(UpgradeUser)

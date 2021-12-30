@@ -11,7 +11,11 @@ import {
   every,
   cloneDeep,
 } from 'lodash'
-import { testActivityStatus, questionType } from '@edulastic/constants'
+import {
+  testActivityStatus,
+  questionType,
+  test as testContants,
+} from '@edulastic/constants'
 import produce from 'immer'
 import { getMathHtml } from '@edulastic/common'
 import { red, yellow, themeColorLighter, darkBlue2 } from '@edulastic/colors'
@@ -20,6 +24,7 @@ import { getFormattedName } from '../Gradebook/transformers'
 
 const alphabets = 'abcdefghijklmnopqrstuvwxyz'.split('')
 
+const { evalTypeLabels, evalTypeValues } = testContants
 /**
  *
  * @param {{data:{questions:Object[]},itemLevelScoring?:boolean, itemLevelScore: number}[]}
@@ -45,7 +50,7 @@ export const markQuestionLabel = (testItems) => {
           qIndex++
           return {
             ...q,
-            qLabel: `Q${qIndex}`,
+            qLabel: qIndex,
             barLabel: `Q${qIndex}`,
           }
         })
@@ -150,7 +155,7 @@ export const getQuestionLabels = (testItemsData = []) => {
       continue
     }
     if (item.data.questions.length === 1) {
-      result[item.data.questions[0].id] = {
+      result[`${item._id}_${item.data.questions[0].id}`] = {
         qLabel: i + 1,
         barLabel: `Q${i + 1}`,
       }
@@ -159,12 +164,12 @@ export const getQuestionLabels = (testItemsData = []) => {
       for (let qIndex = 0; qIndex < item.data.questions.length; qIndex++) {
         const q = item.data.questions[qIndex]
         if (item.isDocBased && q.type !== questionType.SECTION_LABEL) {
-          result[q.id] = {
+          result[`${item._id}_${q.id}`] = {
             qLabel: `Q${qLabelCount}`,
             barLabel: `Q${qLabelCount++}`,
           }
         } else {
-          result[q.id] = {
+          result[`${item._id}_${q.id}`] = {
             qLabel: qIndex === 0 ? i + 1 : null,
             qSubLabel: alphabets[qIndex],
             barLabel: item.itemLevelScoring
@@ -446,6 +451,46 @@ export function getResponseTobeDisplayed(
   return userResponse ? 'TEI' : ''
 }
 
+export function getScoringType(
+  qid,
+  testItemsData,
+  testItemId,
+  gradingPolicy,
+  applyEBSR
+) {
+  for (const testItem of testItemsData) {
+    const questions = get(testItem, ['data', 'questions'], [])
+    const questionNeeded = questions.find(
+      (x) => x.id === qid && (!testItemId || testItem._id === testItemId)
+    )
+    if (questionNeeded) {
+      const containsManualGrad = questions.some((ques) =>
+        questionType.manuallyGradableQn.includes(ques.type)
+      )
+      if (
+        (containsManualGrad && testItem.itemLevelScoring) ||
+        questionType.manuallyGradableQn.includes(questionNeeded.type)
+      ) {
+        return evalTypeValues.ManualGrading
+      }
+      if (gradingPolicy === evalTypeLabels.ITEM_LEVEL_EVALUATION) {
+        if (testItem.multipartItem && questions.length > 1) {
+          return (
+            evalTypeValues[testItem.itemGradingType] ||
+            evalTypeValues.anyCorrect
+          )
+        }
+        if (questionNeeded?.validation?.scoringType) {
+          return evalTypeValues[questionNeeded.validation.scoringType]
+        }
+      }
+    }
+  }
+  return applyEBSR
+    ? evalTypeValues.PARTIAL_CREDIT_EBSR
+    : evalTypeValues[gradingPolicy]
+}
+
 export function getStandardsForStandardBasedReport(
   testItems,
   standardsDescriptions
@@ -457,14 +502,19 @@ export function getStandardsForStandardBasedReport(
   const standardsQuestionsMap = {}
   const items = cloneDeep(testItems)
   const questions = []
-  items.forEach(({ itemLevelScoring, data }) => {
+  items.forEach(({ itemLevelScoring, data, _id }) => {
     if (itemLevelScoring && data?.questions?.length) {
       const alignment = []
       data.questions.forEach((question) => {
         alignment.push(...(question.alignment || []))
         question.alignment = []
+        question.itemId = _id
       })
       data.questions[0].alignment = alignment
+    } else {
+      data.questions.forEach((question) => {
+        question.itemId = _id
+      })
     }
     questions.push(...data.questions)
   })
@@ -480,13 +530,13 @@ export function getStandardsForStandardBasedReport(
       if (standardsQuestionsMap[`${std.id}`]) {
         standardsQuestionsMap[`${std.id}`].qIds = uniq([
           ...standardsQuestionsMap[`${std.id}`].qIds,
-          q.id,
+          `${q.itemId}_${q.id}`,
         ])
       } else {
         standardsQuestionsMap[`${std.id}`] = {
           ...std,
-          desc: standardsDescriptionsKeyed[`${std._id}`]?.desc,
-          qIds: [q.id],
+          desc: standardsDescriptionsKeyed[`${std.id}`]?.desc,
+          qIds: [`${q.itemId}_${q.id}`],
           ...(std.name ? { identifier: std.name } : {}),
           ...(std._id ? {} : { _id: std.id }), // use .id prop as fallback for _id
         }
@@ -507,6 +557,8 @@ export const transformGradeBookResponse = (
     status: assignmentStatus,
     endDate,
     ts,
+    gradingPolicy,
+    applyEBSR,
   },
   studentResponse
 ) => {
@@ -654,6 +706,13 @@ export const transformGradeBookResponse = (
             const _id = el
             const currentQuestionActivity =
               questionActivitiesIndexed[`${testItemId}_${el}`]
+            const scoringType = getScoringType(
+              _id,
+              testItemsData,
+              testItemId,
+              gradingPolicy,
+              applyEBSR
+            )
             const questionMaxScore =
               maxScore ||
               (maxScore == 0 &&
@@ -752,6 +811,7 @@ export const transformGradeBookResponse = (
               pendingEvaluation,
               userId: studentId,
               qActId: currentQuestionActivity._id,
+              scoringType,
               scratchPad,
               responseToDisplay: getResponseTobeDisplayed(
                 testItemsDataKeyed[testItemId],

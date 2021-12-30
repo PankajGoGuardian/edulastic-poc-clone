@@ -117,7 +117,12 @@ const iconsByToolName = {
     />
   ),
   [CONSTANT.TOOLS.TRASH]: (
-    <IconTrash width={13} height={15} stroke="transparent !important" />
+    <IconTrash
+      width={13}
+      height={15}
+      stroke="transparent !important"
+      data-cy="remove"
+    />
   ),
   [CONSTANT.TOOLS.DELETE]: (
     <IconTrash

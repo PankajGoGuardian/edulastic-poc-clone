@@ -1093,7 +1093,7 @@ const PreviewModalWrapper = styled(Modal)`
   top: 30px;
   padding: 0px;
   position: relative;
-  overflow-y: auto;
+
   .ant-modal-content {
     background: transparent;
     box-shadow: none;

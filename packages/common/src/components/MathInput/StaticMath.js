@@ -278,7 +278,7 @@ const StaticMath = ({
         field.latex(innerValues[indx] || '')
       }
     })
-  }, [innerValues])
+  }, [innerValues, mQuill.current])
 
   useEffect(() => {
     if (window.isMobileDevice && mQuill.current) {

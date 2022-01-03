@@ -210,7 +210,7 @@ export const uploadToS3 = async (
   fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
   const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
-  const { fields = {}, url } = result
+  const { fields = {}, url, cdnUrl } = result
 
   Object.keys(fields).forEach((item) => {
     formData.append(item, fields[item])
@@ -227,11 +227,10 @@ export const uploadToS3 = async (
 
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
 
-  // return CDN url for assets in production
-  if (AppConfig.appEnv === 'production' && !ignoreCDN) {
-    return `${AppConfig.cdnURI}/${fields.key}`
+  if (ignoreCDN) {
+    return `${url}/${fields.key}`
   }
-  return `${url}/${fields.key}`
+  return `${cdnUrl}/${fields.key}`
 }
 
 function addProps() {

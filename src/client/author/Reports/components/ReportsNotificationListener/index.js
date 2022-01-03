@@ -129,19 +129,21 @@ const ReportsNotificationListener = ({
       user &&
       [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
     ) {
-      const _csvDocs = uniqBy(
-        userNotifications.filter((d) => d.downloadLink),
-        '__id'
+      const filteredUserNotifications = userNotifications.filter(
+        (d) => d.downloadLink
       )
-      setHasCsvDocs(!!_csvDocs.length)
+      setHasCsvDocs(!!filteredUserNotifications.length)
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])
 
   useEffect(() => {
     if (isNotificationClicked) {
-      const docsToUpdate = csvDocs.filter(
-        (d) => d.status === 'initiated' && d.processStatus === 'done'
+      const docsToUpdate = userNotifications.filter(
+        (d) =>
+          d.status === 'initiated' &&
+          d.processStatus === 'done' &&
+          d.downloadLink
       )
       // bulk update docs for which the notification has been clicked
       updateNotificationDocuments(

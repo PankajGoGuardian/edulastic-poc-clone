@@ -1,9 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useCallback } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { uniqBy } from 'lodash'
 
+import { Spin } from 'antd'
 import { FireBaseService as Fbs } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
@@ -17,23 +18,30 @@ import {
   getCsvModalVisible,
   setCsvModalVisibleAction,
   getCsvDocs,
-  setCsvDocsAction,
-  setGenerateCSVStatusAction,
+  getCsvDocsLoading,
+  updateCsvDocsAction,
+  setHasCsvDocsAction,
 } from '../../ducks'
 
 const reportCSVCollectionName = 'ReportCSV'
 
 const ReportsNotificationListener = ({
   user,
-  setGenerateCSVStatus,
-  reportDocs,
-  setReportDocs,
+  csvDocs,
+  csvDocsLoading,
+  setHasCsvDocs,
+  updateCsvDocs,
   visible,
   setVisible,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const [isNotificationVisible, setIsNotificationVisible] = useState(false)
   const [isNotificationClicked, setIsNotificationClicked] = useState(false)
+
+  const updateCallback = useCallback(
+    () => updateCsvDocs({ csvModalVisible: true }),
+    []
+  )
 
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
@@ -43,20 +51,28 @@ const ReportsNotificationListener = ({
     [user?._id]
   )
 
-  const updateNotificationDocuments = (docs = [], updateData = {}) => {
+  const updateNotificationDocuments = (
+    docs = [],
+    updateData = {},
+    callback = () => {}
+  ) => {
     const batch = Fbs.db.batch()
     docs.forEach((d) => {
       const ref = Fbs.db.collection(reportCSVCollectionName).doc(d.__id)
       batch.update(ref, updateData)
     })
-    batch.commit().catch((err) => console.error(err))
+    batch
+      .commit()
+      .then(callback)
+      .catch((err) => console.error(err))
   }
 
-  const deleteNotificationDocument = (docId) => {
+  const deleteNotificationDocument = (docId, callback = () => {}) => {
     Fbs.db
       .collection(reportCSVCollectionName)
       .doc(docId)
       .delete()
+      .then(callback)
       .catch((err) => console.error(err))
   }
 
@@ -81,10 +97,7 @@ const ReportsNotificationListener = ({
               <span
                 data-cy="download-csv-notification"
                 style={{ color: themeColor, cursor: 'pointer' }}
-                onClick={() => {
-                  setVisible(true)
-                  setIsNotificationClicked(true)
-                }}
+                onClick={() => setIsNotificationClicked(true)}
               >
                 {' Click here to download. '}
               </span>
@@ -100,7 +113,6 @@ const ReportsNotificationListener = ({
           styledNotification({ type: 'error', msg: message })
           deleteNotificationDocument(doc.__id)
         }
-        setGenerateCSVStatus(false)
       }
     })
     if (notificationProps && !isNotificationVisible) {
@@ -117,34 +129,41 @@ const ReportsNotificationListener = ({
       user &&
       [...roleuser.DA_SA_ROLE_ARRAY, roleuser.TEACHER].includes(user.role)
     ) {
-      const _reportDocs = uniqBy(
+      const _csvDocs = uniqBy(
         userNotifications.filter((d) => d.downloadLink),
         '__id'
       )
-      setReportDocs(_reportDocs)
+      setHasCsvDocs(!!_csvDocs.length)
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])
 
   useEffect(() => {
     if (isNotificationClicked) {
-      const docsToUpdate = reportDocs.filter(
+      const docsToUpdate = csvDocs.filter(
         (d) => d.status === 'initiated' && d.processStatus === 'done'
       )
       // bulk update docs for which the notification has been clicked
-      updateNotificationDocuments(docsToUpdate, { status: 'completed' })
+      updateNotificationDocuments(
+        docsToUpdate,
+        { status: 'completed' },
+        updateCallback
+      )
       setIsNotificationClicked(false)
     }
   }, [isNotificationClicked])
 
   return (
-    <ReportsNotificationModal
-      visible={visible}
-      reportDocs={reportDocs}
-      onClose={() => setVisible(false)}
-      // NOTE: uncomment for dev purpose, do not delete
-      // deleteDoc={deleteNotificationDocument}
-    />
+    <>
+      {csvDocsLoading ? <Spin size="large" /> : null}
+      <ReportsNotificationModal
+        visible={visible}
+        reportDocs={csvDocs}
+        onClose={() => setVisible(false)}
+        // NOTE: uncomment for dev purpose, do not delete
+        // deleteDoc={(docId) => deleteNotificationDocument(docId, updateCallback)}
+      />
+    </>
   )
 }
 
@@ -154,12 +173,13 @@ export default compose(
     (state) => ({
       user: getUser(state),
       visible: getCsvModalVisible(state),
-      reportDocs: getCsvDocs(state),
+      csvDocs: getCsvDocs(state),
+      csvDocsLoading: getCsvDocsLoading(state),
     }),
     {
-      setGenerateCSVStatus: setGenerateCSVStatusAction,
+      setHasCsvDocs: setHasCsvDocsAction,
+      updateCsvDocs: updateCsvDocsAction,
       setVisible: setCsvModalVisibleAction,
-      setReportDocs: setCsvDocsAction,
     }
   )
 )(ReportsNotificationListener)

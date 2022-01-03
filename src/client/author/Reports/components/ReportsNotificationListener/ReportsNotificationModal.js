@@ -15,7 +15,8 @@ const ReportsNotificationModal = ({
   reportDocs = [],
   visible,
   onClose,
-  deleteDoc = () => {},
+  // NOTE: uncomment for dev purpose, do not delete
+  // deleteDoc = () => {},
 }) => {
   const columns = [
     {

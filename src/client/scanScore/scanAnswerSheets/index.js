@@ -57,12 +57,13 @@ const videoContstraints = {
 const steps = [
   {
     icon: <IconStep1 />,
-    description: 'Put your bubble sheets so that they are fully visible.',
+    description:
+      'Hold or Place your bubble sheets in front of the camera, so that they are fully visible and the logo Edulastic is on top',
   },
   {
     icon: <IconStep2 />,
     description:
-      'Ensure the bounding boxes of the QR code and the response section are fully visible and aligned vertically.',
+      'Ensure the QR code and response boxes are aligned side by side and fully visible',
   },
   {
     icon: <IconStep3 />,

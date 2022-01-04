@@ -440,6 +440,13 @@ const generateAnswers = {
     })
     return flatten(data)
   },
+  [questionType.SORT_LIST](item, testletResponseIds, testletResponses) {
+    const data = testletResponseIds.map((id) => {
+      const value = testletResponses[id]
+      return ALPHABET.indexOf(value)
+    })
+    return data
+  },
 }
 
 /**

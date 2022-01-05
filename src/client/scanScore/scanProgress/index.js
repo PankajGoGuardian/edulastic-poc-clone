@@ -145,7 +145,11 @@ const ScanProgress = ({
         marginLeft="auto"
         mr="auto"
       >
-        <StyledTitle>Processing Forms...</StyledTitle>
+        <StyledTitle>Form Processing In Progress...</StyledTitle>
+        <p style={{ color: 'GrayText', fontSize: '0.5em' }}>
+          {' '}
+          &#40;please wait, do not refresh the page&#41;
+        </p>
         <Progress
           strokeColor={themeColorBlue}
           percent={

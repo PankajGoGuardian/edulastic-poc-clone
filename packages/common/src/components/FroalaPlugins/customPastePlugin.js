@@ -3,7 +3,7 @@ function customPastePlugin(FroalaEditor) {
     sanitizeClipboardHtml: false,
   })
 
-  FroalaEditor.PLUGINS.customPastePlugin = (editor) => {
+  FroalaEditor.PLUGINS.customPastePlugin = function (editor) {
     function cleanup(clipboard_html) {
       let sanitizedString = clipboard_html
       if (editor.opts.tokenHighlightTemplate) {

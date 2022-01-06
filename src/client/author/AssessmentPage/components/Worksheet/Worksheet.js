@@ -497,6 +497,7 @@ class WorksheetComponent extends React.Component {
       isAddPdf,
       cancelUpload: this.setCancelFn,
       merge: true,
+      hideUserConfirmation: true,
     })
   }, 1000)
 

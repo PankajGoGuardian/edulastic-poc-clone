@@ -252,7 +252,9 @@ function* createAssessmentSaga({ payload }) {
 
       yield put(setTestDataAction(testData))
       yield put(createAssessmentSuccessAction())
-      yield put(push(`/author/assessments/${assessment._id}`))
+      if (!payload?.hideUserConfirmation) {
+        yield put(push(`/author/assessments/${assessment._id}`))
+      }
     } else {
       const userRole = yield select(getUserRole)
       const isReleaseScorePremium = yield select(getReleaseScorePremiumSelector)

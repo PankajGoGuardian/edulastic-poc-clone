@@ -154,6 +154,7 @@ const ScanAnswerSheetsInner = ({
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const debugCanvasRef = useRef(null)
   const streamRef = useRef(null)
   const isFrontFacingRef = useRef(false)
 
@@ -175,6 +176,12 @@ const ScanAnswerSheetsInner = ({
         cv.CV_8UC4
       )
       vc.read(matSrc)
+      const debugMatSrc = new cv.Mat(
+        videoSetting.height,
+        videoSetting.width,
+        cv.CV_8UC4
+      )
+      vc.read(debugMatSrc)
       let result = null
       const parentRectangle = detectParentRectangle(cv, matSrc)
       let rectanglePosition
@@ -196,6 +203,7 @@ const ScanAnswerSheetsInner = ({
       if (answersList) {
         cv.imshow('canvasOutput', matSrc)
       } else {
+        cv.imshow('debugCanvasOutput', debugMatSrc)
         result = getAnswersFromVideo(
           cv,
           matSrc,
@@ -204,6 +212,7 @@ const ScanAnswerSheetsInner = ({
         )
       }
       matSrc.delete()
+      debugMatSrc.delete()
       requestAnimationFrame(() =>
         processVideo(vc).catch(() => {
           console.log('process video opencv error')
@@ -243,7 +252,6 @@ const ScanAnswerSheetsInner = ({
                   msg: 'Form successfully scanned. Please scan the next one.',
                 })
                 audioRef.play()
-
                 if (canvasRef.current) {
                   setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
@@ -259,6 +267,15 @@ const ScanAnswerSheetsInner = ({
                     arrAnswersRef.current.length - 1
                   ].imageUri = fileUrl
                   setScanningPercent(0)
+                }
+
+                if (debugCanvasRef.current) {
+                  const fileUrl = await uploadCanvasFrame(
+                    debugCanvasRef.current
+                  )
+                  arrAnswersRef.current[
+                    arrAnswersRef.current.length - 1
+                  ].answersDetectedImg = fileUrl
                 }
                 const temp = []
                 result.answers.forEach((item, index) => {
@@ -494,6 +511,16 @@ const ScanAnswerSheetsInner = ({
                   height: videoSetting.height,
                   border: '2px solid #ececec',
                   ...flipCameraViewStyle,
+                }}
+              />
+              <canvas
+                id="debugCanvasOutput"
+                ref={debugCanvasRef}
+                style={{
+                  display: 'none',
+                  width: 280,
+                  height: 450,
+                  border: '2px solid #ececec',
                 }}
               />
               <canvas

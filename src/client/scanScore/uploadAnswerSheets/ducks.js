@@ -1,4 +1,5 @@
 import { push } from 'react-router-redux'
+import pdfjsLib from 'pdfjs-dist'
 import { createSlice } from 'redux-starter-kit'
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import axios from 'axios'
@@ -38,6 +39,24 @@ function parseQr(qrCode) {
     page,
   }
 }
+
+const getTotalPdfPageCount = (file) =>
+  new Promise((resolve, reject) => {
+    try {
+      const reader = new FileReader()
+      reader.onload = () => {
+        pdfjsLib
+          .getDocument(reader.result)
+          .then((doc) => resolve(doc.numPages))
+          .catch((e) => {
+            reject(e)
+          })
+      }
+      reader.readAsArrayBuffer(file)
+    } catch (e) {
+      reject(e)
+    }
+  })
 
 const slice = createSlice({
   name: 'uploadAnswerSheets',
@@ -216,6 +235,14 @@ function* createOmrUploadSessionSaga({
         'Multiple files and file type other than PDF are not supported.'
       )
     }
+
+    if (file.type === 'application/pdf') {
+      const pdfPagesCount = yield call(getTotalPdfPageCount, file)
+      if (pdfPagesCount > 100) {
+        throw new Error('Maximum 100 sheets allowed in a single PDF')
+      }
+    }
+
     const source = { name: file.name, size: file.size }
     const session = yield call(scannerApi.createOmrUploadSession, {
       assignmentId,

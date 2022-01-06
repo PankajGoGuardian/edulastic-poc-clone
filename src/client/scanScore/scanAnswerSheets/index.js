@@ -34,6 +34,7 @@ import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
+import { IconInfo } from '@edulastic/icons'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
 import { detectParentRectangle } from './parse-qrcode'
@@ -582,7 +583,17 @@ const ScanAnswerSheetsInner = ({
               onChange={() => {
                 setIsFrontFacing((x) => !x)
               }}
-              label="CAMERA IS FACING ME"
+              label={
+                <CheckBoxLabel>
+                  <strong>I AM USING A LAPTOP WEBCAM</strong>
+                  <Tooltip
+                    title="Tick to horizontally flip the camera recording to help you see and scan easily"
+                    placement="right"
+                  >
+                    <IconInfo />
+                  </Tooltip>
+                </CheckBoxLabel>
+              }
             />
           </Tooltip>
         </Row>
@@ -730,5 +741,12 @@ const Step = styled.div`
     letter-spacing: 0px;
     color: ${lightGrey9};
     opacity: 1;
+  }
+`
+
+const CheckBoxLabel = styled.span`
+  svg {
+    margin-left: 10px;
+    margin-bottom: -2px;
   }
 `

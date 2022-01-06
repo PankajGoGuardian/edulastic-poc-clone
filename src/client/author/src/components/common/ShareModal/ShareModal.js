@@ -102,6 +102,13 @@ const shareLevel = {
 
 const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL', 'LINK']
 const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL', 'LINK']
+const roles = {
+  'district-admin': 'District Admin',
+  'school-admin': 'School Admin',
+  teacher: 'Teacher',
+  student: 'Student',
+  parent: 'Parent',
+}
 
 const { Option } = AutoComplete
 
@@ -328,7 +335,8 @@ class ShareModal extends React.Component {
 
   handleChange = (value) => {
     const { permission } = this.state
-    const [userName, email, _userId] = value.split('||')
+    const [userName, email, role, _userId] = value.split('||')
+    const selectedInputTitle = userName.trim()+',('+email+'),'+role
     const newState = {
       userName,
       email,
@@ -337,7 +345,7 @@ class ShareModal extends React.Component {
     }
     this.setState({
       currentUser: newState,
-      searchString: value,
+      searchString: selectedInputTitle,
     })
   }
 
@@ -684,11 +692,11 @@ class ShareModal extends React.Component {
                       <Option
                         value={`${getFullNameFromAsString(
                           item._source
-                        )}${'||'}${item._source.email}${'||'}${item._id}`}
+                        )}${'||'}${item._source.email}${'||['}${roles[item._source.role]}${']||'}${item._id}`}
                         key={item._id}
                       >
-                        {`${item._source.firstName} ${item._source.lastName}`}
-                        {`(${item._source.email})`}
+                        <p>{`${item._source.firstName} ${item._source.lastName}`}
+                        {`(${item._source.email})`} <b>{'[' + roles[item._source.role]+']'}</b></p>
                       </Option>
                     ))}
                   </AutoCompleteStyled>

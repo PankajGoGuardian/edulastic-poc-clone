@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -40,6 +40,7 @@ import { getAnswersFromVideo } from './answer-utils'
 import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
+import RecordVideoStream from './RecordVideoStream'
 import {
   IconStep1,
   IconStep2,
@@ -122,6 +123,8 @@ const ScanAnswerSheetsInner = ({
   classTitle,
   getOmrUploadSessions,
   setWebCamScannedDocs,
+  setRecordedVideo,
+  enableOmrSessionRecording = false,
 }) => {
   let arrLengthOfAnswer = []
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
@@ -136,6 +139,7 @@ const ScanAnswerSheetsInner = ({
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
+  const recordingEnabled = enableOmrSessionRecording
 
   /**
    * uncomment the following line while debugging
@@ -157,6 +161,7 @@ const ScanAnswerSheetsInner = ({
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
   const isFrontFacingRef = useRef(false)
+  const recorderRef = useRef()
 
   function supressFailureNotifications(time) {
     hideFailureNotificationsRef.current = true
@@ -187,9 +192,9 @@ const ScanAnswerSheetsInner = ({
         cv.imshow('canvasOutput', matSrc)
         matSrc.delete()
         requestAnimationFrame(() =>
-          processVideo(vc).catch((e) => {
+          processVideo(vc).catch(() => {
             console.log('process video opencv error')
-            console.warn('err', e)
+            console.warn('err')
           })
         )
         return
@@ -338,6 +343,9 @@ const ScanAnswerSheetsInner = ({
           setIsStart(true)
           setIsError(false)
           streamRef.current = stream
+          if (recordingEnabled && recorderRef.current) {
+            recorderRef.current.start(stream)
+          }
           // start receiving stream from webcam
           videoRef.current.srcObject = stream
           videoRef.current.play()
@@ -467,6 +475,26 @@ const ScanAnswerSheetsInner = ({
         <Spinner />
       ) : (
         <CameraUploaderWrapper>
+          {recordingEnabled ? (
+            <>
+              <RecordingIndicator>Recording...</RecordingIndicator>
+              <RecordVideoStream
+                ref={recorderRef}
+                onVideoUrlReady={(_url) => {
+                  const { assignmentId, groupId } = qs.parse(
+                    window.location?.search || '',
+                    {
+                      ignoreQueryPrefix: true,
+                    }
+                  )
+                  setRecordedVideo({
+                    url: _url,
+                    filename: `recorded_${assignmentId}_${groupId}.webm`,
+                  })
+                }}
+              />
+            </>
+          ) : null}
           <Title>
             Put your bubble sheet forms in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
@@ -651,9 +679,15 @@ ScanAnswerSheets.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect((state) => ({ ...selector(state) }), {
-    ...actions,
-  })
+  connect(
+    (state) => ({
+      ...selector(state),
+      enableOmrSessionRecording: state?.user?.user?.enableOmrSessionRecording,
+    }),
+    {
+      ...actions,
+    }
+  )
 )
 
 export default enhance(ScanAnswerSheets)
@@ -715,6 +749,36 @@ const HelpIcon = styled.span`
   color: ${white};
   border-radius: 100px;
   cursor: pointer;
+`
+
+const blinking = keyframes`
+  0%{
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.5
+  }
+  100%{
+    opacity: 0;
+  }
+`
+
+const RecordingIndicator = styled.div`
+  background-color: red;
+  color: white;
+  width: 120px;
+  height: 50px;
+  line-height: 50px;
+
+  text-align: center;
+  border-radius: 5px;
+  animation: ${blinking} 1s linear infinite;
 `
 
 const Step = styled.div`

@@ -76,6 +76,10 @@ const slice = createSlice({
     assignmentTitle: 'Loading...',
     classTitle: '...',
     webCamScannedDocs: [],
+    recordedVideo: {
+      url: null,
+      time: null,
+    },
   },
   reducers: {
     setCancelUpload: (state, { payload }) => {
@@ -178,6 +182,14 @@ const slice = createSlice({
         ...x,
         ...parseQr(qrCode),
       }))
+    },
+    setRecordedVideo: (state, { payload }) => {
+      if (state.recordedVideo.url) {
+        // purely for performance optimization to release memory for recorded blob video
+        URL.revokeObjectURL(state.recordedVideo.url)
+      }
+      const { url, filename } = payload
+      state.recordedVideo = { url, filename, time: +new Date() }
     },
   },
 })

@@ -156,6 +156,7 @@ const ListHeader = ({
                 </EduButton>
               )}
               onClick={createNewAssignment}
+              triggerSource={'Create Assignment'}
             />
           </>
         )}

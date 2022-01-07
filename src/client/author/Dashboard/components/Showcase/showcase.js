@@ -1,5 +1,6 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
+import { segmentApi } from '@edulastic/api'
 import MyClasses from './components/Myclasses/Myclass'
 import { fetchDashboardTiles } from '../../ducks'
 import { getUserDetails } from '../../../../student/Login/ducks'
@@ -7,6 +8,10 @@ import { getUserDetails } from '../../../../student/Login/ducks'
 const MainContent = ({ dashboardTiles, getDashboardTiles, user }) => {
   useEffect(() => {
     getDashboardTiles()
+  }, [])
+
+  useEffect(() => {
+    segmentApi.genericEventTrack('Dashboard_PageView', {})
   }, [])
 
   useEffect(() => {

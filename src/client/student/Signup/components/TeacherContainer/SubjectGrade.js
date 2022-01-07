@@ -8,6 +8,7 @@ import {
 } from '@edulastic/colors'
 import { IconExpandBox } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
+import { segmentApi } from '@edulastic/api'
 import { Button, Col, Form, Row, Select } from 'antd'
 import { find, get, isEmpty, map, mapKeys, pick } from 'lodash'
 import PropTypes from 'prop-types'
@@ -105,6 +106,7 @@ class SubjectGrade extends React.Component {
       getCurriculums,
       user = {},
       getDictStandardsForCurriculum,
+      triggerSource,
     } = this.props
     const { standards } = this.state
     const { currentStandardSetStandards } = user?.user || {}
@@ -123,6 +125,12 @@ class SubjectGrade extends React.Component {
 
     if (isEmpty(curriculums)) {
       getCurriculums()
+    }
+
+    if (triggerSource) {
+      segmentApi.genericEventTrack('Grade_SubjectModalOpen', {
+        Trigger_Source: triggerSource,
+      })
     }
   }
 
@@ -191,6 +199,9 @@ class SubjectGrade extends React.Component {
         })
 
         saveSubjectGrade({ ...data })
+        if(!isTestRecommendationCustomizer){
+          segmentApi.genericEventTrack('Signup_GetStarted_ButtonClick', {})
+        }
       }
     })
   }

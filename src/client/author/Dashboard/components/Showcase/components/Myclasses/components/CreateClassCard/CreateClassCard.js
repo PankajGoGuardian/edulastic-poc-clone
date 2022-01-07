@@ -39,6 +39,7 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
             </StyledEduButton>
           )}
           onClick={createNewClass}
+          triggerSource={'Create Class'}
         />
       </CreateClassCardWrapper>
     </>

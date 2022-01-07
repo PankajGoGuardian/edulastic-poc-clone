@@ -85,6 +85,7 @@ const HeaderSyncAction = ({
                 </EduButton>
               )}
               onClick={renderProps.onClick}
+              triggerSource={'Sync Google Class Button Click'}
             />
           )}
           scope={scopes}

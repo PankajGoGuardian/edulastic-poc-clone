@@ -5,6 +5,7 @@ import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
+import { segmentApi } from '@edulastic/api'
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -132,12 +133,17 @@ class Item extends Component {
       isSAWithoutSchools,
       toggleAdminAlertModal,
       orgCollections,
+      isTestRecommendation,
     } = this.props
+    if (isTestRecommendation && !this.state.isOpenModal) {
+      segmentApi.genericEventTrack('Recommended_TestClick', {})
+    }
     const { collections = [] } = item
     const sparkMathId = orgCollections?.find(
       (x) => x.name.toLowerCase() === 'spark math'
     )?._id
     const selectedCollections = collections.map((x) => x._id)
+    const source = isTestRecommendation ? 'Recommendation' : 'Library'
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
     else
       history.push({
@@ -147,6 +153,7 @@ class Item extends Component {
           fromText: 'Test Library',
           toUrl: '/author/tests',
           isSparkMathCollection: selectedCollections.includes(sparkMathId),
+          assessmentAssignedFrom: source,
         },
       })
   }
@@ -156,6 +163,9 @@ class Item extends Component {
   }
 
   openModal = () => {
+    if (this.props.isTestRecommendation) {
+      segmentApi.genericEventTrack('Recommended_TestClick', {})
+    }
     this.setState({ isOpenModal: true })
   }
 
@@ -170,6 +180,9 @@ class Item extends Component {
     const { setIsTestPreviewVisible } = this.props
     setIsTestPreviewVisible(true)
     this.setState({ currentTestId: testId })
+    if (this.props.isTestRecommendation && !this.state.isOpenModal) {
+      segmentApi.genericEventTrack('Recommended_TestClick', {})
+    }
   }
 
   get name() {

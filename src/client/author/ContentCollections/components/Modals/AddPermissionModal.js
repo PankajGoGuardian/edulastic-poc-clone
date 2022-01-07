@@ -271,6 +271,12 @@ const AddPermissionModal = ({
     }
     handleFieldChange(fieldName, date)
   }
+  const roles = {
+    'district-admin': 'District Admin',
+    'school-admin': 'School Admin',
+    teacher: 'Teacher',
+    student: 'Student'
+  }
 
   return (
     <CustomModalStyled
@@ -400,8 +406,9 @@ const AddPermissionModal = ({
                       orgName={`${_user.firstName} ${_user.lastName}`}
                       role={_user.role}
                       data-cy={_user.email}
+                      title={`${_user.firstName} ${_user.lastName} (${_user.email}) [${roles[_user.role]}]`}
                     >
-                      {`${_user.firstName} ${_user.lastName} (${_user.email})`}
+                      <span>{`${_user.firstName} ${_user.lastName} (${_user.email})`} <b>[{roles[_user.role]}]</b></span>
                     </Select.Option>
                   ))}
             </SelectInputStyled>

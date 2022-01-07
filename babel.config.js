@@ -48,13 +48,12 @@ babelPreset.plugins.push.apply(babelPreset.plugins, [
 ])
 
 if (process.env.CYPRESS) {
-  console.log('testing');
   babelPreset.plugins.push.apply(babelPreset.plugins, [['istanbul', 
-    { 
-      'all':true,
-      'extension': ['.js','.ts'],
-      'include': ['src/client/**'],
-    }
+  { 
+    'all':true,
+    'extension': ['.js','.ts'],
+    'include' :['src/client/assessment/widgets/**']
+ }
   ]])
 }
 

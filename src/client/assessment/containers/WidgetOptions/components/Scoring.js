@@ -138,6 +138,9 @@ class Scoring extends Component {
           if (newData.validation?.maxScore) {
             newData.validation.maxScore = updatedScore
           }
+          if (value) {
+            delete newData.rubrics
+          }
         }
         newData.validation[param] = value
         setItemLevelScoring(false)
@@ -330,7 +333,7 @@ class Scoring extends Component {
                   setIsGradingRubric(e.target.checked)
                   if (questionData.rubrics) dissociateRubricFromQuestion()
                 }}
-                disabled={!isCorrectAnsTab}
+                disabled={!isCorrectAnsTab || questionData.validation.unscored}
                 size="large"
               >
                 {t('component.options.gradingRubric')}

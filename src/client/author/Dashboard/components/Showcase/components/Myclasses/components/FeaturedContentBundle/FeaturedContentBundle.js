@@ -72,6 +72,7 @@ const FeaturedContentBundle = ({
                 UNLOCK
               </UnlockButton>
             )}
+            triggerSource={'Unlock Button Click'}
           />
           <p>
             Provide your Interested Grade and Subject to unlock ready-made tests

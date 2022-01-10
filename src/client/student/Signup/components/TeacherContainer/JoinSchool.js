@@ -20,6 +20,7 @@ import {
 
 import { Button } from 'antd/lib/radio'
 
+import { segmentApi } from '@edulastic/api'
 import TeacherCarousel from './TeacherCarousel'
 import RequestSchoolModal from './RequestSchoolModal'
 import RequestSchoolSection from './RequestSchoolSection'
@@ -94,6 +95,7 @@ const JoinSchool = ({
   addingSchool,
   isModal,
   isSchoolSignupOnly = false,
+  triggerSource = '',
 }) => {
   fromUserProfile = fromUserProfile || isSchoolSignupOnly
   const {
@@ -249,6 +251,12 @@ const JoinSchool = ({
   }
 
   const handleSearch = debounce((keyword) => fetchSchool(keyword), 500)
+
+  useEffect(() => {
+    segmentApi.genericEventTrack('School_Selection_ModalOpen', {
+      Trigger_Source: triggerSource,
+    })
+  }, [])
 
   useEffect(() => {
     if (isSignupUsingDaURL || districtId) {

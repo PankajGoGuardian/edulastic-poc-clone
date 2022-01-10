@@ -248,6 +248,7 @@ class ModuleRow extends Component {
         testVersionId,
         resourceIds,
         isSparkMathCollection: isSMPlaylist,
+        assessmentAssignedFrom: 'Playlist',
       },
     })
   }

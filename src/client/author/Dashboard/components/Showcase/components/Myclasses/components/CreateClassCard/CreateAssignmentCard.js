@@ -40,6 +40,7 @@ const CreateAssignmentCard = ({ history, newCreateClassCard }) => {
             </StyledEduButton>
           )}
           onClick={createNewAssignment}
+          triggerSource={'Create Assignment'}
         />
       </CreateClassCardWrapper>
     </>

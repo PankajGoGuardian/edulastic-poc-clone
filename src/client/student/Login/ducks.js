@@ -1407,6 +1407,7 @@ function* googleLogin({ payload }) {
           localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
         }
         role = 'teacher'
+        segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Google' })
       } else if (payload.role === 'student') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
         localStorage.setItem('thirdPartySignOnClassCode', payload.classCode)
@@ -1525,6 +1526,7 @@ function* msoLogin({ payload }) {
           localStorage.setItem('thirdPartySignOnAdditionalRole', 'admin')
         }
         role = 'teacher'
+        segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'MSO' })
       } else if (payload.role === 'student') {
         localStorage.setItem('thirdPartySignOnRole', payload.role)
         localStorage.setItem('thirdPartySignOnClassCode', payload.classCode)
@@ -1617,6 +1619,9 @@ function* cleverLogin({ payload }) {
     if (payload) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
+    if (payload === 'teacher') {
+      segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Clever' })
+    }
     const res = yield call(authApi.cleverLogin)
     TokenStorage.removeAllTokens()
     window.location.href = res
@@ -1678,6 +1683,7 @@ function* atlasLogin({ payload }) {
   try {
     if (payload) {
       localStorage.setItem('thirdPartySignOnRole', payload)
+      segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Atlas' })
     }
     const res = yield call(authApi.atlasLogin, params)
     TokenStorage.removeAllTokens()

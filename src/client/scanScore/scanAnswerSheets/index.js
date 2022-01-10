@@ -176,12 +176,7 @@ const ScanAnswerSheetsInner = ({
         cv.CV_8UC4
       )
       vc.read(matSrc)
-      const debugMatSrc = new cv.Mat(
-        videoSetting.height,
-        videoSetting.width,
-        cv.CV_8UC4
-      )
-      vc.read(debugMatSrc)
+      const debugMatSrc = matSrc.clone()
       let result = null
       const parentRectangle = detectParentRectangle(cv, matSrc)
       let rectanglePosition
@@ -203,12 +198,12 @@ const ScanAnswerSheetsInner = ({
       if (answersList) {
         cv.imshow('canvasOutput', matSrc)
       } else {
-        cv.imshow('debugCanvasOutput', debugMatSrc)
         result = getAnswersFromVideo(
           cv,
           matSrc,
           rectanglePosition,
-          qrCodeData.location
+          qrCodeData.location,
+          debugMatSrc
         )
       }
       matSrc.delete()
@@ -223,6 +218,7 @@ const ScanAnswerSheetsInner = ({
       }
       result.qrCode = qrCodeData.data
       const { answers } = result
+
       if (answers) {
         if (answers.length > 0) {
           if (!answersList) {
@@ -268,15 +264,15 @@ const ScanAnswerSheetsInner = ({
                   ].imageUri = fileUrl
                   setScanningPercent(0)
                 }
-
                 if (debugCanvasRef.current) {
                   const fileUrl = await uploadCanvasFrame(
                     debugCanvasRef.current
                   )
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
-                  ].answersDetectedImg = fileUrl
+                  ].originalImg = fileUrl
                 }
+
                 const temp = []
                 result.answers.forEach((item, index) => {
                   temp.push(`${index + 1}: ${item}`)

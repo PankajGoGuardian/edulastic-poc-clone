@@ -54,7 +54,8 @@ export const getAnswersFromVideo = (
   cv,
   matSrc,
   parentRectangle,
-  qrCodeData
+  qrCodeData,
+  debugMatSrc
 ) => {
   let angleOfQR = 0
   let center = new cv.Point(matSrc.cols / 2, matSrc.rows / 2)
@@ -162,6 +163,8 @@ export const getAnswersFromVideo = (
       )
     }
   }
+
+  imShow('debugCanvasOutput',debugMatSrc ,cv)
 
   M = cv.getRotationMatrix2D(center, angleOfQR, 1)
   cv.warpAffine(

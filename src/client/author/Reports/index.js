@@ -21,8 +21,8 @@ import {
   setSharingStateAction,
   setCsvDownloadingStateAction,
   setPrintingStateAction,
-  getCsvDocs,
-  setCsvModalVisibleAction,
+  updateCsvDocsAction,
+  getHasCsvDocs,
 } from './ducks'
 import {
   getCollaborativeGroupsAction,
@@ -50,8 +50,8 @@ const Container = (props) => {
     showCustomReport,
     loadingSharedReports,
     sharedReportList,
-    reportCsvDocs,
-    setCsvModalVisible,
+    hasCsvDocs,
+    updateCsvDocs,
     isSAWithoutSchools,
     toggleAdminAlertModal,
   } = props
@@ -222,8 +222,8 @@ const Container = (props) => {
           showSharedReport={sharedReportList.length}
           title={headerSettings.title}
           isSharedReport={headerSettings.isSharedReport}
-          reportCsvDocs={reportCsvDocs}
-          setCsvModalVisible={setCsvModalVisible}
+          hasCsvDocs={hasCsvDocs}
+          updateCsvDocs={updateCsvDocs}
         />
       )}
       <MainContentWrapper>
@@ -422,7 +422,7 @@ const enhance = connect(
     isCliUser: state?.user?.isCliUser,
     sharedReportList: getSharedReportList(state),
     loadingSharedReports: getSharedReportsLoader(state),
-    reportCsvDocs: getCsvDocs(state),
+    hasCsvDocs: getHasCsvDocs(state),
     isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
   }),
   {
@@ -431,7 +431,7 @@ const enhance = connect(
     setCsvDownloadingStateAction,
     fetchSharedReports: getSharedReportsAction,
     fetchCollaborationGroups: getCollaborativeGroupsAction,
-    setCsvModalVisible: setCsvModalVisibleAction,
+    updateCsvDocs: updateCsvDocsAction,
     toggleAdminAlertModal: toggleAdminAlertModalAction,
   }
 )

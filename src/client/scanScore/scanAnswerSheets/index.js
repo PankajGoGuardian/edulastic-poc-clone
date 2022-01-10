@@ -113,7 +113,8 @@ async function uploadCanvasFrame(canvas, uploadProgress) {
     aws.s3Folders.WEBCAM_OMR_UPLOADS,
     uploadProgress,
     null,
-    `${assignmentId}`
+    `${assignmentId}`,
+    true
   )
 }
 

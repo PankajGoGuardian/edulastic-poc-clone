@@ -83,7 +83,7 @@ const AuthorCompleteSignupButton = ({
       hasNoPreferences ||
       isSchoolSignupOnly
     ) {
-      if(user.districtIds && user.districtIds.length === 0){
+      if (user.districtIds && user.districtIds.length === 0) {
         setDidSchoolModalOpen(true)
       }
       trackClick()

@@ -199,7 +199,7 @@ class SubjectGrade extends React.Component {
         })
 
         saveSubjectGrade({ ...data })
-        if(!isTestRecommendationCustomizer){
+        if (!isTestRecommendationCustomizer) {
           segmentApi.genericEventTrack('Signup_GetStarted_ButtonClick', {})
         }
       }

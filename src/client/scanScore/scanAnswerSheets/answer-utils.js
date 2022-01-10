@@ -2,7 +2,6 @@ import {
   detectCircles,
   getBoundingRegionsWithCircles,
   getTrueCirclesInRow,
-  getTrueCirclesInRowDuplicate,
   resizeImage,
 } from './process-image'
 import { getAngleOfQR, getWidthOfQR } from './parse-qrcode'

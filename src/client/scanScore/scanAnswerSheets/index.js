@@ -514,8 +514,8 @@ const ScanAnswerSheetsInner = ({
                 ref={debugCanvasRef}
                 style={{
                   display: 'none',
-                  width: 280,
-                  height: 450,
+                  width: videoSetting.width,
+                  height: videoSetting.height,
                   border: '2px solid #ececec',
                 }}
               />

@@ -41,9 +41,7 @@ import { HeaderSaveButton } from '../../../../admin/Common/StyledComponents'
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
   canvas: 2,
-  schoology: 3,
-  classlink: 4,
-  none: 5,
+  none: 3,
 }
 
 function validURL(value, allowLargeDomains = false) {
@@ -191,20 +189,12 @@ class DistrictPolicyForm extends Component {
     // initially make all false and according to target make flag true
     districtPolicyData.googleClassroom = false
     districtPolicyData.canvas = false
-    districtPolicyData.schoology = false
-    districtPolicyData.classlink = false
     switch (e.target.value) {
       case 1:
         districtPolicyData.googleClassroom = true
         break
       case 2:
         districtPolicyData.canvas = true
-        break
-      case 3:
-        districtPolicyData.schoology = true
-        break
-      case 4:
-        districtPolicyData.classlink = true
         break
       default:
         break
@@ -387,8 +377,6 @@ class DistrictPolicyForm extends Component {
       allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || [],
       disableStudentLogin: districtPolicyData.disableStudentLogin || false,
       enableGoogleMeet: districtPolicyData.enableGoogleMeet || false,
-      schoology: districtPolicyData.schoology || false,
-      classlink: districtPolicyData.classlink || false,
       enforceDistrictSignonPolicy:
         districtPolicyData.enforceDistrictSignonPolicy || false,
     }
@@ -413,10 +401,6 @@ class DistrictPolicyForm extends Component {
       ? _3RDPARTYINTEGRATION.googleClassroom
       : districtPolicy.canvas
       ? _3RDPARTYINTEGRATION.canvas
-      : districtPolicy.schoology
-      ? _3RDPARTYINTEGRATION.schoology
-      : districtPolicy.classlink
-      ? _3RDPARTYINTEGRATION.classlink
       : _3RDPARTYINTEGRATION.none
 
     const { role, saveCanvasKeysRequest, user } = this.props
@@ -607,12 +591,6 @@ class DistrictPolicyForm extends Component {
                   )}
                 </RadioBtn>
                 <RadioBtn mb="10px" value={3}>
-                  Schoology
-                </RadioBtn>
-                <RadioBtn mb="10px" value={4}>
-                  ClassLink
-                </RadioBtn>
-                <RadioBtn mb="10px" value={5}>
                   None
                 </RadioBtn>
                 {/* None signifies that no 3rd party integration is enabled */}
@@ -658,7 +636,7 @@ class DistrictPolicyForm extends Component {
                   <StyledRadioGrp
                     onChange={this.enableGoogleMeet}
                     value={
-                      districtPolicy?.enableGoogleMeet === false ? 'no' : 'yes'
+                      districtPolicy?.enableGoogleMeet === true ? 'yes' : 'no'
                     }
                   >
                     <RadioBtn value="yes">Yes</RadioBtn>

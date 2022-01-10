@@ -7,7 +7,8 @@ import React from 'react'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { IconShare } from '@edulastic/icons'
+import { IconShare, IconInfo } from '@edulastic/icons'
+import { themeColorBlue } from '@edulastic/colors'
 import {
   getSaSchoolsSortedSelector,
   getUserOrgId,
@@ -40,6 +41,7 @@ import {
   StyledRowLogo,
   StyledTextArea,
   StyledUrlButton,
+  SyncInfoContainer,
 } from './styled'
 
 class DistrictProfileForm extends React.Component {
@@ -173,20 +175,37 @@ class DistrictProfileForm extends React.Component {
     return (
       <StyledFormDiv>
         <Form>
-          <ProfileImgWrapper>
-            <ImageUpload
-              width="200px"
-              height="200px"
-              imgSrc={districtProfile.logo || ''}
-              keyName="logo"
-              updateImgUrl={this.updateImgSrc}
-              labelStr="logo image"
-              ref={this.childRefArr[7].component}
-              requiredStatus={false}
-              form={form}
-              isInputEnabled={isInputEnabled}
-            />
-          </ProfileImgWrapper>
+          <div>
+            <ProfileImgWrapper>
+              <ImageUpload
+                width="200px"
+                height="200px"
+                imgSrc={districtProfile.logo || ''}
+                keyName="logo"
+                updateImgUrl={this.updateImgSrc}
+                labelStr="logo image"
+                ref={this.childRefArr[7].component}
+                requiredStatus={false}
+                form={form}
+                isInputEnabled={isInputEnabled}
+              />
+            </ProfileImgWrapper>
+            {districtProfile.syncProvider && (
+              <SyncInfoContainer>
+                <IconInfo
+                  fill={themeColorBlue}
+                  style={{
+                    marginRight: '10px',
+                  }}
+                />
+                <span>
+                  {`This is a ${districtProfile.syncProvider} synced ${
+                    isDA ? 'district' : 'school'
+                  }`}
+                </span>
+              </SyncInfoContainer>
+            )}
+          </div>
           <RightContainer>
             <StyledDivMain>
               <HeaderRow type="flex" align="middle" justify="space-between">

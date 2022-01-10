@@ -189,3 +189,9 @@ export const InputWithUrl = styled.div`
   display: flex;
   justify-content: space-between;
 `
+
+export const SyncInfoContainer = styled.div`
+  display: flex;
+  align-items: center;
+  margin-top: 5px;
+`

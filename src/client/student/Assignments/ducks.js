@@ -41,6 +41,7 @@ import {
 } from '../Login/ducks'
 
 import {
+  getAssignmentClassStatus,
   getCurrentGroup,
   getCurrentStudentDistrictId,
   getSelectedCassSectionDistrictId,
@@ -69,7 +70,8 @@ import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
 
 const { COMMON, ASSESSMENT, TESTLET } = testConst.type
-const { DONE, ARCHIVED, NOT_OPEN, IN_PROGRESS } = assignmentStatusOptions
+const { DONE, ARCHIVED, NOT_OPEN } = assignmentStatusOptions
+
 // constants
 export const FILTERS = {
   ALL: 'all',
@@ -335,35 +337,6 @@ export const getShowRetakeModalSelector = createSelector(
   stateSelector,
   (state) => state.showRetakeModal
 )
-
-const getAssignmentClassStatus = (assignment, classId) => {
-  const statusMap = {
-    'NOT OPEN': 0,
-    'IN PROGRESS': 1,
-    'IN GRADING': 2,
-    DONE: 3,
-    ARCHIVED: 4,
-  }
-  let currentStatus = 'ARCHIVED'
-  let currentStatusValue = 4
-  for (const clazz of assignment.class) {
-    if (clazz._id === classId) {
-      const { startDate } = clazz
-      const isStartDateElapsed = startDate && startDate < Date.now()
-      const statusValue = statusMap[clazz.status]
-      if (statusValue < currentStatusValue) {
-        currentStatusValue = statusValue
-        currentStatus = clazz.status
-        if (isStartDateElapsed && clazz.status === NOT_OPEN) {
-          currentStatus = IN_PROGRESS
-          currentStatusValue = statusMap[IN_PROGRESS]
-        }
-      }
-    }
-  }
-
-  return currentStatus
-}
 
 /**
  *
@@ -680,18 +653,42 @@ function* startAssignment({ payload }) {
       isPlaylist = false,
       studentRecommendation,
       safeBrowser,
+      lastAttemptId,
     } = payload
+
+    const institutionId = yield select(getCurrentSchool)
     const languagePreference = yield select(getSelectedLanguageSelector)
+    const groupType = 'class'
+    let testActivityId = null
+
     if (safeBrowser && !isSEB()) {
+      const testData = {
+        assignmentId,
+        groupId: classId,
+        institutionId,
+        groupType,
+        testId,
+      }
+      if (languagePreference) {
+        testData.languagePreference = languagePreference
+      }
+      const { _id } = yield testActivityApi.create(testData)
+      if (lastAttemptId) {
+        testActivityId = lastAttemptId
+      } else {
+        testActivityId = _id
+      }
       const sebUrl = getSebUrl({
         testId,
         testType,
         assignmentId,
+        testActivityId,
         groupId: classId,
       })
+
       yield put(push(`/home/assignments`))
       if (!handleChromeOsSEB()) {
-        yield call(redirectToUrl(sebUrl))
+        yield call(redirectToUrl, sebUrl)
       }
       return
     }
@@ -717,7 +714,6 @@ function* startAssignment({ payload }) {
     // const classIds = yield select(getClassIds);
     // const actualGroupId = getAssignmentClassId(assignment, groupId, classIds);
 
-    const institutionId = yield select(getCurrentSchool)
     const { isLoading } = yield select(getLoadAssignmentSelector)
     if (isLoading) {
       return
@@ -738,8 +734,6 @@ function* startAssignment({ payload }) {
       }
     }
 
-    const groupType = 'class'
-    let testActivityId = null
     if (studentRecommendation) {
       yield put(
         setIsActivityCreatingAction({

@@ -201,7 +201,7 @@ const transformTestItems = (props) => {
             icon: currentStudent.icon,
             color: currentStudent.color,
           }))
-          const label = labels[id] || {}
+          const label = labels[`${item._id}_${id}`] || {}
           if (!item.itemLevelScoring && qActivities[0]) {
             if (filter === 'unscoredItems' && !qActivities[0].isPractice) {
               return false
@@ -250,8 +250,9 @@ const transformTestItems = (props) => {
               return false
             }
           }
-          const scoringType = currentStudent.questionActivities?.find(
-            (ele) => ele.testItemId === item._id
+
+          const scoringType = currentStudent.questionActivities?.find((ele) =>
+            item.data.questions.some((i) => i.id === ele._id)
           )?.scoringType
           qActivities = qActivities.map((q) => {
             const userQuestion = userQActivities.find(
@@ -317,8 +318,8 @@ const Preview = ({
   const questions = get(item, ['data', 'questions'], [])
   const resources = get(item, ['data', 'resources'], [])
   let questionsKeyed = {
-    ..._keyBy(questions, 'id'),
-    ..._keyBy(resources, 'id'),
+    ..._keyBy(questions, (q) => `${item._id}_${q.id}`),
+    ..._keyBy(resources, (r) => `${item._id}_${r.id}`),
   }
   let passage = {}
   if (item.passageId && passages.length) {
@@ -646,6 +647,7 @@ class ClassQuestions extends Component {
         questionsById,
         questions,
         studentWorkAnswersById,
+        testItemId: testItemsData?.[0]?._id,
       }
     }
 

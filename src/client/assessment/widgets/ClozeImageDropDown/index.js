@@ -9,6 +9,7 @@ import { AnswerContext } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { setDropDownInUseAction } from '../../../student/Sidebar/ducks'
 import { changePreviewAction } from '../../../author/src/actions/view'
 import { EDIT } from '../../constants/constantsForQuestions'
 import { replaceVariables, updateVariables } from '../../utils/variables'
@@ -353,6 +354,7 @@ const enhance = compose(
   connect(null, {
     setQuestionData: setQuestionDataAction,
     changePreview: changePreviewAction,
+    setDropDownInUse: setDropDownInUseAction,
   })
 )
 

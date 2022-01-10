@@ -363,10 +363,10 @@ export const getQuestionsSelectorForReview = createSelector(
       const questions = get(item, 'data.questions', [])
       const resources = get(item, 'data.resources', [])
       for (const question of questions) {
-        acc[question.id] = question
+        acc[`${item._id}_${question.id}`] = question
       }
       for (const resource of resources) {
-        acc[resource.id] = resource
+        acc[`${item._id}_${resource.id}`] = resource
       }
       return acc
     }, {})

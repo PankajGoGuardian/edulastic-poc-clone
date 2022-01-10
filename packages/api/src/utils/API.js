@@ -178,7 +178,7 @@ function getReloadsHappenedRecently() {
   return reloads.filter((x) => now - x.time < 15 * 1000) // assuming 5 seconds for each reload
 }
 
-function forceLogout() {
+export function forceLogout() {
   const loginRedirectUrl = localStorage.getItem('loginRedirectUrl')
   localStorage.clear()
   localStorage.setItem('loginRedirectUrl', loginRedirectUrl)
@@ -376,11 +376,28 @@ export default class API {
           if (data.response.status === 401) {
             Sentry.withScope((scope) => {
               scope.setTag('issueType', 'ForcedRedirection')
+              const token = getAccessToken()
+              if (token) {
+                const { _id: userId, exp, iat } = parseJwt(token)
+                scope.setExtra('tokenExpiryDetails', {
+                  exp,
+                  iat,
+                  userId,
+                })
+              }
             })
-            // Needs proper fixing, patching it to fix infinite reload
             forceLogout()
+            const message = data?.response?.data?.message || ''
+            if (
+              message.includes('jwt must be provided') ||
+              message.includes('jwt expired')
+            ) {
+              window.dispatchEvent(new Event('user-token-expired'))
+              return Promise.resolve({ data: { result: null } })
+            }
             window.location.href = '/login'
-          } else if (
+          }
+          if (
             data.response.status === 409 &&
             data.response.data?.message === 'oldToken'
           ) {

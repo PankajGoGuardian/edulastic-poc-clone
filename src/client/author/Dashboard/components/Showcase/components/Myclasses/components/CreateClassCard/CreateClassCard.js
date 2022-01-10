@@ -21,7 +21,9 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
   return (
     <>
       <CreateClassCardWrapper newCreateClassCard={newCreateClassCard}>
-        <CreateClassTitle>Create Class</CreateClassTitle>
+        <CreateClassTitle data-cy="classCreationTitle">
+          Create Class
+        </CreateClassTitle>
         <InfoText>
           Use <b> Google Classroom </b> to import class(es) or create manually
         </InfoText>

@@ -306,7 +306,6 @@ class MathFormulaPreview extends Component {
     // ) {
     //   correctUnit = `\\text{${correctUnit}}`
     // }
-
     return (
       <div>
         <FlexContainer
@@ -324,7 +323,7 @@ class MathFormulaPreview extends Component {
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper>
+            <QuestionTitleWrapper data-cy="questionTitleWrapper">
               <MathFormulaDisplay
                 data-cy="preview-header"
                 style={{ marginBottom: 15 }}
@@ -386,6 +385,7 @@ class MathFormulaPreview extends Component {
                         innerValues={innerValues}
                         onInnerFieldClick={() => this.onInnerFieldClick()}
                         isPrintPreview={isPrintPreview}
+                        style={cssStyles}
                         noBorder
                       />
                     )}
@@ -397,6 +397,9 @@ class MathFormulaPreview extends Component {
                         allowNumericOnly={allowNumericOnly}
                         customKeys={customKeys}
                         numberPad={item.numberPad}
+                        minHeight={cssStyles.height}
+                        minWidth={cssStyles.width}
+                        fontSize={cssStyles.fontSize}
                         value={
                           latex && !Array.isArray(latex)
                             ? latex.replace('\\MathQuillMathField{}', '')
@@ -416,6 +419,7 @@ class MathFormulaPreview extends Component {
                       item={item}
                       preview
                       onChange={this.selectUnitFromDropdown}
+                      data-cy="selectUnitDropdown"
                       selected={this.selectedUnit}
                       disabled={disableResponse}
                       keypadMode={item?.keypadMode} // to get selected keypadMode on student side

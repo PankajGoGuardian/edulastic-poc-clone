@@ -39,6 +39,7 @@ const ResponseFrequency = ({
   settings,
   sharedReport,
   toggleFilter,
+  demographicFilters,
 }) => {
   const isSharedReport = !!sharedReport?._id
   const [difficultItems, setDifficultItems] = useState(40)
@@ -54,7 +55,7 @@ const ResponseFrequency = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters },
+        requestFilters: { ...settings.requestFilters, ...demographicFilters },
         testId: settings.selectedTest.key,
       }
       getResponseFrequency(q)

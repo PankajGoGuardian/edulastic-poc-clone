@@ -42,7 +42,9 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import {
   addStudentRequestAction,
   changeTTSRequestAction,
+  getIsCreateAssignmentModalVisible,
   selectStudentAction,
+  toggleCreateAssignmentModalAction,
   updateStudentRequestAction,
 } from '../../ducks'
 import { getUserOrgData, getUserOrgId } from '../../../src/selectors/user'
@@ -76,6 +78,8 @@ const ActionContainer = ({
   searchAndAddStudents,
   enableStudentGroups,
   districtId,
+  isCreateAssignmentModalVisible,
+  toggleCreateAssignmentModal,
 }) => {
   const [isOpen, setModalStatus] = useState(modalStatus)
   const [sentReq, setReqStatus] = useState(false)
@@ -396,6 +400,8 @@ const ActionContainer = ({
           setinfoModelVisible={setinfoModelVisible}
           infoModalData={infoModalData}
           setInfoModalData={setInfoModalData}
+          isCreateAssignmentModalVisible={isCreateAssignmentModalVisible}
+          toggleCreateAssignmentModal={toggleCreateAssignmentModal}
         />
       )}
 
@@ -599,6 +605,7 @@ export default connect(
     features: getUserFeatures(state),
     policy: getSchoolPolicy(state),
     enableStudentGroups: get(state, 'user.user.features.studentGroups'),
+    isCreateAssignmentModalVisible: getIsCreateAssignmentModalVisible(state),
   }),
   {
     addStudentRequest: addStudentRequestAction,
@@ -606,5 +613,6 @@ export default connect(
     changeTTS: changeTTSRequestAction,
     setSelectedStudents: selectStudentAction,
     loadSchoolPolicy: receiveSchoolPolicyAction,
+    toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
   }
 )(ActionContainer)

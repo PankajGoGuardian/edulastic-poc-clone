@@ -9,34 +9,31 @@ import Bundle from './Bundle'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton/index'
 
 const FeaturedContentBundle = ({
-  featuredBundles,
+  featuredBundles = [],
   handleFeatureClick,
   emptyBoxCount,
-  testLists,
+  totalAssignmentCount,
   isSignupCompleted,
   isSingaporeMath,
   isCpm,
   boughtItemBankIds,
 }) => {
-  if (!featuredBundles.length) {
-    return null
-  }
+  const showFreebundles = !(isSignupCompleted && totalAssignmentCount >= 3)
 
-  const showFreebundles = !(isSignupCompleted && testLists?.length >= 3)
+  const getFreeBundles =
+    featuredBundles?.filter((x) => !x?.config?.subscriptionData) || []
 
-  const getFreeBundles = featuredBundles.filter(
-    (x) => !x?.config?.subscriptionData
-  )
+  const getNotAvailedPremiumBundles =
+    featuredBundles?.filter(
+      (x) =>
+        x?.config?.subscriptionData &&
+        !boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
+    ) || []
 
-  const getNotAvailedPremiumBundles = featuredBundles.filter(
-    (x) =>
-      x?.config?.subscriptionData &&
-      !boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
-  )
-
-  const getAvailedBundles = featuredBundles.filter((x) =>
-    boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
-  )
+  const getAvailedBundles =
+    featuredBundles?.filter((x) =>
+      boughtItemBankIds.includes(x?.config?.subscriptionData?.itemBankId)
+    ) || []
 
   let defaultBundles = []
 
@@ -83,7 +80,7 @@ const FeaturedContentBundle = ({
         </>
       ) : (
         <FlexContainer justifyContent="flex-start" flexWrap="wrap">
-          {filteredfeaturedBundles.map((bundle) => (
+          {filteredfeaturedBundles?.map((bundle) => (
             <Bundle handleClick={handleFeatureClick} bundle={bundle} />
           ))}
           {emptyBoxCount.map((index) => (

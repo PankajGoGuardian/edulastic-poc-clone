@@ -1287,6 +1287,10 @@ span.token.active-word.answer {
   background: #fdcc3b80;
 }
 
+span.token.active-word > * {
+  pointer-events: none;
+}
+
 span.token.active-word {
   background: #93d8f780;
 }

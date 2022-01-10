@@ -62,6 +62,7 @@ const sanitizeLatex = (latex) => {
     .replace(/\\summationSymbol/g, '\\sum')
     .replace(/\\summationLower/g, '\\sum')
     .replace(/\\summationUpper/g, '\\sum')
+    .replace(/\\newline/g, '\\newline ')
 
   if (_latex.substr(-1) === '\\') {
     _latex = _latex.slice(0, -1)
@@ -230,6 +231,22 @@ export const getInnerValuesForStatic = (studentTemplate, userAnswer) => {
     }
   }
   return []
+}
+
+/**
+ * removes leading and trailing newline characters
+ * eg: "  \\newline1\\newline2\\newline  " -> "1\\newline2"
+ * @param {string} latex user response or expected answer
+ * @returns {string} returns latex without leading and trailing newline characters
+ */
+export const removeLeadingAndTrailingNewlineChars = (latex) => {
+  const newlineCharRegex = /^(\\ )*(\\newline)+|(\\newline)+(\\ )*$/g
+
+  while (newlineCharRegex.test(latex)) {
+    latex = latex.replace(newlineCharRegex, '')
+  }
+
+  return latex
 }
 
 // Adding any character after '/square' box

@@ -350,6 +350,8 @@ class CurriculumContainer extends Component {
       mode,
       resequenceTests,
       loading,
+      getAllCurriculumSequences,
+      getCurrentPlaylistMetrics,
     } = this.props
     const {
       expandedModules,
@@ -442,6 +444,8 @@ class CurriculumContainer extends Component {
           urlHasUseThis={urlHasUseThis}
           selectedRows={selectedData}
           setSelectedRows={this.setSelectedData}
+          getAllCurriculumSequences={getAllCurriculumSequences}
+          getCurrentPlaylistMetrics={getCurrentPlaylistMetrics}
         />
       </>
     )
@@ -478,8 +482,10 @@ CurriculumContainer.defaultProps = {
 }
 
 const mapDispatchToProps = (dispatch) => ({
-  getAllCurriculumSequences(ids, showNotification) {
-    dispatch(getAllCurriculumSequencesAction(ids, showNotification))
+  getAllCurriculumSequences(ids, showNotification, backgroundFetch) {
+    dispatch(
+      getAllCurriculumSequencesAction(ids, showNotification, backgroundFetch)
+    )
   },
   putCurriculumSequence(id, curriculumSequence) {
     dispatch(putCurriculumSequenceAction(id, curriculumSequence))

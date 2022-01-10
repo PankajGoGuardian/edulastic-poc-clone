@@ -31,7 +31,10 @@ import { roleuser } from '@edulastic/constants'
 import { clearEvaluationAction } from '../../../../../assessment/actions/evaluation'
 import { Tooltip } from '../../../../../common/utils/helpers'
 import { getCurrentQuestionSelector } from '../../../../sharedDucks/questions'
-import { getPassageUpdateInProgressSelector } from '../../../../ItemDetail/ducks'
+import {
+  getPassageUpdateInProgressSelector,
+  getTestItemsSavingSelector,
+} from '../../../../ItemDetail/ducks'
 import { clearAnswersAction } from '../../../actions/answers'
 import { MAX_TAB_WIDTH } from '../../../constants/others'
 import {
@@ -156,6 +159,7 @@ class ButtonBar extends Component {
       onToggleFullModal,
       isInModal,
       passageUpdateInProgress = false,
+      testItemSavingInProgress = false,
     } = this.props
     return (
       <>
@@ -233,6 +237,9 @@ class ButtonBar extends Component {
                           disabled={disableSave}
                           data-cy="saveButton"
                           onClick={this.handleSave}
+                          loading={
+                            passageUpdateInProgress || testItemSavingInProgress
+                          }
                         >
                           <IconSaveNew />
                           SAVE
@@ -253,7 +260,9 @@ class ButtonBar extends Component {
                         data-cy="saveButton"
                         onClick={this.handleSave}
                         id={getFormattedAttrId(`${qTitle}-save`)}
-                        loading={passageUpdateInProgress}
+                        loading={
+                          passageUpdateInProgress || testItemSavingInProgress
+                        }
                       >
                         <IconSaveNew />
                         SAVE
@@ -429,6 +438,7 @@ ButtonBar.propTypes = {
   showAuditTrail: PropTypes.bool,
   permissions: PropTypes.object.isRequired,
   passageUpdateInProgress: PropTypes.bool,
+  testItemSavingInProgress: PropTypes.bool,
 }
 
 ButtonBar.defaultProps = {
@@ -442,6 +452,7 @@ ButtonBar.defaultProps = {
   withLabels: false,
   hasAuthorPermission: true,
   passageUpdateInProgress: false,
+  testItemSavingInProgress: false,
 }
 
 const enhance = compose(
@@ -471,6 +482,7 @@ const enhance = compose(
         multipartItem,
         loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
         passageUpdateInProgress: getPassageUpdateInProgressSelector(state),
+        testItemSavingInProgress: getTestItemsSavingSelector(state),
       }
     },
     {

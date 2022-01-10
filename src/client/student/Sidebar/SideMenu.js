@@ -295,6 +295,7 @@ class SideMenu extends Component {
                       data-cy={menu.label}
                       onClick={this.toggleMenu}
                       title={isSidebarCollapsed ? menu.label : ''}
+                      isCollapsed={isSidebarCollapsed}
                     >
                       <MenuIcon />
                       {!isSidebarCollapsed && (

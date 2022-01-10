@@ -11,7 +11,7 @@ export const WorksheetWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   overflow: auto;
-  padding-top: ${({ editMode }) => editMode && '40px'};
+  padding-top: ${({ showTools }) => showTools && '40px'};
   background: #f3f3f4;
   height: ${(props) =>
     `calc(100vh - 65px - ${
@@ -119,5 +119,28 @@ export const PDFViewerContainer = styled.div`
 
   .pdfViewer .page canvas[hidden] {
     display: none;
+  }
+
+  .pdfViewer {
+    .ant-modal-header {
+      display: block;
+    }
+
+    .ant-modal-content {
+      height: auto;
+      padding-top: initial;
+
+      .ant-modal-body {
+        padding: 0px 12px 12px 12px;
+      }
+
+      .ant-modal-close-x {
+        display: flex;
+        height: 30px;
+        width: 30px;
+        align-items: center;
+        justify-content: center;
+      }
+    }
   }
 `

@@ -14,7 +14,7 @@ import { takeLatest, call, put, select } from 'redux-saga/effects'
 // } from '@edulastic/api'
 import schoolApi from '@edulastic/api/src/school'
 import userApi from '@edulastic/api/src/user'
-import segmentApi from '@edulastic/api/src/segment';
+import segmentApi from '@edulastic/api/src/segment'
 import settingsApi from '@edulastic/api/src/settings'
 import canvasApi from '@edulastic/api/src/canvas'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
@@ -522,8 +522,10 @@ function* updateUserSignupStateSaga() {
 function* saveSubjectGradeSaga({ payload }) {
   const isTestRecommendationCustomizer = payload?.isTestRecommendationCustomizer
   const setShowTestCustomizerModal = payload?.setShowTestCustomizerModal
+  const onSuccessCallback = payload?.onSuccessCallback
   delete payload.isTestRecommendationCustomizer
   delete payload.setShowTestCustomizerModal
+  delete payload.onSuccessCallback
   let isSaveSubjectGradeSuccessful = false
   const initialUser = yield select(getUser)
   try {
@@ -575,11 +577,17 @@ function* saveSubjectGradeSaga({ payload }) {
     if (isTestRecommendationCustomizer) {
       setShowTestCustomizerModal(false)
     }
+    if (onSuccessCallback) {
+      onSuccessCallback()
+    }
   }
 
   if (!isTestRecommendationCustomizer) {
     // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
-    if (initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL) {
+    if (
+      initialUser.currentSignUpState &&
+      initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL
+    ) {
       yield put(persistAuthStateAndRedirectToAction())
     }
   }

@@ -165,6 +165,11 @@ const ActionButton = ({ title, icon, ...rest }) => (
   </Tooltip>
 )
 
+const CROSS_OUT_QUES = [
+  questionType.MULTIPLE_CHOICE,
+  questionType.CHOICE_MATRIX,
+]
+
 const ToolBar = ({
   settings,
   tool = [],
@@ -172,6 +177,7 @@ const ToolBar = ({
   handleMagnifier,
   openReferenceModal,
   isShowReferenceModal,
+  hasReferenceDoc,
   enableMagnifier,
   toggleUserWorkUploadModal,
   changeTool,
@@ -184,7 +190,7 @@ const ToolBar = ({
     enableScratchpad,
     isTeacherPremium,
   } = settings
-  const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
+  const isDisableCrossBtn = !CROSS_OUT_QUES.includes(qType)
 
   const toolbarHandler = (value) => () => {
     changeTool(value)
@@ -220,7 +226,7 @@ const ToolBar = ({
       <ActionButton
         title={
           isDisableCrossBtn
-            ? 'This option is available only for multiple choice'
+            ? 'This option is available only for multiple choice and matching questions'
             : 'Crossout'
         }
         icon={<CloseIcon />}
@@ -263,13 +269,15 @@ const ToolBar = ({
           onClick={toggleUserWorkUploadModal}
         />
       )}
-      <ActionButton
-        disabled={isPremiumContentWithoutAccess}
-        title="Reference Sheet"
-        icon={<IconReferenceSheet />}
-        active={isShowReferenceModal}
-        onClick={openReferenceModal}
-      />
+      {hasReferenceDoc && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Reference Sheet"
+          icon={<IconReferenceSheet />}
+          active={isShowReferenceModal}
+          onClick={openReferenceModal}
+        />
+      )}
       <LineReader btnComponent={ButtonWithStyle} />
     </Container>
   )

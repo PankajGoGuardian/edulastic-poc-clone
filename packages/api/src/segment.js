@@ -12,41 +12,43 @@ const trackingParameters = {
 
 const getCommonUserDetailsForSegmentEvents = () => {
   const accessToken = getAccessToken()
-  const tokenParsed = parseJwt(accessToken)
-  const userFromRedux = getUserFromRedux()
-  const { subscription } =
-    window?.getStore()?.getState()?.subscription?.subscriptionData || {}
-  // const {products} = window.getStore().getState().subscription||{};
-  const subscriptionName = subscription?.subType || 'free'
-  const subscriptionType = subscription?.subType?.startsWith('TRIAL')
-    ? 'trial'
-    : 'purchased'
-  let subscriptionStatus = null
-  if (subscription?.subType) {
-    if (subscription?.status == 1) {
-      subscriptionStatus = 'active'
-    } else {
-      subscriptionStatus = 'expired'
+  if (accessToken) {
+    const tokenParsed = parseJwt(accessToken)
+    const userFromRedux = getUserFromRedux()
+    const { subscription } =
+      window?.getStore()?.getState()?.subscription?.subscriptionData || {}
+    // const {products} = window.getStore().getState().subscription||{};
+    const subscriptionName = subscription?.subType || 'free'
+    const subscriptionType = subscription?.subType?.startsWith('TRIAL')
+      ? 'trial'
+      : 'purchased'
+    let subscriptionStatus = null
+    if (subscription?.subType) {
+      if (subscription?.status == 1) {
+        subscriptionStatus = 'active'
+      } else {
+        subscriptionStatus = 'expired'
+      }
     }
-  }
-  const { _id: userId, role, districtId } = tokenParsed
-  const { institutionIds = [] } = userFromRedux?.user || {}
+    const { _id: userId, role, districtId } = tokenParsed
+    const { institutionIds = [] } = userFromRedux?.user || {}
 
-  const data = {
-    lastLogin: tokenParsed?.iat * 1000,
-    userId,
-    subscriptionName,
-    ...(institutionIds.length === 1
-      ? { schoolId: institutionIds[0] }
-      : { schoolIds: institutionIds }),
-    districtId,
-    subscriptionType,
-    subscriptionStatus,
-    role,
+    const data = {
+      lastLogin: tokenParsed?.iat * 1000,
+      userId,
+      subscriptionName,
+      ...(institutionIds.length === 1
+        ? { schoolId: institutionIds[0] }
+        : { schoolIds: institutionIds }),
+      districtId,
+      subscriptionType,
+      subscriptionStatus,
+      role,
+    }
+    return data
   }
-  return data
+  return {}
 }
-
 
 const delay = (ms) => {
   return new Promise((res) => {
@@ -136,9 +138,10 @@ const analyticsIdentify = ({ user }) => {
         defaultGrades: [grade = '', ,] = [],
         defaultSubjects: [subject = '', ,] = [],
       },
+      isProxy = false,
     } = user
     const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics) {
+    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
       // Passing user_hash to have secure communication
       window.analytics.identify(
         userId,
@@ -171,9 +174,9 @@ const unloadIntercom = ({ user }) => {
     return
   }
   if (user) {
-    const { role = '', _id, v1Id } = user
+    const { role = '', _id, v1Id, isProxy = false } = user
     const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics) {
+    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
       window.analytics.identify(
         userId,
         {},

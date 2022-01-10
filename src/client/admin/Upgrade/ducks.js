@@ -184,7 +184,7 @@ export const manageSubscriptionsByLicenses = createSlice({
     loading: false,
     licenses: [],
     count: 0,
-    searchType: null,
+    searchType: 'BULK_LICENSES',
   },
   reducers: {
     fetchLicenses: (state) => {

@@ -499,7 +499,7 @@ export const QuestionDetails = styled.div`
 
 export const DetailRow = styled.div`
   display: flex;
-  align-items: center;
+  align-items: ${(props) => props.alignItems || 'center'};
   flex-direction: ${(props) => props.direction || 'row'};
   padding: 5px 50px 5px 0px;
 

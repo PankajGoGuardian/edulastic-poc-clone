@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import produce from 'immer'
 import styled from 'styled-components'
 import { cloneDeep } from 'lodash'
 
@@ -22,6 +23,8 @@ const Preview = ({
   evaluation,
   isPrintPreview,
   tool = [],
+  crossAction,
+  setCrossAction,
 }) => {
   const handleCheck = ({ columnIndex, rowIndex, checked }) => {
     const newAnswer = cloneDeep(userAnswer)
@@ -50,6 +53,32 @@ const Preview = ({
     saveAnswer(newAnswer)
   }
 
+  const handleSetCrossAction = (responseId) => {
+    if (typeof setCrossAction === 'function') {
+      const { id: qId } = item || {}
+      const newAnswer = cloneDeep(userAnswer)
+      setCrossAction(
+        produce(crossAction, (draft) => {
+          if (!draft) {
+            draft = {}
+          }
+          if (!draft[qId]) {
+            draft[qId] = []
+          }
+          if (draft[qId].includes(responseId)) {
+            draft[qId] = draft[qId].filter((x) => x !== responseId)
+          } else {
+            draft[qId].push(responseId)
+          }
+        })
+      )
+      if (newAnswer?.value?.[responseId]) {
+        delete newAnswer.value[responseId]
+        saveAnswer(newAnswer)
+      }
+    }
+  }
+
   return (
     <QuestionWrapper pl={pl}>
       <QuestionContent>
@@ -61,6 +90,9 @@ const Preview = ({
           responseIds={item.responseIds}
           isMultiple={item.multipleResponses}
           onCheck={!disableResponse ? handleCheck : () => {}}
+          onCrossOut={handleSetCrossAction}
+          crossAction={crossAction?.[item.id] || []}
+          crossToolEnabled={!!setCrossAction}
           evaluation={evaluation}
           smallSize={smallSize}
           isPrintPreview={isPrintPreview}

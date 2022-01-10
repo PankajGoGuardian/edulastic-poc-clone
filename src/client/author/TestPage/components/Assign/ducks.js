@@ -291,6 +291,7 @@ function* saveAssignment({ payload }) {
       assignmentSettings.passwordPolicy =
         passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
       assignmentSettings.timedAssignment = false
+      assignmentSettings.showRubricToStudents = false
     }
     // Missing termId notify
     if (!assignmentSettings.termId) {

@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import styled, { keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
 import qs from 'qs'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Progress, Row, Select } from 'antd'
+import { Progress, Row, Select, Tooltip } from 'antd'
 import { OpenCvProvider, useOpenCv } from 'opencv-react'
 import { withRouter } from 'react-router-dom'
 import { round } from 'lodash'
@@ -34,11 +34,13 @@ import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
+import { IconInfo } from '@edulastic/icons'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
 import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
+import RecordVideoStream from './RecordVideoStream'
 import {
   IconStep1,
   IconStep2,
@@ -121,6 +123,8 @@ const ScanAnswerSheetsInner = ({
   classTitle,
   getOmrUploadSessions,
   setWebCamScannedDocs,
+  setRecordedVideo,
+  enableOmrSessionRecording = false,
 }) => {
   let arrLengthOfAnswer = []
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
@@ -135,6 +139,7 @@ const ScanAnswerSheetsInner = ({
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
+  const recordingEnabled = enableOmrSessionRecording
 
   /**
    * uncomment the following line while debugging
@@ -156,6 +161,7 @@ const ScanAnswerSheetsInner = ({
   const canvasRef = useRef(null)
   const streamRef = useRef(null)
   const isFrontFacingRef = useRef(false)
+  const recorderRef = useRef()
 
   function supressFailureNotifications(time) {
     hideFailureNotificationsRef.current = true
@@ -185,7 +191,12 @@ const ScanAnswerSheetsInner = ({
       } else {
         cv.imshow('canvasOutput', matSrc)
         matSrc.delete()
-        requestAnimationFrame(() => processVideo(vc))
+        requestAnimationFrame(() =>
+          processVideo(vc).catch(() => {
+            console.log('process video opencv error')
+            console.warn('err')
+          })
+        )
         return
       }
       if (answersList) {
@@ -199,7 +210,11 @@ const ScanAnswerSheetsInner = ({
         )
       }
       matSrc.delete()
-      requestAnimationFrame(() => processVideo(vc))
+      requestAnimationFrame(() =>
+        processVideo(vc).catch(() => {
+          console.log('process video opencv error')
+        })
+      )
       if (!result) {
         return
       }
@@ -231,7 +246,7 @@ const ScanAnswerSheetsInner = ({
                 arrAnswersRef.current.push(result)
                 notification({
                   type: 'success',
-                  msg: 'Form detected. You can now scan the next one.',
+                  msg: 'Form successfully scanned. Please scan the next one.',
                 })
                 audioRef.play()
 
@@ -301,7 +316,7 @@ const ScanAnswerSheetsInner = ({
           console.log(`Error While accessing camera: ${err}`)
         })
     }
-  }, [])
+  }, [selectedCamera])
 
   useEffect(() => {
     if (isCameraLoaded && isOpencvLoaded) {
@@ -328,6 +343,9 @@ const ScanAnswerSheetsInner = ({
           setIsStart(true)
           setIsError(false)
           streamRef.current = stream
+          if (recordingEnabled && recorderRef.current) {
+            recorderRef.current.start(stream)
+          }
           // start receiving stream from webcam
           videoRef.current.srcObject = stream
           videoRef.current.play()
@@ -340,7 +358,9 @@ const ScanAnswerSheetsInner = ({
                 videoRef.current.setAttribute('height', videoHeight)
                 // Start Video Processing
                 requestAnimationFrame(() =>
-                  processVideo(new cv.VideoCapture(videoRef.current))
+                  processVideo(
+                    new cv.VideoCapture(videoRef.current)
+                  ).catch(() => console.warn('opencv error'))
                 )
               }
             },
@@ -455,12 +475,32 @@ const ScanAnswerSheetsInner = ({
         <Spinner />
       ) : (
         <CameraUploaderWrapper>
+          {recordingEnabled ? (
+            <>
+              <RecordingIndicator>Recording...</RecordingIndicator>
+              <RecordVideoStream
+                ref={recorderRef}
+                onVideoUrlReady={(_url) => {
+                  const { assignmentId, groupId } = qs.parse(
+                    window.location?.search || '',
+                    {
+                      ignoreQueryPrefix: true,
+                    }
+                  )
+                  setRecordedVideo({
+                    url: _url,
+                    filename: `recorded_${assignmentId}_${groupId}.webm`,
+                  })
+                }}
+              />
+            </>
+          ) : null}
           <Title>
-            Put your bubble sheets in front of the camera{' '}
+            Put your bubble sheet forms in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
           <SubTitle>
-            Ensure the sheets are fully visible and wait for the Form detected
+            Ensure the forms are fully visible and wait for the Form detected
             message with a beeper sound.
           </SubTitle>
           <FlexContainer width={`${videoSetting.width}px`}>
@@ -523,7 +563,7 @@ const ScanAnswerSheetsInner = ({
             onClick={triggerCompleteConfirmation}
             style={{ marginTop: 15 }}
           >
-            PROCEED TO NEXT STEP
+            Proceed to Scan Results
           </EduButton>
         </CameraUploaderWrapper>
       )}
@@ -533,7 +573,7 @@ const ScanAnswerSheetsInner = ({
           title="Scan Finished Confirmation"
           description="Have you scanned all Bubble Sheet Forms?"
           buttonText="YES, PROCEED"
-          cancelText="NO, LET ME FINISH"
+          cancelText="No, I have more to scan"
           onCancel={closeScanConfirmationModal}
           onProceed={handleScanComplete}
         />
@@ -550,11 +590,12 @@ const ScanAnswerSheetsInner = ({
         <Row>
           <FieldLabel>SELECT CAMERA</FieldLabel>
           <SelectInputStyled
-            disabled={cameraList.length > 1}
+            disabled={cameraList.length === 1}
             value={cameraList.length === 1 ? cameraList[0].id : selectedCamera}
             onChange={(v) => {
               setSelectedCamera(v)
             }}
+            getPopupContainer={(triggerNode) => triggerNode.parentNode}
           >
             <Option value={null}>Select Camera</Option>
             {cameraList.map((x) => (
@@ -564,13 +605,25 @@ const ScanAnswerSheetsInner = ({
         </Row>
         <br />
         <Row>
-          <Checkbox
-            checked={isFrontFacing}
-            onChange={() => {
-              setIsFrontFacing((x) => !x)
-            }}
-            label="CAMERA IS FACING ME"
-          />
+          <Tooltip title="Check this option if the camera is facing you. This will mirror the image horizontally so that you can scan more easily.">
+            <Checkbox
+              checked={isFrontFacing}
+              onChange={() => {
+                setIsFrontFacing((x) => !x)
+              }}
+              label={
+                <CheckBoxLabel>
+                  <strong>I AM USING A LAPTOP WEBCAM</strong>
+                  <Tooltip
+                    title="Tick to horizontally flip the camera recording to help you see and scan easily"
+                    placement="right"
+                  >
+                    <IconInfo />
+                  </Tooltip>
+                </CheckBoxLabel>
+              }
+            />
+          </Tooltip>
         </Row>
       </CustomModalStyled>
       {isHelpModalVisible && (
@@ -626,9 +679,15 @@ ScanAnswerSheets.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect((state) => ({ ...selector(state) }), {
-    ...actions,
-  })
+  connect(
+    (state) => ({
+      ...selector(state),
+      enableOmrSessionRecording: state?.user?.user?.enableOmrSessionRecording,
+    }),
+    {
+      ...actions,
+    }
+  )
 )
 
 export default enhance(ScanAnswerSheets)
@@ -692,6 +751,36 @@ const HelpIcon = styled.span`
   cursor: pointer;
 `
 
+const blinking = keyframes`
+  0%{
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.5
+  }
+  100%{
+    opacity: 0;
+  }
+`
+
+const RecordingIndicator = styled.div`
+  background-color: red;
+  color: white;
+  width: 120px;
+  height: 50px;
+  line-height: 50px;
+
+  text-align: center;
+  border-radius: 5px;
+  animation: ${blinking} 1s linear infinite;
+`
+
 const Step = styled.div`
   margin: 20px 0px;
   width: 209px;
@@ -716,5 +805,12 @@ const Step = styled.div`
     letter-spacing: 0px;
     color: ${lightGrey9};
     opacity: 1;
+  }
+`
+
+const CheckBoxLabel = styled.span`
+  svg {
+    margin-left: 10px;
+    margin-bottom: -2px;
   }
 `

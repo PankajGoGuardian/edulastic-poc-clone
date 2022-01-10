@@ -86,6 +86,9 @@ const toolByGroup = [
       CONSTANT.TOOLS.AREA,
       CONSTANT.TOOLS.DASHED,
       // CONSTANT.TOOLS.PIECEWISE,
+      // CONSTANT.TOOLS.PIECEWISE_LINE,
+      // CONSTANT.TOOLS.PIECEWISE_POINT,
+      // CONSTANT.TOOLS.LINE_CUT,
       // CONSTANT.TOOLS.NO_SOLUTION,
       // CONSTANT.TOOLS.AREA2,
     ],
@@ -144,20 +147,38 @@ const iconsByToolName = {
   ),
   [CONSTANT.TOOLS.AREA2]: <IconArea2 width={29} height={25} />,
   [CONSTANT.TOOLS.PIECEWISE]: <IconPiecewise width={40} height={32} />,
-  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit />,
-  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} />,
-  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} />,
+  [CONSTANT.TOOLS.PIECEWISE_LINE]: <IconPiecewise width={40} height={32} />,
+  [CONSTANT.TOOLS.PIECEWISE_POINT]: <IconPoint width={11} height={11} />,
+  [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
+  [CONSTANT.TOOLS.LINE_CUT]: <span>cut</span>,
+  [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
+  [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
     <IconEraseText width={13} height={16} stroke="transparent !important" />
   ),
   [CONSTANT.TOOLS.RESET]: (
-    <IconEraseText width={16} height={15} stroke="transparent !important" />
+    <IconEraseText
+      width={16}
+      height={15}
+      stroke="transparent !important"
+      data-cy="reset"
+    />
   ),
   [CONSTANT.TOOLS.TRASH]: (
-    <IconTrash width={13} height={15} stroke="transparent !important" />
+    <IconTrash
+      width={13}
+      height={15}
+      stroke="transparent !important"
+      data-cy="remove"
+    />
   ),
   [CONSTANT.TOOLS.DELETE]: (
-    <IconTrash width={13} height={15} stroke="transparent !important" />
+    <IconTrash
+      width={13}
+      height={15}
+      stroke="transparent !important"
+      data-cy="delete"
+    />
   ),
   add: (
     <IconPlusCircle width={16} height={15} stroke="transparent !important" />
@@ -187,7 +208,10 @@ const labelsByToolName = {
   [CONSTANT.TOOLS.AREA]: 'Area',
   [CONSTANT.TOOLS.DASHED]: 'Dashed',
   [CONSTANT.TOOLS.PIECEWISE]: 'Piecewise',
+  [CONSTANT.TOOLS.PIECEWISE_LINE]: 'Piecewise Line',
+  [CONSTANT.TOOLS.PIECEWISE_POINT]: 'Piecewise Point',
   [CONSTANT.TOOLS.NO_SOLUTION]: 'No Solution',
+  [CONSTANT.TOOLS.LINE_CUT]: 'Line Cut',
   [CONSTANT.TOOLS.AREA2]: 'Area',
   [CONSTANT.TOOLS.EDIT_LABEL]: 'Edit Label',
   [CONSTANT.TOOLS.UNDO]: 'Undo',

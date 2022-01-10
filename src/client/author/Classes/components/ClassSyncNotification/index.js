@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
-import { uniqBy, pull } from 'lodash'
+import { uniqBy, pull, isEmpty, capitalize } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import {
   destroyNotificationMessage,
@@ -22,6 +22,7 @@ import {
 import { fetchGroupsAction } from '../../../sharedDucks/groups'
 import { setAssignmentBulkActionStatus } from '../../../AssignmentAdvanced/ducks'
 import { setBulkSyncCanvasStateAction } from '../../../../student/Signup/duck'
+import { withRouter } from 'react-router-dom'
 
 const antdNotification = notification
 const firestoreGoogleClassSyncStatusCollection = 'GoogleClassSyncStatus'
@@ -42,6 +43,7 @@ const ClassSyncNotificationListener = ({
   fetchGroups,
   setBulkActionStatus,
   setCanvasBulkSyncStatus,
+  history,
 }) => {
   const [notificationIds, setNotificationIds] = useState([])
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
@@ -108,7 +110,10 @@ const ClassSyncNotificationListener = ({
     removeClassSyncDetails()
     const { groupId, studentsSaved } = data
     if (groupId) {
-      fetchStudentsById({ classId: groupId })
+      const pathName = window.location.pathname
+      if (/manageClass\/([a-f0-9])\w*/g.test(pathName)) {
+        history.push(`/author/manageClass/${groupId}`)
+      }
     } else {
       if (studentsSaved) {
         setGroupSyncData(studentsSaved)
@@ -175,7 +180,9 @@ const ClassSyncNotificationListener = ({
   const showUserNotificationOnAtlasClassSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, message, counter, groupIds } = doc
-
+      const providerName =
+        user?.orgData?.districts?.find((o) => !isEmpty(o.atlasProviderName))
+          .atlasProviderName || 'Atlas'
       if (
         status === 'completed' &&
         counter === 0 &&
@@ -184,7 +191,8 @@ const ClassSyncNotificationListener = ({
         setNotificationIds([...notificationIds, doc.__id])
         // show sync complete notification
         notification({
-          msg: message || 'Atlas Class sync task completed.',
+          msg:
+            message || `${capitalize(providerName)} class sync task completed.`,
           type: 'success',
           onClose: () => {
             setNotificationIds([...pull(notificationIds, [doc.__id])])
@@ -207,7 +215,7 @@ const ClassSyncNotificationListener = ({
       ) {
         setNotificationIds([...notificationIds, doc.__id])
         notification({
-          messageKey: 'classSyncWithAtlasFailed',
+          msg: `Class sync with ${capitalize(providerName)} failed`,
           type: 'error',
           onClose: () => {
             setNotificationIds([...pull(notificationIds, [doc.__id])])
@@ -346,6 +354,7 @@ const ClassSyncNotificationListener = ({
 }
 
 export default compose(
+  withRouter,
   connect(
     (state) => ({
       user: getUser(state),

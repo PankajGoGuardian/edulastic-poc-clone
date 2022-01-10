@@ -18,7 +18,7 @@ import { compose } from 'redux'
 import styled from 'styled-components'
 import { segmentApi, canvasApi } from '@edulastic/api'
 // components
-import { Dropdown, Select, Col } from 'antd'
+import { Dropdown, Select, Col, Tooltip } from 'antd'
 
 import GoogleLogin from 'react-google-login'
 import {
@@ -63,6 +63,15 @@ const ATLAS = 'atlas'
 const CLEVER_RESYNC = 'clever resync'
 
 const modalStatus = {}
+
+const WithTooltip = ({ title, children }) =>
+  title ? (
+    <Tooltip data-cy="testNameInToolTip" title={`Assign "${title}"`}>
+      {children}
+    </Tooltip>
+  ) : (
+    <>{children}</>
+  )
 
 const Header = ({
   user,
@@ -241,7 +250,7 @@ const Header = ({
   const disabledEndDate = (current) => current && current < moment()
 
   const handleUnarchiveClass = () => {
-    if (isClassExpired) {
+    if (isClassExpired && type === 'class') {
       unarchiveClass({
         groupId: _id,
         endDate: new Date(classEndDate).getTime(),
@@ -489,17 +498,29 @@ const Header = ({
             Add Co-Teacher
           </EduButton>
         )}
-        {active === 1 && (
-          <EduButton
-            isBlue
-            onClick={() => {
-              segmentApi.genericEventTrack('AssignATestButtonClick', {})
-              history.push('/author/tests')
-            }}
-          >
-            <IconAssignment />
-            ASSIGN A TEST
-          </EduButton>
+        {active === 1 && !history?.location?.state?.isAssignPlaylistModule && (
+          <WithTooltip title={history?.location?.state?.testTitle}>
+            <EduButton
+              data-cy="assignTestFromClass"
+              isBlue
+              onClick={() => {
+                segmentApi.genericEventTrack('AssignTestButtonClick', {
+                  ...history?.location?.state,
+                })
+                history.push({
+                  pathname:
+                    history?.location?.state?.testRedirectUrl ||
+                    '/author/tests',
+                  state: {
+                    ...history?.location?.state,
+                  },
+                })
+              }}
+            >
+              <IconAssignment />
+              ASSIGN TEST
+            </EduButton>
+          </WithTooltip>
         )}
         {active !== 1 && (
           <>
@@ -535,7 +556,7 @@ const Header = ({
                   Are you sure you want to Unarchive{' '}
                   <LightGreenSpan>{name}</LightGreenSpan>?
                 </p>
-                {isClassExpired && (
+                {isClassExpired && type === 'class' && (
                   <StyledCol>
                     <p>
                       The end date of class has already passed. Please update

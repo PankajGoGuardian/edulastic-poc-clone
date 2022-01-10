@@ -7,3 +7,5 @@
 src/client/scanScore/scanAnswerSheets/answer-utils.js
 src/client/scanScore/scanAnswerSheets/parse-qrcode.js
 src/client/scanScore/scanAnswerSheets/process-image.js
+src/client/scanScore/scanAnswerSheets/isomorphic.js
+src/client/scanScore/scanAnswerSheets/log.js

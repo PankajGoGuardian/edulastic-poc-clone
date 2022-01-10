@@ -57,7 +57,7 @@ const TotalPointsInput = ({
   }
 
   const desc = (
-    <ItemLevelScoringDesc>
+    <ItemLevelScoringDesc data-cy="totalPointToolTipDesc">
       Total points will be divided equally among the below parts. If you want
       custom points for different parts, please switch to “Part Level Scores”
       from <a onClick={onShowSettings}>Layout and Grading.</a>
@@ -102,6 +102,7 @@ const PointInput = ({
   itemLevelScoring,
   visible,
   onShowSettings = () => {},
+  isPremiumUser,
 }) => {
   if (!visible) {
     return null
@@ -116,7 +117,7 @@ const PointInput = ({
   )
 
   const desc = (
-    <ItemLevelScoringDesc>
+    <ItemLevelScoringDesc data-cy="partLevelScoringDesc">
       {isRubricQuestion
         ? 'This Question has Grading Rubric attached to it, so points cannot be changed for this question, and it will be equal to the max score of the rubric.'
         : msgWithLink}
@@ -137,7 +138,7 @@ const PointInput = ({
         </Popover>
       )}
       <NumberInputStyled
-        min={0}
+        min={isPremiumUser ? 0 : 0.5}
         step={0.5}
         width="64px"
         padding="0px 2px"

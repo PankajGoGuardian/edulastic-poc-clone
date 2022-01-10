@@ -41,6 +41,7 @@ import {
   getPassageSelector,
   generateRecentlyUsedCollectionsList,
   proceedToPublishItemAction,
+  setTestItemsSavingAction,
 } from '../ItemDetail/ducks'
 import {
   setTestDataAndUpdateAction,
@@ -478,6 +479,8 @@ function* saveQuestionSaga({
   },
 }) {
   try {
+    yield put(setTestItemsSavingAction(true))
+
     if (isTestFlow) {
       const questions = Object.values(
         yield select((state) => get(state, ['authorQuestions', 'byId'], {}))
@@ -509,12 +512,8 @@ function* saveQuestionSaga({
     const question = yield select(getCurrentQuestionSelector)
     const itemDetail = yield select(getItemDetailSelector)
     const alignments = yield select(getDictionariesAlignmentsSelector)
+    const [isIncomplete, errMsg] = isIncompleteQuestion(question)
 
-    const { itemLevelScoring = false } = itemDetail
-    const [isIncomplete, errMsg] = isIncompleteQuestion(
-      question,
-      itemLevelScoring
-    )
     if (isIncomplete) {
       notification({ msg: errMsg })
       if (saveAndPublishFlow) {
@@ -969,6 +968,8 @@ function* saveQuestionSaga({
       type: SAVE_QUESTION_ERROR,
       payload: { error: errorMessage },
     })
+  } finally {
+    yield put(setTestItemsSavingAction(false))
   }
 }
 
@@ -1217,6 +1218,10 @@ function* generateVariableSaga({ payload }) {
           newQuestion.variable.examples[idx][key] = result.values[key]
         })
       }
+    }
+
+    if (newQuestion.rdv) {
+      delete newQuestion.rdv
     }
 
     yield put({

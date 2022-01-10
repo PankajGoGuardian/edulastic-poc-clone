@@ -4,6 +4,7 @@ import produce from 'immer'
 import { cloneDeep } from 'lodash'
 import { math } from '@edulastic/constants'
 
+import { dynamicVarChecks } from '@edulastic/constants/const/math'
 import CorrectAnswers from '../../components/CorrectAnswers'
 
 import MathFormulaAnswer from './components/MathFormulaAnswer'
@@ -58,6 +59,17 @@ class MathFormulaAnswers extends React.Component {
         if (prop === 'options') {
           let hasSimplified = false
           Object.keys(value).forEach((optKey) => {
+            // rdv stands for regenerate dynamic variable, need to regenerate if below checks found true
+            if (
+              draft.variable?.enabled &&
+              !(
+                draft.validation.validResponse.value[index][prop][optKey] ==
+                  value[optKey] || draft.extraOpts?.[optKey] === value[optKey]
+              ) &&
+              dynamicVarChecks.includes(optKey)
+            ) {
+              draft.rdv = true
+            }
             if (simplifiedOptions.includes(optKey)) {
               hasSimplified = true
               value.isSimplified = true

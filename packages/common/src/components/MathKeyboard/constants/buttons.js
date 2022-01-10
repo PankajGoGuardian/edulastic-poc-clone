@@ -233,6 +233,7 @@ import Group6104 from '../assets/decorations/6104.svg'
 import Group6102 from '../assets/decorations/6102.svg'
 import Group6103 from '../assets/decorations/6103.svg'
 import Group1053 from '../assets/decorations/1053.svg'
+import Group1055 from '../assets/decorations/1055.svg'
 import Group1052 from '../assets/decorations/1052.svg'
 import Group1023 from '../assets/decorations/1023.svg'
 import Group1025 from '../assets/decorations/1025.svg'
@@ -2496,6 +2497,14 @@ export const over_arc = {
   types: ['all'],
   command: 'cmd',
   dataCy: 'over_arc',
+}
+
+export const hat = {
+  handler: '\\hat',
+  label: <CustomImage src={Group1055} width={14} height={28} />,
+  types: ['all'],
+  command: 'cmd',
+  dataCy: 'hat_symbole',
 }
 
 export const under_sim = {

@@ -216,6 +216,13 @@ const QuestionBottomAction = ({
   const showQuestionModal = async () => {
     setItemLoading(true)
     try {
+      if (additionalData.bubbleSheetTestId) {
+        notification({
+          type: 'warn',
+          messageKey: 'editWarnBubblesheetGeneratedForThisTest',
+          duration: 12,
+        })
+      }
       const latestTest = await testsApi.getById(additionalData?.testId, {
         data: true,
         requestLatest: true,
@@ -256,6 +263,9 @@ const QuestionBottomAction = ({
       setQuestionData(omit(item, 'activity'))
       setCurrentQuestion(item.id)
       setEditingItemId(item.testItemId)
+      notification({
+        msg: e?.response?.data?.message || 'Unable to retrieve item',
+      })
     } finally {
       toggleQuestionModal(true)
       setItemLoading(false)

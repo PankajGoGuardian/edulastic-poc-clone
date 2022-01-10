@@ -185,7 +185,10 @@ class Container extends Component {
     const { PART_SCORING_TYPE } = multipartEvaluationTypes
     const multipleItemsSettings = () => (
       <>
-        <SettingsButtonWrapper justifyContent="flex-end">
+        <SettingsButtonWrapper
+          justifyContent="flex-end"
+          data-cy="settingsCloseButton"
+        >
           <Button
             color="primary"
             onClick={onCancel}

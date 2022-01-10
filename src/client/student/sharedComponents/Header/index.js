@@ -8,6 +8,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Row } from 'antd'
+import qs from 'qs'
 import ClassSelect, { StudentSlectCommon } from '../ClassSelector'
 import ShowActiveClass from '../ShowActiveClasses'
 import AttemptSelect from './AttemptSelect'
@@ -34,7 +35,11 @@ const Header = ({
   user,
   ...rest
 }) => {
-  const cliUser = isCliUser || user?.openIdProvider === 'CLI'
+  /* for mathia, cliUser param is preserved in search always unlike normal cli user
+   * it appears only on initial launch (used to show banner)
+   */
+  const { cliUser } =
+    qs.parse(window.location.search, { ignoreQueryPrefix: true }) || {}
   return (
     <MainHeader
       Icon={titleIcon}

@@ -39,6 +39,7 @@ export const initializeSegment = (forceEnable = false) => {
   ]
   analytics.factory = function (method) {
     return function () {
+      // eslint-disable-next-line prefer-rest-params
       const args = Array.prototype.slice.call(arguments)
       args.unshift(method)
       analytics.push(args)
@@ -63,4 +64,53 @@ export const initializeSegment = (forceEnable = false) => {
   analytics.SNIPPET_VERSION = AppConfig.segmentVersion
   analytics.load()
   analytics.page()
+}
+
+/**
+ * Searches `arr` for first match in `queries`.
+ * If match is not found for ith query, next query is tried.
+ * If no match is found at all, returns the `_default`
+ * Example 1:
+ * ```js
+ * multiFind(
+ *   [{ a: 0 }, { b: 1, bb: 11 }, { c: 2 }],
+ *   [{ a: 2 }, { b: 1 }]
+ * )
+ * // returns {b: 1, bb: 11}
+ * ```
+ * Example 2:
+ * ```js
+ * multiFind(
+ *   [{ a: 0 }, { b: 1, bb: 11 }, { c: 2 }],
+ *   [{ a: 2 }, { b: 2 }, (v) => v.b == 1]
+ * )
+ * // returns {b: 1, bb: 11}
+ * ```
+ * Example 3:
+ * ```js
+ * multiFind(
+ *   [{ a: 0 }, { b: 1, bb: 11 }, { c: 2 }],
+ *   [{ a: 2 }, { b: 2 }, (v) => v.b == 3],
+ *   {a: 'default'}
+ * )
+ * // returns {a: 'default'}
+ * ```
+ * @template arrayElement, defaultType
+ * @param {arrayElement[]} arr Array to search into
+ * @param {(Function|object)[]} queries array of queries. Query may be function or object
+ * @param {defaultType} _default default value to return if no match found
+ * @returns {arrayElement | defaultType}
+ */
+export function multiFind(arr, queries, _default = undefined) {
+  for (const query of queries) {
+    const findFunc =
+      typeof query === 'function'
+        ? query
+        : (val) => {
+            return Object.entries(query).every(([k, v]) => val[k] === v)
+          }
+    const foundIndex = arr.findIndex(findFunc)
+    if (foundIndex !== -1) return arr[foundIndex]
+  }
+  return _default
 }

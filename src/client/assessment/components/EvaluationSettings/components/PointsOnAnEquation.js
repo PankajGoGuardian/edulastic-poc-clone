@@ -8,6 +8,7 @@ import {
   FieldLabel,
   EduButton,
 } from '@edulastic/common'
+import { cloneDeep } from 'lodash'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { HeadingLabel } from './InlineCheckOptions'
@@ -69,14 +70,18 @@ const PointsOnAnEquation = ({
     setShowSpecialOpts(!showSpecialOpts)
   }
 
+  const handleChangeSpecOpts = (e) => {
+    const { name, value } = e.target
+    const newSpecOpts = cloneDeep(options?.specialPointOpts || {})
+    onChange('specialPointOpts', { ...newSpecOpts, [name]: value })
+  }
+
   useEffect(() => {
     if (options.points || options.latex) {
       setIsAllowed(true)
     }
     setLocalLatex(options.latex)
   }, [options])
-
-  const hasSpecialOpts = optionKey === 'graphPointsOnAnEquation2'
 
   return (
     <div>
@@ -128,8 +133,8 @@ const PointsOnAnEquation = ({
           />
         </FlexContainer>
       </FlexContainer>
-      {hasSpecialOpts && (
-        <SpecialOptContainer>
+      <SpecialOptContainer>
+        {isAllowed && (
           <EduButton
             isGhost
             ml="0px"
@@ -139,39 +144,95 @@ const PointsOnAnEquation = ({
           >
             {showSpecialOpts ? 'Hide Special Options' : 'Show Special Options'}
           </EduButton>
-          {showSpecialOpts && (
-            <SpecialOpts>
-              <FieldLabel mr="6px">points on an equation</FieldLabel>
-              <SpecialOptRow>
-                <FieldLabel marginBottom="0px">Axis crossing X Axis</FieldLabel>
-                <TextInputStyled type="number" />
-                <FieldLabel marginBottom="0px">Y Axis</FieldLabel>
-                <TextInputStyled type="number" />
-              </SpecialOptRow>
-              <SpecialOptRow>
-                <FieldLabel marginBottom="0px">Global Minima</FieldLabel>
-                <TextInputStyled type="number" />
-                <FieldLabel marginBottom="0px">Max</FieldLabel>
-                <TextInputStyled type="number" />
-              </SpecialOptRow>
-              <SpecialOptRow>
-                <FieldLabel marginBottom="0px">Local Minima</FieldLabel>
-                <TextInputStyled type="number" />
-                <FieldLabel marginBottom="0px">Max</FieldLabel>
-                <TextInputStyled type="number" />
-              </SpecialOptRow>
-              <SpecialOptRow>
-                <FieldLabel marginBottom="0px">
-                  Symmetric Points About X
-                </FieldLabel>
-                <TextInputStyled type="number" />
-                <FieldLabel marginBottom="0px">Y Axis</FieldLabel>
-                <TextInputStyled type="number" />
-              </SpecialOptRow>
-            </SpecialOpts>
-          )}
-        </SpecialOptContainer>
-      )}
+        )}
+        {isAllowed && showSpecialOpts && (
+          <SpecialOpts>
+            <FieldLabel mr="6px">points on an equation</FieldLabel>
+            <SpecialOptRow>
+              <FieldLabel marginBottom="0px">Axis crossing X Axis</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="xAxisPoints"
+                disabled={!isAllowed}
+                value={options?.specialPointOpts?.xAxisPoints}
+                onChange={handleChangeSpecOpts}
+              />
+              <FieldLabel marginBottom="0px">Y Axis</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="yAxisPoints"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.yAxisPoints}
+              />
+            </SpecialOptRow>
+            <SpecialOptRow>
+              <FieldLabel marginBottom="0px">Global Minima</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="globalMinimumPoints"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.globalMinimumPoints}
+              />
+              <FieldLabel marginBottom="0px">Max</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="globalMaximumPoints"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.globalMaximumPoints}
+              />
+            </SpecialOptRow>
+            {/* <SpecialOptRow>
+              <FieldLabel marginBottom="0px">Local Minima</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="localMinima"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.localMinima}
+              />
+              <FieldLabel marginBottom="0px">Max</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="localMaxima"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.localMaxima}
+              />
+            </SpecialOptRow> */}
+            <SpecialOptRow>
+              <FieldLabel marginBottom="0px">
+                Symmetric Points About X
+              </FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="symmetricPairsXAxis"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.symmetricPairsXAxis}
+              />
+              <FieldLabel marginBottom="0px">Y Axis</FieldLabel>
+              <TextInputStyled
+                min={1}
+                type="number"
+                name="symmetricPairsYAxis"
+                disabled={!isAllowed}
+                onChange={handleChangeSpecOpts}
+                value={options?.specialPointOpts?.symmetricPairsYAxis}
+              />
+            </SpecialOptRow>
+          </SpecialOpts>
+        )}
+      </SpecialOptContainer>
     </div>
   )
 }

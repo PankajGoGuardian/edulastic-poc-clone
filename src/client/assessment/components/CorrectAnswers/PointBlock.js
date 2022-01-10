@@ -14,6 +14,7 @@ const PointBlock = ({
   correctAnsScore,
   questionType,
   updateScoreOnBlur,
+  isPremiumUser,
 }) => (
   <FlexContainer flexDirection="column" mt="8px">
     <Label>{t('component.correctanswers.points')}</Label>
@@ -28,7 +29,7 @@ const PointBlock = ({
         `${questionType}-${t('component.correctanswers.points')}`
       )}
       max={!isCorrectAnsTab ? correctAnsScore : Number.MAX_SAFE_INTEGER}
-      min={0}
+      min={isPremiumUser ? 0 : 0.5}
       step={0.5}
     />
   </FlexContainer>
@@ -36,6 +37,7 @@ const PointBlock = ({
 
 PointBlock.propTypes = {
   updateScoreOnBlur: PropTypes.func,
+  isPremiumUser: PropTypes.bool.isRequired,
 }
 
 PointBlock.defaultProps = {

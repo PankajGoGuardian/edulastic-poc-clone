@@ -366,20 +366,20 @@ class BarGraph extends Component {
     if (isLoading) {
       return
     }
-    const { qid } = data
+    const { qid, itemId } = data
     if (studentview) {
       const questionNumber = data.name.split('.')[0].substr(1)
       const questionPageNumber = Math.ceil(
         questionNumber / LCB_LIMIT_QUESTION_PER_VIEW
       )
       if (questionPageNumber !== pageNumber) {
-        setQuestionIdToScroll(qid)
+        setQuestionIdToScroll(`${itemId}_${qid}`)
         setLcbQuestionLoaderState(true)
         setTimeout(() => setPageNumber(questionPageNumber), 1)
         return
       }
 
-      return _scrollTo(qid, this.context.current)
+      return _scrollTo(`${itemId}_${qid}`, this.context.current)
     }
     if (hasRandomQuestions) {
       return notification({

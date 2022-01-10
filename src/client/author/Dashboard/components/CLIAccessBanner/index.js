@@ -19,7 +19,6 @@ import {
   UserName,
 } from './styled'
 
-
 const CLIAccessBanner = ({
   visible = false,
   firstName = '',

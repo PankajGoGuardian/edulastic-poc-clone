@@ -148,6 +148,7 @@ export const USE_FLOW_LAYOUT = '[itemDetail] is use flow layout'
 export const MOVE_WIDGET = '[itemDetail] move widget'
 export const ITEM_DETAIL_PUBLISH = '[itemDetail] publish test item'
 export const UPDATE_TESTITEM_STATUS = '[itemDetail] update test item status'
+export const UPDATE_COMPLETED = '[itemDetail] item update completed'
 export const ITEM_SET_REDIRECT_TEST = '[itemDetail] set redirect test id'
 export const ITEM_CLEAR_REDIRECT_TEST = '[itemDetail] clear redirect test id'
 export const DELETE_ITEM_DETAIL_WIDGET_APPLY =
@@ -192,6 +193,7 @@ export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
   '[itemDetail] save current item and paginate'
 const SET_PASSAGE_UPDATE_IN_PROGRESS =
   '[itemDetail] set passage update in progress'
+const SET_TEST_ITEMS_SAVING = '[itemDetail] set test item saving in progress'
 
 // actions
 
@@ -378,6 +380,7 @@ export const setItemDeletingAction = createAction(SET_DELETING_ITEM)
 const setPassageUpdateInProgressAction = createAction(
   SET_PASSAGE_UPDATE_IN_PROGRESS
 )
+export const setTestItemsSavingAction = createAction(SET_TEST_ITEMS_SAVING)
 
 export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -393,6 +396,8 @@ const addItemToCartAction = (item) => ({
     fromItemDetail: true,
   },
 })
+
+export const itemUpdateCompletedAction = createAction(UPDATE_COMPLETED)
 
 // selectors
 
@@ -529,6 +534,11 @@ export const getPassageUpdateInProgressSelector = createSelector(
   (state) => state.passageUpdateInProgress
 )
 
+export const getTestItemsSavingSelector = createSelector(
+  stateSelector,
+  (state) => state.testItemSavingInProgress
+)
+
 export const getItemDetailLoadingSelector = createSelector(
   stateSelector,
   (state) => state.loading
@@ -608,6 +618,7 @@ const initialState = {
   loadingAuditLogs: false,
   originalItem: null,
   passageUpdateInProgress: false,
+  testItemSavingInProgress: false,
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -938,6 +949,7 @@ export function reducer(state = initialState, { type, payload }) {
     case DELETE_WIDGET_FROM_PASSAGE:
       return produce(state, (draft) => {
         draft.passage.structure.widgets.splice(payload, 1)
+        draft.passage.data.splice(payload, 1)
       })
 
     case UPDATE_TAB_TITLE:
@@ -981,6 +993,11 @@ export function reducer(state = initialState, { type, payload }) {
           ...state.item,
           status: payload,
         },
+      }
+    case UPDATE_COMPLETED:
+      return {
+        ...state,
+        updating: false,
       }
     case SAVE_CURRENT_EDITING_TEST_ID:
       return {
@@ -1066,6 +1083,12 @@ export function reducer(state = initialState, { type, payload }) {
       return {
         ...state,
         passageUpdateInProgress: payload,
+      }
+    }
+    case SET_TEST_ITEMS_SAVING: {
+      return {
+        ...state,
+        testItemSavingInProgress: payload,
       }
     }
     default:
@@ -1200,6 +1223,8 @@ export function* deleteItemSaga({ payload }) {
 
 export function* updateItemSaga({ payload }) {
   try {
+    yield put(setTestItemsSavingAction(true))
+
     const { addToTest, updateScoreInQuestionsAsPerItem } = payload
     const oldTestId = payload?.locationState?.previousTestId
     if (!payload.keepData) {
@@ -1248,6 +1273,7 @@ export function* updateItemSaga({ payload }) {
 
     if (isPassageWithQuestions && !questions.length) {
       notification({ messageKey: 'CannotSaveWithoutQuestions' })
+      yield put(itemUpdateCompletedAction())
       return null
     }
 
@@ -1569,6 +1595,8 @@ export function* updateItemSaga({ payload }) {
       type: UPDATE_ITEM_DETAIL_ERROR,
       payload: { error: errorMessage },
     })
+  } finally {
+    yield put(setTestItemsSavingAction(false))
   }
 }
 
@@ -1800,12 +1828,24 @@ function* publishTestItemSaga({ payload }) {
         payload.locationState?.testAuthoring === false &&
         payload.locationState?.testId
       ) {
-        yield put(
-          push({
-            pathname: `/author/tests/tab/review/id/${payload.locationState.testId}`,
-            state: { isAuthoredNow: true },
-          })
-        )
+        if (
+          payload.locationState?.isPlaylistTestReview &&
+          payload.locationState?.playlistId
+        ) {
+          yield put(
+            push({
+              pathname: `/author/playlists/playlist/${payload.locationState.playlistId}/use-this`,
+              state: { isAuthoredNow: true },
+            })
+          )
+        } else {
+          yield put(
+            push({
+              pathname: `/author/tests/tab/review/id/${payload.locationState.testId}`,
+              state: { isAuthoredNow: true },
+            })
+          )
+        }
         return notification({
           type: 'success',
           msg: 'Item is saved in item bank',
@@ -2087,12 +2127,6 @@ function* savePassage({ payload }) {
     if (isTestFlow) {
       // testId = yield select((state) => state.tests?.entity?._id)
 
-      if (currentRouterState) {
-        const routerTestId = currentRouterState.previousTestId
-        if (routerTestId) {
-          testId = routerTestId
-        }
-      }
       if (!testId || testId === 'undefined') {
         let passageItems = []
         if (updatedPassage?._id && updatedPassage?.testItems?.length > 1) {

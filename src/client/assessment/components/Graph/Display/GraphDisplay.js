@@ -304,22 +304,16 @@ class GraphDisplay extends Component {
       : safeParseFloat(uiStyle.yDistance)
 
     if (!xRadians) {
-      const xGap = width / (xMax - xMin)
-      if (xGap >= MIN_GAP) {
-        xMin -= 1
-        xMax += 1
-      } else {
+      const xGap = width / ((xMax - xMin) / xDistance)
+      if (xGap < MIN_GAP) {
         xMin -= MIN_GAP / xGap
         xMax += MIN_GAP / xGap
       }
     }
 
     if (!yRadians) {
-      const yGap = height / (yMax - yMin)
-      if (yGap >= MIN_GAP) {
-        yMin -= 1
-        yMax += 1
-      } else {
+      const yGap = height / ((yMax - yMin) / yDistance)
+      if (yGap < MIN_GAP) {
         yMin -= MIN_GAP / yGap
         yMax += MIN_GAP / yGap
       }

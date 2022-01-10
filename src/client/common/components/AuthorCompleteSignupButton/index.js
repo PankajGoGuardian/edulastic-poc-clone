@@ -34,8 +34,11 @@ const AuthorCompleteSignupButton = ({
   subType,
   interestedSubjects = [],
   interestedGrades = [],
+  onMouseDown = () => {},
+  onSuccessCallback,
 }) => {
-  const { currentSignUpState: signupStatus } = user
+  const { currentSignUpState: signupStatus, orgData = {} } = user
+  const { classList = [] } = orgData
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
 
@@ -70,7 +73,8 @@ const AuthorCompleteSignupButton = ({
     const hasNoPreferences =
       roleuser.TEACHER === user.role &&
       interestedSubjects.length === 0 &&
-      interestedGrades.length === 0
+      interestedGrades.length === 0 &&
+      classList.length === 0
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
       hasNoPreferences ||
@@ -96,6 +100,8 @@ const AuthorCompleteSignupButton = ({
           handleCancel={() => handleCanel(false)}
           isVisible={isSchoolModalVisible}
           isSchoolSignupOnly={isSchoolSignupOnly}
+          onMouseDown={onMouseDown}
+          onSuccessCallback={onSuccessCallback}
         />
       )}
     </>
@@ -109,6 +115,7 @@ AuthorCompleteSignupButton.propTypes = {
   trackClick: PropTypes.func,
   setShowCompleteSignupModal: PropTypes.func,
   setCallFunctionAfterSignup: PropTypes.func,
+  onSuccessCallback: PropTypes.func,
   privateParams: PropTypes.object,
 }
 
@@ -118,6 +125,7 @@ AuthorCompleteSignupButton.defaultProps = {
   renderButton: () => null,
   setShowCompleteSignupModal: () => null,
   setCallFunctionAfterSignup: () => null,
+  onSuccessCallback: () => null,
   privateParams: {},
 }
 

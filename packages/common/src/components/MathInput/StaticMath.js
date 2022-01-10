@@ -232,7 +232,7 @@ const StaticMath = ({
   }
 
   useEffect(() => {
-    if (mathFieldRef.current && !mQuill.current && MQ) {
+    if (mathFieldRef.current && MQ) {
       try {
         mQuill.current = MQ.StaticMath(mathFieldRef.current)
         mQuill.current.latex(sanitizeLatex(latex))
@@ -271,8 +271,9 @@ const StaticMath = ({
   useEffect(() => {
     if (!mQuill.current) return
     const { innerFields = [] } = mQuill.current
+    const hasNoInnerValues = isEmpty(innerValues)
     innerFields.forEach((field, indx) => {
-      const canWrite = innerValues && !field.latex()
+      const canWrite = (innerValues && !field.latex()) || hasNoInnerValues
       if (canWrite) {
         field.latex(innerValues[indx] || '')
       }
@@ -297,6 +298,7 @@ const StaticMath = ({
       ref={containerRef}
       minWidth={style.width}
       minHeight={style.height}
+      fontSize={style.fontSize}
       showKeyboardIcon={window.isMobileDevice}
       onClick={handleClickMath}
     >

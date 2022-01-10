@@ -111,6 +111,7 @@ class WorksheetComponent extends React.Component {
 
   componentDidMount() {
     const {
+      userWork,
       saveUserWork,
       itemDetail,
       freeFormNotes,
@@ -135,7 +136,13 @@ class WorksheetComponent extends React.Component {
           }
         }
       }
-      saveUserWork({ [itemDetail._id]: { scratchpad: freeFormNotes || {} } })
+      const stdAnnotations = userWork?.freeNotesStd || []
+      saveUserWork({
+        [itemDetail._id]: {
+          freeNotesStd: stdAnnotations,
+          scratchpad: freeFormNotes || {},
+        },
+      })
     }
     isImagesBlockedByBrowser().then((flag) => {
       if (flag && !isImageBlockNotification) {
@@ -233,7 +240,7 @@ class WorksheetComponent extends React.Component {
       return {
         ...annotation,
         [key]:
-          annotation[key] > pageNumber ? annotation[key] + 1 : annotation[key],
+          annotation[key] > pageNumber ? +annotation[key] + 1 : annotation[key],
       }
     })
 
@@ -359,14 +366,15 @@ class WorksheetComponent extends React.Component {
 
     const newAnnotations = annotations.map((annotation) => {
       const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      const annIndex = +annotation[key]
       return {
         ...annotation,
         [key]:
-          annotation[key] === pageIndex + 1
+          annIndex === pageIndex + 1
             ? nextIndex + 1
-            : annotation[key] === nextIndex + 1
+            : annIndex === nextIndex + 1
             ? pageIndex + 1
-            : annotation[key],
+            : annIndex,
       }
     })
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
@@ -406,14 +414,15 @@ class WorksheetComponent extends React.Component {
     }
     const newAnnotations = annotations.map((annotation) => {
       const key = annotation.toolbarMode === 'question' ? `page` : `documentId`
+      const annIndex = +annotation[key]
       return {
         ...annotation,
         [key]:
-          annotation[key] === pageIndex + 1
+          annIndex === pageIndex + 1
             ? nextIndex + 1
-            : annotation[key] === nextIndex + 1
+            : annIndex === nextIndex + 1
             ? pageIndex + 1
-            : annotation[key],
+            : annIndex,
       }
     })
     const updatedPageStructure = swap(pageStructure, pageIndex, nextIndex)
@@ -595,11 +604,15 @@ class WorksheetComponent extends React.Component {
       undoAnnotationsOperation,
       redoAnnotationsOperation,
       isAnnotationsStackEmpty = false,
-      pdfAnnotations = [],
       isEditable,
       currentPage: _currentPageInProps,
       groupId,
       itemDetail,
+      testItemId,
+      annotationsStack,
+      undoUserWork,
+      redoUserWork,
+      stdAnnotations,
     } = this.props
     const {
       uploadModal,
@@ -626,6 +639,7 @@ class WorksheetComponent extends React.Component {
 
     const reportMode = viewMode && viewMode === 'report'
     const editMode = viewMode === 'edit'
+    const showAnnotationTools = editMode || testMode
 
     const assesmentMetadata = {
       assessmentId,
@@ -635,7 +649,7 @@ class WorksheetComponent extends React.Component {
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
-        {editMode && (
+        {showAnnotationTools && (
           <PDFAnnotationToolsWrapper>
             <PDFAnnotationTools
               setCurrentTool={setCurrentAnnotationTool}
@@ -645,21 +659,21 @@ class WorksheetComponent extends React.Component {
               annotationToolsProperties={annotationToolsProperties}
               updateToolProperties={updateToolProperties}
               isAnnotationsStackEmpty={isAnnotationsStackEmpty}
-              isAnnotationsEmpty={
-                pdfAnnotations.filter((a) => !a?.questionId)?.length === 0
-              }
+              isAnnotationsEmpty={annotationsStack?.length === 0}
+              testMode={testMode}
               undoAnnotationsOperation={undoAnnotationsOperation}
               redoAnnotationsOperation={redoAnnotationsOperation}
+              undoUserWork={undoUserWork}
+              redoUserWork={redoUserWork}
             />
           </PDFAnnotationToolsWrapper>
         )}
 
         <WorksheetWrapper
+          showTools={showAnnotationTools}
           reportMode={reportMode}
           testMode={testMode}
           extraPaddingTop={extraPaddingTop}
-          editMode={editMode}
-          editModePadding={editMode ? '65px' : '0px'}
         >
           <Modal
             visible={deleteConfirmation}
@@ -742,6 +756,8 @@ class WorksheetComponent extends React.Component {
               page={selectedPage}
               currentPage={currentPage + 1}
               annotations={annotations}
+              stdAnnotations={stdAnnotations}
+              annotationsCount={annotationsStack?.length} // need to update annotations on redo and undo action
               onDragStart={this.onDragStart}
               toggleMinimized={this.toggleMinimized}
               onDropAnnotation={this.handleAddAnnotation}
@@ -765,7 +781,7 @@ class WorksheetComponent extends React.Component {
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
               toggleIntercomDisplay={toggleIntercomDisplay}
-              itemId={itemDetail?._id}
+              itemId={itemDetail?._id || testItemId}
             />
           </PDFViewerContainer>
 
@@ -840,6 +856,25 @@ const Worksheet = withForwardedRef(WorksheetComponent)
 
 export { Worksheet }
 
+const annotationsStackSelector = (state, ownProps) => {
+  const { testMode } = ownProps
+
+  if (!testMode) {
+    const pdfAnnotations = state.tests.entity?.annotations || []
+    return pdfAnnotations.filter((a) => !a?.questionId)
+  }
+
+  return state?.userWork?.past || []
+}
+
+const isAnnotationsStackEmptySelector = (state, ownProps) => {
+  const { testMode } = ownProps
+  if (!testMode) {
+    return state.tests.annotationsStack?.length === 0
+  }
+  return state?.userWork?.future?.length === 0
+}
+
 const enhance = compose(
   withWindowSizes,
   withRouter,
@@ -873,16 +908,16 @@ const enhance = compose(
       answersById: state.answers,
       currentAnnotationTool: state.tests.currentAnnotationTool,
       annotationToolsProperties: state.tests.annotationToolsProperties,
-      isAnnotationsStackEmpty: state.tests.annotationsStack?.length === 0,
-      pdfAnnotations: state.tests.entity?.annotations,
+      isAnnotationsStackEmpty: isAnnotationsStackEmptySelector(state, ownProps),
+      annotationsStack: annotationsStackSelector(state, ownProps),
       isImageBlockNotification: state.user.isImageBlockNotification,
     }),
     {
       saveUserWork: saveUserWorkAction,
       createAssessment: createAssessmentRequestAction,
       setPercentUploaded: setPercentUploadedAction,
-      undoScratchPad: ActionCreators.undo,
-      redoScratchPad: ActionCreators.redo,
+      undoUserWork: ActionCreators.undo,
+      redoUserWork: ActionCreators.redo,
       setTestData: setTestDataAction,
       setQuestionsById: loadQuestionsAction,
       uploadToDrive: uploadToDriveAction,

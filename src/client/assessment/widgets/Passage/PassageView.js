@@ -15,7 +15,6 @@ import {
   highlightSelectedText,
 } from '@edulastic/common'
 
-import { removeHTMLTags } from '@edulastic/common/src/helpers'
 import { InstructorStimulus } from './styled/InstructorStimulus'
 import { Heading } from './styled/Heading'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
@@ -90,11 +89,11 @@ const PassageView = ({
 
   const passageTitle = item?.source ? (
     <>
-      <PassageTitle>{removeHTMLTags(item.contentsTitle)}</PassageTitle> by{' '}
-      <PassageTitle>{removeHTMLTags(item.source)}</PassageTitle>
+      <PassageTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />{' '}
+      by <PassageTitle dangerouslySetInnerHTML={{ __html: item.source }} />
     </>
   ) : (
-    <PassageTitle>{removeHTMLTags(item.contentsTitle)}</PassageTitle>
+    <PassageTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />
   )
 
   const _highlights = isAuthorPreviewMode
@@ -186,7 +185,8 @@ const PassageView = ({
   const onSelectColor = (color) => {
     if (color !== 'remove') {
       highlightSelectedText(
-        'text-heighlight',
+        null, // parent container class, needed in token highlight type
+        'text-highlight',
         highlightTag,
         {
           background: color,

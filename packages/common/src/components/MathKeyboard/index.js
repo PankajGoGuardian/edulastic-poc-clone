@@ -83,7 +83,7 @@ class MathKeyboard extends React.PureComponent {
 
   setKeyboardButtons(keypadType) {
     const { restrictKeys, customKeys, symbols, customKeypads } = this.props
-    const type = symbols[0] || keypadType || math.keyboardMethods.BASIC_MATRICES
+    const type = symbols[0] || keypadType || math.keyboardMethods.BASIC
 
     const isCustomMode = isObject(type)
 

@@ -46,7 +46,6 @@ import {
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
-import { getTestsSelector } from '../../../../../src/selectors/assignments'
 import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 
 const ItemPurchaseModal = loadable(() =>
@@ -85,9 +84,9 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
-  tests,
   loadAssignments,
   interestedSubjects,
+  totalAssignmentCount,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -121,7 +120,8 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const { currentSignUpState } = user
+  const { currentSignUpState, orgData = {} } = user
+  const { classList = [] } = orgData
   const isSignupCompleted = currentSignUpState === signUpState.DONE
 
   const saveRecommendedTests = (_data) => {
@@ -220,14 +220,6 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-
-  const sumOfCounts = (arr) => {
-    let sum = 0
-    for (let i = 0; i < arr.length; i++) sum += arr[i]
-    return sum
-  }
-
-  const { totalAssignmentCount } = user
 
   useEffect(() => {
     if (totalAssignmentCount >= 5) {
@@ -402,7 +394,7 @@ const MyClasses = ({
       }
 
       const imageUrl =
-        isBlocked && !isTrialExpired
+        isBlocked && !isTrialExpired && premiumImageUrl
           ? trialImageUrl
           : isTrialExpired
           ? premiumImageUrl
@@ -491,33 +483,14 @@ const MyClasses = ({
             feature?.config?.excludedPublishers?.includes('Singapore Math')
           )
       )
-      bannerSlides = bannerSlides.filter(
-        (banner) =>
-          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
-          !banner?.description?.toLowerCase()?.includes('spark math') &&
-          !(
-            banner?.description?.toLowerCase()?.includes('engage ny') &&
-            banner?.description?.toLowerCase()?.includes('math')
-          ) &&
-          !(
-            banner?.config?.excludedPublishers?.includes('SingaporeMath') ||
-            banner?.config?.excludedPublishers?.includes('Singapore Math')
-          )
-      )
     } else {
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isSingaporeMath
-      )
-      bannerSlides = bannerSlides.filter(
-        (banner) => banner?.config?.isSingaporeMath
       )
     }
   } else {
     filteredBundles = filteredBundles.filter(
       (feature) => !feature?.config?.isSingaporeMath
-    )
-    bannerSlides = bannerSlides.filter(
-      (banner) => !banner?.config?.isSingaporeMath
     )
   }
 
@@ -530,20 +503,20 @@ const MyClasses = ({
         (feature) =>
           !feature?.description?.toLowerCase()?.includes('sparkmath') &&
           !feature?.description?.toLowerCase()?.includes('spark math') &&
-          !feature?.config?.excludedPublishers?.includes('CPM')
-      )
-      bannerSlides = bannerSlides.filter(
-        (banner) =>
-          !banner?.description?.toLowerCase()?.includes('sparkmath') &&
-          !banner?.description?.toLowerCase()?.includes('spark math') &&
-          !banner?.config?.excludedPublishers?.includes('CPM')
+          !(
+            feature?.config?.excludedPublishers?.includes('CPM') ||
+            feature?.config?.excludedPublishers?.includes('cpm')
+          )
       )
     } else {
       filteredBundles = filteredBundles.filter(
         (feature) => feature?.config?.isCPM
       )
-      bannerSlides = bannerSlides.filter((banner) => banner?.config?.isCPM)
     }
+  } else {
+    filteredBundles = filteredBundles.filter(
+      (feature) => !feature?.config?.isCPM
+    )
   }
 
   const handleInAppRedirect = (filters) => {
@@ -678,13 +651,14 @@ const MyClasses = ({
 
     const subjects = interestedSubjects.map((x) => x.toUpperCase())
 
-    const getProductsKeysByInterestedSubject = Object.keys(
-      Object.fromEntries(
-        Object.entries(productsMetaData).filter(([keys, values]) =>
-          subjects.includes(values.filters)
-        )
-      )
-    )
+    const getProductsKeysByInterestedSubject = Object.entries(
+      productsMetaData
+    ).reduce((a, [_key, _value]) => {
+      if (subjects.includes(_value.filters)) {
+        return a.concat(_key)
+      }
+      return a
+    }, [])
 
     const allAvailableItemProductIds = map(
       products.filter(
@@ -713,11 +687,6 @@ const MyClasses = ({
     (windowWidth - 120) / widthOfTilesWithMargin
   ) // here 120 is width of side-menu 70px and padding of container 50px
 
-  const getClassCardModular = allActiveClasses.length % GridCountInARow
-  const classEmptyBoxCount = getClassCardModular
-    ? new Array(GridCountInARow - getClassCardModular).fill(1)
-    : []
-
   const getFeatureCardModular = filteredBundles.length % GridCountInARow
   const featureEmptyBoxCount = getFeatureCardModular
     ? new Array(GridCountInARow - getFeatureCardModular).fill(1)
@@ -745,6 +714,8 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
+  const hideGetStartedSection = totalAssignmentCount >= 1
+
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
   return (
@@ -758,15 +729,16 @@ const MyClasses = ({
           setShowBannerModal={setShowBannerModal}
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
+          windowWidth={windowWidth}
         />
       )}
       <Classes
         showBannerSlide={showBannerSlide}
         activeClasses={allActiveClasses}
-        emptyBoxCount={classEmptyBoxCount}
         userId={user?._id}
         classData={classData}
         history={history}
+        hideGetStartedSection={hideGetStartedSection}
       />
       {showRecommendedTests && (
         <TestRecommendations
@@ -784,7 +756,7 @@ const MyClasses = ({
           handleFeatureClick={handleFeatureClick}
           emptyBoxCount={featureEmptyBoxCount}
           isSignupCompleted={isSignupCompleted}
-          testLists={tests}
+          totalAssignmentCount={totalAssignmentCount}
           isSingaporeMath={isSingaporeMath}
           isCpm={isCpm}
           boughtItemBankIds={boughtItemBankIds}
@@ -871,6 +843,7 @@ export default compose(
   connect(
     (state) => ({
       classData: state.dashboardTeacher.data,
+      totalAssignmentCount: state.dashboardTeacher?.allAssignmentCount,
       districtId: getUserOrgId(state),
       loading: state.dashboardTeacher.loading,
       user: getUserDetails(state),
@@ -886,7 +859,6 @@ export default compose(
       products: state.subscription?.products,
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       isDemoPlayground: isDemoPlaygroundUser(state),
-      tests: getTestsSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
     }),
     {

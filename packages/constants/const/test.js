@@ -146,6 +146,10 @@ module.exports = {
     partialMatch: 'Partial Match',
     exactMatch: 'Exact Match',
     ManualGrading: 'Manual Grading',
+    anyCorrect: 'Any can be Correct',
+    firstCorrectMust: 'First must be Correct',
+    allCorrectMust: 'All must be Correct',
+    PARTIAL_CREDIT_EBSR: 'Partial Credit (EBSR)',
   },
   accessibilities: {
     // SHOW_COLOUR_SHCEME: "Show Color Scheme",
@@ -394,6 +398,7 @@ module.exports = {
     'keypad',
     'applyEBSR',
     'testContentVisibility',
+    'showRubricToStudents',
   ],
   docBasedSettingsOptions: [
     'partialScore',

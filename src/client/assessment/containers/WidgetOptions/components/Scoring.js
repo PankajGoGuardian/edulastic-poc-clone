@@ -157,6 +157,7 @@ class Scoring extends Component {
     const questionType = get(questionData, 'type', '')
     const isAutoMarkBtnVisible = !nonAutoGradableTypes.includes(questionType)
     const isPractice = get(questionData, 'validation.unscored', false)
+    const isPremiumUser = get(userFeatures, ['premium'], false)
 
     const questionTitle = item?.title || questionData?.title
 
@@ -242,7 +243,7 @@ class Scoring extends Component {
                         width="20%"
                         onChange={onChange}
                         onBlur={(e) => this.updateScoreOnBlur(e?.target?.value)}
-                        min={0}
+                        min={isPremiumUser ? 0 : 0.5}
                         step={0.5}
                         disabled={
                           (!!questionData.rubrics &&

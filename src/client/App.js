@@ -12,7 +12,12 @@ import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { roleuser, signUpState, test } from '@edulastic/constants'
-import { DragDrop, notification, OfflineNotifier, UrlChangeListener } from '@edulastic/common'
+import {
+  DragDrop,
+  notification,
+  OfflineNotifier,
+  UrlChangeListener,
+} from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
 import { themes } from './theme'
@@ -62,6 +67,7 @@ import {
   slice as subscriptionSlice,
 } from './author/Subscription/ducks'
 import AdminNotificationListener from './admin/Components/AdminNotification'
+import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -290,6 +296,7 @@ class App extends Component {
     let retries = 0
     const cb = () => {
       if (!window.pendo) return
+      if (typeof window.pendo.getCurrentUrl !== 'function') return
       window.removeEventListener('load', cb)
 
       // Issue:
@@ -559,6 +566,10 @@ class App extends Component {
         }
 
         if (urlSearch.has('districtRedirect') && urlSearch.has('shortName')) {
+          localStorage.setItem(
+            'schoologyAssignmentRedirectUrl',
+            location.pathname
+          )
           redirectRoute = `/district/${urlSearch.get('shortName')}`
         } else if (!user.authenticating) {
           redirectRoute = '/login'
@@ -641,6 +652,7 @@ class App extends Component {
           />
         )}
         <StudentSessionExpiredModal />
+        <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
         <UrlChangeListener />
         <OfflineNotifier />

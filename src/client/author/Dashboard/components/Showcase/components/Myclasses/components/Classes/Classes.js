@@ -5,11 +5,12 @@ import { connect } from 'react-redux'
 import { TextWrapper } from '../../../../../styledComponents'
 import Card from '../Card'
 import CreateClassCard from '../CreateClassCard/CreateClassCard'
-import { CardContainer, EmptyBoxes } from './styled'
+import { CardContainer } from './styled'
 import { getUserDetails } from '../../../../../../../../student/Login/ducks'
 import { receiveTeacherDashboardAction } from '../../../../../../ducks'
 import { Tooltip } from '../../../../../../../../common/utils/helpers'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
+import CreateAssignmentCard from '../CreateClassCard/CreateAssignmentCard'
 
 const myClassFilters = {
   ALL_CLASSES: 'All Classes',
@@ -32,7 +33,6 @@ const getOrderedClasses = (groups, type) => {
 
 const Classes = ({
   activeClasses,
-  emptyBoxCount,
   userId,
   user,
   getTeacherDashboard,
@@ -40,6 +40,7 @@ const Classes = ({
   classData,
   history,
   showBannerSlide,
+  hideGetStartedSection,
 }) => {
   const [classType, setClassType] = useState(
     myClassFilters[
@@ -50,8 +51,8 @@ const Classes = ({
   )
 
   const showCreateClassCard =
-    classType !== 'My Favorites' && classData.length < 4
-  const allowEmptyBoxes = classData.length > 3
+    classType !== 'My Favorites' &&
+    (classData.length === 0 || (hideGetStartedSection && classData.length < 5))
 
   const isPremiumUser = user?.features?.premium
 
@@ -65,7 +66,7 @@ const Classes = ({
         mt={showBannerSlide ? '1.5rem' : ''}
         mb="1rem"
       >
-        {classData.length < 1 ? 'Get Started with Edulastic' : ' My Classes '}
+        {hideGetStartedSection ? 'My Classes' : 'Get Started with Edulastic'}
       </TextWrapper>
       {isPremiumUser && (
         <SelectInputStyled
@@ -130,8 +131,12 @@ const Classes = ({
             history={history}
           />
         )}
-        {allowEmptyBoxes &&
-          emptyBoxCount.map((index) => <EmptyBoxes key={index} />)}
+        {!hideGetStartedSection && (
+          <CreateAssignmentCard
+            newCreateClassCard={classData.length < 1}
+            history={history}
+          />
+        )}
       </FlexContainer>
     </>
   )

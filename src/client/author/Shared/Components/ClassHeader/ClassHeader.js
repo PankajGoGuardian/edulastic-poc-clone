@@ -90,6 +90,7 @@ import {
 import {
   getGroupList,
   getCanvasAllowedInstitutionPoliciesSelector,
+  getUserRole,
 } from '../../../src/selectors/user'
 import {
   CaretUp,
@@ -110,7 +111,6 @@ import { allowedSettingPageToDisplay } from './utils/transformers'
 import { slice } from '../../../LCBAssignmentSettings/ducks'
 
 const {
-  POLICY_OPEN_MANUALLY_BY_TEACHER,
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
   POLICY_CLOSE_MANUALLY_IN_CLASS,
 } = assignmentPolicyOptions
@@ -212,21 +212,8 @@ class ClassHeader extends Component {
   }
 
   handleOpenAssignment = () => {
-    const { openAssignment, match, additionalData, userRole } = this.props
+    const { openAssignment, match, additionalData } = this.props
     const { classId, assignmentId } = match.params
-    if (
-      additionalData.openPolicy !== POLICY_OPEN_MANUALLY_BY_TEACHER &&
-      additionalData.testType === 'common assessment' &&
-      userRole === 'teacher'
-    ) {
-      return notification({
-        type: 'warn',
-        msg: `You can open the assessment once the Open time ${moment(
-          additionalData.endDate
-        )} has passed.
-      `,
-      })
-    }
     openAssignment(assignmentId, classId, additionalData.testId)
   }
 
@@ -536,6 +523,8 @@ class ClassHeader extends Component {
           uta.UTASTATUS === testActivityStatus.SUBMITTED
       )
 
+    const isAssignmentDone = assignmentStatus.toLowerCase() === 'done'
+
     const renderOpenClose = (
       <OpenCloseWrapper>
         {canOpen ? (
@@ -655,8 +644,14 @@ class ClassHeader extends Component {
             data-cy="download-bubble-sheet"
             key="download-bubble-sheet"
             onClick={() => this.generateBubbleSheet(assignmentId, classId)}
+            disabled={!!isAssignmentDone}
           >
-            Generate Bubble Sheet
+            <Tooltip
+              title={isAssignmentDone ? 'Assignment is not open' : null}
+              placement="right"
+            >
+              Generate Bubble Sheet
+            </Tooltip>
           </MenuItems>
         </FeaturesSwitch>
         <FeaturesSwitch
@@ -749,7 +744,7 @@ class ClassHeader extends Component {
         )}
         {showSchoologyGradeSyncOption && (
           <MenuItems
-          data-cy="schoologySyncGrades"
+            data-cy="schoologySyncGrades"
             key="key10"
             onClick={() =>
               this.handleSchoologyAssignmentGradesSync({
@@ -765,7 +760,7 @@ class ClassHeader extends Component {
           groupAtlasId &&
           atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
             <MenuItems
-            data-cy="schoologySyncAssignment"
+              data-cy="schoologySyncAssignment"
               key="key11"
               onClick={() =>
                 schoologySyncAssignment({
@@ -1120,6 +1115,7 @@ const enhance = compose(
       syncWithSchoologyClassroomInProgress: getSchoologyAssignmentSyncInProgress(
         state
       ),
+      userRole: getUserRole(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

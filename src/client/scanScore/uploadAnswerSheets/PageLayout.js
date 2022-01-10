@@ -1,5 +1,5 @@
 import React from 'react'
-import { Layout } from 'antd'
+import { Layout, Icon, Badge, Tooltip } from 'antd'
 import {
   themeColor,
   borderGrey4,
@@ -10,10 +10,36 @@ import {
 import { EduButton } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconLogoCompact, IconSettings } from '@edulastic/icons'
-
+import { connect } from 'react-redux'
+import moment from 'moment'
+import { selector } from './ducks'
 import Breadcrumb from '../../author/src/components/Breadcrumb'
 
 const { Content } = Layout
+
+function downloadVideo(blob_url, fileName = 'video.webm') {
+  const a = document.createElement('a')
+  a.href = blob_url
+  a.download = fileName
+  a.click()
+  a.remove()
+}
+
+window.downloadVideo = downloadVideo
+
+const VideoDownload = ({ url, filename, time }) => (
+  <Tooltip title={`Recorded ${moment(new Date(time)).fromNow()}`}>
+    <Badge dot>
+      <Icon
+        style={{ marginLeft: 15, fontSize: 25 }}
+        type="video-camera"
+        onClick={() => {
+          downloadVideo(url, filename)
+        }}
+      />
+    </Badge>
+  </Tooltip>
+)
 
 const PageLayout = ({
   children,
@@ -22,6 +48,7 @@ const PageLayout = ({
   classTitle,
   showCameraSettings,
   setShowSettings,
+  recordedVideo,
 }) => (
   <Layout>
     <StyledHeader>
@@ -29,6 +56,7 @@ const PageLayout = ({
       <h2 className="title">SnapScore</h2>
       <h1 className="assignmentTitle">{assignmentTitle}</h1>
       <h3 className="classTitle">{classTitle}</h3>
+      {recordedVideo.url ? <VideoDownload {...recordedVideo} /> : null}
       {showCameraSettings ? (
         <SettingsButton
           btnType="primary"
@@ -50,7 +78,7 @@ const PageLayout = ({
   </Layout>
 )
 
-export default PageLayout
+export default connect((state) => ({ ...selector(state) }))(PageLayout)
 
 const StyledHeader = styled.div`
   height: 45px;

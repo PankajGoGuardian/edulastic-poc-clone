@@ -1,6 +1,5 @@
 import { fileApi } from '@edulastic/api'
 import { aws } from '@edulastic/constants'
-import AppConfig from '../../../../app-config'
 
 const s3Folders = Object.values(aws.s3Folders)
 /**
@@ -30,7 +29,7 @@ export const uploadToS3 = async (
 
   const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   const formData = new FormData()
-  const { fields, url } = result
+  const { fields, url, cdnUrl } = result
 
   Object.keys(fields).forEach((item) => {
     formData.append(item, fields[item])
@@ -46,9 +45,5 @@ export const uploadToS3 = async (
   }
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
 
-  // return CDN url for assets in production
-  if (AppConfig.appEnv === 'production') {
-    return `${AppConfig.cdnURI}/${fields.key}`
-  }
-  return `${url}/${fields.key}`
+  return `${cdnUrl}/${fields.key}`
 }

@@ -136,7 +136,7 @@ class EditTermModal extends React.Component {
                 rules: [
                   { required: true, message: 'Please Select Start Date' },
                 ],
-                initialValue: moment(new Date(startDate), 'DD MMM YYYY'),
+                initialValue: moment(new Date(startDate), 'DD MMM YYYY').utc(),
               })(
                 <DatePickerStyled
                   disabledDate={this.disableStartDate}
@@ -154,7 +154,7 @@ class EditTermModal extends React.Component {
               <FieldLabel>End Date</FieldLabel>
               {getFieldDecorator('endDate', {
                 rules: [{ required: true, message: 'Please Select End Date' }],
-                initialValue: moment(new Date(endDate), 'DD MMM YYYY'),
+                initialValue: moment(new Date(endDate), 'DD MMM YYYY').utc(),
               })(
                 <DatePickerStyled
                   format="DD MMM YYYY"

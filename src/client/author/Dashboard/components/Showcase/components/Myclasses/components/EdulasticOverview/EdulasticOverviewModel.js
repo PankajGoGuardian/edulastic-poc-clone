@@ -4,14 +4,15 @@ import { greenDark } from '@edulastic/colors'
 import { IconDemoAccGreen, IconPlayButton } from '@edulastic/icons'
 
 import styled from 'styled-components'
-import EmbeddedVideoPreviewModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/EmbeddedVideoPreviewModal'
 import EdulasticResourceModal from '../../../../../../../CurriculumSequence/components/ManageContentBlock/components/common/EdulasticResourceModal'
 import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
+import EmbeddedSplitPaneModal from '../EmbeddedSplitPaneModal'
 
 const EdulasticOverviewModel = ({
   handleBannerModalClose,
   isBannerModalVisible,
   setShowBannerModal,
+  windowWidth,
 }) => {
   const [isVideoPreview, setIsVideoPreview] = useState(false)
   const handleVideoClick = () => {
@@ -37,10 +38,13 @@ const EdulasticOverviewModel = ({
     setShowBannerModal(null)
   }
   return isVideoPreview ? (
-    <EmbeddedVideoPreviewModal
+    <EmbeddedSplitPaneModal
       closeCallback={handlePreviewModalClose}
       isVisible={isBannerModalVisible} // isBannerModalVisible will have the video preview title and url
-      modalWidth="650px"
+      modalWidth={windowWidth < 1200 ? '94%' : '1140px'}
+      titleFontSize="22px"
+      padding="25px 0px 25px 45px"
+      windowWidth={windowWidth}
     />
   ) : (
     <EdulasticResourceModal

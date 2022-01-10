@@ -127,6 +127,7 @@ const duplicateAssignment = ({
   isInEditAndRegrade = false,
   cloneItems = false,
   playlistId,
+  updatePlaylist = false,
 }) =>
   api
     .callApi({
@@ -138,6 +139,7 @@ const duplicateAssignment = ({
         isInEditAndRegrade,
         cloneItems,
         playlistId,
+        updatePlaylist,
       },
       method: 'post',
     })

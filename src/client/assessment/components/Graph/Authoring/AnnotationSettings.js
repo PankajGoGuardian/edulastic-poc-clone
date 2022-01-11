@@ -32,7 +32,7 @@ class AnnotationSettings extends Component {
         </Subtitle>
         <Row gutter={24}>
           <Col md={12}>
-            <Label>Title</Label>
+            <Label data-cy="titleLabel">Title</Label>
             <WidgetFRInput>
               <QuestionTextArea
                 toolbarId="annotationTitle"
@@ -43,7 +43,7 @@ class AnnotationSettings extends Component {
             </WidgetFRInput>
           </Col>
           <Col md={12}>
-            <Label>Label top</Label>
+            <Label data-cy="topLabel">Label top</Label>
             <WidgetFRInput>
               <QuestionTextArea
                 toolbarId="annotationLabelTop"
@@ -57,7 +57,7 @@ class AnnotationSettings extends Component {
 
         <Row gutter={24}>
           <Col md={12}>
-            <Label>Label left</Label>
+            <Label data-cy="leftLabel">Label left</Label>
             <WidgetFRInput>
               <QuestionTextArea
                 toolbarId="annotationLabelLeft"
@@ -68,7 +68,7 @@ class AnnotationSettings extends Component {
             </WidgetFRInput>
           </Col>
           <Col md={12}>
-            <Label>Label right</Label>
+            <Label data-cy="rightLabel">Label right</Label>
             <WidgetFRInput>
               <QuestionTextArea
                 toolbarId="annotationLabelRight"
@@ -84,7 +84,7 @@ class AnnotationSettings extends Component {
 
         <Row gutter={24}>
           <Col md={12}>
-            <Label>Label bottom</Label>
+            <Label data-cy="bottomLabel">Label bottom</Label>
             <WidgetFRInput>
               <QuestionTextArea
                 toolbarId="annotationLabelBottom"

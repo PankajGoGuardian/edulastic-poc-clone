@@ -851,6 +851,7 @@ class QuadrantsMoreOptions extends Component {
                     name="xShowAxis"
                     onChange={() => this.handleCheckbox('xShowAxis', xShowAxis)}
                     checked={xShowAxis}
+                    data-cy="xShowAxis"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -860,6 +861,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('xShowAxisLabel', xShowAxisLabel)
                     }
                     checked={xShowAxisLabel}
+                    data-cy="xShowAxisLabel"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -869,6 +871,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('xHideTicks', xHideTicks)
                     }
                     checked={xHideTicks}
+                    data-cy="xHideTicks"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -876,6 +879,7 @@ class QuadrantsMoreOptions extends Component {
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox('xMinArrow', xMinArrow)}
                     checked={xMinArrow}
+                    data-cy="xMinArrow"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -883,6 +887,7 @@ class QuadrantsMoreOptions extends Component {
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox('xMaxArrow', xMaxArrow)}
                     checked={xMaxArrow}
+                    data-cy="xMaxArrow"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -892,6 +897,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('xCommaInLabel', xCommaInLabel)
                     }
                     checked={xCommaInLabel}
+                    data-cy="xCommaInLabel"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -901,6 +907,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('xDrawLabel', xDrawLabel)
                     }
                     checked={xDrawLabel}
+                    data-cy="xDrawLabel"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -910,6 +917,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleChangeRadians('xRadians', !xRadians)
                     }
                     checked={xRadians}
+                    data-cy="xRadians"
                   />
                 </Col>
               </Row>
@@ -1030,6 +1038,7 @@ class QuadrantsMoreOptions extends Component {
                     name="yShowAxis"
                     onChange={() => this.handleCheckbox('yShowAxis', yShowAxis)}
                     checked={yShowAxis}
+                    data-cy="yShowAxis"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1039,6 +1048,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('yShowAxisLabel', yShowAxisLabel)
                     }
                     checked={yShowAxisLabel}
+                    data-cy="yShowAxisLabel"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1048,6 +1058,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('yHideTicks', yHideTicks)
                     }
                     checked={yHideTicks}
+                    data-cy="yHideTicks"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1055,6 +1066,7 @@ class QuadrantsMoreOptions extends Component {
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox('yMinArrow', yMinArrow)}
                     checked={yMinArrow}
+                    data-cy="yMinArrow"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1062,6 +1074,7 @@ class QuadrantsMoreOptions extends Component {
                     name="drawLabelZero"
                     onChange={() => this.handleCheckbox('yMaxArrow', yMaxArrow)}
                     checked={yMaxArrow}
+                    data-cy="yMaxArrow"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1071,6 +1084,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('yCommaInLabel', yCommaInLabel)
                     }
                     checked={yCommaInLabel}
+                    data-cy="yCommaInLabel"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1080,6 +1094,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleCheckbox('yDrawLabel', yDrawLabel)
                     }
                     checked={yDrawLabel}
+                    data-cy="yDrawLabel"
                   />
                 </Col>
                 <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -1089,6 +1104,7 @@ class QuadrantsMoreOptions extends Component {
                       this.handleChangeRadians('yRadians', !yRadians)
                     }
                     checked={yRadians}
+                    data-cy="yRadians"
                   />
                 </Col>
               </Row>
@@ -1168,6 +1184,7 @@ class QuadrantsMoreOptions extends Component {
                 name="src"
                 value={backgroundImage.src}
                 onChange={this.handleBgImgInputChange}
+                data-cy="imageUrl"
               />
             </Col>
           </Row>

@@ -18,12 +18,11 @@ const ORG_TYPE = {
   USER: 'user',
 }
 const ROLE_LABEL = {
-  'district-admin': 'District Admin',
-  'school-admin': 'School Admin',
-  teacher: 'Teacher',
-  student: 'Student'
+  [DISTRICT_ADMIN]: 'District Admin',
+  [SCHOOL_ADMIN]: 'School Admin',
+  [TEACHER]: 'Teacher',
+  [STUDENT]: 'Student',
 }
-
 
 module.exports = {
   STUDENT,

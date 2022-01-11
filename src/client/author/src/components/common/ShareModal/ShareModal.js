@@ -15,7 +15,7 @@ import {
   SelectInputStyled,
   notification,
 } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, roleType } from '@edulastic/constants'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { IconClose, IconShare } from '@edulastic/icons'
 import {
@@ -65,7 +65,7 @@ import {
   getUserOrgId,
 } from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
-import roleType from '@edulastic/constants/const/roleType'
+
 const { Paragraph } = Typography
 
 const permissions = {
@@ -329,7 +329,7 @@ class ShareModal extends React.Component {
   handleChange = (value) => {
     const { permission } = this.state
     const [userName, email, role, _userId] = value.split('||')
-    const selectedInputTitle = userName.trim()+',('+email+'),'+role
+    const selectedInputTitle = `${userName.trim()},(${email}),${role}`
     const newState = {
       userName,
       email,
@@ -685,11 +685,16 @@ class ShareModal extends React.Component {
                       <Option
                         value={`${getFullNameFromAsString(
                           item._source
-                        )}${'||'}${item._source.email}${'||['}${roleType.ROLE_LABEL[item._source.role]}${']||'}${item._id}`}
+                        )}${'||'}${item._source.email}${'||['}${
+                          roleType.ROLE_LABEL[item._source.role]
+                        }${']||'}${item._id}`}
                         key={item._id}
                       >
-                        <p>{`${item._source.firstName} ${item._source.lastName}`}
-                        {`(${item._source.email})`} <b>{'[' + roleType.ROLE_LABEL[item._source.role]+']'}</b></p>
+                        <p>
+                          {`${item._source.firstName} ${item._source.lastName}`}
+                          {`(${item._source.email})`}{' '}
+                          <b>{`[${roleType.ROLE_LABEL[item._source.role]}]`}</b>
+                        </p>
                       </Option>
                     ))}
                   </AutoCompleteStyled>

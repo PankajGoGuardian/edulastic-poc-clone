@@ -12,7 +12,7 @@ import {
   TextInputStyled,
   RadioBtn,
 } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { roleuser, roleType } from '@edulastic/constants'
 import { Col, Row, Select, Spin, Radio } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -33,7 +33,6 @@ import {
 } from '../../ducks'
 import staticData from '../../staticData'
 import { FieldRow, Heading, ModalBody } from './ImportContentModal'
-import roleType from '@edulastic/constants/const/roleType'
 
 const { roleOptions, permissionLevelOptions } = staticData
 
@@ -401,9 +400,14 @@ const AddPermissionModal = ({
                       orgName={`${_user.firstName} ${_user.lastName}`}
                       role={_user.role}
                       data-cy={_user.email}
-                      title={`${_user.firstName} ${_user.lastName} (${_user.email}) [${roleType.ROLE_LABEL[_user.role]}]`}
+                      title={`${_user.firstName} ${_user.lastName} (${
+                        _user.email
+                      }) [${roleType.ROLE_LABEL[_user.role]}]`}
                     >
-                      <span>{`${_user.firstName} ${_user.lastName} (${_user.email})`} <b>[{roleType.ROLE_LABEL[_user.role]}]</b></span>
+                      <span>
+                        {`${_user.firstName} ${_user.lastName} (${_user.email})`}{' '}
+                        <b>[{roleType.ROLE_LABEL[_user.role]}]</b>
+                      </span>
                     </Select.Option>
                   ))}
             </SelectInputStyled>

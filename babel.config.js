@@ -53,7 +53,7 @@ if (process.env.CYPRESS) {
     { 
       'all':true,
       'extension': ['.js','.ts'],
-      'include': ['src/client/**'],
+      'include': ['src/client/author/**','src/client/student/**','src/client/*.js'],
     }
   ]])
 }

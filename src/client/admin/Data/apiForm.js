@@ -337,6 +337,30 @@ export const apiForms = [
     ],
   },
   {
+    id: 'invite-teacher',
+    name: 'Invite Teachers',
+    endPoint: '/bulk-invite-teachers',
+    method: 'post',
+    fields: [
+      {
+        name: 'districtId',
+        displayName: 'District ID',
+        placeholder: 'Enter districtId',
+        type: 'string',
+        required: true,
+      },
+      {
+        key: 'email',
+        name: 'userDetails',
+        displayName: 'Teacher(s) Email Id',
+        placeholder: 'Enter teacher username or email in comma separated',
+        type: 'textarea',
+        formatter: (value) => value.split(',')?.map((v) => v.trim()),
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'create-admin',
     name: 'Create Admin for District/School',
     fields: [

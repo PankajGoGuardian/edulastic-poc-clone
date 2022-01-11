@@ -25,9 +25,17 @@ export const submit = (params, endpoint, method, isSlowApi) =>
       data: params,
     })
     .then(({ data, status }) => ({ ...data, status }))
-    .catch(({ data: errorData }) =>
-      notification({ msg: errorData?.message, messageKey: 'apiFormErr' })
-    )
+    .catch((errorObj) => {
+      const { data: errorData } = errorObj
+      if (errorObj?.response?.data?.message === 'DistrictNotFound') {
+        notification({
+          msg: 'District not found!',
+          messageKey: 'apiFormErr',
+        })
+      } else {
+        notification({ msg: errorData?.message, messageKey: 'apiFormErr' })
+      }
+    })
 
 export const uploadFile = (file, endPoint) => {
   const formData = new FormData()

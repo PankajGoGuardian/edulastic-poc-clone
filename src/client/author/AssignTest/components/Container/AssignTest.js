@@ -76,7 +76,10 @@ import {
   SavedSettingsContainer,
   DeleteIconContainer,
 } from './styled'
-import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+} from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
@@ -129,7 +132,10 @@ class AssignTest extends React.Component {
       getDefaultTestSettings,
       isFreeAdmin,
       isSAWithoutSchools,
+      emailVerified,
+      verificationTS,
       toggleAdminAlertModal,
+      toggleVerifyEmailModal,
       history,
       fetchTestSettingsList,
       userId,
@@ -147,6 +153,16 @@ class AssignTest extends React.Component {
     if (isFreeAdmin) {
       history.push('/author/reports')
       return toggleAdminAlertModal()
+    }
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     resetStudents()
 
@@ -897,6 +913,8 @@ const enhance = compose(
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      emailVerified: get(state.user, 'user.emailVerified', null),
+      verificationTS: get(state.user, 'user.verificationTS', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       currentSettingsId: getCurrentSettingsIdSelector(state),
       userId: getUserId(state),
@@ -921,6 +939,7 @@ const enhance = compose(
       updateAssignmentSettings: updateAssingnmentSettingsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       fetchTestSettingsList: fetchTestSettingsListAction,
       saveTestSettings: saveTestSettingsAction,
       setCurrentTestSettingsId: setCurrentTestSettingsIdAction,

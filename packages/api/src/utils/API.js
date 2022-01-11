@@ -80,6 +80,9 @@ const getLoggedOutUrl = () => {
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
   }
+  if (pathname.includes('/verify')) {
+    return pathname
+  }
 
   return '/login'
 }

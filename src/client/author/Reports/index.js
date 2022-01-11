@@ -1,4 +1,4 @@
-import { pullAllBy } from 'lodash'
+import { pullAllBy, get } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
@@ -37,7 +37,10 @@ import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import { EngagementReportContainer } from './subPages/engagementReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
 import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
-import { toggleAdminAlertModalAction } from '../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+} from '../../student/Login/ducks'
 
 const Container = (props) => {
   const {
@@ -54,6 +57,9 @@ const Container = (props) => {
     updateCsvDocs,
     isSAWithoutSchools,
     toggleAdminAlertModal,
+    emailVerified,
+    verificationTS,
+    toggleVerifyEmailModal,
   } = props
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
@@ -73,6 +79,16 @@ const Container = (props) => {
     if (isSAWithoutSchools) {
       history.push('/author/tests')
       return toggleAdminAlertModal
+    }
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(role === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     window.onbeforeprint = () => {
       // set 1 so that `isPrinting` dependant useEffect logic doesn't executed
@@ -418,6 +434,8 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,
+    emailVerified: get(state.user, 'user.emailVerified', null),
+    verificationTS: get(state.user, 'user.verificationTS', null),
     showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
     sharedReportList: getSharedReportList(state),
@@ -433,6 +451,7 @@ const enhance = connect(
     fetchCollaborationGroups: getCollaborativeGroupsAction,
     updateCsvDocs: updateCsvDocsAction,
     toggleAdminAlertModal: toggleAdminAlertModalAction,
+    toggleVerifyEmailModal: toggleVerifyEmailModalAction,
   }
 )
 

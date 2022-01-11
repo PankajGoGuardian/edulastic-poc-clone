@@ -24,6 +24,7 @@ import {
   Icon as AntIcon,
   Popover,
   Popconfirm,
+  Tooltip,
 } from 'antd'
 import styled from 'styled-components'
 import {
@@ -45,6 +46,7 @@ import {
   IconSwitchUser,
   IconUsers,
   IconExclamationMark,
+  IconCircleCheck,
   IconClose,
   IconDemoAccNav,
 } from '@edulastic/icons'
@@ -59,7 +61,10 @@ import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
   toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  setIsUserSignedUpUsingUsernameAndPassword,
   isDemoPlaygroundUser,
+  setIsUserOnProfilePageAction,
 } from '../../../student/Login/ducks'
 import {
   isOrganizationDistrictSelector,
@@ -304,6 +309,9 @@ class SideMenu extends Component {
         isFreeAdmin,
         isSAWithoutSchools,
         toggleAdminAlertModal,
+        toggleVerifyEmailModal,
+        emailVerified,
+        verificationTS,
       } = this.props
       const { path, label } = this.MenuItems[item.key]
       segmentApi.genericEventTrack('mainMenuClick', { label, path })
@@ -313,6 +321,19 @@ class SideMenu extends Component {
         (label === 'Assignments' && isFreeAdmin)
       ) {
         return toggleAdminAlertModal()
+      }
+      if (
+        ['Assignments', 'Insights'].includes(label) &&
+        !emailVerified &&
+        verificationTS
+      ) {
+        const existingVerificationTS = new Date(verificationTS)
+        const expiryDate = new Date(
+          existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+        ).getTime()
+        if (expiryDate < Date.now()) {
+          return toggleVerifyEmailModal(true)
+        }
       }
       if (label === 'My Playlist' && !this.props.features.premium) {
         return this.handleBlockedClick()
@@ -400,6 +421,20 @@ class SideMenu extends Component {
     })
   }
 
+  handleShowVerifyModal = (isSignupUsingUNAndPass) => {
+    const {
+      setSignedUpUsingUsernameAndPassword,
+      toggleVerifyEmailModal,
+      setIsUserOnProfilePage,
+    } = this.props
+    // set the flag variable
+    setIsUserOnProfilePage(true)
+    if (isSignupUsingUNAndPass) {
+      setSignedUpUsingUsernameAndPassword()
+    }
+    toggleVerifyEmailModal(true)
+  }
+
   getInitials = () => {
     const { firstName, lastName } = this.props
     if (firstName && lastName) return `${firstName[0] + lastName[0]}`
@@ -422,6 +457,7 @@ class SideMenu extends Component {
     isSwitchAccountNotification = false
 
     const {
+      user,
       userId,
       switchDetails,
       windowWidth,
@@ -439,6 +475,8 @@ class SideMenu extends Component {
       isProxyUser,
       isDemoPlaygroundUserProxy,
       orgId,
+      emailVerified,
+      verificationTS,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -465,6 +503,17 @@ class SideMenu extends Component {
         )
       )
     })
+
+    const lmsIds = [
+      'googleId',
+      'atlasId',
+      'cleverId',
+      'msoId',
+      'canvasId',
+      'cliId',
+      'newselaId',
+    ]
+    const isSignupUsingUNAndPass = lmsIds.every((lmsId) => !user[lmsId])
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
 
@@ -527,7 +576,16 @@ class SideMenu extends Component {
             </Menu.Item>
           )}
           {users.length > 1 ? ( // since current user is also in this list
-            <Menu.Item key="3" className="removeSelectedBorder">
+            <Menu.Item
+              key="3"
+              className="removeSelectedBorder"
+              disabled={!emailVerified && verificationTS}
+              title={
+                !emailVerified && verificationTS
+                  ? 'Please verify your email address to access this feature.'
+                  : ''
+              }
+            >
               <a>
                 <IconSwitchUser />
                 <span data-cy="switch-user">
@@ -536,7 +594,16 @@ class SideMenu extends Component {
               </a>
             </Menu.Item>
           ) : userRole !== roleuser.EDULASTIC_CURATOR ? (
-            <Menu.Item key="4" className="removeSelectedBorder">
+            <Menu.Item
+              key="4"
+              className="removeSelectedBorder"
+              disabled={!emailVerified && verificationTS}
+              title={
+                !emailVerified && verificationTS
+                  ? 'Please verify your email address to access this feature.'
+                  : ''
+              }
+            >
               <Link to={`/?addAccount=true&userId=${userId}`} target="_blank">
                 <IconSwitchUser />{' '}
                 <span>{isCollapsed ? '' : 'Add Account'}</span>
@@ -860,6 +927,27 @@ class SideMenu extends Component {
                       )}
                     </div>
                   </Dropdown>
+                  <IconContainerDiv
+                    isCollapsed={isCollapsed}
+                    onClick={() =>
+                      !emailVerified &&
+                      (verificationTS || isSignupUsingUNAndPass)
+                        ? this.handleShowVerifyModal(isSignupUsingUNAndPass)
+                        : null
+                    }
+                  >
+                    {emailVerified ? (
+                      <Tooltip title="Verified">
+                        <CheckCircleIcon />
+                      </Tooltip>
+                    ) : null}
+                    {!emailVerified &&
+                    (verificationTS || isSignupUsingUNAndPass) ? (
+                      <Tooltip title="Not Verified">
+                        <ExclamationIcon />
+                      </Tooltip>
+                    ) : null}
+                  </IconContainerDiv>
                 </UserInfoButton>
               </MenuFooter>
             </MenuWrapper>
@@ -902,6 +990,9 @@ const enhance = compose(
       lastName: get(state.user, 'user.lastName', ''),
       userRole: get(state.user, 'user.role', ''),
       userId: get(state.user, 'user._id', ''),
+      user: get(state.user, 'user', null),
+      emailVerified: get(state.user, 'user.emailVerified', null),
+      verificationTS: get(state.user, 'user.verificationTS', null),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
       orgId: getUserOrgId(state),
@@ -923,6 +1014,9 @@ const enhance = compose(
       toggleSideBar: toggleSideBarAction,
       logout: logoutAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
+      setSignedUpUsingUsernameAndPassword: setIsUserSignedUpUsingUsernameAndPassword,
+      setIsUserOnProfilePage: setIsUserOnProfilePageAction,
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
     }
   )
@@ -1559,6 +1653,20 @@ const HelpIcon = styled(IconQuestion)`
   fill: #1fe3a1;
   width: auto;
   height: 22px;
+`
+const IconContainerDiv = styled.div`
+  position: absolute;
+  top: ${({ isCollapsed }) => (isCollapsed ? '5px' : '8px')};
+  left: ${({ isCollapsed }) => (isCollapsed ? '30px' : '50px')};
+`
+const CheckCircleIcon = styled(IconCircleCheck)`
+  width: auto;
+  height: 16px;
+  margin-left: -10px;
+`
+const ExclamationIcon = styled(IconExclamationMark)`
+  width: auto;
+  height: 16px;
 `
 
 const IconDropdown = styled(AntIcon)`

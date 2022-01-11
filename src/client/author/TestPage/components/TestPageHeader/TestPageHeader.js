@@ -1,4 +1,5 @@
 import { tabletWidth, white, themeColor } from '@edulastic/colors'
+import { get } from 'lodash'
 import { MainHeader, EduButton, notification } from '@edulastic/common'
 import { roleuser, test as testConstants } from '@edulastic/constants'
 import {
@@ -27,6 +28,7 @@ import {
   getUserId,
   getUserRole,
   toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
@@ -207,6 +209,9 @@ const TestPageHeader = ({
   isFreeAdmin,
   isSAWithoutSchools,
   toggleAdminAlertModal,
+  emailVerified,
+  verificationTS,
+  toggleVerifyEmailModal,
   showRegradeConfirmPopup,
   setShowRegradeConfirmPopup,
   regradeFirebaseDocId,
@@ -318,6 +323,16 @@ const TestPageHeader = ({
 
   const handleAssign = () => {
     if (isFreeAdmin || isSAWithoutSchools) return toggleAdminAlertModal()
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
+    }
     onAssign()
   }
 
@@ -900,6 +915,8 @@ const enhance = compose(
       isCurator: getIsCurator(state),
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
+      emailVerified: get(state.user, 'user.emailVerified', null),
+      verificationTS: get(state.user, 'user.verificationTS', null),
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
@@ -911,6 +928,7 @@ const enhance = compose(
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
       deletePlaylist: deletePlaylistRequestAction,
     }

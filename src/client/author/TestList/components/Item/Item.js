@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { uniqBy } from 'lodash'
+import { uniqBy, get } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
@@ -41,7 +41,10 @@ import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
-import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+} from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
@@ -132,7 +135,11 @@ class Item extends Component {
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      emailVerified,
+      verificationTS,
+      toggleVerifyEmailModal,
       orgCollections,
+      userRole,
       isTestRecommendation,
     } = this.props
     if (isTestRecommendation && !this.state.isOpenModal) {
@@ -145,7 +152,16 @@ class Item extends Component {
     const selectedCollections = collections.map((x) => x._id)
     const source = isTestRecommendation ? 'Recommendation' : 'Library'
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else
+    else if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
+    } else
       history.push({
         pathname: `/author/assignments/${item._id}`,
         state: {
@@ -510,6 +526,8 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isUseThisLoading: getIsUseThisLoading(state),
+      emailVerified: get(state.user, 'user.emailVerified', null),
+      verificationTS: get(state.user, 'user.verificationTS', null),
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,
@@ -522,6 +540,7 @@ const enhance = compose(
       duplicatePlayList: duplicatePlaylistRequestAction,
       duplicateTest: duplicateTestRequestAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       useThisPlayList: useThisPlayListAction,
       cloneThisPlayList: cloneThisPlayListAction,

@@ -54,7 +54,10 @@ export const isLoggedInForPrivateRoute = (user) => {
 }
 
 export const isLoggedInForLoggedOutRoute = (user) => {
-  if (user && user.isAuthenticated) {
+  if (
+    user &&
+    user.isAuthenticated 
+  ) {
     if (
       user &&
       user.user &&

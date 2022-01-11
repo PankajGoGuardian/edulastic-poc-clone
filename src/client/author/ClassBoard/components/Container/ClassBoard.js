@@ -128,6 +128,7 @@ import {
 import {
   updateCliUserAction,
   toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import {
@@ -275,9 +276,13 @@ class ClassBoard extends Component {
       isCliUser: cliUserUpdated,
       history,
       setShowAllStudents,
+      emailVerified,
+      verificationTS,
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      toggleVerifyEmailModal,
+      userRole,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -286,6 +291,16 @@ class ClassBoard extends Component {
     if (isFreeAdmin) {
       history.push('/author/reports')
       return toggleAdminAlertModal()
+    }
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
@@ -2023,6 +2038,9 @@ const enhance = compose(
         ['author_classboard_testActivity', 'isShowAllStudents'],
         false
       ),
+      emailVerified: get(state.user, 'user.emailVerified', null),
+      verificationTS: get(state.user, 'user.verificationTS', null),
+      userRole: get(state.user, 'user.role', null),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
       studentsList: getAllStudentsList(state),
@@ -2056,6 +2074,7 @@ const enhance = compose(
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setPageNumber: setPageNumberAction,
     }
   )

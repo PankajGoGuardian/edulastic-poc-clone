@@ -15,7 +15,7 @@ import {
   SelectInputStyled,
   notification,
 } from '@edulastic/common'
-import { roleuser, roleType } from '@edulastic/constants'
+import { roleuser } from '@edulastic/constants'
 import signUpState from '@edulastic/constants/const/signUpState'
 import { IconClose, IconShare } from '@edulastic/icons'
 import {
@@ -686,15 +686,15 @@ class ShareModal extends React.Component {
                         value={`${getFullNameFromAsString(
                           item._source
                         )}${'||'}${item._source.email}${'||['}${
-                          roleType.ROLE_LABEL[item._source.role]
+                          roleuser.ROLE_LABEL[item._source.role]
                         }${']||'}${item._id}`}
                         key={item._id}
                       >
-                        <p>
+                        <span>
                           {`${item._source.firstName} ${item._source.lastName}`}
                           {`(${item._source.email})`}{' '}
-                          <b>{`[${roleType.ROLE_LABEL[item._source.role]}]`}</b>
-                        </p>
+                          <b>{`[${roleuser.ROLE_LABEL[item._source.role]}]`}</b>
+                        </span>
                       </Option>
                     ))}
                   </AutoCompleteStyled>

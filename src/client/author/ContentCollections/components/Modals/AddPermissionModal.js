@@ -12,7 +12,7 @@ import {
   TextInputStyled,
   RadioBtn,
 } from '@edulastic/common'
-import { roleuser, roleType } from '@edulastic/constants'
+import { roleuser } from '@edulastic/constants'
 import { Col, Row, Select, Spin, Radio } from 'antd'
 import moment from 'moment'
 import PropTypes from 'prop-types'
@@ -402,11 +402,11 @@ const AddPermissionModal = ({
                       data-cy={_user.email}
                       title={`${_user.firstName} ${_user.lastName} (${
                         _user.email
-                      }) [${roleType.ROLE_LABEL[_user.role]}]`}
+                      }) [${roleuser.ROLE_LABEL[_user.role]}]`}
                     >
                       <span>
                         {`${_user.firstName} ${_user.lastName} (${_user.email})`}{' '}
-                        <b>[{roleType.ROLE_LABEL[_user.role]}]</b>
+                        <b>[{roleuser.ROLE_LABEL[_user.role]}]</b>
                       </span>
                     </Select.Option>
                   ))}

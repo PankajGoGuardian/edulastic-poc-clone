@@ -65,7 +65,7 @@ import {
   getUserOrgId,
 } from '../../../selectors/user'
 import { RadioInputWrapper } from '../RadioInput'
-
+import roleType from '@edulastic/constants/const/roleType'
 const { Paragraph } = Typography
 
 const permissions = {
@@ -102,13 +102,6 @@ const shareLevel = {
 
 const shareTypeKeys = ['PUBLIC', 'DISTRICT', 'SCHOOL', 'INDIVIDUAL', 'LINK']
 const shareTypeKeyForDa = ['PUBLIC', 'DISTRICT', 'INDIVIDUAL', 'LINK']
-const roles = {
-  'district-admin': 'District Admin',
-  'school-admin': 'School Admin',
-  teacher: 'Teacher',
-  student: 'Student',
-  parent: 'Parent',
-}
 
 const { Option } = AutoComplete
 
@@ -692,11 +685,11 @@ class ShareModal extends React.Component {
                       <Option
                         value={`${getFullNameFromAsString(
                           item._source
-                        )}${'||'}${item._source.email}${'||['}${roles[item._source.role]}${']||'}${item._id}`}
+                        )}${'||'}${item._source.email}${'||['}${roleType.ROLE_LABEL[item._source.role]}${']||'}${item._id}`}
                         key={item._id}
                       >
                         <p>{`${item._source.firstName} ${item._source.lastName}`}
-                        {`(${item._source.email})`} <b>{'[' + roles[item._source.role]+']'}</b></p>
+                        {`(${item._source.email})`} <b>{'[' + roleType.ROLE_LABEL[item._source.role]+']'}</b></p>
                       </Option>
                     ))}
                   </AutoCompleteStyled>

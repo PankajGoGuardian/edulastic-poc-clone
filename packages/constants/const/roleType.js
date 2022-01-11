@@ -17,6 +17,13 @@ const ORG_TYPE = {
   DISTRICT_ADMIN: 'district-admin',
   USER: 'user',
 }
+const ROLE_LABEL = {
+  'district-admin': 'District Admin',
+  'school-admin': 'School Admin',
+  teacher: 'Teacher',
+  student: 'Student'
+}
+
 
 module.exports = {
   STUDENT,
@@ -29,4 +36,5 @@ module.exports = {
   DA_SA_ROLE_ARRAY,
   PARENT,
   ORG_TYPE,
+  ROLE_LABEL,
 }

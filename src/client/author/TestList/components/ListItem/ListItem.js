@@ -163,18 +163,17 @@ class ListItem extends Component {
       toggleVerifyEmailModal,
       isFreeAdmin,
       isSAWithoutSchools,
-      userRole,
     } = this.props
-    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else if (!emailVerified && verificationTS) {
+    let expiryDate
+    if (!emailVerified && verificationTS) {
       const existingVerificationTS = new Date(verificationTS)
-      const expiryDate = new Date(
+      expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
       ).getTime()
-      if (expiryDate < Date.now()) {
-        history.push(userRole === 'teacher' ? '/' : '/author/items')
-        return toggleVerifyEmailModal(true)
-      }
+    }
+    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
+    else if (expiryDate && expiryDate < Date.now()) {
+      toggleVerifyEmailModal(true)
     } else
       history.push({
         pathname: `/author/assignments/${item._id}`,
@@ -641,7 +640,6 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       emailVerified: get(state.user, 'user.emailVerified', null),
       verificationTS: get(state.user, 'user.verificationTS', null),
-      userRole: get(state.user, 'user.role', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),

@@ -139,7 +139,6 @@ class Item extends Component {
       verificationTS,
       toggleVerifyEmailModal,
       orgCollections,
-      userRole,
       isTestRecommendation,
     } = this.props
     if (isTestRecommendation && !this.state.isOpenModal) {
@@ -151,16 +150,16 @@ class Item extends Component {
     )?._id
     const selectedCollections = collections.map((x) => x._id)
     const source = isTestRecommendation ? 'Recommendation' : 'Library'
-    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else if (!emailVerified && verificationTS) {
+    let expiryDate
+    if (!emailVerified && verificationTS) {
       const existingVerificationTS = new Date(verificationTS)
-      const expiryDate = new Date(
+      expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
       ).getTime()
-      if (expiryDate < Date.now()) {
-        history.push(userRole === 'teacher' ? '/' : '/author/items')
-        return toggleVerifyEmailModal(true)
-      }
+    }
+    if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
+    else if (expiryDate && expiryDate < Date.now()) {
+      toggleVerifyEmailModal(true)
     } else
       history.push({
         pathname: `/author/assignments/${item._id}`,

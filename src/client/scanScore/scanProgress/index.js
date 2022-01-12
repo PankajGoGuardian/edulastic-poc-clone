@@ -87,10 +87,11 @@ const ScanProgress = ({
           groupId: tempScannedDocs[0].groupId,
           sessionId,
           responses: tempScannedDocs.map(
-            ({ imageUri, studentId, answers }) => ({
+            ({ imageUri, studentId, answers, originalImgUri }) => ({
               answers,
               studentId,
               imageUri,
+              originalImgUri,
             })
           ),
         })

@@ -270,7 +270,7 @@ const ScanAnswerSheetsInner = ({
                   )
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
-                  ].originalImg = fileUrl
+                  ].originalImgUri = fileUrl
                 }
 
                 const temp = []

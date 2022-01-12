@@ -36,3 +36,7 @@ export const ContentBackDrop = styled.div`
   height: calc(100vh - 64px);
   z-index: 2;
 `
+export const SpinnerContainer = styled.div`
+  height: calc(100vh - 64px);
+  text-align: center;
+`

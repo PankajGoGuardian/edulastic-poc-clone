@@ -35,7 +35,7 @@ import {
   fetchAssignmentsByTestAction,
 } from '../../../../publicTest/ducks'
 
-import { Content, ContentBackDrop } from './styled'
+import { Content, ContentBackDrop, SpinnerContainer } from './styled'
 import TestPageHeader from '../TestPageHeader/TestPageHeader'
 import {
   defaultImage,
@@ -781,7 +781,11 @@ class Container extends PureComponent {
     }
 
     if (isTestLoading && !test._id) {
-      return <Spin />
+      return (
+        <SpinnerContainer>
+          <Spin />
+        </SpinnerContainer>
+      )
     }
 
     switch (current) {

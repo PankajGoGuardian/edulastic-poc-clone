@@ -807,7 +807,12 @@ function* correctItemUpdateSaga({ payload }) {
     const testItems = get(classResponse, 'data.originalItems', [])
     const studentResponse = yield select((state) => state.studentResponse)
     const testItem = testItems.find((t) => t._id === testItemId) || {}
-    const [isIncomplete, errMsg] = isIncompleteQuestion(question)
+    const { itemLevelScoring = false, multipartItem = false } = testItem || {}
+    const [isIncomplete, errMsg] = isIncompleteQuestion(
+      question,
+      itemLevelScoring,
+      multipartItem
+    )
 
     if (isIncomplete) {
       notification({ msg: errMsg })

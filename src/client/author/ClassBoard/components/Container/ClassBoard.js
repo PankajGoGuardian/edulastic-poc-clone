@@ -1467,6 +1467,7 @@ class ClassBoard extends Component {
                     <SwitchBox style={{ position: 'relative' }}>
                       <FilterSpan>FILTER BY STATUS</FilterSpan>
                       <FilterSelect
+                        data-cy="filterByStatus"
                         className="student-status-filter"
                         value={studentFilter}
                         dropdownMenuStyle={{ fontSize: 29 }}

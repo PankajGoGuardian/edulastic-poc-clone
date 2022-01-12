@@ -412,7 +412,6 @@ const ScanAnswerSheetsInner = ({
     }
   }
 
-  
   const closeScanConfirmationModal = () => setConfirmScanCompletion(false)
 
   const stopCamera = () => {
@@ -669,9 +668,7 @@ const ScanAnswerSheetsInner = ({
           visible={limitCameraModePopUp}
           title="Maximum Limit Reached"
           closable={false}
-          footer={[
-            <EduButton onClick={triggerCompleteConfirmation}>NEXT</EduButton>,
-          ]}
+          footer={[<EduButton onClick={handleScanComplete}>NEXT</EduButton>]}
         >
           <p>
             Maximum 100 sheets can be scanned at a time. Please click next to

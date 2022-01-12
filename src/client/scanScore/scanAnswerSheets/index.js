@@ -407,7 +407,6 @@ const ScanAnswerSheetsInner = ({
     if (!arrAnswersRef.current?.length) {
       notification({ type: 'warning', msg: 'No Forms scanned so far.' })
     } else {
-      setlimitCameraModePopUp(false)
       setConfirmScanCompletion(true)
     }
   }
@@ -438,6 +437,7 @@ const ScanAnswerSheetsInner = ({
   }
 
   const handleScanComplete = async () => {
+    setlimitCameraModePopUp(false)
     const { assignmentId, groupId } = qs.parse(window.location?.search || '', {
       ignoreQueryPrefix: true,
     })

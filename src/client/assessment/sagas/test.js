@@ -230,6 +230,7 @@ const getSettings = (test, testActivity, preview) => {
     restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
     restrictNavigationOutAttemptsThreshold:
       assignmentSettings?.restrictNavigationOutAttemptsThreshold,
+    ...(preview && { keypad: test?.keypad?.value }),
   }
 }
 

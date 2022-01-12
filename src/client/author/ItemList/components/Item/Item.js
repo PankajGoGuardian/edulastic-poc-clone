@@ -155,7 +155,8 @@ class Item extends Component {
 
   get getRubricNames() {
     const { item } = this.props
-    const allRubricNames = getAllRubricNames(item)
+    let allRubricNames = getAllRubricNames(item)
+    allRubricNames = allRubricNames.map((rubricData) => rubricData.name)
     const namesCount = allRubricNames.length
     if (namesCount) {
       if (namesCount > 3) {

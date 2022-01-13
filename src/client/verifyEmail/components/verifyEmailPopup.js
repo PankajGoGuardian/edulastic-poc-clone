@@ -90,14 +90,14 @@ const VerifyEmailPopup = (props) => {
   const getModalContent = () => {
     if (onProfilePage && !emailRegex.test(email)) {
       setIsInvalidEmail(true)
-      return 'Please update your email Id with valid email for verification'
+      return 'Please provide a valid email address for verification.'
     }
     if (emailVerifiedStatus.length || emailVerified) {
       if (emailVerifiedStatus === 'linkExpired') {
-        return 'The link has been expired and is no longer valid'
+        return 'The link has expired and is no longer valid.'
       }
       if (emailVerifiedStatus === 'alreadyVerified') {
-        return 'Your email has been already verified'
+        return 'Your email has already been verified.'
       }
       if (emailVerifiedStatus === 'success' || emailVerified) {
         return 'Your email address has been verified.'
@@ -108,23 +108,26 @@ const VerifyEmailPopup = (props) => {
     }
     if (isEmailVerificationLinkSent) {
       if (isEmailVerificationLinkSent === 'success') {
-        return 'A verification link has been sent to you email address. Please click on the link to verify.'
+        if (!onProfilePage && !window.location.pathname.includes('/verify/')) {
+          return 'A verification link has been sent to your email. Please click the link to verify and continue using Edulastic.'
+        }
+        return 'A verification link has been sent to your email. Please click the link to verify.'
       }
       if (isEmailVerificationLinkSent === 'failed') {
-        return ''
+        return 'Failed to send the verification mail. Please try again later.'
       }
     }
     if (flag && !verificationTS) {
-      return 'Your email address is not verified. Please request a new verification link!'
+      return 'Your email address has not been verified. Please request a new verification link!'
     }
     if (
       (flag && verificationTS && expiryDate < Date.now()) ||
       (verificationTS && expiryDate < Date.now())
     ) {
-      return 'Your verification link has expired. Please request a new verification link!'
+      return 'The link has expired and is no longer valid.'
     }
     if (uid && !vc && !isEmailVerificationLinkSent && !emailVerified) {
-      return 'A verification link has been sent to your email address. Please click on the link to verify your account and continue using Edulastic.'
+      return 'A verification link has already been sent to your email address. Please click the link to verify your account and continue using Edulastic.'
     }
   }
 

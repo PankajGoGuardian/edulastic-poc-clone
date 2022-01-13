@@ -15,7 +15,7 @@ const CreateContentAuthorModal = ({
   modalVisible,
   t,
   form,
-  createDistrictAdmin,
+  createContentAuthor,
   closeModal,
 }) => {
   const [emailValidateStatus, setEmailValidateStatus] = useState('success')
@@ -58,7 +58,7 @@ const CreateContentAuthorModal = ({
           password: row.password,
           email,
         }
-        createDistrictAdmin(newUser)
+        createContentAuthor(newUser)
       }
     })
   }

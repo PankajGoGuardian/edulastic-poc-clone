@@ -66,6 +66,11 @@ export const getUserRole = createSelector(
   (state) => state?.user?.role
 )
 
+export const isSuperAdminSelector = createSelector(
+  stateSelector,
+  (state) => state?.user?.features?.isSuperAdmin
+)
+
 export const getChildrens = createSelector(
   stateSelector,
   (state) => state?.user?.children

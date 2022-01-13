@@ -3,6 +3,7 @@ import {
   CustomModalStyled,
   EduButton,
   TextInputStyled,
+  CheckboxLabel,
 } from '@edulastic/common'
 import { Col, Form, Row } from 'antd'
 import React from 'react'
@@ -16,11 +17,12 @@ class CreateDistrictAdminModal extends React.Component {
       emailValidateStatus: 'success',
       emailValidateMsg: '',
       email: '',
+      isSuperAdmin: false,
     }
   }
 
   onCreateDistrictAdmin = async () => {
-    const { email, emailValidateStatus } = this.state
+    const { email, emailValidateStatus, isSuperAdmin } = this.state
     let checkUserResponse = { userExists: true }
 
     if (emailValidateStatus === 'success' && email.length > 0) {
@@ -70,6 +72,7 @@ class CreateDistrictAdminModal extends React.Component {
           lastName,
           password: row.password,
           email: this.state.email,
+          permissions: isSuperAdmin ? ['super_admin'] : [],
         }
         this.props.createDistrictAdmin(newUser)
       }
@@ -102,10 +105,12 @@ class CreateDistrictAdminModal extends React.Component {
     }
   }
 
+  changeSuperAdmin = (e) => this.setState({ isSuperAdmin: e.target.checked })
+
   render() {
     const { modalVisible, t, form } = this.props
     const { getFieldDecorator } = form
-    const { emailValidateStatus, emailValidateMsg } = this.state
+    const { emailValidateStatus, emailValidateMsg, isSuperAdmin } = this.state
 
     return (
       <CustomModalStyled
@@ -181,6 +186,16 @@ class CreateDistrictAdminModal extends React.Component {
                 />
               )}
             </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={6}>
+            <CheckboxLabel
+              checked={isSuperAdmin}
+              onChange={this.changeSuperAdmin}
+            >
+              {t('users.districtadmin.superAdmin')}
+            </CheckboxLabel>
           </Col>
         </Row>
       </CustomModalStyled>

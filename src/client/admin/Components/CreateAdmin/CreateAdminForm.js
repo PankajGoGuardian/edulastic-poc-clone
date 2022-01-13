@@ -27,6 +27,7 @@ const CreateAdminForm = ({
 
   const [schoolList, setSchoolList] = useState([])
   const [isPowerTeacher, setIsPowerTeacher] = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [fetching, setFetching] = useState(false)
 
   const handleChange = (value) => {
@@ -37,10 +38,13 @@ const CreateAdminForm = ({
 
   const changePowerTool = (e) => setIsPowerTeacher(e.target.checked)
 
+  const changeIsSuperAdmin = (e) => setIsSuperAdmin(e.target.checked)
+
   const resetFields = () => {
     form.resetFields()
     setEmail('')
     setIsPowerTeacher(false)
+    setIsSuperAdmin(false)
   }
 
   const createAdmin = async (createReq) => {
@@ -137,6 +141,9 @@ const CreateAdminForm = ({
           password: row.password,
           email,
         }
+        if (isSuperAdmin) {
+          newUser.permissions = ['super_admin']
+        }
         if (isCreatingSchoolAdmin) {
           newUser.institutionIds = row.institutionIds.map((each) => each.key)
           newUser.isPowerTeacher = isPowerTeacher
@@ -202,6 +209,7 @@ const CreateAdminForm = ({
               placeholder={t('users.districtadmin.createda.enterusername')}
               autocomplete="new-password"
               onChange={changeEmail}
+              value={email}
             />
           </FormItem>
         </Col>
@@ -285,6 +293,13 @@ const CreateAdminForm = ({
           </Row>
         </>
       )}
+      <Row>
+        <Col>
+          <CheckboxLabel checked={isSuperAdmin} onChange={changeIsSuperAdmin}>
+            {t('users.schooladmin.superAdmin')}
+          </CheckboxLabel>
+        </Col>
+      </Row>
       <LeftButtonsContainer>
         <EduButton isGhost onClick={onCancel}>
           {t('users.districtadmin.createda.nocancel')}

@@ -5,7 +5,7 @@ import {
   TypeToConfirmModal,
 } from '@edulastic/common'
 import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
@@ -24,6 +24,7 @@ import {
   StyledPagination,
   SubHeaderWrapper,
   TableContainer,
+  StyledTableButton,
 } from '../../../../common/styled'
 import {
   addFilterAction,
@@ -48,10 +49,18 @@ import {
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
 import TableFiltersView from '../../../src/components/common/TableFilters'
-import { getUserOrgId } from '../../../src/selectors/user'
+import {
+  getUserId,
+  getUserOrgId,
+  isSuperAdminSelector,
+} from '../../../src/selectors/user'
 import CreateDistrictAdminModal from './CreateDistrictAdminModal/CreateDistrictAdminModal'
 import EditDistrictAdminModal from './EditDistrictAdminModal/EditDistrictAdminModal'
 import { StyledDistrictAdminTable } from './styled'
+
+import { themeColor } from '@edulastic/colors'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'District Admin' }
 
@@ -90,10 +99,12 @@ class DistrictAdminTable extends Component {
       currentPage: 1,
       refineButtonActive: false,
     }
-    const { t } = this.props
+
+    const { t, isSuperAdmin, userId } = this.props
     this.columns = [
       {
         title: t('users.districtadmin.name'),
+        dataIndex: '_source.firstName',
         render: (_, { _source }) => {
           const firstName = get(_source, 'firstName', '')
           const lastName = get(_source, 'lastName', '')
@@ -130,6 +141,34 @@ class DistrictAdminTable extends Component {
         dataIndex: '_source.lastSigninSSO',
         render: (sso = 'N/A') => sso,
         width: 200,
+      },
+      {
+        dataIndex: '_id',
+        render: (id) => {
+          return (
+            <ActionContainer>
+              {isSuperAdmin && (
+                <>
+                  <StyledButton
+                    onClick={() => this.onEditDistrictAdmin(id)}
+                    title="Edit"
+                    disabled={userId === id}
+                  >
+                    <IconPencilEdit color={themeColor} />
+                  </StyledButton>
+                  <StyledButton
+                    onClick={() => this.handleDeactivateAdmin(id)}
+                    title="Deactivate"
+                    disabled={userId === id}
+                  >
+                    <IconTrash color={themeColor} />
+                  </StyledButton>
+                </>
+              )}
+            </ActionContainer>
+          )
+        },
+        width: 100,
       },
     ]
 
@@ -272,7 +311,7 @@ class DistrictAdminTable extends Component {
   }
 
   onSearchFilter = (value, event, i) => {
-    const _filtersData = this.state.filtersData.map((item, index) => {
+    const _filtersData = this.state?.filtersData.map((item, index) => {
       if (index === i) {
         return {
           ...item,
@@ -523,6 +562,7 @@ class DistrictAdminTable extends Component {
               <EduButton
                 type="primary"
                 onClick={this.showCreateDistrictAdminModal}
+                data-cy="createDistrictAdminButton"
               >
                 {t('users.districtadmin.createdistrictadmin')}
               </EduButton>
@@ -595,10 +635,13 @@ class DistrictAdminTable extends Component {
         {deactivateAdminModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAdminModalVisible}
-            title="Deactivate"
+            title={t('users.districtadmin.deactivateda.title')}
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel="Are you sure you want to deactivate the following district admin(s)?"
+            primaryLabel={
+              t('common.modalConfirmationText1') +
+              t('users.districtadmin.deactivateda.districtadmins')
+            }
             secondaryLabel={selectedAdminsForDeactivate.map((id) => {
               const { _source: { firstName, lastName } = {} } = result[id]
               return (
@@ -623,12 +666,14 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      userId: getUserId(state),
       userOrgId: getUserOrgId(state),
       adminUsersData: getAdminUsersDataSelector(state),
       totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
+      isSuperAdmin: isSuperAdminSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -655,13 +700,28 @@ const enhance = compose(
 
 export default enhance(DistrictAdminTable)
 
-// DistrictAdminTable.propTypes = {
-//   districtAdminData: PropTypes.array.isRequired,
-//   loadDistrictAdminData: PropTypes.func.isRequired,
-//   createDistrictAdmin: PropTypes.func.isRequired,
-//   updateDistrictAdmin: PropTypes.func.isRequired,
-//   deleteDistrictAdmin: PropTypes.func.isRequired,
-//   setSearchName: PropTypes.func.isRequired,
-//   setFilters: PropTypes.func.isRequired,
-//   userOrgId: PropTypes.string.isRequired
-// };
+DistrictAdminTable.propTypes = {
+  loadAdminData: PropTypes.func.isRequired,
+  createAdminUser: PropTypes.func.isRequired,
+  updateAdminUser: PropTypes.func.isRequired,
+  deleteAdminUser: PropTypes.func.isRequired,
+  adminUsersData: PropTypes.object.isRequired,
+  userOrgId: PropTypes.string.isRequired,
+  pageNo: PropTypes.number.isRequired,
+  isSuperAdmin: PropTypes.bool.isRequired,
+}
+
+const ActionContainer = styled.div`
+  white-space: nowrap;
+  cursor: default;
+`
+
+const StyledButton = styled(StyledTableButton)`
+  &[disabled] {
+    opacity: 0;
+    cursor: not-allowed;
+    svg {
+      fill: #adb8bf !important;
+    }
+  }
+`

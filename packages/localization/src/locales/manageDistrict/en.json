@@ -69,10 +69,13 @@
     "districtadmin": {
       "name": "Name",
       "username": "Username",
+      "firstname": "First Name",
+      "lastname": "Last Name",
       "email": "Email",
       "status": "Status",
       "sso": "Sso",
       "password": "Password",
+      "superAdmin": "Super Admin",
       "createdistrictadmin": "+ Create District Admin",
       "createda": {
         "title": "Create district admin",
@@ -87,6 +90,29 @@
           "email": "Please input email",
           "password": "Please input password"
         }
+      },
+      "editda": {
+        "title": "Edit district admin",
+        "enterfirstname": "Enter first name",
+        "enterlastname": "Enter last name",
+        "enteremail": "Enter email",
+        "password": "Password",
+        "confirmpassword": "Confirm Password",
+        "nocancel": "No, Cancel",
+        "yesupdate": "Yes, Update",
+        "enterpassword": "Enter password",
+        "enterconfirmpassword": "Enter Confirm Password",
+        "validations": {
+          "firstname": "Please input first name",
+          "lastname": "Please input last name",
+          "email": "Please input email",
+          "invalidemail": "The input is not valid e-mail",
+          "invalidpassword": "Password does not match"
+        }
+      },
+      "deactivateda": {
+        "title": "Deactivate District Admin(s)",
+        "districtadmins": " District admin(s) ?"
       }
     },
     "schooladmin": {
@@ -105,6 +131,7 @@
       "enablePowerTools": "Enable Power Tools",
       "disablePowerTools": "Disable Power Tools",
       "powertools": "Enable Power Tools",
+      "superAdmin": "Super Admin",
       "createsa": {
         "title": "Create school admin",
         "entername": "Enter name",

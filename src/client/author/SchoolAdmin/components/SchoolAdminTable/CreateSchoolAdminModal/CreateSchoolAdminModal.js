@@ -26,6 +26,7 @@ class CreateSchoolAdminModal extends React.Component {
       schoolList: [],
       fetching: false,
       isPowerTeacher: false,
+      isSuperAdmin: false,
     }
   }
 
@@ -81,7 +82,7 @@ class CreateSchoolAdminModal extends React.Component {
           institutionIds.push(row.institutionIds[i].key)
         }
 
-        const { email: _email, isPowerTeacher } = this.state
+        const { email: _email, isPowerTeacher, isSuperAdmin } = this.state
         const newUser = {
           firstName: firstName[0],
           lastName,
@@ -89,6 +90,7 @@ class CreateSchoolAdminModal extends React.Component {
           email: _email,
           institutionIds,
           isPowerTeacher,
+          permissions: isSuperAdmin ? ['super_admin'] : [],
         }
         this.props.createSchoolAdmin(newUser)
       }
@@ -147,6 +149,8 @@ class CreateSchoolAdminModal extends React.Component {
 
   changePowerTool = (e) => this.setState({ isPowerTeacher: e.target.checked })
 
+  changeSuperAdmin = (e) => this.setState({ isSuperAdmin: e.target.checked })
+
   validateName = (rule, value, callback) => {
     const { t } = this.props
     if (!nameValidator(value)) {
@@ -165,6 +169,7 @@ class CreateSchoolAdminModal extends React.Component {
       fetching,
       schoolList,
       isPowerTeacher,
+      isSuperAdmin,
     } = this.state
 
     return (
@@ -278,7 +283,15 @@ class CreateSchoolAdminModal extends React.Component {
           </Col>
         </Row>
         <Row>
-          <Col span={24}>
+          <Col span={6}>
+            <CheckboxLabel
+              checked={isSuperAdmin}
+              onChange={this.changeSuperAdmin}
+            >
+              {t('users.schooladmin.superAdmin')}
+            </CheckboxLabel>
+          </Col>
+          <Col span={12}>
             <CheckboxLabel
               checked={isPowerTeacher}
               onChange={this.changePowerTool}

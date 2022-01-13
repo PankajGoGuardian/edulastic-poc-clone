@@ -14,15 +14,24 @@ const Option = Select.Option
 
 class EditSchoolAdminModal extends Component {
   onSaveSchoolAdmin = () => {
-    this.props.form.validateFields((err, row = {}) => {
+    this.props?.form.validateFields((err, row = {}) => {
       if (!err) {
         const { schoolAdminData, updateSchoolAdmin, userOrgId } = this.props
+        const { isSuperAdmin } = row
+        const { permissions: currPermissions = [] } = schoolAdminData?._source
+
         if (!row.password) row = omit(row, ['password'])
-        row = omit(row, ['confirmPassword'])
+        row = omit(row, ['confirmPassword', 'isSuperAdmin'])
+
+        const permissions = isSuperAdmin
+          ? [...new Set([...currPermissions, 'super_admin'])]
+          : currPermissions.filter((permission) => permission !== 'super_admin')
+
         updateSchoolAdmin({
           userId: schoolAdminData._id,
           data: Object.assign(row, {
             districtId: userOrgId,
+            permissions,
           }),
         })
         this.onCloseModal()
@@ -42,7 +51,8 @@ class EditSchoolAdminModal extends Component {
   }
 
   onCloseModal = () => {
-    this.props.closeModal()
+    const { closeModal } = this.props
+    closeModal()
   }
 
   render() {
@@ -52,6 +62,7 @@ class EditSchoolAdminModal extends Component {
       schoolsList = [],
       t,
     } = this.props
+    const isSuperAdmin = _source?.permissions.includes('super_admin')
 
     let { institutionDetails = [] } = _source
     let schooleFinalList = [...schoolsList]
@@ -65,16 +76,13 @@ class EditSchoolAdminModal extends Component {
       )
     }
 
-    const schoolsOptions = []
-    schooleFinalList.map((row, index) => {
-      schoolsOptions.push(
-        <Option key={index} value={row?._id}>
-          {row?.name}
-        </Option>
-      )
-    })
+    const schoolsOptions = schooleFinalList.map((row, index) => (
+      <Option key={index} value={row?._id}>
+        {row?.name}
+      </Option>
+    ))
 
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator } = this.props?.form
     return (
       <CustomModalStyled
         visible={modalVisible}
@@ -86,9 +94,11 @@ class EditSchoolAdminModal extends Component {
         footer={[
           <ButtonsContainer>
             <EduButton isGhost onClick={this.onCloseModal}>
-              No, Cancel
+              {t('users.schooladmin.editsa.nocancel')}
             </EduButton>
-            <EduButton onClick={this.onSaveSchoolAdmin}>Yes, Update</EduButton>
+            <EduButton onClick={this.onSaveSchoolAdmin}>
+              {t('users.schooladmin.editsa.yesupdate')}
+            </EduButton>
           </ButtonsContainer>,
         ]}
       >
@@ -221,7 +231,19 @@ class EditSchoolAdminModal extends Component {
           </Col>
         </Row>
         <Row>
-          <Col span={24}>
+          <Col span={9}>
+            <ModalFormItem style={{ margin: '0px' }}>
+              {getFieldDecorator('isSuperAdmin', {
+                initialValue: isSuperAdmin,
+                valuePropName: 'checked',
+              })(
+                <CheckboxLabel>
+                  {t('users.schooladmin.superAdmin')}
+                </CheckboxLabel>
+              )}
+            </ModalFormItem>
+          </Col>
+          <Col span={12}>
             <ModalFormItem style={{ margin: '0px' }}>
               {getFieldDecorator('isPowerTeacher', {
                 initialValue: _source?.isPowerTeacher,

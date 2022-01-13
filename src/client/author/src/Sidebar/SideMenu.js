@@ -72,6 +72,7 @@ import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
   getUserOrgId,
+  isSuperAdminSelector,
 } from '../selectors/user'
 import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUserModal'
 import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
@@ -136,6 +137,7 @@ const menuItems = [
   {
     label: 'user management',
     divider: true,
+    allowSuperAdmin: true,
   },
   {
     label: 'Manage Class',
@@ -150,6 +152,7 @@ const menuItems = [
     path: 'author/districtprofile',
     allowedPathPattern: [/districtprofile/],
     role: ['edulastic-admin', 'district-admin'],
+    allowSuperAdmin: true,
   },
   {
     label: 'Manage School',
@@ -157,6 +160,7 @@ const menuItems = [
     path: 'author/schoolprofile',
     allowedPathPattern: [/schools/],
     role: ['school-admin'],
+    allowSuperAdmin: true,
   },
 ]
 
@@ -201,6 +205,7 @@ class SideMenu extends Component {
       isOrganizationDistrict,
       userRole,
       isSidebarCollapsed,
+      isSuperAdmin,
     } = this.props
 
     let _menuItems = cloneDeep(menuItems)
@@ -208,6 +213,14 @@ class SideMenu extends Component {
       _menuItems = _menuItems.map((i) =>
         i.label === 'Manage District' ? { ...i, label: 'Organization' } : i
       )
+    }
+    // Normal SA and DA
+    if (
+      !isSuperAdmin &&
+      (userRole === roleuser.DISTRICT_ADMIN ||
+        userRole === roleuser.SCHOOL_ADMIN)
+    ) {
+      _menuItems = _menuItems.filter((item) => item.allowSuperAdmin !== true)
     }
     if (features.isCurator) {
       _menuItems = _menuItems.map((i) =>
@@ -1009,6 +1022,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
+      isSuperAdmin: isSuperAdminSelector(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

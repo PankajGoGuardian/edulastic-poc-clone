@@ -883,6 +883,10 @@
     "message": "Course(s) has been successfully deactivated",
     "description": ""
   },
+  "districtAdminCreated": {
+    "message": "  District admin created successfully",
+    "description": ""
+  },
   "districtAdminUpdated": {
     "message": "  District admin updated successfully",
     "description": ""
@@ -1853,6 +1857,14 @@
   },
   "failedLoadingUserData": {
     "message": "failed loading user data",
+    "description": ""
+  },
+  "warnAccessRestrictedUrlDA": {
+    "message": "Permission denied. Admins with Super Admin privilege are allowed to access the Manage District!",
+    "description": ""
+  },
+  "warnAccessRestrictedUrlSA": {
+    "message": "Permission denied. Admins with Super Admin privilege are allowed to access the Manage School!",
     "description": ""
   },
   "authtokenInvalidOnRedirection": {

@@ -44,7 +44,11 @@ import {
   signupGeneralSettingsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
-import { getUser, getUserOrgId } from '../../author/src/selectors/user'
+import {
+  getUser,
+  getUserOrgId,
+  isSuperAdminSelector,
+} from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
@@ -58,6 +62,33 @@ import {
   schoologySyncAssignmentGradesAction,
 } from '../../author/src/actions/assignments'
 import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
+
+const superAdminRoutes = [
+  // SA-DA common routes
+  '/author/districtprofile',
+  '/author/schools',
+  '/author/classes',
+  '/author/courses',
+  '/author/class-enrollment',
+  '/author/groups',
+  '/author/groups/students',
+  '/author/users/district-admin',
+  '/author/users/school-admin',
+  '/author/users/teacher',
+  '/author/users/student',
+  '/author/content/collections',
+  '/author/content/buckets',
+  '/author/content/tools',
+  '/author/settings/districtpolicies',
+  '/author/settings/testsettings',
+  '/author/settings/term',
+  '/author/settings/interested-standards',
+  '/author/settings/standards-proficiency',
+  '/author/settings/performance-bands',
+  // SA routes
+  '/author/schoolprofile',
+  '/author/settings/schoolpolicies',
+]
 
 // types
 export const LOGIN = '[auth] login'
@@ -1356,6 +1387,25 @@ export function* fetchUser({ payload }) {
           'Logged in teacher is a part of multiple districts.',
           'info'
         )
+      })
+    }
+    const location = yield select(routeSelector)
+    const isSuperAdmin = yield select(isSuperAdminSelector)
+    if (
+      (user.role === roleuser.DISTRICT_ADMIN ||
+        user.role === roleuser.SCHOOL_ADMIN) &&
+      !isSuperAdmin &&
+      superAdminRoutes.includes(location)
+    ) {
+      const messageKey =
+        user.role === roleuser.DISTRICT_ADMIN
+          ? 'warnAccessRestrictedUrlDA'
+          : 'warnAccessRestrictedUrlSA'
+
+      yield put(push('/'))
+      notification({
+        type: 'warn',
+        messageKey,
       })
     }
   } catch (error) {

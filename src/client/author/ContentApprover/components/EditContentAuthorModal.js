@@ -8,21 +8,25 @@ import {
   StyledModal,
   ModalFormItem,
 } from '../../../common/styled'
+import { omit } from 'lodash'
 
 const EditContentAuthorModal = ({
   form,
   closeModal,
-  districtAdminData,
-  updateDistrictAdmin,
+  contentApproverData,
+  updateContentApprover,
   userOrgId,
   modalVisible,
-  districtAdminData: { _source },
+  contentApproverData: { _source },
 }) => {
   const onSaveContentAuthor = () => {
     form.validateFields((err, row) => {
       if (!err) {
-        updateDistrictAdmin({
-          userId: districtAdminData._id,
+        if (!row.password) row = omit(row, ['password'])
+        row = omit(row, ['confirmPassword'])
+
+        updateContentApprover({
+          userId: contentApproverData._id,
           data: Object.assign(row, {
             districtId: userOrgId,
           }),
@@ -32,16 +36,25 @@ const EditContentAuthorModal = ({
     })
   }
 
+  const handleConfirmPassword = (rule, value, callback) => {
+    const { getFieldValue } = form
+    const password = getFieldValue('password')
+    const confirmPassword = getFieldValue('confirmPassword')
+
+    if (password !== confirmPassword) return callback('Password does not match')
+
+    callback() // no error
+  }
+
   const { getFieldDecorator } = form
 
   return (
     <StyledModal
       visible={modalVisible}
-      title="Edit District Admin"
+      title="Edit content approver"
       onOk={onSaveContentAuthor}
       onCancel={closeModal}
       maskClosable={false}
-      width="800px"
       centered
       footer={[
         <ButtonsContainer>
@@ -51,7 +64,7 @@ const EditContentAuthorModal = ({
       ]}
     >
       <Row>
-        <Col span={12}>
+        <Col span={24}>
           <ModalFormItem label="First Name">
             {getFieldDecorator('firstName', {
               rules: [
@@ -64,7 +77,7 @@ const EditContentAuthorModal = ({
             })(<Input placeholder="Enter First Name" />)}
           </ModalFormItem>
         </Col>
-        <Col span={12}>
+        <Col span={24}>
           <ModalFormItem label="Last Name">
             {getFieldDecorator('lastName', {
               rules: [
@@ -94,6 +107,42 @@ const EditContentAuthorModal = ({
               ],
               initialValue: _source.email,
             })(<Input placeholder="Enter E-mail" />)}
+          </ModalFormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="Password">
+            {getFieldDecorator(
+              'password',
+              {}
+            )(
+              <Input
+                type="password"
+                autoComplete="off"
+                placeholder="Enter password"
+              />
+            )}
+          </ModalFormItem>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={24}>
+          <ModalFormItem label="Confirm Password">
+            {getFieldDecorator('confirmPassword', {
+              rules: [
+                {
+                  validator: handleConfirmPassword,
+                  message: 'Password does not match',
+                },
+              ],
+            })(
+              <Input
+                type="password"
+                autoComplete="off"
+                placeholder="Enter Confirm Password"
+              />
+            )}
           </ModalFormItem>
         </Col>
       </Row>

@@ -120,9 +120,10 @@ class PointsList extends Component {
                   value={dot.x}
                   onChange={(e) => handleChange(index)('label', e.target.value)}
                   disabled={false}
+                  data-cy={`pointLabel-${index}`}
                 />
               </Col>
-              <Col md={4}>
+              <Col md={4} data-cy={`pointInitial-${index}`}>
                 <CustomInput
                   index={index}
                   type="number"
@@ -139,6 +140,7 @@ class PointsList extends Component {
                   }
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   dropdownStyle={{ textAlign: 'left' }}
+                  data-cy={`pointShow-${index}`}
                 >
                   {this.getHoverSettings().map((setting, i) => (
                     <SelectInputStyled.Option
@@ -160,6 +162,7 @@ class PointsList extends Component {
                     }
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                     dropdownStyle={{ textAlign: 'left' }}
+                    data-cy={`pointFraction-${index}`}
                   >
                     {this.getFractionFormatSettings().map((setting, i) => (
                       <SelectInputStyled.Option
@@ -178,6 +181,7 @@ class PointsList extends Component {
                   onChange={() =>
                     handleChange(index)('interactive', !dot.notInteractive)
                   }
+                  data-cy={`pointInteractive-${index}`}
                 />
               </Col>
               <Col md={isShowFractionField ? 2 : 3}>

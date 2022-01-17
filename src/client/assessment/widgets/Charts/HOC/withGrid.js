@@ -27,7 +27,9 @@ const withGrid = (WrappedComponent) => {
         justifyContent="flex-start"
         style={{ background: theme.widgets.chart.bgColor, overflowX: 'auto' }}
       >
-        <AxisLabel axis="y">{yAxisLabel}</AxisLabel>
+        <AxisLabel axis="y" data-cy="yAxisLabelName">
+          {yAxisLabel}
+        </AxisLabel>
         <div style={{ position: 'relative' }}>
           <AnnotationRnd
             question={item}
@@ -46,7 +48,7 @@ const withGrid = (WrappedComponent) => {
             </FlexContainer>
           )}
           <WrappedComponent {...props} toggleBarDragging={toggleBarDragging} />
-          <AxisLabel>{xAxisLabel}</AxisLabel>
+          <AxisLabel data-cy="xAxisLabelName">{xAxisLabel}</AxisLabel>
         </div>
       </FlexContainer>
     )

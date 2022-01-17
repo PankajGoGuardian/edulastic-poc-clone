@@ -172,7 +172,7 @@ function* duplicateItemRequestSaga({ payload }) {
         testItemIds: testItemsToDuplicate,
       }
 
-      if (isTestEditing && testId) {
+      if (isTestEditing && testId && testId !== 'undefined') {
         passageDuplicateParams.testId = testId
         const hasUnsavedTestData = yield select((state) =>
           get(state, 'tests.updated', false)

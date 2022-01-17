@@ -106,16 +106,16 @@ const UpdateUser = (props) => {
               <Radio key={index} value={index}>
                 {Object.keys(fields).map((field) => {
                   if (
-                    data.role !== roleuser.SCHOOL_ADMIN &&
-                    (data.role !== roleuser.DISTRICT_ADMIN ||
-                      data?.permissions.includes('curator')) &&
+                    data?.role !== roleuser.SCHOOL_ADMIN &&
+                    (data?.role !== roleuser.DISTRICT_ADMIN ||
+                      data?.permissions?.includes('curator')) &&
                     field === 'isSuperAdmin'
                   ) {
                     return null
                   }
                   if (
-                    (data.role === roleuser.SCHOOL_ADMIN ||
-                      data.role === roleuser.DISTRICT_ADMIN) &&
+                    (data?.role === roleuser.SCHOOL_ADMIN ||
+                      data?.role === roleuser.DISTRICT_ADMIN) &&
                     field === 'isSuperAdmin'
                   ) {
                     return (

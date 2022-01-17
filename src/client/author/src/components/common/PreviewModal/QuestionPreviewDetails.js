@@ -41,7 +41,7 @@ const QuestionPreviewDetails = ({
           <DetailRow font={11}>
             <label>ID: </label>
             <span data-cy="item-id-on-preview">
-              {id?.length > 6 ? id.substr(id.length - 6) : id || '--'}
+              {id?.trim()?.length > 6 ? id.substr(id.length - 6) : id || '--'}
             </span>
           </DetailRow>
           <DetailRow>

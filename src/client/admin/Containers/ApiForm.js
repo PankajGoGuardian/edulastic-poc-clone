@@ -143,13 +143,18 @@ const ApiForm = () => {
         option.endPoint = `/user/${data.districtId}/${
           endPoint[endPoint.length - 1]
         }`
+      } else if (id === 'verify-email') {
+        const idRegex = new RegExp(/^[0-9a-fA-F]{24}$/)
+        if (!idRegex.test(data.uid)) {
+          notification({
+            type: 'warning',
+            msg: 'Invalid user Id.',
+            messageKey: 'apiFormErr',
+          })
+          return
+        }
       }
-      submit(
-        data,
-        option.endPoint,
-        option.method,
-        isSlowApi
-      ).then((res) => {
+      submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {
           if (res.result.success || res.status === 200) {
             if (

@@ -640,6 +640,23 @@ export const apiForms = [
     ],
   },
   {
+    id: 'verify-email',
+    name: 'Verify Email',
+    endPoint: 'user/verify',
+    method: 'post',
+    slowApi: false,
+    fields: [
+      {
+        key: 'userId',
+        name: 'uid',
+        placeholder: 'Enter User Id',
+        type: 'string',
+        displayName: 'User ID',
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'move-assessment',
     name: 'Move Assessment',
     endPoint: 'admin-tool/move-assessment',

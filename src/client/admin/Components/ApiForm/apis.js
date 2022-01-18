@@ -33,7 +33,10 @@ export const submit = (params, endpoint, method, isSlowApi) =>
           messageKey: 'apiFormErr',
         })
       } else {
-        notification({ msg: errorData?.message, messageKey: 'apiFormErr' })
+        notification({
+          msg: errorData?.message || errorObj?.response?.data?.message,
+          messageKey: 'apiFormErr',
+        })
       }
     })
 

@@ -34,7 +34,11 @@ import {
   getReportsPeerPerformanceError,
   resetPeerPerformanceAction,
 } from './ducks'
-import { idToName, parseData } from './util/transformers'
+import {
+  parseAndNormalizeExtAttributes,
+  idToName,
+  parseData,
+} from './util/transformers'
 import { getColumns } from './util/tableColumns'
 import { getAssessmentName } from '../../../common/util'
 
@@ -67,11 +71,10 @@ const PeerPerformance = ({
   const peerPerformance = useMemo(() => {
     const peerPerf = { ..._peerPerformance }
     if (peerPerf.metricInfo) {
-      peerPerf.metricInfo = _peerPerformance.metricInfo?.map((mi) => ({
-        ...mi,
-        extAttributes: JSON.parse(mi.extAttributes || '{}'),
-        ...JSON.parse(mi.extAttributes || '{}'),
-      }))
+      peerPerf.metricInfo = _peerPerformance.metricInfo?.map((mi) => {
+        const extAttributes = parseAndNormalizeExtAttributes(mi.extAttributes)
+        return { ...mi, extAttributes, ...extAttributes }
+      })
     }
     return peerPerf
   }, [_peerPerformance])
@@ -152,6 +155,7 @@ const PeerPerformance = ({
       tempCompareBy.push(..._extAttributes)
     }
   )
+
   useEffect(() => {
     if (
       !compareByDropDownData.map((dd) => dd.key).includes(ddfilter.compareBy)

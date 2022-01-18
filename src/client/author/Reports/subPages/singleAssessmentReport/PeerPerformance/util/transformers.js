@@ -58,6 +58,18 @@ export const analyseByToName = {
   proficiencyBand: 'Proficiency Band',
 }
 
+export const parseAndNormalizeExtAttributes = (extAttributesStr) => {
+  const blackList = ['', 'null', 'undefined']
+  const extAttributes = JSON.parse(extAttributesStr || '{}')
+  Object.keys(extAttributes).forEach((k) => {
+    const v = `${extAttributes[k]}`.toLowerCase()
+    if (blackList.includes(v)) {
+      extAttributes[k] = undefined
+    }
+  })
+  return extAttributes
+}
+
 const filterData = (data, filter) => {
   const filteredData = data.filter((item) => {
     if (
@@ -99,11 +111,15 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
 
     let avgStudentScorePercentUnrounded =
       (item.totalTotalScore / item.totalMaxScore) * 100
-    avgStudentScorePercentUnrounded = !isNaN(avgStudentScorePercentUnrounded)
+    avgStudentScorePercentUnrounded = !Number.isNan(
+      avgStudentScorePercentUnrounded
+    )
       ? avgStudentScorePercentUnrounded
       : 0
 
-    const avgStudentScorePercent = !isNaN(avgStudentScorePercentUnrounded)
+    const avgStudentScorePercent = !Number.isNan(
+      avgStudentScorePercentUnrounded
+    )
       ? Math.round(avgStudentScorePercentUnrounded)
       : 0
     const { teacherName, groupName: className } = groupedData[data][0]
@@ -161,11 +177,11 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
 
     const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
     let avgStudentScoreUnrounded = item.totalTotalScore / (statusCounts[1] || 1)
-    avgStudentScoreUnrounded = !isNaN(avgStudentScoreUnrounded)
+    avgStudentScoreUnrounded = !Number.isNan(avgStudentScoreUnrounded)
       ? avgStudentScoreUnrounded
       : 0
 
-    const avgStudentScore = !isNaN(avgStudentScoreUnrounded)
+    const avgStudentScore = !Number.isNan(avgStudentScoreUnrounded)
       ? Number(avgStudentScoreUnrounded.toFixed(2))
       : 0
     const { maxScore, teacherName, groupName: className } = groupedData[data][0]
@@ -384,11 +400,10 @@ export const parseData = (rawData, filter) => {
     output = analyseByProficiencyBand(rawData, groupedData, compareBy)
   }
   if (output) {
-    return output.sort((a, b) =>
-      (a[compareByKeyToSortKey[compareBy]] || '').localeCompare(
-        b[compareByKeyToSortKey[compareBy]] || ''
-      )
-    )
+    return output.sort((a, b) => {
+      const _compareBy = compareByKeyToSortKey[compareBy] || compareBy
+      return (a[_compareBy] || '').localeCompare(b[_compareBy] || '')
+    })
   }
   return []
 }

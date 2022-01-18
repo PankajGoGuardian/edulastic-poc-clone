@@ -41,7 +41,7 @@ const ConfirmationModal = ({
               width="150px"
               isGhost
               onClick={() => onCancel()}
-              style={{ 'margin-left': '0px' }}
+              style={{ 'margin-left': '0px', fontSize: '10px' }}
             >
               {cancelText}
             </EduButton>

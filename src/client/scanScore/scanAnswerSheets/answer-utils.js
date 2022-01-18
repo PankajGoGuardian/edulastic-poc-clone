@@ -5,13 +5,33 @@ import {
   resizeImage,
 } from './process-image'
 import { getAngleOfQR, getWidthOfQR } from './parse-qrcode'
-import { imShow } from './isomorphic'
+import { imShow, sendInstructions } from './isomorphic'
 import log from './log'
 
-export const getAnswers = (cv, srcMat, isSingle) => {
-  let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
-  const circleArray = detectCircles(cv, resizedImage)
+const calculateMinDist = (srcMat) => {
+  let minDist = 17
+  const sizeDifference = Math.round((280 / srcMat.size().width) * 10) / 10
+  minDist = minDist - (1 - sizeDifference) * 10
+  log(
+    '^^^^^^^^^^^^^^^^^^^^^^^^^^ sizeDifference - ration - minDist - srcMat.size().width',
+    sizeDifference,
+    280 / srcMat.size().width,
+    minDist,
+    srcMat.size().width
+  )
+  if (minDist > 20) {
+    minDist = 20
+  }
+  return minDist
+}
 
+export const getAnswers = (cv, srcMat, isSingle) => {
+  const minDist = calculateMinDist(srcMat)
+  let resizedImage = resizeImage(cv, srcMat, isSingle) // resize image
+  let circleArray = detectCircles(cv, resizedImage, minDist)
+
+  const scaleX = srcMat.size().height / resizedImage.size().height
+  const scaleY = srcMat.size().height / resizedImage.size().height
   // circleArray.forEach(item => {
   //     cv.circle(resizedImage, item.center, item.radius, [0, 0, 0, 255], -1);
   // });
@@ -20,6 +40,22 @@ export const getAnswers = (cv, srcMat, isSingle) => {
 
   if (circleArray.length === 0) {
     return arrAnswers
+  } else {
+    // log("rowLocCal", circleArray)
+    if (circleArray[0].center.y / resizedImage.size().height > 0.3) {
+      sendInstructions('Please hold the sheet flat')
+      return arrAnswers
+    }
+    for (let i = 0; i < circleArray.length - 2; i++) {
+      if (
+        (circleArray[i + 1].center.y - circleArray[i].center.y) /
+          resizedImage.size().height >
+        0.1
+      ) {
+        circleArray = circleArray.slice(0, i)
+      }
+    }
+    // log("circleArray", circleArray)
   }
 
   const arrAnswerCircles = groupCirclesByAnswer(circleArray)
@@ -31,46 +67,70 @@ export const getAnswers = (cv, srcMat, isSingle) => {
   // });
   //
   // cv.imshow('workingCanvas', resizedImage);
-  log('resized image', resizedImage)
-  const arrBoundingRegions = getBoundingRegionsWithCircles(
+  //log('resized image',resizedImage);
+  const [
+    arrBoundingRegions,
+    arrBoundingRegionsPoints,
+  ] = getBoundingRegionsWithCircles(
     cv,
     resizedImage,
     circleArray,
     arrAnswerCircles
   )
 
+  const arrAnswersPoints = []
+
   arrBoundingRegions.forEach((region, index) => {
     // if(index === 0) {
     //     cv.imshow('rowCanvas', region);
     // }
-    const answer = getTrueCirclesInRow(cv, region)
+    const [answer, items] = getTrueCirclesInRow(cv, region)
+    items.forEach((item) => {
+      arrAnswersPoints.push({
+        x: (item.center.x + arrBoundingRegionsPoints[index].x) * scaleX,
+        y: (item.center.y + arrBoundingRegionsPoints[index].y) * scaleY,
+        radius: item.radius * scaleX,
+      })
+    })
     arrAnswers.push(answer)
   })
   resizedImage.delete()
-  return arrAnswers
+  return [arrAnswers, arrAnswersPoints]
 }
 
 export const getAnswersFromVideo = (
   cv,
   matSrc,
   parentRectangle,
-  qrCodeData
+  qrCodeData,
+  debugMatSrc
 ) => {
+  log(
+    'parentRectangle',
+    { width: parentRectangle.width, heigth: parentRectangle.heigth },
+    parentRectangle
+  )
+
   let angleOfQR = 0
   let center = new cv.Point(matSrc.cols / 2, matSrc.rows / 2)
   let resultOfAnswers = {}
-  if (parentRectangle && qrCodeData) {
+  let resultOfAnswersPoints = []
+  let rectStartPointX = 0
+  let rectStartPointY = 0
+  if (parentRectangle && qrCodeData && qrCodeData.location) {
     angleOfQR = getAngleOfQR(
-      qrCodeData.bottomRightCorner,
-      qrCodeData.bottomLeftCorner,
+      qrCodeData.location.bottomRightCorner,
+      qrCodeData.location.bottomLeftCorner,
       {
-        x: qrCodeData.bottomLeftCorner.x,
-        y: qrCodeData.bottomRightCorner.y,
+        x: qrCodeData.location.bottomLeftCorner.x,
+        y: qrCodeData.location.bottomRightCorner.y,
       }
     )
   } else {
     resultOfAnswers = { answers: [], qrCode: '', isQRCodeDetected: false }
   }
+
+  imShow('debugCanvasOutput', debugMatSrc, cv)
 
   // rotate the image to detect parent rectangle of bubbles.
   let dSize = new cv.Size(matSrc.cols, matSrc.rows)
@@ -114,6 +174,7 @@ export const getAnswersFromVideo = (
       parentRectangle.topLeftCorner,
       parentRectangle.bottomLeftCorner
     )
+    log('width parent', width)
 
     let arrCroppedParentRect = []
 
@@ -151,15 +212,13 @@ export const getAnswersFromVideo = (
       const croppedLeftRect = matSrc.roi(leftRect)
       croppedLeftRect.convertTo(croppedLeftRect, -1, 1, 30)
       arrCroppedParentRect.push(croppedLeftRect)
+      rectStartPointX = leftRect.x
+      rectStartPointY = leftRect.y
     }
     // const arrCroppedParentRect =  getTrulyRectangles(cv, matSrc, rectArray, true);
     if (arrCroppedParentRect) {
-      resultOfAnswers = getAnswersFromRect(
-        cv,
-        arrCroppedParentRect,
-        matSrc,
-        qrCodeData
-      )
+      ;[resultOfAnswers, resultOfAnswersPoints] =
+        getAnswersFromRect(cv, arrCroppedParentRect, matSrc, qrCodeData) || []
     }
   }
 
@@ -174,9 +233,18 @@ export const getAnswersFromVideo = (
     new cv.Scalar()
   )
 
+  resultOfAnswersPoints?.forEach((points) => {
+    let center = new cv.Point(
+      points.x + rectStartPointX,
+      points.y + rectStartPointY
+    )
+    cv.circle(matSrc, center, points.radius + 2, [255, 255, 0, 128], 2)
+  })
+
   imShow('canvasOutput', matSrc, cv)
   log('matsrc 1', matSrc)
   M.delete()
+  log('angleOfQR', angleOfQR)
   return resultOfAnswers
 }
 
@@ -276,9 +344,12 @@ export const groupCirclesByAnswer = (circleArray) => {
 
 const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
   let resultOfAnswers
+  let answerPoints = []
   if (arrCroppedParentRect.length === 1) {
     // single
-    const answers = getAnswers(cv, arrCroppedParentRect[0], true)
+    const arrAnswers = getAnswers(cv, arrCroppedParentRect[0], true)
+    const answers = arrAnswers[0]
+    answerPoints = arrAnswers[1]
     if (!answers) {
       return
     }
@@ -292,9 +363,15 @@ const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
     // multi
     const leftRectangle = arrCroppedParentRect[0]
     const rightRectangle = arrCroppedParentRect[1]
-    const leftAnswers = getAnswers(cv, leftRectangle, false)
-    const rightAnswers = getAnswers(cv, rightRectangle, false)
 
+    const [leftAnswers, leftAnswerPoints] = getAnswers(cv, leftRectangle, false)
+    const [rightAnswers, rightAnswerPoints] = getAnswers(
+      cv,
+      rightRectangle,
+      false
+    )
+
+    //answerPoints = [...leftAnswerPoints,...rightAnswerPoints];
     if (!leftAnswers || !rightAnswers) {
       return
     }
@@ -309,5 +386,5 @@ const getAnswersFromRect = (cv, arrCroppedParentRect, matSrc, qrCodeData) => {
       isQRCodeDetected: true,
     }
   }
-  return resultOfAnswers
+  return [resultOfAnswers, answerPoints]
 }

@@ -930,6 +930,16 @@ export const proxyRole = createSelector(
   (proxyrole) => proxyrole
 )
 
+export const getEmailVerified = createSelector(
+  ['user.user.emailVerified'],
+  (emailVerified) => emailVerified
+)
+
+export const getVerificationTS = createSelector(
+  ['user.user.verificationTS'],
+  (verificationTS) => verificationTS
+)
+
 export const getAddAccount = createSelector(
   ['user.addAccount'],
   (addAccount) => addAccount

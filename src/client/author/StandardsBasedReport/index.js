@@ -25,6 +25,8 @@ import {
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
@@ -137,8 +139,8 @@ const enhance = compose(
         state.classResponse?.data?.reportStandards?.length || 0,
       reportStandards: state.classResponse?.data?.reportStandards || [],
       isFreeAdmin: isFreeAdminSelector(state),
-      emailVerified: get(state.user, 'user.emailVerified', null),
-      verificationTS: get(state.user, 'user.verificationTS', null),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       userRole: get(state.user, 'user.role', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
     }),

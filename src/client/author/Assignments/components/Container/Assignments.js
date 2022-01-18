@@ -73,6 +73,8 @@ import { DeleteAssignmentModal } from '../DeleteAssignmentModal/deleteAssignment
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../../../student/Login/ducks'
 import EditTagsModal from '../EditTagsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -562,8 +564,8 @@ const enhance = compose(
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
       error: get(state, 'test.error', false),
-      emailVerified: get(state.user, 'user.emailVerified', null),
-      verificationTS: get(state.user, 'user.verificationTS', null),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, 'user.user.orgData', {}),
       toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(

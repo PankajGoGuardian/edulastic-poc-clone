@@ -51,6 +51,8 @@ import {
   isProxyUser as isProxyUserSelector,
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 
@@ -363,8 +365,8 @@ const enhance = compose(
         false
       ),
       authorClassBoard: get(state, ['author_classboard_testActivity'], {}),
-      emailVerified: get(state.user, 'user.emailVerified', null),
-      verificationTS: get(state.user, 'user.verificationTS', null),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       userRole: get(state.user, 'user.role', null),
       scoreMode: state?.expressGraderReducer?.scoreMode,
       isFreeAdmin: isFreeAdminSelector(state),

@@ -1,4 +1,4 @@
-import { pullAllBy, get } from 'lodash'
+import { pullAllBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
@@ -40,6 +40,8 @@ import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../student/Login/ducks'
 
 const Container = (props) => {
@@ -434,8 +436,8 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,
-    emailVerified: get(state.user, 'user.emailVerified', null),
-    verificationTS: get(state.user, 'user.verificationTS', null),
+    emailVerified: getEmailVerified(state),
+    verificationTS: getVerificationTS(state),
     showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
     sharedReportList: getSharedReportList(state),

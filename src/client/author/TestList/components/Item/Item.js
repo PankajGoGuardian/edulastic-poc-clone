@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { uniqBy, get } from 'lodash'
+import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
@@ -44,6 +44,8 @@ import { duplicateTestRequestAction } from '../../../TestPage/ducks'
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -525,8 +527,8 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isUseThisLoading: getIsUseThisLoading(state),
-      emailVerified: get(state.user, 'user.emailVerified', null),
-      verificationTS: get(state.user, 'user.verificationTS', null),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,

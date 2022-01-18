@@ -12,6 +12,8 @@ import {
   sendVerificationEmailAction,
   getIsEmailVerificationLinkSent,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
   getShowVerifyEmailModal,
   getUserId,
   setIsUserOnProfilePageAction,
@@ -38,8 +40,9 @@ const VerifyEmailPopup = (props) => {
     setIsUserOnProfilePage,
   } = props
   const [userId, setUserId] = useState(null)
-  const [isInvalidEmail, setIsInvalidEmail] = useState(false)
   const { vc } = match.params
+
+  const isInvalidEmail = !emailRegex.test(email)
 
   let expiryDate
   if (verificationTS) {
@@ -88,8 +91,7 @@ const VerifyEmailPopup = (props) => {
   }
 
   const getModalContent = () => {
-    if (onProfilePage && !emailRegex.test(email)) {
-      setIsInvalidEmail(true)
+    if (onProfilePage && isInvalidEmail) {
       return 'Please provide a valid email address for verification.'
     }
     if (emailVerifiedStatus.length || emailVerified) {
@@ -216,8 +218,8 @@ const enhance = compose(
       flag: state?.user?.signedUpUsingUsernameAndPassword || false,
       role: state?.user?.user?.role || null,
       isUserIdPresent: state?.user?.isUserIdPresent,
-      emailVerified: state?.user?.user?.emailVerified || false,
-      verificationTS: state?.user?.user?.verificationTS || null,
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       emailVerifiedStatus: getIsEmailVerifedSelector(state),
       isEmailVerificationLinkSent: getIsEmailVerificationLinkSent(state),
       ShowVerifyEmailModal: getShowVerifyEmailModal(state),

@@ -73,6 +73,8 @@ import {
   isDemoPlaygroundUser,
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -536,8 +538,8 @@ const enhance = compose(
       assignmentsSummary: getAssignmentsSummary(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       error: get(state, 'test.error', false),
-      emailVerified: get(state.user, 'user.emailVerified', null),
-      verificationTS: get(state.user, 'user.verificationTS', null),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       classList: getAssignmentClassList(state),
       test: getCurrentTestSelector(state),
       userId: getUserId(state),

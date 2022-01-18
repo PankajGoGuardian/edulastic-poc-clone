@@ -79,6 +79,8 @@ import {
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
 } from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
@@ -913,8 +915,8 @@ const enhance = compose(
       assignmentSettings: state.assignmentSettings,
       isTestLoading: getTestsLoadingSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
-      emailVerified: get(state.user, 'user.emailVerified', null),
-      verificationTS: get(state.user, 'user.verificationTS', null),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       currentSettingsId: getCurrentSettingsIdSelector(state),
       userId: getUserId(state),

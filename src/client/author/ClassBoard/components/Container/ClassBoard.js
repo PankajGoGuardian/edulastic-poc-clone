@@ -1868,7 +1868,10 @@ class ClassBoard extends Component {
                               </div>
                             ) : null}
                           </div>
-                          <ScoreHeader style={{ fontSize: '12px' }}>
+                          <ScoreHeader
+                            data-cy="totlatTimeSpent"
+                            style={{ fontSize: '12px' }}
+                          >
                             {' '}
                             {`TIME (min) : `}{' '}
                             <span
@@ -1882,7 +1885,10 @@ class ClassBoard extends Component {
                               }` || ''}
                             </span>
                           </ScoreHeader>
-                          <ScoreHeader style={{ fontSize: '12px' }}>
+                          <ScoreHeader
+                            data-cy="studentStatus"
+                            style={{ fontSize: '12px' }}
+                          >
                             {' '}
                             {`STATUS : `}{' '}
                             <span
@@ -1900,7 +1906,10 @@ class ClassBoard extends Component {
                                 : 'In Progress' || ''}
                             </span>
                           </ScoreHeader>
-                          <ScoreHeader style={{ fontSize: '12px' }}>
+                          <ScoreHeader
+                            data-cy="submittedDate"
+                            style={{ fontSize: '12px' }}
+                          >
                             SUBMITTED ON :
                             <span style={{ color: black }}>
                               {getSubmittedDate(

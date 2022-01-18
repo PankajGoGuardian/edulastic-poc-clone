@@ -312,9 +312,7 @@ const TestBehaviorGroupContainer = ({
             <CalculatorSelector
               disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
               calcType={calcType}
-              onChangeHanlde={(e) =>
-                overRideSettings('calcType', e.target.value)
-              }
+              onChangeHanlde={(value) => overRideSettings('calcType', value)}
               calculatorKeysAvailable={calculatorKeysAvailable}
             />
           </Col>

@@ -1011,9 +1011,10 @@ export const canAddElementToBoard = (board, x, y) => {
   return coords
 }
 
-export const getClosest = (points, n) => {
+export const getClosest = (points, n, compare = 'y') => {
   const closest = points.reduce(
-    (prev, curr) => (Math.abs(curr.y - n) < Math.abs(prev.y - n) ? curr : prev),
+    (prev, curr) =>
+      Math.abs(curr[compare] - n) < Math.abs(prev[compare] - n) ? curr : prev,
     points[0]
   )
   return closest

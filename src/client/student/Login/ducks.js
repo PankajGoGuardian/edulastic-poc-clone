@@ -1757,6 +1757,11 @@ function* msoSSOLogin({ payload }) {
 }
 
 function* cleverLogin({ payload }) {
+  let isLogin = false
+  if (payload.isLogin) {
+    isLogin = payload.isLogin
+    payload = payload.payload
+  }
   const generalSettings = yield select(signupGeneralSettingsSelector)
   if (generalSettings) {
     localStorage.setItem(
@@ -1771,7 +1776,7 @@ function* cleverLogin({ payload }) {
     if (payload) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
-    if (payload === 'teacher') {
+    if (payload === 'teacher' && !isLogin) {
       segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Clever' })
     }
     const res = yield call(authApi.cleverLogin)

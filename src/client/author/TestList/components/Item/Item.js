@@ -179,8 +179,8 @@ class Item extends Component {
     this.setState({ isOpenModal: false })
   }
 
-  openModal = () => {
-    if (this.props.isTestRecommendation) {
+  openModal = (source) => {
+    if (this.props.isTestRecommendation && source !== 'more') {
       segmentApi.genericEventTrack('Recommended_TestClick', {})
     }
     this.setState({ isOpenModal: true })

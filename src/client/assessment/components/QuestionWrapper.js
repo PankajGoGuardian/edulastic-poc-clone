@@ -749,23 +749,21 @@ class QuestionWrapper extends Component {
                       itemIndex={itemIndex}
                     />
                   )}
-                  {rubricDetails &&
-                    studentReportFeedbackVisible &&
-                    isPremiumUser && (
-                      <RubricTableWrapper>
-                        <FieldLabel className="rubric-title">
-                          Graded Rubric
-                        </FieldLabel>
-                        <FieldLabel className="rubric-name">
-                          {rubricDetails.name}
-                        </FieldLabel>
-                        <PreviewRubricTable
-                          data={rubricDetails}
-                          rubricFeedback={rubricFeedback}
-                          isDisabled
-                        />
-                      </RubricTableWrapper>
-                    )}
+                  {rubricDetails && studentReportFeedbackVisible && (
+                    <RubricTableWrapper>
+                      <FieldLabel className="rubric-title">
+                        Graded Rubric
+                      </FieldLabel>
+                      <FieldLabel className="rubric-name">
+                        {rubricDetails.name}
+                      </FieldLabel>
+                      <PreviewRubricTable
+                        data={rubricDetails}
+                        rubricFeedback={rubricFeedback}
+                        isDisabled
+                      />
+                    </RubricTableWrapper>
+                  )}
                   {view === 'preview' && !isPrintPreview && !showFeedback && (
                     <Hints
                       question={data}

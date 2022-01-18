@@ -176,6 +176,20 @@ export const getOrgGroupList = createSelector(
   (orgData) => orgData.classList || []
 )
 
+export const getCurrentSchool = createSelector(
+  getUserOrgData,
+  (orgData) => orgData.defaultSchool
+)
+
+export const getCurrentSchoolState = createSelector(
+  getOrgSchools,
+  getCurrentSchool,
+  (schools, schoolId) => {
+    const currentSchool = schools.find((sc) => sc._id === schoolId)
+    return currentSchool?.location?.state
+  }
+)
+
 export const currentDistrictInstitutionIds = createSelector(
   getOrgSchools,
   (schools) => schools.map((item) => item._id)

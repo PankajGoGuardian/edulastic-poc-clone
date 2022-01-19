@@ -581,7 +581,11 @@ class SideMenu extends Component {
             </Link>
           </Menu.Item>
           {!isPublisher && (
-            <Menu.Item key="2" className="removeSelectedBorder">
+            <Menu.Item
+              key="2"
+              className="removeSelectedBorder"
+              disabled={isDemoAccount}
+            >
               <Link to="/author/subscription">
                 <IconSubscriptionHighlight />{' '}
                 <span data-cy="subscription">
@@ -594,7 +598,7 @@ class SideMenu extends Component {
             <Menu.Item
               key="3"
               className="removeSelectedBorder"
-              disabled={!emailVerified && verificationTS}
+              disabled={isDemoAccount || (!emailVerified && verificationTS)}
               title={
                 !emailVerified && verificationTS
                   ? 'Please verify your email address to access this feature.'
@@ -612,6 +616,7 @@ class SideMenu extends Component {
             <Menu.Item
               key="4"
               className="removeSelectedBorder"
+              disabled={isDemoAccount || (!emailVerified && verificationTS)}
               disabled={!emailVerified && verificationTS}
               title={
                 !emailVerified && verificationTS
@@ -625,7 +630,12 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           ) : null}
-          <Menu.Item data-cy="signout" key="0" className="removeSelectedBorder">
+          <Menu.Item
+            data-cy="signout"
+            key="0"
+            className="removeSelectedBorder"
+            disabled={isDemoAccount}
+          >
             <a>
               <IconSignoutHighlight />{' '}
               <span>{isCollapsed ? '' : 'Sign Out'}</span>

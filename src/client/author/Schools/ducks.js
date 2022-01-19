@@ -47,6 +47,11 @@ export const getSchoolsSelector = createSelector(
   (state) => state.data
 )
 
+export const getTotalSchoolsSelector = createSelector(
+  stateSchoolsSelector,
+  (state) => state.totalSchoolCount
+)
+
 // reducers
 const initialState = {
   data: [],

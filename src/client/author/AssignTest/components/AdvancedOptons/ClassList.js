@@ -18,7 +18,10 @@ import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
 } from '../../../src/selectors/user'
-import { receiveSchoolsAction } from '../../../Schools/ducks'
+import {
+  getTotalSchoolsSelector,
+  receiveSchoolsAction,
+} from '../../../Schools/ducks'
 import {
   receiveCourseListAction,
   getAggregateCourseListSelector,
@@ -99,9 +102,9 @@ class ClassList extends React.Component {
       userOrgId,
       getAllTags,
       courseList,
+      totalSchools,
     } = this.props
-
-    if (isEmpty(schools)) {
+    if (isEmpty(schools) || schools?.length !== totalSchools) {
       loadSchoolsData({ districtId: userOrgId })
     }
     if (isEmpty(courseList)) {
@@ -596,6 +599,7 @@ const enhance = compose(
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
+      totalSchools: getTotalSchoolsSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,

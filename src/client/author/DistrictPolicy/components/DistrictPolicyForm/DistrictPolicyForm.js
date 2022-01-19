@@ -476,6 +476,7 @@ class DistrictPolicyForm extends Component {
               <StyledHeading1>Student Enrollment Policy</StyledHeading1>
               <StyledElementDiv>
                 <CheckboxLabel
+                  data-cy="student-enrollment-policy"
                   checked={districtPolicy.searchAndAddStudents}
                   onChange={(e) => this.change(e, 'searchAndAddStudents')}
                 >
@@ -512,6 +513,7 @@ class DistrictPolicyForm extends Component {
             <StyledRow gutter={40} type="flex">
               <StyledCol mt="0px" sm={24} xl={12}>
                 <CheckboxLabel
+                  data-cy="allow-school-level-admin"
                   checked={districtPolicy.schoolAdminSettingsAccess}
                   onChange={(e) => this.change(e, 'schoolAdminSettingsAccess')}
                 >
@@ -533,6 +535,7 @@ class DistrictPolicyForm extends Component {
                   value={districtPolicy.allowedDomainForTeachers}
                   onChange={this.handleTagTeacherChange}
                   limit={512}
+                  data-cy="allowed-teachers-domain"
                   placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
                 />
               </StyledFormItem>
@@ -663,7 +666,7 @@ class DistrictPolicyForm extends Component {
           </StyledRow>
 
           <HeaderSaveButton>
-            <EduButton isBlue onClick={this.onSave}>
+            <EduButton data-cy="save-settings" isBlue onClick={this.onSave}>
               <IconSaveNew /> Save
             </EduButton>
           </HeaderSaveButton>

@@ -198,7 +198,7 @@ class DistrictProfileForm extends React.Component {
                     marginRight: '10px',
                   }}
                 />
-                <span>
+                <span data-cy="sync-info">
                   {`This is a ${districtProfile.syncProvider} synced ${
                     isDA ? 'district' : 'school'
                   }`}

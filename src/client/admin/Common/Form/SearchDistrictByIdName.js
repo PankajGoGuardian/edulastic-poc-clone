@@ -35,12 +35,14 @@ export default function SearchDistrictByIdName({
               onSelect={onSelect}
               dataSource={dataSource}
               style={{ width: 350 }}
+              data-cy="district-search-input"
             />
           ) : (
             <CircularInput placeholder={placeholder} style={{ width: 300 }} />
           )
         )}
         <Button
+          data-cy="manage-by-district-input-search-btn"
           icon="search"
           type="submit"
           style={{
@@ -65,6 +67,7 @@ export default function SearchDistrictByIdName({
                 key={item[valueKey]}
                 id={item[valueKey]}
                 value={item[valueKey]}
+                data-cy={`${item.label}-radio`}
               >
                 {item[labelKey]}
               </Radio>

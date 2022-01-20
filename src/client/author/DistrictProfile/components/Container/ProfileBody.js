@@ -1023,7 +1023,7 @@ const enhance = compose(
       joinSchoolVisible: state.user.joinSchoolVisible,
       userInfo: get(state.user, 'user', {}),
       isSignupUsingUNAndPass: get(
-        state.user.user,
+        state.user,
         'signedUpUsingUsernameAndPassword',
         false
       ),

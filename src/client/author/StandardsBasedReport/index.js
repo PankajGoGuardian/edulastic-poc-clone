@@ -27,6 +27,8 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  getLinkExpired,
+  isDefaultDASelector,
 } from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
@@ -42,6 +44,8 @@ class StandardsBasedReport extends Component {
       toggleAdminAlertModal,
       emailVerified,
       verificationTS,
+      linkExpired,
+      isDefaultDA,
       toggleVerifyEmailModal,
       userRole,
     } = this.props
@@ -53,12 +57,12 @@ class StandardsBasedReport extends Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
       ).getTime()
-      if (expiryDate < Date.now()) {
+      if (expiryDate < Date.now() || linkExpired) {
         history.push(userRole === 'teacher' ? '/' : '/author/items')
         return toggleVerifyEmailModal(true)
       }
@@ -141,6 +145,8 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      linkExpired: getLinkExpired(state),
+      isDefaultDA: isDefaultDASelector(state),
       userRole: get(state.user, 'user.role', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
     }),

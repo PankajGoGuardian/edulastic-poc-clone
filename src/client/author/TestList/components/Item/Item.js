@@ -46,6 +46,8 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  getLinkExpired,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -139,6 +141,8 @@ class Item extends Component {
       toggleAdminAlertModal,
       emailVerified,
       verificationTS,
+      linkExpired,
+      isDefaultDA,
       toggleVerifyEmailModal,
       orgCollections,
       isTestRecommendation,
@@ -160,7 +164,10 @@ class Item extends Component {
       ).getTime()
     }
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else if (expiryDate && expiryDate < Date.now()) {
+    else if (
+      ((expiryDate && expiryDate < Date.now()) || linkExpired) &&
+      !isDefaultDA
+    ) {
       toggleVerifyEmailModal(true)
     } else
       history.push({
@@ -529,6 +536,8 @@ const enhance = compose(
       isUseThisLoading: getIsUseThisLoading(state),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      linkExpired: getLinkExpired(state),
+      isDefaultDA: isDefaultDASelector(state),
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,

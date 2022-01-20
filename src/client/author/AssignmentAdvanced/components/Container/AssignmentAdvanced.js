@@ -75,6 +75,8 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  getLinkExpired,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -100,6 +102,8 @@ class AssignmentAdvanced extends Component {
       toggleAdminAlertModal,
       emailVerified,
       verificationTS,
+      linkExpired,
+      isDefaultDA,
       toggleVerifyEmailModal,
       userId,
       districtId: _districtId,
@@ -113,12 +117,12 @@ class AssignmentAdvanced extends Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
       ).getTime()
-      if (expiryDate < Date.now()) {
+      if (expiryDate < Date.now() || linkExpired) {
         history.push(userRole === 'teacher' ? '/' : '/author/items')
         return toggleVerifyEmailModal(true)
       }
@@ -540,6 +544,8 @@ const enhance = compose(
       error: get(state, 'test.error', false),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      linkExpired: getLinkExpired(state),
+      isDefaultDA: isDefaultDASelector(state),
       classList: getAssignmentClassList(state),
       test: getCurrentTestSelector(state),
       userId: getUserId(state),

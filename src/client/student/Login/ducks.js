@@ -904,6 +904,12 @@ export const getUserId = createSelector(
   (_id, currentChild) => _id || currentChild
 )
 
+export const isDefaultDASelector = createSelector(
+  [getUserOrgId, 'user.user.email', getUserRole],
+  (districtId, email, role) =>
+    email === `${districtId}@edulastic.com` && role === roleType.DISTRICT_ADMIN
+)
+
 export const getUserName = createSelector(
   ['user.user.firstName', 'user.user.middleName', 'user.user.lastName'],
   (firstName, middleName, lastName) =>
@@ -938,6 +944,11 @@ export const getEmailVerified = createSelector(
 export const getVerificationTS = createSelector(
   ['user.user.verificationTS'],
   (verificationTS) => verificationTS
+)
+
+export const getLinkExpired = createSelector(
+  ['user.user.linkExpired'],
+  (linkExpired) => linkExpired
 )
 
 export const getAddAccount = createSelector(

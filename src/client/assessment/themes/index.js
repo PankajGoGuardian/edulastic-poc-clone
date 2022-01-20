@@ -649,13 +649,13 @@ const AssessmentContainer = ({
     if (document && window) {
       document.onkeydown = function (e) {
         // for IE
-        e = e || event
-        var keyCode = window.event ? e.which : e.keyCode
+        e = e || window.event
+        const keyCode = window.event ? e.which : e.keyCode
 
         // check ctrl + f and command + f key
         if (
           (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
-          e.keyCode == 70
+          keyCode == 70
         ) {
           e.preventDefault()
           return false
@@ -665,13 +665,13 @@ const AssessmentContainer = ({
     return () => {
       document.onkeydown = function (e) {
         // for IE
-        e = e || event
-        var keyCode = window.event ? e.which : e.keyCode
+        e = e || window.event
+        const keyCode = window.event ? e.which : e.keyCode
 
         // check ctrl + f and command + f key
         if (
           (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
-          e.keyCode == 70
+          keyCode == 70
         ) {
           return true
         }

@@ -491,6 +491,7 @@ class SideMenu extends Component {
       verificationTS,
       isDefaultDA,
       setSignedUpUsingUsernameAndPassword,
+      isSignupUsingUNAndPassSet,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -528,7 +529,7 @@ class SideMenu extends Component {
       'newselaId',
     ]
     const isSignupUsingUNAndPass = lmsIds.every((lmsId) => !user[lmsId])
-    if (isSignupUsingUNAndPass) {
+    if (isSignupUsingUNAndPass && !isSignupUsingUNAndPassSet) {
       setSignedUpUsingUsernameAndPassword()
     }
 
@@ -1025,6 +1026,11 @@ const enhance = compose(
       userRole: get(state.user, 'user.role', ''),
       userId: get(state.user, 'user._id', ''),
       user: get(state.user, 'user', null),
+      isSignupUsingUNAndPassSet: get(
+        state.user,
+        'signedUpUsingUsernameAndPassword',
+        false
+      ),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
       linkExpired: getLinkExpired(state),

@@ -93,10 +93,10 @@ class EditSchoolAdminModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>
+            <EduButton isGhost onClick={this.onCloseModal} data-cy="CancelEdit">
               {t('users.schooladmin.editsa.nocancel')}
             </EduButton>
-            <EduButton onClick={this.onSaveSchoolAdmin}>
+            <EduButton onClick={this.onSaveSchoolAdmin} data-cy="YesEdit">
               {t('users.schooladmin.editsa.yesupdate')}
             </EduButton>
           </ButtonsContainer>,
@@ -118,6 +118,7 @@ class EditSchoolAdminModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('users.schooladmin.editsa.enterfirstname')}
+                  data-cy="firstNameTextBox"
                 />
               )}
             </ModalFormItem>
@@ -135,6 +136,7 @@ class EditSchoolAdminModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('users.schooladmin.editsa.enterlastname')}
+                  data-cy="lastNameTextBox"
                 />
               )}
             </ModalFormItem>
@@ -160,6 +162,7 @@ class EditSchoolAdminModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('users.schooladmin.editsa.enteremail')}
+                  data-cy="emailTextBox"
                 />
               )}
             </ModalFormItem>
@@ -176,6 +179,7 @@ class EditSchoolAdminModal extends Component {
                   type="password"
                   autoComplete="off"
                   placeholder={t('users.schooladmin.editsa.enterpassword')}
+                  data-cy="passwordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -202,6 +206,7 @@ class EditSchoolAdminModal extends Component {
                   placeholder={t(
                     'users.schooladmin.editsa.enterconfirmpassword'
                   )}
+                  data-cy="confirmPasswordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -223,6 +228,7 @@ class EditSchoolAdminModal extends Component {
                   mode="multiple"
                   placeholder={t('users.schooladmin.editsa.selectschool')}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  data-cy="selectSchools"
                 >
                   {schoolsOptions}
                 </SelectInputStyled>
@@ -237,7 +243,7 @@ class EditSchoolAdminModal extends Component {
                 initialValue: isSuperAdmin,
                 valuePropName: 'checked',
               })(
-                <CheckboxLabel>
+                <CheckboxLabel data-cy="superAdminCheckbox">
                   {t('users.schooladmin.superAdmin')}
                 </CheckboxLabel>
               )}
@@ -249,7 +255,7 @@ class EditSchoolAdminModal extends Component {
                 initialValue: _source?.isPowerTeacher,
                 valuePropName: 'checked',
               })(
-                <CheckboxLabel>
+                <CheckboxLabel data-cy="powerUserCheckBox">
                   {t('users.schooladmin.powertools')}
                 </CheckboxLabel>
               )}

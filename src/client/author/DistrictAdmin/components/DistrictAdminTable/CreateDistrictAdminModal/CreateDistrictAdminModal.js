@@ -23,6 +23,7 @@ class CreateDistrictAdminModal extends React.Component {
 
   onCreateDistrictAdmin = async () => {
     const { email, emailValidateStatus, isSuperAdmin } = this.state
+    const { form, createDistrictAdmin } = this.props
     let checkUserResponse = { userExists: true }
 
     if (emailValidateStatus === 'success' && email.length > 0) {
@@ -53,7 +54,7 @@ class CreateDistrictAdminModal extends React.Component {
       })
     }
 
-    this.props.form.validateFields((err, row) => {
+    form?.validateFields((err, row) => {
       if (!err) {
         if (
           checkUserResponse.userExists &&
@@ -71,16 +72,17 @@ class CreateDistrictAdminModal extends React.Component {
           firstName: firstName[0],
           lastName,
           password: row.password,
-          email: this.state.email,
+          email: this.state?.email,
           permissions: isSuperAdmin ? ['super_admin'] : [],
         }
-        this.props.createDistrictAdmin(newUser)
+        createDistrictAdmin(newUser)
       }
     })
   }
 
   onCloseModal = () => {
-    this.props.closeModal()
+    const { closeModal } = this.props
+    closeModal()
   }
 
   changeEmail = (e) => {
@@ -122,10 +124,14 @@ class CreateDistrictAdminModal extends React.Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>
+            <EduButton
+              isGhost
+              onClick={this.onCloseModal}
+              data-cy="CancelCreate"
+            >
               {t('users.districtadmin.createda.nocancel')}
             </EduButton>
-            <EduButton onClick={this.onCreateDistrictAdmin}>
+            <EduButton onClick={this.onCreateDistrictAdmin} data-cy="YesCreate">
               {t('users.districtadmin.createda.yescreate')}
             </EduButton>
           </ButtonsContainer>,
@@ -144,6 +150,7 @@ class CreateDistrictAdminModal extends React.Component {
               })(
                 <TextInputStyled
                   placeholder={t('users.districtadmin.createda.entername')}
+                  data-cy="nameTextBox"
                 />
               )}
             </ModalFormItem>
@@ -162,6 +169,7 @@ class CreateDistrictAdminModal extends React.Component {
                 placeholder={t('users.districtadmin.createda.enterusername')}
                 autocomplete="new-password"
                 onChange={this.changeEmail}
+                data-cy="emailTextBox"
               />
             </ModalFormItem>
           </Col>
@@ -183,6 +191,7 @@ class CreateDistrictAdminModal extends React.Component {
                   placeholder={t('users.districtadmin.createda.enterpassword')}
                   type="password"
                   autocomplete="new-password"
+                  data-cy="passwordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -193,6 +202,7 @@ class CreateDistrictAdminModal extends React.Component {
             <CheckboxLabel
               checked={isSuperAdmin}
               onChange={this.changeSuperAdmin}
+              data-cy="superAdminCheckbox"
             >
               {t('users.districtadmin.superAdmin')}
             </CheckboxLabel>

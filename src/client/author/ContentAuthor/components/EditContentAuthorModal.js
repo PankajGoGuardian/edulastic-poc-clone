@@ -58,8 +58,12 @@ const EditContentAuthorModal = ({
       centered
       footer={[
         <ButtonsContainer>
-          <CancelButton onClick={closeModal}>No, Cancel</CancelButton>
-          <OkButton onClick={onSaveContentAuthor}>Yes, Update</OkButton>
+          <CancelButton onClick={closeModal} data-cy="CancelEdit">
+            No, Cancel
+          </CancelButton>
+          <OkButton onClick={onSaveContentAuthor} data-cy="YesEdit">
+            Yes, Update
+          </OkButton>
         </ButtonsContainer>,
       ]}
     >
@@ -74,7 +78,12 @@ const EditContentAuthorModal = ({
                 },
               ],
               initialValue: _source.firstName,
-            })(<Input placeholder="Enter First Name" />)}
+            })(
+              <Input
+                placeholder="Enter First Name"
+                data-cy="firstNameTextBox"
+              />
+            )}
           </ModalFormItem>
         </Col>
         <Col span={24}>
@@ -87,7 +96,9 @@ const EditContentAuthorModal = ({
                 },
               ],
               initialValue: _source.lastName,
-            })(<Input placeholder="Enter Last Name" />)}
+            })(
+              <Input placeholder="Enter Last Name" data-cy="lastNameTextBox" />
+            )}
           </ModalFormItem>
         </Col>
       </Row>
@@ -106,7 +117,7 @@ const EditContentAuthorModal = ({
                 },
               ],
               initialValue: _source.email,
-            })(<Input placeholder="Enter E-mail" />)}
+            })(<Input placeholder="Enter E-mail" data-cy="emailTextBox" />)}
           </ModalFormItem>
         </Col>
       </Row>
@@ -121,6 +132,7 @@ const EditContentAuthorModal = ({
                 type="password"
                 autoComplete="off"
                 placeholder="Enter password"
+                data-cy="passwordTextBox"
               />
             )}
           </ModalFormItem>
@@ -141,6 +153,7 @@ const EditContentAuthorModal = ({
                 type="password"
                 autoComplete="off"
                 placeholder="Enter Confirm Password"
+                data-cy="confirmPasswordTextBox"
               />
             )}
           </ModalFormItem>

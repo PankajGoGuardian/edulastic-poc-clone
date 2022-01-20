@@ -573,11 +573,13 @@ class ContentAuthorTable extends Component {
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
                 height="34px"
+                data-cy="searchByName"
               />
               <EduButton
                 type="primary"
                 height="34px"
                 onClick={this.showCreateContentApproverModal}
+                data-cy="addContentApproverButton"
               >
                 {t('users.contentApprover.createContentAuthor')}
               </EduButton>
@@ -651,7 +653,7 @@ class ContentAuthorTable extends Component {
         {deactivateApproverModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateApproverModalVisible}
-            title="Deactivate"
+            title="Deactivate Content Approver(s)"
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
             primaryLabel="Are you sure you want to deactivate the following content approver(s)?"

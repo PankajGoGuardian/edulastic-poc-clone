@@ -88,10 +88,10 @@ const CreateContentAuthorModal = ({
       centered
       footer={[
         <ButtonsContainer>
-          <CancelButton onClick={closeModal}>
+          <CancelButton onClick={closeModal} data-cy="CancelCreate">
             {t('users.contentAuthor.createCA.nocancel')}
           </CancelButton>
-          <OkButton onClick={onCreateContentAuthor}>
+          <OkButton onClick={onCreateContentAuthor} data-cy="YesCreate">
             {t('users.contentAuthor.createCA.yescreate')}
           </OkButton>
         </ButtonsContainer>,
@@ -110,6 +110,7 @@ const CreateContentAuthorModal = ({
             })(
               <Input
                 placeholder={t('users.contentAuthor.createCA.entername')}
+                data-cy="nameTextBox"
               />
             )}
           </ModalFormItem>
@@ -128,6 +129,7 @@ const CreateContentAuthorModal = ({
               placeholder={t('users.contentAuthor.createCA.enteremail')}
               autocomplete="new-password"
               onChange={changeEmail}
+              data-cy="emailTextBox"
             />
           </ModalFormItem>
         </Col>
@@ -149,6 +151,7 @@ const CreateContentAuthorModal = ({
                 placeholder={t('users.contentAuthor.createCA.enterpassword')}
                 type="password"
                 autocomplete="new-password"
+                data-cy="passwordTextBox"
               />
             )}
           </ModalFormItem>

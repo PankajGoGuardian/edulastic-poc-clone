@@ -32,6 +32,7 @@ class CreateSchoolAdminModal extends React.Component {
 
   onCreateSchoolAdmin = async () => {
     const { email, emailValidateStatus } = this.state
+    const { form, createSchoolAdmin } = this.props
     let checkUserResponse = { userExists: true }
 
     if (emailValidateStatus === 'success' && email.length > 0) {
@@ -62,7 +63,7 @@ class CreateSchoolAdminModal extends React.Component {
       })
     }
 
-    this.props.form.validateFields((err, row) => {
+    form?.validateFields((err, row) => {
       if (!err) {
         if (
           checkUserResponse.userExists &&
@@ -92,13 +93,14 @@ class CreateSchoolAdminModal extends React.Component {
           isPowerTeacher,
           permissions: isSuperAdmin ? ['super_admin'] : [],
         }
-        this.props.createSchoolAdmin(newUser)
+        createSchoolAdmin(newUser)
       }
     })
   }
 
   onCloseModal = () => {
-    this.props.closeModal()
+    const { closeModal } = this.props
+    closeModal()
   }
 
   changeEmail = (e) => {
@@ -128,8 +130,9 @@ class CreateSchoolAdminModal extends React.Component {
     const searchParam = value
       ? { search: { name: [{ type: 'cont', value }] } }
       : {}
+    const { userOrgId: districtId } = this.props
     const schoolListData = await schoolApi.getSchools({
-      districtId: this.props.userOrgId,
+      districtId,
       limit: 25,
       page: 1,
       sortField: 'name',
@@ -140,7 +143,7 @@ class CreateSchoolAdminModal extends React.Component {
   }
 
   handleChange = (value) => {
-    this.props.form.setFieldsValue({ institutionIds: value })
+    this.props?.form.setFieldsValue({ institutionIds: value })
     this.setState({
       schoolList: [],
       fetching: false,
@@ -161,7 +164,7 @@ class CreateSchoolAdminModal extends React.Component {
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator } = this.props?.form
     const { modalVisible, t } = this.props
     const {
       emailValidateStatus,
@@ -182,10 +185,14 @@ class CreateSchoolAdminModal extends React.Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>
+            <EduButton
+              isGhost
+              onClick={this.onCloseModal}
+              data-cy="CancelCreate"
+            >
               {t('users.schooladmin.createsa.nocancel')}
             </EduButton>
-            <EduButton onClick={this.onCreateSchoolAdmin}>
+            <EduButton onClick={this.onCreateSchoolAdmin} data-cy="YesCreate">
               {t('users.schooladmin.createsa.yescreate')}
             </EduButton>
           </ButtonsContainer>,
@@ -204,6 +211,7 @@ class CreateSchoolAdminModal extends React.Component {
               })(
                 <TextInputStyled
                   placeholder={t('users.schooladmin.createsa.entername')}
+                  data-cy="nameTextBox"
                 />
               )}
             </ModalFormItem>
@@ -244,6 +252,7 @@ class CreateSchoolAdminModal extends React.Component {
                   placeholder={t('users.schooladmin.createsa.enterpassword')}
                   type="password"
                   autocomplete="new-password"
+                  data-cy="passwordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -287,6 +296,7 @@ class CreateSchoolAdminModal extends React.Component {
             <CheckboxLabel
               checked={isSuperAdmin}
               onChange={this.changeSuperAdmin}
+              data-cy="superAdminCheckbox"
             >
               {t('users.schooladmin.superAdmin')}
             </CheckboxLabel>

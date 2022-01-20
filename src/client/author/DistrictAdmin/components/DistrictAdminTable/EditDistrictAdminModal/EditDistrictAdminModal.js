@@ -71,10 +71,10 @@ class EditDistrictAdminModal extends Component {
         centered
         footer={[
           <ButtonsContainer>
-            <EduButton isGhost onClick={this.onCloseModal}>
+            <EduButton isGhost onClick={this.onCloseModal} data-cy="CancelEdit">
               {t('users.districtadmin.editda.nocancel')}
             </EduButton>
-            <EduButton onClick={this.onSaveDistrictAdmin}>
+            <EduButton onClick={this.onSaveDistrictAdmin} data-cy="YesEdit">
               {t('users.districtadmin.editda.yesupdate')}
             </EduButton>
           </ButtonsContainer>,
@@ -96,6 +96,7 @@ class EditDistrictAdminModal extends Component {
               })(
                 <Input
                   placeholder={t('users.districtadmin.editda.enterfirstname')}
+                  data-cy="firstNameTextBox"
                 />
               )}
             </ModalFormItem>
@@ -115,6 +116,7 @@ class EditDistrictAdminModal extends Component {
               })(
                 <Input
                   placeholder={t('users.districtadmin.editda.enterlastname')}
+                  data-cy="lastNameTextBox"
                 />
               )}
             </ModalFormItem>
@@ -140,6 +142,7 @@ class EditDistrictAdminModal extends Component {
               })(
                 <Input
                   placeholder={t('users.districtadmin.editda.enteremail')}
+                  data-cy="emailTextBox"
                 />
               )}
             </ModalFormItem>
@@ -156,6 +159,7 @@ class EditDistrictAdminModal extends Component {
                   type="password"
                   autoComplete="off"
                   placeholder={t('users.districtadmin.editda.enterpassword')}
+                  data-cy="passwordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -182,6 +186,7 @@ class EditDistrictAdminModal extends Component {
                   placeholder={t(
                     'users.districtadmin.editda.enterconfirmpassword'
                   )}
+                  data-cy="confirmPasswordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -194,7 +199,7 @@ class EditDistrictAdminModal extends Component {
                 initialValue: isSuperAdmin,
                 valuePropName: 'checked',
               })(
-                <CheckboxLabel>
+                <CheckboxLabel data-cy="superAdminCheckbox">
                   {t('users.districtadmin.superAdmin')}
                 </CheckboxLabel>
               )}

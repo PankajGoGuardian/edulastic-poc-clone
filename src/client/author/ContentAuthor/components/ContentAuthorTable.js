@@ -578,11 +578,13 @@ class ContentAuthorTable extends Component {
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
                 height="34px"
+                data-cy="searchByName"
               />
               <EduButton
                 type="primary"
                 height="34px"
                 onClick={this.showCreateContentAuthorModal}
+                data-cy="addContentAuthorButton"
               >
                 {t('users.contentAuthor.createContentAuthor')}
               </EduButton>
@@ -654,7 +656,7 @@ class ContentAuthorTable extends Component {
         {deactivateAuthorsModalVisible && (
           <TypeToConfirmModal
             modalVisible={deactivateAuthorsModalVisible}
-            title="Deactivate"
+            title="Deactivate Content Author(s)"
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
             primaryLabel="Are you sure you want to deactivate the following content author(s)?"

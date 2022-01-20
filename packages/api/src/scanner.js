@@ -68,6 +68,15 @@ const scoreWebCamScans = ({ assignmentId, groupId, sessionId, responses }) =>
     },
   })
 
+const checkSheetsApi = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/check-sheets`,
+      params,
+      method: 'get',
+    })
+    .then((result) => result.data)
+
 export default {
   createOmrUploadSession,
   updateOmrUploadSession,

@@ -35,7 +35,7 @@ import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmMod
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
 import { IconInfo } from '@edulastic/icons'
-import { actions, selector } from '../uploadAnswerSheets/ducks'
+import { actions, selector, parseQr } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
 import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
@@ -319,6 +319,58 @@ const ScanAnswerSheetsInner = ({
                 setScannedResponses((x) => x + 1)
                 arrLengthOfAnswer = []
                 console.log(result)
+                // console.log(result)
+                const {
+                  assignmentId: assignmentIdentifier,
+                  groupId: groupIdentfier,
+                  studentId: _studentId,
+                } = parseQr(result.qrCode)
+                const { assignmentId, groupId } = qs.parse(
+                  window.location?.search || '',
+                  {
+                    ignoreQueryPrefix: true,
+                  }
+                )
+                const session = await scannerApi.generateWebCamOmrSession({
+                  assignmentId,
+                  groupId,
+                })
+
+                const {
+                  assignmentId: _assignmentId,
+                  groupId: _groupId,
+                  originalAssignmentId,
+                  originalGroupId,
+                  assignmentTestId,
+                  testId: _testId,
+                } = await scannerApi.checkSheetsApi({
+                  assignmentId: assignmentIdentifier,
+                  groupId: groupIdentfier,
+                  sessionId: session._id,
+                  studentId: _studentId,
+                })
+                if (
+                  (originalAssignmentId &&
+                    `${originalAssignmentId}` != `${_assignmentId}`) ||
+                  (originalGroupId && `${originalGroupId}` != `${_groupId}`)
+                ) {
+                  arrAnswersRef.current.pop()
+                  setScannedResponses((x) => x.substring(0, x.length - 1))
+                  notification({
+                    type: 'info',
+                    msg:
+                      'Scanned document does not belong to the current assignment',
+                  })
+                }
+
+                if (assignmentTestId && `${assignmentTestId}` != _testId) {
+                  console.log('error test')
+                  notification({
+                    type: 'info',
+                    msg:
+                      'This bubble sheet belongs to an older version of the test. Please regenerate bubblesheet with current test and use it.',
+                  })
+                }
               }
             } else {
               arrLengthOfAnswer.push(answers.length)

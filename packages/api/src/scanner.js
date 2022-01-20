@@ -84,4 +84,5 @@ export default {
   splitScanOmrSheets,
   generateWebCamOmrSession,
   scoreWebCamScans,
+  checkSheetsApi,
 }

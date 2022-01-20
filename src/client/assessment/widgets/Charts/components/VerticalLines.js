@@ -27,7 +27,12 @@ const VerticalLines = ({
           {displayAxisLabel && (
             <g transform={`translate(${dot.posX},${height})`}>
               {labelIsVisible(index) && (
-                <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+                <VxText
+                  textAnchor="middle"
+                  verticalAnchor="start"
+                  width={70}
+                  data-cy={`barLabelName-${index}`}
+                >
                   {dot.x}
                 </VxText>
               )}

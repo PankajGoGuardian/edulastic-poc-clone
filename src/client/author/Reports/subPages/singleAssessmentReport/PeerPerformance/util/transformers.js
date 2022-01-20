@@ -64,7 +64,7 @@ export const parseAndNormalizeExtAttributes = (extAttributesStr) => {
   Object.keys(extAttributes).forEach((k) => {
     const v = `${extAttributes[k]}`.toLowerCase()
     if (blackList.includes(v)) {
-      extAttributes[k] = undefined
+      extAttributes[k] = ''
     }
   })
   return extAttributes
@@ -109,19 +109,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       { totalMaxScore: 0, totalTotalScore: 0 }
     )
 
-    let avgStudentScorePercentUnrounded =
-      (item.totalTotalScore / item.totalMaxScore) * 100
-    avgStudentScorePercentUnrounded = !Number.isNan(
-      avgStudentScorePercentUnrounded
-    )
-      ? avgStudentScorePercentUnrounded
-      : 0
-
-    const avgStudentScorePercent = !Number.isNan(
-      avgStudentScorePercentUnrounded
-    )
-      ? Math.round(avgStudentScorePercentUnrounded)
-      : 0
+    const avgStudentScorePercentUnrounded =
+      (item.totalTotalScore / item.totalMaxScore) * 100 || 0
+    const avgStudentScorePercent = Math.round(avgStudentScorePercentUnrounded)
     const { teacherName, groupName: className } = groupedData[data][0]
     const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
     let absent = statusCounts[testActivityStatus.ABSENT] || 0
@@ -176,14 +166,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     )
 
     const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
-    let avgStudentScoreUnrounded = item.totalTotalScore / (statusCounts[1] || 1)
-    avgStudentScoreUnrounded = !Number.isNan(avgStudentScoreUnrounded)
-      ? avgStudentScoreUnrounded
-      : 0
-
-    const avgStudentScore = !Number.isNan(avgStudentScoreUnrounded)
-      ? Number(avgStudentScoreUnrounded.toFixed(2))
-      : 0
+    const avgStudentScoreUnrounded =
+      item.totalTotalScore / (statusCounts[1] || 1) || 0
+    const avgStudentScore = Number(avgStudentScoreUnrounded.toFixed(2))
     const { maxScore, teacherName, groupName: className } = groupedData[data][0]
     let absent = statusCounts[testActivityStatus.ABSENT] || 0
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0

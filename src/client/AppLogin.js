@@ -2,6 +2,7 @@ import React from 'react'
 import { Route, Switch } from 'react-router-dom'
 import loadable from '@loadable/component'
 import { Spin } from 'antd'
+import TagManager from 'react-gtm-module'
 
 if (
   window.location.hash.includes('#renderResource/close/') ||
@@ -46,6 +47,12 @@ const AdminSignup = loadable(
   () => import('./student/Signup/components/AdminContainer/Container'),
   fallbackComponent
 )
+
+const tagManagerArgs = {
+  gtmId: process.env.REACT_APP_GTM_TRACKING_ID || 'GTM-WRWPDJM',
+}
+
+TagManager.initialize(tagManagerArgs)
 
 const AppLogin = () => (
   <>

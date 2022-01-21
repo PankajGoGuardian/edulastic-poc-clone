@@ -185,7 +185,8 @@ export const getCurrentSchoolState = createSelector(
   getOrgSchools,
   getCurrentSchool,
   (schools, schoolId) => {
-    const currentSchool = schools.find((sc) => sc._id === schoolId)
+    const currentSchool =
+      schools.find((sc) => sc._id === schoolId) || schools?.[0]
     return currentSchool?.location?.state
   }
 )

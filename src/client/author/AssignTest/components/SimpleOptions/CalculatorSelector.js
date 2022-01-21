@@ -1,12 +1,15 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Select, Tooltip } from 'antd'
 import { connect } from 'react-redux'
 import { test } from '@edulastic/constants'
 import { SelectInputStyled, isValidDesmosState } from '@edulastic/common'
 import { Label } from './styled'
-import { getCurrentSchoolState } from '../../../src/selectors/user'
+import {
+  isHomeSchoolSelector,
+  getCurrentSchoolState,
+} from '../../../src/selectors/user'
 
-const { calculators, calculatorTypes } = test
+const { calculatorKeys, calculators, calculatorTypes } = test
 
 const CustomLabel = ({ disabled, text }) => {
   if (disabled) {
@@ -28,8 +31,25 @@ const CalculatorSelector = ({
   calcType,
   onChangeHanlde,
   schoolState,
-  calculatorKeysAvailable,
+  premium,
+  calculatorProvider,
+  isHomeSchool,
 }) => {
+  const calcKeys = useMemo(() => {
+    if (premium && calculatorProvider !== 'DESMOS') {
+      return calculatorKeys.filter((k) =>
+        [calculatorTypes.NONE, calculatorTypes.BASIC].includes(k)
+      )
+    }
+
+    if (isHomeSchool) {
+      return calculatorKeys.filter(
+        (k) => ![calculatorTypes.GRAPHING_STATE].includes(k)
+      )
+    }
+    return calculatorKeys
+  }, [premium, calculatorProvider, isHomeSchool])
+
   return (
     <SelectInputStyled
       data-cy="calculatorSelector"
@@ -39,7 +59,7 @@ const CalculatorSelector = ({
       onChange={onChangeHanlde}
       disabled={disabled}
     >
-      {calculatorKeysAvailable.map((item) => {
+      {calcKeys.map((item) => {
         const disableOption =
           item === calculatorTypes.GRAPHING_STATE &&
           !isValidDesmosState(schoolState)
@@ -59,5 +79,6 @@ const CalculatorSelector = ({
 }
 
 export default connect((state) => ({
+  isHomeSchool: isHomeSchoolSelector(state),
   schoolState: getCurrentSchoolState(state),
 }))(CalculatorSelector)

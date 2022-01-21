@@ -15,6 +15,7 @@ import { roleuser, signUpState, test } from '@edulastic/constants'
 import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
+import TagManager from 'react-gtm-module'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
@@ -358,6 +359,17 @@ class App extends Component {
       districtId,
       isSAWithoutSchools,
     } = this.props
+
+    const userRole = user?.user?.role || ''
+
+    if (userRole !== roleuser.STUDENT) {
+      const tagManagerArgs = {
+        gtmId: process.env.REACT_APP_GTM_TRACKING_ID || 'GTM-WRWPDJM',
+      }
+
+      TagManager.initialize(tagManagerArgs)
+    }
+
     if (
       location.hash.includes('#renderResource/close/') ||
       location.hash.includes('#assessmentQuestions/close/')
@@ -583,8 +595,6 @@ class App extends Component {
       notification({ msg: sessionStorage.getItem('errorMessage') })
       sessionStorage.removeItem('errorMessage')
     }
-
-    const userRole = user?.user?.role || ''
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {

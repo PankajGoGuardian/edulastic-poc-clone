@@ -363,7 +363,6 @@ const ScanAnswerSheetsInner = ({
                   assignmentTestId &&
                   `${assignmentTestId}` != _testId
                 ) {
-                  console.log('error test')
                   notification({
                     type: 'info',
                     msg:

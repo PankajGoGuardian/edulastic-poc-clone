@@ -71,7 +71,7 @@ const scoreWebCamScans = ({ assignmentId, groupId, sessionId, responses }) =>
 const checkSheetsApi = (params) =>
   api
     .callApi({
-      url: `${prefix}/check-sheets`,
+      url: `${prefix}/validate-sheet`,
       params,
       method: 'get',
     })

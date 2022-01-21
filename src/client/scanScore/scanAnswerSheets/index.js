@@ -330,28 +330,27 @@ const ScanAnswerSheetsInner = ({
                     ignoreQueryPrefix: true,
                   }
                 )
-                const session = await scannerApi.generateWebCamOmrSession({
-                  assignmentId,
-                  groupId,
-                })
 
                 const {
                   assignmentId: _assignmentId,
                   groupId: _groupId,
-                  originalAssignmentId,
-                  originalGroupId,
                   assignmentTestId,
                   testId: _testId,
-                } = await scannerApi.checkSheetsApi({
-                  assignmentId: assignmentIdentifier,
-                  groupId: groupIdentfier,
-                  sessionId: session._id,
-                  studentId: _studentId,
-                })
+                } = await scannerApi
+                  .checkSheetsApi({
+                    assignmentId: assignmentIdentifier,
+                    groupId: groupIdentfier,
+                    studentId: _studentId,
+                  })
+                  .catch((e) => {
+                    notification({
+                      type: 'info',
+                      msg: e.message,
+                    })
+                  })
                 if (
-                  (originalAssignmentId &&
-                    `${originalAssignmentId}` != `${_assignmentId}`) ||
-                  (originalGroupId && `${originalGroupId}` != `${_groupId}`)
+                  (assignmentId && `${assignmentId}` != `${_assignmentId}`) ||
+                  (groupId && `${groupId}` != `${_groupId}`)
                 ) {
                   arrAnswersRef.current.pop()
                   setScannedResponses((x) => x.substring(0, x.length - 1))
@@ -360,9 +359,10 @@ const ScanAnswerSheetsInner = ({
                     msg:
                       'Scanned document does not belong to the current assignment',
                   })
-                }
-
-                if (assignmentTestId && `${assignmentTestId}` != _testId) {
+                } else if (
+                  assignmentTestId &&
+                  `${assignmentTestId}` != _testId
+                ) {
                   console.log('error test')
                   notification({
                     type: 'info',

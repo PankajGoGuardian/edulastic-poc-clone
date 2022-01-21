@@ -297,7 +297,7 @@ const ScanAnswerSheetsInner = ({
                       setScanningPercent(round(percent, 2))
                     }
                   )
-                  setUploadingToS3(false)
+
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
                   ].imageUri = fileUrl
@@ -369,6 +369,7 @@ const ScanAnswerSheetsInner = ({
                       'This bubble sheet belongs to an older version of the test. Please regenerate bubblesheet with current test and use it.',
                   })
                 }
+                setUploadingToS3(false)
               }
             } else {
               arrLengthOfAnswer.push(answers.length)

@@ -661,6 +661,7 @@ class ProfileBody extends React.Component {
                   <SubHeader>
                     <Title>Instructor Information</Title>
                     {!isEditProfile &&
+                    !isDefaultDA &&
                     ['teacher', 'district-admin', 'school-admin'].includes(
                       user.role
                     ) ? (
@@ -746,7 +747,7 @@ class ProfileBody extends React.Component {
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === 'edulastic-curator' ? null : (
+                {user.role === 'edulastic-curator' || isDefaultDA ? null : (
                   <ChangePasswordToggleButton
                     onClick={() => {
                       this.setState({ showChangePassword: !showChangePassword })

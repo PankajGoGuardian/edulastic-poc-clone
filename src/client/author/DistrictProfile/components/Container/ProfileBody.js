@@ -609,6 +609,9 @@ class ProfileBody extends React.Component {
       autoShareGCAssignment = false,
       interestedCurriculums,
     } = this.state
+    const isUserDefaultDA =
+      user.role === roleuser.DISTRICT_ADMIN &&
+      user.email === `${user.districtIds[0]}@edulastic.com`
     // checking if institution policy/ district policy is enabled
     // OR teacher with home school and having any google sync classroom
     const institutionPolicies = get(user, 'orgData.policies.institutions', [])
@@ -675,6 +678,7 @@ class ProfileBody extends React.Component {
                   <SubHeader>
                     <Title>Instructor Information</Title>
                     {!isEditProfile &&
+                    !isUserDefaultDA &&
                     ['teacher', 'district-admin', 'school-admin'].includes(
                       user.role
                     ) ? (
@@ -765,7 +769,7 @@ class ProfileBody extends React.Component {
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === 'edulastic-curator' ? null : (
+                {user.role === 'edulastic-curator' || isUserDefaultDA ? null : (
                   <ChangePasswordToggleButton
                     onClick={() => {
                       this.setState({ showChangePassword: !showChangePassword })

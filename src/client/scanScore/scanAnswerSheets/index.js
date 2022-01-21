@@ -319,7 +319,6 @@ const ScanAnswerSheetsInner = ({
                 setScannedResponses((x) => x + 1)
                 arrLengthOfAnswer = []
                 console.log(result)
-                // console.log(result)
                 const {
                   assignmentId: assignmentIdentifier,
                   groupId: groupIdentfier,

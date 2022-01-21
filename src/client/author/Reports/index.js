@@ -42,6 +42,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../student/Login/ducks'
 
 const Container = (props) => {
@@ -61,6 +62,7 @@ const Container = (props) => {
     toggleAdminAlertModal,
     emailVerified,
     verificationTS,
+    isDefaultDA,
     toggleVerifyEmailModal,
   } = props
   const [showHeader, setShowHeader] = useState(true)
@@ -82,7 +84,7 @@ const Container = (props) => {
       history.push('/author/tests')
       return toggleAdminAlertModal
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
@@ -438,6 +440,7 @@ const enhance = connect(
     premium: state?.user?.user?.features?.premium,
     emailVerified: getEmailVerified(state),
     verificationTS: getVerificationTS(state),
+    isDefaultDA: isDefaultDASelector(state),
     showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
     sharedReportList: getSharedReportList(state),

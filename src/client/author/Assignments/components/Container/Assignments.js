@@ -75,6 +75,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import EditTagsModal from '../EditTagsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -113,6 +114,7 @@ class Assignments extends Component {
       isFreeAdmin,
       emailVerified,
       verificationTS,
+      isDefaultDA,
       isSAWithoutSchools,
       history,
       toggleAdminAlertModal,
@@ -127,7 +129,7 @@ class Assignments extends Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
@@ -566,6 +568,7 @@ const enhance = compose(
       error: get(state, 'test.error', false),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, 'user.user.orgData', {}),
       toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(

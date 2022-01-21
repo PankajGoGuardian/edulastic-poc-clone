@@ -940,6 +940,17 @@ export const getVerificationTS = createSelector(
   (verificationTS) => verificationTS
 )
 
+export const isDefaultDASelector = createSelector(
+  [getUserOrgId, 'user.user.email', getUserRole],
+  (districtId, email, role) =>
+    email === `${districtId}@edulastic.com` && role === roleType.DISTRICT_ADMIN
+)
+
+export const isSignupUsingUNAndPassSelector = createSelector(
+  ['user.signedUpUsingUsernameAndPassword'],
+  (signedUpUsingUsernameAndPassword) => signedUpUsingUsernameAndPassword
+)
+
 export const getAddAccount = createSelector(
   ['user.addAccount'],
   (addAccount) => addAccount

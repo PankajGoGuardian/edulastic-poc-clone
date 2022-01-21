@@ -87,10 +87,11 @@ const ScanProgress = ({
           groupId: tempScannedDocs[0].groupId,
           sessionId,
           responses: tempScannedDocs.map(
-            ({ imageUri, studentId, answers }) => ({
+            ({ imageUri, studentId, answers, originalImgUri }) => ({
               answers,
               studentId,
               imageUri,
+              originalImgUri,
             })
           ),
         })
@@ -145,7 +146,11 @@ const ScanProgress = ({
         marginLeft="auto"
         mr="auto"
       >
-        <StyledTitle>Processing Forms...</StyledTitle>
+        <StyledTitle>Form Processing In Progress...</StyledTitle>
+        <p style={{ color: 'GrayText', fontSize: '0.5em' }}>
+          {' '}
+          &#40;please wait, do not refresh the page&#41;
+        </p>
         <Progress
           strokeColor={themeColorBlue}
           percent={

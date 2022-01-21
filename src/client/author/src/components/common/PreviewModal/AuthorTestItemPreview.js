@@ -640,12 +640,10 @@ class AuthorTestItemPreview extends Component {
   render() {
     const { cols, onlySratchpad } = this.props
     const { isRejectMode } = this.state
-    let questionCount = 0
     let resourceCount = 0
     cols
       .filter((item) => item.widgets?.length > 0)
       .forEach(({ widgets }) => {
-        questionCount += widgets.length
         resourceCount += widgets.reduce((count, wid) => {
           if (wid.widgetType === 'resource') {
             return count + 1
@@ -653,9 +651,6 @@ class AuthorTestItemPreview extends Component {
           return count
         }, 0)
       })
-    if (questionCount === 0) {
-      return null
-    }
     // send in an array of lengths to preserve the sub-question count
     // filter out the questions with different tab indices in each section
     const sectionQue = this.getSectionQue(cols)

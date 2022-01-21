@@ -19,6 +19,8 @@ const AddSchoolAndGradeModal = ({
   isSchoolSignupOnly = false,
   onMouseDown,
   onSuccessCallback = () => {},
+  triggerSource = '',
+  didSchoolModalOpen,
 }) => {
   const userInfo = get(user, 'user', {})
 
@@ -49,6 +51,7 @@ const AddSchoolAndGradeModal = ({
           allowCanvas={false}
           isModal
           isSchoolSignupOnly={isSchoolSignupOnly}
+          triggerSource={triggerSource}
         />
       ) : (
         <SubjectGradeForm
@@ -57,6 +60,7 @@ const AddSchoolAndGradeModal = ({
           onMouseDown={onMouseDown}
           onSuccessCallback={onSuccessCallback}
           isModal
+          triggerSource={didSchoolModalOpen ? 'Previous Modal' : triggerSource}
         />
       )}
     </CustomModalStyled>

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
 import styled, { keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
 import qs from 'qs'
@@ -49,6 +49,35 @@ import {
   IconStep5,
 } from './icons/StepsIcons'
 
+function useInstructions() {
+  const [_instructions, setInstructions] = useState(null)
+  const instructionsRef = useRef(null)
+
+  const instructionCb = useCallback((e) => {
+    if (instructionsRef.current != e.detail) {
+      setInstructions(e.detail)
+      instructionsRef.current = e.detail
+    }
+  }, [])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setInstructions(null)
+      instructionsRef.current = null
+    }, 2000)
+
+    return () => clearTimeout(timeout)
+  }, [_instructions])
+
+  useEffect(() => {
+    window.addEventListener('instructions', instructionCb)
+
+    return () => window.removeEventListener('instructions', instructionCb)
+  }, [])
+
+  return _instructions
+}
+
 const Option = Select.Option
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
 
@@ -59,12 +88,13 @@ const videoContstraints = {
 const steps = [
   {
     icon: <IconStep1 />,
-    description: 'Put your bubble sheets so that they are fully visible.',
+    description:
+      'Hold or Place your bubble sheets in front of the camera, so that they are fully visible and the logo Edulastic is on top',
   },
   {
     icon: <IconStep2 />,
     description:
-      'Ensure the bounding boxes of the QR code and the response section are fully visible and aligned vertically.',
+      'Ensure the QR code and response boxes are aligned side by side and fully visible',
   },
   {
     icon: <IconStep3 />,
@@ -113,7 +143,8 @@ async function uploadCanvasFrame(canvas, uploadProgress) {
     aws.s3Folders.WEBCAM_OMR_UPLOADS,
     uploadProgress,
     null,
-    `${assignmentId}`
+    `${assignmentId}`,
+    true
   )
 }
 
@@ -156,9 +187,11 @@ const ScanAnswerSheetsInner = ({
   const [selectedCamera, setSelectedCamera] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [isFrontFacing, setIsFrontFacing] = useState(false)
+  const instructions = useInstructions()
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const debugCanvasRef = useRef(null)
   const streamRef = useRef(null)
   const isFrontFacingRef = useRef(false)
   const recorderRef = useRef()
@@ -181,6 +214,7 @@ const ScanAnswerSheetsInner = ({
         cv.CV_8UC4
       )
       vc.read(matSrc)
+      const debugMatSrc = matSrc.clone()
       let result = null
       const parentRectangle = detectParentRectangle(cv, matSrc)
       let rectanglePosition
@@ -191,10 +225,11 @@ const ScanAnswerSheetsInner = ({
       } else {
         cv.imshow('canvasOutput', matSrc)
         matSrc.delete()
+        debugMatSrc.delete()
         requestAnimationFrame(() =>
-          processVideo(vc).catch(() => {
+          processVideo(vc).catch((e) => {
             console.log('process video opencv error')
-            console.warn('err')
+            console.log('err', e)
           })
         )
         return
@@ -206,10 +241,12 @@ const ScanAnswerSheetsInner = ({
           cv,
           matSrc,
           rectanglePosition,
-          qrCodeData.location
+          qrCodeData.location,
+          debugMatSrc
         )
       }
       matSrc.delete()
+      debugMatSrc.delete()
       requestAnimationFrame(() =>
         processVideo(vc).catch(() => {
           console.log('process video opencv error')
@@ -220,6 +257,7 @@ const ScanAnswerSheetsInner = ({
       }
       result.qrCode = qrCodeData.data
       const { answers } = result
+
       if (answers) {
         if (answers.length > 0) {
           if (!answersList) {
@@ -249,7 +287,6 @@ const ScanAnswerSheetsInner = ({
                   msg: 'Form successfully scanned. Please scan the next one.',
                 })
                 audioRef.play()
-
                 if (canvasRef.current) {
                   setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
@@ -266,6 +303,15 @@ const ScanAnswerSheetsInner = ({
                   ].imageUri = fileUrl
                   setScanningPercent(0)
                 }
+                if (debugCanvasRef.current) {
+                  const fileUrl = await uploadCanvasFrame(
+                    debugCanvasRef.current
+                  )
+                  arrAnswersRef.current[
+                    arrAnswersRef.current.length - 1
+                  ].originalImgUri = fileUrl
+                }
+
                 const temp = []
                 result.answers.forEach((item, index) => {
                   temp.push(`${index + 1}: ${item}`)
@@ -499,6 +545,11 @@ const ScanAnswerSheetsInner = ({
             Put your bubble sheet forms in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
+          {instructions ? (
+            <SubTitleDark width="350px">
+              <strong>{instructions}</strong>
+            </SubTitleDark>
+          ) : null}
           <SubTitle>
             Ensure the forms are fully visible and wait for the Form detected
             message with a beeper sound.
@@ -523,6 +574,16 @@ const ScanAnswerSheetsInner = ({
                   height: videoSetting.height,
                   border: '2px solid #ececec',
                   ...flipCameraViewStyle,
+                }}
+              />
+              <canvas
+                id="debugCanvasOutput"
+                ref={debugCanvasRef}
+                style={{
+                  display: 'none',
+                  width: videoSetting.width,
+                  height: videoSetting.height,
+                  border: '2px solid #ececec',
                 }}
               />
               <canvas

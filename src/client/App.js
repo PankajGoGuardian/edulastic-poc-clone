@@ -12,12 +12,7 @@ import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
 import { roleuser, signUpState, test } from '@edulastic/constants'
-import {
-  DragDrop,
-  notification,
-  OfflineNotifier,
-  UrlChangeListener,
-} from '@edulastic/common'
+import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
 import { themes } from './theme'
@@ -68,6 +63,7 @@ import {
 } from './author/Subscription/ducks'
 import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
+import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -121,6 +117,7 @@ const RedirectToTest = lazy(() =>
 )
 const DistrictRoutes = lazy(() => import('./districtRoutes/index'))
 const ResetPassword = lazy(() => import('./resetPassword/index'))
+const VerifyEmail = lazy(() => import('./verifyEmail/index'))
 const SetParentPassword = lazy(() => import('./SetParentPassword'))
 const CLIAccessBanner = lazy(() =>
   import('./author/Dashboard/components/CLIAccessBanner')
@@ -355,6 +352,7 @@ class App extends Component {
       shouldWatch,
       isDemoAccountProxy = false,
       isRequestQuoteModalVisible,
+      showVerifyEmailModal,
       setRequestQuoteModal,
       isRequestOrSubmitSuccessModalVisible,
       districtId,
@@ -633,6 +631,10 @@ class App extends Component {
             onCancel={this.closeRequestQuoteModal}
           />
         )}
+        {showVerifyEmailModal &&
+          !window.location.pathname.includes('/verify/') && (
+            <VerifyEmailPopup />
+          )}
         {isRequestOrSubmitSuccessModalVisible && (
           <InvoiceSuccessModal
             visible={isRequestOrSubmitSuccessModalVisible}
@@ -654,7 +656,6 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
-        <UrlChangeListener />
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />
@@ -726,6 +727,11 @@ class App extends Component {
                   exact
                   path="/resetPassword/"
                   component={ResetPassword}
+                  redirectPath={defaultRoute}
+                />
+                <Route
+                  path="/verify/:vc"
+                  component={VerifyEmail}
                   redirectPath={defaultRoute}
                 />
                 <Route
@@ -913,6 +919,7 @@ const enhance = compose(
         { subscription }
       ),
       isSAWithoutSchools: isSAWithoutSchoolsSelector({ user }),
+      showVerifyEmailModal: user.showVerifyEmailModal,
       districtId: getUserOrgId({ user }),
     }),
     {

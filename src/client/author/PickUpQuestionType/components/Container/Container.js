@@ -282,6 +282,9 @@ class Container extends Component {
       addQuestionToPassage,
       isInModal,
       onToggleFullModal,
+      isTestFlow,
+      testId,
+      match: { params },
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
@@ -296,9 +299,25 @@ class Container extends Component {
         return <div />
       }
     }
+
+    const hasUnsavedChangesInTestFlow =
+      isTestFlow && !testId && params.testId === 'undefined'
+
     return (
       <div showMobileView={mobileViewShow}>
-        <CustomPrompt onUnload />
+        <CustomPrompt
+          when={hasUnsavedChangesInTestFlow}
+          onUnload
+          message={(loc, action) => {
+            if (
+              // going back
+              action === 'POP' &&
+              loc.pathname === '/author/tests/create/addItems'
+            ) {
+              return t('component.common.modal.exitPageWarning')
+            }
+          }}
+        />
         <Header
           title={t('header:common.selectQuestionWidget')}
           link={this.link}

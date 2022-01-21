@@ -1,3 +1,4 @@
+import { segmentApi } from '@edulastic/api'
 import { themeColor, white } from '@edulastic/colors'
 import {
   OnDarkBgLogo,
@@ -90,7 +91,7 @@ class Signup extends React.Component {
 
   componentDidMount() {
     if (window?.analytics?.track) {
-      window.analytics.track('SignupLanded', {
+      window.analytics.track('Signup_PageView', {
         role: 'teacher',
         referrer: window.document.referrer,
       })
@@ -133,6 +134,7 @@ class Signup extends React.Component {
             password,
           })
         }
+        segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Email' })
       }
     })
   }
@@ -274,6 +276,7 @@ class Signup extends React.Component {
                 {t('component.signup.alreadyhaveanaccount')}
               </AlreadyhaveAccount>
               <Link
+                onClick={()=> segmentApi.genericEventTrack('SignupPage_SigninButtonClick', {})}
                 to={
                   isSignupUsingDaURL
                     ? getDistrictLoginUrl(orgShortName, orgType)

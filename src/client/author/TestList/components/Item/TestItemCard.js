@@ -113,7 +113,7 @@ const TestItemCard = ({
                 >
                   Preview
                 </EduButton>
-                <EduButton style={btnStyle} height="32px" onClick={openModal}>
+                <EduButton style={btnStyle} height="32px" onClick={() => openModal('more')}>
                   More
                 </EduButton>
               </>

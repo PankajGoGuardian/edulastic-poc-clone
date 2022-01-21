@@ -256,6 +256,7 @@ const HeaderSection = ({
               </StyledLink>
             )}
             trackClick={trackClick('dashboard:complete-sign-up:click')}
+            triggerSource={'Button Click'}
           />
         )}
         {showManageClass && (

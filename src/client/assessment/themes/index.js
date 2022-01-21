@@ -80,7 +80,6 @@ import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
-import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
 
 const { playerSkinValues } = testConstants
 
@@ -577,9 +576,9 @@ const AssessmentContainer = ({
   loadTest,
   showUserTTS,
   isTestPreviewModalVisible,
-  testKeypad,
   ...restProps
 }) => {
+  const testKeypad = testSettings?.keypad || 'item-level-keypad'
   const _questionsById = useMemo(() => {
     if (preview && questionsById) {
       Object.values(questionsById).forEach((question) => {
@@ -650,13 +649,13 @@ const AssessmentContainer = ({
     if (document && window) {
       document.onkeydown = function (e) {
         // for IE
-        e = e || event
-        var keyCode = window.event ? e.which : e.keyCode
+        e = e || window.event
+        const keyCode = window.event ? e.which : e.keyCode
 
         // check ctrl + f and command + f key
         if (
           (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
-          e.keyCode == 70
+          keyCode == 70
         ) {
           e.preventDefault()
           return false
@@ -666,13 +665,13 @@ const AssessmentContainer = ({
     return () => {
       document.onkeydown = function (e) {
         // for IE
-        e = e || event
-        var keyCode = window.event ? e.which : e.keyCode
+        e = e || window.event
+        const keyCode = window.event ? e.which : e.keyCode
 
         // check ctrl + f and command + f key
         if (
           (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
-          e.keyCode == 70
+          keyCode == 70
         ) {
           return true
         }
@@ -1488,7 +1487,6 @@ const enhance = compose(
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
-      testKeypad: testKeypadSelector(state),
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),
       loading: testLoadingSelector(state),

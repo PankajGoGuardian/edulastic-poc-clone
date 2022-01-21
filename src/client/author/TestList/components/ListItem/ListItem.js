@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash'
+import { uniqBy, get } from 'lodash'
 import {
   cardTitleColor,
   darkGrey,
@@ -85,7 +85,12 @@ import {
 } from './styled'
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import { sharedTypeMap } from '../Item/Item'
-import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+} from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { DeleteItemModal } from '../DeleteItemModal/deleteItemModal'
@@ -155,11 +160,23 @@ class ListItem extends Component {
       history,
       item,
       toggleAdminAlertModal,
+      emailVerified,
+      verificationTS,
+      toggleVerifyEmailModal,
       isFreeAdmin,
       isSAWithoutSchools,
     } = this.props
+    let expiryDate
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+    }
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else
+    else if (expiryDate && expiryDate < Date.now()) {
+      toggleVerifyEmailModal(true)
+    } else
       history.push({
         pathname: `/author/assignments/${item._id}`,
         state: {
@@ -623,6 +640,8 @@ const enhance = compose(
       currentUserId: getUserId(state),
       collectionToWrite: getCollectionsToAddContent(state),
       isFreeAdmin: isFreeAdminSelector(state),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),
@@ -630,6 +649,7 @@ const enhance = compose(
       approveOrRejectSingleTestRequest: approveOrRejectSingleTestRequestAction,
       toggleTestLikeRequest: toggleTestLikeAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       duplicateTest: duplicateTestRequestAction,
     }

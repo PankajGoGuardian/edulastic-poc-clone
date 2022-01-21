@@ -3,14 +3,24 @@ import React, { useRef, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
-import { WithResources } from '@edulastic/common'
+import { connect } from 'react-redux'
+import { WithResources, getDesmosConfig } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { white, boxShadowDefault } from '@edulastic/colors'
+import { test as testContants } from '@edulastic/constants'
 import { Spin } from 'antd'
 import BasicCalculator from './BasicCalculator'
 import EduScientificCalculator from './EduScientificCalculator'
 import CalculatorTitle from './components/CalculatorTitle'
 import AppConfig from '../../../../../app-config'
+import { getCurrentSchoolState } from '../../../../author/src/selectors/user'
+
+const { calculatorTypes } = testContants
+
+const desmosGraphingCalcTypes = [
+  `${calculatorTypes.GRAPHING}_DESMOS`,
+  `${calculatorTypes.GRAPHING_STATE}_DESMOS`,
+]
 
 export function getDefaultCalculatorProvider(type) {
   if (type === 'SCIENTIFIC') {
@@ -69,7 +79,7 @@ const geogebraParams = {
   },
 }
 
-const CalculatorContainer = ({ calculateMode, changeTool }) => {
+const CalculatorContainer = ({ calculateMode, changeTool, schoolState }) => {
   const handleCloseCalculator = () => {
     changeTool(0)
   }
@@ -79,12 +89,14 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
   const desmosScientificRef = useRef()
 
   useEffect(() => {
-    if (desmosGraphingRef.current && calculateMode === 'GRAPHING_DESMOS') {
+    if (
+      desmosGraphingRef.current &&
+      desmosGraphingCalcTypes.includes(calculateMode)
+    ) {
+      const config = getDesmosConfig(schoolState)
       const desmosGraphCalculator = Desmos.GraphingCalculator(
         desmosGraphingRef.current,
-        {
-          degreeMode: true,
-        }
+        config
       )
       desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY })
     }
@@ -120,7 +132,7 @@ const CalculatorContainer = ({ calculateMode, changeTool }) => {
 
   return (
     <Container>
-      {calculateMode === 'GRAPHING_DESMOS' && (
+      {desmosGraphingCalcTypes.includes(calculateMode) && (
         <RndWrapper
           default={defaultRndPros.graphingDesmos}
           dragHandleClassName="calculator-drag-handler"
@@ -224,6 +236,10 @@ CalculatorContainer.propTypes = {
   changeTool: PropTypes.func.isRequired,
 }
 
+const EnhancedCalculator = connect((state) => ({
+  schoolState: getCurrentSchoolState(state),
+}))(CalculatorContainer)
+
 const Container = styled.div`
   position: absolute;
   /* froala editor z-index is 998
@@ -274,7 +290,7 @@ const CalculatorContainerWithResources = (props) => (
     ]}
     fallBack={<Spin />}
   >
-    <CalculatorContainer {...props} />
+    <EnhancedCalculator {...props} />
   </WithResources>
 )
 

@@ -39,6 +39,7 @@ import {
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
+import { segmentApi } from '@edulastic/api'
 
 const FormItem = Form.Item
 
@@ -71,6 +72,7 @@ class LoginContainer extends React.Component {
           })
         }
         login(payload)
+        segmentApi.genericEventTrack('Signin_ButtonClick', { Method: 'Email' })
       }
     })
   }
@@ -206,7 +208,7 @@ class LoginContainer extends React.Component {
                         offset={2}
                         data-cy="cleverLogin"
                         onClick={() => {
-                          cleverLogin('teacher')
+                          cleverLogin({ payload: 'teacher', isLogin: true })
                         }}
                       >
                         <img src={cleverIcon} alt="" />

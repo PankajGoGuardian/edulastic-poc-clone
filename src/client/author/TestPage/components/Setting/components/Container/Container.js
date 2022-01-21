@@ -59,6 +59,7 @@ import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
   isPublisherUserSelector,
+  getCurrentSchoolState,
 } from '../../../../../src/selectors/user'
 import {
   Block,
@@ -98,13 +99,13 @@ import SaveSettingsModal from '../../../../../AssignTest/components/Container/Sa
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
 import { multiFind } from '../../../../../../common/utils/main'
+import CalculatorSetting from './CalculatorSetting'
 
 const {
   settingCategories,
   settingCategoriesFeatureMap,
   type,
   completionTypes,
-  calculators,
   calculatorKeys,
   calculatorTypes,
   evalTypes,
@@ -716,6 +717,7 @@ class Setting extends Component {
       testSettingsList = [],
       performanceBandsData,
       standardsData,
+      schoolState,
       defaultTestTypeProfiles,
     } = this.props
     const {
@@ -1391,23 +1393,15 @@ class Setting extends Component {
                       <Body smallSize={isSmallSize}>
                         <Row>
                           <Col span={8}>
-                            <StyledRadioGroup
+                            <CalculatorSetting
+                              onChangeHandle={this.updateFeatures('calcType')}
                               disabled={
                                 disabled || !assessmentSuperPowersShowCalculator
                               }
-                              onChange={this.updateFeatures('calcType')}
-                              value={calcType}
-                            >
-                              {calculatorKeysAvailable.map((item) => (
-                                <RadioBtn
-                                  data-cy={item}
-                                  value={item}
-                                  key={item}
-                                >
-                                  {calculators[item]}
-                                </RadioBtn>
-                              ))}
-                            </StyledRadioGroup>
+                              calculatorKeysAvailable={calculatorKeysAvailable}
+                              calcType={calcType}
+                              schoolState={schoolState}
+                            />
                           </Col>
                           <Col span={16}>
                             <Description>
@@ -2450,6 +2444,7 @@ const enhance = compose(
       entity: getTestEntitySelector(state),
       features: getUserFeatures(state),
       userRole: getUserRole(state),
+      schoolState: getCurrentSchoolState(state),
       defaultTestTypeProfiles: defaultTestTypeProfilesSelector(state),
       standardsData: get(state, ['standardsProficiencyReducer', 'data'], []),
       performanceBandsData: get(

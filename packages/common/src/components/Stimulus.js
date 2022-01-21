@@ -18,6 +18,11 @@ const Stimulus = withTheme(
       user-select: ${(props) =>
         props.userSelect ? 'text !important' : 'none'};
       -webkit-touch-callout: none;
+      // @see EV-34179 | strong, em tag need to inherit color (if text color selected from froala) of parent tag
+      strong,
+      em {
+        color: inherit !important;
+      }
     }
 
     & *:not(a) {

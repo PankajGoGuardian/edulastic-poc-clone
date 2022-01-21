@@ -68,7 +68,7 @@ QuestionTextArea.defaultProps = {
   border: 'none',
   imageDefaultWidth: 300,
   allowQuickInsert: true,
-  sanitizeClipboardHtml: false,
+  sanitizeClipboardHtml: true,
 }
 
 export default memo(QuestionTextArea)

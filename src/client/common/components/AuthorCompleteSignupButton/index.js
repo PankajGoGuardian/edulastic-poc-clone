@@ -36,10 +36,12 @@ const AuthorCompleteSignupButton = ({
   interestedGrades = [],
   onMouseDown = () => {},
   onSuccessCallback,
+  triggerSource = '',
 }) => {
   const { currentSignUpState: signupStatus, orgData = {} } = user
   const { classList = [] } = orgData
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
+  const [didSchoolModalOpen, setDidSchoolModalOpen] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
 
   const isSchoolSignupOnly = !!(
@@ -52,6 +54,7 @@ const AuthorCompleteSignupButton = ({
     setShowCompleteSignupModal(false)
     setCallFunctionAfterSignup(() => null)
     toggleSchoolModal(value)
+    setDidSchoolModalOpen(value)
   }
 
   useEffect(() => {
@@ -80,6 +83,9 @@ const AuthorCompleteSignupButton = ({
       hasNoPreferences ||
       isSchoolSignupOnly
     ) {
+      if (user.districtIds && user.districtIds.length === 0) {
+        setDidSchoolModalOpen(true)
+      }
       trackClick()
       toggleSchoolModal(true)
       return
@@ -102,6 +108,8 @@ const AuthorCompleteSignupButton = ({
           isSchoolSignupOnly={isSchoolSignupOnly}
           onMouseDown={onMouseDown}
           onSuccessCallback={onSuccessCallback}
+          triggerSource={triggerSource}
+          didSchoolModalOpen={didSchoolModalOpen}
         />
       )}
     </>

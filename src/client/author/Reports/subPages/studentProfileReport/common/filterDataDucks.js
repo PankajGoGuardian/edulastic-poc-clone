@@ -126,6 +126,11 @@ export const getStudentsLoading = createSelector(
   (state) => state.loading
 )
 
+export const getLastStudentsListQuery = createSelector(
+  stateSelector,
+  (state) => state.studentListQuery
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -136,6 +141,7 @@ const initialState = {
   prevSPRFilterData: null,
   SPRFilterData: {},
   studentList: [],
+  studentListQuery: null,
   filters: {
     ...staticDropDownData.initialFilters,
   },
@@ -174,13 +180,14 @@ export const reportSPRFilterDataReducer = createReducer(initialState, {
   [RESET_REPORTS_SPR_FILTER_DATA]: (state) => {
     state.SPRFilterData = {}
   },
-  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_ALL_REPORTS]: () => initialState,
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST]: (state) => {
     state.loading = true
   },
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
     state.studentList = payload.studentList
+    state.studentListQuery = payload.query
   },
   [GET_REPORTS_SPR_STUDENT_DATA_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -213,16 +220,16 @@ function* getReportsSPRFilterDataRequest({ payload }) {
   }
 }
 
-function* receiveStudentsListSaga({ payload }) {
+function* receiveStudentsListSaga({ payload: query }) {
   try {
-    const result = yield call(reportsApi.fetchStudentList, payload)
+    const result = yield call(reportsApi.fetchStudentList, query)
     const studentList = get(result, 'data.result', []).map((item) => ({
       _id: item._id,
       title: getFullName(item),
     }))
     yield put({
       type: GET_REPORTS_SPR_STUDENT_DATA_REQUEST_SUCCESS,
-      payload: { studentList },
+      payload: { studentList, query },
     })
   } catch (err) {
     const msg = 'Unable to fetch students list.'

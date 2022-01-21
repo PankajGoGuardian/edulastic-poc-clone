@@ -4,6 +4,9 @@ import { StyledTable, StyledTableButton } from '../../../../common/styled'
 export const StyledSchoolAdminTable = styled(StyledTable)``
 
 export const StyledMaskButton = styled(StyledTableButton)`
+  &[disabled] {
+    opacity: 0;
+  }
   svg {
     transform: scale(2);
     margin-right: 5px;

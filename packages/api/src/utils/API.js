@@ -15,6 +15,8 @@ const ASSETS_REFRESH_STAMP = 'assetsRefreshDateStamp'
 
 const ErrStatRegex = /5[0-9][0-9]/
 
+const NOT_SUPER_ADMIN = 'NOT_SUPER_ADMIN'
+
 const getCurrentPath = () => {
   const location = window.location
   return `${location.pathname}${location.search}${location.hash}`
@@ -79,6 +81,9 @@ const getLoggedOutUrl = () => {
   }
   if (pathname === '/inviteteacher') {
     return `${window.location.pathname}${window.location.search}${window.location.hash}`
+  }
+  if (pathname.includes('/verify')) {
+    return pathname
   }
 
   return '/login'
@@ -344,6 +349,13 @@ export default class API {
         // make the response available so anyone can read it.
         err.status = data.response?.status
         err.response = data.response
+
+        if (
+          err.status === 403 &&
+          err?.response?.data?.message === NOT_SUPER_ADMIN
+        ) {
+          window.location.reload()
+        }
 
         // log in to sentry, exclude low priority status
         if (err.status && String(err.status).match(ErrStatRegex)) {

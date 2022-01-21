@@ -71,6 +71,7 @@ const ClassCreatePage = ({
                   </EduButton>
                 )}
                 onClick={createNewClass}
+                triggerSource={'Create Class'}
               />
               {!isPlayground &&
                 googleAllowedInstitutions?.length > 0 &&
@@ -92,6 +93,7 @@ const ClassCreatePage = ({
                           })
                           renderProps.onClick(e)
                         }}
+                        triggerSource={'Sync Google Class Button Click'}
                       />
                     )}
                     scope={scopes}

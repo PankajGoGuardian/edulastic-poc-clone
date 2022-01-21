@@ -321,11 +321,11 @@ const activateUser = ({ userId, activate }) =>
     method: 'put',
   })
 
-const updateUsername = ({ username, userId, newUsername }) =>
+const updateUsername = ({ username, userId, newUsername, permissions }) =>
   api.callApi({
-    url: `/admin-tool/username`,
+    url: `/admin-tool/user`,
     method: 'put',
-    data: { username, userId, newUsername },
+    data: { username, userId, newUsername, permissions },
   })
 
 const logout = () =>

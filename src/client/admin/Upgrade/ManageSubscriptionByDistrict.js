@@ -220,9 +220,11 @@ const ManageDistrictPrimaryForm = Form.create({
             valuePropName: 'value',
             rules: [{ required: true }],
           })(
-            <Select style={{ width: 120 }}>
+            <Select style={{ width: 120 }} data-cy="change-plan-select">
               <Option value="free">Free</Option>
-              <Option value="enterprise">Enterprise</Option>
+              <Option value="enterprise" data-cy="enterprise">
+                Enterprise
+              </Option>
             </Select>
           )}
         </Form.Item>
@@ -231,7 +233,7 @@ const ManageDistrictPrimaryForm = Form.create({
           showAdditionalDetails
         />
         <Form.Item>
-          <Button type="primary" htmlType="submit">
+          <Button data-cy="submit-btn" type="primary" htmlType="submit">
             {ctaSubscriptionState}
           </Button>
         </Form.Item>

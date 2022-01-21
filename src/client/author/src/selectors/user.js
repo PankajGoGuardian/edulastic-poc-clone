@@ -66,6 +66,11 @@ export const getUserRole = createSelector(
   (state) => state?.user?.role
 )
 
+export const isSuperAdminSelector = createSelector(
+  stateSelector,
+  (state) => state?.user?.features?.isSuperAdmin
+)
+
 export const getChildrens = createSelector(
   stateSelector,
   (state) => state?.user?.children
@@ -169,6 +174,20 @@ export const getOrgSchools = createSelector(
 export const getOrgGroupList = createSelector(
   getUserOrgData,
   (orgData) => orgData.classList || []
+)
+
+export const getCurrentSchool = createSelector(
+  getUserOrgData,
+  (orgData) => orgData.defaultSchool
+)
+
+export const getCurrentSchoolState = createSelector(
+  getOrgSchools,
+  getCurrentSchool,
+  (schools, schoolId) => {
+    const currentSchool = schools.find((sc) => sc._id === schoolId)
+    return currentSchool?.location?.state
+  }
 )
 
 export const currentDistrictInstitutionIds = createSelector(

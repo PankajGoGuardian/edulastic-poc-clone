@@ -31,7 +31,12 @@ const BarsAxises = ({
           {displayAxisLabel && (
             <g transform={`translate(${xOffsets[index]}, ${height})`}>
               {labelIsVisible(index) && (
-                <VxText textAnchor="middle" verticalAnchor="start" width={70}>
+                <VxText
+                  textAnchor="middle"
+                  verticalAnchor="start"
+                  width={70}
+                  data-cy={`barLabelName-${index}`}
+                >
                   {bar.x}
                 </VxText>
               )}

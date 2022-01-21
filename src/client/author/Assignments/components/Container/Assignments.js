@@ -70,7 +70,12 @@ import {
   getToggleDeleteAssignmentModalState,
 } from '../../../sharedDucks/assignments'
 import { DeleteAssignmentModal } from '../DeleteAssignmentModal/deleteAssignmentModal'
-import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+} from '../../../../student/Login/ducks'
 import EditTagsModal from '../EditTagsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -106,9 +111,12 @@ class Assignments extends Component {
       userRole,
       orgData,
       isFreeAdmin,
+      emailVerified,
+      verificationTS,
       isSAWithoutSchools,
       history,
       toggleAdminAlertModal,
+      toggleVerifyEmailModal,
       userId,
     } = this.props
     if (isSAWithoutSchools) {
@@ -118,6 +126,16 @@ class Assignments extends Component {
     if (isFreeAdmin) {
       history.push('/author/reports')
       return toggleAdminAlertModal()
+    }
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     const { defaultTermId, terms } = orgData
     const storedFilters = getFilterFromSession({
@@ -546,6 +564,8 @@ const enhance = compose(
       isAdvancedView: getAssignmentViewSelector(state),
       userRole: getUserRole(state),
       error: get(state, 'test.error', false),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       defaultFilters: getAssignmentFilterSelector(state),
       orgData: get(state, 'user.user.orgData', {}),
       toggleDeleteAssignmentModalState: getToggleDeleteAssignmentModalState(
@@ -568,6 +588,7 @@ const enhance = compose(
       toggleAssignmentView: toggleAssignmentViewAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       editTagsRequest: editTagsRequestAction,
       setTagsUpdatingState: setTagsUpdatingStateAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,

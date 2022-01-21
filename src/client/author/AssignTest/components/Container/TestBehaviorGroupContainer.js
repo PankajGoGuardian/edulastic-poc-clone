@@ -20,10 +20,10 @@ import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
+import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 
 const {
   calculatorKeys,
-  calculators,
   calculatorTypes,
   releaseGradeTypes,
   evalTypes,
@@ -309,17 +309,12 @@ const TestBehaviorGroupContainer = ({
             </Label>
           </Col>
           <Col span={14}>
-            <AlignRight
+            <CalculatorSelector
               disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
-              value={calcType}
-              onChange={(e) => overRideSettings('calcType', e.target.value)}
-            >
-              {calculatorKeysAvailable.map((item) => (
-                <RadioBtn data-cy={item} value={item} key={item}>
-                  <Label>{calculators[item]}</Label>
-                </RadioBtn>
-              ))}
-            </AlignRight>
+              calcType={calcType}
+              onChangeHanlde={(value) => overRideSettings('calcType', value)}
+              calculatorKeysAvailable={calculatorKeysAvailable}
+            />
           </Col>
         </StyledRow>
       </SettingContainer>

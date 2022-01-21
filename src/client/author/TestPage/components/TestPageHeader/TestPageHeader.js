@@ -27,6 +27,9 @@ import {
   getUserId,
   getUserRole,
   toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
@@ -207,6 +210,9 @@ const TestPageHeader = ({
   isFreeAdmin,
   isSAWithoutSchools,
   toggleAdminAlertModal,
+  emailVerified,
+  verificationTS,
+  toggleVerifyEmailModal,
   showRegradeConfirmPopup,
   setShowRegradeConfirmPopup,
   regradeFirebaseDocId,
@@ -318,6 +324,16 @@ const TestPageHeader = ({
 
   const handleAssign = () => {
     if (isFreeAdmin || isSAWithoutSchools) return toggleAdminAlertModal()
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
+    }
     onAssign()
   }
 
@@ -900,6 +916,8 @@ const enhance = compose(
       isCurator: getIsCurator(state),
       authorQuestionsById: state.authorQuestions.byId,
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),
@@ -911,6 +929,7 @@ const enhance = compose(
       publishForRegrade: publishForRegradeAction,
       fetchAssignments: fetchAssignmentsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setShowRegradeConfirmPopup: setShowRegradeConfirmPopupAction,
       deletePlaylist: deletePlaylistRequestAction,
     }

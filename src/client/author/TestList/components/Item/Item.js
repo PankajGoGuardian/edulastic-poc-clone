@@ -5,6 +5,7 @@ import { uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 import { test } from '@edulastic/constants'
+import { segmentApi } from '@edulastic/api'
 import {
   getOrgDataSelector,
   getCollectionsSelector,
@@ -40,7 +41,12 @@ import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
-import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+} from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
@@ -131,15 +137,32 @@ class Item extends Component {
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      emailVerified,
+      verificationTS,
+      toggleVerifyEmailModal,
       orgCollections,
+      isTestRecommendation,
     } = this.props
+    if (isTestRecommendation && !this.state.isOpenModal) {
+      segmentApi.genericEventTrack('Recommended_TestClick', {})
+    }
     const { collections = [] } = item
     const sparkMathId = orgCollections?.find(
       (x) => x.name.toLowerCase() === 'spark math'
     )?._id
     const selectedCollections = collections.map((x) => x._id)
+    const source = isTestRecommendation ? 'Recommendation' : 'Library'
+    let expiryDate
+    if (!emailVerified && verificationTS) {
+      const existingVerificationTS = new Date(verificationTS)
+      expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+    }
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else
+    else if (expiryDate && expiryDate < Date.now()) {
+      toggleVerifyEmailModal(true)
+    } else
       history.push({
         pathname: `/author/assignments/${item._id}`,
         state: {
@@ -147,6 +170,7 @@ class Item extends Component {
           fromText: 'Test Library',
           toUrl: '/author/tests',
           isSparkMathCollection: selectedCollections.includes(sparkMathId),
+          assessmentAssignedFrom: source,
         },
       })
   }
@@ -155,7 +179,10 @@ class Item extends Component {
     this.setState({ isOpenModal: false })
   }
 
-  openModal = () => {
+  openModal = (source) => {
+    if (this.props.isTestRecommendation && source !== 'more') {
+      segmentApi.genericEventTrack('Recommended_TestClick', {})
+    }
     this.setState({ isOpenModal: true })
   }
 
@@ -170,6 +197,9 @@ class Item extends Component {
     const { setIsTestPreviewVisible } = this.props
     setIsTestPreviewVisible(true)
     this.setState({ currentTestId: testId })
+    if (this.props.isTestRecommendation && !this.state.isOpenModal) {
+      segmentApi.genericEventTrack('Recommended_TestClick', {})
+    }
   }
 
   get name() {
@@ -497,6 +527,8 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isUseThisLoading: getIsUseThisLoading(state),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,
@@ -509,6 +541,7 @@ const enhance = compose(
       duplicatePlayList: duplicatePlaylistRequestAction,
       duplicateTest: duplicateTestRequestAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       useThisPlayList: useThisPlayListAction,
       cloneThisPlayList: cloneThisPlayListAction,

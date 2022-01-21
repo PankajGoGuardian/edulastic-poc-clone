@@ -14,3 +14,12 @@ export function imShow(canvas, data, cv) {
     cv.imshow(canvas, data)
   }
 }
+
+export function sendInstructions(instructions) {
+  if (process['sendInstructions']) {
+    process['sendInstructions'](instructions)
+  } else if (isBrowser) {
+    const event = new CustomEvent('instructions', { detail: instructions })
+    window.dispatchEvent(event)
+  }
+}

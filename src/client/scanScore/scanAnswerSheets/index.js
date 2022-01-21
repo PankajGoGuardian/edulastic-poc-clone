@@ -337,7 +337,7 @@ const ScanAnswerSheetsInner = ({
                   assignmentTestId,
                   testId: _testId,
                 } = await scannerApi
-                  .checkSheetsApi({
+                  .validateSheetApi({
                     assignmentId: assignmentIdentifier,
                     groupId: groupIdentfier,
                     studentId: _studentId,

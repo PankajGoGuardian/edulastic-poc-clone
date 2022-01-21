@@ -68,7 +68,7 @@ const scoreWebCamScans = ({ assignmentId, groupId, sessionId, responses }) =>
     },
   })
 
-const checkSheetsApi = (params) =>
+const validateSheetApi = (params) =>
   api
     .callApi({
       url: `${prefix}/validate-sheet`,
@@ -84,5 +84,5 @@ export default {
   splitScanOmrSheets,
   generateWebCamOmrSession,
   scoreWebCamScans,
-  checkSheetsApi,
+  validateSheetApi,
 }

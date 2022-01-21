@@ -12,6 +12,7 @@ import {
   select,
   take,
   takeLatest,
+  fork,
 } from 'redux-saga/effects'
 import { Modal } from 'antd'
 import {
@@ -72,6 +73,7 @@ import {
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
   RESET_TEST_ITEMS,
+  SAVE_USER_WORK,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -251,6 +253,15 @@ function getScratchpadDataFromAttachments(attachments) {
     }
   })
   return scratchPadData
+}
+
+function* loadAnnotationsToStore({ data, referrerId2 }) {
+  const result = yield attachmentApi.loadDataFromUrl(data.freeNotesStd)
+  const userWork = yield select((state) => state.userWork.present[referrerId2])
+  yield put({
+    type: SAVE_USER_WORK,
+    payload: { [referrerId2]: { ...userWork, freeNotesStd: result.data } },
+  })
 }
 
 function* loadTest({ payload }) {
@@ -613,7 +624,10 @@ function* loadTest({ payload }) {
           referrerId: testActivityId,
         }
       )
-      const scratchPadData = getScratchpadDataFromAttachments(attachments)
+      const scratchPadData = getScratchpadDataFromAttachments(
+        attachments.filter(({ type }) => type === 'scratchpad')
+      )
+
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
@@ -647,6 +661,17 @@ function* loadTest({ payload }) {
             payload: scratchPadData,
           })
         }
+      }
+
+      if (test.isDocBased) {
+        const annotationAttachments = attachments.filter(
+          ({ type }) => type === 'doc-annotations'
+        )
+        yield all(
+          annotationAttachments.map(({ referrerId, data, referrerId2 }) =>
+            fork(loadAnnotationsToStore, { referrerId, data, referrerId2 })
+          )
+        )
       }
 
       const testUserWork = get(activity, 'userWork')

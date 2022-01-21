@@ -618,10 +618,12 @@ class ClassQuestions extends Component {
       const {
         isDocBased,
         docUrl,
-        annotations,
+        annotations: teacherAnnotations,
         pageStructure,
         freeFormNotes = {},
       } = testData
+      const utaId = testActivityId || currentStudent.testActivityId
+      const studentAnnotations = get(userWork, [utaId, 'freeNotesStd'], [])
       const questionActivitiesById = _keyBy(questionActivities, 'qid')
 
       const questions = (testItemsData?.[0]?.data?.questions || []).map(
@@ -641,7 +643,7 @@ class ClassQuestions extends Component {
         viewMode: 'report',
         isDocBased,
         docUrl,
-        annotations,
+        annotations: (teacherAnnotations || []).concat(studentAnnotations),
         pageStructure,
         freeFormNotes,
         questionsById,

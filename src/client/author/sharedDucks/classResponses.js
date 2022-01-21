@@ -168,6 +168,29 @@ function* loadPassagesForItems({ testActivityId, passages }) {
   )
 }
 
+function* loadAnnotationsFromServer({ referrerId, referrerId2 }) {
+  try {
+    const { attachments = [] } = yield call(attachmentApi.loadAllAttachments, {
+      referrerId,
+      referrerId2,
+      type: 'doc-annotations',
+    })
+    const annotationData = {}
+    for (const attachment of attachments) {
+      const { data } = attachment
+      const response = yield call(
+        attachmentApi.loadDataFromUrl,
+        data.freeNotesStd
+      )
+      annotationData[referrerId] = { freeNotesStd: response.data }
+    }
+    yield put({ type: SAVE_USER_WORK, payload: annotationData })
+  } catch (error) {
+    console.log('error loading annotations', error)
+  }
+}
+
+// student view LCB
 function* receiveStudentResponseSaga({ payload }) {
   try {
     const studentResponse = yield call(
@@ -180,8 +203,6 @@ function* receiveStudentResponseSaga({ payload }) {
         uqa?.scratchPad?.scratchpad &&
         uqa.qType === questionType.HIGHLIGHT_IMAGE
     )
-    // student view LCB
-
     yield fork(getAttachmentsForItems, {
       testActivityId: payload.testActivityId,
       testItemsIdArray: sc,
@@ -243,12 +264,26 @@ function* receiveStudentResponseSaga({ payload }) {
 
     const userWork = {}
 
+    if (get(originalData, ['test', 'isDocBased'])) {
+      if (transformedQuestionActivities.length) {
+        const { testItemId, testActivityId } =
+          transformedQuestionActivities[0] || {}
+        if (testItemId && testActivityId) {
+          yield fork(loadAnnotationsFromServer, {
+            referrerId: testActivityId,
+            referrerId2: testItemId,
+          })
+        }
+      }
+    }
+
     transformedQuestionActivities.forEach((item) => {
       if (item.scratchPad) {
         const newUserWork = { ...item.scratchPad }
         userWork[item.testItemId] = newUserWork
       }
     })
+
     if (Object.keys(userWork).length > 0) {
       yield put({
         type: SAVE_USER_WORK,
@@ -371,9 +406,9 @@ function* receiveFeedbackResponseSaga({ payload }) {
   }
 }
 
+// express grader
 function* receiveStudentQuestionSaga({ payload }) {
   try {
-    // express grader
     let feedbackResponse
     if (payload.callItemLevel) {
       feedbackResponse = yield call(
@@ -390,6 +425,23 @@ function* receiveStudentQuestionSaga({ payload }) {
         yield put(setTeacherEditedScore({ [qid]: score }))
       }
     }
+
+    const isDocBased = yield select(
+      (state) => state.author_classboard_testActivity?.data?.test?.isDocBased
+    )
+    if (isDocBased) {
+      const {
+        testActivityId: referrerId,
+        testItemId: referrerId2,
+      } = feedbackResponse
+      if (referrerId && referrerId2) {
+        yield fork(loadAnnotationsFromServer, {
+          referrerId,
+          referrerId2,
+        })
+      }
+    }
+
     if (feedbackResponse) {
       let scratchpadUsedItems = []
       const scratchpadUsed = (obj) =>
@@ -440,8 +492,8 @@ function* receiveStudentQuestionSaga({ payload }) {
   }
 }
 
+// questionview LCB
 function* receiveClassQuestionSaga({ payload }) {
-  // question view LCB
   try {
     let feedbackResponse
     if (payload.testItemId || payload.itemId) {
@@ -471,6 +523,24 @@ function* receiveClassQuestionSaga({ payload }) {
         })
       )
     )
+
+    const isDocBased = yield select(
+      (state) => state.author_classboard_testActivity?.data?.test?.isDocBased
+    )
+    if (isDocBased) {
+      const responseGroupedByUta = groupBy(feedbackResponse, 'testActivityId')
+
+      yield all(
+        Object.keys(responseGroupedByUta).map((utaId) => {
+          const { testItemId } = responseGroupedByUta[utaId][0]
+          return fork(loadAnnotationsFromServer, {
+            referrerId: utaId,
+            referrerId2: testItemId,
+          })
+        })
+      )
+    }
+
     feedbackResponse = feedbackResponse.map((x) => {
       if (x.graded === false) {
         Object.assign(x, { score: 0 })

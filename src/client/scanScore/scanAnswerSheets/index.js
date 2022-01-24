@@ -298,6 +298,7 @@ const ScanAnswerSheetsInner = ({
                       setScanningPercent(round(percent, 2))
                     }
                   )
+                  setUploadingToS3(false)
 
                   arrAnswersRef.current[
                     arrAnswersRef.current.length - 1
@@ -320,7 +321,6 @@ const ScanAnswerSheetsInner = ({
                 setScannedResponses((x) => x + 1)
                 arrLengthOfAnswer = []
                 console.log(result)
-                setUploadingToS3(false)
                 bubbleSheetValidate({
                   qrCode: result.qrCode,
                   arrAnswersRef,

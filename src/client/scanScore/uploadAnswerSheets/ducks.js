@@ -15,7 +15,7 @@ import {
   omrUploadSessionStatus,
 } from './utils'
 
-export function parseQr(qrCode) {
+function parseQr(qrCode) {
   let testId
   let assignmentId
   let groupId

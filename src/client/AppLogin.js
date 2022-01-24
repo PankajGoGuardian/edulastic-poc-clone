@@ -49,7 +49,7 @@ const AdminSignup = loadable(
 )
 
 const tagManagerArgs = {
-  gtmId: process.env.REACT_APP_GTM_TRACKING_ID || 'GTM-WRWPDJM',
+  gtmId: process.env.REACT_APP_GTM_TRACKING_ID || 'GTM-P75258D',
 }
 
 TagManager.initialize(tagManagerArgs)

@@ -35,7 +35,7 @@ import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmMod
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
 import { IconInfo } from '@edulastic/icons'
-import { actions, selector, parseQr } from '../uploadAnswerSheets/ducks'
+import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
 import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
@@ -156,6 +156,7 @@ const ScanAnswerSheetsInner = ({
   setWebCamScannedDocs,
   setRecordedVideo,
   enableOmrSessionRecording = false,
+  bubbleSheetValidate,
 }) => {
   let arrLengthOfAnswer = []
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
@@ -319,57 +320,12 @@ const ScanAnswerSheetsInner = ({
                 setScannedResponses((x) => x + 1)
                 arrLengthOfAnswer = []
                 console.log(result)
-                const {
-                  assignmentId: assignmentIdentifier,
-                  groupId: groupIdentfier,
-                  studentId: _studentId,
-                } = parseQr(result.qrCode)
-                const { assignmentId, groupId } = qs.parse(
-                  window.location?.search || '',
-                  {
-                    ignoreQueryPrefix: true,
-                  }
-                )
-
-                const {
-                  assignmentId: _assignmentId,
-                  groupId: _groupId,
-                  assignmentTestId,
-                  testId: _testId,
-                } = await scannerApi
-                  .validateSheetApi({
-                    assignmentId: assignmentIdentifier,
-                    groupId: groupIdentfier,
-                    studentId: _studentId,
-                  })
-                  .catch((e) => {
-                    notification({
-                      type: 'info',
-                      msg: e.message,
-                    })
-                  })
-                if (
-                  (assignmentId && `${assignmentId}` != `${_assignmentId}`) ||
-                  (groupId && `${groupId}` != `${_groupId}`)
-                ) {
-                  arrAnswersRef.current.pop()
-                  setScannedResponses((x) => x.substring(0, x.length - 1))
-                  notification({
-                    type: 'info',
-                    msg:
-                      'Scanned document does not belong to the current assignment',
-                  })
-                } else if (
-                  assignmentTestId &&
-                  `${assignmentTestId}` != _testId
-                ) {
-                  notification({
-                    type: 'info',
-                    msg:
-                      'This bubble sheet belongs to an older version of the test. Please regenerate bubblesheet with current test and use it.',
-                  })
-                }
                 setUploadingToS3(false)
+                bubbleSheetValidate({
+                  qrCode: result.qrCode,
+                  arrAnswersRef,
+                  setScannedResponses,
+                })
               }
             } else {
               arrLengthOfAnswer.push(answers.length)

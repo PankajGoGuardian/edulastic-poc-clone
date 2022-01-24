@@ -3,6 +3,7 @@ import pdfjsLib from 'pdfjs-dist'
 import { createSlice } from 'redux-starter-kit'
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import axios from 'axios'
+import qs from 'qs'
 
 import { aws } from '@edulastic/constants'
 import { scannerApi } from '@edulastic/api'
@@ -151,6 +152,7 @@ const slice = createSlice({
       }
     },
     updateOmrUploadSession: () => {},
+    bubbleSheetValidate: () => {},
     abortOmrUploadSession: (state) => {
       if (state.cancelUpload) {
         state.cancelUpload()
@@ -397,6 +399,49 @@ function* abortOmrUploadSessionSaga({
   }
 }
 
+function* bubbleSheetValidateSaga({
+  payload: { qrCode, arrAnswersRef, setScannedResponses },
+}) {
+  try {
+    const { assignmentId } = qs.parse(window.location?.search || '', {
+      ignoreQueryPrefix: true,
+    })
+    const {
+      assignmentId: assignmentIdentifier,
+      groupId: groupIdentifier,
+      studentId: _studentId,
+    } = yield call(parseQr, qrCode)
+    const {
+      assignmentId: _assignmentId,
+      assignmentTestId,
+      testId: _testId,
+    } = yield call(scannerApi.validateSheetApi, {
+      assignmentIdentifier,
+      groupIdentifier,
+      _studentId,
+    })
+    if (assignmentId && `${assignmentId}` != `${_assignmentId}`) {
+      arrAnswersRef.current.pop()
+      setScannedResponses((x) => x.substring(0, x.length - 1))
+      notification({
+        type: 'info',
+        msg: 'Scanned document does not belong to the current assignment',
+      })
+    } else if (assignmentTestId && `${assignmentTestId}` != _testId) {
+      notification({
+        type: 'info',
+        msg:
+          'This bubble sheet belongs to an older version of the test. Please regenerate bubblesheet with current test and use it.',
+      })
+    }
+  } catch (e) {
+    notification({
+      type: 'info',
+      msg: e.message,
+    })
+  }
+}
+
 // export saga as default
 export default function* watcherSaga() {
   yield all([
@@ -415,6 +460,10 @@ export default function* watcherSaga() {
     yield takeLatest(
       slice.actions.abortOmrUploadSession,
       abortOmrUploadSessionSaga
+    ),
+    yield takeLatest(
+      slice.actions.bubbleSheetValidate,
+      bubbleSheetValidateSaga
     ),
   ])
 }

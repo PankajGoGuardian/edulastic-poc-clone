@@ -361,7 +361,7 @@ class App extends Component {
 
     if (userRole !== roleuser.STUDENT || userRole !== roleuser.PARENT) {
       const tagManagerArgs = {
-        gtmId: process.env.REACT_APP_GTM_TRACKING_ID || 'GTM-WRWPDJM',
+        gtmId: process.env.REACT_APP_GTM_TRACKING_ID || 'GTM-P75258D',
       }
 
       TagManager.initialize(tagManagerArgs)

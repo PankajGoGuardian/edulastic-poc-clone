@@ -94,15 +94,22 @@ class Item extends Component {
 
   moveToItem = (e) => {
     e && e.stopPropagation()
-    const { history, item, isPlaylist } = this.props
+    const { history, item, isPlaylist, isTestRecommendation } = this.props
+    const source = isTestRecommendation ? 'Recommendation' : 'Library'
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}#review`)
+      history.push({
+        pathname: `/author/playlists/${item._id}#review`,
+        state: {
+          assessmentAssignedFrom: source,
+        },
+      })
     } else {
       const tab = item.title ? 'review' : 'description'
       history.push({
         pathname: `/author/tests/tab/${tab}/id/${item._id}`,
         state: {
           editTestFlow: true,
+          assessmentAssignedFrom: source,
         },
       })
     }

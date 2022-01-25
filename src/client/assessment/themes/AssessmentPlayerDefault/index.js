@@ -695,6 +695,7 @@ class AssessmentPlayerDefault extends React.Component {
                   premiumCollectionWithoutAccess={
                     premiumCollectionWithoutAccess
                   }
+                  multipartItem={item?.multipartItem}
                   {...extraTestItemProps}
                 />
               </MainWrapper>

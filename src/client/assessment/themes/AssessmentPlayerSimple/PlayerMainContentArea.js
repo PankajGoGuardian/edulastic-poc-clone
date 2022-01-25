@@ -90,6 +90,7 @@ const PlayerContentArea = ({
           responsiveWidth={responsiveWidth}
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+          multipartItem={item?.multipartItem}
           {...extraTestItemProps}
         />
       </MainContent>

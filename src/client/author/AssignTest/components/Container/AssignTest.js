@@ -81,6 +81,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import SaveSettingsModal from './SaveSettingsModal'
 import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
@@ -136,6 +137,7 @@ class AssignTest extends React.Component {
       isSAWithoutSchools,
       emailVerified,
       verificationTS,
+      isDefaultDA,
       toggleAdminAlertModal,
       toggleVerifyEmailModal,
       history,
@@ -156,7 +158,7 @@ class AssignTest extends React.Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
@@ -917,6 +919,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       currentSettingsId: getCurrentSettingsIdSelector(state),
       userId: getUserId(state),

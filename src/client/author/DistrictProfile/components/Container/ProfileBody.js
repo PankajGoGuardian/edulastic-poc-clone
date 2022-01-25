@@ -46,7 +46,8 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
-  setIsUserSignedUpUsingUsernameAndPassword,
+  isDefaultDASelector,
+  isSignupUsingUNAndPassSelector,
   setIsUserOnProfilePageAction,
 } from '../../../../student/Login/ducks'
 import { Wrapper } from '../../../../student/styled/index'
@@ -404,17 +405,10 @@ class ProfileBody extends React.Component {
     this.toggleModal('REMOVE_SCHOOL', false)
   }
 
-  handleShowVerifyModal = (isSignupUsingUNAndPass) => {
-    const {
-      setSignedUpUsingUsernameAndPassword,
-      toggleVerifyEmailModal,
-      setIsUserOnProfilePage,
-    } = this.props
+  handleShowVerifyModal = () => {
+    const { toggleVerifyEmailModal, setIsUserOnProfilePage } = this.props
     // set the flag variable
     setIsUserOnProfilePage(true)
-    if (isSignupUsingUNAndPass) {
-      setSignedUpUsingUsernameAndPassword()
-    }
     toggleVerifyEmailModal(true)
   }
 
@@ -594,6 +588,8 @@ class ProfileBody extends React.Component {
       isCleverLibraryUser,
       emailVerified,
       verificationTS,
+      isDefaultDA,
+      isSignupUsingUNAndPass,
     } = this.props
     const {
       showChangePassword,
@@ -621,16 +617,6 @@ class ProfileBody extends React.Component {
     const interestedStaData = {
       curriculums: interestedCurriculums,
     }
-    const lmsIds = [
-      'googleId',
-      'atlasId',
-      'cleverId',
-      'msoId',
-      'canvasId',
-      'cliId',
-      'newselaId',
-    ]
-    const isSignupUsingUNAndPass = lmsIds.every((lmsId) => !user[lmsId])
     const { features, role } = user
     const {
       defaultGrades: userGrades,
@@ -675,6 +661,7 @@ class ProfileBody extends React.Component {
                   <SubHeader>
                     <Title>Instructor Information</Title>
                     {!isEditProfile &&
+                    !isDefaultDA &&
                     ['teacher', 'district-admin', 'school-admin'].includes(
                       user.role
                     ) ? (
@@ -741,16 +728,11 @@ class ProfileBody extends React.Component {
                         <DetailData>
                           {user.email}{' '}
                           {!emailVerified &&
-                          (verificationTS || isSignupUsingUNAndPass) ? (
+                          (verificationTS || isSignupUsingUNAndPass) &&
+                          !isDefaultDA ? (
                             <VerifyEmailSpan>
                               (Email Not Verified.{' '}
-                              <span
-                                onClick={() =>
-                                  this.handleShowVerifyModal(
-                                    isSignupUsingUNAndPass
-                                  )
-                                }
-                              >
+                              <span onClick={this.handleShowVerifyModal}>
                                 Verify Now!
                               </span>
                               )
@@ -765,7 +747,7 @@ class ProfileBody extends React.Component {
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === 'edulastic-curator' ? null : (
+                {user.role === 'edulastic-curator' || isDefaultDA ? null : (
                   <ChangePasswordToggleButton
                     onClick={() => {
                       this.setState({ showChangePassword: !showChangePassword })
@@ -1044,6 +1026,8 @@ const enhance = compose(
       userInfo: get(state.user, 'user', {}),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
+      isSignupUsingUNAndPass: isSignupUsingUNAndPassSelector(state),
       curriculums: getCurriculumsListSelector(state),
       interestedCurriculums: getInterestedCurriculumsByOrgType(state),
       orgSchools: getOrgSchools(state),
@@ -1064,7 +1048,6 @@ const enhance = compose(
       hideJoinSchool: hideJoinSchoolAction,
       updatePowerTeacher: updatePowerTeacherAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,
-      setSignedUpUsingUsernameAndPassword: setIsUserSignedUpUsingUsernameAndPassword,
       setIsUserOnProfilePage: setIsUserOnProfilePageAction,
     }
   )

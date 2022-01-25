@@ -30,6 +30,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
   isDemoPlaygroundUser,
 } from '../../../../student/Login/ducks'
 import ConfirmCancelTestEditModal from '../../../src/components/common/ConfirmCancelTestEditModal'
@@ -212,6 +213,7 @@ const TestPageHeader = ({
   toggleAdminAlertModal,
   emailVerified,
   verificationTS,
+  isDefaultDA,
   toggleVerifyEmailModal,
   showRegradeConfirmPopup,
   setShowRegradeConfirmPopup,
@@ -324,7 +326,7 @@ const TestPageHeader = ({
 
   const handleAssign = () => {
     if (isFreeAdmin || isSAWithoutSchools) return toggleAdminAlertModal()
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
@@ -918,6 +920,7 @@ const enhance = compose(
       isUpdatingTestForRegrade: state.tests.updatingTestForRegrade,
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       showRegradeConfirmPopup: getShowRegradeConfirmPopupSelector(state),

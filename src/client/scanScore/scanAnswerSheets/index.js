@@ -170,6 +170,7 @@ const ScanAnswerSheetsInner = ({
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
+  const [limitCameraModePopUp, setlimitCameraModePopUp] = useState(false)
   const recordingEnabled = enableOmrSessionRecording
 
   /**
@@ -429,6 +430,14 @@ const ScanAnswerSheetsInner = ({
     isFrontFacingRef.current = isFrontFacing
   }, [isFrontFacing])
 
+  const scannedForms = scannedResponses.length
+
+  useEffect(() => {
+    if (scannedForms > 99) {
+      setlimitCameraModePopUp(true)
+    }
+  }, [scannedForms])
+
   const breadcrumbData = [
     {
       title: 'Scan Bubble Sheets',
@@ -473,6 +482,7 @@ const ScanAnswerSheetsInner = ({
   }
 
   const handleScanComplete = async () => {
+    setlimitCameraModePopUp(false)
     const { assignmentId, groupId } = qs.parse(window.location?.search || '', {
       ignoreQueryPrefix: true,
     })
@@ -712,6 +722,20 @@ const ScanAnswerSheetsInner = ({
           onProceed={closeHelpModal}
           hideCancelBtn
         />
+      )}
+      {limitCameraModePopUp && (
+        <CustomModalStyled
+          visible={limitCameraModePopUp}
+          title="Maximum Limit Reached"
+          closable={false}
+          footer={[<EduButton onClick={handleScanComplete}>NEXT</EduButton>]}
+        >
+          <p>
+            Maximum 100 sheets can be scanned at a time. Please click next to
+            process these 100 sheets now. You can start again later if you want
+            to scan more sheets
+          </p>
+        </CustomModalStyled>
       )}
     </PageLayout>
   )

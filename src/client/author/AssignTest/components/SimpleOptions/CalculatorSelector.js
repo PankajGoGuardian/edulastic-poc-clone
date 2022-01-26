@@ -11,8 +11,8 @@ import {
 
 const { calculatorKeys, calculators, calculatorTypes } = test
 
-const CustomLabel = ({ disabled, text }) => {
-  if (disabled) {
+const CustomLabel = ({ showPopover, text }) => {
+  if (showPopover) {
     return (
       <Tooltip
         placement="right"
@@ -36,19 +36,15 @@ const CalculatorSelector = ({
   isHomeSchool,
 }) => {
   const calcKeys = useMemo(() => {
-    if (premium && calculatorProvider !== 'DESMOS') {
-      return calculatorKeys.filter((k) =>
-        [calculatorTypes.NONE, calculatorTypes.BASIC].includes(k)
-      )
-    }
-
     if (isHomeSchool) {
       return calculatorKeys.filter(
         (k) => ![calculatorTypes.GRAPHING_STATE].includes(k)
       )
     }
     return calculatorKeys
-  }, [premium, calculatorProvider, isHomeSchool])
+  }, [isHomeSchool])
+
+  const validState = isValidDesmosState(schoolState)
 
   return (
     <SelectInputStyled
@@ -60,9 +56,16 @@ const CalculatorSelector = ({
       disabled={disabled}
     >
       {calcKeys.map((item) => {
+        const notAvailableStateVersion =
+          item === calculatorTypes.GRAPHING_STATE && !validState
+
         const disableOption =
-          item === calculatorTypes.GRAPHING_STATE &&
-          !isValidDesmosState(schoolState)
+          notAvailableStateVersion ||
+          // @see EV-34375
+          (premium &&
+            calculatorProvider !== 'DESMOS' &&
+            ![calculatorTypes.NONE, calculatorTypes.BASIC].includes(item))
+
         return (
           <Select.Option
             data-cy="class"
@@ -70,7 +73,10 @@ const CalculatorSelector = ({
             key={item}
             disabled={disableOption}
           >
-            <CustomLabel disabled={disableOption} text={calculators[item]} />
+            <CustomLabel
+              text={calculators[item]}
+              showPopover={notAvailableStateVersion}
+            />
           </Select.Option>
         )
       })}

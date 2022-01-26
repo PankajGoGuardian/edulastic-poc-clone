@@ -11,18 +11,25 @@ import { StyledRadioGroup } from './styled'
 
 const { calculators, calculatorTypes, calculatorKeys } = testContants
 
-const RadioButton = ({ itemKey, schoolState }) => {
-  const disabled = useMemo(() => {
+const RadioButton = ({ itemKey, schoolState, calculatorProvider, premium }) => {
+  const showPopover = useMemo(() => {
     return (
       itemKey === calculatorTypes.GRAPHING_STATE &&
       !isValidDesmosState(schoolState)
     )
   }, [itemKey, schoolState])
 
-  if (disabled) {
+  const disableOption =
+    showPopover ||
+    // @see EV-34375
+    (premium &&
+      calculatorProvider !== 'DESMOS' &&
+      ![calculatorTypes.NONE, calculatorTypes.BASIC].includes(itemKey))
+
+  if (showPopover) {
     return (
       <Tooltip title="State information missing, please raise a support request at support@edulastic.com">
-        <RadioBtn data-cy={itemKey} value={itemKey} disabled={disabled}>
+        <RadioBtn data-cy={itemKey} value={itemKey} disabled>
           {calculators[itemKey]}
         </RadioBtn>
       </Tooltip>
@@ -30,7 +37,7 @@ const RadioButton = ({ itemKey, schoolState }) => {
   }
 
   return (
-    <RadioBtn data-cy={itemKey} value={itemKey}>
+    <RadioBtn data-cy={itemKey} value={itemKey} disabled={disableOption}>
       {calculators[itemKey]}
     </RadioBtn>
   )
@@ -46,19 +53,13 @@ const CalculatorSetting = ({
   isHomeSchool,
 }) => {
   const calcKeys = useMemo(() => {
-    if (premium && calculatorProvider !== 'DESMOS') {
-      return calculatorKeys.filter((k) =>
-        [calculatorTypes.NONE, calculatorTypes.BASIC].includes(k)
-      )
-    }
-
     if (isHomeSchool) {
       return calculatorKeys.filter(
         (k) => ![calculatorTypes.GRAPHING_STATE].includes(k)
       )
     }
     return calculatorKeys
-  }, [premium, calculatorProvider, isHomeSchool])
+  }, [isHomeSchool])
 
   return (
     <StyledRadioGroup
@@ -67,7 +68,13 @@ const CalculatorSetting = ({
       value={calcType}
     >
       {calcKeys.map((item) => (
-        <RadioButton schoolState={schoolState} itemKey={item} key={item} />
+        <RadioButton
+          schoolState={schoolState}
+          itemKey={item}
+          key={item}
+          calculatorProvider={calculatorProvider}
+          premium={premium}
+        />
       ))}
     </StyledRadioGroup>
   )

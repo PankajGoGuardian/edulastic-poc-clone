@@ -279,7 +279,12 @@ class Container extends React.Component {
       } else {
         const { assessmentId } = match.params
         if (assessmentId) {
-          history.push(`/author/assignments/${assessmentId}`)
+          history.push({
+            pathname: `/author/assignments/${assessmentId}`,
+            state: {
+              assessmentAssignedFrom: 'Created New',
+            },
+          })
         }
       }
     }

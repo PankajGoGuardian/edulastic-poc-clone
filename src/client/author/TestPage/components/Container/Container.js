@@ -599,7 +599,12 @@ class Container extends PureComponent {
       match,
       updated,
       collections: orgCollections,
+      location,
     } = this.props
+    let source = location?.state?.assessmentAssignedFrom
+    if (!source) {
+      source = 'Created New'
+    }
     const { status, collections } = test
 
     if (!this.validateTimedAssignment()) {
@@ -626,6 +631,7 @@ class Container extends PureComponent {
               fromText: 'TEST LIBRARY',
               toUrl: '/author/tests',
               isSparkMathCollection,
+              assessmentAssignedFrom: source,
             },
           })
         }

@@ -45,7 +45,7 @@ const CalculatorSelector = ({
           !isValidDesmosState(schoolState)
         return (
           <Select.Option
-            data-cy="class"
+            data-cy={item}
             value={item}
             key={item}
             disabled={disableOption}

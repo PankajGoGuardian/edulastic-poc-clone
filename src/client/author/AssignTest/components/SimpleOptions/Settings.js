@@ -39,8 +39,6 @@ import SettingContainer from '../Container/SettingsContainer'
 import CalculatorSelector from './CalculatorSelector'
 
 const {
-  calculatorKeys,
-  calculatorTypes,
   releaseGradeTypes,
   evalTypeLabels,
   releaseGradeLabels,
@@ -274,14 +272,6 @@ const Settings = ({
     restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
-  const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
-  const calculatorKeysAvailable =
-    (checkForCalculator &&
-      calculatorKeys.filter((i) =>
-        [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i)
-      )) ||
-    calculatorKeys
-
   const showMultiLangSelection =
     allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
 
@@ -346,7 +336,8 @@ const Settings = ({
                 }
                 calcType={calcType}
                 onChangeHanlde={(value) => overRideSettings('calcType', value)}
-                calculatorKeysAvailable={calculatorKeysAvailable}
+                premium={premium}
+                calculatorProvider={calculatorProvider}
               />
             </Col>
           </StyledRow>

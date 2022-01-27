@@ -191,6 +191,10 @@ export const getCurrentSchoolState = createSelector(
   }
 )
 
+export const isHomeSchoolSelector = createSelector(getUserOrg, (userOrg) => {
+  return userOrg?.districtStatus === 2
+})
+
 export const currentDistrictInstitutionIds = createSelector(
   getOrgSchools,
   (schools) => schools.map((item) => item._id)

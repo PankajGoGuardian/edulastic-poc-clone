@@ -168,6 +168,8 @@ const ScanAnswerSheetsInner = ({
   const [isError, setIsError] = useState(false)
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
+  const fileUrls = useRef([])
+  const debugFileUrls = useRef([])
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
@@ -300,18 +302,14 @@ const ScanAnswerSheetsInner = ({
                     }
                   )
                   setUploadingToS3(false)
-                  arrAnswersRef.current[
-                    arrAnswersRef.current.length - 1
-                  ].imageUri = fileUrl
+                  fileUrls.current.push(fileUrl)
                   setScanningPercent(0)
                 }
                 if (debugCanvasRef.current) {
                   const fileUrl = await uploadCanvasFrame(
                     debugCanvasRef.current
                   )
-                  arrAnswersRef.current[
-                    arrAnswersRef.current.length - 1
-                  ].originalImgUri = fileUrl
+                  debugFileUrls.current.push(fileUrl)
                 }
 
                 const temp = []
@@ -483,6 +481,10 @@ const ScanAnswerSheetsInner = ({
   }
 
   const handleScanComplete = async () => {
+    arrAnswersRef.current.forEach((response, index) => {
+      response.imageUri = fileUrls[index]
+      response.originalImgUri = debugFileUrls[index]
+    })
     setlimitCameraModePopUp(false)
     const { assignmentId, groupId } = qs.parse(window.location?.search || '', {
       ignoreQueryPrefix: true,

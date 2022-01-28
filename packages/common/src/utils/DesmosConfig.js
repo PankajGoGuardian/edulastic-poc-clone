@@ -26,7 +26,7 @@ const standard = {
   projectorMode: false,
   decimalToFraction: true,
   invertedColors: false,
-  degreeMode: true,
+  degreeMode: false,
   showGrid: true,
   polarMode: false,
   showXAxis: true,

@@ -482,8 +482,8 @@ const ScanAnswerSheetsInner = ({
 
   const handleScanComplete = async () => {
     arrAnswersRef.current.forEach((response, index) => {
-      response.imageUri = fileUrls[index]
-      response.originalImgUri = debugFileUrls[index]
+      response.imageUri = fileUrls.current[index]
+      response.originalImgUri = debugFileUrls.current[index]
     })
     setlimitCameraModePopUp(false)
     const { assignmentId, groupId } = qs.parse(window.location?.search || '', {

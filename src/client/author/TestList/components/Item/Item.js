@@ -98,7 +98,8 @@ class Item extends Component {
     const source = isTestRecommendation ? 'Recommendation' : 'Library'
     if (isPlaylist) {
       history.push({
-        pathname: `/author/playlists/${item._id}#review`,
+        pathname: `/author/playlists/${item._id}`,
+        hash: 'review',
         state: {
           assessmentAssignedFrom: source,
         },

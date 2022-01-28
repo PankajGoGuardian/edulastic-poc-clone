@@ -103,7 +103,10 @@ const CalculatorContainer = ({ calculateMode, changeTool, schoolState }) => {
         config
       )
       desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY })
-      if (stateName) {
+      if (
+        stateName &&
+        calculateMode === `${calculatorTypes.GRAPHING_STATE}_DESMOS`
+      ) {
         setGraphingTitle(`${graphingTitle} | ${stateName}`)
       }
     }

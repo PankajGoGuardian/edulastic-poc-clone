@@ -231,6 +231,10 @@ const stateConfig = {
     qwertyKeyboard: true,
     decimalToFraction: true,
   },
+  south_carolina: {
+    decimalToFraction: false,
+    Slider: true,
+  },
   south_dakota: {
     ...standard,
     images: true,

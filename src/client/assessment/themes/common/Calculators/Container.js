@@ -96,7 +96,7 @@ const CalculatorContainer = ({ calculateMode, changeTool, schoolState }) => {
       desmosGraphingRef.current &&
       desmosGraphingCalcTypes.includes(calculateMode)
     ) {
-      const config = getDesmosConfig(schoolState)
+      const config = getDesmosConfig(schoolState, calculateMode)
       const stateName = getStateName(schoolState)
       const desmosGraphCalculator = Desmos.GraphingCalculator(
         desmosGraphingRef.current,

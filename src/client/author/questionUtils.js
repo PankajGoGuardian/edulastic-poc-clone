@@ -440,19 +440,6 @@ const showEmptyAnswerNotification = (item = {}) => {
   return hasEmpty
 }
 
-export const validateScore = (item) => {
-  const { score } = item?.validation?.validResponse || {}
-  const { unscored = false } = item?.validation || {}
-
-  if (isNil(score) || isNaN(score)) {
-    return [true, 'Score needs to be set']
-  }
-  if (!unscored && parseFloat(score, 10) === 0) {
-    return [true, 'Score cannot be zero']
-  }
-  return [false, '']
-}
-
 /**
  * does question have enough data !?
  *  This is only the begnning. This func is going to grow to handle
@@ -461,11 +448,7 @@ export const validateScore = (item) => {
  *  @returns {Array} - returns a tuple containing a boolean, which flags
  *  a question as complete or incomplete, and if incomplete, teh reason is the second element
  */
-export const isIncompleteQuestion = (
-  item,
-  itemLevelScoring = false,
-  multipartItem = false
-) => {
+export const isIncompleteQuestion = (item) => {
   // if its a resource type question just return.
   if (isEmpty(item)) {
     return [true, 'Question content should not be empty']
@@ -492,15 +475,14 @@ export const isIncompleteQuestion = (
   }
 
   if (!questionType.manuallyGradableQn.includes(item.type)) {
-    /**
-     * In case of multipart item and itemLevelScoring true, all questions except the first have score 0
-     * itemLevelScoring for all items is by default true, thus multipart check is mandatory
-     */
-    if (!(multipartItem === true && itemLevelScoring === true)) {
-      const isScoreValid = validateScore(item)
-      if (isScoreValid[0]) {
-        return isScoreValid
-      }
+    const { score } = item?.validation?.validResponse || {}
+    const { unscored = false } = item?.validation
+
+    if (isNil(score) || isNaN(score)) {
+      return [true, 'Score needs to be set']
+    }
+    if (!unscored && parseFloat(score, 10) === 0) {
+      return [true, 'Score cannot be zero']
     }
   }
 

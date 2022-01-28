@@ -51,7 +51,6 @@ import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
   isOptionsRemoved,
-  validateScore,
 } from '../questionUtils'
 import {
   setTestItemsAction,
@@ -1331,15 +1330,6 @@ export function* updateItemSaga({ payload }) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0])
       if (isIncomplete) {
         return notification({ msg: errMsg })
-      }
-    } else if (questions.length > 1) {
-      for (const question of questions) {
-        if (!questionType.manuallyGradableQn.includes(question.type) && !itemLevelScoring) {
-          const [hasInvalidScore, errMsg] = validateScore(question)
-          if (hasInvalidScore) {
-            return notification({ msg: errMsg })
-          }
-        }
       }
     }
 

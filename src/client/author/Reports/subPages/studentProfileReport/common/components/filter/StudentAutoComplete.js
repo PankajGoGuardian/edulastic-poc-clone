@@ -168,13 +168,15 @@ const StudentAutoComplete = ({
     }
   }, [query])
 
+  const dropdownOpen = shouldDropdownOpen && searchTerms.text
   useEffect(() => {
-    if (activeQuery?.search?.searchString) setDropdownStudents(studentList)
-  }, [studentList, activeQuery])
-  const dropdownOpen =
-    shouldDropdownOpen &&
-    searchTerms.text &&
-    searchTerms.text !== searchTerms.selectedText
+    if (
+      (activeQuery?.search?.searchString ||
+        studentList.some((s) => s.title === searchTerms.text)) &&
+      dropdownOpen
+    )
+      setDropdownStudents(studentList)
+  }, [studentList, activeQuery, dropdownOpen])
   useEffect(() => {
     if (!dropdownOpen) setDropdownStudents([])
   }, [dropdownOpen])

@@ -29,6 +29,7 @@ import {
   secondaryTextColor,
   lightGrey9,
   linkColor,
+  dangerColor,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
@@ -556,7 +557,7 @@ const ScanAnswerSheetsInner = ({
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
           {instructions ? (
-            <SubTitleDark width="350px">
+            <SubTitleDark width="350px" className="instructions">
               <strong>{instructions}</strong>
             </SubTitleDark>
           ) : null}
@@ -814,6 +815,10 @@ const SubTitle = styled.p`
 const SubTitleDark = styled(SubTitle)`
   color: ${linkColor};
   padding-bottom: 15px;
+  &.instructions {
+    color: ${dangerColor};
+    font-size: 15px;
+  }
 `
 
 const CameraModule = styled.div`

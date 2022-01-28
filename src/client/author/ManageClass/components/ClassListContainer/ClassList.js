@@ -93,13 +93,15 @@ const ClassList = ({
               <IconClever height={18} width={18} />
             </Tooltip>
           )
-        } else if (googleCode) {
+        }
+        if (googleCode) {
           syncIconList.push(
             <Tooltip title="Google Classroom" placement="bottom">
               <IconGoogleClassroom height={18} width={18} />
             </Tooltip>
           )
-        } else if (canvasCode) {
+        }
+        if (canvasCode) {
           syncIconList.push(
             <Tooltip title="Canvas" placement="bottom">
               <img
@@ -110,7 +112,8 @@ const ClassList = ({
               />
             </Tooltip>
           )
-        } else if (
+        }
+        if (
           atlasId &&
           (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
             'schoology'
@@ -120,7 +123,8 @@ const ClassList = ({
               <img src={schoologyIcon} alt="Schoology" width="18" height="18" />
             </Tooltip>
           )
-        } else if (
+        }
+        if (
           atlasId &&
           (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
             'classlink'

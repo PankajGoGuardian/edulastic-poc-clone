@@ -628,8 +628,8 @@ export const isValidDesmosState = (state = '') => {
   })
 }
 
-export const getDesmosConfig = (stateName = '') => {
-  if (!stateName) {
+export const getDesmosConfig = (stateName = '', calculateMode) => {
+  if (!stateName || calculateMode !== 'GRAPHING_STATE_DESMOS') {
     return standard
   }
 
@@ -645,7 +645,7 @@ export const getDesmosConfig = (stateName = '') => {
     return standard
   }
 
-  return stateConfig[state.key] || 'standard'
+  return stateConfig[state.key] || standard
 }
 
 export const getStateName = (stateName = '') => {

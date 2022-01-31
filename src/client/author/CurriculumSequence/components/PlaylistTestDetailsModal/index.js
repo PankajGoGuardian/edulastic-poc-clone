@@ -22,12 +22,7 @@ import {
 
 const PlaylistTestDetailsModal = ({
   onClose,
-  modalInitData: {
-    isVisible,
-    requestLatest,
-    currentTestId,
-    isTestAssigned,
-  } = {},
+  modalInitData: { isVisible, requestLatest, currentTestId } = {},
   receiveTestById,
   test = {},
   rows = [],
@@ -54,7 +49,7 @@ const PlaylistTestDetailsModal = ({
   }
 
   const handleEditTest = () => {
-    onEditTest(currentTestId, isTestAssigned)
+    onEditTest(currentTestId)
     onClose(false)
   }
 

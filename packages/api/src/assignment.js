@@ -128,7 +128,6 @@ const duplicateAssignment = ({
   cloneItems = false,
   playlistId,
   updatePlaylist = false,
-  updateContentVersionId = false,
 }) =>
   api
     .callApi({
@@ -141,7 +140,6 @@ const duplicateAssignment = ({
         cloneItems,
         playlistId,
         updatePlaylist,
-        updateContentVersionId,
       },
       method: 'post',
     })

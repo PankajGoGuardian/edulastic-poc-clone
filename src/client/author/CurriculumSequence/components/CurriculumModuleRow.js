@@ -580,9 +580,9 @@ class ModuleRow extends Component {
     })
   }
 
-  onEditTest = (testId, isTestAssigned) => {
+  onEditTest = (testId) => {
     const { editPlaylistTest, playlistId } = this.props
-    editPlaylistTest({ testId, playlistId, isTestAssigned })
+    editPlaylistTest({ testId, playlistId })
   }
 
   render() {
@@ -818,8 +818,6 @@ class ModuleRow extends Component {
                           onClick={() =>
                             togglePlaylistTestDetails({
                               id: moduleData?.assignments?.[0]?.testId,
-                              isTestAssigned:
-                                moduleData?.assignments?.length > 0,
                             })
                           }
                         >
@@ -851,10 +849,7 @@ class ModuleRow extends Component {
                               moduleData?.assignments?.[0]?.testId
                             const testId =
                               testIdFromAssignments || moduleData.contentId
-                            this.onEditTest(
-                              testId,
-                              moduleData?.assignments?.length > 0
-                            )
+                            this.onEditTest(testId)
                           }}
                         >
                           Edit test
@@ -1318,9 +1313,6 @@ class ModuleRow extends Component {
                                                   requestLatest:
                                                     testStatus !== 'draft',
                                                 }),
-                                            isTestAssigned:
-                                              moduleData?.assignments?.length >
-                                              0,
                                           })
                                         )
                                       }}

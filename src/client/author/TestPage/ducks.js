@@ -3466,7 +3466,6 @@ function* duplicateTestSaga({ payload }) {
       cloneItems = false,
       playlistId,
       updatePlaylist = false,
-      updateContentVersionId = false,
     } = payload
     const queryParams = {
       _id,
@@ -3475,7 +3474,6 @@ function* duplicateTestSaga({ payload }) {
       cloneItems,
       playlistId,
       updatePlaylist,
-      updateContentVersionId,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {

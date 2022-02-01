@@ -69,7 +69,7 @@ const SettingMenu = ({
           {...(hidePause
             ? {
                 title:
-                  'This assignment is configured to completed in a single sitting',
+                  'This assignment is configured to be completed in a single sitting',
               }
             : {})}
           key="save"

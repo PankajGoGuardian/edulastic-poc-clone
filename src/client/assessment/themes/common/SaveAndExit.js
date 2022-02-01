@@ -111,7 +111,7 @@ const SaveAndExit = ({
                 placement="bottom"
                 title={
                   hidePause
-                    ? 'This assignment is configured to completed in a single sitting'
+                    ? 'This assignment is configured to be completed in a single sitting'
                     : 'Exit'
                 }
               >
@@ -133,7 +133,7 @@ const SaveAndExit = ({
                 placement="bottomRight"
                 title={
                   hidePause
-                    ? 'This assignment is configured to completed in a single sitting'
+                    ? 'This assignment is configured to be completed in a single sitting'
                     : 'Save & Exit'
                 }
               >

@@ -512,7 +512,12 @@ function* saveQuestionSaga({
     const question = yield select(getCurrentQuestionSelector)
     const itemDetail = yield select(getItemDetailSelector)
     const alignments = yield select(getDictionariesAlignmentsSelector)
-    const [isIncomplete, errMsg] = isIncompleteQuestion(question)
+    const { itemLevelScoring = false, multipartItem = false } = itemDetail
+    const [isIncomplete, errMsg] = isIncompleteQuestion(
+      question,
+      itemLevelScoring,
+      multipartItem
+    )
 
     if (isIncomplete) {
       notification({ msg: errMsg })

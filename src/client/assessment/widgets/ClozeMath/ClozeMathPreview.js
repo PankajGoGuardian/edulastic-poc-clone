@@ -16,7 +16,7 @@ import ClozeInputAnswerDisplay from './ClozeMathDisplay/ClozeInputAnswerDisplay'
 import ClozeMathAnswerDisplay from './ClozeMathDisplay/ClozeMathAnswerDisplay'
 import MathSpanWrapper from '../../components/MathSpanWrapper'
 import Instructions from '../../components/Instructions'
-import { getFontSize } from '../../utils/helpers'
+import { getStylesFromUiStyleToCssStyle } from '../../utils/helpers'
 
 const ClozeMathPreview = ({
   type,
@@ -82,32 +82,19 @@ const ClozeMathPreview = ({
   }, [item?.validation, type, isExpressGrader])
 
   const uiStyles = useMemo(() => {
-    const styles = {}
     const { uiStyle = {} } = item
 
-    styles.fontSize = getFontSize(uiStyle.fontsize)
-
-    if (uiStyle.heightpx) {
-      styles.height = `${uiStyle.heightpx}px`
-    }
+    const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
 
     if (uiStyle.responseFontScale) {
-      styles.responseFontScale = uiStyle.responseFontScale
-    }
-
-    if (uiStyle.minWidth) {
-      styles.minWidth = `${uiStyle.minWidth}px`
-    }
-
-    if (uiStyle.minHeight) {
-      styles.minHeight = `${uiStyle.minHeight}px`
+      cssStyles.responseFontScale = uiStyle.responseFontScale
     }
 
     if (parseInt(uiStyle.minWidth, 10) < 25) {
-      styles.padding = '4px 2px'
+      cssStyles.padding = '4px 2px'
     }
 
-    return styles
+    return cssStyles
   }, [item.uiStyle])
 
   const handleAddAnswer = (answer, answerType, id) => {
@@ -263,6 +250,7 @@ const ClozeMathPreview = ({
           extraOpts={item.extraOpts}
           isPrintPreview={isPrintPreview}
           singleResponseBox={singleResponseBox}
+          uiStyles={uiStyles}
         />
       )}
     </QuestionWrapper>
@@ -295,10 +283,10 @@ ClozeMathPreview.defaultProps = {
 export default withCheckAnswerButton(ClozeMathPreview)
 
 const QuestionWrapper = styled.div`
-  font-size: ${(props) => props.uiStyles.normal || '16px'};
-  font-weight: ${(props) =>
-    props.responseFontScale === 'boosted' ? 600 : 'normal'};
+  font-size: ${(props) => props.uiStyles.fontSize || '16px'};
+  font-weight: ${(props) => props.uiStyles.fontWeight};
   position: relative;
+
   li {
     margin: 4px 0;
   }

@@ -18,6 +18,7 @@ import {
   resourceTypeQuestions,
   saveQuestionAction,
 } from '../../../QuestionEditor/ducks'
+import UnsavedChangesModal from '../UnsavedChangesModal'
 
 const QuestionManageModal = ({
   onCancel,
@@ -34,15 +35,17 @@ const QuestionManageModal = ({
   isEditMultipartQuestion,
   rowIndex,
   tabIndex,
+  hasUnsavedChanges,
 }) => {
   const [prevQuestion, setPrevQuestion] = useState()
   const [isFullModal, setIsFullModal] = useState(false)
+  const [showUnsavedChangesModal, setShowUnsavedChangesModal] = useState(false)
 
   const handleToggleFullModal = () => {
     setIsFullModal(!isFullModal)
   }
 
-  const handleCancel = () => {
+  const applyCancel = () => {
     onCancel()
     if (question?.id) {
       setCurrentQuestion('')
@@ -52,6 +55,15 @@ const QuestionManageModal = ({
     }
     if (!isEditMultipartQuestion && question?.id) {
       removeQuestion(question.id)
+    }
+  }
+
+  const handleCancel = () => {
+    console.log({ hasUnsavedChanges })
+    if (question?.type === 'passage' && hasUnsavedChanges) {
+      setShowUnsavedChangesModal(true)
+    } else {
+      applyCancel()
     }
   }
 
@@ -89,6 +101,8 @@ const QuestionManageModal = ({
     return ['95%', 'calc(100vh - 50px)', { top: 25 }]
   }, [isFullModal])
 
+  console.log({ question })
+
   return (
     <StyledModal
       visible
@@ -108,6 +122,7 @@ const QuestionManageModal = ({
       >
         {question?.id && (
           <QuestionEditor
+            isQuestionManageModal
             isTestFlow={isTestFlow}
             isEditFlow={isEditFlow}
             isMultipartItem
@@ -126,6 +141,19 @@ const QuestionManageModal = ({
           />
         )}
       </ScrollContext.Provider>
+      {}
+      <StyledModal
+        visible={showUnsavedChangesModal}
+        title="You have unsaved changes"
+        onCancel={() => setShowUnsavedChangesModal(false)}
+        onOk={() => applyCancel(true)}
+        centered
+        //  width={modalWidth}
+        //  height={modalHeight}
+        style={modalStyle}
+      >
+        <UnsavedChangesModal />
+      </StyledModal>
     </StyledModal>
   )
 }
@@ -134,6 +162,7 @@ const enhance = compose(
   connect(
     (state) => ({
       question: getCurrentQuestionSelector(state),
+      hasUnsavedChanges: state?.authorQuestions?.updated || false,
     }),
     {
       removeQuestion: deleteQuestionAction,

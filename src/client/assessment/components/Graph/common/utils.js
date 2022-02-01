@@ -12,7 +12,7 @@ export const getAdjustedHeightAndWidth = (
   disableResponse,
   delta = 20
 ) => {
-  const obj = { width: parentWidth, height: layout.height }
+  const obj = { width: layout.width, height: layout.height }
 
   if (parentWidth < layout.width) {
     obj.width = Math.max(parentWidth, MIN_WIDTH)

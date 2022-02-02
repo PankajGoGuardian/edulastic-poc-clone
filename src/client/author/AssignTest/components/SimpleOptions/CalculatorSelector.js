@@ -11,19 +11,26 @@ import {
 
 const { calculatorKeys, calculators, calculatorTypes } = test
 
-const CustomLabel = ({ showPopover, text }) => {
+const CustomLabel = ({ showPopover, itemKey, isHomeSchool }) => {
+  const optLabel = useMemo(() => {
+    if (isHomeSchool && itemKey === 'GRAPHING') {
+      return 'Graphing'
+    }
+    return calculators[itemKey]
+  }, [isHomeSchool, itemKey])
+
   if (showPopover) {
     return (
       <Tooltip
         placement="right"
         title="State information missing, please raise a support request at support@edulastic.com"
       >
-        <Label>{text}</Label>
+        <Label>{optLabel}</Label>
       </Tooltip>
     )
   }
 
-  return <Label>{text}</Label>
+  return <Label>{optLabel}</Label>
 }
 
 const CalculatorSelector = ({
@@ -74,7 +81,8 @@ const CalculatorSelector = ({
             disabled={disableOption}
           >
             <CustomLabel
-              text={calculators[item]}
+              itemKey={item}
+              isHomeSchool={isHomeSchool}
               showPopover={notAvailableStateVersion}
             />
           </Select.Option>

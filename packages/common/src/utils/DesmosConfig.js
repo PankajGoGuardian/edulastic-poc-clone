@@ -151,7 +151,6 @@ const stateConfig = {
   },
   missouri: {
     ...standard,
-
     images: true,
     folders: true,
     notes: true,
@@ -160,7 +159,6 @@ const stateConfig = {
   },
   montana: {
     ...standard,
-
     images: true,
     folders: true,
     notes: true,
@@ -232,6 +230,7 @@ const stateConfig = {
     decimalToFraction: true,
   },
   south_carolina: {
+    ...standard,
     decimalToFraction: false,
     Slider: true,
   },

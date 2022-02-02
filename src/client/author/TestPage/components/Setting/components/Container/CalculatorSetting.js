@@ -11,7 +11,13 @@ import { StyledRadioGroup } from './styled'
 
 const { calculators, calculatorTypes, calculatorKeys } = testContants
 
-const RadioButton = ({ itemKey, schoolState, calculatorProvider, premium }) => {
+const RadioButton = ({
+  itemKey,
+  schoolState,
+  calculatorProvider,
+  premium,
+  isHomeSchool,
+}) => {
   const showPopover = useMemo(() => {
     return (
       itemKey === calculatorTypes.GRAPHING_STATE &&
@@ -26,11 +32,18 @@ const RadioButton = ({ itemKey, schoolState, calculatorProvider, premium }) => {
       calculatorProvider !== 'DESMOS' &&
       ![calculatorTypes.NONE, calculatorTypes.BASIC].includes(itemKey))
 
+  const optLabel = useMemo(() => {
+    if (isHomeSchool && itemKey === 'GRAPHING') {
+      return 'Graphing'
+    }
+    return calculators[itemKey]
+  }, [isHomeSchool, itemKey])
+
   if (showPopover) {
     return (
       <Tooltip title="State information missing, please raise a support request at support@edulastic.com">
         <RadioBtn data-cy={itemKey} value={itemKey} disabled>
-          {calculators[itemKey]}
+          {optLabel}
         </RadioBtn>
       </Tooltip>
     )
@@ -38,7 +51,7 @@ const RadioButton = ({ itemKey, schoolState, calculatorProvider, premium }) => {
 
   return (
     <RadioBtn data-cy={itemKey} value={itemKey} disabled={disableOption}>
-      {calculators[itemKey]}
+      {optLabel}
     </RadioBtn>
   )
 }
@@ -72,6 +85,7 @@ const CalculatorSetting = ({
           schoolState={schoolState}
           itemKey={item}
           key={item}
+          isHomeSchool={isHomeSchool}
           calculatorProvider={calculatorProvider}
           premium={premium}
         />

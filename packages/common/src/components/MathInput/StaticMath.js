@@ -266,7 +266,7 @@ const StaticMath = ({
         // eslint-disable-next-line no-empty
       } catch (e) {}
     }
-  }, [latex, !mathFieldRef.current])
+  }, [latex])
 
   useEffect(() => {
     if (!mQuill.current) return

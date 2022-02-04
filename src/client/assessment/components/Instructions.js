@@ -40,7 +40,6 @@ Instructions.protoTypes = {
   item: PropTypes.shape({
     uiStyle: PropTypes.shape({
       fontSize: PropTypes.string.isRequired,
-      currentFontSize: PropTypes.string.isRequired,
     }).isRequired,
     scoringInstructions: PropTypes.string.isRequired,
     isScoringInstructionsEnabled: PropTypes.bool.isRequired,

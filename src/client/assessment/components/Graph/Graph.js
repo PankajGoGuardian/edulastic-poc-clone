@@ -19,7 +19,6 @@ import { compose } from 'redux'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { defaultSymbols } from '@edulastic/constants'
-import { getFontSize } from '../../utils/helpers'
 import { ContentArea } from '../../styled/ContentArea'
 import {
   setQuestionDataAction,
@@ -73,14 +72,6 @@ const SmallSizeAxisWrapper = styled.div`
   left: 0;
   right: 0;
 `
-
-const getFontSizeList = () => [
-  { value: 'small', label: 'small' },
-  { value: 'normal', label: 'normal' },
-  { value: 'large', label: 'large' },
-  { value: 'extra_large', label: 'extraLarge' },
-  { value: 'huge', label: 'huge' },
-]
 
 class Graph extends Component {
   // Todo: need to fix, there are more
@@ -157,7 +148,6 @@ class Graph extends Component {
     const { item, fillSections, cleanSections, advancedAreOpen } = this.props
 
     return {
-      fontSizeList: getFontSizeList(),
       setOptions: this.handleOptionsChange,
       setCanvas: this.handleCanvasChange,
       setValidation: this.handleValidationChange,
@@ -432,14 +422,6 @@ class Graph extends Component {
 
     const { symbols = defaultSymbols } = item
 
-    const mapFontName = {
-      extra_large: 'xlarge',
-      huge: 'xxlarge',
-      large: 'large',
-      small: 'small',
-      normal: 'normal',
-    }
-
     let previewTab = _previewTab
     let compact = false
     if (
@@ -478,7 +460,7 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 advancedAreOpen
                 setCanvas={this.handleCanvasChange}
-                fontSize={getFontSize(mapFontName[uiStyle?.currentFontSize])}
+                fontSize={uiStyle?.fontSize}
               />
               <Question
                 section="main"
@@ -581,9 +563,7 @@ class Graph extends Component {
                   <StyledStimulus
                     data-cy="questionHeader"
                     dangerouslySetInnerHTML={{ __html: stimulus }}
-                    fontSize={getFontSize(
-                      mapFontName[uiStyle?.currentFontSize]
-                    )}
+                    fontSize={uiStyle?.fontSize}
                   />
                 </QuestionTitleWrapper>
                 {item.canvas && item.uiStyle && (
@@ -735,4 +715,5 @@ export default GraphComponent
 const StyledStimulus = styled(Stimulus)`
   word-break: break-word;
   white-space: pre-wrap;
+  font-size: ${({ fontSize }) => fontSize && `${fontSize}px`};
 `

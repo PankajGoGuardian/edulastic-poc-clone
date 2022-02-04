@@ -556,26 +556,28 @@ function* saveQuestionSaga({
     }
 
     // check if all questions have valid score in the item while saving a particular question
-    if (!isEmpty(allAuthoredQuestions)) {
-      const allQuestionsList = values(allAuthoredQuestions)
-      if (allQuestionsList.length > 1) {
-        for (const authoredQuestion of allQuestionsList) {
-          if (
-            !Object.values(resourceTypeQuestions).includes(
-              authoredQuestion?.type
-            )
-          ) {
-            const questionIndex = getQindex(authoredQuestion?.id, itemDetail)
-            const [hasInvalidScore, invalidScoreErrMsg] = validateScore(
-              authoredQuestion,
-              itemLevelScoring,
-              multipartItem,
-              itemDetailId,
-              questionIndex
-            )
-            if (hasInvalidScore) {
-              return notification({ msg: invalidScoreErrMsg })
-            }
+    const itemQuestions = get(itemDetail, 'data.questions', [])
+    if (itemQuestions.length > 1) {
+      for (const [questionIndex, authoredQuestion] of itemQuestions.entries()) {
+        const _question = get(
+          allAuthoredQuestions,
+          `${authoredQuestion?.id}`,
+          {}
+        )
+        if (
+          !isEmpty(_question) &&
+          !Object.values(resourceTypeQuestions).includes(_question?.type)
+        ) {
+          // need to use question from authorQuestions state as validation data in itemDetail.data.questions is not updated
+          const [hasInvalidScore, invalidScoreErrMsg] = validateScore(
+            _question,
+            itemLevelScoring,
+            multipartItem,
+            itemDetailId,
+            questionIndex
+          )
+          if (hasInvalidScore) {
+            return notification({ msg: invalidScoreErrMsg })
           }
         }
       }

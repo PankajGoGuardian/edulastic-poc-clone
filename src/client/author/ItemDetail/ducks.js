@@ -1349,7 +1349,6 @@ export function* updateItemSaga({ payload }) {
           qIndex
         )
         if (hasInvalidScore) {
-          yield put(itemUpdateCompletedAction())
           return notification({ msg: errMsg })
         }
       }
@@ -1618,6 +1617,7 @@ export function* updateItemSaga({ payload }) {
       payload: { error: errorMessage },
     })
   } finally {
+    yield put(itemUpdateCompletedAction())
     yield put(setTestItemsSavingAction(false))
   }
 }
@@ -1770,6 +1770,7 @@ function* publishTestItemSaga({ payload }) {
       yield select((state) => get(state, ['authorQuestions', 'byId'], {}))
     )
     const testItem = yield select((state) => get(state, ['itemDetail', 'item']))
+    const itemQuestions = get(testItem, 'data.questions', [])
 
     // if there is only question, then its individual question editing screen.
     // in that case test if question is incomplete
@@ -1778,12 +1779,20 @@ function* publishTestItemSaga({ payload }) {
       if (isIncomplete) {
         return notification({ msg: errMsg })
       }
-    } else if (questions.length > 1) {
-      for (const question of questions) {
-        if (!Object.values(resourceTypeQuestions).includes(question?.type)) {
-          const qIndex = getQuestionIndexFromItemData(question?.id, testItem)
+    }
+
+    const questionsById = _keyBy(questions, 'id')
+    // validate score for all questions in multipart item
+    if (itemQuestions.length > 1) {
+      for (const [qIndex, question] of itemQuestions.entries()) {
+        // need to use question from authorQuestions state as validation data in itemDetail.data.questions is not updated
+        const _question = get(questionsById, `${question?.id}`, {})
+        if (
+          !isEmpty(_question) &&
+          !Object.values(resourceTypeQuestions).includes(_question?.type)
+        ) {
           const [hasInvalidScore, errMsg] = validateScore(
-            question,
+            _question,
             testItem?.itemLevelScoring,
             testItem?.multipartItem,
             testItem?._id,
@@ -1795,6 +1804,7 @@ function* publishTestItemSaga({ payload }) {
         }
       }
     }
+
     const isGradingCheckBox = yield select(getIsGradingCheckboxState)
     if (isGradingCheckBox) {
       const currentQuestionId = yield select((state) =>

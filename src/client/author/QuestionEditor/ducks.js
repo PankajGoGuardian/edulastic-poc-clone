@@ -62,6 +62,7 @@ import {
   UPDATE_SCORE_AND_VALIDATION,
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
+  getQuestionsSelector,
   getQuestionsArraySelector,
   changeCurrentQuestionAction,
   changeUpdatedFlagAction,
@@ -77,6 +78,8 @@ import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
+  getQuestionIndexFromItemData,
+  validateScore,
 } from '../questionUtils'
 import { changeViewAction } from '../src/actions/view'
 import {
@@ -452,6 +455,18 @@ export const getQuestionIds = (item) => {
   return questionIds
 }
 
+export const getQindex = (qId = '', itemDetail = {}) => {
+  const questionIds = getQuestionIds(itemDetail)
+  const isNewQuestion = questionIds.filter((item) => item === qId).length === 0
+  let qIndex
+  if (isNewQuestion) {
+    qIndex = itemDetail?.data?.questions?.length
+  } else {
+    qIndex = getQuestionIndexFromItemData(qId, itemDetail)
+  }
+  return qIndex
+}
+
 const updateItemWithAlignmentDetails = (itemDetail = {}, alignments = []) => {
   itemDetail.grades = alignments[0]?.grades || []
   itemDetail.subjects = itemDetail.subjects || []
@@ -510,13 +525,23 @@ function* saveQuestionSaga({
       }
     }
     const question = yield select(getCurrentQuestionSelector)
+    const allAuthoredQuestions = yield select(getQuestionsSelector)
     const itemDetail = yield select(getItemDetailSelector)
     const alignments = yield select(getDictionariesAlignmentsSelector)
-    const { itemLevelScoring = false, multipartItem = false } = itemDetail
+
+    const {
+      itemLevelScoring = false,
+      multipartItem = false,
+      _id: itemDetailId = '',
+    } = itemDetail
+    const qIndex = getQindex(question?.id, itemDetail)
+
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem
+      multipartItem,
+      itemDetailId,
+      qIndex
     )
 
     if (isIncomplete) {
@@ -528,6 +553,32 @@ function* saveQuestionSaga({
         })
       }
       return
+    }
+
+    // check if all questions have valid score in the item while saving a particular question
+    if (!isEmpty(allAuthoredQuestions)) {
+      const allQuestionsList = values(allAuthoredQuestions)
+      if (allQuestionsList.length > 1) {
+        for (const authoredQuestion of allQuestionsList) {
+          if (
+            !Object.values(resourceTypeQuestions).includes(
+              authoredQuestion?.type
+            )
+          ) {
+            const questionIndex = getQindex(authoredQuestion?.id, itemDetail)
+            const [hasInvalidScore, invalidScoreErrMsg] = validateScore(
+              authoredQuestion,
+              itemLevelScoring,
+              multipartItem,
+              itemDetailId,
+              questionIndex
+            )
+            if (hasInvalidScore) {
+              return notification({ msg: invalidScoreErrMsg })
+            }
+          }
+        }
+      }
     }
 
     const [

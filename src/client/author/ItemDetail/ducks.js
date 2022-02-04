@@ -52,6 +52,7 @@ import {
   hasImproperDynamicParamsConfig,
   isOptionsRemoved,
   validateScore,
+  getQuestionIndexFromItemData,
 } from '../questionUtils'
 import {
   setTestItemsAction,
@@ -1240,7 +1241,13 @@ export function* updateItemSaga({ payload }) {
      * in test item data
      */
 
-    const { itemLevelScoring, itemLevelScore, isPassageWithQuestions } = data
+    const {
+      itemLevelScoring,
+      itemLevelScore,
+      isPassageWithQuestions,
+      multipartItem = false,
+      _id: _itemId,
+    } = data
 
     const resourceTypes = [
       questionType.VIDEO,
@@ -1333,12 +1340,17 @@ export function* updateItemSaga({ payload }) {
         return notification({ msg: errMsg })
       }
     } else if (questions.length > 1) {
-      for (const question of questions) {
-        if (!questionType.manuallyGradableQn.includes(question.type) && !itemLevelScoring) {
-          const [hasInvalidScore, errMsg] = validateScore(question)
-          if (hasInvalidScore) {
-            return notification({ msg: errMsg })
-          }
+      for (const [qIndex, question] of questions.entries()) {
+        const [hasInvalidScore, errMsg] = validateScore(
+          question,
+          itemLevelScoring,
+          multipartItem,
+          _itemId,
+          qIndex
+        )
+        if (hasInvalidScore) {
+          yield put(itemUpdateCompletedAction())
+          return notification({ msg: errMsg })
         }
       }
     }
@@ -1757,6 +1769,7 @@ function* publishTestItemSaga({ payload }) {
     const questions = Object.values(
       yield select((state) => get(state, ['authorQuestions', 'byId'], {}))
     )
+    const testItem = yield select((state) => get(state, ['itemDetail', 'item']))
 
     // if there is only question, then its individual question editing screen.
     // in that case test if question is incomplete
@@ -1764,6 +1777,22 @@ function* publishTestItemSaga({ payload }) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0])
       if (isIncomplete) {
         return notification({ msg: errMsg })
+      }
+    } else if (questions.length > 1) {
+      for (const question of questions) {
+        if (!Object.values(resourceTypeQuestions).includes(question?.type)) {
+          const qIndex = getQuestionIndexFromItemData(question?.id, testItem)
+          const [hasInvalidScore, errMsg] = validateScore(
+            question,
+            testItem?.itemLevelScoring,
+            testItem?.multipartItem,
+            testItem?._id,
+            qIndex
+          )
+          if (hasInvalidScore) {
+            return notification({ msg: errMsg })
+          }
+        }
       }
     }
     const isGradingCheckBox = yield select(getIsGradingCheckboxState)
@@ -1776,7 +1805,6 @@ function* publishTestItemSaga({ payload }) {
         return notification({ messageKey: 'pleaseAssociateARubric' })
     }
 
-    const testItem = yield select((state) => get(state, ['itemDetail', 'item']))
     const isMultipartOrPassageType =
       testItem && (testItem.multipartItem || testItem.isPassageWithQuestions)
     const standardPresent = questions.some(hasStandards)

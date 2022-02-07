@@ -182,7 +182,7 @@ const StaticMath = ({
     mQuill.current?.__controller?.cursor?.hide()
   }, [])
 
-  const onInputKeyboard = (key, command = 'cmd') => {
+  const onInputKeyboard = (key, command = 'cmd', numToMove) => {
     if (!currentField.current) {
       return
     }
@@ -206,6 +206,13 @@ const StaticMath = ({
       currentField.current.keystroke('Up')
     } else {
       currentField.current[command](key)
+    }
+
+    // move cursor into start of key(latex)
+    if (command === 'write' && numToMove) {
+      for (let i = 0; i < numToMove; i++) {
+        currentField.current.keystroke('Left')
+      }
     }
     currentField.current.focus()
     handleSave()

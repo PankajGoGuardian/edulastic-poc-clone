@@ -2719,7 +2719,11 @@ function* publishTestSaga({ payload }) {
        */
       yield put(updateAssingnmentSettingsAction(update))
 
-      yield put(push(`/author/assignments/${id}`))
+      yield put(
+        push(`/author/assignments/${id}`, {
+          assessmentAssignedFrom: 'Created New',
+        })
+      )
     } else {
       const role = yield select(getUserRole)
       if (role !== roleuser.EDULASTIC_CURATOR)

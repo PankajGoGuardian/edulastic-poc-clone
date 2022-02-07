@@ -29,10 +29,12 @@ function combineUnitAndValue(userAnswer, isMath, unit) {
 
 const { mathInputMaxHeight } = responseConstant
 
-const CheckBoxedMathBox = ({ value, style }) => {
+const CheckBoxedMathBox = ({ value, style, fontSize, fontWeight }) => {
   return (
     <MathSpan
       style={style}
+      fontSize={fontSize}
+      fontWeight={fontWeight}
       dangerouslySetInnerHTML={{
         __html: `<span class="input__math" data-latex="${value}"></span>`,
       }}

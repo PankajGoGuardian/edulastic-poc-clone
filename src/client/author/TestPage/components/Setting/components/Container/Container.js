@@ -59,7 +59,6 @@ import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
   isPublisherUserSelector,
-  getCurrentSchoolState,
 } from '../../../../../src/selectors/user'
 import {
   Block,
@@ -106,8 +105,6 @@ const {
   settingCategoriesFeatureMap,
   type,
   completionTypes,
-  calculatorKeys,
-  calculatorTypes,
   evalTypes,
   evalTypeLabels,
   accessibilities,
@@ -717,7 +714,6 @@ class Setting extends Component {
       testSettingsList = [],
       performanceBandsData,
       standardsData,
-      schoolState,
       defaultTestTypeProfiles,
     } = this.props
     const {
@@ -864,14 +860,6 @@ class Setting extends Component {
         id: 'skip-alert',
       },
     ]
-
-    const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
-    const calculatorKeysAvailable =
-      (checkForCalculator &&
-        calculatorKeys.filter((i) =>
-          [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i)
-        )) ||
-      calculatorKeys
 
     const advancedSettingCategoris = settingCategories.slice(-6, -4)
     if (playerSkinType === playerSkinValues.testlet.toLowerCase()) {
@@ -1398,9 +1386,9 @@ class Setting extends Component {
                               disabled={
                                 disabled || !assessmentSuperPowersShowCalculator
                               }
-                              calculatorKeysAvailable={calculatorKeysAvailable}
                               calcType={calcType}
-                              schoolState={schoolState}
+                              premium={premium}
+                              calculatorProvider={calculatorProvider}
                             />
                           </Col>
                           <Col span={16}>
@@ -2444,7 +2432,6 @@ const enhance = compose(
       entity: getTestEntitySelector(state),
       features: getUserFeatures(state),
       userRole: getUserRole(state),
-      schoolState: getCurrentSchoolState(state),
       defaultTestTypeProfiles: defaultTestTypeProfilesSelector(state),
       standardsData: get(state, ['standardsProficiencyReducer', 'data'], []),
       performanceBandsData: get(

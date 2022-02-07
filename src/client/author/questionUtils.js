@@ -491,16 +491,14 @@ export const isIncompleteQuestion = (
     return [true, 'Answer choices should not be empty']
   }
 
-  if (!questionType.manuallyGradableQn.includes(item.type)) {
-    /**
-     * In case of multipart item and itemLevelScoring true, all questions except the first have score 0
-     * itemLevelScoring for all items is by default true, thus multipart check is mandatory
-     */
-    if (!(multipartItem === true && itemLevelScoring === true)) {
-      const isScoreValid = validateScore(item)
-      if (isScoreValid[0]) {
-        return isScoreValid
-      }
+  /**
+   * In case of multipart item and itemLevelScoring true, all questions except the first have score 0
+   * itemLevelScoring for all items is by default true, thus multipart check is mandatory
+   */
+  if (!(multipartItem === true && itemLevelScoring === true)) {
+    const isScoreValid = validateScore(item)
+    if (isScoreValid[0]) {
+      return isScoreValid
     }
   }
 

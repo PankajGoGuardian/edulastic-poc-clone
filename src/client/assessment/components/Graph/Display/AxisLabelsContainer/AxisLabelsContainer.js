@@ -224,7 +224,6 @@ class AxisLabelsContainer extends PureComponent {
         adjustedHeightWidth.width,
         adjustedHeightWidth.height
       )
-
       this._graph.setGraphParameters({
         ...defaultGraphParameters(),
         ...canvas,
@@ -237,17 +236,11 @@ class AxisLabelsContainer extends PureComponent {
         ...defaultGridParameters(),
         ...gridParams,
       })
-
-      const _numberlineAxis = {
-        ...numberlineAxis,
-        shuffleAnswerChoices:
-          view !== EDIT && numberlineAxis.shuffleAnswerChoices,
-      }
       const _layout = {
         ...layout,
         ...adjustedHeightWidth,
       }
-      this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout)
+      this._graph.updateNumberlineSettings(canvas, numberlineAxis, _layout)
 
       this._graph.setMarksDeleteHandler()
 
@@ -292,17 +285,11 @@ class AxisLabelsContainer extends PureComponent {
         !isEqual(numberlineAxis, prevProps.numberlineAxis) ||
         !isEqual(layout, prevProps.layout)
       ) {
-        const _numberlineAxis = {
-          ...numberlineAxis,
-          shuffleAnswerChoices:
-            view !== EDIT && numberlineAxis.shuffleAnswerChoices,
-        }
-
         const _layout = {
           ...layout,
           ...adjustedHeightWidth,
         }
-        this._graph.updateNumberlineSettings(canvas, _numberlineAxis, _layout)
+        this._graph.updateNumberlineSettings(canvas, numberlineAxis, _layout)
       }
 
       this.setElementsToGraph(prevProps)
@@ -494,6 +481,8 @@ class AxisLabelsContainer extends PureComponent {
         responseBoxPosition,
         separationDistanceX,
         separationDistanceY,
+        shuffleAnswerChoices,
+        fontSize,
       },
       disableResponse,
       view,
@@ -502,6 +491,7 @@ class AxisLabelsContainer extends PureComponent {
       isPrintPreview,
     } = this.props
     const { isV1Migrated } = graphData
+    const shuffleChoices = view !== EDIT && shuffleAnswerChoices
     const adjustedHeightWidth = this.adjustedHeightWidth
     const [choiceWidth] = this.choiceMaxWidth
 
@@ -552,7 +542,7 @@ class AxisLabelsContainer extends PureComponent {
               controls={this.controls}
               onSelectControl={this.onSelectControl}
               onSelect={() => {}}
-              fontSize={layout?.fontSize}
+              fontSize={fontSize}
             />
           )}
           <ContainerWithResponses
@@ -564,6 +554,8 @@ class AxisLabelsContainer extends PureComponent {
             >
               {!disableResponse && (
                 <ResponseBox
+                  fontSize={fontSize}
+                  shuffleChoices={shuffleChoices}
                   values={this.getMarkValues()}
                   separationDistanceX={separationDistanceX}
                   separationDistanceY={separationDistanceY}

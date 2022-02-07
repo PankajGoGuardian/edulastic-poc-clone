@@ -29,6 +29,9 @@ class ClozeMathWithUnit extends React.Component {
     if (uiStyles.width) {
       btnStyle.minWidth = uiStyles.width
     }
+    if (uiStyles.fontWeight) {
+      btnStyle.fontWeight = uiStyles.fontWeight
+    }
     return uiStyles
   }
 
@@ -106,6 +109,7 @@ class ClozeMathWithUnit extends React.Component {
       <MathInputWrapper
         disableResponse={disableResponse}
         fontSize={btnStyle.fontSize}
+        fontWeight={btnStyle.fontWeight}
         width={width}
         height={height}
         data-cy="mathUnitInput"

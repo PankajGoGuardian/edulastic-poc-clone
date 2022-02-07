@@ -1,10 +1,10 @@
 /* global Desmos, GGBApplet */
-import React, { useRef, useEffect } from 'react'
+import React, { useRef, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { Rnd } from 'react-rnd'
 import { connect } from 'react-redux'
-import { WithResources, getDesmosConfig } from '@edulastic/common'
+import { WithResources, getDesmosConfig, getStateName } from '@edulastic/common'
 import { IconClose } from '@edulastic/icons'
 import { white, boxShadowDefault } from '@edulastic/colors'
 import { test as testContants } from '@edulastic/constants'
@@ -87,18 +87,28 @@ const CalculatorContainer = ({ calculateMode, changeTool, schoolState }) => {
   const desmosGraphingRef = useRef()
   const desmosBasicRef = useRef()
   const desmosScientificRef = useRef()
+  const [graphingTitle, setGraphingTitle] = useState(
+    'Desmos Graphing Calculator'
+  )
 
   useEffect(() => {
     if (
       desmosGraphingRef.current &&
       desmosGraphingCalcTypes.includes(calculateMode)
     ) {
-      const config = getDesmosConfig(schoolState)
+      const config = getDesmosConfig(schoolState, calculateMode)
+      const stateName = getStateName(schoolState)
       const desmosGraphCalculator = Desmos.GraphingCalculator(
         desmosGraphingRef.current,
         config
       )
       desmosGraphCalculator.setExpression({ dragMode: Desmos.DragModes.XY })
+      if (
+        stateName &&
+        calculateMode === `${calculatorTypes.GRAPHING_STATE}_DESMOS`
+      ) {
+        setGraphingTitle(`${graphingTitle} | ${stateName}`)
+      }
     }
 
     if (desmosBasicRef.current && calculateMode === 'BASIC_DESMOS') {
@@ -128,7 +138,7 @@ const CalculatorContainer = ({ calculateMode, changeTool, schoolState }) => {
       )
       geogebraScientific.inject('geogebra-scientificcalculator')
     }
-  }, [calculateMode])
+  }, [calculateMode, schoolState])
 
   return (
     <Container>
@@ -139,7 +149,7 @@ const CalculatorContainer = ({ calculateMode, changeTool, schoolState }) => {
         >
           <div className="calculator-drag-handler">
             <CloseIcon color={white} onClick={handleCloseCalculator} />
-            <Title data-cy="GRAPHING">Graphing Calculator</Title>
+            <Title data-cy="GRAPHING">{graphingTitle}</Title>
           </div>
           <Calculator id="demos-graphiccalculator" ref={desmosGraphingRef} />
         </RndWrapper>

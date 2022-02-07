@@ -11,7 +11,6 @@ export const CheckBox = styled.div`
   min-width: ${(props) => props.width || '140px'};
   max-height: ${responseConstant.mathInputMaxHeight};
   margin: 0px 2px 0px 2px;
-  font-weight: 700;
   align-items: center;
   border-radius: 2px;
   padding-right: 24px;
@@ -19,6 +18,8 @@ export const CheckBox = styled.div`
   background: ${({ theme, fillColor, isPrintPreview }) =>
     isPrintPreview ? white : fillColor || theme.checkbox.noAnswerBgColor};
   color: ${({ theme }) => theme.checkbox.textColor};
+  font-size: ${({ fontSize }) => fontSize};
+  font-weight: ${({ fontWeight }) => fontWeight};
   text-indent: 0;
   .index {
     background: ${({ indexBgColor }) => indexBgColor};
@@ -31,13 +32,14 @@ export const CheckBox = styled.div`
   .index {
     min-width: 30px;
     color: ${white};
-    font-size: 14px;
     display: flex;
     justify-content: center;
     align-items: center;
     align-self: stretch;
     border-bottom-left-radius: 2px;
     border-top-left-radius: 2px;
+    font-size: ${({ fontSize }) => fontSize || '14px'};
+    font-weight: ${({ fontWeight }) => fontWeight};
   }
 
   .value {

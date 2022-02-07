@@ -23,8 +23,6 @@ import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 
 const {
-  calculatorKeys,
-  calculatorTypes,
   releaseGradeTypes,
   evalTypes,
   completionTypes,
@@ -89,14 +87,6 @@ const TestBehaviorGroupContainer = ({
     assignmentSettings?.scoringType ||
     testSettings?.scoringType ||
     evalTypes?.ITEM_LEVEL_EVALUATION
-
-  const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
-  const calculatorKeysAvailable =
-    (checkForCalculator &&
-      calculatorKeys.filter((i) =>
-        [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i)
-      )) ||
-    calculatorKeys
 
   const updateTimedTestAttrs = (attr, value) => {
     if (
@@ -313,7 +303,8 @@ const TestBehaviorGroupContainer = ({
               disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
               calcType={calcType}
               onChangeHanlde={(value) => overRideSettings('calcType', value)}
-              calculatorKeysAvailable={calculatorKeysAvailable}
+              premium={premium}
+              calculatorProvider={calculatorProvider}
             />
           </Col>
         </StyledRow>

@@ -53,6 +53,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 
@@ -144,6 +145,7 @@ class ExpressGrader extends Component {
       toggleAdminAlertModal,
       emailVerified,
       verificationTS,
+      isDefaultDA,
       toggleVerifyEmailModal,
       userRole,
     } = this.props
@@ -155,7 +157,7 @@ class ExpressGrader extends Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
@@ -367,6 +369,7 @@ const enhance = compose(
       authorClassBoard: get(state, ['author_classboard_testActivity'], {}),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       userRole: get(state.user, 'user.role', null),
       scoreMode: state?.expressGraderReducer?.scoreMode,
       isFreeAdmin: isFreeAdminSelector(state),

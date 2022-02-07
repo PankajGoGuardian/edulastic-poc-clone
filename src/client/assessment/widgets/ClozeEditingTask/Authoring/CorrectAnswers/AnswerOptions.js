@@ -67,6 +67,7 @@ const AnswerOptions = ({ t, setQuestionData, item }) => {
         onChange={optionsChangeHandler('shuffleOptions', !shuffleOptions)}
         checked={shuffleOptions}
         style={{ alignSelf: 'center' }}
+        data-cy="shuffleOptions"
       >
         <Label style={{ display: 'inline' }}>
           {t('component.cloze.dropDown.shuffleoptions')}

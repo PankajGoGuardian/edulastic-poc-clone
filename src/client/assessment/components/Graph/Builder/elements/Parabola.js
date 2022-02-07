@@ -348,6 +348,7 @@ export default {
   clean,
   getTempPoints,
   create,
+  drawline,
   getColorParams,
   makeCallbackX,
   makeCallbackY,

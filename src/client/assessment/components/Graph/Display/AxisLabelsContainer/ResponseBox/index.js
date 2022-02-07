@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { shuffle } from 'lodash'
 import { DragDrop, MathFormulaDisplay } from '@edulastic/common'
 import {
   Container,
@@ -12,29 +13,32 @@ const { DragItem } = DragDrop
 
 const ResponseBox = ({
   values,
+  fontSize,
+  shuffleChoices,
   responseBoxWidth,
   isHorizontal,
   separationDistanceX,
   separationDistanceY,
 }) => (
   <Container width={responseBoxWidth} isHorizontal={isHorizontal}>
-    <Title>DRAG DROP VALUES</Title>
+    <Title fontSize={fontSize}>DRAG DROP VALUES</Title>
     <DraggableOptionsContainer
       isHorizontal={isHorizontal}
       distanceX={separationDistanceX}
       distanceY={separationDistanceY}
     >
-      {values.map((value, i) => (
+      {(shuffleChoices ? shuffle(values) : values).map((value, i) => (
         <DragItem
           className="dragging-item"
           id={`response-item-${i}`}
           key={value.id}
           data={value}
         >
-          <MarkContainer>
+          <MarkContainer fontSize={fontSize}>
             <div className="index-box">{i + 1}</div>
             <MathFormulaDisplay
               className="drag-item-cotent"
+              fontSize={fontSize ? `${fontSize}px` : ''}
               dangerouslySetInnerHTML={{ __html: value.text }}
             />
           </MarkContainer>

@@ -11,7 +11,7 @@ const isValidURL = (str) => {
   return regex.test(str)
 }
 
-const loadScratchFromUrl = (dataUrl) =>
+const loadDataFromUrl = (dataUrl) =>
   axios({
     url: dataUrl,
     method: 'get',
@@ -32,9 +32,7 @@ const loadAttachment = (attachmentId) =>
         isValidURL(attachment?.data?.scratchpad)
       ) {
         try {
-          const { data } = await loadScratchFromUrl(
-            attachment?.data?.scratchpad
-          )
+          const { data } = await loadDataFromUrl(attachment?.data?.scratchpad)
           attachment.data.scratchpad = data
         } catch (error) {
           attachment.data.scratchpad = ''
@@ -67,9 +65,7 @@ const loadAllAttachments = (filter) =>
           isValidURL(attachment?.data?.scratchpad)
         ) {
           try {
-            const { data } = await loadScratchFromUrl(
-              attachment?.data?.scratchpad
-            )
+            const { data } = await loadDataFromUrl(attachment?.data?.scratchpad)
             attachment.data.scratchpad = data
           } catch (error) {
             attachment.data.scratchpad = ''
@@ -98,4 +94,5 @@ export default {
   loadAllAttachments,
   updateAttachment,
   downloadAllAttachments,
+  loadDataFromUrl,
 }

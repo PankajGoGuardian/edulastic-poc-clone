@@ -25,8 +25,9 @@ const createStandardTextSet = (element) => styled(element)`
 
   @media screen and (min-width: ${extraDesktopWidthMax}) {
     font-size: ${(props) => {
-      const fontSize =
-        props?.fontSize || `${props?.theme?.common?.standardFont || '14px'}`
+      const fontSize = props.fontSize
+        ? `${props.fontSize}px`
+        : `${props?.theme?.common?.standardFont || '14px'}`
       return fontSize
     }};
   }

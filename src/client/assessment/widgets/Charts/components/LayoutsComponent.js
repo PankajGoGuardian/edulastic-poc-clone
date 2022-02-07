@@ -182,6 +182,7 @@ class LayoutsComponent extends Component {
           <MulticolorBarsOption
             onChange={(val) => changeUIStyle('multicolorBars', val)}
             value={get(item, 'uiStyle.multicolorBars', true)}
+            data-cy="multiColorBar"
           />
         )
       }

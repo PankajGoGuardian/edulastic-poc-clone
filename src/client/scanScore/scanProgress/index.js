@@ -87,10 +87,11 @@ const ScanProgress = ({
           groupId: tempScannedDocs[0].groupId,
           sessionId,
           responses: tempScannedDocs.map(
-            ({ imageUri, studentId, answers }) => ({
+            ({ imageUri, studentId, answers, originalImgUri }) => ({
               answers,
               studentId,
               imageUri,
+              originalImgUri,
             })
           ),
         })
@@ -145,7 +146,11 @@ const ScanProgress = ({
         marginLeft="auto"
         mr="auto"
       >
-        <StyledTitle>Processing Forms...</StyledTitle>
+        <StyledTitle>Form Processing In Progress...</StyledTitle>
+        <StyledParagraph>
+          {' '}
+          &#40;please wait, do not refresh the page&#41;
+        </StyledParagraph>
         <Progress
           strokeColor={themeColorBlue}
           percent={
@@ -212,4 +217,10 @@ const StyledLink = styled.div`
   &:hover {
     color: ${themeColorHoverBlue};
   }
+`
+const StyledParagraph = styled.p`
+  color: GrayText;
+  font-size: 0.9em;
+  margin-top: -10px;
+  font-weight: bold;
 `

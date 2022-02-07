@@ -37,7 +37,7 @@ export const Tools = ({
   const isActive = (control) => tools.includes(control)
 
   return (
-    <ToolbarContainer justifyContent={justifyContent}>
+    <ToolbarContainer justifyContent={justifyContent} data-cy="graphTools">
       {controls.map((control, index) => (
         <ToolBtn
           key={`control-${index}`}
@@ -48,7 +48,9 @@ export const Tools = ({
           }}
         >
           <ToolbarItem>
-            <ToolbarItemIcon>{getIcon(control)}</ToolbarItemIcon>
+            <ToolbarItemIcon data-cy={control}>
+              {getIcon(control)}
+            </ToolbarItemIcon>
             <ToolbarItemLabel>{control}</ToolbarItemLabel>
           </ToolbarItem>
         </ToolBtn>

@@ -199,8 +199,6 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.EXPONENTIAL2:
     case CONSTANT.TOOLS.PIECEWISE_LINE:
     case CONSTANT.TOOLS.PARABOLA:
-    case CONSTANT.TOOLS.ROSE:
-    case CONSTANT.TOOLS.CARDIOID:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -492,9 +490,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.PARABOLA2 &&
       type !== CONSTANT.TOOLS.EXPONENTIAL2 &&
       type !== CONSTANT.TOOLS.PIECEWISE_LINE &&
-      type !== CONSTANT.TOOLS.PARABOLA &&
-      type !== CONSTANT.TOOLS.ROSE &&
-      type !== CONSTANT.TOOLS.CARDIOID
+      type !== CONSTANT.TOOLS.PARABOLA
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,
@@ -1015,9 +1011,10 @@ export const canAddElementToBoard = (board, x, y) => {
   return coords
 }
 
-export const getClosest = (points, n) => {
+export const getClosest = (points, n, compare = 'y') => {
   const closest = points.reduce(
-    (prev, curr) => (Math.abs(curr.y - n) < Math.abs(prev.y - n) ? curr : prev),
+    (prev, curr) =>
+      Math.abs(curr[compare] - n) < Math.abs(prev[compare] - n) ? curr : prev,
     points[0]
   )
   return closest

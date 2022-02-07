@@ -30,7 +30,7 @@ export const MathInputWrapper = styled.div`
     }
 
     & .input__math__field {
-      font-weight: normal;
+      font-weight: ${({ fontWeight }) => fontWeight || 'normal'};
     }
 
     .mq-math-mode .mq-editable-field.mq-focused {

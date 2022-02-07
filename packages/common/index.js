@@ -169,6 +169,12 @@ export {
 } from './src/utils/mathUtils'
 
 export {
+  isValidDesmosState,
+  getDesmosConfig,
+  getStateName,
+} from './src/utils/DesmosConfig'
+
+export {
   default as ItemDetailContext,
   COMPACT,
   DEFAULT,

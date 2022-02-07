@@ -79,7 +79,7 @@ export const ShowUserWork = ({ onClick, loading }) => (
 
 export const TimeSpent = ({ time }) => {
   return (
-    <TimeSpentText>
+    <TimeSpentText data-cy="questionTimeSpent">
       <IconClockCircularOutline />
       {round(time / 1000, 1)}s
     </TimeSpentText>

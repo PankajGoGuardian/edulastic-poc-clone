@@ -81,7 +81,7 @@ class TypeToConfirmModal extends Component {
         <Row>
           <Col span={24}>
             <StyledP>{primaryLabel}</StyledP>
-            <StyledP>{secondaryLabel}</StyledP>
+            <StyledP data-cy="deleteUserText">{secondaryLabel}</StyledP>
             <StyledP>
               If Yes, please type{' '}
               <LightGreenSpan>{wordToBeTyped}</LightGreenSpan> in the space
@@ -95,6 +95,7 @@ class TypeToConfirmModal extends Component {
               align="center"
               value={textValue}
               onChange={this.onChangeInput}
+              data-cy="confirmationInput"
               // here paste is not allowed, and user has to manually type in ARCHIVE
               onPaste={(evt) => evt.preventDefault()}
               errorMsg={errorMsg}

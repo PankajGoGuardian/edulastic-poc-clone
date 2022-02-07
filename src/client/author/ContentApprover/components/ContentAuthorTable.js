@@ -5,7 +5,7 @@ import {
   TypeToConfirmModal,
   SearchInputStyled,
 } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
@@ -52,9 +52,15 @@ import {
 import Breadcrumb from '../../src/components/Breadcrumb'
 import AdminSubHeader from '../../src/components/common/AdminSubHeader/UserSubHeader'
 import TableFiltersView from '../../src/components/common/TableFilters'
-import { getUserOrgId } from '../../src/selectors/user'
+import {
+  getUserId,
+  getUserOrgId,
+  isSuperAdminSelector,
+} from '../../src/selectors/user'
 import CreateContentAuthorModal from './CreateContentAuthorModal'
 import EditContentAuthorModal from './EditContentAuthorModal'
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'Content Approvers' }
 
@@ -74,11 +80,11 @@ class ContentAuthorTable extends Component {
     super(props)
     this.state = {
       selectedRowKeys: [],
-      createDistrictAdminModalVisible: false,
-      editDistrictAdminModaVisible: false,
-      editDistrictAdminKey: '',
-      selectedAdminsForDeactivate: [],
-      deactivateAdminModalVisible: false,
+      createContentApproverModalVisible: false,
+      editContentApproverModaVisible: false,
+      editContentApproverKey: '',
+      selectedApproverForDeactivate: [],
+      deactivateApproverModalVisible: false,
 
       showActive: true,
       searchByName: '',
@@ -93,7 +99,7 @@ class ContentAuthorTable extends Component {
       currentPage: 1,
       refineButtonActive: false,
     }
-    const { t, isProxyUser } = this.props
+    const { currentUserId, t, isProxyUser, isSuperAdmin } = this.props
     this.columns = [
       {
         title: t('users.contentApprover.name'),
@@ -147,16 +153,34 @@ class ContentAuthorTable extends Component {
               ? 'Content Approver'
               : `${firstName} ${lastName}`
           return (
-            <div style={{ whiteSpace: 'nowrap' }}>
-              {status === 1 ? (
-                <StyledTableButton
-                  onClick={() => this.onProxyContentApprover(id)}
-                  title={`Act as ${fullName}`}
-                >
-                  <GiDominoMask />
-                </StyledTableButton>
-              ) : null}
-            </div>
+            <ActionContainer>
+              {isSuperAdmin && (
+                <>
+                  {status === 1 ? (
+                    <StyledTableButton
+                      onClick={() => this.onProxyContentApprover(id)}
+                      title={`Act as ${fullName}`}
+                    >
+                      <GiDominoMask />
+                    </StyledTableButton>
+                  ) : null}
+                  <StyledButton
+                    onClick={() => this.onEditContentApprover(id)}
+                    title="Edit"
+                    disabled={currentUserId === id}
+                  >
+                    <IconPencilEdit color={themeColor} />
+                  </StyledButton>
+                  <StyledButton
+                    onClick={() => this.handleDeactivateContentApprover(id)}
+                    title="Deactivate"
+                    disabled={currentUserId === id}
+                  >
+                    <IconTrash color={themeColor} />
+                  </StyledButton>
+                </>
+              )}
+            </ActionContainer>
           )
         },
         width: 80,
@@ -175,7 +199,7 @@ class ContentAuthorTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps
+    const { contentApproverData: result } = nextProps
     return {
       selectedRowKeys: state.selectedRowKeys.filter(
         (rowKey) => !!result[rowKey]
@@ -187,17 +211,17 @@ class ContentAuthorTable extends Component {
     proxyUser({ userId: id })
   }
 
-  onEditDistrictAdmin = (key) => {
+  onEditContentApprover = (key) => {
     this.setState({
-      editDistrictAdminModaVisible: true,
-      editDistrictAdminKey: key,
+      editContentApproverModaVisible: true,
+      editContentApproverKey: key,
     })
   }
 
-  handleDeactivateAdmin = (id) => {
+  handleDeactivateContentApprover = (id) => {
     this.setState({
-      selectedAdminsForDeactivate: [id],
-      deactivateAdminModalVisible: true,
+      selectedApproverForDeactivate: [id],
+      deactivateApproverModalVisible: true,
     })
   }
 
@@ -205,9 +229,9 @@ class ContentAuthorTable extends Component {
     this.setState({ selectedRowKeys })
   }
 
-  showCreateDistrictAdminModal = () => {
+  showCreateContentApproverModal = () => {
     this.setState({
-      createDistrictAdminModalVisible: true,
+      createContentApproverModalVisible: true,
     })
   }
 
@@ -218,15 +242,15 @@ class ContentAuthorTable extends Component {
       if (selectedRowKeys.length === 0) {
         notification({ msg: t('users.validations.edituser') })
       } else if (selectedRowKeys.length === 1) {
-        this.onEditDistrictAdmin(selectedRowKeys[0])
+        this.onEditContentApprover(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
         notification({ msg: t('users.validations.editsingleuser') })
       }
     } else if (e.key === 'deactivate user') {
       if (selectedRowKeys.length > 0) {
         this.setState({
-          selectedAdminsForDeactivate: selectedRowKeys,
-          deactivateAdminModalVisible: true,
+          selectedApproverForDeactivate: selectedRowKeys,
+          deactivateApproverModalVisible: true,
         })
         // deleteDistrictAdmin(selectedDistrictAdminData);
       } else {
@@ -235,9 +259,9 @@ class ContentAuthorTable extends Component {
     }
   }
 
-  closeEditDistrictAdminModal = () => {
+  closeEditContentApproverModal = () => {
     this.setState({
-      editDistrictAdminModaVisible: false,
+      editContentApproverModaVisible: false,
     })
   }
 
@@ -252,7 +276,7 @@ class ContentAuthorTable extends Component {
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
 
   createUser = (createReq) => {
-    const { userOrgId, createAdminUser } = this.props
+    const { userOrgId, createContentApproverUser } = this.props
     createReq.role = 'district-admin'
     createReq.permissions = ['curator']
     createReq.districtId = userOrgId
@@ -263,31 +287,31 @@ class ContentAuthorTable extends Component {
       listReq: this.getSearchQuery(),
     }
 
-    createAdminUser(o)
-    this.setState({ createDistrictAdminModalVisible: false })
+    createContentApproverUser(o)
+    this.setState({ createContentApproverModalVisible: false })
   }
 
   closeCreateUserModal = () => {
     this.setState({
-      createDistrictAdminModalVisible: false,
+      createContentApproverModalVisible: false,
     })
   }
 
   confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props
-    const { selectedAdminsForDeactivate } = this.state
+    const { deleteContentApproverUser } = this.props
+    const { selectedApproverForDeactivate } = this.state
 
     const o = {
       deleteReq: {
-        userIds: selectedAdminsForDeactivate,
+        userIds: selectedApproverForDeactivate,
         role: 'content-approver',
       },
       listReq: this.getSearchQuery(),
     }
 
-    deleteAdminUser(o)
+    deleteContentApproverUser(o)
     this.setState({
-      deactivateAdminModalVisible: false,
+      deactivateApproverModalVisible: false,
     })
   }
 
@@ -475,8 +499,8 @@ class ContentAuthorTable extends Component {
   }
 
   loadFilteredList = () => {
-    const { loadAdminData } = this.props
-    loadAdminData(this.getSearchQuery())
+    const { loadContentApproverData } = this.props
+    loadContentApproverData(this.getSearchQuery())
   }
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
@@ -484,11 +508,11 @@ class ContentAuthorTable extends Component {
   render() {
     const {
       selectedRowKeys,
-      createDistrictAdminModalVisible,
-      editDistrictAdminModaVisible,
-      editDistrictAdminKey,
-      deactivateAdminModalVisible,
-      selectedAdminsForDeactivate,
+      createContentApproverModalVisible,
+      editContentApproverModaVisible,
+      editContentApproverKey,
+      deactivateApproverModalVisible,
+      selectedApproverForDeactivate,
       filtersData,
       refineButtonActive,
     } = this.state
@@ -499,9 +523,9 @@ class ContentAuthorTable extends Component {
     }
 
     const {
-      adminUsersData: result,
+      contentApproverData: result,
       userOrgId,
-      updateAdminUser,
+      updateContentApproverUser,
       history,
       t,
     } = this.props
@@ -549,11 +573,13 @@ class ContentAuthorTable extends Component {
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
                 height="34px"
+                data-cy="searchByName"
               />
               <EduButton
                 type="primary"
                 height="34px"
-                onClick={this.showCreateDistrictAdminModal}
+                onClick={this.showCreateContentApproverModal}
+                data-cy="addContentApproverButton"
               >
                 {t('users.contentApprover.createContentAuthor')}
               </EduButton>
@@ -604,34 +630,34 @@ class ContentAuthorTable extends Component {
             hideOnSinglePage
           /> */}
         </TableContainer>
-        {createDistrictAdminModalVisible && (
+        {createContentApproverModalVisible && (
           <CreateContentAuthorModal
-            modalVisible={createDistrictAdminModalVisible}
-            createDistrictAdmin={this.createUser}
+            modalVisible={createContentApproverModalVisible}
+            createContentApprover={this.createUser}
             closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
             t={t}
           />
         )}
 
-        {editDistrictAdminModaVisible && (
+        {editContentApproverModaVisible && (
           <EditContentAuthorModal
-            districtAdminData={result[editDistrictAdminKey]}
-            modalVisible={editDistrictAdminModaVisible}
-            updateDistrictAdmin={updateAdminUser}
-            closeModal={this.closeEditDistrictAdminModal}
+            contentApproverData={result[editContentApproverKey]}
+            modalVisible={editContentApproverModaVisible}
+            updateContentApprover={updateContentApproverUser}
+            closeModal={this.closeEditContentApproverModal}
             userOrgId={userOrgId}
             t={t}
           />
         )}
-        {deactivateAdminModalVisible && (
+        {deactivateApproverModalVisible && (
           <TypeToConfirmModal
-            modalVisible={deactivateAdminModalVisible}
-            title="Deactivate"
+            modalVisible={deactivateApproverModalVisible}
+            title="Deactivate Content Approver(s)"
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel="Are you sure you want to deactivate the following district admin(s)?"
-            secondaryLabel={selectedAdminsForDeactivate.map((id) => {
+            primaryLabel="Are you sure you want to deactivate the following content approver(s)?"
+            secondaryLabel={selectedApproverForDeactivate.map((id) => {
               const { _source: { firstName, lastName } = {} } = result[id]
               return (
                 <StyledClassName key={id}>
@@ -641,7 +667,7 @@ class ContentAuthorTable extends Component {
             })}
             closeModal={() =>
               this.setState({
-                deactivateAdminModalVisible: false,
+                deactivateApproverModalVisible: false,
               })
             }
           />
@@ -655,19 +681,21 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      currentUserId: getUserId(state),
       userOrgId: getUserOrgId(state),
-      adminUsersData: getAdminUsersDataSelector(state),
+      contentApproverData: getAdminUsersDataSelector(state),
       totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       isProxyUser: isProxyUserSelector(state),
+      isSuperAdmin: isSuperAdminSelector(state),
     }),
     {
-      createAdminUser: createAdminUserAction,
-      updateAdminUser: updateAdminUserAction,
-      deleteAdminUser: deleteAdminUserAction,
-      loadAdminData: receiveAdminDataAction,
+      createContentApproverUser: createAdminUserAction,
+      updateContentApproverUser: updateAdminUserAction,
+      deleteContentApproverUser: deleteAdminUserAction,
+      loadContentApproverData: receiveAdminDataAction,
       setSearchName: setSearchNameAction,
       setShowActiveUsers: setShowActiveUsersAction,
       setPageNo: setPageNoAction,
@@ -687,3 +715,18 @@ const enhance = compose(
 )
 
 export default enhance(ContentAuthorTable)
+
+const ActionContainer = styled.div`
+  white-space: nowrap;
+  cursor: default;
+`
+
+const StyledButton = styled(StyledTableButton)`
+  &[disabled] {
+    opacity: 0;
+    cursor: not-allowed;
+    svg {
+      fill: #adb8bf !important;
+    }
+  }
+`

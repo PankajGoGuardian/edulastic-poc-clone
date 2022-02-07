@@ -38,6 +38,9 @@ export const getStylesFromUiStyleToCssStyle = (uiStyle) => {
       case 'minWidth':
         cssStyles.minWidth = `${value}px`
         break
+      case 'minHeight':
+        cssStyles.minHeight = `${value}px`
+        break
       case 'widthpx':
         cssStyles.width = `${value}px`
         break
@@ -49,11 +52,18 @@ export const getStylesFromUiStyleToCssStyle = (uiStyle) => {
         break
       case 'responseFontScale':
         if (value === 'boosted') {
-          if (uiStyle.fontsize)
-            cssStyles.fontScale = `${
-              parseFloat(getFontSize(uiStyle.fontsize, true)) * 1.5
-            }rem`
-          else cssStyles.fontScale = '1.5rem'
+          if (uiStyle.fontsize) {
+            const fontSize = getFontSize(uiStyle.fontsize, true)
+            if (fontSize.includes('rem')) {
+              cssStyles.fontScale = `${parseFloat(fontSize) * 1.5}rem`
+            } else {
+              cssStyles.fontScale = `${parseFloat(fontSize) * 1.5}px`
+            }
+            cssStyles.fontWeight = 600
+          } else {
+            cssStyles.fontScale = '1.5rem'
+            cssStyles.fontWeight = 600
+          }
         }
         break
       default:

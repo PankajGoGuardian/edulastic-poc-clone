@@ -45,7 +45,12 @@ import {
 import Breadcrumb from '../../../src/components/Breadcrumb'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/UserSubHeader'
 import TableFiltersView from '../../../src/components/common/TableFilters'
-import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
+import {
+  getUserId,
+  getUserOrgId,
+  getUserRole,
+  isSuperAdminSelector,
+} from '../../../src/selectors/user'
 import {
   addFilterAction,
   changeFilterColumnAction,
@@ -69,6 +74,7 @@ import {
 import CreateSchoolAdminModal from './CreateSchoolAdminModal/CreateSchoolAdminModal'
 import EditSchoolAdminModal from './EditSchoolAdminModal/EditSchoolAdminModal'
 import { StyledMaskButton, StyledSchoolAdminTable } from './styled'
+import styled from 'styled-components'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'School Admin' }
 
@@ -477,6 +483,8 @@ class SchoolAdminTable extends Component {
       history,
       isProxyUser,
       t,
+      isSuperAdmin,
+      currentUserId,
     } = this.props
 
     const columns = [
@@ -531,32 +539,35 @@ class SchoolAdminTable extends Component {
               ? '-'
               : name
           return (
-            <div style={{ whiteSpace: 'nowrap' }}>
-              {role === roleuser.DISTRICT_ADMIN && (
+            <ActionContainer>
+              {(role === roleuser.DISTRICT_ADMIN || isSuperAdmin) && (
                 <>
                   {status === 1 && !isProxyUser ? (
                     <StyledMaskButton
                       onClick={() => this.onProxySchoolAdmin(id)}
                       title={`Act as ${fullName}`}
+                      disabled={currentUserId === id}
                     >
                       <GiDominoMask />
                     </StyledMaskButton>
                   ) : null}
-                  <StyledTableButton
+                  <StyledButton
                     onClick={() => this.onEditSchoolAdmin(id)}
                     title="Edit"
+                    disabled={currentUserId === id}
                   >
                     <IconPencilEdit color={themeColor} />
-                  </StyledTableButton>
-                  <StyledTableButton
+                  </StyledButton>
+                  <StyledButton
                     onClick={() => this.handleDeactivateAdmin(id)}
                     title="Deactivate"
+                    disabled={currentUserId === id}
                   >
                     <IconTrash color={themeColor} />
-                  </StyledTableButton>
+                  </StyledButton>
                 </>
               )}
-            </div>
+            </ActionContainer>
           )
         },
         width: 100,
@@ -740,6 +751,7 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      currentUserId: getUserId(state),
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
       adminUsersData: getAdminUsersDataSelector(state),
@@ -749,6 +761,7 @@ const enhance = compose(
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       isProxyUser: isProxyUserSelector(state),
+      isSuperAdmin: isSuperAdminSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -787,4 +800,20 @@ SchoolAdminTable.propTypes = {
   loadSchoolsData: PropTypes.func.isRequired,
   pageNo: PropTypes.number.isRequired,
   setPageNo: PropTypes.func.isRequired,
+  isSuperAdmin: PropTypes.bool.isRequired,
 }
+
+const ActionContainer = styled.div`
+  white-space: nowrap;
+  cursor: default;
+`
+
+const StyledButton = styled(StyledTableButton)`
+  &[disabled] {
+    opacity: 0;
+    cursor: not-allowed;
+    svg {
+      fill: #adb8bf !important;
+    }
+  }
+`

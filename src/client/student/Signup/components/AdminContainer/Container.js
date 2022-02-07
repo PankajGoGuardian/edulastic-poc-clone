@@ -59,6 +59,7 @@ import {
   LARGE_DESKTOP_WIDTH,
 } from '../../../../author/src/constants/others'
 import TermsAndPrivacy from '../TermsAndPrivacy/TermsAndPrivacy'
+import { segmentApi } from '@edulastic/api'
 
 const FormItem = Form.Item
 
@@ -87,6 +88,7 @@ class AdminSignup extends React.Component {
     e.preventDefault()
     form.validateFieldsAndScroll((err, { password, email, name }) => {
       if (!err) {
+        segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Email' })
         signup({
           password,
           email,
@@ -182,7 +184,7 @@ class AdminSignup extends React.Component {
               <AlreadyhaveAccount>
                 {t('component.signup.alreadyhaveanaccount')}
               </AlreadyhaveAccount>
-              <Link to={getPartnerLoginUrl(partner)}>
+              <Link onClick={()=>segmentApi.genericEventTrack('SignupPage_SigninButtonClick', {})} to={getPartnerLoginUrl(partner)}>
                 {t('common.signinbtn')}
               </Link>
             </Col>

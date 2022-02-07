@@ -318,6 +318,7 @@ class StudentViewContainer extends Component {
             <StudentButtonDiv>
               <FilterSpan>FILTER BY STATUS</FilterSpan>
               <FilterSelect
+                data-cy="filterByAttemptType"
                 className="student-status-filter"
                 value={filter}
                 dropdownMenuStyle={{ fontSize: 29 }}

@@ -63,6 +63,7 @@ import {
 } from './author/Subscription/ducks'
 import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
+import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -116,6 +117,7 @@ const RedirectToTest = lazy(() =>
 )
 const DistrictRoutes = lazy(() => import('./districtRoutes/index'))
 const ResetPassword = lazy(() => import('./resetPassword/index'))
+const VerifyEmail = lazy(() => import('./verifyEmail/index'))
 const SetParentPassword = lazy(() => import('./SetParentPassword'))
 const CLIAccessBanner = lazy(() =>
   import('./author/Dashboard/components/CLIAccessBanner')
@@ -350,6 +352,7 @@ class App extends Component {
       shouldWatch,
       isDemoAccountProxy = false,
       isRequestQuoteModalVisible,
+      showVerifyEmailModal,
       setRequestQuoteModal,
       isRequestOrSubmitSuccessModalVisible,
       districtId,
@@ -628,6 +631,10 @@ class App extends Component {
             onCancel={this.closeRequestQuoteModal}
           />
         )}
+        {showVerifyEmailModal &&
+          !window.location.pathname.includes('/verify/') && (
+            <VerifyEmailPopup />
+          )}
         {isRequestOrSubmitSuccessModalVisible && (
           <InvoiceSuccessModal
             visible={isRequestOrSubmitSuccessModalVisible}
@@ -720,6 +727,11 @@ class App extends Component {
                   exact
                   path="/resetPassword/"
                   component={ResetPassword}
+                  redirectPath={defaultRoute}
+                />
+                <Route
+                  path="/verify/:vc"
+                  component={VerifyEmail}
                   redirectPath={defaultRoute}
                 />
                 <Route
@@ -907,6 +919,7 @@ const enhance = compose(
         { subscription }
       ),
       isSAWithoutSchools: isSAWithoutSchoolsSelector({ user }),
+      showVerifyEmailModal: user.showVerifyEmailModal,
       districtId: getUserOrgId({ user }),
     }),
     {

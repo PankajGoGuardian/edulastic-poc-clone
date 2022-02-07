@@ -5,12 +5,13 @@ import { Row } from 'antd'
 import { updateRubricDataAction, getCurrentRubricDataSelector } from '../ducks'
 import UseExisting from './UseExisting'
 
-const Container = ({ actionType, closeRubricModal }) => {
+const Container = ({ actionType, closeRubricModal, isRegradeFlow }) => {
   return (
     <Row style={{ width: '100%' }}>
       <UseExisting
         closeRubricModal={closeRubricModal}
         actionType={actionType}
+        isRegradeFlow={isRegradeFlow}
       />
     </Row>
   )

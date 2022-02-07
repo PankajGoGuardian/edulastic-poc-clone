@@ -1271,7 +1271,7 @@ function* duplicatePlayListSaga({ payload }) {
 
 function* editPlaylistTestSaga({ payload }) {
   try {
-    const { testId, playlistId } = payload
+    const { testId, playlistId, isTestAssigned } = payload
 
     if (!testId || !playlistId) {
       notification({ msg: 'Insufficient parameters passed!' })
@@ -1369,6 +1369,7 @@ function* editPlaylistTestSaga({ payload }) {
             currentTab: tab,
             playlistId,
             updatePlaylist: true,
+            updateContentVersionId: isTestAssigned === false, // if test is not assigned update versionId upfront
           })
         )
       }
@@ -3243,10 +3244,12 @@ export default createReducer(initialState, {
       state.playlistTestDetailsModal.isVisible = true
       state.playlistTestDetailsModal.currentTestId = payload.id
       state.playlistTestDetailsModal.requestLatest = payload.requestLatest
+      state.playlistTestDetailsModal.isTestAssigned = payload.isTestAssigned
     } else {
       state.playlistTestDetailsModal.isVisible = false
       state.playlistTestDetailsModal.currentTestId = null
       state.playlistTestDetailsModal.requestLatest = undefined
+      state.playlistTestDetailsModal.isTestAssigned = undefined
     }
   },
   [RESET_DESTINATION]: (state, { payload }) => {

@@ -21,7 +21,11 @@ const Toggle = ({
     onChange(options[opIndex])
   return (
     <ToggleWrapper data-cy="toggleWrapper">
-      <AnswerBox isDashedline={isDashedline} style={styles}>
+      <AnswerBox
+        isDashedline={isDashedline}
+        style={styles}
+        data-cy="toggleAnswerBox"
+      >
         <AnswerCont
           dangerouslySetInnerHTML={{ __html: answer }}
           isHighlight={!isDashedline}

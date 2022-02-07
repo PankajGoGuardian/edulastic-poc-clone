@@ -72,6 +72,10 @@ import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import {
   isDemoPlaygroundUser,
   toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -95,8 +99,13 @@ class AssignmentAdvanced extends Component {
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      emailVerified,
+      verificationTS,
+      isDefaultDA,
+      toggleVerifyEmailModal,
       userId,
       districtId: _districtId,
+      userRole,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -105,6 +114,16 @@ class AssignmentAdvanced extends Component {
     if (isFreeAdmin) {
       history.push('/author/reports')
       return toggleAdminAlertModal()
+    }
+    if (!emailVerified && verificationTS && !isDefaultDA) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     const { districtId, testId } = match.params
     const {
@@ -521,6 +540,9 @@ const enhance = compose(
       assignmentsSummary: getAssignmentsSummary(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       error: get(state, 'test.error', false),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       classList: getAssignmentClassList(state),
       test: getCurrentTestSelector(state),
       userId: getUserId(state),
@@ -552,6 +574,7 @@ const enhance = compose(
       bulkDownloadGradesAndResponsesRequest: bulkDownloadGradesAndResponsesAction,
       toggleDeleteAssignmentModal: toggleDeleteAssignmentModalAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }
   )

@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { Select } from 'antd'
+import _ from 'lodash'
 import { notification } from '@edulastic/common'
 import { adminApi, groupApi, enrollmentApi } from '@edulastic/api'
 
@@ -15,12 +16,14 @@ import UpdateUser from '../Components/UpdateUser'
 import ApproveOrganisation from '../Components/ApproveOrganisation'
 import UpdateCoTeacher from '../../author/ManageClass/components/ClassDetails/UpdateCoTeacher/UpdateCoTeacher'
 import UploadStandard from '../Components/StandardUpload'
+import { emailRegex } from '../../common/utils/helpers'
 
 const CREATE_ADMIN = 'create-admin'
 const ARCHIVE_UNARCHIVE_CLASSES = 'archive-unarchive-classes'
 const ACTIVATE_DEACTIVATE_USER = 'activate-deactivate-user'
 const UPDATE_USER = 'update-user'
 const APPROVE_SCHOOL_DISTRICT = 'approve-school-district'
+const INVITE_TEACHER = 'invite-teacher'
 const API_OPTIONS = {
   manageClass: 'manageClass',
 }
@@ -35,6 +38,11 @@ const ApiForm = () => {
   const [selectedClass, setSelectedClass] = useState([])
   const [fileUploadData, setFileUploadData] = useState([])
   const handleOnChange = (_id) => setId(_id)
+  const getFormattedData = (arr) => {
+    return arr.length > 1
+      ? `${arr.slice(0, arr.length - 1).join(', ')} and ${arr[arr.length - 1]}`
+      : arr.join(', ')
+  }
   let option = apiForms.find((ar) => ar.id === id)
   const handleClassSearch = async ({ classId }) => {
     if (regexJs.validMongoId.test(classId)) {
@@ -110,6 +118,41 @@ const ApiForm = () => {
           })
           return
         }
+      } else if (id === 'invite-teacher') {
+        const districtIdRegex = new RegExp(/^[0-9a-fA-F]{24}$/)
+        if (!districtIdRegex.test(data.districtId)) {
+          notification({
+            type: 'warning',
+            msg: 'Invalid district Id.',
+            messageKey: 'apiFormSucc',
+          })
+          return
+        }
+        const isValidEmails = data.userDetails.every((_email) =>
+          emailRegex.test(_email)
+        )
+        if (!isValidEmails) {
+          notification({
+            type: 'warning',
+            msg: 'Invalid email Id.',
+            messageKey: 'apiFormSucc',
+          })
+          return
+        }
+        const endPoint = option.endPoint.split('/')
+        option.endPoint = `/user/${data.districtId}/${
+          endPoint[endPoint.length - 1]
+        }`
+      } else if (id === 'verify-email') {
+        const idRegex = new RegExp(/^[0-9a-fA-F]{24}$/)
+        if (!idRegex.test(data.uid)) {
+          notification({
+            type: 'warning',
+            msg: 'Invalid user Id.',
+            messageKey: 'apiFormErr',
+          })
+          return
+        }
       }
       submit(data, option.endPoint, option.method, isSlowApi).then((res) => {
         if (res?.result) {
@@ -127,6 +170,40 @@ const ApiForm = () => {
               }
             } else if (option.id === APPROVE_SCHOOL_DISTRICT) {
               setOrgData(res.result)
+            } else if (option.id === INVITE_TEACHER) {
+              const alreadyExistsInDistrict = []
+              const inValidEmails = []
+              for (const _user of res.result) {
+                if (_user.status === 'FAILED_USER_EXISTS') {
+                  alreadyExistsInDistrict.push(_user.username)
+                } else if (_user.status === 'FAILED_INVALID_USER_EMAIL') {
+                  inValidEmails.push(_user.username)
+                }
+              }
+              if (alreadyExistsInDistrict.length || inValidEmails.length) {
+                if (alreadyExistsInDistrict.length) {
+                  notification({
+                    type: 'warning',
+                    msg: `User(s) having email Id ${getFormattedData(
+                      alreadyExistsInDistrict
+                    )} is already present in the district Id`,
+                  })
+                }
+                if (inValidEmails.length) {
+                  notification({
+                    type: 'warning',
+                    msg: `Following user(s) have invalid email Id ${getFormattedData(
+                      inValidEmails
+                    )}`,
+                  })
+                }
+              } else {
+                notification({
+                  type: 'success',
+                  msg: res?.result?.message,
+                  messageKey: 'apiFormSucc',
+                })
+              }
             } else {
               notification({
                 type: 'success',

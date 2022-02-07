@@ -33,6 +33,7 @@ const SelectUnit = ({
   allOptions,
   id,
   handleEvent,
+  fontWeight,
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
     btn.types.includes(keypadMode)
@@ -86,6 +87,7 @@ const SelectUnit = ({
       <MathFormulaDisplay
         dangerouslySetInnerHTML={{ __html: label }}
         fontSize={fontSize}
+        fontWeight={fontWeight}
       />
     )
   }
@@ -95,7 +97,7 @@ const SelectUnit = ({
       ref={dropdownWrapper}
       menuStyle={menuStyle}
       preview={preview}
-      height={height}
+      height="100%"
       width={containerWidth}
       isPrintPreview={isPrintPreview}
     >

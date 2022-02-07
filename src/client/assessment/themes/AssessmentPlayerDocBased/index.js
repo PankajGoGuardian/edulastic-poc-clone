@@ -155,6 +155,7 @@ class AssessmentPlayerDocBased extends React.Component {
       groupId,
       hidePause,
       userWork,
+      utaId,
     } = this.props
 
     const questionsById = keyBy(Object.values(_questionsById), 'id')
@@ -171,7 +172,9 @@ class AssessmentPlayerDocBased extends React.Component {
     const extraPaddingTop =
       playerSkinType === 'parcc' ? 35 : playerSkinType === 'sbac' ? 29 : 0
 
-    const stdWork = userWork?.[item._id]?.freeNotesStd
+    const stdWork = (userWork?.[utaId]?.freeNotesStd || []).concat(
+      userWork?.[item._id]?.freeNotesStd || []
+    )
 
     return (
       <ThemeProvider theme={themeToPass}>

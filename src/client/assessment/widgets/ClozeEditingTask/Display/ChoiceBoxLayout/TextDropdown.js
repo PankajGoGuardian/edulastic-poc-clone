@@ -37,6 +37,7 @@ const TextDropdown = ({
         disabled={disableResponse}
         onChange={onChange}
         getPopupContainer={getPopupContainer}
+        data-cy="textDropDown"
       >
         {options.map((response, respID) => (
           <Option title={response} value={response} key={respID}>

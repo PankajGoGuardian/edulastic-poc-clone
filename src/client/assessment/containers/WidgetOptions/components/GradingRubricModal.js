@@ -3,7 +3,12 @@ import styled from 'styled-components'
 import { ConfirmationModal } from '../../../../author/src/components/common/ConfirmationModal'
 import GradingRubric from '../../../../author/GradingRubric/Components/Container'
 
-const GradingRubricModal = ({ visible, toggleModal, actionType }) => {
+const GradingRubricModal = ({
+  visible,
+  toggleModal,
+  actionType,
+  isRegradeFlow = false,
+}) => {
   const Title = [
     <Heading>
       {actionType === 'CREATE NEW'
@@ -25,7 +30,11 @@ const GradingRubricModal = ({ visible, toggleModal, actionType }) => {
       maskClosable={false}
     >
       <ModalBody>
-        <GradingRubric actionType={actionType} closeRubricModal={toggleModal} />
+        <GradingRubric
+          actionType={actionType}
+          closeRubricModal={toggleModal}
+          isRegradeFlow={isRegradeFlow}
+        />
       </ModalBody>
     </StyledModal>
   )

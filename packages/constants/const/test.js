@@ -118,14 +118,17 @@ module.exports = {
     NONE: 'None',
     BASIC: 'Basic',
     SCIENTIFIC: 'Scientific',
-    GRAPHING: 'Graphing',
+    GRAPHING: 'Graphing (Desmos Standard Version)',
+    GRAPHING_STATE: 'Graphing (Desmos State Test Version)',
   },
-  calculatorKeys: ['NONE', 'BASIC', 'SCIENTIFIC', 'GRAPHING'],
+  calculatorKeys: ['NONE', 'BASIC', 'SCIENTIFIC', 'GRAPHING', 'GRAPHING_STATE'],
+
   calculatorTypes: {
     NONE: 'NONE',
     BASIC: 'BASIC',
     SCIENTIFIC: 'SCIENTIFIC',
     GRAPHING: 'GRAPHING',
+    GRAPHING_STATE: 'GRAPHING_STATE',
   },
   evalTypes: {
     ALL_OR_NOTHING: 'All or nothing',

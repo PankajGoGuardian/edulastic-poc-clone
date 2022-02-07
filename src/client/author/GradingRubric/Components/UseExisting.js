@@ -64,6 +64,7 @@ const UseExisting = ({
   totalSearchedCount,
   associateRubricWithQuestion,
   dissociateRubricFromQuestion,
+  isRegradeFlow,
   currentQuestion,
   deleteRubric,
   recentlyUsedRubrics,
@@ -310,6 +311,16 @@ const UseExisting = ({
     margin: '0px 0px 0px 10px',
   }
 
+  const handleRemoveRubric = () => {
+    dissociateRubricFromQuestion()
+    if (isRegradeFlow) {
+      notification({
+        msg:
+          'Score and max score will reset on re-score automatically option of re-grade',
+      })
+    }
+  }
+
   const getContent = () => (
     <>
       {(!['RUBRIC_TABLE', 'SEARCH'].includes(currentMode) ||
@@ -370,10 +381,7 @@ const UseExisting = ({
                   </CustomStyleBtn>
                 )}
                 {currentQuestion.rubrics?._id === currentRubricData?._id && (
-                  <CustomStyleBtn
-                    style={btnStyle}
-                    onClick={() => dissociateRubricFromQuestion()}
-                  >
+                  <CustomStyleBtn style={btnStyle} onClick={handleRemoveRubric}>
                     <FontAwesomeIcon icon={faMinus} aria-hidden="true" /> Remove
                   </CustomStyleBtn>
                 )}

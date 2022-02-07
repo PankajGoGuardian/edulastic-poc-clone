@@ -11,7 +11,6 @@ import {
 } from '@edulastic/common'
 import { withRouter } from 'react-router-dom'
 import {
-  AlignRight,
   AlignSwitchRight,
   SettingsWrapper,
   Password,
@@ -37,11 +36,9 @@ import {
 } from '../../../ClassBoard/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
+import CalculatorSelector from './CalculatorSelector'
 
 const {
-  calculatorKeys,
-  calculators,
-  calculatorTypes,
   releaseGradeTypes,
   evalTypeLabels,
   releaseGradeLabels,
@@ -275,14 +272,6 @@ const Settings = ({
     restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
   } = assignmentSettings
 
-  const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
-  const calculatorKeysAvailable =
-    (checkForCalculator &&
-      calculatorKeys.filter((i) =>
-        [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i)
-      )) ||
-    calculatorKeys
-
   const showMultiLangSelection =
     allowedToSelectMultiLanguage && lcbBultiLanguageEnabled
 
@@ -341,19 +330,15 @@ const Settings = ({
               <Label>SHOW CALCULATOR</Label>
             </Col>
             <Col span={12}>
-              <AlignRight
+              <CalculatorSelector
                 disabled={
                   freezeSettings || !assessmentSuperPowersShowCalculator
                 }
-                value={calcType}
-                onChange={(e) => overRideSettings('calcType', e.target.value)}
-              >
-                {calculatorKeysAvailable.map((item) => (
-                  <RadioBtn data-cy={item} value={item} key={item}>
-                    <Label>{calculators[item]}</Label>
-                  </RadioBtn>
-                ))}
-              </AlignRight>
+                calcType={calcType}
+                onChangeHanlde={(value) => overRideSettings('calcType', value)}
+                premium={premium}
+                calculatorProvider={calculatorProvider}
+              />
             </Col>
           </StyledRow>
         </SettingContainer>

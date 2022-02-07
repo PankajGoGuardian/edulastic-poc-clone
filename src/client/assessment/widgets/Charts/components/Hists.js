@@ -122,6 +122,7 @@ const Hists = ({
           x={bar.posX + bar.width / 2}
           y={height}
           width={70}
+          data-cy={`barLabelName-${index}`}
         >
           {bar.x}
         </Text>

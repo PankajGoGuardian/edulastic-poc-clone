@@ -174,6 +174,23 @@ const wordPressLoginData = (data) =>
     })
     .then((result) => result.data.result)
 
+const verifyEmail = ({ vc }) =>
+  api
+    .callApi({
+      url: `${prefix}/verify/${vc}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
+const sendEmailVerificationLink = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/verify`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   login,
   signup,
@@ -195,4 +212,6 @@ export default {
   newselaSSOLogin,
   newselaLogin,
   wordPressLoginData,
+  verifyEmail,
+  sendEmailVerificationLink,
 }

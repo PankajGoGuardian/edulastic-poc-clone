@@ -1,23 +1,34 @@
 import React, { Component } from 'react'
 import { Form, Input, Row, Col } from 'antd'
-
 import {
-  ButtonsContainer,
-  OkButton,
-  CancelButton,
-  StyledModal,
-  ModalFormItem,
-} from '../../../../../common/styled'
+  CheckboxLabel,
+  CustomModalStyled,
+  EduButton,
+  TextInputStyled,
+} from '@edulastic/common'
+import { omit } from 'lodash'
+import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 
-class EditDistrictAdminModal extends React.Component {
+class EditDistrictAdminModal extends Component {
   onSaveDistrictAdmin = () => {
-    this.props.form.validateFields((err, row) => {
+    this.props?.form.validateFields((err, row) => {
       if (!err) {
         const { districtAdminData, updateDistrictAdmin, userOrgId } = this.props
+        const { isSuperAdmin } = row
+        const { permissions: currPermissions = [] } = districtAdminData?._source
+
+        if (!row.password) row = omit(row, ['password'])
+        row = omit(row, ['confirmPassword', 'isSuperAdmin'])
+
+        const permissions = isSuperAdmin
+          ? [...new Set([...currPermissions, 'super_admin'])]
+          : currPermissions.filter((permission) => permission !== 'super_admin')
+
         updateDistrictAdmin({
           userId: districtAdminData._id,
           data: Object.assign(row, {
             districtId: userOrgId,
+            permissions,
           }),
         })
         this.onCloseModal()
@@ -25,80 +36,177 @@ class EditDistrictAdminModal extends React.Component {
     })
   }
 
+  handleConfirmPassword = (rule, value, callback) => {
+    const { form = {} } = this.props
+    const { getFieldValue } = form
+    const password = getFieldValue('password')
+    const confirmPassword = getFieldValue('confirmPassword')
+
+    if (password !== confirmPassword) return callback('Password does not match')
+
+    callback() // no error
+  }
+
   onCloseModal = () => {
-    this.props.closeModal()
+    const { closeModal } = this.props
+    closeModal()
   }
 
   render() {
-    const { getFieldDecorator } = this.props.form
+    const { getFieldDecorator } = this.props?.form
     const {
       modalVisible,
       districtAdminData: { _source },
+      t,
     } = this.props
+    const isSuperAdmin = _source?.permissions.includes('super_admin')
+
     return (
-      <StyledModal
+      <CustomModalStyled
         visible={modalVisible}
-        title="Edit District Admin"
-        onOk={this.onSaveDistrictAdmin}
+        title={t('users.districtadmin.editda.title')}
+        onOk={this.onCreateSchoolAdmin}
         onCancel={this.onCloseModal}
         maskClosable={false}
-        width="800px"
         centered
         footer={[
           <ButtonsContainer>
-            <CancelButton onClick={this.onCloseModal}>No, Cancel</CancelButton>
-            <OkButton onClick={this.onSaveDistrictAdmin}>Yes, Update</OkButton>
+            <EduButton isGhost onClick={this.onCloseModal} data-cy="CancelEdit">
+              {t('users.districtadmin.editda.nocancel')}
+            </EduButton>
+            <EduButton onClick={this.onSaveDistrictAdmin} data-cy="YesEdit">
+              {t('users.districtadmin.editda.yesupdate')}
+            </EduButton>
           </ButtonsContainer>,
         ]}
       >
         <Row>
-          <Col span={12}>
-            <ModalFormItem label="First Name">
+          <Col span={24}>
+            <ModalFormItem label={t('users.districtadmin.firstname')}>
               {getFieldDecorator('firstName', {
                 rules: [
                   {
                     required: true,
-                    message: 'Please input First Name',
+                    message: t(
+                      'users.districtadmin.editda.validations.firstname'
+                    ),
                   },
                 ],
                 initialValue: _source.firstName,
-              })(<Input placeholder="Enter First Name" />)}
+              })(
+                <Input
+                  placeholder={t('users.districtadmin.editda.enterfirstname')}
+                  data-cy="firstNameTextBox"
+                />
+              )}
             </ModalFormItem>
           </Col>
-          <Col span={12}>
-            <ModalFormItem label="Last Name">
+          <Col span={24}>
+            <ModalFormItem label={t('users.districtadmin.lastname')}>
               {getFieldDecorator('lastName', {
                 rules: [
                   {
                     required: true,
-                    message: 'Please input Last Name',
+                    message: t(
+                      'users.districtadmin.editda.validations.lastname'
+                    ),
                   },
                 ],
                 initialValue: _source.lastName,
-              })(<Input placeholder="Enter Last Name" />)}
+              })(
+                <Input
+                  placeholder={t('users.districtadmin.editda.enterlastname')}
+                  data-cy="lastNameTextBox"
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
         <Row>
           <Col span={24}>
-            <ModalFormItem label="Email">
+            <ModalFormItem label={t('users.districtadmin.email')}>
               {getFieldDecorator('email', {
                 rules: [
                   {
                     required: true,
-                    message: 'Please input E-mail',
+                    message: t('users.districtadmin.editda.validations.email'),
                   },
                   {
                     type: 'email',
-                    message: 'The input is not valid E-mail',
+                    message: t(
+                      'users.districtadmin.editda.validations.invalidemail'
+                    ),
                   },
                 ],
                 initialValue: _source.email,
-              })(<Input placeholder="Enter E-mail" />)}
+              })(
+                <Input
+                  placeholder={t('users.districtadmin.editda.enteremail')}
+                  data-cy="emailTextBox"
+                />
+              )}
             </ModalFormItem>
           </Col>
         </Row>
-      </StyledModal>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem label={t('users.districtadmin.editda.password')}>
+              {getFieldDecorator(
+                'password',
+                {}
+              )(
+                <TextInputStyled
+                  type="password"
+                  autoComplete="off"
+                  placeholder={t('users.districtadmin.editda.enterpassword')}
+                  data-cy="passwordTextBox"
+                />
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem
+              label={t('users.districtadmin.editda.confirmpassword')}
+            >
+              {getFieldDecorator('confirmPassword', {
+                rules: [
+                  {
+                    validator: this.handleConfirmPassword,
+                    message: t(
+                      'users.districtadmin.editda.validations.invalidpassword'
+                    ),
+                  },
+                ],
+              })(
+                <TextInputStyled
+                  type="password"
+                  autoComplete="off"
+                  placeholder={t(
+                    'users.districtadmin.editda.enterconfirmpassword'
+                  )}
+                  data-cy="confirmPasswordTextBox"
+                />
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+        <Row>
+          <Col span={24}>
+            <ModalFormItem style={{ margin: '0px' }}>
+              {getFieldDecorator('isSuperAdmin', {
+                initialValue: isSuperAdmin,
+                valuePropName: 'checked',
+              })(
+                <CheckboxLabel data-cy="superAdminCheckbox">
+                  {t('users.districtadmin.superAdmin')}
+                </CheckboxLabel>
+              )}
+            </ModalFormItem>
+          </Col>
+        </Row>
+      </CustomModalStyled>
     )
   }
 }

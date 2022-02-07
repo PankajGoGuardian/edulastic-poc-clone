@@ -5,7 +5,7 @@ import {
   SearchInputStyled,
   TypeToConfirmModal,
 } from '@edulastic/common'
-import { IconFilter } from '@edulastic/icons'
+import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
@@ -52,10 +52,16 @@ import {
 import Breadcrumb from '../../src/components/Breadcrumb'
 import AdminSubHeader from '../../src/components/common/AdminSubHeader/UserSubHeader'
 import TableFiltersView from '../../src/components/common/TableFilters'
-import { getUserOrgId } from '../../src/selectors/user'
+import {
+  getUserId,
+  getUserOrgId,
+  isSuperAdminSelector,
+} from '../../src/selectors/user'
 import CreateContentAuthorModal from './CreateContentAuthorModal'
 import EditContentAuthorModal from './EditContentAuthorModal'
 import { StyledContentAuthorTable } from './styled'
+import styled from 'styled-components'
+import { themeColor } from '@edulastic/colors'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'Content Authors' }
 
@@ -75,11 +81,11 @@ class ContentAuthorTable extends Component {
     super(props)
     this.state = {
       selectedRowKeys: [],
-      createDistrictAdminModalVisible: false,
-      editDistrictAdminModaVisible: false,
-      editDistrictAdminKey: '',
-      selectedAdminsForDeactivate: [],
-      deactivateAdminModalVisible: false,
+      createContentAuthorModalVisible: false,
+      editContentAuthorModaVisible: false,
+      editContentAuthorKey: '',
+      selectedAuthorsForDeactivate: [],
+      deactivateAuthorsModalVisible: false,
 
       showActive: true,
       searchByName: '',
@@ -94,7 +100,7 @@ class ContentAuthorTable extends Component {
       currentPage: 1,
       refineButtonActive: false,
     }
-    const { t, isProxyUser } = this.props
+    const { currentUserId, t, isProxyUser, isSuperAdmin } = this.props
     this.columns = [
       {
         title: t('users.contentAuthor.name'),
@@ -148,16 +154,34 @@ class ContentAuthorTable extends Component {
               ? 'Content Author'
               : `${firstName} ${lastName}`
           return (
-            <div style={{ whiteSpace: 'nowrap' }}>
-              {status === 1 ? (
-                <StyledTableButton
-                  onClick={() => this.onProxyContentAuthor(id)}
-                  title={`Act as ${fullName}`}
-                >
-                  <GiDominoMask />
-                </StyledTableButton>
-              ) : null}
-            </div>
+            <ActionContainer>
+              {isSuperAdmin && (
+                <>
+                  {status === 1 ? (
+                    <StyledTableButton
+                      onClick={() => this.onProxyContentApprover(id)}
+                      title={`Act as ${fullName}`}
+                    >
+                      <GiDominoMask />
+                    </StyledTableButton>
+                  ) : null}
+                  <StyledButton
+                    onClick={() => this.onEditContentAuthor(id)}
+                    title="Edit"
+                    disabled={currentUserId === id}
+                  >
+                    <IconPencilEdit color={themeColor} />
+                  </StyledButton>
+                  <StyledButton
+                    onClick={() => this.handleDeactivateAuthor(id)}
+                    title="Deactivate"
+                    disabled={currentUserId === id}
+                  >
+                    <IconTrash color={themeColor} />
+                  </StyledButton>
+                </>
+              )}
+            </ActionContainer>
           )
         },
         width: 80,
@@ -176,7 +200,7 @@ class ContentAuthorTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps
+    const { contentAuthorData: result } = nextProps
     return {
       selectedRowKeys: state.selectedRowKeys.filter(
         (rowKey) => !!result[rowKey]
@@ -188,17 +212,17 @@ class ContentAuthorTable extends Component {
     proxyUser({ userId: id })
   }
 
-  onEditDistrictAdmin = (key) => {
+  onEditContentAuthor = (key) => {
     this.setState({
-      editDistrictAdminModaVisible: true,
-      editDistrictAdminKey: key,
+      editContentAuthorModaVisible: true,
+      editContentAuthorKey: key,
     })
   }
 
-  handleDeactivateAdmin = (id) => {
+  handleDeactivateAuthor = (id) => {
     this.setState({
-      selectedAdminsForDeactivate: [id],
-      deactivateAdminModalVisible: true,
+      selectedAuthorsForDeactivate: [id],
+      deactivateAuthorsModalVisible: true,
     })
   }
 
@@ -206,9 +230,9 @@ class ContentAuthorTable extends Component {
     this.setState({ selectedRowKeys })
   }
 
-  showCreateDistrictAdminModal = () => {
+  showCreateContentAuthorModal = () => {
     this.setState({
-      createDistrictAdminModalVisible: true,
+      createContentAuthorModalVisible: true,
     })
   }
 
@@ -219,26 +243,26 @@ class ContentAuthorTable extends Component {
       if (selectedRowKeys.length === 0) {
         notification({ msg: t('users.validations.edituser') })
       } else if (selectedRowKeys.length === 1) {
-        this.onEditDistrictAdmin(selectedRowKeys[0])
+        this.onEditContentAuthor(selectedRowKeys[0])
       } else if (selectedRowKeys.length > 1) {
         notification({ msg: t('users.validations.editsingleuser') })
       }
     } else if (e.key === 'deactivate user') {
       if (selectedRowKeys.length > 0) {
         this.setState({
-          selectedAdminsForDeactivate: selectedRowKeys,
-          deactivateAdminModalVisible: true,
+          selectedAuthorsForDeactivate: selectedRowKeys,
+          deactivateAuthorsModalVisible: true,
         })
-        // deleteDistrictAdmin(selectedDistrictAdminData);
+        // deleteContentAuthor(selectedContentAuthorData);
       } else {
         notification({ msg: t('users.validations.deleteuser') })
       }
     }
   }
 
-  closeEditDistrictAdminModal = () => {
+  closeEditContentAuthorModal = () => {
     this.setState({
-      editDistrictAdminModaVisible: false,
+      editContentAuthorModaVisible: false,
     })
   }
 
@@ -253,7 +277,7 @@ class ContentAuthorTable extends Component {
   // -----|-----|-----|-----| ACTIONS RELATED BEGIN |-----|-----|-----|----- //
 
   createUser = (createReq) => {
-    const { userOrgId, createAdminUser } = this.props
+    const { userOrgId, createContentAuthorUser } = this.props
     createReq.role = 'teacher'
     createReq.permissions = ['author']
     createReq.districtId = userOrgId
@@ -264,31 +288,31 @@ class ContentAuthorTable extends Component {
       listReq: this.getSearchQuery(),
     }
 
-    createAdminUser(o)
-    this.setState({ createDistrictAdminModalVisible: false })
+    createContentAuthorUser(o)
+    this.setState({ createContentAuthorModalVisible: false })
   }
 
   closeCreateUserModal = () => {
     this.setState({
-      createDistrictAdminModalVisible: false,
+      createContentAuthorModalVisible: false,
     })
   }
 
   confirmDeactivate = () => {
-    const { deleteAdminUser } = this.props
-    const { selectedAdminsForDeactivate } = this.state
+    const { deleteContentAuthorUser } = this.props
+    const { selectedAuthorsForDeactivate } = this.state
 
     const o = {
       deleteReq: {
-        userIds: selectedAdminsForDeactivate,
+        userIds: selectedAuthorsForDeactivate,
         role: 'content-author',
       },
       listReq: this.getSearchQuery(),
     }
 
-    deleteAdminUser(o)
+    deleteContentAuthorUser(o)
     this.setState({
-      deactivateAdminModalVisible: false,
+      deactivateAuthorsModalVisible: false,
     })
   }
 
@@ -479,8 +503,8 @@ class ContentAuthorTable extends Component {
   }
 
   loadFilteredList = () => {
-    const { loadAdminData } = this.props
-    loadAdminData(this.getSearchQuery())
+    const { loadContentAuthorData } = this.props
+    loadContentAuthorData(this.getSearchQuery())
   }
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
@@ -488,11 +512,11 @@ class ContentAuthorTable extends Component {
   render() {
     const {
       selectedRowKeys,
-      createDistrictAdminModalVisible,
-      editDistrictAdminModaVisible,
-      editDistrictAdminKey,
-      deactivateAdminModalVisible,
-      selectedAdminsForDeactivate,
+      createContentAuthorModalVisible,
+      editContentAuthorModaVisible,
+      editContentAuthorKey,
+      deactivateAuthorsModalVisible,
+      selectedAuthorsForDeactivate,
       filtersData,
       currentPage,
       refineButtonActive,
@@ -504,10 +528,10 @@ class ContentAuthorTable extends Component {
     }
 
     const {
-      adminUsersData: result,
+      contentAuthorData: result,
       totalUsers,
       userOrgId,
-      updateAdminUser,
+      updateContentAuthorUser,
       history,
       t,
     } = this.props
@@ -554,11 +578,13 @@ class ContentAuthorTable extends Component {
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
                 height="34px"
+                data-cy="searchByName"
               />
               <EduButton
                 type="primary"
                 height="34px"
-                onClick={this.showCreateDistrictAdminModal}
+                onClick={this.showCreateContentAuthorModal}
+                data-cy="addContentAuthorButton"
               >
                 {t('users.contentAuthor.createContentAuthor')}
               </EduButton>
@@ -608,33 +634,33 @@ class ContentAuthorTable extends Component {
             hideOnSinglePage
           />
         </TableContainer>
-        {createDistrictAdminModalVisible && (
+        {createContentAuthorModalVisible && (
           <CreateContentAuthorModal
-            modalVisible={createDistrictAdminModalVisible}
-            createDistrictAdmin={this.createUser}
+            modalVisible={createContentAuthorModalVisible}
+            createContentAuthor={this.createUser}
             closeModal={this.closeCreateUserModal}
             userOrgId={userOrgId}
             t={t}
           />
         )}
-        {editDistrictAdminModaVisible && (
+        {editContentAuthorModaVisible && (
           <EditContentAuthorModal
-            districtAdminData={result[editDistrictAdminKey]}
-            modalVisible={editDistrictAdminModaVisible}
-            updateDistrictAdmin={updateAdminUser}
-            closeModal={this.closeEditDistrictAdminModal}
+            contentAuthorData={result[editContentAuthorKey]}
+            modalVisible={editContentAuthorModaVisible}
+            updateContentAuthor={updateContentAuthorUser}
+            closeModal={this.closeEditContentAuthorModal}
             userOrgId={userOrgId}
             t={t}
           />
         )}
-        {deactivateAdminModalVisible && (
+        {deactivateAuthorsModalVisible && (
           <TypeToConfirmModal
-            modalVisible={deactivateAdminModalVisible}
-            title="Deactivate"
+            modalVisible={deactivateAuthorsModalVisible}
+            title="Deactivate Content Author(s)"
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
-            primaryLabel="Are you sure you want to deactivate the following district admin(s)?"
-            secondaryLabel={selectedAdminsForDeactivate.map((id) => {
+            primaryLabel="Are you sure you want to deactivate the following content author(s)?"
+            secondaryLabel={selectedAuthorsForDeactivate.map((id) => {
               const { _source: { firstName, lastName } = {} } = result[id]
               return (
                 <StyledClassName key={id}>
@@ -644,7 +670,7 @@ class ContentAuthorTable extends Component {
             })}
             closeModal={() =>
               this.setState({
-                deactivateAdminModalVisible: false,
+                deactivateAuthorsModalVisible: false,
               })
             }
           />
@@ -658,19 +684,21 @@ const enhance = compose(
   withNamespaces('manageDistrict'),
   connect(
     (state) => ({
+      currentUserId: getUserId(state),
       userOrgId: getUserOrgId(state),
-      adminUsersData: getAdminUsersDataSelector(state),
+      contentAuthorData: getAdminUsersDataSelector(state),
       totalUsers: getAdminUsersDataCountSelector(state),
       showActiveUsers: getShowActiveUsersSelector(state),
       pageNo: getPageNoSelector(state),
       filters: getFiltersSelector(state),
       isProxyUser: isProxyUserSelector(state),
+      isSuperAdmin: isSuperAdminSelector(state),
     }),
     {
-      createAdminUser: createAdminUserAction,
-      updateAdminUser: updateAdminUserAction,
-      deleteAdminUser: deleteAdminUserAction,
-      loadAdminData: receiveAdminDataAction,
+      createContentAuthorUser: createAdminUserAction,
+      updateContentAuthorUser: updateAdminUserAction,
+      deleteContentAuthorUser: deleteAdminUserAction,
+      loadContentAuthorData: receiveAdminDataAction,
       setSearchName: setSearchNameAction,
       setShowActiveUsers: setShowActiveUsersAction,
       setPageNo: setPageNoAction,
@@ -690,3 +718,18 @@ const enhance = compose(
 )
 
 export default enhance(ContentAuthorTable)
+
+const ActionContainer = styled.div`
+  white-space: nowrap;
+  cursor: default;
+`
+
+const StyledButton = styled(StyledTableButton)`
+  &[disabled] {
+    opacity: 0;
+    cursor: not-allowed;
+    svg {
+      fill: #adb8bf !important;
+    }
+  }
+`

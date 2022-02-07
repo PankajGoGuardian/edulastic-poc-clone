@@ -276,6 +276,7 @@ class Signup extends React.Component {
                 {t('component.signup.alreadyhaveanaccount')}
               </AlreadyhaveAccount>
               <Link
+                onClick={()=> segmentApi.genericEventTrack('SignupPage_SigninButtonClick', {})}
                 to={
                   isSignupUsingDaURL
                     ? getDistrictLoginUrl(orgShortName, orgType)

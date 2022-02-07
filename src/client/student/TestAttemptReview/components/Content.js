@@ -69,6 +69,38 @@ class SummaryTest extends Component {
     if (savedUserWork) {
       saveUserWork({ attachments: savedUserWork })
     }
+    if (document && window) {
+      document.onkeydown = function (e) {
+        // for IE
+        e = e || window.event
+        const keyCode = window.event ? e.which : e.keyCode
+
+        // check ctrl + f and command + f key
+        if (
+          (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+          keyCode == 70
+        ) {
+          e.preventDefault()
+          return false
+        }
+      }
+    }
+  }
+
+  componentWillUnmount() {
+    document.onkeydown = function (e) {
+      // for IE
+      e = e || window.event
+      const keyCode = window.event ? e.which : e.keyCode
+
+      // check ctrl + f and command + f key
+      if (
+        (window.navigator.platform.match('Mac') ? e.metaKey : e.ctrlKey) &&
+        keyCode == 70
+      ) {
+        return true
+      }
+    }
   }
 
   handlerButton = (buttonIdx) => {

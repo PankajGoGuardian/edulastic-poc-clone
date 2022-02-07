@@ -58,6 +58,18 @@ export const analyseByToName = {
   proficiencyBand: 'Proficiency Band',
 }
 
+export const parseAndNormalizeExtAttributes = (extAttributesStr) => {
+  const blackList = ['', 'null', 'undefined']
+  const extAttributes = JSON.parse(extAttributesStr || '{}')
+  Object.keys(extAttributes).forEach((k) => {
+    const v = `${extAttributes[k]}`.toLowerCase()
+    if (blackList.includes(v)) {
+      extAttributes[k] = ''
+    }
+  })
+  return extAttributes
+}
+
 const filterData = (data, filter) => {
   const filteredData = data.filter((item) => {
     if (
@@ -97,15 +109,9 @@ const analyseByScorePercent = (rawData, groupedData, compareBy) => {
       { totalMaxScore: 0, totalTotalScore: 0 }
     )
 
-    let avgStudentScorePercentUnrounded =
-      (item.totalTotalScore / item.totalMaxScore) * 100
-    avgStudentScorePercentUnrounded = !isNaN(avgStudentScorePercentUnrounded)
-      ? avgStudentScorePercentUnrounded
-      : 0
-
-    const avgStudentScorePercent = !isNaN(avgStudentScorePercentUnrounded)
-      ? Math.round(avgStudentScorePercentUnrounded)
-      : 0
+    const avgStudentScorePercentUnrounded =
+      (item.totalTotalScore / item.totalMaxScore) * 100 || 0
+    const avgStudentScorePercent = Math.round(avgStudentScorePercentUnrounded)
     const { teacherName, groupName: className } = groupedData[data][0]
     const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
     let absent = statusCounts[testActivityStatus.ABSENT] || 0
@@ -160,14 +166,9 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     )
 
     const statusCounts = countBy(groupedData[data], (o) => o.progressStatus)
-    let avgStudentScoreUnrounded = item.totalTotalScore / (statusCounts[1] || 1)
-    avgStudentScoreUnrounded = !isNaN(avgStudentScoreUnrounded)
-      ? avgStudentScoreUnrounded
-      : 0
-
-    const avgStudentScore = !isNaN(avgStudentScoreUnrounded)
-      ? Number(avgStudentScoreUnrounded.toFixed(2))
-      : 0
+    const avgStudentScoreUnrounded =
+      item.totalTotalScore / (statusCounts[1] || 1) || 0
+    const avgStudentScore = Number(avgStudentScoreUnrounded.toFixed(2))
     const { maxScore, teacherName, groupName: className } = groupedData[data][0]
     let absent = statusCounts[testActivityStatus.ABSENT] || 0
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
@@ -384,11 +385,10 @@ export const parseData = (rawData, filter) => {
     output = analyseByProficiencyBand(rawData, groupedData, compareBy)
   }
   if (output) {
-    return output.sort((a, b) =>
-      (a[compareByKeyToSortKey[compareBy]] || '').localeCompare(
-        b[compareByKeyToSortKey[compareBy]] || ''
-      )
-    )
+    return output.sort((a, b) => {
+      const _compareBy = compareByKeyToSortKey[compareBy] || compareBy
+      return (a[_compareBy] || '').localeCompare(b[_compareBy] || '')
+    })
   }
   return []
 }

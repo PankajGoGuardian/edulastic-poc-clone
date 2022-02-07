@@ -98,15 +98,13 @@ import SaveSettingsModal from '../../../../../AssignTest/components/Container/Sa
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
 import { multiFind } from '../../../../../../common/utils/main'
+import CalculatorSetting from './CalculatorSetting'
 
 const {
   settingCategories,
   settingCategoriesFeatureMap,
   type,
   completionTypes,
-  calculators,
-  calculatorKeys,
-  calculatorTypes,
   evalTypes,
   evalTypeLabels,
   accessibilities,
@@ -863,14 +861,6 @@ class Setting extends Component {
       },
     ]
 
-    const checkForCalculator = premium && calculatorProvider !== 'DESMOS'
-    const calculatorKeysAvailable =
-      (checkForCalculator &&
-        calculatorKeys.filter((i) =>
-          [calculatorTypes.NONE, calculatorTypes.BASIC].includes(i)
-        )) ||
-      calculatorKeys
-
     const advancedSettingCategoris = settingCategories.slice(-6, -4)
     if (playerSkinType === playerSkinValues.testlet.toLowerCase()) {
       advancedSettingCategoris.push({
@@ -1391,23 +1381,15 @@ class Setting extends Component {
                       <Body smallSize={isSmallSize}>
                         <Row>
                           <Col span={8}>
-                            <StyledRadioGroup
+                            <CalculatorSetting
+                              onChangeHandle={this.updateFeatures('calcType')}
                               disabled={
                                 disabled || !assessmentSuperPowersShowCalculator
                               }
-                              onChange={this.updateFeatures('calcType')}
-                              value={calcType}
-                            >
-                              {calculatorKeysAvailable.map((item) => (
-                                <RadioBtn
-                                  data-cy={item}
-                                  value={item}
-                                  key={item}
-                                >
-                                  {calculators[item]}
-                                </RadioBtn>
-                              ))}
-                            </StyledRadioGroup>
+                              calcType={calcType}
+                              premium={premium}
+                              calculatorProvider={calculatorProvider}
+                            />
                           </Col>
                           <Col span={16}>
                             <Description>

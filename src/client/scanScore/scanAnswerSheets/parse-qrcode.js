@@ -1,5 +1,6 @@
 import jsQR from 'jsqr'
 import log from './log'
+import { sendInstructions } from './isomorphic'
 
 // export const qrRectWidth = 110;
 // export const qrCodeResizeWidth = qrRectWidth * 2;
@@ -40,7 +41,6 @@ export const detectQRCode = (cv, matSrc, qrRect) => {
   let result = null
   const sz = new cv.Size(qrRect.width * 2, qrRect.height * 2)
   cv.resize(croppedQR, croppedQR, sz)
-  log('croppedQr', croppedQR)
   let qrCodeData = jsQR(
     croppedQR.data,
     croppedQR.size().width,
@@ -87,8 +87,67 @@ export const detectParentRectangle = (cv, matSrc) => {
       bottomLeftCorner: bottomLeftCorner,
       bottomRightCorner: bottomRightCorner,
     }
+
+    const frameWidth = matSrc.size().width
+    const frameHeight = matSrc.size().height
+    const spaceFromLeft = Math.floor(
+      (((rectanglePosition.topLeftCorner.x +
+        rectanglePosition.bottomLeftCorner.x) /
+        2) *
+        100) /
+        frameWidth
+    )
+    const spaceFromRight = Math.floor(
+      (((frameWidth -
+        rectanglePosition.topRightCorner.x +
+        (frameWidth - rectanglePosition.bottomRightCorner.x)) /
+        2) *
+        100) /
+        frameWidth
+    )
+    const spaceFromTop = Math.floor(
+      (((rectanglePosition.topLeftCorner.y +
+        rectanglePosition.topRightCorner.y) /
+        2) *
+        100) /
+        frameHeight
+    )
+    const spaceFromBottom = Math.floor(
+      (((frameHeight -
+        rectanglePosition.bottomLeftCorner.y +
+        (frameHeight - rectanglePosition.bottomRightCorner.y)) /
+        2) *
+        100) /
+        frameHeight
+    )
+    log(
+      'rectanglePosition, frameWidth, frameHeight, spaceFromLeft, spaceFromRight, spaceFromTop, spaceFromBottom - ',
+      rectanglePosition,
+      {
+        frameWidth,
+        frameHeight,
+        spaceFromLeft,
+        spaceFromRight,
+        spaceFromTop,
+        spaceFromBottom,
+      }
+    )
+    if (
+      (spaceFromLeft > 30 && spaceFromRight > 30) ||
+      (spaceFromTop > 25 && spaceFromBottom > 25)
+    ) {
+      sendInstructions('Please move the sheet closer to camera')
+      //return null
+    } else if (spaceFromLeft > 30) {
+      sendInstructions('Please move the sheet little left')
+    } else if (spaceFromRight > 30) {
+      sendInstructions('Please move the sheet little right')
+    }
+
     return { rectanglePosition: rectanglePosition, qrCodeData: qrCodeData }
   }
+
+  log('parent rectangle not dtected')
 
   return null
 }
@@ -97,12 +156,16 @@ export const findParentRectangle = (cv, matSrc) => {
   let contours = new cv.MatVector()
   let hierarchy = new cv.Mat()
   let matImg = new cv.Mat()
+  // let matImg1 = new cv.Mat();
 
   cv.cvtColor(matSrc, matImg, cv.COLOR_RGBA2GRAY, 0)
-  let kernel = cv.Mat.ones(7, 7, cv.CV_8U)
+  //log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawContours cvtColor", matImg)
+  let kernel = cv.Mat.ones(9, 9, cv.CV_8U)
   cv.erode(matImg, matImg, kernel)
+  //log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawContours erode", matImg)
 
   cv.threshold(matImg, matImg, 115, 255, cv.THRESH_OTSU)
+  log('>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawContours threshold', matImg)
   // cv.imshow('workingCanvas', matImg);
   cv.findContours(
     matImg,
@@ -111,14 +174,22 @@ export const findParentRectangle = (cv, matSrc) => {
     cv.RETR_CCOMP,
     cv.CHAIN_APPROX_NONE
   )
+  // log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawContours contours", contours)
+  // cv.drawContours(matImg, contours, -1, [0, 255, 0, 0], 3)
+  // // cv.drawContours( matImg1, contours, -1, (0, 255, 0, 0), FILLED, 8, hierarchy )
+  //log(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> drawContours", matImg)
 
   let rectPoints = null
   let rectangles = []
   let qrCode = null
+  let instructions = null
+  log('contours size', contours.size())
   for (let i = 0; i < contours.size(); ++i) {
     let cnt = contours.get(i)
     let rotatedRect = cv.minAreaRect(cnt)
     let vertices = cv.RotatedRect.points(rotatedRect)
+    // log("rectangles ------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>..rectangles", vertices)
+    // log("rectangles ------------------->>>>>>>>>>>>>>>>>>>>>>>>>>>>>..cnt", cnt)
 
     let topLeftCorner
     let topRightCorner
@@ -161,6 +232,8 @@ export const findParentRectangle = (cv, matSrc) => {
           bottomRightCorner,
           bottomLeftCorner,
         ])
+      } else if (width > 400 && height > 300) {
+        instructions = 'Please hold the sheet flat'
       }
     } else if (width < height) {
       if (
@@ -175,6 +248,8 @@ export const findParentRectangle = (cv, matSrc) => {
           bottomRightCorner,
           bottomLeftCorner,
         ])
+      } else if (width > 400 && height > 300) {
+        instructions = 'Please hold the sheet flat'
       }
     }
 
@@ -204,6 +279,9 @@ export const findParentRectangle = (cv, matSrc) => {
   matImg.delete()
 
   if (rectangles.length === 0 || qrCode === null) {
+    if (instructions) {
+      sendInstructions(instructions)
+    }
     return null
   } else {
     rectPoints = rectangles[0]
@@ -227,6 +305,9 @@ export const findParentRectangle = (cv, matSrc) => {
           [255, 255, 0, 255],
           2
         )
+      }
+      if (instructions) {
+        sendInstructions(instructions)
       }
       return null
     }

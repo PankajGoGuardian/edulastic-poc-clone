@@ -17,6 +17,7 @@ import {
   getSPRStudentDataRequestAction,
   getStudentsListSelector,
   getStudentsLoading,
+  getLastStudentsListQuery,
 } from '../../filterDataDucks'
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
@@ -35,10 +36,12 @@ const StudentAutoComplete = ({
   selectCB,
   districtId,
   institutionIds,
+  activeQuery,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+  const [dropdownStudents, setDropdownStudents] = useState(studentList)
 
   const selectedStudent =
     studentList.find((s) => s._id === selectedStudentId) || {}
@@ -164,8 +167,20 @@ const StudentAutoComplete = ({
     }
   }, [query])
 
+  const dropdownOpen = isFocused && searchTerms.text
+  useEffect(() => {
+    if (
+      (activeQuery?.search?.searchString ||
+        studentList.some((s) => s.title === searchTerms.text)) &&
+      dropdownOpen
+    )
+      setDropdownStudents(studentList)
+  }, [studentList, activeQuery, dropdownOpen])
+  useEffect(() => {
+    if (!dropdownOpen) setDropdownStudents([])
+  }, [dropdownOpen])
   // build dropdown data
-  const dropdownData = useDropdownData(studentList, {
+  const dropdownData = useDropdownData(dropdownStudents, {
     cropTitle: false,
     searchText: searchTerms.text || '',
   })
@@ -195,6 +210,7 @@ const StudentAutoComplete = ({
           onBlur={onBlur}
           onFocus={() => setIsFocused(true)}
           onChange={onChange}
+          open={dropdownOpen}
           allowClear={!loading && searchTerms.selectedText && isFocused}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
           notFoundContent={
@@ -218,6 +234,7 @@ export default connect(
     districtId: getUserOrgId(state),
     institutionIds: currentDistrictInstitutionIds(state),
     studentList: getStudentsListSelector(state),
+    activeQuery: getLastStudentsListQuery(state),
     loading: getStudentsLoading(state),
   }),
   {

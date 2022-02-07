@@ -30,16 +30,19 @@ const ProxyUser = () => {
       <Card title="proxy user">
         <Input
           value={email}
+          data-cy="Email Input"
           onChange={(e) => setEmail(e.target.value)}
           placeholder="Email"
         />
         <P>Or</P>
         <Input
           value={userId}
+          data-cy="UserId Input"
           onChange={(e) => setUserId(e.target.value)}
           placeholder="User Id"
         />
         <StyledButton
+          data-cy="Submit Button"
           onClick={() => {
             proxy(email?.trim(), userId?.trim())
           }}

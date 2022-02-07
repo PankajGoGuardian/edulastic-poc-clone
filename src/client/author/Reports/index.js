@@ -21,8 +21,8 @@ import {
   setSharingStateAction,
   setCsvDownloadingStateAction,
   setPrintingStateAction,
-  getCsvDocs,
-  setCsvModalVisibleAction,
+  updateCsvDocsAction,
+  getHasCsvDocs,
 } from './ducks'
 import {
   getCollaborativeGroupsAction,
@@ -37,7 +37,13 @@ import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import { EngagementReportContainer } from './subPages/engagementReport'
 import ClassCreate from '../ManageClass/components/ClassCreate'
 import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
-import { toggleAdminAlertModalAction } from '../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+  isDefaultDASelector,
+} from '../../student/Login/ducks'
 
 const Container = (props) => {
   const {
@@ -50,10 +56,14 @@ const Container = (props) => {
     showCustomReport,
     loadingSharedReports,
     sharedReportList,
-    reportCsvDocs,
-    setCsvModalVisible,
+    hasCsvDocs,
+    updateCsvDocs,
     isSAWithoutSchools,
     toggleAdminAlertModal,
+    emailVerified,
+    verificationTS,
+    isDefaultDA,
+    toggleVerifyEmailModal,
   } = props
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
@@ -73,6 +83,16 @@ const Container = (props) => {
     if (isSAWithoutSchools) {
       history.push('/author/tests')
       return toggleAdminAlertModal
+    }
+    if (!emailVerified && verificationTS && !isDefaultDA) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(role === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     window.onbeforeprint = () => {
       // set 1 so that `isPrinting` dependant useEffect logic doesn't executed
@@ -222,8 +242,8 @@ const Container = (props) => {
           showSharedReport={sharedReportList.length}
           title={headerSettings.title}
           isSharedReport={headerSettings.isSharedReport}
-          reportCsvDocs={reportCsvDocs}
-          setCsvModalVisible={setCsvModalVisible}
+          hasCsvDocs={hasCsvDocs}
+          updateCsvDocs={updateCsvDocs}
         />
       )}
       <MainContentWrapper>
@@ -418,11 +438,14 @@ const enhance = connect(
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: state?.user?.user?.features?.premium,
+    emailVerified: getEmailVerified(state),
+    verificationTS: getVerificationTS(state),
+    isDefaultDA: isDefaultDASelector(state),
     showCustomReport: state?.user?.user?.features?.customReport,
     isCliUser: state?.user?.isCliUser,
     sharedReportList: getSharedReportList(state),
     loadingSharedReports: getSharedReportsLoader(state),
-    reportCsvDocs: getCsvDocs(state),
+    hasCsvDocs: getHasCsvDocs(state),
     isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
   }),
   {
@@ -431,8 +454,9 @@ const enhance = connect(
     setCsvDownloadingStateAction,
     fetchSharedReports: getSharedReportsAction,
     fetchCollaborationGroups: getCollaborativeGroupsAction,
-    setCsvModalVisible: setCsvModalVisibleAction,
+    updateCsvDocs: updateCsvDocsAction,
     toggleAdminAlertModal: toggleAdminAlertModalAction,
+    toggleVerifyEmailModal: toggleVerifyEmailModalAction,
   }
 )
 

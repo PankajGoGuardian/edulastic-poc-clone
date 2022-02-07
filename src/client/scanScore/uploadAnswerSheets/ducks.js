@@ -251,7 +251,9 @@ function* createOmrUploadSessionSaga({
     if (file.type === 'application/pdf') {
       const pdfPagesCount = yield call(getTotalPdfPageCount, file)
       if (pdfPagesCount > 100) {
-        throw new Error('Maximum 100 sheets allowed in a single PDF')
+        throw new Error(
+          'Maximum 100 sheets allowed in a single PDF. Please split the PDF and upload in batches one by one.'
+        )
       }
     }
 

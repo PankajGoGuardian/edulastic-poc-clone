@@ -42,7 +42,7 @@ const VerifyEmailPopup = (props) => {
   const [userId, setUserId] = useState(null)
   const { vc } = match.params
 
-  const isInvalidEmail = !emailRegex.test(email)
+  const isInvalidEmail = email ? !emailRegex.test(email) : false
 
   let expiryDate
   if (verificationTS) {
@@ -129,6 +129,9 @@ const VerifyEmailPopup = (props) => {
       return 'The link has expired and is no longer valid.'
     }
     if (uid && !vc && !isEmailVerificationLinkSent && !emailVerified) {
+      if (!onProfilePage && !window.location.pathname.includes('/verify/')) {
+        return 'A verification link has been sent to your email. Please click the link to verify and continue using Edulastic.'
+      }
       return 'A verification link has already been sent to your email address. Please click the link to verify your account and continue using Edulastic.'
     }
   }

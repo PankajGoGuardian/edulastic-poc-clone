@@ -131,6 +131,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import {
@@ -280,6 +281,7 @@ class ClassBoard extends Component {
       setShowAllStudents,
       emailVerified,
       verificationTS,
+      isDefaultDA,
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
@@ -294,7 +296,7 @@ class ClassBoard extends Component {
       history.push('/author/reports')
       return toggleAdminAlertModal()
     }
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       const expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
@@ -2052,6 +2054,7 @@ const enhance = compose(
       ),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       userRole: get(state.user, 'user.role', null),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),

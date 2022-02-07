@@ -64,7 +64,9 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
   setIsUserSignedUpUsingUsernameAndPassword,
+  isSignupUsingUNAndPassSelector,
   isDemoPlaygroundUser,
   setIsUserOnProfilePageAction,
 } from '../../../student/Login/ducks'
@@ -327,6 +329,7 @@ class SideMenu extends Component {
         toggleVerifyEmailModal,
         emailVerified,
         verificationTS,
+        isDefaultDA,
       } = this.props
       const { path, label } = this.MenuItems[item.key]
       segmentApi.genericEventTrack('mainMenuClick', { label, path })
@@ -340,7 +343,8 @@ class SideMenu extends Component {
       if (
         ['Assignments', 'Insights'].includes(label) &&
         !emailVerified &&
-        verificationTS
+        verificationTS &&
+        !isDefaultDA
       ) {
         const existingVerificationTS = new Date(verificationTS)
         const expiryDate = new Date(
@@ -436,17 +440,10 @@ class SideMenu extends Component {
     })
   }
 
-  handleShowVerifyModal = (isSignupUsingUNAndPass) => {
-    const {
-      setSignedUpUsingUsernameAndPassword,
-      toggleVerifyEmailModal,
-      setIsUserOnProfilePage,
-    } = this.props
+  handleShowVerifyModal = () => {
+    const { toggleVerifyEmailModal, setIsUserOnProfilePage } = this.props
     // set the flag variable
     setIsUserOnProfilePage(true)
-    if (isSignupUsingUNAndPass) {
-      setSignedUpUsingUsernameAndPassword()
-    }
     toggleVerifyEmailModal(true)
   }
 
@@ -492,6 +489,9 @@ class SideMenu extends Component {
       orgId,
       emailVerified,
       verificationTS,
+      isDefaultDA,
+      setSignedUpUsingUsernameAndPassword,
+      isSignupUsingUNAndPassSet,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -529,6 +529,9 @@ class SideMenu extends Component {
       'newselaId',
     ]
     const isSignupUsingUNAndPass = lmsIds.every((lmsId) => !user[lmsId])
+    if (isSignupUsingUNAndPass && !isSignupUsingUNAndPassSet) {
+      setSignedUpUsingUsernameAndPassword()
+    }
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
 
@@ -598,9 +601,12 @@ class SideMenu extends Component {
             <Menu.Item
               key="3"
               className="removeSelectedBorder"
-              disabled={isDemoAccount || (!emailVerified && verificationTS)}
+              disabled={
+                isDemoAccount ||
+                (!emailVerified && verificationTS && !isDefaultDA)
+              }
               title={
-                !emailVerified && verificationTS
+                !emailVerified && verificationTS && !isDefaultDA
                   ? 'Please verify your email address to access this feature.'
                   : ''
               }
@@ -616,10 +622,12 @@ class SideMenu extends Component {
             <Menu.Item
               key="4"
               className="removeSelectedBorder"
-              disabled={isDemoAccount || (!emailVerified && verificationTS)}
-              disabled={!emailVerified && verificationTS}
+              disabled={
+                isDemoAccount ||
+                (!emailVerified && verificationTS && !isDefaultDA)
+              }
               title={
-                !emailVerified && verificationTS
+                !emailVerified && verificationTS && !isDefaultDA
                   ? 'Please verify your email address to access this feature.'
                   : ''
               }
@@ -956,8 +964,9 @@ class SideMenu extends Component {
                     isCollapsed={isCollapsed}
                     onClick={() =>
                       !emailVerified &&
-                      (verificationTS || isSignupUsingUNAndPass)
-                        ? this.handleShowVerifyModal(isSignupUsingUNAndPass)
+                      (verificationTS || isSignupUsingUNAndPass) &&
+                      !isDefaultDA
+                        ? this.handleShowVerifyModal()
                         : null
                     }
                   >
@@ -967,7 +976,8 @@ class SideMenu extends Component {
                       </Tooltip>
                     ) : null}
                     {!emailVerified &&
-                    (verificationTS || isSignupUsingUNAndPass) ? (
+                    (verificationTS || isSignupUsingUNAndPass) &&
+                    !isDefaultDA ? (
                       <Tooltip title="Not Verified">
                         <ExclamationIcon />
                       </Tooltip>
@@ -1018,6 +1028,8 @@ const enhance = compose(
       user: get(state.user, 'user', null),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
+      isSignupUsingUNAndPassSet: isSignupUsingUNAndPassSelector(state),
       isOrganizationDistrict: isOrganizationDistrictSelector(state),
       lastPlayList: getLastPlayListSelector(state),
       orgId: getUserOrgId(state),

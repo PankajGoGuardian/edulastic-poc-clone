@@ -136,12 +136,12 @@ export const detectParentRectangle = (cv, matSrc) => {
       (spaceFromLeft > 30 && spaceFromRight > 30) ||
       (spaceFromTop > 25 && spaceFromBottom > 25)
     ) {
-      sendInstructions('Please move sheet closer')
+      sendInstructions('Please move the sheet closer to camera')
       //return null
     } else if (spaceFromLeft > 30) {
-      sendInstructions('Please move to left')
+      sendInstructions('Please move the sheet little left')
     } else if (spaceFromRight > 30) {
-      sendInstructions('Please move to right')
+      sendInstructions('Please move the sheet little right')
     }
 
     return { rectanglePosition: rectanglePosition, qrCodeData: qrCodeData }

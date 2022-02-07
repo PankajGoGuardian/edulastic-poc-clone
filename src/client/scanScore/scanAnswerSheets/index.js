@@ -29,6 +29,7 @@ import {
   secondaryTextColor,
   lightGrey9,
   linkColor,
+  dangerColor,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
@@ -167,9 +168,12 @@ const ScanAnswerSheetsInner = ({
   const [isError, setIsError] = useState(false)
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
+  const fileUrls = useRef([])
+  const debugFileUrls = useRef([])
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
+  const [limitCameraModePopUp, setlimitCameraModePopUp] = useState(false)
   const recordingEnabled = enableOmrSessionRecording
 
   /**
@@ -298,18 +302,14 @@ const ScanAnswerSheetsInner = ({
                     }
                   )
                   setUploadingToS3(false)
-                  arrAnswersRef.current[
-                    arrAnswersRef.current.length - 1
-                  ].imageUri = fileUrl
+                  fileUrls.current.push(fileUrl)
                   setScanningPercent(0)
                 }
                 if (debugCanvasRef.current) {
                   const fileUrl = await uploadCanvasFrame(
                     debugCanvasRef.current
                   )
-                  arrAnswersRef.current[
-                    arrAnswersRef.current.length - 1
-                  ].originalImgUri = fileUrl
+                  debugFileUrls.current.push(fileUrl)
                 }
 
                 const temp = []
@@ -429,6 +429,14 @@ const ScanAnswerSheetsInner = ({
     isFrontFacingRef.current = isFrontFacing
   }, [isFrontFacing])
 
+  const scannedForms = scannedResponses.length
+
+  useEffect(() => {
+    if (scannedForms > 99) {
+      setlimitCameraModePopUp(true)
+    }
+  }, [scannedForms])
+
   const breadcrumbData = [
     {
       title: 'Scan Bubble Sheets',
@@ -473,6 +481,11 @@ const ScanAnswerSheetsInner = ({
   }
 
   const handleScanComplete = async () => {
+    arrAnswersRef.current.forEach((response, index) => {
+      response.imageUri = fileUrls.current[index]
+      response.originalImgUri = debugFileUrls.current[index]
+    })
+    setlimitCameraModePopUp(false)
     const { assignmentId, groupId } = qs.parse(window.location?.search || '', {
       ignoreQueryPrefix: true,
     })
@@ -546,7 +559,7 @@ const ScanAnswerSheetsInner = ({
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
           {instructions ? (
-            <SubTitleDark width="350px">
+            <SubTitleDark width="350px" className="instructions">
               <strong>{instructions}</strong>
             </SubTitleDark>
           ) : null}
@@ -713,6 +726,20 @@ const ScanAnswerSheetsInner = ({
           hideCancelBtn
         />
       )}
+      {limitCameraModePopUp && (
+        <CustomModalStyled
+          visible={limitCameraModePopUp}
+          title="Maximum Limit Reached"
+          closable={false}
+          footer={[<EduButton onClick={handleScanComplete}>NEXT</EduButton>]}
+        >
+          <p>
+            Maximum 100 sheets can be scanned at a time. Please click next to
+            process these 100 sheets now. You can start again later if you want
+            to scan more sheets
+          </p>
+        </CustomModalStyled>
+      )}
     </PageLayout>
   )
 }
@@ -790,6 +817,10 @@ const SubTitle = styled.p`
 const SubTitleDark = styled(SubTitle)`
   color: ${linkColor};
   padding-bottom: 15px;
+  &.instructions {
+    color: ${dangerColor};
+    font-size: 15px;
+  }
 `
 
 const CameraModule = styled.div`

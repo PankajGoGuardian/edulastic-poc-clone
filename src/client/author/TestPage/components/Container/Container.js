@@ -35,7 +35,7 @@ import {
   fetchAssignmentsByTestAction,
 } from '../../../../publicTest/ducks'
 
-import { Content, ContentBackDrop, SpinnerContainer } from './styled'
+import { Content, ContentBackDrop } from './styled'
 import TestPageHeader from '../TestPageHeader/TestPageHeader'
 import {
   defaultImage,
@@ -599,7 +599,12 @@ class Container extends PureComponent {
       match,
       updated,
       collections: orgCollections,
+      location,
     } = this.props
+    let source = location?.state?.assessmentAssignedFrom
+    if (!source) {
+      source = 'Created New'
+    }
     const { status, collections } = test
 
     if (!this.validateTimedAssignment()) {
@@ -626,6 +631,7 @@ class Container extends PureComponent {
               fromText: 'TEST LIBRARY',
               toUrl: '/author/tests',
               isSparkMathCollection,
+              assessmentAssignedFrom: source,
             },
           })
         }
@@ -781,11 +787,7 @@ class Container extends PureComponent {
     }
 
     if (isTestLoading && !test._id) {
-      return (
-        <SpinnerContainer>
-          <Spin />
-        </SpinnerContainer>
-      )
+      return <Spin />
     }
 
     switch (current) {

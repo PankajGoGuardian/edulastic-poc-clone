@@ -37,14 +37,15 @@ export const getAnswers = (cv, srcMat, isSingle) => {
   // });
 
   let arrAnswers = []
+  const arrAnswersPoints = []
 
   if (circleArray.length === 0) {
-    return arrAnswers
+    return [arrAnswers, arrAnswersPoints]
   } else {
     // log("rowLocCal", circleArray)
     if (circleArray[0].center.y / resizedImage.size().height > 0.3) {
       sendInstructions('Please hold the sheet flat')
-      return arrAnswers
+      return [arrAnswers, arrAnswersPoints]
     }
     for (let i = 0; i < circleArray.length - 2; i++) {
       if (
@@ -77,8 +78,6 @@ export const getAnswers = (cv, srcMat, isSingle) => {
     circleArray,
     arrAnswerCircles
   )
-
-  const arrAnswersPoints = []
 
   arrBoundingRegions.forEach((region, index) => {
     // if(index === 0) {

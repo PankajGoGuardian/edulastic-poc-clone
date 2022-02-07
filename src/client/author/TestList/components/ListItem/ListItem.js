@@ -90,6 +90,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
@@ -162,19 +163,20 @@ class ListItem extends Component {
       toggleAdminAlertModal,
       emailVerified,
       verificationTS,
+      isDefaultDA,
       toggleVerifyEmailModal,
       isFreeAdmin,
       isSAWithoutSchools,
     } = this.props
     let expiryDate
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
       ).getTime()
     }
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else if (expiryDate && expiryDate < Date.now()) {
+    else if (expiryDate && expiryDate < Date.now() && !isDefaultDA) {
       toggleVerifyEmailModal(true)
     } else
       history.push({
@@ -642,6 +644,7 @@ const enhance = compose(
       isFreeAdmin: isFreeAdminSelector(state),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
     }),

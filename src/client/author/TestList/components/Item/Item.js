@@ -46,6 +46,7 @@ import {
   toggleVerifyEmailModalAction,
   getEmailVerified,
   getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
@@ -93,15 +94,23 @@ class Item extends Component {
 
   moveToItem = (e) => {
     e && e.stopPropagation()
-    const { history, item, isPlaylist } = this.props
+    const { history, item, isPlaylist, isTestRecommendation } = this.props
+    const source = isTestRecommendation ? 'Recommendation' : 'Library'
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}#review`)
+      history.push({
+        pathname: `/author/playlists/${item._id}`,
+        hash: 'review',
+        state: {
+          assessmentAssignedFrom: source,
+        },
+      })
     } else {
       const tab = item.title ? 'review' : 'description'
       history.push({
         pathname: `/author/tests/tab/${tab}/id/${item._id}`,
         state: {
           editTestFlow: true,
+          assessmentAssignedFrom: source,
         },
       })
     }
@@ -139,6 +148,7 @@ class Item extends Component {
       toggleAdminAlertModal,
       emailVerified,
       verificationTS,
+      isDefaultDA,
       toggleVerifyEmailModal,
       orgCollections,
       isTestRecommendation,
@@ -153,14 +163,14 @@ class Item extends Component {
     const selectedCollections = collections.map((x) => x._id)
     const source = isTestRecommendation ? 'Recommendation' : 'Library'
     let expiryDate
-    if (!emailVerified && verificationTS) {
+    if (!emailVerified && verificationTS && !isDefaultDA) {
       const existingVerificationTS = new Date(verificationTS)
       expiryDate = new Date(
         existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
       ).getTime()
     }
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else if (expiryDate && expiryDate < Date.now()) {
+    else if (expiryDate && expiryDate < Date.now() && !isDefaultDA) {
       toggleVerifyEmailModal(true)
     } else
       history.push({
@@ -529,6 +539,7 @@ const enhance = compose(
       isUseThisLoading: getIsUseThisLoading(state),
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,

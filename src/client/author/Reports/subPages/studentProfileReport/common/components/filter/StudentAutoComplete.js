@@ -42,7 +42,6 @@ const StudentAutoComplete = ({
   const [fieldValue, setFieldValue] = useState('')
   const [isFocused, setIsFocused] = useState(false)
   const [dropdownStudents, setDropdownStudents] = useState(studentList)
-  const [shouldDropdownOpen, setShouldDropdownOpen] = useState(false)
 
   const selectedStudent =
     studentList.find((s) => s._id === selectedStudentId) || {}
@@ -168,13 +167,15 @@ const StudentAutoComplete = ({
     }
   }, [query])
 
+  const dropdownOpen = isFocused && searchTerms.text
   useEffect(() => {
-    if (activeQuery?.search?.searchString) setDropdownStudents(studentList)
-  }, [studentList, activeQuery])
-  const dropdownOpen =
-    shouldDropdownOpen &&
-    searchTerms.text &&
-    searchTerms.text !== searchTerms.selectedText
+    if (
+      (activeQuery?.search?.searchString ||
+        studentList.some((s) => s.title === searchTerms.text)) &&
+      dropdownOpen
+    )
+      setDropdownStudents(studentList)
+  }, [studentList, activeQuery, dropdownOpen])
   useEffect(() => {
     if (!dropdownOpen) setDropdownStudents([])
   }, [dropdownOpen])
@@ -209,7 +210,6 @@ const StudentAutoComplete = ({
           onBlur={onBlur}
           onFocus={() => setIsFocused(true)}
           onChange={onChange}
-          onDropdownVisibleChange={(open) => setShouldDropdownOpen(open)}
           open={dropdownOpen}
           allowClear={!loading && searchTerms.selectedText && isFocused}
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}

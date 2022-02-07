@@ -1,26 +1,36 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { Select, Tooltip } from 'antd'
 import { connect } from 'react-redux'
 import { test } from '@edulastic/constants'
 import { SelectInputStyled, isValidDesmosState } from '@edulastic/common'
 import { Label } from './styled'
-import { getCurrentSchoolState } from '../../../src/selectors/user'
+import {
+  isHomeSchoolSelector,
+  getCurrentSchoolState,
+} from '../../../src/selectors/user'
 
-const { calculators, calculatorTypes } = test
+const { calculatorKeys, calculators, calculatorTypes } = test
 
-const CustomLabel = ({ disabled, text }) => {
-  if (disabled) {
+const CustomLabel = ({ showPopover, itemKey, isHomeSchool }) => {
+  const optLabel = useMemo(() => {
+    if (isHomeSchool && itemKey === 'GRAPHING') {
+      return 'Graphing'
+    }
+    return calculators[itemKey]
+  }, [isHomeSchool, itemKey])
+
+  if (showPopover) {
     return (
       <Tooltip
         placement="right"
         title="State information missing, please raise a support request at support@edulastic.com"
       >
-        <Label>{text}</Label>
+        <Label>{optLabel}</Label>
       </Tooltip>
     )
   }
 
-  return <Label>{text}</Label>
+  return <Label>{optLabel}</Label>
 }
 
 const CalculatorSelector = ({
@@ -28,8 +38,21 @@ const CalculatorSelector = ({
   calcType,
   onChangeHanlde,
   schoolState,
-  calculatorKeysAvailable,
+  premium,
+  calculatorProvider,
+  isHomeSchool,
 }) => {
+  const calcKeys = useMemo(() => {
+    if (isHomeSchool) {
+      return calculatorKeys.filter(
+        (k) => ![calculatorTypes.GRAPHING_STATE].includes(k)
+      )
+    }
+    return calculatorKeys
+  }, [isHomeSchool])
+
+  const validState = isValidDesmosState(schoolState)
+
   return (
     <SelectInputStyled
       data-cy="calculatorSelector"
@@ -39,18 +62,29 @@ const CalculatorSelector = ({
       onChange={onChangeHanlde}
       disabled={disabled}
     >
-      {calculatorKeysAvailable.map((item) => {
+      {calcKeys.map((item) => {
+        const notAvailableStateVersion =
+          item === calculatorTypes.GRAPHING_STATE && !validState
+
         const disableOption =
-          item === calculatorTypes.GRAPHING_STATE &&
-          !isValidDesmosState(schoolState)
+          notAvailableStateVersion ||
+          // @see EV-34375
+          (premium &&
+            calculatorProvider !== 'DESMOS' &&
+            ![calculatorTypes.NONE, calculatorTypes.BASIC].includes(item))
+
         return (
           <Select.Option
-            data-cy="class"
+            data-cy={item}
             value={item}
             key={item}
             disabled={disableOption}
           >
-            <CustomLabel disabled={disableOption} text={calculators[item]} />
+            <CustomLabel
+              itemKey={item}
+              isHomeSchool={isHomeSchool}
+              showPopover={notAvailableStateVersion}
+            />
           </Select.Option>
         )
       })}
@@ -59,5 +93,6 @@ const CalculatorSelector = ({
 }
 
 export default connect((state) => ({
+  isHomeSchool: isHomeSchoolSelector(state),
   schoolState: getCurrentSchoolState(state),
 }))(CalculatorSelector)

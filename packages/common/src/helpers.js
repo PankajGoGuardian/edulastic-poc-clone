@@ -350,6 +350,8 @@ export const reIndexResponses = (htmlStr) => {
     return htmlStr
   }
 
+  const existingUUIDs = {}
+
   $(parsedHTML)
     .find(
       'textinput, mathinput, mathunit, textdropdown, response, paragraphnumber'
@@ -357,7 +359,16 @@ export const reIndexResponses = (htmlStr) => {
     .each(function (index) {
       $(this).find('span').remove('span')
 
-      const id = $(this).attr('id') || uuid()
+      let id = $(this).attr('id') || uuid()
+
+      if (existingUUIDs[id]) {
+        id = uuid()
+      }
+
+      if (id) {
+        existingUUIDs[id] = true
+      }
+
       $(this).attr({ id, key: id })
       $(this).attr('responseIndex', index + 1)
       $(this).attr('contenteditable', false)

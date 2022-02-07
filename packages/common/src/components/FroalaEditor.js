@@ -254,6 +254,12 @@ const CustomEditor = ({
             }
           }
         },
+        'paste.after': function () {
+          const updatedHtml = reIndexResponses(this.html.get(true))
+          if (updatedHtml) {
+            this.html.set(updatedHtml)
+          }
+        },
         'image.beforeUpload': function (image, clipboardImage) {
           if (
             !canInsert(this.selection.element()) ||

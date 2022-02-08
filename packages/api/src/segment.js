@@ -152,49 +152,12 @@ const analyticsIdentify = ({ user }) => {
           subject,
           name: without([firstName, lastName], undefined, null, '').join(' '),
           premium_user: features.premium,
-        },
-        {
-          Intercom: {
-            hideDefaultLauncher: false,
-            // Keep your secret key safe! Never commit it directly to your repository,
-            // client-side code, or anywhere a third party can find it.
-            // send it from backend ???
-            user_hash: createHmac('sha256', AppConfig.segmentHashSecret)
-              .update(userId.toString())
-              .digest('hex'),
-          },
         }
       )
     }
   }
 }
 
-const unloadIntercom = ({ user }) => {
-  if (!AppConfig.isSegmentEnabled) {
-    return
-  }
-  if (user) {
-    const { role = '', _id, v1Id, isProxy = false } = user
-    const userId = v1Id || _id
-    if (allowedRoles.includes(role) && window.analytics && !isProxy) {
-      window.analytics.identify(
-        userId,
-        {},
-        {
-          Intercom: {
-            hideDefaultLauncher: true,
-            // Keep your secret key safe! Never commit it directly to your repository,
-            // client-side code, or anywhere a third party can find it.
-            // send it from backend ???
-            user_hash: createHmac('sha256', AppConfig.segmentHashSecret)
-              .update(userId.toString())
-              .digest('hex'),
-          },
-        }
-      )
-    }
-  }
-}
 
 const trackTeacherClickOnUpgradeSubscription = ({ user }) => {
   if (!AppConfig.isSegmentEnabled) {
@@ -289,7 +252,6 @@ const genericEventTrack = (event, details) => {
 }
 
 export default {
-  unloadIntercom,
   analyticsIdentify,
   trackTeacherClickOnUpgradeSubscription,
   trackTeacherSignUp,

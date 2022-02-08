@@ -273,9 +273,15 @@ const Author = ({
   }, [orgId, schoolId])
 
   useEffect(() => {
-    const intercomElm = document.querySelector('.intercom-lightweight-app')
-    if (intercomElm) {
-      intercomElm.style.display = isCliUser ? 'none' : 'block'
+    // shown before opening the widget
+    let chatElement = document.querySelector('.embeddedServiceHelpButton')
+    if (chatElement && isCliUser) {
+      chatElement.style.display = 'none'
+    }
+    // shown once opened and minimised
+    chatElement = document.querySelector('.embeddedServiceSidebar')
+    if (chatElement && isCliUser) {
+      chatElement.style.display = 'none'
     }
   }, [isCliUser])
 

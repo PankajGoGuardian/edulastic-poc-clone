@@ -588,7 +588,15 @@ function* loadTest({ payload }) {
         previousQuestionActivities,
         'testItemId'
       )
-
+      const testItemIds = testItems.map((i) => i._id)
+      const { attachments = [] } = yield call(
+        attachmentApi.loadAllAttachments,
+        {
+          referrerId: testActivityId,
+        }
+      )
+      const scratchPadData = {}
+      const attachmentData = getScratchpadDataFromAttachments(attachments)
       previousQuestionActivities.forEach((item) => {
         allPrevAnswers = {
           ...allPrevAnswers,
@@ -597,6 +605,12 @@ function* loadTest({ payload }) {
         allEvaluation = {
           ...allEvaluation,
           [item.qid]: item.evaluation,
+        }
+        if (item.scratchPad) {
+          scratchPadData[item.testItemId] = {
+            ...item.scratchPad,
+            ...attachmentData[item.testItemId],
+          }
         }
       })
 
@@ -616,17 +630,6 @@ function* loadTest({ payload }) {
         payload: previousQActivitiesById,
       })
 
-      const testItemIds = testItems.map((i) => i._id)
-      const { attachments = [] } = yield call(
-        attachmentApi.loadAllAttachments,
-        {
-          referrerId: testActivityId,
-        }
-      )
-      const scratchPadData = getScratchpadDataFromAttachments(
-        attachments.filter(({ type }) => type === 'scratchpad')
-      )
-
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
@@ -635,7 +638,7 @@ function* loadTest({ payload }) {
         if (item.scratchPad) {
           scratchPadData[item.testItemId] = {
             ...item.scratchPad,
-            ...scratchPadData[item.testItemId],
+            ...attachmentData[item.testItemId],
           }
         }
         // land on the testItems which is next to testItem that is attempted and has the highest index

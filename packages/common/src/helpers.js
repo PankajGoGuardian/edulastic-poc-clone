@@ -170,9 +170,9 @@ function convertBlobToFile(blob) {
   return null
 }
 
-function convertStringToFile(str) {
+export function convertStringToFile(str, name) {
   const blob = new Blob([str], { type: 'text/plain;charset=utf-8' })
-  const file = new File([blob], `scratchpad-${Date.now()}.text`)
+  const file = new File([blob], name || `scratchpad-${Date.now()}.text`)
   return file
 }
 

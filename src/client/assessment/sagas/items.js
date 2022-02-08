@@ -6,13 +6,14 @@ import {
   Effects,
   captureSentryException,
 } from '@edulastic/common'
-import { maxBy, isEmpty, isPlainObject } from 'lodash'
+import { maxBy, isEmpty, isPlainObject, omit } from 'lodash'
 import {
   itemsApi,
   testItemActivityApi,
   attchmentApi as attachmentApi,
   testActivityApi,
 } from '@edulastic/api'
+import { convertStringToFile } from '@edulastic/common/src/helpers'
 import { assignmentPolicyOptions, aws } from '@edulastic/constants'
 
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
@@ -90,12 +91,14 @@ export function getFilterAndUpdateForAttachments({
   qId,
   userId,
   scratchpadUri,
+  data,
+  type = 'scratchpad',
 }) {
   const update = {
-    data: { scratchpad: scratchpadUri },
+    data: data || { scratchpad: scratchpadUri },
     referrerId: uta,
     userId,
-    type: 'scratchpad',
+    type,
     referrerType: 'TestActivityContent',
     referrerId2: itemId,
     status: 'published',
@@ -293,7 +296,22 @@ export function* saveUserResponse({ payload }) {
       activity.timeInBlur = timeInBlur
     }
 
+    const annotationsData = {}
+    let annotationsUsed = false
+
+    if (isDocBased) {
+      annotationsUsed = !isEmpty(_userWork.freeNotesStd)
+      annotationsData.freeNotesStd = _userWork.freeNotesStd
+    }
+
     let userWorkData = { ..._userWork, scratchpad: false }
+
+    if (isDocBased) {
+      // omit saving in UQA as it will be saved in attachments
+      userWorkData = omit(userWorkData, ['freeNotesStd'])
+      userWorkData.docAnnotationsUsed = annotationsUsed
+    }
+
     let shouldSaveOrUpdateAttachment = false
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
@@ -302,9 +320,11 @@ export function* saveUserResponse({ payload }) {
       userWorkData = { ...userWorkData, scratchpad: true, dimensions }
       shouldSaveOrUpdateAttachment = true
     }
+
     activity.userWork = userWorkData
     yield call(testItemActivityApi.create, activity, autoSave, pausing)
     const userId = yield select((state) => state?.user?.user?._id)
+
     if (shouldSaveOrUpdateAttachment) {
       const fileData = isDocBased
         ? { ..._userWork.scratchpad, name: `${userTestActivityId}_${userId}` }
@@ -344,6 +364,23 @@ export function* saveUserResponse({ payload }) {
         yield call(attachmentApi.updateAttachment, { update, filter })
       }
     }
+
+    if (isDocBased && annotationsUsed) {
+      const file = convertStringToFile(
+        JSON.stringify(annotationsData.freeNotesStd),
+        `doc-annotations-${userTestActivityId}_${userId},text`
+      )
+      const annotationsURL = yield call(uploadToS3, file, defaultUploadFolder)
+      const { update, filter } = getFilterAndUpdateForAttachments({
+        uta: userTestActivityId,
+        itemId: testItemId,
+        userId,
+        data: { freeNotesStd: annotationsURL },
+        type: 'doc-annotations',
+      })
+      yield call(attachmentApi.updateAttachment, { update, filter })
+    }
+
     if (passageId) {
       const highlights = yield select(
         ({ userWork }) => userWork.present[passageId]?.resourceId
@@ -365,6 +402,7 @@ export function* saveUserResponse({ payload }) {
         yield call(attachmentApi.updateAttachment, { update, filter })
       }
     }
+
     yield put({ type: SAVE_USER_RESPONSE_SUCCESS })
     yield put({
       type: CLEAR_HINT_USAGE,

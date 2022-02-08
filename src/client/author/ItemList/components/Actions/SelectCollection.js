@@ -14,7 +14,10 @@ import {
 import { getSelectedItemSelector } from '../../../TestPage/components/AddItems/ducks'
 import { getSelectedTestsSelector } from '../../../TestList/ducks'
 import { getTestEntitySelector } from '../../../TestPage/ducks'
-import { getSelectedPlaylistSelector } from '../../../Playlist/ducks'
+import {
+  getPlaylistsSelector,
+  getSelectedPlaylistSelector,
+} from '../../../Playlist/ducks'
 
 const SelectCollectionModal = ({
   isAddCollectionModalVisible,
@@ -25,6 +28,7 @@ const SelectCollectionModal = ({
   selectedItems,
   selectedTests,
   selectedPlaylists,
+  playlists,
   test,
 }) => {
   const handleCancel = () => setAddCollectionModalVisible(false)
@@ -32,23 +36,37 @@ const SelectCollectionModal = ({
   const addedItems = test?.itemGroups?.flatMap(
     (itemGroup) => itemGroup.items || []
   )
+  const selectedPlaylistsById = keyBy(playlists, '_id')
   const itemsKeyed = keyBy(addedItems, '_id')
   const handleAddToCollection = ({ _id, itemBankId, name, collectionName }) => {
-    let contentIds = selectedItems.map((id) => itemsKeyed[id]?._id)
+    let contentIds = selectedItems
     if (contentType === 'PLAYLIST') {
       contentIds = selectedPlaylists
     }
     if (contentType === 'TEST') {
-      contentIds = selectedTests.map((item) => item.versionId)
+      contentIds = selectedTests.map((item) => item._id)
     }
     if (!contentIds.length) {
       notification({ messageKey: 'addAtleastOneItemToTest' })
       return handleCancel()
     }
+    const contentsVersionIdById = {}
+    for (const contentId of contentIds) {
+      let versionId
+      if (contentType == 'TEST') {
+        versionId = selectedTests.find((item) => item._id === contentId)
+          ?.versionId
+      } else if (contentType === 'PLAYLIST') {
+        versionId = selectedPlaylistsById[contentId]?._source?.versionId
+      } else {
+        versionId = itemsKeyed[contentId]?.versionId
+      }
+      contentsVersionIdById[contentId] = versionId
+    }
     saveItemsToBucket({
       _id,
       contentType,
-      contentIds,
+      contentsVersionIdById,
       itemBankId,
       name,
       collectionName,
@@ -93,6 +111,7 @@ export default connect(
     selectedItems: getSelectedItemSelector(state),
     selectedTests: getSelectedTestsSelector(state),
     selectedPlaylists: getSelectedPlaylistSelector(state),
+    playlists: getPlaylistsSelector(state),
     test: getTestEntitySelector(state),
   }),
   {

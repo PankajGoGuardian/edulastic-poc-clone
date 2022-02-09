@@ -2667,7 +2667,8 @@ div[class*='_pendo'] button {
   display: none;
 }
 
-.embeddedServiceHelpButton .helpButton {
+.embeddedServiceHelpButton .helpButton,
+.embeddedServiceSidebar .embeddedServiceSidebarMinimizedDefaultUI {
   border-right: none !important;
   border-bottom: none !important;
 }

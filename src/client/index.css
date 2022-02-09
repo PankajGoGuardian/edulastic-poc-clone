@@ -2666,3 +2666,15 @@ div[class*='_pendo'] button {
 .showOne-notification:not(:first-of-type) {
   display: none;
 }
+
+.embeddedServiceHelpButton .helpButton {
+  border-right: none;
+  border-bottom: none;
+}
+.embeddedServiceHelpButton .helpButton .uiButton {
+  background-color: #0cc18c;
+  font-family: "Open Sans", sans-serif;
+}
+.embeddedServiceHelpButton .helpButton .uiButton:focus {
+  outline: 1px solid #0cc18c;
+}

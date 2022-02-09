@@ -1403,7 +1403,7 @@ export function* fetchUser({ payload }) {
           LastName: user.lastName,
           Email: user.email,
           Subject: "General",
-        }  
+        }
       }
     }
     if (

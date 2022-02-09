@@ -34,6 +34,10 @@ const AddStudentsPopup = ({
 }) => {
   const [selectedStudents, setSelectedStudent] = useState([])
   const [endDate, setEndDate] = useState(moment().add(2, 'day'))
+  const closePolicyNotManual =
+    closePolicy !== assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN ||
+    closePolicy !== assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_IN_CLASS
+
   useEffect(() => {
     fetchGroupMembers({ classId: groupId })
   }, [])
@@ -118,28 +122,30 @@ const AddStudentsPopup = ({
             )}
           </SelectInputStyled>
         </Row>
-        <Row>
-          <FieldLabel>Close Date</FieldLabel>
-          <DatePickerStyled
-            allowClear={false}
-            disabledDate={disabledEndDate}
-            disabled={
-              closePolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
-            }
-            style={{ width: '100%', cursor: 'pointer' }}
-            value={endDate}
-            showTime={{ use12Hours: true, format: 'hh:mm a' }}
-            format="YYYY-MM-DD hh:mm a"
-            showToday={false}
-            onChange={(v) => {
-              if (!v) {
-                setEndDate(moment().add(1, 'day'))
-              } else {
-                setEndDate(v)
+        {closePolicyNotManual && (
+          <Row>
+            <FieldLabel>Close Date</FieldLabel>
+            <DatePickerStyled
+              allowClear={false}
+              disabledDate={disabledEndDate}
+              disabled={
+                closePolicy !== assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE
               }
-            }}
-          />
-        </Row>
+              style={{ width: '100%', cursor: 'pointer' }}
+              value={endDate}
+              showTime={{ use12Hours: true, format: 'hh:mm a' }}
+              format="YYYY-MM-DD hh:mm a"
+              showToday={false}
+              onChange={(v) => {
+                if (!v) {
+                  setEndDate(moment().add(1, 'day'))
+                } else {
+                  setEndDate(v)
+                }
+              }}
+            />
+          </Row>
+        )}
       </BodyContainer>
     </CustomModalStyled>
   )

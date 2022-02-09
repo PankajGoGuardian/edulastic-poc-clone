@@ -1397,6 +1397,14 @@ export function* fetchUser({ payload }) {
     yield put(receiveLastPlayListAction())
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction())
+      if (window.embedded_svc) {
+        window.embedded_svc.settings.prepopulatedPrechatFields = {
+          FirstName: user.firstName,
+          LastName: user.lastName,
+          Email: user.email,
+          Subject: 'General',
+        }
+      }
     }
     if (
       user.role == roleuser.TEACHER &&
@@ -1499,7 +1507,6 @@ function* logout() {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {
-      yield call(segmentApi.unloadIntercom, { user })
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }

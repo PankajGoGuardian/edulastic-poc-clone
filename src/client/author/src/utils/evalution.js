@@ -6,6 +6,7 @@ import {
 import {
   manuallyGradableQn,
   PASSAGE,
+  EXPRESSION_MULTIPART,
 } from '@edulastic/constants/const/questionType'
 
 import { MathKeyboard, notification } from '@edulastic/common'
@@ -34,6 +35,39 @@ const getMathUnits = (item) => {
   )
     .map((btn) => btn.handler)
     .concat(customKeys)
+    .filter((x) => x)
+}
+
+const getClozeMathUnits = (item) => {
+  const mathUnitsResponses = get(item, 'responseIds.mathUnits', [])
+  const mathUnitInputs = get(
+    item,
+    'validation.validResponse.mathUnits.value',
+    []
+  )
+
+  return mathUnitInputs
+    .map(({ id }) => {
+      const matched = mathUnitsResponses.find((r) => r.id === id)
+      if (matched) {
+        const { keypadMode, customUnits } = matched
+        if (keypadMode === 'custom') {
+          return {
+            id,
+            units: (customUnits || '').split(','),
+          }
+        }
+        return {
+          id,
+          units: MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
+            btn.types.includes(keypadMode)
+          )
+            .map((btn) => btn.handler)
+            .filter((x) => x),
+        }
+      }
+      return null
+    })
     .filter((x) => x)
 }
 
@@ -102,9 +136,10 @@ export const evaluateItem = async (
           questionId: id,
           testSettings,
         }
-
         if (validation.isUnits && validation.isMath) {
           payload.isUnitAllowedUnits = getMathUnits(validation)
+        } else if (validation.type === EXPRESSION_MULTIPART) {
+          payload.isUnitAllowedUnits = getClozeMathUnits(validation)
         }
 
         const {

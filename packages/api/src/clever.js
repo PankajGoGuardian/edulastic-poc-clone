@@ -18,7 +18,7 @@ const syncCleverClasses = (data) =>
       method: 'post',
       data,
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 const syncGradesWithClever = (data) =>
   api

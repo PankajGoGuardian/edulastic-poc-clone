@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { size, isEmpty } from 'lodash'
+import { size, isEmpty, get } from 'lodash'
 
 import { MainContentWrapper } from '@edulastic/common'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
@@ -22,7 +22,13 @@ import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
 } from '../src/selectors/user'
-import { toggleAdminAlertModalAction } from '../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+  isDefaultDASelector,
+} from '../../student/Login/ducks'
 
 class StandardsBasedReport extends Component {
   componentDidMount() {
@@ -35,6 +41,11 @@ class StandardsBasedReport extends Component {
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      emailVerified,
+      verificationTS,
+      isDefaultDA,
+      toggleVerifyEmailModal,
+      userRole,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -43,6 +54,16 @@ class StandardsBasedReport extends Component {
     if (isFreeAdmin) {
       history.push('/author/reports')
       return toggleAdminAlertModal()
+    }
+    if (!emailVerified && verificationTS && !isDefaultDA) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     if (!size(testActivity) && isEmpty(additionalData)) {
       const { assignmentId, classId } = match.params
@@ -120,11 +141,16 @@ const enhance = compose(
         state.classResponse?.data?.reportStandards?.length || 0,
       reportStandards: state.classResponse?.data?.reportStandards || [],
       isFreeAdmin: isFreeAdminSelector(state),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
+      userRole: get(state.user, 'user.role', null),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
     }
   )
 )

@@ -16,6 +16,7 @@ const CorrectAnswers = ({
   responseIds,
   extraOpts,
   singleResponseBox,
+  uiStyles,
 }) => {
   const { inputs, maths, dropDowns, mathUnits } = responseIds
   let validAnswers = []
@@ -228,6 +229,7 @@ const CorrectAnswers = ({
           <AnswerBox
             key={answer.id}
             answer={answer}
+            uiStyles={uiStyles}
             singleResponseBox={singleResponseBox}
           />
         ))}
@@ -245,6 +247,7 @@ const CorrectAnswers = ({
               <AnswerBox
                 key={altAns.id}
                 answer={altAns}
+                uiStyles={uiStyles}
                 singleResponseBox={singleResponseBox}
               />
             ))}

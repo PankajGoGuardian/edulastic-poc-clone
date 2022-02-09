@@ -15,7 +15,7 @@ const CreateContentAuthorModal = ({
   modalVisible,
   t,
   form,
-  createDistrictAdmin,
+  createContentApprover,
   closeModal,
 }) => {
   const [emailValidateStatus, setEmailValidateStatus] = useState('success')
@@ -58,7 +58,7 @@ const CreateContentAuthorModal = ({
           password: row.password,
           email,
         }
-        createDistrictAdmin(newUser)
+        createContentApprover(newUser)
       }
     })
   }
@@ -89,10 +89,10 @@ const CreateContentAuthorModal = ({
       centered
       footer={[
         <ButtonsContainer>
-          <CancelButton onClick={closeModal}>
+          <CancelButton onClick={closeModal} data-cy="CancelCreate">
             {t('users.contentApprover.createCA.nocancel')}
           </CancelButton>
-          <OkButton onClick={onCreateContentAuthor}>
+          <OkButton onClick={onCreateContentAuthor} data-cy="YesCreate">
             {t('users.contentApprover.createCA.yescreate')}
           </OkButton>
         </ButtonsContainer>,
@@ -111,6 +111,7 @@ const CreateContentAuthorModal = ({
             })(
               <Input
                 placeholder={t('users.contentApprover.createCA.entername')}
+                data-cy="nameTextBox"
               />
             )}
           </ModalFormItem>
@@ -129,6 +130,7 @@ const CreateContentAuthorModal = ({
               placeholder={t('users.contentAuthor.createCA.enteremail')}
               autocomplete="new-password"
               onChange={changeEmail}
+              data-cy="emailTextBox"
             />
           </ModalFormItem>
         </Col>
@@ -150,6 +152,7 @@ const CreateContentAuthorModal = ({
                 placeholder={t('users.contentApprover.createCA.enterpassword')}
                 type="password"
                 autocomplete="new-password"
+                data-cy="passwordTextBox"
               />
             )}
           </ModalFormItem>

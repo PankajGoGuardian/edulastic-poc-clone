@@ -208,7 +208,7 @@ class LoginContainer extends React.Component {
                         offset={2}
                         data-cy="cleverLogin"
                         onClick={() => {
-                          cleverLogin('teacher')
+                          cleverLogin({ payload: 'teacher', isLogin: true })
                         }}
                       >
                         <img src={cleverIcon} alt="" />

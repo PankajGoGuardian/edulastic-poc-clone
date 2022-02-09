@@ -3,9 +3,15 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { WithMathFormula } from '@edulastic/common'
 
-const MathSpanWrapper = ({ latex }) => {
+const MathSpanWrapper = ({ latex, fontSize, fontWeight }) => {
   const template = `<span><span class="input__math" data-latex="${latex}"></span></span>`
-  return <MathSpan dangerouslySetInnerHTML={{ __html: template }} />
+  return (
+    <MathSpan
+      dangerouslySetInnerHTML={{ __html: template }}
+      fontSize={fontSize}
+      fontWeight={fontWeight}
+    />
+  )
 }
 
 MathSpanWrapper.propTypes = {
@@ -16,4 +22,8 @@ export default MathSpanWrapper
 
 const MathSpan = WithMathFormula(styled.span`
   position: relative;
+
+  .katex {
+    font-weight: ${({ fontWeight }) => fontWeight};
+  }
 `)

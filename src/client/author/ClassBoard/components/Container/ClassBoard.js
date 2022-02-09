@@ -128,6 +128,10 @@ import {
 import {
   updateCliUserAction,
   toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+  isDefaultDASelector,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import {
@@ -275,9 +279,14 @@ class ClassBoard extends Component {
       isCliUser: cliUserUpdated,
       history,
       setShowAllStudents,
+      emailVerified,
+      verificationTS,
+      isDefaultDA,
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      toggleVerifyEmailModal,
+      userRole,
     } = this.props
     if (isSAWithoutSchools) {
       history.push('/author/tests')
@@ -286,6 +295,16 @@ class ClassBoard extends Component {
     if (isFreeAdmin) {
       history.push('/author/reports')
       return toggleAdminAlertModal()
+    }
+    if (!emailVerified && verificationTS && !isDefaultDA) {
+      const existingVerificationTS = new Date(verificationTS)
+      const expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+      if (expiryDate < Date.now()) {
+        history.push(userRole === 'teacher' ? '/' : '/author/items')
+        return toggleVerifyEmailModal(true)
+      }
     }
     const { selectedTab } = this.state
     const { assignmentId, classId } = match.params
@@ -1452,6 +1471,7 @@ class ClassBoard extends Component {
                     <SwitchBox style={{ position: 'relative' }}>
                       <FilterSpan>FILTER BY STATUS</FilterSpan>
                       <FilterSelect
+                        data-cy="filterByStatus"
                         className="student-status-filter"
                         value={studentFilter}
                         dropdownMenuStyle={{ fontSize: 29 }}
@@ -1850,7 +1870,10 @@ class ClassBoard extends Component {
                               </div>
                             ) : null}
                           </div>
-                          <ScoreHeader style={{ fontSize: '12px' }}>
+                          <ScoreHeader
+                            data-cy="totlatTimeSpent"
+                            style={{ fontSize: '12px' }}
+                          >
                             {' '}
                             {`TIME (min) : `}{' '}
                             <span
@@ -1864,7 +1887,10 @@ class ClassBoard extends Component {
                               }` || ''}
                             </span>
                           </ScoreHeader>
-                          <ScoreHeader style={{ fontSize: '12px' }}>
+                          <ScoreHeader
+                            data-cy="studentStatus"
+                            style={{ fontSize: '12px' }}
+                          >
                             {' '}
                             {`STATUS : `}{' '}
                             <span
@@ -1882,7 +1908,10 @@ class ClassBoard extends Component {
                                 : 'In Progress' || ''}
                             </span>
                           </ScoreHeader>
-                          <ScoreHeader style={{ fontSize: '12px' }}>
+                          <ScoreHeader
+                            data-cy="submittedDate"
+                            style={{ fontSize: '12px' }}
+                          >
                             SUBMITTED ON :
                             <span style={{ color: black }}>
                               {getSubmittedDate(
@@ -2023,6 +2052,10 @@ const enhance = compose(
         ['author_classboard_testActivity', 'isShowAllStudents'],
         false
       ),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
+      userRole: get(state.user, 'user.role', null),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),
       studentsList: getAllStudentsList(state),
@@ -2056,6 +2089,7 @@ const enhance = compose(
       setShowCanvasShare: setShowCanvasShareAction,
       pauseStudents: togglePauseStudentsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setPageNumber: setPageNumberAction,
     }
   )

@@ -126,7 +126,16 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   let result = str.replace(mathRegex, '{math-latex}')
   let mathContent = str.match(mathRegex)
   Object.keys(variables).forEach((variableName) => {
+    const isLengthOne = `${variables[variableName].exampleValue}`.length == 1
     if (isLatex) {
+      if (isLengthOne) {
+        result = result.replace(
+          new RegExp(`{@${variableName}}`, 'g'),
+          useMathTemplate
+            ? getMathTemplate(variables[variableName].exampleValue)
+            : ` ${variables[variableName].exampleValue}`
+        )
+      }
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
         useMathTemplate
@@ -134,6 +143,14 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
           : ` ${variables[variableName].exampleValue}`
       )
     } else {
+      if (isLengthOne) {
+        result = result.replace(
+          new RegExp(`{@${variableName}}`, 'g'),
+          useMathTemplate
+            ? getMathTemplate(variables[variableName].exampleValue)
+            : variables[variableName].exampleValue
+        )
+      }
       result = result.replace(
         new RegExp(`@${variableName}`, 'g'),
         useMathTemplate
@@ -142,12 +159,18 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
       )
     }
     if (mathContent) {
-      mathContent = mathContent.map((content) =>
-        content.replace(
+      mathContent = mathContent.map((content) => {
+        if (isLengthOne) {
+          content = content.replace(
+            new RegExp(`{@${variableName}}`, 'g'),
+            ` ${variables[variableName].exampleValue}`
+          )
+        }
+        return content.replace(
           new RegExp(`@${variableName}`, 'g'),
           ` ${variables[variableName].exampleValue}`
         )
-      )
+      })
     }
   })
   if (mathContent) {

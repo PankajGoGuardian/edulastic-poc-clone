@@ -1,5 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react'
-import styled from 'styled-components'
+import React, { useState, useEffect, useRef, useCallback } from 'react'
+import styled, { keyframes } from 'styled-components'
 import PropTypes from 'prop-types'
 import qs from 'qs'
 import { connect } from 'react-redux'
@@ -29,16 +29,19 @@ import {
   secondaryTextColor,
   lightGrey9,
   linkColor,
+  dangerColor,
 } from '@edulastic/colors'
 import { aws } from '@edulastic/constants'
 import ConfirmationModal from '@edulastic/common/src/components/SimpleConfirmModal'
 import beepSound from '@edulastic/common/src/utils/data/beep-sound.base64.json'
 import { scannerApi } from '@edulastic/api'
+import { IconInfo } from '@edulastic/icons'
 import { actions, selector } from '../uploadAnswerSheets/ducks'
 import { getAnswersFromVideo } from './answer-utils'
 import { detectParentRectangle } from './parse-qrcode'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import Spinner from '../../common/components/Spinner'
+import RecordVideoStream from './RecordVideoStream'
 import {
   IconStep1,
   IconStep2,
@@ -46,6 +49,35 @@ import {
   IconStep4,
   IconStep5,
 } from './icons/StepsIcons'
+
+function useInstructions() {
+  const [_instructions, setInstructions] = useState(null)
+  const instructionsRef = useRef(null)
+
+  const instructionCb = useCallback((e) => {
+    if (instructionsRef.current != e.detail) {
+      setInstructions(e.detail)
+      instructionsRef.current = e.detail
+    }
+  }, [])
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setInstructions(null)
+      instructionsRef.current = null
+    }, 2000)
+
+    return () => clearTimeout(timeout)
+  }, [_instructions])
+
+  useEffect(() => {
+    window.addEventListener('instructions', instructionCb)
+
+    return () => window.removeEventListener('instructions', instructionCb)
+  }, [])
+
+  return _instructions
+}
 
 const Option = Select.Option
 const audioRef = new Audio(`data:audio/mp3;base64,${beepSound.base64}`)
@@ -57,12 +89,13 @@ const videoContstraints = {
 const steps = [
   {
     icon: <IconStep1 />,
-    description: 'Put your bubble sheets so that they are fully visible.',
+    description:
+      'Hold or Place your bubble sheets in front of the camera, so that they are fully visible and the logo Edulastic is on top',
   },
   {
     icon: <IconStep2 />,
     description:
-      'Ensure the bounding boxes of the QR code and the response section are fully visible and aligned vertically.',
+      'Ensure the QR code and response boxes are aligned side by side and fully visible',
   },
   {
     icon: <IconStep3 />,
@@ -111,7 +144,8 @@ async function uploadCanvasFrame(canvas, uploadProgress) {
     aws.s3Folders.WEBCAM_OMR_UPLOADS,
     uploadProgress,
     null,
-    `${assignmentId}`
+    `${assignmentId}`,
+    true
   )
 }
 
@@ -121,6 +155,8 @@ const ScanAnswerSheetsInner = ({
   classTitle,
   getOmrUploadSessions,
   setWebCamScannedDocs,
+  setRecordedVideo,
+  enableOmrSessionRecording = false,
 }) => {
   let arrLengthOfAnswer = []
   const { cv, loaded: isOpencvLoaded } = useOpenCv()
@@ -132,9 +168,13 @@ const ScanAnswerSheetsInner = ({
   const [isError, setIsError] = useState(false)
   const [isStart, setIsStart] = useState(false)
   const arrAnswersRef = useRef([])
+  const fileUrls = useRef([])
+  const debugFileUrls = useRef([])
   const hideFailureNotificationsRef = useRef(false)
   const [uploadingToS3, setUploadingToS3] = useState(false)
   const [dc, setDc] = useState(0)
+  const [limitCameraModePopUp, setlimitCameraModePopUp] = useState(false)
+  const recordingEnabled = enableOmrSessionRecording
 
   /**
    * uncomment the following line while debugging
@@ -151,11 +191,14 @@ const ScanAnswerSheetsInner = ({
   const [selectedCamera, setSelectedCamera] = useState(null)
   const [showSettings, setShowSettings] = useState(false)
   const [isFrontFacing, setIsFrontFacing] = useState(false)
+  const instructions = useInstructions()
 
   const videoRef = useRef(null)
   const canvasRef = useRef(null)
+  const debugCanvasRef = useRef(null)
   const streamRef = useRef(null)
   const isFrontFacingRef = useRef(false)
+  const recorderRef = useRef()
 
   function supressFailureNotifications(time) {
     hideFailureNotificationsRef.current = true
@@ -175,6 +218,7 @@ const ScanAnswerSheetsInner = ({
         cv.CV_8UC4
       )
       vc.read(matSrc)
+      const debugMatSrc = matSrc.clone()
       let result = null
       const parentRectangle = detectParentRectangle(cv, matSrc)
       let rectanglePosition
@@ -185,10 +229,11 @@ const ScanAnswerSheetsInner = ({
       } else {
         cv.imshow('canvasOutput', matSrc)
         matSrc.delete()
+        debugMatSrc.delete()
         requestAnimationFrame(() =>
           processVideo(vc).catch((e) => {
             console.log('process video opencv error')
-            console.warn('err', e)
+            console.log('err', e)
           })
         )
         return
@@ -200,10 +245,12 @@ const ScanAnswerSheetsInner = ({
           cv,
           matSrc,
           rectanglePosition,
-          qrCodeData.location
+          qrCodeData.location,
+          debugMatSrc
         )
       }
       matSrc.delete()
+      debugMatSrc.delete()
       requestAnimationFrame(() =>
         processVideo(vc).catch(() => {
           console.log('process video opencv error')
@@ -214,6 +261,7 @@ const ScanAnswerSheetsInner = ({
       }
       result.qrCode = qrCodeData.data
       const { answers } = result
+
       if (answers) {
         if (answers.length > 0) {
           if (!answersList) {
@@ -243,7 +291,6 @@ const ScanAnswerSheetsInner = ({
                   msg: 'Form successfully scanned. Please scan the next one.',
                 })
                 audioRef.play()
-
                 if (canvasRef.current) {
                   setUploadingToS3(true)
                   const fileUrl = await uploadCanvasFrame(
@@ -255,11 +302,16 @@ const ScanAnswerSheetsInner = ({
                     }
                   )
                   setUploadingToS3(false)
-                  arrAnswersRef.current[
-                    arrAnswersRef.current.length - 1
-                  ].imageUri = fileUrl
+                  fileUrls.current.push(fileUrl)
                   setScanningPercent(0)
                 }
+                if (debugCanvasRef.current) {
+                  const fileUrl = await uploadCanvasFrame(
+                    debugCanvasRef.current
+                  )
+                  debugFileUrls.current.push(fileUrl)
+                }
+
                 const temp = []
                 result.answers.forEach((item, index) => {
                   temp.push(`${index + 1}: ${item}`)
@@ -337,6 +389,9 @@ const ScanAnswerSheetsInner = ({
           setIsStart(true)
           setIsError(false)
           streamRef.current = stream
+          if (recordingEnabled && recorderRef.current) {
+            recorderRef.current.start(stream)
+          }
           // start receiving stream from webcam
           videoRef.current.srcObject = stream
           videoRef.current.play()
@@ -373,6 +428,14 @@ const ScanAnswerSheetsInner = ({
   useEffect(() => {
     isFrontFacingRef.current = isFrontFacing
   }, [isFrontFacing])
+
+  const scannedForms = scannedResponses.length
+
+  useEffect(() => {
+    if (scannedForms > 99) {
+      setlimitCameraModePopUp(true)
+    }
+  }, [scannedForms])
 
   const breadcrumbData = [
     {
@@ -418,6 +481,11 @@ const ScanAnswerSheetsInner = ({
   }
 
   const handleScanComplete = async () => {
+    arrAnswersRef.current.forEach((response, index) => {
+      response.imageUri = fileUrls.current[index]
+      response.originalImgUri = debugFileUrls.current[index]
+    })
+    setlimitCameraModePopUp(false)
     const { assignmentId, groupId } = qs.parse(window.location?.search || '', {
       ignoreQueryPrefix: true,
     })
@@ -466,10 +534,35 @@ const ScanAnswerSheetsInner = ({
         <Spinner />
       ) : (
         <CameraUploaderWrapper>
+          {recordingEnabled ? (
+            <>
+              <RecordingIndicator>Recording...</RecordingIndicator>
+              <RecordVideoStream
+                ref={recorderRef}
+                onVideoUrlReady={(_url) => {
+                  const { assignmentId, groupId } = qs.parse(
+                    window.location?.search || '',
+                    {
+                      ignoreQueryPrefix: true,
+                    }
+                  )
+                  setRecordedVideo({
+                    url: _url,
+                    filename: `recorded_${assignmentId}_${groupId}.webm`,
+                  })
+                }}
+              />
+            </>
+          ) : null}
           <Title>
             Put your bubble sheet forms in front of the camera{' '}
             <HelpIcon onClick={openHelpModal}>?</HelpIcon>
           </Title>
+          {instructions ? (
+            <SubTitleDark width="350px" className="instructions">
+              <strong>{instructions}</strong>
+            </SubTitleDark>
+          ) : null}
           <SubTitle>
             Ensure the forms are fully visible and wait for the Form detected
             message with a beeper sound.
@@ -494,6 +587,16 @@ const ScanAnswerSheetsInner = ({
                   height: videoSetting.height,
                   border: '2px solid #ececec',
                   ...flipCameraViewStyle,
+                }}
+              />
+              <canvas
+                id="debugCanvasOutput"
+                ref={debugCanvasRef}
+                style={{
+                  display: 'none',
+                  width: videoSetting.width,
+                  height: videoSetting.height,
+                  border: '2px solid #ececec',
                 }}
               />
               <canvas
@@ -582,7 +685,17 @@ const ScanAnswerSheetsInner = ({
               onChange={() => {
                 setIsFrontFacing((x) => !x)
               }}
-              label="CAMERA IS FACING ME"
+              label={
+                <CheckBoxLabel>
+                  <strong>I AM USING A LAPTOP WEBCAM</strong>
+                  <Tooltip
+                    title="Tick to horizontally flip the camera recording to help you see and scan easily"
+                    placement="right"
+                  >
+                    <IconInfo />
+                  </Tooltip>
+                </CheckBoxLabel>
+              }
             />
           </Tooltip>
         </Row>
@@ -613,6 +726,20 @@ const ScanAnswerSheetsInner = ({
           hideCancelBtn
         />
       )}
+      {limitCameraModePopUp && (
+        <CustomModalStyled
+          visible={limitCameraModePopUp}
+          title="Maximum Limit Reached"
+          closable={false}
+          footer={[<EduButton onClick={handleScanComplete}>NEXT</EduButton>]}
+        >
+          <p>
+            Maximum 100 sheets can be scanned at a time. Please click next to
+            process these 100 sheets now. You can start again later if you want
+            to scan more sheets
+          </p>
+        </CustomModalStyled>
+      )}
     </PageLayout>
   )
 }
@@ -640,9 +767,15 @@ ScanAnswerSheets.defaultProps = {
 
 const enhance = compose(
   withRouter,
-  connect((state) => ({ ...selector(state) }), {
-    ...actions,
-  })
+  connect(
+    (state) => ({
+      ...selector(state),
+      enableOmrSessionRecording: state?.user?.user?.enableOmrSessionRecording,
+    }),
+    {
+      ...actions,
+    }
+  )
 )
 
 export default enhance(ScanAnswerSheets)
@@ -684,6 +817,10 @@ const SubTitle = styled.p`
 const SubTitleDark = styled(SubTitle)`
   color: ${linkColor};
   padding-bottom: 15px;
+  &.instructions {
+    color: ${dangerColor};
+    font-size: 15px;
+  }
 `
 
 const CameraModule = styled.div`
@@ -704,6 +841,36 @@ const HelpIcon = styled.span`
   color: ${white};
   border-radius: 100px;
   cursor: pointer;
+`
+
+const blinking = keyframes`
+  0%{
+    opacity: 0;
+  }
+  25% {
+    opacity: 0.5;
+  }
+  50% {
+    opacity: 1;
+  }
+  75% {
+    opacity: 0.5
+  }
+  100%{
+    opacity: 0;
+  }
+`
+
+const RecordingIndicator = styled.div`
+  background-color: red;
+  color: white;
+  width: 120px;
+  height: 50px;
+  line-height: 50px;
+
+  text-align: center;
+  border-radius: 5px;
+  animation: ${blinking} 1s linear infinite;
 `
 
 const Step = styled.div`
@@ -730,5 +897,12 @@ const Step = styled.div`
     letter-spacing: 0px;
     color: ${lightGrey9};
     opacity: 1;
+  }
+`
+
+const CheckBoxLabel = styled.span`
+  svg {
+    margin-left: 10px;
+    margin-bottom: -2px;
   }
 `

@@ -167,6 +167,8 @@ const EssayRichTextPreview = ({
                   placeholder={item?.placeholder}
                   toolbarSize="STD"
                   unsetMaxWidth
+                  sanitizeClipboardHtml
+                  restrictTags
                 />
               </FroalaEditorContainer>
             )}

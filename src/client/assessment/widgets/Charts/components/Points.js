@@ -65,6 +65,7 @@ const Points = ({
                   onMouseEnter={handleMouseAction(index)}
                   onMouseLeave={handleMouseAction(null)}
                   onMouseDown={onMouseDown(index)}
+                  data-cy={`cross-${index}`}
                 />
               ) : (
                 <Circle

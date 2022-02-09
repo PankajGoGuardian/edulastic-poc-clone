@@ -204,9 +204,11 @@ const SET_PRINTING_STATE = '[reports] set printing state'
 const SET_CSV_DOWNLOADING_STATE = '[reports] set csv download state'
 
 const GENERATE_CSV_REQUEST = '[reports] generate csv request'
-const GENERATE_CSV_STATUS = '[reports] generate csv request status'
 const SET_CSV_MODAL_VISIBLE = '[reports] set csv modal visible'
-const SET_CSV_DOCS = '[reports] set csv docs'
+const SET_HAS_CSV_DOCS = '[reports] set hasCsvDocs'
+const UPDATE_CSV_DOCS = '[reports] update csv docs'
+const UPDATE_CSV_DOCS_SUCCESS = '[reports] update csv docs success'
+const UPDATE_CSV_DOCS_ERROR = '[reports] update csv docs error'
 
 const RECEIVE_TEST_LIST_REQUEST = '[reports] receive test list request'
 const RECEIVE_TEST_LIST_REQUEST_SUCCESS =
@@ -227,9 +229,9 @@ export const setCsvDownloadingStateAction = createAction(
 export const receiveTestListAction = createAction(RECEIVE_TEST_LIST_REQUEST)
 
 export const generateCSVAction = createAction(GENERATE_CSV_REQUEST)
-export const setGenerateCSVStatusAction = createAction(GENERATE_CSV_STATUS)
 export const setCsvModalVisibleAction = createAction(SET_CSV_MODAL_VISIBLE)
-export const setCsvDocsAction = createAction(SET_CSV_DOCS)
+export const setHasCsvDocsAction = createAction(SET_HAS_CSV_DOCS)
+export const updateCsvDocsAction = createAction(UPDATE_CSV_DOCS)
 
 export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -270,9 +272,19 @@ export const getCsvModalVisible = createSelector(
   (state) => state.csvModalVisible
 )
 
+export const getHasCsvDocs = createSelector(
+  stateSelector,
+  (state) => state.hasCsvDocs
+)
+
 export const getCsvDocs = createSelector(
   stateSelector,
   (state) => state.csvDocs
+)
+
+export const getCsvDocsLoading = createSelector(
+  stateSelector,
+  (state) => state.csvDocsLoading
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -287,8 +299,9 @@ const initialState = {
   testList: [],
   testListLoading: true,
   csvModalVisible: false,
+  hasCsvDocs: false,
   csvDocs: [],
-  csvLoading: false,
+  csvDocsLoading: false,
 }
 
 const reports = createReducer(initialState, {
@@ -317,14 +330,23 @@ const reports = createReducer(initialState, {
     state.testList = []
     state.error = payload.error
   },
-  [GENERATE_CSV_STATUS]: (state, { payload }) => {
-    state.csvLoading = payload
-  },
   [SET_CSV_MODAL_VISIBLE]: (state, { payload }) => {
     state.csvModalVisible = payload
   },
-  [SET_CSV_DOCS]: (state, { payload }) => {
-    state.csvDocs = payload
+  [SET_HAS_CSV_DOCS]: (state, { payload }) => {
+    state.hasCsvDocs = payload
+  },
+  [UPDATE_CSV_DOCS]: (state) => {
+    state.csvDocsLoading = true
+  },
+  [UPDATE_CSV_DOCS_SUCCESS]: (state, { payload }) => {
+    state.csvDocs = payload.csvDocs
+    state.csvModalVisible = payload.csvModalVisible
+    state.csvDocsLoading = false
+  },
+  [UPDATE_CSV_DOCS_ERROR]: (state, { payload }) => {
+    state.error = payload.error
+    state.csvDocsLoading = false
   },
 })
 
@@ -384,12 +406,26 @@ export function* generateCSVSaga({ payload }) {
     if (!response) {
       throw new Error('Failed to generate CSV')
     }
-    yield put({ type: GENERATE_CSV_STATUS, payload: true })
   } catch (error) {
     const errorMessage =
       error.response.data?.message || 'Download request failed.'
     styledNotification({ msg: errorMessage })
-    yield put({ type: GENERATE_CSV_STATUS, payload: false })
+  }
+}
+
+export function* updateCsvDocsSaga({ payload = {} }) {
+  try {
+    const { csvModalVisible = false } = payload
+    // get signed download URLs for generated CSVs
+    const response = yield call(reportsApi.fetchGeneratedCSVs)
+    yield put({
+      type: UPDATE_CSV_DOCS_SUCCESS,
+      payload: { csvDocs: response, csvModalVisible },
+    })
+  } catch (error) {
+    const errorMessage = error?.message || 'Failed to fetch secured CSVs'
+    styledNotification({ msg: errorMessage })
+    yield put({ type: UPDATE_CSV_DOCS_ERROR, payload: { error: errorMessage } })
   }
 }
 
@@ -713,7 +749,8 @@ export function* reportSaga() {
     reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
-    yield takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
+    takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
+    takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
     takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
   ])

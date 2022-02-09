@@ -2719,7 +2719,11 @@ function* publishTestSaga({ payload }) {
        */
       yield put(updateAssingnmentSettingsAction(update))
 
-      yield put(push(`/author/assignments/${id}`))
+      yield put(
+        push(`/author/assignments/${id}`, {
+          assessmentAssignedFrom: 'Created New',
+        })
+      )
     } else {
       const role = yield select(getUserRole)
       if (role !== roleuser.EDULASTIC_CURATOR)
@@ -3462,6 +3466,7 @@ function* duplicateTestSaga({ payload }) {
       cloneItems = false,
       playlistId,
       updatePlaylist = false,
+      updateContentVersionId = false,
     } = payload
     const queryParams = {
       _id,
@@ -3470,6 +3475,7 @@ function* duplicateTestSaga({ payload }) {
       cloneItems,
       playlistId,
       updatePlaylist,
+      updateContentVersionId,
     }
     const data = yield call(assignmentApi.duplicateAssignment, queryParams)
     if (redirectToNewTest) {

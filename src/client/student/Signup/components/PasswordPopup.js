@@ -13,7 +13,7 @@ const ButtonsContainer = styled.div`
   justify-content: flex-end;
   padding-top: 10px;
 `
-
+// TODO - Need to use the constant roleuser.ROLE_LABEL from '@edulastic/constants'
 const roles = {
   'district-admin': 'District Admin',
   'school-admin': 'School Admin',

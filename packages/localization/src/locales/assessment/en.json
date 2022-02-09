@@ -835,10 +835,7 @@
         "x_distance": "X distance ",
         "y_distance": "Y distance",
         "show_axis_label": "Show axis label",
-        "show_grid": "Show grid",
-        "rectangular": "Rectangular",
-        "complex": "Complex",
-        "polar": "Polar"
+        "show_grid": "Show grid"
       },
       "settingsPopup": {
         "xAxis": "X-AXIS",

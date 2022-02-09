@@ -12,6 +12,7 @@ import {
   white,
   extraDesktopWidthMax,
   themeColorBlue,
+  themeColorHoverBlue,
 } from '@edulastic/colors'
 import {
   FieldLabel,
@@ -42,6 +43,12 @@ import {
   showJoinSchoolAction,
   hideJoinSchoolAction,
   updatePowerTeacherAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+  isDefaultDASelector,
+  isSignupUsingUNAndPassSelector,
+  setIsUserOnProfilePageAction,
 } from '../../../../student/Login/ducks'
 import { Wrapper } from '../../../../student/styled/index'
 import StandardSetModal from '../../../InterestedStandards/components/StandardSetsModal/StandardSetsModal'
@@ -398,6 +405,13 @@ class ProfileBody extends React.Component {
     this.toggleModal('REMOVE_SCHOOL', false)
   }
 
+  handleShowVerifyModal = () => {
+    const { toggleVerifyEmailModal, setIsUserOnProfilePage } = this.props
+    // set the flag variable
+    setIsUserOnProfilePage(true)
+    toggleVerifyEmailModal(true)
+  }
+
   handleSelectStandardButton = () => {
     const { getDictCurriculums } = this.props
     getDictCurriculums()
@@ -572,6 +586,10 @@ class ProfileBody extends React.Component {
       userOrg,
       orgGroupList,
       isCleverLibraryUser,
+      emailVerified,
+      verificationTS,
+      isDefaultDA,
+      isSignupUsingUNAndPass,
     } = this.props
     const {
       showChangePassword,
@@ -643,6 +661,7 @@ class ProfileBody extends React.Component {
                   <SubHeader>
                     <Title>Instructor Information</Title>
                     {!isEditProfile &&
+                    !isDefaultDA &&
                     ['teacher', 'district-admin', 'school-admin'].includes(
                       user.role
                     ) ? (
@@ -706,14 +725,29 @@ class ProfileBody extends React.Component {
                         <DetailTitle>
                           {t('common.title.emailUsernameLabel')}
                         </DetailTitle>
-                        <DetailData>{user.email}</DetailData>
+                        <DetailData>
+                          {user.email}{' '}
+                          {!emailVerified &&
+                          (verificationTS || isSignupUsingUNAndPass) &&
+                          !isDefaultDA ? (
+                            <VerifyEmailSpan>
+                              (Email Not Verified.{' '}
+                              <span onClick={this.handleShowVerifyModal}>
+                                Verify Now!
+                              </span>
+                              )
+                            </VerifyEmailSpan>
+                          ) : (
+                            ''
+                          )}
+                        </DetailData>
                       </DetailRow>
                     </Details>
                   ) : (
                     this.getEditProfileContent()
                   )}
                 </UserDetail>
-                {user.role === 'edulastic-curator' ? null : (
+                {user.role === 'edulastic-curator' || isDefaultDA ? null : (
                   <ChangePasswordToggleButton
                     onClick={() => {
                       this.setState({ showChangePassword: !showChangePassword })
@@ -990,6 +1024,10 @@ const enhance = compose(
       user: state.user.user,
       joinSchoolVisible: state.user.joinSchoolVisible,
       userInfo: get(state.user, 'user', {}),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
+      isSignupUsingUNAndPass: isSignupUsingUNAndPassSelector(state),
       curriculums: getCurriculumsListSelector(state),
       interestedCurriculums: getInterestedCurriculumsByOrgType(state),
       orgSchools: getOrgSchools(state),
@@ -1009,6 +1047,8 @@ const enhance = compose(
       showJoinSchool: showJoinSchoolAction,
       hideJoinSchool: hideJoinSchoolAction,
       updatePowerTeacher: updatePowerTeacherAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
+      setIsUserOnProfilePage: setIsUserOnProfilePageAction,
     }
   )
 )
@@ -1093,6 +1133,20 @@ const SchoolListWrapper = styled.span`
   width: 100%;
   display: flex;
   display: inline-block;
+`
+
+const VerifyEmailSpan = styled.span`
+  font-family: 'Times New Roman', serif;
+  font-size: 1.1em;
+  font-weight: 600;
+  margin-left: 1em;
+  span {
+    color: ${themeColorBlue};
+    cursor: pointer;
+    :hover {
+      color: ${themeColorHoverBlue};
+    }
+  }
 `
 
 const StandardSetsList = styled(SchoolListWrapper)`

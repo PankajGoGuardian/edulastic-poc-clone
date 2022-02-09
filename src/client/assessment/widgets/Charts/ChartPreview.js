@@ -237,7 +237,7 @@ const ChartPreview = ({
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
           {view === PREVIEW && (
             <>
-              <QuestionTitleWrapper>
+              <QuestionTitleWrapper data-cy="questionTitleWrapper">
                 <Stimulus
                   style={{ maxWidth: '100%' }}
                   dangerouslySetInnerHTML={{ __html: item.stimulus }}

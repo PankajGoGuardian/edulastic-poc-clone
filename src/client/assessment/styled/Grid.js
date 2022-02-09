@@ -7,7 +7,7 @@ export const ColumnLabel = styled.div`
   text-transform: uppercase;
   font-size: ${({ theme }) => theme.smallFontSize};
   font-weight: 600;
-  text-align: ${({ align }) => align || 'center'};
+  text-align: center;
   color: ${greyScoreCardTitleColor};
 `
 

@@ -10,7 +10,15 @@ import {
 } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { captureSentryException, notification } from '@edulastic/common'
-import { get, findIndex, keyBy, isEmpty, capitalize } from 'lodash'
+import {
+  get,
+  findIndex,
+  keyBy,
+  isEmpty,
+  capitalize,
+  uniq,
+  flatten,
+} from 'lodash'
 import {
   googleApi,
   groupApi,
@@ -1017,10 +1025,14 @@ function* syncClassWithCanvasSaga({ payload }) {
   try {
     const { groupId: classId } = payload
     yield put(setSyncClassLoadingAction(true))
-    yield call(canvasApi.canvasSync, payload)
+    const result = yield call(canvasApi.canvasSync, payload)
     yield put(setSyncClassLoadingAction(false))
     yield put(fetchStudentsByIdAction({ classId }))
-    notification({ type: 'success', messageKey: 'syncWithCanvasIsComplete' })
+    let message = 'Sync with Canvas is Complete.'
+    if (result.length) {
+      message = `${message} ${result}`
+    }
+    notification({ type: 'success', msg: message })
   } catch (err) {
     captureSentryException(err)
     console.error(err)
@@ -1095,8 +1107,19 @@ function* syncClassListWithCleverSaga({ payload }) {
       grades: c.grades,
       standardSets: c.standardSets,
     }))
-    yield call(cleverApi.syncCleverClasses, filteredPayload)
-    notification({ type: 'success', messageKey: 'syncWithCleverIsComplete' })
+    const result = yield call(cleverApi.syncCleverClasses, filteredPayload)
+    const teacherNotEnrolled = uniq(
+      flatten(
+        result
+          .filter((doc) => doc.multipleDistrictUserEmail)
+          .map((doc) => doc.multipleDistrictUserEmail)
+      )
+    )
+    let message = 'Sync with Clever is complete.'
+    if (teacherNotEnrolled.length) {
+      message = `${message} ${teacherNotEnrolled} can't be enrolled to class as they are part of another district.`
+    }
+    notification({ type: 'success', msg: message })
     const classSyncLoadingStatus = yield select(getClassSyncLoadingStatus)
     if (classSyncLoadingStatus) {
       yield put(fetchStudentsByIdAction({ classId: classList?.[0]?._id }))

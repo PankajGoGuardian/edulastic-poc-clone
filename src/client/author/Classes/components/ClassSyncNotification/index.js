@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
-import { uniqBy, pull, isEmpty, capitalize } from 'lodash'
+import { uniqBy, pull, isEmpty, capitalize, uniq } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import {
   destroyNotificationMessage,
@@ -125,7 +125,14 @@ const ClassSyncNotificationListener = ({
 
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
-      const { status, studentsSaved, counter, groupId, message } = doc
+      const {
+        status,
+        studentsSaved,
+        counter,
+        groupId,
+        message,
+        multipleDistrictUserEmail,
+      } = doc
       // should not append `Please try again later, or email support@edulastic.com.`
       const exact = message?.includes('No google class found')
       if (
@@ -133,9 +140,17 @@ const ClassSyncNotificationListener = ({
         !notificationIds.includes(doc.__id)
       ) {
         setNotificationIds([...notificationIds, doc.__id])
+        let teacherNotEnrolled = ''
+        if (multipleDistrictUserEmail?.length) {
+          teacherNotEnrolled = `${uniq(
+            multipleDistrictUserEmail
+          )} can't be enrolled to class as they are part of another district.`
+        }
         // show sync complete notification
         notification({
-          msg: message || 'Class sync task completed.',
+          msg: `${
+            message || 'Class sync task completed.'
+          } ${teacherNotEnrolled}`,
           type: message ? 'error' : 'success',
           exact,
           onClose: () => {
@@ -148,15 +163,23 @@ const ClassSyncNotificationListener = ({
 
   const showUserNotificationOnCanvasBulkSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
-      const { status, message } = doc
+      const { status, message, multipleDistrictUserEmail } = doc
 
       if (status === 'completed' && !notificationIds.includes(doc.__id)) {
         setCanvasBulkSyncStatus('SUCCESS')
         sessionStorage.removeItem('signupFlow')
         setNotificationIds([...notificationIds, doc.__id])
+        let teacherNotEnrolled = ''
+        if (multipleDistrictUserEmail?.length) {
+          teacherNotEnrolled = `${uniq(
+            multipleDistrictUserEmail
+          )} can't be enrolled to class as they are part of another district.`
+        }
         // show sync complete notification
         notification({
-          msg: message || 'Canvas Class sync task completed.',
+          msg: `${
+            message || 'Canvas Class sync task completed.'
+          } ${teacherNotEnrolled}`,
           type: 'success',
           onClose: () => {
             deleteNotificationDocument(
@@ -179,7 +202,13 @@ const ClassSyncNotificationListener = ({
 
   const showUserNotificationOnAtlasClassSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
-      const { status, message, counter, groupIds } = doc
+      const {
+        status,
+        message,
+        counter,
+        groupIds,
+        multipleDistrictUserEmail,
+      } = doc
       const providerName =
         user?.orgData?.districts?.find((o) => !isEmpty(o.atlasProviderName))
           .atlasProviderName || 'Atlas'
@@ -189,10 +218,17 @@ const ClassSyncNotificationListener = ({
         !notificationIds.includes(doc.__id)
       ) {
         setNotificationIds([...notificationIds, doc.__id])
+        let teacherNotEnrolled = ''
+        if (multipleDistrictUserEmail?.length) {
+          teacherNotEnrolled = `${uniq(
+            multipleDistrictUserEmail
+          )} can't be enrolled to class as they are part of another district.`
+        }
         // show sync complete notification
         notification({
-          msg:
-            message || `${capitalize(providerName)} class sync task completed.`,
+          msg: `${
+            message || `${capitalize(providerName)} class sync task completed.`
+          } ${teacherNotEnrolled}`,
           type: 'success',
           onClose: () => {
             setNotificationIds([...pull(notificationIds, [doc.__id])])
@@ -202,6 +238,7 @@ const ClassSyncNotificationListener = ({
             )
           },
         })
+
         if (getClassSyncLoading) {
           fetchStudentsById({ classId: groupIds?.[0] })
           setSyncClassLoading(false)

@@ -41,7 +41,13 @@ import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
 import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
-import { toggleAdminAlertModalAction } from '../../../../student/Login/ducks'
+import {
+  toggleAdminAlertModalAction,
+  toggleVerifyEmailModalAction,
+  getEmailVerified,
+  getVerificationTS,
+  isDefaultDASelector,
+} from '../../../../student/Login/ducks'
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/test'
 import CustomTitleOnCloneModal from '../../../CurriculumSequence/components/CustomTitleOnCloneModal'
@@ -88,15 +94,23 @@ class Item extends Component {
 
   moveToItem = (e) => {
     e && e.stopPropagation()
-    const { history, item, isPlaylist } = this.props
+    const { history, item, isPlaylist, isTestRecommendation } = this.props
+    const source = isTestRecommendation ? 'Recommendation' : 'Library'
     if (isPlaylist) {
-      history.push(`/author/playlists/${item._id}#review`)
+      history.push({
+        pathname: `/author/playlists/${item._id}`,
+        hash: 'review',
+        state: {
+          assessmentAssignedFrom: source,
+        },
+      })
     } else {
       const tab = item.title ? 'review' : 'description'
       history.push({
         pathname: `/author/tests/tab/${tab}/id/${item._id}`,
         state: {
           editTestFlow: true,
+          assessmentAssignedFrom: source,
         },
       })
     }
@@ -132,6 +146,10 @@ class Item extends Component {
       isFreeAdmin,
       isSAWithoutSchools,
       toggleAdminAlertModal,
+      emailVerified,
+      verificationTS,
+      isDefaultDA,
+      toggleVerifyEmailModal,
       orgCollections,
       isTestRecommendation,
     } = this.props
@@ -144,8 +162,17 @@ class Item extends Component {
     )?._id
     const selectedCollections = collections.map((x) => x._id)
     const source = isTestRecommendation ? 'Recommendation' : 'Library'
+    let expiryDate
+    if (!emailVerified && verificationTS && !isDefaultDA) {
+      const existingVerificationTS = new Date(verificationTS)
+      expiryDate = new Date(
+        existingVerificationTS.setDate(existingVerificationTS.getDate() + 14)
+      ).getTime()
+    }
     if (isFreeAdmin || isSAWithoutSchools) toggleAdminAlertModal()
-    else
+    else if (expiryDate && expiryDate < Date.now() && !isDefaultDA) {
+      toggleVerifyEmailModal(true)
+    } else
       history.push({
         pathname: `/author/assignments/${item._id}`,
         state: {
@@ -162,8 +189,8 @@ class Item extends Component {
     this.setState({ isOpenModal: false })
   }
 
-  openModal = () => {
-    if (this.props.isTestRecommendation) {
+  openModal = (source) => {
+    if (this.props.isTestRecommendation && source !== 'more') {
       segmentApi.genericEventTrack('Recommended_TestClick', {})
     }
     this.setState({ isOpenModal: true })
@@ -510,6 +537,9 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isOrganizationDistrictUser: isOrganizationDistrictUserSelector(state),
       isUseThisLoading: getIsUseThisLoading(state),
+      emailVerified: getEmailVerified(state),
+      verificationTS: getVerificationTS(state),
+      isDefaultDA: isDefaultDASelector(state),
       isUsedModalVisible: state.curriculumSequence?.isUsedModalVisible,
       previouslyUsedPlaylistClone:
         state.curriculumSequence?.previouslyUsedPlaylistClone,
@@ -522,6 +552,7 @@ const enhance = compose(
       duplicatePlayList: duplicatePlaylistRequestAction,
       duplicateTest: duplicateTestRequestAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
+      toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       useThisPlayList: useThisPlayListAction,
       cloneThisPlayList: cloneThisPlayListAction,

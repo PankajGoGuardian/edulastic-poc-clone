@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { MathFormulaDisplay } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
@@ -23,19 +22,6 @@ import { InnerTitle } from '../../../../styled/InnerTitle'
 import utils from '../../common/utils'
 import { CONSTANT } from '../../Builder/config'
 
-const mathRegex = /data-latex="([^"]+)"/g
-
-const ObjectLabel = ({ type, label }) => {
-  if (mathRegex.test(label)) {
-    return (
-      <MathLabel
-        dangerouslySetInnerHTML={{ __html: `${type}<br />${label}` }}
-      />
-    )
-  }
-  return <span dangerouslySetInnerHTML={{ __html: `${type} ${label}` }} />
-}
-
 class DrawingObjects extends Component {
   state = {
     isDashed: {},
@@ -47,7 +33,11 @@ class DrawingObjects extends Component {
     )
 
     if (drawingObject.label) {
-      return <ObjectLabel type={type} label={drawingObject.label} />
+      return (
+        <span
+          dangerouslySetInnerHTML={{ __html: `${type} ${drawingObject.label}` }}
+        />
+      )
     }
 
     if (drawingObject.pointLabels) {
@@ -55,7 +45,11 @@ class DrawingObjects extends Component {
         .map((item) => item.label)
         .join('')
       if (pointLabels) {
-        return <ObjectLabel type={type} label={pointLabels} />
+        return (
+          <span
+            dangerouslySetInnerHTML={{ __html: `${type} ${pointLabels}` }}
+          />
+        )
       }
     }
 
@@ -257,16 +251,4 @@ const Line = styled.span`
   display: inline-block;
   min-width: 40px;
   vertical-align: middle;
-`
-
-const MathLabel = styled(MathFormulaDisplay)`
-  width: auto;
-  text-align: left;
-
-  .input__math {
-    text-transform: initial;
-  }
-  span {
-    white-space: nowrap !important;
-  }
 `

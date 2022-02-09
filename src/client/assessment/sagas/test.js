@@ -12,6 +12,7 @@ import {
   select,
   take,
   takeLatest,
+  fork,
 } from 'redux-saga/effects'
 import { Modal } from 'antd'
 import {
@@ -72,6 +73,7 @@ import {
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
   RESET_TEST_ITEMS,
+  SAVE_USER_WORK,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -155,12 +157,15 @@ const getSettings = (test, testActivity, preview) => {
   const { assignmentSettings = {} } = testActivity || {}
   const calcType = !preview ? assignmentSettings.calcType : test.calcType
   // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
-  const calcProvider =
-    calcType === testContants.calculatorTypes.GRAPHING
-      ? 'DESMOS'
-      : preview
-      ? test.calculatorProvider
-      : testActivity?.calculatorProvider
+  const desmosGraphingCalcTypes = [
+    testContants.calculatorTypes.GRAPHING,
+    testContants.calculatorTypes.GRAPHING_STATE,
+  ]
+  const calcProvider = desmosGraphingCalcTypes.includes(calcType)
+    ? 'DESMOS'
+    : preview
+    ? test.calculatorProvider
+    : testActivity?.calculatorProvider
 
   const maxAnswerChecks = preview
     ? test.maxAnswerChecks
@@ -247,6 +252,15 @@ function getScratchpadDataFromAttachments(attachments) {
     }
   })
   return scratchPadData
+}
+
+function* loadAnnotationsToStore({ data, referrerId2 }) {
+  const result = yield attachmentApi.loadDataFromUrl(data.freeNotesStd)
+  const userWork = yield select((state) => state.userWork.present[referrerId2])
+  yield put({
+    type: SAVE_USER_WORK,
+    payload: { [referrerId2]: { ...userWork, freeNotesStd: result.data } },
+  })
 }
 
 function* loadTest({ payload }) {
@@ -574,7 +588,6 @@ function* loadTest({ payload }) {
         previousQuestionActivities,
         'testItemId'
       )
-
       const testItemIds = testItems.map((i) => i._id)
       const { attachments = [] } = yield call(
         attachmentApi.loadAllAttachments,
@@ -616,6 +629,7 @@ function* loadTest({ payload }) {
         type: LOAD_PREVIOUS_RESPONSES,
         payload: previousQActivitiesById,
       })
+
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
@@ -649,6 +663,17 @@ function* loadTest({ payload }) {
             payload: scratchPadData,
           })
         }
+      }
+
+      if (test.isDocBased) {
+        const annotationAttachments = attachments.filter(
+          ({ type }) => type === 'doc-annotations'
+        )
+        yield all(
+          annotationAttachments.map(({ referrerId, data, referrerId2 }) =>
+            fork(loadAnnotationsToStore, { referrerId, data, referrerId2 })
+          )
+        )
       }
 
       const testUserWork = get(activity, 'userWork')

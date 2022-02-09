@@ -5,7 +5,11 @@ import { whiteSmoke, fadedBlack, red, desktopWidth } from '@edulastic/colors'
 export const Banner = ({ text, buttonText, onButtonClick, showButton }) => (
   <BannerContainer>
     <BannerText>{text}</BannerText>
-    {showButton && <Button onClick={onButtonClick}>{buttonText}</Button>}
+    {showButton && (
+      <Button data-cy="stop-acting-button" onClick={onButtonClick}>
+        {buttonText}
+      </Button>
+    )}
   </BannerContainer>
 )
 

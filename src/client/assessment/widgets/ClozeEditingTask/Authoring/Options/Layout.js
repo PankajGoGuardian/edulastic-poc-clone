@@ -233,6 +233,7 @@ class Layout extends Component {
               onBlur={onWidthInputBlur()}
               onChange={this.handleInputChange}
               value={getMainWidthInputValue()}
+              data-cy="widthInput"
             />
           </Col>
           <Col md={12}>
@@ -244,6 +245,7 @@ class Layout extends Component {
               onBlur={this.handleBlurGlobalHeight}
               onChange={(e) => changeUiStyle('heightpx', +e.target.value)}
               value={uiStyle.heightpx}
+              data-cy="heightInput"
             />
           </Col>
         </Row>
@@ -277,6 +279,7 @@ class Layout extends Component {
                       margin="0px"
                       style={{ float: 'right' }}
                       onClick={() => removeIndividual(respIndex)}
+                      data-cy="individualResponseDelete"
                     >
                       X
                     </CustomStyleBtn>
@@ -301,6 +304,7 @@ class Layout extends Component {
                         responsecontainerindividual,
                         respIndex
                       )}
+                      data-cy="individualResponseWidthInput"
                     />
                   </Col>
                   <Col md={12}>
@@ -317,6 +321,7 @@ class Layout extends Component {
                         )
                       }
                       value={responsecontainerindividual.heightpx}
+                      data-cy="individualResponseHeightInput"
                     />
                   </Col>
                 </Row>
@@ -326,7 +331,10 @@ class Layout extends Component {
         )}
         <Row>
           <Col md={12}>
-            <CustomStyleBtn onClick={addIndividual}>
+            <CustomStyleBtn
+              onClick={addIndividual}
+              data-cy="addIndividualResponseBox"
+            >
               {t('component.options.add')}
             </CustomStyleBtn>
           </Col>

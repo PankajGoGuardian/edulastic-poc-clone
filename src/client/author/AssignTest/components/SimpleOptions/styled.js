@@ -104,10 +104,10 @@ export const AlignRight = styled(RadioGroup)`
   .ant-radio-wrapper {
     white-space: normal;
     margin-right: 25px;
-    max-width: 200px;
+    max-width: ${({ maxWidth }) => maxWidth || '200px'};
     display: flex;
     align-items: center;
-    margin-bottom: 4px;
+    margin-bottom: 8px;
 
     span {
       display: inline-block;

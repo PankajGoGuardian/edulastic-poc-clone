@@ -1,9 +1,10 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import moment from 'moment'
 import { Col, Input, Radio } from 'antd'
 
-import { EduButton, notification } from '@edulastic/common'
+import { CheckboxLabel, EduButton, notification } from '@edulastic/common'
 import { userApi } from '@edulastic/api'
+import { roleuser } from '@edulastic/constants'
 
 import {
   HeadingSpan,
@@ -32,25 +33,49 @@ const fields = {
   mso365: 'msoId',
   cli: 'cliId',
   openIdProvider: 'Open ID Provider',
+  isSuperAdmin: 'super admin',
 }
 
 const UpdateUser = (props) => {
   const [selected, setSelected] = useState(0)
   const [isEdit, setIsEdit] = useState(false)
   const [loading, setLoading] = useState(false)
+  const [isSuperAdmin, setIsSuperAdmin] = useState(false)
   const [newUsername, setNewUsername] = useState('')
   const { userData, clearUserData } = props
 
   const user = userData[selected]
 
+  useEffect(() => {
+    if (
+      user.permissions &&
+      user.permissions.length &&
+      user.permissions.includes('super_admin')
+    ) {
+      setIsSuperAdmin(true)
+    }
+  }, [user])
+
+  const changeIsSuperAdmin = (e) => setIsSuperAdmin(e.target.checked)
+
   const updateUser = async () => {
     setLoading(true)
     try {
-      await userApi.updateUsername({
+      const updateData = {
         username: user.username,
         userId: user._id,
         newUsername,
-      })
+      }
+      if (
+        user.role === roleuser.DISTRICT_ADMIN ||
+        user.role === roleuser.SCHOOL_ADMIN
+      ) {
+        const userPermissions = user.permissions || []
+        updateData.permissions = isSuperAdmin
+          ? [...new Set([...userPermissions, 'super_admin'])]
+          : userPermissions.filter((item) => item !== 'super_admin')
+      }
+      await userApi.updateUsername(updateData)
       notification({
         type: 'success',
         msg: `User has been Updated successfully`,
@@ -79,30 +104,59 @@ const UpdateUser = (props) => {
           <Row>
             <Col span={8}>
               <Radio key={index} value={index}>
-                {Object.keys(fields).map((field) => (
-                  <Row>
-                    {isEdit &&
-                    field === 'username' &&
-                    data?._id === user?._id ? (
-                      <>
-                        <HeadingSpan>{fields[field]}:</HeadingSpan>
-                        &nbsp;&nbsp;
-                        <Input
-                          type="text"
-                          value={newUsername}
-                          onChange={(e) => {
-                            setNewUsername(e.target.value)
-                          }}
-                        />
-                      </>
-                    ) : (
-                      <>
-                        <HeadingSpan>{fields[field]}:</HeadingSpan>
-                        <ValueSpan>{data[field] || '-'}</ValueSpan>
-                      </>
-                    )}
-                  </Row>
-                ))}
+                {Object.keys(fields).map((field) => {
+                  if (
+                    data?.role !== roleuser.SCHOOL_ADMIN &&
+                    (data?.role !== roleuser.DISTRICT_ADMIN ||
+                      data?.permissions?.includes('curator')) &&
+                    field === 'isSuperAdmin'
+                  ) {
+                    return null
+                  }
+                  if (
+                    (data?.role === roleuser.SCHOOL_ADMIN ||
+                      data?.role === roleuser.DISTRICT_ADMIN) &&
+                    field === 'isSuperAdmin'
+                  ) {
+                    return (
+                      <Row>
+                        <Col>
+                          <CheckboxLabel
+                            disabled={!isEdit}
+                            checked={isSuperAdmin}
+                            onChange={changeIsSuperAdmin}
+                          >
+                            Super Admin
+                          </CheckboxLabel>
+                        </Col>
+                      </Row>
+                    )
+                  }
+                  return (
+                    <Row>
+                      {isEdit &&
+                      field === 'username' &&
+                      data?._id === user?._id ? (
+                        <>
+                          <HeadingSpan>{fields[field]}:</HeadingSpan>
+                          &nbsp;&nbsp;
+                          <Input
+                            type="text"
+                            value={newUsername}
+                            onChange={(e) => {
+                              setNewUsername(e.target.value)
+                            }}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <HeadingSpan>{fields[field]}:</HeadingSpan>
+                          <ValueSpan>{data[field] || '-'}</ValueSpan>
+                        </>
+                      )}
+                    </Row>
+                  )
+                })}
                 {data.subscription && (
                   <>
                     <Row>

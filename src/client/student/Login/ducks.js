@@ -44,7 +44,11 @@ import {
   signupGeneralSettingsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
-import { getUser, getUserOrgId } from '../../author/src/selectors/user'
+import {
+  getUser,
+  getUserOrgId,
+  isSuperAdminSelector,
+} from '../../author/src/selectors/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { JOIN_CLASS_REQUEST_SUCCESS } from '../ManageClass/ducks'
 import 'firebase/auth'
@@ -58,6 +62,33 @@ import {
   schoologySyncAssignmentGradesAction,
 } from '../../author/src/actions/assignments'
 import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
+
+const superAdminRoutes = [
+  // SA-DA common routes
+  '/author/districtprofile',
+  '/author/schools',
+  '/author/classes',
+  '/author/courses',
+  '/author/class-enrollment',
+  '/author/groups',
+  '/author/groups/students',
+  '/author/users/district-admin',
+  '/author/users/school-admin',
+  '/author/users/teacher',
+  '/author/users/student',
+  '/author/content/collections',
+  '/author/content/buckets',
+  '/author/content/tools',
+  '/author/settings/districtpolicies',
+  '/author/settings/testsettings',
+  '/author/settings/term',
+  '/author/settings/interested-standards',
+  '/author/settings/standards-proficiency',
+  '/author/settings/performance-bands',
+  // SA routes
+  '/author/schoolprofile',
+  '/author/settings/schoolpolicies',
+]
 
 // types
 export const LOGIN = '[auth] login'
@@ -104,6 +135,14 @@ export const RESET_PASSWORD_USER_SUCCESS = '[auth] reset password user success'
 export const RESET_PASSWORD_REQUEST = '[auth] reset password request'
 export const RESET_PASSWORD_FAILED = '[auth] reset password failed'
 export const RESET_PASSWORD_SUCCESS = '[auth] reset password success'
+export const VERIFY_EMAIL_REQUEST = '[auth] verify email'
+export const VERIFY_EMAIL_SUCCESS = '[auth] verify email success'
+export const VERIFY_EMAIL_FAILED = '[auth] verify email failed'
+export const SEND_VERIFICATION_EMAIL_REQUEST = '[auth] send verification email'
+export const SEND_VERIFICATION_EMAIL_SUCCESS =
+  '[auth] send verification email success'
+export const SEND_VERIFICATION_EMAIL_FAILED =
+  '[auth] send verification email failed'
 export const STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST =
   '[auth] student signup check classcode request'
 export const UPDATE_DEFAULT_GRADES = '[user] update default grades'
@@ -181,6 +220,10 @@ export const PERSIST_AUTH_STATE_AND_REDIRECT =
 export const TOGGLE_IOS_RESTRICT_NAVIGATION_MODAL =
   '[user] toggle ios restrict navigation modal'
 export const TOGGLE_ADMIN_ALERT_MODAL = '[user] toggle admin alert modal'
+export const TOGGLE_VERIFY_EMAIL_MODAL = '[user] toggle verify email modal'
+export const SET_IS_SIGNED_UP_USING_USERNAME_AND_PASSWORD =
+  '[user] set signedUpUsingUsernameAndPassword flag'
+export const SET_ON_PROFILE_PAGE = '[user] set on profile page'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -215,6 +258,18 @@ export const requestNewPasswordResetControlAction = createAction(
 )
 export const resetPasswordUserAction = createAction(RESET_PASSWORD_USER_REQUEST)
 export const resetPasswordAction = createAction(RESET_PASSWORD_REQUEST)
+export const verifyEmailAction = createAction(VERIFY_EMAIL_REQUEST)
+export const verifyEmailSuccessAction = createAction(VERIFY_EMAIL_SUCCESS)
+export const verifyEmailFailedAction = createAction(VERIFY_EMAIL_FAILED)
+export const sendVerificationEmailAction = createAction(
+  SEND_VERIFICATION_EMAIL_REQUEST
+)
+export const sendVerificationEmailSuccessAction = createAction(
+  SEND_VERIFICATION_EMAIL_SUCCESS
+)
+export const sendVerificationEmailFailedAction = createAction(
+  SEND_VERIFICATION_EMAIL_FAILED
+)
 export const studentSignupCheckClasscodeAction = createAction(
   STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST
 )
@@ -285,6 +340,16 @@ export const toggleAdminAlertModalAction = createAction(
   TOGGLE_ADMIN_ALERT_MODAL
 )
 
+export const toggleVerifyEmailModalAction = createAction(
+  TOGGLE_VERIFY_EMAIL_MODAL
+)
+
+export const setIsUserSignedUpUsingUsernameAndPassword = createAction(
+  SET_IS_SIGNED_UP_USING_USERNAME_AND_PASSWORD
+)
+
+export const setIsUserOnProfilePageAction = createAction(SET_ON_PROFILE_PAGE)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -298,6 +363,10 @@ const initialState = {
   isRoleConfirmation: false,
   iosRestrictNavigationModalVisible: false,
   showAdminAlertModal: false,
+  showVerifyEmailModal: false,
+  emailVerifiedStatus: '',
+  signedUpUsingUsernameAndPassword: false,
+  isUserIdPresent: true,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -519,6 +588,39 @@ export default createReducer(initialState, {
   [RESET_PASSWORD_FAILED]: (state) => {
     state.requestingNewPassword = false
   },
+  [VERIFY_EMAIL_SUCCESS]: (state, { payload }) => {
+    state.emailVerifiedStatus = payload.message ? 'alreadyVerified' : 'success'
+    state.userId = payload._id
+    state.user = state.user || {}
+    if (payload._id) {
+      Object.assign(state.user, { _id: payload._id, ...state.user })
+    }
+  },
+  [VERIFY_EMAIL_FAILED]: (state, { payload }) => {
+    const { error, user } = payload
+    state.emailVerifiedStatus = error?.message ? 'linkExpired' : 'failed'
+    // if verification code has expired while verifying email then only set user id
+    state.user = state.user || {}
+    if (user?._id) {
+      Object.assign(state.user, { _id: user._id, ...state.user })
+    } else if (error?.message === 'Link expired') {
+      state.isUserIdPresent = false
+    }
+  },
+  [SEND_VERIFICATION_EMAIL_SUCCESS]: (state) => {
+    state.emailVerifiedStatus = ''
+    state.sendEmailVerificationLinkStatus = 'success'
+  },
+  [SEND_VERIFICATION_EMAIL_FAILED]: (state) => {
+    state.emailVerifiedStatus = ''
+    state.sendEmailVerificationLinkStatus = 'failed'
+  },
+  [SET_IS_SIGNED_UP_USING_USERNAME_AND_PASSWORD]: (state) => {
+    state.signedUpUsingUsernameAndPassword = true
+  },
+  [SET_ON_PROFILE_PAGE]: (state, { payload }) => {
+    state.onProfilePage = payload
+  },
   [GET_INVITE_DETAILS_SUCCESS]: (state, { payload }) => {
     state.invitedUserDetails = payload
   },
@@ -730,6 +832,9 @@ export default createReducer(initialState, {
   [TOGGLE_ADMIN_ALERT_MODAL]: (state) => {
     state.showAdminAlertModal = !state.showAdminAlertModal
   },
+  [TOGGLE_VERIFY_EMAIL_MODAL]: (state, { payload }) => {
+    state.showVerifyEmailModal = payload
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -825,6 +930,27 @@ export const proxyRole = createSelector(
   (proxyrole) => proxyrole
 )
 
+export const getEmailVerified = createSelector(
+  ['user.user.emailVerified'],
+  (emailVerified) => emailVerified
+)
+
+export const getVerificationTS = createSelector(
+  ['user.user.verificationTS'],
+  (verificationTS) => verificationTS
+)
+
+export const isDefaultDASelector = createSelector(
+  [getUserOrgId, 'user.user.email', getUserRole],
+  (districtId, email, role) =>
+    email === `${districtId}@edulastic.com` && role === roleType.DISTRICT_ADMIN
+)
+
+export const isSignupUsingUNAndPassSelector = createSelector(
+  ['user.signedUpUsingUsernameAndPassword'],
+  (signedUpUsingUsernameAndPassword) => signedUpUsingUsernameAndPassword
+)
+
 export const getAddAccount = createSelector(
   ['user.addAccount'],
   (addAccount) => addAccount
@@ -837,6 +963,21 @@ export const getAddAccountUserId = createSelector(
 
 export const getIsClassCodeModalOpen = createSelector(
   ['user.isClassCodeModalOpen'],
+  (r) => r
+)
+
+export const getIsEmailVerifedSelector = createSelector(
+  ['user.emailVerifiedStatus'],
+  (r) => r
+)
+
+export const getIsEmailVerificationLinkSent = createSelector(
+  ['user.sendEmailVerificationLinkStatus'],
+  (r) => r
+)
+
+export const getShowVerifyEmailModal = createSelector(
+  ['user.showVerifyEmailModal'],
   (r) => r
 )
 
@@ -1182,6 +1323,9 @@ const getLoggedOutUrl = () => {
   if (pathname.includes('partnerlogin')) {
     return pathname
   }
+  if (pathname.includes('/verify/')) {
+    return pathname
+  }
   return '/login'
 }
 
@@ -1264,6 +1408,25 @@ export function* fetchUser({ payload }) {
           'Logged in teacher is a part of multiple districts.',
           'info'
         )
+      })
+    }
+    const location = yield select(routeSelector)
+    const isSuperAdmin = yield select(isSuperAdminSelector)
+    if (
+      (user.role === roleuser.DISTRICT_ADMIN ||
+        user.role === roleuser.SCHOOL_ADMIN) &&
+      !isSuperAdmin &&
+      superAdminRoutes.includes(location)
+    ) {
+      const messageKey =
+        user.role === roleuser.DISTRICT_ADMIN
+          ? 'warnAccessRestrictedUrlDA'
+          : 'warnAccessRestrictedUrlSA'
+
+      yield put(push('/'))
+      notification({
+        type: 'warn',
+        messageKey,
       })
     }
   } catch (error) {
@@ -1605,6 +1768,11 @@ function* msoSSOLogin({ payload }) {
 }
 
 function* cleverLogin({ payload }) {
+  let isLogin = false
+  if (payload.isLogin) {
+    isLogin = payload.isLogin
+    payload = payload.payload
+  }
   const generalSettings = yield select(signupGeneralSettingsSelector)
   if (generalSettings) {
     localStorage.setItem(
@@ -1619,7 +1787,7 @@ function* cleverLogin({ payload }) {
     if (payload) {
       localStorage.setItem('thirdPartySignOnRole', payload)
     }
-    if (payload === 'teacher') {
+    if (payload === 'teacher' && !isLogin) {
       segmentApi.genericEventTrack('Signup_ButtonClick', { Method: 'Clever' })
     }
     const res = yield call(authApi.cleverLogin)
@@ -1973,6 +2141,55 @@ function* resetMyPasswordRequestSaga({ payload }) {
   }
 }
 
+function* verifyEmailSaga({ payload }) {
+  let res
+  try {
+    res = yield call(authApi.verifyEmail, payload)
+    const { error } = res
+    if (error) {
+      yield put({
+        type: VERIFY_EMAIL_FAILED,
+        payload: res,
+      })
+    } else {
+      yield put({
+        type: VERIFY_EMAIL_SUCCESS,
+        payload: res,
+      })
+    }
+  } catch (e) {
+    console.error(e)
+    notification({
+      msg: e?.response?.data?.message
+        ? e.response.data.message
+        : 'Failed to verify email.',
+    })
+    yield put({
+      type: VERIFY_EMAIL_FAILED,
+    })
+  }
+}
+
+function* sendVerificationEmailSaga({ payload }) {
+  try {
+    const res = yield call(authApi.sendEmailVerificationLink, payload)
+    yield put({
+      type: SEND_VERIFICATION_EMAIL_SUCCESS,
+      payload: res,
+    })
+  } catch (e) {
+    console.error(e)
+    notification({
+      msg: e?.response?.data?.message
+        ? e.response.data.message
+        : 'Failed to send verification link.',
+    })
+    yield put({
+      type: SEND_VERIFICATION_EMAIL_FAILED,
+    })
+  }
+}
+
 function* updateProfileImageSaga({ payload }) {
   try {
     yield call(userApi.updateUser, payload)
@@ -2221,6 +2438,8 @@ export function* watcherSaga() {
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga)
   yield takeLatest(REQUEST_NEW_PASSWORD_REQUEST, requestNewPasswordSaga)
   yield takeLatest(RESET_PASSWORD_USER_REQUEST, resetPasswordUserSaga)
+  yield takeLatest(VERIFY_EMAIL_REQUEST, verifyEmailSaga)
+  yield takeLatest(SEND_VERIFICATION_EMAIL_REQUEST, sendVerificationEmailSaga)
   yield takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga)
   yield takeLatest(
     STUDENT_SIGNUP_CHECK_CLASSCODE_REQUEST,

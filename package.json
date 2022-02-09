@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "22.1.0",
+  "version": "23.0.0",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -156,7 +156,7 @@
     "redux-undo": "^0.6.1",
     "reselect": "^3.0.1",
     "smoothscroll-polyfill": "^0.4.4",
-    "striptags": "^3.1.1",
+    "striptags": "^3.2.0",
     "styled-components": "^5.1.0",
     "timm": "^1.7.1",
     "uuid": "^3.3.2"

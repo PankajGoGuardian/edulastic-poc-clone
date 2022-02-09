@@ -127,7 +127,7 @@ function onHandler(board, event) {
         )
         break
       case CONSTANT.TOOLS.PARABOLA:
-        newElement = Parabola.create(
+        newElement = Parabola.drawline(
           board,
           { id, label, baseColor, dashed },
           points

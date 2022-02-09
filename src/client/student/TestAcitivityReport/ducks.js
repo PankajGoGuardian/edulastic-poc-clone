@@ -7,6 +7,7 @@ import {
   keyBy,
   maxBy,
   groupBy,
+  get,
 } from 'lodash'
 import produce from 'immer'
 import { push } from 'connected-react-router'
@@ -233,6 +234,17 @@ const createQuestionActiviy = (item = {}, question = {}, testActivity = {}) => {
   return qActivity
 }
 
+function* loadAttachmentsToStore({ referrerId2, data }) {
+  // yield console.log()
+  const response = yield call(attachmentApi.loadDataFromUrl, data.freeNotesStd)
+  const userWork = yield select((state) => state.userWork.present[referrerId2])
+  console.log({ data, res: response.data })
+  yield put({
+    type: SAVE_USER_WORK,
+    payload: { [referrerId2]: { ...userWork, freeNotesStd: response.data } },
+  })
+}
+
 function* loadTestActivityReport({ payload }) {
   try {
     const { testActivityId, groupId, testId } = payload
@@ -253,7 +265,7 @@ function* loadTestActivityReport({ payload }) {
       }),
       call(reportsApi.fetchTestActivityReport, testActivityId, groupId),
     ])
-
+    console.log({ reports, test })
     if (reports.testActivity && reports.testActivity.isPaused) {
       yield put(push(`/home/grades`))
       return notification({
@@ -334,6 +346,7 @@ function* loadTestActivityReport({ payload }) {
         passages,
       })
     }
+
     const qActsKeysByQid = keyBy(
       questionActivities,
       (uqa) => `${uqa.testItemId}_${uqa.qid}`
@@ -388,6 +401,27 @@ function* loadTestActivityReport({ payload }) {
         type: LOAD_SCRATCH_PAD,
         payload: userWork,
       })
+    }
+
+    if (test.isDocBased) {
+      const referrerId = get(reports, ['testActivity', '_id'])
+      const referrerId2 = get(reports, [
+        'testActivity',
+        'itemsToDeliverInGroup',
+        0,
+        'items',
+        0,
+      ])
+      const response = yield attachmentApi.loadAllAttachments({
+        referrerId,
+        referrerId2,
+        type: 'doc-annotations',
+      })
+      yield all(
+        (response.attachments || []).map(({ data }) =>
+          fork(loadAttachmentsToStore, { referrerId2, data })
+        )
+      )
     }
 
     yield put({

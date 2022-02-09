@@ -15,7 +15,8 @@ export const Title = styled.div`
   margin: 0 auto 12px 0px;
   color: ${({ theme }) => theme.textColor};
   font-weight: ${({ theme }) => theme.bold};
-  font-size: ${({ theme }) => theme.smallFontSize};
+  font-size: ${({ theme, fontSize }) =>
+    fontSize ? `${fontSize}px` : theme.smallFontSize};
   line-height: ${({ theme }) => theme.headerLineHeight};
 `
 
@@ -43,10 +44,12 @@ export const MarkContainer = styled.div`
     border-top-left-radius: 4px;
     border-bottom-left-radius: 4px;
     margin-right: 8px;
-    ${({ theme }) => `
+    ${({ theme, fontSize }) => `
       background: ${theme.widgets.axisLabels.indexBoxBgColor};
       color: ${theme.widgets.axisLabels.indexBoxColor};
-      font-size: ${theme.widgets.axisLabels.indexBoxFontSize};
+      font-size: ${
+        fontSize ? `${fontSize}px` : theme.widgets.axisLabels.indexBoxFontSize
+      };
       font-weight: ${theme.widgets.axisLabels.indexBoxFontWeight};
     `};
   }

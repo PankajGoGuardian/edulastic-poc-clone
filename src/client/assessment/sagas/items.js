@@ -13,6 +13,7 @@ import {
   attchmentApi as attachmentApi,
   testActivityApi,
 } from '@edulastic/api'
+import { convertStringToFile } from '@edulastic/common/src/helpers'
 import { assignmentPolicyOptions, aws } from '@edulastic/constants'
 
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
@@ -90,12 +91,14 @@ export function getFilterAndUpdateForAttachments({
   qId,
   userId,
   scratchpadUri,
+  data,
+  type = 'scratchpad',
 }) {
   const update = {
-    data: { scratchpad: scratchpadUri },
+    data: data || { scratchpad: scratchpadUri },
     referrerId: uta,
     userId,
-    type: 'scratchpad',
+    type,
     referrerType: 'TestActivityContent',
     referrerId2: itemId,
     status: 'published',
@@ -293,6 +296,11 @@ export function* saveUserResponse({ payload }) {
       activity.timeInBlur = timeInBlur
     }
 
+    const annotationsData = {}
+    if (isDocBased) {
+      annotationsData.freeNotesStd = _userWork.freeNotesStd
+      delete _userWork.freeNotesStd
+    }
     let userWorkData = { ..._userWork, scratchpad: false }
     let shouldSaveOrUpdateAttachment = false
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
@@ -343,6 +351,21 @@ export function* saveUserResponse({ payload }) {
         })
         yield call(attachmentApi.updateAttachment, { update, filter })
       }
+    }
+    if (isDocBased && !isEmpty(annotationsData.freeNotesStd)) {
+      const file = convertStringToFile(
+        JSON.stringify(annotationsData.freeNotesStd),
+        `doc-annotations-${userTestActivityId}_${userId},text`
+      )
+      const annotationsURL = yield call(uploadToS3, file, defaultUploadFolder)
+      const { update, filter } = getFilterAndUpdateForAttachments({
+        uta: userTestActivityId,
+        itemId: testItemId,
+        userId,
+        data: { freeNotesStd: annotationsURL },
+        type: 'doc-annotations',
+      })
+      yield call(attachmentApi.updateAttachment, { update, filter })
     }
     if (passageId) {
       const highlights = yield select(

@@ -188,6 +188,10 @@ export const MathInputStyles = styled.div`
     }
   }
 
+  .mq-math-mode {
+    font-size: 100%;
+  }
+
   .mq-math-mode var,
   .mq-math-mode i,
   .mq-math-mode i.mq-font {

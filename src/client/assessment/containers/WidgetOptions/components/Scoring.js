@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { withRouter } from 'react-router-dom'
 import { cloneDeep, get } from 'lodash'
 import { Select, Icon } from 'antd'
 import styled, { withTheme } from 'styled-components'
@@ -15,7 +16,11 @@ import {
 } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { rubricsApi } from '@edulastic/api'
-import { FlexContainer, PointBlockContext } from '@edulastic/common'
+import {
+  FlexContainer,
+  PointBlockContext,
+  notification,
+} from '@edulastic/common'
 import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 
 import {
@@ -85,6 +90,21 @@ class Scoring extends Component {
     updateScoreAndValidation(points)
   }
 
+  handleRemoveRubric = () => {
+    const { dissociateRubricFromQuestion, location } = this.props
+    dissociateRubricFromQuestion()
+    if (
+      location?.state?.regradeFlow ||
+      location?.pathname?.includes('classboard') ||
+      location?.pathname?.includes('expressgrader')
+    ) {
+      notification({
+        msg:
+          'Score and max score will reset on re-score automatically option of re-grade',
+      })
+    }
+  }
+
   render() {
     const {
       setQuestionData,
@@ -108,6 +128,7 @@ class Scoring extends Component {
       isCorrectAnsTab = true,
       item = {},
       setItemLevelScoring,
+      location,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
     const handleChangeValidation = (param, value) => {
@@ -137,6 +158,9 @@ class Scoring extends Component {
           })
           if (newData.validation?.maxScore) {
             newData.validation.maxScore = updatedScore
+          }
+          if (value) {
+            delete newData.rubrics
           }
         }
         newData.validation[param] = value
@@ -330,7 +354,7 @@ class Scoring extends Component {
                   setIsGradingRubric(e.target.checked)
                   if (questionData.rubrics) dissociateRubricFromQuestion()
                 }}
-                disabled={!isCorrectAnsTab}
+                disabled={!isCorrectAnsTab || questionData.validation.unscored}
                 size="large"
               >
                 {t('component.options.gradingRubric')}
@@ -384,10 +408,7 @@ class Scoring extends Component {
               >
                 {questionData.rubrics.name}
               </span>
-              <span
-                data-cy="removeRubric"
-                onClick={() => dissociateRubricFromQuestion()}
-              >
+              <span data-cy="removeRubric" onClick={this.handleRemoveRubric}>
                 <Icon type="close" />
               </span>
             </StyledTag>
@@ -446,6 +467,11 @@ class Scoring extends Component {
             data-cy="GradingRubricModal"
             visible={showGradingRubricModal}
             actionType={rubricActionType}
+            isRegradeFlow={
+              location?.state?.regradeFlow ||
+              location?.pathname?.includes('classboard') ||
+              location?.pathname?.includes('expressgrader')
+            }
             toggleModal={() => {
               this.toggleRubricModal()
               setIsGradingRubric(false)
@@ -490,6 +516,7 @@ Scoring.contextType = PointBlockContext
 const enhance = compose(
   withNamespaces('assessment'),
   withTheme,
+  withRouter,
   connect(
     (state) => ({
       questionData: getQuestionDataSelector(state),

@@ -214,7 +214,13 @@ function handleDragStop(board, line, point) {
   if (point.piecewise) {
     const pArr = getPossiblePoints(board, line)
     if (pArr.length > 0) {
-      const closest = getClosest(pArr, point.Y())
+      const [p1, p2] = Object.values(line.ancestors).filter((p) => !p.piecewise)
+      const horizontal = p1.Y() - p2.Y() === 0
+      const closest = getClosest(
+        pArr,
+        horizontal ? point.X() : point.Y(),
+        horizontal ? 'x' : 'y'
+      )
       point.setPosition(JXG.COORDS_BY_USER, [closest.x, closest.y])
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
     }

@@ -2668,13 +2668,13 @@ div[class*='_pendo'] button {
 }
 
 .embeddedServiceHelpButton .helpButton {
-  border-right: none;
-  border-bottom: none;
+  border-right: none !important;
+  border-bottom: none !important;
 }
 .embeddedServiceHelpButton .helpButton .uiButton {
-  background-color: #0cc18c;
-  font-family: "Open Sans", sans-serif;
+  background-color: #0cc18c !important;
+  font-family: "Open Sans", sans-serif !important;
 }
 .embeddedServiceHelpButton .helpButton .uiButton:focus {
-  outline: 1px solid #0cc18c;
+  outline: 1px solid #0cc18c !important;
 }

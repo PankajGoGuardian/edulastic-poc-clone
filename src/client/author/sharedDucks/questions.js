@@ -352,6 +352,12 @@ export const getTestSelector = createSelector(
   (state) => state.entity
 )
 
+export const getQuestionRubrics = createSelector(
+  getQuestionsSelector,
+  getCurrentQuestionIdSelector,
+  (state, id) => state[id]?.rubrics
+)
+
 export const getQuestionsSelectorForReview = createSelector(
   getTestSelector,
   (state) => {

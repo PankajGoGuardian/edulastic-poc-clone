@@ -31,7 +31,10 @@ import {
   getIsGradingCheckboxState,
 } from '../../../../author/QuestionEditor/ducks'
 
-import { removeRubricIdAction } from '../../../../author/sharedDucks/questions'
+import {
+  getQuestionRubrics,
+  removeRubricIdAction,
+} from '../../../../author/sharedDucks/questions'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'
 import { Label } from '../../../styled/WidgetOptions/Label'
@@ -105,6 +108,30 @@ class Scoring extends Component {
     }
   }
 
+  handleGradingRubricCheckBox = (e) => {
+    const {
+      setIsGradingRubric,
+      questionData,
+      dissociateRubricFromQuestion,
+      location,
+      containsRubric,
+    } = this.props
+    setIsGradingRubric(e.target.checked)
+    if (
+      !e.target.checked &&
+      (location?.state?.regradeFlow ||
+        location?.pathname?.includes('classboard') ||
+        location?.pathname?.includes('expressgrader')) &&
+      containsRubric
+    ) {
+      notification({
+        msg:
+          'Score and max score will reset on re-score automatically option of re-grade',
+      })
+    }
+    if (questionData.rubrics) dissociateRubricFromQuestion()
+  }
+
   render() {
     const {
       setQuestionData,
@@ -121,7 +148,6 @@ class Scoring extends Component {
       isGradingCheckboxState,
       setIsGradingRubric,
       userFeatures,
-      dissociateRubricFromQuestion,
       theme,
       showScoringType,
       extraInScoring = null,
@@ -350,10 +376,7 @@ class Scoring extends Component {
               <CheckboxLabel
                 data-cy="gradingRubricChk"
                 checked={isGradingCheckboxState || questionData.rubrics}
-                onChange={(e) => {
-                  setIsGradingRubric(e.target.checked)
-                  if (questionData.rubrics) dissociateRubricFromQuestion()
-                }}
+                onChange={this.handleGradingRubricCheckBox}
                 disabled={!isCorrectAnsTab || questionData.validation.unscored}
                 size="large"
               >
@@ -522,6 +545,7 @@ const enhance = compose(
       questionData: getQuestionDataSelector(state),
       isGradingCheckboxState: getIsGradingCheckboxState(state),
       userFeatures: getUserFeatures(state),
+      containsRubric: getQuestionRubrics(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

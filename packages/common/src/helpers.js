@@ -980,7 +980,7 @@ export const getImageDimensions = (url) =>
   })
 
 export const toggleChatDisplay = () => {
-  // if the chat is initiated the both element embeddedServiceSidebar, embeddedServiceHelpButton 
+  // if the chat is initiated the both element embeddedServiceSidebar, embeddedServiceHelpButton
   // would be there, otherwise only embeddedServiceHelpButton will be there in the dom
   if (document.querySelector('.embeddedServiceSidebar')) {
     // once opened and minimised / after initiating the chat, toggling only this should be fine

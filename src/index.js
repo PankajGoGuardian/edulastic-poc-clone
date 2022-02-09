@@ -77,8 +77,8 @@ export const initEmbeddedServiceCloudWidget = () => {
 
   // ***************** service cloud embedded chat widget snippet
   const initESW = (gslbBaseURL) => {
-    window.embedded_svc.settings.displayHelpButton = true; //Or false
-    window.embedded_svc.settings.language = ''; //For example, enter 'en' or 'en-US'
+    window.embedded_svc.settings.displayHelpButton = true //Or false
+    window.embedded_svc.settings.language = '' //For example, enter 'en' or 'en-US'
 
     //window.embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
     //window.embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
@@ -88,15 +88,15 @@ export const initEmbeddedServiceCloudWidget = () => {
 
     // Settings for Chat
     //window.embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
-      // Dynamically changes the button ID based on what the visitor enters in the pre-chat form.
-      // Returns a valid button ID.
+    // Dynamically changes the button ID based on what the visitor enters in the pre-chat form.
+    // Returns a valid button ID.
     //};
     //window.embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
     //window.embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
     //window.embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
 
-    window.embedded_svc.settings.enabledFeatures = ['LiveAgent'];
-    window.embedded_svc.settings.entryFeature = 'LiveAgent';
+    window.embedded_svc.settings.enabledFeatures = ['LiveAgent']
+    window.embedded_svc.settings.entryFeature = 'LiveAgent'
 
     window.embedded_svc.init(
       'https://goguardian.my.salesforce.com',
@@ -105,25 +105,29 @@ export const initEmbeddedServiceCloudWidget = () => {
       '00D41000000GNzs',
       'Edulastic_Chat_Support',
       {
-        baseLiveAgentContentURL: 'https://c.la3-c1-ia2.salesforceliveagent.com/content',
+        baseLiveAgentContentURL:
+          'https://c.la3-c1-ia2.salesforceliveagent.com/content',
         deploymentId: '5724N000000CocW',
         buttonId: '5734N0000004Rej',
         baseLiveAgentURL: 'https://d.la3-c1-ia2.salesforceliveagent.com/chat',
         eswLiveAgentDevName: 'Edulastic_Chat_Support',
-        isOfflineSupportEnabled: false
+        isOfflineSupportEnabled: false,
       }
-    );
-  };
+    )
+  }
 
   if (!window.embedded_svc) {
-    var s = document.createElement('script');
-    s.setAttribute('src', 'https://goguardian.my.salesforce.com/embeddedservice/5.0/esw.min.js');
-    s.onload = function() {
-      initESW(null);
-    };
-    document.body.appendChild(s);
+    var s = document.createElement('script')
+    s.setAttribute(
+      'src',
+      'https://goguardian.my.salesforce.com/embeddedservice/5.0/esw.min.js'
+    )
+    s.onload = function () {
+      initESW(null)
+    }
+    document.body.appendChild(s)
   } else {
-    initESW('https://service.force.com');
+    initESW('https://service.force.com')
   }
 }
 

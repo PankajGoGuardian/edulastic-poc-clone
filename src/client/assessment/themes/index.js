@@ -84,23 +84,28 @@ import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
 
 const { playerSkinValues } = testConstants
 
-const shouldAutoSave = (itemRows) => {
+const autoSavableTypes = {
+  essayRichText: 1,
+  essayPlainText: 1,
+  formulaessay: 1,
+}
+
+const shouldAutoSave = (itemRows, answersById, itemId) => {
+  let currentAnswer = ''
   if (!itemRows) {
-    return false
+    return [false, currentAnswer]
   }
-  const autoSavableTypes = {
-    essayRichText: 1,
-    essayPlainText: 1,
-    formulaessay: 1,
-  }
+
   for (const row of itemRows) {
     for (const widget of row?.widgets || []) {
       if (widget.widgetType === 'question' && autoSavableTypes[widget.type]) {
-        return true
+        const currentAnswerId = `${itemId}_${widget?.reference}`
+        currentAnswer += answersById[currentAnswerId]
       }
     }
+    return [true, currentAnswer]
   }
-  return false
+  return [false, currentAnswer]
 }
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
@@ -1161,10 +1166,20 @@ const AssessmentContainer = ({
 
   const { referenceDocAttributes } = test || {}
 
-  const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows])
+  const prevAnswerValue = useRef('')
+
+  useEffect(() => {
+    ;[, prevAnswerValue.current] = shouldAutoSave(itemRows, answersById, itemId)
+  }, [itemRows])
+
+  const [autoSave, currentAnswerValue] = useMemo(
+    () => shouldAutoSave(itemRows, answersById, itemId),
+    [itemRows, currentItem, answersById, itemId]
+  )
 
   useInterval(() => {
-    if (autoSave) {
+    if (autoSave && currentAnswerValue !== prevAnswerValue.current) {
+      prevAnswerValue.current = currentAnswerValue
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
   }, 1000 * 30)

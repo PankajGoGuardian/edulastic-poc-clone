@@ -80,10 +80,10 @@ export const initEmbeddedServiceCloudWidget = () => {
     window.embedded_svc.settings.displayHelpButton = true //Or false
     window.embedded_svc.settings.language = '' //For example, enter 'en' or 'en-US'
 
-    //window.embedded_svc.settings.defaultMinimizedText = '...'; //(Defaults to Chat with an Expert)
-    //window.embedded_svc.settings.disabledMinimizedText = '...'; //(Defaults to Agent Offline)
+    window.embedded_svc.settings.defaultMinimizedText = 'Chat' //(Defaults to Chat with an Expert)
+    window.embedded_svc.settings.disabledMinimizedText = 'Chat' //(Defaults to Agent Offline)
 
-    //window.embedded_svc.settings.loadingText = ''; //(Defaults to Loading)
+    window.embedded_svc.settings.loadingText = '...' //(Defaults to Loading)
     //window.embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
 
     // Settings for Chat

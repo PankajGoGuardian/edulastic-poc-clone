@@ -130,6 +130,9 @@ const useLanguageFeatureQn = [
   PASSAGE,
   TEXT,
   VIDEO,
+  CLASSIFICATION,
+  ORDER_LIST,
+  CLOZE_IMAGE_DROP_DOWN,
 ]
 
 module.exports = {

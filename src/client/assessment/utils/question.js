@@ -70,6 +70,21 @@ const patternsByQuestionType = {
     /content/,
     /pages\.(\d+)/,
   ],
+  [questionType.CLASSIFICATION]: [
+    ...commonPatterns,
+    /uiStyle\.rowTitles\.(\d+)/,
+    /uiStyle\.columnTitles\.(\d+)/,
+    /possibleResponses\.(\d+)\.value/,
+    /possibleResponseGroups\.(\d+)\.title/,
+    /possibleResponseGroups\.(\d+)\.responses\.(\d+).value/,
+  ],
+  [questionType.ORDER_LIST]: [...commonPatterns, /list\.(.*?)/],
+  [questionType.CLOZE_IMAGE_DROP_DOWN]: [
+    ...commonPatterns,
+    /options\.(.*?)\.(\d+)/,
+    /validation\.validResponse\.value\.(.*?)/,
+    /validation\.altResponses\.(\d+)\.value\.(.*?)/,
+  ],
 }
 
 const clozeTypes = [

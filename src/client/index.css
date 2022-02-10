@@ -2671,10 +2671,23 @@ div[class*='_pendo'] button {
 .embeddedServiceSidebar .embeddedServiceSidebarMinimizedDefaultUI {
   border-right: none !important;
   border-bottom: none !important;
+  border-radius: 50px !important;
+  box-shadow: none !important;
+  height: 60px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  right: 20px !important;
+  bottom: 20px !important;
 }
 .embeddedServiceHelpButton .helpButton .uiButton {
   background-color: #0cc18c !important;
   font-family: "Open Sans", sans-serif !important;
+  border-radius: 50px !important;
+  box-shadow: none !important;
+  height: 60px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  padding: 0px !important;
 }
 .embeddedServiceHelpButton .helpButton .uiButton:focus {
   outline: 1px solid #0cc18c !important;

@@ -427,6 +427,10 @@ class Container extends Component {
                       Tools
                     </Menu.Item>
                   )}
+                  <Menu.Item key="coding">
+                    <IconWrite />
+                    Coding
+                  </Menu.Item>
                   {/* implementation is in progress */}
                   {/* <Menu.Item key="other">
                     <IconMore />
@@ -552,6 +556,10 @@ class Container extends Component {
               >
                 <IconRulerPencil />
                 Tools
+              </Menu.Item>
+              <Menu.Item key="coding">
+                <IconWrite />
+                Coding
               </Menu.Item>
               {/* implementation is in progress */}
               {/* <Menu.Item key="other" onClick={this.toggleCategories}>

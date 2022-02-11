@@ -200,7 +200,6 @@ const EditorWrapper = styled.div``
 
 const EditorContainer = styled.div`
   width: 500px;
-  margin: auto;
   border: 1px solid #e3e3e2;
 `
 

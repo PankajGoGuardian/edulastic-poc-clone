@@ -27,5 +27,6 @@ const questionTitle = {
   RE_SEQUENCE: 'Re-sequence',
   MATRICES: 'Matrices',
   FORMULA_ESSAY: 'Math Essay',
+  CODING: 'Coding',
 }
 module.exports = questionTitle

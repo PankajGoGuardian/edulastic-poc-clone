@@ -106,6 +106,7 @@ const selectsData = [
   { value: MULTIPLE_SELECTION, text: 'Multiple Selection' },
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
+  { value: CODING, text: 'Coding' },
 ]
 
 const manuallyGradableQn = [

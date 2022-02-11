@@ -44,7 +44,7 @@ import LoggedOutRoute from './common/components/loggedOutRoute'
 import PrivateRoute from './common/components/privateRoute'
 import V1Redirect from './author/V1Redirect'
 import Kid from './kid/app'
-import NotificationListener from './HangoutVideoCallNotification'
+import HangoutsNotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
 import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
@@ -64,6 +64,7 @@ import {
 import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
+import NotificationListener from './NotificationEngine/NotificationListener'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -680,37 +681,41 @@ class App extends Component {
                   path="/author"
                   component={Author}
                   redirectPath={redirectRoute}
-                  notifications={
-                    roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
+                  notifications={[
+                    NotificationListener,
+                    ...(roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
                       ? [
                           BulkActionNotificationListener,
                           ReportsNotificationListener,
                         ]
                       : roleuser.TEACHER === userRole
                       ? [ClassSyncNotification, ReportsNotificationListener]
-                      : null
-                  }
+                      : []),
+                  ]}
                 />
                 <PrivateRoute
                   path="/publisher"
                   component={Publisher}
                   redirectPath={redirectRoute}
+                  notifications={[NotificationListener]}
                 />
                 <PrivateRoute
                   path="/home"
                   component={Dashboard}
-                  notifications={[NotificationListener]}
+                  notifications={[
+                    NotificationListener,
+                    HangoutsNotificationListener,
+                  ]}
                   redirectPath={redirectRoute}
                 />
                 <PrivateRoute
                   path="/admin"
                   component={Admin}
                   redirectPath={redirectRoute}
-                  notifications={
-                    roleuser.EDULASTIC_ADMIN
-                      ? [AdminNotificationListener]
-                      : null
-                  }
+                  notifications={[
+                    NotificationListener,
+                    roleuser.EDULASTIC_ADMIN ? [AdminNotificationListener] : [],
+                  ]}
                 />
                 <PrivateRoute
                   path={[

@@ -1,8 +1,6 @@
 // Don't put any sensitive information
 // https://edupoc.s3.amazonaws.com/edulasticv2-development/JS/thirdpartylib/ev2-scientificcalc/CalcSS3.js
-const cdnURI =
-  process.env.REACT_APP_CDN_URI ||
-  'https://cdnedupoc.snapwiz.net/edulasticv2-development'
+const cdnURI = process.env.REACT_APP_CDN_URI || 'https://cdnedupoc.snapwiz.net'
 const appEnv = process.env.REACT_APP_ENV
 const appStage = process.env.REACT_APP_STAGE
 // __CLIENT_VERSION__ is injected to envs in poi.config.js

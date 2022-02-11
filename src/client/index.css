@@ -2667,6 +2667,16 @@ div[class*='_pendo'] button {
   display: none;
 }
 
+.embeddedServiceHelpButton .embeddedServiceIcon {
+  font-size: 32px;
+  padding-left: 10px;
+  display: block !important;
+}
+.embeddedServiceSidebarMinimizedDefaultUI .embeddedServiceIcon {
+  font-size: 40px;
+  margin-right: 0 !important;
+  margin-top: -5px;
+}
 .embeddedServiceHelpButton .helpButton,
 .embeddedServiceSidebar .embeddedServiceSidebarMinimizedDefaultUI {
   border-right: none !important;

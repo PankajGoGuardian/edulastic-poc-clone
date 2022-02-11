@@ -2758,7 +2758,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: 'coding',
-      cardImage: WSEssayPlainText,
+      cardImage: CodingImage,
       data: {
         title: questionTitle.CODING,
         stimulus: '',

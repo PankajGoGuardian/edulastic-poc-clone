@@ -37,6 +37,7 @@ import {
 import Character from './components/Character'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
+import CodeEditor from '../../components/CodeEditor/CodeEditor'
 
 const getWordCount = (val) =>
   val
@@ -252,105 +253,7 @@ const EssayPlainTextPreview = ({
               isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
             }
           >
-            {!disableResponse && (
-              <EssayToolbar reviewTab={reviewTab} borderRadiusOnlyTop>
-                <FlexContainer
-                  childMarginRight={0}
-                  alignItems="stretch"
-                  justifyContent="space-between"
-                >
-                  {item.showCopy && (
-                    <ToolbarItem
-                      data-cy="questionPlainEssayAuthorPreviewToolCopy"
-                      onClick={handleAction(COPY)}
-                    >
-                      {t('component.essayText.copy')}
-                    </ToolbarItem>
-                  )}
-                  {item.showCut && (
-                    <ToolbarItem
-                      data-cy="questionPlainEssayAuthorPreviewToolCut"
-                      onClick={handleAction(CUT)}
-                    >
-                      {t('component.essayText.cut')}
-                    </ToolbarItem>
-                  )}
-                  {item.showPaste && (
-                    <ToolbarItem
-                      data-cy="questionPlainEssayAuthorPreviewToolPaste"
-                      onClick={handleAction(PASTE)}
-                    >
-                      {t('component.essayText.paste')}
-                    </ToolbarItem>
-                  )}
-
-                  {Array.isArray(item.characterMap) && (
-                    <Character
-                      onSelect={(char) => {
-                        setSelection({
-                          start: selection.start + char.length,
-                          end: selection.start + char.length,
-                        })
-                        setText(
-                          text.slice(0, selection.start) +
-                            char +
-                            text.slice(selection.end)
-                        )
-                      }}
-                      characters={item.characterMap}
-                    />
-                  )}
-                </FlexContainer>
-              </EssayToolbar>
-            )}
-            {!isPrintPreview && (
-              <TextArea
-                minHeight={minHeight || 10}
-                maxHeight={maxHeightPreview} // default height antd input
-                autoSize
-                data-cy="previewBoxContainer"
-                inputRef={(ref) => {
-                  node = ref
-                }}
-                noBorder
-                fontSize={fontSize}
-                bg={background}
-                onSelect={handleSelect}
-                value={
-                  smallSize ? t('component.essayText.plain.templateText') : text
-                }
-                onChange={handleTextChange}
-                size="large"
-                onPaste={!item.showPaste && preventEvent}
-                readOnly={disableResponse}
-                onCopy={!item.showCopy && preventEvent}
-                onCut={!item.showCut && preventEvent}
-                placeholder={item.placeholder || ''}
-                disabled={reviewTab}
-                {...getSpellCheckAttributes(item.spellcheck)}
-              />
-            )}
-            {isPrintPreview && (
-              <StyledPrintAnswerBox>
-                {text.split('\n').map((txt, i) => (
-                  <p key={i}>{txt}</p>
-                ))}
-              </StyledPrintAnswerBox>
-            )}
-
-            {!reviewTab && item.showWordCount && (
-              <EssayToolbar
-                data-cy="questionPlainEssayAuthorPreviewWordCount"
-                borderRadiusOnlyBottom
-              >
-                <FlexContainer
-                  alignItems="stretch"
-                  justifyContent="space-between"
-                />
-
-                <Item style={wordCountStyle}>{displayWordCount}</Item>
-              </EssayToolbar>
-            )}
+            <CodeEditor />
           </EssayPlainTextBoxContainer>
         </QuestionContentWrapper>
       </FlexContainer>
@@ -402,7 +305,6 @@ const StyledPrintAnswerBox = styled.div`
 const EssayPlainTextBoxContainer = styled.div`
   width: ${({ reduceWidth }) => `calc(100% - ${reduceWidth})`};
   border-radius: 4px;
-  border: 1px solid ${lightGrey12};
 `
 
 const EssayToolbar = styled(Toolbar)`

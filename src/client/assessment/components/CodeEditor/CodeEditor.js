@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useRef } from 'react'
 import AceEditor from 'react-ace'
 
 import 'ace-builds/src-noconflict/mode-jsx'
@@ -6,6 +6,8 @@ import 'ace-builds/src-min-noconflict/ext-searchbox'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
 import styled from 'styled-components'
 import { Select } from 'antd'
+import { EduButton } from '@edulastic/common'
+import { IconPlay } from '@edulastic/icons'
 
 const languages = [
   'python',
@@ -82,6 +84,7 @@ const CodeEditor = () => {
   const [theme, setTheme] = useState('monokai')
   const [mode, setMode] = useState('python')
   const [fontSize, setFontSize] = useState(14)
+  const aceRef = useRef()
 
   function onLoad() {
     console.log("i've loaded")
@@ -131,10 +134,16 @@ const CodeEditor = () => {
             ))}
           </Select>
         </OptionWrapper>
+        <OptionWrapper>
+          <EduButton type="primary">
+            <IconPlay />
+          </EduButton>
+        </OptionWrapper>
       </Header>
       <EditorWrapper>
         <CodeHeader>Editor</CodeHeader>
         <AceEditor
+          ref={aceRef}
           mode={mode}
           theme={theme}
           name="blah2"
@@ -174,7 +183,6 @@ const Header = styled.div`
 `
 
 const OptionWrapper = styled.div`
-  background: #fff;
   display: inline-block;
   margin: 0 10px 0 10px;
   .ant-select-selection {
@@ -185,7 +193,7 @@ const EditorWrapper = styled.div``
 
 const EditorContainer = styled.div`
   width: 500px;
-  border: 1px solid #e3e3e2;
+  margin: 20px 0;
 `
 
 const CodeHeader = styled.div`

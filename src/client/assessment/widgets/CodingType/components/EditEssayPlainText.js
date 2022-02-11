@@ -64,7 +64,7 @@ const EditEssayPlainText = ({
           showSelect={false}
           item={item}
         >
-          <WordLimitAndCount
+          {/* <WordLimitAndCount
             data-cy="setShowWordLimit"
             onChange={handleItemChangeChange}
             selectValue={item.showWordLimit}
@@ -74,9 +74,9 @@ const EditEssayPlainText = ({
             cleanSections={cleanSections}
             title={item?.title}
             showHeading={false}
-          />
+          /> */}
           <Row gutter={24}>
-            <Col md={12}>
+            {/* <Col md={12}>
               <CheckboxLabel
                 data-cy="showWordCount"
                 defaultChecked={item.showWordCount}
@@ -87,8 +87,8 @@ const EditEssayPlainText = ({
               >
                 {t('component.essayText.showWordCheckbox')}
               </CheckboxLabel>
-            </Col>
-            <Col md={12}>
+            </Col> */}
+            {/* <Col md={12}>
               <BrowserSpellcheckOption
                 data-cy="browserSpellCheckOption"
                 onChange={(checked) =>
@@ -96,20 +96,20 @@ const EditEssayPlainText = ({
                 }
                 checked={!!item.spellcheck}
               />
-            </Col>
+            </Col> */}
           </Row>
         </Scoring>
       </Question>
 
       {advancedLink}
 
-      <Options
+      {/* <Options
         item={item}
         advancedAreOpen={advancedAreOpen}
         fillSections={fillSections}
         cleanSections={cleanSections}
         handleItemChangeChange={handleItemChangeChange}
-      />
+      /> */}
     </ContentArea>
   )
 }

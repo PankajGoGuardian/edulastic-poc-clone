@@ -1,21 +1,29 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-// import produce from 'immer'
+import produce from 'immer'
 
 import { withNamespaces } from '@edulastic/localization'
 
-// import { updateVariables } from '../../../utils/variables'
+import { updateVariables } from '../../../utils/variables'
 
-// import QuestionTextArea from '../../../components/QuestionTextArea'
+import QuestionTextArea from '../../../components/QuestionTextArea'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
 import CodeEditor from '../../../components/CodeEditor/CodeEditor'
-// import CodeEditor from '../../../../../../../^/untitled/Untitled-5'
 
 class ComposeQuestion extends Component {
   render() {
-    const { item, t, fillSections, cleanSections } = this.props
+    const { item, setQuestionData, t, fillSections, cleanSections } = this.props
+
+    const handleItemChangeChange = (prop, uiStyle) => {
+      setQuestionData(
+        produce(item, (draft) => {
+          draft[prop] = uiStyle
+          updateVariables(draft)
+        })
+      )
+    }
 
     return (
       <Question
@@ -31,6 +39,14 @@ class ComposeQuestion extends Component {
         >
           {t('component.essayText.composequestion')}
         </Subtitle>
+
+        <QuestionTextArea
+          placeholder={t('component.essayText.enterQuestion')}
+          onChange={(stimulus) => handleItemChangeChange('stimulus', stimulus)}
+          value={item.stimulus}
+          toolbarId="compose-question"
+          border="border"
+        />
         <CodeEditor />
       </Question>
     )
@@ -39,6 +55,7 @@ class ComposeQuestion extends Component {
 
 ComposeQuestion.propTypes = {
   item: PropTypes.object.isRequired,
+  setQuestionData: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,

@@ -2,16 +2,15 @@ import React, { useState } from 'react'
 import AceEditor from 'react-ace'
 
 import 'ace-builds/src-noconflict/mode-jsx'
-/*eslint-disable no-alert, no-console */
 import 'ace-builds/src-min-noconflict/ext-searchbox'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
 import styled from 'styled-components'
 import { Select } from 'antd'
+
 const languages = [
+  'python',
   'javascript',
   'java',
-  'python',
-  'ruby',
   'golang',
   'typescript',
   'c_cpp',
@@ -57,39 +56,35 @@ const themeDisplayNames = {
   terminal: 'Terminal',
 }
 languages.forEach((lang) => {
-  // eslint-disable-next-line import/no-dynamic-require
-  require(`ace-builds/src-noconflict/mode-java`)
-  // eslint-disable-next-line import/no-dynamic-require
-  require(`ace-builds/src-noconflict/snippets/${lang}`)
+  import(`ace-builds/src-noconflict/mode-${lang}`)
+  import(`ace-builds/src-noconflict/snippets/${lang}`)
 })
 
-themes.forEach((theme) => require(`ace-builds/src-noconflict/theme-${theme}`))
+themes.forEach((theme) => import(`ace-builds/src-noconflict/theme-${theme}`))
 
 const defaultValue = `function onLoad(editor) {
   console.log("i've loaded");
 }`
+
+const aceEditorProps = {
+  placeholder: '',
+  enableBasicAutocompletion: false,
+  enableLiveAutocompletion: false,
+  showGutter: true,
+  showPrintMargin: true,
+  highlightActiveLine: true,
+  enableSnippets: false,
+  showLineNumbers: true,
+}
+
 const CodeEditor = () => {
-  const [state, setState] = useState({
-    value: defaultValue,
-    placeholder: '',
-    theme: 'monokai',
-    mode: 'python',
-    enableBasicAutocompletion: false,
-    enableLiveAutocompletion: false,
-    fontSize: 14,
-    showGutter: true,
-    showPrintMargin: true,
-    highlightActiveLine: true,
-    enableSnippets: false,
-    showLineNumbers: true,
-  })
+  const [value, setValue] = useState(defaultValue)
+  const [theme, setTheme] = useState('monokai')
+  const [mode, setMode] = useState('python')
+  const [fontSize, setFontSize] = useState(14)
 
   function onLoad() {
     console.log("i've loaded")
-  }
-  function onChange(newValue) {
-    console.log('change', newValue)
-    setState({ ...state, value: newValue })
   }
 
   function onSelectionChange(newValue, event) {
@@ -106,20 +101,11 @@ const CodeEditor = () => {
     console.log('onValidate', annotations)
   }
 
-  function setTheme(value) {
-    setState({ ...state, theme: value })
-  }
-  function setMode(value) {
-    setState({ ...state, mode: value })
-  }
-  function setFontSize(value) {
-    setState({ ...state, fontSize: value })
-  }
   return (
     <EditorContainer>
       <Header>
         <OptionWrapper>
-          <Select name="mode" onChange={setMode} value={state.mode}>
+          <Select name="mode" onChange={setMode} value={mode}>
             {languages.map((lang) => (
               <Select.Option key={lang} value={lang}>
                 {languageDisplayName[lang]}
@@ -128,7 +114,7 @@ const CodeEditor = () => {
           </Select>
         </OptionWrapper>
         <OptionWrapper>
-          <Select name="mode" onChange={setTheme} value={state.theme}>
+          <Select name="mode" onChange={setTheme} value={theme}>
             {themes.map((lang) => (
               <Select.Option key={lang} value={lang}>
                 {themeDisplayNames[lang]}
@@ -137,7 +123,7 @@ const CodeEditor = () => {
           </Select>
         </OptionWrapper>
         <OptionWrapper>
-          <Select name="mode" onChange={setFontSize} value={state.fontSize}>
+          <Select name="mode" onChange={setFontSize} value={fontSize}>
             {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
               <Select.Option key={lang} value={lang}>
                 {lang}
@@ -149,26 +135,25 @@ const CodeEditor = () => {
       <EditorWrapper>
         <CodeHeader>Editor</CodeHeader>
         <AceEditor
-          placeholder={state.placeholder}
-          mode={state.mode}
-          theme={state.theme}
+          mode={mode}
+          theme={theme}
           name="blah2"
           onLoad={onLoad}
-          onChange={onChange}
+          onChange={setValue}
           onSelectionChange={onSelectionChange}
           onCursorChange={onCursorChange}
           onValidate={onValidate}
-          value={state.value}
-          fontSize={state.fontSize}
-          showPrintMargin={state.showPrintMargin}
-          showGutter={state.showGutter}
-          highlightActiveLine={state.highlightActiveLine}
+          value={value}
+          fontSize={fontSize}
+          showPrintMargin={aceEditorProps.showPrintMargin}
+          showGutter={aceEditorProps.showGutter}
+          highlightActiveLine={aceEditorProps.highlightActiveLine}
           setOptions={{
             useWorker: false,
-            enableBasicAutocompletion: state.enableBasicAutocompletion,
-            enableLiveAutocompletion: state.enableLiveAutocompletion,
-            enableSnippets: state.enableSnippets,
-            showLineNumbers: state.showLineNumbers,
+            enableBasicAutocompletion: aceEditorProps.enableBasicAutocompletion,
+            enableLiveAutocompletion: aceEditorProps.enableLiveAutocompletion,
+            enableSnippets: aceEditorProps.enableSnippets,
+            showLineNumbers: aceEditorProps.showLineNumbers,
             tabSize: 2,
           }}
         />

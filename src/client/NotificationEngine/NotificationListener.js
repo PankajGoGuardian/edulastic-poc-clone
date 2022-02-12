@@ -62,7 +62,7 @@ const NotificationListener = ({ user, setNotifications }) => {
     if (unseenCount > 0) {
       const messageForUnseen = `${String(unseenCount)} new`
       const messageForUnread = unreadCount
-        ? `and ${String(unreadCount)} previously unread`
+        ? ` and ${String(unreadCount)} previously unread`
         : ''
       const message = `${messageForUnseen + messageForUnread} notification(s)`
       styledNotification({

@@ -437,25 +437,26 @@ class Scoring extends Component {
             </StyledTag>
           </RubricsContainer>
         )}
-
-        <Row gutter={24} mb="0">
-          <Col md={12}>
-            <CheckboxLabel
-              data-cy="isScoringInstructionsEnabled"
-              checked={questionData?.isScoringInstructionsEnabled}
-              onChange={(e) =>
-                handleChangeInstructions(
-                  'isScoringInstructionsEnabled',
-                  e.target.checked
-                )
-              }
-              size="large"
-              disabled={!isCorrectAnsTab}
-            >
-              Enable scoring instructions
-            </CheckboxLabel>
-          </Col>
-        </Row>
+        {questionData.type !== 'coding' && (
+          <Row gutter={24} mb="0">
+            <Col md={12}>
+              <CheckboxLabel
+                data-cy="isScoringInstructionsEnabled"
+                checked={questionData?.isScoringInstructionsEnabled}
+                onChange={(e) =>
+                  handleChangeInstructions(
+                    'isScoringInstructionsEnabled',
+                    e.target.checked
+                  )
+                }
+                size="large"
+                disabled={!isCorrectAnsTab}
+              >
+                Enable scoring instructions
+              </CheckboxLabel>
+            </Col>
+          </Row>
+        )}
         {questionData?.isScoringInstructionsEnabled && isCorrectAnsTab && (
           <Row gutter={24}>
             <Col md={24} lg={24} xs={24}>

@@ -8,6 +8,9 @@ import styled from 'styled-components'
 import { Select } from 'antd'
 import { EduButton } from '@edulastic/common'
 import { IconPlay } from '@edulastic/icons'
+import { connect } from 'react-redux'
+import { setQuestionDataAction } from '../../../author/src/actions/question'
+import { getQuestionDataSelector } from '../../../author/QuestionEditor/ducks'
 
 const languages = [
   'python',
@@ -18,6 +21,8 @@ const languages = [
   'c_cpp',
   'objectivec',
   'swift',
+  'ruby',
+  'perl',
 ]
 
 const languageDisplayName = {
@@ -30,6 +35,7 @@ const languageDisplayName = {
   c_cpp: 'C++',
   objectivec: 'C',
   swift: 'Swift',
+  perl: 'Perl',
 }
 
 const themes = [
@@ -77,13 +83,12 @@ const aceEditorProps = {
   highlightActiveLine: true,
   enableSnippets: false,
   showLineNumbers: true,
+  theme: 'github',
 }
 
-const CodeEditor = () => {
+const CodeEditor = ({ questionData }) => {
   const [value, setValue] = useState(defaultValue)
-  const [theme, setTheme] = useState('monokai')
-  const [mode, setMode] = useState('python')
-  const [fontSize, setFontSize] = useState(14)
+  const [fontSize, setFontSize] = useState(20)
   const aceRef = useRef()
 
   function onLoad() {
@@ -104,19 +109,21 @@ const CodeEditor = () => {
     console.log('onValidate', annotations)
   }
 
+  const mode = questionData.selectedProgram || 'python'
+
   return (
     <EditorContainer>
       <Header>
-        <OptionWrapper>
-          <Select name="mode" onChange={setMode} value={mode}>
+        {/* <OptionWrapper>
+          <Select name="mode" onChange={onSelectProgram} value={mode}>
             {languages.map((lang) => (
               <Select.Option key={lang} value={lang}>
                 {languageDisplayName[lang]}
               </Select.Option>
             ))}
           </Select>
-        </OptionWrapper>
-        <OptionWrapper>
+        </OptionWrapper> */}
+        {/* <OptionWrapper>
           <Select name="mode" onChange={setTheme} value={theme}>
             {themes.map((lang) => (
               <Select.Option key={lang} value={lang}>
@@ -124,7 +131,7 @@ const CodeEditor = () => {
               </Select.Option>
             ))}
           </Select>
-        </OptionWrapper>
+        </OptionWrapper> */}
         <OptionWrapper>
           <Select name="mode" onChange={setFontSize} value={fontSize}>
             {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
@@ -145,7 +152,7 @@ const CodeEditor = () => {
         <AceEditor
           ref={aceRef}
           mode={mode}
-          theme={theme}
+          theme={aceEditorProps.theme}
           name="blah2"
           onLoad={onLoad}
           onChange={setValue}
@@ -171,10 +178,18 @@ const CodeEditor = () => {
   )
 }
 
-export default CodeEditor
+export default connect(
+  (state) => ({
+    value: state.user,
+    questionData: getQuestionDataSelector(state),
+  }),
+  {
+    setQuestionData: setQuestionDataAction,
+  }
+)(CodeEditor)
 
 const Header = styled.div`
-  background: #000;
+  background: #e8e8e8;
   width: 100%;
   height: 60px;
   display: flex;

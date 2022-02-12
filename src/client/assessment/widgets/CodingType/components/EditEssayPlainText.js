@@ -20,6 +20,7 @@ import {
   BrowserSpellcheckOption,
 } from '../../../containers/WidgetOptions/components'
 import WordLimitAndCount from '../../../components/WordLimitAndCount'
+import CodeEditor from '../../../components/CodeEditor/CodeEditor'
 
 const EditEssayPlainText = ({
   item,
@@ -64,6 +65,7 @@ const EditEssayPlainText = ({
           showSelect={false}
           item={item}
         >
+          <CodeEditor />
           {/* <WordLimitAndCount
             data-cy="setShowWordLimit"
             onChange={handleItemChangeChange}

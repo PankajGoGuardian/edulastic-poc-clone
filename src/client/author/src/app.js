@@ -235,6 +235,10 @@ const MemberCollaboration = loadable(
   }
 )
 
+const Notifications = loadable(() => import('../../NotificationEngine'), {
+  fallback: <Progress />,
+})
+
 // eslint-disable-next-line react/prop-types
 const Author = ({
   match,
@@ -894,6 +898,11 @@ const Author = ({
                   exact
                   path={`${match.url}/students-report-card/:assignmentId/:classId`}
                   component={StudentsReportCard}
+                />
+                <Route
+                  exact
+                  path="/author/notifications"
+                  component={Notifications}
                 />
                 <Route component={NotFound} />
               </Switch>

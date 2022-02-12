@@ -22,6 +22,7 @@ import { publicTestSaga } from './publicTest'
 import dictionariesSaga from './author/src/sagas/dictionaries'
 import { assignmentEmbedLinkSaga } from './assignmentEmbedLink'
 import { ManageSubscriptionSaga } from './author/ManageSubscription'
+import { notificationsSaga } from './NotificationEngine'
 
 export default function* () {
   yield all([
@@ -44,6 +45,7 @@ export default function* () {
     assignmentEmbedLinkSaga(),
     ManageSubscriptionSaga(),
     scanScoreSagas(),
+    notificationsSaga(),
   ])
 }
 

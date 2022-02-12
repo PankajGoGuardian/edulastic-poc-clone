@@ -367,6 +367,11 @@ class SideMenu extends Component {
     }
   }
 
+  handleNotificationButtonClick = () => {
+    const { history } = this.props
+    history.push('notifications')
+  }
+
   handlePlayGround = (evt) => {
     evt.stopPropagation()
     const elementClasses = evt.currentTarget.getAttribute('class')
@@ -852,6 +857,21 @@ class SideMenu extends Component {
                 })}
               </Menu>
               <MenuFooter>
+                <NotificationsButtonContainer isCollapsed={isCollapsed}>
+                  <NotificationButton
+                    onClick={this.handleNotificationButtonClick}
+                  >
+                    <IconContainer className={isCollapsed ? 'active' : ''}>
+                      <AntIcon type="notification" theme="filled" />
+                    </IconContainer>
+                    <LabelMenuItem isCollapsed={isCollapsed}>
+                      Notifications
+                    </LabelMenuItem>
+                  </NotificationButton>
+                  <IconContainerDiv>
+                    <CountBadge>0</CountBadge>
+                  </IconContainerDiv>
+                </NotificationsButtonContainer>
                 {!isDemoPlaygroundUserProxy &&
                   ['district-admin', 'school-admin', 'teacher'].indexOf(
                     userRole
@@ -1835,6 +1855,32 @@ const DemoPlaygroundButtonContainer = styled.div`
   }
 `
 
+const NotificationsButtonContainer = styled.div`
+  margin: 0 0 6px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  justify-content: ${({ isCollapsed }) =>
+    isCollapsed ? 'center' : 'flex-start'};
+  font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
+  cursor: pointer;
+  span {
+    font-weight: 600;
+  }
+  @media (max-height: 720px) {
+    margin: 5px 0px;
+  }
+  @media (max-height: 600px) {
+    display: none;
+  }
+`
+const NotificationButton = styled.div`
+  display: inline-flex;
+  color: #7c93a7;
+`
+
 const DemoPlaygroundButton = styled.div`
   display: inline-flex;
   color: #7c93a7;
@@ -1846,4 +1892,11 @@ const DemoPlaygroundButton = styled.div`
       color: ${themeColor};
     }
   }
+`
+
+const CountBadge = styled.div`
+  border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  background: rgb(223, 8, 131);
 `

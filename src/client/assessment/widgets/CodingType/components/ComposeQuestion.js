@@ -89,7 +89,6 @@ const ComposeQuestion = (props) => {
     )
   }
 
-  console.log(mode, '<<<mode', compiler)
   return (
     <Question
       section="main"

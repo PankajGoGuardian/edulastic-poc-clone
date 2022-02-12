@@ -253,7 +253,7 @@ const EssayPlainTextPreview = ({
               isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
             }
           >
-            <CodeEditor item={item} />
+            <CodeEditor item={item} setText={setText} text={text} />
           </EssayPlainTextBoxContainer>
         </QuestionContentWrapper>
       </FlexContainer>

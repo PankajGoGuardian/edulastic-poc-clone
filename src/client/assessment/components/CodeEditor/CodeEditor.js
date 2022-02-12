@@ -6,8 +6,8 @@ import 'ace-builds/src-min-noconflict/ext-searchbox'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
 import styled from 'styled-components'
 import { Select } from 'antd'
-import { EduButton } from '@edulastic/common'
-import { IconPlay } from '@edulastic/icons'
+import { EduSwitchStyled } from '@edulastic/common'
+
 import { connect } from 'react-redux'
 import { setQuestionDataAction } from '../../../author/src/actions/question'
 import { getQuestionDataSelector } from '../../../author/QuestionEditor/ducks'
@@ -86,33 +86,28 @@ const aceEditorProps = {
   theme: 'github',
 }
 
-const CodeEditor = ({ item }) => {
-  const [value, setValue] = useState(defaultValue)
-  const [fontSize, setFontSize] = useState(20)
+const CodeEditor = ({ item, questionData, setText, text }) => {
+  const [value, setValue] = useState(text)
+  const [fontSize, setFontSize] = useState(14)
+  const [darkTheme, onEnableDarkTheme] = useState(false)
   const aceRef = useRef()
 
-  function onLoad() {
-    console.log("i've loaded")
+  function onLoad() {}
+
+  function onSelectionChange() {}
+
+  function onCursorChange() {}
+
+  function onValidate() {}
+  function onChange(_value) {
+    setValue(_value)
+    setText(_value)
   }
 
-  function onSelectionChange(newValue, event) {
-    console.log('select-change', newValue)
-    console.log('select-change-event', event)
-  }
-
-  function onCursorChange(newValue, event) {
-    console.log('cursor-change', newValue)
-    console.log('cursor-change-event', event)
-  }
-
-  function onValidate(annotations) {
-    console.log('onValidate', annotations)
-  }
-
-  const { selectedProgram = '' } = item || {}
+  const { selectedProgram = '' } = item || questionData || {}
   return (
     <EditorContainer>
-      <Header>
+      <Header darkTheme={darkTheme}>
         {/* <OptionWrapper>
           <Select name="mode" onChange={onSelectProgram} value={mode}>
             {languages.map((lang) => (
@@ -140,21 +135,27 @@ const CodeEditor = ({ item }) => {
             ))}
           </Select>
         </OptionWrapper>
-        <OptionWrapper>
-          <EduButton type="primary">
+        {/* <OptionWrapper>
+          <span type="primary">
             <IconPlay />
-          </EduButton>
+          </span>
+        </OptionWrapper> */}
+        <OptionWrapper>
+          Dark Mode:{' '}
+          <EduSwitchStyled
+            defaultChecked={darkTheme}
+            onChange={onEnableDarkTheme}
+          />
         </OptionWrapper>
       </Header>
       <EditorWrapper>
-        <CodeHeader>Editor</CodeHeader>
         <AceEditor
           ref={aceRef}
           mode={selectedProgram}
-          theme={aceEditorProps.theme}
+          theme={darkTheme ? 'monokai' : aceEditorProps.theme}
           name="blah2"
           onLoad={onLoad}
-          onChange={setValue}
+          onChange={onChange}
           onSelectionChange={onSelectionChange}
           onCursorChange={onCursorChange}
           onValidate={onValidate}
@@ -188,17 +189,18 @@ export default connect(
 )(CodeEditor)
 
 const Header = styled.div`
-  background: #e8e8e8;
+  background: ${(props) => (props.darkTheme ? '#272822' : '#e8e8e8')};
   width: 100%;
   height: 60px;
   display: flex;
   align-items: center;
   justify-content: flex-start;
+  color: ${(props) => (props.darkTheme ? '#fff' : '')};
 `
 
 const OptionWrapper = styled.div`
   display: inline-block;
-  margin: 0 10px 0 10px;
+  margin: 0 10px 0 50px;
   .ant-select-selection {
     width: 140px;
   }
@@ -208,8 +210,4 @@ const EditorWrapper = styled.div``
 const EditorContainer = styled.div`
   width: 500px;
   margin: 20px 0;
-`
-
-const CodeHeader = styled.div`
-  padding: 10px;
 `

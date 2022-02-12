@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import produce from 'immer'
@@ -12,7 +12,6 @@ import { updateVariables } from '../../../utils/variables'
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
-import { EduButton } from '@edulastic/common'
 
 const languages = [
   'python',

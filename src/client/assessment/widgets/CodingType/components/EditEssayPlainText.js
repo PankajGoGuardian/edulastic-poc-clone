@@ -7,20 +7,13 @@ import { Row, Col } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { CheckboxLabel } from '@edulastic/common'
 
-import { updateVariables } from '../../../utils/variables'
-
 import { ContentArea } from '../../../styled/ContentArea'
 
 import ComposeQuestion from './ComposeQuestion'
 // import FormattingOptions from './FormattingOptions'
-import Options from './Options'
+
 import Question from '../../../components/Question'
-import {
-  Scoring,
-  BrowserSpellcheckOption,
-} from '../../../containers/WidgetOptions/components'
-import WordLimitAndCount from '../../../components/WordLimitAndCount'
-import CodeEditor from '../../../components/CodeEditor/CodeEditor'
+import { Scoring } from '../../../containers/WidgetOptions/components'
 
 const EditEssayPlainText = ({
   item,
@@ -29,15 +22,11 @@ const EditEssayPlainText = ({
   advancedAreOpen,
   fillSections,
   cleanSections,
-  t,
 }) => {
-  const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft[prop] = uiStyle
-        updateVariables(draft)
-      })
-    )
+  const handleItemChangeChange = (prop, value) => {
+    produce(item, (draft) => {
+      draft.validation.validResponse[prop] = value
+    })
   }
 
   return (
@@ -65,7 +54,7 @@ const EditEssayPlainText = ({
           showSelect={false}
           item={item}
         >
-          <CodeEditor />
+          {/* <CodeEditor /> */}
           {/* <WordLimitAndCount
             data-cy="setShowWordLimit"
             onChange={handleItemChangeChange}
@@ -78,27 +67,28 @@ const EditEssayPlainText = ({
             showHeading={false}
           /> */}
           <Row gutter={24}>
-            {/* <Col md={12}>
+            <Col md={12}>
               <CheckboxLabel
-                data-cy="showWordCount"
-                defaultChecked={item.showWordCount}
+                defaultChecked={item.noExtraOutput}
                 onChange={(e) =>
-                  handleItemChangeChange('showWordCount', e.target.checked)
+                  handleItemChangeChange('noExtraOutput', e.target.checked)
                 }
                 style={{ marginBottom: '1rem' }}
               >
-                {t('component.essayText.showWordCheckbox')}
+                No extra ouput
               </CheckboxLabel>
-            </Col> */}
-            {/* <Col md={12}>
-              <BrowserSpellcheckOption
-                data-cy="browserSpellCheckOption"
-                onChange={(checked) =>
-                  handleItemChangeChange('spellcheck', checked)
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel
+                defaultChecked={item.trimExtraLines}
+                onChange={(e) =>
+                  handleItemChangeChange('trimExtraLines', e.target.checked)
                 }
-                checked={!!item.spellcheck}
-              />
-            </Col> */}
+                style={{ marginBottom: '1rem' }}
+              >
+                Trim extra lines
+              </CheckboxLabel>
+            </Col>
           </Row>
         </Scoring>
       </Question>
@@ -119,7 +109,6 @@ const EditEssayPlainText = ({
 EditEssayPlainText.propTypes = {
   item: PropTypes.object.isRequired,
   setQuestionData: PropTypes.func.isRequired,
-  t: PropTypes.func.isRequired,
   fillSections: PropTypes.func,
   cleanSections: PropTypes.func,
   advancedLink: PropTypes.any,

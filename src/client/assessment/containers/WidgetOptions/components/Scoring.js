@@ -370,7 +370,7 @@ class Scoring extends Component {
           </Row>
         )}
 
-        {userFeatures.gradingrubrics && (
+        {questionData.type !== 'coding' && userFeatures.gradingrubrics && (
           <Row gutter={24} mb="0">
             <Col md={12}>
               <CheckboxLabel
@@ -423,20 +423,24 @@ class Scoring extends Component {
             </Row>
           )}
 
-        {questionData.rubrics && userFeatures.gradingrubrics && (
-          <RubricsContainer>
-            <StyledTag data-cy="selectedRubric">
-              <span
-                onClick={() => this.handleViewRubric(questionData.rubrics._id)}
-              >
-                {questionData.rubrics.name}
-              </span>
-              <span data-cy="removeRubric" onClick={this.handleRemoveRubric}>
-                <Icon type="close" />
-              </span>
-            </StyledTag>
-          </RubricsContainer>
-        )}
+        {questionData.type !== 'coding' &&
+          questionData.rubrics &&
+          userFeatures.gradingrubrics && (
+            <RubricsContainer>
+              <StyledTag data-cy="selectedRubric">
+                <span
+                  onClick={() =>
+                    this.handleViewRubric(questionData.rubrics._id)
+                  }
+                >
+                  {questionData.rubrics.name}
+                </span>
+                <span data-cy="removeRubric" onClick={this.handleRemoveRubric}>
+                  <Icon type="close" />
+                </span>
+              </StyledTag>
+            </RubricsContainer>
+          )}
         {questionData.type !== 'coding' && (
           <Row gutter={24} mb="0">
             <Col md={12}>

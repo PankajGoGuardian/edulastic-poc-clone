@@ -2764,7 +2764,13 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         stimulus: '',
         type: questionType.CODING,
         validation: {
-          validResponse: { score: 1, input: '', output: '' },
+          validResponse: {
+            score: 1,
+            input: '',
+            output: '',
+            trimExtraLines: false,
+            noExtraOutput: false,
+          },
           maxScore: 1,
           language: 'python',
           compiler: '',

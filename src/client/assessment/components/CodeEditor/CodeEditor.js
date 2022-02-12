@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import AceEditor from 'react-ace'
-import { debounce } from 'lodash'
+import { debounce, get } from 'lodash'
 
 import 'ace-builds/src-noconflict/mode-jsx'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
@@ -52,28 +52,12 @@ const themes = [
   'terminal',
 ]
 
-const themeDisplayNames = {
-  monokai: 'Monokai',
-  github: 'Github',
-  tomorrow: 'Tomorrow',
-  kuroir: 'Kuroir',
-  twilight: 'Twilight',
-  xcode: 'Xcode',
-  textmate: 'Textmate',
-  solarized_dark: 'Solarized Dark',
-  solarized_light: 'Solarized Light',
-  terminal: 'Terminal',
-}
 languages.forEach((lang) => {
   import(`ace-builds/src-noconflict/mode-${lang}`)
   import(`ace-builds/src-noconflict/snippets/${lang}`)
 })
 
 themes.forEach((theme) => import(`ace-builds/src-noconflict/theme-${theme}`))
-
-const defaultValue = `function onLoad(editor) {
-  console.log("i've loaded");
-}`
 
 const aceEditorProps = {
   placeholder: '',
@@ -103,8 +87,9 @@ const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
   const onChange = debounce((_value) => {
     setText(_value)
   }, 1000)
-
-  const { language = '' } = item || questionData || {}
+  const data = item || questionData || {}
+  const language = get(data, 'validation.language', '')
+  console.log(language, ',,,language')
   return (
     <EditorContainer>
       <Header darkTheme={darkTheme}>
@@ -127,9 +112,7 @@ const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
           </Select>
         </OptionWrapper> */}
         <OptionWrapper>
-          <Lang darkTheme={darkTheme}>
-            {languageDisplayName[selectedProgram]}
-          </Lang>
+          <Lang darkTheme={darkTheme}>{languageDisplayName[language]}</Lang>
         </OptionWrapper>
         <OptionWrapper>
           <Select name="mode" onChange={setFontSize} value={fontSize}>

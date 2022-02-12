@@ -2,31 +2,29 @@ import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { uniqBy, flatMap, orderBy } from 'lodash'
+import { uniqBy, map, max, filter } from 'lodash'
 
 import { FireBaseService as Fbs } from '@edulastic/common'
 import { styledNotification } from '../author/Reports/common/styled'
 
+import { notificationStatus } from './helpers'
 import { getUser } from '../author/src/selectors/user'
 
-// NOTE: cannot access firebase console, hence, collection could not be created and we are currently using a temp collection
-// const notificationsCollectionName = 'notification-engine'
-const notificationsCollectionName = 'RegradeAssignments'
+const notificationsCollectionName = 'HackDayNotificationEngine'
 
 const NotificationListener = ({ user }) => {
-  const [notificationIds, setNotificationIds] = useState([])
-  const [isNotificationVisible, setIsNotificationVisible] = useState(false)
+  // const [notificationIds, setNotificationIds] = useState([])
+  // const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
   const userNotifications = Fbs.useFirestoreRealtimeDocuments(
     (db) =>
       db
         .collection(notificationsCollectionName)
-        .where('userId', '==', `${user?._id}`)
-        .where('notificationVariant', '==', 'engine'),
+        .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
 
-  const updateNotifications = (
+  const updateUserNotifications = (
     docs = [],
     updateData = {},
     callback = () => {}
@@ -51,64 +49,86 @@ const NotificationListener = ({ user }) => {
       .catch((err) => console.error(err))
   }
 
-  const showUserNotifications = (docs) => {
-    let unseenCount = 0
-    let unreadCount = 0
-
-    uniqBy(docs, '__id').forEach((doc) => {
-      const { status, seenStatus, readStatus, modifiedAt } = doc
-      const daysDiff = (Date.now() - modifiedAt) / (24 * 60 * 60 * 1000)
-      if (daysDiff > 15) {
-        // delete documents older than 15 days
-        deleteNotification(doc.__id)
-      } else if (status === 'active' && !notificationIds.includes(doc.__id)) {
-        setNotificationIds([...notificationIds, doc.__id])
-        if (seenStatus == 0) {
-          unseenCount += 1
-          unreadCount += 1
-        } else if (readStatus == 0) {
-          unreadCount += 1
-        }
-      }
-    })
-
-    // check: if (unreadCount && !isNotificationVisible) {
-    if (unreadCount) {
-      setIsNotificationVisible(true)
-
-      const prevUnreadCount = unreadCount - unseenCount
-      const messageForUnseen = unseenCount
-        ? `${String(unseenCount)} new notifications`
+  const showUserNotifications = (
+    notificationsToShow,
+    notificationsToDelete
+  ) => {
+    const unseenCount = notificationsToShow.length
+    const unreadCount = notificationsToDelete.length
+    const maxDuration = max(
+      map(notificationsToShow, (doc) => doc.duration || 0)
+    )
+    if (unseenCount > 0) {
+      const messageForUnseen = `${String(unseenCount)} new notifications`
+      const messageForUnread = unreadCount
+        ? `and ${String(unreadCount)} previously unread notifications`
         : ''
-      const messageForUnread = prevUnreadCount
-        ? `${
-            String(prevUnreadCount) + (messageForUnseen ? ' previously' : '')
-          } unread notifications`
-        : ''
-      const message =
-        messageForUnseen && messageForUnread
-          ? `${messageForUnseen} and ${messageForUnread}`
-          : messageForUnseen + messageForUnread
-
+      const message = messageForUnseen + messageForUnread
       styledNotification({
         type: 'success',
-        duration: 10,
+        duration: maxDuration || 6,
         msg: message,
-        onClose: () => setIsNotificationVisible(false),
+        // onClose: () => {},
       })
-
-      // todo: updateNotifications()
     }
   }
 
   useEffect(() => {
-    if (user) {
-      const flattenedUserNotifications = orderBy(
-        flatMap(userNotifications),
-        'modifiedAt',
-        'desc'
+    if (user && userNotifications.length) {
+      const notificationsToDelete = []
+      const notificationsUpcoming = []
+      const notificationsToShow = []
+      const notificationsUnread = []
+      const notificationsActive = filter(
+        uniqBy(userNotifications, '__id'),
+        (doc) => {
+          const daysDiff = (Date.now() - doc.expiresAt) / (24 * 60 * 60 * 1000)
+          const activeAt = doc.activeAt || doc.createdAt
+
+          if (doc.status == notificationStatus.ARCHIVED) {
+            // notificationsToDelete.push(doc)
+            // call delete method?
+            return false
+          }
+          if (daysDiff > 7) {
+            notificationsToDelete.push(doc)
+            return false
+          }
+          if (Date.now() <= activeAt) {
+            notificationsUpcoming.push(doc)
+            return false
+          }
+          if (doc.status == notificationStatus.INITIATED) {
+            notificationsToShow.push(doc)
+          } else if (doc.status == notificationStatus.SEEN) {
+            notificationsUnread.push(doc)
+          }
+          return true
+        }
       )
-      showUserNotifications(flattenedUserNotifications)
+
+      // TODO: remove logs later
+      // console.log('\n\n\n\nNotifications To Delete', JSON.parse(JSON.stringify(notificationsToDelete)))
+      // console.log('\nNotifications Upcoming', JSON.parse(JSON.stringify(notificationsUpcoming)))
+      // console.log('\nNotifications To Show', JSON.parse(JSON.stringify(notificationsToShow)))
+      // console.log('\nNotifications Unread', JSON.parse(JSON.stringify(notificationsUnread)))
+      // console.log('\nNotifications Active', JSON.parse(JSON.stringify(notificationsActive)))
+
+      if (notificationsToShow.length > 0) {
+        // display notifications message
+        showUserNotifications(notificationsToShow, notificationsUnread)
+        // update user notifications with seen status
+        updateUserNotifications(notificationsToShow, {
+          status: notificationStatus.SEEN,
+        })
+      }
+      if (notificationsToDelete) {
+        updateUserNotifications(notificationsToDelete, {
+          status: notificationStatus.ARCHIVED,
+        })
+      }
+      // TODO: update redux state - @neeraj
+      // updateReduxStateAction(notifcationsActive)
     }
   }, [userNotifications])
 

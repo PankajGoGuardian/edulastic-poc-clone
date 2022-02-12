@@ -101,10 +101,10 @@ const CodeEditor = ({ item, questionData, setText, text }) => {
   function onValidate() {}
   function onChange(_value) {
     setValue(_value)
-    setText(_value)
+    setText?.(_value)
   }
 
-  const { selectedProgram = '' } = item || questionData || {}
+  const { language = '' } = item || questionData || {}
   return (
     <EditorContainer>
       <Header darkTheme={darkTheme}>
@@ -151,7 +151,7 @@ const CodeEditor = ({ item, questionData, setText, text }) => {
       <EditorWrapper>
         <AceEditor
           ref={aceRef}
-          mode={selectedProgram}
+          mode={language}
           theme={darkTheme ? 'monokai' : aceEditorProps.theme}
           name="blah2"
           onLoad={onLoad}

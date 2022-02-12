@@ -6,12 +6,12 @@ import produce from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 
 import { Input, Select } from 'antd'
+import { compilersList } from '@edulastic/constants/const/questionType'
 import { updateVariables } from '../../../utils/variables'
 
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
-import { compilersList } from '@edulastic/constants/const/questionType'
 
 const languages = [
   'python',
@@ -41,16 +41,16 @@ const languageDisplayName = {
 
 const ComposeQuestion = (props) => {
   const { item, setQuestionData, t, fillSections, cleanSections } = props
-  const mode = item.selectedProgram || 'python'
+  const mode = item.validation.language || 'python'
   const compiler = compilersList[mode]?.[0]
-  const inputValue = item.inputValue || ''
-  const outPutvalue = item.outPutvalue || ''
+  const input = item.validation.validResponse.input || ''
+  const output = item.validation.validResponse.output || ''
 
   useEffect(() => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.selectedProgram = 'python'
-        draft.compiler = compiler?.name
+        draft.validation.language = 'python'
+        draft.validation.compiler = compiler?.name
       })
     )
   }, [])
@@ -67,8 +67,8 @@ const ComposeQuestion = (props) => {
   const onSelectProgram = (v) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.selectedProgram = v
-        draft.compiler = compiler?.name
+        draft.validation.language = v
+        draft.validation.compiler = compiler?.name
       })
     )
   }
@@ -76,7 +76,7 @@ const ComposeQuestion = (props) => {
   const setInputValue = (e) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.inputValue = e.target.value
+        draft.validation.validResponse.input = e.target.value
       })
     )
   }
@@ -84,7 +84,7 @@ const ComposeQuestion = (props) => {
   const setOutputValue = (e) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.outPutvalue = e.target.value
+        draft.validation.validResponse.output = e.target.value
       })
     )
   }
@@ -133,11 +133,21 @@ const ComposeQuestion = (props) => {
       <br />
       <div>
         Input of the program:
-        <Input type="text" value={inputValue} onChange={setInputValue} />
+        <Input.TextArea
+          autoSize={{ minRows: 2, maxRows: 15 }}
+          type="text"
+          value={input}
+          onChange={setInputValue}
+        />
       </div>
       <div>
         Output of the program:
-        <Input type="text" value={outPutvalue} onChange={setOutputValue} />
+        <Input.TextArea
+          autoSize={{ minRows: 2, maxRows: 15 }}
+          type="text"
+          value={output}
+          onChange={setOutputValue}
+        />
       </div>
     </Question>
   )

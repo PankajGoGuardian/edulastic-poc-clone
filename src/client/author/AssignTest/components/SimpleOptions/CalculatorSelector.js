@@ -61,6 +61,7 @@ const CalculatorSelector = ({
       value={calcType}
       onChange={onChangeHanlde}
       disabled={disabled}
+      getPopupContainer={(node) => node.parentNode}
     >
       {calcKeys.map((item) => {
         const notAvailableStateVersion =

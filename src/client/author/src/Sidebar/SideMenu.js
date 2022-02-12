@@ -369,7 +369,7 @@ class SideMenu extends Component {
 
   handleNotificationButtonClick = () => {
     const { history } = this.props
-    history.push('notifications')
+    history.push('/author/notifications')
   }
 
   handlePlayGround = (evt) => {
@@ -862,15 +862,13 @@ class SideMenu extends Component {
                     onClick={this.handleNotificationButtonClick}
                   >
                     <IconContainer className={isCollapsed ? 'active' : ''}>
-                      <AntIcon type="notification" theme="filled" />
+                      <AntIcon type="message" theme="filled" />
                     </IconContainer>
                     <LabelMenuItem isCollapsed={isCollapsed}>
                       Notifications
                     </LabelMenuItem>
                   </NotificationButton>
-                  <IconContainerDiv>
-                    <CountBadge>0</CountBadge>
-                  </IconContainerDiv>
+                  <CountBadge>99+</CountBadge>
                 </NotificationsButtonContainer>
                 {!isDemoPlaygroundUserProxy &&
                   ['district-admin', 'school-admin', 'teacher'].indexOf(
@@ -1856,6 +1854,7 @@ const DemoPlaygroundButtonContainer = styled.div`
 `
 
 const NotificationsButtonContainer = styled.div`
+  height: 40px;
   margin: 0 0 6px;
   display: flex;
   position: relative;
@@ -1896,7 +1895,14 @@ const DemoPlaygroundButton = styled.div`
 
 const CountBadge = styled.div`
   border-radius: 50%;
-  width: 20px;
-  height: 20px;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  font-size: 0.8rem;
   background: rgb(223, 8, 131);
+  color: white;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  left: 35px;
 `

@@ -72,7 +72,7 @@ export const reducer = createReducer(initialState, {
   },
 })
 
-function* recieveNotificationsListSaga({ payload }) {
+function* recieveNotificationsListSaga() {
   try {
     yield put(receiveNotificationsRequestSuccessAction(TestData))
   } catch (err) {

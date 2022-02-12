@@ -11,17 +11,13 @@ import EssayPlainTextPreview from './EssayPlainTextPreview'
 
 const EssayPlainText = (props) => {
   const { item, view, disableResponse, isPrintPreview } = props
-
-  const itemForPreview = useMemo(() => replaceVariables(item), [item])
-
   return (
     <>
       {view === EDIT && <EditEssayPlainText {...props} />}
       {view === PREVIEW && (
         <EssayPlainTextPreview
-          key={itemForPreview.id}
+          key={item.id}
           {...props}
-          item={itemForPreview}
           disableResponse={disableResponse || isPrintPreview}
         />
       )}

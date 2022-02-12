@@ -86,7 +86,7 @@ const aceEditorProps = {
   theme: 'github',
 }
 
-const CodeEditor = ({ questionData }) => {
+const CodeEditor = ({ item }) => {
   const [value, setValue] = useState(defaultValue)
   const [fontSize, setFontSize] = useState(20)
   const aceRef = useRef()
@@ -109,8 +109,7 @@ const CodeEditor = ({ questionData }) => {
     console.log('onValidate', annotations)
   }
 
-  const mode = questionData.selectedProgram || 'python'
-
+  const { selectedProgram = '' } = item || {}
   return (
     <EditorContainer>
       <Header>
@@ -151,7 +150,7 @@ const CodeEditor = ({ questionData }) => {
         <CodeHeader>Editor</CodeHeader>
         <AceEditor
           ref={aceRef}
-          mode={mode}
+          mode={selectedProgram}
           theme={aceEditorProps.theme}
           name="blah2"
           onLoad={onLoad}

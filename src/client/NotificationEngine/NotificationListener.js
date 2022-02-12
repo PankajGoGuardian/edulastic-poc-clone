@@ -66,7 +66,7 @@ const NotificationListener = ({ user }) => {
       const message = messageForUnseen + messageForUnread
       styledNotification({
         type: 'success',
-        duration: maxDuration || 6,
+        duration: maxDuration || 20,
         msg: message,
         // onClose: () => {},
       })

@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react'
+import React, { useState, useRef, useCallback, useEffect } from 'react'
 import AceEditor from 'react-ace'
 import { debounce, get } from 'lodash'
 
@@ -6,10 +6,11 @@ import 'ace-builds/src-noconflict/mode-jsx'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
 import styled from 'styled-components'
-import { Select } from 'antd'
+import { Select, Button } from 'antd'
 import { EduSwitchStyled } from '@edulastic/common'
 
 import { connect } from 'react-redux'
+import { compilersList } from '@edulastic/constants/const/questionType'
 import { setQuestionDataAction } from '../../../author/src/actions/question'
 import { getQuestionDataSelector } from '../../../author/QuestionEditor/ducks'
 
@@ -25,7 +26,7 @@ const languages = [
   'ruby',
   'perl',
 ]
-//eslint-ignore-next-line
+// eslint-ignore-next-line
 const languageDisplayName = {
   javascript: 'JavaScript',
   java: 'Java',
@@ -83,7 +84,6 @@ const aceEditorProps = {
   theme: 'github',
 }
 
-
 const defaultEditorOptions = {
   useWorker: false,
   enableBasicAutocompletion: aceEditorProps.enableBasicAutocompletion,
@@ -93,13 +93,22 @@ const defaultEditorOptions = {
   tabSize: 2,
 }
 
-export function CodeEditorSimple({value="",onChange,defaultFontSize=20, mode="python",onRun,executing,lines=15}){
-  const [fontSize,setFontSize] = useState(defaultFontSize);
+export function CodeEditorSimple({
+  value = '',
+  onChange,
+  defaultFontSize = 20,
+  mode = 'python',
+  onRun,
+  executing,
+  lines = 15,
+}) {
+  const [fontSize, setFontSize] = useState(defaultFontSize)
   const aceRef = useRef()
 
-  return (<EditorContainer>
-     <Header>
-     <OptionWrapper>
+  return (
+    <EditorContainer>
+      <Header>
+        <OptionWrapper>
           <Select name="mode" onChange={setFontSize} value={fontSize}>
             {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
               <Select.Option key={lang} value={lang}>
@@ -108,13 +117,15 @@ export function CodeEditorSimple({value="",onChange,defaultFontSize=20, mode="py
             ))}
           </Select>
         </OptionWrapper>
-        {onRun && <OptionWrapper>
-          <EduButton type="primary" loading={executing} onClick={onRun}>
-            <IconPlay />
-          </EduButton>
-        </OptionWrapper>}
-     </Header>
-     <EditorWrapper>
+        {onRun && (
+          <OptionWrapper>
+            <EduButton type="primary" loading={executing} onClick={onRun}>
+              <IconPlay />
+            </EduButton>
+          </OptionWrapper>
+        )}
+      </Header>
+      <EditorWrapper>
         <AceEditor
           ref={aceRef}
           mode={mode}
@@ -125,13 +136,21 @@ export function CodeEditorSimple({value="",onChange,defaultFontSize=20, mode="py
           showPrintMargin={aceEditorProps.showPrintMargin}
           showGutter={aceEditorProps.showGutter}
           highlightActiveLine={aceEditorProps.highlightActiveLine}
-          setOptions={{...defaultEditorOptions,maxLines:lines}}
+          setOptions={{ ...defaultEditorOptions, maxLines: lines }}
         />
-    </EditorWrapper>
-  </EditorContainer>)
+      </EditorWrapper>
+    </EditorContainer>
+  )
 }
 
-const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
+const CodeEditor = ({
+  item,
+  questionData,
+  setText,
+  text,
+  disableResponse,
+  allowReset = true,
+}) => {
   const [fontSize, setFontSize] = useState(14)
   const [darkTheme, onEnableDarkTheme] = useState(false)
   const aceRef = useRef()
@@ -143,12 +162,22 @@ const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
   function onCursorChange() {}
 
   function onValidate() {}
-
-  const onChange = debounce((_value) => {
-    setText(_value)
-  }, 1000)
+  const onChange = useCallback(
+    debounce((_value) => {
+      setText(_value)
+    }, 1000),
+    []
+  )
   const data = item || questionData || {}
   const language = get(data, 'language', '')
+  const compiler = compilersList[language][0].name
+  const template = get(data, 'validation.validResponse.template', '')
+  const onReset = useCallback(() => {
+    setText(template)
+  }, [template])
+  useEffect(() => {
+    if (!text && template) setTimeout(() => setText(template), 0)
+  }, [template])
   return (
     <EditorContainer>
       <Header darkTheme={darkTheme}>
@@ -171,9 +200,23 @@ const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
           </Select>
         </OptionWrapper> */}
         <OptionWrapper>
-          <Lang darkTheme={darkTheme}>{languageDisplayName[language]}</Lang>
+          <Lang darkTheme={darkTheme}>
+            {languageDisplayName[language]}: {compiler}
+          </Lang>
         </OptionWrapper>
-        <OptionWrapper>
+        {template && allowReset && (
+          <OptionWrapper>
+            <Button
+              shape="round"
+              icon="snippets"
+              title="Paste Template"
+              isGhost
+              onClick={onReset}
+            />
+          </OptionWrapper>
+        )}
+        <div style={{ flex: '1' }} />
+        {/* <OptionWrapper>
           <Select name="mode" onChange={setFontSize} value={fontSize}>
             {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
               <Select.Option key={lang} value={lang}>
@@ -181,7 +224,7 @@ const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
               </Select.Option>
             ))}
           </Select>
-        </OptionWrapper>
+        </OptionWrapper> */}
         {/* <OptionWrapper>
           <span type="primary">
             <IconPlay />
@@ -265,10 +308,9 @@ const EditorContainer = styled.div`
 const Lang = styled.span`
   display: inline-block;
   background: ${(props) => (props.darkTheme ? '#303129' : '#d8d8d8')};
-  padding: 10px;
+  padding: 4px 20px;
   border-radius: 5px;
   font-weight: bold;
   color: ${(props) => (props.darkTheme ? '#fff' : '#000')};
-  width: 110px;
   text-align: center;
 `

@@ -1,6 +1,7 @@
-import React from 'react'
+import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import produce from 'immer'
+import _ from 'lodash'
 
 import { Row, Col } from 'antd'
 
@@ -14,6 +15,7 @@ import ComposeQuestion from './ComposeQuestion'
 
 import Question from '../../../components/Question'
 import { Scoring } from '../../../containers/WidgetOptions/components'
+import CodeEditor from '../../../components/CodeEditor/CodeEditor'
 
 const EditEssayPlainText = ({
   item,
@@ -26,10 +28,11 @@ const EditEssayPlainText = ({
   const handleItemChangeChange = (prop, value) => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.validation.validResponse[prop] = value
+        _.set(draft.validation.validResponse, prop, value)
       })
     )
   }
+  const [showTemplate, setShowTemplate] = useState(_.get(item, 'validation.validResponse.template', false))
 
   return (
     <ContentArea>
@@ -71,9 +74,14 @@ const EditEssayPlainText = ({
           <Row gutter={24}>
             <Col md={12}>
               <CheckboxLabel
-                defaultChecked={item.validation.validResponse.noExtraOutput}
+                defaultChecked={
+                  !!item.validation.validResponse.options?.noExtraOutput
+                }
                 onChange={(e) =>
-                  handleItemChangeChange('noExtraOutput', e.target.checked)
+                  handleItemChangeChange(
+                    'options.noExtraOutput',
+                    e.target.checked
+                  )
                 }
                 style={{ marginBottom: '1rem' }}
               >
@@ -84,11 +92,26 @@ const EditEssayPlainText = ({
               <CheckboxLabel
                 defaultChecked={item.validation.validResponse.trimExtraLines}
                 onChange={(e) =>
-                  handleItemChangeChange('trimExtraLines', e.target.checked)
+                  handleItemChangeChange(
+                    'options.trimExtraLines',
+                    e.target.checked
+                  )
                 }
                 style={{ marginBottom: '1rem' }}
               >
                 Trim extra lines
+              </CheckboxLabel>
+            </Col>
+            <Col md={12}>
+              <CheckboxLabel
+                defaultChecked={showTemplate}
+                onChange={(e) => {
+                  setShowTemplate(e.target.checked)
+                  handleItemChangeChange('template', '')
+                }}
+                style={{ marginBottom: '1rem' }}
+              >
+                Initial Template
               </CheckboxLabel>
             </Col>
           </Row>
@@ -104,6 +127,14 @@ const EditEssayPlainText = ({
         cleanSections={cleanSections}
         handleItemChangeChange={handleItemChangeChange}
       /> */}
+      {showTemplate && (
+        <CodeEditor
+          item={item}
+          text={item.validation.validResponse.template || ''}
+          setText={(t) => handleItemChangeChange('template', t)}
+          allowReset={false}
+        />
+      )}
     </ContentArea>
   )
 }

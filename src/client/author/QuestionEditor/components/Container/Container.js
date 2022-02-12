@@ -352,8 +352,8 @@ class Container extends Component {
     const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
       question &&
-      !constantsQuestionType.manuallyGradableQn.includes(question.type)
-
+      !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
+      question.type !== constantsQuestionType.CODING
     return (
       <ButtonAction
         onShowSource={this.handleShowSource}
@@ -364,7 +364,11 @@ class Container extends Component {
         handleShowHints={this.toggleHints}
         showHints={showHints}
         view={view}
-        showCheckButton={isShowAnswerVisible || checkAnswerButton}
+        showCheckButton={
+          isShowAnswerVisible ||
+          checkAnswerButton ||
+          question.type === constantsQuestionType.CODING
+        }
         allowedAttempts={checkAttempts}
         previewTab={preview}
         showSettingsButton={false}

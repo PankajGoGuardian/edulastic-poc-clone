@@ -2761,15 +2761,19 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       cardImage: CodingImage,
       data: {
         title: questionTitle.CODING,
-        stimulus: '',
+        stimulus:
+          '<p>Explain the question</p><p><br/></p><p><strong>Sample Input:</strong></p><p style="margin-left: 20px;"><br/></p><p><br/></p><p><strong>Sample Output:</strong></p><p style="margin-left: 20px;"><br/></p>',
         type: questionType.CODING,
         validation: {
           validResponse: {
             score: 1,
             input: '',
             output: '',
-            trimExtraLines: false,
-            noExtraOutput: false,
+            template: '',
+            options: {
+              trimExtraLines: true,
+              noExtraOutput: true,
+            },
           },
           maxScore: 1,
           language: 'python',

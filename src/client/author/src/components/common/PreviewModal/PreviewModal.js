@@ -667,6 +667,9 @@ class PreviewModal extends React.Component {
       itemHasAtleastOneQuestion && testStatus !== 'published'
     const isLoading = loading || item === null || passageLoading
     const isMobile = isSmallSize || fullModal
+    const shouldAllowShowAnswer = item.data.questions.every(
+      (q) => q.type !== questionType.CODING
+    )
 
     return (
       <PreviewModalWrapper
@@ -765,15 +768,17 @@ class PreviewModal extends React.Component {
                   >
                     CHECK ANSWER
                   </EduButton>
-                  <EduButton
-                    isGhost
-                    height="28px"
-                    data-cy="show-answers-btn"
-                    onClick={showAnswer}
-                    disabled={!!premiumCollectionWithoutAccess}
-                  >
-                    SHOW ANSWER
-                  </EduButton>
+                  {shouldAllowShowAnswer && (
+                    <EduButton
+                      isGhost
+                      height="28px"
+                      data-cy="show-answers-btn"
+                      onClick={showAnswer}
+                      disabled={!!premiumCollectionWithoutAccess}
+                    >
+                      SHOW ANSWER
+                    </EduButton>
+                  )}
                 </>
               )}
               {page !== 'itemAuthoring' && (

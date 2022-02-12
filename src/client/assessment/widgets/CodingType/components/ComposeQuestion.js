@@ -69,7 +69,7 @@ const ComposeQuestion = (props) => {
     setQuestionData(
       produce(item, (draft) => {
         draft.validation.language = v
-        draft.validation.compiler = compiler?.name
+        draft.validation.compiler = compilersList[v][0].name
         draft.language = v
       })
     )
@@ -115,7 +115,7 @@ const ComposeQuestion = (props) => {
       />
       <br />
       <div>
-        Select the programming language:{'  '}
+        Language:{'  '}
         <Select
           name="mode"
           onChange={onSelectProgram}
@@ -140,7 +140,7 @@ const ComposeQuestion = (props) => {
 
       <br />
       <div>
-        Input of the program:
+        Standard Input:
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 15 }}
           type="text"
@@ -149,7 +149,7 @@ const ComposeQuestion = (props) => {
         />
       </div>
       <div>
-        Output of the program:
+        Standard Output:
         <Input.TextArea
           autoSize={{ minRows: 2, maxRows: 15 }}
           type="text"

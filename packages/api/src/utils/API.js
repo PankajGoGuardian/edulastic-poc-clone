@@ -386,6 +386,7 @@ export default class API {
 
         if (data && data.response && data.response.status) {
           if (data.response.status === 401) {
+            sessionStorage.setItem('tokenExpired', true)
             Sentry.withScope((scope) => {
               scope.setTag('issueType', 'ForcedRedirection')
               const token = getAccessToken()
@@ -434,6 +435,7 @@ export default class API {
             Sentry.getCurrentHub().getClient().getOptions().enabled = false
           }
           // returning skeleton reponses to avoid erroring out in Api call
+          sessionStorage.setItem('tokenExpired', true)
           return Promise.resolve({ data: { result: null } })
         }
       }

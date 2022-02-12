@@ -186,6 +186,7 @@ export function removeAllTokens() {
   window.sessionStorage.removeItem('defaultTokenKey')
   window.localStorage.removeItem('defaultTokenKey')
   window.localStorage.removeItem('tokens')
+  window.sessionStorage.removeItem('tokenExpired')
 }
 
 export function storeInLocalStorage(key, value) {

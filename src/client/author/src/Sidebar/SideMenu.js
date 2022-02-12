@@ -83,6 +83,7 @@ import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
+import { getNotificationsCount } from '../../../NotificationEngine/ducks'
 
 const menuItems = [
   {
@@ -497,6 +498,7 @@ class SideMenu extends Component {
       isDefaultDA,
       setSignedUpUsingUsernameAndPassword,
       isSignupUsingUNAndPassSet,
+      notificationCount,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -868,7 +870,9 @@ class SideMenu extends Component {
                       Notifications
                     </LabelMenuItem>
                   </NotificationButton>
-                  <CountBadge>99+</CountBadge>
+                  <CountBadge>
+                    {notificationCount > 99 ? '99+' : notificationCount}
+                  </CountBadge>
                 </NotificationsButtonContainer>
                 {!isDemoPlaygroundUserProxy &&
                   ['district-admin', 'school-admin', 'teacher'].indexOf(
@@ -1065,6 +1069,7 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
       isSuperAdmin: isSuperAdminSelector(state),
+      notificationCount: getNotificationsCount(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

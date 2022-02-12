@@ -51,6 +51,7 @@ const ComposeQuestion = (props) => {
       produce(item, (draft) => {
         draft.validation.language = 'python'
         draft.validation.compiler = compiler?.name
+        draft.language = 'python'
       })
     )
   }, [])
@@ -69,6 +70,7 @@ const ComposeQuestion = (props) => {
       produce(item, (draft) => {
         draft.validation.language = v
         draft.validation.compiler = compiler?.name
+        draft.language = v
       })
     )
   }

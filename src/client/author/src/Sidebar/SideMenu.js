@@ -49,6 +49,7 @@ import {
   IconCircleCheck,
   IconClose,
   IconDemoAccNav,
+  IconGoals,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -82,7 +83,9 @@ import SwitchUserModal from '../../../common/components/SwtichUserModal/SwitchUs
 import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
+import GoalsPerformanceModal from '../components/common/GoalsPerformanceModal'
 import { slice } from '../../Subscription/ducks'
+import { loadPerformanceGoalsReportAction } from '../../../student/TestAcitivityReport/ducks'
 
 const menuItems = [
   {
@@ -193,6 +196,7 @@ class SideMenu extends Component {
       showTrialUsedModal: false,
       showPurchaseModal: false,
       showTrialSubsConfirmation: false,
+      showGoalsModal: false,
     }
 
     this.sideMenuRef = React.createRef()
@@ -433,6 +437,22 @@ class SideMenu extends Component {
     })
   }
 
+  handleShowGoalsModal = () => {
+    const { fetchPerformanceGoals } = this.props
+    fetchPerformanceGoals({
+      termId: '61bc37c222542500099eacc4',
+    })
+    this.setState({
+      showGoalsModal: true,
+    })
+  }
+
+  closeGoalsModal = () => {
+    this.setState({
+      showGoalsModal: false,
+    })
+  }
+
   handlePurchaseFlow = () => {
     this.setState({
       showTrialUsedModal: false,
@@ -462,7 +482,7 @@ class SideMenu extends Component {
   }
 
   render() {
-    const { broken, isVisible, showModal } = this.state
+    const { broken, isVisible, showModal, showGoalsModal } = this.state
     let { isSwitchAccountNotification } = this.state
     // For Now we are hiding the switch account notification (Ref: EV-25373)
     // TODO: Remove hiding notification when implementation of "showing notification only once"
@@ -492,6 +512,7 @@ class SideMenu extends Component {
       isDefaultDA,
       setSignedUpUsingUsernameAndPassword,
       isSignupUsingUNAndPassSet,
+      fetchPerformanceGoals,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -557,6 +578,8 @@ class SideMenu extends Component {
     }
 
     const users = get(switchDetails, 'switchAccounts', [])
+
+    console.log('fetchPerformanceGoals', fetchPerformanceGoals)
 
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
@@ -852,6 +875,20 @@ class SideMenu extends Component {
                 })}
               </Menu>
               <MenuFooter>
+                <DemoPlaygroundButtonContainer isCollapsed={isCollapsed}>
+                  <DemoPlaygroundButton
+                    data-cy="goal-performance"
+                    onClick={this.handleShowGoalsModal}
+                    title={isCollapsed ? 'Demo Playground' : ''}
+                  >
+                    <IconContainer className={isCollapsed ? 'active' : ''}>
+                      <IconGoals />
+                    </IconContainer>
+                    <LabelMenuItem percentage="20" isCollapsed={isCollapsed}>
+                      Goals <span className="score">(80%)</span>
+                    </LabelMenuItem>
+                  </DemoPlaygroundButton>
+                </DemoPlaygroundButtonContainer>
                 {!isDemoPlaygroundUserProxy &&
                   ['district-admin', 'school-admin', 'teacher'].indexOf(
                     userRole
@@ -983,6 +1020,12 @@ class SideMenu extends Component {
                       </Tooltip>
                     ) : null}
                   </IconContainerDiv>
+                  {showGoalsModal && (
+                    <GoalsPerformanceModal
+                      showGoalsModal={showGoalsModal}
+                      closeModal={this.closeGoalsModal}
+                    />
+                  )}
                 </UserInfoButton>
               </MenuFooter>
             </MenuWrapper>
@@ -1056,6 +1099,7 @@ const enhance = compose(
       setSignedUpUsingUsernameAndPassword: setIsUserSignedUpUsingUsernameAndPassword,
       setIsUserOnProfilePage: setIsUserOnProfilePageAction,
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
+      fetchPerformanceGoals: loadPerformanceGoalsReportAction,
     }
   )
 )
@@ -1720,6 +1764,14 @@ const LabelMenuItem = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   display: ${({ isCollapsed }) => (isCollapsed ? 'none' : 'block')};
+  .score {
+    color: ${({ percentage }) =>
+      percentage < 30
+        ? 'rgb(255, 230, 192)'
+        : percentage < 60
+        ? 'rgb(235, 123, 101)'
+        : 'rgb(153, 203, 118)'} !important;
+  }
 `
 
 const Hr = styled.div`

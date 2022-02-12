@@ -276,6 +276,17 @@ const fetchGeneratedCSVs = () =>
     })
     .then(({ data }) => data.result)
 
+const fetchPerformanceGoalsDetails = (termId) =>
+  api
+    .callApi({
+      url: '/report/student-performance-details',
+      params: {
+        termId,
+      },
+      method: 'GET',
+    })
+    .then(({ data }) => data.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -311,4 +322,5 @@ export default {
   fetchActivityByTeacher,
   generateCSV,
   fetchGeneratedCSVs,
+  fetchPerformanceGoalsDetails,
 }

@@ -326,9 +326,11 @@ class SideMenu extends Component {
                       Notifications
                     </LabelMenuItem>
                   </NotificationButton>
-                  <CountBadge>
-                    {notificationCount > 99 ? '99+' : notificationCount}
-                  </CountBadge>
+                  {notificationCount !== 0 && (
+                    <CountBadge>
+                      {notificationCount > 99 ? '99+' : notificationCount}
+                    </CountBadge>
+                  )}
                 </NotificationsButtonContainer>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                   <a

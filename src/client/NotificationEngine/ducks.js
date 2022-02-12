@@ -2,30 +2,6 @@ import { put, all, takeEvery } from 'redux-saga/effects'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 
-const TestData = [
-  {
-    title: 'Test Title 1',
-    markAsRead: false,
-    description: 'test description 1',
-    seenStatus: false,
-    topicType: 'Assignment',
-  },
-  {
-    title: 'Test Title 1',
-    markAsRead: false,
-    description: 'test description 1',
-    seenStatus: true,
-    topicType: 'Reports',
-  },
-  {
-    title: 'Test Title 1',
-    markAsRead: true,
-    description: 'test description 1',
-    seenStatus: true,
-    topicType: 'Assignment',
-  },
-]
-
 const RECEIVE_NOTIFICATIONS_REQUEST = '[notifications] receive data request'
 const RECEIVE_NOTIFICATIONS_SUCCESS = '[notifications] recieve data success'
 const RECEIVE_NOTIFICATIONS_ERROR = '[notifications] recieve data error'

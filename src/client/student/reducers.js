@@ -11,6 +11,7 @@ import testFeedback, {
 import user from './Login/ducks'
 import signup from './Signup/duck'
 import { slice as studentPlaylistSlice } from './StudentPlaylist/ducks'
+import { notificationsReducer } from '../NotificationEngine'
 
 const studentReducer = {
   ui,
@@ -24,6 +25,7 @@ const studentReducer = {
   studentEnrollClassList: studentEnrollClassReducer,
   signup,
   studentPlaylist: studentPlaylistSlice.reducer,
+  notificationsReducer,
 }
 
 export default studentReducer

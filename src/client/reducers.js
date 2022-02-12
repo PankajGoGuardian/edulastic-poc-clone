@@ -16,7 +16,6 @@ import user from './student/Login/ducks'
 import signup from './student/Signup/duck'
 import authorUi from './author/src/reducers/authorUi'
 import dictionaries from './author/src/reducers/dictionaries'
-import { notificationsReducer } from './NotificationEngine'
 
 const rootReducer = combineReducers({
   ...assessmentReducers,
@@ -31,7 +30,6 @@ const rootReducer = combineReducers({
   resetPassword: resetPasswordSlice.reducer,
   publicTest: publicTestReducer,
   scanStore,
-  notificationsReducer,
 })
 
 export const loginReducer = combineReducers({

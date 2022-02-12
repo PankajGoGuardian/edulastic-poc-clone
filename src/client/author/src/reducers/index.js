@@ -64,6 +64,7 @@ import { feedback } from './feedback'
 import { mergeUsersReducer } from '../../MergeUsers'
 import { gradebookReducer } from '../../Gradebook'
 import collaborationGroup from '../../Collaboration/ducks'
+import { notificationsReducer } from '../../../NotificationEngine'
 
 const authorReducers = {
   authorUi,
@@ -132,6 +133,7 @@ const authorReducers = {
   mergeUsersReducer,
   gradebookReducer,
   collaborationGroup,
+  notificationsReducer,
 }
 
 export default authorReducers

@@ -104,126 +104,7 @@ const EssayPlainTextPreview = ({
     setWordCount(getWordCount(text))
   }, [text])
 
-  const handleTextChange = (e) => {
-    const val = e.target.value
-    if (typeof val === 'string') {
-      setText(val)
-    }
-  }
-
-  const handleSelect = () => {
-    if (
-      node?.resizableTextArea?.textArea?.selectionStart !==
-      node?.resizableTextArea?.textArea?.selectionEnd
-    ) {
-      setSelection({
-        start: node.resizableTextArea.textArea.selectionStart,
-        end: node.resizableTextArea.textArea.selectionEnd,
-      })
-    } else {
-      setSelection(null)
-    }
-
-    setSelection({
-      start: node?.resizableTextArea?.textArea?.selectionStart,
-      end: node?.resizableTextArea?.textArea?.selectionEnd,
-    })
-  }
-
-  const writeToClipBoard = async (data) => {
-    try {
-      await navigator.clipboard.writeText(data)
-    } catch (e) {
-      console.log(e)
-    }
-  }
-
-  const handleAction = (action) => async () => {
-    /**
-     * @see https://snapwiz.atlassian.net/browse/EV-19378
-     * allow cut/copy/paste through keyboard
-     * syncing cut/copy/paste from keyboard and button actions
-     */
-    let isClipBoardApiAccessible = false
-    if (navigator?.clipboard) {
-      isClipBoardApiAccessible = true
-    }
-    switch (action) {
-      case COPY:
-        if (selection) {
-          setBuffer(text.slice(selection.start, selection.end))
-          if (isClipBoardApiAccessible) {
-            await writeToClipBoard(text.slice(selection.start, selection.end))
-          }
-        }
-        break
-      case CUT: {
-        if (selection) {
-          setBuffer(text.slice(selection.start, selection.end))
-          setText(text.slice(0, selection.start) + text.slice(selection.end))
-          if (isClipBoardApiAccessible) {
-            await writeToClipBoard(text.slice(selection.start, selection.end))
-          }
-        }
-        break
-      }
-      case PASTE: {
-        let clipBoardText = ''
-        if (isClipBoardApiAccessible) {
-          try {
-            clipBoardText = await navigator.clipboard.readText()
-          } catch (e) {
-            console.log(e)
-          }
-          if (clipBoardText) {
-            setBuffer(clipBoardText)
-          }
-        }
-        let val = ''
-        if (selection.end) {
-          val =
-            text.slice(0, selection.start) +
-            (clipBoardText || buffer) +
-            text.slice(selection.end)
-          setText(val)
-        } else {
-          val =
-            text.slice(0, selection.start) +
-            (clipBoardText || buffer) +
-            text.slice(selection.start)
-          setText(val)
-        }
-        break
-      }
-      default:
-        break
-    }
-  }
-
-  const showLimitAlways = item.showWordLimit === ALWAYS
-
-  const showOnLimit = item.showWordLimit === ON_LIMIT
-
-  const displayWordCount =
-    (showOnLimit && item.maxWord < wordCount) || showLimitAlways
-      ? `${wordCount} / ${item.maxWord} ${t(
-          'component.essayText.wordsLimitTitle'
-        )}`
-      : `${wordCount} ${t('component.essayText.wordsTitle')}`
-
-  const wordCountStyle =
-    (showLimitAlways || showOnLimit) && item.maxWord < wordCount
-      ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
-      : {}
-
   const isV1Multipart = get(col, 'isV1Multipart', false)
-  const fontSize =
-    theme.fontSize || getFontSize(get(item, 'uiStyle.fontsize', 'normal'))
-  const { minHeight = '' } = item?.uiStyle || {}
-  const background =
-    item.maxWord < wordCount
-      ? theme.widgets.essayPlainText.textInputLimitedBgColor
-      : theme.widgets.essayPlainText.textInputBgColor
 
   return (
     <StyledPaperWrapper
@@ -253,7 +134,12 @@ const EssayPlainTextPreview = ({
               isStudentAttempt && isFeedbackVisible ? '150px' : '0px'
             }
           >
-            <CodeEditor item={item} setText={setText} text={text} />
+            <CodeEditor
+              item={item}
+              setText={setText}
+              text={text}
+              disableResponse={disableResponse}
+            />
           </EssayPlainTextBoxContainer>
         </QuestionContentWrapper>
       </FlexContainer>

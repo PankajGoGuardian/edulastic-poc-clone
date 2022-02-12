@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import AceEditor from 'react-ace'
+import { debounce } from 'lodash'
 
 import 'ace-builds/src-noconflict/mode-jsx'
 import 'ace-builds/src-min-noconflict/ext-searchbox'
@@ -86,8 +87,7 @@ const aceEditorProps = {
   theme: 'github',
 }
 
-const CodeEditor = ({ item, questionData, setText, text }) => {
-  const [value, setValue] = useState(text)
+const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
   const [fontSize, setFontSize] = useState(14)
   const [darkTheme, onEnableDarkTheme] = useState(false)
   const aceRef = useRef()
@@ -99,10 +99,10 @@ const CodeEditor = ({ item, questionData, setText, text }) => {
   function onCursorChange() {}
 
   function onValidate() {}
-  function onChange(_value) {
-    setValue(_value)
-    setText?.(_value)
-  }
+
+  const onChange = debounce((_value) => {
+    setText(_value)
+  }, 1000)
 
   const { language = '' } = item || questionData || {}
   return (
@@ -126,6 +126,11 @@ const CodeEditor = ({ item, questionData, setText, text }) => {
             ))}
           </Select>
         </OptionWrapper> */}
+        <OptionWrapper>
+          <Lang darkTheme={darkTheme}>
+            {languageDisplayName[selectedProgram]}
+          </Lang>
+        </OptionWrapper>
         <OptionWrapper>
           <Select name="mode" onChange={setFontSize} value={fontSize}>
             {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
@@ -159,11 +164,14 @@ const CodeEditor = ({ item, questionData, setText, text }) => {
           onSelectionChange={onSelectionChange}
           onCursorChange={onCursorChange}
           onValidate={onValidate}
-          value={value}
+          value={text}
           fontSize={fontSize}
           showPrintMargin={aceEditorProps.showPrintMargin}
           showGutter={aceEditorProps.showGutter}
-          highlightActiveLine={aceEditorProps.highlightActiveLine}
+          highlightActiveLine={
+            disableResponse ? false : aceEditorProps.highlightActiveLine
+          }
+          readOnly={disableResponse}
           setOptions={{
             useWorker: false,
             enableBasicAutocompletion: aceEditorProps.enableBasicAutocompletion,
@@ -200,7 +208,7 @@ const Header = styled.div`
 
 const OptionWrapper = styled.div`
   display: inline-block;
-  margin: 0 10px 0 50px;
+  margin: 0 10px 0 10px;
   .ant-select-selection {
     width: 140px;
   }
@@ -210,4 +218,15 @@ const EditorWrapper = styled.div``
 const EditorContainer = styled.div`
   width: 500px;
   margin: 20px 0;
+`
+
+const Lang = styled.span`
+  display: inline-block;
+  background: ${(props) => (props.darkTheme ? '#303129' : '#d8d8d8')};
+  padding: 10px;
+  border-radius: 5px;
+  font-weight: bold;
+  color: ${(props) => (props.darkTheme ? '#fff' : '#000')};
+  width: 110px;
+  text-align: center;
 `

@@ -665,7 +665,7 @@ const enhance = compose(
       isClassResponseLoading: state?.studentResponse?.loading,
       studentQuestionResponseUpdatedAt:
         state?.studentQuestionResponse?.data?.updatedAt,
-      classQuestionResponseData: state.classQuestionResponse.data,
+      classQuestionResponseData: state.classQuestionResponse?.data,
     }),
     {
       loadFeedbackResponses: receiveFeedbackResponseAction,

@@ -380,6 +380,8 @@ const extractFunctions = {
     userResponse ? 'CR' : '',
   [questionType.ESSAY_RICH_TEXT]: (question, userResponse = '') =>
     userResponse ? 'CR' : '',
+  [questionType.CODING]: (question, userResponse = '') =>
+    userResponse ? 'CR' : '',
   [questionType.FORMULA_ESSAY]: (question, userResponse = '') =>
     userResponse ? 'CR' : '',
   [questionType.EXPRESSION_MULTIPART]: (question, userResponse = '') => {

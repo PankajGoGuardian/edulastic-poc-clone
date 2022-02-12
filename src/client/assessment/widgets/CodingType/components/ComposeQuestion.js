@@ -12,6 +12,7 @@ import { updateVariables } from '../../../utils/variables'
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { Subtitle } from '../../../styled/Subtitle'
 import Question from '../../../components/Question'
+import { EduButton } from '@edulastic/common'
 
 const languages = [
   'python',
@@ -126,8 +127,14 @@ const ComposeQuestion = (props) => {
             </Select.Option>
           ))}
         </Select>
-        <span> Compiler: </span>
-        <span>{compiler?.['display-name'] || '-'}</span>
+        <div>
+          <span> Compiler: </span>
+          <span>
+            {compiler?.['display-name']
+              ? `${compiler?.['display-name']} (${compiler?.['name']})`
+              : '-'}
+          </span>
+        </div>
       </div>
 
       <br />
@@ -149,6 +156,9 @@ const ComposeQuestion = (props) => {
           onChange={setOutputValue}
         />
       </div>
+      {/* <div style={{ marginTop: '10px' }}>
+        <EduButton>Add More</EduButton>
+      </div> */}
     </Question>
   )
 }

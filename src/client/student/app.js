@@ -29,6 +29,7 @@ import {
   updateCliUserAction,
 } from './Login/ducks'
 import { AssignmentEmbedLink } from '../assignmentEmbedLink'
+import NotificationEngine from '../NotificationEngine'
 
 const StudentApp = ({
   match,
@@ -87,6 +88,10 @@ const StudentApp = ({
                 <Route
                   path={`${match.url}/playlist`}
                   component={StudentPlaylist}
+                />
+                <Route
+                  path={`${match.url}/notifications`}
+                  component={NotificationEngine}
                 />
                 <Route
                   path={`${match.url}/tests/verid/:versionId`}

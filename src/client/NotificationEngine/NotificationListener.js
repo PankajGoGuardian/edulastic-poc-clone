@@ -9,10 +9,11 @@ import { styledNotification } from '../author/Reports/common/styled'
 
 import { notificationStatus } from './helpers'
 import { getUser } from '../author/src/selectors/user'
+import { receiveNotificationsRequestSuccessAction } from './ducks'
 
 const notificationsCollectionName = 'HackDayNotificationEngine'
 
-const NotificationListener = ({ user }) => {
+const NotificationListener = ({ user, setNotifications }) => {
   // const [notificationIds, setNotificationIds] = useState([])
   // const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
@@ -143,7 +144,7 @@ const NotificationListener = ({ user }) => {
         })
       }
       // TODO: update redux state - @neeraj
-      // updateReduxStateAction(notifcationsActive)
+      setNotifications(notificationsActive)
     }
   }, [userNotifications])
 
@@ -156,6 +157,8 @@ export default compose(
     (state) => ({
       user: getUser(state),
     }),
-    {}
+    {
+      setNotifications: receiveNotificationsRequestSuccessAction,
+    }
   )
 )(NotificationListener)

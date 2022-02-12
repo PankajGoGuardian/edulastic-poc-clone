@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { groupBy } from 'lodash'
+import { withRouter } from 'react-router-dom'
 import { MainHeader, MainContentWrapper, EduButton } from '@edulastic/common'
 
 import {
@@ -16,17 +17,21 @@ import {
 const { Panel } = Collapse
 const { TabPane } = Tabs
 
-const Notification = ({ loading, error, notifications, getNotifications }) => {
+const Notification = ({ loading, notifications, history }) => {
   const [notificationGroups, setNotificationGroups] = useState([])
-  useEffect(() => {
-    getNotifications()
-  }, [])
 
   useEffect(() => {
+    console.log('notifications', notifications)
     setNotificationGroups(groupBy(notifications, 'topicType'))
   }, [notifications])
   // @todo filter notification based on today and past.
   // @todo add an empty container for no notifications case.
+
+  const handleClickAction = (url) => {
+    if (url) {
+      history.push(url)
+    }
+  }
 
   const renderNotificationCollapseContainer = (notificationGroupsData) => (
     <StyledCollapse style={{ padding: '0px' }} accordion>
@@ -35,9 +40,10 @@ const Notification = ({ loading, error, notifications, getNotifications }) => {
           <ListContainer>
             {notificationGroupsData[groupName].map((notification) => (
               <ListItemContainer isMarkedAsRead={notification.markAsRead}>
-                <ListItemInfo>
-                  <h4>{notification.title}</h4>
-                  <p>{notification.description}</p>
+                <ListItemInfo
+                  onClick={() => handleClickAction(notification.URL || '')}
+                >
+                  <p>{notification.message}</p>
                 </ListItemInfo>
                 <ListItemAction>
                   {!notification.markAsRead && (
@@ -77,6 +83,7 @@ const Notification = ({ loading, error, notifications, getNotifications }) => {
 }
 
 const enhance = compose(
+  withRouter,
   connect(
     (state) => ({
       loading: getLoader(state),

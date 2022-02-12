@@ -37,6 +37,7 @@ import {
   logoutAction,
   isProxyUser as isProxyUserSelector,
 } from '../Login/ducks'
+import { getNotificationsCount } from '../../NotificationEngine/ducks'
 
 const menuItems = [
   {
@@ -145,6 +146,11 @@ class SideMenu extends Component {
     }
   }
 
+  handleNotificationButtonClick = () => {
+    const { history } = this.props
+    history.push('/home/notifications')
+  }
+
   onOutsideEvent = (event) => {
     const { isSidebarCollapsed } = this.props
 
@@ -175,6 +181,7 @@ class SideMenu extends Component {
       role,
       features,
       isProxyUser,
+      notificationCount,
     } = this.props
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${
       lastName || ``
@@ -306,6 +313,23 @@ class SideMenu extends Component {
                 })}
               </Menu>
               <MenuFooter>
+                <NotificationsButtonContainer isCollapsed={isSidebarCollapsed}>
+                  <NotificationButton
+                    onClick={this.handleNotificationButtonClick}
+                  >
+                    <IconContainer
+                      className={isSidebarCollapsed ? 'active' : ''}
+                    >
+                      <AntIcon type="message" theme="filled" />
+                    </IconContainer>
+                    <LabelMenuItem isSidebarCollapsed={isSidebarCollapsed}>
+                      Notifications
+                    </LabelMenuItem>
+                  </NotificationButton>
+                  <CountBadge>
+                    {notificationCount > 99 ? '99+' : notificationCount}
+                  </CountBadge>
+                </NotificationsButtonContainer>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
                   <a
                     href={helpCenterUrl}
@@ -413,7 +437,7 @@ const enhance = compose(
   withWindowSizes,
   withNamespaces('sidemenu'),
   connect(
-    ({ router, user, ui }) => ({
+    ({ router, user, ui, ...rest }) => ({
       currentPath: router.location.pathname,
       firstName: user?.user?.firstName || '',
       middleName: get(user, 'user.middleName', ''),
@@ -424,6 +448,7 @@ const enhance = compose(
       role: user?.user?.role,
       features: user?.user?.features,
       isProxyUser: isProxyUserSelector({ user }),
+      notificationCount: getNotificationsCount(rest),
     }),
     {
       logout: logoutAction,
@@ -980,4 +1005,43 @@ const IconBars = styled(AntIcon)`
     font-size: 24px;
     color: ${white};
   }
+`
+const NotificationsButtonContainer = styled.div`
+  height: 40px;
+  margin: 0 0 6px;
+  display: flex;
+  position: relative;
+  overflow: hidden;
+  align-items: center;
+  padding: ${({ isCollapsed }) => (isCollapsed ? '5px 0px' : '5px 25px')};
+  justify-content: ${({ isCollapsed }) =>
+    isCollapsed ? 'center' : 'flex-start'};
+  font-size: ${(props) => props.theme.sideMenu.helpButtonFontSize};
+  cursor: pointer;
+  span {
+    font-weight: 600;
+  }
+  @media (max-height: 720px) {
+    margin: 5px 0px;
+  }
+  @media (max-height: 600px) {
+    display: none;
+  }
+`
+const NotificationButton = styled.div`
+  display: inline-flex;
+  color: #7c93a7;
+`
+const CountBadge = styled.div`
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  line-height: 25px;
+  font-size: 0.8rem;
+  background: rgb(223, 8, 131);
+  color: white;
+  text-align: center;
+  position: absolute;
+  top: 0px;
+  left: 35px;
 `

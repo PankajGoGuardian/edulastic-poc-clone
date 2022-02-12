@@ -57,13 +57,17 @@ export const getNotificationsList = createSelector(
   (state) => state.notifications
 )
 
+export const getNotificationsCount = createSelector(
+  stateSelector,
+  (state) => state.notifications.length || 0
+)
+
 export const reducer = createReducer(initialState, {
   [RECEIVE_NOTIFICATIONS_REQUEST]: (state) => {
     state.loading = true
   },
   [RECEIVE_NOTIFICATIONS_SUCCESS]: (state, { payload }) => {
     state.loading = false
-    // handle payload processing to extract notifications.
     state.notifications = payload
   },
   [RECEIVE_NOTIFICATIONS_ERROR]: (state, { payload }) => {
@@ -72,9 +76,10 @@ export const reducer = createReducer(initialState, {
   },
 })
 
-function* recieveNotificationsListSaga() {
+function* recieveNotificationsListSaga(notifications) {
+  console.log('recieved notifications', notifications)
   try {
-    yield put(receiveNotificationsRequestSuccessAction(TestData))
+    yield put(receiveNotificationsRequestSuccessAction(notifications))
   } catch (err) {
     yield put(
       receiveNotificationsRequestErrorAction({

@@ -59,11 +59,11 @@ const NotificationListener = ({ user }) => {
       map(notificationsToShow, (doc) => doc.duration || 0)
     )
     if (unseenCount > 0) {
-      const messageForUnseen = `${String(unseenCount)} new notifications`
+      const messageForUnseen = `${String(unseenCount)} new`
       const messageForUnread = unreadCount
-        ? `and ${String(unreadCount)} previously unread notifications`
+        ? `and ${String(unreadCount)} previously unread`
         : ''
-      const message = messageForUnseen + messageForUnread
+      const message = `${messageForUnseen + messageForUnread} notification(s)`
       styledNotification({
         type: 'success',
         duration: maxDuration || 20,
@@ -108,11 +108,26 @@ const NotificationListener = ({ user }) => {
       )
 
       // TODO: remove logs later
-      // console.log('\n\n\n\nNotifications To Delete', JSON.parse(JSON.stringify(notificationsToDelete)))
-      // console.log('\nNotifications Upcoming', JSON.parse(JSON.stringify(notificationsUpcoming)))
-      // console.log('\nNotifications To Show', JSON.parse(JSON.stringify(notificationsToShow)))
-      // console.log('\nNotifications Unread', JSON.parse(JSON.stringify(notificationsUnread)))
-      // console.log('\nNotifications Active', JSON.parse(JSON.stringify(notificationsActive)))
+      console.log(
+        '\n\n\n\nNotifications To Delete',
+        JSON.parse(JSON.stringify(notificationsToDelete))
+      )
+      console.log(
+        '\nNotifications Upcoming',
+        JSON.parse(JSON.stringify(notificationsUpcoming))
+      )
+      console.log(
+        '\nNotifications To Show',
+        JSON.parse(JSON.stringify(notificationsToShow))
+      )
+      console.log(
+        '\nNotifications Unread',
+        JSON.parse(JSON.stringify(notificationsUnread))
+      )
+      console.log(
+        '\nNotifications Active',
+        JSON.parse(JSON.stringify(notificationsActive))
+      )
 
       if (notificationsToShow.length > 0) {
         // display notifications message

@@ -25,7 +25,7 @@ const languages = [
   'ruby',
   'perl',
 ]
-
+//eslint-ignore-next-line
 const languageDisplayName = {
   javascript: 'JavaScript',
   java: 'Java',
@@ -52,6 +52,18 @@ const themes = [
   'terminal',
 ]
 
+// const themeDisplayNames = {
+//   monokai: 'Monokai',
+//   github: 'Github',
+//   tomorrow: 'Tomorrow',
+//   kuroir: 'Kuroir',
+//   twilight: 'Twilight',
+//   xcode: 'Xcode',
+//   textmate: 'Textmate',
+//   solarized_dark: 'Solarized Dark',
+//   solarized_light: 'Solarized Light',
+//   terminal: 'Terminal',
+// }
 languages.forEach((lang) => {
   import(`ace-builds/src-noconflict/mode-${lang}`)
   import(`ace-builds/src-noconflict/snippets/${lang}`)
@@ -69,6 +81,54 @@ const aceEditorProps = {
   enableSnippets: false,
   showLineNumbers: true,
   theme: 'github',
+}
+
+
+const defaultEditorOptions = {
+  useWorker: false,
+  enableBasicAutocompletion: aceEditorProps.enableBasicAutocompletion,
+  enableLiveAutocompletion: aceEditorProps.enableLiveAutocompletion,
+  enableSnippets: aceEditorProps.enableSnippets,
+  showLineNumbers: aceEditorProps.showLineNumbers,
+  tabSize: 2,
+}
+
+export function CodeEditorSimple({value="",onChange,defaultFontSize=20, mode="python",onRun,executing,lines=15}){
+  const [fontSize,setFontSize] = useState(defaultFontSize);
+  const aceRef = useRef()
+
+  return (<EditorContainer>
+     <Header>
+     <OptionWrapper>
+          <Select name="mode" onChange={setFontSize} value={fontSize}>
+            {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
+              <Select.Option key={lang} value={lang}>
+                {lang}
+              </Select.Option>
+            ))}
+          </Select>
+        </OptionWrapper>
+        {onRun && <OptionWrapper>
+          <EduButton type="primary" loading={executing} onClick={onRun}>
+            <IconPlay />
+          </EduButton>
+        </OptionWrapper>}
+     </Header>
+     <EditorWrapper>
+        <AceEditor
+          ref={aceRef}
+          mode={mode}
+          theme={aceEditorProps.theme}
+          onChange={onChange}
+          value={value}
+          fontSize={fontSize}
+          showPrintMargin={aceEditorProps.showPrintMargin}
+          showGutter={aceEditorProps.showGutter}
+          highlightActiveLine={aceEditorProps.highlightActiveLine}
+          setOptions={{...defaultEditorOptions,maxLines:lines}}
+        />
+    </EditorWrapper>
+  </EditorContainer>)
 }
 
 const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {

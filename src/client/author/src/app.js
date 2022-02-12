@@ -26,6 +26,7 @@ import {
 } from '../DistrictPolicy/ducks'
 import ImportTest from '../ImportTest'
 import NotFound from '../../NotFound'
+import { TurtleRunner } from '../../assessment/widgets/Turtle/Turtle';
 import { updateRecentCollectionsAction } from './actions/dictionaries'
 
 /* lazy load routes */
@@ -331,6 +332,12 @@ const Author = ({
                   exact
                   path={`${match.url}/tests/snapquiz/add`}
                   render={(props) => <AssessmentCreate {...props} isAddPdf />}
+                />
+
+                <Route
+                exact
+                path={`${match.url}/turtleTest`}
+                component={TurtleRunner}
                 />
 
                 <Route

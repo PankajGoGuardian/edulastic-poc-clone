@@ -89,7 +89,6 @@ const CodeEditor = ({ item, questionData, setText, text, disableResponse }) => {
   }, 1000)
   const data = item || questionData || {}
   const language = get(data, 'validation.language', '')
-  console.log(language, ',,,language')
   return (
     <EditorContainer>
       <Header darkTheme={darkTheme}>

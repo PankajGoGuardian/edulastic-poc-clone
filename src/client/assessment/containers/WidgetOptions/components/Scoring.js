@@ -217,6 +217,7 @@ class Scoring extends Component {
       }
       const points = parseFloat(value, 10)
       handleChangeValidation('validResponse', {
+        ...get(questionData, 'validation.validResponse', {}),
         score: points,
       })
     }

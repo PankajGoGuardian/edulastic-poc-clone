@@ -24,9 +24,11 @@ const EditEssayPlainText = ({
   cleanSections,
 }) => {
   const handleItemChangeChange = (prop, value) => {
-    produce(item, (draft) => {
-      draft.validation.validResponse[prop] = value
-    })
+    setQuestionData(
+      produce(item, (draft) => {
+        draft.validation.validResponse[prop] = value
+      })
+    )
   }
 
   return (
@@ -69,7 +71,7 @@ const EditEssayPlainText = ({
           <Row gutter={24}>
             <Col md={12}>
               <CheckboxLabel
-                defaultChecked={item.noExtraOutput}
+                defaultChecked={item.validation.validResponse.noExtraOutput}
                 onChange={(e) =>
                   handleItemChangeChange('noExtraOutput', e.target.checked)
                 }
@@ -80,7 +82,7 @@ const EditEssayPlainText = ({
             </Col>
             <Col md={12}>
               <CheckboxLabel
-                defaultChecked={item.trimExtraLines}
+                defaultChecked={item.validation.validResponse.trimExtraLines}
                 onChange={(e) =>
                   handleItemChangeChange('trimExtraLines', e.target.checked)
                 }

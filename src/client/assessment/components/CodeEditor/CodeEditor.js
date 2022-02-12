@@ -7,10 +7,11 @@ import 'ace-builds/src-min-noconflict/ext-searchbox'
 import 'ace-builds/src-min-noconflict/ext-language_tools'
 import styled from 'styled-components'
 import { Select, Button } from 'antd'
-import { EduSwitchStyled } from '@edulastic/common'
+import { EduButton, EduSwitchStyled } from '@edulastic/common'
 
 import { connect } from 'react-redux'
 import { compilersList } from '@edulastic/constants/const/questionType'
+import { IconPlay } from '@edulastic/icons'
 import { setQuestionDataAction } from '../../../author/src/actions/question'
 import { getQuestionDataSelector } from '../../../author/QuestionEditor/ducks'
 

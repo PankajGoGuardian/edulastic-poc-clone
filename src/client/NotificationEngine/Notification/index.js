@@ -74,7 +74,7 @@ const Notification = ({ loading, notifications, history }) => {
                   </ListItemInfo>
                   <ListItemAction>
                     <Tooltip
-                      title={`Expiry: ${new Date(
+                      title={`Expires: ${new Date(
                         notification.expiresAt
                       ).toString()}`}
                     >
@@ -93,7 +93,7 @@ const Notification = ({ loading, notifications, history }) => {
                         }
                       )}
                     </Tooltip>
-                    <Tooltip title="Mark as read">
+                    <Tooltip title="Mark as Read">
                       <Icon
                         type="check-circle"
                         style={{ color: themeColor, margin: '0 5px 0 15px' }}
@@ -116,7 +116,7 @@ const Notification = ({ loading, notifications, history }) => {
                       />
                       Read
                     </Tooltip>
-                    <Tooltip title="Archive">
+                    <Tooltip title="Mark as Archived">
                       <Icon
                         type="delete"
                         style={{ color: redDark, margin: '0 5px 0 10px' }}
@@ -135,7 +135,7 @@ const Notification = ({ loading, notifications, history }) => {
                               })
                         }
                       />
-                      Archive
+                      Archived
                     </Tooltip>
                   </ListItemAction>
                 </ListItemContainer>

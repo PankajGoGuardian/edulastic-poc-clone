@@ -4,7 +4,12 @@ import styled from 'styled-components'
 import { title } from '@edulastic/colors'
 import ReviewModalContent from './ReviewModal'
 
-const ReviewPerformanceModal = ({ showReviewModal, closeReviewModal, studentId }) => {
+const ReviewPerformanceModal = ({
+  showReviewModal,
+  closeReviewModal,
+  studentId,
+  closeModal,
+}) => {
   const header = (
     <HeaderTitleWrapper>
       <h2>Differentiation</h2>
@@ -20,7 +25,11 @@ const ReviewPerformanceModal = ({ showReviewModal, closeReviewModal, studentId }
         modalWidth="1200px"
         centered
       >
-        <ReviewModalContent studentId={studentId}/>
+        <ReviewModalContent
+          studentId={studentId}
+          closeReviewModal={closeReviewModal}
+          closeModal={closeModal}
+        />
       </CustomModalStyled>
     </>
   )

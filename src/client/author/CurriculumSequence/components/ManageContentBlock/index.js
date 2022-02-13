@@ -110,6 +110,9 @@ const ManageContentBlock = (props) => {
     userId,
     playlistId,
     isReviewModal,
+    history,
+    closeReviewModal,
+    closeModal,
   } = props
 
   const {
@@ -414,6 +417,10 @@ const ManageContentBlock = (props) => {
               }}
               status={test?.status}
               testType={test?.testType}
+              isReviewModal={isReviewModal}
+              history={history}
+              closeReviewModal={closeReviewModal}
+              closeModal={closeModal}
             />
           )
         })

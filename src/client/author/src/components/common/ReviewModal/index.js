@@ -1,32 +1,34 @@
 import React from 'react'
-import _ from 'lodash'
+import { compose } from 'redux'
+import { connect } from 'react-redux'
+import styled from 'styled-components'
+import { EduTableStyled } from '@edulastic/common'
+import ManageContentBlock from '../../../../CurriculumSequence/components/ManageContentBlock'
 import {
   ContentContainer,
   RightContentWrapper,
   StyledFlexContainer,
 } from './style'
-import ManageContentBlock from '../../../../CurriculumSequence/components/ManageContentBlock'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import {
-  getDifferentiationStudentListSelector,
-  getDifferentiationWorkSelector,
-  getWorkStatusDataSelector,
-} from '../../../../CurriculumSequence/ducks'
-import styled from 'styled-components'
-import { EduTableStyled } from '@edulastic/common'
 import { getPerformanceGoalsSelector } from '../../../../Dashboard/ducks'
+import Tags from '../Tags'
 
-const ReviewModalContent = ({ performanceGoals, studentId }) => {
+const ReviewModalContent = ({
+  performanceGoals,
+  studentId,
+  closeReviewModal,
+  closeModal,
+}) => {
   const getColumns = () => {
-    if(performanceGoals?.differenciations?.[`${studentId}`]){
+    if (performanceGoals?.differenciations?.[`${studentId}`]) {
       return []
     }
-    return [{
-      title: 'Domain',
-      dataIndex: 'domainName',
-      key: 'domainName',
-    }]
+    return [
+      {
+        title: 'Domain',
+        dataIndex: 'domainName',
+        key: 'domainName',
+      },
+    ]
   }
 
   const columns = [
@@ -35,15 +37,21 @@ const ReviewModalContent = ({ performanceGoals, studentId }) => {
       dataIndex: 'name',
       key: 'name',
       align: 'left',
+      render: (name) => <Tags tags={[name]} show={1} />,
     },
     ...getColumns(),
     {
       title: 'Description',
       dataIndex: 'standardName',
       key: 'standardName',
+      align: 'left',
     },
   ]
-  const data = performanceGoals ? (performanceGoals?.differenciations?.[`${studentId}`] || performanceGoals?.eachStdInfo.find(o => o.studentId === studentId)?.standards) : null
+  const data = performanceGoals
+    ? performanceGoals?.differenciations?.[`${studentId}`] ||
+      performanceGoals?.eachStdInfo.find((o) => o.studentId === studentId)
+        ?.standards
+    : null
   return (
     <StyledFlexContainer
       width="100%"
@@ -57,13 +65,18 @@ const ReviewModalContent = ({ performanceGoals, studentId }) => {
             <EduTableStyled
               dataSource={data}
               columns={columns}
-              pagination={{ pageSize: 25, hideOnSinglePage: true }}
+              pagination={{ pageSize: 12, hideOnSinglePage: true }}
               loading={!performanceGoals?.differenciations?.[`${studentId}`]}
             />
           </Container>
         </ContentContainer>
         <RightContentWrapper isReviewModal>
-          <ManageContentBlock isReviewModal isDifferentiationTab />
+          <ManageContentBlock
+            isReviewModal
+            isDifferentiationTab
+            closeReviewModal={closeReviewModal}
+            closeModal={closeModal}
+          />
         </RightContentWrapper>
       </StyledFlexContainer>
     </StyledFlexContainer>
@@ -73,9 +86,6 @@ const ReviewModalContent = ({ performanceGoals, studentId }) => {
 const enhance = compose(
   connect(
     (state) => ({
-      differentiationStudentList: getDifferentiationStudentListSelector(state),
-      differentiationWork: getDifferentiationWorkSelector(state),
-      workStatusData: getWorkStatusDataSelector(state),
       performanceGoals: getPerformanceGoalsSelector(state),
     }),
     null

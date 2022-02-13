@@ -160,6 +160,10 @@ const ResourceItem = ({
   editResource,
   deleteResource,
   userId,
+  isReviewModal,
+  history,
+  closeReviewModal,
+  closeModal,
 }) => {
   let standardIdentifiers = []
   if (type === 'test') {
@@ -197,6 +201,12 @@ const ResourceItem = ({
       opacity: monitor.isDragging() ? 0.4 : 1,
     }),
   })
+
+  const handleClick = (id) => {
+    history.push(`/author/tests/tab/review/id/${id}`)
+    closeReviewModal()
+    closeModal()
+  }
 
   const moreMenu = (
     <MenuStyled data-cy="assessmentItemMoreMenu">
@@ -246,12 +256,22 @@ const ResourceItem = ({
         >
           <ResouceIcon type={type} isAdded={isAdded} />
           <ResourceTitle isAdded={isAdded}>
-            <TitleText
-              data-cy="resourceItemTitle"
-              noStandards={standardIdentifiers.length === 0}
-            >
-              {contentTitle}
-            </TitleText>
+            {isReviewModal ? (
+              <TitleText
+                data-cy="resourceItemTitle"
+                noStandards={standardIdentifiers.length === 0}
+                onClick={() => handleClick(id)}
+              >
+                {contentTitle}
+              </TitleText>
+            ) : (
+              <TitleText
+                data-cy="resourceItemTitle"
+                noStandards={standardIdentifiers.length === 0}
+              >
+                {contentTitle}
+              </TitleText>
+            )}
           </ResourceTitle>
           <Tags
             margin="0px"

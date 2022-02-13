@@ -49,7 +49,7 @@ const GoalsPerformanceModal = ({
 
     return [
       {
-        title: 'Links',
+        title: 'Student Summary Report',
         dataIndex: 'studentId',
         key: 'studentId',
         render: (studentId) => (
@@ -69,9 +69,10 @@ const GoalsPerformanceModal = ({
       dataIndex: 'name',
       key: 'name',
       align: 'left',
+      width: '35%',
     },
     {
-      title: 'Recommended',
+      title: 'Review Standards Counts',
       dataIndex: 'standards',
       key: 'standards',
       render: (standards, data) => (
@@ -102,7 +103,7 @@ const GoalsPerformanceModal = ({
 
   const header = (
     <HeaderTitleWrapper>
-      <h2>Performance Goals</h2>
+      <h2>Performance Achieved</h2>
       <div>
         <Progress
           strokeWidth="12px"
@@ -143,6 +144,7 @@ const GoalsPerformanceModal = ({
         <ReviewPerformanceModal
           showReviewModal={showReviewModal}
           closeReviewModal={closeReviewModal}
+          closeModal={closeModal}
           studentId={studentId}
         />
       )}

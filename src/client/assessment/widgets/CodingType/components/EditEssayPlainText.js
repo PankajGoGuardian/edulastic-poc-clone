@@ -90,7 +90,9 @@ const EditEssayPlainText = ({
             </Col>
             <Col md={12}>
               <CheckboxLabel
-                defaultChecked={item.validation.validResponse.trimExtraLines}
+                defaultChecked={
+                  !!item.validation.validResponse.options?.trimExtraLines
+                }
                 onChange={(e) =>
                   handleItemChangeChange(
                     'options.trimExtraLines',

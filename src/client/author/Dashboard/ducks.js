@@ -110,7 +110,7 @@ const initialState = {
 
 const updateDifferenciationData = (state, payload) => {
   const data = state?.dashboardTeacher?.performanceGoals?.differenciations || {}
-  data[`${payload.studentId}`] = payload.review.map((k) => {
+  data[`${payload.studentId}`] = _.isEmpty(payload.review) ? [] : payload.review.map((k) => {
     return {
       name: k.standardIdentifier,
       standardName: k.description,

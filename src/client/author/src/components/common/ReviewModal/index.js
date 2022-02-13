@@ -1,4 +1,5 @@
 import React from 'react'
+import _ from 'lodash'
 import {
   ContentContainer,
   RightContentWrapper,
@@ -56,8 +57,8 @@ const ReviewModalContent = ({ performanceGoals, studentId }) => {
             <EduTableStyled
               dataSource={data}
               columns={columns}
-              pagination={{ pageSize: 10, hideOnSinglePage: true }}
-              loading={!data}
+              pagination={{ pageSize: 25, hideOnSinglePage: true }}
+              loading={!performanceGoals?.differenciations?.[`${studentId}`]}
             />
           </Container>
         </ContentContainer>

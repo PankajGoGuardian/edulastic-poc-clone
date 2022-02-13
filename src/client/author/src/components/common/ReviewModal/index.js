@@ -16,7 +16,18 @@ import styled from 'styled-components'
 import { EduTableStyled } from '@edulastic/common'
 import { getPerformanceGoalsSelector } from '../../../../Dashboard/ducks'
 
-const ReviewModalContent = ({ performanceGoals }) => {
+const ReviewModalContent = ({ performanceGoals, studentId }) => {
+  const getColumns = () => {
+    if(performanceGoals?.differenciations?.[`${studentId}`]){
+      return []
+    }
+    return [{
+      title: 'Domain',
+      dataIndex: 'domainName',
+      key: 'domainName',
+    }]
+  }
+
   const columns = [
     {
       title: 'Name',
@@ -24,15 +35,14 @@ const ReviewModalContent = ({ performanceGoals }) => {
       key: 'name',
       align: 'left',
     },
+    ...getColumns(),
     {
-      title: 'Recommended',
-      dataIndex: 'age',
-      key: 'age',
-      render: () => <div>Link</div>,
+      title: 'Description',
+      dataIndex: 'standardName',
+      key: 'standardName',
     },
   ]
-
-  console.log('performanceGoals', performanceGoals)
+  const data = performanceGoals ? (performanceGoals?.differenciations?.[`${studentId}`] || performanceGoals?.eachStdInfo.find(o => o.studentId === studentId)?.standards) : null
   return (
     <StyledFlexContainer
       width="100%"
@@ -44,10 +54,10 @@ const ReviewModalContent = ({ performanceGoals }) => {
         <ContentContainer isDifferentiationTab urlHasUseThis>
           <Container>
             <EduTableStyled
-              dataSource={performanceGoals?.differenciations || []}
+              dataSource={data}
               columns={columns}
               pagination={{ pageSize: 10, hideOnSinglePage: true }}
-              loading={!performanceGoals?.differenciations}
+              loading={!data}
             />
           </Container>
         </ContentContainer>

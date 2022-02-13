@@ -18,6 +18,7 @@ const GoalsPerformanceModal = ({
   getDifferentiationData,
 }) => {
   const [showReviewModal, setShowReviewModal] = useState(false)
+  const [studentId, setStudentId] = useState('')
 
   const handleLinkClick = (studentId) => {
     history.push({
@@ -35,6 +36,7 @@ const GoalsPerformanceModal = ({
       skillIdentifiers: `${standards.map((o) => o.name).join(',')}`,
       studentId: data.studentId,
     })
+    setStudentId(data.studentId)
     setShowReviewModal(true)
   }
 
@@ -139,6 +141,7 @@ const GoalsPerformanceModal = ({
         <ReviewPerformanceModal
           showReviewModal={showReviewModal}
           closeReviewModal={closeReviewModal}
+          studentId={studentId}
         />
       )}
     </>

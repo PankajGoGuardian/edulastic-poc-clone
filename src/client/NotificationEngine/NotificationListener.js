@@ -16,7 +16,7 @@ import {
 import { getUser } from '../author/src/selectors/user'
 import { receiveNotificationsRequestSuccessAction } from './ducks'
 
-const NotificationListener = ({ user, setNotifications }) => {
+const NotificationListener = ({ history, user, setNotifications }) => {
   // const [notificationIds, setNotificationIds] = useState([])
   // const [isNotificationVisible, setIsNotificationVisible] = useState(false)
 
@@ -47,6 +47,7 @@ const NotificationListener = ({ user, setNotifications }) => {
         type: 'success',
         duration: maxDuration || 20,
         msg: message,
+        onClick: () => history.push('/author/notifications'),
         // onClose: () => {},
       })
     }

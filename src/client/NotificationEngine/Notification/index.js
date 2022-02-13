@@ -154,7 +154,11 @@ const Notification = ({ loading, notifications, history }) => {
 
   return (
     <>
-      <MainHeader headingText="Notifications" />
+      <MainHeader
+        headerLeftClassName="headerLeftWrapper"
+        headingText="Notifications"
+        Icon={() => <Icon type="message" theme="filled" />}
+      />
       <MainContentWrapper>
         {loading ? (
           <Spin />

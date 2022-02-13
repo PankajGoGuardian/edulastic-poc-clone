@@ -75,17 +75,17 @@ const EditEssayPlainText = ({
             <Col md={12}>
               <CheckboxLabel
                 defaultChecked={
-                  !!item.validation.validResponse.options?.noExtraOutput
+                  !item.validation.validResponse.options?.noExtraOutput
                 }
                 onChange={(e) =>
                   handleItemChangeChange(
                     'options.noExtraOutput',
-                    e.target.checked
+                    !e.target.checked
                   )
                 }
                 style={{ marginBottom: '1rem' }}
               >
-                No extra ouput
+                Ignore Warnings
               </CheckboxLabel>
             </Col>
             <Col md={12}>

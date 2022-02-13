@@ -60,9 +60,10 @@ const Notification = ({ loading, notifications, history }) => {
     setPastNotifications(_pastNotifications)
   }, [notifications])
 
-  const handleClickAction = (url) => {
-    if (url) {
-      history.push(url)
+  const handleClickAction = (notification) => {
+    updateUserNotifications([notification], { status: notificationStatus.READ })
+    if (notification.URL) {
+      history.push(notification.URL)
     }
   }
 
@@ -79,7 +80,7 @@ const Notification = ({ loading, notifications, history }) => {
                     style={{
                       cursor: `${notification.URL ? 'pointer' : 'auto'}`,
                     }}
-                    onClick={() => handleClickAction(notification.URL || '')}
+                    onClick={() => handleClickAction(notification)}
                   >
                     <p>{notification.message}</p>
                   </ListItemInfo>

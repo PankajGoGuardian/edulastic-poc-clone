@@ -46,7 +46,7 @@ const NotificationListener = ({ history, user, setNotifications }) => {
       const message = `${messageForUnseen + messageForUnread} notification(s)`
       styledNotification({
         type: 'success',
-        duration: maxDuration || 20,
+        duration: maxDuration || 10,
         msg: message,
         onClick: () =>
           history.push(

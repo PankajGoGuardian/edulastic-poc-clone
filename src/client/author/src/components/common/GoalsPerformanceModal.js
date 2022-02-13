@@ -1,10 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { CustomModalStyled, EduTableStyled } from '@edulastic/common'
 import styled from 'styled-components'
 import { Progress, Tooltip } from 'antd'
 import { title } from '@edulastic/colors'
 import { isEmpty } from 'lodash'
 import { IconPieChartIcon } from '@edulastic/icons'
+import ReviewPerformanceModal from './ReviewPerformanceModal'
 
 const GoalsPerformanceModal = ({
   termId,
@@ -15,13 +16,20 @@ const GoalsPerformanceModal = ({
   isPremiumUser,
   history,
 }) => {
-  const handleLinkClick = () => {
-    history.push('/author/reports/student-profile-summary/student/')
+  const [showReviewModal, setShowReviewModal] = useState(false)
+
+  const handleLinkClick = (studentId) => {
+    history.push({
+      pathname: `/author/reports/student-profile-summary/student/${studentId}`,
+      state: {
+        studentIdState: studentId,
+      },
+    })
     closeModal()
   }
 
   const handleClick = () => {
-    console.log('clicked to open new modal')
+    setShowReviewModal(true)
   }
 
   const getLinkColumn = () => {
@@ -32,10 +40,10 @@ const GoalsPerformanceModal = ({
     return [
       {
         title: 'Links',
-        dataIndex: 'links',
-        key: 'links',
-        render: () => (
-          <IconContainer onClick={handleLinkClick}>
+        dataIndex: 'studentId',
+        key: 'studentId',
+        render: (studentId) => (
+          <IconContainer onClick={() => handleLinkClick(studentId)}>
             <Tooltip placement="bottom" title="Student Summary Report">
               <IconPieChartIcon alt="Images" />
             </Tooltip>
@@ -56,7 +64,12 @@ const GoalsPerformanceModal = ({
       title: 'Recommended',
       dataIndex: 'age',
       key: 'age',
-      render: () => <LinkContainer onClick={handleClick}>Link</LinkContainer>,
+      render: (value) => (
+        <>
+          {console.log('value', value)}
+          <LinkContainer onClick={handleClick}>Link</LinkContainer>
+        </>
+      ),
     },
     ...getLinkColumn(),
   ]
@@ -71,6 +84,10 @@ const GoalsPerformanceModal = ({
       fetchPerformanceGoals({ termId })
     }
   }, [])
+
+  const closeReviewModal = () => {
+    setShowReviewModal(false)
+  }
 
   const header = (
     <HeaderTitleWrapper>
@@ -93,23 +110,31 @@ const GoalsPerformanceModal = ({
     </HeaderTitleWrapper>
   )
   return (
-    <CustomModalStyled
-      visible={showGoalsModal}
-      title={header}
-      onCancel={closeModal}
-      footer={null}
-      modalWidth="900px"
-      centered
-    >
-      <Container>
-        <EduTableStyled
-          dataSource={performanceData?.eachStdInfo || []}
-          columns={columns}
-          pagination={{ pageSize: 10, hideOnSinglePage: true }}
-          loading={!performanceData?.eachStdInfo}
+    <>
+      <CustomModalStyled
+        visible={showGoalsModal}
+        title={header}
+        onCancel={closeModal}
+        footer={null}
+        modalWidth="700px"
+        centered
+      >
+        <Container>
+          <EduTableStyled
+            dataSource={performanceData?.eachStdInfo || []}
+            columns={columns}
+            pagination={{ pageSize: 10, hideOnSinglePage: true }}
+            loading={!performanceData?.eachStdInfo}
+          />
+        </Container>
+      </CustomModalStyled>
+      {showReviewModal && (
+        <ReviewPerformanceModal
+          showReviewModal={showReviewModal}
+          closeReviewModal={closeReviewModal}
         />
-      </Container>
-    </CustomModalStyled>
+      )}
+    </>
   )
 }
 

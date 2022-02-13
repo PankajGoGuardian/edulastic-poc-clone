@@ -82,6 +82,7 @@ const StudentProfileSummary = ({
   t,
   toggleFilter,
 }) => {
+  const studentIdState = location?.state?.studentIdState
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
     title: 'All',
@@ -102,7 +103,7 @@ const StudentProfileSummary = ({
         : null,
       !!sharedReport?._id,
     ],
-    [sharedReport]
+    [sharedReport, studentIdState]
   )
 
   const {
@@ -143,7 +144,7 @@ const StudentProfileSummary = ({
 
   const data = useMemo(
     () => augementAssessmentChartData(asessmentMetricInfo, bandInfo),
-    [asessmentMetricInfo, bandInfo]
+    [asessmentMetricInfo, bandInfo, studentIdState]
   )
   const [standards, domains] = useGetStudentMasteryData(
     metricInfo,
@@ -181,17 +182,17 @@ const StudentProfileSummary = ({
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
       getStudentProfileSummaryRequest({
         ...settings.requestFilters,
-        studentId: settings.selectedStudent.key,
+        studentId: studentIdState || settings.selectedStudent.key,
       })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedStudent, settings.requestFilters])
+  }, [settings.selectedStudent, settings.requestFilters, studentIdState])
 
   useEffect(() => {
     setSelectedDomain({ key: 'All', title: 'All' })
-  }, [selectedGrade, selectedSubject])
+  }, [selectedGrade, selectedSubject, studentIdState])
 
   useEffect(() => {
     const metrics = get(studentProfileSummary, 'data.result.metricInfo', [])
@@ -203,7 +204,7 @@ const StudentProfileSummary = ({
     ) {
       toggleFilter(null, true)
     }
-  }, [studentProfileSummary])
+  }, [studentProfileSummary, studentIdState])
 
   const _onBarClickCB = (key, args) => {
     !isSharedReport &&

@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Rnd from 'react-rnd-rotate'
+// import Rnd from 'react-rnd-rotate'
 
 import RotateProtractorImg from './assets/rotate.svg'
 import { Image } from './styled/Image'
@@ -26,20 +26,7 @@ const Rule = ({ width, height, showRotate, smallSize }) => {
     backgroundSize: 'contain',
   }
 
-  return (
-    <Rnd
-      size={size}
-      position={{ x: position.x, y: position.y }}
-      onDragStop={(e, d) => {
-        setPosition({ x: d.x, y: d.y })
-      }}
-      resizeHandleStyles={{
-        rotate: handleRotateStyles,
-      }}
-    >
-      <Image width={size.width} height={size.height} />
-    </Rnd>
-  )
+  return <div />
 }
 
 Rule.propTypes = {

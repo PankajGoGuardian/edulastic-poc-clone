@@ -108,6 +108,7 @@ const InnerWorkTable = ({
   removeDifferentiationResources,
   selectedRows,
   setSelectedRows,
+  isReviewModal,
 }) => {
   const [masteryRange, setMasteryRange] = useState([0, 10])
   const [activeHoverIndex, setActiveHoverIndex] = useState(null)
@@ -528,26 +529,31 @@ const InnerWorkTable = ({
             ? 'Practice Work'
             : 'Challenge Work'}
         </span>
-        <span>
-          <span>Mastery Range</span>
-          <>{getSlider()}</>
-        </span>
-        <span>{userCount(filteredStudentList.length, studentList)}</span>
-        <span>
-          {/* Hiding the button for now
+        {!isReviewModal && (
+          <>
+            <span>
+              <span>Mastery Range</span>
+              <>{getSlider()}</>
+            </span>
+            <span>{userCount(filteredStudentList.length, studentList)}</span>
+            <span>
+              {/* Hiding the button for now
           
           <EduButton isGhost height="30px">
             Replace
           </EduButton> */}
-          <EduButton
-            data-cy={`addButton-${type}`}
-            height="30px"
-            onClick={handleAdd}
-          >
-            Assign
-          </EduButton>
-        </span>
+              <EduButton
+                data-cy={`addButton-${type}`}
+                height="30px"
+                onClick={handleAdd}
+              >
+                Assign
+              </EduButton>
+            </span>
+          </>
+        )}
       </TableHeader>
+
       <CommonStudentResourcesContainer>
         <SubResourceView
           data={{

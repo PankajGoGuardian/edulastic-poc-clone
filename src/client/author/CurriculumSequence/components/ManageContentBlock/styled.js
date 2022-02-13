@@ -20,7 +20,7 @@ import styled from 'styled-components'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
 export const ManageContentOuterWrapper = styled.div`
-  width: 450px;
+  width: ${({ isReviewModal }) => (isReviewModal ? '300px' : '450px')};
   height: 100%;
   border-radius: 4px;
 
@@ -81,8 +81,16 @@ export const ManageContentContainer = styled.div`
   width: 100%;
   height: 100%;
   background: ${white};
-  padding: 30px 0px 20px 20px;
+  padding: ${({ isReviewModal }) =>
+    isReviewModal ? '10px 0px 20px 20px' : '30px 0px 20px 20px'};
   border-left: 1px solid ${borderGrey4};
+
+  h4 {
+    font-size: 14px;
+    font-weight: bold;
+    margin: 0px 0px 15px;
+    color: rgba(0, 0, 0, 0.65);
+  }
 
   .ant-spin {
     position: relative;

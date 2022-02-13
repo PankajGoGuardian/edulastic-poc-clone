@@ -109,6 +109,7 @@ const ManageContentBlock = (props) => {
     updateRecentStandardAction,
     userId,
     playlistId,
+    isReviewModal,
   } = props
 
   const {
@@ -427,22 +428,31 @@ const ManageContentBlock = (props) => {
 
   return (
     <>
-      <ManageContentOuterWrapper>
+      <ManageContentOuterWrapper isReviewModal={isReviewModal}>
         <div className="inner-wrapper">
-          <ManageContentContainer data-cy="play-list-search-container">
-            <SearchByNavigationBar justify="flex-start">
-              {resourceTabs.map((tab) => (
-                <SearchByTab
-                  key={tab}
-                  data-cy={tab}
-                  onClick={() => setSearchByTab(tab)}
-                  isTabActive={tab.includes(searchResourceBy)}
-                >
-                  {tab}
-                </SearchByTab>
-              ))}
-            </SearchByNavigationBar>
-            <br />
+          <ManageContentContainer
+            isReviewModal={isReviewModal}
+            data-cy="play-list-search-container"
+          >
+            {isReviewModal && <h4>Tests</h4>}
+            {!isReviewModal && (
+              <>
+                <SearchByNavigationBar justify="flex-start">
+                  {resourceTabs.map((tab) => (
+                    <SearchByTab
+                      key={tab}
+                      data-cy={tab}
+                      onClick={() => setSearchByTab(tab)}
+                      isTabActive={tab.includes(searchResourceBy)}
+                    >
+                      {tab}
+                    </SearchByTab>
+                  ))}
+                </SearchByNavigationBar>
+                <br />
+              </>
+            )}
+
             {/* <SearchByNavigationBar>
             <SearchByTab onClick={() => setSearchBy("keywords")} isTabActive={searchBy === "keywords"}>
               keywords
@@ -469,21 +479,23 @@ const ManageContentBlock = (props) => {
               </SearchBoxContainer>
               {!searchExpand && (
                 <>
-                  <ActionButton
-                    data-cy={
-                      searchResourceBy === 'tests'
-                        ? 'test-filter'
-                        : 'resource-filter'
-                    }
-                    onClick={openContentFilterModal}
-                    isActive={showContentFilterModal}
-                  >
-                    <IconFilter
-                      color={showContentFilterModal ? white : themeColor}
-                      width={20}
-                      height={20}
-                    />
-                  </ActionButton>
+                  {!isReviewModal && (
+                    <ActionButton
+                      data-cy={
+                        searchResourceBy === 'tests'
+                          ? 'test-filter'
+                          : 'resource-filter'
+                      }
+                      onClick={openContentFilterModal}
+                      isActive={showContentFilterModal}
+                    >
+                      <IconFilter
+                        color={showContentFilterModal ? white : themeColor}
+                        width={20}
+                        height={20}
+                      />
+                    </ActionButton>
+                  )}
                   <Dropdown
                     overlay={searchResourceBy === 'tests' ? testMenu : menu}
                     placement="bottomRight"

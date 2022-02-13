@@ -24,16 +24,14 @@ const Notification = ({ loading, notifications, history }) => {
   const [pastNotifications, setPastNotifications] = useState([])
 
   useEffect(() => {
-    console.log('Active notifications', notifications)
-    // const notificationsWithTopicsMeta = notifications.map((n) => ({
-    //   ...n,
-    //   ...topicMeta[n.topicType],
-    // }))
-    // setNotificationGroups(groupBy(notificationsWithTopicsMeta, 'labelGroup'))
-    console.log('notifications', notifications)
+    const notificationsWithTopicsMeta = notifications.map((n) => ({
+      ...n,
+      ...topicMeta[n.topicType],
+    }))
+    console.log('Active notifications', notificationsWithTopicsMeta)
     const _todayNotifications = []
     const _pastNotifications = []
-    for (const notification of notifications) {
+    for (const notification of notificationsWithTopicsMeta) {
       const daysDiff =
         (Date.now() - notification.activeAt) / (24 * 60 * 60 * 1000)
       if (daysDiff > 1) {
@@ -53,14 +51,18 @@ const Notification = ({ loading, notifications, history }) => {
   }
 
   const renderNotificationCollapseContainer = (notificationsData) => {
-    const notificationGroupsData = groupBy(notificationsData, 'topicType')
+    const notificationGroupsData = groupBy(notificationsData, 'labelGroup')
     return Object.keys(notificationGroupsData).length > 0 ? (
       <StyledCollapse style={{ padding: '0px' }} accordion>
         {Object.keys(notificationGroupsData).map((groupName) => (
           <Panel header={groupName}>
             <ListContainer>
               {notificationGroupsData[groupName].map((notification) => (
-                <ListItemContainer isMarkedAsRead={notification.markAsRead}>
+                <ListItemContainer
+                  isMarkedAsRead={
+                    notification.status == notificationStatus.READ
+                  }
+                >
                   <ListItemInfo
                     style={{
                       cursor: `${notification.URL ? 'pointer' : 'auto'}`,

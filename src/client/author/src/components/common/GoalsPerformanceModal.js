@@ -6,6 +6,7 @@ import { title } from '@edulastic/colors'
 import { isEmpty } from 'lodash'
 import { IconPieChartIcon } from '@edulastic/icons'
 import ReviewPerformanceModal from './ReviewPerformanceModal'
+import { segmentApi } from '@edulastic/api'
 
 const GoalsPerformanceModal = ({
   termId,
@@ -38,6 +39,7 @@ const GoalsPerformanceModal = ({
     })
     setStudentId(data.studentId)
     setShowReviewModal(true)
+    segmentApi.genericEventTrack('goals_differentiation', {})
   }
 
   const getLinkColumn = () => {

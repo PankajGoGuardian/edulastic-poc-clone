@@ -445,6 +445,7 @@ class SideMenu extends Component {
     this.setState({
       showGoalsModal: true,
     })
+    segmentApi.genericEventTrack('goals', {})
   }
 
   closeGoalsModal = () => {

@@ -102,23 +102,40 @@ const initialState = {
 }
 
 const translatePerformanceGoalsData = (payload) => {
-  const {metricInfo, skillInfo, stdInfo} = payload
+  const { metricInfo, skillInfo, stdInfo } = payload
   const studentsNameMap = stdInfo.reduce((acc, data) => {
     acc[data._id] = [data.firstName, data.middleName, data.lastName].join(' ')
+    return acc
+  }, {})
+  const standardsNameMap = skillInfo.reduce((acc, data) => {
+    acc[data.standardId] = {
+      name: data.standard,
+      domainName: data.domainName,
+      standardName: data.standardName,
+    }
     return acc
   }, {})
   const eachStdInfo = _.map(_.groupBy(metricInfo, 'studentId'), (data) => {
     const totalOS = _.sumBy(data, 'obtainedScore')
     const totalMS = _.sumBy(data, 'maxScore')
+    // standards < 60%
+    const standards = []
+    data.forEach((o) => {
+      const standardScore = Math.ceil((o.obtainedScore / o.maxScore) * 100)
+      if (standardScore < 60) {
+        standards.push(standardsNameMap[o.standardId])
+      }
+    })
     return {
       studentId: data?.[0]?.studentId,
-      score: Math.ceil((totalOS/totalMS)*100),
-      name: studentsNameMap[data?.[0]?.studentId]
+      score: Math.ceil((totalOS / totalMS) * 100),
+      name: studentsNameMap[data?.[0]?.studentId],
+      standards,
     }
   })
 
-  const countBelow60 = eachStdInfo.filter(o => o.score < 60).length
-  const countAbove60 = eachStdInfo.filter(o => o.score >= 60).length
+  const countBelow60 = eachStdInfo.filter((o) => o.score < 60).length
+  const countAbove60 = eachStdInfo.filter((o) => o.score >= 60).length
 
   return {
     eachStdInfo,

@@ -1,10 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import {
   ContentContainer,
   RightContentWrapper,
   StyledFlexContainer,
 } from './style'
-import WorkTable from '../../../../CurriculumSequence/components/Differentiation/WorkTable'
 import ManageContentBlock from '../../../../CurriculumSequence/components/ManageContentBlock'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -13,18 +12,27 @@ import {
   getDifferentiationWorkSelector,
   getWorkStatusDataSelector,
 } from '../../../../CurriculumSequence/ducks'
+import styled from 'styled-components'
+import { EduTableStyled } from '@edulastic/common'
 import { getPerformanceGoalsSelector } from '../../../../Dashboard/ducks'
 
-const ReviewModalContent = ({
-  differentiationWork,
-  workStatusData,
-  differentiationStudentList,
-  performanceGoals,
-}) => {
-  const [selectedRows, setSelectedRows] = useState([])
-  const workTableCommonProps = {
-    differentiationStudentList,
-  }
+const ReviewModalContent = ({ performanceGoals }) => {
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      align: 'left',
+    },
+    {
+      title: 'Recommended',
+      dataIndex: 'age',
+      key: 'age',
+      render: () => <div>Link</div>,
+    },
+  ]
+
+  console.log('performanceGoals', performanceGoals)
   return (
     <StyledFlexContainer
       width="100%"
@@ -34,18 +42,14 @@ const ReviewModalContent = ({
     >
       <StyledFlexContainer width="100%" justifyContent="flex-start">
         <ContentContainer isDifferentiationTab urlHasUseThis>
-          <div>
-            <WorkTable
-              type="REVIEW"
-              data-cy="review"
-              data={differentiationWork.review}
-              workStatusData={workStatusData.REVIEW || []}
-              selectedRows={selectedRows}
-              setSelectedRows={setSelectedRows}
-              isReviewModal
-              {...workTableCommonProps}
+          <Container>
+            <EduTableStyled
+              dataSource={performanceGoals?.differenciations || []}
+              columns={columns}
+              pagination={{ pageSize: 10, hideOnSinglePage: true }}
+              loading={!performanceGoals?.differenciations}
             />
-          </div>
+          </Container>
         </ContentContainer>
         <RightContentWrapper isReviewModal>
           <ManageContentBlock isReviewModal isDifferentiationTab />
@@ -68,3 +72,14 @@ const enhance = compose(
 )
 
 export default enhance(ReviewModalContent)
+
+const Container = styled.div`
+  .ant-pagination {
+    position: relative;
+    padding: 0px;
+    margin: 0px;
+    bottom: 0;
+    right: 0;
+    top: 15px;
+  }
+`

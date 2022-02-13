@@ -60,7 +60,11 @@ const Notification = ({ loading, notifications, history }) => {
   }, [notifications])
 
   const handleClickAction = (notification) => {
-    updateUserNotifications([notification], { status: notificationStatus.READ })
+    if (notification.status == notificationStatus.SEEN) {
+      updateUserNotifications([notification], {
+        status: notificationStatus.READ,
+      })
+    }
     if (notification.URL) {
       history.push(notification.URL)
     }

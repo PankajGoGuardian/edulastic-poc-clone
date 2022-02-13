@@ -53,8 +53,6 @@ import { getUserRole } from '../../author/src/selectors/user'
 
 export const LOAD_TEST_ACTIVITY_REPORT =
   '[studentReports] load testActivity  report'
-export const LOAD_PERFORMANCE_GOALS_REPORT =
-  '[studentReports] load performance goals report'
 export const SET_STUDENT_ITEMS = '[studentItems] set Student items'
 export const SET_FEEDBACK = '[studentItems] set feedback'
 export const SET_TEST_ACTIVITIES =
@@ -63,9 +61,6 @@ export const SET_TEST_ACTIVITIES =
 // actions
 export const loadTestActivityReportAction = createAction(
   LOAD_TEST_ACTIVITY_REPORT
-)
-export const loadPerformanceGoalsReportAction = createAction(
-  LOAD_PERFORMANCE_GOALS_REPORT
 )
 export const setFeedbackReportAction = createAction(SET_FEEDBACK)
 export const setTestActivitiesAction = createAction(SET_TEST_ACTIVITIES)
@@ -248,23 +243,6 @@ function* loadAttachmentsToStore({ referrerId2, data }) {
     type: SAVE_USER_WORK,
     payload: { [referrerId2]: { ...userWork, freeNotesStd: response.data } },
   })
-}
-
-function* loadPerformanceGoalsDetails({ payload }) {
-  try {
-    const { termId } = payload
-    const result = yield call(reportsApi.fetchPerformanceGoalsDetails, termId)
-    console.log('result', result)
-  } catch (e) {
-    if (e.status === 404) {
-      return notification({
-        msg: e?.response?.data?.message || 'No data found',
-      })
-    }
-    return notification({
-      msg: e?.response?.data?.message || 'Something went wrong',
-    })
-  }
 }
 
 function* loadTestActivityReport({ payload }) {
@@ -480,7 +458,6 @@ function* loadTestActivityReport({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeEvery(LOAD_TEST_ACTIVITY_REPORT, loadTestActivityReport),
-    yield takeEvery(LOAD_PERFORMANCE_GOALS_REPORT, loadPerformanceGoalsDetails),
   ])
 }
 

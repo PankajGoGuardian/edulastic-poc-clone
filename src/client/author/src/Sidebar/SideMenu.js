@@ -85,7 +85,10 @@ import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/componen
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import GoalsPerformanceModal from '../components/common/GoalsPerformanceModal'
 import { slice } from '../../Subscription/ducks'
-import { loadPerformanceGoalsReportAction } from '../../../student/TestAcitivityReport/ducks'
+import {
+  getPerformanceGoalsSelector,
+  loadPerformanceGoalsReportAction,
+} from '../../Dashboard/ducks'
 
 const menuItems = [
   {
@@ -438,13 +441,14 @@ class SideMenu extends Component {
   }
 
   handleShowGoalsModal = () => {
-    const { fetchPerformanceGoals } = this.props
+    const { fetchPerformanceGoals, performanceGoals } = this.props
     fetchPerformanceGoals({
       termId: '61bc37c222542500099eacc4',
     })
     this.setState({
       showGoalsModal: true,
     })
+    console.log('performanceGoals', performanceGoals)
   }
 
   closeGoalsModal = () => {
@@ -1090,6 +1094,7 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
       isSuperAdmin: isSuperAdminSelector(state),
+      performanceGoals: getPerformanceGoalsSelector(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

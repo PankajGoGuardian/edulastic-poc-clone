@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { uniqBy, map, max, filter } from 'lodash'
+import { orderBy, uniqBy, map, max, filter } from 'lodash'
 
 import { FireBaseService as Fbs } from '@edulastic/common'
 import { styledNotification } from '../author/Reports/common/styled'
@@ -59,9 +59,8 @@ const NotificationListener = ({ history, user, setNotifications }) => {
       const notificationsUpcoming = []
       const notificationsToShow = []
       const notificationsUnread = []
-      const notificationsActive = filter(
-        uniqBy(userNotifications, '__id'),
-        (doc) => {
+      const notificationsActive = orderBy(
+        filter(uniqBy(userNotifications, '__id'), (doc) => {
           const daysDiff = (Date.now() - doc.expiresAt) / (24 * 60 * 60 * 1000)
           const activeAt = doc.activeAt || doc.createdAt
           // if (doc.status == notificationStatus.ARCHIVED) {
@@ -81,7 +80,9 @@ const NotificationListener = ({ history, user, setNotifications }) => {
             notificationsUnread.push(doc)
           }
           return true
-        }
+        }),
+        ['activeAt', 'expiresAt'],
+        ['desc', 'desc']
       )
 
       // TODO: remove logs later

@@ -97,7 +97,7 @@ const EditEssayPlainText = ({
                 }
                 onChange={(e) =>
                   handleItemChangeChange(
-                    'validation.validResponseoptions.trimExtraLines',
+                    'validation.validResponse.options.trimExtraLines',
                     e.target.checked
                   )
                 }

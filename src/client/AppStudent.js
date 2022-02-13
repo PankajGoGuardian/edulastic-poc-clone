@@ -28,7 +28,8 @@ import {
   fetchUserAction,
   isProxyUser as isProxyUserSelector,
 } from './student/Login/ducks'
-import NotificationListener from './HangoutVideoCallNotification'
+import HangoutsNotificationListener from './HangoutVideoCallNotification'
+import NotificationListener from './NotificationEngine/NotificationListener'
 import AppUpdate from './common/components/AppUpdate'
 import StudentSessionExpiredModal from './common/components/StudentSessionExpiredModal'
 import { logoutAction } from './author/src/actions/auth'
@@ -216,7 +217,10 @@ class App extends Component {
               <PrivateRoute
                 path="/home"
                 component={Dashboard}
-                notifications={[NotificationListener]}
+                notifications={[
+                  NotificationListener,
+                  HangoutsNotificationListener,
+                ]}
                 redirectPath={redirectRoute}
               />
               <PrivateRoute

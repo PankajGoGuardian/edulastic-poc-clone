@@ -33,7 +33,7 @@ const Notification = ({ loading, notifications, history }) => {
       ...notification,
       ...topicMeta[notification.topicType],
     }))
-    // console.log('Active notifications', notificationsWithTopicsMeta)
+    // console.log('notifications', notificationsWithTopicsMeta)
     const _todayNotifications = []
     const _pastNotifications = []
     const todayDateStr = new Date().toLocaleString('en-GB', {
@@ -146,7 +146,9 @@ const Notification = ({ loading, notifications, history }) => {
                               })
                         }
                       />
-                      Archived
+                      {notification.status == notificationStatus.ARCHIVED
+                        ? 'Archived'
+                        : 'Archive'}
                     </Tooltip>
                   </ListItemAction>
                 </ListItemContainer>

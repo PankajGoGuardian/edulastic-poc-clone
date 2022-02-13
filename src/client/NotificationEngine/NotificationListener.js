@@ -59,13 +59,10 @@ const NotificationListener = ({ history, user, setNotifications }) => {
       const notificationsUpcoming = []
       const notificationsToShow = []
       const notificationsUnread = []
-      const notificationsActive = orderBy(
+      const notifications = orderBy(
         filter(uniqBy(userNotifications, '__id'), (doc) => {
           const daysDiff = (Date.now() - doc.expiresAt) / (24 * 60 * 60 * 1000)
           const activeAt = doc.activeAt || doc.createdAt
-          // if (doc.status == notificationStatus.ARCHIVED) {
-          //   return false
-          // }
           if (daysDiff > 1) {
             notificationsToDelete.push(doc)
             return false
@@ -81,9 +78,15 @@ const NotificationListener = ({ history, user, setNotifications }) => {
           }
           return true
         }),
+        // sort docs in descending order by activeAt & expiresAt
         ['activeAt', 'expiresAt'],
         ['desc', 'desc']
-      )
+      ).sort((a, b) => {
+        // sort archived docs to the bottom
+        const aVal = a.status === notificationStatus.ARCHIVED ? 1 : 0
+        const bVal = b.status === notificationStatus.ARCHIVED ? 1 : 0
+        return aVal - bVal
+      })
 
       // TODO: remove logs later
       console.log(
@@ -102,10 +105,7 @@ const NotificationListener = ({ history, user, setNotifications }) => {
         '\nNotifications Unread',
         JSON.parse(JSON.stringify(notificationsUnread))
       )
-      console.log(
-        '\nNotifications Active',
-        JSON.parse(JSON.stringify(notificationsActive))
-      )
+      console.log('\nNotifications', JSON.parse(JSON.stringify(notifications)))
 
       if (notificationsToShow.length > 0) {
         // display notifications message
@@ -119,7 +119,7 @@ const NotificationListener = ({ history, user, setNotifications }) => {
         deleteUserNotifications(notificationsToDelete)
       }
       // TODO: update redux state - @neeraj
-      setNotifications(notificationsActive)
+      setNotifications(notifications)
     }
   }, [userNotifications])
 

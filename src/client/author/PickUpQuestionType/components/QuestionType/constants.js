@@ -2764,12 +2764,13 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         stimulus:
           '<p>Explain the question</p><p><br/></p><p><strong>Sample Input:</strong></p><p style="margin-left: 20px;"><br/></p><p><br/></p><p><strong>Sample Output:</strong></p><p style="margin-left: 20px;"><br/></p>',
         type: questionType.CODING,
+        defaultCode: undefined,
+        language: 'python',
         validation: {
           validResponse: {
             score: 1,
             input: '',
             output: '',
-            template: '',
             options: {
               trimExtraLines: true,
               noExtraOutput: true,

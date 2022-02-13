@@ -1136,6 +1136,8 @@ function* updateScoreAndValidationSaga({ payload }) {
 
 function* updateQuestionSaga({ payload }) {
   const prevQuestion = yield select(getCurrentQuestionSelector)
+  payload =
+    typeof payload === 'function' ? produce(prevQuestion, payload) : payload
   const currentLanguage = yield select(getCurrentLanguage)
 
   yield put({

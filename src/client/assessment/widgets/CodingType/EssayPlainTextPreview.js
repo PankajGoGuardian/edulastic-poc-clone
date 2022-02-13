@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import styled, { withTheme } from 'styled-components'
@@ -15,26 +15,10 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { lightGrey12, white } from '@edulastic/colors'
-import {
-  COPY,
-  CUT,
-  PASTE,
-  ON_LIMIT,
-  ALWAYS,
-  PREVIEW,
-} from '../../constants/constantsForQuestions'
+import { PREVIEW } from '../../constants/constantsForQuestions'
 
 import { Toolbar } from '../../styled/Toolbar'
-import { Item } from '../../styled/Item'
-
-import { ToolbarItem } from './styled/ToolbarItem'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
-import {
-  preventEvent,
-  getFontSize,
-  getSpellCheckAttributes,
-} from '../../utils/helpers'
-import Character from './components/Character'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
 import CodeEditor from '../../components/CodeEditor/CodeEditor'
@@ -50,43 +34,17 @@ const EssayPlainTextPreview = ({
   col,
   view,
   saveAnswer,
-  t,
   item,
   smallSize,
   userAnswer,
-  theme,
   showQuestionNumber,
-  testItem,
   disableResponse,
-  isReviewTab,
-  isPrintPreview,
   isStudentAttempt,
   isFeedbackVisible,
-  isLCBView,
-  isExpressGrader,
-  isStudentReport,
 }) => {
   const [text, setText] = useState(isString(userAnswer) ? userAnswer : '')
 
   const [wordCount, setWordCount] = useState(getWordCount(text))
-
-  const [selection, setSelection] = useState({ start: 0, end: 0 })
-
-  const [buffer, setBuffer] = useState('')
-
-  const reviewTab = isReviewTab && testItem
-
-  let node
-  const { max_height: maxHeight = '' } = item?.uiStyle || {} // Todo: Field name needs to be corrected in DB
-
-  const maxHeightPreview = useMemo(() => {
-    if (isLCBView || isExpressGrader || isStudentReport) {
-      return 'auto'
-    }
-
-    return Math.max(47, maxHeight)
-  }, [isLCBView, isExpressGrader, isStudentReport, maxHeight])
-
   useEffect(() => {
     if (isString(userAnswer)) {
       setText(userAnswer)

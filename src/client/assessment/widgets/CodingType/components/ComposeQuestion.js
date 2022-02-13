@@ -47,49 +47,39 @@ const ComposeQuestion = (props) => {
   const output = item.validation.validResponse.output || ''
 
   useEffect(() => {
-    setQuestionData(
-      produce(item, (draft) => {
-        const language = draft.language || draft.validation.language || 'python'
-        draft.validation.language = language
-        draft.validation.compiler = compilersList[mode]?.[0]?.name
-        draft.language = language
-      })
-    )
+    setQuestionData((draft) => {
+      const language = draft.language || draft.validation.language || 'python'
+      draft.validation.language = language
+      draft.validation.compiler = compilersList[mode]?.[0]?.name
+      draft.language = language
+    })
   }, [])
 
   const handleItemChangeChange = (prop, uiStyle) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft[prop] = uiStyle
-        updateVariables(draft)
-      })
-    )
+    setQuestionData((draft) => {
+      draft[prop] = uiStyle
+      updateVariables(draft)
+    })
   }
   // const [mode, setMode] = useState('python')
   const onSelectProgram = (v) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.validation.language = v
-        draft.validation.compiler = compilersList[v][0].name
-        draft.language = v
-      })
-    )
+    setQuestionData((draft) => {
+      draft.validation.language = v
+      draft.validation.compiler = compilersList[v][0].name
+      draft.language = v
+    })
   }
 
   const setInputValue = (e) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.validation.validResponse.input = e.target.value
-      })
-    )
+    setQuestionData((draft) => {
+      draft.validation.validResponse.input = e.target.value
+    })
   }
 
   const setOutputValue = (e) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        draft.validation.validResponse.output = e.target.value
-      })
-    )
+    setQuestionData((draft) => {
+      draft.validation.validResponse.output = e.target.value
+    })
   }
 
   return (

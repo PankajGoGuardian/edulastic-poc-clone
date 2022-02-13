@@ -172,7 +172,7 @@ const CodeEditor = ({
   const data = item || questionData || {}
   const language = get(data, 'language', '')
   const compiler = compilersList[language][0].name
-  const template = get(data, 'validation.validResponse.template', '')
+  const template = get(data, 'defaultCode', '')
   const onReset = useCallback(() => {
     setText(template)
   }, [template])
@@ -209,8 +209,8 @@ const CodeEditor = ({
           <OptionWrapper>
             <Button
               shape="round"
-              icon="snippets"
-              title="Paste Template"
+              icon="reload"
+              title="Reload Default Template"
               isGhost
               onClick={onReset}
             />

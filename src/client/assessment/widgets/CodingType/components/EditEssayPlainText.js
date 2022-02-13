@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
-import produce from 'immer'
 import _ from 'lodash'
 
 import { Row, Col } from 'antd'
@@ -25,14 +24,17 @@ const EditEssayPlainText = ({
   fillSections,
   cleanSections,
 }) => {
-  const handleItemChangeChange = (prop, value) => {
-    setQuestionData(
-      produce(item, (draft) => {
-        _.set(draft.validation.validResponse, prop, value)
+  const handleItemChangeChange = useCallback(
+    (prop, value) => {
+      setQuestionData((draft) => {
+        _.set(draft, prop, value)
       })
-    )
-  }
-  const [showTemplate, setShowTemplate] = useState(_.get(item, 'validation.validResponse.template', false))
+    },
+    [setQuestionData]
+  )
+  const [showTemplate, setShowTemplate] = useState(
+    typeof _.get(item, 'defaultCode') !== 'undefined'
+  )
 
   return (
     <ContentArea>
@@ -79,7 +81,7 @@ const EditEssayPlainText = ({
                 }
                 onChange={(e) =>
                   handleItemChangeChange(
-                    'options.noExtraOutput',
+                    'validation.validResponse.options.noExtraOutput',
                     !e.target.checked
                   )
                 }
@@ -95,7 +97,7 @@ const EditEssayPlainText = ({
                 }
                 onChange={(e) =>
                   handleItemChangeChange(
-                    'options.trimExtraLines',
+                    'validation.validResponseoptions.trimExtraLines',
                     e.target.checked
                   )
                 }
@@ -108,12 +110,16 @@ const EditEssayPlainText = ({
               <CheckboxLabel
                 defaultChecked={showTemplate}
                 onChange={(e) => {
-                  setShowTemplate(e.target.checked)
-                  handleItemChangeChange('template', '')
+                  const { checked } = e.target
+                  setShowTemplate(checked)
+                  handleItemChangeChange(
+                    'defaultCode',
+                    checked ? '' : undefined
+                  )
                 }}
                 style={{ marginBottom: '1rem' }}
               >
-                Initial Template
+                Default Template
               </CheckboxLabel>
             </Col>
           </Row>
@@ -132,8 +138,8 @@ const EditEssayPlainText = ({
       {showTemplate && (
         <CodeEditor
           item={item}
-          text={item.validation.validResponse.template || ''}
-          setText={(t) => handleItemChangeChange('template', t)}
+          text={item.defaultCode || ''}
+          setText={(t) => handleItemChangeChange('defaultCode', t)}
           allowReset={false}
         />
       )}

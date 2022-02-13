@@ -5,6 +5,7 @@ import { compose } from 'redux'
 import { orderBy, uniqBy, map, max, filter } from 'lodash'
 
 import { FireBaseService as Fbs } from '@edulastic/common'
+import { roleuser } from '@edulastic/constants'
 import { styledNotification } from '../author/Reports/common/styled'
 
 import {
@@ -47,7 +48,12 @@ const NotificationListener = ({ history, user, setNotifications }) => {
         type: 'success',
         duration: maxDuration || 20,
         msg: message,
-        onClick: () => history.push('/author/notifications'),
+        onClick: () =>
+          history.push(
+            user.role === roleuser.STUDENT
+              ? '/home/notifications'
+              : '/author/notifications'
+          ),
         // onClose: () => {},
       })
     }

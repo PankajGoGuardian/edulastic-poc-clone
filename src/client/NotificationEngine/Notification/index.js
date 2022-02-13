@@ -33,16 +33,27 @@ const Notification = ({ loading, notifications, history }) => {
       ...notification,
       ...topicMeta[notification.topicType],
     }))
-    console.log('Active notifications', notificationsWithTopicsMeta)
+    // console.log('Active notifications', notificationsWithTopicsMeta)
     const _todayNotifications = []
     const _pastNotifications = []
+    const todayDateStr = new Date().toLocaleString('en-GB', {
+      day: 'numeric',
+      month: 'short',
+      year: 'numeric',
+    })
     for (const notification of notificationsWithTopicsMeta) {
-      const daysDiff =
-        (Date.now() - notification.activeAt) / (24 * 60 * 60 * 1000)
-      if (daysDiff > 1) {
-        _pastNotifications.push(notification)
-      } else {
+      const activeAtDateStr = new Date(notification.activeAt).toLocaleString(
+        'en-GB',
+        {
+          day: 'numeric',
+          month: 'short',
+          year: 'numeric',
+        }
+      )
+      if (todayDateStr === activeAtDateStr) {
         _todayNotifications.push(notification)
+      } else {
+        _pastNotifications.push(notification)
       }
     }
     setTodayNotifications(_todayNotifications)
@@ -168,7 +179,13 @@ const Notification = ({ loading, notifications, history }) => {
               tab={
                 <>
                   <span>Today&apos;s Notifications</span>
-                  <StyledBadge count={todayNotifications.length || 0} />
+                  <StyledBadge
+                    count={
+                      todayNotifications.filter(
+                        (n) => n.status == notificationStatus.SEEN
+                      ).length
+                    }
+                  />
                 </>
               }
               key="today"
@@ -179,7 +196,13 @@ const Notification = ({ loading, notifications, history }) => {
               tab={
                 <>
                   <span>Past Notifications</span>
-                  <StyledBadge count={pastNotifications.length || 0} />
+                  <StyledBadge
+                    count={
+                      pastNotifications.filter(
+                        (n) => n.status == notificationStatus.SEEN
+                      ).length
+                    }
+                  />
                 </>
               }
               key="past"

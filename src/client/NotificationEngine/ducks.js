@@ -2,6 +2,8 @@ import { put, all, takeEvery } from 'redux-saga/effects'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 
+import { notificationStatus } from './helpers'
+
 const RECEIVE_NOTIFICATIONS_REQUEST = '[notifications] receive data request'
 const RECEIVE_NOTIFICATIONS_SUCCESS = '[notifications] recieve data success'
 const RECEIVE_NOTIFICATIONS_ERROR = '[notifications] recieve data error'
@@ -30,12 +32,13 @@ export const getError = createSelector(stateSelector, (state) => state.error)
 
 export const getNotificationsList = createSelector(
   stateSelector,
-  (state) => state.notifications
+  (state) => state.notifications || []
 )
 
-export const getNotificationsCount = createSelector(
-  stateSelector,
-  (state) => state.notifications.length || 0
+export const getNotificationsUnreadCount = createSelector(
+  getNotificationsList,
+  (notifications) =>
+    notifications.filter((n) => n.status == notificationStatus.SEEN).length
 )
 
 export const reducer = createReducer(initialState, {

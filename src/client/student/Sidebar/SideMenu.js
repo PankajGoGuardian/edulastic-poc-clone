@@ -44,7 +44,7 @@ import {
   logoutAction,
   isProxyUser as isProxyUserSelector,
 } from '../Login/ducks'
-import { getNotificationsCount } from '../../NotificationEngine/ducks'
+import { getNotificationsUnreadCount } from '../../NotificationEngine/ducks'
 
 const menuItems = [
   {
@@ -188,7 +188,7 @@ class SideMenu extends Component {
       role,
       features,
       isProxyUser,
-      notificationCount,
+      notificationsUnreadCount,
     } = this.props
     const userName = `${firstName} ${middleName ? `${middleName} ` : ``} ${
       lastName || ``
@@ -337,8 +337,8 @@ class SideMenu extends Component {
                       Notifications
                     </LabelMenuItem>
                   </NotificationButton>
-                  {notificationCount !== 0 && (
-                    <CountBadge count={notificationCount} />
+                  {notificationsUnreadCount !== 0 && (
+                    <CountBadge count={notificationsUnreadCount} />
                   )}
                 </NotificationsButtonContainer>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
@@ -459,7 +459,7 @@ const enhance = compose(
       role: user?.user?.role,
       features: user?.user?.features,
       isProxyUser: isProxyUserSelector({ user }),
-      notificationCount: getNotificationsCount(rest),
+      notificationsUnreadCount: getNotificationsUnreadCount(rest),
     }),
     {
       logout: logoutAction,

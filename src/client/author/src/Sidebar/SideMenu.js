@@ -84,7 +84,7 @@ import { switchUser, proxyDemoPlaygroundUser } from '../../authUtils'
 import ItemBankTrialUsedModal from '../../Dashboard/components/Showcase/components/Myclasses/components/FeaturedContentBundle/ItemBankTrialUsedModal'
 import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
-import { getNotificationsCount } from '../../../NotificationEngine/ducks'
+import { getNotificationsUnreadCount } from '../../../NotificationEngine/ducks'
 
 const menuItems = [
   {
@@ -499,7 +499,7 @@ class SideMenu extends Component {
       isDefaultDA,
       setSignedUpUsingUsernameAndPassword,
       isSignupUsingUNAndPassSet,
-      notificationCount,
+      notificationsUnreadCount,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -875,8 +875,8 @@ class SideMenu extends Component {
                       Notifications
                     </LabelMenuItem>
                   </NotificationButton>
-                  {notificationCount !== 0 && (
-                    <CountBadge count={notificationCount} />
+                  {notificationsUnreadCount !== 0 && (
+                    <CountBadge count={notificationsUnreadCount} />
                   )}
                 </NotificationsButtonContainer>
                 {!isDemoPlaygroundUserProxy &&
@@ -1074,7 +1074,7 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       isDemoPlaygroundUserProxy: isDemoPlaygroundUser(state),
       isSuperAdmin: isSuperAdminSelector(state),
-      notificationCount: getNotificationsCount(state),
+      notificationsUnreadCount: getNotificationsUnreadCount(state),
     }),
     {
       toggleSideBar: toggleSideBarAction,

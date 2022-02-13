@@ -53,7 +53,7 @@ const Notification = ({ loading, notifications, history }) => {
   }
 
   const renderNotificationCollapseContainer = (notificationsData) => {
-    const notificationGroupsData = groupBy(notificationsData, 'labelGroup')
+    const notificationGroupsData = groupBy(notificationsData, 'topicType')
     return Object.keys(notificationGroupsData).length > 0 ? (
       <StyledCollapse style={{ padding: '0px' }} accordion>
         {Object.keys(notificationGroupsData).map((groupName) => (

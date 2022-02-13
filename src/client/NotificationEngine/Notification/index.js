@@ -262,11 +262,17 @@ const ListItemContainer = styled.div`
       : '1px dashed #dfdfdf'};
   border-radius: 4px;
   background: ${({ status }) =>
-    status === notificationStatus.READ
-      ? '#eeffff'
-      : status === notificationStatus.ARCHIVED
-      ? ' #ffeeff'
+    status === notificationStatus.ARCHIVED
+      ? '#ffeeff'
+      : status === notificationStatus.READ
+      ? ' #eeffff'
       : '#ffffff'};
+  opacity: ${({ status }) =>
+    status === notificationStatus.ARCHIVED
+      ? '40%'
+      : status === notificationStatus.READ
+      ? '80%'
+      : '100%'};
 `
 
 const StyledEmptyContainer = styled.div`

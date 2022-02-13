@@ -33,7 +33,6 @@ const Notification = ({ loading, notifications, history }) => {
       ...notification,
       ...topicMeta[notification.topicType],
     }))
-    // console.log('notifications', notificationsWithTopicsMeta)
     const _todayNotifications = []
     const _pastNotifications = []
     const todayDateStr = new Date().toLocaleString('en-GB', {
@@ -113,20 +112,20 @@ const Notification = ({ loading, notifications, history }) => {
                         type="check-circle"
                         style={{ color: themeColor, margin: '0 5px 0 15px' }}
                         theme={
-                          notification.status == notificationStatus.SEEN
-                            ? 'outlined'
-                            : 'filled'
+                          notification.status == notificationStatus.READ
+                            ? 'filled'
+                            : 'outlined'
                         }
                         onClick={() =>
-                          notification.status == notificationStatus.ARCHIVED
-                            ? {}
-                            : notification.status == notificationStatus.SEEN
+                          notification.status == notificationStatus.SEEN
                             ? updateUserNotifications([notification], {
                                 status: notificationStatus.READ,
                               })
-                            : updateUserNotifications([notification], {
+                            : notification.status == notificationStatus.READ
+                            ? updateUserNotifications([notification], {
                                 status: notificationStatus.SEEN,
                               })
+                            : {}
                         }
                       />
                       Read

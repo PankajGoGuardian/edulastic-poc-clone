@@ -46,19 +46,23 @@ export const deleteUserNotifications = (docs = [], callback = () => {}) => {
 
 export const topicMeta = {
   [topicType.NEW_ASSIGNMENT]: {
-    label: 'New Assignment',
+    label: 'new',
     labelGroup: 'Assignments',
+    color: '#ff5500',
   },
   [topicType.OVERALL_ASSIGNMENT_FEEDBACK]: {
-    label: 'Overall Feedback',
+    label: 'feedback',
     labelGroup: 'Assignments',
+    color: '#2db7f5',
   },
   [topicType.ASSIGNMENT_GRADING]: {
-    label: 'Assignment Grading',
+    label: 'grading',
     labelGroup: 'Assignments',
+    color: '#108ee9',
   },
   [topicType.SUBSCRIPTION_OFFER]: {
-    label: 'Subscription Offer',
+    label: 'offer',
     labelGroup: 'Subscriptions',
+    color: '#87d068',
   },
 }

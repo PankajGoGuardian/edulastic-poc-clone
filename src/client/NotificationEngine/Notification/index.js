@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Collapse, Icon, Spin, Tabs, Badge, Tooltip } from 'antd'
+import { Collapse, Icon, Spin, Tabs, Badge, Tooltip, Tag } from 'antd'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -84,6 +84,9 @@ const Notification = ({ loading, notifications, history }) => {
                     <p>{notification.message}</p>
                   </ListItemInfo>
                   <ListItemAction>
+                    <Tag style={{ fontWeight: 600 }} color={notification.color}>
+                      {notification.label}
+                    </Tag>
                     <Tooltip
                       title={`Expires: ${new Date(
                         notification.expiresAt

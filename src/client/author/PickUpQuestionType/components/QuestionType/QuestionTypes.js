@@ -21,6 +21,7 @@ const PickUpQuestionTypes = ({
   isPassageItem,
 }) => {
   const allQuestionTypes = getCards(onSelectQuestionType, isPassageItem)
+  console.log('questionType',questionType);
   const selectedQuestionTypes = allQuestionTypes.filter(({ type }) => {
     if (Array.isArray(type)) {
       /**

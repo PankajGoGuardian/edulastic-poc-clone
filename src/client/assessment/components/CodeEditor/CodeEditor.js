@@ -101,7 +101,8 @@ export function CodeEditorSimple({
   mode = 'python',
   onRun,
   executing,
-  lines = 15,
+  lines = 25,
+  disableResponse,
 }) {
   const [fontSize, setFontSize] = useState(defaultFontSize)
   const aceRef = useRef()
@@ -111,13 +112,14 @@ export function CodeEditorSimple({
       <Header>
         <OptionWrapper>
           <Select name="mode" onChange={setFontSize} value={fontSize}>
-            {[14, 16, 18, 20, 24, 28, 32, 40].map((lang) => (
-              <Select.Option key={lang} value={lang}>
-                {lang}
+            {[14, 16, 18, 20, 24, 28, 32, 40].map((fsz) => (
+              <Select.Option key={fsz} value={fsz}>
+                {fsz}
               </Select.Option>
             ))}
           </Select>
         </OptionWrapper>
+        <Lang>Python 3 Turtle</Lang>
         {onRun && (
           <OptionWrapper>
             <EduButton type="primary" loading={executing} onClick={onRun}>
@@ -136,8 +138,9 @@ export function CodeEditorSimple({
           fontSize={fontSize}
           showPrintMargin={aceEditorProps.showPrintMargin}
           showGutter={aceEditorProps.showGutter}
-          highlightActiveLine={aceEditorProps.highlightActiveLine}
-          setOptions={{ ...defaultEditorOptions, maxLines: lines }}
+          highlightActiveLine={ disableResponse?false:aceEditorProps.highlightActiveLine}
+          readOnly={disableResponse}
+          setOptions={{ ...defaultEditorOptions, maxLines: lines, minLines:13 }}
         />
       </EditorWrapper>
     </EditorContainer>

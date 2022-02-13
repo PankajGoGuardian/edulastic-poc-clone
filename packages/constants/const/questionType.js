@@ -41,6 +41,7 @@ const FRACTION_EDITOR = 'fractionEditor'
 const TRUE_OR_FALSE = 'trueOrFalse'
 const SECTION_LABEL = 'sectionLabel'
 const CODING = 'coding'
+const TURTLE = 'turtle'
 const MATH_EXPRESSION = 'mathExpression'
 const MATH_NUMERIC = 'mathNumeric'
 const MATH_EQUATION = 'mathEquation'
@@ -107,6 +108,7 @@ const selectsData = [
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
   { value: CODING, text: 'Coding' },
+  { value: TURTLE, text: 'Turtle' },
 ]
 
 const manuallyGradableQn = [
@@ -5514,4 +5516,5 @@ module.exports = {
   useLanguageFeatureQn,
   PICTOGRAPH,
   compilersList,
+  TURTLE
 }

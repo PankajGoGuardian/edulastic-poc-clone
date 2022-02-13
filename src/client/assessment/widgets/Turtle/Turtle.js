@@ -181,13 +181,18 @@ function BrythonExecution_({}, ref){
 const BrythonExecution = forwardRef(BrythonExecution_);
 
 const code = `
-
 forward(100)
 right(90)
 forward(100)
 right(90)
 forward(100)
 right(90)
+forward(200)
+left(90)
+forward(100)
+left(90)
+forward(100)
+left(90)
 forward(100)
 `
 const code2 = `
@@ -224,34 +229,41 @@ function showError({lineNumber,module,errorMsg}){
     notification({type:"warning",key,msg,duration:0});
 }
 
-export  function TurtleRunner({}){
-    const [codeStr,setCodeStr] = useState(code);
+
+export  function TurtleRunner({codeStr="",setCodeStr,disableResponse, onSvg, answerSvg}){
     const [executing,setExecuting] = useState(false);
-    const [_error,setError] = useState();
+    const [executed,setExecuted] = useState(false)
     const exRef = useRef();
 
 
     return (<div>
-        <h1>TurtleRunner</h1>
         <FlexRow>
             <div className="editor">
-                <CodeEditorSimple value={codeStr} executing={executing} onChange={(v)=>{
+                <CodeEditorSimple 
+                    value={codeStr} 
+                    disableResponse={disableResponse} 
+                    executing={executing} onChange={(v)=>{
                     setCodeStr(v);
                     //console.log('code change',v);
                 }} onRun={()=> {
                     setExecuting(true);
+                    setExecuted(true);
                     setTimeout(()=>{
                         exRef.current.execute(codeStr).then((res)=>{
-                            console.log('res svg');
+                            if(onSvg){
+                                onSvg(res);
+                            }
                         }).catch((e)=>{
                             const parsedError = parsePythonErrorMsg(e);
                             showError(parsedError);
+                            setExecuted(false);
                         }).finally(()=>{
                             setExecuting(false);
                         })
                     },0);
-                }} defaultFontSize={16} />
+                }} defaultFontSize={14} />
             </div>
+            {answerSvg && (!executed)? <div className="answer-svg" dangerouslySetInnerHTML={{__html: answerSvg}}></div>:null}
             <div className="preview">
                 <BrythonExecution ref={exRef} />
             </div>
@@ -282,7 +294,7 @@ const FlexRow = styled.div`
     align-content: center;
     align-items:flex-start;
 
-    .editor,.preview{
+    .editor,.preview,.answer-svg{
         flex: 0 1 auto;
         align-self: auto;
         min-height: auto;

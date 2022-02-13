@@ -49,6 +49,7 @@ import { HighlightImage } from '../widgets/HighlightImage'
 import { Drawing } from './Drawing'
 import { EssayPlainText } from '../widgets/EssayPlainText'
 import { Coding } from '../widgets/CodingType'
+import { TurtleCoding } from '../widgets/CodingType/TurtleCoding';
 import { EssayRichText } from '../widgets/EssayRichText'
 import FractionEditor from '../widgets/FractionEditor'
 import UploadFile from '../widgets/UploadFile'
@@ -174,6 +175,8 @@ const getQuestion = (type) => {
       return Pictograph
     case questionType.CODING:
       return Coding
+    case questionType.TURTLE:
+      return TurtleCoding
     default:
       return () => null
   }

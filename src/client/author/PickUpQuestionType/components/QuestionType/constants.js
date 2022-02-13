@@ -2783,6 +2783,53 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       },
       onSelectQuestionType,
     },
+    {
+      type: 'coding',
+      cardImage: CodingImage,
+      data: {
+        title: questionTitle.TURTLE,
+        stimulus:
+          '<p>Write a turtle program resembling the given diagram</p>',
+        type: questionType.TURTLE,
+        turtleProgram:`fillcolor("red")
+begin_fill()
+forward(100)
+right(90)
+forward(100)
+right(90)
+forward(100)
+right(90)
+forward(100)
+end_fill()
+fillcolor("blue")
+begin_fill()
+forward(100)
+left(90)
+forward(100)
+left(90)
+forward(100)
+left(90)
+forward(100)
+end_fill()
+`,
+        validation: {
+          validResponse: {
+            score: 1,
+            input: '',
+            output: '',
+            template: '',
+            options: {
+              trimExtraLines: true,
+              noExtraOutput: true,
+            },
+          },
+          maxScore: 1,
+          language: 'python',
+          compiler: '',
+        },
+      },
+      onSelectQuestionType,
+    },
   ]
   return isPassage ? cards.filter((i) => !i.isPassageType) : cards
 }

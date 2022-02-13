@@ -7,11 +7,14 @@ import { uniqBy, map, max, filter } from 'lodash'
 import { FireBaseService as Fbs } from '@edulastic/common'
 import { styledNotification } from '../author/Reports/common/styled'
 
-import { notificationStatus } from './helpers'
+import {
+  notificationsCollectionName,
+  notificationStatus,
+  updateUserNotifications,
+  // deleteNotification,
+} from './helpers'
 import { getUser } from '../author/src/selectors/user'
 import { receiveNotificationsRequestSuccessAction } from './ducks'
-
-const notificationsCollectionName = 'HackDayNotificationEngine'
 
 const NotificationListener = ({ user, setNotifications }) => {
   // const [notificationIds, setNotificationIds] = useState([])
@@ -24,31 +27,6 @@ const NotificationListener = ({ user, setNotifications }) => {
         .where('userId', '==', `${user?._id}`),
     [user?._id]
   )
-
-  const updateUserNotifications = (
-    docs = [],
-    updateData = {},
-    callback = () => {}
-  ) => {
-    const batch = Fbs.db.batch()
-    docs.forEach((d) => {
-      const ref = Fbs.db.collection(notificationsCollectionName).doc(d.__id)
-      batch.update(ref, updateData)
-    })
-    batch
-      .commit()
-      .then(callback)
-      .catch((err) => console.error(err))
-  }
-
-  const deleteNotification = (docId, callback = () => {}) => {
-    Fbs.db
-      .collection(notificationsCollectionName)
-      .doc(docId)
-      .delete()
-      .then(callback)
-      .catch((err) => console.error(err))
-  }
 
   const showUserNotifications = (
     notificationsToShow,

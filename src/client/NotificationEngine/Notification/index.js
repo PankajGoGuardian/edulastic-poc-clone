@@ -5,7 +5,9 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { groupBy } from 'lodash'
 import { withRouter } from 'react-router-dom'
+
 import { MainHeader, MainContentWrapper, EduButton } from '@edulastic/common'
+import { notificationStatus, topicMeta } from '../helpers'
 
 import {
   receiveNotificationsRequestAction,
@@ -21,8 +23,12 @@ const Notification = ({ loading, notifications, history }) => {
   const [notificationGroups, setNotificationGroups] = useState([])
 
   useEffect(() => {
-    console.log('notifications', notifications)
-    setNotificationGroups(groupBy(notifications, 'topicType'))
+    console.log('Active notifications', notifications)
+    const notificationsWithTopicsMeta = notifications.map((n) => ({
+      ...n,
+      ...topicMeta[n.topicType],
+    }))
+    setNotificationGroups(groupBy(notificationsWithTopicsMeta, 'labelGroup'))
   }, [notifications])
   // @todo filter notification based on today and past.
   // @todo add an empty container for no notifications case.
@@ -39,7 +45,9 @@ const Notification = ({ loading, notifications, history }) => {
         <Panel header={groupName}>
           <ListContainer>
             {notificationGroupsData[groupName].map((notification) => (
-              <ListItemContainer isMarkedAsRead={notification.markAsRead}>
+              <ListItemContainer
+                isMarkedAsRead={notification.status == notificationStatus.READ}
+              >
                 <ListItemInfo
                   style={{ cursor: `${notification.URL ? 'pointer' : 'auto'}` }}
                   onClick={() => handleClickAction(notification.URL || '')}

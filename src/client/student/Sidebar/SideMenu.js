@@ -7,7 +7,14 @@ import { Link, withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import styled, { withTheme } from 'styled-components'
-import { Layout, Menu as AntMenu, Row, Icon as AntIcon, Dropdown } from 'antd'
+import {
+  Layout,
+  Menu as AntMenu,
+  Row,
+  Icon as AntIcon,
+  Dropdown,
+  Badge,
+} from 'antd'
 import {
   IconLogoCompact,
   IconClockDashboard,
@@ -327,9 +334,7 @@ class SideMenu extends Component {
                     </LabelMenuItem>
                   </NotificationButton>
                   {notificationCount !== 0 && (
-                    <CountBadge>
-                      {notificationCount > 99 ? '99+' : notificationCount}
-                    </CountBadge>
+                    <CountBadge count={notificationCount} />
                   )}
                 </NotificationsButtonContainer>
                 <QuestionButton isSidebarCollapsed={isSidebarCollapsed}>
@@ -1034,16 +1039,16 @@ const NotificationButton = styled.div`
   display: inline-flex;
   color: #7c93a7;
 `
-const CountBadge = styled.div`
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  line-height: 25px;
-  font-size: 0.8rem;
-  background: rgb(223, 8, 131);
-  color: white;
-  text-align: center;
+const CountBadge = styled(Badge)`
+  // border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  // line-height: 25px;
+  // font-size: 0.8rem;
+  // background: rgb(223, 8, 131);
+  // color: white;
+  // text-align: center;
   position: absolute;
-  top: 0px;
+  top: 1px;
   left: 35px;
 `

@@ -25,6 +25,7 @@ import {
   Popover,
   Popconfirm,
   Tooltip,
+  Badge,
 } from 'antd'
 import styled from 'styled-components'
 import {
@@ -871,9 +872,7 @@ class SideMenu extends Component {
                     </LabelMenuItem>
                   </NotificationButton>
                   {notificationCount !== 0 && (
-                    <CountBadge>
-                      {notificationCount > 99 ? '99+' : notificationCount}
-                    </CountBadge>
+                    <CountBadge count={notificationCount} />
                   )}
                 </NotificationsButtonContainer>
                 {!isDemoPlaygroundUserProxy &&
@@ -1900,16 +1899,16 @@ const DemoPlaygroundButton = styled.div`
   }
 `
 
-const CountBadge = styled.div`
-  border-radius: 50%;
-  width: 25px;
-  height: 25px;
-  line-height: 25px;
-  font-size: 0.8rem;
-  background: rgb(223, 8, 131);
-  color: white;
-  text-align: center;
+const CountBadge = styled(Badge)`
+  // border-radius: 50%;
+  width: 20px;
+  height: 20px;
+  // line-height: 25px;
+  // font-size: 0.8rem;
+  // background: rgb(223, 8, 131);
+  // color: white;
+  // text-align: center;
   position: absolute;
-  top: 0px;
+  top: 1px;
   left: 35px;
 `

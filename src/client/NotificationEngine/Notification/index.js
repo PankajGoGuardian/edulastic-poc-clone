@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Collapse, Icon, Spin, Tabs } from 'antd'
+import { Collapse, Icon, Spin, Tabs, Badge } from 'antd'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -20,18 +20,31 @@ const { Panel } = Collapse
 const { TabPane } = Tabs
 
 const Notification = ({ loading, notifications, history }) => {
-  const [notificationGroups, setNotificationGroups] = useState([])
+  const [todayNotifications, setTodayNotifications] = useState([])
+  const [pastNotifications, setPastNotifications] = useState([])
 
   useEffect(() => {
     console.log('Active notifications', notifications)
-    const notificationsWithTopicsMeta = notifications.map((n) => ({
-      ...n,
-      ...topicMeta[n.topicType],
-    }))
-    setNotificationGroups(groupBy(notificationsWithTopicsMeta, 'labelGroup'))
+    // const notificationsWithTopicsMeta = notifications.map((n) => ({
+    //   ...n,
+    //   ...topicMeta[n.topicType],
+    // }))
+    // setNotificationGroups(groupBy(notificationsWithTopicsMeta, 'labelGroup'))
+    console.log('notifications', notifications)
+    const _todayNotifications = []
+    const _pastNotifications = []
+    for (const notification of notifications) {
+      const daysDiff =
+        (Date.now() - notification.activeAt) / (24 * 60 * 60 * 1000)
+      if (daysDiff > 1) {
+        _pastNotifications.push(notification)
+      } else {
+        _todayNotifications.push(notification)
+      }
+    }
+    setTodayNotifications(_todayNotifications)
+    setPastNotifications(_pastNotifications)
   }, [notifications])
-  // @todo filter notification based on today and past.
-  // @todo add an empty container for no notifications case.
 
   const handleClickAction = (url) => {
     if (url) {
@@ -39,36 +52,44 @@ const Notification = ({ loading, notifications, history }) => {
     }
   }
 
-  const renderNotificationCollapseContainer = (notificationGroupsData) => (
-    <StyledCollapse style={{ padding: '0px' }} accordion>
-      {Object.keys(notificationGroupsData).map((groupName) => (
-        <Panel header={groupName}>
-          <ListContainer>
-            {notificationGroupsData[groupName].map((notification) => (
-              <ListItemContainer
-                isMarkedAsRead={notification.status == notificationStatus.READ}
-              >
-                <ListItemInfo
-                  style={{ cursor: `${notification.URL ? 'pointer' : 'auto'}` }}
-                  onClick={() => handleClickAction(notification.URL || '')}
-                >
-                  <p>{notification.message}</p>
-                </ListItemInfo>
-                <ListItemAction>
-                  {!notification.markAsRead && (
-                    <EduButton isGhost>
-                      Mark As Read
-                      <Icon type="check-square" theme="filled" />
-                    </EduButton>
-                  )}
-                </ListItemAction>
-              </ListItemContainer>
-            ))}
-          </ListContainer>
-        </Panel>
-      ))}
-    </StyledCollapse>
-  )
+  const renderNotificationCollapseContainer = (notificationsData) => {
+    const notificationGroupsData = groupBy(notificationsData, 'labelGroup')
+    return Object.keys(notificationGroupsData).length > 0 ? (
+      <StyledCollapse style={{ padding: '0px' }} accordion>
+        {Object.keys(notificationGroupsData).map((groupName) => (
+          <Panel header={groupName}>
+            <ListContainer>
+              {notificationGroupsData[groupName].map((notification) => (
+                <ListItemContainer isMarkedAsRead={notification.markAsRead}>
+                  <ListItemInfo
+                    style={{
+                      cursor: `${notification.URL ? 'pointer' : 'auto'}`,
+                    }}
+                    onClick={() => handleClickAction(notification.URL || '')}
+                  >
+                    <p>{notification.message}</p>
+                  </ListItemInfo>
+                  <ListItemAction>
+                    {!notification.markAsRead && (
+                      <EduButton isGhost>
+                        Mark As Read
+                        <Icon type="check-square" theme="filled" />
+                      </EduButton>
+                    )}
+                  </ListItemAction>
+                </ListItemContainer>
+              ))}
+            </ListContainer>
+          </Panel>
+        ))}
+      </StyledCollapse>
+    ) : (
+      <StyledEmptyContainer>
+        <Icon type="bell" theme="filled" />
+        <h4>No Notifications</h4>
+      </StyledEmptyContainer>
+    )
+  }
 
   return (
     <>
@@ -78,11 +99,27 @@ const Notification = ({ loading, notifications, history }) => {
           <Spin />
         ) : (
           <Tabs>
-            <TabPane tab="Today's Notifications" key="today">
-              {renderNotificationCollapseContainer(notificationGroups)}
+            <TabPane
+              tab={
+                <>
+                  <span>Today&apos;s Notifications</span>
+                  <StyledBadge count={todayNotifications.length || 0} />
+                </>
+              }
+              key="today"
+            >
+              {renderNotificationCollapseContainer(todayNotifications)}
             </TabPane>
-            <TabPane tab="Past Notifications" key="past">
-              {renderNotificationCollapseContainer(notificationGroups)}
+            <TabPane
+              tab={
+                <>
+                  <span>Past Notifications</span>
+                  <StyledBadge count={pastNotifications.length || 0} />
+                </>
+              }
+              key="past"
+            >
+              {renderNotificationCollapseContainer(pastNotifications)}
             </TabPane>
           </Tabs>
         )}
@@ -132,4 +169,20 @@ const ListItemContainer = styled.div`
   margin: 10px 0px;
   background: ${({ isMarkedAsRead }) =>
     isMarkedAsRead ? '#dfdfdf' : '#ffffff'};
+`
+
+const StyledEmptyContainer = styled.div`
+  text-align: center;
+  background: #dfdfdf;
+  height: 100px;
+  line-height: 100px;
+
+  h4 {
+    margin-left: 10px;
+    display: inline;
+  }
+`
+
+const StyledBadge = styled(Badge)`
+  margin-left: 10px;
 `

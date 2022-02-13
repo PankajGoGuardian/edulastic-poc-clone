@@ -865,7 +865,11 @@ class SideMenu extends Component {
                     onClick={this.handleNotificationButtonClick}
                   >
                     <IconContainer className={isCollapsed ? 'active' : ''}>
-                      <AntIcon type="message" theme="filled" />
+                      <AntIcon
+                        type="message"
+                        theme="filled"
+                        style={{ fontSize: 17 }}
+                      />
                     </IconContainer>
                     <LabelMenuItem isCollapsed={isCollapsed}>
                       Notifications
@@ -1884,6 +1888,14 @@ const NotificationsButtonContainer = styled.div`
 const NotificationButton = styled.div`
   display: inline-flex;
   color: #7c93a7;
+  &:hover {
+    svg path {
+      fill: ${themeColor};
+    }
+    span {
+      color: ${themeColor};
+    }
+  }
 `
 
 const DemoPlaygroundButton = styled.div`

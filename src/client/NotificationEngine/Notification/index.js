@@ -1,13 +1,18 @@
 import React, { useEffect, useState } from 'react'
-import { Collapse, Icon, Spin, Tabs, Badge } from 'antd'
+import { Collapse, Icon, Spin, Tabs, Badge, Tooltip } from 'antd'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { groupBy } from 'lodash'
 import { withRouter } from 'react-router-dom'
 
-import { MainHeader, MainContentWrapper, EduButton } from '@edulastic/common'
-import { notificationStatus, topicMeta } from '../helpers'
+import { MainHeader, MainContentWrapper } from '@edulastic/common'
+import { redDark, themeColor } from '@edulastic/colors'
+import {
+  notificationStatus,
+  topicMeta,
+  updateUserNotifications,
+} from '../helpers'
 
 import {
   receiveNotificationsRequestAction,
@@ -24,9 +29,9 @@ const Notification = ({ loading, notifications, history }) => {
   const [pastNotifications, setPastNotifications] = useState([])
 
   useEffect(() => {
-    const notificationsWithTopicsMeta = notifications.map((n) => ({
-      ...n,
-      ...topicMeta[n.topicType],
+    const notificationsWithTopicsMeta = notifications.map((notification) => ({
+      ...notification,
+      ...topicMeta[notification.topicType],
     }))
     console.log('Active notifications', notificationsWithTopicsMeta)
     const _todayNotifications = []
@@ -58,11 +63,7 @@ const Notification = ({ loading, notifications, history }) => {
           <Panel header={groupName}>
             <ListContainer>
               {notificationGroupsData[groupName].map((notification) => (
-                <ListItemContainer
-                  isMarkedAsRead={
-                    notification.status == notificationStatus.READ
-                  }
-                >
+                <ListItemContainer status={notification.status}>
                   <ListItemInfo
                     style={{
                       cursor: `${notification.URL ? 'pointer' : 'auto'}`,
@@ -72,12 +73,70 @@ const Notification = ({ loading, notifications, history }) => {
                     <p>{notification.message}</p>
                   </ListItemInfo>
                   <ListItemAction>
-                    {!notification.markAsRead && (
-                      <EduButton isGhost>
-                        Mark As Read
-                        <Icon type="check-square" theme="filled" />
-                      </EduButton>
-                    )}
+                    <Tooltip
+                      title={`Expiry: ${new Date(
+                        notification.expiresAt
+                      ).toString()}`}
+                    >
+                      <Icon
+                        type="history"
+                        style={{ color: themeColor, margin: '0 5px 0 15px' }}
+                      />
+                      {new Date(notification.expiresAt).toLocaleString(
+                        'en-GB',
+                        {
+                          day: 'numeric',
+                          month: 'short',
+                          year: 'numeric',
+                          hour: 'numeric',
+                          minute: '2-digit',
+                        }
+                      )}
+                    </Tooltip>
+                    <Tooltip title="Mark as read">
+                      <Icon
+                        type="check-circle"
+                        style={{ color: themeColor, margin: '0 5px 0 15px' }}
+                        theme={
+                          notification.status == notificationStatus.SEEN
+                            ? 'outlined'
+                            : 'filled'
+                        }
+                        onClick={() =>
+                          notification.status == notificationStatus.ARCHIVED
+                            ? {}
+                            : notification.status == notificationStatus.SEEN
+                            ? updateUserNotifications([notification], {
+                                status: notificationStatus.READ,
+                              })
+                            : updateUserNotifications([notification], {
+                                status: notificationStatus.SEEN,
+                              })
+                        }
+                      />
+                      Read
+                    </Tooltip>
+                    <Tooltip title="Archive">
+                      <Icon
+                        type="delete"
+                        style={{ color: redDark, margin: '0 5px 0 10px' }}
+                        theme={
+                          notification.status == notificationStatus.ARCHIVED
+                            ? 'filled'
+                            : 'outlined'
+                        }
+                        onClick={() =>
+                          notification.status == notificationStatus.ARCHIVED
+                            ? updateUserNotifications([notification], {
+                                status: notificationStatus.READ,
+                              })
+                            : updateUserNotifications([notification], {
+                                status: notificationStatus.ARCHIVED,
+                              })
+                        }
+                      />
+                      Archive
+                    </Tooltip>
                   </ListItemAction>
                 </ListItemContainer>
               ))}
@@ -162,15 +221,25 @@ const ListItemInfo = styled.div`
 const ListItemAction = styled.div`
   display: flex;
   align-items: center;
+  white-space: nowrap;
 `
 
 const ListItemContainer = styled.div`
   display: flex;
   justify-items: flex-end;
-  padding: 0px 10px;
-  margin: 10px 0px;
-  background: ${({ isMarkedAsRead }) =>
-    isMarkedAsRead ? '#dfdfdf' : '#ffffff'};
+  padding: 5px;
+  margin: 5px;
+  border: ${({ status }) =>
+    status === notificationStatus.SEEN
+      ? '1px solid #dfdfdf'
+      : '1px dashed #dfdfdf'};
+  border-radius: 4px;
+  background: ${({ status }) =>
+    status === notificationStatus.READ
+      ? '#eeffff'
+      : status === notificationStatus.ARCHIVED
+      ? ' #ffeeff'
+      : '#ffffff'};
 `
 
 const StyledEmptyContainer = styled.div`

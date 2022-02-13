@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -11,7 +11,7 @@ import {
   notificationsCollectionName,
   notificationStatus,
   updateUserNotifications,
-  // deleteNotification,
+  deleteUserNotifications,
 } from './helpers'
 import { getUser } from '../author/src/selectors/user'
 import { receiveNotificationsRequestSuccessAction } from './ducks'
@@ -63,13 +63,10 @@ const NotificationListener = ({ user, setNotifications }) => {
         (doc) => {
           const daysDiff = (Date.now() - doc.expiresAt) / (24 * 60 * 60 * 1000)
           const activeAt = doc.activeAt || doc.createdAt
-
-          if (doc.status == notificationStatus.ARCHIVED) {
-            // notificationsToDelete.push(doc)
-            // call delete method?
-            return false
-          }
-          if (daysDiff > 7) {
+          // if (doc.status == notificationStatus.ARCHIVED) {
+          //   return false
+          // }
+          if (daysDiff > 1) {
             notificationsToDelete.push(doc)
             return false
           }
@@ -116,10 +113,8 @@ const NotificationListener = ({ user, setNotifications }) => {
           status: notificationStatus.SEEN,
         })
       }
-      if (notificationsToDelete) {
-        updateUserNotifications(notificationsToDelete, {
-          status: notificationStatus.ARCHIVED,
-        })
+      if (notificationsToDelete.length > 0) {
+        deleteUserNotifications(notificationsToDelete)
       }
       // TODO: update redux state - @neeraj
       setNotifications(notificationsActive)

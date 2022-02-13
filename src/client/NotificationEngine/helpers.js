@@ -32,11 +32,14 @@ export const updateUserNotifications = (
     .catch((err) => console.error(err))
 }
 
-export const deleteNotification = (docId, callback = () => {}) => {
-  Fbs.db
-    .collection(notificationsCollectionName)
-    .doc(docId)
-    .delete()
+export const deleteUserNotifications = (docs = [], callback = () => {}) => {
+  const batch = Fbs.db.batch()
+  docs.forEach((d) => {
+    const ref = Fbs.db.collection(notificationsCollectionName).doc(d.__id)
+    batch.delete(ref)
+  })
+  batch
+    .commit()
     .then(callback)
     .catch((err) => console.error(err))
 }

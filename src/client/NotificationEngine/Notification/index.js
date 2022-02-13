@@ -91,6 +91,7 @@ const Notification = ({ loading, notifications, history }) => {
                       title={`Expires: ${new Date(
                         notification.expiresAt
                       ).toString()}`}
+                      placement="topLeft"
                     >
                       <Icon
                         type="history"
@@ -107,7 +108,16 @@ const Notification = ({ loading, notifications, history }) => {
                         }
                       )}
                     </Tooltip>
-                    <Tooltip title="Mark as Read">
+                    <Tooltip
+                      title={
+                        notification.status == notificationStatus.SEEN
+                          ? 'Mark as Read'
+                          : notification.status == notificationStatus.READ
+                          ? 'Mark as Unread'
+                          : 'Disabled'
+                      }
+                      placement="topLeft"
+                    >
                       <Icon
                         type="check-circle"
                         style={{ color: themeColor, margin: '0 5px 0 15px' }}
@@ -130,7 +140,14 @@ const Notification = ({ loading, notifications, history }) => {
                       />
                       Read
                     </Tooltip>
-                    <Tooltip title="Mark as Archived">
+                    <Tooltip
+                      title={
+                        notification.status == notificationStatus.ARCHIVED
+                          ? 'Mark as Unarchived'
+                          : 'Mark as Archived'
+                      }
+                      placement="topLeft"
+                    >
                       <Icon
                         type="delete"
                         style={{ color: redDark, margin: '0 5px 0 10px' }}

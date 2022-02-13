@@ -441,14 +441,9 @@ class SideMenu extends Component {
   }
 
   handleShowGoalsModal = () => {
-    const { fetchPerformanceGoals, performanceGoals } = this.props
-    fetchPerformanceGoals({
-      termId: '61bc37c222542500099eacc4',
-    })
     this.setState({
       showGoalsModal: true,
     })
-    console.log('performanceGoals', performanceGoals)
   }
 
   closeGoalsModal = () => {
@@ -517,6 +512,7 @@ class SideMenu extends Component {
       setSignedUpUsingUsernameAndPassword,
       isSignupUsingUNAndPassSet,
       fetchPerformanceGoals,
+      performanceGoals,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -582,8 +578,6 @@ class SideMenu extends Component {
     }
 
     const users = get(switchDetails, 'switchAccounts', [])
-
-    console.log('fetchPerformanceGoals', fetchPerformanceGoals)
 
     const footerDropdownMenu = (isDemoAccount = false) => (
       <FooterDropDown
@@ -1026,8 +1020,11 @@ class SideMenu extends Component {
                   </IconContainerDiv>
                   {showGoalsModal && (
                     <GoalsPerformanceModal
+                      termId={user.orgData.defaultTermId}
                       showGoalsModal={showGoalsModal}
                       closeModal={this.closeGoalsModal}
+                      fetchPerformanceGoals={fetchPerformanceGoals}
+                      performanceData={performanceGoals}
                     />
                   )}
                 </UserInfoButton>

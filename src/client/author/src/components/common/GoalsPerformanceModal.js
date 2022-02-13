@@ -1,23 +1,9 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { CustomModalStyled, EduTableStyled } from '@edulastic/common'
 import styled from 'styled-components'
 import { Progress } from 'antd'
 import { title } from '@edulastic/colors'
-
-const dataSource = [
-  {
-    key: '1',
-    name: 'Mike',
-    age: 32,
-    address: '10 Downing Street',
-  },
-  {
-    key: '2',
-    name: 'John',
-    age: 42,
-    address: '10 Downing Street',
-  },
-]
+import { isEmpty } from 'lodash'
 
 const columns = [
   {
@@ -44,10 +30,24 @@ const columns = [
 ]
 
 const GoalsPerformanceModal = ({
+  termId,
+  fetchPerformanceGoals,
   showGoalsModal,
   closeModal,
-  percentage = '80',
+  performanceData = {},
 }) => {
+  const percentage =
+    Math.ceil(
+      (performanceData?.countAbove60 /
+        (performanceData?.countAbove60 + performanceData?.countBelow60)) *
+        100
+    ) || 0
+  useEffect(() => {
+    if (isEmpty(performanceData)) {
+      fetchPerformanceGoals({ termId })
+    }
+  }, [])
+
   const header = (
     <HeaderTitleWrapper>
       <h2>Performance Goals</h2>
@@ -79,7 +79,7 @@ const GoalsPerformanceModal = ({
     >
       <Container>
         <EduTableStyled
-          dataSource={dataSource}
+          dataSource={performanceData?.eachStdInfo || []}
           columns={columns}
           pagination={{ pageSize: 10, hideOnSinglePage: true }}
         />

@@ -1,4 +1,5 @@
 import { takeEvery, call, put, all, select } from 'redux-saga/effects'
+import _ from 'lodash'
 import {
   dashboardApi,
   curriculumSequencesApi,
@@ -100,6 +101,32 @@ const initialState = {
   performanceGoals: {},
 }
 
+const translatePerformanceGoalsData = (payload) => {
+  const {metricInfo, skillInfo, stdInfo} = payload
+  const studentsNameMap = stdInfo.reduce((acc, data) => {
+    acc[data._id] = [data.firstName, data.middleName, data.lastName].join(' ')
+    return acc
+  }, {})
+  const eachStdInfo = _.map(_.groupBy(metricInfo, 'studentId'), (data) => {
+    const totalOS = _.sumBy(data, 'obtainedScore')
+    const totalMS = _.sumBy(data, 'maxScore')
+    return {
+      studentId: data?.[0]?.studentId,
+      score: Math.ceil((totalOS/totalMS)*100),
+      name: studentsNameMap[data?.[0]?.studentId]
+    }
+  })
+
+  const countBelow60 = eachStdInfo.filter(o => o.score < 60).length
+  const countAbove60 = eachStdInfo.filter(o => o.score >= 60).length
+
+  return {
+    eachStdInfo,
+    countBelow60,
+    countAbove60,
+  }
+}
+
 export const reducer = createReducer(initialState, {
   [RECEIVE_TEACHER_DASHBOARD_REQUEST]: (state, { payload }) => {
     state.loading = !payload?.background
@@ -132,7 +159,7 @@ export const reducer = createReducer(initialState, {
     state.playlists = payload
   },
   [SET_PERFORMANCE_GOALS]: (state, { payload }) => {
-    state.performanceGoals = payload
+    state.performanceGoals = translatePerformanceGoalsData(payload)
   },
   [UPDATE_FAVORITE_CLASSES]: (state, { payload }) => {
     state.data = state.data.map((item) => {
@@ -264,7 +291,6 @@ function* loadPerformanceGoalsDetails({ payload }) {
     const { termId } = payload
     const result = yield call(reportsApi.fetchPerformanceGoalsDetails, termId)
     yield put({ type: SET_PERFORMANCE_GOALS, payload: result })
-    console.log('result', result)
   } catch (e) {
     if (e.status === 404) {
       return notification({

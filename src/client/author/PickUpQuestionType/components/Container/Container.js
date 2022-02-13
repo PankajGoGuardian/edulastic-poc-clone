@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import uuid from 'uuid/v4'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Menu } from 'antd'
+import { Icon, Menu } from 'antd'
 import { questionType } from '@edulastic/constants'
 import {
   PaddingDiv,
@@ -31,6 +31,7 @@ import {
   IconPlay,
   IconExpand,
   IconCollapse,
+  IconCode,
 } from '@edulastic/icons'
 import CustomPrompt from '@edulastic/common/src/components/CustomPrompt'
 import QuestionTypes from '../QuestionType/QuestionTypes'
@@ -428,7 +429,7 @@ class Container extends Component {
                     </Menu.Item>
                   )}
                   <Menu.Item key="coding">
-                    <IconWrite />
+                    <Icon type="code" />
                     Coding
                   </Menu.Item>
                   {/* implementation is in progress */}

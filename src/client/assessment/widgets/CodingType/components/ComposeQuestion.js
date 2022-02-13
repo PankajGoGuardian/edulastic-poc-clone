@@ -41,7 +41,7 @@ const languageDisplayName = {
 
 const ComposeQuestion = (props) => {
   const { item, setQuestionData, t, fillSections, cleanSections } = props
-  const mode = item.validation.language || 'python'
+  const mode = item.validation.language || item.language || 'python'
   const compiler = compilersList[mode]?.[0]
   const input = item.validation.validResponse.input || ''
   const output = item.validation.validResponse.output || ''
@@ -49,9 +49,10 @@ const ComposeQuestion = (props) => {
   useEffect(() => {
     setQuestionData(
       produce(item, (draft) => {
-        draft.validation.language = 'python'
-        draft.validation.compiler = compiler?.name
-        draft.language = 'python'
+        const language = draft.language || draft.validation.language || 'python'
+        draft.validation.language = language
+        draft.validation.compiler = compilersList[mode]?.[0]?.name
+        draft.language = language
       })
     )
   }, [])

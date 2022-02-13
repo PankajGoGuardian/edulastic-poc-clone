@@ -3,7 +3,6 @@ const ESSAY_RICH_TEXT = 'essayRichText'
 const FORMULA_ESSAY = 'formulaessay'
 const HIGHLIGHT_IMAGE = 'highlightImage'
 const UPLOAD_FILE = 'uploadFile'
-const CODING = 'coding'
 
 module.exports = [
   ESSAY_PLAIN_TEXT,
@@ -11,5 +10,4 @@ module.exports = [
   FORMULA_ESSAY,
   HIGHLIGHT_IMAGE,
   UPLOAD_FILE,
-  CODING,
 ]

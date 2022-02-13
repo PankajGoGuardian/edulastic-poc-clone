@@ -257,6 +257,7 @@ const CodeEditor = ({
           highlightActiveLine={
             disableResponse ? false : aceEditorProps.highlightActiveLine
           }
+          width="auto"
           readOnly={disableResponse}
           setOptions={{
             useWorker: false,
@@ -302,8 +303,9 @@ const OptionWrapper = styled.div`
 const EditorWrapper = styled.div``
 
 const EditorContainer = styled.div`
-  width: 500px;
-  margin: 20px 0;
+  min-width: 500px;
+  max-width: 1200px;
+  margin: 20px auto;
 `
 
 const Lang = styled.span`

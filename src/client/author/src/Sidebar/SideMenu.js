@@ -87,6 +87,7 @@ import GoalsPerformanceModal from '../components/common/GoalsPerformanceModal'
 import { slice } from '../../Subscription/ducks'
 import {
   getPerformanceGoalsSelector,
+  loadDifferenciationDataAction,
   loadPerformanceGoalsReportAction,
 } from '../../Dashboard/ducks'
 
@@ -513,6 +514,7 @@ class SideMenu extends Component {
       isSignupUsingUNAndPassSet,
       fetchPerformanceGoals,
       performanceGoals,
+      getDifferentiationData,
     } = this.props
     if (userRole === roleuser.STUDENT) {
       return null
@@ -1028,6 +1030,7 @@ class SideMenu extends Component {
                       performanceData={performanceGoals}
                       isPremiumUser={isPremiumUser}
                       history={history}
+                      getDifferentiationData={getDifferentiationData}
                     />
                   )}
                 </UserInfoButton>
@@ -1105,6 +1108,7 @@ const enhance = compose(
       setIsUserOnProfilePage: setIsUserOnProfilePageAction,
       fetchUserSubscriptionStatus: slice?.actions?.fetchUserSubscriptionStatus,
       fetchPerformanceGoals: loadPerformanceGoalsReportAction,
+      getDifferentiationData: loadDifferenciationDataAction,
     }
   )
 )

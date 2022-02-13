@@ -36,9 +36,19 @@ const getRecommendationsStatus = ({ assignmentId, groupId }) =>
     })
     .then((result) => result.data.result)
 
+const getRecommendedReviewStandards = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/differentiation-standards`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 export default {
   fetchRecommendations,
   getDifferentiationWork,
   acceptRecommendations,
   getRecommendationsStatus,
+  getRecommendedReviewStandards,
 }

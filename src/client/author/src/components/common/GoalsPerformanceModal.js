@@ -15,6 +15,7 @@ const GoalsPerformanceModal = ({
   performanceData = {},
   isPremiumUser,
   history,
+  getDifferentiationData,
 }) => {
   const [showReviewModal, setShowReviewModal] = useState(false)
 
@@ -28,7 +29,12 @@ const GoalsPerformanceModal = ({
     closeModal()
   }
 
-  const handleClick = () => {
+  const handleClick = (standards, data) => {
+    getDifferentiationData({
+      standards: `${standards.map((o) => o.id).join(',')}`,
+      skillIdentifiers: `${standards.map((o) => o.name).join(',')}`,
+      studentId: data.studentId,
+    })
     setShowReviewModal(true)
   }
 
@@ -62,12 +68,13 @@ const GoalsPerformanceModal = ({
     },
     {
       title: 'Recommended',
-      dataIndex: 'age',
-      key: 'age',
-      render: (value) => (
+      dataIndex: 'standards',
+      key: 'standards',
+      render: (standards, data) => (
         <>
-          {console.log('value', value)}
-          <LinkContainer onClick={handleClick}>Link</LinkContainer>
+          <LinkContainer onClick={() => handleClick(standards, data)}>
+            Link
+          </LinkContainer>
         </>
       ),
     },

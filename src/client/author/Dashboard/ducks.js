@@ -4,6 +4,7 @@ import {
   dashboardApi,
   curriculumSequencesApi,
   reportsApi,
+  recommendationsApi,
 } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
@@ -31,7 +32,10 @@ const UPDATE_FAVORITE_CLASSES = '[dashboard teacher] update favorite classes'
 const TOGGLE_FAVORITE_CLASS = '[dashboard teacher] toggle favorite classes'
 export const LOAD_PERFORMANCE_GOALS_REPORT =
   '[studentReports] load performance goals report'
-
+export const LOAD_DIFFERENCIATION_DATA =
+  '[studentReports] load differenciation data'
+export const SET_DIFFERENCIATION_DATA =
+  '[studentReports] set diffreciation data'
 export const SET_PERFORMANCE_GOALS = '[studentReports] set performance goals'
 
 export const receiveTeacherDashboardAction = createAction(
@@ -61,6 +65,9 @@ export const updatefavoriteClassesAction = createAction(UPDATE_FAVORITE_CLASSES)
 export const togglefavoriteClassAction = createAction(TOGGLE_FAVORITE_CLASS)
 export const loadPerformanceGoalsReportAction = createAction(
   LOAD_PERFORMANCE_GOALS_REPORT
+)
+export const loadDifferenciationDataAction = createAction(
+  LOAD_DIFFERENCIATION_DATA
 )
 export const stateSelector = (state) => state.dashboardTeacher
 
@@ -101,6 +108,17 @@ const initialState = {
   performanceGoals: {},
 }
 
+const updateDifferenciationData = (state, payload) => {
+  const data = state?.dashboardTeacher?.performanceGoals?.differenciations || {}
+  data[`${payload.studentId}`] = payload.review.map((k) => {
+    return {
+      name: k.standardIdentifier,
+      standardName: k.description,
+    }
+  })
+  return data
+}
+
 const translatePerformanceGoalsData = (payload) => {
   const { metricInfo, skillInfo, stdInfo } = payload
   const studentsNameMap = stdInfo.reduce((acc, data) => {
@@ -109,6 +127,7 @@ const translatePerformanceGoalsData = (payload) => {
   }, {})
   const standardsNameMap = skillInfo.reduce((acc, data) => {
     acc[data.standardId] = {
+      id: data.standardId,
       name: data.standard,
       domainName: data.domainName,
       standardName: data.standardName,
@@ -177,6 +196,12 @@ export const reducer = createReducer(initialState, {
   },
   [SET_PERFORMANCE_GOALS]: (state, { payload }) => {
     state.performanceGoals = translatePerformanceGoalsData(payload)
+  },
+  [SET_DIFFERENCIATION_DATA]: (state, { payload }) => {
+    state.performanceGoals.differenciations = updateDifferenciationData(
+      state,
+      payload
+    )
   },
   [UPDATE_FAVORITE_CLASSES]: (state, { payload }) => {
     state.data = state.data.map((item) => {
@@ -320,6 +345,25 @@ function* loadPerformanceGoalsDetails({ payload }) {
   }
 }
 
+function* loadDifferenciationDetails({ payload }) {
+  try {
+    const studentId = payload.studentId
+    delete payload.studentId
+    const result = yield call(
+      recommendationsApi.getRecommendedReviewStandards,
+      payload
+    )
+    yield put({
+      type: SET_DIFFERENCIATION_DATA,
+      payload: { ...result, studentId },
+    })
+  } catch (e) {
+    return notification({
+      msg: e?.response?.data?.message || 'No data found',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(
@@ -330,5 +374,6 @@ export function* watcherSaga() {
     yield takeEvery(FETCH_PLAYLIST, fetchPlaylistsSaga),
     yield takeEvery(TOGGLE_FAVORITE_CLASS, toggleFavoriteClassSaga),
     yield takeEvery(LOAD_PERFORMANCE_GOALS_REPORT, loadPerformanceGoalsDetails),
+    yield takeEvery(LOAD_DIFFERENCIATION_DATA, loadDifferenciationDetails),
   ])
 }

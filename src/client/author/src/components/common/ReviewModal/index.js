@@ -13,11 +13,13 @@ import {
   getDifferentiationWorkSelector,
   getWorkStatusDataSelector,
 } from '../../../../CurriculumSequence/ducks'
+import { getPerformanceGoalsSelector } from '../../../../Dashboard/ducks'
 
 const ReviewModalContent = ({
   differentiationWork,
   workStatusData,
   differentiationStudentList,
+  performanceGoals,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const workTableCommonProps = {
@@ -59,6 +61,7 @@ const enhance = compose(
       differentiationStudentList: getDifferentiationStudentListSelector(state),
       differentiationWork: getDifferentiationWorkSelector(state),
       workStatusData: getWorkStatusDataSelector(state),
+      performanceGoals: getPerformanceGoalsSelector(state),
     }),
     null
   )

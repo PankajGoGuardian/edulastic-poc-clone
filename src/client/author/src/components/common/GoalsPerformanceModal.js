@@ -1,33 +1,10 @@
 import React, { useEffect } from 'react'
 import { CustomModalStyled, EduTableStyled } from '@edulastic/common'
 import styled from 'styled-components'
-import { Progress } from 'antd'
+import { Progress, Tooltip } from 'antd'
 import { title } from '@edulastic/colors'
 import { isEmpty } from 'lodash'
-
-const columns = [
-  {
-    title: 'Name',
-    dataIndex: 'name',
-    key: 'name',
-    align: 'left',
-  },
-  {
-    title: 'Recommended',
-    dataIndex: 'age',
-    key: 'age',
-  },
-  {
-    title: 'Frequency',
-    dataIndex: 'address',
-    key: 'address',
-  },
-  {
-    title: 'Links',
-    dataIndex: 'address',
-    key: 'address',
-  },
-]
+import { IconPieChartIcon } from '@edulastic/icons'
 
 const GoalsPerformanceModal = ({
   termId,
@@ -35,7 +12,54 @@ const GoalsPerformanceModal = ({
   showGoalsModal,
   closeModal,
   performanceData = {},
+  isPremiumUser,
+  history,
 }) => {
+  const handleLinkClick = () => {
+    history.push('/author/reports/student-profile-summary/student/')
+    closeModal()
+  }
+
+  const handleClick = () => {
+    console.log('clicked to open new modal')
+  }
+
+  const getLinkColumn = () => {
+    if (!isPremiumUser) {
+      return []
+    }
+
+    return [
+      {
+        title: 'Links',
+        dataIndex: 'links',
+        key: 'links',
+        render: () => (
+          <IconContainer onClick={handleLinkClick}>
+            <Tooltip placement="bottom" title="Student Summary Report">
+              <IconPieChartIcon alt="Images" />
+            </Tooltip>
+          </IconContainer>
+        ),
+      },
+    ]
+  }
+
+  const columns = [
+    {
+      title: 'Name',
+      dataIndex: 'name',
+      key: 'name',
+      align: 'left',
+    },
+    {
+      title: 'Recommended',
+      dataIndex: 'age',
+      key: 'age',
+      render: () => <LinkContainer onClick={handleClick}>Link</LinkContainer>,
+    },
+    ...getLinkColumn(),
+  ]
   const percentage =
     Math.ceil(
       (performanceData?.countAbove60 /
@@ -82,6 +106,7 @@ const GoalsPerformanceModal = ({
           dataSource={performanceData?.eachStdInfo || []}
           columns={columns}
           pagination={{ pageSize: 10, hideOnSinglePage: true }}
+          loading={!performanceData?.eachStdInfo}
         />
       </Container>
     </CustomModalStyled>
@@ -116,3 +141,6 @@ const HeaderTitleWrapper = styled.div`
     width: 200px;
   }
 `
+const IconContainer = styled.div``
+
+const LinkContainer = styled.div``

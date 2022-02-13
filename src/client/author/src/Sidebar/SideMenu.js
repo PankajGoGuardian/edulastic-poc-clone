@@ -555,6 +555,7 @@ class SideMenu extends Component {
     }
 
     const isPublisher = features.isCurator || features.isPublisherAuthor
+    const isPremiumUser = features.premium
 
     let _userRole = null
     if (userRole === roleuser.TEACHER) {
@@ -882,8 +883,8 @@ class SideMenu extends Component {
                     <IconContainer className={isCollapsed ? 'active' : ''}>
                       <IconGoals />
                     </IconContainer>
-                    <LabelMenuItem percentage="20" isCollapsed={isCollapsed}>
-                      Goals <span className="score">(80%)</span>
+                    <LabelMenuItem isCollapsed={isCollapsed}>
+                      Goals
                     </LabelMenuItem>
                   </DemoPlaygroundButton>
                 </DemoPlaygroundButtonContainer>
@@ -1025,6 +1026,8 @@ class SideMenu extends Component {
                       closeModal={this.closeGoalsModal}
                       fetchPerformanceGoals={fetchPerformanceGoals}
                       performanceData={performanceGoals}
+                      isPremiumUser={isPremiumUser}
+                      history={history}
                     />
                   )}
                 </UserInfoButton>
@@ -1766,14 +1769,6 @@ const LabelMenuItem = styled.span`
   overflow: hidden;
   text-overflow: ellipsis;
   display: ${({ isCollapsed }) => (isCollapsed ? 'none' : 'block')};
-  .score {
-    color: ${({ percentage }) =>
-      percentage < 30
-        ? 'rgb(255, 230, 192)'
-        : percentage < 60
-        ? 'rgb(235, 123, 101)'
-        : 'rgb(153, 203, 118)'} !important;
-  }
 `
 
 const Hr = styled.div`

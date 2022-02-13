@@ -41,6 +41,7 @@ const Notification = ({ loading, notifications, history }) => {
             {notificationGroupsData[groupName].map((notification) => (
               <ListItemContainer isMarkedAsRead={notification.markAsRead}>
                 <ListItemInfo
+                  style={{ cursor: `${notification.URL ? 'pointer' : 'auto'}` }}
                   onClick={() => handleClickAction(notification.URL || '')}
                 >
                   <p>{notification.message}</p>

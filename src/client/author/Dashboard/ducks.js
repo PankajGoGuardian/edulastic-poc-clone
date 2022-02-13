@@ -110,12 +110,14 @@ const initialState = {
 
 const updateDifferenciationData = (state, payload) => {
   const data = state?.dashboardTeacher?.performanceGoals?.differenciations || {}
-  data[`${payload.studentId}`] = _.isEmpty(payload.review) ? [] : payload.review.map((k) => {
-    return {
-      name: k.standardIdentifier,
-      standardName: k.description,
-    }
-  })
+  data[`${payload.studentId}`] = _.isEmpty(payload.review)
+    ? []
+    : payload.review.map((k) => {
+        return {
+          name: k.standardIdentifier,
+          standardName: k.description,
+        }
+      })
   return data
 }
 
@@ -157,7 +159,7 @@ const translatePerformanceGoalsData = (payload) => {
   const countAbove60 = eachStdInfo.filter((o) => o.score >= 60).length
 
   return {
-    eachStdInfo,
+    eachStdInfo: eachStdInfo.filter((o) => o.score < 60),
     countBelow60,
     countAbove60,
   }

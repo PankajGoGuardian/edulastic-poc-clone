@@ -75,7 +75,7 @@ const GoalsPerformanceModal = ({
       render: (standards, data) => (
         <>
           <LinkContainer onClick={() => handleClick(standards, data)}>
-            Link
+            <a>{standards.length || 0}</a>
           </LinkContainer>
         </>
       ),

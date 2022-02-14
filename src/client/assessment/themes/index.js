@@ -91,9 +91,10 @@ const autoSavableTypes = {
 }
 
 const shouldAutoSave = (itemRows, answersById, itemId) => {
+  let autosave = false
   let currentAnswer = ''
   if (!itemRows) {
-    return [false, currentAnswer]
+    return [autosave, currentAnswer]
   }
 
   for (const row of itemRows) {
@@ -101,11 +102,12 @@ const shouldAutoSave = (itemRows, answersById, itemId) => {
       if (widget.widgetType === 'question' && autoSavableTypes[widget.type]) {
         const currentAnswerId = `${itemId}_${widget?.reference}`
         currentAnswer += answersById[currentAnswerId]
+        autosave = true
       }
     }
     return [true, currentAnswer]
   }
-  return [false, currentAnswer]
+  return [autosave, currentAnswer]
 }
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
@@ -1170,7 +1172,7 @@ const AssessmentContainer = ({
 
   useEffect(() => {
     ;[, prevAnswerValue.current] = shouldAutoSave(itemRows, answersById, itemId)
-  }, [itemRows])
+  }, [itemRows?.length])
 
   const [autoSave, currentAnswerValue] = useMemo(
     () => shouldAutoSave(itemRows, answersById, itemId),

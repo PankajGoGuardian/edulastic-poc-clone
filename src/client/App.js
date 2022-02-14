@@ -618,6 +618,44 @@ class App extends Component {
     const bannerButtonText = isDemoAccountProxy
       ? 'Close demo account'
       : 'Stop Acting as User'
+
+    const eeaCountryCodeList = [
+      'BE',
+      'ES',
+      'HU',
+      'SK',
+      'BG',
+      'FR',
+      'MT',
+      'FI',
+      'CZ',
+      'HR',
+      'NL',
+      'SE',
+      'DK',
+      'IT',
+      'AT',
+      'DE',
+      'CY',
+      'PL',
+      'IS',
+      'EE',
+      'LV',
+      'PT',
+      'LI',
+      'IE',
+      'LT',
+      'RO',
+      'NO',
+      'EL',
+      'LU',
+      'SI',
+    ]
+
+    const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
+
+    const showPrivacyPolicyModal =
+      userRole !== roleuser.STUDENT && userInfo?.isPolicyAccepted === false
     return (
       <div>
         {(isSAWithoutSchools ||
@@ -659,14 +697,14 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
-        {userRole !== roleuser.STUDENT &&
-          userInfo?.isPolicyAccepted === false && (
-            <PrivacyPolicyModal
-              userID={userInfo._id}
-              userRole={userRole}
-              roleuser={roleuser}
-            />
-          )}
+        {showPrivacyPolicyModal && (
+          <PrivacyPolicyModal
+            userID={userInfo._id}
+            userRole={userRole}
+            roleuser={roleuser}
+            isEEAUser={isEEAUser}
+          />
+        )}
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

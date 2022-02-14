@@ -12,9 +12,9 @@ import { darkGrey2, lightGrey8, greyThemeDark1 } from '@edulastic/colors'
 
 import PrivacyPolicyText from './privacyPolicyEULA'
 import ProductPrivacyPolicy from './productPrivacyPolicy'
-import PrivacyEEA from './privacyPolicyEEA'
+import PrivacyPolicyEEA from './privacyPolicyEEA'
 
-const PrivacyPolicyModal = ({ userID }) => {
+const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
 
@@ -73,7 +73,7 @@ const PrivacyPolicyModal = ({ userID }) => {
       <ModalTextBody>
         <PrivacyPolicyText />
         <ProductPrivacyPolicy />
-        <PrivacyEEA />
+        {isEEAUser && <PrivacyPolicyEEA />}
         <CheckboxWrapper>
           <CheckboxLabel onChange={onCheck}>
             By checking the box and clicking “Accept”, I agree to the Terms of

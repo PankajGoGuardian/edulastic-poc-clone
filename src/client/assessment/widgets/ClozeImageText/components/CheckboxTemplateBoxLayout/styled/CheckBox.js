@@ -40,5 +40,6 @@ export const CheckBox = styled.div`
     align-items: center;
     justify-content: center;
     padding-left: 16px;
+    overflow: hidden;
   }
 `

@@ -31,9 +31,9 @@ const PrivacyPolicyModal = ({ userID }) => {
     })
   }
 
-  // if (isPolicyAccepted === undefined && isPolicyAccepted) {
-  //   return
-  // }
+  if (isPolicyAccepted === undefined && isPolicyAccepted) {
+    return
+  }
 
   const headerContent = (
     <>

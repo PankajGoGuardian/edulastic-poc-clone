@@ -65,6 +65,8 @@ import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 
+import PrivacyPolicyModal from './privacyPolicy/PrivacyPolicyModal'
+
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
@@ -656,6 +658,13 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
+        {userRole !== roleuser.STUDENT && (
+          <PrivacyPolicyModal
+            userID={user.user._id}
+            userRole={userRole}
+            roleuser={roleuser}
+          />
+        )}
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

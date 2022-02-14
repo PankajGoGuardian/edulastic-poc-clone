@@ -170,11 +170,11 @@ const generateAnswers = {
     const { responses: eduResponses = [], options } = item
     const data = eduResponses.map((eduRes, contIndex) => {
       const value = testletResponses[testletResponseIds[contIndex]]
-      const opIndex = ALPHABET.indexOf(value)
-      if (value && options[opIndex]) {
+      if (value) {
+        const opIndexes = value.split(',').map((x) => ALPHABET.indexOf(x))
         return {
           responseBoxID: eduRes.id,
-          optionIds: [options[opIndex].id],
+          optionIds: opIndexes.map((x) => options[x].id),
           containerIndex: contIndex,
           // rect: {}, TODO: we will check this property later.
         }

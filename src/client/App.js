@@ -65,6 +65,8 @@ import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 
+import PrivacyPolicyModal from './privacyPolicy/privacyPolicyModal'
+
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
@@ -384,6 +386,7 @@ class App extends Component {
     }
 
     const features = user?.user?.features || {}
+    const userInfo = user?.user
     let defaultRoute = ''
     let redirectRoute = ''
     const isPremium = get(user, ['user', 'features', 'premium'])
@@ -656,6 +659,14 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
+        {userRole !== roleuser.STUDENT &&
+          userInfo?.isPolicyAccepted === false && (
+            <PrivacyPolicyModal
+              userID={userInfo._id}
+              userRole={userRole}
+              roleuser={roleuser}
+            />
+          )}
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

@@ -19801,14 +19801,6 @@ react-responsive-modal@^3.5.1:
     react-minimalist-portal "^2.3.1"
     react-transition-group "^2.4.0"
 
-react-rnd-rotate@^0.0.19:
-  version "0.0.19"
-  resolved "https://registry.yarnpkg.com/react-rnd-rotate/-/react-rnd-rotate-0.0.19.tgz#1bc6e48a26fbda5f35685f6cdc1c945150039028"
-  integrity sha1-G8bkiib72l81aF9s3ByUUVADkCg=
-  dependencies:
-    re-resizable-rotate "0.0.9"
-    react-draggable-rotate "0.0.21"
-
 react-rnd@^9.1.1:
   version "9.2.0"
   resolved "https://registry.yarnpkg.com/react-rnd/-/react-rnd-9.2.0.tgz#0642a9f788ee2f16267d13cefe21d0e94da99668"

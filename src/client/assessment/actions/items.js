@@ -69,7 +69,6 @@ export const saveTestletUserResponse = (
   timeSpent,
   autoSave = false,
   groupId,
-  extData,
   payload
 ) => ({
   type: SAVE_TESTLET_USER_RESPONSE,
@@ -79,7 +78,6 @@ export const saveTestletUserResponse = (
     itemId: item,
     autoSave,
     groupId,
-    extData,
   },
 })
 

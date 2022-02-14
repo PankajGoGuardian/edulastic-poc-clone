@@ -29,6 +29,7 @@ import {
   CLEAR_USER_WORK,
   CLEAR_HINT_USAGE,
   SET_SAVE_USER_RESPONSE,
+  SAVE_TESTLET_USER_RESPONSE,
 } from '../constants/actions'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
@@ -479,6 +480,7 @@ export default function* watcherSaga() {
   yield all([
     yield takeLatest(RECEIVE_ITEM_REQUEST, receiveItemSaga),
     yield Effects.throttleAction(timeOut, SAVE_USER_RESPONSE, saveUserResponse),
+    yield takeLatest(SAVE_TESTLET_USER_RESPONSE, saveUserResponse),
     yield takeLatest(LOAD_USER_RESPONSE, loadUserResponse),
   ])
 }

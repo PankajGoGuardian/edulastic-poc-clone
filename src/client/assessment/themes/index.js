@@ -1338,7 +1338,6 @@ const AssessmentContainer = ({
         hidePause={hidePause}
         testletConfig={testletConfig}
         testletState={testletState}
-        saveUserAnswer={saveUserAnswer}
         {...test}
       />
     )

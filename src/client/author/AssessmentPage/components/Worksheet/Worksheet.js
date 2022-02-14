@@ -151,6 +151,10 @@ class WorksheetComponent extends React.Component {
     })
   }
 
+  componentWillUnmount() {
+    toggleChatDisplay()
+  }
+
   handleHighlightQuestion = (questionId, pdfPreview = false) => {
     this.setState({ highlightedQuestion: questionId })
     const { currentPage } = this.state

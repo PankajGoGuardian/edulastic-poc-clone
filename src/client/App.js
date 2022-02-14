@@ -386,6 +386,7 @@ class App extends Component {
     }
 
     const features = user?.user?.features || {}
+    const userInfo = user?.user
     let defaultRoute = ''
     let redirectRoute = ''
     const isPremium = get(user, ['user', 'features', 'premium'])
@@ -617,6 +618,44 @@ class App extends Component {
     const bannerButtonText = isDemoAccountProxy
       ? 'Close demo account'
       : 'Stop Acting as User'
+
+    const eeaCountryCodeList = [
+      'BE',
+      'ES',
+      'HU',
+      'SK',
+      'BG',
+      'FR',
+      'MT',
+      'FI',
+      'CZ',
+      'HR',
+      'NL',
+      'SE',
+      'DK',
+      'IT',
+      'AT',
+      'DE',
+      'CY',
+      'PL',
+      'IS',
+      'EE',
+      'LV',
+      'PT',
+      'LI',
+      'IE',
+      'LT',
+      'RO',
+      'NO',
+      'EL',
+      'LU',
+      'SI',
+    ]
+
+    const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
+
+    const showPrivacyPolicyModal =
+      userRole !== roleuser.STUDENT && userInfo?.isPolicyAccepted === false
     return (
       <div>
         {(isSAWithoutSchools ||
@@ -658,11 +697,12 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
-        {userRole !== roleuser.STUDENT && (
+        {showPrivacyPolicyModal && (
           <PrivacyPolicyModal
-            userID={user.user._id}
+            userID={userInfo._id}
             userRole={userRole}
             roleuser={roleuser}
+            isEEAUser={isEEAUser}
           />
         )}
         <OfflineNotifier />

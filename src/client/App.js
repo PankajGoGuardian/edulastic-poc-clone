@@ -386,6 +386,7 @@ class App extends Component {
     }
 
     const features = user?.user?.features || {}
+    const userInfo = user?.user
     let defaultRoute = ''
     let redirectRoute = ''
     const isPremium = get(user, ['user', 'features', 'premium'])
@@ -658,13 +659,15 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
-        {userRole !== roleuser.STUDENT && (
-          <PrivacyPolicyModal
-            userID={user.user._id}
-            userRole={userRole}
-            roleuser={roleuser}
-          />
-        )}
+        {userRole !== roleuser.STUDENT &&
+          userInfo?.isPolicyAccepted === false && (
+            <PrivacyPolicyModal
+              userID={userInfo._id}
+              userRole={userRole}
+              roleuser={roleuser}
+              isPolicyAccepted={userInfo?.isPolicyAccepted}
+            />
+          )}
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

@@ -13,26 +13,24 @@ import { darkGrey2, lightGrey8, greyThemeDark1 } from '@edulastic/colors'
 import PrivacyPolicyText from './privacyPolicyText'
 
 const PrivacyPolicyModal = ({ userID }) => {
-  const [isPolicyAccepted, setIsPolicyAccepted] = useState(false)
+  const [isChecked, setIsChecked] = useState(false)
+  const [showModal, setShowModal] = useState(true)
 
-  const onCheck = () => {
-    setIsPolicyAccepted((_isPolicyAccepted) => !_isPolicyAccepted)
+  const onCheck = (value) => {
+    setIsChecked(value?.target?.checked)
   }
 
   const onAccept = () => {
     const payload = {
       userId: userID,
-      isPolicyAccepted,
+      isPolicyAccepted: isChecked,
     }
     userApi.updateUserDetails(payload).catch((e) => {
       notification({
         msg: e?.response?.data?.message,
       })
     })
-  }
-
-  if (isPolicyAccepted === undefined && isPolicyAccepted) {
-    return
+    setShowModal(false)
   }
 
   const headerContent = (
@@ -52,7 +50,7 @@ const PrivacyPolicyModal = ({ userID }) => {
     <>
       <p> scroll to the bottom of page to accept</p>
       <EduButton
-        disabled={isPolicyAccepted}
+        disabled={!isChecked}
         onClick={onAccept}
         style={{ marginLeft: '15px' }}
       >
@@ -62,7 +60,7 @@ const PrivacyPolicyModal = ({ userID }) => {
   )
   return (
     <StyledPrivacyPolicyModal
-      visible
+      visible={showModal}
       closable={false}
       footer={footer}
       title={headerContent}

@@ -216,24 +216,6 @@ const generateAnswers = {
     })
     return data
   },
-  [questionType.CLOZE_IMAGE_DROP_DOWN](
-    item,
-    testletResponseIds,
-    testletResponses
-  ) {
-    const { responses, options } = item
-    const data = {}
-    responses.forEach((responseBox, index) => {
-      const value = testletResponses[testletResponseIds[index]]
-      const opIndex = ALPHABET.indexOf(value)
-      if (value && options[index]) {
-        data[responseBox.id] = options[opIndex][opIndex]
-      } else {
-        data[responseBox.id] = ''
-      }
-    })
-    return data
-  },
   [questionType.GRAPH](item, testletResponseIds, testletResponses) {
     const { testletAdditionalMetadata } = item
     let additionalData = null
@@ -373,39 +355,24 @@ const generateAnswers = {
     const data = {}
     data.value = {}
     testletResponseIds.map((responseId) => {
-      let value = testletResponses[responseId]
-      if (value) {
-        value = value.split(',')
-        value.map((v) => {
-          const num = v.match(/[0-9]+/)
-          const alpha = v.match(/[a-z]+/)
-          if (num && alpha) {
-            const col = ALPHABET.indexOf(alpha[0])
-            const row = num[0] - 1
-            if (responseIds[row] && responseIds[row][col]) {
-              data.value[responseIds[row][col]] = true
-            }
-          }
-        })
-      }
-    })
-    return data
-  },
-  [questionType.CLASSIFICATION](item, testletResponseIds, testletResponses) {
-    const { possibleResponses, classifications } = item
-    const data = {}
-    testletResponseIds.forEach((responseId, index) => {
       const value = testletResponses[responseId]
-      const classification = classifications[index]
-      if (classification) {
-        data[classification.id] = []
-        const responses = convertStrToArr(value)
-        responses.forEach((response) => {
-          const opIndex = ALPHABET.indexOf(response)
-          if (possibleResponses[opIndex] && response) {
-            data[classification.id].push(possibleResponses[opIndex].id)
-          }
-        })
+      if (value) {
+        const valueArr = isArray(value) ? value : value.split(',')
+        try {
+          valueArr.map((v) => {
+            const num = v.match(/[0-9]+/)
+            const alpha = v.match(/[a-z]+/)
+            if (num && alpha) {
+              const col = ALPHABET.indexOf(alpha[0])
+              const row = num[0] - 1
+              if (responseIds[row] && responseIds[row][col]) {
+                data.value[responseIds[row][col]] = true
+              }
+            }
+          })
+        } catch (error) {
+          console.log(error)
+        }
       }
     })
     return data

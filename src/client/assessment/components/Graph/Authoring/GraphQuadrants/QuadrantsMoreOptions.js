@@ -573,7 +573,7 @@ class QuadrantsMoreOptions extends Component {
               >
                 {fontSizeList.map((option) => (
                   <Select.Option data-cy={option.value} key={option.value}>
-                    {option.label}
+                    {t(`component.options.${option.label}`)}
                   </Select.Option>
                 ))}
               </SelectInputStyled>

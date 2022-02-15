@@ -196,7 +196,15 @@ export const replaceLatexesWithMathHtml = (val) => {
 export const replaceMathHtmlWithLatexes = (val) => {
   const jqueryEl = $(`<p/>`).append(val)
   const mathHtmls = jqueryEl.find('span.input__math')
-  if (!mathHtmls.length) return Helpers.sanitizeSelfClosingTags(val)
+
+  /** workaround ot resolve issue with
+   * dropdown getting hidden in table data */
+  // eslint-disable-next-line func-names
+  jqueryEl.find('td').each(function () {
+    $(this).css('overflow', '')
+  })
+
+  if (!mathHtmls.length) return Helpers.sanitizeSelfClosingTags(jqueryEl.html())
 
   // eslint-disable-next-line func-names
   jqueryEl.find('span.input__math').each(function () {

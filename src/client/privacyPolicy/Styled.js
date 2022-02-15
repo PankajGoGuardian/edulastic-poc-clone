@@ -32,7 +32,7 @@ export const StyledHeader3 = styled.h3`
 `
 
 export const StickyHeader = styled(StyledHeader)`
-  padding: 0px 5px;
+  padding: 5px 0px;
   width: 100%;
   background-color: #f8f8f8;
   position: sticky;

@@ -6,6 +6,7 @@ import {
   CheckboxLabel,
   EduButton,
   notification,
+  OnWhiteBgLogo,
 } from '@edulastic/common'
 import { userApi } from '@edulastic/api'
 import { darkGrey2, lightGrey8, greyThemeDark1 } from '@edulastic/colors'
@@ -37,6 +38,9 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
 
   const headerContent = (
     <>
+      <EdulasticLogo>
+        <OnWhiteBgLogo />
+      </EdulasticLogo>
       <ModalTitle>
         End User License Agreement and Product Privacy Policy
       </ModalTitle>
@@ -64,45 +68,53 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
     </>
   )
   return (
-    <StyledPrivacyPolicyModal
-      visible={showModal}
-      closable={false}
-      footer={footer}
-      title={headerContent}
-      width="80%"
-      height="100vh"
-    >
-      <ModalTextBody>
-        <PrivacyPolicyText />
-        <ProductPrivacyPolicy />
-        {!isEEAUser && <PrivacyPolicyEEA />}
-        <CheckboxWrapper>
-          <CheckboxLabel onChange={onCheck}>
-            By checking the box and clicking “Accept”, I agree to the Terms of
-            Service and End User License Agreement and Privacy Policy of the
-            Product
-          </CheckboxLabel>
-        </CheckboxWrapper>
-      </ModalTextBody>
-    </StyledPrivacyPolicyModal>
+    <>
+      <StyledPrivacyPolicyModal
+        visible={showModal}
+        closable={false}
+        footer={footer}
+        title={headerContent}
+        width="80%"
+        height="calc(100vh - 50px)"
+        maskStyle={{
+          background: 'rgba(0,0,0,0.8)',
+        }}
+      >
+        <ModalTextBody>
+          <PrivacyPolicyText />
+          <ProductPrivacyPolicy />
+          {isEEAUser && <PrivacyPolicyEEA />}
+          <CheckboxWrapper>
+            <CheckboxLabel onChange={onCheck}>
+              By checking the box and clicking “Accept”, I agree to the Terms of
+              Service and End User License Agreement and Privacy Policy of the
+              Product
+            </CheckboxLabel>
+          </CheckboxWrapper>
+        </ModalTextBody>
+      </StyledPrivacyPolicyModal>
+    </>
   )
 }
 
+const EdulasticLogo = styled.div`
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+`
+
 const StyledPrivacyPolicyModal = styled(CustomModalStyled)`
-  position: absolute;
-  left: 50%;
-  top: 54%;
-  transform: translate(-50%, -50%);
+  top: 50px;
   .ant-modal-body {
     background-color: white;
-    height: 80%;
+    height: calc(100% - 170px);
     padding: 10px 24px;
     p {
       font-weight: normal !important;
     }
   }
   .ant-modal-content {
-    height: 90%;
+    height: calc(100vh - 100px);
   }
   .ant-modal-header {
     border: none;

@@ -31,8 +31,3 @@ export const StyledDeleteButton = styled(StyledButton)`
   pointer-events: ${(props) => (props.disiable ? 'none' : 'auto')};
   color: ${(props) => (props.disiable ? 'rgba(0,0,0,0.65)' : '#1890ff')};
 `
-
-export const StyledPagination = styled(Pagination)`
-  margin-top: 15px;
-  align-self: flex-end;
-`

@@ -20,6 +20,7 @@ import segmentApi from '@edulastic/api/src/segment'
 import schoolApi from '@edulastic/api/src/school'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser, signUpState } from '@edulastic/constants'
+import { toggleChatDisplay } from '@edulastic/common'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import roleType from '@edulastic/constants/const/roleType'
@@ -1397,6 +1398,19 @@ export function* fetchUser({ payload }) {
     yield put(receiveLastPlayListAction())
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction())
+      // Not required for student and edulastic admin because we hide the chat widget
+      if (user.role !== roleuser.EDULASTIC_ADMIN && window.embedded_svc) {
+        window.embedded_svc.settings.prepopulatedPrechatFields = {
+          FirstName: user.firstName,
+          LastName: user.lastName,
+          Email: user.email,
+          Subject: 'General',
+        }
+      }
+    }
+    // Hiding chat widget for edulastic admin because internal user
+    if (user.role === roleuser.EDULASTIC_ADMIN) {
+      toggleChatDisplay('hide')
     }
     if (
       user.role == roleuser.TEACHER &&
@@ -1499,7 +1513,6 @@ function* logout() {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {
-      yield call(segmentApi.unloadIntercom, { user })
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }

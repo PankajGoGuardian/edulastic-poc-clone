@@ -655,7 +655,9 @@ class App extends Component {
     const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
 
     const showPrivacyPolicyModal =
-      userRole !== roleuser.STUDENT && userInfo?.isPolicyAccepted === false
+      !process.env.REACT_APP_QA_ENV &&
+      userRole !== roleuser.STUDENT &&
+      userInfo?.isPolicyAccepted === false
     return (
       <div>
         {(isSAWithoutSchools ||

@@ -31,6 +31,7 @@ import {
   MainContainer,
   RightFilterDiv,
   StyledTableButton,
+  StyledPagination,
   SubHeaderWrapper,
   TableContainer,
 } from '../../../../common/styled'
@@ -54,7 +55,6 @@ import EditCourseModal from './EditCourseModal/EditCourseModal'
 import {
   StyledCoursesTable,
   StyledHeaderColumn,
-  StyledPagination,
   StyledSortIcon,
   StyledSortIconDiv,
 } from './styled'

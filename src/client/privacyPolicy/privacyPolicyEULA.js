@@ -20,11 +20,13 @@ const PrivacyPolicyText = () => {
         <StyledParagraph>
           Welcome! Before using any of our Offerings, please take the time to
           review this combined Terms of Service and End User License Agreement
-          (EULA), together with any applicable Order Form(s), the Product
-          Privacy Policy, and, if applicable, the Data Processing Addendum
-          (collectively, the “Agreement”). Capitalized words have the
-          definitions set forth throughout this Agreement, including in Section
-          17 (Definitions).
+          (EULA), together with any applicable Order Form(s), the
+          <a target="_blank" rel="noopener noreferrer" href="/privacy-policy/">
+            Product Privacy Policy
+          </a>
+          , and, if applicable, the Data Processing Addendum (collectively, the
+          “Agreement”). Capitalized words have the definitions set forth
+          throughout this Agreement, including in Section 17 (Definitions).
         </StyledParagraph>
         <StyledParagraph>
           When does this Agreement apply ? : This Agreement governs the use of

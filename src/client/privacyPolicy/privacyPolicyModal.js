@@ -70,6 +70,7 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
   return (
     <>
       <StyledPrivacyPolicyModal
+        wrapClassName="privacyPolicyModal"
         visible={showModal}
         closable={false}
         footer={footer}

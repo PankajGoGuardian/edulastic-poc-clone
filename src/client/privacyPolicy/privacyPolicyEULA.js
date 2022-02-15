@@ -32,7 +32,11 @@ const PrivacyPolicyText = () => {
           business as GoGuardian, and acting on behalf of itself and its
           Affiliates (“Liminex”, “we,” “us”, or “our”). This Agreement is
           distinct from our{' '}
-          <a href="https://edulastic.com/website-terms-of-service/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/website-terms-of-service/"
+          >
             Website Terms of Service
           </a>
           , which governs only use of our Website.
@@ -606,7 +610,11 @@ const PrivacyPolicyText = () => {
         </StyledParagraph>
         <StyledParagraph>
           As a reminder, our{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>{' '}
           explains our commitment to protecting School Account Information,
@@ -614,7 +622,11 @@ const PrivacyPolicyText = () => {
           Information and/or Log and Cookie Information, and nothing in this
           Section 7 limits the parties’ respective rights or obligations under
           the{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>{' '}
           or Section 8, below. A party will not disclose or use any Confidential
@@ -637,7 +649,11 @@ const PrivacyPolicyText = () => {
           i. This Section explains that the parties each have responsibilities
           to help protect the privacy of data ingested or maintained in the
           Offerings. The{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>{' '}
           explains, in more detail, how we protect information.
@@ -645,7 +661,11 @@ const PrivacyPolicyText = () => {
         <StyledHeader2>8.1 Our Privacy Responsibilities</StyledHeader2>
         <StyledParagraph>
           Our{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>
           , incorporated herein by reference, explains how we collect, use,
@@ -666,7 +686,11 @@ const PrivacyPolicyText = () => {
           or Switzerland, our Data Processing Addendum&nbsp; also applies to
           your use of the Offerings. School hereby authorizes us to use School
           Account Information in accordance with this Agreement, the{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>{' '}
           and, to the extent applicable, the Data Processing Addendum.
@@ -691,7 +715,11 @@ const PrivacyPolicyText = () => {
           parents/guardians, teachers, and other appropriate staff about your
           use of Offerings. More specifically, we recommend that you provide
           such persons with a copy of our{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>
           , our COPPA Notice and Disclosure Form, and with respect to GoGuardian
@@ -712,7 +740,11 @@ const PrivacyPolicyText = () => {
           Information, Parent/Guardian Information, Activity Information and/or
           School Log and Cookie Information for the purpose of providing the
           Offerings and related functions. Our{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>{' '}
           explains how we cooperate with School under FERPA to fulfill Education
@@ -721,7 +753,11 @@ const PrivacyPolicyText = () => {
           warrants that it is authorized to process such information, including
           any Education Records contained therein, and make such information
           available to us as set out in this Agreement and the{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>
           .
@@ -746,7 +782,11 @@ const PrivacyPolicyText = () => {
           faith belief that such access, preservation, or disclosure is
           reasonably necessary to: (a) comply with legal process; (b) to enforce
           this Agreement or the{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>
           ; (c) respond to claims that any content violates the rights of third
@@ -883,7 +923,11 @@ const PrivacyPolicyText = () => {
           and distribute Your Content, solely for the purpose of enabling
           Liminex and our Affiliates to provide you with any Offering in
           accordance with the terms of this Agreement and the{' '}
-          <a href="https://edulastic.com/privacy-policy/">
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>
           .
@@ -1789,13 +1833,32 @@ const PrivacyPolicyText = () => {
         <StyledParagraph>
           17.35 User Documentation means the online user guides, documentation,
           and help and training materials we make accessible at GoGuardian{' '}
-          <a href="https://help.goguardian.com/hc/en-us/">Help Center</a>, the
-          Pear Deck <a href="https://help.peardeck.com/en">Help Center</a>, or
-          the Edulastic{' '}
-          <a href="https://edulastic.com/help-center/">Help Center</a>, or such
-          other URL we identify from time to time, and any other materials we
-          provide as part of the Offerings, all as may be updated from time to
-          time.
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://help.goguardian.com/hc/en-us/"
+          >
+            Help Center
+          </a>
+          , the Pear Deck{' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://help.peardeck.com/en"
+          >
+            Help Center
+          </a>
+          , or the Edulastic{' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/help-center/"
+          >
+            Help Center
+          </a>
+          , or such other URL we identify from time to time, and any other
+          materials we provide as part of the Offerings, all as may be updated
+          from time to time.
         </StyledParagraph>
         <StyledParagraph>
           17.36 Website(s) means the Liminex or its Affiliates’ websites made

@@ -32,27 +32,47 @@ const ProductPrivacyPolicy = () => {
           <StyledHeader2>Policies</StyledHeader2>
           <StyledList>
             <li>
-              <a href="https://edulastic.com/website-terms-of-service">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://edulastic.com/website-terms-of-service"
+              >
                 Website Terms of Service
               </a>
             </li>
             <li>
-              <a href="https://edulastic.com/privacy-policy-for-website-visitors">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://edulastic.com/privacy-policy-for-website-visitors"
+              >
                 Website Privacy Policy
               </a>
             </li>
             <li>
-              <a href="https://edulastic.com/terms-of-service">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://edulastic.com/terms-of-service"
+              >
                 Product Terms of Service
               </a>
             </li>
             <li>
-              <a href="https://edulastic.com/privacy-policy">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://edulastic.com/privacy-policy"
+              >
                 Product Privacy Policy
               </a>
             </li>
             <li>
-              <a href="https://edulastic.com/data-processing-addendum">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://edulastic.com/data-processing-addendum"
+              >
                 Data Processing Addendum
               </a>
             </li>
@@ -78,7 +98,11 @@ const ProductPrivacyPolicy = () => {
             are always here to answer any questions you have, and we look
             forward to working with you for years to come. Capitalized terms
             used herein that are not expressly defined are as defined in our{' '}
-            <a href="https://edulastic.com/terms-of-service/">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://edulastic.com/terms-of-service/"
+            >
               Product Terms of Service and End User License Agreement
             </a>
             .
@@ -95,40 +119,78 @@ const ProductPrivacyPolicy = () => {
               GoGuardian Offerings
               <StyledList>
                 <li>
-                  <a href="https://www.goguardian.com/admin/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.goguardian.com/admin/"
+                  >
                     GoGuardian Admin
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.goguardian.com/beacon/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.goguardian.com/beacon/"
+                  >
                     GoGuardian Beacon
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.goguardian.com/director/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.goguardian.com/director/"
+                  >
                     GoGuardian Director
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.goguardian.com/dns/">GoGuardian DNS</a>
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.goguardian.com/dns/"
+                  >
+                    GoGuardian DNS
+                  </a>
                 </li>
                 <li>
-                  <a href="https://www.goguardian.com/fleet/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.goguardian.com/fleet/"
+                  >
                     GoGuardian Fleet
                   </a>
                 </li>
                 <li>
-                  <a href="https://www.goguardian.com/teacher/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://www.goguardian.com/teacher/"
+                  >
                     GoGuardian Teacher
                   </a>
                 </li>
               </StyledList>
             </li>
             <li>
-              <a href="https://www.peardeck.com/">Pear Deck Offerings&nbsp;</a>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.peardeck.com/"
+              >
+                Pear Deck Offerings&nbsp;
+              </a>
             </li>
             <li>
-              <a href="https://edulastic.com/">Edulastic Offerings</a>
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://edulastic.com/"
+              >
+                Edulastic Offerings
+              </a>
             </li>
           </StyledList>
           <StyledParagraph>
@@ -156,7 +218,11 @@ const ProductPrivacyPolicy = () => {
             eighteen (18) years old and have the authority, the right, and the
             capacity to legally bind the school and have read and understand
             this Product Privacy Policy. Our Combined{' '}
-            <a href="https://edulastic.com/terms-of-service/">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://edulastic.com/terms-of-service/"
+            >
               Terms of Service and End User License Agreement
             </a>{' '}
             (“EULA”), and as applicable to the extent your School is in the
@@ -541,8 +607,14 @@ const ProductPrivacyPolicy = () => {
             49073.1. We will not use Personal Student Information for any
             purpose other than those required or specifically set forth in this
             Product Privacy Policy, our{' '}
-            <a href="https://edulastic.com/terms-of-service/">EULA</a>, DPA, or
-            any other agreement between a School and Liminex.
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://edulastic.com/terms-of-service/"
+            >
+              EULA
+            </a>
+            , DPA, or any other agreement between a School and Liminex.
           </StyledParagraph>
           <StyledParagraph>
             We will also use your Personal Student Information in accordance
@@ -811,11 +883,19 @@ const ProductPrivacyPolicy = () => {
                   review information about the choices you may have with respect
                   to the personal information you provide through the Parent App
                   in the “
-                  <a href="https://edulastic.com/privacy-policy-for-website-visitors/#heading1_7">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://edulastic.com/privacy-policy-for-website-visitors/#heading1_7"
+                  >
                     Your Choices
                   </a>
                   ” section of our{' '}
-                  <a href="https://edulastic.com/privacy-policy-for-website-visitors/">
+                  <a
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    href="https://edulastic.com/privacy-policy-for-website-visitors/"
+                  >
                     Privacy Policy for Website Visitors
                   </a>
                   .
@@ -979,14 +1059,20 @@ const ProductPrivacyPolicy = () => {
               recourse, liability, and enforcement for such personal data. To
               learn more about the Privacy Shield Framework, visit the
               Department of Commerce’s Privacy Shield list by clicking{' '}
-              <a href="http://www.privacyshield.gov/">here</a>. As required
-              under the principles, when GoGuardian receives personal data under
-              the Privacy Shield and then transfers it to a third-party service
-              provider acting as an agent on GoGuardian’s behalf, we have
-              certain liability under the Privacy Shield if both (i) the agent
-              processes the information in a manner inconsistent with the
-              Privacy Shield; and (ii) GoGuardian is responsible for the event
-              giving rise to the damage.&nbsp;
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="http://www.privacyshield.gov/"
+              >
+                here
+              </a>
+              . As required under the principles, when GoGuardian receives
+              personal data under the Privacy Shield and then transfers it to a
+              third-party service provider acting as an agent on GoGuardian’s
+              behalf, we have certain liability under the Privacy Shield if both
+              (i) the agent processes the information in a manner inconsistent
+              with the Privacy Shield; and (ii) GoGuardian is responsible for
+              the event giving rise to the damage.&nbsp;
             </li>
             <li>
               Pear Deck and Edulastic&nbsp; – European Union-United States and
@@ -1002,10 +1088,16 @@ const ProductPrivacyPolicy = () => {
               liability, and enforcement for such personal data. To learn more
               about the Privacy Shield Framework, visit the Department of
               Commerce’s Privacy Shield list by clicking{' '}
-              <a href="https://www.privacyshield.gov/welcome">here</a>. As
-              required under the principles, when we receive personal data under
-              the Privacy Shield and then transfers it to a third-party service
-              provider acting as an agent on our behalf, we have certain
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.privacyshield.gov/welcome"
+              >
+                here
+              </a>
+              . As required under the principles, when we receive personal data
+              under the Privacy Shield and then transfers it to a third-party
+              service provider acting as an agent on our behalf, we have certain
               liability under the Privacy Shield if both (i) the agent processes
               the information in a manner inconsistent with the Privacy Shield;
               and (ii) Pear Deck or Edulastic, as applicable, is responsible for
@@ -1043,7 +1135,11 @@ const ProductPrivacyPolicy = () => {
             seek further assistance, at no cost to you, from our designated
             Privacy Shield independent recourse mechanism, the JAMS Privacy
             Shield Program, which you can learn more about by visiting{' '}
-            <a href="https://www.jamsadr.com/eu-us-privacy-shield">
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.jamsadr.com/eu-us-privacy-shield"
+            >
               https://www.jamsadr.com/eu-us-privacy-shield
             </a>
             . Residents of the EU or Switzerland may, in certain circumstances,
@@ -1068,11 +1164,24 @@ const ProductPrivacyPolicy = () => {
             dissatisfied with the way we have handled a privacy issue, you may
             contact the Office of the Australian Information Commissioner for
             more information{' '}
-            <a href="https://www.oaic.gov.au/">www.oaic.gov.au</a>. For
-            Singapore residents: If you are located in Singapore, and are
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.oaic.gov.au/"
+            >
+              www.oaic.gov.au
+            </a>
+            . For Singapore residents: If you are located in Singapore, and are
             dissatisfied with the way we have handled a privacy issue, you may
             contact the Personal Data Protection Commission for more information{' '}
-            <a href="https://www.pdpc.gov.sg/">www.pdpc.gov.sg</a>.
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://www.pdpc.gov.sg/"
+            >
+              www.pdpc.gov.sg
+            </a>
+            .
           </StyledParagraph>
 
           <StyledHeader>Cookies Notice</StyledHeader>
@@ -1121,37 +1230,65 @@ const ProductPrivacyPolicy = () => {
           </StyledParagraph>
           <StyledList>
             <li>
-              <a href="https://support.microsoft.com/en-us/help/17442/windows-internet-explorer-delete-manage-cookies">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://support.microsoft.com/en-us/help/17442/windows-internet-explorer-delete-manage-cookies"
+              >
                 Internet Explorer
               </a>
             </li>
             <li>
-              <a href="https://support.google.com/chrome/answer/95647?hl=en-GB">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://support.google.com/chrome/answer/95647?hl=en-GB"
+              >
                 Google Chrome
               </a>
             </li>
             <li>
-              <a href="https://support.microsoft.com/en-us/kb/260971">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://support.microsoft.com/en-us/kb/260971"
+              >
                 Internet Explorer 9
               </a>
             </li>
             <li>
-              <a href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://support.mozilla.org/en-US/kb/cookies-information-websites-store-on-your-computer"
+              >
                 Mozilla Firefox
               </a>
             </li>
             <li>
-              <a href="https://support.apple.com/kb/PH5042?locale=en_US">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://support.apple.com/kb/PH5042?locale=en_US"
+              >
                 Safari (Desktop)
               </a>
             </li>
             <li>
-              <a href="https://support.apple.com/en-us/HT201265">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://support.apple.com/en-us/HT201265"
+              >
                 Safari (Mobile)
               </a>
             </li>
             <li>
-              <a href="http://support.google.com/ics/nexus/bin/answer.py?hl=en">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="http://support.google.com/ics/nexus/bin/answer.py?hl=en"
+              >
                 Android Browser
               </a>
             </li>
@@ -1159,8 +1296,14 @@ const ProductPrivacyPolicy = () => {
           <StyledParagraph>
             For controls specific to advertising and analytics services offered
             by Google, click{' '}
-            <a href="https://tools.google.com/dlpage/gaoptout">here</a> from
-            each of your browsers.
+            <a
+              target="_blank"
+              rel="noopener noreferrer"
+              href="https://tools.google.com/dlpage/gaoptout"
+            >
+              here
+            </a>{' '}
+            from each of your browsers.
           </StyledParagraph>
           <StyledParagraph>
             Note About Do Not Track: Do Not Track (“DNT”): is a privacy
@@ -1200,23 +1343,39 @@ const ProductPrivacyPolicy = () => {
           <StyledParagraph>Student Privacy Resource List:</StyledParagraph>
           <StyledList>
             <li>
-              <a href="https://studentprivacypledge.org/privacy-pledge/">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://studentprivacypledge.org/privacy-pledge/"
+              >
                 Student Privacy Pledge
               </a>
             </li>
             <li>
-              <a href="https://studentprivacycompass.org/">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://studentprivacycompass.org/"
+              >
                 Student Privacy Compass
               </a>
             </li>
             <li>
-              <a href="https://studentprivacy.ed.gov/">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://studentprivacy.ed.gov/"
+              >
                 Department of Education’s Privacy Technology Assistance Center
                 (“PTAC”)
               </a>
             </li>
             <li>
-              <a href="https://www.ftc.gov/tips-advice/business-center/guidance/complying-coppa-frequently-asked-questions">
+              <a
+                target="_blank"
+                rel="noopener noreferrer"
+                href="https://www.ftc.gov/tips-advice/business-center/guidance/complying-coppa-frequently-asked-questions"
+              >
                 The Federal Trade Commission’s Complying with COPPA: Frequently
                 Asked Questions
               </a>

@@ -23,6 +23,7 @@ import {
   IconGraphArea as IconArea,
   IconGraphArea2 as IconArea2,
   IconGraphPiecewiseLine as IconPiecewiseLine,
+  IconGraphPiecewiseParabola as IconPiecewiseParabola,
   IconGraphDashed as IconDashed,
   IconGraphCos as IconCos,
   IconEraseText,
@@ -100,6 +101,9 @@ const iconsByToolName = {
   ),
   [CONSTANT.TOOLS.AREA2]: <IconArea2 width={29} height={25} />,
   [CONSTANT.TOOLS.PIECEWISE_LINE]: <IconPiecewiseLine />,
+  [CONSTANT.TOOLS.PIECEWISE_PARABOLA]: (
+    <IconPiecewiseParabola width={40} height={32} />
+  ),
   [CONSTANT.TOOLS.PIECEWISE_POINT]: <IconPoint width={11} height={11} />,
   [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
   [CONSTANT.TOOLS.LINE_CUT]: <IconLineCut />,
@@ -166,6 +170,7 @@ const labelsByToolName = {
   [CONSTANT.TOOLS.LOGARITHM]: 'Logarithm',
   [CONSTANT.TOOLS.AREA]: 'Area',
   [CONSTANT.TOOLS.DASHED]: 'Dashed',
+  [CONSTANT.TOOLS.PIECEWISE_PARABOLA]: 'Piecewise Parabola',
   [CONSTANT.TOOLS.PIECEWISE_LINE]: 'Piecewise Line',
   [CONSTANT.TOOLS.PIECEWISE_POINT]: 'Piecewise Point',
   [CONSTANT.TOOLS.NO_SOLUTION]: 'No Solution',

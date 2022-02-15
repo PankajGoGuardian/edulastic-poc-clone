@@ -34,7 +34,7 @@ const GRAPH_TOOLS = {
   AREA: 'area',
   AREA2: 'area2',
   DASHED: 'dashed',
-  PIECEWISE: 'piecewise',
+  PIECEWISE_PARABOLA: 'piecewise_parabola',
   PIECEWISE_LINE: 'piecewise_line',
   PIECEWISE_POINT: 'piecewise_point',
   NO_SOLUTION: 'no_solution',

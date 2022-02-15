@@ -199,6 +199,7 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.EXPONENTIAL2:
     case CONSTANT.TOOLS.PIECEWISE_LINE:
     case CONSTANT.TOOLS.PARABOLA:
+    case CONSTANT.TOOLS.PIECEWISE_PARABOLA:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -492,6 +493,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.PARABOLA2 &&
       type !== CONSTANT.TOOLS.EXPONENTIAL2 &&
       type !== CONSTANT.TOOLS.PIECEWISE_LINE &&
+      type !== CONSTANT.TOOLS.PIECEWISE_PARABOLA &&
       type !== CONSTANT.TOOLS.PARABOLA
     ) {
       acc[id].subElementsIds = {
@@ -568,7 +570,8 @@ export function flat2nestedConfig(config) {
               if (
                 !element.subElementsIds &&
                 (type === CONSTANT.TOOLS.POLYGON ||
-                  type === CONSTANT.TOOLS.PIECEWISE_LINE)
+                  type === CONSTANT.TOOLS.PIECEWISE_LINE ||
+                  type === CONSTANT.TOOLS.PIECEWISE_PARABOLA)
               ) {
                 element.subElementsIds = {}
               }

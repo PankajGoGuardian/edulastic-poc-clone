@@ -1,16 +1,16 @@
 import Jsx from 'jsxgraph'
 import { CONSTANT } from '../config'
 import { getAllObjectsUnderMouse } from '../utils'
-import { PiecewiseLine, Parabola } from '.'
+import { PiecewiseLine, PiecewiseParabola } from '.'
 
-const TYPES = [PiecewiseLine.jxgType, Parabola.jxgType]
+const TYPES = [PiecewiseLine.jxgType, PiecewiseParabola.jxgType]
 
 function getCreatePoint(type) {
   switch (type) {
     case PiecewiseLine.jxgType:
       return PiecewiseLine.createPiecewisePoint
-    case Parabola.jxgType:
-      return Parabola.createPiecewisePoint
+    case PiecewiseParabola.jxgType:
+      return PiecewiseParabola.createPiecewisePoint
     default:
       return () => null
   }

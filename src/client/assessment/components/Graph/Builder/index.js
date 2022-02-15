@@ -41,6 +41,7 @@ import {
   Grid,
   Rose,
   Cardioid,
+  PiecewiseParabola,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -306,6 +307,9 @@ class Board {
       case CONSTANT.TOOLS.LINE_CUT:
         this.creatingHandler = LineCut.onHandler()
         return
+      case CONSTANT.TOOLS.PIECEWISE_PARABOLA:
+        this.creatingHandler = PiecewiseParabola.onHandler()
+        return
       case CONSTANT.TOOLS.SEGMENTS_POINT:
         this.creatingHandler = NumberlinePoint.onHandler
         return
@@ -383,6 +387,8 @@ class Board {
         return Secant.clean(this)
       case CONSTANT.TOOLS.PIECEWISE_LINE:
         return PiecewiseLine.clean(this)
+      case CONSTANT.TOOLS.PIECEWISE_PARABOLA:
+        return PiecewiseParabola.clean(this)
       default:
         return false
     }
@@ -406,6 +412,7 @@ class Board {
       ...Tangent.getTempPoints(),
       ...Secant.getTempPoints(),
       ...PiecewiseLine.getTempPoints(),
+      ...PiecewiseParabola.getTempPoints(),
     ]
   }
 
@@ -944,6 +951,8 @@ class Board {
             return Rose.getConfig(e)
           case Cardioid.jxgType:
             return Cardioid.getConfig(e)
+          case PiecewiseParabola.jxgType:
+            return PiecewiseParabola.getConfig(e)
           default:
             throw new Error('Unknown element type:', e.name, e.type)
         }
@@ -1889,6 +1898,10 @@ class Board {
       case PiecewiseLine.jxgType:
         this.labelForEq.push(object.points[0].label, object.points[1].label)
         return PiecewiseLine.create(this, object)
+
+      case PiecewiseParabola.jxgType:
+        this.labelForEq.push(object.points[0].label, object.points[1].label)
+        return PiecewiseParabola.create(this, object)
 
       case NumberLineDotPlotPoint.jxgType: {
         return NumberLineDotPlotPoint.render(this, object, {

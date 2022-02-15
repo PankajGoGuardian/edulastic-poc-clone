@@ -14,8 +14,9 @@ import {
   Exponent2,
   Cardioid,
   Rose,
+  PiecewiseParabola,
+  PiecewiseLine,
 } from '.'
-import PiecewiseLine from './PiecewiseLine'
 import { CONSTANT } from '../config'
 import { getAllObjectsUnderMouse } from '../utils'
 
@@ -36,6 +37,7 @@ const availableTypes = [
   PiecewiseLine.jxgType,
   Cardioid.jxgType,
   Rose.jxgType,
+  PiecewiseParabola.jxgType,
 ]
 
 function onHandler() {

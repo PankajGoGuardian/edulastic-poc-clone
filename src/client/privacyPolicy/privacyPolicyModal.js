@@ -54,7 +54,10 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
       <EduButton
         disabled={!isChecked}
         onClick={onAccept}
-        style={{ marginLeft: '15px' }}
+        ml="15px"
+        fontSize="17px"
+        height="40px"
+        width="150px"
       >
         ACCEPT
       </EduButton>
@@ -72,7 +75,7 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
       <ModalTextBody>
         <PrivacyPolicyText />
         <ProductPrivacyPolicy />
-        {isEEAUser && <PrivacyPolicyEEA />}
+        {!isEEAUser && <PrivacyPolicyEEA />}
         <CheckboxWrapper>
           <CheckboxLabel onChange={onCheck}>
             By checking the box and clicking “Accept”, I agree to the Terms of
@@ -112,6 +115,9 @@ const StyledPrivacyPolicyModal = styled(CustomModalStyled)`
     align-items: center;
     border: none;
     padding-bottom: 10px;
+    p {
+      font-weight: 600;
+    }
   }
 `
 
@@ -125,7 +131,7 @@ const ModalTitle = styled.h6`
 const ModalHeaderSubcontent = styled.p`
   width: 100%;
   color: ${greyThemeDark1};
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.5;
   font-weight: normal;
 `
@@ -151,8 +157,14 @@ const ModalTextBody = styled.div`
   }
 `
 const CheckboxWrapper = styled.div`
-  padding: 0px 10px;
+  padding: 5px 10px;
   background: ${lightGrey8};
+  .ant-checkbox-wrapper {
+    font-weight: bold;
+    .ant-checkbox .ant-checkbox-inner {
+      border-color: #000000;
+    }
+  }
 `
 
 export default PrivacyPolicyModal

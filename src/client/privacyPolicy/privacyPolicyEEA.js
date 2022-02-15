@@ -10,6 +10,9 @@ import {
 const PrivacyEEA = () => {
   return (
     <BodyContentWrapper>
+      <StyledHeader fs="16px">
+        <strong>Edulastic Data Processing Addendum</strong>
+      </StyledHeader>
       <StyledHeader>Introduction</StyledHeader>
       <StyledParagraph>
         This Data Processing Addendum (the ”DPA” or ”Addendum”) forms part of

@@ -12,9 +12,10 @@ const PrivacyPolicyText = () => {
   return (
     <BodyContentWrapper>
       <div>
-        <StyledHeader>
-          <strong>Introduction</strong>
+        <StyledHeader fs="16px">
+          <strong>End User License Agreement</strong>
         </StyledHeader>
+        <StyledHeader>Introduction</StyledHeader>
         <StyledParagraph>
           Welcome! Before using any of our Offerings, please take the time to
           review this combined Terms of Service and End User License Agreement

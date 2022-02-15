@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import { darkGrey2 } from '@edulastic/colors'
 
 export const StyledHeader = styled.h3`
+  font-size: ${(props) => props.fs || '14px'};
   color: ${darkGrey2};
 `
 export const StyledParagraph = styled.p`
@@ -13,7 +14,7 @@ export const StyledParagraph = styled.p`
 `
 
 export const BodyContentWrapper = styled.div`
-  padding: 5px 10px;
+  padding: 10px;
   color: ${darkGrey2};
 `
 

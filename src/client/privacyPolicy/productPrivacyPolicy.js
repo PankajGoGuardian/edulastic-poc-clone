@@ -12,6 +12,9 @@ const ProductPrivacyPolicy = () => {
     <BodyContentWrapper>
       <div>
         <div>
+          <StyledHeader fs="16px">
+            <strong>Product Privacy Policy</strong>
+          </StyledHeader>
           <StyledHeader2>Table of Contents</StyledHeader2>
           <StyledList>
             <li>

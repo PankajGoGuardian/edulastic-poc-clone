@@ -342,6 +342,13 @@ const getDemoPlaygroundUser = () =>
     })
     .then((result) => result.data)
 
+const updateUserDetails = (data) =>
+  api.callApi({
+    url: `${prefix}/`,
+    method: 'put',
+    data,
+  })
+
 export default {
   getUser,
   fetchUsers,
@@ -380,4 +387,5 @@ export default {
   logout,
   getDemoPlaygroundUser,
   updateCollectionVisited,
+  updateUserDetails,
 }

@@ -62,7 +62,6 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
   )
   return (
     <StyledPrivacyPolicyModal
-      disabled={!isChecked}
       visible={showModal}
       closable={false}
       footer={footer}

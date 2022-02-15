@@ -5,16 +5,17 @@ import {
   StyledList,
   StyledHeader2,
   BodyContentWrapper,
+  StickyHeader,
 } from './Styled'
 
 const ProductPrivacyPolicy = () => {
   return (
     <BodyContentWrapper>
+      <StickyHeader fs="16px">
+        <strong>Product Privacy Policy</strong>
+      </StickyHeader>
       <div>
         <div>
-          <StyledHeader fs="16px">
-            <strong>Product Privacy Policy</strong>
-          </StyledHeader>
           <StyledHeader2>Table of Contents</StyledHeader2>
           <StyledList>
             <li>

@@ -6,15 +6,16 @@ import {
   StyledList,
   StyledHeader2,
   StyledHeader3,
+  StickyHeader,
 } from './Styled'
 
 const PrivacyPolicyText = () => {
   return (
     <BodyContentWrapper>
+      <StickyHeader fs="16px">
+        <strong>End User License Agreement</strong>
+      </StickyHeader>
       <div>
-        <StyledHeader fs="16px">
-          <strong>End User License Agreement</strong>
-        </StyledHeader>
         <StyledHeader>Introduction</StyledHeader>
         <StyledParagraph>
           Welcome! Before using any of our Offerings, please take the time to

@@ -5,14 +5,15 @@ import {
   BodyContentWrapper,
   StyledList,
   StyledHeader2,
+  StickyHeader,
 } from './Styled'
 
 const PrivacyEEA = () => {
   return (
     <BodyContentWrapper>
-      <StyledHeader fs="16px">
+      <StickyHeader fs="16px">
         <strong>Edulastic Data Processing Addendum</strong>
-      </StyledHeader>
+      </StickyHeader>
       <StyledHeader>Introduction</StyledHeader>
       <StyledParagraph>
         This Data Processing Addendum (the ”DPA” or ”Addendum”) forms part of

@@ -655,9 +655,7 @@ class App extends Component {
     const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
 
     const showPrivacyPolicyModal =
-      !process.env.REACT_APP_QA_ENV &&
-      userRole !== roleuser.STUDENT &&
-      userInfo?.isPolicyAccepted === false
+      userRole !== roleuser.STUDENT && userInfo?.isPolicyAccepted === false
     return (
       <div>
         {(isSAWithoutSchools ||
@@ -699,14 +697,14 @@ class App extends Component {
         <StudentSessionExpiredModal />
         <UserTokenExpiredModal />
         <AppUpdate visible={showAppUpdate} />
-        {showPrivacyPolicyModal && (
+        {/* {showPrivacyPolicyModal && ( */}
           <PrivacyPolicyModal
             userID={userInfo._id}
             userRole={userRole}
             roleuser={roleuser}
             isEEAUser={isEEAUser}
           />
-        )}
+        {/* )} */}
         <OfflineNotifier />
         {tutorial && (
           <Joyride continuous showProgress showSkipButton steps={tutorial} />

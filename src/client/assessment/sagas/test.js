@@ -277,6 +277,7 @@ function* loadTest({ payload }) {
     summary = false,
     isStudentReport = false,
     regrade = false,
+    languagePreference = '',
   } = payload
   let { testId } = payload
   const _testId = testId
@@ -783,7 +784,8 @@ function* loadTest({ payload }) {
         settings,
         answerCheckByItemId,
         showMagnifier: settings.showMagnifier || test.showMagnifier,
-        languagePreference: testActivity.testActivity?.languagePreference,
+        languagePreference:
+          testActivity.testActivity?.languagePreference || languagePreference,
         grades: test.grades,
         subjects: test.subjects,
       },

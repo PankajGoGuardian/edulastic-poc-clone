@@ -6,6 +6,7 @@ import { connect } from 'react-redux'
 import { Switch, Route, withRouter } from 'react-router-dom'
 import { WithResources } from '@edulastic/common/src/HOC/withResources'
 import { notification } from '@edulastic/common'
+import { get } from 'lodash'
 import AppConfig from '../../app-config'
 
 // themes
@@ -56,6 +57,7 @@ const AssessmentPlayer = ({
   testType,
   isModalVisible,
   isShowStudentWork,
+  languagePreference,
   ...restProps
 }) => {
   testId = preview ? testId : match.params.id
@@ -75,6 +77,7 @@ const AssessmentPlayer = ({
       isShowStudentWork,
       playlistId,
       currentAssignmentId,
+      languagePreference,
     })
   }, [testId])
 
@@ -280,6 +283,7 @@ const enhance = compose(
       title: state.test.title,
       testType: state.test.testType,
       zoomLevel: state.ui.zoomLevel,
+      languagePreference: get(state, 'test.languagePreference', ''),
     }),
     {
       loadTest: loadTestAction,

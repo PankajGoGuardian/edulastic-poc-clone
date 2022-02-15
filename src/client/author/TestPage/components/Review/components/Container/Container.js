@@ -1,5 +1,5 @@
 import React, { PureComponent } from 'react'
-import { Row, Col } from 'antd'
+import { Row, Col, Modal, Select } from 'antd'
 import PropTypes from 'prop-types'
 import {
   cloneDeep,
@@ -23,7 +23,11 @@ import {
   withWindowSizes,
   notification,
   MainContentWrapper,
+  FlexContainer,
 } from '@edulastic/common'
+import { themeColor } from '@edulastic/colors'
+import { IconSelectCaretDown } from '@edulastic/icons'
+
 import { test as testConstants, roleuser } from '@edulastic/constants'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
@@ -70,8 +74,16 @@ import ReviewItems from '../ReviewItems'
 import { resetItemScoreAction } from '../../../../../src/ItemScore/ducks'
 import { groupTestItemsByPassageId } from '../helper'
 import { getIsPreviewModalVisibleSelector } from '../../../../../../assessment/selectors/test'
-import { setIsTestPreviewVisibleAction } from '../../../../../../assessment/actions/test'
+import {
+  setIsTestPreviewVisibleAction,
+  setPreviewLanguageAction,
+} from '../../../../../../assessment/actions/test'
+import { Tooltip } from '../../../../../../common/utils/helpers'
 
+const { Option } = Select
+const { languageCodes } = testConstants
+
+let preferredLanguage = ''
 class Review extends PureComponent {
   secondHeaderRef = React.createRef()
 
@@ -89,6 +101,7 @@ class Review extends PureComponent {
       currentTestId: '',
       hasStickyHeader: false,
       indexForPreview: 0,
+      showLangSelectionModal: false,
     }
   }
 
@@ -506,8 +519,16 @@ class Review extends PureComponent {
     clearEvaluation()
   }
 
+  showOptionForLangSelection = (showModal) => {
+    this.setState({ showLangSelectionModal: showModal })
+  }
+
   showTestPreviewModal = () => {
     const { test, setIsTestPreviewVisible } = this.props
+    if (test.multiLanguageEnabled) {
+      this.showOptionForLangSelection(true)
+      return
+    }
     setIsTestPreviewVisible(true)
     this.setState({ currentTestId: test._id })
   }
@@ -529,6 +550,82 @@ class Review extends PureComponent {
   closeTestPreviewModal = () => {
     const { setIsTestPreviewVisible } = this.props
     setIsTestPreviewVisible(false)
+  }
+
+  setPreviewLanguage = (language) => {
+    const { setIsTestPreviewVisible, setPreviewLanguage, test } = this.props
+    setPreviewLanguage(language)
+    setIsTestPreviewVisible(true)
+    this.setState((prevState) => ({ ...prevState, currentTestId: test._id }))
+  }
+
+  onChangePreviewLanguage = (val) => {
+    preferredLanguage = val
+  }
+
+  PreferredLanguageModal = () => {
+    const { test } = this.props
+    const modalContent = (
+      <FlexContainer flexDirection="column">
+        <>
+          <p>
+            This test is offered in multiple languages. Please select your
+            preferred language. You can change the preferred language anytime
+            during the attempt
+          </p>
+          <p style={{ marginTop: '10px' }}>PREFERRED LANGUAGE</p>
+          <p data-cy="selectLang">
+            <Select
+              getPopupContainer={(e) => e.parentElement}
+              defaultValue=""
+              style={{ width: 200 }}
+              onChange={(val) => this.onChangePreviewLanguage(val)}
+              suffixIcon={<IconSelectCaretDown color={themeColor} />}
+            >
+              <Option value="" disabled>
+                Select Language
+              </Option>
+              <Option value={languageCodes.ENGLISH}>English</Option>
+              <Option value={languageCodes.SPANISH}>Spanish</Option>
+            </Select>
+          </p>
+        </>
+      </FlexContainer>
+    )
+
+    Modal.confirm({
+      title: (
+        <Tooltip title={test?.title}>
+          <div
+            style={{
+              maxWidth: '80%',
+              textOverflow: 'ellipsis',
+              overflow: 'hidden',
+              whiteSpace: 'nowrap',
+            }}
+          >
+            {test?.title}
+          </div>
+        </Tooltip>
+      ),
+      content: modalContent,
+      onOk: () => {
+        this.setPreviewLanguage(preferredLanguage)
+        this.onChangePreviewLanguage('')
+        this.showOptionForLangSelection(false)
+      },
+      onCancel: () => {
+        this.setPreviewLanguage('')
+        this.onChangePreviewLanguage('')
+        this.showOptionForLangSelection(false)
+      },
+      okText: 'YES, CONTINUE',
+      cancelText: 'NO, CANCEL',
+      className: 'ant-modal-confirm-custom-styled',
+      centered: true,
+      icon: '',
+    })
+    return null
   }
 
   render() {
@@ -567,8 +664,8 @@ class Review extends PureComponent {
       item,
       currentTestId,
       hasStickyHeader,
+      showLangSelectionModal,
     } = this.state
-
     // when redirected from other pages, sometimes, test will only be having
     // ids in its testitems, which could create issues.
     if (
@@ -716,6 +813,7 @@ class Review extends PureComponent {
             </ReviewSummaryWrapper>
           )}
         </ReviewContentWrapper>
+        {showLangSelectionModal && this.PreferredLanguageModal()}
         {isModalVisible && (
           <PreviewModal
             testId={test?._id || get(this.props, 'match.params.id', false)}
@@ -818,6 +916,7 @@ const enhance = compose(
       addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
       resetItemScore: resetItemScoreAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      setPreviewLanguage: setPreviewLanguageAction,
     }
   )
 )

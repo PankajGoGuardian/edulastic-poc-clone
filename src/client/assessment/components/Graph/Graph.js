@@ -430,7 +430,7 @@ class Graph extends Component {
       ...restProps
     } = this.props
 
-    const { symbols = defaultSymbols } = item
+    const { symbols = defaultSymbols, numberlineAxis = {} } = item
 
     const mapFontName = {
       extra_large: 'xlarge',
@@ -581,9 +581,11 @@ class Graph extends Component {
                   <StyledStimulus
                     data-cy="questionHeader"
                     dangerouslySetInnerHTML={{ __html: stimulus }}
-                    fontSize={getFontSize(
-                      mapFontName[uiStyle?.currentFontSize]
-                    )}
+                    fontSize={
+                      item.graphType === 'numberLinePlot'
+                        ? `${numberlineAxis?.fontSize || 12}px`
+                        : getFontSize(mapFontName[uiStyle?.currentFontSize])
+                    }
                   />
                 </QuestionTitleWrapper>
                 {item.canvas && item.uiStyle && (

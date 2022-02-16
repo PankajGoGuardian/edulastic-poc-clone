@@ -103,11 +103,11 @@ const DisplayOptions = ({
             data-cy="fontSize"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={handleChangeFontSize}
-            value={getFontSizeItem().label}
+            value={t(`component.options.${getFontSizeItem().label}`)}
           >
             {fontSizeList.map((option) => (
               <Select.Option data-cy={option.id} key={option.value}>
-                {option.label}
+                {t(`component.options.${option.label}`)}
               </Select.Option>
             ))}
           </SelectInputStyled>

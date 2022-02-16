@@ -79,6 +79,7 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
         height="calc(100vh - 50px)"
         maskStyle={{
           background: 'rgba(0,0,0,0.8)',
+          zIndex: '300000',
         }}
       >
         <ModalTextBody>

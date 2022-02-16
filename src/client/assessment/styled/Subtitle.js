@@ -75,7 +75,9 @@ export const Subtitle = ({
     justifyContent="flex-start"
     alignItems="baseline"
   >
-    <SubtitleText styles={textStyles}>{children}</SubtitleText>
+    <SubtitleText styles={textStyles} data-cy="heading">
+      {children}
+    </SubtitleText>
     {showIcon && <QuestionIcon id={id} />}
   </WidgetTitle>
 )

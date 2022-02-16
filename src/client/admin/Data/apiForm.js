@@ -1007,4 +1007,36 @@ export const apiForms = [
       },
     ],
   },
+  {
+    id: 're-evaluation',
+    name: 'Re-Evaluate by Assignment Id',
+    endPoint: 'admin-tool/reevaluate',
+    method: 'post',
+    fields: [
+      {
+        key: 'assignmentId',
+        name: 'assignmentId',
+        placeholder: 'Enter Assignment Id',
+        type: 'string',
+        displayName: 'Assignment Id',
+        required: true,
+      },
+      {
+        key: 'districtId',
+        name: 'districtId',
+        placeholder: 'Enter District Id',
+        type: 'string',
+        displayName: 'District Id',
+        required: true,
+      },
+      {
+        key: 'testItemId',
+        name: 'testItemId',
+        placeholder: 'Enter Test Item Id',
+        type: 'string',
+        displayName: 'Test Item Id',
+        required: true,
+      },
+    ],
+  },
 ]

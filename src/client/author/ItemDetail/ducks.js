@@ -195,6 +195,7 @@ export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
 const SET_PASSAGE_UPDATE_IN_PROGRESS =
   '[itemDetail] set passage update in progress'
 const SET_TEST_ITEMS_SAVING = '[itemDetail] set test item saving in progress'
+export const SET_TTS_LANGUAGE = '[itemDetail] set language for tts'
 
 // actions
 
@@ -399,6 +400,7 @@ const addItemToCartAction = (item) => ({
 })
 
 export const itemUpdateCompletedAction = createAction(UPDATE_COMPLETED)
+export const setTTSLanguageAction = createAction(SET_TTS_LANGUAGE)
 
 // selectors
 
@@ -427,6 +429,11 @@ export const getItemDetailSelector = createSelector(stateSelector, (state) => {
 export const getItemSelector = createSelector(
   stateSelector,
   (state) => state.item
+)
+
+export const getItemLangSelector = createSelector(
+  stateSelector,
+  (state) => state.item.language
 )
 
 export const getCollectionsSelector = createSelector(
@@ -1092,6 +1099,14 @@ export function reducer(state = initialState, { type, payload }) {
         testItemSavingInProgress: payload,
       }
     }
+    case SET_TTS_LANGUAGE:
+      return {
+        ...state,
+        item: {
+          ...state.item,
+          language: payload,
+        },
+      }
     default:
       return state
   }

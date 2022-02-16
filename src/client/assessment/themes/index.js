@@ -585,6 +585,7 @@ const AssessmentContainer = ({
       Object.values(questionsById).forEach((question) => {
         if (
           Array.isArray(question.symbols) &&
+          !isEmpty(testKeypad) &&
           testKeypad !== 'item-level-keypad'
         ) {
           question.symbols[0] = testKeypad

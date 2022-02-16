@@ -55,7 +55,7 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
       <ModalHeaderSubcontent>
         Welcome to <b>Edulastic!</b> We are so excited to start helping you
         protect your students. But before we proceed, please read our entire End
-        user License Agreement to make sure that we’re on the same page.”
+        user License Agreement to make sure that we’re on the same page.
       </ModalHeaderSubcontent>
     </>
   )
@@ -63,7 +63,6 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
   const footer = (
     <>
       <p>Scroll to the bottom of the page and tick the checkbox to accept</p>
-
       <EduButton
         disabled={!isChecked || showSpinner}
         onClick={onAccept}

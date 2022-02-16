@@ -8,7 +8,7 @@ import {
   StickyHeader,
 } from './Styled'
 
-const ProductPrivacyPolicy = () => {
+const ProductPolicyContent = () => {
   return (
     <BodyContentWrapper>
       <StickyHeader fs="16px">
@@ -1388,4 +1388,4 @@ const ProductPrivacyPolicy = () => {
   )
 }
 
-export default ProductPrivacyPolicy
+export default ProductPolicyContent

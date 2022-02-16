@@ -8,7 +8,7 @@ import {
   StickyHeader,
 } from './Styled'
 
-const PrivacyEEA = () => {
+const EeaPolicyContent = () => {
   return (
     <BodyContentWrapper>
       <StickyHeader fs="16px">
@@ -732,4 +732,4 @@ const PrivacyEEA = () => {
   )
 }
 
-export default PrivacyEEA
+export default EeaPolicyContent

@@ -9,7 +9,7 @@ import {
   StickyHeader,
 } from './Styled'
 
-const PrivacyPolicyText = () => {
+const EulaPolicyContent = () => {
   return (
     <BodyContentWrapper>
       <StickyHeader fs="16px">
@@ -20,8 +20,12 @@ const PrivacyPolicyText = () => {
         <StyledParagraph>
           Welcome! Before using any of our Offerings, please take the time to
           review this combined Terms of Service and End User License Agreement
-          (EULA), together with any applicable Order Form(s), the
-          <a target="_blank" rel="noopener noreferrer" href="/privacy-policy/">
+          (EULA), together with any applicable Order Form(s), the{' '}
+          <a
+            target="_blank"
+            rel="noopener noreferrer"
+            href="https://edulastic.com/privacy-policy/"
+          >
             Product Privacy Policy
           </a>
           , and, if applicable, the Data Processing Addendum (collectively, the
@@ -1872,4 +1876,4 @@ const PrivacyPolicyText = () => {
   )
 }
 
-export default PrivacyPolicyText
+export default EulaPolicyContent

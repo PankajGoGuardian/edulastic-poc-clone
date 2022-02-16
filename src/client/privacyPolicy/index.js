@@ -7,15 +7,17 @@ import {
   EduButton,
   notification,
   OnWhiteBgLogo,
+  SpinLoader,
 } from '@edulastic/common'
 import { userApi } from '@edulastic/api'
 import { darkGrey2, lightGrey8, greyThemeDark1 } from '@edulastic/colors'
 
-import PrivacyPolicyText from './privacyPolicyEULA'
-import ProductPrivacyPolicy from './productPrivacyPolicy'
-import PrivacyPolicyEEA from './privacyPolicyEEA'
+import EulaPolicyContent from './eulaPolicyContent'
+import ProductPolicyContent from './productPolicyContent'
+import EeaPolicyContent from './eeaPolicyContent'
 
 const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
+  const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
 
@@ -28,12 +30,18 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
       userId: userID,
       isPolicyAccepted: isChecked,
     }
-    userApi.updateUserDetails(payload).catch((e) => {
-      notification({
-        msg: e?.response?.data?.message,
+    setShowSpinner(true)
+    userApi
+      .updateUserDetails(payload)
+      .then(() => {
+        setShowModal(false)
       })
-    })
-    setShowModal(false)
+      .catch((e) => {
+        setShowSpinner(false)
+        notification({
+          msg: e?.response?.data?.message,
+        })
+      })
   }
 
   const headerContent = (
@@ -45,18 +53,19 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
         End User License Agreement and Product Privacy Policy
       </ModalTitle>
       <ModalHeaderSubcontent>
-        Welcome to Edulastic! We are so excited to start helping you protect
-        your students. But before we proceed, please read our entire End user
-        License Agreement to make sure that we’re on the same page.”
+        Welcome to <b>Edulastic!</b> We are so excited to start helping you
+        protect your students. But before we proceed, please read our entire End
+        user License Agreement to make sure that we’re on the same page.”
       </ModalHeaderSubcontent>
     </>
   )
 
   const footer = (
     <>
-      <p> scroll to the bottom of page to accept</p>
+      <p>Scroll to the bottom of the page and tick the checkbox to accept</p>
+
       <EduButton
-        disabled={!isChecked}
+        disabled={!isChecked || showSpinner}
         onClick={onAccept}
         ml="15px"
         fontSize="17px"
@@ -82,10 +91,11 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
           zIndex: '300000',
         }}
       >
+        {showSpinner && <SpinLoader />}
         <ModalTextBody>
-          <PrivacyPolicyText />
-          <ProductPrivacyPolicy />
-          {isEEAUser && <PrivacyPolicyEEA />}
+          <EulaPolicyContent />
+          <ProductPolicyContent />
+          {isEEAUser && <EeaPolicyContent />}
           <CheckboxWrapper>
             <CheckboxLabel onChange={onCheck}>
               By checking the box and clicking “Accept”, I agree to the Terms of
@@ -100,9 +110,9 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
 }
 
 const EdulasticLogo = styled.div`
-  padding: 10px;
   display: flex;
   justify-content: center;
+  padding: 10px;
 `
 
 const StyledPrivacyPolicyModal = styled(CustomModalStyled)`
@@ -123,10 +133,10 @@ const StyledPrivacyPolicyModal = styled(CustomModalStyled)`
     padding: 10px 24px;
   }
   .ant-modal-footer {
-    background-color: white;
     display: flex;
     justify-content: end !important;
     align-items: center;
+    background-color: white;
     border: none;
     padding-bottom: 10px;
     p {

@@ -65,7 +65,7 @@ import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 
-import PrivacyPolicyModal from './privacyPolicy/privacyPolicyModal'
+import PrivacyPolicyModal from './privacyPolicy'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting

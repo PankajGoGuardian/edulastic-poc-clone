@@ -46,7 +46,6 @@ const Option = (props) => {
     multipleResponses,
     isReviewTab,
     testItem,
-    maxWidth,
     setCrossAction,
     qId,
     crossAction,
@@ -268,7 +267,6 @@ const Option = (props) => {
     // TODO setup label background color for each option
     <LableComp
       data-cy="quillSortableItem"
-      maxWidth={maxWidth}
       smallSize={smallSize}
       className={className}
       showAnswer={showAnswer}
@@ -400,7 +398,6 @@ Option.propTypes = {
   checkAnswer: PropTypes.bool.isRequired,
   validation: PropTypes.any.isRequired,
   uiStyle: PropTypes.object.isRequired,
-  maxWidth: PropTypes.string.isRequired,
   correct: PropTypes.any.isRequired,
   qId: PropTypes.string.isRequired,
   styleType: PropTypes.string,

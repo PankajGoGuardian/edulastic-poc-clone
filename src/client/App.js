@@ -66,6 +66,7 @@ import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 
 import PrivacyPolicyModal from './privacyPolicy'
+import { eeaCountryCodeList } from './privacyPolicy/eeaCountryCodes'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -618,39 +619,6 @@ class App extends Component {
     const bannerButtonText = isDemoAccountProxy
       ? 'Close demo account'
       : 'Stop Acting as User'
-
-    const eeaCountryCodeList = [
-      'BE',
-      'ES',
-      'HU',
-      'SK',
-      'BG',
-      'FR',
-      'MT',
-      'FI',
-      'CZ',
-      'HR',
-      'NL',
-      'SE',
-      'DK',
-      'IT',
-      'AT',
-      'DE',
-      'CY',
-      'PL',
-      'IS',
-      'EE',
-      'LV',
-      'PT',
-      'LI',
-      'IE',
-      'LT',
-      'RO',
-      'NO',
-      'EL',
-      'LU',
-      'SI',
-    ]
 
     const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
 

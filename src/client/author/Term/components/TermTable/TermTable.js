@@ -22,12 +22,12 @@ import {
   DeleteTermModalFooterDiv,
   StyledButton,
   StyledDeleteButton,
+  StyledPagination,
   StyledTermTable,
 } from './styled'
 import {
   LeftFilterDiv,
   MainContainer,
-  StyledPagination,
   TableContainer,
 } from '../../../../common/styled'
 import {

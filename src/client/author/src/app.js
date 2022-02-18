@@ -6,7 +6,7 @@ import PropTypes from 'prop-types'
 import styled, { ThemeProvider } from 'styled-components'
 import { Layout, Spin } from 'antd'
 import { connect } from 'react-redux'
-import { Progress, ErrorHandler, toggleChatDisplay } from '@edulastic/common'
+import { Progress, ErrorHandler } from '@edulastic/common'
 import { tabletWidth, mainBgColor } from '@edulastic/colors'
 import { roleuser } from '@edulastic/constants'
 import { getFromLocalStorage } from '@edulastic/api/src/utils/Storage'
@@ -273,9 +273,9 @@ const Author = ({
   }, [orgId, schoolId])
 
   useEffect(() => {
-    // Hiding chat widget for cli user
-    if (isCliUser) {
-      toggleChatDisplay('hide')
+    const intercomElm = document.querySelector('.intercom-lightweight-app')
+    if (intercomElm) {
+      intercomElm.style.display = isCliUser ? 'none' : 'block'
     }
   }, [isCliUser])
 

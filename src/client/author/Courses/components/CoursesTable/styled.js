@@ -54,6 +54,11 @@ export const StyledActiveCheckbox = styled(Checkbox)`
   margin-left: auto;
 `
 
+export const StyledPagination = styled(Pagination)`
+  align-self: flex-end;
+  margin-top: 15px;
+`
+
 export const StyledHeaderColumn = styled.div`
   display: flex;
   align-items: center;

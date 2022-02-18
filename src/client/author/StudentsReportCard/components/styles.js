@@ -31,8 +31,7 @@ export const StyledPage = styled.div`
     .hide-without-print {
       display: flex !important;
     }
-    .embeddedServiceSidebar,
-    .embeddedServiceHelpButton {
+    .intercom-app {
       display: none !important;
     }
   }

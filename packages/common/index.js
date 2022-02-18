@@ -119,7 +119,7 @@ export {
   getImageUrl,
   getSelectionRect,
   getFormattedAttrId,
-  toggleChatDisplay,
+  toggleIntercomDisplay,
   sanitizeString,
   getSanitizedProps,
   isSEB,

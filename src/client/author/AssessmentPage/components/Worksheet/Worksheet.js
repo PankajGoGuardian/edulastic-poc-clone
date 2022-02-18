@@ -11,7 +11,7 @@ import {
   withWindowSizes,
   notification,
   helpers,
-  toggleChatDisplay,
+  toggleIntercomDisplay,
 } from '@edulastic/common'
 import { white, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -118,7 +118,7 @@ class WorksheetComponent extends React.Component {
       isImageBlockNotification,
       toggleImageBlockNotification,
     } = this.props
-    toggleChatDisplay('hide')
+    toggleIntercomDisplay()
     const fromFreeFormNotes = {}
     if (itemDetail?._id) {
       for (const key in freeFormNotes) {
@@ -149,10 +149,6 @@ class WorksheetComponent extends React.Component {
         toggleImageBlockNotification(true)
       }
     })
-  }
-
-  componentWillUnmount() {
-    toggleChatDisplay('show')
   }
 
   handleHighlightQuestion = (questionId, pdfPreview = false) => {
@@ -785,6 +781,7 @@ class WorksheetComponent extends React.Component {
               currentAnnotationTool={currentAnnotationTool}
               setCurrentAnnotationTool={setCurrentAnnotationTool}
               annotationToolsProperties={annotationToolsProperties}
+              toggleIntercomDisplay={toggleIntercomDisplay}
               itemId={itemDetail?._id || testItemId}
             />
           </PDFViewerContainer>

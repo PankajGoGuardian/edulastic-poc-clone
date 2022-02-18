@@ -1398,15 +1398,6 @@ export function* fetchUser({ payload }) {
     yield put(receiveLastPlayListAction())
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction())
-      // Not required for student and edulastic admin because we hide the chat widget
-      if (user.role !== roleuser.EDULASTIC_ADMIN && window.embedded_svc) {
-        window.embedded_svc.settings.prepopulatedPrechatFields = {
-          FirstName: user.firstName,
-          LastName: user.lastName,
-          Email: user.email,
-          Subject: 'General',
-        }
-      }
     }
     // Hiding chat widget for edulastic admin because internal user
     if (
@@ -1414,6 +1405,8 @@ export function* fetchUser({ payload }) {
       user.role === roleuser.STUDENT
     ) {
       toggleChatDisplay('hide')
+    } else {
+      appConfig.initEmbeddedServiceCloudWidget(user)
     }
     if (
       user.role == roleuser.TEACHER &&

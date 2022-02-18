@@ -61,6 +61,18 @@ const tableColumns = [
     visibleOn: ['csv'],
   },
   {
+    title: 'Class Grade',
+    dataIndex: 'grades',
+    key: 'grades',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'Ethnicity',
+    dataIndex: 'hispanicEthnicity',
+    key: 'hispanicEthnicity',
+    visibleOn: ['csv'],
+  },
+  {
     title: 'School',
     sortable: true,
     type: 'name',
@@ -271,6 +283,7 @@ const normaliseTableData = (rawData, data) => {
       school: relatedGroup.schoolName || '-',
       teacher: relatedGroup.teacherName,
       groupName: relatedGroup.groupName,
+      grades: relatedGroup.grades,
       schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
       districtAvg: round(districtAvgPerf || 0),
       studentScore,

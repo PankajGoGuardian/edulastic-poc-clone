@@ -1409,7 +1409,10 @@ export function* fetchUser({ payload }) {
       }
     }
     // Hiding chat widget for edulastic admin because internal user
-    if (user.role === roleuser.EDULASTIC_ADMIN) {
+    if (
+      user.role === roleuser.EDULASTIC_ADMIN ||
+      user.role === roleuser.STUDENT
+    ) {
       toggleChatDisplay('hide')
     }
     if (

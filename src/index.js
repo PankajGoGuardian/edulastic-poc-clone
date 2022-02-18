@@ -71,29 +71,29 @@ smoothscroll.polyfill()
 initializeSegment()
 
 export const initEmbeddedServiceCloudWidget = () => {
-  // if (process.env.NODE_ENV !== 'production') {
-  //   return
-  // }
+  if (!AppConfig.isSegmentEnabled) {
+    return
+  }
 
   // ***************** service cloud embedded chat widget snippet
   const initESW = (gslbBaseURL) => {
-    window.embedded_svc.settings.displayHelpButton = true //Or false
-    window.embedded_svc.settings.language = '' //For example, enter 'en' or 'en-US'
+    window.embedded_svc.settings.displayHelpButton = true // Or false
+    window.embedded_svc.settings.language = '' // For example, enter 'en' or 'en-US'
 
-    window.embedded_svc.settings.defaultMinimizedText = ' ' //(Defaults to Chat with an Expert)
-    window.embedded_svc.settings.disabledMinimizedText = ' ' //(Defaults to Agent Offline)
+    window.embedded_svc.settings.defaultMinimizedText = ' ' // (Defaults to Chat with an Expert)
+    window.embedded_svc.settings.disabledMinimizedText = ' ' // (Defaults to Agent Offline)
 
-    window.embedded_svc.settings.loadingText = ' ' //(Defaults to Loading)
-    //window.embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
+    window.embedded_svc.settings.loadingText = ' ' // (Defaults to Loading)
+    // window.embedded_svc.settings.storageDomain = 'yourdomain.com'; //(Sets the domain for your deployment so that visitors can navigate subdomains during a chat session)
 
     // Settings for Chat
-    //window.embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
+    // window.embedded_svc.settings.directToButtonRouting = function(prechatFormData) {
     // Dynamically changes the button ID based on what the visitor enters in the pre-chat form.
     // Returns a valid button ID.
-    //};
-    //window.embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
-    //window.embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
-    //window.embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
+    // };
+    // window.embedded_svc.settings.prepopulatedPrechatFields = {}; //Sets the auto-population of pre-chat form fields
+    // window.embedded_svc.settings.fallbackRouting = []; //An array of button IDs, user IDs, or userId_buttonId
+    // window.embedded_svc.settings.offlineSupportMinimizedText = '...'; //(Defaults to Contact Us)
 
     window.embedded_svc.settings.enabledFeatures = ['LiveAgent']
     window.embedded_svc.settings.entryFeature = 'LiveAgent'
@@ -117,7 +117,7 @@ export const initEmbeddedServiceCloudWidget = () => {
   }
 
   if (!window.embedded_svc) {
-    var s = document.createElement('script')
+    const s = document.createElement('script')
     s.setAttribute(
       'src',
       'https://goguardian.my.salesforce.com/embeddedservice/5.0/esw.min.js'

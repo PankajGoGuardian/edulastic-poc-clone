@@ -1172,7 +1172,7 @@ const AssessmentContainer = ({
 
   useEffect(() => {
     ;[, prevAnswerValue.current] = shouldAutoSave(itemRows, answersById, itemId)
-  }, [itemRows?.length])
+  }, [JSON.stringify(itemRows)])
 
   const [autoSave, currentAnswerValue] = useMemo(
     () => shouldAutoSave(itemRows, answersById, itemId),

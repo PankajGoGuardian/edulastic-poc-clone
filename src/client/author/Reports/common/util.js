@@ -17,6 +17,10 @@ import calcMethod from './static/json/calcMethod.json'
 
 const studentFiltersDefaultValues = [
   {
+    key: 'networkIds',
+    value: '',
+  },
+  {
     key: 'schoolIds',
     value: '',
   },

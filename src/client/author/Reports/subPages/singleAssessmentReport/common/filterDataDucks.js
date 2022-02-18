@@ -12,9 +12,9 @@ import staticDropDownData from './static/staticDropDownData.json'
 
 const GET_REPORTS_SAR_FILTER_DATA_REQUEST =
   '[reports] get reports sar filter data request'
-const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS =
+export const GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS =
   '[reports] get reports sar filter data request success'
-const GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR =
+export const GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR =
   '[reports] get reports sar filter data request error'
 const RESET_REPORTS_SAR_FILTER_DATA = '[reports] reset reports sar filter data'
 const RESET_REPORTS_SAR_FILTERS = '[reports] reset reports sar filters'

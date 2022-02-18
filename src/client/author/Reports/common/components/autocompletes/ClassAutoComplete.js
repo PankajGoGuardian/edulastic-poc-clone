@@ -30,6 +30,7 @@ const ClassAutoComplete = ({
   selectedClassIds,
   dataCy,
   districtId,
+  networkIds,
 }) => {
   const classFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -47,6 +48,7 @@ const ClassAutoComplete = ({
       search: {
         name: searchTerms.text,
         type: ['class'],
+        networkIds: (networkIds || '').split(',').filter(Boolean),
       },
       queryType: 'OR',
     }
@@ -85,6 +87,7 @@ const ClassAutoComplete = ({
     grades,
     subjects,
     courseId,
+    networkIds,
   ])
 
   // handle autocomplete actions
@@ -134,7 +137,7 @@ const ClassAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [termId, schoolIds, teacherIds, grades, subjects, courseId])
+  }, [termId, schoolIds, teacherIds, grades, subjects, courseId, networkIds])
 
   // build dropdown data
   const dropdownData = (searchTerms.text ? classList : searchResult).map(

@@ -47,6 +47,9 @@ import {
   setTempTagsDataAction as setSARTempTagsDataAction,
   reportSARFilterDataReducer,
   reportSARFilterDataSaga,
+  getReportsSARFilterData,
+  GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR,
+  GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS,
 } from './subPages/singleAssessmentReport/common/filterDataDucks'
 import {
   getTempTagsDataSelector as getMARTempTagsDataSelector,
@@ -635,6 +638,19 @@ function* getTeacherTags(ids, options) {
   }
   return result
 }
+function* getNetworkTags(ids) {
+  let data = yield select(getReportsSARFilterData)
+  let networks = get(data, 'data.result.networks', [])
+  if (isEmpty(networks)) {
+    yield take([
+      GET_REPORTS_SAR_FILTER_DATA_REQUEST_SUCCESS,
+      GET_REPORTS_SAR_FILTER_DATA_REQUEST_ERROR,
+    ])
+    data = yield select(getReportsSARFilterData)
+    networks = get(data, 'data.result.networks', [])
+  }
+  return filterMapKeys(networks, ids)
+}
 function* getSchoolTags(ids, options) {
   let result = []
   if (Array.isArray(ids) && ids.length) {
@@ -658,6 +674,7 @@ function* getSchoolTags(ids, options) {
 const tagGetterMap = {
   tagIds: getTagFilters,
   testIds: getTestTags,
+  networkIds: getNetworkTags,
   schoolIds: getSchoolTags,
   teacherIds: getTeacherTags,
   courseIds: getCourseTags,

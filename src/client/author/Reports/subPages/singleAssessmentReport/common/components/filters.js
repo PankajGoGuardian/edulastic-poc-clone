@@ -286,6 +286,7 @@ const SingleAssessmentReportFilters = ({
         testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
         tagIds: search.tagIds || '',
         assessmentTypes: search.assessmentTypes || '',
+        networkIds: search.networkIds || '',
         schoolIds: search.schoolIds || '',
         teacherIds: search.teacherIds || '',
         grades: urlGrades.map((item) => item.key).join(',') || '',
@@ -298,6 +299,7 @@ const SingleAssessmentReportFilters = ({
         assignedBy: urlAssignedBy.key,
       }
       if (role === 'teacher') {
+        delete _filters.networkIds
         delete _filters.schoolIds
         delete _filters.teacherIds
       }
@@ -319,6 +321,7 @@ const SingleAssessmentReportFilters = ({
       setTempTagsData(_tempTagsData)
       setFiltersOrTestId({ filters: _filters, testId: _testId })
       fetchUpdateTagsData({
+        networkIds: reject(_filters.networkIds?.split(','), isEmpty),
         schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
         teacherIds: reject(_filters.teacherIds?.split(','), isEmpty),
         courseIds: reject([search.courseId], isEmpty),
@@ -452,6 +455,11 @@ const SingleAssessmentReportFilters = ({
       setActiveTabKey(tabKey)
     }
   }
+
+  const networkOptions = useMemo(() => {
+    const networks = get(SARFilterData, 'data.result.networks', [])
+    return networks.map((n) => ({ key: n._id, title: n.name }))
+  }, [SARFilterData])
 
   return (
     <>
@@ -617,6 +625,31 @@ const SingleAssessmentReportFilters = ({
                     </Col>
                     {role !== 'teacher' && (
                       <>
+                        {!isEmpty(networkOptions) && (
+                          <Col span={6}>
+                            <MultiSelectDropdown
+                              dataCy="networks"
+                              label="Network"
+                              onChange={(e) => {
+                                const selected = networkOptions.filter((a) =>
+                                  e.includes(a.key)
+                                )
+                                updateFilterDropdownCB(
+                                  selected,
+                                  'networkIds',
+                                  true
+                                )
+                              }}
+                              value={
+                                filters.networkIds &&
+                                filters.networkIds !== 'All'
+                                  ? filters.networkIds.split(',')
+                                  : []
+                              }
+                              options={networkOptions}
+                            />
+                          </Col>
+                        )}
                         <Col span={6}>
                           <SchoolAutoComplete
                             dataCy="schools"
@@ -628,6 +661,7 @@ const SingleAssessmentReportFilters = ({
                             selectCB={(e) =>
                               updateFilterDropdownCB(e, 'schoolIds', true)
                             }
+                            networkIds={filters.networkIds}
                           />
                         </Col>
                         <Col span={6}>
@@ -635,6 +669,7 @@ const SingleAssessmentReportFilters = ({
                             dataCy="teachers"
                             termId={filters.termId}
                             school={filters.schoolIds}
+                            networkIds={filters.networkIds}
                             testId={testId}
                             selectedTeacherIds={
                               filters.teacherIds
@@ -708,6 +743,7 @@ const SingleAssessmentReportFilters = ({
                         selectCB={(e) =>
                           updateFilterDropdownCB(e, 'classIds', true)
                         }
+                        networkIds={filters.networkIds}
                       />
                     </Col>
                     <Col span={6}>
@@ -727,6 +763,7 @@ const SingleAssessmentReportFilters = ({
                         selectCB={(e) =>
                           updateFilterDropdownCB(e, 'groupIds', true)
                         }
+                        networkIds={filters.networkIds}
                       />
                     </Col>
                   </Row>

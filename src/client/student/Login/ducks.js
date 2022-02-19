@@ -1399,15 +1399,6 @@ export function* fetchUser({ payload }) {
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction())
     }
-    // Hiding chat widget for edulastic admin because internal user
-    if (
-      user.role === roleuser.EDULASTIC_ADMIN ||
-      user.role === roleuser.STUDENT
-    ) {
-      toggleChatDisplay('hide')
-    } else {
-      appConfig.initEmbeddedServiceCloudWidget(user)
-    }
     if (
       user.role == roleuser.TEACHER &&
       user?.orgData?.districtIds?.length > 1
@@ -2426,6 +2417,20 @@ function* updatePowerTeacher({ payload }) {
   }
 }
 
+// Show or hide chat widget after receiving user
+function* initiateChatWidgetAfterUserLoadSaga({ payload }) {
+  /* eslint require-yield:0 */
+  // Hiding chat widget for edulastic admin because internal user
+  if (
+    payload.role === roleuser.EDULASTIC_ADMIN ||
+    payload.role === roleuser.STUDENT
+  ) {
+    toggleChatDisplay('hide')
+  } else {
+    appConfig.initEmbeddedServiceCloudWidget(payload)
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login)
   yield takeLatest(SIGNUP, signup)
@@ -2477,4 +2482,5 @@ export function* watcherSaga() {
     PERSIST_AUTH_STATE_AND_REDIRECT,
     persistAuthStateAndRedirectToSaga
   )
+  yield takeLatest(SET_USER, initiateChatWidgetAfterUserLoadSaga)
 }

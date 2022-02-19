@@ -1398,22 +1398,6 @@ export function* fetchUser({ payload }) {
     yield put(receiveLastPlayListAction())
     if (user.role !== roleuser.STUDENT) {
       yield put(receiveRecentPlayListsAction())
-      // Not required for student and edulastic admin because we hide the chat widget
-      if (user.role !== roleuser.EDULASTIC_ADMIN && window.embedded_svc) {
-        window.embedded_svc.settings.prepopulatedPrechatFields = {
-          FirstName: user.firstName,
-          LastName: user.lastName,
-          Email: user.email,
-          Subject: 'General',
-        }
-      }
-    }
-    // Hiding chat widget for edulastic admin because internal user
-    if (
-      user.role === roleuser.EDULASTIC_ADMIN ||
-      user.role === roleuser.STUDENT
-    ) {
-      toggleChatDisplay('hide')
     }
     if (
       user.role == roleuser.TEACHER &&
@@ -2437,6 +2421,20 @@ function* updatePowerTeacher({ payload }) {
   }
 }
 
+// Show or hide chat widget after receiving user
+function* initiateChatWidgetAfterUserLoadSaga({ payload }) {
+  /* eslint require-yield:0 */
+  // Hiding chat widget for edulastic admin because internal user
+  if (
+    payload.role === roleuser.EDULASTIC_ADMIN ||
+    payload.role === roleuser.STUDENT
+  ) {
+    toggleChatDisplay('hide')
+  } else {
+    appConfig.initEmbeddedServiceCloudWidget(payload)
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login)
   yield takeLatest(SIGNUP, signup)
@@ -2488,4 +2486,5 @@ export function* watcherSaga() {
     PERSIST_AUTH_STATE_AND_REDIRECT,
     persistAuthStateAndRedirectToSaga
   )
+  yield takeLatest(SET_USER, initiateChatWidgetAfterUserLoadSaga)
 }

@@ -1460,7 +1460,7 @@
     "description": ""
   },
   "ratingsDescLengthValidation": {
-    "message": "Rating description cannot be more than 2048 characters",
+    "message": "Rating description cannot be more than 8192 characters",
     "description": ""
   },
   "ratingPointMustBeZero": {

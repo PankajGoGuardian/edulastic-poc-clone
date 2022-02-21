@@ -36,6 +36,14 @@ const answerValidator = {
     // return hasEmpty;
     return isEmpty(answers) || hasEmpty
   },
+  [questionType.PICTOGRAPH](answers) {
+    const values = answers.map((ans) => ans.value)
+    // all drop column area can not be empty at the same time.
+    return (
+      isEmpty(values) ||
+      values.some((val) => isEmpty(_values(val).filter((x) => !isEmpty(x))))
+    )
+  },
   [questionType.MULTIPLE_CHOICE](answers) {
     // able to save giving empty value as options from UI (fixed)
     const hasEmpty = this.generalValidator(answers)

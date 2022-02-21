@@ -67,7 +67,7 @@ const tableColumns = [
     visibleOn: ['csv'],
   },
   {
-    title: 'Ethnicity',
+    title: 'Hispanic Ethnicity',
     dataIndex: 'hispanicEthnicity',
     key: 'hispanicEthnicity',
     visibleOn: ['csv'],

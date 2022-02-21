@@ -34,6 +34,7 @@ import {
   UploadButton,
   GridSettingHelpText,
 } from '../../common/styled_components'
+import { fontSizeList } from '../constants/options'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
@@ -411,7 +412,6 @@ class QuadrantsMoreOptions extends Component {
     const {
       t,
       graphData,
-      fontSizeList,
       fillSections,
       cleanSections,
       setToolbar,
@@ -433,7 +433,7 @@ class QuadrantsMoreOptions extends Component {
       drawLabelZero,
       displayPositionOnHover,
       displayPositionPoint = true,
-      currentFontSize,
+      fontSize,
       xShowAxisLabel,
       xHideTicks,
       xDrawLabel,
@@ -566,13 +566,13 @@ class QuadrantsMoreOptions extends Component {
               <SelectInputStyled
                 size="large"
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                onChange={(val) => this.handleSelect('currentFontSize', val)}
-                value={currentFontSize}
+                onChange={(val) => this.handleSelect('fontSize', val)}
+                value={fontSize}
                 data-cy="fontSize"
                 style={{ width: '100%' }}
               >
                 {fontSizeList.map((option) => (
-                  <Select.Option data-cy={option.value} key={option.value}>
+                  <Select.Option data-cy={option.id} key={option.value}>
                     {t(`component.options.${option.label}`)}
                   </Select.Option>
                 ))}
@@ -1318,7 +1318,6 @@ QuadrantsMoreOptions.propTypes = {
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
-  fontSizeList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setBgImg: PropTypes.func.isRequired,

@@ -151,18 +151,10 @@ class AxisSegmentsMoreOptions extends Component {
     }
   }
 
-  getFontSizeItem = () => {
-    const { fontSizeList, graphData } = this.props
-    const { numberlineAxis } = graphData
-    return fontSizeList.find(
-      (item) => item.value === parseInt(numberlineAxis.fontSize, 10)
-    )
-  }
-
   changeFontSize = (event) => {
-    const { setNumberline, graphData } = this.props
-    const { numberlineAxis } = graphData
-    setNumberline({ ...numberlineAxis, fontSize: event })
+    const { setOptions, graphData } = this.props
+    const { uiStyle } = graphData
+    setOptions({ ...uiStyle, fontSize: event })
   }
 
   handleSelect = (name, value) => {
@@ -359,11 +351,11 @@ class AxisSegmentsMoreOptions extends Component {
                 data-cy="fontSize"
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 onChange={this.changeFontSize}
-                value={this.getFontSizeItem().label}
+                value={uiStyle?.fontSize}
               >
                 {fontSizeList.map((option) => (
                   <Select.Option data-cy={option.id} key={option.value}>
-                    {option.label}
+                    {t(`component.options.${option.label}`)}
                   </Select.Option>
                 ))}
               </SelectInputStyled>

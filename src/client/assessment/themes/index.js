@@ -84,8 +84,8 @@ import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
 
 const { playerSkinValues } = testConstants
 
-const shouldAutoSave = (itemRows) => {
-  if (!itemRows) {
+const shouldAutoSave = (itemRows, isDocBased = false) => {
+  if (!itemRows || isDocBased) {
     return false
   }
   const autoSavableTypes = {
@@ -1149,6 +1149,7 @@ const AssessmentContainer = ({
     }
   }
   let itemRows = testItem.rows
+  const { isDocBased } = testItem
 
   let passage = {}
   if (testItem.passageId && passages) {
@@ -1162,7 +1163,10 @@ const AssessmentContainer = ({
 
   const { referenceDocAttributes } = test || {}
 
-  const autoSave = useMemo(() => shouldAutoSave(itemRows), [itemRows])
+  const autoSave = useMemo(() => shouldAutoSave(itemRows, isDocBased), [
+    itemRows,
+    isDocBased,
+  ])
 
   useInterval(() => {
     if (autoSave) {

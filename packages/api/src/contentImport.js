@@ -22,8 +22,18 @@ const contentImportProgress = (data) => {
     })
     .then(({ data: response }) => response)
 }
+const validateContent = (data) => {
+  return api
+    .callApi({
+      url: `public/qti-validate`,
+      method: 'post',
+      data,
+    })
+    .then(({ data: response }) => response)
+}
 
 export default {
   contentImport,
   contentImportProgress,
+  validateContent,
 }

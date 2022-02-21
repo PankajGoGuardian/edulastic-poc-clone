@@ -41,6 +41,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
       widthpx: globalWidth = 0,
       minHeight,
       minWidth,
+      transparentBackground,
     } = item.uiStyle || {}
     const width =
       individualWidth ||
@@ -48,6 +49,12 @@ const ClozeInput = ({ id, resprops = {} }) => {
     const height =
       individualHeight ||
       Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10))
+
+    if (transparentBackground) {
+      cssStyles.bg = 'transparent'
+      cssStyles.noBorder = true
+    }
+
     return {
       ...uiStyles,
       width: !width ? 'auto' : `${width}px`,
@@ -100,7 +107,8 @@ const InputBox = styled(TextInputStyled)`
   text-align: center;
   min-width: ${({ minWidth }) => minWidth};
   &.ant-input {
-    border: 1px solid ${lightGrey12};
+    border: ${(props) =>
+      props.noBorder ? 'none' : ` 1px solid ${lightGrey12}`};
     font-weight: normal;
   }
 `

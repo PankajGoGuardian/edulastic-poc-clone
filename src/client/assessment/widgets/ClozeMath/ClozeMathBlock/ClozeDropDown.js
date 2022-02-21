@@ -52,6 +52,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       widthpx: globalWidth = 0,
       minHeight,
       minWidth,
+      transparentBackground,
     } = item.uiStyle || {}
 
     const width =
@@ -60,6 +61,12 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     const height =
       individualHeight ||
       Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10))
+
+    if (transparentBackground) {
+      cssStyles.bg = 'transparent'
+      cssStyles.noBorder = true
+    }
+
     return {
       ...uiStyles,
       width: `${width}px`,
@@ -204,7 +211,8 @@ const DropdownWrapper = styled.div`
 const Dropdown = styled(SelectInputStyled)`
   &.ant-select {
     .ant-select-selection {
-      border: 1px solid ${lightGrey12};
+      border: ${(props) =>
+        props.noBorder ? 'none' : ` 1px solid ${lightGrey12}`};
     }
   }
 `

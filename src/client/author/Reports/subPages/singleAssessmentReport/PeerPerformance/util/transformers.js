@@ -62,6 +62,35 @@ export const parseAndNormalizeExtAttributes = (extAttributesStr) => {
   return extAttributes
 }
 
+const filterMetricInfoByExtDemographicFilters = (metrics, filters) => {
+  if (isEmpty(filters)) {
+    return metrics
+  }
+  const transformedFilter = {}
+  filters.forEach((filter) => {
+    const parsedFilterValue = JSON.parse(filter)
+    const key = Object.keys(parsedFilterValue)[0]
+    const value = parsedFilterValue[key]
+    if (Object.prototype.hasOwnProperty.call(transformedFilter, key)) {
+      transformedFilter[key].push(value)
+    } else {
+      transformedFilter[key] = [value]
+    }
+  })
+  return metrics.filter((metric) => {
+    let isFilterValuePresent = true
+    for (const key of Object.keys(transformedFilter)) {
+      if (!isFilterValuePresent) {
+        break
+      }
+      isFilterValuePresent =
+        isFilterValuePresent &&
+        transformedFilter[key].includes(metric.extAttributes[key])
+    }
+    return isFilterValuePresent
+  })
+}
+
 const filterData = (data, filter) => {
   const filteredData = data.filter((item) => {
     if (
@@ -338,7 +367,7 @@ const analyseByProficiencyBand = (rawData, groupedData, compareBy) => {
   return arr
 }
 
-export const parseData = (rawData, filter) => {
+export const parseData = (rawData, filter, extDemogaphicFilters) => {
   let compareBy = filter.compareBy
   let data = rawData.metricInfo || []
   if (DemographicCompareByOptions.includes(compareBy)) {
@@ -348,8 +377,12 @@ export const parseData = (rawData, filter) => {
     data = transformMetricForStudentGroups(rawData.studentGroupInfo, data)
     compareBy = 'groupId'
   }
-  const filteredData = filterData(data, filter)
-  const groupedData = groupBy(filteredData, compareBy)
+  const filteredDataByDdFilter = filterData(data, filter)
+  const filteredDataByExtDemographicFilter = filterMetricInfoByExtDemographicFilters(
+    filteredDataByDdFilter,
+    extDemogaphicFilters
+  )
+  const groupedData = groupBy(filteredDataByExtDemographicFilter, compareBy)
   let output = []
   if (filter.analyseBy === 'score(%)') {
     output = analyseByScorePercent(rawData, groupedData, compareBy)
@@ -361,4 +394,22 @@ export const parseData = (rawData, filter) => {
     output = analyseByProficiencyBand(rawData, groupedData, compareBy)
   }
   return output.sort((a, b) => a.compareBylabel.localeCompare(b.compareBylabel))
+}
+
+export const createExtDemographicGroupedData = (metrics, ddfilter) => {
+  const extAttributesData = filterData(metrics, ddfilter).map(
+    (metric) => metric.extAttributes
+  )
+  return extAttributesData.reduce((prev, curr) => {
+    Object.keys(curr).forEach((key) => {
+      if (Object.prototype.hasOwnProperty.call(prev, key)) {
+        if (prev[key].indexOf(curr[key]) === -1) {
+          prev[key].push(curr[key])
+        }
+      } else {
+        prev[key] = [curr[key]]
+      }
+    })
+    return prev
+  }, {})
 }

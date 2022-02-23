@@ -778,6 +778,7 @@ function* loadTest({ payload }) {
         annotations: test.annotations,
         docUrl: test.docUrl,
         isDocBased: test.isDocBased,
+        referenceDocAttributes: test.referenceDocAttributes,
         pageStructure: test.pageStructure,
         freeFormNotes: test.freeFormNotes,
         settings,

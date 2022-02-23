@@ -58,6 +58,7 @@ const initialState = {
   blurTime: 0,
   savedBlurTime: 0,
   grades: [],
+  referenceDocAttributes: null,
   subjects: [],
 }
 
@@ -82,6 +83,7 @@ const test = (state = initialState, { payload, type }) => {
         freeFormNotes: payload.freeFormNotes,
         showMagnifier: payload.showMagnifier,
         languagePreference: payload.languagePreference,
+        referenceDocAttributes: payload.referenceDocAttributes,
         grades: payload.grades,
         subjects: payload.subjects,
         settings: {

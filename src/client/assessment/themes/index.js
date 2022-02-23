@@ -562,6 +562,7 @@ const AssessmentContainer = ({
   updateTestPlayer,
   enableMagnifier,
   isShowReferenceModal,
+  referenceDocAttributes,
   studentReportModal,
   hideHints,
   demo,
@@ -1165,8 +1166,6 @@ const AssessmentContainer = ({
     (x) => x.type === questionType.HIGHLIGHT_IMAGE
   )
 
-  const { referenceDocAttributes } = test || {}
-
   const prevAnswerValue = useRef('')
 
   useEffect(() => {
@@ -1295,7 +1294,9 @@ const AssessmentContainer = ({
     enableMagnifier,
     openReferenceModal,
     isShowReferenceModal,
-    referenceDocAttributes,
+    referenceDocAttributes: preview
+      ? test?.referenceDocAttributes
+      : referenceDocAttributes,
     studentReportModal,
     hasDrawingResponse,
     questions: _questionsById,
@@ -1502,6 +1503,7 @@ const enhance = compose(
         {}
       ),
       annotations: state.test.annotations,
+      referenceDocAttributes: state.test.referenceDocAttributes,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
       testKeypad: testKeypadSelector(state),

@@ -154,7 +154,12 @@ const iconsByToolName = {
   [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
   [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
-    <IconEraseText width={13} height={16} stroke="transparent !important" />
+    <IconEraseText
+      width={13}
+      height={16}
+      data-cy="clear"
+      stroke="transparent !important"
+    />
   ),
   [CONSTANT.TOOLS.RESET]: (
     <IconEraseText

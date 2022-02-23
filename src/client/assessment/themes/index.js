@@ -105,7 +105,6 @@ const shouldAutoSave = (itemRows, answersById, itemId) => {
         autosave = true
       }
     }
-    return [true, currentAnswer]
   }
   return [autosave, currentAnswer]
 }

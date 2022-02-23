@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { isUndefined, mapValues, cloneDeep, orderBy } from 'lodash'
+import { isUndefined, mapValues, cloneDeep, values } from 'lodash'
 import { withTheme } from 'styled-components'
 import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 
@@ -153,13 +153,9 @@ class EditingTypeDisplay extends Component {
       evaluation: this.evaluation,
     }
 
-    const displayOptions = orderBy(responseIds, ['index']).map(
-      (option) => options[option.id]
-    )
-
     const dragDropValues = displayStyle?.type === displayStyles.DRAG_DROP && (
       <div style={{ width: '100%', marginTop: 8 }}>
-        <DragDropValues choices={displayOptions} />
+        <DragDropValues choices={values(responses)} />
         <DragPreview />
       </div>
     )
@@ -212,7 +208,7 @@ class EditingTypeDisplay extends Component {
           {dragDropValues}
           {(isPrint || isPrintPreview) && (
             <DisplayOptions
-              options={displayOptions}
+              options={values(responses)}
               style={{ marginTop: '50px' }}
             />
           )}

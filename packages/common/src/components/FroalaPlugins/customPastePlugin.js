@@ -1,5 +1,6 @@
 /* eslint-disable func-names */
 import striptags from 'striptags'
+import { reIndexResponses } from '../../helpers'
 
 const allowedTags = [
   'span',
@@ -64,8 +65,15 @@ function customPastePlugin(FroalaEditor) {
       return sanitizedString
     }
 
+    function afterPaste() {
+      const updatedHtml = reIndexResponses(editor.html.get(true))
+      if (updatedHtml) {
+        editor.html.set(updatedHtml)
+      }
+    }
+
     function _init() {
-      editor.events.on('paste.beforeCleanup', cleanup)
+      editor.events.on('paste.after', afterPaste)
       editor.events.on('paste.afterCleanup', cleanup)
     }
     return {

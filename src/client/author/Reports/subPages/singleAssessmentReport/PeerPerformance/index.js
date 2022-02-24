@@ -130,6 +130,7 @@ const PeerPerformance = ({
 
   useEffect(() => {
     setPerformanceBandProfile(peerPerformance?.bandInfo || {})
+    setExtDemographicFilters([])
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
@@ -191,7 +192,6 @@ const PeerPerformance = ({
         ddfilter
       )
       setExtDemographicData(extDemographicGroupedData)
-      setExtDemographicFilters([])
     }
   }, [res, ddfilter])
 

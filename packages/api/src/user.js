@@ -342,9 +342,9 @@ const getDemoPlaygroundUser = () =>
     })
     .then((result) => result.data)
 
-const updateUserDetails = (data) =>
+const eulaPolicyStatusUpdate = (data) =>
   api.callApi({
-    url: `${prefix}/`,
+    url: `${prefix}/eula-policy`,
     method: 'put',
     data,
   })
@@ -387,5 +387,5 @@ export default {
   logout,
   getDemoPlaygroundUser,
   updateCollectionVisited,
-  updateUserDetails,
+  eulaPolicyStatusUpdate,
 }

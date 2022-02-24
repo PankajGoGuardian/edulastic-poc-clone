@@ -487,7 +487,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           title: '',
         },
         controlbar: {
-          controls: ['undo', 'redo', 'clear', 'trash'],
+          controls: ['undo', 'redo', 'clear', 'delete'],
           defaultControl: 'undo',
         },
         toolbar: {
@@ -688,7 +688,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
           title: '',
         },
         controlbar: {
-          controls: ['undo', 'redo', 'clear', 'trash'],
+          controls: ['undo', 'redo', 'clear', 'delete'],
           defaultControl: 'undo',
         },
         toolbar: {

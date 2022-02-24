@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/no-noninteractive-element-interactions */
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   CheckboxLabel,
   EduButton,
@@ -7,7 +7,7 @@ import {
   OnWhiteBgLogo,
   SpinLoader,
 } from '@edulastic/common'
-import { userApi } from '@edulastic/api'
+import { userApi, segmentApi } from '@edulastic/api'
 import EulaPolicyContent from './eulaPolicyContent'
 import ProductPolicyContent from './productPolicyContent'
 import EeaPolicyContent from './eeaPolicyContent'
@@ -25,6 +25,10 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
 
+  useEffect(() => {
+    segmentApi.genericEventTrack('eulaPopupShown')
+  }, [])
+
   const onCheck = (value) => {
     setIsChecked(value?.target?.checked)
   }
@@ -34,9 +38,10 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
       userId: userID,
       isPolicyAccepted: isChecked,
     }
+    segmentApi.genericEventTrack('eulaPolicyAccepted')
     setShowSpinner(true)
     userApi
-      .updateUserDetails(payload)
+      .eulaPolicyStatusUpdate(payload)
       .then(() => {
         setShowModal(false)
       })

@@ -191,6 +191,7 @@ const PeerPerformance = ({
         ddfilter
       )
       setExtDemographicData(extDemographicGroupedData)
+      setExtDemographicFilters([])
     }
   }, [res, ddfilter])
 
@@ -269,7 +270,14 @@ const PeerPerformance = ({
                 xl={12}
               >
                 <Row className="control-dropdown-row" style={{ flex: 1 }}>
-                  <StyledDropDownContainer xs={24} sm={24} md={8} lg={8} xl={8}>
+                  <StyledDropDownContainer
+                    data-cy="external-demographic-filter"
+                    xs={24}
+                    sm={24}
+                    md={8}
+                    lg={8}
+                    xl={8}
+                  >
                     {!isEmpty(extDemographicData) && (
                       <ExternalDemographicFilter
                         extDemographicData={extDemographicData}

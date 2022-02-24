@@ -1319,7 +1319,7 @@ class Container extends PureComponent {
       writableCollections
     )
     const isCurator =
-      (hasCollectionAccess && userFeatures.isCurator) ||
+      (hasCollectionAccess && userFeatures?.isCurator) ||
       userRole === roleuser.EDULASTIC_CURATOR
     const isOwner = authors?.some((x) => x._id === userId)
     const showPublishButton =

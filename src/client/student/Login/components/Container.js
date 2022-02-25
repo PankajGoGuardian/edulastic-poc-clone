@@ -18,6 +18,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { segmentApi } from '@edulastic/api'
 import {
   isDistrictPolicyAllowed,
   isEmailValid,
@@ -39,7 +40,6 @@ import {
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
-import { segmentApi } from '@edulastic/api'
 
 const FormItem = Form.Item
 
@@ -270,6 +270,8 @@ class LoginContainer extends React.Component {
                           >
                             {getFieldDecorator('email', {
                               validateFirst: true,
+                              trigger: 'onBlur',
+                              valuePropName: 'defaultValue',
                               initialValue: '',
                               rules: [
                                 {
@@ -306,6 +308,8 @@ class LoginContainer extends React.Component {
                             label={t('common.loginpasswordinputlabel')}
                           >
                             {getFieldDecorator('password', {
+                              trigger: 'onBlur',
+                              valuePropName: 'defaultValue',
                               rules: [
                                 {
                                   required: true,

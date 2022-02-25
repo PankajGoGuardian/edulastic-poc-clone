@@ -397,15 +397,17 @@ const AddPermissionModal = ({
                     <Select.Option
                       value={_user._id}
                       key={_user._id}
-                      orgName={`${_user.firstName} ${_user.lastName}`}
+                      orgName={`${_user.firstName} ${_user.lastName || ''}`}
                       role={_user.role}
                       data-cy={_user.email}
-                      title={`${_user.firstName} ${_user.lastName} (${
+                      title={`${_user.firstName} ${_user.lastName || ''} (${
                         _user.email
                       }) [${roleuser.ROLE_LABEL[_user.role]}]`}
                     >
                       <span>
-                        {`${_user.firstName} ${_user.lastName} (${_user.email})`}{' '}
+                        {`${_user.firstName} ${_user.lastName || ''} (${
+                          _user.email
+                        })`}{' '}
                         <b>[{roleuser.ROLE_LABEL[_user.role]}]</b>
                       </span>
                     </Select.Option>

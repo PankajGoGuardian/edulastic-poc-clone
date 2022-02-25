@@ -402,12 +402,14 @@ export const createExtDemographicGroupedData = (metrics, ddfilter) => {
   )
   return extAttributesData.reduce((prev, curr) => {
     Object.keys(curr).forEach((key) => {
-      if (Object.prototype.hasOwnProperty.call(prev, key)) {
-        if (prev[key].indexOf(curr[key]) === -1) {
-          prev[key].push(curr[key])
+      if (!isEmpty(curr[key])) {
+        if (Object.prototype.hasOwnProperty.call(prev, key)) {
+          if (prev[key].indexOf(curr[key]) === -1) {
+            prev[key].push(curr[key])
+          }
+        } else {
+          prev[key] = [curr[key]]
         }
-      } else {
-        prev[key] = [curr[key]]
       }
     })
     return prev

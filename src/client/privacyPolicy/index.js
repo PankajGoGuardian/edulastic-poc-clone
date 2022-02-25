@@ -62,9 +62,9 @@ const PrivacyPolicyModal = ({ userID, isEEAUser }) => {
         End User License Agreement and Product Privacy Policy
       </ModalTitle>
       <ModalHeaderSubcontent>
-        Welcome to <b>Edulastic!</b> We are so excited to start helping you
-        protect your students. But before we proceed, please read our entire End
-        user License Agreement to make sure that we’re on the same page.
+        Welcome to <b>Edulastic!</b> Before we proceed, please read our entire
+        (1) Terms of Service and End User License Agreement; and (2) Product
+        Privacy Policy to make sure we’re on the same page.
       </ModalHeaderSubcontent>
     </>
   )

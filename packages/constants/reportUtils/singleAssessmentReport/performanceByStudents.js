@@ -46,6 +46,7 @@ const tableColumns = [
     dataIndex: 'student',
     key: 'student',
     width: 250,
+    fixed: 'left',
     align: 'left',
   },
   {

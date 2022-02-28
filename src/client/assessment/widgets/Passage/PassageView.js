@@ -4,7 +4,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { isEmpty, get, set } from 'lodash'
 import PropTypes from 'prop-types'
-import { Pagination } from 'antd'
 import {
   Stimulus,
   WithResources,
@@ -21,6 +20,7 @@ import { QuestionTitleWrapper } from './styled/QustionNumber'
 import ColorPicker from './ColorPicker'
 import { ColorPickerContainer, Overlay } from './styled/ColorPicker'
 import { PassageTitleWrapper } from './styled/PassageTitleWrapper'
+import { PassagePagination } from './styled/PassagePagination'
 import AppConfig from '../../../../app-config'
 import { CLEAR } from '../../constants/constantsForQuestions'
 
@@ -82,6 +82,9 @@ const PassageView = ({
   const [selectHighlight, setSelectedHighlight] = useState(null)
   const [isMounted, setIsMounted] = useState(false)
 
+  const isPaginated =
+    item.paginated_content && item.pages && !!item.pages.length && !flowLayout
+
   const isAuthorPreviewMode =
     viewComponent === 'editQuestion' ||
     viewComponent === 'authorPreviewPopup' ||
@@ -96,9 +99,13 @@ const PassageView = ({
     <PassageTitle dangerouslySetInnerHTML={{ __html: item.contentsTitle }} />
   )
 
+  const highlightKey = isPaginated
+    ? `${widgetIndex || 0}_${page}`
+    : widgetIndex || 0
+
   const _highlights = isAuthorPreviewMode
-    ? get(userWork, `resourceId[${widgetIndex || 0}][${authLanguage}]`, '')
-    : get(highlights, `[${widgetIndex}]`, '')
+    ? get(userWork, `resourceId[${highlightKey}][${authLanguage}]`, '')
+    : get(highlights, `[${highlightKey}]`, '')
 
   const saveHistory = () => {
     let { innerHTML: highlightContent = '' } = mainContentsRef.current
@@ -114,13 +121,13 @@ const PassageView = ({
     if (setHighlights) {
       const newHighlights = highlights || {}
       // this is available only at student side
-      setHighlights({ ...newHighlights, [widgetIndex]: highlightContent })
+      setHighlights({ ...newHighlights, [highlightKey]: highlightContent })
     } else {
       // saving the highlights at author side
       // setHighlights is not available at author side
       const newUserWork = set(
         userWork || {},
-        `resourceId[${widgetIndex || 0}][${authLanguage}]`,
+        `resourceId[${highlightKey}][${authLanguage}]`,
         highlightContent
       )
 
@@ -150,10 +157,12 @@ const PassageView = ({
   }
 
   const getContent = () => {
-    let { content } = item
-    content = decodeHTML(content)
-    // _highlights are user work
     if (isEmpty(_highlights)) {
+      let { content } = item
+      if (isPaginated) {
+        content = item.pages[page - 1]
+      }
+      content = decodeHTML(content)
       return content
         ?.replace(/(<div (.*?)>)/g, '')
         ?.replace(/(<\/div>)/g, '')
@@ -272,26 +281,26 @@ const PassageView = ({
         </div>
       )}
 
-      {item.paginated_content &&
-        item.pages &&
-        !!item.pages.length &&
-        !flowLayout && (
-          <div data-cy="content">
+      {isPaginated && (
+        <div data-cy="content">
+          <div id={item.id} className="mainContents" ref={mainContentsRef}>
             <Stimulus
               id="paginatedContents"
-              dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }}
-            />
-
-            <Pagination
-              style={{ justifyContent: 'center' }}
-              pageSize={1}
-              hideOnSinglePage
-              onChange={(pageNum) => setPage(pageNum)}
-              current={page}
-              total={item.pages.length}
+              onFinish={finishedRendering}
+              userSelect={!disableResponse}
+              dangerouslySetInnerHTML={{ __html: content }}
             />
           </div>
-        )}
+
+          <PassagePagination
+            pageSize={1}
+            hideOnSinglePage
+            onChange={(pageNum) => setPage(pageNum)}
+            current={page}
+            total={item.pages.length}
+          />
+        </div>
+      )}
       {/* when the user is selecting text, 
       will show color picker within a Popover. */}
       {(isStudentAttempt || previewTab === CLEAR) && (

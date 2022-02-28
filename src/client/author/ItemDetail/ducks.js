@@ -1255,7 +1255,12 @@ export function* updateItemSaga({ payload }) {
      * in test item data
      */
 
-    const { itemLevelScoring, itemLevelScore, isPassageWithQuestions } = data
+    const {
+      itemLevelScoring,
+      itemLevelScore,
+      isPassageWithQuestions,
+      multipartItem,
+    } = data
 
     const resourceTypes = [
       questionType.VIDEO,
@@ -1287,7 +1292,13 @@ export function* updateItemSaga({ payload }) {
       resourceTypes.includes(item.type)
     )
 
-    if (isPassageWithQuestions && !questions.length) {
+    let preventSaveWithoutQuestions = false
+
+    if ((multipartItem || isPassageWithQuestions) && !questions.length) {
+      preventSaveWithoutQuestions = true
+    }
+
+    if (preventSaveWithoutQuestions) {
       notification({ messageKey: 'CannotSaveWithoutQuestions' })
       yield put(itemUpdateCompletedAction())
       return null
@@ -1349,7 +1360,10 @@ export function* updateItemSaga({ payload }) {
       }
     } else if (questions.length > 1) {
       for (const question of questions) {
-        if (!questionType.manuallyGradableQn.includes(question.type) && !itemLevelScoring) {
+        if (
+          !questionType.manuallyGradableQn.includes(question.type) &&
+          !itemLevelScoring
+        ) {
           const [hasInvalidScore, errMsg] = validateScore(question)
           if (hasInvalidScore) {
             return notification({ msg: errMsg })
@@ -1416,8 +1430,14 @@ export function* updateItemSaga({ payload }) {
       passageData.testId = testIdParam
     }
 
+    const isNew = data._id === 'new'
+
+    if (!isNew) {
+      console.log('no of questions:', data?.data)
+    }
+
     const [{ testId, ...item }, updatedPassage] = yield all([
-      data._id === 'new'
+      isNew
         ? yield call(testItemsApi.create, _omit(data, '_id'))
         : call(testItemsApi.updateById, payload.id, data, testIdParam),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null,

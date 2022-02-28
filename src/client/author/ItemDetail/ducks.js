@@ -1432,10 +1432,6 @@ export function* updateItemSaga({ payload }) {
 
     const isNew = data._id === 'new'
 
-    if (!isNew) {
-      console.log('no of questions:', data?.data)
-    }
-
     const [{ testId, ...item }, updatedPassage] = yield all([
       isNew
         ? yield call(testItemsApi.create, _omit(data, '_id'))

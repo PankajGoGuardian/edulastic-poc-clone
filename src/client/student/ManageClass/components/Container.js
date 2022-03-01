@@ -50,7 +50,7 @@ const ManageClassContainer = ({
   userRole,
   proxyUserRole,
 }) => {
-  const activeClasses = classList.filter((c) => c.active === 1)
+  const activeClasses = classList.filter((c) => c.active === 1) || []
   const [isJoinClassModalVisible, setJoinClassModal] = useState(false)
   const [classCode, setClassCode] = useState(null)
   const code = classList.map((_code) => _code.code)

@@ -63,6 +63,7 @@ const ChartPreview = ({
   setQuestionData,
   isReviewTab,
   hideCorrectAnswer,
+  showAnswerScore,
 }) => {
   const answerContextConfig = useContext(AnswerContext)
   const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
@@ -286,6 +287,8 @@ const ChartPreview = ({
                   showBorder
                   padding="14px 45px"
                   margin="38px 0px"
+                  showAnswerScore={showAnswerScore}
+                  score={validation?.validResponse?.score}
                 >
                   <ChartContainer>
                     <CurrentChart
@@ -317,6 +320,8 @@ const ChartPreview = ({
                   showBorder
                   padding="14px 45px 14px"
                   margin="38px 0px"
+                  showAnswerScore={showAnswerScore}
+                  score={ans?.score}
                 >
                   <ChartContainer>
                     <CurrentChart

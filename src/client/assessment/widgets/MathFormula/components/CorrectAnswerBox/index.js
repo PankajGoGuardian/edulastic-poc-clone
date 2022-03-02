@@ -41,6 +41,8 @@ const CorrectAnswerBox = ({
   extraOtps,
   allowNumericOnly,
   allowedVariables,
+  showAnswerScore,
+  score,
 }) => {
   const [showOptions, setShowOptions] = useState(false)
   const optionsToShow = useMemo(() => {
@@ -57,6 +59,8 @@ const CorrectAnswerBox = ({
           : `${t('component.math.alternateAnswers')} ${index}`
       }
       minHeight="auto"
+      showAnswerScore={showAnswerScore}
+      score={score}
     >
       <Answer>
         <MathFormulaDisplay

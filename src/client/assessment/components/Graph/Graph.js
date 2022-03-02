@@ -417,10 +417,11 @@ class Graph extends Component {
       setQuestionData,
       advancedLink,
       hideCorrectAnswer,
+      showAnswerScore,
       ...restProps
     } = this.props
 
-    const { symbols = defaultSymbols, numberlineAxis = {} } = item
+    const { symbols = defaultSymbols } = item
 
     let previewTab = _previewTab
     let compact = false
@@ -593,6 +594,8 @@ class Graph extends Component {
                         showBorder
                         padding="0px"
                         margin="20px 0px"
+                        showAnswerScore={showAnswerScore}
+                        score={validation?.validResponse?.score}
                       >
                         <GraphDisplay
                           disableResponse
@@ -618,6 +621,8 @@ class Graph extends Component {
                             showBorder
                             padding="0px"
                             margin="20px 0px"
+                            showAnswerScore={showAnswerScore}
+                            score={altAnswer?.score}
                           >
                             <GraphDisplay
                               disableResponse

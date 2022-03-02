@@ -148,6 +148,7 @@ class ClozeDropDownDisplay extends Component {
       hideCorrectAnswer,
       answerScore,
       setDropDownInUse,
+      showAnswerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -168,11 +169,6 @@ class ClozeDropDownDisplay extends Component {
     maxLineHeight =
       maxLineHeight < btnStyle.height ? btnStyle.height : maxLineHeight
 
-    const hasAltAnswers =
-      item.validation &&
-      item.validation.altResponses &&
-      item.validation.altResponses.length > 0
-
     const answerBox =
       (showAnswer || isExpressGrader) && !hideCorrectAnswer ? (
         <>
@@ -185,16 +181,24 @@ class ClozeDropDownDisplay extends Component {
             }
             responseIds={item.responseIds}
             stemNumeration={stemNumeration}
+            showAnswerScore={showAnswerScore}
+            score={item?.validation?.validResponse?.score}
           />
-          {hasAltAnswers && (
-            <CorrectAnswerBoxLayout
-              fontSize={fontSize}
-              groupResponses={options}
-              altResponses={item.validation.altResponses}
-              responseIds={item.responseIds}
-              stemNumeration={stemNumeration}
-            />
-          )}
+          {item?.validation?.altResponses?.map((ans, index) => {
+            return (
+              <CorrectAnswerBoxLayout
+                altAnswers
+                altIndex={index + 1}
+                fontSize={fontSize}
+                groupResponses={options}
+                userAnswers={ans.value}
+                responseIds={item.responseIds}
+                stemNumeration={stemNumeration}
+                showAnswerScore={showAnswerScore}
+                score={ans?.score}
+              />
+            )
+          })}
         </>
       ) : (
         <div />

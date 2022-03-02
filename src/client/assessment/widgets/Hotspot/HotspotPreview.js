@@ -42,6 +42,7 @@ const HotspotPreview = ({
   evaluation,
   changePreviewTab,
   hideCorrectAnswer,
+  isLCBView,
 }) => {
   const {
     areas,
@@ -160,6 +161,8 @@ const HotspotPreview = ({
                 padding="15px 25px 20px"
                 minHeight="auto"
                 titleMargin="0px 0px 12px"
+                isLCBView={isLCBView}
+                score={validation?.validResponse?.score}
               >
                 <BlockContainer
                   data-cy="hotspotMap"
@@ -204,6 +207,8 @@ const HotspotPreview = ({
                     title={`${t('component.graphing.alternateAnswer')} ${
                       i + 1
                     }`}
+                    isLCBView={isLCBView}
+                    score={altAnswer?.score}
                     padding="15px 25px 20px"
                     minHeight="auto"
                     titleMargin="0px 0px 12px"

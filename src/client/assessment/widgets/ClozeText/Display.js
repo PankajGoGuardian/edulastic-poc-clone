@@ -169,6 +169,7 @@ class ClozeTextDisplay extends Component {
       isPrintPreview = false,
       hideCorrectAnswer,
       answerScore,
+      showAnswerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -226,6 +227,8 @@ class ClozeTextDisplay extends Component {
             }
             stemNumeration={uiStyle.stemNumeration}
             singleResponseBox={singleResponseBox}
+            showAnswerScore={showAnswerScore}
+            score={validation?.validResponse?.score}
           />
           {!isEmpty(item.validation.altResponses) &&
             item.validation.altResponses.map((altAnswers, index) => (
@@ -236,6 +239,8 @@ class ClozeTextDisplay extends Component {
                 stemNumeration={uiStyle.stemNumeration}
                 userAnswers={altAnswers.value}
                 singleResponseBox={singleResponseBox}
+                showAnswerScore={showAnswerScore}
+                score={altAnswers?.score}
               />
             ))}
         </>

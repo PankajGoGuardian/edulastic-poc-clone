@@ -47,6 +47,7 @@ const TokenHighlightPreview = ({
   disableResponse,
   hideCorrectAnswer,
   mode,
+  showAnswerScore,
   t,
 }) => {
   const answerContextConfig = useContext(AnswerContext)
@@ -257,6 +258,11 @@ const TokenHighlightPreview = ({
     }, [])
   }
 
+  const validRespScore = get(item, 'validation.validResponse.score')
+  const altRespScores = get(item, 'validation.altResponses', []).map(
+    (ans) => ans?.score
+  )
+
   const getClassNameForExpressGrader = (index) => {
     const { selected } = userAnswer.find((elem) => elem.index === index) || {}
     return selected ? 'active-word token answer' : 'token answer'
@@ -399,6 +405,11 @@ const TokenHighlightPreview = ({
                   : `${t(
                       'component.sortList.alternateAnswer'
                     )} ${correctGroupIndex}`
+              const score =
+                correctGroupIndex === 0
+                  ? validRespScore
+                  : altRespScores?.[correctGroupIndex - 1]
+
               return (
                 <div style={{ width: '100%' }}>
                   <CorrectAnswersContainer
@@ -406,6 +417,8 @@ const TokenHighlightPreview = ({
                     title={title}
                     padding="15px 20px 24px 30px"
                     titleMargin="0px 0px 20px"
+                    showAnswerScore={showAnswerScore}
+                    score={score}
                   >
                     <AnswersWrapper>
                       {correctAnswers.map((el, i) =>

@@ -136,6 +136,8 @@ const QuestionBottomAction = ({
   firebaseDocId,
   setSilentCloning,
   reloadLcbDataInStudentView,
+  hideCorrectAnswer,
+  isGradedExternally,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -377,6 +379,13 @@ const QuestionBottomAction = ({
         item.type
       )
     )
+
+  const hasAltAnswers = item?.validation?.altResponses?.some(
+    (altResp) => altResp?.score !== item?.validation?.validResponse?.score
+  )
+  const showQuestionBottomLCBMessage =
+    isLCBView && !hideCorrectAnswer && (hasAltAnswers || isGradedExternally)
+
   return (
     <>
       {notifyRegradeProgress && (
@@ -385,6 +394,14 @@ const QuestionBottomAction = ({
           visible={notifyRegradeProgress}
           onCloseRegardeProgressModal={onCloseRegardeProgressModal}
         />
+      )}
+      {showQuestionBottomLCBMessage && (
+        <QuestionLCBBottomMessage>
+          {isGradedExternally
+            ? 'Teacher manually awarded score for this item. '
+            : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. '}
+          Use Edit/Regrade option to review the settings.
+        </QuestionLCBBottomMessage>
       )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         <LeftWrapper>
@@ -663,4 +680,13 @@ const CorrectButton = styled(EduButton)`
 `
 const TimeSpentText = styled.div`
   margin-bottom: 3px;
+`
+
+const QuestionLCBBottomMessage = styled.div`
+  margin-left: 51px;
+  margin-top: 24px;
+  font-weight: 500;
+  max-width: 650px;
+  width: calc(100% - 51px);
+  color: ${greyThemeDark4};
 `

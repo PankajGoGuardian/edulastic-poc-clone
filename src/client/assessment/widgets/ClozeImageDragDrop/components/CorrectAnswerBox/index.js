@@ -18,12 +18,17 @@ const CorrectAnswerBoxLayout = ({
   t,
   idValueMap,
   singleResponseBox,
+  showAnswerScore,
+  score,
+  isAltAnswer,
 }) => (
   <CorrectAnswersContainer
     fontSize={fontSize}
     minHeight="auto"
+    showAnswerScore={showAnswerScore}
+    score={score}
     title={
-      answersIndex
+      isAltAnswer
         ? `${t('component.cloze.altAnswers')} ${answersIndex}`
         : t('component.cloze.correctAnswer')
     }

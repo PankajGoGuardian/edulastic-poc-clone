@@ -1,6 +1,18 @@
 import styled, { css } from 'styled-components'
+import { IconInfo } from '@edulastic/icons'
 import { WithMathFormula, NumberInputStyled } from '@edulastic/common'
 import { smallDesktopWidth } from '@edulastic/colors'
+
+export const ScoreInputWrapper = styled.div`
+  position: relative;
+`
+
+export const InfoIcon = styled(IconInfo)`
+  cursor: pointer;
+  position: absolute;
+  top: -6px;
+  right: 4px;
+`
 
 const Style = css`
   background: transparent !important;

@@ -90,11 +90,6 @@ class EditingTypeDisplay extends Component {
     return item?.activity?.userResponse || userSelections
   }
 
-  get hasAltAnswers() {
-    const { item } = this.props
-    return item?.validation?.altResponses?.length
-  }
-
   get checkedAnswers() {
     const { showAnswer, checkAnswer, isPrint, isPrintPreview } = this.props
     return showAnswer || checkAnswer || isPrint || isPrintPreview
@@ -122,6 +117,7 @@ class EditingTypeDisplay extends Component {
       isPrintPreview,
       hideCorrectAnswer,
       answerScore,
+      showAnswerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -225,17 +221,23 @@ class EditingTypeDisplay extends Component {
                 responseIds={item.responseIds}
                 stemNumeration={stemNumeration}
                 singleResponseBox={singleResponseBox}
+                showAnswerScore={showAnswerScore}
+                score={item?.validation?.validResponse?.score}
               />
-              {this.hasAltAnswers ? (
+              {item?.validation?.altResponses?.map((altRes, index) => (
                 <CorrectAnswerBoxLayout
+                  isAltAnswers
+                  answerIndex={index + 1}
                   fontSize={fontSize}
                   groupResponses={options}
-                  altResponses={item.validation.altResponses}
+                  userAnswers={altRes.value || []}
                   responseIds={item.responseIds}
                   stemNumeration={stemNumeration}
                   singleResponseBox={singleResponseBox}
+                  showAnswerScore={showAnswerScore}
+                  score={altRes?.score}
                 />
-              ) : null}
+              ))}
             </>
           )}
         </QuestionContentWrapper>

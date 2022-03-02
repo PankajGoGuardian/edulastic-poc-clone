@@ -83,6 +83,7 @@ const MatchListPreview = ({
   optionsFromStore,
   hideCorrectAnswer,
   windowWidth,
+  showAnswerScore,
 }) => {
   const {
     possibleResponses: posResponses,
@@ -99,7 +100,11 @@ const MatchListPreview = ({
   const { expressGrader, isAnswerModifiable } = answerContextConfig
 
   const validResponse = get(item, 'validation.validResponse.value', {})
+  const validRespScore = get(item, 'validation.validResponse.score')
+
   const alternateResponses = get(item, 'validation.altResponses', [])
+  const altRespScores = alternateResponses.map((resp) => resp?.score)
+
   const stemNumeration = get(item, 'uiStyle.validationStemNumeration', '')
   const dragItemMinWidth = get(
     item,
@@ -478,6 +483,9 @@ const MatchListPreview = ({
               <CorrectAnswers
                 t={t}
                 list={list}
+                showAnswerScore={showAnswerScore}
+                validRespScore={validRespScore}
+                altRespScores={altRespScores}
                 alternateAnswers={alternateAnswers}
                 smallSize={smallSize}
                 allItemsById={allItemsById}

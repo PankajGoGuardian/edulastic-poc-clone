@@ -11,6 +11,8 @@ const CorrectAnswerBoxLayout = ({
   stemNumeration,
   singleResponseBox,
   t,
+  showAnswerScore,
+  score,
 }) => (
   <CorrectAnswersContainer
     minHeight="auto"
@@ -21,6 +23,8 @@ const CorrectAnswerBoxLayout = ({
     }
     padding="15px 25px 20px"
     titleMargin="0px 0px 12px"
+    showAnswerScore={showAnswerScore}
+    score={score}
   >
     {userAnswers
       .sort((a, b) => a.index - b.index)

@@ -72,6 +72,7 @@ const MatrixChoice = ({
     item.feedback_attempts
   )
   const Wrapper = testItem ? EmptyWrapper : StyledPaperWrapper
+  const { showAnswerScore } = restProps
 
   const handleItemChangeChange = (prop, uiStyle) => {
     setQuestionData(
@@ -214,6 +215,8 @@ const MatrixChoice = ({
             <>
               <CorrectAnswersContainer
                 item={item}
+                score={validResponse?.score}
+                showAnswerScore={showAnswerScore}
                 title={t('component.matrix.correctAnswer')}
               >
                 <Preview
@@ -242,6 +245,8 @@ const MatrixChoice = ({
                         i + 1
                       }`}
                       key={i}
+                      score={altAnswer?.score}
+                      showAnswerScore={showAnswerScore}
                     >
                       <Preview
                         saveAnswer={() => {}}

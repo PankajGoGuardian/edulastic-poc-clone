@@ -2,10 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 import { withNamespaces } from '@edulastic/localization'
-
+import { CorrectAnswersContainer } from '@edulastic/common'
 import { getStemNumeration } from '../../utils/helpers'
 import { StyledCorrectAnswerbox } from './styled/StyledCorrectAnswerbox'
-import { CorrectAnswerTitle } from './styled/CorrectAnswerTitle'
 import { AnswerBox } from './AnswerBox'
 
 const CorrectAnswerBoxLayout = ({
@@ -20,6 +19,8 @@ const CorrectAnswerBoxLayout = ({
   centerText,
   singleResponseBox = false,
   t,
+  showAnswerScore,
+  score,
 }) => {
   let results
 
@@ -57,63 +58,69 @@ const CorrectAnswerBoxLayout = ({
   }
 
   return (
-    <StyledCorrectAnswerbox fontSize={fontSize}>
-      <CorrectAnswerTitle>
-        {altAnsIndex
+    <CorrectAnswersContainer
+      title={
+        altAnsIndex
           ? `${t('component.cloze.altAnswers')} ${altAnsIndex}`
-          : t('component.cloze.correctAnswer')}
-      </CorrectAnswerTitle>
-      <div>
-        {hasGroupResponses &&
-          Object.keys(results).map((key, index) => (
-            <div key={index}>
-              <h3>{groupResponses[key] && groupResponses[key].title}</h3>
-              {results[key].map((value, responseIndex) => {
-                const numeration = getStemNumeration(
-                  stemNumeration,
-                  responseIndex
-                )
-                const label =
-                  Array.isArray(groupResponses) && !cleanValue
-                    ? getLabel(value)
-                    : value
-                return (
-                  <AnswerBox
-                    key={numeration}
-                    btnStyle={btnStyle}
-                    index={index}
-                    numeration={numeration}
-                    label={label}
-                    centerText={centerText}
-                    singleResponseBox={singleResponseBox}
-                  />
-                )
-              })}
-            </div>
-          ))}
+          : t('component.cloze.correctAnswer')
+      }
+      minHeight="auto"
+      showAnswerScore={showAnswerScore}
+      score={score}
+    >
+      <StyledCorrectAnswerbox fontSize={fontSize}>
+        <div>
+          {hasGroupResponses &&
+            Object.keys(results).map((key, index) => (
+              <div key={index}>
+                <h3>{groupResponses[key] && groupResponses[key].title}</h3>
+                {results[key].map((value, responseIndex) => {
+                  const numeration = getStemNumeration(
+                    stemNumeration,
+                    responseIndex
+                  )
+                  const label =
+                    Array.isArray(groupResponses) && !cleanValue
+                      ? getLabel(value)
+                      : value
+                  return (
+                    <AnswerBox
+                      key={numeration}
+                      btnStyle={btnStyle}
+                      index={index}
+                      numeration={numeration}
+                      label={label}
+                      centerText={centerText}
+                      singleResponseBox={singleResponseBox}
+                    />
+                  )
+                })}
+              </div>
+            ))}
 
-        {!hasGroupResponses &&
-          results.map((result, index) => {
-            const numeration = getStemNumeration(stemNumeration, index)
-            const label =
-              Array.isArray(groupResponses) &&
-              groupResponses.length > 0 &&
-              !cleanValue
-                ? getLabel(result)
-                : result
-            return (
-              <AnswerBox
-                btnStyle={btnStyle}
-                index={index}
-                numeration={numeration}
-                label={label}
-                centerText={centerText}
-                singleResponseBox={singleResponseBox}
-              />
-            )
-          })}
-      </div>
-    </StyledCorrectAnswerbox>
+          {!hasGroupResponses &&
+            results.map((result, index) => {
+              const numeration = getStemNumeration(stemNumeration, index)
+              const label =
+                Array.isArray(groupResponses) &&
+                groupResponses.length > 0 &&
+                !cleanValue
+                  ? getLabel(result)
+                  : result
+              return (
+                <AnswerBox
+                  btnStyle={btnStyle}
+                  index={index}
+                  numeration={numeration}
+                  label={label}
+                  centerText={centerText}
+                  singleResponseBox={singleResponseBox}
+                />
+              )
+            })}
+        </div>
+      </StyledCorrectAnswerbox>
+    </CorrectAnswersContainer>
   )
 }
 

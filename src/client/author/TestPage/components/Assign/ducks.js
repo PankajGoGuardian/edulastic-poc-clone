@@ -28,6 +28,7 @@ const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
+export const SAVE_BULK_ASSIGNMENT = '[assignments] save bulk assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
@@ -37,6 +38,8 @@ export const REMOVE_ASSIGNMENT = '[assignments] remove assignment'
 export const SET_CURRENT_ASSIGNMENT =
   '[assignments] set current editing assignment'
 export const SET_ASSIGNMENT_SAVING = '[assignments] set assignment saving state'
+export const SET_BULK_ASSIGNMENT_SAVING =
+  '[assignments] set bulk assignment saving state'
 export const TOGGLE_CONFIRM_COMMON_ASSIGNMENTS =
   '[assignments] toggle confirmation common assignments'
 export const UPDATE_ASSIGN_FAIL_DATA = '[assignments] update error data'
@@ -44,16 +47,22 @@ export const TOGGLE_DUPLICATE_ASSIGNMENT_POPUP =
   '[assignments] toggle duplicate assignmnts popup'
 export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
+export const ADD_SEARCH_TERMS_FILTER =
+  '[assignment settings] add search terms filter'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
+export const saveBulkAssignmentAction = createAction(SAVE_BULK_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS)
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT)
 export const setAssignmentSavingAction = createAction(SET_ASSIGNMENT_SAVING)
+export const setBulkAssignmentSavingAction = createAction(
+  SET_BULK_ASSIGNMENT_SAVING
+)
 export const toggleHasCommonAssignmentsPopupAction = createAction(
   TOGGLE_CONFIRM_COMMON_ASSIGNMENTS
 )
@@ -61,15 +70,21 @@ export const updateAssignFailDataAction = createAction(UPDATE_ASSIGN_FAIL_DATA)
 export const toggleHasDuplicateAssignmentPopupAction = createAction(
   TOGGLE_DUPLICATE_ASSIGNMENT_POPUP
 )
+export const setSearchTermsFilterAction = (payload) => ({
+  type: ADD_SEARCH_TERMS_FILTER,
+  payload,
+})
 
 const initialState = {
   isLoading: false,
   isAssigning: false,
+  isBulkAssigning: false,
   hasCommonStudents: false,
   hasDuplicateAssignments: false,
   assignments: [],
   conflictData: {},
   current: '', // id of the current one being edited
+  searchTerms: {},
 }
 
 const setAssignment = (state, { payload }) => {
@@ -80,6 +95,7 @@ const setAssignment = (state, { payload }) => {
 const addAssignment = (state, { payload }) => {
   let isExisting = false
   state.isAssigning = false
+  state.isBulkAssigning = false
   state.assignments = state.assignments.map((item) => {
     if (item._id === payload._id) {
       isExisting = true
@@ -105,6 +121,10 @@ const setAssignmentIsSaving = (state, { payload }) => {
   state.isAssigning = payload
 }
 
+const setBulkAssignmentIsSaving = (state, { payload }) => {
+  state.isBulkAssigning = payload
+}
+
 const setAssignmentFailStatus = (state, { payload }) => {
   state.hasCommonStudents = true
   state.conflictData = payload
@@ -118,6 +138,10 @@ const toggleHasDuplicateAssignmentsPopup = (state, { payload }) => {
   state.hasDuplicateAssignments = payload
 }
 
+const updateSearchTermsFilter = (state, { payload }) => {
+  state.searchTerms = payload
+}
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: (state) => {
     state.isLoading = true
@@ -127,9 +151,11 @@ export const reducer = createReducer(initialState, {
   [SET_CURRENT_ASSIGNMENT]: setCurrent,
   [REMOVE_ASSIGNMENT]: removeAssignment,
   [SET_ASSIGNMENT_SAVING]: setAssignmentIsSaving,
+  [SET_BULK_ASSIGNMENT_SAVING]: setBulkAssignmentIsSaving,
   [UPDATE_ASSIGN_FAIL_DATA]: setAssignmentFailStatus,
   [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
+  [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
 })
 
 // selectors
@@ -140,6 +166,11 @@ export const stateSelector = (state) => state[_module]
 export const getIsloadingAssignmentSelector = createSelector(
   stateSelector,
   (state) => state.isLoading
+)
+
+export const getSearchTermsFilterSelector = createSelector(
+  stateSelector,
+  (state) => state.searchTerms
 )
 
 const currentSelector = createSelector(stateSelector, (state) => state.current)
@@ -435,6 +466,52 @@ function* saveAssignment({ payload }) {
   }
 }
 
+function* saveBulkAssignment({ payload }) {
+  try {
+    yield put(setBulkAssignmentSavingAction(true))
+
+    const { assignmentSettings, ..._payload } = payload
+    const name = yield select(getUserNameSelector)
+    const _id = yield select(getUserId)
+    const assignedBy = { _id, name }
+
+    const startDate =
+      assignmentSettings.startDate &&
+      moment(assignmentSettings.startDate).valueOf()
+    const endDate =
+      assignmentSettings.endDate && moment(assignmentSettings.endDate).valueOf()
+    const dueDate =
+      assignmentSettings.dueDate && moment(assignmentSettings.dueDate).valueOf()
+    const data = {
+      ...omit(assignmentSettings, ['class', 'resources', 'termId']),
+      startDate,
+      endDate,
+      dueDate,
+      assignedBy,
+    }
+
+    if (
+      data.scoringType ===
+      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    ) {
+      data.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+    }
+
+    const result = yield call(assignmentApi.bulkAssign, {
+      ..._payload,
+      assignmentSettings: data,
+    })
+    notification({ type: 'info', msg: result })
+    yield put(push('/author/assignments'))
+  } catch (err) {
+    console.error('error for save assignment', err)
+    const errorMessage = err.response?.data?.message || 'Something went wrong'
+    notification({ msg: errorMessage })
+  } finally {
+    yield put(setBulkAssignmentSavingAction(false))
+  }
+}
+
 function* loadAssignments({ payload }) {
   try {
     let testId
@@ -480,6 +557,7 @@ function* deleteAssignment({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
+    yield takeLatest(SAVE_BULK_ASSIGNMENT, saveBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
   ])

@@ -39,6 +39,7 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
+import { setSearchTermsFilterAction } from '../../../TestPage/components/Assign/ducks'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -162,8 +163,9 @@ class ClassList extends React.Component {
   }
 
   loadClassList = () => {
-    const { loadClassListData, userOrgId } = this.props
+    const { loadClassListData, userOrgId, setSearchTermsFilter } = this.props
     const { searchTerms } = this.state
+    setSearchTermsFilter(searchTerms)
     loadClassListData({
       districtId: userOrgId,
       queryType: 'OR',
@@ -602,6 +604,7 @@ const enhance = compose(
       loadSchoolsData: receiveSchoolsAction,
       loadCourseListData: receiveCourseListAction,
       getAllTags: getAllTagsAction,
+      setSearchTermsFilter: setSearchTermsFilterAction,
     }
   )
 )

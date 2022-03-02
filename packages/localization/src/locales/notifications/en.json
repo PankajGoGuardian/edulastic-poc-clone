@@ -483,6 +483,14 @@
     "message": "Please select at least one class to assign.",
     "description": ""
   },
+  "selectSubject": {
+    "message": "Please select at least one subject to bulk assign.",
+    "description": ""
+  },
+  "selectGrade": {
+    "message": "Please select at least one grade to bulk assign.",
+    "description": ""
+  },
   "endDate": {
     "message": " Please Enter a future end date.",
     "description": ""

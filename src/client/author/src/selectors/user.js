@@ -78,7 +78,7 @@ export const getChildrens = createSelector(
 
 export const getUserIPZipCode = createSelector(
   stateSelector,
-  (state) => state.user.ipZipCode
+  (state) => state.user?.ip2LocationResult?.ipZipCode
 )
 
 export const getUser = createSelector(stateSelector, (state) => state.user)

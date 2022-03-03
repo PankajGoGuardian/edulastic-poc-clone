@@ -12,7 +12,7 @@ export const userPickFields = [
   'firstName',
   'googleId',
   'institutionIds',
-  'ipZipCode',
+  'ip2LocationResult',
   'isClientAccessGiven',
   'isUserGoogleLoggedIn',
   'lastName',

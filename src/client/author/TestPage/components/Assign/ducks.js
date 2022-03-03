@@ -49,6 +49,7 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
+export const SET_EXCLUDE_SCHOOLS = '[assignment settings] set exclude schools'
 
 // actions
 export const setAssignmentAction = createAction(SET_ASSIGNMENT)
@@ -75,6 +76,11 @@ export const setSearchTermsFilterAction = (payload) => ({
   payload,
 })
 
+export const setExcludeSchoolsAction = (payload) => ({
+  type: SET_EXCLUDE_SCHOOLS,
+  payload,
+})
+
 const initialState = {
   isLoading: false,
   isAssigning: false,
@@ -85,6 +91,7 @@ const initialState = {
   conflictData: {},
   current: '', // id of the current one being edited
   searchTerms: {},
+  excludeSchools: false,
 }
 
 const setAssignment = (state, { payload }) => {
@@ -142,6 +149,10 @@ const updateSearchTermsFilter = (state, { payload }) => {
   state.searchTerms = payload
 }
 
+const setExcludeSchools = (state, { payload }) => {
+  state.excludeSchools = payload
+}
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: (state) => {
     state.isLoading = true
@@ -156,6 +167,7 @@ export const reducer = createReducer(initialState, {
   [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
   [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
+  [SET_EXCLUDE_SCHOOLS]: setExcludeSchools,
 })
 
 // selectors

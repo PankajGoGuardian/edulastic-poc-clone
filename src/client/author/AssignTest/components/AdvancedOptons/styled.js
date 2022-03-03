@@ -7,7 +7,7 @@ import {
   white,
   backgrounds,
 } from '@edulastic/colors'
-import { DatePicker, Row, Select, Table } from 'antd'
+import { DatePicker, Row, Select, Table, Switch } from 'antd'
 import styled from 'styled-components'
 
 export const OptionConationer = styled.div`
@@ -274,5 +274,16 @@ export const InfoSection = styled.div`
       font-weight: 600;
       font-size: 16px;
     }
+  }
+`
+
+export const SwitchStyled = styled(Switch)`
+  &.ant-switch {
+    height: 30px !important;
+    width: 100px !important;
+  }
+  &.ant-switch:after {
+    width: 26px !important;
+    height: 26px !important;
   }
 `

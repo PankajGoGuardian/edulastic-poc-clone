@@ -1,6 +1,7 @@
 import { EduButton } from '@edulastic/common'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
+import { get } from 'lodash'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import {
   getSearchTermsFilterSelector,
@@ -21,6 +22,7 @@ const ShowBulkAssignModal = ({
   saveBulkAssignment,
   searchTerms,
   testId,
+  excludeSchools,
 }) => {
   const [saving, setSavingState] = useState(false)
 
@@ -38,6 +40,7 @@ const ShowBulkAssignModal = ({
       testId,
       assignmentSettings,
       schoolIds: institutionIds,
+      excludeSchools,
     }
 
     saveBulkAssignment(payload)
@@ -92,6 +95,7 @@ export default connect(
       : getTestSelector(state),
     searchTerms: getSearchTermsFilterSelector(state),
     testId: getTestIdSelector(state),
+    excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
   }),
   {
     saveBulkAssignment: saveBulkAssignmentAction,

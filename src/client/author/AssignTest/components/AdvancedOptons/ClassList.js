@@ -31,6 +31,7 @@ import {
   ClassListContainer,
   TableContainer,
   InfoSection,
+  SwitchStyled,
 } from './styled'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -39,7 +40,11 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
-import { setSearchTermsFilterAction } from '../../../TestPage/components/Assign/ducks'
+import {
+  setSearchTermsFilterAction,
+  setExcludeSchoolsAction,
+} from '../../../TestPage/components/Assign/ducks'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -267,6 +272,8 @@ class ClassList extends React.Component {
       assignedClassesById,
       testType,
       isCoursesLoading,
+      setExcludeSchools,
+      excludeSchools,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -379,11 +386,28 @@ class ClassList extends React.Component {
       },
     ]
 
+    const { isPlaylist, match } = this.props
+    const { testId } = match.params
+    const isPlaylistModule = isPlaylist && !testId
     return (
       <ClassListContainer>
         <ClassListFilter>
           <StyledRowLabel>
-            School
+            School{' '}
+            {!isPlaylistModule && (
+              <FeaturesSwitch
+                inputFeatures="canBulkAssign"
+                key="canBulkAssign"
+                actionOnInaccessible="hidden"
+              >
+                <SwitchStyled
+                  checkedChildren="EXCLUDE"
+                  unCheckedChildren="INCLUDE"
+                  value={excludeSchools}
+                  onChange={setExcludeSchools}
+                />
+              </FeaturesSwitch>
+            )}
             <SelectInputStyled
               data-cy="schoolSelect"
               mode="multiple"
@@ -598,6 +622,7 @@ const enhance = compose(
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
+      excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
     }),
     {
       loadClassListData: receiveClassListAction,
@@ -605,6 +630,7 @@ const enhance = compose(
       loadCourseListData: receiveCourseListAction,
       getAllTags: getAllTagsAction,
       setSearchTermsFilter: setSearchTermsFilterAction,
+      setExcludeSchools: setExcludeSchoolsAction,
     }
   )
 )

@@ -957,6 +957,7 @@ class AssignTest extends React.Component {
                 match?.params?.playlistId && !match?.params?.testId
               }
               isAssigning={isAssigning || isBulkAssigning}
+              isPlaylist={isPlaylist}
             />
           )}
         </Container>

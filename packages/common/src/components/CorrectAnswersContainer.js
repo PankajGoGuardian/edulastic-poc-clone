@@ -60,11 +60,16 @@ const CorrectAnswersContainer = ({
 }) => {
   const blockTitle = useMemo(() => {
     if (!showAnswerScore || !score) {
-      return <Subtitle margin={titleMargin}>{title}</Subtitle>
+      return (
+        <Subtitle margin={titleMargin} data-cy="answers-title">
+          {title}
+        </Subtitle>
+      )
     }
     return (
       <Subtitle margin={titleMargin}>
-        {title} / Score<ScoreBlock>{score}</ScoreBlock>
+        {title} / Score
+        <ScoreBlock data-cy="answers-score-block">{score}</ScoreBlock>
       </Subtitle>
     )
   }, [showAnswerScore, title, score, titleMargin])

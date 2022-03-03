@@ -1,11 +1,16 @@
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState, useRef } from 'react'
 import { TreeSelect, Tooltip } from 'antd'
-import { startCase } from 'lodash'
+import { startCase, isEmpty } from 'lodash'
 import styled from 'styled-components'
 import { SelectInputStyled } from '@edulastic/common'
 import { greyThemeLight, title } from '@edulastic/colors'
 
-const MAX_TAG_LENGTH = 10
+// approx space each character will take.
+const CHARACTER_WIDTH_OFFSET = 7
+// padding between each tag.
+const TAG_PADDING_OFFSET = 20
+// width to accomodate count tag, eg: +4
+const COUNT_TAG_WIDTH_OFFSET = 60
 
 const getSelectedValuesCharacterLength = (selectedValues) => {
   let totalCharacters = 0
@@ -14,7 +19,6 @@ const getSelectedValuesCharacterLength = (selectedValues) => {
     const value = Object.values(selectedObj)[0] || ''
     totalCharacters += value.length
   })
-  totalCharacters += selectedValues.length * 2
   return totalCharacters
 }
 
@@ -22,6 +26,9 @@ const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
   const [selectedValues, setSelectedValues] = useState([])
   const [maxTagCount, setMaxTagCount] = useState(2)
   const [shouldUpdateMaxTagCount, setShouldUpdateMaxTagCount] = useState(true)
+  const [inputBoxWidth, setInputBoxWidth] = useState(250)
+
+  const FilterContainerRef = useRef(null)
 
   const [treeData, allFilterValues] = useMemo(() => {
     const treeDataValues = Object.keys(extDemographicData).map((filterKey) => {
@@ -67,31 +74,51 @@ const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
   }
 
   useEffect(() => {
+    if (!isEmpty(FilterContainerRef.current)) {
+      // decrease by 10px to remove right margin on the container
+      setInputBoxWidth(FilterContainerRef.current.offsetWidth - 10)
+    }
+  }, [])
+
+  useEffect(() => {
     const totalCharacters = getSelectedValuesCharacterLength(selectedValues)
+    // calculating tags content width based on below items:
+    // 1. total characters shown in all the tags.
+    // 2. Padding between each tag.
+    const charactersWidth =
+      totalCharacters * CHARACTER_WIDTH_OFFSET +
+      selectedValues.length * TAG_PADDING_OFFSET
     if (
-      totalCharacters >= MAX_TAG_LENGTH * 2 - 2 &&
+      charactersWidth >= inputBoxWidth - COUNT_TAG_WIDTH_OFFSET &&
       shouldUpdateMaxTagCount &&
       selectedValues.length !== allFilterValues.length
     ) {
-      setMaxTagCount(selectedValues.length)
+      setMaxTagCount(selectedValues.length - 1)
       setShouldUpdateMaxTagCount(false)
-    } else if (totalCharacters < MAX_TAG_LENGTH * 2) {
+    } else if (charactersWidth < inputBoxWidth - COUNT_TAG_WIDTH_OFFSET) {
       setShouldUpdateMaxTagCount(true)
       setMaxTagCount(10)
     }
   }, [selectedValues])
 
   const handleSelectAll = () => {
-    const totalCharacters = getSelectedValuesCharacterLength(allFilterValues)
-    if (totalCharacters >= MAX_TAG_LENGTH * 2 - 2) {
-      setMaxTagCount(2)
-      setShouldUpdateMaxTagCount(false)
+    let charactersWidth = 0
+    for (const [index, filterValue] of allFilterValues.entries()) {
+      const valueObj = JSON.parse(filterValue)
+      const key = Object.keys(valueObj)[0]
+      charactersWidth +=
+        valueObj[key].length * CHARACTER_WIDTH_OFFSET + TAG_PADDING_OFFSET
+      if (charactersWidth >= inputBoxWidth - COUNT_TAG_WIDTH_OFFSET) {
+        setMaxTagCount(index)
+        setShouldUpdateMaxTagCount(false)
+        break
+      }
     }
     setSelectedValues(allFilterValues)
   }
 
   return (
-    <ExternalDemographicFilterContainer>
+    <ExternalDemographicFilterContainer ref={FilterContainerRef}>
       <SelectInputStyled
         data-cy="external-demographic-filter"
         as={TreeSelect}
@@ -104,7 +131,6 @@ const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
         dropdownClassName="external-demographic-dropdown"
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         maxTagCount={maxTagCount}
-        maxTagTextLength={MAX_TAG_LENGTH}
         maxTagPlaceholder={(omittedValues) => `+${omittedValues.length}`}
         value={selectedValues}
         onChange={(value) => setSelectedValues(value)}

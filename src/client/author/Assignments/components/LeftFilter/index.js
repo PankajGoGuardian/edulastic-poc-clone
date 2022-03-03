@@ -138,7 +138,7 @@ class LeftFilter extends React.Component {
     } = filterState
     const roleBasedTestType =
       userRole === 'teacher' ? testTypes : AdminTestTypes
-    const classListByTerm = classList.filter(
+    const classListByTerm = classList?.filter(
       (item) => item.termId === termId || !termId
     )
     const classListActive = classListByTerm.filter((item) => item.active === 1)

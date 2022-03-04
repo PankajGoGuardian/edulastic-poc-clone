@@ -53,7 +53,9 @@ const StudentApp = ({
 
   const userInfo = user?.user
   const userRole = userInfo?.role || ''
-  const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
+  const isEEAUser = eeaCountryCodeList.includes(
+    userInfo?.ip2LocationResult?.countryCode
+  )
 
   const showPrivacyPolicyModal =
     !process.env.REACT_APP_QA_ENV &&

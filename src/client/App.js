@@ -620,7 +620,9 @@ class App extends Component {
       ? 'Close demo account'
       : 'Stop Acting as User'
 
-    const isEEAUser = eeaCountryCodeList.includes(userInfo?.countryCode)
+    const isEEAUser = eeaCountryCodeList.includes(
+      userInfo?.ip2LocationResult?.countryCode
+    )
 
     const showPrivacyPolicyModal =
       !process.env.REACT_APP_QA_ENV &&

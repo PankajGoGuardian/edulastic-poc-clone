@@ -30,6 +30,9 @@ const VariableRow = ({
   const isNumberSquence = variable.type === 'NUMBER_SEQUENCE'
   const isTextSquence = variable.type === 'TEXT_SEQUENCE'
 
+  // default step is 1
+  const varStep = variable.step || 1
+
   const handleKeypressMathInput = (e) => {
     if (e.key === '@') {
       notification({
@@ -148,7 +151,7 @@ const VariableRow = ({
             type="number"
             data-cy="variableMin"
             value={variable.min}
-            step={0.1}
+            step={varStep}
             onChange={(e) =>
               onChange(
                 variableName,
@@ -166,7 +169,7 @@ const VariableRow = ({
             type="number"
             data-cy="variableMax"
             value={variable.max}
-            step={0.1}
+            step={varStep}
             onChange={(e) =>
               onChange(
                 variableName,

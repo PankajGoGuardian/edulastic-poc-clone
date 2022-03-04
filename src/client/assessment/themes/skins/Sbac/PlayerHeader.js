@@ -14,7 +14,6 @@ import {
 } from '@edulastic/colors'
 import {
   test as testConstants,
-  roleuser,
   keyboard as keyboardConst,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
@@ -29,7 +28,6 @@ import {
   MainActionWrapper,
 } from '../../common'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
-import AudioControls from '../../../AudioControls'
 import { MAX_MOBILE_WIDTH } from '../../../constants/others'
 import {
   ControlBtn,
@@ -74,9 +72,6 @@ const PlayerHeader = ({
   calcBrands,
   changeCaculateMode,
   finishTest,
-  showUserTTS,
-  userRole,
-  LCBPreviewModal,
   items,
   qType,
   setZoomLevel,
@@ -92,7 +87,6 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions,
   testType,
-  isTestPreviewModalVisible,
   isPremiumContentWithoutAccess = false,
   checkAnswer,
   answerChecksUsedForItem,
@@ -134,14 +128,6 @@ const PlayerHeader = ({
     padding: '0',
     zIndex: 505,
   }
-
-  const showAudioControls = userRole === 'teacher' && !!LCBPreviewModal
-  const canShowPlayer =
-    ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
-      (userRole !== roleuser.STUDENT &&
-        (!!LCBPreviewModal || isTestPreviewModalVisible))) &&
-    data?.tts &&
-    data?.tts?.taskStatus === 'COMPLETED'
 
   const { showMagnifier } = settings
 
@@ -289,19 +275,6 @@ const PlayerHeader = ({
                       </StyledButton>
                     </Tooltip>
                   )}
-                  {canShowPlayer && (
-                    <AudioControls
-                      showAudioControls={showAudioControls}
-                      key={data.id}
-                      item={data}
-                      qId={data.id}
-                      audioSrc={data?.tts?.titleAudioURL}
-                      className="sbac-question-audio-controller"
-                      isPremiumContentWithoutAccess={
-                        isPremiumContentWithoutAccess
-                      }
-                    />
-                  )}
                 </FlexContainer>
               </FlexContainer>
               <ToolBar
@@ -351,17 +324,12 @@ PlayerHeader.propTypes = {
   calcBrands: PropTypes.array.isRequired,
   changeCaculateMode: PropTypes.func.isRequired,
   finishTest: PropTypes.func.isRequired,
-  showUserTTS: PropTypes.bool.isRequired,
-  userRole: PropTypes.string.isRequired,
-  LCBPreviewModal: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   qType: PropTypes.string.isRequired,
   setZoomLevel: PropTypes.func.isRequired,
   zoomLevel: PropTypes.oneOf([PropTypes.number, PropTypes.string]).isRequired,
 }
-PlayerHeader.defaultProps = {
-  LCBPreviewModal: false,
-}
+
 const enhance = compose(
   withRouter,
   withWindowSizes,

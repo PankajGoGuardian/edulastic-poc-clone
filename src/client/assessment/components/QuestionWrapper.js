@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { ThemeProvider, withTheme } from 'styled-components'
-import {
-  questionType,
-  test,
-  roleuser,
-  test as testContants,
-} from '@edulastic/constants'
+import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, isEqual, isEmpty } from 'lodash'
@@ -403,7 +398,7 @@ class QuestionWrapper extends Component {
       isPremiumUser,
     } = this.props
 
-    const { releaseGradeLabels } = testContants
+    const { releaseGradeLabels } = test
 
     // return if rubric is not attached to the question
     if (isEmpty(rubrics)) {
@@ -601,7 +596,6 @@ class QuestionWrapper extends Component {
     const answerScore = this.answerScore
     const showAnswerScore =
       isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
-
     return (
       <ThemeProvider
         theme={{
@@ -617,10 +611,6 @@ class QuestionWrapper extends Component {
             (!hideVisibility || isShowStudentWork) &&
             !isPrintPreview && (
               <AudioControls
-                btnWithText={
-                  playerSkinType.toLowerCase() ===
-                  test.playerSkinValues.edulastic.toLowerCase()
-                }
                 hideVisibility={hideVisibility && !isShowStudentWork}
                 key={data.id}
                 item={data}

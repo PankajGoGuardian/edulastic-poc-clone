@@ -31,28 +31,18 @@ import {
   curentPlayerDetailsSelector,
   playerSkinTypeSelector,
 } from './selectors/test'
+import { themes } from '../theme'
+
+const { playerSkin } = themes
+const { defaultButton, navigationButtons } = playerSkin.sbac
 
 const ALPHABET = 'abcdefghijklmnopqrstuvwxyz'
 
-const AudioButton = styled(EduButton)`
-  position: relative;
-  z-index: 998;
-  &.ant-btn.ant-btn-primary.not-supported {
-    background: white;
-    border: 1px solid #de0b83;
-  }
-  &:focus {
-    border: none;
-    outline: 0;
-    box-shadow: 0 0 0 2px ${themeColorBlue};
-  }
-`
-
-const { edulastic, drc, parcc, cmas } = playerSkinValues
+const { edulastic, drc, parcc, cmas, sbac } = playerSkinValues
+const showText = [edulastic, sbac]
 
 const AudioControls = ({
   item: questionData = {},
-  btnWithText = false,
   audioSrc,
   qId: targetQId,
   currentPlayingDetails,
@@ -73,6 +63,8 @@ const AudioControls = ({
   const [pageHowls, setPageHowls] = useState([])
 
   const qId = useMemo(() => targetQId, [targetQId])
+
+  const btnWithText = showText.includes(playerSkinType?.toLowerCase())
 
   const ttsAudioPlaybackRate = parseFloat(
     [edulastic, drc, cmas, parcc].includes(playerSkinType) && !isStudentReport
@@ -345,6 +337,7 @@ const AudioControls = ({
             ml="0px"
             IconBtn={!btnWithText}
             onClick={handlePlayPauseAudio}
+            playerSkinType={playerSkinType}
             disabled={isPremiumContentWithoutAccess}
           >
             {currentPlayingDetails.qId === qId ? (
@@ -375,6 +368,7 @@ const AudioControls = ({
             height="40px"
             IconBtn={!btnWithText}
             onClick={handleStopAudio}
+            playerSkinType={playerSkinType}
             disabled={
               currentPlayingDetails.qId !== qId || isPremiumContentWithoutAccess
             }
@@ -396,6 +390,7 @@ const AudioControls = ({
             height="40px"
             IconBtn={!btnWithText}
             className="not-supported"
+            playerSkinType={playerSkinType}
             disabled
           >
             <IconExclamationMark width={20} height={20} color={white} />
@@ -428,4 +423,51 @@ const AudioButtonsWrapper = styled.div`
       visibility: ${visibility};
     `
   }}
+`
+
+const buttonStyles = {
+  sbac: css`
+    &.ant-btn.ant-btn-primary {
+      background: ${navigationButtons.background};
+      color: ${navigationButtons.color};
+      border: 1px solid ${navigationButtons.color};
+
+      svg {
+        fill: ${navigationButtons.color};
+      }
+
+      &:hover {
+        border: 1px solid ${defaultButton.hover.background};
+        color: ${defaultButton.hover.color};
+        background: ${defaultButton.hover.background};
+
+        svg {
+          fill: ${defaultButton.hover.color};
+        }
+      }
+      &:active,
+      &:focus {
+        outline: 0;
+        box-shadow: none !important;
+        background: ${defaultButton.hover.background};
+      }
+    }
+  `,
+}
+
+const AudioButton = styled(EduButton)`
+  position: relative;
+  z-index: 998;
+
+  &.ant-btn.ant-btn-primary.not-supported {
+    background: white;
+    border: 1px solid #de0b83;
+  }
+  &:focus {
+    border: none;
+    outline: 0;
+    box-shadow: 0 0 0 2px ${themeColorBlue};
+  }
+
+  ${({ playerSkinType }) => buttonStyles[playerSkinType]}
 `

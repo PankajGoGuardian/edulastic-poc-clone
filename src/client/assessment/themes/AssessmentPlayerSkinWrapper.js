@@ -382,8 +382,7 @@ const StyledMainContainer = styled.div`
     }
   }
   ${({ playerSkin }) =>
-    playerSkin.toLowerCase() === test.playerSkinValues.parcc.toLowerCase() ||
-    playerSkin.toLowerCase() === test.playerSkinValues.sbac.toLowerCase()
+    playerSkin.toLowerCase() === test.playerSkinValues.parcc.toLowerCase()
       ? `
     .question-tab-container {
       padding-top: 0!important;

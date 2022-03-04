@@ -96,7 +96,7 @@ class MainInfo extends React.Component {
               )}
               {showAltScoreInfo && (
                 <Tooltip title="Item with alternative answers with different score points. Review suggested">
-                  <InfoIcon />
+                  <InfoIcon data-cy="alternate-score-info" />
                 </Tooltip>
               )}
             </ScoreInputWrapper>

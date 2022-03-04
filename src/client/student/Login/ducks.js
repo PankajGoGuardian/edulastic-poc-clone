@@ -224,6 +224,7 @@ export const TOGGLE_VERIFY_EMAIL_MODAL = '[user] toggle verify email modal'
 export const SET_IS_SIGNED_UP_USING_USERNAME_AND_PASSWORD =
   '[user] set signedUpUsingUsernameAndPassword flag'
 export const SET_ON_PROFILE_PAGE = '[user] set on profile page'
+const SET_EULA_LOCATION_REQUEST = 'set eula location'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -349,6 +350,8 @@ export const setIsUserSignedUpUsingUsernameAndPassword = createAction(
 )
 
 export const setIsUserOnProfilePageAction = createAction(SET_ON_PROFILE_PAGE)
+
+export const setEulaLocationAction = createAction(SET_EULA_LOCATION_REQUEST)
 
 const initialState = {
   addAccount: false,
@@ -532,6 +535,9 @@ export default createReducer(initialState, {
       return state
     }
     state.user.orgData.defaultClass = payload
+  },
+  [SET_EULA_LOCATION_REQUEST]: (state, { payload }) => {
+    state.user.ip2LocationResult = payload
   },
   [UPDATE_DEFAULT_GRADES]: (state, { payload }) => {
     state.user.orgData.selectedGrades = payload
@@ -838,6 +844,11 @@ export default createReducer(initialState, {
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
+
+export const getIsPolicyAccepted = createSelector(
+  [getUserDetails],
+  (state) => state.isPolicyAccepted
+)
 
 export const getCurrentDistrictUsersSelector = createSelector(
   [getUserDetails],
@@ -2361,12 +2372,16 @@ function* getInviteDetailsSaga({ payload }) {
 function* setInviteDetailsSaga({ payload }) {
   try {
     const result = yield call(authApi.updateInvitedUserDetails, payload)
-
+    delete result.isPolicyAccepted
     const user = pick(result, userPickFields)
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
     TokenStorage.selectAccessToken(user._id, user.role)
     yield call(fetchUser, {}) // needed to update org and other user data to local store
-    yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })
+    const isPolicyAccepted = yield select(getIsPolicyAccepted)
+    yield put({
+      type: SET_INVITE_DETAILS_SUCCESS,
+      payload: { ...result, isPolicyAccepted },
+    })
   } catch (e) {
     yield call(message.error, 'Failed to update user details.')
   }

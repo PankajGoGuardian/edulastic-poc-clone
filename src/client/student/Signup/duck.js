@@ -24,6 +24,7 @@ import {
   signupSuccessAction,
   hideJoinSchoolAction,
   fetchUserAction,
+  setEulaLocationAction,
 } from '../Login/ducks'
 import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 
@@ -358,7 +359,12 @@ export default createReducer(initialState, {
 // Sagas
 function* searchSchoolSaga({ payload = {} }) {
   try {
-    const result = yield call(schoolApi.searchSchool, payload)
+    let result = yield call(schoolApi.searchSchool, payload)
+    const eulaLocation = result[1]
+    result = result[0]
+    if (eulaLocation) {
+      yield put(setEulaLocationAction(eulaLocation))
+    }
     yield put(searchSchoolSuccessAction(result))
     // check if no search text is passed
     // consider the result as auto suggest content

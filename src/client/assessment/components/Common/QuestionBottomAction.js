@@ -13,11 +13,15 @@ import {
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
+import { greyThemeDark2, greyThemeDark4, borderGrey4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
 import { roleuser, test as testConstants } from '@edulastic/constants'
-import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
+import {
+  IconInfo,
+  IconTestBank,
+  IconClockCircularOutline,
+} from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
@@ -397,10 +401,15 @@ const QuestionBottomAction = ({
       )}
       {showQuestionBottomLCBMessage && (
         <QuestionLCBBottomMessage>
-          {isGradedExternally
-            ? 'Teacher manually awarded score for this item. '
-            : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. '}
-          Use Edit/Regrade option to review the settings.
+          <span>
+            <IconInfo width={18} height={18} />
+          </span>
+          <span>
+            {isGradedExternally
+              ? 'Teacher manually awarded score for this item. '
+              : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. '}
+            Use Edit/Regrade option to review the settings.
+          </span>
         </QuestionLCBBottomMessage>
       )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
@@ -684,9 +693,18 @@ const TimeSpentText = styled.div`
 
 const QuestionLCBBottomMessage = styled.div`
   margin-left: 51px;
-  margin-top: 24px;
+  margin-top: 20px;
   font-weight: 500;
   max-width: 650px;
   width: calc(100% - 51px);
   color: ${greyThemeDark4};
+  border: 1px solid ${borderGrey4};
+  border-radius: 4px;
+  padding: 8px 14px;
+  display: grid;
+  font-size: 12px;
+  grid-template-columns: 20px 1fr;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.22px;
 `

@@ -178,7 +178,7 @@ const PDFViewer = ({
     pdfScale,
     rotate,
     annotations,
-    stdAnnotations,
+    JSON.stringify(stdAnnotations),
     annotationsCount,
   ])
 

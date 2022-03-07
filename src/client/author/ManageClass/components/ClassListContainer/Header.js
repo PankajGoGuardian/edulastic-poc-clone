@@ -177,6 +177,7 @@ const Header = ({
             {!isPlayground && enableCleverSync && (
               <EduButton
                 isBlue
+                data-cy="syncClever"
                 isGhost
                 onClick={() => setShowCleverSyncModal(true)}
               >
@@ -194,7 +195,12 @@ const Header = ({
                   clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   buttonText="Sync with Google Classroom"
                   render={(renderProps) => (
-                    <EduButton isBlue isGhost onClick={renderProps.onClick}>
+                    <EduButton
+                      isBlue
+                      data-cy="syncGoogle"
+                      isGhost
+                      onClick={renderProps.onClick}
+                    >
                       <IconGoogleClassroom />
                       <span>SYNC WITH GOOGLE CLASSROOM</span>
                     </EduButton>
@@ -231,7 +237,16 @@ const Header = ({
               atlasId &&
               atlasProviderName?.length &&
               filterClass === 'Active' && (
-                <EduButton isBlue isGhost onClick={handleSyncWithAtlas}>
+                <EduButton
+                  isBlue
+                  data-cy={
+                    atlasProviderName.toLowerCase() === 'schoology'
+                      ? 'syncSchoology'
+                      : 'syncClassLink'
+                  }
+                  isGhost
+                  onClick={handleSyncWithAtlas}
+                >
                   <span>
                     RESYNC{' '}
                     {atlasProviderName.toLowerCase() === 'schoology'

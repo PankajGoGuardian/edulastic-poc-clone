@@ -210,7 +210,7 @@ const ConfigureCanvasModal = ({
                 Canvas admin can instal Edulastic app following below steps:
               </p>
               <ol>
-                <li>Search and Install Edualstic-SSO app form app center</li>
+                <li>Search and Install Edualstic-SSO app from app center</li>
                 <li>Enter Consumer and Secret Key in the app</li>
               </ol>
             </ContentList>

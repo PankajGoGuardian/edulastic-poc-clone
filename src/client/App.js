@@ -19,6 +19,7 @@ import { themes } from './theme'
 import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
+import PrivacyPolicyModal from './privacyPolicy'
 import {
   getUserNameSelector,
   getUserOrgId,
@@ -383,7 +384,9 @@ class App extends Component {
       return <Loading />
     }
 
-    const features = user?.user?.features || {}
+    const userInfo = user?.user
+
+    const features = userInfo?.features || {}
     let defaultRoute = ''
     let redirectRoute = ''
     const isPremium = get(user, ['user', 'features', 'premium'])
@@ -615,8 +618,25 @@ class App extends Component {
     const bannerButtonText = isDemoAccountProxy
       ? 'Close demo account'
       : 'Stop Acting as User'
+
+    const showPrivacyPolicyModal =
+      !process.env.REACT_APP_QA_ENV &&
+      userRole !== roleuser.STUDENT &&
+      userInfo?.isPolicyAccepted === false
     return (
       <div>
+        {showPrivacyPolicyModal && (
+          <FeaturesSwitch
+            inputFeatures="eula"
+            actionOnInaccessible="hidden"
+          >
+            <PrivacyPolicyModal
+              userID={userInfo._id}
+              userRole={userRole}
+              roleuser={roleuser}
+            />
+          </FeaturesSwitch>
+        )}
         {(isSAWithoutSchools ||
           (!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole))) && (
           <AdminAlertModal

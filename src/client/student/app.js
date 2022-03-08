@@ -8,6 +8,7 @@ import { Layout } from 'antd'
 import { connect } from 'react-redux'
 import { mobileWidthLarge } from '@edulastic/colors'
 // import { getZoomedTheme } from "./zoomTheme";
+import { roleuser } from '@edulastic/constants'
 import Sidebar from './Sidebar/SideMenu'
 import { Assignment } from './Assignments'
 import { Report } from './Reports'
@@ -29,6 +30,7 @@ import {
   updateCliUserAction,
 } from './Login/ducks'
 import { AssignmentEmbedLink } from '../assignmentEmbedLink'
+import PrivacyPolicyModal from '../privacyPolicy'
 
 const StudentApp = ({
   match,
@@ -36,6 +38,7 @@ const StudentApp = ({
   location,
   updateCliUser,
   isCliUser,
+  user,
 }) => {
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
@@ -47,9 +50,30 @@ const StudentApp = ({
     }
   }, [])
 
+  const userInfo = user?.user
+  const userRole = userInfo?.role || ''
+  const features = userInfo?.features
+
+  const showPrivacyPolicyModal =
+    !process.env.REACT_APP_QA_ENV &&
+    userRole !== roleuser.STUDENT &&
+    userInfo?.isPolicyAccepted === false
+
   return (
     <ThemeProvider theme={globalThemes.default}>
       <StyledLayout isProxyUser={isProxyUser}>
+        {showPrivacyPolicyModal && (
+          <FeaturesSwitch
+            inputFeatures="eula"
+            actionOnInaccessible="hidden"
+          >
+            <PrivacyPolicyModal
+              userID={userInfo._id}
+              userRole={userRole}
+              roleuser={roleuser}
+            />
+          </FeaturesSwitch>
+        )}
         <MainContainer isCliUser={isCliUser}>
           {!isCliUser && <Sidebar isProxyUser={isProxyUser} />}
           <Wrapper>
@@ -106,6 +130,7 @@ const StudentApp = ({
 
 export default connect(
   ({ ui, user }) => ({
+    user,
     zoomLevel: ui.zoomLevel,
     isProxyUser: isProxyUserSelector({ user }),
     isCliUser: user?.isCliUser,

@@ -384,9 +384,11 @@ const QuestionBottomAction = ({
       )
     )
 
-  const hasAltAnswers = item?.validation?.altResponses?.some(
-    (altResp) => altResp?.score !== item?.validation?.validResponse?.score
-  )
+  const hasAltAnswers =
+    item?.validation?.altResponses?.some(
+      (altResp) => altResp?.score !== item?.validation?.validResponse?.score
+    ) && !item?.validation?.unscored
+
   const showQuestionBottomLCBMessage =
     isLCBView && !hideCorrectAnswer && (hasAltAnswers || isGradedExternally)
 

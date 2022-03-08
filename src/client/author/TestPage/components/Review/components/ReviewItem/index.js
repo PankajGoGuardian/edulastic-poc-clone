@@ -111,6 +111,9 @@ const ReviewItem = ({
 
   const showAltScoreInfo = useMemo(() => {
     return item?.data?.questions?.some((q) => {
+      if (q?.validation?.unscored) {
+        return false
+      }
       const correctSore = q?.validation?.validResponse?.score
       const altScores = q?.validation?.altResponses?.map((resp) => resp?.score)
       return altScores?.some((altScore) => altScore !== correctSore)

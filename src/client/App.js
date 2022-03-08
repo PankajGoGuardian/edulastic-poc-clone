@@ -65,6 +65,7 @@ import {
 import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
+import FeaturesSwitch from './features/components/FeaturesSwitch'
 
 const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
@@ -626,10 +627,7 @@ class App extends Component {
     return (
       <div>
         {showPrivacyPolicyModal && (
-          <FeaturesSwitch
-            inputFeatures="eula"
-            actionOnInaccessible="hidden"
-          >
+          <FeaturesSwitch inputFeatures="eula" actionOnInaccessible="hidden">
             <PrivacyPolicyModal
               userID={userInfo._id}
               userRole={userRole}

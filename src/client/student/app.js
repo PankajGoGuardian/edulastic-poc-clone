@@ -31,6 +31,7 @@ import {
 } from './Login/ducks'
 import { AssignmentEmbedLink } from '../assignmentEmbedLink'
 import PrivacyPolicyModal from '../privacyPolicy'
+import FeaturesSwitch from '../features/components/FeaturesSwitch'
 
 const StudentApp = ({
   match,
@@ -52,7 +53,6 @@ const StudentApp = ({
 
   const userInfo = user?.user
   const userRole = userInfo?.role || ''
-  const features = userInfo?.features
 
   const showPrivacyPolicyModal =
     !process.env.REACT_APP_QA_ENV &&
@@ -63,10 +63,7 @@ const StudentApp = ({
     <ThemeProvider theme={globalThemes.default}>
       <StyledLayout isProxyUser={isProxyUser}>
         {showPrivacyPolicyModal && (
-          <FeaturesSwitch
-            inputFeatures="eula"
-            actionOnInaccessible="hidden"
-          >
+          <FeaturesSwitch inputFeatures="eula" actionOnInaccessible="hidden">
             <PrivacyPolicyModal
               userID={userInfo._id}
               userRole={userRole}

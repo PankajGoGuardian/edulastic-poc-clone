@@ -494,8 +494,6 @@ class QuestionWrapper extends Component {
       isQuestionView,
       isShowStudentWork,
       hideCorrectAnswer,
-      isReviewTab,
-      page: viewPage,
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -599,8 +597,6 @@ class QuestionWrapper extends Component {
     }
 
     const answerScore = this.answerScore
-    const showAnswerScore =
-      isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
 
     return (
       <ThemeProvider
@@ -725,7 +721,6 @@ class QuestionWrapper extends Component {
                     {...userAnswerProps}
                     page={page}
                     setPage={this.setPage}
-                    showAnswerScore={showAnswerScore}
                   />
                   {showFeedback && !isPrintPreview && (
                     <BottomAction

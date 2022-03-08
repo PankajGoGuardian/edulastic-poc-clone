@@ -25,6 +25,7 @@ import {
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 import { getUser } from '../../../author/src/selectors/user'
 import PassageDivider from '../../../common/components/PassageDivider'
+import ItemLevelScoreWrapper from '../Common/ItemLevelScoreWrapper'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -391,6 +392,7 @@ class TestItemPreview extends Component {
       isPrintPreview,
       isShowStudentWork,
       responsiveWidth,
+      itemLevelScore,
     } = restProps
 
     const { isFeedbackVisible, collapseDirection } = this.state
@@ -426,6 +428,10 @@ class TestItemPreview extends Component {
           borderRadius: '10px',
         }
       : {}
+
+    const showAnswerScore = isExpressGrader || isLCBView || isReviewTab
+    const showScoreAtItem = itemLevelScoring && !isSingleQuestionView
+    const showScoreAtQuestion = showAnswerScore && !showScoreAtItem
 
     return (
       <ThemeProvider theme={{ ...themes.default }}>
@@ -499,6 +505,7 @@ class TestItemPreview extends Component {
                     testActivityId={testActivityId}
                     studentData={studentData}
                     currentStudent={currentStudent}
+                    showAnswerScore={showScoreAtQuestion}
                   />
                 )
               })}
@@ -528,6 +535,9 @@ class TestItemPreview extends Component {
               )}
             </>
           )}
+        {showScoreAtItem && (
+          <ItemLevelScoreWrapper itemLevelScore={itemLevelScore} />
+        )}
       </ThemeProvider>
     )
   }

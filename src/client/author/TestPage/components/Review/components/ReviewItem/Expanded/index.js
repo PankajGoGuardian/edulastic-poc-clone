@@ -204,6 +204,8 @@ const Expanded = ({
             windowWidth="100%"
             isReviewTab
             testItem
+            itemLevelScoring={testItem?.itemLevelScoring}
+            itemLevelScore={testItem?.itemLevelScore}
             isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
             premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
             itemIdKey={testItem._id}
@@ -272,6 +274,8 @@ const Expanded = ({
                     }
                     isExpandedView
                     itemIdKey={testItem._id}
+                    itemLevelScoring={testItem?.itemLevelScoring}
+                    itemLevelScore={testItem?.itemLevelScore}
                   />
                 </div>
               </AnswerContext.Provider>

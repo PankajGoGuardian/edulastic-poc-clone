@@ -54,6 +54,7 @@ import {
 import PassageDivider from '../../../../../common/components/PassageDivider'
 import { getCurrentLanguage } from '../../../../../common/components/LanguageSelector/duck'
 import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
+import ItemLevelScoreWrapper from '../../../../../assessment/components/Common/ItemLevelScoreWrapper'
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -401,10 +402,11 @@ class AuthorTestItemPreview extends Component {
       viewComponent,
       item,
       isPassage,
+      showScoreAtItem,
       ...restProps
     } = this.props
     const { value, isEnableScratchpad, collapseDirection } = this.state
-    const { createdBy, data = {}, maxScore, _id } = item
+    const { createdBy, data = {}, maxScore, itemLevelScore, _id } = item
     const { questions = [] } = data
     const [firstQuestion = {}] = questions
     const standardIdentfiers =
@@ -503,6 +505,9 @@ class AuthorTestItemPreview extends Component {
               </React.Fragment>
             ))}
           </ScratchpadAndWidgetWrapper>
+          {showScoreAtItem && (
+            <ItemLevelScoreWrapper itemLevelScore={itemLevelScore} />
+          )}
           {!isPassage && (
             <QuestionPreviewDetails
               id={_id}

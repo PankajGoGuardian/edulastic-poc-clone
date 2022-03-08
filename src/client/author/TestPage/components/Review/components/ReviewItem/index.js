@@ -29,6 +29,7 @@ const ReviewItem = ({
   standards,
   groupMinimized,
   groupPoints,
+  isTestsUpdated,
 }) => {
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -155,6 +156,7 @@ const ReviewItem = ({
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           itemNumber={item.indx}
           showAltScoreInfo={showAltScoreInfo}
+          isTestsUpdated={isTestsUpdated}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
@@ -176,6 +178,7 @@ const ReviewItem = ({
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
           showAltScoreInfo={showAltScoreInfo}
+          isTestsUpdated={isTestsUpdated}
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}

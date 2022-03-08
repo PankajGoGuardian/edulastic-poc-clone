@@ -43,6 +43,7 @@ import {
   getAutoSelectItemsLoadingStatusSelector,
   showGroupsPanelSelector,
   getTestsCreatingSelector,
+  getTestsUpdatedSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
 import { clearEvaluationAction } from '../../../../../../assessment/actions/evaluation'
@@ -559,6 +560,7 @@ class Review extends PureComponent {
       showGroupsPanel,
       isPreviewModalVisible,
       playlistId,
+      isTestsUpdated,
     } = this.props
     const {
       isCollapse,
@@ -693,6 +695,7 @@ class Review extends PureComponent {
                 userRole={userRole}
                 isPowerPremiumAccount={isPowerPremiumAccount}
                 showGroupsPanel={showGroupsPanel}
+                isTestsUpdated={isTestsUpdated}
               />
             </Paper>
           </ReviewLeftContainer>
@@ -805,6 +808,7 @@ const enhance = compose(
       showGroupsPanel: showGroupsPanelSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isTestsCreating: getTestsCreatingSelector(state),
+      isTestsUpdated: getTestsUpdatedSelector(state),
     }),
     {
       setData: setTestDataAction,

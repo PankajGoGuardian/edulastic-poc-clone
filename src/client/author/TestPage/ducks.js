@@ -743,6 +743,11 @@ export const getTestsCreatingSelector = createSelector(
   (state) => state.creating
 )
 
+export const getTestsUpdatedSelector = createSelector(
+  stateSelector,
+  (state) => state.updated
+)
+
 export const getTestsLoadingSelector = createSelector(
   stateSelector,
   (state) => state.loading

@@ -33,3 +33,8 @@ export const InfoIcon = styled(IconInfo)`
   top: -6px;
   right: 4px;
 `
+
+export const SaveToApply = styled.span`
+  font-size: 10px;
+  font-style: italic;
+`

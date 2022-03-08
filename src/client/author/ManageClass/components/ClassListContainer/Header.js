@@ -260,7 +260,12 @@ const Header = ({
               isCleverDistrict &&
               isCleverGroupPresent &&
               filterClass === 'Active' && (
-                <EduButton isBlue isGhost onClick={handleSyncWithClever}>
+                <EduButton
+                  isBlue
+                  data-cy="resyncClever"
+                  isGhost
+                  onClick={handleSyncWithClever}
+                >
                   <span>RESYNC CLEVER CLASSES</span>
                 </EduButton>
               )}

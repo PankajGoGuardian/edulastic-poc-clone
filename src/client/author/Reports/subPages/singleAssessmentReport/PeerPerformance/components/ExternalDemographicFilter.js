@@ -7,25 +7,29 @@ import { greyThemeLight, title } from '@edulastic/colors'
 
 // approx space each character will take.
 const CHARACTER_WIDTH_OFFSET = 7
-// padding between each tag.
-const TAG_PADDING_OFFSET = 20
+// padding + left margin in each tag
+const TAG_WIDTH_OFFSET = 25
 // width to accomodate count tag, eg: +4
-const COUNT_TAG_WIDTH_OFFSET = 60
+const COUNT_TAG_WIDTH_OFFSET = 50
 
-const getSelectedValuesCharacterLength = (selectedValues) => {
-  let totalCharacters = 0
-  selectedValues.forEach((selectedValue) => {
+// calculating tags content width based on below items:
+// 1. total characters shown in all the tags.
+// 2. Padding between each tag.
+const getSelectedValuesTagWidths = (selectedValues) => {
+  let tagWidthsSum = 0
+  const tagWidths = selectedValues.map((selectedValue) => {
     const selectedObj = JSON.parse(selectedValue)
     const value = Object.values(selectedObj)[0] || ''
-    totalCharacters += value.length
+    const tagWidth = value.length * CHARACTER_WIDTH_OFFSET + TAG_WIDTH_OFFSET
+    tagWidthsSum += tagWidth
+    return tagWidth
   })
-  return totalCharacters
+  return [tagWidths, tagWidthsSum]
 }
 
 const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
   const [selectedValues, setSelectedValues] = useState([])
   const [maxTagCount, setMaxTagCount] = useState(2)
-  const [shouldUpdateMaxTagCount, setShouldUpdateMaxTagCount] = useState(true)
   const [inputBoxWidth, setInputBoxWidth] = useState(250)
 
   const FilterContainerRef = useRef(null)
@@ -75,47 +79,26 @@ const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
 
   useEffect(() => {
     if (!isEmpty(FilterContainerRef.current)) {
-      // decrease by 10px to remove right margin on the container
-      setInputBoxWidth(FilterContainerRef.current.offsetWidth - 10)
+      // decrease by (10 + 2)px for effective width with 10px right margin
+      setInputBoxWidth(FilterContainerRef.current.offsetWidth - 12)
     }
-  }, [])
+  }, [FilterContainerRef?.current?.offsetWidth])
 
   useEffect(() => {
-    const totalCharacters = getSelectedValuesCharacterLength(selectedValues)
-    // calculating tags content width based on below items:
-    // 1. total characters shown in all the tags.
-    // 2. Padding between each tag.
-    const charactersWidth =
-      totalCharacters * CHARACTER_WIDTH_OFFSET +
-      selectedValues.length * TAG_PADDING_OFFSET
-    if (
-      charactersWidth >= inputBoxWidth - COUNT_TAG_WIDTH_OFFSET &&
-      shouldUpdateMaxTagCount &&
-      selectedValues.length !== allFilterValues.length
-    ) {
-      setMaxTagCount(selectedValues.length - 1)
-      setShouldUpdateMaxTagCount(false)
-    } else if (charactersWidth < inputBoxWidth - COUNT_TAG_WIDTH_OFFSET) {
-      setShouldUpdateMaxTagCount(true)
-      setMaxTagCount(10)
+    const [tagWidths, tagWidthsSum] = getSelectedValuesTagWidths(selectedValues)
+    if (tagWidthsSum > inputBoxWidth) {
+      const inputBoxWidthWithCountTag = inputBoxWidth - COUNT_TAG_WIDTH_OFFSET
+      let _maxTagCount = 0
+      let totalTagWidth = tagWidths[_maxTagCount]
+      while (totalTagWidth < inputBoxWidthWithCountTag) {
+        _maxTagCount += 1
+        totalTagWidth += tagWidths[_maxTagCount]
+      }
+      setMaxTagCount(_maxTagCount)
+    } else if (selectedValues.length) {
+      setMaxTagCount(selectedValues.length + 1)
     }
   }, [selectedValues])
-
-  const handleSelectAll = () => {
-    let charactersWidth = 0
-    for (const [index, filterValue] of allFilterValues.entries()) {
-      const valueObj = JSON.parse(filterValue)
-      const key = Object.keys(valueObj)[0]
-      charactersWidth +=
-        valueObj[key].length * CHARACTER_WIDTH_OFFSET + TAG_PADDING_OFFSET
-      if (charactersWidth >= inputBoxWidth - COUNT_TAG_WIDTH_OFFSET) {
-        setMaxTagCount(index)
-        setShouldUpdateMaxTagCount(false)
-        break
-      }
-    }
-    setSelectedValues(allFilterValues)
-  }
 
   return (
     <ExternalDemographicFilterContainer ref={FilterContainerRef}>
@@ -144,7 +127,7 @@ const ExternalDemographicFilter = ({ extDemographicData, updateFilters }) => {
                 <SelectAllBtn
                   isDisabled={selectedValues.length === allFilterValues.length}
                   dataCy="selectAllButton"
-                  onClickHandler={() => handleSelectAll()}
+                  onClickHandler={() => setSelectedValues(allFilterValues)}
                   titleText="Select All"
                 />
                 <SelectAllBtn

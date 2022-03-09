@@ -393,21 +393,23 @@ class ClassList extends React.Component {
       <ClassListContainer>
         <ClassListFilter>
           <StyledRowLabel>
-            School{' '}
-            {!isPlaylistModule && (
-              <FeaturesSwitch
-                inputFeatures="canBulkAssign"
-                key="canBulkAssign"
-                actionOnInaccessible="hidden"
-              >
-                <SwitchStyled
-                  checkedChildren="EXCLUDE"
-                  unCheckedChildren="INCLUDE"
-                  value={excludeSchools}
-                  onChange={setExcludeSchools}
-                />
-              </FeaturesSwitch>
-            )}
+            <div>
+              School{' '}
+              {!isPlaylistModule && (
+                <FeaturesSwitch
+                  inputFeatures="canBulkAssign"
+                  key="canBulkAssign"
+                  actionOnInaccessible="hidden"
+                >
+                  <SwitchStyled
+                    checkedChildren="EXCLUDE"
+                    unCheckedChildren="INCLUDE"
+                    value={excludeSchools}
+                    onChange={setExcludeSchools}
+                  />
+                </FeaturesSwitch>
+              )}
+            </div>
             <SelectInputStyled
               data-cy="schoolSelect"
               mode="multiple"

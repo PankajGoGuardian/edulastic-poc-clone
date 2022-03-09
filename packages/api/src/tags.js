@@ -15,14 +15,16 @@ const getAll = (tagType) =>
     })
     .then((result) => result.data.result)
 
-const create = (data) =>
-  api
+const create = (_data) => {
+  const data = { ..._data, tagName: _data?.tagName?.trim() }
+  return api
     .callApi({
       url: prefix,
       method: 'post',
       data,
     })
     .then((result) => result.data.result)
+}
 
 const searchTags = (data) =>
   api

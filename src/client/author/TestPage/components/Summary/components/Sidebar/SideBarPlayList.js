@@ -102,7 +102,7 @@ const Sidebar = ({
       setSearchValue('')
       try {
         const { _id, tagName } = await tagsApi.create({
-          tagName: tempSearchValue.trim(),
+          tagName: tempSearchValue,
           tagType: 'playlist',
         })
         newTag = { _id, tagName }

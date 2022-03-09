@@ -19,7 +19,7 @@ const geoGebraPath = `${thirdPartyLibPath}/geogebra/v5.0`
 const sentryWhiteListURLRegex = /edulastic\.com|snapwiz\.net/
 const eduScientificCalcPath = `${thirdPartyLibPath}/ev2-scientificcalc`
 const testletMathJax =
-  'https://ws-preview.nextera.questarai.com/libs/NexteraMathJax.2.7.5/MathJax.js?config=MML_HTMLorMML-full.js'
+  'https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'
 
 const sentryURI =
   process.env.REACT_APP_SENTRY_DSN || process.env.REACT_APP_SENTRY_URI

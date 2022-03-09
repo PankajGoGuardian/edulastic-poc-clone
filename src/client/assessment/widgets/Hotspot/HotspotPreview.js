@@ -43,6 +43,7 @@ const HotspotPreview = ({
   changePreviewTab,
   hideCorrectAnswer,
   isLCBView,
+  showAnswerScore,
 }) => {
   const {
     areas,
@@ -163,6 +164,7 @@ const HotspotPreview = ({
                 titleMargin="0px 0px 12px"
                 isLCBView={isLCBView}
                 score={validation?.validResponse?.score}
+                showAnswerScore={showAnswerScore}
               >
                 <BlockContainer
                   data-cy="hotspotMap"
@@ -212,6 +214,7 @@ const HotspotPreview = ({
                     padding="15px 25px 20px"
                     minHeight="auto"
                     titleMargin="0px 0px 12px"
+                    showAnswerScore={showAnswerScore}
                   >
                     <BlockContainer
                       data-cy="hotspotMap"
@@ -295,6 +298,7 @@ HotspotPreview.propTypes = {
   evaluation: PropTypes.array,
   changePreviewTab: PropTypes.func.isRequired,
   t: PropTypes.func.isRequired,
+  showAnswerScore: PropTypes.bool,
 }
 
 HotspotPreview.defaultProps = {
@@ -304,6 +308,7 @@ HotspotPreview.defaultProps = {
   showQuestionNumber: false,
   disableResponse: false,
   evaluation: [],
+  showAnswerScore: false,
 }
 
 export default withNamespaces('assessment')(HotspotPreview)

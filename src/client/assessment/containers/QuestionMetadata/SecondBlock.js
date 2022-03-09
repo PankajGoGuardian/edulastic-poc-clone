@@ -56,7 +56,7 @@ const SecondBlock = ({
       setSearchValue('')
       try {
         const { _id, tagName } = await tagsApi.create({
-          tagName: tempSearchValue,
+          tagName: tempSearchValue.trim(),
           tagType: 'testitem',
         })
         newTag = { _id, tagName }

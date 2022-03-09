@@ -162,7 +162,7 @@ class AddClassModal extends Component {
       this.setState({ searchValue: '' })
       try {
         const { _id, tagName } = await tagsApi.create({
-          tagName: tempSearchValue,
+          tagName: tempSearchValue.trim(),
           tagType: 'group',
         })
         newTag = { _id, tagName }

@@ -46,7 +46,7 @@ const TagFilter = ({
       setSearchValue('')
       try {
         const { _id, tagName } = await tagsApi.create({
-          tagName: tempSearchValue,
+          tagName: tempSearchValue.trim(),
           tagType,
         })
         newTag = { _id, tagName }

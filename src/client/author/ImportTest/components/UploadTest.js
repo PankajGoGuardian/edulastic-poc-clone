@@ -86,7 +86,7 @@ const UploadTest = ({ t, uploadTest, getAllTags, allTagsData, addNewTag }) => {
       setSearchValue('')
       try {
         const { _id, tagName } = await tagsApi.create({
-          tagName: tempSearchValue,
+          tagName: tempSearchValue.trim(),
           tagType: 'testitem',
         })
         newTag = { _id, tagName }

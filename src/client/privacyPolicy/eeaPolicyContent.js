@@ -461,7 +461,11 @@ const EeaPolicyContent = () => {
             of the 2010 Standard Contractual Clauses but does not permit use of
             the 2021 Standard Contractual Clauses, the 2010 Standard Contractual
             Clauses (decision 2010/87/EU&nbsp;&nbsp;
-            <a href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32010D0087&amp;from=en">
+            <a
+              href="https://eur-lex.europa.eu/legal-content/EN/TXT/HTML/?uri=CELEX:32010D0087&amp;from=en"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
               <strong>available here</strong>
             </a>
             <strong>) </strong>form part of this DPA and take precedence over

@@ -55,7 +55,7 @@ const StudentApp = ({
   const userRole = userInfo?.role || ''
 
   const showPrivacyPolicyModal =
-    !process.env.REACT_APP_QA_ENV &&
+    !(process.env.REACT_APP_QA_ENV && window.showEulaForQA) &&
     userRole !== roleuser.STUDENT &&
     userInfo?.isPolicyAccepted === false
 

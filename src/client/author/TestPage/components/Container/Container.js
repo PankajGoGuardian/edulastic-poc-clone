@@ -1061,7 +1061,7 @@ class Container extends PureComponent {
       }
     }
     // for itemGroup with limited delivery type should not contain items with question level scoring
-    let testItemsHasAtLeastOneQuestion = false
+    let testHasValidTestItems = false
 
     for (const itemGroup of test.itemGroups) {
       if (
@@ -1074,7 +1074,7 @@ class Container extends PureComponent {
         return false
       }
 
-      testItemsHasAtLeastOneQuestion = itemGroup.items.every((item) => {
+      testHasValidTestItems = itemGroup.items.every((item) => {
         const {
           multipartItem,
           isPassageWithQuestions,
@@ -1101,7 +1101,7 @@ class Container extends PureComponent {
       })
     }
 
-    if (!testItemsHasAtLeastOneQuestion) {
+    if (!testHasValidTestItems) {
       notification({ messageKey: `testHasInvalidItem` })
       return false
     }

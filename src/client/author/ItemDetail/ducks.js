@@ -1287,12 +1287,6 @@ export function* updateItemSaga({ payload }) {
       resourceTypes.includes(item.type)
     )
 
-    if (isPassageWithQuestions && !questions.length) {
-      notification({ messageKey: 'CannotSaveWithoutQuestions' })
-      yield put(itemUpdateCompletedAction())
-      return null
-    }
-
     const _widgets = rows
       .flatMap(({ widgets }) => widgets)
       .filter((widget) => widget.widgetType === 'question')
@@ -1349,7 +1343,10 @@ export function* updateItemSaga({ payload }) {
       }
     } else if (questions.length > 1) {
       for (const question of questions) {
-        if (!questionType.manuallyGradableQn.includes(question.type) && !itemLevelScoring) {
+        if (
+          !questionType.manuallyGradableQn.includes(question.type) &&
+          !itemLevelScoring
+        ) {
           const [hasInvalidScore, errMsg] = validateScore(question)
           if (hasInvalidScore) {
             return notification({ msg: errMsg })

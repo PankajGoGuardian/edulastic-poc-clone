@@ -620,10 +620,13 @@ class App extends Component {
       ? 'Close demo account'
       : 'Stop Acting as User'
 
+    window.showEulaForQA = process.env.REACT_APP_QA_ENV
+
     const showPrivacyPolicyModal =
-      !process.env.REACT_APP_QA_ENV &&
+      !window.showEulaForQA &&
       userRole !== roleuser.STUDENT &&
       userInfo?.isPolicyAccepted === false
+
     return (
       <div>
         {showPrivacyPolicyModal && (

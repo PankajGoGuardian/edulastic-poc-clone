@@ -78,6 +78,7 @@ const PrivacyPolicyModal = ({ userID }) => {
         fontSize="17px"
         height="40px"
         width="150px"
+        data-cy="policyAcceptButton"
       >
         ACCEPT
       </EduButton>
@@ -104,7 +105,7 @@ const PrivacyPolicyModal = ({ userID }) => {
           <ProductPolicyContent />
           <EeaPolicyContent />
           <CheckboxWrapper>
-            <CheckboxLabel onChange={onCheck}>
+            <CheckboxLabel onChange={onCheck} data-cy="policyAgreeCheckbox">
               By checking the box and clicking “Accept”, I agree to the Terms of
               Service and End User License Agreement and Privacy Policy of the
               Product

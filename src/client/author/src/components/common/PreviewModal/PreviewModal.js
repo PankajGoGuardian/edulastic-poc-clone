@@ -984,6 +984,7 @@ class PreviewModal extends React.Component {
               premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
               showAnswerScore={showScoreAtQuestion}
               showScoreAtItem={showScoreAtItem}
+              itemLevelScore={item.itemLevelScore}
             />
             {/* {showScoreAtItem && <h1>Hey I am item level score</h1>} */}
             {/* we may need to bring hint button back */}

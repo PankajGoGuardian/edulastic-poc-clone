@@ -393,6 +393,7 @@ class TestItemPreview extends Component {
       isShowStudentWork,
       responsiveWidth,
       itemLevelScore,
+      hideCorrectAnswer,
     } = restProps
 
     const { isFeedbackVisible, collapseDirection } = this.state
@@ -430,7 +431,8 @@ class TestItemPreview extends Component {
       : {}
 
     const showAnswerScore = isExpressGrader || isLCBView || isReviewTab
-    const showScoreAtItem = itemLevelScoring && !isSingleQuestionView
+    const showScoreAtItem =
+      showAnswerScore && itemLevelScoring && !isSingleQuestionView
     const showScoreAtQuestion = showAnswerScore && !showScoreAtItem
 
     return (
@@ -512,6 +514,12 @@ class TestItemPreview extends Component {
             </div>
             {showCollapseButtons && this.renderCollapseButtons()}
           </Container>
+          {showScoreAtItem && !hideCorrectAnswer && (
+            <ItemLevelScoreWrapper
+              isLCBView={isLCBView}
+              itemLevelScore={itemLevelScore}
+            />
+          )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||
@@ -535,9 +543,6 @@ class TestItemPreview extends Component {
               )}
             </>
           )}
-        {showScoreAtItem && (
-          <ItemLevelScoreWrapper itemLevelScore={itemLevelScore} />
-        )}
       </ThemeProvider>
     )
   }

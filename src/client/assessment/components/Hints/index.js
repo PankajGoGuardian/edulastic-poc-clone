@@ -99,8 +99,9 @@ const Hints = ({
   }, [rubricDetails, storeRubricData])
 
   const hintCount = validHints.length
-  const fontSize = getFontSize(get(question, 'uiStyle.fontsize'))
-
+  const fontSize = getFontSize(
+    get(question, 'uiStyle.fontSize') || get(question, 'uiStyle.fontsize')
+  )
   const hintContRef = useRef()
 
   const [showCount, updateShowCount] = useState(0)

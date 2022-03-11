@@ -1,14 +1,12 @@
 import {
   getFormattedAttrId,
   TextInputStyled,
-  SelectInputStyled,
   CustomModalStyled,
   beforeUpload,
   notification,
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { evaluationType, aws } from '@edulastic/constants'
-import { Select } from 'antd'
 import PropTypes from 'prop-types'
 import React, { Component, Fragment } from 'react'
 import { compose } from 'redux'
@@ -34,7 +32,7 @@ import {
   UploadButton,
   GridSettingHelpText,
 } from '../../common/styled_components'
-import { fontSizeList } from '../constants/options'
+import FontSizeSelect from '../../../FontSizeSelect'
 
 const types = [evaluationType.exactMatch, evaluationType.partialMatch]
 
@@ -562,21 +560,13 @@ class QuadrantsMoreOptions extends Component {
               />
             </Col>
             <Col md={12}>
-              <Label>{t('component.graphing.layoutoptions.fontSize')}</Label>
-              <SelectInputStyled
-                size="large"
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                onChange={(val) => this.handleSelect('fontSize', val)}
-                value={fontSize}
+              <FontSizeSelect
                 data-cy="fontSize"
-                style={{ width: '100%' }}
-              >
-                {fontSizeList.map((option) => (
-                  <Select.Option data-cy={option.id} key={option.value}>
-                    {t(`component.options.${option.label}`)}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
+                value={fontSize}
+                onChange={(val) => {
+                  this.handleSelect('fontSize', val)
+                }}
+              />
             </Col>
             <Col md={12}>
               <CheckboxLabel

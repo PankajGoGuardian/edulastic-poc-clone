@@ -620,9 +620,10 @@ class App extends Component {
       ? 'Close demo account'
       : 'Stop Acting as User'
 
+    // here we added a condition for parent role also  because for parent we have a code in app.js
     const showPrivacyPolicyModal =
       !(process.env.REACT_APP_QA_ENV && window.showEulaForQA) &&
-      userRole !== roleuser.STUDENT &&
+      (userRole !== roleuser.STUDENT || userRole !== roleuser.PARENT) &&
       userInfo?.isPolicyAccepted === false
 
     return (

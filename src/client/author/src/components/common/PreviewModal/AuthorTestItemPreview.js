@@ -402,11 +402,10 @@ class AuthorTestItemPreview extends Component {
       viewComponent,
       item,
       isPassage,
-      showScoreAtItem,
       ...restProps
     } = this.props
     const { value, isEnableScratchpad, collapseDirection } = this.state
-    const { createdBy, data = {}, maxScore, itemLevelScore, _id } = item
+    const { createdBy, data = {}, maxScore, _id } = item
     const { questions = [] } = data
     const [firstQuestion = {}] = questions
     const standardIdentfiers =
@@ -505,9 +504,6 @@ class AuthorTestItemPreview extends Component {
               </React.Fragment>
             ))}
           </ScratchpadAndWidgetWrapper>
-          {showScoreAtItem && (
-            <ItemLevelScoreWrapper itemLevelScore={itemLevelScore} />
-          )}
           {!isPassage && (
             <QuestionPreviewDetails
               id={_id}
@@ -643,7 +639,7 @@ class AuthorTestItemPreview extends Component {
   }
 
   render() {
-    const { cols, onlySratchpad } = this.props
+    const { showScoreAtItem, cols, onlySratchpad, itemLevelScore } = this.props
     const { isRejectMode } = this.state
     let resourceCount = 0
     cols
@@ -673,6 +669,12 @@ class AuthorTestItemPreview extends Component {
                 resourceCount
               )
             : this.renderColumnsContentArea({ sectionQue, resourceCount })}
+          {showScoreAtItem && (
+            <ItemLevelScoreWrapper
+              marginBottom="85px"
+              itemLevelScore={itemLevelScore}
+            />
+          )}
         </ScrollContext.Provider>
       </ThemeProvider>
     )

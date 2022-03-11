@@ -624,10 +624,12 @@ class App extends Component {
       ? process.env.REACT_APP_QA_ENV && window.showEulaForQA
       : true // Eula Modal Hidden For QA Environment &  Window Variable value changed on Automation to display
 
-    // here we added a condition for parent role also  because for parent we have a code in app.js
+    // here we are exluding the parent role also, because for parent we have a code in app.js
+    const excludedRoles = [roleuser.STUDENT, roleuser.PARENT]
+
     const showPrivacyPolicyModal =
       !!showEulaForQA &&
-      (userRole !== roleuser.STUDENT || userRole !== roleuser.PARENT) &&
+      !excludedRoles.includes(userRole) &&
       userInfo?.isPolicyAccepted === false
 
     return (

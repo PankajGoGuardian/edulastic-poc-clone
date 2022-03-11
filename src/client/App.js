@@ -628,6 +628,7 @@ class App extends Component {
     const excludedRoles = [roleuser.STUDENT, roleuser.PARENT]
 
     const showPrivacyPolicyModal =
+      !isProxyUser &&
       !!showEulaForQA &&
       !excludedRoles.includes(userRole) &&
       userInfo?.isPolicyAccepted === false

@@ -512,6 +512,7 @@ class AssessmentPlayerDefault extends React.Component {
           }
         : {
             isPassageWithQuestions: item?.isPassageWithQuestions,
+            multipartItem: item?.multipartItem,
             scratchpadDimensions: LCBPreviewModal
               ? scratchpadActivity.dimensions
               : null,

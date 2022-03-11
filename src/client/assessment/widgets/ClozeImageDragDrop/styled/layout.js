@@ -67,5 +67,6 @@ export const StyledDisplayContainer = styled.div`
   height: auto;
   width: 100%;
   max-width: 100%;
-  overflow: ${({ isPrintMode }) => (isPrintMode ? 'initial' : 'auto')};
+  overflow: ${({ isPrintMode }) => (isPrintMode ? '' : 'auto')};
+  font-size: ${({ fontSize }) => fontSize};
 `

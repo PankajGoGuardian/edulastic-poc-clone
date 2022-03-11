@@ -396,7 +396,7 @@ export const GraphToolbar = createStandardTextSet(styled.div`
   display: flex;
   justify-content: space-between;
   padding: 0 0 10px 0;
-  font-size: ${(props) => (props.fontSize ? props.fontSize : 14)}px;
+  font-size: ${(props) => (props.fontSize ? props.fontSize : '14px')};
 
   ul {
     list-style: none;

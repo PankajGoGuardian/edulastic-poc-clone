@@ -362,7 +362,7 @@ Tools.propTypes = {
   controls: PropTypes.array,
   onSelectControl: PropTypes.func,
   onSelect: PropTypes.func,
-  fontSize: PropTypes.number,
+  fontSize: PropTypes.string,
   canEditTools: PropTypes.bool,
   setTools: PropTypes.func,
 }
@@ -374,7 +374,7 @@ Tools.defaultProps = {
   controls: [],
   onSelectControl: () => {},
   onSelect: () => {},
-  fontSize: 14,
+  fontSize: '14px',
   canEditTools: false,
   setTools: () => {},
 }

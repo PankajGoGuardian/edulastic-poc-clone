@@ -23,6 +23,7 @@ import {
   TextInputStyled,
 } from '../../../../styled/InputStyles'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
+import FontSizeSelect from '../../../FontSizeSelect'
 
 class AxisSegmentsMoreOptions extends Component {
   constructor(props) {
@@ -151,10 +152,10 @@ class AxisSegmentsMoreOptions extends Component {
     }
   }
 
-  changeFontSize = (event) => {
+  changeFontSize = (fontSize) => {
     const { setOptions, graphData } = this.props
     const { uiStyle } = graphData
-    setOptions({ ...uiStyle, fontSize: event })
+    setOptions({ ...uiStyle, fontSize })
   }
 
   handleSelect = (name, value) => {
@@ -218,7 +219,6 @@ class AxisSegmentsMoreOptions extends Component {
     const {
       t,
       orientationList,
-      fontSizeList,
       renderingBaseList,
       fillSections,
       cleanSections,
@@ -346,19 +346,11 @@ class AxisSegmentsMoreOptions extends Component {
               />
             </Col>
             <Col md={12}>
-              <Label>{t('component.graphing.layoutoptions.fontSize')}</Label>
-              <SelectInputStyled
+              <FontSizeSelect
                 data-cy="fontSize"
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                onChange={this.changeFontSize}
-                value={uiStyle?.fontSize}
-              >
-                {fontSizeList.map((option) => (
-                  <Select.Option data-cy={option.id} key={option.value}>
-                    {t(`component.options.${option.label}`)}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
+                value={uiStyle.fontSize}
+                onChange={(val) => this.changeFontSize(val)}
+              />
             </Col>
           </Row>
           <Row gutter={24}>
@@ -642,7 +634,6 @@ AxisSegmentsMoreOptions.propTypes = {
   setNumberline: PropTypes.func.isRequired,
   setOptions: PropTypes.func.isRequired,
   orientationList: PropTypes.array.isRequired,
-  fontSizeList: PropTypes.array.isRequired,
   renderingBaseList: PropTypes.array.isRequired,
   setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,

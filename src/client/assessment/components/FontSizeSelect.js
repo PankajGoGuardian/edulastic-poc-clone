@@ -4,7 +4,6 @@ import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
 
 import { Label } from '../styled/WidgetOptions/Label'
-import { StyledSelect } from './Common/InputField'
 import { SelectInputStyled } from '../styled/InputStyles'
 
 const FontSizeSelect = ({ t, onChange, value }) => {

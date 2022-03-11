@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import AxisLabelsMoreOptions from './AxisLabelsMoreOptions'
-import { fontSizeList, renderingBaseList } from '../constants/options'
+import { renderingBaseList } from '../constants/options'
 
 const AxisLabelsOptions = ({
   t,
@@ -44,7 +44,6 @@ const AxisLabelsOptions = ({
       cleanSections={cleanSections}
       setNumberline={setNumberline}
       setValidation={setValidation}
-      fontSizeList={fontSizeList}
       renderingBaseList={renderingBaseList}
       responseBoxPositionList={responseBoxPositionList}
       graphData={graphData}

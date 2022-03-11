@@ -8,10 +8,7 @@ import { withNamespaces } from 'react-i18next'
 import { questionType } from '@edulastic/constants'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 
-import {
-  Layout,
-  FontSizeOption,
-} from '../../../containers/WidgetOptions/components'
+import { Layout } from '../../../containers/WidgetOptions/components'
 import { Row } from '../../../styled/WidgetOptions/Row'
 import { Col } from '../../../styled/WidgetOptions/Col'
 import {
@@ -24,6 +21,7 @@ import MulticolorBarsOption from './MulticolorBarsOption'
 import { Label } from '../../../styled/WidgetOptions/Label'
 import { TextInputStyled } from '../../../styled/InputStyles'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
+import FontSizeSelect from '../../../components/FontSizeSelect'
 
 const InputField = ({ name, value, onChange, type = 'number', t }) => (
   <>
@@ -41,7 +39,7 @@ const InputField = ({ name, value, onChange, type = 'number', t }) => (
 
 InputField.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.any,
+  value: PropTypes.any.isRequired,
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
   type: PropTypes.string,
@@ -63,7 +61,7 @@ const CheckboxField = ({ t, onChange, value, name }) => (
 
 CheckboxField.propTypes = {
   name: PropTypes.string.isRequired,
-  value: PropTypes.any,
+  value: PropTypes.any.isRequired,
   t: PropTypes.func.isRequired,
   onChange: PropTypes.func.isRequired,
 }
@@ -117,9 +115,10 @@ class LayoutsComponent extends Component {
           type="number"
           t={t}
         />,
-        <FontSizeOption
-          onChange={(val) => changeUIStyle('fontsize', val)}
+        <FontSizeSelect
+          data-cy="fontSize"
           value={get(item, 'uiStyle.fontsize', 'normal')}
+          onChange={(val) => changeUIStyle('fontsize', val)}
         />,
       ]
 

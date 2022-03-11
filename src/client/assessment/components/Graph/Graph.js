@@ -53,6 +53,7 @@ import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../Instructions'
 import { EDIT } from '../../constants/constantsForQuestions'
 import { CONSTANT } from './Builder/config'
+import { getFontSize } from '../../utils/helpers'
 
 const EmptyWrapper = styled.div``
 
@@ -109,7 +110,6 @@ class Graph extends Component {
   getMoreOptionsComponent = () => {
     const { item } = this.props
     const { graphType } = item
-
     switch (graphType) {
       case 'axisSegments':
         return AxisSegmentsOptions // number line with plot
@@ -444,6 +444,8 @@ class Graph extends Component {
     }
 
     const { validation, stimulus, uiStyle } = item
+    const { fontSize: _fontSize } = uiStyle
+    const fontSize = getFontSize(_fontSize)
     const OptionsComponent = this.getOptionsComponent()
     const MoreOptionsComponent = this.getMoreOptionsComponent()
 
@@ -461,7 +463,7 @@ class Graph extends Component {
                 cleanSections={cleanSections}
                 advancedAreOpen
                 setCanvas={this.handleCanvasChange}
-                fontSize={uiStyle?.fontSize}
+                fontSize={fontSize}
               />
               <Question
                 section="main"
@@ -564,7 +566,7 @@ class Graph extends Component {
                   <StyledStimulus
                     data-cy="questionHeader"
                     dangerouslySetInnerHTML={{ __html: stimulus }}
-                    fontSize={uiStyle?.fontSize}
+                    fontSize={fontSize}
                   />
                 </QuestionTitleWrapper>
                 {item.canvas && item.uiStyle && (
@@ -720,5 +722,5 @@ export default GraphComponent
 const StyledStimulus = styled(Stimulus)`
   word-break: break-word;
   white-space: pre-wrap;
-  font-size: ${({ fontSize }) => fontSize && `${fontSize}px`};
+  font-size: ${({ fontSize }) => fontSize};
 `

@@ -404,6 +404,7 @@ class ClassList extends React.Component {
                   actionOnInaccessible="hidden"
                 >
                   <SwitchStyled
+                    data-cy="bulkAssignToggleButton"
                     checkedChildren="EXCLUDE"
                     unCheckedChildren="INCLUDE"
                     checked={excludeSchools}

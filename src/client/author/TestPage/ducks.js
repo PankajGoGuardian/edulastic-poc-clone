@@ -3108,7 +3108,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
   }
 }
 
-function* getEvaluation(testItemId, newScore) {
+function* getEvaluation(testItemId, newScore, testSettings = {}) {
   const testItems = yield select(getTestItemsSelector)
   const testItem = testItems.find((x) => x._id === testItemId) || {}
   const {
@@ -3131,12 +3131,13 @@ function* getEvaluation(testItemId, newScore) {
     itemLevelScore,
     testItem._id,
     itemGradingType,
-    assignPartialCredit
+    assignPartialCredit,
+    testSettings
   )
   return evaluation
 }
 
-function* getEvaluationFromItem(testItem, newScore) {
+function* getEvaluationFromItem(testItem, newScore, testSettings = {}) {
   const {
     itemLevelScore,
     itemLevelScoring = false,
@@ -3157,7 +3158,8 @@ function* getEvaluationFromItem(testItem, newScore) {
     itemLevelScore,
     testItem._id,
     itemGradingType,
-    assignPartialCredit
+    assignPartialCredit,
+    testSettings
   )
   return evaluation
 }
@@ -3165,14 +3167,18 @@ function* getEvaluationFromItem(testItem, newScore) {
 function* checkAnswerSaga({ payload }) {
   try {
     let evaluationObject = {}
-    const { scoring } = yield select(getTestEntitySelector)
+    const { scoring, scoringType } = yield select(getTestEntitySelector)
+
     if (payload.isItem) {
       evaluationObject = yield getEvaluationFromItem(
         payload,
-        scoring[payload._id]
+        scoring[payload._id],
+        { scoringType }
       )
     } else {
-      evaluationObject = yield getEvaluation(payload.id, scoring[payload.id])
+      evaluationObject = yield getEvaluation(payload.id, scoring[payload.id], {
+        scoringType,
+      })
     }
     if (isEmpty(evaluationObject)) {
       yield put({

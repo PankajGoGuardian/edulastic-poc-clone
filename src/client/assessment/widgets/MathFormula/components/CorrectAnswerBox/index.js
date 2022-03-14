@@ -22,7 +22,7 @@ export const formatToMathAnswer = (answer, template) => {
       }
     }
   }
-
+console.log(answerStr)
   return answerStr.search('input__math') !== -1
     ? answerStr
     : `<span class="input__math" data-latex="${answerStr}"></span>`

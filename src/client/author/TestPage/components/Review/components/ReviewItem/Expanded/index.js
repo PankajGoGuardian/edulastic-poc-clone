@@ -173,7 +173,7 @@ const Expanded = ({
                 />
               )}
               {showAltScoreInfo && (
-                <Tooltip title="Item with alternative answers with different score points. Review suggested">
+                <Tooltip title="Question has alternate answers with different score points.">
                   <InfoIcon />
                 </Tooltip>
               )}
@@ -321,7 +321,7 @@ const Expanded = ({
                     />
                   )}
                   {showAltScoreInfo && (
-                    <Tooltip title="Item with alternative answers with different score points. Review suggested">
+                    <Tooltip title="Question has alternate answers with different score points.">
                       <InfoIcon />
                     </Tooltip>
                   )}

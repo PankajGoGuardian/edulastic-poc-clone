@@ -1,46 +1,23 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import { SelectInputStyled } from '@edulastic/common'
 import { appLanguages } from '@edulastic/constants'
 
 import { getCurrentLanguage, setLangAction } from './duck'
-import {
-  getItemLangSelector,
-  setTTSLanguageAction,
-} from '../../../author/ItemDetail/ducks'
 
 const { Option } = SelectInputStyled
-const { LANGUAGES_OPTIONS, TTS_LANGUAGES, LANGUAGE_EN } = appLanguages
+const { LANGUAGES_OPTIONS } = appLanguages
 
-const LanguageSelector = ({
-  qLang,
-  ttsLang,
-  setLanguage,
-  setTTSLanguage,
-  isTTSLanguage,
-}) => {
+const LanguageSelector = ({ currentLang, setLanguage }) => {
   const handleChangeLanguage = (lang) => {
-    if (!isTTSLanguage) {
-      setLanguage(lang)
-    } else {
-      setTTSLanguage(lang)
-    }
+    setLanguage(lang)
   }
 
   useEffect(() => {
-    if (!isTTSLanguage) {
-      return () => {
-        setLanguage('')
-      }
+    return () => {
+      setLanguage('')
     }
-  }, [isTTSLanguage])
-
-  const [opts, value] = useMemo(() => {
-    if (isTTSLanguage) {
-      return [TTS_LANGUAGES, ttsLang || LANGUAGE_EN]
-    }
-    return [LANGUAGES_OPTIONS, qLang]
-  }, [isTTSLanguage, qLang, ttsLang])
+  }, [])
 
   return (
     <SelectInputStyled
@@ -48,10 +25,10 @@ const LanguageSelector = ({
       width="120px"
       height="30px"
       onSelect={handleChangeLanguage}
-      value={value}
+      value={currentLang}
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
     >
-      {opts.map((language) => (
+      {LANGUAGES_OPTIONS.map((language) => (
         <Option value={language.value} key={language.value}>
           {language.label}
         </Option>
@@ -62,11 +39,9 @@ const LanguageSelector = ({
 
 export default connect(
   (state) => ({
-    qLang: getCurrentLanguage(state),
-    ttsLang: getItemLangSelector(state),
+    currentLang: getCurrentLanguage(state),
   }),
   {
     setLanguage: setLangAction,
-    setTTSLanguage: setTTSLanguageAction,
   }
 )(LanguageSelector)

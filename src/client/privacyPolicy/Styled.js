@@ -1,5 +1,10 @@
 import styled from 'styled-components'
-import { darkGrey2, greyThemeDark1, lightGrey8 } from '@edulastic/colors'
+import {
+  darkGrey2,
+  greyThemeDark1,
+  lightGrey8,
+  tabletWidth,
+} from '@edulastic/colors'
 import { CustomModalStyled } from '@edulastic/common'
 
 export const BodyContentWrapper = styled.div`
@@ -45,6 +50,12 @@ export const StyledPrivacyPolicyModal = styled(CustomModalStyled)`
   .ant-modal-body {
     background-color: white;
     height: calc(100% - 170px);
+    @media (max-width: 950px) {
+      height: calc(100% - 210px);
+    }
+    @media (max-width: ${tabletWidth}) {
+      height: calc(100% - 220px);
+    }
     padding: 10px 24px;
     p {
       font-weight: normal !important;

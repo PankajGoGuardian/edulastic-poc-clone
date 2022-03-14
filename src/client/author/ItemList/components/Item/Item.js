@@ -446,7 +446,7 @@ class Item extends Component {
     const { item } = this.props
     const Title = item?.passageSource ? (
       <>
-        <PassageTitle dangerouslySetInnerHTML={{ __html: item.passageTitle }} />
+        <PassageTitle dangerouslySetInnerHTML={{ __html: item.passageTitle }} />{' '}
         by{' '}
         <PassageTitle
           dangerouslySetInnerHTML={{ __html: item.passageSource }}

@@ -1248,7 +1248,6 @@ class Container extends Component {
 
               <FlexContainer alignItems="center" justifyContent="flex-end">
                 {this.passageNavigator}
-                <LanguageSelector isTTSLanguage />
                 {allowedToSelectMultiLanguage && showLanguageSelector && (
                   <LanguageSelector />
                 )}

@@ -105,6 +105,7 @@ class ClassList extends React.Component {
       userOrgId,
       getAllTags,
       courseList,
+      setExcludeSchools,
     } = this.props
 
     if (isEmpty(schools)) {
@@ -138,6 +139,7 @@ class ClassList extends React.Component {
       }),
       this.loadClassList
     )
+    setExcludeSchools(false)
   }
 
   componentDidUpdate(prevProps) {
@@ -393,21 +395,24 @@ class ClassList extends React.Component {
       <ClassListContainer>
         <ClassListFilter>
           <StyledRowLabel>
-            School{' '}
-            {!isPlaylistModule && (
-              <FeaturesSwitch
-                inputFeatures="canBulkAssign"
-                key="canBulkAssign"
-                actionOnInaccessible="hidden"
-              >
-                <SwitchStyled
-                  checkedChildren="EXCLUDE"
-                  unCheckedChildren="INCLUDE"
-                  value={excludeSchools}
-                  onChange={setExcludeSchools}
-                />
-              </FeaturesSwitch>
-            )}
+            <div>
+              School{' '}
+              {!isPlaylistModule && (
+                <FeaturesSwitch
+                  inputFeatures="canBulkAssign"
+                  key="canBulkAssign"
+                  actionOnInaccessible="hidden"
+                >
+                  <SwitchStyled
+                    data-cy="bulkAssignToggleButton"
+                    checkedChildren="EXCLUDE"
+                    unCheckedChildren="INCLUDE"
+                    checked={excludeSchools}
+                    onChange={setExcludeSchools}
+                  />
+                </FeaturesSwitch>
+              )}
+            </div>
             <SelectInputStyled
               data-cy="schoolSelect"
               mode="multiple"

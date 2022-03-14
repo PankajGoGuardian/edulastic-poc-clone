@@ -617,7 +617,7 @@ class PreviewModal extends React.Component {
     )
 
     let allWidgets = { ...questions, ...resources }
-    const { authors = [], rows, data = {} } = item || {}
+    const { authors = [], rows, data = {}, itemLevelScoring } = item || {}
     const questionsType =
       data.questions && uniq(data.questions.map((question) => question.type))
     const intersectionCount = intersection(
@@ -667,6 +667,11 @@ class PreviewModal extends React.Component {
       itemHasAtleastOneQuestion && testStatus !== 'published'
     const isLoading = loading || item === null || passageLoading
     const isMobile = isSmallSize || fullModal
+
+    const showScore = page === 'review' && preview === 'show'
+    const showScoreAtItem =
+      showScore && itemLevelScoring && data?.questions?.length > 1
+    const showScoreAtQuestion = showScore && !showScoreAtItem
 
     return (
       <PreviewModalWrapper
@@ -977,7 +982,11 @@ class PreviewModal extends React.Component {
               closeModal={this.closeModal}
               isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+              showAnswerScore={showScoreAtQuestion}
+              showScoreAtItem={showScoreAtItem}
+              itemLevelScore={item.itemLevelScore}
             />
+            {/* {showScoreAtItem && <h1>Hey I am item level score</h1>} */}
             {/* we may need to bring hint button back */}
             {/* {showHints && <Hints questions={get(item, [`data`, `questions`], [])} />} */}
             {showReportIssueField && (

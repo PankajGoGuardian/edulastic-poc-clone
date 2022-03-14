@@ -590,7 +590,6 @@ class Container extends Component {
               )
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-              <LanguageSelector isTTSLanguage />
               {allowedToSelectMultiLanguage &&
                 useLanguageFeatureQn.includes(questionType) && (
                   <LanguageSelector />

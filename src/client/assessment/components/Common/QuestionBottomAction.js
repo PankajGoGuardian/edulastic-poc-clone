@@ -384,9 +384,11 @@ const QuestionBottomAction = ({
       )
     )
 
-  const hasAltAnswers = item?.validation?.altResponses?.some(
-    (altResp) => altResp?.score !== item?.validation?.validResponse?.score
-  )
+  const hasAltAnswers =
+    item?.validation?.altResponses?.some(
+      (altResp) => altResp?.score !== item?.validation?.validResponse?.score
+    ) && !item?.validation?.unscored
+
   const showQuestionBottomLCBMessage =
     isLCBView && !hideCorrectAnswer && (hasAltAnswers || isGradedExternally)
 
@@ -404,7 +406,7 @@ const QuestionBottomAction = ({
           <span>
             <IconInfo width={18} height={18} />
           </span>
-          <span>
+          <span data-cy="alternate-score-info-text">
             {isGradedExternally
               ? 'Teacher manually awarded score for this item. '
               : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. '}

@@ -6,6 +6,7 @@ import {
   themeColorLight,
   white,
   backgrounds,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { DatePicker, Row, Select, Table, Switch } from 'antd'
 import styled from 'styled-components'
@@ -279,11 +280,23 @@ export const InfoSection = styled.div`
 
 export const SwitchStyled = styled(Switch)`
   &.ant-switch {
-    height: 30px !important;
-    width: 100px !important;
+    height: 20px !important;
+    width: 65px !important;
+    border-radius: 2px;
+    margin-left: 5px;
+    line-height: 16px;
   }
   &.ant-switch:after {
-    width: 26px !important;
-    height: 26px !important;
+    width: 5px !important;
+    height: 16px !important;
+    border-radius: 2px;
+  }
+  .ant-switch-inner {
+    font-size: 10px;
+    margin-right: 6px;
+    margin-left: 6px;
+  }
+  &.ant-switch-checked {
+    background-color: ${themeColorBlue};
   }
 `

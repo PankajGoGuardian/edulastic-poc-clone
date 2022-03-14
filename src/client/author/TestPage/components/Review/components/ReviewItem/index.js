@@ -29,6 +29,7 @@ const ReviewItem = ({
   standards,
   groupMinimized,
   groupPoints,
+  isTestsUpdated,
 }) => {
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -111,6 +112,9 @@ const ReviewItem = ({
 
   const showAltScoreInfo = useMemo(() => {
     return item?.data?.questions?.some((q) => {
+      if (q?.validation?.unscored) {
+        return false
+      }
       const correctSore = q?.validation?.validResponse?.score
       const altScores = q?.validation?.altResponses?.map((resp) => resp?.score)
       return altScores?.some((altScore) => altScore !== correctSore)
@@ -152,6 +156,7 @@ const ReviewItem = ({
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           itemNumber={item.indx}
           showAltScoreInfo={showAltScoreInfo}
+          isTestsUpdated={isTestsUpdated}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
@@ -173,6 +178,7 @@ const ReviewItem = ({
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
           showAltScoreInfo={showAltScoreInfo}
+          isTestsUpdated={isTestsUpdated}
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}

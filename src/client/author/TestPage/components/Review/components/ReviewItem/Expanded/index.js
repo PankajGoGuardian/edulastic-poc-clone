@@ -1,5 +1,4 @@
-import UnScored from '@edulastic/common/src/components/Unscored'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Tooltip } from 'antd'
 import { get, keyBy } from 'lodash'
@@ -10,9 +9,10 @@ import {
   CheckboxLabel,
   NumberInputStyled,
 } from '@edulastic/common'
+import UnScored from '@edulastic/common/src/components/Unscored'
 import TestItemPreview from '../../../../../../../assessment/components/TestItemPreview'
 import { PointsLabel } from './styled'
-import { ScoreInputWrapper, InfoIcon } from '../styled'
+import { ScoreInputWrapper, SaveToApply, InfoIcon } from '../styled'
 import Actions from '../Actions'
 
 const transformItemRow = ([row], qid) => [
@@ -56,7 +56,16 @@ const Expanded = ({
   showAltScoreInfo,
   isPremiumContentWithoutAccess,
   premiumCollectionWithoutAccess,
+  isTestsUpdated,
 }) => {
+  const [scoreChanged, setScoreChanged] = useState(false)
+
+  useEffect(() => {
+    if (!isTestsUpdated) {
+      setScoreChanged(isTestsUpdated)
+    }
+  }, [isTestsUpdated])
+
   /**
    * @type {{item:Object,question:Object}[]}
    */
@@ -110,6 +119,8 @@ const Expanded = ({
     } else {
       onChangePoints(metaInfoData.id, questionScore)
     }
+
+    setScoreChanged(true)
   }
 
   return mobile ? (
@@ -166,6 +177,7 @@ const Expanded = ({
                   <InfoIcon />
                 </Tooltip>
               )}
+              {scoreChanged && <SaveToApply>Save to apply changes</SaveToApply>}
             </ScoreInputWrapper>
           </FlexContainer>
         </FlexContainer>
@@ -192,6 +204,8 @@ const Expanded = ({
             windowWidth="100%"
             isReviewTab
             testItem
+            itemLevelScoring={testItem?.itemLevelScoring}
+            itemLevelScore={testItem?.itemLevelScore}
             isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
             premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
             itemIdKey={testItem._id}
@@ -260,6 +274,8 @@ const Expanded = ({
                     }
                     isExpandedView
                     itemIdKey={testItem._id}
+                    itemLevelScoring={testItem?.itemLevelScoring}
+                    itemLevelScore={testItem?.itemLevelScore}
                   />
                 </div>
               </AnswerContext.Provider>
@@ -308,6 +324,9 @@ const Expanded = ({
                     <Tooltip title="Item with alternative answers with different score points. Review suggested">
                       <InfoIcon />
                     </Tooltip>
+                  )}
+                  {scoreChanged && (
+                    <SaveToApply>Save to apply changes</SaveToApply>
                   )}
                 </ScoreInputWrapper>
               </FlexContainer>

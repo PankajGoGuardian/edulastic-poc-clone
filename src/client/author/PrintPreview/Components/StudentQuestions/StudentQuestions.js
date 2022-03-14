@@ -32,7 +32,12 @@ function Preview({ item, passages, evaluation }) {
     questionsKeyed = { ...questionsKeyed, ..._keyBy(passage.data, 'id') }
   }
 
-  const { itemLevelScoring, isPassageWithQuestions, multipartItem } = item
+  const {
+    itemLevelScoring,
+    isPassageWithQuestions,
+    multipartItem,
+    itemLevelScore,
+  } = item
 
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -58,6 +63,7 @@ function Preview({ item, passages, evaluation }) {
         evaluation={evaluation}
         isPassageWithQuestions={isPassageWithQuestions}
         itemLevelScoring={itemLevelScoring}
+        itemLevelScore={itemLevelScore}
         multipartItem={multipartItem}
         isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
         premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}

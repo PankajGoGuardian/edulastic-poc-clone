@@ -755,7 +755,7 @@ class QuestionWrapper extends Component {
                     />
                   )}
                   {rubricDetails && studentReportFeedbackVisible && (
-                    <RubricTableWrapper>
+                    <RubricTableWrapper data-cy="rubricTable">
                       <FieldLabel className="rubric-title">
                         Graded Rubric
                       </FieldLabel>

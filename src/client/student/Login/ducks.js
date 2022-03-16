@@ -2366,7 +2366,11 @@ function* setInviteDetailsSaga({ payload }) {
     TokenStorage.storeAccessToken(result.token, user._id, user.role, true)
     TokenStorage.selectAccessToken(user._id, user.role)
     yield call(fetchUser, {}) // needed to update org and other user data to local store
-    yield put({ type: SET_INVITE_DETAILS_SUCCESS, payload: result })
+    const userFeatures = yield select(getUserFeatures)
+    yield put({
+      type: SET_INVITE_DETAILS_SUCCESS,
+      payload: { ...result, features: userFeatures },
+    })
   } catch (e) {
     yield call(message.error, 'Failed to update user details.')
   }

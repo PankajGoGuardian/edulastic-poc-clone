@@ -330,17 +330,11 @@ const Preview = ({
   const passageId = passage?._id
   const answerContextConfig = useContext(AnswerContext)
   const timeSpent = (get(questionActivity, 'timeSpent', 0) / 1000).toFixed(1)
-  const {
-    multipartItem,
-    itemLevelScoring,
-    isPassageWithQuestions,
-    itemLevelScore,
-  } = item
+  const { multipartItem, itemLevelScoring, isPassageWithQuestions } = item
   const isV1Multipart = (rows || []).some((row) => row.isV1Multipart)
   const scoringProps = {
     multipartItem: multipartItem || isV1Multipart,
     itemLevelScoring,
-    itemLevelScore,
     isPassageWithQuestions,
   }
   const attachments = get(questionActivity, 'scratchPad.attachments', null)

@@ -25,7 +25,6 @@ import {
 import { setPageNumberAction } from '../../../author/src/reducers/testActivity'
 import { getUser } from '../../../author/src/selectors/user'
 import PassageDivider from '../../../common/components/PassageDivider'
-import ItemLevelScoreWrapper from '../Common/ItemLevelScoreWrapper'
 
 class TestItemPreview extends Component {
   constructor(props) {
@@ -392,8 +391,6 @@ class TestItemPreview extends Component {
       isPrintPreview,
       isShowStudentWork,
       responsiveWidth,
-      itemLevelScore,
-      hideCorrectAnswer,
     } = restProps
 
     const { isFeedbackVisible, collapseDirection } = this.state
@@ -429,11 +426,6 @@ class TestItemPreview extends Component {
           borderRadius: '10px',
         }
       : {}
-
-    const showAnswerScore = isExpressGrader || isLCBView || isReviewTab
-    const showScoreAtItem =
-      showAnswerScore && itemLevelScoring && !isSingleQuestionView
-    const showScoreAtQuestion = showAnswerScore && !showScoreAtItem
 
     return (
       <ThemeProvider theme={{ ...themes.default }}>
@@ -507,19 +499,12 @@ class TestItemPreview extends Component {
                     testActivityId={testActivityId}
                     studentData={studentData}
                     currentStudent={currentStudent}
-                    showAnswerScore={showScoreAtQuestion}
                   />
                 )
               })}
             </div>
             {showCollapseButtons && this.renderCollapseButtons()}
           </Container>
-          {showScoreAtItem && !hideCorrectAnswer && (
-            <ItemLevelScoreWrapper
-              isLCBView={isLCBView}
-              itemLevelScore={itemLevelScore}
-            />
-          )}
         </div>
         {/* on the student side, show single feedback only when item level scoring is on */}
         {((itemLevelScoring && isStudentReport) ||

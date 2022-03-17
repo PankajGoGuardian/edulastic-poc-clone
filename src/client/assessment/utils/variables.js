@@ -118,8 +118,14 @@ export const updateVariables = (item, latexKeys = []) => {
   }
 }
 
-export const getMathTemplate = (exampleValue) =>
-  `<span class="input__math" data-latex="${exampleValue}"></span>`
+export const getMathTemplate = (exampleValue) => {
+  if (!exampleValue) {
+    return ''
+  }
+  const sanitize = exampleValue.trim()
+  const q = sanitize.charAt(0) === '"' ? "'" : '"'
+  return `<span class="input__math" data-latex=${q}${sanitize}${q}></span>`
+}
 
 const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   if (!variables) return str
@@ -406,7 +412,7 @@ export const generateExample = (variable) => {
     }
     return sequence
       .split(',')
-      .filter((x) => x.trim())
+      .map((x) => x.trim())
       .filter((x) => x)
   }
   if (SET_TYPES.includes(type)) {
@@ -415,7 +421,7 @@ export const generateExample = (variable) => {
     }
     return set
       .split(',')
-      .filter((x) => x.trim())
+      .map((x) => x.trim())
       .filter((x) => x)
   }
   console.log('ERROR, unknown type:', type)

@@ -5825,8 +5825,10 @@ const { themeColor } = require('@edulastic/colors')
               overlay = document.createElement('div')
               var parentNode = (0, _utils.findSVGContainer)(target).parentNode
               var rect = (0, _utils.getAnnotationRect)(target)
+              var pRect = parentNode.getBoundingClientRect()
+
               var styleLeft = rect.left - OVERLAY_BORDER_SIZE
-              var styleTop = rect.top + OVERLAY_BORDER_SIZE + 24
+              var styleTop = rect.top + rect.height + OVERLAY_BORDER_SIZE
 
               overlay.setAttribute('id', 'pdf-annotate-update-overlay')
               overlay.setAttribute('data-target-id', annotationId)
@@ -5884,6 +5886,11 @@ const { themeColor } = require('@edulastic/colors')
                 saveBtn.addEventListener('click', () =>
                   handleUpdateVideo(annotation[0], documentId)
                 )
+              }
+
+              if (overlay.clientWidth + styleLeft > pRect.width - 10) {
+                const o = overlay.clientWidth + styleLeft - pRect.width
+                overlay.style.left = styleLeft - o - 10 + 'px'
               }
 
               document.addEventListener('click', handleDocumentClick)
@@ -5976,8 +5983,10 @@ const { themeColor } = require('@edulastic/colors')
               overlay = document.createElement('div')
               var parentNode = (0, _utils.findSVGContainer)(target).parentNode
               var rect = (0, _utils.getAnnotationRect)(target)
+              var pRect = parentNode.getBoundingClientRect()
+
               var styleLeft = rect.left - OVERLAY_BORDER_SIZE
-              var styleTop = rect.top + OVERLAY_BORDER_SIZE + 24
+              var styleTop = rect.top + rect.height + OVERLAY_BORDER_SIZE
 
               overlay.setAttribute('id', 'pdf-annotate-update-overlay')
               overlay.setAttribute('data-target-id', annotationId)
@@ -5986,7 +5995,6 @@ const { themeColor } = require('@edulastic/colors')
               overlay.style.top = styleTop + 'px'
               overlay.style.left = styleLeft + 'px'
               overlay.style.minWidth = '200px'
-
               overlay.style.background = '#fff'
 
               var footerControls = `
@@ -6012,14 +6020,28 @@ const { themeColor } = require('@edulastic/colors')
               <div class="ant-modal-header" style="height: 30px; border: none;">
                 <br/>
               </div>
-                <div class="ant-modal-body">
-                  <img id="edu-pdf-image-view" style="max-width: 400px; max-height: 300px; width: 100%;" src="${imageContent}"/>
+                <div class="ant-modal-body" id="edu-pdfimageview-wrapper">
                 </div>
                 ${isEditable ? footerControls : ''}
               </div>
               `
 
               parentNode.appendChild(overlay)
+
+              var newImage = new Image()
+              newImage.onload = function () {
+                document
+                  .getElementById('edu-pdfimageview-wrapper')
+                  .appendChild(this)
+                if (overlay.clientWidth + styleLeft > pRect.width - 10) {
+                  const o = overlay.clientWidth + styleLeft - pRect.width
+                  overlay.style.left = styleLeft - o - 10 + 'px'
+                }
+              }
+              newImage.style.maxWidth = '400px'
+              newImage.style.maxHeight = '300px'
+              newImage.style.width = '100%'
+              newImage.src = imageContent
 
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyImageUpdateOverlay)
@@ -6107,8 +6129,10 @@ const { themeColor } = require('@edulastic/colors')
               overlay = document.createElement('div')
               var parentNode = (0, _utils.findSVGContainer)(target).parentNode
               var rect = (0, _utils.getAnnotationRect)(target)
+              var pRect = parentNode.getBoundingClientRect()
+
               var styleLeft = rect.left - OVERLAY_BORDER_SIZE
-              var styleTop = rect.top + OVERLAY_BORDER_SIZE + 24
+              var styleTop = rect.top + rect.height + OVERLAY_BORDER_SIZE
 
               overlay.setAttribute('id', 'pdf-annotate-update-overlay')
               overlay.setAttribute('data-target-id', annotationId)
@@ -6155,6 +6179,11 @@ const { themeColor } = require('@edulastic/colors')
               `
 
               parentNode.appendChild(overlay)
+
+              if (overlay.clientWidth + styleLeft > pRect.width - 10) {
+                const o = overlay.clientWidth + styleLeft - pRect.width
+                overlay.style.left = styleLeft - o - 10 + 'px'
+              }
 
               var closeBtn = document.getElementById('edu-annotate-close')
               closeBtn.addEventListener('click', destroyCommentUpdateOverlay)

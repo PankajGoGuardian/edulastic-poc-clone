@@ -242,6 +242,8 @@ export function* saveUserResponse({ payload }) {
       if (isDocBased) {
         if (questionId && question === questionId) {
           timesSpent[questionId] = ts
+        } else {
+          timesSpent[question] = 0
         }
       } else {
         timesSpent[question] = ts / questions.length

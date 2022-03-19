@@ -90,10 +90,10 @@ const autoSavableTypes = {
   formulaessay: 1,
 }
 
-const shouldAutoSave = (itemRows, answersById, itemId, isDocBased = false) => {
+const shouldAutoSave = (itemRows, answersById, itemId) => {
   let autosave = false
   let currentAnswer = ''
-  if (!itemRows || isDocBased) {
+  if (!itemRows) {
     return [autosave, currentAnswer]
   }
 
@@ -1154,7 +1154,6 @@ const AssessmentContainer = ({
     }
   }
   let itemRows = testItem.rows
-  const { isDocBased } = testItem
 
   let passage = {}
   if (testItem.passageId && passages) {
@@ -1171,16 +1170,11 @@ const AssessmentContainer = ({
   const prevAnswerValue = useRef('')
 
   useEffect(() => {
-    ;[, prevAnswerValue.current] = shouldAutoSave(
-      itemRows,
-      answersById,
-      itemId,
-      isDocBased
-    )
+    ;[, prevAnswerValue.current] = shouldAutoSave(itemRows, answersById, itemId)
   }, [JSON.stringify(itemRows)])
 
   const [autoSave, currentAnswerValue] = useMemo(
-    () => shouldAutoSave(itemRows, answersById, itemId, isDocBased),
+    () => shouldAutoSave(itemRows, answersById, itemId),
     [itemRows, currentItem, answersById, itemId]
   )
 

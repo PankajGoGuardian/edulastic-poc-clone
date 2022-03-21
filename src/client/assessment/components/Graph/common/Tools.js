@@ -245,13 +245,20 @@ const Tools = ({
 
   const onSelectTool = (tool) => {
     let newTools = [...tools]
+    let isNew = false
     if (newTools.includes(tool)) {
       newTools = newTools.filter((item) => item !== tool)
     } else {
+      isNew = true
       newTools.push(tool)
     }
-
     setTools(newTools)
+
+    if (onSelect && isNew) {
+      onSelect(tool)
+    } else if (selected.includes(tool)) {
+      onSelect(newTools[0])
+    }
   }
 
   const openDrawer = () => {

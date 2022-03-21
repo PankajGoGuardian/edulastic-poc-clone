@@ -57,13 +57,13 @@ const PrivacyPolicyModal = ({ userID }) => {
       <EdulasticLogo>
         <OnWhiteBgLogo />
       </EdulasticLogo>
-      <ModalTitle>
+      <ModalTitle data-cy="eulaModalTitle">
         End User License Agreement and Product Privacy Policy
       </ModalTitle>
-      <ModalHeaderSubcontent>
-        Welcome to <b>Edulastic!</b> We are so excited to start helping you
-        protect your students. But before we proceed, please read our entire End
-        user License Agreement to make sure that we’re on the same page.
+      <ModalHeaderSubcontent data-cy="eulaModalSubTitle">
+        Welcome to <b>Edulastic!</b> Before we proceed, please read our entire
+        (1) Terms of Service and End User License Agreement; and (2) Product
+        Privacy Policy to make sure we’re on the same page.
       </ModalHeaderSubcontent>
     </>
   )
@@ -78,6 +78,7 @@ const PrivacyPolicyModal = ({ userID }) => {
         fontSize="17px"
         height="40px"
         width="150px"
+        data-cy="policyAcceptButton"
       >
         ACCEPT
       </EduButton>
@@ -103,8 +104,8 @@ const PrivacyPolicyModal = ({ userID }) => {
           <EulaPolicyContent />
           <ProductPolicyContent />
           <EeaPolicyContent />
-          <CheckboxWrapper>
-            <CheckboxLabel onChange={onCheck}>
+          <CheckboxWrapper data-cy="policyAgreeCheckboxText">
+            <CheckboxLabel onChange={onCheck} data-cy="policyAgreeCheckbox">
               By checking the box and clicking “Accept”, I agree to the Terms of
               Service and End User License Agreement and Privacy Policy of the
               Product

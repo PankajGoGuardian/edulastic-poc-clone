@@ -3,41 +3,25 @@ import COPPADISCLOSURE from './COPPADisclosure.pdf'
 import { TermsPrivacy } from '../../styled/index'
 
 const TermsAndPrivacy = ({ signIn }) => {
-  return signIn ? (
-    <TermsPrivacy>
-      By signing in you agree to our{' '}
-      <a
-        href="https://edulastic.com/terms-of-service/"
-        target="_blank"
-        rel="noreferrer"
+  return (
+    !signIn && (
+      <TermsPrivacy
+        data-cy="signupTermsAndPrivacy"
+        align="left"
+        minWidth="330px"
       >
-        Product Terms of Service & End User License Agreement
-      </a>{' '}
-      and{' '}
-      <a
-        href="https://edulastic.com/privacy-policy/"
-        target="_blank"
-        rel="noreferrer"
-      >
-        Product Privacy Policy
-      </a>
-    </TermsPrivacy>
-  ) : (
-    <>
-      <TermsPrivacy align="left">By signing up:</TermsPrivacy>
-      <TermsPrivacy align="left" minWidth="330px">
-        You are agreeing that you are authorized to act for your school and you
-        consent to Edulastic&apos;s collection of student data in the{'  '}
+        By signing up, you are agreeing that you are authorized to act for your
+        school and you consent to Edulastic&apos;s collection of student data in
+        the{' '}
         <a
           onClick={() => window.open(COPPADISCLOSURE)}
           target="_blank"
           rel="noreferrer"
         >
-          {' '}
-          COPPA Disclosure
+          COPPA Disclosure.
         </a>
       </TermsPrivacy>
-    </>
+    )
   )
 }
 

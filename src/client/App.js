@@ -620,10 +620,19 @@ class App extends Component {
       ? 'Close demo account'
       : 'Stop Acting as User'
 
+    const showEulaForQA = process.env.REACT_APP_QA_ENV
+      ? process.env.REACT_APP_QA_ENV && window.showEulaForQA
+      : true // Eula Modal Hidden For QA Environment &  Window Variable value changed on Automation to display
+
+    // here we are exluding the parent role also, because for parent we have a code in app.js
+    const excludedRoles = [roleuser.STUDENT, roleuser.PARENT]
+
     const showPrivacyPolicyModal =
-      !process.env.REACT_APP_QA_ENV &&
-      userRole !== roleuser.STUDENT &&
+      !isProxyUser &&
+      !!showEulaForQA &&
+      !excludedRoles.includes(userRole) &&
       userInfo?.isPolicyAccepted === false
+
     return (
       <div>
         {showPrivacyPolicyModal && (

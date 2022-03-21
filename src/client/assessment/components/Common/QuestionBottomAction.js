@@ -390,7 +390,9 @@ const QuestionBottomAction = ({
     ) && !item?.validation?.unscored
 
   const showQuestionBottomLCBMessage =
-    isLCBView && !hideCorrectAnswer && (hasAltAnswers || isGradedExternally)
+    (isLCBView || isExpressGrader) &&
+    !hideCorrectAnswer &&
+    (hasAltAnswers || isGradedExternally)
 
   return (
     <>
@@ -408,9 +410,8 @@ const QuestionBottomAction = ({
           </span>
           <span data-cy="alternate-score-info-text">
             {isGradedExternally
-              ? 'Teacher manually awarded score for this item. '
-              : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. '}
-            Use Edit/Regrade option to review the settings.
+              ? 'Teacher manually awarded score for this item.'
+              : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. Use Edit/Regrade option to review the settings.'}
           </span>
         </QuestionLCBBottomMessage>
       )}
@@ -697,7 +698,7 @@ const QuestionLCBBottomMessage = styled.div`
   margin-left: 51px;
   margin-top: 20px;
   font-weight: 500;
-  max-width: 650px;
+  max-width: 920px;
   width: calc(100% - 51px);
   color: ${greyThemeDark4};
   border: 1px solid ${borderGrey4};

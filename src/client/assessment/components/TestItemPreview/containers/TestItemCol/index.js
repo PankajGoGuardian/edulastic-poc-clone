@@ -102,6 +102,7 @@ class TestItemCol extends Component {
       isShowStudentWork,
       itemId,
       testItemId,
+      multipartItem,
     } = restProps
     const timespent = widget.timespent !== undefined ? widget.timespent : null
     const question =
@@ -172,7 +173,8 @@ class TestItemCol extends Component {
             maxWidth={
               (isLCBView ||
                 isReviewTab ||
-                (isStudentAttempt && isPassageWithQuestions)) &&
+                (isStudentAttempt &&
+                  (isPassageWithQuestions || multipartItem))) &&
               '100%'
             }
           >

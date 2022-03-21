@@ -54,7 +54,6 @@ import {
 import PassageDivider from '../../../../../common/components/PassageDivider'
 import { getCurrentLanguage } from '../../../../../common/components/LanguageSelector/duck'
 import { changeDataToPreferredLanguage } from '../../../../../assessment/utils/question'
-import ItemLevelScoreWrapper from '../../../../../assessment/components/Common/ItemLevelScoreWrapper'
 
 /**
  * As ItemPreview Modal and MultipartItem are using this component,
@@ -639,7 +638,7 @@ class AuthorTestItemPreview extends Component {
   }
 
   render() {
-    const { showScoreAtItem, cols, onlySratchpad, itemLevelScore } = this.props
+    const { cols, onlySratchpad } = this.props
     const { isRejectMode } = this.state
     let resourceCount = 0
     cols
@@ -669,12 +668,6 @@ class AuthorTestItemPreview extends Component {
                 resourceCount
               )
             : this.renderColumnsContentArea({ sectionQue, resourceCount })}
-          {showScoreAtItem && (
-            <ItemLevelScoreWrapper
-              marginBottom="85px"
-              itemLevelScore={itemLevelScore}
-            />
-          )}
         </ScrollContext.Provider>
       </ThemeProvider>
     )

@@ -72,7 +72,8 @@ export const Label = styled.label`
       : 'none'};
   margin-top: 10px;
   display: flex;
-  align-items: center;
+  align-items: ${({ uiStyle }) =>
+    uiStyle.type === 'radioBelow' ? 'end' : 'center'};
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
   margin-right: 12px;
   background: ${({ uiStyle, selected, label }) =>
@@ -136,7 +137,8 @@ export const OptionLabelDiv = styled.div`
     focusedOptionIndex == indx ? '9999' : '9998'};
   position: relative;
   display: flex;
-  align-items: center;
+  align-items: ${({ uiStyle }) =>
+    uiStyle.type === 'radioBelow' ? 'end' : 'center'};
   user-select: ${({ userSelect }) => (userSelect ? 'initial' : 'none')};
   margin-right: 12px;
   margin-bottom: 4px;

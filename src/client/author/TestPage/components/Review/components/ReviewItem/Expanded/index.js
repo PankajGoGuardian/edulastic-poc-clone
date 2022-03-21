@@ -173,7 +173,7 @@ const Expanded = ({
                 />
               )}
               {showAltScoreInfo && (
-                <Tooltip title="Item with alternative answers with different score points. Review suggested">
+                <Tooltip title="Question has alternate answers with different score points.">
                   <InfoIcon />
                 </Tooltip>
               )}
@@ -204,8 +204,6 @@ const Expanded = ({
             windowWidth="100%"
             isReviewTab
             testItem
-            itemLevelScoring={testItem?.itemLevelScoring}
-            itemLevelScore={testItem?.itemLevelScore}
             isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
             premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
             itemIdKey={testItem._id}
@@ -274,8 +272,6 @@ const Expanded = ({
                     }
                     isExpandedView
                     itemIdKey={testItem._id}
-                    itemLevelScoring={testItem?.itemLevelScoring}
-                    itemLevelScore={testItem?.itemLevelScore}
                   />
                 </div>
               </AnswerContext.Provider>
@@ -321,7 +317,7 @@ const Expanded = ({
                     />
                   )}
                   {showAltScoreInfo && (
-                    <Tooltip title="Item with alternative answers with different score points. Review suggested">
+                    <Tooltip title="Question has alternate answers with different score points.">
                       <InfoIcon />
                     </Tooltip>
                   )}

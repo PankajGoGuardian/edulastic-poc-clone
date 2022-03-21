@@ -105,6 +105,7 @@ class ClassList extends React.Component {
       userOrgId,
       getAllTags,
       courseList,
+      setExcludeSchools,
     } = this.props
 
     if (isEmpty(schools)) {
@@ -138,6 +139,7 @@ class ClassList extends React.Component {
       }),
       this.loadClassList
     )
+    setExcludeSchools(false)
   }
 
   componentDidUpdate(prevProps) {
@@ -405,7 +407,7 @@ class ClassList extends React.Component {
                     data-cy="bulkAssignToggleButton"
                     checkedChildren="EXCLUDE"
                     unCheckedChildren="INCLUDE"
-                    value={excludeSchools}
+                    checked={excludeSchools}
                     onChange={setExcludeSchools}
                   />
                 </FeaturesSwitch>

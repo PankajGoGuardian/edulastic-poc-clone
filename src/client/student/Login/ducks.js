@@ -20,6 +20,7 @@ import segmentApi from '@edulastic/api/src/segment'
 import schoolApi from '@edulastic/api/src/school'
 import * as TokenStorage from '@edulastic/api/src/utils/Storage'
 import { roleuser, signUpState } from '@edulastic/constants'
+import { toggleChatDisplay } from '@edulastic/common'
 import firebase from 'firebase/app'
 import * as Sentry from '@sentry/browser'
 import roleType from '@edulastic/constants/const/roleType'
@@ -1499,7 +1500,6 @@ function* logout() {
       TokenStorage.removeAccessToken(user._id, user.role)
       window.close()
     } else {
-      yield call(segmentApi.unloadIntercom, { user })
       if (user && TokenStorage.getAccessTokenForUser(user._id, user.role)) {
         yield call(userApi.logout)
       }
@@ -2421,6 +2421,20 @@ function* updatePowerTeacher({ payload }) {
   }
 }
 
+// Show or hide chat widget after receiving user
+function* initiateChatWidgetAfterUserLoadSaga({ payload }) {
+  /* eslint require-yield:0 */
+  // Hiding chat widget for edulastic admin because internal user
+  if (
+    payload.role === roleuser.EDULASTIC_ADMIN ||
+    payload.role === roleuser.STUDENT
+  ) {
+    toggleChatDisplay('hide')
+  } else {
+    appConfig.initEmbeddedServiceCloudWidget(payload)
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login)
   yield takeLatest(SIGNUP, signup)
@@ -2472,4 +2486,5 @@ export function* watcherSaga() {
     PERSIST_AUTH_STATE_AND_REDIRECT,
     persistAuthStateAndRedirectToSaga
   )
+  yield takeLatest(SET_USER, initiateChatWidgetAfterUserLoadSaga)
 }

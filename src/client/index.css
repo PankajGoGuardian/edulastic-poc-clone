@@ -2666,7 +2666,40 @@ div[class*='_pendo'] button {
 .showOne-notification:not(:first-of-type) {
   display: none;
 }
-
+.embeddedServiceHelpButton .embeddedServiceIcon {
+  font-size: 32px;
+  padding-left: 10px;
+  display: block !important;
+}
+.embeddedServiceSidebarMinimizedDefaultUI .embeddedServiceIcon {
+  font-size: 40px;
+  margin-right: 0 !important;
+  margin-top: -5px;
+}
+.embeddedServiceHelpButton .helpButton,
+.embeddedServiceSidebar .embeddedServiceSidebarMinimizedDefaultUI {
+  border-right: none !important;
+  border-bottom: none !important;
+  border-radius: 50px !important;
+  height: 60px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  right: 20px !important;
+  bottom: 20px !important;
+}
+.embeddedServiceHelpButton .helpButton .uiButton {
+  background-color: #0cc18c !important;
+  font-family: "Open Sans", sans-serif !important;
+  border-radius: 50px !important;
+  height: 60px !important;
+  width: 60px !important;
+  min-width: 60px !important;
+  padding: 0px !important;
+}
+.embeddedServiceHelpButton .helpButton .uiButton:focus {
+  outline: 1px solid #0cc18c !important;
+}
 .privacyPolicyModal {
   z-index: 3000001;
 }
+

@@ -45,11 +45,12 @@ const SimpleAreaWithLineChartContainer = ({ data }) => {
       data
         .filter((item) => item.assessmentDate)
         .map((item) => {
+          // format assessment date to string (preserve UTC timezone)
           return {
             ...item,
-            date: moment(item.assessmentDate).format("MMM'YY"),
-            month: moment(item.assessmentDate).format('MMMM'),
-            year: Number(moment(item.assessmentDate).format('YY')),
+            date: moment.utc(item.assessmentDate).format("MMM'YY"),
+            month: moment.utc(item.assessmentDate).format('MMMM'),
+            year: Number(moment.utc(item.assessmentDate).format('YY')),
           }
         }),
     [data]

@@ -186,7 +186,12 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
     const avgStudentScoreUnrounded =
       item.totalTotalScore / (statusCounts[1] || 1) || 0
     const avgStudentScore = Number(avgStudentScoreUnrounded.toFixed(2))
-    const { maxScore, teacherName, groupName: className } = groupedData[data][0]
+    // TODO prefer BE fix: https://github.com/snapwiz/edu-api/pull/8306
+    // Following is only immediate fix
+    const itemWithMaxScore =
+      maxBy(groupedData[data], 'maxScore') || groupedData[data][0]
+    const { teacherName, groupName: className } = itemWithMaxScore
+    const maxScore = Math.max(itemWithMaxScore.maxScore, avgStudentScore) || 1
     let absent = statusCounts[testActivityStatus.ABSENT] || 0
     absent += statusCounts[testActivityStatus.UN_ASSIGNED] || 0
     absent += statusCounts[testActivityStatus.UN_ENROLLED] || 0

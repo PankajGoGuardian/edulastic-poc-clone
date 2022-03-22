@@ -705,6 +705,15 @@ const AssessmentContainer = ({
   })
 
   // start assessment
+
+  const isAnswerNotUpdated = useRef(true)
+
+  useEffect(() => {
+    if (isAnswerNotUpdated.current && !loading) {
+      isAnswerNotUpdated.current = false
+    }
+  }, [answers])
+
   useEffect(() => {
     /**
      * src/client/assessment/sagas/items.js:saveUserResponse
@@ -950,10 +959,12 @@ const AssessmentContainer = ({
       ) {
         const previewTab = getPreviewTab(index)
         saveCurrentAnswer({
+          isAnswerNotUpdated: isAnswerNotUpdated.current,
           urlToGo: `${url}/itemId/${items[index]._id}`,
           locState: history?.location?.state,
           callback: () => changePreview(previewTab),
         })
+        isAnswerNotUpdated.current = true
       } else {
         if (!enableSkipAlert) {
           // eslint-disable-next-line

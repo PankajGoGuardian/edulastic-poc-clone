@@ -129,6 +129,7 @@ export function* saveUserResponse({ payload }) {
     })
     const ts = Math.min(payload.timeSpent || 0, TIMESPENT_CLAMPING_THRESHOLD)
     const {
+      isAnswerNotUpdated,
       autoSave,
       shouldClearUserWork = false,
       isPlaylist = false,
@@ -137,6 +138,7 @@ export function* saveUserResponse({ payload }) {
       questionId,
       extData,
     } = payload
+
     const itemIndex = payload.itemId
     const timeInBlur = yield select((state) => state.test?.blurTime)
     const assignmentsByIds = yield select(
@@ -311,7 +313,10 @@ export function* saveUserResponse({ payload }) {
       shouldSaveOrUpdateAttachment = true
     }
     activity.userWork = userWorkData
-    yield call(testItemActivityApi.create, activity, autoSave, pausing)
+
+    if (!isAnswerNotUpdated) {
+      yield call(testItemActivityApi.create, activity, autoSave, pausing)
+    }
     const userId = yield select((state) => state?.user?.user?._id)
     if (shouldSaveOrUpdateAttachment) {
       const fileData = isDocBased

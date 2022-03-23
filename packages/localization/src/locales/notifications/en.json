@@ -483,6 +483,14 @@
     "message": "Please select at least one class to assign.",
     "description": ""
   },
+  "selectSubject": {
+    "message": "Please select at least one subject to bulk assign.",
+    "description": ""
+  },
+  "selectGrade": {
+    "message": "Please select at least one grade to bulk assign.",
+    "description": ""
+  },
   "endDate": {
     "message": " Please Enter a future end date.",
     "description": ""
@@ -1460,7 +1468,7 @@
     "description": ""
   },
   "ratingsDescLengthValidation": {
-    "message": "Rating description cannot be more than 2048 characters",
+    "message": "Rating description cannot be more than 8192 characters",
     "description": ""
   },
   "ratingPointMustBeZero": {

@@ -52,7 +52,7 @@ export const productsMetaData = {
     subject: 'math & cs',
     grades: 'Grades K-12',
     learnMoreLinks: 'https://edulastic.com/spark-cs',
-    filters: 'CS',
+    filters: 'COMPUTER SCIENCE',
   },
   CPM: {
     icon: <IconCPM />,

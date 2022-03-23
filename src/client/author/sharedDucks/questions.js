@@ -38,6 +38,8 @@ export const REMOVE_RUBRIC_ID = '[author questions] remove rubricId'
 export const CHANGE_UPDATE_FLAG = '[authorQuestions] update the updated flag'
 export const UPDATE_SCORE_AND_VALIDATION =
   '[authorQuestions] update score and validation'
+export const SET_ITEM_LEVEL_SCORING_FROM_RUBRIC =
+  '[itemDetail] set item level scoring from rubric'
 // actions creators
 export const loadQuestionsAction = createAction(LOAD_QUESTIONS)
 export const addItemsQuestionAction = createAction(ADD_ITEMS_QUESTION)
@@ -274,6 +276,21 @@ const changeValidationWhenUnscored = (question, score) => {
   })
 }
 
+const setItemLevelScoring = (state, { payload }) => {
+  if (!payload) {
+    for (const key of Object.keys(state.byId)) {
+      const oldScore = get(state.byId[key], 'validation.validResponse.score', 0)
+      if (get(state.byId[key], 'validation.unscored', false)) {
+        set(state.byId[key], 'validation.validResponse.score', 0)
+        continue
+      }
+      if (parseFloat(oldScore) === 0) {
+        set(state.byId[key], 'validation.validResponse.score', 1)
+      }
+    }
+  }
+}
+
 export const SET_ITEM_DETAIL_ITEM_LEVEL_SCORING =
   '[itemDetail] set item level scoring'
 export const SET_QUESTION_SCORE = '[author questions] set question score'
@@ -311,24 +328,8 @@ export default createReducer(initialState, {
       set(state.byId[qid], 'validation.validResponse.score', score)
     }
   },
-  [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: (state, { payload }) => {
-    if (!payload) {
-      for (const key of Object.keys(state.byId)) {
-        const oldScore = get(
-          state.byId[key],
-          'validation.validResponse.score',
-          0
-        )
-        if (get(state.byId[key], 'validation.unscored', false)) {
-          set(state.byId[key], 'validation.validResponse.score', 0)
-          continue
-        }
-        if (parseFloat(oldScore) === 0) {
-          set(state.byId[key], 'validation.validResponse.score', 1)
-        }
-      }
-    }
-  },
+  [SET_ITEM_LEVEL_SCORING_FROM_RUBRIC]: setItemLevelScoring,
+  [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING]: setItemLevelScoring,
   [SET_RUBRIC_ID]: (state, { payload }) => {
     state.byId[state.current].rubrics = payload.metadata
     state.byId[state.current].validation.validResponse.score = payload.maxScore
@@ -350,6 +351,12 @@ export const getAuthorQuestionSelector = (state) => state[_module]
 export const getTestSelector = createSelector(
   getTestStateSelector,
   (state) => state.entity
+)
+
+export const getQuestionRubrics = createSelector(
+  getQuestionsSelector,
+  getCurrentQuestionIdSelector,
+  (state, id) => state[id]?.rubrics
 )
 
 export const getQuestionsSelectorForReview = createSelector(

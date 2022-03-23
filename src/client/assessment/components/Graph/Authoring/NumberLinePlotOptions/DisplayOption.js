@@ -1,10 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { Select } from 'antd'
-import { Checkbox } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-
-import { MoreOptionsInput } from '../../common/styled_components'
 
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
@@ -48,7 +45,7 @@ const DisplayOptions = ({
   }
 
   const handleChangeFontSize = (fontSize) => {
-    setNumberline({ ...numberlineAxis, fontSize })
+    setOptions({ ...uiStyle, fontSize })
   }
 
   const handleNumberlineCheckboxChange = (name) => () => {
@@ -58,11 +55,6 @@ const DisplayOptions = ({
   const handleUiStyle = (name) => () => {
     setOptions({ ...uiStyle, [name]: !uiStyle[name] })
   }
-
-  const getFontSizeItem = () =>
-    fontSizeList.find(
-      (item) => item.value === parseInt(numberlineAxis.fontSize, 10)
-    ) || {}
 
   return (
     <>
@@ -103,11 +95,11 @@ const DisplayOptions = ({
             data-cy="fontSize"
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={handleChangeFontSize}
-            value={getFontSizeItem().label}
+            value={uiStyle?.fontSize}
           >
             {fontSizeList.map((option) => (
               <Select.Option data-cy={option.id} key={option.value}>
-                {option.label}
+                {t(`component.options.${option.label}`)}
               </Select.Option>
             ))}
           </SelectInputStyled>

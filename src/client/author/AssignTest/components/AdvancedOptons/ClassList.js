@@ -18,10 +18,7 @@ import {
   getUserOrgId,
   getSchoolsByUserRoleSelector,
 } from '../../../src/selectors/user'
-import {
-  getTotalSchoolsSelector,
-  receiveSchoolsAction,
-} from '../../../Schools/ducks'
+import { receiveSchoolsAction } from '../../../Schools/ducks'
 import {
   receiveCourseListAction,
   getAggregateCourseListSelector,
@@ -34,6 +31,7 @@ import {
   ClassListContainer,
   TableContainer,
   InfoSection,
+  SwitchStyled,
 } from './styled'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -42,6 +40,11 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
+import {
+  setSearchTermsFilterAction,
+  setExcludeSchoolsAction,
+} from '../../../TestPage/components/Assign/ducks'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -102,9 +105,10 @@ class ClassList extends React.Component {
       userOrgId,
       getAllTags,
       courseList,
-      totalSchools,
+      setExcludeSchools,
     } = this.props
-    if (isEmpty(schools) || schools?.length !== totalSchools) {
+
+    if (isEmpty(schools)) {
       loadSchoolsData({ districtId: userOrgId })
     }
     if (isEmpty(courseList)) {
@@ -135,6 +139,7 @@ class ClassList extends React.Component {
       }),
       this.loadClassList
     )
+    setExcludeSchools(false)
   }
 
   componentDidUpdate(prevProps) {
@@ -165,8 +170,9 @@ class ClassList extends React.Component {
   }
 
   loadClassList = () => {
-    const { loadClassListData, userOrgId } = this.props
+    const { loadClassListData, userOrgId, setSearchTermsFilter } = this.props
     const { searchTerms } = this.state
+    setSearchTermsFilter(searchTerms)
     loadClassListData({
       districtId: userOrgId,
       queryType: 'OR',
@@ -268,6 +274,8 @@ class ClassList extends React.Component {
       assignedClassesById,
       testType,
       isCoursesLoading,
+      setExcludeSchools,
+      excludeSchools,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -380,11 +388,31 @@ class ClassList extends React.Component {
       },
     ]
 
+    const { isPlaylist, match } = this.props
+    const { testId } = match.params
+    const isPlaylistModule = isPlaylist && !testId
     return (
       <ClassListContainer>
         <ClassListFilter>
           <StyledRowLabel>
-            School
+            <div>
+              School{' '}
+              {!isPlaylistModule && (
+                <FeaturesSwitch
+                  inputFeatures="canBulkAssign"
+                  key="canBulkAssign"
+                  actionOnInaccessible="hidden"
+                >
+                  <SwitchStyled
+                    data-cy="bulkAssignToggleButton"
+                    checkedChildren="EXCLUDE"
+                    unCheckedChildren="INCLUDE"
+                    checked={excludeSchools}
+                    onChange={setExcludeSchools}
+                  />
+                </FeaturesSwitch>
+              )}
+            </div>
             <SelectInputStyled
               data-cy="schoolSelect"
               mode="multiple"
@@ -599,13 +627,15 @@ const enhance = compose(
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
-      totalSchools: getTotalSchoolsSelector(state),
+      excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
     }),
     {
       loadClassListData: receiveClassListAction,
       loadSchoolsData: receiveSchoolsAction,
       loadCourseListData: receiveCourseListAction,
       getAllTags: getAllTagsAction,
+      setSearchTermsFilter: setSearchTermsFilterAction,
+      setExcludeSchools: setExcludeSchoolsAction,
     }
   )
 )

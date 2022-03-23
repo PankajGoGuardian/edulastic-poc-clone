@@ -146,6 +146,7 @@ class Display extends Component {
       userAnswers,
       setAnswers,
       hideCorrectAnswer,
+      showAnswerScore,
       answerScore,
     } = this.props
 
@@ -290,6 +291,8 @@ class Display extends Component {
           responseContainers={responseContainers}
           stemNumeration={stemNumeration}
           width="100%"
+          showAnswerScore={showAnswerScore}
+          score={validation?.validResponse?.score}
           singleResponseBox={singleResponseBox}
         />
         {altResponses.map((altResponse, index) => (
@@ -300,6 +303,8 @@ class Display extends Component {
             altAnsIndex={index + 1}
             stemNumeration={stemNumeration}
             width="100%"
+            showAnswerScore={showAnswerScore}
+            score={altResponse?.score}
             singleResponseBox={singleResponseBox}
           />
         ))}

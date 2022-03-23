@@ -66,14 +66,19 @@ const organizationSearch = (data) =>
     })
     .then((result) => result.data)
 
-const saveItemsToBucket = ({ itemBankId, _id, contentType, contentIds }) => {
+const saveItemsToBucket = ({
+  itemBankId,
+  _id,
+  contentType,
+  contentsVersionIdById,
+}) => {
   return api
     .callApi({
       url: `${prefix}/${itemBankId}/bucket/${_id}/add-content`,
       method: 'post',
       data: {
         contentType,
-        contentIds,
+        contentsVersionIdById,
       },
     })
     .then((result) => result.data)

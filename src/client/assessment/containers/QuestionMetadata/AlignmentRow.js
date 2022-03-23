@@ -418,7 +418,7 @@ const AlignmentRow = ({
           </Col>
 
           {showIconBrowserBtn ? (
-            <IconWrapper>
+            <IconWrapper data-cy="standardBrowseButton">
               <IconExpandBox onClick={handleShowBrowseModal} />
             </IconWrapper>
           ) : (

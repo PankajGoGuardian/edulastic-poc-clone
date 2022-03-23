@@ -1334,7 +1334,10 @@ export function* updateItemSaga({ payload }) {
       }
     } else if (questions.length > 1) {
       for (const question of questions) {
-        if (!questionType.manuallyGradableQn.includes(question.type) && !itemLevelScoring) {
+        if (
+          !questionType.manuallyGradableQn.includes(question.type) &&
+          !itemLevelScoring
+        ) {
           const [hasInvalidScore, errMsg] = validateScore(question)
           if (hasInvalidScore) {
             return notification({ msg: errMsg })

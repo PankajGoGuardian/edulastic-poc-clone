@@ -166,6 +166,22 @@ const AssessmentStatisticTable = (props) => {
         columns[7].sorter = sortNumbers('avgStudentScore')
         columns[7].render = (text) => `${text}%`
       }
+      const studentsGradedColIdx = columns.findIndex(
+        (col) => col.key === 'studentsGraded'
+      )
+      if (studentsGradedColIdx > -1) {
+        columns[studentsGradedColIdx].render = (_, doc) => {
+          const { studentsAssigned, studentsGraded } = doc
+          const percentage = Math.round(
+            100 * (studentsAssigned ? studentsGraded / studentsAssigned : 0)
+          )
+          return (
+            <>
+              {studentsGraded} ( {percentage}% )
+            </>
+          )
+        }
+      }
     })
 
   const table = useMemo(() => {

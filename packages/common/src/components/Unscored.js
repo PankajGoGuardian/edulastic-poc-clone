@@ -28,6 +28,7 @@ const UnScored = ({
       fontWeight={fontWeight}
       height={height}
       top={top}
+      data-cy="unScoredBlock"
     >
       <span>{text}</span>
     </UnScoredBlock>

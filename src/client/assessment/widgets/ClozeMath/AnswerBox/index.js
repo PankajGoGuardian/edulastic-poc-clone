@@ -17,6 +17,9 @@ const CorrectAnswers = ({
   extraOpts,
   singleResponseBox,
   uiStyles,
+  showAnswerScore,
+  correctScore,
+  altScores,
 }) => {
   const { inputs, maths, dropDowns, mathUnits } = responseIds
   let validAnswers = []
@@ -224,6 +227,8 @@ const CorrectAnswers = ({
         title="Correct answers"
         padding="15px 25px 20px"
         titleMargin="0px 0px 12px"
+        showAnswerScore={showAnswerScore}
+        score={correctScore}
       >
         {validAnswers.map((answer) => (
           <AnswerBox
@@ -242,6 +247,8 @@ const CorrectAnswers = ({
             title={`Alternate answers ${index + 1}`}
             padding="15px 25px 20px"
             titleMargin="0px 0px 12px"
+            showAnswerScore={showAnswerScore}
+            score={altScores?.[index]}
           >
             {altAnswer.map((altAns) => (
               <AnswerBox

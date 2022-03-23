@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import produce from 'immer'
 
-import { Subtitle } from '@edulastic/common'
+import { CorrectAnswersContainer } from '@edulastic/common'
 
 import DragItem from './DragItem'
 import { getStemNumeration } from '../../../utils/helpers'
@@ -19,6 +19,8 @@ const CorrectAnswers = ({
   multiRow,
   title,
   classifications = [],
+  showAnswerScore,
+  score,
 }) => {
   const replaceIdWithValue = (answers) => {
     const res = produce(answers, (draft) => {
@@ -41,8 +43,13 @@ const CorrectAnswers = ({
 
   const boxWidth = dragItemProps.width
   return (
-    <>
-      <Subtitle style={{ marginBottom: 20, marginTop: 20 }}>{title}</Subtitle>
+    <CorrectAnswersContainer
+      score={score}
+      showAnswerScore={showAnswerScore}
+      title={title}
+      padding="12px 24px"
+      minHeight="auto"
+    >
       <ColWrapper multiRow={multiRow}>
         {classifications.map((classification, index) => {
           const answers = containers[classification.id] || []
@@ -75,7 +82,7 @@ const CorrectAnswers = ({
           )
         })}
       </ColWrapper>
-    </>
+    </CorrectAnswersContainer>
   )
 }
 
@@ -114,6 +121,7 @@ const ColWrapper = styled.div`
   align-items: stretch;
   flex-wrap: wrap;
   justify-content: flex-start;
+  margin-top: 12px;
 `
 
 const AnswersContainer = styled.div`

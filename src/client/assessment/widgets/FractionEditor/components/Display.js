@@ -31,11 +31,12 @@ const Display = ({
   userAnswer,
   changePreviewTab,
   isReviewTab,
+  showAnswerScore,
   hideCorrectAnswer,
   view,
   t,
 }) => {
-  const { fractionProperties = {}, annotations = [] } = item
+  const { fractionProperties = {}, annotations = [], itemScore } = item
   const { fractionType } = fractionProperties
   const count = fractionProperties.count || 1
   const selected = userAnswer
@@ -163,6 +164,8 @@ const Display = ({
               selected={Array(get(item, 'validation.validResponse.value', 1))
                 .fill()
                 .map((_, i) => i + 1)}
+              showAnswerScore={showAnswerScore}
+              itemScore={itemScore}
             />
           </FractionContainer>
         )}

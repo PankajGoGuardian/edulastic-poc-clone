@@ -468,6 +468,7 @@ class SimpleOptions extends React.Component {
       selectedResourcesAction,
       orgCollections,
       isAssigning,
+      isPlaylist,
     } = this.props
 
     const { collections } = testSettings
@@ -569,6 +570,7 @@ class SimpleOptions extends React.Component {
                   isVideoResourcePreviewModal={isVideoResourcePreviewModal}
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
+                  isPlaylist={isPlaylist}
                 />
               </TabContentContainer>
             ) : (

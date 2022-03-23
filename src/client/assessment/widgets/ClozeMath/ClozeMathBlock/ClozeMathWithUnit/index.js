@@ -93,6 +93,11 @@ class ClozeMathWithUnit extends React.Component {
     const btnStyle = this.getStyles(uiStyles)
     const customKeys = get(item, 'customKeys', [])
     const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
+
+    if (item?.uiStyle?.transparentBackground) {
+      cssStyles.noBorder = true
+    }
+
     const mathInputProps = {
       value,
       customKeys,
@@ -103,6 +108,7 @@ class ClozeMathWithUnit extends React.Component {
       onInput: this.handleSaveAnswer,
       showResponse: false,
       style: cssStyles,
+      btnStyle: cssStyles.noBorder,
     }
 
     return (
@@ -112,6 +118,8 @@ class ClozeMathWithUnit extends React.Component {
         fontWeight={btnStyle.fontWeight}
         width={width}
         height={height}
+        noBorder={cssStyles.noBorder}
+        background={cssStyles.background}
         data-cy="mathUnitInput"
       >
         <MathInput {...mathInputProps} resetMath />
@@ -129,6 +137,8 @@ class ClozeMathWithUnit extends React.Component {
           id={id}
           height={cssStyles?.height || height}
           width={cssStyles?.width || width}
+          noBorder={cssStyles.noBorder}
+          background={cssStyles.background}
           fontSize={cssStyles?.fontSize}
           handleEvent={this.handleEvent}
         />

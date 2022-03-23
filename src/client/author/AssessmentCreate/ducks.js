@@ -352,7 +352,7 @@ function* uploadToDriveSaga({ payload = {} }) {
       size,
       mimeType,
     })
-    const fileURI = res.Location
+    const fileURI = res.cdnLocation
     yield put(
       createAssessmentRequestAction({
         fileURI,

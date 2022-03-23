@@ -277,6 +277,7 @@ class MathFormulaPreview extends Component {
       hideCorrectAnswer,
       answerScore,
       answerContextConfig: { expressGrader },
+      showAnswerScore,
     } = this.props
     const { innerValues } = this.state
     const isCheckAnswer = previewType === SHOW || previewType === CHECK
@@ -441,6 +442,8 @@ class MathFormulaPreview extends Component {
                   allowNumericOnly={allowNumericOnly}
                   allowedVariables={this.restrictKeys}
                   template={item.template}
+                  showAnswerScore={showAnswerScore}
+                  score={item?.validation?.validResponse?.score}
                   answer={
                     item.isUnits && item.showDropdown
                       ? item.validation.validResponse.value[0].value.search(
@@ -486,6 +489,8 @@ class MathFormulaPreview extends Component {
                     template={item.template}
                     answer={answer}
                     index={index + 1}
+                    showAnswerScore={showAnswerScore}
+                    score={ans?.score}
                     viewComponent={viewComponent}
                     method={ans?.value?.[0]?.method}
                     options={ans?.value?.[0]?.options}

@@ -313,6 +313,7 @@ class ClozeDragDropDisplay extends Component {
       t,
       hideCorrectAnswer,
       answerScore,
+      showAnswerScore,
     } = this.props
     const { userAnswers, possibleResponses, parsedTemplate } = this.state
     const { showDraghandle: dragHandler, shuffleOptions } = configureOptions
@@ -468,6 +469,8 @@ class ClozeDragDropDisplay extends Component {
           }}
           stemNumeration={stemNumeration}
           singleResponseBox={responseIDs?.length === 1}
+          showAnswerScore={showAnswerScore}
+          score={validation?.validResponse?.score}
         />
         {((item.validation && item.validation.altResponses) || []).map(
           (ele, ind) => (
@@ -485,6 +488,8 @@ class ClozeDragDropDisplay extends Component {
               }}
               stemNumeration={stemNumeration}
               singleResponseBox={responseIDs?.length === 1}
+              showAnswerScore={showAnswerScore}
+              score={ele?.score}
             />
           )
         )}

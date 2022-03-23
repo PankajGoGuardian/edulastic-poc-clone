@@ -19,8 +19,15 @@ export default class FormMath extends React.Component {
     answer: '',
   }
 
-  handleChange = (value) => {
-    const { saveAnswer } = this.props
+  handleChange = (value, resetHighlighted = false) => {
+    const { saveAnswer, clearHighlighted } = this.props
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-35019
+     * clear "highlighted" variable to avoid setting focus to math-input once again.
+     */
+    if (resetHighlighted) {
+      clearHighlighted()
+    }
     saveAnswer(value)
   }
 
@@ -93,6 +100,7 @@ export default class FormMath extends React.Component {
           onBlur={this.handleBlur}
           restrictKeys={restrictKeys}
           allowNumericOnly={allowNumericOnly}
+          isFromDocBased
         />
       </ThemeProvider>
     )

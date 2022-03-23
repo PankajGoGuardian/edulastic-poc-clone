@@ -34,6 +34,8 @@ const SelectUnit = ({
   id,
   handleEvent,
   fontWeight,
+  noBorder,
+  background,
 }) => {
   let allBtns = MathKeyboard.KEYBOARD_BUTTONS.filter((btn) =>
     btn.types.includes(keypadMode)
@@ -114,6 +116,8 @@ const SelectUnit = ({
         onFocus={() => handleEvent('focus')}
         onBlur={() => handleEvent('blur')}
         data-cy="selectUnitDropdown"
+        noBorder={noBorder}
+        bg={background}
       >
         {allBtns.map((btn, i) => {
           return (

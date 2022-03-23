@@ -2,7 +2,7 @@ export const responseDisplayOption = {
   choiceMatrix: { value: 'TEI' },
   clozeImageDragDrop: { value: 'TEI' },
   clozeImageDropDown: { value: 'TEI' },
-  CLOZE_IMAGE_TEXT: { value: 'TEI' },
+  clozeImageText: { value: 'TEI' },
   sortList: { value: 'TEI' },
   classification: { value: 'TEI' },
   matchList: { value: 'TEI' },

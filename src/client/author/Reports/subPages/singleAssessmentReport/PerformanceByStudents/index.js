@@ -294,6 +294,7 @@ const PerformanceByStudents = ({
       </NoDataContainer>
     )
   }
+
   return (
     <>
       <UpperContainer>

@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { isEmpty } from 'lodash'
 import styled from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { white } from '@edulastic/colors'
@@ -12,26 +11,19 @@ import Response from './Response'
 
 const CorrectAnswerBoxLayout = ({
   userAnswers,
-  altResponses,
   responseIds = [],
   t,
   stemNumeration,
+  altAnswers,
+  altIndex,
+  showAnswerScore,
+  score,
 }) => {
   const getLabel = (id) => {
-    if (isEmpty(altResponses)) {
-      const correctAnswer = userAnswers.find(
-        (answer) => (answer ? answer.id : '') === id
-      )
-      return correctAnswer ? correctAnswer.value : ''
-    }
-    const altLabels = []
-    altResponses.forEach((altAnswer) => {
-      const answer = altAnswer.value.find((alt) => (alt ? alt.id : '') === id)
-      if (answer && answer.value) {
-        altLabels.push(answer.value)
-      }
-    })
-    return altLabels.toString()
+    const correctAnswer = userAnswers.find(
+      (answer) => (answer ? answer.id : '') === id
+    )
+    return correctAnswer ? correctAnswer.value : ''
   }
   responseIds.sort((a, b) => a.index - b.index)
 
@@ -41,10 +33,12 @@ const CorrectAnswerBoxLayout = ({
       padding="15px 25px 20px"
       titleMargin="0px 0px 12px"
       title={
-        !isEmpty(altResponses)
-          ? t('component.cloze.altAnswers')
+        altAnswers
+          ? `${t('component.cloze.altAnswers')} ${altIndex}`
           : t('component.cloze.correctAnswer')
       }
+      showAnswerScore={showAnswerScore}
+      score={score}
     >
       {responseIds.map((response) => (
         <Answer data-cy="correctAnswer">
@@ -65,7 +59,6 @@ const CorrectAnswerBoxLayout = ({
 }
 
 CorrectAnswerBoxLayout.propTypes = {
-  altResponses: PropTypes.array,
   userAnswers: PropTypes.array,
   stemNumeration: PropTypes.string.isRequired,
   responseIds: PropTypes.array.isRequired,
@@ -73,7 +66,6 @@ CorrectAnswerBoxLayout.propTypes = {
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
-  altResponses: [],
   userAnswers: [],
 }
 

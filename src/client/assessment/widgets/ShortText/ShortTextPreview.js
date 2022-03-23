@@ -2,12 +2,11 @@ import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
 import { compose } from 'redux'
-import styled, { withTheme } from 'styled-components'
-import { get, isEmpty } from 'lodash'
+import { withTheme } from 'styled-components'
+import { get } from 'lodash'
 
 import {
   Stimulus,
-  CorrectAnswersContainer,
   QuestionNumberLabel,
   FlexContainer,
   QuestionLabelWrapper,
@@ -30,6 +29,7 @@ import { SmallStim } from './styled/SmallStim'
 import { getSpellCheckAttributes } from '../../utils/helpers'
 import { Addon } from './styled/Addon'
 import CharacterMap from '../../components/CharacterMap'
+import CorrectAswerBox from './components/CorrectAswerBox'
 import { InputWrapper } from './styled/InputWrapper'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
 import { StyledPaperWrapper } from '../../styled/Widget'
@@ -48,6 +48,7 @@ const ShortTextPreview = ({
   evaluation,
   isPrintPreview,
   hideCorrectAnswer,
+  showAnswerScore,
 }) => {
   const [text, setText] = useState(Array.isArray(userAnswer) ? '' : userAnswer)
   const [selection, setSelection] = useState({ start: 0, end: 0 })
@@ -176,34 +177,10 @@ const ShortTextPreview = ({
           </InputWrapper>
           {view !== EDIT && <Instructions item={item} />}
           {previewTab === SHOW && !hideCorrectAnswer && (
-            <>
-              <CorrectAnswersContainer
-                title={t('component.shortText.correctAnswers')}
-                minHeight="auto"
-                padding="15px 25px 20px"
-              >
-                <CorrectAnswers>
-                  {item?.validation?.validResponse?.value}
-                </CorrectAnswers>
-              </CorrectAnswersContainer>
-              {!isEmpty(item.validation?.altResponses) && (
-                <CorrectAnswersContainer
-                  title={t('component.shortText.alternateAnswers')}
-                  minHeight="auto"
-                  padding="15px 25px 20px"
-                  titleMargin="0px 0px 8px"
-                >
-                  <CorrectAnswers>
-                    {item.validation.altResponses.map((altAnswer, i) => (
-                      <div key={i}>
-                        <span>Alternate Answer {i + 1} : </span>
-                        {altAnswer.value}
-                      </div>
-                    ))}
-                  </CorrectAnswers>
-                </CorrectAnswersContainer>
-              )}
-            </>
+            <CorrectAswerBox
+              showAnswerScore={showAnswerScore}
+              validation={item?.validation}
+            />
           )}
         </QuestionContentWrapper>
       </FlexContainer>
@@ -234,7 +211,3 @@ ShortTextPreview.defaultProps = {
 const enhance = compose(withNamespaces('assessment'), withTheme)
 
 export default enhance(ShortTextPreview)
-
-const CorrectAnswers = styled.div`
-  padding-left: 20px;
-`

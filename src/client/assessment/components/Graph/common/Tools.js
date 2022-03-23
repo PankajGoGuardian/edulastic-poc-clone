@@ -154,7 +154,12 @@ const iconsByToolName = {
   [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
   [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
-    <IconEraseText width={13} height={16} stroke="transparent !important" />
+    <IconEraseText
+      width={13}
+      height={16}
+      data-cy="clear"
+      stroke="transparent !important"
+    />
   ),
   [CONSTANT.TOOLS.RESET]: (
     <IconEraseText
@@ -240,13 +245,20 @@ const Tools = ({
 
   const onSelectTool = (tool) => {
     let newTools = [...tools]
+    let isNew = false
     if (newTools.includes(tool)) {
       newTools = newTools.filter((item) => item !== tool)
     } else {
+      isNew = true
       newTools.push(tool)
     }
-
     setTools(newTools)
+
+    if (onSelect && isNew) {
+      onSelect(tool)
+    } else if (selected.includes(tool)) {
+      onSelect(newTools[0])
+    }
   }
 
   const openDrawer = () => {

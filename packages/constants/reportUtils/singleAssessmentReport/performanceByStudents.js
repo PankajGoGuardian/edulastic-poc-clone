@@ -46,6 +46,7 @@ const tableColumns = [
     dataIndex: 'student',
     key: 'student',
     width: 250,
+    fixed: 'left',
     align: 'left',
   },
   {
@@ -58,6 +59,18 @@ const tableColumns = [
     title: 'STUDENT NUMBER',
     dataIndex: 'studentNumber',
     key: 'sistudentNumber',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'Class Grade',
+    dataIndex: 'grades',
+    key: 'grades',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'Hispanic Ethnicity',
+    dataIndex: 'hispanicEthnicity',
+    key: 'hispanicEthnicity',
     visibleOn: ['csv'],
   },
   {
@@ -271,6 +284,7 @@ const normaliseTableData = (rawData, data) => {
       school: relatedGroup.schoolName || '-',
       teacher: relatedGroup.teacherName,
       groupName: relatedGroup.groupName,
+      grades: relatedGroup.grades,
       schoolAvg: round(relatedSchool.schoolAvgPerf || 0),
       districtAvg: round(districtAvgPerf || 0),
       studentScore,

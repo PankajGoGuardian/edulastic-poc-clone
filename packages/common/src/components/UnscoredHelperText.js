@@ -4,7 +4,12 @@ import styled from 'styled-components'
 import propTypes from 'prop-types'
 
 const UnscoredHelperText = ({ text, fontSize, fontWeight, margin }) => (
-  <StyledHelperText fontSize={fontSize} fontWeight={fontWeight} margin={margin}>
+  <StyledHelperText
+    fontSize={fontSize}
+    fontWeight={fontWeight}
+    margin={margin}
+    data-cy="unscoredHelperText"
+  >
     {text}
   </StyledHelperText>
 )

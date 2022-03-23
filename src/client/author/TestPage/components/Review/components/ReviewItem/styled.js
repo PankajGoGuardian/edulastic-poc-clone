@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { Input } from 'antd'
+import { IconInfo } from '@edulastic/icons'
 import {
   lightGreySecondary,
   secondaryTextColor,
@@ -20,4 +21,20 @@ export const PointsInput = styled(Input)`
     padding: 10px;
     width: 80px;
   }
+`
+
+export const ScoreInputWrapper = styled.div`
+  position: relative;
+`
+
+export const InfoIcon = styled(IconInfo)`
+  cursor: pointer;
+  position: absolute;
+  top: -6px;
+  right: 4px;
+`
+
+export const SaveToApply = styled.span`
+  font-size: 10px;
+  font-style: italic;
 `

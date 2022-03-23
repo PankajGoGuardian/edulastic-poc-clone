@@ -482,7 +482,6 @@ class AxisLabelsContainer extends PureComponent {
         separationDistanceX,
         separationDistanceY,
         shuffleAnswerChoices,
-        fontSize,
       },
       disableResponse,
       view,
@@ -490,7 +489,7 @@ class AxisLabelsContainer extends PureComponent {
       setQuestionData,
       isPrintPreview,
     } = this.props
-    const { isV1Migrated } = graphData
+    const { isV1Migrated, uiStyle } = graphData
     const shuffleChoices = view !== EDIT && shuffleAnswerChoices
     const adjustedHeightWidth = this.adjustedHeightWidth
     const [choiceWidth] = this.choiceMaxWidth
@@ -542,7 +541,7 @@ class AxisLabelsContainer extends PureComponent {
               controls={this.controls}
               onSelectControl={this.onSelectControl}
               onSelect={() => {}}
-              fontSize={fontSize}
+              fontSize={uiStyle?.fontSize}
             />
           )}
           <ContainerWithResponses
@@ -554,7 +553,7 @@ class AxisLabelsContainer extends PureComponent {
             >
               {!disableResponse && (
                 <ResponseBox
-                  fontSize={fontSize}
+                  fontSize={uiStyle?.fontSize}
                   shuffleChoices={shuffleChoices}
                   values={this.getMarkValues()}
                   separationDistanceX={separationDistanceX}

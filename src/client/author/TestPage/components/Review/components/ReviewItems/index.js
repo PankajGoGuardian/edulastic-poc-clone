@@ -33,6 +33,7 @@ const ReviewItems = ({
   blur,
   isPowerPremiumAccount,
   showGroupsPanel,
+  isTestsUpdated,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -113,6 +114,7 @@ const ReviewItems = ({
         scoring={scoring}
         userFeatures={userFeatures}
         standards={standards}
+        isTestsUpdated={isTestsUpdated}
       />
 
       {isFetchingAutoselectItems && (

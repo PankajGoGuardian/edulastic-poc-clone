@@ -344,7 +344,6 @@ class GraphContainer extends PureComponent {
       gridParams,
       bgImgOptions,
       backgroundShapes,
-      toolbar,
       disableResponse,
       previewTab,
       changePreviewTab,
@@ -355,15 +354,14 @@ class GraphContainer extends PureComponent {
       pointsOnEquEnabled,
     } = this.props
 
-    const { tools } = toolbar
     const { resourcesLoaded } = this.state
 
     let refreshElements = false
 
-    if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
-      this.setDefaultToolState()
-      this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT)
-    }
+    // if (JSON.stringify(tools) !== JSON.stringify(prevProps.toolbar.tools)) {
+    //   this.setDefaultToolState()
+    //   this._graph.setTool(tools[0] || CONSTANT.TOOLS.SEGMENTS_POINT)
+    // }
 
     if (this._graph) {
       this._graph.setDisableResponse(disableResponse)
@@ -447,7 +445,8 @@ class GraphContainer extends PureComponent {
       }
       if (
         !isEqual(elements, prevProps.elements) ||
-        !isEqual(evaluation, prevProps.evaluation)
+        !isEqual(evaluation, prevProps.evaluation) ||
+        !isEqual(canvas, prevProps.canvas)
       ) {
         this.setElementsToGraph(prevProps, refreshElements)
       }

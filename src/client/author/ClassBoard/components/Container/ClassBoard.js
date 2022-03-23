@@ -359,7 +359,10 @@ class ClassBoard extends Component {
       additionalData: { testId } = {},
       testActivity,
       allTestActivitiesForStudent,
+      testItemsData,
     } = props
+
+    const { itemId, selectedQid } = state
 
     if (testId !== state.testId) {
       newState = { ...newState, testId }
@@ -435,6 +438,25 @@ class ClassBoard extends Component {
         ...newState,
         selectedStudentId: '',
         classId: props.match.params.classId,
+      }
+    }
+
+    if (
+      testItemsData.some((item) => item?.previousTestItemId === itemId) &&
+      props.location.pathname.includes('question-activity')
+    ) {
+      const currentTestItem =
+        testItemsData.find((item) => item?.previousTestItemId === itemId) || {}
+      const currentQuestions = get(currentTestItem, ['data', 'questions'], [])
+      const currentQid = currentQuestions?.find(
+        (ques) => ques?.previousQuestionId === selectedQid
+      )?.id
+      if (currentTestItem?._id && currentQid) {
+        newState = {
+          ...newState,
+          itemId: currentTestItem._id,
+          selectedQid: currentQid,
+        }
       }
     }
 
@@ -1423,7 +1445,9 @@ class ClassBoard extends Component {
                         setPageNumber(1)
                         loadTestActivity(assignmentId, classId, true)
                         history.push(
-                          `/author/classboard/${assignmentId}/${classId}/question-activity/${firstQuestion._id}`
+                          `/author/classboard/${assignmentId}/${classId}/question-activity/${
+                            selectedQid || firstQuestion._id
+                          }`
                         )
                       }}
                     >

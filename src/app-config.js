@@ -82,6 +82,7 @@ const sentryIgnoreErrors = [
   'expired',
   "Cannot read property 'hasClass' of null",
   "Cannot set property 'isFullscreen' of undefined",
+  "Cannot set properties of undefined (setting 'isFullscreen')",
   "InvalidStateError: Failed to execute 'transaction' on 'IDBDatabase'",
 ]
 const sentryIgnoreUrls = [

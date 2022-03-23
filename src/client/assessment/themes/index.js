@@ -707,6 +707,8 @@ const AssessmentContainer = ({
   // start assessment
 
   const isAnswerNotUpdated = useRef(true)
+  
+  // Prevent UTA update if question response is not updated on navigating from one question to another
 
   useEffect(() => {
     if (isAnswerNotUpdated.current && !loading) {

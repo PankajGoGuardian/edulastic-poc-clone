@@ -990,17 +990,26 @@ export const getImageDimensions = (url) =>
     image.src = url
   })
 
-export const toggleIntercomDisplay = () => {
-  // when the intercom loads it has className => ".intercom-lightweight-app"
-  // once the intercom is launched it changes to => ".intercom-app"
-  const style =
-    document.querySelector('.intercom-lightweight-app')?.style ||
-    document.querySelector('.intercom-app')?.style ||
-    {}
-  if (style.display === 'none') {
-    style.display = ''
-  } else {
-    style.display = 'none'
+export const toggleChatDisplay = (mode) => {
+  // If the chat is initiated then both the elements embeddedServiceSidebar, embeddedServiceHelpButton
+  // would be there in DOM and embeddedServiceHelpButton will be hidden, otherwise only
+  // embeddedServiceHelpButton will be there in the DOM
+  if (document.querySelector('.embeddedServiceSidebar')) {
+    // once opened and minimised / after initiating the chat, toggling only this should be fine
+    const style = document.querySelector('.embeddedServiceSidebar').style
+    if (mode === 'show') {
+      style.display = ''
+    } else {
+      style.display = 'none'
+    }
+  } else if (document.querySelector('.embeddedServiceHelpButton')) {
+    // shown before opening the widget / initiating the chat, toggling only this should be fine
+    const style = document.querySelector('.embeddedServiceHelpButton').style
+    if (mode === 'show') {
+      style.display = ''
+    } else {
+      style.display = 'none'
+    }
   }
 }
 
@@ -1194,7 +1203,7 @@ export default {
   measureText,
   getFormattedAttrId,
   getSelectionRect,
-  toggleIntercomDisplay,
+  toggleChatDisplay,
   executePromisesInSequence,
   sanitizeString,
   uuid,

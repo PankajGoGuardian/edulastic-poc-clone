@@ -55,3 +55,12 @@ export const getSpecialCharacterSets = (customCharacters) => {
 
   return [...defaultCharacterSets, ...customCharacterSet]
 }
+
+const possibleClassNames = ['input__math', 'katex-html', 'mord', 'katex']
+export const isContainsMathContent = (node) => {
+  if (node && node.tagName === 'SPAN') {
+    const classNames = [...node.classList]
+    return classNames.some((x) => possibleClassNames.includes(x))
+  }
+  return false
+}

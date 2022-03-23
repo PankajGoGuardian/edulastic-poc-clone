@@ -52,23 +52,6 @@ const safeParseFloat = (val) => {
   return 1
 }
 
-const getFontSizeVal = (name) => {
-  switch (name) {
-    case 'small':
-      return 12
-    case 'normal':
-      return 14
-    case 'large':
-      return 17
-    case 'extra_large':
-      return 20
-    case 'huge':
-      return 24
-    default:
-      return 14
-  }
-}
-
 const getSnapSize = (snapTo, axisDistance) => {
   if (snapTo) {
     if (axisDistance) return axisDistance
@@ -381,7 +364,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height,
         snapTo: uiStyle.layoutSnapto,
-        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        fontSize: uiStyle.fontSize,
       },
       pointParameters: {
         snapToGrid: true,
@@ -525,7 +508,7 @@ class GraphDisplay extends Component {
         height,
         snapTo: uiStyle.layoutSnapto,
         orientation: uiStyle.orientation || 'horizontal',
-        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        fontSize: uiStyle.fontSize,
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: numberlineAxis.stackResponses
           ? 75
@@ -654,7 +637,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height: uiStyle.layoutHeight,
         snapTo: uiStyle.layoutSnapto,
-        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        fontSize: uiStyle.fontSize,
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: numberlineAxis.stackResponses
           ? 75
@@ -799,7 +782,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height: height === 'auto' ? 150 : parseInt(height, 10),
         snapTo: uiStyle.layoutSnapto,
-        fontSize: getFontSizeVal(uiStyle.currentFontSize),
+        fontSize: uiStyle.fontSize,
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: parseInt(uiStyle.linePosition, 10),
         pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10),

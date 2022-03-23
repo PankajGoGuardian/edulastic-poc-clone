@@ -67,6 +67,7 @@ import {
   getOrgGroupList,
   getCleverLibraryUserSelector,
 } from '../../../src/selectors/user'
+import { validateEmail } from '../../../../common/utils/helpers'
 
 const { ORG_TYPE } = roleuser
 
@@ -436,18 +437,25 @@ class ProfileBody extends React.Component {
 
   checkUser = async (rule, value, callback) => {
     const { user, t, userOrg: { districtId } = {} } = this.props
-
     if (value !== user.email) {
-      const result = await userApi.checkUser({
-        username: value,
-        districtId,
-        role: user.role,
-      })
-
-      if (result.length > 0) {
-        callback(t('common.title.emailAlreadyExistsMessage'))
+      const containsWhiteSpace = !new RegExp(/^\S*$/).test(value)
+      if (
+        (value.length && !validateEmail(value.toLowerCase())) ||
+        containsWhiteSpace
+      ) {
+        callback(t('common.title.invalidEmailMessage'))
       } else {
-        callback()
+        const result = await userApi.checkUser({
+          username: value,
+          districtId,
+          role: user.role,
+        })
+
+        if (result.length > 0) {
+          callback(t('common.title.emailAlreadyExistsMessage'))
+        } else {
+          callback()
+        }
       }
     }
     callback()
@@ -522,11 +530,6 @@ class ProfileBody extends React.Component {
                     {
                       required: true,
                       message: t('common.title.invalidEmailMessage'),
-                    },
-                    {
-                      // validation so that no white spaces are allowed
-                      message: t('common.title.invalidEmailMessage'),
-                      pattern: /^\S*$/,
                     },
                     { max: 256, message: t('common.title.emailLengthMessage') },
                   ],

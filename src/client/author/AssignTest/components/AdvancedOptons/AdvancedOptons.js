@@ -169,6 +169,7 @@ class AdvancedOptons extends React.Component {
       isVideoResourcePreviewModal,
       showRecommendedResources,
       selectedResourcesAction,
+      isPlaylist,
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
@@ -232,6 +233,7 @@ class AdvancedOptons extends React.Component {
                 selectedClasses={classIds}
                 selectClass={this.onChange}
                 testType={assignment.testType || testSettings.testType}
+                isPlaylist={isPlaylist}
               />
             </>
           )}

@@ -1,11 +1,13 @@
 import React from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
+import { withNamespaces } from '@edulastic/localization'
 import {
   Stimulus,
   QuestionNumberLabel,
   FlexContainer,
   QuestionSubLabel,
+  CorrectAnswersContainer,
 } from '@edulastic/common'
 import Instructions from '../../../../components/Instructions'
 import { EDIT } from '../../../../constants/constantsForQuestions'
@@ -33,6 +35,8 @@ const Display = ({
   onSortOptions,
   ...restProps
 }) => {
+  const { t, hideCorrectAnswer, showAnswer, showAnswerScore } = restProps
+
   const OptListComp = fromSetAnswers ? SortableOptions : Options
   return (
     <FlexContainer alignItems="flex-start" justifyContent="flex-start">
@@ -83,6 +87,30 @@ const Display = ({
               {...restProps}
             />
             {view !== EDIT && <Instructions item={item} />}
+
+            {showAnswer &&
+              showAnswerScore &&
+              !hideCorrectAnswer &&
+              !!item?.validation?.validResponse && (
+                <CorrectAnswersContainer
+                  title={t('component.math.correctAnswers')}
+                  minHeight="auto"
+                  showAnswerScore={showAnswerScore}
+                  score={item.validation.validResponse?.score}
+                />
+              )}
+
+            {showAnswer &&
+              showAnswerScore &&
+              !hideCorrectAnswer &&
+              item?.validation?.altResponses?.map((ans, i) => (
+                <CorrectAnswersContainer
+                  title={`${t('component.math.alternateAnswers')} ${i + 1}`}
+                  minHeight="auto"
+                  showAnswerScore={showAnswerScore}
+                  score={ans?.score}
+                />
+              ))}
           </FlexContainer>
         </>
       )}
@@ -145,4 +173,4 @@ const StyledStimulus = styled(Stimulus)`
   }
 `
 
-export default Display
+export default withNamespaces('assessment')(Display)

@@ -447,11 +447,14 @@ class Item extends Component {
     const { item } = this.props
     const Title = item?.passageSource ? (
       <>
-        <PassageTitle>{item.passageTitle}</PassageTitle> by{' '}
-        <PassageTitle>{item.passageSource}</PassageTitle>
+        <PassageTitle dangerouslySetInnerHTML={{ __html: item.passageTitle }} />{' '}
+        by{' '}
+        <PassageTitle
+          dangerouslySetInnerHTML={{ __html: item.passageSource }}
+        />
       </>
     ) : (
-      <PassageTitle>{item.passageTitle}</PassageTitle>
+      <PassageTitle dangerouslySetInnerHTML={{ __html: item.passageTitle }} />
     )
     return (
       <FlexContainer flexDirection="column">

@@ -29,6 +29,7 @@ import {
   loadImage,
   getToolbarButtons,
   getSpecialCharacterSets,
+  isContainsMathContent,
 } from './FroalaPlugins/helpers'
 import { buttonWidthMap } from './FroalaPlugins/constants'
 import {
@@ -205,6 +206,25 @@ const CustomEditor = ({
           } else {
             setCurrentLatex('')
             setCurrentMathEl(null)
+          }
+        },
+        mouseup: function () {
+          const range = this.selection.ranges()[0]
+          const {
+            endContainer,
+            startContainer,
+            commonAncestorContainer,
+          } = range
+          if (
+            !this.selection.isCollapsed() &&
+            (isContainsMathContent(endContainer) ||
+              isContainsMathContent(startContainer) ||
+              isContainsMathContent(commonAncestorContainer))
+          ) {
+            // disable font size button
+            $("[data-cmd='fontSize']").addClass('fr-disabled')
+          } else {
+            $("[data-cmd='fontSize']").removeClass('fr-disabled')
           }
         },
         keydown: function (evt) {

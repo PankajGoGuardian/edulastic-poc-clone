@@ -27,6 +27,7 @@ const TeacherAutoComplete = ({
   testId,
   termId,
   districtId,
+  networkIds,
 }) => {
   const teacherFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -52,7 +53,10 @@ const TeacherAutoComplete = ({
       limit: 25,
       page: 1,
       districtId,
-      search: { name: searchTerms.text },
+      search: {
+        name: searchTerms.text,
+      },
+      networkIds: (networkIds || '').split(',').filter(Boolean),
       role: roleuser.TEACHER,
     }
     if (institutionId) {
@@ -65,7 +69,7 @@ const TeacherAutoComplete = ({
       q.testIds = [testId]
     }
     return q
-  }, [searchTerms.text, institutionId, testId, termId])
+  }, [searchTerms.text, institutionId, testId, termId, networkIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -113,7 +117,7 @@ const TeacherAutoComplete = ({
   }, [searchTerms])
   useEffect(() => {
     setSearchResult([])
-  }, [institutionId, testId, termId])
+  }, [institutionId, testId, termId, networkIds])
 
   return (
     <MultiSelectSearch

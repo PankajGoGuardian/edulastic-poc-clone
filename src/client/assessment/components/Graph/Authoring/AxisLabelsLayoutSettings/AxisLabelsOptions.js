@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import AxisLabelsMoreOptions from './AxisLabelsMoreOptions'
-import { RENDERING_BASE } from '../../Builder/config/constants'
+import { fontSizeList, renderingBaseList } from '../constants/options'
 
 const AxisLabelsOptions = ({
   t,
@@ -16,54 +16,6 @@ const AxisLabelsOptions = ({
   setValidation,
   advancedAreOpen,
 }) => {
-  const fontSizeList = [
-    {
-      id: 'small',
-      label: 'small',
-      value: 10,
-      selected: false,
-    },
-    {
-      id: 'normal',
-      label: 'normal',
-      value: 12,
-      selected: true,
-    },
-    {
-      id: 'large',
-      label: 'large',
-      value: 16,
-      selected: false,
-    },
-    {
-      id: 'extra_large',
-      label: 'extraLarge',
-      value: 20,
-      selected: false,
-    },
-    {
-      id: 'huge',
-      label: 'huge',
-      value: 24,
-      selected: false,
-    },
-  ]
-
-  const renderingBaseList = [
-    {
-      id: RENDERING_BASE.LINE_MINIMUM_VALUE,
-      value: 'Line minimum value',
-      label: 'lineMinValue',
-      selected: true,
-    },
-    {
-      id: RENDERING_BASE.ZERO_BASED,
-      value: 'Zero',
-      label: 'zero',
-      selected: false,
-    },
-  ]
-
   const responseBoxPositionList = [
     {
       id: 'top',

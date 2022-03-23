@@ -755,7 +755,11 @@ function* togglePauseStudentsSaga({ payload }) {
 
 function* reloadLcbDataInStudentView({ payload }) {
   try {
-    yield call(receiveTestActivitySaga, { payload })
+    const isQuestionsView = payload.lcbView === 'question-view'
+    yield call(receiveTestActivitySaga, {
+      payload: { ...payload, isQuestionsView },
+    })
+
     if (payload.lcbView === 'student-report') {
       yield put(receiveStudentResponseAction(payload))
     }
@@ -777,7 +781,6 @@ function* reloadLcbDataInStudentView({ payload }) {
         }
       }
       if (firstQuestionId) {
-        yield put(push(`/`))
         yield put(
           push(
             `/author/classboard/${payload.assignmentId}/${payload.classId}/question-activity/${firstQuestionId}`

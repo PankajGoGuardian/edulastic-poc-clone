@@ -171,14 +171,6 @@ class AxisLabelsMoreOptions extends Component {
     setOptions({ ...uiStyle, [name]: value })
   }
 
-  getFontSizeItem = () => {
-    const { fontSizeList, graphData } = this.props
-    const { numberlineAxis } = graphData
-    return fontSizeList.find(
-      (item) => item.value === parseInt(numberlineAxis.fontSize, 10)
-    )
-  }
-
   getResponseBoxPositionItem = () => {
     const { responseBoxPositionList, graphData } = this.props
     const { numberlineAxis } = graphData
@@ -188,9 +180,9 @@ class AxisLabelsMoreOptions extends Component {
   }
 
   changeFontSize = (event) => {
-    const { setNumberline, graphData } = this.props
-    const { numberlineAxis } = graphData
-    setNumberline({ ...numberlineAxis, fontSize: event })
+    const { setOptions, graphData } = this.props
+    const { uiStyle } = graphData
+    setOptions({ ...uiStyle, fontSize: event })
   }
 
   changeFractionsFormat = (e) => {
@@ -393,7 +385,7 @@ class AxisLabelsMoreOptions extends Component {
                 style={{ width: '100%' }}
                 onChange={this.changeFontSize}
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
-                value={this.getFontSizeItem().label}
+                value={uiStyle.fontSize}
               >
                 {fontSizeList.map((option) => (
                   <Select.Option data-cy={option.id} key={option.value}>

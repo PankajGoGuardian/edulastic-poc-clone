@@ -31,6 +31,7 @@ const FractionEditor = (props) => {
     isReviewTab,
     advancedAreOpen,
     hideCorrectAnswer,
+    showAnswerScore,
   } = props
   return (
     <>
@@ -93,6 +94,7 @@ const FractionEditor = (props) => {
           isReviewTab={isReviewTab}
           view={view}
           hideCorrectAnswer={hideCorrectAnswer}
+          showAnswerScore={showAnswerScore}
         />
       )}
     </>

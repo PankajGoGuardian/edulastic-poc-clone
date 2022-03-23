@@ -4,7 +4,7 @@ import { AnswerBox } from '../DragItem/styled/AnswerBox'
 import { BorderedContainer } from './styled'
 
 export default function DroppedChoices({
-  choices,
+  choices = {},
   classificationId,
   responses,
 }) {

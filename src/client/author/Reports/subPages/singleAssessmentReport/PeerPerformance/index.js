@@ -27,6 +27,7 @@ import { SignedStackedBarChartContainer } from './components/charts/signedStacke
 import { SimpleStackedBarChartContainer } from './components/charts/simpleStackedBarChartContainer'
 import { TableContainer, UpperContainer } from './components/styled'
 import { PeerPerformanceTable } from './components/table/peerPerformanceTable'
+import ExternalDemographicFilter from './components/ExternalDemographicFilter'
 import {
   getPeerPerformanceRequestAction,
   getReportsPeerPerformance,
@@ -38,6 +39,7 @@ import {
   parseAndNormalizeExtAttributes,
   idToName,
   parseData,
+  createExtDemographicGroupedData,
 } from './util/transformers'
 import { getColumns } from './util/tableColumns'
 import { getAssessmentName } from '../../../common/util'
@@ -101,6 +103,9 @@ const PeerPerformance = ({
   })
   const [chartFilter, setChartFilter] = useState({})
 
+  const [extDemographicData, setExtDemographicData] = useState({})
+  const [extDemogaphicFilters, setExtDemographicFilters] = useState([])
+
   useEffect(() => () => resetPeerPerformance(), [])
 
   useEffect(() => {
@@ -125,6 +130,7 @@ const PeerPerformance = ({
 
   useEffect(() => {
     setPerformanceBandProfile(peerPerformance?.bandInfo || {})
+    setExtDemographicFilters([])
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
@@ -173,8 +179,19 @@ const PeerPerformance = ({
   ])
   const parsedData = useMemo(() => {
     return {
-      data: parseData(res, ddfilter),
+      data: parseData(res, ddfilter, extDemogaphicFilters),
       columns: getColumns(ddfilter),
+    }
+  }, [res, ddfilter, extDemogaphicFilters])
+
+  useEffect(() => {
+    // External Demographic Filter data should be constructed after all filters are applied.
+    if (!isEmpty(res.metricInfo)) {
+      const extDemographicGroupedData = createExtDemographicGroupedData(
+        res.metricInfo,
+        ddfilter
+      )
+      setExtDemographicData(extDemographicGroupedData)
     }
   }, [res, ddfilter])
 
@@ -202,6 +219,10 @@ const PeerPerformance = ({
       _chartFilter[key] = true
     }
     setChartFilter(_chartFilter)
+  }
+
+  const updateExtDemographicFilters = (filterData) => {
+    setExtDemographicFilters(filterData)
   }
 
   const onResetClickCB = () => {
@@ -245,17 +266,32 @@ const PeerPerformance = ({
                 xs={24}
                 sm={24}
                 md={12}
-                lg={16}
+                lg={8}
                 xl={12}
               >
-                <Row className="control-dropdown-row">
+                <Row className="control-dropdown-row" style={{ flex: 1 }}>
+                  <StyledDropDownContainer
+                    data-cy="external-demographic-filter"
+                    xs={24}
+                    sm={24}
+                    md={8}
+                    lg={8}
+                    xl={8}
+                  >
+                    {!isEmpty(extDemographicData) && (
+                      <ExternalDemographicFilter
+                        extDemographicData={extDemographicData}
+                        updateFilters={updateExtDemographicFilters}
+                      />
+                    )}
+                  </StyledDropDownContainer>
                   <StyledDropDownContainer
                     data-cy="analyzeBy"
                     xs={24}
                     sm={24}
-                    md={12}
-                    lg={12}
-                    xl={12}
+                    md={8}
+                    lg={8}
+                    xl={8}
                   >
                     <ControlDropDown
                       prefix="Analyze by"
@@ -268,9 +304,9 @@ const PeerPerformance = ({
                     data-cy="compareBy"
                     xs={24}
                     sm={24}
-                    md={12}
-                    lg={12}
-                    xl={12}
+                    md={8}
+                    lg={8}
+                    xl={8}
                   >
                     <ControlDropDown
                       prefix="Compare by"

@@ -17,6 +17,10 @@ import calcMethod from './static/json/calcMethod.json'
 
 const studentFiltersDefaultValues = [
   {
+    key: 'networkIds',
+    value: '',
+  },
+  {
     key: 'schoolIds',
     value: '',
   },
@@ -427,7 +431,7 @@ export const resetStudentFilters = (
     const filtersToReset = defaultValues.slice(index + 1)
     resetFilter(filtersToReset, prevFilters, tagsData)
   } else if (['grades', 'subjects', 'courseId'].includes(key)) {
-    const filtersToReset = defaultValues.slice(2)
+    const filtersToReset = defaultValues.slice(3)
     resetFilter(filtersToReset, prevFilters, tagsData)
   }
 }

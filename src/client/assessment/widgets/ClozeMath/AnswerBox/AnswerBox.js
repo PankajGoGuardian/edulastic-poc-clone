@@ -8,7 +8,6 @@ import EnabledSettings from '../../../components/EvaluationSettings/EnabledSetti
 
 const AnswerBox = ({ singleResponseBox, answer, t, uiStyles }) => {
   const [showOpts, setShowOpts] = useState(false)
-  console.log(uiStyles)
 
   return (
     <Container>

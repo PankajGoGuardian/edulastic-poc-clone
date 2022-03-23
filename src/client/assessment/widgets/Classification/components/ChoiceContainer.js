@@ -1,9 +1,8 @@
-/* eslint-disable react/prop-types */
 import React, { useRef, useLayoutEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { lightGrey1, mobileWidthLarge } from '@edulastic/colors'
+import { mobileWidthLarge } from '@edulastic/colors'
 import { Subtitle } from '@edulastic/common'
 
 function useLayoutEffectDebounced(func, values, time) {
@@ -63,7 +62,6 @@ export default ChoiceContainer
 
 const Container = styled.div`
   padding: 8px 12px 22px;
-  background-color: ${lightGrey1};
 
   ${({ direction, choiceWidth }) => {
     if (direction === 'row') {

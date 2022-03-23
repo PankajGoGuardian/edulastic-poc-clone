@@ -101,7 +101,7 @@ class OrderListPreview extends Component {
   }
 }
 
-const OrderListWrapper = styled.div`
+export const OrderListWrapper = styled.div`
   display: flex;
   div {
     display: ${(props) => (props.styleType === 'inline' ? 'flex' : null)};

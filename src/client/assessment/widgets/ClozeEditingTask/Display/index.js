@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
-import { isUndefined, mapValues, cloneDeep, orderBy } from 'lodash'
+import { isUndefined, mapValues, cloneDeep, values } from 'lodash'
 import { withTheme } from 'styled-components'
 import JsxParser from 'react-jsx-parser/lib/react-jsx-parser.min'
 
@@ -90,11 +90,6 @@ class EditingTypeDisplay extends Component {
     return item?.activity?.userResponse || userSelections
   }
 
-  get hasAltAnswers() {
-    const { item } = this.props
-    return item?.validation?.altResponses?.length
-  }
-
   get checkedAnswers() {
     const { showAnswer, checkAnswer, isPrint, isPrintPreview } = this.props
     return showAnswer || checkAnswer || isPrint || isPrintPreview
@@ -122,6 +117,7 @@ class EditingTypeDisplay extends Component {
       isPrintPreview,
       hideCorrectAnswer,
       answerScore,
+      showAnswerScore,
     } = this.props
 
     const { parsedTemplate } = this.state
@@ -153,13 +149,9 @@ class EditingTypeDisplay extends Component {
       evaluation: this.evaluation,
     }
 
-    const displayOptions = orderBy(responseIds, ['index']).map(
-      (option) => options[option.id]
-    )
-
     const dragDropValues = displayStyle?.type === displayStyles.DRAG_DROP && (
       <div style={{ width: '100%', marginTop: 8 }}>
-        <DragDropValues choices={displayOptions} />
+        <DragDropValues choices={values(responses)} />
         <DragPreview />
       </div>
     )
@@ -212,7 +204,7 @@ class EditingTypeDisplay extends Component {
           {dragDropValues}
           {(isPrint || isPrintPreview) && (
             <DisplayOptions
-              options={displayOptions}
+              options={values(responses)}
               style={{ marginTop: '50px' }}
             />
           )}
@@ -229,17 +221,23 @@ class EditingTypeDisplay extends Component {
                 responseIds={item.responseIds}
                 stemNumeration={stemNumeration}
                 singleResponseBox={singleResponseBox}
+                showAnswerScore={showAnswerScore}
+                score={item?.validation?.validResponse?.score}
               />
-              {this.hasAltAnswers ? (
+              {item?.validation?.altResponses?.map((altRes, index) => (
                 <CorrectAnswerBoxLayout
+                  isAltAnswers
+                  answerIndex={index + 1}
                   fontSize={fontSize}
                   groupResponses={options}
-                  altResponses={item.validation.altResponses}
+                  userAnswers={altRes.value || []}
                   responseIds={item.responseIds}
                   stemNumeration={stemNumeration}
                   singleResponseBox={singleResponseBox}
+                  showAnswerScore={showAnswerScore}
+                  score={altRes?.score}
                 />
-              ) : null}
+              ))}
             </>
           )}
         </QuestionContentWrapper>

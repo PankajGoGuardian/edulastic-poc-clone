@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import keyBy from 'lodash/keyBy'
+import get from 'lodash/get'
 
 import { FlexContainer, Subtitle } from '@edulastic/common'
 
@@ -62,7 +63,7 @@ const CorrectAnswers = ({
                   </ColumnHeader>
                 )}
                 <AnswersContainer>
-                  {droppedChoices[classification.id].map((answer) => {
+                  {get(droppedChoices, classification.id, []).map((answer) => {
                     const { image, unit, count } =
                       responsesById[answer.id] || {}
 

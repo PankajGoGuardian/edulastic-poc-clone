@@ -195,6 +195,7 @@ class Display extends Component {
       hideCorrectAnswer,
       answerScore,
       setDropDownInUse,
+      showAnswerScore,
     } = this.props
 
     const { shuffleOptions } = configureOptions
@@ -457,6 +458,7 @@ class Display extends Component {
     const altAnswers = get(validation, 'altResponses', [])
 
     const correctAnswers = get(validation, ['validResponse', 'value'], {})
+    const correctAnswerScore = get(validation, ['validResponse', 'score'])
     const singleResponseBox =
       responseContainers && responseContainers.length === 1
 
@@ -464,6 +466,8 @@ class Display extends Component {
       <>
         <CorrectAnswerBoxLayout
           fontSize={fontSize}
+          showAnswerScore={showAnswerScore}
+          score={correctAnswerScore}
           stemNumeration={stemNumeration}
           userAnswers={getAnswersSortedByIndex(correctAnswers, this.idIndexMap)}
           singleResponseBox={singleResponseBox}
@@ -480,6 +484,8 @@ class Display extends Component {
               stemNumeration={stemNumeration}
               userAnswers={altAnswerSorted}
               altAnsIndex={index + 1}
+              showAnswerScore={showAnswerScore}
+              score={answer?.score}
               singleResponseBox={singleResponseBox}
             />
           )

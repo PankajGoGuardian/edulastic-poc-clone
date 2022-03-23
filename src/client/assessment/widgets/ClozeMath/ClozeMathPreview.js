@@ -39,13 +39,14 @@ const ClozeMathPreview = ({
   hideCorrectAnswer,
   answerScore,
   setDropDownInUse,
+  showAnswerScore,
 }) => {
   const [newHtml, setNewHtml] = useState('')
   const { isAnswerModifiable } = useContext(AnswerContext)
 
-  const allAnswers = useMemo(() => {
+  const [allAnswers, correctScore, altScores] = useMemo(() => {
     if (isExpressGrader || type === SHOW) {
-      return {
+      const answers = {
         mathAnswers: get(item, 'validation.validResponse.value', []),
         dropdownAnswers: get(
           item,
@@ -77,8 +78,16 @@ const ClozeMathPreview = ({
           []
         ).map((alt) => get(alt, 'mathUnits.value', [])),
       }
+
+      const _correctScore = get(item, 'validation.validResponse.score')
+
+      const _altScores = get(item, 'validation.altResponses', []).map(
+        (alt) => alt?.score
+      )
+
+      return [answers, _correctScore, _altScores]
     }
-    return {}
+    return []
   }, [item?.validation, type, isExpressGrader])
 
   const uiStyles = useMemo(() => {
@@ -251,6 +260,9 @@ const ClozeMathPreview = ({
           isPrintPreview={isPrintPreview}
           singleResponseBox={singleResponseBox}
           uiStyles={uiStyles}
+          showAnswerScore={showAnswerScore}
+          correctScore={correctScore}
+          altScores={altScores}
         />
       )}
     </QuestionWrapper>

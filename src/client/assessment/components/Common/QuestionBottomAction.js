@@ -13,11 +13,15 @@ import {
 import { TitleWrapper } from '@edulastic/common/src/components/MainHeader'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { greyThemeDark2, greyThemeDark4 } from '@edulastic/colors'
+import { greyThemeDark2, greyThemeDark4, borderGrey4 } from '@edulastic/colors'
 import { round, get, omit } from 'lodash'
 import { Modal, Popover } from 'antd'
 import { roleuser, test as testConstants } from '@edulastic/constants'
-import { IconTestBank, IconClockCircularOutline } from '@edulastic/icons'
+import {
+  IconInfo,
+  IconTestBank,
+  IconClockCircularOutline,
+} from '@edulastic/icons'
 import { testItemsApi, testsApi } from '@edulastic/api'
 import { EDIT } from '../../constants/constantsForQuestions'
 import {
@@ -136,6 +140,8 @@ const QuestionBottomAction = ({
   firebaseDocId,
   setSilentCloning,
   reloadLcbDataInStudentView,
+  hideCorrectAnswer,
+  isGradedExternally,
   ...questionProps
 }) => {
   // const [openQuestionModal, setOpenQuestionModal] = useState(false)
@@ -377,6 +383,17 @@ const QuestionBottomAction = ({
         item.type
       )
     )
+
+  const hasAltAnswers =
+    item?.validation?.altResponses?.some(
+      (altResp) => altResp?.score !== item?.validation?.validResponse?.score
+    ) && !item?.validation?.unscored
+
+  const showQuestionBottomLCBMessage =
+    (isLCBView || isExpressGrader) &&
+    !hideCorrectAnswer &&
+    (hasAltAnswers || isGradedExternally)
+
   return (
     <>
       {notifyRegradeProgress && (
@@ -385,6 +402,18 @@ const QuestionBottomAction = ({
           visible={notifyRegradeProgress}
           onCloseRegardeProgressModal={onCloseRegardeProgressModal}
         />
+      )}
+      {showQuestionBottomLCBMessage && (
+        <QuestionLCBBottomMessage>
+          <span>
+            <IconInfo width={18} height={18} />
+          </span>
+          <span data-cy="alternate-score-info-text">
+            {isGradedExternally
+              ? 'Teacher manually awarded score for this item.'
+              : 'Alternate answers with different scores are set for this item, which impacts evaluation and scoring. Use Edit/Regrade option to review the settings.'}
+          </span>
+        </QuestionLCBBottomMessage>
       )}
       <BottomActionWrapper className={isStudentReport ? 'student-report' : ''}>
         <LeftWrapper>
@@ -663,4 +692,22 @@ const CorrectButton = styled(EduButton)`
 `
 const TimeSpentText = styled.div`
   margin-bottom: 3px;
+`
+
+const QuestionLCBBottomMessage = styled.div`
+  margin-left: 51px;
+  margin-top: 20px;
+  font-weight: 500;
+  max-width: 920px;
+  width: calc(100% - 51px);
+  color: ${greyThemeDark4};
+  border: 1px solid ${borderGrey4};
+  border-radius: 4px;
+  padding: 8px 14px;
+  display: grid;
+  font-size: 12px;
+  grid-template-columns: 20px 1fr;
+  align-items: center;
+  gap: 10px;
+  letter-spacing: 0.22px;
 `

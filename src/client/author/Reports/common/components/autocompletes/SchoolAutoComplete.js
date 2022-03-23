@@ -22,6 +22,7 @@ const SchoolAutoComplete = ({
   selectCB,
   selectedSchoolIds,
   districtId,
+  networkIds,
 }) => {
   const schoolFilterRef = useRef()
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -46,9 +47,10 @@ const SchoolAutoComplete = ({
       search: {
         name: [{ type: 'cont', value: searchTerms.text }],
       },
+      networkIds: (networkIds || '').split(',').filter(Boolean),
     }
     return q
-  }, [searchTerms.text])
+  }, [searchTerms.text, networkIds])
 
   // handle autocomplete actions
   const onSearch = (value) => {
@@ -94,6 +96,9 @@ const SchoolAutoComplete = ({
       loadSchoolListDebounced(query)
     }
   }, [searchTerms])
+  useEffect(() => {
+    setSearchResult([])
+  }, [networkIds])
 
   return (
     <MultiSelectSearch

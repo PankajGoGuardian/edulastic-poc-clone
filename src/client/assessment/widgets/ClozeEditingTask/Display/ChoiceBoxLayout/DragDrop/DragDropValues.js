@@ -14,9 +14,9 @@ const DragDropValues = ({ choices }) => {
       <InnerTitle innerText="Drag Drop Values" />
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {possibleChoices.map(
-          (choice, indx) =>
+          (choice) =>
             choice && (
-              <DragItem key={indx} data={choice}>
+              <DragItem key={choice} data={choice}>
                 <Choice>
                   <MathFormulaDisplay
                     dangerouslySetInnerHTML={{ __html: choice }}

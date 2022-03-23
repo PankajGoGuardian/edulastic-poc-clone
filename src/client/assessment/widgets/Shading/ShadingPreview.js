@@ -49,6 +49,7 @@ const ShadingPreview = ({
   disableResponse,
   evaluation,
   hideCorrectAnswer,
+  showAnswerScore,
 }) => {
   const { canvas, validation } = item
   const fontSize = getFontSize(get(item, 'uiStyle.fontsize'))
@@ -245,6 +246,8 @@ const ShadingPreview = ({
           {previewTab === SHOW && !hideCorrectAnswer && (
             <>
               <CorrectAnswersContainer
+                showAnswerScore={showAnswerScore}
+                score={validation?.validResponse?.score}
                 title={t('component.shading.correctAnswer')}
               >
                 <CorrectAnswerBlock>
@@ -266,6 +269,8 @@ const ShadingPreview = ({
               {validation.altResponses &&
                 validation.altResponses.map((altAnswer, i) => (
                   <CorrectAnswersContainer
+                    showAnswerScore={showAnswerScore}
+                    score={altAnswer?.score}
                     title={`${t('component.shading.alternateAnswer')} ${i + 1}`}
                   >
                     <CorrectAnswerBlock>

@@ -4,7 +4,12 @@ import { FlexContainer, CorrectAnswersContainer } from '@edulastic/common'
 import Rectangles from './Rectangles'
 import Circles from './Circles'
 
-const CorrectAnswerBox = ({ fractionProperties, selected }) => {
+const CorrectAnswerBox = ({
+  fractionProperties,
+  selected,
+  showAnswerScore,
+  itemScore,
+}) => {
   const { count, rows, columns, sectors, fractionType } = fractionProperties
   /**
    * creating an object with keys as selected fractions and value to true
@@ -16,6 +21,7 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
     obj[elem] = true
     return obj
   }, {})
+
   return (
     <CorrectAnswersContainer
       title="Correct Answer"
@@ -24,6 +30,8 @@ const CorrectAnswerBox = ({ fractionProperties, selected }) => {
       padding="20px 45px 45px"
       margin="0px"
       titleMargin="0px 0px 20px"
+      showAnswerScore={showAnswerScore}
+      score={itemScore}
     >
       <FlexContainer justifyContent="flex-start" flexWrap="wrap">
         {Array(count)

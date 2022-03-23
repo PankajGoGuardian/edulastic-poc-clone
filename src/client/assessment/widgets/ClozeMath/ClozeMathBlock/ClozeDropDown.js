@@ -1,4 +1,4 @@
-import React, { useRef, useEffect, useState, useMemo } from 'react'
+import React, { useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { find, indexOf } from 'lodash'
 import styled from 'styled-components'
@@ -52,6 +52,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       widthpx: globalWidth = 0,
       minHeight,
       minWidth,
+      transparentBackground,
     } = item.uiStyle || {}
 
     const width =
@@ -60,6 +61,12 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     const height =
       individualHeight ||
       Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10))
+
+    if (transparentBackground) {
+      cssStyles.bg = 'transparent'
+      cssStyles.noBorder = true
+    }
+
     return {
       ...uiStyles,
       width: `${width}px`,
@@ -69,10 +76,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
   }, [item])
 
   const dropDownWrapper = useRef(null)
-  const [menuStyle, setMenuStyle] = useState({
-    top: `${dropdownStyle.height} !important`,
-    left: `0px !important`,
-  })
 
   const getPopupContainer = (node) => {
     return node.parentNode
@@ -95,36 +98,6 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
     )
     val = getStemNumeration('lowercase', itemIndex)
   }
-  // TODO
-  // make a generic component for dropdown and use it in all questions
-  // so that we can have control all dropdowns just by changing one place
-  useEffect(() => {
-    // recalculate the dimensions whenever the element is mounted
-    if (dropDownWrapper.current) {
-      const wrapper = dropDownWrapper.current
-      const { height: wrapperHeight, top } = wrapper.getBoundingClientRect()
-      const optionCount = options?.length || 0
-      const heightOfEachOption = 40
-      const totalOptionsHeight = Math.max(optionCount * heightOfEachOption, 120)
-      if (window.innerHeight - (wrapperHeight + top) < totalOptionsHeight) {
-        // dropdown near to the bottom of the screen
-        // or dropdown has many options wihch cannot fit at the bottom
-
-        // show options above the dropdown
-        setMenuStyle({
-          top: `auto !important`,
-          left: `0px !important`,
-          bottom: `100%`,
-        })
-      } else {
-        // show options below the dropdown
-        setMenuStyle({
-          top: `${wrapper.clientHeight}px !important`,
-          left: `0px !important`,
-        })
-      }
-    }
-  }, [dropDownWrapper.current])
 
   return checked ? (
     <CheckedBlock
@@ -142,11 +115,7 @@ const ClozeDropDown = ({ resprops = {}, id }) => {
       allCorrects={allCorrects}
     />
   ) : (
-    <DropdownWrapper
-      ref={dropDownWrapper}
-      menuStyle={menuStyle}
-      isPrintPreview={isPrintPreview}
-    >
+    <DropdownWrapper ref={dropDownWrapper} isPrintPreview={isPrintPreview}>
       <Dropdown
         data-cy="textDropDown"
         disabled={disableResponse}
@@ -195,16 +164,14 @@ const DropdownWrapper = styled.div`
     }
   }
 
-  .ant-select-dropdown {
-    ${({ menuStyle }) => menuStyle};
-  }
   text-indent: 0;
 `
 
 const Dropdown = styled(SelectInputStyled)`
   &.ant-select {
     .ant-select-selection {
-      border: 1px solid ${lightGrey12};
+      border: ${(props) =>
+        props.noBorder ? 'none' : ` 1px solid ${lightGrey12}`};
     }
   }
 `

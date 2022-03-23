@@ -1,6 +1,5 @@
 import React, { useMemo, useState } from 'react'
 import PropTypes from 'prop-types'
-import { chunk } from 'lodash'
 import { SortableContainer } from 'react-sortable-hoc'
 import { FlexContainer } from '@edulastic/common'
 import { OptionsList } from '../styled/OptionsList'
@@ -21,8 +20,6 @@ const Options = ({
   ...restProps
 }) => {
   const [focusedOptionIndex, setFocusedOptionIndex] = useState(0)
-  const noOfColumns = parseInt(uiStyle.columns || 1, 10)
-  const noOfRows = Math.ceil(options.length / noOfColumns)
 
   const OptComponent = fromSetAnswers ? SortableOption : Option
 
@@ -34,21 +31,23 @@ const Options = ({
       }, {}),
     [options]
   )
+
   const cols = useMemo(() => {
-    if (uiStyle.orientation === 'horizontal') {
-      const bump = chunk(options, noOfColumns)
-      return new Array(noOfRows)
-        .fill(true)
-        .map((_, i) => {
-          if (noOfColumns > i) {
-            return bump.map((col) => col[i]).filter((x) => x)
-          }
-          return null
+    const numOfColumns = parseInt(uiStyle.columns || 1, 10)
+    const numOfRows = Math.ceil(options.length / numOfColumns)
+    const tempRows = new Array(numOfRows).fill(true)
+    return new Array(numOfColumns).fill(true).map((_, c) => {
+      return tempRows
+        .map((__, r) => {
+          const optIndex =
+            uiStyle.orientation === 'horizontal'
+              ? numOfColumns * r + c
+              : numOfRows * c + r
+          return options[optIndex]
         })
         .filter((x) => x)
-    }
-    return chunk(options, noOfRows)
-  }, [options, noOfColumns, noOfRows, uiStyle.orientation])
+    })
+  }, [options, uiStyle.orientation, uiStyle.columns])
 
   return (
     <OptionsList
@@ -68,7 +67,7 @@ const Options = ({
         >
           {col.map((row) => (
             <OptComponent
-              maxWidth={`${(1 / noOfColumns) * 100 - 1}%`}
+              // maxWidth={`${(1 / numOfCols) * 100 - 1}%`}
               key={row.value}
               indx={indexMap[row.value]}
               index={indexMap[row.value]}

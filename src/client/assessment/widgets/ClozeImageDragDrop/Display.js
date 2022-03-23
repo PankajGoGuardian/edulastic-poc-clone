@@ -484,6 +484,7 @@ class Display extends Component {
       view,
       hideCorrectAnswer,
       answerScore,
+      showAnswerScore,
     } = this.props
     const isPrintMode = isPrint || isPrintPreview
     const isWrapText = get(item, 'responseLayout.isWrapText', false)
@@ -769,24 +770,40 @@ class Display extends Component {
     )
 
     const validAnswers = get(item, 'validation.validResponse.value', [])
-    const altAnswers = get(item, 'validation.altResponses', []).map((alt) =>
-      get(alt, 'value', []).map((res) => res)
-    )
-    const allAnswers = [validAnswers, ...altAnswers]
+    const validAnswerScore = get(item, 'validation.validResponse.score')
 
-    const correctAnswerBoxLayout = allAnswers.map((answers, answersIndex) => (
-      <CorrectAnswerBoxLayout
-        fontSize={fontSize}
-        groupResponses={options}
-        userAnswers={answers}
-        answersIndex={answersIndex}
-        stemNumeration={stemNumeration}
-        idValueMap={idValueMap}
-        singleResponseBox={
-          responseContainers && responseContainers.length === 1
-        }
-      />
-    ))
+    const correctAnswerBoxLayout = (
+      <>
+        <CorrectAnswerBoxLayout
+          fontSize={fontSize}
+          groupResponses={options}
+          userAnswers={validAnswers}
+          stemNumeration={stemNumeration}
+          idValueMap={idValueMap}
+          showAnswerScore={showAnswerScore}
+          score={validAnswerScore}
+          singleResponseBox={
+            responseContainers && responseContainers.length === 1
+          }
+        />
+        {item?.validation?.altResponses?.map((altAnswer, index) => (
+          <CorrectAnswerBoxLayout
+            isAltAnswer
+            fontSize={fontSize}
+            answersIndex={index + 1}
+            groupResponses={options}
+            userAnswers={altAnswer?.value}
+            stemNumeration={stemNumeration}
+            idValueMap={idValueMap}
+            showAnswerScore={showAnswerScore}
+            score={altAnswer?.score}
+            singleResponseBox={
+              responseContainers && responseContainers.length === 1
+            }
+          />
+        ))}
+      </>
+    )
 
     const responseBoxLayout = isReviewTab ? <div /> : previewResponseBoxLayout
     const answerBox =
@@ -797,89 +814,85 @@ class Display extends Component {
       )
 
     return (
-      <div style={{ fontSize }}>
-        <HorizontalScrollContext.Provider
-          value={{ getScrollElement: () => this.displayWrapperRef.current }}
+      <HorizontalScrollContext.Provider
+        value={{ getScrollElement: () => this.displayWrapperRef.current }}
+      >
+        <StyledDisplayContainer
+          fontSize={fontSize}
+          ref={this.displayWrapperRef}
+          isPrintMode={isPrintMode}
         >
-          <StyledDisplayContainer
-            ref={this.displayWrapperRef}
-            isPrintMode={isPrintMode}
-          >
-            <FlexContainer justifyContent="flex-start" alignItems="baseline">
-              <QuestionLabelWrapper>
-                {showQuestionNumber && (
-                  <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
-                )}
-                {item.qSubLabel && (
-                  <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
-                )}
-              </QuestionLabelWrapper>
-              <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-                <QuestionTitleWrapper>
-                  <Stimulus
+          <FlexContainer justifyContent="flex-start" alignItems="baseline">
+            <QuestionLabelWrapper>
+              {showQuestionNumber && (
+                <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+              )}
+              {item.qSubLabel && (
+                <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>
+              )}
+            </QuestionLabelWrapper>
+            <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
+              <QuestionTitleWrapper>
+                <Stimulus
+                  smallSize={smallSize}
+                  dangerouslySetInnerHTML={{ __html: question }}
+                />
+              </QuestionTitleWrapper>
+              {responseposition === 'top' && (
+                <div style={containerStyle}>
+                  <StyledContainer>
+                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                  </StyledContainer>
+                  <StyledContainer>{templateBoxLayout}</StyledContainer>
+                </div>
+              )}
+              {responseposition === 'bottom' && (
+                <div style={containerStyle}>
+                  <StyledContainer>
+                    <RelativeContainer>{templateBoxLayout}</RelativeContainer>
+                  </StyledContainer>
+                  <StyledContainer>{responseBoxLayout}</StyledContainer>
+                </div>
+              )}
+              {responseposition === 'left' && (
+                <LeftContainer style={containerStyle}>
+                  <LeftResponseContainer width="auto" isReviewTab={isReviewTab}>
+                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                  </LeftResponseContainer>
+                  <LeftTemplateContainer
+                    studentReport={isPrintMode ? true : studentReport}
+                    responseBoxContainerWidth={responseBoxWidth}
+                  >
+                    {templateBoxLayout}
+                  </LeftTemplateContainer>
+                </LeftContainer>
+              )}
+              {responseposition === 'right' && (
+                <RightContainer smallSize={smallSize} style={containerStyle}>
+                  <RightTemplateContainer
                     smallSize={smallSize}
-                    dangerouslySetInnerHTML={{ __html: question }}
-                  />
-                </QuestionTitleWrapper>
-                {responseposition === 'top' && (
-                  <div style={containerStyle}>
-                    <StyledContainer>
-                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                    </StyledContainer>
-                    <StyledContainer>{templateBoxLayout}</StyledContainer>
-                  </div>
-                )}
-                {responseposition === 'bottom' && (
-                  <div style={containerStyle}>
-                    <StyledContainer>
-                      <RelativeContainer>{templateBoxLayout}</RelativeContainer>
-                    </StyledContainer>
-                    <StyledContainer>{responseBoxLayout}</StyledContainer>
-                  </div>
-                )}
-                {responseposition === 'left' && (
-                  <LeftContainer style={containerStyle}>
-                    <LeftResponseContainer
-                      width="auto"
-                      isReviewTab={isReviewTab}
-                    >
-                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                    </LeftResponseContainer>
-                    <LeftTemplateContainer
-                      studentReport={isPrintMode ? true : studentReport}
-                      responseBoxContainerWidth={responseBoxWidth}
-                    >
-                      {templateBoxLayout}
-                    </LeftTemplateContainer>
-                  </LeftContainer>
-                )}
-                {responseposition === 'right' && (
-                  <RightContainer smallSize={smallSize} style={containerStyle}>
-                    <RightTemplateContainer
-                      smallSize={smallSize}
-                      studentReport={isPrintMode ? true : studentReport}
-                      responseBoxContainerWidth={responseBoxWidth}
-                    >
-                      {templateBoxLayout}
-                    </RightTemplateContainer>
+                    studentReport={isPrintMode ? true : studentReport}
+                    responseBoxContainerWidth={responseBoxWidth}
+                  >
+                    {templateBoxLayout}
+                  </RightTemplateContainer>
 
-                    <RightResponseContainer
-                      width="auto"
-                      isReviewTab={isReviewTab}
-                      smallSize={smallSize}
-                    >
-                      <RelativeContainer>{responseBoxLayout}</RelativeContainer>
-                    </RightResponseContainer>
-                  </RightContainer>
-                )}
-                {view && view !== EDIT && <Instructions item={item} />}
-                {answerBox}
-                <DragPreview />
-              </QuestionContentWrapper>
-            </FlexContainer>
-          </StyledDisplayContainer>
-        </HorizontalScrollContext.Provider>
-      </div>
+                  <RightResponseContainer
+                    width="auto"
+                    isReviewTab={isReviewTab}
+                    smallSize={smallSize}
+                  >
+                    <RelativeContainer>{responseBoxLayout}</RelativeContainer>
+                  </RightResponseContainer>
+                </RightContainer>
+              )}
+              {view && view !== EDIT && <Instructions item={item} />}
+              {answerBox}
+              <DragPreview />
+            </QuestionContentWrapper>
+          </FlexContainer>
+        </StyledDisplayContainer>
+      </HorizontalScrollContext.Provider>
     )
   }
 }

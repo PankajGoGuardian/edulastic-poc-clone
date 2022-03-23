@@ -1,6 +1,6 @@
 import React, { memo, useState } from 'react'
 import PropTypes from 'prop-types'
-import Rnd from 'react-rnd-rotate'
+import { Rnd } from 'react-rnd'
 
 import RotateProtractorImg from './assets/rotate.svg'
 import { Image } from './styled/Image'

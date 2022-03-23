@@ -10,7 +10,7 @@ import { updateVariables } from '../../utils/variables'
 import CorrectAnswers from '../../components/CorrectAnswers'
 import { ContentArea } from '../../styled/ContentArea'
 
-import CorrectAnswer from './components/CorrectAnswer'
+import ComposeAnswer from './components/ComposeAnswer'
 import ComposeQuestion from './components/ComposeQuestion'
 import Options from './components/Options'
 import Question from '../../components/Question'
@@ -101,7 +101,7 @@ const EditShortText = ({
   }
 
   const renderOptions = () => (
-    <CorrectAnswer
+    <ComposeAnswer
       data-cy="correctAnswerShortText"
       title={item.title}
       item={item}

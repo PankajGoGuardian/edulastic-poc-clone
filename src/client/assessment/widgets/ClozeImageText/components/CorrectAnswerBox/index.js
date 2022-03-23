@@ -1,58 +1,56 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { withNamespaces } from '@edulastic/localization'
+import { CorrectAnswersContainer } from '@edulastic/common'
 import { getStemNumeration } from '../../../../utils/helpers'
-import { CorrectAnswerBox } from './styled/CorrectAnswerBox'
-import { CorrectAnswerTitle } from './styled/CorrectAnswerTitle'
 import { AnswerBox } from './styled/AnswerBox'
 import { IndexBox } from './styled/IndexBox'
 import { AnswerContent } from './styled/AnswerContent'
 
 const CorrectAnswerBoxLayout = ({
-  fontSize,
   userAnswers,
   altAnsIndex,
   stemNumeration,
   responseContainers,
   t,
-  width,
   singleResponseBox,
+  showAnswerScore,
+  score,
 }) => (
-  <CorrectAnswerBox width={width} fontSize={fontSize}>
-    <CorrectAnswerTitle>
-      {altAnsIndex
+  <CorrectAnswersContainer
+    title={
+      altAnsIndex
         ? `${t('component.cloze.altAnswers')} ${altAnsIndex}`
-        : t('component.cloze.correctAnswer')}
-    </CorrectAnswerTitle>
-    <div>
-      {responseContainers?.map(({ id }, index) => (
-        <AnswerBox key={`correct-answer-${index}`}>
-          {!singleResponseBox && (
-            <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
-          )}
-          <AnswerContent>{userAnswers[id]}</AnswerContent>
-        </AnswerBox>
-      ))}
-    </div>
-  </CorrectAnswerBox>
+        : t('component.cloze.correctAnswer')
+    }
+    padding="15px 25px 20px"
+    titleMargin="0px 0px 12px"
+    showAnswerScore={showAnswerScore}
+    score={score}
+  >
+    {responseContainers?.map(({ id }, index) => (
+      <AnswerBox key={`correct-answer-${index}`}>
+        {!singleResponseBox && (
+          <IndexBox>{getStemNumeration(stemNumeration, index)}</IndexBox>
+        )}
+        <AnswerContent>{userAnswers[id]}</AnswerContent>
+      </AnswerBox>
+    ))}
+  </CorrectAnswersContainer>
 )
 
 CorrectAnswerBoxLayout.propTypes = {
-  fontSize: PropTypes.string,
   userAnswers: PropTypes.array,
   t: PropTypes.func.isRequired,
   altAnsIndex: PropTypes.number,
   stemNumeration: PropTypes.string,
-  width: PropTypes.string,
   singleResponseBox: PropTypes.bool,
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
-  fontSize: '13px',
   userAnswers: [],
   altAnsIndex: 0,
   stemNumeration: 'numerical',
-  width: '100%',
   singleResponseBox: false,
 }
 

@@ -15,10 +15,14 @@ const ShowCorrect = ({
   t,
   stemNumeration,
   itemStyle,
+  showAnswerScore,
+  validResponseScore,
 }) => (
   <>
     <CorrectAnswersContainer
       minHeight="auto"
+      score={validResponseScore}
+      showAnswerScore={showAnswerScore}
       title={t('component.sortList.correctAnswers')}
     >
       <FlexContainer marginLeft="20px">
@@ -35,12 +39,13 @@ const ShowCorrect = ({
         })}
       </FlexContainer>
     </CorrectAnswersContainer>
-
     {altResponses.map((ans, i) => (
       <CorrectAnswersContainer
         key={i}
         title={`${t('component.sortList.alternateAnswer')} ${i + 1}`}
         minHeight="auto"
+        showAnswerScore={showAnswerScore}
+        score={ans?.score}
       >
         <FlexContainer marginLeft="20px">
           {ans.value.map((answer, index) => {

@@ -69,6 +69,7 @@ const ClassificationPreview = ({
   isPrintPreview,
   isPrint,
   hideCorrectAnswer,
+  showAnswerScore,
 }) => {
   const listPosition = get(item, 'uiStyle.possibilityListPosition', 'left')
   const rowHeader = get(item, 'uiStyle.rowHeader', null)
@@ -127,6 +128,10 @@ const ClassificationPreview = ({
   const validArray = get(item, 'validation.validResponse.value', [])
   const altArrays = get(item, 'validation.altResponses', []).map(
     (arr) => arr.value || []
+  )
+  const validRespScore = get(item, 'validation.validResponse.score', [])
+  const altRespScores = get(item, 'validation.altResponses', []).map(
+    (arr) => arr?.score
   )
 
   let groupArrays = []
@@ -506,6 +511,8 @@ const ClassificationPreview = ({
                 dragItemProps={dragItemProps}
                 title={t('component.classification.correctAnswers')}
                 multiRow={rowCount > 1}
+                showAnswerScore={showAnswerScore}
+                score={validRespScore}
               />
               {altArrays.map((altArray, ind) => (
                 <CorrectAnswers
@@ -521,6 +528,8 @@ const ClassificationPreview = ({
                   title={`${t('component.classification.alternateAnswer')} ${
                     ind + 1
                   }`}
+                  showAnswerScore={showAnswerScore}
+                  score={altRespScores[ind]}
                 />
               ))}
             </ChoiceContainer>

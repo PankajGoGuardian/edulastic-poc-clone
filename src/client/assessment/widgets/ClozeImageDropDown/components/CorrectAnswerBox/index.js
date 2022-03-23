@@ -12,12 +12,13 @@ import { IndexBox } from './styled/IndexBox'
 import { AnswerContent } from './styled/AnswerContent'
 
 const CorrectAnswerBoxLayout = ({
-  fontSize,
   userAnswers,
   altAnsIndex,
   stemNumeration,
   singleResponseBox,
   t,
+  showAnswerScore,
+  score,
 }) => (
   <CorrectAnswersContainer
     title={
@@ -25,8 +26,9 @@ const CorrectAnswerBoxLayout = ({
         ? `${t('component.cloze.altAnswers')} ${altAnsIndex}`
         : t('component.cloze.correctAnswer')
     }
-    fontSize={fontSize}
     minHeight="auto"
+    showAnswerScore={showAnswerScore}
+    score={score}
   >
     <CorrectAnswerBox>
       {userAnswers.map((userAnswer) => (
@@ -50,7 +52,6 @@ const CorrectAnswerBoxLayout = ({
 )
 
 CorrectAnswerBoxLayout.propTypes = {
-  fontSize: PropTypes.string,
   userAnswers: PropTypes.object,
   t: PropTypes.func.isRequired,
   altAnsIndex: PropTypes.number,
@@ -59,7 +60,6 @@ CorrectAnswerBoxLayout.propTypes = {
 }
 
 CorrectAnswerBoxLayout.defaultProps = {
-  fontSize: '13px',
   userAnswers: [],
   altAnsIndex: 0,
   stemNumeration: 'numerical',

@@ -15,6 +15,15 @@ const create = (data) =>
     })
     .then((result) => result.data.result)
 
+const bulkAssign = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/bulk-assign`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const update = (id, data) =>
   api
     .callApi({
@@ -303,4 +312,5 @@ export default {
   fetchRegradeSettings,
   editTagsRequest,
   getBubbleSheet,
+  bulkAssign,
 }

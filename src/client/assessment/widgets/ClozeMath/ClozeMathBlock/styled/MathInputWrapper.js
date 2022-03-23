@@ -15,11 +15,14 @@ export const MathInputWrapper = styled.div`
     padding: 2px 15px;
     vertical-align: middle;
 
-    ${({ disableResponse }) =>
+    ${({ disableResponse, background }) =>
       disableResponse &&
-      `background: #f5f5f5; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
-    background: ${greyThemeLighter};
-    border: 1px solid ${lightGrey12};
+      `background: ${
+        background || '#f5f5f5'
+      }; cursor: not-allowed; color: rgba(0, 0, 0, 0.25);`}
+    background:${({ background }) => background || greyThemeLighter};
+    border: ${(props) =>
+      props.noBorder ? 'none' : ` 1px solid ${lightGrey12}`};
     border-radius: 2px;
 
     &:hover,

@@ -37,6 +37,7 @@ import {
   getUserFeatures,
 } from '../../../src/selectors/user'
 import {
+  getSearchTermsFilterSelector,
   loadAssignmentsAction,
   saveAssignmentAction,
 } from '../../../TestPage/components/Assign/ducks'
@@ -88,6 +89,8 @@ import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
+import ShowBulkAssignModal from './ShowBulkAssignModal'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 const { ASSESSMENT, COMMON } = testConst.type
 const {
@@ -115,6 +118,7 @@ class AssignTest extends React.Component {
       showDeleteSettingModal: false,
       showUpdateSettingModal: false,
       settingDetails: null,
+      showBulkAssignModal: false,
     }
   }
 
@@ -363,16 +367,65 @@ class AssignTest extends React.Component {
     this.setState({ isAdvancedView: checked })
   }
 
-  renderHeaderButton = (isAssigning) => {
+  handleBulkAssign = () => {
+    const { searchTerms, assignmentSettings: assignment } = this.props
+    const { changeDateSelection } = this.state
+    const { subjects, grades } = searchTerms
+
+    if (!assignment.startDate) return
+    if (isEmpty(subjects)) {
+      return notification({ messageKey: 'selectSubject' })
+    }
+    if (isEmpty(grades)) {
+      return notification({ messageKey: 'selectGrade' })
+    }
+
+    if (!this.validateTimedAssignment()) return
+    if (assignment.endDate < Date.now()) {
+      notification({ messageKey: 'endDate' })
+      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
+    } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
+      notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
+      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
+    }
+
+    this.setState({
+      showBulkAssignModal: true,
+    })
+  }
+
+  renderHeaderButton = () => {
+    const { isBulkAssigning, isAssigning, isPlaylist, match } = this.props
+    const { testId } = match.params
+    const isPlaylistModule = isPlaylist && !testId
     return (
-      <EduButton
-        isBlue
-        data-cy="assignButton"
-        onClick={this.handleAssign}
-        loading={isAssigning}
-      >
-        {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
-      </EduButton>
+      <>
+        {!isPlaylistModule && (
+          <FeaturesSwitch
+            inputFeatures="canBulkAssign"
+            key="canBulkAssign"
+            actionOnInaccessible="hidden"
+          >
+            <EduButton
+              isBlue
+              data-cy="bulkAssignButton"
+              onClick={this.handleBulkAssign}
+              loading={isBulkAssigning}
+            >
+              {isBulkAssigning ? 'ASSIGNING...' : 'BULK ASSIGN'}
+            </EduButton>
+          </FeaturesSwitch>
+        )}
+
+        <EduButton
+          isBlue
+          data-cy="assignButton"
+          onClick={this.handleAssign}
+          loading={isAssigning}
+        >
+          {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
+        </EduButton>
+      </>
     )
   }
 
@@ -705,12 +758,14 @@ class AssignTest extends React.Component {
       showDeleteSettingModal,
       settingDetails,
       showUpdateSettingModal,
+      showBulkAssignModal,
     } = this.state
     const {
       assignmentSettings: assignment,
       isTestLoading,
       match,
       isAssigning,
+      isBulkAssigning,
     } = this.props
     const {
       classList,
@@ -745,6 +800,15 @@ class AssignTest extends React.Component {
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
+        {showBulkAssignModal && (
+          <ShowBulkAssignModal
+            closeModal={() => {
+              this.setState({ showBulkAssignModal: false })
+            }}
+            assignmentSettings={assignment}
+            moduleTitle={moduleTitle}
+          />
+        )}
         <MultipleAssignConfirmation
           assignment={assignment}
           isPlaylist={isPlaylist}
@@ -780,7 +844,7 @@ class AssignTest extends React.Component {
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
           renderButton={this.renderHeaderButton}
-          isLoadingButtonState={isAssigning}
+          isLoadingButtonState={isAssigning || isBulkAssigning}
         />
 
         <Container>
@@ -892,7 +956,8 @@ class AssignTest extends React.Component {
               showAssignModuleContent={
                 match?.params?.playlistId && !match?.params?.testId
               }
-              isAssigning={isAssigning}
+              isAssigning={isAssigning || isBulkAssigning}
+              isPlaylist={isPlaylist}
             />
           )}
         </Container>
@@ -930,6 +995,8 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
+      searchTerms: getSearchTermsFilterSelector(state),
+      isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
     }),
     {
       loadClassList: receiveClassListAction,

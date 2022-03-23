@@ -14,7 +14,6 @@ import styled, { withTheme } from 'styled-components'
 import produce from 'immer'
 import { withNamespaces } from '@edulastic/localization'
 import {
-  CorrectAnswersContainer,
   QuestionNumberLabel,
   ScrollContext,
   FlexContainer,
@@ -37,6 +36,7 @@ import {
 } from '../../constants/constantsForQuestions'
 import OrderListPreview from './components/OrderListPreview'
 import Options from './components/Options'
+import ShowAnswers from './components/ShowAnswers'
 import { getFontSize, getStemNumeration } from '../../utils/helpers'
 import { replaceVariables, updateVariables } from '../../utils/variables'
 import { ContentArea } from '../../styled/ContentArea'
@@ -106,6 +106,7 @@ const OrderList = ({
   isReviewTab,
   hideCorrectAnswer,
   isPrintPreview,
+  showAnswerScore,
 }) => {
   const [correctTab, setCorrectTab] = useState(0)
   const scrollContext = useContext(ScrollContext)
@@ -226,14 +227,6 @@ const OrderList = ({
   if (!item) return null
   // ------------------ Item Preivew Start ------------------ //
   const itemForPreview = useMemo(() => replaceVariables(item), [item])
-  const correctAnswers = get(
-    itemForPreview,
-    'validation.validResponse.value',
-    {}
-  )
-  const hasAltAnswers =
-    get(itemForPreview, 'validation.altResponses', []).length > 0
-  const alternateAnswers = {}
 
   /**
    * _userAnswer contains user response and else part will run when there is no response
@@ -243,9 +236,6 @@ const OrderList = ({
     ? _userAnswer
     : convertArrToObj(keys(get(item, 'list', {})))
   const userAnswerToShow = keys(userAnswer)
-  const correctAnswersToShow = convertObjToArr(correctAnswers).map((ans) =>
-    get(itemForPreview, `list[${ans.id}]`, '')
-  )
 
   const onSortPreviewEnd = ({ oldIndex, newIndex }) => {
     const newUserAnswer = convertArrToObj(
@@ -266,18 +256,6 @@ const OrderList = ({
       onSortPreviewEnd({ oldIndex: 0, newIndex: 0 }) // Setting initial answer set by the author
     }
   }, [view, previewTab])
-
-  if (hasAltAnswers) {
-    const altAnswers = itemForPreview.validation.altResponses
-    altAnswers.forEach((altAnswer) => {
-      convertObjToArr(altAnswer.value).forEach((alt, index) => {
-        alternateAnswers[index + 1] = alternateAnswers[index + 1] || []
-        if (alt !== '') {
-          alternateAnswers[index + 1].push(itemForPreview.list[alt.id])
-        }
-      })
-    })
-  }
 
   const evaluationForCheckAnswer =
     evaluation ||
@@ -396,33 +374,14 @@ const OrderList = ({
 
               {view !== EDIT && <Instructions item={item} />}
               {(previewTab === SHOW || isReviewTab) && !hideCorrectAnswer ? (
-                <>
-                  <CorrectAnswersContainer
-                    title={t('component.orderlist.correctanswer')}
-                    titleMargin="0px 0px 20px"
-                  >
-                    <OrderListPreview
-                      {...previewProps}
-                      showAnswer
-                      questions={correctAnswersToShow}
-                    />
-                  </CorrectAnswersContainer>
-
-                  {hasAltAnswers && (
-                    <CorrectAnswersContainer
-                      title={t('component.orderlist.alternateAnswer')}
-                      titleMargin="0px 0px 20px"
-                    >
-                      <OrderListPreview
-                        {...previewProps}
-                        showAnswer
-                        questions={Object.keys(alternateAnswers).map((key) =>
-                          alternateAnswers[key].join(', ')
-                        )}
-                      />
-                    </CorrectAnswersContainer>
-                  )}
-                </>
+                <ShowAnswers
+                  smallSize={smallSize}
+                  uiStyle={uiStyle}
+                  options={itemForPreview.list}
+                  validation={itemForPreview?.validation}
+                  isPrintPreview={isPrintPreview}
+                  showAnswerScore={showAnswerScore}
+                />
               ) : null}
             </QuestionContentWrapper>
           </FlexContainer>

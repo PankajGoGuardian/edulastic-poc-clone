@@ -63,6 +63,7 @@ const SortListPreview = ({
   hideCorrectAnswer,
   evaluation,
   checkAnswerInProgress,
+  showAnswerScore,
 }) => {
   const previewRef = useRef()
   const answerContextConfig = useContext(AnswerContext)
@@ -201,6 +202,8 @@ const SortListPreview = ({
 
   const validResponse = get(item, 'validation.validResponse.value', [])
   const altResponses = get(item, 'validation.altResponses', [])
+
+  const validResponseScore = get(item, 'validation.validResponse.score')
 
   const validResponseCorrectList = source.map(
     (ans, i) => source[validResponse[i]]
@@ -479,6 +482,8 @@ const SortListPreview = ({
                 correctList={validResponse}
                 itemStyle={{ ...dragItemStyle }}
                 stemNumeration={stemNumeration}
+                validResponseScore={validResponseScore}
+                showAnswerScore={showAnswerScore}
               />
             )}
           </QuestionContentWrapper>

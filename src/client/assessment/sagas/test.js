@@ -153,7 +153,7 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
-const getSettings = (test, testActivity, preview) => {
+const getSettings = (test, testActivity, preview, calculatorProvider) => {
   const { assignmentSettings = {} } = testActivity || {}
   const calcType = !preview ? assignmentSettings.calcType : test.calcType
   // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
@@ -164,7 +164,7 @@ const getSettings = (test, testActivity, preview) => {
   const calcProvider = desmosGraphingCalcTypes.includes(calcType)
     ? 'DESMOS'
     : preview
-    ? test.calculatorProvider
+    ? test.calculatorProvider || calculatorProvider
     : testActivity?.calculatorProvider
 
   const maxAnswerChecks = preview
@@ -512,7 +512,19 @@ function* loadTest({ payload }) {
     // eslint-disable-next-line prefer-const
     let { testItems, passages } = test
 
-    const settings = getSettings(test, testActivity, preview)
+    const calculatorProvider = yield select((state) =>
+      get(
+        state,
+        'subscription.subscriptionData.subscription.calculatorProvider'
+      )
+    )
+
+    const settings = getSettings(
+      test,
+      testActivity,
+      preview,
+      calculatorProvider
+    )
 
     const testType = settings.testType || test.testType
 

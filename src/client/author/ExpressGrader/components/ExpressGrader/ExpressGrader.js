@@ -12,7 +12,7 @@ import {
   MainContentWrapper,
   WithResources,
   FlexContainer,
-  toggleIntercomDisplay,
+  toggleChatDisplay,
 } from '@edulastic/common'
 import AppConfig from '../../../../../app-config'
 import ScoreTable from '../ScoreTable/ScoreTable'
@@ -200,7 +200,7 @@ class ExpressGrader extends Component {
   }
 
   showQuestionModal = (record) => {
-    toggleIntercomDisplay()
+    toggleChatDisplay('hide')
     this.setState({
       record,
       isVisibleModal: true,
@@ -214,7 +214,7 @@ class ExpressGrader extends Component {
   }
 
   hideQuestionModal = () => {
-    toggleIntercomDisplay()
+    toggleChatDisplay('show')
     const { changedFeedback } = this.state
     if (changedFeedback) {
       const {

@@ -29,6 +29,7 @@ const ReviewItem = ({
   standards,
   groupMinimized,
   groupPoints,
+  isTestsUpdated,
 }) => {
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -50,9 +51,6 @@ const ReviewItem = ({
     }
     return audio
   }
-
-  const _questions = get(item, 'data.questions', [])
-  const itemLevelScoring = get(item, 'itemLevelScoring', false)
 
   /**
    * in test review, to disable input field for item
@@ -112,11 +110,25 @@ const ReviewItem = ({
     }
   }, [item])
 
+  const showAltScoreInfo = useMemo(() => {
+    return item?.data?.questions?.some((q) => {
+      if (q?.validation?.unscored) {
+        return false
+      }
+      const correctSore = q?.validation?.validResponse?.score
+      const altScores = q?.validation?.altResponses?.map((resp) => resp?.score)
+      return altScores?.some((altScore) => altScore !== correctSore)
+    })
+  }, [item])
+
   const handleSelect = (e) => {
     onSelect(item._id, e.target.checked)
   }
 
   const checked = selected?.includes(item._id)
+
+  const _questions = get(item, 'data.questions', [])
+  const itemLevelScoring = get(item, 'itemLevelScoring', false)
 
   return (
     <>
@@ -143,6 +155,8 @@ const ReviewItem = ({
           groupPoints={groupPoints}
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           itemNumber={item.indx}
+          showAltScoreInfo={showAltScoreInfo}
+          isTestsUpdated={isTestsUpdated}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
         />
@@ -163,6 +177,8 @@ const ReviewItem = ({
           expandRow={toggleExpandRow}
           groupMinimized={groupMinimized}
           groupPoints={groupPoints}
+          showAltScoreInfo={showAltScoreInfo}
+          isTestsUpdated={isTestsUpdated}
           isUnScoredItem={getUnScoredItem(_questions, itemLevelScoring)}
           isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}

@@ -262,11 +262,22 @@ class MathInput extends React.PureComponent {
 
   sanitizeLatexOnBlur = () => {
     const { mathField } = this.state
-    const { onInput: saveAnswer } = this.props
+    const { onInput: saveAnswer, isFromDocBased = false } = this.props
 
     if (mathField && mathField.latex()) {
       const mathLatex = removeLeadingAndTrailingNewlineChars(mathField.latex())
-      saveAnswer(reformatMathInputLatex(mathLatex))
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-35019
+       * In FormMath component "highlighted" variable is used to set focus to math-input
+       * As saveAnswer is called it updates store and the FormMath is re-rendered
+       * In between the renders "highlighted" variable is true and sets focus to math-input once again.
+       * Using below flag sent with saveAnswer the "highlighted" variable is reset which avoids focus to math-input
+       */
+      if (isFromDocBased) {
+        saveAnswer(reformatMathInputLatex(mathLatex), true)
+      } else {
+        saveAnswer(reformatMathInputLatex(mathLatex))
+      }
     }
   }
 
@@ -564,6 +575,7 @@ MathInput.propTypes = {
   contentLength: PropTypes.number,
   resetMath: PropTypes.bool,
   showDragHandle: PropTypes.bool,
+  isFromDocBased: PropTypes.bool,
 }
 
 MathInput.defaultProps = {
@@ -590,6 +602,7 @@ MathInput.defaultProps = {
   contentLength: 0,
   resetMath: false,
   showDragHandle: true,
+  isFromDocBased: false,
 }
 
 export default MathInput

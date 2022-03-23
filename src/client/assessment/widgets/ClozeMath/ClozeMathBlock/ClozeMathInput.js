@@ -59,7 +59,9 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     widthpx: globalWidth = 0,
     minHeight,
     minWidth,
+    transparentBackground,
   } = item?.uiStyle || {}
+
   const width =
     individualWidth ||
     Math.max(parseInt(globalWidth, 10), parseInt(minWidth, 10))
@@ -68,6 +70,10 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     Math.max(parseInt(globalHeight, 10), parseInt(minHeight, 10))
 
   const cssStyles = getStylesFromUiStyleToCssStyle(item.uiStyle)
+
+  if (transparentBackground) {
+    cssStyles.noBorder = true
+  }
 
   const handleSaveAnswer = (latex) => {
     const value = reformatMathInputLatex(latex)
@@ -85,6 +91,8 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
     numberPad: item.numberPad,
     onInput: handleSaveAnswer,
     showResponse: useTemplate,
+    noBorder: cssStyles.noBorder,
+    background: cssStyles.background,
   }
 
   const staticOrMathInput = useTemplate ? (
@@ -115,6 +123,8 @@ const ClozeMathInput = ({ resprops = {}, id, responseindex }) => {
       width={width}
       disableResponse={disableResponse}
       height={height}
+      noBorder={cssStyles.noBorder}
+      background={cssStyles.background}
       fontSize={cssStyles?.fontSize || uiStyles?.fontSize}
       data-cy="mathInput"
     >

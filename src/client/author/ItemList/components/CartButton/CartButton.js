@@ -16,6 +16,7 @@ const CartButton = ({
   numberChecker,
   tests,
   clearSelectedItems,
+  displayDeselect = false,
 }) => {
   let numberOfSelectedItems = selectedItems && selectedItems.length
   if (numberOfSelectedItems && numberChecker) {
@@ -25,7 +26,7 @@ const CartButton = ({
   }
   return (
     <Container>
-      {numberOfSelectedItems > 0 && (
+      {numberOfSelectedItems > 0 && displayDeselect && (
         <EduButton
           data-cy="deselectItems"
           isBlue

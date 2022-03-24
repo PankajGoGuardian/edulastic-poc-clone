@@ -1,11 +1,25 @@
 class EdulasticLogin {
-  constructor({ tokenProvider, getSignedData, redirectUrl }) {
+  constructor({ tokenProvider, getSignedData, redirectUrl, element }) {
     this.getSignedData = getSignedData
     this.tokenProvider = tokenProvider
     this.edulasticHeaders = {
       'Content-Type': 'application/json',
     }
     this.redirectUrlBase = redirectUrl
+    if (element) {
+      /**
+       * @type {HTMLElement}
+       */
+      let btnElement = element
+      if (typeof element === 'string') {
+        btnElement = document.querySelector(element)
+      }
+      const listener = () => {
+        this.loginToEdulastic()
+      }
+      btnElement.addEventListener('click', listener)
+      return () => btnElement.removeEventListener('click', listener)
+    }
   }
 
   loginToEdulastic() {

@@ -244,7 +244,7 @@ export function PerformanceBandAlt(props) {
 
   const handleProfileLimit = () => {
     const canCreateProfile =
-      profiles.filter((x) => x.createdBy?._id === currentUserId).length <= 10
+      profiles.filter((x) => x.createdBy?._id === currentUserId).length < 10
     if (!canCreateProfile) {
       notification({ messageKey: 'maximumTenProfilesPerUser' })
       return false

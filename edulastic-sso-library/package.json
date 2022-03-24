@@ -1,0 +1,29 @@
+{
+  "name": "edulastic-sso-library",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "prebuild": "rimraf dist",
+    "lint": "eslint '**/*.js",
+    "build": "rollup -c",
+    "deploy": "yarn build && aws s3 cp dist s3://edureact-dev/edulastic-sso-library/ --recursive"
+  },
+  "keywords": [
+    "edulastic",
+    "sso"
+  ],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sukhdeep-snapwiz/edulastic-sso/issues"
+  },
+  "homepage": "https://github.com/sukhdeep-snapwiz/edulastic-sso#readme",
+  "devDependencies": {
+    "eslint": "^8.11.0",
+    "prettier-eslint": "^13.0.0",
+    "prettier-eslint-cli": "^5.0.1",
+    "rimraf": "^3.0.2",
+    "rollup": "^2.70.1"
+  }
+}

@@ -1,25 +1,33 @@
 /* eslint-disable func-names */
 import { notification } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
-import { uploadToS3, canInsert, beforeUpload } from '../../helpers'
+import {
+  uploadToS3,
+  convertBlobToFile,
+  canInsert,
+  beforeUpload,
+} from '../../helpers'
 import { loadImage } from './helpers'
+import { showProgressBar, hideProgressBar } from './CustomLoader'
 
 function imageUploadPlugin(FroalaEditor) {
   FroalaEditor.PLUGINS.customImageUploadPlugin = function (editor) {
-    function imageBeforeUpload(image) {
-      this.image.showProgressBar()
+    function imageBeforeUpload(images) {
+      this.popups.hideAll()
+      showProgressBar()
+      this.edit.off()
 
       if (
         !canInsert(this.selection.element()) ||
         !canInsert(this.selection.endElement()) ||
-        !beforeUpload(image[0])
+        !beforeUpload(images[0])
       ) {
-        this.image.hideProgressBar()
+        hideProgressBar()
         return false
       }
 
       // TODO: pass folder as props
-      uploadToS3(image[0], aws.s3Folders.DEFAULT)
+      uploadToS3(images[0], aws.s3Folders.DEFAULT)
         .then((result) => {
           this.image.insert(result, false, null)
         })
@@ -27,9 +35,7 @@ function imageUploadPlugin(FroalaEditor) {
           console.error(e)
           notification({ messageKey: 'imageUploadErr' })
         })
-        .finally(() => {
-          this.image.hideProgressBar()
-        })
+
       return false
     }
 
@@ -48,22 +54,20 @@ function imageUploadPlugin(FroalaEditor) {
         }
       } catch (e) {
         notification({ messageKey: 'imageLoadErr' })
+      } finally {
+        hideProgressBar()
+        this.popups.hideAll()
+        this.edit.on()
       }
+      return false
     }
 
     function beforePasteUpload(img) {
-      // DO NOT USE ASYNC/AWAIT
       fetch(img.src)
         .then((res) => res.blob())
         .then((blob) => {
-          uploadToS3(blob, aws.s3Folders.DEFAULT)
-            .then((result) => {
-              this.image.insert(result, false, null)
-            })
-            .catch((e) => {
-              console.error(e)
-              notification({ messageKey: 'imageUploadErr' })
-            })
+          const file = convertBlobToFile(blob)
+          this.image.upload([file])
         })
       img?.remove()
       return false

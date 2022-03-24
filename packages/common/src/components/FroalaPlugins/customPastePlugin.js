@@ -66,6 +66,7 @@ function customPastePlugin(FroalaEditor) {
     }
 
     function updateHtml() {
+      this.selection.save()
       const updatedHtml = reIndexResponses(this.html.get(true))
       if (updatedHtml) {
         this.html.set(updatedHtml)

@@ -30,6 +30,25 @@ class EdulasticLogin {
       }
     )
   }
+
+  createButton(element, styles = {}) {
+    const btn = document.createElement('button')
+    btn.innerHTML = 'Login to Edulastic'
+    btn.type = 'submit'
+    btn.name = 'edulasticLoginBtn'
+    btn.onclick = this.loginToEdulastic()
+    for (const property in styles) {
+      if (property) {
+        btn.style[property] = styles[property]
+      }
+    }
+    element.appendChild(btn)
+    return {
+      unmountEdulasticLoginButton() {
+        btn.remove()
+      },
+    }
+  }
 }
 
 export { EdulasticLogin }

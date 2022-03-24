@@ -13,6 +13,10 @@ const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
     onChangeTool(mode)
   }
 
+  const onKeyDown = (mode) => (e) => {
+    if (e.key === 'Enter') onClickHandler(mode)()
+  }
+
   return (
     <FlexContainer>
       <HideShowDataController />
@@ -27,6 +31,8 @@ const RightButtons = ({ onChangeTool, deleteMode, canRedo, canUndo }) => {
           }
           onClick={onClickHandler(btn.mode)}
           selected={deleteMode && btn.mode === drawTools.DELETE_TOOL}
+          tabIndex="0"
+          onKeyDown={onKeyDown(btn.mode)}
         >
           <span />
         </StyledButton>

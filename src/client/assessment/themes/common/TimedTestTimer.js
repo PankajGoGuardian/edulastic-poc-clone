@@ -213,6 +213,7 @@ const TimedTestTimer = ({
           <Label
             isDanger={currentAssignmentTime <= CAUTION_TIME}
             fgColor={fgColor}
+            tabIndex="0"
           >
             {getFormattedTime(
               currentAssignmentTime < 0 ? 0 : currentAssignmentTime

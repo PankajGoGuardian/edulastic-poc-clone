@@ -9,6 +9,10 @@ const MidButtons = ({ onChangeTool, activeMode }) => {
     onChangeTool(mode)
   }
 
+  const onKeyDown = (mode) => (e) => {
+    if (e.key === 'Enter') onClickHandler(mode)()
+  }
+
   return (
     <FlexContainer>
       {midControls.map((btn) => (
@@ -18,6 +22,8 @@ const MidButtons = ({ onChangeTool, activeMode }) => {
           pos={btn.pos}
           onClick={onClickHandler(btn.mode)}
           selected={activeMode === btn.mode}
+          tabIndex="0"
+          onKeyDown={onKeyDown(btn.mode)}
         >
           <span />
         </StyledButton>

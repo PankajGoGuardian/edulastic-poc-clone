@@ -130,6 +130,57 @@ const Magnifier = ({
     e.preventDefault()
   }
 
+  const onKeyDown = (e) => {
+    const pos = magnifierRef?.current?.getBoundingClientRect()
+
+    switch (e.key) {
+      case 'ArrowLeft':
+        setSetting({
+          ...setting,
+          pos: {
+            x: pos.x - 10 < -pos.width + 10 ? -pos.width + 10 : pos.x - 10,
+            y: pos.y,
+          },
+        })
+        break
+      case 'ArrowRight':
+        setSetting({
+          ...setting,
+          pos: {
+            x:
+              pos.x + 10 > setting.windowWidth - 10
+                ? setting.windowWidth - 10
+                : pos.x + 10,
+            y: pos.y,
+          },
+        })
+        break
+      case 'ArrowUp':
+        setSetting({
+          ...setting,
+          pos: {
+            x: pos.x,
+            y: pos.y - 10 < offset.top ? offset.top : pos.y - 10,
+          },
+        })
+        break
+      case 'ArrowDown':
+        setSetting({
+          ...setting,
+          pos: {
+            x: pos.x,
+            y:
+              pos.y + 10 > setting.windowHeight - 10
+                ? setting.windowHeight - 10
+                : pos.y + 10,
+          },
+        })
+        break
+      default:
+        break
+    }
+  }
+
   const handleSidebarScroll = (e) =>
     document
       .getElementsByClassName('scrollbar-container')[1]
@@ -477,6 +528,8 @@ const Magnifier = ({
           magnifierWidth={width}
           magnifierHeight={height}
           pos={setting.pos}
+          tabIndex="0"
+          onKeyDown={onKeyDown}
         >
           <ZoomedContentWrapper
             scale={scale}

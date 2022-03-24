@@ -311,7 +311,7 @@ const Scratchpad = ({
         showHints: false,
         scrollbars: false,
         readOnly,
-        setFocus: false, // Zwibbler will be unable to intercept any keyboard commands
+        setFocus: true, // By setting it to 'false' zwibbler will be unable to intercept any keyboard commands. Here setting it to true on order to move the ruler and protractor using arrows
         allowZoom: !isStudentAttempt,
         allowTextInShape: false, // Zwibbler to write text inside a closed shapes @see EV-29941
         leaveTextToolOnBlur: true, // Zwibbler text tool data will be saved if user moves out of scratchpad

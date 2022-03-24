@@ -446,8 +446,18 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
 
   let redirectRoute = _redirectRoute || ''
 
-  const appRedirectPath = localStorage.getItem('loginRedirectUrl')
-
+  let appRedirectPath = localStorage.getItem('loginRedirectUrl')
+  const assignPageRegex = /\/assignments\/([a-f\d]{24})(?:\/)?$/
+  if (
+    assignPageRegex.test(appRedirectPath) &&
+    user?.user?.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL &&
+    user?.user?.role === roleuser.TEACHER
+  ) {
+    const testId = last(appRedirectPath.split('/'))
+    appRedirectPath = `/author/tests/tab/review/id/${testId}`
+    localStorage.setItem('loginRedirectUrl', appRedirectPath)
+    sessionStorage.setItem('completeSignUp', true)
+  }
   if (appRedirectPath && !isPartOfLoginRoutes(appRedirectPath)) {
     redirectRoute = getValidRedirectRouteByRole(
       appRedirectPath,

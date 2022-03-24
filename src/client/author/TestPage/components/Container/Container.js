@@ -26,6 +26,7 @@ import {
   test as testContants,
   roleuser,
   collections as collectionsConstant,
+  signUpState,
 } from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
@@ -93,6 +94,7 @@ import {
   getWritableCollectionsSelector,
   isOrganizationDistrictSelector,
   isPremiumUserSelector,
+  getUserSignupStatusSelector,
 } from '../../../src/selectors/user'
 import SourceModal from '../../../QuestionEditor/components/SourceModal/SourceModal'
 import ShareModal from '../../../src/components/common/ShareModal'
@@ -129,6 +131,7 @@ import {
 import { setSelectedLanguageAction } from '../../../../student/sharedDucks/AssignmentModule/ducks'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import { convertCollectionOptionsToArray } from '../../../src/utils/util'
+import TeacherSignup from '../../../../student/Signup/components/TeacherContainer/Container'
 
 const ItemCloneModal = loadable(() => import('../ItemCloneConfirmationModal'))
 
@@ -156,6 +159,7 @@ class Container extends PureComponent {
       disableAlert: false,
       showCloneModal: false,
       isSettingsChecked: false,
+      showCompeleteSignUp: false,
     }
   }
 
@@ -215,6 +219,7 @@ class Container extends PureComponent {
       isPremiumUser,
       fetchTestSettingsList,
       userId,
+      userSignupStatus,
     } = this.props
 
     const { versionId, id } = match.params
@@ -295,6 +300,14 @@ class Container extends PureComponent {
         getDefaultTestSettings({ saveDefaultTestSettings: true })
     } else {
       fetchAssignmentsByTest({ testId: id })
+    }
+    if (
+      sessionStorage.getItem('completeSignUp') &&
+      userSignupStatus === signUpState.ACCESS_WITHOUT_SCHOOL &&
+      userRole === roleuser.TEACHER
+    ) {
+      sessionStorage.removeItem('completeSignUp')
+      this.setState({ showCompeleteSignUp: true })
     }
   }
 
@@ -1302,7 +1315,12 @@ class Container extends PureComponent {
     if (userRole === roleuser.STUDENT) {
       return null
     }
-    const { showShareModal, isShowFilter, showCloneModal } = this.state
+    const {
+      showShareModal,
+      isShowFilter,
+      showCloneModal,
+      showCompeleteSignUp,
+    } = this.state
     const current = currentTab
     const {
       _id: testId,
@@ -1380,6 +1398,15 @@ class Container extends PureComponent {
           }}
         />
         {this.renderModal()}
+        {showCompeleteSignUp && !isTestLoading && (
+          <TeacherSignup
+            isModal
+            isVisible={showCompeleteSignUp}
+            handleCancel={() => {
+              this.setState({ showCompeleteSignUp: false })
+            }}
+          />
+        )}
         {showShareModal && (
           <ShareModal
             shareLabel="TEST URL"
@@ -1553,6 +1580,7 @@ const enhance = compose(
       isPremiumUser: isPremiumUserSelector(state),
       isUpgradePopupVisible: getShowUpgradePopupSelector(state),
       testSettingsList: getTestSettingsListSelector(state),
+      userSignupStatus: getUserSignupStatusSelector(state),
     }),
     {
       createTest: createTestAction,

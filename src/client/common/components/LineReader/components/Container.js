@@ -84,6 +84,51 @@ const Container = ({ destory }) => {
     })
   }
 
+  const handleKeyDown = (e) => {
+    // console.log(e.target.classList, '<<<<',e.target.getBoundingClientRect)
+    if (e.target.classList.contains('lineReader')) {
+      let x = e.target.getBoundingClientRect().x
+      let y = e.target.getBoundingClientRect().y
+
+      switch (e.keyCode) {
+        case 37:
+          x -= 3
+          break
+        case 39:
+          x += 3
+          break
+        case 38:
+          y -= 3
+          break
+        case 40:
+          y += 3
+          break
+        default:
+      }
+
+      if (x < 0) {
+        x = 0
+      }
+
+      if (y < 0) {
+        y = 0
+      }
+
+      setSettings({
+        ...settings,
+        outer: {
+          ...outer,
+          x,
+          y,
+        },
+      })
+    }
+
+    if (e.target.classList.contains('lineReader-innerMask')) {
+      console.log('here it goes')
+    }
+  }
+
   return (
     <Mask
       size={{ width: outer.width, height: outer.height }}
@@ -97,6 +142,9 @@ const Container = ({ destory }) => {
       minWidth={DEFAULT_LINE_MIN_WIDTH + GAP + inner.x}
       enableResizing={{ bottomRight: true }}
       dragHandleClassName="lineReader-dragHandler"
+      onKeyDown={handleKeyDown}
+      className="lineReader"
+      tabIndex="0"
     >
       <CloseButton onClick={destory}>
         <IconClose width={10} height={10} />
@@ -112,6 +160,7 @@ const Container = ({ destory }) => {
         resizeHandleClasses={{
           bottomRight: 'innermask-resize-bottomright',
         }}
+        tabIndex="0"
         maxHeight={outer.height - inner.y - GAP}
         maxWidth={outer.width - inner.x - GAP}
         minHeight={DEFAULT_LINE_HEIGHT}
@@ -122,8 +171,9 @@ const Container = ({ destory }) => {
         position={{ x: inner.x, y: inner.y }}
         onDrag={handleDragInner}
         onResize={handleResizeInner}
+        className="lineReader-innerMask"
       >
-        <InnerMaskDragHandler className="innermask-dragHandler" />
+        <InnerMaskDragHandler className="innermask-dragHandler" tabIndex="0" />
       </InnerMask>
     </Mask>
   )

@@ -83,7 +83,7 @@ import LinePlotCategories from '../../../src/assets/charts/line-plot-categories-
 import DotPlotCategories from '../../../src/assets/charts/dot-plot-categories-blue.svg'
 import LinePlotNumberLine from '../../../src/assets/charts/line-plot-number-line-blue.svg'
 import DotPlotNumberLine from '../../../src/assets/charts/dot-plot-number-line-blue.svg'
-import Histogram from '../../../src/assets/charts/histogram-blue.svg'
+import Histogram from '../../../src/assets/charts/histogram.svg'
 import BarChart from '../../../src/assets/charts/bar-chart-blue.svg'
 import LineChart from '../../../src/assets/charts/line-chart-blue.svg'
 

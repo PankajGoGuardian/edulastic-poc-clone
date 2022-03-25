@@ -26,7 +26,7 @@ import { CONSTANT } from '../../Builder/config'
 const mathRegex = /data-latex="([^"]+)"/g
 
 const ObjectLabel = ({ type, label }) => {
-  if (mathRegex.test(label)) {
+  if (label.search(mathRegex) !== -1) {
     return (
       <MathLabel
         dangerouslySetInnerHTML={{ __html: `${type}<br />${label}` }}

@@ -7,7 +7,7 @@
     "prebuild": "rimraf dist",
     "lint": "eslint '**/*.js",
     "build": "rollup -c",
-    "deploy": "yarn build && aws s3 cp dist s3://edureact-dev/edulastic-sso-library/v1.04/ --recursive"
+    "deploy": "yarn build && aws s3 cp dist s3://edureact-dev/edulastic-sso-library/v1.05/ --recursive"
   },
   "keywords": [
     "edulastic",

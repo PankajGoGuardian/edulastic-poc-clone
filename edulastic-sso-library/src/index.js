@@ -34,8 +34,8 @@ class EdulasticLogin {
           .then((data) => {
             const result = data.result
             if (result && result.authToken) {
-              const url = `${this.redirectUrlBase}?token=${result.authToken}&userId=${result.id}&role=${result.role}`
-              window.location.href = url
+              const url = `${this.redirectUrlBase}?token=${result.authToken}&userId=${result.id}&role=${result.role}&fromPD`
+              window.open(url, '_blank', 'noopener').focus()
             }
           })
       },

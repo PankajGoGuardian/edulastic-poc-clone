@@ -92,36 +92,37 @@ const ClozeMathPreview = ({
   }, [item?.validation, type, isExpressGrader])
 
   const answersById = useMemo(() => {
-    const validResponse = values(
+    if (!isLCBView) {
+      return {}
+    }
+    const extractResponse = (response) => {
+      const answers = values(response)
+        .map((ans) => (Array.isArray(ans) ? ans : ans.value))
+        .flat()
+        .map((ans) => {
+          const answer = Array.isArray(ans) ? ans[0] : ans
+          return {
+            id: answer.id,
+            value: answer.value,
+            ...(answer?.options ? { options: answer.options } : {}),
+          }
+        })
+
+      return keyBy(answers, 'id')
+    }
+    const validResponse = extractResponse(
       omit(get(item, 'validation.validResponse', {}), ['score'])
     )
-      .map((ans) => {
-        if (Array.isArray(ans)) {
-          return ans[0]
-        }
-        return ans.value
-      })
-      .map((ans) => ans[0])
-
     const altResponses = get(item, 'validation.altResponses', []).map(
       (altResponse) => {
-        const altAnswers = values(omit(altResponse, 'score'))
-          .map((ans) => {
-            if (Array.isArray(ans)) {
-              return ans[0]
-            }
-            return ans.value
-          })
-          .map((ans) => ans[0])
-        return keyBy(altAnswers, 'id')
+        return extractResponse(omit(altResponse, 'score'))
       }
     )
-
     return {
-      correctAnswers: keyBy(validResponse, 'id'),
+      correctAnswers: validResponse,
       altAnswers: altResponses,
     }
-  }, [item?.validation])
+  }, [item?.validation, isLCBView])
 
   const uiStyles = useMemo(() => {
     const { uiStyle = {} } = item

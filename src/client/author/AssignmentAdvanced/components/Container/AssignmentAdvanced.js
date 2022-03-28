@@ -4,22 +4,18 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import qs from 'qs'
-import { find, get, isEmpty } from 'lodash'
-import { Dropdown } from 'antd'
+import { find, get } from 'lodash'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'
-import { IconMoreVertical } from '@edulastic/icons'
 import {
   receiveAssignmentClassList,
-  receiveAssignmentsSummaryAction,
   toggleReleaseScoreSettingsAction,
 } from '../../../src/actions/assignments'
 
 import {
   getAssignmentClassList,
   getAssignmentsLoadingSelector,
-  getAssignmentsSummary,
   getAssignmentTestList,
   getBulkActionStatusSelector,
   getBulkActionTypeSelector,
@@ -28,12 +24,10 @@ import {
   stateSelector,
 } from '../../../src/selectors/assignments'
 import ListHeader from '../../../src/components/common/ListHeader'
-import ActionMenu from '../../../Assignments/components/ActionMenu/ActionMenu'
 import {
   Anchor,
   AnchorLink,
   Breadcrumbs,
-  BtnAction,
   Container,
   PaginationInfo,
   StyledButton,
@@ -66,7 +60,6 @@ import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
 } from '../../../src/selectors/user'
-import { canEditTest } from '../../../Assignments/utils'
 import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAssignmentModal/deleteAssignmentModal'
 import PrintTestModal from '../../../src/components/common/PrintTestModal'
 import {
@@ -126,11 +119,7 @@ class AssignmentAdvanced extends Component {
       }
     }
     const { districtId, testId } = match.params
-    const {
-      loadAssignmentsClassList,
-      loadAssignmentsSummary,
-      assignmentsSummary,
-    } = this.props
+    const { loadAssignmentsClassList } = this.props
     const { pageNo, filterStatus } = this.state
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
@@ -145,9 +134,6 @@ class AssignmentAdvanced extends Component {
       userId,
       districtId: _districtId,
     })
-    if (isEmpty(assignmentsSummary)) {
-      loadAssignmentsSummary({ districtId })
-    }
     loadAssignmentsClassList({
       districtId,
       testId,
@@ -351,9 +337,7 @@ class AssignmentAdvanced extends Component {
     const { filterStatus, isHeaderAction, openPrintModal, pageNo } = this.state
     const {
       classList,
-      assignmentsSummary,
       match,
-      history,
       error,
       toggleReleaseGradePopUp,
       isShowReleaseSettingsPopup,
@@ -366,17 +350,14 @@ class AssignmentAdvanced extends Component {
       bulkDownloadGradesAndResponsesRequest,
       toggleDeleteAssignmentModal,
       location,
-      userId,
       test,
       isLoadingAssignments,
       bulkActionStatus,
       userRole,
-      userClassList,
       userSchoolsList,
       authorAssignmentsState = {},
       assignmentTestList,
       isPreviewModalVisible,
-      isDemoPlayground = false,
     } = this.props
     const {
       assignmentStatusCounts: { notOpen, inProgress, inGrading, done },
@@ -401,9 +382,7 @@ class AssignmentAdvanced extends Component {
     }
     const { testId } = match.params
     const assingment =
-      find(assignmentsSummary, (item) => item.testId === testId) ||
-      find(assignmentTestList, (item) => item.testId === testId) ||
-      {}
+      find(assignmentTestList, (item) => item.testId === testId) || test || {}
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -433,35 +412,6 @@ class AssignmentAdvanced extends Component {
           title={assingment.title || 'Loading...'}
           titleWidth="1120px"
           hasButton={false}
-          renderExtra={() => (
-            <Dropdown
-              overlay={ActionMenu({
-                onOpenReleaseScoreSettings: this.onOpenReleaseScoreSettings,
-                row: assingment,
-                history,
-                showPreviewModal: this.toggleTestPreviewModal,
-                toggleEditModal: this.onEnableEdit,
-                canEdit: canEditTest(test, userId),
-                userRole,
-                userId,
-                toggleDeleteModal: () => {
-                  this.setState({ isHeaderAction: true })
-                  toggleDeleteAssignmentModal(true)
-                },
-                userClassList,
-                togglePrintModal: this.togglePrintModal,
-                assignmentTest: assingment,
-                isDemoPlaygroundUser: isDemoPlayground,
-              })}
-              placement="bottomLeft"
-              trigger={['hover']}
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            >
-              <BtnAction>
-                <IconMoreVertical />
-              </BtnAction>
-            </Dropdown>
-          )}
         />
         <Container>
           <StyledFlexContainer justifyContent="space-between">
@@ -473,7 +423,7 @@ class AssignmentAdvanced extends Component {
               /&nbsp;
               <Anchor>{assingment.title}</Anchor>
             </PaginationInfo>
-            {this.renderBreadcrumbs(assingment, history)}
+            {this.renderBreadcrumbs()}
           </StyledFlexContainer>
           <TableWrapper>
             <StyledCard>
@@ -525,8 +475,6 @@ class AssignmentAdvanced extends Component {
 AssignmentAdvanced.propTypes = {
   match: PropTypes.object.isRequired,
   loadAssignmentsClassList: PropTypes.func.isRequired,
-  loadAssignmentsSummary: PropTypes.func.isRequired,
-  assignmentsSummary: PropTypes.array.isRequired,
   classList: PropTypes.array.isRequired,
   history: PropTypes.object.isRequired,
 }
@@ -537,7 +485,6 @@ const enhance = compose(
   withNamespaces('header'),
   connect(
     (state) => ({
-      assignmentsSummary: getAssignmentsSummary(state),
       isShowReleaseSettingsPopup: getToggleReleaseGradeStateSelector(state),
       error: get(state, 'test.error', false),
       emailVerified: getEmailVerified(state),
@@ -564,7 +511,6 @@ const enhance = compose(
       setReleaseScore: releaseScoreAction,
       toggleReleaseGradePopUp: toggleReleaseScoreSettingsAction,
       loadAssignmentsClassList: receiveAssignmentClassList,
-      loadAssignmentsSummary: receiveAssignmentsSummaryAction,
       bulkOpenAssignmentRequest: bulkOpenAssignmentAction,
       bulkCloseAssignmentRequest: bulkCloseAssignmentAction,
       bulkPauseAssignmentRequest: bulkPauseAssignmentAction,

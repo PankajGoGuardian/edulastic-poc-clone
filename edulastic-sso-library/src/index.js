@@ -23,18 +23,18 @@ class EdulasticLogin {
   }
 
   loginToEdulastic() {
-    this.getSignedData.then(
-      function (response) {
+    this.getSignedData().then(
+      (response) => {
         fetch(this.tokenProvider, {
           method: 'POST',
           headers: { ...this.edulasticHeaders },
           body: JSON.stringify(response),
         })
-          .then((res) => res.body)
+          .then((res) => res.json())
           .then((data) => {
             const result = data.result
             if (result && result.authToken) {
-              const url = `${this.redirectUrlBase}?token=${result.authToken}?userId=${result.id}?role=${result.role}`
+              const url = `${this.redirectUrlBase}?token=${result.authToken}&userId=${result.id}&role=${result.role}`
               window.location.href = url
             }
           })

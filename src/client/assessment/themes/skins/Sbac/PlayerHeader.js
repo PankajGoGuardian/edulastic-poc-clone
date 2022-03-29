@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -47,7 +47,6 @@ import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
-import { changeDataToPreferredLanguage } from '../../../utils/question'
 
 const {
   playerSkin: { sbac },
@@ -96,23 +95,10 @@ const PlayerHeader = ({
   bookmarks = [],
   defaultAP,
   t,
-  utaPreferredLanguage,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
   }, [])
-
-  const data = useMemo(() => {
-    let question = items[currentItem]?.data?.questions[0]
-    if (question) {
-      question = changeDataToPreferredLanguage(
-        question,
-        utaPreferredLanguage,
-        true
-      )
-    }
-    return question
-  }, [items, currentItem, utaPreferredLanguage])
 
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed

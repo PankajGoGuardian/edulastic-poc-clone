@@ -249,8 +249,8 @@ const stateConfig = {
     folders: true,
     notes: true,
     Slider: true,
-    // 'Implicit Plotting': true,
-    // 'Inequality Plotting': true,
+    plotInequalities: false,
+    plotImplicits: false,
   },
   utah: {
     ...standard,

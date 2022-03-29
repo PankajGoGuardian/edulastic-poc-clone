@@ -57,6 +57,8 @@ const stateConfig = {
     qwertyKeyboard: true,
     degreeMode: false,
     decimalToFraction: true,
+    plotInequalities: false,
+    plotImplicits: false,
   },
   connecticut: { ...standard },
   delaware: {

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { get, isEqual } from 'lodash'
+import { get, isEqual, escapeRegExp } from 'lodash'
 import { connect } from 'react-redux'
 import { Icon, Tooltip } from 'antd'
 import { themeColor } from '@edulastic/colors'
@@ -57,7 +57,9 @@ const CollectionsTable = ({
   useEffect(() => {
     if (searchValue) {
       const filteredCollections = collectionList.filter((c) => {
-        const isPresent = c.name.search(new RegExp(searchValue, 'i'))
+        const isPresent = c.name.search(
+          new RegExp(escapeRegExp(searchValue), 'i')
+        )
         if (isPresent < 0) return false
         return true
       })

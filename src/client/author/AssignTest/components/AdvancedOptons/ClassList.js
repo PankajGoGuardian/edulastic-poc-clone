@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
+import { SelectInputStyled, SelectWithCopyPaste } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { test as testConst } from '@edulastic/constants'
@@ -413,16 +413,20 @@ class ClassList extends React.Component {
                 </FeaturesSwitch>
               )}
             </div>
-            <SelectInputStyled
+            <SelectWithCopyPaste
               data-cy="schoolSelect"
               mode="multiple"
               placeholder="All School"
               showSearch
               filterOption={(input, option) =>
                 option.props.children
-                  .toLowerCase()
+                  ?.toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0 ||
+                option.props.value
+                  ?.toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
+              searchData={schools}
               onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
               tagsEllipsis
@@ -432,7 +436,7 @@ class ClassList extends React.Component {
                   {name}
                 </Select.Option>
               ))}
-            </SelectInputStyled>
+            </SelectWithCopyPaste>
           </StyledRowLabel>
 
           <StyledRowLabel>

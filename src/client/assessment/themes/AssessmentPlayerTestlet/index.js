@@ -195,6 +195,7 @@ export default connect(
     currentAssignmentTime: state.test?.currentAssignmentTime,
     savingResponse: state?.test?.savingResponse,
     stopTimerFlag: state.test?.stopTimerFlag,
+    isOffline: state?.ui?.isOffline,
   }),
   {
     checkAnswer: checkAnswerEvaluation,

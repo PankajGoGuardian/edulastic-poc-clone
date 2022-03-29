@@ -1159,6 +1159,10 @@
     "message": "Failed saving the Answer",
     "description": ""
   },
+  "failedSavingAnswerDueToNoInternet": {
+    "message": "Your internet connection is out. Please check it before proceeding…",
+    "description": ""
+  },
   "failedLoadingAnswer": {
     "message": "Failed loading the Answer",
     "description": ""

@@ -1,19 +1,31 @@
 import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import styled, { keyframes } from 'styled-components'
+import { setNetworkOfflineAction } from '../../../../src/client/student/Sidebar/ducks'
 
-const OfflineNotifier = () => {
-  const [isOffline, setOffline] = useState(false)
+const OfflineNotifier = ({ isOffline, setOffline }) => {
   const [isBackOnline, setIsBackOnline] = useState(false)
 
   useEffect(() => {
-    window.addEventListener('offline', () => setOffline(true))
-    window.addEventListener('online', () => {
+    function offline() {
+      setOffline(true)
+    }
+
+    function online() {
       setIsBackOnline(true)
       setTimeout(() => {
         setOffline(false)
         setIsBackOnline(false)
       }, 2000)
-    })
+    }
+
+    window.addEventListener('offline', offline)
+    window.addEventListener('online', online)
+
+    return () => {
+      window.removeEventListener('offline', offline)
+      window.removeEventListener('online', online)
+    }
   }, [])
 
   return isOffline ? (
@@ -23,8 +35,8 @@ const OfflineNotifier = () => {
       <NoInternetAlert>
         <div>No Internet Connection</div>
         <Spinner>
-          {[...new Array(12)].map((o) => (
-            <div />
+          {[...new Array(12)].map((o, i) => (
+            <div key={i} />
           ))}
         </Spinner>
       </NoInternetAlert>
@@ -32,7 +44,14 @@ const OfflineNotifier = () => {
   ) : null
 }
 
-export default OfflineNotifier
+export default connect(
+  (state) => ({
+    isOffline: state?.ui?.isOffline,
+  }),
+  {
+    setOffline: setNetworkOfflineAction,
+  }
+)(OfflineNotifier)
 
 const keyFrameExampleOne = keyframes`
   0% {

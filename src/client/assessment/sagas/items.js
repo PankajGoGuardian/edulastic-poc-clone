@@ -436,9 +436,13 @@ export function* saveUserResponse({ payload }) {
       yield put(push('/home/assignments'))
       notification({ msg: err.response.data })
     } else {
-      notification({ messageKey: 'failedSavingAnswer' })
+      const isOffline = yield select(({ ui }) => ui?.isOffline)
+      if (isOffline) {
+        notification({ messageKey: 'failedSavingAnswerDueToNoInternet' })
+      } else {
+        notification({ messageKey: 'failedSavingAnswer' })
+      }
     }
-    // yield call(message.error, "Failed saving the Answer");
   } finally {
     yield put({
       type: SET_SAVE_USER_RESPONSE,

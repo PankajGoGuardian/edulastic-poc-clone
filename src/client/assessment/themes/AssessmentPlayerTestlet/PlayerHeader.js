@@ -33,10 +33,12 @@ const PlayerHeader = ({
   previewPlayer,
   hasSubmitButton,
   savingResponse,
+  isOffline,
 }) => {
   let buttonText = 'Next'
   let showButton = true
   const disableButton =
+    isOffline ||
     savingResponse ||
     (!unlockNext && currentPage > 1 && currentPage < dropdownOptions?.length)
 

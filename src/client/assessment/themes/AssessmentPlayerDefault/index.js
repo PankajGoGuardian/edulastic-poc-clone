@@ -456,8 +456,8 @@ class AssessmentPlayerDefault extends React.Component {
     const showSettingIcon =
       windowWidth < IPAD_LANDSCAPE_WIDTH ||
       isZoomGreator('md', themeToPass?.zoomLevel) ||
-      (zoomLevel >= '1.75' && windowWidth < MEDIUM_DESKTOP_WIDTH) ||
-      (zoomLevel >= '1.75' &&
+      (zoomLevel >= '1.5' && windowWidth < MEDIUM_DESKTOP_WIDTH) ||
+      (zoomLevel >= '1.5' &&
         windowWidth < LARGE_DESKTOP_WIDTH &&
         settings.maxAnswerChecks > 0)
     let headerZoom = 1

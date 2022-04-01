@@ -175,15 +175,20 @@ const Header = ({
         {currentTab === 'class' && (
           <>
             {!isPlayground && enableCleverSync && (
-              <EduButton
-                isBlue
-                data-cy="syncClever"
-                isGhost
+              <AuthorCompleteSignupButton
+                renderButton={(handleClick) => (
+                  <EduButton 
+                    isGhost 
+                    isBlue 
+                    onClick={handleClick}
+                    data-cy="syncClever"
+                  >
+                    <IconClever width={18} height={18} />
+                    <span>SYNC NOW WITH CLEVER</span>
+                  </EduButton>
+                )}
                 onClick={() => setShowCleverSyncModal(true)}
-              >
-                <IconClever width={18} height={18} />
-                <span>SYNC NOW WITH CLEVER</span>
-              </EduButton>
+              />
             )}
             {!isPlayground &&
               googleAllowedInstitutions?.length > 0 &&

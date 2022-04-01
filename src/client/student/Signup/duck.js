@@ -483,7 +483,7 @@ function* joinSchoolSaga({ payload = {} }) {
   }
 }
 
-function* updateUserSignupStateSaga({ payload }) {
+function* updateUserSignupStateSaga({ payload = {} } = {}) {
   try {
     const user = yield select(getUser)
     const districtId = yield select(getUserOrgId)

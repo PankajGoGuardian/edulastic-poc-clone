@@ -43,8 +43,11 @@ import Tags from '../../../src/components/common/Tags'
 import {
   setSearchTermsFilterAction,
   setExcludeSchoolsAction,
+  setNoSchoolIdentifiedAction,
+  getNoSchoolFoundSelector,
 } from '../../../TestPage/components/Assign/ducks'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import NoDataIdentified from '../Container/NoDataIdentified'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -93,6 +96,7 @@ class ClassList extends React.Component {
         tags: [],
       },
       filterClassIds: [],
+      showNoSchoolIdentifiedModal: false,
     }
   }
 
@@ -197,10 +201,12 @@ class ClassList extends React.Component {
   }
 
   changeFilter = (key, value) => {
+    const { setNoSchoolIdentified } = this.props
     const { searchTerms } = this.state
     searchTerms[key] =
       key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
     this.setState({ searchTerms }, this.loadClassList)
+    if (key === 'institutionIds') setNoSchoolIdentified({})
   }
 
   handleClassTypeFilter = (key) => {
@@ -236,6 +242,11 @@ class ClassList extends React.Component {
     if (filterClassIds.length) {
       this.setState({ filterClassIds: filterclassList })
     }
+  }
+
+  setNoSchoolFound = (noDataFound) => {
+    const { setNoSchoolIdentified } = this.props
+    setNoSchoolIdentified(noDataFound)
   }
 
   handleClassSelectFromDropDown = (value) => {
@@ -276,8 +287,14 @@ class ClassList extends React.Component {
       isCoursesLoading,
       setExcludeSchools,
       excludeSchools,
+      noSchoolFound,
     } = this.props
-    const { searchTerms, classType, filterClassIds } = this.state
+    const {
+      searchTerms,
+      classType,
+      filterClassIds,
+      showNoSchoolIdentifiedModal,
+    } = this.state
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -397,6 +414,24 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             <div>
               School{' '}
+              {!isEmpty(noSchoolFound) && (
+                <a
+                  onClick={() => {
+                    this.setState({ showNoSchoolIdentifiedModal: true })
+                  }}
+                >
+                  ({noSchoolFound?.total - noSchoolFound?.data?.length}/
+                  {noSchoolFound.total} identified)
+                </a>
+              )}
+              {showNoSchoolIdentifiedModal && (
+                <NoDataIdentified
+                  closeModal={() => {
+                    this.setState({ showNoSchoolIdentifiedModal: false })
+                  }}
+                  noDataFound={noSchoolFound}
+                />
+              )}
               {!isPlaylistModule && (
                 <FeaturesSwitch
                   inputFeatures="canBulkAssign"
@@ -430,6 +465,7 @@ class ClassList extends React.Component {
               onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
               tagsEllipsis
+              setNoDataFound={this.setNoSchoolFound}
             >
               {schools.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
@@ -632,6 +668,7 @@ const enhance = compose(
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
       excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
+      noSchoolFound: getNoSchoolFoundSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,
@@ -640,6 +677,7 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       setSearchTermsFilter: setSearchTermsFilterAction,
       setExcludeSchools: setExcludeSchoolsAction,
+      setNoSchoolIdentified: setNoSchoolIdentifiedAction,
     }
   )
 )

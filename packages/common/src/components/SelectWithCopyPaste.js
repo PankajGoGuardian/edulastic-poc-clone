@@ -8,7 +8,7 @@ const SelectWithCopyPaste = ({
   value,
   onChange,
   mode,
-  setNoDataFound,
+  setNoDataFound = undefined,
   ...props
 }) => {
   const searchAndApply = debounce((searchValue) => {
@@ -60,9 +60,11 @@ const SelectWithCopyPaste = ({
         }
         onChange(uniqDataIds)
 
-        if (!isEmpty(noDataFound))
-          setNoDataFound({ data: noDataFound, total: searchValues.length })
-        else setNoDataFound({})
+        if (setNoDataFound) {
+          if (!isEmpty(noDataFound))
+            setNoDataFound({ data: noDataFound, total: searchValues.length })
+          else setNoDataFound({})
+        }
       }
     }
   }, 500)

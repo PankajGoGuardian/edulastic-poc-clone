@@ -45,6 +45,7 @@ const MAX_SIZE = 2 * 1024 * 1024 // 2 MB
 // }
 const ReferenceMaterial = ({
   owner,
+  premium,
   isEditable,
   isSmallSize,
   setTestData,
@@ -110,10 +111,10 @@ const ReferenceMaterial = ({
     <SettingContainer>
       <Title>
         <span>
-          Reference Material <DollarPremiumSymbol premium />
+          Reference Material <DollarPremiumSymbol premium={premium} />
         </span>
         <EduSwitchStyled
-          disabled={!owner || !isEditable}
+          disabled={!owner || !isEditable || !premium}
           checked={enableUpload}
           data-cy="assignment-referenceDocAttributes-switch"
           onChange={updateReferenceMaterial}
@@ -125,7 +126,7 @@ const ReferenceMaterial = ({
           constant value sheets etc to help students in solving the questions.
         </Description>
       </Body>
-      {!hasReference && enableUpload && (
+      {!hasReference && enableUpload && premium && (
         <FlexContainer justifyContent="flex-start" alignItems="center">
           <EduButton height="28px" mr="24px" onClick={handleChooseFile}>
             UPLOAD FILE

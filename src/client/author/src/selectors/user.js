@@ -549,3 +549,8 @@ export const isEtsDistrictSelector = createSelector(
   getUserOrgId,
   (districtId) => districtId === etsDistrict
 )
+
+export const allowReferenceMaterialSelector = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'allowReferenceMaterial', false)
+)

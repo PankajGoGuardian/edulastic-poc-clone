@@ -177,7 +177,7 @@ const ToolBar = ({
   handleMagnifier,
   openReferenceModal,
   isShowReferenceModal,
-  hasReferenceDoc,
+  allowReferenceMaterial,
   enableMagnifier,
   toggleUserWorkUploadModal,
   changeTool,
@@ -269,7 +269,7 @@ const ToolBar = ({
           onClick={toggleUserWorkUploadModal}
         />
       )}
-      {hasReferenceDoc && (
+      {allowReferenceMaterial && (
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Reference Sheet"

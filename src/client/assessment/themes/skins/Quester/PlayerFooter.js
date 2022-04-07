@@ -6,6 +6,7 @@ import {
   IconMagnify,
   IconQuester,
   IconCheck,
+  IconReferenceSheet,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -64,6 +65,8 @@ const PlayerFooter = ({
   checkAnswer,
   isPremiumContentWithoutAccess = false,
   passage,
+  openReferenceModal,
+  allowReferenceMaterial,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -264,6 +267,25 @@ const PlayerFooter = ({
           </IconWrapper>
 
           <span>{t('common.test.uploadWork')}</span>
+        </ActionContainer>
+      )}
+
+      {allowReferenceMaterial && (
+        <ActionContainer
+          hoverEffect
+          onClick={openReferenceModal}
+          title={t('common.test.referenceSheet')}
+          data-cy="referenceSheet"
+          disabled={isPremiumContentWithoutAccess}
+        >
+          <IconWrapper>
+            <IconReferenceSheet
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.referenceSheet')}</span>
         </ActionContainer>
       )}
 

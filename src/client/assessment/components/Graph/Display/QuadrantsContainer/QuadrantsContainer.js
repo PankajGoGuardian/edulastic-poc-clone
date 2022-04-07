@@ -446,7 +446,8 @@ class GraphContainer extends PureComponent {
       if (
         !isEqual(elements, prevProps.elements) ||
         !isEqual(evaluation, prevProps.evaluation) ||
-        !isEqual(canvas, prevProps.canvas)
+        !isEqual(canvas, prevProps.canvas) ||
+        disableResponse !== prevProps.disableResponse
       ) {
         this.setElementsToGraph(prevProps, refreshElements)
       }

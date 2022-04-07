@@ -36,7 +36,11 @@ import { redirectPolicySelector } from '../selectors/test'
 import { getServerTs } from '../../student/utils'
 import { Fscreen } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
-import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
+import {
+  scratchpadDomRectSelector,
+  getScratchPadUpdatedSelector,
+} from '../../common/components/Scratchpad/duck'
+import { resetAnnotationUpdateAction } from '../actions/userWork'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -303,6 +307,9 @@ export function* saveUserResponse({ payload }) {
     if (isDocBased) {
       annotationsUsed = !isEmpty(_userWork.freeNotesStd)
       annotationsData.freeNotesStd = _userWork.freeNotesStd
+      annotationsData.freeNotesUpdated = yield select(
+        ({ userWork }) => userWork.present.freeNotesUpdated || false
+      )
     }
 
     let userWorkData = { ..._userWork, scratchpad: false }
@@ -319,7 +326,7 @@ export function* saveUserResponse({ payload }) {
     if (scratchPadUsed) {
       const dimensions = yield select(scratchpadDomRectSelector)
       userWorkData = { ...userWorkData, scratchpad: true, dimensions }
-      shouldSaveOrUpdateAttachment = true
+      shouldSaveOrUpdateAttachment = yield select(getScratchPadUpdatedSelector)
     }
 
     activity.userWork = userWorkData
@@ -366,7 +373,7 @@ export function* saveUserResponse({ payload }) {
       }
     }
 
-    if (isDocBased && annotationsUsed) {
+    if (isDocBased && annotationsUsed && annotationsData.freeNotesUpdated) {
       const file = convertStringToFile(
         JSON.stringify(annotationsData.freeNotesStd),
         `doc-annotations-${userTestActivityId}_${userId},text`
@@ -380,6 +387,7 @@ export function* saveUserResponse({ payload }) {
         type: 'doc-annotations',
       })
       yield call(attachmentApi.updateAttachment, { update, filter })
+      yield put(resetAnnotationUpdateAction(false))
     }
 
     if (passageId) {

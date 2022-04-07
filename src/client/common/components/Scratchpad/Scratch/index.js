@@ -79,11 +79,13 @@ const Scratchpad = ({
   conatinerWidth,
   dimensionsPercent,
   isDropDownInUse,
+  scratchpadUpdated,
 }) => {
   const [zwibbler, setZwibbler] = useState()
   const [clipBoard, updateClipBoard] = useState()
   const [showMathModal, setShowMathModal] = useState(false)
   const [prevItemIndex, setPrevItemIndex] = useState(null)
+  const isScratchpadUpdated = useRef()
   const isDeleteMode = useRef()
   const zwibblerContainer = useRef()
   const zwibblerRef = useRef()
@@ -326,9 +328,13 @@ const Scratchpad = ({
         if (newZwibbler.dirty()) {
           saveData(newZwibbler.save('zwibbler3'))
         }
+        const spUpdated =
+          scratchpadUpdated || newZwibbler.canUndo() || newZwibbler.canRedo()
+        isScratchpadUpdated.current = spUpdated
         toggleButtons({
           canRedo: newZwibbler.canRedo(),
           canUndo: newZwibbler.canUndo(),
+          scratchpadUpdated: spUpdated,
         })
       })
       newZwibbler.on('paste', () => {
@@ -348,14 +354,14 @@ const Scratchpad = ({
     }
     return () => {
       setZwibbler(null)
-      resetScratchpad()
+      resetScratchpad(isScratchpadUpdated.current)
     }
   }, [])
 
   useEffect(() => {
     if (clearClicked && zwibbler) {
       zwibbler.newDocument()
-      resetScratchpad()
+      resetScratchpad(isScratchpadUpdated.current)
     }
   }, [clearClicked])
 
@@ -452,6 +458,7 @@ const EnhancedComponent = compose(
       editMode: state.scratchpad.editMode,
       hideData: state.scratchpad.hideData,
       dimensionsPercent: state.scratchpad.dimensionsPercent,
+      scratchpadUpdated: state.scratchpad.scratchpadUpdated,
       isDropDownInUse: state.ui.isDropDownInUse,
     }),
     {

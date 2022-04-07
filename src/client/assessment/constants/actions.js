@@ -104,6 +104,7 @@ export const LOAD_SCRATCH_PAD = '[userWork] load scratchPad data'
 export const LOAD_SCRATCH_PAD_SAVED =
   '[userWork] load scratchPad data maintaining state'
 export const CLEAR_USER_WORK = '[userWork] clear userWork'
+export const RESET_ANNOTATIONS_UPDATE = '[userWork] reset annotation update'
 export const SAVE_HINT_USAGE = '[hintUsage] save hintUsage'
 export const CLEAR_HINT_USAGE = '[hintUsage] clear hintUsage'
 

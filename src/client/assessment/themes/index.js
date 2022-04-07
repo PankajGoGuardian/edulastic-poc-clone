@@ -82,6 +82,7 @@ import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
+import { resetScratchPadDataAction } from '../../common/components/Scratchpad/duck'
 
 const { playerSkinValues } = testConstants
 
@@ -585,6 +586,7 @@ const AssessmentContainer = ({
   showUserTTS,
   isTestPreviewModalVisible,
   testKeypad,
+  resetScratchpad,
   ...restProps
 }) => {
   const _questionsById = useMemo(() => {
@@ -753,6 +755,7 @@ const AssessmentContainer = ({
     lastTime.current = Date.now()
     window.localStorage.assessmentLastTime = lastTime.current
     gotoItem(currentItem)
+    resetScratchpad(false)
     setCheckAnswerInProgress(false)
   }, [currentItem])
 
@@ -1549,6 +1552,7 @@ const enhance = compose(
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       loadTest: loadTestAction,
+      resetScratchpad: resetScratchPadDataAction,
     }
   )
 )

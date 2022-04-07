@@ -45,6 +45,7 @@ const initialState = {
   hideData: false,
   scratchpadRect: {},
   dimensionsPercent: 100,
+  scratchpadUpdated: false,
 }
 
 export function scratchpad(state = initialState, { type, payload }) {
@@ -82,7 +83,11 @@ export function scratchpad(state = initialState, { type, payload }) {
         dimensionsPercent: state.dimensionsPercent + payload,
       }
     case RESET_SCRATCHPAD:
-      return { ...initialState, scratchpadRect: state.scratchpadRect }
+      return {
+        ...initialState,
+        scratchpadRect: state.scratchpadRect,
+        scratchpadUpdated: payload,
+      }
     default:
       return state
   }
@@ -93,4 +98,9 @@ export const scratchpadStateSelector = (state) => state.scratchpad
 export const scratchpadDomRectSelector = createSelector(
   scratchpadStateSelector,
   (state) => state.scratchpadRect
+)
+
+export const getScratchPadUpdatedSelector = createSelector(
+  scratchpadStateSelector,
+  (state) => state.scratchpadUpdated || false
 )

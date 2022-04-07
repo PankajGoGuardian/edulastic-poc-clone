@@ -3,7 +3,7 @@ import { helpers } from '@edulastic/common'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { setTestDataAction, setUndoStackAction } from '../../../TestPage/ducks'
 import {
-  resetAnnotationUpdateAction,
+  setAnnotationUpdateAction,
   saveUserWorkAction,
 } from '../../../../assessment/actions/userWork'
 import { getStore } from '../../../../configureStore'
@@ -53,7 +53,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
   _updateStore(documentId, annotations = []) {
     if (this.store && this.store.getState) {
       const state = this.store.getState()
-      this.store.dispatch(resetAnnotationUpdateAction(true))
+      this.store.dispatch(setAnnotationUpdateAction(true))
       if (!this.reportMode && !this.testMode) {
         const questionAnnotations = (
           state.tests?.entity?.annotations ||

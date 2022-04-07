@@ -85,7 +85,6 @@ const Scratchpad = ({
   const [clipBoard, updateClipBoard] = useState()
   const [showMathModal, setShowMathModal] = useState(false)
   const [prevItemIndex, setPrevItemIndex] = useState(null)
-  const isScratchpadUpdated = useRef()
   const isDeleteMode = useRef()
   const zwibblerContainer = useRef()
   const zwibblerRef = useRef()
@@ -330,7 +329,6 @@ const Scratchpad = ({
         }
         const spUpdated =
           scratchpadUpdated || newZwibbler.canUndo() || newZwibbler.canRedo()
-        isScratchpadUpdated.current = spUpdated
         toggleButtons({
           canRedo: newZwibbler.canRedo(),
           canUndo: newZwibbler.canUndo(),
@@ -354,14 +352,14 @@ const Scratchpad = ({
     }
     return () => {
       setZwibbler(null)
-      resetScratchpad(isScratchpadUpdated.current)
+      resetScratchpad()
     }
   }, [])
 
   useEffect(() => {
     if (clearClicked && zwibbler) {
       zwibbler.newDocument()
-      resetScratchpad(isScratchpadUpdated.current)
+      resetScratchpad()
     }
   }, [clearClicked])
 

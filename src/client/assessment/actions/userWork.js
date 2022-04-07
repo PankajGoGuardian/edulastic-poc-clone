@@ -2,7 +2,7 @@ import {
   SAVE_USER_WORK,
   LOAD_SCRATCH_PAD,
   CLEAR_USER_WORK,
-  RESET_ANNOTATIONS_UPDATE,
+  SET_ANNOTATIONS_UPDATE,
 } from '../constants/actions'
 
 export const saveUserWorkAction = (payload) => ({
@@ -20,7 +20,7 @@ export const clearUserWorkAction = (payload) => ({
   payload,
 })
 
-export const resetAnnotationUpdateAction = (payload) => ({
-  type: RESET_ANNOTATIONS_UPDATE,
+export const setAnnotationUpdateAction = (payload) => ({
+  type: SET_ANNOTATIONS_UPDATE,
   payload,
 })

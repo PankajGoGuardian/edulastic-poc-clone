@@ -4,6 +4,7 @@ import max from 'lodash/max'
 
 const UPDATE_SCRATCHPAD = '[scratchpad] update scratchpad data'
 const RESET_SCRATCHPAD = '[scratchpad] reset scratchpad data'
+const SET_SCRATCHPAD_UPDATED = '[scratchpad] set scratchpad updated flag'
 const SET_SELECTED_NODES = '[scratchpad] set selected nodes'
 const TOGGLE_BUTTONS = '[scratchpad] toggle buttons'
 const UPDATE_EDIT_MODE = '[scratchpad] update scratchpad edit mode'
@@ -17,6 +18,7 @@ const ADJUST_SCRATCHPAD_DIMENSIONS =
 
 export const updateScratchpadAction = createAction(UPDATE_SCRATCHPAD)
 export const resetScratchPadDataAction = createAction(RESET_SCRATCHPAD)
+export const setScratchPadUpdatedAction = createAction(SET_SCRATCHPAD_UPDATED)
 export const setSelectedNodesAction = createAction(SET_SELECTED_NODES)
 export const toggleButtonsAction = createAction(TOGGLE_BUTTONS)
 export const updateEditModeAction = createAction(UPDATE_EDIT_MODE)
@@ -83,6 +85,12 @@ export function scratchpad(state = initialState, { type, payload }) {
         dimensionsPercent: state.dimensionsPercent + payload,
       }
     case RESET_SCRATCHPAD:
+      return {
+        ...initialState,
+        scratchpadRect: state.scratchpadRect,
+        scratchpadUpdated: state.scratchpadUpdated,
+      }
+    case SET_SCRATCHPAD_UPDATED:
       return {
         ...initialState,
         scratchpadRect: state.scratchpadRect,

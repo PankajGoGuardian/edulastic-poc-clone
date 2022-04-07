@@ -40,7 +40,7 @@ import {
   scratchpadDomRectSelector,
   getScratchPadUpdatedSelector,
 } from '../../common/components/Scratchpad/duck'
-import { resetAnnotationUpdateAction } from '../actions/userWork'
+import { setAnnotationUpdateAction } from '../actions/userWork'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -387,7 +387,7 @@ export function* saveUserResponse({ payload }) {
         type: 'doc-annotations',
       })
       yield call(attachmentApi.updateAttachment, { update, filter })
-      yield put(resetAnnotationUpdateAction(false))
+      yield put(setAnnotationUpdateAction(false))
     }
 
     if (passageId) {

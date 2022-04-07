@@ -7,6 +7,7 @@ import { Pointer } from '../../../../../styled/Pointer'
 import { Point } from '../../../../../styled/Point'
 import { Triangle } from '../../../../../styled/Triangle'
 import { IconWrapper } from '../styled/IconWrapper'
+import { TextContainer } from '../styled/TextContainer'
 import PopoverContent from '../../PopoverContent'
 import { getEvalautionColor } from '../../../../../utils/evaluation'
 import { CheckBox } from '../styled/CheckBox'
@@ -81,9 +82,14 @@ const Response = ({
           {indexStr}
         </span>
       )}
-      <div className="text">
+      <TextContainer
+        singleResponseBox={singleResponseBox}
+        checkAnswer={checkAnswer}
+        lessMinWidth={lessMinWidth}
+        className="text"
+      >
         <div className="clipText">{userAnswer}</div>
-      </div>
+      </TextContainer>
 
       <div className="icons">
         {hasAnswered && (

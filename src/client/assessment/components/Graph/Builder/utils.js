@@ -199,6 +199,8 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.EXPONENTIAL2:
     case CONSTANT.TOOLS.PIECEWISE_LINE:
     case CONSTANT.TOOLS.PARABOLA:
+    case CONSTANT.TOOLS.ROSE:
+    case CONSTANT.TOOLS.CARDIOID:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -490,7 +492,9 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.PARABOLA2 &&
       type !== CONSTANT.TOOLS.EXPONENTIAL2 &&
       type !== CONSTANT.TOOLS.PIECEWISE_LINE &&
-      type !== CONSTANT.TOOLS.PARABOLA
+      type !== CONSTANT.TOOLS.PARABOLA &&
+      type !== CONSTANT.TOOLS.ROSE &&
+      type !== CONSTANT.TOOLS.CARDIOID
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,

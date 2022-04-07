@@ -5,7 +5,6 @@ import {
   LOAD_SCRATCH_PAD,
   CLEAR_USER_WORK,
   LOAD_SCRATCH_PAD_SAVED,
-  SET_ANNOTATIONS_UPDATE,
 } from '../constants/actions'
 
 export const REQUEST_SCRATCH_PAD_SUCCESS = '[scratchpad] load success'
@@ -35,11 +34,6 @@ const userWork = (state = initialState, { type, payload }) => {
         [testItemId]: scratchPad,
       }
     }
-    case SET_ANNOTATIONS_UPDATE:
-      return {
-        ...state,
-        freeNotesUpdated: payload,
-      }
     case CLEAR_USER_WORK:
       return initialState
     default:
@@ -60,7 +54,6 @@ export default filterActions(
     LOAD_SCRATCH_PAD_SAVED,
     SAVE_USER_WORK,
     REQUEST_SCRATCH_PAD_SUCCESS,
-    SET_ANNOTATIONS_UPDATE,
     ...Object.values(ActionTypes),
   ]
 )

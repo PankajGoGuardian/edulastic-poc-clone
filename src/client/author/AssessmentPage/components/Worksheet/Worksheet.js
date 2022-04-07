@@ -51,6 +51,7 @@ import PDFAnnotationTools from '../PDFAnnotationTools'
 import AppConfig from '../../../../../app-config'
 import { isImagesBlockedByBrowser } from '../../../../common/utils/helpers'
 import { toggleImageBlockNotificationAction } from '../../../../student/Login/ducks'
+import { setScratchPadUpdatedAction } from '../../../../common/components/Scratchpad/duck'
 
 const swap = (array, i, j) => {
   const copy = array.slice()
@@ -618,6 +619,7 @@ class WorksheetComponent extends React.Component {
       undoUserWork,
       redoUserWork,
       stdAnnotations,
+      setScratchpadUpdated,
     } = this.props
     const {
       uploadModal,
@@ -670,6 +672,7 @@ class WorksheetComponent extends React.Component {
               redoAnnotationsOperation={redoAnnotationsOperation}
               undoUserWork={undoUserWork}
               redoUserWork={redoUserWork}
+              setScratchpadUpdated={setScratchpadUpdated}
             />
           </PDFAnnotationToolsWrapper>
         )}
@@ -930,6 +933,7 @@ const enhance = compose(
       undoAnnotationsOperation: undoAnnotationsAction,
       redoAnnotationsOperation: redoAnnotationsAction,
       toggleImageBlockNotification: toggleImageBlockNotificationAction,
+      setScratchpadUpdated: setScratchPadUpdatedAction,
     }
   )
 )

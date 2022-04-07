@@ -2,11 +2,9 @@ import { findIndex, uniqBy } from 'lodash'
 import { helpers } from '@edulastic/common'
 import { PDFJSAnnotate } from '@edulastic/ext-libs'
 import { setTestDataAction, setUndoStackAction } from '../../../TestPage/ducks'
-import {
-  setAnnotationUpdateAction,
-  saveUserWorkAction,
-} from '../../../../assessment/actions/userWork'
+import { saveUserWorkAction } from '../../../../assessment/actions/userWork'
 import { getStore } from '../../../../configureStore'
+import { setScratchPadUpdatedAction } from '../../../../common/components/Scratchpad/duck'
 
 export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
   constructor(testMode, reportMode, testItemId, annotations) {
@@ -53,7 +51,7 @@ export class PdfStoreAdapter extends PDFJSAnnotate.StoreAdapter {
   _updateStore(documentId, annotations = []) {
     if (this.store && this.store.getState) {
       const state = this.store.getState()
-      this.store.dispatch(setAnnotationUpdateAction(true))
+      this.store.dispatch(setScratchPadUpdatedAction(true))
       if (!this.reportMode && !this.testMode) {
         const questionAnnotations = (
           state.tests?.entity?.annotations ||

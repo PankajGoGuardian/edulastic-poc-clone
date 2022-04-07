@@ -24,12 +24,17 @@ const PDFAnnotationTools = ({
   isAnnotationsEmpty = false,
   undoUserWork,
   redoUserWork,
+  setScratchpadUpdated,
 }) => {
   const handleClick = (key) => {
     if (key === 'thumbnails') {
       setCurrentTool('')
       togglePdfThumbnails()
       return
+    }
+
+    if (setScratchpadUpdated && (key == 'undo' || key == 'redo')) {
+      setScratchpadUpdated(true)
     }
 
     if (key == 'undo') {

@@ -39,8 +39,8 @@ import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/Assignment
 import {
   scratchpadDomRectSelector,
   getScratchPadUpdatedSelector,
+  setScratchPadUpdatedAction,
 } from '../../common/components/Scratchpad/duck'
-import { setAnnotationUpdateAction } from '../actions/userWork'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -373,7 +373,8 @@ export function* saveUserResponse({ payload }) {
       }
     }
 
-    if (isDocBased && annotationsUsed && annotationsData.freeNotesUpdated) {
+    const annotationsUpdated = yield select(getScratchPadUpdatedSelector)
+    if (isDocBased && annotationsUsed && annotationsUpdated) {
       const file = convertStringToFile(
         JSON.stringify(annotationsData.freeNotesStd),
         `doc-annotations-${userTestActivityId}_${userId},text`
@@ -387,7 +388,7 @@ export function* saveUserResponse({ payload }) {
         type: 'doc-annotations',
       })
       yield call(attachmentApi.updateAttachment, { update, filter })
-      yield put(setAnnotationUpdateAction(false))
+      yield put(setScratchPadUpdatedAction(false))
     }
 
     if (passageId) {

@@ -56,7 +56,7 @@ class Uploader extends React.Component {
       <UploadWrapper>
         <Upload {...props}>
           <Container>
-            <ImageContainer>
+            <ImageContainer data-cy="imageContainer">
               {imageUrl ? (
                 <Image src={imageUrl} windowWidth={windowWidth} alt="test" />
               ) : (

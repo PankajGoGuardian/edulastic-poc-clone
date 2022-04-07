@@ -35,8 +35,6 @@ const CorrectAnswers = ({
   const hidingScoringBlock = useContext(PointBlockContext)
   const hidePoint = mixAndMatch && correctTab > 0
 
-  const hideAltScoring = hidingScoringBlock && correctTab > 0
-
   const updateScoreOnBlur = (score) => {
     if (score < 0) {
       return
@@ -68,7 +66,7 @@ const CorrectAnswers = ({
             correctTab={correctTab}
             validation={validation}
           />
-          {!hidePoint && !hideAltScoring && (
+          {!hidePoint && !hidingScoringBlock && (
             <PointBlock
               {...rest}
               correctAnsScore={validation?.validResponse?.score}

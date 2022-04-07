@@ -554,7 +554,9 @@ class Graph extends Component {
             >
               <QuestionLabelWrapper>
                 {showQuestionNumber && !flowLayout ? (
-                  <QuestionNumberLabel>{item.qLabel}</QuestionNumberLabel>
+                  <QuestionNumberLabel fontSize={fontSize}>
+                    {item.qLabel}
+                  </QuestionNumberLabel>
                 ) : null}
                 {item.qSubLabel && (
                   <QuestionSubLabel>({item.qSubLabel})</QuestionSubLabel>

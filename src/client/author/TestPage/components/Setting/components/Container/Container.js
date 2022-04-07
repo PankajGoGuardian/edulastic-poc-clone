@@ -59,6 +59,7 @@ import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
   isPublisherUserSelector,
+  allowReferenceMaterialSelector,
 } from '../../../../../src/selectors/user'
 import {
   Block,
@@ -90,7 +91,7 @@ import {
   StyledRow,
 } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
-// import ReferenceMaterial from './ReferenceMaterial'
+import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
 import { skinTypesOrder, showRubricToStudentsSetting } from '../../../../utils'
@@ -701,6 +702,7 @@ class Setting extends Component {
       showCancelButton,
       disableAnswerOnPaper,
       premium,
+      allowReferenceMaterial,
       districtPermissions = [],
       isAuthorPublisher,
       calculatorProvider,
@@ -754,7 +756,7 @@ class Setting extends Component {
       applyEBSR = false,
       enableSkipAlert = false,
       settingId: currentSettingsId = '',
-      // referenceDocAttributes,
+      referenceDocAttributes,
       showRubricToStudents = false,
       performanceBand: _performanceBand,
       standardGradingScale: _standardGradingScale,
@@ -1361,14 +1363,17 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {/* <Block id="reference-material" smallSize={isSmallSize}>
-                    <ReferenceMaterial
-                      owner={owner}
-                      isEditable={isEditable}
-                      isSmallSize={isSmallSize}
-                      referenceDocAttributes={referenceDocAttributes}
-                    />
-                  </Block> */}
+                  {allowReferenceMaterial && (
+                    <Block id="reference-material" smallSize={isSmallSize}>
+                      <ReferenceMaterial
+                        owner={owner}
+                        isEditable={isEditable}
+                        isSmallSize={isSmallSize}
+                        premium={premium}
+                        referenceDocAttributes={referenceDocAttributes}
+                      />
+                    </Block>
+                  )}
 
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>
@@ -2444,6 +2449,7 @@ const enhance = compose(
       districtPermissions:
         state?.user?.user?.orgData?.districts?.[0]?.districtPermissions,
       premium: state?.user?.user?.features?.premium,
+      allowReferenceMaterial: allowReferenceMaterialSelector(state),
       calculatorProvider: state?.user?.user?.features?.calculatorProvider,
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions

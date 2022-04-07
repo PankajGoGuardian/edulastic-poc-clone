@@ -63,6 +63,7 @@ const Display = ({
             className="__print_question-content-wrapper"
             flexDirection="column"
             alignItems="flex-start"
+            data-cy="question-content-wrapper"
           >
             {!fromSetAnswers && (
               <StyledStimulus

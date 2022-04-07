@@ -369,6 +369,7 @@ class AssessmentPlayerDefault extends React.Component {
       isTestDemoPlayer,
       canShowPlaybackOptionTTS,
       passage,
+      allowReferenceMaterial,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -575,7 +576,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             openReferenceModal={openReferenceModal}
             isShowReferenceModal={isShowReferenceModal}
-            hasReferenceDoc={!!referenceDocAttributes}
+            allowReferenceMaterial={allowReferenceMaterial}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}
@@ -718,7 +719,10 @@ class AssessmentPlayerDefault extends React.Component {
               cameraImageName={cameraImageName}
             />
             {isShowReferenceModal && referenceDocAttributes && (
-              <ReferenceDocModal attributes={referenceDocAttributes} />
+              <ReferenceDocModal
+                attributes={referenceDocAttributes}
+                playerSkinType={playerSkinType}
+              />
             )}
           </AssessmentPlayerSkinWrapper>
         </Container>

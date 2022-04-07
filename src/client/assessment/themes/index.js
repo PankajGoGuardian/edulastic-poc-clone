@@ -81,6 +81,7 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
+import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
 
 const { playerSkinValues } = testConstants
 
@@ -1513,6 +1514,7 @@ const enhance = compose(
       showMagnifier: state.test.showMagnifier,
       enableMagnifier: state.testPlayer.enableMagnifier,
       isShowReferenceModal: state.testPlayer.isShowReferenceModal,
+      allowReferenceMaterial: allowReferenceMaterialSelector(state),
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),

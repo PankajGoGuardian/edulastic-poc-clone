@@ -319,14 +319,13 @@ export function* saveUserResponse({ payload }) {
       userWorkData.docAnnotationsUsed = annotationsUsed
     }
 
-    const shouldSaveOrUpdateAttachment = yield select(
-      getScratchPadUpdatedSelector
-    )
+    let shouldSaveOrUpdateAttachment = false
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
     if (scratchPadUsed) {
       const dimensions = yield select(scratchpadDomRectSelector)
       userWorkData = { ...userWorkData, scratchpad: true, dimensions }
+      shouldSaveOrUpdateAttachment = yield select(getScratchPadUpdatedSelector)
     }
 
     activity.userWork = userWorkData
@@ -373,7 +372,8 @@ export function* saveUserResponse({ payload }) {
       }
     }
 
-    if (isDocBased && annotationsUsed && shouldSaveOrUpdateAttachment) {
+    const isAnnotationsUpdated = yield select(getScratchPadUpdatedSelector)
+    if (isDocBased && annotationsUsed && isAnnotationsUpdated) {
       const file = convertStringToFile(
         JSON.stringify(annotationsData.freeNotesStd),
         `doc-annotations-${userTestActivityId}_${userId},text`

@@ -5023,6 +5023,7 @@ const { themeColor } = require('@edulastic/colors')
             var canvasContext = canvas.getContext('2d', { alpha: false })
             var viewport = pdfPage.getViewport(scale, rotate)
             var transform = scalePage(pageNumber, viewport, canvasContext)
+            var annotateViewport = { ...viewport, rotation: 0 }
 
             // Render the page
             return Promise.all([
@@ -5033,7 +5034,7 @@ const { themeColor } = require('@edulastic/colors')
               }),
               _PDFJSAnnotate2.default.render(
                 svg,
-                viewport,
+                annotateViewport,
                 annotations,
                 authoringMode
               ),

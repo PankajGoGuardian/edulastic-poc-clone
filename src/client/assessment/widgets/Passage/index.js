@@ -17,6 +17,7 @@ import PassageView from './PassageView'
 import Details from './Details'
 
 import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
+import { setTextHighlightedAction } from '../../../common/components/Scratchpad/duck'
 
 const EmptyWrapper = styled.div``
 
@@ -44,6 +45,7 @@ const Passage = ({
   cleanSections,
   advancedAreOpen,
   flowLayout,
+  setTextHighlighted,
   ...restProps
 }) => {
   const Wrapper = smallSize ? EmptyWrapper : PassageWrapper
@@ -69,6 +71,7 @@ const Passage = ({
           item={itemForPreview}
           flowLayout={flowLayout}
           setQuestionData={setQuestionData}
+          setTextHighlighted={setTextHighlighted}
           {...restProps}
         />
       </Wrapper>
@@ -109,6 +112,7 @@ const enhance = compose(
       setQuestionData: setQuestionDataAction,
       saveUserWork: saveUserWorkAction,
       clearUserWork: clearUserWorkAction,
+      setTextHighlighted: setTextHighlightedAction,
     }
   )
 )

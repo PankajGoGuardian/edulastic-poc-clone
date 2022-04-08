@@ -40,6 +40,8 @@ import {
   scratchpadDomRectSelector,
   getScratchPadUpdatedSelector,
   setScratchPadUpdatedAction,
+  getTextHighlightedSelector,
+  setTextHighlightedAction,
 } from '../../common/components/Scratchpad/duck'
 
 const {
@@ -307,9 +309,6 @@ export function* saveUserResponse({ payload }) {
     if (isDocBased) {
       annotationsUsed = !isEmpty(_userWork.freeNotesStd)
       annotationsData.freeNotesStd = _userWork.freeNotesStd
-      annotationsData.freeNotesUpdated = yield select(
-        ({ userWork }) => userWork.present.freeNotesUpdated || false
-      )
     }
 
     let userWorkData = { ..._userWork, scratchpad: false }
@@ -320,13 +319,14 @@ export function* saveUserResponse({ payload }) {
       userWorkData.docAnnotationsUsed = annotationsUsed
     }
 
-    let shouldSaveOrUpdateAttachment = false
+    const shouldSaveOrUpdateAttachment = yield select(
+      getScratchPadUpdatedSelector
+    )
     const scratchPadUsed = !isEmpty(_userWork?.scratchpad)
 
     if (scratchPadUsed) {
       const dimensions = yield select(scratchpadDomRectSelector)
       userWorkData = { ...userWorkData, scratchpad: true, dimensions }
-      shouldSaveOrUpdateAttachment = yield select(getScratchPadUpdatedSelector)
     }
 
     activity.userWork = userWorkData
@@ -373,8 +373,7 @@ export function* saveUserResponse({ payload }) {
       }
     }
 
-    const annotationsUpdated = yield select(getScratchPadUpdatedSelector)
-    if (isDocBased && annotationsUsed && annotationsUpdated) {
+    if (isDocBased && annotationsUsed && shouldSaveOrUpdateAttachment) {
       const file = convertStringToFile(
         JSON.stringify(annotationsData.freeNotesStd),
         `doc-annotations-${userTestActivityId}_${userId},text`
@@ -395,7 +394,8 @@ export function* saveUserResponse({ payload }) {
       const highlights = yield select(
         ({ userWork }) => userWork.present[passageId]?.resourceId
       )
-      if (highlights) {
+      const isHighlightUpdated = yield select(getTextHighlightedSelector)
+      if (highlights && isHighlightUpdated) {
         const update = {
           data: { resourceId: highlights },
           referrerId: userTestActivityId,
@@ -410,6 +410,7 @@ export function* saveUserResponse({ payload }) {
           referrerId2: passageId,
         }
         yield call(attachmentApi.updateAttachment, { update, filter })
+        yield put(setTextHighlightedAction(false))
       }
     }
 

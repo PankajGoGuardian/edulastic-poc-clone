@@ -5,6 +5,7 @@ import max from 'lodash/max'
 const UPDATE_SCRATCHPAD = '[scratchpad] update scratchpad data'
 const RESET_SCRATCHPAD = '[scratchpad] reset scratchpad data'
 const SET_SCRATCHPAD_UPDATED = '[scratchpad] set scratchpad updated flag'
+const SET_TEXT_HIGHLIGHTED = '[scratchpad] set text highlighted in passage'
 const SET_SELECTED_NODES = '[scratchpad] set selected nodes'
 const TOGGLE_BUTTONS = '[scratchpad] toggle buttons'
 const UPDATE_EDIT_MODE = '[scratchpad] update scratchpad edit mode'
@@ -19,6 +20,7 @@ const ADJUST_SCRATCHPAD_DIMENSIONS =
 export const updateScratchpadAction = createAction(UPDATE_SCRATCHPAD)
 export const resetScratchPadDataAction = createAction(RESET_SCRATCHPAD)
 export const setScratchPadUpdatedAction = createAction(SET_SCRATCHPAD_UPDATED)
+export const setTextHighlightedAction = createAction(SET_TEXT_HIGHLIGHTED)
 export const setSelectedNodesAction = createAction(SET_SELECTED_NODES)
 export const toggleButtonsAction = createAction(TOGGLE_BUTTONS)
 export const updateEditModeAction = createAction(UPDATE_EDIT_MODE)
@@ -48,6 +50,7 @@ const initialState = {
   scratchpadRect: {},
   dimensionsPercent: 100,
   scratchpadUpdated: false,
+  textHighlighted: false,
 }
 
 export function scratchpad(state = initialState, { type, payload }) {
@@ -88,13 +91,18 @@ export function scratchpad(state = initialState, { type, payload }) {
       return {
         ...initialState,
         scratchpadRect: state.scratchpadRect,
+        textHighlighted: state.textHighlighted,
         scratchpadUpdated: state.scratchpadUpdated,
       }
     case SET_SCRATCHPAD_UPDATED:
       return {
-        ...initialState,
-        scratchpadRect: state.scratchpadRect,
+        ...state,
         scratchpadUpdated: payload,
+      }
+    case SET_TEXT_HIGHLIGHTED:
+      return {
+        ...state,
+        textHighlighted: payload,
       }
     default:
       return state
@@ -111,4 +119,9 @@ export const scratchpadDomRectSelector = createSelector(
 export const getScratchPadUpdatedSelector = createSelector(
   scratchpadStateSelector,
   (state) => state.scratchpadUpdated || false
+)
+
+export const getTextHighlightedSelector = createSelector(
+  scratchpadStateSelector,
+  (state) => state.textHighlighted || false
 )

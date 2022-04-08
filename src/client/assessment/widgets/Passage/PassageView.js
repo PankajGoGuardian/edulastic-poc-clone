@@ -75,6 +75,7 @@ const PassageView = ({
   setPage,
   authLanguage,
   isStudentAttempt,
+  setTextHighlighted,
 }) => {
   const mainContentsRef = useRef()
   const rangRef = useRef()
@@ -184,6 +185,7 @@ const PassageView = ({
 
   const onSelectColor = (color) => {
     if (color !== 'remove') {
+      setTextHighlighted(true)
       highlightSelectedText(
         null, // parent container class, needed in token highlight type
         'text-highlight',
@@ -200,6 +202,7 @@ const PassageView = ({
   }
 
   const updateColor = (color) => {
+    setTextHighlighted(true)
     if (mainContentsRef.current && selectHighlight) {
       const element = $(mainContentsRef.current).find(`#${selectHighlight.id}`)
       if (color === 'remove') {

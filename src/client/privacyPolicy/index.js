@@ -23,9 +23,21 @@ const PrivacyPolicyModal = ({ userID }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
+  const [isEEAUser, setIsEEAUser] = useState(false)
 
   useEffect(() => {
+    setShowSpinner(true)
     segmentApi.genericEventTrack('eulaPopupShown')
+    userApi
+      .getUserLocation()
+      .then(({ result }) => {
+        setIsEEAUser(result?.isEEAUser)
+        setShowSpinner(false)
+      })
+      .catch((e) => {
+        setShowSpinner(false)
+        console.warn('Error', e)
+      })
   }, [])
 
   const onCheck = (value) => {
@@ -103,7 +115,7 @@ const PrivacyPolicyModal = ({ userID }) => {
         <ModalTextBody>
           <EulaPolicyContent />
           <ProductPolicyContent />
-          <EeaPolicyContent />
+          {isEEAUser && <EeaPolicyContent />}
           <CheckboxWrapper data-cy="policyAgreeCheckboxText">
             <CheckboxLabel onChange={onCheck} data-cy="policyAgreeCheckbox">
               By checking the box and clicking “Accept”, I agree to the Terms of

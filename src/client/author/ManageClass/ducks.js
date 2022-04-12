@@ -1035,8 +1035,14 @@ function* syncClassWithCanvasSaga({ payload }) {
     notification({ type: 'success', msg: message })
   } catch (err) {
     captureSentryException(err)
-    console.error(err)
-    notification({ messageKey: 'classSyncWithCanvasFailed' })
+    if (err?.status === 403) {
+      notification({
+        type: 'info',
+        msg: err?.response?.data?.message || 'Class sync with Canvas failed',
+      })
+    } else {
+      notification({ messageKey: 'classSyncWithCanvasFailed' })
+    }
     yield put(setSyncClassLoadingAction(false))
   }
 }

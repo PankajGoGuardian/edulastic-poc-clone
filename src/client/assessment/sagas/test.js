@@ -798,6 +798,7 @@ function* loadTest({ payload }) {
         languagePreference: testActivity.testActivity?.languagePreference,
         grades: test.grades,
         subjects: test.subjects,
+        referenceDocAttributes: test?.referenceDocAttributes,
       },
     })
     if (preview) {

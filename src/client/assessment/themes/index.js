@@ -1166,7 +1166,7 @@ const AssessmentContainer = ({
     (x) => x.type === questionType.HIGHLIGHT_IMAGE
   )
 
-  const { referenceDocAttributes } = test || {}
+  const { referenceDocAttributes } = restProps || test || {}
 
   const prevAnswerValue = useRef('')
 
@@ -1515,6 +1515,7 @@ const enhance = compose(
       enableMagnifier: state.testPlayer.enableMagnifier,
       isShowReferenceModal: state.testPlayer.isShowReferenceModal,
       allowReferenceMaterial: allowReferenceMaterialSelector(state),
+      referenceDocAttributes: state?.test?.referenceDocAttributes,
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),

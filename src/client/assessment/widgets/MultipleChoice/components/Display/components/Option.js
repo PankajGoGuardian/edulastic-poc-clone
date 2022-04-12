@@ -219,8 +219,7 @@ const Option = (props) => {
       onClickEvent={onChangeHandler}
       tool={tool}
       fromSetAnswers={fromSetAnswers}
-      disableTab={fromSetAnswers}
-      onlySpaceKey
+      onlyEnterKey
     >
       {fromSetAnswers && <DragHandle />}
       {uiStyle.type !== 'radioBelow' && container}

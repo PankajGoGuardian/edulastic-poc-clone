@@ -4999,12 +4999,14 @@ const { themeColor } = require('@edulastic/colors')
          *    - fulfilled: [pdfPage, annotations]
          *    - rejected: Error
          */
-        function renderPage(pageNumber, renderOptions) {
+        function renderPage(pageNumber, renderOptions, annotateRenderOptions) {
           var documentId = renderOptions.documentId
           var pdfDocument = renderOptions.pdfDocument
           var scale = renderOptions.scale
           var rotate = renderOptions.rotate
           var authoringMode = renderOptions.authoringMode
+          var annotateScale = annotateRenderOptions.scale
+          var annotateRotate = annotateRenderOptions.rotate
 
           // Load the page and annotations
 
@@ -5023,7 +5025,10 @@ const { themeColor } = require('@edulastic/colors')
             var canvasContext = canvas.getContext('2d', { alpha: false })
             var viewport = pdfPage.getViewport(scale, rotate)
             var transform = scalePage(pageNumber, viewport, canvasContext)
-            var annotateViewport = { ...viewport, rotation: 0 }
+            var annotateViewport = pdfPage.getViewport(
+              annotateScale,
+              annotateRotate
+            )
 
             // Render the page
             return Promise.all([

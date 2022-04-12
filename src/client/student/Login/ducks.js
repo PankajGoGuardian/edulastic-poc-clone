@@ -206,6 +206,7 @@ export const UPDATE_USER_FAVORITES = '[user] update user favorites'
 export const SET_USER_FAVORITES = '[user] set user favorites'
 export const ADD_CLASS_TO_USER = '[user] add class to user'
 export const SET_CLASS_TO_USER = '[user] set class to user'
+export const SET_LOCATION_TO_USER = '[user] set location to user'
 export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
@@ -314,6 +315,7 @@ export const updatePowerTeacherAction = createAction(
 )
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER)
 export const setClassToUserAction = createAction(SET_CLASS_TO_USER)
+export const setLocationToUserAction = createAction(SET_LOCATION_TO_USER)
 export const addItemBankPermissionAction = createAction(
   ADD_COLLECTION_PERMISSION
 )
@@ -803,6 +805,9 @@ export default createReducer(initialState, {
   },
   [SET_CLASS_TO_USER]: (state, { payload }) => {
     state.user.orgData.classList = payload
+  },
+  [SET_LOCATION_TO_USER]: (state, { payload }) => {
+    state.user.location = payload
   },
   [ADD_COLLECTION_PERMISSION]: (state, { payload }) => {
     const itemBanks = get(state, 'user.orgData.itemBanks', [])

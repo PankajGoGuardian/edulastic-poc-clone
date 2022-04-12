@@ -7,6 +7,7 @@ import {
   SpinLoader,
 } from '@edulastic/common'
 import { userApi, segmentApi } from '@edulastic/api'
+import { connect } from 'react-redux'
 import EulaPolicyContent from './eulaPolicyContent'
 import ProductPolicyContent from './productPolicyContent'
 import EeaPolicyContent from './eeaPolicyContent'
@@ -18,8 +19,9 @@ import {
   ModalTitle,
   StyledPrivacyPolicyModal,
 } from './Styled'
+import { setLocationToUserAction } from '../student/Login/ducks'
 
-const PrivacyPolicyModal = ({ userID }) => {
+const PrivacyPolicyModal = ({ userID, setLocationData }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
@@ -33,6 +35,7 @@ const PrivacyPolicyModal = ({ userID }) => {
       .then(({ result }) => {
         setIsEEAUser(result?.isEEAUser)
         setShowSpinner(false)
+        setLocationData(result)
       })
       .catch((e) => {
         setShowSpinner(false)
@@ -129,4 +132,6 @@ const PrivacyPolicyModal = ({ userID }) => {
   )
 }
 
-export default PrivacyPolicyModal
+export default connect(() => {}, { setLocationData: setLocationToUserAction })(
+  PrivacyPolicyModal
+)

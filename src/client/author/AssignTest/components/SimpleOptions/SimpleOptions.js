@@ -23,6 +23,7 @@ import { SpinnerContainer } from '../../../src/MainStyle'
 import {
   getCollectionsSelector,
   getUserRole,
+  allowReferenceMaterialSelector,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -469,6 +470,7 @@ class SimpleOptions extends React.Component {
       orgCollections,
       isAssigning,
       isPlaylist,
+      allowReferenceMaterial,
     } = this.props
 
     const { collections } = testSettings
@@ -633,6 +635,7 @@ class SimpleOptions extends React.Component {
                 featuresAvailable={featuresAvailable}
                 tootltipWidth={tootltipWidth}
                 showAssignModuleContent={showAssignModuleContent}
+                allowReferenceMaterial={allowReferenceMaterial}
               />
             </TabContentContainer>
           </TabPane>
@@ -749,6 +752,7 @@ const enhance = compose(
       freezeSettings: getIsOverrideFreezeSelector(state),
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       recommendedResources: getRecommendedResources(state),
+      allowReferenceMaterial: allowReferenceMaterialSelector(state),
       orgCollections: getCollectionsSelector(state),
       isVideoResourcePreviewModal:
         state.curriculumSequence?.isVideoResourcePreviewModal,

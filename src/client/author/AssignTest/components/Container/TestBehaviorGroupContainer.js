@@ -1,11 +1,11 @@
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import { roleuser, test } from '@edulastic/constants'
 import { evalTypeLabels } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
-import Styled from 'styled-components'
 import {
   AlignRight,
   AlignSwitchRight,
@@ -21,6 +21,7 @@ import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
+import RefMaterialFile from './RefMaterialFile'
 
 const {
   releaseGradeTypes,
@@ -53,6 +54,7 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
+  allowReferenceMaterial,
   t,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
@@ -68,6 +70,7 @@ const TestBehaviorGroupContainer = ({
     testType = testSettings.testType,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
+    referenceDocAttributes = testSettings?.referenceDocAttributes,
   } = assignmentSettings
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
@@ -281,6 +284,17 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Mark as done */}
 
+      {/* Reference Material */}
+      {allowReferenceMaterial && (
+        <RefMaterialFile
+          premium={premium}
+          tootltipWidth={tootltipWidth}
+          overRideSettings={overRideSettings}
+          attributes={referenceDocAttributes}
+        />
+      )}
+      {/* Reference Material */}
+
       {/* Show Calculator */}
       <SettingContainer id="calculator-setting">
         <DetailsTooltip
@@ -481,7 +495,7 @@ const TestBehaviorGroupContainer = ({
 
 export default withNamespaces('author')(TestBehaviorGroupContainer)
 
-const StyledSpan = Styled.span`
+const StyledSpan = styled.span`
   font-weight: ${(props) => props.theme.semiBold};
   font-size: 11px;
 `

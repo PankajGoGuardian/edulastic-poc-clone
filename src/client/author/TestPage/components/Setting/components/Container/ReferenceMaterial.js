@@ -1,13 +1,9 @@
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
-import { isEmpty } from 'lodash'
-import { aws, fileTypes } from '@edulastic/constants'
 import {
   EduSwitchStyled,
   EduButton,
   FlexContainer,
-  notification,
-  uploadToS3,
   PortalSpinner,
   FileIcon,
   formatFileSize,
@@ -15,6 +11,7 @@ import {
 import { SettingContainer } from '../../../../../AssignTest/components/Container/styled'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 import { setTestDataAction } from '../../../../ducks'
+import { useRefMaterialFile } from '../../../../../Shared/Hooks/useRefMaterialFile'
 import {
   Body,
   Description,
@@ -25,24 +22,6 @@ import {
   CloseIcon,
 } from './styled'
 
-const allowedFiles = [
-  fileTypes.PDF,
-  fileTypes.PNG,
-  fileTypes.JPEG,
-  fileTypes.JPG,
-]
-
-const folder = aws.s3Folders.DEFAULT
-
-const MAX_SIZE = 2 * 1024 * 1024 // 2 MB
-
-// const reference = {
-//   name: 'bird.png',
-//   size: 532360,
-//   source:
-//     'https://s3.amazonaws.com/edureact-dev/default/bird_e3dee757-940a-4b09-b583-88405fc09270.png',
-//   type: 'image/png',
-// }
 const ReferenceMaterial = ({
   owner,
   premium,
@@ -52,28 +31,20 @@ const ReferenceMaterial = ({
   referenceDocAttributes,
 }) => {
   const inputRef = useRef()
-  const [enableUpload, setEnableUpload] = useState(false)
-  const [isUploading, setIsUploading] = useState(false)
-  const hasReference = !isEmpty(referenceDocAttributes)
 
-  const updateReferenceMaterial = (checked) => {
-    setEnableUpload(checked)
-    if (!checked) {
-      setTestData({ referenceDocAttributes: {} })
-    }
+  const updateTestData = (value) => {
+    setTestData({ referenceDocAttributes: value })
   }
 
-  const handleUploadFile = async (file) => {
-    setIsUploading(true)
-    try {
-      const uri = await uploadToS3(file, folder)
-      const { name, size, type } = file
-      setTestData({ referenceDocAttributes: { name, size, source: uri, type } })
-    } catch (error) {
-      console.log(error)
-    }
-    setIsUploading(false)
-  }
+  const [
+    hasRefMaterial,
+    enableUpload,
+    isUploading,
+    allowedFiles,
+    onChangeSwitch,
+    onRemoveFile,
+    onChangeFile,
+  ] = useRefMaterialFile(referenceDocAttributes, updateTestData)
 
   const handleChooseFile = (evt) => {
     if (inputRef.current) {
@@ -88,24 +59,9 @@ const ReferenceMaterial = ({
     inputRef.current.value = ''
 
     if (fileToUpload) {
-      const { size } = fileToUpload
-      if (size > MAX_SIZE) {
-        notification({ messageKey: 'imageSizeError' })
-        return
-      }
-      handleUploadFile(fileToUpload)
+      onChangeFile(fileToUpload)
     }
   }
-
-  const removeFile = () => {
-    setTestData({ referenceDocAttributes: {} })
-  }
-
-  useEffect(() => {
-    if (hasReference) {
-      setEnableUpload(true)
-    }
-  }, [hasReference])
 
   return (
     <SettingContainer>
@@ -117,7 +73,7 @@ const ReferenceMaterial = ({
           disabled={!owner || !isEditable || !premium}
           checked={enableUpload}
           data-cy="assignment-referenceDocAttributes-switch"
-          onChange={updateReferenceMaterial}
+          onChange={onChangeSwitch}
         />
       </Title>
       <Body smallSize={isSmallSize}>
@@ -126,7 +82,7 @@ const ReferenceMaterial = ({
           constant value sheets etc to help students in solving the questions.
         </Description>
       </Body>
-      {!hasReference && enableUpload && premium && (
+      {!hasRefMaterial && enableUpload && premium && (
         <FlexContainer justifyContent="flex-start" alignItems="center">
           <EduButton height="28px" mr="24px" onClick={handleChooseFile}>
             UPLOAD FILE
@@ -134,7 +90,7 @@ const ReferenceMaterial = ({
           <NormalText>PNG, JPG, PDF (Max 2MB)</NormalText>
         </FlexContainer>
       )}
-      {hasReference && (
+      {hasRefMaterial && (
         <FlexContainer justifyContent="flex-start" alignItems="center">
           <FileIcon type={referenceDocAttributes?.type} />
           <FileName>{referenceDocAttributes.name}</FileName>
@@ -143,7 +99,7 @@ const ReferenceMaterial = ({
             width={12}
             height={12}
             role="presentation"
-            onClick={removeFile}
+            onClick={onRemoveFile}
           />
         </FlexContainer>
       )}

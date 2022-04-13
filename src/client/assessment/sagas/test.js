@@ -72,7 +72,6 @@ import {
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
-  RESET_TEST_ITEMS,
   SAVE_USER_WORK,
 } from '../constants/actions'
 import {
@@ -87,6 +86,7 @@ import {
   setPasswordStatusAction,
   languageChangeSuccessAction,
   setShowTestInfoSuccesAction,
+  resetStudentAttemptAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -1113,9 +1113,9 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
-    yield put({
-      type: RESET_TEST_ITEMS,
-    })
+    if (!payload.preventRouteChange) {
+      yield put(resetStudentAttemptAction())
+    }
     Fscreen.safeExitfullScreen()
   }
 }

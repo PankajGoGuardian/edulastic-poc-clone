@@ -13,6 +13,7 @@ import {
   SET_TEST_LOADING_STATUS,
   SET_PREVIEW_LANGUAGE,
   SET_IS_TEST_PREVIEW_VISIBLE,
+  RESET_TEST_ITEMS,
 } from '../constants/actions'
 
 export const loadTestAction = (payload) => ({
@@ -81,5 +82,10 @@ export const setPreviewLanguageAction = (payload) => ({
 
 export const setIsTestPreviewVisibleAction = (payload) => ({
   type: SET_IS_TEST_PREVIEW_VISIBLE,
+  payload,
+})
+
+export const resetStudentAttemptAction = (payload) => ({
+  type: RESET_TEST_ITEMS,
   payload,
 })

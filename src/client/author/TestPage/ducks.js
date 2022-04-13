@@ -2604,7 +2604,6 @@ function* shareTestSaga({ payload }) {
         contentType: payload.data.contentType,
       })
     )
-    yield put(setSharingContentStateAction(false))
     yield put(
       updateEmailNotificationDataAction({
         sendEmailNotification: false,
@@ -2612,6 +2611,7 @@ function* shareTestSaga({ payload }) {
         notificationMessage: '',
       })
     )
+    yield put(setSharingContentStateAction(false))
     notification({ type: 'success', messageKey: 'sharedPlaylist' })
   } catch (err) {
     const {
@@ -2619,12 +2619,12 @@ function* shareTestSaga({ payload }) {
     } = err.response
     captureSentryException(err)
     const hasInvalidMails = invalidEmails.length > 0
+    yield put(setSharingContentStateAction(false))
     if (hasInvalidMails) {
       return notification({
         msg: `Invalid mails found (${invalidEmails.join(', ')})`,
       })
     }
-    yield put(setSharingContentStateAction(false))
     notification({ msg: errorMessage || 'Sharing failed' })
   }
 }

@@ -73,7 +73,7 @@ const RefMaterialFile = ({
         <Col span={14} style={{ display: 'flex', flexDirection: 'column' }}>
           <Row style={{ display: 'flex', alignItems: 'center' }}>
             <AlignSwitchRight
-              data-cy="assignment-time-switch"
+              data-cy="reference-material-switch"
               size="small"
               defaultChecked={false}
               checked={enableUpload}

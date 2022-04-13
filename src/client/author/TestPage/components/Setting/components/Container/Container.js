@@ -676,6 +676,14 @@ class Setting extends Component {
     }
   }
 
+  get isReferenceMaterialAllowedForCurrentSkin() {
+    const { quester, edulastic } = playerSkinValues
+    const { entity: { playerSkinType = edulastic } = {} } = this.props
+    const retval = playerSkinType === edulastic || playerSkinType === quester
+
+    return retval
+  }
+
   render() {
     const {
       showPassword,
@@ -1363,17 +1371,18 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {allowReferenceMaterial && (
-                    <Block id="reference-material" smallSize={isSmallSize}>
-                      <ReferenceMaterial
-                        owner={owner}
-                        isEditable={isEditable}
-                        isSmallSize={isSmallSize}
-                        premium={premium}
-                        referenceDocAttributes={referenceDocAttributes}
-                      />
-                    </Block>
-                  )}
+                  {allowReferenceMaterial &&
+                    this.isReferenceMaterialAllowedForCurrentSkin && (
+                      <Block id="reference-material" smallSize={isSmallSize}>
+                        <ReferenceMaterial
+                          owner={owner}
+                          isEditable={isEditable}
+                          isSmallSize={isSmallSize}
+                          premium={premium}
+                          referenceDocAttributes={referenceDocAttributes}
+                        />
+                      </Block>
+                    )}
 
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>

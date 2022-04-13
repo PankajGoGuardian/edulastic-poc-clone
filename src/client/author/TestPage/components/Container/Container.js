@@ -945,6 +945,7 @@ class Container extends PureComponent {
       userRole,
       userFeatures,
       testSettingsList,
+      updated,
     } = this.props
     if (!test?.title?.trim()?.length) {
       notification({ messageKey: 'nameFieldRequired' })
@@ -984,6 +985,10 @@ class Container extends PureComponent {
         !userFeatures.isCurator
       ) {
         newTest.isInEditAndRegrade = true
+      }
+      if (!updated) {
+        notification({ msg: 'Already Saved as draft' })
+        return
       }
       updateTest(test._id, { ...newTest, currentTab })
     } else {

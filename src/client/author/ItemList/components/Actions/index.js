@@ -116,12 +116,15 @@ const Actions = ({
         Remove from Folder
       </MenuItems>
       {!isEmpty(collectionsToWrite) && (
-        <MenuItems onClick={() => setAddCollectionModalVisible(true)}>
+        <MenuItems
+          data-cy="add-to-collection"
+          onClick={() => setAddCollectionModalVisible(true)}
+        >
           <span>Add to Collection</span>
         </MenuItems>
       )}
       {!isEmpty(collectionsToWrite) && (
-        <MenuItems>
+        <MenuItems data-cy="remove-from-collection">
           <span>Remove from Collection</span>
         </MenuItems>
       )}

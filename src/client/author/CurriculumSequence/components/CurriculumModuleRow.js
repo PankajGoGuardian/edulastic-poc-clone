@@ -37,7 +37,7 @@ import {
 import { getCurrentGroup, proxyRole } from '../../../student/Login/ducks'
 import { removeTestFromModuleAction } from '../../PlaylistPage/ducks'
 import Tags from '../../src/components/common/Tags'
-import { getUserRole } from '../../src/selectors/user'
+import { getUserRole, getUserIdSelector } from '../../src/selectors/user'
 import {
   playlistTestRemoveFromModuleAction,
   putCurriculumSequenceAction,
@@ -624,6 +624,7 @@ class ModuleRow extends Component {
       toggleAssignments,
       isPreviewModalVisible,
       blurCurrentModuleRow,
+      userID,
     } = this.props
     const { selectedTest } = this.state
     const { assignTest } = this
@@ -706,7 +707,18 @@ class ModuleRow extends Component {
                 lockToContainerEdges
                 useDragHandle
               >
-                {contentData.map((moduleData, index) => {
+                {contentData.map((_module, index) => {
+                  const assignmentData =
+                    userRole === 'district-admin'
+                      ? _module.assignments.filter(
+                          (_data) => _data.assignedBy._id === userID
+                        )
+                      : _module.assignments
+
+                  const moduleData = {
+                    ..._module,
+                    assignments: assignmentData,
+                  }
                   const {
                     assignments = [],
                     contentId,
@@ -715,6 +727,7 @@ class ModuleRow extends Component {
                     status: testStatus,
                     contentTitle,
                   } = moduleData
+
                   const isTestType = contentType === 'test'
                   const statusList = assignments
                     .flatMap((item) => item.class || [])
@@ -1405,6 +1418,7 @@ const enhance = compose(
       isContentExpanded: curriculumSequence.isContentExpanded,
       assigned: curriculumSequence.assigned,
       userRole: getUserRole({ user }),
+      userID: getUserIdSelector({ user }),
       isStudent: getUserRole({ user }) === 'student',
       classId: getCurrentGroup({ user }),
       playlistTestDetailsModalData:

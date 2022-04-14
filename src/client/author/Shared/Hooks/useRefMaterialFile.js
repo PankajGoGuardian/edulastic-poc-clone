@@ -38,13 +38,13 @@ export const useRefMaterialFile = (referenceDocAttributes, setData) => {
   }
 
   const handleChangeFile = async (file) => {
-    setIsUploading(true)
     try {
       const { name, size, type } = file
       if (size > MAX_SIZE) {
         notification({ messageKey: 'imageSizeError' })
         return
       }
+      setIsUploading(true)
       const uri = await uploadToS3(file, folder)
       if (typeof setData === 'function') {
         setData({ name, size, source: uri, type })

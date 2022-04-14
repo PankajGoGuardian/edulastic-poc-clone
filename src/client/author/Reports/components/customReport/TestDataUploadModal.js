@@ -6,6 +6,7 @@ import { isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
+import { aws } from '@edulastic/constants'
 import { CustomModalStyled, FlexContainer, EduButton } from '@edulastic/common'
 import {
   dashBorderColor,
@@ -17,6 +18,7 @@ import {
 import { IconUpload } from '@edulastic/icons'
 
 import { uploadTestDataFileAction, getTestDatFileUploadLoader } from './ducks'
+import { uploadToS3 } from '../../../src/utils/upload'
 
 const { Option } = Select
 
@@ -25,12 +27,18 @@ const TestDataUploadModal = ({
   isVisible,
   closeModal,
   loading,
+  user,
 }) => {
   const [file, setFile] = useState(null)
 
   const handleFileUpload = () => {
     // Handle file upload here.
     uploadFile(file)
+    uploadToS3(file, `${aws.s3Folders.DEFAULT}`, `${user._id}`).then(
+      (fileUrl) => {
+        console.log('file url', fileUrl)
+      }
+    )
   }
 
   return (
@@ -124,6 +132,7 @@ const TestDataUploadModal = ({
 const withConnect = connect(
   (state) => ({
     loading: getTestDatFileUploadLoader(state),
+    user: state.user.user,
   }),
   {
     uploadFile: uploadTestDataFileAction,

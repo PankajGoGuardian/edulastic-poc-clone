@@ -1,6 +1,7 @@
 import {
   groupBy,
   minBy,
+  maxBy,
   cloneDeep,
   countBy,
   uniq,
@@ -216,7 +217,7 @@ const analyseByRawScore = (rawData, groupedData, compareBy) => {
       className,
       [compareBy]: data,
       compareBy,
-      compareBylabel: groupedData[data][0]?.[idToLabel(compareBy)] || '-',
+      compareBylabel: itemWithMaxScore?.[idToLabel(compareBy)] || '-',
       fill: getHSLFromRange1((avgStudentScore / maxScore) * 100),
       dFill: getHSLFromRange1(rawData.districtAvgPerf),
     }

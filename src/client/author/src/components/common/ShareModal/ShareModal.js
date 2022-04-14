@@ -380,7 +380,7 @@ class ShareModal extends React.Component {
       }
     } else {
       const isTypeExisting = sharedUsersList.some(
-        (item) => item.sharedType === sharedKeysObj[sharedType]
+        (item) => item.userName === shareTypes[sharedType]
       )
       if (isTypeExisting) {
         notification({
@@ -513,7 +513,6 @@ class ShareModal extends React.Component {
       notificationMessage,
       loadingSharedUsers,
       maxSharingLevelAllowed = shareLevel[sharedKeysObj.LINK],
-      sharingState,
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -773,6 +772,7 @@ class ShareModal extends React.Component {
               )}
             </NotificationBlock>
           )}
+
           <DoneButtonContainer>
             <EduButton
               height="32px"
@@ -788,7 +788,6 @@ class ShareModal extends React.Component {
               data-cy="share-button-pop"
               onClick={this.handleShare}
               style={{ display: 'inline-flex' }}
-              loading={sharingState}
             >
               <IconShare />
               {isPublished ? 'SHARE' : 'Invite Co-Authors'}

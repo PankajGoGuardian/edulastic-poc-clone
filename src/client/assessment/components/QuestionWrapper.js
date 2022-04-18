@@ -749,21 +749,23 @@ class QuestionWrapper extends Component {
                       isGradedExternally={answerScore.isGradedExternally}
                     />
                   )}
-                  {rubricDetails && studentReportFeedbackVisible && (
-                    <RubricTableWrapper data-cy="rubricTable">
-                      <FieldLabel className="rubric-title">
-                        Graded Rubric
-                      </FieldLabel>
-                      <FieldLabel className="rubric-name">
-                        {rubricDetails.name}
-                      </FieldLabel>
-                      <PreviewRubricTable
-                        data={rubricDetails}
-                        rubricFeedback={rubricFeedback}
-                        isDisabled
-                      />
-                    </RubricTableWrapper>
-                  )}
+                  {rubricDetails &&
+                    studentReportFeedbackVisible &&
+                    !isShowStudentWork && (
+                      <RubricTableWrapper data-cy="rubricTable">
+                        <FieldLabel className="rubric-title">
+                          Graded Rubric
+                        </FieldLabel>
+                        <FieldLabel className="rubric-name">
+                          {rubricDetails.name}
+                        </FieldLabel>
+                        <PreviewRubricTable
+                          data={rubricDetails}
+                          rubricFeedback={rubricFeedback}
+                          isDisabled
+                        />
+                      </RubricTableWrapper>
+                    )}
                   {view === 'preview' && !isPrintPreview && !showFeedback && (
                     <Hints
                       question={data}

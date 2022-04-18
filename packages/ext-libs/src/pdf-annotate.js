@@ -1,8 +1,9 @@
 // eslint-disable-next-line
 var pdfjsViewer = require('pdfjs-dist/web/pdf_viewer.js') // pdfjs-dist - v2.1.266
 var { aws } = require('@edulastic/constants')
-var { uploadToS3, getYoutubeId } = require('@edulastic/common')
+var { uploadToS3, getYoutubeId, notification } = require('@edulastic/common')
 const { themeColor } = require('@edulastic/colors')
+const { allowedImageFileTypes } = require('@edulastic/common/src/helpers')
 ;(function webpackUniversalModuleDefinition(root, factory) {
   if (typeof exports === 'object' && typeof module === 'object')
     module.exports = factory()
@@ -5570,7 +5571,7 @@ const { themeColor } = require('@edulastic/colors')
             
             <div class="ant-popover-buttons">
               <button id="edu-annotate-cancel" type="button" class="ant-btn ant-btn-sm"><span>Cancel</span></button>
-              <input type="file" accept="image/*"  id="BtnBrowseHidden" name="files" style="display: none;" />
+              <input type="file" accept="image/jpeg,image/jpg,image/png,image/gif"  id="BtnBrowseHidden" name="files" style="display: none;" />
                 <label class="ant-btn ant-btn-primary ant-btn-sm" for="BtnBrowseHidden" id="EduBrowse">
                 Upload
               </label>
@@ -5600,11 +5601,14 @@ const { themeColor } = require('@edulastic/colors')
         function handleFileChange() {
           var upload = document.getElementById('BtnBrowseHidden')
           var header = document.getElementById('edu-annotate-upload-label')
-
-          if (upload?.files?.[0]) {
-            header.innerText = upload.files[0].name
-
-            uploadToS3(upload.files[0], aws.s3Folders.DEFAULT)
+          var file = upload?.files?.[0]
+          if (file) {
+            if (!allowedImageFileTypes.includes(file.type)) {
+              notification({ messageKey: 'imageTypeError' })
+              return false
+            }
+            header.innerText = file.name
+            uploadToS3(file, aws.s3Folders.DEFAULT)
               .then((fileUri) => savePoint(fileUri))
               .catch(() => {
                 console.log('Some Error Occured while uploading the file ')
@@ -5997,7 +6001,7 @@ const { themeColor } = require('@edulastic/colors')
 
               var footerControls = `
               <div class="ant-modal-footer" style="border: none; padding: 0 10px 10px 0">
-                <input type="file" accept="image/*"  id="BtnReplaceImageHidden" name="files" style="display: none;" />
+                <input type="file" accept="image/jpeg,image/jpg,image/png,image/gif"  id="BtnReplaceImageHidden" name="files" style="display: none;" />
                 <label class="ant-btn ant-btn-primary ant-btn-sm" for="BtnReplaceImageHidden" id="edu-replace-image">
                   Replace Image
                 </label>
@@ -6046,9 +6050,13 @@ const { themeColor } = require('@edulastic/colors')
         function handleImageChange(annotation, documentId) {
           var upload = document.getElementById('BtnReplaceImageHidden')
           var image = document.getElementById('edu-pdf-image-view')
-
-          if (upload?.files?.[0]) {
-            uploadToS3(upload.files[0], aws.s3Folders.DEFAULT)
+          var file = upload?.files?.[0]
+          if (file) {
+            if (!allowedImageFileTypes.includes(file.type)) {
+              notification({ messageKey: 'imageTypeError' })
+              return false
+            }
+            uploadToS3(file, aws.s3Folders.DEFAULT)
               .then((fileUri) => {
                 if (image) {
                   image.setAttribute('src', fileUri)

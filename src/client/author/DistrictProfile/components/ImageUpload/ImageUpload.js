@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { aws, roleuser } from '@edulastic/constants'
-import { notification } from '@edulastic/common'
+import { beforeUpload, notification } from '@edulastic/common'
 import { IconPhotoCamera } from '@edulastic/icons'
 import { white } from '@edulastic/colors'
 import { message } from 'antd'
@@ -29,6 +29,13 @@ class ImageUpload extends Component {
 
   handleChange = async (event) => {
     const file = event.target.files[0]
+    if (!file.type.match(/image/g)) {
+      notification({ messageKey: 'pleaseUploadFilesInImageFormat' })
+      return
+    }
+    if (!beforeUpload(file)) {
+      return
+    }
     if (file.size > 2 * 1024 * 1024) {
       notification({ messageKey: 'imageMustBeSmallerThan2mb' })
     } else {

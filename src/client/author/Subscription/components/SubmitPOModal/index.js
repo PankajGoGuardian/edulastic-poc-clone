@@ -163,7 +163,10 @@ const SubmitPOModal = ({
         'vnd',
         'wordprocessingml',
         'pdf',
-        'image',
+        'jpeg',
+        'jpg',
+        'png',
+        'gif',
       ].some((x) => file.type.includes(x))
     ) {
       return 'Unsupported file format.'

@@ -508,6 +508,13 @@ export const removeIndexFromTemplate = (tmpl) => {
   return sanitizeString($(parsedHTML).html())
 }
 
+export const allowedImageFileTypes = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/gif',
+]
+
 export const allowedFileTypes = [
   'image/jpeg',
   'image/jpg',

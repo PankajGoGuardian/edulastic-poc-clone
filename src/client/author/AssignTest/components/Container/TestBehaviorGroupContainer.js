@@ -285,7 +285,7 @@ const TestBehaviorGroupContainer = ({
       {/* Mark as done */}
 
       {/* Reference Material */}
-      {allowReferenceMaterial && (
+      {allowReferenceMaterial && !testSettings?.isDocBased && (
         <RefMaterialFile
           premium={premium}
           tootltipWidth={tootltipWidth}

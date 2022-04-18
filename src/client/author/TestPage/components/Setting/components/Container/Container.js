@@ -1372,7 +1372,8 @@ class Setting extends Component {
                   </Block>
 
                   {allowReferenceMaterial &&
-                    this.isReferenceMaterialAllowedForCurrentSkin && (
+                    this.isReferenceMaterialAllowedForCurrentSkin &&
+                    !isDocBased && (
                       <Block id="reference-material" smallSize={isSmallSize}>
                         <ReferenceMaterial
                           owner={owner}

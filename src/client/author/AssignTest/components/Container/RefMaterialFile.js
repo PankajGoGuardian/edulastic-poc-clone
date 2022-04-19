@@ -21,6 +21,7 @@ const RefMaterialFile = ({
   tootltipWidth,
   overRideSettings,
   attributes,
+  hasRefMaterialAttributes,
 }) => {
   const inputRef = useRef()
 
@@ -75,6 +76,7 @@ const RefMaterialFile = ({
             <AlignSwitchRight
               data-cy="reference-material-switch"
               size="small"
+              disabled={!hasRefMaterialAttributes}
               defaultChecked={false}
               checked={enableUpload}
               onChange={onChangeSwitch}

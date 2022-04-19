@@ -56,6 +56,7 @@ const TestBehaviorGroupContainer = ({
   tootltipWidth,
   showAssignModuleContent,
   allowReferenceMaterial,
+  hasRefMaterialAttributes,
   t,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
@@ -304,6 +305,7 @@ const TestBehaviorGroupContainer = ({
           tootltipWidth={tootltipWidth}
           overRideSettings={overRideSettings}
           attributes={referenceDocAttributes}
+          hasRefMaterialAttributes={hasRefMaterialAttributes}
         />
       )}
       {/* Reference Material */}

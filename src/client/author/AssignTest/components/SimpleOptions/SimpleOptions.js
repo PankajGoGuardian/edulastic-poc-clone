@@ -7,7 +7,7 @@ import {
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, isBoolean, keyBy, pick } from 'lodash'
+import { curry, get, isBoolean, keyBy, pick, isEmpty } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -471,6 +471,7 @@ class SimpleOptions extends React.Component {
       isAssigning,
       isPlaylist,
       allowReferenceMaterial,
+      hasRefMaterialAttributes,
     } = this.props
 
     const { collections } = testSettings
@@ -636,6 +637,7 @@ class SimpleOptions extends React.Component {
                 tootltipWidth={tootltipWidth}
                 showAssignModuleContent={showAssignModuleContent}
                 allowReferenceMaterial={allowReferenceMaterial}
+                hasRefMaterialAttributes={hasRefMaterialAttributes}
               />
             </TabContentContainer>
           </TabPane>
@@ -759,6 +761,9 @@ const enhance = compose(
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
+      hasRefMaterialAttributes: !isEmpty(
+        state?.tests?.entity?.referenceDocAttributes
+      ),
       defaultTestTypeProfiles: get(state, 'tests.defaultTestTypeProfiles', {}),
       performanceBands: get(state, 'performanceBandReducer.profiles', []),
       standardsProficiencies: get(

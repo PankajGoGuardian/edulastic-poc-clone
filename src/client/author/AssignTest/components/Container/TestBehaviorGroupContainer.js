@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
@@ -30,6 +30,7 @@ const {
   releaseGradeLabels,
   testContentVisibilityTypes,
   testContentVisibility: testContentVisibilityOptions,
+  playerSkinValues,
 } = test
 
 const TEST_TYPE_TOOLTIP_CONTENT =
@@ -68,10 +69,22 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
+    playerSkinType = testSettings.playerSkinType,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
+    isDocBased = testSettings?.isDocBased,
   } = assignmentSettings
+
+  const showRefMaterial = useMemo(() => {
+    const { quester, edulastic } = playerSkinValues
+    return (
+      !isDocBased &&
+      allowReferenceMaterial &&
+      (playerSkinType === edulastic || testType === quester)
+    )
+  }, [playerSkinType, allowReferenceMaterial, isDocBased])
+
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
     .flat()
@@ -285,7 +298,7 @@ const TestBehaviorGroupContainer = ({
       {/* Mark as done */}
 
       {/* Reference Material */}
-      {allowReferenceMaterial && !testSettings?.isDocBased && (
+      {showRefMaterial && (
         <RefMaterialFile
           premium={premium}
           tootltipWidth={tootltipWidth}

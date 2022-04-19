@@ -40,6 +40,10 @@ export const useRefMaterialFile = (referenceDocAttributes, setData) => {
   const handleChangeFile = async (file) => {
     try {
       const { name, size, type } = file
+      if (!allowedFiles.includes(type)) {
+        notification({ messageKey: 'fileTypeErr' })
+        return
+      }
       if (size > MAX_SIZE) {
         notification({ messageKey: 'imageSizeError' })
         return

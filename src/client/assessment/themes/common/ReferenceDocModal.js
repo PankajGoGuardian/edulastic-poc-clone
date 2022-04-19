@@ -30,7 +30,7 @@ const SinglePage = ({ getPage, pageNum, size }) => {
       ;(async () => {
         try {
           const page = await getPage(pageNum)
-          const outputScale = window.devicePixelRatio || 1
+          // const outputScale = window.devicePixelRatio || 1
           const viewport = page.getViewport({ scale: 1 })
 
           const scale1 = size / viewport.width
@@ -39,12 +39,12 @@ const SinglePage = ({ getPage, pageNum, size }) => {
           cavasRef.current.height = scaledViewport.height
           cavasRef.current.width = scaledViewport.width
 
-          const ctxTransform =
-            outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null
+          // const ctxTransform =
+          //   outputScale !== 1 ? [outputScale, 0, 0, outputScale, 0, 0] : null
 
           const renderContext = {
             canvasContext: context,
-            transform: ctxTransform,
+            // transform: ctxTransform,
             viewport: scaledViewport,
           }
 

@@ -700,6 +700,12 @@ class AssessmentPlayerDefault extends React.Component {
                   {...extraTestItemProps}
                 />
               </MainWrapper>
+              {isShowReferenceModal && referenceDocAttributes && (
+                <ReferenceDocModal
+                  attributes={referenceDocAttributes}
+                  playerSkinType={playerSkinType}
+                />
+              )}
             </Main>
 
             <ReportIssuePopover item={item} playerSkinType={playerSkinType} />
@@ -718,12 +724,6 @@ class AssessmentPlayerDefault extends React.Component {
               onUploadFinished={this.saveUserWorkAttachments}
               cameraImageName={cameraImageName}
             />
-            {isShowReferenceModal && referenceDocAttributes && (
-              <ReferenceDocModal
-                attributes={referenceDocAttributes}
-                playerSkinType={playerSkinType}
-              />
-            )}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

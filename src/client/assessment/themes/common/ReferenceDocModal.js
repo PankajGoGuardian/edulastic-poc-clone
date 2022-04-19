@@ -129,6 +129,7 @@ const ReferenceDocModal = ({
 
   return (
     <RndWrapper
+      bounds="parent"
       default={initSetting}
       onResizeStop={handleResizeStop}
       dragHandleClassName="reference-material-drag-handler"

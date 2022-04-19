@@ -1371,20 +1371,6 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {allowReferenceMaterial &&
-                    this.isReferenceMaterialAllowedForCurrentSkin &&
-                    !isDocBased && (
-                      <Block id="reference-material" smallSize={isSmallSize}>
-                        <ReferenceMaterial
-                          owner={owner}
-                          isEditable={isEditable}
-                          isSmallSize={isSmallSize}
-                          premium={premium}
-                          referenceDocAttributes={referenceDocAttributes}
-                        />
-                      </Block>
-                    )}
-
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>
                       <Title>
@@ -1416,6 +1402,20 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
+
+                  {allowReferenceMaterial &&
+                    this.isReferenceMaterialAllowedForCurrentSkin &&
+                    !isDocBased && (
+                      <Block id="reference-material" smallSize={isSmallSize}>
+                        <ReferenceMaterial
+                          owner={owner}
+                          isEditable={isEditable}
+                          isSmallSize={isSmallSize}
+                          premium={premium}
+                          referenceDocAttributes={referenceDocAttributes}
+                        />
+                      </Block>
+                    )}
 
                   <Block id="timed-test" smallSize={isSmallSize}>
                     <SettingContainer>

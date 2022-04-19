@@ -223,6 +223,15 @@ const ToolBar = ({
           onClick={toolbarHandler(2)}
         />
       )}
+      {allowReferenceMaterial && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Reference Sheet"
+          icon={<IconReferenceSheet />}
+          active={isShowReferenceModal}
+          onClick={openReferenceModal}
+        />
+      )}
       <ActionButton
         title={
           isDisableCrossBtn
@@ -267,15 +276,6 @@ const ToolBar = ({
           title="Upload work"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
-        />
-      )}
-      {allowReferenceMaterial && (
-        <ActionButton
-          disabled={isPremiumContentWithoutAccess}
-          title="Reference Sheet"
-          icon={<IconReferenceSheet />}
-          active={isShowReferenceModal}
-          onClick={openReferenceModal}
         />
       )}
       <LineReader btnComponent={ButtonWithStyle} />

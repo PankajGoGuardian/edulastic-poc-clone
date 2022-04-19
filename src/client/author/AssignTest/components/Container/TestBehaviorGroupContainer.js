@@ -298,18 +298,6 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Mark as done */}
 
-      {/* Reference Material */}
-      {showRefMaterial && (
-        <RefMaterialFile
-          premium={premium}
-          tootltipWidth={tootltipWidth}
-          overRideSettings={overRideSettings}
-          attributes={referenceDocAttributes}
-          hasRefMaterialAttributes={hasRefMaterialAttributes}
-        />
-      )}
-      {/* Reference Material */}
-
       {/* Show Calculator */}
       <SettingContainer id="calculator-setting">
         <DetailsTooltip
@@ -339,6 +327,18 @@ const TestBehaviorGroupContainer = ({
         </StyledRow>
       </SettingContainer>
       {/* Show Calculator */}
+
+      {/* Reference Material */}
+      {showRefMaterial && (
+        <RefMaterialFile
+          premium={premium}
+          tootltipWidth={tootltipWidth}
+          overRideSettings={overRideSettings}
+          attributes={referenceDocAttributes}
+          hasRefMaterialAttributes={hasRefMaterialAttributes}
+        />
+      )}
+      {/* Reference Material */}
 
       {/* Timed TEST */}
       <SettingContainer id="timed-test-setting">

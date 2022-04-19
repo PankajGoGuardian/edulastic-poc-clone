@@ -5,6 +5,7 @@ import { connect } from 'react-redux'
 
 import { test } from '@edulastic/constants'
 import TestItemPreview from '../../components/TestItemPreview'
+import ReferenceDocModal from '../common/ReferenceDocModal'
 import PlayerFooter from './PlayerFooter'
 import { getEvaluationSelector } from '../../selectors/answers'
 import getZoomedResponsiveWidth from '../../utils/zoomedResponsiveWidth'
@@ -43,6 +44,8 @@ const PlayerContentArea = ({
   tool,
   premiumCollectionWithoutAccess,
   isPremiumContentWithoutAccess,
+  referenceDocAttributes,
+  isShowReferenceModal,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -51,7 +54,6 @@ const PlayerContentArea = ({
     diff: 290,
     zoomLevel,
   })
-
   const extraTestItemProps =
     testItemState === 'check'
       ? {
@@ -106,6 +108,12 @@ const PlayerContentArea = ({
           blockNavigationToAnsweredQuestions={
             blockNavigationToAnsweredQuestions
           }
+        />
+      )}
+      {isShowReferenceModal && referenceDocAttributes && (
+        <ReferenceDocModal
+          attributes={referenceDocAttributes}
+          playerSkinType={playerSkinType}
         />
       )}
     </Main>

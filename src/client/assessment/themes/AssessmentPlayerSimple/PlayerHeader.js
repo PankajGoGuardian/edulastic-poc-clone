@@ -64,6 +64,9 @@ const PlayerHeader = ({
   LCBPreviewModal = false,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
+  allowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -196,6 +199,9 @@ const PlayerHeader = ({
                     isPremiumContentWithoutAccess={
                       isPremiumContentWithoutAccess
                     }
+                    openReferenceModal={openReferenceModal}
+                    isShowReferenceModal={isShowReferenceModal}
+                    allowReferenceMaterial={allowReferenceMaterial}
                   />
                 )}
               </MainActionWrapper>

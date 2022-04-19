@@ -12,3 +12,7 @@ export const TextContainer = styled.div`
       singleResponseBox || checkAnswer || lessMinWidth ? '24px' : '56px'
     })`};
 `
+export const PopOverTextContainer = styled.div`
+  white-space: normal;
+  word-break: break-word;
+`

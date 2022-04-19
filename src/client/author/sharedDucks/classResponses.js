@@ -18,7 +18,7 @@ import {
 import { questionType } from '@edulastic/constants'
 import { createAction } from 'redux-starter-kit'
 import { notification } from '@edulastic/common'
-import { get, isEmpty, groupBy, isPlainObject, isNil } from 'lodash'
+import { get, isEmpty, groupBy, isPlainObject, isNil, isArray } from 'lodash'
 
 import {
   RECEIVE_CLASS_RESPONSE_REQUEST,
@@ -471,8 +471,13 @@ function* receiveStudentQuestionSaga({ payload }) {
     const passages = get(originalData, 'test.passages', [])
 
     if (!isEmpty(passages) && feedbackResponse) {
+      let testActivityId = feedbackResponse.testActivityId
+      if (isArray(feedbackResponse))
+        testActivityId = feedbackResponse.find((item) => item?.testActivityId)
+          ?.testActivityId
+
       yield fork(loadPassagesForItems, {
-        testActivityId: feedbackResponse.testActivityId,
+        testActivityId,
         passages,
       })
     }

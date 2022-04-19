@@ -57,6 +57,7 @@ import { MathFormula } from '../widgets/MathFormula'
 import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
+import { setPassageCurrentPageAction } from '../actions/userInteractions'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
@@ -182,11 +183,19 @@ class QuestionWrapper extends Component {
       extras: [],
       activeTab: 0,
       shuffledOptsOrder: [],
-      page: 1,
     }
   }
 
-  setPage = (page) => this.setState({ page })
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-34955
+   * page data is required in ItemAudioControl component. Thus storing the page data in redux store
+   */
+  setPage = (page) => {
+    const { setPassageCurrentPage, data: { id, type } = {} } = this.props
+    if (id && type === questionType.PASSAGE) {
+      setPassageCurrentPage({ passageId: id, page })
+    }
+  }
 
   handleShuffledOptions = (shuffledOptsOrder) => {
     this.setState({ shuffledOptsOrder })
@@ -281,6 +290,10 @@ class QuestionWrapper extends Component {
       return false
     }
     return true
+  }
+
+  componentDidMount() {
+    this.setPage(1)
   }
 
   openStudentWork = () => {
@@ -427,6 +440,14 @@ class QuestionWrapper extends Component {
     )
   }
 
+  get passageCurrentPage() {
+    const {
+      userInteractionsPassageData: passageInfo = {},
+      data: { id } = {},
+    } = this.props
+    return passageInfo[id]?.currentPage || 1
+  }
+
   render() {
     const {
       noPadding,
@@ -496,7 +517,9 @@ class QuestionWrapper extends Component {
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)
     const timeSpent = get(data, 'activity.timeSpent', false)
-    const { main, advanced, extras, activeTab, page } = this.state
+    const { main, advanced, extras, activeTab } = this.state
+    const page = this.passageCurrentPage
+
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
     const { layoutType } = this.context
@@ -875,9 +898,15 @@ const enhance = compose(
       previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
       assignmentLevelSettings: assignmentLevelSettingsSelector(state),
       testLevelSettings: get(state, ['test', 'settings'], {}),
+      userInteractionsPassageData: get(
+        state,
+        ['userInteractions', 'passages'],
+        {}
+      ),
     }),
     {
       loadScratchPad: requestScratchPadAction,
+      setPassageCurrentPage: setPassageCurrentPageAction,
     }
   )
 )

@@ -139,3 +139,6 @@ export const UPDATE_PLAYER_PREVIEW_STATE =
   '[assessmentPlayer] update player settings'
 export const SET_VIEW_TEST_INFO_SUCCESS =
   '[assessmentPlayer] view test info success'
+
+// userInteraction passage
+export const SET_PASSAGE_CURRENT_PAGE = '[passage] set passage current page'

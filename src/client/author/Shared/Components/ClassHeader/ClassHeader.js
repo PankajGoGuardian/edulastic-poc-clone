@@ -92,6 +92,8 @@ import {
   getCanvasAllowedInstitutionPoliciesSelector,
   getUserRole,
 } from '../../../src/selectors/user'
+import { getIsProxiedByEAAccountSelector } from '../../../../student/Login/ducks'
+
 import {
   CaretUp,
   ClassDropMenu,
@@ -437,6 +439,7 @@ class ClassHeader extends Component {
       studentsUTAData,
       schoologySyncAssignment,
       syncWithSchoologyClassroomInProgress,
+      isProxiedByEAAccount,
     } = this.props
     const {
       visible,
@@ -786,19 +789,21 @@ class ClassHeader extends Component {
             Sync Grades to Schoology
           </MenuItems>
         )}
-        <FeaturesSwitch
-          inputFeatures="LCBstudentReportCard"
-          key="LCBstudentReportCard"
-          actionOnInaccessible="hidden"
-          groupId={classId}
-        >
-          <MenuItems
-            data-cy="studentReportCard"
-            onClick={this.onStudentReportCardsClick}
+        {!isProxiedByEAAccount && (
+          <FeaturesSwitch
+            inputFeatures="LCBstudentReportCard"
+            key="LCBstudentReportCard"
+            actionOnInaccessible="hidden"
+            groupId={classId}
           >
-            Student Report Cards
-          </MenuItems>
-        </FeaturesSwitch>
+            <MenuItems
+              data-cy="studentReportCard"
+              onClick={this.onStudentReportCardsClick}
+            >
+              Student Report Cards
+            </MenuItems>
+          </FeaturesSwitch>
+        )}
       </DropMenu>
     )
 
@@ -1099,6 +1104,7 @@ const enhance = compose(
       isViewPassword: getViewPasswordSelector(state),
       hasRandomQuestions: getHasRandomQuestionselector(state),
       orgClasses: getGroupList(state),
+      isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
       districtPolicy: get(state, 'user.user.orgData.policies.district'),
       canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
         state

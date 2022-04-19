@@ -893,7 +893,7 @@ const Author = ({
                 <Route
                   exact
                   path={`${match.url}/students-report-card/:assignmentId/:classId`}
-                  component={StudentsReportCard}
+                  render={(props) => <StudentsReportCard {...props} audit />}
                 />
                 <Route component={NotFound} />
               </Switch>

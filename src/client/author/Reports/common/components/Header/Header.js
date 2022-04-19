@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
 import { Dropdown, Menu, Col, Icon } from 'antd'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
@@ -8,6 +10,7 @@ import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
+import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
@@ -24,6 +27,7 @@ const CustomizedHeaderWrapper = ({
   isSharedReport,
   hasCsvDocs,
   updateCsvDocs,
+  isProxiedByEAAccount,
   t,
 }) => {
   const _onShareClickCB = () => {
@@ -90,7 +94,7 @@ const CustomizedHeaderWrapper = ({
   const actionRightButtons = (
     <ActionButtonWrapper>
       {navMenu}
-      {showCSVDocsDownloadButton ? (
+      {showCSVDocsDownloadButton && !isProxiedByEAAccount ? (
         <ActionButton
           isBlue
           isGhost
@@ -118,7 +122,7 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ) : null}
       </FeaturesSwitch>
-      {onPrintClickCB ? (
+      {onPrintClickCB && !isProxiedByEAAccount ? (
         <ActionButton
           isBlue
           isGhost
@@ -134,7 +138,7 @@ const CustomizedHeaderWrapper = ({
         inputFeatures="downloadReports"
         actionOnInaccessible="hidden"
       >
-        {onDownloadCSVClickCB && !hideDownloadIcon ? (
+        {onDownloadCSVClickCB && !hideDownloadIcon && !isProxiedByEAAccount ? (
           <ActionButton
             data-cy="download-csv"
             isBlue
@@ -186,9 +190,14 @@ const CustomizedHeaderWrapper = ({
   )
 }
 
-export default withNamespaces('header')(
-  withWindowSizes(CustomizedHeaderWrapper)
+const enhance = compose(
+  withWindowSizes,
+  withNamespaces('header'),
+  connect((state) => ({
+    isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+  }))
 )
+export default enhance(CustomizedHeaderWrapper)
 
 const StyledCol = styled(Col)`
   align-self: flex-end;

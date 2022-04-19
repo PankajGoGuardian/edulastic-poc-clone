@@ -197,6 +197,7 @@ function* receiveStudentResponseSaga({ payload }) {
       classResponseApi.studentResponse,
       payload
     )
+    delete payload.audit
     const { questionActivities: uqas = [] } = studentResponse
     const sc = uqas.filter(
       (uqa) =>

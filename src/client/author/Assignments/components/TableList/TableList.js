@@ -64,7 +64,10 @@ import {
 import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
 import { canEditTest } from '../../utils'
 import { bulkDownloadGradesAndResponsesAction } from '../../../AssignmentAdvanced/ducks'
-import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
+import {
+  getIsProxiedByEAAccountSelector,
+  isDemoPlaygroundUser,
+} from '../../../../student/Login/ducks'
 
 const convertTableData = (
   data,
@@ -163,6 +166,7 @@ const TableList = ({
   showEmbedLinkModal,
   toggleTagsEditModal,
   isDemoPlayground = false,
+  isProxiedByEAAccount = false,
 }) => {
   const [expandedRows, setExpandedRows] = useState([])
   const [details, setdetails] = useState(true)
@@ -652,6 +656,7 @@ const TableList = ({
                 showEmbedLinkModal,
                 toggleTagsEditModal,
                 isDemoPlaygroundUser: isDemoPlayground,
+                isProxiedByEAAccount,
               })}
               placement="bottomRight"
               trigger={['click']}
@@ -781,6 +786,7 @@ const enhance = compose(
       userRole: getUserRole(state),
       userClassList: getGroupList(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
+      isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
     }),
     {
       setItemsToFolder: setItemsMoveFolderAction,

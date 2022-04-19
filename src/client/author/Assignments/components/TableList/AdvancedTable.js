@@ -38,7 +38,10 @@ import {
   TypeIcon,
   TypeWrapper,
 } from './styled'
-import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
+import {
+  isDemoPlaygroundUser,
+  getIsProxiedByEAAccountSelector,
+} from '../../../../student/Login/ducks'
 
 class AdvancedTable extends Component {
   // eslint-disable-next-line react/state-in-constructor
@@ -225,6 +228,7 @@ class AdvancedTable extends Component {
             showEmbedLinkModal,
             toggleTagsEditModal,
             isDemoPlayground = false,
+            isProxiedByEAAccount = false,
           } = this.props
           const isAssignProgress =
             row.bulkAssignedCountProcessed < row.bulkAssignedCount
@@ -260,6 +264,7 @@ class AdvancedTable extends Component {
                   showEmbedLinkModal,
                   toggleTagsEditModal,
                   isDemoPlaygroundUser: isDemoPlayground,
+                  isProxiedByEAAccount,
                 })}
                 placement="bottomRight"
                 trigger={['click']}
@@ -529,6 +534,7 @@ const enhance = compose(
       assignmentTests: getAssignmentTestsSelector(state),
       userClassList: getGroupList(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
+      isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

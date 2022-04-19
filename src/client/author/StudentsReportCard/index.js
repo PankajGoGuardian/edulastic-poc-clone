@@ -20,6 +20,7 @@ const StudentsReportCard = ({
   classResponse,
   loadTestSettings,
   performanceBandsData,
+  audit = false,
 }) => {
   const { assignmentId, classId } = match.params
   const gradedTestActivities = testActivity.filter(
@@ -54,10 +55,10 @@ const StudentsReportCard = ({
     }
   })
 
-  const totalLength = gradedTestActivities?.length || 0,
-    loadedCount = Object.keys(numStudentsLoaded).length,
-    allLoaded = totalLength === loadedCount,
-    percentLoaded = round((loadedCount / totalLength) * 100, 1)
+  const totalLength = gradedTestActivities?.length || 0
+  const loadedCount = Object.keys(numStudentsLoaded).length
+  const allLoaded = totalLength === loadedCount
+  const percentLoaded = round((loadedCount / totalLength) * 100, 1)
 
   return (
     <>
@@ -86,6 +87,7 @@ const StudentsReportCard = ({
               performanceBandsData={performanceBandsData}
               index={index}
               setLoaded={setLoadedCb}
+              audit={audit}
             />
           ) : null
         )}

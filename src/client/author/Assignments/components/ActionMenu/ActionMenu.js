@@ -45,6 +45,7 @@ const ActionMenu = ({
   showEmbedLinkModal = () => {},
   toggleTagsEditModal = () => {},
   isDemoPlaygroundUser = false,
+  isProxiedByEAAccount = false,
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -248,7 +249,7 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {userRole === roleuser.TEACHER && (
+        {userRole === roleuser.TEACHER && !isProxiedByEAAccount && (
           <Menu.Item
             data-cy="download-responses"
             key="download-responses"

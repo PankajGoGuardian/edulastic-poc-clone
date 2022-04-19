@@ -1,6 +1,7 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { groupBy } from 'lodash'
 import { Tooltip, Dropdown } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
@@ -31,6 +32,7 @@ import {
 } from './styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
+import { getIsProxiedByEAAccountSelector } from '../../../../student/Login/ducks'
 
 export const testTypeToolTip = {
   assessment: 'Class Assessment',
@@ -172,6 +174,7 @@ const TableList = ({
   totalAssignmentsClasses,
   handlePagination,
   filterStatus,
+  isProxiedByEAAccount,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
@@ -296,12 +299,16 @@ const TableList = ({
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>
         Release Score
       </MoreOption>
-      <MoreOption onClick={() => handleBulkAction('downloadGrades')}>
-        Download Grades
-      </MoreOption>
-      <MoreOption onClick={() => handleBulkAction('downloadResponses')}>
-        Download Responses
-      </MoreOption>
+      {!isProxiedByEAAccount ? (
+        <MoreOption onClick={() => handleBulkAction('downloadGrades')}>
+          Download Grades
+        </MoreOption>
+      ) : null}
+      {!isProxiedByEAAccount ? (
+        <MoreOption onClick={() => handleBulkAction('downloadResponses')}>
+          Download Responses
+        </MoreOption>
+      ) : null}
       <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>
         Unassign
       </MoreOption>
@@ -415,6 +422,12 @@ TableList.propTypes = {
   classList: PropTypes.array.isRequired,
 }
 
-const enhance = compose(withRouter, withNamespaces('assignmentCard'))
+const enhance = compose(
+  withRouter,
+  withNamespaces('assignmentCard'),
+  connect((state) => ({
+    isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+  }))
+)
 
 export default enhance(TableList)

@@ -227,6 +227,10 @@ export const SET_IS_SIGNED_UP_USING_USERNAME_AND_PASSWORD =
   '[user] set signedUpUsingUsernameAndPassword flag'
 export const SET_ON_PROFILE_PAGE = '[user] set on profile page'
 
+export const TOGGLE_FORGOT_PASSWORD_MODAL =
+  '[user] toggle forgot password modal'
+
+export const LOGIN_ATTEMPT_EXCEEDED = '[user] too many login attempt'
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -352,6 +356,12 @@ export const setIsUserSignedUpUsingUsernameAndPassword = createAction(
 )
 
 export const setIsUserOnProfilePageAction = createAction(SET_ON_PROFILE_PAGE)
+
+export const setForgotPasswordVisibleAction = createAction(
+  TOGGLE_FORGOT_PASSWORD_MODAL
+)
+
+export const setTooManyAttemptAction = createAction(LOGIN_ATTEMPT_EXCEEDED)
 
 const initialState = {
   addAccount: false,
@@ -851,6 +861,12 @@ export default createReducer(initialState, {
   [TOGGLE_VERIFY_EMAIL_MODAL]: (state, { payload }) => {
     state.showVerifyEmailModal = payload
   },
+  [TOGGLE_FORGOT_PASSWORD_MODAL]: (state, { payload }) => {
+    state.forgotPasswordVisible = payload
+  },
+  [LOGIN_ATTEMPT_EXCEEDED]: (state, { payload }) => {
+    state.tooManyAttempt = payload
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -941,6 +957,20 @@ export const isDemoPlaygroundUser = createSelector(
   (isPlayground) => isPlayground
 )
 
+export const getIsProxiedByEAAccountSelector = createSelector(
+  [isProxyUser],
+  (_isProxyUser) => {
+    const defaultTokenKey = sessionStorage.getItem('defaultTokenKey')
+    if (defaultTokenKey) {
+      const role = defaultTokenKey.split(':')[3]
+      if (role === roleuser.EDULASTIC_ADMIN && _isProxyUser) {
+        return true
+      }
+    }
+    return false
+  }
+)
+
 export const proxyRole = createSelector(
   ['user.user.proxyRole'],
   (proxyrole) => proxyrole
@@ -989,6 +1019,16 @@ export const getIsEmailVerifedSelector = createSelector(
 
 export const getIsEmailVerificationLinkSent = createSelector(
   ['user.sendEmailVerificationLinkStatus'],
+  (r) => r
+)
+
+export const getForgotPasswordVisible = createSelector(
+  ['user.forgotPasswordVisible'],
+  (r) => r
+)
+
+export const getTooManyAtempt = createSelector(
+  ['user.tooManyAttempt'],
   (r) => r
 )
 
@@ -1099,7 +1139,14 @@ function* login({ payload }) {
     ) {
       errorMessage = data.message || err?.response?.data?.message
     }
-    notification({ msg: errorMessage })
+    if (status === 429) {
+      // set the flag to show reset password popup
+      yield put(setForgotPasswordVisibleAction(true))
+      yield put(setTooManyAttemptAction(true))
+      // reset too many atempt flag on close of reset password modal
+    } else {
+      notification({ msg: errorMessage })
+    }
   } finally {
     yield put(removeLoadingComponentAction({ componentName: 'loginButton' }))
   }

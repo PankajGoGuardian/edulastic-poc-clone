@@ -557,6 +557,23 @@ export const apiForms = [
     ],
   },
   {
+    id: 'reset-password-attempt',
+    name: 'Reset Password Attempt',
+    endPoint: 'admin-tool/reset-pass-attempts',
+    method: 'post',
+    fields: [
+      {
+        key: 'userId',
+        name: 'userId',
+        displayName: 'User Id',
+        placeholder: 'Enter User Id',
+        type: 'string',
+        formatter: (value) => value.trim(),
+        required: true,
+      },
+    ],
+  },
+  {
     id: 'approve-school-district',
     name: 'Approve School/District',
     endPoint: 'school/district-School-Details',

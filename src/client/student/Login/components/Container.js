@@ -35,6 +35,9 @@ import {
   atlasLoginAction,
   getIsClassCodeModalOpen,
   toggleClassCodeModalAction,
+  setForgotPasswordVisibleAction,
+  getForgotPasswordVisible,
+  setTooManyAttemptAction,
 } from '../ducks'
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
@@ -52,7 +55,6 @@ class LoginContainer extends React.Component {
 
   state = {
     confirmDirty: false,
-    forgotPasswordVisible: false,
     classCode: '',
   }
 
@@ -86,25 +88,21 @@ class LoginContainer extends React.Component {
   }
 
   onForgotPasswordClick = (e) => {
+    const { setforgotPasswordVisible } = this.props
     e.preventDefault()
-    this.setState((state) => ({
-      ...state,
-      forgotPasswordVisible: true,
-    }))
+    setforgotPasswordVisible(true)
   }
 
   onForgotPasswordCancel = () => {
-    this.setState((state) => ({
-      ...state,
-      forgotPasswordVisible: false,
-    }))
+    const { setforgotPasswordVisible, setTooManyAttempt } = this.props
+    setforgotPasswordVisible(false)
+
+    setTooManyAttempt(false)
   }
 
   onForgotPasswordOk = () => {
-    this.setState((state) => ({
-      ...state,
-      forgotPasswordVisible: false,
-    }))
+    const { setforgotPasswordVisible } = this.props
+    setforgotPasswordVisible(false)
   }
 
   render() {
@@ -122,9 +120,10 @@ class LoginContainer extends React.Component {
       loadingComponents,
       isClassCodeModalOpen,
       toggleClassCodeModal,
+      forgotPasswordVisible,
     } = this.props
 
-    const { forgotPasswordVisible, classCode } = this.state
+    const { classCode } = this.state
 
     const formItemLayout = {
       labelCol: {
@@ -391,6 +390,7 @@ const enhance = compose(
     (state) => ({
       loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
       isClassCodeModalOpen: getIsClassCodeModalOpen(state),
+      forgotPasswordVisible: getForgotPasswordVisible(state),
     }),
     {
       googleLogin: googleLoginAction,
@@ -399,6 +399,8 @@ const enhance = compose(
       login: loginAction,
       atlasLogin: atlasLoginAction,
       toggleClassCodeModal: toggleClassCodeModalAction,
+      setforgotPasswordVisible: setForgotPasswordVisibleAction,
+      setTooManyAttempt: setTooManyAttemptAction,
     }
   )
 )

@@ -132,6 +132,7 @@ import {
   getEmailVerified,
   getVerificationTS,
   isDefaultDASelector,
+  getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import {
@@ -1094,6 +1095,7 @@ class ClassBoard extends Component {
       regradeModalState,
       setPageNumber,
       isDocBasedTest,
+      isProxiedByEAAccount,
     } = this.props
 
     const {
@@ -1634,22 +1636,26 @@ class ClassBoard extends Component {
                             </MenuItems>
                           )}
 
-                          <MenuItems
-                            data-cy="downloadGrades"
-                            disabled={!enableDownload}
-                            onClick={() => this.handleDownloadGrades(false)}
-                          >
-                            <IconDownload />
-                            <span>Download Grades</span>
-                          </MenuItems>
-                          <MenuItems
-                            data-cy="downloadResponse"
-                            disabled={!enableDownload}
-                            onClick={() => this.handleDownloadGrades(true)}
-                          >
-                            <IconDownload />
-                            <span>Download Response</span>
-                          </MenuItems>
+                          {!isProxiedByEAAccount && (
+                            <MenuItems
+                              data-cy="downloadGrades"
+                              disabled={!enableDownload}
+                              onClick={() => this.handleDownloadGrades(false)}
+                            >
+                              <IconDownload />
+                              <span>Download Grades</span>
+                            </MenuItems>
+                          )}
+                          {!isProxiedByEAAccount && (
+                            <MenuItems
+                              data-cy="downloadResponse"
+                              disabled={!enableDownload}
+                              onClick={() => this.handleDownloadGrades(true)}
+                            >
+                              <IconDownload />
+                              <span>Download Response</span>
+                            </MenuItems>
+                          )}
                         </DropMenu>
                       }
                       placement="bottomRight"
@@ -2079,6 +2085,7 @@ const enhance = compose(
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
       isDefaultDA: isDefaultDASelector(state),
+      isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
       userRole: get(state.user, 'user.role', null),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),

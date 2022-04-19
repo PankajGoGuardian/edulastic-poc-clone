@@ -11,6 +11,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { isEmailValid } from '../../../common/utils/helpers'
 import { ButtonsContainer } from '../../../common/styled'
 import {
+  getTooManyAtempt,
   requestNewPasswordAction,
   requestNewPasswordResetControlAction,
 } from '../ducks'
@@ -24,6 +25,7 @@ const ForgotPasswordPopup = (props) => {
     user,
     districtPolicy,
     requestNewPasswordResetControl,
+    tooManyAttempt = false,
   } = props
   const { requestingNewPassword, requestNewPasswordSuccess } = user
 
@@ -48,8 +50,13 @@ const ForgotPasswordPopup = (props) => {
   }
 
   const modalTitle = useMemo(
-    () => (!requestNewPasswordSuccess ? 'Forgot Password' : 'Email Sent'),
-    [requestNewPasswordSuccess]
+    () =>
+      (tooManyAttempt && !requestNewPasswordSuccess)
+        ? 'Password attempt exceeded'
+        : !requestNewPasswordSuccess
+        ? 'Forgot Password'
+        : 'Email Sent',
+    [requestNewPasswordSuccess, tooManyAttempt]
   )
 
   return (
@@ -64,7 +71,26 @@ const ForgotPasswordPopup = (props) => {
       footer={[]}
     >
       <div>
-        {!requestNewPasswordSuccess ? (
+        {(tooManyAttempt && !requestNewPasswordSuccess) ? (
+          <div>
+            <StyledText>
+              You have entered the wrong password too many times. For security
+              reasons we have locked your account. Please enter your registered
+              username or email to receive a link to reset your password and
+              regain access.
+            </StyledText>
+            <StyledText>
+              Alternatively, you can ask your admin/teacher to reset your
+              password.
+            </StyledText>
+            <ConnectedForgotPasswordForm
+              onSubmit={onSendLink}
+              onCancel={onCancelForgotPassword}
+              t={t}
+              requestingNewPassword={requestingNewPassword}
+            />
+          </div>
+        ) : !requestNewPasswordSuccess ? (
           <div>
             <StyledText>
               Please enter your registered username or email. We will email you
@@ -309,6 +335,7 @@ const enhance = compose(
     (state) => ({
       user: get(state, 'user', null),
       districtPolicy: get(state, 'signup.districtPolicy', {}),
+      tooManyAttempt: getTooManyAtempt(state),
     }),
     {
       requestNewPassword: requestNewPasswordAction,

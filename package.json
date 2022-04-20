@@ -41,8 +41,8 @@
     "buildwlimit": "NODE_ENV=production react-app-rewired --max_old_space_size=6096 build",
     "build:login2": "webpack --config src/webpack.login.config.js",
     "prod-serve": "serve -s build -p 3001",
-    "test": "jest --coverage && ava",
     "jest": "jest",
+    "test": "react-scripts test --coverage --watchAll=false",
     "ava": "ava --watch",
     "test:watch": "jest --watch",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
@@ -168,6 +168,10 @@
     "@storybook/addon-links": "^5.0.11",
     "@storybook/addons": "^5.0.11",
     "@storybook/react": "^5.0.11",
+    "@testing-library/jest-dom": "^5.16.2",
+    "@testing-library/react": "^12.1.4",
+    "@testing-library/user-event": "^14.0.0",
+    "@types/jest": "^27.4.1",
     "@types/react": "^16.9.55",
     "ava": "1.0.0-rc.2",
     "babel-core": "7.0.0-bridge.0",
@@ -266,29 +270,23 @@
     ]
   },
   "jest": {
-    "verbose": true,
-    "clearMocks": true,
-    "setupTestFrameworkScriptFile": "<rootDir>/config/test-setup.js",
-    "transform": {
-      "^.+\\.(js|jsx|mjs)$": "<rootDir>/config/jest-transform.js"
-    },
-    "testRegex": "__test__/.*\\.test\\.js$",
-    "testFileExtensions": [
-      "es6",
-      "js"
-    ],
-    "moduleFileExtensions": [
-      "js",
-      "json",
-      "es6"
+    "testMatch": [
+      "**/?(*.)+(spec).[jt]s?(x)"
     ],
     "transformIgnorePatterns": [
-      "[/\\\\]node_modules[/\\\\].+\\.(js|jsx|mjs)$"
+      "/node_modules/(?!((antd|rc-util|rc-pagination|rc-calendar)/es|@eduastic)/)"
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/fileMock.js",
       "\\.(css|less)$": "<rootDir>/config/styleMock.js"
-    }
+    },
+    "collectCoverageFrom": [
+      "src/**/*.{js,jsx}",
+      "!src/**/*.stories.{js,jsx}",
+      "!src/index.js",
+      "!src/login.js",
+      "!src/service-worker*.js"
+    ]
   },
   "browserslist": {
     "production": [

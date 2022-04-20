@@ -37,8 +37,12 @@ const ForgotPasswordPopup = (props) => {
     onCancel()
   }
 
-  const onSendLink = (email) => {
-    requestNewPassword({ email, districtId: districtPolicy.orgId })
+  const onSendLink = (email, multipleAttempt) => {
+    requestNewPassword({
+      email,
+      districtId: districtPolicy.orgId,
+      multipleAttempt,
+    })
   }
 
   const onClickTryAgain = () => {
@@ -51,7 +55,7 @@ const ForgotPasswordPopup = (props) => {
 
   const modalTitle = useMemo(
     () =>
-      (tooManyAttempt && !requestNewPasswordSuccess)
+      tooManyAttempt && !requestNewPasswordSuccess
         ? 'Password attempt exceeded'
         : !requestNewPasswordSuccess
         ? 'Forgot Password'
@@ -71,20 +75,22 @@ const ForgotPasswordPopup = (props) => {
       footer={[]}
     >
       <div>
-        {(tooManyAttempt && !requestNewPasswordSuccess) ? (
+        {tooManyAttempt && !requestNewPasswordSuccess ? (
           <div>
             <StyledText>
               You have entered the wrong password too many times. For security
-              reasons we have locked your account. Please enter your registered
-              username or email to receive a link to reset your password and
-              regain access.
+              reasons we have locked your account.
             </StyledText>
             <StyledText>
-              Alternatively, you can ask your admin/teacher to reset your
-              password.
+              Please enter your <b>registered username or email</b> to receive a
+              link to reset your password and regain access.
+            </StyledText>
+            <StyledText>
+              <b>Alternatively</b>, you can <b>ask your admin/teacher</b> to
+              reset your password.
             </StyledText>
             <ConnectedForgotPasswordForm
-              onSubmit={onSendLink}
+              onSubmit={(e) => onSendLink(e, true)}
               onCancel={onCancelForgotPassword}
               t={t}
               requestingNewPassword={requestingNewPassword}
@@ -195,7 +201,7 @@ const ForgotPasswordForm = (props) => {
           ml="20px"
           disabled={requestingNewPassword}
         >
-          Email Me
+          Send Reset Link
         </EduButton>
       </ButtonsContainer>
     </Form>

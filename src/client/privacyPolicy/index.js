@@ -77,8 +77,10 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
       </ModalTitle>
       <ModalHeaderSubcontent data-cy="eulaModalSubTitle">
         Welcome to <b>Edulastic!</b> Before we proceed, please read our entire
-        (1) Terms of Service and End User License Agreement; and (2) Product
-        Privacy Policy to make sure we’re on the same page.
+        (1) Terms of Service and End User License Agreement; (2) Product Privacy
+        Policy
+        {isEEAUser && ' and (3) Edulastic Data Processing Addendum '} to make
+        sure we’re on the same page.
       </ModalHeaderSubcontent>
     </>
   )

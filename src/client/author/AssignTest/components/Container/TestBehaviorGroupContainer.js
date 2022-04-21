@@ -82,7 +82,7 @@ const TestBehaviorGroupContainer = ({
     return (
       !isDocBased &&
       allowReferenceMaterial &&
-      (playerSkinType === edulastic || testType === quester)
+      (playerSkinType === edulastic || playerSkinType === quester)
     )
   }, [playerSkinType, allowReferenceMaterial, isDocBased])
 

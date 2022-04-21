@@ -369,7 +369,7 @@ class AssessmentPlayerDefault extends React.Component {
       isTestDemoPlayer,
       canShowPlaybackOptionTTS,
       passage,
-      allowReferenceMaterial,
+      canShowReferenceMaterial,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -576,7 +576,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             openReferenceModal={openReferenceModal}
             isShowReferenceModal={isShowReferenceModal}
-            allowReferenceMaterial={allowReferenceMaterial}
+            canShowReferenceMaterial={canShowReferenceMaterial}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}

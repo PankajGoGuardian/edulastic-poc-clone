@@ -583,6 +583,7 @@ const AssessmentContainer = ({
   loadTest,
   showUserTTS,
   isTestPreviewModalVisible,
+  allowReferenceMaterial,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -1304,6 +1305,8 @@ const AssessmentContainer = ({
     gotoSummary,
     handleReviewOrSubmit,
     canShowPlaybackOptionTTS,
+    canShowReferenceMaterial:
+      !isEmpty(referenceDocAttributes) && allowReferenceMaterial,
     ...restProps,
   }
 

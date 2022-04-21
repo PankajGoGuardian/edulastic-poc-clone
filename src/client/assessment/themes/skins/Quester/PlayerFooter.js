@@ -66,7 +66,7 @@ const PlayerFooter = ({
   isPremiumContentWithoutAccess = false,
   passage,
   openReferenceModal,
-  allowReferenceMaterial,
+  canShowReferenceMaterial,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -270,7 +270,7 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
 
-      {allowReferenceMaterial && (
+      {canShowReferenceMaterial && (
         <ActionContainer
           hoverEffect
           onClick={openReferenceModal}

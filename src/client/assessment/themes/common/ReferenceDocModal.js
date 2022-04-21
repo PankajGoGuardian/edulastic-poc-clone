@@ -165,7 +165,7 @@ const ReferenceMaterialView = styled.div`
 `
 
 const Image = styled.img`
-  height: 100%;
+  height: auto;
   width: 100%;
   object-fit: cover;
 `

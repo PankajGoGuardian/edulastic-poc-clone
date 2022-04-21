@@ -64,7 +64,7 @@ const PlayerHeader = ({
   LCBPreviewModal = false,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
-  allowReferenceMaterial,
+  canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
 }) => {
@@ -201,7 +201,7 @@ const PlayerHeader = ({
                     }
                     openReferenceModal={openReferenceModal}
                     isShowReferenceModal={isShowReferenceModal}
-                    allowReferenceMaterial={allowReferenceMaterial}
+                    canShowReferenceMaterial={canShowReferenceMaterial}
                   />
                 )}
               </MainActionWrapper>

@@ -386,6 +386,14 @@ class ClassHeader extends Component {
       .getBubbleSheet({ assignmentId, groupId })
       .then((r) => {
         hideLoading()
+        if (r.data?.result?.hasNonMcq) {
+          notification({
+            type: 'warn',
+            msg: `Please note Non multiple choice questions will have to be manually graded.`,
+            exact: true,
+            duration: null,
+          })
+        }
         if (r.data?.result?.Location) {
           window.open(r.data?.result?.Location, '_blank').focus()
         }

@@ -6195,7 +6195,7 @@ caniuse-lite@^1.0.0, caniuse-lite@^1.0.30000981, caniuse-lite@^1.0.30000989, can
   resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001319.tgz#eb4da4eb3ecdd409f7ba1907820061d56096e88f"
   integrity sha512-xjlIAFHucBRSMUo1kb5D4LYgcN1M45qdKP++lhqowDpwJwGkpIRTt5qQqnhxjj1vHcI7nrJxWhCC1ATrCEBTcw==
 
-canvas@^2.4.1:
+canvas@^2.4.1, canvas@^2.6.0:
   version "2.9.1"
   resolved "https://registry.yarnpkg.com/canvas/-/canvas-2.9.1.tgz#58ec841cba36cef0675bc7a74ebd1561f0b476b0"
   integrity sha512-vSQti1uG/2gjv3x6QLOZw7TctfufaerTWbVe+NSduHxxLGB+qf3kFgQ6n66DSnuoINtVUjrLLIK2R+lxrBG07A==
@@ -13358,10 +13358,14 @@ jsqr@^1.4.0:
     array-includes "^3.1.3"
     object.assign "^4.1.2"
 
-jsxgraph@^1.2.3:
-  version "1.4.2"
-  resolved "https://registry.yarnpkg.com/jsxgraph/-/jsxgraph-1.4.2.tgz#676a69a2166476eaa3290c6dc8330e3c9977e155"
-  integrity sha512-iQ1rXAyt1mwdQtVX/0qh9h7QYlf1YDUlZuJ/ZroEMjq9hwb82exuPTZwKRpX/j7C+HdU1lbv9m845wNA46YQgQ==
+jsxgraph@1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/jsxgraph/-/jsxgraph-1.2.3.tgz#640180e27ba6091a604a07c986fd3e819be77df5"
+  integrity sha512-EOTkM6XYHoSq12qKKfNuakO7Q1R+JeQI7oaniJ00rZKi9v8/oge4Mxe30tlyy5/J8oCfx9tvV2Vyczu1ZnJqAw==
+  dependencies:
+    requirejs "^2.3.6"
+  optionalDependencies:
+    canvas "^2.6.0"
 
 keyboardevent-key-polyfill@^1.1.0:
   version "1.1.0"
@@ -18997,6 +19001,11 @@ require-precompiled@^0.1.0:
   version "0.1.0"
   resolved "https://registry.yarnpkg.com/require-precompiled/-/require-precompiled-0.1.0.tgz#5a1b52eb70ebed43eb982e974c85ab59571e56fa"
   integrity sha1-WhtS63Dr7UPrmC6XTIWrWVceVvo=
+
+requirejs@^2.3.6:
+  version "2.3.6"
+  resolved "https://registry.yarnpkg.com/requirejs/-/requirejs-2.3.6.tgz#e5093d9601c2829251258c0b9445d4d19fa9e7c9"
+  integrity sha512-ipEzlWQe6RK3jkzikgCupiTbTvm4S0/CAU5GlgptkN5SO6F3u0UD0K18wy6ErDqiCyP4J4YYe1HuAShvsxePLg==
 
 requires-port@^1.0.0:
   version "1.0.0"

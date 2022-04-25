@@ -21,6 +21,7 @@ import {
   IconDeskTopMonitor,
   IconNotes,
   IconSettings,
+  IconStar,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
@@ -111,6 +112,7 @@ import {
 import ViewPasswordModal from './ViewPasswordModal'
 import { allowedSettingPageToDisplay } from './utils/transformers'
 import { slice } from '../../../LCBAssignmentSettings/ducks'
+import PremiumPopover from '../../../../features/components/PremiumPopover'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -136,6 +138,8 @@ class ClassHeader extends Component {
       isCloseModalVisible: false,
       modalInputVal: '',
       condition: true, // Whether meet the condition, if not show popconfirm.
+      actionsVisible: false,
+      premiumPopup: null,
     }
     this.inputRef = React.createRef()
   }
@@ -409,6 +413,29 @@ class ClassHeader extends Component {
       })
   }
 
+  componentDidUpdate() {
+    const { premiumPopup } = this.state
+    try {
+      if (premiumPopup && !document.body.contains(premiumPopup)) {
+        // eslint-disable-next-line react/no-did-update-set-state
+        this.setState({
+          premiumPopup: null,
+        })
+      }
+    } catch {
+      // eslint-disable-next-line react/no-did-update-set-state
+      this.setState({
+        premiumPopup: null,
+      })
+    }
+  }
+
+  showPremiumPopup = (element) => {
+    this.setState({
+      premiumPopup: element,
+    })
+  }
+
   render() {
     const {
       t,
@@ -454,7 +481,10 @@ class ClassHeader extends Component {
       isPauseModalVisible,
       isCloseModalVisible,
       modalInputVal = '',
+      actionsVisible,
+      premiumPopup,
     } = this.state
+    const forceActionsVisible = !!premiumPopup
     const {
       endDate,
       startDate,
@@ -582,31 +612,44 @@ class ClassHeader extends Component {
       </OpenCloseWrapper>
     )
 
-    const scanBubbleSheetMenuItem = (() => {
+    const scanBubbleSheetMenuItem = ({ isAccessible }) => {
       const tooltipTitle = canOpen
         ? 'OPEN Assignment to Scan Responses'
         : isPaused
         ? 'RESUME Assignment to Scan Responses'
         : ''
       const isMenuItemActive = !canOpen && !isPaused && canClose
-      const menuItemContent = isMenuItemActive ? (
-        <Link
-          to={{
-            pathname: '/uploadAnswerSheets',
-            search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+      const menuText = (
+        <span
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
           }}
-          target="_blank"
         >
-          Scan Bubble Sheet
-        </Link>
-      ) : (
-        'Scan Bubble Sheet'
+          Scan Bubble Sheet&nbsp;&nbsp; {isAccessible || <IconStar />}
+        </span>
       )
+      const menuItemContent =
+        isMenuItemActive && isAccessible ? (
+          <Link
+            to={{
+              pathname: '/uploadAnswerSheets',
+              search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+            }}
+            target="_blank"
+          >
+            {menuText}
+          </Link>
+        ) : (
+          menuText
+        )
       return (
         <MenuItems
           data-cy="upload-bubble-sheet"
           key="upload-bubble-sheet"
-          disabled={!isMenuItemActive}
+          disabled={!isMenuItemActive || !isAccessible}
+          style={!isAccessible ? { cursor: 'pointer' } : {}}
         >
           {!isMenuItemActive && tooltipTitle ? (
             <Tooltip title={tooltipTitle} placement="left">
@@ -617,10 +660,10 @@ class ClassHeader extends Component {
           )}
         </MenuItems>
       )
-    })()
+    }
 
     const actionsMenu = (
-      <DropMenu>
+      <DropMenu style={{ display: 'flex', flexDirection: 'column' }}>
         <CaretUp className="fa fa-caret-up" />
         {isSmallDesktop && <MenuItems key="key3">{renderOpenClose}</MenuItems>}
         <FeaturesSwitch
@@ -648,30 +691,61 @@ class ClassHeader extends Component {
         </MenuItems>
         <FeaturesSwitch
           inputFeatures="enableOmrSheets"
-          actionOnInaccessible="hidden"
+          actionOnInaccessible={(e) =>
+            this.showPremiumPopup(e.currentTarget || e.target)
+          }
           groupId={classId}
+          style={
+            (isAccessible) => (isAccessible ? {} : { order: 99 }) // order should be >= no. of list items to put it at last
+          }
         >
-          <MenuItems
-            data-cy="download-bubble-sheet"
-            key="download-bubble-sheet"
-            onClick={() => this.generateBubbleSheet(assignmentId, classId)}
-            disabled={!!isAssignmentDone}
-          >
-            <Tooltip
-              title={isAssignmentDone ? 'Assignment is not open' : null}
-              placement="right"
+          {({ isAccessible }) => (
+            <MenuItems
+              data-cy="download-bubble-sheet"
+              key="download-bubble-sheet"
+              onClick={(e) =>
+                isAccessible
+                  ? this.generateBubbleSheet(assignmentId, classId)
+                  : this.showPremiumPopup(e.domEvent.target)
+              }
+              disabled={!!isAssignmentDone || !isAccessible}
+              style={!isAccessible ? { cursor: 'pointer' } : {}}
             >
-              Generate Bubble Sheet
-            </Tooltip>
-          </MenuItems>
+              <Tooltip
+                title={isAssignmentDone ? 'Assignment is not open' : null}
+                placement="right"
+              >
+                <span
+                  style={{
+                    display: 'flex',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                  }}
+                >
+                  Generate Bubble Sheet&nbsp;&nbsp;
+                  {isAccessible || <IconStar />}
+                </span>
+              </Tooltip>
+            </MenuItems>
+          )}
         </FeaturesSwitch>
         <FeaturesSwitch
           inputFeatures="enableOmrSheets"
-          actionOnInaccessible="hidden"
+          actionOnInaccessible={(e) =>
+            this.showPremiumPopup(e.currentTarget || e.target)
+          }
           groupId={classId}
+          style={
+            (isAccessible) => (isAccessible ? {} : { order: 99 }) // order should be >= no. of list items to put it at last
+          }
         >
           {scanBubbleSheetMenuItem}
         </FeaturesSwitch>
+        <PremiumPopover
+          target={premiumPopup}
+          onClose={() => this.setState({ premiumPopup: null })}
+          descriptionType="bubble"
+        />
         {isShowUnAssign && (
           <MenuItems
             data-cy="unAssign"
@@ -961,6 +1035,8 @@ class ClassHeader extends Component {
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 overlay={actionsMenu}
                 placement="bottomRight"
+                visible={forceActionsVisible || actionsVisible}
+                onVisibleChange={(v) => this.setState({ actionsVisible: v })}
               >
                 <EduButton isBlue data-cy="headerDropDown" IconBtn>
                   <FontAwesomeIcon icon={faEllipsisV} />

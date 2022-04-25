@@ -16,7 +16,7 @@ import {
   getUserId as getUserIdSelector,
 } from '../../student/Login/ducks'
 import { fetchMultipleSubscriptionsAction } from '../ManageSubscription/ducks'
-import { getUserSelector } from '../src/selectors/user'
+import { getUserSelector, isPremiumUserSelector } from '../src/selectors/user'
 import { fetchDashboardTiles } from '../Dashboard/ducks'
 
 // selectors
@@ -76,6 +76,50 @@ export const getRequestOrSubmitSuccessVisibility = createSelector(
 export const getRequestQuoteVisibility = createSelector(
   subscriptionSelector,
   (state) => state.isRequestQuoteModalVisible
+)
+
+export const getShowHeaderTrialModal = createSelector(
+  subscriptionSelector,
+  (state) => state?.showHeaderTrialModal
+)
+
+export const getIsPaidPremium = createSelector(
+  getSubscriptionSelector,
+  isPremiumUserSelector,
+  (sub, isPremiumUser) => {
+    const subType = sub?.subType
+    return !(
+      !subType ||
+      subType === 'TRIAL_PREMIUM' ||
+      (subType === 'partial_premium' && !isPremiumUser)
+    )
+  }
+)
+
+export const getIsAboutToExpire = createSelector(
+  getSubscriptionSelector,
+  (sub) => {
+    const subEndDate = sub?.subEndDate
+    return subEndDate
+      ? Date.now() + 30 * 24 * 60 * 60 * 1000 > subEndDate &&
+          Date.now() < subEndDate + 10 * 24 * 60 * 60 * 1000
+      : false
+  }
+)
+
+export const getNeedsRenewal = createSelector(
+  getSubscriptionSelector,
+  getIsPaidPremium,
+  getIsAboutToExpire,
+  getIsSubscriptionExpired,
+  (sub, isPaidPremium, isAboutToExpire, isSubscriptionExpired) => {
+    const subType = sub?.subType
+    return (
+      ((isPaidPremium && isAboutToExpire) ||
+        (!isPaidPremium && isSubscriptionExpired)) &&
+      !['enterprise', 'partial_premium'].includes(subType)
+    )
+  }
 )
 
 const slice = createSlice({

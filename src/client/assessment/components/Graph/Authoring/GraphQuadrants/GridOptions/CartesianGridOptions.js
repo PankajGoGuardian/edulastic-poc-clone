@@ -453,6 +453,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="xShowAxis"
                 checked={xShowAxis}
                 onChange={() => handleCheckbox('xShowAxis', xShowAxis)}
+                data-cy="xShowAxis"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -462,6 +463,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 onChange={() =>
                   handleCheckbox('xShowAxisLabel', xShowAxisLabel)
                 }
+                data-cy="xShowAxisLabel"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -469,6 +471,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('xHideTicks', xHideTicks)}
                 checked={xHideTicks}
+                data-cy="xHideTicks"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -476,6 +479,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('xMinArrow', xMinArrow)}
                 checked={xMinArrow}
+                data-cy="xMinArrow"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -483,6 +487,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('xMaxArrow', xMaxArrow)}
                 checked={xMaxArrow}
+                data-cy="xMaxArrow"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -490,6 +495,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('xCommaInLabel', xCommaInLabel)}
                 checked={xCommaInLabel}
+                data-cy="xCommaInLabel"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -497,6 +503,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('xDrawLabel', xDrawLabel)}
                 checked={xDrawLabel}
+                data-cy="xDrawLabel"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -504,6 +511,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="xRadians"
                 onChange={() => handleChangeRadians('xRadians', !xRadians)}
                 checked={xRadians}
+                data-cy="xRadians"
               />
             </Col>
           </Row>
@@ -620,6 +628,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="yShowAxis"
                 onChange={() => handleCheckbox('yShowAxis', yShowAxis)}
                 checked={yShowAxis}
+                data-cy="yShowAxis"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -629,6 +638,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                   handleCheckbox('yShowAxisLabel', yShowAxisLabel)
                 }
                 checked={yShowAxisLabel}
+                data-cy="yShowAxisLabel"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -636,6 +646,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('yHideTicks', yHideTicks)}
                 checked={yHideTicks}
+                data-cy="yHideTicks"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -643,6 +654,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('yMinArrow', yMinArrow)}
                 checked={yMinArrow}
+                data-cy="yMinArrow"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -650,6 +662,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('yMaxArrow', yMaxArrow)}
                 checked={yMaxArrow}
+                data-cy="yMaxArrow"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -657,6 +670,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('yCommaInLabel', yCommaInLabel)}
                 checked={yCommaInLabel}
+                data-cy="yCommaInLabel"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -664,6 +678,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="drawLabelZero"
                 onChange={() => handleCheckbox('yDrawLabel', yDrawLabel)}
                 checked={yDrawLabel}
+                data-cy="yDrawLabel"
               />
             </Col>
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
@@ -671,6 +686,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
                 name="yRadians"
                 onChange={() => handleCheckbox('yRadians', !yRadians)}
                 checked={yRadians}
+                data-cy="yRadians"
               />
             </Col>
           </Row>

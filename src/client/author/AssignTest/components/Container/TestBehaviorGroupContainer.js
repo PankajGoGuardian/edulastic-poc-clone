@@ -55,7 +55,6 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  allowReferenceMaterial,
   hasRefMaterialAttributes,
   t,
 }) => {
@@ -81,10 +80,9 @@ const TestBehaviorGroupContainer = ({
     const { quester, edulastic } = playerSkinValues
     return (
       !isDocBased &&
-      allowReferenceMaterial &&
       (playerSkinType === edulastic || playerSkinType === quester)
     )
-  }, [playerSkinType, allowReferenceMaterial, isDocBased])
+  }, [playerSkinType, isDocBased])
 
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)

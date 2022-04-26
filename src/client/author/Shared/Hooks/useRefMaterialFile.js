@@ -26,7 +26,8 @@ export const useRefMaterialFile = (referenceDocAttributes, setData) => {
 
   const handleRemoveRefMaterial = () => {
     if (typeof setData === 'function') {
-      setData(null)
+      setData({})
+      setEnableUpload(false)
     }
   }
 

@@ -710,7 +710,6 @@ class Setting extends Component {
       showCancelButton,
       disableAnswerOnPaper,
       premium,
-      allowReferenceMaterial,
       districtPermissions = [],
       isAuthorPublisher,
       calculatorProvider,
@@ -1403,8 +1402,7 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {allowReferenceMaterial &&
-                    this.isReferenceMaterialAllowedForCurrentSkin &&
+                  {this.isReferenceMaterialAllowedForCurrentSkin &&
                     !isDocBased && (
                       <Block id="reference-material" smallSize={isSmallSize}>
                         <ReferenceMaterial

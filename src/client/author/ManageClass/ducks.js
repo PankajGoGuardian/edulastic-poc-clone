@@ -33,6 +33,7 @@ import { push } from 'connected-react-router'
 import { roleuser } from '@edulastic/constants'
 import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
+import React from 'react'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
@@ -47,6 +48,7 @@ import {
 import { getOrgGroupList, getUserRole } from '../src/selectors/user'
 import { slice } from '../Subscription/ducks'
 import { clearClassListAction } from '../Classes/ducks'
+
 // selectors
 const manageClassSelector = (state) => state.manageClass
 export const getSelectedSubject = createSelector(
@@ -1036,9 +1038,26 @@ function* syncClassWithCanvasSaga({ payload }) {
   } catch (err) {
     captureSentryException(err)
     if (err?.status === 403) {
+      let msg = err?.response?.data?.message || 'Class sync with Canvas failed'
+      if (err?.response?.data?.message === 'existingClassSyncFail') {
+        msg = (
+          <span>
+            This course section is already synced with{' '}
+            {err?.response?.data?.info?.sectionName}{' '}
+            {err?.response?.data?.info?.status ? (
+              ''
+            ) : (
+              <span>
+                (<span style={{ color: 'red' }}>Archived class</span>)
+              </span>
+            )}
+            . Please ask your admin to update the class or enroll as co-teacher.
+          </span>
+        )
+      }
       notification({
         type: 'info',
-        msg: err?.response?.data?.message || 'Class sync with Canvas failed',
+        msg,
       })
     } else {
       notification({ messageKey: 'classSyncWithCanvasFailed' })

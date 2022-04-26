@@ -9,6 +9,7 @@ import {
   white,
   mainTextColor,
   title,
+  lightFadedBlack,
   green,
   red,
   black,
@@ -208,7 +209,7 @@ export const MenuItems = styled(Menu.Item)`
   display: flex;
   align-items: center;
   font-size: 11px;
-  color: ${title};
+  color: ${({ disabled }) => (disabled ? lightFadedBlack : title)};
   font-weight: 600;
   &:hover {
     svg {
@@ -226,6 +227,14 @@ export const MenuItems = styled(Menu.Item)`
     margin-right: 10px;
     path {
       fill: ${mainTextColor};
+    }
+  }
+  &.ant-dropdown-menu-item-disabled {
+    svg,
+    i {
+      path {
+        fill: ${lightFadedBlack}!important;
+      }
     }
   }
   &:not(.ant-dropdown-menu-item-disabled):hover {

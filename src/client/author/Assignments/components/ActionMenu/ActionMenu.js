@@ -249,10 +249,16 @@ const ActionMenu = ({
             </StyledLink>
           </Menu.Item>
         )}
-        {userRole === roleuser.TEACHER && !isProxiedByEAAccount && (
+        {userRole === roleuser.TEACHER && (
           <Menu.Item
             data-cy="download-responses"
             key="download-responses"
+            disabled={isProxiedByEAAccount}
+            title={
+              isProxiedByEAAccount
+                ? 'Bulk action disabled for EA proxy accounts.'
+                : ''
+            }
             onClick={() => handleDownloadResponses(currentTestId)}
           >
             <StyledLink target="_blank" rel="noopener noreferrer">

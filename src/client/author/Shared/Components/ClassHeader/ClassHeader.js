@@ -871,21 +871,25 @@ class ClassHeader extends Component {
             Sync Grades to Schoology
           </MenuItems>
         )}
-        {!isProxiedByEAAccount && (
-          <FeaturesSwitch
-            inputFeatures="LCBstudentReportCard"
-            key="LCBstudentReportCard"
-            actionOnInaccessible="hidden"
-            groupId={classId}
+        <FeaturesSwitch
+          inputFeatures="LCBstudentReportCard"
+          key="LCBstudentReportCard"
+          actionOnInaccessible="hidden"
+          groupId={classId}
+        >
+          <MenuItems
+            disabled={isProxiedByEAAccount}
+            title={
+              isProxiedByEAAccount
+                ? 'Bulk action disabled for EA proxy accounts.'
+                : ''
+            }
+            data-cy="studentReportCard"
+            onClick={this.onStudentReportCardsClick}
           >
-            <MenuItems
-              data-cy="studentReportCard"
-              onClick={this.onStudentReportCardsClick}
-            >
-              Student Report Cards
-            </MenuItems>
-          </FeaturesSwitch>
-        )}
+            Student Report Cards
+          </MenuItems>
+        </FeaturesSwitch>
       </DropMenu>
     )
 

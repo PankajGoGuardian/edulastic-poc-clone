@@ -94,11 +94,16 @@ const CustomizedHeaderWrapper = ({
   const actionRightButtons = (
     <ActionButtonWrapper>
       {navMenu}
-      {showCSVDocsDownloadButton && !isProxiedByEAAccount ? (
+      {showCSVDocsDownloadButton ? (
         <ActionButton
           isBlue
           isGhost
-          title="Download Data"
+          disabled={isProxiedByEAAccount}
+          title={
+            isProxiedByEAAccount
+              ? 'Bulk action disabled for EA proxy accounts.'
+              : 'Download Data'
+          }
           onClick={() => updateCsvDocs({ csvModalVisible: true })}
         >
           <Icon type="download" />
@@ -122,12 +127,17 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ) : null}
       </FeaturesSwitch>
-      {onPrintClickCB && !isProxiedByEAAccount ? (
+      {onPrintClickCB ? (
         <ActionButton
           isBlue
           isGhost
           IconBtn
-          title="Print"
+          disabled={isProxiedByEAAccount}
+          title={
+            isProxiedByEAAccount
+              ? 'Bulk action disabled for EA proxy accounts.'
+              : 'Print'
+          }
           onClick={_onPrintClickCB}
         >
           <Icon type="printer" />
@@ -138,13 +148,18 @@ const CustomizedHeaderWrapper = ({
         inputFeatures="downloadReports"
         actionOnInaccessible="hidden"
       >
-        {onDownloadCSVClickCB && !hideDownloadIcon && !isProxiedByEAAccount ? (
+        {onDownloadCSVClickCB && !hideDownloadIcon ? (
           <ActionButton
             data-cy="download-csv"
             isBlue
             isGhost
             IconBtn
-            title="Download CSV"
+            disabled={isProxiedByEAAccount}
+            title={
+              isProxiedByEAAccount
+                ? 'Bulk action disabled for EA proxy accounts.'
+                : 'Download CSV'
+            }
             onClick={_onDownloadCSVClickCB}
           >
             <Icon type="download" />

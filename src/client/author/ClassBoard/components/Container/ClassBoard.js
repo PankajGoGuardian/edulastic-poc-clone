@@ -1,4 +1,4 @@
-import { black } from '@edulastic/colors'
+import { black, lightFadedBlack } from '@edulastic/colors'
 import {
   MainContentWrapper,
   CheckboxLabel,
@@ -1635,27 +1635,36 @@ class ClassBoard extends Component {
                               <span>Resume Students</span>
                             </MenuItems>
                           )}
-
-                          {!isProxiedByEAAccount && (
-                            <MenuItems
-                              data-cy="downloadGrades"
-                              disabled={!enableDownload}
-                              onClick={() => this.handleDownloadGrades(false)}
-                            >
-                              <IconDownload />
-                              <span>Download Grades</span>
-                            </MenuItems>
-                          )}
-                          {!isProxiedByEAAccount && (
-                            <MenuItems
-                              data-cy="downloadResponse"
-                              disabled={!enableDownload}
-                              onClick={() => this.handleDownloadGrades(true)}
-                            >
-                              <IconDownload />
-                              <span>Download Response</span>
-                            </MenuItems>
-                          )}
+                          <MenuItems
+                            data-cy="downloadGrades"
+                            disabled={!enableDownload || isProxiedByEAAccount}
+                            title={
+                              isProxiedByEAAccount
+                                ? 'Bulk action disabled for EA proxy accounts.'
+                                : ''
+                            }
+                            onClick={() => this.handleDownloadGrades(false)}
+                          >
+                            <IconDownload />
+                            <span>Download Grades</span>
+                          </MenuItems>
+                          <MenuItems
+                            data-cy="downloadResponse"
+                            disabled={!enableDownload || isProxiedByEAAccount}
+                            title={
+                              isProxiedByEAAccount
+                                ? 'Bulk action disabled for EA proxy accounts.'
+                                : ''
+                            }
+                            onClick={() => this.handleDownloadGrades(true)}
+                          >
+                            <IconDownload
+                              color={
+                                isProxiedByEAAccount ? lightFadedBlack : null
+                              }
+                            />
+                            <span>Download Response</span>
+                          </MenuItems>
                         </DropMenu>
                       }
                       placement="bottomRight"

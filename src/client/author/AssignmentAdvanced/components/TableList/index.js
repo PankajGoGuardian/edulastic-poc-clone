@@ -299,16 +299,38 @@ const TableList = ({
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>
         Release Score
       </MoreOption>
-      {!isProxiedByEAAccount ? (
-        <MoreOption onClick={() => handleBulkAction('downloadGrades')}>
-          Download Grades
-        </MoreOption>
-      ) : null}
-      {!isProxiedByEAAccount ? (
-        <MoreOption onClick={() => handleBulkAction('downloadResponses')}>
-          Download Responses
-        </MoreOption>
-      ) : null}
+      <Tooltip
+        title={
+          isProxiedByEAAccount
+            ? 'Bulk action disabled for EA proxy accounts.'
+            : ''
+        }
+      >
+        <div>
+          <MoreOption
+            onClick={() => handleBulkAction('downloadGrades')}
+            disabled={isProxiedByEAAccount}
+          >
+            Download Grades
+          </MoreOption>
+        </div>
+      </Tooltip>
+      <Tooltip
+        title={
+          isProxiedByEAAccount
+            ? 'Bulk action disabled for EA proxy accounts.'
+            : ''
+        }
+      >
+        <div>
+          <MoreOption
+            onClick={() => handleBulkAction('downloadResponses')}
+            disabled={isProxiedByEAAccount}
+          >
+            Download Responses
+          </MoreOption>
+        </div>
+      </Tooltip>
       <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>
         Unassign
       </MoreOption>

@@ -114,6 +114,7 @@ const PlayerContentArea = ({
         <ReferenceDocModal
           attributes={referenceDocAttributes}
           playerSkinType={playerSkinType}
+          zoomLevel={zoomLevel}
         />
       )}
     </Main>

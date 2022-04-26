@@ -116,6 +116,9 @@ const PlayerHeader = ({
         blockNavigationToAnsweredQuestions={blockNavigationToAnsweredQuestions}
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
         toggleUserWorkUploadModal={toggleUserWorkUploadModal}
+        openReferenceModal={openReferenceModal}
+        isShowReferenceModal={isShowReferenceModal}
+        canShowReferenceMaterial={canShowReferenceMaterial}
       />
       <SettingsModal
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}

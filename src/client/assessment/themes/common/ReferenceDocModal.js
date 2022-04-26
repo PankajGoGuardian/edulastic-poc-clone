@@ -22,7 +22,7 @@ const {
 pdfjsLib.GlobalWorkerOptions.workerSrc =
   'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.1.266/build/pdf.worker.min.js'
 
-const SinglePage = ({ getPage, pageNum, size }) => {
+const SinglePage = ({ getPage, pageNum, size, zoomLevel }) => {
   const cavasRef = useRef()
 
   useEffect(() => {
@@ -33,8 +33,12 @@ const SinglePage = ({ getPage, pageNum, size }) => {
           // const outputScale = window.devicePixelRatio || 1
           const viewport = page.getViewport({ scale: 1 })
 
-          const scale1 = size / viewport.width
-          const scaledViewport = page.getViewport({ scale: scale1 })
+          let scale = size / viewport.width
+          if (zoomLevel > 1 && zoomLevel !== undefined) {
+            scale *= zoomLevel
+          }
+
+          const scaledViewport = page.getViewport({ scale })
           const context = cavasRef.current.getContext('2d')
           cavasRef.current.height = scaledViewport.height
           cavasRef.current.width = scaledViewport.width
@@ -54,12 +58,12 @@ const SinglePage = ({ getPage, pageNum, size }) => {
         }
       })()
     }
-  }, [pageNum, getPage, size])
+  }, [pageNum, getPage, size, zoomLevel])
 
   return <canvas width={0} height={0} ref={cavasRef} />
 }
 
-const PdfView = ({ uri, size }) => {
+const PdfView = ({ uri, size, zoomLevel }) => {
   const pdfRef = useRef()
   const [numPages, setNumPages] = useState(null)
 
@@ -84,7 +88,13 @@ const PdfView = ({ uri, size }) => {
   return (
     <PdfDocument>
       {new Array(numPages).fill(true).map((_, i) => (
-        <SinglePage key={i} getPage={getPage} pageNum={i + 1} size={size} />
+        <SinglePage
+          key={i}
+          getPage={getPage}
+          pageNum={i + 1}
+          size={size}
+          zoomLevel={zoomLevel}
+        />
       ))}
     </PdfDocument>
   )
@@ -98,6 +108,7 @@ const ReferenceDocModal = ({
   playerSkinType,
   attributes,
   updateTestPlayer,
+  zoomLevel,
 }) => {
   const [size, setSize] = useState(600)
   const handleClose = () => {
@@ -117,15 +128,16 @@ const ReferenceDocModal = ({
 
     const { source, type } = attributes
     if (imageTypes.includes(type)) {
-      return <Image src={source} />
+      return <Image src={source} zoomLevel={zoomLevel} />
     }
     if (type === fileTypes.PDF) {
-      return <PdfView uri={source} size={size} />
+      return <PdfView uri={source} size={size} zoomLevel={zoomLevel} />
     }
     return null
-  }, [attributes, size])
+  }, [attributes, size, zoomLevel])
 
   const skinType = playerSkinType ? playerSkinType.toLowerCase() : ''
+  const zoomed = zoomLevel > 1 && zoomLevel !== undefined
 
   return (
     <RndWrapper
@@ -140,8 +152,11 @@ const ReferenceDocModal = ({
           Reference Material
         </Title>
       </div>
-      <ReferenceMaterialView isPdf={attributes?.type === fileTypes.PDF}>
-        {reference}
+      <ReferenceMaterialView
+        zoomed={zoomed}
+        isPdf={attributes?.type === fileTypes.PDF}
+      >
+        <div style={{ width: '100%', height: '100%' }}>{reference}</div>
       </ReferenceMaterialView>
     </RndWrapper>
   )
@@ -161,13 +176,25 @@ const ReferenceMaterialView = styled.div`
   width: 100%;
   height: calc(100% - 35px);
   overflow-y: auto;
-  overflow-x: ${({ isPdf }) => isPdf && 'hidden'};
+  overflow-x: ${({ isPdf, zoomed }) => !zoomed && isPdf && 'hidden'};
 `
 
 const Image = styled.img`
   height: auto;
   width: 100%;
   object-fit: cover;
+
+  ${({ zoomLevel }) => {
+    const zoomed = zoomLevel > 1 && zoomLevel !== undefined
+    if (!zoomed) {
+      return ''
+    }
+
+    return `
+      transform: ${zoomed ? `scale(${zoomLevel})` : ''};
+      transform-origin: ${zoomed ? `top left` : ''};
+    `
+  }};
 `
 
 const CloseIcon = styled(IconClose)`

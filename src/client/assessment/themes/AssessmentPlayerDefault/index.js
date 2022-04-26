@@ -635,6 +635,9 @@ class AssessmentPlayerDefault extends React.Component {
               }
               isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
+              openReferenceModal={openReferenceModal}
+              isShowReferenceModal={isShowReferenceModal}
+              canShowReferenceMaterial={canShowReferenceMaterial}
             />
             {!previewPlayer && (
               <SavePauseModalMobile
@@ -704,6 +707,7 @@ class AssessmentPlayerDefault extends React.Component {
                 <ReferenceDocModal
                   attributes={referenceDocAttributes}
                   playerSkinType={playerSkinType}
+                  zoomLevel={zoomLevel}
                 />
               )}
             </Main>

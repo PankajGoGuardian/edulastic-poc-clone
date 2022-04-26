@@ -169,7 +169,7 @@ export default connect(null, { updateTestPlayer: updateTestPlayerAction })(
 const RndWrapper = styled(Rnd)`
   background: ${white};
   box-shadow: ${boxShadowDefault};
-  z-index: 1500;
+  z-index: 999;
 `
 
 const ReferenceMaterialView = styled.div`

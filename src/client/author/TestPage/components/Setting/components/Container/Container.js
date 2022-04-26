@@ -1410,6 +1410,7 @@ class Setting extends Component {
                           isEditable={isEditable}
                           isSmallSize={isSmallSize}
                           premium={premium}
+                          disabled={disabled}
                           referenceDocAttributes={referenceDocAttributes}
                         />
                       </Block>

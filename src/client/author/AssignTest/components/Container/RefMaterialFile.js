@@ -21,6 +21,7 @@ const RefMaterialFile = ({
   tootltipWidth,
   overRideSettings,
   attributes,
+  disabled,
   hasRefMaterialAttributes,
 }) => {
   const inputRef = useRef()
@@ -76,7 +77,7 @@ const RefMaterialFile = ({
             <AlignSwitchRight
               data-cy="reference-material-switch"
               size="small"
-              disabled={!hasRefMaterialAttributes}
+              disabled={!hasRefMaterialAttributes || disabled}
               defaultChecked={false}
               checked={enableUpload}
               onChange={onChangeSwitch}
@@ -91,12 +92,14 @@ const RefMaterialFile = ({
               <FileIcon type={attributes?.type} />
               <FileName>{attributes.name}</FileName>
               <NormalText>{formatFileSize(attributes.size)}</NormalText>
-              <CloseIcon
-                width={12}
-                height={12}
-                role="presentation"
-                onClick={onRemoveFile}
-              />
+              {!disabled && (
+                <CloseIcon
+                  width={12}
+                  height={12}
+                  role="presentation"
+                  onClick={onRemoveFile}
+                />
+              )}
             </FlexContainer>
           )}
           {!hasRefMaterial && enableUpload && premium && (

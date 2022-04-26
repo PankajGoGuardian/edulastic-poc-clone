@@ -25,6 +25,7 @@ import {
 const ReferenceMaterial = ({
   owner,
   premium,
+  disabled,
   isEditable,
   isSmallSize,
   setTestData,
@@ -70,8 +71,8 @@ const ReferenceMaterial = ({
           Reference Material <DollarPremiumSymbol premium={premium} />
         </span>
         <EduSwitchStyled
-          disabled={!owner || !isEditable || !premium}
           checked={enableUpload}
+          disabled={!owner || !isEditable || !premium || disabled}
           data-cy="assignment-referenceDocAttributes-switch"
           onChange={onChangeSwitch}
         />
@@ -95,12 +96,14 @@ const ReferenceMaterial = ({
           <FileIcon type={referenceDocAttributes?.type} />
           <FileName>{referenceDocAttributes.name}</FileName>
           <NormalText>{formatFileSize(referenceDocAttributes.size)}</NormalText>
-          <CloseIcon
-            width={12}
-            height={12}
-            role="presentation"
-            onClick={onRemoveFile}
-          />
+          {!disabled && (
+            <CloseIcon
+              width={12}
+              height={12}
+              role="presentation"
+              onClick={onRemoveFile}
+            />
+          )}
         </FlexContainer>
       )}
       <UploadInput

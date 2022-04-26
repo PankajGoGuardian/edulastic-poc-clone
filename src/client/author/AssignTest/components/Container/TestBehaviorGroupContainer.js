@@ -330,6 +330,7 @@ const TestBehaviorGroupContainer = ({
       {showRefMaterial && (
         <RefMaterialFile
           premium={premium}
+          disabled={freezeSettings}
           tootltipWidth={tootltipWidth}
           overRideSettings={overRideSettings}
           attributes={referenceDocAttributes}

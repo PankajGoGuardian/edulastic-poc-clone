@@ -402,6 +402,7 @@ module.exports = {
     'applyEBSR',
     'testContentVisibility',
     'showRubricToStudents',
+    'referenceDocAttributes',
   ],
   docBasedSettingsOptions: [
     'partialScore',

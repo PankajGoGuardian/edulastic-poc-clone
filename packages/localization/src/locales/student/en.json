@@ -71,7 +71,8 @@
       "pause": "Pause",
       "flag": "Flag",
       "options": "Options",
-      "referenceSheet": "Reference Sheet"
+      "referenceSheet": "Reference Sheet",
+      "referenceGuide": "Reference Guide"
     }
   },
   "component": {

@@ -153,6 +153,26 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
       <Devider />
+
+      {canShowReferenceMaterial && (
+        <ActionContainer
+          hoverEffect
+          onClick={openReferenceModal}
+          title={t('common.test.referenceSheet')}
+          data-cy="referenceSheet"
+          disabled={isPremiumContentWithoutAccess}
+        >
+          <IconWrapper>
+            <IconReferenceSheet
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.referenceGuide')}</span>
+        </ActionContainer>
+      )}
+
       {maxAnswerChecks > 0 && !hideCheckAnswer && (
         <ActionContainer
           hoverEffect
@@ -267,25 +287,6 @@ const PlayerFooter = ({
           </IconWrapper>
 
           <span>{t('common.test.uploadWork')}</span>
-        </ActionContainer>
-      )}
-
-      {canShowReferenceMaterial && (
-        <ActionContainer
-          hoverEffect
-          onClick={openReferenceModal}
-          title={t('common.test.referenceSheet')}
-          data-cy="referenceSheet"
-          disabled={isPremiumContentWithoutAccess}
-        >
-          <IconWrapper>
-            <IconReferenceSheet
-              color={footer.textColor}
-              hoverColor={button.background}
-            />
-          </IconWrapper>
-
-          <span>{t('common.test.referenceSheet')}</span>
         </ActionContainer>
       )}
 

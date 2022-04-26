@@ -355,7 +355,12 @@ const numberFormat = [
   'isExponentialForm',
 ]
 const accuracyForms = ['tolerance', 'significantDecimalPlaces']
-const multipleValues = ['requireIntervalNotation', 'isIn', 'satisfies']
+const notationForms = [
+  'requireSetNotation',
+  'requireListNotation',
+  'requireCoordinateNotation',
+]
+const multipleValues = ['isIn', 'satisfies']
 const equationForms = [
   'isLineStandardForm',
   'isLineSlopeInterceptForm',
@@ -395,6 +400,7 @@ const evaluationSettings = {
       'expressionForms',
       'numberFormat',
       'accuracyForms',
+      'notationForms',
       'multipleValues',
       'equationForms',
     ],
@@ -451,6 +457,7 @@ const subEvaluationSettingsGrouped = {
   numberFormat,
   accuracyForms,
   multipleValues,
+  notationForms,
   equationForms,
   graphSegmentChecks,
   graphLineChecks,

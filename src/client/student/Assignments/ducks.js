@@ -23,7 +23,7 @@ import {
   TokenStorage,
 } from '@edulastic/api'
 import {
-  test as testConst,
+  testTypes as testTypesConstants,
   testActivityStatus,
   assignmentStatusOptions,
 } from '@edulastic/constants'
@@ -69,7 +69,10 @@ import { clearOrderOfOptionsInStore } from '../../assessment/actions/assessmentP
 import { getServerTs } from '../utils'
 import { TIME_UPDATE_TYPE } from '../../assessment/themes/common/TimedTestTimer'
 
-const { COMMON, ASSESSMENT, TESTLET } = testConst.type
+const { COMMON, TESTLET, PRACTICE } = testTypesConstants.TEST_TYPES
+
+const { TEST_TYPES_VALUES_MAP } = testTypesConstants
+
 const { DONE, ARCHIVED, NOT_OPEN } = assignmentStatusOptions
 
 // constants
@@ -548,7 +551,11 @@ export function getSebUrl({
   // seems to be causing problem when used in a url while launching the SEB
   // so just transforming common assessment => common_assessment
   // encodeURI/encodeURIComponent doesn't seem to work as well
-  const convertedType = (testType || '').split(' ').join('_')
+  let convertedType = (testType || '').split(' ').join('_')
+  if (PRACTICE.includes(testType)) {
+    convertedType = TEST_TYPES_VALUES_MAP.PRACTICE
+  }
+
   let url
   if (process.env.REACT_APP_API_URI.startsWith('http')) {
     url = `${process.env.REACT_APP_API_URI.replace('http', 'seb').replace(
@@ -789,14 +796,21 @@ function* startAssignment({ payload }) {
       testActivityId = _id
     }
 
+    let playerTestType = testType
+
+    if (COMMON.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
+    }
+    if (PRACTICE.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
+    }
+
     // set Activity id
-    if (testType !== TESTLET) {
+    if (!TESTLET.includes(testType)) {
       if (studentRecommendation) {
         yield put(
           push({
-            pathname: `/student/${
-              testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
+            pathname: `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistRecommendationsFlow: true,
               playlistId: studentRecommendation.playlistId,
@@ -806,9 +820,7 @@ function* startAssignment({ payload }) {
       } else if (isPlaylist) {
         yield put(
           push({
-            pathname: `/student/${
-              testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
+            pathname: `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -818,16 +830,14 @@ function* startAssignment({ payload }) {
       } else {
         yield put(
           push(
-            `/student/${
-              testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
+            `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }
     } else {
       yield put(
         push(
-          `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`
+          `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}`
         )
       )
     }
@@ -901,6 +911,15 @@ function* resumeAssignment({ payload }) {
       }
     }
 
+    let playerTestType = testType
+
+    if (COMMON.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
+    }
+    if (PRACTICE.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
+    }
+
     // get the class id for the assignment
     // const groupId = yield select(getCurrentGroup);
     // const assignmentsById = yield select(assignmentsSelector);
@@ -910,20 +929,18 @@ function* resumeAssignment({ payload }) {
     if (studentRecommendation) {
       yield put(
         push({
-          pathname: `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
+          pathname: `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
           state: {
             playlistRecommendationsFlow: true,
             playlistId: studentRecommendation.playlistId,
           },
         })
       )
-    } else if (testType !== TESTLET) {
+    } else if (!TESTLET.includes(testType)) {
       if (isPlaylist) {
         yield put(
           push({
-            pathname: `/student/${
-              testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
+            pathname: `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`,
             state: {
               playlistAssignmentFlow: true,
               playlistId: isPlaylist.playlistId,
@@ -933,16 +950,14 @@ function* resumeAssignment({ payload }) {
       } else {
         yield put(
           push(
-            `/student/${
-              testType === COMMON ? ASSESSMENT : testType
-            }/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
+            `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}/itemId/new`
           )
         )
       }
     } else {
       yield put(
         push(
-          `/student/${testType}/${testId}/class/${classId}/uta/${testActivityId}`
+          `/student/${playerTestType}/${testId}/class/${classId}/uta/${testActivityId}`
         )
       )
     }

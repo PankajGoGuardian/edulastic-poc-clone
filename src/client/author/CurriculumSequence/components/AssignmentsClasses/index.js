@@ -1,20 +1,19 @@
 import React from 'react'
 import styled from 'styled-components'
-import { Avatar, Table } from 'antd'
+import { Table } from 'antd'
 import {
   titleColor,
   white,
-  testTypeColor,
   mediumDesktopExactWidth,
   cardTitleColor,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
+import { TestTypeIcon } from '@edulastic/common'
 import { Tooltip } from '../../../../common/utils/helpers'
 import additemsIcon from '../../../Assignments/assets/add-items.svg'
 import piechartIcon from '../../../Assignments/assets/pie-chart.svg'
 import presentationIcon from '../../../Assignments/assets/presentation.svg'
 import { StatusLabel } from '../../../Assignments/components/TableList/styled'
-import { CustomIcon } from '../styled'
 
 const AssignmentsClasses = ({
   moduleId,
@@ -46,19 +45,7 @@ const AssignmentsClasses = ({
       title: 'Type',
       width: '60px',
       dataIndex: 'testType',
-      render: (testType) => (
-        <CustomIcon marginRight={0} align="unset">
-          <Avatar
-            size={18}
-            style={{
-              backgroundColor: testTypeColor[testType || 'practice'],
-              fontSize: '13px',
-            }}
-          >
-            {testType[0].toUpperCase() || 'P'}
-          </Avatar>
-        </CustomIcon>
-      ),
+      render: (testType) => <TestTypeIcon testType={testType} />,
       sorter: (a, b) => a.testType - b.testType,
     },
     {

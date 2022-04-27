@@ -6,7 +6,11 @@ import { get, isEmpty, uniqBy } from 'lodash'
 import { Link, withRouter } from 'react-router-dom'
 import { Dropdown, Tooltip, Spin, Menu } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
-import { test as testConstants, roleuser } from '@edulastic/constants'
+import {
+  test as testConstants,
+  testTypes as testTypesConstants,
+  roleuser,
+} from '@edulastic/constants'
 import {
   IconPresentation,
   IconAddItem,
@@ -19,6 +23,7 @@ import {
   withWindowSizes,
   EduButton,
   CheckboxLabel,
+  TestTypeIcon,
 } from '@edulastic/common'
 import { greyThemeDark3 } from '@edulastic/colors'
 
@@ -42,7 +47,6 @@ import {
   TestThumbnail,
   AssignmentTD,
   IconArrowDown,
-  TypeIcon,
   ExpandDivdier,
   StatusLabel,
   ActionDiv,
@@ -215,19 +219,9 @@ const TableList = ({
               )
             }
           >
-            {row && row.testType === testConstants.type.PRACTICE ? (
-              <TypeIcon data-cy="type" type="p">
-                P
-              </TypeIcon>
-            ) : row.testType === testConstants.type.ASSESSMENT ? (
-              <TypeIcon data-cy="type">A</TypeIcon>
-            ) : (
-              <TypeIcon data-cy="type" type="c">
-                C
-              </TypeIcon>
-            )}
-            <TimedTestIndicator data-cy="type" type="p">
-              {row.timedAssignment && (
+            {row && <TestTypeIcon testType={row.testType} />}
+            {row.timedAssignment && (
+              <TimedTestIndicator data-cy="type" type="p">
                 <Tooltip
                   title={
                     <IndicatorText>
@@ -239,8 +233,8 @@ const TableList = ({
                 >
                   <IconHourGlass color={greyThemeDark3} />
                 </Tooltip>
-              )}
-            </TimedTestIndicator>
+              </TimedTestIndicator>
+            )}
           </TypeWrapper>
         ),
       },
@@ -545,7 +539,7 @@ const TableList = ({
         return a.testType.localeCompare(b.testType)
       },
       width: '14%',
-      render: (text = testConstants.type.ASSESSMENT) => (
+      render: (text = testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT) => (
         <TitleCase data-cy="testType">{text}</TitleCase>
       ),
     },

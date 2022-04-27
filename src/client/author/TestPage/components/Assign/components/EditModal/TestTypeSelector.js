@@ -1,16 +1,9 @@
 import React from 'react'
 import { Select, Col, Row } from 'antd'
-
-import { test } from '@edulastic/constants'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { StyledRow, StyledRowLabel, TestTypeDropDown } from './styled'
 import { StyledSelect } from '../../../../../AssignTest/components/SimpleOptions/styled'
-
-const { type } = test
-const { ASSESSMENT, PRACTICE } = type
-const testTypes = {
-  [ASSESSMENT]: 'Assessment',
-  [PRACTICE]: 'Practice',
-}
+import { getTestTypeFullNames } from '../../../../../../common/utils/testTypeUtils'
 
 const generateReportTypes = {
   YES: {
@@ -30,6 +23,8 @@ const TestTypeSelector = ({
   userRole,
   onGenerateReportFieldChange,
 }) => {
+  const testTypes = getTestTypeFullNames(testType, userRole)
+
   return (
     <>
       <StyledRowLabel gutter={16}>
@@ -53,7 +48,7 @@ const TestTypeSelector = ({
         </Col>
       </Row>
       <Col span={12}>
-        {testType === PRACTICE && (
+        {testTypesConstants.TEST_TYPES.PRACTICE.includes(testType) && (
           <>
             <StyledRowLabel>
               <Col span={24}>Generate Report</Col>

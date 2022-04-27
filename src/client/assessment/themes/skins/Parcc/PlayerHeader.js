@@ -13,8 +13,8 @@ import {
 } from '@edulastic/colors'
 import { IconBookmark } from '@edulastic/icons'
 import {
-  test as testConstants,
   keyboard as keyboardConst,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
@@ -90,6 +90,7 @@ const PlayerHeader = ({
   answerChecksUsedForItem,
   canShowPlaybackOptionTTS,
 }) => {
+  const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
   const totalUnanswered = skipped.filter((s) => s).length
@@ -128,7 +129,7 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
-      {testType === testConstants.type.PRACTICE && (
+      {PRACTICE.includes(testType) && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}

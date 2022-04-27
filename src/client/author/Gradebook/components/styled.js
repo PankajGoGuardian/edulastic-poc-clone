@@ -171,26 +171,6 @@ export const TestThumbnail = styled.img`
   }
 `
 
-export const TestTypeIcon = styled.span`
-  width: 18px;
-  height: 18px;
-  margin: 0px 10px;
-  border-radius: 50%;
-  text-align: center;
-  text-transform: uppercase;
-  color: ${white};
-  background: ${(props) => props.bgColor};
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 17px;
-  @media (min-width: ${extraDesktopWidthMax}) {
-    width: 20px;
-    height: 20px;
-    font-size: 14px;
-    line-height: 19px;
-  }
-`
-
 export const AssignmentTD = styled.div`
   text-align: left;
   padding-left: 0px !important;

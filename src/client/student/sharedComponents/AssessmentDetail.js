@@ -3,8 +3,6 @@ import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Col, Tooltip } from 'antd'
 import {
-  white,
-  testTypeColor,
   extraDesktopWidth,
   largeDesktopWidth,
   mobileWidthMax,
@@ -13,11 +11,8 @@ import {
   themeColor,
   greyThemeDark3,
 } from '@edulastic/colors'
-import {
-  test,
-  testActivity as testActivityConstants,
-} from '@edulastic/constants'
-import { FlexContainer, notification } from '@edulastic/common'
+import { testActivity as testActivityConstants } from '@edulastic/constants'
+import { FlexContainer, notification, TestTypeIcon } from '@edulastic/common'
 import { IconSchedule, IconHourGlass } from '@edulastic/icons'
 import { curriculumSequencesApi } from '@edulastic/api'
 import { pick } from 'lodash'
@@ -34,7 +29,6 @@ const { pastDueTagBackground, pastDueTagColor } = themes.default.default
 const {
   studentAssignmentConstants: { assignmentStatus },
 } = testActivityConstants
-const { ASSESSMENT, PRACTICE } = test.type
 
 const AssessmentDetails = ({
   title,
@@ -121,15 +115,10 @@ const AssessmentDetails = ({
           <Tooltip title={title}>
             <AssignmentTitle data-cy="testTitle">{title}</AssignmentTitle>
           </Tooltip>
-          <Tooltip title={t(`common.toolTip.${testType}`)}>
-            <TestType data-cy="testType" type={testType}>
-              {testType === PRACTICE
-                ? t('common.practice')
-                : testType === ASSESSMENT
-                ? t('common.assessment')
-                : t('common.common')}
-            </TestType>
-          </Tooltip>
+          <TestTypeIcon
+            toolTipTitle={t(`common.toolTip.${testType}`)}
+            testType={testType}
+          />
         </CardTitle>
         <FlexContainer alignItems="center" justifyContent="flex-start">
           <StatusWrapper>
@@ -455,23 +444,6 @@ const SafeExamIcon = React.memo(styled.img`
   width: 25px;
   height: 25px;
   margin-left: 10px;
-`)
-
-const TestType = React.memo(styled.span`
-  font-family: ${(props) => props.theme.assignment.cardTitleFontFamily};
-  min-width: 20px;
-  height: 20px;
-  background: ${(props) =>
-    props.type ? testTypeColor[props.type] : testTypeColor.assessment};
-  text-align: center;
-  color: ${white};
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: ${(props) => props.theme.assignment.cardAssingmnetTitleFontSize};
-  line-height: 19px;
-  margin: 0px 10px;
-  display: inline-block;
-  vertical-align: top;
 `)
 
 const StatusRow = styled.div`

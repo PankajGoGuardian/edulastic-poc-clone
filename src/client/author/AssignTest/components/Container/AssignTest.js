@@ -3,6 +3,7 @@ import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
+  testTypes as testTypesConstants,
   assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
@@ -92,7 +93,7 @@ import slice from '../../../CurriculumSequence/components/ManageContentBlock/duc
 import ShowBulkAssignModal from './ShowBulkAssignModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
-const { ASSESSMENT, COMMON } = testConst.type
+const { ASSESSMENT, COMMON } = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
   evalTypeLabels,
   TEST_SETTINGS_SAVE_LIMIT,

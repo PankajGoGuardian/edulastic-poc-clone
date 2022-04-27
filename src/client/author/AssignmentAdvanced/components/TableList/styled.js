@@ -7,7 +7,6 @@ import {
   secondaryTextColor,
   authorAssignment,
   tabletWidth,
-  testTypeColor,
   themeColorBlue,
   lightGrey4,
   lightGrey5,
@@ -118,27 +117,6 @@ export const TableData = styled(Table)`
       padding-right: 0px;
     }
   }
-`
-
-export const TypeIcon = styled.span`
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  max-width: 18px;
-  background: ${(props) =>
-    props.type === 'p'
-      ? testTypeColor.practice
-      : props.type === 'c'
-      ? testTypeColor.common
-      : testTypeColor.assessment};
-  text-align: center;
-  color: ${white};
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 17px;
-  padding-left: 1px;
-  text-transform: uppercase;
 `
 
 export const BtnStatus = styled(Button)`

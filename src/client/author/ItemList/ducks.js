@@ -1,7 +1,11 @@
 import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects'
 import { uniq, keyBy } from 'lodash'
 import produce from 'immer'
-import { test as testConstant, roleuser } from '@edulastic/constants'
+import {
+  test as testConstant,
+  testTypes as testTypesConstants,
+  roleuser,
+} from '@edulastic/constants'
 import { createSelector } from 'reselect'
 import { notification } from '@edulastic/common'
 import { createAction } from 'redux-starter-kit'
@@ -241,7 +245,7 @@ export function* createTestFromCart({ payload: { testName } }) {
     userRole === roleuser.DISTRICT_ADMIN ||
     userRole === roleuser.SCHOOL_ADMIN
   ) {
-    test.testType = testConstant.type.COMMON
+    test.testType = testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
     test.freezeSettings = !isOrganizationDA
   }
   const updatedTest = {

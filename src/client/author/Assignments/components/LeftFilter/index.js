@@ -29,8 +29,9 @@ import { FilterContainer } from './styled'
 import Folders from '../../../src/components/Folders'
 import { setItemsMoveFolderAction } from '../../../src/actions/folder'
 import TagFilter from '../../../src/components/common/TagFilter'
+import { getTestTypeFullNames } from '../../../../common/utils/testTypeUtils'
 
-const { allGrades, allSubjects, testTypes, AdminTestTypes } = selectsData
+const { allGrades, allSubjects } = selectsData
 
 const AssignmentStatus = {
   NOT_OPEN: 'NOT OPEN',
@@ -136,8 +137,7 @@ class LeftFilter extends React.Component {
       tags = [],
       folderId = '',
     } = filterState
-    const roleBasedTestType =
-      userRole === 'teacher' ? testTypes : AdminTestTypes
+    const testTypes = getTestTypeFullNames()
     const classListByTerm = classList.filter(
       (item) => item.termId === termId || !termId
     )
@@ -217,9 +217,12 @@ class LeftFilter extends React.Component {
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           margin="0px 0px 15px"
         >
-          {roleBasedTestType.map(({ value, text }, index) => (
-            <Select.Option key={index} value={value}>
-              {text}
+          <Select.Option key="all" value="">
+            All
+          </Select.Option>
+          {Object.keys(testTypes).map((key, index) => (
+            <Select.Option key={index} value={key}>
+              {testTypes[key]}
             </Select.Option>
           ))}
         </SelectInputStyled>

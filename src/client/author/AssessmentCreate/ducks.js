@@ -7,7 +7,12 @@ import produce from 'immer'
 import { get, without, omit } from 'lodash'
 
 import { testsApi, testItemsApi, fileApi } from '@edulastic/api'
-import { aws, roleuser, test as testConstant } from '@edulastic/constants'
+import {
+  aws,
+  roleuser,
+  test as testConstant,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { helpers, notification } from '@edulastic/common'
 import { uploadToS3 } from '../src/utils/upload'
 import {
@@ -229,7 +234,11 @@ function* createAssessmentSaga({ payload }) {
           }))
         }
       )
-      if (updatedAssessment.testType !== testConstant.type.COMMON) {
+      if (
+        !testTypesConstants.TEST_TYPES.COMMON.includes(
+          updatedAssessment.testType
+        )
+      ) {
         delete updatedAssessment.freezeSettings
       }
 
@@ -292,7 +301,12 @@ function* createAssessmentSaga({ payload }) {
         pageStructure: pageStructure.length
           ? pageStructure
           : defaultPageStructure,
-        ...(isAdmin ? { testType: testConstant.type.COMMON } : {}),
+        ...(isAdmin
+          ? {
+              testType:
+                testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
+            }
+          : {}),
       }
       if (
         newAssessment.passwordPolicy !==
@@ -308,7 +322,9 @@ function* createAssessmentSaga({ payload }) {
       }
       // Omit passages in doc basedtest creation flow as backend is not expecting it
       const omitedItems = ['passages']
-      if (newAssessment.testType !== testConstant.type.COMMON) {
+      if (
+        !testTypesConstants.TEST_TYPES.COMMON.includes(newAssessment.testType)
+      ) {
         omitedItems.push('freezeSettings')
       }
       const assesmentPayload = omit(newAssessment, omitedItems)

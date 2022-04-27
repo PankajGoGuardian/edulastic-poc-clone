@@ -27,6 +27,7 @@ import {
   roleuser,
   collections as collectionsConstant,
   signUpState,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { testsApi } from '@edulastic/api'
 import { themeColor } from '@edulastic/colors'
@@ -273,7 +274,8 @@ class Container extends PureComponent {
           userRole === roleuser.SCHOOL_ADMIN
         ) {
           setData({
-            testType: testContants.type.COMMON,
+            testType:
+              testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT,
             freezeSettings: !isOrganizationDA,
             updated: false,
           })

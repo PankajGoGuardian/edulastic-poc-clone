@@ -3,7 +3,11 @@ import { omit, get } from 'lodash'
 import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
-import { test as testContants, roleuser } from '@edulastic/constants'
+import {
+  test as testContants,
+  roleuser,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { assignmentApi, testsApi } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import {
@@ -296,7 +300,9 @@ function* saveAssignment({ payload }) {
     const dueDate = payload.dueDate && moment(payload.dueDate).valueOf()
 
     const userRole = yield select(getUserRole)
-    const isTestLet = test.testType === testContants.type.TESTLET
+    const isTestLet = testTypesConstants.TEST_TYPES.TESTLET.includes(
+      test.testType
+    )
     const testType = isTestLet
       ? test.testType
       : get(payload, 'testType', test.testType)

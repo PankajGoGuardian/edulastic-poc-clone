@@ -6,6 +6,7 @@ import {
   test as testConst,
   assignmentPolicyOptions,
   roleuser,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { takeEvery, all, select, put } from 'redux-saga/effects'
 import { getUserRole } from '../src/selectors/user'
@@ -62,15 +63,27 @@ export const getAssignedClassesByIdSelector = createSelector(
   getAssignmentsSelector,
   (assignments) => {
     const assignmentsByTestType = groupBy(assignments, 'testType')
-    const { COMMON, ASSESSMENT, PRACTICE, TESTLET } = testConst.type
+    const {
+      COMMON,
+      ASSESSMENT,
+      PRACTICE,
+      TESTLET,
+      HOMEWORK,
+      QUIZ,
+    } = testTypesConstants.TEST_TYPES_VALUES_MAP
     const assignedClassesByTestType = {
       [COMMON]: {},
       [ASSESSMENT]: {},
       [PRACTICE]: {},
       [TESTLET]: {},
+      [HOMEWORK]: {},
+      [QUIZ]: {},
     }
     for (const [key, value] of Object.entries(assignmentsByTestType)) {
-      if (key === COMMON && !value.archived) {
+      if (
+        testTypesConstants.TEST_TYPES.COMMON.includes(key) &&
+        !value.archived
+      ) {
         const assignedClasses = value
           .flatMap((item) => get(item, 'class', []))
           .filter(

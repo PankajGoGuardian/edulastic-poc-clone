@@ -1,12 +1,12 @@
 import React, { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
-import { test as testConstants } from '@edulastic/constants'
+import { TestTypeIcon } from '@edulastic/common'
 
 import presentationIcon from '../../../../assets/presentation.svg'
 import additemsIcon from '../../../../assets/add-items.svg'
 import piechartIcon from '../../../../assets/pie-chart.svg'
-import { TypeIcon, Icon } from '../../../TableList/styled'
+import { Icon } from '../../../TableList/styled'
 import AssignmentDetails from '../AssignmentDetails/AssignmentDetails'
 import {
   AssignmentThumbnail,
@@ -58,18 +58,7 @@ export default class MobileAssignment extends React.Component {
     )
   }
 
-  renderTestType = (testType) =>
-    testType === testConstants.type.PRACTICE ? (
-      <TypeIcon data-cy="type" type="p">
-        P
-      </TypeIcon>
-    ) : testType === testConstants.type.ASSESSMENT ? (
-      <TypeIcon data-cy="type">A</TypeIcon>
-    ) : (
-      <TypeIcon data-cy="type" type="c">
-        C
-      </TypeIcon>
-    )
+  renderTestType = (testType) => <TestTypeIcon testType={testType} />
 
   renderClass = (classes) => (item, key) => {
     const {

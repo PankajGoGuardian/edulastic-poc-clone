@@ -1,10 +1,4 @@
 module.exports = {
-  type: {
-    ASSESSMENT: 'assessment',
-    COMMON: 'common assessment',
-    PRACTICE: 'practice',
-    TESTLET: 'testlet',
-  },
   settingsList: [
     { id: 'test-type', title: 'Test Type' },
     { id: 'maximum-attempts-allowed', title: 'Maximum Attempts Allowed' },

@@ -5,7 +5,11 @@ import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
 import { withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { test as testConstants, questionType } from '@edulastic/constants'
+import {
+  test as testConstants,
+  testTypes as testTypesConstants,
+  questionType,
+} from '@edulastic/constants'
 import {
   IconEduLogo,
   IconDrc,
@@ -84,6 +88,7 @@ const PlayerHeader = ({
     maxAnswerChecks,
   } = settings
 
+  const { PRACTICE } = testTypesConstants.TEST_TYPES
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
   const hideCheckAnswer = !TokenStorage.getAccessToken()
@@ -101,7 +106,7 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
-      {testType === testConstants.type.PRACTICE && (
+      {PRACTICE.includes(testType) && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}

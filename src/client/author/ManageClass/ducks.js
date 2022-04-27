@@ -31,9 +31,9 @@ import {
 import * as Sentry from '@sentry/browser'
 import { push } from 'connected-react-router'
 import { roleuser } from '@edulastic/constants'
+import React from 'react'
 import { receiveTeacherDashboardAction } from '../Dashboard/ducks'
 import { fetchGroupsAction, addGroupAction } from '../sharedDucks/groups'
-import React from 'react'
 import {
   setUserGoogleLoggedInAction,
   addClassToUserAction,
@@ -1045,13 +1045,14 @@ function* syncClassWithCanvasSaga({ payload }) {
             This course section is already synced with{' '}
             {err?.response?.data?.info?.sectionName}{' '}
             {err?.response?.data?.info?.status ? (
-              ''
+              '. Please ask your admin to update the class or enroll as co-teacher.'
             ) : (
               <span>
-                (<span style={{ color: 'red' }}>Archived class</span>)
+                (<span style={{ color: 'red' }}>Archived class</span>) . Please
+                ask your admin to unarchive the class or enroll as a teacher or
+                co-teacher.
               </span>
             )}
-            . Please ask your admin to update the class or enroll as co-teacher.
           </span>
         )
       }

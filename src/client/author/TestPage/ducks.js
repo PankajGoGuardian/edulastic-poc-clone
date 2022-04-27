@@ -337,8 +337,10 @@ export const SET_SHOW_REGRADE_CONFIRM =
 export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
 export const SET_MAX_SHARING_LEVEL_ALLOWED =
   '[tests] set max sharing level allowed'
+export const TOGGLE_REFERENCE_MATERIAL = '[tests] toggle enable ref material'
 // actions
 
+export const toggleRefMaterialAction = createAction(TOGGLE_REFERENCE_MATERIAL)
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
 export const replaceTestDataAction = createAction(REPLACE_TEST_DATA)
@@ -603,6 +605,11 @@ export const playlistStateSelector = (state) => state.playlist
 export const getPassageItemsCountSelector = createSelector(
   stateSelector,
   (state) => state.passageItems.length
+)
+
+export const isEnabledRefMaterialSelector = createSelector(
+  stateSelector,
+  (state) => state.enableRefMaterial
 )
 
 export const getPassageItemsSelector = createSelector(
@@ -1038,6 +1045,7 @@ const initialState = {
     result: [],
     isLoading: true,
   },
+  enableRefMaterial: false,
 }
 
 export const testTypeAsProfileNameType = {
@@ -1683,6 +1691,12 @@ export const reducer = (state = initialState, { type, payload }) => {
       return {
         ...state,
         maxSharingLevelAllowed: payload,
+      }
+    case TOGGLE_REFERENCE_MATERIAL:
+      return {
+        ...state,
+        updated: true,
+        enableRefMaterial: payload,
       }
     default:
       return state

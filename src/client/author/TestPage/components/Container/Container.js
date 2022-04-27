@@ -71,6 +71,7 @@ import {
   fetchTestSettingsListAction,
   getTestSettingsListSelector,
   setTestSettingsListAction,
+  isEnabledRefMaterialSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -896,7 +897,13 @@ class Container extends PureComponent {
   }
 
   modifyTest = () => {
-    const { user, test, itemsSubjectAndGrade } = this.props
+    const {
+      currentTab,
+      enabledRefMaterial,
+      user,
+      test,
+      itemsSubjectAndGrade,
+    } = this.props
     const { itemGroups } = test
     const newTest = cloneDeep(test)
 
@@ -930,6 +937,15 @@ class Container extends PureComponent {
       }
       return foundItem
     })
+
+    if (
+      !enabledRefMaterial &&
+      currentTab === 'settings' &&
+      !isEmpty(newTest.referenceDocAttributes)
+    ) {
+      newTest.referenceDocAttributes = {}
+    }
+
     return newTest
   }
 
@@ -1581,6 +1597,7 @@ const enhance = compose(
       isUpgradePopupVisible: getShowUpgradePopupSelector(state),
       testSettingsList: getTestSettingsListSelector(state),
       userSignupStatus: getUserSignupStatusSelector(state),
+      enabledRefMaterial: isEnabledRefMaterialSelector(state),
     }),
     {
       createTest: createTestAction,

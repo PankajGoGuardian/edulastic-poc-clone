@@ -404,7 +404,6 @@ class QuestionWrapper extends Component {
       userRole,
       view,
       testLevelSettings: {
-        releaseScore: testLevelReleaseScore,
         showRubricToStudents: testLevelShowRubricToStudents = false,
       } = {},
       data: { rubrics } = {},
@@ -425,10 +424,7 @@ class QuestionWrapper extends Component {
       (isTestPreviewModalVisible || isTestDemoPlayer) &&
       isPremiumUser
     ) {
-      return (
-        testLevelReleaseScore !== releaseGradeLabels.DONT_RELEASE &&
-        testLevelShowRubricToStudents
-      )
+      return testLevelShowRubricToStudents
     }
 
     // if its a student attempt

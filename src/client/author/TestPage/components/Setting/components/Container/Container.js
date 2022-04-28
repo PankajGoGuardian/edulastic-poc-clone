@@ -670,6 +670,11 @@ class Setting extends Component {
     }
   }
 
+  handleUpdateRefMaterial = (value) => {
+    const { setTestData } = this.props
+    setTestData({ referenceDocAttributes: value })
+  }
+
   get isReferenceMaterialAllowedForCurrentSkin() {
     const { quester, edulastic } = playerSkinValues
     const { entity: { playerSkinType = edulastic } = {} } = this.props
@@ -1390,6 +1395,7 @@ class Setting extends Component {
                           isSmallSize={isSmallSize}
                           premium={premium}
                           disabled={disabled}
+                          setData={this.handleUpdateRefMaterial}
                           referenceDocAttributes={referenceDocAttributes}
                         />
                       </Block>

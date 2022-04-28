@@ -55,7 +55,6 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  hasRefMaterialAttributes,
   t,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
@@ -138,6 +137,10 @@ const TestBehaviorGroupContainer = ({
     }
 
     overRideSettings(attr, value)
+  }
+
+  const updateRefMaterials = (value) => {
+    overRideSettings('referenceDocAttributes', value)
   }
 
   const testTypeContent = (
@@ -332,9 +335,9 @@ const TestBehaviorGroupContainer = ({
           premium={premium}
           disabled={freezeSettings}
           tootltipWidth={tootltipWidth}
-          overRideSettings={overRideSettings}
-          attributes={referenceDocAttributes}
-          hasRefMaterialAttributes={hasRefMaterialAttributes}
+          setData={updateRefMaterials}
+          referenceDocAttributes={referenceDocAttributes}
+          hasAttributesInTest={!!testSettings?.referenceDocAttributes}
         />
       )}
       {/* Reference Material */}

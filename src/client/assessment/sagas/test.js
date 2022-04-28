@@ -638,9 +638,26 @@ function* loadTest({ payload }) {
           referrerId: testActivityId,
         }
       )
-      const scratchPadData = getScratchpadDataFromAttachments(
+
+      let scratchPadData = getScratchpadDataFromAttachments(
         attachments.filter(({ type }) => type === 'scratchpad')
       )
+
+      const passageAttachments = attachments.filter(
+        ({ type }) => type === 'passage'
+      )
+      // loading attachments from server
+      if (passageAttachments?.length) {
+        const passageHighlights = passageAttachments.reduce((acc, curr) => {
+          const passageId = curr.referrerId2
+          if (passageId) {
+            acc[passageId] = curr.data
+          }
+          return acc
+        }, {})
+
+        scratchPadData = { ...scratchPadData, ...passageHighlights }
+      }
 
       questionActivities.forEach((item) => {
         allAnswers = {
@@ -663,6 +680,7 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item
         }
       })
+
       if (Object.keys(scratchPadData).length) {
         if (savedUserWork) {
           yield put({

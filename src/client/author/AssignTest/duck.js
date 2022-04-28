@@ -64,7 +64,7 @@ export const getAssignedClassesByIdSelector = createSelector(
   (assignments) => {
     const assignmentsByTestType = groupBy(assignments, 'testType')
     const {
-      COMMON,
+      COMMON_ASSESSMENT,
       ASSESSMENT,
       PRACTICE,
       TESTLET,
@@ -72,7 +72,7 @@ export const getAssignedClassesByIdSelector = createSelector(
       QUIZ,
     } = testTypesConstants.TEST_TYPES_VALUES_MAP
     const assignedClassesByTestType = {
-      [COMMON]: {},
+      [COMMON_ASSESSMENT]: {},
       [ASSESSMENT]: {},
       [PRACTICE]: {},
       [TESTLET]: {},

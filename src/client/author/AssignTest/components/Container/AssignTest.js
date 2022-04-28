@@ -93,7 +93,10 @@ import slice from '../../../CurriculumSequence/components/ManageContentBlock/duc
 import ShowBulkAssignModal from './ShowBulkAssignModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
-const { ASSESSMENT, COMMON } = testTypesConstants.TEST_TYPES_VALUES_MAP
+const {
+  ASSESSMENT,
+  COMMON_ASSESSMENT,
+} = testTypesConstants.TEST_TYPES_VALUES_MAP
 const {
   evalTypeLabels,
   TEST_SETTINGS_SAVE_LIMIT,
@@ -233,7 +236,7 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
           : assignmentSettings.closePolicy ||
             assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
-        testType: isAdmin ? COMMON : ASSESSMENT,
+        testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType,
       })
     } else {
@@ -246,7 +249,7 @@ class AssignTest extends React.Component {
           }
         : {}
       this.updateAssignmentNew({
-        testType: isAdmin ? COMMON : ASSESSMENT,
+        testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,

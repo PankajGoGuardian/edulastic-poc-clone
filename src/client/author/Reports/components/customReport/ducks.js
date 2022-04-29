@@ -1,7 +1,6 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { all, call, put, takeLatest } from 'redux-saga/effects'
-import { aws } from '@edulastic/constants'
 import { customReportApi, dataWarehouseApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { uploadToS3 } from './utils/uploadToS3'
@@ -24,7 +23,7 @@ const UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS =
 const UPLOAD_TEST_DATA_FILE_REQUEST_ERROR =
   '[reports] upload test data file request error'
 
-const GET_UPLOADS_STATUS_LIST_REQUEST =
+export const GET_UPLOADS_STATUS_LIST_REQUEST =
   '[reports] get uploads status list request'
 const GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS =
   '[reports] get uploads status list success'
@@ -198,6 +197,24 @@ export function* getCustomReportURLRequest({ payload }) {
   }
 }
 
+export function* fetchUploadsStatusList() {
+  try {
+    const uploadsStatusList = yield call(dataWarehouseApi.getLogs)
+    yield put({
+      type: GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS,
+      payload: uploadsStatusList,
+    })
+  } catch (error) {
+    const msg =
+      'Error getting uploads status list. Please try again after a few minutes.'
+    notification({ msg })
+    yield put({
+      type: GET_UPLOADS_STATUS_LIST_REQUEST_ERROR,
+      payload: { error: msg },
+    })
+  }
+}
+
 export function* uploadTestDataFile({ payload }) {
   try {
     notification({
@@ -205,10 +222,11 @@ export function* uploadTestDataFile({ payload }) {
     })
     const response = yield uploadToS3(
       payload.file,
-      `${aws.s3Folders.DEFAULT}`,
-      payload.userId,
+      process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER,
+      'raw_data',
       payload.category,
-      payload.districtId
+      payload.districtId,
+      fetchUploadsStatusList
     )
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS,
@@ -229,24 +247,6 @@ export function* uploadTestDataFile({ payload }) {
     }
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_ERROR,
-      payload: { error: msg },
-    })
-  }
-}
-
-export function* fetchUploadsStatusList() {
-  try {
-    const uploadsStatusList = yield call(dataWarehouseApi.getLogs)
-    yield put({
-      type: GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS,
-      payload: uploadsStatusList,
-    })
-  } catch (error) {
-    const msg =
-      'Error getting uploads status list. Please try again after a few minutes.'
-    notification({ msg })
-    yield put({
-      type: GET_UPLOADS_STATUS_LIST_REQUEST_ERROR,
       payload: { error: msg },
     })
   }

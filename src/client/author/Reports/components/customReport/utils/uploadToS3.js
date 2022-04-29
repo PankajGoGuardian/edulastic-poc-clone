@@ -1,5 +1,7 @@
 import { dataWarehouseApi, fileApi } from '@edulastic/api'
 import { aws } from '@edulastic/constants'
+import { getStore } from '../../../../../configureStore'
+import { fetchUploadsStatusList, GET_UPLOADS_STATUS_LIST_REQUEST } from '../ducks'
 
 const s3Folders = Object.values(aws.s3Folders)
 
@@ -76,12 +78,10 @@ export const uploadToS3 = async (
       progressCallback,
       cancelUpload
     )
-    await dataWarehouseApi.updateLogStatus(logDetails._id, {
-      status: 'UPLOAD_SUCCESS',
-    })
+    getStore().dispatch(GET_UPLOADS_STATUS_LIST_REQUEST)
   } catch (e) {
     await dataWarehouseApi.updateLogStatus(logDetails._id, {
-      status: 'UPLOAD_ERROR',
+      status: 'ERROR',
     })
     throw new Error('Error while uploading the file.')
   }

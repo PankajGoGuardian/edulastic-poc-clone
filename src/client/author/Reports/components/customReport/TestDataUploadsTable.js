@@ -30,10 +30,10 @@ const sortText = (key) => (a, b) =>
   (a[key] || '').toLowerCase().localeCompare((b[key] || '').toLowerCase())
 
 const getTag = (status) => {
-  if (status === 'success') {
+  if (status === 'SUCCESS') {
     return <Tag color={green}>Success</Tag>
   }
-  if (status === 'failed') {
+  if (status === 'ERROR') {
     return <Tag color={red}>Failed</Tag>
   }
   return <Tag color={yellow}>In Progress</Tag>

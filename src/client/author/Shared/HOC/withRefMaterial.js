@@ -111,7 +111,11 @@ export const withRefMaterial = (WrappedComponent) => {
       if (enableUpload && creating && !hasRefMaterial) {
         toggleRefMaterial(false)
       }
-    }, [creating, enableUpload, hasRefMaterial])
+      if (!premium && hasRefMaterial) {
+        setData({})
+        toggleRefMaterial(false)
+      }
+    }, [creating, enableUpload, premium, hasRefMaterial])
 
     return (
       <WrappedComponent

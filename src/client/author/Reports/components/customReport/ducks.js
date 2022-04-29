@@ -23,12 +23,17 @@ const UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS =
 const UPLOAD_TEST_DATA_FILE_REQUEST_ERROR =
   '[reports] upload test data file request error'
 
-export const GET_UPLOADS_STATUS_LIST_REQUEST =
+const GET_UPLOADS_STATUS_LIST_REQUEST =
   '[reports] get uploads status list request'
 const GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS =
   '[reports] get uploads status list success'
 const GET_UPLOADS_STATUS_LIST_REQUEST_ERROR =
   '[reports] get uploads status list error'
+const GET_RESET_TEST_DATA_UPLOAD_RESPONSE =
+  '[reports] get reset test data upload response'
+
+const GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS =
+  '[reports] get reset test data upload response success'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -45,6 +50,10 @@ export const uploadTestDataFileAction = createAction(
 
 export const getUploadsStatusListAction = createAction(
   GET_UPLOADS_STATUS_LIST_REQUEST
+)
+
+export const getResetTestDataFileUploadResponseAction = createAction(
+  GET_RESET_TEST_DATA_UPLOAD_RESPONSE
 )
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
@@ -86,6 +95,11 @@ export const getUploadsStatusLoader = createSelector(
 export const getUploadsStatusList = createSelector(
   stateSelector,
   (state) => state.uploadsStatusList
+)
+
+export const getTestDataFileUploadResponse = createSelector(
+  stateSelector,
+  (state) => state.testDataFileUploadResponse
 )
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
@@ -149,6 +163,9 @@ export const customReportReducer = createReducer(initialState, {
   [GET_CUSTOM_REPORT_STATE_REQUEST_ERROR]: (state, { payload }) => {
     state.uploadsStatusListLoader = false
     state.uploadsStatusListError = payload.error
+  },
+  [GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS]: (state) => {
+    state.testDataFileUploadResponse = null
   },
 })
 
@@ -252,6 +269,12 @@ export function* uploadTestDataFile({ payload }) {
   }
 }
 
+export function* resetUploadResponse() {
+  yield put({
+    type: GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS,
+  })
+}
+
 // -----|-----|-----|-----| SAGAS ENDED |-----|-----|-----|----- //
 
 export function* customReportSaga() {
@@ -260,5 +283,6 @@ export function* customReportSaga() {
     yield takeLatest(GET_CUSTOM_REPORT_URL_REQUEST, getCustomReportURLRequest),
     yield takeLatest(UPLOAD_TEST_DATA_FILE_REQUEST, uploadTestDataFile),
     yield takeLatest(GET_UPLOADS_STATUS_LIST_REQUEST, fetchUploadsStatusList),
+    yield takeLatest(GET_RESET_TEST_DATA_UPLOAD_RESPONSE, resetUploadResponse),
   ])
 }

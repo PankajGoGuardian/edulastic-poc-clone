@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
 import { Icon, Select, Spin } from 'antd'
@@ -16,7 +16,11 @@ import {
 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
 
-import { uploadTestDataFileAction, getTestDataFileUploadLoader } from './ducks'
+import {
+  uploadTestDataFileAction,
+  getTestDataFileUploadLoader,
+  getTestDataFileUploadResponse,
+} from './ducks'
 
 import dropdownData from './static/dropdownData.json'
 
@@ -28,6 +32,7 @@ const TestDataUploadModal = ({
   closeModal,
   loading,
   user,
+  uploadResponse,
 }) => {
   const [file, setFile] = useState(null)
   const [category, setCategory] = useState('')
@@ -39,21 +44,30 @@ const TestDataUploadModal = ({
       districtId: `${user?.currentDistrictId || user.districtIds[0]}`,
       category,
     })
-    closeModal(true)
   }
+
+  useEffect(() => {
+    if (!isEmpty(uploadResponse)) {
+      closeModal(true)
+    }
+  }, [uploadResponse])
 
   return (
     <CustomModalStyled
       visible={isVisible}
       title="Upload File"
-      onCancel={closeModal}
+      onCancel={() => {
+        closeModal(false)
+      }}
       centered
       footer={[
         <EduButton
           width="200px"
           isGhost
           key="cancelButton"
-          onClick={closeModal}
+          onClick={() => {
+            closeModal(false)
+          }}
         >
           CANCEL
         </EduButton>,
@@ -139,6 +153,7 @@ const withConnect = connect(
   (state) => ({
     loading: getTestDataFileUploadLoader(state),
     user: state.user.user,
+    uploadResponse: getTestDataFileUploadResponse(state),
   }),
   {
     uploadFile: uploadTestDataFileAction,

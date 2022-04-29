@@ -43,7 +43,7 @@ const descriptions = {
   default:
     'Get additional reports, options to assist students, collaborate with colleagues, anti-cheating tools and more.',
   bubble:
-    'Experience the additional features of Edulastic Teacher Premium for 14 days: OMR exams, read-loud for students, extra test security settings, easier collaboration, in-depth reports and more.',
+    'Get bubble sheet feature to take OMR exams, also gain access to additional reports, options to assist students, anti-cheating tools and many more.',
 }
 
 const getContent = ({

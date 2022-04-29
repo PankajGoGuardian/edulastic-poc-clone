@@ -78,7 +78,7 @@ export const uploadToS3 = async (
       progressCallback,
       cancelUpload
     )
-    getStore().dispatch(GET_UPLOADS_STATUS_LIST_REQUEST)
+    getStore().dispatch({ type: GET_UPLOADS_STATUS_LIST_REQUEST })
   } catch (e) {
     await dataWarehouseApi.updateLogStatus(logDetails._id, {
       status: 'ERROR',

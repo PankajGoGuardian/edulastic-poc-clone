@@ -231,6 +231,8 @@ export const TOGGLE_FORGOT_PASSWORD_MODAL =
   '[user] toggle forgot password modal'
 
 export const LOGIN_ATTEMPT_EXCEEDED = '[user] too many login attempt'
+export const LOGIN_ATTEMPT_REMAINING = '[user] login attempt remaining'
+
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -362,6 +364,8 @@ export const setForgotPasswordVisibleAction = createAction(
 )
 
 export const setTooManyAttemptAction = createAction(LOGIN_ATTEMPT_EXCEEDED)
+
+export const setLoginAttemptRemaining = createAction(LOGIN_ATTEMPT_REMAINING)
 
 const initialState = {
   addAccount: false,
@@ -867,6 +871,9 @@ export default createReducer(initialState, {
   [LOGIN_ATTEMPT_EXCEEDED]: (state, { payload }) => {
     state.tooManyAttempt = payload
   },
+  [LOGIN_ATTEMPT_REMAINING]: (state, { payload }) => {
+    state.loginAttemptRemaining = payload
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -1037,6 +1044,11 @@ export const getShowVerifyEmailModal = createSelector(
   (r) => r
 )
 
+export const getLoginAttemptRemaining = createSelector(
+  ['user.loginAttemptRemaining'],
+  (r) => r
+)
+
 export const getIsCpm = createSelector(
   [getUserDetails],
   (user) =>
@@ -1051,6 +1063,7 @@ function getCurrentFirebaseUser() {
 }
 
 function* login({ payload }) {
+  yield put(setLoginAttemptRemaining(null))
   yield put(addLoadingComponentAction({ componentName: 'loginButton' }))
   const _payload = { ...payload }
   const generalSettings = yield select(signupGeneralSettingsSelector)
@@ -1137,7 +1150,7 @@ function* login({ payload }) {
     // Important redirection code removed, redirect code already present in /src/client/App.js
     // it receives new user props in each steps of teacher signup and for other roles
   } catch (err) {
-    const { status, data = {} } = err
+    const { status, data = {}, response } = err
     console.error(err)
     let errorMessage = 'You have entered an invalid email/username or password.'
     if (
@@ -1145,6 +1158,9 @@ function* login({ payload }) {
       (data.message || err?.response?.data?.message)
     ) {
       errorMessage = data.message || err?.response?.data?.message
+    }
+    if (response?.data?.countRemaining) {
+      yield put(setLoginAttemptRemaining(response.data.countRemaining))
     }
     if (status === 429) {
       // set the flag to show reset password popup

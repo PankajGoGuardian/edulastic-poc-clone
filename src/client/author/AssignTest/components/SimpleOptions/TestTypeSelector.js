@@ -1,7 +1,9 @@
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { Col, Select } from 'antd'
 import React from 'react'
+import { connect } from 'react-redux'
 import { getTestTypeFullNames } from '../../../../common/utils/testTypeUtils'
+import { isPremiumUserSelector } from '../../../src/selectors/user'
 
 const TestTypeSelector = ({
   testType,
@@ -11,8 +13,9 @@ const TestTypeSelector = ({
   disabled = false,
   fullwidth = false,
   paddingTop,
+  isPremiumUser,
 }) => {
-  const testTypes = getTestTypeFullNames(testType, userRole)
+  const testTypes = getTestTypeFullNames(isPremiumUser, userRole, testType)
 
   const SelectOption = (
     <SelectInputStyled
@@ -55,4 +58,6 @@ const TestTypeSelector = ({
   )
 }
 
-export default TestTypeSelector
+export default connect((state) => ({
+  isPremiumUser: isPremiumUserSelector(state),
+}))(TestTypeSelector)

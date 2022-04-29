@@ -766,7 +766,7 @@ class Setting extends Component {
       standardGradingScale: _standardGradingScale,
     } = entity
 
-    const testTypes = getTestTypeFullNames(testType, userRole)
+    const testTypes = getTestTypeFullNames(premium, userRole, testType)
     let isSettingPresent = false
     if (
       currentSettingsId &&

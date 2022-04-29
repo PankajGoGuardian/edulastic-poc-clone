@@ -1,29 +1,10 @@
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { all, call, put, takeLatest } from 'redux-saga/effects'
-import { customReportApi } from '@edulastic/api'
+import { aws } from '@edulastic/constants'
+import { customReportApi, dataWarehouseApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-
-const sampleUploadsStatusList = [
-  {
-    _id: 1,
-    testName: 'Enrollment report',
-    lastUpdatedAt: new Date().getTime(),
-    status: 'success',
-  },
-  {
-    _id: 2,
-    testName: 'Test Correlations',
-    lastUpdatedAt: new Date().getTime(),
-    status: 'failed',
-  },
-  {
-    _id: 3,
-    testName: 'SAT',
-    lastUpdatedAt: new Date().getTime(),
-    status: 'in progress',
-  },
-]
+import { uploadToS3 } from './utils/uploadToS3'
 
 const GET_CUSTOM_REPORT_STATE_REQUEST = '[reports] get custom reports request'
 const GET_CUSTOM_REPORT_STATE_REQUEST_SUCCESS =
@@ -93,7 +74,7 @@ export const getCustomReportName = createSelector(stateSelector, (state) =>
   state.reportURL ? state.reportURL.name : ''
 )
 
-export const getTestDatFileUploadLoader = createSelector(
+export const getTestDataFileUploadLoader = createSelector(
   stateSelector,
   (state) => state.testDataFileUploadLoading
 )
@@ -149,6 +130,7 @@ export const customReportReducer = createReducer(initialState, {
   },
   [UPLOAD_TEST_DATA_FILE_REQUEST]: (state) => {
     state.testDataFileUploadLoading = true
+    state.testDataFileUploadResponse = null
   },
   [UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS]: (state, { payload }) => {
     state.testDataFileUploadLoading = false
@@ -218,17 +200,33 @@ export function* getCustomReportURLRequest({ payload }) {
 
 export function* uploadTestDataFile({ payload }) {
   try {
-    // make api call
-    // const response = yield call()
-    const response = {}
-    console.log('payload', payload)
+    notification({
+      msg: 'File upload in progress.',
+    })
+    const response = yield uploadToS3(
+      payload.file,
+      `${aws.s3Folders.DEFAULT}`,
+      payload.userId,
+      payload.category,
+      payload.districtId
+    )
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS,
       payload: response,
     })
+    notification({
+      msg: 'File uploaded successfully.',
+      destroyAll: true,
+    })
   } catch (error) {
-    const msg = 'Error uploading the file. Please try again after a few minutes.'
-    notification({ msg })
+    let msg = ''
+    if (error?.message) {
+      msg = error.message
+      notification({ type: 'error', exact: true, msg, destroyAll: true })
+    } else {
+      msg = 'Error uploading the file. Please try again after a few minutes.'
+      notification({ type: 'error', msg, destroyAll: true })
+    }
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_ERROR,
       payload: { error: msg },
@@ -236,10 +234,9 @@ export function* uploadTestDataFile({ payload }) {
   }
 }
 
-export function* fetchUploadsStatusList({ payload }) {
+export function* fetchUploadsStatusList() {
   try {
-    // const uploadsStatusList = yield call()
-    const uploadsStatusList = sampleUploadsStatusList
+    const uploadsStatusList = yield call(dataWarehouseApi.getLogs)
     yield put({
       type: GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS,
       payload: uploadsStatusList,

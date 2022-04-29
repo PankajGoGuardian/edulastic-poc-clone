@@ -1,0 +1,10 @@
+{
+  "dataFormatDropdownOptions": [
+    { "key": "AIR", "value": "AIR" },
+    { "key": "CAASPP", "value": "CAASPP" },
+    { "key": "ELPAC", "value": "ELPAC" },
+    { "key": "SAT", "value": "SAT" },
+    { "key": "iReady", "value": "iReady" },
+    { "key": "NWEA", "value": "NWEA" }
+  ]
+}

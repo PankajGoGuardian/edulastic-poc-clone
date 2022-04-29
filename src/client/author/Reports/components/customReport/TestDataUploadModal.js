@@ -6,7 +6,6 @@ import { isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
-import { aws } from '@edulastic/constants'
 import { CustomModalStyled, FlexContainer, EduButton } from '@edulastic/common'
 import {
   dashBorderColor,
@@ -17,8 +16,9 @@ import {
 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
 
-import { uploadTestDataFileAction, getTestDatFileUploadLoader } from './ducks'
-import { uploadToS3 } from '../../../src/utils/upload'
+import { uploadTestDataFileAction, getTestDataFileUploadLoader } from './ducks'
+
+import dropdownData from './static/dropdownData.json'
 
 const { Option } = Select
 
@@ -30,15 +30,16 @@ const TestDataUploadModal = ({
   user,
 }) => {
   const [file, setFile] = useState(null)
+  const [category, setCategory] = useState('')
 
   const handleFileUpload = () => {
-    // Handle file upload here.
-    uploadFile(file)
-    uploadToS3(file, `${aws.s3Folders.DEFAULT}`, `${user._id}`).then(
-      (fileUrl) => {
-        console.log('file url', fileUrl)
-      }
-    )
+    uploadFile({
+      file,
+      userId: `${user._id}`,
+      districtId: `${user?.currentDistrictId || user.districtIds[0]}`,
+      category,
+    })
+    closeModal(true)
   }
 
   return (
@@ -60,7 +61,7 @@ const TestDataUploadModal = ({
           btnType="primary"
           width="200px"
           onClick={() => handleFileUpload()}
-          disabled={loading || isEmpty(file)}
+          disabled={loading || isEmpty(file) || isEmpty(category)}
         >
           {loading ? <Spin /> : 'Upload'}
         </EduButton>,
@@ -70,9 +71,14 @@ const TestDataUploadModal = ({
         <Select
           placeholder="Select data format"
           style={{ width: 200 }}
-          onChange={() => {}}
+          onChange={(e) => {
+            setCategory(e)
+          }}
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
-          <Option value="csv">CSV</Option>
+          {dropdownData.dataFormatDropdownOptions.map(({ key, value }) => (
+            <Option value={key}>{value}</Option>
+          ))}
         </Select>
         <Dropzone
           maxSize="104857600"
@@ -131,7 +137,7 @@ const TestDataUploadModal = ({
 
 const withConnect = connect(
   (state) => ({
-    loading: getTestDatFileUploadLoader(state),
+    loading: getTestDataFileUploadLoader(state),
     user: state.user.user,
   }),
   {

@@ -5,11 +5,7 @@ import userEvent from '@testing-library/user-event'
 import segmentApi from '@edulastic/api/src/segment'
 import { userApi } from '@edulastic/api'
 import configureMockStore from 'redux-mock-store'
-import { configure } from 'enzyme'
-import Adapter from 'enzyme-adapter-react-16'
 import PrivacyPolicyModal from './index'
-
-configure({ adapter: new Adapter() })
 
 const mockStore = configureMockStore()
 const store = mockStore({})

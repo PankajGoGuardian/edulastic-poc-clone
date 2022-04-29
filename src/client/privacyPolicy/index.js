@@ -72,7 +72,7 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
       <EdulasticLogo>
         <OnWhiteBgLogo />
       </EdulasticLogo>
-      <ModalTitle data-cy="eulaModalTitle">
+      <ModalTitle data-testid="eulaModalTitle" data-cy="eulaModalTitle">
         End User License Agreement{!isEEAUser ? ' and' : ','} Product Privacy
         Policy {isEEAUser && 'and Edulastic Data Processing Addendum'}
       </ModalTitle>

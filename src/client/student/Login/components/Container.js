@@ -18,6 +18,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { segmentApi } from '@edulastic/api'
 import {
   isDistrictPolicyAllowed,
   isEmailValid,
@@ -38,11 +39,11 @@ import {
   setForgotPasswordVisibleAction,
   getForgotPasswordVisible,
   setTooManyAttemptAction,
+  getLoginAttemptRemaining,
 } from '../ducks'
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
-import { segmentApi } from '@edulastic/api'
 
 const FormItem = Form.Item
 
@@ -121,6 +122,7 @@ class LoginContainer extends React.Component {
       isClassCodeModalOpen,
       toggleClassCodeModal,
       forgotPasswordVisible,
+      loginAttemptRemaining,
     } = this.props
 
     const { classCode } = this.state
@@ -319,6 +321,11 @@ class LoginContainer extends React.Component {
                                 autoComplete="off"
                               />
                             )}
+                            {loginAttemptRemaining &&
+                            loginAttemptRemaining <= 2 &&
+                            loginAttemptRemaining > 0 ? (
+                              <ErrorMessage>{`${loginAttemptRemaining} attempts remaining!`}</ErrorMessage>
+                            ) : null}
                           </FormItem>
                           <FormItem>
                             {getFieldDecorator('remember', {
@@ -391,6 +398,7 @@ const enhance = compose(
       loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
       isClassCodeModalOpen: getIsClassCodeModalOpen(state),
       forgotPasswordVisible: getForgotPasswordVisible(state),
+      loginAttemptRemaining: getLoginAttemptRemaining(state),
     }),
     {
       googleLogin: googleLoginAction,
@@ -447,6 +455,13 @@ const FormWrapper = styled.div`
   background: white;
   overflow: hidden;
   border-radius: 8px;
+`
+
+const ErrorMessage = styled.p`
+  color: #f5222d;
+  font-size: 10px;
+  margin-top: -10px;
+  margin-bottom: -10px;
 `
 
 const FormHead = styled(Row)`

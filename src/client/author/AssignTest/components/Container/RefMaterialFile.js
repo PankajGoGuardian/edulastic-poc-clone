@@ -35,7 +35,7 @@ const RefMaterialFile = ({
             <AlignSwitchRight
               data-cy="reference-material-switch"
               size="small"
-              disabled={!hasAttributesInTest || disabled}
+              disabled={!hasAttributesInTest || disabled || !premium}
               defaultChecked={false}
               checked={enableUpload}
               onChange={onChangeSwitch}

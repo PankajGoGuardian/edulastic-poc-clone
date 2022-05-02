@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
@@ -337,7 +338,7 @@ const TestBehaviorGroupContainer = ({
           tootltipWidth={tootltipWidth}
           setData={updateRefMaterials}
           referenceDocAttributes={referenceDocAttributes}
-          hasAttributesInTest={!!testSettings?.referenceDocAttributes}
+          hasAttributesInTest={!isEmpty(testSettings?.referenceDocAttributes)}
         />
       )}
       {/* Reference Material */}

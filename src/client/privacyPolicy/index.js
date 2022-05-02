@@ -140,6 +140,9 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
   )
 }
 
-export default connect(() => {}, { setLocationData: setLocationToUserAction })(
-  PrivacyPolicyModal
-)
+export default connect(
+  () => {
+    return {}
+  },
+  { setLocationData: setLocationToUserAction }
+)(PrivacyPolicyModal)

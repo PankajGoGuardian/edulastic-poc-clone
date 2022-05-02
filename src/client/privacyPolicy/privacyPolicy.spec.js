@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, screen } from '@testing-library/react'
+import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import segmentApi from '@edulastic/api/src/segment'
 import { userApi } from '@edulastic/api'
@@ -16,20 +16,34 @@ jest.spyOn(segmentApi, 'genericEventTrack')
 segmentApi.genericEventTrack = jest.fn()
 
 describe('Privacy Policy Modal Component', () => {
-  test('test modal visibiltiy ', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(userApi, 'getUserLocation')
+      .mockImplementation(() =>
+        Promise.resolve({ result: { isEEAUser: true } })
+      )
+  })
+  test('test modal components visibility ', async () => {
     const result = render(<PrivacyPolicyModal store={store} />)
-    const moduleTitleElement = result.getByText(
+    const moduleTitleElement = screen.getByText(
       'End User License Agreement and Product Privacy Policy'
     )
     expect(moduleTitleElement).toBeInTheDocument()
     const checkBoxTextElement = screen.getByText(
       'By checking the box and clicking “Accept”, I agree to the Terms of Service and End User License Agreement and Privacy Policy of the Product'
     )
+    const eulaPolicyContent = result.getByTestId('eulaPolicyContent')
+    expect(eulaPolicyContent).toBeInTheDocument()
+    const productPrivacyPolicy = result.getByTestId('productPrivacyPolicy')
+    expect(productPrivacyPolicy).toBeInTheDocument()
     expect(checkBoxTextElement).toBeInTheDocument()
-    const acceptButton = result.getByTestId('acceptButton')
+    const acceptButton = screen.getByTestId('acceptButton')
     expect(acceptButton).toBeDisabled()
-    const checkbox = result.getByTestId('check')
+    const checkbox = screen.getByTestId('check')
     expect(checkbox).toBeEnabled()
+    await waitFor(() => {
+      expect(screen.getByTestId('eeaPolicyContent')).toBeInTheDocument()
+    })
   })
   test('click checkbox and accept policy', async () => {
     userApi.eulaPolicyStatusUpdate = jest

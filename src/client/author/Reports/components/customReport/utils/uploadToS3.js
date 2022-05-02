@@ -29,7 +29,7 @@ export const uploadToS3 = async (
    * remove special characters from file name before uploading
    */
   const { name: fileName = '' } = file
-  const fileParts = fileName.split('.')[0].split('__')
+  const fileParts = fileName.replace(/\s/g, '').split('.')[0].split('__')
   if (fileParts.length !== 4) {
     throw new Error('Invalid file name.')
   }
@@ -48,12 +48,11 @@ export const uploadToS3 = async (
       `District id for the file does not matches with user's district id.`
     )
   }
+  const fName = `${fileParts[0]}__${fileParts[1].toUpperCase()}__${
+    fileParts[2]
+  }__${fileParts[3]}.csv`
 
-  const result = await dataWarehouseApi.getSignedUrl(
-    fileName,
-    folder,
-    subFolder
-  )
+  const result = await dataWarehouseApi.getSignedUrl(fName, folder, subFolder)
   const formData = new FormData()
   const { fields, url, cdnUrl, logDetails } = result
 

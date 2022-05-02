@@ -36,13 +36,24 @@ const componentsVisibility = () => {
   expect(checkbox).toBeEnabled()
 }
 
+const acceptPolicy = async () => {
+  userApi.eulaPolicyStatusUpdate = jest
+    .fn()
+    .mockReturnValue(Promise.resolve({}))
+  render(<PrivacyPolicyModal store={store} />)
+  const acceptButton = screen.getByTestId('acceptButton')
+  expect(acceptButton).toBeDisabled()
+  const checkbox = screen.getByTestId('check')
+  await userEvent.click(checkbox)
+  await userEvent.click(acceptButton)
+  expect(userApi.eulaPolicyStatusUpdate).toBeCalled()
+}
+
 describe('Privacy Policy Modal Non EEA USER', () => {
   beforeEach(() => {
     jest
       .spyOn(userApi, 'getUserLocation')
-      .mockImplementation(() =>
-        Promise.resolve({ result: { isEEAUser: false } })
-      )
+      .mockReturnValueOnce(Promise.resolve({ result: {} }))
   })
   test('test modal components visibility ', async () => {
     await waitFor(() => {
@@ -53,16 +64,7 @@ describe('Privacy Policy Modal Non EEA USER', () => {
     expect(eeaPolicyContent).toBeNull()
   })
   test('click checkbox and accept policy', async () => {
-    userApi.eulaPolicyStatusUpdate = jest
-      .fn()
-      .mockReturnValue(Promise.resolve({}))
-    render(<PrivacyPolicyModal store={store} />)
-    const acceptButton = screen.getByTestId('acceptButton')
-    expect(acceptButton).toBeDisabled()
-    const checkbox = screen.getByTestId('check')
-    await userEvent.click(checkbox)
-    await userEvent.click(acceptButton)
-    expect(userApi.eulaPolicyStatusUpdate).toBeCalled()
+    acceptPolicy()
   })
 })
 
@@ -70,9 +72,7 @@ describe('privacy Policy Modal EEA USER', () => {
   beforeEach(() => {
     jest
       .spyOn(userApi, 'getUserLocation')
-      .mockImplementation(() =>
-        Promise.resolve({ result: { isEEAUser: true } })
-      )
+      .mockReturnValueOnce(Promise.resolve({ result: { isEEAUser: true } }))
   })
   test('test modal components visibility with eeaPolicyContent ', async () => {
     render(<PrivacyPolicyModal store={store} />)
@@ -80,5 +80,8 @@ describe('privacy Policy Modal EEA USER', () => {
     await waitFor(() => {
       expect(screen.getByTestId('eeaPolicyContent')).toBeInTheDocument()
     })
+  })
+  test('click checkbox and accept policy', async () => {
+    acceptPolicy()
   })
 })

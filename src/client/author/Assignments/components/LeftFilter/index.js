@@ -139,7 +139,7 @@ class LeftFilter extends React.Component {
       tags = [],
       folderId = '',
     } = filterState
-    const testTypes = getTestTypeFullNames(isPremiumUser, userRole)
+    const testTypes = getTestTypeFullNames(isPremiumUser)
     const classListByTerm = classList.filter(
       (item) => item.termId === termId || !termId
     )

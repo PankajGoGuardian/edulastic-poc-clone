@@ -3,6 +3,7 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { all, call, put, takeLatest } from 'redux-saga/effects'
 import { customReportApi, dataWarehouseApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { dataWarehouse } from '@edulastic/constants'
 import { uploadToS3 } from './utils/uploadToS3'
 
 const GET_CUSTOM_REPORT_STATE_REQUEST = '[reports] get custom reports request'
@@ -216,7 +217,7 @@ export function* getCustomReportURLRequest({ payload }) {
 
 export function* fetchUploadsStatusList() {
   try {
-    const uploadsStatusList = yield call(dataWarehouseApi.getLogs)
+    const uploadsStatusList = yield call(dataWarehouseApi.getDataWarehouse)
     yield put({
       type: GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS,
       payload: uploadsStatusList,
@@ -239,7 +240,7 @@ export function* uploadTestDataFile({ payload }) {
     })
     const response = yield uploadToS3(
       payload.file,
-      process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER,
+      dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
       'raw_data',
       payload.category,
       payload.districtId,

@@ -76,7 +76,7 @@ export const uploadToS3 = async (
       cancelUpload
     )
   } catch (e) {
-    await dataWarehouseApi.updateLogStatus(logDetails._id, {
+    await dataWarehouseApi.updateDatawarehouseStatus(logDetails._id, {
       status: 'ERROR',
     })
     throw new Error('Error while uploading the file.')

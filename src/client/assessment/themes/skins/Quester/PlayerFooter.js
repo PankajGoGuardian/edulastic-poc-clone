@@ -6,7 +6,7 @@ import {
   IconMagnify,
   IconQuester,
   IconCheck,
-  IconReferenceGuid,
+  IconReferenceGuide,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -163,7 +163,7 @@ const PlayerFooter = ({
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
-            <IconReferenceGuid
+            <IconReferenceGuide
               color={footer.textColor}
               hoverColor={button.background}
             />

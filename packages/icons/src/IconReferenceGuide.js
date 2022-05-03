@@ -5,6 +5,7 @@ import SVG from './common/SVG'
 
 const IconReferenceGuide = (props) => (
   <SVG
+    data-cy="icon-reference-sheet"
     xmlns="http://www.w3.org/2000/svg"
     width="14.367"
     height="16.793"

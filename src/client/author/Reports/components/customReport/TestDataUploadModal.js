@@ -55,6 +55,7 @@ const TestDataUploadModal = ({
   return (
     <CustomModalStyled
       visible={isVisible}
+      maskClosable={false}
       title="Upload File"
       onCancel={() => {
         closeModal(false)

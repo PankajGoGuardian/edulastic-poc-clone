@@ -158,8 +158,8 @@ const PlayerFooter = ({
         <ActionContainer
           hoverEffect
           onClick={openReferenceModal}
-          title={t('common.test.referenceSheet')}
-          data-cy="referenceSheet"
+          title={t('common.test.referenceGuide')}
+          data-cy="referenceGuide"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>

@@ -259,6 +259,7 @@ const Container = (props) => {
                   isCliUser={isCliUser}
                   breadcrumbData={headerSettings.breadcrumbData}
                   setDynamicBreadcrumb={setDynamicBreadcrumb}
+                  showDataWarehouse
                 />
               )
             }}

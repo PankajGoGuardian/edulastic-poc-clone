@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import next from 'immer'
 import { Tag } from 'antd'
 
@@ -40,6 +40,10 @@ const getTag = (status) => {
 }
 
 const TestDataUploadsTable = ({ uploadsStatusList }) => {
+  const sortedData = useMemo(() => {
+    return uploadsStatusList.sort((a, b) => b.updatedAt - a.updatedAt)
+  }, [uploadsStatusList])
+
   const _columns = next(columns, (rawColumns) => {
     rawColumns[0].sorter = sortText('testName')
     rawColumns[1].sorter = (a, b) => a - b
@@ -54,7 +58,7 @@ const TestDataUploadsTable = ({ uploadsStatusList }) => {
 
   return (
     <CsvTable
-      dataSource={uploadsStatusList}
+      dataSource={sortedData}
       columns={_columns}
       tableToRender={StyledTable}
       scroll={{ x: '100%' }}

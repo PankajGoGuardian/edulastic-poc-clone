@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { IconUpload } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { get } from 'lodash'
 
 import { EduButton, FlexContainer } from '@edulastic/common'
 import { StyledContainer } from '../../common/styled'

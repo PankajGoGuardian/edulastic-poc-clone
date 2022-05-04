@@ -57,8 +57,6 @@ import {
   updateTestSettingRequestAction,
   getIsOverrideFreezeSelector,
   setTestSettingsListAction,
-  isEnabledRefMaterialSelector,
-  getTestsUpdatedSelector,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -340,8 +338,6 @@ class AssignTest extends React.Component {
       isAssigning,
       assignmentSettings: assignment,
       location,
-      isEnabledRefMaterial,
-      refMatOptUpdated,
     } = this.props
     const source = location?.state?.assessmentAssignedFrom
     let updatedAssignment = { ...assignment }
@@ -361,9 +357,7 @@ class AssignTest extends React.Component {
       if (!selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
       }
-      if (!isEnabledRefMaterial && refMatOptUpdated) {
-        updatedAssignment.referenceDocAttributes = {}
-      }
+
       const isValid = this.validateSettings(updatedAssignment)
       if (isValid) {
         if (source) {
@@ -1008,8 +1002,6 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       searchTerms: getSearchTermsFilterSelector(state),
       isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
-      isEnabledRefMaterial: isEnabledRefMaterialSelector(state),
-      refMatOptUpdated: getTestsUpdatedSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,

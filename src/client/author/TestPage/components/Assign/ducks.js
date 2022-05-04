@@ -1,5 +1,5 @@
 import * as moment from 'moment'
-import { omit, get } from 'lodash'
+import { omit, get, isEmpty } from 'lodash'
 import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
@@ -19,7 +19,13 @@ import {
   takeLatest,
 } from 'redux-saga/effects'
 import { replace, push } from 'connected-react-router'
-import { getTestSelector, getTestIdSelector } from '../../ducks'
+import {
+  getTestSelector,
+  getTestIdSelector,
+  isEnabledRefMaterialSelector,
+  getTestsUpdatedSelector,
+} from '../../ducks'
+
 import { formatAssignment } from './utils'
 import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
 import { UPDATE_CURRENT_EDITING_ASSIGNMENT } from '../../../src/constants/actions'
@@ -341,6 +347,20 @@ function* saveAssignment({ payload }) {
         passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
       assignmentSettings.timedAssignment = false
       assignmentSettings.showRubricToStudents = false
+    }
+
+    const referenceDocAttributes =
+      assignmentSettings.referenceDocAttributes || test.referenceDocAttributes
+    const refMatOptUpdated = yield select(getTestsUpdatedSelector)
+    const isEnabledRefMaterial = yield select(isEnabledRefMaterialSelector)
+
+    if (
+      (!isEmpty(referenceDocAttributes) && isEnabledRefMaterial) ||
+      (!isEmpty(referenceDocAttributes) && !refMatOptUpdated)
+    ) {
+      assignmentSettings.referenceDocAttributes = referenceDocAttributes
+    } else {
+      assignmentSettings.referenceDocAttributes = {}
     }
     // Missing termId notify
     if (!assignmentSettings.termId) {

@@ -314,13 +314,13 @@ export const getDefaultSettings = ({
   return {
     performanceBand: {
       _id:
-        defaultTestProfiles?.performanceBand[profileKey] ||
+        defaultTestProfiles?.performanceBand?.[profileKey] ||
         defaultTestProfiles?.performanceBand?.common ||
         '',
     },
     standardProficiency: {
       _id:
-        defaultTestProfiles?.standardProficiency[profileKey] ||
+        defaultTestProfiles?.standardProficiency?.[profileKey] ||
         defaultTestProfiles?.standardProficiency?.common ||
         '',
     },

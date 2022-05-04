@@ -3,7 +3,7 @@
 const TEST_TYPES = {
   ASSESSMENT: ['assessment'],
   COMMON: ['common assessment'],
-  PRACTICE: ['practice', 'homework', 'quiz'],
+  PRACTICE: ['practice'],
   TESTLET: ['testlet'],
 }
 
@@ -27,8 +27,6 @@ const TEST_TYPE_LABELS = {
   'common assessment': 'Common Assessment',
   assessment: 'Class Assessment',
   practice: 'Practice Assessment',
-  homework: 'Homework',
-  quiz: 'Quiz',
 }
 
 const PREMIUM_TEST_TYPES = [

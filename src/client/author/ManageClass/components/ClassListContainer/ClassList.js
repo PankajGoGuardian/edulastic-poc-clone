@@ -13,7 +13,13 @@ import schoologyIcon from '../../../../student/assets/schoology.png'
 import ClassSelector from './ClassSelector'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import ClassCreatePage from './ClassCreatePage'
-import { TableWrapper, ClassListTable, Tags, SubHeader } from './styled'
+import {
+  TableWrapper,
+  ClassListTable,
+  Tags,
+  SubHeader,
+  IconWrapper,
+} from './styled'
 import { fetchClassListAction, setFilterClassAction } from '../../ducks'
 import GoogleBanner from './GoogleBanner'
 import { getUserDetails } from '../../../../student/Login/ducks'
@@ -237,11 +243,13 @@ const ClassList = ({
       dataIndex: 'syncedWith',
       render: (syncedIconList) => (
         <FlexContainer justify-content="space-between" align-items="center">
-          {syncedIconList?.length ? (
-            syncedIconList.map((icons) => icons)
-          ) : (
-            <p>-</p>
-          )}
+          <IconWrapper>
+            {syncedIconList?.length ? (
+              syncedIconList.map((icons) => icons)
+            ) : (
+              <p>-</p>
+            )}
+          </IconWrapper>
         </FlexContainer>
       ),
     },

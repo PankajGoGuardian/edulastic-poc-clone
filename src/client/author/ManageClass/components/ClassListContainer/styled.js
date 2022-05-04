@@ -506,3 +506,11 @@ export const InstitutionSelectWrapper = styled.div`
     }
   }
 `
+export const IconWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  svg {
+    margin: 0 8px;
+  }
+`

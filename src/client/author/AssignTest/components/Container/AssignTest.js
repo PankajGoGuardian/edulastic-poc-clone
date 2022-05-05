@@ -586,6 +586,7 @@ class AssignTest extends React.Component {
   }
 
   validateSettings = (entity) => {
+    const { isEnabledRefMaterial } = this.props
     let isValid = true
     if (
       ![
@@ -662,6 +663,13 @@ class AssignTest extends React.Component {
         })
         isValid = false
       }
+    } else if (isEnabledRefMaterial && isEmpty(entity.referenceDocAttributes)) {
+      this.handleTabChange(sectionContants.TEST_BEHAVIOR_SECTION)
+      notification({
+        type: 'warn',
+        messageKey: 'uploadReferenceMaterial',
+      })
+      isValid = false
     }
     return isValid
   }

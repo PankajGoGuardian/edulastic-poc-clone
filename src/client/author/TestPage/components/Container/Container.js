@@ -608,6 +608,15 @@ class Container extends PureComponent {
     return true
   }
 
+  validateReferenceDocMaterial = () => {
+    const { test, enabledRefMaterial } = this.props
+    if (enabledRefMaterial && isEmpty(test.referenceDocAttributes)) {
+      notification({ messageKey: 'uploadReferenceMaterial' })
+      return false
+    }
+    return true
+  }
+
   handleAssign = () => {
     const {
       test,
@@ -968,9 +977,13 @@ class Container extends PureComponent {
       notification({ messageKey: 'nameFieldRequired' })
       return
     }
-    if (!this.validateTimedAssignment()) {
+    if (
+      !this.validateTimedAssignment() ||
+      !this.validateReferenceDocMaterial()
+    ) {
       return
     }
+
     const newTest = this.modifyTest()
     if (newTest.safeBrowser && !newTest.sebPassword) {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
@@ -1090,6 +1103,9 @@ class Container extends PureComponent {
         })
         return false
       }
+    }
+    if (!this.validateReferenceDocMaterial()) {
+      return false
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
     let itemGroupWithQuestionsCount = 0

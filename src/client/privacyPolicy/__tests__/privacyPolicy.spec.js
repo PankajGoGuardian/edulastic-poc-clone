@@ -5,12 +5,12 @@ import userEvent from '@testing-library/user-event'
 import segmentApi from '@edulastic/api/src/segment'
 import { userApi } from '@edulastic/api'
 import configureMockStore from 'redux-mock-store'
-import PrivacyPolicyModal from './index'
+import PrivacyPolicyModal from '../index'
 
 const mockStore = configureMockStore()
 const store = mockStore({})
 
-jest.mock('../../../packages/api/src/utils/API')
+jest.mock('../../../../packages/api/src/utils/API')
 
 jest.spyOn(userApi, 'eulaPolicyStatusUpdate')
 

@@ -14,7 +14,7 @@ import {
 import { getSanitizedProps } from '@edulastic/common'
 import PropTypes from 'prop-types'
 
-const EduButton = ({ children, btnType, isGhost, ...restProps }) => {
+const EduButton = ({ children, ...restProps }) => {
   const blacklistedPropsDOMElements = ['features', 'groupList']
   const sanitizedProps = getSanitizedProps(
     restProps,

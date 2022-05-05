@@ -3,7 +3,7 @@ import { BodyContentWrapper, StickyHeader } from './Styled'
 
 const ProductPolicyContent = () => {
   return (
-    <BodyContentWrapper>
+    <BodyContentWrapper data-testid="productPrivacyPolicy">
       <StickyHeader>
         <strong>Product Privacy Policy</strong>
       </StickyHeader>

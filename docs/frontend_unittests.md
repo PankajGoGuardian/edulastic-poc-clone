@@ -158,3 +158,12 @@ describe('PrivacyModal component', () => {
 ```
 
 [example](https://github.com/snapwiz/edulastic-poc/blob/036c3832ae6d037158e267c3413ed3fbce959696/src/client/privacyPolicy/privacyPolicy.spec.js#L7-L8)
+
+### How to run
+
+Run all the spec files
+yarn test
+
+Run specific spec file
+yarn test <spec_path>
+example : yarn run src/client/privacyPolicy/privacyPolicy.spec.js

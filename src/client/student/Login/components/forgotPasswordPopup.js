@@ -184,6 +184,7 @@ const ForgotPasswordForm = (props) => {
           ],
         })(
           <Input
+            data-testid="email-input"
             className="email-input"
             prefix={<IconMail color={themeColor} />}
             placeholder="Enter Registered Username or Email"
@@ -196,6 +197,7 @@ const ForgotPasswordForm = (props) => {
           Cancel
         </EduButton>
         <EduButton
+          data-testid="send-reset"
           htmlType="submit"
           key="sendLink"
           ml="20px"

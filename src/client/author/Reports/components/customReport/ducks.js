@@ -217,7 +217,7 @@ export function* getCustomReportURLRequest({ payload }) {
 
 export function* fetchUploadsStatusList() {
   try {
-    const uploadsStatusList = yield call(dataWarehouseApi.getDataWarehouse)
+    const uploadsStatusList = yield call(dataWarehouseApi.getDataWarehouseLogs)
     yield put({
       type: GET_UPLOADS_STATUS_LIST_REQUEST_SUCCESS,
       payload: uploadsStatusList,
@@ -243,8 +243,7 @@ export function* uploadTestDataFile({ payload }) {
       dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
       'raw_data',
       payload.category,
-      payload.districtId,
-      fetchUploadsStatusList
+      payload.districtId
     )
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS,

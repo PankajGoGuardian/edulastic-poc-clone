@@ -16,7 +16,7 @@ const ReferenceMaterial = ({
   onChangeSwitch,
 }) => {
   return (
-    <SettingContainer>
+    <SettingContainer data-testid="reference-material-setting">
       <Title>
         <span>
           Reference Material <DollarPremiumSymbol premium={premium} />
@@ -25,6 +25,7 @@ const ReferenceMaterial = ({
           checked={enableUpload}
           disabled={!owner || !isEditable || !premium || disabled}
           data-cy="assignment-referenceDocAttributes-switch"
+          data-testid="assignment-referenceDocAttributes-switch"
           onChange={onChangeSwitch}
         />
       </Title>

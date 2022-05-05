@@ -69,7 +69,7 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
-    playerSkinType = testSettings.playerSkinType,
+    playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
@@ -78,6 +78,7 @@ const TestBehaviorGroupContainer = ({
 
   const showRefMaterial = useMemo(() => {
     const { quester, edulastic } = playerSkinValues
+
     return (
       !isDocBased &&
       (playerSkinType === edulastic || playerSkinType === quester)

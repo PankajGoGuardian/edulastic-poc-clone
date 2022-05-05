@@ -311,6 +311,7 @@ const TableList = ({
             ? 'Bulk action disabled for EA proxy accounts.'
             : ''
         }
+        placement="right"
       >
         <div>
           <MoreOption
@@ -327,6 +328,7 @@ const TableList = ({
             ? 'Bulk action disabled for EA proxy accounts.'
             : ''
         }
+        placement="right"
       >
         <div>
           <MoreOption

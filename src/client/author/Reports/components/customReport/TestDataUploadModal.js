@@ -53,7 +53,9 @@ const TestDataUploadModal = ({
   }, [uploadResponse])
 
   return (
-    <CustomModalStyled
+    <Modal
+      modalWidth="800px"
+      style={{ height: '800px' }}
       visible={isVisible}
       maskClosable={false}
       title="Upload File"
@@ -146,7 +148,7 @@ const TestDataUploadModal = ({
           )}
         </FlexContainer>
       </Container>
-    </CustomModalStyled>
+    </Modal>
   )
 }
 
@@ -162,6 +164,8 @@ const withConnect = connect(
 )
 
 export default compose(withConnect)(TestDataUploadModal)
+
+const Modal = styled(CustomModalStyled)``
 
 const Container = styled.div`
   padding: 10px;

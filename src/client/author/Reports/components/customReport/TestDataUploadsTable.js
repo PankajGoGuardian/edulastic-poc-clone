@@ -6,7 +6,8 @@ import { red, green, yellow } from '@edulastic/colors'
 
 import { isEmpty } from 'lodash'
 import CsvTable from '../../common/components/tables/CsvTable'
-import { NoDataContainer, StyledTable } from '../../common/styled'
+import { NoDataContainer } from '../../common/styled'
+import { StyledTable } from '../../../../common/styled'
 
 const columns = [
   {

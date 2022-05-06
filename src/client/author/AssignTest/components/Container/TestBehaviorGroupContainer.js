@@ -1,6 +1,6 @@
-import React, { useMemo, useState } from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { isEmpty } from 'lodash'
+// import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
@@ -22,7 +22,7 @@ import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
-import RefMaterialFile from './RefMaterialFile'
+// import RefMaterialFile from './RefMaterialFile'
 
 const {
   releaseGradeTypes,
@@ -31,7 +31,7 @@ const {
   releaseGradeLabels,
   testContentVisibilityTypes,
   testContentVisibility: testContentVisibilityOptions,
-  playerSkinValues,
+  // playerSkinValues,
 } = test
 
 const TEST_TYPE_TOOLTIP_CONTENT =
@@ -69,21 +69,21 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
-    playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
+    // playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
-    referenceDocAttributes = testSettings?.referenceDocAttributes,
-    isDocBased = testSettings?.isDocBased,
+    // referenceDocAttributes = testSettings?.referenceDocAttributes,
+    // isDocBased = testSettings?.isDocBased,
   } = assignmentSettings
 
-  const showRefMaterial = useMemo(() => {
-    const { quester, edulastic } = playerSkinValues
+  // const showRefMaterial = useMemo(() => {
+  //   const { quester, edulastic } = playerSkinValues
 
-    return (
-      !isDocBased &&
-      (playerSkinType === edulastic || playerSkinType === quester)
-    )
-  }, [playerSkinType, isDocBased])
+  //   return (
+  //     !isDocBased &&
+  //     (playerSkinType === edulastic || playerSkinType === quester)
+  //   )
+  // }, [playerSkinType, isDocBased])
 
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
@@ -141,9 +141,9 @@ const TestBehaviorGroupContainer = ({
     overRideSettings(attr, value)
   }
 
-  const updateRefMaterials = (value) => {
-    overRideSettings('referenceDocAttributes', value)
-  }
+  // const updateRefMaterials = (value) => {
+  //   overRideSettings('referenceDocAttributes', value)
+  // }
 
   const testTypeContent = (
     <>
@@ -332,7 +332,7 @@ const TestBehaviorGroupContainer = ({
       {/* Show Calculator */}
 
       {/* Reference Material */}
-      {showRefMaterial && (
+      {/* {showRefMaterial && (
         <RefMaterialFile
           premium={premium}
           disabled={freezeSettings}
@@ -341,7 +341,7 @@ const TestBehaviorGroupContainer = ({
           referenceDocAttributes={referenceDocAttributes}
           hasAttributesInTest={!isEmpty(testSettings?.referenceDocAttributes)}
         />
-      )}
+      )} */}
       {/* Reference Material */}
 
       {/* Timed TEST */}

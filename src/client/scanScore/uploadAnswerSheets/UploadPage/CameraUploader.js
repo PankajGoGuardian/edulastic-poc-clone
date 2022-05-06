@@ -11,28 +11,15 @@ import {
   white,
   cardBg,
 } from '@edulastic/colors'
-import { EduButton, notification } from '@edulastic/common'
+import { EduButton } from '@edulastic/common'
 import { IconQRCode } from '@edulastic/icons'
-import { compose } from 'redux'
-import { connect } from 'react-redux'
-import { selector } from '../ducks'
 
-const CameraUploader = ({ history, hasNonMcq }) => {
-  const initCameraUpload = () => {
-    if (hasNonMcq) {
-      notification({
-        type: 'warn',
-        msg:
-          'The sheet contains non MCQ questions, please use PDF upload mode to scan',
-        exact: true,
-      })
-      return
-    }
+const CameraUploader = ({ history }) => {
+  const initCameraUpload = () =>
     history.push({
       pathname: '/uploadAnswerSheets/cameraScan',
       search: window.location.search,
     })
-  }
 
   return (
     <CameraUploaderWrapper>
@@ -53,11 +40,7 @@ const CameraUploader = ({ history, hasNonMcq }) => {
   )
 }
 
-const enhance = compose(
-  withRouter,
-  connect((state) => ({ ...selector(state) }), null)
-)
-export default enhance(CameraUploader)
+export default withRouter(CameraUploader)
 
 const CameraUploaderWrapper = styled.div`
   width: 450px;

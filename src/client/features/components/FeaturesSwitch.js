@@ -17,15 +17,16 @@ import { isFeatureAccessibleToUser as isFeatureAccessible } from '../featuresUti
  *
  */
 const FeaturesSwitch = (props) => {
-  let { children, style } = props
-  const { actionOnInaccessible = 'hidden', redirectRoute = '' } = props
+  const {
+    children,
+    actionOnInaccessible = 'hidden',
+    redirectRoute = '',
+  } = props
 
   const isAccessible = isFeatureAccessible({
     ...props,
   })
-  style = typeof style === 'function' ? style(isAccessible) : style
-  children =
-    typeof children === 'function' ? children({ isAccessible }) : children
+
   const redirect = (
     <Switch>
       <Redirect exact to={redirectRoute} />
@@ -48,15 +49,13 @@ const FeaturesSwitch = (props) => {
   })
 
   // TODO: Remove once BE is fixed
-  if (isAccessible || actionOnInaccessible === 'disabled') return _children
-  if (actionOnInaccessible === 'redirect') return redirect
-  if (typeof actionOnInaccessible === 'function')
-    return (
-      <div style={style} onClick={actionOnInaccessible}>
-        {_children}
-      </div>
-    )
-  return null
+  return isAccessible
+    ? _children
+    : actionOnInaccessible === 'disabled'
+    ? _children
+    : actionOnInaccessible === 'redirect'
+    ? redirect
+    : null
 }
 export { isFeatureAccessible }
 export default connect((state) => ({

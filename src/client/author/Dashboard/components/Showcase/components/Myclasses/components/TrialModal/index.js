@@ -162,8 +162,8 @@ const TrialModal = ({
         {hasPremiumTrialIncluded ? (
           <p>
             Experience the additional features of Edulastic Teacher Premium for
-            14 days: OMR exams, read-loud for students, extra test security
-            settings, easier collaboration, in-depth reports and more.
+            14 days: read-loud for students, extra test security settings,
+            easier collaboration, in-depth reports and more.
           </p>
         ) : (
           <p>

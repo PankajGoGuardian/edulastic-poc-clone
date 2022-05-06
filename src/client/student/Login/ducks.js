@@ -1037,13 +1037,6 @@ export const getShowVerifyEmailModal = createSelector(
   (r) => r
 )
 
-export const getIsCpm = createSelector(
-  [getUserDetails],
-  (user) =>
-    user?.utm_source?.toLowerCase()?.includes('cpm') ||
-    user?.referrer?.toLowerCase()?.includes('cpm')
-)
-
 const routeSelector = (state) => state.router.location.pathname
 
 function getCurrentFirebaseUser() {

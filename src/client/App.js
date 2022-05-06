@@ -11,11 +11,7 @@ import { compose } from 'redux'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
-import {
-  roleuser,
-  signUpState,
-  testTypes as testTypesConstants,
-} from '@edulastic/constants'
+import { roleuser, signUpState, test } from '@edulastic/constants'
 import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
@@ -71,11 +67,7 @@ import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 import FeaturesSwitch from './features/components/FeaturesSwitch'
 
-const {
-  ASSESSMENT,
-  PRACTICE,
-  TESTLET,
-} = testTypesConstants.TEST_TYPES_VALUES_MAP
+const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
   import(

@@ -5,14 +5,13 @@ import { Tooltip as AntDTooltip, Modal } from 'antd'
 import { notification } from '@edulastic/common'
 import { EDULASTIC_CURATOR } from '@edulastic/constants/const/roleType'
 import { themeColor } from '@edulastic/colors'
-import { signUpState } from '@edulastic/constants'
+import { signUpState, test as testConst } from '@edulastic/constants'
 import * as Sentry from '@sentry/browser'
 import { API } from '@edulastic/api'
 import qs from 'qs'
 import { Partners } from './static/partnerData'
 import { smallestZoomLevel } from './static/zoom'
 import { breakpoints } from '../../student/zoomTheme'
-import { getProfileKey } from './testTypeUtils'
 
 // eslint-disable-next-line no-control-regex
 export const emailRegex = /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/
@@ -55,7 +54,10 @@ export const isLoggedInForPrivateRoute = (user) => {
 }
 
 export const isLoggedInForLoggedOutRoute = (user) => {
-  if (user && user.isAuthenticated) {
+  if (
+    user &&
+    user.isAuthenticated 
+  ) {
     if (
       user &&
       user.user &&
@@ -310,20 +312,43 @@ export const getDefaultSettings = ({
   testType = '',
   defaultTestProfiles = {},
 }) => {
-  const profileKey = getProfileKey(testType)
-  return {
-    performanceBand: {
-      _id:
-        defaultTestProfiles?.performanceBand?.[profileKey] ||
-        defaultTestProfiles?.performanceBand?.common ||
-        '',
-    },
-    standardProficiency: {
-      _id:
-        defaultTestProfiles?.standardProficiency?.[profileKey] ||
-        defaultTestProfiles?.standardProficiency?.common ||
-        '',
-    },
+  switch (true) {
+    case testType === testConst.type.COMMON:
+      return {
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.common || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.common || '',
+        },
+      }
+    case testType === testConst.type.ASSESSMENT:
+      return {
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.class || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.class || '',
+        },
+      }
+    case testType === testConst.type.PRACTICE:
+      return {
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.practice || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.practice || '',
+        },
+      }
+    default:
+      return {
+        performanceBand: {
+          _id: defaultTestProfiles?.performanceBand?.common || '',
+        },
+        standardProficiency: {
+          _id: defaultTestProfiles?.standardProficiency?.common || '',
+        },
+      }
   }
 }
 

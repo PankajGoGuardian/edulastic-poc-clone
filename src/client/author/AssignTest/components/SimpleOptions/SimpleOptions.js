@@ -4,7 +4,6 @@ import {
   assignmentSettingSections as sectionContants,
   roleuser,
   test as testConst,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
@@ -16,7 +15,6 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { multiFind } from '../../../../common/utils/main'
-import { getProfileKey } from '../../../../common/utils/testTypeUtils'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -32,6 +30,7 @@ import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
+  testTypesToTestSettings,
 } from '../../../TestPage/ducks'
 import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
@@ -219,12 +218,11 @@ class SimpleOptions extends React.Component {
         }
         case 'testType': {
           if (
-            testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) ||
-            testTypesConstants.TEST_TYPES.COMMON.includes(value)
+            value === testConst.type.ASSESSMENT ||
+            value === testConst.type.COMMON
           ) {
             state.releaseScore =
-              testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) &&
-              isReleaseScorePremium
+              value === testConst.type.ASSESSMENT && isReleaseScorePremium
                 ? releaseGradeLabels.WITH_RESPONSE
                 : releaseGradeLabels.DONT_RELEASE
             if (free && !premium) {
@@ -244,7 +242,7 @@ class SimpleOptions extends React.Component {
                 {
                   _id:
                     defaultTestTypeProfiles.performanceBand[
-                      getProfileKey(value)
+                      testTypesToTestSettings[value]
                     ],
                 },
               ],
@@ -259,7 +257,7 @@ class SimpleOptions extends React.Component {
                 {
                   _id:
                     defaultTestTypeProfiles.standardProficiency[
-                      getProfileKey(value)
+                      testTypesToTestSettings[value]
                     ],
                 },
               ],

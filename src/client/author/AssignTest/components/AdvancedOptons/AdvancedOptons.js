@@ -2,7 +2,6 @@ import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { Col } from 'antd'
 import produce from 'immer'
@@ -117,18 +116,17 @@ class AdvancedOptons extends React.Component {
         state.standardGradingScale = standardGradingScale
 
         if (
-          testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) ||
-          testTypesConstants.TEST_TYPES.COMMON.includes(value)
+          value === testConst.type.ASSESSMENT ||
+          value === testConst.type.COMMON
         ) {
           state.releaseScore =
-            testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) &&
-            isReleaseScorePremium
+            value === testConst.type.ASSESSMENT && isReleaseScorePremium
               ? releaseGradeLabels.WITH_RESPONSE
               : releaseGradeLabels.DONT_RELEASE
         } else {
           state.releaseScore = releaseGradeLabels.WITH_ANSWERS
         }
-        if (testTypesConstants.TEST_TYPES.COMMON.includes(value)) {
+        if (value === testConst.type.COMMON) {
           state.class = state.class.filter(
             (item) => !assignedClassesById[value][item._id]
           )

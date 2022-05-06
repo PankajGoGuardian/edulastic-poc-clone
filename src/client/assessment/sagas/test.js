@@ -41,7 +41,6 @@ import {
   test as testContants,
   roleuser,
   testActivityStatus,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
@@ -122,7 +121,6 @@ import {
 // import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants
-const { TEST_TYPES, TEST_TYPES_VALUES_MAP } = testTypesConstants
 
 const modifyTestDataForPreview = (test) =>
   produce(test, (draft) => {
@@ -760,7 +758,7 @@ function* loadTest({ payload }) {
         !isFromSummary &&
         !summary
       ) {
-        if (loadFromLast && !TEST_TYPES.TESTLET.includes(testType)) {
+        if (loadFromLast && testType !== testContants.type.TESTLET) {
           const itemId = testItemIds[lastAttendedQuestion]
           yield put(
             push({
@@ -772,7 +770,7 @@ function* loadTest({ payload }) {
             type: SET_RESUME_STATUS,
             payload: false,
           })
-        } else if (!TEST_TYPES.TESTLET.includes(testType)) {
+        } else if (testType !== testContants.type.TESTLET) {
           yield put(
             push({
               pathname: `${testItemIds[0]}`,
@@ -873,14 +871,10 @@ function* loadTest({ payload }) {
         }
       })
 
-      let playerTestType = testType
-
-      if (TEST_TYPES.COMMON.includes(testType)) {
-        playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
-      }
-      if (TEST_TYPES.PRACTICE.includes(testType)) {
-        playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
-      }
+      const playerTestType =
+        testType === testContants.type.COMMON
+          ? testContants.type.ASSESSMENT
+          : testType
 
       if (testItems.length === lastVisitedItemIndex + 1) {
         yield put(
@@ -1169,14 +1163,10 @@ function* switchLanguage({ payload }) {
       languageChangeSuccessAction({ languagePreference, testActivityId: _id })
     )
     const testType = yield select((state) => state.test && state.test.testType)
-    let playerTestType = testType
-    if (TEST_TYPES.COMMON.includes(testType)) {
-      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
-    }
-    if (TEST_TYPES.PRACTICE.includes(testType)) {
-      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
-    }
-
+    const urlTestType =
+      testType === testContants.type.COMMON
+        ? testContants.type.ASSESSMENT
+        : testType
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
     yield put({
@@ -1187,7 +1177,7 @@ function* switchLanguage({ payload }) {
     yield put(push('/'))
     yield put(
       push({
-        pathname: `/student/${playerTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        pathname: `/student/${urlTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
         state: {
           switchLanguage: true,
         },

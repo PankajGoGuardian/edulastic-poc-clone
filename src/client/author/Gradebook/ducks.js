@@ -5,12 +5,11 @@ import { keyBy } from 'lodash'
 import { reportsApi, assignmentApi, groupApi } from '@edulastic/api'
 
 // imported selectors
-import { getUserOrgData, isPremiumUserSelector } from '../src/selectors/user'
+import { getUserOrgData } from '../src/selectors/user'
 import selectsData from '../TestPage/components/common/selectsData'
 
 // transformers & constants
 import { STATUS_LIST, PAGE_DETAIL } from './transformers'
-import { getTestTypeFullNames } from '../../common/utils/testTypeUtils'
 
 // slice
 const slice = createSlice({
@@ -103,7 +102,7 @@ function* fetchStudentPerformanceSaga({ payload }) {
 
 function* fetchGradebookFiltersSaga() {
   try {
-    const { allGrades, allSubjects } = selectsData
+    const { allGrades, allSubjects, testTypes: tTypes } = selectsData
     // grades
     const grades = allGrades.map(({ value, text }) => ({
       id: value,
@@ -114,14 +113,10 @@ function* fetchGradebookFiltersSaga() {
       .filter((s) => s.value)
       .map(({ value, text }) => ({ id: value, name: text }))
     // testTypes
-    const isPremiumUser = yield select(isPremiumUserSelector)
-    const testTypeFullNames = getTestTypeFullNames(isPremiumUser)
-    const testTypes = Object.keys(testTypeFullNames).map((key) => ({
-      id: key,
-      name: testTypeFullNames[key],
+    const testTypes = tTypes.map(({ value, text }) => ({
+      id: value,
+      name: text,
     }))
-    testTypes.unshift({ id: '', name: 'All' })
-
     // assessments
     const {
       assignments,

@@ -10,7 +10,7 @@ import { withRouter } from 'react-router-dom'
 import { get, isEmpty } from 'lodash'
 import { EduButton, FlexContainer, withKeyboard } from '@edulastic/common'
 import { IconPhotoCamera, IconSend } from '@edulastic/icons'
-import { testTypes as testTypesConstants } from '@edulastic/constants'
+import { test as testTypes } from '@edulastic/constants'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import {
   largeDesktopWidth,
@@ -32,7 +32,7 @@ import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 import TestAttachementsModal from '../../../author/StudentView/Modals/TestAttachementsModal'
 import { getUser } from '../../../author/src/selectors/user'
 
-const { ASSESSMENT, PRACTICE, TESTLET } = testTypesConstants.TEST_TYPES
+const { ASSESSMENT, PRACTICE, TESTLET } = testTypes.type
 class SummaryTest extends Component {
   constructor(props) {
     super(props)
@@ -48,9 +48,9 @@ class SummaryTest extends Component {
     const { utaId: testActivityId, id: testId, assessmentType } = match.params
     const savedUserWork = JSON.parse(localStorage.getItem(`${testId}:userWork`))
     if (
-      ASSESSMENT.includes(assessmentType) ||
-      PRACTICE.includes(assessmentType) ||
-      TESTLET.includes(assessmentType)
+      assessmentType === ASSESSMENT ||
+      assessmentType === PRACTICE ||
+      assessmentType === TESTLET
     ) {
       const { allQids } = questionList
       if (allQids.length === 0) {
@@ -123,7 +123,7 @@ class SummaryTest extends Component {
       targetItemIndex = q.split('no_question_')[1]
     }
 
-    if (!TESTLET.includes(test.testType)) {
+    if (test.testType !== TESTLET) {
       history.push(
         `/student/${assessmentType}/${testId}/class/${groupId}/uta/${testActivityId}/itemId/${
           itemId || items[targetItemIndex]._id

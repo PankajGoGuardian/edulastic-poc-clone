@@ -2,7 +2,6 @@ import { themeColor, darkGrey } from '@edulastic/colors'
 import { EduButton, FlexContainer, notification } from '@edulastic/common'
 import {
   test as TEST,
-  testTypes as testTypesConstants,
   collections as collectionsConstant,
 } from '@edulastic/constants'
 import { IconLock, IconPencilEdit } from '@edulastic/icons'
@@ -66,8 +65,7 @@ import { getAssignmentsSelector, fetchAssignmentsAction } from '../Assign/ducks'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { setUserAction } from '../../../../student/Login/ducks'
 
-const { statusConstants, passwordPolicy } = TEST
-const { TEST_TYPES } = testTypesConstants
+const { statusConstants, passwordPolicy, type: _testTypes } = TEST
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 const sharedWithPriorityOrder = ['Public', 'District', 'School']
@@ -436,7 +434,7 @@ class SuccessPage extends React.Component {
                 <>
                   <FlexTitle>Success!</FlexTitle>
                   <FlexTextWrapper>
-                    {TEST_TYPES.COMMON.includes(assignment.testType)
+                    {assignment.testType === _testTypes.COMMON
                       ? `Test ${
                           moduleTitle || title
                         } has been assigned to students in ${
@@ -458,7 +456,7 @@ class SuccessPage extends React.Component {
                       the password, announce to students and make the assignment
                       available for the student to work on.
                     </FlexText>
-                  ) : TEST_TYPES.COMMON.includes(assignment.testType) ? (
+                  ) : assignment.testType === _testTypes.COMMON ? (
                     <FlexText>
                       You can monitor student progress and responses using the
                       Live Class Board &nbsp;

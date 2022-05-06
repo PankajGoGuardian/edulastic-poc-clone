@@ -6,11 +6,7 @@ import qs from 'qs'
 import { assignmentApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { IconPrint, IconBarChart, IconEdit } from '@edulastic/icons'
-import {
-  roleuser,
-  test,
-  testTypes as testTypesConstants,
-} from '@edulastic/constants'
+import { roleuser, test } from '@edulastic/constants'
 
 import classIcon from '../../assets/manage-class.svg'
 import viewIcon from '../../assets/view.svg'
@@ -58,7 +54,7 @@ const ActionMenu = ({
   const currentAssignmentId = assignmentDetails._id
   const currentClassId = assignmentDetails.classId
   const shouldSendAssignmentId =
-    testTypesConstants.TEST_TYPES.COMMON.includes(assignmentTest?.testType) ||
+    assignmentTest?.testType === test.type.COMMON ||
     !assignmentTest?.authors?.find((a) => a._id === userId)
   const isAssignmentOwner = row?.assignedBy?.some(({ _id }) => _id === userId)
 

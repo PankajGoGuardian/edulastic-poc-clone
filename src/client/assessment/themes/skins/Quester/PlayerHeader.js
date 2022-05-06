@@ -6,8 +6,8 @@ import styled, { css } from 'styled-components'
 import { withWindowSizes, withKeyboard } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
+  test as testConstants,
   keyboard as keyboardConst,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import {
   IconEduLogo,
@@ -68,7 +68,6 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
 }) => {
-  const { PRACTICE } = testTypesConstants.TEST_TYPES
   const totalQuestions = options.length
   const totalBookmarks = bookmarks.filter((b) => b).length
   const totalUnanswered = skipped.filter((s) => s).length
@@ -98,7 +97,7 @@ const PlayerHeader = ({
 
   return (
     <FlexContainer>
-      {PRACTICE.includes(testType) && (
+      {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}

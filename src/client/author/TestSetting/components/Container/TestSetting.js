@@ -242,13 +242,13 @@ class TestSetting extends Component {
                   <SelectInputStyled
                     value={get(
                       testSetting,
-                      'testTypesProfile.performanceBand.assessment'
+                      'testTypesProfile.performanceBand.class'
                     )}
                     onChange={(value) =>
                       setDefaultProfile({
                         value,
                         profileType: 'performanceBand',
-                        testType: 'assessment',
+                        testType: 'class',
                       })
                     }
                     loading={performanceBandLoading}
@@ -296,7 +296,7 @@ class TestSetting extends Component {
                       setDefaultProfile({
                         value,
                         profileType: 'standardProficiency',
-                        testType: 'assessment',
+                        testType: 'common',
                       })
                     }
                     loading={standardsProficiencyLoading}
@@ -311,13 +311,13 @@ class TestSetting extends Component {
                   <SelectInputStyled
                     value={get(
                       testSetting,
-                      'testTypesProfile.standardProficiency.assessment'
+                      'testTypesProfile.standardProficiency.class'
                     )}
                     onChange={(value) =>
                       setDefaultProfile({
                         value,
                         profileType: 'standardProficiency',
-                        testType: 'assessment',
+                        testType: 'class',
                       })
                     }
                     loading={standardsProficiencyLoading}

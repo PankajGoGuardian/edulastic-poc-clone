@@ -3,7 +3,6 @@ import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
-  testTypes as testTypesConstants,
   assignmentSettingSections as sectionContants,
 } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
@@ -93,10 +92,7 @@ import slice from '../../../CurriculumSequence/components/ManageContentBlock/duc
 import ShowBulkAssignModal from './ShowBulkAssignModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
-const {
-  ASSESSMENT,
-  COMMON_ASSESSMENT,
-} = testTypesConstants.TEST_TYPES_VALUES_MAP
+const { ASSESSMENT, COMMON } = testConst.type
 const {
   evalTypeLabels,
   TEST_SETTINGS_SAVE_LIMIT,
@@ -236,7 +232,7 @@ class AssignTest extends React.Component {
           ? assignmentPolicyOptions.POLICY_CLOSE_MANUALLY_BY_ADMIN
           : assignmentSettings.closePolicy ||
             assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
-        testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
+        testType: isAdmin ? COMMON : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType,
       })
     } else {
@@ -249,7 +245,7 @@ class AssignTest extends React.Component {
           }
         : {}
       this.updateAssignmentNew({
-        testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
+        testType: isAdmin ? COMMON : ASSESSMENT,
         openPolicy: isAdmin
           ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
           : assignmentSettings.openPolicy,

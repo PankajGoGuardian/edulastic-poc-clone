@@ -10,7 +10,7 @@ import {
 } from 'lodash'
 
 // constants
-import { testActivityStatus } from '@edulastic/constants'
+import { test as testConstants, testActivityStatus } from '@edulastic/constants'
 
 export const INITIAL_FILTERS = {
   assessmentIds: [],
@@ -69,6 +69,13 @@ export const STATUS_LIST = [
     fgColor: '#f787ab',
   },
 ]
+
+export const TEST_TYPE_COLOR = {
+  [testConstants.type.ASSESSMENT]: '#5EB500',
+  [testConstants.type.COMMON]: '#FF9100',
+  [testConstants.type.PRACTICE]: '#00A8FF',
+  'common assessment': '#FF9100',
+}
 
 export const getFormattedName = (
   firstName = '',

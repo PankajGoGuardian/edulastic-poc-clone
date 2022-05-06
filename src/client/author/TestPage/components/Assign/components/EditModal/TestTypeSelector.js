@@ -1,11 +1,16 @@
 import React from 'react'
 import { Select, Col, Row } from 'antd'
-import { testTypes as testTypesConstants } from '@edulastic/constants'
-import { connect } from 'react-redux'
+
+import { test } from '@edulastic/constants'
 import { StyledRow, StyledRowLabel, TestTypeDropDown } from './styled'
 import { StyledSelect } from '../../../../../AssignTest/components/SimpleOptions/styled'
-import { getTestTypeFullNames } from '../../../../../../common/utils/testTypeUtils'
-import { isPremiumUserSelector } from '../../../../../src/selectors/user'
+
+const { type } = test
+const { ASSESSMENT, PRACTICE } = type
+const testTypes = {
+  [ASSESSMENT]: 'Assessment',
+  [PRACTICE]: 'Practice',
+}
 
 const generateReportTypes = {
   YES: {
@@ -24,10 +29,7 @@ const TestTypeSelector = ({
   generateReport,
   userRole,
   onGenerateReportFieldChange,
-  isPremiumUser,
 }) => {
-  const testTypes = getTestTypeFullNames(isPremiumUser, userRole, testType)
-
   return (
     <>
       <StyledRowLabel gutter={16}>
@@ -51,7 +53,7 @@ const TestTypeSelector = ({
         </Col>
       </Row>
       <Col span={12}>
-        {testTypesConstants.TEST_TYPES.PRACTICE.includes(testType) && (
+        {testType === PRACTICE && (
           <>
             <StyledRowLabel>
               <Col span={24}>Generate Report</Col>
@@ -81,6 +83,4 @@ const TestTypeSelector = ({
   )
 }
 
-export default connect((state) => ({
-  isPremiumUser: isPremiumUserSelector(state),
-}))(TestTypeSelector)
+export default TestTypeSelector

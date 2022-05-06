@@ -238,8 +238,6 @@ export const testTypeColor = {
   common: '#FF9100',
   practice: '#00A8FF',
   'common assessment': '#FF9100',
-  homework: '#e82a83',
-  quiz: '#873fe5',
 }
 
 export const authorAssignment = {

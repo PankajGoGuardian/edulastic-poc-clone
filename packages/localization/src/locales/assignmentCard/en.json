@@ -5,15 +5,11 @@
     "assessment": "A",
     "practice": "P",
     "common": "C",
-    "homework": "H",
-    "quiz": "Q",
     "toolTip": {
       "assessment": "Class Assignment",
       "practice": "Practice Assignment",
       "common assessment": "Common Assignment",
-      "testlet": "testlet",
-      "homework": "Homework",
-      "quiz": "Quiz"
+      "testlet": "testlet"
     },
     "opensIn": "Opens in",
     "submittedTag": "SUBMITTED",

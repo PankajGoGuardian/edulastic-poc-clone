@@ -5,7 +5,6 @@ import {
   assignmentPolicyOptions,
   roleuser,
   test as testConst,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { IconAssignment } from '@edulastic/icons'
 import * as moment from 'moment'
@@ -35,10 +34,7 @@ import {
   PaginationInfo,
 } from './styled'
 
-const {
-  ASSESSMENT,
-  COMMON_ASSESSMENT,
-} = testTypesConstants.TEST_TYPES_VALUES_MAP
+const { ASSESSMENT, COMMON } = testConst.type
 
 const AssignRecommendations = ({
   userRole,
@@ -69,7 +65,7 @@ const AssignRecommendations = ({
     const testType = assignmentSettings.testType
       ? assignmentSettings.testType
       : isAdmin
-      ? COMMON_ASSESSMENT
+      ? COMMON
       : ASSESSMENT
 
     const updatedAssignment = {

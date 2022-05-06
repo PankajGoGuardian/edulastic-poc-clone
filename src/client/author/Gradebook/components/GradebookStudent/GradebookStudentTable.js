@@ -5,7 +5,7 @@ import moment from 'moment'
 
 // components
 import { Tooltip } from 'antd'
-import { FlexContainer, TestTypeIcon } from '@edulastic/common'
+import { FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
   StyledTable,
@@ -13,11 +13,12 @@ import {
   Icon,
   TestThumbnail,
   AssignmentTD,
+  TestTypeIcon,
 } from '../styled'
 import presentationIcon from '../../../Assignments/assets/presentation.svg'
 
 // constants
-import { STATUS_LIST } from '../../transformers'
+import { STATUS_LIST, TEST_TYPE_COLOR } from '../../transformers'
 
 const statusMap = keyBy(STATUS_LIST, 'id')
 
@@ -42,10 +43,11 @@ const GradebookStudentTable = ({ t, dataSource = [], windowHeight }) => {
           <Tooltip placement="top" title={data}>
             <AssignmentTD>{data}</AssignmentTD>
           </Tooltip>
-          <TestTypeIcon
-            title={t(`common.toolTip.${row.testType}`)}
-            testType={row.testType}
-          />
+          <Tooltip title={t(`common.toolTip.${row.testType}`)}>
+            <TestTypeIcon bgColor={TEST_TYPE_COLOR[row.testType]}>
+              {t(`common.${row.testType?.split(' ')?.[0] || 'assessment'}`)}
+            </TestTypeIcon>
+          </Tooltip>
         </FlexContainer>
       ),
       sorter: (a, b) =>

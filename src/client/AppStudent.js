@@ -4,12 +4,7 @@ import qs from 'qs'
 import queryString from 'query-string'
 import PropTypes from 'prop-types'
 import { Switch, Redirect, withRouter, Route } from 'react-router-dom'
-import {
-  test,
-  signUpState,
-  roleuser,
-  testTypes as testTypesConstants,
-} from '@edulastic/constants'
+import { test, signUpState, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { DndProvider } from 'react-dnd'
 import TouchBackend from 'react-dnd-touch-backend'
@@ -44,11 +39,7 @@ const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
 )
 
-const {
-  ASSESSMENT,
-  PRACTICE,
-  TESTLET,
-} = testTypesConstants.TEST_TYPES_VALUES_MAP
+const { ASSESSMENT, PRACTICE, TESTLET } = test.type
 // route wise splitting
 const AssessmentPlayer = lazy(() =>
   import(/* webpackChunkName: "assessmentPlayer" */ './assessment/index')

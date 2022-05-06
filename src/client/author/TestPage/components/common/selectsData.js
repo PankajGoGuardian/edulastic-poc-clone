@@ -1,3 +1,7 @@
+import { test } from '@edulastic/constants'
+
+const { ASSESSMENT, PRACTICE, COMMON } = test.type
+
 // TK instead of PK for PreKindergarten is intentional
 const allGrades = [
   { value: 'TK', text: 'PreKindergarten' },
@@ -73,6 +77,20 @@ const closePolicyForAdmin = [
   { value: 'Close Manually by Admin', text: 'Close Manually by Admin' },
 ]
 
+const testTypes = [
+  { value: '', text: 'All' },
+  { value: COMMON, text: 'Common Assessments' },
+  { value: ASSESSMENT, text: 'Class Assessments' },
+  { value: PRACTICE, text: 'Practice' },
+]
+
+const AdminTestTypes = [
+  { value: '', text: 'All' },
+  { value: COMMON, text: 'Common Assessments' },
+  { value: ASSESSMENT, text: 'Class Assessments' },
+  { value: PRACTICE, text: 'Practice' },
+]
+
 const allStatus = [
   { value: '', text: 'All' },
   { value: 'published', text: 'Published' },
@@ -103,6 +121,8 @@ export default {
   closePolicy,
   closePolicyForAdmin,
   allStatus,
+  testTypes,
   defaultStandards,
+  AdminTestTypes,
   extraStatus,
 }

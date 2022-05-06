@@ -6,8 +6,8 @@ import { groupBy } from 'lodash'
 import { Tooltip, Dropdown } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
-import { testTypes as testTypesConstants, roleuser } from '@edulastic/constants'
-import { EduButton, notification, TestTypeIcon } from '@edulastic/common'
+import { test, roleuser } from '@edulastic/constants'
+import { EduButton, notification } from '@edulastic/common'
 import {
   IconMoreHorizontal,
   IconPresentation,
@@ -21,6 +21,7 @@ import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAss
 import {
   Container,
   TableData,
+  TypeIcon,
   BtnStatus,
   ActionsWrapper,
   BulkActionsWrapper,
@@ -37,8 +38,6 @@ export const testTypeToolTip = {
   assessment: 'Class Assessment',
   'common assessment': 'Common Assessment',
   practice: 'Practice Assessment',
-  homework: 'Homework',
-  quiz: 'Quiz',
 }
 
 const columns = [
@@ -67,16 +66,11 @@ const columns = [
     sorter: (a, b) =>
       a.type.localeCompare(b.type, 'en', { ignorePunctuation: true }),
     width: '6%',
-    render: (
-      text = testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT,
-      row
-    ) => (
+    render: (text = test.type.ASSESSMENT, row) => (
       <AssessmentTypeWrapper>
-        <TestTypeIcon
-          toolTipTitle={testTypeToolTip[text]}
-          toolTipPlacement="bottom"
-          testType={text}
-        />
+        <Tooltip placement="bottom" title={testTypeToolTip[text]}>
+          <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
+        </Tooltip>
         {row.timedAssignment && (
           <Tooltip
             placement="right"

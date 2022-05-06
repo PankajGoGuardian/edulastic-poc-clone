@@ -13,8 +13,8 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import {
+  test as testConstants,
   keyboard as keyboardConst,
-  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
 import { IconBookmark } from '@edulastic/icons'
@@ -102,7 +102,6 @@ const PlayerHeader = ({
 
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
-  const { PRACTICE } = testTypesConstants.TEST_TYPES
 
   const totalQuestions = options.length
   const totalAnswered = skipped.filter((s) => !s).length
@@ -120,7 +119,7 @@ const PlayerHeader = ({
 
   return (
     <StyledFlexContainer>
-      {PRACTICE.includes(testType) && (
+      {testType === testConstants.type.PRACTICE && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}

@@ -1,9 +1,11 @@
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
+import { roleuser, test } from '@edulastic/constants'
 import { Col, Select } from 'antd'
 import React from 'react'
 import { connect } from 'react-redux'
-import { getTestTypeFullNames } from '../../../../common/utils/testTypeUtils'
-import { isPremiumUserSelector } from '../../../src/selectors/user'
+
+const { type } = test
+const { ASSESSMENT, PRACTICE, COMMON } = type
 
 const TestTypeSelector = ({
   testType,
@@ -12,10 +14,15 @@ const TestTypeSelector = ({
   isAdvanceView,
   disabled = false,
   fullwidth = false,
+  districtPermissions = [],
   paddingTop,
-  isPremiumUser,
 }) => {
-  const testTypes = getTestTypeFullNames(isPremiumUser, userRole, testType)
+  const isAdmin =
+    userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
+  const testTypes = {
+    [ASSESSMENT]: 'Class Assessment',
+    [PRACTICE]: isAdmin ? 'Practice' : 'Practice Assessment',
+  }
 
   const SelectOption = (
     <SelectInputStyled
@@ -27,6 +34,11 @@ const TestTypeSelector = ({
       height="30px"
       getPopupContainer={(node) => node.parentNode}
     >
+      {isAdmin && !districtPermissions.includes('publisher') && (
+        <Select.Option key={COMMON} value={COMMON}>
+          Common Assessment
+        </Select.Option>
+      )}
       {Object.keys(testTypes).map((key) => {
         return (
           <Select.Option key={key} value={key}>
@@ -59,5 +71,6 @@ const TestTypeSelector = ({
 }
 
 export default connect((state) => ({
-  isPremiumUser: isPremiumUserSelector(state),
+  districtPermissions:
+    state?.user?.user?.orgData?.districts?.[0]?.districtPermissions,
 }))(TestTypeSelector)

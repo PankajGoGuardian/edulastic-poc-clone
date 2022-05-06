@@ -5,7 +5,6 @@ import {
   roleuser,
   questionType,
   test as testConst,
-  testTypes as testTypesConstants,
   assignmentPolicyOptions,
 } from '@edulastic/constants'
 import {
@@ -105,7 +104,6 @@ import { sortTestItemQuestions } from '../dataUtils'
 import { answersByQId } from '../../assessment/selectors/test'
 import { multiFind } from '../../common/utils/main'
 import { hasValidResponse } from '../questionUtils'
-import { getProfileKey } from '../../common/utils/testTypeUtils'
 
 const {
   ITEM_GROUP_TYPES,
@@ -125,6 +123,18 @@ const testItemStatusConstants = {
   ARCHIVED: 'archived',
 }
 
+export const testTypes = {
+  ASSESSMENT: 'assessment',
+  COMMON: 'common assessment',
+  PRACTICE: 'practice',
+  TESTLET: 'testlet',
+}
+
+export const testTypesToTestSettings = {
+  [testTypes.ASSESSMENT]: 'class',
+  [testTypes.COMMON]: 'common',
+  [testTypes.PRACTICE]: 'practice',
+}
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
   groupName: 'Group 1' /* For now, auto-generated. */,
@@ -924,7 +934,7 @@ export const createBlankTest = () => ({
   description: '',
   releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
-  testType: testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT,
+  testType: test.type.ASSESSMENT,
   markAsDone: test.completionTypes.AUTOMATICALLY,
   generateReport: true,
   safeBrowser: false,
@@ -1038,13 +1048,19 @@ const initialState = {
   enableRefMaterial: false,
 }
 
+export const testTypeAsProfileNameType = {
+  [test.type.ASSESSMENT]: 'class',
+  [test.type.PRACTICE]: 'practice',
+  [test.type.COMMON]: 'common',
+}
+
 const getDefaultScales = (state, payload) => {
   const {
     performanceBandProfiles,
     standardsProficiencyProfiles,
     defaultTestTypeProfiles,
   } = payload
-  const testType = getProfileKey(state.entity.testType)
+  const testType = testTypeAsProfileNameType[state.entity.testType]
   const bandId =
     performanceBandProfiles.find(
       (item) => item._id === defaultTestTypeProfiles?.performanceBand[testType]
@@ -1798,11 +1814,7 @@ const setTime = (userRole) => {
 
 const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const testType = entity?.testType
-  const { PRACTICE } = testTypesConstants.TEST_TYPES
-  const {
-    ASSESSMENT,
-    COMMON_ASSESSMENT,
-  } = testTypesConstants.TEST_TYPES_VALUES_MAP
+  const { ASSESSMENT, COMMON, PRACTICE } = testConst.type
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
   const settings = {
@@ -1847,9 +1859,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   }
 
   if (isAdmin) {
-    settings.testType = PRACTICE.includes(testType)
-      ? testType
-      : COMMON_ASSESSMENT
+    settings.testType = testType === PRACTICE ? PRACTICE : COMMON
     settings.openPolicy =
       assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
   }
@@ -2136,11 +2146,11 @@ export function* receiveTestByIdSaga({ payload }) {
     if (payload.options?.assigningNew) {
       const performanceBandId =
         state.defaultTestTypeProfiles.performanceBand?.[
-          getProfileKey(entity.testType)
+          testTypesToTestSettings[entity.testType]
         ]
       const standardProficiencyId =
         state.defaultTestTypeProfiles.standardProficiency?.[
-          getProfileKey(entity.testType)
+          testTypesToTestSettings[entity.testType]
         ]
       assignmentSettings = { ...assignmentSettings }
       assignmentSettings.performanceBand = pick(
@@ -2217,7 +2227,7 @@ function* createTest(data) {
     'summary',
     'alreadyLiked',
   ]
-  if (!testTypesConstants.TEST_TYPES.COMMON.includes(data.testType)) {
+  if (data.testType !== test.type.COMMON) {
     omitedItems.push('freezeSettings')
   }
   const dataToSend = omit(data, omitedItems)
@@ -2320,7 +2330,7 @@ export function* updateTestSaga({ payload }) {
     ]
     // remove createdDate and updatedDate
     const oldId = payload.data._id
-    if (!testTypesConstants.TEST_TYPES.COMMON.includes(payload.data.testType)) {
+    if (payload.data.testType !== test.type.COMMON) {
       testFieldsToOmit.push('freezeSettings')
     }
 
@@ -3029,7 +3039,7 @@ function* setTestDataAndUpdateSaga({ payload }) {
       // summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
       // passages doesnt accepted by BE
       const omitedItems = ['passages', 'summary', 'alreadyLiked']
-      if (!testTypesConstants.TEST_TYPES.COMMON.includes(testObj.testType)) {
+      if (testObj.testType !== test.type.COMMON) {
         omitedItems.push('freezeSettings')
       }
       testObj = omit(testObj, omitedItems)
@@ -3390,12 +3400,12 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       const defaultTestTypeProfiles = {
         performanceBand: {
           common: performanceBandId,
-          assessment: performanceBandId,
+          class: performanceBandId,
           practice: performanceBandId,
         },
         standardProficiency: {
           common: standardProficiencyId,
-          assessment: standardProficiencyId,
+          class: standardProficiencyId,
           practice: standardProficiencyId,
         },
       }
@@ -3596,7 +3606,7 @@ function* updateTestAndNavigate({ payload }) {
       const isTestCreated = testId && testId !== 'undefined'
       if (
         !isTestCreated &&
-        testTypesConstants.TEST_TYPES.COMMON.includes(data.testType) &&
+        data.testType === test.type.COMMON &&
         roleuser.DA_SA_ROLE_ARRAY.includes(role) &&
         !data.testContentVisibility
       ) {

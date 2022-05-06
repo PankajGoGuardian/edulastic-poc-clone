@@ -6,9 +6,11 @@ import {
   lightGreySecondary,
   mediumDesktopExactWidth,
   mobileWidth,
+  testTypeColor,
   themeColor,
   title,
   white,
+  themeColorBlue,
 } from '@edulastic/colors'
 import { testActivity } from '@edulastic/constants'
 import { IconDownEmptyArrow } from '@edulastic/icons'
@@ -180,6 +182,27 @@ export const BtnAction = styled(Button)`
 
 export const AssignedImg = styled.img`
   color: ${lightBlue};
+`
+
+export const TypeIcon = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  float: right;
+  width: 18px;
+  height: 18px;
+  max-width: 18px;
+  background: ${(props) =>
+    props.type === 'p'
+      ? testTypeColor.practice
+      : props.type === 'c'
+      ? testTypeColor.common
+      : testTypeColor.assessment};
+  color: ${white};
+  border-radius: 50%;
+  font-weight: 600;
+  font-size: ${(props) => props.theme.bodyFontSize};
+  align-self: center;
 `
 
 export const TypeWrapper = styled.span`

@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { Modal, Spin } from 'antd'
 import { WithResources } from '@edulastic/common/src/HOC/withResources'
-import { testTypes as testTypesConstants } from '@edulastic/constants'
+import { test as testConstants } from '@edulastic/constants'
 import AssessmentPlayer from '../../../../assessment'
 import TestActivityPreview from './TestActivityPreview'
 import { finishedPreviewTestAction } from '../../../../assessment/sharedDucks/previewTest'
@@ -45,8 +45,6 @@ const TestPreviewModal = ({
     showStudentPerformancePreview,
     setShowStudentPerformancePreview,
   ] = useState(false)
-
-  const { PRACTICE } = testTypesConstants.TEST_TYPES
 
   useEffect(() => {
     if (error) {
@@ -133,7 +131,7 @@ const TestPreviewModal = ({
             studentReportModal={studentReportModal}
             currentAssignmentId={currentAssignmentId}
             currentAssignmentClass={currentAssignmentClass}
-            defaultAP={!PRACTICE.includes(testType)}
+            defaultAP={testType !== testConstants.type.PRACTICE}
             isModalVisible={isModalVisible}
             {...restProps}
           />

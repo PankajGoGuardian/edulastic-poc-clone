@@ -74,9 +74,8 @@ const Magnifier = ({
 
   const handleScroll = (e) => {
     if (enable) {
-      const zoomWrapper = document.querySelector('.zoomed-container-wrapper')
-      zoomWrapper
-        ?.getElementsByClassName('test-item-col')?.[0]
+      document
+        .getElementsByClassName('test-item-col')[1]
         ?.scrollTo(0, e.target.scrollTop)
     }
   }

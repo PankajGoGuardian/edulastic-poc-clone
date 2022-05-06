@@ -126,43 +126,49 @@ const replaceValue = (str, variables, isLatex = false, useMathTemplate) => {
   let result = str.replace(mathRegex, '{math-latex}')
   let mathContent = str.match(mathRegex)
   Object.keys(variables).forEach((variableName) => {
-    const replacement = useMathTemplate
-      ? getMathTemplate(variables[variableName].exampleValue)
-      : variables[variableName].exampleValue
-
+    const isLengthOne = `${variables[variableName].exampleValue}`.length == 1
     if (isLatex) {
-      const hasCurlyBrackets = !!str.match(
-        new RegExp(`{@${variableName}}`, 'g')
-      )
-      if (hasCurlyBrackets) {
+      if (isLengthOne) {
         result = result.replace(
-          new RegExp(`@${variableName}`, 'g'),
-          replacement
-        )
-      } else {
-        result = result.replace(
-          new RegExp(`@${variableName}`, 'g'),
-          ` ${replacement}`
+          new RegExp(`{@${variableName}}`, 'g'),
+          useMathTemplate
+            ? getMathTemplate(variables[variableName].exampleValue)
+            : ` ${variables[variableName].exampleValue}`
         )
       }
+      result = result.replace(
+        new RegExp(`@${variableName}`, 'g'),
+        useMathTemplate
+          ? getMathTemplate(variables[variableName].exampleValue)
+          : ` ${variables[variableName].exampleValue}`
+      )
     } else {
-      result = result.replace(new RegExp(`@${variableName}`, 'g'), replacement)
+      if (isLengthOne) {
+        result = result.replace(
+          new RegExp(`{@${variableName}}`, 'g'),
+          useMathTemplate
+            ? getMathTemplate(variables[variableName].exampleValue)
+            : variables[variableName].exampleValue
+        )
+      }
+      result = result.replace(
+        new RegExp(`@${variableName}`, 'g'),
+        useMathTemplate
+          ? getMathTemplate(variables[variableName].exampleValue)
+          : variables[variableName].exampleValue
+      )
     }
     if (mathContent) {
       mathContent = mathContent.map((content) => {
-        const mathReplacement = variables[variableName].exampleValue
-        const hasCurlyBrackets = !!str.match(
-          new RegExp(`{@${variableName}}`, 'g')
-        )
-        if (hasCurlyBrackets) {
-          return content.replace(
-            new RegExp(`@${variableName}`, 'g'),
-            ` ${mathReplacement}`
+        if (isLengthOne) {
+          content = content.replace(
+            new RegExp(`{@${variableName}}`, 'g'),
+            ` ${variables[variableName].exampleValue}`
           )
         }
         return content.replace(
           new RegExp(`@${variableName}`, 'g'),
-          ` ${mathReplacement}`
+          ` ${variables[variableName].exampleValue}`
         )
       })
     }

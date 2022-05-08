@@ -935,7 +935,7 @@ class Container extends PureComponent {
     return newTest
   }
 
-  handleSave = () => {
+  handleSave = (draft) => {
     const {
       test = {},
       updateTest,
@@ -988,7 +988,7 @@ class Container extends PureComponent {
       ) {
         newTest.isInEditAndRegrade = true
       }
-      if (!updated) {
+      if (!updated && draft) {
         notification({ msg: 'Already Saved as draft' })
         return
       }
@@ -1435,7 +1435,11 @@ class Container extends PureComponent {
           onChangeNav={this.handleNavChange}
           current={current}
           isDocBased={isDocBased}
-          onSave={isDocBased ? this.handleDocBasedSave : this.handleSave}
+          onSave={
+            isDocBased
+              ? this.handleDocBasedSave
+              : () => this.handleSave('draft')
+          }
           onShare={this.onShareModalChange}
           onPublish={this.handlePublishTest}
           title={test?.title || ''}

@@ -143,14 +143,28 @@ const analyticsIdentify = ({ user }) => {
     const userId = v1Id || _id
     if (allowedRoles.includes(role) && window.analytics && !isProxy) {
       // Passing user_hash to have secure communication
-      window.analytics.identify(userId, {
-        ...getUserDetails(user),
-        isV2User: true,
-        grade,
-        subject,
-        name: without([firstName, lastName], undefined, null, '').join(' '),
-        premium_user: features.premium,
-      })
+      window.analytics.identify(
+        userId,
+        {
+          ...getUserDetails(user),
+          isV2User: true,
+          grade,
+          subject,
+          name: without([firstName, lastName], undefined, null, '').join(' '),
+          premium_user: features.premium,
+        },
+        {
+          Intercom: {
+            hideDefaultLauncher: true,
+            // Keep your secret key safe! Never commit it directly to your repository,
+            // client-side code, or anywhere a third party can find it.
+            // send it from backend ???
+            user_hash: createHmac('sha256', AppConfig.segmentHashSecret)
+              .update(userId.toString())
+              .digest('hex'),
+          },
+        }
+      )
     }
   }
 }

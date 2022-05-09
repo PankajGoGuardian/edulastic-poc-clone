@@ -80,7 +80,7 @@ import { setCheckAnswerInProgressStatusAction } from '../actions/checkanswer'
 import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
-import { testKeypadSelector } from '../components/KeyPadOptions/ducks'
+import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
 
 const { playerSkinValues } = testConstants
 
@@ -583,9 +583,10 @@ const AssessmentContainer = ({
   loadTest,
   showUserTTS,
   isTestPreviewModalVisible,
-  testKeypad,
+  allowReferenceMaterial,
   ...restProps
 }) => {
+  const testKeypad = testSettings?.keypad || 'item-level-keypad'
   const _questionsById = useMemo(() => {
     if (preview && questionsById) {
       Object.values(questionsById).forEach((question) => {
@@ -1166,7 +1167,7 @@ const AssessmentContainer = ({
     (x) => x.type === questionType.HIGHLIGHT_IMAGE
   )
 
-  const { referenceDocAttributes } = test || {}
+  const { referenceDocAttributes } = restProps
 
   const prevAnswerValue = useRef('')
 
@@ -1305,6 +1306,8 @@ const AssessmentContainer = ({
     gotoSummary,
     handleReviewOrSubmit,
     canShowPlaybackOptionTTS,
+    canShowReferenceMaterial:
+      !isEmpty(referenceDocAttributes) && allowReferenceMaterial,
     ...restProps,
   }
 
@@ -1504,7 +1507,6 @@ const enhance = compose(
       annotations: state.test.annotations,
       pageStructure: state.test.pageStructure,
       questionsById: getQuestionsByIdSelector(state),
-      testKeypad: testKeypadSelector(state),
       answers: getAnswersArraySelector(state),
       answersById: getAnswersListSelector(state),
       loading: testLoadingSelector(state),
@@ -1514,6 +1516,8 @@ const enhance = compose(
       showMagnifier: state.test.showMagnifier,
       enableMagnifier: state.testPlayer.enableMagnifier,
       isShowReferenceModal: state.testPlayer.isShowReferenceModal,
+      allowReferenceMaterial: allowReferenceMaterialSelector(state),
+      referenceDocAttributes: state?.test?.referenceDocAttributes,
       regradedAssignment: get(state, 'studentAssignment.regradedAssignment'),
       userId: get(state, 'user.user._id'),
       userRole: get(state, 'user.user.role'),

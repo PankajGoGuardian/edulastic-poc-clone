@@ -246,7 +246,7 @@ const CanvasBulkAddClass = ({
 
   const handleSkip = () => {
     setSignUpStatus(3)
-    setUserSignupState()
+    setUserSignupState({ isSignupDone: true })
     history.push({ pathname: `/author/dashboard` })
   }
   const activeCourseList = useMemo(

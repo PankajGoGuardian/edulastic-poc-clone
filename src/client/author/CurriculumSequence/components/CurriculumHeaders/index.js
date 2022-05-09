@@ -123,7 +123,6 @@ const CurriculumHeader = ({
   role,
   features,
   isStudent,
-  isTeacher,
   isManageContentActive,
   isPublisherUser,
   isDesktop,
@@ -260,6 +259,7 @@ const CurriculumHeader = ({
               current={currentTab}
               showDifferentiationTab={isSparkMathPlaylist}
               showInsightTab={role === roleuser.TEACHER}
+              role={role}
             />
           )}
 

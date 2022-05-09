@@ -9,7 +9,7 @@ import {
   IconProtactor,
   IconScratchPad,
   IconCloudUpload,
-  IconReferenceSheet,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { Button } from 'antd'
 import PropTypes from 'prop-types'
@@ -177,7 +177,7 @@ const ToolBar = ({
   handleMagnifier,
   openReferenceModal,
   isShowReferenceModal,
-  hasReferenceDoc,
+  canShowReferenceMaterial,
   enableMagnifier,
   toggleUserWorkUploadModal,
   changeTool,
@@ -221,6 +221,15 @@ const ToolBar = ({
           icon={<CaculatorIcon />}
           active={tool.includes(2)}
           onClick={toolbarHandler(2)}
+        />
+      )}
+      {canShowReferenceMaterial && (
+        <ActionButton
+          disabled={isPremiumContentWithoutAccess}
+          title="Reference Material"
+          icon={<IconEduReferenceSheet height="22" width="20" />}
+          active={isShowReferenceModal}
+          onClick={openReferenceModal}
         />
       )}
       <ActionButton
@@ -267,15 +276,6 @@ const ToolBar = ({
           title="Upload work"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
-        />
-      )}
-      {hasReferenceDoc && (
-        <ActionButton
-          disabled={isPremiumContentWithoutAccess}
-          title="Reference Sheet"
-          icon={<IconReferenceSheet />}
-          active={isShowReferenceModal}
-          onClick={openReferenceModal}
         />
       )}
       <LineReader btnComponent={ButtonWithStyle} />

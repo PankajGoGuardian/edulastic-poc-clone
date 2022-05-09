@@ -64,6 +64,9 @@ const PlayerHeader = ({
   LCBPreviewModal = false,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
 }) => {
   const [isToolbarModalVisible, setToolbarModalVisible] = useState(false)
 
@@ -113,6 +116,9 @@ const PlayerHeader = ({
         blockNavigationToAnsweredQuestions={blockNavigationToAnsweredQuestions}
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
         toggleUserWorkUploadModal={toggleUserWorkUploadModal}
+        openReferenceModal={openReferenceModal}
+        isShowReferenceModal={isShowReferenceModal}
+        canShowReferenceMaterial={canShowReferenceMaterial}
       />
       <SettingsModal
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
@@ -196,6 +202,9 @@ const PlayerHeader = ({
                     isPremiumContentWithoutAccess={
                       isPremiumContentWithoutAccess
                     }
+                    openReferenceModal={openReferenceModal}
+                    isShowReferenceModal={isShowReferenceModal}
+                    canShowReferenceMaterial={canShowReferenceMaterial}
                   />
                 )}
               </MainActionWrapper>

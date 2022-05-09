@@ -84,6 +84,7 @@ const test = (state = initialState, { payload, type }) => {
         languagePreference: payload.languagePreference,
         grades: payload.grades,
         subjects: payload.subjects,
+        referenceDocAttributes: payload?.referenceDocAttributes,
         settings: {
           ...state.settings,
           ...payload.settings,

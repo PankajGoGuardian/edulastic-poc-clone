@@ -13,7 +13,13 @@ import schoologyIcon from '../../../../student/assets/schoology.png'
 import ClassSelector from './ClassSelector'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import ClassCreatePage from './ClassCreatePage'
-import { TableWrapper, ClassListTable, Tags, SubHeader } from './styled'
+import {
+  TableWrapper,
+  ClassListTable,
+  Tags,
+  SubHeader,
+  IconWrapper,
+} from './styled'
 import { fetchClassListAction, setFilterClassAction } from '../../ducks'
 import GoogleBanner from './GoogleBanner'
 import { getUserDetails } from '../../../../student/Login/ducks'
@@ -93,13 +99,15 @@ const ClassList = ({
               <IconClever height={18} width={18} />
             </Tooltip>
           )
-        } else if (googleCode) {
+        }
+        if (googleCode) {
           syncIconList.push(
             <Tooltip title="Google Classroom" placement="bottom">
               <IconGoogleClassroom height={18} width={18} />
             </Tooltip>
           )
-        } else if (canvasCode) {
+        }
+        if (canvasCode) {
           syncIconList.push(
             <Tooltip title="Canvas" placement="bottom">
               <img
@@ -110,7 +118,8 @@ const ClassList = ({
               />
             </Tooltip>
           )
-        } else if (
+        }
+        if (
           atlasId &&
           (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
             'schoology'
@@ -120,7 +129,8 @@ const ClassList = ({
               <img src={schoologyIcon} alt="Schoology" width="18" height="18" />
             </Tooltip>
           )
-        } else if (
+        }
+        if (
           atlasId &&
           (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
             'classlink'
@@ -233,11 +243,13 @@ const ClassList = ({
       dataIndex: 'syncedWith',
       render: (syncedIconList) => (
         <FlexContainer justify-content="space-between" align-items="center">
-          {syncedIconList?.length ? (
-            syncedIconList.map((icons) => icons)
-          ) : (
-            <p>-</p>
-          )}
+          <IconWrapper>
+            {syncedIconList?.length ? (
+              syncedIconList.map((icons) => icons)
+            ) : (
+              <p>-</p>
+            )}
+          </IconWrapper>
         </FlexContainer>
       ),
     },

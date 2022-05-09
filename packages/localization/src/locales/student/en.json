@@ -70,7 +70,9 @@
       "magnify": "Magnify",
       "pause": "Pause",
       "flag": "Flag",
-      "options": "Options"
+      "options": "Options",
+      "referenceSheet": "Reference Sheet",
+      "referenceGuide": "Reference Guide"
     }
   },
   "component": {

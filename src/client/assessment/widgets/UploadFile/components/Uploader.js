@@ -8,8 +8,9 @@ import {
   EduButton,
   notification,
 } from '@edulastic/common'
-import { aws } from '@edulastic/constants'
+import { aws, fileTypes } from '@edulastic/constants'
 
+import { allowedImageFileTypes } from '@edulastic/common/src/helpers'
 import ProgressBar from './ProgressBar'
 import { allowedFiles, MAX_SIZE, MAX_COUNT } from './constants'
 
@@ -92,7 +93,16 @@ const Uploader = ({ onCompleted, mt }) => {
     if (files) {
       const filesArr = Object.keys(files)
         .map((key) => {
-          const { size } = files[key]
+          const file = files[key]
+          const { size } = file
+          // validate file type in case of image
+          if (
+            file.type.match(/image/g) &&
+            !allowedImageFileTypes.includes(file.type)
+          ) {
+            notification({ messageKey: 'imageTypeError' })
+            return false
+          }
           // image size should be less than 5MB
           if (size > 5 * MAX_SIZE) {
             notification({ messageKey: 'fileSizeError5MB' })
@@ -153,7 +163,7 @@ const Uploader = ({ onCompleted, mt }) => {
         ref={inputRef}
         onClick={resetInputValue}
         onChange={handleChange}
-        accept={allowedFiles.join()}
+        accept={allowedFiles.filter((o) => o !== fileTypes.IMAGES).join()}
       />
       {!isEmpty(progressArr) && (
         <FlexContainer flexWrap="wrap" mt="26px" justifyContent="flex-start">

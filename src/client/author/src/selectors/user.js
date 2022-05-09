@@ -78,7 +78,7 @@ export const getChildrens = createSelector(
 
 export const getUserIPZipCode = createSelector(
   stateSelector,
-  (state) => state.user.ipZipCode
+  (state) => state.user?.location?.zip
 )
 
 export const getUser = createSelector(stateSelector, (state) => state.user)
@@ -548,4 +548,9 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
 export const isEtsDistrictSelector = createSelector(
   getUserOrgId,
   (districtId) => districtId === etsDistrict
+)
+
+export const allowReferenceMaterialSelector = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'allowReferenceMaterial', false)
 )

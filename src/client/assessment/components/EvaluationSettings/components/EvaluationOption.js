@@ -16,6 +16,7 @@ const numberStyle = ['significantDecimalPlaces']
 const dropdownSingleOpt = ['setDecimalSeparator']
 const dropdownArray = ['setThousandsSeparator']
 const radioStyle = ['interpret', 'equationForms', 'numberFormat']
+const radioGroup = ['multipleValues', 'notationForms']
 const inlineOptions = [
   'fractionForms',
   'expressionForms',
@@ -112,7 +113,7 @@ const EvaluationOption = ({
       />
     )
   }
-  if (optionKey === 'multipleValues') {
+  if (radioGroup.includes(optionKey)) {
     return (
       <MultipleValues
         optionKey={optionKey}

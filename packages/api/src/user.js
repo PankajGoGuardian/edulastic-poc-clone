@@ -348,6 +348,13 @@ const eulaPolicyStatusUpdate = (data) =>
     method: 'put',
     data,
   })
+const getUserLocation = () =>
+  api
+    .callApi({
+      url: `${prefix}/user-loc-data`,
+      method: 'get',
+    })
+    .then((result) => result.data)
 
 export default {
   getUser,
@@ -388,4 +395,5 @@ export default {
   getDemoPlaygroundUser,
   updateCollectionVisited,
   eulaPolicyStatusUpdate,
+  getUserLocation,
 }

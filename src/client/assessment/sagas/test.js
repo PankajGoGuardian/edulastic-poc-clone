@@ -41,6 +41,7 @@ import {
   test as testContants,
   roleuser,
   testActivityStatus,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
@@ -72,7 +73,6 @@ import {
   SET_SAVE_USER_RESPONSE,
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
-  RESET_TEST_ITEMS,
   SAVE_USER_WORK,
 } from '../constants/actions'
 import {
@@ -87,6 +87,7 @@ import {
   setPasswordStatusAction,
   languageChangeSuccessAction,
   setShowTestInfoSuccesAction,
+  resetStudentAttemptAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -121,6 +122,7 @@ import {
 // import { checkClientTime } from "../../common/utils/helpers";
 
 const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants
+const { TEST_TYPES, TEST_TYPES_VALUES_MAP } = testTypesConstants
 
 const modifyTestDataForPreview = (test) =>
   produce(test, (draft) => {
@@ -208,6 +210,10 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     ? test.showRubricToStudents
     : assignmentSettings.showRubricToStudents
 
+  const referenceDocAttributes = preview
+    ? test.referenceDocAttributes
+    : assignmentSettings.referenceDocAttributes
+
   return {
     testType,
     calcProvider,
@@ -235,6 +241,8 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
     restrictNavigationOutAttemptsThreshold:
       assignmentSettings?.restrictNavigationOutAttemptsThreshold,
+    referenceDocAttributes,
+    ...(preview && { keypad: test?.keypad?.value }),
   }
 }
 
@@ -642,6 +650,34 @@ function* loadTest({ payload }) {
         payload: previousQActivitiesById,
       })
 
+      const testItemIds = testItems.map((i) => i._id)
+      const { attachments = [] } = yield call(
+        attachmentApi.loadAllAttachments,
+        {
+          referrerId: testActivityId,
+        }
+      )
+
+      let scratchPadData = getScratchpadDataFromAttachments(
+        attachments.filter(({ type }) => type === 'scratchpad')
+      )
+
+      const passageAttachments = attachments.filter(
+        ({ type }) => type === 'passage'
+      )
+      // loading attachments from server
+      if (passageAttachments?.length) {
+        const passageHighlights = passageAttachments.reduce((acc, curr) => {
+          const passageId = curr.referrerId2
+          if (passageId) {
+            acc[passageId] = curr.data
+          }
+          return acc
+        }, {})
+
+        scratchPadData = { ...scratchPadData, ...passageHighlights }
+      }
+
       questionActivities.forEach((item) => {
         allAnswers = {
           ...allAnswers,
@@ -663,6 +699,7 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item
         }
       })
+
       if (Object.keys(scratchPadData).length) {
         if (savedUserWork) {
           yield put({
@@ -737,7 +774,7 @@ function* loadTest({ payload }) {
         !isFromSummary &&
         !summary
       ) {
-        if (loadFromLast && testType !== testContants.type.TESTLET) {
+        if (loadFromLast && !TEST_TYPES.TESTLET.includes(testType)) {
           const itemId = testItemIds[lastAttendedQuestion]
           yield put(
             push({
@@ -749,7 +786,7 @@ function* loadTest({ payload }) {
             type: SET_RESUME_STATUS,
             payload: false,
           })
-        } else if (testType !== testContants.type.TESTLET) {
+        } else if (!TEST_TYPES.TESTLET.includes(testType)) {
           yield put(
             push({
               pathname: `${testItemIds[0]}`,
@@ -780,7 +817,6 @@ function* loadTest({ payload }) {
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!
-
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
@@ -801,6 +837,7 @@ function* loadTest({ payload }) {
         languagePreference: testActivity.testActivity?.languagePreference,
         grades: test.grades,
         subjects: test.subjects,
+        referenceDocAttributes: settings.referenceDocAttributes,
       },
     })
     if (preview) {
@@ -850,10 +887,14 @@ function* loadTest({ payload }) {
         }
       })
 
-      const playerTestType =
-        testType === testContants.type.COMMON
-          ? testContants.type.ASSESSMENT
-          : testType
+      let playerTestType = testType
+
+      if (TEST_TYPES.COMMON.includes(testType)) {
+        playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
+      }
+      if (TEST_TYPES.PRACTICE.includes(testType)) {
+        playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
+      }
 
       if (testItems.length === lastVisitedItemIndex + 1) {
         yield put(
@@ -1115,9 +1156,9 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
-    yield put({
-      type: RESET_TEST_ITEMS,
-    })
+    if (!payload.preventRouteChange) {
+      yield put(resetStudentAttemptAction())
+    }
     Fscreen.safeExitfullScreen()
   }
 }
@@ -1142,10 +1183,14 @@ function* switchLanguage({ payload }) {
       languageChangeSuccessAction({ languagePreference, testActivityId: _id })
     )
     const testType = yield select((state) => state.test && state.test.testType)
-    const urlTestType =
-      testType === testContants.type.COMMON
-        ? testContants.type.ASSESSMENT
-        : testType
+    let playerTestType = testType
+    if (TEST_TYPES.COMMON.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.ASSESSMENT
+    }
+    if (TEST_TYPES.PRACTICE.includes(testType)) {
+      playerTestType = TEST_TYPES_VALUES_MAP.PRACTICE
+    }
+
     const firstItemId = itemsToDeliverInGroup[0].items[0]
     yield put(startAssessmentAction())
     yield put({
@@ -1156,7 +1201,7 @@ function* switchLanguage({ payload }) {
     yield put(push('/'))
     yield put(
       push({
-        pathname: `/student/${urlTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
+        pathname: `/student/${playerTestType}/${testId}/class/${groupId}/uta/${_id}/itemId/${firstItemId}`,
         state: {
           switchLanguage: true,
         },

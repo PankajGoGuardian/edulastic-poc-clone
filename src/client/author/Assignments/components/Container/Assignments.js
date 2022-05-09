@@ -7,7 +7,7 @@ import PerfectScrollbar from 'react-perfect-scrollbar'
 
 import { withWindowSizes, FlexContainer } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { roleuser, test as testConstants } from '@edulastic/constants'
+import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
 import { IconFilter, IconAssignment, IconCloseFilter } from '@edulastic/icons'
 import { white, themeColor } from '@edulastic/colors'
 
@@ -156,7 +156,8 @@ class Assignments extends Component {
         userRole === roleuser.DISTRICT_ADMIN) &&
       !Object.prototype.hasOwnProperty.call(storedFilters, 'testType')
     ) {
-      filters.testType = testConstants.type.COMMON
+      filters.testType =
+        testTypesConstants.TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
     }
     if (
       defaultTermId &&

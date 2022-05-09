@@ -803,6 +803,7 @@ class TeacherTable extends Component {
             handleOnOkClick={this.confirmDeactivate}
             wordToBeTyped="DEACTIVATE"
             primaryLabel={
+              t('users.teacher.deactivateTeacher.text') +
               t('common.modalConfirmationText1') +
               t('users.teacher.deactivateTeacher.teachers')
             }

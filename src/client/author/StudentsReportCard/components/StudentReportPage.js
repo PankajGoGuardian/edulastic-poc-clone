@@ -50,6 +50,7 @@ const StudentReportPage = ({
   setLoaded,
   index,
   interestedCurriculums,
+  audit,
 }) => {
   const performanceRef = useRef()
   const mainContainerRef = useRef()
@@ -62,6 +63,7 @@ const StudentReportPage = ({
       groupId,
       testActivityId: testActivity.testActivityId,
       studentId: testActivity.studentId,
+      audit,
     })
   }, [testActivity.studentId])
 

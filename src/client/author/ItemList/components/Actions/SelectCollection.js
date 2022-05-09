@@ -85,6 +85,7 @@ const SelectCollectionModal = ({
       <BodyStyled>
         {buckets.map((bucket) => (
           <ModuleContainer
+            data-cy="moduleContainer"
             key={bucket.bucketId}
             onClick={() =>
               handleAddToCollection({
@@ -95,7 +96,9 @@ const SelectCollectionModal = ({
               })
             }
           >
-            <ModuleLabel>{bucket.collectionName}: </ModuleLabel>
+            <ModuleLabel data-cy={bucket.collectionName}>
+              {bucket.collectionName}:{' '}
+            </ModuleLabel>
             <ModuleName>{bucket.name}</ModuleName>
           </ModuleContainer>
         ))}

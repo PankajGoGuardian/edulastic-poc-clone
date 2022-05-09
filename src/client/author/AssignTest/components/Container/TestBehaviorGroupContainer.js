@@ -1,11 +1,12 @@
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
+import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
 import { roleuser, test } from '@edulastic/constants'
 import { evalTypeLabels } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
-import Styled from 'styled-components'
 import {
   AlignRight,
   AlignSwitchRight,
@@ -21,6 +22,7 @@ import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
+import RefMaterialFile from './RefMaterialFile'
 
 const {
   releaseGradeTypes,
@@ -29,6 +31,7 @@ const {
   releaseGradeLabels,
   testContentVisibilityTypes,
   testContentVisibility: testContentVisibilityOptions,
+  playerSkinValues,
 } = test
 
 const TEST_TYPE_TOOLTIP_CONTENT =
@@ -66,9 +69,22 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
+    playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
+    referenceDocAttributes = testSettings?.referenceDocAttributes,
+    isDocBased = testSettings?.isDocBased,
   } = assignmentSettings
+
+  const showRefMaterial = useMemo(() => {
+    const { quester, edulastic } = playerSkinValues
+
+    return (
+      !isDocBased &&
+      (playerSkinType === edulastic || playerSkinType === quester)
+    )
+  }, [playerSkinType, isDocBased])
+
   const multipartItems = testSettings.itemGroups
     .map((o) => o.items)
     .flat()
@@ -123,6 +139,10 @@ const TestBehaviorGroupContainer = ({
     }
 
     overRideSettings(attr, value)
+  }
+
+  const updateRefMaterials = (value) => {
+    overRideSettings('referenceDocAttributes', value)
   }
 
   const testTypeContent = (
@@ -311,6 +331,19 @@ const TestBehaviorGroupContainer = ({
       </SettingContainer>
       {/* Show Calculator */}
 
+      {/* Reference Material */}
+      {showRefMaterial && (
+        <RefMaterialFile
+          premium={premium}
+          disabled={freezeSettings}
+          tootltipWidth={tootltipWidth}
+          setData={updateRefMaterials}
+          referenceDocAttributes={referenceDocAttributes}
+          hasAttributesInTest={!isEmpty(testSettings?.referenceDocAttributes)}
+        />
+      )}
+      {/* Reference Material */}
+
       {/* Timed TEST */}
       <SettingContainer id="timed-test-setting">
         <DetailsTooltip
@@ -481,7 +514,7 @@ const TestBehaviorGroupContainer = ({
 
 export default withNamespaces('author')(TestBehaviorGroupContainer)
 
-const StyledSpan = Styled.span`
+const StyledSpan = styled.span`
   font-weight: ${(props) => props.theme.semiBold};
   font-size: 11px;
 `

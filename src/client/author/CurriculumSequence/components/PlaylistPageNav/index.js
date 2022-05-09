@@ -10,35 +10,43 @@ const PlaylistPageNav = ({
   current,
   showDifferentiationTab,
   showInsightTab,
-}) => (
-  <HeaderMidContainer>
-    <StyledTabs>
-      {playlistPageNavButtons.map(({ value, text }) => {
-        if (value === 'differentiation' && !showDifferentiationTab) {
-          return null
-        }
-        if (value === 'insights' && !showInsightTab) {
-          return null
-        }
-        return (
-          <HeaderTabs
-            style={
-              current === value
-                ? { cursor: 'not-allowed' }
-                : { cursor: 'pointer' }
-            }
-            dataCy={value}
-            isActive={current === value}
-            linkLabel={text}
-            key={value}
-            onClickHandler={onChange(value)}
-            isPlaylist
-          />
-        )
-      })}
-    </StyledTabs>
-  </HeaderMidContainer>
-)
+  role,
+}) => {
+  const isAdmin = role === 'district-admin' || role === 'school-admin'
+
+  return (
+    <HeaderMidContainer>
+      <StyledTabs>
+        {playlistPageNavButtons.map(({ value, text }) => {
+          if (
+            value === 'differentiation' &&
+            (!showDifferentiationTab || isAdmin)
+          ) {
+            return null
+          }
+          if (value === 'insights' && !showInsightTab) {
+            return null
+          }
+          return (
+            <HeaderTabs
+              style={
+                current === value
+                  ? { cursor: 'not-allowed' }
+                  : { cursor: 'pointer' }
+              }
+              dataCy={value}
+              isActive={current === value}
+              linkLabel={text}
+              key={value}
+              onClickHandler={onChange(value)}
+              isPlaylist
+            />
+          )
+        })}
+      </StyledTabs>
+    </HeaderMidContainer>
+  )
+}
 
 PlaylistPageNav.propTypes = {
   onChange: PropTypes.func.isRequired,

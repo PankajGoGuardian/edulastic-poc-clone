@@ -6,7 +6,11 @@ import qs from 'qs'
 import { assignmentApi } from '@edulastic/api'
 import { captureSentryException, notification } from '@edulastic/common'
 import { IconPrint, IconBarChart, IconEdit } from '@edulastic/icons'
-import { roleuser, test } from '@edulastic/constants'
+import {
+  roleuser,
+  test,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 
 import classIcon from '../../assets/manage-class.svg'
 import viewIcon from '../../assets/view.svg'
@@ -45,6 +49,7 @@ const ActionMenu = ({
   showEmbedLinkModal = () => {},
   toggleTagsEditModal = () => {},
   isDemoPlaygroundUser = false,
+  isProxiedByEAAccount = false,
 }) => {
   const getAssignmentDetails = () =>
     !Object.keys(currentAssignment).length ? row : currentAssignment
@@ -53,7 +58,7 @@ const ActionMenu = ({
   const currentAssignmentId = assignmentDetails._id
   const currentClassId = assignmentDetails.classId
   const shouldSendAssignmentId =
-    assignmentTest?.testType === test.type.COMMON ||
+    testTypesConstants.TEST_TYPES.COMMON.includes(assignmentTest?.testType) ||
     !assignmentTest?.authors?.find((a) => a._id === userId)
   const isAssignmentOwner = row?.assignedBy?.some(({ _id }) => _id === userId)
 
@@ -252,6 +257,12 @@ const ActionMenu = ({
           <Menu.Item
             data-cy="download-responses"
             key="download-responses"
+            disabled={isProxiedByEAAccount}
+            title={
+              isProxiedByEAAccount
+                ? 'Bulk action disabled for EA proxy accounts.'
+                : ''
+            }
             onClick={() => handleDownloadResponses(currentTestId)}
           >
             <StyledLink target="_blank" rel="noopener noreferrer">

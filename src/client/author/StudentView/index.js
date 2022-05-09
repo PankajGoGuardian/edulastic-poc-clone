@@ -21,7 +21,7 @@ import {
   IconFolder,
 } from '@edulastic/icons'
 import {
-  test,
+  testTypes as testTypesConstants,
   questionActivity as questionActivityConst,
 } from '@edulastic/constants'
 import { white } from '@edulastic/colors'
@@ -191,7 +191,9 @@ class StudentViewContainer extends Component {
 
     const { classId, assignmentId } = match?.params || {}
 
-    const showStudentWorkButton = test.type.TESTLET === classResponse.testType
+    const showStudentWorkButton = testTypesConstants.TEST_TYPES.TESTLET.includes(
+      classResponse.testType
+    )
 
     // show the total count.
     const questionActivities = studentResponse?.questionActivities || []

@@ -7,7 +7,7 @@ import { Select } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
-import { test as testConst } from '@edulastic/constants'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq, debounce } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
@@ -162,7 +162,7 @@ class ClassList extends React.Component {
     }
     if (
       prevProps.testType !== testType &&
-      testType === testConst.type.COMMON &&
+      testTypesConstants.TEST_TYPES.COMMON.includes(testType) &&
       filterClassIds.length
     ) {
       this.setState({ filterClassIds: [] }) // eslint-disable-line

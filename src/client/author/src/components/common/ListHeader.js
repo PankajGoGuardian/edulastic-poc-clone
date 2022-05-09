@@ -125,7 +125,11 @@ const ListHeader = ({
                 </EduButton>
               )} */}
               {btnTitle && btnTitle.length ? null : (
-                <CartButton onClick={newTest} buttonText="Create test with" />
+                <CartButton
+                  onClick={newTest}
+                  buttonText="Create test with"
+                  displayDeselect
+                />
               )}
               {renderExtra()}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
@@ -156,7 +160,7 @@ const ListHeader = ({
                 </EduButton>
               )}
               onClick={createNewAssignment}
-              triggerSource={'Create Assignment'}
+              triggerSource="Create Assignment"
             />
           </>
         )}

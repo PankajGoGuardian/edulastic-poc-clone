@@ -143,9 +143,10 @@ const ApiForm = () => {
         option.endPoint = `/user/${data.districtId}/${
           endPoint[endPoint.length - 1]
         }`
-      } else if (id === 'verify-email') {
+      } else if (id === 'verify-email' || id === 'reset-password-attempt') {
         const idRegex = new RegExp(/^[0-9a-fA-F]{24}$/)
-        if (!idRegex.test(data.uid)) {
+        const value = id === 'verify-email' ? data.uid : data.userId
+        if (!idRegex.test(value)) {
           notification({
             type: 'warning',
             msg: 'Invalid user Id.',

@@ -11,6 +11,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { isEmailValid } from '../../../common/utils/helpers'
 import { ButtonsContainer } from '../../../common/styled'
 import {
+  getTooManyAtempt,
   requestNewPasswordAction,
   requestNewPasswordResetControlAction,
 } from '../ducks'
@@ -24,6 +25,7 @@ const ForgotPasswordPopup = (props) => {
     user,
     districtPolicy,
     requestNewPasswordResetControl,
+    tooManyAttempt = false,
   } = props
   const { requestingNewPassword, requestNewPasswordSuccess } = user
 
@@ -35,8 +37,12 @@ const ForgotPasswordPopup = (props) => {
     onCancel()
   }
 
-  const onSendLink = (email) => {
-    requestNewPassword({ email, districtId: districtPolicy.orgId })
+  const onSendLink = (email, multipleAttempt) => {
+    requestNewPassword({
+      email,
+      districtId: districtPolicy.orgId,
+      multipleAttempt,
+    })
   }
 
   const onClickTryAgain = () => {
@@ -48,8 +54,13 @@ const ForgotPasswordPopup = (props) => {
   }
 
   const modalTitle = useMemo(
-    () => (!requestNewPasswordSuccess ? 'Forgot Password' : 'Email Sent'),
-    [requestNewPasswordSuccess]
+    () =>
+      tooManyAttempt && !requestNewPasswordSuccess
+        ? 'Password attempt exceeded'
+        : !requestNewPasswordSuccess
+        ? 'Forgot Password'
+        : 'Email Sent',
+    [requestNewPasswordSuccess, tooManyAttempt]
   )
 
   return (
@@ -64,7 +75,28 @@ const ForgotPasswordPopup = (props) => {
       footer={[]}
     >
       <div>
-        {!requestNewPasswordSuccess ? (
+        {tooManyAttempt && !requestNewPasswordSuccess ? (
+          <div>
+            <StyledText>
+              You have entered the wrong password too many times. For security
+              reasons we have locked your account.
+            </StyledText>
+            <StyledText>
+              Please enter your <b>registered username or email</b> to receive a
+              link to reset your password and regain access.
+            </StyledText>
+            <StyledText>
+              <b>Alternatively</b>, you can <b>ask your admin/teacher</b> to
+              reset your password.
+            </StyledText>
+            <ConnectedForgotPasswordForm
+              onSubmit={(e) => onSendLink(e, true)}
+              onCancel={onCancelForgotPassword}
+              t={t}
+              requestingNewPassword={requestingNewPassword}
+            />
+          </div>
+        ) : !requestNewPasswordSuccess ? (
           <div>
             <StyledText>
               Please enter your registered username or email. We will email you
@@ -152,6 +184,7 @@ const ForgotPasswordForm = (props) => {
           ],
         })(
           <Input
+            data-testid="email-input"
             className="email-input"
             prefix={<IconMail color={themeColor} />}
             placeholder="Enter Registered Username or Email"
@@ -164,12 +197,13 @@ const ForgotPasswordForm = (props) => {
           Cancel
         </EduButton>
         <EduButton
+          data-testid="send-reset"
           htmlType="submit"
           key="sendLink"
           ml="20px"
           disabled={requestingNewPassword}
         >
-          Email Me
+          Send Reset Link
         </EduButton>
       </ButtonsContainer>
     </Form>
@@ -309,6 +343,7 @@ const enhance = compose(
     (state) => ({
       user: get(state, 'user', null),
       districtPolicy: get(state, 'signup.districtPolicy', {}),
+      tooManyAttempt: getTooManyAtempt(state),
     }),
     {
       requestNewPassword: requestNewPasswordAction,

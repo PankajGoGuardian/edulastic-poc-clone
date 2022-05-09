@@ -1,7 +1,7 @@
 import { push } from 'react-router-redux'
 import pdfjsLib from 'pdfjs-dist'
 import { createSlice } from 'redux-starter-kit'
-import { takeLatest, call, put, all } from 'redux-saga/effects'
+import { takeLatest, call, put, all, select } from 'redux-saga/effects'
 import axios from 'axios'
 
 import { aws } from '@edulastic/constants'
@@ -112,6 +112,8 @@ const slice = createSlice({
         state.error = payload.error
       } else {
         state.omrUploadSessions = payload.omrUploadSessions
+        state.hasNonMcq = payload.hasNonMcq
+        state.bubbleSheetVersion = payload.bubbleSheetVersion
       }
     },
     setAssignmentAndClassTitle: (state, { payload }) => {
@@ -194,11 +196,23 @@ const slice = createSlice({
   },
 })
 
+// export actions & reducer
+export const { actions, reducer } = slice
+
+// export state selector
+export const selector = (state) => state?.scanStore?.uploadAnswerSheets
+
 function* getOmrUploadSessionsSaga({ payload }) {
   try {
     const { sessionId, fromWebcam, ..._payload } = payload
     const result = yield call(scannerApi.getOmrUploadSessions, _payload)
-    const { omrUploadSessions, assignmentTitle, classTitle } = result || {}
+    const {
+      omrUploadSessions,
+      assignmentTitle,
+      classTitle,
+      bubbleSheetVersion,
+      hasNonMcq,
+    } = result || {}
     yield put(
       slice.actions.setAssignmentAndClassTitle({ assignmentTitle, classTitle })
     )
@@ -220,7 +234,13 @@ function* getOmrUploadSessionsSaga({ payload }) {
         )
       }
     }
-    yield put(slice.actions.getOmrUploadSessionsDone({ omrUploadSessions }))
+    yield put(
+      slice.actions.getOmrUploadSessionsDone({
+        omrUploadSessions,
+        hasNonMcq,
+        bubbleSheetVersion,
+      })
+    )
   } catch (e) {
     console.log(e)
     notification({
@@ -346,10 +366,21 @@ function* updateOmrUploadSessionSaga({
       status,
       message: session.message,
     })
-    notification({
-      type: 'success',
-      msg: 'Successfully scanned responses have been recorded on Edulastic.',
-    })
+    const { hasNonMcq } = yield select(selector)
+    if (hasNonMcq) {
+      notification({
+        type: 'warn',
+        msg:
+          'Multiple choice responses are graded. Please manually grade the other responses.',
+        exact: true,
+        duration: null,
+      })
+    } else {
+      notification({
+        type: 'success',
+        msg: 'Successfully scanned responses have been recorded on Edulastic.',
+      })
+    }
     // delete firebase docs here
     const docIds = pageDocs.map(({ docId }) => docId)
     yield call(deleteNotificationDocuments, docIds)
@@ -420,9 +451,3 @@ export default function* watcherSaga() {
     ),
   ])
 }
-
-// export actions & reducer
-export const { actions, reducer } = slice
-
-// export state selector
-export const selector = (state) => state?.scanStore?.uploadAnswerSheets

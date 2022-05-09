@@ -4,6 +4,7 @@ import { response } from '@edulastic/constants'
 
 import { IconWrapper } from './CheckboxTemplateBoxLayout/styled/IconWrapper'
 import { CheckBox } from './CheckboxTemplateBoxLayout/styled/CheckBox'
+import { PopOverTextContainer } from './CheckboxTemplateBoxLayout/styled/TextContainer'
 
 const PopoverContent = ({
   indexStr,
@@ -32,7 +33,7 @@ const PopoverContent = ({
       </span>
     )}
     <div className="text" style={{ maxWidth: response.maxWidth }}>
-      <div style={{ whiteSpace: 'normal' }}>{userAnswer}</div>
+      <PopOverTextContainer>{userAnswer}</PopOverTextContainer>
     </div>
 
     <div className="icons">

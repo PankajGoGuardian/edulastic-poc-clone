@@ -8,10 +8,7 @@ import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { getUser, getUserOrgId } from '../../../src/selectors/user'
-import {
-  receiveAssignmentClassList,
-  receiveAssignmentsSummaryAction,
-} from '../../../src/actions/assignments'
+import { receiveAssignmentClassList } from '../../../src/actions/assignments'
 import {
   closeHangoutNotification as closeFirebaseNotification,
   destroyNotificationMessage,
@@ -27,7 +24,6 @@ const NotificationListener = ({
   user,
   location,
   fetchAssignmentClassList,
-  fetchAssignmentsSummaryAction,
   setBulkActionStatus,
   history,
   orgId,
@@ -124,7 +120,6 @@ const NotificationListener = ({
           testType &&
           action !== DOWNLOAD_GRADES_AND_RESPONSE
         ) {
-          fetchAssignmentsSummaryAction({ districtId })
           fetchAssignmentClassList({
             districtId,
             testId,
@@ -178,7 +173,6 @@ export default compose(
     }),
     {
       fetchAssignmentClassList: receiveAssignmentClassList,
-      fetchAssignmentsSummaryAction: receiveAssignmentsSummaryAction,
       setBulkActionStatus: setAssignmentBulkActionStatus,
     }
   )

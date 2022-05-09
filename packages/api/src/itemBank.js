@@ -16,6 +16,7 @@ const editCollection = (data) =>
 const getCollectionList = () => {
   return api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}`,
       method: 'get',
     })

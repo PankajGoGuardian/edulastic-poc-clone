@@ -1,9 +1,10 @@
-import { testTypeColor, themeColor, white } from '@edulastic/colors'
-import { FlexContainer, notification } from '@edulastic/common'
+import { themeColor, white } from '@edulastic/colors'
+import { FlexContainer, notification, TestTypeIcon } from '@edulastic/common'
 import {
   testActivityStatus,
   roleuser,
   test as testConstants,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import {
   IconCheckSmall,
@@ -12,7 +13,7 @@ import {
   IconVisualization,
   IconTrash,
 } from '@edulastic/icons'
-import { Avatar, Button, Dropdown, Menu, Col } from 'antd'
+import { Button, Dropdown, Menu, Col } from 'antd'
 import moment from 'moment'
 import produce from 'immer'
 import PropTypes from 'prop-types'
@@ -68,7 +69,6 @@ import {
   DragHandle,
   IconActionButton,
   LastColumn,
-  CustomIcon,
   ModuleFocused,
   AssignmentButton,
   ModuleDataWrapper,
@@ -1132,25 +1132,14 @@ class ModuleRow extends Component {
                     </>
                   )
 
-                  const testType = isTestType && (
-                    <CustomIcon marginLeft={10} marginRight={5}>
-                      {urlHasUseThis && (
-                        <Avatar
-                          size={18}
-                          style={{
-                            backgroundColor:
-                              testTypeColor[
-                                moduleData.assignments?.[0]?.testType
-                              ] || testTypeColor[moduleData.testType],
-                            fontSize: '13px',
-                          }}
-                        >
-                          {moduleData.assignments?.[0]?.testType?.[0]?.toUpperCase() ||
-                            moduleData?.testType?.[0]?.toUpperCase() ||
-                            ' P '}
-                        </Avatar>
-                      )}
-                    </CustomIcon>
+                  const testType = isTestType && urlHasUseThis && (
+                    <TestTypeIcon
+                      testType={
+                        moduleData.assignments?.[0]?.testType ||
+                        moduleData?.testType ||
+                        testTypesConstants.TEST_TYPES_VALUES_MAP.PRACTICE
+                      }
+                    />
                   )
 
                   const testTags = isTestType && (

@@ -1,6 +1,7 @@
 import { takeLatest, call, all, select, put } from 'redux-saga/effects'
 import { testItemActivityApi, attchmentApi } from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
+import { Effects } from '@edulastic/common'
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import {
   SAVE_TEST_LEVEL_USER_WORK,
@@ -60,9 +61,16 @@ function* saveTestletLog({ payload }) {
   }
 }
 
+const timeOut =
+  process.env.NODE_ENV === 'development'
+    ? 12000
+    : process.env.REACT_APP_QA_ENV
+    ? 60000
+    : 8000
+
 export default function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_TEST_LEVEL_USER_WORK, saveTestletState),
-    yield takeLatest(SAVE_TESTLET_LOG, saveTestletLog),
+    yield Effects.throttleAction(timeOut, SAVE_TESTLET_LOG, saveTestletLog),
   ])
 }

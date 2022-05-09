@@ -53,6 +53,7 @@ export default function withKeyboard(WrappedComponent) {
         onClick,
         onClickEvent,
         onlySpaceKey = false,
+        onlyEnterKey = false,
         tool = [],
         fromSetAnswers,
         disableTab,
@@ -61,6 +62,7 @@ export default function withKeyboard(WrappedComponent) {
       const isSratchPadEnabled = tool.includes(5)
       let supportedKeys = [keyboardConst.ENTER_KEY, keyboardConst.SPACE_KEY]
       if (onlySpaceKey) supportedKeys = [keyboardConst.SPACE_KEY]
+      else if (onlyEnterKey) supportedKeys = [keyboardConst.ENTER_KEY]
       return (
         <StyledWrappedComponent
           {...this.state}
@@ -68,10 +70,10 @@ export default function withKeyboard(WrappedComponent) {
           // If sratchpad is enabled than disabling tab key navigation to prevent user from attempting question
           tabIndex={isSratchPadEnabled || disableTab ? '-1' : '0'}
           onKeyDown={(e) => {
-            if (isSratchPadEnabled || fromSetAnswers) return
+            if (isSratchPadEnabled) return
             const code = e.which || e.keyCode
             // preventing default behavior if any key is pressed other than tab key
-            if (code !== keyboardConst.TAB_KEY) {
+            if (code !== keyboardConst.TAB_KEY && !fromSetAnswers) {
               e.preventDefault()
             }
             if (supportedKeys.includes(code)) {

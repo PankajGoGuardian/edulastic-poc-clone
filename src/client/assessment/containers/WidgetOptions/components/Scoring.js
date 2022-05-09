@@ -271,7 +271,9 @@ class Scoring extends Component {
                 {t('component.options.automarkable')}
               </CheckboxLabel>
             </Col>
-            {isAutomarkChecked && <Col md={12}>{unscoredCheckBox}</Col>}
+            {isAutomarkChecked && isPremiumUser && (
+              <Col md={12}>{unscoredCheckBox}</Col>
+            )}
           </Row>
         )}
 
@@ -477,7 +479,7 @@ class Scoring extends Component {
         )}
 
         {/* practice usage for manually gradable types */}
-        {!isAutoMarkBtnVisible && (
+        {!isAutoMarkBtnVisible && isPremiumUser && (
           <Row gutter={24}>
             <Col md={12}>{unscoredCheckBox}</Col>
           </Row>

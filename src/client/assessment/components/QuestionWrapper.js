@@ -1,12 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import styled, { ThemeProvider, withTheme } from 'styled-components'
-import {
-  questionType,
-  test,
-  roleuser,
-  test as testContants,
-} from '@edulastic/constants'
+import { questionType, test, roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { get, isEqual, isEmpty } from 'lodash'
@@ -62,6 +57,7 @@ import { MathFormula } from '../widgets/MathFormula'
 import { FormulaEssay } from '../widgets/FormulaEssay'
 import ClozeMath from '../widgets/ClozeMath'
 import { requestScratchPadAction } from '../../author/ExpressGrader/ducks'
+import { setPassageCurrentPageAction } from '../actions/userInteractions'
 import { Chart } from '../widgets/Charts'
 import { getUserRole, getUserFeatures } from '../../author/src/selectors/user'
 import AudioControls from '../AudioControls'
@@ -187,11 +183,19 @@ class QuestionWrapper extends Component {
       extras: [],
       activeTab: 0,
       shuffledOptsOrder: [],
-      page: 1,
     }
   }
 
-  setPage = (page) => this.setState({ page })
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-34955
+   * page data is required in ItemAudioControl component. Thus storing the page data in redux store
+   */
+  setPage = (page) => {
+    const { setPassageCurrentPage, data: { id, type } = {} } = this.props
+    if (id && type === questionType.PASSAGE) {
+      setPassageCurrentPage({ passageId: id, page })
+    }
+  }
 
   handleShuffledOptions = (shuffledOptsOrder) => {
     this.setState({ shuffledOptsOrder })
@@ -286,6 +290,10 @@ class QuestionWrapper extends Component {
       return false
     }
     return true
+  }
+
+  componentDidMount() {
+    this.setPage(1)
   }
 
   openStudentWork = () => {
@@ -396,14 +404,13 @@ class QuestionWrapper extends Component {
       userRole,
       view,
       testLevelSettings: {
-        releaseScore: testLevelReleaseScore,
         showRubricToStudents: testLevelShowRubricToStudents = false,
       } = {},
       data: { rubrics } = {},
       isPremiumUser,
     } = this.props
 
-    const { releaseGradeLabels } = testContants
+    const { releaseGradeLabels } = test
 
     // return if rubric is not attached to the question
     if (isEmpty(rubrics)) {
@@ -417,10 +424,7 @@ class QuestionWrapper extends Component {
       (isTestPreviewModalVisible || isTestDemoPlayer) &&
       isPremiumUser
     ) {
-      return (
-        testLevelReleaseScore !== releaseGradeLabels.DONT_RELEASE &&
-        testLevelShowRubricToStudents
-      )
+      return testLevelShowRubricToStudents
     }
 
     // if its a student attempt
@@ -430,6 +434,14 @@ class QuestionWrapper extends Component {
       releaseScore !== releaseGradeLabels.DONT_RELEASE &&
       showRubricToStudents
     )
+  }
+
+  get passageCurrentPage() {
+    const {
+      userInteractionsPassageData: passageInfo = {},
+      data: { id } = {},
+    } = this.props
+    return passageInfo[id]?.currentPage || 1
   }
 
   render() {
@@ -501,7 +513,9 @@ class QuestionWrapper extends Component {
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)
     const timeSpent = get(data, 'activity.timeSpent', false)
-    const { main, advanced, extras, activeTab, page } = this.state
+    const { main, advanced, extras, activeTab } = this.state
+    const page = this.passageCurrentPage
+
     const disabled =
       get(data, 'activity.disabled', false) || data.scoringDisabled
     const { layoutType } = this.context
@@ -601,7 +615,6 @@ class QuestionWrapper extends Component {
     const answerScore = this.answerScore
     const showAnswerScore =
       isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
-
     return (
       <ThemeProvider
         theme={{
@@ -617,10 +630,6 @@ class QuestionWrapper extends Component {
             (!hideVisibility || isShowStudentWork) &&
             !isPrintPreview && (
               <AudioControls
-                btnWithText={
-                  playerSkinType.toLowerCase() ===
-                  test.playerSkinValues.edulastic.toLowerCase()
-                }
                 hideVisibility={hideVisibility && !isShowStudentWork}
                 key={data.id}
                 item={data}
@@ -759,21 +768,23 @@ class QuestionWrapper extends Component {
                       isGradedExternally={answerScore.isGradedExternally}
                     />
                   )}
-                  {rubricDetails && studentReportFeedbackVisible && (
-                    <RubricTableWrapper data-cy="rubricTable">
-                      <FieldLabel className="rubric-title">
-                        Graded Rubric
-                      </FieldLabel>
-                      <FieldLabel className="rubric-name">
-                        {rubricDetails.name}
-                      </FieldLabel>
-                      <PreviewRubricTable
-                        data={rubricDetails}
-                        rubricFeedback={rubricFeedback}
-                        isDisabled
-                      />
-                    </RubricTableWrapper>
-                  )}
+                  {rubricDetails &&
+                    studentReportFeedbackVisible &&
+                    !isShowStudentWork && (
+                      <RubricTableWrapper data-cy="rubricTable">
+                        <FieldLabel className="rubric-title">
+                          Graded Rubric
+                        </FieldLabel>
+                        <FieldLabel className="rubric-name">
+                          {rubricDetails.name}
+                        </FieldLabel>
+                        <PreviewRubricTable
+                          data={rubricDetails}
+                          rubricFeedback={rubricFeedback}
+                          isDisabled
+                        />
+                      </RubricTableWrapper>
+                    )}
                   {view === 'preview' && !isPrintPreview && !showFeedback && (
                     <Hints
                       question={data}
@@ -883,9 +894,15 @@ const enhance = compose(
       previewMaxScore: state?.itemScore?.maxScore, // this used only in the author preview
       assignmentLevelSettings: assignmentLevelSettingsSelector(state),
       testLevelSettings: get(state, ['test', 'settings'], {}),
+      userInteractionsPassageData: get(
+        state,
+        ['userInteractions', 'passages'],
+        {}
+      ),
     }),
     {
       loadScratchPad: requestScratchPadAction,
+      setPassageCurrentPage: setPassageCurrentPageAction,
     }
   )
 )

@@ -24,9 +24,9 @@ import {
 import headings from './FroalaPlugins/headings'
 import customPastePlugin from './FroalaPlugins/customPastePlugin'
 import customPlugin from './FroalaPlugins/customPlugin'
+import imageUploadPlugin from './FroalaPlugins/imageUploadPlugin'
 import useStickyToolbar from './FroalaPlugins/useStickyToolbar'
 import {
-  loadImage,
   getToolbarButtons,
   getSpecialCharacterSets,
   isContainsMathContent,
@@ -55,6 +55,8 @@ headings(FroalaEditor)
 customPastePlugin(FroalaEditor)
 // register custom buttons
 customPlugin(FroalaEditor)
+// adds image.beforeUpload and image.inserted event handler
+imageUploadPlugin(FroalaEditor)
 
 const CustomEditor = ({
   value,
@@ -272,47 +274,6 @@ const CustomEditor = ({
               cursorEl.remove()
               return
             }
-          }
-        },
-        'image.beforeUpload': function (image, clipboardImage) {
-          if (
-            !canInsert(this.selection.element()) ||
-            !canInsert(this.selection.endElement()) ||
-            !beforeUpload(image[0])
-          ) {
-            clipboardImage?.remove()
-            this.popups.hideAll()
-            return false
-          }
-          this.image.showProgressBar()
-          // TODO: pass folder as props
-          uploadToS3(image[0], aws.s3Folders.DEFAULT)
-            .then((result) => {
-              this.image.insert(result, false, null, clipboardImage)
-            })
-            .catch((e) => {
-              console.error(e)
-              clipboardImage?.remove()
-              this.popups.hideAll()
-              notification({ messageKey: 'imageUploadErr' })
-            })
-
-          return false
-        },
-        'image.inserted': async function ($img) {
-          try {
-            if (!$img[0].complete) {
-              await loadImage($img[0].src)
-              $img.css({
-                verticalAlign: 'middle',
-                width:
-                  $img[0].naturalWidth < imageDefaultWidth
-                    ? `${$img[0].naturalWidth}px`
-                    : `${imageDefaultWidth}px`,
-              })
-            }
-          } catch (e) {
-            notification({ messageKey: 'imageLoadErr' })
           }
         },
         'video.beforeUpload': function (video) {

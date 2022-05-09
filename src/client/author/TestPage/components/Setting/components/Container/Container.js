@@ -26,7 +26,11 @@ import {
   withWindowSizes,
   EduButton,
 } from '@edulastic/common'
-import { roleuser, test as testContants } from '@edulastic/constants'
+import {
+  roleuser,
+  test as testContants,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { IconInfo, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 
@@ -37,14 +41,12 @@ import {
   getUserId,
 } from '../../../../../../student/Login/ducks'
 import {
-  testTypesToTestSettings,
   defaultTestTypeProfilesSelector,
   getDisableAnswerOnPaperSelector,
   getReleaseScorePremiumSelector,
   getTestEntitySelector,
   resetUpdatedStateAction,
   setTestDataAction,
-  testTypeAsProfileNameType,
   fetchTestSettingsListAction,
   saveTestSettingsAction,
   getTestSettingsListSelector,
@@ -58,7 +60,7 @@ import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
 import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
-  isPublisherUserSelector,
+  allowReferenceMaterialSelector,
 } from '../../../../../src/selectors/user'
 import {
   Block,
@@ -90,7 +92,7 @@ import {
   StyledRow,
 } from '../../../../../AssignTest/components/SimpleOptions/styled'
 import KeypadDropdown from './KeypadDropdown'
-// import ReferenceMaterial from './ReferenceMaterial'
+import ReferenceMaterial from './ReferenceMaterial'
 import { getAssignmentsSelector } from '../../../Assign/ducks'
 import { ConfirmationModal } from '../../../../../src/components/common/ConfirmationModal'
 import { skinTypesOrder, showRubricToStudentsSetting } from '../../../../utils'
@@ -99,11 +101,14 @@ import DeleteTestSettingsModal from '../../../../../AssignTest/components/Contai
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
 import { multiFind } from '../../../../../../common/utils/main'
 import CalculatorSetting from './CalculatorSetting'
+import {
+  getProfileKey,
+  getTestTypeFullNames,
+} from '../../../../../../common/utils/testTypeUtils'
 
 const {
   settingCategories,
   settingCategoriesFeatureMap,
-  type,
   completionTypes,
   evalTypes,
   evalTypeLabels,
@@ -126,17 +131,7 @@ const {
 
 const { Option } = Select
 
-const { ASSESSMENT, PRACTICE, COMMON } = type
-
-const testTypes = {
-  [ASSESSMENT]: 'Class Assessment',
-  [PRACTICE]: 'Practice',
-}
-
-const authorPublisherTestTypes = {
-  [ASSESSMENT]: 'Assessment',
-  [PRACTICE]: 'Practice',
-}
+const { ASSESSMENT, COMMON } = testTypesConstants.TEST_TYPES
 
 const {
   ALL_OR_NOTHING,
@@ -259,7 +254,7 @@ class Setting extends Component {
     } = this.props
     switch (key) {
       case 'testType': {
-        const testProfileType = testTypeAsProfileNameType[value]
+        const testProfileType = getProfileKey(value)
         const defaultBandId =
           defaultTestTypeProfiles?.performanceBand?.[testProfileType]
         const defaultStandardId =
@@ -268,9 +263,9 @@ class Setting extends Component {
           performanceBandsData.find((item) => item._id === defaultBandId) || {}
         const standardGradingScale =
           standardsData.find((item) => item._id === defaultStandardId) || {}
-        if (value === ASSESSMENT || value === COMMON) {
+        if (ASSESSMENT.includes(value) || COMMON.includes(value)) {
           const releaseScore =
-            value === ASSESSMENT && isReleaseScorePremium
+            ASSESSMENT.includes(value) && isReleaseScorePremium
               ? releaseGradeLabels.WITH_RESPONSE
               : releaseGradeLabels.DONT_RELEASE
           setMaxAttempts(1)
@@ -367,7 +362,7 @@ class Setting extends Component {
               {
                 _id:
                   defaultTestTypeProfiles.performanceBand[
-                    testTypesToTestSettings[testType]
+                    getProfileKey(testType)
                   ],
               },
             ],
@@ -385,7 +380,7 @@ class Setting extends Component {
               {
                 _id:
                   defaultTestTypeProfiles.standardProficiency[
-                    testTypesToTestSettings[testType]
+                    getProfileKey(testType)
                   ],
               },
             ],
@@ -675,6 +670,19 @@ class Setting extends Component {
     }
   }
 
+  handleUpdateRefMaterial = (value) => {
+    const { setTestData } = this.props
+    setTestData({ referenceDocAttributes: value })
+  }
+
+  get isReferenceMaterialAllowedForCurrentSkin() {
+    const { quester, edulastic } = playerSkinValues
+    const { entity: { playerSkinType = edulastic } = {} } = this.props
+    const retval = playerSkinType === edulastic || playerSkinType === quester
+
+    return retval
+  }
+
   render() {
     const {
       showPassword,
@@ -701,8 +709,6 @@ class Setting extends Component {
       showCancelButton,
       disableAnswerOnPaper,
       premium,
-      districtPermissions = [],
-      isAuthorPublisher,
       calculatorProvider,
       allowedToSelectMultiLanguage,
       testAssignments,
@@ -754,12 +760,13 @@ class Setting extends Component {
       applyEBSR = false,
       enableSkipAlert = false,
       settingId: currentSettingsId = '',
-      // referenceDocAttributes,
+      referenceDocAttributes,
       showRubricToStudents = false,
       performanceBand: _performanceBand,
       standardGradingScale: _standardGradingScale,
     } = entity
 
+    const testTypes = getTestTypeFullNames(premium, userRole, testType)
     let isSettingPresent = false
     if (
       currentSettingsId &&
@@ -906,7 +913,7 @@ class Setting extends Component {
           {
             _id:
               defaultTestTypeProfiles.performanceBand?.[
-                testTypesToTestSettings[testType]
+                getProfileKey(testType)
               ],
           },
         ],
@@ -922,7 +929,7 @@ class Setting extends Component {
           {
             _id:
               defaultTestTypeProfiles.standardProficiency?.[
-                testTypesToTestSettings[testType]
+                getProfileKey(testType)
               ],
           },
         ],
@@ -1118,23 +1125,9 @@ class Setting extends Component {
                               }
                               data-cy="testType"
                             >
-                              {(userRole === roleuser.DISTRICT_ADMIN ||
-                                userRole === roleuser.SCHOOL_ADMIN ||
-                                testType === COMMON) &&
-                                !districtPermissions.includes('publisher') && (
-                                  <Option key={COMMON} value={COMMON}>
-                                    Common Assessment
-                                  </Option>
-                                )}
-                              {Object.keys(
-                                isAuthorPublisher
-                                  ? authorPublisherTestTypes
-                                  : testTypes
-                              ).map((key) => (
+                              {Object.keys(testTypes).map((key) => (
                                 <Option key={key} value={key}>
-                                  {isAuthorPublisher
-                                    ? authorPublisherTestTypes[key]
-                                    : testTypes[key]}
+                                  {testTypes[key]}
                                 </Option>
                               ))}
                             </SelectInputStyled>
@@ -1151,7 +1144,7 @@ class Setting extends Component {
 
                   {(userRole === roleuser.DISTRICT_ADMIN ||
                     userRole === roleuser.SCHOOL_ADMIN) &&
-                    testType === COMMON && (
+                    COMMON.includes(testType) && (
                       <Block id="freeze-settings" smallSize={isSmallSize}>
                         <Row>
                           <Title>
@@ -1361,15 +1354,6 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  {/* <Block id="reference-material" smallSize={isSmallSize}>
-                    <ReferenceMaterial
-                      owner={owner}
-                      isEditable={isEditable}
-                      isSmallSize={isSmallSize}
-                      referenceDocAttributes={referenceDocAttributes}
-                    />
-                  </Block> */}
-
                   <Block id="show-calculator" smallSize={isSmallSize}>
                     <SettingContainer>
                       <Title>
@@ -1401,6 +1385,21 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
+
+                  {this.isReferenceMaterialAllowedForCurrentSkin &&
+                    !isDocBased && (
+                      <Block id="reference-material" smallSize={isSmallSize}>
+                        <ReferenceMaterial
+                          owner={owner}
+                          isEditable={isEditable}
+                          isSmallSize={isSmallSize}
+                          premium={premium}
+                          disabled={disabled}
+                          setData={this.handleUpdateRefMaterial}
+                          referenceDocAttributes={referenceDocAttributes}
+                        />
+                      </Block>
+                    )}
 
                   <Block id="timed-test" smallSize={isSmallSize}>
                     <SettingContainer>
@@ -2441,14 +2440,12 @@ const enhance = compose(
       ),
       isReleaseScorePremium: getReleaseScorePremiumSelector(state),
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-      districtPermissions:
-        state?.user?.user?.orgData?.districts?.[0]?.districtPermissions,
       premium: state?.user?.user?.features?.premium,
+      allowReferenceMaterial: allowReferenceMaterialSelector(state),
       calculatorProvider: state?.user?.user?.features?.calculatorProvider,
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
-      isAuthorPublisher: isPublisherUserSelector(state),
       editEnable: state.tests?.editEnable,
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       testAssignments: getAssignmentsSelector(state),

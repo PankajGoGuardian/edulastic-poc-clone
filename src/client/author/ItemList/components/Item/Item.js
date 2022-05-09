@@ -572,6 +572,7 @@ class Item extends Component {
                     height="36px"
                     isGhost
                     onClick={openPreviewModal}
+                    data-cy="view"
                   >
                     <IconEye />
                     <span>{t('component.item.view').toUpperCase()}</span>
@@ -596,6 +597,7 @@ class Item extends Component {
                       selectedToCart={selectedToCart}
                       width="60px"
                       height="36px"
+                      data-cy="addRemoveButton"
                       onClick={this.handleToggleItemToCart(item)}
                     >
                       {selectedToCart ? <IconClose /> : <IconPlus />}

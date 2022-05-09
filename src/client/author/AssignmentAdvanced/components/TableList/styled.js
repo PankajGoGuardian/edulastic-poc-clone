@@ -7,10 +7,11 @@ import {
   secondaryTextColor,
   authorAssignment,
   tabletWidth,
-  testTypeColor,
   themeColorBlue,
   lightGrey4,
   lightGrey5,
+  lightFadedBlack,
+  black,
 } from '@edulastic/colors'
 
 const { assignmentStatusBg } = authorAssignment
@@ -120,27 +121,6 @@ export const TableData = styled(Table)`
   }
 `
 
-export const TypeIcon = styled.span`
-  display: inline-block;
-  width: 18px;
-  height: 18px;
-  max-width: 18px;
-  background: ${(props) =>
-    props.type === 'p'
-      ? testTypeColor.practice
-      : props.type === 'c'
-      ? testTypeColor.common
-      : testTypeColor.assessment};
-  text-align: center;
-  color: ${white};
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 17px;
-  padding-left: 1px;
-  text-transform: uppercase;
-`
-
 export const BtnStatus = styled(Button)`
   color: ${white};
   border: 0px;
@@ -203,11 +183,12 @@ export const BulkActionsButtonContainer = styled.div`
 export const MoreOption = styled.div`
   padding: 0px 12px;
   height: 30px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: center;
+  color: ${({ disabled }) => (disabled ? lightFadedBlack : black)};
   & :hover {
     color: ${white};
     background: ${themeColorBlue};

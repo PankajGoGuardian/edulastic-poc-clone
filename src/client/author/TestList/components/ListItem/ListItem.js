@@ -528,6 +528,7 @@ class ListItem extends Component {
                       <IconEye /> {t('component.itemlist.preview')}
                     </ViewButtonStyled>
                     <AddRemoveButton
+                      data-cy="addRemoveButton"
                       onClick={this.handleAddRemoveToCart(item, isInCart)}
                       selectedToCart={isInCart}
                     >

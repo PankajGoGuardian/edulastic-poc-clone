@@ -269,9 +269,10 @@ class ButtonBar extends Component {
                       </EduButton>
                       {!isTestFlow && showSaveAndPublishButton && (
                         <EduButton
-                          loading={loadingComponents.includes(
-                            'saveAndPublishItem'
-                          )}
+                          loading={
+                            loadingComponents.includes('saveAndPublishItem') ||
+                            testItemSavingInProgress
+                          }
                           isBlue
                           disabled={disableSave}
                           data-cy="saveAndPublishItem"
@@ -291,6 +292,7 @@ class ButtonBar extends Component {
                       disabled={disableSave}
                       data-cy="publishItem"
                       onClick={this.handlePublishItem}
+                      loading={testItemSavingInProgress}
                     >
                       PUBLISH
                     </EduButton>

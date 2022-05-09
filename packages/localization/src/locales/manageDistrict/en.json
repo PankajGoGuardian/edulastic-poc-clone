@@ -194,7 +194,8 @@
       "powertools": "Enable Power Tools",
       "deactivateTeacher": {
         "title": "Deactivate Teacher(s)",
-        "teachers": " teacher(s)?"
+        "teachers": " teacher(s)?",
+        "text": "All associated classes will be moved to co-teacher. Reports won't be accesible if there is no co-teacher present."
       },
       "inviteteacher": {
         "title": "Bulk Add Teacher",

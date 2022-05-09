@@ -9,6 +9,7 @@ import { Button } from 'antd'
 import { AssessmentPlayerContext } from '@edulastic/common'
 import {
   finishTestAcitivityAction,
+  resetStudentAttemptAction,
   setIsTestPreviewVisibleAction,
 } from '../../actions/test'
 
@@ -21,6 +22,7 @@ const AssignmentTimeEndedAlert = ({
   utaId,
   isAuthorPreview,
   setIsTestPreviewVisible,
+  resetStudentAttempt,
 }) => {
   const { currentItem } = useContext(AssessmentPlayerContext)
 
@@ -43,6 +45,12 @@ const AssignmentTimeEndedAlert = ({
       })
     }
   }, [currentItem])
+
+  useEffect(() => {
+    return () => {
+      resetStudentAttempt()
+    }
+  }, [])
 
   const handleClose = () => {
     if (!isAuthorPreview) {
@@ -101,6 +109,7 @@ const enhance = compose(
     {
       autoSubmitTest: finishTestAcitivityAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
+      resetStudentAttempt: resetStudentAttemptAction,
     }
   )
 )

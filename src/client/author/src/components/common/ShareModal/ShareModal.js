@@ -512,7 +512,7 @@ class ShareModal extends React.Component {
       showMessageBody,
       notificationMessage,
       loadingSharedUsers,
-      maxSharingLevelAllowed = shareLevel[sharedKeysObj.LINK],
+      maxSharingLevelAllowed = shareLevel[sharedKeysObj.PUBLIC],
     } = this.props
     const filteredUserList = userList.filter(
       (user) =>
@@ -641,6 +641,7 @@ class ShareModal extends React.Component {
                       key={item}
                       disabled={
                         (!isPlaylist &&
+                          item !== sharedKeysObj.LINK &&
                           shareLevel[item] > maxSharingLevelAllowed) ||
                         (!isPublished && item !== sharedKeysObj.INDIVIDUAL) ||
                         (hasPremiumQuestion && item === sharedKeysObj.PUBLIC) ||

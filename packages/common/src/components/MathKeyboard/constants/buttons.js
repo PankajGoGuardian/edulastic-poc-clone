@@ -111,6 +111,7 @@ import GroupGigabit from '../assets/units/gb.svg'
 import GroupMol from '../assets/units/mol.svg'
 import GroupGramMol from '../assets/units/g-mol.svg'
 import GroupGramLiter from '../assets/units/g-ml.svg'
+import Sqmi from '../assets/units/sqmi.svg'
 
 import Group8879 from '../assets/arrows/Group8879.svg'
 import Group8880 from '../assets/arrows/Group8880.svg'
@@ -1192,7 +1193,7 @@ export const us_feet = {
 
 export const us_sq_mi = {
   handler: '\\text{sq mi}',
-  label: 'sq mi',
+  label: <CustomImage src={Sqmi} width={38} height={24} />,
   types: ['all'],
   command: 'write',
   dataCy: 'us_sq_mi',

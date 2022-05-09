@@ -55,6 +55,7 @@ const Options = ({
       styleType={styleType}
       fontSize={fontSize}
       className="multiplechoice-optionlist"
+      uiStyleType={uiStyle?.type}
     >
       {cols.map((col, colIdx) => (
         <FlexContainer

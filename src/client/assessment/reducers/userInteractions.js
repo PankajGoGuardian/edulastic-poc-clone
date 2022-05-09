@@ -1,7 +1,13 @@
 import { createReducer } from 'redux-starter-kit'
-import { SAVE_HINT_USAGE, CLEAR_HINT_USAGE } from '../constants/actions'
+import {
+  SAVE_HINT_USAGE,
+  CLEAR_HINT_USAGE,
+  SET_PASSAGE_CURRENT_PAGE,
+} from '../constants/actions'
 
-const initialState = {}
+const initialState = {
+  passages: {},
+}
 
 const saveHintUsage = (state, { payload }) => {
   const { itemId, hintUsage } = payload
@@ -18,7 +24,24 @@ const clearHintUsage = (state, { payload }) => {
   }
 }
 
+const setPassageCurrentPage = (state, { payload }) => {
+  const { passageId, page } = payload
+  const passageData = state.passages?.[passageId] || {}
+
+  return {
+    ...state,
+    passages: {
+      ...state.passages,
+      [passageId]: {
+        ...passageData,
+        currentPage: page,
+      },
+    },
+  }
+}
+
 export default createReducer(initialState, {
   [SAVE_HINT_USAGE]: saveHintUsage,
   [CLEAR_HINT_USAGE]: clearHintUsage,
+  [SET_PASSAGE_CURRENT_PAGE]: setPassageCurrentPage,
 })

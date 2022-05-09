@@ -6,6 +6,7 @@ import {
   IconMagnify,
   IconQuester,
   IconCheck,
+  IconReferenceGuide,
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
@@ -64,6 +65,8 @@ const PlayerFooter = ({
   checkAnswer,
   isPremiumContentWithoutAccess = false,
   passage,
+  openReferenceModal,
+  canShowReferenceMaterial,
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
@@ -150,6 +153,26 @@ const PlayerFooter = ({
         </ActionContainer>
       )}
       <Devider />
+
+      {canShowReferenceMaterial && (
+        <ActionContainer
+          hoverEffect
+          onClick={openReferenceModal}
+          title={t('common.test.referenceGuide')}
+          data-cy="referenceGuide"
+          disabled={isPremiumContentWithoutAccess}
+        >
+          <IconWrapper>
+            <IconReferenceGuide
+              color={footer.textColor}
+              hoverColor={button.background}
+            />
+          </IconWrapper>
+
+          <span>{t('common.test.referenceGuide')}</span>
+        </ActionContainer>
+      )}
+
       {maxAnswerChecks > 0 && !hideCheckAnswer && (
         <ActionContainer
           hoverEffect

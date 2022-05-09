@@ -369,6 +369,7 @@ class AssessmentPlayerDefault extends React.Component {
       isTestDemoPlayer,
       canShowPlaybackOptionTTS,
       passage,
+      canShowReferenceMaterial,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -456,8 +457,8 @@ class AssessmentPlayerDefault extends React.Component {
     const showSettingIcon =
       windowWidth < IPAD_LANDSCAPE_WIDTH ||
       isZoomGreator('md', themeToPass?.zoomLevel) ||
-      (zoomLevel >= '1.75' && windowWidth < MEDIUM_DESKTOP_WIDTH) ||
-      (zoomLevel >= '1.75' &&
+      (zoomLevel >= '1.5' && windowWidth < MEDIUM_DESKTOP_WIDTH) ||
+      (zoomLevel >= '1.5' &&
         windowWidth < LARGE_DESKTOP_WIDTH &&
         settings.maxAnswerChecks > 0)
     let headerZoom = 1
@@ -575,7 +576,7 @@ class AssessmentPlayerDefault extends React.Component {
             changeCaculateMode={this.handleModeCaculate}
             openReferenceModal={openReferenceModal}
             isShowReferenceModal={isShowReferenceModal}
-            hasReferenceDoc={!!referenceDocAttributes}
+            canShowReferenceMaterial={canShowReferenceMaterial}
             changeTool={this.changeTool}
             hasDrawingResponse={hasDrawingResponse}
             qType={qType}
@@ -634,6 +635,9 @@ class AssessmentPlayerDefault extends React.Component {
               }
               isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               toggleUserWorkUploadModal={this.toggleUserWorkUploadModal}
+              openReferenceModal={openReferenceModal}
+              isShowReferenceModal={isShowReferenceModal}
+              canShowReferenceMaterial={canShowReferenceMaterial}
             />
             {!previewPlayer && (
               <SavePauseModalMobile
@@ -699,6 +703,13 @@ class AssessmentPlayerDefault extends React.Component {
                   {...extraTestItemProps}
                 />
               </MainWrapper>
+              {isShowReferenceModal && referenceDocAttributes && (
+                <ReferenceDocModal
+                  attributes={referenceDocAttributes}
+                  playerSkinType={playerSkinType}
+                  zoomLevel={zoomLevel}
+                />
+              )}
             </Main>
 
             <ReportIssuePopover item={item} playerSkinType={playerSkinType} />
@@ -717,9 +728,6 @@ class AssessmentPlayerDefault extends React.Component {
               onUploadFinished={this.saveUserWorkAttachments}
               cameraImageName={cameraImageName}
             />
-            {isShowReferenceModal && referenceDocAttributes && (
-              <ReferenceDocModal attributes={referenceDocAttributes} />
-            )}
           </AssessmentPlayerSkinWrapper>
         </Container>
       </ThemeProvider>

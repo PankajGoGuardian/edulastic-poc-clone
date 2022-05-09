@@ -46,6 +46,7 @@ const graph = require('./const/graph')
 const questionActivity = require('./const/questionActivity')
 const curriculumGrades = require('./const/curriculumGrades')
 const keyboard = require('./const/keyboard')
+const testTypes = require('./const/testTypes')
 
 // helpers / utils / transformers
 const reportUtils = require('./reportUtils')
@@ -100,4 +101,5 @@ module.exports = {
   curriculumGrades,
   reportUtils,
   keyboard,
+  testTypes,
 }

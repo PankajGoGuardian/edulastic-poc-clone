@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { withRouter } from 'react-router'
 import PropTypes from 'prop-types'
 import { Spin } from 'antd'
-import { test as testConstants } from '@edulastic/constants'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { WithResources } from '@edulastic/common/src/HOC/withResources'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -103,7 +103,9 @@ const DemoPlayer = ({
             demo
             closeTestPreviewModal={closeTestPreviewModal}
             submitPreviewTest={submitPreviewTest}
-            defaultAP={testType !== testConstants.type.PRACTICE}
+            defaultAP={
+              !testTypesConstants.TEST_TYPES.PRACTICE.includes(testType)
+            }
             isTestDemoPlayer
           />
         </WithResources>

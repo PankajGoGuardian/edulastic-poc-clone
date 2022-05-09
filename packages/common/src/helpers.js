@@ -157,14 +157,18 @@ function isBlobData(file) {
   return isBinary
 }
 
-function convertBlobToFile(blob) {
+export function convertBlobToFile(blob) {
   if (blob) {
     let fileExtension = 'png'
     const { type: fileType = '' } = blob
     if (fileType.includes('image/')) {
       fileExtension = fileType.split('image/')[1]
     }
-    const file = new File([blob], `pasted-image-${Date.now()}.${fileExtension}`)
+    const options = {
+      type: fileType,
+    }
+    const name = `pasted-image-${Date.now()}.${fileExtension}`
+    const file = new File([blob], name, options)
     return file
   }
   return null
@@ -503,6 +507,13 @@ export const removeIndexFromTemplate = (tmpl) => {
     })
   return sanitizeString($(parsedHTML).html())
 }
+
+export const allowedImageFileTypes = [
+  'image/jpeg',
+  'image/jpg',
+  'image/png',
+  'image/gif',
+]
 
 export const allowedFileTypes = [
   'image/jpeg',

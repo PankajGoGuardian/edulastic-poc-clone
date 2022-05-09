@@ -69,7 +69,7 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
   openReferenceModal,
   isShowReferenceModal,
-  hasReferenceDoc,
+  canShowReferenceMaterial,
 }) => {
   const query = qs.parse(location.search, { ignoreQueryPrefix: true })
   const { cliUser } = query
@@ -235,7 +235,7 @@ const PlayerHeader = ({
                         groupId={groupId}
                         openReferenceModal={openReferenceModal}
                         isShowReferenceModal={isShowReferenceModal}
-                        hasReferenceDoc={hasReferenceDoc}
+                        canShowReferenceMaterial={canShowReferenceMaterial}
                         isPremiumContentWithoutAccess={
                           isPremiumContentWithoutAccess
                         }

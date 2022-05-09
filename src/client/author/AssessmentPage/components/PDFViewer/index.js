@@ -33,6 +33,7 @@ const PDFViewer = ({
   const pageNumber = URL === BLANK_URL ? 1 : pageNo
   const viewerRef = useRef(null)
   const [pdfDocument, setPdfDocument] = useState(null)
+  const rotation = useRef(null)
 
   const adapter = useMemo(() => {
     // create store adapter for student attempt or teachor authoring
@@ -111,6 +112,7 @@ const PDFViewer = ({
               width: viewport.width,
               height: viewport.height,
             })
+            rotation.current = viewport.rotation
             setPdfDocument(_pdfDocument)
             setDocLoading(false)
           })
@@ -161,14 +163,24 @@ const PDFViewer = ({
       const _page = UI.createPage(pageNumber)
       viewerRef.current.appendChild(_page)
       // TODO: dont rely on currentPage number as documentId !!!
-      const RENDER_OPTIONS = {
+
+      const renderOptions = {
         documentId: currentPage,
         pdfDocument,
         scale: pdfScale || 1.33,
-        rotate: rotate || 0,
+        rotate: rotation.current || 0,
         authoringMode,
       }
-      UI.renderPage(pageNumber, RENDER_OPTIONS)
+      const RENDER_OPTIONS = {
+        ...renderOptions,
+        rotate: rotate ? rotation.current + rotate : rotation.current,
+      }
+
+      const ANNOTATE_RENDER_OPTIONS = {
+        ...renderOptions,
+        rotate: rotate || 0,
+      }
+      UI.renderPage(pageNumber, RENDER_OPTIONS, ANNOTATE_RENDER_OPTIONS)
     }
   }, [
     docLoading,

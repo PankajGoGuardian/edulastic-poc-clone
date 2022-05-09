@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
@@ -13,9 +13,8 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import {
-  test as testConstants,
-  roleuser,
   keyboard as keyboardConst,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
 import { IconBookmark } from '@edulastic/icons'
@@ -29,7 +28,6 @@ import {
   MainActionWrapper,
 } from '../../common'
 import { useUtaPauseAllowed } from '../../common/SaveAndExit'
-import AudioControls from '../../../AudioControls'
 import { MAX_MOBILE_WIDTH } from '../../../constants/others'
 import {
   ControlBtn,
@@ -49,7 +47,6 @@ import { setZoomLevelAction } from '../../../../student/Sidebar/ducks'
 import SettingsModal from '../../../../student/sharedComponents/SettingsModal'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
-import { changeDataToPreferredLanguage } from '../../../utils/question'
 
 const {
   playerSkin: { sbac },
@@ -74,9 +71,6 @@ const PlayerHeader = ({
   calcBrands,
   changeCaculateMode,
   finishTest,
-  showUserTTS,
-  userRole,
-  LCBPreviewModal,
   items,
   qType,
   setZoomLevel,
@@ -92,7 +86,6 @@ const PlayerHeader = ({
   hidePause,
   blockNavigationToAnsweredQuestions,
   testType,
-  isTestPreviewModalVisible,
   isPremiumContentWithoutAccess = false,
   checkAnswer,
   answerChecksUsedForItem,
@@ -102,26 +95,14 @@ const PlayerHeader = ({
   bookmarks = [],
   defaultAP,
   t,
-  utaPreferredLanguage,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
   }, [])
 
-  const data = useMemo(() => {
-    let question = items[currentItem]?.data?.questions[0]
-    if (question) {
-      question = changeDataToPreferredLanguage(
-        question,
-        utaPreferredLanguage,
-        true
-      )
-    }
-    return question
-  }, [items, currentItem, utaPreferredLanguage])
-
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? true : _pauseAllowed
+  const { PRACTICE } = testTypesConstants.TEST_TYPES
 
   const totalQuestions = options.length
   const totalAnswered = skipped.filter((s) => !s).length
@@ -135,19 +116,11 @@ const PlayerHeader = ({
     zIndex: 505,
   }
 
-  const showAudioControls = userRole === 'teacher' && !!LCBPreviewModal
-  const canShowPlayer =
-    ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
-      (userRole !== roleuser.STUDENT &&
-        (!!LCBPreviewModal || isTestPreviewModalVisible))) &&
-    data?.tts &&
-    data?.tts?.taskStatus === 'COMPLETED'
-
   const { showMagnifier } = settings
 
   return (
     <StyledFlexContainer>
-      {testType === testConstants.type.PRACTICE && (
+      {PRACTICE.includes(testType) && (
         <SettingsModal
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
@@ -289,19 +262,6 @@ const PlayerHeader = ({
                       </StyledButton>
                     </Tooltip>
                   )}
-                  {canShowPlayer && (
-                    <AudioControls
-                      showAudioControls={showAudioControls}
-                      key={data.id}
-                      item={data}
-                      qId={data.id}
-                      audioSrc={data?.tts?.titleAudioURL}
-                      className="sbac-question-audio-controller"
-                      isPremiumContentWithoutAccess={
-                        isPremiumContentWithoutAccess
-                      }
-                    />
-                  )}
                 </FlexContainer>
               </FlexContainer>
               <ToolBar
@@ -351,17 +311,12 @@ PlayerHeader.propTypes = {
   calcBrands: PropTypes.array.isRequired,
   changeCaculateMode: PropTypes.func.isRequired,
   finishTest: PropTypes.func.isRequired,
-  showUserTTS: PropTypes.bool.isRequired,
-  userRole: PropTypes.string.isRequired,
-  LCBPreviewModal: PropTypes.bool,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   qType: PropTypes.string.isRequired,
   setZoomLevel: PropTypes.func.isRequired,
   zoomLevel: PropTypes.oneOf([PropTypes.number, PropTypes.string]).isRequired,
 }
-PlayerHeader.defaultProps = {
-  LCBPreviewModal: false,
-}
+
 const enhance = compose(
   withRouter,
   withWindowSizes,

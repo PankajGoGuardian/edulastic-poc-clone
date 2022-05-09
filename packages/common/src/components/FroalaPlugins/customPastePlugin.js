@@ -65,16 +65,18 @@ function customPastePlugin(FroalaEditor) {
       return sanitizedString
     }
 
-    function afterPaste() {
-      const updatedHtml = reIndexResponses(editor.html.get(true))
+    function updateHtml() {
+      this.selection.save()
+      const updatedHtml = reIndexResponses(this.html.get(true))
       if (updatedHtml) {
-        editor.html.set(updatedHtml)
+        this.html.set(updatedHtml)
       }
     }
 
     function _init() {
       editor.events.on('paste.after', afterPaste)
       editor.events.on('paste.afterCleanup', cleanup)
+      editor.events.on('paste.after', updateHtml)
     }
     return {
       _init,

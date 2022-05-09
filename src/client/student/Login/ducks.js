@@ -206,6 +206,7 @@ export const UPDATE_USER_FAVORITES = '[user] update user favorites'
 export const SET_USER_FAVORITES = '[user] set user favorites'
 export const ADD_CLASS_TO_USER = '[user] add class to user'
 export const SET_CLASS_TO_USER = '[user] set class to user'
+export const SET_LOCATION_TO_USER = '[user] set location to user'
 export const ADD_COLLECTION_PERMISSION = '[user] update item bank permission'
 export const REMOVE_COLLECTION_PERMISSION = '[user] remove item bank permission'
 export const SET_CLI_USER = '[user] set cli user'
@@ -226,6 +227,10 @@ export const SET_IS_SIGNED_UP_USING_USERNAME_AND_PASSWORD =
   '[user] set signedUpUsingUsernameAndPassword flag'
 export const SET_ON_PROFILE_PAGE = '[user] set on profile page'
 
+export const TOGGLE_FORGOT_PASSWORD_MODAL =
+  '[user] toggle forgot password modal'
+
+export const LOGIN_ATTEMPT_EXCEEDED = '[user] too many login attempt'
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -314,6 +319,7 @@ export const updatePowerTeacherAction = createAction(
 )
 export const addClassToUserAction = createAction(ADD_CLASS_TO_USER)
 export const setClassToUserAction = createAction(SET_CLASS_TO_USER)
+export const setLocationToUserAction = createAction(SET_LOCATION_TO_USER)
 export const addItemBankPermissionAction = createAction(
   ADD_COLLECTION_PERMISSION
 )
@@ -350,6 +356,12 @@ export const setIsUserSignedUpUsingUsernameAndPassword = createAction(
 )
 
 export const setIsUserOnProfilePageAction = createAction(SET_ON_PROFILE_PAGE)
+
+export const setForgotPasswordVisibleAction = createAction(
+  TOGGLE_FORGOT_PASSWORD_MODAL
+)
+
+export const setTooManyAttemptAction = createAction(LOGIN_ATTEMPT_EXCEEDED)
 
 const initialState = {
   addAccount: false,
@@ -446,8 +458,18 @@ function* persistAuthStateAndRedirectToSaga({ payload }) {
 
   let redirectRoute = _redirectRoute || ''
 
-  const appRedirectPath = localStorage.getItem('loginRedirectUrl')
-
+  let appRedirectPath = localStorage.getItem('loginRedirectUrl')
+  const assignPageRegex = /\/assignments\/([a-f\d]{24})(?:\/)?$/
+  if (
+    assignPageRegex.test(appRedirectPath) &&
+    user?.user?.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL &&
+    user?.user?.role === roleuser.TEACHER
+  ) {
+    const testId = last(appRedirectPath.split('/'))
+    appRedirectPath = `/author/tests/tab/review/id/${testId}`
+    localStorage.setItem('loginRedirectUrl', appRedirectPath)
+    sessionStorage.setItem('completeSignUp', true)
+  }
   if (appRedirectPath && !isPartOfLoginRoutes(appRedirectPath)) {
     redirectRoute = getValidRedirectRouteByRole(
       appRedirectPath,
@@ -794,6 +816,9 @@ export default createReducer(initialState, {
   [SET_CLASS_TO_USER]: (state, { payload }) => {
     state.user.orgData.classList = payload
   },
+  [SET_LOCATION_TO_USER]: (state, { payload }) => {
+    state.user.location = payload
+  },
   [ADD_COLLECTION_PERMISSION]: (state, { payload }) => {
     const itemBanks = get(state, 'user.orgData.itemBanks', [])
     const { itemBankId, accessLevel, status } = payload
@@ -835,6 +860,12 @@ export default createReducer(initialState, {
   },
   [TOGGLE_VERIFY_EMAIL_MODAL]: (state, { payload }) => {
     state.showVerifyEmailModal = payload
+  },
+  [TOGGLE_FORGOT_PASSWORD_MODAL]: (state, { payload }) => {
+    state.forgotPasswordVisible = payload
+  },
+  [LOGIN_ATTEMPT_EXCEEDED]: (state, { payload }) => {
+    state.tooManyAttempt = payload
   },
 })
 
@@ -926,6 +957,20 @@ export const isDemoPlaygroundUser = createSelector(
   (isPlayground) => isPlayground
 )
 
+export const getIsProxiedByEAAccountSelector = createSelector(
+  [isProxyUser],
+  (_isProxyUser) => {
+    const defaultTokenKey = sessionStorage.getItem('defaultTokenKey')
+    if (defaultTokenKey) {
+      const role = defaultTokenKey.split(':')[3]
+      if (role === roleuser.EDULASTIC_ADMIN && _isProxyUser) {
+        return true
+      }
+    }
+    return false
+  }
+)
+
 export const proxyRole = createSelector(
   ['user.user.proxyRole'],
   (proxyrole) => proxyrole
@@ -977,9 +1022,26 @@ export const getIsEmailVerificationLinkSent = createSelector(
   (r) => r
 )
 
+export const getForgotPasswordVisible = createSelector(
+  ['user.forgotPasswordVisible'],
+  (r) => r
+)
+
+export const getTooManyAtempt = createSelector(
+  ['user.tooManyAttempt'],
+  (r) => r
+)
+
 export const getShowVerifyEmailModal = createSelector(
   ['user.showVerifyEmailModal'],
   (r) => r
+)
+
+export const getIsCpm = createSelector(
+  [getUserDetails],
+  (user) =>
+    user?.utm_source?.toLowerCase()?.includes('cpm') ||
+    user?.referrer?.toLowerCase()?.includes('cpm')
 )
 
 const routeSelector = (state) => state.router.location.pathname
@@ -1084,7 +1146,14 @@ function* login({ payload }) {
     ) {
       errorMessage = data.message || err?.response?.data?.message
     }
-    notification({ msg: errorMessage })
+    if (status === 429) {
+      // set the flag to show reset password popup
+      yield put(setForgotPasswordVisibleAction(true))
+      yield put(setTooManyAttemptAction(true))
+      // reset too many atempt flag on close of reset password modal
+    } else {
+      notification({ msg: errorMessage })
+    }
   } finally {
     yield put(removeLoadingComponentAction({ componentName: 'loginButton' }))
   }

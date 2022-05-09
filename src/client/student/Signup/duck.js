@@ -483,14 +483,15 @@ function* joinSchoolSaga({ payload = {} }) {
   }
 }
 
-function* updateUserSignupStateSaga() {
+function* updateUserSignupStateSaga({ payload = {} } = {}) {
   try {
     const user = yield select(getUser)
     const districtId = yield select(getUserOrgId)
     if (
-      !isEmpty(user.orgData.districtIds) &&
-      !isEmpty(user.orgData.defaultGrades) &&
-      !isEmpty(user.orgData.defaultSubjects)
+      (!isEmpty(user.orgData.districtIds) &&
+        !isEmpty(user.orgData.defaultGrades) &&
+        !isEmpty(user.orgData.defaultSubjects)) ||
+      payload?.isSignupDone
     ) {
       const data = {
         email: user.email,

@@ -273,7 +273,7 @@ function StandardsProficiency(props) {
 
   const handleProfileLimit = () => {
     const canCreateProfile =
-      props.profiles.filter((x) => x.createdBy?._id === props.userId).length <=
+      props.profiles.filter((x) => x.createdBy?._id === props.userId).length <
       10
     if (!canCreateProfile) {
       notification({ messageKey: 'maximumTenProfilesPerUser' })

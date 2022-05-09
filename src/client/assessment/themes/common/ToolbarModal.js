@@ -117,6 +117,9 @@ class ToolbarModal extends React.Component {
       qType,
       blockNavigationToAnsweredQuestions = false,
       isPremiumContentWithoutAccess = false,
+      openReferenceModal,
+      isShowReferenceModal,
+      canShowReferenceMaterial,
     } = this.props
     const questions = get(
       items,
@@ -142,6 +145,15 @@ class ToolbarModal extends React.Component {
               disabled={isPremiumContentWithoutAccess}
             >
               Bookmark
+            </StyledButton>
+          )}
+          {canShowReferenceMaterial && (
+            <StyledButton
+              onClick={openReferenceModal}
+              active={isShowReferenceModal}
+              disabled={isPremiumContentWithoutAccess}
+            >
+              Reference Sheet
             </StyledButton>
           )}
           {settings.calcType !== calculatorTypes.NONE && (

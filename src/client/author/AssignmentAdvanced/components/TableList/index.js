@@ -1,12 +1,13 @@
 import React, { useState, useMemo, useEffect } from 'react'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
+import { connect } from 'react-redux'
 import { groupBy } from 'lodash'
 import { Tooltip, Dropdown } from 'antd'
 import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from '@edulastic/localization'
-import { test, roleuser } from '@edulastic/constants'
-import { EduButton, notification } from '@edulastic/common'
+import { testTypes as testTypesConstants, roleuser } from '@edulastic/constants'
+import { EduButton, notification, TestTypeIcon } from '@edulastic/common'
 import {
   IconMoreHorizontal,
   IconPresentation,
@@ -20,7 +21,6 @@ import { DeleteAssignmentModal } from '../../../Assignments/components/DeleteAss
 import {
   Container,
   TableData,
-  TypeIcon,
   BtnStatus,
   ActionsWrapper,
   BulkActionsWrapper,
@@ -31,11 +31,14 @@ import {
 } from './styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
+import { getIsProxiedByEAAccountSelector } from '../../../../student/Login/ducks'
 
 export const testTypeToolTip = {
   assessment: 'Class Assessment',
   'common assessment': 'Common Assessment',
   practice: 'Practice Assessment',
+  homework: 'Homework',
+  quiz: 'Quiz',
 }
 
 const columns = [
@@ -64,11 +67,16 @@ const columns = [
     sorter: (a, b) =>
       a.type.localeCompare(b.type, 'en', { ignorePunctuation: true }),
     width: '6%',
-    render: (text = test.type.ASSESSMENT, row) => (
+    render: (
+      text = testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT,
+      row
+    ) => (
       <AssessmentTypeWrapper>
-        <Tooltip placement="bottom" title={testTypeToolTip[text]}>
-          <TypeIcon type={text.charAt(0)}>{text.charAt(0)}</TypeIcon>
-        </Tooltip>
+        <TestTypeIcon
+          toolTipTitle={testTypeToolTip[text]}
+          toolTipPlacement="bottom"
+          testType={text}
+        />
         {row.timedAssignment && (
           <Tooltip
             placement="right"
@@ -172,6 +180,7 @@ const TableList = ({
   totalAssignmentsClasses,
   handlePagination,
   filterStatus,
+  isProxiedByEAAccount,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
@@ -296,12 +305,40 @@ const TableList = ({
       <MoreOption onClick={() => setReleaseScoreModalVisibility(true)}>
         Release Score
       </MoreOption>
-      <MoreOption onClick={() => handleBulkAction('downloadGrades')}>
-        Download Grades
-      </MoreOption>
-      <MoreOption onClick={() => handleBulkAction('downloadResponses')}>
-        Download Responses
-      </MoreOption>
+      <Tooltip
+        title={
+          isProxiedByEAAccount
+            ? 'Bulk action disabled for EA proxy accounts.'
+            : ''
+        }
+        placement="right"
+      >
+        <div>
+          <MoreOption
+            onClick={() => handleBulkAction('downloadGrades')}
+            disabled={isProxiedByEAAccount}
+          >
+            Download Grades
+          </MoreOption>
+        </div>
+      </Tooltip>
+      <Tooltip
+        title={
+          isProxiedByEAAccount
+            ? 'Bulk action disabled for EA proxy accounts.'
+            : ''
+        }
+        placement="right"
+      >
+        <div>
+          <MoreOption
+            onClick={() => handleBulkAction('downloadResponses')}
+            disabled={isProxiedByEAAccount}
+          >
+            Download Responses
+          </MoreOption>
+        </div>
+      </Tooltip>
       <MoreOption onClick={() => toggleDeleteAssignmentModal(true)}>
         Unassign
       </MoreOption>
@@ -415,6 +452,12 @@ TableList.propTypes = {
   classList: PropTypes.array.isRequired,
 }
 
-const enhance = compose(withRouter, withNamespaces('assignmentCard'))
+const enhance = compose(
+  withRouter,
+  withNamespaces('assignmentCard'),
+  connect((state) => ({
+    isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+  }))
+)
 
 export default enhance(TableList)

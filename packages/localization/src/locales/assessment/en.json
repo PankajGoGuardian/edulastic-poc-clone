@@ -835,7 +835,10 @@
         "x_distance": "X distance ",
         "y_distance": "Y distance",
         "show_axis_label": "Show axis label",
-        "show_grid": "Show grid"
+        "show_grid": "Show grid",
+        "rectangular": "Rectangular",
+        "complex": "Complex",
+        "polar": "Polar"
       },
       "settingsPopup": {
         "xAxis": "X-AXIS",
@@ -1033,6 +1036,10 @@
       "numberFormat": "Number Format",
       "accuracyForms": "Accuracy",
       "multipleValues": "Multiple Values",
+      "notationForms": "Notation Forms",
+      "requireSetNotation": "Set Notation",
+      "requireListNotation": "List Notation",
+      "requireCoordinateNotation": "Coordinate Notation",
       "equationForms": "Equation Forms",
       "isSimplifiedFraction": "Simple Fraction",
       "graphPointsOnAnEquation": "Points on an equation",
@@ -1132,7 +1139,10 @@
         "graphPointsOnAnEquation2": "There are two scenarios:#{\\newline[0.5em]#}1) You give an object such as a line or circle and require the student to enter any   two points that lie on the object.#{\\newline#}2) You provide an equation, #{\\text{e.g.\\enspace}y=x+1\\enspace#}and the student needs to enter points that lie on this equation.#{\\newline[0.5em]#}You can also use inequalities in both scenarios.",
         "equationForms": "Forms of lines and conic sections:#{\\newline[1em]\\text{Line Standard Form:\\enspace}ax+by=c\\newline\\text{Line Slope Intercept Form:\\enspace}y=ax+b\\newline\\text{Line Point Slope Form:\\enspace}(y-b)=c(x-a)\\newline\\text{Quadratic Standard Form:\\enspace}ax^2+bx+c=0\\newline\\text{Polynomial Standard Form:\\enspace}\\Sigma(a_ix^i)=0#} where the #{a_i#} are the coeficients and #{i#} is the degree of the polynomial#{\\newline\\text{Polynomial Factored Form\\enspace}\\Pi(x-a_i)=0\\newline[1em]\\text{Conic Standard Forms:}\\newline[0.5em]\\text{Circle:\\enspace}(x-h)^2+(y-k)^2=r^2\\newline[0.3em]\\text{Ellipse:\\enspace}\\frac{(x-h)^2}{a^2}+\\frac{(y-k)^2}{b^2}=1\\newline[0.3em]\\text{Hyperbola:\\enspace}\\frac{(x-h)^2}{a^2}-\\frac{(y-k)^2}{b^2}=1\\newline[.3em]\\text{Parabola:\\enspace}4p(y-k)=(x-h)^2\\newline[1em]\\text{Parabola Vertex Form:\\enspace}y=a(x-h)^2+k\\newline\\text{\\enspace( x or y can be on LHS)}#}",
         "updateOrDeleteCustomKeypad": "Removed keypad (and older version of the keypad in the case of you edit a keypad) will not be available for future questions and test setting. Old content will continue to have the same keypad until question is saved with new keypad again.",
-        "saveCustomKeypad": "Save your custom keypad to use on future questions. It will appear as an option in the Choose Keypad dropdown"
+        "saveCustomKeypad": "Save your custom keypad to use on future questions. It will appear as an option in the Choose Keypad dropdown",
+        "requireSetNotation": "Set Notation",
+        "requireListNotation": "List Notation",
+        "requireCoordinateNotation": "Coordinate Notation"
       }
     },
     "matrix": {

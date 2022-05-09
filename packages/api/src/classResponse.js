@@ -13,13 +13,14 @@ const classResponse = ({ testId, classId, assignmentId }) =>
 
     .then((result) => result.data.result)
 
-const studentResponse = ({ testActivityId, groupId }) =>
+const studentResponse = ({ testActivityId, groupId, audit = false }) =>
   api
     .callApi({
       url: `/test-activity/${testActivityId}/report`,
       method: 'get',
       params: {
         groupId,
+        audit,
       },
     })
     .then((result) => result.data.result)

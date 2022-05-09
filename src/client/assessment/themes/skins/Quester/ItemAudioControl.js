@@ -5,6 +5,7 @@ import { white } from '@edulastic/colors'
 import { IconMore } from '@edulastic/icons'
 import { Dropdown, Menu } from 'antd'
 import { connect } from 'react-redux'
+import { get } from 'lodash'
 import AudioControls from '../../../AudioControls'
 import { themes } from '../../../../theme'
 import { getQuestionsByIdSelector } from '../../../selectors/questions'
@@ -73,6 +74,7 @@ const ItemAudioControl = ({
   isPremiumContentWithoutAccess,
   passage,
   questionsById,
+  userInteractionsPassageData,
 }) => {
   const [selected, setSelected] = useState()
   const controller = useRef()
@@ -139,6 +141,7 @@ const ItemAudioControl = ({
         audioSrc={selected?.tts?.titleAudioURL}
         className="quester-question-audio-controller"
         isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+        page={userInteractionsPassageData?.[selected.id]?.currentPage || 1}
       />
       <IconMoreVertical
         color={footer.textColor}
@@ -151,6 +154,11 @@ const ItemAudioControl = ({
 export default connect(
   (state) => ({
     questionsById: getQuestionsByIdSelector(state),
+    userInteractionsPassageData: get(
+      state,
+      ['userInteractions', 'passages'],
+      {}
+    ),
   }),
   null
 )(ItemAudioControl)

@@ -1,20 +1,48 @@
-import { isNumber } from 'lodash'
+import { isNumber, isNaN } from 'lodash'
+
+function getCountDecimals(numStr) {
+  if (Math.floor(numStr) === parseFloat(numStr)) {
+    return 0
+  }
+  const [, decimals] = (numStr || '').split('.')
+  return (decimals || '').length
+}
+
+function normalOperation(numberOne, numberTwo, callBack) {
+  const oneDecimals = getCountDecimals(numberOne)
+  const twoDecimals = getCountDecimals(numberTwo)
+  const decimals = Math.max(oneDecimals, twoDecimals)
+
+  const one = numberOne * 10 ** decimals
+  const two = numberTwo * 10 ** decimals
+  return callBack(one, two, 10 ** decimals)
+}
+
+function multiply(numberOne, numberTwo) {
+  const oneDecimals = getCountDecimals(numberOne)
+  const twoDecimals = getCountDecimals(numberTwo)
+  const decimals = oneDecimals + twoDecimals
+
+  const one = numberOne * 10 ** oneDecimals
+  const two = numberTwo * 10 ** twoDecimals
+
+  return (one * two) / 10 ** decimals
+}
 
 export default function calculate(obj, buttonName) {
   function operate(numberOne, numberTwo, operation) {
-    const one = parseFloat(numberOne)
     const two = parseFloat(numberTwo)
 
     if (operation === '+') {
-      return (one + two).toString()
+      return normalOperation(numberOne, numberTwo, (a, b, c) => (a + b) / c)
     }
 
     if (operation === '-') {
-      return (one - two).toString()
+      return normalOperation(numberOne, numberTwo, (a, b, c) => (a - b) / c)
     }
 
     if (operation === 'x') {
-      return (one * two).toString()
+      return multiply(numberOne, numberTwo)
     }
 
     if (operation === '÷') {
@@ -22,7 +50,7 @@ export default function calculate(obj, buttonName) {
         alert('Divide by 0 error')
         return '0'
       }
-      return (one / two).toString()
+      return normalOperation(numberOne, numberTwo, (a, b) => a / b)
     }
     throw Error(`Unknown operation '${operation}'`)
   }

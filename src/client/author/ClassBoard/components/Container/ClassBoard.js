@@ -1,4 +1,4 @@
-import { black } from '@edulastic/colors'
+import { black, lightFadedBlack } from '@edulastic/colors'
 import {
   MainContentWrapper,
   CheckboxLabel,
@@ -132,6 +132,7 @@ import {
   getEmailVerified,
   getVerificationTS,
   isDefaultDASelector,
+  getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
 import { getSubmittedDate } from '../../utils'
 import {
@@ -1094,6 +1095,7 @@ class ClassBoard extends Component {
       regradeModalState,
       setPageNumber,
       isDocBasedTest,
+      isProxiedByEAAccount,
     } = this.props
 
     const {
@@ -1633,10 +1635,14 @@ class ClassBoard extends Component {
                               <span>Resume Students</span>
                             </MenuItems>
                           )}
-
                           <MenuItems
                             data-cy="downloadGrades"
-                            disabled={!enableDownload}
+                            disabled={!enableDownload || isProxiedByEAAccount}
+                            title={
+                              isProxiedByEAAccount
+                                ? 'Bulk action disabled for EA proxy accounts.'
+                                : ''
+                            }
                             onClick={() => this.handleDownloadGrades(false)}
                           >
                             <IconDownload />
@@ -1644,10 +1650,19 @@ class ClassBoard extends Component {
                           </MenuItems>
                           <MenuItems
                             data-cy="downloadResponse"
-                            disabled={!enableDownload}
+                            disabled={!enableDownload || isProxiedByEAAccount}
+                            title={
+                              isProxiedByEAAccount
+                                ? 'Bulk action disabled for EA proxy accounts.'
+                                : ''
+                            }
                             onClick={() => this.handleDownloadGrades(true)}
                           >
-                            <IconDownload />
+                            <IconDownload
+                              color={
+                                isProxiedByEAAccount ? lightFadedBlack : null
+                              }
+                            />
                             <span>Download Response</span>
                           </MenuItems>
                         </DropMenu>
@@ -2079,6 +2094,7 @@ const enhance = compose(
       emailVerified: getEmailVerified(state),
       verificationTS: getVerificationTS(state),
       isDefaultDA: isDefaultDASelector(state),
+      isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
       userRole: get(state.user, 'user.role', null),
       activeAssignedStudents: getActiveAssignedStudents(state),
       firstQuestionEntities: getFirstQuestionEntitiesSelector(state),

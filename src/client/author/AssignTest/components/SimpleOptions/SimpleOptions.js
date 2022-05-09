@@ -4,6 +4,7 @@ import {
   assignmentSettingSections as sectionContants,
   roleuser,
   test as testConst,
+  testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
@@ -15,6 +16,7 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { multiFind } from '../../../../common/utils/main'
+import { getProfileKey } from '../../../../common/utils/testTypeUtils'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
@@ -23,13 +25,13 @@ import { SpinnerContainer } from '../../../src/MainStyle'
 import {
   getCollectionsSelector,
   getUserRole,
+  allowReferenceMaterialSelector,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
-  testTypesToTestSettings,
 } from '../../../TestPage/ducks'
 import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
@@ -217,11 +219,12 @@ class SimpleOptions extends React.Component {
         }
         case 'testType': {
           if (
-            value === testConst.type.ASSESSMENT ||
-            value === testConst.type.COMMON
+            testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) ||
+            testTypesConstants.TEST_TYPES.COMMON.includes(value)
           ) {
             state.releaseScore =
-              value === testConst.type.ASSESSMENT && isReleaseScorePremium
+              testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) &&
+              isReleaseScorePremium
                 ? releaseGradeLabels.WITH_RESPONSE
                 : releaseGradeLabels.DONT_RELEASE
             if (free && !premium) {
@@ -241,7 +244,7 @@ class SimpleOptions extends React.Component {
                 {
                   _id:
                     defaultTestTypeProfiles.performanceBand[
-                      testTypesToTestSettings[value]
+                      getProfileKey(value)
                     ],
                 },
               ],
@@ -256,7 +259,7 @@ class SimpleOptions extends React.Component {
                 {
                   _id:
                     defaultTestTypeProfiles.standardProficiency[
-                      testTypesToTestSettings[value]
+                      getProfileKey(value)
                     ],
                 },
               ],
@@ -469,6 +472,7 @@ class SimpleOptions extends React.Component {
       orgCollections,
       isAssigning,
       isPlaylist,
+      allowReferenceMaterial,
     } = this.props
 
     const { collections } = testSettings
@@ -633,6 +637,7 @@ class SimpleOptions extends React.Component {
                 featuresAvailable={featuresAvailable}
                 tootltipWidth={tootltipWidth}
                 showAssignModuleContent={showAssignModuleContent}
+                allowReferenceMaterial={allowReferenceMaterial}
               />
             </TabContentContainer>
           </TabPane>
@@ -749,6 +754,7 @@ const enhance = compose(
       freezeSettings: getIsOverrideFreezeSelector(state),
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       recommendedResources: getRecommendedResources(state),
+      allowReferenceMaterial: allowReferenceMaterialSelector(state),
       orgCollections: getCollectionsSelector(state),
       isVideoResourcePreviewModal:
         state.curriculumSequence?.isVideoResourcePreviewModal,

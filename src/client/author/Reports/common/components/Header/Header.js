@@ -1,6 +1,8 @@
 import React, { Fragment } from 'react'
 import { Dropdown, Menu, Col, Icon } from 'antd'
 import { Link } from 'react-router-dom'
+import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
@@ -8,6 +10,7 @@ import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
+import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
@@ -24,6 +27,7 @@ const CustomizedHeaderWrapper = ({
   isSharedReport,
   hasCsvDocs,
   updateCsvDocs,
+  isProxiedByEAAccount,
   t,
 }) => {
   const _onShareClickCB = () => {
@@ -94,7 +98,12 @@ const CustomizedHeaderWrapper = ({
         <ActionButton
           isBlue
           isGhost
-          title="Download Data"
+          disabled={isProxiedByEAAccount}
+          title={
+            isProxiedByEAAccount
+              ? 'Bulk action disabled for EA proxy accounts.'
+              : 'Download Data'
+          }
           onClick={() => updateCsvDocs({ csvModalVisible: true })}
         >
           <Icon type="download" />
@@ -123,7 +132,12 @@ const CustomizedHeaderWrapper = ({
           isBlue
           isGhost
           IconBtn
-          title="Print"
+          disabled={isProxiedByEAAccount}
+          title={
+            isProxiedByEAAccount
+              ? 'Bulk action disabled for EA proxy accounts.'
+              : 'Print'
+          }
           onClick={_onPrintClickCB}
         >
           <Icon type="printer" />
@@ -140,7 +154,12 @@ const CustomizedHeaderWrapper = ({
             isBlue
             isGhost
             IconBtn
-            title="Download CSV"
+            disabled={isProxiedByEAAccount}
+            title={
+              isProxiedByEAAccount
+                ? 'Bulk action disabled for EA proxy accounts.'
+                : 'Download CSV'
+            }
             onClick={_onDownloadCSVClickCB}
           >
             <Icon type="download" />
@@ -186,9 +205,14 @@ const CustomizedHeaderWrapper = ({
   )
 }
 
-export default withNamespaces('header')(
-  withWindowSizes(CustomizedHeaderWrapper)
+const enhance = compose(
+  withWindowSizes,
+  withNamespaces('header'),
+  connect((state) => ({
+    isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+  }))
 )
+export default enhance(CustomizedHeaderWrapper)
 
 const StyledCol = styled(Col)`
   align-self: flex-end;

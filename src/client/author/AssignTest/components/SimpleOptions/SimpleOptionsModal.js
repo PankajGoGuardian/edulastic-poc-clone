@@ -1,6 +1,9 @@
 import React, { useEffect } from 'react'
 import PropTypes from 'prop-types'
-import { test as testConst } from '@edulastic/constants'
+import {
+  test as testConst,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { Col, Spin } from 'antd'
 import produce from 'immer'
 import moment from 'moment'
@@ -41,11 +44,12 @@ const SimpleOptionsModal = ({
       switch (field) {
         case 'testType': {
           if (
-            value === testConst.type.ASSESSMENT ||
-            value === testConst.type.COMMON
+            testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) ||
+            testTypesConstants.TEST_TYPES.COMMON.includes(value)
           ) {
             draft.releaseScore =
-              value === testConst.type.ASSESSMENT && isReleaseScorePremium
+              testTypesConstants.TEST_TYPES.ASSESSMENT.includes(value) &&
+              isReleaseScorePremium
                 ? releaseGradeLabels.WITH_RESPONSE
                 : releaseGradeLabels.DONT_RELEASE
             draft.maxAttempts = 1

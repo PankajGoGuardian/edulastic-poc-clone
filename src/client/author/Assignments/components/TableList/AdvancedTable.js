@@ -1,5 +1,9 @@
-import { EduButton, FlexContainer, CheckboxLabel } from '@edulastic/common'
-import { test } from '@edulastic/constants'
+import {
+  EduButton,
+  FlexContainer,
+  CheckboxLabel,
+  TestTypeIcon,
+} from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Dropdown, Spin, Tooltip, Menu } from 'antd'
 import produce from 'immer'
@@ -35,10 +39,12 @@ import {
   Container,
   TableData,
   TestThumbnail,
-  TypeIcon,
   TypeWrapper,
 } from './styled'
-import { isDemoPlaygroundUser } from '../../../../student/Login/ducks'
+import {
+  isDemoPlaygroundUser,
+  getIsProxiedByEAAccountSelector,
+} from '../../../../student/Login/ducks'
 
 class AdvancedTable extends Component {
   // eslint-disable-next-line react/state-in-constructor
@@ -86,17 +92,7 @@ class AdvancedTable extends Component {
             float="none"
             justify="left"
           >
-            {row && row.testType === test.type.PRACTICE ? (
-              <TypeIcon data-cy="type" type="p">
-                P
-              </TypeIcon>
-            ) : row.testType === test.type.ASSESSMENT ? (
-              <TypeIcon data-cy="type">A</TypeIcon>
-            ) : (
-              <TypeIcon data-cy="type" type="c">
-                C
-              </TypeIcon>
-            )}
+            {row && <TestTypeIcon testType={row.testType} />}
           </TypeWrapper>
         ),
       },
@@ -225,6 +221,7 @@ class AdvancedTable extends Component {
             showEmbedLinkModal,
             toggleTagsEditModal,
             isDemoPlayground = false,
+            isProxiedByEAAccount = false,
           } = this.props
           const isAssignProgress =
             row.bulkAssignedCountProcessed < row.bulkAssignedCount
@@ -260,6 +257,7 @@ class AdvancedTable extends Component {
                   showEmbedLinkModal,
                   toggleTagsEditModal,
                   isDemoPlaygroundUser: isDemoPlayground,
+                  isProxiedByEAAccount,
                 })}
                 placement="bottomRight"
                 trigger={['click']}
@@ -529,6 +527,7 @@ const enhance = compose(
       assignmentTests: getAssignmentTestsSelector(state),
       userClassList: getGroupList(state),
       isDemoPlayground: isDemoPlaygroundUser(state),
+      isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
     }),
     {
       loadAssignmentsSummary: receiveAssignmentsSummaryAction,

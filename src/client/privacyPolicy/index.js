@@ -7,6 +7,7 @@ import {
   SpinLoader,
 } from '@edulastic/common'
 import { userApi, segmentApi } from '@edulastic/api'
+import { connect } from 'react-redux'
 import EulaPolicyContent from './eulaPolicyContent'
 import ProductPolicyContent from './productPolicyContent'
 import EeaPolicyContent from './eeaPolicyContent'
@@ -18,14 +19,28 @@ import {
   ModalTitle,
   StyledPrivacyPolicyModal,
 } from './Styled'
+import { setLocationToUserAction } from '../student/Login/ducks'
 
-const PrivacyPolicyModal = ({ userID }) => {
+const PrivacyPolicyModal = ({ userID, setLocationData }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
+  const [isEEAUser, setIsEEAUser] = useState(false)
 
   useEffect(() => {
+    setShowSpinner(true)
     segmentApi.genericEventTrack('eulaPopupShown')
+    userApi
+      .getUserLocation()
+      .then(({ result }) => {
+        setIsEEAUser(result?.isEEAUser)
+        setShowSpinner(false)
+        setLocationData(result)
+      })
+      .catch((e) => {
+        setShowSpinner(false)
+        console.warn('Error', e)
+      })
   }, [])
 
   const onCheck = (value) => {
@@ -57,13 +72,16 @@ const PrivacyPolicyModal = ({ userID }) => {
       <EdulasticLogo>
         <OnWhiteBgLogo />
       </EdulasticLogo>
-      <ModalTitle data-cy="eulaModalTitle">
-        End User License Agreement and Product Privacy Policy
+      <ModalTitle data-testid="eulaModalTitle" data-cy="eulaModalTitle">
+        End User License Agreement{!isEEAUser ? ' and' : ','} Product Privacy
+        Policy {isEEAUser && 'and Edulastic Data Processing Addendum'}
       </ModalTitle>
       <ModalHeaderSubcontent data-cy="eulaModalSubTitle">
         Welcome to <b>Edulastic!</b> Before we proceed, please read our entire
-        (1) Terms of Service and End User License Agreement; and (2) Product
-        Privacy Policy to make sure we’re on the same page.
+        (1) Terms of Service and End User License Agreement;{' '}
+        {!isEEAUser && 'and'} (2) Product Privacy Policy
+        {isEEAUser && ' and (3) Edulastic Data Processing Addendum '} to make
+        sure we’re on the same page.
       </ModalHeaderSubcontent>
     </>
   )
@@ -79,6 +97,7 @@ const PrivacyPolicyModal = ({ userID }) => {
         height="40px"
         width="150px"
         data-cy="policyAcceptButton"
+        data-testid="acceptButton"
       >
         ACCEPT
       </EduButton>
@@ -103,9 +122,13 @@ const PrivacyPolicyModal = ({ userID }) => {
         <ModalTextBody>
           <EulaPolicyContent />
           <ProductPolicyContent />
-          <EeaPolicyContent />
+          {isEEAUser && <EeaPolicyContent />}
           <CheckboxWrapper data-cy="policyAgreeCheckboxText">
-            <CheckboxLabel onChange={onCheck} data-cy="policyAgreeCheckbox">
+            <CheckboxLabel
+              onChange={onCheck}
+              data-cy="policyAgreeCheckbox"
+              data-testid="check"
+            >
               By checking the box and clicking “Accept”, I agree to the Terms of
               Service and End User License Agreement and Privacy Policy of the
               Product
@@ -117,4 +140,9 @@ const PrivacyPolicyModal = ({ userID }) => {
   )
 }
 
-export default PrivacyPolicyModal
+export default connect(
+  () => {
+    return {}
+  },
+  { setLocationData: setLocationToUserAction }
+)(PrivacyPolicyModal)

@@ -4,7 +4,7 @@ import {
   EduButton,
   TextInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row } from 'antd'
+import { Col, Form, Row, Tooltip } from 'antd'
 import React, { Component } from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import { StyledSpin, StyledSpinContainer } from './styled'
@@ -18,6 +18,7 @@ class EditSchoolModal extends Component {
         validateStatus: 'success',
         validateMsg: '',
       },
+      isValuesChanged: false,
       showSpin: false,
       checkSchoolExist: { totalSchools: 0, data: [] },
     }
@@ -85,6 +86,27 @@ class EditSchoolModal extends Component {
     this.props.closeModal()
   }
 
+  checkIsValueUpdated = (e, fieldName) => {
+    let values
+    this.props.form.validateFields((err, val) => {
+      values = val
+    })
+    const { schoolData } = this.props
+    values[fieldName] = e.target.value
+    const { name, address, zip, city, state } = values
+    if (
+      schoolData.name !== name.trim() ||
+      schoolData.address !== address.trim() ||
+      schoolData.zip !== zip.trim() ||
+      schoolData.city !== city.trim() ||
+      schoolData.state !== state.trim()
+    ) {
+      this.setState({ isValuesChanged: true })
+      return
+    }
+    this.setState({ isValuesChanged: false })
+  }
+
   changeSchoolName = (e) => {
     if (e.target.value.length == 0) {
       this.setState({
@@ -96,6 +118,7 @@ class EditSchoolModal extends Component {
         checkSchoolExist: { totalSchools: 0, data: [] },
       })
     } else {
+      this.checkIsValueUpdated(e, 'name')
       this.setState({
         nameValidate: {
           value: e.target.value,
@@ -110,7 +133,7 @@ class EditSchoolModal extends Component {
   render() {
     const { getFieldDecorator } = this.props.form
     const { modalVisible, schoolData, t } = this.props
-    const { nameValidate, showSpin } = this.state
+    const { nameValidate, showSpin, isValuesChanged } = this.state
 
     return (
       <CustomModalStyled
@@ -125,9 +148,20 @@ class EditSchoolModal extends Component {
             <EduButton isGhost onClick={this.onCloseModal}>
               {t('common.cancel')}
             </EduButton>
-            <EduButton onClick={this.onUpdateSchool} disabled={showSpin}>
-              {t('school.updateschool')}
-            </EduButton>
+            <Tooltip
+              title={
+                !isValuesChanged ? 'No change to update.' : 'Update School'
+              }
+            >
+              <div>
+                <EduButton
+                  onClick={this.onUpdateSchool}
+                  disabled={showSpin || !isValuesChanged}
+                >
+                  {t('school.updateschool')}
+                </EduButton>
+              </div>
+            </Tooltip>
           </ButtonsContainer>,
         ]}
       >
@@ -165,6 +199,7 @@ class EditSchoolModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('school.components.createschool.address')}
+                  onChange={(e) => this.checkIsValueUpdated(e, 'address')}
                 />
               )}
             </ModalFormItem>
@@ -178,6 +213,7 @@ class EditSchoolModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('school.components.createschool.city')}
+                  onChange={(e) => this.checkIsValueUpdated(e, 'city')}
                 />
               )}
             </ModalFormItem>
@@ -197,6 +233,7 @@ class EditSchoolModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('school.components.createschool.zip')}
+                  onChange={(e) => this.checkIsValueUpdated(e, 'zip')}
                 />
               )}
             </ModalFormItem>
@@ -208,6 +245,7 @@ class EditSchoolModal extends Component {
               })(
                 <TextInputStyled
                   placeholder={t('school.components.createschool.state')}
+                  onChange={(e) => this.checkIsValueUpdated(e, 'state')}
                 />
               )}
             </ModalFormItem>

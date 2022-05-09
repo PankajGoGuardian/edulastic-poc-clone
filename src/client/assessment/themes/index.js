@@ -1166,7 +1166,7 @@ const AssessmentContainer = ({
     (x) => x.type === questionType.HIGHLIGHT_IMAGE
   )
 
-  const { referenceDocAttributes } = restProps || test || {}
+  const { referenceDocAttributes } = restProps
 
   const prevAnswerValue = useRef('')
 

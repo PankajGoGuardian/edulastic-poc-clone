@@ -259,7 +259,7 @@ class TestSetting extends Component {
                   </SelectInputStyled>
                 </StyledCol>
                 <StyledCol span={8}>
-                  <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
+                  <InputLabel>Practice Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,
@@ -328,7 +328,7 @@ class TestSetting extends Component {
                   </SelectInputStyled>
                 </StyledCol>
                 <StyledCol span={8}>
-                  <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
+                  <InputLabel>Practice Test</InputLabel>
                   <SelectInputStyled
                     value={get(
                       testSetting,

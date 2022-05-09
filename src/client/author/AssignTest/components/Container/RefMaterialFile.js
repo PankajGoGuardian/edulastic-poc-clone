@@ -1,62 +1,20 @@
-import React, { useRef } from 'react'
-import styled from 'styled-components'
+import React from 'react'
 import { Col, Row } from 'antd'
-import {
-  FlexContainer,
-  FileIcon,
-  formatFileSize,
-  PortalSpinner,
-  EduButton,
-} from '@edulastic/common'
-import { IconClose } from '@edulastic/icons'
-import { themeColor, cardTitleColor, linkColor1 } from '@edulastic/colors'
 import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { AlignSwitchRight, Label, StyledRow } from '../SimpleOptions/styled'
-import { useRefMaterialFile } from '../../../Shared/Hooks/useRefMaterialFile'
+import { withRefMaterial } from '../../../Shared/HOC/withRefMaterial'
 
 const RefMaterialFile = ({
   premium,
   tootltipWidth,
-  overRideSettings,
-  attributes,
+  hasAttributesInTest,
+  children,
   disabled,
-  hasRefMaterialAttributes,
+  enableUpload,
+  onChangeSwitch,
 }) => {
-  const inputRef = useRef()
-
-  const updateSetting = (value) => {
-    overRideSettings('referenceDocAttributes', value)
-  }
-
-  const [
-    hasRefMaterial,
-    enableUpload,
-    isUploading,
-    allowedFiles,
-    onChangeSwitch,
-    onRemoveFile,
-    onChangeFile,
-  ] = useRefMaterialFile(attributes, updateSetting)
-
-  const handleChangeFile = (evt) => {
-    const { files } = evt.target
-    const fileToUpload = files[0]
-    inputRef.current.value = ''
-
-    if (fileToUpload) {
-      onChangeFile(fileToUpload)
-    }
-  }
-
-  const handleChooseFile = (evt) => {
-    if (inputRef.current) {
-      inputRef.current.click()
-      evt.target.blur()
-    }
-  }
-
   return (
     <SettingContainer id="reference-material">
       <DetailsTooltip
@@ -77,84 +35,17 @@ const RefMaterialFile = ({
             <AlignSwitchRight
               data-cy="reference-material-switch"
               size="small"
-              disabled={!hasRefMaterialAttributes || disabled}
+              disabled={!hasAttributesInTest || disabled || !premium}
               defaultChecked={false}
               checked={enableUpload}
               onChange={onChangeSwitch}
             />
           </Row>
-          {hasRefMaterial && (
-            <FlexContainer
-              mt="15px"
-              justifyContent="flex-start"
-              alignItems="center"
-            >
-              <FileIcon type={attributes?.type} />
-              <FileName>{attributes.name}</FileName>
-              <NormalText>{formatFileSize(attributes.size)}</NormalText>
-              {!disabled && (
-                <CloseIcon
-                  width={12}
-                  height={12}
-                  role="presentation"
-                  onClick={onRemoveFile}
-                />
-              )}
-            </FlexContainer>
-          )}
-          {!hasRefMaterial && enableUpload && premium && (
-            <FlexContainer
-              justifyContent="flex-start"
-              alignItems="center"
-              mt="15px"
-            >
-              <EduButton
-                height="28px"
-                ml="0px"
-                mr="24px"
-                onClick={handleChooseFile}
-              >
-                UPLOAD FILE
-              </EduButton>
-              <NormalText>PNG, JPG, PDF (Max 2MB)</NormalText>
-            </FlexContainer>
-          )}
-          {enableUpload && (
-            <UploadInput
-              multiple
-              type="file"
-              onChange={handleChangeFile}
-              ref={inputRef}
-              accept={allowedFiles.join()}
-            />
-          )}
-          {isUploading && <PortalSpinner />}
+          {children}
         </Col>
       </StyledRow>
     </SettingContainer>
   )
 }
 
-export default RefMaterialFile
-
-const CloseIcon = styled(IconClose)`
-  fill: ${linkColor1};
-  margin-left: 24px;
-`
-
-const FileName = styled.span`
-  color: ${themeColor};
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0px 24px;
-`
-
-const NormalText = styled.span`
-  font-size: 12px;
-  font-weight: 700;
-  color: ${cardTitleColor};
-`
-
-const UploadInput = styled.input`
-  display: none;
-`
+export default withRefMaterial(RefMaterialFile)

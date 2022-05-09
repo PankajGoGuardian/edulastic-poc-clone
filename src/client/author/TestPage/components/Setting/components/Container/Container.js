@@ -670,6 +670,11 @@ class Setting extends Component {
     }
   }
 
+  handleUpdateRefMaterial = (value) => {
+    const { setTestData } = this.props
+    setTestData({ referenceDocAttributes: value })
+  }
+
   get isReferenceMaterialAllowedForCurrentSkin() {
     const { quester, edulastic } = playerSkinValues
     const { entity: { playerSkinType = edulastic } = {} } = this.props
@@ -761,7 +766,7 @@ class Setting extends Component {
       standardGradingScale: _standardGradingScale,
     } = entity
 
-    const testTypes = getTestTypeFullNames(testType, userRole)
+    const testTypes = getTestTypeFullNames(premium, userRole, testType)
     let isSettingPresent = false
     if (
       currentSettingsId &&
@@ -1390,6 +1395,7 @@ class Setting extends Component {
                           isSmallSize={isSmallSize}
                           premium={premium}
                           disabled={disabled}
+                          setData={this.handleUpdateRefMaterial}
                           referenceDocAttributes={referenceDocAttributes}
                         />
                       </Block>

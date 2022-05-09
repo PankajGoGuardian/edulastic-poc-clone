@@ -9,7 +9,7 @@ import {
   themeLightGrayBgColor,
   boxShadowDefault,
 } from '@edulastic/colors'
-import { IconClose } from '@edulastic/icons'
+import { IconClose, IconResize } from '@edulastic/icons'
 import { fileTypes, test } from '@edulastic/constants'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
 import { themes } from '../../../theme'
@@ -137,6 +137,7 @@ const ReferenceDocModal = ({
   }, [attributes, size, zoomLevel])
 
   const skinType = playerSkinType ? playerSkinType.toLowerCase() : ''
+  const isQuestarSkin = skinType === playerSkinValues.quester.toLowerCase()
   const zoomed = zoomLevel > 1 && zoomLevel !== undefined
 
   return (
@@ -149,15 +150,17 @@ const ReferenceDocModal = ({
       <div className="reference-material-drag-handler">
         <CloseIcon color={white} onClick={handleClose} />
         <Title data-cy="ReferenceMaterial" skinType={skinType}>
-          Reference Material
+          Reference {isQuestarSkin ? 'Guide' : 'Material'}
         </Title>
       </div>
       <ReferenceMaterialView
         zoomed={zoomed}
+        isQuestarSkin={isQuestarSkin}
         isPdf={attributes?.type === fileTypes.PDF}
       >
         <div style={{ width: '100%', height: '100%' }}>{reference}</div>
       </ReferenceMaterialView>
+      {isQuestarSkin && <ResizeIcon />}
     </RndWrapper>
   )
 }
@@ -174,7 +177,8 @@ const RndWrapper = styled(Rnd)`
 
 const ReferenceMaterialView = styled.div`
   width: 100%;
-  height: calc(100% - 35px);
+  height: ${({ isQuestarSkin }) =>
+    isQuestarSkin ? 'calc(100% - 45px)' : 'calc(100% - 35px)'};
   overflow-y: auto;
   overflow-x: ${({ isPdf, zoomed }) => !zoomed && isPdf && 'hidden'};
 `
@@ -234,4 +238,10 @@ const PdfDocument = styled.div`
   canvas + canvas {
     margin-top: 24px;
   }
+`
+
+const ResizeIcon = styled(IconResize)`
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
 `

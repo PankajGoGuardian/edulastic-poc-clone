@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
@@ -55,7 +56,6 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  hasRefMaterialAttributes,
   t,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
@@ -69,7 +69,7 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
-    playerSkinType = testSettings.playerSkinType,
+    playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
@@ -78,6 +78,7 @@ const TestBehaviorGroupContainer = ({
 
   const showRefMaterial = useMemo(() => {
     const { quester, edulastic } = playerSkinValues
+
     return (
       !isDocBased &&
       (playerSkinType === edulastic || playerSkinType === quester)
@@ -138,6 +139,10 @@ const TestBehaviorGroupContainer = ({
     }
 
     overRideSettings(attr, value)
+  }
+
+  const updateRefMaterials = (value) => {
+    overRideSettings('referenceDocAttributes', value)
   }
 
   const testTypeContent = (
@@ -332,9 +337,9 @@ const TestBehaviorGroupContainer = ({
           premium={premium}
           disabled={freezeSettings}
           tootltipWidth={tootltipWidth}
-          overRideSettings={overRideSettings}
-          attributes={referenceDocAttributes}
-          hasRefMaterialAttributes={hasRefMaterialAttributes}
+          setData={updateRefMaterials}
+          referenceDocAttributes={referenceDocAttributes}
+          hasAttributesInTest={!isEmpty(testSettings?.referenceDocAttributes)}
         />
       )}
       {/* Reference Material */}

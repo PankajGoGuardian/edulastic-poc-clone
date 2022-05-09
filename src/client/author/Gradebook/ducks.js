@@ -5,7 +5,7 @@ import { keyBy } from 'lodash'
 import { reportsApi, assignmentApi, groupApi } from '@edulastic/api'
 
 // imported selectors
-import { getUserOrgData } from '../src/selectors/user'
+import { getUserOrgData, isPremiumUserSelector } from '../src/selectors/user'
 import selectsData from '../TestPage/components/common/selectsData'
 
 // transformers & constants
@@ -114,10 +114,11 @@ function* fetchGradebookFiltersSaga() {
       .filter((s) => s.value)
       .map(({ value, text }) => ({ id: value, name: text }))
     // testTypes
-    const testTypeFullNames = getTestTypeFullNames()
+    const isPremiumUser = yield select(isPremiumUserSelector)
+    const testTypeFullNames = getTestTypeFullNames(isPremiumUser)
     const testTypes = Object.keys(testTypeFullNames).map((key) => ({
-        id: key,
-        name: testTypeFullNames[key],
+      id: key,
+      name: testTypeFullNames[key],
     }))
     testTypes.unshift({ id: '', name: 'All' })
 

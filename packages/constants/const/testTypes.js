@@ -3,7 +3,7 @@
 const TEST_TYPES = {
   ASSESSMENT: ['assessment'],
   COMMON: ['common assessment'],
-  PRACTICE: ['practice', 'homework', 'quiz'],
+  PRACTICE: ['practice'],
   TESTLET: ['testlet'],
 }
 
@@ -24,12 +24,15 @@ const TEST_TYPES_VALUES_MAP = ALL_TEST_TYPES_VALUES.reduce((acc, curr) => {
 }, {})
 
 const TEST_TYPE_LABELS = {
-  assessment: 'Class Assessment',
   'common assessment': 'Common Assessment',
+  assessment: 'Class Assessment',
   practice: 'Practice Assessment',
-  homework: 'Homework',
-  quiz: 'Quiz',
 }
+
+const PREMIUM_TEST_TYPES = [
+  TEST_TYPES_VALUES_MAP.HOMEWORK,
+  TEST_TYPES_VALUES_MAP.QUIZ,
+]
 
 module.exports = {
   TEST_TYPES,
@@ -38,4 +41,5 @@ module.exports = {
   ALL_TEST_TYPES_KEYS_EXCLUDING_TESTLET,
   TEST_TYPES_VALUES_MAP,
   TEST_TYPE_LABELS,
+  PREMIUM_TEST_TYPES,
 }

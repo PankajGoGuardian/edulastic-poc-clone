@@ -9,7 +9,7 @@ import {
   IconProtactor,
   IconScratchPad,
   IconCloudUpload,
-  IconReferenceSheet,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { Button } from 'antd'
 import PropTypes from 'prop-types'
@@ -226,8 +226,8 @@ const ToolBar = ({
       {canShowReferenceMaterial && (
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
-          title="Reference Sheet"
-          icon={<IconReferenceSheet />}
+          title="Reference Material"
+          icon={<IconEduReferenceSheet height="22" width="20" />}
           active={isShowReferenceModal}
           onClick={openReferenceModal}
         />

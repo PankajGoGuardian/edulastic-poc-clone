@@ -72,6 +72,7 @@ import {
   fetchTestSettingsListAction,
   getTestSettingsListSelector,
   setTestSettingsListAction,
+  isEnabledRefMaterialSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -607,6 +608,15 @@ class Container extends PureComponent {
     return true
   }
 
+  validateReferenceDocMaterial = () => {
+    const { test, enabledRefMaterial } = this.props
+    if (enabledRefMaterial && isEmpty(test.referenceDocAttributes)) {
+      notification({ messageKey: 'uploadReferenceMaterial' })
+      return false
+    }
+    return true
+  }
+
   handleAssign = () => {
     const {
       test,
@@ -898,7 +908,13 @@ class Container extends PureComponent {
   }
 
   modifyTest = () => {
-    const { user, test, itemsSubjectAndGrade } = this.props
+    const {
+      currentTab,
+      enabledRefMaterial,
+      user,
+      test,
+      itemsSubjectAndGrade,
+    } = this.props
     const { itemGroups } = test
     const newTest = cloneDeep(test)
 
@@ -932,6 +948,15 @@ class Container extends PureComponent {
       }
       return foundItem
     })
+
+    if (
+      !enabledRefMaterial &&
+      currentTab === 'settings' &&
+      !isEmpty(newTest.referenceDocAttributes)
+    ) {
+      newTest.referenceDocAttributes = {}
+    }
+
     return newTest
   }
 
@@ -952,9 +977,13 @@ class Container extends PureComponent {
       notification({ messageKey: 'nameFieldRequired' })
       return
     }
-    if (!this.validateTimedAssignment()) {
+    if (
+      !this.validateTimedAssignment() ||
+      !this.validateReferenceDocMaterial()
+    ) {
       return
     }
+
     const newTest = this.modifyTest()
     if (newTest.safeBrowser && !newTest.sebPassword) {
       if (this.sebPasswordRef.current && this.sebPasswordRef.current.input) {
@@ -1074,6 +1103,9 @@ class Container extends PureComponent {
         })
         return false
       }
+    }
+    if (!this.validateReferenceDocMaterial()) {
+      return false
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
     let itemGroupWithQuestionsCount = 0
@@ -1583,6 +1615,7 @@ const enhance = compose(
       isUpgradePopupVisible: getShowUpgradePopupSelector(state),
       testSettingsList: getTestSettingsListSelector(state),
       userSignupStatus: getUserSignupStatusSelector(state),
+      enabledRefMaterial: isEnabledRefMaterialSelector(state),
     }),
     {
       createTest: createTestAction,

@@ -210,6 +210,10 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     ? test.showRubricToStudents
     : assignmentSettings.showRubricToStudents
 
+  const referenceDocAttributes = preview
+    ? test.referenceDocAttributes
+    : assignmentSettings.referenceDocAttributes
+
   return {
     testType,
     calcProvider,
@@ -237,6 +241,7 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     restrictNavigationOut: assignmentSettings?.restrictNavigationOut || false,
     restrictNavigationOutAttemptsThreshold:
       assignmentSettings?.restrictNavigationOutAttemptsThreshold,
+    referenceDocAttributes,
     ...(preview && { keypad: test?.keypad?.value }),
   }
 }
@@ -638,9 +643,26 @@ function* loadTest({ payload }) {
           referrerId: testActivityId,
         }
       )
-      const scratchPadData = getScratchpadDataFromAttachments(
+
+      let scratchPadData = getScratchpadDataFromAttachments(
         attachments.filter(({ type }) => type === 'scratchpad')
       )
+
+      const passageAttachments = attachments.filter(
+        ({ type }) => type === 'passage'
+      )
+      // loading attachments from server
+      if (passageAttachments?.length) {
+        const passageHighlights = passageAttachments.reduce((acc, curr) => {
+          const passageId = curr.referrerId2
+          if (passageId) {
+            acc[passageId] = curr.data
+          }
+          return acc
+        }, {})
+
+        scratchPadData = { ...scratchPadData, ...passageHighlights }
+      }
 
       questionActivities.forEach((item) => {
         allAnswers = {
@@ -663,6 +685,7 @@ function* loadTest({ payload }) {
           lastAttemptedQuestion = item
         }
       })
+
       if (Object.keys(scratchPadData).length) {
         if (savedUserWork) {
           yield put({
@@ -780,7 +803,6 @@ function* loadTest({ payload }) {
 
     // test items are put into store after shuffling questions sometimes..
     // hence dont frigging move this, and this better stay at the end!
-
     yield put({
       type: LOAD_TEST_ITEMS,
       payload: {
@@ -801,7 +823,7 @@ function* loadTest({ payload }) {
         languagePreference: testActivity.testActivity?.languagePreference,
         grades: test.grades,
         subjects: test.subjects,
-        referenceDocAttributes: test?.referenceDocAttributes,
+        referenceDocAttributes: settings.referenceDocAttributes,
       },
     })
     if (preview) {

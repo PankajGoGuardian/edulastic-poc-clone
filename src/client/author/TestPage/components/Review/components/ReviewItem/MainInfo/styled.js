@@ -62,6 +62,11 @@ export const Stimulus = WithMathFormula(styled.div`
     display: contents;
   }
 
+  img {
+    display: block; /* it is required, images do not show up otherwise */
+    max-width: 100%;
+  }
+
   @media (max-width: ${smallDesktopWidth}) {
     word-break: break-all;
   }

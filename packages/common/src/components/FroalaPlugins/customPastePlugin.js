@@ -74,7 +74,7 @@ function customPastePlugin(FroalaEditor) {
     }
 
     function _init() {
-      editor.events.on('paste.beforeCleanup', cleanup)
+      editor.events.on('paste.after', afterPaste)
       editor.events.on('paste.afterCleanup', cleanup)
       editor.events.on('paste.after', updateHtml)
     }

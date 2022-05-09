@@ -217,6 +217,7 @@ function LCBAssignmentSettings({
                           status !== assignmentStatusOptions.NOT_OPEN
                         }
                         height="30px"
+                        getPopupContainer={(node) => node.parentNode}
                       >
                         {openPolicyOptions.map(({ value, text }, index) => (
                           <Select.Option
@@ -254,6 +255,7 @@ function LCBAssignmentSettings({
                       onChange={changeField('closePolicy')}
                       disabled={status === assignmentStatusOptions.DONE}
                       height="30px"
+                      getPopupContainer={(node) => node.parentNode}
                     >
                       {closePolicy.map(({ value, text }, index) => (
                         <Select.Option

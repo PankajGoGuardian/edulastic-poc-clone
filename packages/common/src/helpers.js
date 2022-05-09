@@ -1058,8 +1058,13 @@ export const getSanitizedProps = (props, blackListedProps) => {
 }
 
 export const captureSentryException = (err, extraData) => {
+  const tokenExpired = sessionStorage.getItem('tokenExpired') || false
   // Ignore BE's business errors
-  if (!err || (err && [409, 302, 422, 403].includes(err.status))) {
+  if (
+    !err ||
+    (err && [409, 302, 422, 403].includes(err.status)) ||
+    tokenExpired
+  ) {
     return
   }
 

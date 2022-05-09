@@ -742,13 +742,15 @@ class Review extends PureComponent {
             playlistId={playlistId}
           />
         )}
-        <TestPreviewModal
-          isModalVisible={isPreviewModalVisible}
-          testId={currentTestId}
-          test={test}
-          showStudentPerformance
-          closeTestPreviewModal={this.hidePreviewModal}
-        />
+        {!isPlaylistTestReview && (
+          <TestPreviewModal
+            isModalVisible={isPreviewModalVisible}
+            testId={currentTestId}
+            test={test}
+            showStudentPerformance
+            closeTestPreviewModal={this.hidePreviewModal}
+          />
+        )}
       </MainContentWrapper>
     )
   }

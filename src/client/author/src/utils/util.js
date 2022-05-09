@@ -1,4 +1,4 @@
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 
 export const convertCollectionOptionsToArray = (options = []) => {
   const data = {}
@@ -21,15 +21,24 @@ export const convertCollectionOptionsToArray = (options = []) => {
 export const getAllRubricNames = (item = {}) => {
   const questions = get(item, 'data.questions', [])
   let rubricNames = []
-  if (questions.length === 1 && questions[0]?.rubrics?.name) {
-    rubricNames = [questions[0].rubrics.name]
+  if (
+    questions.length === 1 &&
+    questions[0]?.rubrics?.name &&
+    questions[0]?.rubrics?._id
+  ) {
+    rubricNames = [questions[0].rubrics]
   } else {
-    rubricNames = questions.map((q, index) => {
-      if (q?.rubrics?.name) {
-        return `Q${index + 1}: ${q.rubrics.name}`
-      }
-      return ''
-    })
+    rubricNames = questions
+      .map((q, index) => {
+        if (q?.rubrics?.name && q?.rubrics?._id) {
+          return {
+            name: `Q${index + 1}: ${q.rubrics.name}`,
+            _id: q.rubrics._id,
+          }
+        }
+        return {}
+      })
+      .filter((rubricData) => !isEmpty(rubricData))
   }
   return rubricNames.filter((name) => name)
 }

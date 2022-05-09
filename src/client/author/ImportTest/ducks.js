@@ -32,6 +32,9 @@ const GET_IMPORT_PROGRESS = '[import test] get import progress action'
 const SET_JOBS_DATA = '[import test] set jobs response data'
 const SET_SUCCESS_MESSAGE = '[import test] set success message'
 const SET_IS_IMPORTING = '[import test] set is importing'
+const QTI_VALIDATION_DATA = `[validation data] set qti validation data`
+const VALIDATE_QTI_REQUEST = '[validate test] validating qti content'
+const QTI_VALIDATION_LOADER = '[validate test loader] loader init'
 
 export const uploadTestRequestAction = createAction(UPLOAD_TEST_REQUEST)
 export const uploadTestSuccessAction = createAction(UPLOAD_TEST_SUSSESS)
@@ -40,8 +43,11 @@ export const uploadTestStatusAction = createAction(SET_UPLOAD_TEST_STATUS)
 export const setJobIdsAction = createAction(SET_JOB_IDS)
 export const qtiImportProgressAction = createAction(GET_IMPORT_PROGRESS)
 export const setJobsDataAction = createAction(SET_JOBS_DATA)
+export const setQtiValidationDataAction = createAction(QTI_VALIDATION_DATA)
+export const setQtiValidationLoaderAction = createAction(QTI_VALIDATION_LOADER)
 export const setSuccessMessageAction = createAction(SET_SUCCESS_MESSAGE)
 export const setIsImportingAction = createAction(SET_IS_IMPORTING)
+export const validateQtiAction = createAction(VALIDATE_QTI_REQUEST)
 
 const initialState = {
   testDetail: {},
@@ -83,6 +89,13 @@ const setSuccessMessage = (state, { payload }) => {
 const setIsImporting = (state, { payload }) => {
   state.importing = payload
 }
+const setQtiValidationData = (state, { payload }) => {
+  state.qtiValidationData = payload
+}
+
+const setShowValidateLoader = (state, { payload }) => {
+  state.showValidationLoader = payload
+}
 
 export const reducers = createReducer(initialState, {
   [SET_UPLOAD_TEST_STATUS]: testUploadStatus,
@@ -92,6 +105,8 @@ export const reducers = createReducer(initialState, {
   [SET_JOBS_DATA]: setJobsData,
   [SET_SUCCESS_MESSAGE]: setSuccessMessage,
   [SET_IS_IMPORTING]: setIsImporting,
+  [QTI_VALIDATION_DATA]: setQtiValidationData,
+  [QTI_VALIDATION_LOADER]: setShowValidateLoader,
 })
 
 export function* uploadTestStaga({ payload }) {
@@ -151,11 +166,27 @@ function* getImportProgressSaga({ payload: jobIds }) {
     return notification({ messageKey: 'failedToFetchProgress' })
   }
 }
+function* validateQtiContent({ payload: path }) {
+  try {
+    yield put(setQtiValidationLoaderAction(true))
+    const { result: response } = yield call(contentImportApi.validateContent, {
+      path,
+    })
+    yield put(setQtiValidationDataAction(response))
+    yield put(setQtiValidationLoaderAction(false))
+  } catch (e) {
+    console.log({ e })
+    yield put(setQtiValidationDataAction(e))
+    yield put(setQtiValidationLoaderAction(false))
+    return notification({ msg: e.message })
+  }
+}
 
 export function* importTestWatcher() {
   yield all([
     yield takeLatest(UPLOAD_TEST_REQUEST, uploadTestStaga),
     yield takeLatest(GET_IMPORT_PROGRESS, getImportProgressSaga),
+    yield takeLatest(VALIDATE_QTI_REQUEST, validateQtiContent),
   ])
 }
 

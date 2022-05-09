@@ -351,14 +351,17 @@ class PreviewModal extends React.Component {
       })
     }
     if (isTest) {
-      updateTestAndNavigate({
+      const payload = {
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
         fadeSidebar: 'false',
         regradeFlow,
-        previousTestId: test.previousTestId,
         testId,
         isEditing: true,
-      })
+      }
+      if (testId !== test.previousTestId) {
+        payload.previousTestId = test.previousTestId
+      }
+      updateTestAndNavigate(payload)
     } else {
       history.push(`/author/items/${itemId}/item-detail`)
     }

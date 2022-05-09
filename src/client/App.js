@@ -138,6 +138,7 @@ const AssignmentEmbedLink = lazy(() =>
   import('./assignmentEmbedLink/container')
 )
 const AudioTagPlayer = lazy(() => import('./AudioTagPlayer'))
+const QtiValidator = lazy(() => import('./QtiValidator'))
 
 const RequestQuoteModal = loadable(() =>
   import('./author/Subscription/components/RequestQuoteModal')
@@ -916,6 +917,10 @@ class App extends Component {
                 <Route
                   path="/audio-test"
                   render={() => <AudioTagPlayer user={user?.user} />}
+                />
+                <Route
+                  path="/qti-validator"
+                  render={() => <QtiValidator user={user?.user} />}
                 />
                 <Redirect exact to={defaultRoute} />
               </Switch>

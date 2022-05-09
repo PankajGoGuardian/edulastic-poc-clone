@@ -2035,12 +2035,24 @@
     "message": "Please select user to disable power tools",
     "description": ""
   },
+  "broadcastSuccess": {
+    "message": "Broadcasted Item Successfully",
+    "description": ""
+  },
+  "broadcastError": {
+    "message": "Broadcasted Item Failed",
+    "description": ""
+  },
   "cliCustomStudentUserNotExist": {
     "message": "Custom student doesn't have test activity",
     "description": ""
   },
   "unableToRetrieve": {
     "message": "Unable to retrieve relevant information.",
+    "description": ""
+  },
+  "classAlreadyExist": {
+    "message": "Class already exists in Manage Class",
     "description": ""
   },
   "scratchpadInfoMultipart": {

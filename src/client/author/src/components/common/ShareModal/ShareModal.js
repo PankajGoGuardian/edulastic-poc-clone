@@ -692,7 +692,9 @@ class ShareModal extends React.Component {
                         key={item._id}
                       >
                         <span>
-                          {`${item._source.firstName} ${item._source.lastName}`}
+                          {`${item._source.firstName} ${
+                            item._source.lastName || ''
+                          }`}
                           {`(${item._source.email})`}{' '}
                           <b>{`[${roleuser.ROLE_LABEL[item._source.role]}]`}</b>
                         </span>

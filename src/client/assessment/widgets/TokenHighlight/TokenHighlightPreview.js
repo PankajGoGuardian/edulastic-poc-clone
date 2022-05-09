@@ -425,6 +425,7 @@ const TokenHighlightPreview = ({
                         el.selected ? (
                           <MathSpan
                             onClick={() => {}}
+                            className="token"
                             dangerouslySetInnerHTML={{ __html: el.value }}
                             style={getStyles(i, correctAnswers)}
                             key={i}

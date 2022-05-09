@@ -306,6 +306,7 @@ const Settings = ({
                 value={releaseScore}
                 onChange={changeField('releaseScore')}
                 height="30px"
+                getPopupContainer={(node) => node.parentNode}
               >
                 {_releaseGradeKeys.map((item, index) => (
                   <Select.Option data-cy="class" key={index} value={item}>
@@ -532,6 +533,7 @@ const Settings = ({
                     }}
                     value={autoRedirectSettings.questionsDelivery || ''}
                     height="30px"
+                    getPopupContainer={(node) => node.parentNode}
                   >
                     {Object.keys(QuestionDelivery).map((item, index) => (
                       <Select.Option key={index} value={item}>
@@ -566,6 +568,7 @@ const Settings = ({
                     }}
                     value={autoRedirectSettings.showPreviousAttempt || ''}
                     height="30px"
+                    getPopupContainer={(node) => node.parentNode}
                   >
                     {Object.keys(ShowPreviousAttempt).map((item, index) => (
                       <Select.Option key={index} value={item}>
@@ -930,6 +933,7 @@ const Settings = ({
                     value={passwordPolicy}
                     onChange={changeField('passwordPolicy')}
                     height="30px"
+                    getPopupContainer={(node) => node.parentNode}
                   >
                     {Object.keys(passwordPolicyValues).map((item, index) => (
                       <Select.Option

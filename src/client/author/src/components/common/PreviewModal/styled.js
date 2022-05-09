@@ -9,6 +9,7 @@ import {
   red,
   smallDesktopWidth,
   mediumDesktopExactWidth,
+  themeColorHoverBlue,
 } from '@edulastic/colors'
 import { Button, Icon, Typography, Input } from 'antd'
 
@@ -576,4 +577,9 @@ export const PremiumItemBannerWrapper = styled.div`
     position: absolute;
     top: -40px;
   }
+`
+export const StyledSpan = styled.span`
+  display: inline !important;
+  cursor: pointer;
+  color: ${themeColorHoverBlue} !important;
 `

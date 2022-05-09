@@ -48,7 +48,8 @@ const MetaInfo = ({
   const questions = get(item, 'data.questions', [])
   const isRubricAttached = questions.some((q) => q?.rubrics)
   const rubricNames = useMemo(() => {
-    const allRubricNames = getAllRubricNames(item)
+    let allRubricNames = getAllRubricNames(item)
+    allRubricNames = allRubricNames.map((rubricData) => rubricData.name)
     const namesCount = allRubricNames.length
     if (namesCount) {
       if (namesCount > 3) {

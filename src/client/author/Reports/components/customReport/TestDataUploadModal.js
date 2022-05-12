@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
-import { Icon, Select, Spin } from 'antd'
+import { Icon, Select, Spin, Input, Row, Col, Progress } from 'antd'
 import { isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -13,6 +13,7 @@ import {
   greyThemeDark3,
   greyThemeLighter,
   themeColorBlue,
+  borderGrey,
 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
 
@@ -20,6 +21,10 @@ import {
   uploadTestDataFileAction,
   getTestDataFileUploadLoader,
   getTestDataFileUploadResponse,
+  getUpdateUploadProgressAction,
+  getFileUploadProgress,
+  getSetCancelUploadAction,
+  getAbortUploadAction,
 } from './ducks'
 
 import dropdownData from './static/dropdownData.json'
@@ -31,19 +36,31 @@ const TestDataUploadModal = ({
   isVisible,
   closeModal,
   loading,
-  user,
   uploadResponse,
+  handleUploadProgress,
+  uploadProgress,
+  setCancelUpload,
+  abortUpload,
 }) => {
   const [file, setFile] = useState(null)
   const [category, setCategory] = useState('')
+  const [testName, setTestName] = useState('')
+  const [year, setYear] = useState('')
+  const [yearDropdownOptions, setYearDropdownOptions] = useState([])
 
   const handleFileUpload = () => {
     uploadFile({
       file,
-      userId: `${user._id}`,
-      districtId: `${user?.currentDistrictId || user.districtIds[0]}`,
       category,
+      handleUploadProgress,
+      setCancelUpload,
+      year,
+      testName,
     })
+  }
+
+  const cancelFileUpload = () => {
+    abortUpload()
   }
 
   useEffect(() => {
@@ -51,6 +68,18 @@ const TestDataUploadModal = ({
       closeModal(true)
     }
   }, [uploadResponse])
+
+  useEffect(() => {
+    const currentYear = new Date().getFullYear()
+    const yearOptions = []
+    for (let i = 0; i < 5; i++) {
+      yearOptions.push({
+        key: currentYear - i,
+        value: currentYear - i,
+      })
+    }
+    setYearDropdownOptions(yearOptions)
+  }, [])
 
   return (
     <Modal
@@ -68,9 +97,7 @@ const TestDataUploadModal = ({
           width="200px"
           isGhost
           key="cancelButton"
-          onClick={() => {
-            closeModal(false)
-          }}
+          onClick={cancelFileUpload}
         >
           CANCEL
         </EduButton>,
@@ -85,18 +112,44 @@ const TestDataUploadModal = ({
       ]}
     >
       <Container>
-        <Select
-          placeholder="Select data format"
-          style={{ width: 200 }}
-          onChange={(e) => {
-            setCategory(e)
-          }}
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-        >
-          {dropdownData.dataFormatDropdownOptions.map(({ key, value }) => (
-            <Option value={key}>{value}</Option>
-          ))}
-        </Select>
+        <StyledRow>
+          <StyledCol span={12}>
+            <StyledSelect
+              placeholder="Select data format"
+              onChange={(e) => {
+                setCategory(e)
+              }}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              {dropdownData.dataFormatDropdownOptions.map(({ key, value }) => (
+                <Option value={key}>{value}</Option>
+              ))}
+            </StyledSelect>
+          </StyledCol>
+          <StyledCol span={12}>
+            <StyledSelect
+              placeholder="Select year"
+              onChange={(e) => {
+                setYear(e)
+              }}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              {yearDropdownOptions.map(({ key, value }) => (
+                <Option value={key}>{value}</Option>
+              ))}
+            </StyledSelect>
+          </StyledCol>
+        </StyledRow>
+        <StyledRow>
+          <StyledCol span={12}>
+            <Input
+              placeholder="Enter Test Title"
+              value={testName}
+              onChange={(e) => setTestName(e.target.value)}
+            />
+          </StyledCol>
+        </StyledRow>
+
         <Dropzone
           maxSize="104857600"
           onDrop={([f]) => setFile(f)}
@@ -115,20 +168,26 @@ const TestDataUploadModal = ({
                 }`}
                 isDragActive={isDragActive}
               >
-                <input {...getInputProps()} />
-                <FlexContainer
-                  flexDirection="column"
-                  justifyContent="center"
-                  alignItems="center"
-                >
-                  <IconUpload />
-                  <StyledText>Drag & Drop</StyledText>
-                  <StyledText isComment>
-                    {`or `}
-                    <Underlined>browse</Underlined>
-                    {` : CSV (100MB Max)`}
-                  </StyledText>
-                </FlexContainer>
+                {loading ? (
+                  <StyledProgress percent={uploadProgress} />
+                ) : (
+                  <>
+                    <input {...getInputProps()} />
+                    <FlexContainer
+                      flexDirection="column"
+                      justifyContent="center"
+                      alignItems="center"
+                    >
+                      <IconUpload />
+                      <StyledText>Drag & Drop</StyledText>
+                      <StyledText isComment>
+                        {`or `}
+                        <Underlined>browse</Underlined>
+                        {` : CSV (100MB Max)`}
+                      </StyledText>
+                    </FlexContainer>
+                  </>
+                )}
               </DropzoneContentContainer>
             )
           }}
@@ -155,11 +214,14 @@ const TestDataUploadModal = ({
 const withConnect = connect(
   (state) => ({
     loading: getTestDataFileUploadLoader(state),
-    user: state.user.user,
     uploadResponse: getTestDataFileUploadResponse(state),
+    uploadProgress: getFileUploadProgress(state),
   }),
   {
     uploadFile: uploadTestDataFileAction,
+    handleUploadProgress: getUpdateUploadProgressAction,
+    setCancelUpload: getSetCancelUploadAction,
+    abortUpload: getAbortUploadAction,
   }
 )
 
@@ -175,6 +237,9 @@ const DropzoneContentContainer = styled.div`
   margin: 20px 0;
   padding: 50px;
   border-radius: 2px;
+  height: 400px;
+  display: flex;
+  justify-content: center;
   border: ${({ isDragActive }) =>
     isDragActive
       ? `2px solid ${themeColorBlue}`
@@ -195,6 +260,22 @@ const DropzoneContentContainer = styled.div`
   }
 `
 
+const StyledProgress = styled(Progress)`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  .ant-progress-inner {
+    border-radius: 0px;
+  }
+  .ant-progress-bg {
+    border-radius: 0px;
+    height: 15px !important;
+  }
+  .ant-progress-inner {
+    background: ${borderGrey};
+  }
+`
+
 const StyledText = styled.div`
   font-size: ${({ isComment }) => (isComment ? 11 : 14)}px;
   font-weight: bold;
@@ -207,4 +288,16 @@ const Underlined = styled.span`
   color: ${themeColorBlue};
   cursor: pointer;
   text-decoration: underline;
+`
+
+const StyledRow = styled(Row)`
+  margin-bottom: 10px;
+`
+
+const StyledCol = styled(Col)`
+  padding-right: 10px;
+`
+
+const StyledSelect = styled(Select)`
+  width: 100%;
 `

@@ -36,6 +36,13 @@ const GET_RESET_TEST_DATA_UPLOAD_RESPONSE =
 const GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS =
   '[reports] get reset test data upload response success'
 
+const GET_UPDATE_UPLOAD_PROGRESS_REQUEST =
+  '[reports] get update upload progress request'
+
+const GET_SET_CANCEL_UPLOAD_REQUEST = '[reports] get set cancel upload request'
+
+const GET_ABORT_UPLOAD_REQUEST = '[reports] get abort upload request'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 export const getCustomReportAction = createAction(
@@ -56,6 +63,16 @@ export const getUploadsStatusListAction = createAction(
 export const getResetTestDataFileUploadResponseAction = createAction(
   GET_RESET_TEST_DATA_UPLOAD_RESPONSE
 )
+
+export const getUpdateUploadProgressAction = createAction(
+  GET_UPDATE_UPLOAD_PROGRESS_REQUEST
+)
+
+export const getSetCancelUploadAction = createAction(
+  GET_SET_CANCEL_UPLOAD_REQUEST
+)
+
+export const getAbortUploadAction = createAction(GET_ABORT_UPLOAD_REQUEST)
 
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
@@ -103,6 +120,11 @@ export const getTestDataFileUploadResponse = createSelector(
   (state) => state.testDataFileUploadResponse
 )
 
+export const getFileUploadProgress = createSelector(
+  stateSelector,
+  (state) => state.uploadProgress
+)
+
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -112,6 +134,8 @@ export const getTestDataFileUploadResponse = createSelector(
 const initialState = {
   customReportList: [],
   testDataFileUploadLoading: false,
+  cancelUpload: null,
+  uploadProgress: 0,
   testDataFileUploadError: null,
   testDataFileUploadResponse: null,
   uploadsStatusList: [],
@@ -149,6 +173,7 @@ export const customReportReducer = createReducer(initialState, {
   [UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS]: (state, { payload }) => {
     state.testDataFileUploadLoading = false
     state.testDataFileUploadResponse = payload
+    state.uploadProgress = 0
   },
   [UPLOAD_TEST_DATA_FILE_REQUEST_ERROR]: (state, { payload }) => {
     state.testDataFileUploadLoading = false
@@ -167,6 +192,24 @@ export const customReportReducer = createReducer(initialState, {
   },
   [GET_RESET_TEST_DATA_UPLOAD_RESPONSE_SUCCESS]: (state) => {
     state.testDataFileUploadResponse = null
+  },
+  [GET_UPDATE_UPLOAD_PROGRESS_REQUEST]: (state, { payload }) => {
+    const { loaded: uploaded, total } = payload.progressData
+    const mulFactor = payload.mulFactor || 100
+    const uploadProgress = Number(((mulFactor * uploaded) / total).toFixed(2))
+    state.uploadProgress = uploadProgress || 0
+  },
+  [GET_SET_CANCEL_UPLOAD_REQUEST]: (state, { payload }) => {
+    state.cancelUpload = payload
+  },
+  [GET_ABORT_UPLOAD_REQUEST]: (state) => {
+    state.testDataFileUploadResponse = {
+      message: 'File upload cancelled by user',
+    }
+    state.uploadProgress = 0
+    if (state.cancelUpload) {
+      state.cancelUpload()
+    }
   },
 })
 
@@ -233,17 +276,33 @@ export function* fetchUploadsStatusList() {
   }
 }
 
-export function* uploadTestDataFile({ payload }) {
+export function* uploadTestDataFile({
+  payload: {
+    file,
+    category,
+    handleUploadProgress,
+    setCancelUpload,
+    year,
+    testName,
+  },
+}) {
   try {
     notification({
       msg: 'File upload in progress.',
     })
-    const response = yield uploadToS3(
-      payload.file,
-      dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
-      'raw_data',
-      payload.category,
-      payload.districtId
+    const response = yield uploadToS3({
+      file,
+      folder: dataWarehouse.S3_DATA_WAREHOUSE_FOLDER,
+      subFolder: 'raw_data',
+      category,
+      progressCallback: (progressData) =>
+        handleUploadProgress({ progressData }),
+      cancelUpload: setCancelUpload,
+      year,
+      testName,
+    })
+    yield put(
+      handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
     yield put({
       type: UPLOAD_TEST_DATA_FILE_REQUEST_SUCCESS,

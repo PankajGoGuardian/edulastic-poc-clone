@@ -21,10 +21,13 @@ const CreateAssignmentCard = ({ history, newCreateClassCard }) => {
   return (
     <>
       <CreateClassCardWrapper newCreateClassCard={newCreateClassCard}>
-        <CreateClassTitle data-cy="asignmentCreationTitle">
+        <CreateClassTitle
+          data-cy="asignmentCreationTitle"
+          data-testid="asignmentCreationTitle"
+        >
           Create Assignment
         </CreateClassTitle>
-        <InfoText>
+        <InfoText data-testid="infoText">
           Select from a library of <b> 200K pre-built assessment </b> or create
           your own
         </InfoText>
@@ -33,6 +36,7 @@ const CreateAssignmentCard = ({ history, newCreateClassCard }) => {
             <StyledEduButton
               isBlue
               data-cy="createNewAssignment"
+              data-testid="createNewAssignment"
               onClick={handleClick}
             >
               <IconPlusCircle width={16} height={16} />{' '}
@@ -40,7 +44,7 @@ const CreateAssignmentCard = ({ history, newCreateClassCard }) => {
             </StyledEduButton>
           )}
           onClick={createNewAssignment}
-          triggerSource={'Create Assignment'}
+          triggerSource="Create Assignment"
         />
       </CreateClassCardWrapper>
     </>

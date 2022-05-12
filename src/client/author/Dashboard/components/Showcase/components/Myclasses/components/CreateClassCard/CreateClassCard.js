@@ -21,16 +21,20 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
   return (
     <>
       <CreateClassCardWrapper newCreateClassCard={newCreateClassCard}>
-        <CreateClassTitle data-cy="classCreationTitle">
+        <CreateClassTitle
+          data-cy="classCreationTitle"
+          data-testid="classCreationTitle"
+        >
           Create Class
         </CreateClassTitle>
-        <InfoText>
+        <InfoText data-testid="infoText">
           Use <b> Google Classroom </b> to import class(es) or create manually
         </InfoText>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <StyledEduButton
               isBlue
+              data-testid="createNewClassFromCard"
               data-cy="createNewClassFromCard"
               onClick={handleClick}
             >
@@ -39,7 +43,7 @@ const CreateClassCard = ({ history, newCreateClassCard }) => {
             </StyledEduButton>
           )}
           onClick={createNewClass}
-          triggerSource={'Create Class'}
+          triggerSource="Create Class"
         />
       </CreateClassCardWrapper>
     </>

@@ -129,7 +129,7 @@ const PurchaseFlowModals = (props) => {
   const [isPaymentServiceModalVisible, setPaymentServiceModal] = useState(false)
   const [isSubmitPOModalVisible, setSubmitPOModal] = useState(false)
 
-  const trialConfirmationMessage = showTrialConfirmationMessage.subEndDate
+  const trialConfirmationMessage = showTrialConfirmationMessage?.subEndDate
     ? showTrialConfirmationMessage
     : { subEndDate: moment(subEndDate).format('DD MMM, YYYY') }
   /**

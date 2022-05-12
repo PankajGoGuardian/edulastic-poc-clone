@@ -164,7 +164,6 @@ const HeaderSection = ({
 
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
-
   const [visible, setvisible] = useState(false)
 
   const trackClick = (event) => () =>
@@ -256,7 +255,7 @@ const HeaderSection = ({
               </StyledLink>
             )}
             trackClick={trackClick('dashboard:complete-sign-up:click')}
-            triggerSource={'Button Click'}
+            triggerSource="Button Click"
           />
         )}
         {showManageClass && (

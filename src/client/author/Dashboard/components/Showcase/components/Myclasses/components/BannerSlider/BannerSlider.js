@@ -81,6 +81,7 @@ const BannerSlider = ({
     <>
       <TextWrapper
         data-cy="bannerTitle"
+        data-testid="bannerTitle"
         fw="bold"
         size="16px"
         color={title}
@@ -131,7 +132,10 @@ const BannerSlider = ({
                     )
                   }
                 >
-                  <SlideDescription data-cy={slide.description}>
+                  <SlideDescription
+                    data-cy={slide.description}
+                    data-testid={slide.description}
+                  >
                     {slide.description}
                   </SlideDescription>
                   {isSparkTile ? (
@@ -147,9 +151,13 @@ const BannerSlider = ({
                       </LearnMore>
                     )
                   ) : isDemoPlaygroundTile ? (
-                    <LearnMore data-cy="explore">Explore</LearnMore>
+                    <LearnMore data-cy="explore" data-testid="explore">
+                      Explore
+                    </LearnMore>
                   ) : (
-                    <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
+                    <LearnMore data-cy="LearnMore" data-testid="LearnMore">
+                      LEARN MORE
+                    </LearnMore>
                   )}
                 </Slides>
               )

@@ -128,14 +128,16 @@ const CardImage = ({
 
   return (
     <>
-      <Image src={thumbnail || cardImg} />
+      <Image src={thumbnail || cardImg} data-testid="thumbnailImage" />
       <OverlayText>
         <Row>
           <Col span={24}>
             <StyledRow>
               <Col span={17}>
                 <Tooltip title={name} placement="bottomLeft">
-                  <TextDiv data-cy="name">{name}</TextDiv>
+                  <TextDiv data-cy="name" data-testid="className">
+                    {name}
+                  </TextDiv>
                 </Tooltip>
               </Col>
               <Col span={6} offset={1}>
@@ -160,6 +162,7 @@ const CardImage = ({
             </RowWrapperGrade>
             <RowWrapperGrade>
               <TextWrapper
+                data-testid="studentCount"
                 data-cy="studentCount"
                 color={white}
                 rfs="11px"
@@ -187,6 +190,7 @@ const CardImage = ({
             >
               <Icon
                 data-cy="classFavourite"
+                data-testid="classFavourite"
                 type="heart"
                 theme={isFavourite ? 'filled' : undefined}
               />

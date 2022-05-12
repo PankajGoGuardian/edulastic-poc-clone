@@ -60,6 +60,7 @@ const Classes = ({
     <>
       <TextWrapper
         data-cy="classSectionTitle"
+        data-testid="classSectionTitle"
         fw="bold"
         size="16px"
         color={title}

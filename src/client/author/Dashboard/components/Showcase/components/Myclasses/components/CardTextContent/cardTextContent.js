@@ -59,7 +59,10 @@ export const CardTextContent = ({ data, history, userId, districtId }) => {
         <LeftCol width="auto">
           <Link to="/author/assignments" onClick={applyClassFilter}>
             <IconWrapper>
-              <OverlayText data-cy="totalAssignment">
+              <OverlayText
+                data-cy="totalAssignment"
+                data-testid="totalAssignment"
+              >
                 {totalAssignment || 0}
               </OverlayText>
             </IconWrapper>
@@ -68,7 +71,7 @@ export const CardTextContent = ({ data, history, userId, districtId }) => {
 
         <CenterCol>
           <Link to="/author/assignments" onClick={applyClassFilter}>
-            <AssignmentCount>
+            <AssignmentCount data-testid="assignmentsText">
               {totalAssignment > 1 ? 'Assignments' : 'Assignment'}
             </AssignmentCount>
           </Link>
@@ -97,15 +100,21 @@ export const CardTextContent = ({ data, history, userId, districtId }) => {
             width="100%"
           >
             <LeftCol width="auto">
-              <Image src={asgnThumbnail} />
+              <Image data-testid="asgnThumbnail" src={asgnThumbnail} />
             </LeftCol>
             <CenterCol>
               <Tooltip title={asgnTitle} placement="topLeft">
-                <AssignmentTitle data-cy="assignmentTitle">
+                <AssignmentTitle
+                  data-cy="assignmentTitle"
+                  data-testid="assignmentTitle"
+                >
                   {asgnTitle}
                 </AssignmentTitle>
               </Tooltip>
-              <AssignmentStatusText data-cy="assignmentStatus">
+              <AssignmentStatusText
+                data-testid="assignmentStatus"
+                data-cy="assignmentStatus"
+              >
                 {asgnStatus}
               </AssignmentStatusText>
             </CenterCol>
@@ -115,6 +124,7 @@ export const CardTextContent = ({ data, history, userId, districtId }) => {
             <Row>
               <TextWrapper
                 data-cy="assignmentTitle"
+                data-testid="assignmentTitle"
                 color={cardTitleColor}
                 rfs="12px"
                 size="12px"

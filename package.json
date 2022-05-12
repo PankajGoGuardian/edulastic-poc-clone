@@ -274,7 +274,7 @@
       "**/?(*.)+(spec).[jt]s?(x)"
     ],
     "transformIgnorePatterns": [
-      "/node_modules/(?!((antd|rc-util|rc-pagination|rc-calendar)/es|@eduastic)/)"
+      "/node_modules/(?!((antd|rc-util|rc-pagination|rc-calendar|react-redux)/es|@eduastic|react-dnd|dnd-core|react-dnd-touch-backend|react-dnd-html5-backend|@babel|react-dom|prop-types)/)"
     ],
     "moduleNameMapper": {
       "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/fileMock.js",

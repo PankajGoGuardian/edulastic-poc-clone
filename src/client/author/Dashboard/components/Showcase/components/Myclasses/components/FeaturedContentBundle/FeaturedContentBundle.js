@@ -56,7 +56,14 @@ const FeaturedContentBundle = ({
 
   return (
     <FeatureContentWrapper>
-      <TextWrapper fw="bold" size="16px" color={title} mt=".5rem" mb="1rem">
+      <TextWrapper
+        fw="bold"
+        size="16px"
+        color={title}
+        mt=".5rem"
+        mb="1rem"
+        data-testid="preBuiltTestCollection"
+      >
         Pre-built Test Collections{' '}
       </TextWrapper>
       {!isSignupCompleted ? (
@@ -72,7 +79,7 @@ const FeaturedContentBundle = ({
                 UNLOCK
               </UnlockButton>
             )}
-            triggerSource={'Unlock Button Click'}
+            triggerSource="Unlock Button Click"
           />
           <p>
             Provide your Interested Grade and Subject to unlock ready-made tests

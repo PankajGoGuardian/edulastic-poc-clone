@@ -65,7 +65,10 @@ import WarningModal from '../../../ItemDetail/components/WarningModal'
 import { clearAnswersAction } from '../../../src/actions/answers'
 import LanguageSelector from '../../../../common/components/LanguageSelector'
 import { getCurrentLanguage } from '../../../../common/components/LanguageSelector/duck'
-import { allowedToSelectMultiLanguageInTest } from '../../../src/selectors/user'
+import {
+  allowedToSelectMultiLanguageInTest,
+  getIsCurator,
+} from '../../../src/selectors/user'
 
 const { useLanguageFeatureQn } = constantsQuestionType
 
@@ -520,6 +523,7 @@ class Container extends Component {
       currentLanguage,
       showCalculatingSpinner,
       allowedToSelectMultiLanguage,
+      isCurator,
       t,
       isMultipartItem,
       isInModal,
@@ -590,7 +594,7 @@ class Container extends Component {
               )
             )}
             <RightActionButtons xs={{ span: 16 }} lg={{ span: 12 }}>
-              {allowedToSelectMultiLanguage &&
+              {(allowedToSelectMultiLanguage || isCurator) &&
                 useLanguageFeatureQn.includes(questionType) && (
                   <LanguageSelector />
                 )}
@@ -656,7 +660,7 @@ Container.propTypes = {
   onSaveScrollTop: PropTypes.func.isRequired,
   savedWindowScrollTop: PropTypes.number,
   testId: PropTypes.string,
-  isAuthorOrCurator: PropTypes.bool,
+  isCurator: PropTypes.bool,
 }
 
 Container.defaultProps = {
@@ -669,7 +673,7 @@ Container.defaultProps = {
   savedWindowScrollTop: 0,
   testId: '',
   testName: '',
-  isAuthorOrCurator: false,
+  isCurator: false,
 }
 
 const enhance = compose(
@@ -692,6 +696,7 @@ const enhance = compose(
       previewMode: getPreviewSelector(state),
       currentLanguage: getCurrentLanguage(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      isCurator: getIsCurator(state),
     }),
     {
       changeView: changeViewAction,

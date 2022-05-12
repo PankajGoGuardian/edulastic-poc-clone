@@ -104,6 +104,7 @@ import QuestionAuditTrailLogs from '../../../../assessment/containers/QuestionAu
 import LanguageSelector from '../../../../common/components/LanguageSelector'
 import {
   allowedToSelectMultiLanguageInTest,
+  getIsCurator,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import QuestionManageModal from '../QuestionManageModal'
@@ -1076,6 +1077,7 @@ class Container extends Component {
       isEditFlow,
       itemEditDisabled,
       setItemLevelScore,
+      isCurator,
     } = this.props
     const {
       itemLevelScoring,
@@ -1248,9 +1250,8 @@ class Container extends Component {
 
               <FlexContainer alignItems="center" justifyContent="flex-end">
                 {this.passageNavigator}
-                {allowedToSelectMultiLanguage && showLanguageSelector && (
-                  <LanguageSelector />
-                )}
+                {(allowedToSelectMultiLanguage || isCurator) &&
+                  showLanguageSelector && <LanguageSelector />}
                 {view !== 'preview' &&
                   view !== 'auditTrail' &&
                   showMultipartAllPartsScore && (
@@ -1352,6 +1353,7 @@ Container.propTypes = {
   addWidgetToPassage: PropTypes.func.isRequired,
   itemDeleting: PropTypes.any.isRequired,
   setMultipartEvaluationSetting: PropTypes.func,
+  isCurator: PropTypes.bool,
 }
 
 Container.defaultProps = {
@@ -1365,6 +1367,7 @@ Container.defaultProps = {
   setItemLevelScoring: () => {},
   setMultipartEvaluationSetting: () => {},
   isTestFlow: false,
+  isCurator: false,
 }
 
 const enhance = compose(
@@ -1387,6 +1390,7 @@ const enhance = compose(
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
       isPremiumUser: isPremiumUserSelector(state),
       itemEditDisabled: getIsEditDisbledSelector(state),
+      isCurator: getIsCurator(state),
     }),
     {
       changeView: changeViewAction,

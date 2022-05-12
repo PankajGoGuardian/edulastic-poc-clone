@@ -45,7 +45,7 @@ const TestDataUploadModal = ({
   const [file, setFile] = useState(null)
   const [category, setCategory] = useState('')
   const [testName, setTestName] = useState('')
-  const [year, setYear] = useState('')
+  const [versionYear, setVersionYear] = useState('')
   const [yearDropdownOptions, setYearDropdownOptions] = useState([])
 
   const handleFileUpload = () => {
@@ -54,7 +54,7 @@ const TestDataUploadModal = ({
       category,
       handleUploadProgress,
       setCancelUpload,
-      year,
+      versionYear,
       testName,
     })
   }
@@ -130,7 +130,7 @@ const TestDataUploadModal = ({
             <StyledSelect
               placeholder="Select year"
               onChange={(e) => {
-                setYear(e)
+                setVersionYear(e)
               }}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >

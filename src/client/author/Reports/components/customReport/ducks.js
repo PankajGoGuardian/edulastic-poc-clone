@@ -282,7 +282,7 @@ export function* uploadTestDataFile({
     category,
     handleUploadProgress,
     setCancelUpload,
-    year,
+    versionYear,
     testName,
   },
 }) {
@@ -298,7 +298,7 @@ export function* uploadTestDataFile({
       progressCallback: (progressData) =>
         handleUploadProgress({ progressData }),
       cancelUpload: setCancelUpload,
-      year,
+      versionYear,
       testName,
     })
     yield put(

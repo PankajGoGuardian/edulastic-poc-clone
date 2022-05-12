@@ -4,7 +4,6 @@ import { isEmpty } from 'lodash'
 
 const s3Folders = Object.values(aws.s3Folders)
 
-const getCleanLowerCaseString = (str) => str.trim().toLowerCase()
 /**
  * upload a file to s3 using signed url
  * @param {file} file
@@ -16,7 +15,7 @@ export const uploadToS3 = async ({
   category,
   progressCallback,
   cancelUpload,
-  year,
+  versionYear,
   testName,
 }) => {
   let logDetails = {}
@@ -36,7 +35,7 @@ export const uploadToS3 = async ({
   const result = await dataWarehouseApi.getSignedUrl(
     name,
     category,
-    year,
+    versionYear,
     testName,
     folder,
     subFolder

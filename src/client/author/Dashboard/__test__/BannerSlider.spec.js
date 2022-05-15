@@ -3,7 +3,7 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
-import BannerSlider from '../../components/Showcase/components/Myclasses/components/BannerSlider/BannerSlider'
+import BannerSlider from '../components/Showcase/components/Myclasses/components/BannerSlider/BannerSlider'
 
 const mockStore = configureMockStore()
 
@@ -32,14 +32,12 @@ const bannerSlides = [
   },
 ]
 
-describe('Introduction Banner Slider', () => {
-  test(' Banner Slider for new users', async () => {
-    const store = mockStore({
-      user: { user: { signupStatus: 5 } },
-    })
+describe('Dashboard Introduction Banner Slider', () => {
+  test('test banner slider component render', async () => {
+    const store = mockStore({})
     render(
       <Provider store={store}>
-        <BannerSlider bannerSlides={bannerSlides} windowWidth={0} />
+        <BannerSlider bannerSlides={bannerSlides} />
       </Provider>
     )
     const introductionTitle = screen.getByText(

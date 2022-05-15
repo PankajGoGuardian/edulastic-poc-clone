@@ -3,12 +3,12 @@ import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
-import CreateAssignmentCard from '../../components/Showcase/components/Myclasses/components/CreateClassCard/CreateAssignmentCard'
+import CreateAssignmentCard from '../components/Showcase/components/Myclasses/components/CreateClassCard/CreateAssignmentCard'
 
 const mockStore = configureMockStore()
 
 describe('Dashboard Create Assignment Card', () => {
-  test('Create Assignment Card for new user', async () => {
+  test('test Create Assignment Card component render', async () => {
     const store = mockStore({
       user: { user: {} },
     })

@@ -56,14 +56,7 @@ const FeaturedContentBundle = ({
 
   return (
     <FeatureContentWrapper>
-      <TextWrapper
-        fw="bold"
-        size="16px"
-        color={title}
-        mt=".5rem"
-        mb="1rem"
-        data-testid="preBuiltTestCollection"
-      >
+      <TextWrapper fw="bold" size="16px" color={title} mt=".5rem" mb="1rem">
         Pre-built Test Collections{' '}
       </TextWrapper>
       {!isSignupCompleted ? (
@@ -74,6 +67,7 @@ const FeaturedContentBundle = ({
                 height="28px"
                 isGhost
                 data-cy="unlockPreBuiltTests"
+                data-testid="unlockPreBuiltTests"
                 onClick={handleClick}
               >
                 UNLOCK
@@ -88,8 +82,8 @@ const FeaturedContentBundle = ({
         </>
       ) : (
         <FlexContainer justifyContent="flex-start" flexWrap="wrap">
-          {filteredfeaturedBundles?.map((bundle) => (
-            <Bundle handleClick={handleFeatureClick} bundle={bundle} />
+          {filteredfeaturedBundles?.map((bundle, i) => (
+            <Bundle key={i} handleClick={handleFeatureClick} bundle={bundle} />
           ))}
           {emptyBoxCount.map((index) => (
             <EmptyBox key={index} />

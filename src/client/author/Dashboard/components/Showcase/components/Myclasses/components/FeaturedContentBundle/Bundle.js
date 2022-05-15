@@ -8,6 +8,7 @@ const Bundle = ({ handleClick, bundle }) => {
   const onClick = () => handleClick(bundle || {})
   return (
     <BundleContainer
+      data-testid="preBuiltTests"
       onClick={onClick}
       bgImage={bundle.imageUrl}
       data-cy={

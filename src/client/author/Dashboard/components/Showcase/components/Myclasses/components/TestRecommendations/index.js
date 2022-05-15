@@ -84,6 +84,7 @@ const TestRecommendationsContainer = ({
             <TestCardContainer
               key={index}
               data-cy={`recommendationCard${index}`}
+              data-testid="testCardContainer"
             >
               <CardWrapper
                 owner={

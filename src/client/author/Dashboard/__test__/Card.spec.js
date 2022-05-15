@@ -4,7 +4,7 @@ import { render, screen } from '@testing-library/react'
 import { BrowserRouter as Router } from 'react-router-dom'
 import configureMockStore from 'redux-mock-store'
 import { Provider } from 'react-redux'
-import CardCard from '../../components/Showcase/components/Myclasses/components/Card'
+import CardCard from '../components/Showcase/components/Myclasses/components/Card'
 
 const mockStore = configureMockStore()
 
@@ -41,8 +41,8 @@ const cardComponentsVisibility = () => {
   expect(studentCount).toBeInTheDocument()
 }
 
-describe(' Dashboard My Classes Card Component', () => {
-  test('test class card visibility for non premium user', async () => {
+describe(' Dashboard My Classes Cards', () => {
+  test('test class card component rendering for non premium user', async () => {
     const store = mockStore({})
     render(
       <Router>
@@ -55,7 +55,7 @@ describe(' Dashboard My Classes Card Component', () => {
     const classFavourite = screen.queryByTestId('classFavourite')
     expect(classFavourite).not.toBeInTheDocument()
   })
-  test('test class card visibility for premium user', async () => {
+  test('test class card component render for premium user', async () => {
     const store = mockStore({
       user: {
         user: {

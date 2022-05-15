@@ -8,10 +8,7 @@ import MyClasses from '../../components/Showcase/components/Myclasses/Myclass'
 
 const mockStore = configureMockStore()
 
-jest.mock('../../../src/components/common/PurchaseModals', () => () => {
-  const PurchaseFlowModal = 'PurchaseFlowModal'
-  return <PurchaseFlowModal />
-})
+jest.mock('../../../src/components/common/PurchaseModals', () => () => <div />)
 
 const userDetails = {
   currentSignUpState: 3,

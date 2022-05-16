@@ -205,9 +205,10 @@ const PremiumPopover = ({ children, ...props }) => {
     if (!target) return
     console.log(target)
     const rect = target.getBoundingClientRect?.()
+    const screenWidth = document.body.clientWidth || window.innerWidth
     const newModalPos = {
       top: rect.bottom,
-      right: `${window.screen.availWidth - rect.left}px`,
+      right: `${Math.max(screenWidth - rect.left, 0)}px`,
     }
     setModalPos(newModalPos)
   }, [target])

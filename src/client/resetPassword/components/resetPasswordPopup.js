@@ -182,6 +182,7 @@ const InputPasswordForm = (props) => {
             autoComplete="new-password"
             prefix={<Icon type="key" style={{ color: 'white' }} />}
             onChange={onConfirmPasswordChange}
+            data-cy="confirmPasswordTextBox"
           />
         )}
       </Form.Item>

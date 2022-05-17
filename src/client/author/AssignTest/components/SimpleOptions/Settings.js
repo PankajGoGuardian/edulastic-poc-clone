@@ -955,6 +955,7 @@ const Settings = ({
                       value={assignmentPassword}
                       type="text"
                       placeholder="Enter Password"
+                      data-cy="passwordTextBox"
                       color={passwordStatus.color}
                     />
                     <MessageSpan>{passwordStatus.message}</MessageSpan>

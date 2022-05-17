@@ -1748,6 +1748,7 @@ class Setting extends Component {
                                     value={assignmentPassword}
                                     type="text"
                                     placeholder="Enter Password"
+                                    data-cy="passwordTextBox"
                                   />
                                   {validationMessage ? (
                                     <MessageSpan>

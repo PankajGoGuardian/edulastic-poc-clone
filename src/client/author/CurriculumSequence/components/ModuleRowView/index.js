@@ -83,7 +83,7 @@ const ModuleRowView = (props) => {
   }
 
   const moduleManagementMenu = (
-    <MenuStyled data-cy="moduleItemMoreMenu">
+    <MenuStyled data-cy="moduleItemMoreMenu" data-testid="moduleItemMoreMenu">
       <CaretUp className="fa fa-caret-up" />
       {!isDesktop && (
         <Menu.Item onClick={onClickHideShow}>
@@ -167,10 +167,8 @@ const ModuleRowView = (props) => {
         justifyContent={hideEditOptions && 'flex-end'}
         ml={hideEditOptions && 'auto'}
       >
-        {[
-          moduleCompleteOrAssign,
-          !isManageContentActive && isPlaylistDetailsPage ? null : moreActions,
-        ]}
+        {moduleCompleteOrAssign}
+        {!isManageContentActive && isPlaylistDetailsPage ? null : moreActions}
       </LastColumn>
     </>
   )

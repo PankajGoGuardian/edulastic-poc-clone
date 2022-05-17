@@ -49,6 +49,7 @@ const CurriculumSubHeader = ({
     <SubHeaderInfoCard
       data-test={isManageContentActive}
       data-cy="playlist-grade"
+      data-testid="playlist-grade"
     >
       <GraduationCapIcon color="grey" />
       <SubHeaderInfoCardText>Grade {grades.join(', ')}</SubHeaderInfoCardText>
@@ -56,7 +57,7 @@ const CurriculumSubHeader = ({
   )
 
   const subHeaderIcon2 = !!subjects.length && (
-    <SubHeaderInfoCard data-cy="playlist-sub">
+    <SubHeaderInfoCard data-cy="playlist-sub" data-testid="playlist-sub">
       <BookIcon color="grey" />
       <SubHeaderInfoCardText>
         {subjects.filter((item) => !!item).join(', ')}
@@ -105,10 +106,12 @@ const CurriculumSubHeader = ({
         <CurriculumSubHeaderRow>
           <SubHeaderTitleContainer>
             <ModuleProgres>
-              <SubHeaderTitle>Module progress</SubHeaderTitle>
+              <SubHeaderTitle data-testid="SubHeaderTitle">
+                Module progress
+              </SubHeaderTitle>
               <SubHeaderModuleProgressContainer data-cy="module-pogress">
                 <div>
-                  <span className="assigned">
+                  <span className="assigned" data-testid="assigned">
                     {`${assigned}/${summaryData?.length || 0}`}
                   </span>
                   <span className="assigned-label">Assigned</span>
@@ -153,6 +156,7 @@ const CurriculumSubHeader = ({
                       isBlue
                       onClick={toggleManageContentClick('manageContent')}
                       data-cy="customizeContent"
+                      data-testid="customizeContent"
                     >
                       Customize Content
                     </CustomizeButton>
@@ -183,7 +187,11 @@ const CurriculumSubHeader = ({
                 disabled={!userTerms.length}
               >
                 {userTerms.map((term) => (
-                  <Select.Option key={term._id} value={term._id}>
+                  <Select.Option
+                    key={term._id}
+                    value={term._id}
+                    data-testid="userTerms"
+                  >
                     {term.name}
                   </Select.Option>
                 ))}

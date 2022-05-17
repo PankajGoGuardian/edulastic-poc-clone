@@ -29,7 +29,11 @@ const ProgressBars = ({
     return (
       <ResolvedInfoColumsWrapper>
         <ProficiencyColumn style={columnStyle} isAssessment={isAssessment}>
-          <InfoColumnLabel isAssessment={isAssessment} textColor={lightGrey5}>
+          <InfoColumnLabel
+            isAssessment={isAssessment}
+            textColor={lightGrey5}
+            data-testid="proficiency"
+          >
             PROFICIENCY
           </InfoColumnLabel>
           {/* TODO: Method to find Progress Percentage */}
@@ -47,6 +51,7 @@ const ProgressBars = ({
               isAssessment={isAssessment}
               justify="center"
               textColor={lightGrey5}
+              data-testid="submitted"
             >
               SUBMITTED
             </InfoColumnLabel>
@@ -88,6 +93,7 @@ const ProgressBars = ({
               isAssessment={isAssessment}
               justify="center"
               textColor={lightGrey5}
+              data-testid="classes"
             >
               CLASSES
             </InfoColumnLabel>

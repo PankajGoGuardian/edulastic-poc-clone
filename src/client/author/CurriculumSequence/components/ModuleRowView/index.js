@@ -107,6 +107,7 @@ const ModuleRowView = (props) => {
         textColor={themeColor}
         fontWeight="Bold"
         data-cy={module.hidden ? 'show-module' : 'hide-module'}
+        data-tetsid="hide-module"
         onClick={onClickHideShow}
       >
         {module.hidden ? 'SHOW MODULE' : 'HIDE MODULE'}
@@ -132,6 +133,7 @@ const ModuleRowView = (props) => {
     moduleCompleteOrAssign = (
       <StyledTag
         data-cy="AssignWholeModule"
+        data-tetsid="AssignWholeModule"
         bgColor={themeColor}
         onClick={onClickAssign}
         style={moduleInlineStyle}
@@ -146,7 +148,12 @@ const ModuleRowView = (props) => {
     (hasEditAccess || customizeInDraft) && (
       <Dropdown overlay={moduleManagementMenu} trigger={['click']}>
         <IconActionButton onClick={(e) => e.stopPropagation()}>
-          <IconMoreVertical width={5} height={14} color={themeColor} />
+          <IconMoreVertical
+            data-testid="actionDropdown"
+            width={5}
+            height={14}
+            color={themeColor}
+          />
         </IconActionButton>
       </Dropdown>
     )
@@ -170,7 +177,7 @@ const ModuleRowView = (props) => {
 
   return (
     <ModuleHeader>
-      <ModuleID data-cy="module-id">
+      <ModuleID data-cy="module-id" data-testid="module-id">
         <span>{moduleId || moduleIndex + 1}</span>
       </ModuleID>
       <ModuleHeaderData>
@@ -187,7 +194,9 @@ const ModuleRowView = (props) => {
           </StyledLabel>
           <ModuleTitleWrapper>
             <Tooltip title={title}>
-              <ModuleTitle data-cy="module-name">{title}</ModuleTitle>
+              <ModuleTitle data-cy="module-name" data-testid="module-name">
+                {title}
+              </ModuleTitle>
             </Tooltip>
             <ModuleTitlePrefix>
               {!hideEditOptions && (

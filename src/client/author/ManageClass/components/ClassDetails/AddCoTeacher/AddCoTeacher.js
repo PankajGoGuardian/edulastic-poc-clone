@@ -164,6 +164,7 @@ class AddCoTeacher extends React.Component {
           onSearch={this.onSearchHandler}
           getPopupContainer={(triggerNode) => triggerNode.parentNode}
           style={{ width: '100%', marginTop: '10px' }}
+          data-testid="add-co-teacher-input"
         >
           {coTeachers.map(
             (el, index) =>

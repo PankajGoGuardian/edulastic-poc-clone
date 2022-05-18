@@ -1,16 +1,18 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render } from '@testing-library/react'
+import { fireEvent, render, screen } from '@testing-library/react'
 import { Provider } from 'react-redux'
-import configureMockStore from 'redux-mock-store'
 import { BrowserRouter as Router } from 'react-router-dom'
 import ModuleRow from '../components/CurriculumModuleRow'
+import configureStore from '../../../configureStore'
 
+jest.mock('../components/PlaylistTestDetailsModal/index', () => () => (
+  <div data-testid="PlaylistTestDetailsModal" />
+))
 jest.mock(
   '../../../../client/assessment/containers/QuestionAuditTrailLogs/index'
 )
-
-const mockStore = configureMockStore()
+jest.mock('../../../../client/author/CurriculumSequence/util')
 
 const curriculum = {
   active: 1,
@@ -53,16 +55,17 @@ const props = {
   isManageContentActive: false,
   showRightPanel: true,
   isDesktop: true,
+  urlHasUseThis: true,
   hasEditAccess: true,
   isStudent: false,
   moduleStatus: false,
-  status: 'draft',
+  status: 'published',
   padding: false,
-  collapsed: true,
+  collapsed: false,
   module: {
     data: [
       {
-        assignments: [],
+        assignments: [{ testId: 'id', class: [] }],
         contentId: 'contentId',
         contentTitle: 'content title',
         contentType: 'test',
@@ -70,7 +73,7 @@ const props = {
         hidden: false,
         standardIdentifiers: ['6.RP.A.1', '6.RP.A.3.a', '6.RP.A.3.b'],
         standards: [{}, {}, {}],
-        status: 'published',
+        status: 'draft',
         testType: 'assessment',
       },
     ],
@@ -82,6 +85,7 @@ const props = {
     _id: '62822c7a0d80dd00094776ee',
   },
   curriculum,
+  moduleIndex: 0,
   summaryData: [
     {
       classes: '-',
@@ -99,19 +103,24 @@ const props = {
   ],
 }
 
-describe('Playlist Tab', () => {
-  test('test visibility of playlist tests section rendered from ModuleRow component  ', async () => {
-    const store = mockStore({
-      user: { user: {} },
-      curriculumSequence: {
-        checkedUnitItems: [],
-        currentAssignmentIds: ['id'],
-      },
-      test: {
-        isTestPreviewModalVisible: false,
-      },
-    })
+const Store = {
+  user: { user: {} },
+  curriculumSequence: {
+    checkedUnitItems: [],
+    currentAssignmentIds: ['id'],
+    playlistTestDetailsModal: {
+      isVisible: false,
+    },
+  },
+  test: {
+    isTestPreviewModalVisible: false,
+  },
+}
 
+const { store } = configureStore(Store)
+
+describe('Playlist Tab', () => {
+  test('test visibility of playlist ModuleRow component  ', async () => {
     render(
       <Provider store={store}>
         <Router>
@@ -119,5 +128,22 @@ describe('Playlist Tab', () => {
         </Router>
       </Provider>
     )
+    const moduleDataName = screen.getByTestId('moduleDataName')
+    expect(moduleDataName).toBeInTheDocument()
+  })
+  test('test PlaylistTestDetailsModal visibility onclicking moduleRow ', async () => {
+    render(
+      <Provider store={store}>
+        <Router>
+          <ModuleRow {...props} />
+        </Router>
+      </Provider>
+    )
+
+    const moduleDataName = screen.getByTestId('moduleDataName')
+    expect(moduleDataName).toBeInTheDocument()
+    fireEvent.click(moduleDataName)
+    const playlistTestDeatils = screen.getByTestId('PlaylistTestDetailsModal')
+    expect(playlistTestDeatils).toBeInTheDocument()
   })
 })

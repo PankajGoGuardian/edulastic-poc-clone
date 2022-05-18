@@ -46,11 +46,12 @@ const componentVisbility = () => {
   expect(actionDropdown).toBeInTheDocument()
 }
 
+const store = mockStore({
+  user: { user: {} },
+})
+
 describe('Playlist Tab', () => {
   test('test visibility of playlist module details section rendered from ModuleRowView component  ', async () => {
-    const store = mockStore({
-      user: { user: {} },
-    })
     render(
       <Provider store={store}>
         <ModuleRowView {...props} />
@@ -59,9 +60,6 @@ describe('Playlist Tab', () => {
     componentVisbility()
   })
   test('test actions/moreItemMenu dropdown visibility on click  ', async () => {
-    const store = mockStore({
-      user: { user: {} },
-    })
     render(
       <Provider store={store}>
         <ModuleRowView {...props} />

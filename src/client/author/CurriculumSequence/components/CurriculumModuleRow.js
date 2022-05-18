@@ -1294,6 +1294,7 @@ class ModuleRow extends Component {
                                     }
                                   >
                                     <ModuleDataName
+                                      data-testid="moduleDataName"
                                       onClick={() => {
                                         return (
                                           !isStudent &&

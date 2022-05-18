@@ -1,76 +1,123 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { fireEvent, render, screen } from '@testing-library/react'
+import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import configureMockStore from 'redux-mock-store'
-import ModuleRowView from '../components/ModuleRowView'
+import { BrowserRouter as Router } from 'react-router-dom'
+import ModuleRow from '../components/CurriculumModuleRow'
+
+jest.mock(
+  '../../../../client/assessment/containers/QuestionAuditTrailLogs/index'
+)
 
 const mockStore = configureMockStore()
 
-const props = {
-  module: { title: 'title', data: [{}] },
-  urlHasUseThis: true,
-  moduleIndex: 0,
-  summaryData: {
-    data: [{}],
-    description: '<p>description</p>',
-    moduleGroupName: 'MODULE NAME',
-    moduleId: '1',
-    referenceModuleId: '60199b4453e3edad44a67424',
-    title: 'title',
-    _id: '62566c254655ff0009fe4415',
-  },
-  isStudent: false,
-  hideEditOptions: false,
-  hasEditAccess: true,
-  isPlaylistDetailsPage: false,
-  isDesktop: true,
-  isManageContentActive: false,
-  customizeInDraft: false,
+const curriculum = {
+  active: 1,
+  alignmentInfo: '',
+  analytics: [],
+  authors: [],
+  bgColor: '#1AB394',
+  clonedCollections: [],
+  collections: [],
+  createdBy: { _id: 'id', name: 'name' },
+  createdDate: 1652698029919,
+  customize: false,
+  derivedFrom: { _id: 'id', name: 'name' },
+  description: '',
+  grades: ['2'],
+  isAuthor: true,
+  modules: [],
+  originalAuthor: { _id: 'id', name: 'name' },
+  skin: 'PUBLISHER',
+  status: 'draft',
+  subjects: ['ELA'],
+  textColor: '#fff',
+  thumbnail:
+    'https://cdn.edulastic.com/images/assessmentThumbnails/ela/15891-9.gif',
+  title: 'title',
+  type: 'content',
+  updatedDate: 1652780505905,
+  usedCount: 0,
+  version: 10,
+  versionId: 'vid',
+  _id: 'id',
 }
 
-const componentVisbility = () => {
-  const moduleId = screen.getByTestId('module-id')
-  expect(moduleId).toBeInTheDocument()
-  const submitted = screen.getByText('SUBMITTED')
-  expect(submitted).toBeInTheDocument()
-  const classes = screen.getByText('CLASSES')
-  expect(classes).toBeInTheDocument()
-  const moduleName = screen.getByTestId('module-name')
-  expect(moduleName).toBeInTheDocument()
-  const hideModule = screen.getByText('HIDE MODULE')
-  expect(hideModule).toBeInTheDocument()
-  const proficiency = screen.getByText('PROFICIENCY')
-  expect(proficiency).toBeInTheDocument()
-  const actionDropdown = screen.getByTestId('actionDropdown')
-  expect(actionDropdown).toBeInTheDocument()
+const props = {
+  isPreviewModalVisible: false,
+  customizeInDraft: false,
+  isPlaylistDetailsPage: false,
+  isSparkMathPlaylist: false,
+  userRole: 'teacher',
+  isManageContentActive: false,
+  showRightPanel: true,
+  isDesktop: true,
+  hasEditAccess: true,
+  isStudent: false,
+  moduleStatus: false,
+  status: 'draft',
+  padding: false,
+  collapsed: true,
+  module: {
+    data: [
+      {
+        assignments: [],
+        contentId: 'contentId',
+        contentTitle: 'content title',
+        contentType: 'test',
+        contentVersionId: 'content version ID',
+        hidden: false,
+        standardIdentifiers: ['6.RP.A.1', '6.RP.A.3.a', '6.RP.A.3.b'],
+        standards: [{}, {}, {}],
+        status: 'published',
+        testType: 'assessment',
+      },
+    ],
+    description: '<p>description</p>',
+    hidden: false,
+    moduleGroupName: 'module group name',
+    moduleId: 'id',
+    title: 'title',
+    _id: '62822c7a0d80dd00094776ee',
+  },
+  curriculum,
+  summaryData: [
+    {
+      classes: '-',
+      hidden: false,
+      index: 0,
+      maxScore: NaN,
+      name: 'Module 1',
+      scores: NaN,
+      submitted: '-',
+      tSpent: 0,
+      timeSpent: '0 min',
+      title: '3',
+      value: NaN,
+    },
+  ],
 }
 
 describe('Playlist Tab', () => {
-  test('test playlist module details section rendered from ModuleRow component visibility  ', async () => {
+  test('test visibility of playlist tests section rendered from ModuleRow component  ', async () => {
     const store = mockStore({
       user: { user: {} },
+      curriculumSequence: {
+        checkedUnitItems: [],
+        currentAssignmentIds: ['id'],
+      },
+      test: {
+        isTestPreviewModalVisible: false,
+      },
     })
+
     render(
       <Provider store={store}>
-        <ModuleRowView {...props} />
+        <Router>
+          <ModuleRow {...props} />
+        </Router>
       </Provider>
     )
-    componentVisbility()
-  })
-  test('test actions/moreItemMenu dropdown visibility on onclick  ', async () => {
-    const store = mockStore({
-      user: { user: {} },
-    })
-    render(
-      <Provider store={store}>
-        <ModuleRowView {...props} />
-      </Provider>
-    )
-    const actionDropdown = screen.getByTestId('actionDropdown')
-    expect(actionDropdown).toBeInTheDocument()
-    fireEvent.click(actionDropdown)
-    const moduleItemMoreMenu = screen.getByTestId('moduleItemMoreMenu')
-    expect(moduleItemMoreMenu).toBeInTheDocument()
   })
 })

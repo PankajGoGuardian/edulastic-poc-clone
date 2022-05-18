@@ -646,6 +646,7 @@ class ModuleRow extends Component {
         </Menu.Item>
       </Menu>
     )
+
     return (
       (isStudent && module.hidden) || (
         <>

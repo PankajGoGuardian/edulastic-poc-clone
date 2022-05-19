@@ -434,6 +434,11 @@ export const getCollectionsSelector = createSelector(
   (state) => state.collections || []
 )
 
+export const getItemDetailQuestionsSelector = createSelector(
+  getItemSelector,
+  (state) => state?.data?.questions || []
+)
+
 export const getHighlightCollectionSelector = createSelector(
   stateSelector,
   (state) => state.highlightCollection

@@ -43,6 +43,7 @@
     "prod-serve": "serve -s build -p 3001",
     "jest": "jest",
     "test": "react-scripts test --coverage --watchAll=false",
+    "test:silent": "react-scripts test --silent --watchAll=false",
     "ava": "ava --watch",
     "test:watch": "jest --watch",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",

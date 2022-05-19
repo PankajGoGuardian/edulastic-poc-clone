@@ -102,6 +102,7 @@ const TestDataUploadModal = ({
           CANCEL
         </EduButton>,
         <EduButton
+          data-testid="upload-button"
           btnType="primary"
           width="200px"
           onClick={() => handleFileUpload()}
@@ -115,6 +116,7 @@ const TestDataUploadModal = ({
         <StyledRow>
           <StyledCol span={12}>
             <StyledSelect
+              data-testid="data-format-dropdown"
               placeholder="Select data format"
               onChange={(e) => {
                 setCategory(e)
@@ -122,12 +124,15 @@ const TestDataUploadModal = ({
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
               {dropdownData.dataFormatDropdownOptions.map(({ key, value }) => (
-                <Option value={key}>{value}</Option>
+                <Option value={key} key={key}>
+                  {value}
+                </Option>
               ))}
             </StyledSelect>
           </StyledCol>
           <StyledCol span={12}>
             <StyledSelect
+              data-testid="year-dropdown"
               placeholder="Select year"
               onChange={(e) => {
                 setVersionYear(e)
@@ -135,7 +140,9 @@ const TestDataUploadModal = ({
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
               {yearDropdownOptions.map(({ key, value }) => (
-                <Option value={key}>{value}</Option>
+                <Option value={key} key={key}>
+                  {value}
+                </Option>
               ))}
             </StyledSelect>
           </StyledCol>
@@ -143,6 +150,7 @@ const TestDataUploadModal = ({
         <StyledRow>
           <StyledCol span={12}>
             <Input
+              data-testid="test-title-input"
               placeholder="Enter Test Title"
               value={testName}
               onChange={(e) => setTestName(e.target.value)}
@@ -151,7 +159,7 @@ const TestDataUploadModal = ({
         </StyledRow>
 
         <Dropzone
-          maxSize="104857600"
+          maxSize={104857600}
           onDrop={([f]) => setFile(f)}
           accept=".csv, application/vnd.ms-excel, text/csv" // text/csv might not work for Windows based machines
           className="dropzone"

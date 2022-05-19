@@ -1,15 +1,13 @@
 import { render } from '@testing-library/react'
 import React from 'react'
-import configureMockStore from 'redux-mock-store'
 import { ThemeProvider } from 'styled-components'
 import TestDataUploadsTable from './TestDataUploadsTable'
 import { appRender } from './test-utils'
 import { themes } from '../../../../theme'
 
-const mockStore = configureMockStore()
-const store = mockStore({
+const initialState = {
   isPrinting: false,
-})
+}
 
 const uploadsTestData = [
   {
@@ -56,11 +54,9 @@ describe('Test Data Uploads Table component', () => {
   it('test component renders with 2 table rows', () => {
     const { container } = appRender(
       <ThemeProvider theme={themes.default}>
-        <TestDataUploadsTable
-          uploadsStatusList={uploadsTestData}
-          store={store}
-        />
-      </ThemeProvider>
+        <TestDataUploadsTable uploadsStatusList={uploadsTestData} />
+      </ThemeProvider>,
+      initialState
     )
     expect(container.getElementsByClassName('ant-table-row').length).toBe(2)
   })

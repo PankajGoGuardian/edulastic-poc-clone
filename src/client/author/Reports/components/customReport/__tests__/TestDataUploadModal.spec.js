@@ -1,6 +1,6 @@
 import React from 'react'
-import { appRender } from './test-utils'
-import TestDataUploadModal from './TestDataUploadModal'
+import { appRender } from '../test-utils'
+import TestDataUploadModal from '../TestDataUploadModal'
 
 const initialState = {
   loading: false,

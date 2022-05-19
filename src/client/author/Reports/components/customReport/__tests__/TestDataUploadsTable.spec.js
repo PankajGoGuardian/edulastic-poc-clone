@@ -1,9 +1,9 @@
 import { render } from '@testing-library/react'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
-import TestDataUploadsTable from './TestDataUploadsTable'
-import { appRender } from './test-utils'
-import { themes } from '../../../../theme'
+import TestDataUploadsTable from '../TestDataUploadsTable'
+import { appRender } from '../test-utils'
+import { themes } from '../../../../../theme'
 
 const initialState = {
   isPrinting: false,

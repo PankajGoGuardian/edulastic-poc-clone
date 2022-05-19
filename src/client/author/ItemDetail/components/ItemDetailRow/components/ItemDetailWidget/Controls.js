@@ -96,13 +96,13 @@ const TotalPointsInput = ({
 
 const PointInput = ({
   value,
+  pointInputMinValue,
   onChange,
   disabled,
   isRubricQuestion,
   itemLevelScoring,
   visible,
   onShowSettings = () => {},
-  isPremiumUser,
 }) => {
   if (!visible) {
     return null
@@ -139,7 +139,7 @@ const PointInput = ({
       )}
       <NumberInputStyled
         type="number"
-        min={isPremiumUser ? 0 : 0.5}
+        min={pointInputMinValue}
         step={0.5}
         width="64px"
         padding="0px 2px"

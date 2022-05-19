@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperText'
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
@@ -86,6 +86,22 @@ const ItemDetailWidget = ({
     ? Math.round(itemLevelPartScore * 100) / 100
     : score
 
+  /**
+   * @see https://snapwiz.atlassian.net/browse/EV-35305
+   * For free user min value for the point input cannot be 0.5 strictly
+   * For Eg: In case of 2 questions and itemLevelScore is 0.5 the part score is 0.25
+   * Thus the min value for the input should be calculated dynamically for a free user and itemLevelScoring on.
+   */
+  const pointInputMinValue = useMemo(() => {
+    let minValue
+    if (isPremiumUser) {
+      minValue = 0
+    } else {
+      minValue = itemLevelScoring ? Math.min(0.5, partScore) : 0.5
+    }
+    return minValue
+  }, [isPremiumUser, itemLevelScoring, partScore])
+
   const unscored = itemLevelScoring
     ? question?.validation?.unscored
     : get(question, 'validation.unscored', false)
@@ -127,6 +143,7 @@ const ItemDetailWidget = ({
             <ButtonsContainer unscored={unscored}>
               <Ctrls.Point
                 value={partScore}
+                pointInputMinValue={pointInputMinValue}
                 onChange={scoreChangeHandler}
                 data-cy="pointUpdate"
                 visible={isPointsBlockVisible}
@@ -134,7 +151,6 @@ const ItemDetailWidget = ({
                 isRubricQuestion={!!question.rubrics && !itemLevelScoring}
                 itemLevelScoring={itemLevelScoring}
                 onShowSettings={onShowSettings}
-                isPremiumUser={isPremiumUser}
               />
 
               {unscored && <UnscoredHelperText margin="0px 0px 10px 0px" />}

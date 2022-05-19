@@ -12,7 +12,7 @@ const store = mockStore({
 })
 
 describe('Playlist Page Nav', () => {
-  test('test nav tab should contain only playlist and insights tabsfor non sparkMath playlist  ', async () => {
+  test('test expecting nav tab should contain only playlist and insights tabs for non sparkMath playlist  ', async () => {
     const isSparkMathPlaylist = false
     render(
       <Router>
@@ -36,7 +36,7 @@ describe('Playlist Page Nav', () => {
     expect(Differentiation).not.toBeInTheDocument()
   })
 
-  test('test nav tab should contain playlist,insights and differentiation tabs for sparkMath playlist  ', async () => {
+  test('test expecting nav tab should contain playlist,insights and differentiation tabs for sparkMath playlist  ', async () => {
     const isSparkMathPlaylist = true
     render(
       <Router>
@@ -59,7 +59,7 @@ describe('Playlist Page Nav', () => {
     expect(Differentiation).toBeInTheDocument()
   })
 
-  test('test nav tab should contain only playlist,insights tabs for sparkMathPlaylist playlist if user is admin ', async () => {
+  test('test expecting nav tab should contain only playlist,insights tabs for sparkMath playlist if user is admin ', async () => {
     const isSparkMathPlaylist = true
     render(
       <Router>

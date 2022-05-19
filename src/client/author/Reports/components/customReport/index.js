@@ -1,51 +1,100 @@
-import React, { useEffect } from 'react'
-import { Result, Spin } from 'antd'
+import React, { useState, useEffect } from 'react'
 import PropTypes from 'prop-types'
+import { Tabs, Spin } from 'antd'
+import styled from 'styled-components'
+import { IconUpload } from '@edulastic/icons'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { get } from 'lodash'
 
-import { SubHeader } from '../../common/components/Header'
+import { EduButton, FlexContainer } from '@edulastic/common'
 import { StyledContainer } from '../../common/styled'
-import CustomReportCard from './customReportCard/customReportCard'
+import TestDataUploadModal from './TestDataUploadModal'
+import { SubHeader } from '../../common/components/Header'
+import TestDataUploadsTable from './TestDataUploadsTable'
+import CustomReportsWrapper from './CustomReportsWrapper'
 
 import {
-  getCustomReportAction,
-  getCustomReportList,
-  getCustomReportLoader,
+  getUploadsStatusListAction,
+  getUploadsStatusLoader,
+  getUploadsStatusList,
+  getResetTestDataFileUploadResponseAction,
 } from './ducks'
 
-const CustomReports = (props) => {
-  const {
-    customReportList = [],
-    getCustomReport,
-    isLoading,
-    history,
-    breadcrumbData,
-    isCliUser,
-  } = props
-  const showLoader = () => <Spin size="small" />
+const CustomReports = ({
+  history,
+  breadcrumbData,
+  isCliUser,
+  loading,
+  uploadsStatusList,
+  fetchUploadsStatusList,
+  resetUploadResponse,
+  isDataWarehouseEnabled,
+}) => {
+  const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
+  const [activeTabKey, setActiveTabKey] = useState('reports')
+
   useEffect(() => {
-    if (customReportList.length === 0) {
-      getCustomReport()
-    }
+    fetchUploadsStatusList()
   }, [])
 
   const showReport = (_id) => {
     history.push(`/author/reports/custom-reports/${_id}`)
   }
 
+  const closeModal = (shouldChangeTab) => {
+    setShowTestDataUploadModal(false)
+    if (shouldChangeTab) {
+      setActiveTabKey('status')
+      fetchUploadsStatusList()
+    }
+    resetUploadResponse()
+  }
+
+  const showModal = () => {
+    setShowTestDataUploadModal(true)
+  }
+
   return (
     <>
-      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
+      <FlexContainer justifyContent="space-between" marginBottom="10px">
+        <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
+        {isDataWarehouseEnabled && (
+          <EduButton isGhost height="100%" onClick={() => showModal()}>
+            <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
+            AND OTHER
+          </EduButton>
+        )}
+      </FlexContainer>
       <StyledContainer>
-        {isLoading ? (
-          showLoader()
-        ) : customReportList.length > 0 ? (
-          <CustomReportCard
-            reportCards={customReportList}
-            showReport={showReport}
-          />
+        {isDataWarehouseEnabled ? (
+          <StyledTabs
+            mode="horizontal"
+            activeKey={activeTabKey}
+            onTabClick={(key) => setActiveTabKey(key)}
+          >
+            <StyledTabPane tab="Reports" key="reports">
+              <CustomReportsWrapper showReport={showReport} />
+            </StyledTabPane>
+            <StyledTabPane tab="Status" key="status">
+              {loading ? (
+                <Spin />
+              ) : (
+                <TestDataUploadsTable
+                  loading={loading}
+                  uploadsStatusList={uploadsStatusList}
+                />
+              )}
+            </StyledTabPane>
+          </StyledTabs>
         ) : (
-          <Result title="No report found" />
+          <CustomReportsWrapper showReport={showReport} />
+        )}
+        {showTestDataUploadModal && (
+          <TestDataUploadModal
+            isVisible={showTestDataUploadModal}
+            closeModal={closeModal}
+          />
         )}
       </StyledContainer>
     </>
@@ -53,20 +102,35 @@ const CustomReports = (props) => {
 }
 
 CustomReports.propTypes = {
-  isLoading: PropTypes.bool.isRequired,
-  customReportList: PropTypes.array.isRequired,
-  getCustomReport: PropTypes.func.isRequired,
   history: PropTypes.object.isRequired,
 }
 
-const enhance = connect(
+export const StyledTabPane = styled(Tabs.TabPane)``
+export const StyledTabs = styled(Tabs)`
+  width: 100%;
+  margin-left: 0;
+  .ant-tabs-bar {
+    margin-bottom: 0;
+    border-color: transparent;
+  }
+  .ant-tabs-nav-scroll {
+    margin-bottom: 10px;
+  }
+`
+const withConnect = connect(
   (state) => ({
-    isLoading: getCustomReportLoader(state),
-    customReportList: getCustomReportList(state),
+    loading: getUploadsStatusLoader(state),
+    uploadsStatusList: getUploadsStatusList(state),
+    isDataWarehouseEnabled: get(
+      state,
+      ['user', 'user', 'features', 'isDataWarehouseEnabled'],
+      false
+    ),
   }),
   {
-    getCustomReport: getCustomReportAction,
+    fetchUploadsStatusList: getUploadsStatusListAction,
+    resetUploadResponse: getResetTestDataFileUploadResponseAction,
   }
 )
 
-export default enhance(CustomReports)
+export default compose(withConnect)(CustomReports)

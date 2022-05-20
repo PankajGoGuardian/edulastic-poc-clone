@@ -53,7 +53,7 @@ const QuestionPreviewDetails = ({
         </DetailRow>
         <DetailRow direction="column" alignItems="flex-start">
           <label>Rubric</label>
-          <span>
+          <span data-cy="rubricOnPreview">
             {allRubricNames.length ? allRubricNames.join(', ') : '--'}
           </span>
         </DetailRow>

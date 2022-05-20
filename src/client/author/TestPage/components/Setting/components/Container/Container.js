@@ -1512,7 +1512,10 @@ class Setting extends Component {
                           />
                         </Title>
                         <Body smallSize={isSmallSize}>
-                          <Description style={{ marginTop: '10px' }}>
+                          <Description
+                            style={{ marginTop: '10px' }}
+                            data-cy="show-rubric-to-students-desc"
+                          >
                             {t('showRubricToStudents.info')}
                           </Description>
                         </Body>

@@ -85,7 +85,11 @@ class InviteMultipleTeacherModal extends Component {
                   },
                 ],
               })(
-                <StyledTextArea row={10} onChange={this.handleChangeTextArea} />
+                <StyledTextArea
+                  data-testid="text-area"
+                  row={10}
+                  onChange={this.handleChangeTextArea}
+                />
               )}
             </ModalFormItem>
           </Col>

@@ -242,7 +242,8 @@ export const StyledTableButton = styled.a`
 export const StyledPagination = styled(Pagination)`
   align-self: flex-end;
   margin-top: 15px;
-  margin-right: ${(props) => (props.marginRight ? `${props.marginRight}px` : '55px')};
+  margin-right: ${(props) =>
+    props.marginRight ? `${props.marginRight}px` : '55px'};
 `
 
 export const ButtonsContainer = styled.div`
@@ -313,9 +314,9 @@ export const ModalFormItem = styled(Form.Item)`
   }
   .ant-form-item-label {
     text-transform: uppercase;
-    color: ${(props) => props.theme.manageDistrict.formLabelColor};
+    color: ${(props) => props.theme.manageDistrict?.formLabelColor};
     font-weight: 600;
-    font-size: ${(props) => props.theme.manageDistrict.formLabelFontSize};
+    font-size: ${(props) => props.theme.manageDistrict?.formLabelFontSize};
     margin-bottom: 5px;
     line-height: 1;
   }

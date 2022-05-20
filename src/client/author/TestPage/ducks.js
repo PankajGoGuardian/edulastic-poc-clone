@@ -761,8 +761,8 @@ export const getDefaultSettingsLoadingSelector = createSelector(
 )
 
 export const shouldDisableSelector = createSelector(
-  getTestsLoadingSelector,
-  getIsloadingAssignmentSelector,
+  (state) => getTestsLoadingSelector(state),
+  (state) => getIsloadingAssignmentSelector(state),
   (testLoading, assignmentsLoading) => testLoading || assignmentsLoading
 )
 

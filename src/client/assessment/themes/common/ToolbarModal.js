@@ -136,6 +136,7 @@ class ToolbarModal extends React.Component {
         footer={null}
         centered
         width="390px"
+        zIndex={1500}
       >
         <Container>
           {!blockNavigationToAnsweredQuestions && (

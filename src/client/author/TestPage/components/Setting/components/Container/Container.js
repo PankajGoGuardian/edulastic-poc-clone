@@ -534,7 +534,7 @@ class Setting extends Component {
     } = this.props
     const { settingId: currentSettingsId = '' } = entity
     if (value === 'save-settings-option') {
-      if (currentSettingsId === '')
+      if (currentSettingsId === '' || currentSettingsId === null)
         this.setState({ showSaveSettingsModal: true })
       else {
         const { _id, title } =

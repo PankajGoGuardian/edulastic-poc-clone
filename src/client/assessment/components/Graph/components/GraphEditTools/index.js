@@ -23,6 +23,18 @@ const PLUS_TOOL = 'plusTool'
 const MINUS_TOOL = 'minusTool'
 const { GRAPH_TOOLS } = graph
 
+const zoomScale = 2
+
+const zoomIn = (n) => n / zoomScale
+
+const zoomOut = (n) => n * zoomScale
+
+const ELEMENT_TYPES_SCALE = [
+  GRAPH_TOOLS.AREA,
+  GRAPH_TOOLS.AREA2,
+  GRAPH_TOOLS.POINT,
+]
+
 class GraphEditTools extends Component {
   constructor(props) {
     super(props)
@@ -60,19 +72,19 @@ class GraphEditTools extends Component {
     }
 
     if (tool === MINUS_TOOL) {
-      xMin *= 2
-      xMax *= 2
-      yMin *= 2
-      yMax *= 2
-      xDistance *= 2
-      yDistance *= 2
+      xMin = zoomOut(xMin)
+      xMax = zoomOut(xMax)
+      yMin = zoomOut(yMin)
+      yMax = zoomOut(yMax)
+      xDistance = zoomOut(xDistance)
+      yDistance = zoomOut(yDistance)
     } else if (tool === PLUS_TOOL) {
-      xMin /= 2
-      xMax /= 2
-      yMin /= 2
-      yMax /= 2
-      xDistance /= 2
-      yDistance /= 2
+      xMin = zoomIn(xMin)
+      xMax = zoomIn(xMax)
+      yMin = zoomIn(yMin)
+      yMax = zoomIn(yMax)
+      xDistance = zoomIn(xDistance)
+      yDistance = zoomIn(yDistance)
     }
 
     xMin = +xMin.toFixed(8)
@@ -97,6 +109,31 @@ class GraphEditTools extends Component {
       yTickDistance: yDistance,
     }
 
+    const { validation } = newGraphData
+    if (validation) {
+      const elementMap = (element) => {
+        if (!ELEMENT_TYPES_SCALE.includes(element.type)) {
+          return element
+        }
+        if (tool === PLUS_TOOL) {
+          element.x = zoomIn(element.x)
+          element.y = zoomIn(element.y)
+        } else if (tool === MINUS_TOOL) {
+          element.x = zoomOut(element.x)
+          element.y = zoomOut(element.y)
+        }
+        return element
+      }
+      const { validResponse, altResponses } = validation
+      if (validResponse && !isEmpty(validResponse.value)) {
+        validResponse.value = validResponse.value.map(elementMap)
+      }
+      if (!isEmpty(altResponses)) {
+        altResponses.forEach((altResp) => {
+          altResp.value = altResp.value.map(elementMap)
+        })
+      }
+    }
     setQuestionData(newGraphData)
   }
 

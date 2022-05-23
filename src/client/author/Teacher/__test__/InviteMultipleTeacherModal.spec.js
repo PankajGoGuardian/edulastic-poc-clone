@@ -50,8 +50,6 @@ describe('Testing the InviteMultipleTeacherModal', () => {
     )
     const textArea = screen.getByTestId('text-area')
     fireEvent.change(textArea, { target: { value: 'dummy@dummy.com' } })
-    // const placeHolderText = screen.getByText('Enter email like...')
-    // expect(placeHolderText).not.toBeInTheDocument()
     const addButton = screen.getByText('Yes, Add Teacher(s)')
     expect(addButton).toBeInTheDocument()
     await fireEvent.click(addButton)

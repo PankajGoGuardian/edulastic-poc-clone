@@ -1,9 +1,10 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, screen } from '@testing-library/react'
-import { BrowserRouter as Router } from 'react-router-dom'
+import { render, screen, fireEvent, waitFor } from '@testing-library/react'
+import { Router } from 'react-router-dom'
 import configureMockStore from 'redux-mock-store'
 import { Provider } from 'react-redux'
+import { createMemoryHistory } from 'history'
 import CardCard from '../components/Showcase/components/Myclasses/components/Card'
 
 const mockStore = configureMockStore()
@@ -22,7 +23,10 @@ const data = {
     'https://cdn.edulastic.com/images/classThumbnails/question.jpg-3.jpg',
   totalAssignment: 42,
   grades: ['O'],
+  _id: 'id',
 }
+
+const history = createMemoryHistory()
 
 const cardComponentsVisibility = () => {
   const totalAssignmentCount = screen.getByTestId('totalAssignment')
@@ -45,7 +49,7 @@ describe(' Dashboard My Classes Cards', () => {
   test('test class card component rendering for non premium user', async () => {
     const store = mockStore({})
     render(
-      <Router>
+      <Router history={history}>
         <Provider store={store}>
           <CardCard data={data} />
         </Provider>
@@ -66,7 +70,7 @@ describe(' Dashboard My Classes Cards', () => {
       },
     })
     render(
-      <Router>
+      <Router history={history}>
         <Provider store={store}>
           <CardCard data={data} />
         </Provider>
@@ -75,5 +79,60 @@ describe(' Dashboard My Classes Cards', () => {
     cardComponentsVisibility()
     const classFavourite = screen.getByTestId('classFavourite')
     expect(classFavourite).toBeInTheDocument()
+  })
+  test('test onclicking recent assignments info on card the page should land on lcb', async () => {
+    const store = mockStore({
+      user: {
+        user: {
+          features: {
+            premium: true,
+          },
+        },
+      },
+    })
+    render(
+      <Router history={history}>
+        <Provider store={store}>
+          <CardCard data={data} />
+        </Provider>
+      </Router>
+    )
+    cardComponentsVisibility()
+    const assignmentsText = screen.getByTestId('assignmentsText')
+    expect(assignmentsText).toBeInTheDocument()
+    const classFavourite = screen.getByTestId('classFavourite')
+    expect(classFavourite).toBeInTheDocument()
+    const assignmentsInfo = screen.getByTestId('assignmentsInfo')
+    fireEvent.click(assignmentsInfo)
+    expect(history.location.pathname).toBe(
+      '/author/classboard/6277cc4a0de858286eb66128/id'
+    )
+  })
+  test('test onclicking assignment count section on class card page should land on assignment page ', async () => {
+    const store = mockStore({
+      user: {
+        user: {
+          features: {
+            premium: true,
+          },
+        },
+      },
+    })
+    render(
+      <Router history={history}>
+        <Provider store={store}>
+          <CardCard data={data} />
+        </Provider>
+      </Router>
+    )
+
+    const totalAssignment = screen.getByTestId('totalAssignment')
+    fireEvent.click(totalAssignment)
+    waitFor(() => {
+      expect(window.sessionStorage.getItem('assignments_filter')).toEqual(
+        "{ classId: 'id',testType: '',termId: '',}"
+      )
+    })
+    expect(history.location.pathname).toBe('/author/assignments')
   })
 })

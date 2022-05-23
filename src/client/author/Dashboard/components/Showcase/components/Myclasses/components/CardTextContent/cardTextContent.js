@@ -91,7 +91,10 @@ export const CardTextContent = ({ data, history, userId, districtId }) => {
           </RightCol>
         )}
       </RowWrapper>
-      <RowWrapper1 onClick={() => gotoAssignedAssessment()}>
+      <RowWrapper1
+        onClick={() => gotoAssignedAssessment()}
+        data-testid="assignmentsInfo"
+      >
         <Label>RECENT</Label>
         {asgnTitle ? (
           <FlexContainer

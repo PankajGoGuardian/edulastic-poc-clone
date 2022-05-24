@@ -239,7 +239,7 @@ const AudioControls = ({
       stopAllAudios()
       Howler.unload()
     }
-  }, [qId])
+  }, [qId, audioSrc])
 
   const handleStopAudio = () => {
     currentHowl?.stop()

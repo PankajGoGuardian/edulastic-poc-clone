@@ -395,10 +395,7 @@ class QuestionWrapper extends Component {
   // @see EV-25152 | need to display show rubric button in student attempt and test review modal
   get showRubricToStudentsButton() {
     const {
-      assignmentLevelSettings: {
-        releaseScore,
-        showRubricToStudents = false,
-      } = {},
+      assignmentLevelSettings: { showRubricToStudents = false } = {},
       isTestPreviewModalVisible = false,
       isTestDemoPlayer = false,
       userRole,
@@ -409,8 +406,6 @@ class QuestionWrapper extends Component {
       data: { rubrics } = {},
       isPremiumUser,
     } = this.props
-
-    const { releaseGradeLabels } = test
 
     // return if rubric is not attached to the question
     if (isEmpty(rubrics)) {
@@ -431,7 +426,6 @@ class QuestionWrapper extends Component {
     return (
       userRole === roleuser.STUDENT &&
       view === 'preview' &&
-      releaseScore !== releaseGradeLabels.DONT_RELEASE &&
       showRubricToStudents
     )
   }

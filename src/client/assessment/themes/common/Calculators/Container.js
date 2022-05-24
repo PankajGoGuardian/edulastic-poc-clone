@@ -252,7 +252,7 @@ const EnhancedCalculator = connect((state) => ({
 
 const Container = styled.div`
   position: absolute;
-  /* froala editor z-index is 998
+  /* froala editor z-index is 997 or 996
    * @see: https://snapwiz.atlassian.net/browse/EV-19515
    */
   z-index: 1000;

@@ -432,9 +432,17 @@ const getRouteByGeneralRoute = (user) => {
       return '/admin/search/clever'
     case roleuser.DISTRICT_ADMIN:
     case roleuser.SCHOOL_ADMIN:
-      if (!user?.user?.features?.premium) return '/author/reports'
+      if (!user?.user?.features?.premium) {
+        return '/author/reports'
+      }
+      if (user?.user?.features?.isCurator) {
+        return '/publisher/dashboard'
+      }
       return '/author/assignments'
     case roleuser.TEACHER:
+      if (user?.user?.features?.isPublisherAuthor) {
+        return '/author/items'
+      }
       return '/author/dashboard'
     case roleuser.STUDENT:
     case roleuser.PARENT:

@@ -199,8 +199,6 @@ function getPointsFromFlatConfig(type, pointIds, config) {
     case CONSTANT.TOOLS.EXPONENTIAL2:
     case CONSTANT.TOOLS.PIECEWISE_LINE:
     case CONSTANT.TOOLS.PARABOLA:
-    case CONSTANT.TOOLS.ROSE:
-    case CONSTANT.TOOLS.CARDIOID:
       return Object.keys(pointIds)
         .sort()
         .map((k) => config.find((element) => element.id === pointIds[k]))
@@ -458,7 +456,9 @@ export function flatConfig(config, accArg = {}, isSub = false) {
     if (
       type === CONSTANT.TOOLS.POINT ||
       type === CONSTANT.TOOLS.AREA ||
-      type === CONSTANT.TOOLS.DRAG_DROP
+      type === CONSTANT.TOOLS.DRAG_DROP ||
+      type === CONSTANT.TOOLS.CARDIOID ||
+      type === CONSTANT.TOOLS.ROSE
     ) {
       if (!acc[id]) {
         acc[id] = element
@@ -492,9 +492,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
       type !== CONSTANT.TOOLS.PARABOLA2 &&
       type !== CONSTANT.TOOLS.EXPONENTIAL2 &&
       type !== CONSTANT.TOOLS.PIECEWISE_LINE &&
-      type !== CONSTANT.TOOLS.PARABOLA &&
-      type !== CONSTANT.TOOLS.ROSE &&
-      type !== CONSTANT.TOOLS.CARDIOID
+      type !== CONSTANT.TOOLS.PARABOLA
     ) {
       acc[id].subElementsIds = {
         startPoint: points[0].id,
@@ -544,7 +542,9 @@ export function flat2nestedConfig(config) {
             if (
               type === CONSTANT.TOOLS.POINT ||
               type === CONSTANT.TOOLS.DRAG_DROP ||
-              type === CONSTANT.TOOLS.AREA
+              type === CONSTANT.TOOLS.AREA ||
+              type === CONSTANT.TOOLS.CARDIOID ||
+              type === CONSTANT.TOOLS.ROSE
             ) {
               acc[id].x = element.x
               acc[id].y = element.y

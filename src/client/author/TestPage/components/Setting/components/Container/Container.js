@@ -747,6 +747,7 @@ class Setting extends Component {
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
+      allowTeacherRedirect = false,
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
@@ -1141,6 +1142,28 @@ class Setting extends Component {
                       </Body>
                     </Row>
                   </Block>
+
+                  {(userRole === roleuser.DISTRICT_ADMIN ||
+                    userRole === roleuser.SCHOOL_ADMIN) &&
+                    COMMON.includes(testType) && (
+                      <Block id="allow-redirect" smallSize={isSmallSize}>
+                        <Row>
+                          <Title>
+                            <span>Allow Teachers to Redirect</span>
+                            <EduSwitchStyled
+                              disabled={freezeSettings}
+                              data-cy="allow-redirect"
+                              checked={allowTeacherRedirect}
+                              onChange={(value) =>
+                                this.updateTestData('allowTeacherRedirect')(
+                                  value
+                                )
+                              }
+                            />
+                          </Title>
+                        </Row>
+                      </Block>
+                    )}
 
                   {(userRole === roleuser.DISTRICT_ADMIN ||
                     userRole === roleuser.SCHOOL_ADMIN) &&

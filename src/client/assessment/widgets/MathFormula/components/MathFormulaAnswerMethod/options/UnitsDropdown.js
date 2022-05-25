@@ -134,7 +134,9 @@ const UnitsDropdownPure = ({
       {item.showDropdown && view !== 'edit' && (
         <DropdownWrapper menuStyle={menuStyle} ref={dropdownWrapper}>
           <SelectInputStyled
-            value={preview ? selected : options ? options.unit : ''}
+            value={getLabel({
+              handler: preview ? selected : options ? options.unit : '',
+            })}
             onChange={handleChange}
             disabled={disabled}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}

@@ -26,6 +26,7 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
   const [isEEAUser, setIsEEAUser] = useState(false)
+  const [noLocation, setNoLocation] = useState(false)
 
   useEffect(() => {
     setShowSpinner(true)
@@ -34,6 +35,7 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
       .getUserLocation()
       .then(({ result }) => {
         setIsEEAUser(result?.isEEAUser)
+        setNoLocation(result?.noLocation)
         setShowSpinner(false)
         setLocationData(result)
       })
@@ -73,15 +75,17 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
         <OnWhiteBgLogo />
       </EdulasticLogo>
       <ModalTitle data-testid="eulaModalTitle" data-cy="eulaModalTitle">
-        End User License Agreement{!isEEAUser ? ' and' : ','} Product Privacy
-        Policy {isEEAUser && 'and Edulastic Data Processing Addendum'}
+        End User License Agreement{!isEEAUser || !noLocation ? ' and' : ','}{' '}
+        Product Privacy Policy{' '}
+        {(isEEAUser || noLocation) && 'and Edulastic Data Processing Addendum'}
       </ModalTitle>
       <ModalHeaderSubcontent data-cy="eulaModalSubTitle">
         Welcome to <b>Edulastic!</b> Before we proceed, please read our entire
         (1) Terms of Service and End User License Agreement;{' '}
-        {!isEEAUser && 'and'} (2) Product Privacy Policy
-        {isEEAUser && ' and (3) Edulastic Data Processing Addendum '} to make
-        sure we’re on the same page.
+        {(!isEEAUser || !noLocation) && 'and'} (2) Product Privacy Policy
+        {(isEEAUser || noLocation) &&
+          ' and (3) Edulastic Data Processing Addendum '}{' '}
+        to make sure we’re on the same page.
       </ModalHeaderSubcontent>
     </>
   )
@@ -122,7 +126,7 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
         <ModalTextBody>
           <EulaPolicyContent />
           <ProductPolicyContent />
-          {isEEAUser && <EeaPolicyContent />}
+          {(isEEAUser || noLocation) && <EeaPolicyContent />}
           <CheckboxWrapper data-cy="policyAgreeCheckboxText">
             <CheckboxLabel
               onChange={onCheck}

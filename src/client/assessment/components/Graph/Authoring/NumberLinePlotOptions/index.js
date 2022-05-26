@@ -1,7 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import NumberLinePlotMoreOptions from './NumberLinePlotMoreOptions'
-import { fontSizeList } from '../constants/options'
 
 const NumberLinePlotOptions = ({
   setCanvas,
@@ -23,7 +22,6 @@ const NumberLinePlotOptions = ({
       cleanSections={cleanSections}
       setNumberline={setNumberline}
       setValidation={setValidation}
-      fontSizeList={fontSizeList}
       graphData={graphData}
       advancedAreOpen={advancedAreOpen}
     />

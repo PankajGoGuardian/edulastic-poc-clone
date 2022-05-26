@@ -42,7 +42,6 @@ class NumberLinePlotMoreOptions extends Component {
   render() {
     const {
       t,
-      fontSizeList,
       fillSections,
       cleanSections,
       setValidation,
@@ -113,7 +112,6 @@ class NumberLinePlotMoreOptions extends Component {
           <DisplayOptions
             uiStyle={uiStyle}
             canvas={canvas}
-            fontSizeList={fontSizeList}
             numberlineAxis={numberlineAxis}
             setOptions={setOptions}
             setNumberline={setNumberline}
@@ -138,7 +136,6 @@ NumberLinePlotMoreOptions.propTypes = {
   setCanvas: PropTypes.func.isRequired,
   setNumberline: PropTypes.func.isRequired,
   setOptions: PropTypes.func.isRequired,
-  fontSizeList: PropTypes.array.isRequired,
   setValidation: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
   setControls: PropTypes.func.isRequired,

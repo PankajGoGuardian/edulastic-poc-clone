@@ -860,7 +860,7 @@ class GraphContainer extends PureComponent {
                 selected={[selectedTool]}
                 onSelectControl={this.onSelectControl}
                 onSelect={this.onSelectTool}
-                fontSize={bgShapes ? 14 : layout.fontSize}
+                fontSize={bgShapes ? '14px' : layout.fontSize}
               />
             </StyledToolsContainer>
           )}

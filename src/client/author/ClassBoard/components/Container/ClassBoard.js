@@ -20,7 +20,11 @@ import {
   IconRemove,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { testActivityStatus } from '@edulastic/constants'
+import {
+  testActivityStatus,
+  testTypes as testTypesConstants,
+  roleuser,
+} from '@edulastic/constants'
 import { Dropdown, Select, notification as antNotification } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
@@ -138,9 +142,16 @@ import { getSubmittedDate } from '../../utils'
 import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
+  getUserId,
 } from '../../../src/selectors/user'
-import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
+import {
+  getRegradeModalStateSelector,
+  getTestEntitySelector,
+} from '../../../TestPage/ducks'
+import { getTestTypeSelector } from '../../../TestPage/components/Setting/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
+
+const { COMMON } = testTypesConstants.TEST_TYPES
 
 const NotificationComponent = (props) => {
   notification(props)
@@ -1096,6 +1107,11 @@ class ClassBoard extends Component {
       setPageNumber,
       isDocBasedTest,
       isProxiedByEAAccount,
+      testType,
+      entity,
+      userRole,
+      userId,
+      assignedBy,
     } = this.props
 
     const {
@@ -1553,6 +1569,12 @@ class ClassBoard extends Component {
                     <RedirectButton
                       data-cy="rediectButton"
                       onClick={this.handleRedirect}
+                      disabled={
+                        COMMON.includes(testType) &&
+                        !entity.allowRedirectToTeacher &&
+                        roleuser.TEACHER === userRole &&
+                        !assignedBy === userId
+                      }
                     >
                       <ButtonIconWrap>
                         <IconRedirect />
@@ -2107,6 +2129,12 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
       isDocBasedTest: getIsDocBasedTestSelector(state),
+      testType: getTestTypeSelector(state),
+      entity: getTestEntitySelector(state),
+      userId: getUserId(state),
+      assignedBy:
+        state?.author_classboard_testActivity?.additionalData?.assignedBy
+          ?._id || '',
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

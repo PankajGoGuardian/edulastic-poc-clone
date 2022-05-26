@@ -1094,7 +1094,11 @@ function* launchAssignment({ payload }) {
             yield put(setConfirmationForTimedAssessmentAction(assignment))
             return
           }
-          if (!testActivities.length && hasInstruction && instruction) {
+          if (
+            lastActivity.status === testActivityStatus.NOT_STARTED &&
+            hasInstruction &&
+            instruction
+          ) {
             yield put(
               showTestInstructionsAction({ showInstruction: true, assignment })
             )

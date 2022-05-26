@@ -2767,8 +2767,12 @@ function* publishForRegrade({ payload }) {
   try {
     yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
+    const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
+    }
+    if (!enabledRefMaterial && !isEmpty(_test.referenceDocAttributes)) {
+      _test.referenceDocAttributes = {}
     }
     if (!validateRestrictNavigationOut(_test)) {
       yield put(setUpdatingTestForRegradeStateAction(false))

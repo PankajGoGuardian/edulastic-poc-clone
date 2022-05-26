@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
-import { test } from '@edulastic/constants'
+import { test, testTypes } from '@edulastic/constants'
 import {
   RadioBtn,
   notification,
@@ -34,9 +34,12 @@ import {
   getIsOverrideFreezeSelector,
   getmultiLanguageEnabled,
 } from '../../../ClassBoard/ducks'
+import { getTestTypeSelector } from '../../../TestPage/components/Setting/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
 import CalculatorSelector from './CalculatorSelector'
+
+const { COMMON } = testTypes
 
 const {
   releaseGradeTypes,
@@ -76,6 +79,7 @@ const Settings = ({
   totalItems,
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
+  testType,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -270,6 +274,7 @@ const Settings = ({
     restrictNavigationOut = tempTestSettings.restrictNavigationOut,
     safeBrowser = tempTestSettings.safeBrowser,
     restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
+    allowTeacherRedirect = false,
   } = assignmentSettings
 
   const showMultiLangSelection =
@@ -441,7 +446,32 @@ const Settings = ({
           </SettingContainer>
         )}
         {/* Multi language */}
-
+        {COMMON.includes(testType) && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="Allow Teachers to Redirect"
+              content="When selected, allows students to automatically retake a test when they scored below a set threshold. Enables students to practice and improve learning through multiple self-directed attempts."
+              premium={assessmentSuperPowersAutoRedirect}
+            />
+            <StyledRow gutter={16}>
+              <StyledCol span={12}>
+                <Label>Allow Teachers to Redirect</Label>
+              </StyledCol>
+              <StyledCol span={12}>
+                <AlignSwitchRight
+                  data-cy="allow-teacher-redirect-switch"
+                  size="small"
+                  defaultChecked
+                  disabled={freezeSettings}
+                  checked={allowTeacherRedirect}
+                  onChange={(value) =>
+                    changeField('allowTeacherRedirect')(value)
+                  }
+                />
+              </StyledCol>
+            </StyledRow>
+          </SettingContainer>
+        )}
         {/* Auto Redirect */}
         <SettingContainer>
           <DetailsTooltip
@@ -1023,6 +1053,7 @@ export default connect(
     features: state?.user?.user?.features,
     lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
     allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+    testType: getTestTypeSelector(state),
   }),
   null
 )(withRouter(Settings))

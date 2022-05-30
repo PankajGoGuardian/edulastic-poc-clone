@@ -1802,6 +1802,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const {
     ASSESSMENT,
     COMMON_ASSESSMENT,
+    PRACTICE: _PRACTICE,
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
@@ -1865,7 +1866,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   }
 
   if (!isPlaylist && features.free && !features.premium) {
-    settings.testType = ASSESSMENT
+    settings.testType = PRACTICE.includes(testType) ? _PRACTICE : ASSESSMENT
     settings.maxAttempts = 1
     settings.markAsDone = completionTypes.AUTOMATICALLY
     settings.releaseScore = releaseGradeLabels.DONT_RELEASE

@@ -52,14 +52,6 @@ const studentFiltersDefaultValues = [
   },
 ]
 
-const testTypeHashMap = {
-  practice: 'practice',
-  common: 'common',
-  class: 'class',
-  'common assessment': 'common',
-  assessment: 'class',
-}
-
 const DemographicCompareByOptions = [
   'gender',
   'race',
@@ -458,7 +450,6 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
-  testTypeHashMap,
   DemographicCompareByOptions,
   percentage,
   roundedPercentage,

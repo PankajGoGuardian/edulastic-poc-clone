@@ -102,8 +102,9 @@ import UpdateTestSettingsModal from '../../../../../AssignTest/components/Contai
 import { multiFind } from '../../../../../../common/utils/main'
 import CalculatorSetting from './CalculatorSetting'
 import {
+  getAvailableTestTypesForUser,
   getProfileKey,
-  getTestTypeFullNames,
+  includeCommonOnTestType,
 } from '../../../../../../common/utils/testTypeUtils'
 
 const {
@@ -766,7 +767,11 @@ class Setting extends Component {
       standardGradingScale: _standardGradingScale,
     } = entity
 
-    const testTypes = getTestTypeFullNames(premium, userRole, testType)
+    const availableTestTypes = getAvailableTestTypesForUser({
+      isPremium: premium,
+      role: userRole,
+    })
+    const testTypes = includeCommonOnTestType(availableTestTypes, testType)
     let isSettingPresent = false
     if (
       currentSettingsId &&

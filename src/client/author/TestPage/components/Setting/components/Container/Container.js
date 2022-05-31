@@ -748,6 +748,7 @@ class Setting extends Component {
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
+      allowTeacherRedirect = true,
       freezeSettings = false,
       hasInstruction = false,
       instruction = '',
@@ -1146,6 +1147,32 @@ class Setting extends Component {
                       </Body>
                     </Row>
                   </Block>
+
+                  {COMMON.includes(testType) && (
+                    <Block id="allow-redirect" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>Allow Teachers to Redirect</span>
+                          <EduSwitchStyled
+                            disabled={disabled}
+                            data-cy="allow-redirect"
+                            checked={allowTeacherRedirect}
+                            onChange={(value) =>
+                              this.updateTestData('allowTeacherRedirect')(value)
+                            }
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description>
+                            When allow teachers to redirect is set to ON,
+                            teachers are allowed to redirect a common test for
+                            their class. Set to OFF to prevent teachers from
+                            using the redirect test feature.
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
 
                   {(userRole === roleuser.DISTRICT_ADMIN ||
                     userRole === roleuser.SCHOOL_ADMIN) &&

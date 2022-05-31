@@ -262,6 +262,7 @@ function getSettingsSelector(state) {
     restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold,
     allowedOpenDate,
+    allowTeacherRedirect,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -355,6 +356,7 @@ function getSettingsSelector(state) {
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       allowedOpenDate,
+      allowTeacherRedirect,
     },
     isUndefined
   )

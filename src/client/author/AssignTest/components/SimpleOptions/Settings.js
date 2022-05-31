@@ -1,8 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
-import { test } from '@edulastic/constants'
+import { test, testTypes } from '@edulastic/constants'
 import {
   RadioBtn,
   notification,
@@ -37,6 +39,8 @@ import {
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
 import CalculatorSelector from './CalculatorSelector'
+
+const { COMMON } = testTypes.TEST_TYPES
 
 const {
   releaseGradeTypes,
@@ -76,6 +80,7 @@ const Settings = ({
   totalItems,
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
+  t,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -265,11 +270,13 @@ const Settings = ({
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
+    testType = tempTestSettings.testType,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     blockSaveAndContinue = tempTestSettings.blockSaveAndContinue,
     restrictNavigationOut = tempTestSettings.restrictNavigationOut,
     safeBrowser = tempTestSettings.safeBrowser,
     restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
+    allowTeacherRedirect = tempTestSettings.allowTeacherRedirect,
   } = assignmentSettings
 
   const showMultiLangSelection =
@@ -441,7 +448,32 @@ const Settings = ({
           </SettingContainer>
         )}
         {/* Multi language */}
-
+        {COMMON.includes(testType) && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="Allow Teachers to Redirect"
+              content={t('allowTeacherToRedirect.info')}
+              premium={assessmentSuperPowersAutoRedirect}
+            />
+            <StyledRow gutter={16}>
+              <StyledCol span={12}>
+                <Label>Allow Teachers to Redirect</Label>
+              </StyledCol>
+              <StyledCol span={12}>
+                <AlignSwitchRight
+                  data-cy="allow-teacher-redirect-switch"
+                  size="small"
+                  defaultChecked
+                  disabled={freezeSettings}
+                  checked={allowTeacherRedirect}
+                  onChange={(value) =>
+                    overRideSettings('allowTeacherRedirect', value)
+                  }
+                />
+              </StyledCol>
+            </StyledRow>
+          </SettingContainer>
+        )}
         {/* Auto Redirect */}
         <SettingContainer>
           <DetailsTooltip
@@ -1010,19 +1042,25 @@ const Settings = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    userRole: getUserRole(state),
-    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    premium: state?.user?.user?.features?.premium,
-    calculatorProvider: state?.user?.user?.features?.calculatorProvider,
-    totalItems: state?.tests?.entity?.isDocBased
-      ? state?.tests?.entity?.summary?.totalQuestions
-      : state?.tests?.entity?.summary?.totalItems,
-    freezeSettings: getIsOverrideFreezeSelector(state),
-    features: state?.user?.user?.features,
-    lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
-    allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
-  }),
-  null
-)(withRouter(Settings))
+const enhance = compose(
+  withNamespaces('author'),
+  withRouter,
+  connect(
+    (state) => ({
+      userRole: getUserRole(state),
+      disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+      premium: state?.user?.user?.features?.premium,
+      calculatorProvider: state?.user?.user?.features?.calculatorProvider,
+      totalItems: state?.tests?.entity?.isDocBased
+        ? state?.tests?.entity?.summary?.totalQuestions
+        : state?.tests?.entity?.summary?.totalItems,
+      freezeSettings: getIsOverrideFreezeSelector(state),
+      features: state?.user?.user?.features,
+      lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+    }),
+    null
+  )
+)
+
+export default enhance(Settings)

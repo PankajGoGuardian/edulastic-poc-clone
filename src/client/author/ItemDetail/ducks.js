@@ -1276,12 +1276,6 @@ export function* updateItemSaga({ payload }) {
       resourceTypes.includes(item.type)
     )
 
-    if (isPassageWithQuestions && !questions.length) {
-      notification({ messageKey: 'CannotSaveWithoutQuestions' })
-      yield put(itemUpdateCompletedAction())
-      return null
-    }
-
     const _widgets = rows
       .flatMap(({ widgets }) => widgets)
       .filter((widget) => widget.widgetType === 'question')

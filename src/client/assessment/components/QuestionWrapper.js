@@ -87,8 +87,6 @@ import {
 } from '../../common/components/LanguageSelector/duck'
 import { StyledPaperWrapper } from '../styled/Widget'
 import Pictograph from '../widgets/Pictorgraph'
-import { setQuestionScoreAction } from '../../author/sharedDucks/questions'
-import { setItemLevelScoreAction } from '../../author/ItemDetail/ducks'
 
 const DummyQuestion = () => <></>
 
@@ -296,42 +294,6 @@ class QuestionWrapper extends Component {
 
   componentDidMount() {
     this.setPage(1)
-
-    const {
-      data: question,
-      testItemDetail,
-      testItemsInTest,
-      setQuestionLevelScore,
-      setItemLevelScore,
-      match,
-    } = this.props
-    const {
-      params: { testId, itemId },
-      path,
-    } = match
-
-    if (!(testId && itemId && path.includes('/author/tests'))) return
-
-    if (testItemsInTest.length && testItemDetail && question) {
-      const matchingTestItem = testItemsInTest.find(
-        ({ _id }) => _id === testItemDetail._id
-      )
-
-      if (!matchingTestItem) return
-
-      const questions = matchingTestItem.data.questions || []
-
-      const matchingQuestion = questions.find(({ id }) => id === question.id)
-
-      if (matchingQuestion) {
-        const score = matchingQuestion.validation.validResponse.score
-        setQuestionLevelScore({ qid: question.id, score })
-      }
-
-      if (matchingTestItem.itemLevelScore) {
-        setItemLevelScore(matchingTestItem.itemLevelScore)
-      }
-    }
   }
 
   openStudentWork = () => {
@@ -938,17 +900,10 @@ const enhance = compose(
         ['userInteractions', 'passages'],
         {}
       ),
-      testItemsInTest:
-        get(state, 'tests.entity.itemGroups', []).flatMap(
-          (itemGroup) => itemGroup.items || []
-        ) || [],
-      testItemDetail: get(state, 'itemDetail.item', {}),
     }),
     {
       loadScratchPad: requestScratchPadAction,
       setPassageCurrentPage: setPassageCurrentPageAction,
-      setQuestionLevelScore: setQuestionScoreAction,
-      setItemLevelScore: setItemLevelScoreAction,
     }
   )
 )

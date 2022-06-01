@@ -1148,6 +1148,7 @@ function* receiveItemSaga({ payload }) {
     })
 
     const { itemLevelScore } = data
+    yield put(setItemLevelScoreAction(itemLevelScore))
 
     yield put({
       type: CLEAR_DICT_ALIGNMENTS,

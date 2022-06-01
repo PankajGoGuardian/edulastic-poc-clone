@@ -540,6 +540,10 @@ class QuestionWrapper extends Component {
       hideCorrectAnswer,
       isReviewTab,
       page: viewPage,
+      assignmentLevelSettings: {
+        showHintsToStudents = true,
+        penaltyOnUsingHints = 0,
+      },
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -647,6 +651,7 @@ class QuestionWrapper extends Component {
     const answerScore = this.answerScore
     const showAnswerScore =
       isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
+
     return (
       <ThemeProvider
         theme={{
@@ -829,6 +834,8 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                       displayRubricInfoButton={this.showRubricToStudentsButton}
                       rubricDetails={rubricDetails}
+                      showHintsToStudents={showHintsToStudents}
+                      penaltyOnUsingHints={penaltyOnUsingHints}
                     />
                   )}
                 </StyledFlexContainer>

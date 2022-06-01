@@ -128,6 +128,14 @@ const slice = createSlice({
             delete state.updateSettings.restrictNavigationOutAttemptsThreshold
           }
         }
+        if (
+          key === 'showHintsToStudents' &&
+          value === false &&
+          state.assignment.penaltyOnUsingHints > 0
+        ) {
+          state.assignment.penaltyOnUsingHints = 0
+          state.updateSettings.penaltyOnUsingHints = 0
+        }
       }
     },
   },
@@ -263,6 +271,8 @@ function getSettingsSelector(state) {
     restrictNavigationOutAttemptsThreshold,
     allowedOpenDate,
     allowTeacherRedirect,
+    showHintsToStudents,
+    penaltyOnUsingHints,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -357,6 +367,8 @@ function getSettingsSelector(state) {
       restrictNavigationOutAttemptsThreshold,
       allowedOpenDate,
       allowTeacherRedirect,
+      showHintsToStudents,
+      penaltyOnUsingHints,
     },
     isUndefined
   )

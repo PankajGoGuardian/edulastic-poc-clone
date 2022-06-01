@@ -43,6 +43,11 @@ module.exports = {
       type: 'settings-category',
     },
     {
+      id: 'student-tools',
+      title: 'Student Tools',
+      type: 'student-tools',
+    },
+    {
       id: 'anti-cheating',
       title: 'Anti-Cheating',
       type: 'settings-category',
@@ -397,6 +402,8 @@ module.exports = {
     'testContentVisibility',
     'showRubricToStudents',
     'referenceDocAttributes',
+    'showHintsToStudents',
+    'penaltyOnUsingHints',
   ],
   docBasedSettingsOptions: [
     'partialScore',

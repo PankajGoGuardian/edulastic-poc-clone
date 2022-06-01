@@ -106,6 +106,7 @@ import {
   getProfileKey,
   includeCommonOnTestType,
 } from '../../../../../../common/utils/testTypeUtils'
+import HintsToStudents from './HintsToStudents'
 
 const {
   settingCategories,
@@ -158,6 +159,7 @@ class Setting extends Component {
       showDeleteSettingModal: false,
       showUpdateSettingModal: false,
       settingDetails: null,
+      isStudentToolsGroupExpanded: true,
     }
 
     this.containerRef = React.createRef()
@@ -251,8 +253,9 @@ class Setting extends Component {
       defaultTestTypeProfiles,
       isReleaseScorePremium,
       disableAnswerOnPaper,
-      entity: { testType },
+      entity: { testType, penaltyOnUsingHints },
     } = this.props
+    const extraData = {}
     switch (key) {
       case 'testType': {
         const testProfileType = getProfileKey(value)
@@ -390,11 +393,17 @@ class Setting extends Component {
           ['_id', 'name']
         )
         break
+      case 'showHintsToStudents':
+        if (value === false && penaltyOnUsingHints > 0) {
+          Object.assign(extraData, { penaltyOnUsingHints: 0 })
+        }
+        break
       default:
         break
     }
     setTestData({
       [key]: value,
+      ...extraData,
     })
   }
 
@@ -696,6 +705,7 @@ class Setting extends Component {
       showDeleteSettingModal,
       settingDetails,
       showUpdateSettingModal,
+      isStudentToolsGroupExpanded,
     } = this.state
     const {
       current,
@@ -766,6 +776,8 @@ class Setting extends Component {
       showRubricToStudents = false,
       performanceBand: _performanceBand,
       standardGradingScale: _standardGradingScale,
+      showHintsToStudents = true,
+      penaltyOnUsingHints = 0,
     } = entity
 
     const availableTestTypes = getAvailableTestTypesForUser({
@@ -874,8 +886,11 @@ class Setting extends Component {
       },
     ]
 
+    const isTestlet =
+      playerSkinType?.toLowerCase() === playerSkinValues.testlet.toLowerCase()
+
     const advancedSettingCategoris = settingCategories.slice(-6, -4)
-    if (playerSkinType === playerSkinValues.testlet.toLowerCase()) {
+    if (isTestlet) {
       advancedSettingCategoris.push({
         id: 'external-metadata',
         title: 'External Metadata',
@@ -1386,53 +1401,6 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
 
-                  <Block id="show-calculator" smallSize={isSmallSize}>
-                    <SettingContainer>
-                      <Title>
-                        Show Calculator{' '}
-                        <DollarPremiumSymbol
-                          premium={assessmentSuperPowersShowCalculator}
-                        />
-                      </Title>
-                      <Body smallSize={isSmallSize}>
-                        <Row>
-                          <Col span={8}>
-                            <CalculatorSetting
-                              onChangeHandle={this.updateFeatures('calcType')}
-                              disabled={
-                                disabled || !assessmentSuperPowersShowCalculator
-                              }
-                              calcType={calcType}
-                              premium={premium}
-                              calculatorProvider={calculatorProvider}
-                            />
-                          </Col>
-                          <Col span={16}>
-                            <Description>
-                              If students can use an on-screen calculator,
-                              select the type to make available on the test.
-                            </Description>
-                          </Col>
-                        </Row>
-                      </Body>
-                    </SettingContainer>
-                  </Block>
-
-                  {this.isReferenceMaterialAllowedForCurrentSkin &&
-                    !isDocBased && (
-                      <Block id="reference-material" smallSize={isSmallSize}>
-                        <ReferenceMaterial
-                          owner={owner}
-                          isEditable={isEditable}
-                          isSmallSize={isSmallSize}
-                          premium={premium}
-                          disabled={disabled}
-                          setData={this.handleUpdateRefMaterial}
-                          referenceDocAttributes={referenceDocAttributes}
-                        />
-                      </Block>
-                    )}
-
                   <Block id="timed-test" smallSize={isSmallSize}>
                     <SettingContainer>
                       <Title>
@@ -1516,44 +1484,6 @@ class Setting extends Component {
                       </Body>
                     </SettingContainer>
                   </Block>
-
-                  {!isDocBased && (
-                    <Block id="show-rubric-to-students" smallSize={isSmallSize}>
-                      <SettingContainer>
-                        <Title>
-                          <span>Show Rubric to Students </span>
-                          <DollarPremiumSymbol premium={premium} />
-                          <Tooltip title={t('showRubricToStudents.info')}>
-                            <IconInfo
-                              color={lightGrey9}
-                              style={{ marginLeft: '10px', cursor: 'pointer' }}
-                            />
-                          </Tooltip>
-                          <EduSwitchStyled
-                            disabled={
-                              !isShowRubricToStudentsSettingVisible ||
-                              !owner ||
-                              !isEditable ||
-                              !premium
-                            }
-                            checked={showRubricToStudents}
-                            data-cy="show-rubric-to-students-switch"
-                            onChange={this.updateTestData(
-                              'showRubricToStudents'
-                            )}
-                          />
-                        </Title>
-                        <Body smallSize={isSmallSize}>
-                          <Description
-                            style={{ marginTop: '10px' }}
-                            data-cy="show-rubric-to-students-desc"
-                          >
-                            {t('showRubricToStudents.info')}
-                          </Description>
-                        </Body>
-                      </SettingContainer>
-                    </Block>
-                  )}
 
                   <Block id="maximum-attempts-allowed">
                     <SettingContainer>
@@ -1644,6 +1574,245 @@ class Setting extends Component {
                       </Body>
                     </Block>
                   )}
+                </>
+              )}
+
+              <SettingsCategoryBlock id="student-tools">
+                <span>
+                  Student Tools <DollarPremiumSymbol premium={premium} />
+                </span>
+                <span
+                  onClick={() =>
+                    this.togglePanel(
+                      'isStudentToolsGroupExpanded',
+                      !isStudentToolsGroupExpanded
+                    )
+                  }
+                >
+                  <Icon type={isStudentToolsGroupExpanded ? 'minus' : 'plus'} />
+                </span>
+              </SettingsCategoryBlock>
+              {isStudentToolsGroupExpanded && (
+                <>
+                  <Block id="show-calculator" smallSize={isSmallSize}>
+                    <SettingContainer>
+                      <Title>
+                        Show Calculator{' '}
+                        <DollarPremiumSymbol
+                          premium={assessmentSuperPowersShowCalculator}
+                        />
+                      </Title>
+                      <Body smallSize={isSmallSize}>
+                        <Row>
+                          <Col span={8}>
+                            <CalculatorSetting
+                              onChangeHandle={this.updateFeatures('calcType')}
+                              disabled={
+                                disabled || !assessmentSuperPowersShowCalculator
+                              }
+                              calcType={calcType}
+                              premium={premium}
+                              calculatorProvider={calculatorProvider}
+                            />
+                          </Col>
+                          <Col span={16}>
+                            <Description>
+                              If students can use an on-screen calculator,
+                              select the type to make available on the test.
+                            </Description>
+                          </Col>
+                        </Row>
+                      </Body>
+                    </SettingContainer>
+                  </Block>
+
+                  {!isDocBased && (
+                    <Block id="show-rubric-to-students" smallSize={isSmallSize}>
+                      <SettingContainer>
+                        <Title>
+                          <span>Show Rubric to Students </span>
+                          <DollarPremiumSymbol premium={premium} />
+                          <Tooltip title={t('showRubricToStudents.info')}>
+                            <IconInfo
+                              color={lightGrey9}
+                              style={{ marginLeft: '10px', cursor: 'pointer' }}
+                            />
+                          </Tooltip>
+                          <EduSwitchStyled
+                            disabled={
+                              !isShowRubricToStudentsSettingVisible ||
+                              !owner ||
+                              !isEditable ||
+                              !premium
+                            }
+                            checked={showRubricToStudents}
+                            data-cy="show-rubric-to-students-switch"
+                            onChange={this.updateTestData(
+                              'showRubricToStudents'
+                            )}
+                          />
+                        </Title>
+                        <Body smallSize={isSmallSize}>
+                          <Description
+                            style={{ marginTop: '10px' }}
+                            data-cy="show-rubric-to-students-desc"
+                          >
+                            {t('showRubricToStudents.info')}
+                          </Description>
+                        </Body>
+                      </SettingContainer>
+                    </Block>
+                  )}
+
+                  <HintsToStudents
+                    isSmallSize={isSmallSize}
+                    disabled={disabled}
+                    isDocBased={isDocBased}
+                    isTestlet={isTestlet}
+                    penaltyOnUsingHints={penaltyOnUsingHints}
+                    showHintsToStudents={showHintsToStudents}
+                    updateTestData={this.updateTestData}
+                    showHintsFeatureAllowed={features.showHintsToStudents}
+                  />
+
+                  {this.isReferenceMaterialAllowedForCurrentSkin &&
+                    !isDocBased && (
+                      <Block id="reference-material" smallSize={isSmallSize}>
+                        <ReferenceMaterial
+                          owner={owner}
+                          isEditable={isEditable}
+                          isSmallSize={isSmallSize}
+                          premium={premium}
+                          disabled={disabled}
+                          setData={this.handleUpdateRefMaterial}
+                          referenceDocAttributes={referenceDocAttributes}
+                        />
+                      </Block>
+                    )}
+
+                  <Block id="accessibility" smallSize={isSmallSize}>
+                    <Title>
+                      Accessibility <DollarPremiumSymbol premium={premium} />
+                    </Title>
+                    <RadioWrapper
+                      disabled={disabled}
+                      style={{
+                        marginTop: '20px',
+                        marginBottom: 0,
+                        flexDirection: 'row',
+                      }}
+                    >
+                      {accessibilityData
+                        .filter(
+                          (item) =>
+                            !(item.key === 'enableSkipAlert' && isDocBased)
+                        )
+                        .map((o) => (
+                          <StyledRow key={o.key} align="middle">
+                            <Col span={6}>
+                              <span
+                                style={{
+                                  fontSize: 13,
+                                  fontWeight: 600,
+                                  textTransform: 'uppercase',
+                                }}
+                              >
+                                {accessibilities[o.key]}
+                              </span>
+                            </Col>
+                            <Col span={12}>
+                              <StyledRadioGroup
+                                disabled={disabled || !features[o.key]}
+                                onChange={(e) =>
+                                  this.updateTestData(o.key)(e.target.value)
+                                }
+                                value={o.value}
+                                style={{ flexDirection: 'row', height: '18px' }}
+                              >
+                                <RadioBtn data-cy={`${o.key}-enable`} value>
+                                  ENABLE
+                                </RadioBtn>
+                                <RadioBtn
+                                  data-cy={`${o.key}-disable`}
+                                  value={false}
+                                >
+                                  DISABLE
+                                </RadioBtn>
+                              </StyledRadioGroup>
+                            </Col>
+                            <Col span={24}>
+                              <Description>{o.description}</Description>
+                            </Col>
+                          </StyledRow>
+                        ))}
+                    </RadioWrapper>
+                    <RadioWrapper
+                      disabled={disabled}
+                      style={{
+                        marginTop: '5px',
+                        marginBottom: 0,
+                        flexDirection: 'row',
+                      }}
+                    >
+                      <StyledRow align="middle">
+                        <Col span={6}>
+                          <span
+                            style={{
+                              fontSize: 13,
+                              fontWeight: 600,
+                              textTransform: 'uppercase',
+                            }}
+                          >
+                            Keypad <DollarPremiumSymbol premium={premium} />
+                          </span>
+                        </Col>
+                        <Col span={12}>
+                          <KeypadDropdown
+                            value={this.keypadDropdownValue}
+                            // This anonymous function should be wrapping the keypad selection function to make the Dropdown method work. Issue: EV-29904
+                            onChangeHandler={(value) => {
+                              this.keypadSelection(value)
+                            }}
+                            disabled={disabled || !premium}
+                          />
+                        </Col>
+                        <Col span={24}>
+                          <ConfirmationModal
+                            centered
+                            visible={warningKeypadSelection}
+                            footer={[
+                              <EduButton
+                                isGhost
+                                onClick={() =>
+                                  this.confirmKeypadSelection(false)
+                                }
+                              >
+                                CANCEL
+                              </EduButton>,
+                              <EduButton
+                                onClick={() =>
+                                  this.confirmKeypadSelection(true)
+                                }
+                              >
+                                PROCEED
+                              </EduButton>,
+                            ]}
+                            textAlign="center"
+                            onCancel={() => () =>
+                              this.confirmKeypadSelection(false)}
+                          >
+                            <p>
+                              <b>{t('keypadSettings.warning')}</b>
+                            </p>
+                          </ConfirmationModal>
+                          <Description>
+                            Select keypad to apply current selection to all
+                            questions in the test
+                          </Description>
+                        </Col>
+                      </StyledRow>
+                    </RadioWrapper>
+                  </Block>
                 </>
               )}
 
@@ -2278,130 +2447,6 @@ class Setting extends Component {
                       admins. Teachers can choose from the different profiles
                       created by the admin
                     </Description>
-                  </Block>
-
-                  <Block id="accessibility" smallSize={isSmallSize}>
-                    <Title>
-                      Accessibility <DollarPremiumSymbol premium={premium} />
-                    </Title>
-                    <RadioWrapper
-                      disabled={disabled}
-                      style={{
-                        marginTop: '20px',
-                        marginBottom: 0,
-                        flexDirection: 'row',
-                      }}
-                    >
-                      {accessibilityData
-                        .filter(
-                          (item) =>
-                            !(item.key === 'enableSkipAlert' && isDocBased)
-                        )
-                        .map((o) => (
-                          <StyledRow key={o.key} align="middle">
-                            <Col span={6}>
-                              <span
-                                style={{
-                                  fontSize: 13,
-                                  fontWeight: 600,
-                                  textTransform: 'uppercase',
-                                }}
-                              >
-                                {accessibilities[o.key]}
-                              </span>
-                            </Col>
-                            <Col span={12}>
-                              <StyledRadioGroup
-                                disabled={disabled || !features[o.key]}
-                                onChange={(e) =>
-                                  this.updateTestData(o.key)(e.target.value)
-                                }
-                                value={o.value}
-                                style={{ flexDirection: 'row', height: '18px' }}
-                              >
-                                <RadioBtn data-cy={`${o.key}-enable`} value>
-                                  ENABLE
-                                </RadioBtn>
-                                <RadioBtn
-                                  data-cy={`${o.key}-disable`}
-                                  value={false}
-                                >
-                                  DISABLE
-                                </RadioBtn>
-                              </StyledRadioGroup>
-                            </Col>
-                            <Col span={24}>
-                              <Description>{o.description}</Description>
-                            </Col>
-                          </StyledRow>
-                        ))}
-                    </RadioWrapper>
-                    <RadioWrapper
-                      disabled={disabled}
-                      style={{
-                        marginTop: '5px',
-                        marginBottom: 0,
-                        flexDirection: 'row',
-                      }}
-                    >
-                      <StyledRow align="middle">
-                        <Col span={6}>
-                          <span
-                            style={{
-                              fontSize: 13,
-                              fontWeight: 600,
-                              textTransform: 'uppercase',
-                            }}
-                          >
-                            Keypad <DollarPremiumSymbol premium={premium} />
-                          </span>
-                        </Col>
-                        <Col span={12}>
-                          <KeypadDropdown
-                            value={this.keypadDropdownValue}
-                            // This anonymous function should be wrapping the keypad selection function to make the Dropdown method work. Issue: EV-29904
-                            onChangeHandler={(value) => {
-                              this.keypadSelection(value)
-                            }}
-                            disabled={disabled || !premium}
-                          />
-                        </Col>
-                        <Col span={24}>
-                          <ConfirmationModal
-                            centered
-                            visible={warningKeypadSelection}
-                            footer={[
-                              <EduButton
-                                isGhost
-                                onClick={() =>
-                                  this.confirmKeypadSelection(false)
-                                }
-                              >
-                                CANCEL
-                              </EduButton>,
-                              <EduButton
-                                onClick={() =>
-                                  this.confirmKeypadSelection(true)
-                                }
-                              >
-                                PROCEED
-                              </EduButton>,
-                            ]}
-                            textAlign="center"
-                            onCancel={() => () =>
-                              this.confirmKeypadSelection(false)}
-                          >
-                            <p>
-                              <b>{t('keypadSettings.warning')}</b>
-                            </p>
-                          </ConfirmationModal>
-                          <Description>
-                            Select keypad to apply current selection to all
-                            questions in the test
-                          </Description>
-                        </Col>
-                      </StyledRow>
-                    </RadioWrapper>
                   </Block>
 
                   {playerSkinType ===

@@ -214,6 +214,13 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     ? test.referenceDocAttributes
     : assignmentSettings.referenceDocAttributes
 
+  const showHintsToStudents = preview
+    ? true
+    : assignmentSettings.showHintsToStudents
+  const penaltyOnUsingHints = preview
+    ? test.penaltyOnUsingHints || 0
+    : assignmentSettings.penaltyOnUsingHints || 0
+
   return {
     testType,
     calcProvider,
@@ -243,6 +250,8 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
       assignmentSettings?.restrictNavigationOutAttemptsThreshold,
     referenceDocAttributes,
     ...(preview && { keypad: test?.keypad?.value }),
+    showHintsToStudents,
+    penaltyOnUsingHints,
   }
 }
 

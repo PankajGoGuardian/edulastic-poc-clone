@@ -27,6 +27,7 @@ import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
+import ShowHintsToStudents from './ShowHintsToStudents'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -63,6 +64,7 @@ const TestBehaviorGroupContainer = ({
   tootltipWidth,
   showAssignModuleContent,
   t,
+  allowToUseShowHintsToStudents,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -81,6 +83,8 @@ const TestBehaviorGroupContainer = ({
     allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
+    showHintsToStudents = testSettings?.showHintsToStudents || true,
+    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints || 0,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
@@ -476,6 +480,19 @@ const TestBehaviorGroupContainer = ({
           </StyledRow>
         </SettingContainer>
       )}
+
+      <ShowHintsToStudents
+        tootltipWidth={tootltipWidth}
+        premium={premium}
+        content=""
+        freezeSettings={freezeSettings}
+        showHintsToStudents={showHintsToStudents}
+        penaltyOnUsingHints={penaltyOnUsingHints}
+        overRideSettings={overRideSettings}
+        allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
+        isDocBased={isDocBased}
+        isTestlet={playerSkinType?.toLowerCase() === playerSkinValues.testlet}
+      />
 
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||

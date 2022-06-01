@@ -5,6 +5,7 @@ import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
 import { test, testTypes } from '@edulastic/constants'
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import {
   RadioBtn,
   notification,
@@ -39,6 +40,8 @@ import {
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
 import CalculatorSelector from './CalculatorSelector'
+import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
+import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
 
 const { COMMON } = testTypes.TEST_TYPES
 
@@ -253,6 +256,7 @@ const Settings = ({
     assessmentSuperPowersTimedTest,
     assessmentSuperPowersRestrictQuestionBackNav,
     maxAttemptAllowed,
+    showHintsToStudents: showHintsToStudentsFeatureAllowed,
   } = features
 
   const {
@@ -277,6 +281,9 @@ const Settings = ({
     safeBrowser = tempTestSettings.safeBrowser,
     restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
     allowTeacherRedirect = tempTestSettings.allowTeacherRedirect,
+    showHintsToStudents = tempTestSettings.showHintsToStudents,
+    penaltyOnUsingHints = tempTestSettings.penaltyOnUsingHints,
+    playerSkinType = testSettings.playerSkinType,
   } = assignmentSettings
 
   const showMultiLangSelection =
@@ -285,6 +292,8 @@ const Settings = ({
   const navigationThresholdMoreThan1 =
     restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
     restrictNavigationOutAttemptsThreshold > 1
+
+  const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -887,6 +896,46 @@ const Settings = ({
           </StyledRow>
         </SettingContainer>
         {/* Timed TEST */}
+
+        {/* Show hints to students */}
+        {showHintsToStudentsFeatureAllowed && !isDocBased && !isTestlet && (
+          <SettingContainer>
+            {/* <DetailsTooltip
+              title="SHOW HINTS TO STUDENTS"
+              content="show hints to students"
+              premium={showHintsToStudentsFeatureAllowed}
+            /> */}
+            <StyledRow gutter={16} mb="15p">
+              <Col span={12}>
+                <Label>SHOW HINTS TO STUDENTS</Label>
+              </Col>
+              <Col span={12}>
+                <StyledRow borderBottom="none" padding="0px 0px 10px 0px">
+                  <ShowHintsSwitch
+                    disabled={freezeSettings}
+                    checked={showHintsToStudents}
+                    onChangeHandler={(value) =>
+                      overRideSettings('showHintsToStudents', value)
+                    }
+                  />
+                </StyledRow>
+                {showHintsToStudents && (
+                  <StyledRow borderBottom="none" padding="0px">
+                    <RadioOptions
+                      disabled={freezeSettings}
+                      penaltyOnUsingHints={penaltyOnUsingHints}
+                      updatePenaltyPoints={(value) =>
+                        overRideSettings('penaltyOnUsingHints', value)
+                      }
+                      isAssignPage
+                    />
+                  </StyledRow>
+                )}
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
+        {/* Show hints to students */}
 
         {/* Answer on Paper */}
         <SettingContainer>

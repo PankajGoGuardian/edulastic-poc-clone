@@ -987,6 +987,8 @@ export const createBlankTest = () => ({
   showMagnifier: true,
   enableScratchpad: true,
   enableSkipAlert: false,
+  showHintsToStudents: true,
+  penaltyOnUsingHints: 0,
 })
 
 const initialState = {
@@ -1841,6 +1843,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
+    showHintsToStudents: entity.showHintsToStudents || true,
+    penaltyOnUsingHints: entity.penaltyOnUsingHints || 0,
   }
 
   if (entity.safeBrowser) {
@@ -1886,6 +1890,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
     settings.showRubricToStudents = false
+    settings.showHintsToStudents = true
+    settings.penaltyOnUsingHints = 0
     delete settings.keypad
   }
 

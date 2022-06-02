@@ -363,6 +363,7 @@ const HeaderSection = ({
             >
               {needsRenewal ? (
                 <EduButton
+                  data-cy="renewSubscription"
                   type="primary"
                   isBlue
                   style={{

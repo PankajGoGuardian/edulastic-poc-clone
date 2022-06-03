@@ -199,7 +199,10 @@ class EditDistrictAdminModal extends Component {
                 initialValue: isSuperAdmin,
                 valuePropName: 'checked',
               })(
-                <CheckboxLabel data-cy="superAdminCheckbox">
+                <CheckboxLabel
+                  data-cy="superAdminCheckbox"
+                  data-testid="superAdminCheckbox"
+                >
                   {t('users.districtadmin.superAdmin')}
                 </CheckboxLabel>
               )}

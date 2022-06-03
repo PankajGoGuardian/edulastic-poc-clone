@@ -203,6 +203,7 @@ class CreateDistrictAdminModal extends React.Component {
               checked={isSuperAdmin}
               onChange={this.changeSuperAdmin}
               data-cy="superAdminCheckbox"
+              data-testid="superAdminCheckbox"
             >
               {t('users.districtadmin.superAdmin')}
             </CheckboxLabel>

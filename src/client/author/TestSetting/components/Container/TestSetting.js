@@ -45,7 +45,7 @@ const linkSharingPermissions = {
   VIEW: 'Limited access (duplicate, assign)',
   ASSIGN: 'View and assign',
   NOACTION: 'No Actions (View Only)',
-  NO: 'OFF',
+  NO: 'Link sharing off',
 }
 
 class TestSetting extends Component {
@@ -205,7 +205,7 @@ class TestSetting extends Component {
               <StyledHeading1>Default Options</StyledHeading1>
               <StyledRow type="flex" gutter={40}>
                 <StyledCol span={8}>
-                  <InputLabel>Set Link Sharing ON for new test </InputLabel>
+                  <InputLabel>SELECT LINK SHARING FOR NEW TEST</InputLabel>
                   <SelectInputStyled
                     value={
                       testSetting.isLinkSharingEnabled

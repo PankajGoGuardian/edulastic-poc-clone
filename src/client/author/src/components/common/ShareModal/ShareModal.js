@@ -554,7 +554,7 @@ class ShareModal extends React.Component {
     else if (sharedType === 'SCHOOL')
       sharedTypeMessage = `Anyone in ${schools.map((s) => s.name).join(', ')}`
     else if (sharedType === 'LINK')
-      sharedTypeMessage = `Anyone with a link can use the Test. Invited users also find it under "Shared with Me" in the library`
+      sharedTypeMessage = `Anyone with this link can access the test`
 
     const shareTypeKeysToDisplay = (isDA
       ? shareTypeKeyForDa

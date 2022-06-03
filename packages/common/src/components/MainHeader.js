@@ -87,7 +87,7 @@ const enhance = compose(
 export default enhance(MainHeader)
 
 const HeaderWrapper = styled.div`
-  padding-top: ${(props) => props.height || props.theme.HeaderHeight.md}px;
+  padding-top: ${(props) => props.height || props.theme.HeaderHeight?.md}px;
 
   .ant-dropdown {
     /* the div hiding this has z-index 999 */
@@ -112,16 +112,16 @@ const HeaderWrapper = styled.div`
   }
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    padding-top: ${(props) => props.height || props.theme.HeaderHeight.md}px;
+    padding-top: ${(props) => props.height || props.theme.HeaderHeight?.md}px;
   }
   @media (min-width: ${extraDesktopWidthMax}) {
-    padding-top: ${(props) => props.height || props.theme.HeaderHeight.xl}px;
+    padding-top: ${(props) => props.height || props.theme.HeaderHeight?.xl}px;
   }
   @media (max-width: ${smallDesktopWidth}) {
-    padding-top: ${(props) => props.theme.HeaderHeight.sd}px;
+    padding-top: ${(props) => props.theme.HeaderHeight?.sd}px;
   }
   @media (max-width: ${mobileWidthLarge}) {
-    height: ${(props) => props.theme.HeaderHeight.xs}px;
+    height: ${(props) => props.theme.HeaderHeight?.xs}px;
     flex-wrap: wrap;
   }
   @media print {
@@ -131,26 +131,26 @@ const HeaderWrapper = styled.div`
 
 const Container = styled.div`
   padding: 0px 30px;
-  background: ${(props) => props.theme.header.headerBgColor};
+  background: ${(props) => props.theme.header?.headerBgColor};
   display: ${(props) => props.display || 'flex'};
   justify-content: ${(props) => props.justify || 'space-between'};
   align-items: ${(props) => props.align || 'center'};
   border-bottom: 1px solid #2f4151;
-  height: ${(props) => props.height || props.theme.HeaderHeight.md}px;
+  height: ${(props) => props.height || props.theme.HeaderHeight?.md}px;
   border-radius: ${({ isInModal }) => (isInModal ? '10px 10px 0px 0px' : '')};
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    height: ${(props) => props.height || props.theme.HeaderHeight.xl}px;
+    height: ${(props) => props.height || props.theme.HeaderHeight?.xl}px;
   }
   @media (min-width: ${mediumDesktopExactWidth}) {
-    height: ${(props) => props.height || props.theme.HeaderHeight.md}px;
+    height: ${(props) => props.height || props.theme.HeaderHeight?.md}px;
   }
   @media (max-width: ${smallDesktopWidth}) {
-    height: ${(props) => props.theme.HeaderHeight.sd}px;
+    height: ${(props) => props.theme.HeaderHeight?.sd}px;
   }
   @media (max-width: ${mobileWidthLarge}) {
     height: ${(props) =>
-      props.mobileHeaderHeight || props.theme.HeaderHeight.xs}px;
+      props.mobileHeaderHeight || props.theme.HeaderHeight?.xs}px;
     flex-wrap: wrap;
   }
 `
@@ -174,7 +174,7 @@ export const HeaderLeftContainer = styled.div`
 
 export const TitleWrapper = styled.h1`
   font-size: 18px;
-  color: ${(props) => props.theme.header.headerTitleTextColor};
+  color: ${(props) => props.theme.header?.headerTitleTextColor};
   font-weight: bold;
   line-height: normal;
   min-width: auto;
@@ -187,7 +187,7 @@ export const TitleWrapper = styled.h1`
   text-overflow: ellipsis;
 
   @media (min-width: ${mediumDesktopExactWidth}) {
-    font-size: ${(props) => props.theme.header.headerTitleFontSize};
+    font-size: ${(props) => props.theme.header?.headerTitleFontSize};
     min-width: ${(props) => props.titleMinWidth || '200px'};
   }
   @media (max-width: ${smallDesktopWidth}) {
@@ -207,7 +207,7 @@ const TitleIcon = styled.span`
   align-items: center;
   margin-right: 15px;
   svg {
-    fill: ${(props) => props.theme.header.headerTitleTextColor};
+    fill: ${(props) => props.theme.header?.headerTitleTextColor};
   }
 
   @media (max-width: ${smallDesktopWidth}) {

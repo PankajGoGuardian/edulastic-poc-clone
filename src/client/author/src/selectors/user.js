@@ -554,3 +554,12 @@ export const allowReferenceMaterialSelector = createSelector(
   getUserFeatures,
   (features) => _get(features, 'allowReferenceMaterial', false)
 )
+
+export const isDataWarehouseEnabled = createSelector(
+  getUserFeatures,
+  (features) => _get(features, 'isDataWarehouseEnabled', false)
+)
+
+export const isDataOpsUser = createSelector(getUserFeatures, (features) =>
+  _get(features, 'isDataOpsUser', false)
+)

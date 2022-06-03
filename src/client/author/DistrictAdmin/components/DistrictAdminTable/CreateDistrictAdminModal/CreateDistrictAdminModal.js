@@ -4,11 +4,16 @@ import {
   EduButton,
   TextInputStyled,
   CheckboxLabel,
+  SelectInputStyled,
 } from '@edulastic/common'
-import { Col, Form, Row } from 'antd'
+import { userPermissions } from '@edulastic/constants'
+import { IconInfo } from '@edulastic/icons'
+import { Col, Form, Row, Select, Tooltip } from 'antd'
 import React from 'react'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
 import { validateEmail } from '../../../../../common/utils/helpers'
+import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
+import { daRoleList } from '../helpers'
 
 class CreateDistrictAdminModal extends React.Component {
   constructor(props) {
@@ -18,11 +23,12 @@ class CreateDistrictAdminModal extends React.Component {
       emailValidateMsg: '',
       email: '',
       isSuperAdmin: false,
+      daRole: daRoleList[0].value,
     }
   }
 
   onCreateDistrictAdmin = async () => {
-    const { email, emailValidateStatus, isSuperAdmin } = this.state
+    const { email, emailValidateStatus, isSuperAdmin, daRole } = this.state
     const { form, createDistrictAdmin } = this.props
     let checkUserResponse = { userExists: true }
 
@@ -68,12 +74,19 @@ class CreateDistrictAdminModal extends React.Component {
           const lastNameIndex = firstName[0].length + 1
           lastName = row.name.substr(lastNameIndex, row.name.length)
         }
+        const permissions = []
+        if (daRole !== daRoleList[0].value) {
+          permissions.push(daRole)
+        }
+        if (isSuperAdmin) {
+          permissions.push(userPermissions.SUPER_ADMIN)
+        }
         const newUser = {
           firstName: firstName[0],
           lastName,
           password: row.password,
           email: this.state?.email,
-          permissions: isSuperAdmin ? ['super_admin'] : [],
+          permissions,
         }
         createDistrictAdmin(newUser)
       }
@@ -108,6 +121,8 @@ class CreateDistrictAdminModal extends React.Component {
   }
 
   changeSuperAdmin = (e) => this.setState({ isSuperAdmin: e.target.checked })
+
+  changeDARole = (value) => this.setState({ daRole: value })
 
   render() {
     const { modalVisible, t, form } = this.props
@@ -197,6 +212,34 @@ class CreateDistrictAdminModal extends React.Component {
             </ModalFormItem>
           </Col>
         </Row>
+        <FeaturesSwitch
+          inputFeatures="isDataWarehouseEnabled"
+          actionOnInaccessible="hidden"
+        >
+          <Row>
+            <Col span={24}>
+              <ModalFormItem
+                label={t('users.districtadmin.createda.selectrole')}
+              >
+                <SelectInputStyled
+                  data-cy="selectRole"
+                  defaultValue={daRoleList[0].value}
+                  onChange={this.changeDARole}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                >
+                  {daRoleList.map((item) => (
+                    <Select.Option key={item.value} value={item.value}>
+                      {item.label}
+                      <Tooltip title={item.tooltipTitle}>
+                        <IconInfo height={10} />
+                      </Tooltip>
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </ModalFormItem>
+            </Col>
+          </Row>
+        </FeaturesSwitch>
         <Row>
           <Col span={6}>
             <CheckboxLabel

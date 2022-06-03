@@ -1,17 +1,16 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { Tabs, Spin } from 'antd'
 import styled from 'styled-components'
 import { IconUpload } from '@edulastic/icons'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
 
 import { EduButton, FlexContainer } from '@edulastic/common'
 import { StyledContainer } from '../../common/styled'
-import TestDataUploadModal from './TestDataUploadModal'
 import { SubHeader } from '../../common/components/Header'
-import TestDataUploadsTable from './TestDataUploadsTable'
+import DataWarehoureUploadsTable from '../../../Shared/Components/DataWarehouseUploadsTable'
+import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
 import CustomReportsWrapper from './CustomReportsWrapper'
 
 import {
@@ -19,7 +18,11 @@ import {
   getUploadsStatusLoader,
   getUploadsStatusList,
   getResetTestDataFileUploadResponseAction,
-} from './ducks'
+} from '../../../sharedDucks/dataWarehouse'
+import {
+  isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
+  isDataOpsUser as checkIsDataOpsUser,
+} from '../../../src/selectors/user'
 
 const CustomReports = ({
   history,
@@ -30,12 +33,20 @@ const CustomReports = ({
   fetchUploadsStatusList,
   resetUploadResponse,
   isDataWarehouseEnabled,
+  isDataOpsUser,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('reports')
 
+  const isDataWarehouseEnabledForUser = useMemo(
+    () => isDataWarehouseEnabled && isDataOpsUser,
+    [isDataWarehouseEnabled, isDataOpsUser]
+  )
+
   useEffect(() => {
-    fetchUploadsStatusList()
+    if (isDataWarehouseEnabledForUser) {
+      fetchUploadsStatusList()
+    }
   }, [])
 
   const showReport = (_id) => {
@@ -59,7 +70,7 @@ const CustomReports = ({
     <>
       <FlexContainer justifyContent="space-between" marginBottom="10px">
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
-        {isDataWarehouseEnabled && (
+        {isDataWarehouseEnabledForUser && (
           <EduButton isGhost height="100%" onClick={() => showModal()}>
             <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
             AND OTHER
@@ -67,7 +78,7 @@ const CustomReports = ({
         )}
       </FlexContainer>
       <StyledContainer>
-        {isDataWarehouseEnabled ? (
+        {isDataWarehouseEnabledForUser ? (
           <StyledTabs
             mode="horizontal"
             activeKey={activeTabKey}
@@ -77,21 +88,23 @@ const CustomReports = ({
               <CustomReportsWrapper showReport={showReport} />
             </StyledTabPane>
             <StyledTabPane tab="Status" key="status">
-              {loading ? (
-                <Spin />
-              ) : (
-                <TestDataUploadsTable
-                  loading={loading}
-                  uploadsStatusList={uploadsStatusList}
-                />
-              )}
+              <TableContainer>
+                {loading ? (
+                  <Spin />
+                ) : (
+                  <DataWarehoureUploadsTable
+                    loading={loading}
+                    uploadsStatusList={uploadsStatusList}
+                  />
+                )}
+              </TableContainer>
             </StyledTabPane>
           </StyledTabs>
         ) : (
           <CustomReportsWrapper showReport={showReport} />
         )}
         {showTestDataUploadModal && (
-          <TestDataUploadModal
+          <DataWarehoureUploadModal
             isVisible={showTestDataUploadModal}
             closeModal={closeModal}
           />
@@ -105,8 +118,8 @@ CustomReports.propTypes = {
   history: PropTypes.object.isRequired,
 }
 
-export const StyledTabPane = styled(Tabs.TabPane)``
-export const StyledTabs = styled(Tabs)`
+const StyledTabPane = styled(Tabs.TabPane)``
+const StyledTabs = styled(Tabs)`
   width: 100%;
   margin-left: 0;
   .ant-tabs-bar {
@@ -117,15 +130,16 @@ export const StyledTabs = styled(Tabs)`
     margin-bottom: 10px;
   }
 `
+const TableContainer = styled.div`
+  min-height: 500px;
+`
+
 const withConnect = connect(
   (state) => ({
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
-    isDataWarehouseEnabled: get(
-      state,
-      ['user', 'user', 'features', 'isDataWarehouseEnabled'],
-      false
-    ),
+    isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
+    isDataOpsUser: checkIsDataOpsUser(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,

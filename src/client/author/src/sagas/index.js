@@ -56,6 +56,7 @@ import { advancedAssignmentsSaga } from '../../AssignmentAdvanced'
 import { watcherSaga as previewModalSaga } from '../components/common/PreviewModal/ducks'
 import { collaborationGroupSaga } from '../../Collaboration/index'
 import { languageSaga } from '../../../common/components/LanguageSelector/duck'
+import { dataWarehouseSaga } from '../../sharedDucks/dataWarehouse'
 
 const authorSagas = [
   itemsSaga(),
@@ -116,6 +117,7 @@ const authorSagas = [
   advancedAssignmentsSaga(),
   collaborationGroupSaga(),
   languageSaga(),
+  dataWarehouseSaga(),
 ]
 
 export default authorSagas

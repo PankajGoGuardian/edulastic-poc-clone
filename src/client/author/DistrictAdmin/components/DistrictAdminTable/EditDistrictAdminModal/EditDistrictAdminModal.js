@@ -1,28 +1,45 @@
 import React, { Component } from 'react'
-import { Form, Input, Row, Col } from 'antd'
+import { Form, Input, Row, Col, Select, Tooltip } from 'antd'
 import {
   CheckboxLabel,
   CustomModalStyled,
   EduButton,
+  SelectInputStyled,
   TextInputStyled,
 } from '@edulastic/common'
 import { omit } from 'lodash'
+import { userPermissions } from '@edulastic/constants'
+import { IconInfo } from '@edulastic/icons'
 import { ButtonsContainer, ModalFormItem } from '../../../../../common/styled'
+import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
+
+import { daRoleList } from '../helpers'
 
 class EditDistrictAdminModal extends Component {
   onSaveDistrictAdmin = () => {
     this.props?.form.validateFields((err, row) => {
       if (!err) {
         const { districtAdminData, updateDistrictAdmin, userOrgId } = this.props
-        const { isSuperAdmin } = row
+        const { isSuperAdmin, daRole } = row
         const { permissions: currPermissions = [] } = districtAdminData?._source
 
         if (!row.password) row = omit(row, ['password'])
-        row = omit(row, ['confirmPassword', 'isSuperAdmin'])
+        row = omit(row, ['confirmPassword', 'isSuperAdmin', 'daRole'])
 
-        const permissions = isSuperAdmin
-          ? [...new Set([...currPermissions, 'super_admin'])]
-          : currPermissions.filter((permission) => permission !== 'super_admin')
+        const permissions = currPermissions.filter(
+          (p) =>
+            ![
+              userPermissions.SUPER_ADMIN,
+              userPermissions.DATA_OPS,
+              userPermissions.DATA_OPS_ONLY,
+            ].includes(p)
+        )
+        if (isSuperAdmin) {
+          permissions.push(userPermissions.SUPER_ADMIN)
+        }
+        if (daRole !== daRoleList[0].value) {
+          permissions.push(daRole)
+        }
 
         updateDistrictAdmin({
           userId: districtAdminData._id,
@@ -59,7 +76,20 @@ class EditDistrictAdminModal extends Component {
       districtAdminData: { _source },
       t,
     } = this.props
-    const isSuperAdmin = _source?.permissions.includes('super_admin')
+    const isSuperAdmin = _source?.permissions.includes(
+      userPermissions.SUPER_ADMIN
+    )
+
+    let daRole = daRoleList[0].value
+    if (
+      _source?.permissions.includes(userPermissions.DATA_OPS) ||
+      _source?.permissions.includes(userPermissions.DATA_OPS_ONLY)
+    ) {
+      daRole = (
+        daRoleList.find((item) => _source?.permissions.includes(item.value)) ||
+        daRoleList[0]
+      ).value
+    }
 
     return (
       <CustomModalStyled
@@ -192,6 +222,34 @@ class EditDistrictAdminModal extends Component {
             </ModalFormItem>
           </Col>
         </Row>
+        <FeaturesSwitch
+          inputFeatures="isDataWarehouseEnabled"
+          actionOnInaccessible="hidden"
+        >
+          <Row>
+            <Col span={24}>
+              <ModalFormItem label={t('users.districtadmin.editda.selectrole')}>
+                {getFieldDecorator('daRole', {
+                  initialValue: daRole,
+                })(
+                  <SelectInputStyled
+                    data-cy="selectRole"
+                    getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                  >
+                    {daRoleList.map((item) => (
+                      <Select.Option key={item.value} value={item.value}>
+                        {item.label}
+                        <Tooltip title={item.tooltipTitle}>
+                          <IconInfo height={10} />
+                        </Tooltip>
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                )}
+              </ModalFormItem>
+            </Col>
+          </Row>
+        </FeaturesSwitch>
         <Row>
           <Col span={24}>
             <ModalFormItem style={{ margin: '0px' }}>

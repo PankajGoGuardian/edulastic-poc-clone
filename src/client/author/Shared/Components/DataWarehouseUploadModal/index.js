@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
 import styled from 'styled-components'
 import { Icon, Select, Spin, Input, Row, Col, Progress } from 'antd'
@@ -25,13 +25,13 @@ import {
   getFileUploadProgress,
   getSetCancelUploadAction,
   getAbortUploadAction,
-} from './ducks'
+} from '../../../sharedDucks/dataWarehouse'
 
-import dropdownData from './static/dropdownData.json'
+import dropdownData from './dropdownData.json'
 
 const { Option } = Select
 
-const TestDataUploadModal = ({
+const DataWarehouseUploadModal = ({
   uploadFile,
   isVisible,
   closeModal,
@@ -81,6 +81,16 @@ const TestDataUploadModal = ({
     setYearDropdownOptions(yearOptions)
   }, [])
 
+  const isUploadBtnDisabled = useMemo(
+    () =>
+      loading ||
+      isEmpty(file) ||
+      isEmpty(category) ||
+      isEmpty(testName) ||
+      isEmpty(`${versionYear}`),
+    [loading, file, category, testName, versionYear]
+  )
+
   return (
     <Modal
       modalWidth="800px"
@@ -105,7 +115,7 @@ const TestDataUploadModal = ({
           btnType="primary"
           width="200px"
           onClick={() => handleFileUpload()}
-          disabled={loading || isEmpty(file) || isEmpty(category)}
+          disabled={isUploadBtnDisabled}
         >
           {loading ? <Spin /> : 'Upload'}
         </EduButton>,
@@ -225,7 +235,7 @@ const withConnect = connect(
   }
 )
 
-export default compose(withConnect)(TestDataUploadModal)
+export default compose(withConnect)(DataWarehouseUploadModal)
 
 const Modal = styled(CustomModalStyled)``
 

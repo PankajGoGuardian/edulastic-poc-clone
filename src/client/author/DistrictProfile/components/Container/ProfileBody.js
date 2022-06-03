@@ -593,6 +593,7 @@ class ProfileBody extends React.Component {
       verificationTS,
       isDefaultDA,
       isSignupUsingUNAndPass,
+      isDataOpsOnlyUser,
     } = this.props
     const {
       showChangePassword,
@@ -644,11 +645,12 @@ class ProfileBody extends React.Component {
     ) {
       showPowerTools = true
     }
-    const showDefaultSettings = [
-      roleuser.TEACHER,
-      roleuser.DISTRICT_ADMIN,
-      roleuser.SCHOOL_ADMIN,
-    ].includes(role)
+    const showDefaultSettings =
+      [
+        roleuser.TEACHER,
+        roleuser.DISTRICT_ADMIN,
+        roleuser.SCHOOL_ADMIN,
+      ].includes(role) && !isDataOpsOnlyUser
     return (
       <MainContentWrapper padding="30px" flag={flag}>
         <ProfileWrapper display="flex" boxShadow="none" minHeight="max-content">
@@ -1037,6 +1039,11 @@ const enhance = compose(
       userOrg: getUserOrg(state),
       orgGroupList: getOrgGroupList(state),
       isCleverLibraryUser: getCleverLibraryUserSelector(state),
+      isDataOpsOnlyUser: get(
+        state,
+        ['user', 'user', 'features', 'isDataOpsOnlyUser'],
+        false
+      ),
     }),
     {
       resetMyPassword: resetMyPasswordAction,

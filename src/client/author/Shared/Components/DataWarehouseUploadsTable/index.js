@@ -3,12 +3,11 @@ import next from 'immer'
 import styled from 'styled-components'
 import { Tag, Tooltip } from 'antd'
 
-import { red, green, yellow } from '@edulastic/colors'
+import { red, green, yellow, fadedBlack } from '@edulastic/colors'
 import { IconCharInfo } from '@edulastic/icons'
 
 import { isEmpty } from 'lodash'
-import CsvTable from '../../common/components/tables/CsvTable'
-import { NoDataContainer } from '../../common/styled'
+import CsvTable from './CsvTable'
 import { StyledTable } from '../../../../common/styled'
 
 const columns = [
@@ -49,7 +48,7 @@ const getTag = (status, statusReason = '') => {
   return <Tag color={yellow}>In Progress</Tag>
 }
 
-const TestDataUploadsTable = ({ uploadsStatusList }) => {
+const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
   const sortedData = useMemo(() => {
     return uploadsStatusList.sort((a, b) => b.updatedAt - a.updatedAt)
   }, [uploadsStatusList])
@@ -86,4 +85,16 @@ const InfoIcon = styled(IconCharInfo)`
   cursor: pointer;
 `
 
-export default TestDataUploadsTable
+const NoDataContainer = styled.div`
+  background: white;
+  color: ${fadedBlack};
+  margin-top: 290px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: ${({ fontSize }) => fontSize || '25px'};
+  font-weight: 700;
+  text-align: 'center';
+`
+
+export default DataWarehouseUploadsTable

@@ -18,7 +18,7 @@ const GET_REPORTS_MAR_FILTER_DATA_REQUEST_ERROR =
 const SET_REPORTS_PREV_MAR_FILTER_DATA =
   '[reports] set reports prev mar filter data'
 
-const SET_FILTERS = '[reports] set mar filters'
+export const SET_FILTERS = '[reports] set mar filters'
 const SET_TEMP_DD_FILTER = '[reports] set mar tempDdFilter'
 const SET_TEMP_TAGS_DATA = '[reports] set mar temp tempTagsData'
 

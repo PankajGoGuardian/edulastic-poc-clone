@@ -580,7 +580,7 @@ class FeedbackRight extends Component {
         {showHintUsed && (
           <GradingPolicyWrapper>
             HINTS USED &nbsp;
-            <GradingPolicy data-cy="gradingPolicyType">
+            <GradingPolicy data-cy="hintsUsed">
               {hintsUsed ? 'Yes' : 'No'}
             </GradingPolicy>
           </GradingPolicyWrapper>

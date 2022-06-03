@@ -393,6 +393,7 @@ class TestItemPreview extends Component {
       testActivityId,
       studentData,
       currentStudent,
+      selectedTheme = 'default',
       ...restProps
     } = this.props
     const {
@@ -514,6 +515,9 @@ class TestItemPreview extends Component {
                     testActivityId={testActivityId}
                     studentData={studentData}
                     currentStudent={currentStudent}
+                    themeBgColor={
+                      selectedTheme === 'default' ? white : theme.themeColor
+                    }
                   />
                 )
               })}
@@ -590,6 +594,7 @@ const enhance = compose(
       pageNumber: getPageNumberSelector(state),
       testActivityId: get(state, 'test.testActivityId', ''),
       studentData: getUser(state),
+      selectedTheme: state.ui.selectedTheme,
     }),
     {
       changedPlayerContent: changedPlayerContentAction,

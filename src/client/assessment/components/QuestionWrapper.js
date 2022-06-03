@@ -734,6 +734,7 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                     showAnswerScore={showAnswerScore}
+                    isDefaultTheme={selectedTheme === 'default'}
                   />
                   {showFeedback && !isPrintPreview && (
                     <BottomAction

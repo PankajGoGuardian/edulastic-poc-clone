@@ -20,7 +20,6 @@ export const withMathFormula = (WrappedComponent) => {
       fontSize,
       theme = {},
       className,
-      color,
       onFinish,
     } = props
     const [loaded, setLoaded] = useState(false)
@@ -70,7 +69,6 @@ export const withMathFormula = (WrappedComponent) => {
           dangerouslySetInnerHTML={{ __html: newInnerHtml }}
           style={{
             ...style,
-            color: color || theme.questionTextColor,
             fontSize: fontSize || theme.fontSize,
           }}
         />

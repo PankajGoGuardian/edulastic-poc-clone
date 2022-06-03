@@ -101,7 +101,7 @@ const EssayRichTextPreview = ({
   const wordCountStyle =
     (showLimitAlways || showOnLimit) && item.maxWord < wordCount
       ? { color: theme.widgets.essayRichText.wordCountLimitedColor }
-      : {}
+      : { color: theme.widgets.essayPlainText.wordCountColor }
 
   const isV1Multipart = get(col, 'isV1Multipart', false)
 

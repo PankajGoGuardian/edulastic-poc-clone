@@ -989,6 +989,7 @@ export const createBlankTest = () => ({
   enableSkipAlert: false,
   showHintsToStudents: true,
   penaltyOnUsingHints: 0,
+  allowTeacherRedirect: true,
 })
 
 const initialState = {

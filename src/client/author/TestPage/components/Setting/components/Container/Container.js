@@ -1172,8 +1172,10 @@ class Setting extends Component {
                             disabled={disabled}
                             data-cy="allow-redirect"
                             checked={allowTeacherRedirect}
-                            onChange={(value) =>
-                              this.updateTestData('allowTeacherRedirect')(value)
+                            onChange={() =>
+                              this.updateTestData('allowTeacherRedirect')(
+                                !allowTeacherRedirect
+                              )
                             }
                           />
                         </Title>

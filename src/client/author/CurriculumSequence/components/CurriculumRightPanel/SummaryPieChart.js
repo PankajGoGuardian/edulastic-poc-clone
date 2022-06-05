@@ -104,7 +104,7 @@ const SummaryPieChart = ({ data = [], totalTimeSpent, colors, isStudent }) => {
   })
 
   return chartData.length ? (
-    <ChartContainer>
+    <ChartContainer data-testid="pie-chart">
       <PieChart width={315} height={250}>
         <Pie
           activeIndex={activeIndex}

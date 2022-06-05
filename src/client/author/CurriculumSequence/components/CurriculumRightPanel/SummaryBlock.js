@@ -58,9 +58,12 @@ const SummaryBlock = ({
             ((isStudent && !item.hidden) || (!isStudent && urlHasUseThis)) && (
               <div style={{ opacity: item.hidden ? `.5` : `1` }}>
                 <Tooltip placement="left" title={item.title || item.name}>
-                  <ModuleTitle>{item.title || item.name}</ModuleTitle>
+                  <ModuleTitle data-testid="moduleTitle">
+                    {item.title || item.name}
+                  </ModuleTitle>
                 </Tooltip>
                 <StyledProgressBar
+                  data-testid="progressBar"
                   strokeColor={getProgressColor(item?.value)}
                   strokeWidth={13}
                   percent={item.value}
@@ -111,14 +114,14 @@ const SummaryBlockContainer = styled.div`
   @media (max-width: ${desktopWidth}) {
     position: fixed;
     right: 0px;
-    top: ${(props) => props.theme.HeaderHeight.sd}px;
-    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.sd}px)`};
+    top: ${(props) => props.theme.HeaderHeight?.sd}px;
+    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight?.sd}px)`};
     overflow: auto;
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    top: ${(props) => props.theme.HeaderHeight.xs}px;
-    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight.xs}px)`};
+    top: ${(props) => props.theme.HeaderHeight?.xs}px;
+    height: ${({ theme }) => `calc(100vh - ${theme.HeaderHeight?.xs}px)`};
   }
 `
 

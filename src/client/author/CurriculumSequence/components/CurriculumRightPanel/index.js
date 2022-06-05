@@ -97,10 +97,10 @@ export const HideRightPanel = styled.div`
 
   @media (max-width: ${desktopWidth}) {
     position: fixed;
-    top: ${(props) => props.theme.HeaderHeight.sd + 18}px;
+    top: ${(props) => props.theme.HeaderHeight?.sd + 18}px;
   }
 
   @media (max-width: ${mobileWidthLarge}) {
-    top: ${(props) => props.theme.HeaderHeight.xs + 18}px;
+    top: ${(props) => props.theme.HeaderHeight?.xs + 18}px;
   }
 `

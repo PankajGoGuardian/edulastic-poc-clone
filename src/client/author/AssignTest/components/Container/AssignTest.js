@@ -357,6 +357,7 @@ class AssignTest extends React.Component {
       if (!selectedDateOption) {
         updatedAssignment = omit(updatedAssignment, ['dueDate'])
       }
+
       const isValid = this.validateSettings(updatedAssignment)
       if (isValid) {
         if (source) {
@@ -585,6 +586,7 @@ class AssignTest extends React.Component {
   }
 
   validateSettings = (entity) => {
+    const { isEnabledRefMaterial } = this.props
     let isValid = true
     if (
       ![
@@ -661,6 +663,13 @@ class AssignTest extends React.Component {
         })
         isValid = false
       }
+    } else if (isEnabledRefMaterial && isEmpty(entity.referenceDocAttributes)) {
+      this.handleTabChange(sectionContants.TEST_BEHAVIOR_SECTION)
+      notification({
+        type: 'warn',
+        messageKey: 'uploadReferenceMaterial',
+      })
+      isValid = false
     }
     return isValid
   }
@@ -801,6 +810,7 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
+
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />

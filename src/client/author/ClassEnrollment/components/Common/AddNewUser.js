@@ -447,6 +447,7 @@ class AddNewUserForm extends React.Component {
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Enter Password"
+                      data-cy="passwordTextBox"
                       autoComplete="new-password"
                       disabled={
                         isUserExists || userExistsInClass || !isValidClassCode
@@ -471,6 +472,7 @@ class AddNewUserForm extends React.Component {
                       prefix={<img style={iconSize} src={keyIcon} alt="" />}
                       type="password"
                       placeholder="Confirm Password"
+                      data-cy="confirmPasswordTextBox"
                       autoComplete="new-password"
                       disabled={
                         isUserExists || userExistsInClass || !isValidClassCode

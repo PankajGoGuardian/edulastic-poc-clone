@@ -327,8 +327,10 @@ export const SET_SHOW_REGRADE_CONFIRM =
 export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
 export const SET_MAX_SHARING_LEVEL_ALLOWED =
   '[tests] set max sharing level allowed'
+export const TOGGLE_REFERENCE_MATERIAL = '[tests] toggle enable ref material'
 // actions
 
+export const toggleRefMaterialAction = createAction(TOGGLE_REFERENCE_MATERIAL)
 export const previewCheckAnswerAction = createAction(PREVIEW_CHECK_ANSWER)
 export const previewShowAnswerAction = createAction(PREVIEW_SHOW_ANSWER)
 export const replaceTestDataAction = createAction(REPLACE_TEST_DATA)
@@ -593,6 +595,11 @@ export const playlistStateSelector = (state) => state.playlist
 export const getPassageItemsCountSelector = createSelector(
   stateSelector,
   (state) => state.passageItems.length
+)
+
+export const isEnabledRefMaterialSelector = createSelector(
+  stateSelector,
+  (state) => state.enableRefMaterial
 )
 
 export const getPassageItemsSelector = createSelector(
@@ -980,6 +987,9 @@ export const createBlankTest = () => ({
   showMagnifier: true,
   enableScratchpad: true,
   enableSkipAlert: false,
+  showHintsToStudents: true,
+  penaltyOnUsingHints: 0,
+  allowTeacherRedirect: true,
 })
 
 const initialState = {
@@ -1028,6 +1038,7 @@ const initialState = {
     result: [],
     isLoading: true,
   },
+  enableRefMaterial: false,
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1668,6 +1679,12 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         maxSharingLevelAllowed: payload,
       }
+    case TOGGLE_REFERENCE_MATERIAL:
+      return {
+        ...state,
+        updated: true,
+        enableRefMaterial: payload,
+      }
     default:
       return state
   }
@@ -1788,6 +1805,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const {
     ASSESSMENT,
     COMMON_ASSESSMENT,
+    PRACTICE: _PRACTICE,
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
@@ -1826,6 +1844,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
+    showHintsToStudents: entity.showHintsToStudents || true,
+    penaltyOnUsingHints: entity.penaltyOnUsingHints || 0,
   }
 
   if (entity.safeBrowser) {
@@ -1851,7 +1871,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   }
 
   if (!isPlaylist && features.free && !features.premium) {
-    settings.testType = ASSESSMENT
+    settings.testType = PRACTICE.includes(testType) ? _PRACTICE : ASSESSMENT
     settings.maxAttempts = 1
     settings.markAsDone = completionTypes.AUTOMATICALLY
     settings.releaseScore = releaseGradeLabels.DONT_RELEASE
@@ -1871,6 +1891,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
     settings.showRubricToStudents = false
+    settings.showHintsToStudents = true
+    settings.penaltyOnUsingHints = 0
     delete settings.keypad
   }
 
@@ -2753,8 +2775,12 @@ function* publishForRegrade({ payload }) {
   try {
     yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
+    const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
+    }
+    if (!enabledRefMaterial && !isEmpty(_test.referenceDocAttributes)) {
+      _test.referenceDocAttributes = {}
     }
     if (!validateRestrictNavigationOut(_test)) {
       yield put(setUpdatingTestForRegradeStateAction(false))

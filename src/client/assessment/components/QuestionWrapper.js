@@ -395,10 +395,7 @@ class QuestionWrapper extends Component {
   // @see EV-25152 | need to display show rubric button in student attempt and test review modal
   get showRubricToStudentsButton() {
     const {
-      assignmentLevelSettings: {
-        releaseScore,
-        showRubricToStudents = false,
-      } = {},
+      assignmentLevelSettings: { showRubricToStudents = false } = {},
       isTestPreviewModalVisible = false,
       isTestDemoPlayer = false,
       userRole,
@@ -409,8 +406,6 @@ class QuestionWrapper extends Component {
       data: { rubrics } = {},
       isPremiumUser,
     } = this.props
-
-    const { releaseGradeLabels } = test
 
     // return if rubric is not attached to the question
     if (isEmpty(rubrics)) {
@@ -431,7 +426,6 @@ class QuestionWrapper extends Component {
     return (
       userRole === roleuser.STUDENT &&
       view === 'preview' &&
-      releaseScore !== releaseGradeLabels.DONT_RELEASE &&
       showRubricToStudents
     )
   }
@@ -508,6 +502,10 @@ class QuestionWrapper extends Component {
       hideCorrectAnswer,
       isReviewTab,
       page: viewPage,
+      assignmentLevelSettings: {
+        showHintsToStudents = true,
+        penaltyOnUsingHints = 0,
+      },
     } = restProps
 
     const userAnswer = get(data, 'activity.userResponse', null)
@@ -615,6 +613,7 @@ class QuestionWrapper extends Component {
     const answerScore = this.answerScore
     const showAnswerScore =
       isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
+
     return (
       <ThemeProvider
         theme={{
@@ -735,6 +734,7 @@ class QuestionWrapper extends Component {
                     page={page}
                     setPage={this.setPage}
                     showAnswerScore={showAnswerScore}
+                    isDefaultTheme={selectedTheme === 'default'}
                   />
                   {showFeedback && !isPrintPreview && (
                     <BottomAction
@@ -797,6 +797,8 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                       displayRubricInfoButton={this.showRubricToStudentsButton}
                       rubricDetails={rubricDetails}
+                      showHintsToStudents={showHintsToStudents}
+                      penaltyOnUsingHints={penaltyOnUsingHints}
                     />
                   )}
                 </StyledFlexContainer>

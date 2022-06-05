@@ -51,6 +51,12 @@ class ToolbarModal extends React.Component {
     onClose()
   }
 
+  handleReferenceMaterial = () => {
+    const { onClose, openReferenceModal } = this.props
+    openReferenceModal()
+    onClose()
+  }
+
   hint = () => {
     const { onClose } = this.props
     onClose()
@@ -117,7 +123,6 @@ class ToolbarModal extends React.Component {
       qType,
       blockNavigationToAnsweredQuestions = false,
       isPremiumContentWithoutAccess = false,
-      openReferenceModal,
       isShowReferenceModal,
       canShowReferenceMaterial,
     } = this.props
@@ -136,6 +141,7 @@ class ToolbarModal extends React.Component {
         footer={null}
         centered
         width="390px"
+        zIndex={1500}
       >
         <Container>
           {!blockNavigationToAnsweredQuestions && (
@@ -149,11 +155,11 @@ class ToolbarModal extends React.Component {
           )}
           {canShowReferenceMaterial && (
             <StyledButton
-              onClick={openReferenceModal}
+              onClick={this.handleReferenceMaterial}
               active={isShowReferenceModal}
               disabled={isPremiumContentWithoutAccess}
             >
-              Reference Sheet
+              Reference Material
             </StyledButton>
           )}
           {settings.calcType !== calculatorTypes.NONE && (

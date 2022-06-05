@@ -76,6 +76,7 @@
       "sso": "Sso",
       "password": "Password",
       "superAdmin": "Super Admin",
+      "role": "Role",
       "createdistrictadmin": "+ Create District Admin",
       "createda": {
         "title": "Create district admin",
@@ -85,6 +86,7 @@
         "enterpassword": "Enter password",
         "nocancel": "No, Cancel",
         "yescreate": "Yes, Create",
+        "selectrole": "Role",
         "validations": {
           "name": "Please input name",
           "email": "Please input email",
@@ -102,6 +104,7 @@
         "yesupdate": "Yes, Update",
         "enterpassword": "Enter password",
         "enterconfirmpassword": "Enter Confirm Password",
+        "selectrole": "Role",
         "validations": {
           "firstname": "Please input first name",
           "lastname": "Please input last name",

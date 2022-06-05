@@ -684,7 +684,7 @@ const CartesianGridOptions = ({ t, graphData, setOptions, setCanvas }) => {
             <Col align="center" md={3} style={{ marginBottom: '0' }}>
               <CheckboxLabel
                 name="yRadians"
-                onChange={() => handleCheckbox('yRadians', !yRadians)}
+                onChange={() => handleChangeRadians('yRadians', !yRadians)}
                 checked={yRadians}
                 data-cy="yRadians"
               />

@@ -519,7 +519,7 @@ export const getTestsItemsPageSelector = createSelector(
 )
 
 export const getSelectedItemSelector = createSelector(
-  getSelectedTestItemsSelector,
+  (s) => getSelectedTestItemsSelector(s),
   (testItems) => testItems.map((item) => item._id)
 )
 

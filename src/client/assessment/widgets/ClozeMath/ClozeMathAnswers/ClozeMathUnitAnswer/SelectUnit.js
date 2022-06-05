@@ -106,7 +106,9 @@ const SelectUnit = ({
       <SelectInputStyled
         disabled={disabled}
         onChange={onChangeUnit}
-        value={value}
+        value={getLabel({
+          handler: value,
+        })}
         preview={preview}
         height={`${height}px`}
         getPopupContainer={getPopupContainer}

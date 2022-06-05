@@ -49,6 +49,7 @@ import {
   IconCircleCheck,
   IconClose,
   IconDemoAccNav,
+  IconCloudUpload
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -85,6 +86,12 @@ import PurchaseFlowModals from '../components/common/PurchaseModals'
 import { slice } from '../../Subscription/ducks'
 
 const menuItems = [
+  {
+    label: 'Data Warehouse',
+    icon: IconCloudUpload,
+    allowedPathPattern: [/author\/data-warehouse/],
+    path: 'author/data-warehouse',
+  },
   {
     label: 'Dashboard',
     icon: IconClockDashboard,
@@ -213,6 +220,12 @@ class SideMenu extends Component {
     } = this.props
 
     let _menuItems = cloneDeep(menuItems)
+
+    if (features.isDataOpsOnlyUser) {
+      return menuItems.filter((i) => i.label === 'Data Warehouse')
+    }
+    _menuItems = _menuItems.filter((i) => i.label !== 'Data Warehouse')
+
     if (isOrganizationDistrict) {
       _menuItems = _menuItems.map((i) =>
         i.label === 'Manage District' ? { ...i, label: 'Organization' } : i
@@ -579,7 +592,7 @@ class SideMenu extends Component {
               <span>{isCollapsed ? '' : 'My Profile'}</span>
             </Link>
           </Menu.Item>
-          {!isPublisher && (
+          {!features.isDataOpsOnlyUser && !isPublisher && (
             <Menu.Item
               key="2"
               className="removeSelectedBorder"
@@ -593,7 +606,7 @@ class SideMenu extends Component {
               </Link>
             </Menu.Item>
           )}
-          {users.length > 1 ? ( // since current user is also in this list
+          {!features.isDataOpsOnlyUser && users.length > 1 ? ( // since current user is also in this list
             <Menu.Item
               key="3"
               className="removeSelectedBorder"
@@ -614,7 +627,8 @@ class SideMenu extends Component {
                 </span>
               </a>
             </Menu.Item>
-          ) : userRole !== roleuser.EDULASTIC_CURATOR ? (
+          ) : !features.isDataOpsOnlyUser &&
+            userRole !== roleuser.EDULASTIC_CURATOR ? (
             <Menu.Item
               key="4"
               className="removeSelectedBorder"
@@ -849,6 +863,7 @@ class SideMenu extends Component {
               </Menu>
               <MenuFooter>
                 {!isDemoPlaygroundUserProxy &&
+                  !features.isDataOpsOnlyUser &&
                   ['district-admin', 'school-admin', 'teacher'].indexOf(
                     userRole
                   ) > -1 && (

@@ -487,6 +487,10 @@
     "message": "Please select at least one subject to bulk assign.",
     "description": ""
   },
+  "uploadReferenceMaterial": {
+    "message": "Please upload reference material.",
+    "description": ""
+  },
   "selectGrade": {
     "message": "Please select at least one grade to bulk assign.",
     "description": ""
@@ -2093,6 +2097,14 @@
   },
   "clozMathDuplicatedParam": {
     "message": "Same dynamic variable can not be used in two or more input boxes.",
+    "description": ""
+  },
+  "invalidDynamicParameterMinValue": {
+    "message": "Min value cannot be greater than or equal to max value",
+    "description": ""
+  },
+  "invalidDynamicParameterMaxValue": {
+    "message": "Max value cannot be smaller than or equal to min value",
     "description": ""
   },
   "invalidSeqVariableMsg": {

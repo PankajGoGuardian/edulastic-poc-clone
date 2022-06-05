@@ -1,9 +1,14 @@
 import React from 'react'
 import { Select, Col, Row } from 'antd'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
+import { connect } from 'react-redux'
 import { StyledRow, StyledRowLabel, TestTypeDropDown } from './styled'
 import { StyledSelect } from '../../../../../AssignTest/components/SimpleOptions/styled'
-import { getTestTypeFullNames } from '../../../../../../common/utils/testTypeUtils'
+import {
+  getAvailableTestTypesForUser,
+  includeCommonOnTestType,
+} from '../../../../../../common/utils/testTypeUtils'
+import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 
 const generateReportTypes = {
   YES: {
@@ -22,8 +27,13 @@ const TestTypeSelector = ({
   generateReport,
   userRole,
   onGenerateReportFieldChange,
+  isPremiumUser,
 }) => {
-  const testTypes = getTestTypeFullNames(testType, userRole)
+  const availableTestTypes = getAvailableTestTypesForUser({
+    isPremium: isPremiumUser,
+    role: userRole,
+  })
+  const testTypes = includeCommonOnTestType(availableTestTypes, testType)
 
   return (
     <>
@@ -78,4 +88,6 @@ const TestTypeSelector = ({
   )
 }
 
-export default TestTypeSelector
+export default connect((state) => ({
+  isPremiumUser: isPremiumUserSelector(state),
+}))(TestTypeSelector)

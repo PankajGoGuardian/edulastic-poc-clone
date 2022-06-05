@@ -3,7 +3,7 @@ import { BodyContentWrapper, StickyHeader } from './Styled'
 
 const EeaPolicyContent = () => {
   return (
-    <BodyContentWrapper>
+    <BodyContentWrapper data-testid="eeaPolicyContent">
       <StickyHeader>
         <strong>Edulastic Data Processing Addendum</strong>
       </StickyHeader>

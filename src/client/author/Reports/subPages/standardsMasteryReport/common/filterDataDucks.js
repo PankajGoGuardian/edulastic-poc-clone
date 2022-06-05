@@ -19,7 +19,7 @@ const GET_REPORTS_STANDARDS_FILTERS_REQUEST_ERROR =
 const SET_REPORTS_PREV_STANDARDS_FILTERS =
   '[reports] get reports prev standards filters'
 
-const SET_FILTERS = '[reports] set standards filters'
+export const SET_FILTERS = '[reports] set standards filters'
 const SET_TEMP_DD_FILTER = '[reports] set standards tempDdFilters'
 const SET_TEMP_TAGS_DATA = '[reports] set standards temp tempTagsData'
 

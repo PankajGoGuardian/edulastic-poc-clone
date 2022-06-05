@@ -32,14 +32,9 @@ import {
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
 import { getIsProxiedByEAAccountSelector } from '../../../../student/Login/ducks'
+import { getAllTestTypesMap } from '../../../../common/utils/testTypeUtils'
 
-export const testTypeToolTip = {
-  assessment: 'Class Assessment',
-  'common assessment': 'Common Assessment',
-  practice: 'Practice Assessment',
-  homework: 'Homework',
-  quiz: 'Quiz',
-}
+export const testTypeToolTip = getAllTestTypesMap()
 
 const columns = [
   {
@@ -311,6 +306,7 @@ const TableList = ({
             ? 'Bulk action disabled for EA proxy accounts.'
             : ''
         }
+        placement="right"
       >
         <div>
           <MoreOption
@@ -327,6 +323,7 @@ const TableList = ({
             ? 'Bulk action disabled for EA proxy accounts.'
             : ''
         }
+        placement="right"
       >
         <div>
           <MoreOption

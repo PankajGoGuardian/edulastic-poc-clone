@@ -12,7 +12,7 @@ import {
   PerformanceTitle,
 } from './styles'
 
-const PerformanceBrand = (props, ref) => {
+const PerformanceBrand = (props) => {
   const {
     testData = {},
     data = {},
@@ -30,7 +30,11 @@ const PerformanceBrand = (props, ref) => {
     classTitle,
     studentActivityStartDate,
   } = data
-  const perfomancePercentage = (data.obtainedScore / data.totalScore) * 100
+
+  let perfomancePercentage = (obtainedScore / totalScore) * 100
+
+  perfomancePercentage =
+    (Number.isFinite(perfomancePercentage) && perfomancePercentage) || 0
 
   // finding matching performance band wrt scored percentange from selected performance band group
   const { performanceBand } =
@@ -47,9 +51,9 @@ const PerformanceBrand = (props, ref) => {
   // finding the mestry
   let mastery = null
   for (let i = 0; i < chartData.length; i++) {
-    const data = chartData[i]
-    if (perfomancePercentage >= data.threshold) {
-      mastery = data
+    const _data = chartData[i]
+    if (perfomancePercentage >= _data.threshold) {
+      mastery = _data
       break
     }
   }
@@ -190,7 +194,7 @@ const PerformanceBrand = (props, ref) => {
                     data-cy="report-performance-band"
                     style={{ color: selectedPerformanceBand?.color || 'black' }}
                   >
-                    {selectedPerformanceBand?.name || ''}
+                    {totalScore > 0 ? selectedPerformanceBand?.name || '' : ''}
                   </span>
                 </PerformanceTitle>
               )}

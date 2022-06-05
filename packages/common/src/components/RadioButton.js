@@ -83,6 +83,6 @@ const StyledRadioBtn = styled(Radio)`
   }
 
   @media (min-width: ${extraDesktopWidthMax}) {
-    font-size: ${(props) => props.theme.widgetOptions.labelFontSize};
+    font-size: ${(props) => props.theme.widgetOptions?.labelFontSize};
   }
 `

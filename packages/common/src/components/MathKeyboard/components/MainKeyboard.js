@@ -87,6 +87,16 @@ const MainKeyboard = ({
       limitRow = 4
     }
 
+    if (type === keyboardMethods.UNITS_SI) {
+      keysPerRow = 7
+      limitRow = 4
+    }
+
+    if (type === keyboardMethods.UNITS_US) {
+      keysPerRow = 7
+      limitRow = 5
+    }
+
     const rows = chunk(keybuttons, keysPerRow)
     updateBoards(chunk(rows, limitRow))
     updateCurrent(0)

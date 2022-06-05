@@ -229,6 +229,7 @@ class EditSchoolAdminModal extends Component {
                   placeholder={t('users.schooladmin.editsa.selectschool')}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   data-cy="selectSchools"
+                  data-testid="selectSchools"
                 >
                   {schoolsOptions}
                 </SelectInputStyled>
@@ -243,7 +244,10 @@ class EditSchoolAdminModal extends Component {
                 initialValue: isSuperAdmin,
                 valuePropName: 'checked',
               })(
-                <CheckboxLabel data-cy="superAdminCheckbox">
+                <CheckboxLabel
+                  data-cy="superAdminCheckbox"
+                  data-testid="superAdminCheckbox"
+                >
                   {t('users.schooladmin.superAdmin')}
                 </CheckboxLabel>
               )}
@@ -255,7 +259,10 @@ class EditSchoolAdminModal extends Component {
                 initialValue: _source?.isPowerTeacher,
                 valuePropName: 'checked',
               })(
-                <CheckboxLabel data-cy="powerUserCheckBox">
+                <CheckboxLabel
+                  data-cy="powerUserCheckBox"
+                  data-testid="powerUserCheckBox"
+                >
                   {t('users.schooladmin.powertools')}
                 </CheckboxLabel>
               )}

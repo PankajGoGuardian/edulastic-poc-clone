@@ -362,7 +362,7 @@ const MergeIdsTable = ({
           width="12%"
         />
         <Column
-          title="Clever Edu Count"
+          title={`${title} Edu Count`}
           dataIndex="totalLmsCount"
           key="totalLmsCount"
           width="12%"

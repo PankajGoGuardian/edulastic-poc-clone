@@ -224,12 +224,15 @@ const getCuratedTestActivity = (taGroup) => {
       laDate: curatedGroup[0].laDate,
       status: 'NOT STARTED',
       percentScore: ' ',
-      archived: curatedGroup,
+      archived: curatedGroup.filter((t) => t), // ref. EV-35273 - filter out null values for "Not Started" tests as fallback
     }
   }
   // return last attempted ta with others as archived
   return (
-    curatedGroup[0] && { ...curatedGroup[0], archived: curatedGroup.slice(1) }
+    curatedGroup[0] && {
+      ...curatedGroup[0],
+      archived: curatedGroup.slice(1).filter((t) => t), // ref. EV-35273 - filter out null values for "Not Started" tests as fallback
+    }
   )
 }
 
@@ -406,7 +409,7 @@ export const curateGradebookData = (
   if (urlHasStudent) {
     // calculate overall countByStatus
     const countByStatus = {}
-    STATUS_LIST.map(({ id }) => {
+    STATUS_LIST.forEach(({ id }) => {
       countByStatus[id] = 0
       curatedData.forEach((d) => {
         countByStatus[id] += d.countByStatus[id] || 0

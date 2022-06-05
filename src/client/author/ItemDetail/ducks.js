@@ -434,6 +434,11 @@ export const getCollectionsSelector = createSelector(
   (state) => state.collections || []
 )
 
+export const getItemDetailQuestionsSelector = createSelector(
+  getItemSelector,
+  (state) => state?.data?.questions || []
+)
+
 export const getHighlightCollectionSelector = createSelector(
   stateSelector,
   (state) => state.highlightCollection
@@ -1271,12 +1276,6 @@ export function* updateItemSaga({ payload }) {
     const resources = widgets.filter((item) =>
       resourceTypes.includes(item.type)
     )
-
-    if (isPassageWithQuestions && !questions.length) {
-      notification({ messageKey: 'CannotSaveWithoutQuestions' })
-      yield put(itemUpdateCompletedAction())
-      return null
-    }
 
     const _widgets = rows
       .flatMap(({ widgets }) => widgets)

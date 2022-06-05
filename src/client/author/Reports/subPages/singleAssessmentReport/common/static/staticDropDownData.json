@@ -70,12 +70,12 @@
     "hispanicEthnicity": "all"
   },
   "initialDdFilterTags": {
-    "race": {"key": "all", "title": "All"},
-    "gender": {"key": "all", "title": "All"},
-    "iepStatus": {"key": "all", "title": "All"},
-    "frlStatus": {"key": "all", "title": "All"},
-    "ellStatus": {"key": "all", "title": "All"},
-    "hispanicEthnicity": {"key": "all", "title": "All"}
+    "race": { "key": "all", "title": "All" },
+    "gender": { "key": "all", "title": "All" },
+    "iepStatus": { "key": "all", "title": "All" },
+    "frlStatus": { "key": "all", "title": "All" },
+    "ellStatus": { "key": "all", "title": "All" },
+    "hispanicEthnicity": { "key": "all", "title": "All" }
   },
   "subjects": [
     { "key": "Mathematics", "title": "Mathematics" },
@@ -101,11 +101,6 @@
     { "key": "11", "title": "Grade 11" },
     { "key": "12", "title": "Grade 12" },
     { "key": "O", "title": "Other" }
-  ],
-  "assessmentType": [
-    { "key": "common assessment", "title": "Common" },
-    { "key": "assessment", "title": "Class" },
-    { "key": "practice", "title": "Practice" }
   ],
   "assignedBy": [
     { "key": "anyone", "title": "Anyone" },

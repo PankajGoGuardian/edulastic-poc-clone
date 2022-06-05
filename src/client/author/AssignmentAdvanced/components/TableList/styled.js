@@ -10,6 +10,8 @@ import {
   themeColorBlue,
   lightGrey4,
   lightGrey5,
+  lightFadedBlack,
+  black,
 } from '@edulastic/colors'
 
 const { assignmentStatusBg } = authorAssignment
@@ -181,11 +183,12 @@ export const BulkActionsButtonContainer = styled.div`
 export const MoreOption = styled.div`
   padding: 0px 12px;
   height: 30px;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   font-size: 12px;
   font-weight: 600;
   display: flex;
   align-items: center;
+  color: ${({ disabled }) => (disabled ? lightFadedBlack : black)};
   & :hover {
     color: ${white};
     background: ${themeColorBlue};

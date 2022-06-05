@@ -30,6 +30,8 @@ import {
   IconUndo,
   IconPlusCircle,
   IconEdit,
+  IconGraphRose,
+  IconGraphCardioid,
 } from '@edulastic/icons'
 import ToolsContiner from './ToolsContiner'
 import {
@@ -101,8 +103,8 @@ const iconsByToolName = {
   [CONSTANT.TOOLS.PIECEWISE_POINT]: <IconPoint width={11} height={11} />,
   [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
   [CONSTANT.TOOLS.LINE_CUT]: <span>cut</span>,
-  [CONSTANT.TOOLS.ROSE]: <span>Rose</span>,
-  [CONSTANT.TOOLS.CARDIOID]: <span>Cardoid</span>,
+  [CONSTANT.TOOLS.ROSE]: <IconGraphRose height={22} />,
+  [CONSTANT.TOOLS.CARDIOID]: <IconGraphCardioid height={22} />,
   [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
   [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
@@ -324,7 +326,7 @@ Tools.propTypes = {
   controls: PropTypes.array,
   onSelectControl: PropTypes.func,
   onSelect: PropTypes.func,
-  fontSize: PropTypes.number,
+  fontSize: PropTypes.string,
   canEditTools: PropTypes.bool,
   setTools: PropTypes.func,
 }
@@ -336,7 +338,7 @@ Tools.defaultProps = {
   controls: [],
   onSelectControl: () => {},
   onSelect: () => {},
-  fontSize: 14,
+  fontSize: '14px',
   canEditTools: false,
   setTools: () => {},
 }

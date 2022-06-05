@@ -10,7 +10,7 @@ import selectsData from '../TestPage/components/common/selectsData'
 
 // transformers & constants
 import { STATUS_LIST, PAGE_DETAIL } from './transformers'
-import { getTestTypeFullNames } from '../../common/utils/testTypeUtils'
+import { getAllTestTypesMap } from '../../common/utils/testTypeUtils'
 
 // slice
 const slice = createSlice({
@@ -114,10 +114,10 @@ function* fetchGradebookFiltersSaga() {
       .filter((s) => s.value)
       .map(({ value, text }) => ({ id: value, name: text }))
     // testTypes
-    const testTypeFullNames = getTestTypeFullNames()
+    const testTypeFullNames = getAllTestTypesMap()
     const testTypes = Object.keys(testTypeFullNames).map((key) => ({
-        id: key,
-        name: testTypeFullNames[key],
+      id: key,
+      name: testTypeFullNames[key],
     }))
     testTypes.unshift({ id: '', name: 'All' })
 

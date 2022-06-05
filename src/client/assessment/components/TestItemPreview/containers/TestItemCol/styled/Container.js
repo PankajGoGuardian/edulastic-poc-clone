@@ -64,7 +64,8 @@ export const Container = styled.div`
   flex-direction: column;
   border-right-color: ${(props) =>
     props.theme.testItemPreview.itemColBorderColor};
-  background-color: ${(props) => props.isStudentAttempt && '#fff'};
+  background-color: ${(props) =>
+    props.isStudentAttempt && (props?.themeBgColor || '#fff')};
   border-radius: ${(props) => props.isStudentAttempt && '8px'};
   padding-top: ${(props) => props.isStudentAttempt && '12px'};
   overflow: ${(props) =>

@@ -23,13 +23,17 @@ import {
   getUserRole,
   getCurrentTerm,
   getUserOrgId,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import { FilterContainer } from './styled'
 import Folders from '../../../src/components/Folders'
 import { setItemsMoveFolderAction } from '../../../src/actions/folder'
 import TagFilter from '../../../src/components/common/TagFilter'
-import { getTestTypeFullNames } from '../../../../common/utils/testTypeUtils'
+import {
+  getAllTestTypesMap,
+  getNonPremiumTestTypes,
+} from '../../../../common/utils/testTypeUtils'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -124,6 +128,7 @@ class LeftFilter extends React.Component {
       assignmentTestList = [],
       isAdvancedView,
       teacherTestList = [],
+      isPremiumUser,
     } = this.props
     const {
       subject,
@@ -137,7 +142,9 @@ class LeftFilter extends React.Component {
       tags = [],
       folderId = '',
     } = filterState
-    const testTypes = getTestTypeFullNames()
+    const testTypes = isPremiumUser
+      ? getAllTestTypesMap()
+      : getNonPremiumTestTypes()
     const classListByTerm = classList.filter(
       (item) => item.termId === termId || !termId
     )
@@ -421,6 +428,7 @@ export default connect(
     assignmentTestList: getAssignmentTestList(state),
     teacherTestList: getAssignmentTestsSelector(state),
     currentTerm: getCurrentTerm(state),
+    isPremiumUser: isPremiumUserSelector(state),
   }),
   {
     setItemsToFolder: setItemsMoveFolderAction,

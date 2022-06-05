@@ -1,3 +1,4 @@
+import { getAllTestTypesMap } from '../../../../../../common/utils/testTypeUtils'
 import {
   groupBy,
   sumBy,
@@ -9,12 +10,10 @@ import {
   forEach,
   values,
   reduce,
-  capitalize,
 } from 'lodash'
 import {
   percentage,
   getLeastProficiencyBand,
-  testTypeHashMap,
   formatDate,
 } from '../../../../common/util'
 
@@ -123,6 +122,7 @@ export const parseData = (rawData = {}) => {
     const score = round(percentage(totalScore, totalMaxScore))
     const rawScore = totalScore / totalGraded || 0
     const assessmentDateFormatted = formatDate(assessmentDate)
+    const testTypes = getAllTestTypesMap()
 
     return {
       maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
@@ -136,7 +136,7 @@ export const parseData = (rawData = {}) => {
       testName,
       totalTestItems,
       uniqId: testId + testType,
-      testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
+      testType: testTypes[testType.toLowerCase()],
       assessmentDate,
       assessmentDateFormatted,
       totalAssigned,

@@ -1,9 +1,14 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import { roleuser, test } from '@edulastic/constants'
+import {
+  roleuser,
+  test,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { evalTypeLabels } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -22,6 +27,9 @@ import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
+import ShowHintsToStudents from './ShowHintsToStudents'
+
+const { COMMON } = testTypesConstants.TEST_TYPES
 
 const {
   releaseGradeTypes,
@@ -55,8 +63,8 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  hasRefMaterialAttributes,
   t,
+  allowToUseShowHintsToStudents,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -69,15 +77,19 @@ const TestBehaviorGroupContainer = ({
     testContentVisibility = testSettings.testContentVisibility ||
       testContentVisibilityOptions.ALWAYS,
     testType = testSettings.testType,
-    playerSkinType = testSettings.playerSkinType,
+    playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
+    allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
+    showHintsToStudents = testSettings?.showHintsToStudents || true,
+    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints || 0,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
     const { quester, edulastic } = playerSkinValues
+
     return (
       !isDocBased &&
       (playerSkinType === edulastic || playerSkinType === quester)
@@ -138,6 +150,10 @@ const TestBehaviorGroupContainer = ({
     }
 
     overRideSettings(attr, value)
+  }
+
+  const updateRefMaterials = (value) => {
+    overRideSettings('referenceDocAttributes', value)
   }
 
   const testTypeContent = (
@@ -332,9 +348,9 @@ const TestBehaviorGroupContainer = ({
           premium={premium}
           disabled={freezeSettings}
           tootltipWidth={tootltipWidth}
-          overRideSettings={overRideSettings}
-          attributes={referenceDocAttributes}
-          hasRefMaterialAttributes={hasRefMaterialAttributes}
+          setData={updateRefMaterials}
+          referenceDocAttributes={referenceDocAttributes}
+          hasAttributesInTest={!isEmpty(testSettings?.referenceDocAttributes)}
         />
       )}
       {/* Reference Material */}
@@ -465,6 +481,19 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
 
+      <ShowHintsToStudents
+        tootltipWidth={tootltipWidth}
+        premium={premium}
+        content=""
+        freezeSettings={freezeSettings}
+        showHintsToStudents={showHintsToStudents}
+        penaltyOnUsingHints={penaltyOnUsingHints}
+        overRideSettings={overRideSettings}
+        allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
+        isDocBased={isDocBased}
+        isTestlet={playerSkinType?.toLowerCase() === playerSkinValues.testlet}
+      />
+
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) && (
@@ -503,6 +532,44 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
       {/* Test Content visibility */}
+      {COMMON.includes(testType) && (
+        <SettingContainer id="allow-teachers-to-redirect">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="ALLOW TEACHERS TO REDIRECT"
+            content={t('allowTeacherToRedirect.info')}
+            premium={premium}
+            placement="rightTop"
+          />
+          <StyledRow
+            data-cy="allow-teachers-to-redirect"
+            gutter={16}
+            mb="15px"
+            height="40"
+          >
+            <Col span={10}>
+              <Label>
+                <span>ALLOW TEACHERS TO REDIRECT</span>
+                <DollarPremiumSymbol premium={premium} />
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-testid="allow-teachers-to-redirect-switch"
+                  size="small"
+                  defaultChecked
+                  disabled={freezeSettings}
+                  checked={allowTeacherRedirect}
+                  onChange={(value) =>
+                    overRideSettings('allowTeacherRedirect', value)
+                  }
+                />
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
     </>
   )
 }

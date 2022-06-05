@@ -221,7 +221,9 @@ const ManageDistrictPrimaryForm = Form.create({
             rules: [{ required: true }],
           })(
             <Select style={{ width: 120 }} data-cy="change-plan-select">
-              <Option value="free">Free</Option>
+              <Option value="free" data-cy="free">
+                Free
+              </Option>
               <Option value="enterprise" data-cy="enterprise">
                 Enterprise
               </Option>

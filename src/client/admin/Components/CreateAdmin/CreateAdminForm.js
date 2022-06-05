@@ -231,6 +231,7 @@ const CreateAdminForm = ({
                 placeholder={t('users.districtadmin.createda.enterpassword')}
                 type="password"
                 autocomplete="new-password"
+                data-cy="passwordTextBox"
               />
             )}
           </FormItem>

@@ -41,6 +41,7 @@ import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   currentDistrictInstitutionIds,
+  isPublisherUserSelector,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
@@ -158,6 +159,7 @@ const HeaderSection = ({
   schoolPolicy,
   setShowHeaderTrialModal,
   isPremiumTrialUsed,
+  isPublisherUser,
 }) => {
   const { subEndDate, subType } = subscription || {}
   const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
@@ -247,17 +249,18 @@ const HeaderSection = ({
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
         {(currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
-          isEmpty(institutionIds)) && (
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <StyledLink data-cy="completeSignup" onClick={handleClick}>
-                Complete signup
-              </StyledLink>
-            )}
-            trackClick={trackClick('dashboard:complete-sign-up:click')}
-            triggerSource="Button Click"
-          />
-        )}
+          isEmpty(institutionIds)) &&
+          !isPublisherUser && (
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <StyledLink data-cy="completeSignup" onClick={handleClick}>
+                  Complete signup
+                </StyledLink>
+              )}
+              trackClick={trackClick('dashboard:complete-sign-up:click')}
+              triggerSource="Button Click"
+            />
+          )}
         {showManageClass && (
           <>
             <Tooltip title="Manage Class">
@@ -359,6 +362,7 @@ const HeaderSection = ({
             >
               {needsRenewal ? (
                 <EduButton
+                  data-cy="renewSubscription"
                   type="primary"
                   isBlue
                   style={{
@@ -435,6 +439,7 @@ const enhance = compose(
       loading: state.dashboardTeacher.loading,
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
+      isPublisherUser: isPublisherUserSelector(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,

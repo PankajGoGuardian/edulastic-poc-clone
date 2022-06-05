@@ -11,13 +11,13 @@ import styled from 'styled-components'
 
 export const FieldLabel = styled.label`
   font-size: ${(props) => props.fs || '11px'};
-  font-weight: ${(props) => props.theme.widgetOptions.labelFontWeight};
-  font-style: ${(props) => props.theme.widgetOptions.labelFontStyle};
-  font-stretch: ${(props) => props.theme.widgetOptions.labelFontStretch};
+  font-weight: ${(props) => props.theme.widgetOptions?.labelFontWeight};
+  font-style: ${(props) => props.theme.widgetOptions?.labelFontStyle};
+  font-stretch: ${(props) => props.theme.widgetOptions?.labelFontStretch};
   line-height: 1.38;
   text-align: left;
   white-space: ${(props) => props.nowrap || 'nowrap'};
-  color: ${(props) => props.color || props.theme.widgetOptions.labelColor};
+  color: ${(props) => props.color || props.theme.widgetOptions?.labelColor};
   display: ${(props) => (props.display ? props.display : 'block')};
   text-transform: uppercase;
   margin-top: ${(props) => props.mt || '0px'};
@@ -85,7 +85,7 @@ export const TextInputStyled = styled((props) => (
     text-align: ${(props) => props.align || 'left'};
     ${inputCommonStyle};
     ${(props) => props.style};
-    color: ${({ theme }) => theme.questionTextColor};
+    color: ${({ color, theme }) => color || theme.questionTextColor};
     &:focus,
     &:hover {
       border: 1px solid ${themeColorBlue} !important;

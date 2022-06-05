@@ -1,5 +1,4 @@
 import {
-  cardTitleColor,
   lightGreySecondary,
   linkColor1,
   mobileWidth,
@@ -14,7 +13,6 @@ import {
   backgroundGrey,
 } from '@edulastic/colors'
 import { Paper } from '@edulastic/common'
-import { IconClose } from '@edulastic/icons'
 import { Anchor, Button, Col, Input, Radio, Select, Table } from 'antd'
 import styled from 'styled-components'
 import { SavedSettingsContainer } from '../../../../../AssignTest/components/Container/styled'
@@ -124,7 +122,8 @@ export const Title = styled.div`
 
 export const Body = styled.div`
   background: ${white};
-  padding: ${(props) => (props.smallSize ? '0' : '20px 0px')};
+  padding: ${({ smallSize, padding }) =>
+    smallSize ? '0' : padding || '20px 0px'};
   border-radius: 4px;
   .sebPassword {
     margin-bottom: 10px;
@@ -149,6 +148,7 @@ export const Description = styled.div`
   line-height: 22px;
   color: #6a737f;
   margin-top: ${({ marginTop }) => marginTop || '10px'};
+  margin-bottom: ${({ marginTop }) => marginTop};
 `
 
 export const StyledRadioGroup = styled(Radio.Group)`
@@ -254,12 +254,6 @@ export const BandsText = styled.span`
   font-weight: 600;
   letter-spacing: 0.3px;
   color: #4aac8b;
-`
-
-export const NormalText = styled.span`
-  font-size: 12px;
-  font-weight: 700;
-  color: ${cardTitleColor};
 `
 
 export const InputTitle = styled.div`
@@ -402,20 +396,4 @@ export const SubHeaderContainer = styled.div`
   padding-bottom: 15px;
   display: flex;
   align-items: center;
-`
-
-export const UploadInput = styled.input`
-  display: none;
-`
-
-export const FileName = styled.span`
-  color: ${themeColor};
-  font-size: 13px;
-  font-weight: 600;
-  margin: 0px 24px;
-`
-
-export const CloseIcon = styled(IconClose)`
-  fill: ${linkColor1};
-  margin-left: 24px;
 `

@@ -27,8 +27,8 @@ class QuillSortableHintsList extends Component {
     setQuestionData(
       produce(item, (draft) => {
         draft.hints = arrayMove(draft.hints, oldIndex, newIndex).map(
-          ({ label }, index) => ({
-            value: index,
+          ({ label, value }) => ({
+            value,
             label,
           })
         )

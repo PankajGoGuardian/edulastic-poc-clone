@@ -74,7 +74,7 @@ const ForgotPasswordPopup = (props) => {
       bodyPadding="25px 0px 0px 0px"
       footer={[]}
     >
-      <div>
+      <div data-cy="passwordReset">
         {tooManyAttempt && !requestNewPasswordSuccess ? (
           <div>
             <StyledText>
@@ -127,7 +127,7 @@ const ForgotPasswordPopup = (props) => {
               </StyledText>
             </div>
             <ButtonsContainer>
-              <EduButton key="close" onClick={onClickClose}>
+              <EduButton key="close" onClick={onClickClose} data-cy="close">
                 Close
               </EduButton>
             </ButtonsContainer>
@@ -184,22 +184,26 @@ const ForgotPasswordForm = (props) => {
           ],
         })(
           <Input
+            data-testid="email-input"
             className="email-input"
             prefix={<IconMail color={themeColor} />}
             placeholder="Enter Registered Username or Email"
+            data-cy="enterUsernameOrEmail"
             autoComplete="new-password"
           />
         )}
       </Form.Item>
       <ButtonsContainer>
-        <EduButton isGhost onClick={onCancel}>
+        <EduButton isGhost onClick={onCancel} data-cy="cancel">
           Cancel
         </EduButton>
         <EduButton
+          data-testid="send-reset"
           htmlType="submit"
           key="sendLink"
           ml="20px"
           disabled={requestingNewPassword}
+          data-cy="sendResetLink"
         >
           Send Reset Link
         </EduButton>

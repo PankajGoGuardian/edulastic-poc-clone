@@ -22,11 +22,11 @@ function multiply(numberOne, numberTwo) {
   const oneDecimals = getCountDecimals(numberOne)
   const twoDecimals = getCountDecimals(numberTwo)
   const decimals = oneDecimals + twoDecimals
-
   const one = numberOne * 10 ** oneDecimals
   const two = numberTwo * 10 ** twoDecimals
+  const result = (one * two) / 10 ** decimals
 
-  return (one * two) / 10 ** decimals
+  return result
 }
 
 export default function calculate(obj, buttonName) {
@@ -34,15 +34,22 @@ export default function calculate(obj, buttonName) {
     const two = parseFloat(numberTwo)
 
     if (operation === '+') {
-      return normalOperation(numberOne, numberTwo, (a, b, c) => (a + b) / c)
+      return normalOperation(numberOne, numberTwo, (a, b, c) => {
+        const result = (a + b) / c
+        return result.toString()
+      })
     }
 
     if (operation === '-') {
-      return normalOperation(numberOne, numberTwo, (a, b, c) => (a - b) / c)
+      return normalOperation(numberOne, numberTwo, (a, b, c) => {
+        const result = (a - b) / c
+        return result.toString()
+      })
     }
 
     if (operation === 'x') {
-      return multiply(numberOne, numberTwo)
+      const result = multiply(numberOne, numberTwo)
+      return result.toString()
     }
 
     if (operation === '÷') {
@@ -50,7 +57,10 @@ export default function calculate(obj, buttonName) {
         alert('Divide by 0 error')
         return '0'
       }
-      return normalOperation(numberOne, numberTwo, (a, b) => a / b)
+      return normalOperation(numberOne, numberTwo, (a, b) => {
+        const result = a / b
+        return result.toString()
+      })
     }
     throw Error(`Unknown operation '${operation}'`)
   }

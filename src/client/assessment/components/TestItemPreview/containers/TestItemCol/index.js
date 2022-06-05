@@ -348,6 +348,7 @@ class TestItemCol extends Component {
       currentStudent,
       zoomLevel,
       responsiveWidth,
+      themeBgColor,
       ...restProps
     } = this.props
     const {
@@ -406,6 +407,7 @@ class TestItemCol extends Component {
           isExpressGrader={isExpressGrader}
           isStudentReport={isStudentReport}
           ref={this.scrollContainer}
+          themeBgColor={themeBgColor}
           className={`test-item-col ${
             col?.tabs?.length ? 'test-item-tab-container' : ''
           }`}

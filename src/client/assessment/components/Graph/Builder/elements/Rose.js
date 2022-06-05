@@ -1,122 +1,94 @@
+import JXG from 'jsxgraph'
 import { CONSTANT } from '../config'
 import { Point } from '.'
-import { colorGenerator } from '../utils'
+import { nameGen, colorGenerator } from '../utils'
 
 const jxgType = 106
 
-let tempPoints = []
-
-function getColorParams(color) {
-  return {
-    // fillColor: color,
-    strokeColor: color,
-    highlightStrokeColor: color,
-    // highlightFillColor: color,
+function createPoint(board, p, color) {
+  const object = {
+    x: p.x,
+    y: p.y,
+    label: p.label,
+    labelIsVisible: true,
+    pointIsVisible: true,
+    id: null,
   }
+  const conf = { size: 4, fillColor: color }
+  const point = Point.create(board, object, conf)
+
+  point.on('drag', () => {
+    point.setPosition(JXG.COORDS_BY_USER, [point.X(), 0])
+  })
+
+  return point
 }
 
 function drawRose(board, obj, settings = {}) {
-  const k = 2
-  const l = 2
-  const { priorityColor, points, baseColor, dashed = false } = obj
-  const [point1, point2] = points
+  const { fixed = true } = settings
+  const { x, y, priorityColor, baseColor, dashed = false, label } = obj
+  const currentColor = priorityColor || board.priorityColor || baseColor
 
-  const { fixed = false } = settings
+  const point = createPoint(board, { x, y, label }, currentColor)
 
-  const rose = board.$board.create(
+  const roseObj = board.$board.create(
     'curve',
-    [
-      (phi) => (point2.X() - point1.X()) * Math.cos(k * phi),
-      [point1.X(), point1.Y()],
-      0,
-      () => l * Math.PI,
-    ],
+    [(phi) => point.X() * Math.cos(2 * phi), [0, 0], 0, () => 2 * Math.PI],
     {
       fixed,
       strokewidth: 2,
       dash: dashed ? 2 : 0,
-      ...getColorParams(priorityColor || board.priorityColor || baseColor),
+      strokeColor: currentColor,
+      highlightStrokeColor: currentColor,
     }
   )
 
-  rose.on('drag', () => {
-    board.dragged = true
-  })
-
-  rose.type = jxgType
-  rose.ancestors = {
-    [point1.id]: point1,
-    [point2.id]: point2,
-  }
-  rose.addParents(points)
-  return rose
-}
-
-function onHandler(board, event) {
-  const point = Point.onHandler(board, event)
-  point.isTemp = true
-  tempPoints.push(point)
-
-  if (tempPoints.length === 2) {
-    tempPoints.forEach((p) => {
-      p.isTemp = false
+  if (!fixed) {
+    roseObj.on('drag', () => {
+      board.dragged = true
     })
-
-    const obj = {
-      label: false,
-      labelIsVisible: true,
-      points: tempPoints,
-      baseColor: colorGenerator(board.elements.length),
-    }
-
-    const roseObj = drawRose(board, obj)
-    tempPoints = []
-    return roseObj
   }
-}
+  roseObj.type = jxgType
+  roseObj.point = point
+  roseObj.labelHTML = label
+  roseObj.addParents(point)
 
-function loadObject(board, object, settings) {
-  const { points } = object
-  const pointObjs = points.map((obj) => Point.create(board, obj))
-  const obj = {
-    ...object,
-    points: pointObjs,
-  }
-  const roseObj = drawRose(board, obj, settings)
   return roseObj
 }
 
-function getConfig(roseObj) {
-  return {
-    _type: roseObj.type,
-    id: roseObj.id,
-    type: CONSTANT.TOOLS.ROSE,
-    label: roseObj.labelHTML || false,
-    baseColor: roseObj.baseColor,
-    dashed: roseObj.dashed,
-    labelIsVisible: roseObj.labelIsVisible,
-    points: Object.keys(roseObj.ancestors).map((n) =>
-      Point.getConfig(roseObj.ancestors[n])
-    ),
+function onHandler(board, event) {
+  const coords = board.getCoords(event).usrCoords
+  const object = {
+    labelIsVisible: true,
+    x: coords[1],
+    y: 0,
+    label: nameGen(board.elements),
+    baseColor: colorGenerator(board.elements.length),
   }
+  return drawRose(board, object)
 }
 
-function clean(board) {
-  const result = tempPoints.length > 0
-  tempPoints.forEach((point) => board.$board.removeObject(point))
-  tempPoints = []
-  return result
+function loadObject(board, object, settings) {
+  return drawRose(board, object, settings)
 }
 
-function getTempPoints() {
-  return tempPoints
+function getConfig(jxgObj) {
+  return {
+    _type: jxgObj.type,
+    id: jxgObj.id,
+    type: CONSTANT.TOOLS.CARDIOID,
+    label: jxgObj.labelHTML || false,
+    baseColor: jxgObj.baseColor,
+    dashed: jxgObj.dashed,
+    labelIsVisible: jxgObj.labelIsVisible,
+    x: jxgObj.point.X(),
+    y: jxgObj.point.Y(),
+  }
 }
 
 export default {
   jxgType,
-  clean,
   onHandler,
   getConfig,
   create: loadObject,
-  getTempPoints,
 }

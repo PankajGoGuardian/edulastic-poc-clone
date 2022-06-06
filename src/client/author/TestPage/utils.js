@@ -12,7 +12,6 @@ import {
 import { helpers } from '@edulastic/common'
 import {
   test as testConstants,
-  collections,
   question as questionConstants,
 } from '@edulastic/constants'
 
@@ -24,8 +23,6 @@ const roundOff = (number) =>
   number ? Number(Number(number).toFixed(2)) : number
 
 const { sectionLabelType } = questionConstants
-
-const { nonPremiumCollections = {} } = collections
 
 const { getQuestionLevelScore, getPoints } = helpers
 
@@ -226,20 +223,6 @@ export const sortGrades = (grades) => {
     sortedGrades = [...sortedGrades, 'o']
   }
   return sortedGrades
-}
-
-/**
- * Checks if the item is premium content or not.
- * Any item which has collections excluding edulastic certified and engage ny
- * is premium content
- * @param {Array<Object>} _collections
- * @returns {Boolean} isPremium
- */
-export const isPremiumContent = (_collections = []) => {
-  const nonPremiumIds = Object.keys(nonPremiumCollections)
-  const isPremium = (collection) => !nonPremiumIds.includes(collection._id)
-  const result = _collections.filter(isPremium)
-  return result.length > 0
 }
 
 export const skinTypesOrder = (skinTypes = {}) => {

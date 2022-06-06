@@ -2,10 +2,9 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { SortableContainer } from 'react-sortable-hoc'
 import { get } from 'lodash'
-import { getQuestionType } from '../../../../../dataUtils'
+import { getQuestionType, isPremiumContent } from '../../../../../dataUtils'
 
 import ListItem from './ListItem'
-import { isPremiumContent } from '../../../../utils'
 
 const List = SortableContainer(
   ({

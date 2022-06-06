@@ -5,8 +5,11 @@ import { collections as collectionConst } from '@edulastic/constants'
 import MainInfo from './MainInfo'
 import MetaInfo from './MetaInfo'
 import Expanded from './Expanded'
-import { getQuestionType } from '../../../../../dataUtils'
-import { isPremiumContent } from '../../../../utils'
+import {
+  getQuestionType,
+  isPremiumContent,
+  showPremiumLabelOnContent,
+} from '../../../../../dataUtils'
 
 const ReviewItem = ({
   item,
@@ -30,6 +33,9 @@ const ReviewItem = ({
   groupMinimized,
   groupPoints,
   isTestsUpdated,
+  orgCollections,
+  isPublishers,
+  userId,
 }) => {
   const premiumCollectionWithoutAccess = useMemo(
     () =>
@@ -81,6 +87,13 @@ const ReviewItem = ({
       isScoringDisabled,
       groupId: item.groupId,
     }
+    const testItemOwner =
+      item.authors && item.authors.some((x) => x._id === userId)
+    const showPremiumLabel =
+      !isPublishers &&
+      !testItemOwner &&
+      isPremiumContent(item?.collections || []) &&
+      showPremiumLabelOnContent(item?.collections, orgCollections)
 
     const meta = {
       id: item._id,
@@ -89,7 +102,7 @@ const ReviewItem = ({
       type: getQuestionType(item),
       points: scoring[item._id] || helpers.getPoints(item),
       item,
-      isPremium: isPremiumContent(item?.collections || []),
+      isPremium: showPremiumLabel,
       standards: standards[item._id],
       audio: audioStatus(item),
       tags: item.tags,

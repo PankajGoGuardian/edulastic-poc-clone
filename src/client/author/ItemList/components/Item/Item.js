@@ -37,6 +37,7 @@ import {
   getQuestionType,
   getTestItemAuthorIcon,
   showPremiumLabelOnContent,
+  isPremiumContent,
 } from '../../../dataUtils'
 import { MAX_TAB_WIDTH } from '../../../src/constants/others'
 import Standards from './Standards'
@@ -497,7 +498,10 @@ class Item extends Component {
       features,
       openPreviewModal,
       userRole,
+      userId,
+      collections,
     } = this.props
+    const owner = item.authors && item.authors.some((x) => x._id === userId)
     const {
       isOpenedDetails,
       selectedId,
@@ -662,12 +666,15 @@ class Item extends Component {
                   <Tags data-cy="tags" tags={item.tags} key="tags" />
                 )}
                 <CategoryContent>
+                  {isPremiumContent(item.collections || []) &&
+                    showPremiumLabelOnContent(item.collections, collections) &&
+                    !isPublisher &&
+                    !owner && <PremiumTag />}
                   {itemTypes.map((itemType) => (
                     <Label data-cy="ques-type">
                       <LabelText>{itemType}</LabelText>
                     </Label>
                   ))}
-                  {item.collectionName ? <PremiumTag /> : null}
                   <CollectionTag
                     data-cy="collection"
                     collectionName={item?.collectionName}

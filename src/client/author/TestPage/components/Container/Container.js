@@ -869,6 +869,7 @@ class Container extends PureComponent {
             isEditable={isEditable}
             current={current}
             showCancelButton={showCancelButton}
+            userId={userId}
           />
         )
       case 'settings':

@@ -1,6 +1,7 @@
 import React from 'react'
 import { get, keyBy, uniqBy, uniq, memoize } from 'lodash'
 import { questionType as questionTypes } from '@edulastic/constants'
+import { nonPremiumCollections } from '@edulastic/constants/const/collections'
 import { UserIcon } from './ItemList/components/Item/styled'
 import { EdulasticVerified } from './TestList/components/ListItem/styled'
 
@@ -281,4 +282,21 @@ export const showPremiumLabelOnContent = (
     )
     .map((x) => x._id)
   return itemCollections.some((c) => premiumCollectionIds.includes(c._id))
+}
+
+/**
+ * Checks if the item is premium content or not.
+ * Any item which has collections excluding edulastic certified and engage ny
+ * is premium content
+ * @param {Array<Object>} _collections
+ * @returns {Boolean} isPremium
+ */
+export const isPremiumContent = (_collections = []) => {
+  const hasPremiumCollection = _collections.some(
+    ({ type }) => type === 'premium'
+  )
+  const nonPremiumIds = Object.keys(nonPremiumCollections)
+  const isPremium = (collection) => !nonPremiumIds.includes(collection._id)
+  const result = _collections.filter(isPremium)
+  return result.length > 0 && hasPremiumCollection
 }

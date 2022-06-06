@@ -65,6 +65,7 @@ import {
   getUserFeatures,
   getUserRole,
   getIsPowerPremiumAccount,
+  getCollectionsSelector,
 } from '../../../../../src/selectors/user'
 import TestPreviewModal from '../../../../../Assignments/components/Container/TestPreviewModal'
 import ReviewItems from '../ReviewItems'
@@ -561,6 +562,8 @@ class Review extends PureComponent {
       isPreviewModalVisible,
       playlistId,
       isTestsUpdated,
+      orgCollections,
+      userId,
     } = this.props
     const {
       isCollapse,
@@ -696,6 +699,8 @@ class Review extends PureComponent {
                 isPowerPremiumAccount={isPowerPremiumAccount}
                 showGroupsPanel={showGroupsPanel}
                 isTestsUpdated={isTestsUpdated}
+                orgCollections={orgCollections}
+                userId={userId}
               />
             </Paper>
           </ReviewLeftContainer>
@@ -809,6 +814,7 @@ const enhance = compose(
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
       isTestsCreating: getTestsCreatingSelector(state),
       isTestsUpdated: getTestsUpdatedSelector(state),
+      orgCollections: getCollectionsSelector(state),
     }),
     {
       setData: setTestDataAction,

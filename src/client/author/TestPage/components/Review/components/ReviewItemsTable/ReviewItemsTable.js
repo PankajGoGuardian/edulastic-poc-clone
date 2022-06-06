@@ -10,9 +10,8 @@ import { ReviewTableWrapper } from './styled'
 import MainInfoCell from './MainInfoCell/MainInfoCell'
 import MetaInfoCell from './MetaInfoCell/MetaInfoCell'
 import { getStandardsSelector } from '../../ducks'
-import { getQuestionType } from '../../../../../dataUtils'
+import { getQuestionType, isPremiumContent } from '../../../../../dataUtils'
 import ListItem from '../List/ListItem'
-import { isPremiumContent } from '../../../../utils'
 
 const ItemsTable = ({
   items,

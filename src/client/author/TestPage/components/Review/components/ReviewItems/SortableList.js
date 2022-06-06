@@ -91,6 +91,7 @@ export default SortableContainer(
           isEditable={isEditable}
           index={index}
           item={item}
+          isPublishers={isPublishers}
         />
       )
     }

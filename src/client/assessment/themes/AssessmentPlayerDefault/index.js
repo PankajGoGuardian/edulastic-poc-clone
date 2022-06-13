@@ -370,6 +370,7 @@ class AssessmentPlayerDefault extends React.Component {
       canShowPlaybackOptionTTS,
       passage,
       canShowReferenceMaterial,
+      classLevelSettings,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -700,6 +701,7 @@ class AssessmentPlayerDefault extends React.Component {
                   premiumCollectionWithoutAccess={
                     premiumCollectionWithoutAccess
                   }
+                  classLevelSettings={classLevelSettings}
                   {...extraTestItemProps}
                 />
               </MainWrapper>

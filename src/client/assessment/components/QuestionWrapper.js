@@ -503,11 +503,18 @@ class QuestionWrapper extends Component {
       isReviewTab,
       page: viewPage,
       assignmentLevelSettings: {
-        showHintsToStudents = true,
-        penaltyOnUsingHints = 0,
+        showHintsToStudents: showHintsToStudentsAssignmentLevel = true,
+        penaltyOnUsingHints: penaltyOnUsingHintsAssignmentLevel = 0,
       },
+      classLevelSettings,
     } = restProps
 
+    const showHintsToStudents =
+      classLevelSettings?.showHintsToStudents ||
+      showHintsToStudentsAssignmentLevel
+    const penaltyOnUsingHints =
+      classLevelSettings?.penaltyOnUsingHints ||
+      penaltyOnUsingHintsAssignmentLevel
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)
     const timeSpent = get(data, 'activity.timeSpent', false)

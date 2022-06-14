@@ -40,7 +40,7 @@ const GRAPH_TOOLS = {
   NO_SOLUTION: 'no_solution',
   LINE_CUT: 'line_cut',
   ROSE: 'rose',
-  CARDIOID: 'Cardioid',
+  CARDIOID: 'cardioid',
 
   // Default
   RESET: 'reset',

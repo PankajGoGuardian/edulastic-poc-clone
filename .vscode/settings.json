@@ -1,6 +1,4 @@
 {
-  // Place your settings in this file to overwrite default and user settings.
-  "editor.renderIndentGuides": true,
   "editor.renderWhitespace": "boundary",
   "editor.insertSpaces": false,
   "editor.detectIndentation": true,
@@ -40,7 +38,7 @@
   "prettier.useTabs": false,
   "prettier.trailingComma": "es5",
   "[javascript]": {
-    "editor.defaultFormatter": "numso.prettier-standard-vscode"
+    "editor.defaultFormatter": "esbenp.prettier-vscode"
   },
   "[javascriptreact]": {
     "editor.defaultFormatter": "esbenp.prettier-vscode"
@@ -58,5 +56,6 @@
     "rules": {
       "react/jsx-props-no-spreading": 0
     }
-  }
+  },
+  "editor.guides.indentation": true
 }

@@ -80,7 +80,6 @@ export const TOOLS_BY_GROUP = {
         GRAPH_TOOLS.RAY,
         GRAPH_TOOLS.VECTOR,
         GRAPH_TOOLS.LINE,
-        GRAPH_TOOLS.ROSE,
       ],
     },
     {

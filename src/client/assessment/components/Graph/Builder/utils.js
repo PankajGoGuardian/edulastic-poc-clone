@@ -557,6 +557,13 @@ export function flat2nestedConfig(config) {
               if (type === CONSTANT.TOOLS.DRAG_DROP) {
                 acc[id].dimensions = dimensions
               }
+              if (
+                type === CONSTANT.TOOLS.CARDIOID ||
+                type === CONSTANT.TOOLS.ROSE
+              ) {
+                acc[id].r = element.r
+                acc[id].t = element.t
+              }
             } else {
               if (
                 !element.subElementsIds &&

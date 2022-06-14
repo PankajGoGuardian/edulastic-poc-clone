@@ -1,4 +1,4 @@
-import { isEmpty, range, cloneDeep } from 'lodash'
+import { isEmpty, range, cloneDeep, round } from 'lodash'
 import { greyThemeDark1, someGreyColor1 } from '@edulastic/colors'
 import { angleAxesParams } from '../settings'
 import { CONSTANT } from '../config'
@@ -161,6 +161,44 @@ function drawCircle(board, radius) {
   return circle
 }
 
+function findIntersections(thetaArr, radiusArr) {
+  const base = thetaArr.map((theta) => {
+    if (theta === 0) {
+      return [1, 0, 0]
+    }
+    if (theta === 360) {
+      return [1, 0, 360]
+    }
+    if (theta === 90) {
+      return [0, 1, 90]
+    }
+    if (theta === 180) {
+      return [-1, 0, 180]
+    }
+    if (theta === 270) {
+      return [0, -1, 270]
+    }
+    const thetaRadian = (theta * Math.PI) / 180
+    const x = Math.cos(thetaRadian)
+    const y = Math.sin(thetaRadian)
+    return [x, y, theta]
+  })
+
+  return radiusArr
+    .map((r) => {
+      return base.map((b) => {
+        const [x, y, t] = b
+        return [round(x * r, 2), round(y * r, 2), t, r]
+      })
+    })
+    .reduce(
+      (acc, curr) => {
+        return [...acc, ...curr]
+      },
+      [0, 0, 0, 0]
+    )
+}
+
 /**
  *
  * @param {object} board jsxgraph instance
@@ -189,7 +227,8 @@ function addPolarGrid(board, gridParams = {}) {
   const angleAxes = thetaArr.map((theta) =>
     drawTheta(board, theta, gridParams, radiusArr)
   )
-  return [...angleAxes, ...circles]
+  const intersections = findIntersections(thetaArr, radiusArr)
+  return [[...angleAxes, ...circles], intersections]
 }
 
 function switchGrid(gridParams) {
@@ -207,14 +246,17 @@ function switchGrid(gridParams) {
   const axes = this.$board.defaultAxes
 
   switch (this.gridType) {
-    case CONSTANT.POLAR_GRID:
+    case CONSTANT.POLAR_GRID: {
       this.$board.removeGrids()
       axes.x.setAttribute({ visible: false })
       axes.y.setAttribute({ visible: false })
       axes.x.ticks[0].setAttribute({ visible: false })
       axes.y.ticks[0].setAttribute({ visible: false })
-      this.polarGrid = addPolarGrid(this.$board, gridParams)
+      const restuls = addPolarGrid(this.$board, gridParams)
+      this.polarGrid = restuls[0]
+      this.polarIntersections = restuls[1]
       break
+    }
     case CONSTANT.RECT_GRID: {
       this.$board.addGrid()
       axes.x.setAttribute({ visible: true })
@@ -222,6 +264,8 @@ function switchGrid(gridParams) {
       axes.x.ticks[0].setAttribute({ visible: true })
       axes.y.ticks[0].setAttribute({ visible: true })
       this.setGraphParameters(this.parameters.graphParameters)
+      this.polarGrid = null
+      this.polarIntersections = null
       break
     }
     default:

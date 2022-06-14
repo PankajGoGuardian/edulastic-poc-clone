@@ -2,8 +2,16 @@ import JXG from 'jsxgraph'
 import { CONSTANT } from '../config'
 import { Point } from '.'
 import { nameGen, colorGenerator } from '../utils'
+import mathstrings from '../config/mathstrings.json'
 
 const jxgType = 107
+
+const makeCallback = (point) => (phi) => {
+  if (Math.abs(point.X()) > Math.abs(point.Y())) {
+    return (-point.X() / 2) * (1 - Math.cos(phi))
+  }
+  return (-point.Y() / 2) * (1 - Math.sin(phi))
+}
 
 function createPoint(board, p, color) {
   const object = {
@@ -18,7 +26,15 @@ function createPoint(board, p, color) {
   const point = Point.create(board, object, conf)
 
   point.on('drag', () => {
-    point.setPosition(JXG.COORDS_BY_USER, [point.X(), 0])
+    if (Math.abs(point.X()) > Math.abs(point.Y())) {
+      point.setPosition(JXG.COORDS_BY_USER, [point.X(), 0])
+    } else {
+      point.setPosition(JXG.COORDS_BY_USER, [0, point.Y()])
+    }
+  })
+
+  point.on('up', () => {
+    board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
   })
 
   return point
@@ -28,12 +44,21 @@ function drawCardioidObj(board, obj, settings = {}) {
   const { fixed = true } = settings
   const { x, y, priorityColor, baseColor, dashed = false, label } = obj
   const currentColor = priorityColor || board.priorityColor || baseColor
+  const coords = Point.getPointCoordsForPolar(
+    board.polarIntersections,
+    [x, y],
+    true
+  )
 
-  const point = createPoint(board, { x, y, label }, currentColor)
+  const point = createPoint(
+    board,
+    { x: coords[0], y: coords[1], label },
+    currentColor
+  )
 
   const cardioid = board.$board.create(
     'curve',
-    [(phi) => (-point.X() / 2) * (1 - Math.cos(phi)), [0, 0], 0, 2 * Math.PI],
+    [makeCallback(point), [0, 0], 0, 2 * Math.PI],
     {
       fixed,
       strokewidth: 2,
@@ -51,6 +76,10 @@ function drawCardioidObj(board, obj, settings = {}) {
   cardioid.point = point
   cardioid.addParents(point)
   cardioid.labelHTML = label
+  cardioid.dashed = obj.dashed
+
+  cardioid.r = coords[3] // radius was needed for the evalautor
+  cardioid.t = mathstrings[`latex_${coords[2]}`] // theta needed for the evalautor
   return cardioid
 }
 
@@ -58,8 +87,8 @@ function onHandler(board, event) {
   const coords = board.getCoords(event).usrCoords
   const object = {
     labelIsVisible: true,
-    x: coords[1],
-    y: 0,
+    x: Math.abs(coords[1]) > Math.abs(coords[2]) ? coords[1] : 0,
+    y: Math.abs(coords[1]) > Math.abs(coords[2]) ? 0 : coords[2],
     label: nameGen(board.elements),
     baseColor: colorGenerator(board.elements.length),
   }
@@ -82,6 +111,8 @@ function getConfig(jxgObj) {
     labelIsVisible: jxgObj.labelIsVisible,
     x: jxgObj.point.X(),
     y: jxgObj.point.Y(),
+    r: jxgObj.r,
+    t: jxgObj.t,
   }
 }
 
@@ -90,4 +121,5 @@ export default {
   onHandler,
   getConfig,
   create: loadObject,
+  makeCallback,
 }

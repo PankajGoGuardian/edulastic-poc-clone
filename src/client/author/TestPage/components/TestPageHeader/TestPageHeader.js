@@ -236,6 +236,11 @@ const TestPageHeader = ({
   const isPublishers = !!(features.isCurator || features.isPublisherAuthor)
   const isEdulasticCurator = userRole === roleuser.EDULASTIC_CURATOR
   const playlistId = match?.params?.id
+  const isOwnerOfTheTest = test?.createdBy?._id === userId
+  const viewOnlyPermission =
+    test?.isLinkSharingEnabled &&
+    test?.availablePermissions?.includes('noAction') &&
+    !isOwnerOfTheTest
 
   useEffect(() => {
     // TODO: As this component used also in playlist page, please call below api conditionally if no purpose of calling assignments list.
@@ -459,6 +464,10 @@ const TestPageHeader = ({
       : isPlaylist
       ? '290px'
       : '250px'
+
+  const isCloneButtonDisable =
+    editEnable || disableButtons || isDemoPlayground || viewOnlyPermission
+
   return (
     <>
       <Upgrade />
@@ -660,9 +669,11 @@ const TestPageHeader = ({
                 title={
                   isDemoPlayground
                     ? 'This feature is not available in demo account.'
+                    : isCloneButtonDisable
+                    ? 'Actions are disabled on this test'
                     : 'Duplicate Test'
                 }
-                disabled={editEnable || disableButtons || isDemoPlayground}
+                disabled={isCloneButtonDisable}
                 data-cy="duplicate"
                 onClick={() => handleDuplicateTest()}
               >

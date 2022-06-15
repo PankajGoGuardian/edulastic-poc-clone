@@ -810,6 +810,7 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
+
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />

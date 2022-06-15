@@ -10,6 +10,7 @@ import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
+import { TEST_TYPES_VALUES_MAP } from '@edulastic/constants/const/testTypes'
 import FilterTags from '../../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import MultiSelectDropdown from '../../../../../common/components/widgets/MultiSelectDropdown'
@@ -47,6 +48,7 @@ import { resetStudentFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
+import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -83,6 +85,7 @@ const MultipleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
 }) => {
+  const availableAssessmentType = getArrayOfAllTestTypes()
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
@@ -165,7 +168,8 @@ const MultipleAssessmentReportFilters = ({
           (user.role === roleuser.DISTRICT_ADMIN ||
             user.role === roleuser.SCHOOL_ADMIN)
         ) {
-          search.assessmentTypes = search.assessmentTypes || 'common assessment'
+          search.assessmentTypes =
+            search.assessmentTypes || TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
         }
         const urlSchoolYear =
           schoolYears.find((item) => item.key === search.termId) ||
@@ -218,7 +222,7 @@ const MultipleAssessmentReportFilters = ({
           termId: urlSchoolYear,
           testSubjects: urlTestSubjects,
           testGrades: urlTestGrades,
-          assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+          assessmentTypes: availableAssessmentType.filter((a) =>
             assessmentTypesArr.includes(a.key)
           ),
           subjects: urlSubjects,
@@ -422,8 +426,8 @@ const MultipleAssessmentReportFilters = ({
                         label="Test Type"
                         el={assessmentTypesRef}
                         onChange={(e) => {
-                          const selected = staticDropDownData.assessmentType.filter(
-                            (a) => e.includes(a.key)
+                          const selected = availableAssessmentType.filter((a) =>
+                            e.includes(a.key)
                           )
                           updateFilterDropdownCB(
                             selected,
@@ -436,7 +440,7 @@ const MultipleAssessmentReportFilters = ({
                             ? filters.assessmentTypes.split(',')
                             : []
                         }
-                        options={staticDropDownData.assessmentType}
+                        options={availableAssessmentType}
                       />
                     </Col>
                     <Col span={6}>

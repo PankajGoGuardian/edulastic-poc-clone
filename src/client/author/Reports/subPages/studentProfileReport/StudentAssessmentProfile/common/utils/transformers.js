@@ -1,5 +1,6 @@
-import { map, get, find, round, sumBy, capitalize } from 'lodash'
-import { testTypeHashMap, formatDate } from '../../../../../common/util'
+import { getAllTestTypesMap } from '../../../../../../../common/utils/testTypeUtils'
+import { map, get, find, round, sumBy } from 'lodash'
+import { formatDate } from '../../../../../common/util'
 
 export const getData = (rawData = {}, tests = [], bandInfo = []) => {
   if (!tests.length) {
@@ -25,11 +26,12 @@ export const getData = (rawData = {}, tests = [], bandInfo = []) => {
     } / ${round(sumBy(assignments, 'maxScore'), 2)}`
 
     const assignmentDateFormatted = formatDate(test.assignmentDate)
+    const testTypes = getAllTestTypesMap()
 
     return {
       totalQuestions: 0,
       ...test,
-      testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
+      testType: testTypes[testType.toLowerCase()],
       assignmentDateFormatted,
       districtAvg: testDistrictAvg,
       groupAvg: testGroupAvg,

@@ -2099,6 +2099,14 @@
     "message": "Same dynamic variable can not be used in two or more input boxes.",
     "description": ""
   },
+  "invalidDynamicParameterMinValue": {
+    "message": "Min value cannot be greater than or equal to max value",
+    "description": ""
+  },
+  "invalidDynamicParameterMaxValue": {
+    "message": "Max value cannot be smaller than or equal to min value",
+    "description": ""
+  },
   "invalidSeqVariableMsg": {
     "message": "Please note that all dynamic parameters that are of \"sequence\" type need to have the same number of items. Otherwise, it may not be so obvious how the sequences should be aligned.",
     "description": ""

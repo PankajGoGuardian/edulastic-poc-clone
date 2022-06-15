@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import styled from 'styled-components'
+import styled, { withTheme } from 'styled-components'
 import PropTypes from 'prop-types'
 import { Input, Popover } from 'antd'
 import { response as responseDimensions } from '@edulastic/constants'
@@ -15,6 +15,7 @@ const AutoExpandInput = ({
   style = {},
   inputRef,
   type,
+  theme,
   ...rest
 }) => {
   const maxWidth = responseDimensions.clozeTextMaxWidth
@@ -25,6 +26,10 @@ const AutoExpandInput = ({
 
   const { disableAutoExpend, ...btnStyle } = style
 
+  const modifiedStyle = {
+    ...btnStyle,
+    color: theme.common.inputContainerTextTheme,
+  }
   const MInput = multipleLine ? TextArea : TextInputStyled
   const changeInputWidth = (em, val) => {
     // during initialization ref is not attached
@@ -98,7 +103,7 @@ const AutoExpandInput = ({
         onBlur={handleBuler}
         wrap={multipleLine ? '' : 'off'}
         value={value || ''}
-        style={btnStyle}
+        style={modifiedStyle}
         type={type}
         {...rest}
       />
@@ -126,7 +131,7 @@ AutoExpandInput.defaultProps = {
   inputRef: null,
 }
 
-export default AutoExpandInput
+export default withTheme(AutoExpandInput)
 
 const PopoverContent = styled.div`
   max-width: 600px;

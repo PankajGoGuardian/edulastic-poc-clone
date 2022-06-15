@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { withNamespaces } from '@edulastic/localization'
 import AxisSegmentsMoreOptions from './AxisSegmentsMoreOptions'
-import {
-  fontSizeList,
-  renderingBaseList,
-  orientationList,
-} from '../constants/options'
+import { renderingBaseList, orientationList } from '../constants/options'
 
 const AxisSegmentsOptions = ({
   setCanvas,
@@ -29,7 +25,6 @@ const AxisSegmentsOptions = ({
       cleanSections={cleanSections}
       setNumberline={setNumberline}
       setValidation={setValidation}
-      fontSizeList={fontSizeList}
       orientationList={orientationList}
       renderingBaseList={renderingBaseList}
       graphData={graphData}

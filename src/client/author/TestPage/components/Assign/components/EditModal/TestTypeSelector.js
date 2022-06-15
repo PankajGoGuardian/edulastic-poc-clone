@@ -4,7 +4,10 @@ import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { StyledRow, StyledRowLabel, TestTypeDropDown } from './styled'
 import { StyledSelect } from '../../../../../AssignTest/components/SimpleOptions/styled'
-import { getTestTypeFullNames } from '../../../../../../common/utils/testTypeUtils'
+import {
+  getAvailableTestTypesForUser,
+  includeCommonOnTestType,
+} from '../../../../../../common/utils/testTypeUtils'
 import { isPremiumUserSelector } from '../../../../../src/selectors/user'
 
 const generateReportTypes = {
@@ -26,7 +29,11 @@ const TestTypeSelector = ({
   onGenerateReportFieldChange,
   isPremiumUser,
 }) => {
-  const testTypes = getTestTypeFullNames(isPremiumUser, userRole, testType)
+  const availableTestTypes = getAvailableTestTypesForUser({
+    isPremium: isPremiumUser,
+    role: userRole,
+  })
+  const testTypes = includeCommonOnTestType(availableTestTypes, testType)
 
   return (
     <>

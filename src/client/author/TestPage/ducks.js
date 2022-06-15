@@ -987,6 +987,9 @@ export const createBlankTest = () => ({
   showMagnifier: true,
   enableScratchpad: true,
   enableSkipAlert: false,
+  showHintsToStudents: true,
+  penaltyOnUsingHints: 0,
+  allowTeacherRedirect: true,
 })
 
 const initialState = {
@@ -1802,6 +1805,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const {
     ASSESSMENT,
     COMMON_ASSESSMENT,
+    PRACTICE: _PRACTICE,
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
@@ -1840,6 +1844,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
+    showHintsToStudents: entity.showHintsToStudents || true,
+    penaltyOnUsingHints: entity.penaltyOnUsingHints || 0,
   }
 
   if (entity.safeBrowser) {
@@ -1865,7 +1871,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   }
 
   if (!isPlaylist && features.free && !features.premium) {
-    settings.testType = ASSESSMENT
+    settings.testType = PRACTICE.includes(testType) ? _PRACTICE : ASSESSMENT
     settings.maxAttempts = 1
     settings.markAsDone = completionTypes.AUTOMATICALLY
     settings.releaseScore = releaseGradeLabels.DONT_RELEASE
@@ -1885,6 +1891,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
     settings.showRubricToStudents = false
+    settings.showHintsToStudents = true
+    settings.penaltyOnUsingHints = 0
     delete settings.keypad
   }
 
@@ -2767,8 +2775,12 @@ function* publishForRegrade({ payload }) {
   try {
     yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
+    const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
     if (_test.isUsed && !test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
+    }
+    if (!enabledRefMaterial && !isEmpty(_test.referenceDocAttributes)) {
+      _test.referenceDocAttributes = {}
     }
     if (!validateRestrictNavigationOut(_test)) {
       yield put(setUpdatingTestForRegradeStateAction(false))

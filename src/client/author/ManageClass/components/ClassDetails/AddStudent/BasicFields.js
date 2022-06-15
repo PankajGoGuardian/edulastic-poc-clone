@@ -398,6 +398,7 @@ const BasicFields = ({
                   type="password"
                   placeholder="Enter Password"
                   autoComplete="new-password"
+                  data-cy="passwordTextBox"
                 />
               )}
             </Form.Item>
@@ -419,6 +420,7 @@ const BasicFields = ({
                   type="password"
                   placeholder="Confirm Password"
                   autoComplete="new-password"
+                  data-cy="confirmPasswordTextBox"
                 />
               )}
             </Form.Item>

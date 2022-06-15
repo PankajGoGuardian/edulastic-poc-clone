@@ -1,22 +1,18 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Select } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 
 import { Row } from '../../../../styled/WidgetOptions/Row'
 import { Col } from '../../../../styled/WidgetOptions/Col'
 import { Label } from '../../../../styled/WidgetOptions/Label'
-import {
-  TextInputStyled,
-  SelectInputStyled,
-} from '../../../../styled/InputStyles'
+import { TextInputStyled } from '../../../../styled/InputStyles'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
+import FontSizeSelect from '../../../FontSizeSelect'
 
 const DisplayOptions = ({
   t,
   uiStyle,
   canvas,
-  fontSizeList,
   numberlineAxis,
   setOptions,
   setNumberline,
@@ -90,19 +86,11 @@ const DisplayOptions = ({
           />
         </Col>
         <Col md={12}>
-          <Label>{t('component.graphing.layoutoptions.fontSize')}</Label>
-          <SelectInputStyled
+          <FontSizeSelect
             data-cy="fontSize"
-            getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            onChange={handleChangeFontSize}
-            value={uiStyle?.fontSize}
-          >
-            {fontSizeList.map((option) => (
-              <Select.Option data-cy={option.id} key={option.value}>
-                {t(`component.options.${option.label}`)}
-              </Select.Option>
-            ))}
-          </SelectInputStyled>
+            value={uiStyle.fontSize}
+            onChange={(val) => handleChangeFontSize(val)}
+          />
         </Col>
       </Row>
       <Row gutter={24}>
@@ -151,7 +139,6 @@ DisplayOptions.propTypes = {
   t: PropTypes.func.isRequired,
   uiStyle: PropTypes.object.isRequired,
   canvas: PropTypes.object.isRequired,
-  fontSizeList: PropTypes.array.isRequired,
   numberlineAxis: PropTypes.object.isRequired,
   setCanvas: PropTypes.func.isRequired,
   setOptions: PropTypes.func.isRequired,

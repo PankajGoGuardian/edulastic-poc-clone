@@ -383,10 +383,6 @@ class Board {
         return Secant.clean(this)
       case CONSTANT.TOOLS.PIECEWISE_LINE:
         return PiecewiseLine.clean(this)
-      case CONSTANT.TOOLS.ROSE:
-        return Rose.clean(this)
-      case CONSTANT.TOOLS.CARDIOID:
-        return Cardioid.clean(this)
       default:
         return false
     }
@@ -410,8 +406,6 @@ class Board {
       ...Tangent.getTempPoints(),
       ...Secant.getTempPoints(),
       ...PiecewiseLine.getTempPoints(),
-      ...Rose.getTempPoints(),
-      ...Cardioid.getTempPoints(),
     ]
   }
 

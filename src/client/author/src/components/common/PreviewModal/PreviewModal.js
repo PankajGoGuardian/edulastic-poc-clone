@@ -351,14 +351,17 @@ class PreviewModal extends React.Component {
       })
     }
     if (isTest) {
-      updateTestAndNavigate({
+      const payload = {
         pathname: `/author/tests/${testId}/editItem/${itemId}`,
         fadeSidebar: 'false',
         regradeFlow,
-        previousTestId: test.previousTestId,
         testId,
         isEditing: true,
-      })
+      }
+      if (testId !== test.previousTestId) {
+        payload.previousTestId = test.previousTestId
+      }
+      updateTestAndNavigate(payload)
     } else {
       history.push(`/author/items/${itemId}/item-detail`)
     }
@@ -631,8 +634,19 @@ class PreviewModal extends React.Component {
       item?.collections,
       writableCollections
     )
-    const allowDuplicate =
+    let allowDuplicate =
       allowDuplicateCheck(item?.collections, collections, 'item') || isOwner
+    if (
+      item?.sharedWith?.filter(
+        (s) =>
+          `${s?._id}` === `${item._id}` &&
+          s.name === 'LINK' &&
+          s.permission === 'NOACTION'
+      ).length &&
+      !isOwner
+    ) {
+      allowDuplicate = false
+    }
     const allRows =
       item && !!item.passageId && !!passage
         ? [passage.structure, ...rows]

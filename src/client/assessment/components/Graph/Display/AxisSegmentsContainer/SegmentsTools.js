@@ -98,6 +98,10 @@ const SegmentsTools = ({
     iconsByToolName[toolName] ? iconsByToolName[toolName]() : ''
 
   const getStyle = (_theme, _fontSize) => {
+    let fontSizeValue = _fontSize
+    if (fontSizeValue.includes('px')) {
+      fontSizeValue = parseInt(fontSizeValue, 10)
+    }
     if (ifZoomed(_theme?.zoomLevel)) {
       return {
         width: 'auto',
@@ -108,7 +112,7 @@ const SegmentsTools = ({
 
     return !vertical
       ? {
-          width: _fontSize > 20 ? 105 : 93,
+          width: fontSizeValue > 20 ? 105 : 93,
         }
       : {}
   }

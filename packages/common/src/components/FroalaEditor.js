@@ -129,7 +129,7 @@ const CustomEditor = ({
       imageInsertButtons: ['imageUpload'], // hide other image uplaod options
       imageDefaultDisplay: 'inline',
       linkAlwaysBlank: true, // adding to make link always open in blank
-      zIndex: 997, // header 999 | dropdown 998
+      zIndex: 996, // header 999 | dropdown 998 | froala calculate toolbar zIndex - 1
       imageDefaultWidth,
       initOnClick,
       toolbarButtons,

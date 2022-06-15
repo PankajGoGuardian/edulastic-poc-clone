@@ -21,11 +21,37 @@ import {
 } from './Styled'
 import { setLocationToUserAction } from '../student/Login/ducks'
 
+const eeaTitle =
+  'End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
+
+const nonEeaTitle = 'End User License Agreement and Product Privacy Policy'
+
+const eeaSubTitle =
+  'Welcome to Edulastic! Before we proceed, please read our entire (1) Terms of Service and End User License Agreement;  (2) Product Privacy Policy and (3) Edulastic Data Processing Addendum  to make sure we’re on the same page.'
+
+const nonEeaSubtitle =
+  'Welcome to Edulastic! Before we proceed, please read our entire (1) Terms of Service and End User License Agreement; and (2) Product Privacy Policy to make sure we’re on the same page.'
+
 const PrivacyPolicyModal = ({ userID, setLocationData }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
   const [isEEAUser, setIsEEAUser] = useState(false)
+  const [noLocation, setNoLocation] = useState(false)
+
+  const modalTitle = () => {
+    if (noLocation || isEEAUser) {
+      return eeaTitle
+    }
+    return nonEeaTitle
+  }
+
+  const modalSubTitle = () => {
+    if (noLocation || isEEAUser) {
+      return eeaSubTitle
+    }
+    return nonEeaSubtitle
+  }
 
   useEffect(() => {
     setShowSpinner(true)
@@ -34,6 +60,7 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
       .getUserLocation()
       .then(({ result }) => {
         setIsEEAUser(result?.isEEAUser)
+        setNoLocation(result?.noLocation)
         setShowSpinner(false)
         setLocationData(result)
       })
@@ -73,15 +100,10 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
         <OnWhiteBgLogo />
       </EdulasticLogo>
       <ModalTitle data-testid="eulaModalTitle" data-cy="eulaModalTitle">
-        End User License Agreement{!isEEAUser ? ' and' : ','} Product Privacy
-        Policy {isEEAUser && 'and Edulastic Data Processing Addendum'}
+        {modalTitle()}
       </ModalTitle>
       <ModalHeaderSubcontent data-cy="eulaModalSubTitle">
-        Welcome to <b>Edulastic!</b> Before we proceed, please read our entire
-        (1) Terms of Service and End User License Agreement;{' '}
-        {!isEEAUser && 'and'} (2) Product Privacy Policy
-        {isEEAUser && ' and (3) Edulastic Data Processing Addendum '} to make
-        sure we’re on the same page.
+        {modalSubTitle()}
       </ModalHeaderSubcontent>
     </>
   )
@@ -122,7 +144,7 @@ const PrivacyPolicyModal = ({ userID, setLocationData }) => {
         <ModalTextBody>
           <EulaPolicyContent />
           <ProductPolicyContent />
-          {isEEAUser && <EeaPolicyContent />}
+          {(isEEAUser || noLocation) && <EeaPolicyContent />}
           <CheckboxWrapper data-cy="policyAgreeCheckboxText">
             <CheckboxLabel
               onChange={onCheck}

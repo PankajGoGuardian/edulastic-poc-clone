@@ -214,17 +214,18 @@ function* duplicateItemRequestSaga({ payload }) {
       )
     }
     if (isTest) {
-      yield put(
-        updateTestAndNavigateAction({
-          pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}`,
-          fadeSidebar: true,
-          regradeFlow,
-          previousTestId: test.previousTestId,
-          testId,
-          isDuplicating: true,
-          passage,
-        })
-      )
+      const _payload = {
+        pathname: `/author/tests/${testId}/editItem/${duplicatedItem._id}`,
+        fadeSidebar: true,
+        regradeFlow,
+        testId,
+        isDuplicating: true,
+        passage,
+      }
+      if (testId !== test.previousTestId) {
+        _payload.previousTestId = test.previousTestId
+      }
+      yield put(updateTestAndNavigateAction(_payload))
     } else {
       yield put(push(`/author/items/${duplicatedItem._id}/item-detail`))
     }
@@ -271,13 +272,14 @@ function* editNonAuthoredItemSaga({ payload }) {
       duplicateItemId = duplicatedItem._id
     }
     const path = `/author/tests/${testId}/editItem/${duplicateItemId}`
-    yield put(
-      push(path, {
-        fadeSidebar: true,
-        regradeFlow: true,
-        previousTestId: test.previousTestId,
-      })
-    )
+    const _payload = {
+      fadeSidebar: true,
+      regradeFlow: true,
+    }
+    if (testId !== test.previousTestId) {
+      _payload.previousTestId = test.previousTestId
+    }
+    yield put(push(path, _payload))
     yield put(setTestsLoadingAction(false))
   } catch (e) {
     yield put(setTestsLoadingAction(false))

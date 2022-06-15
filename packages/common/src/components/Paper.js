@@ -5,7 +5,7 @@ const Paper = styled.div`
   font-size: ${(props) => props.fontSize};
   border-radius: ${(props) =>
     props.borderRadius ? props.borderRadius : '10px'};
-  background: ${white};
+  background: ${({ isDefaultTheme = true }) => isDefaultTheme && white};
   padding: ${(props) => (props.padding ? props.padding : '0px')};
   box-shadow: ${(props) => (props.boxShadow ? props.boxShadow : 'none')};
   overflow: ${({ overflow }) => overflow || ''};

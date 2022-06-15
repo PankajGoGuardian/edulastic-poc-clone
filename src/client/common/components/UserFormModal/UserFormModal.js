@@ -291,6 +291,7 @@ class UserForm extends React.Component {
                       type="password"
                       autoComplete="off"
                       placeholder="Enter Password"
+                      data-cy="passwordTextBox"
                     />
                   )}
                 </Form.Item>
@@ -312,6 +313,7 @@ class UserForm extends React.Component {
                       type="password"
                       autoComplete="off"
                       placeholder="Confirm Password"
+                      data-cy="confirmPasswordTextBox"
                     />
                   )}
                 </Form.Item>

@@ -1,120 +1,93 @@
+import JXG from 'jsxgraph'
 import { CONSTANT } from '../config'
 import { Point } from '.'
-import { colorGenerator } from '../utils'
+import { nameGen, colorGenerator } from '../utils'
 
 const jxgType = 107
 
-let tempPoints = []
-
-function getColorParams(color) {
-  return {
-    // fillColor: color,
-    strokeColor: color,
-    highlightStrokeColor: color,
-    // highlightFillColor: color,
+function createPoint(board, p, color) {
+  const object = {
+    x: p.x,
+    y: p.y,
+    label: p.label,
+    labelIsVisible: true,
+    pointIsVisible: true,
+    id: null,
   }
+  const conf = { size: 4, fillColor: color }
+  const point = Point.create(board, object, conf)
+
+  point.on('drag', () => {
+    point.setPosition(JXG.COORDS_BY_USER, [point.X(), 0])
+  })
+
+  return point
 }
 
 function drawCardioidObj(board, obj, settings = {}) {
-  const { priorityColor, points, baseColor, dashed = false } = obj
-  const [point1, point2] = points
+  const { fixed = true } = settings
+  const { x, y, priorityColor, baseColor, dashed = false, label } = obj
+  const currentColor = priorityColor || board.priorityColor || baseColor
 
-  const { fixed = false } = settings
+  const point = createPoint(board, { x, y, label }, currentColor)
 
   const cardioid = board.$board.create(
     'curve',
-    [
-      (phi) => (-(point2.X() - point1.X()) / 2) * (1 - Math.cos(phi)),
-      [point1.X(), point1.Y()],
-      0,
-      2 * Math.PI,
-    ],
+    [(phi) => (-point.X() / 2) * (1 - Math.cos(phi)), [0, 0], 0, 2 * Math.PI],
     {
       fixed,
       strokewidth: 2,
       dash: dashed ? 2 : 0,
-      ...getColorParams(priorityColor || board.priorityColor || baseColor),
+      strokeColor: currentColor,
+      highlightStrokeColor: currentColor,
     }
   )
-
-  cardioid.on('drag', () => {
-    board.dragged = true
-  })
-
-  cardioid.type = jxgType
-  cardioid.ancestors = {
-    [point1.id]: point1,
-    [point2.id]: point2,
+  if (!fixed) {
+    cardioid.on('drag', () => {
+      board.dragged = true
+    })
   }
-  cardioid.addParents(points)
+  cardioid.type = jxgType
+  cardioid.point = point
+  cardioid.addParents(point)
+  cardioid.labelHTML = label
   return cardioid
 }
 
 function onHandler(board, event) {
-  const point = Point.onHandler(board, event)
-  point.isTemp = true
-  tempPoints.push(point)
-
-  if (tempPoints.length === 2) {
-    tempPoints.forEach((p) => {
-      p.isTemp = false
-    })
-
-    const obj = {
-      label: false,
-      labelIsVisible: true,
-      points: tempPoints,
-      baseColor: colorGenerator(board.elements.length),
-    }
-
-    const cardioidObj = drawCardioidObj(board, obj)
-    tempPoints = []
-    return cardioidObj
+  const coords = board.getCoords(event).usrCoords
+  const object = {
+    labelIsVisible: true,
+    x: coords[1],
+    y: 0,
+    label: nameGen(board.elements),
+    baseColor: colorGenerator(board.elements.length),
   }
+
+  return drawCardioidObj(board, object)
 }
 
 function loadObject(board, object, settings) {
-  const { points } = object
-  const pointObjs = points.map((obj) => Point.create(board, obj))
-  const obj = {
-    ...object,
-    points: pointObjs,
-  }
-  const cardioidObj = drawCardioidObj(board, obj, settings)
-  return cardioidObj
+  return drawCardioidObj(board, object, settings)
 }
 
-function getConfig(cardioidObj) {
+function getConfig(jxgObj) {
   return {
-    _type: cardioidObj.type,
-    id: cardioidObj.id,
+    _type: jxgObj.type,
+    id: jxgObj.id,
     type: CONSTANT.TOOLS.CARDIOID,
-    label: cardioidObj.labelHTML || false,
-    baseColor: cardioidObj.baseColor,
-    dashed: cardioidObj.dashed,
-    labelIsVisible: cardioidObj.labelIsVisible,
-    points: Object.keys(cardioidObj.ancestors).map((n) =>
-      Point.getConfig(cardioidObj.ancestors[n])
-    ),
+    label: jxgObj.labelHTML || false,
+    baseColor: jxgObj.baseColor,
+    dashed: jxgObj.dashed,
+    labelIsVisible: jxgObj.labelIsVisible,
+    x: jxgObj.point.X(),
+    y: jxgObj.point.Y(),
   }
-}
-
-function clean(board) {
-  const result = tempPoints.length > 0
-  tempPoints.forEach((point) => board.$board.removeObject(point))
-  tempPoints = []
-  return result
-}
-
-function getTempPoints() {
-  return tempPoints
 }
 
 export default {
   jxgType,
-  clean,
   onHandler,
   getConfig,
   create: loadObject,
-  getTempPoints,
 }

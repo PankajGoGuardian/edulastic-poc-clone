@@ -204,23 +204,27 @@ const BannerHeight = 35
 
 export const themeColorsMap = {
   MGLG: {
-    themeColor: '#f1f1f1',
-    themeSecondaryColor: '#969696',
+    themeColor: '#E5E5E5', // container color
+    themeSecondaryColor: '#666', // text color
+    themeMainBg: '#f4f4f4', // color behind the container
     title: 'Medium Gray on Light Gray',
   },
   BOR: {
     themeColor: '#ffd0ff',
-    themeSecondaryColor: '#131313',
+    themeSecondaryColor: '#0e0b0f',
+    themeMainBg: '#eebdee',
     title: 'Black on Rose',
   },
   RCON: {
-    themeColor: '#131313',
+    themeColor: '#000000',
     themeSecondaryColor: '#ffffff',
+    themeMainBg: '#ffffff',
     title: 'Reverse Contrast',
   },
   YAB: {
     themeColor: '#003399',
     themeSecondaryColor: '#ffcc00',
+    themeMainBg: '#3f84e5',
     title: 'Yellow on Blue',
   },
 }
@@ -494,6 +498,7 @@ export const defaultTheme = {
     addNewChoiceButtonHoverColor: brandWhite,
     addNewChoiceButtonBgActiveColor: themeColor,
     addNewChoiceButtonActiveColor: linkFilledBgColor,
+    inputContainerTextTheme: questionTextColor,
     mathInputMathBorderColor: greyThemeLight,
     mathInputMathClearBgColor: clearIconColor,
     mathInputMathWrongBgColor: wrongBgColor,
@@ -1037,6 +1042,7 @@ export const defaultTheme = {
       sortableItemFontSize: questionTextextraFontSize,
       toolbarBgColor: 'none',
       toolbarColor: labelStyle,
+      wordCountColor: 'none',
     },
     shortText: {
       subtitleFontSize,
@@ -1177,6 +1183,7 @@ export const defaultTheme = {
       iconCloseColor: closeColor,
     },
     matrixChoice: {
+      questionTextColor,
       quillBorderColor: borderColor,
       inlineLabelColor: themeColor,
       correctCellInputWrapperBgColor: rightBgColor,
@@ -1679,6 +1686,7 @@ export const defaultTheme = {
 export const themes = {
   MGLG: {
     ...defaultTheme,
+    questionTextColor: themeColorsMap.MGLG.themeSecondaryColor,
     themeColor: themeColorsMap.MGLG.themeColor,
     headerClassTitleColor: themeColorsMap.MGLG.themeSecondaryColor,
     headerBorderColor: themeColorsMap.MGLG.themeSecondaryColor,
@@ -1783,6 +1791,7 @@ export const themes = {
     },
     common: {
       ...defaultTheme.common,
+      subtitleColor: themeColorsMap.MGLG.themeSecondaryColor,
       mathInputBgColor: themeColorsMap.MGLG.themeColor,
       mathInputMathBorderColor: themeColorsMap.MGLG.themeSecondaryColor,
       toolbarBgColor: themeColorsMap.MGLG.themeColor,
@@ -1806,7 +1815,7 @@ export const themes = {
       ...defaultTheme.widgets,
       assessmentPlayers: {
         ...defaultTheme.widgets.assessmentPlayers,
-        mainBgColor: themeColorsMap.MGLG.themeColor,
+        mainBgColor: themeColorsMap.MGLG.themeMainBg,
         mainContentBgColor: themeColorsMap.MGLG.themeColor,
         mainContentTextColor: themeColorsMap.MGLG.themeSecondaryColor,
       },
@@ -1821,7 +1830,7 @@ export const themes = {
       },
       matrixChoice: {
         ...defaultTheme.widgets.matrixChoice,
-        styledTableThBgColor: themeColorsMap.MGLG.themeSecondaryColor,
+        questionTextColor: themeColorsMap.MGLG.themeSecondaryColor,
         inlineLabelColor: themeColorsMap.MGLG.themeSecondaryColor,
         inlineLabelHoverColor: themeColorsMap.MGLG.themeColor,
       },
@@ -1895,6 +1904,7 @@ export const themes = {
   },
   BOR: {
     ...defaultTheme,
+    questionTextColor: themeColorsMap.BOR.themeSecondaryColor,
     themeColor: themeColorsMap.BOR.themeColor,
     headerClassTitleColor: themeColorsMap.BOR.themeSecondaryColor,
     headerBorderColor: themeColorsMap.BOR.themeSecondaryColor,
@@ -1998,6 +2008,7 @@ export const themes = {
     },
     common: {
       ...defaultTheme.common,
+      subtitleColor: themeColorsMap.BOR.themeSecondaryColor,
       mathInputBgColor: themeColorsMap.BOR.themeColor,
       mathInputMathBorderColor: themeColorsMap.BOR.themeSecondaryColor,
       toolbarBgColor: themeColorsMap.BOR.themeColor,
@@ -2021,7 +2032,7 @@ export const themes = {
       ...defaultTheme.widgets,
       assessmentPlayers: {
         ...defaultTheme.widgets.assessmentPlayers,
-        mainBgColor: themeColorsMap.BOR.themeColor,
+        mainBgColor: themeColorsMap.BOR.themeMainBg,
         mainContentBgColor: themeColorsMap.BOR.themeColor,
         mainContentTextColor: themeColorsMap.BOR.themeSecondaryColor,
       },
@@ -2035,7 +2046,7 @@ export const themes = {
       },
       matrixChoice: {
         ...defaultTheme.widgets.matrixChoice,
-        styledTableThBgColor: themeColorsMap.BOR.themeSecondaryColor,
+        questionTextColor: themeColorsMap.BOR.themeSecondaryColor,
         inlineLabelColor: themeColorsMap.BOR.themeSecondaryColor,
         inlineLabelHoverColor: themeColorsMap.BOR.themeColor,
       },
@@ -2109,6 +2120,7 @@ export const themes = {
   },
   RCON: {
     ...defaultTheme,
+    questionTextColor: themeColorsMap.RCON.themeSecondaryColor,
     themeColor: themeColorsMap.RCON.themeColor,
     headerClassTitleColor: themeColorsMap.RCON.themeSecondaryColor,
     headerBorderColor: themeColorsMap.RCON.themeSecondaryColor,
@@ -2213,6 +2225,7 @@ export const themes = {
     },
     common: {
       ...defaultTheme.common,
+      subtitleColor: themeColorsMap.RCON.themeSecondaryColor,
       mathInputBgColor: themeColorsMap.RCON.themeColor,
       mathInputMathBorderColor: themeColorsMap.RCON.themeSecondaryColor,
       toolbarBgColor: themeColorsMap.RCON.themeColor,
@@ -2236,7 +2249,7 @@ export const themes = {
       ...defaultTheme.widgets,
       assessmentPlayers: {
         ...defaultTheme.widgets.assessmentPlayers,
-        mainBgColor: themeColorsMap.RCON.themeColor,
+        mainBgColor: themeColorsMap.RCON.themeMainBg,
         mainContentBgColor: themeColorsMap.RCON.themeColor,
         mainContentTextColor: themeColorsMap.RCON.themeSecondaryColor,
       },
@@ -2251,13 +2264,13 @@ export const themes = {
       },
       matrixChoice: {
         ...defaultTheme.widgets.matrixChoice,
-        styledTableThBgColor: themeColorsMap.RCON.themeSecondaryColor,
+        questionTextColor: themeColorsMap.RCON.themeSecondaryColor,
         inlineLabelColor: themeColorsMap.RCON.themeSecondaryColor,
         inlineLabelHoverColor: themeColorsMap.RCON.themeColor,
       },
       shortText: {
         ...defaultTheme.widgets.shortText,
-        inputColor: themeColorsMap.RCON.themeSecondaryColor,
+        inputColor: themeColorsMap.RCON.themeColor,
         inputBorderColor: themeColorsMap.RCON.themeSecondaryColor,
         inputHoverBorderColor: themeColorsMap.RCON.themeSecondaryColor,
       },
@@ -2280,8 +2293,9 @@ export const themes = {
       essayRichText: {
         ...defaultTheme.widgets.essayRichText,
         toolbarBgColor: themeColorsMap.RCON.themeColor,
-        toolbarColor: themeColorsMap.RCON.themeSecondaryColor,
-        quillTextColor: themeColorsMap.RCON.themeSecondaryColor,
+        toolbarColor: themeColorsMap.RCON.themeColor,
+        quillTextColor: themeColorsMap.RCON.themeColor,
+        wordCountColor: themeColorsMap.RCON.themeColor,
       },
       orderList: {
         ...defaultTheme.widgets.orderList,
@@ -2294,6 +2308,7 @@ export const themes = {
       },
       essayPlainText: {
         ...defaultTheme.widgets.essayPlainText,
+        wordCountColor: themeColorsMap.RCON.themeColor,
         textInputBgColor: themeColorsMap.RCON.themeColor,
         textInputColor: themeColorsMap.RCON.themeSecondaryColor,
         textInputBorderColor: themeColorsMap.RCON.themeSecondaryColor,
@@ -2325,6 +2340,7 @@ export const themes = {
   },
   YAB: {
     ...defaultTheme,
+    questionTextColor: themeColorsMap.YAB.themeSecondaryColor,
     themeColor: themeColorsMap.YAB.themeColor,
     headerClassTitleColor: themeColorsMap.YAB.themeSecondaryColor,
     headerBorderColor: themeColorsMap.YAB.themeSecondaryColor,
@@ -2426,6 +2442,7 @@ export const themes = {
     },
     common: {
       ...defaultTheme.common,
+      subtitleColor: themeColorsMap.YAB.themeSecondaryColor,
       mathInputBgColor: themeColorsMap.YAB.themeColor,
       mathInputMathBorderColor: themeColorsMap.YAB.themeSecondaryColor,
       toolbarBgColor: themeColorsMap.YAB.themeColor,
@@ -2449,7 +2466,7 @@ export const themes = {
       ...defaultTheme.widgets,
       assessmentPlayers: {
         ...defaultTheme.widgets.assessmentPlayers,
-        mainBgColor: themeColorsMap.YAB.themeColor,
+        mainBgColor: themeColorsMap.YAB.themeMainBg,
         mainContentBgColor: themeColorsMap.YAB.themeColor,
         mainContentTextColor: themeColorsMap.YAB.themeSecondaryColor,
       },
@@ -2463,7 +2480,7 @@ export const themes = {
       },
       matrixChoice: {
         ...defaultTheme.widgets.matrixChoice,
-        styledTableThBgColor: themeColorsMap.YAB.themeSecondaryColor,
+        questionTextColor: themeColorsMap.YAB.themeSecondaryColor,
         inlineLabelColor: themeColorsMap.YAB.themeSecondaryColor,
         inlineLabelHoverColor: themeColorsMap.YAB.themeColor,
         tableStyledHeaderColor: themeColorsMap.YAB.themeColor,

@@ -37,6 +37,7 @@ import {
   getUser,
   getInterestedCurriculumsSelector,
   currentDistrictInstitutionIds,
+  isPremiumUserSelector,
 } from '../../../../../src/selectors/user'
 
 import {
@@ -54,6 +55,10 @@ import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
+import {
+  getArrayOfNonPremiumTestTypes,
+  getArrayOfAllTestTypes,
+} from '../../../../../../common/utils/testTypeUtils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -91,7 +96,11 @@ const StandardsMasteryReportFilters = ({
   loc,
   fetchUpdateTagsData,
   institutionIds,
+  isPremium,
 }) => {
+  const availableAssessmentType = isPremium
+    ? getArrayOfAllTestTypes()
+    : getArrayOfNonPremiumTestTypes()
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.CLASS_FILTERS.key
   )
@@ -324,7 +333,7 @@ const StandardsMasteryReportFilters = ({
         subjects: urlSubjects,
         testGrades: urlTestGrades,
         testSubjects: urlTestSubjects,
-        assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+        assessmentTypes: availableAssessmentType.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
         curriculumId: urlCurriculum,
@@ -576,7 +585,7 @@ const StandardsMasteryReportFilters = ({
                           label="Test Type"
                           el={assessmentTypesRef}
                           onChange={(e) => {
-                            const selected = staticDropDownData.assessmentType.filter(
+                            const selected = availableAssessmentType.filter(
                               (a) => e.includes(a.key)
                             )
                             updateFilterDropdownCB(
@@ -590,7 +599,7 @@ const StandardsMasteryReportFilters = ({
                               ? filters.assessmentTypes.split(',')
                               : []
                           }
-                          options={staticDropDownData.assessmentType}
+                          options={availableAssessmentType}
                         />
                       </Col>
                       <Col span={6}>
@@ -954,6 +963,7 @@ const enhance = compose(
       standardsGradebook: getReportsStandardsGradebook(state),
       standardsProgress: getReportsStandardsProgress(state),
       institutionIds: currentDistrictInstitutionIds(state),
+      isPremium: isPremiumUserSelector(state),
     }),
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,

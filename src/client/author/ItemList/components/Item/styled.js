@@ -602,7 +602,7 @@ export const PassageTitleContainer = styled(Col)`
   text-overflow: ellipsis;
 `
 export const PassageTitle = styled.span`
-  color: ${textBlackColor};
+  color: ${(props) => props?.theme?.common?.subtitleColor || textBlackColor};
   height: 18px;
   text-align: left;
   font: normal normal bold 14px/19px Open Sans;

@@ -24,6 +24,7 @@ import {
 } from '../../../../styled/InputStyles'
 import { CheckboxLabel } from '../../../../styled/CheckboxWithLabel'
 import { validations } from '../../../../utils/inputsValidations'
+import FontSizeSelect from '../../../FontSizeSelect'
 
 class AxisLabelsMoreOptions extends Component {
   constructor(props) {
@@ -179,10 +180,10 @@ class AxisLabelsMoreOptions extends Component {
     )
   }
 
-  changeFontSize = (event) => {
+  changeFontSize = (fontSize) => {
     const { setOptions, graphData } = this.props
     const { uiStyle } = graphData
-    setOptions({ ...uiStyle, fontSize: event })
+    setOptions({ ...uiStyle, fontSize })
   }
 
   changeFractionsFormat = (e) => {
@@ -220,7 +221,6 @@ class AxisLabelsMoreOptions extends Component {
 
     const {
       t,
-      fontSizeList,
       renderingBaseList,
       responseBoxPositionList,
       fillSections,
@@ -232,7 +232,6 @@ class AxisLabelsMoreOptions extends Component {
 
     const { canvas, uiStyle, numberlineAxis } = graphData
     const { fractionsFormat } = numberlineAxis
-
     return (
       <>
         <Question
@@ -379,20 +378,11 @@ class AxisLabelsMoreOptions extends Component {
             </Col>
 
             <Col md={12}>
-              <Label>{t('component.graphing.layoutoptions.fontSize')}</Label>
-              <SelectInputStyled
+              <FontSizeSelect
                 data-cy="fontSize"
-                style={{ width: '100%' }}
-                onChange={this.changeFontSize}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
                 value={uiStyle.fontSize}
-              >
-                {fontSizeList.map((option) => (
-                  <Select.Option data-cy={option.id} key={option.value}>
-                    {t(`component.options.${option.label}`)}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
+                onChange={(val) => this.changeFontSize(val)}
+              />
             </Col>
           </Row>
           <Row gutter={24}>
@@ -660,7 +650,6 @@ AxisLabelsMoreOptions.propTypes = {
   cleanSections: PropTypes.func.isRequired,
   fillSections: PropTypes.func.isRequired,
   graphData: PropTypes.object.isRequired,
-  fontSizeList: PropTypes.array.isRequired,
   renderingBaseList: PropTypes.array.isRequired,
   responseBoxPositionList: PropTypes.array.isRequired,
   setOptions: PropTypes.func.isRequired,

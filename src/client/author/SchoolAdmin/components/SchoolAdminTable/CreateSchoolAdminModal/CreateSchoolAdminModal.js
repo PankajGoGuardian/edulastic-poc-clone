@@ -280,6 +280,7 @@ class CreateSchoolAdminModal extends React.Component {
                   onFocus={this.fetchSchool}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   data-cy="selectSchools"
+                  data-testid="selectSchools"
                 >
                   {schoolList.map((school) => (
                     <Option key={school._id} value={school._id}>
@@ -297,6 +298,7 @@ class CreateSchoolAdminModal extends React.Component {
               checked={isSuperAdmin}
               onChange={this.changeSuperAdmin}
               data-cy="superAdminCheckbox"
+              data-testid="superAdminCheckbox"
             >
               {t('users.schooladmin.superAdmin')}
             </CheckboxLabel>
@@ -306,6 +308,7 @@ class CreateSchoolAdminModal extends React.Component {
               checked={isPowerTeacher}
               onChange={this.changePowerTool}
               data-cy="powerUserCheckBox"
+              data-testid="powerUserCheckBox"
             >
               {t('users.schooladmin.powertools')}
             </CheckboxLabel>

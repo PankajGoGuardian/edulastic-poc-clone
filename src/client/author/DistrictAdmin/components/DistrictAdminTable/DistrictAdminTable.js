@@ -11,6 +11,9 @@ import { get, isEmpty } from 'lodash'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { themeColor } from '@edulastic/colors'
+import PropTypes from 'prop-types'
+import styled from 'styled-components'
 import {
   StyledClassName,
   StyledFilterDiv,
@@ -57,10 +60,7 @@ import {
 import CreateDistrictAdminModal from './CreateDistrictAdminModal/CreateDistrictAdminModal'
 import EditDistrictAdminModal from './EditDistrictAdminModal/EditDistrictAdminModal'
 import { StyledDistrictAdminTable } from './styled'
-
-import { themeColor } from '@edulastic/colors'
-import PropTypes from 'prop-types'
-import styled from 'styled-components'
+import { daRoleList } from './helpers'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'District Admin' }
 
@@ -72,6 +72,16 @@ const filterStrDD = {
       { title: 'Inactive', value: 0, disabled: false },
     ],
     placeholder: 'Select a value',
+  },
+  role: {
+    list: [
+      { title: 'Select a value', value: undefined, disabled: true },
+      ...daRoleList.map((item) => ({
+        title: item.label,
+        value: item.value,
+        disabled: false,
+      })),
+    ],
   },
 }
 
@@ -133,6 +143,17 @@ class DistrictAdminTable extends Component {
           const prev = get(a, '_source.email', '')
           const next = get(b, '_source.email', '')
           return next.localeCompare(prev)
+        },
+        width: 200,
+      },
+      {
+        title: t('users.districtadmin.role'),
+        dataIndex: '_source.permissions',
+        render: (permissions = []) => {
+          const daRole =
+            daRoleList.find((item) => permissions.includes(item.value)) ||
+            daRoleList[0]
+          return daRole.label
         },
         width: 200,
       },
@@ -405,7 +426,7 @@ class DistrictAdminTable extends Component {
 
   addFilter = () => {
     const { filtersData } = this.state
-    if (filtersData.length < 3) {
+    if (filtersData.length < 4) {
       this.setState({
         filtersData: [
           ...filtersData,
@@ -443,11 +464,23 @@ class DistrictAdminTable extends Component {
     let { showActive } = this.state
 
     const search = {}
+    let permissions = ''
+    let permissionsToOmit = []
     for (const [index, item] of filtersData.entries()) {
       const { filtersColumn, filtersValue, filterStr } = item
       if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
         if (filtersColumn === 'status') {
           showActive = filterStr
+          continue
+        }
+        if (filtersColumn === 'role') {
+          if (filterStr === daRoleList[0].value) {
+            permissions = ''
+            permissionsToOmit = daRoleList.slice(1).map((r) => r.value)
+          } else {
+            permissions = filterStr
+            permissionsToOmit = []
+          }
           continue
         }
         if (!search[filtersColumn]) {
@@ -467,15 +500,11 @@ class DistrictAdminTable extends Component {
       role: 'district-admin',
       limit: 25,
       page: currentPage,
+      status: showActive ? 1 : 0,
+      ...(permissions ? { permissions } : { permissionsToOmit }),
       // uncomment after elastic search is fixed
       // sortField,
       // order
-    }
-
-    queryObj.status = 0
-
-    if (showActive) {
-      queryObj.status = 1
     }
     return queryObj
   }
@@ -530,6 +559,7 @@ class DistrictAdminTable extends Component {
       t('users.districtadmin.username'),
       t('users.districtadmin.email'),
       t('users.districtadmin.status'),
+      t('users.districtadmin.role'),
     ]
 
     return (

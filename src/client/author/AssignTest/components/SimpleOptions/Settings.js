@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
-import { test, testTypes } from '@edulastic/constants'
+import { test, testTypes, roleuser } from '@edulastic/constants'
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import {
   RadioBtn,
@@ -31,11 +31,13 @@ import {
 import {
   getUserRole,
   allowedToSelectMultiLanguageInTest,
+  getUserIdSelector,
 } from '../../../src/selectors/user'
 import { getDisableAnswerOnPaperSelector } from '../../../TestPage/ducks'
 import {
   getIsOverrideFreezeSelector,
   getmultiLanguageEnabled,
+  getAdditionalDataSelector,
 } from '../../../ClassBoard/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
@@ -84,6 +86,9 @@ const Settings = ({
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
   t,
+  additionalData,
+  userId,
+  userRole,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -294,6 +299,9 @@ const Settings = ({
     restrictNavigationOutAttemptsThreshold > 1
 
   const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
+  const isAssignedTeacher =
+    `${additionalData?.assignedBy?._id}` === `${userId}` &&
+    userRole === roleuser.TEACHER
 
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
@@ -473,7 +481,7 @@ const Settings = ({
                   data-cy="allow-teacher-redirect-switch"
                   size="small"
                   defaultChecked
-                  disabled={freezeSettings}
+                  disabled={freezeSettings || !isAssignedTeacher}
                   checked={allowTeacherRedirect}
                   onChange={(value) =>
                     overRideSettings('allowTeacherRedirect', value)
@@ -1105,8 +1113,10 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       freezeSettings: getIsOverrideFreezeSelector(state),
       features: state?.user?.user?.features,
+      userId: getUserIdSelector(state),
       lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      additionalData: getAdditionalDataSelector(state),
     }),
     null
   )

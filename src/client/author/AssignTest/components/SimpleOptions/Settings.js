@@ -299,10 +299,14 @@ const Settings = ({
     restrictNavigationOutAttemptsThreshold > 1
 
   const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
-  const isAssignedTeacher =
-    `${additionalData?.assignedBy?._id}` === `${userId}` &&
+  let isAssignedTeacher = true
+  if (
+    additionalData &&
+    `${additionalData?.assignedBy?._id}` !== `${userId}` &&
     userRole === roleuser.TEACHER
-
+  ) {
+    isAssignedTeacher = false
+  }
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>

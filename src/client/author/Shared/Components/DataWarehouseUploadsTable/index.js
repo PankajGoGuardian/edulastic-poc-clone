@@ -55,7 +55,8 @@ const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
 
   const _columns = next(columns, (rawColumns) => {
     rawColumns[0].sorter = sortText('testName')
-    rawColumns[1].sorter = (a, b) => a - b
+    rawColumns[1].sorter = (a, b) =>
+      new Date(a.updatedAt) - new Date(b.updatedAt)
     rawColumns[1].render = (dateTime) => new Date(dateTime).toLocaleDateString()
     rawColumns[2].sorter = sortText('status')
     rawColumns[2].render = (status, record) =>

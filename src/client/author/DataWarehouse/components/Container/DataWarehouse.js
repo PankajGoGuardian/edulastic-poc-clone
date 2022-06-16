@@ -58,8 +58,7 @@ const DataWarehouse = ({
       <MainHeader Icon={IconCloudUpload} headingText="Data Warehouse" />
       <FlexContainer justifyContent="right" padding="10px">
         <EduButton isGhost height="100%" onClick={() => showModal()}>
-          <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
-          AND OTHER
+          <IconUpload /> Upload national / state tests data files
         </EduButton>
       </FlexContainer>
       <TableContainer>

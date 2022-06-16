@@ -72,8 +72,7 @@ const CustomReports = ({
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
         {isDataWarehouseEnabledForUser && (
           <EduButton isGhost height="100%" onClick={() => showModal()}>
-            <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
-            AND OTHER
+            <IconUpload /> Upload national / state tests data files
           </EduButton>
         )}
       </FlexContainer>
@@ -87,7 +86,7 @@ const CustomReports = ({
             <StyledTabPane tab="Reports" key="reports">
               <CustomReportsWrapper showReport={showReport} />
             </StyledTabPane>
-            <StyledTabPane tab="Status" key="status">
+            <StyledTabPane tab="Imports history" key="importsHistory">
               <TableContainer>
                 {loading ? (
                   <Spin />

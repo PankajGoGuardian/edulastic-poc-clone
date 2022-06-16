@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { RadioBtn } from '@edulastic/common'
 
@@ -13,9 +13,11 @@ export default ({
   updatePenaltyPoints,
   isAssignPage,
 }) => {
-  const [radioValue, updateRadioValue] = useState(
-    penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty'
-  )
+  const [radioValue, updateRadioValue] = useState('noPenalty')
+
+  useEffect(() => {
+    updateRadioValue(penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty')
+  }, [penaltyOnUsingHints])
 
   const handleChangeRadio = (event) => {
     const choice = event.target.value

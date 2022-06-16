@@ -64,7 +64,11 @@ const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
   })
 
   if (isEmpty(uploadsStatusList)) {
-    return <NoDataContainer>No Uploads data available.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        No previous import, use upload button to import test data.
+      </NoDataContainer>
+    )
   }
 
   return (

@@ -22,6 +22,7 @@ import {
 import {
   isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
   isDataOpsUser as checkIsDataOpsUser,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 
 const CustomReports = ({
@@ -34,13 +35,14 @@ const CustomReports = ({
   resetUploadResponse,
   isDataWarehouseEnabled,
   isDataOpsUser,
+  isPremiumUser,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('reports')
 
   const isDataWarehouseEnabledForUser = useMemo(
-    () => isDataWarehouseEnabled && isDataOpsUser,
-    [isDataWarehouseEnabled, isDataOpsUser]
+    () => isDataWarehouseEnabled && isDataOpsUser && isPremiumUser,
+    [isDataWarehouseEnabled, isDataOpsUser, isPremiumUser]
   )
 
   useEffect(() => {
@@ -139,6 +141,7 @@ const withConnect = connect(
     uploadsStatusList: getUploadsStatusList(state),
     isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
     isDataOpsUser: checkIsDataOpsUser(state),
+    isPremiumUser: isPremiumUserSelector(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,

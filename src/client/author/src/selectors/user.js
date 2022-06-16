@@ -563,3 +563,7 @@ export const isDataWarehouseEnabled = createSelector(
 export const isDataOpsUser = createSelector(getUserFeatures, (features) =>
   _get(features, 'isDataOpsUser', false)
 )
+
+export const isDataOpsOnlyUser = createSelector(getUserFeatures, (features) =>
+  _get(features, 'isDataOpsOnlyUser', false)
+)

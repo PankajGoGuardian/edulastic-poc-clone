@@ -1670,6 +1670,7 @@ class Setting extends Component {
                   )}
 
                   <HintsToStudents
+                    premium={premium}
                     isSmallSize={isSmallSize}
                     disabled={disabled}
                     isDocBased={isDocBased}

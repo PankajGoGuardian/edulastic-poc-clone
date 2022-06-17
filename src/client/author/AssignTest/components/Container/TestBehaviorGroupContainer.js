@@ -167,6 +167,8 @@ const TestBehaviorGroupContainer = ({
     </>
   )
 
+  const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
+
   return (
     <>
       {/* Test type */}
@@ -481,18 +483,28 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
 
-      <ShowHintsToStudents
-        tootltipWidth={tootltipWidth}
-        premium={premium}
-        content=""
-        freezeSettings={freezeSettings}
-        showHintsToStudents={showHintsToStudents}
-        penaltyOnUsingHints={penaltyOnUsingHints}
-        overRideSettings={overRideSettings}
-        allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
-        isDocBased={isDocBased}
-        isTestlet={playerSkinType?.toLowerCase() === playerSkinValues.testlet}
-      />
+      {/* Show hints to students */}
+      {!(isDocBased && isTestlet) && (
+        <SettingContainer id="show-hints-to-students">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="SHOW HINTS TO STUDENTS"
+            content="Students will be able to see the hint associated with an item while attempting the assignment"
+            premium={premium}
+            placement="rightTop"
+          />
+          <ShowHintsToStudents
+            tootltipWidth={tootltipWidth}
+            premium={premium}
+            freezeSettings={freezeSettings}
+            showHintsToStudents={showHintsToStudents}
+            penaltyOnUsingHints={penaltyOnUsingHints}
+            overRideSettings={overRideSettings}
+            allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
+          />
+        </SettingContainer>
+      )}
+      {/* Show hints to students */}
 
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||

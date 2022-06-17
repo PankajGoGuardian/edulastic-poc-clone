@@ -261,7 +261,6 @@ const Settings = ({
     assessmentSuperPowersTimedTest,
     assessmentSuperPowersRestrictQuestionBackNav,
     maxAttemptAllowed,
-    showHintsToStudents: showHintsToStudentsFeatureAllowed,
   } = features
 
   const {
@@ -910,13 +909,13 @@ const Settings = ({
         {/* Timed TEST */}
 
         {/* Show hints to students */}
-        {showHintsToStudentsFeatureAllowed && !isDocBased && !isTestlet && (
+        {!isDocBased && !isTestlet && (
           <SettingContainer>
-            {/* <DetailsTooltip
+            <DetailsTooltip
               title="SHOW HINTS TO STUDENTS"
-              content="show hints to students"
-              premium={showHintsToStudentsFeatureAllowed}
-            /> */}
+              content="Students will be able to see the hint associated with an item while attempting the assignment"
+              premium={premium}
+            />
             <StyledRow gutter={16} mb="15p">
               <Col span={12}>
                 <Label>SHOW HINTS TO STUDENTS</Label>
@@ -924,7 +923,7 @@ const Settings = ({
               <Col span={12}>
                 <StyledRow borderBottom="none" padding="0px 0px 10px 0px">
                   <ShowHintsSwitch
-                    disabled={freezeSettings}
+                    disabled={freezeSettings || !premium}
                     checked={showHintsToStudents}
                     onChangeHandler={(value) =>
                       overRideSettings('showHintsToStudents', value)
@@ -934,7 +933,7 @@ const Settings = ({
                 {showHintsToStudents && (
                   <StyledRow borderBottom="none" padding="0px">
                     <RadioOptions
-                      disabled={freezeSettings}
+                      disabled={freezeSettings || !premium}
                       penaltyOnUsingHints={penaltyOnUsingHints}
                       updatePenaltyPoints={(value) =>
                         overRideSettings('penaltyOnUsingHints', value)

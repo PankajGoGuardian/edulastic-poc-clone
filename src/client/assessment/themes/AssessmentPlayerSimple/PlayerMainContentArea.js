@@ -46,6 +46,7 @@ const PlayerContentArea = ({
   isPremiumContentWithoutAccess,
   referenceDocAttributes,
   isShowReferenceModal,
+  saveHintUsageData,
   classLevelSettings,
 }) => {
   const item = items[currentItem]
@@ -70,6 +71,15 @@ const PlayerContentArea = ({
           setHighlights,
         }
 
+  const saveHintUsage = (hintUsage) => {
+    if (item?._id) {
+      saveHintUsageData({
+        itemId: item._id,
+        hintUsage,
+      })
+    }
+  }
+
   return (
     <Main>
       <MainContent>
@@ -93,6 +103,7 @@ const PlayerContentArea = ({
           responsiveWidth={responsiveWidth}
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+          saveHintUsage={saveHintUsage}
           classLevelSettings={classLevelSettings}
           {...extraTestItemProps}
         />

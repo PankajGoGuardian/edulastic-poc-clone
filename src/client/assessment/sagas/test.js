@@ -215,8 +215,9 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     : assignmentSettings.referenceDocAttributes
 
   const showHintsToStudents = preview
-    ? true
+    ? test.showHintsToStudents
     : assignmentSettings.showHintsToStudents
+
   const penaltyOnUsingHints = preview
     ? test.penaltyOnUsingHints || 0
     : assignmentSettings.penaltyOnUsingHints || 0

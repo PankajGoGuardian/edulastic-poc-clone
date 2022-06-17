@@ -370,6 +370,7 @@ class AssessmentPlayerDefault extends React.Component {
       canShowPlaybackOptionTTS,
       passage,
       canShowReferenceMaterial,
+      viewAsStudent,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -701,6 +702,7 @@ class AssessmentPlayerDefault extends React.Component {
                     premiumCollectionWithoutAccess
                   }
                   {...extraTestItemProps}
+                  viewAsStudent={viewAsStudent}
                 />
               </MainWrapper>
               {isShowReferenceModal && referenceDocAttributes && (

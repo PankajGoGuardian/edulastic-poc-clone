@@ -503,10 +503,23 @@ class QuestionWrapper extends Component {
       isReviewTab,
       page: viewPage,
       assignmentLevelSettings: {
-        showHintsToStudents = true,
-        penaltyOnUsingHints = 0,
+        showHintsToStudents: showHintsToStudentsAssignment = true,
+        penaltyOnUsingHints: penaltyOnUsingHintsAssignment = 0,
       },
+      testLevelSettings: {
+        showHintsToStudents: showHintsToStudentsTest = true,
+        penaltyOnUsingHints: penaltyOnUsingHintsTest = 0,
+      },
+      viewAsStudent,
     } = restProps
+
+    const showHintsToStudents = viewAsStudent
+      ? showHintsToStudentsTest
+      : showHintsToStudentsAssignment
+
+    const penaltyOnUsingHints = viewAsStudent
+      ? penaltyOnUsingHintsTest
+      : penaltyOnUsingHintsAssignment
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)
@@ -799,6 +812,7 @@ class QuestionWrapper extends Component {
                       rubricDetails={rubricDetails}
                       showHintsToStudents={showHintsToStudents}
                       penaltyOnUsingHints={penaltyOnUsingHints}
+                      viewAsStudent={viewAsStudent}
                     />
                   )}
                 </StyledFlexContainer>

@@ -400,6 +400,7 @@ function* loadTest({ payload }) {
           data: true,
           groupId,
           testActivityId,
+          requestLatest: !!preview,
           ...(playlistId ? { playlistId } : {}),
           ...(currentAssignmentId ? { assignmentId: currentAssignmentId } : {}),
         }) // when preview(author side) use normal non cached api

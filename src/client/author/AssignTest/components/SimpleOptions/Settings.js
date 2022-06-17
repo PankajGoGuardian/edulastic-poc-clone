@@ -89,6 +89,7 @@ const Settings = ({
   additionalData,
   userId,
   userRole,
+  togglePenaltyOnUsingHints,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -938,6 +939,7 @@ const Settings = ({
                       updatePenaltyPoints={(value) =>
                         overRideSettings('penaltyOnUsingHints', value)
                       }
+                      togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
                       isAssignPage
                     />
                   </StyledRow>

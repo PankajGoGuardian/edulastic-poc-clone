@@ -12,6 +12,7 @@ export default ({
   penaltyOnUsingHints,
   overRideSettings,
   premium,
+  togglePenaltyOnUsingHints,
 }) => {
   const isDisabled = freezeSettings || !premium
   const handleChangePenaltyPoints = (value) => {
@@ -57,6 +58,7 @@ export default ({
                 disabled={isDisabled}
                 penaltyOnUsingHints={penaltyOnUsingHints}
                 updatePenaltyPoints={handleChangePenaltyPoints}
+                togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
                 isAssignPage
               />
             </Col>

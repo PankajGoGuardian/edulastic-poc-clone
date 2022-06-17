@@ -13,6 +13,7 @@ export default ({
   penaltyOnUsingHints,
   updateTestData,
   isTestlet,
+  togglePenaltyOnUsingHints,
   premium,
 }) => {
   if (isDocBased || isTestlet) {
@@ -36,6 +37,7 @@ export default ({
           penaltyOnUsingHints={penaltyOnUsingHints}
           showHintsToStudents={showHintsToStudents}
           updateTestData={updateTestData}
+          togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
         />
       </SettingContainer>
     </Block>

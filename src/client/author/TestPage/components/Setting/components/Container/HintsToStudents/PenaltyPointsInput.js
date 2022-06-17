@@ -18,8 +18,9 @@ export default ({ penaltyOnUsingHints, updatePenaltyPoints, disabled }) => {
     const points = parseFloat(event.target.value)
     if (Number.isNaN(points)) {
       notification({
-        msg: 'only numbers in the range 1 to 100 are accepted',
+        msg: 'Only numbers in the range 1 to 100 are accepted',
       })
+      return
     }
     updatePenaltyPoints(clamp(points, 1, 100))
   }

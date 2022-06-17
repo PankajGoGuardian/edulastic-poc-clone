@@ -65,6 +65,7 @@ const TestBehaviorGroupContainer = ({
   showAssignModuleContent,
   t,
   allowToUseShowHintsToStudents,
+  togglePenaltyOnUsingHints,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -501,6 +502,7 @@ const TestBehaviorGroupContainer = ({
             penaltyOnUsingHints={penaltyOnUsingHints}
             overRideSettings={overRideSettings}
             allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
+            togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
           />
         </SettingContainer>
       )}

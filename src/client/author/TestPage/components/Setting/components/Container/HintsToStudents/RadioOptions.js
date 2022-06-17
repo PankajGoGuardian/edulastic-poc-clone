@@ -12,16 +12,24 @@ export default ({
   penaltyOnUsingHints,
   updatePenaltyPoints,
   isAssignPage,
+  togglePenaltyOnUsingHints,
 }) => {
   const [radioValue, updateRadioValue] = useState('noPenalty')
 
   useEffect(() => {
-    updateRadioValue(penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty')
+    const intitialRadioValue =
+      penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty'
+    updateRadioValue(intitialRadioValue)
+    togglePenaltyOnUsingHints(intitialRadioValue === 'withPenalty')
+    return () => {
+      togglePenaltyOnUsingHints(false)
+    }
   }, [penaltyOnUsingHints])
 
   const handleChangeRadio = (event) => {
     const choice = event.target.value
     updateRadioValue(choice)
+    togglePenaltyOnUsingHints(choice === 'withPenalty')
     if (choice === 'noPenalty' && penaltyOnUsingHints > 0) {
       updatePenaltyPoints(0)
     }

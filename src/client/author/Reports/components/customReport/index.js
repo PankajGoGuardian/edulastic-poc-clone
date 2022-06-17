@@ -22,6 +22,7 @@ import {
 import {
   isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
   isDataOpsUser as checkIsDataOpsUser,
+  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 
 const CustomReports = ({
@@ -34,13 +35,14 @@ const CustomReports = ({
   resetUploadResponse,
   isDataWarehouseEnabled,
   isDataOpsUser,
+  isPremiumUser,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('reports')
 
   const isDataWarehouseEnabledForUser = useMemo(
-    () => isDataWarehouseEnabled && isDataOpsUser,
-    [isDataWarehouseEnabled, isDataOpsUser]
+    () => isDataWarehouseEnabled && isDataOpsUser && isPremiumUser,
+    [isDataWarehouseEnabled, isDataOpsUser, isPremiumUser]
   )
 
   useEffect(() => {
@@ -72,8 +74,7 @@ const CustomReports = ({
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
         {isDataWarehouseEnabledForUser && (
           <EduButton isGhost height="100%" onClick={() => showModal()}>
-            <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
-            AND OTHER
+            <IconUpload /> Upload national / state tests data files
           </EduButton>
         )}
       </FlexContainer>
@@ -87,7 +88,7 @@ const CustomReports = ({
             <StyledTabPane tab="Reports" key="reports">
               <CustomReportsWrapper showReport={showReport} />
             </StyledTabPane>
-            <StyledTabPane tab="Status" key="status">
+            <StyledTabPane tab="Imports history" key="importsHistory">
               <TableContainer>
                 {loading ? (
                   <Spin />
@@ -140,6 +141,7 @@ const withConnect = connect(
     uploadsStatusList: getUploadsStatusList(state),
     isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
     isDataOpsUser: checkIsDataOpsUser(state),
+    isPremiumUser: isPremiumUserSelector(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,

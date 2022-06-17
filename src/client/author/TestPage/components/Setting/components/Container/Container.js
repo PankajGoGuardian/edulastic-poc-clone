@@ -267,6 +267,9 @@ class Setting extends Component {
           performanceBandsData.find((item) => item._id === defaultBandId) || {}
         const standardGradingScale =
           standardsData.find((item) => item._id === defaultStandardId) || {}
+        if (COMMON.includes(value)) {
+          Object.assign(extraData, { allowTeacherRedirect: true })
+        }
         if (ASSESSMENT.includes(value) || COMMON.includes(value)) {
           const releaseScore =
             ASSESSMENT.includes(value) && isReleaseScorePremium

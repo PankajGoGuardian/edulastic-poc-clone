@@ -9,6 +9,7 @@ import { questionType } from '@edulastic/constants'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { answersByQId } from '../selectors/test'
+import { clearHintUsageAction } from '../actions/userInteractions'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -217,6 +218,7 @@ function* evaluateTestItemSaga({ payload }) {
         allQuestionsById,
         testId: test._id || payload.testId,
       })
+      yield put(clearHintUsageAction())
     }
     if (typeof callback === 'function') {
       callback()

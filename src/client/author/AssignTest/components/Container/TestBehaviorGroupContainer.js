@@ -83,8 +83,8 @@ const TestBehaviorGroupContainer = ({
     allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
-    showHintsToStudents = testSettings?.showHintsToStudents || true,
-    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints || 0,
+    showHintsToStudents = testSettings?.showHintsToStudents,
+    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {

@@ -1809,6 +1809,9 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
+
+  const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = entity
+
   const settings = {
     startDate: moment(),
     class: [],
@@ -1844,8 +1847,8 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
-    showHintsToStudents: entity.showHintsToStudents || true,
-    penaltyOnUsingHints: entity.penaltyOnUsingHints || 0,
+    showHintsToStudents,
+    penaltyOnUsingHints,
     allowTeacherRedirect: entity.allowTeacherRedirect || true,
   }
 

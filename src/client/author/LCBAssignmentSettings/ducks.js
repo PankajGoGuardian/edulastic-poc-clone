@@ -198,6 +198,7 @@ function* loadAssignmentSaga({ payload }) {
       passwordExpireIn,
       assignmentPassword,
       penaltyOnUsingHints,
+      showHintsToStudents,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -225,6 +226,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (typeof penaltyOnUsingHints === 'number') {
       data.penaltyOnUsingHints = penaltyOnUsingHints
+    }
+    if (typeof showHintsToStudents === 'boolean') {
+      data.showHintsToStudents = showHintsToStudents
     }
     if (passwordPolicy !== undefined) {
       data.passwordPolicy = passwordPolicy

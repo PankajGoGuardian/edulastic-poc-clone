@@ -1849,7 +1849,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showRubricToStudents: entity.showRubricToStudents,
     showHintsToStudents,
     penaltyOnUsingHints,
-    allowTeacherRedirect: entity.allowTeacherRedirect || true,
+    allowTeacherRedirect: entity.allowTeacherRedirect,
   }
 
   if (entity.safeBrowser) {

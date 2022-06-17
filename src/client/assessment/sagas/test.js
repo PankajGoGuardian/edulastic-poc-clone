@@ -223,7 +223,7 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     : assignmentSettings.penaltyOnUsingHints || 0
   const allowTeacherRedirect = preview
     ? test.allowTeacherRedirect
-    : assignmentSettings.allowTeacherRedirect || true
+    : assignmentSettings.allowTeacherRedirect
 
   return {
     testType,

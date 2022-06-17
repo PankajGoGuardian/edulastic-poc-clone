@@ -61,12 +61,12 @@ export default ({
           checked={radioValue === 'withPenalty'}
           disabled={disabled}
         >
-          Penalize{' '}
+          Penalize
           <PenaltyPointsInput
             penaltyOnUsingHints={penaltyOnUsingHints}
             updatePenaltyPoints={updatePenaltyPoints}
             disabled={radioValue !== 'withPenalty' || disabled}
-          />{' '}
+          />
           % on using Hint
         </RadioBtn>
       </Tooltip>

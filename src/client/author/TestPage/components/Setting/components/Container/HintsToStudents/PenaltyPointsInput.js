@@ -28,15 +28,16 @@ export default ({ penaltyOnUsingHints, updatePenaltyPoints, disabled }) => {
     <TextInputStyled
       data-testid={penaltyPointsInputTestId}
       value={inputValue}
-      placeholder="Insert a value"
+      placeholder="value"
       type="number"
-      width="135px"
+      width="85px"
       data-cy="penaltyOnUsingHints"
       onChange={handleChangePenaltyPoints}
       onBlur={handleOnBlur}
       disabled={disabled}
       min={1}
       max={100}
+      margin="0 5px"
     />
   )
 }

@@ -58,7 +58,7 @@ const CustomReports = ({
   const closeModal = (shouldChangeTab) => {
     setShowTestDataUploadModal(false)
     if (shouldChangeTab) {
-      setActiveTabKey('status')
+      setActiveTabKey('importsHistory')
       fetchUploadsStatusList()
     }
     resetUploadResponse()

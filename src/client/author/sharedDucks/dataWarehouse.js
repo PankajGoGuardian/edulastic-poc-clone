@@ -208,7 +208,7 @@ export function* uploadTestDataFile({
       payload: response,
     })
     notification({
-      msg: 'Import successful. Check progress on the Status page.',
+      msg: 'Import Successful.',
       destroyAll: true,
       type: 'success',
     })

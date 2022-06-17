@@ -161,7 +161,7 @@ const DataWarehouseUploadModal = ({
         </StyledRow>
 
         <Dropzone
-          maxSize="104857600"
+          maxSize="31457280"
           onDrop={([f]) => setFile(f)}
           accept=".csv, application/vnd.ms-excel, text/csv" // text/csv might not work for Windows based machines
           className="dropzone"
@@ -193,7 +193,7 @@ const DataWarehouseUploadModal = ({
                       <StyledText isComment>
                         {`or `}
                         <Underlined>browse</Underlined>
-                        {` : CSV (100MB Max)`}
+                        {` : CSV (30MB Max)`}
                       </StyledText>
                     </FlexContainer>
                   </>

@@ -88,7 +88,7 @@ const Hints = ({
   penaltyOnUsingHints,
   viewAsStudent,
 }) => {
-  if (isStudent && showHintsToStudents === false) {
+  if (showHintsToStudents === false) {
     return null
   }
   const { id } = question

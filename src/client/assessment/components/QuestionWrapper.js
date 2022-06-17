@@ -516,13 +516,15 @@ class QuestionWrapper extends Component {
 
     const showHintsToStudents = viewAsStudent
       ? showHintsToStudentsTest
-      : classLevelSettings?.showHintsToStudents ||
-        showHintsToStudentsAssignmentLevel
+      : typeof classLevelSettings?.showHintsToStudents === 'boolean'
+      ? classLevelSettings.showHintsToStudents
+      : showHintsToStudentsAssignmentLevel
 
     const penaltyOnUsingHints = viewAsStudent
       ? penaltyOnUsingHintsTest
-      : classLevelSettings?.penaltyOnUsingHints ||
-        penaltyOnUsingHintsAssignmentLevel
+      : typeof classLevelSettings?.penaltyOnUsingHints === 'number'
+      ? classLevelSettings.penaltyOnUsingHints
+      : penaltyOnUsingHintsAssignmentLevel
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)

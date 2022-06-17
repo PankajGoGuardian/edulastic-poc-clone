@@ -283,6 +283,7 @@ class AssessmentPlayerSimple extends React.Component {
       user: { firstName = '', lastName = '' },
       playerSkinType,
       canShowPlaybackOptionTTS,
+      classLevelSettings,
     } = this.props
     const {
       showExitPopup,
@@ -393,6 +394,7 @@ class AssessmentPlayerSimple extends React.Component {
               tool={toolsOpenStatus}
               isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+              classLevelSettings={classLevelSettings}
             />
             {!previewPlayer && (
               <SubmitConfirmation

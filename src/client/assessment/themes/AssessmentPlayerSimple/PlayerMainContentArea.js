@@ -46,6 +46,7 @@ const PlayerContentArea = ({
   isPremiumContentWithoutAccess,
   referenceDocAttributes,
   isShowReferenceModal,
+  classLevelSettings,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -92,6 +93,7 @@ const PlayerContentArea = ({
           responsiveWidth={responsiveWidth}
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+          classLevelSettings={classLevelSettings}
           {...extraTestItemProps}
         />
       </MainContent>

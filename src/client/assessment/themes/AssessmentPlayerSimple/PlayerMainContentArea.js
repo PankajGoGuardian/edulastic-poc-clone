@@ -48,6 +48,7 @@ const PlayerContentArea = ({
   isShowReferenceModal,
   saveHintUsageData,
   classLevelSettings,
+  viewAsStudent,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -105,6 +106,7 @@ const PlayerContentArea = ({
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
           saveHintUsage={saveHintUsage}
           classLevelSettings={classLevelSettings}
+          viewAsStudent={viewAsStudent}
           {...extraTestItemProps}
         />
       </MainContent>

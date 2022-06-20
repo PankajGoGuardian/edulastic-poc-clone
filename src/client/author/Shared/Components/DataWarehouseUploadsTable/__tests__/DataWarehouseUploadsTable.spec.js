@@ -1,8 +1,8 @@
 import { render } from '@testing-library/react'
 import React from 'react'
 import { ThemeProvider } from 'styled-components'
-import TestDataUploadsTable from '../TestDataUploadsTable'
-import { appRender } from '../test-utils'
+import DataWarehouseUploadsTable from '../index'
+import { appRender } from '../../../../testUtils'
 import { themes } from '../../../../../theme'
 
 const initialState = {
@@ -45,16 +45,22 @@ const uploadsTestData = [
 
 describe('Test Data Uploads Table component', () => {
   it('test component renders without error', () => {
-    render(<TestDataUploadsTable uploadsStatusList={[]} />)
+    render(<DataWarehouseUploadsTable uploadsStatusList={[]} />)
   })
   it('test component renders with expect no data text', () => {
-    const container = render(<TestDataUploadsTable uploadsStatusList={[]} />)
-    expect(container.queryByText(/No Uploads data available./i)).toBeTruthy()
+    const container = render(
+      <DataWarehouseUploadsTable uploadsStatusList={[]} />
+    )
+    expect(
+      container.queryByText(
+        /No previous import, use upload button to import test data./i
+      )
+    ).toBeTruthy()
   })
   it('test component renders with 2 table rows', () => {
     const { container } = appRender(
       <ThemeProvider theme={themes.default}>
-        <TestDataUploadsTable uploadsStatusList={uploadsTestData} />
+        <DataWarehouseUploadsTable uploadsStatusList={uploadsTestData} />
       </ThemeProvider>,
       initialState
     )

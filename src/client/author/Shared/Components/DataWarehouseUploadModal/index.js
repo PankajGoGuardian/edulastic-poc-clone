@@ -124,6 +124,7 @@ const DataWarehouseUploadModal = ({
           width="200px"
           onClick={() => handleFileUpload()}
           disabled={isUploadBtnDisabled}
+          data-testid="upload-button"
         >
           {loading ? <Spin /> : 'Upload'}
         </EduButton>,
@@ -134,19 +135,23 @@ const DataWarehouseUploadModal = ({
           <StyledCol span={12}>
             <StyledSelect
               placeholder="Select data format"
+              data-testid="data-format-dropdown"
               onChange={(e) => {
                 setCategory(e)
               }}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
               {dropdownData.dataFormatDropdownOptions.map(({ key, value }) => (
-                <Option value={key}>{value}</Option>
+                <Option value={key} key={key}>
+                  {value}
+                </Option>
               ))}
             </StyledSelect>
           </StyledCol>
           <StyledCol span={12}>
             <StyledSelect
               placeholder="Select year"
+              data-testid="year-dropdown"
               onChange={(e) => {
                 setVersionYear(e)
               }}
@@ -161,7 +166,8 @@ const DataWarehouseUploadModal = ({
         <StyledRow>
           <StyledCol span={12}>
             <Input
-              placeholder="Enter Test Title"
+              placeholder="test-title-input"
+              data-testid="test-title-input"
               value={testName}
               onChange={(e) => setTestName(e.target.value)}
             />
@@ -169,16 +175,7 @@ const DataWarehouseUploadModal = ({
         </StyledRow>
 
         <Dropzone
-          maxSize={MAX_FILE_SIZE}
-          onDropRejected={(f) => {
-            if (f[0].size > MAX_FILE_SIZE) {
-              notification({
-                msg: 'Please select a file with size less than 30 MB.',
-                type: 'error',
-                exact: true,
-              })
-            }
-          }}
+          maxSize={31457280}
           onDrop={([f]) => setFile(f)}
           accept=".csv, application/vnd.ms-excel, text/csv" // text/csv might not work for Windows based machines
           className="dropzone"

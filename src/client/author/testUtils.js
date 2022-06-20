@@ -3,7 +3,7 @@ import { render } from '@testing-library/react'
 import { Provider } from 'react-redux'
 import { createMemoryHistory } from 'history'
 import { ConnectedRouter } from 'connected-react-router'
-import configureStore from '../../../../configureStore'
+import configureStore from '../configureStore'
 
 function reduxWrapper(
   initialState,

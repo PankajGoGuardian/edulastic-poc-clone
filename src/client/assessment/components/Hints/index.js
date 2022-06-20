@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react'
 import PropTypes from 'prop-types'
-import { Modal } from 'antd'
 import get from 'lodash/get'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
@@ -18,7 +17,6 @@ import {
   greyThemeLighter,
   title,
   themeColorBlue,
-  themeColor,
 } from '@edulastic/colors'
 
 import { getFontSize } from '../../utils/helpers'
@@ -84,13 +82,7 @@ const Hints = ({
   getRubricById,
   rubricDataLoading,
   storeRubricData,
-  showHintsToStudents,
-  penaltyOnUsingHints,
-  viewAsStudent,
 }) => {
-  if (showHintsToStudents === false) {
-    return null
-  }
   const { id } = question
   const validHints = useMemo(() => {
     return (question?.hints || []).filter((hint) => hint?.label)
@@ -124,34 +116,6 @@ const Hints = ({
       updateShowCount(1)
     }
     setToggleHints(!toggleHints)
-  }
-
-  const handleShowHints = (e) => {
-    e.stopPropagation()
-    if (
-      (isStudent || viewAsStudent) &&
-      penaltyOnUsingHints > 0 &&
-      showCount === 0
-    ) {
-      Modal.confirm({
-        title: 'Do you want to proceed?',
-        content:
-          'Are you sure that you want to use a hint? Using hint might reduce your score.',
-        onOk: () => {
-          showHintHandler(e)
-          return Modal.destroyAll()
-        },
-        onCancel: () => Modal.destroyAll(),
-        okText: 'Proceed',
-        centered: true,
-        width: 500,
-        okButtonProps: {
-          style: { background: themeColor },
-        },
-      })
-      return
-    }
-    return showHintHandler(e)
   }
 
   const showMoreHints = (e) => {
@@ -209,22 +173,16 @@ const Hints = ({
       }, 500)
     }
     if (showCount) {
-      const payload = {
+      saveHintUsage({
         event: 'HintClicked',
         id,
         time: Date.now(),
-      }
-      const currentHintId = validHints?.[showCount - 1]?.value
-      if (currentHintId) {
-        Object.assign(payload, { hintId: currentHintId })
-      }
-      saveHintUsage(payload)
+      })
     }
   }, [showCount])
 
   useEffect(() => {
     updateShowCount(0)
-    setToggleHints(true)
   }, [id])
 
   if (
@@ -240,7 +198,7 @@ const Hints = ({
   return (
     <>
       <InfoButtons
-        showHintHandler={handleShowHints}
+        showHintHandler={showHintHandler}
         toggleHints={toggleHints}
         isStudentReport={isStudentReport}
         hintCount={hintCount}

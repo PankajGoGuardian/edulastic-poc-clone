@@ -148,7 +148,6 @@ export const Description = styled.div`
   line-height: 22px;
   color: #6a737f;
   margin-top: ${({ marginTop }) => marginTop || '10px'};
-  margin-bottom: ${({ marginTop }) => marginTop};
 `
 
 export const StyledRadioGroup = styled(Radio.Group)`

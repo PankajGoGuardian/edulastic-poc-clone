@@ -502,29 +502,7 @@ class QuestionWrapper extends Component {
       hideCorrectAnswer,
       isReviewTab,
       page: viewPage,
-      assignmentLevelSettings: {
-        showHintsToStudents: showHintsToStudentsAssignmentLevel = true,
-        penaltyOnUsingHints: penaltyOnUsingHintsAssignmentLevel = 0,
-      },
-      testLevelSettings: {
-        showHintsToStudents: showHintsToStudentsTest = true,
-        penaltyOnUsingHints: penaltyOnUsingHintsTest = 0,
-      },
-      classLevelSettings,
-      viewAsStudent,
     } = restProps
-
-    const showHintsToStudents = viewAsStudent
-      ? showHintsToStudentsTest
-      : typeof classLevelSettings?.showHintsToStudents === 'boolean'
-      ? classLevelSettings.showHintsToStudents
-      : showHintsToStudentsAssignmentLevel
-
-    const penaltyOnUsingHints = viewAsStudent
-      ? penaltyOnUsingHintsTest
-      : typeof classLevelSettings?.penaltyOnUsingHints === 'number'
-      ? classLevelSettings.penaltyOnUsingHints
-      : penaltyOnUsingHintsAssignmentLevel
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)
@@ -631,7 +609,6 @@ class QuestionWrapper extends Component {
     const answerScore = this.answerScore
     const showAnswerScore =
       isExpressGrader || isLCBView || isReviewTab || viewPage === 'review'
-
     return (
       <ThemeProvider
         theme={{
@@ -815,9 +792,6 @@ class QuestionWrapper extends Component {
                       isStudentReport={isStudentReport}
                       displayRubricInfoButton={this.showRubricToStudentsButton}
                       rubricDetails={rubricDetails}
-                      showHintsToStudents={showHintsToStudents}
-                      penaltyOnUsingHints={penaltyOnUsingHints}
-                      viewAsStudent={viewAsStudent}
                     />
                   )}
                 </StyledFlexContainer>

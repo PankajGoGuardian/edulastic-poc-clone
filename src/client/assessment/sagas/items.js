@@ -278,17 +278,6 @@ export function* saveUserResponse({ payload }) {
     const userInteractions = yield select(
       ({ userInteractions: _userInteractions }) => _userInteractions[testItemId]
     )
-    const hintClickEvent = (obj) => obj.event === 'HintClicked'
-    const hintsUsedInItem = (userInteractions || [])
-      .filter(hintClickEvent)
-      .reduce((acc, curr) => {
-        const { hintId, id: qId } = curr
-        if (hintId) {
-          acc[qId] = acc[qId] || []
-          acc[qId].push(hintId)
-        }
-        return acc
-      }, {})
     const activity = {
       answers: itemAnswers,
       testItemId,
@@ -299,7 +288,6 @@ export function* saveUserResponse({ payload }) {
       timesSpent,
       shuffledOptions: shuffles,
       bookmarked,
-      hintsUsedInItem,
     }
 
     if (!isEmpty(extData)) {

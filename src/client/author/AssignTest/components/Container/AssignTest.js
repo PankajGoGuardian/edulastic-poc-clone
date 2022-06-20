@@ -46,7 +46,6 @@ import {
   getDefaultTestSettingsAction,
   getTestSelector,
   getTestsLoadingSelector,
-  getPenaltyOnUsingHintsSelector,
   receiveTestByIdAction,
   getCurrentSettingsIdSelector,
   fetchTestSettingsListAction,
@@ -587,8 +586,7 @@ class AssignTest extends React.Component {
   }
 
   validateSettings = (entity) => {
-    const { isEnabledRefMaterial, hasPenaltyOnUsingHints } = this.props
-    const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = entity
+    const { isEnabledRefMaterial } = this.props
     let isValid = true
     if (
       ![
@@ -670,17 +668,6 @@ class AssignTest extends React.Component {
       notification({
         type: 'warn',
         messageKey: 'uploadReferenceMaterial',
-      })
-      isValid = false
-    } else if (
-      showHintsToStudents &&
-      hasPenaltyOnUsingHints &&
-      (Number.isNaN(penaltyOnUsingHints) || !penaltyOnUsingHints > 0)
-    ) {
-      this.handleTabChange(sectionContants.TEST_BEHAVIOR_SECTION)
-      notification({
-        type: 'warn',
-        messageKey: 'enterPenaltyOnHintsValue',
       })
       isValid = false
     }
@@ -823,7 +810,6 @@ class AssignTest extends React.Component {
     const moduleTitle = _module?.title || ''
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
-
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
@@ -1024,7 +1010,6 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       searchTerms: getSearchTermsFilterSelector(state),
       isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
-      hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,

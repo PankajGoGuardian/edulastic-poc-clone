@@ -38,10 +38,7 @@ import SettingContainer from '../AssignTest/components/Container/SettingsContain
 /**
  * Imports related to testSettings
  */
-import {
-  getDefaultTestSettingsAction,
-  togglePenaltyOnUsingHintsAction,
-} from '../TestPage/ducks'
+import { getDefaultTestSettingsAction } from '../TestPage/ducks'
 import { getTestEntitySelector } from '../AssignTest/duck'
 import { InputLabel, InputLabelContainer, ClassHeading } from './styled'
 import { allowedSettingPageToDisplay } from '../Shared/Components/ClassHeader/utils/transformers'
@@ -70,7 +67,6 @@ function LCBAssignmentSettings({
   isDocBased,
   loading,
   userRole,
-  togglePenaltyOnUsingHints,
 }) {
   const { openPolicy, closePolicy, openPolicyForAdmin } = selectsData
   const { assignmentId, classId } = match.params || {}
@@ -100,7 +96,7 @@ function LCBAssignmentSettings({
   }, [isAdmin, openPolicy, openPolicyForAdmin])
 
   const { startDate, endDate, status, dueDate, allowedOpenDate } =
-    assignment?.['class']?.[0] || {}
+    assignment?.class?.[0] || {}
 
   const showAllowedOpenDate =
     status === assignmentStatusOptions.NOT_OPEN &&
@@ -280,7 +276,6 @@ function LCBAssignmentSettings({
                 gradeSubject={gradeSubject}
                 _releaseGradeKeys={releaseGradeKeys}
                 isDocBased={isDocBased}
-                togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
               />
 
               <Row gutter={0} style={{ marginTop: '15px' }}>
@@ -334,6 +329,5 @@ export default connect(
     changeAttrs: slice.actions.changeAttribute,
     updateLocally: slice.actions.updateAssignment,
     loadTestSettings: getDefaultTestSettingsAction,
-    togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
   }
 )(LCBAssignmentSettings)

@@ -36,7 +36,6 @@ const FeedbackWrapper = ({
   isExpressGrader,
   isQuestionView,
   t,
-  hintsUsed,
 }) => {
   const feedbackRef = useRef()
   const heightOfContainer = feedbackRef.current?.clientHeight
@@ -121,7 +120,6 @@ const FeedbackWrapper = ({
             isExpressGrader={isExpressGrader}
             isQuestionView={isQuestionView}
             isAbsolutePos={!isStudentReport && shouldTakeDimensionsFromStore}
-            hintsUsed={hintsUsed}
             {...presentationModeProps}
           />
         )}

@@ -455,7 +455,6 @@ class FeedbackRight extends Component {
       disabled,
       isPracticeQuestion,
       isAbsolutePos,
-      hintsUsed,
     } = this.props
     const {
       score,
@@ -522,8 +521,6 @@ class FeedbackRight extends Component {
     //   _maxScore = "";
     // }
 
-    const showHintUsed = !isUndefined(hintsUsed)
-
     return (
       <StyledCardTwo
         data-cy="feedbackContainer"
@@ -576,16 +573,6 @@ class FeedbackRight extends Component {
         ) : (
           <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />
         )}
-
-        {showHintUsed && (
-          <GradingPolicyWrapper>
-            HINTS USED &nbsp;
-            <GradingPolicy data-cy="hintsUsed">
-              {hintsUsed ? 'Yes' : 'No'}
-            </GradingPolicy>
-          </GradingPolicyWrapper>
-        )}
-
         {showGradingRubricButton && (
           <RubricGrading
             rubricData={rubricDetails}

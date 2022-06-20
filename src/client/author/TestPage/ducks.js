@@ -328,8 +328,6 @@ export const SET_SHOW_UPGRADE_POPUP = '[tests] set show upgrade popup'
 export const SET_MAX_SHARING_LEVEL_ALLOWED =
   '[tests] set max sharing level allowed'
 export const TOGGLE_REFERENCE_MATERIAL = '[tests] toggle enable ref material'
-export const TOGGLE_PENALTY_ON_USING_HINTS =
-  '[tests] toggle penalty on using hints'
 // actions
 
 export const toggleRefMaterialAction = createAction(TOGGLE_REFERENCE_MATERIAL)
@@ -339,9 +337,6 @@ export const replaceTestDataAction = createAction(REPLACE_TEST_DATA)
 export const setNextPreviewItemAction = createAction(SET_NEXT_PREVIEW_ITEM)
 export const updateDefaultThumbnailAction = createAction(
   UPDATE_TEST_DEFAULT_IMAGE
-)
-export const togglePenaltyOnUsingHintsAction = createAction(
-  TOGGLE_PENALTY_ON_USING_HINTS
 )
 export const setPassageItemsAction = createAction(SET_PASSAGE_ITEMS)
 export const setAndSavePassageItemsAction = createAction(
@@ -596,11 +591,6 @@ export const defaultImage =
 export const stateSelector = (state) => state.tests
 
 export const playlistStateSelector = (state) => state.playlist
-
-export const getPenaltyOnUsingHintsSelector = createSelector(
-  stateSelector,
-  (state) => state.hasPenaltyOnUsingHints
-)
 
 export const getPassageItemsCountSelector = createSelector(
   stateSelector,
@@ -997,8 +987,6 @@ export const createBlankTest = () => ({
   showMagnifier: true,
   enableScratchpad: true,
   enableSkipAlert: false,
-  showHintsToStudents: true,
-  penaltyOnUsingHints: 0,
   allowTeacherRedirect: true,
 })
 
@@ -1049,7 +1037,6 @@ const initialState = {
     isLoading: true,
   },
   enableRefMaterial: false,
-  hasPenaltyOnUsingHints: false,
 }
 
 const getDefaultScales = (state, payload) => {
@@ -1696,12 +1683,6 @@ export const reducer = (state = initialState, { type, payload }) => {
         updated: true,
         enableRefMaterial: payload,
       }
-    case TOGGLE_PENALTY_ON_USING_HINTS:
-      return {
-        ...state,
-        updated: true,
-        hasPenaltyOnUsingHints: payload,
-      }
     default:
       return state
   }
@@ -1826,9 +1807,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   } = testTypesConstants.TEST_TYPES_VALUES_MAP
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
-
-  const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = entity
-
   const settings = {
     startDate: moment(),
     class: [],
@@ -1864,8 +1842,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
-    showHintsToStudents,
-    penaltyOnUsingHints,
     allowTeacherRedirect: entity.allowTeacherRedirect,
   }
 
@@ -1912,8 +1888,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.restrictNavigationOut = null
     settings.restrictNavigationOutAttemptsThreshold = 0
     settings.showRubricToStudents = false
-    settings.showHintsToStudents = true
-    settings.penaltyOnUsingHints = 0
     delete settings.keypad
   }
 

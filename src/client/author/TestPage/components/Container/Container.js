@@ -73,7 +73,6 @@ import {
   getTestSettingsListSelector,
   setTestSettingsListAction,
   isEnabledRefMaterialSelector,
-  getPenaltyOnUsingHintsSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -618,22 +617,6 @@ class Container extends PureComponent {
     return true
   }
 
-  validatePenaltyOnUsingHintsValue = () => {
-    const { test, hasPenaltyOnUsingHints } = this.props
-    const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = test
-
-    if (
-      showHintsToStudents &&
-      hasPenaltyOnUsingHints &&
-      (Number.isNaN(penaltyOnUsingHints) || !penaltyOnUsingHints > 0)
-    ) {
-      notification({ messageKey: 'enterPenaltyOnHintsValue' })
-      return false
-    }
-
-    return true
-  }
-
   handleAssign = () => {
     const {
       test,
@@ -996,8 +979,7 @@ class Container extends PureComponent {
     }
     if (
       !this.validateTimedAssignment() ||
-      !this.validateReferenceDocMaterial() ||
-      !this.validatePenaltyOnUsingHintsValue()
+      !this.validateReferenceDocMaterial()
     ) {
       return
     }
@@ -1123,9 +1105,6 @@ class Container extends PureComponent {
       }
     }
     if (!this.validateReferenceDocMaterial()) {
-      return false
-    }
-    if (!this.validatePenaltyOnUsingHintsValue()) {
       return false
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring
@@ -1637,7 +1616,6 @@ const enhance = compose(
       testSettingsList: getTestSettingsListSelector(state),
       userSignupStatus: getUserSignupStatusSelector(state),
       enabledRefMaterial: isEnabledRefMaterialSelector(state),
-      hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
     }),
     {
       createTest: createTestAction,

@@ -141,7 +141,7 @@ export const withRefMaterial = (WrappedComponent) => {
             <NormalText>PNG, JPG, PDF (Max 2MB)</NormalText>
           </FlexContainer>
         )}
-        {hasRefMaterial && enableUpload && (
+        {hasRefMaterial && (
           <FlexContainer
             mt="16px"
             justifyContent="flex-start"

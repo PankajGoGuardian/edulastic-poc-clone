@@ -147,6 +147,7 @@ function* evaluateAnswers({ payload: groupId }) {
         {
           answers: allAnswers,
           testId,
+          replaceVariable: true,
         }
       )
       let score = 0

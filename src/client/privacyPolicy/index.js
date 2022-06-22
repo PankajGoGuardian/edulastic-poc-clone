@@ -32,16 +32,12 @@ const eeaSubTitle =
 const nonEeaSubtitle =
   'Welcome to Edulastic! Before we proceed, please read our entire (1) Terms of Service and End User License Agreement; and (2) Product Privacy Policy to make sure we’re on the same page.'
 
-const PrivacyPolicyModal = ({
-  userID,
-  setLocationData,
-  locationResult,
-  isEEAUser,
-  noLocation,
-}) => {
+const PrivacyPolicyModal = ({ userID, setLocationData }) => {
+  const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
-  const [showSpinner, setShowSpinner] = useState(false)
+  const [isEEAUser, setIsEEAUser] = useState(false)
+  const [noLocation, setNoLocation] = useState(false)
 
   const modalTitle = () => {
     if (noLocation || isEEAUser) {
@@ -58,8 +54,20 @@ const PrivacyPolicyModal = ({
   }
 
   useEffect(() => {
+    setShowSpinner(true)
     segmentApi.genericEventTrack('eulaPopupShown')
-    setLocationData(locationResult)
+    userApi
+      .getUserLocation()
+      .then(({ result }) => {
+        setIsEEAUser(result?.isEEAUser)
+        setNoLocation(result?.noLocation)
+        setShowSpinner(false)
+        setLocationData(result)
+      })
+      .catch((e) => {
+        setShowSpinner(false)
+        console.warn('Error', e)
+      })
   }, [])
 
   const onCheck = (value) => {

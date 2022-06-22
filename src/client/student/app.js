@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { Route, Switch } from 'react-router-dom'
 import PropTypes from 'prop-types'
 import qs from 'qs'
@@ -9,7 +9,6 @@ import { connect } from 'react-redux'
 import { mobileWidthLarge } from '@edulastic/colors'
 // import { getZoomedTheme } from "./zoomTheme";
 import { roleuser } from '@edulastic/constants'
-import { userApi } from '@edulastic/api'
 import Sidebar from './Sidebar/SideMenu'
 import { Assignment } from './Assignments'
 import { Report } from './Reports'
@@ -42,9 +41,6 @@ const StudentApp = ({
   isCliUser,
   user,
 }) => {
-  const [isEEAUser, setIsEEAUser] = useState(false)
-  const [noLocation, setNoLocation] = useState(false)
-  const [locationResult, setLocationResult] = useState({})
   // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
   // themeToPass = { ...themeToPass, ...globalThemes.zoomed(themeToPass) };
 
@@ -53,17 +49,6 @@ const StudentApp = ({
     if (searchParams.cliUser) {
       updateCliUser(true)
     }
-
-    userApi
-      .getUserLocation()
-      .then(({ result }) => {
-        setIsEEAUser(result?.isEEAUser)
-        setNoLocation(result?.noLocation)
-        setLocationResult(result)
-      })
-      .catch((e) => {
-        console.warn('Error', e)
-      })
   }, [])
 
   const userInfo = user?.user
@@ -85,9 +70,6 @@ const StudentApp = ({
         {showPrivacyPolicyModal && (
           <FeaturesSwitch inputFeatures="eula" actionOnInaccessible="hidden">
             <PrivacyPolicyModal
-              isEEAUser={isEEAUser}
-              noLocation={noLocation}
-              locationResult={locationResult}
               userID={userInfo._id}
               userRole={userRole}
               roleuser={roleuser}

@@ -17,7 +17,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { DragDrop, notification, OfflineNotifier } from '@edulastic/common'
-import { TokenStorage, userApi } from '@edulastic/api'
+import { TokenStorage } from '@edulastic/api'
 import { sessionFilters } from '@edulastic/constants/const/common'
 import { themes } from './theme'
 import { Banner } from './common/components/Banner'
@@ -263,9 +263,6 @@ class App extends Component {
     showAppUpdate: false,
     canShowCliBanner: true,
     showSelectStates: false,
-    locationResult: null,
-    isEEAUser: false,
-    noLocation: false,
   }
 
   componentDidMount() {
@@ -293,18 +290,6 @@ class App extends Component {
       })
     })
     this.handlePendoGuide()
-    userApi
-      .getUserLocation()
-      .then(({ result }) => {
-        this.setState({
-          locationResult: result,
-          isEEAUser: result?.isEEAUser,
-          noLocation: result?.noLocation,
-        })
-      })
-      .catch((e) => {
-        console.warn('Error', e)
-      })
   }
 
   componentDidUpdate(prevProps) {
@@ -663,9 +648,6 @@ class App extends Component {
         {showPrivacyPolicyModal && (
           <FeaturesSwitch inputFeatures="eula" actionOnInaccessible="hidden">
             <PrivacyPolicyModal
-              locationResult={this.state.locationResult}
-              isEEAUser={this.state.isEEAUser}
-              noLocation={this.state.noLocation}
               userID={userInfo._id}
               userRole={userRole}
               roleuser={roleuser}

@@ -20,11 +20,15 @@ export default ({
     const intitialRadioValue =
       penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty'
     updateRadioValue(intitialRadioValue)
-    togglePenaltyOnUsingHints(intitialRadioValue === 'withPenalty')
-    return () => {
-      togglePenaltyOnUsingHints(false)
+    if (!disabled) {
+      togglePenaltyOnUsingHints(intitialRadioValue === 'withPenalty')
     }
-  }, [penaltyOnUsingHints])
+    return () => {
+      if (!disabled) {
+        togglePenaltyOnUsingHints(false)
+      }
+    }
+  }, [penaltyOnUsingHints, disabled])
 
   const handleChangeRadio = (event) => {
     const choice = event.target.value

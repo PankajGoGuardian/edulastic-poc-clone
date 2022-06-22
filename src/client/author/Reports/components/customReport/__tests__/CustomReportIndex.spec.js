@@ -2,7 +2,7 @@ import React from 'react'
 import { waitFor, screen } from '@testing-library/react'
 import { dataWarehouseApi, customReportApi } from '@edulastic/api'
 import CustomReports from '../index'
-import { appRender } from '../test-utils'
+import { appRender } from '../../../../testUtils'
 
 const initialState = {
   customReportReducer: {

@@ -6,7 +6,23 @@ https://goguardian.atlassian.net/browse/ISSUE_ID
 
 ---
 
-**What kind of change does this PR introduce ?** (Bug fix, feature, docs update, description ...)
+**Summary** 
+
+<!-- Answer below. Give a 2 line summary about the changes. `>` represents a block quote below -->
+
+>
+
+---
+
+**What does this PR changes ?**
+
+<!-- List the changes because of this PR. `>` represents a block quote below -->
+
+>
+
+---
+
+**Why do we need this change ?**(Describe briefly why do we need this PR)
 
 <!-- Answer below. `>` represents a block quote below -->
 
@@ -14,31 +30,15 @@ https://goguardian.atlassian.net/browse/ISSUE_ID
 
 ---
 
-**What are the modules/areas to be validated ?**(You can put _Refer to JIRA_ if already elaborated)
+**How this change was tested ?** 
 
-<!-- Answer below. `>` represents a block quote below -->
-
->
-
----
-
-**Does this PR introduce a breaking change?**(Any changes that might impact users using the app currently?)
-
-<!-- Answer below. `>` represents a block quote below -->
+<!-- Answer below in 2-4 lines how this change is tested locally or any other way `>` represents a block quote below -->
 
 >
 
 ---
 
-**Have you tested in your local or any env ?** (if not what blocked you?)
-
-<!-- Answer below. `>` represents a block quote below -->
-
->
-
----
-
-**Does this change need a DB patch?** (if yes, provide the reference below.)
+**Any additional steps apart from code change ?** (Provide any db patch or any other steps needed along with code change)
 
 <!-- Answer below. `>` represents a block quote below -->
 
@@ -54,7 +54,7 @@ https://goguardian.atlassian.net/browse/ISSUE_ID
 
 ---
 
-**Have you added your unit tests?**
+**List the unit tests created/updated in relation to this change**
 
 <!-- Answer below. `>` represents a block quote below -->
 

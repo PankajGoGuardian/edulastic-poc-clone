@@ -40,13 +40,6 @@ import {
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Test Settings' }
-// This permission is used in District test setting only.
-const linkSharingPermissions = {
-  VIEW: 'Limited access (duplicate, assign)',
-  ASSIGN: 'View and assign',
-  NOACTION: 'No Actions (View Only)',
-  NO: 'Link sharing off',
-}
 
 class TestSetting extends Component {
   constructor(props) {
@@ -105,25 +98,11 @@ class TestSetting extends Component {
     return { testSetting: nextProps.testSetting }
   }
 
-  changeSetting = (e, fieldName, value) => {
+  changeSetting = (e, fieldName) => {
     const { testSetting } = this.state
     const { setTestSettingValue, role } = this.props
-    if (fieldName === 'linkSharingPermission') {
-      if (value === 'NO') {
-        setTestSettingValue(
-          { ...testSetting, isLinkSharingEnabled: false },
-          role === roleuser.SCHOOL_ADMIN
-        )
-      } else {
-        setTestSettingValue(
-          { ...testSetting, [fieldName]: value, isLinkSharingEnabled: true },
-          role === roleuser.SCHOOL_ADMIN
-        )
-      }
-      return
-    }
     setTestSettingValue(
-      { ...testSetting, [fieldName]: e?.target?.value },
+      { ...testSetting, [fieldName]: e.target.value },
       role === roleuser.SCHOOL_ADMIN
     )
   }
@@ -144,11 +123,6 @@ class TestSetting extends Component {
       timer: testSetting.timer,
       testTypesProfile: testSetting.testTypesProfile,
       isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
-    }
-    if (updateData.isLinkSharingEnabled) {
-      Object.assign(updateData, {
-        linkSharingPermission: testSetting.linkSharingPermission,
-      })
     }
 
     // eslint-disable-next-line
@@ -204,29 +178,6 @@ class TestSetting extends Component {
               <SaSchoolSelect />
               <StyledHeading1>Default Options</StyledHeading1>
               <StyledRow type="flex" gutter={40}>
-                <StyledCol span={8}>
-                  <InputLabel>SELECT LINK SHARING FOR NEW TEST</InputLabel>
-                  <SelectInputStyled
-                    value={
-                      testSetting.isLinkSharingEnabled
-                        ? get(testSetting, 'linkSharingPermission') || 'VIEW'
-                        : 'NO'
-                    }
-                    onChange={(value) => {
-                      this.changeSetting(null, 'linkSharingPermission', value)
-                    }}
-                    size="large"
-                  >
-                    {Object.keys(linkSharingPermissions).map((item) => (
-                      <Select.Option
-                        value={item}
-                        key={linkSharingPermissions[item]}
-                      >
-                        {linkSharingPermissions[item]}
-                      </Select.Option>
-                    ))}
-                  </SelectInputStyled>
-                </StyledCol>
                 <StyledCol>
                   <InputLabel>Allow Partial Score </InputLabel>
                   <StyledRadioGrp
@@ -244,6 +195,18 @@ class TestSetting extends Component {
                     defaultValue={testSetting.timer}
                     onChange={(e) => this.changeSetting(e, 'timer')}
                     value={testSetting.timer}
+                  >
+                    <RadioBtn value>Yes</RadioBtn>
+                    <RadioBtn value={false}>No</RadioBtn>
+                  </StyledRadioGrp>
+                </StyledCol>
+                <StyledCol>
+                  <InputLabel>Set Link Sharing ON for new test </InputLabel>
+                  <StyledRadioGrp
+                    onChange={(e) =>
+                      this.changeSetting(e, 'isLinkSharingEnabled')
+                    }
+                    value={!!testSetting.isLinkSharingEnabled}
                   >
                     <RadioBtn value>Yes</RadioBtn>
                     <RadioBtn value={false}>No</RadioBtn>

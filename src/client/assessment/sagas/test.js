@@ -221,9 +221,6 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
   const penaltyOnUsingHints = preview
     ? test.penaltyOnUsingHints || 0
     : assignmentSettings.penaltyOnUsingHints || 0
-  const allowTeacherRedirect = preview
-    ? test.allowTeacherRedirect
-    : assignmentSettings.allowTeacherRedirect
 
   return {
     testType,
@@ -236,7 +233,6 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     enableScratchpad,
     enableSkipAlert,
     showRubricToStudents,
-    allowTeacherRedirect,
     calcType: calcType || testContants.calculatorTypes.NONE,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:

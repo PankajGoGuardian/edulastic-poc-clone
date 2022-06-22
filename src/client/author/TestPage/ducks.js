@@ -999,7 +999,6 @@ export const createBlankTest = () => ({
   enableSkipAlert: false,
   showHintsToStudents: true,
   penaltyOnUsingHints: 0,
-  allowTeacherRedirect: true,
 })
 
 const initialState = {
@@ -1866,7 +1865,6 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showRubricToStudents: entity.showRubricToStudents,
     showHintsToStudents,
     penaltyOnUsingHints,
-    allowTeacherRedirect: entity.allowTeacherRedirect,
   }
 
   if (entity.safeBrowser) {

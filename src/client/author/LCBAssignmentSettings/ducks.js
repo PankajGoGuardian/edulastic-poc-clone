@@ -279,7 +279,6 @@ function getSettingsSelector(state) {
     restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold,
     allowedOpenDate,
-    allowTeacherRedirect,
     showHintsToStudents,
     penaltyOnUsingHints,
   } = assignment
@@ -386,7 +385,6 @@ function getSettingsSelector(state) {
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       allowedOpenDate,
-      allowTeacherRedirect,
       showHintsToStudents,
       penaltyOnUsingHints,
     },

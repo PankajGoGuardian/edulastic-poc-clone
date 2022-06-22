@@ -404,7 +404,6 @@ module.exports = {
     'referenceDocAttributes',
     'showHintsToStudents',
     'penaltyOnUsingHints',
-    'allowTeacherRedirect',
   ],
   docBasedSettingsOptions: [
     'partialScore',

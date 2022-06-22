@@ -20,17 +20,8 @@ import {
   IconRemove,
 } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import {
-  testActivityStatus,
-  testTypes as testTypesConstants,
-  roleuser,
-} from '@edulastic/constants'
-import {
-  Dropdown,
-  Select,
-  notification as antNotification,
-  Tooltip,
-} from 'antd'
+import { testActivityStatus } from '@edulastic/constants'
+import { Dropdown, Select, notification as antNotification } from 'antd'
 import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -147,12 +138,9 @@ import { getSubmittedDate } from '../../utils'
 import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
-  getUserId,
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
-
-const { COMMON } = testTypesConstants.TEST_TYPES
 
 const NotificationComponent = (props) => {
   notification(props)
@@ -1108,8 +1096,6 @@ class ClassBoard extends Component {
       setPageNumber,
       isDocBasedTest,
       isProxiedByEAAccount,
-      userRole,
-      userId,
     } = this.props
 
     const {
@@ -1130,12 +1116,6 @@ class ClassBoard extends Component {
       toggleBackTopIcon,
       studentFilter,
     } = this.state
-
-    const isRedirectButtonDisabled =
-      COMMON.includes(additionalData?.testType) &&
-      !additionalData?.allowTeacherRedirect &&
-      roleuser?.TEACHER === userRole &&
-      !(additionalData?.assignedBy?._id === userId)
 
     const { assignmentId, classId } = match.params
     const studentTestActivity =
@@ -1570,27 +1550,15 @@ class ClassBoard extends Component {
                       </ButtonIconWrap>
                       PRINT
                     </RedirectButton>
-                    <Tooltip
-                      placement="top"
-                      title={
-                        isRedirectButtonDisabled
-                          ? 'Redirect is not permitted'
-                          : ''
-                      }
+                    <RedirectButton
+                      data-cy="rediectButton"
+                      onClick={this.handleRedirect}
                     >
-                      <div>
-                        <RedirectButton
-                          data-cy="rediectButton"
-                          onClick={this.handleRedirect}
-                          disabled={isRedirectButtonDisabled}
-                        >
-                          <ButtonIconWrap>
-                            <IconRedirect />
-                          </ButtonIconWrap>
-                          REDIRECT
-                        </RedirectButton>
-                      </div>
-                    </Tooltip>
+                      <ButtonIconWrap>
+                        <IconRedirect />
+                      </ButtonIconWrap>
+                      REDIRECT
+                    </RedirectButton>
                     <Dropdown
                       getPopupContainer={(triggerNode) => {
                         return triggerNode.parentNode
@@ -2139,7 +2107,6 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
       regradeModalState: getRegradeModalStateSelector(state),
       isDocBasedTest: getIsDocBasedTestSelector(state),
-      userId: getUserId(state),
     }),
     {
       loadTestActivity: receiveTestActivitydAction,

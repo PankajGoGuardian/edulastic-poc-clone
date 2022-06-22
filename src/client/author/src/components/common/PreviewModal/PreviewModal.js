@@ -634,19 +634,8 @@ class PreviewModal extends React.Component {
       item?.collections,
       writableCollections
     )
-    let allowDuplicate =
+    const allowDuplicate =
       allowDuplicateCheck(item?.collections, collections, 'item') || isOwner
-    if (
-      item?.sharedWith?.filter(
-        (s) =>
-          `${s?._id}` === `${item._id}` &&
-          s.name === 'LINK' &&
-          s.permission === 'NOACTION'
-      ).length &&
-      !isOwner
-    ) {
-      allowDuplicate = false
-    }
     const allRows =
       item && !!item.passageId && !!passage
         ? [passage.structure, ...rows]

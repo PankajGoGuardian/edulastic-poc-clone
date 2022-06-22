@@ -4,11 +4,7 @@ import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import {
-  roleuser,
-  test,
-  testTypes as testTypesConstants,
-} from '@edulastic/constants'
+import { roleuser, test } from '@edulastic/constants'
 import { evalTypeLabels } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -28,8 +24,6 @@ import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
-
-const { COMMON } = testTypesConstants.TEST_TYPES
 
 const {
   releaseGradeTypes,
@@ -81,7 +75,6 @@ const TestBehaviorGroupContainer = ({
     playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
-    allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
     showHintsToStudents = testSettings?.showHintsToStudents,
@@ -546,44 +539,6 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
       {/* Test Content visibility */}
-      {COMMON.includes(testType) && (
-        <SettingContainer id="allow-teachers-to-redirect">
-          <DetailsTooltip
-            width={tootltipWidth}
-            title="ALLOW TEACHERS TO REDIRECT"
-            content={t('allowTeacherToRedirect.info')}
-            premium={premium}
-            placement="rightTop"
-          />
-          <StyledRow
-            data-cy="allow-teachers-to-redirect"
-            gutter={16}
-            mb="15px"
-            height="40"
-          >
-            <Col span={10}>
-              <Label>
-                <span>ALLOW TEACHERS TO REDIRECT</span>
-                <DollarPremiumSymbol premium={premium} />
-              </Label>
-            </Col>
-            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
-              <Row style={{ display: 'flex', alignItems: 'center' }}>
-                <AlignSwitchRight
-                  data-testid="allow-teachers-to-redirect-switch"
-                  size="small"
-                  defaultChecked
-                  disabled={freezeSettings}
-                  checked={allowTeacherRedirect}
-                  onChange={(value) =>
-                    overRideSettings('allowTeacherRedirect', value)
-                  }
-                />
-              </Row>
-            </Col>
-          </StyledRow>
-        </SettingContainer>
-      )}
     </>
   )
 }

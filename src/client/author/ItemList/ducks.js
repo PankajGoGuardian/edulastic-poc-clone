@@ -74,8 +74,8 @@ const mapItemsByCollectionCount = (items, itemBanks) => {
 }
 
 export const itemsDataTableSelector = createSelector(
-  (s) => getTestEntitySelector(s),
-  (s) => getCollectionsSelector(s),
+  getTestEntitySelector,
+  getCollectionsSelector,
   (state, itemBanks) => {
     const testItems =
       state?.itemGroups?.flatMap((group) => group.items || []) || []

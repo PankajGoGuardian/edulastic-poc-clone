@@ -109,6 +109,7 @@ function ProfileRow({
               remove(_id)
               setDeleteProfileName(name)
             }}
+            data-cy="deleteProfile"
           >
             YES, DELETE
           </EduButton>,
@@ -124,6 +125,7 @@ function ProfileRow({
             <TextInputStyled
               style={{ marginTop: '10px' }}
               align="center"
+              data-cy="typeDelete"
               value={deleteText}
               onChange={(e) => setDeleteText(e.target.value)}
             />
@@ -143,6 +145,7 @@ function ProfileRow({
                   performanceBandInstance.current.setChanged(true)
                 }
               }}
+              data-cy="editProfile"
             />
           ) : (
             <h3>{name}</h3>
@@ -158,9 +161,10 @@ function ProfileRow({
                 e.stopPropagation()
                 setEditable({ value: true, index: _id })
               }}
+              data-cy="editButton"
             />
           )}
-          <Icon type="copy" onClick={onDuplicate} />
+          <Icon type="copy" onClick={onDuplicate} data-cy="cloneButton" />
           {hideEdit ? null : (
             <Icon
               type="delete"
@@ -169,6 +173,7 @@ function ProfileRow({
                 e.stopPropagation()
                 setConfirmVisible(true)
               }}
+              data-cy="deleteButton"
             />
           )}
           {
@@ -435,6 +440,7 @@ export function PerformanceBandAlt(props) {
                     <TextInputStyled
                       autoFocus
                       value={profileName}
+                      data-cy="enterPerformanceBandName"
                       onChange={(e) => setProfileName(e.target.value)}
                     />
                   </Col>
@@ -444,6 +450,7 @@ export function PerformanceBandAlt(props) {
                 <EduButton
                   ml="0"
                   type="primary"
+                  data-cy="createNewProfile"
                   onClick={() =>
                     handleProfileLimit() && setConfirmVisible(true)
                   }

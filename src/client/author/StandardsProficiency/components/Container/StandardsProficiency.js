@@ -140,6 +140,7 @@ function ProfileRow(props) {
               deleteRow(_id)
               setDeleteProficiencyName(profileName)
             }}
+            data-cy="deleteProfile"
           >
             YES, DELETE
           </EduButton>,
@@ -156,6 +157,7 @@ function ProfileRow(props) {
             <TextInputStyled
               style={{ marginTop: '10px' }}
               align="center"
+              data-cy="typeDelete"
               autoFocus
               value={deleteText}
               onChange={(e) => setDeleteText(e.target.value)}
@@ -176,6 +178,7 @@ function ProfileRow(props) {
                   proficiencyTableInstance.current.setChanged(true)
                 }
               }}
+              data-cy="editProfile"
             />
           ) : (
             <h3>{profileName}</h3>
@@ -191,6 +194,7 @@ function ProfileRow(props) {
                 e.stopPropagation()
                 props.setEditable({ index, value: true })
               }}
+              data-cy="editButton"
             />
           )}
           <Icon
@@ -199,6 +203,7 @@ function ProfileRow(props) {
               e.stopPropagation()
               onDuplicate()
             }}
+            data-cy="cloneButton"
           />
           {props.hideEdit ? null : (
             <Icon
@@ -208,6 +213,7 @@ function ProfileRow(props) {
                 e.stopPropagation()
                 setConfirmVisible(true)
               }}
+              data-cy="deleteButton"
             />
           )}
           {
@@ -441,6 +447,7 @@ function StandardsProficiency(props) {
                     </FieldLabel>
                     <TextInputStyled
                       value={profileName}
+                      data-cy="enterStandardProficiencyName"
                       onChange={(e) => setProfileName(e.target.value)}
                     />
                   </Col>
@@ -450,6 +457,7 @@ function StandardsProficiency(props) {
                 <EduButton
                   ml="0px"
                   type="primary"
+                  data-cy="createNewProfile"
                   onClick={() =>
                     handleProfileLimit() && setConfirmVisible(true)
                   }

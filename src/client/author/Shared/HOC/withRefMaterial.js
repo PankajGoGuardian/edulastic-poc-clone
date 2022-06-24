@@ -98,22 +98,16 @@ export const withRefMaterial = (WrappedComponent) => {
     }
 
     useEffect(() => {
-      if (hasRefMaterial && !disabled) {
+      if (hasRefMaterial) {
         toggleRefMaterial(true)
       }
 
       return () => {
-        if (!disabled) {
-          toggleRefMaterial(false)
-        }
+        toggleRefMaterial(false)
       }
-    }, [disabled])
+    }, [])
 
     useEffect(() => {
-      if (disabled) {
-        return
-      }
-
       if (enableUpload && creating && !hasRefMaterial) {
         toggleRefMaterial(false)
       }
@@ -121,7 +115,7 @@ export const withRefMaterial = (WrappedComponent) => {
         setData({})
         toggleRefMaterial(false)
       }
-    }, [disabled, creating, enableUpload, premium, hasRefMaterial])
+    }, [creating, enableUpload, premium, hasRefMaterial])
 
     return (
       <WrappedComponent

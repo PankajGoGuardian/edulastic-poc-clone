@@ -266,3 +266,5 @@ export const reformatMathInputLatex = (latex) =>
     .replace(/\\square/g, '\\square ')
     .replace(/\\min /g, 'min') // avoiding \min keyword added with mathquill latex
     .replace(/\\deg /g, 'deg') // avoiding \deg keyword added with mathquill latex;
+    .replace(/&gt;/g, '>')
+    .replace(/&lt;/g, '<')

@@ -38,7 +38,7 @@ https://goguardian.atlassian.net/browse/ISSUE_ID
 
 ---
 
-**Any additional steps apart from code change ?** (Provide any db patch or any other steps needed along with code change)
+** What are the additional steps needed for this change to take effect ?** (Provide any db patch or any other steps needed along with code change)
 
 <!-- Answer below. `>` represents a block quote below -->
 

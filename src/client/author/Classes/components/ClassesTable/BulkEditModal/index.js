@@ -354,6 +354,12 @@ function BulkEditModal({
                         updateMode === 'course'
                           ? `_source.${updateMode}.name`
                           : `_source.${updateMode}`,
+                      render: (items) => {
+                        if (updateMode === 'grades' && Array.isArray(items)) {
+                          return items.join(',')
+                        }
+                        return items
+                      },
                     },
                   ]
             }

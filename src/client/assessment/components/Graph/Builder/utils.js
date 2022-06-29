@@ -456,9 +456,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
     if (
       type === CONSTANT.TOOLS.POINT ||
       type === CONSTANT.TOOLS.AREA ||
-      type === CONSTANT.TOOLS.DRAG_DROP ||
-      type === CONSTANT.TOOLS.CARDIOID ||
-      type === CONSTANT.TOOLS.ROSE
+      type === CONSTANT.TOOLS.DRAG_DROP
     ) {
       if (!acc[id]) {
         acc[id] = element
@@ -542,9 +540,7 @@ export function flat2nestedConfig(config) {
             if (
               type === CONSTANT.TOOLS.POINT ||
               type === CONSTANT.TOOLS.DRAG_DROP ||
-              type === CONSTANT.TOOLS.AREA ||
-              type === CONSTANT.TOOLS.CARDIOID ||
-              type === CONSTANT.TOOLS.ROSE
+              type === CONSTANT.TOOLS.AREA
             ) {
               acc[id].x = element.x
               acc[id].y = element.y

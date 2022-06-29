@@ -30,8 +30,6 @@ import {
   IconUndo,
   IconPlusCircle,
   IconEdit,
-  IconGraphRose,
-  IconGraphCardioid,
 } from '@edulastic/icons'
 import ToolsContiner from './ToolsContiner'
 import {
@@ -44,8 +42,58 @@ import {
   ToolbarItemLabel,
   ToolGroupLabel,
 } from './styled_components'
-import { CONSTANT, getToolOptsByGrid } from '../Builder/config'
+import { CONSTANT } from '../Builder/config'
 import HelpTooltip from './HelpTooltip'
+
+const toolByGroup = [
+  {
+    title: 'Basic object',
+    items: [
+      CONSTANT.TOOLS.POINT,
+      CONSTANT.TOOLS.SEGMENT,
+      CONSTANT.TOOLS.POLYGON,
+      CONSTANT.TOOLS.RAY,
+      CONSTANT.TOOLS.VECTOR,
+      CONSTANT.TOOLS.LINE,
+    ],
+  },
+  {
+    title: 'Conics',
+    items: [
+      CONSTANT.TOOLS.CIRCLE,
+      CONSTANT.TOOLS.ELLIPSE,
+      CONSTANT.TOOLS.PARABOLA,
+      CONSTANT.TOOLS.PARABOLA2,
+      CONSTANT.TOOLS.HYPERBOLA,
+    ],
+  },
+  {
+    title: 'Trigonometry',
+    items: [
+      CONSTANT.TOOLS.SIN,
+      CONSTANT.TOOLS.COS,
+      CONSTANT.TOOLS.TANGENT,
+      CONSTANT.TOOLS.SECANT,
+    ],
+  },
+  {
+    title: 'Miscellaneous',
+    items: [
+      CONSTANT.TOOLS.POLYNOM,
+      CONSTANT.TOOLS.EXPONENT,
+      // CONSTANT.TOOLS.EXPONENTIAL2,
+      CONSTANT.TOOLS.LOGARITHM,
+      CONSTANT.TOOLS.AREA,
+      CONSTANT.TOOLS.DASHED,
+      // CONSTANT.TOOLS.PIECEWISE,
+      // CONSTANT.TOOLS.PIECEWISE_LINE,
+      // CONSTANT.TOOLS.PIECEWISE_POINT,
+      // CONSTANT.TOOLS.LINE_CUT,
+      // CONSTANT.TOOLS.NO_SOLUTION,
+      // CONSTANT.TOOLS.AREA2,
+    ],
+  },
+]
 
 const iconsByToolName = {
   [CONSTANT.TOOLS.POINT]: <IconPoint width={11} height={11} data-cy="point" />,
@@ -103,8 +151,6 @@ const iconsByToolName = {
   [CONSTANT.TOOLS.PIECEWISE_POINT]: <IconPoint width={11} height={11} />,
   [CONSTANT.TOOLS.EDIT_LABEL]: <IconEdit data-cy="editLabel" />,
   [CONSTANT.TOOLS.LINE_CUT]: <span>cut</span>,
-  [CONSTANT.TOOLS.ROSE]: <IconGraphRose height={22} />,
-  [CONSTANT.TOOLS.CARDIOID]: <IconGraphCardioid height={22} />,
   [CONSTANT.TOOLS.UNDO]: <IconUndo width={16} height={15} data-cy="undo" />,
   [CONSTANT.TOOLS.REDO]: <IconRedo width={16} height={15} data-cy="redo" />,
   [CONSTANT.TOOLS.CLEAR]: (
@@ -172,8 +218,6 @@ const labelsByToolName = {
   [CONSTANT.TOOLS.NO_SOLUTION]: 'No Solution',
   [CONSTANT.TOOLS.LINE_CUT]: 'Line Cut',
   [CONSTANT.TOOLS.AREA2]: 'Area',
-  [CONSTANT.TOOLS.ROSE]: 'Rose',
-  [CONSTANT.TOOLS.CARDIOID]: 'Cardioid',
   [CONSTANT.TOOLS.EDIT_LABEL]: 'Edit Label',
   [CONSTANT.TOOLS.UNDO]: 'Undo',
   [CONSTANT.TOOLS.REDO]: 'Redo',
@@ -196,7 +240,6 @@ const Tools = ({
   fontSize,
   setTools,
   canEditTools,
-  gridType,
 }) => {
   const [isOpenDrawer, setIsOpenDrawer] = useState(false)
 
@@ -284,7 +327,7 @@ const Tools = ({
 
       {isOpenDrawer && canEditTools && toolsAreVisible && (
         <ToolsContiner visible={isOpenDrawer} onClose={hideDrawer}>
-          {getToolOptsByGrid(gridType).map((group, groupIdx) => (
+          {toolByGroup.map((group, groupIdx) => (
             <div key={groupIdx}>
               <ToolGroupLabel>{group.title}</ToolGroupLabel>
               <ToolGroup>

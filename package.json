@@ -41,10 +41,10 @@
     "buildwlimit": "NODE_ENV=production react-app-rewired --max_old_space_size=6096 build",
     "build:login2": "webpack --config src/webpack.login.config.js",
     "prod-serve": "serve -s build -p 3001",
-    "jest": "jest",
     "test": "react-scripts test --coverage --watchAll=false",
+    "test:watch": "react-scripts test",
+    "test:silent": "react-scripts test --silent --watchAll=false",
     "ava": "ava --watch",
-    "test:watch": "jest --watch",
     "publish-constants": "git subtree push --prefix packages/constants git@github.com:snapwiz/edu-constants.git master",
     "storybook": "STORYBOOK_ENABLED=1 NODE_ENV=development start-storybook -p 6006",
     "build-storybook": "build-storybook",
@@ -204,7 +204,6 @@
     "flow-bin": "^0.86.0",
     "html-webpack-plugin": "4.5.0",
     "husky": "^4.3.0",
-    "jest-cli": "^23.1.0",
     "jira-prepare-commit-msg": "^1.4.0",
     "less": "^3.12.2",
     "less-loader": "^7.0.2",
@@ -274,11 +273,11 @@
       "**/?(*.)+(spec).[jt]s?(x)"
     ],
     "transformIgnorePatterns": [
-      "/node_modules/(?!((antd|rc-util|rc-pagination|rc-calendar)/es|@eduastic|react-dnd|dnd-core|react-dnd-touch-backend|react-dnd-html5-backend)/)"
+      "/node_modules/(?!((antd|rc-util|rc-pagination|rc-calendar|react-redux)/es|@edulastic|react-dnd|dnd-core|react-dnd-touch-backend|react-dnd-html5-backend|@babel/runtime)/)"
     ],
     "moduleNameMapper": {
-      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga)$": "<rootDir>/config/fileMock.js",
-      "\\.(css|less)$": "<rootDir>/config/styleMock.js"
+      "\\.(jpg|jpeg|png|gif|eot|otf|webp|svg|ttf|woff|woff2|mp4|webm|wav|mp3|m4a|aac|oga|pdf)$": "<rootDir>/config/fileMock.js",
+      "\\.(css|less|scss)$": "<rootDir>/config/styleMock.js"
     },
     "collectCoverageFrom": [
       "src/**/*.{js,jsx}",

@@ -17,10 +17,13 @@ import {
   getBookKeepersInviteSuccessStatus,
   slice,
   getShowTrialConfirmationMessageSelector,
+  getCartVisibleSelector,
+  getCartQuantities,
 } from '../../../../Subscription/ducks'
 import {
   getCollectionsSelector,
   getInterestedGradesSelector,
+  getUser,
   getUserOrgId,
 } from '../../../selectors/user'
 import {
@@ -579,7 +582,7 @@ export default compose(
       products: getProducts(state),
       verificationPending: getIsVerificationPending(state),
       premiumProductId: getPremiumProductId(state),
-      user: state.user.user,
+      user: getUser(state),
       addOnProductIds: getAddOnProductIds(state),
       userOrgId: getUserOrgId(state),
       isBookKeepersInviteSuccess: getBookKeepersInviteSuccessStatus(state),
@@ -589,8 +592,8 @@ export default compose(
         state
       ),
       interestedGrades: getInterestedGradesSelector(state),
-      cartVisible: state?.subscription?.cartVisible,
-      cartQuantities: state?.subscription?.cartQuantities,
+      cartVisible: getCartVisibleSelector(state),
+      cartQuantities: getCartQuantities(state),
     }),
     {
       handleStripePayment: slice.actions.stripePaymentAction,

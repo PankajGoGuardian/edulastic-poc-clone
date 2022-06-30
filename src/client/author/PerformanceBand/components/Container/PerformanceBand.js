@@ -161,10 +161,10 @@ function ProfileRow({
                 e.stopPropagation()
                 setEditable({ value: true, index: _id })
               }}
-              data-cy="editButton"
+              data-cy={`${name}-edit`}
             />
           )}
-          <Icon type="copy" onClick={onDuplicate} data-cy="cloneButton" />
+          <Icon type="copy" onClick={onDuplicate} data-cy={`${name}-clone`} />
           {hideEdit ? null : (
             <Icon
               type="delete"
@@ -173,7 +173,7 @@ function ProfileRow({
                 e.stopPropagation()
                 setConfirmVisible(true)
               }}
-              data-cy="deleteButton"
+              data-cy={`${name}-delete`}
             />
           )}
           {

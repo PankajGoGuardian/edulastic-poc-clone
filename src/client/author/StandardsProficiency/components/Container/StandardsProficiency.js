@@ -194,7 +194,7 @@ function ProfileRow(props) {
                 e.stopPropagation()
                 props.setEditable({ index, value: true })
               }}
-              data-cy="editButton"
+              data-cy={`${profileName}-edit`}
             />
           )}
           <Icon
@@ -203,7 +203,7 @@ function ProfileRow(props) {
               e.stopPropagation()
               onDuplicate()
             }}
-            data-cy="cloneButton"
+            data-cy={`${profileName}-clone`}
           />
           {props.hideEdit ? null : (
             <Icon
@@ -213,7 +213,7 @@ function ProfileRow(props) {
                 e.stopPropagation()
                 setConfirmVisible(true)
               }}
-              data-cy="deleteButton"
+              data-cy={`${profileName}-delete`}
             />
           )}
           {

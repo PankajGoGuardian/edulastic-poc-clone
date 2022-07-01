@@ -835,10 +835,7 @@
         "x_distance": "X distance ",
         "y_distance": "Y distance",
         "show_axis_label": "Show axis label",
-        "show_grid": "Show grid",
-        "rectangular": "Rectangular",
-        "complex": "Complex",
-        "polar": "Polar"
+        "show_grid": "Show grid"
       },
       "settingsPopup": {
         "xAxis": "X-AXIS",
@@ -901,8 +898,6 @@
         "piecewise": "",
         "no_solution": "",
         "area2": "",
-        "rose": "",
-        "Cardioid": "",
         "fxWithArea": "You cannot use this functionality after plotting a graph. This option is used solely for the purposes of exploring curves of complicated equations.",
         "fxHepler": "This is a teacher-only tool for exploring curves of various complex equations like #{y =\\frac{1}{tan(x)}#}. For creating questions for your students, you should only use the predefined graphing objects."
       }

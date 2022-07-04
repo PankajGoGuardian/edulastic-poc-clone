@@ -53,6 +53,7 @@ import {
   getTestDefaultSettingsSelector,
   deleteTestSettingRequestAction,
   updateTestSettingRequestAction,
+  togglePenaltyOnUsingHintsAction,
 } from '../../../../ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 
@@ -267,6 +268,9 @@ class Setting extends Component {
           performanceBandsData.find((item) => item._id === defaultBandId) || {}
         const standardGradingScale =
           standardsData.find((item) => item._id === defaultStandardId) || {}
+        if (COMMON.includes(value)) {
+          Object.assign(extraData, { allowTeacherRedirect: true })
+        }
         if (ASSESSMENT.includes(value) || COMMON.includes(value)) {
           const releaseScore =
             ASSESSMENT.includes(value) && isReleaseScorePremium
@@ -732,6 +736,7 @@ class Setting extends Component {
       performanceBandsData,
       standardsData,
       defaultTestTypeProfiles,
+      togglePenaltyOnUsingHints,
     } = this.props
     const {
       isDocBased,
@@ -1667,6 +1672,7 @@ class Setting extends Component {
                   )}
 
                   <HintsToStudents
+                    premium={premium}
                     isSmallSize={isSmallSize}
                     disabled={disabled}
                     isDocBased={isDocBased}
@@ -1675,6 +1681,7 @@ class Setting extends Component {
                     showHintsToStudents={showHintsToStudents}
                     updateTestData={this.updateTestData}
                     showHintsFeatureAllowed={features.showHintsToStudents}
+                    togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
                   />
 
                   {this.isReferenceMaterialAllowedForCurrentSkin &&
@@ -2546,6 +2553,7 @@ const enhance = compose(
       saveTestSettings: saveTestSettingsAction,
       deleteTestSettingRequest: deleteTestSettingRequestAction,
       updateTestSettingRequest: updateTestSettingRequestAction,
+      togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
     }
   )
 )

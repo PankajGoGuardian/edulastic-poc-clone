@@ -55,7 +55,8 @@ const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
 
   const _columns = next(columns, (rawColumns) => {
     rawColumns[0].sorter = sortText('testName')
-    rawColumns[1].sorter = (a, b) => a - b
+    rawColumns[1].sorter = (a, b) =>
+      new Date(a.updatedAt) - new Date(b.updatedAt)
     rawColumns[1].render = (dateTime) => new Date(dateTime).toLocaleDateString()
     rawColumns[2].sorter = sortText('status')
     rawColumns[2].render = (status, record) =>
@@ -63,7 +64,11 @@ const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
   })
 
   if (isEmpty(uploadsStatusList)) {
-    return <NoDataContainer>No Uploads data available.</NoDataContainer>
+    return (
+      <NoDataContainer>
+        No previous import, use upload button to import test data.
+      </NoDataContainer>
+    )
   }
 
   return (

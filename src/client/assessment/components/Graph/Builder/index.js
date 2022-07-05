@@ -448,7 +448,7 @@ class Board {
         Modal.confirm({
           title: 'Warning',
           content: i18n.t(
-            'assessment:component.graphing.helperText.fxWithArea'
+            'assessment:component.graphing.helperText.polarWithArea'
           ),
           okText: 'Confirm',
           okCancel: false,
@@ -456,6 +456,45 @@ class Board {
         })
         return
       }
+
+      if (
+        (this.elements || []).some(
+          (element) =>
+            element.type === Rose.jxgType || element.type === Cardioid.jxgType
+        ) &&
+        this.currentTool === CONSTANT.TOOLS.AREA
+      ) {
+        Modal.confirm({
+          title: 'Warning',
+          content: i18n.t(
+            'assessment:component.graphing.helperText.polarWithArea'
+          ),
+          okText: 'Confirm',
+          okCancel: false,
+          maskClosable: true,
+        })
+        return
+      }
+
+      if (
+        (this.elements || []).some(
+          (element) => element.type === Area.jxgType
+        ) &&
+        (this.currentTool === CONSTANT.TOOLS.ROSE ||
+          this.currentTool === CONSTANT.TOOLS.CARDIOID)
+      ) {
+        Modal.confirm({
+          title: 'Warning',
+          content: i18n.t(
+            'assessment:component.graphing.helperText.polarWithArea'
+          ),
+          okText: 'Confirm',
+          okCancel: false,
+          maskClosable: true,
+        })
+        return
+      }
+
       if (
         this.currentTool === CONSTANT.TOOLS.TRASH ||
         this.currentTool === CONSTANT.TOOLS.DELETE

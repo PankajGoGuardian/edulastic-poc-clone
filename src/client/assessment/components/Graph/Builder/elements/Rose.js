@@ -10,7 +10,7 @@ const makeCallback = (point) => (phi) => {
   const r = Math.sqrt(point.X() ** 2 + point.Y() ** 2)
   const rad = Math.atan2(point.Y(), point.X())
   const deg = rad * (180 / Math.PI)
-  const k = Math.floor(deg > 0 ? 180 / deg : 0)
+  const k = Math.round(deg > 0 ? 180 / deg : 0)
 
   return r * Math.cos(k * phi)
 }

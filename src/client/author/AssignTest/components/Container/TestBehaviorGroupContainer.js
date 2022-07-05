@@ -4,7 +4,11 @@ import { isEmpty } from 'lodash'
 import { Col, Modal, Row, Select } from 'antd'
 import { CheckboxLabel, RadioBtn, SelectInputStyled } from '@edulastic/common'
 import { themeColor } from '@edulastic/colors'
-import { roleuser, test } from '@edulastic/constants'
+import {
+  roleuser,
+  test,
+  testTypes as testTypesConstants,
+} from '@edulastic/constants'
 import { evalTypeLabels } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -23,6 +27,9 @@ import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
+import ShowHintsToStudents from './ShowHintsToStudents'
+
+const { COMMON } = testTypesConstants.TEST_TYPES
 
 const {
   releaseGradeTypes,
@@ -57,6 +64,8 @@ const TestBehaviorGroupContainer = ({
   tootltipWidth,
   showAssignModuleContent,
   t,
+  allowToUseShowHintsToStudents,
+  togglePenaltyOnUsingHints,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -72,8 +81,11 @@ const TestBehaviorGroupContainer = ({
     playerSkinType = testSettings.playerSkinType || playerSkinValues.edulastic,
     applyEBSR = false,
     showRubricToStudents = testSettings.showRubricToStudents,
+    allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
+    showHintsToStudents = testSettings?.showHintsToStudents,
+    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
@@ -155,6 +167,8 @@ const TestBehaviorGroupContainer = ({
       )}
     </>
   )
+
+  const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
 
   return (
     <>
@@ -470,6 +484,30 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
 
+      {/* Show hints to students */}
+      {!(isDocBased && isTestlet) && (
+        <SettingContainer id="show-hints-to-students">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="SHOW HINTS TO STUDENTS"
+            content="Students will be able to see the hint associated with an item while attempting the assignment"
+            premium={premium}
+            placement="rightTop"
+          />
+          <ShowHintsToStudents
+            tootltipWidth={tootltipWidth}
+            premium={premium}
+            freezeSettings={freezeSettings}
+            showHintsToStudents={showHintsToStudents}
+            penaltyOnUsingHints={penaltyOnUsingHints}
+            overRideSettings={overRideSettings}
+            allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
+            togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
+          />
+        </SettingContainer>
+      )}
+      {/* Show hints to students */}
+
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||
         userRole === roleuser.SCHOOL_ADMIN) && (
@@ -508,6 +546,44 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
       {/* Test Content visibility */}
+      {COMMON.includes(testType) && (
+        <SettingContainer id="allow-teachers-to-redirect">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title="ALLOW TEACHERS TO REDIRECT"
+            content={t('allowTeacherToRedirect.info')}
+            premium={premium}
+            placement="rightTop"
+          />
+          <StyledRow
+            data-cy="allow-teachers-to-redirect"
+            gutter={16}
+            mb="15px"
+            height="40"
+          >
+            <Col span={10}>
+              <Label>
+                <span>ALLOW TEACHERS TO REDIRECT</span>
+                <DollarPremiumSymbol premium={premium} />
+              </Label>
+            </Col>
+            <Col span={10} style={{ display: 'flex', flexDirection: 'column' }}>
+              <Row style={{ display: 'flex', alignItems: 'center' }}>
+                <AlignSwitchRight
+                  data-testid="allow-teachers-to-redirect-switch"
+                  size="small"
+                  defaultChecked
+                  disabled={freezeSettings}
+                  checked={allowTeacherRedirect}
+                  onChange={(value) =>
+                    overRideSettings('allowTeacherRedirect', value)
+                  }
+                />
+              </Row>
+            </Col>
+          </StyledRow>
+        </SettingContainer>
+      )}
     </>
   )
 }

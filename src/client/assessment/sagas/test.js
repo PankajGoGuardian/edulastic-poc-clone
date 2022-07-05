@@ -214,6 +214,17 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     ? test.referenceDocAttributes
     : assignmentSettings.referenceDocAttributes
 
+  const showHintsToStudents = preview
+    ? test.showHintsToStudents
+    : assignmentSettings.showHintsToStudents
+
+  const penaltyOnUsingHints = preview
+    ? test.penaltyOnUsingHints || 0
+    : assignmentSettings.penaltyOnUsingHints || 0
+  const allowTeacherRedirect = preview
+    ? test.allowTeacherRedirect
+    : assignmentSettings.allowTeacherRedirect
+
   return {
     testType,
     calcProvider,
@@ -225,6 +236,7 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     enableScratchpad,
     enableSkipAlert,
     showRubricToStudents,
+    allowTeacherRedirect,
     calcType: calcType || testContants.calculatorTypes.NONE,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:
@@ -243,6 +255,8 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
       assignmentSettings?.restrictNavigationOutAttemptsThreshold,
     referenceDocAttributes,
     ...(preview && { keypad: test?.keypad?.value }),
+    showHintsToStudents,
+    penaltyOnUsingHints,
   }
 }
 

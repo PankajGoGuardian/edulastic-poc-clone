@@ -6,7 +6,7 @@ import qs from 'qs'
 
 import { Spin, Tabs, Row, Col } from 'antd'
 
-import { roleuser } from '@edulastic/constants'
+import { roleuser, testTypes as testTypesConstants } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
@@ -49,6 +49,7 @@ import {
 } from '../../../../../src/selectors/user'
 import { resetStudentFilters } from '../../../../common/util'
 import staticDropDownData from '../static/staticDropDownData.json'
+import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
@@ -102,6 +103,8 @@ const SingleAssessmentReportFilters = ({
   testList,
   fetchUpdateTagsData,
 }) => {
+  const { TEST_TYPES_VALUES_MAP } = testTypesConstants
+  const availableAssessmentType = getArrayOfAllTestTypes()
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
@@ -250,7 +253,8 @@ const SingleAssessmentReportFilters = ({
         (user.role === roleuser.DISTRICT_ADMIN ||
           user.role === roleuser.SCHOOL_ADMIN)
       ) {
-        search.assessmentTypes = search.assessmentTypes || 'common assessment'
+        search.assessmentTypes =
+          search.assessmentTypes || TEST_TYPES_VALUES_MAP.COMMON_ASSESSMENT
       }
 
       const urlSchoolYear =
@@ -308,7 +312,7 @@ const SingleAssessmentReportFilters = ({
         termId: urlSchoolYear,
         testGrades: urlTestGrades,
         testSubjects: urlTestSubjects,
-        assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+        assessmentTypes: availableAssessmentType.filter((a) =>
           assessmentTypesArr.includes(a.key)
         ),
         grades: urlGrades,
@@ -550,8 +554,8 @@ const SingleAssessmentReportFilters = ({
                         dataCy="testTypes"
                         label="Test Type"
                         onChange={(e) => {
-                          const selected = staticDropDownData.assessmentType.filter(
-                            (a) => e.includes(a.key)
+                          const selected = availableAssessmentType.filter((a) =>
+                            e.includes(a.key)
                           )
                           updateFilterDropdownCB(
                             selected,
@@ -565,7 +569,7 @@ const SingleAssessmentReportFilters = ({
                             ? filters.assessmentTypes.split(',')
                             : []
                         }
-                        options={staticDropDownData.assessmentType}
+                        options={availableAssessmentType}
                       />
                     </Col>
                     <Col span={6}>

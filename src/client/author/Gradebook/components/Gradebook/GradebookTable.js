@@ -30,7 +30,10 @@ const GradebookTable = ({
       width: colWidth + 40,
       render: (data, row) => (
         <Tooltip title={data}>
-          <Link to={`/author/gradebook/student/${row._id}`}>
+          <Link
+            to={`/author/gradebook/student/${row._id}`}
+            data-cy="studentName"
+          >
             {data || t('common.anonymous')}
           </Link>
         </Tooltip>
@@ -72,12 +75,14 @@ const GradebookTable = ({
         const color = STATUS_LIST.find((s) => s.id === status)?.color
         return assignmentId && classId && status !== 'UN ASSIGNED' ? (
           <Link to={`/author/classBoard/${assignmentId}/${classId}`}>
-            <StyledTableCell color={color}>
+            <StyledTableCell color={color} data-cy="percentScore">
               {percentScore || '-'}
             </StyledTableCell>
           </Link>
         ) : (
-          <StyledTableCell>{percentScore || '-'}</StyledTableCell>
+          <StyledTableCell>
+            {percentScore || '-'}
+          </StyledTableCell>
         )
       },
       sorter: (a, b) =>
@@ -108,6 +113,7 @@ const GradebookTable = ({
 
   return (
     <StyledTable
+      data-cy="gradeBookTable"
       rowKey={(row) => `${row._id}_${row.classId}`}
       columns={columns}
       dataSource={dataSource}

@@ -50,7 +50,10 @@ import { SelectInputStyled, TextInputStyled } from '../../../styled/InputStyles'
 import QuestionTextArea from '../../../components/QuestionTextArea'
 import { WidgetFRInput } from '../../../styled/Widget'
 import { PointsInput } from '../../../styled/CorrectAnswerHeader'
-import { setItemLevelScoreFromRubricAction } from '../../../../author/ItemDetail/ducks'
+import {
+  setItemLevelScoreFromRubricAction,
+  getItemDetailQuestionsSelector,
+} from '../../../../author/ItemDetail/ducks'
 
 const roundingTypes = [rounding.roundDown, rounding.none]
 
@@ -155,8 +158,11 @@ class Scoring extends Component {
       item = {},
       setItemLevelScoring,
       location,
+      itemDetailQuestions,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
+    const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
+
     const handleChangeValidation = (param, value) => {
       const newData = cloneDeep(questionData)
 
@@ -188,9 +194,24 @@ class Scoring extends Component {
           if (value) {
             delete newData.rubrics
           }
+          /**
+           * @see EV-35429 and EV-29700
+           * If question is marked as unscored itemLevelScoring should be set to false (EV-29700).
+           * If unscored is checked then as mentioned above itemLevelScoring was set to false
+           * but if unscored is unchecked itemLevelScoring value wasn't being changed.
+           * Items other than multipart have by default itemLevelScoring value true.
+           * Thus setting back itemLevelScoring value if unscored is unchecked (for non-multipart items).
+           */
+          if (value) {
+            setItemLevelScoring(false)
+          } else if (
+            value === false &&
+            (itemDetailQuestionsLength === 0 || itemDetailQuestionsLength === 1)
+          ) {
+            setItemLevelScoring(true)
+          }
         }
         newData.validation[param] = value
-        setItemLevelScoring(false)
       }
 
       setQuestionData(newData)
@@ -548,6 +569,7 @@ const enhance = compose(
       isGradingCheckboxState: getIsGradingCheckboxState(state),
       userFeatures: getUserFeatures(state),
       containsRubric: getQuestionRubrics(state),
+      itemDetailQuestions: getItemDetailQuestionsSelector(state),
     }),
     {
       setQuestionData: setQuestionDataAction,

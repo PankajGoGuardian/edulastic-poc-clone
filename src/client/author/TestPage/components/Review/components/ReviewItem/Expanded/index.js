@@ -15,22 +15,26 @@ import { PointsLabel } from './styled'
 import { ScoreInputWrapper, SaveToApply, InfoIcon } from '../styled'
 import Actions from '../Actions'
 
-const transformItemRow = ([row], qid) => [
+const transformItemRow = (row, qid) => [
   {
     ...row,
     widgets: row.widgets.filter((x) => {
       if (x.widgetType === 'question') {
         return x.reference === qid
       }
-      return true
+      return false
     }),
   },
 ]
 
-const splitItems = (item, testItem) =>
-  testItem.data?.questions.map(({ id }) => ({
-    item: transformItemRow(item, id),
+const splitItems = (item, testItem) => {
+  const questionRow = item.find((x) =>
+    x.widgets.some((w) => w.widgetType === 'question')
+  )
+  return testItem.data?.questions.map(({ id }) => ({
+    item: transformItemRow(questionRow, id),
   }))
+}
 
 const Expanded = ({
   item,

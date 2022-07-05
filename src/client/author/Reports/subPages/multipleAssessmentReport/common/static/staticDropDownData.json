@@ -91,11 +91,6 @@
     { "key": "12", "title": "Grade 12" },
     { "key": "O", "title": "Other" }
   ],
-  "assessmentType": [
-    { "key": "common assessment", "title": "Common" },
-    { "key": "assessment", "title": "Class" },
-    { "key": "practice", "title": "Practice" }
-  ],
   "assignedBy": [
     { "key": "anyone", "title": "Anyone" },
     { "key": "me", "title": "Me" }

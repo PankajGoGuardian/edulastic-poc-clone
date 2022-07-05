@@ -171,8 +171,8 @@ class TestItemPreview extends Component {
       isQuestionView,
       itemIdKey,
       testItemId,
+      isLCBView,
     } = this.props
-
     const [
       displayFeedback,
       shouldTakeDimensionsFromStore,
@@ -190,7 +190,21 @@ class TestItemPreview extends Component {
     const prevQActivityForQuestion = previousQuestionActivity.find(
       (qa) => qa.qid === question?.id
     )
+    let hintsUsed
+    if (isLCBView || isExpressGrader) {
+      if (itemLevelScoring) {
+        const questionsList = Object.values(questions)
+        if (questionsList.length) {
+          hintsUsed = questionsList.some(
+            ({ activity }) => activity?.hintsUsed?.length > 0
+          )
+        }
+      } else {
+        hintsUsed = !!question?.activity?.hintsUsed?.length > 0
+      }
+    }
     const testActivityId = question?.activity?.testActivityId
+
     return displayFeedback ? (
       <FeedbackWrapper
         showFeedback={showFeedback}
@@ -209,6 +223,7 @@ class TestItemPreview extends Component {
         itemId={itemId || itemIdKey || testItemId}
         key={`${testActivityId}_${index}`}
         ref={this.feedbackRef}
+        hintsUsed={hintsUsed}
       />
     ) : null
   }
@@ -378,6 +393,7 @@ class TestItemPreview extends Component {
       testActivityId,
       studentData,
       currentStudent,
+      selectedTheme = 'default',
       ...restProps
     } = this.props
     const {
@@ -499,6 +515,9 @@ class TestItemPreview extends Component {
                     testActivityId={testActivityId}
                     studentData={studentData}
                     currentStudent={currentStudent}
+                    themeBgColor={
+                      selectedTheme === 'default' ? white : theme.themeColor
+                    }
                   />
                 )
               })}
@@ -575,6 +594,7 @@ const enhance = compose(
       pageNumber: getPageNumberSelector(state),
       testActivityId: get(state, 'test.testActivityId', ''),
       studentData: getUser(state),
+      selectedTheme: state.ui.selectedTheme,
     }),
     {
       changedPlayerContent: changedPlayerContentAction,

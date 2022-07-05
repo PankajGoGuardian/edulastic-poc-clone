@@ -56,36 +56,26 @@ const QuestionPreviewDetails = ({
           </DetailRow>
         </FlexWrap>
 
-        <FlexWrap border="none" justify="flex-start">
-          <DetailRow direction="column">
-            <label>Depth of Knowledge</label>
-            <span data-cy="dok-on-preview">{depthOfKnowledge || '--'}</span>
-          </DetailRow>
-          <DetailRow direction="column">
-            <label>Difficulty Level</label>
-            <span data-cy="diff-on-preview">{authorDifficulty || '--'}</span>
-          </DetailRow>
-          <DetailRow direction="column">
-            <label>Bloom’s Taxonomy</label>
-            <span data-cy="tax-on-preview">{bloomsTaxonomy || '--'}</span>
-          </DetailRow>
-          <DetailRow direction="column" alignItems="flex-start">
-            <label>Rubric</label>
-            <div>
-              {allRubricNames.length
-                ? allRubricNames.map((rubricData, index) => (
-                    <StyledSpan
-                      onClick={() => handleUpdateRubricId(rubricData._id)}
-                    >
-                      {rubricData?.name}
-                      {index === rubricNamesLength - 1 ? '' : ','}
-                      &nbsp;
-                    </StyledSpan>
-                  ))
-                : '--'}
-            </div>
-          </DetailRow>
-        </FlexWrap>
+      <FlexWrap border="none" justify="flex-start">
+        <DetailRow direction="column">
+          <label>Depth of Knowledge</label>
+          <span data-cy="dok-on-preview">{depthOfKnowledge || '--'}</span>
+        </DetailRow>
+        <DetailRow direction="column">
+          <label>Difficulty Level</label>
+          <span data-cy="diff-on-preview">{authorDifficulty || '--'}</span>
+        </DetailRow>
+        <DetailRow direction="column">
+          <label>Bloom’s Taxonomy</label>
+          <span data-cy="tax-on-preview">{bloomsTaxonomy || '--'}</span>
+        </DetailRow>
+        <DetailRow direction="column" alignItems="flex-start">
+          <label>Rubric</label>
+          <span data-cy="rubricOnPreview">
+            {allRubricNames.length ? allRubricNames.join(', ') : '--'}
+          </span>
+        </DetailRow>
+      </FlexWrap>
 
         <FlexWrap border="none" direction="column" align="flex-start">
           <DetailRow className="standards">

@@ -1,8 +1,11 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { connect } from 'react-redux'
+import { compose } from 'redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
+import { withNamespaces } from '@edulastic/localization'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
-import { test } from '@edulastic/constants'
+import { test, testTypes, roleuser } from '@edulastic/constants'
+import { playerSkinValues } from '@edulastic/constants/const/test'
 import {
   RadioBtn,
   notification,
@@ -28,15 +31,21 @@ import {
 import {
   getUserRole,
   allowedToSelectMultiLanguageInTest,
+  getUserIdSelector,
 } from '../../../src/selectors/user'
 import { getDisableAnswerOnPaperSelector } from '../../../TestPage/ducks'
 import {
   getIsOverrideFreezeSelector,
   getmultiLanguageEnabled,
+  getAdditionalDataSelector,
 } from '../../../ClassBoard/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
 import CalculatorSelector from './CalculatorSelector'
+import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
+import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
+
+const { COMMON } = testTypes.TEST_TYPES
 
 const {
   releaseGradeTypes,
@@ -76,6 +85,11 @@ const Settings = ({
   totalItems,
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
+  t,
+  additionalData,
+  userId,
+  userRole,
+  togglePenaltyOnUsingHints,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -265,11 +279,16 @@ const Settings = ({
     timedAssignment = tempTestSettings.timedAssignment,
     allowedTime = tempTestSettings.allowedTime,
     pauseAllowed = tempTestSettings.pauseAllowed,
+    testType = tempTestSettings.testType,
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     blockSaveAndContinue = tempTestSettings.blockSaveAndContinue,
     restrictNavigationOut = tempTestSettings.restrictNavigationOut,
     safeBrowser = tempTestSettings.safeBrowser,
     restrictNavigationOutAttemptsThreshold = tempTestSettings.restrictNavigationOutAttemptsThreshold,
+    allowTeacherRedirect = tempTestSettings.allowTeacherRedirect,
+    showHintsToStudents = tempTestSettings.showHintsToStudents,
+    penaltyOnUsingHints = tempTestSettings.penaltyOnUsingHints,
+    playerSkinType = testSettings.playerSkinType,
   } = assignmentSettings
 
   const showMultiLangSelection =
@@ -279,6 +298,15 @@ const Settings = ({
     restrictNavigationOut === 'warn-and-report-after-n-alerts' &&
     restrictNavigationOutAttemptsThreshold > 1
 
+  const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
+  let isAssignedTeacher = true
+  if (
+    additionalData &&
+    `${additionalData?.assignedBy?._id}` !== `${userId}` &&
+    userRole === roleuser.TEACHER
+  ) {
+    isAssignedTeacher = false
+  }
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -442,7 +470,32 @@ const Settings = ({
           </SettingContainer>
         )}
         {/* Multi language */}
-
+        {COMMON.includes(testType) && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="Allow Teachers to Redirect"
+              content={t('allowTeacherToRedirect.info')}
+              premium={assessmentSuperPowersAutoRedirect}
+            />
+            <StyledRow gutter={16}>
+              <StyledCol span={12}>
+                <Label>Allow Teachers to Redirect</Label>
+              </StyledCol>
+              <StyledCol span={12}>
+                <AlignSwitchRight
+                  data-cy="allow-teacher-redirect-switch"
+                  size="small"
+                  defaultChecked
+                  disabled={freezeSettings || !isAssignedTeacher}
+                  checked={allowTeacherRedirect}
+                  onChange={(value) =>
+                    overRideSettings('allowTeacherRedirect', value)
+                  }
+                />
+              </StyledCol>
+            </StyledRow>
+          </SettingContainer>
+        )}
         {/* Auto Redirect */}
         <SettingContainer>
           <DetailsTooltip
@@ -859,6 +912,47 @@ const Settings = ({
         </SettingContainer>
         {/* Timed TEST */}
 
+        {/* Show hints to students */}
+        {!isDocBased && !isTestlet && (
+          <SettingContainer>
+            <DetailsTooltip
+              title="SHOW HINTS TO STUDENTS"
+              content="Students will be able to see the hint associated with an item while attempting the assignment"
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15p">
+              <Col span={12}>
+                <Label>SHOW HINTS TO STUDENTS</Label>
+              </Col>
+              <Col span={12}>
+                <StyledRow borderBottom="none" padding="0px 0px 10px 0px">
+                  <ShowHintsSwitch
+                    disabled={freezeSettings || !premium}
+                    checked={showHintsToStudents}
+                    onChangeHandler={(value) =>
+                      overRideSettings('showHintsToStudents', value)
+                    }
+                  />
+                </StyledRow>
+                {showHintsToStudents && (
+                  <StyledRow borderBottom="none" padding="0px">
+                    <RadioOptions
+                      disabled={freezeSettings || !premium}
+                      penaltyOnUsingHints={penaltyOnUsingHints}
+                      updatePenaltyPoints={(value) =>
+                        overRideSettings('penaltyOnUsingHints', value)
+                      }
+                      togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
+                      isAssignPage
+                    />
+                  </StyledRow>
+                )}
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
+        {/* Show hints to students */}
+
         {/* Answer on Paper */}
         <SettingContainer>
           <DetailsTooltip
@@ -959,6 +1053,7 @@ const Settings = ({
                       value={assignmentPassword}
                       type="text"
                       placeholder="Enter Password"
+                      data-cy="passwordTextBox"
                       color={passwordStatus.color}
                     />
                     <MessageSpan>{passwordStatus.message}</MessageSpan>
@@ -1013,19 +1108,27 @@ const Settings = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    userRole: getUserRole(state),
-    disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
-    premium: state?.user?.user?.features?.premium,
-    calculatorProvider: state?.user?.user?.features?.calculatorProvider,
-    totalItems: state?.tests?.entity?.isDocBased
-      ? state?.tests?.entity?.summary?.totalQuestions
-      : state?.tests?.entity?.summary?.totalItems,
-    freezeSettings: getIsOverrideFreezeSelector(state),
-    features: state?.user?.user?.features,
-    lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
-    allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
-  }),
-  null
-)(withRouter(Settings))
+const enhance = compose(
+  withNamespaces('author'),
+  withRouter,
+  connect(
+    (state) => ({
+      userRole: getUserRole(state),
+      disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
+      premium: state?.user?.user?.features?.premium,
+      calculatorProvider: state?.user?.user?.features?.calculatorProvider,
+      totalItems: state?.tests?.entity?.isDocBased
+        ? state?.tests?.entity?.summary?.totalQuestions
+        : state?.tests?.entity?.summary?.totalItems,
+      freezeSettings: getIsOverrideFreezeSelector(state),
+      features: state?.user?.user?.features,
+      userId: getUserIdSelector(state),
+      lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
+      allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      additionalData: getAdditionalDataSelector(state),
+    }),
+    null
+  )
+)
+
+export default enhance(Settings)

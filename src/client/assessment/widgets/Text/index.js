@@ -22,6 +22,7 @@ const Text = ({
   fillSections,
   cleanSections,
   advancedLink,
+  isDefaultTheme = true,
 }) => {
   const Wrapper = smallSize ? EmptyWrapper : Paper
 
@@ -41,7 +42,7 @@ const Text = ({
   }
 
   return (
-    <Wrapper>
+    <Wrapper isDefaultTheme={isDefaultTheme}>
       <TextContentPreview item={item} />
     </Wrapper>
   )

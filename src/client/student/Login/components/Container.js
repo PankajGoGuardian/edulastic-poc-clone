@@ -325,13 +325,14 @@ class LoginContainer extends React.Component {
                               valuePropName: 'checked',
                               initialValue: true,
                             })(
-                              <RememberCheckBox>
+                              <RememberCheckBox data-cy="rememberMe">
                                 {t('common.remembermetext')}
                               </RememberCheckBox>
                             )}
                             <ForgetPassword
                               style={{ marginTop: 1 }}
                               onClick={this.onForgotPasswordClick}
+                              data-cy="forgotPassword"
                             >
                               <span>{t('common.forgotpasswordtext')}</span>
                             </ForgetPassword>

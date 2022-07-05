@@ -17,6 +17,7 @@ import Question from '../../Question'
 import { ColumnLabel, RowLabel } from '../../../styled/Grid'
 import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
 import { SelectInputStyled } from '../../../styled/InputStyles'
+import { getFontSize } from '../../../utils/helpers'
 
 class NumberLinePlot extends Component {
   onChangeQuestion = (stimulus) => {
@@ -127,7 +128,7 @@ class NumberLinePlot extends Component {
             value={stimulus}
             firstFocus={firstMount}
             border="border"
-            fontSize={`${graphData.numberlineAxis.fontSize}px`}
+            fontSize={getFontSize(graphData?.uiStyle?.fontSize)}
           />
         </Question>
 

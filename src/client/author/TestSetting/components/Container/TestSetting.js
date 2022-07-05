@@ -40,6 +40,13 @@ import {
 
 const title = 'Manage District'
 const menuActive = { mainMenu: 'Settings', subMenu: 'Test Settings' }
+// This permission is used in District test setting only.
+const linkSharingPermissions = {
+  VIEW: 'Limited access (duplicate, assign)',
+  ASSIGN: 'View and assign',
+  NOACTION: 'No Actions (View Only)',
+  NO: 'Link sharing off',
+}
 
 class TestSetting extends Component {
   constructor(props) {
@@ -98,11 +105,25 @@ class TestSetting extends Component {
     return { testSetting: nextProps.testSetting }
   }
 
-  changeSetting = (e, fieldName) => {
+  changeSetting = (e, fieldName, value) => {
     const { testSetting } = this.state
     const { setTestSettingValue, role } = this.props
+    if (fieldName === 'linkSharingPermission') {
+      if (value === 'NO') {
+        setTestSettingValue(
+          { ...testSetting, isLinkSharingEnabled: false },
+          role === roleuser.SCHOOL_ADMIN
+        )
+      } else {
+        setTestSettingValue(
+          { ...testSetting, [fieldName]: value, isLinkSharingEnabled: true },
+          role === roleuser.SCHOOL_ADMIN
+        )
+      }
+      return
+    }
     setTestSettingValue(
-      { ...testSetting, [fieldName]: e.target.value },
+      { ...testSetting, [fieldName]: e?.target?.value },
       role === roleuser.SCHOOL_ADMIN
     )
   }
@@ -123,6 +144,11 @@ class TestSetting extends Component {
       timer: testSetting.timer,
       testTypesProfile: testSetting.testTypesProfile,
       isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
+    }
+    if (updateData.isLinkSharingEnabled) {
+      Object.assign(updateData, {
+        linkSharingPermission: testSetting.linkSharingPermission,
+      })
     }
 
     // eslint-disable-next-line
@@ -176,9 +202,35 @@ class TestSetting extends Component {
             )}
             <ContentWrapper>
               <SaSchoolSelect />
-              <StyledHeading1>Default Options</StyledHeading1>
-              <StyledRow type="flex" gutter={40}>
-                <StyledCol>
+              <StyledHeading1 data-cy="defaultOptionsContent">
+                Default Options
+              </StyledHeading1>
+              <StyledRow type="flex" gutter={40} data-cy="defaultOptions">
+                <StyledCol span={8} data-cy="selectLinkSharing">
+                  <InputLabel>SELECT LINK SHARING FOR NEW TEST</InputLabel>
+                  <SelectInputStyled
+                    data-cy="selectLink"
+                    value={
+                      testSetting.isLinkSharingEnabled
+                        ? get(testSetting, 'linkSharingPermission') || 'VIEW'
+                        : 'NO'
+                    }
+                    onChange={(value) => {
+                      this.changeSetting(null, 'linkSharingPermission', value)
+                    }}
+                    size="large"
+                  >
+                    {Object.keys(linkSharingPermissions).map((item) => (
+                      <Select.Option
+                        value={item}
+                        key={linkSharingPermissions[item]}
+                      >
+                        {linkSharingPermissions[item]}
+                      </Select.Option>
+                    ))}
+                  </SelectInputStyled>
+                </StyledCol>
+                <StyledCol data-cy="allowPartialScore">
                   <InputLabel>Allow Partial Score </InputLabel>
                   <StyledRadioGrp
                     defaultValue={testSetting.partialScore}
@@ -189,7 +241,7 @@ class TestSetting extends Component {
                     <RadioBtn value={false}>No</RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
-                <StyledCol>
+                <StyledCol data-cy="showTimer">
                   <InputLabel>Show Timer </InputLabel>
                   <StyledRadioGrp
                     defaultValue={testSetting.timer}
@@ -200,25 +252,16 @@ class TestSetting extends Component {
                     <RadioBtn value={false}>No</RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
-                <StyledCol>
-                  <InputLabel>Set Link Sharing ON for new test </InputLabel>
-                  <StyledRadioGrp
-                    onChange={(e) =>
-                      this.changeSetting(e, 'isLinkSharingEnabled')
-                    }
-                    value={!!testSetting.isLinkSharingEnabled}
-                  >
-                    <RadioBtn value>Yes</RadioBtn>
-                    <RadioBtn value={false}>No</RadioBtn>
-                  </StyledRadioGrp>
-                </StyledCol>
               </StyledRow>
 
-              <StyledHeading1>Default Performance Band Profiles</StyledHeading1>
-              <StyledRow gutter={40}>
-                <StyledCol span={8}>
+              <StyledHeading1 data-cy="performanceBandProfiles">
+                Default Performance Band Profiles
+              </StyledHeading1>
+              <StyledRow gutter={40} data-cy="defaultPerformanceBand">
+                <StyledCol span={8} data-cy="commonTest">
                   <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="commonTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.performanceBand.common'
@@ -237,9 +280,10 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
+                <StyledCol span={8} data-cy="classTest">
                   <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="classTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.performanceBand.assessment'
@@ -258,9 +302,10 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
-                  <InputLabel>Practice Test</InputLabel>
+                <StyledCol span={8} data-cy="practiceHomeworkQuizTest">
+                  <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
                   <SelectInputStyled
+                    data-cy="practiceHomeworkQuizTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.performanceBand.practice'
@@ -281,13 +326,14 @@ class TestSetting extends Component {
                 </StyledCol>
               </StyledRow>
 
-              <StyledHeading1>
+              <StyledHeading1 data-cy="standardProficiencyProfiles">
                 Default Standard Proficiency Profiles
               </StyledHeading1>
-              <StyledRow gutter={40}>
-                <StyledCol span={8}>
+              <StyledRow gutter={40} data-cy="defaultStandardProficiency">
+                <StyledCol span={8} data-cy="commonTest">
                   <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="commonTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.standardProficiency.common'
@@ -306,9 +352,10 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
+                <StyledCol span={8} data-cy="classTest">
                   <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="classTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.standardProficiency.assessment'
@@ -327,9 +374,10 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
-                  <InputLabel>Practice Test</InputLabel>
+                <StyledCol span={8} data-cy="practiceHomeworkQuizTest">
+                  <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
                   <SelectInputStyled
+                    data-cy="practiceHomeworkQuizTestProficiency"
                     value={get(
                       testSetting,
                       'testTypesProfile.standardProficiency.practice'
@@ -356,7 +404,11 @@ class TestSetting extends Component {
                 style={{ marginTop: '15px' }}
               >
                 <HeaderSaveButton>
-                  <EduButton isBlue onClick={this.updateValue}>
+                  <EduButton
+                    data-cy="saveButton"
+                    isBlue
+                    onClick={this.updateValue}
+                  >
                     <IconSaveNew /> Save
                   </EduButton>
                 </HeaderSaveButton>

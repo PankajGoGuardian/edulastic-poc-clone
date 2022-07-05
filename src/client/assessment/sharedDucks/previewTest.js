@@ -9,6 +9,7 @@ import { questionType } from '@edulastic/constants'
 import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { answersByQId } from '../selectors/test'
+import { clearHintUsageAction } from '../actions/userInteractions'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -79,11 +80,13 @@ function* evaluateQuestionsSaga({
   questions,
   answers,
   timeSpent = 0,
+  hintsUsedInItem,
 }) {
   const res = yield testItemsApi.evaluateAsStudent(testItemId, {
     answers: answersByQids,
     testId,
     replaceVariable: true,
+    hintsUsedInItem,
   })
 
   const previewUserWork = yield select(
@@ -183,6 +186,20 @@ function* evaluateTestItemSaga({ payload }) {
     const answersByQids = answersByQId(answers, testItem._id)
 
     const test = yield select((state) => get(state, 'tests.entity', {}))
+    const userInteractions = yield select(
+      ({ userInteractions: _userInteractions }) => _userInteractions[testItemId]
+    )
+    const hintClickEvent = (obj) => obj.event === 'HintClicked'
+    const hintsUsedInItem = (userInteractions || [])
+      .filter(hintClickEvent)
+      .reduce((acc, curr) => {
+        const { hintId, id: qId } = curr
+        if (hintId) {
+          acc[qId] = acc[qId] || []
+          acc[qId].push(hintId)
+        }
+        return acc
+      }, {})
 
     yield call(evaluateQuestionsSaga, {
       answersByQids,
@@ -191,6 +208,7 @@ function* evaluateTestItemSaga({ payload }) {
       questions,
       answers,
       timeSpent,
+      hintsUsedInItem,
     })
     // onSubmit preview test evaluate all skipped question
     if (isLastQuestion) {
@@ -200,6 +218,7 @@ function* evaluateTestItemSaga({ payload }) {
         allQuestionsById,
         testId: test._id || payload.testId,
       })
+      yield put(clearHintUsageAction())
     }
     if (typeof callback === 'function') {
       callback()

@@ -553,12 +553,23 @@ const getPermissionToEdit = (state, props) => {
     testItem?.collections,
     writableCollections
   )
-  const allowDuplicate = allowDuplicateCheck(
+  let allowDuplicate = allowDuplicateCheck(
     testItem?.collections,
     collections,
     'item'
   )
 
+  if (
+    testItem?.sharedWith?.filter(
+      (s) =>
+        `${s?._id}` === `${testItem._id}` &&
+        s.name === 'LINK' &&
+        s.permission === 'NOACTION'
+    ).length &&
+    !isOwner
+  ) {
+    allowDuplicate = false
+  }
   const isDisableEdit = !(
     isOwner ||
     userRole === roleuser.EDULASTIC_CURATOR ||

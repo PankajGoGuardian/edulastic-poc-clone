@@ -49,11 +49,6 @@ const pointParameters = {
 
 const axesParameters = {
   /**
-   * Set the ticks type. Possible values are 'linear' or 'polar'.
-   * @see https://jsxgraph.org/docs/symbols/Ticks.html#type
-   */
-  type: 'linear',
-  /**
    * @see https://jsxgraph.org/docs/symbols/Ticks.html#ticksDistance
    */
   ticksDistance: 1,
@@ -108,23 +103,6 @@ const bgImageParameters = {
   coords: [0, 0],
   size: [100, 100],
   opacity: 0.5,
-}
-
-export const angleAxesParams = {
-  strokeWidth: 1,
-  strokeColor: '#C0C0C0',
-  highlightStrokeColor: '#C0C0C0',
-  straightFirst: false,
-  straightLast: false,
-  firstArrow: {
-    size: 0,
-  },
-  lastArrow: {
-    size: 0,
-  },
-  ticks: {
-    visible: false, // important: should be false, due to performace issue
-  },
 }
 
 export const labelParameters = {

@@ -7,7 +7,7 @@ import { IconStar } from '@edulastic/icons'
 const DollarPremiumSymbol = ({ premium }) => {
   if (premium) return null
   return (
-    <Link to="/author/subscription">
+    <Link data-testid="premium-dollar-symbol" to="/author/subscription">
       <DollarSymbolWrapper>
         <IconStar />
       </DollarSymbolWrapper>

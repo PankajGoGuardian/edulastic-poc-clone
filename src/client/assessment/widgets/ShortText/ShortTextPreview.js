@@ -148,6 +148,7 @@ const ShortTextPreview = ({
               onSelect={handleSelect}
               placeholder={item.placeholder || ''}
               type={inputType}
+              color={theme.widgets.shortText.inputColor}
               {...getSpellCheckAttributes(item.spellcheck)}
             />
             {isCharacterMap && inputType === 'text' && (

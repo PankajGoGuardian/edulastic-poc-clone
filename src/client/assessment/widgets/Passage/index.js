@@ -26,7 +26,8 @@ const PassageWrapper = styled(Paper).attrs(() => ({
   className: 'passage-wrapper',
 }))`
   border-radius: ${({ flowLayout }) => (flowLayout ? 0 : 10)}px;
-  background: ${({ flowLayout }) => (flowLayout ? 'transparent' : white)};
+  background: ${(props) =>
+    props.flowLayout ? 'transparent' : props?.isDefaultTheme && white};
   box-shadow: ${({ flowLayout }) =>
     flowLayout ? 'unset' : `0 3px 10px 0 ${boxShadowDefault}`};
   position: relative;
@@ -44,6 +45,7 @@ const Passage = ({
   cleanSections,
   advancedAreOpen,
   flowLayout,
+  isDefaultTheme = true,
   ...restProps
 }) => {
   const Wrapper = smallSize ? EmptyWrapper : PassageWrapper
@@ -63,7 +65,7 @@ const Passage = ({
 
   if (view === 'preview') {
     return (
-      <Wrapper flowLayout={flowLayout}>
+      <Wrapper flowLayout={flowLayout} isDefaultTheme={isDefaultTheme}>
         <PassageView
           preview
           item={itemForPreview}

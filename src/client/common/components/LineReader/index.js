@@ -24,7 +24,11 @@ const LineReader = ({
     if (typeof onClick === 'function') {
       onClick()
     }
-    showLineReader()
+    if (visible) {
+      destoryReader()
+    } else {
+      showLineReader()
+    }
   }
 
   useEffect(() => {
@@ -49,13 +53,7 @@ const LineReader = ({
 
   return (
     <Tooltip placement="top" title="Line Reader">
-      <Button
-        isGhost
-        IconBtn
-        disabled={visible}
-        data-cy="lineReaderButton"
-        onClick={handleClick}
-      >
+      <Button isGhost IconBtn data-cy="lineReaderButton" onClick={handleClick}>
         {btnText || <IconLineReader />}
       </Button>
     </Tooltip>

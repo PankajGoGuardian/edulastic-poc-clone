@@ -224,16 +224,19 @@ const StartAssignment = loadable(
   }
 )
 
-const Collaboration = loadable(() => import('../../author/Collaboration'), {
+const Collaboration = loadable(() => import('../Collaboration'), {
   fallback: <Progress />,
 })
 
 const MemberCollaboration = loadable(
-  () => import('../../author/Groups/MemberCollaboration'),
+  () => import('../Groups/MemberCollaboration'),
   {
     fallback: <Progress />,
   }
 )
+const DataWarehouse = loadable(() => import('../DataWarehouse'), {
+  fallback: <Progress />,
+})
 
 // eslint-disable-next-line react/prop-types
 const Author = ({
@@ -894,6 +897,11 @@ const Author = ({
                   exact
                   path={`${match.url}/students-report-card/:assignmentId/:classId`}
                   render={(props) => <StudentsReportCard {...props} audit />}
+                />
+                <Route
+                  exact
+                  path={`${match.url}/data-warehouse`}
+                  component={DataWarehouse}
                 />
                 <Route component={NotFound} />
               </Switch>

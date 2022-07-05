@@ -33,6 +33,7 @@ import { processSchoolYear } from '../../../multipleAssessmentReport/common/util
 
 import staticDropDownData from '../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
+import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 
 const EngagementReportFilters = ({
   isPrinting,
@@ -54,6 +55,7 @@ const EngagementReportFilters = ({
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
 }) => {
+  const availableAssessmentType = getArrayOfAllTestTypes()
   const assessmentTypesRef = useRef()
   const schoolYears = useMemo(() => processSchoolYear(user), [user])
   const defaultTermId = get(user, 'orgData.defaultTermId', '') || schoolYears[0]
@@ -92,7 +94,7 @@ const EngagementReportFilters = ({
       termId: urlSchoolYear,
       grades: urlGrades,
       subjects: urlSubjects,
-      assessmentTypes: staticDropDownData.assessmentType.filter((a) =>
+      assessmentTypes: availableAssessmentType.filter((a) =>
         assessmentTypesArr.includes(a.key)
       ),
       assignedBy: urlAssignedBy,
@@ -294,8 +296,8 @@ const EngagementReportFilters = ({
                     label="Test Type"
                     el={assessmentTypesRef}
                     onChange={(e) => {
-                      const selected = staticDropDownData.assessmentType.filter(
-                        (a) => e.includes(a.key)
+                      const selected = availableAssessmentType.filter((a) =>
+                        e.includes(a.key)
                       )
                       updateFilterDropdownCB(selected, 'assessmentTypes', true)
                     }}
@@ -305,7 +307,7 @@ const EngagementReportFilters = ({
                         ? filters.assessmentTypes.split(',')
                         : []
                     }
-                    options={staticDropDownData.assessmentType}
+                    options={availableAssessmentType}
                   />
                 </Col>
               </Row>

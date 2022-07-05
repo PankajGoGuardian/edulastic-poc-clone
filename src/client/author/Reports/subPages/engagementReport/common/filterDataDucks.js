@@ -5,7 +5,7 @@ import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
 import staticDropDownData from './static/staticDropDownData.json'
 
-const SET_FILTERS = '[reports] set er filters'
+export const SET_FILTERS = '[reports] set er filters'
 const SET_TEMP_TAGS_DATA = '[reports] set spr temp tags data'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //

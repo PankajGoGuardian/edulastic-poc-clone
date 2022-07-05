@@ -81,7 +81,7 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { defaultFocus, value } = this.props
+    const { defaultFocus, value, onInput: saveAnswer } = this.props
     if (!window.MathQuill) return
 
     const MQ = window.MathQuill.getInterface(2)
@@ -101,7 +101,10 @@ class MathInput extends React.PureComponent {
 
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill)
     this.mQuill = mathField
-    mathField.write(this.sanitizeLatex(value))
+    // keep redux store in sync with sanitized latex value
+    const mathFieldValue = this.sanitizeLatex(value)
+    saveAnswer(mathFieldValue)
+    mathField.write(mathFieldValue)
     this.mathField1 = mathField
     if (defaultFocus) {
       mathField.focus()
@@ -209,6 +212,8 @@ class MathInput extends React.PureComponent {
       .replace(/\\not\\subseteq/g, '\\notsubseteq')
       .replace(/\\not\\subset/g, '\\notsubset')
       .replace(/\\newline/g, '\\newline ')
+      .replace(/&gt;/g, '>')
+      .replace(/&lt;/g, '<')
 
   handleKeypress = (e) => {
     const {

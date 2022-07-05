@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from 'react'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { math } from '@edulastic/constants'
 import { redDark } from '@edulastic/colors'
 import { MathInput, TextInputStyled, notification } from '@edulastic/common'
@@ -52,6 +53,35 @@ const VariableRow = ({
   const onBlurHandle = (name, type, value) => {
     if (type === 'step' && value === 0) {
       onChange(name, type, '')
+    }
+
+    /**
+     * @see https://snapwiz.atlassian.net/browse/EV-35241
+     * moving min and max value validation out of onChange method for min, max value changing smooth
+     * if validation fails values are being set to respective default values
+     */
+    if (type === 'min' || type === 'max') {
+      if (name !== variableName && isEmpty(variable)) {
+        return
+      }
+
+      if (type === 'min' && variable.max <= value) {
+        notification({
+          type: 'warn',
+          messageKey: 'invalidDynamicParameterMinValue',
+        })
+        onChange(name, type, 0)
+        return
+      }
+      if (type === 'max' && variable.min >= value) {
+        notification({
+          type: 'warn',
+          messageKey: 'invalidDynamicParameterMaxValue',
+        })
+        onChange(name, type, 100)
+        return
+      }
+      onChange(name, type, value)
     }
   }
 
@@ -159,6 +189,13 @@ const VariableRow = ({
                 e.target.value ? +e.target.value : ''
               )
             }
+            onBlur={(e) =>
+              onBlurHandle(
+                variableName,
+                'min',
+                e.target.value ? +e.target.value : ''
+              )
+            }
             size="large"
           />
         </StyledCol>
@@ -172,6 +209,13 @@ const VariableRow = ({
             step={varStep}
             onChange={(e) =>
               onChange(
+                variableName,
+                'max',
+                e.target.value ? +e.target.value : ''
+              )
+            }
+            onBlur={(e) =>
+              onBlurHandle(
                 variableName,
                 'max',
                 e.target.value ? +e.target.value : ''

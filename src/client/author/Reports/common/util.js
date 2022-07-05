@@ -43,14 +43,6 @@ const studentFiltersDefaultValues = [
   },
 ]
 
-export const testTypeHashMap = {
-  practice: 'practice',
-  common: 'common',
-  class: 'class',
-  'common assessment': 'common',
-  assessment: 'class',
-}
-
 export const DemographicCompareByOptions = [
   'gender',
   'race',

@@ -72,13 +72,7 @@ const Variables = ({
     if (!has(newData, `variable.variables.${variableName}`)) {
       return
     }
-    if (
-      (param === 'min' &&
-        newData.variable.variables[variableName].max <= value) ||
-      (param === 'max' && newData.variable.variables[variableName].min >= value)
-    ) {
-      return
-    }
+
     newData.variable.variables[variableName][param] = value
 
     if (newData.variable.variables[variableName].type !== 'FORMULA') {

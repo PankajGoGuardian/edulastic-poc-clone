@@ -128,6 +128,14 @@ const slice = createSlice({
             delete state.updateSettings.restrictNavigationOutAttemptsThreshold
           }
         }
+        if (
+          key === 'showHintsToStudents' &&
+          value === false &&
+          state.assignment.penaltyOnUsingHints > 0
+        ) {
+          state.assignment.penaltyOnUsingHints = 0
+          state.updateSettings.penaltyOnUsingHints = 0
+        }
       }
     },
   },
@@ -189,6 +197,8 @@ function* loadAssignmentSaga({ payload }) {
       passwordPolicy,
       passwordExpireIn,
       assignmentPassword,
+      penaltyOnUsingHints,
+      showHintsToStudents,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -214,6 +224,12 @@ function* loadAssignmentSaga({ payload }) {
     if (calcType) {
       data.calcType = calcType
     }
+    if (typeof penaltyOnUsingHints === 'number') {
+      data.penaltyOnUsingHints = penaltyOnUsingHints
+    }
+    if (typeof showHintsToStudents === 'boolean') {
+      data.showHintsToStudents = showHintsToStudents
+    }
     if (passwordPolicy !== undefined) {
       data.passwordPolicy = passwordPolicy
       if (passwordExpireIn !== undefined) {
@@ -238,6 +254,7 @@ function* loadAssignmentSaga({ payload }) {
 function getSettingsSelector(state) {
   const assignment = state.LCBAssignmentSettings?.updateSettings || {}
   const existingSettings = state.LCBAssignmentSettings?.assignment || {}
+  const hasPenaltyOnUsingHints = state.tests?.hasPenaltyOnUsingHints || false
   const {
     openPolicy,
     closePolicy,
@@ -262,6 +279,9 @@ function getSettingsSelector(state) {
     restrictNavigationOut,
     restrictNavigationOutAttemptsThreshold,
     allowedOpenDate,
+    allowTeacherRedirect,
+    showHintsToStudents,
+    penaltyOnUsingHints,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -298,6 +318,17 @@ function getSettingsSelector(state) {
     !existingSettings.assignmentPassword
   ) {
     notification({ msg: 'Please set the assignment password' })
+    return false
+  }
+
+  const _penaltyOnUsingHints =
+    penaltyOnUsingHints || existingSettings.penaltyOnUsingHints
+  if (
+    (showHintsToStudents || existingSettings.showHintsToStudents) &&
+    hasPenaltyOnUsingHints &&
+    (Number.isNaN(_penaltyOnUsingHints) || !_penaltyOnUsingHints > 0)
+  ) {
+    notification({ messageKey: 'enterPenaltyOnHintsValue' })
     return false
   }
 
@@ -355,6 +386,9 @@ function getSettingsSelector(state) {
       restrictNavigationOut,
       restrictNavigationOutAttemptsThreshold,
       allowedOpenDate,
+      allowTeacherRedirect,
+      showHintsToStudents,
+      penaltyOnUsingHints,
     },
     isUndefined
   )

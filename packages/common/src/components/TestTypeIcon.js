@@ -10,7 +10,7 @@ const TestTypeIcon = ({
 }) => {
   return (
     <Tooltip placement={toolTipPlacement} title={toolTipTitle}>
-      <TypeIcon data-cy="testType" type={testType}>
+      <TypeIcon data-cy="testType" data-testid="testType" type={testType}>
         {testType.split('')[0].toUpperCase()}
       </TypeIcon>
     </Tooltip>

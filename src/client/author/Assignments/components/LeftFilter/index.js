@@ -30,7 +30,10 @@ import { FilterContainer } from './styled'
 import Folders from '../../../src/components/Folders'
 import { setItemsMoveFolderAction } from '../../../src/actions/folder'
 import TagFilter from '../../../src/components/common/TagFilter'
-import { getTestTypeFullNames } from '../../../../common/utils/testTypeUtils'
+import {
+  getAllTestTypesMap,
+  getNonPremiumTestTypes,
+} from '../../../../common/utils/testTypeUtils'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -139,7 +142,9 @@ class LeftFilter extends React.Component {
       tags = [],
       folderId = '',
     } = filterState
-    const testTypes = getTestTypeFullNames(isPremiumUser)
+    const testTypes = isPremiumUser
+      ? getAllTestTypesMap()
+      : getNonPremiumTestTypes()
     const classListByTerm = classList.filter(
       (item) => item.termId === termId || !termId
     )

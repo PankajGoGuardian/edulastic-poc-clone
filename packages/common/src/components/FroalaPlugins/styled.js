@@ -118,7 +118,7 @@ const toolbarInlineStyle = css`
   left: 0px;
   right: 0px;
   bottom: 100%;
-  z-index: 1000;
+  z-index: 997;
 `
 
 export const ToolbarContainer = styled.div`

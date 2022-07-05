@@ -1,10 +1,10 @@
+import { getAllTestTypesMap } from '../../../../../../common/utils/testTypeUtils'
 import {
   groupBy,
   map,
   reduce,
   values,
   round,
-  capitalize,
   sumBy,
   orderBy,
   filter,
@@ -13,11 +13,7 @@ import {
   uniqBy,
   isEmpty,
 } from 'lodash'
-import {
-  percentage,
-  getProficiencyBand,
-  testTypeHashMap,
-} from '../../../../common/util'
+import { percentage, getProficiencyBand } from '../../../../common/util'
 import gradesMap from '../static/gradesMap.json'
 
 export const getFullName = (s) =>
@@ -68,11 +64,13 @@ export const augementAssessmentChartData = (
     const band = getProficiencyBand(scoreAvg, bandInfo)
     const { standardSet, subject } =
       studentClassData.find((s) => s.studentId === assignment.studentId) || {}
+    const testTypes = getAllTestTypesMap()
+
     return {
       ...assignment,
       score: scoreAvg,
       uniqId: testId + testType,
-      testType: capitalize(testTypeHashMap[testType.toLowerCase()]),
+      testType: testTypes[testType.toLowerCase()],
       diffScore: 100 - scoreAvg,
       band,
       assignments,

@@ -21,7 +21,7 @@ const RESET_REPORTS_SAR_FILTERS = '[reports] reset reports sar filters'
 const SET_REPORTS_PREV_SAR_FILTER_DATA =
   '[reports] set reports prev sar filter data'
 
-const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
+export const SET_FILTERS_OR_TEST_ID = '[reports] set sar filters or testId'
 const SET_TEMP_DD_FILTER = '[reports] set sar tempDdFilter'
 const SET_TEMP_TAGS_DATA = '[reports] set sar temp tempTagsData'
 

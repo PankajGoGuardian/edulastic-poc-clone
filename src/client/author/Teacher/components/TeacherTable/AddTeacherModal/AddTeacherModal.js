@@ -346,6 +346,7 @@ class AddTeacherModal extends React.Component {
                   autocomplete="new-password"
                   onChange={this.changePwd}
                   prefix={<IconLock color={themeColor} />}
+                  data-cy="passwordTextBox"
                 />
               )}
             </ModalFormItem>
@@ -375,6 +376,7 @@ class AddTeacherModal extends React.Component {
                   autocomplete="new-password"
                   onChange={this.changeConfirmPwd}
                   prefix={<IconLock color={themeColor} />}
+                  data-cy="passwordTextBox"
                 />
               )}
             </ModalFormItem>

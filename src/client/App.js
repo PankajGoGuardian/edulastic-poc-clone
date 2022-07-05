@@ -518,6 +518,8 @@ class App extends Component {
         } else if (role === 'district-admin' || role === 'school-admin') {
           if (features.isCurator) {
             defaultRoute = '/publisher/dashboard'
+          } else if (role === 'district-admin' && features.isDataOpsOnlyUser) {
+            defaultRoute = '/author/data-warehouse'
           }
           // redirecting da & sa to assignments after login as their dashboard page is not implemented
           else if (isSAWithoutSchools) {

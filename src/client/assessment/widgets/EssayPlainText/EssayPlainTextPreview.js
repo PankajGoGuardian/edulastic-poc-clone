@@ -213,7 +213,7 @@ const EssayPlainTextPreview = ({
   const wordCountStyle =
     (showLimitAlways || showOnLimit) && item.maxWord < wordCount
       ? { color: theme.widgets.essayPlainText.wordCountLimitedColor }
-      : {}
+      : { color: theme.widgets.essayPlainText.wordCountColor }
 
   const isV1Multipart = get(col, 'isV1Multipart', false)
   const fontSize =

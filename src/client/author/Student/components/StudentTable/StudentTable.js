@@ -754,6 +754,7 @@ class StudentTable extends Component {
                 onSearch={this.handleSearchName}
                 onChange={this.onChangeSearch}
                 height="34px"
+                data-cy="searchByName"
               />
               <EduButton
                 height="34px"

@@ -1,0 +1,6 @@
+const S3_DATA_WAREHOUSE_FOLDER =
+  process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER
+
+module.exports = {
+  S3_DATA_WAREHOUSE_FOLDER,
+}

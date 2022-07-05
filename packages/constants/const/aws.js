@@ -9,5 +9,8 @@ module.exports = {
     WEBCT_IMPORT: 'webctImports',
     PO_SUBMISSIONS: 'poSubmissions',
     WEBCAM_OMR_UPLOADS: 'webcam_omr_uploads',
+    DATA_WAREHOUSE_FOLDER:
+      process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER ||
+      'dev_data_warehouse',
   },
 }

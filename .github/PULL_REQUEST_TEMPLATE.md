@@ -2,7 +2,7 @@
 
 <!-- Add the JIRA reference with us -->
 
-https://snapwiz.atlassian.net/browse/ISSUE_ID
+https://goguardian.atlassian.net/browse/ISSUE_ID
 
 ---
 

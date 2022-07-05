@@ -182,15 +182,6 @@ export default function SearchDistrictTable({
         onDeleteClick={() =>
           deleteDistrictId({ districtId: record._id, isClasslink })
         }
-        disabled={
-          isClasslink
-            ? DISABLED_DISTRICT_SYNC_STATUS.indexOf(
-                record._source.syncStatus
-              ) !== -1
-            : DISABLED_DISTRICT_SYNC_STATUS.indexOf(
-                record._source.cleverSyncStatus
-              ) !== -1
-        }
         isClasslink={isClasslink}
       />
     ) : (

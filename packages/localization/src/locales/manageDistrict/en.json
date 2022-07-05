@@ -76,6 +76,7 @@
       "sso": "Sso",
       "password": "Password",
       "superAdmin": "Super Admin",
+      "role": "Role",
       "createdistrictadmin": "+ Create District Admin",
       "createda": {
         "title": "Create district admin",
@@ -85,6 +86,7 @@
         "enterpassword": "Enter password",
         "nocancel": "No, Cancel",
         "yescreate": "Yes, Create",
+        "selectrole": "Role",
         "validations": {
           "name": "Please input name",
           "email": "Please input email",
@@ -102,6 +104,7 @@
         "yesupdate": "Yes, Update",
         "enterpassword": "Enter password",
         "enterconfirmpassword": "Enter Confirm Password",
+        "selectrole": "Role",
         "validations": {
           "firstname": "Please input first name",
           "lastname": "Please input last name",
@@ -435,9 +438,13 @@
         "title": "Bulk Update Class(es)",
         "updateclasses": "Update Classes",
         "chosecourse": "Choose course to update all selected classes",
+        "addgrades": "Add grade(s) to all selected classes",
+        "choosesubject": "Choose Subject to update all selected classes",
         "addtags": "Add tag(s) to all selected classes",
         "choseenddate": "Choose an end date to update all selected classes",
         "changecourseassociation": "Change course association for selected classes",
+        "updategrades": "Update grades for selected classes",
+        "updatesubject": "Update subject for selected classes",
         "updatetags": "Update tags for selected classes",
         "updateenddate": "Update end date of selected classes",
         "proceed": "Proceed",

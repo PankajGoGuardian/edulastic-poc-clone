@@ -212,6 +212,7 @@ const stateConfig = {
     qwertyKeyboard: true,
     degreeMode: false,
     decimalToFraction: true,
+    plotSingleVariableImplicitEquations: false,
   },
   oregon: {
     ...standard,

@@ -74,6 +74,14 @@ const permissions = {
   ASSIGN: 'Only View and Assign',
 }
 
+// This link sharing permission is to show in the shareModal only.
+// There will be one more permission OFF for diabling the link sharing.
+const linkSharingPermissions = {
+  VIEW: 'Limited access (duplicate, assign)',
+  ASSIGN: 'View and assign',
+  NOACTION: 'No Actions (View Only)',
+}
+
 const permissionKeys = ['EDIT', 'VIEW', 'ASSIGN']
 
 const shareTypes = {
@@ -128,6 +136,9 @@ const SharedRow = ({ data, index, getEmail, getUserName, removeHandler }) => {
           {data.permission === 'VIEW' && 'Limited Actions (duplicate, assign)'}
         </span>
         <span>{data.permission === 'ASSIGN' && 'Only View and Assign'}</span>
+        <span>
+          {data.permission === 'NOACTION' && 'No Actions (View Only)'}
+        </span>
       </Col>
       <Col span={1}>
         <a data-cy="share-button-close" onClick={() => removeHandler()}>
@@ -543,7 +554,7 @@ class ShareModal extends React.Component {
     else if (sharedType === 'SCHOOL')
       sharedTypeMessage = `Anyone in ${schools.map((s) => s.name).join(', ')}`
     else if (sharedType === 'LINK')
-      sharedTypeMessage = `Anyone with a link can use the Test. Invited users also find it under "Shared with Me" in the library`
+      sharedTypeMessage = `Anyone with this link can access the test`
 
     const shareTypeKeysToDisplay = (isDA
       ? shareTypeKeyForDa
@@ -723,29 +734,37 @@ class ShareModal extends React.Component {
                     sharedKeysObj.INDIVIDUAL,
                     sharedKeysObj.SCHOOL,
                     sharedKeysObj.DISTRICT,
+                    sharedKeysObj.LINK,
                   ].includes(sharedType)
                     ? { marginLeft: '0px' }
                     : { display: 'none' }
                 }
                 onChange={this.permissionHandler}
                 data-cy="permission-button-pop"
-                disabled={[sharedKeysObj.PUBLIC, sharedKeysObj.LINK].includes(
-                  sharedType
-                )}
+                disabled={[sharedKeysObj.PUBLIC].includes(sharedType)}
                 value={permission}
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
               >
-                {_permissionKeys.map((item) =>
-                  (!isPublished && item === 'ASSIGN') ||
-                  (item === 'EDIT' &&
-                    [sharedKeysObj.SCHOOL, sharedKeysObj.DISTRICT].includes(
-                      sharedType
-                    )) ? null : (
-                    <Select.Option value={item} key={permissions[item]}>
-                      {permissions[item]}
-                    </Select.Option>
-                  )
-                )}
+                {sharedKeysObj.LINK !== sharedType
+                  ? _permissionKeys.map((item) =>
+                      (!isPublished && item === 'ASSIGN') ||
+                      (item === 'EDIT' &&
+                        [sharedKeysObj.SCHOOL, sharedKeysObj.DISTRICT].includes(
+                          sharedType
+                        )) ? null : (
+                        <Select.Option value={item} key={permissions[item]}>
+                          {permissions[item]}
+                        </Select.Option>
+                      )
+                    )
+                  : Object.keys(linkSharingPermissions).map((item) => (
+                      <Select.Option
+                        value={item}
+                        key={linkSharingPermissions[item]}
+                      >
+                        {linkSharingPermissions[item]}
+                      </Select.Option>
+                    ))}
               </IndividualSelectInputStyled>
             </FlexContainer>
           </PeopleBlock>

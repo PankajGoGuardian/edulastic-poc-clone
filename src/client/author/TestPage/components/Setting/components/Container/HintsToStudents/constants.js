@@ -1,0 +1,5 @@
+export const titleComponentTestId = 'show-hints-to-student-title'
+export const hintsSwitchTestId = 'show-hints-to-students-switch'
+// export const radioGroupTestId = 'styled-radio-group'
+export const radioOptionTestId = 'penalty-option-on-using-hints'
+export const penaltyPointsInputTestId = 'penalty-points-input'

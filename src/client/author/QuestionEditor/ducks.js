@@ -33,6 +33,8 @@ import { alignmentStandardsFromMongoToUI as transformDomainsToStandard } from '.
 
 import {
   getItemDetailSelector,
+  getItemDetailQuestionsSelector,
+  setItemLevelScoreFromRubricAction,
   UPDATE_ITEM_DETAIL_SUCCESS,
   setRedirectTestAction,
   hasStandards,
@@ -1127,6 +1129,25 @@ function* updateScoreAndValidationSaga({ payload }) {
     !isEmpty(currentQuestion)
   ) {
     const newQuestion = changeValidationWhenUnscored(score, currentQuestion)
+    const itemDetailQuestions = yield select(getItemDetailQuestionsSelector)
+    const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
+    const isUnscored = get(newQuestion, 'validation.unscored', false)
+    /**
+     * @see EV-35429 and EV-29700
+     * If question is marked as unscored itemLevelScoring should be set to false (EV-29700).
+     * If unscored is checked then as mentioned above itemLevelScoring was set to false
+     * but if unscored is unchecked itemLevelScoring value wasn't being changed.
+     * Items other than multipart have by default itemLevelScoring value true.
+     * Thus setting back itemLevelScoring value if unscored is unchecked (for non-multipart items).
+     */
+    if (isUnscored) {
+      yield put(setItemLevelScoreFromRubricAction(false))
+    } else if (
+      isUnscored === false &&
+      (itemDetailQuestionsLength === 0 || itemDetailQuestionsLength === 1)
+    ) {
+      yield put(setItemLevelScoreFromRubricAction(true))
+    }
     yield put({
       type: UPDATE_QUESTION_REQUEST,
       payload: newQuestion,

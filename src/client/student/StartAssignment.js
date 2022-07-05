@@ -50,9 +50,24 @@ const StartAssignment = ({
         testId,
         testType = 'assessment',
         safeBrowser,
+        hasInstruction,
+        instruction,
       } = timedAssignment
+      let instructionContent = ''
+      if (hasInstruction && instruction) {
+        // TODO: Reuse TestInfoModal component
+        instructionContent = (
+          <p data-testid="instruction">
+            <br />
+            <MathFormulaDisplay
+              dangerouslySetInnerHTML={{ __html: instruction }}
+            />
+          </p>
+        )
+      }
+
       const content = pauseAllowed ? (
-        <p>
+        <p data-testid="timed-instruction">
           {' '}
           This is a timed assignment which should be finished within the time
           limit set for this assignment. The time limit for this assignment is{' '}
@@ -61,6 +76,7 @@ const StartAssignment = ({
             {allowedTime / (60 * 1000)} minutes
           </span>
           . Do you want to continue?
+          {instructionContent}
         </p>
       ) : (
         <p>
@@ -72,6 +88,7 @@ const StartAssignment = ({
             {allowedTime / (60 * 1000)} minutes
           </span>{' '}
           and you can’t quit in between. Do you want to continue?
+          {instructionContent}
         </p>
       )
 

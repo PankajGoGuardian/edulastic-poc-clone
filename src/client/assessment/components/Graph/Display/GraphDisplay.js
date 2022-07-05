@@ -8,7 +8,7 @@ import loadable from '@loadable/component'
 import Progress from '@edulastic/common/src/components/Progress'
 import { defaultSymbols } from '@edulastic/constants'
 
-import { fractionStringToNumber } from '../../../utils/helpers'
+import { fractionStringToNumber, getFontSize } from '../../../utils/helpers'
 import { CLEAR } from '../../../constants/constantsForQuestions'
 import { setQuestionDataAction } from '../../../../author/src/actions/question'
 import { smallestZoomLevel } from '../../../../common/utils/static/zoom'
@@ -344,7 +344,6 @@ class GraphDisplay extends Component {
       drawLabelZero = true,
       xRadians,
       yRadians,
-      gridType,
     } = uiStyle
 
     const { width = 0, height = 0 } = this.getGraphDimensions(uiStyle)
@@ -365,7 +364,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height,
         snapTo: uiStyle.layoutSnapto,
-        fontSize: uiStyle.fontSize,
+        fontSize: getFontSize(uiStyle.fontSize, false),
       },
       pointParameters: {
         snapToGrid: true,
@@ -402,22 +401,9 @@ class GraphDisplay extends Component {
         useRadians: yRadians,
       },
       gridParams: {
-        showGrid,
         gridX: xDistance,
         gridY: yDistance,
-      },
-      polarGridParams: {
-        tMin: uiStyle.tMin,
-        tMax: uiStyle.tMax,
-        tDist: uiStyle.tDist,
-        rMin: uiStyle.rMin,
-        rMax: uiStyle.rMax,
-        rDist: uiStyle.rDist,
-        rShowAxis: uiStyle.rShowAxis,
-        tShowAxis: uiStyle.tShowAxis,
-        rDrawLabel: uiStyle.rDrawLabel,
-        tDrawLabel: uiStyle.tDrawLabel,
-        tRadians: uiStyle.tRadians,
+        showGrid,
       },
       bgImgOptions: {
         urlImg: backgroundImage.src,
@@ -451,7 +437,6 @@ class GraphDisplay extends Component {
       setQuestionData,
       graphData,
       onChangeKeypad,
-      gridType,
       symbols,
       showConnect,
       pointsOnEquEnabled,
@@ -523,7 +508,7 @@ class GraphDisplay extends Component {
         height,
         snapTo: uiStyle.layoutSnapto,
         orientation: uiStyle.orientation || 'horizontal',
-        fontSize: uiStyle.fontSize,
+        fontSize: getFontSize(uiStyle.fontSize, false),
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: numberlineAxis.stackResponses
           ? 75
@@ -652,7 +637,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height: uiStyle.layoutHeight,
         snapTo: uiStyle.layoutSnapto,
-        fontSize: uiStyle.fontSize,
+        fontSize: getFontSize(uiStyle.fontSize, false),
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: numberlineAxis.stackResponses
           ? 75
@@ -797,7 +782,7 @@ class GraphDisplay extends Component {
         margin: uiStyle.layoutMargin,
         height: height === 'auto' ? 150 : parseInt(height, 10),
         snapTo: uiStyle.layoutSnapto,
-        fontSize: uiStyle.fontSize,
+        fontSize: getFontSize(uiStyle.fontSize, false),
         titlePosition: parseInt(uiStyle.titlePosition, 10),
         linePosition: parseInt(uiStyle.linePosition, 10),
         pointBoxPosition: parseInt(uiStyle.pointBoxPosition, 10),

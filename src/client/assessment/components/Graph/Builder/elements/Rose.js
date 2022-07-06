@@ -33,7 +33,7 @@ function createPoint(board, p, color) {
       [point.X(), point.Y()],
       true
     )
-    if (polarCoords[2] >= 90) {
+    if (polarCoords[2] > 90 || polarCoords[2] === 75) {
       point.setPosition(JXG.COORDS_BY_USER, [p.x, p.y])
     }
   })
@@ -95,7 +95,7 @@ function onHandler(board, event) {
     [coords[1], coords[2]],
     true
   )
-  if (polarCoords[2] >= 90) {
+  if (polarCoords[2] > 90 || polarCoords[2] === 75) {
     return
   }
   const object = {

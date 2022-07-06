@@ -39,6 +39,8 @@ const GRAPH_TOOLS = {
   PIECEWISE_POINT: 'piecewise_point',
   NO_SOLUTION: 'no_solution',
   LINE_CUT: 'line_cut',
+  ROSE: 'rose',
+  CARDIOID: 'cardioid',
 
   // Default
   RESET: 'reset',
@@ -65,7 +67,16 @@ const EVENT_NAMES = {
   CHANGE_LABEL: 'change.label',
 }
 
+const RECT_GRID = 'rectangular'
+const COMPLEX_GRID = 'complex'
+const POLAR_GRID = 'polar'
+const GRID_TYPES = [RECT_GRID, POLAR_GRID] // COMPLEX_GRID,
+
 module.exports = {
   GRAPH_TOOLS,
   EVENT_NAMES,
+  GRID_TYPES,
+  RECT_GRID,
+  COMPLEX_GRID,
+  POLAR_GRID,
 }

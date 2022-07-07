@@ -20,6 +20,7 @@ import {
 
 import { Button } from 'antd/lib/radio'
 
+import { signupStateBykey } from '@edulastic/constants/const/signUpState'
 import { segmentApi } from '@edulastic/api'
 import TeacherCarousel from './TeacherCarousel'
 import RequestSchoolModal from './RequestSchoolModal'
@@ -150,6 +151,7 @@ const JoinSchool = ({
           type: userInfo.role,
           signOnMethod,
           institutionId: _school.schoolId,
+          currentSignUpState: signupStateBykey[currentSignUpState],
         },
         error: { message: t('common.policyviolation') },
       })

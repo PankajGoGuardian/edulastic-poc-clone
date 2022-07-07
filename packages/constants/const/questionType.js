@@ -133,6 +133,8 @@ const useLanguageFeatureQn = [
   CLASSIFICATION,
   ORDER_LIST,
   CLOZE_IMAGE_DROP_DOWN,
+  ESSAY_PLAIN_TEXT,
+  ESSAY_RICH_TEXT,
 ]
 
 module.exports = {

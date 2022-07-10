@@ -1108,7 +1108,7 @@ class Container extends PureComponent {
         return false
       }
       if (
-        test.itemGroups.some(
+        test?.itemGroups.some(
           (itemGroup) =>
             itemGroup.type === ITEM_GROUP_TYPES.STATIC &&
             itemGroup.deliveryType ===

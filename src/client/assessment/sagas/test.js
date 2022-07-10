@@ -493,7 +493,7 @@ function* loadTest({ payload }) {
     }
     if (
       preview &&
-      test.itemGroups.some(
+      test?.itemGroups.some(
         (group = {}) =>
           group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT &&
           !group.items?.length

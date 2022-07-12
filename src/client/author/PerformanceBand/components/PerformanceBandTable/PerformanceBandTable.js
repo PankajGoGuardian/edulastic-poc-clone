@@ -653,6 +653,7 @@ export class PerformanceBandTable extends React.Component {
               type="primary"
               onClick={this.updatePerformanceBand}
               disabled={!isChangeState}
+              data-cy="saveProfile"
             >
               Save
             </StyledSaveButton>

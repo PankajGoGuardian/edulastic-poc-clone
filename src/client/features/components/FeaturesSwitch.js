@@ -16,7 +16,7 @@ import { isFeatureAccessibleToUser as isFeatureAccessible } from '../featuresUti
  * features is optional, if omitted only gradeSubject will be taken into account
  *
  */
-const FeaturesSwitch = (props) => {
+export const FeaturesSwitch = (props) => {
   let { children, style } = props
   const { actionOnInaccessible = 'hidden', redirectRoute = '' } = props
 

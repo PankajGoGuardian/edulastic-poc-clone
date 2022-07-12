@@ -395,6 +395,7 @@ class StandardsProficiencyTable extends React.Component {
                 type="primary"
                 onClick={this.saveScale}
                 disabled={!isChangeState}
+                data-cy="saveProfile"
               >
                 Save
               </EduButton>

@@ -202,11 +202,14 @@ class TestSetting extends Component {
             )}
             <ContentWrapper>
               <SaSchoolSelect />
-              <StyledHeading1>Default Options</StyledHeading1>
-              <StyledRow type="flex" gutter={40}>
-                <StyledCol span={8}>
+              <StyledHeading1 data-cy="defaultOptionsContent">
+                Default Options
+              </StyledHeading1>
+              <StyledRow type="flex" gutter={40} data-cy="defaultOptions">
+                <StyledCol span={8} data-cy="selectLinkSharing">
                   <InputLabel>SELECT LINK SHARING FOR NEW TEST</InputLabel>
                   <SelectInputStyled
+                    data-cy="selectLink"
                     value={
                       testSetting.isLinkSharingEnabled
                         ? get(testSetting, 'linkSharingPermission') || 'VIEW'
@@ -227,7 +230,7 @@ class TestSetting extends Component {
                     ))}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol>
+                <StyledCol data-cy="allowPartialScore">
                   <InputLabel>Allow Partial Score </InputLabel>
                   <StyledRadioGrp
                     defaultValue={testSetting.partialScore}
@@ -238,7 +241,7 @@ class TestSetting extends Component {
                     <RadioBtn value={false}>No</RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
-                <StyledCol>
+                <StyledCol data-cy="showTimer">
                   <InputLabel>Show Timer </InputLabel>
                   <StyledRadioGrp
                     defaultValue={testSetting.timer}
@@ -251,11 +254,14 @@ class TestSetting extends Component {
                 </StyledCol>
               </StyledRow>
 
-              <StyledHeading1>Default Performance Band Profiles</StyledHeading1>
-              <StyledRow gutter={40}>
-                <StyledCol span={8}>
+              <StyledHeading1 data-cy="performanceBandProfiles">
+                Default Performance Band Profiles
+              </StyledHeading1>
+              <StyledRow gutter={40} data-cy="defaultPerformanceBand">
+                <StyledCol span={8} data-cy="commonTest">
                   <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="commonTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.performanceBand.common'
@@ -274,9 +280,10 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
+                <StyledCol span={8} data-cy="classTest">
                   <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="classTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.performanceBand.assessment'
@@ -295,9 +302,10 @@ class TestSetting extends Component {
                     {performanceBandOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
+                <StyledCol span={8} data-cy="practiceHomeworkQuizTest">
                   <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
                   <SelectInputStyled
+                    data-cy="practiceHomeworkQuizTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.performanceBand.practice'
@@ -318,13 +326,14 @@ class TestSetting extends Component {
                 </StyledCol>
               </StyledRow>
 
-              <StyledHeading1>
+              <StyledHeading1 data-cy="standardProficiencyProfiles">
                 Default Standard Proficiency Profiles
               </StyledHeading1>
-              <StyledRow gutter={40}>
-                <StyledCol span={8}>
+              <StyledRow gutter={40} data-cy="defaultStandardProficiency">
+                <StyledCol span={8} data-cy="commonTest">
                   <InputLabel>Common Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="commonTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.standardProficiency.common'
@@ -343,9 +352,10 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
+                <StyledCol span={8} data-cy="classTest">
                   <InputLabel>Class Test</InputLabel>
                   <SelectInputStyled
+                    data-cy="classTestBand"
                     value={get(
                       testSetting,
                       'testTypesProfile.standardProficiency.assessment'
@@ -364,9 +374,10 @@ class TestSetting extends Component {
                     {standardsProficiencyOptions}
                   </SelectInputStyled>
                 </StyledCol>
-                <StyledCol span={8}>
+                <StyledCol span={8} data-cy="practiceHomeworkQuizTest">
                   <InputLabel>Practice Test/ Homework/ Quiz</InputLabel>
                   <SelectInputStyled
+                    data-cy="practiceHomeworkQuizTestProficiency"
                     value={get(
                       testSetting,
                       'testTypesProfile.standardProficiency.practice'
@@ -393,7 +404,11 @@ class TestSetting extends Component {
                 style={{ marginTop: '15px' }}
               >
                 <HeaderSaveButton>
-                  <EduButton isBlue onClick={this.updateValue}>
+                  <EduButton
+                    data-cy="saveButton"
+                    isBlue
+                    onClick={this.updateValue}
+                  >
                     <IconSaveNew /> Save
                   </EduButton>
                 </HeaderSaveButton>

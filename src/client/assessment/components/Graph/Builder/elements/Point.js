@@ -14,6 +14,21 @@ function getColorParams(color) {
   }
 }
 
+function getPointCoordsForPolar(intersections, point, snapToGrid) {
+  if (!snapToGrid || !intersections) {
+    return point
+  }
+
+  function distance(p) {
+    return Math.sqrt((point[0] - p[0]) ** 2 + (point[1] - p[1]) ** 2)
+  }
+
+  const closest = intersections.reduce((a, b) =>
+    distance(a) < distance(b) ? a : b
+  )
+  return closest
+}
+
 function create(board, object, settings = {}) {
   const {
     labelIsVisible = true,
@@ -26,6 +41,10 @@ function create(board, object, settings = {}) {
   } = settings
 
   const { x, y, id = null, label, baseColor, priorityColor } = object
+  const isPolarGrid = board.gridType === CONSTANT.POLAR_GRID
+  const coords = isPolarGrid
+    ? getPointCoordsForPolar(board.polarIntersections, [x, y], snapToGrid)
+    : [x, y]
 
   const hideColor = pointIsVisible ? null : 'transparent'
 
@@ -39,7 +58,7 @@ function create(board, object, settings = {}) {
       visible: labelIsVisible,
     },
     fixed,
-    snapToGrid,
+    snapToGrid: isPolarGrid ? false : snapToGrid,
     id,
   }
 
@@ -60,7 +79,11 @@ function create(board, object, settings = {}) {
     pointConf.highlightFillColor = '#fff'
   }
 
-  const point = board?.$board?.create('point', [x, y], pointConf)
+  const point = board?.$board?.create(
+    'point',
+    [coords[0], coords[1]],
+    pointConf
+  )
 
   point.pointIsVisible = object.pointIsVisible
   point.labelIsVisible = object.labelIsVisible
@@ -70,6 +93,14 @@ function create(board, object, settings = {}) {
 
   if (!fixed && attchEvent) {
     point.on('up', () => {
+      if (isPolarGrid && snapToGrid) {
+        const closest = getPointCoordsForPolar(
+          board.polarIntersections,
+          [point.X(), point.Y()],
+          snapToGrid
+        )
+        point.setPosition(JXG.COORDS_BY_USER, [closest[0], closest[1]])
+      }
       if (point.dragged) {
         point.dragged = false
         if (!point.isTemp) {
@@ -146,4 +177,5 @@ export default {
   getConfig,
   create,
   getColorParams,
+  getPointCoordsForPolar,
 }

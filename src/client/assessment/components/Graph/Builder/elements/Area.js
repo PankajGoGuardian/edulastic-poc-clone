@@ -29,6 +29,8 @@ import {
   Circle,
   Ellipse,
   Exponent2,
+  Cardioid,
+  Rose,
 } from '.'
 
 const jxgType = 100
@@ -48,6 +50,8 @@ const AVAILABLE_TYPES = [
   Cos.jxgType,
   Equation.jxgType,
   Exponent2.jxgType,
+  Cardioid.jxgType,
+  Rose.jxgType,
 ]
 
 function rnd(num) {

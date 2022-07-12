@@ -1574,7 +1574,7 @@ class ClassBoard extends Component {
                       placement="top"
                       title={
                         isRedirectButtonDisabled
-                          ? 'REDIRECT IS NOT PERMITTED'
+                          ? 'Redirect is not permitted'
                           : ''
                       }
                     >

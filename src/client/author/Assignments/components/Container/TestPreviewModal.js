@@ -135,6 +135,7 @@ const TestPreviewModal = ({
             currentAssignmentClass={currentAssignmentClass}
             defaultAP={!PRACTICE.includes(testType)}
             isModalVisible={isModalVisible}
+            viewAsStudent
             {...restProps}
           />
         </WithResources>

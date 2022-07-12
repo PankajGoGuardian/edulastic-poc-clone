@@ -19,9 +19,13 @@ import { compose } from 'redux'
 import { ButtonsContainer } from '../../../../../common/styled'
 import { currentDistrictInstitutionIds } from '../../../../src/selectors/user'
 import { addNewTagAction, getAllTagsAction } from '../../../../TestPage/ducks'
+import selectsData from '../../../../TestPage/components/common/selectsData'
+import { FieldWrapper } from './styled'
 
 const { Button } = StyledComponents
 const { Option } = Select
+
+const { allGrades, allSubjects } = selectsData
 
 const CONFIG = {
   course: 'Course',
@@ -150,7 +154,7 @@ function BulkEditModal({
     switch (updateMode) {
       case 'course':
         return (
-          <div>
+          <FieldWrapper>
             <FieldLabel>
               {t('class.components.bulkedit.chosecourse')}
             </FieldLabel>
@@ -170,11 +174,53 @@ function BulkEditModal({
                 </Option>
               ))}
             </SelectInputStyled>
-          </div>
+          </FieldWrapper>
+        )
+      case 'grades':
+        return (
+          <FieldWrapper>
+            <FieldLabel>{t('class.components.bulkedit.addgrades')}</FieldLabel>
+            <SelectInputStyled
+              style={{ width: '100%' }}
+              mode="multiple"
+              notFoundContent={null}
+              placeholder="Please enter 1 or more characters"
+              onChange={(val) => setValue(val)}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              optionFilterProp="children"
+            >
+              {allGrades.map((el) => (
+                <Option key={el.value} value={el.value}>
+                  {el.text}
+                </Option>
+              ))}
+            </SelectInputStyled>
+          </FieldWrapper>
+        )
+      case 'subject':
+        return (
+          <FieldWrapper>
+            <FieldLabel>
+              {t('class.components.bulkedit.choosesubject')}
+            </FieldLabel>
+            <SelectInputStyled
+              style={{ width: '100%' }}
+              notFoundContent={null}
+              placeholder="Please enter 1 or more characters"
+              onChange={(val) => setValue(val)}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              {allSubjects.map((el) => (
+                <Option key={el.value} value={el.value}>
+                  {el.text}
+                </Option>
+              ))}
+            </SelectInputStyled>
+          </FieldWrapper>
         )
       case 'tags':
         return (
-          <div>
+          <FieldWrapper>
             <FieldLabel>{t('class.components.bulkedit.addtags')}</FieldLabel>
             {getFieldDecorator('tags')(
               <SelectInputStyled
@@ -211,11 +257,11 @@ function BulkEditModal({
                 ))}
               </SelectInputStyled>
             )}
-          </div>
+          </FieldWrapper>
         )
       case 'endDate':
         return (
-          <div>
+          <FieldWrapper>
             <FieldLabel>
               {t('class.components.bulkedit.choseenddate')}
             </FieldLabel>
@@ -224,7 +270,7 @@ function BulkEditModal({
               onChange={(date) => setValue(date.valueOf())}
               format="ll"
             />
-          </div>
+          </FieldWrapper>
         )
       default:
         return <span>{t('class.components.bulkedit.default')}</span>
@@ -263,7 +309,10 @@ function BulkEditModal({
     >
       {updateView ? (
         <>
-          <Button onClick={() => setBulkEditUpdateView(false)} noStyle>
+          <Button
+            onClick={() => setBulkEditUpdateView(false)}
+            style={{ marginBottom: '10px' }}
+          >
             <Icon type="left" />
             {t('class.components.bulkedit.back')}
           </Button>
@@ -305,6 +354,12 @@ function BulkEditModal({
                         updateMode === 'course'
                           ? `_source.${updateMode}.name`
                           : `_source.${updateMode}`,
+                      render: (items) => {
+                        if (updateMode === 'grades' && Array.isArray(items)) {
+                          return items.join(',')
+                        }
+                        return items
+                      },
                     },
                   ]
             }
@@ -320,13 +375,19 @@ function BulkEditModal({
             onChange={(evt) => setBulkEditMode(evt.target.value)}
             value={updateMode}
           >
-            <RadioBtn value="course">
+            <RadioBtn mb="5px" value="course">
               {t('class.components.bulkedit.changecourseassociation')}
             </RadioBtn>
-            <RadioBtn value="tags">
+            <RadioBtn mb="5px" value="grades">
+              {t('class.components.bulkedit.updategrades')}
+            </RadioBtn>
+            <RadioBtn mb="5px" value="subject">
+              {t('class.components.bulkedit.updatesubject')}
+            </RadioBtn>
+            <RadioBtn mb="5px" value="tags">
               {t('class.components.bulkedit.updatetags')}
             </RadioBtn>
-            <RadioBtn value="endDate">
+            <RadioBtn mb="5px" value="endDate">
               {t('class.components.bulkedit.updateenddate')}
             </RadioBtn>
           </RadioGrp>

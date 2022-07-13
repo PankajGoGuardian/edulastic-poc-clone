@@ -3,6 +3,7 @@ import {
   greyThemeLighter,
   themeColorBlue,
   lightGrey12,
+  textBlackColor,
 } from '@edulastic/colors'
 import { isObject } from 'lodash'
 import styled, { css, withTheme } from 'styled-components'
@@ -71,6 +72,7 @@ const DropContainer = ({
     ...style,
     background:
       rest.evaluationBackgroundColor || style.background || greyThemeLighter,
+    color: textBlackColor,
   }
 
   const onClickHandler = (e) => {

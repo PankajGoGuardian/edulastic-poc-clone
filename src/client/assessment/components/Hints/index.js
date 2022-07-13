@@ -86,9 +86,8 @@ const Hints = ({
   storeRubricData,
   showHintsToStudents,
   penaltyOnUsingHints,
-  viewAsStudent,
 }) => {
-  if (showHintsToStudents === false) {
+  if (isStudent && showHintsToStudents === false) {
     return null
   }
   const { id } = question
@@ -128,11 +127,7 @@ const Hints = ({
 
   const handleShowHints = (e) => {
     e.stopPropagation()
-    if (
-      (isStudent || viewAsStudent) &&
-      penaltyOnUsingHints > 0 &&
-      showCount === 0
-    ) {
+    if (isStudent && penaltyOnUsingHints > 0 && showCount === 0) {
       Modal.confirm({
         title: 'Do you want to proceed?',
         content:

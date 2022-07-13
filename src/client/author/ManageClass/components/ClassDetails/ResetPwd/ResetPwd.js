@@ -1,11 +1,12 @@
-import { CustomModalStyled, EduButton } from '@edulastic/common'
-import { Form } from 'antd'
-import { get } from 'lodash'
-import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { get } from 'lodash'
+import PropTypes from 'prop-types'
+import { Form } from 'antd'
+import { EduButton, CustomModalStyled } from '@edulastic/common'
 import { resetPasswordRequestAction } from '../../../ducks'
-import { StyledInput, Title } from './styled'
+import { getUserOrgData } from '../../../../src/selectors/user'
+import { StyledModal, Title, ActionButton, StyledInput } from './styled'
 
 class ResetPwd extends React.Component {
   static propTypes = {
@@ -14,6 +15,7 @@ class ResetPwd extends React.Component {
     isOpen: PropTypes.bool,
     changePwd: PropTypes.func.isRequired,
     selectedStudent: PropTypes.array.isRequired,
+    orgData: PropTypes.object.isRequired,
     selectedClass: PropTypes.object.isRequired,
   }
 
@@ -28,17 +30,21 @@ class ResetPwd extends React.Component {
       changePwd,
       selectedStudent,
       handleCancel,
+      orgData,
       selectedClass,
     } = this.props
     form.validateFields((err, values) => {
       if (!err) {
         const { code: classCode } = selectedClass
         const userIds = selectedStudent.map((std) => std._id || std.userId)
+        const { districtId } = orgData
         const { password: newPassword } = values
         changePwd({
           userIds,
           newPassword,
           classCode,
+          userRole: 'student',
+          districtId,
         })
         if (handleCancel) {
           handleCancel()
@@ -135,6 +141,7 @@ const ResetPwdModal = Form.create({ name: 'reset_password' })(ResetPwd)
 export default connect(
   (state) => ({
     selectedStudent: get(state, 'manageClass.selectedStudent', []),
+    orgData: getUserOrgData(state),
     selectedClass: get(state, 'manageClass.entity'),
   }),
   {

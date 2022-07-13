@@ -85,23 +85,6 @@ const patternsByQuestionType = {
     /validation\.validResponse\.value\.(.*?)/,
     /validation\.altResponses\.(\d+)\.value\.(.*?)/,
   ],
-  [questionType.ESSAY_RICH_TEXT]: [
-    ...commonPatterns,
-    /placeholder/,
-    /metadata\.distractor_rationale_response_level\.(\d+)/,
-  ],
-  [questionType.ESSAY_PLAIN_TEXT]: [
-    ...commonPatterns,
-    /placeholder/,
-    /metadata\.distractor_rationale_response_level\.(\d+)/,
-  ],
-  // [questionType.SHORT_TEXT]: [
-  //   ...commonPatterns,
-  //   /placeholder/,
-  //   /metadata\.distractor_rationale_response_level\.(\d+)/,
-  //   /validation\.validResponse\.value/,
-  //   /validation\.altResponses\.(\d+)\.value/,
-  // ],
 }
 
 const clozeTypes = [

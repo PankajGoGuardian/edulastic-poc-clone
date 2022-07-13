@@ -12,32 +12,27 @@ export default ({
   showHintsToStudents,
   penaltyOnUsingHints,
   updateTestData,
+  showHintsFeatureAllowed,
   isTestlet,
-  togglePenaltyOnUsingHints,
-  premium,
 }) => {
-  if (isDocBased || isTestlet) {
+  if (isDocBased || isTestlet || !showHintsFeatureAllowed) {
     return null
   }
-
-  const isDisabled = disabled || !premium
 
   return (
     <Block id="show-hints-to-students" smallSize={isSmallSize}>
       <SettingContainer>
         <Title
           showHintsToStudents={showHintsToStudents}
-          disabled={isDisabled}
+          disabled={disabled}
           updateTestData={updateTestData}
-          premium={premium}
         />
         <Body
-          disabled={isDisabled}
+          disabled={disabled}
           isSmallSize={isSmallSize}
           penaltyOnUsingHints={penaltyOnUsingHints}
           showHintsToStudents={showHintsToStudents}
           updateTestData={updateTestData}
-          togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
         />
       </SettingContainer>
     </Block>

@@ -68,10 +68,7 @@ const GradebookFilters = ({
           }}
         >
           <StyledSpan> FILTERS </StyledSpan>
-          <StyledSpan onClick={clearFilters} data-cy="clearFilters">
-            {' '}
-            CLEAR ALL{' '}
-          </StyledSpan>
+          <StyledSpan onClick={clearFilters}> CLEAR ALL </StyledSpan>
         </Col>
         <FilterDropdown
           label="Assessment"

@@ -10,7 +10,6 @@ export default ({
   showHintsToStudents,
   penaltyOnUsingHints,
   updateTestData,
-  togglePenaltyOnUsingHints,
 }) => {
   if (!showHintsToStudents) {
     return null
@@ -32,7 +31,6 @@ export default ({
             disabled={disabled}
             penaltyOnUsingHints={penaltyOnUsingHints}
             updatePenaltyPoints={updatePenaltyPoints}
-            togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
           />
         </Col>
       </Row>

@@ -81,7 +81,7 @@ class MathInput extends React.PureComponent {
   }
 
   componentDidMount() {
-    const { defaultFocus, value, onInput: saveAnswer, isTemplate } = this.props
+    const { defaultFocus, value, onInput: saveAnswer } = this.props
     if (!window.MathQuill) return
 
     const MQ = window.MathQuill.getInterface(2)
@@ -101,14 +101,9 @@ class MathInput extends React.PureComponent {
 
     const mathField = MQ.MathField(this.mathFieldRef.current, window.MathQuill)
     this.mQuill = mathField
-    /**
-     * keep redux store in sync with sanitized latex value
-     * Mathinput is rendered in Template section of question. saveAnswer need not to be called for template section on mount
-     */
+    // keep redux store in sync with sanitized latex value
     const mathFieldValue = this.sanitizeLatex(value)
-    if (!isTemplate) {
-      saveAnswer(mathFieldValue)
-    }
+    saveAnswer(mathFieldValue)
     mathField.write(mathFieldValue)
     this.mathField1 = mathField
     if (defaultFocus) {
@@ -586,7 +581,6 @@ MathInput.propTypes = {
   resetMath: PropTypes.bool,
   showDragHandle: PropTypes.bool,
   isFromDocBased: PropTypes.bool,
-  isTemplate: PropTypes.bool,
 }
 
 MathInput.defaultProps = {
@@ -614,7 +608,6 @@ MathInput.defaultProps = {
   resetMath: false,
   showDragHandle: true,
   isFromDocBased: false,
-  isTemplate: false,
 }
 
 export default MathInput

@@ -32,7 +32,6 @@ import {
   getDisableAnswerOnPaperSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
-  togglePenaltyOnUsingHintsAction,
 } from '../../../TestPage/ducks'
 import { getSelectedResourcesAction } from '../../duck'
 import { getListOfActiveStudents } from '../../utils'
@@ -481,7 +480,6 @@ class SimpleOptions extends React.Component {
       isAssigning,
       isPlaylist,
       allowReferenceMaterial,
-      togglePenaltyOnUsingHints,
     } = this.props
 
     const { collections } = testSettings
@@ -648,7 +646,6 @@ class SimpleOptions extends React.Component {
                 showAssignModuleContent={showAssignModuleContent}
                 allowReferenceMaterial={allowReferenceMaterial}
                 allowToUseShowHintsToStudents={features?.showHintsToStudents}
-                togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
               />
             </TabContentContainer>
           </TabPane>
@@ -783,7 +780,6 @@ const enhance = compose(
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       selectedResourcesAction: getSelectedResourcesAction,
-      togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
     }
   )
 )

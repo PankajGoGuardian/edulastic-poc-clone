@@ -601,12 +601,6 @@ const AssessmentContainer = ({
     return questionsById
   }, [questionsById, preview, testKeypad])
 
-  const classLevelSettings = useMemo(() => {
-    const classes = get(assignmentById, [currentAssignment, 'class'], [])
-    const classSettings = classes.find((_class) => _class._id === groupId)
-    return classSettings
-  }, [assignmentById, currentAssignment, groupId])
-
   const itemId = preview || testletType ? 'new' : match.params.itemId || 'new'
   const itemIndex =
     itemId === 'new' ? 0 : items.findIndex((ele) => ele._id === itemId)
@@ -1314,7 +1308,6 @@ const AssessmentContainer = ({
     canShowReferenceMaterial:
       !isEmpty(referenceDocAttributes) && allowReferenceMaterial,
     ...restProps,
-    classLevelSettings,
   }
 
   useEffect(() => {

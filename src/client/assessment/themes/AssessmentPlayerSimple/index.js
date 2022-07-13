@@ -38,7 +38,10 @@ import { changePreviewAction } from '../../../author/src/actions/view'
 import { setUserAnswerAction } from '../../actions/answers'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
-import { showHintsAction } from '../../actions/userInteractions'
+import {
+  showHintsAction,
+  saveHintUsageAction,
+} from '../../actions/userInteractions'
 import { CLEAR } from '../../constants/constantsForQuestions'
 import { showScratchpadInfoNotification } from '../../utils/helpers'
 import UserWorkUploadModal from '../../components/UserWorkUploadModal'
@@ -275,6 +278,7 @@ class AssessmentPlayerSimple extends React.Component {
       zoomLevel,
       windowWidth,
       showHints,
+      saveHintUsageData,
       timedAssignment = false,
       groupId,
       highlights,
@@ -283,6 +287,8 @@ class AssessmentPlayerSimple extends React.Component {
       user: { firstName = '', lastName = '' },
       playerSkinType,
       canShowPlaybackOptionTTS,
+      classLevelSettings,
+      viewAsStudent,
     } = this.props
     const {
       showExitPopup,
@@ -393,6 +399,9 @@ class AssessmentPlayerSimple extends React.Component {
               tool={toolsOpenStatus}
               isPremiumContentWithoutAccess={!!premiumCollectionWithoutAccess}
               premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+              saveHintUsageData={saveHintUsageData}
+              classLevelSettings={classLevelSettings}
+              viewAsStudent={viewAsStudent}
             />
             {!previewPlayer && (
               <SubmitConfirmation
@@ -504,6 +513,7 @@ const enhance = compose(
       setUserAnswer: setUserAnswerAction,
       updateTestPlayer: updateTestPlayerAction,
       showHints: showHintsAction,
+      saveHintUsageData: saveHintUsageAction,
     }
   )
 )

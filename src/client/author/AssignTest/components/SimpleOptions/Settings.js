@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { Row, Col, Select, Input, InputNumber, Modal } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { green, red, blueBorder, themeColor } from '@edulastic/colors'
-import { test, testTypes } from '@edulastic/constants'
+import { test, testTypes, roleuser } from '@edulastic/constants'
 import { playerSkinValues } from '@edulastic/constants/const/test'
 import {
   RadioBtn,
@@ -31,11 +31,13 @@ import {
 import {
   getUserRole,
   allowedToSelectMultiLanguageInTest,
+  getUserIdSelector,
 } from '../../../src/selectors/user'
 import { getDisableAnswerOnPaperSelector } from '../../../TestPage/ducks'
 import {
   getIsOverrideFreezeSelector,
   getmultiLanguageEnabled,
+  getAdditionalDataSelector,
 } from '../../../ClassBoard/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
@@ -84,6 +86,10 @@ const Settings = ({
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
   t,
+  additionalData,
+  userId,
+  userRole,
+  togglePenaltyOnUsingHints,
 }) => {
   const [tempTestSettings, updateTempTestSettings] = useState({
     ...testSettings,
@@ -256,7 +262,6 @@ const Settings = ({
     assessmentSuperPowersTimedTest,
     assessmentSuperPowersRestrictQuestionBackNav,
     maxAttemptAllowed,
-    showHintsToStudents: showHintsToStudentsFeatureAllowed,
   } = features
 
   const {
@@ -294,7 +299,14 @@ const Settings = ({
     restrictNavigationOutAttemptsThreshold > 1
 
   const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
-
+  let isAssignedTeacher = true
+  if (
+    additionalData &&
+    `${additionalData?.assignedBy?._id}` !== `${userId}` &&
+    userRole === roleuser.TEACHER
+  ) {
+    isAssignedTeacher = false
+  }
   return (
     <SettingsWrapper isAdvanced={isAdvanced}>
       <StyledDiv>
@@ -473,7 +485,7 @@ const Settings = ({
                   data-cy="allow-teacher-redirect-switch"
                   size="small"
                   defaultChecked
-                  disabled={freezeSettings}
+                  disabled={freezeSettings || !isAssignedTeacher}
                   checked={allowTeacherRedirect}
                   onChange={(value) =>
                     overRideSettings('allowTeacherRedirect', value)
@@ -898,13 +910,13 @@ const Settings = ({
         {/* Timed TEST */}
 
         {/* Show hints to students */}
-        {showHintsToStudentsFeatureAllowed && !isDocBased && !isTestlet && (
+        {!isDocBased && !isTestlet && (
           <SettingContainer>
-            {/* <DetailsTooltip
+            <DetailsTooltip
               title="SHOW HINTS TO STUDENTS"
-              content="show hints to students"
-              premium={showHintsToStudentsFeatureAllowed}
-            /> */}
+              content="Students will be able to see the hint associated with an item while attempting the assignment"
+              premium={premium}
+            />
             <StyledRow gutter={16} mb="15p">
               <Col span={12}>
                 <Label>SHOW HINTS TO STUDENTS</Label>
@@ -912,7 +924,7 @@ const Settings = ({
               <Col span={12}>
                 <StyledRow borderBottom="none" padding="0px 0px 10px 0px">
                   <ShowHintsSwitch
-                    disabled={freezeSettings}
+                    disabled={freezeSettings || !premium}
                     checked={showHintsToStudents}
                     onChangeHandler={(value) =>
                       overRideSettings('showHintsToStudents', value)
@@ -922,11 +934,12 @@ const Settings = ({
                 {showHintsToStudents && (
                   <StyledRow borderBottom="none" padding="0px">
                     <RadioOptions
-                      disabled={freezeSettings}
+                      disabled={freezeSettings || !premium}
                       penaltyOnUsingHints={penaltyOnUsingHints}
                       updatePenaltyPoints={(value) =>
                         overRideSettings('penaltyOnUsingHints', value)
                       }
+                      togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
                       isAssignPage
                     />
                   </StyledRow>
@@ -1105,8 +1118,10 @@ const enhance = compose(
         : state?.tests?.entity?.summary?.totalItems,
       freezeSettings: getIsOverrideFreezeSelector(state),
       features: state?.user?.user?.features,
+      userId: getUserIdSelector(state),
       lcbBultiLanguageEnabled: getmultiLanguageEnabled(state),
       allowedToSelectMultiLanguage: allowedToSelectMultiLanguageInTest(state),
+      additionalData: getAdditionalDataSelector(state),
     }),
     null
   )

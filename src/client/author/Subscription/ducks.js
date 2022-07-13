@@ -25,6 +25,15 @@ export const getSubscriptionDataSelector = createSelector(
   subscriptionSelector,
   (state) => state.subscriptionData
 )
+export const getCartVisibleSelector = createSelector(
+  subscriptionSelector,
+  (state) => state.cartVisible
+)
+export const getCartQuantities = createSelector(
+  subscriptionSelector,
+  (state) => state.cartQuantities
+)
+
 export const getSubscriptionSelector = createSelector(
   getSubscriptionDataSelector,
   (state) => state.subscription

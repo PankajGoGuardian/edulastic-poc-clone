@@ -79,7 +79,7 @@ const GradebookFilters = ({
           }
           value={filters.assessmentIds}
           options={data.assessments}
-          dataCy="grades"
+          dataCy="filter-test-name"
         />
         <FilterDropdown
           label="Status"

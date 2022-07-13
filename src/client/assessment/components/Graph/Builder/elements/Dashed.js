@@ -12,6 +12,8 @@ import {
   Cos,
   Tangent,
   Exponent2,
+  Cardioid,
+  Rose,
 } from '.'
 import PiecewiseLine from './PiecewiseLine'
 import { CONSTANT } from '../config'
@@ -32,6 +34,8 @@ const availableTypes = [
   Sin.jxgType,
   Cos.jxgType,
   PiecewiseLine.jxgType,
+  Cardioid.jxgType,
+  Rose.jxgType,
 ]
 
 function onHandler() {

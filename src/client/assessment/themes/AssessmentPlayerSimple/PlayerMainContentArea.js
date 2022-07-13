@@ -46,6 +46,9 @@ const PlayerContentArea = ({
   isPremiumContentWithoutAccess,
   referenceDocAttributes,
   isShowReferenceModal,
+  saveHintUsageData,
+  classLevelSettings,
+  viewAsStudent,
 }) => {
   const item = items[currentItem]
   const previousQuestionActivity = previousQuestionActivities[item._id]
@@ -68,6 +71,15 @@ const PlayerContentArea = ({
           setCrossAction,
           setHighlights,
         }
+
+  const saveHintUsage = (hintUsage) => {
+    if (item?._id) {
+      saveHintUsageData({
+        itemId: item._id,
+        hintUsage,
+      })
+    }
+  }
 
   return (
     <Main>
@@ -92,6 +104,9 @@ const PlayerContentArea = ({
           responsiveWidth={responsiveWidth}
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           premiumCollectionWithoutAccess={premiumCollectionWithoutAccess}
+          saveHintUsage={saveHintUsage}
+          classLevelSettings={classLevelSettings}
+          viewAsStudent={viewAsStudent}
           {...extraTestItemProps}
         />
       </MainContent>

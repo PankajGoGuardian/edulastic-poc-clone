@@ -6,7 +6,12 @@ import { isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
-import { CustomModalStyled, FlexContainer, EduButton } from '@edulastic/common'
+import {
+  CustomModalStyled,
+  FlexContainer,
+  EduButton,
+  notification,
+} from '@edulastic/common'
 import {
   dashBorderColor,
   dragDropUploadText,
@@ -14,6 +19,7 @@ import {
   greyThemeLighter,
   themeColorBlue,
   borderGrey,
+  red,
 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
 
@@ -28,6 +34,8 @@ import {
 } from '../../../sharedDucks/dataWarehouse'
 
 import dropdownData from './dropdownData.json'
+
+const MAX_FILE_SIZE = 30000000
 
 const { Option } = Select
 
@@ -161,7 +169,16 @@ const DataWarehouseUploadModal = ({
         </StyledRow>
 
         <Dropzone
-          maxSize="104857600"
+          maxSize={MAX_FILE_SIZE}
+          onDropRejected={(f) => {
+            if (f[0].size > MAX_FILE_SIZE) {
+              notification({
+                msg: 'Please select a file with size less than 30 MB.',
+                type: 'error',
+                exact: true,
+              })
+            }
+          }}
           onDrop={([f]) => setFile(f)}
           accept=".csv, application/vnd.ms-excel, text/csv" // text/csv might not work for Windows based machines
           className="dropzone"
@@ -193,7 +210,7 @@ const DataWarehouseUploadModal = ({
                       <StyledText isComment>
                         {`or `}
                         <Underlined>browse</Underlined>
-                        {` : CSV (100MB Max)`}
+                        {` : CSV (30MB Max)`}
                       </StyledText>
                     </FlexContainer>
                   </>

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 
 import { RadioBtn } from '@edulastic/common'
 
@@ -12,14 +12,28 @@ export default ({
   penaltyOnUsingHints,
   updatePenaltyPoints,
   isAssignPage,
+  togglePenaltyOnUsingHints,
 }) => {
-  const [radioValue, updateRadioValue] = useState(
-    penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty'
-  )
+  const [radioValue, updateRadioValue] = useState('noPenalty')
+
+  useEffect(() => {
+    const intitialRadioValue =
+      penaltyOnUsingHints > 0 ? 'withPenalty' : 'noPenalty'
+    updateRadioValue(intitialRadioValue)
+    if (!disabled) {
+      togglePenaltyOnUsingHints(intitialRadioValue === 'withPenalty')
+    }
+    return () => {
+      if (!disabled) {
+        togglePenaltyOnUsingHints(false)
+      }
+    }
+  }, [penaltyOnUsingHints, disabled])
 
   const handleChangeRadio = (event) => {
     const choice = event.target.value
     updateRadioValue(choice)
+    togglePenaltyOnUsingHints(choice === 'withPenalty')
     if (choice === 'noPenalty' && penaltyOnUsingHints > 0) {
       updatePenaltyPoints(0)
     }
@@ -59,12 +73,12 @@ export default ({
           checked={radioValue === 'withPenalty'}
           disabled={disabled}
         >
-          Penalize{' '}
+          Penalize
           <PenaltyPointsInput
             penaltyOnUsingHints={penaltyOnUsingHints}
             updatePenaltyPoints={updatePenaltyPoints}
             disabled={radioValue !== 'withPenalty' || disabled}
-          />{' '}
+          />
           % on using Hint
         </RadioBtn>
       </Tooltip>

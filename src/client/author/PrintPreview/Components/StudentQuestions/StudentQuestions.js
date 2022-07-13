@@ -19,7 +19,7 @@ import { getDynamicVariablesSetIdForViewResponse } from '../../../ClassBoard/duc
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
-function Preview({ item, passages, evaluation, index }) {
+function Preview({ item, passages, evaluation }) {
   const rows = getRows(item)
   const questions = get(item, ['data', 'questions'], [])
   const resources = get(item, ['data', 'resources'], [])
@@ -43,12 +43,8 @@ function Preview({ item, passages, evaluation, index }) {
     [item]
   )
 
-  // __prevent-page-break class is not applied to first item because it creates an empty page in beginning
   return (
-    <Content
-      key={item._id}
-      className={index !== 0 ? '__prevent-page-break' : ''}
-    >
+    <Content key={item._id}>
       <TestItemPreview
         showFeedback
         cols={rows}
@@ -238,14 +234,13 @@ class StudentQuestions extends Component {
       return acc
     }, {})
 
-    const testItemsRender = testItems.map((item, index) => (
+    const testItemsRender = testItems.map((item) => (
       <div>
         <div className="__print-question-main-wrapper">
           <Preview
             item={item}
             passages={passages}
             evaluation={evaluationStatus}
-            index={index}
           />
         </div>
       </div>

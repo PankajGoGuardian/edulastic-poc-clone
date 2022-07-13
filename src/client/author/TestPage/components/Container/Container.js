@@ -73,6 +73,7 @@ import {
   getTestSettingsListSelector,
   setTestSettingsListAction,
   isEnabledRefMaterialSelector,
+  getPenaltyOnUsingHintsSelector,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -617,6 +618,22 @@ class Container extends PureComponent {
     return true
   }
 
+  validatePenaltyOnUsingHintsValue = () => {
+    const { test, hasPenaltyOnUsingHints } = this.props
+    const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = test
+
+    if (
+      showHintsToStudents &&
+      hasPenaltyOnUsingHints &&
+      (Number.isNaN(penaltyOnUsingHints) || !penaltyOnUsingHints > 0)
+    ) {
+      notification({ messageKey: 'enterPenaltyOnHintsValue' })
+      return false
+    }
+
+    return true
+  }
+
   handleAssign = () => {
     const {
       test,
@@ -979,7 +996,8 @@ class Container extends PureComponent {
     }
     if (
       !this.validateTimedAssignment() ||
-      !this.validateReferenceDocMaterial()
+      !this.validateReferenceDocMaterial() ||
+      !this.validatePenaltyOnUsingHintsValue()
     ) {
       return
     }
@@ -1104,9 +1122,15 @@ class Container extends PureComponent {
         return false
       }
     }
-    // for itemGroup with limited delivery type should not contain items with question level scoring
-    let testHasValidTestItems = false
-
+    if (!this.validateReferenceDocMaterial()) {
+      return false
+    }
+    if (!this.validatePenaltyOnUsingHintsValue()) {
+      return false
+    }
+    // for itemGroup with limted delivery type should not contain items with question level scoring
+    let itemGroupWithQuestionsCount = 0
+    let testHasInvalidItem = false
     for (const itemGroup of test.itemGroups) {
       if (
         itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
@@ -1117,35 +1141,47 @@ class Container extends PureComponent {
         })
         return false
       }
+      if (itemGroup.items.some((item) => item.data.questions.length > 0)) {
+        itemGroupWithQuestionsCount++
+      }
 
-      testHasValidTestItems = itemGroup.items.every((item) => {
-        const {
-          multipartItem,
-          isPassageWithQuestions,
-          data: { resources, questions },
-        } = item
-
-        if (multipartItem && !isPassageWithQuestions) {
-          return questions.length
-        }
-
-        if (isPassageWithQuestions) {
-          const passage = passages?.find((p) => p._id === item.passageId)
-          if (!passage) {
+      if (
+        itemGroup.items.some(
+          (item) =>
+            item.data.questions.length <= 0 && item.data.resources.length <= 0
+        )
+      ) {
+        testHasInvalidItem = true
+      }
+      if (
+        itemGroup.items.some((item) => {
+          if (!item.isPassageWithQuestions || !item.passageId) {
+            return false
+          }
+          const _passage = passages?.find((p) => p._id === item.passageId)
+          if (!_passage) {
+            return false
+          }
+          const { structure } = _passage
+          const { widgets = [] } = structure
+          if (!widgets.length) {
+            // cannot publish the test if it has invalid passage item
+            // @see: https://snapwiz.atlassian.net/browse/EV-29485
             return true
           }
-          const { structure } = passage
-          const { widgets = [] } = structure
-          // cannot publish the test if it has invalid passage item
-          // @see: https://snapwiz.atlassian.net/browse/EV-29485
-          return widgets.length && questions.length
-        }
-
-        return questions.length || resources.length
-      })
+          return false
+        })
+      ) {
+        testHasInvalidItem = true
+      }
     }
 
-    if (!testHasValidTestItems) {
+    if (!itemGroupWithQuestionsCount) {
+      notification({ messageKey: `noQuestions` })
+      return false
+    }
+
+    if (testHasInvalidItem) {
       notification({ messageKey: `testHasInvalidItem` })
       return false
     }
@@ -1601,6 +1637,7 @@ const enhance = compose(
       testSettingsList: getTestSettingsListSelector(state),
       userSignupStatus: getUserSignupStatusSelector(state),
       enabledRefMaterial: isEnabledRefMaterialSelector(state),
+      hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
     }),
     {
       createTest: createTestAction,

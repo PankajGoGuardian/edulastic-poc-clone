@@ -86,11 +86,11 @@ const MatchListPreview = ({
   showAnswerScore,
 }) => {
   const {
-    possibleResponses: posResponses,
+    possibleResponses: posResponses = [],
     possibleResponseGroups = [],
     groupPossibleResponses,
     stimulus,
-    list,
+    list = [],
     shuffleOptions,
     duplicatedResponses = false,
   } = item

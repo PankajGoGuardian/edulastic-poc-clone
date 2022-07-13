@@ -3,7 +3,7 @@ import UnscoredHelperText from '@edulastic/common/src/components/UnscoredHelperT
 import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { DragSource } from 'react-dnd'
 import QuestionWrapper from '../../../../../../assessment/components/QuestionWrapper'
 import { Types } from '../../../../constants'
@@ -41,6 +41,10 @@ const ItemDetailWidget = ({
   onShowSettings,
   isPremiumUser,
 }) => {
+  const isEmtpyQuestion = useMemo(() => {
+    return isEmpty(question)
+  }, [question])
+
   const [showButtons, setShowButtons] = useState(!flowLayout)
 
   const onMouseEnterHander = () => {
@@ -111,6 +115,10 @@ const ItemDetailWidget = ({
     : onChangeQuestionLevelPoint
 
   const [isEditDisabled, disabledReason] = itemEditDisabled
+
+  if (isEmtpyQuestion) {
+    return null
+  }
 
   return (
     connectDragPreview &&

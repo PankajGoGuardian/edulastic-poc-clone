@@ -12,11 +12,7 @@ import { GroupItem, GroupItemLabel } from '../styled'
 const GroupContainer = ({ name, Icon, onClick, isActive }) => (
   <GroupItem span={24} padding="9px 18px" onClick={onClick} isActive={isActive}>
     <Icon />
-    <GroupItemLabel
-      fontStyle="11px/15px"
-      padding="0 0 0 20px"
-      data-cy="groupItemLabel"
-    >
+    <GroupItemLabel fontStyle="11px/15px" padding="0 0 0 20px">
       <Tooltip placement="right" title={name}>
         {name}
       </Tooltip>
@@ -38,7 +34,6 @@ const GroupsFilter = ({ current, options, onClick, onNewGroupClick }) => (
           cursor: 'pointer',
         }}
         onClick={onNewGroupClick}
-        data-cy="createStudentGroup"
       />
     </Col>
     <GroupContainer

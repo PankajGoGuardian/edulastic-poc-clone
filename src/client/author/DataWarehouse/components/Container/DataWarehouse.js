@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Spin } from 'antd'
 import { compose } from 'redux'
+import { get } from 'lodash'
 import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
 import { fadedBlack } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -15,11 +16,6 @@ import {
   getUploadsStatusList,
   getResetTestDataFileUploadResponseAction,
 } from '../../../sharedDucks/dataWarehouse'
-import {
-  isPremiumUserSelector,
-  isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
-  isDataOpsOnlyUser as checkIsDataOpsOnlyUser,
-} from '../../../src/selectors/user'
 
 const DataWarehouse = ({
   loading,
@@ -28,7 +24,6 @@ const DataWarehouse = ({
   resetUploadResponse,
   isDataWarehouseEnabled,
   isDataOpsOnlyUser,
-  isPremiumUser,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
 
@@ -50,10 +45,10 @@ const DataWarehouse = ({
     }
   }, [])
 
-  if (!isDataWarehouseEnabled || !isDataOpsOnlyUser || !isPremiumUser) {
+  if (!isDataWarehouseEnabled || !isDataOpsOnlyUser) {
     return (
       <NotAllowedContainer>
-        Contact your district administrator to upload data.
+        District is not enabled with data warehouse feature.
       </NotAllowedContainer>
     )
   }
@@ -63,7 +58,8 @@ const DataWarehouse = ({
       <MainHeader Icon={IconCloudUpload} headingText="Data Warehouse" />
       <FlexContainer justifyContent="right" padding="10px">
         <EduButton isGhost height="100%" onClick={() => showModal()}>
-          <IconUpload /> Upload national / state tests data files
+          <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
+          AND OTHER
         </EduButton>
       </FlexContainer>
       <TableContainer>
@@ -90,9 +86,17 @@ const withConnect = connect(
   (state) => ({
     loading: getUploadsStatusLoader(state),
     uploadsStatusList: getUploadsStatusList(state),
-    isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
-    isDataOpsOnlyUser: checkIsDataOpsOnlyUser(state),
-    isPremiumUser: isPremiumUserSelector(state),
+    isDataWarehouseEnabled: get(
+      state,
+      ['user', 'user', 'features', 'isDataWarehouseEnabled'],
+      false
+    ),
+    isDataOpsOnlyUser: get(state, [
+      'user',
+      'user',
+      'features',
+      'isDataOpsOnlyUser',
+    ]),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,

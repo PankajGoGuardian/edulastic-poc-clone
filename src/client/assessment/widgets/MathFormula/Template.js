@@ -83,7 +83,6 @@ class Template extends Component {
           {t('component.math.template')}
         </Subtitle>
         <MathInput
-          isTemplate
           showResponse
           showDropdown
           fullWidth

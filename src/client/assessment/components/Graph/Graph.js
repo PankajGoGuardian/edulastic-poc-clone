@@ -444,7 +444,7 @@ class Graph extends Component {
     }
 
     const { validation, stimulus, uiStyle } = item
-    const { fontSize: _fontSize } = uiStyle || {}
+    const { fontSize: _fontSize } = uiStyle
     const fontSize = getFontSize(_fontSize)
     const OptionsComponent = this.getOptionsComponent()
     const MoreOptionsComponent = this.getMoreOptionsComponent()

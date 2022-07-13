@@ -22,7 +22,6 @@ import {
 import {
   isDataWarehouseEnabled as checkIsDataWarehouseEnabled,
   isDataOpsUser as checkIsDataOpsUser,
-  isPremiumUserSelector,
 } from '../../../src/selectors/user'
 
 const CustomReports = ({
@@ -35,14 +34,13 @@ const CustomReports = ({
   resetUploadResponse,
   isDataWarehouseEnabled,
   isDataOpsUser,
-  isPremiumUser,
 }) => {
   const [showTestDataUploadModal, setShowTestDataUploadModal] = useState(false)
   const [activeTabKey, setActiveTabKey] = useState('reports')
 
   const isDataWarehouseEnabledForUser = useMemo(
-    () => isDataWarehouseEnabled && isDataOpsUser && isPremiumUser,
-    [isDataWarehouseEnabled, isDataOpsUser, isPremiumUser]
+    () => isDataWarehouseEnabled && isDataOpsUser,
+    [isDataWarehouseEnabled, isDataOpsUser]
   )
 
   useEffect(() => {
@@ -58,7 +56,7 @@ const CustomReports = ({
   const closeModal = (shouldChangeTab) => {
     setShowTestDataUploadModal(false)
     if (shouldChangeTab) {
-      setActiveTabKey('importsHistory')
+      setActiveTabKey('status')
       fetchUploadsStatusList()
     }
     resetUploadResponse()
@@ -74,7 +72,8 @@ const CustomReports = ({
         <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser} />
         {isDataWarehouseEnabledForUser && (
           <EduButton isGhost height="100%" onClick={() => showModal()}>
-            <IconUpload /> Upload national / state tests data files
+            <IconUpload /> Upload Test Data Files SUCH AS CAASP, ELAPAC, IREADY
+            AND OTHER
           </EduButton>
         )}
       </FlexContainer>
@@ -88,7 +87,7 @@ const CustomReports = ({
             <StyledTabPane tab="Reports" key="reports">
               <CustomReportsWrapper showReport={showReport} />
             </StyledTabPane>
-            <StyledTabPane tab="Imports history" key="importsHistory">
+            <StyledTabPane tab="Status" key="status">
               <TableContainer>
                 {loading ? (
                   <Spin />
@@ -141,7 +140,6 @@ const withConnect = connect(
     uploadsStatusList: getUploadsStatusList(state),
     isDataWarehouseEnabled: checkIsDataWarehouseEnabled(state),
     isDataOpsUser: checkIsDataOpsUser(state),
-    isPremiumUser: isPremiumUserSelector(state),
   }),
   {
     fetchUploadsStatusList: getUploadsStatusListAction,

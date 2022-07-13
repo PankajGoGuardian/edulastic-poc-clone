@@ -65,7 +65,6 @@ const TestBehaviorGroupContainer = ({
   showAssignModuleContent,
   t,
   allowToUseShowHintsToStudents,
-  togglePenaltyOnUsingHints,
 }) => {
   const [timedTestConfirmed, setTimedtestConfirmed] = useState(false)
   const {
@@ -84,8 +83,8 @@ const TestBehaviorGroupContainer = ({
     allowTeacherRedirect = testSettings.allowTeacherRedirect,
     referenceDocAttributes = testSettings?.referenceDocAttributes,
     isDocBased = testSettings?.isDocBased,
-    showHintsToStudents = testSettings?.showHintsToStudents,
-    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints,
+    showHintsToStudents = testSettings?.showHintsToStudents || true,
+    penaltyOnUsingHints = testSettings?.penaltyOnUsingHints || 0,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
@@ -167,8 +166,6 @@ const TestBehaviorGroupContainer = ({
       )}
     </>
   )
-
-  const isTestlet = playerSkinType?.toLowerCase() === playerSkinValues.testlet
 
   return (
     <>
@@ -484,29 +481,18 @@ const TestBehaviorGroupContainer = ({
         </SettingContainer>
       )}
 
-      {/* Show hints to students */}
-      {!(isDocBased && isTestlet) && (
-        <SettingContainer id="show-hints-to-students">
-          <DetailsTooltip
-            width={tootltipWidth}
-            title="SHOW HINTS TO STUDENTS"
-            content="Students will be able to see the hint associated with an item while attempting the assignment"
-            premium={premium}
-            placement="rightTop"
-          />
-          <ShowHintsToStudents
-            tootltipWidth={tootltipWidth}
-            premium={premium}
-            freezeSettings={freezeSettings}
-            showHintsToStudents={showHintsToStudents}
-            penaltyOnUsingHints={penaltyOnUsingHints}
-            overRideSettings={overRideSettings}
-            allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
-            togglePenaltyOnUsingHints={togglePenaltyOnUsingHints}
-          />
-        </SettingContainer>
-      )}
-      {/* Show hints to students */}
+      <ShowHintsToStudents
+        tootltipWidth={tootltipWidth}
+        premium={premium}
+        content=""
+        freezeSettings={freezeSettings}
+        showHintsToStudents={showHintsToStudents}
+        penaltyOnUsingHints={penaltyOnUsingHints}
+        overRideSettings={overRideSettings}
+        allowToUseShowHintsToStudents={allowToUseShowHintsToStudents}
+        isDocBased={isDocBased}
+        isTestlet={playerSkinType?.toLowerCase() === playerSkinValues.testlet}
+      />
 
       {/* Test Content visibility */}
       {(userRole === roleuser.DISTRICT_ADMIN ||

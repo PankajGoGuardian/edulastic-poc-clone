@@ -18,9 +18,8 @@ export default ({ penaltyOnUsingHints, updatePenaltyPoints, disabled }) => {
     const points = parseFloat(event.target.value)
     if (Number.isNaN(points)) {
       notification({
-        msg: 'Only numbers in the range 1 to 100 are accepted',
+        msg: 'only numbers in the range 1 to 100 are accepted',
       })
-      return
     }
     updatePenaltyPoints(clamp(points, 1, 100))
   }
@@ -29,16 +28,15 @@ export default ({ penaltyOnUsingHints, updatePenaltyPoints, disabled }) => {
     <TextInputStyled
       data-testid={penaltyPointsInputTestId}
       value={inputValue}
-      placeholder="value"
+      placeholder="Insert a value"
       type="number"
-      width="85px"
+      width="135px"
       data-cy="penaltyOnUsingHints"
       onChange={handleChangePenaltyPoints}
       onBlur={handleOnBlur}
       disabled={disabled}
       min={1}
       max={100}
-      margin="0 5px"
     />
   )
 }

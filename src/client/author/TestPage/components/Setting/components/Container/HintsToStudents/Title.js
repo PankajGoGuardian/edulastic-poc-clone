@@ -7,9 +7,8 @@ import { lightGrey9 } from '@edulastic/colors'
 import { Title } from '../styled'
 import { titleComponentTestId } from './constants'
 import ShowHintsSwitch from './ShowHintsSwitch'
-import DollarPremiumSymbol from '../../../../../../AssignTest/components/Container/DollarPremiumSymbol'
 
-export default ({ showHintsToStudents, updateTestData, disabled, premium }) => {
+export default ({ showHintsToStudents, updateTestData, disabled }) => {
   const updateShowHints = (value) => {
     updateTestData('showHintsToStudents')(value)
   }
@@ -17,7 +16,6 @@ export default ({ showHintsToStudents, updateTestData, disabled, premium }) => {
   return (
     <Title data-testid={titleComponentTestId}>
       <span>Show Hints to Students </span>
-      <DollarPremiumSymbol premium={premium} />
       <Tooltip title="Students will be able to see the hint associated with an item while attempting the assignment">
         <IconInfo
           color={lightGrey9}
@@ -25,7 +23,7 @@ export default ({ showHintsToStudents, updateTestData, disabled, premium }) => {
         />
       </Tooltip>
       <ShowHintsSwitch
-        disabled={disabled || !premium}
+        disabled={disabled}
         checked={showHintsToStudents}
         onChangeHandler={updateShowHints}
       />

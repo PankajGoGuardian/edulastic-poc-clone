@@ -38,6 +38,9 @@ import {
   PiecewiseLine,
   LineCut,
   PiecewisePoint,
+  Grid,
+  Rose,
+  Cardioid,
 } from './elements'
 import {
   fillConfigDefaultParameters,
@@ -89,6 +92,10 @@ class Board {
      * Static unitX
      */
     this.staticUnitX = null
+    /**
+     *  Polar grids or Complex
+     */
+    this.grids = []
     /**
      * Answers
      */
@@ -148,6 +155,8 @@ class Board {
     this.inequalities = []
 
     this.pointOnEquEnabled = false
+
+    this.switchGrid = Grid.switchGrid.bind(this)
   }
 
   addDragDropValue(value, x, y, dimensions) {
@@ -314,6 +323,12 @@ class Board {
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION:
       case CONSTANT.TOOLS.RAY_RIGHT_DIRECTION_LEFT_HOLLOW:
         this.creatingHandler = NumberlineVector.onHandler
+        return
+      case CONSTANT.TOOLS.ROSE:
+        this.creatingHandler = Rose.onHandler
+        return
+      case CONSTANT.TOOLS.CARDIOID:
+        this.creatingHandler = Cardioid.onHandler
         return
       case CONSTANT.TOOLS.EDIT_LABEL:
       case CONSTANT.TOOLS.TRASH:
@@ -886,6 +901,10 @@ class Board {
             return DragDrop.getConfig(e)
           case PiecewiseLine.jxgType:
             return PiecewiseLine.getConfig(e)
+          case Rose.jxgType:
+            return Rose.getConfig(e)
+          case Cardioid.jxgType:
+            return Cardioid.getConfig(e)
           default:
             throw new Error('Unknown element type:', e.name, e.type)
         }
@@ -978,8 +997,19 @@ class Board {
    * @see https://jsxgraph.org/docs/symbols/JXG.Board.html#setBoundingBox
    */
   setGridParameters(gridParameters) {
+    this.gridParameters = gridParameters
     updateGrid(this.$board.grids, gridParameters)
     this.$board.fullUpdate()
+  }
+
+  /**
+   * update grid and axes based on grid type
+   * @param {string} gridType retangular | polar | complex
+   * @param {object} polarGridParams grid options for polar
+   */
+  updateGridAndAxes(gridType, polarGridParams) {
+    this.gridType = gridType
+    this.switchGrid(polarGridParams)
   }
 
   /**
@@ -1826,6 +1856,10 @@ class Board {
           fixed,
         })
       }
+      case Rose.jxgType:
+        return Rose.create(this, object, { fixed })
+      case Cardioid.jxgType:
+        return Cardioid.create(this, object, { fixed })
       default:
         throw new Error('Unknown element:', object)
     }

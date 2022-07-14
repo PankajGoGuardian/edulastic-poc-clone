@@ -1142,6 +1142,10 @@ class ModuleRow extends Component {
                     />
                   )
 
+                  const identifiers =
+                    moduleData.standards.map((identifier) => identifier.name) ||
+                    []
+
                   const testTags = isTestType && (
                     <FlexContainer
                       height="25px"
@@ -1151,7 +1155,7 @@ class ModuleRow extends Component {
                       <Tags
                         margin="5px 0px 0px 0px"
                         flexWrap="nowrap"
-                        tags={moduleData.standardIdentifiers}
+                        tags={identifiers}
                         completed={urlHasUseThis && contentCompleted}
                         show={2}
                         isPlaylist

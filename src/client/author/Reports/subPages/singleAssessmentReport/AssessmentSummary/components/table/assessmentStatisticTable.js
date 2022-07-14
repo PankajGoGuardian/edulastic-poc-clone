@@ -219,7 +219,7 @@ const AssessmentStatisticTable = (props) => {
     <div className={`${className}`}>
       <Row type="flex" justify="start" className="top-area">
         <Col className="top-area-col table-title">
-          <StyledH3>
+          <StyledH3 data-testid="tableTitle">
             Assignment Statistics for {name} by{' '}
             <span className="stats-grouped-by">{tableType.title}</span>
           </StyledH3>

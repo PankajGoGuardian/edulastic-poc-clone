@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import React from 'react'
 import { Row } from 'antd'
 import { FlexContainer } from '@edulastic/common'
 import { fadedBlack, extraDesktopWidthMax } from '@edulastic/colors'
@@ -45,7 +46,9 @@ export const UpperContainer = styled(FlexContainer)`
 
 export const TableContainer = styled(Row)``
 
-export const StyledAssessmentStatisticTable = styled(AssessmentStatisticTable)`
+export const StyledAssessmentStatisticTable = styled((props) => (
+  <AssessmentStatisticTable {...props} />
+))`
   .top-area {
     min-height: 50px;
     font-weight: 700;

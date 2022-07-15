@@ -1142,9 +1142,9 @@ class ModuleRow extends Component {
                     />
                   )
 
-                  const identifiers =
-                    moduleData.standards.map((identifier) => identifier.name) ||
-                    []
+                  const identifiers = moduleData?.standards?.map(
+                    (identifier) => identifier.name || []
+                  )
 
                   const testTags = isTestType && (
                     <FlexContainer

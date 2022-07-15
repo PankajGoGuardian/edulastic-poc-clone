@@ -141,6 +141,17 @@ const ClassList = ({
             </Tooltip>
           )
         }
+        if (
+          atlasId &&
+          (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
+            'clever'
+        ) {
+          syncIconList.push(
+            <Tooltip title="Clever" placement="bottom">
+              <IconClever height={18} width={18} />
+            </Tooltip>
+          )
+        }
         return { ..._group, syncedWith: syncIconList }
       })
       return classGroupObjWithSyncedInfo

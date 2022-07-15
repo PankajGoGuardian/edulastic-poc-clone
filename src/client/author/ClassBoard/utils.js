@@ -159,3 +159,16 @@ export const getSubmittedDate = (activityEndDate, classEndDate) => {
   }
   return moment(endDate).format('MMM DD, YYYY HH:mm')
 }
+
+export const getAtlasSyncProviderName = (providerName, formatStr) => {
+  switch (providerName.toLowerCase()) {
+    case 'schoology':
+      return formatStr('SCHOOLOGY')
+    case 'classlink':
+      return formatStr('CLASSLINK')
+    case 'clever':
+      return formatStr('CLEVER')
+    default:
+      return ''
+  }
+}

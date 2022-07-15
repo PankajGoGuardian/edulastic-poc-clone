@@ -1,5 +1,6 @@
 import React, { useMemo } from 'react'
 import { compose } from 'redux'
+import { toUpper } from 'lodash'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
@@ -28,6 +29,7 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { getAtlasSyncProviderName } from '../../../ClassBoard/utils'
 
 const Header = ({
   classGroups,
@@ -55,7 +57,7 @@ const Header = ({
   const atlasGroup = classGroups.find(
     (_group) =>
       _group.atlasProviderName &&
-      ['schoology', 'classlink'].includes(
+      ['schoology', 'classlink', 'clever'].includes(
         _group.atlasProviderName.toLowerCase()
       )
   )
@@ -177,9 +179,9 @@ const Header = ({
             {!isPlayground && enableCleverSync && (
               <AuthorCompleteSignupButton
                 renderButton={(handleClick) => (
-                  <EduButton 
-                    isGhost 
-                    isBlue 
+                  <EduButton
+                    isGhost
+                    isBlue
                     onClick={handleClick}
                     data-cy="syncClever"
                   >
@@ -254,9 +256,7 @@ const Header = ({
                 >
                   <span>
                     RESYNC{' '}
-                    {atlasProviderName.toLowerCase() === 'schoology'
-                      ? 'SCHOOLOGY'
-                      : 'CLASSLINK'}{' '}
+                    {getAtlasSyncProviderName(atlasProviderName, toUpper)}{' '}
                     CLASSES
                   </span>
                 </EduButton>

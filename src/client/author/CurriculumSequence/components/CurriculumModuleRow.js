@@ -624,6 +624,7 @@ class ModuleRow extends Component {
       toggleAssignments,
       isPreviewModalVisible,
       blurCurrentModuleRow,
+      isEditPage,
     } = this.props
     const { selectedTest } = this.state
     const { assignTest } = this
@@ -1142,9 +1143,11 @@ class ModuleRow extends Component {
                     />
                   )
 
-                  const identifiers = moduleData?.standards?.map(
-                    (identifier) => identifier.name || []
-                  )
+                  const identifiers = isEditPage
+                    ? moduleData?.standardIdentifiers
+                    : moduleData?.standards?.map(
+                        (identifier) => identifier.name || []
+                      )
 
                   const testTags = isTestType && (
                     <FlexContainer

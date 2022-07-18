@@ -402,11 +402,16 @@ const AddPermissionModal = ({
                       data-cy={_user.email}
                       title={`${_user.firstName} ${_user.lastName} (${
                         _user.email
-                      }) [${roleuser.ROLE_LABEL[_user.role]}]`}
+                      }) [${
+                        _user.permission || roleuser.ROLE_LABEL[_user.role]
+                      }]`}
                     >
                       <span>
                         {`${_user.firstName} ${_user.lastName} (${_user.email})`}{' '}
-                        <b>[{roleuser.ROLE_LABEL[_user.role]}]</b>
+                        <b>
+                          [{_user.permission || roleuser.ROLE_LABEL[_user.role]}
+                          ]
+                        </b>
                       </span>
                     </Select.Option>
                   ))}

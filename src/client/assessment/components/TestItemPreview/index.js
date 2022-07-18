@@ -352,6 +352,12 @@ class TestItemPreview extends Component {
     return (cols || []).flatMap((col) => col?.widgets).filter((q) => q)
   }
 
+  get isMultipartItem() {
+    const { cols, multipartItem: v2Multipart } = this.props
+    const isV1Multipart = (cols || []).some((col) => col.isV1Multipart)
+    return v2Multipart || isV1Multipart
+  }
+
   get isPassageInExpandedView() {
     const {
       cols,
@@ -425,7 +431,11 @@ class TestItemPreview extends Component {
       (item) => item && item.widgetType === 'resource'
     )
     // show collapse button only in student player or in author preview mode.
-    const showCollapseButtons = hasResourceTypeQuestion && showCollapseBtn
+    const showCollapseButtons =
+      hasResourceTypeQuestion &&
+      showCollapseBtn &&
+      this.isMultipartItem &&
+      (cols || []).some((col) => col.dimension !== '100%')
 
     const hasDrawingResponse = widgets.some(
       (x) => x.type === questionType.HIGHLIGHT_IMAGE

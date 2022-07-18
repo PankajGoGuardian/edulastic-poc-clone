@@ -107,6 +107,7 @@ const PlayerContentArea = ({
           saveHintUsage={saveHintUsage}
           classLevelSettings={classLevelSettings}
           viewAsStudent={viewAsStudent}
+          multipartItem={item?.multipartItem}
           {...extraTestItemProps}
         />
       </MainContent>

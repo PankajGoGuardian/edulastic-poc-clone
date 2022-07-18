@@ -703,6 +703,7 @@ class AssessmentPlayerDefault extends React.Component {
                     premiumCollectionWithoutAccess
                   }
                   classLevelSettings={classLevelSettings}
+                  multipartItem={item?.multipartItem}
                   {...extraTestItemProps}
                   viewAsStudent={viewAsStudent}
                 />

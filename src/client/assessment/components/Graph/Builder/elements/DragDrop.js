@@ -107,6 +107,7 @@ function create(board, object, settings) {
     cssClass,
     highlightCssClass: cssClass,
     fixed,
+    parse: false,
   })
 
   // fix offset flickering

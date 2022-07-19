@@ -3273,18 +3273,17 @@ function* showAnswerSaga({ payload = {} }) {
         return acc
       }, {})
     }
-
-    const evaluation = yield createShowAnswerData(
-      questions,
-      answers,
-      testItem._id || payload._id
-    )
     yield put({
       type: CHANGE_PREVIEW,
       payload: {
         view: 'show',
       },
     })
+    const evaluation = yield createShowAnswerData(
+      questions,
+      answers,
+      testItem._id || payload._id
+    )
     yield put({
       type: ADD_ITEM_EVALUATION,
       payload: {

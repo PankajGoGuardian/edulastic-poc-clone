@@ -103,9 +103,11 @@ export const withRefMaterial = (WrappedComponent) => {
       }
 
       return () => {
-        toggleRefMaterial(false)
+        if (!hasRefMaterial) {
+          toggleRefMaterial(false)
+        }
       }
-    }, [])
+    }, [hasRefMaterial])
 
     useEffect(() => {
       if (enableUpload && creating && !hasRefMaterial) {

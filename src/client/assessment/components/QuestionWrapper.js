@@ -1050,6 +1050,9 @@ const QuestionContainer = styled.div`
       .katex .halfarrow-right {
         overflow: hidden !important;
       }
+      .fr-toolbar {
+        display: none !important;
+      }
     }
     .question-wrapper {
       padding: 5px;

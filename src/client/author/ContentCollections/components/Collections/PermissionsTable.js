@@ -8,6 +8,7 @@ import { IconPencilEdit } from '@edulastic/icons'
 import { roleuser } from '@edulastic/constants'
 import { EduButton, SearchInputStyled } from '@edulastic/common'
 import { ContentBucketTable } from './ContentBucketsTable'
+import { getTheRole, caluculateOffset } from '../../util'
 import {
   PermissionTableContainer,
   HeadingContainer,
@@ -29,7 +30,6 @@ import {
 } from '../../ducks'
 import { getUserRole, getUserOrgId } from '../../../src/selectors/user'
 
-import { caluculateOffset } from '../../util'
 import {
   TableFilters,
   TabTitle,
@@ -82,7 +82,6 @@ const PermissionsTable = ({
   const handleDeactivatePermission = (id) => {
     deletePermissionRequest({ bankId: selectedCollection.bankId, id })
   }
-
   const columns = [
     {
       title: 'Organization',
@@ -99,7 +98,11 @@ const PermissionsTable = ({
       title: 'Role',
       dataIndex: 'role',
       key: 'role',
-      render: (_, record) => record.role.join(' / '),
+      render: (_, record) => {
+        if (record.orgName.toLowerCase() == 'user')
+          return getTheRole(record.permission, record.role[0])
+        return record.role.join(' / ')
+      },
     },
     {
       title: 'Start',

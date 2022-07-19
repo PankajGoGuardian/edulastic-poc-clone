@@ -32,6 +32,7 @@ import {
   searchOrgaizationRequestAction,
 } from '../../ducks'
 import staticData from '../../staticData'
+import { getTheRole } from '../../util'
 import { FieldRow, Heading, ModalBody } from './ImportContentModal'
 
 const { roleOptions, permissionLevelOptions } = staticData
@@ -402,16 +403,11 @@ const AddPermissionModal = ({
                       data-cy={_user.email}
                       title={`${_user.firstName} ${_user.lastName} (${
                         _user.email
-                      }) [${
-                        _user.permission || roleuser.ROLE_LABEL[_user.role]
-                      }]`}
+                      } [${getTheRole(_user.permission, _user.role)}]`}
                     >
                       <span>
                         {`${_user.firstName} ${_user.lastName} (${_user.email})`}{' '}
-                        <b>
-                          [{_user.permission || roleuser.ROLE_LABEL[_user.role]}
-                          ]
-                        </b>
+                        <b>{`[${getTheRole(_user.permission, _user.role)}]`}</b>
                       </span>
                     </Select.Option>
                   ))}

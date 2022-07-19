@@ -2,7 +2,7 @@ import { userPermissions } from '@edulastic/constants'
 
 export const daRoleList = [
   {
-    label: 'DA',
+    label: 'District Admin',
     value: '-',
     tooltipTitle:
       'This district admin user cannot access data warehouse feature.',

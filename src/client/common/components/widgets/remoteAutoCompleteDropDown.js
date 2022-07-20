@@ -39,6 +39,7 @@ const RemoteAutocompleteDropDown = ({
   _ref,
   disabled = false,
   isModalOpen,
+  fontSize = false,
 }) => {
   const [dropDownData, setDropDownData] = useState(data)
   const [selected, setSelected] = useState(by)
@@ -287,6 +288,7 @@ const RemoteAutocompleteDropDown = ({
               style={{ color: '#00ad50' }}
             />
           }
+          style={{ fontSize: fontSize ? `${fontSize} !important` : null }}
           placeholder={selected.title ? selected.title : placeholder}
         />
       </AutoComplete>

@@ -3,6 +3,7 @@ import { SelectInputStyled, notification } from '@edulastic/common'
 import { Select } from 'antd'
 import { uniq } from 'lodash'
 import React, { useState } from 'react'
+import styled from 'styled-components'
 import { FieldLabel } from './index'
 
 const Tags = (props) => {
@@ -65,16 +66,14 @@ const Tags = (props) => {
     <>
       <FieldLabel
         label="Tags"
-        optional
         {...props}
         fiedlName="tags"
         initialValue={tags.map((tag) => tag._id)}
       >
-        <SelectInputStyled
+        <StyledSelectInput
           showArrow
           data-cy="tagsSelect"
           mode="multiple"
-          style={{ marginBottom: 0 }}
           optionLabelProp="title"
           placeholder="Select Tags"
           onSearch={searchTags}
@@ -85,6 +84,7 @@ const Tags = (props) => {
               .toLowerCase()
               .includes(input.trim().toLowerCase())
           }
+          getPopupContainer={(triggerNode) => triggerNode.parentNode}
         >
           {searchValue.trim() ? (
             <Select.Option key={0} value={searchValue} title={searchValue}>
@@ -98,10 +98,23 @@ const Tags = (props) => {
               {tagName}
             </Select.Option>
           ))}
-        </SelectInputStyled>
+        </StyledSelectInput>
       </FieldLabel>
     </>
   )
 }
 
 export default Tags
+
+const StyledSelectInput = styled(SelectInputStyled)`
+  &.ant-select {
+    .ant-select-selection {
+      &.ant-select-selection--multiple {
+        &:before,
+        &:after {
+          content: none;
+        }
+      }
+    }
+  }
+`

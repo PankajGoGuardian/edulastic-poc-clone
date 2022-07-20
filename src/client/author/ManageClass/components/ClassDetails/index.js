@@ -51,6 +51,7 @@ import {
 } from '../../../src/selectors/user'
 import ReauthenticateModal from './ReauthenticateModal'
 import CreateNewAssignmentModal from '../CreateNewAssignmentModal'
+import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
 
 const ClassDetails = ({
   location,
@@ -86,6 +87,7 @@ const ClassDetails = ({
   userDistrictId,
   isCreateAssignmentModalVisible,
   toggleCreateAssignmentModal,
+  setShowAssignmentCreationModal,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -234,7 +236,7 @@ const ClassDetails = ({
 
   const handleCreateNewAssignmentClick = () => {
     toggleCreateAssignmentModal(false)
-    history.push('/author/assignments/select')
+    setShowAssignmentCreationModal(true)
   }
 
   useEffect(() => {
@@ -474,6 +476,7 @@ const enhance = compose(
       setGoogleAuthenticationRequired: setGoogleAuthenticationRequiredAction,
       saveGoogleTokensAndRetrySync: saveGoogleTokensAndRetrySyncAction,
       toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
+      setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
     }
   )
 )

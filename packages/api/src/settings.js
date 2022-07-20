@@ -291,6 +291,15 @@ const saveCanvasIntegrationKeys = (data) =>
     })
     .then((result) => result.data.result)
 
+const fetchOrgInterestedStandards = ({ districtId, institutionId }) =>
+  api
+    .callApi({
+      url: `${prefix}/minimal-org-settings`,
+      method: 'get',
+      params: { districtId, institutionId },
+    })
+    .then((result) => result.data.result)
+
 export default {
   getDistrictProfile,
   updateDistrictProfile,
@@ -324,4 +333,5 @@ export default {
   saveCanvasIntegrationKeys,
   getTestSettingsList,
   removeTestSetting,
+  fetchOrgInterestedStandards,
 }

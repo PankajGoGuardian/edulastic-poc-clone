@@ -1,9 +1,8 @@
 import React from 'react'
 import { Row, Col, Tooltip, Icon } from 'antd'
 import { compose } from 'redux'
-import { Link, withRouter } from 'react-router-dom'
-import { IconAssignment, IconManage } from '@edulastic/icons'
-import { themeColor, white } from '@edulastic/colors'
+import { withRouter } from 'react-router-dom'
+import { white } from '@edulastic/colors'
 import { connect } from 'react-redux'
 import { notification } from '@edulastic/common'
 import { getUserDetails } from '../../../../../../../../student/Login/ducks'
@@ -21,13 +20,11 @@ import {
   SpanLeftMargin,
   RowWrapperGrade,
   StyledRow,
-  CircleBtn,
   MetaText,
   FavCircleBtn,
 } from './styled'
 import cardImg from '../../../../../../assets/images/cardImg.png'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
-import { setFilterInSession } from '../../../../../../../../common/utils/helpers'
 
 const CardImage = ({
   data,
@@ -54,20 +51,6 @@ const CardImage = ({
 
   const gotoManageClass = (classId = '') => () => {
     history.push(`/author/manageClass/${classId}`)
-  }
-
-  const applyClassFilter = () => {
-    const filter = {
-      classId: _id,
-      testType: '',
-      termId: '',
-    }
-    setFilterInSession({
-      key: 'assignments_filter',
-      userId,
-      districtId,
-      filter,
-    })
   }
 
   const metaInfo = (
@@ -129,7 +112,7 @@ const CardImage = ({
   return (
     <>
       <Image src={thumbnail || cardImg} />
-      <OverlayText>
+      <OverlayText onClick={gotoManageClass(_id)}>
         <Row>
           <Col span={24}>
             <StyledRow>
@@ -140,14 +123,30 @@ const CardImage = ({
               </Col>
               <Col span={6} offset={1}>
                 <IconWrapper>
-                  <CircleBtn onClick={gotoManageClass(_id)}>
-                    <IconManage color={themeColor} width={13} height={13} />
-                  </CircleBtn>
-                  <Link to="/author/assignments" onClick={applyClassFilter}>
-                    <CircleBtn bg={themeColor} style={{ marginLeft: '5px' }}>
-                      <IconAssignment color={white} width={11} height={14} />
-                    </CircleBtn>
-                  </Link>
+                  {isPremiumUser && (
+                    <Tooltip
+                      title="Mark class as Favorite to organize your classes"
+                      placement="bottom"
+                    >
+                      <FavCircleBtn
+                        isFavorite={isFavourite}
+                        onClick={(event) => {
+                          event.stopPropagation()
+                          handleToggle({
+                            groupId: _id,
+                            toggleValue: !isFavourite,
+                          })
+                        }}
+                      >
+                        <Icon
+                          data-cy="classFavourite"
+                          type="heart"
+                          theme="filled"
+                          style={{ fontSize: '16px' }}
+                        />
+                      </FavCircleBtn>
+                    </Tooltip>
+                  )}
                 </IconWrapper>
               </Col>
             </StyledRow>
@@ -171,28 +170,6 @@ const CardImage = ({
             </RowWrapperGrade>
           </Col>
         </Row>
-        {isPremiumUser && (
-          <Tooltip
-            title="Mark class as Favorite to organize your classes"
-            placement="bottom"
-          >
-            <FavCircleBtn
-              isFavorite={isFavourite}
-              onClick={() =>
-                handleToggle({
-                  groupId: _id,
-                  toggleValue: !isFavourite,
-                })
-              }
-            >
-              <Icon
-                data-cy="classFavourite"
-                type="heart"
-                theme={isFavourite ? 'filled' : undefined}
-              />
-            </FavCircleBtn>
-          </Tooltip>
-        )}
       </OverlayText>
     </>
   )

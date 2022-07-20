@@ -115,6 +115,7 @@ export const getIsCreateAssignmentModalVisible = createSelector(
   manageClassSelector,
   (state) => state.isCreateAssignmentModalVisible
 )
+
 // action types
 
 export const FETCH_CLASS_LIST = '[manageClass] fetch google class'
@@ -216,6 +217,7 @@ export const REMOVE_CLASS_SYNC_NOTIFICATION =
   '[manageClass] remove class sync notification'
 
 export const SET_CLEVER_SYNC_MODAL = '[manageClass] set clever sync modal'
+const SET_CANVAS_SYNC_MODAL = '[manageClass] set canvas sync modal'
 
 export const SET_UPDATE_COTEACHER_MODAL =
   '[manageClass] set coteacher update modal'
@@ -237,6 +239,9 @@ export const SAVE_GOOGLE_TOKENS_AND_RETRY_SYNC =
 
 export const TOGGLE_CREATE_ASSIGNMENT_MODAL =
   '[manageClass] toggle create assignment modal on first class creation'
+
+export const SET_CREATE_CLASS_TYPE_DETAILS =
+  '[manageClass] set class type details'
 
 // action creators
 
@@ -353,6 +358,7 @@ export const removeClassSyncNotificationAction = createAction(
 )
 
 export const setShowCleverSyncModalAction = createAction(SET_CLEVER_SYNC_MODAL)
+export const setShowCanvasSyncModalAction = createAction(SET_CANVAS_SYNC_MODAL)
 
 export const setFilterClassAction = createAction(SET_FILTER_CLASS)
 
@@ -376,6 +382,9 @@ export const saveGoogleTokensAndRetrySyncAction = createAction(
 
 export const toggleCreateAssignmentModalAction = createAction(
   TOGGLE_CREATE_ASSIGNMENT_MODAL
+)
+export const setCreateClassTypeDetailsAction = createAction(
+  SET_CREATE_CLASS_TYPE_DETAILS
 )
 
 // initial State
@@ -402,11 +411,13 @@ const initialState = {
   classNotFoundError: false,
   unarchivingClass: false,
   showCleverSyncModal: false,
+  showCanvasSyncModal: false,
   filterClass: 'Active',
   showUpdateCoTeachersModal: false,
   googleAuthenticationRequired: false,
   googleClassCode: '',
   isCreateAssignmentModalVisible: 0, // 0 - false, 1 - pending (still false), 2 - true
+  createClassType: {},
 }
 
 const setFilterClass = (state, { payload }) => {
@@ -415,6 +426,10 @@ const setFilterClass = (state, { payload }) => {
 
 const setShowCleverSyncModal = (state, { payload }) => {
   state.showCleverSyncModal = payload
+}
+
+const setShowCanvasSyncModal = (state, { payload }) => {
+  state.showCanvasSyncModal = payload
 }
 
 const setshowUpdateCoTeachersModal = (state, { payload }) => {
@@ -664,6 +679,7 @@ export default createReducer(initialState, {
     state.unarchivingClass = false
   },
   [SET_CLEVER_SYNC_MODAL]: setShowCleverSyncModal,
+  [SET_CANVAS_SYNC_MODAL]: setShowCanvasSyncModal,
   [SET_FILTER_CLASS]: setFilterClass,
   [SET_UPDATE_COTEACHER_MODAL]: setshowUpdateCoTeachersModal,
   [SET_ADD_COTEACHER_MODAL]: setshowAddCoTeachersModal,
@@ -675,6 +691,9 @@ export default createReducer(initialState, {
   },
   [TOGGLE_CREATE_ASSIGNMENT_MODAL]: (state, { payload }) => {
     state.isCreateAssignmentModalVisible = payload
+  },
+  [SET_CREATE_CLASS_TYPE_DETAILS]: (state, { payload }) => {
+    state.createClassType = payload
   },
 })
 
@@ -738,7 +757,7 @@ function* fetchStudentsByClassId({ payload }) {
 
 function* receiveCreateClassRequest({ payload }) {
   try {
-    const { studentIds, callUserMeApi, ...rest } = payload
+    const { exitPath, studentIds, callUserMeApi, ...rest } = payload
     const result = yield call(groupApi.createGroup, rest)
     const { name, type, code: classCode, districtId } = result
     const typeText = type === 'custom' ? 'group' : 'class'
@@ -767,6 +786,10 @@ function* receiveCreateClassRequest({ payload }) {
     yield put(addGroupAction(result))
     yield put(addClassToUserAction(result))
     yield put(clearClassListAction())
+    if (exitPath) {
+      yield put(push('/'))
+      yield put(push(exitPath))
+    }
   } catch (err) {
     const {
       data: { message: errorMessage },

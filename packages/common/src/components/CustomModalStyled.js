@@ -18,12 +18,13 @@ const StyledModal = styled(Modal)`
   min-width: ${(props) => (props.modalWidth ? props.modalWidth : '600px')};
   top: ${(props) => (props.top ? props.top : '100px')};
   .ant-modal-content {
-    background: ${white};
+    background: ${(props) => (props.bgColor ? props.bgColor : white)};
     padding: ${(props) => props.padding || '25px 45px'};
+    border-radius: ${(props) => props.borderRadius};
     .ant-modal-close {
-      color: ${title};
-      top: 10px;
-      right: 30px;
+      color: ${(props) => props.closeIconColor || title};
+      top: ${(props) => props.closeTopAlign || '10px'};
+      right: ${(props) => props.closeRightAlign || '30px'};
       svg {
         width: 24px;
         height: 24px;

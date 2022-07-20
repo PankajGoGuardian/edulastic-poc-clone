@@ -1,17 +1,20 @@
 import styled from 'styled-components'
-import { themeColor, white } from '@edulastic/colors'
+import { lightGreen11, themeColor } from '@edulastic/colors'
+import { Col, Row } from 'antd'
 
 export const LearnMore = styled.span`
   height: auto;
   min-width: 90px;
   text-align: center;
   position: absolute;
-  top: 140px;
-  font-size: 9px;
-  font-weight: 600;
-  background: ${white};
+  top: 110px;
+  left: ${(props) => props.moveLeft || '140px'};
   padding: 5px 10px;
-  color: #3f85e5;
+  font-weight: 700;
+  font-size: 10px;
+  line-height: 14px;
+  letter-spacing: 0.08em;
+  color: rgba(0, 0, 0, 0.6);
   border-radius: 4px;
   transform: translateX(40px);
   text-transform: uppercase;
@@ -26,7 +29,7 @@ export const SlideContainer = styled.span`
 
 export const SliderContainer = styled.div`
   position: relative;
-  height: 210px;
+  height: 175px;
   overflow: hidden;
   margin: 0px -8px;
   .prev,
@@ -66,17 +69,18 @@ export const NextButton = styled(PrevButton)`
 `
 
 export const Slides = styled.div`
-  height: 200px;
-  width: 490px;
-  color: ${white};
+  height: 150px;
+  width: 290px;
+  padding: 20px 30px;
   cursor: pointer;
   display: inline-block;
-  background-image: ${(props) => `url(${props.bgImage})`};
-  background-size: 100% 100%;
-  background-position: top left;
-  background-repeat: no-repeat;
-  border-radius: 4px;
-  margin: 5px 0px 5px 8px;
+  background: linear-gradient(
+    72.19deg,
+    rgba(83, 176, 149, 0.1) -11.13%,
+    rgba(83, 176, 149, 0.1) 100%
+  );
+  border-radius: 10px;
+  margin: 5px 9px;
   position: relative;
   transform: scale(1);
   transition: 0.2s;
@@ -84,7 +88,6 @@ export const Slides = styled.div`
     box-shadow: 0 0 3px 2px ${themeColor};
     transform: scale(1.015);
     border: none;
-    overflow: hidden;
   }
 
   &.last,
@@ -97,19 +100,41 @@ export const SlideDescription = styled.span`
   height: auto;
   width: auto;
   max-width: 420px;
-  position: absolute;
-  top: 30px;
-  font-size: 18px;
-  background: #0006;
-  color: ${white};
-  padding: 5px 10px;
   transform: translateX(40px);
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
   border-radius: 4px;
-
+  font-weight: 800;
+  font-size: 14px;
+  line-height: 19px;
+  color: rgba(0, 0, 0, 0.6);
   &:hover {
     cursor: pointer;
   }
+`
+
+export const DashedLine = styled.div`
+  width: 7%;
+  border: 2px solid ${lightGreen11};
+  margin: 0px;
+  margin-bottom: 15px;
+  height: 0px;
+`
+
+export const StyledRow = styled(Row)`
+  margin-bottom: 10px;
+`
+export const StyledCol = styled(Col)``
+
+export const SlideInfo = styled.div`
+  font-size: 12px;
+  line-height: 16px;
+  color: rgba(0, 0, 0, 0.8);
+`
+export const IconWrapper = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100%;
 `

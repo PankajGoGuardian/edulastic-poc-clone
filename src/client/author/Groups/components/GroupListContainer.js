@@ -35,6 +35,8 @@ const GroupListContainer = ({
   setShowActive,
   archiveGroup,
   unarchiveGroup,
+  setShowClassCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const [searchName, setSearchName] = useState('')
   const [selectedRows, setSelectedRows] = useState([])
@@ -47,11 +49,10 @@ const GroupListContainer = ({
   const resetArchiveModalProps = () =>
     setArchiveModalProps({ visible: false, _id: '', name: '' })
 
-  const handleCreateGroup = () =>
-    history.push({
-      pathname: `${match.url}/createClass/`,
-      state: { type: 'group', exitPath: match.url },
-    })
+  const handleCreateGroup = () => {
+    setShowClassCreationModal(true)
+    setCreateClassTypeDetails({ type: 'group', exitPath: match.url })
+  }
 
   const handleEditGroup = (groupId) =>
     history.push({

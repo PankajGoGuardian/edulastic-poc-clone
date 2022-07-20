@@ -9,7 +9,7 @@ export const CreateClassCardWrapper = styled.div`
   justify-content: space-evenly;
   width: ${({ newCreateClassCard }) =>
     newCreateClassCard ? '380px' : '350px'};
-  height: 212px;
+  height: 250px;
   border: 2px solid ${greyThemeLight};
   border-radius: 10px;
   border-style: dashed;

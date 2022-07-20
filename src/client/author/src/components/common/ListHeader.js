@@ -37,6 +37,7 @@ import {
   getUserRole,
 } from '../../selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import { setShowAssignmentCreationModalAction } from '../../../Dashboard/ducks'
 
 const ListHeader = ({
   onCreate,
@@ -61,8 +62,8 @@ const ListHeader = ({
   userFeatures = {},
   newTest,
   titleWidth,
-  history,
   isLoadingButtonState = false,
+  setShowAssignmentCreationModal,
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
 
@@ -78,7 +79,7 @@ const ListHeader = ({
     setTeachersDetailsModalVisible(false)
   }
 
-  const createNewAssignment = () => history.push('/author/assignments/select')
+  const createNewAssignment = () => setShowAssignmentCreationModal(true)
 
   return (
     <MainHeader titleMaxWidth={titleWidth} Icon={titleIcon} headingText={title}>
@@ -191,7 +192,6 @@ ListHeader.propTypes = {
   createAssignment: PropTypes.bool,
   t: PropTypes.func.isRequired,
   title: PropTypes.string.isRequired,
-  history: PropTypes.object.isRequired,
   btnTitle: PropTypes.string,
   renderExtra: PropTypes.func,
   renderFilter: PropTypes.func,
@@ -234,6 +234,7 @@ const enhance = compose(
     {
       addBulkTeacher: addBulkTeacherAdminAction,
       setTeachersDetailsModalVisible: setTeachersDetailsModalVisibleAction,
+      setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
     }
   )
 )

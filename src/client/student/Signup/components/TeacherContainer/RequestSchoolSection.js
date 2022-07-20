@@ -113,7 +113,6 @@ const RequestSchool = (props) => {
         t={t}
         handleSubmit={handleSubmit}
         userInfo={userInfo}
-        fromUserProfile
       />
       <ButtonRow>
         <EduButton

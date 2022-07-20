@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import { compose } from 'redux'
 import { toUpper } from 'lodash'
 import PropTypes from 'prop-types'
-import { withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import { GoogleLogin } from 'react-google-login'
 
@@ -45,12 +44,13 @@ const Header = ({
   user,
   handleCanvasBulkSync,
   isClassLink,
-  history,
   syncClassWithAtlas,
   syncCleverClassList,
   refreshPage,
   isCleverDistrict,
   filterClass,
+  setShowClassCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const { atlasId, cleverId, isPlayground } = user
 
@@ -132,11 +132,10 @@ const Header = ({
     },
   ]
 
-  const createNewClass = () =>
-    history.push({
-      pathname: '/author/manageClass/createClass',
-      state: { type: currentTab },
-    })
+  const createNewClass = () => {
+    setShowClassCreationModal(true)
+    setCreateClassTypeDetails({ type: currentTab })
+  }
 
   // `googleStopSync` is true if all `googleAllowedInstitutions` have `stopSync` enabled
   const googleStopSync = useMemo(
@@ -292,9 +291,8 @@ const Header = ({
 
 Header.propTypes = {
   fetchGoogleClassList: PropTypes.func.isRequired,
-  history: PropTypes.object.isRequired,
 }
 
-const enhance = compose(withNamespaces('header'), withRouter)
+const enhance = compose(withNamespaces('header'))
 
 export default enhance(Header)

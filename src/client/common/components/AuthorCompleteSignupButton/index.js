@@ -21,6 +21,7 @@ const TeacherSignup = loadable(
 )
 
 const AuthorCompleteSignupButton = ({
+  userInfo,
   user = {},
   renderButton,
   onClick,
@@ -44,10 +45,16 @@ const AuthorCompleteSignupButton = ({
   const [didSchoolModalOpen, setDidSchoolModalOpen] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
 
+  const isCanvasUserSchoolNotSelected =
+    (userInfo.signupStatus === signUpState.SCHOOL_NOT_SELECTED ||
+      userInfo.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL) &&
+    user?.openIdProvider === 'canvas'
+
   const isSchoolSignupOnly = !!(
     orgSchools.length === 0 &&
     !!userOrgId &&
-    roleuser.TEACHER === user.role
+    roleuser.TEACHER === user.role &&
+    !isCanvasUserSchoolNotSelected
   )
 
   const handleCanel = (value) => {
@@ -81,7 +88,8 @@ const AuthorCompleteSignupButton = ({
     if (
       signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
       hasNoPreferences ||
-      isSchoolSignupOnly
+      isSchoolSignupOnly ||
+      isCanvasUserSchoolNotSelected
     ) {
       if (user.districtIds && user.districtIds.length === 0) {
         setDidSchoolModalOpen(true)
@@ -110,6 +118,7 @@ const AuthorCompleteSignupButton = ({
           onSuccessCallback={onSuccessCallback}
           triggerSource={triggerSource}
           didSchoolModalOpen={didSchoolModalOpen}
+          allowCanvas={isCanvasUserSchoolNotSelected}
         />
       )}
     </>
@@ -139,6 +148,7 @@ AuthorCompleteSignupButton.defaultProps = {
 
 const enhance = compose(
   connect((state) => ({
+    userInfo: state.user,
     user: getUser(state),
     orgSchools: getOrgSchools(state),
     userOrgId: getUserOrgId(state),

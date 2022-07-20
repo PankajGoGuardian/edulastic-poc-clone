@@ -7,7 +7,7 @@ import AddSchoolAndGradeModal from './AddSchoolAndGradeModal'
 
 const Container = ({ isModal, ...rest }) => {
   if (isModal) {
-    return <AddSchoolAndGradeModal {...rest} />
+    return <AddSchoolAndGradeModal {...rest} hideJoinSchoolBanner />
   }
 
   return <Main {...rest} />

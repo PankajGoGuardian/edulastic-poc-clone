@@ -20,7 +20,11 @@ import {
   SubHeader,
   IconWrapper,
 } from './styled'
-import { fetchClassListAction, setFilterClassAction } from '../../ducks'
+import {
+  fetchClassListAction,
+  setCreateClassTypeDetailsAction,
+  setFilterClassAction,
+} from '../../ducks'
 import GoogleBanner from './GoogleBanner'
 import { getUserDetails } from '../../../../student/Login/ducks'
 import Header from './Header'
@@ -29,6 +33,7 @@ import {
   getCanvasAllowedInstitutionPoliciesSelector,
   getCleverLibraryUserSelector,
 } from '../../../src/selectors/user'
+import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -56,6 +61,8 @@ const ClassList = ({
   studentsList,
   setFilterClass,
   filterClass,
+  setShowClassCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const recentInstitute = institutions[institutions.length - 1]
   const findGrade = (_grade = []) =>
@@ -318,6 +325,8 @@ const ClassList = ({
         handleCanvasBulkSync={handleCanvasBulkSync}
         isClassLink={isClassLink}
         filterClass={filterClass}
+        setShowClassCreationModal={setShowClassCreationModal}
+        setCreateClassTypeDetails={setCreateClassTypeDetails}
       />
       <MainContentWrapper>
         <SubHeader>
@@ -353,6 +362,8 @@ const ClassList = ({
                   fetchClassList={fetchClassList}
                   googleAllowedInstitutions={googleAllowedInstitutions}
                   isClassLink={isClassLink}
+                  setShowClassCreationModal={setShowClassCreationModal}
+                  setCreateClassTypeDetails={setCreateClassTypeDetails}
                 />
               )}
             </>
@@ -401,6 +412,8 @@ const enhance = compose(
     {
       fetchClassList: fetchClassListAction,
       setFilterClass: setFilterClassAction,
+      setShowClassCreationModal: setShowClassCreationModalAction,
+      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )

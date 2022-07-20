@@ -4,15 +4,18 @@ import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
-import { capitalize, isEmpty, find, get, pickBy, identity } from 'lodash'
-import { Form, Spin, Row } from 'antd'
+import { isEmpty, find, get, pickBy, identity } from 'lodash'
+import { Form, Spin, Row, Col } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
 import { segmentApi } from '@edulastic/api'
 // actions
+import { CustomModalStyled } from '@edulastic/common'
+import styled from 'styled-components'
 import { getDictCurriculumsAction } from '../../../src/actions/dictionaries'
 import {
   createClassAction,
   getSelectedSubject,
+  setCreateClassTypeDetailsAction,
   setSubjectAction,
 } from '../../ducks'
 // selectors
@@ -32,16 +35,16 @@ import {
 } from '../../../Courses/ducks'
 
 // componentes
-import Header from './Header'
-import BreadCrumb from '../../../src/components/Breadcrumb'
 import LeftFields from './LeftFields'
 import RightFields from './RightFields'
-import { Container, FormTitle, LeftContainer, RightContainer } from './styled'
+import { LeftContainer } from './styled'
 import {
   addNewTagAction,
   getAllTagsAction,
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
+import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
+import { TitleHeader, TitleParagraph } from '../../../Welcome/styled/styled'
 
 class ClassCreate extends React.Component {
   static propTypes = {
@@ -81,8 +84,13 @@ class ClassCreate extends React.Component {
   }
 
   componentDidMount() {
-    const { curriculums, getCurriculums, getAllTags, location } = this.props
-    const { fromDashboard, type } = location?.state || {}
+    const {
+      curriculums,
+      getCurriculums,
+      getAllTags,
+      createClassType,
+    } = this.props
+    const { fromDashboard, type } = createClassType || {}
     segmentApi.genericEventTrack('createClassStart', { fromDashboard, type })
 
     if (isEmpty(curriculums)) {
@@ -106,7 +114,9 @@ class ClassCreate extends React.Component {
 
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
-        const { createClass, curriculums, location } = this.props
+        const { createClass, curriculums, createClassType } = this.props
+        const { fromDashboard, type, studentIds = [], exitPath } =
+          createClassType || {}
         const {
           standardSets,
           endDate,
@@ -141,7 +151,7 @@ class ClassCreate extends React.Component {
         })
 
         values.districtId = districtId
-        values.type = location?.state?.type === 'group' ? 'custom' : 'class'
+        values.type = type === 'group' ? 'custom' : 'class'
         values.parent = { id: userId }
         values.owners = [userId]
         values.description = description || ''
@@ -152,7 +162,7 @@ class ClassCreate extends React.Component {
         values.grades = isEmpty(grades) ? ['O'] : grades
         values.subject = isEmpty(subject) ? 'Other Subjects' : subject
         values.tags = tags?.map((t) => allTagsData.find((o) => o._id === t))
-        values.studentIds = location?.state?.studentIds || []
+        values.studentIds = studentIds || []
 
         // eslint-disable-next-line react/no-unused-state
         this.setState({ submitted: true })
@@ -162,8 +172,7 @@ class ClassCreate extends React.Component {
           callUserMeApi = true
         }
         const submitValues = pickBy(values, identity)
-        createClass({ ...submitValues, callUserMeApi })
-        const { fromDashboard, type } = location?.state || {}
+        createClass({ ...submitValues, callUserMeApi, exitPath })
         segmentApi.genericEventTrack('createClassSubmit', {
           ...submitValues,
           fromDashboard,
@@ -205,8 +214,8 @@ class ClassCreate extends React.Component {
   }
 
   getBreadCrumbData = () => {
-    const { match, location } = this.props
-    const { type = 'class', exitPath } = location?.state || {}
+    const { match, createClassType } = this.props
+    const { type = 'class', exitPath } = createClassType || {}
     const pathList = match.url.split('/')
     let breadCrumbData = []
 
@@ -277,71 +286,95 @@ class ClassCreate extends React.Component {
       allTagsData,
       addNewTag,
       history,
-      location,
       userRole,
+      isVisible,
+      setShowClassCreationModal,
+      setCreateClassTypeDetails,
+      createClassType,
+      userFeatures,
     } = this.props
 
-    const { type, exitPath } = location?.state || {}
+    const { type, exitPath } = createClassType || {}
 
     const { _id: classId, tags } = entity
     const { getFieldDecorator, getFieldValue, setFieldsValue } = form
-    const { defaultSchool, schools } = userOrgData
+    const {
+      defaultGrades,
+      defaultSubjects,
+      interestedCurriculums,
+      defaultSchool,
+      schools,
+    } = userOrgData
     const { submitted } = this.state
+
+    const modalTitle = (
+      <Row gutter={96}>
+        <Col span={12}>
+          <StyledDiv>
+            <TitleHeader>Enter your {type || 'class'} details</TitleHeader>
+            <TitleParagraph>before we go ahead</TitleParagraph>
+          </StyledDiv>
+        </Col>
+        <LeftContainer span={12}>
+          <LeftFields />
+        </LeftContainer>
+      </Row>
+    )
+
     if (!creating && submitted && isEmpty(error)) {
-      history.push({
-        pathname: exitPath || `/author/manageClass/${classId}`,
-        state: location?.state,
-      })
+      setShowClassCreationModal(false)
+      setCreateClassTypeDetails({})
+      if (!exitPath) {
+        history.push(`/author/manageClass/${classId}`)
+      }
     }
     return (
-      <Form onSubmit={this.handleSubmit}>
-        <Header type={type || 'class'} exitPath={exitPath} />
-        <Spin spinning={creating}>
-          <BreadCrumb
-            ellipsis="calc(100% - 200px)"
-            data={this.getBreadCrumbData()}
-            style={{ position: 'unset', margin: '20px 0 0 30px' }}
-          />
-          <Container padding="30px">
-            <FormTitle>{capitalize(type || 'class')} Details</FormTitle>
-            <Row gutter={36}>
-              <LeftContainer xs={8}>
-                <LeftFields
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  tags={tags}
-                  setFieldsValue={setFieldsValue}
-                  allTagsData={allTagsData}
-                  addNewTag={addNewTag}
-                  type={type || 'class'}
-                />
-              </LeftContainer>
-              <RightContainer xs={16}>
-                <RightFields
-                  selectedSubject={selectedSubject}
-                  filteredCurriculums={filteredCurriculums}
-                  getFieldDecorator={getFieldDecorator}
-                  getFieldValue={getFieldValue}
-                  defaultSchool={defaultSchool}
-                  courseList={courseList}
-                  schoolList={schools}
-                  searchCourse={this.searchCourse}
-                  isSearching={isSearching}
-                  setSubject={setSubject}
-                  userOrgData={userOrgData}
-                  clearStandards={this.clearStandards}
-                  tags={tags}
-                  setFieldsValue={setFieldsValue}
-                  allTagsData={allTagsData}
-                  addNewTag={addNewTag}
-                  type={type || 'class'}
-                  userRole={userRole}
-                />
-              </RightContainer>
-            </Row>
-          </Container>
-        </Spin>
-      </Form>
+      <CustomModalStyled
+        visible={isVisible}
+        title={modalTitle}
+        footer={null}
+        width="900px"
+        onCancel={() => {
+          setShowClassCreationModal(false)
+          setCreateClassTypeDetails({})
+        }}
+        centered
+        padding="30px 60px"
+        bodyPadding="0px"
+        borderRadius="10px"
+        closeTopAlign="14px"
+        closeRightAlign="10px"
+        closeIconColor="black"
+      >
+        <FormWrapper onSubmit={this.handleSubmit}>
+          <Spin spinning={creating}>
+            <RightFields
+              selectedSubject={selectedSubject}
+              filteredCurriculums={filteredCurriculums}
+              getFieldDecorator={getFieldDecorator}
+              getFieldValue={getFieldValue}
+              defaultSchool={defaultSchool}
+              courseList={courseList}
+              schoolList={schools}
+              searchCourse={this.searchCourse}
+              isSearching={isSearching}
+              setSubject={setSubject}
+              userOrgData={userOrgData}
+              clearStandards={this.clearStandards}
+              tags={tags}
+              setFieldsValue={setFieldsValue}
+              allTagsData={allTagsData}
+              addNewTag={addNewTag}
+              type={type || 'class'}
+              userRole={userRole}
+              defaultGrades={defaultGrades}
+              defaultSubjects={defaultSubjects}
+              interestedCurriculums={interestedCurriculums}
+              isCourseVisible={userFeatures?.selectCourse}
+            />
+          </Spin>
+        </FormWrapper>
+      </CustomModalStyled>
     )
   }
 }
@@ -371,6 +404,7 @@ const enhance = compose(
         userRole: getUserRole(state),
         userFeatures: getUserFeatures(state),
         districtId: getUserOrgId(state),
+        createClassType: get(state, 'manageClass.createClassType'),
       }
     },
     {
@@ -380,8 +414,56 @@ const enhance = compose(
       addNewTag: addNewTagAction,
       searchCourseList: receiveSearchCourseAction,
       setSubject: setSubjectAction,
+      setShowClassCreationModal: setShowClassCreationModalAction,
+      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )
 
 export default enhance(ClassCreateForm)
+
+const StyledDiv = styled(Row)`
+  padding-top: 20px;
+`
+const FormWrapper = styled(Form)`
+  .ant-row {
+    text-align: left;
+    padding: 0px;
+    label {
+      font-weight: 600;
+      font-size: 14px;
+      line-height: 19px;
+      text-transform: uppercase;
+      color: #000000;
+      &:after {
+        display: none;
+      }
+    }
+    .ant-form-item-children {
+      .ant-input {
+        min-height: 45px;
+        margin-top: 10px;
+      }
+      .remote-autocomplete-dropdown {
+        line-height: normal;
+        .ant-input-affix-wrapper {
+          .ant-input {
+            min-height: 45px;
+          }
+        }
+      }
+      .ant-select-selection .ant-select-selection__rendered {
+        min-height: 45px;
+        .ant-select-selection-selected-value {
+          margin-top: 7px;
+        }
+      }
+      .ant-select-selection__choice {
+        height: 35px !important;
+      }
+      .ant-select-arrow {
+        top: 50% !important;
+      }
+    }
+  }
+`

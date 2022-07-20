@@ -9,7 +9,8 @@ const SyncModal = ({
   handleCancel,
   classDetails,
   onProceed,
-  history,
+  setShowClassCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const [title, setTitle] = useState('')
   const [description, setDescription] = useState('')
@@ -28,7 +29,8 @@ const SyncModal = ({
   }, [classDetails])
 
   const handleCreateNewClassClick = () => {
-    history.push('/author/manageClass/createClass')
+    setShowClassCreationModal(true)
+    setCreateClassTypeDetails({ type: 'class' })
   }
 
   const handleOnProceedClick = () => {

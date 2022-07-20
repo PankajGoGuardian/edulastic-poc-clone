@@ -13,6 +13,7 @@ const EdulasticOverviewModel = ({
   isBannerModalVisible,
   setShowBannerModal,
   windowWidth,
+  continueToDashboardButton = false,
 }) => {
   const [isVideoPreview, setIsVideoPreview] = useState(false)
   const handleVideoClick = () => {
@@ -45,6 +46,7 @@ const EdulasticOverviewModel = ({
       titleFontSize="22px"
       padding="25px 0px 25px 45px"
       windowWidth={windowWidth}
+      continueToDashboardButton={continueToDashboardButton}
     />
   ) : (
     <EdulasticResourceModal
@@ -52,6 +54,7 @@ const EdulasticOverviewModel = ({
       closeCallback={handleBannerModalClose}
       hideFooter
       isVisible={isBannerModalVisible}
+      continueToDashboardButton={continueToDashboardButton}
     >
       <ModalBody>
         <ContentHeaderDiv>

@@ -1,4 +1,4 @@
-import { fadedGreen, themeColor } from '@edulastic/colors'
+import { darkGrey3, fadedGreen, themeColor } from '@edulastic/colors'
 import { Button, Carousel, Icon, Tooltip } from 'antd'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -59,8 +59,8 @@ const carouselOptions = {
   infinite: false,
   draggable: true,
   speed: 500,
-  slidesToShow: 5,
-  slidesToScroll: 5,
+  slidesToShow: 3,
+  slidesToScroll: 3,
   initialSlide: 0,
   arrows: true,
   variableWidth: true,
@@ -93,9 +93,7 @@ const carouselOptions = {
 
 const TeacherCarousel = ({ teachers }) => (
   <CarouselWrapper>
-    <TeacherCount>
-      {teachers.length} teacher(s) from this school use Edulastic
-    </TeacherCount>
+    <TeacherCount>HERE ARE A FEW TEACHERS FROM THIS SCHOOL</TeacherCount>
     <Carousel {...carouselOptions}>
       {teachers.map((item) => (
         <Card teacher={item._source} />
@@ -107,22 +105,26 @@ const TeacherCarousel = ({ teachers }) => (
 export default TeacherCarousel
 
 const CarouselWrapper = styled.div`
-  margin-top: 32px;
   .slick-track {
     display: flex;
   }
-  .ant-carousel .slick-slider {
-    .slick-slide {
-      min-width: 70px;
-      display: flex;
-      justify-content: center;
-    }
+  .ant-carousel {
+    margin-left: 20px;
+    .slick-slider {
+      width: 80%;
+      margin: auto;
+      .slick-slide {
+        min-width: 100px;
+        display: flex;
+        justify-content: center;
+      }
 
-    .ant-btn:not([disabled]):active,
-    .ant-btn {
-      border: 0px;
-      i {
-        color: ${themeColor};
+      .ant-btn:not([disabled]):active,
+      .ant-btn {
+        border: 0px;
+        i {
+          color: ${darkGrey3};
+        }
       }
     }
   }
@@ -130,13 +132,17 @@ const CarouselWrapper = styled.div`
 
 const TeacherCount = styled.div`
   margin-bottom: 16px;
-  font-weight: 600;
+  font-weight: 300;
+  font-size: 12px;
+  line-height: 16px;
+  letter-spacing: 0.01em;
+  text-transform: uppercase;
+  color: ${darkGrey3};
 `
 
 const CardWrapper = styled.div`
   display: flex;
   align-items: center;
-  width: 50px;
   img {
     width: 50px;
     height: 50px;
@@ -152,10 +158,11 @@ const TeacherInfo = styled.div`
 
 const TeacherName = styled.div`
   font-weight: 500;
-  max-width: 49px;
+  max-width: 70px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  margin-top: 15px;
 `
 
 const CircleMark = styled.div`
@@ -177,19 +184,21 @@ const ArrowBtn = styled(Button)`
   color: ${themeColor};
   position: absolute;
   top: 50%;
-  width: 20px;
-  height: 20px;
+  width: 16px;
+  height: 16px;
   margin-top: -24px;
   padding: 0px;
   outline: none;
   cursor: pointer;
-  font-size: 24px;
+  font-size: 16px;
 `
 
 const StyledNextButton = styled(ArrowBtn)`
-  left: -32px;
+  left: -5px;
+  z-index: 20;
 `
 
 const StyledPrevButton = styled(ArrowBtn)`
-  right: -32px;
+  right: -25px;
+  z-index: 20;
 `

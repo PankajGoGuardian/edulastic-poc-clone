@@ -38,22 +38,8 @@ import {
 } from '../../../../sharedDucks/groups'
 import { requestEnrolExistingUserToClassAction } from '../../../../ClassEnrollment/ducks'
 import { getFormattedName } from '../../../../Gradebook/transformers'
-
-const getParentUrl = (urlList) => {
-  // urlList[2] decides the origin of the createClass route
-  switch (urlList[2]) {
-    case 'reports':
-      // equivalent to /author/reports/<report-type>
-      return urlList.slice(0, 4).join('/')
-    case 'manageClass':
-    case 'gradebook':
-    case 'groups':
-    case 'class-enrollment':
-      return `/author/${urlList[2]}`
-    default:
-      return '/author/manageClass'
-  }
-}
+import { setCreateClassTypeDetailsAction } from '../../../../ManageClass/ducks'
+import { setShowClassCreationModalAction } from '../../../../Dashboard/ducks'
 
 const ScrollElement = ({ item, onClick, ticked }) => (
   <div
@@ -90,8 +76,9 @@ const AddToGroupModal = ({
   groupList,
   enrollStudentsToGroup,
   match,
-  history,
   windowWidth,
+  setShowClassCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const groupTypeText = groupType === 'custom' ? 'group' : 'class'
   const [studentList, setStudentList] = useState([])
@@ -216,14 +203,11 @@ const AddToGroupModal = ({
 
   const handleAddNew = () => {
     if (checkedStudents.length) {
-      const parentUrl = getParentUrl(match.url.split('/'))
-      history.push({
-        pathname: `${parentUrl}/createClass/`,
-        state: {
-          type: groupTypeText,
-          studentIds: checkedStudents.map((s) => s._id),
-          exitPath: match.url,
-        },
+      setShowClassCreationModal(true)
+      setCreateClassTypeDetails({
+        type: groupTypeText,
+        studentIds: checkedStudents.map((s) => s._id),
+        exitPath: match.url,
       })
     } else {
       notification({
@@ -381,6 +365,8 @@ export default compose(
     {
       fetchGroups: fetchGroupsAction,
       enrollStudentsToGroup: requestEnrolExistingUserToClassAction,
+      setShowClassCreationModal: setShowClassCreationModalAction,
+      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )(AddToGroupModal)

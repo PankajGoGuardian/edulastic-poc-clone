@@ -9,7 +9,6 @@ import {
   themeColor,
   mobileWidthMax,
   greyGraphstroke,
-  greenDark3,
   greenDark2,
   tabletWidth,
   extraDesktopWidthMax,
@@ -371,4 +370,14 @@ export const TermsPrivacy = styled.p`
   @media (min-width: ${largeDesktopWidth}) {
     min-width: ${({ minWidth }) => minWidth || ' '}};
   }
+`
+
+export const ContainerForButtonAtEnd = styled.div`
+  display: flex;
+  justify-content: flex-end;
+  padding: 0px;
+  width: ${(props) => props.containerWidth || 'auto'};
+  padding-right: ${(props) => props.pR || '0px'};
+  margin-top: ${(props) => props.mT || '0px'};
+  margin-bottom: ${(props) => props.mB || '0px'};
 `

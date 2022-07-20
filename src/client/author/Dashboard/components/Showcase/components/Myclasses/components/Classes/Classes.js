@@ -1,4 +1,3 @@
-import { title } from '@edulastic/colors'
 import { FlexContainer, SelectInputStyled } from '@edulastic/common'
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
@@ -7,10 +6,15 @@ import Card from '../Card'
 import CreateClassCard from '../CreateClassCard/CreateClassCard'
 import { CardContainer } from './styled'
 import { getUserDetails } from '../../../../../../../../student/Login/ducks'
-import { receiveTeacherDashboardAction } from '../../../../../../ducks'
+import {
+  receiveTeacherDashboardAction,
+  setShowAssignmentCreationModalAction,
+  setShowClassCreationModalAction,
+} from '../../../../../../ducks'
 import { Tooltip } from '../../../../../../../../common/utils/helpers'
 import { getUserOrgId } from '../../../../../../../src/selectors/user'
 import CreateAssignmentCard from '../CreateClassCard/CreateAssignmentCard'
+import { setCreateClassTypeDetailsAction } from '../../../../../../../ManageClass/ducks'
 
 const myClassFilters = {
   ALL_CLASSES: 'All Classes',
@@ -41,6 +45,9 @@ const Classes = ({
   history,
   showBannerSlide,
   hideGetStartedSection,
+  setShowClassCreationModal,
+  setShowAssignmentCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const [classType, setClassType] = useState(
     myClassFilters[
@@ -60,13 +67,15 @@ const Classes = ({
     <>
       <TextWrapper
         data-cy="classSectionTitle"
-        fw="bold"
         size="16px"
-        color={title}
         mt={showBannerSlide ? '1.5rem' : ''}
         mb="1rem"
+        rfs="20px"
+        fw="700"
+        lh="27px"
+        color="#000000"
       >
-        {hideGetStartedSection ? 'My Classes' : 'Get Started with Edulastic'}
+        {hideGetStartedSection ? 'Classes' : 'Get Started with Edulastic'}
       </TextWrapper>
       {isPremiumUser && (
         <SelectInputStyled
@@ -129,12 +138,15 @@ const Classes = ({
           <CreateClassCard
             newCreateClassCard={classData.length < 1}
             history={history}
+            setShowClassCreationModal={setShowClassCreationModal}
+            setCreateClassTypeDetails={setCreateClassTypeDetails}
           />
         )}
         {!hideGetStartedSection && (
           <CreateAssignmentCard
             newCreateClassCard={classData.length < 1}
             history={history}
+            setShowAssignmentCreationModal={setShowAssignmentCreationModal}
           />
         )}
       </FlexContainer>
@@ -149,5 +161,8 @@ export default connect(
   }),
   {
     getTeacherDashboard: receiveTeacherDashboardAction,
+    setShowClassCreationModal: setShowClassCreationModalAction,
+    setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
+    setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
   }
 )(Classes)

@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
@@ -6,6 +6,10 @@ import { get } from 'lodash'
 import { CustomModalStyled } from '@edulastic/common'
 import JoinSchool from './JoinSchool'
 import SubjectGradeForm from './SubjectGrade'
+import {
+  TitleHeader,
+  TitleParagraph,
+} from '../../../../author/Welcome/styled/styled'
 
 const AddSchoolAndGradeModal = ({
   user,
@@ -20,49 +24,73 @@ const AddSchoolAndGradeModal = ({
   onMouseDown,
   onSuccessCallback = () => {},
   triggerSource = '',
-  didSchoolModalOpen,
+  allowCanvas,
+  hideJoinSchoolBanner,
 }) => {
   const userInfo = get(user, 'user', {})
+  const [schoolSelectedFromDropdown, setSchoolSelectedFromDropdown] = useState(
+    false
+  )
+  const [isCompleteSignupInProgress, setIsCompleteSignupInProgress] = useState(
+    false
+  )
+
+  const modalTitle = (
+    <>
+      <TitleHeader>Join your school</TitleHeader>
+      <TitleParagraph>
+        and provide your curriculum details, so we can provide relevent content
+      </TitleParagraph>
+    </>
+  )
 
   return (
     <CustomModalStyled
-      title={
-        userInfo.districtIds && userInfo.districtIds.length === 0
-          ? 'Where do you teach?'
-          : 'What do you teach?'
-      }
+      title={modalTitle}
       visible={isVisible}
       footer={null}
-      width="900px"
+      closable={!isCompleteSignupInProgress}
+      maskClosable={!isCompleteSignupInProgress}
+      width="850px"
       data-cy="signupSchoolSelectionTitle"
       onCancel={handleCancel}
       centered
+      bgColor="#dbf2ec"
+      padding="30px 60px"
+      modalWidth="565px"
+      borderRadius="20px"
+      closeTopAlign="14px"
+      closeRightAlign="10px"
+      closeIconColor="black"
     >
-      {(userInfo.districtIds && userInfo.districtIds.length === 0) ||
-      isSchoolSignupOnly ? (
-        <JoinSchool
-          userInfo={userInfo}
-          districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
-          isSignupUsingDaURL={isSignupUsingDaURL}
-          generalSettings={generalSettings}
-          districtPolicy={districtPolicy}
-          orgShortName={orgShortName}
-          orgType={orgType}
-          allowCanvas={false}
-          isModal
-          isSchoolSignupOnly={isSchoolSignupOnly}
-          triggerSource={triggerSource}
-        />
-      ) : (
-        <SubjectGradeForm
-          userInfo={userInfo}
-          districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
-          onMouseDown={onMouseDown}
-          onSuccessCallback={onSuccessCallback}
-          isModal
-          triggerSource={didSchoolModalOpen ? 'Previous Modal' : triggerSource}
-        />
-      )}
+      <JoinSchool
+        userInfo={userInfo}
+        districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
+        isSignupUsingDaURL={isSignupUsingDaURL}
+        generalSettings={generalSettings}
+        districtPolicy={districtPolicy}
+        orgShortName={orgShortName}
+        orgType={orgType}
+        allowCanvas={allowCanvas}
+        isModal
+        isSchoolSignupOnly={isSchoolSignupOnly}
+        triggerSource={triggerSource}
+        setSchoolSelectedFromDropdown={setSchoolSelectedFromDropdown}
+        hideJoinSchoolBanner={hideJoinSchoolBanner}
+        isCompleteSignupInProgress={isCompleteSignupInProgress}
+      />
+      <SubjectGradeForm
+        userInfo={userInfo}
+        districtId={isSignupUsingDaURL ? generalSettings.orgId : false}
+        onMouseDown={onMouseDown}
+        onSuccessCallback={onSuccessCallback}
+        isModal
+        triggerSource={triggerSource}
+        schoolSelectedFromDropdown={schoolSelectedFromDropdown}
+        withJoinSchoolModal
+        isCompleteSignupInProgress={isCompleteSignupInProgress}
+        setIsCompleteSignupInProgress={setIsCompleteSignupInProgress}
+      />
     </CustomModalStyled>
   )
 }

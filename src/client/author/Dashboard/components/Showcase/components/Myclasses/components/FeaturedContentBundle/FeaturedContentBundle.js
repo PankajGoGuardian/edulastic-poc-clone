@@ -2,7 +2,7 @@ import React from 'react'
 
 // components
 import { FlexContainer } from '@edulastic/common'
-import { title } from '@edulastic/colors'
+import { Link } from 'react-router-dom'
 import { TextWrapper } from '../../../../../styledComponents'
 import { FeatureContentWrapper, EmptyBox, UnlockButton } from './styled'
 import Bundle from './Bundle'
@@ -56,8 +56,15 @@ const FeaturedContentBundle = ({
 
   return (
     <FeatureContentWrapper>
-      <TextWrapper fw="bold" size="16px" color={title} mt=".5rem" mb="1rem">
-        Pre-built Test Collections{' '}
+      <TextWrapper
+        size="16px"
+        fw="700"
+        lh="22px"
+        color="#000000"
+        mt=".5rem"
+        mb="1rem"
+      >
+        Ready-made Tests you can use{' '}
       </TextWrapper>
       {!isSignupCompleted ? (
         <>
@@ -72,7 +79,7 @@ const FeaturedContentBundle = ({
                 UNLOCK
               </UnlockButton>
             )}
-            triggerSource={'Unlock Button Click'}
+            triggerSource="Unlock Button Click"
           />
           <p>
             Provide your Interested Grade and Subject to unlock ready-made tests
@@ -80,14 +87,21 @@ const FeaturedContentBundle = ({
           </p>
         </>
       ) : (
-        <FlexContainer justifyContent="flex-start" flexWrap="wrap">
-          {filteredfeaturedBundles?.map((bundle) => (
-            <Bundle handleClick={handleFeatureClick} bundle={bundle} />
-          ))}
-          {emptyBoxCount.map((index) => (
-            <EmptyBox key={index} />
-          ))}
-        </FlexContainer>
+        <>
+          <Link to="/author/tests">
+            <UnlockButton height="28px" isGhost>
+              Explore All
+            </UnlockButton>
+          </Link>
+          <FlexContainer justifyContent="flex-start" flexWrap="wrap">
+            {filteredfeaturedBundles?.map((bundle) => (
+              <Bundle handleClick={handleFeatureClick} bundle={bundle} />
+            ))}
+            {emptyBoxCount.map((index) => (
+              <EmptyBox key={index} />
+            ))}
+          </FlexContainer>
+        </>
       )}
     </FeatureContentWrapper>
   )

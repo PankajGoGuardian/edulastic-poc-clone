@@ -53,6 +53,7 @@ const CREATE_SCHOOL_SUCCESS = '[signup] create a school success'
 const CREATE_SCHOOL_FAILED = '[signup] create a school failed'
 
 const JOIN_SCHOOL_REQUEST = '[signup] update with school request'
+const JOIN_SCHOOL_SUCCESS = '[signup] update with school success'
 const JOIN_SCHOOL_FAILED = '[signup] update with school failed'
 
 const SAVE_SUBJECTGRADE_REQUEST = '[signup] save with subject and grade request'
@@ -63,6 +64,8 @@ const SAVE_SUBJECTGRADE_RESET =
 const CREATE_AND_JOIN_SCHOOL_REQUEST = '[signup] create and join school request'
 const CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST =
   '[signup] create and join school join request'
+const CREATE_AND_JOIN_SCHOOL_JOIN_SUCCESS =
+  '[signup] create and join school join success'
 
 export const GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_REQUEST =
   '[signup] get district by short name and org type request'
@@ -78,6 +81,10 @@ const CHECK_DISTRICT_POLICY_FAILED = '[signup] check district policy failed'
 const FETCH_SCHOOL_TEACHERS_REQUEST = '[signup] fetch school teachers request'
 const FETCH_SCHOOL_TEACHERS_SUCCESS = '[signup] fetch school teachers success'
 const FETCH_SCHOOL_TEACHERS_FAILED = '[signup] fetch school teachers failed'
+const RESET_SCHOOL_TEACHERS = '[signup] reset school teachers'
+const SET_SCHOOL_SELECTED_IN_MODAL = '[signup] set school select in modal'
+const SET_SCHOOL_SELECT_WARNING = '[signup] set school select warning'
+const SET_DISPLAY_HOME_SCHOOL_BUTTON = '[signup] set display home school button'
 
 const SET_AUTO_SUGGEST_SCHOOLS = '[singup] set auto suggest schools'
 const SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS =
@@ -159,6 +166,17 @@ export const checkDistrictPolicyFailedAction = createAction(
 export const fetchSchoolTeachersRequestAction = createAction(
   FETCH_SCHOOL_TEACHERS_REQUEST
 )
+export const resetSchoolTeachersAction = createAction(RESET_SCHOOL_TEACHERS)
+export const setSchoolSelectedInModalAction = createAction(
+  SET_SCHOOL_SELECTED_IN_MODAL
+)
+export const setSchoolSelectWarningAction = createAction(
+  SET_SCHOOL_SELECT_WARNING
+)
+export const setDisplayHomeSchoolButtonAction = createAction(
+  SET_DISPLAY_HOME_SCHOOL_BUTTON
+)
+
 export const setAutoSuggestSchools = createAction(SET_AUTO_SUGGEST_SCHOOLS)
 export const setPreviousAutoSuggestSchools = createAction(
   SET_PREVIOUS_AUTO_SUGGEST_SCHOOLS
@@ -188,6 +206,9 @@ const initialState = {
   checkDistrictPolicy: true,
   autoSuggestSchools: [],
   bulkSyncCanvasStatus: '',
+  schoolSelectedInJoinModal: {},
+  displaySchoolSelectWarning: false,
+  displayHomeSchoolButton: false,
 }
 
 const searchSchool = (state) => {
@@ -291,6 +312,9 @@ export default createReducer(initialState, {
   [CREATE_AND_JOIN_SCHOOL_JOIN_REQUEST]: (state) => {
     state.updateUserWithSchoolLoading = true
   },
+  [CREATE_AND_JOIN_SCHOOL_JOIN_SUCCESS]: (state) => {
+    state.updateUserWithSchoolLoading = false
+  },
   [CREATE_SCHOOL_REQUEST]: (state) => {
     state.createSchoolRequestPending = true
   },
@@ -309,6 +333,9 @@ export default createReducer(initialState, {
   },
   [JOIN_SCHOOL_REQUEST]: (state) => {
     state.updateUserWithSchoolLoading = true
+  },
+  [JOIN_SCHOOL_SUCCESS]: (state) => {
+    state.updateUserWithSchoolLoading = false
   },
   [JOIN_SCHOOL_FAILED]: (state) => {
     state.updateUserWithSchoolLoading = false
@@ -353,6 +380,18 @@ export default createReducer(initialState, {
     state.schools = [...state.autoSuggestSchools]
   },
   [SET_BULK_SYNC_CANVAS_STATUS]: setBulkSyncingStatus,
+  [RESET_SCHOOL_TEACHERS]: (state) => {
+    state.schoolTeachers = []
+  },
+  [SET_SCHOOL_SELECTED_IN_MODAL]: (state, { payload }) => {
+    state.schoolSelectedInJoinModal = payload
+  },
+  [SET_SCHOOL_SELECT_WARNING]: (state, { payload }) => {
+    state.displaySchoolSelectWarning = payload
+  },
+  [SET_DISPLAY_HOME_SCHOOL_BUTTON]: (state, { payload }) => {
+    state.displayHomeSchoolButton = payload
+  },
 })
 
 // Sagas
@@ -410,6 +449,7 @@ function* createSchoolSaga({ payload = {} }) {
 function* createAndJoinSchoolSaga({ payload = {} }) {
   const createSchoolPayload = payload.createSchool
   const joinSchoolPayload = payload.joinSchool
+  const { setSchoolInJoinSchoolModal = false, onSuccessHandler } = payload
   let isCreateSchoolSuccessful = false
   let result
   try {
@@ -444,7 +484,11 @@ function* createAndJoinSchoolSaga({ payload = {} }) {
         TokenStorage.selectAccessToken(_result._id, _result.role)
       }
       const user = pick(_result, userPickFields)
+      yield put({ type: CREATE_AND_JOIN_SCHOOL_JOIN_SUCCESS })
       yield put(signupSuccessAction(user))
+      if (setSchoolInJoinSchoolModal) {
+        onSuccessHandler(createSchoolPayload)
+      }
       yield call(segmentApi.trackTeacherSignUp, { user: result })
       window.localStorage.setItem('author:dashboard:version', 0)
       yield put(hideJoinSchoolAction())
@@ -469,6 +513,7 @@ function* joinSchoolSaga({ payload = {} }) {
     }
     const user = pick(result, userPickFields)
     yield put(signupSuccessAction(user))
+    yield put({ type: JOIN_SCHOOL_SUCCESS })
     yield call(segmentApi.trackTeacherSignUp, { user: result })
     window.localStorage.setItem('author:dashboard:version', 0)
     yield put(hideJoinSchoolAction())
@@ -520,16 +565,26 @@ function* updateUserSignupStateSaga({ payload = {} } = {}) {
   }
 }
 
-function* saveSubjectGradeSaga({ payload }) {
-  const isTestRecommendationCustomizer = payload?.isTestRecommendationCustomizer
-  const setShowTestCustomizerModal = payload?.setShowTestCustomizerModal
-  const onSuccessCallback = payload?.onSuccessCallback
-  delete payload.isTestRecommendationCustomizer
-  delete payload.setShowTestCustomizerModal
-  delete payload.onSuccessCallback
+function* saveSubjectGradeSaga({ payload: _payload }) {
+  const {
+    isTestRecommendationCustomizer,
+    setShowTestCustomizerModal,
+    onSuccessCallback,
+    schoolSelectedFromDropdown,
+    schoolData,
+    ...payload
+  } = _payload
   let isSaveSubjectGradeSuccessful = false
   const initialUser = yield select(getUser)
   try {
+    if (schoolSelectedFromDropdown) {
+      yield call(joinSchoolSaga, {
+        payload: {
+          data: schoolData,
+          userId: payload.orgId,
+        },
+      })
+    }
     const result = yield call(settingsApi.saveInterestedStandards, payload) ||
       {}
     isSaveSubjectGradeSuccessful = true
@@ -587,7 +642,11 @@ function* saveSubjectGradeSaga({ payload }) {
     // If user has signUpState ACCESS_WITHOUT_SCHOOL, it means he is already accessing in-session app
     if (
       initialUser.currentSignUpState &&
-      initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL
+      initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL &&
+      !(
+        initialUser.currentSignUpState === signUpState.SCHOOL_NOT_SELECTED &&
+        initialUser?.openIdProvider === 'canvas'
+      )
     ) {
       yield put(persistAuthStateAndRedirectToAction())
     }
@@ -638,6 +697,7 @@ function* checkDistrictPolicyRequestSaga({ payload }) {
   } catch (e) {
     console.log('e', e)
     yield put(checkDistrictPolicyFailedAction())
+    yield put(setSchoolSelectWarningAction(true))
     notification({ msg: payload.error.message })
   }
 }

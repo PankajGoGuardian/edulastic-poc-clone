@@ -1,6 +1,7 @@
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import PropTypes from 'prop-types'
 import React from 'react'
+import { ContainerForButtonAtEnd } from '../../../../../../student/Signup/styled'
 
 // A common bare-bone view modal component to add resource types
 
@@ -12,6 +13,7 @@ const EdulasticResourceModal = ({
   okText = 'SUBMIT',
   canceltext = 'CANCEL',
   hideFooter = false,
+  continueToDashboardButton = false,
   modalWidth = '',
   children,
   titleFontSize,
@@ -48,6 +50,18 @@ const EdulasticResourceModal = ({
       padding={padding}
     >
       {children}
+      {continueToDashboardButton && (
+        <ContainerForButtonAtEnd pR="50px">
+          <EduButton
+            width="202px"
+            height="42px"
+            key="cancel"
+            onClick={closeCallback}
+          >
+            Continue to Dashboard
+          </EduButton>
+        </ContainerForButtonAtEnd>
+      )}
     </CustomModalStyled>
   )
 }

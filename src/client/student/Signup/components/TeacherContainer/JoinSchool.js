@@ -618,7 +618,7 @@ const JoinSchool = ({
               <Col xs={24} sm={18} md={12}>
                 {!selected && !homeSchool && (
                   <SearchWithCityText mB={displaySchoolSelectWarning && '30px'}>
-                    For International School, please enter you city first.
+                    For International School, please enter your city first.
                   </SearchWithCityText>
                 )}
                 {selected && SchoolDetails}

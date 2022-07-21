@@ -134,9 +134,7 @@ const JoinSchool = ({
   const displayRequestNewSchoolButton =
     (userInfo?.openIdProvider === 'canvas' &&
       currentSignUpState === signUpState.DONE) ||
-    (userInfo?.openIdProvider !== 'canvas' &&
-      (currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
-        currentSignUpState === signUpState.DONE))
+    userInfo?.openIdProvider !== 'canvas'
 
   const [selected, setSchool] = useState(null)
   const [tempSelected, setTempSchool] = useState(null)

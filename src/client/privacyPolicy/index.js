@@ -37,6 +37,8 @@ const PrivacyPolicyModal = ({
   userID,
   setLocationData,
   setShowWelcomePopup,
+  userRole,
+  roleuser,
 }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -90,7 +92,9 @@ const PrivacyPolicyModal = ({
       .eulaPolicyStatusUpdate(payload)
       .then(() => {
         setShowModal(false)
-        setShowWelcomePopup(true)
+        if (userRole === roleuser?.TEACHER) {
+          setShowWelcomePopup(true)
+        }
       })
       .catch((e) => {
         setShowSpinner(false)

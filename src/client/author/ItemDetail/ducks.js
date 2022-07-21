@@ -195,6 +195,7 @@ export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
 const SET_PASSAGE_UPDATE_IN_PROGRESS =
   '[itemDetail] set passage update in progress'
 const SET_TEST_ITEMS_SAVING = '[itemDetail] set test item saving in progress'
+const SET_TEST_ITEM_SCORE_UPDATED = '[itemDetail] set test item score updated'
 
 // actions
 
@@ -382,6 +383,9 @@ const setPassageUpdateInProgressAction = createAction(
   SET_PASSAGE_UPDATE_IN_PROGRESS
 )
 export const setTestItemsSavingAction = createAction(SET_TEST_ITEMS_SAVING)
+export const setTestItemScoreUpdatedAction = createAction(
+  SET_TEST_ITEM_SCORE_UPDATED
+)
 
 export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -575,6 +579,11 @@ export const getItemDetailDimensionTypeSelector = createSelector(
   }
 )
 
+export const getScoreUpdatedSelector = createSelector(
+  stateSelector,
+  (state) => state.isTestItemScoreUpdated
+)
+
 export const getItemDetailValidationSelector = createSelector(
   getItemDetailRowsSelector,
   (rows) => {
@@ -625,6 +634,10 @@ const initialState = {
   originalItem: null,
   passageUpdateInProgress: false,
   testItemSavingInProgress: false,
+  isTestItemScoreUpdated: {
+    currentTestItemId: '',
+    isUpdated: false,
+  },
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -1097,6 +1110,12 @@ export function reducer(state = initialState, { type, payload }) {
         testItemSavingInProgress: payload,
       }
     }
+    case SET_TEST_ITEM_SCORE_UPDATED: {
+      return {
+        ...state,
+        isTestItemScoreUpdated: payload,
+      }
+    }
     default:
       return state
   }
@@ -1148,7 +1167,6 @@ function* receiveItemSaga({ payload }) {
     })
 
     const { itemLevelScore } = data
-    yield put(setItemLevelScoreAction(itemLevelScore))
 
     yield put({
       type: CLEAR_DICT_ALIGNMENTS,
@@ -1405,14 +1423,27 @@ export function* updateItemSaga({ payload }) {
     const hasValidTestId = payload.testId && payload.testId !== 'undefined'
     const testIdParam = hasValidTestId ? payload.testId : null
 
+    const scoreUpdatedData = yield select(getScoreUpdatedSelector) || {}
+    const isScoreUpdatedParam =
+      scoreUpdatedData && payload.id === scoreUpdatedData.currentTestItemId
+        ? scoreUpdatedData.isUpdated
+        : null
+
     if (!isEmpty(passageData) && testIdParam) {
       passageData.testId = testIdParam
     }
 
+    const params = {
+      ...(testIdParam && { testId: testIdParam }),
+      ...(testIdParam &&
+        typeof isScoreUpdatedParam === 'boolean' && {
+          isScoreUpdated: isScoreUpdatedParam,
+        }),
+    }
     const [{ testId, ...item }, updatedPassage] = yield all([
       data._id === 'new'
         ? yield call(testItemsApi.create, _omit(data, '_id'))
-        : call(testItemsApi.updateById, payload.id, data, testIdParam),
+        : call(testItemsApi.updateById, payload.id, data, params),
       !isEmpty(passageData) ? call(passageApi.update, passageData) : null,
     ])
 
@@ -1626,12 +1657,14 @@ export function* updateItemDocBasedSaga({ payload }) {
     }
     const data = _omit(payload.data, ['authors', '__v'])
 
+    const params = { ...(payload.testId && { testId: payload.testId }) }
+
     const questions = get(payload.data, ['data', 'questions'], [])
     const { testId, ...item } = yield call(
       testItemsApi.updateById,
       payload.id,
       data,
-      payload.testId
+      params
     )
     // on update, if there is only question.. set it as the questionId, since we are changing the view
     // to singleQuestionView!
@@ -1748,11 +1781,24 @@ function* saveTestItemSaga() {
     resources,
   }
   const redirectTestId = yield select(getRedirectTestSelector)
+  const scoreUpdatedData = yield select(getScoreUpdatedSelector) || {}
+  const isScoreUpdatedParam =
+    scoreUpdatedData && data._id === scoreUpdatedData.currentTestItemId
+      ? scoreUpdatedData.isUpdated
+      : null
+
+  const params = {
+    ...(redirectTestId && { testId: redirectTestId }),
+    ...(redirectTestId &&
+      typeof isScoreUpdatedParam === 'boolean' && {
+        isScoreUpdated: isScoreUpdatedParam,
+      }),
+  }
 
   const newTestItem =
     data._id === 'new'
       ? yield call(testItemsApi.create, _omit(data, '_id'))
-      : yield call(testItemsApi.updateById, data._id, data, redirectTestId)
+      : yield call(testItemsApi.updateById, data._id, data, params)
   yield put({
     type: UPDATE_ITEM_DETAIL_SUCCESS,
     payload: { item: newTestItem },
@@ -2327,6 +2373,25 @@ function* saveCurrentItemAndRoueToOtherSaga({ payload }) {
   }
 }
 
+function* setScoreUpdatedSaga({ payload }) {
+  try {
+    const pathname = yield select((state) =>
+      get(state, 'router.location.pathname', false)
+    )
+    const itemDetail = yield select(getItemDetailSelector)
+    if (pathname.includes('/author/tests') && itemDetail?._id) {
+      yield put(
+        setTestItemScoreUpdatedAction({
+          currentTestItemId: itemDetail._id,
+          isUpdated: true,
+        })
+      )
+    }
+  } catch (err) {
+    Sentry.captureException(err)
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -2352,6 +2417,10 @@ export function* watcherSaga() {
     yield takeEvery(
       SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
       saveCurrentItemAndRoueToOtherSaga
+    ),
+    yield takeLatest(
+      [SET_ITEM_DETAIL_ITEM_LEVEL_SCORING, SET_ITEM_LEVEL_SCORING_FROM_RUBRIC],
+      setScoreUpdatedSaga
     ),
   ])
 }

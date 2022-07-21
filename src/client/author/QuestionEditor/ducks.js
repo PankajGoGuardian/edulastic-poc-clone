@@ -44,6 +44,8 @@ import {
   generateRecentlyUsedCollectionsList,
   proceedToPublishItemAction,
   setTestItemsSavingAction,
+  setTestItemScoreUpdatedAction,
+  getScoreUpdatedSelector,
 } from '../ItemDetail/ducks'
 import {
   setTestDataAndUpdateAction,
@@ -725,6 +727,19 @@ function* saveQuestionSaga({
     const redirectTestId = yield select(redirectTestIdSelector)
     // In test flow, if test not created, testId is 'undefined' | EV-27944
     const _testId = redirectTestId || (tId === 'undefined' ? undefined : tId)
+    const scoreUpdatedData = yield select(getScoreUpdatedSelector) || {}
+    const isScoreUpdatedParam =
+      scoreUpdatedData && itemDetail._id === scoreUpdatedData.currentTestItemId
+        ? scoreUpdatedData.isUpdated
+        : null
+
+    const params = {
+      ...(_testId && { testId: _testId }),
+      ...(_testId &&
+        typeof isScoreUpdatedParam === 'boolean' && {
+          isScoreUpdated: isScoreUpdatedParam,
+        }),
+    }
     let item
     // if its a new testItem, create testItem, else update it.
     // TODO: do we need redirect testId here?!
@@ -736,7 +751,7 @@ function* saveQuestionSaga({
         ...(itemDetail.multipartItem && _testId ? [{ testId: _testId }] : [])
       )
     } else {
-      item = yield call(testItemsApi.updateById, itemDetail._id, data, _testId)
+      item = yield call(testItemsApi.updateById, itemDetail._id, data, params)
     }
     yield put(addItemToCartAction(item))
     yield put(changeUpdatedFlagAction(false))
@@ -1122,6 +1137,20 @@ function* updateScoreAndValidationSaga({ payload }) {
     questionType.PASSAGE,
     questionType.TEXT,
   ]
+
+  const pathname = yield select((state) =>
+    get(state, 'router.location.pathname', false)
+  )
+  const itemDetail = yield select(getItemDetailSelector)
+
+  if (pathname.includes('/author/tests') && itemDetail?._id) {
+    yield put(
+      setTestItemScoreUpdatedAction({
+        currentTestItemId: itemDetail._id,
+        isUpdated: true,
+      })
+    )
+  }
 
   if (
     typeof score === 'number' &&

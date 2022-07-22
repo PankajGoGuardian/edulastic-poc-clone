@@ -19,7 +19,6 @@ import {
   greyThemeLighter,
   themeColorBlue,
   borderGrey,
-  red,
 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
 
@@ -121,6 +120,7 @@ const DataWarehouseUploadModal = ({
         </EduButton>,
         <EduButton
           btnType="primary"
+          data-testid="upload-btn"
           width="200px"
           onClick={() => handleFileUpload()}
           disabled={isUploadBtnDisabled}

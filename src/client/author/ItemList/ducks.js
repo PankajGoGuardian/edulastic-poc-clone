@@ -84,8 +84,8 @@ export const itemsDataTableSelector = createSelector(
 )
 
 export const testsDataTableSelector = createSelector(
-  getSelectedTestsSelector,
-  getCollectionsSelector,
+  (s) => getSelectedTestsSelector(s),
+  (s) => getCollectionsSelector(s),
   (selectedTests, itemBanks) =>
     mapItemsByCollectionCount(selectedTests, itemBanks)
 )

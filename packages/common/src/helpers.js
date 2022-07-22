@@ -230,8 +230,20 @@ export const uploadToS3 = async (
   }
 
   await fileApi.uploadBySignedUrl(url, formData, progressCallback, cancelUpload)
-
   if (ignoreCDN) {
+    //expecting to return s3 url only for bubble sheet/omr uploads
+    if (
+      folder !== aws.s3Folders.WEBCAM_OMR_UPLOADS &&
+      folder !== aws.s3Folders.BUBBLE_SHEETS
+    ) {
+      Sentry.withScope((scope) => {
+        scope.setExtra('content', {
+          folder,
+          url: `${url}/${fields.key}`,
+        })
+        Sentry.captureException(new Error('Content using s3 url'))
+      })
+    }
     return `${url}/${fields.key}`
   }
   return `${cdnUrl}/${fields.key}`

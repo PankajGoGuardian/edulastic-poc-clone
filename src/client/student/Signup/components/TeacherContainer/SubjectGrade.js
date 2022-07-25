@@ -170,6 +170,7 @@ class SubjectGrade extends React.Component {
       schoolSelected,
       setSchoolSelectWarning,
       withJoinSchoolModal,
+      isSchoolSignupOnly,
     } = this.props
     const isSignUp = true
     e.preventDefault()
@@ -190,14 +191,26 @@ class SubjectGrade extends React.Component {
         const { email, firstName, middleName, lastName } = userInfo
         setIsCompleteSignupInProgress(true)
 
-        const schoolData = {
-          institutionIds: [schoolSelected.schoolId || schoolSelected._id || ''],
+        const addSchoolFlow = isSchoolSignupOnly
+        const schoolId = schoolSelected.schoolId || schoolSelected._id
+        let schoolData = {
+          institutionIds: [schoolId || ''],
           districtId: schoolSelected.districtId,
           currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
           email: email || '',
           ...(firstName ? { firstName } : {}),
           middleName,
           lastName,
+        }
+        if (isSchoolSignupOnly) {
+          const institutionIds = userInfo?.institutionIds || []
+          const newInstitutionIds = schoolId
+            ? [...institutionIds, schoolId]
+            : institutionIds
+          schoolData = {
+            ...schoolData,
+            institutionIds: [...new Set(newInstitutionIds)],
+          }
         }
 
         const data = {
@@ -214,6 +227,7 @@ class SubjectGrade extends React.Component {
           onSuccessCallback,
           schoolSelectedFromDropdown,
           schoolData,
+          addSchoolFlow,
         }
 
         map(values.standard, (id) => {

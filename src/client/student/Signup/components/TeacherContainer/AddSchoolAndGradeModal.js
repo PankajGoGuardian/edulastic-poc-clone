@@ -90,6 +90,7 @@ const AddSchoolAndGradeModal = ({
         withJoinSchoolModal
         isCompleteSignupInProgress={isCompleteSignupInProgress}
         setIsCompleteSignupInProgress={setIsCompleteSignupInProgress}
+        isSchoolSignupOnly={isSchoolSignupOnly}
       />
     </CustomModalStyled>
   )

@@ -2400,7 +2400,7 @@ function* removeSchoolSaga({ payload }) {
   }
 }
 
-function* addSchoolSaga({ payload = {} }) {
+export function* addSchoolSaga({ payload = {} }) {
   try {
     const result = yield call(userApi.updateUser, payload)
     const user = pick(result, userPickFields)

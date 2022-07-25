@@ -24,6 +24,7 @@ import {
   signupSuccessAction,
   hideJoinSchoolAction,
   fetchUserAction,
+  addSchoolSaga,
 } from '../Login/ducks'
 import { getUser, getUserOrgId } from '../../author/src/selectors/user'
 
@@ -572,18 +573,24 @@ function* saveSubjectGradeSaga({ payload: _payload }) {
     onSuccessCallback,
     schoolSelectedFromDropdown,
     schoolData,
+    addSchoolFlow,
     ...payload
   } = _payload
   let isSaveSubjectGradeSuccessful = false
   const initialUser = yield select(getUser)
   try {
     if (schoolSelectedFromDropdown) {
-      yield call(joinSchoolSaga, {
-        payload: {
-          data: schoolData,
-          userId: payload.orgId,
-        },
-      })
+      const schoolPayload = {
+        data: schoolData,
+        userId: payload.orgId,
+      }
+      addSchoolFlow
+        ? yield call(addSchoolSaga, {
+            payload: schoolPayload,
+          })
+        : yield call(joinSchoolSaga, {
+            payload: schoolPayload,
+          })
     }
     const result = yield call(settingsApi.saveInterestedStandards, payload) ||
       {}

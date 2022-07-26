@@ -12,6 +12,7 @@ import {
   uniq,
   isEmpty,
   set,
+  isNil,
 } from 'lodash'
 import { testItemsApi, passageApi, attchmentApi } from '@edulastic/api'
 import { questionType, roleuser } from '@edulastic/constants'
@@ -30,7 +31,11 @@ import { storeInLocalStorage } from '@edulastic/api/src/utils/Storage'
 import { createAction } from 'redux-starter-kit'
 import { replace, push } from 'connected-react-router'
 import produce from 'immer'
-import { captureSentryException, notification } from '@edulastic/common'
+import {
+  captureSentryException,
+  notification,
+  helpers,
+} from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
 import {
   loadQuestionsAction,
@@ -65,6 +70,7 @@ import {
   setTestPassageAction,
   setPassageItemsAction,
   getPassageItemsSelector,
+  getSelectedTestItemsSelector,
 } from '../TestPage/ducks'
 import { changeViewAction } from '../src/actions/view'
 
@@ -581,7 +587,7 @@ export const getItemDetailDimensionTypeSelector = createSelector(
 
 export const getScoreUpdatedSelector = createSelector(
   stateSelector,
-  (state) => state.isTestItemScoreUpdated
+  (state) => state.testItemScoreUpdateData
 )
 
 export const getItemDetailValidationSelector = createSelector(
@@ -634,7 +640,7 @@ const initialState = {
   originalItem: null,
   passageUpdateInProgress: false,
   testItemSavingInProgress: false,
-  isTestItemScoreUpdated: {
+  testItemScoreUpdateData: {
     currentTestItemId: '',
     isUpdated: false,
   },
@@ -1113,7 +1119,7 @@ export function reducer(state = initialState, { type, payload }) {
     case SET_TEST_ITEM_SCORE_UPDATED: {
       return {
         ...state,
-        isTestItemScoreUpdated: payload,
+        testItemScoreUpdateData: payload,
       }
     }
     default:
@@ -1604,7 +1610,63 @@ export function* updateItemSaga({ payload }) {
       } else {
         // When deleting question from passage item should not go to test preview
         const { redirectOnDeleteQuestion } = payload
-        yield put(setCreatedItemToTestAction(item))
+
+        /**
+         * @see https://goguardian.atlassian.net/browse/EV-33094
+         * retain scores set at test level if score is not updated by the user explicitly while editing the item
+         */
+        if (
+          testIdParam &&
+          typeof isScoreUpdatedParam === 'boolean' &&
+          isScoreUpdatedParam === false
+        ) {
+          const entityTestItems = yield select(getSelectedTestItemsSelector)
+          const entityCurrentTestItem = (entityTestItems || []).find(
+            (_item) => _item._id === item._id
+          )
+          let updatedItem = cloneDeep(item)
+          if (!isEmpty(entityCurrentTestItem)) {
+            let itemQuestions = get(updatedItem, 'data.questions', [])
+            const entityItemQuestions = get(
+              entityCurrentTestItem,
+              'data.questions',
+              []
+            )
+            const entityItemQuestionsKeyById = _keyBy(entityItemQuestions, 'id')
+
+            itemQuestions = itemQuestions.map((question) => {
+              const existingQuestion = entityItemQuestionsKeyById[question.id]
+              const oldScore = get(
+                existingQuestion,
+                'validation.validResponse.score',
+                undefined
+              )
+              if (!isNil(oldScore)) {
+                set(question, 'validation.validResponse.score', oldScore)
+              }
+              return question
+            })
+            set(updatedItem, 'data.questions', itemQuestions)
+
+            if (updatedItem?.itemLevelScoring) {
+              const oldItemLevelScore = _.get(
+                entityCurrentTestItem,
+                'itemLevelScore',
+                undefined
+              )
+              if (!isNil(oldItemLevelScore)) {
+                set(updatedItem, 'itemLevelScore', oldItemLevelScore)
+              }
+            }
+
+            const maxScore = helpers.getPoints(updatedItem)
+            set(updatedItem, 'maxScore', maxScore)
+          }
+          yield put(setCreatedItemToTestAction(updatedItem))
+        } else {
+          yield put(setCreatedItemToTestAction(item))
+        }
+
         if (redirectOnDeleteQuestion) {
           yield put(
             push({
@@ -1975,6 +2037,16 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
       testItem,
       ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
       testItem.itemLevelScore
+    )
+  }
+
+  // set score updated to true if a question is delete from the item
+  if (isTestFlow && testId && testItemId) {
+    yield put(
+      setTestItemScoreUpdatedAction({
+        currentTestItemId: testItemId,
+        isUpdated: true,
+      })
     )
   }
 

@@ -592,6 +592,16 @@ function* saveQuestionSaga({
           reference: id,
           tabIndex,
         })
+
+        // set score updated to true if a new question is added to item
+        if (isTestFlow && tId && itemDetail._id) {
+          yield put(
+            setTestItemScoreUpdatedAction({
+              currentTestItemId: itemDetail._id,
+              isUpdated: true,
+            })
+          )
+        }
       }
     }
 

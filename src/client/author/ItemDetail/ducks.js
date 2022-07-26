@@ -52,6 +52,7 @@ import {
   hasImproperDynamicParamsConfig,
   isOptionsRemoved,
   validateScore,
+  getQuestionIndexFromItemData,
 } from '../questionUtils'
 import {
   setTestItemsAction,
@@ -1245,7 +1246,13 @@ export function* updateItemSaga({ payload }) {
      * in test item data
      */
 
-    const { itemLevelScoring, itemLevelScore, isPassageWithQuestions } = data
+    const {
+      itemLevelScoring,
+      itemLevelScore,
+      isPassageWithQuestions,
+      multipartItem = false,
+      _id: _itemId,
+    } = data
 
     const resourceTypes = [
       questionType.VIDEO,
@@ -1339,15 +1346,16 @@ export function* updateItemSaga({ payload }) {
         return notification({ msg: errMsg })
       }
     } else if (questions.length > 1) {
-      for (const question of questions) {
-        if (
-          !questionType.manuallyGradableQn.includes(question.type) &&
-          !itemLevelScoring
-        ) {
-          const [hasInvalidScore, errMsg] = validateScore(question)
-          if (hasInvalidScore) {
-            return notification({ msg: errMsg })
-          }
+      for (const [qIndex, question] of questions.entries()) {
+        const [hasInvalidScore, errMsg] = validateScore(
+          question,
+          itemLevelScoring,
+          multipartItem,
+          _itemId,
+          qIndex
+        )
+        if (hasInvalidScore) {
+          return notification({ msg: errMsg })
         }
       }
     }
@@ -1615,6 +1623,7 @@ export function* updateItemSaga({ payload }) {
       payload: { error: errorMessage },
     })
   } finally {
+    yield put(itemUpdateCompletedAction())
     yield put(setTestItemsSavingAction(false))
   }
 }
@@ -1767,6 +1776,8 @@ function* publishTestItemSaga({ payload }) {
     const questions = Object.values(
       yield select((state) => get(state, ['authorQuestions', 'byId'], {}))
     )
+    const testItem = yield select((state) => get(state, ['itemDetail', 'item']))
+    const itemQuestions = get(testItem, 'data.questions', [])
 
     // if there is only question, then its individual question editing screen.
     // in that case test if question is incomplete
@@ -1776,6 +1787,31 @@ function* publishTestItemSaga({ payload }) {
         return notification({ msg: errMsg })
       }
     }
+
+    const questionsById = _keyBy(questions, 'id')
+    // validate score for all questions in multipart item
+    if (itemQuestions.length > 1) {
+      for (const [qIndex, question] of itemQuestions.entries()) {
+        // need to use question from authorQuestions state as validation data in itemDetail.data.questions is not updated
+        const _question = get(questionsById, `${question?.id}`, {})
+        if (
+          !isEmpty(_question) &&
+          !Object.values(resourceTypeQuestions).includes(_question?.type)
+        ) {
+          const [hasInvalidScore, errMsg] = validateScore(
+            _question,
+            testItem?.itemLevelScoring,
+            testItem?.multipartItem,
+            testItem?._id,
+            qIndex
+          )
+          if (hasInvalidScore) {
+            return notification({ msg: errMsg })
+          }
+        }
+      }
+    }
+
     const isGradingCheckBox = yield select(getIsGradingCheckboxState)
     if (isGradingCheckBox) {
       const currentQuestionId = yield select((state) =>
@@ -1786,7 +1822,6 @@ function* publishTestItemSaga({ payload }) {
         return notification({ messageKey: 'pleaseAssociateARubric' })
     }
 
-    const testItem = yield select((state) => get(state, ['itemDetail', 'item']))
     const isMultipartOrPassageType =
       testItem && (testItem.multipartItem || testItem.isPassageWithQuestions)
     const standardPresent = questions.some(hasStandards)

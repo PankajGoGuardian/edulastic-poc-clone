@@ -440,15 +440,38 @@ const showEmptyAnswerNotification = (item = {}) => {
   return hasEmpty
 }
 
-export const validateScore = (item) => {
+export const validateScore = (
+  item,
+  itemLevelScoring = false,
+  multipartItem = false,
+  itemId = '',
+  qIndex = undefined
+) => {
   const { score } = item?.validation?.validResponse || {}
   const { unscored = false } = item?.validation || {}
-
-  if (isNil(score) || isNaN(score)) {
-    return [true, 'Score needs to be set']
-  }
-  if (!unscored && parseFloat(score, 10) === 0) {
-    return [true, 'Score cannot be zero']
+  /**
+   * In case of multipart item and itemLevelScoring true, all questions except the first have score 0
+   * Thus zero score check should not be done for questions with index > 0
+   * itemLevelScoring for all items is by default true, thus multipart check is mandatory
+   * If itemId is new there are no questions in the item yet and all the score checks should be done for such item
+   */
+  if (
+    multipartItem === true &&
+    itemLevelScoring === true &&
+    itemId !== 'new' &&
+    !isNil(qIndex) &&
+    qIndex > 0
+  ) {
+    if (isNil(score) || isNaN(score)) {
+      return [true, 'Score needs to be set']
+    }
+  } else {
+    if (isNil(score) || isNaN(score)) {
+      return [true, 'Score needs to be set']
+    }
+    if (!unscored && parseFloat(score, 10) === 0) {
+      return [true, 'Score cannot be zero']
+    }
   }
   return [false, '']
 }
@@ -464,7 +487,9 @@ export const validateScore = (item) => {
 export const isIncompleteQuestion = (
   item,
   itemLevelScoring = false,
-  multipartItem = false
+  multipartItem = false,
+  itemId = '',
+  qIndex = undefined
 ) => {
   // if its a resource type question just return.
   if (isEmpty(item)) {
@@ -491,15 +516,15 @@ export const isIncompleteQuestion = (
     return [true, 'Answer choices should not be empty']
   }
 
-  /**
-   * In case of multipart item and itemLevelScoring true, all questions except the first have score 0
-   * itemLevelScoring for all items is by default true, thus multipart check is mandatory
-   */
-  if (!(multipartItem === true && itemLevelScoring === true)) {
-    const isScoreValid = validateScore(item)
-    if (isScoreValid[0]) {
-      return isScoreValid
-    }
+  const isScoreValid = validateScore(
+    item,
+    multipartItem,
+    itemLevelScoring,
+    itemId,
+    qIndex
+  )
+  if (isScoreValid[0]) {
+    return isScoreValid
   }
 
   if (!questionType.manuallyGradableQn.includes(item.type)) {
@@ -819,4 +844,16 @@ export const hasValidResponse = (userResponse, questions) => {
     })
   }
   return false
+}
+
+export const getQuestionIndexFromItemData = (qId, item) => {
+  if (!isNil(qId) && !isEmpty(item)) {
+    const { data: { questions = [] } = {} } = item || {}
+    for (const [qIndex, questionData] of questions.entries()) {
+      if (qId === questionData?.id) {
+        return qIndex
+      }
+    }
+  }
+  return undefined
 }

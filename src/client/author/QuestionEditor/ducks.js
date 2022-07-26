@@ -18,6 +18,7 @@ import {
   uniqBy,
   uniq,
   isEmpty,
+  isNaN,
 } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
@@ -64,6 +65,7 @@ import {
   UPDATE_SCORE_AND_VALIDATION,
   SET_FIRST_MOUNT,
   getCurrentQuestionSelector,
+  getQuestionsSelector,
   getQuestionsArraySelector,
   changeCurrentQuestionAction,
   changeUpdatedFlagAction,
@@ -79,6 +81,8 @@ import { getNewAlignmentState } from '../src/reducers/dictionaries'
 import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
+  getQuestionIndexFromItemData,
+  validateScore,
 } from '../questionUtils'
 import { changeViewAction } from '../src/actions/view'
 import {
@@ -454,6 +458,18 @@ export const getQuestionIds = (item) => {
   return questionIds
 }
 
+export const getQindex = (qId = '', itemDetail = {}) => {
+  const questionIds = getQuestionIds(itemDetail)
+  const isNewQuestion = questionIds.filter((item) => item === qId).length === 0
+  let qIndex
+  if (isNewQuestion) {
+    qIndex = itemDetail?.data?.questions?.length
+  } else {
+    qIndex = getQuestionIndexFromItemData(qId, itemDetail)
+  }
+  return qIndex
+}
+
 const updateItemWithAlignmentDetails = (itemDetail = {}, alignments = []) => {
   itemDetail.grades = alignments[0]?.grades || []
   itemDetail.subjects = itemDetail.subjects || []
@@ -512,13 +528,23 @@ function* saveQuestionSaga({
       }
     }
     const question = yield select(getCurrentQuestionSelector)
+    const allAuthoredQuestions = yield select(getQuestionsSelector)
     const itemDetail = yield select(getItemDetailSelector)
     const alignments = yield select(getDictionariesAlignmentsSelector)
-    const { itemLevelScoring = false, multipartItem = false } = itemDetail
+
+    const {
+      itemLevelScoring = false,
+      multipartItem = false,
+      _id: itemDetailId = '',
+    } = itemDetail
+    const qIndex = getQindex(question?.id, itemDetail)
+
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem
+      multipartItem,
+      itemDetailId,
+      qIndex
     )
 
     if (isIncomplete) {
@@ -530,6 +556,34 @@ function* saveQuestionSaga({
         })
       }
       return
+    }
+
+    // check if all questions have valid score in the item while saving a particular question
+    const itemQuestions = get(itemDetail, 'data.questions', [])
+    if (itemQuestions.length > 1) {
+      for (const [questionIndex, authoredQuestion] of itemQuestions.entries()) {
+        const _question = get(
+          allAuthoredQuestions,
+          `${authoredQuestion?.id}`,
+          {}
+        )
+        if (
+          !isEmpty(_question) &&
+          !Object.values(resourceTypeQuestions).includes(_question?.type)
+        ) {
+          // need to use question from authorQuestions state as validation data in itemDetail.data.questions is not updated
+          const [hasInvalidScore, invalidScoreErrMsg] = validateScore(
+            _question,
+            itemLevelScoring,
+            multipartItem,
+            itemDetailId,
+            questionIndex
+          )
+          if (hasInvalidScore) {
+            return notification({ msg: invalidScoreErrMsg })
+          }
+        }
+      }
     }
 
     const [
@@ -1125,6 +1179,7 @@ function* updateScoreAndValidationSaga({ payload }) {
 
   if (
     typeof score === 'number' &&
+    !isNaN(score) &&
     !resourceTypes.includes(currentQuestion?.type) &&
     !isEmpty(currentQuestion)
   ) {

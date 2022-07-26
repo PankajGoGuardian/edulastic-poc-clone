@@ -1251,6 +1251,7 @@ export function* updateItemSaga({ payload }) {
       questionType.VIDEO,
       questionType.PASSAGE,
       questionType.TEXT,
+      questionType.PROTRACTOR,
     ]
     const rows = yield select((state) => get(state, 'itemDetail.item.rows'), [])
     const testItemWidgetIds = rows.reduce((allIds, row = {}) => {
@@ -1708,6 +1709,7 @@ function* saveTestItemSaga() {
     questionType.VIDEO,
     questionType.PASSAGE,
     questionType.TEXT,
+    questionType.PROTRACTOR,
   ]
   const data = yield select(getItemDetailSelector)
   const testItemWidgets = data.rows

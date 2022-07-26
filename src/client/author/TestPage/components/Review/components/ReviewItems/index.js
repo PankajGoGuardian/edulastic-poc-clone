@@ -34,6 +34,8 @@ const ReviewItems = ({
   isPowerPremiumAccount,
   showGroupsPanel,
   isTestsUpdated,
+  orgCollections,
+  userId,
 }) => {
   const container = getContainer()
   if (!container) return null
@@ -115,6 +117,8 @@ const ReviewItems = ({
         userFeatures={userFeatures}
         standards={standards}
         isTestsUpdated={isTestsUpdated}
+        orgCollections={orgCollections}
+        userId={userId}
       />
 
       {isFetchingAutoselectItems && (

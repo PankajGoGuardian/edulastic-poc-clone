@@ -20,6 +20,7 @@ import ViewModal from '../ViewModal'
 import TestPreviewModal from '../../../Assignments/components/Container/TestPreviewModal'
 import {
   flattenPlaylistStandards,
+  isPremiumContent,
   showPremiumLabelOnContent,
 } from '../../../dataUtils'
 import { DeleteItemModal } from '../DeleteItemModal/deleteItemModal'
@@ -39,7 +40,6 @@ import CloneOnUsePlaylistConfirmationModal from '../../../CurriculumSequence/com
 import { allowDuplicateCheck } from '../../../src/utils/permissionCheck'
 import PlaylistCard from './PlaylistCard'
 import TestItemCard from './TestItemCard'
-import { isPremiumContent } from '../../../TestPage/utils'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
 import {
   toggleAdminAlertModalAction,

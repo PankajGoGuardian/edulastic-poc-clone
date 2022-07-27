@@ -200,7 +200,9 @@ const BannerSlider = ({
             >
               <StyledRow>
                 <StyledCol span={12}>
-                  <SlideDescription>Tests Library</SlideDescription>
+                  <SlideDescription data-cy="Tests Library">
+                    Tests Library
+                  </SlideDescription>
                 </StyledCol>
                 <StyledCol span={2} offset={10}>
                   <IconWrapper>

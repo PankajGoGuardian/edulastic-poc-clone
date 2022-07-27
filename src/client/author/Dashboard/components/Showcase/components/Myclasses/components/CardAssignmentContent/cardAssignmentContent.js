@@ -63,13 +63,18 @@ export const CardAssignmentContent = ({
             )}
             {(!totalAssignment || totalAssignment === 0) && (
               <Tooltip title="Create New Assignment" placement="topLeft">
-                <Icon type="plus" width={36} height={36} />
+                <Icon
+                  type="plus"
+                  width={36}
+                  height={36}
+                  data-cy="addNewAssignmentIcon"
+                />
               </Tooltip>
             )}
           </LeftCol>
 
           <CenterCol span={20}>
-            <AssignmentCount>
+            <AssignmentCount data-cy="assignmentContent">
               {totalAssignment > 1
                 ? 'Assignments'
                 : totalAssignment === 1

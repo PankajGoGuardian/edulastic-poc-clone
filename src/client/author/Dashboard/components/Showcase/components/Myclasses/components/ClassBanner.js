@@ -43,7 +43,7 @@ const ClassBanner = ({
     teacherData && teacherData.filter((id) => id?.atlasId).length > 0
 
   return (
-    <ClassBannerWrapper>
+    <ClassBannerWrapper data-cy="createClassBanner">
       <ClassInfo>
         <OverlayText fontSize="12px" width="63%" textAlign="left">
           <ClassName>Classes</ClassName>
@@ -71,7 +71,7 @@ const ClassBanner = ({
           </StyledDiv>
           <AuthorCompleteSignupButton
             renderButton={(handleClick) => (
-              <EduButton data-cy="createNewClassFromCard" onClick={handleClick}>
+              <EduButton data-cy="createNewClass" onClick={handleClick}>
                 CREATE a CLASS
               </EduButton>
             )}

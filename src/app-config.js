@@ -4,7 +4,7 @@ const cdnURI =
   process.env.REACT_APP_CDN_URI ||
   'https://cdnedupoc.snapwiz.net/edulasticv2-development'
 const appEnv = process.env.REACT_APP_ENV
-const appStage = process.env.REACT_APP_STAGE
+const appStage = process.env.REACT_APP_STAGE || 'development'
 // __CLIENT_VERSION__ is injected to envs in poi.config.js
 // using it to avoid importing json for just version
 const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
@@ -195,11 +195,16 @@ const initEmbeddedServiceCloudWidget = (user) => {
   }
 }
 
+const getSentryReleaseName = () => {
+  return `${appVersion}.edu-fe.${appStage}`
+}
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
   sentryIgnoreUrls,
   appStage,
+  getSentryReleaseName,
   appVersion,
   sentryURI,
   segmentHashSecret,

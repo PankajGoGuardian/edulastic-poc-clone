@@ -40,8 +40,8 @@ if (AppConfig.sentryURI) {
     sampleRate: 0.5,
     maxBreadcrumbs: 30,
     dsn: AppConfig.sentryURI,
-    release: AppConfig.appVersion,
-    environment: AppConfig.appStage || 'development',
+    release: AppConfig.getSentryReleaseName(),
+    environment: AppConfig.appStage,
     maxValueLength: 600, // defaults to 250 chars, we will need more info recorded.
     ignoreErrors: AppConfig.sentryIgnoreErrors,
     denyUrls: AppConfig.sentryIgnoreUrls,

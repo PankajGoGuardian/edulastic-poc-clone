@@ -44,6 +44,7 @@ import {
   setSyncClassLoadingAction,
   toggleCreateAssignmentModalAction,
   getIsCreateAssignmentModalVisible,
+  setCreateClassTypeDetailsAction,
 } from '../../ducks'
 import {
   getCleverLibraryUserSelector,
@@ -88,6 +89,7 @@ const ClassDetails = ({
   isCreateAssignmentModalVisible,
   toggleCreateAssignmentModal,
   setShowAssignmentCreationModal,
+  setCreateClassTypeDetails,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -145,6 +147,13 @@ const ClassDetails = ({
       if (showCanvasSyncModal) setCanvasSyncModalVisibility(false)
     }
   }, [syncClassLoading])
+
+  useEffect(() => {
+    // to set the createClassType value as empty object
+    return () => {
+      setCreateClassTypeDetails({})
+    }
+  })
 
   useEffect(() => {
     if (classId) {
@@ -477,6 +486,7 @@ const enhance = compose(
       saveGoogleTokensAndRetrySync: saveGoogleTokensAndRetrySyncAction,
       toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
       setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
+      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )

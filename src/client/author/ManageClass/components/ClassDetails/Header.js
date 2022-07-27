@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { capitalize, toUpper } from 'lodash'
+import { capitalize, get, toUpper } from 'lodash'
 import styled from 'styled-components'
 import { segmentApi, canvasApi } from '@edulastic/api'
 // components
@@ -103,6 +103,7 @@ const Header = ({
   isCleverDistrict,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
+  createClassType,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -500,7 +501,11 @@ const Header = ({
           </EduButton>
         )}
         {active === 1 && !history?.location?.state?.isAssignPlaylistModule && (
-          <WithTooltip title={history?.location?.state?.testTitle}>
+          <WithTooltip
+            title={
+              history?.location?.state?.testTitle || createClassType?.testTitle
+            }
+          >
             <EduButton
               data-cy="assignTestFromClass"
               isBlue
@@ -511,6 +516,7 @@ const Header = ({
                 history.push({
                   pathname:
                     history?.location?.state?.testRedirectUrl ||
+                    createClassType?.testRedirectUrl ||
                     '/author/tests',
                   state: {
                     ...history?.location?.state,
@@ -672,6 +678,7 @@ const enhance = compose(
       user: state?.user?.user,
       showCoteacherModal: getManageCoTeacherModalVisibleStateSelector(state),
       orgId: getUserOrgId(state),
+      createClassType: get(state, 'manageClass.createClassType'),
     }),
     {
       setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,

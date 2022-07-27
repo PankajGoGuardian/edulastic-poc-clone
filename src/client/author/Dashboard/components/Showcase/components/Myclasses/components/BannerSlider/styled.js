@@ -7,7 +7,7 @@ export const LearnMore = styled.span`
   min-width: 90px;
   text-align: center;
   position: absolute;
-  top: 110px;
+  top: 125px;
   left: ${(props) => props.moveLeft || '140px'};
   padding: 5px 10px;
   font-weight: 700;
@@ -23,8 +23,9 @@ export const LearnMore = styled.span`
     cursor: pointer;
   }
 `
-export const SlideContainer = styled.span`
+export const SlideContainer = styled.div`
   height: 200px;
+  display: flex;
 `
 
 export const SliderContainer = styled.div`
@@ -69,8 +70,8 @@ export const NextButton = styled(PrevButton)`
 `
 
 export const Slides = styled.div`
-  height: 150px;
-  width: 290px;
+  height: 160px;
+  width: ${(props) => props.width || '290px'};
   padding: 20px 30px;
   cursor: pointer;
   display: inline-block;
@@ -131,6 +132,8 @@ export const SlideInfo = styled.div`
   font-size: 12px;
   line-height: 16px;
   color: rgba(0, 0, 0, 0.8);
+  white-space: break-spaces;
+  width: 80%;
 `
 export const IconWrapper = styled.span`
   display: flex;

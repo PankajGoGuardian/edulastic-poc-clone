@@ -554,7 +554,11 @@ class SimpleOptions extends React.Component {
 
     const createClassHandler = () => {
       setShowClassCreationModal(true)
-      setCreateClassTypeDetails({ type: 'class' })
+      setCreateClassTypeDetails({
+        type: 'class',
+        testTitle: testSettings?.title,
+        testRedirectUrl: match?.url,
+      })
     }
 
     return (

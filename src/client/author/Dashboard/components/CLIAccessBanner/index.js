@@ -18,6 +18,9 @@ import {
   UserInfo,
   UserName,
 } from './styled'
+import { setShowWelcomePopupAction } from '../../ducks'
+import { getUser } from '../../../src/selectors/user'
+import { signUpState } from '@edulastic/constants'
 
 const CLIAccessBanner = ({
   visible = false,
@@ -25,6 +28,8 @@ const CLIAccessBanner = ({
   lastName = '',
   onClose,
   logout,
+  userInfo,
+  setShowWelcomePopup,
 }) => {
   const [isVisible, setVisible] = useState(false)
 
@@ -101,6 +106,12 @@ const CLIAccessBanner = ({
       <Button
         onClick={() => {
           onClose()
+          if (
+            userInfo.currentSignUpState === signUpState.SCHOOL_NOT_SELECTED ||
+            userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+          ) {
+            setShowWelcomePopup(true)
+          }
         }}
         data-cy="cliBannerBtn"
       >
@@ -118,8 +129,10 @@ export default connect(
     firstName: state.user.user.firstName,
     lastName: state.user.user.lastName,
     isCliUser: get(state, 'user.isCliUser', false),
+    userInfo: getUser(state),
   }),
   {
     logout: logoutAction,
+    setShowWelcomePopup: setShowWelcomePopupAction,
   }
 )(CLIAccessBanner)

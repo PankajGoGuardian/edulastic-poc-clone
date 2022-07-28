@@ -149,13 +149,6 @@ const ClassDetails = ({
   }, [syncClassLoading])
 
   useEffect(() => {
-    // to set the createClassType value as empty object
-    return () => {
-      setCreateClassTypeDetails({})
-    }
-  })
-
-  useEffect(() => {
     if (classId) {
       loadStudents({ classId })
     }
@@ -411,6 +404,7 @@ const ClassDetails = ({
               archiveClass={archiveClass}
               allowCanvasLogin={allowCanvasLogin}
               syncCanvasModal={syncCanvasModal}
+              setCreateClassTypeDetails={setCreateClassTypeDetails}
             />
 
             <ActionContainer

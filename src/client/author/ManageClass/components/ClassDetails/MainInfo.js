@@ -2,7 +2,7 @@ import { find } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import { Col } from 'antd'
-import React from 'react'
+import React, { useEffect } from 'react'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import defaultImage from '../../../src/assets/manageclass/abstract.jpg'
 import selectsData from '../../../TestPage/components/common/selectsData'
@@ -30,6 +30,7 @@ const MainInfo = ({
   archiveClass,
   allowCanvasLogin,
   syncCanvasModal,
+  setCreateClassTypeDetails,
 }) => {
   // eslint-disable-next-line max-len
   const {
@@ -54,6 +55,13 @@ const MainInfo = ({
   const _subject = find(allSubjects, (item) => item.value === subject) || {
     text: subject,
   }
+
+  useEffect(() => {
+    // to set the createClassType value as empty object
+    return () => {
+      setCreateClassTypeDetails({})
+    }
+  })
 
   return (
     <div>

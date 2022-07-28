@@ -381,7 +381,7 @@ export function* saveUserResponse({ payload }) {
     if (isDocBased && annotationsUsed) {
       const file = convertStringToFile(
         JSON.stringify(annotationsData.freeNotesStd),
-        `doc-annotations-${userTestActivityId}_${userId},text`
+        `doc-annotations-${userTestActivityId}_${userId}.text`
       )
       const annotationsURL = yield call(uploadToS3, file, defaultUploadFolder)
       const { update, filter } = getFilterAndUpdateForAttachments({

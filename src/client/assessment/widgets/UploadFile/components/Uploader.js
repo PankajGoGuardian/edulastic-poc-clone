@@ -10,7 +10,6 @@ import {
 } from '@edulastic/common'
 import { aws, fileTypes } from '@edulastic/constants'
 
-import { allowedImageFileTypes } from '@edulastic/common/src/helpers'
 import ProgressBar from './ProgressBar'
 import { allowedFiles, MAX_SIZE, MAX_COUNT } from './constants'
 
@@ -87,7 +86,24 @@ const Uploader = ({ onCompleted, mt }) => {
       console.log(error)
     }
   }
-
+  const allowedFileTypeForFileUploadQuestion = [
+    'image/jpeg',
+    'image/jpg',
+    'image/png',
+    'image/gif',
+    'text/plain',
+    'application/pdf',
+    'application/msword',
+    'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+    'application/vnd.ms-excel',
+    'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+    'audio/mp3',
+    'audio/mpeg',
+    'video/mp4',
+    'video/webm',
+    'video/ogg',
+    'video/quicktime',
+  ]
   const handleChange = (e) => {
     const { files } = e.target
     if (files) {
@@ -96,11 +112,10 @@ const Uploader = ({ onCompleted, mt }) => {
           const file = files[key]
           const { size } = file
           // validate file type in case of image
-          if (
-            file.type.match(/image/g) &&
-            !allowedImageFileTypes.includes(file.type)
-          ) {
-            notification({ messageKey: 'imageTypeError' })
+          if (!allowedFileTypeForFileUploadQuestion.includes(file.type)) {
+            notification({
+              msg: `Uploaded file type is not supported`,
+            })
             return false
           }
           // image size should be less than 5MB

@@ -12,7 +12,7 @@ import { isEmpty, max, isPlainObject } from 'lodash'
 import { PREVIEW } from '../../constants/constantsForQuestions'
 import { PreviewContainer } from './styled/PreviewContainer'
 import DEFAULT_IMAGE from '../../assets/highlightImageBackground.svg'
-import { s3ImageBucketPath } from '../../../config'
+import AppConfig from '../../../../app-config'
 import Instructions from '../../components/Instructions'
 import {
   Scratchpad,
@@ -72,7 +72,7 @@ const HighlightImagePreview = ({
   const altText = image ? image.altText : ''
   const file = image ? image.source : ''
 
-  const CDN_IMAGE_PATH = `${s3ImageBucketPath}/highlight_image_background.svg`
+  const CDN_IMAGE_PATH = `${AppConfig.cdnURI}/highlight_image_background.svg`
   // <div style={{ width: "100%", height: "100%", zoom: theme?.widgets?.highlightImage?.imageZoom }}>
   const renderImage = () => (
     <Image

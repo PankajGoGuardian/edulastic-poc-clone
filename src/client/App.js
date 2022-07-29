@@ -35,6 +35,7 @@ import {
   fetchUserAction,
   isProxyUser as isProxyUserSelector,
   isDemoPlaygroundUser,
+  superAdminRoutes,
 } from './student/Login/ducks'
 import TestDemoPlayer from './author/TestDemoPlayer'
 import TestItemDemoPlayer from './author/TestItemDemoPlayer'
@@ -519,6 +520,11 @@ class App extends Component {
             redirectRoute = `/district/${path[1]}/signup`
           } else {
             redirectRoute = '/Signup'
+          }
+          if (
+            superAdminRoutes.includes(location.pathname.toLocaleLowerCase())
+          ) {
+            redirectRoute = defaultRoute || '/author/dashboard'
           }
         } else if (role === 'edulastic-admin') {
           defaultRoute = '/admin'

@@ -65,7 +65,7 @@ import {
 import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
 
-const superAdminRoutes = [
+export const superAdminRoutes = [
   // SA-DA common routes
   '/author/districtprofile',
   '/author/schools',

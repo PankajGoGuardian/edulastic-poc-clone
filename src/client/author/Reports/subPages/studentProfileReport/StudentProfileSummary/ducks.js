@@ -88,6 +88,9 @@ export const reportStudentProfileSummaryReducer = createReducer(initialState, {
 
 function* getReportsStudentProfileSummaryRequest({ payload }) {
   try {
+    if (payload.fetchLastYearData) {
+      payload.termId = payload.lastYearTermId
+    }
     const studentProfileSummary = yield call(
       reportsApi.fetchStudentProfileSummaryReport,
       payload

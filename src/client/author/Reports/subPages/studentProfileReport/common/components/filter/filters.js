@@ -6,6 +6,7 @@ import qs from 'qs'
 import { Tabs, Row, Col } from 'antd'
 
 import { IconFilter } from '@edulastic/icons'
+import { CheckboxLabel } from '@edulastic/common'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../../common/components/FilterTags'
@@ -129,6 +130,7 @@ const StudentProfileReportFilters = ({
 
   const { terms = [] } = orgData
   const termOptions = useMemo(() => getTermOptions(terms), [terms])
+  console.log('Term options', termOptions)
 
   const { studentClassData = [], bandInfo = [], scaleInfo = [] } = get(
     SPRFilterData,
@@ -586,6 +588,20 @@ const StudentProfileReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
+          <StyledDropDownContainer>
+            <CheckboxLabel
+              onChange={(e) => {
+                setFilters({
+                  ...filters,
+                  fetchLastYearData: e.target.checked,
+                  lastYearTermId: termOptions[1].key,
+                  showApply: true,
+                })
+              }}
+            >
+              Get last year data
+            </CheckboxLabel>
+          </StyledDropDownContainer>
           <StyledDropDownContainer
             xs={24}
             sm={12}

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { themeColor, lightGreen11 } from '@edulastic/colors'
+import { themeColor, lightGreen11, white } from '@edulastic/colors'
 import { Row, Col } from 'antd'
 
 export const RowWrapper = styled(Row)`
@@ -10,17 +10,26 @@ export const RowWrapper = styled(Row)`
 export const LeftCol = styled(Col)`
   width: ${({ width }) => width || '45px'};
   margin-right: 10px;
+  span {
+    display: grid;
+  }
+  svg {
+    fill: white;
+    width: 16px;
+    height: 16px;
+  }
 `
 
 export const CenterCol = styled(Col)``
 
 export const CardText = styled.div`
   border: 1px solid ${lightGreen11};
-  background-color: white;
+  background-color: ${({ hasAssignment }) =>
+    hasAssignment ? white : '#3f84e5'};
   margin: auto;
   border-radius: 4px;
   text-transform: uppercase;
-  color: ${themeColor};
+  color: ${({ hasAssignment }) => (hasAssignment ? themeColor : white)};
   cursor: pointer;
   padding: 7px 22px;
   display: inline-block;

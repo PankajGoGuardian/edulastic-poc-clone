@@ -1,8 +1,9 @@
 import React from 'react'
 import { withRouter } from 'react-router-dom'
-import { Tooltip, Icon } from 'antd'
+import { Tooltip } from 'antd'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
+import { IconPlusCircle } from '@edulastic/icons'
 import {
   CardText,
   RowWrapper,
@@ -50,6 +51,7 @@ export const CardAssignmentContent = ({
   return (
     <ButtonHolder>
       <CardText
+        hasAssignment={totalAssignment}
         onClick={
           totalAssignment >= 1 ? navigateToAssignments : openAssignmentPopup
         }
@@ -63,12 +65,7 @@ export const CardAssignmentContent = ({
             )}
             {(!totalAssignment || totalAssignment === 0) && (
               <Tooltip title="Create New Assignment" placement="topLeft">
-                <Icon
-                  type="plus"
-                  width={36}
-                  height={36}
-                  data-cy="addNewAssignmentIcon"
-                />
+                <IconPlusCircle data-cy="addNewAssignmentIcon" />{' '}
               </Tooltip>
             )}
           </LeftCol>

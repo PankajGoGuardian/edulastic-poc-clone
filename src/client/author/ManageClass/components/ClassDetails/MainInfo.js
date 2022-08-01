@@ -61,7 +61,7 @@ const MainInfo = ({
     return () => {
       setCreateClassTypeDetails({})
     }
-  })
+  }, [])
 
   return (
     <div>

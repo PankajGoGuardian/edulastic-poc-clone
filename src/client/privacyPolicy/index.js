@@ -21,7 +21,7 @@ import {
 } from './Styled'
 import { setLocationToUserAction } from '../student/Login/ducks'
 import { setShowWelcomePopupAction } from '../author/Dashboard/ducks'
-import { getUser } from '../author/src/selectors/user'
+import { getUser, isPublisherUserSelector } from '../author/src/selectors/user'
 
 const eeaTitle =
   'End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
@@ -41,6 +41,7 @@ const PrivacyPolicyModal = ({
   userRole,
   roleuser,
   userInfo,
+  isPublisherUser,
 }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
@@ -96,7 +97,8 @@ const PrivacyPolicyModal = ({
         setShowModal(false)
         if (
           userRole === roleuser?.TEACHER &&
-          userInfo?.openIdProvider?.toLowerCase() !== 'cli'
+          userInfo?.openIdProvider?.toLowerCase() !== 'cli' &&
+          !isPublisherUser
         ) {
           setShowWelcomePopup(true)
         }
@@ -183,6 +185,7 @@ const PrivacyPolicyModal = ({
 export default connect(
   (state) => ({
     userInfo: getUser(state),
+    isPublisherUser: isPublisherUserSelector(state),
   }),
   {
     setLocationData: setLocationToUserAction,

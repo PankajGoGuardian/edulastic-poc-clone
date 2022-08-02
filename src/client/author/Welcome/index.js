@@ -34,6 +34,7 @@ const WelcomeContainer = ({
   userInfo,
 }) => {
   const [showQuickStartGuide, setShowQuickStartGuide] = useState(null)
+  const isCliUser = user?.openIdProvider?.toLowerCase() === 'cli'
 
   const onSuccessCallback = () => {
     setShowJoinSchoolModal(false)
@@ -66,7 +67,9 @@ const WelcomeContainer = ({
   return (
     <>
       {showWelcomePopup && <WelcomePopup isVisible={showWelcomePopup} />}
-      {showGetStartedModal && <GetStarted isVisible={showGetStartedModal} />}
+      {showGetStartedModal && (
+        <GetStarted isVisible={showGetStartedModal} isCliUser={isCliUser} />
+      )}
       {showJoinSchoolModal && (
         <AddSchoolAndGradeModal
           isVisible={showJoinSchoolModal}
@@ -77,6 +80,7 @@ const WelcomeContainer = ({
           triggerSource={triggerSource}
           allowCanvas={isCanvasUserSchoolNotSelected}
           hideJoinSchoolBanner
+          isCliUser={isCliUser}
         />
       )}
       {showQuickStartGuide && (

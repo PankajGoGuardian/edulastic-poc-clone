@@ -5,7 +5,7 @@ import { CONSTANT } from '../config'
 import { handleSnap, colorGenerator, setLabel } from '../utils'
 import { getLabelParameters } from '../settings'
 
-const jxgType = 106
+const jxgType = 201
 
 const defaultConfig = {
   fixed: false,
@@ -320,7 +320,7 @@ function clean(board) {
 function getConfig(parabola) {
   return {
     _type: parabola.type,
-    type: CONSTANT.TOOLS.PARABOLA,
+    type: CONSTANT.TOOLS.PIECEWISE_PARABOLA,
     id: parabola.id,
     label: parabola.labelHTML || false,
     labelIsVisible: parabola.labelIsVisible,

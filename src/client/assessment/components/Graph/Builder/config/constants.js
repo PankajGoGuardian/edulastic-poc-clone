@@ -47,8 +47,10 @@ export const ALL_TOLLS = {
     GRAPH_TOOLS.EXPONENTIAL2,
     GRAPH_TOOLS.LOGARITHM,
     GRAPH_TOOLS.AREA,
+    // GRAPH_TOOLS.AREA2,
     GRAPH_TOOLS.DASHED,
     GRAPH_TOOLS.PIECEWISE_LINE,
+    GRAPH_TOOLS.PIECEWISE_PARABOLA,
     // GRAPH_TOOLS.PIECEWISE_POINT, // used to make segment to piecewise
     GRAPH_TOOLS.LINE_CUT,
     // GRAPH_TOOLS.NO_SOLUTION, // not implemented yet
@@ -110,6 +112,7 @@ export const TOOLS_BY_GROUP = {
         GRAPH_TOOLS.AREA,
         GRAPH_TOOLS.DASHED,
         GRAPH_TOOLS.PIECEWISE_LINE,
+        GRAPH_TOOLS.PIECEWISE_PARABOLA,
         // GRAPH_TOOLS.PIECEWISE_POINT, // used to make segment to piecewise
         GRAPH_TOOLS.LINE_CUT,
         // GRAPH_TOOLS.NO_SOLUTION, // not implemented yet

@@ -37,6 +37,7 @@ import {
   resetStudentProfileSummaryAction,
 } from './ducks'
 import staticDropDownData from '../../singleAssessmentReport/common/static/staticDropDownData.json'
+import { getOrgGroupList } from '../../../../src/selectors/user'
 
 const getTooltip = (payload) => {
   if (payload && payload.length) {
@@ -81,6 +82,7 @@ const StudentProfileSummary = ({
   sharedReport,
   t,
   toggleFilter,
+  classList,
 }) => {
   const [selectedDomain, setSelectedDomain] = useState({
     key: 'All',
@@ -206,7 +208,9 @@ const StudentProfileSummary = ({
   }, [studentProfileSummary])
 
   const _onBarClickCB = (key, args) => {
+    const exists = classList.some((e) => e._id === args.groupId)
     !isSharedReport &&
+      exists &&
       history.push({
         pathname: `/author/classboard/${args.assignmentId}/${args.groupId}/test-activity/${args.testActivityId}`,
         state: {
@@ -357,6 +361,7 @@ const withConnect = connect(
     error: getReportsStudentProfileSummaryError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    classList: getOrgGroupList(state),
   }),
   {
     getStudentProfileSummaryRequest: getStudentProfileSummaryRequestAction,

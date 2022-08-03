@@ -89,10 +89,15 @@ const getCol = (
   columnKey,
   location,
   pageTitle,
-  record
+  record,
+  classList
 ) => {
   let value = text === undefined || text === null ? 'N/A' : `${text}%`
-  if (columnKey === 'score' && !isSharedReport) {
+  if (
+    columnKey === 'score' &&
+    !isSharedReport &&
+    classList.some((e) => e._id === record.groupId)
+  ) {
     value = getFormattedLink(record, location, pageTitle, value)
   }
   return (
@@ -102,7 +107,7 @@ const getCol = (
   )
 }
 
-const tableColumns = (location, pageTitle, isSharedReport) => [
+const tableColumns = (location, pageTitle, isSharedReport, classList) => [
   {
     title: 'Assessment Name',
     dataIndex: 'testName',
@@ -111,7 +116,7 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
     fixed: 'left',
     width: 200,
     render: (data, record) =>
-      !isSharedReport ? (
+      !isSharedReport && classList.some((e) => e._id === record.groupId) ? (
         <Link
           to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
         >
@@ -146,7 +151,7 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
     className: 'rawscore',
     key: 'rawScore',
     render: (data, record) =>
-      !isSharedReport
+      !isSharedReport && classList.some((e) => e._id === record.groupId)
         ? getFormattedLink(record, location, pageTitle, data)
         : data,
   },
@@ -167,8 +172,14 @@ const tableColumns = (location, pageTitle, isSharedReport) => [
   },
 ]
 
-const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
-  ...tableColumns(location, pageTitle, isSharedReport),
+const getColumns = (
+  studentName = '',
+  location,
+  pageTitle,
+  isSharedReport,
+  classList
+) => [
+  ...tableColumns(location, pageTitle, isSharedReport, classList),
   {
     title: 'Student (Score%)',
     dataIndex: 'score',
@@ -229,7 +240,8 @@ const getColumns = (studentName = '', location, pageTitle, isSharedReport) => [
               'score',
               location,
               pageTitle,
-              record
+              record,
+              classList
             )
           }
         />
@@ -247,8 +259,15 @@ const AssessmentTable = ({
   location,
   pageTitle,
   isSharedReport,
+  classList,
 }) => {
-  const columns = getColumns(studentName, location, pageTitle, isSharedReport)
+  const columns = getColumns(
+    studentName,
+    location,
+    pageTitle,
+    isSharedReport,
+    classList
+  )
 
   const filteredData = filter(data, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true

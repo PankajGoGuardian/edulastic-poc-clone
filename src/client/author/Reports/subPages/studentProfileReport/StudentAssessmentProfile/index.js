@@ -23,6 +23,7 @@ import {
   getReportsStudentAssessmentProfileError,
   resetStudentAssessmentProfileAction,
 } from './ducks'
+import { getOrgGroupList } from '../../../../src/selectors/user'
 
 const StudentAssessmentProfile = ({
   loading,
@@ -38,6 +39,7 @@ const StudentAssessmentProfile = ({
   sharedReport,
   t,
   toggleFilter,
+  classList,
 }) => {
   const anonymousString = t('common.anonymous')
 
@@ -179,6 +181,7 @@ const StudentAssessmentProfile = ({
           location={location}
           pageTitle={pageTitle}
           isSharedReport={isSharedReport}
+          classList={classList}
         />
       </StyledCard>
     </>
@@ -192,6 +195,7 @@ const withConnect = connect(
     error: getReportsStudentAssessmentProfileError(state),
     SPRFilterData: getReportsSPRFilterData(state),
     isCsvDownloading: getCsvDownloadingState(state),
+    classList: getOrgGroupList(state),
   }),
   {
     getStudentAssessmentProfile: getStudentAssessmentProfileRequestAction,

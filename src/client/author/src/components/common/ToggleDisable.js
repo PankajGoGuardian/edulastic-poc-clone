@@ -1,5 +1,5 @@
 import React from 'react'
-import { message, Tooltip } from 'antd'
+import { Tooltip } from 'antd'
 import { notification } from '@edulastic/common'
 
 const WithDisableMessage = ({ children, disabled, errMessage }) => {
@@ -7,17 +7,12 @@ const WithDisableMessage = ({ children, disabled, errMessage }) => {
     if (disabled) {
       notification({
         type: 'warn',
-        msg:
-          errMessage || 'This assignment has random items for every student.',
+        msg: errMessage || 'Option is currently disabled.',
       })
     }
   }
   return disabled ? (
-    <Tooltip
-      title={
-        errMessage || 'This assignment has random items for every student.'
-      }
-    >
+    <Tooltip title={errMessage || 'Option is currently disabled.'}>
       <span onClick={handleClick}>{children}</span>
     </Tooltip>
   ) : (

@@ -28,6 +28,7 @@ const HeaderTabs = ({
   ...restProps
 }) => {
   const handleOnClick = () => {
+    if (disabled) return
     if (to && to !== '#') {
       // we are sending a place to route
       history.push(to)
@@ -101,9 +102,9 @@ export const StyledLink = styled.div`
   display: flex;
   align-items: center;
   text-transform: uppercase;
-  ${(restProps) => restProps.style};
-  cursor: pointer;
-
+  ${({ style }) => style};
+  ${({ disabled }) =>
+    disabled ? 'opacity: 0.4; cursor: not-allowed;' : 'cursor: pointer;'};
   @media (max-width: ${mobileWidthMax}) {
     flex-basis: 100%;
   }

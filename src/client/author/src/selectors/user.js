@@ -1,7 +1,9 @@
-import { get as _get, pick, groupBy } from 'lodash'
+import { get as _get, pick, groupBy, isEmpty } from 'lodash'
 import { createSelector } from 'reselect'
 import { roleuser } from '@edulastic/constants'
 import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/ducks'
+import { getDefaultInterests } from '../../dataUtils'
+import { getCurriculumsListSelector } from './dictionaries'
 
 // Express grader enabling grid edit for selected districts
 const gridEditEnabledDistricts = {
@@ -125,6 +127,41 @@ export const getInterestedSubjectsSelector = createSelector(
   getOrgDataSelector,
   (state) => _get(state, 'defaultSubjects', [])
 )
+
+export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
+  getInterestedSubjectsSelector,
+  getInterestedGradesSelector,
+  getInterestedCurriculumsSelector,
+  getCurriculumsListSelector,
+  (
+    interestedSubjects,
+    interestedGrades,
+    interestedCurriculums,
+    curriculums
+  ) => {
+    const previousInterests = getDefaultInterests()
+    const subject = previousInterests.subject || interestedSubjects[0] || ''
+
+    const curriculum =
+      curriculums?.find(
+        (curr) =>
+          curr._id === previousInterests.curriculumId &&
+          curr.subject === subject
+      ) || interestedCurriculums.find((cur) => cur.subject === subject)
+
+    return {
+      subject,
+      grades: !isEmpty(previousInterests.grades)
+        ? previousInterests.grades
+        : interestedGrades || [],
+      curriculum: {
+        id: parseInt(curriculum?._id, 10) || '',
+        curriculum: curriculum?.curriculum || curriculum?.name || '',
+      },
+    }
+  }
+)
+
 /**
  * this selector shouldn't be used for students
  * student can be part of multiple district

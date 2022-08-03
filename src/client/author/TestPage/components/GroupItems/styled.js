@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row, Radio, Button } from 'antd'
+import { Row, Radio, Button, Collapse } from 'antd'
 import {
   boxShadowDefault,
   white,
@@ -23,8 +23,6 @@ export const CreateGroupWrapper = styled.div`
   margin: auto;
   padding: 40px 80px;
   margin-top: 50px;
-  box-shadow: ${boxShadowDefault};
-  border-radius: 8px;
 `
 
 export const Heading = styled.div`
@@ -187,12 +185,6 @@ export const DoneButton = styled(AddGroupButton)`
   margin: auto;
 `
 
-export const Footer = styled.div`
-  display: flex;
-  justify-content: center;
-  padding-top: 10px;
-`
-
 export const ItemTag = styled.span`
   background: ${themeColorTagsBg};
   color: ${themeColor};
@@ -221,19 +213,30 @@ export const StandardNameSection = styled.div`
   }
 `
 
+export const PanelStyled = styled(Collapse.Panel)`
+  & .ant-collapse-header[role='button'] {
+    padding: 0 16px 0 40px;
+  }
+`
+
 export const PanelHeading = styled.div`
   display: flex;
   justify-content: space-between;
   > div:last-child {
     display: flex;
+    align-items: center;
     > div {
       margin-left: 10px;
+      padding: 8px;
       font-size: 18px;
       color: ${themeColor};
       svg {
         fill: ${themeColor};
       }
     }
+  }
+  & > label {
+    padding: 12px 0;
   }
 `
 

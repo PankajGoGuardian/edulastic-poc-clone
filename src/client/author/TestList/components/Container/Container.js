@@ -273,6 +273,7 @@ class TestList extends Component {
 
     this.setState({ isSingaporeMath })
 
+    // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
     const {
       subject = interestedSubjects,
       grades = interestedGrades || [],

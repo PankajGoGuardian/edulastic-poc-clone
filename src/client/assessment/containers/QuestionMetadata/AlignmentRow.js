@@ -218,6 +218,7 @@ const AlignmentRow = ({
 
   useEffect(() => {
     const { curriculumId: alCurriculumId } = alignment
+    // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
     const defaultInterests = getDefaultInterests()
     /**
      * TODO: test item subjects should not have [[]] as a value, need to fix at item level
@@ -275,10 +276,10 @@ const AlignmentRow = ({
       {showModal && (
         <StandardsModal
           t={t}
-          subject={subject}
-          grades={grades}
-          standards={standards}
-          standard={{ curriculum, id: curriculumId }}
+          defaultSubject={subject}
+          defaultGrades={grades}
+          defaultStandards={standards}
+          defaultStandard={{ curriculum, id: curriculumId }}
           visible={showModal}
           curriculums={curriculums}
           onApply={handleApply}

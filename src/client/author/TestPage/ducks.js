@@ -127,7 +127,7 @@ const testItemStatusConstants = {
 
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
-  groupName: 'Group 1' /* For now, auto-generated. */,
+  groupName: 'SECTION 1' /* For now, auto-generated. */,
   items: [],
   deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
   index: 0,
@@ -951,6 +951,7 @@ export const createBlankTest = () => ({
   scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
   isDocBased: false,
+  isDynamicTest: false,
   status: 'draft',
   thumbnail: defaultImage,
   itemGroups: [
@@ -3709,7 +3710,10 @@ function tranformItemGroupToData(itemGroup, index, allStaticGroupItemIds) {
             limit: itemGroup.deliverItemsCount,
             search: {
               collectionId: itemGroup.collectionDetails._id,
-              standardId: itemGroup.standardDetails.standardId,
+              standardIds:
+                itemGroup?.standardDetails?.standards?.map(
+                  (std) => std.standardId
+                ) || [],
               nInItemIds: allStaticGroupItemIds,
               ...optionalFields,
             },

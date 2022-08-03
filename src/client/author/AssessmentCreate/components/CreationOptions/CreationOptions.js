@@ -5,16 +5,24 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import OptionPDF from '../OptionPDF/OptionPDF'
 import OptionScratch from '../OptionScratch/OptionScratch'
+import OptionDynamicTest from '../OptionDynamicTest/OptionDynamicTest'
 import BodyWrapper from '../../../AssignmentCreate/common/BodyWrapper'
 import FlexWrapper from '../../../AssignmentCreate/common/FlexWrapper'
 import OptionQti from '../OptionQTI/OptionQTI'
 import { QTI_DISTRICTS } from '../../../../config'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 const CreationOptions = ({ onUploadPDF, isShowQTI }) => (
   <BodyWrapper>
     <FlexWrapper marginBottom="0px">
       <OptionScratch />
       <OptionPDF onClick={onUploadPDF} />
+      <FeaturesSwitch
+        inputFeatures="enableDynamicTests"
+        actionOnInaccessible="hidden"
+      >
+        <OptionDynamicTest />
+      </FeaturesSwitch>
       {isShowQTI && <OptionQti />}
     </FlexWrapper>
   </BodyWrapper>

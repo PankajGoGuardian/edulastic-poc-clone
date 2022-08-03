@@ -1,42 +1,20 @@
 import { testItemsApi } from '@edulastic/api'
-import {
-  CheckboxLabel,
-  EduButton,
-  notification,
-  RadioBtn,
-  RadioGrp,
-} from '@edulastic/common'
+import { EduButton, notification, RadioBtn, RadioGrp } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
-import { IconPencilEdit } from '@edulastic/icons'
+import { IconInfo, IconPencilEdit } from '@edulastic/icons'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
-import { faQuestionCircle } from '@fortawesome/free-solid-svg-icons'
+import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Collapse, Icon, Input, Select } from 'antd'
-import { isEqual, keyBy, maxBy, pick } from 'lodash'
+import { Collapse, Select, Tooltip } from 'antd'
+import { intersection, isEmpty, keyBy, maxBy, pick } from 'lodash'
 import nanoid from 'nanoid'
 import React, { useEffect, useState } from 'react'
-import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import StandardsModal from '../../../../assessment/containers/QuestionMetadata/StandardsModal'
-import { getDefaultInterests } from '../../../dataUtils'
-import {
-  getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction,
-} from '../../../src/actions/dictionaries'
+import StandardsSelect from '../../../../assessment/containers/QuestionMetadata/StandardsSelect'
 import Breadcrumb from '../../../src/components/Breadcrumb'
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector,
-  standardsSelector,
-} from '../../../src/selectors/dictionaries'
-import {
-  getCollectionsSelector,
-  getInterestedCurriculumsSelector,
-  getInterestedGradesSelector,
-  getInterestedSubjectsSelector,
-} from '../../../src/selectors/user'
+import { getCollectionsSelector } from '../../../src/selectors/user'
 import {
   addNewGroupAction,
   deleteItemsGroupAction,
@@ -56,10 +34,8 @@ import {
   Container,
   ContentBody,
   CreateGroupWrapper,
-  Footer,
   GroupField,
   Heading,
-  ItemCountWrapper,
   ItemTag,
   Label,
   PanelHeading,
@@ -67,61 +43,34 @@ import {
   QuestionTagsWrapper,
   RadioMessage,
   SelectWrapper,
-  StandardNameSection,
+  PanelStyled,
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
+import ItemCountWrapperContainer from './ItemCountWrapperContainer'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
 const GroupItems = ({
-  t,
   match,
   updateGroupData,
   addNewGroup,
   getAllTags,
   allTagsData,
   collections,
-  getCurriculums,
-  curriculumStandards,
-  getCurriculumStandards,
-  curriculumStandardsLoading,
-  curriculums,
   removeTestItems,
   deleteItemsGroup,
   test,
   setTestData,
   history,
-  interestedGrades,
-  interestedSubjects,
-  interestedCurriculums: [firstCurriculum],
-  handleSaveTest,
+  currentGroupIndex,
+  setCurrentGroupIndex,
 }) => {
-  const { Panel } = Collapse
-
   const [editGroupDetail, setEditGroupDetails] = useState({})
-  const [showStandardModal, setShowStandardModal] = useState(false)
   const [showConfirmModal, setShowConfirmModal] = useState(false)
-  const [searchProps, setSearchProps] = useState({
-    id: '',
-    grades: [],
-    searchStr: '',
-  })
-  const [currentGroupIndex, setCurrentGroupIndex] = useState(null)
   const [confirmModalCategory, setConfirmModalCategory] = useState(null)
   const [fetchingItems, setFetchingItems] = useState(false)
   const [deleteGroupIndex, setDeleteGroupIndex] = useState(null)
   const [activePanels, setActivePanels] = useState([])
-  const {
-    subject = interestedSubjects?.[0] || '',
-    grades = interestedGrades || [],
-    curriculumId = firstCurriculum?.subject === interestedSubjects?.[0]
-      ? firstCurriculum?._id
-      : '',
-  } = getDefaultInterests()
-
-  const goBackUrl = match.params?.id
-    ? `/author/tests/tab/addItems/id/${match.params.id}`
-    : '/author/tests/create/addItems'
 
   const breadcrumbData = [
     {
@@ -129,42 +78,35 @@ const GroupItems = ({
       to: '/author/tests',
     },
     {
-      title: 'ADD ITEMS',
-      to: goBackUrl,
-    },
-    {
-      title: 'QUESTION DELIVERY GROUPS',
+      title: 'ADD SECTIONS',
       to: '',
     },
   ]
 
-  const switchToAddItems = () => history.push(goBackUrl)
   const collectionData = collections.map((o) => ({
     text: o.name,
     value: o._id,
     type: o.type,
   }))
 
-  const searchCurriculumStandards = (searchObject) => {
-    if (!isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject)
-      getCurriculumStandards(
-        searchObject.id,
-        searchObject.grades,
-        searchObject.searchStr
-      )
-    }
-  }
-
   useEffect(() => {
     setActivePanels(test.itemGroups.map((_, i) => (i + 1).toString()))
-    if (curriculums.length === 0) {
-      getCurriculums()
-    }
     getAllTags({ type: 'testitem' })
-
-    searchCurriculumStandards({ id: curriculumId, grades, searchStr: '' })
   }, [])
+
+  const handleSelectItems = () => {
+    // validate if no section is being edited
+    if (currentGroupIndex !== null) {
+      notification({
+        messageKey: 'pleaseSaveTheChangesMadeToGroupFirst',
+      })
+    } else {
+      const addItemsUrl = match.params?.id
+        ? `/author/tests/tab/addItems/id/${match.params.id}`
+        : '/author/tests/create/addItems'
+      history.push(addItemsUrl)
+    }
+  }
 
   const handleChange = (fieldName, value) => {
     let updatedGroupData = { ...editGroupDetail }
@@ -312,19 +254,22 @@ const GroupItems = ({
     const data = {
       ...NewGroup,
       _id: nanoid(),
-      groupName: `Group ${index + 2}`,
+      groupName: `SECTION ${index + 2}`,
       index: index + 1,
     }
     addNewGroup(data)
     setActivePanels([...activePanels, (test.itemGroups.length + 1).toString()])
   }
 
-  const checkDuplicateGroup = (collectionId, standardId) => {
+  const checkDuplicateGroup = (collectionId, standardDetails) => {
     const duplicateGroup = test.itemGroups.find(
       (g, index) =>
         index !== currentGroupIndex &&
         g.collectionDetails?._id === collectionId &&
-        g.standardDetails?.standardId === standardId
+        intersection(
+          standardDetails.standards.map((std) => std.standardId),
+          g.standardDetails?.standards.map((std) => std.standardId)
+        ).length
     )
     if (duplicateGroup) {
       notification({
@@ -336,36 +281,12 @@ const GroupItems = ({
     return false
   }
 
-  const handleApply = (data) => {
-    if (!data?.eloStandards?.length) {
-      return notification({
-        type: 'warn',
-        messageKey: 'pleaseSelectStantdardBeforeApplying',
-      })
-    }
-    const { subject: _subject, eloStandards } = data
-    const _grades = data.grades.length
-      ? data.grades
-      : eloStandards[0]?.grades || []
-    const {
-      curriculumId: _curriculumId,
-      _id: standardId,
-      tloId: domainId,
-      identifier,
-    } = eloStandards[0]
-    const standardDetails = {
-      subject: _subject,
-      grades: _grades,
-      curriculumId: _curriculumId,
-      standardId,
-      domainId,
-      identifier,
-    }
-    setShowStandardModal(false)
+  const handleStandardsChange = (standardDetails) => {
     const { collectionDetails } = editGroupDetail
     if (
       collectionDetails &&
-      checkDuplicateGroup(collectionDetails._id, standardId)
+      standardDetails &&
+      checkDuplicateGroup(collectionDetails._id, standardDetails)
     )
       return
     handleChange('standardDetails', standardDetails)
@@ -377,73 +298,10 @@ const GroupItems = ({
     )
     const { standardDetails } = editGroupDetail
     if (standardDetails) {
-      const isDuplicate = checkDuplicateGroup(
-        collectionId,
-        standardDetails.standardId
-      )
+      const isDuplicate = checkDuplicateGroup(collectionId, standardDetails)
       if (isDuplicate) return
     }
     handleChange('collectionDetails', { _id, name, type })
-  }
-
-  const validateGroups = () => {
-    if (currentGroupIndex !== null) {
-      return notification({
-        messageKey: 'pleaseSaveTheChangesMadeToGroupFirst',
-      })
-    }
-    const staticGroups = []
-    const autoSelectGroups = []
-    let isValid = true
-
-    test.itemGroups.forEach((group) => {
-      if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group)
-      else autoSelectGroups.push(group)
-    })
-
-    for (let i = 0; i < staticGroups.length; i++) {
-      const { items, deliveryType, deliverItemsCount } = staticGroups[i]
-      if (items.length === 0) {
-        notification({
-          messageKey: 'eachStaticGroupShouldContainAtleastOneItems',
-        })
-        isValid = false
-        break
-      }
-      if (
-        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-        !deliverItemsCount
-      ) {
-        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-        isValid = false
-        break
-      }
-    }
-
-    for (let i = 0; i < autoSelectGroups.length; i++) {
-      const {
-        collectionDetails,
-        standardDetails,
-        deliverItemsCount,
-      } = autoSelectGroups[i]
-      if (!collectionDetails || !standardDetails) {
-        notification({
-          messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
-        })
-        isValid = false
-        break
-      }
-      if (!deliverItemsCount) {
-        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-        isValid = false
-        break
-      }
-    }
-
-    if (isValid) {
-      handleSaveTest()
-      switchToAddItems()
-    }
   }
 
   const handleEditGroup = (e, itemGroup, index) => {
@@ -469,7 +327,7 @@ const GroupItems = ({
         standardDetails,
         deliverItemsCount,
       } = editGroupDetail
-      if (!collectionDetails || !standardDetails) {
+      if (!collectionDetails || isEmpty(standardDetails?.standards)) {
         notification({
           messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
         })
@@ -527,7 +385,6 @@ const GroupItems = ({
     if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
       return saveGroupToTest()
     }
-
     const optionalFields = {
       depthOfKnowledge: editGroupDetail.dok,
       authorDifficulty: editGroupDetail.difficulty,
@@ -540,7 +397,9 @@ const GroupItems = ({
       limit: editGroupDetail.deliverItemsCount,
       search: {
         collectionId: editGroupDetail.collectionDetails._id,
-        standardId: editGroupDetail.standardDetails.standardId,
+        standardIds: editGroupDetail.standardDetails.standards.map(
+          (std) => std.standardId
+        ),
         ...optionalFields,
       },
     }
@@ -582,30 +441,6 @@ const GroupItems = ({
 
   return (
     <Container>
-      {showStandardModal && (
-        <StandardsModal
-          t={t}
-          subject={subject}
-          grades={grades}
-          standards={[]}
-          standard={{
-            curriculum:
-              curriculums.find(
-                (item) => item._id === parseInt(curriculumId, 10)
-              )?.curriculum || '',
-            id: parseInt(curriculumId, 10) || '',
-          }}
-          visible={showStandardModal}
-          curriculums={curriculums}
-          onApply={handleApply}
-          onCancel={() => setShowStandardModal(false)}
-          curriculumStandardsELO={curriculumStandards.elo}
-          curriculumStandardsTLO={curriculumStandards.tlo}
-          getCurriculumStandards={searchCurriculumStandards}
-          curriculumStandardsLoading={curriculumStandardsLoading}
-          singleSelect
-        />
-      )}
       {showConfirmModal && (
         <TypeConfirmModal
           visible={showConfirmModal}
@@ -619,8 +454,10 @@ const GroupItems = ({
       </BreadcrumbContainer>
       <CreateGroupWrapper>
         <Heading>
-          Question Delivery Groups&nbsp;&nbsp;
-          <FontAwesomeIcon icon={faQuestionCircle} aria-hidden="true" />
+          ITEM DELIVERY SECTIONS&nbsp;
+          <Tooltip title="Within each section, select specific instructions for what you want included. You can have one section or create multiple sections.">
+            <IconInfo />
+          </Tooltip>
         </Heading>
         <Collapse
           activeKey={activePanels}
@@ -636,7 +473,7 @@ const GroupItems = ({
                 ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
                 : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
             return (
-              <Panel
+              <PanelStyled
                 header={[
                   <PanelHeading>
                     <Label fontWeight="600">{itemGroup.groupName}</Label>
@@ -664,25 +501,41 @@ const GroupItems = ({
               >
                 <ContentBody data-cy={`group-${itemGroup.groupName}`}>
                   <GroupField>
-                    <CheckboxLabel
-                      checked={
+                    <RadioGrp
+                      name="radiogroup"
+                      value={
                         currentGroupIndex === index
-                          ? editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT
-                          : itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT
+                          ? editGroupDetail.type
+                          : itemGroup.type
                       }
-                      data-cy={`autoselect-${itemGroup.groupName}`}
-                      disabled={currentGroupIndex !== index}
                       onChange={() => handleTypeSelect(index)}
+                      disabled={currentGroupIndex !== index}
                     >
-                      AUTO SELECT ITEMS BASED ON STANDARDS
-                    </CheckboxLabel>
+                      <RadioBtn
+                        data-cy={`check-group-type-${itemGroup.groupName}`}
+                        defaultChecked={false}
+                        value={ITEM_GROUP_TYPES.AUTOSELECT}
+                      >
+                        <Tooltip title="Set the parameters for what you’d like to include in this section, and we will find and add the items for you.">
+                          AUTO SELECT ITEMS BASED ON STANDARDS
+                        </Tooltip>
+                      </RadioBtn>
+                      <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
+                        <RadioBtn
+                          defaultChecked
+                          value={ITEM_GROUP_TYPES.STATIC}
+                        >
+                          MANUAL SELECT ITEMS FROM ITEM BANK
+                        </RadioBtn>
+                      </Tooltip>
+                    </RadioGrp>
                   </GroupField>
                   {(currentGroupIndex === index &&
                     editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) ||
                   (currentGroupIndex !== index &&
                     itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
                     <GroupField>
-                      <Label>Items</Label>
+                      <Label>Items *</Label>
                       <QuestionTagsWrapper>
                         <QuestionTagsContainer
                           data-cy={`item-container-${itemGroup.groupName}`}
@@ -701,7 +554,7 @@ const GroupItems = ({
                         <EduButton
                           height="40px"
                           isGhost
-                          onClick={switchToAddItems}
+                          onClick={handleSelectItems}
                         >
                           Select Items
                         </EduButton>
@@ -710,7 +563,7 @@ const GroupItems = ({
                   ) : (
                     <AutoSelectFields>
                       <SelectWrapper width="200px">
-                        <Label>Collection</Label>
+                        <Label>Collection *</Label>
                         <Select
                           data-cy={`collection-${itemGroup.groupName}`}
                           size="default"
@@ -740,40 +593,17 @@ const GroupItems = ({
                         </Select>
                       </SelectWrapper>
                       <SelectWrapper width="200px">
-                        <Label>Standards</Label>
-                        {(currentGroupIndex === index &&
-                          editGroupDetail.standardDetails) ||
-                        (currentGroupIndex !== index &&
-                          itemGroup.standardDetails) ? (
-                          <StandardNameSection>
-                            <span>
-                              {currentGroupIndex === index
-                                ? editGroupDetail.standardDetails.identifier
-                                : itemGroup.standardDetails.identifier}
-                            </span>
-                            <span
-                              onClick={() => {
-                                if (currentGroupIndex === index)
-                                  handleChange('standardDetails', '')
-                              }}
-                            >
-                              <Icon type="close" />
-                            </span>
-                          </StandardNameSection>
-                        ) : (
-                          <EduButton
-                            isGhost
-                            data-cy={`standard-${itemGroup.groupName}`}
-                            onClick={() => {
-                              if (currentGroupIndex === index) {
-                                setShowStandardModal(true)
-                                setCurrentGroupIndex(index)
-                              }
-                            }}
-                          >
-                            Browse
-                          </EduButton>
-                        )}
+                        <Label>Standards *</Label>
+                        <StandardsSelect
+                          onChange={handleStandardsChange}
+                          preventInput
+                          standardDetails={
+                            currentGroupIndex === index
+                              ? editGroupDetail.standardDetails
+                              : itemGroup.standardDetails
+                          }
+                          disabled={currentGroupIndex !== index}
+                        />
                       </SelectWrapper>
                       <SelectWrapper width="200px">
                         <Label>Depth of knowledge</Label>
@@ -799,6 +629,36 @@ const GroupItems = ({
                               data-cy={`${itemGroup.groupName} ${el.text}`}
                             >
                               {`${_index > 0 ? _index : ''} ${el.text}`}
+                            </Select.Option>
+                          ))}
+                        </Select>
+                      </SelectWrapper>
+                      <SelectWrapper width="200px">
+                        <Label>Difficulty</Label>
+                        <Select
+                          placeholder="Select one"
+                          data-cy="selectDifficulty"
+                          size="default"
+                          onSelect={(value) =>
+                            handleChange('difficulty', value)
+                          }
+                          value={
+                            currentGroupIndex === index
+                              ? editGroupDetail.difficulty
+                              : itemGroup.difficulty
+                          }
+                          getPopupContainer={(triggerNode) =>
+                            triggerNode.parentNode
+                          }
+                          disabled={currentGroupIndex !== index}
+                        >
+                          {selectsData.allAuthorDifficulty.map((el) => (
+                            <Select.Option
+                              key={el.value}
+                              value={el.value}
+                              data-cy={`${itemGroup.groupName} ${el.text}`}
+                            >
+                              {el.text}
                             </Select.Option>
                           ))}
                         </Select>
@@ -835,36 +695,6 @@ const GroupItems = ({
                           ))}
                         </Select>
                       </SelectWrapper>
-                      <SelectWrapper width="200px">
-                        <Label>Difficulty</Label>
-                        <Select
-                          placeholder="Select one"
-                          data-cy="selectDifficulty"
-                          size="default"
-                          onSelect={(value) =>
-                            handleChange('difficulty', value)
-                          }
-                          value={
-                            currentGroupIndex === index
-                              ? editGroupDetail.difficulty
-                              : itemGroup.difficulty
-                          }
-                          getPopupContainer={(triggerNode) =>
-                            triggerNode.parentNode
-                          }
-                          disabled={currentGroupIndex !== index}
-                        >
-                          {selectsData.allAuthorDifficulty.map((el) => (
-                            <Select.Option
-                              key={el.value}
-                              value={el.value}
-                              data-cy={`${itemGroup.groupName} ${el.text}`}
-                            >
-                              {el.text}
-                            </Select.Option>
-                          ))}
-                        </Select>
-                      </SelectWrapper>
                     </AutoSelectFields>
                   )}
                   <GroupField>
@@ -890,57 +720,57 @@ const GroupItems = ({
                             defaultChecked
                             value={ITEM_GROUP_DELIVERY_TYPES.ALL}
                           >
-                            Deliver all Items in this Group
+                            Deliver all Items in this Section
                           </RadioBtn>
 
                           <RadioMessage>
                             Use this option to deliver a specific number of
-                            randomly picked question per Group.
+                            randomly picked question per Section.
                           </RadioMessage>
+
+                          <RadioBtn
+                            data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
+                            defaultChecked={false}
+                            value={
+                              currentGroupIndex === index
+                                ? editingDeliveryType
+                                : currentDeliveryType
+                            }
+                          >
+                            <ItemCountWrapperContainer
+                              handleChange={handleChange}
+                              editGroupDetail={editGroupDetail}
+                              currentGroupIndex={currentGroupIndex}
+                              index={index}
+                              itemGroup={itemGroup}
+                            />
+                          </RadioBtn>
                         </>
                       )}
-                      <RadioBtn
+                    </RadioGrp>
+                    {((currentGroupIndex === index &&
+                      editGroupDetail.type === ITEM_GROUP_TYPES.AUTOSELECT) ||
+                      (currentGroupIndex !== index &&
+                        itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT)) && (
+                      <span
                         data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
-                        defaultChecked={false}
                         value={
                           currentGroupIndex === index
                             ? editingDeliveryType
                             : currentDeliveryType
                         }
+                        style={{ disabled: true }}
                       >
-                        <ItemCountWrapper>
-                          <span>Deliver a total of </span>
-                          <Input
-                            data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
-                            type="number"
-                            disabled={
-                              (editGroupDetail.deliveryType ===
-                                ITEM_GROUP_DELIVERY_TYPES.ALL &&
-                                currentGroupIndex === index) ||
-                              currentGroupIndex !== index
-                            }
-                            min={0}
-                            value={
-                              currentGroupIndex === index
-                                ? editGroupDetail.deliverItemsCount || ''
-                                : itemGroup.deliverItemsCount || ''
-                            }
-                            onChange={(e) =>
-                              handleChange(
-                                'deliverItemsCount',
-                                parseFloat(e.target.value)
-                              )
-                            }
-                            max={
-                              editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
-                                ? itemGroup.items.length
-                                : 100
-                            }
-                          />
-                          <span> Item(s)</span>
-                        </ItemCountWrapper>
-                      </RadioBtn>
-                    </RadioGrp>
+                        <ItemCountWrapperContainer
+                          handleChange={handleChange}
+                          editGroupDetail={editGroupDetail}
+                          currentGroupIndex={currentGroupIndex}
+                          index={index}
+                          itemGroup={itemGroup}
+                          isRequired
+                        />
+                      </span>
+                    )}
                   </GroupField>
                   <GroupField style={{ display: 'flex' }} marginBottom="5px">
                     {currentGroupIndex === index && (
@@ -969,48 +799,46 @@ const GroupItems = ({
                     )}
                   </GroupField>
                 </ContentBody>
-              </Panel>
+              </PanelStyled>
             )
           })}
         </Collapse>
-        <GroupField style={{ marginTop: '10px' }}>
+        <GroupField style={{ marginTop: '15px', marginLeft: '45%' }}>
           {currentGroupIndex === null && (
-            <EduButton data-cy="add-group" onClick={handleAddGroup}>
-              Add Group
-            </EduButton>
+            <button
+              type="button"
+              data-cy="add-group"
+              onClick={handleAddGroup}
+              style={{
+                paddingBlock: '12px',
+                borderRadius: '7px',
+                borderColor: 'transparent',
+                cursor: 'pointer',
+                fontSize: '12px',
+              }}
+            >
+              <FontAwesomeIcon icon={faPlusCircle} aria-hidden="true" />
+              &nbsp;&nbsp;&nbsp;&nbsp;ADD SECTION
+            </button>
           )}
         </GroupField>
-        <Footer>
-          <EduButton data-cy="done" onClick={validateGroups}>
-            Done
-          </EduButton>
-        </Footer>
       </CreateGroupWrapper>
     </Container>
   )
 }
 
 const enhance = compose(
-  withNamespaces('assessment'),
   withRouter,
   connect(
     (state) => ({
       allTagsData: getAllTagsSelector(state, 'testitem'),
       collections: getCollectionsSelector(state),
-      curriculumStandards: getStandardsListSelector(state),
-      curriculumStandardsLoading: standardsSelector(state).loading,
-      curriculums: getCurriculumsListSelector(state),
       test: getTestEntitySelector(state),
-      interestedGrades: getInterestedGradesSelector(state),
-      interestedSubjects: getInterestedSubjectsSelector(state),
-      interestedCurriculums: getInterestedCurriculumsSelector(state),
     }),
     {
-      getCurriculums: getDictCurriculumsAction,
       updateGroupData: updateGroupDataAction,
       addNewGroup: addNewGroupAction,
       getAllTags: getAllTagsAction,
-      getCurriculumStandards: getDictStandardsForCurriculumAction,
       removeTestItems: removeTestItemsAction,
       deleteItemsGroup: deleteItemsGroupAction,
       setTestData: setTestDataAction,

@@ -994,7 +994,7 @@ class ClassHeader extends Component {
                     disabled={hasRandomQuestions || !isItemsVisible}
                     errMessage={
                       hasRandomQuestions
-                        ? 'This assignment has random items for every student.'
+                        ? t('common.randomItemsDisableMessage')
                         : t('common.testHidden')
                     }
                   >

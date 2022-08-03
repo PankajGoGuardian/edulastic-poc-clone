@@ -15,6 +15,7 @@ import {
   IconShare,
   IconTestBank,
   IconTrashAlt,
+  IconItemGroup,
 } from '@edulastic/icons'
 import PropTypes from 'prop-types'
 import React, { memo, useEffect, useState } from 'react'
@@ -159,6 +160,28 @@ export const docBasedButtons = [
     text: 'Settings',
   },
 ]
+export const navButtonsDynamicTest = [
+  {
+    icon: <IconDescription color={white} width={16} height={16} />,
+    value: 'description',
+    text: 'Description',
+  },
+  {
+    icon: <IconItemGroup color={white} width={16} height={16} />,
+    value: 'addSections',
+    text: 'Add Sections',
+  },
+  {
+    icon: <IconTick color={white} width={16} height={16} />,
+    value: 'review',
+    text: 'Review',
+  },
+  {
+    icon: <IconSettings color={white} width={16} height={16} />,
+    value: 'settings',
+    text: 'Settings',
+  },
+]
 // TODO mobile look
 const TestPageHeader = ({
   onChangeNav,
@@ -178,6 +201,7 @@ const TestPageHeader = ({
   hasTestId,
   testStatus,
   isPlaylist,
+  isDynamicTest,
   owner,
   onAssign,
   history,
@@ -228,6 +252,8 @@ const TestPageHeader = ({
       ? [...playlistNavButtons]
       : isDocBased
       ? [...docBasedButtons]
+      : isDynamicTest
+      ? [...navButtonsDynamicTest]
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)
   const [showPrintOptionPopup, setShowPrintOptionPopup] = useState(false)

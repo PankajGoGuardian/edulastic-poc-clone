@@ -23,7 +23,10 @@ const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
       <StyledLabel data-cy="sort-button" onClick={onSort}>
         Sort by <StyledSortIcon dir={sortDir} />
       </StyledLabel>
-      <StyledDropdown overlayStyle={{ zIndex: 1005 }} overlay={menu}>
+      <StyledDropdown
+        getPopupContainer={(el) => el.parentElement}
+        overlay={menu}
+      >
         <Button data-cy="sort-dropdown">
           {sortBy2?.text} <IconDownEmptyArrow />
         </Button>

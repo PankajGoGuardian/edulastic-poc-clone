@@ -151,6 +151,7 @@ import {
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
+import { clearUserWorkAction } from '../../../../assessment/actions/userWork'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -276,10 +277,11 @@ class ClassBoard extends Component {
   }
 
   componentWillUnmount() {
-    const { setShowCanvasShare } = this.props
+    const { setShowCanvasShare, clearUserWork } = this.props
     window.removeEventListener('scroll', this.handleScroll)
     setShowCanvasShare(false)
     antNotification.destroy()
+    clearUserWork()
   }
 
   componentDidMount() {
@@ -2164,6 +2166,7 @@ const enhance = compose(
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setPageNumber: setPageNumberAction,
+      clearUserWork: clearUserWorkAction,
     }
   )
 )

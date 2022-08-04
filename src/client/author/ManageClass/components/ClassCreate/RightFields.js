@@ -41,6 +41,7 @@ const RightFields = ({
   isCourseVisible,
   ...restProps
 }) => {
+  const isClass = type === 'class'
   const [startDate, setStartDate] = useState(moment())
   const [toggleDetails, setToggleDetails] = useState(true)
   const defaultSubject = defaultSubjects.length === 1 ? defaultSubjects[0] : []
@@ -105,31 +106,38 @@ const RightFields = ({
               />
             </FieldLabel>
           </Col>
-          <Col xs={12}>
-            <FieldLabel
-              label="Subject"
-              {...restProps}
-              fiedlName="subject"
-              initialValue={defaultSubject}
-            >
-              <SelectInputStyled
-                placeholder="Select Subject"
-                onSelect={updateSubject}
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+          {isClass && (
+            <Col xs={12}>
+              <FieldLabel
+                label="Grade"
+                {...restProps}
+                fiedlName="grades"
+                initialValue={defaultGrade}
               >
-                {subjects.map((el) => (
-                  <Select.Option key={el.value} value={el.value}>
-                    {el.text}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </FieldLabel>
-          </Col>
-        </StyledFlexContainer>
-
-        {type !== 'class' && (
-          <StyledFlexContainer gutter={96}>
-            <Col xs={24}>
+                <SelectInputStyled
+                  showArrow
+                  showSearch
+                  placeholder="Select Grades"
+                  optionFilterProp="children"
+                  mode="multiple"
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                >
+                  {grades.map((el) => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </FieldLabel>
+            </Col>
+          )}
+          {!isClass && (
+            <Col xs={12}>
               <FieldLabel
                 label="Description"
                 {...restProps}
@@ -141,40 +149,31 @@ const RightFields = ({
                 />
               </FieldLabel>
             </Col>
-          </StyledFlexContainer>
-        )}
+          )}
+        </StyledFlexContainer>
 
-        <StyledFlexContainer gutter={96}>
-          <Col xs={type === 'class' ? 12 : 24}>
-            <FieldLabel
-              label="Grade"
-              {...restProps}
-              fiedlName="grades"
-              initialValue={defaultGrade}
-            >
-              <SelectInputStyled
-                showArrow
-                showSearch
-                placeholder="Select Grades"
-                optionFilterProp="children"
-                mode="multiple"
-                filterOption={(input, option) =>
-                  option.props.children
-                    .toLowerCase()
-                    .indexOf(input.toLowerCase()) >= 0
-                }
-                getPopupContainer={(triggerNode) => triggerNode.parentNode}
+        {isClass && (
+          <StyledFlexContainer gutter={96}>
+            <Col xs={12}>
+              <FieldLabel
+                label="Subject"
+                {...restProps}
+                fiedlName="subject"
+                initialValue={defaultSubject}
               >
-                {grades.map((el) => (
-                  <Select.Option key={el.value} value={el.value}>
-                    {el.text}
-                  </Select.Option>
-                ))}
-              </SelectInputStyled>
-            </FieldLabel>
-          </Col>
-
-          {type === 'class' && (
+                <SelectInputStyled
+                  placeholder="Select Subject"
+                  onSelect={updateSubject}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                >
+                  {subjects.map((el) => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </FieldLabel>
+            </Col>
             <Col xs={12}>
               <FieldLabel
                 label="Standard Sets"
@@ -220,10 +219,64 @@ const RightFields = ({
                 </SelectInputStyled>
               </FieldLabel>
             </Col>
-          )}
-        </StyledFlexContainer>
+          </StyledFlexContainer>
+        )}
 
-        {type === 'class' && isDropdown && (
+        {!isClass && (
+          <StyledFlexContainer gutter={96}>
+            <Col xs={12}>
+              <FieldLabel
+                label="Grade"
+                {...restProps}
+                fiedlName="grades"
+                initialValue={defaultGrade}
+              >
+                <SelectInputStyled
+                  showArrow
+                  showSearch
+                  placeholder="Select Grades"
+                  optionFilterProp="children"
+                  mode="multiple"
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                >
+                  {grades.map((el) => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </FieldLabel>
+            </Col>
+
+            <Col xs={12}>
+              <FieldLabel
+                label="Subject"
+                {...restProps}
+                fiedlName="subject"
+                initialValue={defaultSubject}
+              >
+                <SelectInputStyled
+                  placeholder="Select Subject"
+                  onSelect={updateSubject}
+                  getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                >
+                  {subjects.map((el) => (
+                    <Select.Option key={el.value} value={el.value}>
+                      {el.text}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </FieldLabel>
+            </Col>
+          </StyledFlexContainer>
+        )}
+
+        {isClass && isDropdown && (
           <Row gutter={96}>
             <Col span={12}>
               <FieldLabel
@@ -277,7 +330,7 @@ const RightFields = ({
             )}
           </Col>
         </Row>
-        {type === 'class' && (
+        {isClass && (
           <StyledFlexContainer gutter={96} hidden={toggleDetails}>
             <Col xs={12}>
               <FieldLabel
@@ -385,17 +438,16 @@ const RightFields = ({
             </Row>
           </Col>
         </StyledFlexContainer>
-        {(!isDropdown || type !== 'class') &&
-          userRole !== roleuser.DISTRICT_ADMIN && (
-            <FieldLabel
-              {...restProps}
-              fiedlName="institutionId"
-              initialValue={defaultSchool}
-              style={{ height: '0px' }}
-            >
-              <input type="hidden" />
-            </FieldLabel>
-          )}
+        {(!isDropdown || !isClass) && userRole !== roleuser.DISTRICT_ADMIN && (
+          <FieldLabel
+            {...restProps}
+            fiedlName="institutionId"
+            initialValue={defaultSchool}
+            style={{ height: '0px' }}
+          >
+            <input type="hidden" />
+          </FieldLabel>
+        )}
       </div>
     </>
   )

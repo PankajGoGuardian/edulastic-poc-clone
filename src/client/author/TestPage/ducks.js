@@ -3416,10 +3416,12 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
       }
     } else {
       const { performanceBand, standardGradingScale } = testEntity
-      const performanceBandProfiles = [performanceBand]
-      const standardsProficiencyProfiles = [standardGradingScale]
-      const performanceBandId = performanceBand._id
-      const standardProficiencyId = standardGradingScale._id
+      const performanceBandProfiles = performanceBand ? [performanceBand] : []
+      const standardsProficiencyProfiles = standardGradingScale
+        ? [standardGradingScale]
+        : []
+      const performanceBandId = performanceBand?._id
+      const standardProficiencyId = standardGradingScale?._id
       const defaultTestTypeProfiles = {
         performanceBand: {
           common: performanceBandId,

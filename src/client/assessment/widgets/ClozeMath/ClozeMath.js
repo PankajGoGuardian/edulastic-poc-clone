@@ -14,7 +14,6 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import produce from 'immer'
 import { get, cloneDeep, find, orderBy } from 'lodash'
-import { withTutorial } from '../../../tutorials/withTutorial'
 import { CLEAR, PREVIEW, EDIT } from '../../constants/constantsForQuestions'
 import ClozeMathAnswers from './ClozeMathAnswers'
 import ClozeMathPreview from './ClozeMathPreview'
@@ -130,7 +129,6 @@ const ClozeMath = ({
       return otherOptions
     })
   }
-
   return (
     <WithResources
       criticalResources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
@@ -279,7 +277,6 @@ ClozeMath.defaultProps = {
 }
 
 const enhance = compose(
-  withTutorial('clozeMath'),
   connect(
     (state) => ({
       enableMagnifier: state.testPlayer.enableMagnifier,

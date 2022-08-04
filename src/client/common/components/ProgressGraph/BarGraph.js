@@ -37,12 +37,12 @@ const BarGraph = ({
     page * NUMBER_OF_BARS + NUMBER_OF_BARS
   )
 
-  const handleClick = ({ itemId, index }) => {
+  const handleClick = ({ itemId, index, qid }) => {
     let nextItemIndex = testItems.findIndex((item) => item._id === itemId)
     if (nextItemIndex === -1) {
       nextItemIndex = index
     }
-    onClickBar(nextItemIndex)
+    onClickBar(nextItemIndex, itemId, qid)
   }
 
   const prevBars = () => {

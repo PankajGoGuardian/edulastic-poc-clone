@@ -1,11 +1,11 @@
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import { compose } from 'redux'
 import { get, keyBy } from 'lodash'
+import { scrollTo, MainContentWrapper, FlexContainer } from '@edulastic/common'
 import { IconReport } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
-import { MainContentWrapper, FlexContainer } from '@edulastic/common'
 import { collections as collectionConst } from '@edulastic/constants'
 import ProgressGraph from '../../../../common/components/ProgressGraph'
 import TestAcivityHeader from '../../../../student/sharedComponents/Header'
@@ -28,6 +28,17 @@ const TestActivityPreview = ({
   previewModal,
   testPreviewLanguage,
 }) => {
+  const refForScroll = useRef('')
+
+  const onClickBarHandler = (index, itemId, qid) => {
+    const el = document.querySelector(`.question-container-id-${itemId}_${qid}`)
+    scrollTo(
+      el,
+      (document.querySelector('.fixed-header')?.offsetHeight + 10) * 2 || 0,
+      refForScroll.current
+    )
+  }
+
   const passages = test?.passages || []
   const evaluations = questionActivities.reduce((acc, curr) => {
     acc[`${curr.testItemId}_${curr.qid}`] = curr.evaluation
@@ -127,12 +138,13 @@ const TestActivityPreview = ({
         showReviewResponses={false}
         previewModal={previewModal}
       />
-      <MainContentWrapper padding="0px 20px">
+      <MainContentWrapper ref={refForScroll} padding="0px 20px">
         <StudentPerformancePreview>
           <ProgressGraph
             testActivity={testActivity}
             questionActivities={questionActivities}
             testItems={testItems}
+            onClickBar={onClickBarHandler}
           />
         </StudentPerformancePreview>
         <div>{testItemsPreview}</div>

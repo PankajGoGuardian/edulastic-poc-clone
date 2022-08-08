@@ -52,7 +52,7 @@ const TestItemCard = ({
   collectionName,
   isDocBased,
   summary,
-  isDynamic,
+  isDynamicTest,
   authorName,
   testItemId,
   usage,
@@ -150,7 +150,7 @@ const TestItemCard = ({
 
       {!isTestRecommendation && (
         <MidRow>
-          <Collection isDynamic={isDynamic}>
+          <Collection isDynamicTest={isDynamicTest}>
             <label>COLLECTIONS</label>
             <CollectionNameWrapper
               data-cy="test-collection"
@@ -169,7 +169,7 @@ const TestItemCard = ({
               {isDocBased ? summary.totalQuestions : summary.totalItems}
             </div>
           </Qcount>
-          {isDynamic && (
+          {isDynamicTest && (
             <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
               <IconDynamic color={themeColor} />
             </DynamicIconWrapper>

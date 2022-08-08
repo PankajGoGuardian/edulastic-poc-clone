@@ -5,7 +5,11 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
 import { Pagination, Spin } from 'antd'
-import { roleuser, sortOptions } from '@edulastic/constants'
+import {
+  roleuser,
+  sortOptions,
+  test as testConstants,
+} from '@edulastic/constants'
 import {
   withWindowSizes,
   FlexContainer,
@@ -86,6 +90,8 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+
+const { testCategoryTypes } = testConstants
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -512,7 +518,7 @@ class AddItems extends PureComponent {
       sort = {},
       gotoAddSections,
     } = this.props
-    const isDynamicTest = test?.isDynamicTest
+    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
     const selectedItemIds = test?.itemGroups?.flatMap(
       (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
     )

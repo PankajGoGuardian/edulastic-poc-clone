@@ -111,6 +111,8 @@ class Item extends Component {
         state: {
           editTestFlow: true,
           assessmentAssignedFrom: source,
+          isDynamicTest:
+            item?.testCategory === test.testCategoryTypes.DYNAMIC_TEST,
         },
       })
     }

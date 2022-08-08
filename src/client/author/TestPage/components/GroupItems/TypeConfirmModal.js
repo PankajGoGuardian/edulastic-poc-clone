@@ -11,7 +11,7 @@ const TypeConfirmModal = ({
   groupName,
 }) => {
   const Footer = [
-    <Button ghost data-cy="NoOverRide" onClick={() => handleResponse('NO')}>
+    <Button data-cy="NoOverRide" onClick={() => handleResponse('NO')}>
       NO
     </Button>,
     <YesButton data-cy="overRide" onClick={() => handleResponse('YES')}>

@@ -229,8 +229,9 @@ class MathFormulaPreview extends Component {
 
   get selectedUnit() {
     const { userAnswer, testItem, item } = this.props
+    // if user doesn't choose units it shows 'undefined' in math input. Thus return empty string instead of undefined
     if (!testItem && userAnswer) {
-      return userAnswer.unit
+      return userAnswer.unit || ''
     }
     if (testItem) {
       return get(item, 'validation.validResponse.value[0].options.unit', '')

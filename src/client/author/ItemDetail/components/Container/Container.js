@@ -64,6 +64,7 @@ import {
   addWidgetToPassageAction,
   deleteItemAction,
   editMultipartWidgetAction,
+  setTestItemScoreUpdatedAction,
 } from '../../ducks'
 import {
   changeCurrentQuestionAction,
@@ -805,6 +806,20 @@ class Container extends Component {
     })
   }
 
+  handleScoreUpdate = () => {
+    const { match, setTestItemScoreUpdated } = this.props
+    const {
+      params: { testId, itemId },
+      path,
+    } = match
+    if (testId && itemId && path.includes('/author/tests')) {
+      setTestItemScoreUpdated({
+        currentTestItemId: itemId,
+        isUpdated: true,
+      })
+    }
+  }
+
   renderCollapseButtons = () => {
     const { collapseDirection } = this.state
     return (
@@ -901,6 +916,7 @@ class Container extends Component {
                   onShowSettings={this.handleShowSettings}
                   containerType="question"
                   showAddItemButton={showAddItemButton}
+                  handleScoreUpdate={this.handleScoreUpdate}
                 />
               </>
             ))}
@@ -1126,6 +1142,7 @@ class Container extends Component {
       item?.data?.questions?.some((q) => useLanguageFeatureQn.includes(q.type))
 
     const handleTotalPartScoreChange = (score) => {
+      this.handleScoreUpdate()
       setItemLevelScore(+score)
     }
 
@@ -1418,6 +1435,7 @@ const enhance = compose(
       setCreatedItemToTest: setCreatedItemToTestAction,
       setCurrentQuestion: changeCurrentQuestionAction,
       editMultipartWidget: editMultipartWidgetAction,
+      setTestItemScoreUpdated: setTestItemScoreUpdatedAction,
     }
   )
 )

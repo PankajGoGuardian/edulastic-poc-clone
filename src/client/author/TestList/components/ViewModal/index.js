@@ -192,7 +192,7 @@ class ViewModal extends React.Component {
       modalView = true,
       publicAccess = false,
       isPublisherUser,
-      isDynamic,
+      isDynamicTest,
       handleLikeTest,
       isTestLiked,
       collectionName,
@@ -551,7 +551,7 @@ class ViewModal extends React.Component {
           <ModalColumn>
             <div>
               <AssessmentNameLabel>Test Name</AssessmentNameLabel>
-              {isDynamic && (
+              {isDynamicTest && (
                 <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
                   <IconDynamic color={greyThemeDark2} />
                   &nbsp;&nbsp; SMARTBUILD TEST

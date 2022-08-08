@@ -46,6 +46,12 @@ export const getProducts = createSelector(
   subscriptionSelector,
   (state) => state.products
 )
+export const getTrialPeriod = createSelector(
+  getProducts,
+  (products) =>
+    products?.filter((o) => o.type === 'PREMIUM')?.trialPeriod ||
+    products?.filter((o) => o.type !== 'STUDENT_LICENSE')?.[0]?.trialPeriod
+)
 export const getItemBankSubscriptions = createSelector(
   getSubscriptionDataSelector,
   (state) => state.itemBankSubscriptions
@@ -280,7 +286,8 @@ function* showSuccessNotifications(apiPaymentResponse, isTrial = false) {
   const { subscriptions, itemBankPermissions = [] } = apiPaymentResponse
   const hasSubscriptions = Object.keys(subscriptions).length > 0
   const hasItemBankPermissions = !isEmpty(itemBankPermissions)
-  const subscriptionPeriod = isTrial ? '14 days' : 'an year'
+  const trialPeriod = yield select(getTrialPeriod)
+  const subscriptionPeriod = isTrial ? `${trialPeriod} days` : 'an year'
   const premiumType = isTrial ? 'Trial Premium' : 'Premium'
   const { user } = yield select(getUserSelector)
   const eventType = isTrial ? 'trial' : 'purchase'

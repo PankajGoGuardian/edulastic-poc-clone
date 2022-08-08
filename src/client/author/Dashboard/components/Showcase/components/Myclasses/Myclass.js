@@ -28,7 +28,7 @@ import { productsMetaData } from '../../../../../src/components/common/PurchaseM
 import SubjectGradeForm from '../../../../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 // ducks
-import { slice } from '../../../../../Subscription/ducks'
+import { slice, getTrialPeriod } from '../../../../../Subscription/ducks'
 import { getDictCurriculumsAction } from '../../../../../src/actions/dictionaries'
 import { receiveSearchCourseAction } from '../../../../../Courses/ducks'
 import { fetchCleverClassListRequestAction } from '../../../../../ManageClass/ducks'
@@ -88,6 +88,7 @@ const MyClasses = ({
   loadAssignments,
   interestedSubjects,
   totalAssignmentCount,
+  trialPeriod,
 }) => {
   const [showBannerModal, setShowBannerModal] = useState(null)
   const [isPurchaseModalVisible, setIsPurchaseModalVisible] = useState(false)
@@ -818,6 +819,7 @@ const MyClasses = ({
           products={products}
           setShowHeaderTrialModal={setShowHeaderTrialModal}
           setTrialAddOnProductIds={setTrialAddOnProductIds}
+          trialPeriod={trialPeriod}
         />
       )}
       {showTestCustomizerModal && (
@@ -865,6 +867,7 @@ export default compose(
       showHeaderTrialModal: state.subscription?.showHeaderTrialModal,
       isDemoPlayground: isDemoPlaygroundUser(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
+      trialPeriod: getTrialPeriod(state),
     }),
     {
       receiveSearchCourse: receiveSearchCourseAction,

@@ -13,6 +13,7 @@ import {
   getItemBankSubscriptions,
   getSubscriptionDataSelector,
   getIsVerificationPending,
+  getTrialPeriod,
 } from '../../author/Subscription/ducks'
 // TODO: Change to SVG
 import IMG from '../../author/Subscription/static/6.png'
@@ -124,6 +125,7 @@ export const PremiumPopover = ({ children, ...props }) => {
     startTrialAction,
     usedTrialItemBankIds,
     isVerificationPending,
+    trialPeriod,
   } = props
 
   const [productData, setProductData] = useState({})
@@ -251,6 +253,7 @@ export const PremiumPopover = ({ children, ...props }) => {
         products={products}
         setShowHeaderTrialModal={setShowHeaderTrialModal}
         setTrialAddOnProductIds={setTrialAddOnProductIds}
+        trialPeriod={trialPeriod}
       />
       <PurchaseFlowModals
         showSubscriptionAddonModal={showSubscriptionAddonModal}
@@ -275,6 +278,7 @@ export default connect(
     isPremiumTrialUsed: getSubscriptionDataSelector(state)?.isPremiumTrialUsed,
     needsRenewal: getNeedsRenewal(state),
     products: getProducts(state),
+    trialPeriod: getTrialPeriod(state),
     showHeaderTrialModal: getShowHeaderTrialModal(state),
     itemBankSubscriptions: getItemBankSubscriptions(state),
     usedTrialItemBankIds: getSubscriptionDataSelector(state)

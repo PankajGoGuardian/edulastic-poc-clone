@@ -80,6 +80,7 @@ const SubscriptionMain = ({
   signUpFlowModalHandler = () => {},
   setIsTabShouldSwitch,
   isLoading = false,
+  trialPeriod,
 }) => {
   const _isFreeAdmin = isFreeAdmin && !isPaidPremium
   const [isTrialModalVisible, setIsTrialModalVisible] = useState(false)
@@ -785,6 +786,7 @@ const SubscriptionMain = ({
           hasAllTrialProducts={hasAllTrialProducts}
           setShowTrialSubsConfirmation={setShowTrialSubsConfirmation}
           setIsTabShouldSwitch={setIsTabShouldSwitch}
+          trialPeriod={trialPeriod}
         />
       )}
       {showFeatureNotAvailableModal && (

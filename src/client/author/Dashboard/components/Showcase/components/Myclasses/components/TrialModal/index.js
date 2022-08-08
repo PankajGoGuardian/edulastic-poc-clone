@@ -26,6 +26,7 @@ const TrialModal = ({
   setTrialAddOnProductIds = () => {},
   hasAllTrialProducts = false,
   setIsTabShouldSwitch = () => {},
+  trialPeriod,
 }) => {
   const hasPremiumTrialIncluded = useMemo(
     () => !isPremiumUser && !isPremiumTrialUsed,
@@ -161,14 +162,14 @@ const TrialModal = ({
       <ModalBody>
         {hasPremiumTrialIncluded ? (
           <p>
-            Experience the additional features of Edulastic Teacher Premium for
-            14 days: OMR exams, read-loud for students, extra test security
-            settings, easier collaboration, in-depth reports and more.
+            Experience the additional features of Edulastic Teacher Premium for{' '}
+            {trialPeriod} days: OMR exams, read-loud for students, extra test
+            security settings, easier collaboration, in-depth reports and more.
           </p>
         ) : (
           <p>
             Access premium assessments and practice for the subjects you teach
-            for the next 14 days.
+            for the next {trialPeriod} days.
           </p>
         )}
       </ModalBody>

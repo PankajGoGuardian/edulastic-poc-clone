@@ -34,6 +34,7 @@ import { themeColor } from '@edulastic/colors'
 import { testActivityApi, classBoardApi, TokenStorage } from '@edulastic/api'
 
 import Styled from 'styled-components'
+import { Howler } from 'howler'
 import {
   gotoItem as gotoItemAction,
   saveUserResponse,
@@ -45,6 +46,7 @@ import {
   loadTestAction,
   setIsTestPreviewVisibleAction,
   setPasswordValidateStatusAction,
+  setCurrentAudioDetailsAction,
 } from '../actions/test'
 import { evaluateAnswer } from '../actions/evaluation'
 import { changePreview as changePreviewAction } from '../actions/view'
@@ -582,6 +584,8 @@ const AssessmentContainer = ({
   savedBlurTime: blurTimeAlreadySaved,
   loadTest,
   showUserTTS,
+  closeTTSA,
+  closeTTS,
   isTestPreviewModalVisible,
   allowReferenceMaterial,
   ...restProps
@@ -980,7 +984,17 @@ const AssessmentContainer = ({
     }
   }
 
+  const stopAllAudios = () => {
+    const findAllPlayingHowls = Howler._howls.filter((item) => item.playing())
+    if (findAllPlayingHowls.length) {
+      findAllPlayingHowls.forEach((item) => item.stop())
+    }
+  }
   const moveToNext = async (e, needsToProceed = false, value) => {
+    if (closeTTS.qId) {
+      closeTTSA()
+      stopAllAudios()
+    }
     if (!isLast() && value !== 'SUBMIT') {
       gotoQuestion(Number(currentItem) + 1, needsToProceed, 'next')
     }
@@ -1073,6 +1087,10 @@ const AssessmentContainer = ({
   }
 
   const moveToPrev = (e, needsToProceed = false) => {
+    if (closeTTS.qId) {
+      closeTTSA()
+      stopAllAudios()
+    }
     if (!isFirst())
       gotoQuestion(Number(currentItem) - 1, needsToProceed, 'prev')
     if (enableMagnifier || isShowReferenceModal) {
@@ -1540,6 +1558,7 @@ const enhance = compose(
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      closeTTS: state.test.currentPlayingDetails,
     }),
     {
       saveUserResponse,
@@ -1559,6 +1578,7 @@ const enhance = compose(
       setCheckAnswerInProgress: setCheckAnswerInProgressStatusAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       loadTest: loadTestAction,
+      closeTTSA: setCurrentAudioDetailsAction,
     }
   )
 )

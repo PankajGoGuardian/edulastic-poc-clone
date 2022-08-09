@@ -15,9 +15,11 @@ import useInterval from '@use-it/interval'
 import { db } from '@edulastic/common/src/Firebase'
 import { notification } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { Howler } from 'howler'
 import AssignmentTimeEndedAlert from './AssignmentTimeEndedAlert'
 import { utaStartTimeUpdateRequired } from '../../../student/sharedDucks/AssignmentModule/ducks'
 import { getUserRole } from '../../../author/src/selectors/user'
+import { setCurrentAudioDetailsAction } from '../../actions/test'
 
 export const TIME_UPDATE_TYPE = {
   START: 'start',
@@ -66,6 +68,8 @@ const TimedTestTimer = ({
   userRole,
   isPreview,
   allowedTime,
+  closeTTSA,
+  closeTTS,
   style = {},
 }) => {
   const [uta, setUtaDoc] = useState()
@@ -76,6 +80,16 @@ const TimedTestTimer = ({
     db.collection(firestoreCollectionName).doc(utaId || 'NONEXISTENT')
   )
   const isAuthorPreview = userRole !== roleuser.STUDENT && isPreview
+  const stopAllAudios = () => {
+    const findAllPlayingHowls = Howler._howls.filter((item) => item.playing())
+    if (findAllPlayingHowls.length) {
+      findAllPlayingHowls.forEach((item) => item.stop())
+    }
+  }
+  if (closeTTS.qId && currentAssignmentTime === 0) {
+    closeTTSA()
+    stopAllAudios()
+  }
   useEffect(() => {
     let unsubscribe = () => {}
     if (!isAuthorPreview) {
@@ -241,9 +255,11 @@ const enhance = compose(
       isPreview: state.test.isTestPreviewModalVisible,
       userRole: getUserRole(state),
       allowedTime: state.test.settings.allowedTime,
+      closeTTS: state.test.currentPlayingDetails,
     }),
     {
       resetUpdateUtaType: utaStartTimeUpdateRequired,
+      closeTTSA: setCurrentAudioDetailsAction,
     }
   )
 )

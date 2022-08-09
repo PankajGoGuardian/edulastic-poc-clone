@@ -44,6 +44,7 @@ import {
   RadioMessage,
   SelectWrapper,
   PanelStyled,
+  SectionNameInput,
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
 import ItemCountWrapperContainer from './ItemCountWrapperContainer'
@@ -477,7 +478,25 @@ const GroupItems = ({
               <PanelStyled
                 header={[
                   <PanelHeading>
-                    <Label fontWeight="600">{itemGroup.groupName}</Label>
+                    {currentGroupIndex !== index ? (
+                      <Label fontWeight="600">{itemGroup.groupName}</Label>
+                    ) : (
+                      <SectionNameInput
+                        type="text"
+                        value={
+                          currentGroupIndex === index
+                            ? editGroupDetail.groupName
+                            : itemGroup.groupName
+                        }
+                        onClick={(e) => {
+                          // Stops the collapsible click event when clicked on input box
+                          e.stopPropagation()
+                        }}
+                        onChange={(e) =>
+                          handleChange('groupName', e.target.value)
+                        }
+                      />
+                    )}
                     <div>
                       {currentGroupIndex !== index && (
                         <div

@@ -16,7 +16,7 @@ describe('Test TrialModal with new trial expiry day', () => {
         startPremiumTrial={() => {}}
         products={[]}
         setShowHeaderTrialModal={() => {}}
-        trialPeriod={60}
+        displayText="60 days"
       />
     )
     const moduleTitleElement = screen.getByText(

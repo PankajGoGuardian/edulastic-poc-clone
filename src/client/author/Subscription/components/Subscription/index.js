@@ -6,7 +6,7 @@ import { compose } from 'redux'
 // import { withNamespaces } from '@edulastic/localization' // TODO: Need i18n support
 import { connect } from 'react-redux'
 import { roleuser, signUpState } from '@edulastic/constants'
-import { slice, getTrialPeriod } from '../../ducks'
+import { slice, trialPeriodTextSelector } from '../../ducks'
 import HasLicenseKeyModal from '../HasLicenseKeyModal'
 import PurchaseLicenseModal from '../PurchaseLicenseModal'
 import { Wrapper } from '../styled/commonStyled'
@@ -217,7 +217,7 @@ const Subscription = (props) => {
     setRequestQuoteModal,
     proratedProducts,
     isLoading,
-    trialPeriod,
+    displayText,
   } = props
 
   const { subEndDate, subType, schoolId = '' } = subscription
@@ -481,7 +481,7 @@ const Subscription = (props) => {
             proratedProducts={proratedProducts}
             signUpFlowModalHandler={signUpFlowModalHandler}
             setIsTabShouldSwitch={setIsTabShouldSwitch}
-            trialPeriod={trialPeriod}
+            displayText={displayText}
           />
         )}
       </SubscriptionContentWrapper>
@@ -585,7 +585,7 @@ export default compose(
       cartQuantities: state.subscription?.cartQuantities,
       proratedProducts: state.subscription?.proratedProducts,
       isLoading: getLoadingStateSelector(state),
-      trialPeriod: getTrialPeriod(state),
+      displayText: trialPeriodTextSelector(state),
     }),
     {
       verifyAndUpgradeLicense: slice.actions.upgradeLicenseKeyPending,

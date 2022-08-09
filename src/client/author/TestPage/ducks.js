@@ -2289,7 +2289,13 @@ function* createTestSaga({ payload }) {
     if (hasAutoSelectItems) {
       yield put(addItemsToAutoselectGroupsRequestAction(entity))
     }
-    const currentTab = payload.isCartTest ? 'description' : 'addItems'
+    const pathname = yield select((state) => state.router.location.pathname)
+    const currentTabMatch = pathname?.match(
+      /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
+    )
+    // try to keep the user on the same tab after test creation
+    // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
+    const currentTab = currentTabMatch?.[1] || 'description'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {

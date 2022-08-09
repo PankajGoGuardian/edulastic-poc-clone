@@ -1,14 +1,21 @@
 import '@testing-library/jest-dom'
 import React from 'react'
-import { render, screen, waitFor } from '@testing-library/react'
-import userEvent from '@testing-library/user-event'
+import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import segmentApi from '@edulastic/api/src/segment'
 import { userApi } from '@edulastic/api'
 import configureMockStore from 'redux-mock-store'
+import { act } from 'react-dom/test-utils'
 import PrivacyPolicyModal from '../index'
+import { SET_SHOW_WELCOME } from '../../author/Dashboard/ducks'
 
 const mockStore = configureMockStore()
-const store = mockStore({})
+const store = mockStore({
+  user: {
+    user: {
+      features: {},
+    },
+  },
+})
 
 jest.mock('../../../../packages/api/src/utils/API')
 
@@ -36,16 +43,23 @@ const componentsVisibility = () => {
   expect(checkbox).toBeEnabled()
 }
 
+const clickOnAcceptButton = async () => {
+  const acceptButton = screen.getByTestId('acceptButton')
+  expect(acceptButton).toBeDisabled()
+  const checkbox = screen.getByTestId('check')
+
+  await act(async () => {
+    await fireEvent.click(checkbox)
+    await fireEvent.click(acceptButton)
+  })
+}
+
 const acceptPolicy = async () => {
   userApi.eulaPolicyStatusUpdate = jest
     .fn()
     .mockReturnValue(Promise.resolve({}))
   render(<PrivacyPolicyModal store={store} />)
-  const acceptButton = screen.getByTestId('acceptButton')
-  expect(acceptButton).toBeDisabled()
-  const checkbox = screen.getByTestId('check')
-  await userEvent.click(checkbox)
-  await userEvent.click(acceptButton)
+  await clickOnAcceptButton()
   expect(userApi.eulaPolicyStatusUpdate).toBeCalled()
 }
 
@@ -83,5 +97,77 @@ describe('privacy Policy Modal EEA USER', () => {
   })
   test('click checkbox and accept policy', async () => {
     acceptPolicy()
+  })
+})
+
+describe('Validate actions after accepting the privacy policy', () => {
+  beforeEach(() => {
+    jest
+      .spyOn(userApi, 'getUserLocation')
+      .mockReturnValueOnce(Promise.resolve({ result: {} }))
+    userApi.eulaPolicyStatusUpdate = jest
+      .fn()
+      .mockReturnValue(Promise.resolve({}))
+  })
+  test('> the action for welcome modal should be triggered for teacher', async () => {
+    const tempStore = mockStore({
+      user: {
+        user: {
+          openIdProvider: '',
+          features: {},
+        },
+      },
+    })
+    render(<PrivacyPolicyModal store={tempStore} userRole="teacher" />)
+    await clickOnAcceptButton()
+    expect(SET_SHOW_WELCOME).toBe(tempStore.getActions()[1].type)
+  })
+
+  test('> the action for welcome modal should not be triggered for cli teacher', async () => {
+    const tempStore = mockStore({
+      user: {
+        user: {
+          openIdProvider: 'cli',
+          features: {},
+        },
+      },
+    })
+    render(<PrivacyPolicyModal store={tempStore} userRole="teacher" />)
+    await clickOnAcceptButton()
+    expect(tempStore.getActions()[1]).toBeUndefined()
+  })
+
+  test('> the action for welcome modal should not be triggered for publisher', async () => {
+    const tempStore = mockStore({
+      user: {
+        user: {
+          openIdProvider: '',
+          features: {
+            isPublisherAuthor: true,
+            isCurator: false,
+          },
+        },
+      },
+    })
+    render(<PrivacyPolicyModal store={tempStore} userRole="teacher" />)
+    await clickOnAcceptButton()
+    expect(tempStore.getActions()[1]).toBeUndefined()
+  })
+
+  test('> the action for welcome modal should not be triggered for curator', async () => {
+    const tempStore = mockStore({
+      user: {
+        user: {
+          openIdProvider: '',
+          features: {
+            isPublisherAuthor: false,
+            isCurator: true,
+          },
+        },
+      },
+    })
+    render(<PrivacyPolicyModal store={tempStore} userRole="district-admin" />)
+    await clickOnAcceptButton()
+    expect(tempStore.getActions()[1]).toBeUndefined()
   })
 })

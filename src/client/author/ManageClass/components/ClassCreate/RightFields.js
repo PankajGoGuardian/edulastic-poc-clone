@@ -6,7 +6,7 @@ import {
 } from '@edulastic/common'
 import { Row, Col, Icon, Select } from 'antd'
 import { debounce, filter, isArray, isEmpty } from 'lodash'
-import * as moment from 'moment'
+import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { useState, useEffect } from 'react'
 
@@ -102,7 +102,7 @@ const RightFields = ({
             <FieldLabel label={`${type} name`} {...restProps} fiedlName="name">
               <TextInputStyled
                 placeholder={`Enter the name of your ${type}`}
-                maxLength="256"
+                maxLength={256}
               />
             </FieldLabel>
           </Col>
@@ -145,7 +145,7 @@ const RightFields = ({
               >
                 <TextInputStyled
                   placeholder={`Enter ${type} description`}
-                  maxLength="512"
+                  maxLength={512}
                 />
               </FieldLabel>
             </Col>

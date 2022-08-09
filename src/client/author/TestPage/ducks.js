@@ -2804,7 +2804,7 @@ function* publishForRegrade({ payload }) {
     yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
     const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
-    if (_test.isUsed && !test.isInEditAndRegrade) {
+    if (_test.isUsed && !_test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
     }
     if (!enabledRefMaterial && !isEmpty(_test.referenceDocAttributes)) {

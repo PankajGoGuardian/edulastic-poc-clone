@@ -84,7 +84,7 @@ const FETCH_SCHOOL_TEACHERS_SUCCESS = '[signup] fetch school teachers success'
 const FETCH_SCHOOL_TEACHERS_FAILED = '[signup] fetch school teachers failed'
 const RESET_SCHOOL_TEACHERS = '[signup] reset school teachers'
 const SET_SCHOOL_SELECTED_IN_MODAL = '[signup] set school select in modal'
-const SET_SCHOOL_SELECT_WARNING = '[signup] set school select warning'
+export const SET_SCHOOL_SELECT_WARNING = '[signup] set school select warning'
 const SET_DISPLAY_HOME_SCHOOL_BUTTON = '[signup] set display home school button'
 
 const SET_AUTO_SUGGEST_SCHOOLS = '[singup] set auto suggest schools'

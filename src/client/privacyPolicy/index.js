@@ -8,6 +8,7 @@ import {
 } from '@edulastic/common'
 import { userApi, segmentApi } from '@edulastic/api'
 import { connect } from 'react-redux'
+import { roleuser } from '@edulastic/constants'
 import EulaPolicyContent from './eulaPolicyContent'
 import ProductPolicyContent from './productPolicyContent'
 import EeaPolicyContent from './eeaPolicyContent'
@@ -39,7 +40,6 @@ const PrivacyPolicyModal = ({
   setLocationData,
   setShowWelcomePopup,
   userRole,
-  roleuser,
   userInfo,
   isPublisherUser,
 }) => {
@@ -96,7 +96,7 @@ const PrivacyPolicyModal = ({
       .then(() => {
         setShowModal(false)
         if (
-          userRole === roleuser?.TEACHER &&
+          userRole === roleuser.TEACHER &&
           userInfo?.openIdProvider?.toLowerCase() !== 'cli' &&
           !isPublisherUser
         ) {

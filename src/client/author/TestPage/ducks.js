@@ -133,6 +133,13 @@ export const NewGroup = {
   deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
   index: 0,
 }
+export const NewGroupAutoselect = {
+  type: ITEM_GROUP_TYPES.AUTOSELECT /* Default : static */,
+  groupName: 'SECTION 1' /* For now, auto-generated. */,
+  items: [],
+  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM,
+  index: 0,
+}
 export const createWidget = ({ id, type, title }) => ({
   widgetType: type === 'sectionLabel' ? 'resource' : 'question',
   type,

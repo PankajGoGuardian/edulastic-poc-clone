@@ -132,6 +132,17 @@ const GroupItems = ({
         return
       }
       if (
+        [ITEM_GROUP_TYPES.STATIC, ITEM_GROUP_TYPES.AUTOSELECT].includes(
+          updatedGroupData.type
+        ) &&
+        value < 0
+      ) {
+        notification({
+          messageKey: 'totalItemsToBeDeliveredCannotBeLessThanZero',
+        })
+        return
+      }
+      if (
         updatedGroupData.type === ITEM_GROUP_TYPES.AUTOSELECT &&
         value > 100
       ) {

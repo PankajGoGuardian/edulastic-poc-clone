@@ -1823,6 +1823,10 @@
     "message": "Each Static group should contain at least 1 test item",
     "description": ""
   },
+  "pleaseEnterGroupName": {
+    "message": "Please provide section name.",
+    "description": ""
+  },
   "pleaseEnterTotalNumberOfItems": {
     "message": "Please enter the total number of items to be delivered.",
     "description": ""

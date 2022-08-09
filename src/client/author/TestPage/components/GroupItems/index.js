@@ -313,34 +313,41 @@ const GroupItems = ({
   }
 
   const validateGroup = () => {
-    let isValid = true
-    if (editGroupDetail.type === ITEM_GROUP_TYPES.STATIC) {
-      const { deliveryType, deliverItemsCount } = editGroupDetail
+    const {
+      type,
+      groupName,
+      collectionDetails,
+      standardDetails,
+      deliveryType,
+      deliverItemsCount,
+    } = editGroupDetail
+    if (!groupName?.length) {
+      notification({ messageKey: 'pleaseEnterGroupName' })
+      return false
+    }
+    if (type === ITEM_GROUP_TYPES.STATIC) {
+      // validations for static item groups
       if (
         deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
         !deliverItemsCount
       ) {
         notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-        isValid = false
+        return false
       }
     } else {
-      const {
-        collectionDetails,
-        standardDetails,
-        deliverItemsCount,
-      } = editGroupDetail
+      // validations for autoselect item groups
       if (!collectionDetails || isEmpty(standardDetails?.standards)) {
         notification({
           messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
         })
-        isValid = false
+        return false
       }
-      if (isValid && !deliverItemsCount) {
+      if (!deliverItemsCount) {
         notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-        isValid = false
+        return false
       }
     }
-    return isValid
+    return true
   }
 
   const saveGroupToTest = () => {
@@ -483,6 +490,8 @@ const GroupItems = ({
                     ) : (
                       <SectionNameInput
                         type="text"
+                        placeholder="Provide a section name (upto 50 characters)"
+                        maxLength={50}
                         value={
                           currentGroupIndex === index
                             ? editGroupDetail.groupName

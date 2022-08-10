@@ -36,6 +36,7 @@
     "IN GRADING": "IN GRADING",
     "absent": "ABSENT",
     "submitted": "SUBMITTED",
-    "completedOn": "Completed On"
+    "completedOn": "Completed On",
+    "randomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment"
   }
 }

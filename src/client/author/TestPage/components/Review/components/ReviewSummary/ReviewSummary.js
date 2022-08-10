@@ -96,7 +96,7 @@ const ReviewSummary = ({
             size="large"
             disabled={!owner || !isEditable}
             placeholder="Please select"
-            defaultValue={grades}
+            value={grades}
             onChange={onChangeGrade}
             margin="0px 0px 15px"
           >
@@ -116,7 +116,7 @@ const ReviewSummary = ({
             size="large"
             disabled={!owner || !isEditable}
             placeholder="Please select"
-            defaultValue={subjects}
+            value={subjects}
             onChange={onChangeSubjects}
             margin="0px 0px 15px"
           >

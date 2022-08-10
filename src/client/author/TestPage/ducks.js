@@ -190,10 +190,15 @@ export const getTestGradeAndSubject = (
   testTags
 ) => {
   if (group.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+    const gradesFromGroup = group?.standardDetails?.grades || []
+    const subjectsFromGroup = group?.standardDetails?.subject
+      ? [group.standardDetails.subject]
+      : []
+    const tagsFromGroup = group?.tags || []
     return {
-      testGrades: _uniq([...testGrades, ...group.standardDetails.grades]),
-      testSubjects: _uniq([...testSubjects, group.standardDetails.subject]),
-      testTags: _uniq([...testTags, ...(group.tags || [])]),
+      testGrades: _uniq([...testGrades, ...gradesFromGroup]),
+      testSubjects: _uniq([...testSubjects, ...subjectsFromGroup]),
+      testTags: _uniq([...testTags, ...tagsFromGroup]),
     }
   }
   return { testGrades, testSubjects, testTags: [] }

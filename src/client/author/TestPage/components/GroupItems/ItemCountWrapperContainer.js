@@ -7,7 +7,7 @@ const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
 export default function ItemCountWrapperContainer({
   handleChange,
-  editGroupDetail,
+  currentGroupDetails,
   currentGroupIndex,
   index,
   itemGroup,
@@ -20,21 +20,22 @@ export default function ItemCountWrapperContainer({
         data-cy={`input-deliver-bycount-${itemGroup.groupName}`}
         type="number"
         disabled={
-          (editGroupDetail.deliveryType === ITEM_GROUP_DELIVERY_TYPES.ALL &&
+          (currentGroupDetails?.deliveryType ===
+            ITEM_GROUP_DELIVERY_TYPES.ALL &&
             currentGroupIndex === index) ||
           currentGroupIndex !== index
         }
         min={0}
         value={
           currentGroupIndex === index
-            ? editGroupDetail.deliverItemsCount || ''
+            ? currentGroupDetails.deliverItemsCount || ''
             : itemGroup.deliverItemsCount || ''
         }
         onChange={(e) =>
           handleChange('deliverItemsCount', parseFloat(e.target.value))
         }
         max={
-          editGroupDetail.type === ITEM_GROUP_TYPES.STATIC
+          currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC
             ? itemGroup.items.length
             : 100
         }

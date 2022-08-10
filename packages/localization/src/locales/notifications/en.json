@@ -1823,8 +1823,16 @@
     "message": "Each Static group should contain at least 1 test item",
     "description": ""
   },
+  "eachGroupShouldHaveUniqueGroupName": {
+    "message": "Each section should have a unique section name",
+    "description": ""
+  },
   "pleaseEnterGroupName": {
     "message": "Please provide section name.",
+    "description": ""
+  },
+  "pleaseEnterUniqueGroupName": {
+    "message": "Please provide a unique section name to proceed.",
     "description": ""
   },
   "pleaseEnterTotalNumberOfItems": {

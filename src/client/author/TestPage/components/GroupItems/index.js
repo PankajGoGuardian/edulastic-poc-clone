@@ -530,7 +530,7 @@ const GroupItems = ({
 
   return (
     <Container>
-      {fetchingItems && <Spin />}
+      {fetchingItems && <Spin size="large" style={{ zIndex: 2000 }} />}
       {showConfirmModal && (
         <TypeConfirmModal
           visible={showConfirmModal}

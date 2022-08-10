@@ -12,6 +12,7 @@ import {
   flatten,
   isArray,
   groupBy,
+  intersection,
 } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -126,15 +127,25 @@ class Review extends PureComponent {
     }
   }
 
-  // componentDidUpdate(prevProps, prevState) {
-  //   // const element = this.listWrapperRef?.current;
-  //   // const { testItems } = this.props;
-  //   // const { items, isCollapse } = prevState;
-  //   // if (element.offsetHeight < window.innerHeight && items.length < testItems.length) {
-  //   //   // eslint-disable-next-line react/no-did-update-set-state
-  //   //   this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
-  //   // }
-  // }
+  componentDidUpdate(prevProps) {
+    const { test: prevTest } = prevProps
+    const {
+      test,
+      addItemsToAutoselectGroupsRequest,
+      isTestsCreating,
+    } = this.props
+    const prevItemGroupIds = prevTest.itemGroups.map((ig) => ig._id)
+    const itemGroupIds = test.itemGroups.map((ig) => ig._id)
+    const hasDifferentItemGroups =
+      intersection(prevItemGroupIds, itemGroupIds).length !==
+      itemGroupIds.length
+    const hasAutoSelectItems = test.itemGroups.some(
+      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems && !isTestsCreating && hasDifferentItemGroups) {
+      addItemsToAutoselectGroupsRequest(test)
+    }
+  }
 
   setSelected = (values) => {
     const { test, setData } = this.props

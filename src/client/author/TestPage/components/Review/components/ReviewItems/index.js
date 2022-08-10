@@ -85,48 +85,44 @@ const ReviewItems = ({
   }
 
   return (
-    <>
-      <SortableList
-        items={itemsWithIndex}
-        useDragHandle
-        passagesKeyed={passagesKeyed}
-        onChangePoints={onChangePoints}
-        blur={blur}
-        handlePreview={handlePreview}
-        isEditable={isEditable}
-        isCollapse={isCollapse}
-        mobile={!isSmallSize}
-        owner={owner}
-        onSortEnd={moveSingleItems}
-        onSortGroup={moveGroupItems}
-        lockToContainerEdges
-        lockOffset={['10%', '10%']}
-        onSelect={handleCheckboxChange}
-        selected={selected}
-        questions={questions}
-        rows={rows}
-        removeSingle={removeSingle}
-        removeMultiple={removeMultiple}
-        getContainer={getContainer}
-        itemGroups={itemGroups}
-        isPublishers={isPublishers}
-        userRole={userRole}
-        isPowerPremiumAccount={isPowerPremiumAccount}
-        showGroupsPanel={showGroupsPanel}
-        scoring={scoring}
-        userFeatures={userFeatures}
-        standards={standards}
-        isTestsUpdated={isTestsUpdated}
-        orgCollections={orgCollections}
-        userId={userId}
-      />
-
-      {isFetchingAutoselectItems && (
-        <StyledSpinnerContainer>
-          <Spin />
-        </StyledSpinnerContainer>
-      )}
-    </>
+    <StyledSpinnerContainer>
+      <Spin spinning={isFetchingAutoselectItems}>
+        <SortableList
+          items={itemsWithIndex}
+          useDragHandle
+          passagesKeyed={passagesKeyed}
+          onChangePoints={onChangePoints}
+          blur={blur}
+          handlePreview={handlePreview}
+          isEditable={isEditable}
+          isCollapse={isCollapse}
+          mobile={!isSmallSize}
+          owner={owner}
+          onSortEnd={moveSingleItems}
+          onSortGroup={moveGroupItems}
+          lockToContainerEdges
+          lockOffset={['10%', '10%']}
+          onSelect={handleCheckboxChange}
+          selected={selected}
+          questions={questions}
+          rows={rows}
+          removeSingle={removeSingle}
+          removeMultiple={removeMultiple}
+          getContainer={getContainer}
+          itemGroups={itemGroups}
+          isPublishers={isPublishers}
+          userRole={userRole}
+          isPowerPremiumAccount={isPowerPremiumAccount}
+          showGroupsPanel={showGroupsPanel}
+          scoring={scoring}
+          userFeatures={userFeatures}
+          standards={standards}
+          isTestsUpdated={isTestsUpdated}
+          orgCollections={orgCollections}
+          userId={userId}
+        />
+      </Spin>
+    </StyledSpinnerContainer>
   )
 }
 

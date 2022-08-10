@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { capitalize, get, toUpper } from 'lodash'
+import { get } from 'lodash'
 import styled from 'styled-components'
 import { segmentApi, canvasApi } from '@edulastic/api'
 // components
@@ -56,7 +56,6 @@ import SyncModal from './SyncModal'
 import { getUserOrgId } from '../../../src/selectors/user'
 import { setFilterInSession } from '../../../../common/utils/helpers'
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
-import { getAtlasSyncProviderName } from '../../../ClassBoard/utils'
 
 const Option = Select.Option
 
@@ -397,7 +396,9 @@ const Header = ({
                   >
                     <span className="menu-label">
                       Resync{' '}
-                      {getAtlasSyncProviderName(atlasProviderName, capitalize)}{' '}
+                      {atlasProviderName.toLowerCase() === 'schoology'
+                        ? 'Schoology'
+                        : 'Classlink'}{' '}
                       Class
                     </span>
                   </Option>
@@ -477,7 +478,10 @@ const Header = ({
                 onClick={handleAtlasSync}
               >
                 <span>
-                  RESYNC {getAtlasSyncProviderName(atlasProviderName, toUpper)}{' '}
+                  RESYNC{' '}
+                  {atlasProviderName.toLowerCase() === 'schoology'
+                    ? 'SCHOOLOGY'
+                    : 'CLASSLINK'}{' '}
                   CLASS
                 </span>
               </EduButton>

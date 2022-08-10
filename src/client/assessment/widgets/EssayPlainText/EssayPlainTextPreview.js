@@ -241,7 +241,7 @@ const EssayPlainTextPreview = ({
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper>
+          <QuestionTitleWrapper data-cy="questionTitle">
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}

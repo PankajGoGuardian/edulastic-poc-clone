@@ -304,6 +304,7 @@ class Container extends PureComponent {
         setData({
           testCategory: testCategoryTypes.DYNAMIC_TEST,
           itemGroups: [defaultItemGroup],
+          testType: testTypesConstants.TEST_TYPES_VALUES_MAP.QUIZ, // currently premium users only able to create dynamic test hence quiz type allowed
         })
         // if create dynamic test, default item group should be editable
         this.setState({

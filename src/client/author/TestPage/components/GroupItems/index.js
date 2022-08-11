@@ -455,6 +455,17 @@ const GroupItems = ({
       notification({ type: 'warn', messageKey: 'allItemsInsideLimited' })
       return
     }
+
+    if (
+      updatedGroupData.deliveryType ===
+        ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+      updatedGroupData.type === ITEM_GROUP_TYPES.STATIC &&
+      updatedGroupData.items.length <= updatedGroupData.deliverItemsCount
+    ) {
+      notification({ type: 'warn', messageKey: 'totalItemsToBeDelivered' })
+      return
+    }
+
     const disableAnswerOnPaper =
       updatedGroupData.deliveryType ===
         ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM ||

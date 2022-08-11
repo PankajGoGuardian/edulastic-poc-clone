@@ -728,6 +728,25 @@ class Container extends PureComponent {
     return true
   }
 
+  validateNumberOfItemsInSection = () => {
+    const { test: { itemGroups = [] } = {} } = this.props
+    if (
+      itemGroups.some(
+        (itemGroup) =>
+          itemGroup.type === ITEM_GROUP_TYPES.STATIC &&
+          itemGroup.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+          itemGroup.items.length <= itemGroup.deliverItemsCount
+      )
+    ) {
+      notification({
+        messageKey: 'totalItemsToBeDelivered',
+      })
+      return false
+    }
+
+    return true
+  }
+
   handleAssign = () => {
     const {
       test,
@@ -1118,7 +1137,8 @@ class Container extends PureComponent {
     if (
       !this.validateTimedAssignment() ||
       !this.validateReferenceDocMaterial() ||
-      !this.validatePenaltyOnUsingHintsValue()
+      !this.validatePenaltyOnUsingHintsValue() ||
+      !this.validateNumberOfItemsInSection()
     ) {
       return
     }
@@ -1246,7 +1266,10 @@ class Container extends PureComponent {
     if (!this.validateReferenceDocMaterial()) {
       return false
     }
-    if (!this.validatePenaltyOnUsingHintsValue()) {
+    if (
+      !this.validatePenaltyOnUsingHintsValue() ||
+      !this.validateNumberOfItemsInSection()
+    ) {
       return false
     }
     // for itemGroup with limted delivery type should not contain items with question level scoring

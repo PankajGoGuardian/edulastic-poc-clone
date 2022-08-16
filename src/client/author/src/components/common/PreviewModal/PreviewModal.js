@@ -25,7 +25,7 @@ import {
 import { withNamespaces } from '@edulastic/localization'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { Icon, Modal, Spin, Popover } from 'antd'
+import { Icon, Modal, Spin, Popover, Tooltip } from 'antd'
 import { get, intersection, keyBy, uniq } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -825,54 +825,70 @@ class PreviewModal extends React.Component {
                   </DisabledButton>
                 </Popover>
               ) : (
-                <EduButton
-                  IconBtn
-                  isGhost
-                  height="28px"
-                  width="28px"
-                  title={
-                    isDisableEdit
-                      ? !allowDuplicate
-                        ? 'Edit of Item is restricted by Publisher'
-                        : 'Edit permission is restricted by the author'
-                      : isDynamicTest
-                      ? t('authoringItemDisabled.info')
-                      : 'Edit item'
-                  }
-                  noHover={isDisableEdit}
-                  disabled={
-                    isPlaylistTestReview ||
-                    isDisableEdit ||
-                    !!premiumCollectionWithoutAccess ||
-                    isDynamicTest
-                  }
-                  onClick={this.editTestItem}
+                <Tooltip
+                  title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
                 >
-                  <IconPencilEdit color={themeColor} title="Edit item" />
-                </EduButton>
+                  <span
+                    style={{
+                      cursor: isDynamicTest ? 'not-allowed' : 'pointer',
+                    }}
+                  >
+                    <EduButton
+                      IconBtn
+                      isGhost
+                      height="28px"
+                      width="28px"
+                      title={
+                        isDisableEdit
+                          ? !allowDuplicate
+                            ? 'Edit of Item is restricted by Publisher'
+                            : 'Edit permission is restricted by the author'
+                          : 'Edit item'
+                      }
+                      noHover={isDisableEdit}
+                      disabled={
+                        isPlaylistTestReview ||
+                        isDisableEdit ||
+                        !!premiumCollectionWithoutAccess ||
+                        isDynamicTest
+                      }
+                      onClick={this.editTestItem}
+                      style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                    >
+                      <IconPencilEdit color={themeColor} title="Edit item" />
+                    </EduButton>
+                  </span>
+                </Tooltip>
               )}
-              <EduButton
-                IconBtn
-                isGhost
-                width="28px"
-                height="28px"
-                title={
-                  isDisableDuplicate
-                    ? 'Clone permission is restricted by the author'
-                    : isDynamicTest
-                    ? t('authoringItemDisabled.info')
-                    : 'Clone'
-                }
-                noHover={isDisableDuplicate}
-                disabled={
-                  isDisableDuplicate ||
-                  !!premiumCollectionWithoutAccess ||
-                  isDynamicTest
-                }
-                onClick={this.handleDuplicateTestItem}
+              <Tooltip
+                title={isDynamicTest ? t('authoringItemDisabled.info') : ''}
               >
-                <IconCopy color={themeColor} />
-              </EduButton>
+                <span
+                  style={{ cursor: isDynamicTest ? 'not-allowed' : 'pointer' }}
+                >
+                  <EduButton
+                    IconBtn
+                    isGhost
+                    width="28px"
+                    height="28px"
+                    title={
+                      isDisableDuplicate
+                        ? 'Clone permission is restricted by the author'
+                        : 'Clone'
+                    }
+                    noHover={isDisableDuplicate}
+                    disabled={
+                      isDisableDuplicate ||
+                      !!premiumCollectionWithoutAccess ||
+                      isDynamicTest
+                    }
+                    onClick={this.handleDuplicateTestItem}
+                    style={isDynamicTest ? { pointerEvents: 'none' } : {}} // For Dynamic test, edit and clone button are disabled. To avoid overlapping of tooltip on hover of edit and clone button, we disable the pointer events.
+                  >
+                    <IconCopy color={themeColor} />
+                  </EduButton>
+                </span>
+              </Tooltip>
               {isOwner &&
                 !(
                   userFeatures?.isPublisherAuthor && item.status === 'published'

@@ -468,9 +468,10 @@ const GroupItems = ({
     }
     updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex })
     setCurrentGroupIndex(null)
-    setCurrentGroupDetails({})
-    // handleSaveTest will first validate for all groups and then save test
-    handleSaveTest()
+    setCurrentGroupDetails({}, () => {
+      // do after state has been updated.
+      handleSaveTest()
+    })
   }
 
   const handleSaveGroup = async (index) => {

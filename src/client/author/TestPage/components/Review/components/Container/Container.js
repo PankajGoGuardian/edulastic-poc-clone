@@ -39,10 +39,8 @@ import {
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
   getTestItemsSelector,
-  addItemsToAutoselectGroupsRequestAction,
   getAutoSelectItemsLoadingStatusSelector,
   showGroupsPanelSelector,
-  getTestsCreatingSelector,
   getTestsUpdatedSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
@@ -790,7 +788,6 @@ const enhance = compose(
       isPowerPremiumAccount: getIsPowerPremiumAccount(state),
       showGroupsPanel: showGroupsPanelSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
-      isTestsCreating: getTestsCreatingSelector(state),
       isTestsUpdated: getTestsUpdatedSelector(state),
       orgCollections: getCollectionsSelector(state),
     }),
@@ -803,7 +800,6 @@ const enhance = compose(
       clearAnswer: clearAnswersAction,
       clearEvaluation: clearEvaluationAction,
       setTestItems: setTestItemsAction,
-      addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
       resetItemScore: resetItemScoreAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }

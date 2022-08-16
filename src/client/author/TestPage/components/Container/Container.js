@@ -634,64 +634,71 @@ class Container extends PureComponent {
   validateGroups = () => {
     const { test } = this.props
     const { currentGroupIndex } = this.state
-    let isValid = true
-    const groupNamesFromTest = _uniq(
-      test.itemGroups.map((g) => `${g.groupName || ''}`.toLowerCase())
-    )
+    if (test?.testCategory !== testCategoryTypes.DYNAMIC_TEST) {
+      return true
+    }
     if (currentGroupIndex !== null) {
       notification({
         messageKey: 'pleaseSaveTheChangesMadeToGroupFirst',
       })
-      isValid = false
-    } else if (groupNamesFromTest.length !== test.itemGroups.length) {
+      return false
+    }
+    const groupNamesFromTest = _uniq(
+      test.itemGroups.map((g) => `${g.groupName || ''}`.toLowerCase())
+    )
+    if (groupNamesFromTest.length !== test.itemGroups.length) {
       notification({ messageKey: 'eachGroupShouldHaveUniqueGroupName' })
-      return
-    } else {
-      const staticGroups = []
-      const autoSelectGroups = []
-      test?.itemGroups?.forEach((group) => {
-        if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group)
-        else autoSelectGroups.push(group)
-      })
-      for (let i = 0; i < staticGroups.length; i++) {
-        const { items, deliveryType, deliverItemsCount } = staticGroups[i]
-        if (!items.length) {
-          notification({
-            messageKey: 'eachStaticGroupShouldContainAtleastOneItems',
-          })
-          isValid = false
-          break
-        }
-        if (
-          deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-          !deliverItemsCount
-        ) {
-          notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-          isValid = false
-          break
-        }
+      return false
+    }
+    const staticGroups = []
+    const autoSelectGroups = []
+    test?.itemGroups?.forEach((group) => {
+      if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group)
+      else autoSelectGroups.push(group)
+    })
+    for (let i = 0; i < staticGroups.length; i++) {
+      const { items, deliveryType, deliverItemsCount } = staticGroups[i]
+      if (!items.length) {
+        notification({
+          messageKey: 'eachStaticGroupShouldContainAtleastOneItems',
+        })
+        return false
       }
-      for (let i = 0; i < autoSelectGroups.length; i++) {
-        const {
-          collectionDetails,
-          standardDetails,
-          deliverItemsCount,
-        } = autoSelectGroups[i]
-        if (!collectionDetails || isEmpty(standardDetails?.standards)) {
-          notification({
-            messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
-          })
-          isValid = false
-          break
-        }
-        if (!deliverItemsCount) {
-          notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-          isValid = false
-          break
-        }
+      if (
+        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        !deliverItemsCount
+      ) {
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        return false
+      }
+      if (
+        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        items.length <= deliverItemsCount
+      ) {
+        notification({
+          messageKey: 'totalItemsToBeDelivered',
+        })
+        return false
       }
     }
-    return isValid
+    for (let i = 0; i < autoSelectGroups.length; i++) {
+      const {
+        collectionDetails,
+        standardDetails,
+        deliverItemsCount,
+      } = autoSelectGroups[i]
+      if (!collectionDetails || isEmpty(standardDetails?.standards)) {
+        notification({
+          messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
+        })
+        return false
+      }
+      if (!deliverItemsCount) {
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        return false
+      }
+    }
+    return true
   }
 
   validateTimedAssignment = () => {
@@ -1119,7 +1126,8 @@ class Container extends PureComponent {
     if (
       !this.validateTimedAssignment() ||
       !this.validateReferenceDocMaterial() ||
-      !this.validatePenaltyOnUsingHintsValue()
+      !this.validatePenaltyOnUsingHintsValue() ||
+      !this.validateGroups() // validate groups for dynamic tests before save
     ) {
       return
     }
@@ -1229,20 +1237,10 @@ class Container extends PureComponent {
         })
         return false
       }
-      if (
-        test.itemGroups.some(
-          (itemGroup) =>
-            itemGroup.type === ITEM_GROUP_TYPES.STATIC &&
-            itemGroup.deliveryType ===
-              ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-            itemGroup.items.length <= itemGroup.deliverItemsCount
-        )
-      ) {
-        notification({
-          messageKey: 'selectedItemsGroupShouldNotBeMoreThanDelivedItems',
-        })
-        return false
-      }
+    }
+    if (!this.validateGroups()) {
+      // validate groups for dynamic tests
+      return false
     }
     if (!this.validateReferenceDocMaterial()) {
       return false

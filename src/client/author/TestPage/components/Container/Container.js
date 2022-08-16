@@ -1040,16 +1040,16 @@ class Container extends PureComponent {
           <Content>
             <GroupItems
               currentGroupIndex={currentGroupIndex}
-              setCurrentGroupIndex={(groupIndex) =>
-                this.setState({ currentGroupIndex: groupIndex })
+              setCurrentGroupIndex={(groupIndex, cb = undefined) =>
+                this.setState({ currentGroupIndex: groupIndex }, cb)
               }
               currentGroupDetails={currentGroupDetails}
-              setCurrentGroupDetails={(itemGroup) =>
-                this.setState({ currentGroupDetails: itemGroup })
+              setCurrentGroupDetails={(itemGroup, cb = undefined) =>
+                this.setState({ currentGroupDetails: itemGroup }, cb)
               }
               groupNotEdited={groupNotEdited}
-              setGroupNotEdited={(value) =>
-                this.setState({ groupNotEdited: value })
+              setGroupNotEdited={(value, cb = undefined) =>
+                this.setState({ groupNotEdited: value }, cb)
               }
               validateGroups={this.validateGroups}
               handleSaveTest={this.handleSave}

@@ -222,7 +222,7 @@ function* receiveStudentResponseSaga({ payload }) {
     }
     // AUTOSELECT group will have different questions for every student
     // hence update the items from student response api
-    if (hasRandomQuestions(originalData.test.itemGroups)) {
+    if (hasRandomQuestions(originalData.test)) {
       const itemGroups = originalData.test.itemGroups.map((group) => ({
         ...group,
         items: studentResponse.itemGroups[group._id] || [],

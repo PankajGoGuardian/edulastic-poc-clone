@@ -28,11 +28,13 @@ import {
   MoreOption,
   AssessmentTypeWrapper,
   ClassNameCell,
+  StyledLink,
 } from './styled'
 import { Container as MoreOptionsContainer } from '../../../Assignments/components/ActionMenu/styled'
 import { TimedTestIndicator } from '../../../Assignments/components/TableList/styled'
 import { getIsProxiedByEAAccountSelector } from '../../../../student/Login/ducks'
 import { getAllTestTypesMap } from '../../../../common/utils/testTypeUtils'
+import { getHasRandomQuestionselector } from '../../../src/selectors/assignments'
 
 export const testTypeToolTip = getAllTestTypesMap()
 
@@ -137,10 +139,29 @@ const columns = [
             <IconPresentation data-cy="lcb" alt="Images" />
           </Link>
         </Tooltip>
-        <Tooltip placement="bottom" title="Express Grader">
-          <Link to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}>
+        <Tooltip
+          placement="bottom"
+          title={
+            row.hasRandomQuestions
+              ? row.t('common.randomItemsDisableMessage')
+              : 'Express Grader'
+          }
+        >
+          <StyledLink
+            disabled={row.hasRandomQuestions}
+            onClick={() =>
+              row.hasRandomQuestions
+                ? notification({
+                    type: 'warn',
+                    msg: row.t('common.randomItemsDisableMessage'),
+                  })
+                : row.history.push(
+                    `/author/expressgrader/${row.assignmentId}/${row.classId}`
+                  )
+            }
+          >
             <IconAddItem data-cy="expressGrader" alt="Images" />
-          </Link>
+          </StyledLink>
         </Tooltip>
         <Tooltip placement="bottom" title="Reports">
           <Link
@@ -176,6 +197,8 @@ const TableList = ({
   handlePagination,
   filterStatus,
   isProxiedByEAAccount,
+  hasRandomQuestions = false,
+  t,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showReleaseScoreModal, setReleaseScoreModalVisibility] = useState(
@@ -205,6 +228,9 @@ const TableList = ({
     allowedTime: data.allowedTime,
     institutionName: showSchoolName ? data.institutionName : false,
     teacherName: data.teacherName || '',
+    history,
+    hasRandomQuestions,
+    t,
   })
   const rowData = useMemo(
     () => classList.map((data, index) => convertRowData(data, index)),
@@ -452,6 +478,7 @@ const enhance = compose(
   withNamespaces('assignmentCard'),
   connect((state) => ({
     isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+    hasRandomQuestions: getHasRandomQuestionselector(state),
   }))
 )
 

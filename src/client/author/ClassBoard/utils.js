@@ -1,7 +1,11 @@
-import { test } from '@edulastic/constants'
+import { test as testConstants } from '@edulastic/constants'
 import moment from 'moment'
 
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test
+const {
+  ITEM_GROUP_TYPES,
+  ITEM_GROUP_DELIVERY_TYPES,
+  testCategoryTypes,
+} = testConstants
 
 let colors = [
   'red',
@@ -118,7 +122,13 @@ export const getUserName = (student) => {
  * for itemGroups exists - atleast one group with AUTOSELECT or STATIC with limited random can have random items, hence return true
  *
  */
-export const hasRandomQuestions = (itemGroups = []) => {
+export const hasRandomQuestions = (test = {}) => {
+  const { itemGroups = [], testCategory = testCategoryTypes.DEFAULT } = test
+
+  if (testCategory === testCategoryTypes.DYNAMIC_TEST) {
+    return true
+  }
+
   if (!itemGroups || !itemGroups.length) {
     return false
   }

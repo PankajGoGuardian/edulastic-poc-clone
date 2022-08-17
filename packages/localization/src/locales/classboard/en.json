@@ -12,6 +12,7 @@
     "avg_time": "AVG TIME (SECONDS)",
     "standardBasedReports": "STANDARDS BASED REPORT",
     "testHidden": "View of Items is Restricted by the Admin",
-    "randomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment"
+    "randomItemsDisableMessage": "The questions for each student have been dynamically selected and as a result, question based comparison is unavailable for this assignment",
+    "randomItemsBubbleScanDisableMessage": "The questions for each student have been dynamically selected and as a result, bubble sheet actions are unavailable"
   }
 }

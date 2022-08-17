@@ -2,11 +2,12 @@ import React from 'react'
 import { /* Link, */ withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
+import { segmentApi } from '@edulastic/api'
 import { EduButton } from '@edulastic/common'
+
 import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
 import TitleWrapper from '../../../AssignmentCreate/common/TitleWrapper'
-
 import { DynamicTestTitle, /* Footer, */ Tag } from './styled'
 
 import {
@@ -18,6 +19,7 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
   const handleCreate = () => {
     clearTestData()
     clearCreatedItems()
+    segmentApi.genericEventTrack('DynamicTestCreateTestClick', {})
     history.push({
       pathname: '/author/tests/create',
       state: { isDynamicTest: true },

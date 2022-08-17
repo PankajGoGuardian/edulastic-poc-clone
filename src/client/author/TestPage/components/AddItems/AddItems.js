@@ -590,6 +590,7 @@ class AddItems extends PureComponent {
                           data-cy="createNewItem"
                           disabled={isDynamicTest}
                           onClick={this.handleCreateNewItem}
+                          style={isDynamicTest ? { pointerEvents: 'none' } : {}} // Tooltip should hide immediately as soon as mouse pointer leaves
                         >
                           <IconPlusCircle
                             color={themeColor}

@@ -9,7 +9,6 @@ import {
   extraDesktopWidthMax,
 } from '@edulastic/colors'
 import { notification, TestTypeIcon } from '@edulastic/common'
-import { testCategoryTypes } from '@edulastic/constants/const/test'
 import { withNamespaces } from '@edulastic/localization'
 import { Tooltip } from '../../../../common/utils/helpers'
 import additemsIcon from '../../../Assignments/assets/add-items.svg'
@@ -30,9 +29,9 @@ const AssignmentsClasses = ({
     ...assignment,
   }))
 
-  const isDynamicTest =
-    moduleData.find((modData) => modData.contentId === contentId)
-      .testCategory === testCategoryTypes.DYNAMIC_TEST
+  const hasRandomQuestions = moduleData.find(
+    (modData) => modData.contentId === contentId
+  ).hasRandomQuestions
 
   const renderTextCell = (text) => (
     <StyledLabel>
@@ -110,15 +109,15 @@ const AssignmentsClasses = ({
           <Tooltip
             placement="bottom"
             title={
-              isDynamicTest
+              hasRandomQuestions
                 ? t('common.randomItemsDisableMessage')
                 : 'Express Grader'
             }
           >
             <BtnContainer
-              disabled={isDynamicTest}
+              disabled={hasRandomQuestions}
               onClick={(e) =>
-                isDynamicTest
+                hasRandomQuestions
                   ? notification({
                       type: 'warn',
                       msg: t('common.randomItemsDisableMessage'),

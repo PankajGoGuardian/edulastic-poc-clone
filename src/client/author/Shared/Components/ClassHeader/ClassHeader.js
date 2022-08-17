@@ -617,6 +617,8 @@ class ClassHeader extends Component {
         ? 'OPEN Assignment to Scan Responses'
         : isPaused
         ? 'RESUME Assignment to Scan Responses'
+        : hasRandomQuestions
+        ? t('common.randomItemsDisableMessage')
         : ''
       const isMenuItemActive = !canOpen && !isPaused && canClose
       const menuText = (
@@ -631,7 +633,7 @@ class ClassHeader extends Component {
         </span>
       )
       const menuItemContent =
-        isMenuItemActive && isAccessible ? (
+        isMenuItemActive && isAccessible && !hasRandomQuestions ? (
           <Link
             to={{
               pathname: '/uploadAnswerSheets',
@@ -648,7 +650,12 @@ class ClassHeader extends Component {
         <MenuItems
           data-cy="upload-bubble-sheet"
           key="upload-bubble-sheet"
-          disabled={!isMenuItemActive || !isAccessible}
+          onClick={() =>
+            hasRandomQuestions
+              ? notification({ msg: t('common.randomItemsDisableMessage') })
+              : null
+          }
+          disabled={!isMenuItemActive || !isAccessible || hasRandomQuestions}
           style={!isAccessible ? { cursor: 'pointer' } : {}}
         >
           {!isMenuItemActive && tooltipTitle ? (
@@ -704,15 +711,25 @@ class ClassHeader extends Component {
               data-cy="download-bubble-sheet"
               key="download-bubble-sheet"
               onClick={(e) =>
-                isAccessible
-                  ? this.generateBubbleSheet(assignmentId, classId)
-                  : this.showPremiumPopup(e.domEvent.target)
+                !isAccessible
+                  ? this.showPremiumPopup(e.domEvent.target)
+                  : hasRandomQuestions
+                  ? notification({ msg: t('common.randomItemsDisableMessage') })
+                  : this.generateBubbleSheet(assignmentId, classId)
               }
-              disabled={!!isAssignmentDone || !isAccessible}
+              disabled={
+                !!isAssignmentDone || !isAccessible || hasRandomQuestions
+              }
               style={!isAccessible ? { cursor: 'pointer' } : {}}
             >
               <Tooltip
-                title={isAssignmentDone ? 'Assignment is not open' : null}
+                title={
+                  isAssignmentDone
+                    ? 'Assignment is not open'
+                    : hasRandomQuestions
+                    ? t('common.randomItemsDisableMessage')
+                    : null
+                }
                 placement="right"
               >
                 <span

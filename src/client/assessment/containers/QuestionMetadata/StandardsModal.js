@@ -235,7 +235,7 @@ const StandardsModal = ({
       modalWidth="800px"
       top="50px"
     >
-      <Paper data-cy="standard-PopUp">
+      <Paper data-cy={`standard-PopUp-${visible}`}>
         <PopupRowSelect
           handleChangeStandard={handleChangeStandard}
           handleChangeGrades={handleChangeGrades}

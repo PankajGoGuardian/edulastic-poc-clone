@@ -340,8 +340,19 @@ class Container extends PureComponent {
   }
 
   componentWillUnmount() {
-    const { resetPageState, setEditEnable, setTestSettingsList } = this.props
+    const {
+      resetPageState,
+      setEditEnable,
+      setTestSettingsList,
+      history,
+      removeTestEntity,
+      match,
+    } = this.props
+    const pathname = history?.location?.pathname || ''
+    const isNavigatingToEditItemPath =
+      pathname.includes('/author/tests/') && pathname.includes('/editItem/')
     // disable edit on unmount
+    if (match.params.id && !isNavigatingToEditItemPath) removeTestEntity()
     setEditEnable(false)
     resetPageState()
     setTestSettingsList([])

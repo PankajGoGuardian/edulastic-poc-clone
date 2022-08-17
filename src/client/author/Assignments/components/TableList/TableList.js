@@ -103,7 +103,7 @@ const convertTableData = (
   classId: assignments[0]?.classId,
   currentAssignment: assignments[0],
   testType: data.testType,
-  hasAutoSelectGroups: data.hasAutoSelectGroups,
+  hasRandomQuestions: data.hasRandomQuestions,
   assignmentVisibility: assignments.map(
     (item) =>
       item.testContentVisibility || testConstants.testContentVisibility.ALWAYS
@@ -140,7 +140,7 @@ const convertExpandTableData = (data, testItem, index) => ({
   classId: data.classId,
   testType: data.testType,
   timedAssignment: data.timedAssignment && data.allowedTime,
-  hasAutoSelectGroups: testItem.hasAutoSelectGroups,
+  hasRandomQuestions: testItem.hasRandomQuestions,
 })
 
 const TableList = ({
@@ -331,14 +331,14 @@ const TableList = ({
               groupId={row.classId}
             >
               <WithDisableMessage
-                disabled={row.hasAutoSelectGroups}
+                disabled={row.hasRandomQuestions}
                 errMessage={t('common.randomItemsDisableMessage')}
               >
                 <Tooltip placement="bottom" title="Express Grader">
                   <Link
                     data-cy="eg"
                     to={`/author/expressgrader/${row.assignmentId}/${row.classId}`}
-                    disabled={row.hasAutoSelectGroups}
+                    disabled={row.hasRandomQuestions}
                   >
                     <IconAddItem alt="Images" />
                   </Link>

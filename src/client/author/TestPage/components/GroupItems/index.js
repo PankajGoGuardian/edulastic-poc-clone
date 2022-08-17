@@ -586,9 +586,15 @@ const GroupItems = ({
                 header={[
                   <PanelHeading>
                     {currentGroupIndex !== index ? (
-                      <Label fontWeight="600">{itemGroup.groupName}</Label>
+                      <Label
+                        fontWeight="600"
+                        data-cy={`sectionName-${itemGroup.groupName}`}
+                      >
+                        {itemGroup.groupName}
+                      </Label>
                     ) : (
                       <SectionNameInput
+                        data-cy="sectionNameInput"
                         type="text"
                         placeholder="Provide a section name (upto 50 characters)"
                         maxLength={50}
@@ -609,7 +615,8 @@ const GroupItems = ({
                     <div>
                       {currentGroupIndex !== index && (
                         <div
-                          title="Edit"
+                          data-cy={`editSection-${itemGroup.groupName}`}
+                          title="edit"
                           onClick={(e) => handleEditGroup(e, itemGroup, index)}
                         >
                           <IconPencilEdit />
@@ -618,6 +625,7 @@ const GroupItems = ({
                       {test.itemGroups.length > 1 && (
                         <div
                           title="Delete"
+                          data-cy={`deleteSection-${itemGroup.groupName}`}
                           onClick={(e) => handleDeleteGroup(e, index)}
                         >
                           <FontAwesomeIcon icon={faTrashAlt} />
@@ -641,7 +649,7 @@ const GroupItems = ({
                       disabled={currentGroupIndex !== index}
                     >
                       <RadioBtn
-                        data-cy={`check-group-type-${itemGroup.groupName}`}
+                        data-cy={`autoSelect-${itemGroup.groupName}`}
                         defaultChecked
                         value={ITEM_GROUP_TYPES.AUTOSELECT}
                       >
@@ -658,7 +666,10 @@ const GroupItems = ({
                         </Tooltip>
                       </RadioBtn>
                       <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
-                        <RadioBtn value={ITEM_GROUP_TYPES.STATIC}>
+                        <RadioBtn
+                          value={ITEM_GROUP_TYPES.STATIC}
+                          data-cy={`static-${itemGroup.groupName}`}
+                        >
                           MANUAL SELECT ITEMS FROM ITEM BANK
                         </RadioBtn>
                       </Tooltip>
@@ -690,6 +701,7 @@ const GroupItems = ({
                           isGhost
                           onClick={handleSelectItems}
                           disabled={currentGroupIndex !== index}
+                          data-cy={`selectItemButton-${itemGroup.groupName}`}
                         >
                           Select Items
                         </EduButton>
@@ -727,7 +739,10 @@ const GroupItems = ({
                           ))}
                         </Select>
                       </SelectWrapper>
-                      <SelectWrapper width="200px">
+                      <SelectWrapper
+                        width="200px"
+                        data-cy={`selectStd-${itemGroup.groupName}`}
+                      >
                         <Label>Standards *</Label>
                         <StandardsSelect
                           onChange={handleStandardsChange}
@@ -743,7 +758,7 @@ const GroupItems = ({
                       <SelectWrapper width="200px">
                         <Label>Depth of knowledge</Label>
                         <Select
-                          data-cy="selectDOK"
+                          data-cy={`selectDOK-${itemGroup.groupName}`}
                           placeholder="Select DOK"
                           size="default"
                           onSelect={(value) => handleChange('dok', value)}
@@ -772,7 +787,7 @@ const GroupItems = ({
                         <Label>Difficulty</Label>
                         <Select
                           placeholder="Select one"
-                          data-cy="selectDifficulty"
+                          data-cy={`selectDifficulty-${itemGroup.groupName}`}
                           size="default"
                           onSelect={(value) =>
                             handleChange('difficulty', value)
@@ -803,7 +818,7 @@ const GroupItems = ({
                         <Select
                           showArrow
                           mode="multiple"
-                          data-cy="selectTags"
+                          data-cy={`selectTags-${itemGroup.groupName}`}
                           size="default"
                           onChange={(value) => handleChange('tags', value)}
                           filterOption={(input, option) =>
@@ -924,6 +939,7 @@ const GroupItems = ({
                           Save
                         </EduButton>
                         <EduButton
+                          data-cy={`cancel-${itemGroup.groupName}`}
                           isGhost
                           disabled={fetchingItems}
                           onClick={(e) => {
@@ -945,7 +961,7 @@ const GroupItems = ({
           {currentGroupIndex === null && (
             <button
               type="button"
-              data-cy="add-group"
+              data-cy="add-section"
               onClick={handleAddGroup}
               style={{
                 paddingBlock: '12px',

@@ -26,7 +26,7 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
     })
   }
   return (
-    <CardComponent>
+    <CardComponent data-cy="smartBuild">
       <Tag>New</Tag>
       <DynamicTestTitle>
         <span>Smart</span>Build
@@ -36,7 +36,12 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
         Set your preferences and let the assessment assemble itself from the
         item bank.
       </TextWrapper>
-      <EduButton width="180px" isGhost onClick={handleCreate}>
+      <EduButton
+        width="180px"
+        isGhost
+        onClick={handleCreate}
+        data-cy="smartBuildCreateTest"
+      >
         CREATE TEST
       </EduButton>
       {/* TODO uncomment when quick tour video URL is available */}

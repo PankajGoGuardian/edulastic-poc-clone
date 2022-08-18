@@ -103,7 +103,7 @@ const RightFields = ({
           </Col>
           <Col xs={12}>
             <FieldLabel
-              label="Subject"
+              label="Subjects"
               {...restProps}
               fiedlName="subject"
               initialValue={defaultSubject || []}
@@ -127,7 +127,7 @@ const RightFields = ({
           <StyledFlexContainer gutter={96}>
             <Col xs={24}>
               <FieldLabel
-                label="Description"
+                label="Descripition"
                 {...restProps}
                 fiedlName="description"
               >
@@ -252,7 +252,6 @@ const RightFields = ({
           <Col span={12}>
             <AdditionalSettingsContainer
               onClick={handleAdditionalDetailsToggle}
-              data-cy="classAdvancedSettings"
             >
               ADVANCED SETTINGS (OPTIONAL){'  '}
               <Icon type={!toggleDetails ? 'caret-up' : 'caret-down'} />
@@ -261,13 +260,8 @@ const RightFields = ({
           <Col span={12}>
             {toggleDetails && (
               <ContainerForButtonAtEnd mB="20px" mT="20px">
-                <EduButton
-                  width="125px"
-                  height="42px"
-                  htmlType="submit"
-                  data-cy="saveClass"
-                >
-                  Create {type}
+                <EduButton width="125px" height="42px" htmlType="submit">
+                  Create Class
                 </EduButton>
               </ContainerForButtonAtEnd>
             )}
@@ -362,21 +356,14 @@ const RightFields = ({
                 xs={!isCourseVisible ? 12 : 24}
                 style={{ alignSelf: 'center' }}
               >
-                {!toggleDetails && (
-                  <ContainerForButtonAtEnd
-                    mB="0px"
-                    mT={!isCourseVisible ? '0px' : '25px'}
-                  >
-                    <EduButton
-                      width="125px"
-                      height="42px"
-                      htmlType="submit"
-                      data-cy="saveClass"
-                    >
-                      Create {type}
-                    </EduButton>
-                  </ContainerForButtonAtEnd>
-                )}
+                <ContainerForButtonAtEnd
+                  mB="0px"
+                  mT={!isCourseVisible ? '0px' : '25px'}
+                >
+                  <EduButton width="125px" height="42px" htmlType="submit">
+                    Create Class
+                  </EduButton>
+                </ContainerForButtonAtEnd>
               </Col>
             </Row>
           </Col>

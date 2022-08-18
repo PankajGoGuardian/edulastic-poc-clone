@@ -357,9 +357,6 @@ const FormWrapper = styled(Form)`
         .ant-input {
           height: 50px;
         }
-        .ant-input-suffix {
-          top: 60%;
-        }
       }
     }
     .ant-select-selection .ant-select-selection__rendered {

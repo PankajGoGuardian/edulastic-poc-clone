@@ -646,7 +646,6 @@ const SelectForm = styled(Form)`
     }
 
     .ant-select-arrow {
-      top: 50%;
       svg {
         fill: ${themeColor};
       }

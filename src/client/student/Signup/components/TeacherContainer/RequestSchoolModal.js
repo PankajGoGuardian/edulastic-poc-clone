@@ -129,18 +129,16 @@ class RequestSchool extends React.Component {
 
     const footer = (
       <ContainerForButtonAtEnd containerWidth="100%" mB="10px">
-        <ButtonWrapper>
-          <EduButton
-            height="42px"
-            width="175px"
-            data-cy="reqNewSchoolBtn"
-            onClick={this.handleSubmit}
-            htmlType="submit"
-            disabled={loading}
-          >
-            <span>Request new school</span>
-          </EduButton>
-        </ButtonWrapper>
+        <EduButton
+          height="42px"
+          width="175px"
+          data-cy="reqNewSchoolBtn"
+          onClick={this.handleSubmit}
+          htmlType="submit"
+          disabled={loading}
+        >
+          <span>Request new school</span>
+        </EduButton>
       </ContainerForButtonAtEnd>
     )
 
@@ -152,9 +150,9 @@ class RequestSchool extends React.Component {
         footer={footer}
         onCancel={handleCancel}
         centered
-        padding="12px 60px"
+        padding="30px 60px"
         modalWidth="565px"
-        borderRadius="20px"
+        borderRadius="10px"
         closeTopAlign="14px"
         closeRightAlign="10px"
         closeIconColor="black"
@@ -197,14 +195,7 @@ const enhance = compose(
 )
 export default enhance(RequestSchoolModal)
 
-const ButtonWrapper = styled.div`
-  position: relative;
-  bottom: 12px;
-`
-
 const Title = styled.div`
-  position: relative;
-  top: 15px;
   color: ${linkColor};
   h4 {
     @media (min-width: ${mediumDesktopExactWidth}) {

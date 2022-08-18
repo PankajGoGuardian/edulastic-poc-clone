@@ -730,7 +730,7 @@ function* fetchStudentsByClassId({ payload }) {
       (state) => state.dashboardTeacher?.allAssignmentCount
     )
     const testRedirectUrl = yield select(
-      (state) => state.manageClass?.createClassType?.testRedirectUrl
+      (state) => state.router?.location?.state?.testRedirectUrl
     )
     /**
      *  show create assignment modal in my class
@@ -847,7 +847,7 @@ function* receiveAddStudentRequest({ payload }) {
         (state) => state.dashboardTeacher?.allAssignmentCount
       )
       const testRedirectUrl = yield select(
-        (state) => state.manageClass?.createClassType?.testRedirectUrl
+        (state) => state.router?.location?.state?.testRedirectUrl
       )
       /**
        *  show create assignment modal in my class

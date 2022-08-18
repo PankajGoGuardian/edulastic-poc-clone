@@ -54,8 +54,13 @@ const StudentApp = ({
   const userInfo = user?.user
   const userRole = userInfo?.role || ''
 
+  const showEulaForQA = process.env.REACT_APP_QA_ENV
+    ? process.env.REACT_APP_QA_ENV && window.showEulaForQA
+    : true // Eula Modal Hidden For QA Environment &  Window Variable value changed on Automation to display
+
   const showPrivacyPolicyModal =
     !isProxyUser &&
+    !!showEulaForQA &&
     userRole !== roleuser.STUDENT &&
     userInfo?.isPolicyAccepted === false
 

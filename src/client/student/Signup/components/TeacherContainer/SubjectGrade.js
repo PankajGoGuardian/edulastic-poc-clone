@@ -192,10 +192,10 @@ class SubjectGrade extends React.Component {
         setIsCompleteSignupInProgress(true)
 
         const addSchoolFlow = isSchoolSignupOnly
-        const schoolId = schoolSelected?.schoolId || schoolSelected?._id
+        const schoolId = schoolSelected.schoolId || schoolSelected._id
         let schoolData = {
           institutionIds: [schoolId || ''],
-          districtId: schoolSelected?.districtId,
+          districtId: schoolSelected.districtId,
           currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
           email: email || '',
           ...(firstName ? { firstName } : {}),

@@ -75,18 +75,18 @@ const GetStartedModal = ({
       closeIconColor="black"
     >
       <StyledRow>
-        {row1.map((data, index) => (
-          <DisplayElement key={index} {...data} />
+        {row1.map((data) => (
+          <DisplayElement {...data} />
         ))}
       </StyledRow>
       <StyledRow>
-        {row2.map((data, index) => (
-          <DisplayElement key={index} {...data} />
+        {row2.map((data) => (
+          <DisplayElement {...data} />
         ))}
       </StyledRow>
       <StyledRow mB="35px">
-        {row3.map((data, index) => (
-          <DisplayElement key={index} {...data} />
+        {row3.map((data) => (
+          <DisplayElement {...data} />
         ))}
       </StyledRow>
       <StyledRow mB="5px">

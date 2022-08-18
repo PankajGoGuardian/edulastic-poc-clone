@@ -25,11 +25,11 @@ const FETCH_PLAYLIST_SUCCESS = '[dashboard teacher] fetch playlists success'
 const UPDATE_FAVORITE_CLASSES = '[dashboard teacher] update favorite classes'
 const TOGGLE_FAVORITE_CLASS = '[dashboard teacher] toggle favorite classes'
 
-export const SET_SHOW_WELCOME = '[dashboard teacher] set show welcome'
-export const SET_SHOW_GET_STARTED = '[dashboard teacher] set show get started'
-export const SET_SHOW_JOIN_SCHOOL = '[dashboard teacher] set show join school'
+const SET_SHOW_WELCOME = '[dashboard teacher] set show welcome'
+const SET_SHOW_GET_STARTED = '[dashboard teacher] set show get started'
+const SET_SHOW_JOIN_SCHOOL = '[dashboard teacher] set show join school'
 const SET_SHOW_CLASS_CREATION = '[dashboard teacher] set show class creation'
-export const SET_SHOW_ASSIGNMENT_CREATION =
+const SET_SHOW_ASSIGNMENT_CREATION =
   '[dashboard teacher] set show assignment creation'
 
 export const receiveTeacherDashboardAction = createAction(

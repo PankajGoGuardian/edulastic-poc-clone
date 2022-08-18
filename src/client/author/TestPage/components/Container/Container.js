@@ -346,9 +346,16 @@ class Container extends PureComponent {
       resetPageState,
       setEditEnable,
       setTestSettingsList,
+      test,
     } = this.props
+    // reset test data when it's a saved test or dynamic test in creation
+    if (
+      match.params.id ||
+      test.testCategory === testCategoryTypes.DYNAMIC_TEST
+    ) {
+      removeTestEntity()
+    }
     // disable edit on unmount
-    if (match.params.id) removeTestEntity()
     setEditEnable(false)
     resetPageState()
     setTestSettingsList([])

@@ -185,8 +185,10 @@ class Item extends Component {
     if (features.isPublisherAuthor && owner) {
       const isDynamicTest =
         test?.testCategory === testCategoryTypes.DYNAMIC_TEST
-      if (item.status === 'inreview' && isDynamicTest) {
-        return notification({ msg: 'Editing is diabled for In Review item' })
+      if (isDynamicTest) {
+        return notification({
+          msg: 'Editing is disabled for test items in SmartBuild',
+        })
       }
       return history.push(`/author/items/${item._id}/item-detail`)
     }

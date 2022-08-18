@@ -34,6 +34,7 @@ const standard = {
   xAxisNumbers: true,
   yAxisNumbers: true,
   polarNumbers: true,
+  branding: false,
 }
 
 const stateConfig = {
@@ -48,9 +49,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   california: {
     ...standard,
@@ -63,9 +64,9 @@ const stateConfig = {
     decimalToFraction: false,
     plotInequalities: false,
     plotImplicits: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   connecticut: { ...standard },
   delaware: {
@@ -77,9 +78,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   florida: {
     ...standard,
@@ -91,9 +92,9 @@ const stateConfig = {
     notes: false,
     qwertyKeyboard: false,
     degreeMode: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   hawaii: {
     ...standard,
@@ -104,9 +105,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   idaho: {
     ...standard,
@@ -117,9 +118,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   indiana: {
     ...standard,
@@ -130,9 +131,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   iowa: {
     ...standard,
@@ -144,8 +145,8 @@ const stateConfig = {
     notes: false,
     degreeMode: true,
     forceEnableGeometryFunctions: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   louisiana: {
     ...standard,
@@ -154,9 +155,9 @@ const stateConfig = {
     notes: false,
     qwertyKeyboard: false,
     degreeMode: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   maryland: {
     ...standard,
@@ -165,8 +166,8 @@ const stateConfig = {
     notes: false,
     degreeMode: true,
     forceEnableGeometryFunctions: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   massachusetts: {
     ...standard,
@@ -175,8 +176,8 @@ const stateConfig = {
     notes: false,
     degreeMode: true,
     forceEnableGeometryFunctions: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   michigan: {
     ...standard,
@@ -189,9 +190,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   missouri: {
     ...standard,
@@ -200,8 +201,8 @@ const stateConfig = {
     notes: false,
     qwertyKeyboard: false,
     degreeMode: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   montana: {
     ...standard,
@@ -227,9 +228,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   new_york: {
     ...standard,
@@ -239,8 +240,8 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     forceEnableGeometryFunctions: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   north_carolina: {
     ...standard,
@@ -249,12 +250,11 @@ const stateConfig = {
     notes: false,
     qwertyKeyboard: false,
     degreeMode: true,
-    plotSingleVariableImplicitEquations: false,
     forceLogModeRegressions: true,
     forceEnableGeometryFunctions: false,
     // Actions: false
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   north_dakota: {
     ...standard,
@@ -267,9 +267,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   oregon: {
     ...standard,
@@ -280,21 +280,20 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   pennsylvania: {
     images: false,
     folders: false,
     notes: false,
     plotImplicits: false,
-    plotSingleVariableImplicitEquations: false,
     forceEnableGeometryFunctions: false,
     sliders: false,
     // Actions: false
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   rhode_island: {
     ...standard,
@@ -304,9 +303,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
     forceEnableGeometryFunctions: true,
   },
   south_carolina: {
@@ -323,9 +322,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   texas: {
     ...standard,
@@ -337,8 +336,8 @@ const stateConfig = {
     plotInequalities: false,
     plotImplicits: false,
     forceEnableGeometryFunctions: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   utah: {
     ...standard,
@@ -347,8 +346,8 @@ const stateConfig = {
     notes: false,
     degreeMode: true,
     forceEnableGeometryFunctions: true,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
   },
   vermont: {
     ...standard,
@@ -359,9 +358,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   virginia: {
     ...standard,
@@ -369,9 +368,8 @@ const stateConfig = {
     folders: false,
     notes: false,
     degreeMode: true,
+    restrictedFunctions: true,
     plotSingleVariableImplicitEquations: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
     // audio: false,
   },
   washington: {
@@ -383,9 +381,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   west_virginia: {
     ...standard,
@@ -395,9 +393,9 @@ const stateConfig = {
     zoomFit: false,
     degreeMode: true,
     forceEnableGeometryFunctions: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   wyoming: {
     ...standard,
@@ -407,9 +405,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
   virgin_islands: {
     ...standard,
@@ -420,9 +418,9 @@ const stateConfig = {
     qwertyKeyboard: false,
     degreeMode: true,
     decimalToFraction: false,
-    // "Advanced Trig Functions": false,
-    // "Advanced Stats Functions": false,
-    // "Advanced Dist Functions": false,
+    restrictedFunctions: true,
+    plotSingleVariableImplicitEquations: false,
+    distributions: false,
   },
 }
 

@@ -421,7 +421,7 @@ class SubjectGrade extends React.Component {
                   </Form.Item>
                 </Col>
                 <Col xs={24} sm={18} md={12}>
-                  <Form.Item label="Subject">
+                  <Form.Item label="Subjects">
                     {getFieldDecorator('subjects', {
                       initialValue: subjects,
                       rules: [

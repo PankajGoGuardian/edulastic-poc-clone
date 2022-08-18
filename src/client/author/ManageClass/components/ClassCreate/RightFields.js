@@ -43,13 +43,9 @@ const RightFields = ({
 }) => {
   const [startDate, setStartDate] = useState(moment())
   const [toggleDetails, setToggleDetails] = useState(true)
-  const defaultSubject = defaultSubjects.length === 1 ? defaultSubjects[0] : []
-  const defaultGrade = defaultGrades.length === 1 ? defaultGrades : []
+  const defaultSubject = defaultSubjects[0]
   const defaultStandardSetIds = interestedCurriculums
-    .filter(
-      ({ subject, orgType }) =>
-        subject === defaultSubject && orgType === userRole
-    )
+    .filter(({ subject }) => subject === defaultSubject)
     .map(({ _id }) => _id)
 
   useEffect(() => {
@@ -110,7 +106,7 @@ const RightFields = ({
               label="Subject"
               {...restProps}
               fiedlName="subject"
-              initialValue={defaultSubject}
+              initialValue={defaultSubject || []}
             >
               <SelectInputStyled
                 placeholder="Select Subject"
@@ -150,7 +146,7 @@ const RightFields = ({
               label="Grade"
               {...restProps}
               fiedlName="grades"
-              initialValue={defaultGrade}
+              initialValue={defaultGrades || []}
             >
               <SelectInputStyled
                 showArrow

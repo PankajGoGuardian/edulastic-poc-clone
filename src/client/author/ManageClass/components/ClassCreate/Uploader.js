@@ -3,11 +3,11 @@ import PropTypes from 'prop-types'
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { IconPlus } from '@edulastic/icons'
+import { IconPhotoCamera } from '@edulastic/icons'
 import { aws } from '@edulastic/constants'
 import { withWindowSizes, beforeUpload } from '@edulastic/common'
 import { Upload } from 'antd'
-import { white, themeColor } from '@edulastic/colors'
+import { white, themeColorBlue } from '@edulastic/colors'
 import { uploadToS3 } from '../../../src/utils/upload'
 import { uploadTestImageAction } from '../../../src/actions/uploadTestImage'
 
@@ -38,6 +38,9 @@ class Uploader extends React.Component {
     const uploadButton = (
       <Container>
         <Image src={url} alt="Test" />
+        <Camera>
+          <IconPhotoCamera color={white} width={16} height={16} />
+        </Camera>
       </Container>
     )
 
@@ -61,7 +64,7 @@ class Uploader extends React.Component {
               )}
             </ImageContainer>
             <Camera>
-              <IconPlus color={themeColor} width="20px" />
+              <IconPhotoCamera color={white} width="20px" />
             </Camera>
           </Container>
         </Upload>
@@ -84,12 +87,12 @@ const enhance = compose(
 export default enhance(Uploader)
 
 const Container = styled.div`
+  min-height: 207px;
   width: 100%;
   position: relative;
 `
 
 const UploadWrapper = styled.div`
-  width: 100px;
   .ant-upload-select {
     min-width: 100%;
     border: none;
@@ -104,20 +107,18 @@ const UploadWrapper = styled.div`
 
 const Image = styled.img`
   width: 100%;
-  height: 100px;
-  border-radius: 50%;
-  border: 1px solid ${themeColor};
+  height: 207px;
+  border-radius: 5px;
 `
 
 const Camera = styled.div`
-  background: ${white};
+  background: ${themeColorBlue};
   border-radius: 50%;
-  border: 1px solid ${themeColor};
-  width: 32px;
-  height: 32px;
+  width: 40px;
+  height: 40px;
   position: absolute;
-  right: 0px;
-  bottom: 0px;
+  right: 20px;
+  bottom: -17px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -126,6 +127,7 @@ const Camera = styled.div`
 
 const ImageContainer = styled.div`
   width: 100%;
+  min-height: 207px;
   overflow: hidden;
   border-radius: 5px;
 `

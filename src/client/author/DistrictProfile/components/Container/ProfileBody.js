@@ -68,7 +68,6 @@ import {
   getCleverLibraryUserSelector,
 } from '../../../src/selectors/user'
 import { validateEmail } from '../../../../common/utils/helpers'
-import { setShowJoinSchoolModalAction } from '../../../Dashboard/ducks'
 
 const { ORG_TYPE } = roleuser
 
@@ -421,15 +420,8 @@ class ProfileBody extends React.Component {
   }
 
   handleAddSchool = () => {
-    const { userInfo, showJoinSchool, setShowJoinSchoolModal } = this.props
-    if (
-      !isEmpty(userInfo.orgData?.districtIds) &&
-      !isEmpty(userInfo.orgData?.schools)
-    ) {
-      showJoinSchool()
-    } else {
-      setShowJoinSchoolModal(true)
-    }
+    const { showJoinSchool } = this.props
+    showJoinSchool()
   }
 
   handlePowerTeacherUpdate = (checked) => {
@@ -1067,7 +1059,6 @@ const enhance = compose(
       updatePowerTeacher: updatePowerTeacherAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,
       setIsUserOnProfilePage: setIsUserOnProfilePageAction,
-      setShowJoinSchoolModal: setShowJoinSchoolModalAction,
     }
   )
 )

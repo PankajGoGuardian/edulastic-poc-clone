@@ -63,7 +63,6 @@ import {
   schoologySyncAssignmentGradesAction,
 } from '../../author/src/actions/assignments'
 import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
-import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
 
 export const superAdminRoutes = [
   // SA-DA common routes
@@ -232,10 +231,6 @@ export const TOGGLE_FORGOT_PASSWORD_MODAL =
   '[user] toggle forgot password modal'
 
 export const LOGIN_ATTEMPT_EXCEEDED = '[user] too many login attempt'
-export const SET_SHOW_ALL_STANDARDS = '[user] set show all standards'
-export const FETCH_ORG_INTERESTED_STANDARDS =
-  '[user] fetch org interested standards'
-
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
 export const loginAction = createAction(LOGIN)
@@ -367,12 +362,6 @@ export const setForgotPasswordVisibleAction = createAction(
 )
 
 export const setTooManyAttemptAction = createAction(LOGIN_ATTEMPT_EXCEEDED)
-
-export const setShowAllStandardsAction = createAction(SET_SHOW_ALL_STANDARDS)
-
-export const fetchOrgInterestedStandardsAction = createAction(
-  FETCH_ORG_INTERESTED_STANDARDS
-)
 
 const initialState = {
   addAccount: false,
@@ -889,9 +878,6 @@ export default createReducer(initialState, {
   },
   [LOGIN_ATTEMPT_EXCEEDED]: (state, { payload }) => {
     state.tooManyAttempt = payload
-  },
-  [SET_SHOW_ALL_STANDARDS]: (state, { payload }) => {
-    state.user.orgData.showAllStandards = payload
   },
 })
 
@@ -2194,24 +2180,6 @@ function* resetPasswordUserSaga({ payload }) {
   }
 }
 
-function* fetchShowAllStandardsSaga({ payload }) {
-  try {
-    const { districtId, schoolId } = payload
-    const data = { districtId, institutionId: schoolId }
-    const { showAllStandards, schoolAdminSettingsAccess } = yield call(
-      settingsApi.fetchOrgInterestedStandards,
-      data
-    )
-    yield put(setShowAllStandardsAction(showAllStandards))
-    yield put(setSchoolAdminSettingsAccessAction(schoolAdminSettingsAccess))
-  } catch (e) {
-    captureSentryException(e)
-    notification({
-      msg: 'Failed to fetch user selected school details.',
-    })
-  }
-}
-
 function* resetPasswordRequestSaga({ payload }) {
   try {
     const result = yield call(userApi.resetUserPassword, payload)
@@ -2569,7 +2537,6 @@ export function* watcherSaga() {
   yield takeLatest(UPDATE_USER_ROLE_REQUEST, updateUserRoleSaga)
   yield takeLatest(REQUEST_NEW_PASSWORD_REQUEST, requestNewPasswordSaga)
   yield takeLatest(RESET_PASSWORD_USER_REQUEST, resetPasswordUserSaga)
-  yield takeLatest(FETCH_ORG_INTERESTED_STANDARDS, fetchShowAllStandardsSaga)
   yield takeLatest(VERIFY_EMAIL_REQUEST, verifyEmailSaga)
   yield takeLatest(SEND_VERIFICATION_EMAIL_REQUEST, sendVerificationEmailSaga)
   yield takeLatest(RESET_PASSWORD_REQUEST, resetPasswordRequestSaga)

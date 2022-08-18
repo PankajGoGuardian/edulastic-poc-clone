@@ -2,13 +2,8 @@ import React, { useEffect, useRef, useState } from 'react'
 import { debounce } from 'lodash'
 
 // components
-import { lightGreen11, white } from '@edulastic/colors'
-import {
-  IconChevronLeft,
-  IconTimer,
-  IconVideoCamera,
-  IconTestLibrary,
-} from '@edulastic/icons'
+import { title, white } from '@edulastic/colors'
+import { IconChevronLeft } from '@edulastic/icons'
 import { segmentApi } from '@edulastic/api'
 import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import {
@@ -20,11 +15,6 @@ import {
   LearnMore,
   SlideContainer,
   SlideDescription,
-  DashedLine,
-  StyledRow,
-  StyledCol,
-  SlideInfo,
-  IconWrapper,
 } from './styled'
 import EdulasticOverviewModel from '../EdulasticOverview/EdulasticOverviewModel'
 import { TextWrapper } from '../../../../../styledComponents'
@@ -38,15 +28,10 @@ const BannerSlider = ({
   accessibleItembankProductIds = [],
   setShowBannerModal,
   windowWidth,
-  history,
 }) => {
   const [showArrow, setShowArrow] = useState(false)
   const scrollBarRef = useRef(null)
 
-  // We are doing minimal BE changes. So filtering the demo playground and then displaying test library banner.
-  const updatedBannerSlides = bannerSlides.filter(
-    (slide) => slide.description != 'Demo Playground'
-  )
   useEffect(() => {
     const { clientWidth, scrollWidth } = scrollBarRef.current
     if (scrollWidth > clientWidth) {
@@ -67,6 +52,8 @@ const BannerSlider = ({
       behavior: 'smooth',
     })
   }, 300)
+
+  const bannerLength = bannerSlides.length
 
   const handleBannerClick = (
     evt,
@@ -90,23 +77,16 @@ const BannerSlider = ({
     bannerActionHandler(config.filters[0], description)
   }
 
-  const navigateToTest = () => history.push('/author/tests')
-
   return (
     <>
       <TextWrapper
         data-cy="bannerTitle"
+        fw="bold"
         size="16px"
+        color={title}
         style={{ marginBottom: '1rem' }}
-        mt="10px"
-        fw="700"
-        lh="22px"
-        color={lightGreen11}
       >
-        <IconWrapper>
-          <IconTimer alt="" margin="0px 15px 0px 5px" />
-          Quick Introduction to Edulastic
-        </IconWrapper>
+        Quick Introduction to Edulastic
       </TextWrapper>
       <SliderContainer>
         {showArrow && (
@@ -121,7 +101,7 @@ const BannerSlider = ({
         )}
         <ScrollbarContainer className="scrollbar-container" ref={scrollBarRef}>
           <SlideContainer data-cy="sliderContainer">
-            {updatedBannerSlides.map((slide) => {
+            {bannerSlides.map((slide, index) => {
               const isSparkTile = slide.description
                 ?.toLowerCase()
                 ?.includes('spark')
@@ -137,6 +117,8 @@ const BannerSlider = ({
               return (
                 <Slides
                   data-cy="banners"
+                  className={bannerLength === index + 1 ? 'last' : ''}
+                  bgImage={slide.imageUrl}
                   key={slide._id}
                   onClick={(evt) =>
                     handleBannerClick(
@@ -149,72 +131,29 @@ const BannerSlider = ({
                     )
                   }
                 >
-                  <StyledRow>
-                    <StyledCol span={12}>
-                      <SlideDescription data-cy={slide.description}>
-                        {slide.description}
-                      </SlideDescription>
-                    </StyledCol>
-                    <StyledCol span={2} offset={10}>
-                      <IconWrapper>
-                        <IconVideoCamera margin="5px 0px 0px 0px" />
-                      </IconWrapper>
-                    </StyledCol>
-                  </StyledRow>
-                  <DashedLine />
-                  <SlideInfo>Resource to help you up </SlideInfo>
-                  <SlideInfo>and running quickly</SlideInfo>
+                  <SlideDescription data-cy={slide.description}>
+                    {slide.description}
+                  </SlideDescription>
                   {isSparkTile ? (
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
-                    ) && (
-                      <LearnMore data-cy="tryItFree" moveLeft="145px">
-                        TRY IT FREE
-                      </LearnMore>
-                    )
+                    ) && <LearnMore data-cy="tryItFree">TRY IT FREE</LearnMore>
                   ) : isCPMTile ? (
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
                     ) && (
-                      <LearnMore data-cy="tryItFree" moveLeft="120px">
+                      <LearnMore data-cy="tryItFree">
                         Start a Free Trial
                       </LearnMore>
                     )
                   ) : isDemoPlaygroundTile ? (
-                    <LearnMore data-cy="explore" moveLeft="150px">
-                      Explore
-                    </LearnMore>
+                    <LearnMore data-cy="explore">Explore</LearnMore>
                   ) : (
                     <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   )}
                 </Slides>
               )
             })}
-            <Slides
-              data-cy="banners"
-              className="last"
-              key="TestLibrary"
-              onClick={navigateToTest}
-            >
-              <StyledRow>
-                <StyledCol span={12}>
-                  <SlideDescription>Tests Library</SlideDescription>
-                </StyledCol>
-                <StyledCol span={2} offset={10}>
-                  <IconWrapper>
-                    <IconTestLibrary />
-                  </IconWrapper>
-                </StyledCol>
-              </StyledRow>
-              <DashedLine />
-              <SlideInfo>Check out tests from our</SlideInfo>
-              <SlideInfo>
-                library of <b style={{ color: '#000' }}>over 100K+ tests</b>
-              </SlideInfo>
-              <LearnMore data-cy="Explore" moveLeft="150px">
-                Explore
-              </LearnMore>
-            </Slides>
           </SlideContainer>
         </ScrollbarContainer>
       </SliderContainer>

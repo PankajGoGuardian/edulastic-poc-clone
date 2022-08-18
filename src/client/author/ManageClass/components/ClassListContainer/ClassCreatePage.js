@@ -1,4 +1,5 @@
 import React from 'react'
+import { withRouter } from 'react-router-dom'
 import { IconGoogleClassroom } from '@edulastic/icons'
 import GoogleLogin from 'react-google-login'
 import { EduButton } from '@edulastic/common'
@@ -31,8 +32,7 @@ const ClassCreatePage = ({
   fetchClassList,
   googleAllowedInstitutions,
   isClassLink,
-  setShowClassCreationModal,
-  setCreateClassTypeDetails,
+  history,
 }) => {
   const { name } = recentInstitute
 
@@ -46,10 +46,7 @@ const ClassCreatePage = ({
 
   const { isUserGoogleLoggedIn, cleverId, isPlayground } = user
 
-  const createNewClass = () => {
-    setShowClassCreationModal(true)
-    setCreateClassTypeDetails({ type: 'class' })
-  }
+  const createNewClass = () => history.push('/author/manageClass/createClass')
 
   return (
     <>
@@ -74,7 +71,7 @@ const ClassCreatePage = ({
                   </EduButton>
                 )}
                 onClick={createNewClass}
-                triggerSource="Create Class"
+                triggerSource={'Create Class'}
               />
               {!isPlayground &&
                 googleAllowedInstitutions?.length > 0 &&
@@ -96,7 +93,7 @@ const ClassCreatePage = ({
                           })
                           renderProps.onClick(e)
                         }}
-                        triggerSource="Sync Google Class Button Click"
+                        triggerSource={'Sync Google Class Button Click'}
                       />
                     )}
                     scope={scopes}
@@ -114,4 +111,4 @@ const ClassCreatePage = ({
   )
 }
 
-export default ClassCreatePage
+export default withRouter(ClassCreatePage)

@@ -6,6 +6,7 @@ import {
 } from '@edulastic/common'
 import GoogleLogin from 'react-google-login'
 import { canvasApi } from '@edulastic/api'
+import { IconGoogleClassroom, IconClever } from '@edulastic/icons'
 
 import { scopes } from '../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage'
 import authorizeCanvas from '../../../../../../../../common/utils/CanavsAuthorizationModule'
@@ -79,11 +80,12 @@ const HeaderSyncAction = ({
             <AuthorCompleteSignupButton
               renderButton={(handleClick) => (
                 <EduButton isGhost isBlue onClick={handleClick}>
-                  <p>Sync with Google Classroom</p>
+                  <IconGoogleClassroom />
+                  <p>Sync Google Classroom</p>
                 </EduButton>
               )}
               onClick={renderProps.onClick}
-              triggerSource="Sync Google Class Button Click"
+              triggerSource={'Sync Google Class Button Click'}
             />
           )}
           scope={scopes}
@@ -97,6 +99,7 @@ const HeaderSyncAction = ({
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <EduButton isGhost isBlue onClick={handleClick}>
+              <IconClever />
               <p>Sync Class Roster from Clever</p>
             </EduButton>
           )}
@@ -107,6 +110,13 @@ const HeaderSyncAction = ({
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <EduButton isGhost isBlue onClick={handleClick}>
+              <img
+                alt="Canvas"
+                src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                width={18}
+                height={18}
+                style={{ marginRight: '8px' }}
+              />
               <p>Sync with Canvas</p>
             </EduButton>
           )}

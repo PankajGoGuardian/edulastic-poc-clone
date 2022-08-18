@@ -25,13 +25,6 @@ const FETCH_PLAYLIST_SUCCESS = '[dashboard teacher] fetch playlists success'
 const UPDATE_FAVORITE_CLASSES = '[dashboard teacher] update favorite classes'
 const TOGGLE_FAVORITE_CLASS = '[dashboard teacher] toggle favorite classes'
 
-const SET_SHOW_WELCOME = '[dashboard teacher] set show welcome'
-const SET_SHOW_GET_STARTED = '[dashboard teacher] set show get started'
-const SET_SHOW_JOIN_SCHOOL = '[dashboard teacher] set show join school'
-const SET_SHOW_CLASS_CREATION = '[dashboard teacher] set show class creation'
-const SET_SHOW_ASSIGNMENT_CREATION =
-  '[dashboard teacher] set show assignment creation'
-
 export const receiveTeacherDashboardAction = createAction(
   RECEIVE_TEACHER_DASHBOARD_REQUEST
 )
@@ -58,16 +51,6 @@ export const fetchPlaylistsSuccessAction = createAction(FETCH_PLAYLIST_SUCCESS)
 export const updatefavoriteClassesAction = createAction(UPDATE_FAVORITE_CLASSES)
 export const togglefavoriteClassAction = createAction(TOGGLE_FAVORITE_CLASS)
 
-export const setShowWelcomePopupAction = createAction(SET_SHOW_WELCOME)
-export const setShowGetStartedModalAction = createAction(SET_SHOW_GET_STARTED)
-export const setShowJoinSchoolModalAction = createAction(SET_SHOW_JOIN_SCHOOL)
-export const setShowClassCreationModalAction = createAction(
-  SET_SHOW_CLASS_CREATION
-)
-export const setShowAssignmentCreationModalAction = createAction(
-  SET_SHOW_ASSIGNMENT_CREATION
-)
-
 export const stateSelector = (state) => state.dashboardTeacher
 
 export const getLaunchHangoutStatus = createSelector(
@@ -89,27 +72,6 @@ export const getDashboardClasses = createSelector(
   (state) => state.data
 )
 
-export const getShowWelcomePopupSelector = createSelector(
-  stateSelector,
-  (state) => state.showWelcomePopup
-)
-export const getShowGetStartedModalSelector = createSelector(
-  stateSelector,
-  (state) => state.showGetStartedModal
-)
-export const getShowJoinSchoolModalSelector = createSelector(
-  stateSelector,
-  (state) => state.showJoinSchoolModal
-)
-export const getShowClassCreationModalSelector = createSelector(
-  stateSelector,
-  (state) => state.showClassCreationModal
-)
-export const getShowAssignmentCreationModalSelector = createSelector(
-  stateSelector,
-  (state) => state.showAssignmentCreationModal
-)
-
 const initialState = {
   data: [],
   error: null,
@@ -120,11 +82,6 @@ const initialState = {
     localStorage.getItem('author:dashboard:tiles') || '[]'
   ),
   allAssignmentCount: 0,
-  showWelcomePopup: false,
-  showGetStartedModal: false,
-  showJoinSchoolModal: false,
-  showClassCreationModal: false,
-  showAssignmentCreationModal: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -165,21 +122,6 @@ export const reducer = createReducer(initialState, {
       }
       return item
     })
-  },
-  [SET_SHOW_WELCOME]: (state, { payload }) => {
-    state.showWelcomePopup = payload
-  },
-  [SET_SHOW_GET_STARTED]: (state, { payload }) => {
-    state.showGetStartedModal = payload
-  },
-  [SET_SHOW_JOIN_SCHOOL]: (state, { payload }) => {
-    state.showJoinSchoolModal = payload
-  },
-  [SET_SHOW_CLASS_CREATION]: (state, { payload }) => {
-    state.showClassCreationModal = payload
-  },
-  [SET_SHOW_ASSIGNMENT_CREATION]: (state, { payload }) => {
-    state.showAssignmentCreationModal = payload
   },
 })
 

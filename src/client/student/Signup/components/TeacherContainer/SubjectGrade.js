@@ -1,9 +1,7 @@
 import {
-  darkGrey3,
   extraDesktopWidthMax,
   grey,
   mobileWidthMax,
-  secondaryTextColor,
   themeColor,
   title,
   white,
@@ -39,9 +37,7 @@ import selectsData from '../../../../author/TestPage/components/common/selectsDa
 import {
   saveSubjectGradeAction,
   saveSubjectGradeloadingSelector,
-  setSchoolSelectWarningAction,
 } from '../../duck'
-import { ContainerForButtonAtEnd } from '../../styled'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -94,7 +90,6 @@ class SubjectGrade extends React.Component {
     isTestRecommendationCustomizer: PropTypes.bool,
     setShowTestCustomizerModal: PropTypes.func,
     onSuccessCallback: PropTypes.func,
-    setIsCompleteSignupInProgress: PropTypes.func,
     user: PropTypes.object.isRequired,
   }
 
@@ -103,7 +98,6 @@ class SubjectGrade extends React.Component {
     isTestRecommendationCustomizer: false,
     setShowTestCustomizerModal: () => {},
     onSuccessCallback: () => {},
-    setIsCompleteSignupInProgress: () => {},
   }
 
   componentDidMount() {
@@ -140,17 +134,6 @@ class SubjectGrade extends React.Component {
     }
   }
 
-  componentDidUpdate(prevProps) {
-    const { schoolSelected, form, isCompleteSignupInProgress } = this.props
-
-    if (
-      schoolSelected !== prevProps.schoolSelected &&
-      !isCompleteSignupInProgress
-    ) {
-      form.resetFields()
-    }
-  }
-
   updateSubjects = (e) => {
     this.setState({ subjects: e })
   }
@@ -167,38 +150,16 @@ class SubjectGrade extends React.Component {
       saveSubjectGrade,
       isTestRecommendationCustomizer,
       setShowTestCustomizerModal,
-      schoolSelected,
-      setSchoolSelectWarning,
-      withJoinSchoolModal,
     } = this.props
     const isSignUp = true
     e.preventDefault()
-    if (isEmpty(schoolSelected) && withJoinSchoolModal) {
-      return setSchoolSelectWarning(true)
-    }
-
     form.validateFields((err, values) => {
       if (!err) {
         const {
           curriculums,
           curriculumStandards = {},
           onSuccessCallback,
-          schoolSelectedFromDropdown = false,
-          setIsCompleteSignupInProgress,
         } = this.props
-
-        const { email, firstName, middleName, lastName } = userInfo
-        setIsCompleteSignupInProgress(true)
-
-        const schoolData = {
-          institutionIds: [schoolSelected.schoolId || schoolSelected._id || ''],
-          districtId: schoolSelected.districtId,
-          currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
-          email: email || '',
-          ...(firstName ? { firstName } : {}),
-          middleName,
-          lastName,
-        }
 
         const data = {
           orgId: userInfo._id,
@@ -212,8 +173,6 @@ class SubjectGrade extends React.Component {
           isTestRecommendationCustomizer,
           setShowTestCustomizerModal,
           onSuccessCallback,
-          schoolSelectedFromDropdown,
-          schoolData,
         }
 
         map(values.standard, (id) => {
@@ -311,7 +270,6 @@ class SubjectGrade extends React.Component {
       curriculumStandards,
       userInfo,
       onMouseDown,
-      withJoinSchoolModal = false,
     } = this.props
     let { interestedCurriculums } = this.props
 
@@ -345,28 +303,22 @@ class SubjectGrade extends React.Component {
 
     return (
       <>
-        {!withJoinSchoolModal && (
-          <BannerText>
-            <Img src={schoolIcon} alt="" />
-            <H3>
-              {t('component.signup.teacher.provide')}{' '}
-              {t('component.signup.teacher.curriculumdetails')}
-            </H3>
-            <H5>{t('component.signup.teacher.gsinfotext')}</H5>
-          </BannerText>
-        )}
-        <SubjectGradeBody
-          mA={withJoinSchoolModal && '0px -60px -55px -60px'}
-          hasMinHeight={!isModal}
-        >
+        <SubjectGradeBody hasMinHeight={!isModal}>
           <Col
-            xs={{ span: 20 }}
-            lg={{ span: isModal ? 22 : 18 }}
-            style={{ width: '100%' }}
+            xs={{ span: 20, offset: 2 }}
+            lg={{ span: isModal ? 22 : 18, offset: isModal ? 1 : 3 }}
           >
-            <SelectForm onSubmit={this.handleSubmit}>
-              <FlexWrapper type="flex" align="middle" gutter={56}>
-                <Col xs={24} sm={18} md={12}>
+            <FlexWrapper type="flex" align="middle">
+              <BannerText xs={24} sm={18} md={12}>
+                <SchoolIcon src={schoolIcon} alt="" />
+                <h3>
+                  {t('component.signup.teacher.provide')} <br />{' '}
+                  {t('component.signup.teacher.curriculumdetails')}
+                </h3>
+                <h5>{t('component.signup.teacher.gsinfotext')}</h5>
+              </BannerText>
+              <Col xs={24} sm={18} md={12}>
+                <SelectForm onSubmit={this.handleSubmit}>
                   <Form.Item label="Grade">
                     {getFieldDecorator('grade', {
                       initialValue: grades,
@@ -405,8 +357,6 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
-                </Col>
-                <Col xs={24} sm={18} md={12}>
                   <Form.Item label="Subjects">
                     {getFieldDecorator('subjects', {
                       initialValue: subjects,
@@ -439,10 +389,6 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
-                </Col>
-              </FlexWrapper>
-              <FlexWrapper type="flex" align="middle" gutter={56}>
-                <Col xs={24} sm={18} md={12}>
                   <Form.Item label="Standard Sets">
                     {getFieldDecorator('standard', {
                       initialValue:
@@ -486,16 +432,7 @@ class SubjectGrade extends React.Component {
                       </GradeSelect>
                     )}
                   </Form.Item>
-                </Col>
-                <Col xs={24} sm={18} md={12}>
-                  <Form.Item
-                    label={
-                      <>
-                        What are you teaching?{' '}
-                        <OptionalText>(optional)</OptionalText>
-                      </>
-                    }
-                  >
+                  <Form.Item label="What are you teaching right now? (optional)">
                     {getFieldDecorator('curriculumStandards', {
                       initialValue: curriculumStandards?.elo?.length
                         ? curriculumStandard
@@ -547,20 +484,18 @@ class SubjectGrade extends React.Component {
                       </FilterItemWrapper>
                     )}
                   </Form.Item>
-                </Col>
-              </FlexWrapper>
-              <ContainerForButtonAtEnd pR="30px" mB="10px">
-                <ProceedBtn
-                  data-cy="getStarted"
-                  type="primary"
-                  htmlType="submit"
-                  loading={saveSubjectGradeloading}
-                  onMouseDown={onMouseDown}
-                >
-                  {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
-                </ProceedBtn>
-              </ContainerForButtonAtEnd>
-            </SelectForm>
+                  <ProceedBtn
+                    data-cy="getStarted"
+                    type="primary"
+                    htmlType="submit"
+                    loading={saveSubjectGradeloading}
+                    onMouseDown={onMouseDown}
+                  >
+                    {isTestRecommendationCustomizer ? 'Update' : 'Get Started'}
+                  </ProceedBtn>
+                </SelectForm>
+              </Col>
+            </FlexWrapper>
           </Col>
         </SubjectGradeBody>
         {showStandardsModal && (
@@ -588,13 +523,11 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       saveSubjectGradeloading: saveSubjectGradeloadingSelector(state),
       curriculumStandards: getStandardsListSelector(state),
-      schoolSelected: get(state, 'signup.schoolSelectedInJoinModal', {}),
     }),
     {
       getCurriculums: getDictCurriculumsAction,
       saveSubjectGrade: saveSubjectGradeAction,
       getDictStandardsForCurriculum: getDictStandardsForCurriculumAction,
-      setSchoolSelectWarning: setSchoolSelectWarningAction,
     }
   )
 )
@@ -602,23 +535,56 @@ const enhance = compose(
 export default enhance(SubjectGradeForm)
 
 const SubjectGradeBody = styled(Row)`
-  padding: 25px 30px;
-  margin: ${(props) => props.mA || '0px'};
-  border-radius: 20px;
+  padding: 10px 0px;
   background: ${white};
   ${({ hasMinHeight = true }) =>
     hasMinHeight && `min-height: calc(100vh - 93px);`}
 `
 
 const FlexWrapper = styled(Row)`
-  padding: 10px 30px;
   @media (max-width: ${mobileWidthMax}) {
     flex-direction: column;
     align-items: center;
   }
 `
 
+const BannerText = styled(Col)`
+  text-align: left;
+  h3 {
+    font-size: 45px;
+    font-weight: bold;
+    color: ${title};
+    line-height: 1;
+    letter-spacing: -2.25px;
+    margin-top: 0px;
+    margin-bottom: 15px;
+  }
+  h5 {
+    font-size: 13px;
+    margin-top: 10px;
+    color: ${title};
+  }
+
+  @media (max-width: ${mobileWidthMax}) {
+    margin-bottom: 30px;
+    h3 {
+      font-weight: 400;
+    }
+    h5 {
+      font-size: 16px;
+    }
+  }
+  @media (min-width: ${extraDesktopWidthMax}) {
+    h5 {
+      font-size: 24px;
+    }
+  }
+`
+
 const SelectForm = styled(Form)`
+  max-width: 640px;
+  margin: 0px auto;
+  padding: 5px 25px;
   text-align: center;
 
   .ant-form-item {
@@ -628,7 +594,7 @@ const SelectForm = styled(Form)`
       font-weight: 600;
       font-size: 11px;
       text-transform: uppercase;
-      color: ${secondaryTextColor};
+      color: #434b5d;
     }
 
     .ant-select-arrow {
@@ -640,22 +606,6 @@ const SelectForm = styled(Form)`
   .ant-form-item-required::before {
     content: '';
   }
-  .ant-form-item-required::after {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 19px;
-    color: #ff0000;
-    margin-left: 4px;
-    content: '*' !important;
-  }
-  .ant-select-disabled {
-    .ant-select-selection {
-      background-color: ${white};
-    }
-  }
-  .ant-form-item-label > label {
-    font-size: 14px;
-  }
   .ant-form-item-label > label::after {
     content: '';
   }
@@ -663,7 +613,8 @@ const SelectForm = styled(Form)`
     padding-top: 8px;
   }
   .ant-select-selection {
-    border: 1px solid #a0a0a0;
+    border: none;
+    border-bottom: 1px solid #a0a0a0;
     border-radius: 0;
     min-height: 45px;
     box-shadow: none !important;
@@ -680,17 +631,16 @@ const SelectForm = styled(Form)`
         }
       }
       .ant-select-selection__choice {
-        background: #d9d9d9;
+        background: #e3e3e3;
         height: 30px;
         line-height: 30px;
-        border-radius: 4px;
+        border-radius: 20px;
         padding: 0px 15px;
-        margin-top: 6px;
         .ant-select-selection__choice__content {
           font-size: 11px;
-          color: #000000;
+          color: ${title};
           text-transform: uppercase;
-          padding-right: 5px;
+          margin-right: 5px;
           svg {
             width: 8px;
             height: 8px;
@@ -705,16 +655,18 @@ const SelectForm = styled(Form)`
   }
 `
 
+const SchoolIcon = styled.img`
+  width: 80px;
+  margin-bottom: 10px;
+`
+
 const GradeSelect = styled(Select)`
   width: 100%;
 `
 
 const ProceedBtn = styled(Button)`
   background: ${themeColor};
-  width: 134px;
-  height: 42px;
-  white-space: none;
-  padding: 10px;
+  min-width: 100%;
   color: ${white};
   text-transform: uppercase;
   text-align: center;
@@ -739,35 +691,4 @@ const IconExpandBoxWrapper = styled.div`
       fill: ${grey};
     }
   }
-`
-
-const OptionalText = styled.span`
-  font-weight: 300;
-  font-size: 14px;
-  line-height: 19px;
-  color: ${darkGrey3};
-`
-const BannerText = styled.div`
-  display: grid;
-  justify-content: center;
-  margin-top: 50px;
-`
-const Img = styled.img`
-  margin: auto;
-  width: 135px;
-  height: 120px;
-`
-const H3 = styled.h3`
-  font-size: 45px;
-  font-weight: bold;
-  color: ${secondaryTextColor};
-  line-height: 1;
-  letter-spacing: -2.25px;
-  margin-top: 10px;
-  margin-bottom: 15px;
-`
-const H5 = styled.h5`
-  font-size: 24px;
-  margin: auto;
-  color: ${secondaryTextColor};
 `

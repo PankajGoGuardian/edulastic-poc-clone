@@ -49,13 +49,11 @@ import AddCoTeacher from './AddCoTeacher/AddCoTeacher'
 import UpdateCoTeacher from './UpdateCoTeacher/UpdateCoTeacher'
 import {
   getManageCoTeacherModalVisibleStateSelector,
-  setCreateClassTypeDetailsAction,
   showUpdateCoTeacherModalAction,
 } from '../../ducks'
 import SyncModal from './SyncModal'
 import { getUserOrgId } from '../../../src/selectors/user'
 import { setFilterInSession } from '../../../../common/utils/helpers'
-import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
 
 const Option = Select.Option
 
@@ -100,8 +98,6 @@ const Header = ({
   syncClassWithAtlas,
   setSyncClassLoading,
   isCleverDistrict,
-  setShowClassCreationModal,
-  setCreateClassTypeDetails,
 }) => {
   const handleLoginSuccess = (data) => {
     fetchClassList({ data, showModal: false })
@@ -546,8 +542,6 @@ const Header = ({
             handleCancel={handleUnarchiveClassCancel}
             classDetails={selectedClass}
             history={history}
-            setShowClassCreationModal={setShowClassCreationModal}
-            setCreateClassTypeDetails={setCreateClassTypeDetails}
             onProceed={
               selectedClass?.canvasCode ? handleSyncWithCanvas : syncGCModal
             }
@@ -679,8 +673,6 @@ const enhance = compose(
     }),
     {
       setUpdateCoTeacherModal: showUpdateCoTeacherModalAction,
-      setShowClassCreationModal: setShowClassCreationModalAction,
-      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )

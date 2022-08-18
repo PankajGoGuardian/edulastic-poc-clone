@@ -127,7 +127,6 @@ const Container = ({
         orgType={orgType}
         isVisible={isModalVisible}
         handleCancel={() => toggleModal(false)}
-        hideJoinSchoolBanner
       />
     )
   }

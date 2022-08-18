@@ -10,14 +10,12 @@ import {
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton/index'
 
-const CreateClassCard = ({
-  newCreateClassCard,
-  setShowClassCreationModal,
-  setCreateClassTypeDetails,
-}) => {
+const CreateClassCard = ({ history, newCreateClassCard }) => {
   const createNewClass = () => {
-    setShowClassCreationModal(true)
-    setCreateClassTypeDetails({ type: 'class', fromDashboard: true })
+    history.push({
+      pathname: '/author/manageClass/createClass',
+      state: { fromDashboard: true },
+    })
   }
 
   return (
@@ -41,7 +39,7 @@ const CreateClassCard = ({
             </StyledEduButton>
           )}
           onClick={createNewClass}
-          triggerSource="Create Class"
+          triggerSource={'Create Class'}
         />
       </CreateClassCardWrapper>
     </>

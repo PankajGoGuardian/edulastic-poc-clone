@@ -18,11 +18,7 @@ import {
   fetchArchiveGroupsAction,
 } from '../../sharedDucks/groups'
 import { archiveClassAction } from '../../Classes/ducks'
-import {
-  setCreateClassTypeDetailsAction,
-  unarchiveClassAction,
-} from '../../ManageClass/ducks'
-import { setShowClassCreationModalAction } from '../../Dashboard/ducks'
+import { unarchiveClassAction } from '../../ManageClass/ducks'
 
 const StudentGroups = ({
   t,
@@ -37,8 +33,6 @@ const StudentGroups = ({
   fetchArchiveGroups,
   archiveGroup,
   unarchiveGroup,
-  setShowClassCreationModal,
-  setCreateClassTypeDetails,
 }) => {
   const [showActive, setShowActive] = useState(true)
   const [studentGroups, setStudentGroups] = useState([])
@@ -76,8 +70,6 @@ const StudentGroups = ({
       setShowActive={setShowActive}
       archiveGroup={archiveGroup}
       unarchiveGroup={unarchiveGroup}
-      setShowClassCreationModal={setShowClassCreationModal}
-      setCreateClassTypeDetails={setCreateClassTypeDetails}
     />
   )
 }
@@ -98,8 +90,6 @@ const enhance = compose(
       fetchArchiveGroups: fetchArchiveGroupsAction,
       archiveGroup: archiveClassAction,
       unarchiveGroup: unarchiveClassAction,
-      setShowClassCreationModal: setShowClassCreationModalAction,
-      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )

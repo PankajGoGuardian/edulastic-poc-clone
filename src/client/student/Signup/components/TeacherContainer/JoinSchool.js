@@ -3,8 +3,8 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
-import { get, debounce, find, isEmpty } from 'lodash'
-import { Row, Col, Breadcrumb, Icon, Button as Buttons, Tooltip } from 'antd'
+import { get, debounce, find } from 'lodash'
+import { Row, Col, Breadcrumb, Icon, Button as Buttons } from 'antd'
 import styled, { css } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
 import { IconClose } from '@edulastic/icons'
@@ -16,8 +16,6 @@ import {
   mobileWidthMax,
   mobileWidthLarge,
   extraDesktopWidthMax,
-  lightGreen11,
-  darkGrey3,
 } from '@edulastic/colors'
 
 import { Button } from 'antd/lib/radio'
@@ -28,11 +26,7 @@ import TeacherCarousel from './TeacherCarousel'
 import RequestSchoolModal from './RequestSchoolModal'
 import RequestSchoolSection from './RequestSchoolSection'
 
-import {
-  addSchoolAction,
-  fetchOrgInterestedStandardsAction,
-  setShowAllStandardsAction,
-} from '../../../Login/ducks'
+import { addSchoolAction } from '../../../Login/ducks'
 import {
   searchSchoolRequestAction,
   searchSchoolByDistrictRequestAction,
@@ -42,13 +36,8 @@ import {
   createAndJoinSchoolRequestAction,
   fetchSchoolTeachersRequestAction,
   setPreviousAutoSuggestSchools,
-  resetSchoolTeachersAction,
-  setSchoolSelectedInModalAction,
-  setSchoolSelectWarningAction,
-  setDisplayHomeSchoolButtonAction,
 } from '../../duck'
 import {
-  getOrgSchools,
   getUserIPZipCode,
   getUserOrgId,
 } from '../../../../author/src/selectors/user'
@@ -108,19 +97,6 @@ const JoinSchool = ({
   isModal,
   isSchoolSignupOnly = false,
   triggerSource = '',
-  setShowAllStandards,
-  resetSchoolTeachers,
-  fetchOrgInterestedStandards,
-  setSchoolSelectedInModal,
-  setSchoolSelectWarning,
-  displaySchoolSelectWarning,
-  institutions,
-  setSchoolSelectedFromDropdown,
-  schoolAdminSettingsAccess,
-  hideJoinSchoolBanner = false,
-  isCompleteSignupInProgress,
-  displayHomeSchoolButton,
-  setDisplayHomeSchoolButton,
 }) => {
   fromUserProfile = fromUserProfile || isSchoolSignupOnly
   const {
@@ -130,14 +106,6 @@ const JoinSchool = ({
     lastName,
     currentSignUpState,
   } = userInfo
-
-  const displayRequestNewSchoolButton =
-    (userInfo?.openIdProvider === 'canvas' &&
-      currentSignUpState === signUpState.DONE) ||
-    (userInfo?.openIdProvider !== 'canvas' &&
-      (currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
-        currentSignUpState === signUpState.DONE))
-
   const [selected, setSchool] = useState(null)
   const [tempSelected, setTempSchool] = useState(null)
   const [showModal, setShowModal] = useState(false)
@@ -145,45 +113,18 @@ const JoinSchool = ({
   const [requestSchoolFormVisible, setRequestSchoolFormVisible] = useState(
     false
   )
-  const [isDisabled, setIsDisabled] = useState(false)
-  const [preDistrictId, setPreDistrictId] = useState(null)
-  const [currDistrictId, setCurrDistrictId] = useState(null)
   const autoCompleteRef = useRef(null)
 
-  const toggleModal = () => {
-    if (isCompleteSignupInProgress) {
-      return
-    }
-    setShowModal(!showModal)
-  }
+  const toggleModal = () => setShowModal(!showModal)
 
-  const setSchoolData = (data) => {
-    setSchool(data)
-    setSchoolSelectedInModal(data)
-    setSchoolSelectWarning(!data)
-  }
-
-  const setSchoolMethod = (data) => {
-    setSchoolData(data)
-    if (setSchoolSelectedFromDropdown) {
-      setSchoolSelectedFromDropdown(false)
-    }
-    resetSchoolTeachers()
-    setIsDisabled(true)
-    toggleModal()
-  }
   const schoolIcon =
     '//cdn.edulastic.com/JS/webresources/images/as/signup-join-school-icon.png'
-  const deselectClassDisabledMsg =
-    'You cannot edit the school now. If you want to change complete the signup and go to my profile to update school.'
 
   const changeSchool = (value) => {
     const _school = find(schools, (item) => item.schoolId === value.key)
-    setPreDistrictId(currDistrictId)
-    setCurrDistrictId(_school?.districtId)
 
     if (isSignupUsingDaURL) {
-      setSchoolData(_school)
+      setSchool(_school)
 
       const teacherSearch = {
         limit: 20,
@@ -228,10 +169,7 @@ const JoinSchool = ({
       }
       setSchool(null)
     } else if (tempSelected) {
-      setSchoolData(tempSelected)
-      if (setSchoolSelectedFromDropdown) {
-        setSchoolSelectedFromDropdown(true)
-      }
+      setSchool(tempSelected)
 
       const teacherSearch = {
         limit: 20,
@@ -244,22 +182,9 @@ const JoinSchool = ({
         institutionIds: [tempSelected.schoolId],
       }
       fetchSchoolTeachers(teacherSearch)
-      if (
-        !(preDistrictId === currDistrictId && !schoolAdminSettingsAccess) &&
-        !fromUserProfile
-      ) {
-        fetchOrgInterestedStandards(tempSelected)
-      }
     }
     setTempSchool(null)
   }, [checkDistrictPolicy])
-
-  useEffect(() => {
-    if (!isEmpty(institutions) && !fromUserProfile && districtId) {
-      setSchoolData(institutions[0])
-      setIsDisabled(true)
-    }
-  }, [institutions])
 
   const handleSubmit = () => {
     const schoolId = selected.schoolId || selected._id
@@ -333,13 +258,6 @@ const JoinSchool = ({
     segmentApi.genericEventTrack('School_Selection_ModalOpen', {
       Trigger_Source: triggerSource,
     })
-    const homeSchoolButton =
-      (!districtId || !isSchoolSignupOnly) && !fromUserProfile && !allowCanvas
-    setDisplayHomeSchoolButton(homeSchoolButton)
-    return () => {
-      setSchoolSelectWarning(false)
-      setSchoolSelectedInModal(null)
-    }
   }, [])
 
   useEffect(() => {
@@ -356,7 +274,7 @@ const JoinSchool = ({
 
   useEffect(() => {
     if (newSchool._id && !homeSchool && !fromUserProfile) {
-      setSchoolData(newSchool)
+      setSchool(newSchool._id)
     }
   }, [newSchool])
 
@@ -378,17 +296,10 @@ const JoinSchool = ({
   }, [schools])
 
   const onClickHomeSchool = () => {
-    if (
-      createSchoolRequestPending ||
-      updateUserWithSchoolLoading ||
-      isCompleteSignupInProgress
-    ) {
+    if (createSchoolRequestPending || updateUserWithSchoolLoading) {
       return
     }
 
-    if (setSchoolSelectedFromDropdown) {
-      setSchoolSelectedFromDropdown(false)
-    }
     const schoolAndDistrictNamePrefix =
       userInfo.firstName + (userInfo.lastName ? `${userInfo.lastName} ` : ' ')
     const districtName = `${schoolAndDistrictNamePrefix}HOME SCHOOL DISTRICT`
@@ -412,7 +323,10 @@ const JoinSchool = ({
       createSchool: body,
       joinSchool: {
         data: {
-          currentSignUpState: 'ACCESS_WITHOUT_SCHOOL',
+          currentSignUpState:
+            userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
+              ? 'ACCESS_WITHOUT_SCHOOL'
+              : 'PREFERENCE_NOT_SELECTED',
           email: userInfo.email,
           firstName: userInfo.firstName,
           middleName: userInfo.middleName,
@@ -421,62 +335,15 @@ const JoinSchool = ({
         userId: userInfo._id,
       },
     })
-    setSchoolData(body)
-    resetSchoolTeachers()
-    setIsDisabled(true)
     setHomeSchool(true)
   }
 
-  const showRequestForm = () => {
-    if (isCompleteSignupInProgress) {
-      return
-    }
-    setRequestSchoolFormVisible(true)
-  }
+  const showRequestForm = () => setRequestSchoolFormVisible(true)
   const hideRequestForm = () => setRequestSchoolFormVisible(false)
-
-  const showJoinSchoolBanner = fromUserProfile && !hideJoinSchoolBanner
-  const ProceedButton = (
-    <ProceedBtn
-      data-cy="proceed"
-      onClick={handleSubmit}
-      disabled={
-        createSchoolRequestPending ||
-        updateUserWithSchoolLoading ||
-        (showJoinSchoolBanner && addingSchool)
-      }
-    >
-      {t(!allowCanvas ? 'common.proceed' : 'common.importCanvasClasses')}
-    </ProceedBtn>
-  )
-
-  const SchoolDetails = (
-    <div style={{ textAlign: 'center' }}>
-      {schoolTeachers.length > 0 ? (
-        <TeacherCarousel teachers={schoolTeachers} />
-      ) : null}
-      {showJoinSchoolBanner && ProceedButton}
-    </div>
-  )
-
-  const removeSchool = () => {
-    setSchoolData(null)
-    if (setSchoolSelectedFromDropdown) {
-      setSchoolSelectedFromDropdown(false)
-    }
-    setShowAllStandards(false)
-    if (homeSchool) {
-      setHomeSchool(false)
-    }
-  }
 
   return (
     <>
-      <JoinSchoolBody
-        hasMinHeight={!isModal}
-        data-cy="joinSchoolBody"
-        isPadded={showJoinSchoolBanner}
-      >
+      <JoinSchoolBody hasMinHeight={!isModal} data-cy="joinSchoolBody">
         {requestSchoolFormVisible && (
           <BreadcrumbWrapper>
             <Breadcrumb.Item>
@@ -486,69 +353,56 @@ const JoinSchool = ({
           </BreadcrumbWrapper>
         )}
         <Col
-          xs={{ span: 20, offset: showJoinSchoolBanner ? 2 : null }}
-          lg={{
-            span: isModal ? 22 : 18,
-            offset: isModal ? (showJoinSchoolBanner ? 1 : null) : 3,
-          }}
-          style={{ width: !showJoinSchoolBanner && '100%' }}
+          xs={{ span: 20, offset: 2 }}
+          lg={{ span: isModal ? 22 : 18, offset: isModal ? 1 : 3 }}
         >
           <FlexWrapper type="flex" align="middle">
-            {showJoinSchoolBanner && (
-              <BannerText
-                xs={24}
-                sm={18}
-                md={12}
-                fromUserProfile={showJoinSchoolBanner}
-              >
-                <SchoolIcon src={schoolIcon} alt="" />
-                {requestSchoolFormVisible ? (
-                  <>
-                    <h3>
-                      {t('component.signup.teacher.request')} <br />{' '}
-                      {t('component.signup.teacher.newschool')}
-                    </h3>
-                    <h5>
-                      {t('component.signup.teacher.filldetails')} <br />{' '}
-                      {t('component.signup.teacher.edulasticsupport')}
-                    </h5>
-                  </>
-                ) : (
-                  <>
-                    <h3>
-                      {t('component.signup.teacher.joinschool')} <br />{' '}
-                      {t('common.community')}
-                    </h3>
-                    <h5>{t('component.signup.teacher.collaboratetext')}</h5>
-                  </>
-                )}
-              </BannerText>
-            )}
+            <BannerText
+              xs={24}
+              sm={18}
+              md={12}
+              fromUserProfile={fromUserProfile}
+            >
+              <SchoolIcon src={schoolIcon} alt="" />
+              {requestSchoolFormVisible ? (
+                <>
+                  <h3>
+                    {t('component.signup.teacher.request')} <br />{' '}
+                    {t('component.signup.teacher.newschool')}
+                  </h3>
+                  <h5>
+                    {t('component.signup.teacher.filldetails')} <br />{' '}
+                    {t('component.signup.teacher.edulasticsupport')}
+                  </h5>
+                </>
+              ) : (
+                <>
+                  <h3>
+                    {t('component.signup.teacher.joinschool')} <br />{' '}
+                    {t('common.community')}
+                  </h3>
+                  <h5>{t('component.signup.teacher.collaboratetext')}</h5>
+                </>
+              )}
+            </BannerText>
             <Col xs={24} sm={18} md={12}>
               {requestSchoolFormVisible ? (
                 <RequestSchoolSection userInfo={userInfo} />
               ) : (
                 <SelectForm>
-                  <SeachSchoolLabel>SEARCH FOR YOUR SCHOOL</SeachSchoolLabel>
+                  <label>SEARCH SCHOOL</label>
                   {selected ? (
                     <SchoolSelected>
-                      <Tooltip
-                        placement="top"
-                        title={isDisabled && deselectClassDisabledMsg}
-                      >
-                        <SelectedTag>
-                          <span data-cy="selectedSchool">
-                            {selected.schoolName || selected.name || ''}
-                          </span>
-                          {!isDisabled && (
-                            <IconClose
-                              data-cy="removeSelected"
-                              color={themeColor}
-                              onClick={removeSchool}
-                            />
-                          )}
-                        </SelectedTag>
-                      </Tooltip>
+                      <SelectedTag>
+                        <span data-cy="selectedSchool">
+                          {selected.schoolName || ''}
+                        </span>
+                        <IconClose
+                          data-cy="removeSelected"
+                          color={themeColor}
+                          onClick={() => setSchool(null)}
+                        />
+                      </SelectedTag>
                     </SchoolSelected>
                   ) : (
                     <StyledRemoteAutocompleteDropDown
@@ -565,67 +419,66 @@ const JoinSchool = ({
                       isLoading={isSearching}
                       _ref={autoCompleteRef}
                       disabled={!!tempSelected}
-                      fontSize="12px"
                     />
                   )}
-                  {displaySchoolSelectWarning && (
-                    <ErrorMsg>Please select a school</ErrorMsg>
+                  {selected && selected.districtName ? (
+                    <DistrictName data-cy="districtName">
+                      <span>{t('common.district')}: </span>
+                      {selected.districtName}
+                    </DistrictName>
+                  ) : (
+                    ''
                   )}
                   <Actions>
-                    {displayRequestNewSchoolButton || fromUserProfile ? (
-                      <Tooltip
-                        placement="top"
-                        title={isDisabled && deselectClassDisabledMsg}
+                    {(!isSignupUsingDaURL && !districtId) || fromUserProfile ? (
+                      <AnchorBtn
+                        data-cy="reqNewSchoolBtn"
+                        onClick={
+                          fromUserProfile ? showRequestForm : toggleModal
+                        }
                       >
-                        <AnchorBtn
-                          data-cy="reqNewSchoolBtn"
-                          loading={
-                            createSchoolRequestPending ||
-                            updateUserWithSchoolLoading
-                          }
-                          onClick={
-                            showJoinSchoolBanner ? showRequestForm : toggleModal
-                          }
-                          bgColor={showJoinSchoolBanner}
-                          disabled={isDisabled}
-                        >
-                          {t('component.signup.teacher.requestnewschool')}
-                        </AnchorBtn>
-                      </Tooltip>
+                        {t('component.signup.teacher.requestnewschool')} »
+                      </AnchorBtn>
                     ) : null}
-                    {displayHomeSchoolButton ? (
-                      <Tooltip
-                        placement="top"
-                        title={isDisabled && deselectClassDisabledMsg}
+                    {!allowCanvas && !fromUserProfile ? (
+                      <AnchorBtn
+                        loading={
+                          createSchoolRequestPending ||
+                          updateUserWithSchoolLoading
+                        }
+                        onClick={onClickHomeSchool}
                       >
-                        <AnchorBtn
-                          loading={
-                            createSchoolRequestPending ||
-                            updateUserWithSchoolLoading
-                          }
-                          onClick={onClickHomeSchool}
-                          disabled={isDisabled}
-                        >
-                          {' '}
-                          HOME SCHOOL
-                        </AnchorBtn>
-                      </Tooltip>
+                        {' '}
+                        I WANT TO HOMESCHOOL »
+                      </AnchorBtn>
                     ) : null}
                   </Actions>
+
+                  {selected && (
+                    <div style={{ textAlign: 'center' }}>
+                      {schoolTeachers.length > 0 ? (
+                        <TeacherCarousel teachers={schoolTeachers} />
+                      ) : null}
+                      <ProceedBtn
+                        data-cy="proceed"
+                        onClick={handleSubmit}
+                        disabled={
+                          createSchoolRequestPending ||
+                          updateUserWithSchoolLoading ||
+                          (fromUserProfile && addingSchool)
+                        }
+                      >
+                        {t(
+                          !allowCanvas
+                            ? 'common.proceed'
+                            : 'common.importCanvasClasses'
+                        )}
+                      </ProceedBtn>
+                    </div>
+                  )}
                 </SelectForm>
               )}
-              {showJoinSchoolBanner && selected && SchoolDetails}
             </Col>
-            {!showJoinSchoolBanner && (
-              <Col xs={24} sm={18} md={12}>
-                {!selected && !homeSchool && (
-                  <SearchWithCityText mB={displaySchoolSelectWarning && '30px'}>
-                    For International School, please enter you city first.
-                  </SearchWithCityText>
-                )}
-                {selected && SchoolDetails}
-              </Col>
-            )}
           </FlexWrapper>
         </Col>
       </JoinSchoolBody>
@@ -634,7 +487,6 @@ const JoinSchool = ({
           isOpen={showModal}
           handleCancel={toggleModal}
           userInfo={userInfo}
-          setSchool={setSchoolMethod}
         />
       ) : null}
     </>
@@ -679,22 +531,6 @@ const enhance = compose(
       districtId: getUserOrgId(state),
       schoolTeachers: get(state, 'signup.schoolTeachers', []),
       addingSchool: get(state, 'user.addingSchool'),
-      displaySchoolSelectWarning: get(
-        state,
-        'signup.displaySchoolSelectWarning',
-        false
-      ),
-      institutions: getOrgSchools(state),
-      schoolAdminSettingsAccess: get(
-        state,
-        'districtPolicyReducer.schoolAdminSettingsAccess',
-        false
-      ),
-      displayHomeSchoolButton: get(
-        state,
-        'signup.displayHomeSchoolButton',
-        false
-      ),
     }),
     {
       searchSchool: searchSchoolRequestAction,
@@ -705,12 +541,6 @@ const enhance = compose(
       fetchSchoolTeachers: fetchSchoolTeachersRequestAction,
       setPreviousAutoSuggestSchoolsContent: setPreviousAutoSuggestSchools,
       addSchool: addSchoolAction,
-      setShowAllStandards: setShowAllStandardsAction,
-      resetSchoolTeachers: resetSchoolTeachersAction,
-      fetchOrgInterestedStandards: fetchOrgInterestedStandardsAction,
-      setSchoolSelectedInModal: setSchoolSelectedInModalAction,
-      setSchoolSelectWarning: setSchoolSelectWarningAction,
-      setDisplayHomeSchoolButton: setDisplayHomeSchoolButtonAction,
     }
   )
 )
@@ -738,9 +568,10 @@ const BreadcrumbLink = styled.span`
 `
 
 const JoinSchoolBody = styled(Row)`
-  padding: ${(props) => (props.isPadded ? '60px 0px;' : '0px;')}
-    ${({ hasMinHeight = true }) =>
-      hasMinHeight && `min-height: calc(100vh - 93px);`};
+  padding: 60px 0px;
+  background: white;
+  ${({ hasMinHeight = true }) =>
+    hasMinHeight && `min-height: calc(100vh - 93px);`}
 `
 
 const FlexWrapper = styled(Row)`
@@ -789,7 +620,7 @@ const selectStyle = css`
     .ant-select-selection__rendered {
       line-height: 45px;
       .ant-input-affix-wrapper .ant-input {
-        min-height: 47px;
+        min-height: 43px;
         box-shadow: none;
         border: none;
         font-size: 20px;
@@ -806,10 +637,12 @@ const selectStyle = css`
 const SelectForm = styled.div`
   max-width: 640px;
   margin: 0px auto;
-  padding: 25px 30px 25px 0px;
+  padding: 25px;
+  background: ${white};
   border-radius: 8px;
   .remote-autocomplete-dropdown {
-    border: 1px solid #a0a0a0;
+    border-bottom: 1px solid #a0a0a0;
+    background: ${white};
     margin: 0px;
     ${selectStyle};
   }
@@ -824,35 +657,32 @@ const SelectForm = styled.div`
   }
 `
 
+const DistrictName = styled.div`
+  font-size: 12px;
+  margin-right: auto;
+  padding: 15px 0px 0px;
+  span {
+    font-weight: 600;
+  }
+`
+
 const Actions = styled.div`
   display: flex;
-  justify-content: end;
-  padding: 0px;
-  margin-bottom: 15px;
+  justify-content: flex-start;
+  padding: 15px 0px;
 `
 
 const AnchorBtn = styled(Buttons)`
-  color: #398a73;
-  line-height: 14px;
   text-transform: uppercase;
-  font-weight: 800;
+  font-weight: 600;
   font-size: 10px;
-  margin-top: 15px;
-  margin-left: 30px;
+  color: ${themeColor};
+  margin-right: 25px;
   user-select: none;
   cursor: pointer;
   padding: 0;
   border: none;
-  border-radius: 0;
-  border-bottom: dashed;
   outline: none;
-  background-color: ${(props) => (props.bgColor ? white : '#dbf2ec')};
-  height: auto;
-  &.ant-btn[disabled],
-  &:hover,
-  &:focus {
-    background-color: ${(props) => (props.bgColor ? white : '#dbf2ec')};
-  }
 `
 
 const SchoolIcon = styled.img`
@@ -862,29 +692,27 @@ const SchoolIcon = styled.img`
 
 const SchoolSelected = styled.div`
   width: 100%;
-  border: 1px solid #a0a0a0;
+  background: ${white};
+  border-bottom: 1px solid #a0a0a0;
   margin: 0px;
   display: flex;
   align-items: center;
-  padding: 5px 15px;
+  padding: 5px;
   min-height: 45px;
 `
 
 const SelectedTag = styled.div`
-  background: #d9d9d9;
-  border-radius: 4px;
+  background: #e3e3e3;
+  border-radius: 20px;
   display: flex;
   padding: 2px 15px;
   min-height: 30px;
   color: ${themeColor};
   align-items: center;
   span {
-    font-weight: 400;
-    font-size: 11px;
-    line-height: 15px;
-    letter-spacing: 0.02em;
     margin-right: 10px;
-    color: #000000;
+    font-size: 11px;
+    color: #434b5d;
     text-transform: uppercase;
   }
   svg {
@@ -951,33 +779,4 @@ const DistrictInfo = styled.div`
 
 const StyledRemoteAutocompleteDropDown = styled(RemoteAutocompleteDropDown)`
   width: 100%;
-  svg {
-    font-size: 20px;
-    color: ${lightGreen11};
-  }
-`
-
-const ErrorMsg = styled.div`
-  font-size: 14px;
-  line-height: 1.5;
-  color: #f5222d;
-`
-const SeachSchoolLabel = styled.div`
-  font-weight: 600;
-  font-size: 14px;
-  line-height: 19px;
-  text-transform: uppercase;
-  color: ${darkGrey3};
-  padding: 5px 0px;
-  margin-bottom: 10px;
-`
-
-const SearchWithCityText = styled.div`
-  width: 50%;
-  margin-left: 15px;
-  margin-bottom: ${(props) => props.mB || '0px'};
-  font-weight: 600;
-  font-size: 12px;
-  line-height: 16px;
-  color: #8c8c8c;
 `

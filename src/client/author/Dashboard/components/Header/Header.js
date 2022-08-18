@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { Link } from 'react-router-dom'
+import { Link, withRouter } from 'react-router-dom'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
@@ -16,7 +16,7 @@ import {
 } from '@edulastic/icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { segmentApi } from '@edulastic/api'
 
 import { signUpState } from '@edulastic/constants'
@@ -29,23 +29,28 @@ import {
   PopoverTitle,
   PopoverWrapper,
   UpgradeBtn,
+  StyledLink,
   CloseButton,
 } from './styled'
-import { launchHangoutOpen, setShowClassCreationModalAction } from '../../ducks'
+import { launchHangoutOpen } from '../../ducks'
 import {
   getUserSelector,
+  getCanvasAllowedInstitutionPoliciesSelector,
+  getCleverLibraryUserSelector,
+  getGoogleAllowedInstitionPoliciesSelector,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   currentDistrictInstitutionIds,
+  isPublisherUserSelector,
 } from '../../../src/selectors/user'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
+import HeaderSyncAction from '../Showcase/components/Myclasses/components/HeaderSyncAction/HeaderSyncAction'
 import {
+  fetchClassListAction,
   fetchCleverClassListRequestAction,
   getCanvasCourseListRequestAction,
   getCanvasSectionListRequestAction,
   getCleverClassListSelector,
-  setCreateClassTypeDetailsAction,
-  setShowCanvasSyncModalAction,
   setShowCleverSyncModalAction,
   syncClassesWithCleverAction,
 } from '../../../ManageClass/ducks'
@@ -127,6 +132,12 @@ const HeaderSection = ({
   t,
   openLaunchHangout,
   subscription,
+  history,
+  fetchClassList,
+  isUserGoogleLoggedIn,
+  googleAllowedInstitutions,
+  canvasAllowedInstitutions,
+  isCleverUser,
   setShowCleverSyncModal,
   courseList,
   loadingCleverClassList,
@@ -141,17 +152,17 @@ const HeaderSection = ({
   getCanvasCourseListRequest,
   getCanvasSectionListRequest,
   showCleverSyncModal,
+  teacherData,
   classData,
+  loading,
   districtPolicy,
   schoolPolicy,
   setShowHeaderTrialModal,
   isPremiumTrialUsed,
-  showCanvasSyncModal,
-  setShowCanvasSyncModal,
-  setShowClassCreationModal,
-  setCreateClassTypeDetails,
+  isPublisherUser,
 }) => {
   const { subEndDate, subType } = subscription || {}
+  const [showCanvasSyncModal, setShowCanvasSyncModal] = useState(false)
 
   const { user: userInfo } = user
   const { currentSignUpState } = userInfo
@@ -197,10 +208,7 @@ const HeaderSection = ({
     (needsRenewal || !isPaidPremium) &&
     !['enterprise', 'partial_premium'].includes(subType)
 
-  const createNewClass = () => {
-    setShowClassCreationModal(true)
-    setCreateClassTypeDetails({ type: 'class' })
-  }
+  const createNewClass = () => history.push('/author/manageClass/createClass')
 
   const sortableClasses = classData
     .filter((d) => d.asgnStartDate !== null && d.asgnStartDate !== undefined)
@@ -214,14 +222,24 @@ const HeaderSection = ({
     (c) => c.active === 1 && c.type === 'class'
   )
 
+  const isClassLink =
+    teacherData && teacherData.filter((id) => id?.atlasId).length > 0
+
   const closeCleverSyncModal = () => setShowCleverSyncModal(false)
   const closeCanvasSyncModal = () => setShowCanvasSyncModal(false)
 
   const handleShowTrialModal = () => setShowHeaderTrialModal(true)
 
+  const hasNoActiveClassFallback =
+    !loading &&
+    allActiveClasses.length === 0 &&
+    (googleAllowedInstitutions.length > 0 ||
+      isCleverUser ||
+      canvasAllowedInstitutions.length > 0)
+
   const isSignupComplete = currentSignUpState === signUpState.DONE
 
-  const atleastOneClassPresent = allActiveClasses.length > 0
+  const showManageClass = allActiveClasses.length > 0
 
   const isHangoutEnabled =
     districtPolicy?.enableGoogleMeet === true
@@ -231,7 +249,20 @@ const HeaderSection = ({
   return (
     <MainHeader Icon={IconClockDashboard} headingText={t('common.dashboard')}>
       <FlexContainer alignItems="center">
-        {atleastOneClassPresent && (
+        {(currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL ||
+          isEmpty(institutionIds)) &&
+          !isPublisherUser && (
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <StyledLink data-cy="completeSignup" onClick={handleClick}>
+                  Complete signup
+                </StyledLink>
+              )}
+              trackClick={trackClick('dashboard:complete-sign-up:click')}
+              triggerSource="Button Click"
+            />
+          )}
+        {showManageClass && (
           <>
             <Tooltip title="Manage Class">
               <Link to="/author/manageClass">
@@ -262,6 +293,20 @@ const HeaderSection = ({
           </>
         )}
 
+        {hasNoActiveClassFallback && (
+          <HeaderSyncAction
+            fetchClassList={fetchClassList}
+            history={history}
+            isUserGoogleLoggedIn={isUserGoogleLoggedIn}
+            allowGoogleLogin={googleAllowedInstitutions.length > 0}
+            canvasAllowedInstitutions={canvasAllowedInstitutions}
+            enableCleverSync={isCleverUser}
+            setShowCleverSyncModal={setShowCleverSyncModal}
+            handleCanvasBulkSync={() => setShowCanvasSyncModal(true)}
+            user={userInfo}
+            isClassLink={isClassLink}
+          />
+        )}
         <CanvasClassSelectModal
           visible={showCanvasSyncModal}
           onCancel={closeCanvasSyncModal}
@@ -286,22 +331,20 @@ const HeaderSection = ({
           defaultGrades={defaultGrades}
           defaultSubjects={defaultSubjects}
         />
-        {atleastOneClassPresent && (
-          <AuthorCompleteSignupButton
-            renderButton={(handleClick) => (
-              <EduButton
-                isBlue
-                style={{ marginLeft: '5px' }}
-                data-cy="createNewClass"
-                onClick={handleClick}
-              >
-                <IconPlusCircle width={16} height={16} /> NEW CLASS
-              </EduButton>
-            )}
-            onClick={createNewClass}
-            trackClick={trackClick('dashboard:create-new-class:click')}
-          />
-        )}
+        <AuthorCompleteSignupButton
+          renderButton={(handleClick) => (
+            <EduButton
+              isBlue
+              style={{ marginLeft: '5px' }}
+              data-cy="createNewClass"
+              onClick={handleClick}
+            >
+              <IconPlusCircle width={16} height={16} /> NEW CLASS
+            </EduButton>
+          )}
+          onClick={createNewClass}
+          trackClick={trackClick('dashboard:create-new-class:click')}
+        />
         {showPopup && (
           <PopoverWrapper>
             <Popover
@@ -344,7 +387,7 @@ const HeaderSection = ({
                 >
                   <i className="fa fa-unlock-alt" aria-hidden="true" />
                   {!isPremiumUser && !isPremiumTrialUsed
-                    ? 'TRY PREMIUM'
+                    ? 'TRY PREMIUM FOR FREE'
                     : 'Upgrade'}
                 </EduButton>
               )}
@@ -360,44 +403,54 @@ HeaderSection.propTypes = {
   user: PropTypes.object.isRequired,
   isSubscriptionExpired: PropTypes.bool.isRequired,
   openLaunchHangout: PropTypes.func.isRequired,
+  history: PropTypes.object.isRequired,
 }
 
 const enhance = compose(
   withNamespaces('header'),
+  withRouter,
   connect(
     (state) => ({
       user: getUserSelector(state),
       subscription: state?.subscription?.subscriptionData?.subscription,
       isSubscriptionExpired: state?.subscription?.isSubscriptionExpired,
+      isUserGoogleLoggedIn: get(state, 'user.user.isUserGoogleLoggedIn'),
       districtPolicy: get(state, 'user.user.orgData.policies.district'),
       schoolPolicy: get(state, 'user.user.orgData.policies.institutions'),
+      googleAllowedInstitutions: getGoogleAllowedInstitionPoliciesSelector(
+        state
+      ),
+      canvasAllowedInstitutions: getCanvasAllowedInstitutionPoliciesSelector(
+        state
+      ),
+      isCleverUser: getCleverLibraryUserSelector(state),
       canvasCourseList: get(state, 'manageClass.canvasCourseList', []),
       canvasSectionList: get(state, 'manageClass.canvasSectionList', []),
       courseList: get(state, 'coursesReducer.searchResult'),
       loadingCleverClassList: get(state, 'manageClass.loadingCleverClassList'),
       cleverClassList: getCleverClassListSelector(state),
       showCleverSyncModal: get(state, 'manageClass.showCleverSyncModal', false),
-      showCanvasSyncModal: get(state, 'manageClass.showCanvasSyncModal', false),
+      teacherData: get(state, 'dashboardTeacher.data', []),
       classData: state.dashboardTeacher.data,
       institutionIds: currentDistrictInstitutionIds(state),
       getStandardsListBySubject: (subject) =>
         getFormattedCurriculumsSelector(state, { subject }),
       defaultGrades: getInterestedGradesSelector(state),
       defaultSubjects: getInterestedSubjectsSelector(state),
+      loading: state.dashboardTeacher.loading,
       isPremiumTrialUsed:
         state.subscription?.subscriptionData?.isPremiumTrialUsed,
+      isPublisherUser: isPublisherUserSelector(state),
     }),
     {
       openLaunchHangout: launchHangoutOpen,
+      fetchClassList: fetchClassListAction,
       setShowCleverSyncModal: setShowCleverSyncModalAction,
       fetchCleverClassList: fetchCleverClassListRequestAction,
       syncCleverClassList: syncClassesWithCleverAction,
       getCanvasCourseListRequest: getCanvasCourseListRequestAction,
       getCanvasSectionListRequest: getCanvasSectionListRequestAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
-      setShowCanvasSyncModal: setShowCanvasSyncModalAction,
-      setShowClassCreationModal: setShowClassCreationModalAction,
-      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
     }
   )
 )

@@ -1,18 +1,22 @@
 import styled, { css } from 'styled-components'
 import { Row } from 'antd'
-import { white } from '@edulastic/colors'
+import { white, themeColor } from '@edulastic/colors'
 import { TextWrapper } from '../../../../../styledComponents'
 
 const CircleBtnStyle = css`
+  width: 24px;
+  height: 24px;
   border-radius: 50%;
+  background: ${(props) => props.bg || white};
   cursor: pointer;
   display: flex;
-  margin: 3px 5px;
+  justify-content: center;
+  align-items: center;
 `
 
 export const Image = styled.img`
   width: 100%;
-  height: 145px;
+  height: 98px;
   position: relative;
   filter: brightness(50%);
   border: none;
@@ -28,29 +32,33 @@ export const OverlayText = styled.div`
   z-index: 30;
   color: ${white};
   overflow: hidden;
-  padding: 9px 15px;
+  padding: 9px 12px;
   font-weight: bold;
-  cursor: pointer;
 `
 export const IconWrapper = styled.div`
   display: flex;
-  justify-content: end;
+`
+export const CircleBtn = styled.div`
+  ${CircleBtnStyle}
 `
 
 export const FavCircleBtn = styled.div`
   ${CircleBtnStyle}
+  position:absolute;
+  right: 10px;
+  bottom: 5px;
   &:hover {
     svg {
       transform: scale(1.15);
     }
   }
   & > i > svg {
-    fill: ${(props) => (props.isFavorite ? '#ca481e' : white)};
+    fill: ${(props) => (props.isFavorite ? '#ca481e' : themeColor)};
   }
 `
 
 export const TextDiv = styled.p`
-  font-size: 14px;
+  font-size: 13px;
   margin-top: 2px;
   text-overflow: ellipsis;
   font-weight: bold;
@@ -71,7 +79,7 @@ export const SpanLeftMargin = styled.span`
   margin-left: 0.5rem;
 `
 export const RowWrapperGrade = styled(Row)`
-  margin: 5px 0px;
+  margin-top: 2px;
 `
 
 export const StyledRow = styled(Row)`
@@ -79,5 +87,4 @@ export const StyledRow = styled(Row)`
   max-height: 35px;
   min-height: 24px;
   align-items: top;
-  margin: 5px 0px;
 `

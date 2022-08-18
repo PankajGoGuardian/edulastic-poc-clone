@@ -10,12 +10,12 @@ import {
 } from './styled'
 import AuthorCompleteSignupButton from '../../../../../../../../common/components/AuthorCompleteSignupButton/index'
 
-const CreateAssignmentCard = ({
-  newCreateClassCard,
-  setShowAssignmentCreationModal,
-}) => {
+const CreateAssignmentCard = ({ history, newCreateClassCard }) => {
   const createNewAssignment = () => {
-    setShowAssignmentCreationModal(true)
+    history.push({
+      pathname: '/author/assignments/select',
+      state: { fromDashboard: true },
+    })
   }
 
   return (
@@ -25,7 +25,7 @@ const CreateAssignmentCard = ({
           Create Assignment
         </CreateClassTitle>
         <InfoText>
-          Select from a library of <b> 100K+ pre-built assessment </b> or create
+          Select from a library of <b> 200K pre-built assessment </b> or create
           your own
         </InfoText>
         <AuthorCompleteSignupButton
@@ -40,7 +40,7 @@ const CreateAssignmentCard = ({
             </StyledEduButton>
           )}
           onClick={createNewAssignment}
-          triggerSource="Create Assignment"
+          triggerSource={'Create Assignment'}
         />
       </CreateClassCardWrapper>
     </>

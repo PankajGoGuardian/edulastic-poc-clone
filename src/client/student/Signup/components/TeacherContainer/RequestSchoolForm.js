@@ -5,11 +5,10 @@ import { debounce, get, isEmpty, map } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
-import { darkGrey3 } from '@edulastic/colors'
 import { RemoteAutocompleteDropDown } from '../../../../common/components/widgets/remoteAutoCompleteDropDown'
 import { searchDistrictsRequestAction } from '../../duck'
 import { statesWithCodes } from './constants'
-import { getUserOrg, getUserOrgId } from '../../../../author/src/selectors/user'
+import { getUserOrg } from '../../../../author/src/selectors/user'
 
 const { Option } = Select
 class RequestSchoolForm extends React.Component {
@@ -64,8 +63,9 @@ class RequestSchoolForm extends React.Component {
       isSearching,
       autocompleteDistricts,
       t,
+      userInfo,
       handleSubmit,
-      districtId,
+      fromUserProfile,
       userOrg = {},
     } = this.props
     const { getFieldDecorator } = form
@@ -98,7 +98,7 @@ class RequestSchoolForm extends React.Component {
 
     return (
       <FormWrapper {...formItemLayout} onSubmit={handleSubmit}>
-        <Form.Item label="Name of your school">
+        <Form.Item label="Name">
           {getFieldDecorator('name', {
             validateTrigger: ['onChange', 'onBlur'],
             rules: [
@@ -115,90 +115,98 @@ class RequestSchoolForm extends React.Component {
             />
           )}
         </Form.Item>
-        <Row gutter={56}>
-          <Col xs={24} sm={12}>
-            <Form.Item label="Address">
-              {getFieldDecorator('address', {
-                rules: [
-                  {
-                    required: false,
-                    message: 'Please provide a valid school address.',
+        {fromUserProfile ? (
+          <Form.Item label="District">
+            {getFieldDecorator('districtId', {
+              initialValue: userOrg?.districtName,
+            })(<TextInputStyled data-cy="district" disabled />)}
+          </Form.Item>
+        ) : (
+          <Form.Item label="District">
+            {getFieldDecorator('districtId', {
+              initialValue: { key: '', title: '' },
+              rules: [
+                {
+                  required: true,
+                  message: 'Please provide a valid district name.',
+                },
+                {
+                  validator: async (rule, value, callback) => {
+                    if (value.title.length === 0 || value.key.length === 0) {
+                      callback('Please provide a valid district name.')
+                      return
+                    }
+
+                    if (value.key === 'Add New') {
+                      callback()
+                      return
+                    }
+
+                    if (value.cleverId) {
+                      callback(
+                        'The enrollment for this district is handled by district SIS, Please contact admin to create your Edulastic account.'
+                      )
+                      return
+                    }
+
+                    try {
+                      let signOnMethod = 'userNameAndPassword'
+                      signOnMethod = userInfo.msoId
+                        ? 'office365SignOn'
+                        : signOnMethod
+                      signOnMethod = userInfo.cleverId
+                        ? 'cleverSignOn'
+                        : signOnMethod
+                      signOnMethod = userInfo.googleId
+                        ? 'googleSignOn'
+                        : signOnMethod
+                      const checkDistrictPolicyPayload = {
+                        districtId: value.key,
+                        email: userInfo.email,
+                        type: userInfo.role,
+                        signOnMethod,
+                      }
+                      callback()
+                      return
+                    } catch (error) {
+                      console.error(error)
+                      callback(t('common.policyviolation'))
+                    }
                   },
-                ],
-              })(
-                <TextInputStyled
-                  data-cy="address"
-                  placeholder="Enter your school address"
-                />
-              )}
-            </Form.Item>
-          </Col>
-          <Col xs={24} sm={12}>
-            {districtId ? (
-              <Form.Item label="District">
-                {getFieldDecorator('districtId', {
-                  initialValue: userOrg?.districtName,
-                })(<TextInputStyled data-cy="district" disabled />)}
-              </Form.Item>
-            ) : (
-              <Form.Item label="District">
-                {getFieldDecorator('districtId', {
-                  initialValue: { key: '', title: '' },
-                  rules: [
-                    {
-                      required: true,
-                      message: 'Please provide a valid district name.',
-                    },
-                    {
-                      validator: async (rule, value, callback) => {
-                        if (
-                          value.title.length === 0 ||
-                          value.key.length === 0
-                        ) {
-                          callback('Please provide a valid district name.')
-                          return
-                        }
-
-                        if (value.key === 'Add New') {
-                          callback()
-                          return
-                        }
-
-                        if (value.cleverId) {
-                          callback(
-                            'The enrollment for this district is handled by district SIS, Please contact admin to create your Edulastic account.'
-                          )
-                          return
-                        }
-                        try {
-                          callback()
-                          return
-                        } catch (error) {
-                          console.error(error)
-                          callback(t('common.policyviolation'))
-                        }
-                      },
-                    },
-                  ],
-                })(
-                  <RemoteAutocompleteDropDown
-                    by={keyword}
-                    data={autocompleteDistricts}
-                    onSearchTextChange={this.handleTyping}
-                    iconType="down"
-                    createNew
-                    createNewLabel="Create New District"
-                    existingLabel="Districts"
-                    placeholder="Enter your school district name"
-                    isLoading={isSearching}
-                    isModalOpen
-                  />
-                )}
-              </Form.Item>
+                },
+              ],
+            })(
+              <RemoteAutocompleteDropDown
+                by={keyword}
+                data={autocompleteDistricts}
+                onSearchTextChange={this.handleTyping}
+                iconType="down"
+                createNew
+                createNewLabel="Create New District"
+                existingLabel="Districts"
+                placeholder="Enter your school district name"
+                isLoading={isSearching}
+                isModalOpen
+              />
             )}
-          </Col>
-        </Row>
-        <Row gutter={56}>
+          </Form.Item>
+        )}
+        <Form.Item label="Address">
+          {getFieldDecorator('address', {
+            rules: [
+              {
+                required: false,
+                message: 'Please provide a valid school address.',
+              },
+            ],
+          })(
+            <TextInputStyled
+              data-cy="address"
+              placeholder="Enter your school address"
+            />
+          )}
+        </Form.Item>
+        <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item label="City">
               {getFieldDecorator('city', {
@@ -233,7 +241,7 @@ class RequestSchoolForm extends React.Component {
             </Form.Item>
           </Col>
         </Row>
-        <Row gutter={56}>
+        <Row gutter={24}>
           <Col xs={24} sm={12}>
             <Form.Item label="State" style={{ width: '100%' }}>
               {getFieldDecorator(
@@ -305,7 +313,6 @@ export default connect(
     isSearching: get(state, 'signup.isSearching', false),
     autocompleteDistricts: get(state, 'signup.autocompleteDistricts', []),
     userOrg: getUserOrg(state),
-    districtId: getUserOrgId(state),
   }),
   {
     searchDistrict: searchDistrictsRequestAction,
@@ -314,29 +321,16 @@ export default connect(
 
 const FormWrapper = styled(Form)`
   .ant-row .ant-form-item-label {
+    line-height: normal;
     text-align: left;
     padding: 0px;
     label {
-      font-weight: 600;
-      font-size: 14px;
-      line-height: 19px;
+      font-size: 11px;
       text-transform: uppercase;
-      color: ${darkGrey3};
       &:after {
-        content: '';
+        display: none;
       }
     }
-  }
-  .ant-form-item-required::before {
-    content: '';
-  }
-  .ant-form-item-required::after {
-    font-weight: 600;
-    font-size: 14px;
-    line-height: 19px;
-    color: #ff0000;
-    margin-left: 4px;
-    content: '*' !important;
   }
   .ant-form-item-control {
     .ant-form-explain {
@@ -344,26 +338,6 @@ const FormWrapper = styled(Form)`
     }
   }
   .ant-row.ant-form-item {
-    margin-bottom: 20px;
-  }
-  .ant-form-item-children {
-    .ant-input {
-      height: 50px;
-      margin-top: 10px;
-    }
-    .remote-autocomplete-dropdown {
-      line-height: normal;
-      .ant-input-affix-wrapper {
-        .ant-input {
-          height: 50px;
-        }
-      }
-    }
-    .ant-select-selection .ant-select-selection__rendered {
-      height: 50px;
-      .ant-select-selection-selected-value {
-        margin-top: 7px;
-      }
-    }
+    margin-bottom: 15px;
   }
 `

@@ -20,7 +20,6 @@ import {
   StyledPrivacyPolicyModal,
 } from './Styled'
 import { setLocationToUserAction } from '../student/Login/ducks'
-import { setShowWelcomePopupAction } from '../author/Dashboard/ducks'
 
 const eeaTitle =
   'End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
@@ -33,11 +32,7 @@ const eeaSubTitle =
 const nonEeaSubtitle =
   'Welcome to Edulastic! Before we proceed, please read our entire (1) Terms of Service and End User License Agreement; and (2) Product Privacy Policy to make sure we’re on the same page.'
 
-const PrivacyPolicyModal = ({
-  userID,
-  setLocationData,
-  setShowWelcomePopup,
-}) => {
+const PrivacyPolicyModal = ({ userID, setLocationData }) => {
   const [showSpinner, setShowSpinner] = useState(false)
   const [isChecked, setIsChecked] = useState(false)
   const [showModal, setShowModal] = useState(true)
@@ -90,7 +85,6 @@ const PrivacyPolicyModal = ({
       .eulaPolicyStatusUpdate(payload)
       .then(() => {
         setShowModal(false)
-        setShowWelcomePopup(true)
       })
       .catch((e) => {
         setShowSpinner(false)
@@ -172,8 +166,5 @@ export default connect(
   () => {
     return {}
   },
-  {
-    setLocationData: setLocationToUserAction,
-    setShowWelcomePopup: setShowWelcomePopupAction,
-  }
+  { setLocationData: setLocationToUserAction }
 )(PrivacyPolicyModal)

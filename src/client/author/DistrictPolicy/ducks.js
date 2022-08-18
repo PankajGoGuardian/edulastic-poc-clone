@@ -16,8 +16,6 @@ const UPDATE_DISTRICT_POLICY_ERROR = '[district policy] update data error'
 const CREATE_DISTRICT_POLICY_REQUEST = '[district policy] create data request'
 const CREATE_DISTRICT_POLICY_SUCCESS = '[district policy] create data success'
 const CREATE_DISTRICT_POLICY_ERROR = '[district policy] create data error'
-const SET_SCHOOL_ADMIN_SETTINGS_ACCESS =
-  '[district policy] set school admin settings access'
 
 const CHANGE_DISTRICT_POLICY_ACTION = '[district policy] save changed data'
 const SAVE_CANVAS_INTEGRATION_KEYS_REQUEST =
@@ -60,9 +58,6 @@ export const changeDistrictPolicyAction = createAction(
 export const saveCanvasKeysRequestAction = createAction(
   SAVE_CANVAS_INTEGRATION_KEYS_REQUEST
 )
-export const setSchoolAdminSettingsAccessAction = createAction(
-  SET_SCHOOL_ADMIN_SETTINGS_ACCESS
-)
 
 // reducers
 const initialState = {
@@ -93,8 +88,6 @@ const initialState = {
   allowedDomainsForDistrict: '',
 
   canvas: false,
-
-  schoolAdminSettingsAccess: false,
 }
 
 export const reducer = createReducer(initialState, {
@@ -178,9 +171,6 @@ export const reducer = createReducer(initialState, {
     } else {
       state.data = data
     }
-  },
-  [SET_SCHOOL_ADMIN_SETTINGS_ACCESS]: (state, { payload }) => {
-    state.schoolAdminSettingsAccess = payload
   },
 })
 

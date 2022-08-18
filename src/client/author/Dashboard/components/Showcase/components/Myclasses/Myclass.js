@@ -50,7 +50,6 @@ import {
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
 import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
-import ClassBanner from './components/ClassBanner'
 
 const ItemPurchaseModal = loadable(() =>
   import('./components/ItemPurchaseModal')
@@ -125,7 +124,8 @@ const MyClasses = ({
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
 
-  const { currentSignUpState } = user
+  const { currentSignUpState, orgData = {} } = user
+  const { classList = [] } = orgData
   const isSignupCompleted = currentSignUpState === signUpState.DONE
 
   const saveRecommendedTests = (_data) => {
@@ -224,7 +224,7 @@ const MyClasses = ({
   const allActiveClasses = allClasses.filter(
     (c) => c.active === 1 && c.type === 'class'
   )
-  const atleastOneClassPresent = allActiveClasses.length > 0
+
   useEffect(() => {
     if (totalAssignmentCount >= 5) {
       checkLocalRecommendedTests()
@@ -723,19 +723,7 @@ const MyClasses = ({
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
   return (
-    <MainContentWrapper padding="15px 25px">
-      {atleastOneClassPresent ? (
-        <Classes
-          showBannerSlide={showBannerSlide}
-          activeClasses={allActiveClasses}
-          userId={user?._id}
-          classData={classData}
-          history={history}
-          hideGetStartedSection={hideGetStartedSection}
-        />
-      ) : (
-        <ClassBanner />
-      )}
+    <MainContentWrapper padding="30px 25px">
       {showBannerSlide && (
         <BannerSlider
           bannerSlides={bannerSlides}
@@ -746,9 +734,16 @@ const MyClasses = ({
           handleSparkClick={handleSparkClick}
           accessibleItembankProductIds={accessibleItembankProductIds}
           windowWidth={windowWidth}
-          history={history}
         />
       )}
+      <Classes
+        showBannerSlide={showBannerSlide}
+        activeClasses={allActiveClasses}
+        userId={user?._id}
+        classData={classData}
+        history={history}
+        hideGetStartedSection={hideGetStartedSection}
+      />
       {showRecommendedTests && (
         <TestRecommendations
           recommendations={recommendedTests}

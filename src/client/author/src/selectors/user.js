@@ -80,7 +80,7 @@ export const getChildrens = createSelector(
 
 export const getUserIPZipCode = createSelector(
   stateSelector,
-  (state) => state.user?.location?.zip || undefined
+  (state) => state.user?.location?.zip
 )
 
 export const getUser = createSelector(stateSelector, (state) => state.user)

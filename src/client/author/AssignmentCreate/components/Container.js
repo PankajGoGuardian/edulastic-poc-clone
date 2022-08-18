@@ -1,157 +1,92 @@
-import { CustomModalStyled, EduButton } from '@edulastic/common'
-import React from 'react'
-import { withRouter } from 'react-router-dom'
+import { EduButton, MainContentWrapper, MainHeader } from '@edulastic/common'
+import { IconNewFile, IconTestBank } from '@edulastic/icons'
+import PropTypes from 'prop-types'
+import React, { Component } from 'react'
+import { withNamespaces } from 'react-i18next'
+import { Link, withRouter } from 'react-router-dom'
 import { compose } from 'redux'
-import { Col, Row } from 'antd'
-import { connect } from 'react-redux'
-import { lightGreen11 } from '@edulastic/colors'
-import { setShowAssignmentCreationModalAction } from '../../Dashboard/ducks'
-import AppConfig from '../../../../app-config'
-import { TitleHeader, TitleParagraph } from '../../Welcome/styled/styled'
-import {
-  DottedLine,
-  Img,
-  InfoText,
-  PartitionDiv,
-  StyledDiv1,
-  StyledDiv2,
-  Title,
-} from './styled'
+import BreadCrumb from '../../src/components/Breadcrumb'
+import { SecondHeader } from '../../TestPage/components/Summary/components/Container/styled'
+import BodyWrapper from '../common/BodyWrapper'
+import CardComponent from '../common/CardComponent'
+import CountWrapper from '../common/CountWrapper'
+import FlexWrapper from '../common/FlexWrapper'
+import IconWrapper from '../common/IconWrapper'
+import TextWrapper from '../common/TextWrapper'
+import TextWrapperBold from '../common/TextWrapperBold'
+import { AlignMiddle } from '../common/Title'
+import TitleWrapper from '../common/TitleWrapper'
 
-const CreateAssignmentModal = ({
-  visible,
-  setShowAssignmentCreationModal,
-  history,
-}) => {
-  const FOLDER_IMAGE_PATH = `${AppConfig.cdnURI}/Folder.png`
-  const PENCIL_IMAGE_PATH = `${AppConfig.cdnURI}/Pencil.png`
+class Container extends Component {
+  render() {
+    const breadcrumbData = [
+      {
+        title: 'RECENT ASSIGNMENTS',
+        to: '/author/assignments',
+      },
+      {
+        title: 'NEW ASSIGNMENT',
+        to: '',
+      },
+    ]
 
-  const closeModal = () => {
-    setShowAssignmentCreationModal(false)
+    const { t } = this.props
+
+    return (
+      <div>
+        <MainHeader headingText={t('common.newAssignment')}>
+          <AlignMiddle>SELECT A TEST</AlignMiddle>
+        </MainHeader>
+        <MainContentWrapper>
+          <SecondHeader>
+            <BreadCrumb data={breadcrumbData} style={{ position: 'unset' }} />
+          </SecondHeader>
+          <BodyWrapper height="calc(100% - 30px)">
+            <FlexWrapper>
+              <CardComponent>
+                <IconWrapper marginBottom="0px">
+                  <IconTestBank height="20" width="20" />
+                </IconWrapper>
+                <TitleWrapper>Choose From Library</TitleWrapper>
+                <TextWrapper>
+                  Select pre built assessment from the <br /> Edulastic Library
+                </TextWrapper>
+                <CountWrapper>191211</CountWrapper>
+                <TextWrapperBold>
+                  Pre-built assessment in Library
+                </TextWrapperBold>
+                <Link to="/author/tests">
+                  <EduButton data-cy="browseAll" isGhost width="180px">
+                    BROWSE ALL
+                  </EduButton>
+                </Link>
+              </CardComponent>
+              <CardComponent>
+                <IconWrapper marginBottom="0px">
+                  <IconNewFile height="22" width="18" />
+                </IconWrapper>
+                <TitleWrapper>Author a Test</TitleWrapper>
+                <TextWrapper>
+                  Create test using questions from the <br /> library or author
+                  your own.
+                </TextWrapper>
+                <Link to="/author/tests/select">
+                  <EduButton data-cy="createNew" isGhost width="180px">
+                    Create Test
+                  </EduButton>
+                </Link>
+              </CardComponent>
+            </FlexWrapper>
+          </BodyWrapper>
+        </MainContentWrapper>
+      </div>
+    )
   }
-
-  const navigateToTestPage = () => {
-    setShowAssignmentCreationModal(false)
-    history.push('/author/tests')
-  }
-
-  const createTestPage = () => {
-    setShowAssignmentCreationModal(false)
-    history.push('/author/tests/select')
-  }
-
-  const modalTitle = (
-    <>
-      <TitleHeader>Create assignment </TitleHeader>
-      <TitleParagraph>
-        Tell us how you&apos;d like to make your assignment
-      </TitleParagraph>
-    </>
-  )
-
-  return (
-    <CustomModalStyled
-      title={modalTitle}
-      visible={visible}
-      modalWidth="620px"
-      footer={null}
-      data-cy="createAssignmentModal"
-      onCancel={closeModal}
-      centered
-      borderRadius="10px"
-      closeTopAlign="14px"
-      closeRightAlign="10px"
-      closeIconColor="black"
-      zIndex={5001}
-    >
-      <StyledDiv1>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Title>Pre-built assessment </Title>
-            <DottedLine margin="0px 0px 30px 0px" />
-            <InfoText>
-              Select a pre-built assessment from <b>100k+ assesments</b> in the
-              Edulastic Library.
-            </InfoText>
-          </Col>
-          <Col span={12}>
-            <Img
-              src={FOLDER_IMAGE_PATH}
-              width="80px"
-              height="96px"
-              mL="75px"
-              mB="30px"
-            />
-            <div style={{ display: 'flex', justifyContent: 'end' }}>
-              <EduButton
-                width="189px"
-                height="42px"
-                onClick={navigateToTestPage}
-              >
-                Choose from library
-              </EduButton>
-            </div>
-          </Col>
-        </Row>
-      </StyledDiv1>
-      <PartitionDiv>
-        <DottedLine
-          border="1px dashed #e0dfdf"
-          margin="auto 30px"
-          width="94px"
-        />
-        OR
-        <DottedLine
-          border="1px dashed #e0dfdf"
-          margin="auto 30px"
-          width="94px"
-        />
-      </PartitionDiv>
-      <StyledDiv2>
-        <Row gutter={24}>
-          <Col span={12}>
-            <Title fs="16px" mB="10px">
-              Create your own test
-            </Title>
-            <DottedLine
-              border={`1px solid ${lightGreen11}`}
-              width="7%"
-              margin="0px 0px 10px 0px"
-            />
-            <InfoText>
-              Create and curate your own test using questions from the library
-              or author your own.
-            </InfoText>
-          </Col>
-          <Col span={12}>
-            <Img
-              src={PENCIL_IMAGE_PATH}
-              width="45px"
-              height="56px"
-              mL="125px"
-              mB="15px"
-            />
-            <div style={{ display: 'flex', justifyContent: 'end' }}>
-              <EduButton
-                width="136px"
-                height="42px"
-                isGhost
-                onClick={createTestPage}
-              >
-                Author a test
-              </EduButton>
-            </div>
-          </Col>
-        </Row>
-      </StyledDiv2>
-    </CustomModalStyled>
-  )
 }
 
-const enhance = compose(
-  withRouter,
-  connect(null, {
-    setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
-  })
-)
-export default enhance(CreateAssignmentModal)
+Container.propTypes = {
+  t: PropTypes.func.isRequired,
+}
+
+const enhance = compose(withRouter, withNamespaces('header'))
+export default enhance(Container)

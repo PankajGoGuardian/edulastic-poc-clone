@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { title } from '@edulastic/colors'
 import { FlexContainer } from '@edulastic/common'
 import { segmentApi } from '@edulastic/api'
 import { TextWrapper } from '../../../../../styledComponents'
@@ -45,8 +46,8 @@ const TestRecommendationsContainer = ({
         alignItems="flex-start"
         mt="35px"
       >
-        <TextWrapper size="16px" fw="700" lh="22px" color="#000000">
-          Here are some curated Tests you might like
+        <TextWrapper fw="bold" size="16px" color={title}>
+          Recommended Tests For You
         </TextWrapper>
         <CustomButton
           isGhost

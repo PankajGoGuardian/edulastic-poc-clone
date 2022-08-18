@@ -24,7 +24,6 @@ import { Banner } from './common/components/Banner'
 import { TestAttemptReview } from './student/TestAttemptReview'
 import SebQuitConfirm from './student/SebQuitConfirm'
 import PrivacyPolicyModal from './privacyPolicy'
-import WelcomeContainer from './author/Welcome/index'
 import {
   getUserNameSelector,
   getUserOrgId,
@@ -72,12 +71,6 @@ import AdminNotificationListener from './admin/Components/AdminNotification'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
 import { VerifyEmailPopup } from './verifyEmail/components/verifyEmailPopup'
 import FeaturesSwitch from './features/components/FeaturesSwitch'
-import {
-  getShowAssignmentCreationModalSelector,
-  getShowClassCreationModalSelector,
-} from './author/Dashboard/ducks'
-import CreateClassModal from './author/ManageClass/components/ClassCreate'
-import CreateAssignmentModal from './author/AssignmentCreate'
 
 const {
   ASSESSMENT,
@@ -375,8 +368,6 @@ class App extends Component {
       isRequestOrSubmitSuccessModalVisible,
       districtId,
       isSAWithoutSchools,
-      showClassCreationModal,
-      showAssignmentCreationModal,
     } = this.props
     if (
       location.hash.includes('#renderResource/close/') ||
@@ -504,9 +495,7 @@ class App extends Component {
           } else if (
             user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             user.signupStatus === signUpState.DONE ||
-            isUndefined(user.signupStatus) ||
-            (user.signupStatus === signUpState.SCHOOL_NOT_SELECTED &&
-              user?.user?.openIdProvider === 'canvas')
+            isUndefined(user.signupStatus)
           ) {
             if (features.isPublisherAuthor) {
               defaultRoute = 'author/items'
@@ -671,13 +660,6 @@ class App extends Component {
             />
           </FeaturesSwitch>
         )}
-        {showClassCreationModal && (
-          <CreateClassModal isVisible={showClassCreationModal} />
-        )}
-        {showAssignmentCreationModal && (
-          <CreateAssignmentModal visible={showAssignmentCreationModal} />
-        )}
-        <WelcomeContainer />
         {(isSAWithoutSchools ||
           (!isPremium && roleuser.DA_SA_ROLE_ARRAY.includes(userRole))) && (
           <AdminAlertModal
@@ -968,7 +950,7 @@ class App extends Component {
 const enhance = compose(
   withRouter,
   connect(
-    ({ user, tutorial, subscription, dashboardTeacher }) => ({
+    ({ user, tutorial, subscription }) => ({
       user,
       tutorial: tutorial.currentTutorial,
       fullName: getUserNameSelector({ user }),
@@ -982,12 +964,6 @@ const enhance = compose(
       isSAWithoutSchools: isSAWithoutSchoolsSelector({ user }),
       showVerifyEmailModal: user.showVerifyEmailModal,
       districtId: getUserOrgId({ user }),
-      showClassCreationModal: getShowClassCreationModalSelector({
-        dashboardTeacher,
-      }),
-      showAssignmentCreationModal: getShowAssignmentCreationModalSelector({
-        dashboardTeacher,
-      }),
     }),
     {
       fetchUser: fetchUserAction,

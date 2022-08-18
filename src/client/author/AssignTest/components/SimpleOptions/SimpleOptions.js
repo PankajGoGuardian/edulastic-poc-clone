@@ -21,8 +21,6 @@ import { isFeatureAccessible } from '../../../../features/components/FeaturesSwi
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import { getRecommendedResources } from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } from '../../../CurriculumSequence/ducks'
-import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
-import { setCreateClassTypeDetailsAction } from '../../../ManageClass/ducks'
 import { SpinnerContainer } from '../../../src/MainStyle'
 import {
   getCollectionsSelector,
@@ -483,8 +481,6 @@ class SimpleOptions extends React.Component {
       isAssigning,
       isPlaylist,
       allowReferenceMaterial,
-      setShowClassCreationModal,
-      setCreateClassTypeDetails,
       togglePenaltyOnUsingHints,
     } = this.props
 
@@ -553,8 +549,14 @@ class SimpleOptions extends React.Component {
     }
 
     const createClassHandler = () => {
-      setShowClassCreationModal(true)
-      setCreateClassTypeDetails({ type: 'class' })
+      history.push({
+        pathname: '/author/manageClass/createClass',
+        state: {
+          testRedirectUrl: match?.url,
+          testTitle: testSettings?.title,
+          ...history?.location?.state,
+        },
+      })
     }
 
     return (
@@ -781,8 +783,6 @@ const enhance = compose(
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,
       selectedResourcesAction: getSelectedResourcesAction,
-      setShowClassCreationModal: setShowClassCreationModalAction,
-      setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
       togglePenaltyOnUsingHints: togglePenaltyOnUsingHintsAction,
     }
   )

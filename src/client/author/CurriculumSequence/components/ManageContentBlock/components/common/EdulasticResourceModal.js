@@ -57,7 +57,6 @@ const EdulasticResourceModal = ({
             height="42px"
             key="cancel"
             onClick={closeCallback}
-            data-cy="continueToDashboardButton"
           >
             Continue to Dashboard
           </EduButton>

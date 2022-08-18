@@ -135,9 +135,6 @@ const PrivacyPolicyModal = ({
       </EduButton>
     </>
   )
-
-  if (!showModal) return null
-
   return (
     <>
       <StyledPrivacyPolicyModal

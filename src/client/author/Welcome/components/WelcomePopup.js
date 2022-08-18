@@ -39,9 +39,7 @@ const WelcomePopup = ({
       closeRightAlign="10px"
       closeIconColor="black"
     >
-      <GreetingUser data-cy="WelcomeUserContent">
-        Hi there, {userName}! 👋
-      </GreetingUser>
+      <GreetingUser>Hi there, {userName}! 👋</GreetingUser>
       <WelcomeHeader>Welcome to Edulastic!</WelcomeHeader>
       <WelcomeNote>Join our 700K+ community of teachers</WelcomeNote>
     </CustomModalStyled>

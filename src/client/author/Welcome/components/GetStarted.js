@@ -88,12 +88,7 @@ const GetStartedModal = ({
         ))}
       </StyledRow>
       <StyledRow mB="5px">
-        <EduButton
-          data-cy="GetStartedNextButton"
-          height="42px"
-          width="120px"
-          onClick={handleClick}
-        >
+        <EduButton height="42px" width="120px" onClick={handleClick}>
           Next
         </EduButton>
       </StyledRow>

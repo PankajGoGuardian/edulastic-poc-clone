@@ -87,7 +87,6 @@ const CreateAssignmentModal = ({
                 width="189px"
                 height="42px"
                 onClick={navigateToTestPage}
-                data-cy="browseAll"
               >
                 Choose from library
               </EduButton>
@@ -138,7 +137,6 @@ const CreateAssignmentModal = ({
                 height="42px"
                 isGhost
                 onClick={createTestPage}
-                data-cy="createNewTest"
               >
                 Author a test
               </EduButton>

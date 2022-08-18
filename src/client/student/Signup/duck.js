@@ -645,8 +645,7 @@ function* saveSubjectGradeSaga({ payload: _payload }) {
       initialUser.currentSignUpState !== signUpState.ACCESS_WITHOUT_SCHOOL &&
       !(
         initialUser.currentSignUpState === signUpState.SCHOOL_NOT_SELECTED &&
-        (initialUser?.openIdProvider === 'canvas' ||
-          initialUser?.openIdProvider === 'CLI')
+        initialUser?.openIdProvider === 'canvas'
       )
     ) {
       yield put(persistAuthStateAndRedirectToAction())

@@ -48,8 +48,7 @@ export const isLoggedInForPrivateRoute = (user) => {
         user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
         isUndefined(user.signupStatus) ||
         (user.signupStatus === signUpState.SCHOOL_NOT_SELECTED &&
-          (user?.user?.openIdProvider === 'canvas' ||
-            user?.user?.openIdProvider === 'CLI')))
+          user?.user?.openIdProvider === 'canvas'))
     ) {
       return true
     }

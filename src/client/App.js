@@ -506,8 +506,7 @@ class App extends Component {
             user.signupStatus === signUpState.DONE ||
             isUndefined(user.signupStatus) ||
             (user.signupStatus === signUpState.SCHOOL_NOT_SELECTED &&
-              (user?.user?.openIdProvider === 'canvas' ||
-                user?.user?.openIdProvider === 'CLI'))
+              user?.user?.openIdProvider === 'canvas')
           ) {
             if (features.isPublisherAuthor) {
               defaultRoute = 'author/items'

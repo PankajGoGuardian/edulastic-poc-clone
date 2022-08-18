@@ -10,6 +10,7 @@ import {
   IconTestLibrary,
 } from '@edulastic/icons'
 import { segmentApi } from '@edulastic/api'
+import { proxyDemoPlaygroundUser } from '../../../../../../../authUtils'
 import {
   ScrollbarContainer,
   Slides,
@@ -39,32 +40,13 @@ const BannerSlider = ({
   windowWidth,
   history,
 }) => {
-  const bannerContentMap = {
-    '2 Min Overview': {
-      content: 'Resource to help you up and running quickly',
-      icon: <IconVideoCamera />,
-    },
-    'Singapore Banner': {
-      icon: <IconVideoCamera />,
-    },
-    'CPM Digital Assessment Package': {
-      content:
-        'Pre-built, customizable assessments for each chapter of your course, from Core Connections, Course 1 through Algebra 2 and Integrated 1-3',
-      icon: <IconTestLibrary />,
-    },
-  }
-
   const [showArrow, setShowArrow] = useState(false)
   const scrollBarRef = useRef(null)
 
   // We are doing minimal BE changes. So filtering the demo playground and then displaying test library banner.
-  const updatedBannerSlides = bannerSlides
-    .filter((slide) => slide.description != 'Demo Playground')
-    .map((slide) => ({
-      ...slide,
-      ...bannerContentMap[slide.description],
-    }))
-
+  const updatedBannerSlides = bannerSlides.filter(
+    (slide) => slide.description != 'Demo Playground'
+  )
   useEffect(() => {
     const { clientWidth, scrollWidth } = scrollBarRef.current
     if (scrollWidth > clientWidth) {
@@ -91,11 +73,18 @@ const BannerSlider = ({
     config,
     description,
     isSparkBannerTile,
+    isDemoPlaygroundTile,
     slide
   ) => {
     segmentApi.genericEventTrack('bannerClick', { _id: slide._id, description })
     if (isSparkBannerTile) {
-      handleSparkClick(config?.subscriptionData?.productId)
+      handleSparkClick(config.subscriptionData.productId)
+      return
+    }
+    if (isDemoPlaygroundTile) {
+      evt.stopPropagation()
+      const elementClasses = evt.currentTarget.getAttribute('class')
+      proxyDemoPlaygroundUser(elementClasses.indexOf('automation') > -1)
       return
     }
     bannerActionHandler(config.filters[0], description)
@@ -141,35 +130,40 @@ const BannerSlider = ({
                 ?.toLowerCase()
                 ?.includes('cpm')
 
+              const isDemoPlaygroundTile = slide.description
+                ?.toLowerCase()
+                ?.includes('playground')
+
               return (
                 <Slides
                   data-cy="banners"
                   key={slide._id}
-                  width={isCPMTile && '400px'}
                   onClick={(evt) =>
                     handleBannerClick(
                       evt,
                       slide.config,
                       slide.description,
                       isSparkTile || isCPMTile,
+                      isDemoPlaygroundTile,
                       slide
                     )
                   }
                 >
                   <StyledRow>
-                    <StyledCol span={20}>
+                    <StyledCol span={12}>
                       <SlideDescription data-cy={slide.description}>
                         {slide.description}
                       </SlideDescription>
                     </StyledCol>
-                    <StyledCol span={2} offset={2}>
+                    <StyledCol span={2} offset={10}>
                       <IconWrapper>
-                        {slide.icon || <IconVideoCamera />}
+                        <IconVideoCamera margin="5px 0px 0px 0px" />
                       </IconWrapper>
                     </StyledCol>
                   </StyledRow>
                   <DashedLine />
-                  <SlideInfo>{slide.content}</SlideInfo>
+                  <SlideInfo>Resource to help you up </SlideInfo>
+                  <SlideInfo>and running quickly</SlideInfo>
                   {isSparkTile ? (
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
@@ -182,10 +176,14 @@ const BannerSlider = ({
                     !accessibleItembankProductIds?.includes(
                       slide.config?.subscriptionData?.productId
                     ) && (
-                      <LearnMore data-cy="tryItFree" moveLeft="210px">
+                      <LearnMore data-cy="tryItFree" moveLeft="120px">
                         Start a Free Trial
                       </LearnMore>
                     )
+                  ) : isDemoPlaygroundTile ? (
+                    <LearnMore data-cy="explore" moveLeft="150px">
+                      Explore
+                    </LearnMore>
                   ) : (
                     <LearnMore data-cy="LearnMore">LEARN MORE</LearnMore>
                   )}

@@ -286,7 +286,6 @@ class ClassCreate extends React.Component {
       allTagsData,
       addNewTag,
       history,
-      location,
       userRole,
       isVisible,
       setShowClassCreationModal,
@@ -324,11 +323,9 @@ class ClassCreate extends React.Component {
 
     if (!creating && submitted && isEmpty(error)) {
       setShowClassCreationModal(false)
+      setCreateClassTypeDetails({})
       if (!exitPath) {
-        history.push({
-          pathname: `/author/manageClass/${classId}`,
-          state: location?.state,
-        })
+        history.push(`/author/manageClass/${classId}`)
       }
     }
     return (

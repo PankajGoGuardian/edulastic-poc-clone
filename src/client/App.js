@@ -504,8 +504,10 @@ class App extends Component {
           } else if (
             user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
             user.signupStatus === signUpState.DONE ||
-            user.signupStatus === signUpState.SCHOOL_NOT_SELECTED ||
-            isUndefined(user.signupStatus)
+            isUndefined(user.signupStatus) ||
+            (user.signupStatus === signUpState.SCHOOL_NOT_SELECTED &&
+              (user?.user?.openIdProvider === 'canvas' ||
+                user?.user?.openIdProvider === 'CLI'))
           ) {
             if (features.isPublisherAuthor) {
               defaultRoute = 'author/items'

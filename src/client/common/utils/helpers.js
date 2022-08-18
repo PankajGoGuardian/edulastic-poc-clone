@@ -46,8 +46,10 @@ export const isLoggedInForPrivateRoute = (user) => {
       user.user.role === 'teacher' &&
       (user.signupStatus === signUpState.DONE ||
         user.signupStatus === signUpState.ACCESS_WITHOUT_SCHOOL ||
-        user.signupStatus === signUpState.SCHOOL_NOT_SELECTED ||
-        isUndefined(user.signupStatus))
+        isUndefined(user.signupStatus) ||
+        (user.signupStatus === signUpState.SCHOOL_NOT_SELECTED &&
+          (user?.user?.openIdProvider === 'canvas' ||
+            user?.user?.openIdProvider === 'CLI')))
     ) {
       return true
     }

@@ -20,7 +20,7 @@ import {
 } from './styled'
 import { setShowWelcomePopupAction } from '../../ducks'
 import { getUser } from '../../../src/selectors/user'
-import { roleuser, signUpState } from '@edulastic/constants'
+import { signUpState } from '@edulastic/constants'
 
 const CLIAccessBanner = ({
   visible = false,
@@ -107,9 +107,8 @@ const CLIAccessBanner = ({
         onClick={() => {
           onClose()
           if (
-            userInfo.role == roleuser.TEACHER &&
-            (userInfo.currentSignUpState === signUpState.SCHOOL_NOT_SELECTED ||
-              userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL)
+            userInfo.currentSignUpState === signUpState.SCHOOL_NOT_SELECTED ||
+            userInfo.currentSignUpState === signUpState.ACCESS_WITHOUT_SCHOOL
           ) {
             setShowWelcomePopup(true)
           }

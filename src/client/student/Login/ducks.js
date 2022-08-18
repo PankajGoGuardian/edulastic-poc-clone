@@ -1530,7 +1530,6 @@ export function* fetchUser({ payload }) {
     }
     const cliBannerShown = sessionStorage.cliBannerShown === 'true'
     if (
-      user?.role == roleuser.TEACHER &&
       user?.openIdProvider?.toLowerCase() === 'cli' &&
       user?.currentSignUpState !== signUpState.DONE &&
       (cliBannerShown || !window.location?.search?.includes('showCLIBanner=1'))

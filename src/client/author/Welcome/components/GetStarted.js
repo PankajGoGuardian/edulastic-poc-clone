@@ -39,7 +39,6 @@ const DisplayElement = ({ value, src, text, dashed }) => (
 
 const GetStartedModal = ({
   isVisible,
-  isCliUser,
   setShowGetStartedModal,
   setShowJoinSchoolModal,
 }) => {
@@ -66,7 +65,6 @@ const GetStartedModal = ({
       onCancel={closeModal}
       footer={null}
       maskClosable={false}
-      closable={!isCliUser}
       centered
       modalWidth="565px"
       borderRadius="10px"

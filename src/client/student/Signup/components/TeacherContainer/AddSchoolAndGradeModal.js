@@ -26,7 +26,6 @@ const AddSchoolAndGradeModal = ({
   triggerSource = '',
   allowCanvas,
   hideJoinSchoolBanner,
-  isCliUser = false,
 }) => {
   const userInfo = get(user, 'user', {})
   const [schoolSelectedFromDropdown, setSchoolSelectedFromDropdown] = useState(
@@ -50,8 +49,8 @@ const AddSchoolAndGradeModal = ({
       title={modalTitle}
       visible={isVisible}
       footer={null}
-      closable={!isCompleteSignupInProgress && !isCliUser}
-      maskClosable={false}
+      closable={!isCompleteSignupInProgress}
+      maskClosable={!isCompleteSignupInProgress}
       width="850px"
       data-cy="signupSchoolSelectionTitle"
       onCancel={handleCancel}

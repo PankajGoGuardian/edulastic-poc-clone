@@ -62,10 +62,7 @@ import {
   schoologySyncAssignmentAction,
   schoologySyncAssignmentGradesAction,
 } from '../../author/src/actions/assignments'
-import {
-  fetchDashboardTiles,
-  setShowJoinSchoolModalAction,
-} from '../../author/Dashboard/ducks'
+import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
 
 export const superAdminRoutes = [
@@ -1527,14 +1524,6 @@ export function* fetchUser({ payload }) {
         type: 'warn',
         messageKey,
       })
-    }
-    const cliBannerShown = sessionStorage.cliBannerShown === 'true'
-    if (
-      user?.openIdProvider?.toLowerCase() === 'cli' &&
-      user?.currentSignUpState !== signUpState.DONE &&
-      (cliBannerShown || !window.location?.search?.includes('showCLIBanner=1'))
-    ) {
-      yield put(setShowJoinSchoolModalAction(true))
     }
   } catch (error) {
     console.log('err', error, error)

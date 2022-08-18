@@ -53,7 +53,6 @@ import { PointsInput } from '../../../styled/CorrectAnswerHeader'
 import {
   setItemLevelScoreFromRubricAction,
   getItemDetailQuestionsSelector,
-  setTestItemScoreUpdatedAction,
 } from '../../../../author/ItemDetail/ducks'
 
 const roundingTypes = [rounding.roundDown, rounding.none]
@@ -160,14 +159,7 @@ class Scoring extends Component {
       setItemLevelScoring,
       location,
       itemDetailQuestions,
-      match,
-      setTestItemScoreUpdated,
     } = this.props
-
-    const {
-      params: { testId, itemId },
-      path,
-    } = match
     const { showGradingRubricModal, rubricActionType } = this.state
     const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
 
@@ -217,12 +209,6 @@ class Scoring extends Component {
             (itemDetailQuestionsLength === 0 || itemDetailQuestionsLength === 1)
           ) {
             setItemLevelScoring(true)
-          }
-          if (testId && itemId && path.includes('/author/tests')) {
-            setTestItemScoreUpdated({
-              currentTestItemId: itemId,
-              isUpdated: true,
-            })
           }
         }
         newData.validation[param] = value
@@ -592,7 +578,6 @@ const enhance = compose(
       dissociateRubricFromQuestion: removeRubricIdAction,
       setItemLevelScoring: setItemLevelScoreFromRubricAction,
       updateScoreAndValidation: updateScoreAndValidationAction,
-      setTestItemScoreUpdated: setTestItemScoreUpdatedAction,
     }
   )
 )

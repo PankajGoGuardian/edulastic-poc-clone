@@ -12,7 +12,6 @@ import {
   uniq,
   isEmpty,
   set,
-  isNil,
 } from 'lodash'
 import { testItemsApi, passageApi, attchmentApi } from '@edulastic/api'
 import { questionType, roleuser } from '@edulastic/constants'
@@ -39,7 +38,6 @@ import {
   deleteQuestionAction,
   changeCurrentQuestionAction,
   UPDATE_QUESTION,
-  REMOVE_RUBRIC_ID,
   changeUpdatedFlagAction,
   addQuestionAction,
   getCurrentQuestionSelector,
@@ -56,7 +54,6 @@ import {
   isOptionsRemoved,
   validateScore,
   getQuestionIndexFromItemData,
-  replaceScoresInItem,
 } from '../questionUtils'
 import {
   setTestItemsAction,
@@ -70,7 +67,6 @@ import {
   setTestPassageAction,
   setPassageItemsAction,
   getPassageItemsSelector,
-  getSelectedTestItemsSelector,
 } from '../TestPage/ducks'
 import { changeViewAction } from '../src/actions/view'
 
@@ -202,7 +198,6 @@ export const SAVE_CURRENT_ITEM_MOVE_TO_NEXT =
 const SET_PASSAGE_UPDATE_IN_PROGRESS =
   '[itemDetail] set passage update in progress'
 const SET_TEST_ITEMS_SAVING = '[itemDetail] set test item saving in progress'
-const SET_TEST_ITEM_SCORE_UPDATED = '[itemDetail] set test item score updated'
 
 // actions
 
@@ -390,9 +385,6 @@ const setPassageUpdateInProgressAction = createAction(
   SET_PASSAGE_UPDATE_IN_PROGRESS
 )
 export const setTestItemsSavingAction = createAction(SET_TEST_ITEMS_SAVING)
-export const setTestItemScoreUpdatedAction = createAction(
-  SET_TEST_ITEM_SCORE_UPDATED
-)
 
 export const saveCurrentEditingTestIdAction = (id) => ({
   type: SAVE_CURRENT_EDITING_TEST_ID,
@@ -586,11 +578,6 @@ export const getItemDetailDimensionTypeSelector = createSelector(
   }
 )
 
-export const getScoreUpdatedSelector = createSelector(
-  stateSelector,
-  (state) => state.testItemScoreUpdateData
-)
-
 export const getItemDetailValidationSelector = createSelector(
   getItemDetailRowsSelector,
   (rows) => {
@@ -641,10 +628,6 @@ const initialState = {
   originalItem: null,
   passageUpdateInProgress: false,
   testItemSavingInProgress: false,
-  testItemScoreUpdateData: {
-    currentTestItemId: '',
-    isUpdated: false,
-  },
 }
 
 const deleteWidget = (state, { rowIndex, widgetIndex }) =>
@@ -1117,12 +1100,6 @@ export function reducer(state = initialState, { type, payload }) {
         testItemSavingInProgress: payload,
       }
     }
-    case SET_TEST_ITEM_SCORE_UPDATED: {
-      return {
-        ...state,
-        testItemScoreUpdateData: payload,
-      }
-    }
     default:
       return state
   }
@@ -1174,6 +1151,7 @@ function* receiveItemSaga({ payload }) {
     })
 
     const { itemLevelScore } = data
+    yield put(setItemLevelScoreAction(itemLevelScore))
 
     yield put({
       type: CLEAR_DICT_ALIGNMENTS,
@@ -1262,7 +1240,7 @@ export function* updateItemSaga({ payload }) {
       // avoid data part being put into db
       delete payload.data.data
     }
-    let data = _omit(payload.data, ['authors', '__v'])
+    const data = _omit(payload.data, ['authors', '__v'])
 
     /**
      * Commented the below code as it was adding testId to item data which
@@ -1384,26 +1362,6 @@ export function* updateItemSaga({ payload }) {
       }
     }
 
-    const originalItemData = yield select((state) =>
-      get(state, ['itemDetail', 'originalItem'], {})
-    )
-    const regradeFlow = yield select(isRegradeFlowSelector)
-    const scoreUpdatedData = yield select(getScoreUpdatedSelector) || {}
-    const isScoreUpdated =
-      scoreUpdatedData && payload.id === scoreUpdatedData.currentTestItemId
-        ? scoreUpdatedData.isUpdated
-        : null
-
-    if (
-      data._id !== 'new' &&
-      payload.testId &&
-      payload.testId !== 'undefined' &&
-      !regradeFlow &&
-      isScoreUpdated === false
-    ) {
-      data = replaceScoresInItem(data, originalItemData)
-    }
-
     const itemHasQuestions = questions?.length > 0
     const isPracticeQuestion = (question) =>
       question?.validation?.unscored === true
@@ -1416,6 +1374,7 @@ export function* updateItemSaga({ payload }) {
     const originalQuestions = yield select((state) =>
       get(state, ['itemDetail', 'originalItem', 'data', 'questions'])
     )
+    const regradeFlow = yield select(isRegradeFlowSelector)
     if (regradeFlow && isOptionsRemoved(originalQuestions, questions)) {
       return notification({
         type: 'warn',
@@ -1625,27 +1584,7 @@ export function* updateItemSaga({ payload }) {
       } else {
         // When deleting question from passage item should not go to test preview
         const { redirectOnDeleteQuestion } = payload
-
-        /**
-         * @see https://goguardian.atlassian.net/browse/EV-33094
-         * retain scores set at test level if score is not updated by the user explicitly while editing the item
-         */
-        if (
-          testIdParam &&
-          !regradeFlow &&
-          isScoreUpdated === false &&
-          data._id !== 'new'
-        ) {
-          const entityTestItems = yield select(getSelectedTestItemsSelector)
-          const entityCurrentTestItem = (entityTestItems || []).find(
-            (_item) => _item._id === item._id
-          )
-          const updatedItem = replaceScoresInItem(item, entityCurrentTestItem)
-          yield put(setCreatedItemToTestAction(updatedItem))
-        } else {
-          yield put(setCreatedItemToTestAction(item))
-        }
-
+        yield put(setCreatedItemToTestAction(item))
         if (redirectOnDeleteQuestion) {
           yield put(
             push({
@@ -2029,16 +1968,6 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
       testItem,
       ['data', 'questions', 0, 'validation', 'validResponse', 'score'],
       testItem.itemLevelScore
-    )
-  }
-
-  // set score updated to true if a question is delete from the item
-  if (isTestFlow && testId && testItemId) {
-    yield put(
-      setTestItemScoreUpdatedAction({
-        currentTestItemId: testItemId,
-        isUpdated: true,
-      })
     )
   }
 
@@ -2477,25 +2406,6 @@ function* saveCurrentItemAndRoueToOtherSaga({ payload }) {
   }
 }
 
-function* setScoreUpdatedSaga({ payload }) {
-  try {
-    const pathname = yield select((state) =>
-      get(state, 'router.location.pathname', false)
-    )
-    const itemDetail = yield select(getItemDetailSelector)
-    if (pathname.includes('/author/tests') && itemDetail?._id) {
-      yield put(
-        setTestItemScoreUpdatedAction({
-          currentTestItemId: itemDetail._id,
-          isUpdated: true,
-        })
-      )
-    }
-  } catch (err) {
-    Sentry.captureException(err)
-  }
-}
-
 export function* watcherSaga() {
   yield all([
     yield takeEvery(RECEIVE_ITEM_DETAIL_REQUEST, receiveItemSaga),
@@ -2523,13 +2433,5 @@ export function* watcherSaga() {
       saveCurrentItemAndRoueToOtherSaga
     ),
     yield takeEvery(MOVE_WIDGET, moveWidgetSaga),
-    yield takeLatest(
-      [
-        SET_ITEM_DETAIL_ITEM_LEVEL_SCORING,
-        SET_ITEM_LEVEL_SCORING_FROM_RUBRIC,
-        REMOVE_RUBRIC_ID,
-      ],
-      setScoreUpdatedSaga
-    ),
   ])
 }

@@ -19,7 +19,6 @@ import {
   clearItemDetailAction,
   proceedPublishingItemAction,
   saveCurrentTestItemAction,
-  setTestItemScoreUpdatedAction,
 } from '../../ducks'
 import WarningModal from '../WarningModal'
 import { getCurrentQuestionIdSelector } from '../../../sharedDucks/questions'
@@ -46,7 +45,6 @@ const ItemDetailContainer = ({
   proceedPublish,
   userFeatures,
   location,
-  setTestItemScoreUpdated,
   ...props
 }) => {
   const { modalItemId } = props
@@ -68,13 +66,6 @@ const ItemDetailContainer = ({
         data: true,
         validation: true,
         ...(hasValidTestId && { testId }),
-      })
-    }
-    const { path = '' } = match
-    if (testId && itemId && path.includes('/author/tests')) {
-      setTestItemScoreUpdated({
-        currentTestItemId: itemId,
-        isUpdated: false,
       })
     }
   }, [itemId])
@@ -195,7 +186,6 @@ const enhance = compose(
       clearItem: clearItemDetailAction,
       proceedPublish: proceedPublishingItemAction,
       saveTestItem: saveCurrentTestItemAction,
-      setTestItemScoreUpdated: setTestItemScoreUpdatedAction,
     }
   )
 )

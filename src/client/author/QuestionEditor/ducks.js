@@ -45,8 +45,6 @@ import {
   generateRecentlyUsedCollectionsList,
   proceedToPublishItemAction,
   setTestItemsSavingAction,
-  setTestItemScoreUpdatedAction,
-  getScoreUpdatedSelector,
 } from '../ItemDetail/ducks'
 import {
   setTestDataAndUpdateAction,
@@ -71,7 +69,6 @@ import {
   getQuestionsArraySelector,
   changeCurrentQuestionAction,
   changeUpdatedFlagAction,
-  isRegradeFlowSelector,
 } from '../sharedDucks/questions'
 
 import {
@@ -86,7 +83,6 @@ import {
   hasImproperDynamicParamsConfig,
   getQuestionIndexFromItemData,
   validateScore,
-  replaceScoresInItem,
 } from '../questionUtils'
 import { changeViewAction } from '../src/actions/view'
 import {
@@ -648,16 +644,6 @@ function* saveQuestionSaga({
           reference: id,
           tabIndex,
         })
-
-        // set score updated to true if a new question is added to item
-        if (isTestFlow && tId && itemDetail._id) {
-          yield put(
-            setTestItemScoreUpdatedAction({
-              currentTestItemId: itemDetail._id,
-              isUpdated: true,
-            })
-          )
-        }
       }
     }
 
@@ -684,26 +670,6 @@ function* saveQuestionSaga({
         questions: reSequenceQuestionsWithWidgets(_widgets, currentQuestions),
         resources: currentResources,
       },
-    }
-
-    const originalItemData = yield select((state) =>
-      get(state, ['itemDetail', 'originalItem'], {})
-    )
-    const isRegradeFlow = yield select(isRegradeFlowSelector)
-    const scoreUpdatedData = yield select(getScoreUpdatedSelector) || {}
-    const isScoreUpdated =
-      scoreUpdatedData && itemDetailId === scoreUpdatedData.currentTestItemId
-        ? scoreUpdatedData.isUpdated
-        : null
-
-    if (
-      itemDetailId !== 'new' &&
-      isTestFlow &&
-      tId !== 'undefined' &&
-      !isRegradeFlow &&
-      isScoreUpdated === false
-    ) {
-      data = replaceScoresInItem(data, originalItemData)
     }
 
     let allQuestionsArePractice = data.data.questions.length > 0
@@ -1210,20 +1176,6 @@ function* updateScoreAndValidationSaga({ payload }) {
     questionType.PASSAGE,
     questionType.TEXT,
   ]
-
-  const pathname = yield select((state) =>
-    get(state, 'router.location.pathname', false)
-  )
-  const itemDetail = yield select(getItemDetailSelector)
-
-  if (pathname.includes('/author/tests') && itemDetail?._id) {
-    yield put(
-      setTestItemScoreUpdatedAction({
-        currentTestItemId: itemDetail._id,
-        isUpdated: true,
-      })
-    )
-  }
 
   if (
     typeof score === 'number' &&

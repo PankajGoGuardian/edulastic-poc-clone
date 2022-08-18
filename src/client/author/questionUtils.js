@@ -1,8 +1,7 @@
 import { questionType, question, customTags, math } from '@edulastic/constants'
-import { get, set, isString, isEmpty, keys, keyBy, isNil, isNaN } from 'lodash'
-import produce from 'immer'
+import { get, isString, isEmpty, keys, keyBy, isNil, isNaN } from 'lodash'
 import striptags from 'striptags'
-import { templateHasImage, notification, helpers } from '@edulastic/common'
+import { templateHasImage, notification } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
 import { hasEmptyAnswers } from './utils/answerValidator'
 
@@ -866,41 +865,4 @@ export const getQuestionIndexFromItemData = (qId, item) => {
     }
   }
   return undefined
-}
-
-export const replaceScoresInItem = (item, originalItem) => {
-  if (isEmpty(item) || isEmpty(originalItem)) {
-    return item
-  }
-
-  const updatedItem = produce(item, (draft) => {
-    let itemQuestions = get(draft, 'data.questions', [])
-    const originalItemQuestions = get(originalItem, 'data.questions', [])
-    const originalItemQuestionsKeyById = keyBy(originalItemQuestions, 'id')
-
-    itemQuestions = itemQuestions.map((_question) => {
-      const existingQuestion = originalItemQuestionsKeyById[_question.id]
-      const oldScore = get(
-        existingQuestion,
-        'validation.validResponse.score',
-        undefined
-      )
-      if (!isNil(oldScore)) {
-        set(_question, 'validation.validResponse.score', oldScore)
-      }
-      return _question
-    })
-    set(draft, 'data.questions', itemQuestions)
-
-    if (draft?.itemLevelScoring) {
-      const oldItemLevelScore = get(originalItem, 'itemLevelScore', undefined)
-      if (!isNil(oldItemLevelScore)) {
-        set(draft, 'itemLevelScore', oldItemLevelScore)
-      }
-    }
-
-    const maxScore = helpers.getPoints(draft)
-    set(draft, 'maxScore', maxScore)
-  })
-  return updatedItem
 }

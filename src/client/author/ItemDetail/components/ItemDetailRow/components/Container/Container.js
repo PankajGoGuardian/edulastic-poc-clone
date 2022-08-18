@@ -72,12 +72,7 @@ class Container extends Component {
     flowLayout,
     previewTab,
   }) => {
-    const {
-      itemData,
-      isPassageQuestion,
-      onShowSettings,
-      handleScoreUpdate,
-    } = this.props
+    const { itemData, isPassageQuestion, onShowSettings } = this.props
     const { multipartItem } = itemData
 
     return (
@@ -93,7 +88,6 @@ class Container extends Component {
         isPassageQuestion={isPassageQuestion}
         dataCy={multipartItem ? 'item-detail-widget' : 'passage-widget'}
         onShowSettings={onShowSettings}
-        handleScoreUpdate={handleScoreUpdate}
       />
     )
   }

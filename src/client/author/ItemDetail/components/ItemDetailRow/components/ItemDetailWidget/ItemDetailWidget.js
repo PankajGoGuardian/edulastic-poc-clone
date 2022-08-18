@@ -40,7 +40,6 @@ const ItemDetailWidget = ({
   dataCy,
   onShowSettings,
   isPremiumUser,
-  handleScoreUpdate,
 }) => {
   const isEmtpyQuestion = useMemo(() => {
     return isEmpty(question)
@@ -57,9 +56,6 @@ const ItemDetailWidget = ({
   }
 
   const onChangeQuestionLevelPoint = (score, isOnBlur = false) => {
-    if (typeof handleScoreUpdate === 'function') {
-      handleScoreUpdate()
-    }
     setQuestionScore({
       score: +score,
       qid: question.id,

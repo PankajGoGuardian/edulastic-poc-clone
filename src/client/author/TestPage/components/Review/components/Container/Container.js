@@ -720,7 +720,6 @@ class Review extends PureComponent {
                 onChangeCollection={onChangeCollection}
                 windowWidth={windowWidth}
                 isPublishers={isPublishers}
-                testCategory={test.testCategory}
               />
             </ReviewSummaryWrapper>
           )}

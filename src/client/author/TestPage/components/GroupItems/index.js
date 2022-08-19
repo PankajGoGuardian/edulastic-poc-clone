@@ -153,12 +153,6 @@ const GroupItems = ({
               items: [],
             }
     } else if (fieldName === 'deliverItemsCount') {
-      if (value < 0) {
-        notification({
-          messageKey: 'totalItemsToBeDeliveredCannotBeLessThanZero',
-        })
-        return
-      }
       if (
         updatedGroupData.type === ITEM_GROUP_TYPES.STATIC &&
         value >= updatedGroupData.items.length

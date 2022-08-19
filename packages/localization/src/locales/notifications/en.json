@@ -1811,10 +1811,6 @@
     "message": "Total Items to be delivered cannot be more than 100",
     "description": ""
   },
-  "totalItemsToBeDeliveredCannotBeLessThanZero": {
-    "message": "Total Items to be delivered cannot be less than zero.",
-    "description": ""
-  },
   "pleaseSelectAtleastTwoItems": {
     "message": " Please select atleast 2 items to manually give the items delivery count.",
     "description": ""

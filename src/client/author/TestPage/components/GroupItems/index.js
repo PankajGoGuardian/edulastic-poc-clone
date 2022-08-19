@@ -419,13 +419,6 @@ const GroupItems = ({
         notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
         return false
       }
-      if (
-        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-        items.length <= deliverItemsCount
-      ) {
-        notification({ type: 'warn', messageKey: 'totalItemsToBeDelivered' })
-        return false
-      }
     } else {
       // validations for autoselect item groups
       if (!collectionDetails || isEmpty(standardDetails?.standards)) {

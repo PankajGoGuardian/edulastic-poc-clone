@@ -613,15 +613,14 @@ class ClassHeader extends Component {
     )
 
     const scanBubbleSheetMenuItem = ({ isAccessible }) => {
-      const tooltipTitle = hasRandomQuestions
-        ? t('common.randomItemsBubbleScanDisableMessage')
-        : canOpen
+      const tooltipTitle = canOpen
         ? 'OPEN Assignment to Scan Responses'
         : isPaused
         ? 'RESUME Assignment to Scan Responses'
-        : null
-      const isMenuItemActive =
-        !canOpen && !isPaused && canClose && isAccessible && !hasRandomQuestions
+        : hasRandomQuestions
+        ? t('common.randomItemsBubbleScanDisableMessage')
+        : ''
+      const isMenuItemActive = !canOpen && !isPaused && canClose
       const menuText = (
         <span
           style={{
@@ -633,19 +632,20 @@ class ClassHeader extends Component {
           Scan Bubble Sheet&nbsp;&nbsp; {isAccessible || <IconStar />}
         </span>
       )
-      const menuItemContent = isMenuItemActive ? (
-        <Link
-          to={{
-            pathname: '/uploadAnswerSheets',
-            search: `?assignmentId=${assignmentId}&groupId=${classId}`,
-          }}
-          target="_blank"
-        >
-          {menuText}
-        </Link>
-      ) : (
-        menuText
-      )
+      const menuItemContent =
+        isMenuItemActive && isAccessible && !hasRandomQuestions ? (
+          <Link
+            to={{
+              pathname: '/uploadAnswerSheets',
+              search: `?assignmentId=${assignmentId}&groupId=${classId}`,
+            }}
+            target="_blank"
+          >
+            {menuText}
+          </Link>
+        ) : (
+          menuText
+        )
       return (
         <MenuItems
           data-cy="upload-bubble-sheet"
@@ -657,15 +657,16 @@ class ClassHeader extends Component {
                 })
               : null
           }
-          disabled={!isMenuItemActive}
+          disabled={!isMenuItemActive || !isAccessible || hasRandomQuestions}
           style={!isAccessible ? { cursor: 'pointer' } : {}}
         >
-          <Tooltip
-            title={!isMenuItemActive ? tooltipTitle : null}
-            placement="left"
-          >
-            {menuItemContent}
-          </Tooltip>
+          {!isMenuItemActive && tooltipTitle ? (
+            <Tooltip title={tooltipTitle} placement="left">
+              {menuItemContent}
+            </Tooltip>
+          ) : (
+            menuItemContent
+          )}
         </MenuItems>
       )
     }
@@ -727,10 +728,10 @@ class ClassHeader extends Component {
             >
               <Tooltip
                 title={
-                  hasRandomQuestions
-                    ? t('common.randomItemsBubbleScanDisableMessage')
-                    : isAssignmentDone
+                  isAssignmentDone
                     ? 'Assignment is not open'
+                    : hasRandomQuestions
+                    ? t('common.randomItemsBubbleScanDisableMessage')
                     : null
                 }
                 placement="right"

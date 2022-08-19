@@ -4,7 +4,7 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
-import { Pagination, Spin, Tooltip } from 'antd'
+import { Pagination, Spin } from 'antd'
 import {
   roleuser,
   sortOptions,
@@ -578,28 +578,23 @@ class AddItems extends PureComponent {
                     {itemGroupCount} SELECTED
                   </Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
-                    <Tooltip
+                    <EduButton
+                      height="28px"
+                      isGhost
+                      data-cy="createNewItem"
                       title={
                         isDynamicTest ? t('authoringItemDisabled.info') : ''
                       }
+                      disabled={isDynamicTest}
+                      onClick={this.handleCreateNewItem}
                     >
-                      <div>
-                        <EduButton
-                          height="28px"
-                          isGhost
-                          data-cy="createNewItem"
-                          disabled={isDynamicTest}
-                          onClick={this.handleCreateNewItem}
-                        >
-                          <IconPlusCircle
-                            color={themeColor}
-                            width={12}
-                            height={12}
-                          />
-                          <span>Create new Item</span>
-                        </EduButton>
-                      </div>
-                    </Tooltip>
+                      <IconPlusCircle
+                        color={themeColor}
+                        width={12}
+                        height={12}
+                      />
+                      <span>Create new Item</span>
+                    </EduButton>
                   )}
                 </FlexContainer>
                 <SortMenu

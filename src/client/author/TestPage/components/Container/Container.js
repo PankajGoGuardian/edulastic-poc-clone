@@ -1087,11 +1087,6 @@ class Container extends PureComponent {
       name,
     }
 
-    if (newTest && !newTest.scoring) {
-      // recommended tests created via differentiation might not have scoring details
-      newTest.scoring = { total: 0, testItems: [] }
-    }
-
     newTest.scoring.testItems = (
       itemGroups.flatMap((itemGroup) => itemGroup.items || []) || []
     ).map((item) => {

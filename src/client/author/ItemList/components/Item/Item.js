@@ -172,22 +172,10 @@ class Item extends Component {
   }
 
   handleStimulusClick = () => {
-    const {
-      features,
-      item,
-      userId,
-      history,
-      openPreviewModal,
-      test,
-    } = this.props
+    const { features, item, userId, history, openPreviewModal } = this.props
     const owner = item.authors && item.authors.some((x) => x._id === userId)
     // Author can only edit if owner
     if (features.isPublisherAuthor && owner) {
-      const isDynamicTest =
-        test?.testCategory === testCategoryTypes.DYNAMIC_TEST
-      if (item.status === 'inreview' && isDynamicTest) {
-        return notification({ msg: 'Editing is diabled for In Review item' })
-      }
       return history.push(`/author/items/${item._id}/item-detail`)
     }
     openPreviewModal()

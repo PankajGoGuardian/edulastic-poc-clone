@@ -1,9 +1,10 @@
 import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import {
+  test,
   roleuser,
   questionType,
-  test as testConstants,
+  test as testConst,
   testTypes as testTypesConstants,
   assignmentPolicyOptions,
 } from '@edulastic/constants'
@@ -116,9 +117,7 @@ const {
   passwordPolicy,
   testSettingsOptions,
   docBasedSettingsOptions,
-  calculatorKeys,
-  testCategoryTypes,
-} = testConstants
+} = test
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
   DRAFT: 'draft',
@@ -933,26 +932,26 @@ export const getTestItemsRowsSelector = createSelector(
 export const createBlankTest = () => ({
   title: undefined,
   description: '',
-  releaseScore: releaseGradeLabels.DONT_RELEASE,
+  releaseScore: test.releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
   testType: testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT,
-  testCategory: testCategoryTypes.DEFAULT,
-  markAsDone: completionTypes.AUTOMATICALLY,
+  markAsDone: test.completionTypes.AUTOMATICALLY,
   generateReport: true,
   safeBrowser: false,
   sebPassword: '',
   blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
-  calcType: calculatorKeys[0],
+  calcType: test.calculatorKeys[0],
   answerOnPaper: false,
   assignmentPassword: '',
   passwordExpireIn: 15 * 60,
-  passwordPolicy: passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+  passwordPolicy: test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   maxAnswerChecks: 0,
-  scoringType: evalTypeLabels.PARTIAL_CREDIT,
+  scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
   isDocBased: false,
+  isDynamicTest: false,
   status: 'draft',
   thumbnail: defaultImage,
   itemGroups: [
@@ -2229,11 +2228,13 @@ function* createTest(data) {
   if (title !== undefined && !title.trim().length) {
     return notification({ messageKey: 'nameShouldNotEmpty' })
   }
-  if (_passwordPolicy !== passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+  if (_passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
     delete data.assignmentPassword
   }
 
-  if (_passwordPolicy !== passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
+  if (
+    _passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+  ) {
     delete data.passwordExpireIn
   }
   const omitedItems = [
@@ -2277,7 +2278,7 @@ function* createTestSaga({ payload }) {
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
     const hasAutoSelectItems = entity.itemGroups.some(
-      (g) => g.type === ITEM_GROUP_TYPES.AUTOSELECT
+      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
     )
     if (hasAutoSelectItems) {
       yield put(addItemsToAutoselectGroupsRequestAction(entity))
@@ -2357,9 +2358,9 @@ export function* updateTestSaga({ payload }) {
     // Penalty true/false is set to determine the case
     if (
       payload.data.scoringType ===
-      evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      test.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
-      payload.data.scoringType = evalTypeLabels.PARTIAL_CREDIT
+      payload.data.scoringType = test.evalTypeLabels.PARTIAL_CREDIT
     }
 
     const pageStructure = get(payload.data, 'pageStructure', []).map(
@@ -2374,18 +2375,18 @@ export function* updateTestSaga({ payload }) {
       : undefined
     if (
       payload.data.passwordPolicy !==
-      passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
       testFieldsToOmit.push('passwordExpireIn')
     }
     if (
       payload.data.passwordPolicy !==
-      passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
     ) {
       testFieldsToOmit.push('assignmentPassword')
     } else if (
       payload.data.passwordPolicy ===
-        passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+        test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!payload.data.assignmentPassword ||
         payload.data.assignmentPassword.length < 6 ||
         payload.data.assignmentPassword.length > 25)
@@ -2436,7 +2437,7 @@ export function* updateTestSaga({ payload }) {
     fillAutoselectGoupsWithDummyItems(entity)
     yield put(updateTestSuccessAction(entity))
     const hasAutoSelectItems = entity.itemGroups.some(
-      (g) => g.type === ITEM_GROUP_TYPES.AUTOSELECT
+      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
     )
     if (hasAutoSelectItems) {
       yield put(addItemsToAutoselectGroupsRequestAction(entity))
@@ -2937,10 +2938,11 @@ function* setTestDataAndUpdateSaga({ payload }) {
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
     // Penalty true/false is set to determine the case
     if (
-      newTest.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      newTest.scoringType ===
+      test.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
       newTest = produce(newTest, (draft) => {
-        draft.scoringType = evalTypeLabels.PARTIAL_CREDIT
+        draft.scoringType = test.evalTypeLabels.PARTIAL_CREDIT
       })
     }
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
@@ -3028,20 +3030,20 @@ function* setTestDataAndUpdateSaga({ payload }) {
     }
 
     if (!newTest._id) {
-      const { title } = newTest
+      const { title, testContentVisibility } = newTest
       const role = yield select(getUserRole)
       if (!title) {
         return notification({ messageKey: 'nameShouldNotEmpty' })
       }
       if (
         newTest.passwordPolicy !==
-        passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+        test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
       ) {
         delete newTest.passwordExpireIn
       }
       if (
         newTest.passwordPolicy !==
-        passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+        test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
       ) {
         delete newTest.assignmentPassword
       } else if (!newTest.assignmentPassword) {
@@ -3052,11 +3054,10 @@ function* setTestDataAndUpdateSaga({ payload }) {
       let testObj = produce(newTest, (draft) => {
         draft.itemGroups = transformItemGroupsUIToMongo(draft.itemGroups)
         if (
-          !newTest.testContentVisibility &&
+          !testContentVisibility &&
           (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)
         ) {
-          draft.testContentVisibility =
-            testConstants.testContentVisibility.ALWAYS
+          draft.testContentVisibility = test.testContentVisibility.ALWAYS
         }
       })
       // summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
@@ -3474,7 +3475,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     if ((!testData._id || !testData.title) && partialScore === false) {
       yield put(
         setTestDataAction({
-          scoringType: evalTypeLabels.ALL_OR_NOTHING,
+          scoringType: test.evalTypeLabels.ALL_OR_NOTHING,
         })
       )
     }
@@ -3632,7 +3633,7 @@ function* updateTestAndNavigate({ payload }) {
         roleuser.DA_SA_ROLE_ARRAY.includes(role) &&
         !data.testContentVisibility
       ) {
-        data.testContentVisibility = testConstants.testContentVisibility.ALWAYS
+        data.testContentVisibility = test.testContentVisibility.ALWAYS
       }
       const _test = !isTestCreated ? yield createTest(data) : {}
       if ((isEditing || isDuplicating) && isTestCreated) {

@@ -97,7 +97,6 @@ function handleConfirmForDeletePlaylist(id, title, deletePlaylist) {
 const {
   statusConstants,
   testContentVisibility: testContentVisibilityOptions,
-  testCategoryTypes,
 } = testConstants
 
 export const navButtonsTest = [
@@ -202,6 +201,7 @@ const TestPageHeader = ({
   hasTestId,
   testStatus,
   isPlaylist,
+  isDynamicTest,
   owner,
   onAssign,
   history,
@@ -252,7 +252,7 @@ const TestPageHeader = ({
       ? [...playlistNavButtons]
       : isDocBased
       ? [...docBasedButtons]
-      : test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+      : isDynamicTest
       ? [...navButtonsDynamicTest]
       : [...navButtonsTest])
   const [showCancelPopup, setShowCancelPopup] = useState(false)

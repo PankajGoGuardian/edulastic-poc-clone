@@ -404,15 +404,13 @@ class Item extends Component {
         isPlaylist ? 'playList' : 'test'
       ) || isOwner
 
-    const isDynamicTest =
+    const isDynamic =
       !isPlaylist &&
-      (item?.testCategory === test.testCategoryTypes.DYNAMIC_TEST ||
-        // TODO: fallback conditions to be removed after migration for testCategory
-        item?.itemGroups?.some(
-          (group) =>
-            group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
-            group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-        ))
+      item?.itemGroups?.some(
+        (group) =>
+          group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
+          group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+      )
 
     const cardViewProps = {
       _source,
@@ -433,7 +431,7 @@ class Item extends Component {
       collectionName,
       isDocBased,
       summary,
-      isDynamicTest,
+      isDynamic,
       openModal: this.openModal,
       moveToItem: this.moveToItem,
       assignTest: this.assignTest,
@@ -472,7 +470,7 @@ class Item extends Component {
             windowWidth={windowWidth}
             allowDuplicate={allowDuplicate}
             previewLink={(e) => this.showPreviewModal(testId, e)}
-            isDynamicTest={isDynamicTest}
+            isDynamic={isDynamic}
             handleLikeTest={this.handleLikeTest}
             isTestLiked={isTestLiked}
             collectionName={collectionName}

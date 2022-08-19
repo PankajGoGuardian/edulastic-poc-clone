@@ -315,15 +315,13 @@ class ListItem extends Component {
       !isCoTeacher &&
       !(_source?.createdBy?._id === currentUserId)
 
-    const isDynamicTest =
+    const isDynamic =
       !isPlaylist &&
-      (item?.testCategory === test.testCategoryTypes.DYNAMIC_TEST ||
-        // TODO: fallback conditions to be removed after migration for testCategory
-        item?.itemGroups?.some(
-          (group) =>
-            group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
-            group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
-        ))
+      item?.itemGroups?.some(
+        (group) =>
+          group.type === test.ITEM_GROUP_TYPES.AUTOSELECT ||
+          group.deliveryType === test.ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+      )
 
     let collectionName = 'PRIVATE'
     if (collections?.length > 0 && orgCollections.length > 0) {
@@ -370,7 +368,7 @@ class ListItem extends Component {
             allowDuplicate={allowDuplicate}
             onDelete={this.onDelete}
             previewLink={() => this.showPreviewModal(item._id)}
-            isDynamicTest={isDynamicTest}
+            isDynamic={isDynamic}
             handleLikeTest={this.handleLikeTest}
             isTestLiked={isTestLiked}
             collectionName={collectionName}
@@ -577,7 +575,7 @@ class ListItem extends Component {
                 </TestStatusWrapper>
                 {collections.find((o) => o.name === 'Edulastic Certified') &&
                   getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
-                {isDynamicTest && (
+                {isDynamic && (
                   <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
                     <IconDynamic color={themeColor} />
                   </DynamicIconWrapper>

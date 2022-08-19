@@ -17,7 +17,7 @@ import {
 import { get } from 'lodash'
 import { Row, Icon, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
-import { question, test as testConstants, roleuser } from '@edulastic/constants'
+import { question, test as testContants, roleuser } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import {
   MathFormulaDisplay,
@@ -97,11 +97,7 @@ import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/te
 import { WithToolTip } from './AddOrRemove'
 import { getAllRubricNames } from '../../../src/utils/util'
 
-const {
-  ITEM_GROUP_TYPES,
-  ITEM_GROUP_DELIVERY_TYPES,
-  testCategoryTypes,
-} = testConstants
+const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants
 
 // render single item
 class Item extends Component {
@@ -512,7 +508,7 @@ class Item extends Component {
       passageConfirmModalVisible,
       showSelectGroupModal,
     } = this.state
-    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+    const isDynamicTest = test?.isDynamicTest
     const itemTypes = getQuestionType(item)
     const isPublisher = features.isCurator || features.isPublisherAuthor
     const staticGroups =
@@ -522,7 +518,7 @@ class Item extends Component {
         ? 'Selected'
         : test?.itemGroups?.find(
             (grp) => !!grp.items.find((i) => i._id === item._id)
-          )?.groupName || 'Section'
+          )?.groupName || 'Group'
     const hideAddRemove = userRole === roleuser.EDULASTIC_CURATOR
 
     const isDynamicItem = item.data?.questions?.some(

@@ -23,7 +23,7 @@ import {
   CustomPrompt,
 } from '@edulastic/common'
 import {
-  test as testConstants,
+  test as testContants,
   roleuser,
   collections as collectionsConstant,
   signUpState,
@@ -147,8 +147,7 @@ const {
   ITEM_GROUP_DELIVERY_TYPES,
   testSettingsOptions,
   docBasedSettingsOptions,
-  testCategoryTypes,
-} = testConstants
+} = testContants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 class Container extends PureComponent {
@@ -292,7 +291,7 @@ class Container extends PureComponent {
         }
       }
       if (location?.state?.isDynamicTest) {
-        setData({ testCategory: testCategoryTypes.DYNAMIC_TEST })
+        setData({ isDynamicTest: true })
       }
       if (showCancelButton) {
         setEditEnable(true)
@@ -582,7 +581,7 @@ class Container extends PureComponent {
     if (
       location?.pathname?.includes('addSections') &&
       !['addItems', 'addSections'].includes(value) &&
-      test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+      test?.isDynamicTest
     ) {
       hasValidGroups = this.validateGroups()
       if (!hasValidGroups) return
@@ -1345,7 +1344,7 @@ class Container extends PureComponent {
     const canEdit =
       (authors && authors.some((x) => x._id === userId)) || isCurator
     const isArchivedInactiveTest =
-      test.status === statusConstants.ARCHIVED && test.active === 0
+      test.status === testContants.statusConstants.ARCHIVED && test.active === 0
     // If assignments present for the test and user clicking on edit do a quick test fetch and see if co author regraded or not. Else older code.
     if (editClick && testAssignments.length) {
       const entity = await testsApi.getById(testId, {
@@ -1463,6 +1462,7 @@ class Container extends PureComponent {
       subjects,
       itemGroups,
       isDocBased,
+      isDynamicTest,
       versionId,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
@@ -1588,6 +1588,7 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
+          isDynamicTest={isDynamicTest}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
         {isTestLoading && test._id && <ContentBackDrop />}

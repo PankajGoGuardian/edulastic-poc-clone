@@ -121,6 +121,7 @@ module.exports = {
     GRAPHING_STATE: 'Graphing (Desmos State Test Version)',
   },
   calculatorKeys: ['NONE', 'BASIC', 'SCIENTIFIC', 'GRAPHING', 'GRAPHING_STATE'],
+
   calculatorTypes: {
     NONE: 'NONE',
     BASIC: 'BASIC',
@@ -435,9 +436,4 @@ module.exports = {
     'testContentVisibility',
   ],
   TEST_SETTINGS_SAVE_LIMIT: 20,
-  testCategoryTypes: {
-    DEFAULT: 'default',
-    DOC_BASED: 'doc_based',
-    DYNAMIC_TEST: 'dynamic_test',
-  },
 }

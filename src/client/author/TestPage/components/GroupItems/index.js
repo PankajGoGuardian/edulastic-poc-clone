@@ -516,15 +516,7 @@ const GroupItems = ({
                         defaultChecked={false}
                         value={ITEM_GROUP_TYPES.AUTOSELECT}
                       >
-                        <Tooltip
-                          title={
-                            <span>
-                              Set the parameters for what you’d like to include
-                              in this section, and <b>SmartBuild</b> will find
-                              and add the items for you.
-                            </span>
-                          }
-                        >
+                        <Tooltip title="Set the parameters for what you’d like to include in this section, and we will find and add the items for you.">
                           AUTO SELECT ITEMS BASED ON STANDARDS
                         </Tooltip>
                       </RadioBtn>

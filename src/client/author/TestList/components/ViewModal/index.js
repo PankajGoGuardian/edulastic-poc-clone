@@ -5,7 +5,7 @@ import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import {
   roleuser,
   collections as collectionsConstant,
-  test as testConstants,
+  test as testContants,
 } from '@edulastic/constants'
 import TestsApi from '@edulastic/api/src/tests'
 import {
@@ -92,7 +92,7 @@ import ShareModal from '../../../src/components/common/ShareModal'
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
-const { statusConstants } = testConstants
+const { statusConstants } = testContants
 class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
@@ -646,8 +646,9 @@ class ViewModal extends React.Component {
               <Spin />
             ) : (
               <PerfectScrollbar>
-                {item?.testCategory ===
-                testConstants.testCategoryTypes.DYNAMIC_TEST ? (
+                {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
+                {summary?.groupSummary?.length > 1 ||
+                itemGroups?.[0]?.type === 'AUTOSELECT' ? (
                   summary?.groupSummary?.map((group, i) => {
                     return (
                       <>

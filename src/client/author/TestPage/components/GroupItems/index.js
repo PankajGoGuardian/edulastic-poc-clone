@@ -469,7 +469,7 @@ const GroupItems = ({
     updateGroupData({ updatedGroupData, groupIndex: currentGroupIndex })
     setCurrentGroupIndex(null)
     setCurrentGroupDetails({})
-    if (validateGroups()) {
+    if (!validateGroups()) {
       handleSaveTest()
     }
   }

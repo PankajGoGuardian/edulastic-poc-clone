@@ -129,18 +129,17 @@ export const getInterestedSubjectsSelector = createSelector(
 )
 
 export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
-  getDefaultInterests,
   getInterestedSubjectsSelector,
   getInterestedGradesSelector,
   getInterestedCurriculumsSelector,
   getCurriculumsListSelector,
   (
-    previousInterests,
     interestedSubjects,
     interestedGrades,
     interestedCurriculums,
     curriculums
   ) => {
+    const previousInterests = getDefaultInterests()
     const subject = previousInterests.subject || interestedSubjects[0] || ''
 
     const curriculum =

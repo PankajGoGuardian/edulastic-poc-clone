@@ -188,7 +188,7 @@ export const getTestGradeAndSubject = (
       testTags: _uniq([...testTags, ...(group.tags || [])]),
     }
   }
-  return { testGrades, testSubjects, testTags: [] }
+  return { testGrades, testSubjects }
 }
 
 export const isRegradedByCoAuthor = (userId, entity, requestedTestId) => {

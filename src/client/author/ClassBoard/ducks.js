@@ -1009,7 +1009,7 @@ export const ttsUserIdSelector = createSelector(
 
 export const getHasRandomQuestionselector = createSelector(
   getClassResponseSelector,
-  (_test) => hasRandomQuestions(_test || {})
+  (_test) => hasRandomQuestions(_test?.itemGroups || [])
 )
 
 export const getTotalPoints = createSelector(

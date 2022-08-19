@@ -207,8 +207,3 @@ export const ClassNameCell = styled.div`
     color: ${lightGrey5};
   }
 `
-
-export const StyledLink = styled.div`
-  ${({ disabled }) =>
-    disabled ? 'opacity: 0.4; cursor: not-allowed;' : 'cursor: pointer;'};
-`

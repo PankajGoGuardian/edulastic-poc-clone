@@ -74,7 +74,6 @@ import {
   setTestSettingsListAction,
   isEnabledRefMaterialSelector,
   getPenaltyOnUsingHintsSelector,
-  NewGroupAutoselect,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -226,7 +225,6 @@ class Container extends PureComponent {
       fetchTestSettingsList,
       userId,
       userSignupStatus,
-      test,
     } = this.props
 
     const { versionId, id } = match.params
@@ -294,15 +292,7 @@ class Container extends PureComponent {
         }
       }
       if (location?.state?.isDynamicTest) {
-        setData({
-          testCategory: testCategoryTypes.DYNAMIC_TEST,
-          itemGroups: [
-            {
-              ...(test.itemGroups?.[0] || {}),
-              ...NewGroupAutoselect,
-            },
-          ],
-        })
+        setData({ testCategory: testCategoryTypes.DYNAMIC_TEST })
       }
       if (showCancelButton) {
         setEditEnable(true)
@@ -615,8 +605,6 @@ class Container extends PureComponent {
       test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
     if (
       isEditable &&
-      (hasValidGroups ||
-        test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
       (totalTestItems > 0 || isAutoSelectGroup) &&
       !(totalTestItems === 1 && !_id && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&

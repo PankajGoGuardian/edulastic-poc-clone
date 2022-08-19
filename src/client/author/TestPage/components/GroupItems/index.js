@@ -22,7 +22,7 @@ import {
   getAllTagsSelector,
   getStaticGroupItemIds,
   getTestEntitySelector,
-  NewGroupAutoselect,
+  NewGroup,
   setTestDataAction,
   updateGroupDataAction,
 } from '../../ducks'
@@ -108,7 +108,6 @@ const GroupItems = ({
     }
   }
 
-  // for radio button, value is empty and data is toggled
   const handleChange = (fieldName, value) => {
     let updatedGroupData = { ...editGroupDetail }
     if (fieldName === 'type') {
@@ -253,7 +252,7 @@ const GroupItems = ({
     }
     const { index } = maxBy(test.itemGroups, 'index')
     const data = {
-      ...NewGroupAutoselect,
+      ...NewGroup,
       _id: nanoid(),
       groupName: `SECTION ${index + 2}`,
       index: index + 1,
@@ -514,7 +513,7 @@ const GroupItems = ({
                     >
                       <RadioBtn
                         data-cy={`check-group-type-${itemGroup.groupName}`}
-                        defaultChecked
+                        defaultChecked={false}
                         value={ITEM_GROUP_TYPES.AUTOSELECT}
                       >
                         <Tooltip
@@ -530,7 +529,10 @@ const GroupItems = ({
                         </Tooltip>
                       </RadioBtn>
                       <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
-                        <RadioBtn value={ITEM_GROUP_TYPES.STATIC}>
+                        <RadioBtn
+                          defaultChecked
+                          value={ITEM_GROUP_TYPES.STATIC}
+                        >
                           MANUAL SELECT ITEMS FROM ITEM BANK
                         </RadioBtn>
                       </Tooltip>

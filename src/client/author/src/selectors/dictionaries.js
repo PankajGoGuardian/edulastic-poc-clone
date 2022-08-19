@@ -1,10 +1,11 @@
 import { createSelector } from 'reselect'
-import { keyBy, isEmpty, forEach, uniqBy } from 'lodash'
+import { keyBy, isEmpty, forEach } from 'lodash'
 import selectData from '../../TestPage/components/common/selectsData'
 import {
   getInterestedCurriculumsSelector,
   getShowAllCurriculumsSelector,
 } from './user'
+import { getEloTloFromStandards } from '../utils/dictionaries'
 
 const { defaultStandards } = selectData
 export const stateSelector = (state) => state.dictionaries
@@ -108,24 +109,9 @@ export const getDictionariesAlignmentsSelector = createSelector(
   (state) => state.alignments
 )
 export const standardsSelector = createSelector(stateSelector, (state) => {
-  const standardsWithId = state.standards.data.map((el) => ({
-    _id: el.id,
-    ...el,
-  }))
-  const elo = standardsWithId.filter((item) => item.level === 'ELO')
-  const tlo = uniqBy(
-    standardsWithId.map((item) => ({
-      identifier: item.tloIdentifier,
-      description: item.tloDescription,
-      position: item.position,
-      _id: item.tloId,
-    })),
-    '_id'
-  )
   return {
     ...state.standards,
-    elo,
-    tlo,
+    ...getEloTloFromStandards(state.standards.data),
   }
 })
 

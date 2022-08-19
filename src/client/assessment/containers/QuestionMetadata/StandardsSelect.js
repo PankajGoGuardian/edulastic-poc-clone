@@ -6,18 +6,14 @@ import { IconExpandBox } from '@edulastic/icons'
 import { withNamespaces } from 'react-i18next'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { isEqual, uniq } from 'lodash'
+import { uniq } from 'lodash'
+import { dictionariesApi } from '@edulastic/api'
 import { getPreviouslyUsedOrDefaultInterestsSelector } from '../../../author/src/selectors/user'
 import StandardsModal from './StandardsModal'
-import {
-  getDictCurriculumsAction,
-  getDictStandardsForCurriculumAction,
-} from '../../../author/src/actions/dictionaries'
-import {
-  getCurriculumsListSelector,
-  getStandardsListSelector,
-  standardsSelector,
-} from '../../../author/src/selectors/dictionaries'
+import { getDictCurriculumsAction } from '../../../author/src/actions/dictionaries'
+import { getCurriculumsListSelector } from '../../../author/src/selectors/dictionaries'
+import useApiQuery from '../../hooks/useApiQuery'
+import { getEloTloFromStandards } from '../../../author/src/utils/dictionaries'
 
 function StandardsSelectButton(props) {
   const {
@@ -112,10 +108,7 @@ function StandardsSelect(props) {
     t,
     mode,
     onChange,
-    getCurriculumStandards,
-    curriculumStandardsLoading,
     curriculums,
-    curriculumStandards,
     getCurriculums,
     preventInput,
     disabled,
@@ -132,23 +125,48 @@ function StandardsSelect(props) {
 
   const [isModalVisible, setIsModalVisible] = useState(false)
   const [searchProps, setSearchProps] = useState({
-    id: '',
-    grades: [],
-    searchStr: '',
+    curriculumId:
+      standardDetails?.standards?.[0]?.curriculumId || defaultCurriculumId,
+    grades: standardDetails?.grades || defaultGrades,
+    search: '',
   })
+  const { data: response, loading: curriculumStandardsLoading } = useApiQuery(
+    dictionariesApi.receiveStandards,
+    searchProps
+  )
+  const curriculumStandards = useMemo(() => {
+    if (!response) return { elo: [], tlo: [] }
+
+    const unsortedCurriculumStandards = getEloTloFromStandards(response)
+    const elo = unsortedCurriculumStandards.elo.sort(
+      (a, b) => a.position - b.position
+    )
+    const tlo = unsortedCurriculumStandards.tlo.sort(
+      (a, b) => a.position - b.position
+    )
+    return {
+      elo,
+      tlo,
+    }
+  }, [response, curriculumStandardsLoading])
+
   const extraProps = {}
 
-  // TODO only used by StandardsModal. Better move into that.
   const searchCurriculumStandards = (searchObject) => {
-    if (!isEqual(searchProps, searchObject)) {
-      setSearchProps(searchObject)
-      getCurriculumStandards(
-        searchObject.id,
-        searchObject.grades,
-        searchObject.searchStr
-      )
-    }
+    setSearchProps({
+      curriculumId: searchObject.id,
+      grades: searchObject.grades,
+      search: searchObject.searchStr,
+    })
   }
+  useEffect(() => {
+    setSearchProps({
+      curriculumId:
+        standardDetails?.standards?.[0]?.curriculumId || defaultCurriculumId,
+      grades: standardDetails?.grades || defaultGrades,
+      search: '',
+    })
+  }, [standardDetails])
 
   const handleApply = (data) => {
     if (!data?.eloStandards?.length) {
@@ -192,11 +210,6 @@ function StandardsSelect(props) {
   }
 
   useEffect(() => {
-    searchCurriculumStandards({
-      id: defaultCurriculumId,
-      grades: defaultGrades,
-      searchStr: '',
-    })
     if (curriculums.length === 0) {
       getCurriculums()
     }
@@ -265,8 +278,6 @@ const enhance = compose(
   withNamespaces('assessment'),
   connect(
     (state) => ({
-      curriculumStandards: getStandardsListSelector(state),
-      curriculumStandardsLoading: standardsSelector(state).loading,
       curriculums: getCurriculumsListSelector(state),
       previouslyUsedOrDefaultInterests: getPreviouslyUsedOrDefaultInterestsSelector(
         state
@@ -274,7 +285,6 @@ const enhance = compose(
     }),
     {
       getCurriculums: getDictCurriculumsAction,
-      getCurriculumStandards: getDictStandardsForCurriculumAction,
     }
   )
 )

@@ -125,7 +125,7 @@ const StandardsModal = ({
     const tloId =
       standardDetails.standards?.[0].domainId ||
       state.eloStandards[0]?.tloId ||
-      curriculumStandardsTLO[0]._id ||
+      curriculumStandardsTLO[0]?._id ||
       ''
     setSelectedTLO(tloId)
     setValidStateAndRefresh({

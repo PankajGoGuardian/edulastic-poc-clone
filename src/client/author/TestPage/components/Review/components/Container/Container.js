@@ -12,6 +12,7 @@ import {
   flatten,
   isArray,
   groupBy,
+  intersection,
 } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -24,7 +25,7 @@ import {
   notification,
   MainContentWrapper,
 } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import { test as testConstants, roleuser } from '@edulastic/constants'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
 import {
@@ -102,6 +103,18 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
+    const {
+      test,
+      addItemsToAutoselectGroupsRequest,
+      isTestsCreating,
+    } = this.props
+    const hasAutoSelectItems = test.itemGroups.some(
+      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems && !isTestsCreating) {
+      addItemsToAutoselectGroupsRequest(test)
+    }
+
     // url = http://localhost:3001/author/tests/tab/review/id/testId/
     // ?token=value&firebaseToken=value&userId=value&role=teacher&itemBank=cli&showCLIBanner=1
     // &showAssingmentPreview=1
@@ -111,6 +124,26 @@ class Review extends PureComponent {
     if (showAssignmentPreview) {
       const { setIsTestPreviewVisible } = this.props
       setIsTestPreviewVisible(true)
+    }
+  }
+
+  componentDidUpdate(prevProps) {
+    const { test: prevTest } = prevProps
+    const {
+      test,
+      addItemsToAutoselectGroupsRequest,
+      isTestsCreating,
+    } = this.props
+    const prevItemGroupIds = prevTest.itemGroups.map((ig) => ig._id)
+    const itemGroupIds = test.itemGroups.map((ig) => ig._id)
+    const hasDifferentItemGroups =
+      intersection(prevItemGroupIds, itemGroupIds).length !==
+      itemGroupIds.length
+    const hasAutoSelectItems = test.itemGroups.some(
+      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems && !isTestsCreating && hasDifferentItemGroups) {
+      addItemsToAutoselectGroupsRequest(test)
     }
   }
 
@@ -748,6 +781,7 @@ Review.propTypes = {
   standards: PropTypes.object.isRequired,
   current: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
+  addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
   clearDictAlignment: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   onSaveTestId: PropTypes.func,

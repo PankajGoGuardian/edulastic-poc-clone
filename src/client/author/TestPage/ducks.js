@@ -29,7 +29,6 @@ import {
   round,
   pick,
   isUndefined,
-  intersection,
 } from 'lodash'
 import {
   testsApi,
@@ -2045,7 +2044,7 @@ export const fillAutoselectGoupsWithDummyItems = (testEntity) => {
 // saga
 export function* receiveTestByIdSaga({ payload }) {
   try {
-    const prevTest = yield select(getTestSelector)
+    const tests = yield select((state) => state.tests)
     let createdItems = yield select(getTestCreatedItemsSelector)
     const entity = yield call(testsApi.getById, payload.id, {
       data: true,
@@ -2070,7 +2069,7 @@ export function* receiveTestByIdSaga({ payload }) {
     }
     entity.passages = [
       ...entity.passages,
-      ...differenceBy(prevTest.passages, entity.passages, '_id'),
+      ...differenceBy(tests.entity.passages, entity.passages, '_id'),
     ]
     fillAutoselectGoupsWithDummyItems(entity)
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
@@ -2209,20 +2208,6 @@ export function* receiveTestByIdSaga({ payload }) {
     }
     yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
-    // for dynamic test, check if itemGroups have updated and add items to auto-select groups
-    if (entity.testCategory === testCategoryTypes.DYNAMIC_TEST) {
-      const prevItemGroupIds = prevTest.itemGroups.map((ig) => ig._id)
-      const currItemGroupIds = entity.itemGroups.map((ig) => ig._id)
-      const hasDifferentItemGroups =
-        intersection(prevItemGroupIds, currItemGroupIds).length !==
-        currItemGroupIds.length
-      const hasAutoSelectItems = entity.itemGroups.some(
-        (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
-      )
-      if (hasDifferentItemGroups && hasAutoSelectItems) {
-        yield put(addItemsToAutoselectGroupsRequestAction(entity))
-      }
-    }
   } catch (err) {
     captureSentryException(err)
     console.log({ err })

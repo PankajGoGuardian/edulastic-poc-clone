@@ -552,9 +552,9 @@ class ViewModal extends React.Component {
             <div>
               <AssessmentNameLabel>Test Name</AssessmentNameLabel>
               {isDynamic && (
-                <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
+                <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
                   <IconDynamic color={greyThemeDark2} />
-                  &nbsp;&nbsp; SMARTBUILD TEST
+                  &nbsp;&nbsp; DYNAMIC TEST
                 </DynamicIconWrapper>
               )}
             </div>

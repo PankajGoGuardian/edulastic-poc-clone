@@ -508,7 +508,6 @@ class Item extends Component {
       passageConfirmModalVisible,
       showSelectGroupModal,
     } = this.state
-    const isDynamicTest = test?.isDynamicTest
     const itemTypes = getQuestionType(item)
     const isPublisher = features.isCurator || features.isPublisherAuthor
     const staticGroups =
@@ -608,7 +607,7 @@ class Item extends Component {
                     </AddRemoveButton>
                   )}
                 </ViewButton>
-              ) : isPublisher || isDynamicTest ? (
+              ) : isPublisher ? (
                 <AddRemoveBtnPublisher
                   loading={selectedId === item._id}
                   onClick={() => this.handleAddRemove(item, this.isAddOrRemove)}
@@ -728,7 +727,7 @@ class Item extends Component {
                   >
                     <IconDown />
                   </MoreInfo>
-                  {isPublisher || isDynamicTest ? (
+                  {isPublisher ? (
                     <AddRemoveBtnPublisher
                       loading={selectedId === item._id}
                       onClick={() => {

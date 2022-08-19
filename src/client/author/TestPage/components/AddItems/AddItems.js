@@ -14,7 +14,7 @@ import {
 } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { IconPlusCircle, IconItemGroup } from '@edulastic/icons'
-import { themeColor, white } from '@edulastic/colors'
+import { themeColor } from '@edulastic/colors'
 import qs from 'qs'
 import { sessionFilters as sessionFilterKeys } from '@edulastic/constants/const/common'
 import { ItemsPagination, Selected } from './styled'
@@ -56,6 +56,7 @@ import {
 } from '../../ducks'
 import ItemFilter from '../../../ItemList/components/ItemFilter/ItemFilter'
 import {
+  Container,
   ListItems,
   Element,
   PaginationContainer,
@@ -63,11 +64,11 @@ import {
   ScrollbarContainer,
   MobileFilterIcon,
 } from '../../../ItemList/components/Container/styled'
-import AddItemsContainer from './AddItemsContainer'
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
 import {
   getInterestedCurriculumsSelector,
   getUserId,
+  getUserFeatures,
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
   getUserOrgId,
@@ -158,7 +159,6 @@ class AddItems extends PureComponent {
     }
 
     if (needToSetFilter) {
-      // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
       const {
         subject = interestedSubjects?.[0],
         grades = interestedGrades || [],
@@ -508,18 +508,26 @@ class AddItems extends PureComponent {
       toggleFilter,
       isShowFilter,
       search,
+      features,
+      gotoGroupItems,
       userRole,
       sort = {},
-      gotoAddSections,
     } = this.props
-    const isDynamicTest = test?.isDynamicTest
+
+    const { isCurator, isPublisherAuthor } = features
+    let showGroupItemsBtn = false
+
+    if (isCurator || isPublisherAuthor) {
+      showGroupItemsBtn = true
+    }
+
     const selectedItemIds = test?.itemGroups?.flatMap(
       (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
     )
     const itemGroupCount = selectedItemIds?.length || 0
 
     return (
-      <AddItemsContainer isDynamicTest={isDynamicTest}>
+      <Container>
         <ItemFilter
           onSearchFieldChange={this.handleSearchFieldChange}
           onSearchInputChange={this.handleSearchInputChange}
@@ -586,6 +594,21 @@ class AddItems extends PureComponent {
                       <span>Create new Item</span>
                     </EduButton>
                   )}
+                  {showGroupItemsBtn && (
+                    <EduButton
+                      height="28px"
+                      isGhost
+                      data-cy="groupItem"
+                      onClick={gotoGroupItems}
+                    >
+                      <IconItemGroup
+                        color={themeColor}
+                        width={12}
+                        height={12}
+                      />
+                      <span>Group Items</span>
+                    </EduButton>
+                  )}
                 </FlexContainer>
                 <SortMenu
                   options={sortOptions.itemList}
@@ -593,16 +616,6 @@ class AddItems extends PureComponent {
                   sortDir={sort.sortDir}
                   sortBy={sort.sortBy}
                 />
-                {isDynamicTest && (
-                  <EduButton
-                    style={{ height: '32px !important' }}
-                    data-cy="gotoAddSections"
-                    onClick={gotoAddSections}
-                  >
-                    <IconItemGroup color={white} width={12} height={12} />
-                    <span>Done</span>
-                  </EduButton>
-                )}
               </ItemsMenu>
 
               {!loading && (
@@ -637,7 +650,7 @@ class AddItems extends PureComponent {
             </ContentWrapper>
           </Element>
         </ListItems>
-      </AddItemsContainer>
+      </Container>
     )
   }
 }
@@ -661,6 +674,7 @@ const enhance = compose(
       testItemsList: getTestItemsSelector(state),
       search: getSearchFilterStateSelector(state),
       sort: getSortFilterStateSelector(state),
+      features: getUserFeatures(state),
       interestedGrades: getInterestedGradesSelector(state),
       interestedSubjects: getInterestedSubjectsSelector(state),
       pageNumber: state?.testsAddItems?.page,

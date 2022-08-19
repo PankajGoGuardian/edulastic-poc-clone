@@ -18,7 +18,6 @@ const CardComponent = styled.div`
     flex-basis: 100%;
     margin-bottom: 10px;
   }
-  position: relative;
 `
 
 export default CardComponent

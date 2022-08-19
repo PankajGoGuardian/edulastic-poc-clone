@@ -293,11 +293,11 @@ const Author = ({
     history.location.pathname.includes('students-report-card')
   const assessmentTabs = [
     'description',
-    'addSections',
     'addItems',
     'review',
     'settings',
     'worksheet',
+    'groupItems',
   ]
 
   return (

@@ -1435,7 +1435,7 @@ class ClassBoard extends Component {
                     disabled={hasRandomQuestions || !isItemsVisible}
                     errMessage={
                       hasRandomQuestions
-                        ? t('common.randomItemsDisableMessage')
+                        ? 'This assignment has random items for every student.'
                         : t('common.testHidden')
                     }
                   >

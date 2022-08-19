@@ -7,7 +7,6 @@ import {
 import { Paper, MainContentWrapper } from '@edulastic/common'
 import PerfectScrollbar from 'react-perfect-scrollbar'
 import styled from 'styled-components'
-import { Modal } from 'antd'
 
 export const Container = styled(MainContentWrapper)`
   padding: 0;
@@ -18,19 +17,6 @@ export const Container = styled(MainContentWrapper)`
     padding: 0;
     height: initial;
     overflow: auto;
-  }
-`
-
-export const FullScreenModal = styled(Modal)`
-  top: 0px;
-  width: 100% !important;
-  .ant-modal-close-x {
-    visibility: hidden;
-  }
-  .ant-modal-body {
-    padding: 0px;
-    display: flex;
-    height: 100vh;
   }
 `
 

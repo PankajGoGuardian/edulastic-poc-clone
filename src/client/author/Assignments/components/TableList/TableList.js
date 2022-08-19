@@ -332,7 +332,7 @@ const TableList = ({
             >
               <WithDisableMessage
                 disabled={row.hasAutoSelectGroups}
-                errMessage={t('common.randomItemsDisableMessage')}
+                errMessage="This assignment has random items for every student."
               >
                 <Tooltip placement="bottom" title="Express Grader">
                   <Link

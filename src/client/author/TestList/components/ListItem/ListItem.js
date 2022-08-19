@@ -1,4 +1,4 @@
-import { uniqBy } from 'lodash'
+import { uniqBy, get } from 'lodash'
 import {
   cardTitleColor,
   darkGrey,
@@ -576,7 +576,7 @@ class ListItem extends Component {
                 {collections.find((o) => o.name === 'Edulastic Certified') &&
                   getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
                 {isDynamic && (
-                  <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
+                  <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
                     <IconDynamic color={themeColor} />
                   </DynamicIconWrapper>
                 )}

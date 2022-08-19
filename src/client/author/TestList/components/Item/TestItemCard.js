@@ -113,11 +113,7 @@ const TestItemCard = ({
                 >
                   Preview
                 </EduButton>
-                <EduButton
-                  style={btnStyle}
-                  height="32px"
-                  onClick={() => openModal('more')}
-                >
+                <EduButton style={btnStyle} height="32px" onClick={() => openModal('more')}>
                   More
                 </EduButton>
               </>
@@ -170,7 +166,7 @@ const TestItemCard = ({
             </div>
           </Qcount>
           {isDynamic && (
-            <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
+            <DynamicIconWrapper title="Dynamic Test. Every student might get different items in assignment">
               <IconDynamic color={themeColor} />
             </DynamicIconWrapper>
           )}

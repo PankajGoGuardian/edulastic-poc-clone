@@ -149,12 +149,13 @@ export const createGroupSummary = (test) => {
       isLimitedDeliveryType
     )
     if (isAutoSelect) {
-      summaryData.standards =
-        itemGroup?.standardDetails?.standards.map((std) => ({
+      summaryData.standards = [
+        {
           isEquivalentStandard: false,
-          identifier: std.identifier,
-          curriculumId: std.curriculumId,
-        })) || []
+          identifier: itemGroup.standardDetails.identifier,
+          curriculumId: itemGroup.standardDetails.curriculumId,
+        },
+      ]
     }
     if (
       (!isAutoSelect && isLimitedDeliveryType && itemGroup.deliverItemsCount) ||

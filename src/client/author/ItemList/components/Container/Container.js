@@ -124,8 +124,6 @@ class Contaier extends Component {
       districtId,
       test,
     } = this.props
-
-    // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
     const {
       subject = interestedSubjects,
       grades = interestedGrades || [],

@@ -8,9 +8,8 @@ import {
   RadioBtn,
 } from '@edulastic/common'
 import { Col, Row, Spin } from 'antd'
-import { isEqual } from 'lodash'
 import PropTypes from 'prop-types'
-import React, { useEffect, useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import { setDefaultInterests } from '../../../author/dataUtils'
 import PopupRowSelect from './PopupRowSelect'
 import { Container } from './styled/Container'
@@ -22,139 +21,30 @@ const StandardsModal = ({
   onApply,
   onCancel,
   t,
-  defaultStandard,
-  defaultStandards,
-  defaultSubject,
-  defaultGrades,
+  standard,
+  standards,
+  subject,
+  grades,
   curriculumStandardsELO,
   curriculumStandardsTLO,
   getCurriculumStandards,
   curriculumStandardsLoading,
   singleSelect = false,
   isPlaylistView = false,
-  standardDetails,
-  curriculums,
 }) => {
   const [state, setState] = useState({
-    standard: defaultStandard,
-    eloStandards: defaultStandards,
-    subject: defaultSubject,
-    grades: defaultGrades,
+    standard,
+    eloStandards: standards,
+    subject,
+    grades,
   })
 
   const [selectedTLO, setSelectedTLO] = useState(
     curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : ''
   )
-
-  const reset = () => {
-    setState({
-      standard: defaultStandard,
-      eloStandards: defaultStandards,
-      subject: defaultSubject,
-      grades: defaultGrades,
-    })
-    setSelectedTLO(
-      curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : ''
-    )
-  }
-
-  const setValidStateAndRefresh = ({
-    subject,
-    standard,
-    grades,
-    eloStandards,
-  }) => {
-    subject = subject || state.subject || defaultSubject
-    standard = standard || state.standard || defaultStandard
-    grades = grades || state.grades || defaultGrades
-    eloStandards = eloStandards || state.eloStandards || defaultStandards
-
-    const _curriculum = curriculums.find((curr) => curr._id === standard?.id)
-    standard = {
-      id: _curriculum?._id,
-      curriculum: _curriculum?.curriculum,
-    }
-    grades = grades || []
-    eloStandards = (eloStandards || []).filter((elo) =>
-      curriculumStandardsELO.find((cElo) => cElo._id === elo._id)
-    )
-    const newState = {
-      subject,
-      standard,
-      grades,
-      eloStandards,
-    }
-    const isSubjectChanged = !isEqual(newState.subject, state.subject)
-    const isGradesChanged = !isEqual(newState.grades, state.grades)
-    const isStandardChanged = !isEqual(newState.standard, state.standard)
-
-    setState(newState)
-
-    if (!isPlaylistView) {
-      if (isSubjectChanged || isGradesChanged || isStandardChanged)
-        getCurriculumStandards({
-          id: newState.standard.id,
-          grades: newState.grades,
-          searchStr: '',
-        })
-    } else if (isGradesChanged || isStandardChanged) {
-      getCurriculumStandards(newState.standard.id, newState.grades, '')
-    }
-    setDefaultInterests({
-      subject: newState.subject,
-      curriculumId: newState.standard.id,
-      grades: newState.grades,
-    })
-  }
-
-  useEffect(() => {
-    if (!visible) return
-    if (!standardDetails) return reset()
-    const subject = standardDetails.subject || state.subject
-    const eloStandards =
-      standardDetails.standards?.map((std) => ({ _id: std.standardId })) ||
-      state.eloStandards
-    const grades = standardDetails.grades || state.grades
-    const curriculumId =
-      standardDetails.standards?.[0].curriculumId || state.standard.id
-    const rawCurriculum = curriculums.find((curr) => curr._id === curriculumId)
-    const standard = {
-      id: rawCurriculum?._id,
-      curriculum: rawCurriculum?.curriculum,
-    }
-    const tloId =
-      standardDetails.standards?.[0].domainId ||
-      state.eloStandards[0]?.tloId ||
-      curriculumStandardsTLO[0]._id ||
-      ''
-    setSelectedTLO(tloId)
-    setValidStateAndRefresh({
-      subject,
-      eloStandards,
-      grades,
-      standard,
-    })
-  }, [visible])
-
-  useEffect(() => {
-    const selectedTloFound = curriculumStandardsTLO.find(
-      (tlo) => tlo._id === selectedTLO
-    )
-    if (!selectedTloFound && curriculumStandardsTLO[0])
-      setSelectedTLO(curriculumStandardsTLO[0]._id)
+  useMemo(() => {
+    if (curriculumStandardsTLO[0]) setSelectedTLO(curriculumStandardsTLO[0]._id)
   }, [curriculumStandardsTLO])
-
-  useEffect(() => {
-    setState((prevState) => {
-      const newEloStandards = curriculumStandardsELO.filter(
-        (cElo) => !!prevState.eloStandards.find((pElo) => pElo._id === cElo._id)
-      )
-      return {
-        ...prevState,
-        eloStandards: newEloStandards,
-      }
-    })
-  }, [curriculumStandardsELO])
 
   const filteredELO = curriculumStandardsELO
     .filter((c) => c.tloId === selectedTLO)
@@ -191,20 +81,40 @@ const StandardsModal = ({
   )
 
   const handleChangeSubject = (val) => {
-    setValidStateAndRefresh({
-      ...state,
+    setState((prevState) => ({
+      ...prevState,
       subject: val,
-      standard: { ...state.standard, curriculum: '' },
-    })
+      standard: { ...prevState.standard, curriculum: '' },
+    }))
+    if (!isPlaylistView) {
+      getCurriculumStandards({ id: '', grades: state.grades, searchStr: '' })
+    }
+    setDefaultInterests({ subject: val })
   }
 
   const handleChangeStandard = (curriculum, event) => {
-    const id = parseInt(event.key, 10)
-    setValidStateAndRefresh({ ...state, standard: { id, curriculum } })
+    const id = event.key
+    setState({ ...state, standard: { id, curriculum } })
+    if (isPlaylistView) {
+      getCurriculumStandards(id)
+    } else {
+      getCurriculumStandards({ id, grades: state.grades, searchStr: '' })
+    }
+    setDefaultInterests({ curriculumId: id })
   }
 
   const handleChangeGrades = (val) => {
-    setValidStateAndRefresh({ ...state, grades: val })
+    setState({ ...state, grades: val })
+    if (!isPlaylistView) {
+      getCurriculumStandards({
+        id: state.standard.id,
+        grades: val,
+        searchStr: '',
+      })
+    } else {
+      getCurriculumStandards(state.standard.id, val, '')
+    }
+    setDefaultInterests({ grades: val })
   }
 
   const handleCheckELO = (c) => {
@@ -315,19 +225,19 @@ StandardsModal.propTypes = {
   visible: PropTypes.bool.isRequired,
   onApply: PropTypes.func.isRequired,
   onCancel: PropTypes.func.isRequired,
-  defaultStandard: PropTypes.object.isRequired,
+  standard: PropTypes.object.isRequired,
   t: PropTypes.func.isRequired,
-  defaultSubject: PropTypes.string,
+  subject: PropTypes.string,
   curriculumStandardsELO: PropTypes.array,
   curriculumStandardsTLO: PropTypes.array,
-  defaultGrades: PropTypes.array,
+  grades: PropTypes.array,
 }
 
 StandardsModal.defaultProps = {
-  defaultSubject: '',
+  subject: '',
   curriculumStandardsELO: [],
   curriculumStandardsTLO: [],
-  defaultGrades: [],
+  grades: [],
 }
 
 export default StandardsModal

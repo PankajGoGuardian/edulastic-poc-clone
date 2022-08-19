@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
-import { debounce, uniq, get } from 'lodash'
+import { debounce, uniq, get, omit } from 'lodash'
 import { Pagination, Spin } from 'antd'
 import { roleuser, sortOptions } from '@edulastic/constants'
 import {
@@ -187,6 +187,9 @@ class AddItems extends PureComponent {
       }
 
       this.updateFilterState(search, sort)
+      if (search.filter === filterMenuItems[4].filter) {
+        search.filter = filterMenuItems[0].filter
+      }
     }
     if (!curriculums.length) getCurriculums()
     getAllTags({ type: 'testitem' })
@@ -230,17 +233,22 @@ class AddItems extends PureComponent {
       (item) => item.path === filterType
     )
     const { filter = '' } = (getMatchingObj.length && getMatchingObj[0]) || {}
-    const searchState = {
-      ...search,
-      filter,
-    }
+    const searchState = omit(
+      {
+        ...search,
+        filter,
+      },
+      ['folderId']
+    )
     const sortByRecency = ['by-me', 'shared'].includes(filterType)
     const sort = {
       sortBy: sortByRecency ? 'recency' : 'popularity',
       sortDir: 'desc',
     }
     this.updateFilterState(searchState, sort)
-    receiveTestItems(searchState, sort, 1, limit)
+    if (filterType !== 'folders') {
+      receiveTestItems(searchState, sort, 1, limit)
+    }
   }
 
   handleClearSearch = () => {

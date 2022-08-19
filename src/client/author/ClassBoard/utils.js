@@ -117,10 +117,10 @@ export const getUserName = (student) => {
 }
 
 /**
- * @param {Object} test
- * no item groups - if dynamic test return true else false
- * dynamic test with auto-select itemGroup or with limited/random delivery type - return true
- * keep in sync with `hasRandomQuestionsInGroup()` in `edu-api/src/utils/test.js`
+ * @param {Object} itemGroups
+ * no itemGroups return false
+ * for itemGroups exists - atleast one group with AUTOSELECT or STATIC with limited random can have random items, hence return true
+ *
  */
 export const hasRandomQuestions = (test = {}) => {
   const { itemGroups = [], testCategory = testCategoryTypes.DEFAULT } = test

@@ -29,6 +29,7 @@ import {
   round,
   pick,
   isUndefined,
+  intersection,
 } from 'lodash'
 import {
   testsApi,
@@ -2208,7 +2209,20 @@ export function* receiveTestByIdSaga({ payload }) {
     }
     yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
-    yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    // for dynamic test, check if itemGroups have updated and add items to auto-select groups
+    if (entity.testCategory === testCategoryTypes.DYNAMIC_TEST) {
+      const prevItemGroupIds = prevTest.itemGroups.map((ig) => ig._id)
+      const currItemGroupIds = entity.itemGroups.map((ig) => ig._id)
+      const hasDifferentItemGroups =
+        intersection(prevItemGroupIds, currItemGroupIds).length !==
+        currItemGroupIds.length
+      const hasAutoSelectItems = entity.itemGroups.some(
+        (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+      )
+      if (hasDifferentItemGroups && hasAutoSelectItems) {
+        yield put(addItemsToAutoselectGroupsRequestAction(entity))
+      }
+    }
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
@@ -2289,7 +2303,12 @@ function* createTestSaga({ payload }) {
     const entity = yield createTest(payload.data)
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
-    yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    const hasAutoSelectItems = entity.itemGroups.some(
+      (g) => g.type === ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems) {
+      yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    }
     const pathname = yield select((state) => state.router.location.pathname)
     const currentTabMatch = pathname?.match(
       /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
@@ -2449,7 +2468,12 @@ export function* updateTestSaga({ payload }) {
     }
     fillAutoselectGoupsWithDummyItems(entity)
     yield put(updateTestSuccessAction(entity))
-    yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    const hasAutoSelectItems = entity.itemGroups.some(
+      (g) => g.type === ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (hasAutoSelectItems) {
+      yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    }
     const newId = entity._id
     const userRole = yield select(getUserRole)
     const isCurator = yield select(getIsCurator)
@@ -3755,10 +3779,6 @@ function* fetchAutoselectGroupItemsSaga(payload) {
 
 function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
   try {
-    const hasAutoSelectItems = _test.itemGroups.some(
-      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
-    )
-    if (!hasAutoSelectItems) return
     yield put(setAutoselectItemsFetchingStatusAction(true))
     const transformedData = getItemGroupsTransformed(_test)
     for (const { isFetchItems, data, groupName } of transformedData) {

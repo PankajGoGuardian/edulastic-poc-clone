@@ -125,19 +125,17 @@ export const getUserName = (student) => {
 export const hasRandomQuestions = (test = {}) => {
   const { itemGroups = [], testCategory = testCategoryTypes.DEFAULT } = test
 
-  if (!itemGroups || !itemGroups.length) {
-    // hasRandomQuestion should be true when itemGroups are absent for dynamic test
-    // this is done so that all features relying on this check are disabled
-    return testCategory === testCategoryTypes.DYNAMIC_TEST
+  if (testCategory === testCategoryTypes.DYNAMIC_TEST) {
+    return true
   }
-  return (
-    testCategory === testCategoryTypes.DYNAMIC_TEST &&
-    // if all itemGroups do not belong to type STATIC with deliveryType ALL
-    itemGroups.some(
-      (group) =>
-        group.type === ITEM_GROUP_TYPES.AUTOSELECT ||
-        group.deliveryType !== ITEM_GROUP_DELIVERY_TYPES.ALL
-    )
+
+  if (!itemGroups || !itemGroups.length) {
+    return false
+  }
+  return itemGroups.some(
+    (group) =>
+      group.type === ITEM_GROUP_TYPES.AUTOSELECT ||
+      group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
   )
 }
 

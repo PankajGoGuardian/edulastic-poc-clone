@@ -295,8 +295,7 @@ class Container extends PureComponent {
           })
         }
       }
-      if (location?.state?.isDynamicTest && !id) {
-        // run only when creating a new test and not during edit test
+      if (location?.state?.isDynamicTest) {
         const defaultItemGroup = {
           ...(test.itemGroups?.[0] || {}),
           ...NewGroupAutoselect,

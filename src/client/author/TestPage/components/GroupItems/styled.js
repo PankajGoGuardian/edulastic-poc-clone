@@ -114,7 +114,7 @@ export const AddGroupButton = styled.span`
 `
 
 export const RadioMessage = styled.div`
-  margin: 5px 0px 20px 35px;
+  margin: 5px 0px 0px ${(props) => props.marginLeft || '0px'};
   font-size: ${(props) => props.theme.smallFontSize};
   color: ${linkColor1};
 `

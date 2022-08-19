@@ -870,11 +870,15 @@ const GroupItems = ({
                             data-cy={`check-deliver-all-${itemGroup.groupName}`}
                             defaultChecked
                             value={ITEM_GROUP_DELIVERY_TYPES.ALL}
-                            vertical
-                            mb="10px"
                           >
                             Deliver all Items in this Section
                           </RadioBtn>
+
+                          <RadioMessage>
+                            Use this option to deliver a specific number of
+                            randomly picked question per Section.
+                          </RadioMessage>
+
                           <RadioBtn
                             data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
                             defaultChecked={false}
@@ -883,7 +887,6 @@ const GroupItems = ({
                                 ? editingDeliveryType
                                 : currentDeliveryType
                             }
-                            vertical
                           >
                             <ItemCountWrapperContainer
                               handleChange={handleChange}
@@ -893,10 +896,6 @@ const GroupItems = ({
                               itemGroup={itemGroup}
                             />
                           </RadioBtn>
-                          <RadioMessage marginLeft="27px">
-                            Use this to deliver a specific number of randomly
-                            picked question per Section.
-                          </RadioMessage>
                         </>
                       )}
                     </RadioGrp>
@@ -905,30 +904,24 @@ const GroupItems = ({
                         ITEM_GROUP_TYPES.AUTOSELECT) ||
                       (currentGroupIndex !== index &&
                         itemGroup.type === ITEM_GROUP_TYPES.AUTOSELECT)) && (
-                      <>
-                        <span
-                          data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
-                          value={
-                            currentGroupIndex === index
-                              ? editingDeliveryType
-                              : currentDeliveryType
-                          }
-                          style={{ disabled: true }}
-                        >
-                          <ItemCountWrapperContainer
-                            handleChange={handleChange}
-                            currentGroupDetails={currentGroupDetails}
-                            currentGroupIndex={currentGroupIndex}
-                            index={index}
-                            itemGroup={itemGroup}
-                            isRequired
-                          />
-                        </span>
-                        <RadioMessage>
-                          Use this to deliver a specific number of randomly
-                          picked question per Section.
-                        </RadioMessage>
-                      </>
+                      <span
+                        data-cy={`check-deliver-bycount-${itemGroup.groupName}`}
+                        value={
+                          currentGroupIndex === index
+                            ? editingDeliveryType
+                            : currentDeliveryType
+                        }
+                        style={{ disabled: true }}
+                      >
+                        <ItemCountWrapperContainer
+                          handleChange={handleChange}
+                          currentGroupDetails={currentGroupDetails}
+                          currentGroupIndex={currentGroupIndex}
+                          index={index}
+                          itemGroup={itemGroup}
+                          isRequired
+                        />
+                      </span>
                     )}
                   </GroupField>
                   <GroupField style={{ display: 'flex' }} marginBottom="5px">

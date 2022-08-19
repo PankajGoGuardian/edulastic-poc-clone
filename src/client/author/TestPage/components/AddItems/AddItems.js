@@ -582,10 +582,6 @@ class AddItems extends PureComponent {
                       height="28px"
                       isGhost
                       data-cy="createNewItem"
-                      title={
-                        isDynamicTest ? t('authoringItemDisabled.info') : ''
-                      }
-                      disabled={isDynamicTest}
                       onClick={this.handleCreateNewItem}
                     >
                       <IconPlusCircle

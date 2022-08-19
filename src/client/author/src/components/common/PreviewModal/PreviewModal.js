@@ -11,7 +11,6 @@ import {
   questionType,
   roleuser,
   collections as collectionConst,
-  test as testConstants,
 } from '@edulastic/constants'
 import {
   IconClose,
@@ -22,7 +21,6 @@ import {
   IconTrash,
   IconClear,
 } from '@edulastic/icons'
-import { withNamespaces } from '@edulastic/localization'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Icon, Modal, Spin, Popover } from 'antd'
@@ -86,7 +84,6 @@ import {
 import ReportIssue from './ReportIssue'
 import { ButtonsWrapper, RejectButton } from './styled'
 
-const { testCategoryTypes } = testConstants
 class PreviewModal extends React.Component {
   constructor(props) {
     super(props)
@@ -599,7 +596,6 @@ class PreviewModal extends React.Component {
       selectedRows,
       passageItemIds = [],
       isPlaylistTestReview,
-      t,
     } = this.props
 
     const premiumCollectionWithoutAccess =
@@ -610,7 +606,6 @@ class PreviewModal extends React.Component {
 
     const { testItems = [] } = passage || {}
     const hasMultipleTestItems = testItems.length > 1
-    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
 
     const {
       passageLoading,
@@ -835,16 +830,13 @@ class PreviewModal extends React.Component {
                       ? !allowDuplicate
                         ? 'Edit of Item is restricted by Publisher'
                         : 'Edit permission is restricted by the author'
-                      : isDynamicTest
-                      ? t('authoringItemDisabled.info')
                       : 'Edit item'
                   }
                   noHover={isDisableEdit}
                   disabled={
                     isPlaylistTestReview ||
                     isDisableEdit ||
-                    !!premiumCollectionWithoutAccess ||
-                    isDynamicTest
+                    !!premiumCollectionWithoutAccess
                   }
                   onClick={this.editTestItem}
                 >
@@ -859,15 +851,11 @@ class PreviewModal extends React.Component {
                 title={
                   isDisableDuplicate
                     ? 'Clone permission is restricted by the author'
-                    : isDynamicTest
-                    ? t('authoringItemDisabled.info')
                     : 'Clone'
                 }
                 noHover={isDisableDuplicate}
                 disabled={
-                  isDisableDuplicate ||
-                  !!premiumCollectionWithoutAccess ||
-                  isDynamicTest
+                  isDisableDuplicate || !!premiumCollectionWithoutAccess
                 }
                 onClick={this.handleDuplicateTestItem}
               >
@@ -1055,7 +1043,6 @@ PreviewModal.defaultProps = {
 const enhance = compose(
   withRouter,
   withWindowSizes,
-  withNamespaces('author'),
   connect(
     (state, ownProps) => {
       const itemId = (ownProps.data || {}).id

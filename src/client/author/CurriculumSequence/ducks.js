@@ -770,7 +770,6 @@ function* putCurriculumSequence({ payload }) {
           'testType',
           'status',
           'hasStandardsOnCreation',
-          'hasRandomQuestions',
         ])
       })
       return mod

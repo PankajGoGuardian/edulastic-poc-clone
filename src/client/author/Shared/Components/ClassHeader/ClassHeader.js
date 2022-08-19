@@ -618,7 +618,7 @@ class ClassHeader extends Component {
         : isPaused
         ? 'RESUME Assignment to Scan Responses'
         : hasRandomQuestions
-        ? t('common.randomItemsBubbleScanDisableMessage')
+        ? t('common.randomItemsDisableMessage')
         : ''
       const isMenuItemActive = !canOpen && !isPaused && canClose
       const menuText = (
@@ -652,9 +652,7 @@ class ClassHeader extends Component {
           key="upload-bubble-sheet"
           onClick={() =>
             hasRandomQuestions
-              ? notification({
-                  msg: t('common.randomItemsBubbleScanDisableMessage'),
-                })
+              ? notification({ msg: t('common.randomItemsDisableMessage') })
               : null
           }
           disabled={!isMenuItemActive || !isAccessible || hasRandomQuestions}
@@ -716,9 +714,7 @@ class ClassHeader extends Component {
                 !isAccessible
                   ? this.showPremiumPopup(e.domEvent.target)
                   : hasRandomQuestions
-                  ? notification({
-                      msg: t('common.randomItemsBubbleScanDisableMessage'),
-                    })
+                  ? notification({ msg: t('common.randomItemsDisableMessage') })
                   : this.generateBubbleSheet(assignmentId, classId)
               }
               disabled={
@@ -731,7 +727,7 @@ class ClassHeader extends Component {
                   isAssignmentDone
                     ? 'Assignment is not open'
                     : hasRandomQuestions
-                    ? t('common.randomItemsBubbleScanDisableMessage')
+                    ? t('common.randomItemsDisableMessage')
                     : null
                 }
                 placement="right"

@@ -1639,9 +1639,7 @@ class Container extends PureComponent {
           hasCollectionAccess={hasCollectionAccess}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
-        {creating && !(isTestLoading && !test._id) && (
-          <Spin size="large" style={{ zIndex: 2000 }} />
-        )}
+        {creating && !(isTestLoading && !test._id) && <Spin />}
         {isTestLoading && test._id && <ContentBackDrop />}
         {isTestLoading && !test._id ? <Spin /> : this.renderContent()}
         <ItemCloneModal

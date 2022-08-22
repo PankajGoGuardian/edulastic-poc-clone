@@ -906,8 +906,7 @@
         "rose": "To create a rose with an equation of #{r = a cos(kθ)#},<br />place the control point on #{(a, \\frac{\\pi}{k})#}",
         "cardioid": "To create a cardioid with an equation of #{r = a(1 + cos(θ))#}, place the control point on #{(2a,0)#}.<br />To create a cardioid with an equation of #{r = a(1 - cos(θ))#}, place the control point on #{(2a, \\pi)#}.<br />To create a cardioid with an equation of #{r = a(1 + sin(θ))#}, place the control point on #{(2a,\\frac{\\pi}{2})#}.<br />To create a cardioid with an equation of #{r = a(1 - sin(θ))#}, place the control point on #{(2a, \\frac{3\\pi}{2})#}.",
         "polarWithArea": "You cannot use Area with a Rose or Cardioid graph",
-        "piecewise_parabola": "",
-        "line_cut": "",
+        "piecewise_parabola": "Draw a parabola and use the cutting tool to cut off sections of the parabola to create piecewise functions.",
         "fxWithArea": "You cannot use this functionality after plotting a graph. This option is used solely for the purposes of exploring curves of complicated equations.",
         "fxHepler": "This is a teacher-only tool for exploring curves of various complex equations like #{y =\\frac{1}{tan(x)}#}. For creating questions for your students, you should only use the predefined graphing objects."
       }

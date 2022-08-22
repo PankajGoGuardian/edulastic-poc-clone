@@ -18,6 +18,7 @@ const {
   TEXT,
   PASSAGE,
   EDITING_TASK,
+  MATH,
 } = questionType
 
 const { methods } = math
@@ -837,8 +838,16 @@ export const hasValidResponse = (userResponse, questions) => {
     return qids.some((qid) => {
       const qType = questions[qid]?.type
       const answer = userResponse[qid]
+      const {
+        isMath = false,
+        isUnits = false,
+        showDropdown = false,
+      } = questions[qid] || {}
       if (qType === EXPRESSION_MULTIPART) {
         return validateUserResponse(answer)
+        // eslint-disable-next-line no-else-return
+      } else if (qType === MATH && isMath && isUnits && showDropdown) {
+        return answer?.expression && answer?.unit
       }
       return !isEmpty(answer)
     })

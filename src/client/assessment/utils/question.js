@@ -277,7 +277,21 @@ export const changeDataInPreferredLanguage = (
         langDataPaths.forEach((path) => {
           const enData = get(draft, path)
           const langData = get(draft.languageFeatures[langKey], path)
-          if (enData && langData) {
+          /**
+           * @see https://goguardian.atlassian.net/browse/EV-36104
+           * For token highlight qType data can differ for "validation.validResponse.value" or "templeWithTokens" paths
+           * as data can be different for different languages. Thus need not compare enData and langData for setting
+           * other language "validation" and "templateWithTokens"
+           */
+          if (
+            newQuestion.type === questionType.TOKEN_HIGHLIGHT &&
+            langData &&
+            typeof path === 'string' &&
+            (path.startsWith('validation.validResponse.value') ||
+              path.startsWith('templeWithTokens'))
+          ) {
+            set(cleanLangData, path, langData)
+          } else if (enData && langData) {
             set(cleanLangData, path, langData)
           }
         })

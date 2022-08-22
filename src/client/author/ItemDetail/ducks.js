@@ -42,6 +42,7 @@ import {
   addQuestionAction,
   getCurrentQuestionSelector,
   isRegradeFlowSelector,
+  getQuestionsSelector,
 } from '../sharedDucks/questions'
 import {
   CLEAR_DICT_ALIGNMENTS,
@@ -148,6 +149,7 @@ export const CHANGE_TAB_TITLE = '[itemDetail] change tab title'
 export const REMOVE_TAB = '[itemDetail] remove tab'
 export const USE_FLOW_LAYOUT = '[itemDetail] is use flow layout'
 export const MOVE_WIDGET = '[itemDetail] move widget'
+export const MOVE_WIDGET_APPLY = '[itemDetail] move widget apply'
 export const ITEM_DETAIL_PUBLISH = '[itemDetail] publish test item'
 export const UPDATE_TESTITEM_STATUS = '[itemDetail] update test item status'
 export const UPDATE_COMPLETED = '[itemDetail] item update completed'
@@ -962,7 +964,7 @@ export function reducer(state = initialState, { type, payload }) {
     case UPDATE_TAB_TITLE:
       return updateTabTitle(state, payload)
 
-    case MOVE_WIDGET:
+    case MOVE_WIDGET_APPLY:
       return moveWidget(state, payload)
 
     case USE_TABS:
@@ -1983,6 +1985,46 @@ function* deleteWidgetSaga({ payload: { rowIndex, widgetIndex, updateData } }) {
   )
 }
 
+function* moveWidgetSaga({ payload }) {
+  yield put({
+    type: MOVE_WIDGET_APPLY,
+    payload,
+  })
+  const { from: { isPassageQuestion } = {} } = payload || {}
+  // validation needs to be updated for author questions after resequence in case of itemLevelScoring true. Thus load questions on resequence
+  const itemLevelScoring = yield select(getItemLevelScoringSelector)
+  if (itemLevelScoring && !isPassageQuestion) {
+    let authoredQuestions = yield select(getQuestionsSelector)
+    let questions = yield select(getItemDetailQuestionsSelector)
+    questions = _keyBy(questions, 'id')
+    if (!isEmpty(authoredQuestions)) {
+      authoredQuestions = produce(authoredQuestions, (draft) => {
+        for (const qid in draft) {
+          if (draft.hasOwnProperty(qid)) {
+            const authoredQuestion = draft[qid]
+            if (
+              authoredQuestion &&
+              authoredQuestion.validation &&
+              !Object.values(resourceTypeQuestions).includes(
+                authoredQuestion.type
+              )
+            ) {
+              const question = questions[qid]
+              if (question && question.validation) {
+                const newValidation = get(question, 'validation')
+                const scoringDisabled = get(question, 'scoringDisabled')
+                set(authoredQuestion, 'validation', newValidation)
+                set(authoredQuestion, 'scoringDisabled', scoringDisabled)
+              }
+            }
+          }
+        }
+      })
+    }
+    yield put(loadQuestionsAction(authoredQuestions))
+  }
+}
+
 function* convertToMultipartSaga({ payload }) {
   try {
     const { isTestFlow = false, testId } = payload
@@ -2390,5 +2432,6 @@ export function* watcherSaga() {
       SAVE_CURRENT_ITEM_MOVE_TO_NEXT,
       saveCurrentItemAndRoueToOtherSaga
     ),
+    yield takeEvery(MOVE_WIDGET, moveWidgetSaga),
   ])
 }

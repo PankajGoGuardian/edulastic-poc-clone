@@ -3,6 +3,7 @@ import { Row, Select, Input } from 'antd'
 import PropTypes from 'prop-types'
 import React, { useMemo } from 'react'
 import { connect } from 'react-redux'
+import { test as testConstants } from '@edulastic/constants'
 import { getInterestedStandards } from '../../../../../dataUtils'
 import Tags from '../../../../../src/components/common/Tags'
 import {
@@ -48,6 +49,7 @@ const ReviewSummary = ({
   interestedCurriculums,
   windowWidth,
   test: { itemGroups, metadata, alignment },
+  testCategory,
   summary,
   hasRandomQuestions,
   isPublishers,
@@ -94,7 +96,7 @@ const ReviewSummary = ({
             size="large"
             disabled={!owner || !isEditable}
             placeholder="Please select"
-            defaultValue={grades}
+            value={grades}
             onChange={onChangeGrade}
             margin="0px 0px 15px"
           >
@@ -114,7 +116,7 @@ const ReviewSummary = ({
             size="large"
             disabled={!owner || !isEditable}
             placeholder="Please select"
-            defaultValue={subjects}
+            value={subjects}
             onChange={onChangeSubjects}
             margin="0px 0px 15px"
           >
@@ -158,7 +160,8 @@ const ReviewSummary = ({
       </FlexBoxTwo>
 
       <FlexBoxThree>
-        {isPublishers &&
+        {(isPublishers ||
+          testCategory == testConstants.testCategoryTypes.DYNAMIC_TEST) &&
           summary?.groupSummary?.map((group, i) => {
             const standards = interestedStandards.map(
               ({ identifier }) => identifier

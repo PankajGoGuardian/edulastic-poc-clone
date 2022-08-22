@@ -450,6 +450,10 @@ export const ToolbarItemLabel = styled.span`
     max-width: 55px;
     line-height: 1.6;
   }
+
+  &.icon-piecewise_line-label {
+    font-size: 9px;
+  }
 `
 
 export const ToolbarItemIcon = styled.div`

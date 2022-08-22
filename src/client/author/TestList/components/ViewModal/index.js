@@ -5,7 +5,7 @@ import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import {
   roleuser,
   collections as collectionsConstant,
-  test as testContants,
+  test as testConstants,
 } from '@edulastic/constants'
 import TestsApi from '@edulastic/api/src/tests'
 import {
@@ -92,7 +92,7 @@ import ShareModal from '../../../src/components/common/ShareModal'
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
-const { statusConstants } = testContants
+const { statusConstants } = testConstants
 class ViewModal extends React.Component {
   static propTypes = {
     isShow: PropTypes.bool.isRequired,
@@ -192,7 +192,7 @@ class ViewModal extends React.Component {
       modalView = true,
       publicAccess = false,
       isPublisherUser,
-      isDynamic,
+      isDynamicTest,
       handleLikeTest,
       isTestLiked,
       collectionName,
@@ -551,7 +551,7 @@ class ViewModal extends React.Component {
           <ModalColumn>
             <div>
               <AssessmentNameLabel>Test Name</AssessmentNameLabel>
-              {isDynamic && (
+              {isDynamicTest && (
                 <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
                   <IconDynamic color={greyThemeDark2} />
                   &nbsp;&nbsp; SMARTBUILD TEST
@@ -646,9 +646,8 @@ class ViewModal extends React.Component {
               <Spin />
             ) : (
               <PerfectScrollbar>
-                {/* one group with AUTOSELECT or multiple groups can be considered as publisher test */}
-                {summary?.groupSummary?.length > 1 ||
-                itemGroups?.[0]?.type === 'AUTOSELECT' ? (
+                {item?.testCategory ===
+                testConstants.testCategoryTypes.DYNAMIC_TEST ? (
                   summary?.groupSummary?.map((group, i) => {
                     return (
                       <>

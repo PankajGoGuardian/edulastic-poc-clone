@@ -1,10 +1,9 @@
 import { createSelector } from 'reselect'
 import { createAction } from 'redux-starter-kit'
 import {
-  test,
   roleuser,
   questionType,
-  test as testConst,
+  test as testConstants,
   testTypes as testTypesConstants,
   assignmentPolicyOptions,
 } from '@edulastic/constants'
@@ -117,7 +116,9 @@ const {
   passwordPolicy,
   testSettingsOptions,
   docBasedSettingsOptions,
-} = test
+  calculatorKeys,
+  testCategoryTypes,
+} = testConstants
 const testItemStatusConstants = {
   INREVIEW: 'inreview',
   DRAFT: 'draft',
@@ -130,6 +131,13 @@ export const NewGroup = {
   groupName: 'SECTION 1' /* For now, auto-generated. */,
   items: [],
   deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
+  index: 0,
+}
+export const NewGroupAutoselect = {
+  type: ITEM_GROUP_TYPES.AUTOSELECT /* Default : static */,
+  groupName: 'SECTION 1' /* For now, auto-generated. */,
+  items: [],
+  deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM,
   index: 0,
 }
 export const createWidget = ({ id, type, title }) => ({
@@ -182,10 +190,15 @@ export const getTestGradeAndSubject = (
   testTags
 ) => {
   if (group.type === ITEM_GROUP_TYPES.AUTOSELECT) {
+    const gradesFromGroup = group?.standardDetails?.grades || []
+    const subjectsFromGroup = group?.standardDetails?.subject
+      ? [group.standardDetails.subject]
+      : []
+    const tagsFromGroup = group?.tags || []
     return {
-      testGrades: _uniq([...testGrades, ...group.standardDetails.grades]),
-      testSubjects: _uniq([...testSubjects, group.standardDetails.subject]),
-      testTags: _uniq([...testTags, ...(group.tags || [])]),
+      testGrades: _uniq([...testGrades, ...gradesFromGroup]),
+      testSubjects: _uniq([...testSubjects, ...subjectsFromGroup]),
+      testTags: _uniq([...testTags, ...tagsFromGroup]),
     }
   }
   return { testGrades, testSubjects, testTags: [] }
@@ -932,26 +945,26 @@ export const getTestItemsRowsSelector = createSelector(
 export const createBlankTest = () => ({
   title: undefined,
   description: '',
-  releaseScore: test.releaseGradeLabels.DONT_RELEASE,
+  releaseScore: releaseGradeLabels.DONT_RELEASE,
   maxAttempts: 1,
   testType: testTypesConstants.TEST_TYPES_VALUES_MAP.ASSESSMENT,
-  markAsDone: test.completionTypes.AUTOMATICALLY,
+  testCategory: testCategoryTypes.DEFAULT,
+  markAsDone: completionTypes.AUTOMATICALLY,
   generateReport: true,
   safeBrowser: false,
   sebPassword: '',
   blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
-  calcType: test.calculatorKeys[0],
+  calcType: calculatorKeys[0],
   answerOnPaper: false,
   assignmentPassword: '',
   passwordExpireIn: 15 * 60,
-  passwordPolicy: test.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+  passwordPolicy: passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
   maxAnswerChecks: 0,
-  scoringType: test.evalTypeLabels.PARTIAL_CREDIT,
+  scoringType: evalTypeLabels.PARTIAL_CREDIT,
   penalty: false,
   isDocBased: false,
-  isDynamicTest: false,
   status: 'draft',
   thumbnail: defaultImage,
   itemGroups: [
@@ -2031,7 +2044,7 @@ export const fillAutoselectGoupsWithDummyItems = (testEntity) => {
 // saga
 export function* receiveTestByIdSaga({ payload }) {
   try {
-    const tests = yield select((state) => state.tests)
+    const prevTest = yield select(getTestSelector)
     let createdItems = yield select(getTestCreatedItemsSelector)
     const entity = yield call(testsApi.getById, payload.id, {
       data: true,
@@ -2056,7 +2069,7 @@ export function* receiveTestByIdSaga({ payload }) {
     }
     entity.passages = [
       ...entity.passages,
-      ...differenceBy(tests.entity.passages, entity.passages, '_id'),
+      ...differenceBy(prevTest.passages, entity.passages, '_id'),
     ]
     fillAutoselectGoupsWithDummyItems(entity)
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
@@ -2195,6 +2208,7 @@ export function* receiveTestByIdSaga({ payload }) {
     }
     yield put(updateAssingnmentSettingsAction(assignmentSettings))
     yield put(setDefaultTestSettingsAction(defaultTestSettings))
+    yield put(addItemsToAutoselectGroupsRequestAction(entity))
   } catch (err) {
     captureSentryException(err)
     console.log({ err })
@@ -2228,13 +2242,11 @@ function* createTest(data) {
   if (title !== undefined && !title.trim().length) {
     return notification({ messageKey: 'nameShouldNotEmpty' })
   }
-  if (_passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
+  if (_passwordPolicy !== passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC) {
     delete data.assignmentPassword
   }
 
-  if (
-    _passwordPolicy !== test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
-  ) {
+  if (_passwordPolicy !== passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC) {
     delete data.passwordExpireIn
   }
   const omitedItems = [
@@ -2277,13 +2289,14 @@ function* createTestSaga({ payload }) {
     const entity = yield createTest(payload.data)
     entity.itemGroups = payload.data.itemGroups
     yield put(createTestSuccessAction(entity))
-    const hasAutoSelectItems = entity.itemGroups.some(
-      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
+    yield put(addItemsToAutoselectGroupsRequestAction(entity))
+    const pathname = yield select((state) => state.router.location.pathname)
+    const currentTabMatch = pathname?.match(
+      /(?:\/author\/tests\/(?:create|tab)\/)([^/]+)/
     )
-    if (hasAutoSelectItems) {
-      yield put(addItemsToAutoselectGroupsRequestAction(entity))
-    }
-    const currentTab = payload.isCartTest ? 'description' : 'addItems'
+    // try to keep the user on the same tab after test creation
+    // Go to `description` tab if user is not on Test Page already, e.g. coming from Item Library.
+    const currentTab = currentTabMatch?.[1] || 'description'
     yield put(replace(`/author/tests/tab/${currentTab}/id/${entity._id}`))
     notification({ type: 'success', messageKey: 'testCreated' })
   } catch (err) {
@@ -2358,9 +2371,9 @@ export function* updateTestSaga({ payload }) {
     // Penalty true/false is set to determine the case
     if (
       payload.data.scoringType ===
-      test.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
-      payload.data.scoringType = test.evalTypeLabels.PARTIAL_CREDIT
+      payload.data.scoringType = evalTypeLabels.PARTIAL_CREDIT
     }
 
     const pageStructure = get(payload.data, 'pageStructure', []).map(
@@ -2375,18 +2388,18 @@ export function* updateTestSaga({ payload }) {
       : undefined
     if (
       payload.data.passwordPolicy !==
-      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+      passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
       testFieldsToOmit.push('passwordExpireIn')
     }
     if (
       payload.data.passwordPolicy !==
-      test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+      passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
     ) {
       testFieldsToOmit.push('assignmentPassword')
     } else if (
       payload.data.passwordPolicy ===
-        test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+        passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!payload.data.assignmentPassword ||
         payload.data.assignmentPassword.length < 6 ||
         payload.data.assignmentPassword.length > 25)
@@ -2436,12 +2449,7 @@ export function* updateTestSaga({ payload }) {
     }
     fillAutoselectGoupsWithDummyItems(entity)
     yield put(updateTestSuccessAction(entity))
-    const hasAutoSelectItems = entity.itemGroups.some(
-      (g) => g.type === testConst.ITEM_GROUP_TYPES.AUTOSELECT
-    )
-    if (hasAutoSelectItems) {
-      yield put(addItemsToAutoselectGroupsRequestAction(entity))
-    }
+    yield put(addItemsToAutoselectGroupsRequestAction(entity))
     const newId = entity._id
     const userRole = yield select(getUserRole)
     const isCurator = yield select(getIsCurator)
@@ -2798,7 +2806,7 @@ function* publishForRegrade({ payload }) {
     yield put(setUpdatingTestForRegradeStateAction(true))
     const _test = yield select(getTestSelector)
     const enabledRefMaterial = yield select(isEnabledRefMaterialSelector)
-    if (_test.isUsed && !test.isInEditAndRegrade) {
+    if (_test.isUsed && !_test.isInEditAndRegrade) {
       _test.isInEditAndRegrade = true
     }
     if (!enabledRefMaterial && !isEmpty(_test.referenceDocAttributes)) {
@@ -2938,11 +2946,10 @@ function* setTestDataAndUpdateSaga({ payload }) {
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
     // Penalty true/false is set to determine the case
     if (
-      newTest.scoringType ===
-      test.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      newTest.scoringType === evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
       newTest = produce(newTest, (draft) => {
-        draft.scoringType = test.evalTypeLabels.PARTIAL_CREDIT
+        draft.scoringType = evalTypeLabels.PARTIAL_CREDIT
       })
     }
     const currentGroupIndex = yield select(getCurrentGroupIndexSelector)
@@ -3030,20 +3037,20 @@ function* setTestDataAndUpdateSaga({ payload }) {
     }
 
     if (!newTest._id) {
-      const { title, testContentVisibility } = newTest
+      const { title } = newTest
       const role = yield select(getUserRole)
       if (!title) {
         return notification({ messageKey: 'nameShouldNotEmpty' })
       }
       if (
         newTest.passwordPolicy !==
-        test.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+        passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
       ) {
         delete newTest.passwordExpireIn
       }
       if (
         newTest.passwordPolicy !==
-        test.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+        passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
       ) {
         delete newTest.assignmentPassword
       } else if (!newTest.assignmentPassword) {
@@ -3054,10 +3061,11 @@ function* setTestDataAndUpdateSaga({ payload }) {
       let testObj = produce(newTest, (draft) => {
         draft.itemGroups = transformItemGroupsUIToMongo(draft.itemGroups)
         if (
-          !testContentVisibility &&
+          !newTest.testContentVisibility &&
           (role === roleuser.DISTRICT_ADMIN || role === roleuser.SCHOOL_ADMIN)
         ) {
-          draft.testContentVisibility = test.testContentVisibility.ALWAYS
+          draft.testContentVisibility =
+            testConstants.testContentVisibility.ALWAYS
         }
       })
       // summary CAN BE REMOVED AS BE WILL CREATE ITS OWN SUMMARY USING ITEMS
@@ -3475,7 +3483,7 @@ function* getDefaultTestSettingsSaga({ payload: testEntity }) {
     if ((!testData._id || !testData.title) && partialScore === false) {
       yield put(
         setTestDataAction({
-          scoringType: test.evalTypeLabels.ALL_OR_NOTHING,
+          scoringType: evalTypeLabels.ALL_OR_NOTHING,
         })
       )
     }
@@ -3633,7 +3641,7 @@ function* updateTestAndNavigate({ payload }) {
         roleuser.DA_SA_ROLE_ARRAY.includes(role) &&
         !data.testContentVisibility
       ) {
-        data.testContentVisibility = test.testContentVisibility.ALWAYS
+        data.testContentVisibility = testConstants.testContentVisibility.ALWAYS
       }
       const _test = !isTestCreated ? yield createTest(data) : {}
       if ((isEditing || isDuplicating) && isTestCreated) {
@@ -3747,6 +3755,10 @@ function* fetchAutoselectGroupItemsSaga(payload) {
 
 function* addItemsToAutoselectGroupsSaga({ payload: _test }) {
   try {
+    const hasAutoSelectItems = _test.itemGroups.some(
+      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
+    )
+    if (!hasAutoSelectItems) return
     yield put(setAutoselectItemsFetchingStatusAction(true))
     const transformedData = getItemGroupsTransformed(_test)
     for (const { isFetchItems, data, groupName } of transformedData) {

@@ -24,7 +24,7 @@ import {
   notification,
   MainContentWrapper,
 } from '@edulastic/common'
-import { test as testConstants, roleuser } from '@edulastic/constants'
+import { roleuser } from '@edulastic/constants'
 import PreviewModal from '../../../../../src/components/common/PreviewModal'
 import HeaderBar from '../HeaderBar/HeaderBar'
 import {
@@ -39,10 +39,8 @@ import {
   getDefaultThumbnailSelector,
   updateDefaultThumbnailAction,
   getTestItemsSelector,
-  addItemsToAutoselectGroupsRequestAction,
   getAutoSelectItemsLoadingStatusSelector,
   showGroupsPanelSelector,
-  getTestsCreatingSelector,
   getTestsUpdatedSelector,
 } from '../../../../ducks'
 import { clearAnswersAction } from '../../../../../src/actions/answers'
@@ -102,18 +100,6 @@ class Review extends PureComponent {
 
   componentDidMount() {
     this.containerRef?.current?.addEventListener('scroll', this.handleScroll)
-    const {
-      test,
-      addItemsToAutoselectGroupsRequest,
-      isTestsCreating,
-    } = this.props
-    const hasAutoSelectItems = test.itemGroups.some(
-      (g) => g.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT
-    )
-    if (hasAutoSelectItems && !isTestsCreating) {
-      addItemsToAutoselectGroupsRequest(test)
-    }
-
     // url = http://localhost:3001/author/tests/tab/review/id/testId/
     // ?token=value&firebaseToken=value&userId=value&role=teacher&itemBank=cli&showCLIBanner=1
     // &showAssingmentPreview=1
@@ -125,16 +111,6 @@ class Review extends PureComponent {
       setIsTestPreviewVisible(true)
     }
   }
-
-  // componentDidUpdate(prevProps, prevState) {
-  //   // const element = this.listWrapperRef?.current;
-  //   // const { testItems } = this.props;
-  //   // const { items, isCollapse } = prevState;
-  //   // if (element.offsetHeight < window.innerHeight && items.length < testItems.length) {
-  //   //   // eslint-disable-next-line react/no-did-update-set-state
-  //   //   this.setState({ items: testItems.slice(0, items.length + (isCollapse ? 10 : 3)) });
-  //   // }
-  // }
 
   setSelected = (values) => {
     const { test, setData } = this.props
@@ -720,6 +696,7 @@ class Review extends PureComponent {
                 onChangeCollection={onChangeCollection}
                 windowWidth={windowWidth}
                 isPublishers={isPublishers}
+                testCategory={test?.testCategory}
               />
             </ReviewSummaryWrapper>
           )}
@@ -769,7 +746,6 @@ Review.propTypes = {
   standards: PropTypes.object.isRequired,
   current: PropTypes.string.isRequired,
   windowWidth: PropTypes.number.isRequired,
-  addItemsToAutoselectGroupsRequest: PropTypes.func.isRequired,
   clearDictAlignment: PropTypes.func.isRequired,
   owner: PropTypes.bool,
   onSaveTestId: PropTypes.func,
@@ -812,7 +788,6 @@ const enhance = compose(
       isPowerPremiumAccount: getIsPowerPremiumAccount(state),
       showGroupsPanel: showGroupsPanelSelector(state),
       isPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
-      isTestsCreating: getTestsCreatingSelector(state),
       isTestsUpdated: getTestsUpdatedSelector(state),
       orgCollections: getCollectionsSelector(state),
     }),
@@ -825,7 +800,6 @@ const enhance = compose(
       clearAnswer: clearAnswersAction,
       clearEvaluation: clearEvaluationAction,
       setTestItems: setTestItemsAction,
-      addItemsToAutoselectGroupsRequest: addItemsToAutoselectGroupsRequestAction,
       resetItemScore: resetItemScoreAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
     }

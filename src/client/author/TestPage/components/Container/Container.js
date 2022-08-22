@@ -23,7 +23,7 @@ import {
   CustomPrompt,
 } from '@edulastic/common'
 import {
-  test as testContants,
+  test as testConstants,
   roleuser,
   collections as collectionsConstant,
   signUpState,
@@ -74,6 +74,7 @@ import {
   setTestSettingsListAction,
   isEnabledRefMaterialSelector,
   getPenaltyOnUsingHintsSelector,
+  NewGroupAutoselect,
 } from '../../ducks'
 import {
   getItemsSubjectAndGradeAction,
@@ -147,7 +148,8 @@ const {
   ITEM_GROUP_DELIVERY_TYPES,
   testSettingsOptions,
   docBasedSettingsOptions,
-} = testContants
+  testCategoryTypes,
+} = testConstants
 const { nonPremiumCollectionsToShareContent } = collectionsConstant
 
 class Container extends PureComponent {
@@ -164,6 +166,8 @@ class Container extends PureComponent {
       isSettingsChecked: false,
       showCompeleteSignUp: false,
       currentGroupIndex: null,
+      currentGroupDetails: {},
+      groupNotEdited: true,
     }
   }
 
@@ -224,6 +228,7 @@ class Container extends PureComponent {
       fetchTestSettingsList,
       userId,
       userSignupStatus,
+      test,
     } = this.props
 
     const { versionId, id } = match.params
@@ -290,8 +295,23 @@ class Container extends PureComponent {
           })
         }
       }
-      if (location?.state?.isDynamicTest) {
-        setData({ isDynamicTest: true })
+      if (location?.state?.isDynamicTest && !id) {
+        // run only when creating a new test and not during edit test
+        const defaultItemGroup = {
+          ...(test.itemGroups?.[0] || {}),
+          ...NewGroupAutoselect,
+        }
+        // if create dynamic test, default item group is autoselect
+        setData({
+          testCategory: testCategoryTypes.DYNAMIC_TEST,
+          itemGroups: [defaultItemGroup],
+          testType: testTypesConstants.TEST_TYPES_VALUES_MAP.QUIZ, // currently premium users only able to create dynamic test hence quiz type allowed
+        })
+        // if create dynamic test, default item group should be editable
+        this.setState({
+          currentGroupIndex: 0,
+          currentGroupDetails: defaultItemGroup,
+        })
       }
       if (showCancelButton) {
         setEditEnable(true)
@@ -326,11 +346,17 @@ class Container extends PureComponent {
       resetPageState,
       setEditEnable,
       setTestSettingsList,
+      test,
     } = this.props
+    // reset test data when it's a saved test or dynamic test in creation
+    if (
+      match.params.id ||
+      test.testCategory === testCategoryTypes.DYNAMIC_TEST
+    ) {
+      removeTestEntity()
+    }
     // disable edit on unmount
     setEditEnable(false)
-    // clear test entity only on edit and regrade flow
-    if (match.params.id) removeTestEntity()
     resetPageState()
     setTestSettingsList([])
   }
@@ -570,6 +596,7 @@ class Container extends PureComponent {
       editEnable,
       location,
     } = this.props
+    const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
     // condition to validate if test title is not empty before navigating to other tabs
     if (!test?.title?.trim()?.length) {
@@ -579,10 +606,12 @@ class Container extends PureComponent {
     let hasValidGroups = false
     // condition to validate Add Sections has been updated successfully before navigating to other tabs
     // Add Items needs to be exempt from this as it is a full-screen popup which works in tandem with Add Sections
+    // Description page navigation should be allowed if there was no edit made to the groups
     if (
       location?.pathname?.includes('addSections') &&
       !['addItems', 'addSections'].includes(value) &&
-      test?.isDynamicTest
+      !(value === 'description' && groupNotEdited) &&
+      test?.testCategory === testCategoryTypes.DYNAMIC_TEST
     ) {
       hasValidGroups = this.validateGroups()
       if (!hasValidGroups) return
@@ -605,6 +634,8 @@ class Container extends PureComponent {
       test.itemGroups[0].type === ITEM_GROUP_TYPES.AUTOSELECT
     if (
       isEditable &&
+      (hasValidGroups ||
+        test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
       (totalTestItems > 0 || isAutoSelectGroup) &&
       !(totalTestItems === 1 && !_id && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&
@@ -617,58 +648,71 @@ class Container extends PureComponent {
   validateGroups = () => {
     const { test } = this.props
     const { currentGroupIndex } = this.state
-    let isValid = true
+    if (test?.testCategory !== testCategoryTypes.DYNAMIC_TEST) {
+      return true
+    }
     if (currentGroupIndex !== null) {
       notification({
         messageKey: 'pleaseSaveTheChangesMadeToGroupFirst',
       })
-      isValid = false
-    } else {
-      const staticGroups = []
-      const autoSelectGroups = []
-      test?.itemGroups?.forEach((group) => {
-        if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group)
-        else autoSelectGroups.push(group)
-      })
-      for (let i = 0; i < staticGroups.length; i++) {
-        const { items, deliveryType, deliverItemsCount } = staticGroups[i]
-        if (items.length === 0) {
-          notification({
-            messageKey: 'eachStaticGroupShouldContainAtleastOneItems',
-          })
-          isValid = false
-          break
-        }
-        if (
-          deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-          !deliverItemsCount
-        ) {
-          notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-          isValid = false
-          break
-        }
+      return false
+    }
+    const groupNamesFromTest = _uniq(
+      test.itemGroups.map((g) => `${g.groupName || ''}`.toLowerCase())
+    )
+    if (groupNamesFromTest.length !== test.itemGroups.length) {
+      notification({ messageKey: 'eachGroupShouldHaveUniqueGroupName' })
+      return false
+    }
+    const staticGroups = []
+    const autoSelectGroups = []
+    test?.itemGroups?.forEach((group) => {
+      if (group.type === ITEM_GROUP_TYPES.STATIC) staticGroups.push(group)
+      else autoSelectGroups.push(group)
+    })
+    for (let i = 0; i < staticGroups.length; i++) {
+      const { items, deliveryType, deliverItemsCount } = staticGroups[i]
+      if (!items.length) {
+        notification({
+          messageKey: 'eachStaticGroupShouldContainAtleastOneItems',
+        })
+        return false
       }
-      for (let i = 0; i < autoSelectGroups.length; i++) {
-        const {
-          collectionDetails,
-          standardDetails,
-          deliverItemsCount,
-        } = autoSelectGroups[i]
-        if (!collectionDetails || isEmpty(standardDetails?.standards)) {
-          notification({
-            messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
-          })
-          isValid = false
-          break
-        }
-        if (!deliverItemsCount) {
-          notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
-          isValid = false
-          break
-        }
+      if (
+        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        !deliverItemsCount
+      ) {
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        return false
+      }
+      if (
+        deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
+        items.length <= deliverItemsCount
+      ) {
+        notification({
+          messageKey: 'totalItemsToBeDelivered',
+        })
+        return false
       }
     }
-    return isValid
+    for (let i = 0; i < autoSelectGroups.length; i++) {
+      const {
+        collectionDetails,
+        standardDetails,
+        deliverItemsCount,
+      } = autoSelectGroups[i]
+      if (!collectionDetails || isEmpty(standardDetails?.standards)) {
+        notification({
+          messageKey: 'eachAutoselectGroupShouldHaveAStandardAndCollection',
+        })
+        return false
+      }
+      if (!deliverItemsCount) {
+        notification({ messageKey: 'pleaseEnterTotalNumberOfItems' })
+        return false
+      }
+    }
+    return true
   }
 
   validateTimedAssignment = () => {
@@ -846,7 +890,6 @@ class Container extends PureComponent {
       test,
       setData,
       rows,
-      isTestLoading,
       userId,
       match = {},
       testStatus,
@@ -865,7 +908,12 @@ class Container extends PureComponent {
     const { params = {} } = match
     const { showCancelButton = false } =
       history.location.state || this.state || {}
-    const { isShowFilter, currentGroupIndex } = this.state
+    const {
+      isShowFilter,
+      currentGroupIndex,
+      currentGroupDetails,
+      groupNotEdited,
+    } = this.state
     const current = currentTab
     const {
       authors,
@@ -900,10 +948,6 @@ class Container extends PureComponent {
       isEditable,
     }
 
-    if (isTestLoading && !test._id) {
-      return <Spin />
-    }
-
     switch (current) {
       case 'addItems':
         return (
@@ -914,7 +958,18 @@ class Container extends PureComponent {
               onSaveTestId={this.handleSaveTestId}
               test={test}
               gotoSummary={this.handleNavChange('description')}
-              gotoAddSections={this.handleNavChange('addSections')}
+              gotoAddSections={() => {
+                if (
+                  test.itemGroups?.[currentGroupIndex]?.type ===
+                  ITEM_GROUP_TYPES.STATIC
+                ) {
+                  // update state for currentGroupDetails after items have been (added to/removed from) itemGroups
+                  this.setState({
+                    currentGroupDetails: test.itemGroups[currentGroupIndex],
+                  })
+                }
+                this.handleNavChange('addSections')()
+              }}
               toggleFilter={this.toggleFilter}
               isShowFilter={isShowFilter}
               handleSaveTest={this.handleSave}
@@ -991,9 +1046,19 @@ class Container extends PureComponent {
           <Content>
             <GroupItems
               currentGroupIndex={currentGroupIndex}
-              setCurrentGroupIndex={(groupIndex) =>
-                this.setState({ currentGroupIndex: groupIndex })
+              setCurrentGroupIndex={(groupIndex, cb = undefined) =>
+                this.setState({ currentGroupIndex: groupIndex }, cb)
               }
+              currentGroupDetails={currentGroupDetails}
+              setCurrentGroupDetails={(itemGroup, cb = undefined) =>
+                this.setState({ currentGroupDetails: itemGroup }, cb)
+              }
+              groupNotEdited={groupNotEdited}
+              setGroupNotEdited={(value, cb = undefined) =>
+                this.setState({ groupNotEdited: value }, cb)
+              }
+              validateGroups={this.validateGroups}
+              handleSaveTest={this.handleSave}
             />
           </Content>
         )
@@ -1027,6 +1092,11 @@ class Container extends PureComponent {
     newTest.createdBy = {
       id: user._id,
       name,
+    }
+
+    if (newTest && !newTest.scoring) {
+      // recommended tests created via differentiation might not have scoring details
+      newTest.scoring = { total: 0, testItems: [] }
     }
 
     newTest.scoring.testItems = (
@@ -1075,7 +1145,8 @@ class Container extends PureComponent {
     if (
       !this.validateTimedAssignment() ||
       !this.validateReferenceDocMaterial() ||
-      !this.validatePenaltyOnUsingHintsValue()
+      !this.validatePenaltyOnUsingHintsValue() ||
+      !this.validateGroups() // validate groups for dynamic tests before save
     ) {
       return
     }
@@ -1185,20 +1256,10 @@ class Container extends PureComponent {
         })
         return false
       }
-      if (
-        test.itemGroups.some(
-          (itemGroup) =>
-            itemGroup.type === ITEM_GROUP_TYPES.STATIC &&
-            itemGroup.deliveryType ===
-              ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM &&
-            itemGroup.items.length <= itemGroup.deliverItemsCount
-        )
-      ) {
-        notification({
-          messageKey: 'selectedItemsGroupShouldNotBeMoreThanDelivedItems',
-        })
-        return false
-      }
+    }
+    if (!this.validateGroups()) {
+      // validate groups for dynamic tests
+      return false
     }
     if (!this.validateReferenceDocMaterial()) {
       return false
@@ -1345,7 +1406,7 @@ class Container extends PureComponent {
     const canEdit =
       (authors && authors.some((x) => x._id === userId)) || isCurator
     const isArchivedInactiveTest =
-      test.status === testContants.statusConstants.ARCHIVED && test.active === 0
+      test.status === statusConstants.ARCHIVED && test.active === 0
     // If assignments present for the test and user clicking on edit do a quick test fetch and see if co author regraded or not. Else older code.
     if (editClick && testAssignments.length) {
       const entity = await testsApi.getById(testId, {
@@ -1463,7 +1524,6 @@ class Container extends PureComponent {
       subjects,
       itemGroups,
       isDocBased,
-      isDynamicTest,
       versionId,
     } = test
     const hasCollectionAccess = allowContentEditCheck(
@@ -1496,7 +1556,7 @@ class Container extends PureComponent {
       !!testAssignments.length &&
       !showEditButton &&
       !showDuplicateButton &&
-      (testStatus === 'draft' || editEnable)
+      (testStatus === statusConstants.DRAFT || editEnable)
 
     const premiumOrgCollections = collections.filter(
       ({ _id }) =>
@@ -1589,11 +1649,13 @@ class Container extends PureComponent {
           validateTest={this.validateTest}
           setDisableAlert={this.setDisableAlert}
           hasCollectionAccess={hasCollectionAccess}
-          isDynamicTest={isDynamicTest}
         />
         {/* This will work like an overlay during the test save for prevent content edit */}
+        {creating && !(isTestLoading && !test._id) && (
+          <Spin size="large" style={{ zIndex: 2000 }} />
+        )}
         {isTestLoading && test._id && <ContentBackDrop />}
-        {this.renderContent()}
+        {isTestLoading && !test._id ? <Spin /> : this.renderContent()}
         <ItemCloneModal
           fallback={<Progress />}
           handleDuplicateTest={this.handleDuplicateTest}

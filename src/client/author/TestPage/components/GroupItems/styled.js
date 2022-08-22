@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { Row, Radio, Button, Collapse } from 'antd'
+import { Row, Radio, Button, Collapse, Input } from 'antd'
 import {
   boxShadowDefault,
   white,
@@ -64,6 +64,10 @@ export const Label = styled.label`
   font-weight: ${({ fontWeight }) => fontWeight || '600'};
   cursor: ${({ fontWeight }) => (fontWeight ? 'pointer' : 'default')};
 `
+export const SectionNameInput = styled(Input)`
+  max-width: 400px;
+  margin: 10px;
+`
 
 export const RadioGroup = styled(Radio.Group)`
   display: block;
@@ -110,7 +114,7 @@ export const AddGroupButton = styled.span`
 `
 
 export const RadioMessage = styled.div`
-  margin: 5px 0px 20px 35px;
+  margin: 5px 0px 0px ${(props) => props.marginLeft || '0px'};
   font-size: ${(props) => props.theme.smallFontSize};
   color: ${linkColor1};
 `

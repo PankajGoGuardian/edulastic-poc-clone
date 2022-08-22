@@ -4,8 +4,12 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { debounce, uniq, get } from 'lodash'
-import { Pagination, Spin } from 'antd'
-import { roleuser, sortOptions } from '@edulastic/constants'
+import { Pagination, Spin, Tooltip } from 'antd'
+import {
+  roleuser,
+  sortOptions,
+  test as testConstants,
+} from '@edulastic/constants'
 import {
   withWindowSizes,
   FlexContainer,
@@ -86,6 +90,8 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
+
+const { testCategoryTypes } = testConstants
 
 class AddItems extends PureComponent {
   static propTypes = {
@@ -512,7 +518,7 @@ class AddItems extends PureComponent {
       sort = {},
       gotoAddSections,
     } = this.props
-    const isDynamicTest = test?.isDynamicTest
+    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
     const selectedItemIds = test?.itemGroups?.flatMap(
       (itemGroup) => itemGroup?.items?.map((i) => i._id) || []
     )
@@ -572,19 +578,29 @@ class AddItems extends PureComponent {
                     {itemGroupCount} SELECTED
                   </Selected>
                   {userRole !== roleuser.EDULASTIC_CURATOR && (
-                    <EduButton
-                      height="28px"
-                      isGhost
-                      data-cy="createNewItem"
-                      onClick={this.handleCreateNewItem}
+                    <Tooltip
+                      title={
+                        isDynamicTest ? t('authoringItemDisabled.info') : ''
+                      }
                     >
-                      <IconPlusCircle
-                        color={themeColor}
-                        width={12}
-                        height={12}
-                      />
-                      <span>Create new Item</span>
-                    </EduButton>
+                      <div>
+                        <EduButton
+                          height="28px"
+                          isGhost
+                          data-cy="createNewItem"
+                          disabled={isDynamicTest}
+                          onClick={this.handleCreateNewItem}
+                          style={isDynamicTest ? { pointerEvents: 'none' } : {}} // Tooltip should hide immediately as soon as mouse pointer leaves
+                        >
+                          <IconPlusCircle
+                            color={themeColor}
+                            width={12}
+                            height={12}
+                          />
+                          <span>Create new Item</span>
+                        </EduButton>
+                      </div>
+                    </Tooltip>
                   )}
                 </FlexContainer>
                 <SortMenu

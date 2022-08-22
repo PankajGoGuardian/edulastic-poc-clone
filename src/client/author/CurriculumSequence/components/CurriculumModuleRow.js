@@ -1178,6 +1178,7 @@ class ModuleRow extends Component {
                         contentId={moduleData.contentId}
                         assignmentRows={assignmentRows}
                         handleActionClick={handleActionClick}
+                        moduleData={module?.data}
                       />
                     )
 

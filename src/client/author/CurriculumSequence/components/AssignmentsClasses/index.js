@@ -8,7 +8,8 @@ import {
   cardTitleColor,
   extraDesktopWidthMax,
 } from '@edulastic/colors'
-import { TestTypeIcon } from '@edulastic/common'
+import { notification, TestTypeIcon } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import { Tooltip } from '../../../../common/utils/helpers'
 import additemsIcon from '../../../Assignments/assets/add-items.svg'
 import piechartIcon from '../../../Assignments/assets/pie-chart.svg'
@@ -20,11 +21,17 @@ const AssignmentsClasses = ({
   contentId,
   assignmentRows,
   handleActionClick,
+  moduleData,
+  t,
 }) => {
   const data = assignmentRows?.map((assignment, index) => ({
     key: index,
     ...assignment,
   }))
+
+  const hasRandomQuestions = moduleData.find(
+    (modData) => modData.contentId === contentId
+  ).hasRandomQuestions
 
   const renderTextCell = (text) => (
     <StyledLabel>
@@ -99,17 +106,30 @@ const AssignmentsClasses = ({
             </BtnContainer>
           </Tooltip>
 
-          <Tooltip placement="bottom" title="Express Grader">
+          <Tooltip
+            placement="bottom"
+            title={
+              hasRandomQuestions
+                ? t('common.randomItemsDisableMessage')
+                : 'Express Grader'
+            }
+          >
             <BtnContainer
+              disabled={hasRandomQuestions}
               onClick={(e) =>
-                handleActionClick(
-                  e,
-                  'expressgrader',
-                  assignment?.assignmentId,
-                  assignment?.classId,
-                  moduleId,
-                  contentId
-                )
+                hasRandomQuestions
+                  ? notification({
+                      type: 'warn',
+                      msg: t('common.randomItemsDisableMessage'),
+                    })
+                  : handleActionClick(
+                      e,
+                      'expressgrader',
+                      assignment?.assignmentId,
+                      assignment?.classId,
+                      moduleId,
+                      contentId
+                    )
               }
             >
               <img src={additemsIcon} alt="Images" />
@@ -152,7 +172,7 @@ const AssignmentsClasses = ({
   )
 }
 
-export default AssignmentsClasses
+export default withNamespaces('assignmentCard')(AssignmentsClasses)
 
 const AssignmentsClassesContainer = styled.div`
   background: ${white};
@@ -170,6 +190,8 @@ const ActionsWrapper = styled.div`
 `
 
 const BtnContainer = styled.div`
+  ${({ disabled }) =>
+    disabled ? 'opacity: 0.4; cursor: not-allowed;' : 'cursor: pointer;'};
   background: transparent;
   img {
     width: 18px;

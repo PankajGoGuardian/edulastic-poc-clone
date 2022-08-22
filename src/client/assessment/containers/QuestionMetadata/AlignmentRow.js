@@ -106,7 +106,7 @@ const AlignmentRow = ({
 
   const handleChangeStandard = (_curriculum, event) => {
     userUpdate.current = true
-    const _curriculumId = event.key
+    const _curriculumId = parseInt(event.key, 10)
     storeInLocalStorage('defaultCurriculumId', _curriculumId)
     storeInLocalStorage('defaultCurriculumName', _curriculum)
     updateDefaultCurriculum({

@@ -62,6 +62,7 @@ const CreateAssignmentModal = ({
       closeTopAlign="14px"
       closeRightAlign="10px"
       closeIconColor="black"
+      zIndex={5001}
     >
       <StyledDiv1>
         <Row gutter={24}>

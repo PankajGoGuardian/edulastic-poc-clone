@@ -1,7 +1,11 @@
-import { test } from '@edulastic/constants'
+import { test as testConstants } from '@edulastic/constants'
 import moment from 'moment'
 
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = test
+const {
+  ITEM_GROUP_TYPES,
+  ITEM_GROUP_DELIVERY_TYPES,
+  testCategoryTypes,
+} = testConstants
 
 let colors = [
   'red',
@@ -113,19 +117,27 @@ export const getUserName = (student) => {
 }
 
 /**
- * @param {Object} itemGroups
- * no itemGroups return false
- * for itemGroups exists - atleast one group with AUTOSELECT or STATIC with limited random can have random items, hence return true
- *
+ * @param {Object} test
+ * no item groups - if dynamic test return true else false
+ * dynamic test with auto-select itemGroup or with limited/random delivery type - return true
+ * keep in sync with `hasRandomQuestionsInGroup()` in `edu-api/src/utils/test.js`
  */
-export const hasRandomQuestions = (itemGroups = []) => {
+export const hasRandomQuestions = (test = {}) => {
+  const { itemGroups = [], testCategory = testCategoryTypes.DEFAULT } = test
+
   if (!itemGroups || !itemGroups.length) {
-    return false
+    // hasRandomQuestion should be true when itemGroups are absent for dynamic test
+    // this is done so that all features relying on this check are disabled
+    return testCategory === testCategoryTypes.DYNAMIC_TEST
   }
-  return itemGroups.some(
-    (group) =>
-      group.type === ITEM_GROUP_TYPES.AUTOSELECT ||
-      group.deliveryType === ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
+  return (
+    testCategory === testCategoryTypes.DYNAMIC_TEST &&
+    // if all itemGroups do not belong to type STATIC with deliveryType ALL
+    itemGroups.some(
+      (group) =>
+        group.type === ITEM_GROUP_TYPES.AUTOSELECT ||
+        group.deliveryType !== ITEM_GROUP_DELIVERY_TYPES.ALL
+    )
   )
 }
 
@@ -158,17 +170,4 @@ export const getSubmittedDate = (activityEndDate, classEndDate) => {
     return '-'
   }
   return moment(endDate).format('MMM DD, YYYY HH:mm')
-}
-
-export const getAtlasSyncProviderName = (providerName, formatStr) => {
-  switch (providerName.toLowerCase()) {
-    case 'schoology':
-      return formatStr('SCHOOLOGY')
-    case 'classlink':
-      return formatStr('CLASSLINK')
-    case 'clever':
-      return formatStr('CLEVER')
-    default:
-      return ''
-  }
 }

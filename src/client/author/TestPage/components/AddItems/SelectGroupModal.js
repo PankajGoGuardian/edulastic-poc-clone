@@ -23,7 +23,11 @@ const SelectGroupModal = ({ visible, test, handleResponse }) => {
           {test.itemGroups.map(({ groupName, type }, index) => {
             if (type === ITEM_GROUP_TYPES.STATIC)
               return (
-                <GroupWrapper key={index} onClick={() => handleResponse(index)}>
+                <GroupWrapper
+                  key={index}
+                  onClick={() => handleResponse(index)}
+                  data-cy={`addItemToSection-${groupName}`}
+                >
                   {groupName}
                 </GroupWrapper>
               )

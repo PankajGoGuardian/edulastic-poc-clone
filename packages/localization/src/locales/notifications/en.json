@@ -1343,10 +1343,6 @@
     "message": "Please select an organization first",
     "description": ""
   },
-  "selectedItemsGroupShouldNotBeMoreThanDelivedItems": {
-    "message": "Selected items count in a group should be more than the delivered items count.",
-    "description": ""
-  },
   "editWarnBubblesheetGeneratedForThisTest": {
     "message": "Please note bubble sheet is already generated with this test. If you edit the test, you can not use the generated bubble sheet and have to regenerate it and take a new test.",
     "description": ""
@@ -1811,6 +1807,10 @@
     "message": "Total Items to be delivered cannot be more than 100",
     "description": ""
   },
+  "totalItemsToBeDeliveredCannotBeLessThanZero": {
+    "message": "Total Items to be delivered cannot be less than zero.",
+    "description": ""
+  },
   "pleaseSelectAtleastTwoItems": {
     "message": " Please select atleast 2 items to manually give the items delivery count.",
     "description": ""
@@ -1821,6 +1821,18 @@
   },
   "eachStaticGroupShouldContainAtleastOneItems": {
     "message": "Each Static group should contain at least 1 test item",
+    "description": ""
+  },
+  "eachGroupShouldHaveUniqueGroupName": {
+    "message": "Each section should have a unique section name",
+    "description": ""
+  },
+  "pleaseEnterGroupName": {
+    "message": "Please provide section name.",
+    "description": ""
+  },
+  "pleaseEnterUniqueGroupName": {
+    "message": "Please provide a unique section name to proceed.",
     "description": ""
   },
   "pleaseEnterTotalNumberOfItems": {

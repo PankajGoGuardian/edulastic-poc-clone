@@ -256,7 +256,7 @@ const PeerPerformance = ({
           <StyledSignedBarContainer>
             <Row type="flex" justify="start">
               <Col xs={24} sm={24} md={12} lg={8} xl={12}>
-                <StyledH3>
+                <StyledH3 data-testid="barChart">
                   Assessment Performance by {idToName(ddfilter.compareBy)} |{' '}
                   {assessmentName}
                 </StyledH3>

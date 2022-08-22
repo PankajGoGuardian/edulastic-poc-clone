@@ -234,7 +234,7 @@ export const PeerPerformanceTable = ({
   return (
     <div>
       <StyledDiv>
-        <StyledH3>
+        <StyledH3 data-testid="peerPerformanceTable">
           Assessment Statistics By {idToName(compareBy)} | {assessmentName}
         </StyledH3>
       </StyledDiv>

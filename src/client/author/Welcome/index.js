@@ -6,6 +6,7 @@ import PropTypes from 'prop-types'
 import { roleuser, signUpState } from '@edulastic/constants'
 import { withWindowSizes } from '@edulastic/common'
 import { groupBy } from 'lodash'
+import * as Sentry from '@sentry/browser'
 import AddSchoolAndGradeModal from '../../student/Signup/components/TeacherContainer/AddSchoolAndGradeModal'
 import {
   getShowGetStartedModalSelector,
@@ -38,13 +39,27 @@ const WelcomeContainer = ({
 
   const onSuccessCallback = () => {
     setShowJoinSchoolModal(false)
-    if (!location.pathname.includes('profile')) {
+    if (location.pathname.includes('dashboard')) {
       const { BANNER } = groupBy(dashboardTiles, 'type')
-      const quickStartGuideData = BANNER.find(
-        (banner) => banner.description === '2 Min Overview'
-      )?.config?.filters[0]
+      if (!BANNER) {
+        const dashboardTilesIds = dashboardTiles?.map((tiles) => tiles?._id)
+        Sentry.withScope((scope) => {
+          scope.setExtra('content', {
+            userId: user._id,
+            lastSigninSSO: user.lastSigninSSO,
+            dashboardTilesIds,
+          })
+          Sentry.captureException(new Error('User is authenticating'))
+        })
+        return
+      }
+      const quickStartGuideData =
+        BANNER?.find((banner) => banner.description === '2 Min Overview')
+          ?.config?.filters[0] || {}
       const { data } = quickStartGuideData
-      setShowQuickStartGuide(data)
+      if (data) {
+        setShowQuickStartGuide(data)
+      }
     }
   }
 

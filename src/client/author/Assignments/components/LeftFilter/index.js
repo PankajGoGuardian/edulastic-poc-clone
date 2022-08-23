@@ -14,11 +14,6 @@ import {
   receiveAssignmentsSummaryAction,
 } from '../../../src/actions/assignments'
 import {
-  getAssignmentTeacherList,
-  getAssignmentTestList,
-  getAssignmentTestsSelector,
-} from '../../../src/selectors/assignments'
-import {
   getGroupList,
   getUserRole,
   getCurrentTerm,
@@ -34,6 +29,8 @@ import {
   getAllTestTypesMap,
   getNonPremiumTestTypes,
 } from '../../../../common/utils/testTypeUtils'
+import TestNameList from './TestNameList'
+import TeachersList from './TeachersList'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -124,10 +121,7 @@ class LeftFilter extends React.Component {
       filterState,
       userRole,
       classList,
-      teacherList,
-      assignmentTestList = [],
       isAdvancedView,
-      teacherTestList = [],
       isPremiumUser,
     } = this.props
     const {
@@ -236,31 +230,11 @@ class LeftFilter extends React.Component {
 
         {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && (
           <>
-            <FieldLabel>Teachers</FieldLabel>
-            <SelectInputStyled
-              data-cy="filter-teachers"
-              mode="default"
-              showSearch
-              placeholder="All Teacher(s)"
-              value={assignedBy}
+            <TeachersList
               onChange={this.handleChange('assignedBy')}
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-              margin="0px 0px 15px"
-            >
-              <Select.Option key="" value="">
-                All Teacher(s)
-              </Select.Option>
-              {teacherList?.map(({ _id, name }, index) => (
-                <Select.Option key={index} value={_id}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
+              assignedBy={assignedBy}
+              termId={termId}
+            />
           </>
         )}
 
@@ -357,38 +331,15 @@ class LeftFilter extends React.Component {
           selectedTagIds={tags}
         />
 
-        <FieldLabel>Test Name</FieldLabel>
-        <SelectInputStyled
-          data-cy="filter-test-name"
-          mode="default"
-          showSearch
-          placeholder="All Tests"
-          value={testId}
+        <TestNameList
           onChange={this.handleChange('testId')}
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          filterOption={(input, option) =>
-            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
-            0
-          }
-          margin="0px 0px 15px"
-        >
-          <Select.Option key={0} value="">
-            All Tests
-          </Select.Option>
-          {roleuser.DA_SA_ROLE_ARRAY.includes(userRole) &&
-            assignmentTestList?.map(({ testId: _id, title }, index) => (
-              <Select.Option key={index} value={_id}>
-                {title}
-              </Select.Option>
-            ))}
-          {userRole === roleuser.TEACHER &&
-            teacherTestList.map(({ _id, title }, index) => (
-              <Select.Option key={index} value={_id}>
-                {title}
-              </Select.Option>
-            ))}
-        </SelectInputStyled>
-
+          subject={subject}
+          grades={grades}
+          termId={termId}
+          testType={testType}
+          status={status}
+          testId={testId}
+        />
         <Folders
           showAllItems
           removeItemFromCart={this.deselectItemsFolder}
@@ -424,9 +375,6 @@ export default connect(
     termsData: get(state, 'user.user.orgData.terms', []),
     userRole: getUserRole(state),
     classList: getGroupList(state),
-    teacherList: getAssignmentTeacherList(state),
-    assignmentTestList: getAssignmentTestList(state),
-    teacherTestList: getAssignmentTestsSelector(state),
     currentTerm: getCurrentTerm(state),
     isPremiumUser: isPremiumUserSelector(state),
   }),

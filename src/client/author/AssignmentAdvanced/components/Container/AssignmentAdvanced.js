@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import qs from 'qs'
-import { find, get } from 'lodash'
+import { get } from 'lodash'
 import { FlexContainer, withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { authorAssignment } from '@edulastic/colors'
@@ -16,7 +16,6 @@ import {
 import {
   getAssignmentClassList,
   getAssignmentsLoadingSelector,
-  getAssignmentTestList,
   getBulkActionStatusSelector,
   getBulkActionTypeSelector,
   getCurrentTestSelector,
@@ -356,7 +355,6 @@ class AssignmentAdvanced extends Component {
       userRole,
       userSchoolsList,
       authorAssignmentsState = {},
-      assignmentTestList,
       isPreviewModalVisible,
     } = this.props
     const {
@@ -381,8 +379,7 @@ class AssignmentAdvanced extends Component {
         totalCountToShow = totalAssignmentsClasses
     }
     const { testId } = match.params
-    const assingment =
-      find(assignmentTestList, (item) => item.testId === testId) || test || {}
+    const assingment = test || {}
     const { testType = '' } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     })
@@ -499,7 +496,6 @@ const enhance = compose(
       userClassList: getGroupList(state),
       userSchoolsList: getUserSchoolsListSelector(state),
       authorAssignmentsState: stateSelector(state),
-      assignmentTestList: getAssignmentTestList(state),
       bulkActionType: getBulkActionTypeSelector(state),
       isFreeAdmin: isFreeAdminSelector(state),
       isSAWithoutSchools: isSAWithoutSchoolsSelector(state),

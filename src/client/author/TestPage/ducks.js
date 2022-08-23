@@ -105,7 +105,7 @@ import { answersByQId } from '../../assessment/selectors/test'
 import { multiFind } from '../../common/utils/main'
 import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
-import { selectsData } from './components/common'
+import selectsData from './components/common/selectsData'
 
 const {
   ITEM_GROUP_TYPES,

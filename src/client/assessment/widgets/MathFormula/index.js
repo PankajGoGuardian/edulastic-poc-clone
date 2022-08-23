@@ -130,7 +130,9 @@ const MathFormula = ({
             saveAnswer={saveAnswer}
             evaluation={evaluation}
             smallSize={smallSize}
-            userAnswer={userAnswer}
+            userAnswer={
+              userAnswer && userAnswer?.length > 0 ? userAnswer : null
+            }
             fillSections={fillSections}
             cleanSections={cleanSections}
             changePreview={changePreview}

@@ -41,7 +41,7 @@ const WelcomeContainer = ({
     setShowJoinSchoolModal(false)
     if (location.pathname.includes('dashboard')) {
       const { BANNER } = groupBy(dashboardTiles, 'type')
-      if (!BANNER) {
+      if (!userInfo.authenticating) {
         const dashboardTilesIds = dashboardTiles?.map((tiles) => tiles?._id)
         Sentry.withScope((scope) => {
           scope.setExtra('content', {
@@ -49,7 +49,7 @@ const WelcomeContainer = ({
             lastSigninSSO: user.lastSigninSSO,
             dashboardTilesIds,
           })
-          Sentry.captureException(new Error('User is authenticating'))
+          Sentry.captureException(new Error('User is authenticated'))
         })
         return
       }

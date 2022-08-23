@@ -8,8 +8,8 @@ import MainContent from './Showcase/showcase'
 
 const Dashboard = ({ userId, authenticating }) => {
   if (!userId) {
-    if (authenticating) {
-      Sentry.captureException(new Error('User is authenticating'))
+    if (!authenticating) {
+      Sentry.captureException(new Error('User is authenticated'))
     }
     return <Spin />
   }

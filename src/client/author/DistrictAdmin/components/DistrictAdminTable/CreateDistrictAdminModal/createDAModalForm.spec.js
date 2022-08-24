@@ -5,11 +5,21 @@ import userEvent from '@testing-library/user-event'
 import { get } from 'lodash'
 import ManageDistrict from '@edulastic/localization/src/locales/manageDistrict/en'
 import { authApi } from '@edulastic/api'
+import configureMockStore from 'redux-mock-store'
+import { Provider } from 'react-redux'
 import CreateDistrictAdminModalForm from './CreateDistrictAdminModal'
 
 jest.mock('../../../../../../../packages/api/src/utils/API')
 
 jest.spyOn(authApi, 'checkUserExist')
+
+const mockStore = configureMockStore()
+const storeData = {
+  user: {
+    user: {},
+  },
+}
+const store = mockStore(storeData)
 
 const newUser = {
   firstName: 'dummy',
@@ -66,11 +76,19 @@ describe('#Testing the CreateDistrictAdminModalForm', () => {
   })
 
   it('> test CreateDistrictAdminModalForm component renders without error', () => {
-    render(<CreateDistrictAdminModalForm modalVisible t={t} />)
+    render(
+      <Provider store={store}>
+        <CreateDistrictAdminModalForm modalVisible t={t} />
+      </Provider>
+    )
   })
 
   it('> should display all elements on the screen', () => {
-    render(<CreateDistrictAdminModalForm modalVisible t={t} />)
+    render(
+      <Provider store={store}>
+        <CreateDistrictAdminModalForm modalVisible t={t} />
+      </Provider>
+    )
 
     const [
       nameInputTextBox,
@@ -103,11 +121,13 @@ describe('#Testing the CreateDistrictAdminModalForm', () => {
     )
 
     render(
-      <CreateDistrictAdminModalForm
-        modalVisible
-        t={t}
-        createDistrictAdmin={createDistrictAdmin}
-      />
+      <Provider store={store}>
+        <CreateDistrictAdminModalForm
+          modalVisible
+          t={t}
+          createDistrictAdmin={createDistrictAdmin}
+        />
+      </Provider>
     )
 
     const [
@@ -141,11 +161,13 @@ describe('#Testing the CreateDistrictAdminModalForm', () => {
     )
 
     render(
-      <CreateDistrictAdminModalForm
-        modalVisible
-        t={t}
-        createDistrictAdmin={createDistrictAdmin}
-      />
+      <Provider store={store}>
+        <CreateDistrictAdminModalForm
+          modalVisible
+          t={t}
+          createDistrictAdmin={createDistrictAdmin}
+        />
+      </Provider>
     )
 
     const [
@@ -179,11 +201,13 @@ describe('#Testing the CreateDistrictAdminModalForm', () => {
     )
 
     render(
-      <CreateDistrictAdminModalForm
-        modalVisible
-        t={t}
-        createDistrictAdmin={createDistrictAdmin}
-      />
+      <Provider store={store}>
+        <CreateDistrictAdminModalForm
+          modalVisible
+          t={t}
+          createDistrictAdmin={createDistrictAdmin}
+        />
+      </Provider>
     )
 
     const [

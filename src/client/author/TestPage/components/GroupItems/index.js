@@ -2,6 +2,7 @@ import { testItemsApi } from '@edulastic/api'
 import { EduButton, notification, RadioBtn, RadioGrp } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import { IconInfo, IconPencilEdit } from '@edulastic/icons'
+import { lightRed2 } from '@edulastic/colors'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
@@ -707,7 +708,9 @@ const GroupItems = ({
                   ) : (
                     <AutoSelectFields>
                       <SelectWrapper width="200px">
-                        <Label>Collection *</Label>
+                        <Label>
+                          Collection <span style={{ color: lightRed2 }}>*</span>
+                        </Label>
                         <Select
                           data-cy={`collection-${itemGroup.groupName}`}
                           size="default"
@@ -740,7 +743,9 @@ const GroupItems = ({
                         width="200px"
                         data-cy={`selectStd-${itemGroup.groupName}`}
                       >
-                        <Label>Standards *</Label>
+                        <Label>
+                          Standards <span style={{ color: lightRed2 }}>*</span>
+                        </Label>
                         <StandardsSelect
                           onChange={handleStandardsChange}
                           preventInput

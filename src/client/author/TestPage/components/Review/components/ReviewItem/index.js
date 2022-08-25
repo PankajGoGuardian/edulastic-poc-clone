@@ -179,6 +179,7 @@ const ReviewItem = ({
           data={data.main}
           handlePreview={handlePreview}
           isEditable={isEditable}
+          isAutoselect={data.meta.item?.autoselectedItem}
           owner={owner}
           index={item.indx}
           onSelect={handleSelect}

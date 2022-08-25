@@ -722,47 +722,122 @@ class PreviewModal extends React.Component {
             {showAddItemToTestButton &&
               (isPassage && showAddPassageItemToTestButton ? (
                 <>
-                  <EduButton
-                    isBlue
-                    height="28px"
-                    justifyContent="center"
-                    onClick={this.handleSelection}
-                    dataCy={
-                      this.isAddOrRemove
-                        ? 'addCurrentItem'
-                        : 'removeCurrentItem'
+                  <Tooltip
+                    title={
+                      !this.isAddOrRemove && item?.autoselectedItem
+                        ? "Auto selected item can't be deleted"
+                        : ''
                     }
                   >
-                    {this.isAddOrRemove
-                      ? 'ADD CURRENT ITEM'
-                      : 'REMOVE CURRENT ITEM'}
-                  </EduButton>
+                    <span
+                      style={{
+                        cursor:
+                          !this.isAddOrRemove && item?.autoselectedItem
+                            ? 'not-allowed'
+                            : 'pointer',
+                      }}
+                    >
+                      <EduButton
+                        isBlue
+                        disabled={!this.isAddOrRemove && item?.autoselectedItem}
+                        height="28px"
+                        justifyContent="center"
+                        onClick={this.handleSelection}
+                        dataCy={
+                          this.isAddOrRemove
+                            ? 'addCurrentItem'
+                            : 'removeCurrentItem'
+                        }
+                        style={
+                          !this.isAddOrRemove && item?.autoselectedItem
+                            ? { pointerEvents: 'none' }
+                            : {}
+                        }
+                      >
+                        {this.isAddOrRemove
+                          ? 'ADD CURRENT ITEM'
+                          : 'REMOVE CURRENT ITEM'}
+                      </EduButton>
+                    </span>
+                  </Tooltip>
                   {isPassage > 1 && (
-                    <EduButton
-                      isGhost
-                      height="28px"
-                      justifyContent="center"
-                      onClick={this.handleAddAllPassageItems}
-                      dataCy={
-                        hasPassageItemToAdd ? `addAllItems` : `removeAllItems`
+                    <Tooltip
+                      title={
+                        !hasPassageItemToAdd && item?.autoselectedItem
+                          ? "Auto selected item can't be deleted"
+                          : ''
                       }
                     >
-                      {hasPassageItemToAdd
-                        ? `Add all(${isPassage}) items`
-                        : `Remove all(${isPassage}) items`}
-                    </EduButton>
+                      <span
+                        style={{
+                          cursor:
+                            !hasPassageItemToAdd && item?.autoselectedItem
+                              ? 'not-allowed'
+                              : 'pointer',
+                        }}
+                      >
+                        <EduButton
+                          isGhost
+                          disabled={
+                            !hasPassageItemToAdd && item?.autoselectedItem
+                          }
+                          height="28px"
+                          justifyContent="center"
+                          onClick={this.handleAddAllPassageItems}
+                          dataCy={
+                            hasPassageItemToAdd
+                              ? `addAllItems`
+                              : `removeAllItems`
+                          }
+                          style={
+                            !hasPassageItemToAdd && item?.autoselectedItem
+                              ? { pointerEvents: 'none' }
+                              : {}
+                          }
+                        >
+                          {hasPassageItemToAdd
+                            ? `Add all(${isPassage}) items`
+                            : `Remove all(${isPassage}) items`}
+                        </EduButton>
+                      </span>
+                    </Tooltip>
                   )}
                 </>
               ) : (
-                <EduButton
-                  isBlue
-                  height="28px"
-                  justifyContent="center"
-                  onClick={this.handleSelection}
-                  data-cy={this.isAddOrRemove ? 'addToTest' : 'removefromTest'}
+                <Tooltip
+                  title={
+                    !this.isAddOrRemove && item?.autoselectedItem
+                      ? "Auto selected item can't be deleted"
+                      : ''
+                  }
                 >
-                  {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
-                </EduButton>
+                  <span
+                    style={{
+                      cursor:
+                        !this.isAddOrRemove && item?.autoselectedItem
+                          ? 'not-allowed'
+                          : 'pointer',
+                    }}
+                  >
+                    <EduButton
+                      disabled={!this.isAddOrRemove && item?.autoselectedItem}
+                      isBlue
+                      height="28px"
+                      justifyContent="center"
+                      onClick={this.handleSelection}
+                      data-cy={
+                        this.isAddOrRemove ? 'addToTest' : 'removefromTest'
+                      }
+                      style={
+                        !this.isAddOrRemove && item?.autoselectedItem
+                          ? { pointerEvents: 'none' }
+                          : {}
+                      }
+                    >
+                      {this.isAddOrRemove ? 'Add To Test' : 'Remove from Test'}
+                    </EduButton>
+                  </span>
+                </Tooltip>
               ))}
             <ButtonsWrapper
               justifyContent="flex-end"

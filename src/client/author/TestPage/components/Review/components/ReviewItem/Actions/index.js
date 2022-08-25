@@ -1,8 +1,10 @@
 import React from 'react'
 import { IconEye, IconTrash, IconExpand, IconCollapse } from '@edulastic/icons'
+import { Tooltip } from 'antd'
 import { Container, ActionButton } from './styled'
 
 export default ({
+  isAutoselect,
   expanded,
   onPreview,
   onDelete,
@@ -27,15 +29,28 @@ export default ({
       <IconEye width={18} height={18} />
     </ActionButton>
     {isEditable && (
-      <ActionButton
-        isGhost
-        title="Remove"
-        data-cy="delete"
-        onClick={onDelete}
-        onMouseDown={(e) => e && e.preventDefault()}
+      <Tooltip
+        title={isAutoselect ? "Auto selected item can't be deleted" : ''}
       >
-        <IconTrash width={15} height={15} />
-      </ActionButton>
+        <span
+          style={{
+            cursor: isAutoselect ? 'not-allowed' : 'pointer',
+            marginLeft: '5px',
+          }}
+        >
+          <ActionButton
+            disabled={isAutoselect}
+            isGhost
+            title="Remove"
+            data-cy="delete"
+            onClick={onDelete}
+            style={isAutoselect ? { pointerEvents: 'none' } : {}}
+            onMouseDown={(e) => e && e.preventDefault()}
+          >
+            <IconTrash width={15} height={15} />
+          </ActionButton>
+        </span>
+      </Tooltip>
     )}
   </Container>
 )

@@ -144,6 +144,7 @@ const Expanded = ({
         )}
         <FlexContainer>
           <Actions
+            isAutoselect={testItem?.autoselectedItem}
             style={{ marginBottom: 8, width: 108 }}
             onPreview={() => onPreview(metaInfoData.id)}
             onCollapseExpandRow={collapsRow}
@@ -332,6 +333,7 @@ const Expanded = ({
               </FlexContainer>
               {index === 0 && (
                 <Actions
+                  isAutoselect={testItem?.autoselectedItem}
                   style={{ marginTop: 8, width: 108 }}
                   onPreview={() => onPreview(metaInfoData.id)}
                   onCollapseExpandRow={collapsRow}

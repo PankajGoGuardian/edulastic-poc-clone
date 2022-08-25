@@ -19,6 +19,7 @@ class MainInfo extends React.Component {
     const {
       data,
       index,
+      isAutoselect,
       handlePreview,
       isEditable,
       owner,
@@ -65,6 +66,7 @@ class MainInfo extends React.Component {
         >
           <FlexContainer flexDirection="row" alignItems="center">
             <Actions
+              isAutoselect={isAutoselect}
               onPreview={() => handlePreview(data.id)}
               onCollapseExpandRow={expandRow}
               onDelete={onDelete}

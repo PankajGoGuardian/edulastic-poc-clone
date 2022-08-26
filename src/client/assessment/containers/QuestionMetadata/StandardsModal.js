@@ -8,7 +8,7 @@ import {
   RadioBtn,
 } from '@edulastic/common'
 import { Col, Row, Spin } from 'antd'
-import { isEqual } from 'lodash'
+import { differenceBy, intersectionBy, isEqual, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { setDefaultInterests } from '../../../author/dataUtils'
@@ -34,6 +34,7 @@ const StandardsModal = ({
   isPlaylistView = false,
   standardDetails,
   curriculums,
+  enableSelectAll,
 }) => {
   const [state, setState] = useState({
     standard: defaultStandard,
@@ -42,9 +43,7 @@ const StandardsModal = ({
     grades: defaultGrades,
   })
 
-  const [selectedTLO, setSelectedTLO] = useState(
-    curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : ''
-  )
+  const [selectedTLO, setSelectedTLO] = useState(curriculumStandardsTLO[0])
 
   const reset = () => {
     setState({
@@ -53,9 +52,7 @@ const StandardsModal = ({
       subject: defaultSubject,
       grades: defaultGrades,
     })
-    setSelectedTLO(
-      curriculumStandardsTLO[0] ? curriculumStandardsTLO[0]._id : ''
-    )
+    setSelectedTLO(curriculumStandardsTLO[0])
   }
 
   const setValidStateAndRefresh = ({
@@ -127,7 +124,7 @@ const StandardsModal = ({
       state.eloStandards[0]?.tloId ||
       curriculumStandardsTLO[0]._id ||
       ''
-    setSelectedTLO(tloId)
+    setSelectedTLO(curriculumStandardsTLO.find((tlo) => tlo._id === tloId))
     setValidStateAndRefresh({
       subject,
       eloStandards,
@@ -138,10 +135,10 @@ const StandardsModal = ({
 
   useEffect(() => {
     const selectedTloFound = curriculumStandardsTLO.find(
-      (tlo) => tlo._id === selectedTLO
+      (tlo) => tlo._id === selectedTLO?._id
     )
     if (!selectedTloFound && curriculumStandardsTLO[0])
-      setSelectedTLO(curriculumStandardsTLO[0]._id)
+      setSelectedTLO(curriculumStandardsTLO[0])
   }, [curriculumStandardsTLO])
 
   useEffect(() => {
@@ -157,7 +154,7 @@ const StandardsModal = ({
   }, [curriculumStandardsELO])
 
   const filteredELO = curriculumStandardsELO
-    .filter((c) => c.tloId === selectedTLO)
+    .filter((c) => c.tloId === selectedTLO?._id)
     .sort((a, b) => {
       // if tloIdentifier dont match fallback to ascending order sort
       if (a.tloIdentifier !== b.tloIdentifier)
@@ -169,6 +166,27 @@ const StandardsModal = ({
 
       return parseInt(aSubIdentifier, 10) - parseInt(bSubIdentifier, 10)
     })
+
+  const nEloSelectedFromSelectedTlo = intersectionBy(
+    filteredELO,
+    state.eloStandards,
+    '_id'
+  ).length
+  const allChecked =
+    nEloSelectedFromSelectedTlo &&
+    nEloSelectedFromSelectedTlo === filteredELO.length
+  const indeterminate =
+    nEloSelectedFromSelectedTlo &&
+    nEloSelectedFromSelectedTlo < filteredELO.length
+
+  const handleCheckAll = () => {
+    setValidStateAndRefresh({
+      ...state,
+      eloStandards: nEloSelectedFromSelectedTlo
+        ? differenceBy(state.eloStandards, filteredELO, '_id')
+        : uniqBy([...state.eloStandards, ...filteredELO], '_id'),
+    })
+  }
 
   const footer = (
     <FlexContainer>
@@ -220,9 +238,7 @@ const StandardsModal = ({
     else
       setState({
         ...state,
-        eloStandards: [...state.eloStandards].filter(
-          (elo) => elo._id !== c._id
-        ),
+        eloStandards: state.eloStandards.filter((elo) => elo._id !== c._id),
       })
   }
 
@@ -250,20 +266,33 @@ const StandardsModal = ({
           <Spin spinning={curriculumStandardsLoading} size="large">
             <Col md={8} style={{ overflow: 'hidden' }}>
               <TLOList>
-                {curriculumStandardsTLO.map(
-                  ({ identifier, description, _id }) => (
-                    <TLOListItem
-                      title={identifier}
-                      description={description}
-                      active={_id === selectedTLO}
-                      key={_id}
-                      onClick={() => setSelectedTLO(_id)}
-                    />
-                  )
-                )}
+                {curriculumStandardsTLO.map((tlo) => (
+                  <TLOListItem
+                    title={tlo.identifier}
+                    description={tlo.description}
+                    active={tlo._id === selectedTLO?._id}
+                    key={tlo._id}
+                    onClick={() => setSelectedTLO(tlo)}
+                  />
+                ))}
               </TLOList>
             </Col>
             <Col md={16} style={{ overflow: 'hidden' }}>
+              {enableSelectAll && selectedTLO && (
+                <>
+                  <Row type="flex">
+                    <CheckboxLabel
+                      indeterminate={indeterminate}
+                      onChange={handleCheckAll}
+                      checked={allChecked}
+                      textTransform="none"
+                    >
+                      All {selectedTLO.identifier} Standards
+                    </CheckboxLabel>
+                  </Row>
+                  <br />
+                </>
+              )}
               <ELOList padding="0">
                 <Container padding="15px" borderRadius="0px">
                   {filteredELO.map((c) => (
@@ -321,6 +350,7 @@ StandardsModal.propTypes = {
   curriculumStandardsELO: PropTypes.array,
   curriculumStandardsTLO: PropTypes.array,
   defaultGrades: PropTypes.array,
+  enableSelectAll: PropTypes.bool,
 }
 
 StandardsModal.defaultProps = {
@@ -328,6 +358,7 @@ StandardsModal.defaultProps = {
   curriculumStandardsELO: [],
   curriculumStandardsTLO: [],
   defaultGrades: [],
+  enableSelectAll: false,
 }
 
 export default StandardsModal

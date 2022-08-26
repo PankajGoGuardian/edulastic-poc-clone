@@ -4,6 +4,7 @@ import { connect } from 'react-redux'
 
 import { segmentApi } from '@edulastic/api'
 import { EduButton } from '@edulastic/common'
+import { darkOrange1, themeColorBlue } from '@edulastic/colors'
 
 import CardComponent from '../../../AssignmentCreate/common/CardComponent'
 import TextWrapper from '../../../AssignmentCreate/common/TextWrapper'
@@ -27,9 +28,21 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
   }
   return (
     <CardComponent data-cy="smartBuild">
-      <Tag>New</Tag>
+      <Tag style={{ backgroundColor: darkOrange1 }}>New</Tag>
       <DynamicTestTitle>
         <span>Smart</span>Build
+        <Tag
+          style={{
+            position: 'relative',
+            left: 5,
+            top: 0,
+            backgroundColor: 'inherit',
+            border: `1.5px solid ${themeColorBlue}`,
+            color: themeColorBlue,
+          }}
+        >
+          BETA
+        </Tag>
       </DynamicTestTitle>
       <TitleWrapper>Create Section Test</TitleWrapper>
       <TextWrapper>

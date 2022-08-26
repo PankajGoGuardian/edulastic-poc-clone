@@ -1,6 +1,7 @@
 import React from 'react'
 import { Input } from 'antd'
 import { test as testConstants } from '@edulastic/constants'
+import { lightRed2 } from '@edulastic/colors'
 import { ItemCountWrapper } from './styled'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
@@ -40,7 +41,9 @@ export default function ItemCountWrapperContainer({
             : 100
         }
       />
-      <span> Item(s) {isRequired ? '*' : ''}</span>
+      <span>
+        Item(s) {isRequired ? <span style={{ color: lightRed2 }}>*</span> : ''}
+      </span>
     </ItemCountWrapper>
   )
 }

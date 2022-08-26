@@ -678,7 +678,9 @@ const GroupItems = ({
                   (currentGroupIndex !== index &&
                     itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
                     <GroupField>
-                      <Label>Items *</Label>
+                      <Label>
+                        Items <span style={{ color: lightRed2 }}>*</span>
+                      </Label>
                       <QuestionTagsWrapper>
                         <QuestionTagsContainer
                           data-cy={`item-container-${itemGroup.groupName}`}

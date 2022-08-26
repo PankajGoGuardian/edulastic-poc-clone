@@ -21,7 +21,6 @@ const LIST_FETCH_LIMIT = 35
 const TeachersList = ({
   onChange,
   assignedBy,
-  termId,
   loadTeacherList,
   teacherList: teacherListRaw,
   districtId,
@@ -43,18 +42,12 @@ const TeachersList = ({
     },
     role: roleuser.TEACHER,
     testIds,
-    termId: termId || undefined,
   }
 
   const handleSearch = debounce((value) => {
     delete query.teacherIds
-    if (value) {
-      query.search.name = value
-      delete query.testIds
-      loadTeacherList(query)
-    } else {
-      loadTeacherList(query)
-    }
+    query.search.name = value
+    loadTeacherList(query)
   }, 500)
   useEffect(() => {
     const { assignedBy: _assignedBy } = getFilterFromSession({

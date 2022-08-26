@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { Select } from 'antd'
@@ -11,12 +11,14 @@ import {
   setTestListLoadingAction,
 } from '../../../Reports/ducks'
 import {
-  currentDistrictInstitutionIds,
   getUserIdSelector,
   getUserOrgId,
   getUserRole,
 } from '../../../src/selectors/user'
-import { getAssignmentTestsSelector } from '../../../src/selectors/assignments'
+import {
+  getAdminTestIdsSelector,
+  getAssignmentTestsSelector,
+} from '../../../src/selectors/assignments'
 import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const LIST_FETCH_LIMIT = 35
@@ -27,54 +29,27 @@ const TestNameList = ({
   loadTestList,
   testList,
   districtId,
-  institutionIds,
-  grades = [],
-  subject,
-  testType,
-  termId,
-  status,
   testId,
   loading,
   setTestListLoading,
   teacherTestList = [],
   userId,
+  testIds,
 }) => {
-  const [changed, setFilterChanged] = useState(false)
   const query = {
     limit: LIST_FETCH_LIMIT,
     page: 1,
     search: {
       searchString: '',
       districtId,
+      testIds,
     },
     aggregate: true,
   }
-  if (userRole === roleuser.SCHOOL_ADMIN && institutionIds?.length) {
-    query.search.institutionIds = institutionIds
-  }
-  if (termId) {
-    query.search.termId = termId
-  }
-  if (grades?.length) {
-    query.search.grades = Array.isArray(grades)
-      ? grades.filter((item) => !!item)
-      : grades.split(',')
-  }
-  if (subject) {
-    query.search.subjects = [subject]
-  }
-  if (testType) {
-    query.search.testTypes = [testType]
-  }
   const handleSearch = debounce((value) => {
     if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
-      delete query.search.testIds
-      if (value) {
-        query.search.searchString = value
-        loadTestList(query)
-      } else {
-        loadTestList(query)
-      }
+      query.search.searchString = value
+      loadTestList(query)
     }
   }, 500)
 
@@ -95,10 +70,6 @@ const TestNameList = ({
     }
   }, [])
 
-  useEffect(() => {
-    setFilterChanged(true)
-  }, [status, termId, grades, subject, testType])
-
   const _testList = roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
     ? testList
     : teacherTestList
@@ -116,14 +87,8 @@ const TestNameList = ({
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onSearch={handleSearch}
         onFocus={() => {
-          if (
-            (!testList.length || changed) &&
-            roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-          ) {
+          if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
             loadTestList(query)
-            if (changed) {
-              setFilterChanged(false)
-            }
           }
         }}
         filterOption={(input, option) =>
@@ -150,11 +115,11 @@ export default connect(
   (state) => ({
     testList: getTestListSelector(state),
     districtId: getUserOrgId(state),
-    institutionIds: currentDistrictInstitutionIds(state),
     userRole: getUserRole(state),
     loading: getTestListLoadingSelector(state),
     teacherTestList: getAssignmentTestsSelector(state),
     userId: getUserIdSelector(state),
+    testIds: getAdminTestIdsSelector(state),
   }),
   {
     loadTestList: receiveTestListAction,

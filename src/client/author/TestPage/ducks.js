@@ -105,6 +105,7 @@ import { answersByQId } from '../../assessment/selectors/test'
 import { multiFind } from '../../common/utils/main'
 import { hasValidResponse } from '../questionUtils'
 import { getProfileKey } from '../../common/utils/testTypeUtils'
+import selectsData from './components/common/selectsData'
 
 const {
   ITEM_GROUP_TYPES,
@@ -139,6 +140,7 @@ export const NewGroupAutoselect = {
   items: [],
   deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM,
   index: 0,
+  difficulty: selectsData.allAuthorDifficulty[0].value,
 }
 export const createWidget = ({ id, type, title }) => ({
   widgetType: type === 'sectionLabel' ? 'resource' : 'question',

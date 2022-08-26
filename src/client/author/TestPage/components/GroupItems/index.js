@@ -757,7 +757,8 @@ const GroupItems = ({
                           disabled={currentGroupIndex !== index}
                         />
                       </SelectWrapper>
-                      <SelectWrapper width="200px">
+                      {/* TODO DOK will be re-introduced in future, hence, commented the code */}
+                      {/* <SelectWrapper width="200px">
                         <Label>Depth of knowledge</Label>
                         <Select
                           data-cy={`selectDOK-${itemGroup.groupName}`}
@@ -784,7 +785,7 @@ const GroupItems = ({
                             </Select.Option>
                           ))}
                         </Select>
-                      </SelectWrapper>
+                      </SelectWrapper> */}
                       <SelectWrapper width="200px">
                         <Label>Difficulty</Label>
                         <Select
@@ -803,6 +804,9 @@ const GroupItems = ({
                             triggerNode.parentNode
                           }
                           disabled={currentGroupIndex !== index}
+                          defaultValue={
+                            selectsData.allAuthorDifficulty[0].value
+                          }
                         >
                           {selectsData.allAuthorDifficulty.map((el) => (
                             <Select.Option

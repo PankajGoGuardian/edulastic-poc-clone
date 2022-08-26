@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useRef } from 'react'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { Select } from 'antd'
@@ -29,6 +29,7 @@ const TeachersList = ({
   testsLoading,
   userId,
 }) => {
+  const teacherListRef = useRef()
   const teacherList = useMemo(() => combineNames(teacherListRaw), [
     teacherListRaw,
   ])
@@ -45,6 +46,7 @@ const TeachersList = ({
   }
 
   const handleSearch = debounce((value) => {
+    delete query.testIds
     delete query.teacherIds
     query.search.name = value
     loadTeacherList(query)
@@ -73,10 +75,14 @@ const TeachersList = ({
         showSearch
         placeholder="All Teacher(s)"
         value={assignedBy}
-        onChange={onChange}
+        onChange={(value) => {
+          teacherListRef.current.blur()
+          onChange(value)
+        }}
         onSearch={handleSearch}
         onFocus={() => {
-          if (!testsLoading) {
+          if (!testsLoading && !loading) {
+            query.search.name = ''
             loadTeacherList(query)
           }
         }}
@@ -87,6 +93,7 @@ const TeachersList = ({
         }
         loading={loading}
         margin="0px 0px 15px"
+        ref={teacherListRef}
       >
         <Select.Option key="" value="">
           All Teacher(s)

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useRef } from 'react'
 import { FieldLabel, SelectInputStyled } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { Select } from 'antd'
@@ -36,6 +36,7 @@ const TestNameList = ({
   userId,
   testIds,
 }) => {
+  const filterTestNameRef = useRef()
   const query = {
     limit: LIST_FETCH_LIMIT,
     page: 1,
@@ -49,6 +50,7 @@ const TestNameList = ({
   const handleSearch = debounce((value) => {
     if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
       query.search.searchString = value
+      delete query.search.testIds
       loadTestList(query)
     }
   }, 500)
@@ -83,11 +85,16 @@ const TestNameList = ({
         showSearch
         placeholder="All Tests"
         value={testId}
-        onChange={onChange}
+        onChange={(value) => {
+          filterTestNameRef.current.blur()
+          onChange(value)
+        }}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         onSearch={handleSearch}
         onFocus={() => {
-          if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
+          if (roleuser.DA_SA_ROLE_ARRAY.includes(userRole) && !loading) {
+            query.search.searchString = ''
+            query.search.testIds = testIds
             loadTestList(query)
           }
         }}
@@ -97,6 +104,7 @@ const TestNameList = ({
         }
         margin="0px 0px 15px"
         loading={loading}
+        ref={filterTestNameRef}
       >
         <Select.Option key={0} value="">
           All Tests

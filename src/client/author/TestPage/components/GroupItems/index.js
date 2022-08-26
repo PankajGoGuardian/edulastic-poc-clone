@@ -2,11 +2,12 @@ import { testItemsApi } from '@edulastic/api'
 import { EduButton, notification, RadioBtn, RadioGrp } from '@edulastic/common'
 import { test as testConstants } from '@edulastic/constants'
 import { IconInfo, IconPencilEdit } from '@edulastic/icons'
+import { lightRed2 } from '@edulastic/colors'
 import { faTrashAlt } from '@fortawesome/free-regular-svg-icons'
 import { faPlusCircle } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Collapse, Select, Tooltip, Spin } from 'antd'
-import { intersection, isEmpty, keyBy, maxBy, pick, uniq } from 'lodash'
+import { intersection, isEmpty, keyBy, maxBy, pick, uniq, omit } from 'lodash'
 import nanoid from 'nanoid'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
@@ -22,6 +23,7 @@ import {
   getAllTagsSelector,
   getStaticGroupItemIds,
   getTestEntitySelector,
+  NewGroup,
   NewGroupAutoselect,
   setTestDataAction,
   updateGroupDataAction,
@@ -142,15 +144,11 @@ const GroupItems = ({
         currentGroupDetails.type === ITEM_GROUP_TYPES.AUTOSELECT
           ? {
               ...currentGroupDetails,
-              type: ITEM_GROUP_TYPES.STATIC,
-              deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL,
-              items: [],
+              ...omit(NewGroup, ['index', 'groupName']),
             }
           : {
               ...currentGroupDetails,
-              type: ITEM_GROUP_TYPES.AUTOSELECT,
-              deliveryType: ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM,
-              items: [],
+              ...omit(NewGroupAutoselect, ['index', 'groupName']),
             }
     } else if (fieldName === 'deliverItemsCount') {
       if (value < 0) {
@@ -710,7 +708,9 @@ const GroupItems = ({
                   ) : (
                     <AutoSelectFields>
                       <SelectWrapper width="200px">
-                        <Label>Collection *</Label>
+                        <Label>
+                          Collection <span style={{ color: lightRed2 }}>*</span>
+                        </Label>
                         <Select
                           data-cy={`collection-${itemGroup.groupName}`}
                           size="default"
@@ -743,7 +743,9 @@ const GroupItems = ({
                         width="200px"
                         data-cy={`selectStd-${itemGroup.groupName}`}
                       >
-                        <Label>Standards *</Label>
+                        <Label>
+                          Standards <span style={{ color: lightRed2 }}>*</span>
+                        </Label>
                         <StandardsSelect
                           onChange={handleStandardsChange}
                           preventInput

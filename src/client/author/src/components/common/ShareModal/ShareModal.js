@@ -611,6 +611,7 @@ class ShareModal extends React.Component {
                     {sharedUsersList.map((data, index) => (
                       <SharedRow
                         data={data}
+                        key={index}
                         index={index}
                         getEmail={() => this.getEmail(data)}
                         getUserName={() => this.getUserName(data)}

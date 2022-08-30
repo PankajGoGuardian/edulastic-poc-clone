@@ -564,7 +564,7 @@ class Graph extends Component {
               </QuestionLabelWrapper>
 
               <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-                <QuestionTitleWrapper>
+                <QuestionTitleWrapper data-cy="questionTitle">
                   <StyledStimulus
                     data-cy="questionHeader"
                     dangerouslySetInnerHTML={{ __html: stimulus }}

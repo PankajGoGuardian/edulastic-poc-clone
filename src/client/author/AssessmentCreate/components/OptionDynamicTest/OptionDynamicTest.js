@@ -29,7 +29,7 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
   return (
     <CardComponent data-cy="smartBuild">
       <Tag style={{ backgroundColor: darkOrange1 }}>New</Tag>
-      <DynamicTestTitle>
+      <DynamicTestTitle data-testid="title">
         <span>Smart</span>Build
         <Tag
           style={{
@@ -45,7 +45,7 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
         </Tag>
       </DynamicTestTitle>
       <TitleWrapper>Create Section Test</TitleWrapper>
-      <TextWrapper>
+      <TextWrapper data-testid="description">
         Set your preferences and let the assessment assemble itself from the
         item bank.
       </TextWrapper>

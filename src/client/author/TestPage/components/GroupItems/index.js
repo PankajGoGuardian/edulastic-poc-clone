@@ -228,38 +228,37 @@ const GroupItems = ({
     setCurrentGroupDetails(updatedGroupData)
   }
 
-  // NOTE: temporarily disable type selection for sections (ref. EV-36498)
-  // const handleTypeSelect = (groupIndex) => {
-  //   let showModal = false
-  //   const {
-  //     type,
-  //     items,
-  //     collectionDetails,
-  //     standardDetails,
-  //     dok,
-  //     tags,
-  //     difficulty,
-  //   } = currentGroupDetails
+  const handleTypeSelect = (groupIndex) => {
+    let showModal = false
+    const {
+      type,
+      items,
+      collectionDetails,
+      standardDetails,
+      dok,
+      tags,
+      difficulty,
+    } = currentGroupDetails
 
-  //   if (type === ITEM_GROUP_TYPES.STATIC && items.length > 0) {
-  //     showModal = true
-  //   } else if (
-  //     type === ITEM_GROUP_TYPES.AUTOSELECT &&
-  //     (collectionDetails ||
-  //       standardDetails ||
-  //       dok ||
-  //       tags?.length ||
-  //       difficulty)
-  //   ) {
-  //     showModal = true
-  //   }
-  //   if (showModal) {
-  //     setConfirmModalCategory('TYPE')
-  //     setShowConfirmModal(true)
-  //     return setCurrentGroupIndex(groupIndex)
-  //   }
-  //   return handleChange('type', '')
-  // }
+    if (type === ITEM_GROUP_TYPES.STATIC && items.length > 0) {
+      showModal = true
+    } else if (
+      type === ITEM_GROUP_TYPES.AUTOSELECT &&
+      (collectionDetails ||
+        standardDetails ||
+        dok ||
+        tags?.length ||
+        difficulty)
+    ) {
+      showModal = true
+    }
+    if (showModal) {
+      setConfirmModalCategory('TYPE')
+      setShowConfirmModal(true)
+      return setCurrentGroupIndex(groupIndex)
+    }
+    return handleChange('type', '')
+  }
 
   const handleConfirmResponse = (value) => {
     if (value === 'YES') {
@@ -636,8 +635,7 @@ const GroupItems = ({
                 key={index + 1}
               >
                 <ContentBody data-cy={`group-${itemGroup.groupName}`}>
-                  {/* NOTE: temporarily disable type selection for sections (ref. EV-36498) */}
-                  {/* <GroupField>
+                  <GroupField>
                     <RadioGrp
                       name="radiogroup"
                       value={
@@ -648,33 +646,34 @@ const GroupItems = ({
                       onChange={() => handleTypeSelect(index)}
                       disabled={currentGroupIndex !== index}
                     >
-                      <RadioBtn
-                        data-cy={`autoSelect-${itemGroup.groupName}`}
-                        defaultChecked
-                        value={ITEM_GROUP_TYPES.AUTOSELECT}
+                      <Tooltip
+                        title={
+                          <span>
+                            Set the parameters for what you’d like to include in
+                            this section, and <b>SmartBuild</b> will find and
+                            add the items for you.
+                          </span>
+                        }
                       >
-                        <Tooltip
-                          title={
-                            <span>
-                              Set the parameters for what you’d like to include
-                              in this section, and <b>SmartBuild</b> will find
-                              and add the items for you.
-                            </span>
-                          }
+                        <RadioBtn
+                          data-cy={`autoSelect-${itemGroup.groupName}`}
+                          defaultChecked
+                          value={ITEM_GROUP_TYPES.AUTOSELECT}
                         >
                           AUTO SELECT ITEMS BASED ON STANDARDS
-                        </Tooltip>
-                      </RadioBtn>
-                      <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
+                        </RadioBtn>
+                      </Tooltip>
+                      {/* NOTE: temporarily hide radio button for manual-select items (ref. EV-36498) */}
+                      {/* <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
                         <RadioBtn
                           value={ITEM_GROUP_TYPES.STATIC}
                           data-cy={`static-${itemGroup.groupName}`}
                         >
                           MANUAL SELECT ITEMS FROM ITEM BANK
                         </RadioBtn>
-                      </Tooltip>
+                      </Tooltip> */}
                     </RadioGrp>
-                  </GroupField> */}
+                  </GroupField>
                   {(currentGroupIndex === index &&
                     currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC) ||
                   (currentGroupIndex !== index &&

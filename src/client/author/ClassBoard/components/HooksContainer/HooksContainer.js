@@ -142,7 +142,11 @@ const Shell = ({
     addActivity,
     addItem,
     submitActivity,
-    redirect: reloadLCB,
+    redirect: () => {
+      if (!isEG) {
+        reloadLCB()
+      }
+    },
     // "assignment:close": closeAssignment,
     assignment: reloadLCB,
     languagePreferenceSwitched,

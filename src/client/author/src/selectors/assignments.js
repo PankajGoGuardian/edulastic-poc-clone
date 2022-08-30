@@ -1,6 +1,7 @@
 import { createSelector } from 'reselect'
-import { groupBy, get as _get } from 'lodash'
+import { groupBy } from 'lodash'
 import { getUserRole } from './user'
+import { hasRandomQuestions } from '../../ClassBoard/utils'
 
 export const stateSelector = (state) => state.author_assignments
 
@@ -26,14 +27,9 @@ export const getAssignmentsSummary = createSelector(
   (state) => state.summaryEntities
 )
 
-export const getAssignmentTeacherList = createSelector(
-  stateSelector,
-  (state) => state.teacherList
-)
-
-export const getAssignmentTestList = createSelector(
-  stateSelector,
-  (state) => state.testsList
+export const getAdminTestIdsSelector = createSelector(
+  getAssignmentsSummary,
+  (state) => state?.map((item) => item.testId) || []
 )
 
 export const getAssignmentClassList = createSelector(
@@ -127,4 +123,9 @@ export const getSchoologyAssignmentSyncInProgress = createSelector(
 export const getTagsUpdatingStateSelector = createSelector(
   stateSelector,
   (state) => state.tagsUpdatingState
+)
+
+export const getHasRandomQuestionselector = createSelector(
+  getCurrentTestSelector,
+  (test) => hasRandomQuestions(test || {})
 )

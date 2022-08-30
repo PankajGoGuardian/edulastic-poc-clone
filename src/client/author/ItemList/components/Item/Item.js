@@ -17,7 +17,7 @@ import {
 import { get } from 'lodash'
 import { Row, Icon, Tooltip } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
-import { question, test as testContants, roleuser } from '@edulastic/constants'
+import { question, test as testConstants, roleuser } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import {
   MathFormulaDisplay,
@@ -97,7 +97,11 @@ import TestStatusWrapper from '../../../TestList/components/TestStatusWrapper/te
 import { WithToolTip } from './AddOrRemove'
 import { getAllRubricNames } from '../../../src/utils/util'
 
-const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testContants
+const {
+  ITEM_GROUP_TYPES,
+  ITEM_GROUP_DELIVERY_TYPES,
+  testCategoryTypes,
+} = testConstants
 
 // render single item
 class Item extends Component {
@@ -168,10 +172,24 @@ class Item extends Component {
   }
 
   handleStimulusClick = () => {
-    const { features, item, userId, history, openPreviewModal } = this.props
+    const {
+      features,
+      item,
+      userId,
+      history,
+      openPreviewModal,
+      test,
+    } = this.props
     const owner = item.authors && item.authors.some((x) => x._id === userId)
     // Author can only edit if owner
     if (features.isPublisherAuthor && owner) {
+      const isDynamicTest =
+        test?.testCategory === testCategoryTypes.DYNAMIC_TEST
+      if (isDynamicTest) {
+        return notification({
+          msg: 'Editing is disabled for test items in SmartBuild',
+        })
+      }
       return history.push(`/author/items/${item._id}/item-detail`)
     }
     openPreviewModal()
@@ -508,7 +526,7 @@ class Item extends Component {
       passageConfirmModalVisible,
       showSelectGroupModal,
     } = this.state
-    const isDynamicTest = test?.isDynamicTest
+    const isDynamicTest = test?.testCategory === testCategoryTypes.DYNAMIC_TEST
     const itemTypes = getQuestionType(item)
     const isPublisher = features.isCurator || features.isPublisherAuthor
     const staticGroups =
@@ -518,7 +536,7 @@ class Item extends Component {
         ? 'Selected'
         : test?.itemGroups?.find(
             (grp) => !!grp.items.find((i) => i._id === item._id)
-          )?.groupName || 'Group'
+          )?.groupName || 'Section'
     const hideAddRemove = userRole === roleuser.EDULASTIC_CURATOR
 
     const isDynamicItem = item.data?.questions?.some(

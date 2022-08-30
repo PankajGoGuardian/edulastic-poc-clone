@@ -171,7 +171,7 @@ const StandardsModal = ({
     })
 
   const footer = (
-    <FlexContainer>
+    <FlexContainer data-cy={`active-standaard-${visible}`}>
       <EduButton
         height="40px"
         data-cy="cancel-Stand-Set"
@@ -235,7 +235,7 @@ const StandardsModal = ({
       modalWidth="800px"
       top="50px"
     >
-      <Paper data-cy="standard-PopUp">
+      <Paper data-cy={`standard-PopUp-${visible}`}>
         <PopupRowSelect
           handleChangeStandard={handleChangeStandard}
           handleChangeGrades={handleChangeGrades}

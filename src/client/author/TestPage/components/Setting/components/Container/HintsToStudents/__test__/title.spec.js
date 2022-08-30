@@ -11,6 +11,19 @@ const defaultProps = {
   disabled: false,
 }
 
+jest.mock(
+  '../../../../../../../AssignTest/Components/Container/DollarPremiumSymbol',
+  () => ({
+    __esModule: true,
+    default: ({ premium }) => {
+      if (premium) {
+        return null
+      }
+      return <span data-testid="premium-dollar-symbol">Premium symbol</span>
+    },
+  })
+)
+
 describe('testing show hints to students title section', () => {
   test('title section should render', () => {
     render(<TitleSection {...defaultProps} />)

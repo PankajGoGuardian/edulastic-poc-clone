@@ -925,6 +925,7 @@ function* updatePlaylistSaga({ payload }) {
           'alignment',
           'assignments',
           'hasStandardsOnCreation',
+          'hasRandomQuestions',
         ])
       })
       return mod
@@ -1011,6 +1012,7 @@ function* publishPlaylistSaga({ payload }) {
           'alignment',
           'assignments',
           'hasStandardsOnCreation',
+          'hasRandomQuestions',
         ])
       )
       return mod

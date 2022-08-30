@@ -89,6 +89,7 @@ const Display = ({
             justifyContent="flex-start"
             alignItems="baseline"
             width="100%"
+            data-cy="questionTitle"
           >
             <StimulusContainer dangerouslySetInnerHTML={{ __html: stimulus }} />
           </FlexContainer>

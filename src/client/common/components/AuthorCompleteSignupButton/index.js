@@ -5,6 +5,7 @@ import { Spin } from 'antd'
 import loadable from '@loadable/component'
 import PropTypes from 'prop-types'
 import { roleuser, signUpState } from '@edulastic/constants'
+import { CustomModalStyled } from '@edulastic/common'
 import {
   getInterestedGradesSelector,
   getInterestedSubjectsSelector,
@@ -12,6 +13,7 @@ import {
   getUser,
   getUserOrgId,
 } from '../../../author/src/selectors/user'
+import SubjectGrade from '../../../student/Signup/components/TeacherContainer/SubjectGrade'
 
 const TeacherSignup = loadable(
   () => import('../../../student/Signup/components/TeacherContainer/Container'),
@@ -42,6 +44,7 @@ const AuthorCompleteSignupButton = ({
   const { currentSignUpState: signupStatus, orgData = {} } = user
   const { classList = [] } = orgData
   const [isSchoolModalVisible, setIsSchoolModalVisible] = useState(false)
+  const [isGradeModalVisible, setIsGradeModalVisible] = useState(false)
   const [didSchoolModalOpen, setDidSchoolModalOpen] = useState(false)
   const toggleSchoolModal = (value) => setIsSchoolModalVisible(value)
 
@@ -60,7 +63,11 @@ const AuthorCompleteSignupButton = ({
   const handleCanel = (value) => {
     setShowCompleteSignupModal(false)
     setCallFunctionAfterSignup(() => null)
-    toggleSchoolModal(value)
+    if (roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
+      setIsGradeModalVisible(value)
+    } else {
+      toggleSchoolModal(value)
+    }
     setDidSchoolModalOpen(value)
   }
 
@@ -76,7 +83,11 @@ const AuthorCompleteSignupButton = ({
   }, [signupStatus, orgSchools])
 
   useEffect(() => {
-    setIsSchoolModalVisible(isOpenSignupModal)
+    if (roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
+      setIsGradeModalVisible(isOpenSignupModal)
+    } else {
+      setIsSchoolModalVisible(isOpenSignupModal)
+    }
   }, [isOpenSignupModal])
 
   const handleClick = () => {
@@ -120,6 +131,22 @@ const AuthorCompleteSignupButton = ({
           didSchoolModalOpen={didSchoolModalOpen}
           allowCanvas={isCanvasUserSchoolNotSelected}
         />
+      )}
+      {isGradeModalVisible && (
+        <CustomModalStyled
+          title="What do you teach?"
+          visible={isGradeModalVisible}
+          footer={null}
+          width="900px"
+          onCancel={() => handleCanel(false)}
+          centered
+        >
+          <SubjectGrade
+            userInfo={user}
+            isModal
+            onSuccessCallback={() => handleCanel(false)}
+          />
+        </CustomModalStyled>
       )}
     </>
   )

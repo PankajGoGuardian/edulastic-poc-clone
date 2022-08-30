@@ -45,6 +45,7 @@ const allDepthOfKnowledge = [
   { value: 'Extended Thinking', text: 'Extended Thinking' },
 ]
 
+// First value is the default value.
 const allAuthorDifficulty = [
   { value: '', text: 'All Levels' },
   { value: 'Easy', text: 'Easy' },

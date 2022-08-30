@@ -1,6 +1,5 @@
 import React, { useMemo } from 'react'
 import { compose } from 'redux'
-import { toUpper } from 'lodash'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
 import { GoogleLogin } from 'react-google-login'
@@ -28,7 +27,6 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
 import { scopes } from './ClassCreatePage'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
-import { getAtlasSyncProviderName } from '../../../ClassBoard/utils'
 
 const Header = ({
   classGroups,
@@ -57,7 +55,7 @@ const Header = ({
   const atlasGroup = classGroups.find(
     (_group) =>
       _group.atlasProviderName &&
-      ['schoology', 'classlink', 'clever'].includes(
+      ['schoology', 'classlink'].includes(
         _group.atlasProviderName.toLowerCase()
       )
   )
@@ -255,7 +253,9 @@ const Header = ({
                 >
                   <span>
                     RESYNC{' '}
-                    {getAtlasSyncProviderName(atlasProviderName, toUpper)}{' '}
+                    {atlasProviderName.toLowerCase() === 'schoology'
+                      ? 'SCHOOLOGY'
+                      : 'CLASSLINK'}{' '}
                     CLASSES
                   </span>
                 </EduButton>

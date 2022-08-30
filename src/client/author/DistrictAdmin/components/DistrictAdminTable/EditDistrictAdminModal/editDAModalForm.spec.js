@@ -4,6 +4,8 @@ import { render, screen, fireEvent, cleanup } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { get } from 'lodash'
 import ManageDistrict from '@edulastic/localization/src/locales/manageDistrict/en'
+import configureMockStore from 'redux-mock-store'
+import { Provider } from 'react-redux'
 import EditDistrictAdminModalForm from './EditDistrictAdminModal'
 
 const newUser = {
@@ -21,6 +23,14 @@ const districtAdminData = {
 const t = (data) => {
   return get(ManageDistrict, data)
 }
+
+const mockStore = configureMockStore()
+const storeData = {
+  user: {
+    user: {},
+  },
+}
+const store = mockStore(storeData)
 
 const updateDistrictAdmin = jest.fn()
 
@@ -89,21 +99,25 @@ describe('#Testing the EditDistrictAdminModalForm', () => {
 
   it('> test EditDistrictAdminModalForm component renders without error', () => {
     render(
-      <EditDistrictAdminModalForm
-        modalVisible
-        t={t}
-        districtAdminData={districtAdminData}
-      />
+      <Provider store={store}>
+        <EditDistrictAdminModalForm
+          modalVisible
+          t={t}
+          districtAdminData={districtAdminData}
+        />
+      </Provider>
     )
   })
 
   it('> should display all elements with default user values - normal DA', () => {
     render(
-      <EditDistrictAdminModalForm
-        modalVisible
-        t={t}
-        districtAdminData={districtAdminData}
-      />
+      <Provider store={store}>
+        <EditDistrictAdminModalForm
+          modalVisible
+          t={t}
+          districtAdminData={districtAdminData}
+        />
+      </Provider>
     )
 
     const [
@@ -140,11 +154,13 @@ describe('#Testing the EditDistrictAdminModalForm', () => {
   it('> should display all elements with default user values - super Admin DA', () => {
     districtAdminData._source.permissions = ['super_admin']
     render(
-      <EditDistrictAdminModalForm
-        modalVisible
-        t={t}
-        districtAdminData={districtAdminData}
-      />
+      <Provider store={store}>
+        <EditDistrictAdminModalForm
+          modalVisible
+          t={t}
+          districtAdminData={districtAdminData}
+        />
+      </Provider>
     )
 
     const [
@@ -181,13 +197,15 @@ describe('#Testing the EditDistrictAdminModalForm', () => {
   it('> should update normal DA to super admin DA', async () => {
     districtAdminData._source.permissions = []
     render(
-      <EditDistrictAdminModalForm
-        modalVisible
-        t={t}
-        districtAdminData={districtAdminData}
-        closeModal={closeModal}
-        updateDistrictAdmin={updateDistrictAdmin}
-      />
+      <Provider store={store}>
+        <EditDistrictAdminModalForm
+          modalVisible
+          t={t}
+          districtAdminData={districtAdminData}
+          closeModal={closeModal}
+          updateDistrictAdmin={updateDistrictAdmin}
+        />
+      </Provider>
     )
 
     const [
@@ -229,13 +247,15 @@ describe('#Testing the EditDistrictAdminModalForm', () => {
   it('> should downgrade a super admin DA to normal DA', async () => {
     districtAdminData._source.permissions = ['super_admin']
     render(
-      <EditDistrictAdminModalForm
-        modalVisible
-        t={t}
-        districtAdminData={districtAdminData}
-        closeModal={closeModal}
-        updateDistrictAdmin={updateDistrictAdmin}
-      />
+      <Provider store={store}>
+        <EditDistrictAdminModalForm
+          modalVisible
+          t={t}
+          districtAdminData={districtAdminData}
+          closeModal={closeModal}
+          updateDistrictAdmin={updateDistrictAdmin}
+        />
+      </Provider>
     )
 
     const [

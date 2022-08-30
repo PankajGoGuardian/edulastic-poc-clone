@@ -486,7 +486,8 @@ export const MidRow = styled.div`
   }
 `
 export const Collection = styled.div`
-  width: ${({ isDynamic }) => (isDynamic ? '50%' : 'calc(100% - 70px)')};
+  width: ${({ isDynamicTest }) =>
+    isDynamicTest ? '50%' : 'calc(100% - 70px)'};
   padding: 0px 5px;
 `
 

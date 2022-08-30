@@ -228,37 +228,38 @@ const GroupItems = ({
     setCurrentGroupDetails(updatedGroupData)
   }
 
-  const handleTypeSelect = (groupIndex) => {
-    let showModal = false
-    const {
-      type,
-      items,
-      collectionDetails,
-      standardDetails,
-      dok,
-      tags,
-      difficulty,
-    } = currentGroupDetails
+  // NOTE: temporarily disable type selection for sections (ref. EV-36498)
+  // const handleTypeSelect = (groupIndex) => {
+  //   let showModal = false
+  //   const {
+  //     type,
+  //     items,
+  //     collectionDetails,
+  //     standardDetails,
+  //     dok,
+  //     tags,
+  //     difficulty,
+  //   } = currentGroupDetails
 
-    if (type === ITEM_GROUP_TYPES.STATIC && items.length > 0) {
-      showModal = true
-    } else if (
-      type === ITEM_GROUP_TYPES.AUTOSELECT &&
-      (collectionDetails ||
-        standardDetails ||
-        dok ||
-        tags?.length ||
-        difficulty)
-    ) {
-      showModal = true
-    }
-    if (showModal) {
-      setConfirmModalCategory('TYPE')
-      setShowConfirmModal(true)
-      return setCurrentGroupIndex(groupIndex)
-    }
-    return handleChange('type', '')
-  }
+  //   if (type === ITEM_GROUP_TYPES.STATIC && items.length > 0) {
+  //     showModal = true
+  //   } else if (
+  //     type === ITEM_GROUP_TYPES.AUTOSELECT &&
+  //     (collectionDetails ||
+  //       standardDetails ||
+  //       dok ||
+  //       tags?.length ||
+  //       difficulty)
+  //   ) {
+  //     showModal = true
+  //   }
+  //   if (showModal) {
+  //     setConfirmModalCategory('TYPE')
+  //     setShowConfirmModal(true)
+  //     return setCurrentGroupIndex(groupIndex)
+  //   }
+  //   return handleChange('type', '')
+  // }
 
   const handleConfirmResponse = (value) => {
     if (value === 'YES') {
@@ -635,7 +636,8 @@ const GroupItems = ({
                 key={index + 1}
               >
                 <ContentBody data-cy={`group-${itemGroup.groupName}`}>
-                  <GroupField>
+                  {/* NOTE: temporarily disable type selection for sections (ref. EV-36498) */}
+                  {/* <GroupField>
                     <RadioGrp
                       name="radiogroup"
                       value={
@@ -672,7 +674,7 @@ const GroupItems = ({
                         </RadioBtn>
                       </Tooltip>
                     </RadioGrp>
-                  </GroupField>
+                  </GroupField> */}
                   {(currentGroupIndex === index &&
                     currentGroupDetails.type === ITEM_GROUP_TYPES.STATIC) ||
                   (currentGroupIndex !== index &&

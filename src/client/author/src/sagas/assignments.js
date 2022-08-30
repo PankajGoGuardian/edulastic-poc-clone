@@ -99,25 +99,18 @@ function* receiveAssignmentsSummary({ payload = {} }) {
       })
       // handle zero assignments for current filter result
       if (entities) {
-        const {
-          result = [],
-          total = 0,
-          teachers = [],
-          testInfo = [],
-        } = entities
+        const { result = [], total = 0 } = entities
         yield put({
           type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
           payload: {
             entities: result,
             total,
-            teacherList: teachers,
-            testsList: testInfo,
           },
         })
       } else {
         yield put({
           type: RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS,
-          payload: { entities: [], total: 0, teacherList: [], testsList: [] },
+          payload: { entities: [], total: 0 },
         })
       }
     }

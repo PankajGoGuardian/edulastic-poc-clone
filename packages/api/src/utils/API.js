@@ -339,7 +339,7 @@ export default class API {
         if (data.response?.status === 500) {
           err = new Error(
             `Sorry, you have hit an unexpected error and the product team has been notified. We will fix it as soon as possible. url: ${reqUrl}: message: ${
-              data.response?.data?.message || 'NA'
+              data.response?.data?.message || data.message || 'NA'
             }`
           )
         } else {
@@ -349,6 +349,15 @@ export default class API {
         // make the response available so anyone can read it.
         err.status = data.response?.status
         err.response = data.response
+
+        // Add stack trace (from request) to this response
+        const originalStackTrace = data.config?.errorContext?.stack
+        if (originalStackTrace) {
+          err.stack = `${err.stack}\n${originalStackTrace.replace(
+            /^[^\n]+\n/,
+            ''
+          )}`
+        }
 
         if (
           err.status === 403 &&
@@ -441,6 +450,7 @@ export default class API {
   }
 
   callApi({ method = 'get', ...rest }) {
-    return this.instance({ method, ...rest })
+    const errorContext = new Error('Request made from: ')
+    return this.instance({ method, ...rest, errorContext })
   }
 }

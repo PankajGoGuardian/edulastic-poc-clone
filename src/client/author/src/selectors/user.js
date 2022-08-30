@@ -133,7 +133,7 @@ export const getPreviouslyUsedOrDefaultInterestsSelector = createSelector(
   getInterestedSubjectsSelector,
   getInterestedGradesSelector,
   getInterestedCurriculumsSelector,
-  getCurriculumsListSelector,
+  (s) => getCurriculumsListSelector(s),
   (
     previousInterests,
     interestedSubjects,

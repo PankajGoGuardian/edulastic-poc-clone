@@ -12,6 +12,7 @@ const defaultProps = {
   disabled: false,
   penaltyOnUsingHints: 0,
   updatePenaltyPoint: jest.fn(),
+  togglePenaltyOnUsingHints: jest.fn(),
 }
 
 jest.mock(

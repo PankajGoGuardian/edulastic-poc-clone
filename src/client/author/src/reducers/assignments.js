@@ -79,13 +79,11 @@ const reducer = (state = initialState, { type, payload }) => {
     case RECEIVE_ASSIGNMENTS_SUMMARY_REQUEST:
       return { ...state, loading: true, filtering: payload.filtering }
     case RECEIVE_ASSIGNMENTS_SUMMARY_SUCCESS: {
-      const { entities = [], total, teacherList, testsList } = payload
+      const { entities = [], total } = payload
       return {
         ...state,
         loading: false,
         summaryEntities: entities,
-        teacherList,
-        testsList,
         total,
         filtering: false,
       }

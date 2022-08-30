@@ -91,7 +91,7 @@ const Hints = ({
   if (showHintsToStudents === false) {
     return null
   }
-  const { id } = question
+  const { id, testItemId } = question
   const validHints = useMemo(() => {
     return (question?.hints || []).filter((hint) => hint?.label)
   }, [question])
@@ -225,7 +225,7 @@ const Hints = ({
   useEffect(() => {
     updateShowCount(0)
     setToggleHints(true)
-  }, [id])
+  }, [id, testItemId])
 
   if (
     question.type === 'passage' ||

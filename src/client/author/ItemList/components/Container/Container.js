@@ -186,9 +186,6 @@ class Contaier extends Component {
       receiveItems(updatedSearch, sort, 1, limit)
     } else {
       this.updateFilterState(search, sort)
-      if (search.filter === filterMenuItems[4].filter) {
-        search.filter = filterMenuItems[0].filter
-      }
       receiveItems(search, sort, 1, limit)
     }
     if (curriculums.length === 0) {

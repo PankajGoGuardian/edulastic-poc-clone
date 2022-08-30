@@ -382,6 +382,10 @@ function* receiveTestItemsSaga({
       searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     }
 
+    if (search?.filter === SMART_FILTERS.FOLDERS) {
+      search.filter = SMART_FILTERS.ENTIRE_LIBRARY
+    }
+
     const { items, count } = yield call(testItemsApi.getAll, {
       search: { ...search, tags: searchTags },
       sort,

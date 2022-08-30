@@ -187,9 +187,6 @@ class AddItems extends PureComponent {
       }
 
       this.updateFilterState(search, sort)
-      if (search.filter === filterMenuItems[4].filter) {
-        search.filter = filterMenuItems[0].filter
-      }
     }
     if (!curriculums.length) getCurriculums()
     getAllTags({ type: 'testitem' })

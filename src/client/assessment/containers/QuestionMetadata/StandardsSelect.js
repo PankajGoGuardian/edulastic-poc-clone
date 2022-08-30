@@ -71,6 +71,7 @@ function StandardsSelectButton(props) {
       }
       onDropdownVisibleChange={onDropdown}
       allowClear
+      maxTagCount={4}
       {...extraProps}
     >
       {allStandards.map((el) => (
@@ -231,6 +232,7 @@ function StandardsSelect(props) {
         curriculumStandardsLoading={curriculumStandardsLoading}
         singleSelect={mode !== 'multiple'}
         standardDetails={standardDetails}
+        enableSelectAll
       />
       <StandardsSelectButton
         mode={mode}

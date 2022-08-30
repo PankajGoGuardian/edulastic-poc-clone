@@ -646,31 +646,32 @@ const GroupItems = ({
                       onChange={() => handleTypeSelect(index)}
                       disabled={currentGroupIndex !== index}
                     >
-                      <RadioBtn
-                        data-cy={`autoSelect-${itemGroup.groupName}`}
-                        defaultChecked
-                        value={ITEM_GROUP_TYPES.AUTOSELECT}
+                      <Tooltip
+                        title={
+                          <span>
+                            Set the parameters for what you’d like to include in
+                            this section, and <b>SmartBuild</b> will find and
+                            add the items for you.
+                          </span>
+                        }
                       >
-                        <Tooltip
-                          title={
-                            <span>
-                              Set the parameters for what you’d like to include
-                              in this section, and <b>SmartBuild</b> will find
-                              and add the items for you.
-                            </span>
-                          }
+                        <RadioBtn
+                          data-cy={`autoSelect-${itemGroup.groupName}`}
+                          defaultChecked
+                          value={ITEM_GROUP_TYPES.AUTOSELECT}
                         >
                           AUTO SELECT ITEMS BASED ON STANDARDS
-                        </Tooltip>
-                      </RadioBtn>
-                      <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
+                        </RadioBtn>
+                      </Tooltip>
+                      {/* NOTE: temporarily hide radio button for manual-select items (ref. EV-36498) */}
+                      {/* <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
                         <RadioBtn
                           value={ITEM_GROUP_TYPES.STATIC}
                           data-cy={`static-${itemGroup.groupName}`}
                         >
                           MANUAL SELECT ITEMS FROM ITEM BANK
                         </RadioBtn>
-                      </Tooltip>
+                      </Tooltip> */}
                     </RadioGrp>
                   </GroupField>
                   {(currentGroupIndex === index &&
@@ -678,7 +679,9 @@ const GroupItems = ({
                   (currentGroupIndex !== index &&
                     itemGroup.type === ITEM_GROUP_TYPES.STATIC) ? (
                     <GroupField>
-                      <Label>Items *</Label>
+                      <Label>
+                        Items <span style={{ color: lightRed2 }}>*</span>
+                      </Label>
                       <QuestionTagsWrapper>
                         <QuestionTagsContainer
                           data-cy={`item-container-${itemGroup.groupName}`}

@@ -382,7 +382,7 @@ function* receiveTestItemsSaga({
       searchTags = tags.map((tag) => allTagsKeyById[tag]?.tagName || '')
     }
 
-    if (search?.filter === SMART_FILTERS.FOLDERS) {
+    if (search?.filter === SMART_FILTERS.FOLDERS && !search?.folderId) {
       search.filter = SMART_FILTERS.ENTIRE_LIBRARY
     }
 

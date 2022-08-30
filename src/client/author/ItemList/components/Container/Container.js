@@ -254,9 +254,7 @@ class Contaier extends Component {
       sort
     )
 
-    if (filterType !== 'folders') {
-      receiveItems({ ...updatedSearch, filter }, sort, 1, limit)
-    }
+    receiveItems({ ...updatedSearch, filter }, sort, 1, limit)
 
     history.push(`/author/items/filter/${filterType}`)
   }

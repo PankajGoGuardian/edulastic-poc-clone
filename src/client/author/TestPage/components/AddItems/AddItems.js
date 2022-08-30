@@ -243,9 +243,7 @@ class AddItems extends PureComponent {
       sortDir: 'desc',
     }
     this.updateFilterState(searchState, sort)
-    if (filterType !== 'folders') {
-      receiveTestItems(searchState, sort, 1, limit)
-    }
+    receiveTestItems(searchState, sort, 1, limit)
   }
 
   handleClearSearch = () => {

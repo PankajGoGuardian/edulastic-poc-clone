@@ -302,9 +302,7 @@ class MathInput extends React.PureComponent {
   handleChangeField = () => {
     const { onInput: saveAnswer } = this.props
     const { mathField } = this.state
-
-    const text = reformatMathInputLatex(mathField.latex())
-    saveAnswer(text.replace(/\\square/g, '\\square '))
+    saveAnswer(reformatMathInputLatex(mathField.latex()))
   }
 
   onInput = (key, command = 'cmd', numToMove) => {

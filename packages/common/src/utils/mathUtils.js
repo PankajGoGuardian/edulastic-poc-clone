@@ -268,3 +268,5 @@ export const reformatMathInputLatex = (latex) =>
     .replace(/\\deg /g, 'deg') // avoiding \deg keyword added with mathquill latex;
     .replace(/&gt;/g, '>')
     .replace(/&lt;/g, '<')
+    .replace(/N_A/g, ' N_A')
+    .replace(/K_B/g, ' K_B')

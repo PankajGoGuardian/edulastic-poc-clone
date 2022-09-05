@@ -10,7 +10,7 @@ import { roleuser } from '@edulastic/constants'
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Icon, Menu } from 'antd'
-import { get } from 'lodash'
+import { get, debounce } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'
@@ -75,6 +75,11 @@ import CreateSchoolAdminModal from './CreateSchoolAdminModal/CreateSchoolAdminMo
 import EditSchoolAdminModal from './EditSchoolAdminModal/EditSchoolAdminModal'
 import { StyledMaskButton, StyledSchoolAdminTable } from './styled'
 import styled from 'styled-components'
+import {
+  isSchoolSearchingSelector,
+  searchSchoolByDistrictRequestAction,
+  getSchoolsSelector as getSchoolsSelectorFromSignup,
+} from '../../../../student/Signup/duck'
 
 const menuActive = { mainMenu: 'Users', subMenu: 'School Admin' }
 
@@ -87,6 +92,7 @@ const filterStrDD = {
     ],
     placeholder: 'Select a value',
   },
+  school: { list: [], placeholder: 'Search and select a school' }, // Added to hide contains filter
 }
 
 class SchoolAdminTable extends Component {
@@ -112,6 +118,10 @@ class SchoolAdminTable extends Component {
       ],
       currentPage: 1,
       refineButtonActive: false,
+      schoolsState: {
+        list: [],
+        fetching: false,
+      },
     }
     this.filterTextInputRef = [
       React.createRef(),
@@ -127,12 +137,22 @@ class SchoolAdminTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps
-    return {
+    const { adminUsersData: result, isSchoolSearching, getSchools } = nextProps
+    const { schoolsState } = state
+    const newState = {
       selectedRowKeys: state.selectedRowKeys.filter(
         (rowKey) => !!result[rowKey]
       ),
     }
+    if (schoolsState?.fetching !== isSchoolSearching) {
+      Object.assign(newState, {
+        schoolsState: {
+          list: getSchools,
+          fetching: isSchoolSearching,
+        },
+      })
+    }
+    return newState
   }
 
   onEditSchoolAdmin = (id) => {
@@ -324,17 +344,27 @@ class SchoolAdminTable extends Component {
     )
   }
 
-  changeFilterText = (e, key) => {
+  changeFilterText = (e, key, callApi) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
+      const val = e?.target ? e.target?.value : e?.key
+      const updatedFilterData = {
+        ...item,
+        filterStr: val,
+      }
+      if (callApi) {
+        Object.assign(updatedFilterData, {
+          filterAdded: val !== '',
+        })
+      }
       if (index === key) {
-        return {
-          ...item,
-          filterStr: e.target.value,
-        }
+        return updatedFilterData
       }
       return item
     })
-    this.setState({ filtersData: _filtersData })
+    this.setState(
+      { filtersData: _filtersData },
+      callApi ? this.loadFilteredList : null
+    )
   }
 
   changeFilterColumn = (value, key) => {
@@ -344,7 +374,7 @@ class SchoolAdminTable extends Component {
           ...item,
           filtersColumn: value,
         }
-        if (value === 'status') _item.filtersValue = 'eq'
+        if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
         return _item
       }
       return item
@@ -407,19 +437,31 @@ class SchoolAdminTable extends Component {
     const { userOrgId } = this.props
     const { filtersData, searchByName, currentPage } = this.state
     let { showActive } = this.state
-
+    let institutionId = ''
     const search = {}
     for (const [index, item] of filtersData.entries()) {
-      const { filtersColumn, filtersValue, filterStr } = item
-      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
-        if (filtersColumn === 'status') {
-          showActive = filterStr
-          continue
+      if (item?.filtersColumn === 'school') {
+        if (
+          institutionId &&
+          item?.filterStr &&
+          institutionId.indexOf('item?.filterStr') < 0
+        ) {
+          institutionId = `${institutionId},${item?.filterStr}`
+        } else if(item?.filterStr){
+          institutionId = item?.filterStr
         }
-        if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
-        } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr })
+      } else {
+        const { filtersColumn, filtersValue, filterStr } = item
+        if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+          if (filtersColumn === 'status') {
+            showActive = filterStr
+            continue
+          }
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
+          } else {
+            search[filtersColumn].push({ type: filtersValue, value: filterStr })
+          }
         }
       }
     }
@@ -430,6 +472,7 @@ class SchoolAdminTable extends Component {
     const queryObj = {
       search,
       districtId: userOrgId,
+      institutionId,
       role: 'school-admin',
       limit: 25,
       page: currentPage,
@@ -450,6 +493,18 @@ class SchoolAdminTable extends Component {
     const { loadAdminData } = this.props
     loadAdminData(this.getSearchQuery())
   }
+
+  fetchSchool = debounce((value) => {
+    const { userOrgId: districtId, getSchoolsWithinDistrict } = this.props
+    getSchoolsWithinDistrict({
+      districtId,
+      limit: 25,
+      page: 1,
+      sortField: 'name',
+      order: 'asc',
+      search: { name: [{ type: 'cont', value }] },
+    })
+  }, 500)
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -601,6 +656,7 @@ class SchoolAdminTable extends Component {
       },
     ]
     const firstColData = [
+      t('users.teacher.school'),
       t('users.schooladmin.username'),
       t('users.schooladmin.email'),
       t('users.schooladmin.status'),
@@ -679,6 +735,8 @@ class SchoolAdminTable extends Component {
           handleAddFilter={this.addFilter}
           handleRemoveFilter={this.removeFilter}
           firstColData={firstColData}
+          schoolsState={this.state.schoolsState}
+          fetchSchool={this.fetchSchool}
         />
         <TableContainer>
           <StyledSchoolAdminTable
@@ -762,6 +820,8 @@ const enhance = compose(
       filters: getFiltersSelector(state),
       isProxyUser: isProxyUserSelector(state),
       isSuperAdmin: isSuperAdminSelector(state),
+      isSchoolSearching: isSchoolSearchingSelector(state),
+      getSchools: getSchoolsSelectorFromSignup(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -784,6 +844,7 @@ const enhance = compose(
       removeFilter: removeFilterAction,
       setRole: setRoleAction,
       updatePowerTeacher: updatePowerTeacherAction,
+      getSchoolsWithinDistrict: searchSchoolByDistrictRequestAction,
     }
   )
 )

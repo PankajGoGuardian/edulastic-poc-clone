@@ -116,6 +116,16 @@ export const signupGeneralSettingsSelector = createSelector(
   (subState) => subState
 )
 
+export const isSchoolSearchingSelector = createSelector(
+  ['signup'],
+  (state) => state.isSearching
+)
+
+export const getSchoolsSelector = createSelector(
+  ['signup'],
+  (state) => state.schools
+)
+
 // Actions
 export const searchSchoolRequestAction = createAction(SEARCH_SCHOOL_REQUEST)
 export const searchSchoolSuccessAction = createAction(SEARCH_SCHOOL_SUCCESS)

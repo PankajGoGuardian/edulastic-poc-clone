@@ -9,7 +9,7 @@ import { SearchInputStyled } from '@edulastic/common/src/components/InputStyles'
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Icon, Menu } from 'antd'
-import { get, identity, isEmpty, pickBy, unset } from 'lodash'
+import { get, identity, isEmpty, pickBy, unset, debounce } from 'lodash'
 import * as moment from 'moment'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'
@@ -38,6 +38,11 @@ import {
   getUserFeatures,
   isProxyUser as isProxyUserSelector,
 } from '../../../../student/Login/ducks'
+import {
+  getSchoolsSelector,
+  isSchoolSearchingSelector,
+  searchSchoolByDistrictRequestAction,
+} from '../../../../student/Signup/duck'
 import { proxyUser } from '../../../authUtils'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
@@ -100,6 +105,7 @@ const filterStrDD = {
     ],
     placeholder: 'Select a value',
   },
+  school: { list: [], placeholder: 'Search and select a school' }, // Added to hide contains filter
 }
 
 class StudentTable extends Component {
@@ -126,6 +132,10 @@ class StudentTable extends Component {
         },
       ],
       refineButtonActive: false,
+      schoolsState: {
+        list: [],
+        fetching: false,
+      },
     }
     const { t, isProxyUser } = this.props
     this.columns = [
@@ -259,12 +269,22 @@ class StudentTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps
-    return {
+    const { adminUsersData: result, isSchoolSearching, getSchools } = nextProps
+    const { schoolsState } = state
+    const newState = {
       selectedRowKeys: state.selectedRowKeys.filter(
         (rowKey) => !!result[rowKey]
       ),
     }
+    if (schoolsState?.fetching != isSchoolSearching) {
+      Object.assign(newState, {
+        schoolsState: {
+          list: getSchools,
+          fetching: isSchoolSearching,
+        },
+      })
+    }
+    return newState
   }
 
   onProxyStudent = (id) => {
@@ -521,17 +541,27 @@ class StudentTable extends Component {
     )
   }
 
-  changeFilterText = (e, key) => {
+  changeFilterText = (e, key, callApi) => {
     const _filtersData = this.state.filtersData.map((item, index) => {
+      const val = e?.target ? e.target?.value : e?.key
+      const updatedFilterData = {
+        ...item,
+        filterStr: val,
+      }
+      if (callApi) {
+        Object.assign(updatedFilterData, {
+          filterAdded: val !== '',
+        })
+      }
       if (index === key) {
-        return {
-          ...item,
-          filterStr: e.target.value,
-        }
+        return updatedFilterData
       }
       return item
     })
-    this.setState({ filtersData: _filtersData })
+    this.setState(
+      { filtersData: _filtersData },
+      callApi ? this.loadFilteredList : null
+    )
   }
 
   changeFilterColumn = (value, key) => {
@@ -541,7 +571,7 @@ class StudentTable extends Component {
           ...item,
           filtersColumn: value,
         }
-        if (value === 'status') _item.filtersValue = 'eq'
+        if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
         return _item
       }
       return item
@@ -604,9 +634,20 @@ class StudentTable extends Component {
     const { userOrgId, location = {} } = this.props
     const { filtersData, searchByName, currentPage } = this.state
     let { showActive } = this.state
-
+    let institutionId = ''
     const search = {}
     for (const [index, item] of filtersData.entries()) {
+      if(item?.filtersColumn === 'school'){
+        if (
+          institutionId &&
+          item?.filterStr &&
+          institutionId.indexOf('item?.filterStr') < 0
+        ) {
+          institutionId = `${institutionId},${item?.filterStr}`
+        } else if(item?.filterStr){
+          institutionId = item?.filterStr
+        }
+      } else {
       const { filtersColumn, filtersValue, filterStr } = item
       if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
         if (filtersColumn === 'status') {
@@ -620,6 +661,7 @@ class StudentTable extends Component {
         }
       }
     }
+    }
 
     if (searchByName) {
       search.name = searchByName
@@ -627,6 +669,7 @@ class StudentTable extends Component {
     const queryObj = {
       search,
       districtId: userOrgId,
+      institutionId,
       role: 'student',
       limit: 25,
       page: currentPage,
@@ -655,6 +698,18 @@ class StudentTable extends Component {
   setPageNo = (page) => {
     this.setState({ currentPage: page }, this.loadFilteredList)
   }
+
+  fetchSchool = debounce((value) => {
+    const { userOrgId: districtId, getSchoolsWithinDistrict } = this.props
+    getSchoolsWithinDistrict({
+      districtId,
+      limit: 25,
+      page: 1,
+      sortField: 'name',
+      order: 'asc',
+      search: { name: [{ type: 'cont', value }] },
+    })
+  }, 500)
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -724,6 +779,7 @@ class StudentTable extends Component {
     ]
 
     const firstColData = [
+      t('users.teacher.school'),
       t('users.student.username'),
       t('users.student.email'),
       t('users.student.status'),
@@ -801,6 +857,8 @@ class StudentTable extends Component {
           handleAddFilter={this.addFilter}
           handleRemoveFilter={this.removeFilter}
           firstColData={firstColData}
+          schoolsState={this.state.schoolsState}
+          fetchSchool={this.fetchSchool}
         />
         <TableContainer>
           <StyledStudentTable
@@ -935,6 +993,8 @@ const enhance = compose(
       schoolId: get(state, 'user.saSettingsSchool'),
       role: getUserRole(state),
       isProxyUser: isProxyUserSelector(state),
+      isSchoolSearching: isSchoolSearchingSelector(state),
+      getSchools: getSchoolsSelector(state),
     }),
     {
       loadSchoolsData: receiveSchoolsAction,
@@ -966,6 +1026,7 @@ const enhance = compose(
       resetClassDetails: resetFetchedClassDetailsAction,
       loadSchoolPolicy: receiveSchoolPolicyAction,
       loadDistrictPolicy: receiveDistrictPolicyAction,
+      getSchoolsWithinDistrict: searchSchoolByDistrictRequestAction,
     }
   )
 )

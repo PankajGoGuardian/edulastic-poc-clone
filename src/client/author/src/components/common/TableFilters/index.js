@@ -4,7 +4,7 @@ import {
   SearchInputStyled,
   SelectInputStyled,
 } from '@edulastic/common'
-import { Select } from 'antd'
+import { Select, Spin } from 'antd'
 import React from 'react'
 import { withNamespaces } from 'react-i18next'
 import { compose } from 'redux'
@@ -31,6 +31,11 @@ const TableFiltersView = ({
   handleStatusValue = () => {},
   handleAddFilter = () => {},
   handleRemoveFilter = () => {},
+  schoolsState = {
+    list: [],
+    fetching: false,
+  },
+  fetchSchool = () => {},
 }) => {
   return (
     <FilterWrapper showFilters={showFilters}>
@@ -51,12 +56,18 @@ const TableFiltersView = ({
                 onChange={(e) => handleFilterColumn(e, i)}
                 value={filtersColumn || undefined}
                 height="32px"
+                data-testid={'filter_col'}
               >
                 <Option value="other" disabled>
                   {t('common.selectcolumn')}
                 </Option>
                 {firstColData.map((x) => (
-                  <Option value={x.toLowerCase()}>{x}</Option>
+                  <Option
+                    value={x.toLowerCase()}
+                    data-testid={`filter_col_${x.toLowerCase()}`}
+                  >
+                    {x}
+                  </Option>
                 ))}
               </SelectInputStyled>
             </StyledCol>
@@ -88,6 +99,24 @@ const TableFiltersView = ({
                   ref={filterRef[i]}
                   height="32px"
                 />
+              ) : filtersColumn === 'school' ? (
+                <SelectInputStyled
+                  showSearch
+                  labelInValue
+                  placeholder={filterStrDD[filtersColumn].placeholder}
+                  notFoundContent={
+                    schoolsState.fetching ? <Spin size="small" /> : null
+                  }
+                  filterOption={false}
+                  onSearch={(e) => (e.length > 2 ? fetchSchool(e) : '')}
+                  onChange={(e) => handleFilterText(e, i, true)}
+                >
+                  {schoolsState.list.map((school) => (
+                    <Option key={school.schoolId} value={school.schoolId}>
+                      {school.schoolName}
+                    </Option>
+                  ))}
+                </SelectInputStyled>
               ) : (
                 <SelectInputStyled
                   placeholder={filterStrDD[filtersColumn].placeholder}

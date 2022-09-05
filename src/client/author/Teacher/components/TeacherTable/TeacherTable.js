@@ -9,7 +9,7 @@ import {
 import { IconFilter, IconPencilEdit, IconTrash } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import { Icon, Menu } from 'antd'
-import { get, isEmpty } from 'lodash'
+import { get, isEmpty, debounce } from 'lodash'
 import React, { Component } from 'react'
 import { GiDominoMask } from 'react-icons/gi'
 import { connect } from 'react-redux'
@@ -35,6 +35,11 @@ import {
   isProxyUser as isProxyUserSelector,
   updatePowerTeacherAction,
 } from '../../../../student/Login/ducks'
+import {
+  getSchoolsSelector,
+  isSchoolSearchingSelector,
+  searchSchoolByDistrictRequestAction,
+} from '../../../../student/Signup/duck'
 import { proxyUser } from '../../../authUtils'
 import { MergeTeachersModal } from '../../../MergeUsers'
 import {
@@ -81,6 +86,7 @@ const filterStrDD = {
     ],
     placeholder: 'Select a value',
   },
+  school: { list: [], placeholder: 'Search and select a school' }, // Added to hide contains filter
 }
 
 class TeacherTable extends Component {
@@ -107,6 +113,10 @@ class TeacherTable extends Component {
       ],
       currentPage: 1,
       refineButtonActive: false,
+      schoolsState: {
+        list: [],
+        fetching: false,
+      },
     }
     const { t, isProxyUser } = this.props
     this.columns = [
@@ -237,12 +247,23 @@ class TeacherTable extends Component {
   }
 
   static getDerivedStateFromProps(nextProps, state) {
-    const { adminUsersData: result } = nextProps
-    return {
+    const { adminUsersData: result, isSchoolSearching, getSchools } = nextProps
+    const { schoolsState } = state
+    const newState = {
       selectedRowKeys: state.selectedRowKeys.filter(
         (rowKey) => !!result[rowKey]
       ),
     }
+    if (schoolsState?.fetching != isSchoolSearching) {
+      Object.assign(newState, {
+        schoolsState: {
+          list: getSchools,
+          fetching: isSchoolSearching,
+        },
+        isSchoolSearchInProgress: isSchoolSearching,
+      })
+    }
+    return newState
   }
 
   onProxyTeacher = (id) => {
@@ -475,18 +496,27 @@ class TeacherTable extends Component {
     )
   }
 
-  changeFilterText = (e, key) => {
-    const { filtersData } = this.state
-    const _filtersData = filtersData.map((item, index) => {
+  changeFilterText = (e, key, callApi) => {
+    const _filtersData = this.state.filtersData.map((item, index) => {
+      const val = e?.target ? e.target?.value : e?.key
+      const updatedFilterData = {
+        ...item,
+        filterStr: val,
+      }
+      if (callApi) {
+        Object.assign(updatedFilterData, {
+          filterAdded: val !== '',
+        })
+      }
       if (index === key) {
-        return {
-          ...item,
-          filterStr: e.target.value,
-        }
+        return updatedFilterData
       }
       return item
     })
-    this.setState({ filtersData: _filtersData })
+    this.setState(
+      { filtersData: _filtersData },
+      callApi ? this.loadFilteredList : null
+    )
   }
 
   changeFilterColumn = (value, key) => {
@@ -497,7 +527,7 @@ class TeacherTable extends Component {
           ...item,
           filtersColumn: value,
         }
-        if (value === 'status') _item.filtersValue = 'eq'
+        if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
         return _item
       }
       return item
@@ -561,18 +591,31 @@ class TeacherTable extends Component {
     const { userOrgId, location = {} } = this.props
     const { filtersData, searchByName, currentPage } = this.state
     let { showActive } = this.state
+    let institutionId = location.institutionId ? location.institutionId : ''
     const search = {}
     for (const [, item] of filtersData.entries()) {
-      const { filtersColumn, filtersValue, filterStr } = item
-      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
-        if (filtersColumn === 'status') {
-          showActive = filterStr
-          continue
+      if (item?.filtersColumn === 'school') {
+        if (
+          institutionId &&
+          item?.filterStr &&
+          institutionId.indexOf('item?.filterStr') < 0
+        ) {
+          institutionId = `${institutionId},${item?.filterStr}`
+        } else if (item?.filterStr) {
+          institutionId = item?.filterStr
         }
-        if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
-        } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr })
+      } else {
+        const { filtersColumn, filtersValue, filterStr } = item
+        if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+          if (filtersColumn === 'status') {
+            showActive = filterStr
+            continue
+          }
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
+          } else {
+            search[filtersColumn].push({ type: filtersValue, value: filterStr })
+          }
         }
       }
     }
@@ -587,7 +630,7 @@ class TeacherTable extends Component {
       role: 'teacher',
       page: currentPage,
       limit: 25,
-      institutionId: location.institutionId || '',
+      institutionId,
       // uncomment after elastic search is fixed
       // sortField,
       // order
@@ -610,6 +653,18 @@ class TeacherTable extends Component {
     const { setTeachersDetailsModalVisible } = this.props
     setTeachersDetailsModalVisible(false)
   }
+
+  fetchSchool = debounce((value) => {
+    const { userOrgId: districtId, getSchoolsWithinDistrict } = this.props
+    getSchoolsWithinDistrict({
+      districtId,
+      limit: 25,
+      page: 1,
+      sortField: 'name',
+      order: 'asc',
+      search: { name: [{ type: 'cont', value }] },
+    })
+  }, 500)
 
   // -----|-----|-----|-----| FILTER RELATED ENDED |-----|-----|-----|----- //
 
@@ -673,6 +728,7 @@ class TeacherTable extends Component {
     ]
 
     const firstColData = [
+      t('users.teacher.school'),
       t('users.student.username'),
       t('users.student.email'),
       t('users.student.status'),
@@ -749,6 +805,8 @@ class TeacherTable extends Component {
           handleAddFilter={this.addFilter}
           handleRemoveFilter={this.removeFilter}
           firstColData={firstColData}
+          schoolsState={this.state.schoolsState}
+          fetchSchool={this.fetchSchool}
         />
         <TableContainer>
           <StyledTeacherTable
@@ -859,6 +917,8 @@ const enhance = compose(
         false
       ),
       isProxyUser: isProxyUserSelector(state),
+      isSchoolSearching: isSchoolSearchingSelector(state),
+      getSchools: getSchoolsSelector(state),
     }),
     {
       createAdminUser: createAdminUserAction,
@@ -882,6 +942,7 @@ const enhance = compose(
       removeFilter: removeFilterAction,
       setRole: setRoleAction,
       updatePowerTeacher: updatePowerTeacherAction,
+      getSchoolsWithinDistrict: searchSchoolByDistrictRequestAction,
     }
   )
 )

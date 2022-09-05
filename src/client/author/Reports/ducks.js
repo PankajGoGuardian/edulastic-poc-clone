@@ -220,8 +220,6 @@ const RECEIVE_TEST_LIST_REQUEST_ERROR =
   '[reports] receive test list request request error'
 
 const FETCH_UPDATE_TAGS_DATA = '[reports] fetch & update tagsData'
-const ADMIN_ASSIGNMENTS_TEST_LIST_LOADING =
-  '[reports] set test list loading status'
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
@@ -239,9 +237,6 @@ export const setHasCsvDocsAction = createAction(SET_HAS_CSV_DOCS)
 export const updateCsvDocsAction = createAction(UPDATE_CSV_DOCS)
 
 export const fetchUpdateTagsDataAction = createAction(FETCH_UPDATE_TAGS_DATA)
-export const setTestListLoadingAction = createAction(
-  ADMIN_ASSIGNMENTS_TEST_LIST_LOADING
-)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -355,9 +350,6 @@ const reports = createReducer(initialState, {
   [UPDATE_CSV_DOCS_ERROR]: (state, { payload }) => {
     state.error = payload.error
     state.csvDocsLoading = false
-  },
-  [ADMIN_ASSIGNMENTS_TEST_LIST_LOADING]: (state, { payload }) => {
-    state.testListLoading = payload
   },
 })
 

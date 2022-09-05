@@ -60,12 +60,7 @@ const ActionMenu = ({
   const shouldSendAssignmentId =
     testTypesConstants.TEST_TYPES.COMMON.includes(assignmentTest?.testType) ||
     !assignmentTest?.authors?.find((a) => a._id === userId)
-  const assignedByIds =
-    userRole === roleuser.TEACHER
-      ? row?.assignedBy?.map((item) => item._id)
-      : row?.assignedBy
-
-  const isAssignmentOwner = assignedByIds?.includes(userId)
+  const isAssignmentOwner = row?.assignedBy?.some(({ _id }) => _id === userId)
 
   const handleShowPreview = () => {
     if (

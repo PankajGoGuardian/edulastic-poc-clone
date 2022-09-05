@@ -1204,7 +1204,7 @@ function* updateScoreAndValidationSaga({ payload }) {
       yield put(setItemLevelScoreFromRubricAction(true))
     }
     yield put({
-      type: UPDATE_QUESTION_REQUEST,
+      type: UPDATE_QUESTION,
       payload: newQuestion,
     })
   }

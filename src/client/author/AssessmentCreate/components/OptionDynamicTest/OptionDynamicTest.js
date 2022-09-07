@@ -1,9 +1,9 @@
-import React from 'react'
-import { Link, withRouter } from 'react-router-dom'
+import React, { useState } from 'react'
+import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 
 import { segmentApi } from '@edulastic/api'
-import { EduButton } from '@edulastic/common'
+import { EduButton, CustomModalStyled } from '@edulastic/common'
 import { darkOrange1, themeColorBlue } from '@edulastic/colors'
 
 import CardComponent from '../../../AssignmentCreate/common/CardComponent'
@@ -17,6 +17,7 @@ import {
 } from '../../../TestPage/ducks'
 
 const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
+  const [modalState, setModalState] = useState(false)
   const handleCreate = () => {
     clearTestData()
     clearCreatedItems()
@@ -25,6 +26,14 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
       pathname: '/author/tests/create',
       state: { isDynamicTest: true },
     })
+  }
+
+  const openModal = () => {
+    setModalState(true)
+  }
+
+  const closeModal = () => {
+    setModalState(false)
   }
   return (
     <CardComponent data-cy="smartBuild">
@@ -58,14 +67,31 @@ const OptionDynamicTest = ({ history, clearTestData, clearCreatedItems }) => {
         CREATE TEST
       </EduButton>
       <Footer>
-        <Link
-          to={{
-            pathname: 'https://swvideo.wistia.com/medias/na92pypvxo',
-          }}
-          target="_blank"
+        <div
+          style={{ position: 'relative', width: '100%', cursor: 'pointer' }}
+          onClick={openModal}
         >
           WATCH QUICK TOUR
-        </Link>
+        </div>
+        <CustomModalStyled
+          visible={modalState}
+          onCancel={closeModal}
+          title="Get Started with SmartBuild"
+          footer={null}
+          destroyOnClose
+          width="768px"
+        >
+          <iframe
+            title="SmartBuild"
+            width="100%"
+            height="400px"
+            src="//fast.wistia.net/embed/iframe/na92pypvxo"
+            allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+            frameBorder="0"
+            allowFullScreen
+            scrolling="no"
+          />
+        </CustomModalStyled>
       </Footer>
     </CardComponent>
   )

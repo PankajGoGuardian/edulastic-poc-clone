@@ -1,5 +1,5 @@
 import '@testing-library/jest-dom'
-import { screen, render } from '@testing-library/react'
+import { screen, render, fireEvent, waitFor } from '@testing-library/react'
 import { createMemoryHistory } from 'history'
 import configureMockStore from 'redux-mock-store'
 import React from 'react'
@@ -32,13 +32,31 @@ const history = createMemoryHistory()
 const mockStore = configureMockStore()
 const store = mockStore({})
 
-test('OptionDynamicTest', () => {
-  render(
-    <Router history={history}>
-      <Provider store={store}>
-        <OptionDynamicTest />
-      </Provider>
-    </Router>
-  )
-  OptionDynamicTestVisibility()
+describe('OptionDynamicTest', () => {
+  test('Check visibility of DynamicTest Card', () => {
+    render(
+      <Router history={history}>
+        <Provider store={store}>
+          <OptionDynamicTest />
+        </Provider>
+      </Router>
+    )
+    OptionDynamicTestVisibility()
+  })
+
+  test('Open modal for quick watch tour', async () => {
+    render(
+      <Router history={history}>
+        <Provider store={store}>
+          <OptionDynamicTest />
+        </Provider>
+      </Router>
+    )
+    fireEvent.click(screen.getByText('WATCH QUICK TOUR'))
+    await waitFor(() =>
+      expect(
+        screen.getByText('Get Started with SmartBuild')
+      ).toBeInTheDocument()
+    )
+  })
 })

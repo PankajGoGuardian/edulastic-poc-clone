@@ -32,6 +32,7 @@ import {
 import { AssignmentEmbedLink } from '../assignmentEmbedLink'
 import PrivacyPolicyModal from '../privacyPolicy'
 import FeaturesSwitch from '../features/components/FeaturesSwitch'
+import WholeChildReportContainer from './WholeChildReportContainer'
 
 const StudentApp = ({
   match,
@@ -94,6 +95,10 @@ const StudentApp = ({
                 <Route
                   path={`${match.url}/skill-mastery`}
                   component={SkillReportContainer}
+                />
+                <Route
+                  path={`${match.url}/whole-child`}
+                  component={WholeChildReportContainer}
                 />
                 <Route path={`${match.url}/manage`} component={ManageClass} />
                 <Route path={`${match.url}/profile`} component={Profile} />

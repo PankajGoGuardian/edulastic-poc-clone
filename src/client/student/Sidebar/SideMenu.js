@@ -60,6 +60,11 @@ const menuItems = [
     path: 'home/skill-mastery',
   },
   {
+    label: 'Whole Child Report',
+    icon: IconBarChart,
+    path: 'home/whole-child',
+  },
+  {
     label: 'My Classes',
     icon: IconManage,
     path: 'home/manage',
@@ -287,6 +292,12 @@ class SideMenu extends Component {
                     isSidebarCollapsed
                   )
                   if (menu?.label === 'Playlist' && !features?.playlist) {
+                    return null
+                  }
+                  if (
+                    role === 'student' &&
+                    menu.label === 'Whole Child Report'
+                  ) {
                     return null
                   }
                   return (

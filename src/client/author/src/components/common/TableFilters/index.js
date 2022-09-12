@@ -56,7 +56,7 @@ const TableFiltersView = ({
                 onChange={(e) => handleFilterColumn(e, i)}
                 value={filtersColumn || undefined}
                 height="32px"
-                data-testid={'filter_col'}
+                data-testid="filter_col"
               >
                 <Option value="other" disabled>
                   {t('common.selectcolumn')}
@@ -102,14 +102,14 @@ const TableFiltersView = ({
               ) : filtersColumn === 'school' ? (
                 <SelectInputStyled
                   showSearch
-                  labelInValue
+                  value={filterStr !== '' ? filterStr : undefined}
                   placeholder={filterStrDD[filtersColumn].placeholder}
                   notFoundContent={
                     schoolsState.fetching ? <Spin size="small" /> : null
                   }
                   filterOption={false}
                   onSearch={(e) => (e.length > 2 ? fetchSchool(e) : '')}
-                  onChange={(e) => handleFilterText(e, i, true)}
+                  onSelect={(v, event) => handleFilterText(event, i, true)}
                 >
                   {schoolsState.list.map((school) => (
                     <Option key={school.schoolId} value={school.schoolId}>

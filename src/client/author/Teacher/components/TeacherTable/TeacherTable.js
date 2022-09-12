@@ -525,6 +525,7 @@ class TeacherTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
+          filterStr: "",
           filtersColumn: value,
         }
         if (value === 'status' || value === 'school') _item.filtersValue = 'eq'

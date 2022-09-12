@@ -396,6 +396,7 @@ class DistrictAdminTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
+          filterStr: "",
           filtersColumn: value,
         }
         if (value === 'status') _item.filtersValue = 'eq'

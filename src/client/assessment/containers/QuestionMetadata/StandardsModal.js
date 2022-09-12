@@ -189,7 +189,7 @@ const StandardsModal = ({
   }
 
   const footer = (
-    <FlexContainer>
+    <FlexContainer data-cy={`active-standaard-${visible}`}>
       <EduButton
         height="40px"
         data-cy="cancel-Stand-Set"

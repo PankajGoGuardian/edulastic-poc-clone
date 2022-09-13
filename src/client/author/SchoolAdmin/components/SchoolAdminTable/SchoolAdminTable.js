@@ -309,7 +309,7 @@ class SchoolAdminTable extends Component {
     })
 
     // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () =>
+    this.setState({ currentPage: 1, filtersData: _filtersData }, () =>
       this.filterTextInputRef[i].current.blur()
     )
   }
@@ -324,7 +324,10 @@ class SchoolAdminTable extends Component {
       }
       return item
     })
-    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList)
+    this.setState(
+      () => ({ currentPage: 1, filtersData: _filtersData }),
+      this.loadFilteredList
+    )
   }
 
   changeStatusValue = (value, key) => {
@@ -372,7 +375,7 @@ class SchoolAdminTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
-          filterStr: "",
+          filterStr: '',
           filtersColumn: value,
         }
         if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
@@ -448,7 +451,7 @@ class SchoolAdminTable extends Component {
           institutionId.indexOf('item?.filterStr') < 0
         ) {
           institutionId = `${institutionId},${item?.filterStr}`
-        } else if(item?.filterStr){
+        } else if (item?.filterStr) {
           institutionId = item?.filterStr
         }
       } else {

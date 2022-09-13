@@ -506,7 +506,7 @@ class StudentTable extends Component {
     })
 
     // For some unknown reason till now calling blur() synchronously doesnt work.
-    this.setState({ filtersData: _filtersData }, () =>
+    this.setState({ currentPage: 1, filtersData: _filtersData }, () =>
       this.filterTextInputRef[i].current.blur()
     )
   }
@@ -521,7 +521,10 @@ class StudentTable extends Component {
       }
       return item
     })
-    this.setState(() => ({ filtersData: _filtersData }), this.loadFilteredList)
+    this.setState(
+      () => ({ currentPage: 1, filtersData: _filtersData }),
+      this.loadFilteredList
+    )
   }
 
   changeStatusValue = (value, key) => {
@@ -569,7 +572,7 @@ class StudentTable extends Component {
       if (key === index) {
         const _item = {
           ...item,
-          filterStr: "",
+          filterStr: '',
           filtersColumn: value,
         }
         if (value === 'status' || value === 'school') _item.filtersValue = 'eq'
@@ -638,30 +641,30 @@ class StudentTable extends Component {
     let institutionId = ''
     const search = {}
     for (const [index, item] of filtersData.entries()) {
-      if(item?.filtersColumn === 'school'){
+      if (item?.filtersColumn === 'school') {
         if (
           institutionId &&
           item?.filterStr &&
           institutionId.indexOf('item?.filterStr') < 0
         ) {
           institutionId = `${institutionId},${item?.filterStr}`
-        } else if(item?.filterStr){
+        } else if (item?.filterStr) {
           institutionId = item?.filterStr
         }
       } else {
-      const { filtersColumn, filtersValue, filterStr } = item
-      if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
-        if (filtersColumn === 'status') {
-          showActive = filterStr
-          continue
-        }
-        if (!search[filtersColumn]) {
-          search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
-        } else {
-          search[filtersColumn].push({ type: filtersValue, value: filterStr })
+        const { filtersColumn, filtersValue, filterStr } = item
+        if (filtersColumn !== '' && filtersValue !== '' && filterStr !== '') {
+          if (filtersColumn === 'status') {
+            showActive = filterStr
+            continue
+          }
+          if (!search[filtersColumn]) {
+            search[filtersColumn] = [{ type: filtersValue, value: filterStr }]
+          } else {
+            search[filtersColumn].push({ type: filtersValue, value: filterStr })
+          }
         }
       }
-    }
     }
 
     if (searchByName) {

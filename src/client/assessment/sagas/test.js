@@ -225,6 +225,10 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     ? test.allowTeacherRedirect
     : assignmentSettings.allowTeacherRedirect
 
+  const showTtsForPassages = preview
+    ? test.showTtsForPassages
+    : assignmentSettings.showTtsForPassages
+
   return {
     testType,
     calcProvider,
@@ -257,6 +261,7 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     ...(preview && { keypad: test?.keypad?.value }),
     showHintsToStudents,
     penaltyOnUsingHints,
+    showTtsForPassages,
   }
 }
 

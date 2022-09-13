@@ -108,6 +108,7 @@ import {
   includeCommonOnTestType,
 } from '../../../../../../common/utils/testTypeUtils'
 import HintsToStudents from './HintsToStudents'
+import TtsForPassage from './TtsForPassage'
 
 const {
   settingCategories,
@@ -783,6 +784,7 @@ class Setting extends Component {
       standardGradingScale: _standardGradingScale,
       showHintsToStudents = true,
       penaltyOnUsingHints = 0,
+      showTtsForPassages = true,
     } = entity
 
     const availableTestTypes = getAvailableTestTypesForUser({
@@ -1264,6 +1266,20 @@ class Setting extends Component {
                     </SettingContainer>
                   </Block>
                   {/* Add instruction ends */}
+
+                  {/* Allow TTS for Passage starts */}
+                  <TtsForPassage
+                    premium={premium}
+                    isSmallSize={isSmallSize}
+                    disabled={disabled}
+                    isDocBased={isDocBased}
+                    isTestlet={isTestlet}
+                    updateTestData={this.updateTestData}
+                    showTtsForPassages={showTtsForPassages}
+                    t={t}
+                  />
+                  {/* Allow TTS for Passage ends */}
+
                   <Block id="release-scores" smallSize={isSmallSize}>
                     <Title>
                       Release Scores{' '}

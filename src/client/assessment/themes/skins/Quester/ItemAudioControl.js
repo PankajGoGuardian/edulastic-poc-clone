@@ -75,6 +75,7 @@ const ItemAudioControl = ({
   passage,
   questionsById,
   userInteractionsPassageData,
+  showTtsForPassages,
 }) => {
   const [selected, setSelected] = useState()
   const controller = useRef()
@@ -90,6 +91,14 @@ const ItemAudioControl = ({
         const q =
           questionsById[`${item._id}_${widget.reference}`] ||
           questionsById[widget.reference]
+
+        // EV-36516 | if showTtsForPassages is false hide tts for passage
+        if (
+          (q.type === 'passage' || q.type === 'video') &&
+          showTtsForPassages === false
+        ) {
+          return null
+        }
         if (q?.tts && q?.tts?.taskStatus === 'COMPLETED') {
           return q
         }

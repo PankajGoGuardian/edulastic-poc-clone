@@ -28,6 +28,7 @@ import { showRubricToStudentsSetting } from '../../../TestPage/utils'
 import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
+import ShowTtsForPassage from './ShowTtsForPassages'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -86,6 +87,7 @@ const TestBehaviorGroupContainer = ({
     isDocBased = testSettings?.isDocBased,
     showHintsToStudents = testSettings?.showHintsToStudents,
     penaltyOnUsingHints = testSettings?.penaltyOnUsingHints,
+    showTtsForPassages = testSettings?.showTtsForPassages,
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
@@ -357,6 +359,28 @@ const TestBehaviorGroupContainer = ({
         />
       )}
       {/* Reference Material */}
+
+      {/* Show TTS for passage */}
+      {!(isDocBased || isTestlet) && (
+        <SettingContainer id="show-tts-for-passage">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title={t('showTtsForPassage.title')}
+            content={t('showTtsForPassage.info')}
+            premium={premium}
+            placement="rightTop"
+          />
+          <ShowTtsForPassage
+            tootltipWidth={tootltipWidth}
+            premium={premium}
+            freezeSettings={freezeSettings}
+            showTtsForPassages={showTtsForPassages}
+            overRideSettings={overRideSettings}
+            t={t}
+          />
+        </SettingContainer>
+      )}
+      {/* Show TTS for passage */}
 
       {/* Timed TEST */}
       <SettingContainer id="timed-test-setting">

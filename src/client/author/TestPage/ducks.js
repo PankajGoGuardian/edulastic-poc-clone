@@ -1016,6 +1016,7 @@ export const createBlankTest = () => ({
   showHintsToStudents: true,
   penaltyOnUsingHints: 0,
   allowTeacherRedirect: true,
+  showTtsForPassages: true,
 })
 
 const initialState = {
@@ -1843,7 +1844,11 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   const isAdmin =
     userRole === roleuser.SCHOOL_ADMIN || userRole === roleuser.DISTRICT_ADMIN
 
-  const { showHintsToStudents = true, penaltyOnUsingHints = 0 } = entity
+  const {
+    showHintsToStudents = true,
+    penaltyOnUsingHints = 0,
+    showTtsForPassages = true,
+  } = entity
 
   const settings = {
     startDate: moment(),
@@ -1883,6 +1888,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showHintsToStudents,
     penaltyOnUsingHints,
     allowTeacherRedirect: entity.allowTeacherRedirect,
+    showTtsForPassages,
   }
 
   if (entity.safeBrowser) {
@@ -1930,6 +1936,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.showRubricToStudents = false
     settings.showHintsToStudents = true
     settings.penaltyOnUsingHints = 0
+    settings.showTtsForPassages = true
     delete settings.keypad
   }
 

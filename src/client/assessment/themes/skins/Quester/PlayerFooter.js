@@ -75,6 +75,7 @@ const PlayerFooter = ({
     isTeacherPremium,
     showMagnifier,
     maxAnswerChecks,
+    showTtsForPassages = true,
   } = settings
   const isDisableCrossBtn = qType !== questionType.MULTIPLE_CHOICE
 
@@ -296,6 +297,7 @@ const PlayerFooter = ({
           item={items[currentItem]}
           windowWidth={windowWidth}
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
+          showTtsForPassages={showTtsForPassages}
         />
       )}
     </MainFooter>

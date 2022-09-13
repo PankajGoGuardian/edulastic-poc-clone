@@ -404,6 +404,7 @@ module.exports = {
     'showHintsToStudents',
     'penaltyOnUsingHints',
     'allowTeacherRedirect',
+    'showTtsForPassages',
   ],
   docBasedSettingsOptions: [
     'partialScore',

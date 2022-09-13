@@ -180,5 +180,9 @@
   },
   "authoringItemDisabled": {
     "info": "Authoring item is disabled for Dynamic Test."
+  },
+  "showTtsForPassage": {
+    "title": "Allow Text To Speech For Passage",
+    "info": "When ON for an item for which TTS is enabled, student get option to play text to speech for passage text while they attempt."
   }
 }

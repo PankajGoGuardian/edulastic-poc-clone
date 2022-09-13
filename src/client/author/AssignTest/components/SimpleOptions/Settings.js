@@ -289,6 +289,7 @@ const Settings = ({
     showHintsToStudents = tempTestSettings.showHintsToStudents,
     penaltyOnUsingHints = tempTestSettings.penaltyOnUsingHints,
     playerSkinType = testSettings.playerSkinType,
+    showTtsForPassages = tempTestSettings.showTtsForPassages,
   } = assignmentSettings
 
   const showMultiLangSelection =
@@ -826,6 +827,33 @@ const Settings = ({
           )
           /* Restrict Question Navigation */
         }
+
+        {/* Show TTS for passage */}
+        {!(isDocBased || isTestlet) && (
+          <SettingContainer>
+            <DetailsTooltip
+              title={t('showTtsForPassage.title')}
+              content={t('showTtsForPassage.info')}
+              premium={premium}
+            />
+            <StyledRow gutter={16} mb="15px">
+              <Col span={12}>
+                <Label>{t('showTtsForPassage.title')}</Label>
+              </Col>
+              <Col span={12}>
+                <AlignSwitchRight
+                  disabled={freezeSettings || !premium}
+                  size="small"
+                  checked={showTtsForPassages}
+                  onChange={(value) =>
+                    overRideSettings('showTtsForPassages', value)
+                  }
+                />
+              </Col>
+            </StyledRow>
+          </SettingContainer>
+        )}
+        {/* Show TTS for passage */}
 
         {/* Timed TEST */}
         <SettingContainer>

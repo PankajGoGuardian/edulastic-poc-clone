@@ -199,6 +199,7 @@ function* loadAssignmentSaga({ payload }) {
       assignmentPassword,
       penaltyOnUsingHints,
       showHintsToStudents,
+      showTtsForPassages,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -229,6 +230,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (typeof showHintsToStudents === 'boolean') {
       data.showHintsToStudents = showHintsToStudents
+    }
+    if (typeof showTtsForPassages === 'boolean') {
+      data.showTtsForPassages = showTtsForPassages
     }
     if (passwordPolicy !== undefined) {
       data.passwordPolicy = passwordPolicy
@@ -282,6 +286,7 @@ function getSettingsSelector(state) {
     allowTeacherRedirect,
     showHintsToStudents,
     penaltyOnUsingHints,
+    showTtsForPassages,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -389,6 +394,7 @@ function getSettingsSelector(state) {
       allowTeacherRedirect,
       showHintsToStudents,
       penaltyOnUsingHints,
+      showTtsForPassages,
     },
     isUndefined
   )

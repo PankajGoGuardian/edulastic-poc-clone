@@ -505,10 +505,12 @@ class QuestionWrapper extends Component {
       assignmentLevelSettings: {
         showHintsToStudents: showHintsToStudentsAssignmentLevel = true,
         penaltyOnUsingHints: penaltyOnUsingHintsAssignmentLevel = 0,
+        showTtsForPassages: showTtsForPassagesAssignmentLevel = true,
       },
       testLevelSettings: {
         showHintsToStudents: showHintsToStudentsTest = true,
         penaltyOnUsingHints: penaltyOnUsingHintsTest = 0,
+        showTtsForPassages: showTtsForPassagesTest = true,
       },
       classLevelSettings,
       viewAsStudent,
@@ -525,6 +527,12 @@ class QuestionWrapper extends Component {
       : typeof classLevelSettings?.penaltyOnUsingHints === 'number'
       ? classLevelSettings.penaltyOnUsingHints
       : penaltyOnUsingHintsAssignmentLevel
+
+    const showTtsForPassages = viewAsStudent
+      ? showTtsForPassagesTest
+      : typeof classLevelSettings?.showTtsForPassages === 'boolean'
+      ? classLevelSettings.showTtsForPassages
+      : showTtsForPassagesAssignmentLevel
 
     const userAnswer = get(data, 'activity.userResponse', null)
     const isSkipped = get(data, 'activity.skipped', false)
@@ -563,12 +571,19 @@ class QuestionWrapper extends Component {
       userAnswerProps.key = data.id
     }
 
+    // EV-36516 | if showTtsForPassages is false hide tts for passage
+    const showPlayerForPassage =
+      data.type === questionType.PASSAGE || data.type === questionType.VIDEO
+        ? showTtsForPassages
+        : true
+
     const canShowPlayer =
       ((showUserTTS === 'yes' && userRole === roleuser.STUDENT) ||
         this.ttsVisibilityAuthorSide) &&
       data.tts &&
       data.tts.taskStatus === 'COMPLETED' &&
-      playerSkinType !== test.playerSkinValues.quester
+      playerSkinType !== test.playerSkinValues.quester &&
+      showPlayerForPassage
 
     /**
      * we need to render the tts buttons at author, if it was rendered at student side

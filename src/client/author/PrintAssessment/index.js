@@ -16,6 +16,7 @@ import {
   roleuser,
   test as testConstants,
   collections as collectionConst,
+  question as questionContants,
 } from '@edulastic/constants'
 import { getOrderedQuestionsAndAnswers, formatQuestionLists } from './utils'
 import QuestionWrapper from '../../assessment/components/QuestionWrapper'
@@ -25,6 +26,7 @@ import {
   getUserFeatures,
 } from '../src/selectors/user'
 import { fillAutoselectGoupsWithDummyItems } from '../TestPage/ducks'
+import { changeDataToPreferredLanguage } from '../../assessment/utils/question'
 
 const { testContentVisibility: testContentVisibilityOptions } = testConstants
 
@@ -82,7 +84,14 @@ function useTestFetch(testId, type, filterQuestions, assignmentId, groupId) {
 const PrintAssessment = ({ match, userRole, features, location }) => {
   const containerRef = useRef(null)
   const query = _qs.parse(location.search, { ignoreQueryPrefix: true })
-  const { type, qs, assignmentId, groupId } = query
+  const {
+    type,
+    qs,
+    assignmentId,
+    groupId,
+    preferredLanguage = 'es',
+    hideAnswers = true,
+  } = query
   const filterQuestions = type === 'custom' ? formatQuestionLists(qs) : []
   const { testId } = match.params
   const test = useTestFetch(
@@ -119,12 +128,22 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
               <span> {test.title}</span>
             </Col>
           </Row>
-          <span> Created By {test?.createdBy?.name} </span> <br />
+          <span> Created By LAUSD Admin </span> <br />
         </StyledHeader>
         <hr />
         {!isContentHidden && questions.length ? (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             {questions.map((question, index) => {
+              // video or resource type questions not be printed.
+              if (
+                questionContants.resourceTypeQuestions.includes(question.type)
+              ) {
+                return null
+              }
+              question = changeDataToPreferredLanguage(
+                question,
+                preferredLanguage
+              )
               const questionHeight =
                 question.type == 'clozeImageDropDown'
                   ? { minHeight: '500px' }
@@ -158,7 +177,7 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                 </div>
               )
             })}
-            {!!test.answers.length && features.premium && (
+            {!hideAnswers && !!test.answers.length && features.premium && (
               <StyledAnswerWrapper>
                 <StyledAnswerText>Answer Key of {test.title}</StyledAnswerText>
                 {test.answers.map((answer) => (

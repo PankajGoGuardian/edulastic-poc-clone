@@ -193,6 +193,17 @@ class Assignments extends Component {
     this.setState({ filterState })
   }
 
+  componentDidUpdate(prevProps) {
+    const { defaultTermId: prevDefaultTermId } = prevProps?.orgData
+    const { defaultTermId } = this.props?.orgData
+    const { filterState } = this.state
+    const termId = filterState?.termId || defaultTermId
+
+    if (!prevDefaultTermId && defaultTermId) {
+      this.setFilterState({ ...filterState, termId })
+    }
+  }
+
   hidePreviewModal = () => {
     const { setIsTestPreviewVisible } = this.props
     setIsTestPreviewVisible(false)

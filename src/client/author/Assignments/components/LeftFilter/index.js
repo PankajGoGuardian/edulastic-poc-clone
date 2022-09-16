@@ -94,7 +94,7 @@ class LeftFilter extends React.Component {
       currentTerm,
     } = this.props
     const filters = folderId
-      ? { ...filterState, termId: '', folderId }
+      ? { ...filterState, folderId }
       : { ...filterState, termId: currentTerm, folderId: '' }
 
     if (isAdvancedView) {
@@ -194,25 +194,25 @@ class LeftFilter extends React.Component {
           ))}
         </SelectInputStyled>
 
-        <FieldLabel>Year</FieldLabel>
-        <SelectInputStyled
-          data-cy="schoolYear"
-          mode="default"
-          placeholder="All years"
-          value={termId}
-          onChange={this.handleChange('termId')}
-          getPopupContainer={(triggerNode) => triggerNode.parentNode}
-          margin="0px 0px 15px"
-        >
-          <Select.Option key="all" value="">
-            All years
-          </Select.Option>
-          {termsData.map(({ _id, name }) => (
-            <Select.Option key={_id} value={_id}>
-              {name}
-            </Select.Option>
-          ))}
-        </SelectInputStyled>
+        {termId && (
+          <>
+            <FieldLabel>Year</FieldLabel>
+            <SelectInputStyled
+              data-cy="schoolYear"
+              mode="default"
+              value={termId}
+              onChange={this.handleChange('termId')}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+              margin="0px 0px 15px"
+            >
+              {termsData.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
+            </SelectInputStyled>
+          </>
+        )}
 
         <FieldLabel>Test Type</FieldLabel>
         <SelectInputStyled

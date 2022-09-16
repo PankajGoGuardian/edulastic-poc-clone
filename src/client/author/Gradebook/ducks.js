@@ -5,7 +5,7 @@ import { keyBy } from 'lodash'
 import { reportsApi, assignmentApi, groupApi } from '@edulastic/api'
 
 // imported selectors
-import { getUserOrgData } from '../src/selectors/user'
+import { getCurrentTerm, getUserOrgData } from '../src/selectors/user'
 import selectsData from '../TestPage/components/common/selectsData'
 
 // transformers & constants
@@ -120,12 +120,15 @@ function* fetchGradebookFiltersSaga() {
       name: testTypeFullNames[key],
     }))
     testTypes.unshift({ id: '', name: 'All' })
+    const currentTerm = yield select(getCurrentTerm)
 
     // assessments
-    const {
-      assignments,
-      tests,
-    } = yield call(assignmentApi.fetchTeacherAssignments, { filters: {} })
+    const { assignments, tests } = yield call(
+      assignmentApi.fetchTeacherAssignments,
+      {
+        filters: { termId: currentTerm },
+      }
+    )
     const groupedTests = keyBy(tests, '_id')
     const assessments = assignments.map((a) => {
       const testTitle = groupedTests[a.testId]?.title?.trim() || a.title
@@ -141,10 +144,8 @@ function* fetchGradebookFiltersSaga() {
     })
     // terms
     const { terms = [] } = yield select(getUserOrgData)
-    const termList = [
-      { id: '', name: 'All' },
-      ...terms.map((t) => ({ ...t, id: t._id })),
-    ]
+    const termList = terms.map((t) => ({ ...t, id: t._id }))
+
     // status
     const statusList = [{ id: '', name: 'All' }, ...STATUS_LIST]
     // set filters data

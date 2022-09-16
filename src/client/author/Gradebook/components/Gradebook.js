@@ -115,6 +115,7 @@ const Gradebook = ({
   }
 
   useEffect(() => {
+    setInitialFilters()
     fetchFiltersData()
     setOnComponentLoad(false)
   }, [])

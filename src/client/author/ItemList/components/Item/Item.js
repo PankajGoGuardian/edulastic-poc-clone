@@ -213,11 +213,12 @@ class Item extends Component {
       .filter((_item) => _item.tts)
       .map((_item) => _item.tts)
     const isItemLiked = item?.alreadyLiked || false
+    const dok = (questions.find((_item) => _item.depthOfKnowledge) || {})
+      .depthOfKnowledge
     const details = [
       {
         name: 'DOK:',
-        text: (questions.find((_item) => _item.depthOfKnowledge) || {})
-          .depthOfKnowledge,
+        text: question.allDepthOfKnowledgeMap[dok]?.text,
         dataCy: 'itemDok',
       },
       {

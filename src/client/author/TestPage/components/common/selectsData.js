@@ -1,3 +1,5 @@
+import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
+
 // TK instead of PK for PreKindergarten is intentional
 const allGrades = [
   { value: 'TK', text: 'PreKindergarten' },
@@ -37,13 +39,7 @@ const allCollections = [
   // { value: "edulastic_certified", text: "Edulastic Certified" }
 ]
 
-const allDepthOfKnowledge = [
-  { value: '', text: 'Not Specified' },
-  { value: 'Recall', text: 'Recall' },
-  { value: 'Skill/Concept', text: 'Skill/Concept' },
-  { value: 'Strategic Thinking', text: 'Strategic Thinking' },
-  { value: 'Extended Thinking', text: 'Extended Thinking' },
-]
+const allDepthOfKnowledge = Object.values(allDepthOfKnowledgeMap)
 
 // First value is the default value.
 const allAuthorDifficulty = [

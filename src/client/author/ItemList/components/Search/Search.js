@@ -172,7 +172,7 @@ const Search = ({
   const subjectRef = useRef()
   const standardsRef = useRef()
   const collectionRef = useRef()
-  const tagsRef = useRef()
+  // const tagsRef = useRef()
 
   return (
     <MainFilterItems>
@@ -407,9 +407,9 @@ const Search = ({
                     value={depthOfKnowledge}
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   >
-                    {selectsData.allDepthOfKnowledge.map((el, index) => (
+                    {selectsData.allDepthOfKnowledge.map((el) => (
                       <Select.Option key={el.value} value={el.value}>
-                        {`${index > 0 ? index : ''} ${el.text}`}
+                        {`${el.text}`}
                       </Select.Option>
                     ))}
                   </SelectInputStyled>

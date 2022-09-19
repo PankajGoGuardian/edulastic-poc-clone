@@ -53,10 +53,10 @@ const filterData = [
     onChange: 'depthOfKnowledge',
     data: [
       { value: '', text: 'All Depth of Knowledge' },
-      { value: 'Recall', text: 'Recall' },
-      { value: 'Skill/Concept', text: 'Skill/Concept' },
-      { value: 'Strategic Thinking', text: 'Strategic Thinking' },
-      { value: 'Extended Thinking', text: 'Extended Thinking' },
+      { value: 'Recall', text: '1 - Recall' },
+      { value: 'Skill/Concept', text: '2- Skill/Concept' },
+      { value: 'Strategic Thinking', text: '3 - Strategic Thinking' },
+      { value: 'Extended Thinking', text: '4 - Extended Thinking' },
     ],
   },
 

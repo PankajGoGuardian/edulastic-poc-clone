@@ -7,6 +7,8 @@ import {
   questionType as questionTypes,
   libraryFilters,
 } from '@edulastic/constants'
+import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
+
 import {
   curriculumsByIdSelector,
   standardsSelector,
@@ -107,18 +109,22 @@ const HeaderFilter = ({
     popOverArray,
     containerWidthObj
   ) => {
-    const widthOfTag = getWidthOfTag(tagTitle)
+    let text = tagTitle
+    if (type === 'depthOfKnowledge') {
+      text = allDepthOfKnowledgeMap[tagTitle]?.text
+    }
+    const widthOfTag = getWidthOfTag(text)
     if (widthOfTag <= containerWidthObj.remainingWidth) {
       containerWidthObj.remainingWidth -= widthOfTag
       bodyArr.push(
         <Tag closable onClose={(e) => handleCloseTag(e, type, d)}>
-          {tagTitle}
+          {text}
         </Tag>
       )
     } else {
       popOverArray.push(
         <StyledPopupTag closable onClose={(e) => handleCloseTag(e, type, d)}>
-          {tagTitle}
+          {text}
         </StyledPopupTag>
       )
     }

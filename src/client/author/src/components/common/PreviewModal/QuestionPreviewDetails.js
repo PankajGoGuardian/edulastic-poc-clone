@@ -1,4 +1,6 @@
 import React, { useMemo } from 'react'
+import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
+
 import { QuestionDetails, DetailRow, FlexWrap } from './styled'
 import Standards from '../../../../ItemList/components/Item/Standards'
 import { getAllRubricNames } from '../../../utils/util'
@@ -41,7 +43,9 @@ const QuestionPreviewDetails = ({
       <FlexWrap border="none" justify="flex-start">
         <DetailRow direction="column">
           <label>Depth of Knowledge</label>
-          <span data-cy="dok-on-preview">{depthOfKnowledge || '--'}</span>
+          <span data-cy="dok-on-preview">
+            {allDepthOfKnowledgeMap[depthOfKnowledge]?.text || '--'}
+          </span>
         </DetailRow>
         <DetailRow direction="column">
           <label>Difficulty Level</label>

@@ -2,6 +2,7 @@ import React, { Fragment, useMemo } from 'react'
 import { get } from 'lodash'
 import { helpers } from '@edulastic/common'
 import { collections as collectionConst } from '@edulastic/constants'
+import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 import MainInfo from './MainInfo'
 import MetaInfo from './MetaInfo'
 import Expanded from './Expanded'
@@ -95,6 +96,9 @@ const ReviewItem = ({
       isPremiumContent(item?.collections || []) &&
       showPremiumLabelOnContent(item?.collections, orgCollections)
 
+    const dok = (item.data.questions.find((e) => e.depthOfKnowledge) || {})
+      .depthOfKnowledge
+
     const meta = {
       id: item._id,
       by: get(item, ['createdBy', 'name'], ''),
@@ -106,11 +110,7 @@ const ReviewItem = ({
       standards: standards[item._id],
       audio: audioStatus(item),
       tags: item.tags,
-      dok:
-        item.data &&
-        item.data.questions &&
-        (item.data.questions.find((e) => e.depthOfKnowledge) || {})
-          .depthOfKnowledge,
+      dok: item.data && item.data.questions && allDepthOfKnowledgeMap[dok]?.text,
     }
 
     if (item.data && item.data.questions && item.data.questions.length) {

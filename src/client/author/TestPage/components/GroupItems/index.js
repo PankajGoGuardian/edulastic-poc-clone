@@ -50,6 +50,7 @@ import {
 } from './styled'
 import TypeConfirmModal from './TypeConfirmModal'
 import ItemCountWrapperContainer from './ItemCountWrapperContainer'
+// import { allDepthOfKnowledgeMap } from '@edulastic/constants/const/question'
 
 const { ITEM_GROUP_TYPES, ITEM_GROUP_DELIVERY_TYPES } = testConstants
 
@@ -579,6 +580,11 @@ const GroupItems = ({
               itemGroup.type === ITEM_GROUP_TYPES.STATIC
                 ? ITEM_GROUP_DELIVERY_TYPES.LIMITED_RANDOM
                 : ITEM_GROUP_DELIVERY_TYPES.ALL_RANDOM
+
+            // const dok =
+            //   currentGroupIndex === index
+            //     ? currentGroupDetails.dok
+            //     : itemGroup.dok
             return (
               <PanelStyled
                 header={[
@@ -768,11 +774,7 @@ const GroupItems = ({
                           placeholder="Select DOK"
                           size="default"
                           onSelect={(value) => handleChange('dok', value)}
-                          value={
-                            currentGroupIndex === index
-                              ? currentGroupDetails.dok
-                              : itemGroup.dok
-                          }
+                          value={allDepthOfKnowledgeMap[dok]?.text}
                           getPopupContainer={(triggerNode) =>
                             triggerNode.parentNode
                           }

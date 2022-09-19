@@ -97,7 +97,7 @@ const StudentApp = ({
                   component={SkillReportContainer}
                 />
                 <Route
-                  path={`${match.url}/whole-child`}
+                  path={`${match.url}/whole-child-report`}
                   component={WholeChildReportContainer}
                 />
                 <Route path={`${match.url}/manage`} component={ManageClass} />

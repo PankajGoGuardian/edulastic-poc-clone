@@ -62,7 +62,7 @@ const menuItems = [
   {
     label: 'Whole Child Report',
     icon: IconBarChart,
-    path: 'home/whole-child',
+    path: 'home/whole-child-report',
   },
   {
     label: 'My Classes',

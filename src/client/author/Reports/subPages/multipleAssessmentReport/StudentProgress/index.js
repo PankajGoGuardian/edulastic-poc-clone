@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { get, head, isEmpty } from 'lodash'
 
 import { SpinLoader, notification } from '@edulastic/common'
+import { reportUtils } from '@edulastic/constants'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
@@ -10,11 +11,6 @@ import TrendStats from '../common/components/trend/TrendStats'
 import TrendTable from '../common/components/trend/TrendTable'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import {
-  downloadCSV,
-  filterAccordingToRole,
-  getFormattedName,
-} from '../../../common/util'
 import { NoDataContainer } from '../../../common/styled'
 import { getCsvDownloadingState } from '../../../ducks'
 import { getUserRole } from '../../../../src/selectors/user'
@@ -29,6 +25,12 @@ import { useGetBandData } from './hooks'
 
 import dropDownData from './static/json/dropDownData.json'
 import tableColumns from './static/json/tableColumns.json'
+
+const {
+  downloadCSV,
+  filterAccordingToRole,
+  getFormattedName,
+} = reportUtils.common
 
 const DefaultBandInfo = [
   {

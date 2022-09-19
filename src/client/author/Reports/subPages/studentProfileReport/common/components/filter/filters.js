@@ -28,10 +28,6 @@ import {
   getCurrentTerm,
 } from '../../../../../../src/selectors/user'
 import {
-  receiveStudentsListAction,
-  getStudentsListSelector,
-} from '../../../../../../Student/ducks'
-import {
   getFiltersSelector,
   getStudentSelector,
   getTempTagsDataSelector,
@@ -712,14 +708,12 @@ const enhance = connect(
     prevSPRFilterData: getReportsPrevSPRFilterData(state),
     loading: getReportsSPRFilterLoadingState(state),
     orgData: getOrgDataSelector(state),
-    studentList: getStudentsListSelector(state),
     defaultTermId: getCurrentTerm(state),
     studentProgressProfile: getReportsStudentProgressProfile(state),
   }),
   {
     getSPRFilterDataRequest: getSPRFilterDataRequestAction,
     setPrevSPRFilterData: setPrevSPRFilterDataAction,
-    receiveStudentsListAction,
     setFilters: setFiltersAction,
     setStudent: setStudentAction,
     setTempTagsData: setTempTagsDataAction,

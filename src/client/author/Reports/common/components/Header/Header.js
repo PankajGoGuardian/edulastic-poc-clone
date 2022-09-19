@@ -22,6 +22,7 @@ const CustomizedHeaderWrapper = ({
   hideSideMenu,
   isCliUser,
   showCustomReport,
+  showDataWarehouseReport,
   showSharedReport,
   title,
   isSharedReport,
@@ -61,6 +62,14 @@ const CustomizedHeaderWrapper = ({
   if (!showSharedReport && activeNavigationKey !== 'shared-reports') {
     filterNavigationItems = filterNavigationItems.filter(
       (item) => item.key !== 'shared-reports'
+    )
+  }
+  if (
+    !showDataWarehouseReport &&
+    activeNavigationKey !== 'data-warehouse-reports'
+  ) {
+    filterNavigationItems = filterNavigationItems.filter(
+      (item) => item.key !== 'data-warehouse-reports'
     )
   }
 

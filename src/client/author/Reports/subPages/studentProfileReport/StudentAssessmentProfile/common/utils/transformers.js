@@ -1,8 +1,8 @@
-import { getAllTestTypesMap } from '../../../../../../../common/utils/testTypeUtils'
 import { map, get, find, round, sumBy } from 'lodash'
+import { getAllTestTypesMap } from '../../../../../../../common/utils/testTypeUtils'
 import { formatDate } from '../../../../../common/util'
 
-export const getData = (rawData = {}, tests = [], bandInfo = []) => {
+export const getData = (rawData = {}, tests = []) => {
   if (!tests.length) {
     return []
   }

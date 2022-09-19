@@ -10,6 +10,7 @@ const {
   find,
   indexOf,
   keyBy,
+  capitalize,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -336,10 +337,25 @@ const downloadCSV = (filename, data) => {
   document.body.removeChild(link)
 }
 
-const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
+const getFormattedName = (
+  name,
+  displayLastNameFirst = true,
+  capitalizeName = false,
+  showAnonymousOnEmpty = false
+) => {
+  let nameArr = (name || '').trim().split(' ')
+  if (capitalizeName) {
+    nameArr = nameArr.map((t) => capitalize(t))
+  }
+  let curatedName = nameArr.join(' ')
+  if (displayLastNameFirst) {
+    const lName = nameArr.splice(nameArr.length - 1)[0] || ''
+    curatedName = nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
+  }
+  if (showAnonymousOnEmpty) {
+    curatedName = curatedName || 'Anonymous'
+  }
+  return curatedName
 }
 
 const getStudentAssignments = (scaleInfo = [], studentStandardData = []) => {

@@ -63,6 +63,15 @@ const SharedReportsContainer = ({
       default:
       // do nothing
     }
+    switch (reportType) {
+      case report.reportNavType.WHOLE_CHILD_REPORT:
+        history.push(
+          `/author/reports/${reportType}/student/${filters.studentId}?termId=${filters.termId}&reportId=${_id}`
+        )
+        break
+      default:
+      // do nothing
+    }
   }
 
   const sharedReportsData = useMemo(() => {

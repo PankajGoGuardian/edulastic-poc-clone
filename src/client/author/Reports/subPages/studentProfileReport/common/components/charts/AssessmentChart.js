@@ -1,9 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { round, get, find } from 'lodash'
-import { addColors } from '../../../../../common/util'
+import { reportUtils } from '@edulastic/constants'
 import { SimpleStackedBarChart } from '../../../../../common/components/charts/simpleStackedBarChart'
 import BarTooltipRow from '../../../../../common/components/tooltip/BarTooltipRow'
+
+const { addColors } = reportUtils.common
 
 const AssessmentChart = ({
   data,

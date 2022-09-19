@@ -1,4 +1,3 @@
-import { getAllTestTypesMap } from '../../../../../../common/utils/testTypeUtils'
 import {
   groupBy,
   map,
@@ -13,11 +12,15 @@ import {
   uniqBy,
   isEmpty,
 } from 'lodash'
+import { reportUtils } from '@edulastic/constants'
+import { getAllTestTypesMap } from '../../../../../../common/utils/testTypeUtils'
 import { percentage, getProficiencyBand } from '../../../../common/util'
 import gradesMap from '../static/gradesMap.json'
 
+const { getFormattedName } = reportUtils.common
+
 export const getFullName = (s) =>
-  `${s.firstName || ''} ${s.lastName || ''}`.trim()
+  getFormattedName(`${s.firstName} ${s.lastName}`, false)
 
 export const getStudentName = (selectedStudent, studInfo) => {
   if (selectedStudent.title) {

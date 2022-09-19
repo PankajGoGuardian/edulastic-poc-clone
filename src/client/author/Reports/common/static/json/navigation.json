@@ -288,6 +288,30 @@
       ],
       "group": "mainReport"
     },
+    "data-warehouse-reports": {
+      "title": "Data Warehouse Reports",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports"
+        }
+      ],
+      "group": "mainReport"
+    },
+    "whole-child-report": {
+      "title": "Whole Child Report",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "WHOLE CHILD REPORT"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
     "shared-reports": {
       "title": "Shared Reports",
       "breadcrumb": [
@@ -420,6 +444,18 @@
         "key": "shared-reports",
         "title": "SHARED REPORTS",
         "location": "/author/reports/shared-reports/"
+      },
+      {
+        "key": "data-warehouse-reports",
+        "title": "DATA WAREHOUSE REPORTS",
+        "location": "/author/reports/data-warehouse-reports/"
+      }
+    ],
+    "data-warehouse-reports": [
+      {
+        "key": "whole-child-report",
+        "title":"WHOLE CHILD REPORT",
+        "location": "/author/reports/data-warehouse-reports/whole-child-report"
       }
     ]
   }

@@ -16,6 +16,7 @@ const {
   roundedPercentage,
   getOverallScore,
   getCsvDataFromTableBE,
+  getFormattedName,
 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -136,12 +137,6 @@ const groupedByDomain = (
       }
     })
     .sort((a, b) => a.domainName.localeCompare(b.domainName))
-}
-
-const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
 const getRowInfo = (groupInfo, studInfo, compareByKey, value) => {

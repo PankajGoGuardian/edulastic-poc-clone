@@ -152,6 +152,10 @@ import {
   reportActivityByTeacherSaga,
 } from './subPages/engagementReport/ActivityByTeacher/ducks'
 import {
+  reducer as reportWholeChildReducer,
+  watcherSaga as reportWholeChildSaga,
+} from './subPages/dataWarehouseReports/wholeChildReport/ducks'
+import {
   customReportReducer,
   customReportSaga,
 } from './components/customReport/ducks'
@@ -201,6 +205,7 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
+import * as WholeChildReport from './subPages/dataWarehouseReports/wholeChildReport/ducks'
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -390,6 +395,7 @@ export const reportReducer = combineReducers({
   reportActivityByTeacherReducer,
   customReportReducer,
   sharedReportsReducer,
+  reportWholeChildReducer,
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -479,6 +485,12 @@ const selectorDict = {
     getSettings: getReportsERSettings,
     setTags: setERTagsDataAction,
     setTempTags: setERTempTagsDataAction,
+  },
+  [reportGroupType.WHOLE_CHILD_REPORT]: {
+    getTempTags: WholeChildReport.selectors.filterTagsData,
+    getSettings: WholeChildReport.selectors.settings,
+    setTags: WholeChildReport.actions.setSelectedFilterTagsData,
+    setTempTags: WholeChildReport.actions.setFilterTagsData,
   },
 }
 
@@ -766,6 +778,7 @@ export function* reportSaga() {
     reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
+    reportWholeChildSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

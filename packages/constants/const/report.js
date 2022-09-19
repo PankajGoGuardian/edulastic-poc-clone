@@ -4,6 +4,7 @@ const reportGroupType = {
   STANDARDS_MASTERY_REPORT: 'standards-mastery-report',
   STUDENT_PROFILE_REPORT: 'student-profile-report',
   ENGAGEMENT_REPORT: 'engagement-report',
+  WHOLE_CHILD_REPORT: 'whole-child-report',
 }
 
 const reportNavType = {
@@ -25,6 +26,7 @@ const reportNavType = {
   ENGAGEMENT_SUMMARY: 'engagement-summary',
   ACTIVITY_BY_SCHOOL: 'activity-by-school',
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
+  WHOLE_CHILD_REPORT: 'whole-child-report',
 }
 
 const sharedWithType = {

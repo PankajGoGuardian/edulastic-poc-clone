@@ -11,18 +11,17 @@ import {
 
 import { reportUtils } from '@edulastic/constants'
 
-const { getOverallScore, DemographicCompareByOptions } = reportUtils.common
+const {
+  getOverallScore,
+  DemographicCompareByOptions,
+  getFormattedName,
+} = reportUtils.common
+
 const {
   getMasteryLevel,
   getScore,
   getOverallRawScore,
 } = reportUtils.standardsPerformanceSummary
-
-const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
-}
 
 const getCompareByDataKey = (compareByKey) => {
   switch (compareByKey) {

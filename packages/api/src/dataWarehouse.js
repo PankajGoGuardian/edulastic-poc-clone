@@ -1,3 +1,4 @@
+import qs from 'qs'
 import API from './utils/API'
 
 const api = new API()
@@ -43,8 +44,21 @@ const updateDatawarehouseLogsStatus = (id, data) =>
     })
     .then((result) => result.data.result)
 
+/**
+ * @param {{reportId: string} | {studentId: string, termId: strign}} data
+ */
+const getWholeChildReport = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    url: `${prefix}/whole-child-report?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
   updateDatawarehouseLogsStatus,
+  getWholeChildReport,
 }

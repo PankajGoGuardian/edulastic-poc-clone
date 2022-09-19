@@ -2,11 +2,24 @@ import React from 'react'
 import { StyledAxisTickText } from '../../../styled'
 
 export const CustomChartXTick = (props) => {
-  const { x, y, payload, data, getXTickText, width, visibleTicksCount } = props
+  const {
+    x,
+    y,
+    payload,
+    data,
+    getXTickText,
+    getXTickTagText,
+    width,
+    fontWeight,
+    visibleTicksCount,
+  } = props
 
   const tickWidth = Math.floor(width / visibleTicksCount)
 
   let text = getXTickText ? getXTickText(payload, data) : payload.value
+
+  const tagText = getXTickTagText ? getXTickTagText(payload, data) : ''
+  const tagWidth = (tagText?.length || 0) * 10
 
   if (text && text.length > 25 && tickWidth < 80) {
     if (text[19] === ' ') text = text.substr(0, 24)
@@ -28,9 +41,33 @@ export const CustomChartXTick = (props) => {
         textAnchor="middle"
         verticalAnchor="start"
         width={tickWidth}
+        fontWeight={fontWeight}
       >
         {text}
       </StyledAxisTickText>
+      {tagText ? (
+        <>
+          <rect
+            x={-(tagWidth / 2)}
+            y={24}
+            rx={10}
+            width={tagWidth}
+            height={17}
+            fill="black"
+          />
+          <StyledAxisTickText
+            y={30}
+            textAnchor="middle"
+            verticalAnchor="start"
+            width={tickWidth}
+            fontSize="8px"
+            fontWeight={fontWeight}
+            fill="white"
+          >
+            {tagText}
+          </StyledAxisTickText>
+        </>
+      ) : null}
     </g>
   )
 }

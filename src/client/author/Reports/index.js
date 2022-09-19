@@ -1,4 +1,4 @@
-import { pullAllBy } from 'lodash'
+import { get, pullAllBy } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
@@ -15,6 +15,8 @@ import { PrintableScreen } from './common/styled'
 import CustomReports from './components/customReport'
 import CustomReportIframe from './components/customReport/customReportIframe'
 import SharedReports from './components/sharedReports'
+import DataWarehouseReports from './components/dataWarehouseReport'
+import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
 import {
   getCsvDownloadingState,
   getPrintingState,
@@ -54,6 +56,7 @@ const Container = (props) => {
     match,
     isCliUser,
     showCustomReport,
+    showDataWarehouseReport,
     loadingSharedReports,
     sharedReportList,
     hasCsvDocs,
@@ -69,7 +72,7 @@ const Container = (props) => {
   const [hideHeader, setHideHeader] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
   const [showApply, setShowApply] = useState(false)
-  const reportType = props?.match?.params?.reportType || 'standard-reports'
+  const reportType = get(props, 'match.params.reportType', 'standard-reports')
   const groupName = navigation.locToData[reportType].group
   const [navigationItems, setNavigationItems] = useState(
     navigation.navigation[groupName]
@@ -113,7 +116,8 @@ const Container = (props) => {
     if (
       reportType === 'standard-reports' ||
       reportType === 'custom-reports' ||
-      reportType === 'shared-reports'
+      reportType === 'shared-reports' ||
+      reportType === 'data-warehouse-reports'
     ) {
       setNavigationItems(navigation.navigation[groupName])
     }
@@ -165,7 +169,8 @@ const Container = (props) => {
       (loc &&
         (loc === 'standard-reports' ||
           loc === 'custom-reports' ||
-          loc === 'shared-reports'))
+          loc === 'shared-reports' ||
+          loc === 'data-warehouse-reports'))
     ) {
       loc = !loc ? reportType : loc
       const breadcrumbInfo = navigation.locToData[loc].breadcrumb
@@ -239,6 +244,7 @@ const Container = (props) => {
           hideSideMenu={isCliUser}
           isCliUser={isCliUser}
           showCustomReport={showCustomReport}
+          showDataWarehouseReport={showDataWarehouseReport}
           showSharedReport={sharedReportList.length}
           title={headerSettings.title}
           isSharedReport={headerSettings.isSharedReport}
@@ -427,6 +433,36 @@ const Container = (props) => {
             )
           }}
         />
+        <Route
+          exact
+          path="/author/reports/data-warehouse-reports"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <DataWarehouseReports
+                {..._props}
+                isCliUser={isCliUser}
+                breadcrumbData={headerSettings.breadcrumbData}
+                loc={reportType}
+              />
+            )
+          }}
+        />
+        <Route
+          path={[`/author/reports/whole-child-report/student/`]}
+          render={(_props) => (
+            <DataWarehouseReportsContainer
+              {..._props}
+              isCliUser={isCliUser}
+              breadcrumbData={headerSettings.breadcrumbData}
+              showApply={showApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={reportType}
+              updateNavigation={setNavigationItems}
+            />
+          )}
+        />
       </MainContentWrapper>
     </PrintableScreen>
   )
@@ -437,12 +473,17 @@ const enhance = connect(
     role: getUserRole(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
-    premium: state?.user?.user?.features?.premium,
+    premium: get(state, 'user.user.features.premium', false),
     emailVerified: getEmailVerified(state),
     verificationTS: getVerificationTS(state),
     isDefaultDA: isDefaultDASelector(state),
-    showCustomReport: state?.user?.user?.features?.customReport,
-    isCliUser: state?.user?.isCliUser,
+    showCustomReport: get(state, 'user.user.features.customReports', false),
+    showDataWarehouseReport: get(
+      state,
+      'user.user.features.dataWarehouseReports',
+      false
+    ),
+    isCliUser: get(state, 'user.isCliUser', false),
     sharedReportList: getSharedReportList(state),
     loadingSharedReports: getSharedReportsLoader(state),
     hasCsvDocs: getHasCsvDocs(state),

@@ -13,7 +13,7 @@ import {
 } from '@edulastic/colors'
 import { EduButton, Card, FieldLabel, notification } from '@edulastic/common'
 import { Text } from '@vx/text'
-import { Col, Slider, Table, Button, Menu } from 'antd'
+import { Col, Slider, Table, Button, Menu, Row } from 'antd'
 import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
 
@@ -412,6 +412,74 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
     font-weight: 900;
   }
 `
+
+export const StyledCustomChartTooltipDark = styled(CustomChartTooltip)`
+  width: 200px;
+  min-height: 75px;
+  background-color: #4b4b4b;
+  border-radius: 10px;
+  box-shadow: 0 0 20px #c0c0c0;
+  padding: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  z-index: 999 !important;
+
+  .tooltip-key {
+    font-weight: 900;
+  }
+  &:after {
+    content: '';
+    height: 0;
+    width: 0;
+    position: absolute;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-style: solid;
+    border-width: 10px 10px 0 10px;
+    border-color: #4b4b4b transparent transparent transparent;
+  }
+`
+
+export const TooltipRow = styled.div`
+  display: flex;
+  margin-bottom: 10px;
+`
+
+export const TooltipRowTitle = styled.p`
+  color: #b0b0b0;
+`
+
+export const TooltipRowValue = styled.p`
+  color: #ffffff;
+  margin-left: 10px;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
+`
+export const DashedHr = styled.hr`
+  margin: 20px 0px;
+  border: 1px dashed #b0b0b0;
+`
+export const ColorBandRow = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 15px;
+
+  &:last-child {
+    margin-bottom: 0px;
+  }
+`
+
+export const ColorCircle = styled.div`
+  border-radius: 50%;
+  border: 2px solid #ffffff;
+  height: 20px;
+  width: 20px;
+  background-color: ${({ color }) => color || '#ffffff'};
+`
+
 export const StyledSlider = styled(Slider)`
   height: 22px;
   .ant-slider-rail {
@@ -457,7 +525,9 @@ export const StyledChartNavButton = styled(EduButton)`
 `
 
 export const StyledAxisTickText = styled(Text)`
-  font-size: 12px;
+  font-size: ${(props) => props.fontSize || '12px'};
+  font-weight: ${(props) => props.fontWeight || 'normal'};
+  fill: ${(props) => props.fill || 'black'};
 `
 
 export const StyledText = styled.text`
@@ -499,7 +569,7 @@ export const StyledSignedBarContainer = styled.div`
 
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
-  flex: ${({ autoFlex }) => (autoFlex ? '1 1 0' : '0 0 auto')};
+  flex: ${({ flex, autoFlex }) => flex ?? (autoFlex ? '1 1 0' : '0 0 auto')};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;
@@ -777,5 +847,22 @@ export const ColoredCell = styled.div`
     background-color: ${({ bgColor }) => bgColor};
     -webkit-print-color-adjust: exact;
     color-adjust: exact;
+  }
+`
+export const SecondaryFilterRow = styled(Row).attrs((props) => ({
+  type: 'flex',
+  gutter: [8, 0],
+  justify: 'end',
+  align: 'middle',
+  ...props,
+}))`
+  padding-left: 10px;
+  padding-top: 5px;
+  float: right;
+  align-items: flex-end;
+  width: ${(p) => p.width || '75%'};
+  & input,
+  button {
+    ${(p) => (p.fieldHeight ? `height: ${p.fieldHeight} !important;` : '')};
   }
 `

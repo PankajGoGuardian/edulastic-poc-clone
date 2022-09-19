@@ -21,6 +21,7 @@ const {
   getHSLFromRange1,
   DemographicCompareByOptions,
   getCsvDataFromTableBE,
+  getFormattedName,
 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -507,12 +508,6 @@ const analysisDomainsData = (compareBy, skillInfo, metricInfo, scaleInfo) => {
   })
 
   return data
-}
-
-const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
 const getAnalyzedTableData = (report, viewBy, compareBy) => {

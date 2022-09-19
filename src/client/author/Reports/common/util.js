@@ -253,21 +253,6 @@ export const getOverallScore = (metrics = []) =>
 export const filterAccordingToRole = (columns, role) =>
   columns.filter((column) => !includes(column.hiddenFromRole, role))
 
-export const addColors = (
-  data = [],
-  selectedData,
-  xDataKey,
-  scoreKey = 'avgScore'
-) =>
-  map(data, (item) =>
-    next(item, (draft) => {
-      draft.fill =
-        includes(selectedData, item[xDataKey]) || !selectedData.length
-          ? getHSLFromRange1(item[scoreKey])
-          : '#cccccc'
-    })
-  )
-
 export const getLeastProficiencyBand = (bandInfo = []) =>
   orderBy(bandInfo, 'threshold', ['desc'])[bandInfo.length - 1] || {}
 
@@ -334,12 +319,6 @@ export const downloadCSV = (filename, data) => {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
-}
-
-export const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
 export const getStudentAssignments = (

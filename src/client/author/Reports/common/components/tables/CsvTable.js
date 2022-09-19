@@ -77,10 +77,9 @@ const StyledTableWrapper = styled.div`
     table {
       overflow-wrap: break-word;
     }
-  }
-
-  .ant-table-layout-fixed .ant-table-scroll .ant-table-body {
-    overflow-x: hidden !important;
+    .ant-table-layout-fixed .ant-table-scroll .ant-table-body {
+      overflow-x: hidden !important;
+    }
   }
 `
 

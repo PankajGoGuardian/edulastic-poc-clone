@@ -10,10 +10,13 @@ import {
   orderBy,
 } from 'lodash'
 import { white } from '@edulastic/colors'
+import { reportUtils } from '@edulastic/constants'
 import {
   getProficiencyBand,
   DemographicCompareByOptions,
 } from '../../../../common/util'
+
+const { getFormattedName } = reportUtils.common
 
 export const idToLabel = {
   standardId: 'standard',
@@ -55,12 +58,6 @@ export const analyseByToKeyToRender = {
   rawScore: 'rawScore',
   masteryLevel: 'masteryName',
   masteryScore: 'fm',
-}
-
-const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
 export const getMasteryDropDown = (masteryScale) => {

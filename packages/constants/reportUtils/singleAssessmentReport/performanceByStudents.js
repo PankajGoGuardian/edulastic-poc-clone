@@ -22,6 +22,7 @@ const {
   filterData,
   formatDate,
   getCsvDataFromTableBE,
+  getFormattedName,
 } = require('../common')
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -222,12 +223,6 @@ const getProficiency = (item, bandInfo) => {
       return obj.name || getLeastProficiency(bandInfo).name
     }
   }
-}
-
-const getFormattedName = (name) => {
-  const nameArr = (name || '').trim().split(' ')
-  const lName = nameArr.splice(nameArr.length - 1)[0]
-  return nameArr.length ? `${lName}, ${nameArr.join(' ')}` : lName
 }
 
 const normaliseTableData = (rawData, data) => {

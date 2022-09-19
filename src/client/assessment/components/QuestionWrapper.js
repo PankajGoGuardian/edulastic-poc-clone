@@ -573,7 +573,8 @@ class QuestionWrapper extends Component {
 
     // EV-36516 | if showTtsForPassages is false hide tts for passage
     const showPlayerForPassage =
-      data.type === questionType.PASSAGE || data.type === questionType.VIDEO
+      !isStudentReport &&
+      (data.type === questionType.PASSAGE || data.type === questionType.VIDEO)
         ? showTtsForPassages
         : true
 

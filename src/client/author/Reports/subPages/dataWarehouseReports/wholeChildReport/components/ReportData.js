@@ -1,3 +1,4 @@
+import { SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import { isEmpty, get } from 'lodash'
 import React, { useEffect, useMemo } from 'react'
@@ -21,7 +22,9 @@ const ReportData = ({
   filtersData,
   isCsvDownloading,
   resetAllReports,
+  loadingReportData,
   fetchReportDataRequest,
+  fetchFiltersDataRequest,
   toggleFilter,
 }) => {
   useEffect(
@@ -31,9 +34,12 @@ const ReportData = ({
     },
     []
   )
-
   useEffect(() => {
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
+      fetchFiltersDataRequest({
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
+      })
       fetchReportDataRequest({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
@@ -55,8 +61,6 @@ const ReportData = ({
     'data.result',
     {}
   )
-  console.log(filtersData)
-  console.log(reportData)
 
   const selectedPerformanceBand = (
     bandInfo.find(
@@ -90,14 +94,16 @@ const ReportData = ({
     studentInformation
   )
 
-  console.log(studentInformation)
-  console.log(studentName)
-
   const onCsvConvert = (data) =>
     downloadCSV(`Whole Child Report-${studentName}.csv`, data)
   return (
     <ReportContainer>
-      {error && error.dataSizeExceeded ? (
+      {loadingReportData ? (
+        <SpinLoader
+          tip="Please wait while we gather the required information..."
+          position="fixed"
+        />
+      ) : error && error.dataSizeExceeded ? (
         <DataSizeExceeded />
       ) : isEmpty(assignmentMetrics) ||
         isEmpty(districtMetrics) ||
@@ -107,7 +113,7 @@ const ReportData = ({
         <NoDataContainer>
           {settings.requestFilters?.termId
             ? 'No data available currently.'
-            : 'None'}
+            : ''}
         </NoDataContainer>
       ) : (
         <>
@@ -135,6 +141,7 @@ const enhance = connect(
     error: selectors.error(state),
     reportData: selectors.reportData(state),
     filtersData: selectors.filtersData(state),
+    loadingReportData: selectors.loadingReportData(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

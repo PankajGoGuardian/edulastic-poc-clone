@@ -22,7 +22,7 @@ import {
 } from '../ManageClass/ducks'
 import Header from '../sharedComponents/Header'
 import MainContainer from '../styled/mainContainer'
-import { getUserRole, getChildrens } from '../../author/src/selectors/user'
+import { getChildrens } from '../../author/src/selectors/user'
 import { LoaderConainer } from '../SkillReport/styled'
 import ReportData from '../../author/Reports/subPages/dataWarehouseReports/wholeChildReport/components/ReportData'
 
@@ -37,7 +37,6 @@ const getChildrenUserName = (childrens, childId) => {
 const WholeChildReportContainer = ({
   flag,
   userId,
-  userRole,
   userName,
   classId,
   loadAllClasses,
@@ -46,7 +45,6 @@ const WholeChildReportContainer = ({
   loading,
   resetEnrolledClass,
   currentChild,
-  getSPRFilterDataRequest,
   childrens,
   t,
 }) => {
@@ -78,7 +76,6 @@ const WholeChildReportContainer = ({
   useEffect(() => {
     if (classId) {
       const termId = getTermId(userClasses, classId || fallbackClassId)
-      console.log(termId)
       setSettings({
         ...settings,
         requestFilters: {
@@ -106,11 +103,7 @@ const WholeChildReportContainer = ({
         // if you need to pass multiple ids then pass it as comma separated
         groupIds: classId,
       })
-    } else if (
-      !classId &&
-      userRole === 'student' &&
-      (activeClasses || []).length
-    ) {
+    } else if (!classId && (activeClasses || []).length) {
       const firstActiveClassId = activeClasses?.[0]?._id
       if (firstActiveClassId) {
         Object.assign(q, {
@@ -119,7 +112,6 @@ const WholeChildReportContainer = ({
         })
       }
     }
-    if (q.termId) getSPRFilterDataRequest(q)
   }, [settings])
   return (
     <MainContainer flag={flag}>
@@ -163,7 +155,6 @@ export default withNamespaces('header')(
       userId: getUserId(state),
       currentChild: state?.user?.currentChild,
       loading: getLoaderSelector(state),
-      userRole: getUserRole(state),
       childrens: getChildrens(state),
     }),
     {

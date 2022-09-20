@@ -10,7 +10,7 @@ export const getData = (rawData = {}, tests = []) => {
   const { districtAvg = [], groupAvg = [], schoolAvg = [] } = rawData
 
   const parsedData = map(tests, (test) => {
-    const { testType, testId, assignments } = test
+    const { testId, assignments } = test
 
     const testInfo = { testId }
 
@@ -26,12 +26,10 @@ export const getData = (rawData = {}, tests = []) => {
     } / ${round(sumBy(assignments, 'maxScore'), 2)}`
 
     const assignmentDateFormatted = formatDate(test.assignmentDate)
-    const testTypes = getAllTestTypesMap()
 
     return {
       totalQuestions: 0,
       ...test,
-      testType: testTypes[testType.toLowerCase()],
       assignmentDateFormatted,
       districtAvg: testDistrictAvg,
       groupAvg: testGroupAvg,

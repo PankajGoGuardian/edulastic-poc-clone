@@ -566,7 +566,8 @@ export const currentUserIdSelector = createSelector(
 
 export const allowedToSelectMultiLanguageInTest = createSelector(
   currentUserIdSelector,
-  (state) => {
+  getIsCurator,
+  (state, isCurator) => {
     const allowedUserIds = [
       '5f5f729516eaad0008c45a44', // vinayt@v2.com uat user
       // '5d26f2f892df401ddf8c2fd7', // poc user
@@ -580,7 +581,7 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
       '5f48a498db9eaf900d7abfde', // Swetha-access-lausd-mulitlingual-content (PRO)
       '5e3be21d03b7ad0924bf517a', // admin@happyhealthy.org - prod sales account
     ]
-    return allowedUserIds.includes(state)
+    return allowedUserIds.includes(state) || isCurator
   }
 )
 

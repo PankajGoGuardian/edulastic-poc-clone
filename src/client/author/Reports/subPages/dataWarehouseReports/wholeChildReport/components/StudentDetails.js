@@ -42,26 +42,26 @@ const StudentDetails = ({
       <DetailsWrapper>
         <Details>
           <StudentName>
-            <StyledIcon />
-            <StyledTitle>{studentName}</StyledTitle>
+            <StyledIcon data-testid="userIcon" />
+            <StyledTitle data-testid="studentName">{studentName}</StyledTitle>
           </StudentName>
           <StyledLine />
           <StudentMetaData>
             <div>
               <StyledFont>School : </StyledFont>
-              <StyledTitle>{schoolName}</StyledTitle>
+              <StyledTitle data-testid="schoolName">{schoolName}</StyledTitle>
             </div>
             <div>
               <StyledFont>Grade : </StyledFont>
-              <StyledTitle>{grades}</StyledTitle>
+              <StyledTitle data-testid="grade">{grades}</StyledTitle>
             </div>
             <div>
               <StyledFont>Race : </StyledFont>
-              <StyledTitle>{race}</StyledTitle>
+              <StyledTitle data-testid="race">{race}</StyledTitle>
             </div>
             <div>
               <StyledFont>Gender : </StyledFont>
-              <StyledTitle>{gender}</StyledTitle>
+              <StyledTitle data-testid="gender">{gender}</StyledTitle>
             </div>
           </StudentMetaData>
         </Details>

@@ -23,6 +23,7 @@ const getTableColumns = () => {
         {!record.isShareReport && !record.externalTestType ? (
           <Link
             to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+            data-testid="testName"
           >
             <h4>{testName}</h4>
           </Link>

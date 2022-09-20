@@ -322,6 +322,7 @@ const WholeChildReportFilters = ({
         <ReportFiltersContainer visible={!reportId}>
           <StyledEduButton
             data-cy="filters"
+            data-testid="filters"
             isGhost={!showFilter}
             onClick={toggleFilter}
             style={{ height: '24px' }}
@@ -373,6 +374,7 @@ const WholeChildReportFilters = ({
                   <Col span={8}>
                     <MultiSelectDropdown
                       dataCy="classGrade"
+                      data-testid="classGrade"
                       label="Class Grade"
                       onChange={(e) => {
                         const selected = staticDropDownData.grades.filter((a) =>
@@ -391,6 +393,7 @@ const WholeChildReportFilters = ({
                   <Col span={8}>
                     <MultiSelectDropdown
                       dataCy="classSubject"
+                      data-testid="classSubject"
                       label="Class Subject"
                       onChange={(e) => {
                         const selected = staticDropDownData.subjects.filter(
@@ -409,6 +412,7 @@ const WholeChildReportFilters = ({
                   <Col span={8}>
                     <ClassAutoComplete
                       dataCy="classes"
+                      data-testid="classes"
                       termId={filters.termId}
                       schoolIds={filters.schoolIds}
                       courseIds={filters.courseIds}
@@ -432,6 +436,7 @@ const WholeChildReportFilters = ({
                   isGhost
                   key="cancelButton"
                   data-cy="cancelFilter"
+                  data-testid="cancelFilter"
                   onClick={(e) => toggleFilter(e, false)}
                 >
                   Cancel
@@ -442,6 +447,7 @@ const WholeChildReportFilters = ({
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
                   data-cy="applyFilter"
+                  data-testid="applyFilter"
                   disabled={!showApply || loadingFiltersData}
                   onClick={() => onGoClick()}
                 >
@@ -482,6 +488,7 @@ const WholeChildReportFilters = ({
             sm={12}
             lg={6}
             data-cy="performanceBand"
+            data-testid="performanceBand"
           >
             <FieldLabel fs=".7rem" data-cy="schoolYear">
               PERFORMANCE BAND
@@ -504,6 +511,7 @@ const WholeChildReportFilters = ({
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"
+              data-testid="applyRowFilter"
               data-cy="applyRowFilter"
               disabled={loadingFiltersData}
               onClick={() => onGoClick()}

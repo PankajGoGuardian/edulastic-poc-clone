@@ -156,7 +156,7 @@ const PassageView = ({
     if (isEmpty(_highlights)) {
       return content
         ?.replace(/(<div (.*?)>)/g, '')
-        ?.replace(/(<\/div>)/g, '')
+        ?.replace(/(<\/div>)/g, '<br/>')
         ?.replace(/(<p>)/g, '')
         ?.replace(/(<\/p>)/g, '<br/>')
     }

@@ -36,6 +36,10 @@ const filtersDefaultValues = [
     value: '',
   },
   {
+    key: 'schoolIds',
+    value: '',
+  },
+  {
     key: '',
     nestedFilters: [
       {
@@ -44,6 +48,10 @@ const filtersDefaultValues = [
       },
       {
         key: 'subjects',
+        value: '',
+      },
+      {
+        key: 'classIds',
         value: '',
       },
     ],

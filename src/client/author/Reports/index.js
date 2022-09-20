@@ -477,7 +477,8 @@ const enhance = connect(
     emailVerified: getEmailVerified(state),
     verificationTS: getVerificationTS(state),
     isDefaultDA: isDefaultDASelector(state),
-    showCustomReport: get(state, 'user.user.features.customReports', false),
+    // NOTE: customReports (enabled for all premium users) & customReport are separate features
+    showCustomReport: get(state, 'user.user.features.customReport', false),
     showDataWarehouseReport: get(
       state,
       'user.user.features.dataWarehouseReports',

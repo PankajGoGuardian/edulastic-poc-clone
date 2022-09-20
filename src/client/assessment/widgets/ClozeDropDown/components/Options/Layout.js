@@ -321,6 +321,20 @@ class Layout extends Component {
                       value={responsecontainerindividual.heightpx}
                     />
                   </Col>
+                  <Col md={12}>
+                    <Label>{t('component.options.defaultText')}</Label>
+                    <TextInputStyled
+                      disabled={false}
+                      onChange={(e) =>
+                        changeIndividualUiStyle(
+                          'placeholder',
+                          e.target.value,
+                          respIndex
+                        )
+                      }
+                      value={responsecontainerindividual.placeholder}
+                    />
+                  </Col>
                 </Row>
               </Container>
             )

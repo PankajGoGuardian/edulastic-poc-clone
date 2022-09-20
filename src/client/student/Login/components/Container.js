@@ -18,6 +18,7 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import styled from 'styled-components'
+import { segmentApi } from '@edulastic/api'
 import {
   isDistrictPolicyAllowed,
   isEmailValid,
@@ -42,7 +43,6 @@ import {
 import { ForgotPasswordPopup } from './forgotPasswordPopup'
 import { ClassCodePopup } from './classCodePopup'
 import TermsAndPrivacy from '../../Signup/components/TermsAndPrivacy/TermsAndPrivacy'
-import { segmentApi } from '@edulastic/api'
 
 const FormItem = Form.Item
 
@@ -173,6 +173,7 @@ class LoginContainer extends React.Component {
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
+                        data-cy="googleLogin"
                         onClick={() => {
                           googleLogin()
                         }}
@@ -189,6 +190,7 @@ class LoginContainer extends React.Component {
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
+                        data-cy="msoLogin"
                         onClick={() => {
                           msoLogin()
                         }}
@@ -222,6 +224,7 @@ class LoginContainer extends React.Component {
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
+                        data-cy="classlinkLogin"
                         onClick={() => {
                           atlasLogin('teacher')
                         }}
@@ -242,6 +245,7 @@ class LoginContainer extends React.Component {
                       <ThirdPartyLoginBtn
                         span={20}
                         offset={2}
+                        data-cy="schoologyLogin"
                         onClick={() => {
                           atlasLogin('teacher')
                         }}

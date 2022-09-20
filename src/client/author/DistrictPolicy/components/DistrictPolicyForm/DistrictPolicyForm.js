@@ -418,36 +418,42 @@ class DistrictPolicyForm extends Component {
                 <CheckboxLabel
                   checked={districtPolicy.userNameAndPassword}
                   onChange={(e) => this.change(e, 'userNameAndPassword')}
+                  data-cy="userNameAndPassword"
                 >
                   Username and password
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.googleSignOn}
                   onChange={(e) => this.change(e, 'googleSignOn')}
+                  data-cy="googleSignOn"
                 >
                   Google Single signon
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.office365SignOn}
                   onChange={(e) => this.change(e, 'office365SignOn')}
+                  data-cy="office365SignOn"
                 >
                   Office365 Single signon
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.atlasSignOn}
                   onChange={(e) => this.change(e, 'atlasSignOn')}
+                  data-cy="classlinkSignOn"
                 >
                   Classlink Single signon
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.schoologySignOn}
                   onChange={(e) => this.change(e, 'schoologySignOn')}
+                  data-cy="schoologySignOn"
                 >
                   Schoology Single signon
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.cleverSignOn}
                   onChange={(e) => this.change(e, 'cleverSignOn')}
+                  data-cy="cleverSignOn"
                 >
                   Clever instance signon
                 </CheckboxLabel>
@@ -461,12 +467,14 @@ class DistrictPolicyForm extends Component {
                 <CheckboxLabel
                   checked={districtPolicy.teacherSignUp}
                   onChange={(e) => this.change(e, 'teacherSignUp')}
+                  data-cy="teacherSignUp"
                 >
                   Allow Teachers to sign-up
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.studentSignUp}
                   onChange={(e) => this.change(e, 'studentSignUp')}
+                  data-cy="studentSignUp"
                 >
                   Allow Students to sign-up
                 </CheckboxLabel>
@@ -490,18 +498,21 @@ class DistrictPolicyForm extends Component {
                 <CheckboxLabel
                   checked={districtPolicy.googleUsernames}
                   onChange={(e) => this.change(e, 'googleUsernames')}
+                  data-cy="student-googleUsernames"
                 >
                   Google Usernames
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.office365Usernames}
                   onChange={(e) => this.change(e, 'office365Usernames')}
+                  data-cy="student-office365Usernames"
                 >
                   Office 365 Usernames
                 </CheckboxLabel>
                 <CheckboxLabel
                   checked={districtPolicy.firstNameAndLastName}
                   onChange={(e) => this.change(e, 'firstNameAndLastName')}
+                  data-cy="student-firstNameAndLastName"
                 >
                   Firstname and Lastname
                 </CheckboxLabel>
@@ -547,6 +558,7 @@ class DistrictPolicyForm extends Component {
                 help={allowDomainForSchoolValidate.errorMsg}
               >
                 <TextInputStyled
+                  data-cy="domain-for-recommending-schools"
                   value={districtPolicy.allowedDomainsForDistrict}
                   onChange={this.handleTagSchoolChange}
                   placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
@@ -566,6 +578,7 @@ class DistrictPolicyForm extends Component {
                   value={districtPolicy.allowedDomainForStudents}
                   onChange={this.handleTagStudentChange}
                   limit={512}
+                  data-cy="allowed-students-domain"
                   placeholder="Enter allowed domain(s), example - gmail.com, edulastic.com"
                 />
               </StyledFormItem>
@@ -576,10 +589,10 @@ class DistrictPolicyForm extends Component {
                 onChange={this.thirdpartyIntegration}
                 value={thirdPartyValue}
               >
-                <RadioBtn mb="10px" value={1}>
+                <RadioBtn mb="10px" value={1} data-cy="googleClassroom">
                   Google Classroom
                 </RadioBtn>
-                <RadioBtn mb="10px" value={2}>
+                <RadioBtn mb="10px" value={2} data-cy="canvas">
                   <span>Canvas</span>{' '}
                   {isSchoolLevel ? null : (
                     <ConfigureButton
@@ -593,7 +606,7 @@ class DistrictPolicyForm extends Component {
                     </ConfigureButton>
                   )}
                 </RadioBtn>
-                <RadioBtn mb="10px" value={3}>
+                <RadioBtn mb="10px" value={3} data-cy="none">
                   None
                 </RadioBtn>
                 {/* None signifies that no 3rd party integration is enabled */}
@@ -611,6 +624,7 @@ class DistrictPolicyForm extends Component {
                 help={allowIpForAssignmentValidate.errorMsg}
               >
                 <TextInputStyled
+                  data-cy="allowedIpForAssignments"
                   value={districtPolicy.allowedIpForAssignments}
                   onChange={this.handleInputIpAddresses}
                   placeholder="Enter allowed ip(s), example - 127.0.*.1, 187.0.*.*"
@@ -630,8 +644,12 @@ class DistrictPolicyForm extends Component {
                     onChange={this.disableStudentLogin}
                     value={districtPolicy?.disableStudentLogin ? 'yes' : 'no'}
                   >
-                    <RadioBtn value="yes">Yes</RadioBtn>
-                    <RadioBtn value="no">No</RadioBtn>
+                    <RadioBtn data-cy="disableStudentLogin-yes" value="yes">
+                      Yes
+                    </RadioBtn>
+                    <RadioBtn data-cy="disableStudentLogin-no" value="no">
+                      No
+                    </RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
                 <StyledCol mt="0px">
@@ -642,8 +660,12 @@ class DistrictPolicyForm extends Component {
                       districtPolicy?.enableGoogleMeet === true ? 'yes' : 'no'
                     }
                   >
-                    <RadioBtn value="yes">Yes</RadioBtn>
-                    <RadioBtn value="no">No</RadioBtn>
+                    <RadioBtn data-cy="enableGoogleMeet-yes" value="yes">
+                      Yes
+                    </RadioBtn>
+                    <RadioBtn data-cy="enableGoogleMeet-no" value="no">
+                      No
+                    </RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
               </StyledRow>
@@ -659,8 +681,12 @@ class DistrictPolicyForm extends Component {
                   districtPolicy?.enforceDistrictSignonPolicy ? 'yes' : 'no'
                 }
               >
-                <RadioBtn value="yes">Yes</RadioBtn>
-                <RadioBtn value="no">No</RadioBtn>
+                <RadioBtn data-cy="enforceDistrictSignonPolicy-yes" value="yes">
+                  Yes
+                </RadioBtn>
+                <RadioBtn data-cy="enforceDistrictSignonPolicy-no" value="no">
+                  No
+                </RadioBtn>
               </StyledRadioGrp>
             </StyledCol>
           </StyledRow>

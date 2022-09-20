@@ -86,7 +86,7 @@ class AdminHeader extends Component {
         mobileHeaderHeight={100}
         headerLeftClassName="manage-district-headerLeft"
       >
-        <AdminHeaderContent>
+        <AdminHeaderContent data-cy="manage-district-header">
           <StyledTabs
             type="card"
             tabPosition="top"

@@ -154,7 +154,9 @@ export const isDistrictPolicyAllowed = (
   if (
     isSignupUsingDaURL &&
     districtPolicy &&
-    (districtPolicy[name] || isUndefined(districtPolicy[name]))
+    (districtPolicy[name] ||
+      (isUndefined(districtPolicy[name]) &&
+        !['atlasSignOn', 'schoologySignOn'].includes(name)))
   ) {
     return true
   }

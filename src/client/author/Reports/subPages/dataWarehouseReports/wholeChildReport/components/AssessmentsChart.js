@@ -24,12 +24,18 @@ const TooltipRowItem = ({ title = '', value = '' }) => (
   </TooltipRow>
 )
 
-const ColorBandItem = ({ name, color }) => (
-  <ColorBandRow>
-    <ColorCircle color={color} />
-    <TooltipRowValue>{name}</TooltipRowValue>
-  </ColorBandRow>
-)
+const ColorBandItem = ({ name, color, highlight }) => {
+  let style = {}
+  if (highlight) {
+    style = { fontSize: '15px', fontWeight: 'bold' }
+  }
+  return (
+    <ColorBandRow>
+      <ColorCircle color={color} />
+      <TooltipRowValue style={style}>{name}</TooltipRowValue>
+    </ColorBandRow>
+  )
+}
 
 // payload: [{ color, dataKey, fill, formatter, name, type, unit, value, payload }, ...]
 // payload[0].payload: contains data for that bar
@@ -57,9 +63,16 @@ const getTooltipJSX = (payload, barIndex) => {
             <TooltipRowItem
               title={`${demoAchievementLevels.length} color band`}
             />
-            {demoAchievementLevels.map((band) => (
-              <ColorBandItem color={band.color} name={band.name} />
-            ))}
+            {demoAchievementLevels
+              .slice(0)
+              .reverse()
+              .map((band) => (
+                <ColorBandItem
+                  color={band.color}
+                  highlight={band.id === barData.achievementLevel}
+                  name={band.name}
+                />
+              ))}
           </>
         ) : (
           <ColorBandItem color={barData.band.color} name={barData.band.name} />

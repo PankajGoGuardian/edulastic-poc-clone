@@ -14,14 +14,14 @@ import {
 import { tableColumnsData } from '../utils'
 import LargeTag from './LargeTag'
 
-const getTableColumns = () => {
+const getTableColumns = (isSharedReport) => {
   return next(tableColumnsData, (_columns) => {
     // link to LCB for testName
     const testNameIdx = _columns.findIndex((col) => col.key === 'testName')
     _columns[testNameIdx].render = (testName, record) => (
       <AssementNameContainer>
         <span>
-          {!record.isShareReport && !record.externalTestType ? (
+          {!isSharedReport && !record.externalTestType ? (
             <Link
               to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
               data-testid="testName"
@@ -88,8 +88,15 @@ const getTableColumns = () => {
   })
 }
 
-const AssessmentsTable = ({ tableData, onCsvConvert, isCsvDownloading }) => {
-  const tableColumns = useMemo(() => getTableColumns())
+const AssessmentsTable = ({
+  tableData,
+  onCsvConvert,
+  isCsvDownloading,
+  isSharedReport,
+}) => {
+  const tableColumns = useMemo(() => getTableColumns(isSharedReport), [
+    isSharedReport,
+  ])
   return (
     <TableContainer>
       <CsvTable

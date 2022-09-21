@@ -109,6 +109,12 @@ const WholeChildReport = ({
     }
   }
 
+  const { studentClassData = [], bandInfo = [], demographics = {} } = get(
+    filtersData,
+    'data.result',
+    {}
+  )
+
   const onGoClick = (_settings) => {
     const requestFilterKeys = [
       'termId',
@@ -136,6 +142,10 @@ const WholeChildReport = ({
       },
       selectedStudent: _settings.selectedStudent,
       selectedFilterTagsData: _settings.selectedFilterTagsData,
+      selectedStudentInformation: {
+        ...(studentClassData[0] || {}),
+        ...demographics,
+      },
     })
     setShowApply(false)
   }
@@ -166,11 +176,6 @@ const WholeChildReport = ({
     }
   }, [settings.selectedStudent, settings.requestFilters])
 
-  const { studentClassData = [], bandInfo = [], demographics = {} } = get(
-    filtersData,
-    'data.result',
-    {}
-  )
   const {
     assignmentMetrics = [],
     districtMetrics = [],
@@ -209,10 +214,9 @@ const WholeChildReport = ({
     selectedPerformanceBand,
   ])
 
-  const studentInformation = { ...(studentClassData[0] || {}), ...demographics }
   const studentName = getStudentName(
     settings.selectedStudent,
-    studentInformation
+    settings.selectedStudentInformation
   )
 
   // const onTestSelect = (item) =>
@@ -295,7 +299,9 @@ const WholeChildReport = ({
           </NoDataContainer>
         ) : (
           <>
-            <StudentDetails studentInformation={studentInformation} />
+            <StudentDetails
+              studentInformation={settings.selectedStudentInformation}
+            />
             <AssessmentsChart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}

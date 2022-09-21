@@ -42,6 +42,7 @@ const initialState = {
     //     standardIds: '',
     //   },
     selectedFilterTagsData: {},
+    selectedStudentInformation: {},
   },
   loadingReportData: false,
   reportData: {},

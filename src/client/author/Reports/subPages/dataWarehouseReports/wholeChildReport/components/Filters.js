@@ -377,8 +377,6 @@ const WholeChildReportFilters = ({
                       selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
                     />
                   </Col>
-                </Row>
-                <Row type="flex" gutter={[5, 10]}>
                   <Col span={8}>
                     <MultiSelectDropdown
                       dataCy="classGrade"

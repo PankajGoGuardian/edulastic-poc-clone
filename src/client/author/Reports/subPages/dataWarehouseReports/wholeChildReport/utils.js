@@ -94,6 +94,7 @@ export const tableColumnsData = [
     title: 'Total Questions',
     dataIndex: 'totalTestItems',
     key: 'totalTestItems',
+    width: 180,
   },
   {
     title: 'Performance',
@@ -101,24 +102,28 @@ export const tableColumnsData = [
     key: 'averageScore',
   },
   {
-    title: 'District (Avg. Score%)',
+    title: 'District (Avg. Score)',
     dataIndex: 'districtAvg',
     key: 'districtAvg',
+    width: 180,
   },
   {
-    title: 'School (Avg Score%)',
+    title: 'School (Avg Score)',
     dataIndex: 'schoolAvg',
     key: 'schoolAvg',
+    width: 180,
   },
   {
-    title: 'Class (Avg Score%)',
+    title: 'Class (Avg Score)',
     dataIndex: 'groupAvg',
     key: 'groupAvg',
+    width: 180,
   },
   {
     title: 'Claim Levels',
     dataIndex: 'claimsInfo',
     key: 'claimsInfo',
+    align: 'left',
   },
 ]
 

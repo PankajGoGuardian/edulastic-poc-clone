@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import { Tooltip } from 'antd'
+import { greyThemeDark1 } from '@edulastic/colors'
 
 const LargeTagParent = styled.div`
   display: flex;
@@ -10,26 +12,47 @@ const LargeTagParent = styled.div`
   height: 32px;
   border-radius: 4px;
   ${(props) => (props.background ? `background: ${props.background};` : '')}
-  ${(props) => (props.color ? `color: ${props.color};` : '')}
-	& > div:first-child {
-    font-weight: 400;
+  color: ${(props) => props.color || greyThemeDark1} !important;
+  div.left-text {
+    font-weight: bold;
+    max-width: 135px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
-  & > div {
-    color: transparent;
-    background: inherit;
-    background-clip: text;
-    -webkit-background-clip: text;
-    filter: invert(1) grayscale(1) contrast(50);
+  div.right-text {
+    font-weight: bold;
   }
 `
 
 const LargeTag = (props) => {
-  const { leftText, rightText, leftStyle, rightStyle, ...restProps } = props
-  return (
+  const {
+    tooltipPlacement,
+    tooltipText,
+    leftText,
+    rightText,
+    leftStyle,
+    rightStyle,
+    ...restProps
+  } = props
+
+  const largeTag = (
     <LargeTagParent {...restProps}>
-      <div style={leftStyle}>{leftText}</div>
-      <div style={rightStyle}>{rightText}</div>
+      <div className="left-text" style={leftStyle}>
+        {leftText}
+      </div>
+      <div className="right-text" style={rightStyle}>
+        {rightText}
+      </div>
     </LargeTagParent>
+  )
+
+  return tooltipText ? (
+    <Tooltip placement={tooltipPlacement || 'top'} title={tooltipText}>
+      {largeTag}
+    </Tooltip>
+  ) : (
+    largeTag
   )
 }
 export default LargeTag

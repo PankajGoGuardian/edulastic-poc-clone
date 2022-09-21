@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import { Tag } from 'antd'
-import { IconStudent, IconCheckMark } from '@edulastic/icons'
+import { IconStudent } from '@edulastic/icons'
 import {
   lightGrey9,
   extraDesktopWidthMax,
@@ -54,7 +54,6 @@ export const CustomStyledTable = styled(StyledTable)`
         text-transform: uppercase;
         font-size: 10px;
         border: 0px;
-        background: none;
         .ant-table-column-sorter {
           vertical-align: top;
         }
@@ -75,7 +74,7 @@ export const CustomStyledTable = styled(StyledTable)`
 `
 
 export const AssementNameContainer = styled.div`
-  h4 {
+  span {
     font-weight: bold;
   }
 `
@@ -103,12 +102,15 @@ export const Demographics = styled.div`
   padding: 20px 5px;
   background-color: ${fadedGrey};
   border-radius: 0px 0px 10px 10px;
-  & > div {
+  & > div.demographic-item {
     display: flex;
     align-items: center;
-  }
-  p {
-    font-weight: bold;
+    svg {
+      margin-right: 10px;
+    }
+    span {
+      font-weight: bold;
+    }
   }
 `
 
@@ -146,9 +148,4 @@ export const StyledIcon = styled(IconStudent)`
   margin-right: 10px;
   align-self: center;
   color: ${themeColor};
-`
-
-export const StyledCheckedIcon = styled(IconCheckMark)`
-  margin-right: 10px;
-  color: ${(props) => (props.checked ? themeColor : 'grey')};
 `

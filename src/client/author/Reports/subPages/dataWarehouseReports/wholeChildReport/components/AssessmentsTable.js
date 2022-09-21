@@ -20,16 +20,18 @@ const getTableColumns = () => {
     const testNameIdx = _columns.findIndex((col) => col.key === 'testName')
     _columns[testNameIdx].render = (testName, record) => (
       <AssementNameContainer>
-        {!record.isShareReport && !record.externalTestType ? (
-          <Link
-            to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
-            data-testid="testName"
-          >
-            <h4>{testName}</h4>
-          </Link>
-        ) : (
-          <h4>{testName}</h4>
-        )}
+        <span>
+          {!record.isShareReport && !record.externalTestType ? (
+            <Link
+              to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+              data-testid="testName"
+            >
+              {testName}
+            </Link>
+          ) : (
+            testName
+          )}
+        </span>
         {record.externalTestType ? (
           <StyledTag color="black">{record.externalTestType}</StyledTag>
         ) : null}
@@ -43,16 +45,28 @@ const getTableColumns = () => {
       !record.externalTestType ? (
         <Row type="flex" justify="center">
           <LargeTag
+            tooltipPlacement="topLeft"
+            tooltipText={record.band.name}
             leftText={record.band.name}
-            rightText={`${Math.round(averageScore)}${
-              record.externalTestType ? '%' : ''
-            }`}
+            rightText={`${Math.round(averageScore)}%`}
             background={record.band.color}
           />
         </Row>
       ) : (
         record.totalScore
       )
+    // render value with percentage for averages of internal tests
+    const districtAvgIdx = _columns.findIndex(
+      (col) => col.key === 'districtAvg'
+    )
+    _columns[districtAvgIdx].render = (districtAvg, record) =>
+      !record.externalTestType ? `${districtAvg}%` : districtAvg
+    const schoolAvgIdx = _columns.findIndex((col) => col.key === 'schoolAvg')
+    _columns[schoolAvgIdx].render = (schoolAvg, record) =>
+      !record.externalTestType ? `${schoolAvg}%` : schoolAvg
+    const groupAvgIdx = _columns.findIndex((col) => col.key === 'groupAvg')
+    _columns[groupAvgIdx].render = (groupAvg, record) =>
+      !record.externalTestType ? `${groupAvg}%` : groupAvg
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
     _columns[claimsInfoIdx].render = (claimsInfo) => (

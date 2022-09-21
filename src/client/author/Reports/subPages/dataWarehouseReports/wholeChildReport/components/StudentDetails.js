@@ -1,6 +1,8 @@
 import React from 'react'
 
+import { themeColor } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
+import { IconCheckMark } from '@edulastic/icons'
 import {
   DetailsWrapper,
   Details,
@@ -11,7 +13,6 @@ import {
   StyledFont,
   StyledLine,
   Demographics,
-  StyledCheckedIcon,
 } from '../common/styled'
 
 const { getFormattedName } = reportUtils.common
@@ -67,38 +68,30 @@ const StudentDetails = ({
         </Details>
       </DetailsWrapper>
       <Demographics>
-        <div>
-          <StyledCheckedIcon
-            type="check-circle"
-            theme="filled"
-            checked={frlStatus}
-          />
-          <p>FRL Status</p>
-        </div>
-        <div>
-          <StyledCheckedIcon
-            type="check-circle"
-            theme="filled"
-            checked={iepStatus}
-          />
-          <p>IEP Status</p>
-        </div>
-        <div>
-          <StyledCheckedIcon
-            type="check-circle"
-            theme="filled"
-            checked={ellStatus}
-          />
-          <p>ELL Status</p>
-        </div>
-        <div>
-          <StyledCheckedIcon
-            type="check-circle"
-            theme="filled"
-            checked={hispanicEthnicity}
-          />
-          <p>Hispanic Ethnicity</p>
-        </div>
+        {frlStatus === 'Yes' ? (
+          <div className="demographic-item">
+            <IconCheckMark color={themeColor} />
+            <span>FRL Status</span>
+          </div>
+        ) : null}
+        {iepStatus === 'Yes' ? (
+          <div className="demographic-item">
+            <IconCheckMark color={themeColor} />
+            <span>IEP Status</span>
+          </div>
+        ) : null}
+        {ellStatus === 'Yes' ? (
+          <div className="demographic-item">
+            <IconCheckMark color={themeColor} />
+            <span>ELL Status</span>
+          </div>
+        ) : null}
+        {hispanicEthnicity === 'Yes' ? (
+          <div className="demographic-item">
+            <IconCheckMark color={themeColor} />
+            <span>Hispanic Ethnicity</span>
+          </div>
+        ) : null}
       </Demographics>
     </div>
   )

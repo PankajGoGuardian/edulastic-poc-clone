@@ -133,9 +133,14 @@ const SharedRow = ({ data, index, getEmail, getUserName, removeHandler }) => {
             'All Actions (edit, duplicate, assign)'}
         </span>
         <span>
-          {data.permission === 'VIEW' && data.sharedType === 'LINK'
-            ? 'Limited Access (duplicate, assign)'
-            : 'Limited Actions (duplicate, assign)'}
+          {data.permission === 'VIEW' &&
+            data.sharedType !== 'LINK' &&
+            'Limited Actions (duplicate, assign)'}
+        </span>
+        <span>
+          {data.permission === 'VIEW' &&
+            data.sharedType === 'LINK' &&
+            'Limited Access (duplicate, assign)'}
         </span>
         <span>{data.permission === 'ASSIGN' && 'Only View and Assign'}</span>
         <span>

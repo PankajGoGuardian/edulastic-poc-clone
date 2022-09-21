@@ -542,6 +542,8 @@ class StudentTable extends Component {
   }
 
   changeFilterText = (e, key, callApi) => {
+    const { location = {} } = this.props;
+    location.institutionId = '';
     const _filtersData = this.state.filtersData.map((item, index) => {
       const val = e?.target ? e.target?.value : e?.key
       const updatedFilterData = {

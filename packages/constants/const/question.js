@@ -13,7 +13,7 @@ module.exports = {
   EMPTY_ANSWER: 'EDULASTIC_EMPTY_CORRECT_ANSWER',
   allDepthOfKnowledgeMap: {
     '': { value: '', text: 'Not Specified' },
-    Recall: { value: 'Recall', text: '1- Recall' },
+    Recall: { value: 'Recall', text: '1 - Recall' },
     'Skill/Concept': { value: 'Skill/Concept', text: '2 - Skill/Concept' },
     'Strategic Thinking': {
       value: 'Strategic Thinking',

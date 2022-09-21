@@ -70,7 +70,11 @@ const getTableColumns = () => {
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
     _columns[claimsInfoIdx].render = (claimsInfo) => (
-      <Row type="flex" justify="center" style={{ gap: '8px' }}>
+      <Row
+        type="flex"
+        justify="center"
+        style={{ gap: '8px', flexWrap: 'nowrap' }}
+      >
         {(claimsInfo || []).map((claim) => (
           <LargeTag
             leftText={claim.name}

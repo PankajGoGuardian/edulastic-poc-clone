@@ -247,7 +247,7 @@ export const SignedStackedBarChart = ({
     const { coordinate } = payload
     let content
     if (getXTickText) {
-      content = getXTickText(payload, chartData)
+      content = getXTickText(payload, renderData)
     } else {
       content = payload.value
     }
@@ -438,7 +438,6 @@ export const SignedStackedBarChart = ({
                     dataKey={bdItem.topLabelKey}
                     position="top"
                     fill="#010101"
-                    // offset={5}
                     onMouseOver={onBarMouseOver(bdIndex, true)}
                     onMouseLeave={onBarMouseLeave(bdIndex)}
                   />

@@ -1,5 +1,7 @@
-import React, { Component } from 'react'
+import React from 'react'
 import { Input, Dropdown, Menu, Icon } from 'antd'
+
+import { colors as colorConstants } from '@edulastic/constants'
 import {
   StyledFormItem,
   ScoreColorSpan,
@@ -71,16 +73,16 @@ class StandardsProficiencyEditableCell extends React.Component {
     const isnum = /^\d+$/.test(value)
     if (!isnum) {
       callback('Please input number.')
-    } else if (parseInt(value) > 100) {
+    } else if (parseInt(value, 10) > 100) {
       callback('Should not exceed 100.')
     } else if (record.score === dataSource.length) {
-      if (parseInt(value) <= dataSource[1].threshold)
+      if (parseInt(value, 10) <= dataSource[1].threshold)
         callback(`Value should not be less then ${dataSource[1].threshold}.`)
       else {
         callback()
       }
     } else if (
-      parseInt(value) >=
+      parseInt(value, 10) >=
       dataSource[dataSource.length - record.score - 1].threshold
     ) {
       callback(
@@ -89,7 +91,7 @@ class StandardsProficiencyEditableCell extends React.Component {
         }.`
       )
     } else if (
-      parseInt(value) <=
+      parseInt(value, 10) <=
       dataSource[dataSource.length - record.score + 1].threshold
     ) {
       callback(
@@ -151,19 +153,7 @@ class StandardsProficiencyEditableCell extends React.Component {
     const { selectedColor, colorValidate } = this.state
 
     const colorMenuItems = []
-    const colors = [
-      '#576ba9',
-      '#a1c3ea',
-      '#f39300',
-      '#fec571',
-      '#3db04e',
-      '#74e27a',
-      '#afa515',
-      '#ebdd54',
-      '#b22222',
-      '#7c0a02',
-      '#db75c5',
-    ]
+    const colors = [...colorConstants.standardProficiencyColors]
     for (let i = 0; i < colors.length; i++) {
       colorMenuItems.push(
         <Menu.Item key={colors[i]}>

@@ -26,6 +26,7 @@ const response = require('./const/dimensions')
 const canvasDimensions = require('./const/canvas')
 const clozeImage = require('./const/clozeImage')
 const fonts = require('./const/fonts')
+const colors = require('./const/colors')
 const question = require('./const/question')
 const ChoiceDimensions = require('./const/ChoiceDimensions')
 const assignmentStatusOptions = require('./const/assignmentStatus')
@@ -84,6 +85,7 @@ module.exports = {
   canvasDimensions,
   clozeImage,
   fonts,
+  colors,
   assignmentStatusOptions,
   youtubeVideoDetails,
   customTags,

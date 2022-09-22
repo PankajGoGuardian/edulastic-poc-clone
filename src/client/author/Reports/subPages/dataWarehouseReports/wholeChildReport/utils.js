@@ -1,6 +1,6 @@
 import { map, groupBy, reduce, values, sumBy, round, get, find } from 'lodash'
 
-import { reportUtils } from '@edulastic/constants'
+import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -154,13 +154,14 @@ export const tableColumnsData = [
 // ]
 
 export const demoAchievementLevels = [
-  { id: 'level-1', color: '#442288', name: 'Level 1' },
-  { id: 'level-2', color: '#6CA2EA', name: 'Level 2' },
-  { id: 'level-3', color: '#B5D33D', name: 'Level 3' },
-  { id: 'level-4', color: '#FED23F', name: 'Level 4' },
-  { id: 'level-5', color: '#EB7D5B', name: 'Level 5' },
-  { id: 'level-6', color: '#EE54EE', name: 'Level 6' },
+  ...colorConstants.externalPerformanceBandColors,
 ]
+  .reverse()
+  .map((color, index) => ({
+    id: `level-${index + 1}`,
+    color,
+    name: `Level ${index + 1}`,
+  }))
 
 // demo data end
 

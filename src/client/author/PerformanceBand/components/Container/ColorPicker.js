@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { themeColor, sectionBorder } from '@edulastic/colors'
 
 import { Popover, Row, Col, Icon } from 'antd'
+import { colors as colorConstants } from '@edulastic/constants'
 
 const StyledIcon = styled(Icon)`
   vertical-align: middle;
@@ -15,19 +16,7 @@ const StyledIcon = styled(Icon)`
   }
 `
 
-export const colors = [
-  '#576BA9',
-  '#A1C3EA',
-  '#F39300',
-  '#FEC571',
-  '#3DB04E',
-  '#74E27A',
-  '#AFA515',
-  '#EBDD54',
-  '#b22222',
-  '#7c0a02',
-  '#db75c5',
-]
+export const colors = [...colorConstants.performanceBandColors]
 
 // "#576BA9","#A1C3EA","#F39300","#FEC571","#3DB04E","#74E27A","#AFA515","#EBDD54"
 function ColorPicker(props) {

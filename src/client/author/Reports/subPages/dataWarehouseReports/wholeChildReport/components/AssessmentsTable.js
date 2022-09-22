@@ -55,6 +55,21 @@ const getTableColumns = (isSharedReport) => {
       ) : (
         record.totalScore
       )
+    // render performance level in CSV
+    const performanceLevelIdx = _columns.findIndex(
+      (col) => col.key === 'performanceLevel'
+    )
+    _columns[performanceLevelIdx].render = (_, record) =>
+      // TODO: replace dash with correct band label for performance in external test
+      !record.externalTestType ? record.band.name : '-'
+    // render performance score in CSV
+    const performanceScoreIdx = _columns.findIndex(
+      (col) => col.key === 'performanceScore'
+    )
+    _columns[performanceScoreIdx].render = (_, record) =>
+      !record.externalTestType
+        ? `${Math.round(record.averageScore)}%`
+        : record.totalScore
     // render value with percentage for averages of internal tests
     const districtAvgIdx = _columns.findIndex(
       (col) => col.key === 'districtAvg'

@@ -377,7 +377,7 @@ export const ResponseFrequencyTable = ({
   ])
 
   const onCsvConvert = (data, rawData) => {
-    // extract all rows excpet the columns name
+    // extract all rows except the columns name
     const csvRows = rawData.splice(1, rawData.length)
     const modifiedCsvRows = csvRows.map((csvRow) => {
       const item = csvRow[6]

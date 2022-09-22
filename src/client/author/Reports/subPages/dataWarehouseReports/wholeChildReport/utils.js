@@ -100,6 +100,17 @@ export const tableColumnsData = [
     title: 'Performance',
     dataIndex: 'averageScore',
     key: 'averageScore',
+    visibleOn: ['browser'],
+  },
+  {
+    title: 'Performance Level',
+    key: 'performanceLevel',
+    visibleOn: ['csv'],
+  },
+  {
+    title: 'Score',
+    key: 'performanceScore',
+    visibleOn: ['csv'],
   },
   {
     title: 'District (Avg. Score)',
@@ -124,6 +135,7 @@ export const tableColumnsData = [
     dataIndex: 'claimsInfo',
     key: 'claimsInfo',
     align: 'left',
+    visibleOn: ['browser'],
   },
 ]
 

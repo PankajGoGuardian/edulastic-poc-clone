@@ -18,8 +18,8 @@ import { ControlDropDown } from '../../../../common/components/widgets/controlDr
 import MultiSelectDropdown from '../../../../common/components/widgets/MultiSelectDropdown'
 import FilterTags from '../../../../common/components/FilterTags'
 import SchoolAutoComplete from '../../../../common/components/autocompletes/SchoolAutoComplete'
-import CourseAutoComplete from '../../../../common/components/autocompletes/CourseAutoComplete'
-import ClassAutoComplete from '../../../../common/components/autocompletes/ClassAutoComplete'
+import CoursesAutoComplete from '../../../../common/components/autocompletes/CoursesAutoComplete'
+import ClassAutoComplete from './ClassAutoComplete'
 import StudentAutoComplete from './StudentAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
@@ -87,6 +87,7 @@ const WholeChildReportFilters = ({
   setPrevFiltersData,
   onGoClick: _onGoClick,
   fetchUpdateTagsData,
+  history,
 }) => {
   const tagTypes = staticDropDownData.tagTypes
   const splittedPath = location.pathname.split('/')
@@ -289,6 +290,12 @@ const WholeChildReportFilters = ({
     toggleFilter(null, true)
   }
 
+  const getNewPathname = () => {
+    const splitted = location.pathname.split('/')
+    splitted.splice(splitted.length - 1)
+    return `${splitted.join('/')}/`
+  }
+
   const updateFilterDropdownCB = (
     selected,
     keyName,
@@ -306,6 +313,7 @@ const WholeChildReportFilters = ({
       : selected.key
     resetReportFilters(_filterTagsData, _filters, keyName, _selected)
     setFilterTagsData(_filterTagsData)
+    history.push(`${getNewPathname()}?${qs.stringify(_filters)}`)
     // update filters
     _filters[keyName] = _selected
     if (isPageLevelFilter) {
@@ -371,10 +379,14 @@ const WholeChildReportFilters = ({
                     </Col>
                   ) : null}
                   <Col span={8}>
-                    <FilterLabel data-cy="course">Course</FilterLabel>
-                    <CourseAutoComplete
-                      selectedCourseId={filters.courseId}
-                      selectCB={(e) => updateFilterDropdownCB(e, 'courseId')}
+                    <CoursesAutoComplete
+                      data-cy="courses"
+                      selectedCourseIds={
+                        filters.courseIds ? filters.courseIds.split(',') : []
+                      }
+                      selectCB={(e) =>
+                        updateFilterDropdownCB(e, 'courseIds', true)
+                      }
                     />
                   </Col>
                   <Col span={8}>

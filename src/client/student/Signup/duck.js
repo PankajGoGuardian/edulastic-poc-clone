@@ -1,5 +1,5 @@
 import { createAction, createReducer, createSelector } from 'redux-starter-kit'
-import { get, isEmpty, pick } from 'lodash'
+import { get, isEmpty, pick, isArray } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import produce from 'immer'
 import { push } from 'connected-react-router'
@@ -116,6 +116,15 @@ export const signupGeneralSettingsSelector = createSelector(
   (subState) => subState
 )
 
+export const signupDistrictIdSelector = createSelector(
+  ['signup.districtId'],
+  (subState) => subState || undefined
+)
+
+export const signupSchoolsSelector = createSelector(
+  ['signup.schools'],
+  (subState) => (!isEmpty(subState) ? subState : undefined)
+
 export const isSchoolSearchingSelector = createSelector(
   ['signup'],
   (state) => state.isSearching
@@ -220,6 +229,7 @@ const initialState = {
   schoolSelectedInJoinModal: {},
   displaySchoolSelectWarning: false,
   displayHomeSchoolButton: false,
+  districtId: '',
 }
 
 const searchSchool = (state) => {
@@ -355,16 +365,22 @@ export default createReducer(initialState, {
     state.districtUrlLoading = true
     state.generalSettings = undefined
     state.districtPolicy = undefined
+    state.districtId = undefined
+    state.schools = undefined
   },
   [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS]: (state, { payload }) => {
     state.districtUrlLoading = false
     state.generalSettings = payload.generalSettings
     state.districtPolicy = payload.districtPolicy
+    state.districtId = payload.districtId
+    state.schools = payload.institutionIds
   },
   [GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_FAILED]: (state) => {
     state.districtUrlLoading = false
     state.generalSettings = undefined
     state.districtPolicy = undefined
+    state.districtId = undefined
+    state.schools = undefined
   },
   [CHECK_DISTRICT_POLICY_REQUEST]: (state) => {
     state.checkingPolicy = true
@@ -678,12 +694,27 @@ function* getOrgDetailsByShortNameAndOrgTypeSaga({ payload }) {
       settingsApi.getOrgDetailsByShortNameAndOrgType,
       payload.data
     )
-    const { generalSettings, districtPolicy } = result
+    const {
+      generalSettings,
+      districtPolicy,
+      districtId,
+      institutionIds,
+    } = result
 
-    if (generalSettings && districtPolicy) {
+    if (
+      generalSettings &&
+      districtPolicy &&
+      districtId &&
+      isArray(institutionIds)
+    ) {
       yield put({
         type: GET_DISTRICT_BY_SHORT_NAME_AND_ORG_TYPE_SUCCESS,
-        payload: { generalSettings, districtPolicy },
+        payload: {
+          generalSettings,
+          districtPolicy,
+          districtId,
+          institutionIds,
+        },
       })
       if (generalSettings.orgType === 'district') {
         const [, districtLogin] = window.location.pathname?.split('/')

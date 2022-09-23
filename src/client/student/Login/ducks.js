@@ -43,6 +43,8 @@ import { userPickFields } from '../../common/utils/static/user'
 import {
   signupDistrictPolicySelector,
   signupGeneralSettingsSelector,
+  signupDistrictIdSelector,
+  signupSchoolsSelector,
   updateUserSignupStateAction,
 } from '../Signup/duck'
 import {
@@ -1227,10 +1229,8 @@ function* signup({ payload }) {
   const districtPolicy = yield select(signupDistrictPolicySelector)
   const generalSettings = yield select(signupGeneralSettingsSelector)
 
-  let districtId
-  if (generalSettings) {
-    districtId = generalSettings.orgId
-  }
+  const districtId = yield select(signupDistrictIdSelector)
+  const institutionIds = yield select(signupSchoolsSelector)
 
   try {
     const {
@@ -1275,6 +1275,7 @@ function* signup({ payload }) {
       lastName,
       role,
       districtId,
+      institutionIds,
       utm_source,
     }
 

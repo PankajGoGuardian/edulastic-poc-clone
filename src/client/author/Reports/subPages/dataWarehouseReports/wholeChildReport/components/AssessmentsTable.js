@@ -57,7 +57,7 @@ const getTableColumns = (isSharedReport) => {
             tooltipPlacement="topLeft"
             tooltipText={record.achievementLevelInfo.name}
             leftText={record.achievementLevelInfo.name}
-            rightText={record.achievementLevel}
+            rightText={new Intl.NumberFormat().format(record.score)}
             background={record.achievementLevelInfo.color}
           />
         ) : (
@@ -96,19 +96,25 @@ const getTableColumns = (isSharedReport) => {
       (col) => col.key === 'totalTestItems'
     )
     _columns[totalTestItemsIdx].render = (totalTestItems, record) =>
-      !record.externalTestType ? totalTestItems : '-'
+      totalTestItems ?? '-'
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
     _columns[claimsInfoIdx].render = (claimsInfo) => (
       <Row
         type="flex"
-        justify="center"
+        justify="flex-start"
         style={{ gap: '8px', flexWrap: 'nowrap' }}
       >
         {!isEmpty(claimsInfo)
           ? claimsInfo.map((claim) => (
               <LargeTag
-                tooltipText={`${claim.name}: ${claim.value}`}
+                tooltipText={
+                  <>
+                    {claim.name}
+                    <br />
+                    {claim.value}
+                  </>
+                }
                 leftText={claim.name}
                 rightText={claim.value}
                 background={claim.color}

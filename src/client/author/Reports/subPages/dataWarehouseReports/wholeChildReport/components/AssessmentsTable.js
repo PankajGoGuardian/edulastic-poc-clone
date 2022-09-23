@@ -3,6 +3,7 @@ import next from 'immer'
 import { Link } from 'react-router-dom'
 
 import { Row } from 'antd'
+import { isEmpty } from 'lodash'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -41,9 +42,9 @@ const getTableColumns = (isSharedReport) => {
     const averageScoreIdx = _columns.findIndex(
       (col) => col.key === 'averageScore'
     )
-    _columns[averageScoreIdx].render = (averageScore, record) =>
-      !record.externalTestType ? (
-        <Row type="flex" justify="center">
+    _columns[averageScoreIdx].render = (averageScore, record) => (
+      <Row type="flex" justify="center">
+        {!record.externalTestType ? (
           <LargeTag
             tooltipPlacement="topLeft"
             tooltipText={record.band.name}
@@ -51,10 +52,19 @@ const getTableColumns = (isSharedReport) => {
             rightText={`${Math.round(averageScore)}%`}
             background={record.band.color}
           />
-        </Row>
-      ) : (
-        record.totalScore
-      )
+        ) : record.achievementLevelInfo ? (
+          <LargeTag
+            tooltipPlacement="topLeft"
+            tooltipText={record.achievementLevelInfo.name}
+            leftText={record.achievementLevelInfo.name}
+            rightText={record.achievementLevel}
+            background={record.achievementLevelInfo.color}
+          />
+        ) : (
+          '-'
+        )}
+      </Row>
+    )
     // render performance level in CSV
     const performanceLevelIdx = _columns.findIndex(
       (col) => col.key === 'performanceLevel'
@@ -81,7 +91,12 @@ const getTableColumns = (isSharedReport) => {
       !record.externalTestType ? `${schoolAvg}%` : schoolAvg
     const groupAvgIdx = _columns.findIndex((col) => col.key === 'groupAvg')
     _columns[groupAvgIdx].render = (groupAvg, record) =>
-      !record.externalTestType ? `${groupAvg}%` : groupAvg
+      !record.externalTestType ? `${groupAvg}%` : groupAvg ?? '-'
+    const totalTestItemsIdx = _columns.findIndex(
+      (col) => col.key === 'totalTestItems'
+    )
+    _columns[totalTestItemsIdx].render = (totalTestItems, record) =>
+      !record.externalTestType ? totalTestItems : '-'
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
     _columns[claimsInfoIdx].render = (claimsInfo) => (
@@ -90,14 +105,17 @@ const getTableColumns = (isSharedReport) => {
         justify="center"
         style={{ gap: '8px', flexWrap: 'nowrap' }}
       >
-        {(claimsInfo || []).map((claim) => (
-          <LargeTag
-            leftText={claim.name}
-            rightText={claim.value}
-            background={claim.color}
-            key={claim.id}
-          />
-        ))}
+        {!isEmpty(claimsInfo)
+          ? claimsInfo.map((claim) => (
+              <LargeTag
+                tooltipText={`${claim.name}: ${claim.value}`}
+                leftText={claim.name}
+                rightText={claim.value}
+                background={claim.color}
+                key={`${claim.name}:${claim.value}`}
+              />
+            ))
+          : '-'}
       </Row>
     )
   })

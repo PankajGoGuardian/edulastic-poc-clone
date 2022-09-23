@@ -1,6 +1,18 @@
-import { map, groupBy, reduce, values, sumBy, round, get, find } from 'lodash'
+import {
+  map,
+  groupBy,
+  reduce,
+  values,
+  sumBy,
+  round,
+  get,
+  find,
+  uniq,
+  zipObject,
+} from 'lodash'
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
+import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -66,6 +78,19 @@ export const staticDropDownData = {
     { key: 'other', title: 'Other' },
   ],
 }
+
+export const claimsColorMap = zipObject(
+  [
+    'Concepts and Procedures',
+    'Problem Solving and Modeling/Data Analysis',
+    'Communicating Reasoning',
+    'Reading',
+    'Writing',
+    'Listening',
+    'Research/Inquiry',
+  ],
+  colorConstants.externalPerformanceBandColors
+)
 
 export const tableColumnsData = [
   {
@@ -139,44 +164,6 @@ export const tableColumnsData = [
   },
 ]
 
-// demo data start
-
-// const demoExternalAssignmentMetrics = [
-//   {
-//     title: 'External Test 1',
-//     assignmentDate: '1655271969000',
-//     testType: '',
-//     externalTestType: 'CAASPP',
-//     groupId: '62a9719318f1040009a9b1c2',
-//     testActivityId: '333',
-//     testId: '111',
-//     reportKey: '111',
-//     assignmentId: '222',
-//     studentId: '5e4a3b4603b7ad092407d3a0',
-//     maxScore: 4,
-//     score: 3,
-//     achievementLevel: 'level-4',
-//     claimsInfo: [
-//       { id: '1', color: '#B5D33D', name: 'Claim 1', value: 84 },
-//       { id: '2', color: '#EB7D5B', name: 'Claim 2', value: 96 },
-//       { id: '3', color: '#6CA2EA', name: 'Claim 3', value: 77 },
-//       { id: '4', color: '#FED23F', name: 'Claim 4', value: 34 },
-//     ],
-//   },
-// ]
-
-export const demoAchievementLevels = [
-  ...colorConstants.externalPerformanceBandColors,
-]
-  .reverse()
-  .map((color, index) => ({
-    id: `level-${index + 1}`,
-    color,
-    name: `Level ${index + 1}`,
-  }))
-
-// demo data end
-
 export const getStudentName = (studInfo, selectedStudent) => {
   if (selectedStudent?.title) {
     return selectedStudent.title
@@ -184,13 +171,70 @@ export const getStudentName = (studInfo, selectedStudent) => {
   return getFormattedName(`${studInfo.firstName} ${studInfo.lastName}`, false)
 }
 
+const colorByText = (text) => {
+  const numFromText = sumBy(`${text}`.toLowerCase(), (ch) => ch.charCodeAt())
+  const colorArr = colorConstants.externalPerformanceBandColors
+  return colorArr[numFromText % colorArr.length]
+}
+
+export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
+  const mappedExternalMetrics = externalMetrics.map((metric) => ({
+    title: metric.testTitle,
+    assignmentDate: +new Date(metric.testStartDate),
+    testType: 'External Assessment',
+    externalTestType: metric.testCategory,
+    groupId: '',
+    testActivityId: '',
+    testId: `${metric.testTitle}`,
+    reportKey: '',
+    assignmentId: '',
+    studentId: metric.studentId,
+    maxScore: undefined,
+    score: +metric.score,
+    achievementLevel: `${parseInt(metric.achievementLevel, 10)}`,
+    claimsInfo: Object.entries(JSON.parse(metric.claims || '{}')).map(
+      ([name, value]) => ({
+        name,
+        value,
+        color: claimsColorMap[name] || colorByText(name),
+      })
+    ),
+  }))
+  return [...internalMetrics, ...mappedExternalMetrics]
+}
+
+export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
+  const mappedExternalMetrics = externalMetrics.map((metric) => ({
+    testId: `${metric.testTitle}`,
+    districtAvg: +metric.districtAvg,
+    districtAvgPerf: undefined,
+  }))
+  return [...internalMetrics, ...mappedExternalMetrics]
+}
+
+export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
+  const mappedExternalMetrics = externalMetrics.map((metric) => ({
+    testId: `${metric.testTitle}`,
+    schoolCode: metric.schoolCode,
+    schoolAvg: +metric.schoolAvg,
+    schoolAvgPerf: undefined,
+  }))
+  return [...internalMetrics, ...mappedExternalMetrics]
+}
+
 export const getChartData = ({
   assignmentMetrics = [],
   studentClassData = [],
   selectedPerformanceBand = [],
 }) => {
-  // TODO: remove demo data
-  // assignmentMetrics = [...assignmentMetrics, ...demoExternalAssignmentMetrics]
+  const externalTestNames = uniq(
+    assignmentMetrics.flatMap((cdItem) =>
+      cdItem.externalTestType ? [cdItem.title] : []
+    )
+  )
+  const achievementLevelMap = Object.fromEntries(
+    externalTestNames.map((name) => [name, getAchievementLevels(name)])
+  )
 
   if (!assignmentMetrics.length) {
     return []
@@ -232,6 +276,12 @@ export const getChartData = ({
         averageScore,
         band,
       })
+    } else {
+      Object.assign(assessmentData, {
+        achievementLevelInfo: achievementLevelMap[assessmentData.title].find(
+          (a) => a.id === assessmentData.achievementLevel
+        ),
+      })
     }
     return assessmentData
   }).sort((a, b) => Number(b.assignmentDate) - Number(a.assignmentDate))
@@ -248,15 +298,23 @@ export const getTableData = ({
     return []
   }
   const parsedData = map(chartData, (assessment) => {
-    const { testId, assignmentDate } = assessment
+    const { testId, assignmentDate, externalTestType } = assessment
     const testDistrictAvg = round(
-      get(find(districtMetrics, { testId }), 'districtAvgPerf', 0)
+      get(
+        find(districtMetrics, { testId }),
+        externalTestType ? 'districtAvg' : 'districtAvgPerf',
+        0
+      )
     )
-    const testGroupAvg = round(
-      get(find(groupMetrics, { testId }), 'groupAvgPerf', 0)
-    )
+    const testGroupAvg = externalTestType
+      ? '-'
+      : round(get(find(groupMetrics, { testId }), 'groupAvgPerf', 0))
     const testSchoolAvg = round(
-      get(find(schoolMetrics, { testId }), 'schoolAvgPerf', 0)
+      get(
+        find(schoolMetrics, { testId }),
+        externalTestType ? 'schoolAvg' : 'schoolAvgPerf',
+        0
+      )
     )
     const rawScore = `${assessment.totalScore?.toFixed(2) || '0.00'} / ${round(
       assessment.totalMaxScore,

@@ -1,7 +1,8 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { reportUtils } from '@edulastic/constants'
-import { isEmpty, round } from 'lodash'
+import { round, uniq } from 'lodash'
+import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
 import { SignedStackedBarChart } from '../../../../common/components/charts/customSignedStackedBarChart'
 import {
   TooltipRow,
@@ -11,9 +12,6 @@ import {
   ColorCircle,
   ColorBandRow,
 } from '../../../../common/styled'
-
-// TODO: remove demo data
-import { demoAchievementLevels } from '../utils'
 
 const { formatDate } = reportUtils.common
 
@@ -42,6 +40,26 @@ const ColorBandItem = ({ name, color, highlight }) => {
 const getTooltipJSX = (payload, barIndex) => {
   if (payload && payload.length && barIndex !== null) {
     const barData = payload[0].payload
+    let colorBandComponent = null
+    if (barData.externalTestType) {
+      const achievementLevels = getAchievementLevels(barData.testName).reverse()
+      colorBandComponent = (
+        <>
+          <TooltipRowItem title={`${achievementLevels.length} color band`} />
+          {achievementLevels.map((band) => (
+            <ColorBandItem
+              highlight={band.id === barData.achievementLevel}
+              color={band.color}
+              name={band.name}
+            />
+          ))}
+        </>
+      )
+    } else {
+      colorBandComponent = (
+        <ColorBandItem color={barData.band.color} name={barData.band.name} />
+      )
+    }
     return (
       <div>
         <TooltipRowItem
@@ -57,26 +75,7 @@ const getTooltipJSX = (payload, barIndex) => {
           }
         />
         <DashedHr />
-        {barData.externalTestType && !isEmpty(barData.claimsInfo) ? (
-          <>
-            {/* TODO: remove demo data */}
-            <TooltipRowItem
-              title={`${demoAchievementLevels.length} color band`}
-            />
-            {demoAchievementLevels
-              .slice(0)
-              .reverse()
-              .map((band) => (
-                <ColorBandItem
-                  color={band.color}
-                  highlight={band.id === barData.achievementLevel}
-                  name={band.name}
-                />
-              ))}
-          </>
-        ) : (
-          <ColorBandItem color={barData.band.color} name={barData.band.name} />
-        )}
+        {colorBandComponent}
       </div>
     )
   }
@@ -104,8 +103,16 @@ const AssessmentsChart = ({
   onBarClickCB,
   onResetClickCB,
 }) => {
-  // TODO: remove demo data
-  const achievementLevels = demoAchievementLevels
+  const externalTestNames = uniq(
+    chartData.flatMap((cdItem) =>
+      cdItem.externalTestType ? [cdItem.testName] : []
+    )
+  )
+  const achievementLevelMap = Object.fromEntries(
+    externalTestNames.map((name) => [name, getAchievementLevels(name)])
+  )
+  const allAchievementLevels = Object.values(achievementLevelMap).flat()
+  const achievementLevels = allAchievementLevels
 
   const legendPayload = selectedPerformanceBand
     .sort((a, b) => a.threshold - b.threshold)
@@ -137,19 +144,21 @@ const AssessmentsChart = ({
     [`bar${index + 1}`]: Math.floor(100 / achievementLevels.length),
   }))
 
-  const barsCellDataForExternal = barsDataForExternal.reduce(
-    (res, ele) => ({
-      ...res,
-      [ele.key]: ele[ele.key],
-    }),
-    {}
-  )
-
   const data = chartData
     .map((d) => {
       if (d.externalTestType) {
         const barData = barsDataForExternal.find(
-          (bar) => bar.id === d.achievementLevel
+          (bar) => bar.id === d.achievementLevel && bar.testTitle === d.title
+        )
+
+        const bars = barsDataForExternal.filter((b) => b.testTitle === d.title)
+
+        const barsCellDataForExternal = bars.reduce(
+          (res, ele) => ({
+            ...res,
+            [ele.key]: Math.floor(100 / bars.length),
+          }),
+          {}
         )
         return barData
           ? {

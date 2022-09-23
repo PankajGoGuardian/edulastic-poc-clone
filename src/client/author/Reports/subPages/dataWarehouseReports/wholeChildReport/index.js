@@ -32,7 +32,14 @@ import {
 } from '../../../../src/selectors/user'
 import { actions, selectors } from './ducks'
 
-import { getChartData, getTableData, getStudentName } from './utils'
+import {
+  getChartData,
+  getTableData,
+  getStudentName,
+  mergeSchoolMetrics,
+  mergeDistrictMetrics,
+  mergeTestMetrics,
+} from './utils'
 import { getNavigationTabLinks } from '../../../common/util'
 import navigation from '../../../common/static/json/navigation.json'
 
@@ -212,13 +219,6 @@ const WholeChildReport = ({
     }
   }, [settings.selectedStudent, settings.requestFilters])
 
-  const {
-    assignmentMetrics = [],
-    districtMetrics = [],
-    schoolMetrics = [],
-    groupMetrics = [],
-  } = get(reportData, 'data.result', {})
-
   const selectedPerformanceBand = (
     bandInfo.find(
       (x) =>
@@ -228,7 +228,29 @@ const WholeChildReport = ({
     ) || bandInfo[0]
   )?.performanceBand
 
-  const [chartData, tableData] = useMemo(() => {
+  const [chartData, tableData, isDataEmpty] = useMemo(() => {
+    const {
+      assignmentMetrics: internalAssignmentMetrics = [],
+      districtMetrics: internalDistrictMetrics = [],
+      schoolMetrics: internalSchoolMetrics = [],
+      groupMetrics = [],
+      externalTestMetrics = [],
+      externalSchoolMetrics = [],
+      externalDistrictMetrics = [],
+    } = get(reportData, 'data.result', {})
+    const assignmentMetrics = mergeTestMetrics(
+      internalAssignmentMetrics,
+      externalTestMetrics
+    )
+
+    const districtMetrics = mergeDistrictMetrics(
+      internalDistrictMetrics,
+      externalDistrictMetrics
+    )
+    const schoolMetrics = mergeSchoolMetrics(
+      internalSchoolMetrics,
+      externalSchoolMetrics
+    )
     const _chartData = getChartData({
       assignmentMetrics,
       studentClassData,
@@ -240,15 +262,14 @@ const WholeChildReport = ({
       groupMetrics,
       chartData: _chartData,
     })
-    return [_chartData, _tableData]
-  }, [
-    assignmentMetrics,
-    districtMetrics,
-    schoolMetrics,
-    groupMetrics,
-    studentClassData,
-    selectedPerformanceBand,
-  ])
+    return [
+      _chartData,
+      _tableData,
+      isEmpty(assignmentMetrics) ||
+        isEmpty(districtMetrics) ||
+        isEmpty(schoolMetrics),
+    ]
+  }, [reportData, studentClassData, selectedPerformanceBand])
 
   const studentName = getStudentName(
     settings.selectedStudent,
@@ -323,11 +344,7 @@ const WholeChildReport = ({
           />
         ) : error && error.dataSizeExceeded ? (
           <DataSizeExceeded />
-        ) : isEmpty(assignmentMetrics) ||
-          isEmpty(districtMetrics) ||
-          isEmpty(schoolMetrics) ||
-          isEmpty(groupMetrics) ||
-          !settings.selectedStudent?.key ? (
+        ) : isDataEmpty || !settings.selectedStudent?.key ? (
           <NoDataContainer>
             {settings.requestFilters?.termId
               ? 'No data available currently.'

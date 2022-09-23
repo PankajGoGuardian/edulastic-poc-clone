@@ -32,11 +32,11 @@ const filtersDefaultValues = [
     value: '',
   },
   {
-    key: 'courseIds',
+    key: 'schoolIds',
     value: '',
   },
   {
-    key: 'schoolIds',
+    key: 'courseIds',
     value: '',
   },
   {
@@ -245,14 +245,20 @@ const WholeChildReportFilters = ({
   }
 
   const resetReportFilters = (nextTagsData, prevFilters, key, selected) => {
-    const index = filtersDefaultValues.findIndex((s) => s.key === key)
+    let newFiltersDefaultValues = filtersDefaultValues
+    if (key === 'schoolIds') {
+      newFiltersDefaultValues = filtersDefaultValues.filter(
+        (e) => e.key !== 'courseIds'
+      )
+    }
+    const index = newFiltersDefaultValues.findIndex((s) => s.key === key)
     if (!['grades', 'subjects'].includes(key)) {
       resetFilters(
         nextTagsData,
         prevFilters,
         key,
         selected,
-        filtersDefaultValues
+        newFiltersDefaultValues
       )
     }
     if (

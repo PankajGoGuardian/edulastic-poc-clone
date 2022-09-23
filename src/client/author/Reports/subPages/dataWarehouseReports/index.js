@@ -12,6 +12,7 @@ const DataWarehouseReportsContainer = ({
   onRefineResultsCB,
   loc,
   updateNavigation,
+  setShowHeader,
   ..._props
 }) => {
   return (
@@ -22,17 +23,21 @@ const DataWarehouseReportsContainer = ({
       <Route
         exact
         path="/author/reports/whole-child-report/student/:studentId?"
-        render={() => (
-          <WholeChildReport
-            {..._props}
-            breadcrumbData={breadcrumbData}
-            isCliUser={isCliUser}
-            showApply={showApply}
-            showFilter={showFilter}
-            onRefineResultsCB={onRefineResultsCB}
-            loc={loc}
-          />
-        )}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <WholeChildReport
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              showApply={showApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
       />
     </FeaturesSwitch>
   )

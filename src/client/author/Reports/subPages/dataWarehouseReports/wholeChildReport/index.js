@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
 import { Spin } from 'antd'
+import next from 'immer'
 
 import { SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
@@ -32,6 +33,8 @@ import {
 import { actions, selectors } from './ducks'
 
 import { getChartData, getTableData, getStudentName } from './utils'
+import { getNavigationTabLinks } from '../../../common/util'
+import navigation from '../../../common/static/json/navigation.json'
 
 const { downloadCSV } = reportUtils.common
 
@@ -50,6 +53,7 @@ const WholeChildReport = ({
   breadcrumbData,
   isCliUser,
   isPrinting,
+  updateNavigation,
   // value props (from report selectors)
   firstLoad,
   showFilter,
@@ -157,6 +161,38 @@ const WholeChildReport = ({
     },
     []
   )
+
+  const computeChartNavigationLinks = (sel, requestFilters) => {
+    if (navigation.locToData[loc]) {
+      const arr = Object.keys(requestFilters)
+      const obj = {}
+      arr.forEach((item) => {
+        const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
+        obj[item] = val
+      })
+      obj.reportId = reportId || ''
+      return next(
+        navigation.navigation[navigation.locToData[loc].group],
+        (draft) => {
+          getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`)
+        }
+      )
+    }
+    return []
+  }
+  useEffect(() => {
+    if (settings.selectedStudent.key) {
+      const path = `${settings.selectedStudent.key}?${qs.stringify(
+        settings.requestFilters
+      )}`
+      history.push(path)
+    }
+    const computedChartNavigatorLinks = computeChartNavigationLinks(
+      settings.selectedStudent,
+      settings.requestFilters
+    )
+    updateNavigation(computedChartNavigatorLinks)
+  }, [settings])
 
   useEffect(() => {
     if (settings.selectedStudent.key) {

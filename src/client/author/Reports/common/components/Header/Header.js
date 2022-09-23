@@ -73,9 +73,11 @@ const CustomizedHeaderWrapper = ({
     )
   }
 
+  const dataWarehouseReportTypes = ['whole-child-report']
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
-    : filterNavigationItems.length > 1
+    : dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
+      filterNavigationItems.length > 1
     ? filterNavigationItems
     : []
 

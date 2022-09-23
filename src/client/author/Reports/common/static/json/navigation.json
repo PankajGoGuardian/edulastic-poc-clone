@@ -454,8 +454,8 @@
     "data-warehouse-reports": [
       {
         "key": "whole-child-report",
-        "title":"WHOLE CHILD REPORT",
-        "location": "/author/reports/data-warehouse-reports/whole-child-report"
+        "title": "WHOLE CHILD REPORT",
+        "location": "/author/reports/whole-child-report/student/"
       }
     ]
   }

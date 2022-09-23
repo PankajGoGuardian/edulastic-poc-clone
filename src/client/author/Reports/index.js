@@ -460,6 +460,7 @@ const Container = (props) => {
               onRefineResultsCB={onRefineResultsCB}
               loc={reportType}
               updateNavigation={setNavigationItems}
+              setShowHeader={setShowHeader}
             />
           )}
         />

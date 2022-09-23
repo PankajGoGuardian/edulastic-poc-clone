@@ -124,6 +124,7 @@ export const signupDistrictIdSelector = createSelector(
 export const signupSchoolsSelector = createSelector(
   ['signup.schools'],
   (subState) => (!isEmpty(subState) ? subState : undefined)
+)
 
 export const isSchoolSearchingSelector = createSelector(
   ['signup'],

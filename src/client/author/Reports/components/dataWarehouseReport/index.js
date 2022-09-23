@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+
+import { IconWholeChildReport } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { SubHeader } from '../../common/components/Header'
 import MoreReportsContainer from './common/components/MoreReportsContainer'
@@ -15,6 +17,7 @@ const DataWarehouseReports = ({ breadcrumbData, isCliUser, loc }) => {
       >
         <StyledCardsContainer>
           <ReportLinkCard
+            IconThumbnail={IconWholeChildReport}
             title="Whole child report"
             description="See the performance of a particular student accross Edulastic &amp; external tests"
             url="/author/reports/whole-child-report/student/"

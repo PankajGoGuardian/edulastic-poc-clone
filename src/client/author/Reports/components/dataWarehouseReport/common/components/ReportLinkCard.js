@@ -2,10 +2,16 @@ import React from 'react'
 import styled from 'styled-components'
 import { Card, Icon } from 'antd'
 import { withRouter } from 'react-router-dom'
-import { IconWholeChildReport } from '@edulastic/icons'
-import { greyThemeDark3 } from '@edulastic/colors'
+import { greyThemeDark3, themeColor } from '@edulastic/colors'
 
-const ReportLinkCard = ({ title, description, url, loc, history }) => {
+const ReportLinkCard = ({
+  IconThumbnail,
+  title,
+  description,
+  url,
+  loc,
+  history,
+}) => {
   const navigateToReport = () => {
     history.push({ pathname: url, state: { source: loc } })
   }
@@ -14,10 +20,14 @@ const ReportLinkCard = ({ title, description, url, loc, history }) => {
     <StyledCard onClick={navigateToReport}>
       <HeaderContainer>
         <h2>{title}</h2>
-        <Icon type="right" />
+        <Icon
+          type="right"
+          theme="outlined"
+          style={{ fontSize: '20px', fontWeight: 'bold', color: themeColor }}
+        />
       </HeaderContainer>
       <ImageContainer>
-        <IconWholeChildReport />
+        <IconThumbnail />
       </ImageContainer>
       <p style={{ padding: '0 20px' }}>{description}</p>
     </StyledCard>

@@ -1,6 +1,7 @@
 import React from 'react'
+import { Icon } from 'antd'
 
-import { themeColor } from '@edulastic/colors'
+import { themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { IconCheckMark } from '@edulastic/icons'
 import {
@@ -54,45 +55,77 @@ const StudentDetails = ({
           <StudentMetaData>
             <div>
               <span>School : </span>
-              <span data-testid="schoolName">{schoolName}</span>
+              <span data-testid="schoolName">{schoolName || '-'}</span>
             </div>
             <div>
               <span>Grade : </span>
-              <span data-testid="grade">{grades}</span>
+              <span data-testid="grade">{grades || '-'}</span>
             </div>
             <div>
               <span>Race : </span>
-              <span data-testid="race">{race}</span>
+              <span data-testid="race">{race || '-'}</span>
             </div>
             <div>
               <span>Gender : </span>
-              <span data-testid="gender">{gender}</span>
+              <span data-testid="gender">{gender || '-'}</span>
             </div>
           </StudentMetaData>
         </Details>
       </DetailsWrapper>
       <Demographics>
-        {frlStatus === 'Yes' ? (
+        {frlStatus ? (
           <div className="demographic-item">
-            <IconCheckMark color={themeColor} />
+            {frlStatus === 'Yes' ? (
+              <IconCheckMark color={themeColor} />
+            ) : (
+              <Icon
+                type="close-circle"
+                theme="filled"
+                style={{ color: greyThemeDark2 }}
+              />
+            )}
             <span>FRL Status</span>
           </div>
         ) : null}
-        {iepStatus === 'Yes' ? (
+        {iepStatus ? (
           <div className="demographic-item">
-            <IconCheckMark color={themeColor} />
+            {iepStatus === 'Yes' ? (
+              <IconCheckMark color={themeColor} />
+            ) : (
+              <Icon
+                type="close-circle"
+                theme="filled"
+                style={{ color: greyThemeDark2 }}
+              />
+            )}
             <span>IEP Status</span>
           </div>
         ) : null}
-        {ellStatus === 'Yes' ? (
+        {ellStatus ? (
           <div className="demographic-item">
-            <IconCheckMark color={themeColor} />
+            {ellStatus === 'Yes' ? (
+              <IconCheckMark color={themeColor} />
+            ) : (
+              <Icon
+                type="close-circle"
+                theme="filled"
+                style={{ color: greyThemeDark2 }}
+              />
+            )}
             <span>ELL Status</span>
           </div>
         ) : null}
-        {hispanicEthnicity === 'Yes' ? (
+        {hispanicEthnicity ? (
           <div className="demographic-item">
-            <IconCheckMark color={themeColor} />
+            {hispanicEthnicity === 'Yes' ? (
+              <IconCheckMark color={themeColor} />
+            ) : (
+              <Icon
+                type="close-circle"
+                theme="filled"
+                style={{ color: greyThemeDark2 }}
+              />
+            )}
             <span>Hispanic Ethnicity</span>
           </div>
         ) : null}

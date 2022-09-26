@@ -115,7 +115,9 @@ export const Demographics = styled.div`
     display: flex;
     margin: 0px 30px;
     align-items: center;
+    white-space: nowrap;
     svg {
+      font-size: 16px;
       margin-right: 10px;
     }
     span {

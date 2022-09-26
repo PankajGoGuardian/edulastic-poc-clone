@@ -120,11 +120,12 @@ const WholeChildReport = ({
     }
   }
 
-  const { studentClassData = [], bandInfo = [], demographics = {} } = get(
-    filtersData,
-    'data.result',
-    {}
-  )
+  const {
+    studentClassData = [],
+    bandInfo = [],
+    demographics = {},
+    thumbnail,
+  } = get(filtersData, 'data.result', {})
 
   const onGoClick = (_settings) => {
     const requestFilterKeys = [
@@ -156,6 +157,7 @@ const WholeChildReport = ({
       selectedStudentInformation: {
         ...(studentClassData[0] || {}),
         ...demographics,
+        thumbnail,
       },
     })
     setShowApply(false)

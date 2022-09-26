@@ -121,22 +121,31 @@ export const StudentName = styled.div`
   align-items: center;
   padding-left: 20px;
   margin-right: 20px;
+  gap: 24px;
+  & > span {
+    text-align: left;
+    font: normal normal bold 18px/24px Open Sans;
+    letter-spacing: 0px;
+    color: ${greyThemeDark1};
+  }
 `
 export const StudentMetaData = styled.div`
   display: flex;
   flex-wrap: wrap;
+  color: ${greyThemeDark1};
   & > div {
     padding-left: 20px;
+    & > span:first-child {
+      text-align: left;
+      font: normal normal normal 12px/17px Open Sans;
+      letter-spacing: 0px;
+    }
+    & > span:last-child {
+      text-align: left;
+      font: normal normal bold 12px/17px Open Sans;
+      letter-spacing: 0px;
+    }
   }
-`
-export const StyledTitle = styled.span`
-  color: ${greyThemeDark1};
-  font-weight: bold;
-  text-transform: capitalize;
-`
-
-export const StyledFont = styled.span`
-  color: ${greyThemeDark1};
 `
 
 export const StyledLine = styled.div`
@@ -149,4 +158,11 @@ export const StyledIcon = styled(IconStudent)`
   margin-right: 10px;
   align-self: center;
   color: ${themeColor};
+`
+
+export const UserIcon = styled.div`
+  width: 30px;
+  height: 30px;
+  ${({ src }) => (src ? `background-image: url(${src});` : '')}
+  border-radius: 50%;
 `

@@ -8,11 +8,10 @@ import {
   Details,
   StudentName,
   StyledIcon,
-  StyledTitle,
   StudentMetaData,
-  StyledFont,
   StyledLine,
   Demographics,
+  UserIcon,
 } from '../common/styled'
 
 const { getFormattedName } = reportUtils.common
@@ -30,6 +29,7 @@ const StudentDetails = ({
     frlStatus,
     ellStatus,
     hispanicEthnicity,
+    thumbnail,
   },
 }) => {
   const studentName = getFormattedName(
@@ -43,26 +43,30 @@ const StudentDetails = ({
       <DetailsWrapper>
         <Details>
           <StudentName>
-            <StyledIcon data-testid="userIcon" />
-            <StyledTitle data-testid="studentName">{studentName}</StyledTitle>
+            {thumbnail ? (
+              <UserIcon src={thumbnail} />
+            ) : (
+              <StyledIcon data-testid="userIcon" />
+            )}
+            <span data-testid="studentName">{studentName}</span>
           </StudentName>
           <StyledLine />
           <StudentMetaData>
             <div>
-              <StyledFont>School : </StyledFont>
-              <StyledTitle data-testid="schoolName">{schoolName}</StyledTitle>
+              <span>School : </span>
+              <span data-testid="schoolName">{schoolName}</span>
             </div>
             <div>
-              <StyledFont>Grade : </StyledFont>
-              <StyledTitle data-testid="grade">{grades}</StyledTitle>
+              <span>Grade : </span>
+              <span data-testid="grade">{grades}</span>
             </div>
             <div>
-              <StyledFont>Race : </StyledFont>
-              <StyledTitle data-testid="race">{race}</StyledTitle>
+              <span>Race : </span>
+              <span data-testid="race">{race}</span>
             </div>
             <div>
-              <StyledFont>Gender : </StyledFont>
-              <StyledTitle data-testid="gender">{gender}</StyledTitle>
+              <span>Gender : </span>
+              <span data-testid="gender">{gender}</span>
             </div>
           </StudentMetaData>
         </Details>

@@ -98,12 +98,13 @@ export const DetailsWrapper = styled.div`
 export const Demographics = styled.div`
   display: flex;
   flex-wrap: wrap;
-  justify-content: space-evenly;
+  justify-content: center;
   padding: 20px 5px;
   background-color: ${fadedGrey};
   border-radius: 0px 0px 10px 10px;
   & > div.demographic-item {
     display: flex;
+    margin: 0px 30px;
     align-items: center;
     svg {
       margin-right: 10px;

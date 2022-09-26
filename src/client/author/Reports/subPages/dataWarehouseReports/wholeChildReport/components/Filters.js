@@ -515,7 +515,7 @@ const WholeChildReportFilters = ({
             data-testid="performanceBand"
           >
             <FieldLabel fs=".7rem" data-cy="schoolYear">
-              PERFORMANCE BAND
+              EDULASTIC PERFORMANCE BAND
             </FieldLabel>
             <ControlDropDown
               by={selectedPerformanceBand}

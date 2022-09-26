@@ -243,6 +243,10 @@ export const SignedStackedBarChart = ({
   const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
   const onLegendMouseLeave = () => setActiveLegend(null)
 
+  const setLegendMargin = (value) => {
+    return <span style={{ marginRight: '30px' }}>{value}</span>
+  }
+
   const onXAxisTickTooltipMouseOver = (payload) => {
     const { coordinate } = payload
     let content
@@ -408,6 +412,7 @@ export const SignedStackedBarChart = ({
               onMouseEnter={onLegendMouseEnter}
               onMouseLeave={onLegendMouseLeave}
               {...legendProps}
+              formatter={setLegendMargin}
             />
           ) : null}
           {isSignedChart ? (

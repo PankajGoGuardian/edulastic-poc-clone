@@ -74,10 +74,19 @@ export const CustomStyledTable = styled(StyledTable)`
 `
 
 export const AssementNameContainer = styled.div`
-  span {
+  .test-name-container {
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
   }
 `
+export const AssessmentName = styled.div`
+  color: ${(props) => props.color} !important;
+`
+
 export const TableContainer = styled.div`
   margin-top: 20px;
 `

@@ -4,12 +4,14 @@ import { Link } from 'react-router-dom'
 
 import { Row } from 'antd'
 import { isEmpty } from 'lodash'
+import { themeColor } from '@edulastic/colors'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
   CustomStyledTable,
   AssementNameContainer,
   TableContainer,
+  AssessmentName,
 } from '../common/styled'
 
 import { tableColumnsData } from '../utils'
@@ -19,25 +21,27 @@ const getTableColumns = (isSharedReport) => {
   return next(tableColumnsData, (_columns) => {
     // link to LCB for testName
     const testNameIdx = _columns.findIndex((col) => col.key === 'testName')
-    _columns[testNameIdx].render = (testName, record) => (
-      <AssementNameContainer>
-        <span>
-          {!isSharedReport && !record.externalTestType ? (
-            <Link
-              to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
-              data-testid="testName"
-            >
-              {testName}
-            </Link>
-          ) : (
-            testName
-          )}
-        </span>
-        {record.externalTestType ? (
-          <StyledTag color="black">{record.externalTestType}</StyledTag>
-        ) : null}
-      </AssementNameContainer>
-    )
+    _columns[testNameIdx].render = (testName, record) => {
+      return (
+        <AssementNameContainer>
+          <div className="test-name-container">
+            {!isSharedReport && !record.externalTestType ? (
+              <Link
+                to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
+                data-testid="testName"
+              >
+                <AssessmentName color={themeColor}>{testName}</AssessmentName>
+              </Link>
+            ) : (
+              <AssessmentName>{testName}</AssessmentName>
+            )}
+          </div>
+          {record.externalTestType ? (
+            <StyledTag color="black">{record.externalTestType}</StyledTag>
+          ) : null}
+        </AssementNameContainer>
+      )
+    }
     // render rectangular tag for performance
     const averageScoreIdx = _columns.findIndex(
       (col) => col.key === 'averageScore'

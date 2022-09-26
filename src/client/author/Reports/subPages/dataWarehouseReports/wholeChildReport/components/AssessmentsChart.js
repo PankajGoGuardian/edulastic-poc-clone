@@ -164,7 +164,9 @@ const AssessmentsChart = ({
           ? {
               ...d,
               ...barsCellDataForExternal,
-              [barData.insideLabelKey]: d.totalScore,
+              [barData.insideLabelKey]: new Intl.NumberFormat().format(
+                d.totalScore
+              ),
               fillOpacity: 0.2,
               additionalData: {
                 [barData.key]: {

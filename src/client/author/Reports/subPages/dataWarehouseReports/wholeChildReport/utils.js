@@ -269,7 +269,7 @@ export const getChartData = ({
       subject,
     }
     if (!externalTestType) {
-      const averageScore = percentage(totalScore, totalMaxScore)
+      const averageScore = percentage(totalScore, totalMaxScore, true)
       const band = getProficiencyBand(averageScore, selectedPerformanceBand)
       Object.assign(assessmentData, {
         testType: testTypes[testType.toLowerCase()],

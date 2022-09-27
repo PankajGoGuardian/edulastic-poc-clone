@@ -186,7 +186,7 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     externalTestType: metric.testCategory,
     groupId: '',
     testActivityId: '',
-    testId: `${metric.testTitle}`,
+    testId: metric.testKey,
     reportKey: '',
     assignmentId: '',
     studentId: metric.studentId,
@@ -204,7 +204,7 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
 
 export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testTitle}`,
+    testId: metric.testKey,
     districtAvg: +metric.districtAvg,
     districtAvgPerf: undefined,
   }))
@@ -213,7 +213,7 @@ export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
 
 export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testTitle}`,
+    testId: metric.testKey,
     schoolCode: metric.schoolCode,
     schoolAvg: +metric.schoolAvg,
     schoolAvgPerf: undefined,

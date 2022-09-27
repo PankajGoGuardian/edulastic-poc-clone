@@ -159,6 +159,7 @@ const WholeChildReport = ({
         ...demographics,
         thumbnail,
       },
+      selectedStudentClassData: studentClassData,
     })
     setShowApply(false)
   }
@@ -255,7 +256,7 @@ const WholeChildReport = ({
     )
     const _chartData = getChartData({
       assignmentMetrics,
-      studentClassData,
+      StudentClassData: settings.selectedStudentClassData,
       selectedPerformanceBand,
     })
     const _tableData = getTableData({

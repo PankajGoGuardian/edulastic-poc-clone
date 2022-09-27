@@ -20,21 +20,6 @@ export const StyledTag = styled(Tag)`
 `
 
 export const CustomStyledTable = styled(StyledTable)`
-  .ant-table-layout-fixed {
-    .ant-table-scroll {
-      .ant-table-thead {
-        th {
-          white-space: nowrap;
-        }
-      }
-
-      @media print {
-        .ant-table-body {
-          overflow-x: hidden !important;
-        }
-      }
-    }
-  }
   table {
     tbody {
       tr {
@@ -44,6 +29,9 @@ export const CustomStyledTable = styled(StyledTable)`
         }
       }
     }
+  }
+  .ant-table-column-title {
+    white-space: nowrap !important;
   }
   .ant-table-fixed-left {
     .ant-table-thead {
@@ -81,6 +69,13 @@ export const AssementNameContainer = styled.div`
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+  }
+  @media print {
+    .test-name-container {
+      display: block;
+      -webkit-line-clamp: unset;
+      -webkit-box-orient: unset;
+    }
   }
 `
 export const AssessmentName = styled.div`

@@ -9,6 +9,7 @@ import {
   find,
   uniq,
   zipObject,
+  mapValues,
 } from 'lodash'
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
@@ -192,13 +193,11 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     maxScore: undefined,
     score: +metric.score,
     achievementLevel: `${parseInt(metric.achievementLevel, 10)}`,
-    claimsInfo: Object.entries(JSON.parse(metric.claims || '{}')).map(
-      ([name, value]) => ({
-        name,
-        value,
-        color: claimsColorMap[name] || colorByText(name),
-      })
-    ),
+    claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) => ({
+      name,
+      value,
+      color: claimsColorMap[name] || colorByText(name),
+    })),
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }

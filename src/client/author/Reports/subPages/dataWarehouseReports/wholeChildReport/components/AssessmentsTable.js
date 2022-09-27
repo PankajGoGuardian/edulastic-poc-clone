@@ -3,7 +3,7 @@ import next from 'immer'
 import { Link } from 'react-router-dom'
 
 import { Row } from 'antd'
-import { isEmpty } from 'lodash'
+import { isEmpty, uniq } from 'lodash'
 import { themeColor } from '@edulastic/colors'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
@@ -99,7 +99,7 @@ const getTableColumns = (isSharedReport) => {
     const totalTestItemsIdx = _columns.findIndex(
       (col) => col.key === 'totalTestItems'
     )
-    _columns[totalTestItemsIdx].render = (totalTestItems, record) =>
+    _columns[totalTestItemsIdx].render = (totalTestItems) =>
       totalTestItems ?? '-'
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
@@ -110,7 +110,7 @@ const getTableColumns = (isSharedReport) => {
         style={{ gap: '8px', flexWrap: 'nowrap' }}
       >
         {!isEmpty(claimsInfo)
-          ? claimsInfo.map((claim) => (
+          ? Object.values(claimsInfo).map((claim) => (
               <LargeTag
                 tooltipText={
                   <>
@@ -137,9 +137,24 @@ const AssessmentsTable = ({
   isCsvDownloading,
   isSharedReport,
 }) => {
-  const tableColumns = useMemo(() => getTableColumns(isSharedReport), [
-    isSharedReport,
-  ])
+  const claimNames = useMemo(
+    () =>
+      uniq(
+        tableData.flatMap((row) =>
+          row.externalTestType ? Object.keys(row.claimsInfo) : []
+        )
+      ),
+    [tableData]
+  )
+  const tableColumns = useMemo(() => {
+    const initialColumns = getTableColumns(isSharedReport)
+    const claimsColumnsForCSV = claimNames.map((claimName) => ({
+      title: claimName,
+      dataIndex: `claimsInfo['${claimName}'].value`,
+      visibleOn: ['csv'],
+    }))
+    return [...initialColumns, ...claimsColumnsForCSV]
+  }, [isSharedReport, ...claimNames])
   return (
     <TableContainer>
       <CsvTable

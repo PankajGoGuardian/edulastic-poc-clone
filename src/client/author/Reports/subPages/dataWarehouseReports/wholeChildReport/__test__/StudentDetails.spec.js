@@ -2,20 +2,7 @@ import '@testing-library/jest-dom'
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import StudentDetails from '../components/StudentDetails'
-
-const studentInformation = {
-  studentId: 'studentId',
-  firstName: 'firstName',
-  lastName: 'lastName',
-  schoolName: ' schoolName',
-  groupId: 'groupId',
-  subject: 'subject',
-  grades: '1',
-  courseName: 'courseName',
-  courseId: 'courseId',
-  standardSet: 'standardSet',
-  termId: 'termId',
-}
+import { studentInformation } from './testData'
 
 describe('Data warehouse reports ', () => {
   test('student details component visibility ', async () => {

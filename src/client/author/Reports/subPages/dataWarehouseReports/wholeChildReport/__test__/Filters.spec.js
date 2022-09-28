@@ -4,15 +4,14 @@ import { render, screen } from '@testing-library/react'
 import configureMockStore from 'redux-mock-store'
 import WholeChildReportFilters from '../components/Filters'
 
+jest.mock('../components/ClassAutoComplete', () => () => (
+  <div data-testid="ClassAutoComplete" />
+))
 jest.mock(
-  '../../../../common/components/autocompletes/ClassAutoComplete',
-  () => () => <div data-testid="ClassAutoComplete" />
+  '../../../../common/components/autocompletes/CoursesAutoComplete',
+  () => () => <div data-testid="Courses" />
 )
-jest.mock(
-  '../../../../common/components/autocompletes/CourseAutoComplete',
-  () => () => <div data-testid="CourseAutoComplete" />
-)
-jest.mock('../../wholeChildReport/components/StudentAutoComplete', () => () => (
+jest.mock('../components/StudentAutoComplete', () => () => (
   <div data-testid="StudentAutoComplete" />
 ))
 
@@ -69,7 +68,7 @@ describe('Data warehouse reports ', () => {
     expect(filtersButton).toBeInTheDocument()
     const schoolYear = document.querySelector('[title="School Year"]')
     expect(schoolYear).toBeInTheDocument()
-    const CourseAutoComplete = screen.getByTestId('CourseAutoComplete')
+    const CourseAutoComplete = screen.getByTestId('Courses')
     expect(CourseAutoComplete).toBeInTheDocument()
     const classGrade = document.querySelector('[data-cy="classGrade"]')
     expect(classGrade).toBeInTheDocument()

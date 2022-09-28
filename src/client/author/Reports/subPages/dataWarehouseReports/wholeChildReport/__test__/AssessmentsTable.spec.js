@@ -6,43 +6,9 @@ import { Provider } from 'react-redux'
 import { Router } from 'react-router-dom'
 import { createMemoryHistory } from 'history'
 import AssessmentsTable from '../components/AssessmentsTable'
+import { tableData } from './testData'
 
 const history = createMemoryHistory()
-
-const tableData = [
-  {
-    totalQuestions: 0,
-    assignmentId: '62fca80a92e57e0009aa8d00',
-    groupId: '62daacbdffcb990009f78e2b',
-    studentId: '61bc392ff6d9b7f1b6200626',
-    maxScore: 5,
-    reportKey: '62fca7e93d0413000aa70f08',
-    score: 2.6667,
-    testActivityId: '62fca80a92e57e0009aa8d01',
-    testId: '62fca7e93d0413000aa70f08',
-    totalTestItems: 3,
-    assignmentDate: '1660725248288',
-    testType: 'Class Assessment',
-    title: 'Normal Test01',
-    testName: 'Normal Test01',
-    totalScore: 2.6667,
-    totalMaxScore: 5,
-    standardSet: 'Virginia Mathematics',
-    subject: 'Mathematics',
-    averageScore: 53.334,
-    band: {
-      color: '#EBDD54',
-      threshold: 50,
-      aboveStandard: 1,
-      name: 'Basic',
-    },
-    assignmentDateFormatted: 'Aug 17, 2022',
-    districtAvg: 53,
-    groupAvg: 53,
-    schoolAvg: 53,
-    rawScore: '2.67 / 5',
-  },
-]
 
 const mockStore = configureMockStore()
 const store = mockStore({
@@ -70,11 +36,11 @@ describe('Data warehouse reports ', () => {
     expect(dayOfstartTitle).toBeInTheDocument()
     const performanceTitle = screen.getByText('Performance')
     expect(performanceTitle).toBeInTheDocument()
-    const distirtAvgScore = screen.getByText('District (Avg. Score%)')
+    const distirtAvgScore = screen.getByText('District (Avg. Score)')
     expect(distirtAvgScore).toBeInTheDocument()
-    const schoolAvgScoreTitle = screen.getByText('School (Avg Score%)')
+    const schoolAvgScoreTitle = screen.getByText('School (Avg Score)')
     expect(schoolAvgScoreTitle).toBeInTheDocument()
-    const classAvgScoreTitle = screen.getByText('Class (Avg Score%)')
+    const classAvgScoreTitle = screen.getByText('Class (Avg Score)')
     expect(classAvgScoreTitle).toBeInTheDocument()
     const claimsTitle = screen.getByText('Claim Levels')
     expect(claimsTitle).toBeInTheDocument()

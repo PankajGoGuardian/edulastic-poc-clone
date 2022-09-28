@@ -768,6 +768,7 @@ class TeacherTable extends Component {
                 height="34px"
                 type="primary"
                 onClick={this.showInviteTeacherModal}
+                data-cy="inviteMultipleTeachers"
               >
                 {t('users.teacher.inviteteachers')}
               </EduButton>

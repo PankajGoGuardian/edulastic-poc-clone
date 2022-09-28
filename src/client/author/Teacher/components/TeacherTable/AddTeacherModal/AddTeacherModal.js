@@ -322,6 +322,7 @@ class AddTeacherModal extends React.Component {
                 autocomplete="new-password"
                 onChange={this.changeEmail}
                 prefix={<IconMail color={themeColor} />}
+                data-cy="emailTextBox"
               />
             </ModalFormItem>
           </Col>
@@ -420,6 +421,7 @@ class AddTeacherModal extends React.Component {
             <CheckboxLabel
               checked={isPowerTeacher}
               onChange={this.changePowerTool}
+              data-cy="powerUserCheckBox"
             >
               {t('users.teacher.powertools')}
             </CheckboxLabel>

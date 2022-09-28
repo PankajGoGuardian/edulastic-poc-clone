@@ -441,7 +441,12 @@ const Header = ({
                   clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
                   buttonText="Sync with Google Classroom"
                   render={(renderProps) => (
-                    <EduButton isBlue isGhost onClick={renderProps.onClick}>
+                    <EduButton
+                      isBlue
+                      isGhost
+                      onClick={renderProps.onClick}
+                      data-cy="syncGoogleClass"
+                    >
                       <IconGoogleClassroom />
                       <span>SYNC WITH GOOGLE CLASSROOM</span>
                     </EduButton>

@@ -78,7 +78,12 @@ const HeaderSyncAction = ({
           render={(renderProps) => (
             <AuthorCompleteSignupButton
               renderButton={(handleClick) => (
-                <EduButton isGhost isBlue onClick={handleClick}>
+                <EduButton
+                  isGhost
+                  isBlue
+                  onClick={handleClick}
+                  data-cy="syncGoogle"
+                >
                   <p>Sync with Google Classroom</p>
                 </EduButton>
               )}
@@ -106,7 +111,12 @@ const HeaderSyncAction = ({
       {enableCanvasSync && !cleverId && !isClassLink && (
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <EduButton isGhost isBlue onClick={handleClick}>
+            <EduButton
+              isGhost
+              isBlue
+              onClick={handleClick}
+              data-cy="syncCanvas"
+            >
               <p>Sync with Canvas</p>
             </EduButton>
           )}

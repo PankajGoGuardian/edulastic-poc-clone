@@ -171,4 +171,7 @@ export const UserIcon = styled.div`
   height: 30px;
   ${({ src }) => (src ? `background-image: url(${src});` : '')}
   border-radius: 50%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
 `

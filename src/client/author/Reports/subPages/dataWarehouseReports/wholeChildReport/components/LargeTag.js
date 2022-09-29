@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { isEmpty } from 'lodash'
 import { Tooltip } from 'antd'
 import { greyThemeDark1 } from '@edulastic/colors'
 
@@ -35,9 +36,10 @@ const LargeTag = (props) => {
     rightStyle,
     ...restProps
   } = props
+  const justifyContent = isEmpty(leftText) ? 'center' : 'space-between'
 
   const largeTag = (
-    <LargeTagParent {...restProps}>
+    <LargeTagParent {...restProps} style={{ justifyContent }}>
       <div className="left-text" style={leftStyle}>
         {leftText}
       </div>

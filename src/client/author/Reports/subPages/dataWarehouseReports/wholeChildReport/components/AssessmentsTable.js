@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 import { Link } from 'react-router-dom'
 
-import { Row } from 'antd'
+import { Row, Tooltip } from 'antd'
 import { isEmpty, uniq } from 'lodash'
 import { themeColor } from '@edulastic/colors'
 import CsvTable from '../../../../common/components/tables/CsvTable'
@@ -22,6 +22,12 @@ const getTableColumns = (isSharedReport) => {
     // link to LCB for testName
     const testNameIdx = _columns.findIndex((col) => col.key === 'testName')
     _columns[testNameIdx].render = (testName, record) => {
+      const testTitle = testName || '-'
+      const testTitleElement = (
+        <Tooltip placement="right" title={testTitle}>
+          {testTitle}
+        </Tooltip>
+      )
       return (
         <AssementNameContainer>
           <div className="test-name-container">
@@ -30,10 +36,12 @@ const getTableColumns = (isSharedReport) => {
                 to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
                 data-testid="testName"
               >
-                <AssessmentName color={themeColor}>{testName}</AssessmentName>
+                <AssessmentName color={themeColor}>
+                  {testTitleElement}
+                </AssessmentName>
               </Link>
             ) : (
-              <AssessmentName>{testName}</AssessmentName>
+              testTitleElement
             )}
           </div>
           {record.externalTestType ? (
@@ -56,13 +64,18 @@ const getTableColumns = (isSharedReport) => {
             rightText={`${Math.round(averageScore)}%`}
             background={record.band.color}
           />
-        ) : record.achievementLevelInfo ? (
+        ) : !(record.score === undefined || record.score === null) &&
+          record.achievementLevelInfo ? (
           <LargeTag
             tooltipPlacement="topLeft"
-            tooltipText={record.achievementLevelInfo.name}
-            leftText={record.achievementLevelInfo.name}
-            rightText={new Intl.NumberFormat().format(record.score)}
-            background={record.achievementLevelInfo.color}
+            tooltipText={record.achievementLevelInfo?.name || ''}
+            leftText={record.achievementLevelInfo?.name || ''}
+            rightText={
+              Number.isInteger(record.score)
+                ? new Intl.NumberFormat().format(record.score)
+                : '-'
+            }
+            background={record.achievementLevelInfo?.color || ''}
           />
         ) : (
           '-'
@@ -116,11 +129,11 @@ const getTableColumns = (isSharedReport) => {
                   <>
                     {claim.name}
                     <br />
-                    {claim.value}
+                    {claim.value || '-'}
                   </>
                 }
                 leftText={claim.name}
-                rightText={claim.value}
+                rightText={claim.value || '-'}
                 background={claim.color}
                 key={`${claim.name}:${claim.value}`}
               />

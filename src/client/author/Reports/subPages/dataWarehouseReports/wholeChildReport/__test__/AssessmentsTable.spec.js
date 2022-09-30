@@ -24,7 +24,7 @@ describe('Data warehouse reports ', () => {
     render(
       <Router history={history}>
         <Provider store={store}>
-          <AssessmentsTable />
+          <AssessmentsTable tableData={tableData} />
         </Provider>
       </Router>
     )

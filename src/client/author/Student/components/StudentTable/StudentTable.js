@@ -819,6 +819,7 @@ class StudentTable extends Component {
                 height="34px"
                 type="primary"
                 onClick={this.showInviteStudentModal}
+                data-cy="addMultipleStudents"
               >
                 + Add Multiple Students
               </EduButton>

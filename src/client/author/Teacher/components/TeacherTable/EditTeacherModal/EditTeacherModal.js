@@ -185,7 +185,11 @@ class EditTeacherModal extends Component {
             {getFieldDecorator('isPowerTeacher', {
               initialValue: _source?.isPowerTeacher,
               valuePropName: 'checked',
-            })(<CheckboxLabel>{t('users.teacher.powertools')}</CheckboxLabel>)}
+            })(
+              <CheckboxLabel data-cy="powerUserCheckBox">
+                {t('users.teacher.powertools')}
+              </CheckboxLabel>
+            )}
           </Col>
         </Row>
       </CustomModalStyled>

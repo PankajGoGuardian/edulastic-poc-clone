@@ -275,8 +275,8 @@ const WholeChildReport = ({
   }, [reportData, settings.selectedStudentClassData, selectedPerformanceBand])
 
   const studentName = getStudentName(
-    settings.selectedStudent,
-    settings.selectedStudentInformation
+    settings.selectedStudentInformation,
+    settings.selectedStudent
   )
 
   // const onTestSelect = (item) =>

@@ -23,9 +23,11 @@ const getTableColumns = (isSharedReport) => {
     const testNameIdx = _columns.findIndex((col) => col.key === 'testName')
     _columns[testNameIdx].render = (testName, record) => {
       const testTitle = testName || '-'
+      // space is added after test title so that for external test,
+      // there is a space between test title and test tag
       const testTitleElement = (
         <Tooltip placement="right" title={testTitle}>
-          {testTitle}
+          {`${testTitle} `}
         </Tooltip>
       )
       return (
@@ -87,8 +89,9 @@ const getTableColumns = (isSharedReport) => {
       (col) => col.key === 'performanceLevel'
     )
     _columns[performanceLevelIdx].render = (_, record) =>
-      // TODO: replace dash with correct band label for performance in external test
-      !record.externalTestType ? record.band.name : '-'
+      (!record.externalTestType
+        ? record.band.name
+        : record.achievementLevelInfo?.name) || '-'
     // render performance score in CSV
     const performanceScoreIdx = _columns.findIndex(
       (col) => col.key === 'performanceScore'

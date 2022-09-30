@@ -107,7 +107,6 @@ export const SignedStackedBarChart = ({
     startIndex: 0,
     endIndex: pageSize - 1,
   })
-  const [copyData, setCopyData] = useState(null)
   const [barIndex, setBarIndex] = useState(null)
   const [activeLegend, setActiveLegend] = useState(null)
   const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
@@ -154,14 +153,6 @@ export const SignedStackedBarChart = ({
       dx: 25,
       fontSize: 14,
     },
-  }
-
-  if (data !== copyData) {
-    setPagination({
-      startIndex: 0,
-      endIndex: pageSize - 1,
-    })
-    setCopyData(data)
   }
 
   const chartData = useMemo(() => [...data], [pagination])

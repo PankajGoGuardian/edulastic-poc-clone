@@ -80,7 +80,6 @@ const ComposeQuestion = ({
         <Col span={24}>
           <FroalaEditor
             fallback={<Progress />}
-            tag="textarea"
             placeholder={t('component.coding.questionPlaceholder')}
             value={item.stimulusBody}
             toolbarId={toolbarId}

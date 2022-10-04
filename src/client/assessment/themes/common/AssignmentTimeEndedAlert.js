@@ -65,6 +65,7 @@ const AssignmentTimeEndedAlert = ({
     <Modal
       open={isVisible}
       onClose={handleClose}
+      closeOnOverlayClick={false}
       styles={{
         modal: {
           maxWidth: '582px',

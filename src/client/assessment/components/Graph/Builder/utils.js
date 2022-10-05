@@ -6,7 +6,7 @@ import { replaceLatexesWithMathHtml } from '@edulastic/common/src/utils/mathUtil
 import { convertNumberToFraction } from '../../../utils/helpers'
 import { CONSTANT, Colors } from './config'
 import { defaultConfig as lineConfig } from './elements/Line'
-import { Area } from './elements' // , EditButton
+import { Area, Area2 } from './elements' // , EditButton
 import rayConfig from './elements/Ray'
 import segmentConfig from './elements/Segment'
 import vectorConfig from './elements/Vector'
@@ -236,6 +236,7 @@ export const handleSnap = (line, points, board) => {
       points.forEach((point) => point.snapToGrid())
       line.dragged = false
       Area.updateShadingsForAreaPoints(board, board.elements)
+      Area2.updateShadingsForAreaPoints(board, board.elements)
       board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
     }
   })
@@ -248,6 +249,7 @@ export const handleSnap = (line, points, board) => {
       if (point.dragged) {
         point.dragged = false
         Area.updateShadingsForAreaPoints(board, board.elements)
+        Area2.updateShadingsForAreaPoints(board, board.elements)
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_MOVE)
       }
     })
@@ -456,6 +458,7 @@ export function flatConfig(config, accArg = {}, isSub = false) {
     if (
       type === CONSTANT.TOOLS.POINT ||
       type === CONSTANT.TOOLS.AREA ||
+      type === CONSTANT.TOOLS.AREA2 ||
       type === CONSTANT.TOOLS.DRAG_DROP ||
       type === CONSTANT.TOOLS.CARDIOID ||
       type === CONSTANT.TOOLS.ROSE
@@ -543,6 +546,7 @@ export function flat2nestedConfig(config) {
               type === CONSTANT.TOOLS.POINT ||
               type === CONSTANT.TOOLS.DRAG_DROP ||
               type === CONSTANT.TOOLS.AREA ||
+              type === CONSTANT.TOOLS.AREA2 ||
               type === CONSTANT.TOOLS.CARDIOID ||
               type === CONSTANT.TOOLS.ROSE
             ) {

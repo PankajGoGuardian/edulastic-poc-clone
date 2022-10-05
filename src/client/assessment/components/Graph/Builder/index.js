@@ -7,6 +7,7 @@ import i18n from '@edulastic/localization'
 import getDefaultConfig, { CONSTANT } from './config'
 import {
   Area,
+  Area2,
   Circle,
   DragDrop,
   DrawingObject,
@@ -294,6 +295,9 @@ class Board {
       case CONSTANT.TOOLS.AREA:
         this.creatingHandler = Area.onHandler()
         return
+      case CONSTANT.TOOLS.AREA2:
+        this.creatingHandler = Area2.onHandler()
+        return
       case CONSTANT.TOOLS.DASHED:
         this.creatingHandler = Dashed.onHandler()
         return
@@ -500,9 +504,10 @@ class Board {
         this.currentTool === CONSTANT.TOOLS.DELETE
       ) {
         if (this.removeObjectsUnderMouse(event)) {
+          this.removeInequalities()
           Area.updateShadingsForAreaPoints(this, this.elements)
+          Area2.updateShadingsForAreaPoints(this, this.elements)
           this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_DELETE)
-          this.removeIneqalities()
         }
         return
       }
@@ -522,6 +527,7 @@ class Board {
       if (newElement) {
         this.elements.push(newElement)
         Area.updateShadingsForAreaPoints(this, this.elements)
+        Area2.updateShadingsForAreaPoints(this, this.elements)
         this.events.emit(CONSTANT.EVENT_NAMES.CHANGE_NEW)
       }
     })
@@ -784,7 +790,7 @@ class Board {
     this.elements.map(this.removeObject.bind(this))
     this.elements = []
     this.labelForEq = []
-    this.removeIneqalities()
+    this.removeInequalities()
     this.bgElements.forEach((el) => {
       if (el.type == 12) {
         this.labelForEq.push(el.labelHTML)
@@ -797,7 +803,7 @@ class Board {
   }
 
   resetAnswers() {
-    this.removeIneqalities()
+    this.removeInequalities()
     this.answers.map(this.removeObject.bind(this))
     this.answers = []
   }
@@ -936,6 +942,8 @@ class Board {
             return Equation.getConfig(e)
           case Area.jxgType:
             return Area.getConfig(e)
+          case Area2.jxgType:
+            return Area2.getConfig(e)
           case DragDrop.jxgType:
             return DragDrop.getConfig(e)
           case PiecewiseLine.jxgType:
@@ -1105,7 +1113,7 @@ class Board {
     )
   }
 
-  removeIneqalities() {
+  removeInequalities() {
     this.inequalities.forEach((ineq) => {
       this.$board.removeObject(ineq)
     })
@@ -1122,13 +1130,15 @@ class Board {
       )
     )
     Area.updateShadingsForAreaPoints(this, this.answers)
+    Area2.updateShadingsForAreaPoints(this, this.answers)
   }
 
   loadFromConfig(flatCfg) {
-    this.removeIneqalities()
+    this.removeInequalities()
     const config = flat2nestedConfig(flatCfg)
     this.elements.push(...config.map((element) => this.loadObject(element)))
     Area.updateShadingsForAreaPoints(this, this.elements)
+    Area2.updateShadingsForAreaPoints(this, this.elements)
   }
 
   loadSegments(elements) {
@@ -1881,6 +1891,9 @@ class Board {
       }
       case Area.jxgType:
         return Area.create(this, object, { fixed })
+
+      case Area2.jxgType:
+        return Area2.create(this, object, { fixed })
 
       case DragDrop.jxgType:
         return DragDrop.create(this, object, {

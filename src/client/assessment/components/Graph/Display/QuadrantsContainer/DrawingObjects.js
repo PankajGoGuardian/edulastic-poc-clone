@@ -14,6 +14,7 @@ import {
   IconGraphVector as IconVector,
   IconGraphSegment as IconSegment,
   IconGraphPolygon as IconPolygon,
+  IconGraphArea2 as IconArea2,
   IconGraphArea as IconArea,
 } from '@edulastic/icons'
 import { CustomStyleBtn } from '../../../../styled/ButtonStyles'
@@ -90,6 +91,7 @@ class DrawingObjects extends Component {
       [CONSTANT.TOOLS.SIN]: () => <IconSine {...options} />,
       [CONSTANT.TOOLS.POLYGON]: () => <IconPolygon {...options} />,
       [CONSTANT.TOOLS.AREA]: () => <IconArea {...options} />,
+      [CONSTANT.TOOLS.AREA2]: <IconArea2 width={29} height={25} />,
     }
 
     return iconsByToolName[toolName]()

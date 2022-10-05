@@ -58,6 +58,10 @@ export default {
       fillColor: lightBlue9,
       highlightFillColor: lightBlue9,
     },
+    [CONSTANT.TOOLS.AREA2]: {
+      fillColor: lightBlue9,
+      highlightFillColor: lightBlue9,
+    },
   },
 
   red: {
@@ -101,6 +105,10 @@ export default {
       fillColor: '#ee1658',
       highlightFillColor: '#ee1658',
     },
+    [CONSTANT.TOOLS.AREA2]: {
+      fillColor: '#ee1658',
+      highlightFillColor: '#ee1658',
+    },
   },
   green: {
     [CONSTANT.TOOLS.POINT]: {
@@ -140,6 +148,10 @@ export default {
       highlightFillColor: '#1fe3a1',
     },
     [CONSTANT.TOOLS.AREA]: {
+      fillColor: '#1fe3a1',
+      highlightFillColor: '#1fe3a1',
+    },
+    [CONSTANT.TOOLS.AREA2]: {
       fillColor: '#1fe3a1',
       highlightFillColor: '#1fe3a1',
     },

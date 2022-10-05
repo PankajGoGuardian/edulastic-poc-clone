@@ -1,7 +1,7 @@
 /* eslint-disable */
 import { CONSTANT } from '../config'
 import { fixApiLatex } from '../utils'
-import { Area } from '.'
+import { Area, Area2 } from '.'
 
 const jxgType = 98
 
@@ -859,6 +859,7 @@ function create(board, object) {
   line.apiLatex = apiLatex
 
   Area.setAreaForEquation(board, line)
+  Area2.setAreaForEquation(board, line)
 
   return line
 }

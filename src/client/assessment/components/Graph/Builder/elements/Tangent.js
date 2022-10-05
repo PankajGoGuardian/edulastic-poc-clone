@@ -1,5 +1,5 @@
 import { notification } from '@edulastic/common'
-import { Point, Area } from '.'
+import { Point, Area, Area2 } from '.'
 import { CONSTANT } from '../config'
 import { handleSnap, colorGenerator, setLabel } from '../utils'
 import { getLabelParameters } from '../settings'
@@ -75,7 +75,9 @@ function create(board, object, tangentPoints, settings = {}) {
 }
 
 function hasArea(shapes) {
-  return shapes.some((el) => el.type === Area.jxgType)
+  return shapes.some(
+    (el) => el.type === Area.jxgType || el.type === Area2.jxgType
+  )
 }
 
 function onHandler() {

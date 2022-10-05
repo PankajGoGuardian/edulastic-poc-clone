@@ -16,6 +16,7 @@ import {
   Cos,
   Tangent,
   Area,
+  Area2,
 } from '.'
 
 function onHandler(board, event) {
@@ -47,6 +48,12 @@ function onHandler(board, event) {
     })
   } else if (type === CONSTANT.TOOLS.AREA) {
     newElement = Area.create(board, {
+      id,
+      x: coords.usrCoords[1],
+      y: coords.usrCoords[2],
+    })
+  } else if (type === CONSTANT.TOOLS.AREA2) {
+    newElement = Area2.create(board, {
       id,
       x: coords.usrCoords[1],
       y: coords.usrCoords[2],

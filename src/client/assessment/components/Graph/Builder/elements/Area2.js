@@ -2,6 +2,7 @@ import JXG from 'jsxgraph'
 import { isArray } from 'lodash'
 import { CONSTANT } from '../config'
 import { getLineFunc } from '../utils'
+import { Cos, Sin, Tangent } from '.'
 
 const jxgType = 108
 
@@ -19,19 +20,24 @@ function rnd(num) {
 }
 
 function updateShading(board, areaPoint, shapes) {
-  const usrX = rnd(areaPoint.X())
-  const usrY = rnd(areaPoint.Y())
+  const areaX = rnd(areaPoint.X())
+  const areaY = rnd(areaPoint.Y())
 
   if (isArray(shapes)) {
     shapes.forEach((shape) => {
       switch (shape.type) {
+        case JXG.OBJECT_TYPE_CIRCLE:
+        case JXG.OBJECT_TYPE_CONIC: {
+          // TODO: Having trouble...
+          return
+        }
         case JXG.OBJECT_TYPE_LINE: {
           const [point1, point2] = Object.values(shape.ancestors)
           const func = getLineFunc(
             { x: point1.X(), y: point1.Y() },
             { x: point2.X(), y: point2.Y() }
           )
-          let inverse = func(usrX, usrY) > 0
+          let inverse = func(areaX, areaY) > 0
 
           if (point1.X() < point2.X()) {
             inverse = !inverse
@@ -43,6 +49,30 @@ function updateShading(board, areaPoint, shapes) {
 
           const ineq = board.$board.create('inequality', [shape], { inverse })
           board.inequalities.push(ineq)
+          break
+        }
+        case Sin.jxgType: {
+          const points = Object.values(shape.ancestors)
+          const inverse = areaY > Sin.makeCallback(...points)(areaX)
+          board.inequalities.push(
+            board.$board.create('inequality', [shape], { inverse })
+          )
+          break
+        }
+        case Cos.jxgType: {
+          const points = Object.values(shape.ancestors)
+          const inverse = areaY > Cos.makeCallback(...points)(areaX)
+          board.inequalities.push(
+            board.$board.create('inequality', [shape], { inverse })
+          )
+          break
+        }
+        case Tangent.jxgType: {
+          const points = Object.values(shape.ancestors)
+          const inverse = areaY > Tangent.makeCallback(...points)(areaX)
+          board.inequalities.push(
+            board.$board.create('inequality', [shape], { inverse })
+          )
           break
         }
         default:

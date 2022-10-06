@@ -95,6 +95,7 @@ const ClassSelector = ({
         <ClassLabel>{t('common.classLabel')}</ClassLabel>
         <Select
           data-cy="select-class"
+          aria-label="select class"
           value={currentGroup}
           getPopupContainer={() =>
             document.getElementById('class-dropdown-wrapper')

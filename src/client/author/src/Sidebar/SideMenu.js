@@ -49,7 +49,7 @@ import {
   IconCircleCheck,
   IconClose,
   IconDemoAccNav,
-  IconCloudUpload
+  IconCloudUpload,
 } from '@edulastic/icons'
 import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
@@ -763,6 +763,7 @@ class SideMenu extends Component {
                         divider
                         visible
                         data-cy={menu.label}
+                        aria-label={menu.label}
                         key={index.toString()}
                       >
                         {!isCollapsed ? <span>{menu.label}</span> : <Hr />}

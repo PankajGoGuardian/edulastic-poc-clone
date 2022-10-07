@@ -621,6 +621,7 @@ class Item extends Component {
                       width="60px"
                       height="36px"
                       data-cy="addRemoveButton"
+                      aria-label={selectedToCart ? 'Remove Item' : 'Add Item'}
                       onClick={this.handleToggleItemToCart(item)}
                     >
                       {selectedToCart ? <IconClose /> : <IconPlus />}

@@ -402,6 +402,7 @@ const Search = ({
                 <ItemBody>
                   <SelectInputStyled
                     data-cy="selectDOK"
+                    aria-label="Select DOK"
                     size="large"
                     onSelect={onSearchFieldChange('depthOfKnowledge')}
                     value={depthOfKnowledge}
@@ -420,6 +421,7 @@ const Search = ({
                 <ItemBody>
                   <SelectInputStyled
                     data-cy="selectDifficulty"
+                    aria-label="Select Difficulty"
                     size="large"
                     onSelect={onSearchFieldChange('authorDifficulty')}
                     value={authorDifficulty}

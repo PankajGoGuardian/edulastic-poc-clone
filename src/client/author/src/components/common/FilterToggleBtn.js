@@ -11,6 +11,8 @@ class FilterToggleBtn extends Component {
       <>
         <MobileLeftFilterButton
           data-cy="filter"
+          aria-label="Toggle filter"
+          title="Toggle filter"
           header={header}
           isShowFilter={!isShowFilter}
           variant="filter"

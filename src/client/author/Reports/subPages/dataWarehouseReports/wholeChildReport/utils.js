@@ -8,7 +8,6 @@ import {
   get,
   find,
   uniq,
-  zipObject,
   mapValues,
 } from 'lodash'
 
@@ -80,8 +79,9 @@ export const staticDropDownData = {
   ],
 }
 
-export const claimsColorMap = zipObject(
-  [
+export const claimsColorMap = Object.fromEntries(
+  uniq([
+    // CAASPP
     'Concepts and Procedures',
     'Problem Solving and Modeling/Data Analysis',
     'Communicating Reasoning',
@@ -89,8 +89,67 @@ export const claimsColorMap = zipObject(
     'Writing',
     'Listening',
     'Research/Inquiry',
-  ],
-  colorConstants.externalPerformanceBandColors
+
+    // #region iReady
+    'Phonological Awareness',
+    'Phonics',
+    'High-Frequency Words',
+    'Vocabulary',
+    'Reading Comprehension: Literature',
+    'Reading Comprehension: Informational Text',
+
+    'Number and Operations',
+    'Algebra and Algebraic Thinking',
+    'Measurement and Data',
+    'Geometry',
+    // #endregion
+
+    // #region NWEA
+    // Mathematics K–2
+    'Operations and Algebraic Thinking',
+    'Number and Operations',
+    'Measurement and Data',
+    'Geometry',
+
+    // Mathematics 2–5
+    'Operations and Algebraic Thinking',
+    'Number and Operations',
+    'Measurement and Data',
+    'Geometry',
+
+    // Mathematics 6+
+    'Operations and Algebraic Thinking',
+    'The Real and Complex Number Systems',
+    'Geometry',
+    'Statistics and Probability',
+
+    // Reading K–2
+    'Literature and Informational',
+    'Vocabulary Use and Functions',
+    'Foundational Skills',
+    'Language and Writing',
+
+    // Reading
+    'Literary Text: Key Ideas and Details',
+    'Literary Text: Language, Craft, Structure',
+    'Informational Text: Key Ideas and Details',
+    'Informational Text: Language, Craft, Structure',
+    'Vocabulary: Acquisition and Use',
+
+    // Language Usage
+    'Writing: Write, Revise Texts for Purpose and Audience',
+    'Language: Understand, Edit for Grammar, Usage',
+    'Language: Understand, Edit for Mechanics',
+
+    // Science
+    'Life Sciences',
+    'Physical Sciences',
+    'Earth and Space Sciences',
+    // #endregion
+  ]).map((claimName, i) => {
+    const colors = colorConstants.externalPerformanceBandColors
+    return [claimName, colors[i % colors.length]]
+  })
 )
 
 export const tableColumnsData = [
@@ -195,7 +254,7 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     achievementLevel: `${parseInt(metric.achievementLevel, 10)}`,
     claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) => ({
       name,
-      value,
+      value: typeof value === 'object' ? value.score : value,
       color: claimsColorMap[name] || colorByText(name),
     })),
     schoolCode: metric.schoolCode,

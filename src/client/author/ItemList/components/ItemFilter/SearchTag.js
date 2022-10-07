@@ -12,6 +12,7 @@ const InputTag = ({
     <SelectInputStyled
       mode="tags"
       placeholder={placeholder || 'Search by skills and keywords'}
+      aria-label={placeholder || 'Search by skills and keywords'}
       onChange={onSearchInputChange}
       style={{ width: '100%', minHeight: '40px' }}
       value={value}

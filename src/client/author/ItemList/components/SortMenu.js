@@ -21,7 +21,11 @@ const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
   return (
     <FlexContainer>
       <StyledLabel data-cy="sort-button" onClick={onSort}>
-        Sort by <StyledSortIcon dir={sortDir} />
+        Sort by{' '}
+        <StyledSortIcon
+          dir={sortDir}
+          aria-label={sortDir === 'asc' ? 'Sort ascending' : 'Sort descending'}
+        />
       </StyledLabel>
       <StyledDropdown
         getPopupContainer={(el) => el.parentElement}

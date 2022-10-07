@@ -206,8 +206,8 @@ const AssessmentsChart = ({
         getXTickText={getXTickText}
         getXTickTagText={getXTickTagText}
         filter={{}}
-        onBarClickCB={() => console.log('onBarClickCB')}
-        onResetClickCB={() => console.log('onResetClickCB')}
+        onBarClickCB={onBarClickCB}
+        onResetClickCB={onResetClickCB}
         margin={{ top: 0, right: 20, left: 20, bottom: 40 }}
         legendProps={{
           iconType: 'circle',
@@ -236,8 +236,8 @@ AssessmentsChart.propTypes = {
 }
 
 AssessmentsChart.defaultProps = {
-  onResetClickCB: () => {},
-  onBarClickCB: () => {},
+  onResetClickCB: () => console.log('onResetClickCB'),
+  onBarClickCB: () => console.log('onBarClickCB'),
 }
 
 export default AssessmentsChart

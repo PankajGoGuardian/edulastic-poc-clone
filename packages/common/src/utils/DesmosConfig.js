@@ -58,7 +58,7 @@ const stateConfig = {
     degreeMode: false,
     decimalToFraction: true,
     plotInequalities: false,
-    plotImplicits: false,
+    plotSingleVariableImplicitEquations: false,
   },
   connecticut: { ...standard },
   delaware: {

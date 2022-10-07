@@ -7,9 +7,9 @@ const IconLock = (props) => (
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 15.783 13.63"
     {...props}
-    aria-labelledby="volumeUpIcontitle volumeUpIconDescription"
+    aria-labelledby="volumeUpIconTitle volumeUpIconDescription"
   >
-    <title id="volumeUpIcontitle" lang="en">
+    <title id="volumeUpIconTitle" lang="en">
       Volume Up Icon
     </title>
     <desc id="volumeUpIconDescription">Volume Up Icon</desc>

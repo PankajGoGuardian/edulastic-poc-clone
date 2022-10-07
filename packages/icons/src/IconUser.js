@@ -6,10 +6,10 @@ const IconUser = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 12.174 16.005"
-    aria-labelledby="userIcontitle userIconDescription"
+    aria-labelledby="userIconTitle userIconDescription"
     {...props}
   >
-    <title id="userIcontitle" lang="en">
+    <title id="userIconTitle" lang="en">
       User Icon
     </title>
     <desc id="userIconDescription">User Icon</desc>

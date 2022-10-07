@@ -10,10 +10,10 @@ const IconRubric = (props) => (
     width="14.563"
     height="14.407"
     viewBox="0 0 14.563 14.407"
-    aria-labelledby="rubricIcontitle rubricIconDescription"
+    aria-labelledby="rubricIconTitle rubricIconDescription"
     {...props}
   >
-    <title id="rubricIcontitle" lang="en">
+    <title id="rubricIconTitle" lang="en">
       Rubric Icon
     </title>
     <desc id="rubricIconDescription">Rubric Icon</desc>

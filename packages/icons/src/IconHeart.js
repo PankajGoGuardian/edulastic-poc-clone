@@ -7,10 +7,10 @@ const IconHeart = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 17.957 16.1"
-    aria-labelledby="likeIcontitle likeIconDescription"
+    aria-labelledby="likeIconTitle likeIconDescription"
     {...props}
   >
-    <title id="likeIcontitle" lang="en">
+    <title id="likeIconTitle" lang="en">
       Like Icon
     </title>
     <desc id="likeIconDescription">Like Icon</desc>

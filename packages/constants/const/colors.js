@@ -28,8 +28,14 @@ const bandColorsNew = [
   '#db75c5',
 ]
 
+const threeBandColors = ['#74e27a', '#ebdd54', '#e55c5c']
+
+const fiveBandColors = ['#a1c3ea', '#fec571', '#74e27a', '#ebdd54', '#e55c5c']
+
 module.exports = {
   performanceBandColors: bandColors,
   externalPerformanceBandColors: bandColorsNew,
   standardProficiencyColors: bandColors,
+  threeBandColors,
+  fiveBandColors,
 }

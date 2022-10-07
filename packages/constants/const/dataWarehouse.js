@@ -36,7 +36,8 @@ const achievementLevelsGrouped = [
   },
 ]
 
-const getAchievementLevels = (testTitle) => {
+const getCAASPPAchievementLevels = (test) => {
+  const { testId, title: testTitle } = test
   let result = [
     { id: '9', name: 'No score' },
 
@@ -53,10 +54,101 @@ const getAchievementLevels = (testTitle) => {
   }
   result = result.map((r, i) => ({
     ...r,
-    testTitle,
+    testId,
     color: colorConstants.externalPerformanceBandColors[i],
+    active: test.achievementLevel === r.id,
   }))
   return result
+}
+
+const getIReadyAchievementLevels = (test) => {
+  const { testId } = test
+  const achievementLevel = test.achievementLevel.toLowerCase()
+  const isMid = achievementLevel.startsWith('mid')
+  const isLate = achievementLevel.startsWith('late')
+  const isEarly = achievementLevel.startsWith('early')
+  const level = achievementLevel.match(/(?<=level\s+)\w+/)?.[0]
+  const levelDiff = (level === 'k' ? 0 : +level) - test.grade
+  return [
+    {
+      testId,
+      name: 'Two or More Grade Levels Below',
+      active: levelDiff <= -2,
+      color: colorConstants.threeBandColors[0],
+      id: 'Two or More Grade Levels Below',
+    },
+    {
+      testId,
+      name: 'On (Early) Grade Level or One Grade Level Below',
+      active: isEarly || levelDiff == -1,
+      color: colorConstants.threeBandColors[1],
+      id: 'On (Early) Grade Level or One Grade Level Below',
+    },
+    {
+      testId,
+      name: 'On (Mid/Late) or Above Grade Level',
+      active: isMid || isLate || levelDiff >= 0,
+      color: colorConstants.threeBandColors[2],
+      id: 'On (Mid/Late) or Above Grade Level',
+    },
+  ]
+}
+
+const getNWEAAchievementLevels = (test) => {
+  const { testId } = test
+  const score = test.score
+  return [
+    {
+      testId,
+      name: 'Low',
+      id: 'Low',
+      color: colorConstants.fiveBandColors[4],
+      active: score < 21,
+    },
+    {
+      testId,
+      name: 'LoAvg',
+      id: 'LoAvg',
+      color: colorConstants.fiveBandColors[3],
+      active: score >= 21 && score <= 40,
+    },
+    {
+      testId,
+      name: 'Avg',
+      id: 'Avg',
+      color: colorConstants.fiveBandColors[2],
+      active: score >= 41 && score <= 60,
+    },
+    {
+      testId,
+      name: 'HiAvg',
+      id: 'HiAvg',
+      color: colorConstants.fiveBandColors[1],
+      active: score >= 61 && score <= 80,
+    },
+    {
+      testId,
+      name: 'Hi',
+      id: 'Hi',
+      color: colorConstants.fiveBandColors[0],
+      active: score >= 80,
+    },
+  ]
+}
+
+// order of returned achievementLevels must be worst to best
+const getAchievementLevels = (test) => {
+  switch (test.externalTestType) {
+    case 'CAASPP':
+      return getCAASPPAchievementLevels(test)
+    case 'NWEA':
+      return getNWEAAchievementLevels(test)
+    case 'iReady_Math':
+    case 'iReady_ELA':
+      return getIReadyAchievementLevels(test)
+    default:
+      throw new Error('Invalid Test Category')
+  }
 }
 
 module.exports = {

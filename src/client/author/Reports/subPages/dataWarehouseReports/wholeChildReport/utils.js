@@ -251,13 +251,14 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     studentId: metric.studentId,
     maxScore: undefined,
     score: +metric.score,
-    achievementLevel: `${parseInt(metric.achievementLevel, 10)}`,
+    achievementLevel: metric.achievementLevel,
     claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) => ({
       name,
       value: typeof value === 'object' ? value.score : value,
       color: claimsColorMap[name] || colorByText(name),
     })),
     schoolCode: metric.schoolCode,
+    grade: metric.grade,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
@@ -286,13 +287,11 @@ export const getChartData = ({
   studentClassData = [],
   selectedPerformanceBand = [],
 }) => {
-  const externalTestNames = uniq(
-    assignmentMetrics.flatMap((cdItem) =>
-      cdItem.externalTestType ? [cdItem.title] : []
-    )
+  const externalTests = assignmentMetrics.flatMap((cdItem) =>
+    cdItem.externalTestType ? [cdItem] : []
   )
   const achievementLevelMap = Object.fromEntries(
-    externalTestNames.map((name) => [name, getAchievementLevels(name)])
+    externalTests.map((test) => [test.testId, getAchievementLevels(test)])
   )
 
   if (!assignmentMetrics.length) {
@@ -337,8 +336,9 @@ export const getChartData = ({
       })
     } else {
       Object.assign(assessmentData, {
-        achievementLevelInfo: achievementLevelMap[assessmentData.title].find(
-          (a) => a.id === assessmentData.achievementLevel
+        achievementLevelBands: achievementLevelMap[assessmentData.testId],
+        achievementLevelInfo: achievementLevelMap[assessmentData.testId].find(
+          (a) => a.active
         ),
       })
     }

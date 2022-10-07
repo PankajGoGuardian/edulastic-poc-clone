@@ -3,7 +3,16 @@ import withIconStyles from '@edulastic/icons/src/HOC/withIconStyles'
 import SVG from '@edulastic/icons/src/common/SVG'
 
 const IconLock = (props) => (
-  <SVG xmlns="http://www.w3.org/2000/svg" viewBox="0 0 15.783 13.63" {...props}>
+  <SVG
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 15.783 13.63"
+    {...props}
+    aria-labelledby="volumeUpIcontitle volumeUpIconDescription"
+  >
+    <title id="volumeUpIcontitle" lang="en">
+      Volume Up Icon
+    </title>
+    <desc id="volumeUpIconDescription">Volume Up Icon</desc>
     <g transform="translate(14.662 -34.57)">
       <g transform="translate(-14.661 33.549)">
         <path

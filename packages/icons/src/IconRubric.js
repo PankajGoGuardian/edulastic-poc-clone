@@ -10,8 +10,13 @@ const IconRubric = (props) => (
     width="14.563"
     height="14.407"
     viewBox="0 0 14.563 14.407"
+    aria-labelledby="rubricIcontitle rubricIconDescription"
     {...props}
   >
+    <title id="rubricIcontitle" lang="en">
+      Rubric Icon
+    </title>
+    <desc id="rubricIconDescription">Rubric Icon</desc>
     <g transform="translate(-573.486 -57.6)">
       <g transform="translate(565.66 57.473)">
         <g transform="translate(7.982 0.127)">

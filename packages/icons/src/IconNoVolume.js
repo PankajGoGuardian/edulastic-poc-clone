@@ -6,13 +6,10 @@ const IconLock = (props) => (
   <SVG
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 17.828 16.827"
-    aria-labelledby="noVolumeIconTitle noVolumeIconDescription"
     {...props}
   >
-    <title id="noVolumeIconTitle" lang="en">
-      No Volume Icon
-    </title>
-    <desc id="noVolumeIconDescription">No Volume Icon</desc>
+    <title lang="en">No Volume Icon</title>
+    <desc>No Volume Icon</desc>
     <g transform="translate(15.576 -32.657)">
       <g transform="translate(-14.661 33.549)">
         <path

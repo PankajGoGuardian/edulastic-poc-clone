@@ -187,7 +187,9 @@ export const StyledQuestionMark = styled(Icon)`
   cursor: pointer;
 `
 
-export const StyledButton = styled(Button)`
+export const StyledButton = styled(Button).attrs({
+  'aria-label': 'toolbar button',
+})`
   width: 35px;
   height: 35px;
   padding: 0;

@@ -69,6 +69,7 @@ const QuestionSelectDropdown = ({
           dropdownClassName="question-select-list-dropdown"
           value={currentItem}
           data-cy="options"
+          aria-label="question select list dropdown"
           onChange={(value) => {
             value === 'SUBMIT'
               ? moveToNext(null, true, value)

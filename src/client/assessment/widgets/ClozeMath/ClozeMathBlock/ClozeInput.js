@@ -85,6 +85,7 @@ const ClozeInput = ({ id, resprops = {} }) => {
         onChange={(e) => save({ value: e.target.value, index }, 'inputs', id)}
         value={val}
         data-cy="textInput"
+        aria-label="text input"
         {...inputBoxStyle}
       />
     </InputDiv>

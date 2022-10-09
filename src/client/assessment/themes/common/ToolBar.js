@@ -30,7 +30,9 @@ export const Container = styled.div`
   }
 `
 
-export const ButtonWithStyle = styled(Button)`
+export const ButtonWithStyle = styled(Button).attrs({
+  'aria-label': 'toolbar button',
+})`
   border: 1px solid #ffffff;
   margin-right: 5px;
   border-radius: 5px;

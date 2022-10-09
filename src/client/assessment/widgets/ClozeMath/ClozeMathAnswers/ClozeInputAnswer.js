@@ -77,6 +77,7 @@ class ClozeInputAnswer extends Component {
               >
                 <TextInputStyled
                   data-cy="textInput"
+                  aria-label="text input"
                   style={{
                     width: cssStyles.width || width,
                     height: cssStyles.height || height,

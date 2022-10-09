@@ -118,6 +118,7 @@ const SelectUnit = ({
         onFocus={() => handleEvent('focus')}
         onBlur={() => handleEvent('blur')}
         data-cy="selectUnitDropdown"
+        aria-label="select unit dropdown"
         noBorder={noBorder}
         bg={background}
       >

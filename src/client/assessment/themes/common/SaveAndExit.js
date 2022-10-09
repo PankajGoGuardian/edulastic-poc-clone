@@ -96,6 +96,7 @@ const SaveAndExit = ({
         <Tooltip placement="bottom" title="Test Options">
           <StyledButton
             data-cy="testOptions"
+            aria-label="test options button"
             onClick={() => setSettingsModalVisibility(true)}
           >
             <IconAccessibility />
@@ -117,6 +118,7 @@ const SaveAndExit = ({
               >
                 <SaveAndExitButton
                   data-cy="finishTest"
+                  aria-label="finish test button"
                   disabled={hidePause}
                   onClick={finishTest}
                 >
@@ -140,6 +142,7 @@ const SaveAndExit = ({
                 <SaveAndExitButton
                   disabled={hidePause}
                   data-cy="finishTest"
+                  aria-label="finish test button"
                   onClick={finishTest}
                 >
                   <IconCircleLogout />

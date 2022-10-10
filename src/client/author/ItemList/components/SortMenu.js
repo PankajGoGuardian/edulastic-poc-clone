@@ -24,7 +24,7 @@ const SortMenu = ({ options, onSelect, sortBy, sortDir }) => {
         Sort by{' '}
         <StyledSortIcon
           dir={sortDir}
-          aria-label={sortDir === 'asc' ? 'Sort ascending' : 'Sort descending'}
+          aria-label={`Sort ${sortDir === 'asc' ? 'ascending' : 'descending'}`}
         />
       </StyledLabel>
       <StyledDropdown

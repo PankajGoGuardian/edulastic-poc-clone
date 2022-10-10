@@ -22,7 +22,10 @@ const SET_SCHOOL_ADMIN_SETTINGS_ACCESS =
 const CHANGE_DISTRICT_POLICY_ACTION = '[district policy] save changed data'
 const SAVE_CANVAS_INTEGRATION_KEYS_REQUEST =
   '[district policy] save canvas integration keys request'
-
+const SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST =
+  '[district policy] save oneroster api configuration keys request'
+const SAVE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST =
+  '[district policy] save oneroster lti integration keys request'
 export const receiveDistrictPolicyAction = createAction(
   RECEIVE_DISTRICT_POLICY_REQUEST
 )
@@ -59,6 +62,14 @@ export const changeDistrictPolicyAction = createAction(
 
 export const saveCanvasKeysRequestAction = createAction(
   SAVE_CANVAS_INTEGRATION_KEYS_REQUEST
+)
+
+export const saveOnerosterApiConfigurationAction = createAction(
+  SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST
+)
+
+export const saveOnerosterLtiConfigurationAction = createAction(
+  SAVE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST
 )
 export const setSchoolAdminSettingsAccessAction = createAction(
   SET_SCHOOL_ADMIN_SETTINGS_ACCESS
@@ -252,6 +263,56 @@ function* saveCanvasKeysRequestSaga({ payload }) {
     notification(notificationData)
   }
 }
+function* saveOnerosterApiKeysRequestSaga({ payload }) {
+  try {
+    const result = yield call(settingsApi.saveOnerosterApiConfigKeys, payload)
+    yield put(updateDistrictPolicySuccessAction(result))
+    notification({
+      type: 'success',
+      msg: 'Oneroster Api Configuration keys saved successfully',
+    })
+  } catch (err) {
+    const notificationData = {
+      type: 'error',
+      msg:
+        err?.response?.data?.message ||
+        'Unable to save Oneroster Api Configuration keys',
+    }
+    if (err?.response?.data?.statusCode === 403) {
+      Object.assign(notificationData, {
+        exact: true,
+      })
+    }
+    notification(notificationData)
+  }
+}
+
+function* saveOnerosterLtiKeysRequestSaga({ payload }) {
+  try {
+    const result = yield call(
+      settingsApi.saveOnerosterLtiIntegrationKeys,
+      payload
+    )
+    yield put(updateDistrictPolicySuccessAction(result))
+    notification({
+      type: 'success',
+      msg: 'Oneroster Lti Integration keys saved successfully',
+    })
+  } catch (err) {
+    const notificationData = {
+      type: 'error',
+      msg:
+        err?.response?.data?.message ||
+        'Unable to save Oneroster Lti Integration keys',
+    }
+    if (err?.response?.data?.statusCode === 403) {
+      Object.assign(notificationData, {
+        exact: true,
+      })
+    }
+    notification(notificationData)
+  }
+}
 
 export function* watcherSaga() {
   yield all([
@@ -267,6 +328,18 @@ export function* watcherSaga() {
     yield takeEvery(
       SAVE_CANVAS_INTEGRATION_KEYS_REQUEST,
       saveCanvasKeysRequestSaga
+    ),
+  ])
+  yield all([
+    yield takeEvery(
+      SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST,
+      saveOnerosterApiKeysRequestSaga
+    ),
+  ])
+  yield all([
+    yield takeEvery(
+      SAVE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST,
+      saveOnerosterLtiKeysRequestSaga
     ),
   ])
 }

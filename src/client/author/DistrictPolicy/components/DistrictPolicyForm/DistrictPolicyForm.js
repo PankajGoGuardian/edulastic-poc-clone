@@ -23,8 +23,11 @@ import {
   receiveSchoolPolicyAction,
   updateDistrictPolicyAction,
   saveCanvasKeysRequestAction,
+  saveOnerosterApiConfigurationAction,
+  saveOnerosterLtiConfigurationAction,
 } from '../../ducks'
 import ConfigureCanvasModal from './ConfigureCanvasModal'
+import ConfigureOnerosterModal from './ConfigureOnerosterModal'
 import {
   InputLabel,
   StyledCol,
@@ -41,7 +44,8 @@ import { HeaderSaveButton } from '../../../../admin/Common/StyledComponents'
 const _3RDPARTYINTEGRATION = {
   googleClassroom: 1,
   canvas: 2,
-  none: 3,
+  oneroster: 3,
+  none: 4,
 }
 
 function validURL(value, allowLargeDomains = false) {
@@ -97,6 +101,7 @@ class DistrictPolicyForm extends Component {
         errorMsg: '',
       },
       showCanvasConfigrationModal: false,
+      showOnerosterConfigurationModal: false,
     }
   }
 
@@ -189,12 +194,16 @@ class DistrictPolicyForm extends Component {
     // initially make all false and according to target make flag true
     districtPolicyData.googleClassroom = false
     districtPolicyData.canvas = false
+    districtPolicyData.oneroster = false
     switch (e.target.value) {
       case 1:
         districtPolicyData.googleClassroom = true
         break
       case 2:
         districtPolicyData.canvas = true
+        break
+      case 3:
+        districtPolicyData.oneroster = true
         break
       default:
         break
@@ -394,6 +403,7 @@ class DistrictPolicyForm extends Component {
       allowDomainForSchoolValidate,
       allowIpForAssignmentValidate,
       showCanvasConfigrationModal,
+      showOnerosterConfigurationModal,
     } = this.state
 
     const { districtPolicy } = this.props
@@ -401,9 +411,17 @@ class DistrictPolicyForm extends Component {
       ? _3RDPARTYINTEGRATION.googleClassroom
       : districtPolicy.canvas
       ? _3RDPARTYINTEGRATION.canvas
+      : districtPolicy.oneroster
+      ? _3RDPARTYINTEGRATION.oneroster
       : _3RDPARTYINTEGRATION.none
 
-    const { role, saveCanvasKeysRequest, user } = this.props
+    const {
+      role,
+      saveCanvasKeysRequest,
+      saveOnerosterApiConfiguration,
+      saveOnerosterLtiConfiguration,
+      user,
+    } = this.props
     const isSchoolLevel = role === 'school-admin'
 
     return (
@@ -606,7 +624,23 @@ class DistrictPolicyForm extends Component {
                     </ConfigureButton>
                   )}
                 </RadioBtn>
-                <RadioBtn mb="10px" value={3} data-cy="none">
+                <RadioBtn mb="10px" value={3} data-cy="oneroster">
+                  <span>OneRoster</span>{' '}
+                  {isSchoolLevel ? null : (
+                    <ConfigureButton
+                      onClick={(e) => {
+                        e.preventDefault()
+                        if (thirdPartyValue === _3RDPARTYINTEGRATION.oneroster)
+                          this.setState({
+                            showOnerosterConfigurationModal: true,
+                          })
+                      }}
+                    >
+                      (Configure)
+                    </ConfigureButton>
+                  )}
+                </RadioBtn>
+                <RadioBtn mb="10px" value={4} data-cy="none">
                   None
                 </RadioBtn>
                 {/* None signifies that no 3rd party integration is enabled */}
@@ -715,6 +749,26 @@ class DistrictPolicyForm extends Component {
             user={user}
           />
         )}
+        {showOnerosterConfigurationModal && (
+          <ConfigureOnerosterModal
+            visible={showOnerosterConfigurationModal}
+            handleCancel={() => {
+              this.setState({ showOnerosterConfigurationModal: false })
+            }}
+            districtPolicyId={districtPolicy._id}
+            orgType={districtPolicy.orgType}
+            orgId={districtPolicy.orgId}
+            saveOnerosterApiConfiguration={saveOnerosterApiConfiguration}
+            saveOnerosterLtiConfiguration={saveOnerosterLtiConfiguration}
+            oneRosterBaseUrl={districtPolicy.oneRosterBaseUrl}
+            oneRosterClientId={districtPolicy.oneRosterClientId}
+            oneRosterSecretKey={districtPolicy.oneRosterSecretKey}
+            oneRosterTokenUrl={districtPolicy.oneRosterTokenUrl}
+            rosterOAuthConsumerKey={districtPolicy.rosterOAuthConsumerKey}
+            rosterOAuthConsumerSecret={districtPolicy.rosterOAuthConsumerSecret}
+            user={user}
+          />
+        )}
       </>
     )
   }
@@ -736,6 +790,8 @@ const enhance = compose(
       changeDistrictPolicyData: changeDistrictPolicyAction,
       loadSchoolPolicy: receiveSchoolPolicyAction,
       saveCanvasKeysRequest: saveCanvasKeysRequestAction,
+      saveOnerosterApiConfiguration: saveOnerosterApiConfigurationAction,
+      saveOnerosterLtiConfiguration: saveOnerosterLtiConfigurationAction,
     }
   )
 )

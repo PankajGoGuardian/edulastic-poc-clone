@@ -291,6 +291,24 @@ const saveCanvasIntegrationKeys = (data) =>
     })
     .then((result) => result.data.result)
 
+const saveOnerosterApiConfigKeys = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/oneroster-api-configuration-keys`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
+const saveOnerosterLtiIntegrationKeys = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/oneroster-lti-integration-keys`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const fetchOrgInterestedStandards = ({ districtId, institutionId }) =>
   api
     .callApi({
@@ -331,6 +349,8 @@ export default {
   updateExternalTools,
   deleteExternalTools,
   saveCanvasIntegrationKeys,
+  saveOnerosterApiConfigKeys,
+  saveOnerosterLtiIntegrationKeys,
   getTestSettingsList,
   removeTestSetting,
   fetchOrgInterestedStandards,

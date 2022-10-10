@@ -597,7 +597,7 @@ class Item extends Component {
                     onClick={openPreviewModal}
                     data-cy="view"
                   >
-                    <IconEye />
+                    <IconEye aria-hidden="true" />
                     <span>{t('component.item.view').toUpperCase()}</span>
                   </EduButton>
                   {!hideAddRemove && !hasQuestions ? (

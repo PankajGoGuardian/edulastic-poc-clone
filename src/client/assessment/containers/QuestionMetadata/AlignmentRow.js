@@ -312,6 +312,7 @@ const AlignmentRow = ({
                     value={subject}
                     getPopupContainer={(trigger) => trigger.parentNode}
                     onChange={setSubject}
+                    aria-label="Select subject"
                   >
                     {selectsData.allSubjects.map(({ text, value }) =>
                       value ? (
@@ -334,6 +335,7 @@ const AlignmentRow = ({
                     dropdownClassName="custom-antd-select"
                     getPopupContainer={(trigger) => trigger.parentNode}
                     onChange={handleChangeStandard}
+                    aria-label="Select standard set"
                   >
                     {formattedCuriculums.map(({ value, text, disabled }) => (
                       <Select.Option
@@ -355,6 +357,7 @@ const AlignmentRow = ({
                     getPopupContainer={(trigger) => trigger.parentNode}
                     value={grades}
                     onChange={setGrades}
+                    aria-label="Select grade"
                   >
                     {selectsData.allGrades.map(({ text, value }) => (
                       <Select.Option key={text} value={value}>
@@ -382,6 +385,7 @@ const AlignmentRow = ({
                 onSearch={handleSearchStandard}
                 onSelect={handleStandardSelect}
                 onDeselect={handleStandardDeselect}
+                aria-label="Select standards"
               >
                 {!curriculumStandardsLoading &&
                   curriculumStandardsELO &&

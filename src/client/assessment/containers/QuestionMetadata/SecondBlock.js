@@ -121,7 +121,10 @@ const SecondBlock = ({
               placeholder={t('component.options.selectDOK')}
               onSelect={onQuestionDataSelect('depthOfKnowledge')}
               value={depthOfKnowledge}
-              suffixIcon={<SelectSuffixIcon type="caret-down" />}
+              suffixIcon={
+                <SelectSuffixIcon type="caret-down" aria-hidden="true" />
+              }
+              aria-label="Select DOK"
             >
               <Select.Option key="Select DOK" value="">
                 Select DOK
@@ -146,6 +149,7 @@ const SecondBlock = ({
               data-cy="externalQuestionId"
               value={testletQuestionId}
               onChange={onChangeExternalData('testletQuestionId')}
+              aria-label="Enter external question id"
             />
           </ItemBody>
         </Col>
@@ -159,7 +163,10 @@ const SecondBlock = ({
               onSelect={onQuestionDataSelect('authorDifficulty')}
               value={authorDifficulty}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              suffixIcon={<SelectSuffixIcon type="caret-down" />}
+              suffixIcon={
+                <SelectSuffixIcon type="caret-down" aria-hidden="true" />
+              }
+              aria-label="Select Difficulty"
             >
               <Select.Option key="Select Difficulty Level" value="">
                 Select Difficulty Level
@@ -187,6 +194,7 @@ const SecondBlock = ({
               value={testletResponseIds}
               maxLength={250}
               onChange={onChangeExternalData('testletResponseIds')}
+              aria-label="Enter external response id's"
             />
           </ItemBody>
         </Col>
@@ -201,7 +209,10 @@ const SecondBlock = ({
               value={bloomsTaxonomy}
               dropdownClassName="custom-antd-select"
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
-              suffixIcon={<SelectSuffixIcon type="caret-down" />}
+              suffixIcon={
+                <SelectSuffixIcon type="caret-down" aria-hidden="true" />
+              }
+              aria-label="Select Bloom's Taxonomy"
             >
               <Select.Option key={"Select Bloom's Taxonomy"} value="">
                 Select Bloom&apos;s Taxonomy
@@ -223,6 +234,7 @@ const SecondBlock = ({
                 padding="6px 15px"
                 value={testletAdditionalMetadata}
                 onChange={onChangeExternalData('testletAdditionalMetadata')}
+                aria-label="Enter additional meta data"
               />
             </ItemBody>
           )}
@@ -316,6 +328,7 @@ const SecondBlock = ({
                   option.props.title.toLowerCase().includes(input.toLowerCase())
                 }
                 getPopupContainer={(triggerNode) => triggerNode.parentNode}
+                aria-label="Select tags"
               >
                 {searchValue.trim() ? (
                   <Select.Option

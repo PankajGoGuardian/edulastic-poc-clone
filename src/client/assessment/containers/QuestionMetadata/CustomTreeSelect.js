@@ -44,7 +44,7 @@ const CustomTreeSelect = ({ bg, children, title, style }) => {
       <Wrapper data-cy="selectStandards" style={style}>
         <Title bg={bg} onClick={() => setShow(!show)}>
           <TextEllipsis title={title}>{title}</TextEllipsis>
-          <SelectSuffixIcon type="caret-down" />
+          <SelectSuffixIcon type="caret-down" aria-hidden="true" />
         </Title>
         {show && <Main>{children}</Main>}
       </Wrapper>

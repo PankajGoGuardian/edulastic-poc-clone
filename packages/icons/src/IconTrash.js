@@ -10,6 +10,8 @@ const IconTrash = ({ title, ...props }) => (
     viewBox="0 0 11.729 15.702"
     {...props}
   >
+    <title lang="en">Delete Icon</title>
+    <desc>Delete Icon</desc>
     <g transform="translate(0)">
       <path
         d="M48.889.522V0H45.4V.522h-4.12V2.634H53.01V.522Z"

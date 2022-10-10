@@ -173,7 +173,12 @@ class ButtonBar extends Component {
                     dataCy="editButton"
                     isActive={view === 'edit'}
                     icon={
-                      <IconPencilEdit color={white} width={18} height={16} />
+                      <IconPencilEdit
+                        color={white}
+                        width={18}
+                        height={16}
+                        aria-hidden="true"
+                      />
                     }
                     linkLabel="Edit Mode"
                     onClickHandler={this.handleMenuClick('edit')}
@@ -183,7 +188,14 @@ class ButtonBar extends Component {
                   id={getFormattedAttrId(`${qTitle}-preview-mode`)}
                   dataCy="previewButton"
                   isActive={view === 'preview'}
-                  icon={<IconEye color={white} width={18} height={16} />}
+                  icon={
+                    <IconEye
+                      color={white}
+                      width={18}
+                      height={16}
+                      aria-hidden="true"
+                    />
+                  }
                   linkLabel="Preview mode"
                   onClickHandler={this.handleMenuClick('preview')}
                 />
@@ -192,7 +204,14 @@ class ButtonBar extends Component {
                     id={getFormattedAttrId(`${qTitle}-metadata`)}
                     dataCy="metadataButton"
                     isActive={view === 'metadata'}
-                    icon={<IconMetadata color={white} width={18} height={16} />}
+                    icon={
+                      <IconMetadata
+                        color={white}
+                        width={18}
+                        height={16}
+                        aria-hidden="true"
+                      />
+                    }
                     linkLabel="Meta data"
                     onClickHandler={this.handleMenuClick('metadata')}
                   />
@@ -205,7 +224,12 @@ class ButtonBar extends Component {
                       dataCy="auditTrailButton"
                       isActive={view === 'auditTrail'}
                       icon={
-                        <IconPencilEdit color={white} width={18} height={16} />
+                        <IconPencilEdit
+                          color={white}
+                          width={18}
+                          height={16}
+                          aria-hidden="true"
+                        />
                       }
                       linkLabel="Audit trail"
                       onClickHandler={this.handleMenuClick('auditTrail')}
@@ -226,7 +250,7 @@ class ButtonBar extends Component {
                           data-cy="saveCancel"
                           onClick={onCancel}
                         >
-                          <IconClose />
+                          <IconClose aria-hidden="true" />
                           CANCEL
                         </EduButton>
                       )}
@@ -241,7 +265,7 @@ class ButtonBar extends Component {
                             passageUpdateInProgress || testItemSavingInProgress
                           }
                         >
-                          <IconSaveNew />
+                          <IconSaveNew aria-hidden="true" />
                           SAVE
                         </EduButton>
                       </Tooltip>
@@ -250,7 +274,7 @@ class ButtonBar extends Component {
                     <>
                       {isTestFlow && !onCloseEditModal && (
                         <EduButton isBlue onClick={onCancel}>
-                          <IconClose />
+                          <IconClose aria-hidden="true" />
                           CANCEL
                         </EduButton>
                       )}
@@ -264,7 +288,7 @@ class ButtonBar extends Component {
                           passageUpdateInProgress || testItemSavingInProgress
                         }
                       >
-                        <IconSaveNew />
+                        <IconSaveNew aria-hidden="true" />
                         SAVE
                       </EduButton>
                       {!isTestFlow && showSaveAndPublishButton && (

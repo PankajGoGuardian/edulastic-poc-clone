@@ -579,7 +579,11 @@ export const allowedToSelectMultiLanguageInTest = createSelector(
       '5ec422aabdde150007764df1', // "Edulastic Premium Content",
       '60af953c3b51956dbb99b4cb', // Bharat-access-lausd-mulitlingual-content (PRD)
       '5f48a498db9eaf900d7abfde', // Swetha-access-lausd-mulitlingual-content (PRO)
-      '5e3be21d03b7ad0924bf517a', // admin@happyhealthy.org - prod sales account
+      '5e3be21d03b7ad0924bf517a', // admin@happyhealthy.org - prod sales account,
+      '6335b59dfff76700096de0df',
+      '6318aab17007110009a3e38b',
+      '6344400dc681d000090a1aeb',
+      '63444025023544000997de11',
     ]
     return allowedUserIds.includes(state) || isCurator
   }

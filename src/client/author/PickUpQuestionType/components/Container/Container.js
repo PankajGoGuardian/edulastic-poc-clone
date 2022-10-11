@@ -376,54 +376,54 @@ class Container extends Component {
                   onClick={this.handleCategory}
                 >
                   <Menu.Item key="multiple-choice">
-                    <IconNewList />
+                    <IconNewList aria-hidden="true" />
                     Multiple Choice
                   </Menu.Item>
                   <Menu.Item key="fill-blanks">
-                    <IconSelection />
+                    <IconSelection aria-hidden="true" />
                     Fill in the Blanks
                   </Menu.Item>
                   <Menu.Item key="classify">
-                    <IconLayout />
+                    <IconLayout aria-hidden="true" />
                     Classify, Match & Order
                   </Menu.Item>
                   <Menu.Item key="edit">
-                    <IconWrite />
+                    <IconWrite aria-hidden="true" />
                     Writing
                   </Menu.Item>
                   {!multipartItem && (
                     <Menu.Item key="read">
-                      <IconRead />
+                      <IconRead aria-hidden="true" />
                       PASSAGE
                     </Menu.Item>
                   )}
                   <Menu.Item key="highlight">
-                    <IconTarget />
+                    <IconTarget aria-hidden="true" />
                     Highlight
                   </Menu.Item>
                   <Menu.Item key="math">
-                    <IconMath />
+                    <IconMath aria-hidden="true" />
                     Math
                   </Menu.Item>
                   <Menu.Item key="graphing">
-                    <IconLineChart />
+                    <IconLineChart aria-hidden="true" />
                     Graphing
                   </Menu.Item>
                   <Menu.Item key="charts">
-                    <IconBarChart />
+                    <IconBarChart aria-hidden="true" />
                     Charts
                   </Menu.Item>
                   <Menu.Item key="multipart">
-                    <IconMultipart />
+                    <IconMultipart aria-hidden="true" />
                     Multipart
                   </Menu.Item>
                   <Menu.Item key="instruction">
-                    <IconPlay />
+                    <IconPlay aria-hidden="true" />
                     Instructions
                   </Menu.Item>
                   {multipartItem && (
                     <Menu.Item key="rulers-calculators">
-                      <IconRulerPencil />
+                      <IconRulerPencil aria-hidden="true" />
                       Tools
                     </Menu.Item>
                   )}
@@ -501,56 +501,56 @@ class Container extends Component {
               onClick={this.handleCategory}
             >
               <Menu.Item key="multiple-choice" onClick={this.toggleCategories}>
-                <IconNewList />
+                <IconNewList aria-hidden="true" />
                 Multiple Choice
               </Menu.Item>
               <Menu.Item key="fill-blanks" onClick={this.toggleCategories}>
-                <IconSelection />
+                <IconSelection aria-hidden="true" />
                 Fill in the Blanks
               </Menu.Item>
               <Menu.Item key="classify" onClick={this.toggleCategories}>
-                <IconLayout />
+                <IconLayout aria-hidden="true" />
                 Classify, Match & Order
               </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
-                <IconWrite />
+                <IconWrite aria-hidden="true" />
                 Writing
               </Menu.Item>
               {!multipartItem && (
                 <Menu.Item key="read" onClick={this.toggleCategories}>
-                  <IconRead />
+                  <IconRead aria-hidden="true" />
                   Reading
                 </Menu.Item>
               )}
               <Menu.Item key="highlight" onClick={this.toggleCategories}>
-                <IconTarget />
+                <IconTarget aria-hidden="true" />
                 Highlight
               </Menu.Item>
               <Menu.Item key="math" onClick={this.toggleCategories}>
-                <IconMath />
+                <IconMath aria-hidden="true" />
                 Math
               </Menu.Item>
               <Menu.Item key="graphing" onClick={this.toggleCategories}>
-                <IconLineChart />
+                <IconLineChart aria-hidden="true" />
                 Graphing
               </Menu.Item>
               <Menu.Item key="charts" onClick={this.toggleCategories}>
-                <IconBarChart />
+                <IconBarChart aria-hidden="true" />
                 Charts
               </Menu.Item>
               <Menu.Item key="multipart">
-                <IconMultipart />
+                <IconMultipart aria-hidden="true" />
                 Multipart
               </Menu.Item>
               <Menu.Item key="instruction">
-                <IconPlay />
+                <IconPlay aria-hidden="true" />
                 Instructions
               </Menu.Item>
               <Menu.Item
                 key="rulers-calculators"
                 onClick={this.toggleCategories}
               >
-                <IconRulerPencil />
+                <IconRulerPencil aria-hidden="true" />
                 Tools
               </Menu.Item>
               {/* implementation is in progress */}

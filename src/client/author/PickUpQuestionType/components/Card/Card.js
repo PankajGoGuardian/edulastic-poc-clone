@@ -23,7 +23,7 @@ const Card = ({
       <RoundDiv onClick={() => onSelectQuestionType(smallData)} data-cy={title}>
         <Header className="card-title">{title}</Header>
         <Content>
-          <StyledPreviewImage src={cardImage || CardMapImage} />
+          <StyledPreviewImage src={cardImage || CardMapImage} alt="" />
         </Content>
       </RoundDiv>
     </>

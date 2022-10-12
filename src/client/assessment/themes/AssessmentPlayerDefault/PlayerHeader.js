@@ -129,6 +129,7 @@ const PlayerHeader = ({
                         prev
                         skin
                         data-cy="prev"
+                        aria-label="Previous question"
                         type="primary"
                         icon="left"
                         disabled={disabled}
@@ -156,6 +157,7 @@ const PlayerHeader = ({
                         skin
                         type="primary"
                         data-cy="next"
+                        aria-label={isLast ? 'Submit test' : 'Next question'}
                         icon={isLast ? null : 'right'}
                         onClick={(e) => {
                           moveToNext()
@@ -174,7 +176,7 @@ const PlayerHeader = ({
                             moveToNext()
                         }}
                       >
-                        {isLast && <IconSend />}
+                        {isLast && <IconSend aria-hidden="true" />}
                         {isLast ? 'SUBMIT' : 'NEXT'}
                       </ControlBtn.Next>
                     )}

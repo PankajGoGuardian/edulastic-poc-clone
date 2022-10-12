@@ -43,8 +43,9 @@ const TestButton = ({
             onClick={(e) => !isPremiumContentWithoutAccess && toggleBookmark(e)}
             active={isBookmarked}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Bookmark question"
           >
-            <StyledIconBookmark />
+            <StyledIconBookmark aria-hidden="true" />
             <span>{t('common.test.bookmark')}</span>
           </StyledButton>
         </Tooltip>
@@ -63,9 +64,10 @@ const TestButton = ({
           <StyledButton
             onClick={handleCheckAnswer}
             data-cy="checkAnswer"
+            aria-label="Check answer"
             disabled={isPremiumContentWithoutAccess}
           >
-            <StyledIconCheck />
+            <StyledIconCheck aria-hidden="true" />
             <span> {t('common.test.checkanswer')}</span>
           </StyledButton>
         </Tooltip>

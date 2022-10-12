@@ -30,9 +30,7 @@ export const Container = styled.div`
   }
 `
 
-export const ButtonWithStyle = styled(Button).attrs({
-  'aria-label': 'toolbar button',
-})`
+export const ButtonWithStyle = styled(Button)`
   border: 1px solid #ffffff;
   margin-right: 5px;
   border-radius: 5px;
@@ -203,6 +201,7 @@ const ToolBar = ({
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
         title="Pointer"
+        aria-label="Pointer"
         icon={<CursorIcon />}
         active={tool.includes(0)}
         onClick={toolbarHandler(0)}
@@ -211,6 +210,7 @@ const ToolBar = ({
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
         title="Ruler"
+        aria-label="Ruler"
         icon={<InRulerIcon />}
         active={tool.includes(1)}
         onClick={toolbarHandler(1)}
@@ -220,6 +220,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Calculator"
+          aria-label="Calculator"
           icon={<CaculatorIcon />}
           active={tool.includes(2)}
           onClick={toolbarHandler(2)}
@@ -229,6 +230,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Reference Material"
+          aria-label="Reference Material"
           icon={<IconEduReferenceSheet height="22" width="20" />}
           active={isShowReferenceModal}
           onClick={openReferenceModal}
@@ -240,6 +242,7 @@ const ToolBar = ({
             ? 'This option is available only for multiple choice and matching questions'
             : 'Crossout'
         }
+        aria-label="Crossout"
         icon={<CloseIcon />}
         active={tool.includes(3)}
         onClick={toolbarHandler(3)}
@@ -248,6 +251,7 @@ const ToolBar = ({
       <ActionButton
         disabled={isPremiumContentWithoutAccess}
         title="Protactor"
+        aria-label="Protactor"
         icon={<ProtactorIcon />}
         active={tool.includes(4)}
         onClick={toolbarHandler(4)}
@@ -258,6 +262,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Scratch Pad"
+          aria-label="Scratch Pad"
           icon={<ScratchPadIcon />}
           active={tool.includes(5)}
           onClick={toolbarHandler(5)}
@@ -267,6 +272,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Magnify"
+          aria-label="Magnify"
           icon={<IconMagnify />}
           active={enableMagnifier}
           onClick={handleMagnifier}
@@ -276,6 +282,7 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Upload work"
+          aria-label="Upload work"
           icon={<IconCloudUpload />}
           onClick={toggleUserWorkUploadModal}
         />

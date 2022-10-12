@@ -107,7 +107,9 @@ const Container = styled.div`
   display: flex;
 `
 
-const StyledButton = withKeyboard(styled.div`
+const StyledButton = withKeyboard(styled.div.attrs({
+  role: 'button',
+})`
   margin-right: 5px;
   text-transform: uppercase;
   display: flex;

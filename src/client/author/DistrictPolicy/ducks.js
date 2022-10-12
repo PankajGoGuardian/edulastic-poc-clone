@@ -1,6 +1,6 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { takeEvery, call, put, all } from 'redux-saga/effects'
-import { settingsApi } from '@edulastic/api'
+import { settingsApi, onerosterApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { get } from 'lodash'
 import { createSelector } from 'reselect'
@@ -24,8 +24,8 @@ const SAVE_CANVAS_INTEGRATION_KEYS_REQUEST =
   '[district policy] save canvas integration keys request'
 const SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST =
   '[district policy] save oneroster api configuration keys request'
-const SAVE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST =
-  '[district policy] save oneroster lti integration keys request'
+const GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST =
+  '[district policy] generate oneroster lti integration keys request'
 export const receiveDistrictPolicyAction = createAction(
   RECEIVE_DISTRICT_POLICY_REQUEST
 )
@@ -68,8 +68,8 @@ export const saveOnerosterApiConfigurationAction = createAction(
   SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST
 )
 
-export const saveOnerosterLtiConfigurationAction = createAction(
-  SAVE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST
+export const generateOnerosterLtiKeysAction = createAction(
+  GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST
 )
 export const setSchoolAdminSettingsAccessAction = createAction(
   SET_SCHOOL_ADMIN_SETTINGS_ACCESS
@@ -287,23 +287,20 @@ function* saveOnerosterApiKeysRequestSaga({ payload }) {
   }
 }
 
-function* saveOnerosterLtiKeysRequestSaga({ payload }) {
+function* generateOnerosterLtiKeysRequestSaga() {
   try {
-    const result = yield call(
-      settingsApi.saveOnerosterLtiIntegrationKeys,
-      payload
-    )
+    const result = yield call(onerosterApi.generateLtiKeys)
     yield put(updateDistrictPolicySuccessAction(result))
     notification({
       type: 'success',
-      msg: 'Oneroster Lti Integration keys saved successfully',
+      msg: 'Oneroster Lti Integration keys generated successfully',
     })
   } catch (err) {
     const notificationData = {
       type: 'error',
       msg:
         err?.response?.data?.message ||
-        'Unable to save Oneroster Lti Integration keys',
+        'Unable to generate Oneroster Lti Integration keys',
     }
     if (err?.response?.data?.statusCode === 403) {
       Object.assign(notificationData, {
@@ -338,8 +335,8 @@ export function* watcherSaga() {
   ])
   yield all([
     yield takeEvery(
-      SAVE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST,
-      saveOnerosterLtiKeysRequestSaga
+      GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST,
+      generateOnerosterLtiKeysRequestSaga
     ),
   ])
 }

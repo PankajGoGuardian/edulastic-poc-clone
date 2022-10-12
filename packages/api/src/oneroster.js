@@ -12,6 +12,15 @@ const testApiConfig = (data) =>
     })
     .then((result) => result.data.result)
 
+const generateLtiKeys = () =>
+  api
+    .callApi({
+      url: `${prefix}/generate-lti-keys`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
 export default {
   testApiConfig,
+  generateLtiKeys,
 }

@@ -24,7 +24,7 @@ import {
   updateDistrictPolicyAction,
   saveCanvasKeysRequestAction,
   saveOnerosterApiConfigurationAction,
-  saveOnerosterLtiConfigurationAction,
+  generateOnerosterLtiKeysAction,
 } from '../../ducks'
 import ConfigureCanvasModal from './ConfigureCanvasModal'
 import ConfigureOnerosterModal from './ConfigureOnerosterModal'
@@ -383,6 +383,7 @@ class DistrictPolicyForm extends Component {
         : [],
       googleClassroom: districtPolicyData.googleClassroom || false,
       canvas: districtPolicyData.canvas || false,
+      oneroster: districtPolicyData.oneroster || false,
       allowedIpForAssignments: districtPolicyData.allowedIpForAssignments || [],
       disableStudentLogin: districtPolicyData.disableStudentLogin || false,
       enableGoogleMeet: districtPolicyData.enableGoogleMeet || false,
@@ -419,7 +420,7 @@ class DistrictPolicyForm extends Component {
       role,
       saveCanvasKeysRequest,
       saveOnerosterApiConfiguration,
-      saveOnerosterLtiConfiguration,
+      generateOnerosterLtiKeys,
       user,
     } = this.props
     const isSchoolLevel = role === 'school-admin'
@@ -759,14 +760,13 @@ class DistrictPolicyForm extends Component {
             orgType={districtPolicy.orgType}
             orgId={districtPolicy.orgId}
             saveOnerosterApiConfiguration={saveOnerosterApiConfiguration}
-            saveOnerosterLtiConfiguration={saveOnerosterLtiConfiguration}
+            generateOnerosterLtiKeys={generateOnerosterLtiKeys}
             oneRosterBaseUrl={districtPolicy.oneRosterBaseUrl}
             oneRosterClientId={districtPolicy.oneRosterClientId}
             oneRosterSecretKey={districtPolicy.oneRosterSecretKey}
             oneRosterTokenUrl={districtPolicy.oneRosterTokenUrl}
             rosterOAuthConsumerKey={districtPolicy.rosterOAuthConsumerKey}
             rosterOAuthConsumerSecret={districtPolicy.rosterOAuthConsumerSecret}
-            user={user}
           />
         )}
       </>
@@ -791,7 +791,7 @@ const enhance = compose(
       loadSchoolPolicy: receiveSchoolPolicyAction,
       saveCanvasKeysRequest: saveCanvasKeysRequestAction,
       saveOnerosterApiConfiguration: saveOnerosterApiConfigurationAction,
-      saveOnerosterLtiConfiguration: saveOnerosterLtiConfigurationAction,
+      generateOnerosterLtiKeys: generateOnerosterLtiKeysAction,
     }
   )
 )

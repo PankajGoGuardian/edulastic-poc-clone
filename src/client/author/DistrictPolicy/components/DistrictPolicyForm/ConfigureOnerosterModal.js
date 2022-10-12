@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Tabs } from 'antd'
+import { Tabs, Tooltip } from 'antd'
 import styled from 'styled-components'
 import {
   captureSentryException,
@@ -26,25 +26,19 @@ const ConfigureOnerosterModal = ({
   orgType,
   orgId,
   saveOnerosterApiConfiguration,
-  saveOnerosterLtiConfiguration,
+  generateOnerosterLtiKeys,
   oneRosterBaseUrl = '',
   oneRosterClientId = '',
   oneRosterSecretKey = '',
   oneRosterTokenUrl = '',
   rosterOAuthConsumerKey = '',
   rosterOAuthConsumerSecret = '',
-  user,
-  userDistrictId,
 }) => {
   const [apiConfig, setApiConfig] = useState({
     oneRosterBaseUrl,
     oneRosterClientId,
     oneRosterSecretKey,
     oneRosterTokenUrl,
-  })
-  const [ltiConfig, setLtiConfig] = useState({
-    rosterOAuthConsumerKey,
-    rosterOAuthConsumerSecret,
   })
 
   const { TabPane } = Tabs
@@ -59,8 +53,7 @@ const ConfigureOnerosterModal = ({
     !apiConfig.oneRosterSecretKey ||
     (isOAuth2 && !apiConfig.oneRosterTokenUrl)
 
-  const isFieldEmptyInLtiConfig =
-    !ltiConfig.rosterOAuthConsumerKey || !ltiConfig.rosterOAuthConsumerSecret
+  const isLtiKeysPresent = rosterOAuthConsumerKey || rosterOAuthConsumerSecret
 
   useEffect(() => {
     if (oneRosterBaseUrl && oneRosterClientId && oneRosterSecretKey)
@@ -78,13 +71,6 @@ const ConfigureOnerosterModal = ({
   const handleApiConfigChange = ({ target: { value } }, key) => {
     setApiConfig({
       ...apiConfig,
-      [key]: value,
-    })
-  }
-
-  const handleLtiConfigChange = ({ target: { value } }, key) => {
-    setLtiConfig({
-      ...ltiConfig,
       [key]: value,
     })
   }
@@ -114,29 +100,13 @@ const ConfigureOnerosterModal = ({
     setEnableFields(false)
   }
 
-  const handleAdd = () => {
-    if (isFieldEmptyInLtiConfig) {
-      return notification({
-        type: 'warn',
-        msg: 'Please fill all the required fields',
-      })
-    }
-    const data = {
-      rosterOAuthConsumerKey: ltiConfig.rosterOAuthConsumerKey.trim(),
-      rosterOAuthConsumerSecret: ltiConfig.rosterOAuthConsumerSecret.trim(),
-      orgId,
-      orgType,
-      id: districtPolicyId,
-    }
-    saveOnerosterLtiConfiguration(data)
+  const generateLtiKeys = () => {
+    generateOnerosterLtiKeys()
     setEnableFields(false)
   }
 
   const handleCallback = (key) => {
-    if (
-      (key === '1' && isFieldEmptyInApiConfig) ||
-      (key === '2' && isFieldEmptyInLtiConfig)
-    ) {
+    if (key === '1' && isFieldEmptyInApiConfig) {
       setEnableFields(true)
     } else {
       setEnableFields(false)
@@ -156,10 +126,7 @@ const ConfigureOnerosterModal = ({
       oneRosterClientId: apiConfig.oneRosterClientId.trim(),
       oneRosterBaseUrl: apiConfig.oneRosterBaseUrl.trim(),
       oneRosterSecretKey: apiConfig.oneRosterSecretKey.trim(),
-      orgId,
-      orgType,
       isOAuth2,
-      id: districtPolicyId,
     }
     if (isOAuth2) {
       Object.assign(data, {
@@ -168,21 +135,12 @@ const ConfigureOnerosterModal = ({
     }
     try {
       const result = await onerosterApi.testApiConfig(data)
-      if (result?.errorMessage) {
-        notification({
-          type: 'warn',
-          msg:
-            result?.errorMessage ||
-            'Failed to connect with OneRoster. Please enter the valid configuration',
-        })
-      } else {
-        notification({
-          type: 'success',
-          msg:
-            result?.errorMessage ||
-            'Failed to connect with current configuration. Please enter the valid configuration',
-        })
-      }
+      notification({
+        type: 'success',
+        msg:
+          result ||
+          'Connection established successfully with current configuration',
+      })
       setIsLoading(false)
     } catch (err) {
       setIsLoading(false)
@@ -220,9 +178,17 @@ const ConfigureOnerosterModal = ({
               <RadioBtn mb="10px" value={1} data-cy="oAuth1">
                 oAuth 1.0
               </RadioBtn>
-              <RadioBtn mb="10px" value={2} data-cy="oAuth2">
-                oAuth 2.0
-              </RadioBtn>
+              <Tooltip title="Feature not supported." placement="right">
+                <RadioBtn
+                  mb="10px"
+                  value={2}
+                  data-cy="oAuth2"
+                  disabled
+                  defaultChecked={false}
+                >
+                  oAuth 2.0
+                </RadioBtn>
+              </Tooltip>
             </StyledRadioGrp>
             {isOAuth2 ? (
               <InputRow>
@@ -293,48 +259,67 @@ const ConfigureOnerosterModal = ({
             </ButtonWrapper>
           </TabPane>
           <TabPane tab="Lti Integration" key="2">
-            <InputRow>
-              <label>Consumer Key</label>
-              <TextInputStyled
-                placeholder="Enter Consumer Key"
-                value={ltiConfig.rosterOAuthConsumerKey}
-                onChange={(e) =>
-                  handleLtiConfigChange(e, 'rosterOAuthConsumerKey')
-                }
-                disabled={!fieldsEnabled}
-                height="40px"
-              />
-            </InputRow>
-            <InputRow>
-              <label>Secret key</label>
-              <TextInputStyled
-                placeholder="Enter Secret Key"
-                value={ltiConfig.rosterOAuthConsumerSecret}
-                onChange={(e) =>
-                  handleLtiConfigChange(e, 'rosterOAuthConsumerSecret')
-                }
-                disabled={!fieldsEnabled}
-                height="40px"
-              />
-            </InputRow>
-            <ButtonWrapper fieldsEnabled={fieldsEnabled}>
-              {!fieldsEnabled && (
-                <ChangeLink isGhost onClick={() => setEnableFields(true)}>
-                  Change Details
-                </ChangeLink>
-              )}
+            {isLtiKeysPresent ? (
+              <>
+                <InputRow>
+                  <label>Auth Url</label>
+                  <TextInputStyled
+                    placeholder="Auth Url"
+                    value="http://edulasticv2-dryrun.snapwiz.net/api/auth/Lti"
+                    disabled
+                    height="40px"
+                  />
+                </InputRow>
+                <InputRow>
+                  <label>Consumer Key</label>
+                  <TextInputStyled
+                    placeholder="Enter Consumer Key"
+                    value={rosterOAuthConsumerKey}
+                    disabled
+                    height="40px"
+                  />
+                </InputRow>
+                <InputRow>
+                  <label>Secret key</label>
+                  <TextInputStyled
+                    placeholder="Enter Secret Key"
+                    value={rosterOAuthConsumerSecret}
+                    disabled
+                    height="40px"
+                  />
+                </InputRow>
+              </>
+            ) : (
+              <ContentList>
+                <p>
+                  District admin can generate LTI Integration keys by clicking
+                  below GENERATE KEY button.
+                </p>
+                <p>Note:</p>
+                <ol>
+                  <li>LTI keys cannot be generated again.</li>
+                </ol>
+              </ContentList>
+            )}
+            <ButtonWrapper fieldsEnabled>
               <div>
                 <EduButton
                   height="40px"
-                  width="100px"
+                  width="200px"
                   isGhost
                   onClick={handleCancel}
                 >
-                  NO, CANCEL
+                  CANCEL
                 </EduButton>
-                <EduButton height="40px" width="100px" onClick={handleAdd}>
-                  YES, ADD APP
-                </EduButton>
+                {!isLtiKeysPresent ? (
+                  <EduButton
+                    height="40px"
+                    width="200px"
+                    onClick={generateLtiKeys}
+                  >
+                    GENERATE KEY
+                  </EduButton>
+                ) : null}
               </div>
             </ButtonWrapper>
           </TabPane>
@@ -365,6 +350,14 @@ const ChangeLink = styled.div`
   font-weight: 600;
   text-transform: uppercase;
   cursor: pointer;
+`
+const ContentList = styled.div`
+  font-weight: regular;
+  font-size: 15px;
+  color: #304050;
+  ol {
+    padding-left: 23px;
+  }
 `
 const AnchorLink = styled.a`
   color: ${green};

@@ -2,8 +2,8 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 import { Link } from 'react-router-dom'
 
-import { Row } from 'antd'
-import { isEmpty } from 'lodash'
+import { Row, Tooltip } from 'antd'
+import { isEmpty, uniq } from 'lodash'
 import { themeColor } from '@edulastic/colors'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
@@ -22,6 +22,14 @@ const getTableColumns = (isSharedReport) => {
     // link to LCB for testName
     const testNameIdx = _columns.findIndex((col) => col.key === 'testName')
     _columns[testNameIdx].render = (testName, record) => {
+      const testTitle = testName || '-'
+      // space is added after test title so that for external test,
+      // there is a space between test title and test tag
+      const testTitleElement = (
+        <Tooltip placement="right" title={testTitle}>
+          {`${testTitle} `}
+        </Tooltip>
+      )
       return (
         <AssementNameContainer>
           <div className="test-name-container">
@@ -30,10 +38,12 @@ const getTableColumns = (isSharedReport) => {
                 to={`/author/classboard/${record.assignmentId}/${record.groupId}/test-activity/${record.testActivityId}`}
                 data-testid="testName"
               >
-                <AssessmentName color={themeColor}>{testName}</AssessmentName>
+                <AssessmentName color={themeColor}>
+                  {testTitleElement}
+                </AssessmentName>
               </Link>
             ) : (
-              <AssessmentName>{testName}</AssessmentName>
+              testTitleElement
             )}
           </div>
           {record.externalTestType ? (
@@ -56,13 +66,18 @@ const getTableColumns = (isSharedReport) => {
             rightText={`${Math.round(averageScore)}%`}
             background={record.band.color}
           />
-        ) : record.achievementLevelInfo ? (
+        ) : !(record.score === undefined || record.score === null) &&
+          record.achievementLevelInfo ? (
           <LargeTag
             tooltipPlacement="topLeft"
-            tooltipText={record.achievementLevelInfo.name}
-            leftText={record.achievementLevelInfo.name}
-            rightText={new Intl.NumberFormat().format(record.score)}
-            background={record.achievementLevelInfo.color}
+            tooltipText={record.achievementLevelInfo?.name || ''}
+            leftText={record.achievementLevelInfo?.name || ''}
+            rightText={
+              Number.isInteger(record.score)
+                ? new Intl.NumberFormat().format(record.score)
+                : '-'
+            }
+            background={record.achievementLevelInfo?.color || ''}
           />
         ) : (
           '-'
@@ -74,8 +89,9 @@ const getTableColumns = (isSharedReport) => {
       (col) => col.key === 'performanceLevel'
     )
     _columns[performanceLevelIdx].render = (_, record) =>
-      // TODO: replace dash with correct band label for performance in external test
-      !record.externalTestType ? record.band.name : '-'
+      (!record.externalTestType
+        ? record.band.name
+        : record.achievementLevelInfo?.name) || '-'
     // render performance score in CSV
     const performanceScoreIdx = _columns.findIndex(
       (col) => col.key === 'performanceScore'
@@ -99,7 +115,7 @@ const getTableColumns = (isSharedReport) => {
     const totalTestItemsIdx = _columns.findIndex(
       (col) => col.key === 'totalTestItems'
     )
-    _columns[totalTestItemsIdx].render = (totalTestItems, record) =>
+    _columns[totalTestItemsIdx].render = (totalTestItems) =>
       totalTestItems ?? '-'
     // render array of rectangular tags for claims
     const claimsInfoIdx = _columns.findIndex((col) => col.key === 'claimsInfo')
@@ -110,17 +126,17 @@ const getTableColumns = (isSharedReport) => {
         style={{ gap: '8px', flexWrap: 'nowrap' }}
       >
         {!isEmpty(claimsInfo)
-          ? claimsInfo.map((claim) => (
+          ? Object.values(claimsInfo).map((claim) => (
               <LargeTag
                 tooltipText={
                   <>
                     {claim.name}
                     <br />
-                    {claim.value}
+                    {claim.value || '-'}
                   </>
                 }
                 leftText={claim.name}
-                rightText={claim.value}
+                rightText={claim.value || '-'}
                 background={claim.color}
                 key={`${claim.name}:${claim.value}`}
               />
@@ -137,9 +153,24 @@ const AssessmentsTable = ({
   isCsvDownloading,
   isSharedReport,
 }) => {
-  const tableColumns = useMemo(() => getTableColumns(isSharedReport), [
-    isSharedReport,
-  ])
+  const claimNames = useMemo(
+    () =>
+      uniq(
+        tableData.flatMap((row) =>
+          row.externalTestType ? Object.keys(row.claimsInfo) : []
+        )
+      ),
+    [tableData]
+  )
+  const tableColumns = useMemo(() => {
+    const initialColumns = getTableColumns(isSharedReport)
+    const claimsColumnsForCSV = claimNames.map((claimName) => ({
+      title: claimName,
+      dataIndex: `claimsInfo['${claimName}'].value`,
+      visibleOn: ['csv'],
+    }))
+    return [...initialColumns, ...claimsColumnsForCSV]
+  }, [isSharedReport, ...claimNames])
   return (
     <TableContainer>
       <CsvTable

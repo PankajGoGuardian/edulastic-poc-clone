@@ -300,15 +300,6 @@ const saveOnerosterApiConfigKeys = (data) =>
     })
     .then((result) => result.data.result)
 
-const saveOnerosterLtiIntegrationKeys = (data) =>
-  api
-    .callApi({
-      url: `${prefix}/oneroster-lti-integration-keys`,
-      method: 'post',
-      data,
-    })
-    .then((result) => result.data.result)
-
 const fetchOrgInterestedStandards = ({ districtId, institutionId }) =>
   api
     .callApi({
@@ -350,7 +341,6 @@ export default {
   deleteExternalTools,
   saveCanvasIntegrationKeys,
   saveOnerosterApiConfigKeys,
-  saveOnerosterLtiIntegrationKeys,
   getTestSettingsList,
   removeTestSetting,
   fetchOrgInterestedStandards,

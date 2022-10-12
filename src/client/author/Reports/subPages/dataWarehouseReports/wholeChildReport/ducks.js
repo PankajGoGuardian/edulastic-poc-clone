@@ -43,6 +43,7 @@ const initialState = {
     //   },
     selectedFilterTagsData: {},
     selectedStudentInformation: {},
+    selectedStudentClassData: {},
   },
   loadingReportData: false,
   reportData: {},

@@ -159,6 +159,7 @@ const WholeChildReport = ({
         ...demographics,
         thumbnail,
       },
+      selectedStudentClassData: studentClassData,
     })
     setShowApply(false)
   }
@@ -255,7 +256,7 @@ const WholeChildReport = ({
     )
     const _chartData = getChartData({
       assignmentMetrics,
-      studentClassData,
+      studentClassData: settings.selectedStudentClassData,
       selectedPerformanceBand,
     })
     const _tableData = getTableData({
@@ -271,11 +272,11 @@ const WholeChildReport = ({
         isEmpty(districtMetrics) ||
         isEmpty(schoolMetrics),
     ]
-  }, [reportData, studentClassData, selectedPerformanceBand])
+  }, [reportData, settings.selectedStudentClassData, selectedPerformanceBand])
 
   const studentName = getStudentName(
-    settings.selectedStudent,
-    settings.selectedStudentInformation
+    settings.selectedStudentInformation,
+    settings.selectedStudent
   )
 
   // const onTestSelect = (item) =>

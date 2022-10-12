@@ -9,6 +9,7 @@ import {
   find,
   uniq,
   zipObject,
+  mapValues,
 } from 'lodash'
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
@@ -185,27 +186,26 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     externalTestType: metric.testCategory,
     groupId: '',
     testActivityId: '',
-    testId: `${metric.testTitle}`,
+    testId: `${metric.testCategory}:${metric.testTitle}`,
     reportKey: '',
     assignmentId: '',
     studentId: metric.studentId,
     maxScore: undefined,
     score: +metric.score,
     achievementLevel: `${parseInt(metric.achievementLevel, 10)}`,
-    claimsInfo: Object.entries(JSON.parse(metric.claims || '{}')).map(
-      ([name, value]) => ({
-        name,
-        value,
-        color: claimsColorMap[name] || colorByText(name),
-      })
-    ),
+    claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) => ({
+      name,
+      value,
+      color: claimsColorMap[name] || colorByText(name),
+    })),
+    schoolCode: metric.schoolCode,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
 
 export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testTitle}`,
+    testId: `${metric.testCategory}:${metric.testTitle}`,
     districtAvg: +metric.districtAvg,
     districtAvgPerf: undefined,
   }))
@@ -214,7 +214,7 @@ export const mergeDistrictMetrics = (internalMetrics, externalMetrics) => {
 
 export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    testId: `${metric.testTitle}`,
+    testId: `${metric.testCategory}:${metric.testTitle}`,
     schoolCode: metric.schoolCode,
     schoolAvg: +metric.schoolAvg,
     schoolAvgPerf: undefined,
@@ -298,7 +298,7 @@ export const getTableData = ({
     return []
   }
   const parsedData = map(chartData, (assessment) => {
-    const { testId, assignmentDate, externalTestType } = assessment
+    const { testId, assignmentDate, externalTestType, schoolCode } = assessment
     const testDistrictAvg = round(
       get(
         find(districtMetrics, { testId }),
@@ -310,11 +310,9 @@ export const getTableData = ({
       ? '-'
       : round(get(find(groupMetrics, { testId }), 'groupAvgPerf', 0))
     const testSchoolAvg = round(
-      get(
-        find(schoolMetrics, { testId }),
-        externalTestType ? 'schoolAvg' : 'schoolAvgPerf',
-        0
-      )
+      externalTestType
+        ? get(find(schoolMetrics, { testId, schoolCode }), 'schoolAvg', 0)
+        : get(find(schoolMetrics, { testId }), 'schoolAvgPerf', 0)
     )
     const rawScore = `${assessment.totalScore?.toFixed(2) || '0.00'} / ${round(
       assessment.totalMaxScore,

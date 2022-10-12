@@ -96,8 +96,9 @@ const ReviewItem = ({
       isPremiumContent(item?.collections || []) &&
       showPremiumLabelOnContent(item?.collections, orgCollections)
 
-    const dok = (item.data.questions.find((e) => e.depthOfKnowledge) || {})
-      .depthOfKnowledge
+    const dok = (
+      get(item, 'data.questions', []).find((e) => e.depthOfKnowledge) || {}
+    )?.depthOfKnowledge
 
     const meta = {
       id: item._id,
@@ -110,7 +111,8 @@ const ReviewItem = ({
       standards: standards[item._id],
       audio: audioStatus(item),
       tags: item.tags,
-      dok: item.data && item.data.questions && allDepthOfKnowledgeMap[dok]?.text,
+      dok:
+        item.data && item.data.questions && allDepthOfKnowledgeMap[dok]?.text,
     }
 
     if (item.data && item.data.questions && item.data.questions.length) {

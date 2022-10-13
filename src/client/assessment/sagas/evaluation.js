@@ -168,31 +168,29 @@ function* evaluateAnswers({ payload: groupId }) {
       })
     } else {
       evaluationObj = yield call(testItemsApi.evaluation, testItemId, activity)
-      const { evaluations: _evaluations } = evaluationObj
-      Object.keys(_evaluations).forEach((item) => {
-        evaluations[`${testItemId}_${item}`] = _evaluations[item]
-      })
     }
     const { maxScore, score = 0 } = evaluationObj
     const [type, message] = getTypeAndMsgBasedOnScore(score, maxScore)
-    yield put({
-      type: CHANGE_PREVIEW,
-      payload: {
-        view: 'check',
-      },
-    })
-    yield put({
-      type: CHANGE_VIEW,
-      payload: {
-        view: 'preview',
-      },
-    })
-    yield put({
-      type: ADD_ITEM_EVALUATION,
-      payload: {
-        ...evaluations,
-      },
-    })
+    if (role !== roleuser.STUDENT) {
+      yield put({
+        type: CHANGE_PREVIEW,
+        payload: {
+          view: 'check',
+        },
+      })
+      yield put({
+        type: CHANGE_VIEW,
+        payload: {
+          view: 'preview',
+        },
+      })
+      yield put({
+        type: ADD_ITEM_EVALUATION,
+        payload: {
+          ...evaluations,
+        },
+      })
+    }
 
     yield put({
       type: COUNT_CHECK_ANSWER,

@@ -862,8 +862,7 @@ function* loadTest({ payload }) {
           test.hasInstruction ||
           test.timedAssignment
         ) ||
-        demo ||
-        preview
+        demo
       ) {
         yield put(setShowTestInfoSuccesAction(true))
       }

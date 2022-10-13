@@ -112,15 +112,26 @@ const ConfigureOnerosterModal = ({
     setEnableFields(false)
   }
 
+  const resetApiConfig = () => {
+    setApiConfig({
+      oneRosterBaseUrl,
+      oneRosterClientId,
+      oneRosterSecretKey,
+      oneRosterTokenUrl,
+    })
+  }
+
   const handleCallback = (key) => {
     if (key === '1' && isFieldEmptyInApiConfig) {
       setEnableFields(true)
     } else {
       setEnableFields(false)
     }
+    resetApiConfig()
   }
 
   const handleCancel = () => {
+    resetApiConfig()
     setEnableFields(false)
   }
 

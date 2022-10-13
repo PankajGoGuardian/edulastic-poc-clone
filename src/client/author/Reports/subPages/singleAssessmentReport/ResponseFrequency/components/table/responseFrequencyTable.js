@@ -402,6 +402,7 @@ export const ResponseFrequencyTable = ({
   return (
     <StyledCard className="response-frequency-table">
       <CsvTable
+        data-testid="response-frequency-table"
         isCsvDownloading={isCsvDownloading}
         onCsvConvert={onCsvConvert}
         tableToRender={PrintableTable}

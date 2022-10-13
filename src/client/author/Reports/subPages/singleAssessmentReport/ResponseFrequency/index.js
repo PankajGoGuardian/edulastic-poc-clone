@@ -158,7 +158,7 @@ const ResponseFrequency = ({
     <div>
       <StyledContainer type="flex">
         <StyledCard>
-          <StyledH3>
+          <StyledH3 data-testid="title">
             Question Type performance for Assessment: {assessmentName}
           </StyledH3>
           <StackedBarChartContainer

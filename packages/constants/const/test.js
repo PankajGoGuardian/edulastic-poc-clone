@@ -342,7 +342,7 @@ module.exports = {
     ricas: 'parcc',
     sc_ready: 'edulastic',
     tcap_tnready: 'edulastic',
-    staar: 'parcc',
+    staar: 'sbac',
     ut_rise: 'sbac',
     sol: 'parcc',
     wcap: 'sbac',

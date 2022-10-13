@@ -4,7 +4,7 @@ import {
   StyledLayout,
   SettingsWrapper,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
-import { themeColor } from '@edulastic/colors'
+import { themeColor, greyThemeLight } from '@edulastic/colors'
 const { Dragger } = Upload
 
 export const RosterDataWrapper = styled.div`
@@ -16,8 +16,9 @@ export const RosterDataWrapper = styled.div`
 
 export const CustomStyledLayout = styled(StyledLayout)`
   width: 100%;
-  border: 1px solid black;
+  border: 3px solid ${greyThemeLight};
   padding: 30px 15px;
+  margin-top: 50px;
 `
 
 export const CustomSettingsWrapper = styled(SettingsWrapper)``

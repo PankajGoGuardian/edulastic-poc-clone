@@ -224,6 +224,7 @@ export const QuestionAnalysisTable = ({
 
   return (
     <CsvTable
+      data-testid="QuestionAnalysisTable"
       isCsvDownloading={isCsvDownloading}
       onCsvConvert={onCsvConvert}
       tableToRender={StyledTable}

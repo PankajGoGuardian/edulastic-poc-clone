@@ -154,7 +154,9 @@ const QuestionAnalysis = ({
     <div>
       <UpperContainer>
         <StyledCard>
-          <StyledH3>Question Performance Analysis | {assessmentName}</StyledH3>
+          <StyledH3 data-testid="title">
+            Question Performance Analysis | {assessmentName}
+          </StyledH3>
           <SimpleStackedBarWithLineChartContainer
             chartData={chartData}
             onBarClickCB={onBarClickCB}
@@ -180,7 +182,7 @@ const QuestionAnalysis = ({
                     | {assessmentName}
                   </StyledH3>
                 </Col>
-                <Col data-cy="compareBy">
+                <Col data-cy="compareBy" data-testid="compareBy">
                   {userRole !== roleuser.TEACHER ? (
                     <ControlDropDown
                       prefix="Compare by"

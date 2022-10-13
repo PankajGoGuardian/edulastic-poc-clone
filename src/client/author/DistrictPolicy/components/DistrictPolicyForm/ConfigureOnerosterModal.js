@@ -21,10 +21,12 @@ import { getUserOrgId } from '../../../src/selectors/user'
 
 const ConfigureOnerosterModal = ({
   visible,
-  handleCancel,
+  handleClose,
   districtPolicyId,
   orgType,
   orgId,
+  isLoading,
+  setIsLoading,
   saveOnerosterApiConfiguration,
   generateOnerosterLtiKeys,
   oneRosterBaseUrl = '',
@@ -45,7 +47,6 @@ const ConfigureOnerosterModal = ({
 
   const [fieldsEnabled, setEnableFields] = useState(true)
   const [isOAuth2, setIsOAuth2] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
 
   const isFieldEmptyInApiConfig =
     !apiConfig.oneRosterClientId ||
@@ -53,7 +54,13 @@ const ConfigureOnerosterModal = ({
     !apiConfig.oneRosterSecretKey ||
     (isOAuth2 && !apiConfig.oneRosterTokenUrl)
 
-  const isLtiKeysPresent = rosterOAuthConsumerKey || rosterOAuthConsumerSecret
+  const isApiKeysPresent =
+    oneRosterClientId &&
+    oneRosterBaseUrl &&
+    oneRosterSecretKey &&
+    (!isOAuth2 || (isOAuth2 && oneRosterTokenUrl))
+
+  const isLtiKeysPresent = rosterOAuthConsumerKey && rosterOAuthConsumerSecret
 
   useEffect(() => {
     if (oneRosterBaseUrl && oneRosterClientId && oneRosterSecretKey)
@@ -113,6 +120,10 @@ const ConfigureOnerosterModal = ({
     }
   }
 
+  const handleCancel = () => {
+    setEnableFields(false)
+  }
+
   const testConnection = async () => {
     setIsLoading(true)
     if (isFieldEmptyInApiConfig) {
@@ -158,17 +169,17 @@ const ConfigureOnerosterModal = ({
       visible={visible}
       title="OneRoster Integration"
       footer={null}
-      onCancel={handleCancel}
+      onCancel={handleClose}
       modalWidth="520px"
       bodyPadding="25px 0px 10px"
       centered
     >
+      {isLoading ? (
+        <SpinContainer loading>
+          <StyledSpin size="large" />
+        </SpinContainer>
+      ) : null}
       <ModalBodyWrapper>
-        {isLoading && (
-          <SpinContainer loading={isLoading}>
-            <StyledSpin size="small" />
-          </SpinContainer>
-        )}
         <Tabs defaultActiveKey="1" onChange={handleCallback}>
           <TabPane tab="Api Configuration" key="1">
             <StyledRadioGrp
@@ -244,14 +255,27 @@ const ConfigureOnerosterModal = ({
                 </ChangeLink>
               )}
               <div>
-                <EduButton
-                  height="40px"
-                  width="100px"
-                  isGhost
-                  onClick={handleCancel}
-                >
-                  Cancel
-                </EduButton>
+                {isApiKeysPresent && fieldsEnabled ? (
+                  <EduButton
+                    height="40px"
+                    width="100px"
+                    isGhost
+                    key="0"
+                    onClick={handleCancel}
+                  >
+                    Cancel
+                  </EduButton>
+                ) : (
+                  <EduButton
+                    height="40px"
+                    width="100px"
+                    isGhost
+                    key="1"
+                    onClick={handleClose}
+                  >
+                    Close
+                  </EduButton>
+                )}
                 <EduButton height="40px" width="100px" onClick={handleSave}>
                   Save
                 </EduButton>
@@ -307,9 +331,9 @@ const ConfigureOnerosterModal = ({
                   height="40px"
                   width="200px"
                   isGhost
-                  onClick={handleCancel}
+                  onClick={handleClose}
                 >
-                  CANCEL
+                  CLOSE
                 </EduButton>
                 {!isLtiKeysPresent ? (
                   <EduButton

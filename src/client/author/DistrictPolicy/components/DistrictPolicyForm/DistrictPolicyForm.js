@@ -25,6 +25,8 @@ import {
   saveCanvasKeysRequestAction,
   saveOnerosterApiConfigurationAction,
   generateOnerosterLtiKeysAction,
+  getIsLoading,
+  setIsLoadingAction,
 } from '../../ducks'
 import ConfigureCanvasModal from './ConfigureCanvasModal'
 import ConfigureOnerosterModal from './ConfigureOnerosterModal'
@@ -422,6 +424,8 @@ class DistrictPolicyForm extends Component {
       saveOnerosterApiConfiguration,
       generateOnerosterLtiKeys,
       user,
+      isLoading,
+      setIsLoading,
     } = this.props
     const isSchoolLevel = role === 'school-admin'
 
@@ -753,9 +757,11 @@ class DistrictPolicyForm extends Component {
         {showOnerosterConfigurationModal && (
           <ConfigureOnerosterModal
             visible={showOnerosterConfigurationModal}
-            handleCancel={() => {
+            handleClose={() => {
               this.setState({ showOnerosterConfigurationModal: false })
             }}
+            isLoading={isLoading}
+            setIsLoading={setIsLoading}
             districtPolicyId={districtPolicy._id}
             orgType={districtPolicy.orgType}
             orgId={districtPolicy.orgId}
@@ -782,6 +788,7 @@ const enhance = compose(
       role: getUserRole(state),
       schoolId: get(state, 'user.saSettingsSchool'),
       user: get(state, 'user.user'),
+      isLoading: getIsLoading(state),
     }),
     {
       loadDistrictPolicy: receiveDistrictPolicyAction,
@@ -789,6 +796,7 @@ const enhance = compose(
       createDistrictPolicy: createDistrictPolicyAction,
       changeDistrictPolicyData: changeDistrictPolicyAction,
       loadSchoolPolicy: receiveSchoolPolicyAction,
+      setIsLoading: setIsLoadingAction,
       saveCanvasKeysRequest: saveCanvasKeysRequestAction,
       saveOnerosterApiConfiguration: saveOnerosterApiConfigurationAction,
       generateOnerosterLtiKeys: generateOnerosterLtiKeysAction,

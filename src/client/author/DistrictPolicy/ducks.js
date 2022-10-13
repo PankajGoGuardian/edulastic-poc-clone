@@ -18,14 +18,23 @@ const CREATE_DISTRICT_POLICY_SUCCESS = '[district policy] create data success'
 const CREATE_DISTRICT_POLICY_ERROR = '[district policy] create data error'
 const SET_SCHOOL_ADMIN_SETTINGS_ACCESS =
   '[district policy] set school admin settings access'
-
 const CHANGE_DISTRICT_POLICY_ACTION = '[district policy] save changed data'
 const SAVE_CANVAS_INTEGRATION_KEYS_REQUEST =
   '[district policy] save canvas integration keys request'
 const SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST =
   '[district policy] save oneroster api configuration keys request'
+const SAVE_ONEROSTER_API_CONFIGURATION_KEYS_SUCCESS =
+  '[district policy] save oneroster api configuration keys success'
+const SAVE_ONEROSTER_API_CONFIGURATION_KEYS_ERROR =
+  '[district policy] save oneroster api configuration keys error'
 const GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST =
   '[district policy] generate oneroster lti integration keys request'
+const GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_SUCCESS =
+  '[district policy] generate oneroster lti integration keys success'
+const GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_ERROR =
+  '[district policy] generate oneroster lti integration keys error'
+const SET_IS_LOADING_REQUEST = '[district policy] set isLoading request'
+
 export const receiveDistrictPolicyAction = createAction(
   RECEIVE_DISTRICT_POLICY_REQUEST
 )
@@ -68,18 +77,38 @@ export const saveOnerosterApiConfigurationAction = createAction(
   SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST
 )
 
+export const saveOnerosterApiConfigurationSuccessAction = createAction(
+  SAVE_ONEROSTER_API_CONFIGURATION_KEYS_SUCCESS
+)
+
+export const saveOnerosterApiConfigurationErrorAction = createAction(
+  SAVE_ONEROSTER_API_CONFIGURATION_KEYS_ERROR
+)
+
 export const generateOnerosterLtiKeysAction = createAction(
   GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST
 )
+
+export const generateOnerosterLtiKeysSuccessAction = createAction(
+  GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_SUCCESS
+)
+
+export const generateOnerosterLtiKeysErrorAction = createAction(
+  GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_ERROR
+)
+
 export const setSchoolAdminSettingsAccessAction = createAction(
   SET_SCHOOL_ADMIN_SETTINGS_ACCESS
 )
+
+export const setIsLoadingAction = createAction(SET_IS_LOADING_REQUEST)
 
 // reducers
 const initialState = {
   data: {},
   error: null,
   loading: false,
+  onerosterConfigLoading: false,
   updating: false,
   update: null,
   updateError: null,
@@ -133,6 +162,27 @@ export const reducer = createReducer(initialState, {
         ''
       ).toString(),
     }
+  },
+  [SAVE_ONEROSTER_API_CONFIGURATION_KEYS_REQUEST]: (state) => {
+    state.onerosterConfigLoading = true
+  },
+  [SAVE_ONEROSTER_API_CONFIGURATION_KEYS_SUCCESS]: (state) => {
+    state.onerosterConfigLoading = false
+  },
+  [SAVE_ONEROSTER_API_CONFIGURATION_KEYS_ERROR]: (state) => {
+    state.onerosterConfigLoading = false
+  },
+  [GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_REQUEST]: (state) => {
+    state.onerosterConfigLoading = true
+  },
+  [GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_SUCCESS]: (state) => {
+    state.onerosterConfigLoading = false
+  },
+  [GENERATE_ONEROSTER_LTI_INTEGRATION_KEYS_ERROR]: (state) => {
+    state.onerosterConfigLoading = false
+  },
+  [SET_IS_LOADING_REQUEST]: (state, { payload }) => {
+    state.onerosterConfigLoading = payload
   },
   [RECEIVE_DISTRICT_POLICY_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -267,11 +317,13 @@ function* saveOnerosterApiKeysRequestSaga({ payload }) {
   try {
     const result = yield call(settingsApi.saveOnerosterApiConfigKeys, payload)
     yield put(updateDistrictPolicySuccessAction(result))
+    yield put(saveOnerosterApiConfigurationSuccessAction())
     notification({
       type: 'success',
       msg: 'Oneroster Api Configuration keys saved successfully',
     })
   } catch (err) {
+    yield put(saveOnerosterApiConfigurationErrorAction())
     const notificationData = {
       type: 'error',
       msg:
@@ -291,11 +343,13 @@ function* generateOnerosterLtiKeysRequestSaga() {
   try {
     const result = yield call(onerosterApi.generateLtiKeys)
     yield put(updateDistrictPolicySuccessAction(result))
+    yield put(generateOnerosterLtiKeysSuccessAction())
     notification({
       type: 'success',
       msg: 'Oneroster Lti Integration keys generated successfully',
     })
   } catch (err) {
+    yield put(generateOnerosterLtiKeysErrorAction())
     const notificationData = {
       type: 'error',
       msg:
@@ -341,6 +395,8 @@ export function* watcherSaga() {
   ])
 }
 
+export const getIsLoading = (state) =>
+  get(state, ['districtPolicyReducer', 'onerosterConfigLoading'], false)
 export const getSchoolPolicy = (state) =>
   get(state, ['districtPolicyReducer', 'schoolData'], [])
 export const getDistrictPolicy = (state) =>

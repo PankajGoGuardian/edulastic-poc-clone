@@ -347,6 +347,7 @@ export default {
   getConfig,
   clean,
   getTempPoints,
+  getDirection: direction,
   create,
   drawline,
   getColorParams,

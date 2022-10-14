@@ -36,20 +36,20 @@ import {
 const jxgType = 100
 
 const AVAILABLE_TYPES = [
-  JXG.OBJECT_TYPE_CIRCLE,
-  JXG.OBJECT_TYPE_CONIC,
-  JXG.OBJECT_TYPE_LINE,
-  JXG.OBJECT_TYPE_POLYGON,
-  Exponent.jxgType,
+  JXG.OBJECT_TYPE_CIRCLE, // D
+  JXG.OBJECT_TYPE_CONIC, // D
+  JXG.OBJECT_TYPE_LINE, // D
+  JXG.OBJECT_TYPE_POLYGON, // D
+  Exponent.jxgType, // D
   Hyperbola.jxgType,
-  Logarithm.jxgType,
+  Logarithm.jxgType, // D
   Parabola.jxgType,
   Parabola2.jxgType,
-  Polynom.jxgType,
-  Sin.jxgType,
-  Cos.jxgType,
+  Polynom.jxgType, // D
+  Sin.jxgType, // D
+  Cos.jxgType, // D
   Equation.jxgType,
-  Exponent2.jxgType,
+  Exponent2.jxgType, // D
   Cardioid.jxgType,
   Rose.jxgType,
 ]

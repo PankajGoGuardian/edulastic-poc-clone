@@ -4,6 +4,7 @@ import {
   StyledLayout,
   SettingsWrapper,
 } from '../../../../admin/Common/StyledComponents/settingsContent'
+import { SpinContainer } from '../../../../admin/Common/StyledComponents'
 import { themeColor, greyThemeLight } from '@edulastic/colors'
 const { Dragger } = Upload
 
@@ -18,7 +19,7 @@ export const CustomStyledLayout = styled(StyledLayout)`
   width: 100%;
   border: 3px solid ${greyThemeLight};
   padding: 30px 15px;
-  margin-top: 50px;
+  margin-top: 30px;
 `
 
 export const CustomSettingsWrapper = styled(SettingsWrapper)``
@@ -47,4 +48,7 @@ export const UploadDragger = styled(Dragger)`
     padding: 0;
     margin: 0;
   }
+`
+export const StyledSpincontainer = styled(SpinContainer)`
+  top: 150px;
 `

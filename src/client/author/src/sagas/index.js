@@ -57,6 +57,7 @@ import { watcherSaga as previewModalSaga } from '../components/common/PreviewMod
 import { collaborationGroupSaga } from '../../Collaboration/index'
 import { languageSaga } from '../../../common/components/LanguageSelector/duck'
 import { dataWarehouseSaga } from '../../sharedDucks/dataWarehouse'
+import { rosterImportSaga } from '../../RosterImport'
 
 const authorSagas = [
   itemsSaga(),
@@ -118,6 +119,7 @@ const authorSagas = [
   collaborationGroupSaga(),
   languageSaga(),
   dataWarehouseSaga(),
+  rosterImportSaga(),
 ]
 
 export default authorSagas

@@ -1,5 +1,11 @@
 import styled from 'styled-components'
-import { greyLight1 } from '@edulastic/colors'
+import {
+  greyLight1,
+  greyThemeDark1,
+  greyThemeLight,
+  themeColorBlue,
+} from '@edulastic/colors'
+import { IconDownload } from '@edulastic/icons'
 
 export const LeftWrapper = styled.div`
   display: flex;
@@ -12,7 +18,21 @@ export const DownloadFileAndInstructions = styled.div`
   justify-content: space-between;
 `
 
-export const RosterHistoryWrapper = styled.div``
+export const RosterHistoryWrapper = styled.div`
+  width: 55%;
+  display: flex;
+  flex-direction: column;
+  padding: 10px 25px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+  .ant-table-column-title {
+    color: ${greyThemeDark1};
+  }
+  .ant-table-thead {
+    background-color: black;
+  }
+`
 
 export const DownloadCsv = styled.div`
   display: flex;
@@ -28,4 +48,65 @@ export const StyledHeading1 = styled.h3`
   font-weight: bold;
   margin-top: 0px;
   margin-bottom: 15px;
+`
+export const StyledHeading2 = styled.h4`
+  font-size: 25px !important;
+  font-weight: bold;
+  margin-top: -35px;
+  padding: -10px 30px;
+`
+
+export const RecordTable = styled.div`
+  .ant-table-body > table {
+    border-collapse: collapse;
+  }
+  .ant-table-body > table > thead {
+    border-bottom: 1px solid ${greyThemeLight};
+  }
+  .ant-table-tbody > tr {
+    border-bottom: 1px solid ${greyThemeLight};
+  }
+  .ant-table-tbody > tr > td {
+    border: none;
+  }
+`
+export const StyledDownloadIcon = styled(IconDownload)`
+  margin-right: 10px;
+  & > g > path {
+    fill: ${themeColorBlue};
+  }
+`
+export const StyledAnchor = styled.a`
+  color: ${themeColorBlue};
+  font-weight: bold;
+`
+export const HistoryWrapper = styled.div`
+  margin-top: -30px;
+`
+export const HistoryWrapperChild = styled.div`
+  display: flex;
+  font-weight: normal;
+`
+export const CompleteWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  padding: 10px 25px;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  font-weight: bold;
+  justify-content: space-between;
+`
+export const MetaDataOnTable = styled.div`
+  width: 35%;
+  display: flex;
+  justify-content: space-between;
+  color: #a0a0a0;
+  font-weight: normal;
+`
+export const StyledParagraph = styled.p`
+  margin-left: 10px;
+`
+export const StyledDiv = styled.div`
+  margin-left: 50px;
+  margin-top: 5px;
 `

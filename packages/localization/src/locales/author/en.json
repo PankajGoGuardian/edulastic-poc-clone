@@ -183,6 +183,6 @@
   },
   "showTtsForPassage": {
     "title": "Allow Text To Speech For Passage",
-    "info": "When ON for an item for which TTS is enabled, student get option to play text to speech for passage text while they attempt."
+    "info": "When ON, students will be able to use TTS to listen to passages. When OFF, TTS will be disabled for passage-based questions."
   }
 }

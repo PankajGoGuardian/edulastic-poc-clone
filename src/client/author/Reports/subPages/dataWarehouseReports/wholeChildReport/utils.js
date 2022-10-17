@@ -7,13 +7,12 @@ import {
   round,
   get,
   find,
-  uniq,
-  zipObject,
   mapValues,
 } from 'lodash'
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
+import { createColorBand } from '@edulastic/constants/const/colors'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -80,18 +79,30 @@ export const staticDropDownData = {
   ],
 }
 
-export const claimsColorMap = zipObject(
-  [
-    'Concepts and Procedures',
-    'Problem Solving and Modeling/Data Analysis',
-    'Communicating Reasoning',
-    'Reading',
-    'Writing',
-    'Listening',
-    'Research/Inquiry',
-  ],
-  colorConstants.externalPerformanceBandColors
-)
+export const claimsColorMap = {
+  // CAASPP claimNames
+  'Concepts and Procedures': createColorBand(7)[0],
+  'Problem Solving and Modeling/Data Analysis': createColorBand(7)[1],
+  'Communicating Reasoning': createColorBand(7)[2],
+  Reading: createColorBand(7)[3],
+  Writing: createColorBand(7)[4],
+  Listening: createColorBand(7)[5],
+  'Research/Inquiry': createColorBand(7)[6],
+
+  // NWEA
+  Hi: createColorBand(5)[0],
+  High: createColorBand(5)[0],
+  HiAvg: createColorBand(5)[1],
+  Avg: createColorBand(5)[2],
+  LoAvg: createColorBand(5)[3],
+  Low: createColorBand(5)[4],
+
+  // iReady
+  'Tested Out': createColorBand(3)[2],
+  'On (Mid/Late) or Above Grade Level': createColorBand(3)[0],
+  'On (Early) Grade Level or One Grade Level Below': createColorBand(3)[1],
+  'Two or More Grade Levels Below': createColorBand(3)[2],
+}
 
 export const tableColumnsData = [
   {
@@ -178,6 +189,24 @@ const colorByText = (text) => {
   return colorArr[numFromText % colorArr.length]
 }
 
+const getClaimInfo = (value, name, metric) => {
+  let color = claimsColorMap[typeof value === 'object' ? value.label : name]
+  if (!color && typeof value === 'object') {
+    const bands = getAchievementLevels({
+      externalTestType: metric.testCategory,
+      score: value.score,
+      achievementLevel: value.label,
+      grade: metric.grade,
+    })
+    color = bands.find((b) => b.active)?.color
+  }
+  return {
+    name,
+    value: typeof value === 'object' ? value.score : value,
+    color: color || colorByText(typeof value === 'object' ? value.label : name),
+  }
+}
+
 export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
   const mappedExternalMetrics = externalMetrics.map((metric) => ({
     title: metric.testTitle,
@@ -192,13 +221,12 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     studentId: metric.studentId,
     maxScore: undefined,
     score: +metric.score,
-    achievementLevel: `${parseInt(metric.achievementLevel, 10)}`,
-    claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) => ({
-      name,
-      value,
-      color: claimsColorMap[name] || colorByText(name),
-    })),
+    achievementLevel: metric.achievementLevel,
+    claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) =>
+      getClaimInfo(value, name, metric)
+    ),
     schoolCode: metric.schoolCode,
+    grade: metric.grade,
   }))
   return [...internalMetrics, ...mappedExternalMetrics]
 }
@@ -227,13 +255,11 @@ export const getChartData = ({
   studentClassData = [],
   selectedPerformanceBand = [],
 }) => {
-  const externalTestNames = uniq(
-    assignmentMetrics.flatMap((cdItem) =>
-      cdItem.externalTestType ? [cdItem.title] : []
-    )
+  const externalTests = assignmentMetrics.flatMap((cdItem) =>
+    cdItem.externalTestType ? [cdItem] : []
   )
   const achievementLevelMap = Object.fromEntries(
-    externalTestNames.map((name) => [name, getAchievementLevels(name)])
+    externalTests.map((test) => [test.testId, getAchievementLevels(test)])
   )
 
   if (!assignmentMetrics.length) {
@@ -278,8 +304,9 @@ export const getChartData = ({
       })
     } else {
       Object.assign(assessmentData, {
-        achievementLevelInfo: achievementLevelMap[assessmentData.title].find(
-          (a) => a.id === assessmentData.achievementLevel
+        achievementLevelBands: achievementLevelMap[assessmentData.testId],
+        achievementLevelInfo: achievementLevelMap[assessmentData.testId].find(
+          (a) => a.active
         ),
       })
     }

@@ -1,8 +1,7 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 import { reportUtils } from '@edulastic/constants'
-import { round, uniq } from 'lodash'
-import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
+import { round } from 'lodash'
 import { SignedStackedBarChart } from '../../../../common/components/charts/customSignedStackedBarChart'
 import {
   TooltipRow,
@@ -42,13 +41,13 @@ const getTooltipJSX = (payload, barIndex) => {
     const barData = payload[0].payload
     let colorBandComponent = null
     if (barData.externalTestType) {
-      const achievementLevels = getAchievementLevels(barData.testName).reverse()
+      const achievementLevels = [...barData.achievementLevelBands].reverse()
       colorBandComponent = (
         <>
           <TooltipRowItem title={`${achievementLevels.length} color band`} />
           {achievementLevels.map((band) => (
             <ColorBandItem
-              highlight={band.id === barData.achievementLevel}
+              highlight={band.active}
               color={band.color}
               name={band.name}
             />
@@ -103,17 +102,6 @@ const AssessmentsChart = ({
   onBarClickCB,
   onResetClickCB,
 }) => {
-  const externalTestNames = uniq(
-    chartData.flatMap((cdItem) =>
-      cdItem.externalTestType ? [cdItem.testName] : []
-    )
-  )
-  const achievementLevelMap = Object.fromEntries(
-    externalTestNames.map((name) => [name, getAchievementLevels(name)])
-  )
-  const allAchievementLevels = Object.values(achievementLevelMap).flat()
-  const achievementLevels = allAchievementLevels
-
   const legendPayload = selectedPerformanceBand
     .sort((a, b) => a.threshold - b.threshold)
     .map((pb, index) => ({
@@ -122,6 +110,10 @@ const AssessmentsChart = ({
       value: pb.name,
       type: 'circle',
     }))
+
+  const achievementLevels = chartData.flatMap((cdItem) =>
+    cdItem.externalTestType ? cdItem.achievementLevelBands : []
+  )
 
   const barsDataForInternal = selectedPerformanceBand.map((pb, index) => ({
     ...pb,
@@ -148,10 +140,10 @@ const AssessmentsChart = ({
     .map((d) => {
       if (d.externalTestType) {
         const barData = barsDataForExternal.find(
-          (bar) => bar.id === d.achievementLevel && bar.testTitle === d.title
+          (bar) => bar.active && bar.testId === d.testId
         )
 
-        const bars = barsDataForExternal.filter((b) => b.testTitle === d.title)
+        const bars = barsDataForExternal.filter((b) => b.testId === d.testId)
 
         const barsCellDataForExternal = bars.reduce(
           (res, ele) => ({
@@ -206,8 +198,8 @@ const AssessmentsChart = ({
         getXTickText={getXTickText}
         getXTickTagText={getXTickTagText}
         filter={{}}
-        onBarClickCB={() => console.log('onBarClickCB')}
-        onResetClickCB={() => console.log('onResetClickCB')}
+        onBarClickCB={onBarClickCB}
+        onResetClickCB={onResetClickCB}
         margin={{ top: 0, right: 20, left: 20, bottom: 40 }}
         legendProps={{
           iconType: 'circle',

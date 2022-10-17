@@ -1,26 +1,19 @@
-import { connect } from 'react-redux'
-import { Anchor } from 'antd'
-import { IconExclamationMark } from '@edulastic/icons'
+import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
-import { IconDownload } from '@edulastic/icons'
-import { get } from 'lodash'
-import React, { useEffect } from 'react'
 import {
   RosterHistoryWrapper,
   StyledHeading2,
   RecordTable,
   HistoryWrapper,
-  StyledDownloadIcon,
-  StyledAnchor,
   HistoryWrapperChild,
   CompleteWrapper,
   StyledParagraph,
   StyledDiv,
   MetaDataOnTable,
 } from './styled'
-import { Table } from '../../../../../client/admin/Common/StyledComponents/index'
-const { Link } = Anchor
+import { Table } from '../../../../admin/Common/StyledComponents/index'
+
 const { Column } = Table
 const RosterHistory = (props) => {
   const { rosterImportLog = [] } = props
@@ -30,10 +23,10 @@ const RosterHistory = (props) => {
       <RosterHistoryWrapper>
         <StyledHeading2>Last Attempted Import</StyledHeading2>
         <MetaDataOnTable>
-        <p>Roster - file name</p>
-        <p>24 August 2022</p>
-        <p>3:14pm</p>
-      </MetaDataOnTable>
+          <p>Roster - file name</p>
+          <p>24 August 2022</p>
+          <p>3:14pm</p>
+        </MetaDataOnTable>
         <RecordTable>
           <Table
             rowKey={(record) => record.key}
@@ -63,12 +56,13 @@ const RosterHistory = (props) => {
               dataIndex="errorCount"
               key="errorCount"
               width="1%"
-              render={(text, record) => {
-                const showExclaimationIcon = parseInt(text) > 0
-
+              render={(text) => {
+                const showExclaimationIcon = parseInt(text, 10) > 0
                 return {
                   props: {
-                    style: { color: parseInt(text) > 0 ? 'orange' : 'black' },
+                    style: {
+                      color: parseInt(text, 10) > 0 ? 'orange' : 'black',
+                    },
                   },
                   children: (
                     <div>
@@ -87,7 +81,6 @@ const RosterHistory = (props) => {
             <Column title="" dataIndex="download" key="downlad" width="2%" />
           </Table>
         </RecordTable>
-        <HistoryWrapper></HistoryWrapper>
       </RosterHistoryWrapper>
       <HistoryWrapper>
         <h1>Roster Import History</h1>

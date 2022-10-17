@@ -5,17 +5,19 @@ import {
   greyThemeLight,
   themeColorBlue,
 } from '@edulastic/colors'
-import { IconDownload } from '@edulastic/icons'
+import { IconDownload, IconNewFile } from '@edulastic/icons'
 
 export const LeftWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  margin-top: -15px;
 `
 
 export const DownloadFileAndInstructions = styled.div`
-  width: 400px;
+  width: 380px;
   display: flex;
   justify-content: space-between;
+  align-self: center;
 `
 
 export const RosterHistoryWrapper = styled.div`
@@ -38,9 +40,9 @@ export const DownloadCsv = styled.div`
   display: flex;
   align-self: center;
   width: 40%;
-  padding: 10px 30px;
+  padding: 10px 10px;
   border: 2px solid ${greyLight1};
-  margin-top: 20px;
+  margin-top: 25px;
   justify-content: space-evenly;
 `
 export const StyledHeading1 = styled.h3`
@@ -48,7 +50,18 @@ export const StyledHeading1 = styled.h3`
   font-weight: bold;
   margin-top: 0px;
   margin-bottom: 15px;
+  text-align: left;
 `
+
+export const StyledIconNewFile = styled(IconNewFile)`
+  position: relative;
+  top: 3px;
+  right: -5px;
+  & > g > path {
+    fill: ${themeColorBlue};
+  }
+`
+
 export const StyledHeading2 = styled.h4`
   font-size: 25px !important;
   font-weight: bold;

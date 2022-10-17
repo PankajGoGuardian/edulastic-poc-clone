@@ -1,66 +1,83 @@
 import { connect } from 'react-redux'
 import React from 'react'
+import { IconCloudUpload } from '@edulastic/icons'
+import {
+  greyThemeDark1,
+  themeColorBlue,
+  themeColor,
+  borderGrey,
+} from '@edulastic/colors'
+import styled from 'styled-components'
+import { Progress } from 'antd'
 import {
   LeftWrapper,
   DownloadFileAndInstructions,
   DownloadCsv,
   StyledHeading1,
+  StyledParagraph,
+  StyledDownloadIcon,
+  StyledIconNewFile,
+  StyledAnchor,
 } from './styled'
-import { RosterDataWrapper, UploadDragger } from '../Container/styled'
-import { IconDownload, IconCloudUpload } from '@edulastic/icons'
-import { greyThemeDark1, themeColorBlue, themeColor } from '@edulastic/colors'
+import { RosterDataWrapper } from '../Container/styled'
 
-import {
-  Container,
-  ButtonsContainer,
-  RoundedButton,
-} from '../../../../author/AssessmentCreate/components/CreateBlank/styled.js'
-
-const RosterData = () => {
-  const onUpload = () => {
-    return 'uploaded'
-  }
-  const creating = () => {
-    return 'creating'
-  }
-
+const RosterData = ({ isFileUploading, uploadProgress }) => {
   return (
     <RosterDataWrapper>
       <LeftWrapper>
         <div>
           <StyledHeading1>Roster Data</StyledHeading1>
-          <p>
+          <StyledParagraph>
             You can import data securely by attaching CSV files within a zip
             file format.
-          </p>
+          </StyledParagraph>
         </div>
         <DownloadFileAndInstructions>
           <p color={themeColorBlue}>
-            downloads example files
-            <IconDownload color={themeColor} />
+            <StyledAnchor>
+              <span> Downloads example files </span>
+              <StyledDownloadIcon color={themeColor} />
+            </StyledAnchor>
           </p>
-          <p>view instructions</p>
+          <p>
+            <StyledAnchor>
+              <span>View instructions </span> <StyledIconNewFile />{' '}
+            </StyledAnchor>
+          </p>
         </DownloadFileAndInstructions>
       </LeftWrapper>
       <DownloadCsv>
-        <p>ADD ROSTER DATA IN CSV FILES WITHIN A ZIP FILE FORMAT</p>
-        <ButtonsContainer width="180px">
-          <UploadDragger
-            UploadDragger
-            name="file"
-            onChange={onUpload}
-            disabled={creating}
-            beforeUpload={() => false}
-            accept=".pdf"
-          >
-            <div data-cy="uploadPdfFromFiles">
-              <IconCloudUpload color={greyThemeDark1} />
-            </div>
-          </UploadDragger>
-        </ButtonsContainer>
+        {isFileUploading ? (
+          <StyledProgress percent={uploadProgress} />
+        ) : (
+          <>
+            <p>ADD ROSTER DATA IN CSV FILES WITHIN A ZIP FILE FORMAT</p>
+            <IconCloudUpload
+              data-cy="uploadPdfFromFiles"
+              color={greyThemeDark1}
+              style={{ minWidth: '24px', minHeight: '24px' }}
+            />
+          </>
+        )}
       </DownloadCsv>
     </RosterDataWrapper>
   )
 }
 
 export default connect(() => ({}), {})(RosterData)
+
+const StyledProgress = styled(Progress)`
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  .ant-progress-inner {
+    border-radius: 0px;
+  }
+  .ant-progress-bg {
+    border-radius: 0px;
+    height: 15px !important;
+  }
+  .ant-progress-inner {
+    background: ${borderGrey};
+  }
+`

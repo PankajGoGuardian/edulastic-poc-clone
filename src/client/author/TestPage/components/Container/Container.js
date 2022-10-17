@@ -595,6 +595,7 @@ class Container extends PureComponent {
       updated,
       editEnable,
       location,
+      creating,
     } = this.props
     const { groupNotEdited } = this.state
     const { authors, itemGroups = [], _id } = test
@@ -637,7 +638,7 @@ class Container extends PureComponent {
       (hasValidGroups ||
         test.testCategory !== testCategoryTypes.DYNAMIC_TEST) &&
       (totalTestItems > 0 || isAutoSelectGroup) &&
-      !(totalTestItems === 1 && !_id && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
+      !(totalTestItems === 1 && !_id && creating && !isAutoSelectGroup) && // avoid redundant new test creation api call when user adds first item and quickly switches the tab
       updated &&
       !firstFlow
     ) {

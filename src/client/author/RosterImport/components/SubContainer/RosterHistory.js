@@ -1,6 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import moment from 'moment'
 import {
   RosterHistoryWrapper,
   StyledHeading2,
@@ -11,26 +12,26 @@ import {
   StyledParagraph,
   StyledDiv,
   MetaDataOnTable,
+  StyledCSVLink,
+  StyledDownloadIcon,
 } from './styled'
 import { Table } from '../../../../admin/Common/StyledComponents/index'
 
 const { Column } = Table
 const RosterHistory = (props) => {
-  const { rosterImportLog = [] } = props
-  const data = rosterImportLog
+  const { rosterImportLog = [], syncStartTime = new Date().getTime() } = props
   return (
     <CompleteWrapper>
       <RosterHistoryWrapper>
         <StyledHeading2>Last Attempted Import</StyledHeading2>
         <MetaDataOnTable>
           <p>Roster - file name</p>
-          <p>24 August 2022</p>
-          <p>3:14pm</p>
+          <p>{moment(syncStartTime).format('MMM DD YYYY hh:mm a')}</p>
         </MetaDataOnTable>
         <RecordTable>
           <Table
             rowKey={(record) => record.key}
-            dataSource={data}
+            dataSource={rosterImportLog}
             pagination={false}
           >
             <Column
@@ -40,19 +41,19 @@ const RosterHistory = (props) => {
               width="1%"
             />
             <Column
-              title="Total Count"
+              title="Entity Count"
               dataIndex="totalCount"
               key="totalCount"
               width="1%"
             />
             <Column
-              title="Created"
+              title="Created/Updated Count"
               dataIndex="createdCount"
               key="createdCount"
-              width="1%"
+              width="1.5%"
             />
             <Column
-              title="Errors"
+              title="Failed Count"
               dataIndex="errorCount"
               key="errorCount"
               width="1%"
@@ -78,7 +79,26 @@ const RosterHistory = (props) => {
                 }
               }}
             />
-            <Column title="" dataIndex="download" key="downlad" width="2%" />
+            <Column
+              title=""
+              dataIndex="errorLog"
+              key="errorLog"
+              width="2%"
+              render={(text, record) => {
+                return (
+                  text.length && (
+                    <StyledCSVLink
+                      data={text}
+                      filename={record.recordType}
+                      seperator=","
+                    >
+                      <StyledDownloadIcon />
+                      Download Changes
+                    </StyledCSVLink>
+                  )
+                )
+              }}
+            />
           </Table>
         </RecordTable>
       </RosterHistoryWrapper>

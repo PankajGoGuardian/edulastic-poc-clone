@@ -6,6 +6,7 @@ import {
   themeColorBlue,
 } from '@edulastic/colors'
 import { IconDownload, IconNewFile } from '@edulastic/icons'
+import { CSVLink } from 'react-csv'
 
 export const LeftWrapper = styled.div`
   display: flex;
@@ -89,10 +90,6 @@ export const StyledDownloadIcon = styled(IconDownload)`
     fill: ${themeColorBlue};
   }
 `
-export const StyledAnchor = styled.a`
-  color: ${themeColorBlue};
-  font-weight: bold;
-`
 export const HistoryWrapper = styled.div`
   margin-top: -30px;
 `
@@ -122,4 +119,13 @@ export const StyledParagraph = styled.p`
 export const StyledDiv = styled.div`
   margin-left: 50px;
   margin-top: 5px;
+`
+export const StyledAnchor = styled.a`
+  color: ${themeColorBlue};
+  font-weight: bold;
+`
+
+export const StyledCSVLink = styled(CSVLink)`
+  color: ${themeColorBlue};
+  font-weight: bold;
 `

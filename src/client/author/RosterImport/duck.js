@@ -48,6 +48,7 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_ROSTER_LOG_SUCCESS]: (state, { payload }) => {
     state.loading = false
     state.rosterImportLog = payload?.rosterImportLog
+    state.syncStartTime = payload?.syncStartTime
   },
   [GET_SET_CANCEL_UPLOAD_REQUEST]: (state, { payload }) => {
     state.cancelUpload = payload
@@ -158,4 +159,8 @@ export const getFileUploadProgress = createSelector(
 export const getIsRosterZipFileUploading = createSelector(
   stateSelector,
   (state) => state.rosterZipFileUploading || false
+)
+export const getsyncStartTime = createSelector(
+  stateSelector,
+  (state) => state.syncStartTime || new Date().getTime()
 )

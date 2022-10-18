@@ -565,23 +565,10 @@ export const currentUserIdSelector = createSelector(
 )
 
 export const allowedToSelectMultiLanguageInTest = createSelector(
-  currentUserIdSelector,
+  getUserFeatures,
   getIsCurator,
-  (state, isCurator) => {
-    const allowedUserIds = [
-      '5f5f729516eaad0008c45a44', // vinayt@v2.com uat user
-      // '5d26f2f892df401ddf8c2fd7', // poc user
-      '6034a9c3e6cce4000810e6d1', // cespark1@at.com - automation QA env
-      '602383287e63eb0007a54233', // vvk@content.com - Conetnt Author
-      '6023834b7e63eb0007a54234', // vvk@approver.com - Content Editor
-      '5ee90bb54e6a8b000713dae9', // QA testing author account
-      '5e3138446247305142d94332', // QA testing publisher account
-      '5ec422aabdde150007764df1', // "Edulastic Premium Content",
-      '60af953c3b51956dbb99b4cb', // Bharat-access-lausd-mulitlingual-content (PRD)
-      '5f48a498db9eaf900d7abfde', // Swetha-access-lausd-mulitlingual-content (PRO)
-      '5e3be21d03b7ad0924bf517a', // admin@happyhealthy.org - prod sales account
-    ]
-    return allowedUserIds.includes(state) || isCurator
+  (userFeatures, isCurator) => {
+    return _get(userFeatures, 'allowMultiLanguageAuthoring', false) || isCurator
   }
 )
 

@@ -197,7 +197,7 @@ const ConfigureOnerosterModal = ({
               onChange={() => setIsOAuth2(!isOAuth2)}
               value={isOAuth2 ? 2 : 1}
             >
-              <RadioBtn mb="10px" value={1} data-cy="oAuth1">
+              <RadioBtn mb="10px" value={1} data-cy="oAuth1" data-testid="oAuth1">
                 oAuth 1.0
               </RadioBtn>
               <Tooltip title="Feature not supported." placement="right">
@@ -207,6 +207,7 @@ const ConfigureOnerosterModal = ({
                   data-cy="oAuth2"
                   disabled
                   defaultChecked={false}
+                  data-testid="oAuth2">
                 >
                   oAuth 2.0
                 </RadioBtn>
@@ -234,6 +235,7 @@ const ConfigureOnerosterModal = ({
                 value={apiConfig.oneRosterBaseUrl}
                 disabled={!fieldsEnabled}
                 height="40px"
+                data-testid="baseUrl"
               />
             </InputRow>
             <InputRow>
@@ -244,6 +246,7 @@ const ConfigureOnerosterModal = ({
                 value={apiConfig.oneRosterClientId}
                 disabled={!fieldsEnabled}
                 height="40px"
+                data-testid="clientId"
               />
             </InputRow>
             <InputRow>
@@ -254,6 +257,7 @@ const ConfigureOnerosterModal = ({
                 value={apiConfig.oneRosterSecretKey}
                 disabled={!fieldsEnabled}
                 height="40px"
+                data-testid = "secretKey"
               />
             </InputRow>
             {!fieldsEnabled && (
@@ -312,6 +316,7 @@ const ConfigureOnerosterModal = ({
                     value={rosterOAuthConsumerKey}
                     disabled
                     height="40px"
+                    data-testid="consumerKey"
                   />
                 </InputRow>
                 <InputRow>
@@ -321,6 +326,7 @@ const ConfigureOnerosterModal = ({
                     value={rosterOAuthConsumerSecret}
                     disabled
                     height="40px"
+                    data-testid="secretKey2"
                   />
                 </InputRow>
               </>

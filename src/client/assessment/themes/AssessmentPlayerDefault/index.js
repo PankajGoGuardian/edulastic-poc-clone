@@ -507,7 +507,7 @@ class AssessmentPlayerDefault extends React.Component {
     const extraTestItemProps =
       testItemState === 'check'
         ? {
-            previewTab: 'check',
+            previewTab: viewAsStudent ? 'check' : 'clear',
             verticalDivider: item.verticalDivider,
             scrolling: item.scrolling,
             changePreviewTab: this.handleChangePreview,

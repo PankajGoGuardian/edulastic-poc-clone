@@ -669,15 +669,14 @@ const GroupItems = ({
                           AUTO SELECT ITEMS BASED ON STANDARDS
                         </RadioBtn>
                       </Tooltip>
-                      {/* NOTE: temporarily hide radio button for manual-select items (ref. EV-36498) */}
-                      {/* <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
+                      <Tooltip title="Choose the items you’d like to include yourself! Then indicate how many you’d like included in the final version of the assessment.">
                         <RadioBtn
                           value={ITEM_GROUP_TYPES.STATIC}
                           data-cy={`static-${itemGroup.groupName}`}
                         >
                           MANUAL SELECT ITEMS FROM ITEM BANK
                         </RadioBtn>
-                      </Tooltip> */}
+                      </Tooltip>
                     </RadioGrp>
                   </GroupField>
                   {(currentGroupIndex === index &&

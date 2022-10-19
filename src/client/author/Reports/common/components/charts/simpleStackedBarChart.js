@@ -271,6 +271,7 @@ const SimpleStackedBarChartComponent = ({
 
   return (
     <StyledStackedBarChartContainer
+      data-testid="StyledStackedBarChartContainer"
       overflowStyle={overflowStyle}
       clickable={isBarClickable}
     >

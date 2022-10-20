@@ -53,6 +53,7 @@ import V1Redirect from './author/V1Redirect'
 import Kid from './kid/app'
 import NotificationListener from './HangoutVideoCallNotification'
 import BulkActionNotificationListener from './author/AssignmentAdvanced/components/BulkAssignmentActionNotification'
+import RosterSyncNotification from './author/RosterImport/components/RosterSyncNotification'
 import ClassSyncNotification from './author/Classes/components/ClassSyncNotification'
 import ReportsNotificationListener from './author/Reports/components/ReportsNotificationListener'
 import BubbleScanNotificationsListener from './scanScore/BubbleScanNotificationsListener'
@@ -740,6 +741,7 @@ class App extends Component {
                       ? [
                           BulkActionNotificationListener,
                           ReportsNotificationListener,
+                          RosterSyncNotification,
                         ]
                       : roleuser.TEACHER === userRole
                       ? [ClassSyncNotification, ReportsNotificationListener]

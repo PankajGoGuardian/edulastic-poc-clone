@@ -33,7 +33,7 @@ class AdminSubHeader extends Component {
       case 'Standards Proficiency':
         history.push(`/author/settings/standards-proficiency`)
         return
-      case 'Roster Import':
+      case 'OneRoster Import':
         history.push(`/author/settings/roster-import`)
         return
       case 'Interested Standards':
@@ -77,7 +77,7 @@ class AdminSubHeader extends Component {
               key="Standards Proficiency"
             />
             {role === 'district-admin' ? (
-              <StyledTabPane tab="Roster Import" key="Roster Import" />
+              <StyledTabPane tab="OneRoster Import" key="OneRoster Import" />
             ) : null}
           </StyledSubMenu>
         )}

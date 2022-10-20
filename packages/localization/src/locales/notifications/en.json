@@ -1239,6 +1239,10 @@
     "message": "File size exceeds 100 MB limit.",
     "description": ""
   },
+  "syncInProgress": {
+    "message": "OneRoster sync is in progress.",
+    "description": ""
+  },
   "selectedDocumentIsTooBigToUpload": {
     "message": "The selected document is too big to be uploaded",
     "description": ""

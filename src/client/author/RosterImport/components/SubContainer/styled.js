@@ -5,7 +5,7 @@ import {
   greyThemeLight,
   themeColorBlue,
 } from '@edulastic/colors'
-import { IconDownload, IconNewFile } from '@edulastic/icons'
+import { IconDownload, IconPDFFile } from '@edulastic/icons'
 import { CSVLink } from 'react-csv'
 
 export const LeftWrapper = styled.div`
@@ -54,10 +54,10 @@ export const StyledHeading1 = styled.h3`
   text-align: left;
 `
 
-export const StyledIconNewFile = styled(IconNewFile)`
+export const StyledIconPDFFile = styled(IconPDFFile)`
   position: relative;
   top: 3px;
-  right: -5px;
+  left: 3px;
   & > g > path {
     fill: ${themeColorBlue};
   }
@@ -85,7 +85,7 @@ export const RecordTable = styled.div`
   }
 `
 export const StyledDownloadIcon = styled(IconDownload)`
-  margin-right: 10px;
+  margin-left: 2px;
   & > g > path {
     fill: ${themeColorBlue};
   }
@@ -96,6 +96,7 @@ export const HistoryWrapper = styled.div`
 export const HistoryWrapperChild = styled.div`
   display: flex;
   font-weight: normal;
+  flex-direction: column;
 `
 export const CompleteWrapper = styled.div`
   width: 100%;
@@ -107,22 +108,20 @@ export const CompleteWrapper = styled.div`
   justify-content: space-between;
 `
 export const MetaDataOnTable = styled.div`
-  width: 35%;
   display: flex;
-  justify-content: space-between;
   color: #a0a0a0;
   font-weight: normal;
 `
 export const StyledParagraph = styled.p`
-  margin-left: 10px;
+  margin-left: 30px;
 `
 export const StyledDiv = styled.div`
-  margin-left: 50px;
-  margin-top: 5px;
+  margin-bottom: 20px;
 `
 export const StyledAnchor = styled.a`
   color: ${themeColorBlue};
   font-weight: bold;
+  margin-right: 15px;
 `
 
 export const StyledCSVLink = styled(CSVLink)`

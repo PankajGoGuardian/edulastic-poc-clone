@@ -18,15 +18,23 @@ import {
 import { Table } from '../../../../admin/Common/StyledComponents/index'
 
 const { Column } = Table
-const RosterHistory = (props) => {
-  const { rosterImportLog = [], syncStartTime = new Date().getTime() } = props
+const RosterHistory = ({ rosterImportLog = [], summary = [] }) => {
+  const getTime = (TS) => {
+    return moment(TS).format('MMM DD YYYY hh:mm A')
+  }
   return (
     <CompleteWrapper>
       <RosterHistoryWrapper>
         <StyledHeading2>Last Attempted Import</StyledHeading2>
         <MetaDataOnTable>
-          <p>Roster - file name</p>
-          <p>{moment(syncStartTime).format('MMM DD YYYY hh:mm a')}</p>
+          <p>
+            {summary.length ? summary?.[0]?.rawFileName : 'Roster - file name'}
+          </p>
+          <StyledParagraph>
+            {summary.length
+              ? getTime(summary?.[0]?.syncStartTS)
+              : getTime(new Date().getTime())}
+          </StyledParagraph>
         </MetaDataOnTable>
         <RecordTable>
           <Table
@@ -47,10 +55,10 @@ const RosterHistory = (props) => {
               width="1%"
             />
             <Column
-              title="Created/Updated Count"
+              title="Created / Updated Count"
               dataIndex="createdCount"
               key="createdCount"
-              width="1.5%"
+              width="1.7%"
             />
             <Column
               title="Failed Count"
@@ -85,17 +93,17 @@ const RosterHistory = (props) => {
               key="errorLog"
               width="2%"
               render={(text, record) => {
-                return (
-                  text.length && (
-                    <StyledCSVLink
-                      data={text}
-                      filename={record.recordType}
-                      seperator=","
-                    >
-                      <StyledDownloadIcon />
-                      Download Changes
-                    </StyledCSVLink>
-                  )
+                return text.length ? (
+                  <StyledCSVLink
+                    data={text}
+                    filename={record.recordType}
+                    seperator=","
+                  >
+                    <StyledDownloadIcon />
+                    Download Changes
+                  </StyledCSVLink>
+                ) : (
+                  ''
                 )
               }}
             />
@@ -105,13 +113,12 @@ const RosterHistory = (props) => {
       <HistoryWrapper>
         <h1>Roster Import History</h1>
         <HistoryWrapperChild>
-          <div>
-            <p>Roster-file name</p>
-            <StyledParagraph>24 August 2022 3:15pm</StyledParagraph>
-          </div>
-          <StyledDiv>
-            <p>View Upload Data</p>
-          </StyledDiv>
+          {summary.map((doc) => (
+            <StyledDiv>
+              <p>{doc.rawFileName}</p>
+              <StyledParagraph>{getTime(doc.syncStartTS)}</StyledParagraph>
+            </StyledDiv>
+          ))}
         </HistoryWrapperChild>
       </HistoryWrapper>
     </CompleteWrapper>

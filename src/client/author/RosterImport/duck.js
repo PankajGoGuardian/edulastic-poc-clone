@@ -6,18 +6,27 @@ import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { aws } from '@edulastic/constants'
 
+export const oneRosterSyncStatus = {
+  IN_PROGRESS: 1,
+  COMPLETED: 2,
+  FAILED: 3,
+}
+
 const RECEIVE_ROSTER_LOG_REQUEST = '[Roster Log] receive data request'
 const RECEIVE_ROSTER_LOG_SUCCESS = '[Roster Log] receive data success'
 const GET_UPDATE_UPLOAD_PROGRESS_REQUEST =
-  '[district policy] upload oneroster zip file request'
+  '[Roster Log] upload oneroster zip file request'
 const UPLOAD_ONEROSTER_ZIP_FILE_REQUEST =
-  '[district policy] get update upload progress request'
+  '[Roster Log] get update upload progress request'
 const UPLOAD_ONEROSTER_ZIP_FILE_SUCCESS =
-  '[district policy] upload oneroster zip file success'
+  '[Roster Log] upload oneroster zip file success'
 const UPLOAD_ONEROSTER_ZIP_FILE_ERROR =
-  '[district policy] upload oneroster zip file error'
-const GET_SET_CANCEL_UPLOAD_REQUEST = '[reports] get set cancel upload request'
-const GET_ABORT_UPLOAD_REQUEST = '[reports] get abort upload request'
+  '[Roster Log] upload oneroster zip file error'
+const GET_SET_CANCEL_UPLOAD_REQUEST =
+  '[Roster Log] get set cancel upload request'
+const GET_ABORT_UPLOAD_REQUEST = '[Roster Log] get abort upload request'
+const SET_ONEROSTER_SYNC_STATUS_REQUEST =
+  '[Roster Log] set oneroster sync status request'
 
 export const receiveRosterLogAction = createAction(RECEIVE_ROSTER_LOG_REQUEST)
 export const receiveRosterLogSucessAction = createAction(
@@ -32,6 +41,9 @@ export const getUpdateOfZipUploadProgressAction = createAction(
 )
 export const uploadOneRosterZipFileAction = createAction(
   UPLOAD_ONEROSTER_ZIP_FILE_REQUEST
+)
+export const setOneRosterSyncStatusAction = createAction(
+  SET_ONEROSTER_SYNC_STATUS_REQUEST
 )
 
 const initialState = {
@@ -48,7 +60,8 @@ export const reducer = createReducer(initialState, {
   [RECEIVE_ROSTER_LOG_SUCCESS]: (state, { payload }) => {
     state.loading = false
     state.rosterImportLog = payload?.rosterImportLog
-    state.syncStartTime = payload?.syncStartTime
+    state.summary = payload?.summary
+    state.syncStatus = payload?.syncStatus
   },
   [GET_SET_CANCEL_UPLOAD_REQUEST]: (state, { payload }) => {
     state.cancelUpload = payload
@@ -77,6 +90,9 @@ export const reducer = createReducer(initialState, {
   [UPLOAD_ONEROSTER_ZIP_FILE_ERROR]: (state) => {
     state.rosterZipFileUploading = false
   },
+  [SET_ONEROSTER_SYNC_STATUS_REQUEST]: (state, { payload }) => {
+    state.syncStatus = payload
+  },
 })
 
 function* receiveRosterLogSaga() {
@@ -97,6 +113,7 @@ export function* uploadOneRosterZipFileSaga({
       msg: 'File upload in progress.',
       type: 'info',
     })
+    yield put(setOneRosterSyncStatusAction(oneRosterSyncStatus.IN_PROGRESS))
     const response = yield uploadToS3(
       file,
       aws.s3Folders.ONEROSTER,
@@ -126,6 +143,7 @@ export function* uploadOneRosterZipFileSaga({
       msg = 'Error uploading the file. Please try again after a few minutes.'
       notification({ type: 'error', msg, destroyAll: true })
     }
+    yield put(setOneRosterSyncStatusAction(oneRosterSyncStatus.FAILED))
     yield put({
       type: UPLOAD_ONEROSTER_ZIP_FILE_ERROR,
       payload: { error: msg },
@@ -160,7 +178,11 @@ export const getIsRosterZipFileUploading = createSelector(
   stateSelector,
   (state) => state.rosterZipFileUploading || false
 )
-export const getsyncStartTime = createSelector(
+export const getOneRosterSyncSummary = createSelector(
   stateSelector,
-  (state) => state.syncStartTime || new Date().getTime()
+  (state) => state.summary || []
+)
+export const getOneRosterSyncStatus = createSelector(
+  stateSelector,
+  (state) => state.syncStatus
 )

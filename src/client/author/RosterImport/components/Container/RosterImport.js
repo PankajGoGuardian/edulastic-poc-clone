@@ -24,17 +24,12 @@ import {
   getUpdateOfZipUploadProgressAction,
   getSetCancelUploadAction,
   getAbortUploadAction,
-  getsyncStartTime,
+  getOneRosterSyncSummary,
+  getOneRosterSyncStatus,
+  oneRosterSyncStatus,
 } from '../../duck'
-// import {
-//   uploadOneRosterZipFileAction,
-//   getUpdateOfZipUploadProgressAction,
-//   getSetCancelUploadAction,
-//   getAbortUploadAction,
-//   getIsRosterZipFileUploading,
-//   getFileUploadProgress,
-// } from '../../../DistrictPolicy/ducks'
-// import { DropAreaContainer } from '../../../AssessmentCreate/components/DropArea/styled'
+
+import { getUserId } from '../../../src/selectors/user'
 
 const title = 'Manage District'
 const RosterImport = ({
@@ -48,9 +43,10 @@ const RosterImport = ({
   uploadProgress,
   rosterImportLog,
   loadRosterLogs,
-  syncStartTime,
+  summary,
+  syncStatus,
 }) => {
-  const menuActive = { mainMenu: 'Settings', subMenu: 'Roster Import' }
+  const menuActive = { mainMenu: 'Settings', subMenu: 'OneRoster Import' }
   const showSpin = loading
   const [isDragging, setIsDragging] = useState(false)
 
@@ -63,6 +59,10 @@ const RosterImport = ({
   }
 
   const onChange = ({ file }) => {
+    if (syncStatus === oneRosterSyncStatus.IN_PROGRESS) {
+      notification({ messageKey: 'syncInProgress' })
+      return
+    }
     if (file.type !== 'application/zip') {
       notification({ messageKey: 'fileFormatNotSupportedUploadZip' })
       return
@@ -102,7 +102,7 @@ const RosterImport = ({
                 onChange={onChange}
                 beforeUpload={() => false}
                 multiple={false}
-                // accept=".zip, zip, application/zip"
+                accept=".zip, zip, application/zip"
                 showUploadList={false}
               >
                 <DataExport
@@ -115,7 +115,7 @@ const RosterImport = ({
             <CustomStyledLayout>
               <RosterHistory
                 rosterImportLog={rosterImportLog}
-                syncStartTime={syncStartTime}
+                summary={summary}
               />
             </CustomStyledLayout>
           </>
@@ -127,11 +127,13 @@ const RosterImport = ({
 
 const withConnect = connect(
   (state) => ({
+    userId: getUserId(state),
     loading: getIsLoading(state),
     rosterImportLog: getRosterImportLog(state),
     isFileUploading: getIsRosterZipFileUploading(state),
     uploadProgress: getFileUploadProgress(state),
-    syncStartTime: getsyncStartTime(state),
+    summary: getOneRosterSyncSummary(state),
+    syncStatus: getOneRosterSyncStatus(state),
   }),
   {
     loadRosterLogs: receiveRosterLogAction,

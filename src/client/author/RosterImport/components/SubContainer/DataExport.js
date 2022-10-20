@@ -16,7 +16,7 @@ import {
   StyledHeading1,
   StyledParagraph,
   StyledDownloadIcon,
-  StyledIconNewFile,
+  StyledIconPDFFile,
   StyledAnchor,
 } from './styled'
 import { RosterDataWrapper } from '../Container/styled'
@@ -41,7 +41,7 @@ const RosterData = ({ isFileUploading, uploadProgress }) => {
           </p>
           <p>
             <StyledAnchor>
-              <span>View instructions </span> <StyledIconNewFile />{' '}
+              <span>View instructions</span> <StyledIconPDFFile />{' '}
             </StyledAnchor>
           </p>
         </DownloadFileAndInstructions>

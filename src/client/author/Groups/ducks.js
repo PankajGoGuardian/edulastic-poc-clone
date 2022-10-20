@@ -143,8 +143,7 @@ function* createCollaborationGroup({ payload }) {
   } catch (err) {
     captureSentryException(err)
     notification({
-      type: 'error',
-      msg: 'Unable to create collaboration group.',
+      msg: err.message || 'Unable to create collaboration group.',
     })
   }
 }

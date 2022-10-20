@@ -36,8 +36,8 @@ describe('Testing configure one Roster modal', () => {
 
   it('>> should have all the default elements in API CONFIGURATION tab', () => {
     const baseUrl = 'https://edulastic-vn-v2.oneroster.com/ims/oneroster/v1p1'
-    const clientId = '05f7b9467647b6357892bd07'
-    const secretKey = '2801e896353e9c2d81d91568'
+    const clientId = '123411'
+    const key = '123111'
     render(
       <ConfigureOnerosterModal
         store={store}
@@ -48,7 +48,7 @@ describe('Testing configure one Roster modal', () => {
         orgId="5eabe28303b7ad092412aa93"
         oneRosterBaseUrl={baseUrl}
         oneRosterClientId={clientId}
-        oneRosterSecretKey={secretKey}
+        oneRosterSecretKey={key}
       />
     )
     const radioButton1 = screen.getByTestId('oAuth1', { name: 'OAUTH 1.0' })
@@ -80,9 +80,9 @@ describe('Testing configure one Roster modal', () => {
   })
 
   it('>> should have all the default elements in LTI INTEGRATION tab', () => {
-    const consumerKey = '823d4a9873efbb9856b07f396bd6f71f'
-    const secretKey =
-      'fbfd59618b4af3ede11ae58777d95a75c20d568e7e60a7fca4f91b2526183a56'
+    const consumerKey = '112333'
+    const key =
+      '11111111'
 
     render(
       <ConfigureOnerosterModal
@@ -93,7 +93,7 @@ describe('Testing configure one Roster modal', () => {
         orgType="district"
         orgId="5eabe28303b7ad092412aa93"
         rosterOAuthConsumerKey={consumerKey}
-        rosterOAuthConsumerSecret={secretKey}
+        rosterOAuthConsumerSecret={key}
       />
     )
     const ltiIntegration = screen.getByText(/lti integration/i)

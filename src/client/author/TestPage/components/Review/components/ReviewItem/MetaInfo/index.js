@@ -140,9 +140,9 @@ const MetaInfo = ({
         </LikeIconStyled>
         {audio && Object.prototype.hasOwnProperty.call(audio, 'ttsSuccess') ? (
           audio.ttsSuccess ? (
-            <IconVolumeUp margin="0px 0px 0px 20px" />
+            <IconVolumeUp margin="0px 0px 0px 20px" data-cy="iconVolumeUp" />
           ) : (
-            <IconNoVolume margin="0px 0px 0px 20px" />
+            <IconNoVolume margin="0px 0px 0px 20px" data-cy="iconNoVolume" />
           )
         ) : (
           ''

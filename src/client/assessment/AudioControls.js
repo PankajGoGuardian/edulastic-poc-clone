@@ -339,6 +339,7 @@ const AudioControls = ({
             onClick={handlePlayPauseAudio}
             playerSkinType={playerSkinType}
             disabled={isPremiumContentWithoutAccess}
+            data-cy="playBtn"
           >
             {currentPlayingDetails.qId === qId ? (
               <>
@@ -372,6 +373,7 @@ const AudioControls = ({
             disabled={
               currentPlayingDetails.qId !== qId || isPremiumContentWithoutAccess
             }
+            data-cy="stopBtn"
           >
             <>
               {btnWithText ? (

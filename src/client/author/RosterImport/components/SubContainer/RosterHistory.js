@@ -2,34 +2,51 @@ import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
 import moment from 'moment'
+import { Tooltip } from 'antd'
 import {
   RosterHistoryWrapper,
   StyledHeading2,
   RecordTable,
-  HistoryWrapper,
   HistoryWrapperChild,
   CompleteWrapper,
   StyledParagraph,
   StyledDiv,
   MetaDataOnTable,
-  StyledCSVLink,
+  StyledButton,
   StyledDownloadIcon,
 } from './styled'
 import { Table } from '../../../../admin/Common/StyledComponents/index'
 
 const { Column } = Table
-const RosterHistory = ({ rosterImportLog = [], summary = [] }) => {
+const RosterHistory = ({
+  rosterImportLog = [],
+  summary = [],
+  downloadCsvErrorData,
+}) => {
+  const getModifiedFileName = (fileName = '') => {
+    let modifiedFileName = fileName
+    if (fileName.length > 30) {
+      modifiedFileName = `${fileName.slice(0, 27)}...`
+    }
+    return (
+      <Tooltip title={fileName}>
+        <p>{modifiedFileName}</p>
+      </Tooltip>
+    )
+  }
+
   const getTime = (TS) => {
     return moment(TS).format('MMM DD YYYY hh:mm A')
   }
+
   return (
     <CompleteWrapper>
       <RosterHistoryWrapper>
-        <StyledHeading2>Last Attempted Import</StyledHeading2>
+        <StyledHeading2 bold="700">Last Attempted Import</StyledHeading2>
         <MetaDataOnTable>
-          <p>
-            {summary.length ? summary?.[0]?.rawFileName : 'Roster - file name'}
-          </p>
+          {getModifiedFileName(
+            summary.length ? summary?.[0]?.zipFileName : 'Roster - file name'
+          )}
           <StyledParagraph>
             {summary.length
               ? getTime(summary?.[0]?.syncStartTS)
@@ -89,19 +106,23 @@ const RosterHistory = ({ rosterImportLog = [], summary = [] }) => {
             />
             <Column
               title=""
-              dataIndex="errorLog"
-              key="errorLog"
+              dataIndex="errorCount"
+              key="downloadError"
               width="2%"
-              render={(text, record) => {
-                return text.length ? (
-                  <StyledCSVLink
-                    data={text}
-                    filename={record.recordType}
-                    seperator=","
+              render={(val, record) => {
+                return val > 0 ? (
+                  <StyledButton
+                    type="link"
+                    onClick={() =>
+                      downloadCsvErrorData({
+                        entity: record.recordType,
+                        timestamp: summary?.[0].syncStartTS,
+                        fileName: `${record.recordType}.csv`,
+                      })
+                    }
                   >
-                    <StyledDownloadIcon />
-                    Download Changes
-                  </StyledCSVLink>
+                    <StyledDownloadIcon /> Download Changes
+                  </StyledButton>
                 ) : (
                   ''
                 )
@@ -110,17 +131,17 @@ const RosterHistory = ({ rosterImportLog = [], summary = [] }) => {
           </Table>
         </RecordTable>
       </RosterHistoryWrapper>
-      <HistoryWrapper>
-        <h1>Roster Import History</h1>
+      <div>
+        <StyledHeading2>Roster Import History</StyledHeading2>
         <HistoryWrapperChild>
           {summary.map((doc) => (
             <StyledDiv>
-              <p>{doc.rawFileName}</p>
+              {getModifiedFileName(doc.zipFileName)}
               <StyledParagraph>{getTime(doc.syncStartTS)}</StyledParagraph>
             </StyledDiv>
           ))}
         </HistoryWrapperChild>
-      </HistoryWrapper>
+      </div>
     </CompleteWrapper>
   )
 }

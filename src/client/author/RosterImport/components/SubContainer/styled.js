@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { Button } from 'antd'
 import {
   greyLight1,
   greyThemeDark1,
@@ -6,7 +7,6 @@ import {
   themeColorBlue,
 } from '@edulastic/colors'
 import { IconDownload, IconPDFFile } from '@edulastic/icons'
-import { CSVLink } from 'react-csv'
 
 export const LeftWrapper = styled.div`
   display: flex;
@@ -25,9 +25,6 @@ export const RosterHistoryWrapper = styled.div`
   width: 55%;
   display: flex;
   flex-direction: column;
-  padding: 10px 25px;
-  margin-bottom: 10px;
-  margin-top: 10px;
   font-weight: bold;
   .ant-table-column-title {
     color: ${greyThemeDark1};
@@ -45,6 +42,7 @@ export const DownloadCsv = styled.div`
   border: 2px solid ${greyLight1};
   margin-top: 25px;
   justify-content: space-evenly;
+  margin-bottom: -10px;
 `
 export const StyledHeading1 = styled.h3`
   font-size: 16px !important;
@@ -65,7 +63,7 @@ export const StyledIconPDFFile = styled(IconPDFFile)`
 
 export const StyledHeading2 = styled.h4`
   font-size: 25px !important;
-  font-weight: bold;
+  font-weight: ${({ bold }) => bold || 400};
   margin-top: -35px;
   padding: -10px 30px;
 `
@@ -85,23 +83,22 @@ export const RecordTable = styled.div`
   }
 `
 export const StyledDownloadIcon = styled(IconDownload)`
-  margin-left: 2px;
+  margin-left: 5px;
+  margin-right: 3px;
   & > g > path {
     fill: ${themeColorBlue};
   }
 `
-export const HistoryWrapper = styled.div`
-  margin-top: -30px;
-`
 export const HistoryWrapperChild = styled.div`
   display: flex;
   font-weight: normal;
+  margin-top: 30px;
   flex-direction: column;
 `
 export const CompleteWrapper = styled.div`
   width: 100%;
   display: flex;
-  padding: 10px 25px;
+  padding: 20px 25px;
   margin-bottom: 10px;
   margin-top: 10px;
   font-weight: bold;
@@ -116,7 +113,9 @@ export const StyledParagraph = styled.p`
   margin-left: 30px;
 `
 export const StyledDiv = styled.div`
-  margin-bottom: 20px;
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 24px;
 `
 export const StyledAnchor = styled.a`
   color: ${themeColorBlue};
@@ -124,7 +123,8 @@ export const StyledAnchor = styled.a`
   margin-right: 15px;
 `
 
-export const StyledCSVLink = styled(CSVLink)`
+export const StyledButton = styled(Button)`
   color: ${themeColorBlue};
   font-weight: bold;
+  border: none;
 `

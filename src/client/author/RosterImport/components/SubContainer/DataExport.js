@@ -35,7 +35,7 @@ const RosterData = ({ isFileUploading, uploadProgress }) => {
         <DownloadFileAndInstructions>
           <p color={themeColorBlue}>
             <StyledAnchor>
-              <span> Downloads example files </span>
+              <span> Download example files </span>
               <StyledDownloadIcon color={themeColor} />
             </StyledAnchor>
           </p>

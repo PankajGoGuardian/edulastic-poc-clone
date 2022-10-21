@@ -24,4 +24,12 @@ const fetchRosterLogs = () =>
     })
     .then((result) => result.data.result)
 
-export default { getSignedUrl, fetchRosterLogs }
+const downloadEntityError = ({ entity, timestamp }) =>
+  api
+    .callApi({
+      url: `${prefix}/download-error?entity=${entity}&timestamp=${timestamp}`,
+      method: 'get',
+    })
+    .then((result) => result.data.result)
+
+export default { getSignedUrl, fetchRosterLogs, downloadEntityError }

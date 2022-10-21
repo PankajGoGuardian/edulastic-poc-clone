@@ -27,6 +27,7 @@ import {
   getOneRosterSyncSummary,
   getOneRosterSyncStatus,
   oneRosterSyncStatus,
+  downloadCsvErrorDataAction,
 } from '../../duck'
 
 import { getUserId } from '../../../src/selectors/user'
@@ -45,6 +46,7 @@ const RosterImport = ({
   loadRosterLogs,
   summary,
   syncStatus,
+  downloadCsvErrorData,
 }) => {
   const menuActive = { mainMenu: 'Settings', subMenu: 'OneRoster Import' }
   const showSpin = loading
@@ -116,6 +118,7 @@ const RosterImport = ({
               <RosterHistory
                 rosterImportLog={rosterImportLog}
                 summary={summary}
+                downloadCsvErrorData={downloadCsvErrorData}
               />
             </CustomStyledLayout>
           </>
@@ -141,6 +144,7 @@ const withConnect = connect(
     handleUploadProgress: getUpdateOfZipUploadProgressAction,
     setCancelUpload: getSetCancelUploadAction,
     abortUpload: getAbortUploadAction,
+    downloadCsvErrorData: downloadCsvErrorDataAction,
   }
 )
 

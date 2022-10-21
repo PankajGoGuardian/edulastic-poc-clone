@@ -5,6 +5,7 @@ import { notification, uploadToS3 } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import { aws } from '@edulastic/constants'
+import { downloadCSV } from '../Reports/common/util'
 
 export const oneRosterSyncStatus = {
   IN_PROGRESS: 1,
@@ -27,6 +28,8 @@ const GET_SET_CANCEL_UPLOAD_REQUEST =
 const GET_ABORT_UPLOAD_REQUEST = '[Roster Log] get abort upload request'
 const SET_ONEROSTER_SYNC_STATUS_REQUEST =
   '[Roster Log] set oneroster sync status request'
+const DOWNLOAD_CSV_ERROR_DATA_REQUEST =
+  '[Roster Log] download csv error data request'
 
 export const receiveRosterLogAction = createAction(RECEIVE_ROSTER_LOG_REQUEST)
 export const receiveRosterLogSucessAction = createAction(
@@ -44,6 +47,9 @@ export const uploadOneRosterZipFileAction = createAction(
 )
 export const setOneRosterSyncStatusAction = createAction(
   SET_ONEROSTER_SYNC_STATUS_REQUEST
+)
+export const downloadCsvErrorDataAction = createAction(
+  DOWNLOAD_CSV_ERROR_DATA_REQUEST
 )
 
 const initialState = {
@@ -151,6 +157,27 @@ export function* uploadOneRosterZipFileSaga({
   }
 }
 
+export function* downloadCsvErrorDataSaga({
+  payload: { entity, timestamp, fileName },
+}) {
+  try {
+    const data = yield call(onerosterApi.downloadEntityError, {
+      entity,
+      timestamp,
+    })
+    downloadCSV(fileName, data)
+  } catch (error) {
+    let msg = ''
+    if (error?.message) {
+      msg = error.message
+      notification({ type: 'error', exact: true, msg, destroyAll: true })
+    } else {
+      msg = 'Error downloading the file. Please try again after a few minutes.'
+      notification({ type: 'error', msg, destroyAll: true })
+    }
+  }
+}
+
 export function* watcherSaga() {
   yield all([yield takeEvery(RECEIVE_ROSTER_LOG_REQUEST, receiveRosterLogSaga)])
   yield all([
@@ -158,6 +185,9 @@ export function* watcherSaga() {
       UPLOAD_ONEROSTER_ZIP_FILE_REQUEST,
       uploadOneRosterZipFileSaga
     ),
+  ])
+  yield all([
+    yield takeEvery(DOWNLOAD_CSV_ERROR_DATA_REQUEST, downloadCsvErrorDataSaga),
   ])
 }
 

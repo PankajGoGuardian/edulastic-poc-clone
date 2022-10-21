@@ -43,7 +43,7 @@ const AVAILABLE_TYPES = [
   Exponent.jxgType, // D
   Hyperbola.jxgType,
   Logarithm.jxgType, // D
-  Parabola.jxgType,
+  Parabola.jxgType, // D
   Parabola2.jxgType,
   Polynom.jxgType, // D
   Sin.jxgType, // D

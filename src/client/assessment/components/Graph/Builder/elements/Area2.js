@@ -6,7 +6,6 @@ import {
   getCircleFunc,
   getEllipseFunc,
   getLineFunc,
-  getHyperbolaFunc,
 } from '../utils'
 import {
   Circle,
@@ -18,9 +17,12 @@ import {
   Logarithm,
   Polynom,
   Parabola,
+  Parabola2,
   Sin,
   Tangent,
 } from '.'
+import { area2Hyperbola } from './helpers/area2Hyperbola'
+import { area2Parabola2 } from './helpers/area2Parabola2'
 
 const jxgType = 108
 
@@ -232,11 +234,11 @@ function updateShading(board, areaPoint, shapes) {
           const ineq = board.$board.create('curve', [[], []], CURVE_FILL)
           // eslint-disable-next-line func-names
           ineq.updateDataArray = function () {
-            const [, p0x, p0y] = first(shape.points).usrCoords
-            const [, pnx, pny] = last(shape.points).usrCoords
             if (board.dragged) {
               return
             }
+            const [, p0x, p0y] = first(shape.points).usrCoords
+            const [, pnx, pny] = last(shape.points).usrCoords
             if (inverse) {
               if (direction === 1) {
                 this.dataX = [p0x, xMin, xMin, xMax, xMax]
@@ -295,18 +297,10 @@ function updateShading(board, areaPoint, shapes) {
 
           inequalities.push(ineq)
           board.$board.update()
-
           break
         }
         case Hyperbola.jxgType: {
-          const { points } = Hyperbola.getConfig(shape)
-          const func = getHyperbolaFunc(
-            { x: points[0].x, y: points[0].y },
-            { x: points[1].x, y: points[1].y },
-            { x: points[2].x, y: points[2].y }
-          )
-          const inverse = func(areaX, areaY) > 0
-          console.log(inverse)
+          inequalities.push(area2Hyperbola(board, shape, [areaX, areaY]))
           break
         }
         case Logarithm.jxgType: {
@@ -366,6 +360,10 @@ function updateShading(board, areaPoint, shapes) {
           inequalities.push(
             board.$board.create('inequality', [shape], { inverse })
           )
+          break
+        }
+        case Parabola2.jxgType: {
+          inequalities.push(area2Parabola2(board, shape, [areaX, areaY]))
           break
         }
         default:

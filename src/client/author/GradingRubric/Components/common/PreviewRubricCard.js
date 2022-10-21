@@ -82,6 +82,7 @@ const PreviewRubricCard = ({
     onChange({
       score: calculateScore(rubricData, selectedRatings),
       rubricFeedback: selectedRatings,
+      rubricId: rubricData._id,
     })
   }
 

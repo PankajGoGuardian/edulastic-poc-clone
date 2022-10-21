@@ -73,9 +73,6 @@ export const reducer = createReducer(initialState, {
     state.cancelUpload = payload
   },
   [GET_ABORT_UPLOAD_REQUEST]: (state) => {
-    state.testDataFileUploadResponse = {
-      message: 'File upload cancelled by user',
-    }
     state.uploadProgress = 0
     if (state.cancelUpload) {
       state.cancelUpload()

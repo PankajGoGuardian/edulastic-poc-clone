@@ -597,7 +597,7 @@ const TestBehaviorGroupContainer = ({
                   data-testid="allow-teachers-to-redirect-switch"
                   size="small"
                   defaultChecked
-                  disabled={freezeSettings}
+                  disabled={freezeSettings || !premium}
                   checked={allowTeacherRedirect}
                   onChange={(value) =>
                     overRideSettings('allowTeacherRedirect', value)

@@ -61,8 +61,8 @@ const PlayerContentArea = ({
     testItemState === 'check'
       ? {
           evaluation,
-          previewTab: viewAsStudent ? 'check' : 'clear',
-          preview: viewAsStudent ? 'check' : 'clear',
+          previewTab: 'check',
+          preview: 'check',
           changePreviewTab: changePreview,
         }
       : {

@@ -1227,8 +1227,20 @@
     "message": "File format not supported, please select a valid PDF file.",
     "description": ""
   },
+  "fileFormatNotSupportedUploadZip": {
+    "message": "File format not supported, please upload a Zip file.",
+    "description": ""
+  },
   "fileSizeExceeds": {
     "message": "File size exceeds 15 MB limit.",
+    "description": ""
+  },
+  "fileSizeExceeds100Mb": {
+    "message": "File size exceeds 100 MB limit.",
+    "description": ""
+  },
+  "syncInProgress": {
+    "message": "OneRoster sync is in progress.",
     "description": ""
   },
   "selectedDocumentIsTooBigToUpload": {

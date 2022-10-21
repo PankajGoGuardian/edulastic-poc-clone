@@ -2,7 +2,7 @@
 import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
-import { fileApi } from '@edulastic/api'
+import { fileApi, onerosterApi } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
@@ -212,7 +212,12 @@ export const uploadToS3 = async (
 
   let { name: fileName } = fileToUpload
   fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
-  const result = await fileApi.getSignedUrl(fileName, folder, subFolder)
+  let result
+  if (folder === aws.s3Folders.ONEROSTER) {
+    result = await onerosterApi.getSignedUrl(fileName, folder)
+  } else {
+    result = await fileApi.getSignedUrl(fileName, folder, subFolder)
+  }
   const formData = new FormData()
   const { fields = {}, url, cdnUrl } = result
 

@@ -65,6 +65,7 @@ import { mergeUsersReducer } from '../../MergeUsers'
 import { gradebookReducer } from '../../Gradebook'
 import collaborationGroup from '../../Collaboration/ducks'
 import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
+import { rosterImportReducer } from '../../RosterImport'
 
 const authorReducers = {
   authorUi,
@@ -134,6 +135,7 @@ const authorReducers = {
   gradebookReducer,
   collaborationGroup,
   dataWarehouseReducer,
+  rosterImportReducer,
 }
 
 export default authorReducers

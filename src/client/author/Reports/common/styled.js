@@ -432,12 +432,13 @@ export const StyledCustomChartTooltipDark = styled(CustomChartTooltip)`
     height: 0;
     width: 0;
     position: absolute;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
     border-style: solid;
     border-width: 10px 10px 0 10px;
     border-color: #4b4b4b transparent transparent transparent;
+    bottom: -10px;
+    left: 50%;
+    transform: translateX(-50%);
+    ${({ style }) => ({ ...style })};
   }
 `
 

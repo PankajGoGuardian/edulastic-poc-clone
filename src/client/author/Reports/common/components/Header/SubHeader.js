@@ -34,7 +34,7 @@ const HeaderTitle = styled.div`
   .ant-breadcrumb {
     white-space: nowrap;
     min-width: 230px;
-    max-width: 320px;
+    max-width: 360px;
   }
 `
 

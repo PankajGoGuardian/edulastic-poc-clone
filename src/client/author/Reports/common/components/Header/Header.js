@@ -5,12 +5,20 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'
 import styled from 'styled-components'
+
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
 import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
+
 import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
+
+import navigation from '../../static/json/navigation.json'
+
+const dataWarehouseReportTypes = navigation.navigation[
+  'data-warehouse-reports'
+].map((item) => item.key)
 
 const CustomizedHeaderWrapper = ({
   windowWidth,
@@ -73,7 +81,6 @@ const CustomizedHeaderWrapper = ({
     )
   }
 
-  const dataWarehouseReportTypes = ['whole-child-report']
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
     : dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||

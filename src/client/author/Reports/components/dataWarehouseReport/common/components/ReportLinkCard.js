@@ -23,7 +23,12 @@ const ReportLinkCard = ({
         <Icon
           type="right"
           theme="outlined"
-          style={{ fontSize: '20px', fontWeight: 'bold', color: themeColor }}
+          style={{
+            marginTop: '6px',
+            fontSize: '20px',
+            fontWeight: 'bold',
+            color: themeColor,
+          }}
         />
       </HeaderContainer>
       <ImageContainer>
@@ -37,8 +42,10 @@ const ReportLinkCard = ({
 const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: start;
+  height: 64px;
   h2 {
+    margin-right: 10px;
     margin-bottom: 0px;
     font-weight: bold;
     color: ${greyThemeDark3};
@@ -50,14 +57,15 @@ const ImageContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 250px;
-  margin: 80px 0px;
+  margin: 50px 0px 80px;
 `
 
 const StyledCard = styled(Card)`
   cursor: pointer;
+  margin: 0 10px 20px;
   border-radius: 10px;
   height: 600px;
-  max-width: 300px;
+  width: 300px;
 `
 
 export default withRouter(ReportLinkCard)

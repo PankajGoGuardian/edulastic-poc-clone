@@ -15,9 +15,9 @@ const StyledCard = styled(Card)`
   display: flex;
   border-radius: 10px;
   height: 600px;
-  width: 1500px;
+  margin: 0 10px;
+  width: -webkit-fill-available;
   align-items: center;
   justify-content: center;
-  margin-left: 30px;
 `
 export default MoreReportsContainer

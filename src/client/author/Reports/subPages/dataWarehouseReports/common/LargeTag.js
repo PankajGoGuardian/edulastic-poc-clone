@@ -28,6 +28,7 @@ const LargeTagParent = styled.div`
 
 const LargeTag = (props) => {
   const {
+    CustomTooltip = Tooltip,
     tooltipPlacement,
     tooltipText,
     leftText,
@@ -50,11 +51,16 @@ const LargeTag = (props) => {
   )
 
   return tooltipText ? (
-    <Tooltip placement={tooltipPlacement || 'top'} title={tooltipText}>
+    <CustomTooltip
+      placement={tooltipPlacement || 'top'}
+      title={tooltipText}
+      getPopupContainer={(triggerNode) => triggerNode}
+    >
       {largeTag}
-    </Tooltip>
+    </CustomTooltip>
   ) : (
     largeTag
   )
 }
+
 export default LargeTag

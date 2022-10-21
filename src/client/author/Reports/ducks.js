@@ -156,6 +156,10 @@ import {
   watcherSaga as reportWholeChildSaga,
 } from './subPages/dataWarehouseReports/wholeChildReport/ducks'
 import {
+  reducer as reportMultipleAssessmentDwReducer,
+  watcherSaga as reportMultipleAssessmentDwSaga,
+} from './subPages/dataWarehouseReports/MultipleAssessmentReport/ducks'
+import {
   customReportReducer,
   customReportSaga,
 } from './components/customReport/ducks'
@@ -396,6 +400,7 @@ export const reportReducer = combineReducers({
   customReportReducer,
   sharedReportsReducer,
   reportWholeChildReducer,
+  reportMultipleAssessmentDwReducer,
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -779,6 +784,7 @@ export function* reportSaga() {
     customReportSaga(),
     sharedReportsSaga(),
     reportWholeChildSaga(),
+    reportMultipleAssessmentDwSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
     yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),

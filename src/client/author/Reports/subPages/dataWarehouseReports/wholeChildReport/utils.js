@@ -12,7 +12,7 @@ import {
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
-import { createColorBand } from '@edulastic/constants/const/colors'
+import { getColorBandBySize } from '@edulastic/constants/const/colors'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -81,27 +81,27 @@ export const staticDropDownData = {
 
 export const claimsColorMap = {
   // CAASPP claimNames
-  'Concepts and Procedures': createColorBand(7)[0],
-  'Problem Solving and Modeling/Data Analysis': createColorBand(7)[1],
-  'Communicating Reasoning': createColorBand(7)[2],
-  Reading: createColorBand(7)[3],
-  Writing: createColorBand(7)[4],
-  Listening: createColorBand(7)[5],
-  'Research/Inquiry': createColorBand(7)[6],
+  'Concepts and Procedures': getColorBandBySize(7)[0],
+  'Problem Solving and Modeling/Data Analysis': getColorBandBySize(7)[1],
+  'Communicating Reasoning': getColorBandBySize(7)[2],
+  Reading: getColorBandBySize(7)[3],
+  Writing: getColorBandBySize(7)[4],
+  Listening: getColorBandBySize(7)[5],
+  'Research/Inquiry': getColorBandBySize(7)[6],
 
   // NWEA
-  Hi: createColorBand(5)[0],
-  High: createColorBand(5)[0],
-  HiAvg: createColorBand(5)[1],
-  Avg: createColorBand(5)[2],
-  LoAvg: createColorBand(5)[3],
-  Low: createColorBand(5)[4],
+  Hi: '#295FA5',
+  High: '#295FA5',
+  HiAvg: '#3B8457',
+  Avg: '#F6C750',
+  LoAvg: '#E9923F',
+  Low: '#76211E',
 
   // iReady
-  'Tested Out': createColorBand(3)[2],
-  'On (Mid/Late) or Above Grade Level': createColorBand(3)[0],
-  'On (Early) Grade Level or One Grade Level Below': createColorBand(3)[1],
-  'Two or More Grade Levels Below': createColorBand(3)[2],
+  'On (Mid/Late) or Above Grade Level': getColorBandBySize(3)[0],
+  'On (Early) Grade Level or One Grade Level Below': getColorBandBySize(3)[1],
+  'Two or More Grade Levels Below': getColorBandBySize(3)[2],
+  'Tested Out': getColorBandBySize(3)[2],
 }
 
 export const tableColumnsData = [

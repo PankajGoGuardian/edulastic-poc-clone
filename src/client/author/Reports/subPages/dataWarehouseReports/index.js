@@ -4,6 +4,8 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import WholeChildReport from './wholeChildReport'
 
+import MultipleAssessmentReport from './MultipleAssessmentReport'
+
 const DataWarehouseReportsContainer = ({
   breadcrumbData,
   isCliUser,
@@ -27,6 +29,25 @@ const DataWarehouseReportsContainer = ({
           setShowHeader(true)
           return (
             <WholeChildReport
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              showApply={showApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path="/author/reports/multiple-assessment-report-dw"
+        render={() => {
+          setShowHeader(true)
+          return (
+            <MultipleAssessmentReport
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}

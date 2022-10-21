@@ -335,7 +335,10 @@ export { default as IconLesson } from './src/IconLesson'
 export { default as IconTestLibrary } from './src/IconTestLibrary'
 export { default as IconTimer } from './src/IconTimer'
 export { default as IconVideoCamera } from './src/IconVideoCamera'
+
+// data warehouse reports
+export { default as IconMoreReports } from './src/IconMoreReports'
+export { default as IconMultipleAssessmentReportDW } from './src/IconMultipleAssessmentReportDW'
 export { default as IconWholeChildReport } from './src/IconWholeChildReport'
 export { default as IconCheckMark } from './src/IconCheckMark'
 export { default as IconStudent } from './src/IconStudent'
-export { default as IconMoreReports } from './src/IconMoreReports'

@@ -449,7 +449,10 @@ const Container = (props) => {
           }}
         />
         <Route
-          path={[`/author/reports/whole-child-report/student/`]}
+          path={[
+            '/author/reports/whole-child-report/student/',
+            '/author/reports/multiple-assessment-report-dw',
+          ]}
           render={(_props) => (
             <DataWarehouseReportsContainer
               {..._props}

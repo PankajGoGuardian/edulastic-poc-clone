@@ -27,62 +27,57 @@ const bandColorsNew = [
   '#ce7bc1',
 ]
 
-/**
- * derived from `bandColorsNew` by calling `[2,3,4,5,6,7,8,9,10].map(createColorBand)`
- *
- * TODO update colors after input from PM
- */
 const colorBandsByLength = {
-  2: ['#5fad5a', '#e55c5c'],
-  3: ['#5fad5a', '#ada439', '#e55c5c'],
-  4: ['#5fad5a', '#e9dc6b', '#e69736', '#e55c5c'],
-  5: ['#5fad5a', '#e9dc6b', '#ada439', '#f59d7c', '#e55c5c'],
-  6: ['#5fad5a', '#90de85', '#e9dc6b', '#e69736', '#f59d7c', '#e55c5c'],
+  2: ['#90DE85', '#E55C5C'],
+  3: ['#90DE85', '#E9DC6B', '#E55C5C'],
+  4: ['#5FAD5A', '#90DE85', '#E9DC6B', '#E55C5C'],
+  5: ['#5FAD5A', '#90DE85', '#E9DC6B', '#E69736', '#E55C5C'],
+  6: ['#5FAD5A', '#90DE85', '#E9DC6B', '#F59D7C', '#E69736', '#E55C5C'],
   7: [
-    '#5fad5a',
-    '#90de85',
-    '#e9dc6b',
-    '#ada439',
-    '#e69736',
-    '#f59d7c',
-    '#e55c5c',
+    '#5FAD5A',
+    '#90DE85',
+    '#E9DC6B',
+    '#ADA439',
+    '#F59D7C',
+    '#E69736',
+    '#E55C5C',
   ],
   8: [
-    '#798cce',
-    '#a8c2e6',
-    '#90de85',
-    '#e9dc6b',
-    '#ada439',
-    '#e69736',
-    '#e55c5c',
-    '#ce7bc1',
+    '#5FAD5A',
+    '#90DE85',
+    '#A8C2E6',
+    '#E9DC6B',
+    '#ADA439',
+    '#F59D7C',
+    '#E69736',
+    '#E55C5C',
   ],
   9: [
-    '#798cce',
-    '#a8c2e6',
-    '#5fad5a',
-    '#90de85',
-    '#ada439',
-    '#e69736',
-    '#f59d7c',
-    '#e55c5c',
-    '#ce7bc1',
+    '#5FAD5A',
+    '#90DE85',
+    '#798CCE',
+    '#A8C2E6',
+    '#E9DC6B',
+    '#ADA439',
+    '#F59D7C',
+    '#E69736',
+    '#E55C5C',
   ],
   10: [
-    '#798cce',
-    '#a8c2e6',
-    '#5fad5a',
-    '#90de85',
-    '#e9dc6b',
-    '#ada439',
-    '#e69736',
-    '#f59d7c',
-    '#e55c5c',
-    '#ce7bc1',
+    '#5FAD5A',
+    '#90DE85',
+    '#CE7BC1',
+    '#798CCE',
+    '#A8C2E6',
+    '#E9DC6B',
+    '#ADA439',
+    '#F59D7C',
+    '#E69736',
+    '#E55C5C',
   ],
 }
 
-const createColorBand = (length) => {
+const getColorBandBySize = (length) => {
   if (length in colorBandsByLength) return [...colorBandsByLength[length]]
 
   if (length > bandColorsNew.length) throw new Error('Color not available')
@@ -103,5 +98,5 @@ module.exports = {
   performanceBandColors: bandColors,
   externalPerformanceBandColors: bandColorsNew,
   standardProficiencyColors: bandColors,
-  createColorBand,
+  getColorBandBySize,
 }

@@ -40,7 +40,6 @@ import {
   mergeDistrictMetrics,
   mergeTestMetrics,
 } from './utils'
-import { getNavigationTabLinks } from '../../../common/util'
 import navigation from '../../../common/static/json/navigation.json'
 
 const { downloadCSV } = reportUtils.common
@@ -172,7 +171,8 @@ const WholeChildReport = ({
     []
   )
 
-  const computeChartNavigationLinks = (sel, requestFilters) => {
+  const computeChartNavigationLinks = () => {
+    const { selectedStudent, requestFilters } = settings
     if (navigation.locToData[loc]) {
       const arr = Object.keys(requestFilters)
       const obj = {}
@@ -181,15 +181,20 @@ const WholeChildReport = ({
         obj[item] = val
       })
       obj.reportId = reportId || ''
-      return next(
-        navigation.navigation[navigation.locToData[loc].group],
-        (draft) => {
-          getNavigationTabLinks(draft, `${sel.key}?${qs.stringify(obj)}`)
-        }
-      )
+      const _navigationItems = navigation.navigation[
+        navigation.locToData[loc].group
+      ].filter((item) => {
+        // if data warehouse report is shared, only that report tab should be shown
+        return !reportId || item.key === loc
+      })
+      return next(_navigationItems, (draft) => {
+        const _currentItem = draft.find((t) => t.key === loc)
+        _currentItem.location += `${selectedStudent.key}?${qs.stringify(obj)}`
+      })
     }
     return []
   }
+
   useEffect(() => {
     if (settings.selectedStudent.key) {
       const path = `${settings.selectedStudent.key}?${qs.stringify(
@@ -197,10 +202,7 @@ const WholeChildReport = ({
       )}`
       history.push(path)
     }
-    const computedChartNavigatorLinks = computeChartNavigationLinks(
-      settings.selectedStudent,
-      settings.requestFilters
-    )
+    const computedChartNavigatorLinks = computeChartNavigationLinks()
     updateNavigation(computedChartNavigatorLinks)
   }, [settings])
 
@@ -245,7 +247,6 @@ const WholeChildReport = ({
       internalAssignmentMetrics,
       externalTestMetrics
     )
-
     const districtMetrics = mergeDistrictMetrics(
       internalDistrictMetrics,
       externalDistrictMetrics

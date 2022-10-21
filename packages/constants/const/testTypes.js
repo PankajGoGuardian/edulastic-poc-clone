@@ -1,4 +1,13 @@
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
+const EXTERNAL_TEST_TYPES = {
+  AIR: 'AIR',
+  CAASPP: 'CAASPP',
+  ELPAC: 'ELPAC',
+  SAT: 'SAT',
+  iReady_Math: 'iReady (MATH)',
+  iReady_ELA: 'iReady (ELA)',
+  NWEA: 'NWEA',
+}
 
 const TEST_TYPES = {
   ASSESSMENT: ['assessment'],
@@ -44,4 +53,5 @@ module.exports = {
   TEST_TYPES_VALUES_MAP,
   TEST_TYPE_LABELS,
   PREMIUM_TEST_TYPES,
+  EXTERNAL_TEST_TYPES,
 }

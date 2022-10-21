@@ -54,7 +54,7 @@ const initialState = {
 
 const slice = createSlice({
   name: 'wholeChildReport',
-  initialState,
+  initialState: { ...initialState },
   reducers: {
     fetchFiltersDataRequest: (state) => {
       state.loadingFiltersData = true
@@ -119,7 +119,7 @@ const slice = createSlice({
       state.loadingReportData = false
       state.error = payload.error
     },
-    resetReport: () => ({ ...initialState }),
+    resetDWWholeChildReport: () => ({ ...initialState }),
   },
   extraReducers: {
     [RESET_ALL_REPORTS]: () => ({ ...initialState }),

@@ -9,13 +9,13 @@ import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
   CustomStyledTable,
-  AssementNameContainer,
   TableContainer,
   AssessmentName,
-} from '../common/styled'
+} from '../../common/styled'
 
 import { tableColumnsData } from '../utils'
-import LargeTag from './LargeTag'
+import LargeTag from '../../common/LargeTag'
+import { AssessmentNameContainer } from '../common/styled'
 
 const getTableColumns = (isSharedReport) => {
   return next(tableColumnsData, (_columns) => {
@@ -31,7 +31,7 @@ const getTableColumns = (isSharedReport) => {
         </Tooltip>
       )
       return (
-        <AssementNameContainer>
+        <AssessmentNameContainer>
           <div className="test-name-container">
             {!isSharedReport && !record.externalTestType ? (
               <Link
@@ -49,7 +49,7 @@ const getTableColumns = (isSharedReport) => {
           {record.externalTestType ? (
             <StyledTag color="black">{record.externalTestType}</StyledTag>
           ) : null}
-        </AssementNameContainer>
+        </AssessmentNameContainer>
       )
     }
     // render rectangular tag for performance

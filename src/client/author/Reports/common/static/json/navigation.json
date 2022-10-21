@@ -312,6 +312,20 @@
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
     },
+    "multiple-assessment-report-dw": {
+      "title": "Multiple Assessment Report",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "MULTIPLE ASSESSMENT REPORT"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
     "shared-reports": {
       "title": "Shared Reports",
       "breadcrumb": [
@@ -452,6 +466,11 @@
       }
     ],
     "data-warehouse-reports": [
+      {
+        "key": "multiple-assessment-report-dw",
+        "title": "MULTIPLE ASSESSMENT REPORT",
+        "location": "/author/reports/multiple-assessment-report-dw"
+      },
       {
         "key": "whole-child-report",
         "title": "WHOLE CHILD REPORT",

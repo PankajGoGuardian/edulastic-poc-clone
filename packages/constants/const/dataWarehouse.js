@@ -1,4 +1,4 @@
-const { createColorBand } = require('./colors')
+const { getColorBandBySize } = require('./colors')
 
 const S3_DATA_WAREHOUSE_FOLDER =
   process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER
@@ -13,10 +13,10 @@ const achievementLevelsGrouped = [
     data: [
       { id: '9', name: 'No score' },
 
-      { id: '1', name: 'Standard Not Met' },
-      { id: '2', name: 'Standard Nearly Met' },
-      { id: '3', name: 'Standard Met' },
-      { id: '4', name: 'Standard Exceeded' },
+      { id: '1', name: 'Standard Not Met', color: '#EA9C71' },
+      { id: '2', name: 'Standard Nearly Met', color: '#D8DE52' },
+      { id: '3', name: 'Standard Met', color: '#86BD56' },
+      { id: '4', name: 'Standard Exceeded', color: '#4298C9' },
     ],
   },
   {
@@ -29,9 +29,9 @@ const achievementLevelsGrouped = [
     data: [
       { id: '9', name: 'No score' },
 
-      { id: '1', name: 'Level 1' },
-      { id: '2', name: 'Level 2' },
-      { id: '3', name: 'Level 3' },
+      { id: '1', name: 'Level 1', color: '#EA9B71' },
+      { id: '2', name: 'Level 2', color: '#D9DD52' },
+      { id: '3', name: 'Level 3', color: '#4198C9' },
     ],
   },
 ]
@@ -52,11 +52,11 @@ const getCAASPPAchievementLevels = (test) => {
       break
     }
   }
-  const colorBand = createColorBand(result.length).reverse()
+  const colorBand = getColorBandBySize(result.length).reverse()
   result = result.map((r, i) => ({
+    color: colorBand[i],
     ...r,
     testId,
-    color: colorBand[i],
     active: test.achievementLevel === r.id,
   }))
   return result
@@ -71,7 +71,7 @@ const getIReadyAchievementLevels = (test) => {
   const isEarly = achievementLevel.startsWith('early')
   const level = achievementLevel.match(/(?<=level\s+)\w+/)?.[0]
   const levelDiff = (level === 'k' ? 0 : +level) - test.grade
-  const colorBand = createColorBand(3).reverse()
+  const colorBand = getColorBandBySize(3).reverse()
   return [
     {
       testId,
@@ -100,41 +100,40 @@ const getIReadyAchievementLevels = (test) => {
 const getNWEAAchievementLevels = (test) => {
   const { testId } = test
   const score = test.score
-  const colorBand = createColorBand(5).reverse()
   return [
     {
       testId,
       name: 'Low',
       id: 'Low',
-      color: colorBand[0],
+      color: '#76211E',
       active: score < 21,
     },
     {
       testId,
       name: 'LoAvg',
       id: 'LoAvg',
-      color: colorBand[1],
+      color: '#E9923F',
       active: score >= 21 && score <= 40,
     },
     {
       testId,
       name: 'Avg',
       id: 'Avg',
-      color: colorBand[2],
+      color: '#F6C750',
       active: score >= 41 && score <= 60,
     },
     {
       testId,
       name: 'HiAvg',
       id: 'HiAvg',
-      color: colorBand[3],
+      color: '#3B8457',
       active: score >= 61 && score <= 80,
     },
     {
       testId,
       name: 'Hi',
       id: 'Hi',
-      color: colorBand[4],
+      color: '#295FA5',
       active: score >= 80,
     },
   ]

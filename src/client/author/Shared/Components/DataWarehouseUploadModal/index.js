@@ -12,6 +12,7 @@ import {
   EduButton,
   notification,
 } from '@edulastic/common'
+import { testTypes as testTypesConstants } from '@edulastic/constants'
 import {
   dashBorderColor,
   dragDropUploadText,
@@ -32,7 +33,7 @@ import {
   getAbortUploadAction,
 } from '../../../sharedDucks/dataWarehouse'
 
-import dropdownData from './dropdownData.json'
+const { EXTERNAL_TEST_TYPES } = testTypesConstants
 
 const MAX_FILE_SIZE = 30000000
 
@@ -139,7 +140,7 @@ const DataWarehouseUploadModal = ({
               }}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
             >
-              {dropdownData.dataFormatDropdownOptions.map(({ key, value }) => (
+              {Object.entries(EXTERNAL_TEST_TYPES).map(([key, value]) => (
                 <Option value={key}>{value}</Option>
               ))}
             </StyledSelect>

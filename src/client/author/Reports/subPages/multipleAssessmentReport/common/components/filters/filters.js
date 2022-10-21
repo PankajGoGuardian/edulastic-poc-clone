@@ -51,6 +51,7 @@ import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
+const availableAssessmentType = getArrayOfAllTestTypes()
 
 const MultipleAssessmentReportFilters = ({
   loc,
@@ -85,7 +86,6 @@ const MultipleAssessmentReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
 }) => {
-  const availableAssessmentType = getArrayOfAllTestTypes()
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
   )

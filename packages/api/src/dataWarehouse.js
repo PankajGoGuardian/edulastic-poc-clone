@@ -50,7 +50,28 @@ const updateDatawarehouseLogsStatus = (id, data) =>
 const getWholeChildReport = (data) => {
   const queryString = qs.stringify(data)
   return api.callApi({
+    useSlowApi: true,
     url: `${prefix}/whole-child-report?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
+const getMARChartMetrics = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/multiple-assessment-report/chart?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
+const getMARTableMetrics = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/multiple-assessment-report/table?${queryString}`,
     method: 'get',
     data,
   })
@@ -61,4 +82,6 @@ export default {
   getDataWarehouseLogs,
   updateDatawarehouseLogsStatus,
   getWholeChildReport,
+  getMARChartMetrics,
+  getMARTableMetrics,
 }

@@ -34,6 +34,16 @@ const RosterHistory = ({
       </Tooltip>
     )
   }
+  const getModifiedEntityName = (entityName) => {
+    const map = {
+      school: 'Schools',
+      class: 'Sections',
+      user: 'Users',
+      enrollment: 'Enrollments',
+      course: 'Courses',
+    }
+    return map[entityName]
+  }
 
   const getTime = (TS) => {
     return moment(TS).format('MMM DD YYYY hh:mm A')
@@ -45,12 +55,12 @@ const RosterHistory = ({
         <StyledHeading2 bold="700">Last Attempted Import</StyledHeading2>
         <MetaDataOnTable>
           {getModifiedFileName(
-            summary.length ? summary?.[0]?.zipFileName : 'Roster - file name'
+            summary.length ? summary?.[0]?.zipFileName : 'NA'
           )}
           <StyledParagraph>
             {summary.length
               ? getTime(summary?.[0]?.syncStartTS)
-              : getTime(new Date().getTime())}
+              : '-- / -- / --'}
           </StyledParagraph>
         </MetaDataOnTable>
         <RecordTable>
@@ -64,6 +74,7 @@ const RosterHistory = ({
               dataIndex="recordType"
               key="recordType"
               width="1%"
+              render={(text) => getModifiedEntityName(text)}
             />
             <Column
               title="Entity Count"

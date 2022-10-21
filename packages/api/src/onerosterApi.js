@@ -3,14 +3,13 @@ import API from './utils/API'
 const api = new API()
 const prefix = '/oneroster'
 
-const getSignedUrl = (filename, folder, subFolder) =>
+const getSignedUrl = (filename, folder) =>
   api
     .callApi({
       url: `${prefix}/signed-url`,
       method: 'get',
       params: {
         filename,
-        subFolder,
         folder,
       },
     })
@@ -27,8 +26,12 @@ const fetchRosterLogs = () =>
 const downloadEntityError = ({ entity, timestamp }) =>
   api
     .callApi({
-      url: `${prefix}/download-error?entity=${entity}&timestamp=${timestamp}`,
+      url: `${prefix}/download-error`,
       method: 'get',
+      params: {
+        entity,
+        timestamp,
+      },
     })
     .then((result) => result.data.result)
 

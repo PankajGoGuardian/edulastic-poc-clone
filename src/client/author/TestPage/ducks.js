@@ -1848,6 +1848,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showHintsToStudents = true,
     penaltyOnUsingHints = 0,
     showTtsForPassages = true,
+    allowTeacherRedirect = true,
   } = entity
 
   const settings = {
@@ -1887,7 +1888,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     showRubricToStudents: entity.showRubricToStudents,
     showHintsToStudents,
     penaltyOnUsingHints,
-    allowTeacherRedirect: entity.allowTeacherRedirect,
+    allowTeacherRedirect,
     showTtsForPassages,
   }
 
@@ -1906,6 +1907,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
   if (!isAdmin) {
     settings.testType = testType || ASSESSMENT
     settings.openPolicy = assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
+    delete settings.allowTeacherRedirect
   }
 
   if (entity.timedAssignment) {

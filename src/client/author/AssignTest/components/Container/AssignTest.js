@@ -219,6 +219,12 @@ class AssignTest extends React.Component {
       userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
 
     if (isPlaylist) {
+      //todo: We need to handle defaulting other settings in a better way
+      const additionalSettings = {}
+      // is admin assigning playlist module ?
+      if (isAdmin && !match.params.testId) {
+        additionalSettings.allowTeacherRedirect = true
+      }
       fetchPlaylistById(match.params.playlistId)
       getDefaultTestSettings()
       this.updateAssignmentNew({
@@ -239,6 +245,7 @@ class AssignTest extends React.Component {
             assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType,
+        ...additionalSettings,
       })
     } else {
       const premiumSettings = premium

@@ -16,7 +16,6 @@ import {
   roleuser,
   test as testConstants,
   collections as collectionConst,
-  question as questionContants,
 } from '@edulastic/constants'
 import { getOrderedQuestionsAndAnswers, formatQuestionLists } from './utils'
 import QuestionWrapper from '../../assessment/components/QuestionWrapper'
@@ -89,8 +88,8 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
     qs,
     assignmentId,
     groupId,
-    preferredLanguage = 'es',
-    hideAnswers = true,
+    preferredLanguage,
+    showAnswers = 'true',
   } = query
   const filterQuestions = type === 'custom' ? formatQuestionLists(qs) : []
   const { testId } = match.params
@@ -128,22 +127,18 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
               <span> {test.title}</span>
             </Col>
           </Row>
-          <span> Created By LAUSD Admin </span> <br />
+          <span> Created By {test?.createdBy?.name} </span> <br />
         </StyledHeader>
         <hr />
         {!isContentHidden && questions.length ? (
           <AnswerContext.Provider value={{ isAnswerModifiable: false }}>
             {questions.map((question, index) => {
-              // video or resource type questions not be printed.
-              if (
-                questionContants.resourceTypeQuestions.includes(question.type)
-              ) {
-                return null
+              if (preferredLanguage === 'es') {
+                question = changeDataToPreferredLanguage(
+                  question,
+                  preferredLanguage
+                )
               }
-              question = changeDataToPreferredLanguage(
-                question,
-                preferredLanguage
-              )
               const questionHeight =
                 question.type == 'clozeImageDropDown'
                   ? { minHeight: '500px' }
@@ -177,34 +172,38 @@ const PrintAssessment = ({ match, userRole, features, location }) => {
                 </div>
               )
             })}
-            {!hideAnswers && !!test.answers.length && features.premium && (
-              <StyledAnswerWrapper>
-                <StyledAnswerText>Answer Key of {test.title}</StyledAnswerText>
-                {test.answers.map((answer) => (
-                  <AnswerContainer>
-                    {answer.qLabel}.
-                    <div className="answer-wrapper">
-                      {answer.answers.map((ans, i) => {
-                        const stringifyContent = Array.isArray(ans)
-                          ? ans.join(', ')
-                          : ans
-                        return (
-                          <FlexContainer>
-                            <StyledMathFormulaDisplay
-                              key={i}
-                              dangerouslySetInnerHTML={{
-                                __html: stringifyContent || '',
-                              }}
-                            />
-                            {i !== answer.answers.length - 1 && ';'}
-                          </FlexContainer>
-                        )
-                      })}
-                    </div>
-                  </AnswerContainer>
-                ))}
-              </StyledAnswerWrapper>
-            )}
+            {showAnswers === 'true' &&
+              !!test.answers.length &&
+              features.premium && (
+                <StyledAnswerWrapper>
+                  <StyledAnswerText>
+                    Answer Key of {test.title}
+                  </StyledAnswerText>
+                  {test.answers.map((answer) => (
+                    <AnswerContainer>
+                      {answer.qLabel}.
+                      <div className="answer-wrapper">
+                        {answer.answers.map((ans, i) => {
+                          const stringifyContent = Array.isArray(ans)
+                            ? ans.join(', ')
+                            : ans
+                          return (
+                            <FlexContainer>
+                              <StyledMathFormulaDisplay
+                                key={i}
+                                dangerouslySetInnerHTML={{
+                                  __html: stringifyContent || '',
+                                }}
+                              />
+                              {i !== answer.answers.length - 1 && ';'}
+                            </FlexContainer>
+                          )
+                        })}
+                      </div>
+                    </AnswerContainer>
+                  ))}
+                </StyledAnswerWrapper>
+              )}
           </AnswerContext.Provider>
         ) : !questions.length && !isContentHidden ? (
           <div style={{ textAlign: 'center' }}>

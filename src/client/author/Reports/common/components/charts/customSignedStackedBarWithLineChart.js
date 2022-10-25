@@ -41,8 +41,11 @@ const _barsLabelFormatter = (val) => {
 }
 
 const LabelText = ({
+  position,
   x,
   y,
+  offsetX = 0,
+  offsetY = 0,
   width,
   height,
   value,
@@ -51,6 +54,7 @@ const LabelText = ({
   onBarMouseLeave,
   bdIndex,
   payload,
+  style = {},
 }) => {
   return (
     <g
@@ -59,10 +63,11 @@ const LabelText = ({
       onMouseLeave={onBarMouseLeave(bdIndex)}
     >
       <text
-        x={x + width / 2}
-        y={y + height / 2}
+        x={x + width / 2 + offsetX}
+        y={y + (position === 'inside' ? height / 2 : 0) + offsetY}
         textAnchor="middle"
         dominantBaseline="middle"
+        style={style}
       >
         {formatter(value, payload)}
       </text>
@@ -462,7 +467,16 @@ export const SignedStackedBarWithLineChart = ({
                     fill="#010101"
                     onMouseOver={onBarMouseOver(bdIndex, true)}
                     onMouseLeave={onBarMouseLeave(bdIndex)}
-                    offset={12}
+                    content={
+                      <LabelText
+                        position="top"
+                        onBarMouseOver={onBarMouseOver}
+                        onBarMouseLeave={onBarMouseLeave}
+                        bdIndex={bdIndex}
+                        formatter={barsLabelFormatter}
+                        offsetY={-12}
+                      />
+                    }
                   />
                 ) : null}
                 {hasBarInsideLabels ? (
@@ -470,7 +484,6 @@ export const SignedStackedBarWithLineChart = ({
                     dataKey={bdItem.insideLabelKey}
                     position="inside"
                     fill="#010101"
-                    offset={5}
                     onMouseOver={onBarMouseOver(bdIndex)}
                     onMouseLeave={onBarMouseLeave(bdIndex)}
                     content={
@@ -480,6 +493,7 @@ export const SignedStackedBarWithLineChart = ({
                         onBarMouseLeave={onBarMouseLeave}
                         bdIndex={bdIndex}
                         formatter={barsLabelFormatter}
+                        style={{ opacity: barFillOpacity }}
                       />
                     }
                   />

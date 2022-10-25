@@ -69,9 +69,6 @@ const NotificationListener = ({ user, loadRosterLogs }) => {
             msg: `${message || 'OneRoster sync completed.'}`,
             type: 'success',
             exact: true,
-            onClose: () => {
-              onNotificationClick(event, doc.__id)
-            },
           })
         } else if (
           status === 'failed' &&
@@ -96,7 +93,7 @@ const NotificationListener = ({ user, loadRosterLogs }) => {
   }
 
   useEffect(() => {
-    if (user && roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
+    if (user && user.role === roleuser.DISTRICT_ADMIN) {
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])

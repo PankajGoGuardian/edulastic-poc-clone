@@ -60,7 +60,7 @@ const ReviewToolbar = ({
             style={!skipped[option] && { paddingLeft: '33px' }}
             disabled={blockNavigationToAnsweredQuestions}
             data-cy="questionSelectOptions"
-            aria-label={`Question ${option + 1}`}
+            aria-label={`Select Question ${option + 1}`}
             onClick={() => {
               handleQuestionCLick({ key: option })
             }}

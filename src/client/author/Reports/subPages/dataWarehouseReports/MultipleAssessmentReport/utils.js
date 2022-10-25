@@ -547,7 +547,7 @@ export const getChartData = (
         }
         const _recordsWithBands = augmentBandData(records, null)
         const _record =
-          _recordsWithBands.find((r) => r.band.id == band.id) || {}
+          _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
         if (parseInt(_record.totalGraded, 10)) {
           _record.totalGradedPercentage = round(
             percentage(_record.totalGraded, testData.totalGraded)

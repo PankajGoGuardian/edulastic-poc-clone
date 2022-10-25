@@ -3,6 +3,13 @@ const { getColorBandBySize } = require('./colors')
 const S3_DATA_WAREHOUSE_FOLDER =
   process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER
 
+const caasppDefaultAchievementLevels = [
+  { id: '9', name: 'No score' }, // for caaspp, id = 9, represents no score
+  { id: '1', name: 'Level 1', color: '#EA9B71' },
+  { id: '2', name: 'Level 2', color: '#D9DD52' },
+  { id: '3', name: 'Level 3', color: '#4198C9' },
+]
+
 const achievementLevelsGrouped = [
   {
     testTitles: [
@@ -12,7 +19,6 @@ const achievementLevelsGrouped = [
     ],
     data: [
       { id: '9', name: 'No score' },
-
       { id: '1', name: 'Standard Not Met', color: '#EA9C71' },
       { id: '2', name: 'Standard Nearly Met', color: '#D8DE52' },
       { id: '3', name: 'Standard Met', color: '#86BD56' },
@@ -26,26 +32,13 @@ const achievementLevelsGrouped = [
       'CAA for Science',
       'California Spanish Assessment', // waiting approval: read field 150 in https://www.caaspp.org/rsc/pdfs/CAASPP.student_data_layout.2022.pdf
     ],
-    data: [
-      { id: '9', name: 'No score' },
-
-      { id: '1', name: 'Level 1', color: '#EA9B71' },
-      { id: '2', name: 'Level 2', color: '#D9DD52' },
-      { id: '3', name: 'Level 3', color: '#4198C9' },
-    ],
+    data: [...caasppDefaultAchievementLevels],
   },
 ]
 
 const getCAASPPAchievementLevels = (test) => {
   const { testId, title: testTitle } = test
-  let result = [
-    { id: '9', name: 'No score' },
-
-    { id: '1', name: 'Level 1' },
-    { id: '2', name: 'Level 2' },
-    { id: '3', name: 'Level 3' },
-    { id: '4', name: 'Level 4' },
-  ]
+  let result = [...caasppDefaultAchievementLevels]
   for (const achievementLevelsGroup of achievementLevelsGrouped) {
     if (achievementLevelsGroup.testTitles.includes(testTitle)) {
       result = achievementLevelsGroup.data

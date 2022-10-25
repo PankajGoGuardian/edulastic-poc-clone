@@ -89,6 +89,9 @@ const FeedbackWrapper = ({
     return null
   }
 
+  if (data.type == questionType.VIDEO || data.type == questionType.TEXT) {
+    return null
+  }
   return (
     <StyledFeedbackWrapper
       ref={feedbackRef}

@@ -48,6 +48,7 @@ const SettingMenu = ({
         .map((key) => (
           <MenuItem
             key={key}
+            aria-label={`Select ${menuItems[key]}`}
             disabled={
               (key === 'enableMagnifier' && !showMagnifier) ||
               isPremiumContentWithoutAccess
@@ -58,7 +59,7 @@ const SettingMenu = ({
           >
             {menuItems[key]}
             {key === 'enableMagnifier' && enableMagnifier && (
-              <FontAwesomeIcon icon={faCheck} />
+              <FontAwesomeIcon icon={faCheck} aria-hidden="true" />
             )}
           </MenuItem>
         ))}
@@ -74,6 +75,7 @@ const SettingMenu = ({
             : {})}
           key="save"
           data-cy="finishTest"
+          aria-label="Save and exit test"
           onClick={() => {
             handleSettingsChange({ key: 'save' })
           }}
@@ -90,9 +92,13 @@ const SettingMenu = ({
       getPopupContainer={(triggerNode) => triggerNode.parentNode}
       trigger={['hover', 'click']}
     >
-      <StyledButton style={{ width: 'auto' }} data-cy="exitMenu">
-        <IconUser />
-        {firstName} <Icon type="down" />
+      <StyledButton
+        style={{ width: 'auto' }}
+        data-cy="exitMenu"
+        aria-label="Select option"
+      >
+        <IconUser aria-hidden="true" />
+        {firstName} <Icon type="down" aria-hidden="true" />
       </StyledButton>
     </StyledDropdown>
   )

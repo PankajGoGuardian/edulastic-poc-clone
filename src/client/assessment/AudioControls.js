@@ -339,25 +339,36 @@ const AudioControls = ({
             onClick={handlePlayPauseAudio}
             playerSkinType={playerSkinType}
             disabled={isPremiumContentWithoutAccess}
+            aria-label={`${
+              currentPlayingDetails.qId === qId ? 'Pause' : 'Play'
+            } question audio`}
           >
             {currentPlayingDetails.qId === qId ? (
               <>
                 {btnWithText ? (
                   <>
-                    <IconAudioPause /> PAUSE
+                    <IconAudioPause aria-hidden="true" /> PAUSE
                   </>
                 ) : (
-                  <IconAudioPause color={white} className="audio-pause" />
+                  <IconAudioPause
+                    color={white}
+                    className="audio-pause"
+                    aria-hidden="true"
+                  />
                 )}
               </>
             ) : (
               <>
                 {btnWithText ? (
                   <>
-                    <IconPlayBig /> PLAY
+                    <IconPlayBig aria-hidden="true" /> PLAY
                   </>
                 ) : (
-                  <IconPlayFilled color={white} className="audio-play" />
+                  <IconPlayFilled
+                    color={white}
+                    className="audio-play"
+                    aria-hidden="true"
+                  />
                 )}
               </>
             )}
@@ -372,14 +383,19 @@ const AudioControls = ({
             disabled={
               currentPlayingDetails.qId !== qId || isPremiumContentWithoutAccess
             }
+            aria-label="Stop question audio"
           >
             <>
               {btnWithText ? (
                 <>
-                  <IconStopCircle /> STOP
+                  <IconStopCircle aria-hidden="true" /> STOP
                 </>
               ) : (
-                <IconStop color={white} className="audio-stop" />
+                <IconStop
+                  color={white}
+                  className="audio-stop"
+                  aria-hidden="true"
+                />
               )}
             </>
           </AudioButton>

@@ -70,9 +70,10 @@ const ToolBar = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          aria-label="Check answer"
           disabled={isPremiumContentWithoutAccess}
         >
-          <IconCheck />
+          <IconCheck aria-hidden="true" />
         </StyledButton>
       )}
       {calcType !== calculatorTypes.NONE && (
@@ -81,8 +82,9 @@ const ToolBar = ({
             active={tool.indexOf(2) !== -1}
             onClick={() => toolbarHandler(2)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Calculator"
           >
-            <CaculatorIcon />
+            <CaculatorIcon aria-hidden="true" />
           </StyledButton>
         </Tooltip>
       )}
@@ -100,8 +102,9 @@ const ToolBar = ({
             active={tool.indexOf(3) !== -1}
             disabled={isDisableCrossBtn || isPremiumContentWithoutAccess}
             onClick={() => toolbarHandler(3)}
+            aria-label="Crossout"
           >
-            <CloseIcon />
+            <CloseIcon aria-hidden="true" />
           </StyledButton>
         </Tooltip>
       )}
@@ -112,8 +115,9 @@ const ToolBar = ({
             active={tool.indexOf(5) !== -1}
             onClick={() => toolbarHandler(5)}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Scratch Pad"
           >
-            <ScratchPadIcon />
+            <ScratchPadIcon aria-hidden="true" />
           </StyledButton>
         </Tooltip>
       )}
@@ -122,8 +126,9 @@ const ToolBar = ({
           <StyledButton
             onClick={toggleUserWorkUploadModal}
             disabled={isPremiumContentWithoutAccess}
+            aria-label="Upload work"
           >
-            <IconCloudUpload />
+            <IconCloudUpload aria-hidden="true" />
           </StyledButton>
         </Tooltip>
       )}

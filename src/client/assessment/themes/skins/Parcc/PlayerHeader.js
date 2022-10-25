@@ -167,6 +167,7 @@ const PlayerHeader = ({
                   >
                     <ControlBtn
                       data-cy="prev"
+                      aria-label="Previous question"
                       icon="left"
                       disabled={isFirst() || blockNavigationToAnsweredQuestions}
                       onClick={(e) => {
@@ -194,6 +195,7 @@ const PlayerHeader = ({
                   >
                     <ControlBtn
                       data-cy="next"
+                      aria-label="Next question"
                       icon="right"
                       onClick={(e) => {
                         moveToNext()
@@ -230,6 +232,7 @@ const PlayerHeader = ({
                       />
                       {!blockNavigationToAnsweredQuestions && (
                         <StyledButton
+                          aria-label="Bookmark question"
                           onClick={
                             defaultAP
                               ? toggleBookmark
@@ -238,7 +241,7 @@ const PlayerHeader = ({
                           active={isBookmarked}
                           disabled={isPremiumContentWithoutAccess}
                         >
-                          <StyledIconBookmark />
+                          <StyledIconBookmark aria-hidden="true" />
                           <span>{t('common.test.bookmark')}</span>
                         </StyledButton>
                       )}

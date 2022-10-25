@@ -60,6 +60,7 @@ const ReviewToolbar = ({
             style={!skipped[option] && { paddingLeft: '33px' }}
             disabled={blockNavigationToAnsweredQuestions}
             data-cy="questionSelectOptions"
+            aria-label={`Question ${option + 1}`}
             onClick={() => {
               handleQuestionCLick({ key: option })
             }}
@@ -79,6 +80,7 @@ const ReviewToolbar = ({
         <Card
           style={selectedCard === 'all' ? cardStyle : {}}
           onClick={() => handleCardClick('all')}
+          aria-label="All questions"
         >
           <StyledCounter>{totalQuestions}</StyledCounter>
           <div>All questions</div>
@@ -86,6 +88,7 @@ const ReviewToolbar = ({
         <Card
           style={selectedCard === 'notAnswered' ? cardStyle : {}}
           onClick={() => handleCardClick('notAnswered')}
+          aria-label="Not answered questions"
         >
           <StyledCounter>{totalUnanswered}</StyledCounter>
           <div>Not answered</div>
@@ -93,6 +96,7 @@ const ReviewToolbar = ({
         <Card
           style={selectedCard === 'bookmarks' ? cardStyle : {}}
           onClick={() => handleCardClick('bookmarks')}
+          aria-label="Bookmarked questions"
         >
           <StyledCounter>{totalBookmarks}</StyledCounter>
           <div>Bookmarks</div>
@@ -109,8 +113,8 @@ const ReviewToolbar = ({
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         trigger={['hover', 'click']}
       >
-        <StyledButton data-cy="options">
-          <StyledIconList />
+        <StyledButton data-cy="options" aria-label="Review">
+          <StyledIconList aria-hidden="true" />
           <span>{t('common.test.review')}</span>
         </StyledButton>
       </StyledPopover>

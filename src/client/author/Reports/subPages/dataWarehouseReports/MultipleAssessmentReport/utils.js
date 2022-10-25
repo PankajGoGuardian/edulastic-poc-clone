@@ -306,7 +306,8 @@ const getAggregatedDataByUniqId = (metricInfo) => {
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
             totalTotalScore:
-              (parseInt(ele.totalScore, 10) || 0) + res.totalTotalScore,
+              round(parseFloat(ele.totalScore, 10), 2) ||
+              0 + res.totalTotalScore,
             totalMaxScore: (parseInt(ele.maxScore, 10) || 0) + res.maxScore,
             totalStudentCount:
               (parseInt(ele.totalStudentCount, 10) || 0) +
@@ -422,7 +423,7 @@ export const getChartData = (
           const _res =
             parseInt(ele.assessmentDate, 10) > res.assessmentDate ? ele : res
           const _totalGraded = parseInt(ele.totalGraded || 0, 10) || 0
-          const _totalScore = parseInt(ele.totalScore || 0, 10) || 0
+          const _totalScore = round(parseFloat(ele.totalScore || 0, 10), 2) || 0
           const _totalMaxScore =
             parseFloat(ele.maxPossibleScore || 0) * _totalGraded
           return {

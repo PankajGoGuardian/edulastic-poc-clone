@@ -160,9 +160,13 @@ const PlayerHeader = ({
                         : 'Check Answer'
                     }
                     data-cy="checkAnswer"
+                    aria-label="Check answer"
                     disabled={isPremiumContentWithoutAccess}
                   >
-                    <IconDrc.Cursor color={header2.background} />
+                    <IconDrc.Cursor
+                      color={header2.background}
+                      aria-hidden="true"
+                    />
                   </ButtonWrapper>
                 )}
                 <ButtonWrapper
@@ -177,8 +181,12 @@ const PlayerHeader = ({
                       : 'Crossout'
                   }
                   data-cy="crossButton"
+                  aria-label="Crossout"
                 >
-                  <IconDrc.AnswerEliminator color={header2.background} />
+                  <IconDrc.AnswerEliminator
+                    color={header2.background}
+                    aria-hidden="true"
+                  />
                 </ButtonWrapper>
                 {calcType !== testConstants.calculatorTypes.NONE && (
                   <ButtonWrapper
@@ -186,8 +194,12 @@ const PlayerHeader = ({
                     onClick={() => changeTool(CALC)}
                     title={t('common.test.calculator')}
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label="Calculator"
                   >
-                    <IconCalculator color={header2.background} />
+                    <IconCalculator
+                      color={header2.background}
+                      aria-hidden="true"
+                    />
                   </ButtonWrapper>
                 )}
                 {enableScratchpad && !hasDrawingResponse && (
@@ -197,8 +209,12 @@ const PlayerHeader = ({
                     title={t('common.test.scratchPad')}
                     data-cy="scratchPad"
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label="Scratch Pad"
                   >
-                    <IconScratchPad color={header2.background} />
+                    <IconScratchPad
+                      color={header2.background}
+                      aria-hidden="true"
+                    />
                   </ButtonWrapper>
                 )}
                 {showMagnifier && (
@@ -208,8 +224,12 @@ const PlayerHeader = ({
                     title={t('common.test.magnify')}
                     data-cy="magnify"
                     disabled={isPremiumContentWithoutAccess}
+                    aria-label="Magnify"
                   >
-                    <IconDrc.Zoom color={header2.background} />
+                    <IconDrc.Zoom
+                      color={header2.background}
+                      aria-hidden="true"
+                    />
                   </ButtonWrapper>
                 )}
 
@@ -218,9 +238,13 @@ const PlayerHeader = ({
                     onClick={toggleUserWorkUploadModal}
                     title={t('common.test.uploadWork')}
                     data-cy="uploadWork"
+                    aria-label="Upload Work"
                     disabled={isPremiumContentWithoutAccess}
                   >
-                    <IconCloudUpload color={header2.background} />
+                    <IconCloudUpload
+                      color={header2.background}
+                      aria-hidden="true"
+                    />
                   </ButtonWrapper>
                 )}
               </Container>
@@ -321,7 +345,9 @@ const IconEduLogoStyled = styled(IconEduLogo)`
   left: 8px;
 `
 
-const ButtonWrapper = styled.span`
+const ButtonWrapper = styled.span.attrs({
+  role: 'button',
+})`
   width: 32px;
   height: 32px;
   background: ${header2.textColor};

@@ -80,6 +80,9 @@ const QuestionSelectDropdown = ({
           {options.map((item, index) => (
             <Select.Option
               data-cy="questionSelectOptions"
+              aria-label={`${t('common.layout.selectbox.question')} ${
+                index + 1
+              }`}
               key={index}
               value={item}
             >
@@ -96,8 +99,12 @@ const QuestionSelectDropdown = ({
             </Select.Option>
           ))}
           {showSubmit && (
-            <Select.Option key={options.length} value="SUBMIT">
-              Submit <IconSend />
+            <Select.Option
+              key={options.length}
+              value="SUBMIT"
+              aria-label="Submit test"
+            >
+              Submit <IconSend aria-hidden="true" />
             </Select.Option>
           )}
         </Select>

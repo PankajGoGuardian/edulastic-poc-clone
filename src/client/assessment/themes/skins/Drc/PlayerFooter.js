@@ -55,6 +55,7 @@ const PlayerFooter = ({
             <ButtonWrapper
               isPrimary={false}
               data-cy="submit"
+              aria-label="Review/End Test"
               onClick={handleReviewOrSubmit}
             >
               <span>{t('common.test.reviewOrEnd')}</span>
@@ -73,6 +74,7 @@ const PlayerFooter = ({
           >
             <ButtonWrapper
               data-cy="finishTest"
+              aria-label="Pause and exit test"
               onClick={() => {
                 if (hidePause) {
                   return
@@ -104,6 +106,7 @@ const PlayerFooter = ({
                   : () => toggleBookmark(items[currentItem]?._id))
               }
               data-cy="bookmark"
+              aria-label="Bookmark question"
             >
               {t('common.test.flag')}
             </ButtonWrapper>
@@ -120,6 +123,7 @@ const PlayerFooter = ({
               isPrimary
               data-cy="testOptions"
               onClick={() => setSettingsModalVisibility(true)}
+              aria-label="Test options"
             >
               options
             </ButtonWrapper>
@@ -140,6 +144,7 @@ const PlayerFooter = ({
         >
           <ControlBtn
             data-cy="prev"
+            aria-label="Previous question"
             icon="left"
             type="primary"
             disabled={isFirst() || blockNavigationToAnsweredQuestions}
@@ -170,6 +175,7 @@ const PlayerFooter = ({
         >
           <ControlBtn
             data-cy="next"
+            aria-label={isLast() ? 'Submit test' : 'Next question'}
             type="primary"
             icon="right"
             onClick={(e) => {
@@ -189,7 +195,10 @@ const PlayerFooter = ({
             }}
             style={{ marginLeft: '5px' }}
           >
-            <IconDrc.IconNext style={{ marginRight: '10px' }} />
+            <IconDrc.IconNext
+              style={{ marginRight: '10px' }}
+              aria-hidden="true"
+            />
             <span>{isLast() ? 'SUBMIT' : 'NEXT'}</span>
           </ControlBtn>
         </Tooltip>
@@ -225,7 +234,9 @@ const MainFooter = styled.div`
   height: 70px;
 `
 
-const ButtonWrapper = styled.span`
+const ButtonWrapper = styled.span.attrs({
+  role: 'button',
+})`
   border-radius: 4px;
   display: flex;
   align-items: center;

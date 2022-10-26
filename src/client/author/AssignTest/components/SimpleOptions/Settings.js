@@ -842,6 +842,7 @@ const Settings = ({
               </Col>
               <Col span={12}>
                 <AlignSwitchRight
+                  data-cy="showTtsForPassages"
                   disabled={freezeSettings || !premium}
                   size="small"
                   checked={showTtsForPassages}

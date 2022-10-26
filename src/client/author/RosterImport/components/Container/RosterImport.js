@@ -181,7 +181,7 @@ const RosterImport = ({
                       VIEW INSTRUCTIONS
                     </p>
                   </FlexContainer>
-                  <EduButton ml="40px">Download Examples Files</EduButton>
+                  <EduButton ml="40px">Download Example Files</EduButton>
                 </FlexContainer>
               </FlexContainer>
             </Container>

@@ -52,9 +52,6 @@ const NotificationListener = ({ user, loadRosterLogs }) => {
           antdNotification({
             msg: `${message || 'OneRoster sync in progress.'}`,
             exact: true,
-            onClose: () => {
-              onNotificationClick(event, doc.__id)
-            },
           })
         } else if (
           status === 'completed' &&
@@ -69,6 +66,9 @@ const NotificationListener = ({ user, loadRosterLogs }) => {
             msg: `${message || 'OneRoster sync completed.'}`,
             type: 'success',
             exact: true,
+            onClose: () => {
+              onNotificationClick(event, doc.__id)
+            },
           })
         } else if (
           status === 'failed' &&

@@ -24,7 +24,7 @@ const RosterData = ({ isFileUploading, uploadProgress }) => {
                 }}
               />
             </StyledDiv>
-            <StyledDiv mb="8px">DRAG DROP YOUR FILE </StyledDiv>
+            <StyledDiv mb="8px">DRAG & DROP YOUR FILE</StyledDiv>
             <StyledDiv style={{ fontSize: '12px' }} mb="15px">
               ADD ROSTER DATA IN CSV FILES WITHIN A ZIP FILE FORMAT
             </StyledDiv>

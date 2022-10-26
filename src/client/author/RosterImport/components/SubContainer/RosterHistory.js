@@ -1,6 +1,7 @@
 import React from 'react'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faExclamationTriangle } from '@fortawesome/free-solid-svg-icons'
+import { stringCompare } from '@edulastic/constants/reportUtils/common'
 import moment from 'moment'
 import { Tooltip } from 'antd'
 import {
@@ -10,7 +11,6 @@ import {
   HistoryWrapperChild,
   CompleteWrapper,
   StyledParagraph,
-  StyledDiv,
   MetaDataOnTable,
   StyledButton,
   StyledDownloadIcon,
@@ -52,12 +52,12 @@ const RosterHistory = ({
   return (
     <CompleteWrapper>
       <RosterHistoryWrapper>
-        <StyledHeading2 bold="700">Last Attempted Import</StyledHeading2>
+        <StyledHeading2 bold="700">Import Summary</StyledHeading2>
         <MetaDataOnTable>
           {getModifiedFileName(
             summary.length ? summary?.[0]?.zipFileName : 'NA'
           )}
-          <StyledParagraph>
+          <StyledParagraph ml="30px">
             {summary.length
               ? getTime(summary?.[0]?.syncStartTS)
               : '-- / -- / --'}
@@ -75,24 +75,33 @@ const RosterHistory = ({
               key="recordType"
               width="1%"
               render={(text) => getModifiedEntityName(text)}
+              sorter={(a, b) =>
+                stringCompare(
+                  getModifiedEntityName(a.recordType),
+                  getModifiedEntityName(b.recordType)
+                )
+              }
             />
             <Column
-              title="Entity Count"
+              title="Total Count"
               dataIndex="totalCount"
               key="totalCount"
               width="1%"
+              sorter={(a, b) => a.totalCount - b.totalCount}
             />
             <Column
-              title="Created / Updated Count"
+              title="Modified Count"
               dataIndex="createdCount"
               key="createdCount"
-              width="1.7%"
+              width="1%"
+              sorter={(a, b) => a.createdCount - b.createdCount}
             />
             <Column
               title="Failed Count"
               dataIndex="errorCount"
               key="errorCount"
               width="1%"
+              sorter={(a, b) => a.errorCount - b.errorCount}
               render={(text) => {
                 const showExclaimationIcon = parseInt(text, 10) > 0
                 return {
@@ -119,7 +128,7 @@ const RosterHistory = ({
               title=""
               dataIndex="errorCount"
               key="downloadError"
-              width="2%"
+              width="1.5%"
               render={(val, record) => {
                 return val ? (
                   <StyledButton
@@ -142,17 +151,37 @@ const RosterHistory = ({
           </Table>
         </RecordTable>
       </RosterHistoryWrapper>
-      <div>
-        <StyledHeading2>Roster Import History</StyledHeading2>
-        <HistoryWrapperChild>
-          {summary.map((doc) => (
-            <StyledDiv>
-              {getModifiedFileName(doc.zipFileName)}
-              <StyledParagraph>{getTime(doc.syncStartTS)}</StyledParagraph>
-            </StyledDiv>
-          ))}
-        </HistoryWrapperChild>
-      </div>
+      <HistoryWrapperChild>
+        <StyledHeading2 bold="700">Recent Imports</StyledHeading2>
+        <RecordTable>
+          <Table
+            rowKey={(record) => record.key}
+            dataSource={summary}
+            pagination={false}
+          >
+            <Column
+              title="File Name"
+              dataIndex="zipFileName"
+              key="zipFileName"
+              width="2%"
+              sorter={(a, b) => stringCompare(a.zipFileName, b.zipFileName)}
+              render={(text) => {
+                return getModifiedFileName(text)
+              }}
+            />
+            <Column
+              title="Date and Time"
+              dataIndex="syncStartTS"
+              key="syncStartTS"
+              width="1%"
+              sorter={(a, b) => a.syncStartTS - b.syncStartTS}
+              render={(text) => {
+                return getTime(text)
+              }}
+            />
+          </Table>
+        </RecordTable>
+      </HistoryWrapperChild>
     </CompleteWrapper>
   )
 }

@@ -1,5 +1,11 @@
 import React, { useState, useEffect } from 'react'
-import { notification } from '@edulastic/common'
+import {
+  notification,
+  FlexContainer,
+  RadioGrp,
+  EduButton,
+} from '@edulastic/common'
+import { Popover, Tooltip } from 'antd'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import DataExport from '../SubContainer/DataExport'
@@ -8,12 +14,22 @@ import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
 import AdminSubHeader from '../../../src/components/common/AdminSubHeader/SettingSubHeader'
 import { StyledContent } from '../../../../admin/Common/StyledComponents/settingsContent'
 import {
-  CustomStyledLayout,
+  CustomUploadStyledLayout,
+  CustomHistoryStyledLayout,
   CustomSettingsWrapper,
   StyledSpincontainer,
   UploadDragger,
+  StyledHeading1,
+  Container,
+  StyledSpan,
+  CustomRadioBtn,
+  InfoIcon,
 } from './styled'
 import { StyledSpin } from '../../../../admin/Common/StyledComponents'
+import {
+  Label,
+  RadioButtonWrapper,
+} from '../../../AssignTest/components/SimpleOptions/styled'
 import {
   getIsLoading,
   getRosterImportLog,
@@ -33,6 +49,11 @@ import {
 import { getUserId } from '../../../src/selectors/user'
 
 const title = 'Manage District'
+const oneRosterSyncType = {
+  DELTA: 'delta',
+  FULL: 'full',
+  ACCOMODATION: 'accomodation',
+}
 const RosterImport = ({
   history,
   uploadFile,
@@ -48,9 +69,10 @@ const RosterImport = ({
   syncStatus,
   downloadCsvErrorData,
 }) => {
-  const menuActive = { mainMenu: 'Settings', subMenu: 'OneRoster Import' }
+  const menuActive = { mainMenu: 'Settings', subMenu: 'Import Sis Data' }
   const showSpin = loading
   const [isDragging, setIsDragging] = useState(false)
+  const [selectedSyncType, setSelectedSyncType] = useState('')
 
   useEffect(() => {
     loadRosterLogs()
@@ -61,6 +83,10 @@ const RosterImport = ({
   }
 
   const onChange = ({ file }) => {
+    if (!selectedSyncType) {
+      notification({ msg: 'Please select any one sync type to proceed' })
+      return
+    }
     if (syncStatus === oneRosterSyncStatus.IN_PROGRESS) {
       notification({ messageKey: 'syncInProgress' })
       return
@@ -77,7 +103,12 @@ const RosterImport = ({
       file,
       handleUploadProgress,
       setCancelUpload,
+      syncType: selectedSyncType,
     })
+  }
+
+  const handleSyncOptionChange = (e) => {
+    setSelectedSyncType(e.target.value)
   }
 
   return (
@@ -92,7 +123,67 @@ const RosterImport = ({
         )}
         {!loading && (
           <>
-            <CustomStyledLayout
+            <Container>
+              <StyledHeading1>Import SIS Data</StyledHeading1>
+              <p>
+                Choose the import type and import data securely by attaching csv
+                files with a zip format.
+              </p>
+              <FlexContainer
+                justifyContent="space-between"
+                alignItems="center"
+                width="100%"
+                mt="30px"
+              >
+                <StyledSpan>
+                  SELECT AN OPTION
+                  <RadioGrp
+                    style={{ display: 'flex' }}
+                    onChange={handleSyncOptionChange}
+                    value={selectedSyncType}
+                  >
+                    <RadioButtonWrapper>
+                      <CustomRadioBtn value={oneRosterSyncType.DELTA} />
+                      <Label>DELTA SYNC</Label>
+                    </RadioButtonWrapper>
+                    <RadioButtonWrapper style={{ marginLeft: '20px' }}>
+                      <CustomRadioBtn value={oneRosterSyncType.FULL} />
+                      <Label>FULL SYNC</Label>
+                    </RadioButtonWrapper>
+                    <Tooltip title="Feature to be released in future.">
+                      <RadioButtonWrapper style={{ marginLeft: '20px' }}>
+                        <CustomRadioBtn
+                          disabled
+                          value={oneRosterSyncType.ACCOMODATION}
+                        />
+                        <Label disabled>ACCOMODATIONS</Label>
+                      </RadioButtonWrapper>
+                    </Tooltip>
+                  </RadioGrp>
+                </StyledSpan>
+                <FlexContainer
+                  justifyContent="space-between"
+                  alignItems="center"
+                >
+                  <FlexContainer
+                    justifyContent="space-between"
+                    alignItems="center"
+                  >
+                    <Popover
+                      placement="topRight"
+                      content="Instruction for uploading the zip"
+                    >
+                      <InfoIcon />
+                    </Popover>
+                    <p style={{ fontSize: '12px', marginLeft: '5px' }}>
+                      VIEW INSTRUCTIONS
+                    </p>
+                  </FlexContainer>
+                  <EduButton ml="40px">Download Examples Files</EduButton>
+                </FlexContainer>
+              </FlexContainer>
+            </Container>
+            <CustomUploadStyledLayout
               onDragOver={() => setIsDragging(true)}
               onDrop={() => setIsDragging(false)}
               onDragLeave={() => setIsDragging(false)}
@@ -113,14 +204,14 @@ const RosterImport = ({
                   cancelUpload={cancelUpload}
                 />
               </UploadDragger>
-            </CustomStyledLayout>
-            <CustomStyledLayout>
+            </CustomUploadStyledLayout>
+            <CustomHistoryStyledLayout>
               <RosterHistory
                 rosterImportLog={rosterImportLog}
                 summary={summary}
                 downloadCsvErrorData={downloadCsvErrorData}
               />
-            </CustomStyledLayout>
+            </CustomHistoryStyledLayout>
           </>
         )}
       </StyledContent>

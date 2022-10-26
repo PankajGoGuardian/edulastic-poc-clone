@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { Button } from 'antd'
 import {
-  greyLight1,
   greyThemeDark1,
   greyThemeLight,
   themeColorBlue,
+  lightGrey2,
 } from '@edulastic/colors'
 import { IconDownload, IconPDFFile } from '@edulastic/icons'
 
@@ -36,20 +36,12 @@ export const RosterHistoryWrapper = styled.div`
 
 export const DownloadCsv = styled.div`
   display: flex;
+  flex-direction: column;
   align-self: center;
-  width: 40%;
-  padding: 10px 10px;
-  border: 2px solid ${greyLight1};
-  margin-top: 25px;
+  width: content-width;
+  color: ${lightGrey2};
   justify-content: space-evenly;
-  margin-bottom: -10px;
-`
-export const StyledHeading1 = styled.h3`
-  font-size: 16px !important;
-  font-weight: bold;
-  margin-top: 0px;
-  margin-bottom: 15px;
-  text-align: left;
+  font-size: 16px;
 `
 
 export const StyledIconPDFFile = styled(IconPDFFile)`
@@ -62,7 +54,7 @@ export const StyledIconPDFFile = styled(IconPDFFile)`
 `
 
 export const StyledHeading2 = styled.h4`
-  font-size: 25px !important;
+  font-size: 18px !important;
   font-weight: ${({ bold }) => bold || 400};
   margin-top: -35px;
   padding: -10px 30px;
@@ -92,13 +84,13 @@ export const StyledDownloadIcon = styled(IconDownload)`
 export const HistoryWrapperChild = styled.div`
   display: flex;
   font-weight: normal;
-  margin-top: 30px;
   flex-direction: column;
+  width: 35%;
 `
 export const CompleteWrapper = styled.div`
   width: 100%;
   display: flex;
-  padding: 20px 25px;
+  padding: 20px 10px;
   margin-bottom: 10px;
   margin-top: 10px;
   font-weight: bold;
@@ -110,12 +102,16 @@ export const MetaDataOnTable = styled.div`
   font-weight: normal;
 `
 export const StyledParagraph = styled.p`
-  margin-left: 30px;
+  margin-top: ${({ mt }) => mt};
+  margin-bottom: ${({ mb }) => mb};
+  margin-right: ${({ mr }) => mr};
+  margin-left: ${({ ml }) => ml};
 `
 export const StyledDiv = styled.div`
-  display: flex;
-  justify-content: space-between;
-  margin-bottom: 24px;
+  margin-top: ${({ mt }) => mt};
+  margin-bottom: ${({ mb }) => mb};
+  margin-right: ${({ mr }) => mr};
+  margin-left: ${({ ml }) => ml};
 `
 export const StyledAnchor = styled.a`
   color: ${themeColorBlue};

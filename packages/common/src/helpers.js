@@ -191,7 +191,8 @@ export const uploadToS3 = async (
   progressCallback,
   cancelUpload,
   subFolder = '',
-  ignoreCDN = false
+  ignoreCDN = false,
+  data = ''
 ) => {
   if (!file) {
     throw new Error('file is missing')
@@ -214,7 +215,7 @@ export const uploadToS3 = async (
   fileName = fileName.replace(/[^a-zA-Z0-9-_. ]/g, '')
   let result
   if (folder === aws.s3Folders.ONEROSTER) {
-    result = await onerosterApi.getSignedUrl(fileName, folder)
+    result = await onerosterApi.getSignedUrl(fileName, folder, data)
   } else {
     result = await fileApi.getSignedUrl(fileName, folder, subFolder)
   }

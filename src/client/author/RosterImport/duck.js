@@ -109,7 +109,7 @@ function* receiveRosterLogSaga() {
 }
 
 export function* uploadOneRosterZipFileSaga({
-  payload: { file, handleUploadProgress, setCancelUpload },
+  payload: { file, handleUploadProgress, setCancelUpload, syncType },
 }) {
   try {
     notification({
@@ -123,7 +123,8 @@ export function* uploadOneRosterZipFileSaga({
       (progressData) => handleUploadProgress({ progressData }),
       setCancelUpload,
       '',
-      true
+      true,
+      syncType
     )
     yield put(
       handleUploadProgress({ progressData: { loaded: 100, total: 100 } })

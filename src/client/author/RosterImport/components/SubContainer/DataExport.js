@@ -1,62 +1,33 @@
 import { connect } from 'react-redux'
 import React from 'react'
-import { IconCloudUpload } from '@edulastic/icons'
-import {
-  greyThemeDark1,
-  themeColorBlue,
-  themeColor,
-  borderGrey,
-} from '@edulastic/colors'
+import { IconUpload } from '@edulastic/icons'
+import { borderGrey, greyThemeLight } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Progress } from 'antd'
-import {
-  LeftWrapper,
-  DownloadFileAndInstructions,
-  DownloadCsv,
-  StyledHeading1,
-  StyledParagraph,
-  StyledDownloadIcon,
-  StyledIconPDFFile,
-  StyledAnchor,
-} from './styled'
+import { DownloadCsv, StyledDiv } from './styled'
 import { RosterDataWrapper } from '../Container/styled'
 
 const RosterData = ({ isFileUploading, uploadProgress }) => {
   return (
     <RosterDataWrapper>
-      <LeftWrapper>
-        <div>
-          <StyledHeading1>Roster Data</StyledHeading1>
-          <StyledParagraph>
-            You can import data securely by attaching CSV files within a zip
-            file format.
-          </StyledParagraph>
-        </div>
-        <DownloadFileAndInstructions>
-          <p color={themeColorBlue}>
-            <StyledAnchor>
-              <span> Download example files </span>
-              <StyledDownloadIcon color={themeColor} />
-            </StyledAnchor>
-          </p>
-          <p>
-            <StyledAnchor>
-              <span>View instructions</span> <StyledIconPDFFile />{' '}
-            </StyledAnchor>
-          </p>
-        </DownloadFileAndInstructions>
-      </LeftWrapper>
       <DownloadCsv>
         {isFileUploading ? (
           <StyledProgress percent={uploadProgress} />
         ) : (
           <>
-            <p>ADD ROSTER DATA IN CSV FILES WITHIN A ZIP FILE FORMAT</p>
-            <IconCloudUpload
-              data-cy="uploadPdfFromFiles"
-              color={greyThemeDark1}
-              style={{ minWidth: '24px', minHeight: '24px' }}
-            />
+            <StyledDiv mb="15px">
+              <IconUpload
+                style={{
+                  minWidth: '36px',
+                  minHeight: '36px',
+                  fill: greyThemeLight,
+                }}
+              />
+            </StyledDiv>
+            <StyledDiv mb="8px">DRAG DROP YOUR FILE </StyledDiv>
+            <StyledDiv style={{ fontSize: '12px' }} mb="15px">
+              ADD ROSTER DATA IN CSV FILES WITHIN A ZIP FILE FORMAT
+            </StyledDiv>
           </>
         )}
       </DownloadCsv>

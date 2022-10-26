@@ -22,7 +22,7 @@ export const DownloadFileAndInstructions = styled.div`
 `
 
 export const RosterHistoryWrapper = styled.div`
-  width: 55%;
+  width: 60%;
   display: flex;
   flex-direction: column;
   font-weight: bold;
@@ -38,7 +38,8 @@ export const DownloadCsv = styled.div`
   display: flex;
   flex-direction: column;
   align-self: center;
-  width: content-width;
+  width: fit-content;
+  min-width: 30%;
   color: ${lightGrey2};
   justify-content: space-evenly;
   font-size: 16px;
@@ -75,7 +76,8 @@ export const RecordTable = styled.div`
   }
 `
 export const StyledDownloadIcon = styled(IconDownload)`
-  margin-left: 5px;
+  height: 11px;
+  width: 11px;
   margin-right: 3px;
   & > g > path {
     fill: ${themeColorBlue};
@@ -123,4 +125,6 @@ export const StyledButton = styled(Button)`
   color: ${themeColorBlue};
   font-weight: bold;
   border: none;
+  margin: -5px 0px;
+  padding: 0px;
 `

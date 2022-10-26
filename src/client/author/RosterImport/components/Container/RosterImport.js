@@ -91,7 +91,9 @@ const RosterImport = ({
       notification({ messageKey: 'syncInProgress' })
       return
     }
-    if (file.type !== 'application/zip') {
+    const { name: fileName } = file
+    const fileExtension = fileName.split('.')?.[fileName.split('.').length - 1]
+    if (fileExtension !== 'zip') {
       notification({ messageKey: 'fileFormatNotSupportedUploadZip' })
       return
     }
@@ -127,7 +129,7 @@ const RosterImport = ({
               <StyledHeading1>Import SIS Data</StyledHeading1>
               <p>
                 Choose the import type and import data securely by attaching csv
-                files with a zip format.
+                files with a zip file format.
               </p>
               <FlexContainer
                 justifyContent="space-between"

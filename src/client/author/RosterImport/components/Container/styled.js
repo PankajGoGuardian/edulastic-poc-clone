@@ -26,6 +26,8 @@ export const RosterDataWrapper = styled.div`
   width: 100%;
   display: flex;
   flex-direction: column;
+  justify-content: center;
+  min-height: 225px;
   padding: 50px 0px;
   background-color: transparent;
   &:hover {
@@ -50,13 +52,12 @@ export const StyledSpan = styled.div`
   margin-top: 2px;
   margin-bottom: 2px;
   width: 30%;
-  min-width: 400px;
+  min-width: 500px;
 `
 
 export const CustomUploadStyledLayout = styled(StyledLayout)`
   width: 100%;
   margin-top: 25px;
-  min-height: 250px;
   background: ${lightGrey};
   border: ${({ isDragging }) =>
     isDragging ? `3px dashed ${themeColor}` : `3px dashed ${greyThemeLight}`};

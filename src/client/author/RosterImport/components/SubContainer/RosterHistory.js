@@ -73,7 +73,7 @@ const RosterHistory = ({
               title="Record Type"
               dataIndex="recordType"
               key="recordType"
-              width="1%"
+              width="10%"
               render={(text) => getModifiedEntityName(text)}
               sorter={(a, b) =>
                 stringCompare(
@@ -86,21 +86,21 @@ const RosterHistory = ({
               title="Total Count"
               dataIndex="totalCount"
               key="totalCount"
-              width="1%"
+              width="10%"
               sorter={(a, b) => a.totalCount - b.totalCount}
             />
             <Column
               title="Modified Count"
               dataIndex="createdCount"
               key="createdCount"
-              width="1%"
+              width="12%"
               sorter={(a, b) => a.createdCount - b.createdCount}
             />
             <Column
               title="Failed Count"
               dataIndex="errorCount"
               key="errorCount"
-              width="1%"
+              width="10%"
               sorter={(a, b) => a.errorCount - b.errorCount}
               render={(text) => {
                 const showExclaimationIcon = parseInt(text, 10) > 0
@@ -128,7 +128,7 @@ const RosterHistory = ({
               title=""
               dataIndex="errorCount"
               key="downloadError"
-              width="1.5%"
+              width="15%"
               render={(val, record) => {
                 return val ? (
                   <StyledButton
@@ -173,7 +173,7 @@ const RosterHistory = ({
               title="Date and Time"
               dataIndex="syncStartTS"
               key="syncStartTS"
-              width="1%"
+              width="1.5%"
               sorter={(a, b) => a.syncStartTS - b.syncStartTS}
               render={(text) => {
                 return getTime(text)

@@ -143,16 +143,17 @@ const RosterImport = ({
                     value={selectedSyncType}
                   >
                     <RadioButtonWrapper>
-                      <CustomRadioBtn value={oneRosterSyncType.DELTA} />
+                      <CustomRadioBtn value={oneRosterSyncType.DELTA} data-testid = {"delta"} />
                       <Label>DELTA SYNC</Label>
                     </RadioButtonWrapper>
                     <RadioButtonWrapper style={{ marginLeft: '20px' }}>
-                      <CustomRadioBtn value={oneRosterSyncType.FULL} />
+                      <CustomRadioBtn value={oneRosterSyncType.FULL} data-testid = {"full"} />
                       <Label>FULL SYNC</Label>
                     </RadioButtonWrapper>
                     <Tooltip title="Feature to be released in future.">
                       <RadioButtonWrapper style={{ marginLeft: '20px' }}>
                         <CustomRadioBtn
+                          data-testid = {"accom"}
                           disabled
                           value={oneRosterSyncType.ACCOMODATION}
                         />

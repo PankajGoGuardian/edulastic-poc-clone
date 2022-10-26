@@ -163,7 +163,7 @@ export const StyledTable = styled(Table)`
     overflow: auto;
     &-thead {
       & > tr > th {
-        color: ${(props) => props.theme.manageDistrict.tableHeaderTxtColor};
+        color: ${(props) => props.theme?.manageDistrict?.tableHeaderTxtColor};
         font-size: 10px;
         font-weight: bold;
         padding: 20px 10px;
@@ -196,7 +196,7 @@ export const StyledTable = styled(Table)`
         }
         @media (min-width: ${extraDesktopWidth}) {
           font-size: ${(props) =>
-            props.theme.manageDistrict.tableHeaderTxtSize};
+            props.theme?.manageDistrict?.tableHeaderTxtSize};
         }
       }
     }
@@ -205,7 +205,7 @@ export const StyledTable = styled(Table)`
         background: ${white};
         font-family: Open Sans;
         letter-spacing: 0.26px;
-        color: ${(props) => props.theme.manageDistrict.tableRowTxtColor};
+        color: ${(props) => props.theme?.manageDistrict?.tableRowTxtColor};
         font-size: 11px;
         font-weight: 600;
         cursor: pointer;
@@ -218,7 +218,7 @@ export const StyledTable = styled(Table)`
           font-weight: 550;
         }
         @media (min-width: ${extraDesktopWidth}) {
-          font-size: ${(props) => props.theme.manageDistrict.tableRowTxtSize};
+          font-size: ${(props) => props.theme?.manageDistrict?.tableRowTxtSize};
         }
       }
     }
@@ -256,21 +256,21 @@ const CommonStyledButton = styled(Button)`
   border-radius: 4px;
   text-transform: uppercase;
   font-size: ${(props) =>
-    props.theme.manageDistrict.modalFooterBtnTextFontSize};
+    props.theme?.manageDistrict?.modalFooterBtnTextFontSize};
   min-width: 150px;
   height: 40px;
   white-space: nowrap;
 `
 export const CancelButton = styled(CommonStyledButton)`
-  background: ${(props) => props.theme.manageDistrict.modalFooterBtnColor2};
-  color: ${(props) => props.theme.manageDistrict.modalFooterBtnTxtColor2};
+  background: ${(props) => props.theme?.manageDistrict?.modalFooterBtnColor2};
+  color: ${(props) => props.theme?.manageDistrict?.modalFooterBtnTxtColor2};
   border: 1px solid
-    ${(props) => props.theme.manageDistrict.modalFooterBtnTxtColor2};
+    ${(props) => props.theme?.manageDistrict?.modalFooterBtnTxtColor2};
 `
 
 export const OkButton = styled(CommonStyledButton)`
-  background: ${(props) => props.theme.manageDistrict.modalFooterBtnColor1};
-  color: ${(props) => props.theme.manageDistrict.modalFooterBtnTxtColor1};
+  background: ${(props) => props.theme?.manageDistrict?.modalFooterBtnColor1};
+  color: ${(props) => props.theme?.manageDistrict?.modalFooterBtnTxtColor1};
   border: none;
 `
 export const StyledModal = styled(Modal)`

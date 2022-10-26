@@ -111,22 +111,24 @@ const PlayerFooter = ({
     <MainFooter isSidebarVisible className="quester-player-footer">
       <ActionContainer
         data-cy="zoomIn"
+        aria-label="Zoom out"
         onClick={handleZoomOut}
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
-          <IconMinusRounded color={footer.textColor} />
+          <IconMinusRounded color={footer.textColor} aria-hidden="true" />
         </IconWrap>
         <span>ZOOM OUT</span>
       </ActionContainer>
 
       <ActionContainer
         data-cy="zoomOut"
+        aria-label="Zoom in"
         onClick={handleZoomIn}
         disabled={isPremiumContentWithoutAccess}
       >
         <IconWrap className="hover-effect">
-          <IconPlus color={footer.textColor} />
+          <IconPlus color={footer.textColor} aria-hidden="true" />
         </IconWrap>
         <span>ZOOM IN</span>
       </ActionContainer>
@@ -141,12 +143,14 @@ const PlayerFooter = ({
           }
           title={t('common.test.bookmark')}
           data-cy="bookmark"
+          aria-label="Bookmark question"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconBookMark
               color={isBookmarked ? button.background : footer.textColor}
               hoverColor={button.background}
+              aria-hidden="true"
             />
           </IconWrapper>
 
@@ -161,12 +165,14 @@ const PlayerFooter = ({
           onClick={openReferenceModal}
           title={t('common.test.referenceGuide')}
           data-cy="referenceGuide"
+          aria-label="Reference guide"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconReferenceGuide
               color={footer.textColor}
               hoverColor={button.background}
+              aria-hidden="true"
             />
           </IconWrapper>
 
@@ -186,9 +192,14 @@ const PlayerFooter = ({
               : 'Check Answer'
           }
           data-cy="checkAnswer"
+          aria-label="Check answer"
           disabled={isPremiumContentWithoutAccess}
         >
-          <IconCheck color={footer.textColor} hoverColor={button.background} />
+          <IconCheck
+            color={footer.textColor}
+            hoverColor={button.background}
+            aria-hidden="true"
+          />
           <span> {t('common.test.checkanswer')}</span>
         </ActionContainer>
       )}
@@ -203,11 +214,13 @@ const PlayerFooter = ({
             : 'Crossout'
         }
         data-cy="crossButton"
+        aria-label="Answer eliminator"
       >
         <IconWrapper>
           <IconAnswerEliminator
             color={footer.textColor}
             hoverColor={button.background}
+            aria-hidden="true"
           />
         </IconWrapper>
 
@@ -220,12 +233,14 @@ const PlayerFooter = ({
           onClick={() => changeTool(CALC)}
           title={t('common.test.calculator')}
           data-cy="calculator"
+          aria-label="Calculator"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconCalculator
               color={footer.textColor}
               hoverColor={button.background}
+              aria-hidden="true"
             />
           </IconWrapper>
 
@@ -239,12 +254,14 @@ const PlayerFooter = ({
           onClick={() => changeTool(SCRATCHPAD)}
           title={t('common.test.scratchPad')}
           data-cy="scratchPad"
+          aria-label="Scratch pad"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconScratchPad
               color={footer.textColor}
               hoverColor={button.background}
+              aria-hidden="true"
             />
           </IconWrapper>
 
@@ -259,12 +276,14 @@ const PlayerFooter = ({
           onClick={handleMagnifier}
           title={t('common.test.magnify')}
           data-cy="magnify"
+          aria-label="Magnify"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconMagnify
               color={footer.textColor}
               hoverColor={button.background}
+              aria-hidden="true"
             />
           </IconWrapper>
 
@@ -278,12 +297,14 @@ const PlayerFooter = ({
           onClick={toggleUserWorkUploadModal}
           title={t('common.test.uploadWork')}
           data-cy="uploadWork"
+          aria-label="Upload work"
           disabled={isPremiumContentWithoutAccess}
         >
           <IconWrapper>
             <IconCloudUpload
               color={footer.textColor}
               hoverColor={button.background}
+              aria-hidden="true"
             />
           </IconWrapper>
 
@@ -377,7 +398,9 @@ const MainFooter = styled.div`
   }
 `
 
-const ActionContainer = withKeyboard(styled.div`
+const ActionContainer = withKeyboard(styled.div.attrs({
+  role: 'button',
+})`
   text-align: center;
   display: flex;
   align-items: center;

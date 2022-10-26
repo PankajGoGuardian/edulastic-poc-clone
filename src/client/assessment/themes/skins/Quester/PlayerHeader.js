@@ -162,6 +162,7 @@ const PlayerHeader = ({
               >
                 <SignOut
                   data-cy="finishTest"
+                  aria-label="Finish test"
                   onClick={finishTest}
                   disabled={hidePause}
                 >
@@ -179,7 +180,15 @@ const PlayerHeader = ({
             <HeaderWrapper justifyContent="space-between">
               {!isDocbased && (
                 <Container className="quester-question-list">
-                  <StyledButton data-cy="options" onClick={handleOpen}>
+                  <StyledButton
+                    data-cy="options"
+                    onClick={handleOpen}
+                    aria-label={
+                      isLast()
+                        ? t('common.test.reviewAndSubmit')
+                        : t('common.test.review')
+                    }
+                  >
                     <span>
                       {isLast()
                         ? t('common.test.reviewAndSubmit')
@@ -212,6 +221,7 @@ const PlayerHeader = ({
                 >
                   <ControlBtn
                     data-cy="prev"
+                    aria-label="Previous question"
                     icon="left"
                     type="primary"
                     disabled={isFirst() || blockNavigationToAnsweredQuestions}
@@ -232,7 +242,7 @@ const PlayerHeader = ({
                         moveToPrev()
                     }}
                   >
-                    <IconQuester.IconPrevious />
+                    <IconQuester.IconPrevious aria-hidden="true" />
                   </ControlBtn>
                 </Tooltip>
                 <Tooltip
@@ -242,6 +252,7 @@ const PlayerHeader = ({
                 >
                   <ControlBtn
                     data-cy="next"
+                    aria-label={isLast() ? 'Submit test' : 'Next question'}
                     type="primary"
                     icon="right"
                     onClick={(e) => {
@@ -262,7 +273,10 @@ const PlayerHeader = ({
                     }}
                     style={{ marginLeft: '15px' }}
                   >
-                    <IconQuester.IconNext style={{ marginRight: '10px' }} />
+                    <IconQuester.IconNext
+                      style={{ marginRight: '10px' }}
+                      aria-hidden="true"
+                    />
                     <span>{isLast() ? 'SUBMIT' : 'NEXT'}</span>
                   </ControlBtn>
                 </Tooltip>
@@ -304,7 +318,9 @@ const NavigationHeader = styled(FlexContainer)`
   justify-content: space-between;
 `
 
-const SignOut = withKeyboard(styled.div`
+const SignOut = withKeyboard(styled.div.attrs({
+  role: 'button',
+})`
   display: flex;
   align-items: center;
   justify-content: center;

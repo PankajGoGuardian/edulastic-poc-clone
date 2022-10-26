@@ -74,6 +74,7 @@ const ReviewQuestionsModal = ({
           key="cancelButton"
           onClick={handleClose}
           style={{ padding: '10px 40px' }}
+          aria-label="No, cancel"
         >
           NO, CANCEL
         </EduButton>,
@@ -82,6 +83,7 @@ const ReviewQuestionsModal = ({
           key="okButton"
           onClick={previewPlayer ? finishTest : gotoSummary}
           style={{ padding: '10px 40px' }}
+          aria-label="Submit test"
         >
           SUBMIT TEST
         </EduButton>,
@@ -107,18 +109,21 @@ const ReviewQuestionsModal = ({
             <Card
               selected={selectedCard === 'notAnswered'}
               onClick={() => handleCardClick('notAnswered')}
+              aria-label="Unanswered questions"
             >
               <div>UNANSWERED ({totalUnanswered})</div>
             </Card>
             <Card
               selected={selectedCard === 'answered'}
               onClick={() => handleCardClick('answered')}
+              aria-label="Answered questions"
             >
               <div>ANSWERED ({totalQuestions - totalUnanswered})</div>
             </Card>
             <Card
               selected={selectedCard === 'bookmarks'}
               onClick={() => handleCardClick('bookmarks')}
+              aria-label="Bookmarked questions"
             >
               <div>BOOKMARKED ({totalBookmarks})</div>
             </Card>
@@ -133,6 +138,7 @@ const ReviewQuestionsModal = ({
               key={option}
               disabled={blockNavigationToAnsweredQuestions}
               data-cy="questionSelectOptions"
+              aria-label={`Question ${option + 1}`}
               bg={getItemStatusColor(selectedCard)}
               onClick={() => {
                 handleQuestionCLick({ key: option })
@@ -165,7 +171,9 @@ const enhance = compose(withNamespaces('student'))
 
 export default enhance(ReviewQuestionsModal)
 
-const Card = withKeyboard(styled.div`
+const Card = withKeyboard(styled.div.attrs({
+  role: 'button',
+})`
   display: flex;
   flex-direction: column;
   align-items: center;

@@ -17,7 +17,9 @@ export const StyledPopover = styled(Popover)`
   }
 `
 
-export const StyledButton = withKeyboard(styled.div`
+export const StyledButton = withKeyboard(styled.div.attrs({
+  role: 'button',
+})`
   background-color: ${header2.background};
   border: 1px solid ${button.background};
   color: ${button.background};

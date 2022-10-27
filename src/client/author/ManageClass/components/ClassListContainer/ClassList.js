@@ -100,7 +100,12 @@ const ClassList = ({
           canvasCode,
         } = _group
         const syncIconList = []
-        if (cleverId) {
+        if (
+          cleverId ||
+          (atlasId &&
+            (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
+              'clever')
+        ) {
           syncIconList.push(
             <Tooltip title="Clever" placement="bottom">
               <IconClever height={18} width={18} />
@@ -114,7 +119,12 @@ const ClassList = ({
             </Tooltip>
           )
         }
-        if (canvasCode) {
+        if (
+          canvasCode ||
+          (atlasId &&
+            (atlasProviderName || user?.openIdProvider)?.toLowerCase() ===
+              'canvas')
+        ) {
           syncIconList.push(
             <Tooltip title="Canvas" placement="bottom">
               <img

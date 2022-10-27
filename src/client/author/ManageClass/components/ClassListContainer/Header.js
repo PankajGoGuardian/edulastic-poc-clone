@@ -55,7 +55,7 @@ const Header = ({
   const atlasGroup = classGroups.find(
     (_group) =>
       _group.atlasProviderName &&
-      ['schoology', 'classlink'].includes(
+      ['schoology', 'classlink', 'clever', 'canvas'].includes(
         _group.atlasProviderName.toLowerCase()
       )
   )
@@ -251,13 +251,7 @@ const Header = ({
                   isGhost
                   onClick={handleSyncWithAtlas}
                 >
-                  <span>
-                    RESYNC{' '}
-                    {atlasProviderName.toLowerCase() === 'schoology'
-                      ? 'SCHOOLOGY'
-                      : 'CLASSLINK'}{' '}
-                    CLASSES
-                  </span>
+                  <span>RESYNC {atlasProviderName.toUpperCase()} CLASSES</span>
                 </EduButton>
               )}
             {!isPlayground &&

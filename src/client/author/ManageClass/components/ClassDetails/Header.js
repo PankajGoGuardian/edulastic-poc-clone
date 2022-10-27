@@ -15,7 +15,7 @@ import React, { useEffect, useState } from 'react'
 import * as moment from 'moment'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get } from 'lodash'
+import { get, capitalize, toUpper } from 'lodash'
 import styled from 'styled-components'
 import { segmentApi, canvasApi } from '@edulastic/api'
 // components
@@ -395,11 +395,7 @@ const Header = ({
                     onClick={handleAtlasSync}
                   >
                     <span className="menu-label">
-                      Resync{' '}
-                      {atlasProviderName.toLowerCase() === 'schoology'
-                        ? 'Schoology'
-                        : 'Classlink'}{' '}
-                      Class
+                      Resync {capitalize(atlasProviderName)} Class
                     </span>
                   </Option>
                 )
@@ -482,13 +478,7 @@ const Header = ({
                 isGhost
                 onClick={handleAtlasSync}
               >
-                <span>
-                  RESYNC{' '}
-                  {atlasProviderName.toLowerCase() === 'schoology'
-                    ? 'SCHOOLOGY'
-                    : 'CLASSLINK'}{' '}
-                  CLASS
-                </span>
+                <span>RESYNC {toUpper(atlasProviderName)} CLASS</span>
               </EduButton>
             )}
             {showCleverReSyncButton && (

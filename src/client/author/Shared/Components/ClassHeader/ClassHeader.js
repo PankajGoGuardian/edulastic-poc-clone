@@ -27,7 +27,7 @@ import { withNamespaces } from '@edulastic/localization'
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { Dropdown, Tooltip, message } from 'antd'
-import { get } from 'lodash'
+import { get, capitalize } from 'lodash'
 import moment from 'moment'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
@@ -546,7 +546,9 @@ class ClassHeader extends Component {
     const showSchoologyGradeSyncOption =
       !isDemoPlaygroundUser &&
       groupAtlasId &&
-      atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' &&
+      (atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' ||
+        (['CANVAS', 'CLEVER'].includes(atlasProviderName.toLocaleUpperCase()) &&
+          districtPolicy?.providerNameToShareResourceViaEdlink)) &&
       assignmentStatusForDisplay !== assignmentStatusConstants.NOT_OPEN &&
       studentsUTAData.some(
         (uta) =>
@@ -858,12 +860,16 @@ class ClassHeader extends Component {
               })
             }
           >
-            Sync Grades to Schoology Classroom
+            Sync Grades to {capitalize(atlasProviderName)} Classroom
           </MenuItems>
         )}
         {!isDemoPlaygroundUser &&
           groupAtlasId &&
-          atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' && (
+          (atlasProviderName.toLocaleUpperCase() === 'SCHOOLOGY' ||
+            (['CANVAS', 'CLEVER'].includes(
+              atlasProviderName.toLocaleUpperCase()
+            ) &&
+              districtPolicy?.providerNameToShareResourceViaEdlink)) && (
             <MenuItems
               data-cy="schoologySyncAssignment"
               key="key11"
@@ -875,7 +881,7 @@ class ClassHeader extends Component {
               }
               disabled={syncWithSchoologyClassroomInProgress}
             >
-              Sync with Schoology Classroom
+              Sync with {capitalize(atlasProviderName)} Classroom
             </MenuItems>
           )}
         {showCleverGradeSyncOption && (
@@ -888,7 +894,7 @@ class ClassHeader extends Component {
               })
             }
           >
-            Sync Grades to Schoology
+            Sync Grades to Clever
           </MenuItems>
         )}
         <FeaturesSwitch

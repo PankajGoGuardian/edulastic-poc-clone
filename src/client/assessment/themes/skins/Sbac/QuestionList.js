@@ -68,6 +68,7 @@ const QuestionList = ({
           dropdownClassName="question-select-list-dropdown"
           value={currentItem}
           data-cy="options"
+          aria-label="question select list dropdown"
           onChange={(value) => {
             value === 'SUBMIT'
               ? moveToNext(null, true, value)
@@ -80,6 +81,9 @@ const QuestionList = ({
               data-cy="questionSelectOptions"
               key={index}
               value={item}
+              aria-label={`${t('common.layout.selectbox.question')} ${
+                index + 1
+              }`}
             >
               {`${t('common.layout.selectbox.question')} ${index + 1}/${
                 options.length

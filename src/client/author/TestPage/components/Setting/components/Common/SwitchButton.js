@@ -10,6 +10,7 @@ const SwitchButton = ({ disabled, checked, onChangeHandler }) => {
       checked={checked}
       onChange={onChangeHandler}
       data-testid={settingSwitchButtonTestId}
+      data-cy="allowTtsForPassage"
     />
   )
 }

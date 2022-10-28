@@ -857,6 +857,7 @@ class ClassHeader extends Component {
               this.handleSchoologyAssignmentGradesSync({
                 assignmentId,
                 groupId: classId,
+                atlasProviderName: capitalize(atlasProviderName),
               })
             }
           >
@@ -877,6 +878,7 @@ class ClassHeader extends Component {
                 schoologySyncAssignment({
                   assignmentIds: [assignmentId],
                   groupId: classId,
+                  atlasProviderName: capitalize(atlasProviderName),
                 })
               }
               disabled={syncWithSchoologyClassroomInProgress}

@@ -357,7 +357,9 @@ function* getAtlasGradeSyncUpdate({ assignmentId, groupId, signedUrl }) {
 }
 
 function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
+  const { atlasProviderName = 'Schoology' } = payload
   try {
+    delete payload?.atlasProviderName
     const { result } = yield call(
       atlasApi.syncGradesWithSchoologyClassroom,
       payload
@@ -387,12 +389,12 @@ function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
     } else if (result?.statusCode === 200) {
       notification({
         type: 'success',
-        msg: 'Grade sync with Schoology is in progress',
+        msg: `Grade sync with ${atlasProviderName} is in progress`,
       })
     } else {
       notification({
         type: 'success',
-        msg: 'Grades are being shared to Schoology Classroom',
+        msg: `Grades are being shared to ${atlasProviderName} Classroom`,
       })
     }
   } catch (err) {
@@ -407,13 +409,14 @@ function* syncAssignmentGradesWithSchoologyClassroomSaga({ payload }) {
     notification({
       msg:
         err?.response?.data?.message ||
-        'Failed to share grades to Schoology Classroom',
+        `Failed to share grades to ${atlasProviderName} Classroom`,
     })
     console.error(err)
   }
 }
 
 function* syncAssignmentWithSchoologyClassroomSaga({ payload = {} }) {
+  const { atlasProviderName = 'Schoology' } = payload
   try {
     notification({ type: 'success', messageKey: 'sharedAssignmentInProgress' })
     const result = yield call(assignmentApi.syncWithSchoologyClassroom, payload)
@@ -432,13 +435,12 @@ function* syncAssignmentWithSchoologyClassroomSaga({ payload = {} }) {
         type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_SUCCESS,
       })
       notification({
-        type: 'success',
-        messageKey: 'assignmentSharedWithSchoologyClassroom',
+        msg: `Assignment is shared with ${atlasProviderName} Classroom successfully`,
       })
     } else {
       const errorMessage =
         result?.[0]?.message ||
-        'Assignment failed to share with schoology classroom. Please try after sometime.'
+        `Assignment failed to share with ${atlasProviderName} classroom. Please try after sometime.`
       yield put({
         type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
       })
@@ -448,7 +450,7 @@ function* syncAssignmentWithSchoologyClassroomSaga({ payload = {} }) {
     captureSentryException(error)
     const errorMessage =
       error?.data?.message ||
-      'Assignment failed to share with schoology classroom. Please try after sometime.'
+      `Assignment failed to share with ${atlasProviderName} classroom. Please try after sometime.`
     yield put({
       type: SYNC_ASSIGNMENT_WITH_SCHOOLOGY_CLASSROOM_ERROR,
     })

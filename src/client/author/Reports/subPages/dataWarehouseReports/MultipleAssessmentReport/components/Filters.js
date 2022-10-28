@@ -96,7 +96,7 @@ const MultipleAssessmentReportFilters = ({
     if (reportId) {
       fetchFiltersDataRequest({ reportId })
       setFilters({ ...filters, ...search })
-    } else if (prevFiltersData !== filtersData) {
+    } else {
       const termId =
         search.termId ||
         defaultTermId ||
@@ -117,8 +117,8 @@ const MultipleAssessmentReportFilters = ({
     if (filtersData !== prevFiltersData && !isEmpty(filtersData)) {
       if (reportId) {
         _onGoClick({
-          filters: { ...filters, ...search },
-          tagsData: {},
+          requestFilters: { ...filters, ...search },
+          selectedFilterTagsData: {},
         })
       } else {
         const urlSchoolYear =
@@ -181,8 +181,8 @@ const MultipleAssessmentReportFilters = ({
           toggleFilter(null, true)
         } else {
           _onGoClick({
-            filters: { ..._filters },
-            tagsData: { ..._filterTagsData },
+            requestFilters: { ..._filters },
+            selectedFilterTagsData: { ..._filterTagsData },
           })
           fetchUpdateTagsData({
             testIds: reject(_filters.testIds?.split(','), isEmpty),
@@ -205,7 +205,7 @@ const MultipleAssessmentReportFilters = ({
 
   const onGoClick = (_settings = {}) => {
     const settings = {
-      filters: { ...filters },
+      requestFilters: { ...filters },
       selectedFilterTagsData: { ...filterTagsData },
       ..._settings,
     }
@@ -238,9 +238,9 @@ const MultipleAssessmentReportFilters = ({
     toggleFilter(null, true)
   }
 
-  const handleTagClick = () => {
+  const handleTagClick = (filterKey) => {
     const _filtersTabKey =
-      staticDropDownData.tagTypes.find((filter) => filter.key === filtersTabKey)
+      staticDropDownData.tagTypes.find((filter) => filter.key === filterKey)
         ?.tabKey || -1
     if (_filtersTabKey !== -1) {
       toggleFilter(null, true)

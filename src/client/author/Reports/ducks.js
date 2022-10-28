@@ -154,10 +154,14 @@ import {
 import {
   reducer as reportWholeChildReducer,
   watcherSaga as reportWholeChildSaga,
+  selectors as reportWholeChildSelectors,
+  actions as reportWholeChildActions,
 } from './subPages/dataWarehouseReports/wholeChildReport/ducks'
 import {
   reducer as reportMultipleAssessmentDwReducer,
   watcherSaga as reportMultipleAssessmentDwSaga,
+  selectors as reportMultipleAssessmentDwSelectors,
+  actions as reportMultipleAssessmentDwActions,
 } from './subPages/dataWarehouseReports/MultipleAssessmentReport/ducks'
 import {
   customReportReducer,
@@ -209,7 +213,6 @@ import {
   getGroupListSelector,
   receiveGroupListAction,
 } from '../Groups/ducks'
-import * as WholeChildReport from './subPages/dataWarehouseReports/wholeChildReport/ducks'
 
 const SET_SHARING_STATE = '[reports] set sharing state'
 const SET_PRINTING_STATE = '[reports] set printing state'
@@ -492,10 +495,16 @@ const selectorDict = {
     setTempTags: setERTempTagsDataAction,
   },
   [reportGroupType.WHOLE_CHILD_REPORT]: {
-    getTempTags: WholeChildReport.selectors.filterTagsData,
-    getSettings: WholeChildReport.selectors.settings,
-    setTags: WholeChildReport.actions.setSelectedFilterTagsData,
-    setTempTags: WholeChildReport.actions.setFilterTagsData,
+    getTempTags: reportWholeChildSelectors.filterTagsData,
+    getSettings: reportWholeChildSelectors.settings,
+    setTags: reportWholeChildActions.setSelectedFilterTagsData,
+    setTempTags: reportWholeChildActions.setFilterTagsData,
+  },
+  [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
+    getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
+    getSettings: reportMultipleAssessmentDwSelectors.settings,
+    setTags: reportMultipleAssessmentDwActions.setDWMARSelectedFilterTagsData,
+    setTempTags: reportMultipleAssessmentDwActions.setDWMARFilterTagsData,
   },
 }
 

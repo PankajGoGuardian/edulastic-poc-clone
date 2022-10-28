@@ -1,6 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { round } from 'lodash'
+import { isEmpty, round } from 'lodash'
 
 import { greyThemeDark1 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
@@ -16,6 +16,15 @@ import {
 import { toggleItem } from '../../../../common/util'
 
 const { formatDate } = reportUtils.common
+
+const chartLineProps = {
+  strokeDasharray: '5 3',
+  stroke: greyThemeDark1,
+  strokeWidth: 2,
+  strokeWidthActive: 20,
+}
+
+const chartMargin = { top: 0, right: 20, left: 20, bottom: 40 }
 
 const TooltipRowItem = ({ title = '', value = '' }) => (
   <TooltipRow>
@@ -90,6 +99,8 @@ const getRightTooltipJSX = (payload, barIndex) => {
     const barKey = `bar${barIndex + 1}`
     const barData = payload[0].payload
     const recordColor = barData.additionalData[barKey]
+    // TODO: find a better way to handle right tooltip state updates
+    if (isEmpty(barData) || isEmpty(recordColor)) return null
     let recordIndex
     const records = barData.records
     const bar = records.filter((e, index) => {
@@ -140,7 +151,11 @@ const barsLabelFormatter = (value) => {
 // payload: { coordinate, value, index, offset }
 // _data: contains the current slice of data displayed in the chart
 const getXTickText = (payload, _data) => {
-  return _data[payload.index]?.testName || '-'
+  const _testData = _data[payload.index]
+  const _testName = _testData.isIncomplete
+    ? `${_testData.testName} *`
+    : _testData.testName
+  return _testName || '-'
 }
 
 const getXTickTagText = (payload, _data) => {
@@ -150,8 +165,8 @@ const getXTickTagText = (payload, _data) => {
 const Chart = ({
   chartData,
   selectedPerformanceBand,
-  selectedItems,
-  setSelectedItems,
+  selectedTests,
+  setSelectedTests,
 }) => {
   const achievementLevels = chartData.flatMap((cdItem) =>
     cdItem.externalTestType ? cdItem.bands : []
@@ -165,6 +180,20 @@ const Chart = ({
       value: pb.name,
       type: 'circle',
     }))
+
+  const selectedTestsFilter = selectedTests.reduce(
+    (res, ele) => ({
+      ...res,
+      [ele]: true,
+    }),
+    {}
+  )
+
+  const chartLegendProps = {
+    iconType: 'circle',
+    height: 70,
+    payload: legendPayload,
+  }
 
   const barsDataForInternal = selectedPerformanceBand.map((pb, index) => ({
     ...pb,
@@ -257,20 +286,13 @@ const Chart = ({
   })
 
   const handleToggleSelectedBars = (item) => {
-    const newSelectedTests = toggleItem(selectedItems, item)
-    setSelectedItems(newSelectedTests)
+    const _selectedTests = toggleItem(selectedTests, item)
+    setSelectedTests(_selectedTests)
   }
 
   const _onResetClickCB = () => {
-    setSelectedItems([])
+    setSelectedTests([])
   }
-  const selectedTests = selectedItems.reduce(
-    (res, ele) => ({
-      ...res,
-      [ele]: true,
-    }),
-    {}
-  )
 
   return (
     <SignedStackedBarWithLineChart
@@ -280,14 +302,9 @@ const Chart = ({
           ? barsDataForExternal
           : barsDataForInternal
       }
-      xAxisDataKey="testId"
+      xAxisDataKey="uniqId"
       lineDataKey="lineScore"
-      lineProps={{
-        strokeDasharray: '5 3',
-        stroke: greyThemeDark1,
-        strokeWidth: 2,
-        strokeWidthActive: 20,
-      }}
+      lineProps={chartLineProps}
       getTooltipJSX={getTooltipJSX}
       getRightTooltipJSX={getRightTooltipJSX}
       barsLabelFormatter={barsLabelFormatter}
@@ -295,15 +312,11 @@ const Chart = ({
       yAxisLabel=""
       getXTickText={getXTickText}
       getXTickTagText={getXTickTagText}
-      filter={selectedTests}
+      filter={selectedTestsFilter}
       onBarClickCB={handleToggleSelectedBars}
       onResetClickCB={_onResetClickCB}
-      margin={{ top: 0, right: 20, left: 20, bottom: 40 }}
-      legendProps={{
-        iconType: 'circle',
-        height: 70,
-        payload: legendPayload,
-      }}
+      margin={chartMargin}
+      legendProps={chartLegendProps}
       yDomain={[0, 150]}
       ticks={[
         0,
@@ -337,13 +350,13 @@ const Chart = ({
 Chart.propTypes = {
   chartData: PropTypes.array.isRequired,
   selectedPerformanceBand: PropTypes.array.isRequired,
-  selectedItems: PropTypes.array,
-  setSelectedItems: PropTypes.func,
+  selectedTests: PropTypes.array,
+  setSelectedTests: PropTypes.func,
 }
 
 Chart.defaultProps = {
-  selectedItems: [],
-  setSelectedItems: () => {},
+  selectedTests: [],
+  setSelectedTests: () => {},
 }
 
 export default Chart

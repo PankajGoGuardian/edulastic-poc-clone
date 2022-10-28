@@ -126,12 +126,12 @@ const MultipleAssessmentReport = ({
 
   const onGoClick = (_settings) => {
     const _requestFilters = {}
-    Object.keys(_settings.filters).forEach((filterType) => {
+    Object.keys(_settings.requestFilters).forEach((filterType) => {
       _requestFilters[filterType] =
-        _settings.filters[filterType] === 'All' ||
-        _settings.filters[filterType] === 'all'
+        _settings.requestFilters[filterType] === 'All' ||
+        _settings.requestFilters[filterType] === 'all'
           ? ''
-          : _settings.filters[filterType]
+          : _settings.requestFilters[filterType]
     })
     setDWMARSettings({
       ...settings,
@@ -241,7 +241,11 @@ const MultipleAssessmentReport = ({
     }
   }, [reportTableData])
 
-  const { selectedPerformanceBand, chartData } = useMemo(() => {
+  const {
+    incompleteTests,
+    selectedPerformanceBand,
+    chartData,
+  } = useMemo(() => {
     // performance band for chart should update post chart data API response
     const { bandInfo = [] } = get(filtersData, 'data.result', {})
     const _selectedPerformanceBand = (
@@ -254,11 +258,11 @@ const MultipleAssessmentReport = ({
     const {
       internalMetricsForChart = [],
       externalMetricsForChart = [],
-      incompleteTests = [],
+      incompleteTests: _incompleteTests = [],
     } = get(reportChartData, 'data.result', {})
     const _internalMetricsForChart = internalMetricsForChart.map((d) => ({
       ...d,
-      isIncomplete: incompleteTests.includes(d.testId),
+      isIncomplete: _incompleteTests.includes(d.testId),
     }))
     const _chartData = getChartData(
       _internalMetricsForChart,
@@ -266,13 +270,13 @@ const MultipleAssessmentReport = ({
       _selectedPerformanceBand
     )
     return {
+      incompleteTests: _incompleteTests,
       selectedPerformanceBand: _selectedPerformanceBand,
       chartData: _chartData,
     }
   }, [reportChartData])
 
   const { tableData, overallAssessmentsData } = useMemo(() => {
-    const { incompleteTests = [] } = get(reportChartData, 'data.result', {})
     const {
       internalMetricsForTable = [],
       externalMetricsForTable = [],
@@ -289,12 +293,12 @@ const MultipleAssessmentReport = ({
       selectedPerformanceBand,
       settings.selectedCompareBy.key
     )
-  }, [reportTableData, reportChartData, selectedPerformanceBand])
+  }, [reportTableData, incompleteTests, selectedPerformanceBand])
 
   const filteredOverallAssessmentsData = filter(
     overallAssessmentsData,
     (test) =>
-      selectedTests.length ? includes(selectedTests, test.testId) : true
+      selectedTests.length ? includes(selectedTests, test.uniqId) : true
   )
 
   return (
@@ -364,8 +368,8 @@ const MultipleAssessmentReport = ({
             <Chart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}
-              selectedItems={selectedTests}
-              setSelectedItems={setSelectedTests}
+              selectedTests={selectedTests}
+              setSelectedTests={setSelectedTests}
             />
             <TableFilters
               updateFilterDropdownCB={updateFilterDropdownCB}
@@ -377,6 +381,7 @@ const MultipleAssessmentReport = ({
             <Table
               tableData={tableData}
               overallAssessmentsData={filteredOverallAssessmentsData}
+              showIncompleteTestsMessage={!!incompleteTests.length}
               settings={settings}
               isSharedReport={isSharedReport}
               onCsvConvert={onCsvConvert}

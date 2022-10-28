@@ -20,6 +20,10 @@ import {
 const { getProficiencyBand, percentage } = reportUtils.common
 const { getAchievementLevels } = dataWarehouseConstants
 
+/**
+ * NOTE: the constants declared here affects only the Multiple Assessment Report in Data Warehouse
+ */
+
 export const staticDropDownData = {
   filterSections: {
     TEST_FILTERS: {

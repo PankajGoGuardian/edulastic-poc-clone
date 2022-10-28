@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { Row } from 'antd'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
+import { StyledH3 } from '../../../../common/styled'
 
 const TableFilters = ({
   updateFilterDropdownCB,
@@ -9,7 +10,8 @@ const TableFilters = ({
   selectedCompareBy,
 }) => {
   return (
-    <Row type="flex" justify="end" align="middle">
+    <Row type="flex" justify="space-between" align="middle">
+      <StyledH3>Performance by {selectedCompareBy?.title || '-'}</StyledH3>
       <ControlDropDown
         prefix="Compare By"
         by={selectedCompareBy}

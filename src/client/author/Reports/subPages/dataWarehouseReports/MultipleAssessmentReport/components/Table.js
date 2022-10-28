@@ -22,6 +22,7 @@ import {
   DashedHr,
   ColorCircle,
   ColorBandRow,
+  StyledH3,
 } from '../../../../common/styled'
 import LargeTag from '../../common/LargeTag'
 
@@ -112,9 +113,8 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
           visibleOn: ['browser'],
           render: (tests = {}) => {
             const currentTest = tests.find((t) => t.uniqId === uniqId)
-            let tooltipText = ''
             if (currentTest) {
-              tooltipText = () => (
+              const tooltipText = (
                 <div>
                   <TooltipRowItem
                     title="Date:"
@@ -139,7 +139,7 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
                   />
                 </div>
               )
-              return currentTest ? (
+              return (
                 <Row type="flex" justify="center">
                   <LargeTag
                     CustomTooltip={CustomTooltip}
@@ -153,10 +153,9 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
                     background={currentTest.band.color}
                   />
                 </Row>
-              ) : (
-                '-'
               )
             }
+            return '-'
           },
         },
         // assessment column to be downloaded in csv
@@ -191,6 +190,7 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
 const AssessmentsTable = ({
   tableData,
   overallAssessmentsData,
+  showIncompleteTestsMessage,
   settings,
   onCsvConvert,
   isCsvDownloading,
@@ -210,6 +210,12 @@ const AssessmentsTable = ({
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
       />
+      {showIncompleteTestsMessage && (
+        <StyledH3 fontSize="10px" fontWeight="normal" margin="20px 0 0 0">
+          * Some assignment(s) for this test are still in progress and hence the
+          results may not be complete
+        </StyledH3>
+      )}
     </TableContainer>
   )
 }

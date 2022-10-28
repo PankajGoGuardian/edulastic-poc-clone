@@ -38,10 +38,11 @@ const InfoButtons = ({
   isStudent,
   handleShowRubricClick,
   displayRubricInfoButton,
+  showHintsToStudents,
 }) => {
   return (
     <FlexContainer justifyContent="flex-start" mt="20px">
-      {!isStudentReport && hintCount > 0 && (
+      {showHintsToStudents && !isStudentReport && hintCount > 0 && (
         <ShowHint
           height="30px"
           isGhost
@@ -88,9 +89,6 @@ const Hints = ({
   penaltyOnUsingHints,
   viewAsStudent,
 }) => {
-  if (showHintsToStudents === false) {
-    return null
-  }
   const { id } = question
   const validHints = useMemo(() => {
     return (question?.hints || []).filter((hint) => hint?.label)
@@ -247,6 +245,7 @@ const Hints = ({
         isStudent={isStudent}
         handleShowRubricClick={handleShowRubricClick}
         displayRubricInfoButton={displayRubricInfoButton}
+        showHintsToStudents={showHintsToStudents}
       />
       {!isStudentReport && hintCount > 0 && (
         <HintsContainer toggleHints={toggleHints}>

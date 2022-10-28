@@ -305,10 +305,14 @@ const getAggregatedDataByUniqId = (metricInfo) => {
           return {
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
-            totalTotalScore:
-              round(parseFloat(ele.totalScore, 10), 2) ||
-              0 + res.totalTotalScore,
-            totalMaxScore: (parseInt(ele.maxScore, 10) || 0) + res.maxScore,
+            totalTotalScore: round(
+              (parseFloat(ele.totalScore, 10) || 0) + res.totalTotalScore,
+              2
+            ),
+            totalMaxScore: round(
+              (parseFloat(ele.maxScore, 10) || 0) + res.maxScore,
+              2
+            ),
             totalStudentCount:
               (parseInt(ele.totalStudentCount, 10) || 0) +
               parseInt(res.totalStudentCount, 10),
@@ -423,7 +427,7 @@ export const getChartData = (
           const _res =
             parseInt(ele.assessmentDate, 10) > res.assessmentDate ? ele : res
           const _totalGraded = parseInt(ele.totalGraded || 0, 10) || 0
-          const _totalScore = round(parseFloat(ele.totalScore || 0, 10), 2) || 0
+          const _totalScore = parseFloat(ele.totalScore || 0, 10) || 0
           const _totalMaxScore =
             parseFloat(ele.maxPossibleScore || 0) * _totalGraded
           return {
@@ -431,8 +435,8 @@ export const getChartData = (
             assessmentDate: parseInt(_res.assessmentDate, 10),
             isIncomplete: _isIncomplete,
             totalGraded: res.totalGraded + _totalGraded,
-            totalScore: res.totalScore + _totalScore,
-            totalMaxScore: res.totalMaxScore + _totalMaxScore,
+            totalScore: round(res.totalScore + _totalScore, 2),
+            totalMaxScore: round(res.totalMaxScore + _totalMaxScore, 2),
           }
         },
         {
@@ -504,14 +508,14 @@ export const getChartData = (
           const _res =
             parseInt(ele.assessmentDate, 10) > res.assessmentDate ? ele : res
           const _totalGraded = parseInt(ele.totalGraded || 0, 10) || 0
-          const _totalScore = parseInt(ele.totalScore || 0, 10) || 0
+          const _totalScore = parseFloat(ele.totalScore || 0, 10) || 0
           const _totalMaxScore = parseFloat(ele.maxScore || 0) * _totalGraded
           return {
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
             totalGraded: res.totalGraded + _totalGraded,
-            totalScore: res.totalScore + _totalScore,
-            totalMaxScore: res.totalMaxScore + _totalMaxScore,
+            totalScore: round(res.totalScore + _totalScore, 2),
+            totalMaxScore: round(res.totalMaxScore + _totalMaxScore, 2),
           }
         },
         {

@@ -62,6 +62,21 @@ import {
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
+const rubricsData = [
+  {
+    _id: '6019969a53e3edad44a47949',
+    name: 'Two Point Rubric Short Response',
+  },
+  {
+    _id: '6019969a53e3edad44a47945',
+    name: '2Point Rubric Short Response',
+  },
+  {
+    _id: '6019969a53e3edad44a4794c',
+    name: 'Two Point Rubric Short Response.',
+  },
+]
+
 const StandardsMasteryReportFilters = ({
   isPrinting,
   user,
@@ -154,6 +169,13 @@ const StandardsMasteryReportFilters = ({
     key: `${domainId}`,
     title: domainGroup[domainId][0].domain,
   }))
+  const rubricsList = rubricsData.map(({ _id, name }) => ({
+    key: `${_id}`,
+    title: name,
+  }))
+  const selectedRubrics = (rubricsList || []).filter((o) =>
+    filters.rubricIds?.includes(o.key)
+  )
   const selectedDomains = (domainsList || []).filter((o) =>
     filters.domainIds?.includes(o.key)
   )
@@ -319,6 +341,7 @@ const StandardsMasteryReportFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
+        rubricIds: [],
         standardId: search.standardId || '',
         assignedBy: urlAssignedBy.key,
       }
@@ -418,19 +441,30 @@ const StandardsMasteryReportFilters = ({
     }
   }
 
-  const onSelectDomain = (domain) => {
-    const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
-      allDomainIds.includes(o)
+  const onMultiOptionSelect = (filter, filterName, optionsList) => {
+    const _selectedIds = toggleItem(
+      filters[filterName],
+      filter.key
+    ).filter((o) => optionsList.map((option) => option.key).includes(o))
+    const selectedTagData = optionsList.filter((d) =>
+      _selectedIds.includes(d.key)
     )
-    const domainTagsData = domainsList.filter((d) => _domainIds.includes(d.key))
-    setTempTagsData({ ...tempTagsData, domainIds: domainTagsData })
-    setFilters({ ...filters, domainIds: _domainIds, showApply: true })
+    const _tempTagsData = { ...tempTagsData }
+    _tempTagsData[filterName] = selectedTagData
+    const _filters = { ...filters, showApply: true }
+    _filters[filterName] = _selectedIds
+    setTempTagsData(_tempTagsData)
+    setFilters(_filters)
   }
 
-  const onChangeDomains = (domains) => {
-    if (!domains?.length) {
-      setTempTagsData({ ...tempTagsData, domainIds: [] })
-      setFilters({ ...filters, domainIds: [], showApply: true })
+  const onMultiOptionChange = (selectedFilters, filterName) => {
+    if (!selectedFilters?.length) {
+      const _tempTagsData = { ...tempTagsData }
+      _tempTagsData[filterName] = []
+      const _filters = { ...filters, showApply: true }
+      _filters[filterName] = []
+      setTempTagsData(_tempTagsData)
+      setFilters(_filters)
     }
   }
 
@@ -850,90 +884,142 @@ const StandardsMasteryReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          <StyledDropDownContainer
-            xs={24}
-            sm={12}
-            lg={6}
-            autoFlex
-            data-cy="standardSet"
-          >
-            <ControlDropDown
-              by={filters.curriculumId}
-              selectCB={(e, selected) =>
-                updateFilterDropdownCB(selected, 'curriculumId', false, true)
-              }
-              data={curriculumsList}
-              prefix="Standard Set"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
-          <StyledDropDownContainer
-            xs={24}
-            sm={12}
-            lg={6}
-            autoFlex
-            data-cy="standardGrade"
-          >
-            <ControlDropDown
-              by={filters.standardGrade}
-              selectCB={(e, selected) =>
-                updateFilterDropdownCB(selected, 'standardGrade', false, true)
-              }
-              data={staticDropDownData.allGrades}
-              prefix="Standard Grade"
-              showPrefixOnSelected={false}
-            />
-          </StyledDropDownContainer>
-          {loc !== 'standards-progress' && standardProficiencyFilter}
-          <StyledDropDownContainer
-            xs={24}
-            sm={12}
-            lg={6}
-            autoFlex
-            data-cy="domain"
-          >
-            <MultipleSelect
-              containerClassName="standards-mastery-report-domain-autocomplete"
-              data={domainsList || []}
-              valueToDisplay={
-                selectedDomains.length > 1
-                  ? { key: '', title: 'Multiple Domains' }
-                  : selectedDomains
-              }
-              by={selectedDomains}
-              prefix="Domains"
-              onSelect={onSelectDomain}
-              onChange={onChangeDomains}
-              placeholder="All Domains"
-              style={{ minWidth: '80px', width: '100%', height: 'auto' }}
-            />
-          </StyledDropDownContainer>
-          {loc === 'standards-progress' && (
+          {loc === 'performance-by-rubric-criteria' ? (
             <StyledDropDownContainer
               xs={24}
               sm={12}
               lg={6}
               autoFlex
-              data-cy="standard"
+              data-cy="rubric-criteria"
+              style={{ maxWidth: '300px' }}
             >
-              <AutocompleteDropDown
-                prefix="Standard"
-                by={
-                  // filters.standardId is searched in standardsList
-                  // to make sure standardId passed via url also sets the correct standard
-                  standardsList.find(
-                    (o) => `${o.key}` === `${filters.standardId}`
-                  ) ||
-                  standardsList[0] || { key: '', title: '' }
+              <MultipleSelect
+                containerClassName="rubric-criteria"
+                data={rubricsList || []}
+                valueToDisplay={
+                  selectedRubrics.length > 1
+                    ? { key: '', title: 'Multiple Rubrics' }
+                    : selectedRubrics
                 }
-                selectCB={(selected) => {
-                  updateFilterDropdownCB(selected, 'standardId', false, true)
+                by={selectedRubrics}
+                prefix="Rubric Criteria"
+                onSelect={(selected) => {
+                  onMultiOptionSelect(selected, 'rubricIds', rubricsList)
                 }}
-                data={standardsList}
+                onChange={(selected) => {
+                  onMultiOptionChange(selected, 'rubricIds')
+                }}
+                placeholder="All Rubrics"
+                style={{ height: 'auto' }}
               />
             </StyledDropDownContainer>
+          ) : (
+            <>
+              <StyledDropDownContainer
+                xs={24}
+                sm={12}
+                lg={6}
+                autoFlex
+                data-cy="standardSet"
+              >
+                <ControlDropDown
+                  by={filters.curriculumId}
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(
+                      selected,
+                      'curriculumId',
+                      false,
+                      true
+                    )
+                  }
+                  data={curriculumsList}
+                  prefix="Standard Set"
+                  showPrefixOnSelected={false}
+                />
+              </StyledDropDownContainer>
+              <StyledDropDownContainer
+                xs={24}
+                sm={12}
+                lg={6}
+                autoFlex
+                data-cy="standardGrade"
+              >
+                <ControlDropDown
+                  by={filters.standardGrade}
+                  selectCB={(e, selected) =>
+                    updateFilterDropdownCB(
+                      selected,
+                      'standardGrade',
+                      false,
+                      true
+                    )
+                  }
+                  data={staticDropDownData.allGrades}
+                  prefix="Standard Grade"
+                  showPrefixOnSelected={false}
+                />
+              </StyledDropDownContainer>
+              {loc !== 'standards-progress' && standardProficiencyFilter}
+              <StyledDropDownContainer
+                xs={24}
+                sm={12}
+                lg={6}
+                autoFlex
+                data-cy="domain"
+              >
+                <MultipleSelect
+                  containerClassName="standards-mastery-report-domain-autocomplete"
+                  data={domainsList || []}
+                  valueToDisplay={
+                    selectedDomains.length > 1
+                      ? { key: '', title: 'Multiple Domains' }
+                      : selectedDomains
+                  }
+                  by={selectedDomains}
+                  prefix="Domains"
+                  onSelect={(selected) => {
+                    onMultiOptionSelect(selected, 'domainIds', domainsList)
+                  }}
+                  onChange={(selected) => {
+                    onMultiOptionChange(selected, 'domainIds')
+                  }}
+                  placeholder="All Domains"
+                  style={{ minWidth: '80px', width: '100%', height: 'auto' }}
+                />
+              </StyledDropDownContainer>
+              {loc === 'standards-progress' && (
+                <StyledDropDownContainer
+                  xs={24}
+                  sm={12}
+                  lg={6}
+                  autoFlex
+                  data-cy="standard"
+                >
+                  <AutocompleteDropDown
+                    prefix="Standard"
+                    by={
+                      // filters.standardId is searched in standardsList
+                      // to make sure standardId passed via url also sets the correct standard
+                      standardsList.find(
+                        (o) => `${o.key}` === `${filters.standardId}`
+                      ) ||
+                      standardsList[0] || { key: '', title: '' }
+                    }
+                    selectCB={(selected) => {
+                      updateFilterDropdownCB(
+                        selected,
+                        'standardId',
+                        false,
+                        true
+                      )
+                    }}
+                    data={standardsList}
+                  />
+                </StyledDropDownContainer>
+              )}
+              {loc === 'standards-progress' && standardProficiencyFilter}
+            </>
           )}
-          {loc === 'standards-progress' && standardProficiencyFilter}
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"

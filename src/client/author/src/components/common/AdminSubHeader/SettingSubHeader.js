@@ -4,7 +4,10 @@ import PropTypes from 'prop-types'
 import { get } from 'lodash'
 import { SubHeaderWrapper, StyledTabPane, StyledSubMenu } from './styled'
 import { getUserRole } from '../../../selectors/user'
-import { getSchoolAdminSettingsAccess } from '../../../../DistrictPolicy/ducks'
+import {
+  getSchoolAdminSettingsAccess,
+  getEnableOneRosterSync,
+} from '../../../../DistrictPolicy/ducks'
 
 class AdminSubHeader extends Component {
   static propTypes = {
@@ -42,7 +45,12 @@ class AdminSubHeader extends Component {
   }
 
   render() {
-    const { active, role, schoolLevelAdminSettings } = this.props
+    const {
+      active,
+      role,
+      schoolLevelAdminSettings,
+      enableOneRosterSync,
+    } = this.props
     return (
       <SubHeaderWrapper>
         {active.mainMenu === 'Settings' && (
@@ -76,7 +84,7 @@ class AdminSubHeader extends Component {
               tab="Standards Proficiency"
               key="Standards Proficiency"
             />
-            {role === 'district-admin' ? (
+            {role === 'district-admin' && enableOneRosterSync ? (
               <StyledTabPane tab="Import Sis Data" key="Import Sis Data" />
             ) : null}
           </StyledSubMenu>
@@ -90,6 +98,7 @@ export default connect(
   (state) => ({
     role: getUserRole(state),
     schoolLevelAdminSettings: getSchoolAdminSettingsAccess(state),
+    enableOneRosterSync: getEnableOneRosterSync(state),
   }),
   {}
 )(AdminSubHeader)

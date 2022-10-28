@@ -288,3 +288,8 @@ export const getSchoolAdminSettingsAccess = createSelector(
   getPolicies,
   (state) => state.schoolAdminSettingsAccess
 )
+
+export const getEnableOneRosterSync = createSelector(
+  getDistrictPolicy,
+  (state) => state.enableOneRosterSync || false
+)

@@ -92,6 +92,7 @@ export const superAdminRoutes = [
   '/author/settings/interested-standards',
   '/author/settings/standards-proficiency',
   '/author/settings/performance-bands',
+  '/author/settings/roster-import',
   // SA routes
   '/author/schoolprofile',
   '/author/settings/schoolpolicies',

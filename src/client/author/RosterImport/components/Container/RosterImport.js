@@ -5,9 +5,11 @@ import {
   RadioGrp,
   EduButton,
 } from '@edulastic/common'
+import { get } from 'lodash'
 import { Popover, Tooltip } from 'antd'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { roleuser } from '@edulastic/constants'
 import DataExport from '../SubContainer/DataExport'
 import RosterHistory from '../SubContainer/RosterHistory'
 import AdminHeader from '../../../src/components/common/AdminHeader/AdminHeader'
@@ -45,8 +47,9 @@ import {
   oneRosterSyncStatus,
   downloadCsvErrorDataAction,
 } from '../../duck'
+import { getEnableOneRosterSync } from '../../../DistrictPolicy/ducks'
 
-import { getUserId } from '../../../src/selectors/user'
+import { getUser } from '../../../src/selectors/user'
 
 const title = 'Manage District'
 const oneRosterSyncType = {
@@ -68,6 +71,9 @@ const RosterImport = ({
   summary,
   syncStatus,
   downloadCsvErrorData,
+  user,
+  enableOneRosterSync,
+  isDistrictPolicyLoading,
 }) => {
   const menuActive = { mainMenu: 'Settings', subMenu: 'Import Sis Data' }
   const showSpin = loading
@@ -75,8 +81,20 @@ const RosterImport = ({
   const [selectedSyncType, setSelectedSyncType] = useState('')
 
   useEffect(() => {
-    loadRosterLogs()
-  }, [])
+    if (
+      user.role !== roleuser.DISTRICT_ADMIN ||
+      (!isDistrictPolicyLoading && !enableOneRosterSync)
+    ) {
+      history.push('/')
+      return
+    }
+    if (
+      user.role === roleuser.DISTRICT_ADMIN ||
+      (!isDistrictPolicyLoading && enableOneRosterSync)
+    ) {
+      loadRosterLogs()
+    }
+  }, [isDistrictPolicyLoading])
 
   const cancelUpload = () => {
     abortUpload()
@@ -117,7 +135,10 @@ const RosterImport = ({
     <CustomSettingsWrapper>
       <AdminHeader title={title} active={menuActive} history={history} />
       <StyledContent>
-        <AdminSubHeader active={menuActive} history={history} />
+        <AdminSubHeader
+          active={isDistrictPolicyLoading ? {} : menuActive}
+          history={history}
+        />
         {showSpin && (
           <StyledSpincontainer loading={showSpin}>
             <StyledSpin size="large" />
@@ -223,13 +244,19 @@ const RosterImport = ({
 
 const withConnect = connect(
   (state) => ({
-    userId: getUserId(state),
+    user: getUser(state),
     loading: getIsLoading(state),
+    isDistrictPolicyLoading: get(
+      state,
+      ['districtPolicyReducer', 'loading'],
+      []
+    ),
     rosterImportLog: getRosterImportLog(state),
     isFileUploading: getIsRosterZipFileUploading(state),
     uploadProgress: getFileUploadProgress(state),
     summary: getOneRosterSyncSummary(state),
     syncStatus: getOneRosterSyncStatus(state),
+    enableOneRosterSync: getEnableOneRosterSync(state),
   }),
   {
     loadRosterLogs: receiveRosterLogAction,

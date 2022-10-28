@@ -551,7 +551,6 @@ export const SignedStackedBarWithLineChart = ({
           {lineDataKey ? (
             // Visible line
             <Line
-              yAxisId="lineChart"
               dataKey={lineDataKey}
               strokeOpacity={fillOpacity.line}
               {...lineProps}
@@ -560,7 +559,6 @@ export const SignedStackedBarWithLineChart = ({
           {lineDataKey ? (
             // invisible line defining activation/hover area for Visible line
             <Line
-              yAxisId="lineChart"
               dataKey={lineDataKey}
               strokeOpacity={0}
               onMouseEnter={() => setFillOpacity({ bar: 0.2, line: 1 })}

@@ -317,25 +317,8 @@ const Chart = ({
       onResetClickCB={_onResetClickCB}
       margin={chartMargin}
       legendProps={chartLegendProps}
-      yDomain={[0, 150]}
-      ticks={[
-        0,
-        10,
-        20,
-        30,
-        40,
-        50,
-        60,
-        70,
-        80,
-        90,
-        100,
-        110,
-        120,
-        130,
-        140,
-        150,
-      ]}
+      yDomain={[0, 100]}
+      ticks={[0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100]}
       pageSize={10}
       hasRoundedBars={false}
       isSignedChart={false}

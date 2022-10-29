@@ -4,10 +4,10 @@ const S3_DATA_WAREHOUSE_FOLDER =
   process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER
 
 const caasppDefaultAchievementLevels = [
-  { id: '9', name: 'No score' }, // for caaspp, id = 9, represents no score
-  { id: '1', name: 'Level 1', color: '#EA9B71' },
-  { id: '2', name: 'Level 2', color: '#D9DD52' },
-  { id: '3', name: 'Level 3', color: '#4198C9' },
+  { id: '9', name: 'No score', rank: 0 }, // for caaspp, id = 9, represents no score
+  { id: '1', name: 'Level 1', color: '#EA9B71', rank: 1 },
+  { id: '2', name: 'Level 2', color: '#D9DD52', rank: 2 },
+  { id: '3', name: 'Level 3', color: '#4198C9', rank: 3 },
 ]
 
 const achievementLevelsGrouped = [
@@ -18,11 +18,11 @@ const achievementLevelsGrouped = [
       'California Science Test (CAST)',
     ],
     data: [
-      { id: '9', name: 'No score' },
-      { id: '1', name: 'Standard Not Met', color: '#EA9C71' },
-      { id: '2', name: 'Standard Nearly Met', color: '#D8DE52' },
-      { id: '3', name: 'Standard Met', color: '#86BD56' },
-      { id: '4', name: 'Standard Exceeded', color: '#4298C9' },
+      { id: '9', name: 'No score', rank: 0 },
+      { id: '1', name: 'Standard Not Met', color: '#EA9C71', rank: 1 },
+      { id: '2', name: 'Standard Nearly Met', color: '#D8DE52', rank: 2 },
+      { id: '3', name: 'Standard Met', color: '#86BD56', rank: 3 },
+      { id: '4', name: 'Standard Exceeded', color: '#4298C9', rank: 4 },
     ],
   },
   {
@@ -72,6 +72,7 @@ const getIReadyAchievementLevels = (test) => {
       active: levelDiff <= -2,
       color: colorBand[0],
       id: 'Two or More Grade Levels Below',
+      rank: 0,
     },
     {
       testId,
@@ -79,6 +80,7 @@ const getIReadyAchievementLevels = (test) => {
       active: isEarly || levelDiff == -1,
       color: colorBand[1],
       id: 'On (Early) Grade Level or One Grade Level Below',
+      rank: 1,
     },
     {
       testId,
@@ -86,6 +88,7 @@ const getIReadyAchievementLevels = (test) => {
       active: isMid || isLate || levelDiff >= 0,
       color: colorBand[2],
       id: 'On (Mid/Late) or Above Grade Level',
+      rank: 2,
     },
   ]
 }
@@ -100,6 +103,7 @@ const getNWEAAchievementLevels = (test) => {
       id: 'Low',
       color: '#76211E',
       active: score < 21,
+      rank: 0,
     },
     {
       testId,
@@ -107,6 +111,7 @@ const getNWEAAchievementLevels = (test) => {
       id: 'LoAvg',
       color: '#E9923F',
       active: score >= 21 && score <= 40,
+      rank: 1,
     },
     {
       testId,
@@ -114,6 +119,7 @@ const getNWEAAchievementLevels = (test) => {
       id: 'Avg',
       color: '#F6C750',
       active: score >= 41 && score <= 60,
+      rank: 2,
     },
     {
       testId,
@@ -121,6 +127,7 @@ const getNWEAAchievementLevels = (test) => {
       id: 'HiAvg',
       color: '#3B8457',
       active: score >= 61 && score <= 80,
+      rank: 3,
     },
     {
       testId,
@@ -128,6 +135,7 @@ const getNWEAAchievementLevels = (test) => {
       id: 'Hi',
       color: '#295FA5',
       active: score >= 80,
+      rank: 4,
     },
   ]
 }

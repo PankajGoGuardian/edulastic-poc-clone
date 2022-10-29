@@ -277,6 +277,7 @@ const getProficiencyBand = (score, bandInfo, field = 'threshold') => {
     orderBy(bandInfo, 'threshold'),
     (band, index) => ({
       ...band,
+      rank: index,
       color: band.color
         ? band.color
         : getHSLFromRange1(round((100 / (bandInfo.length - 1)) * index)),

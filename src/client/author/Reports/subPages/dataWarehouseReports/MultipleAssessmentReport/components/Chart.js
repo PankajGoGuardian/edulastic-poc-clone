@@ -101,26 +101,15 @@ const getRightTooltipJSX = (payload, barIndex) => {
     const recordColor = barData.additionalData[barKey]
     // TODO: find a better way to handle right tooltip state updates
     if (isEmpty(barData) || isEmpty(recordColor)) return null
-    let recordIndex
     const records = barData.records
-    const bar = records.filter((e, index) => {
-      if (e.color === recordColor.fill) recordIndex = index
+    const bar = records.filter((e) => {
       return e.color === recordColor.fill
     })
-    let scoreRange
     let name = bar[0].bandName
     if (barData.externalTestType) {
-      // TODO: scoreRange value is required
-      scoreRange = 'NA'
       const achievementLevels = [...barData.bands]
       name = achievementLevels.filter((e) => e.color === recordColor.fill)[0]
         .name
-    } else if (recordIndex === 0) {
-      scoreRange = `${records[recordIndex].threshold}-100%`
-    } else {
-      scoreRange = `${records[recordIndex].threshold}-${
-        records[recordIndex - 1].threshold
-      }%`
     }
     const colorBandComponent = (
       <ColorBandItem color={bar[0].color} name={name} />
@@ -131,7 +120,6 @@ const getRightTooltipJSX = (payload, barIndex) => {
           title="Students:"
           value={`${bar[0].totalGraded}/${barData.totalGraded}`}
         />
-        <TooltipRowItem title="Score:" value={scoreRange} />
         {barData[barKey] < 10 && (
           <TooltipRowItem title="Student(%):" value={`${barData[barKey]}%`} />
         )}

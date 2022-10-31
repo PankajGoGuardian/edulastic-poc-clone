@@ -10,7 +10,7 @@ import {
   get,
   minBy,
   round,
-  sortBy,
+  meanBy,
 } from 'lodash'
 
 import {
@@ -272,20 +272,10 @@ const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
   }
 }
 
-/**
- * Gets Median if odd elements, else `n/2 - 1`th element in sorted `arr`
- *
- * i.e.
- *
- * if `n` is odd, returns `sortedArr[(n-1)/2]`,
- * if `n` is even, returns `sortedArr[n/2]`
- * @param {number[]} arr array of numbers
- * @returns {number}
- */
-const medianStarBy = (arr, ...iteratees) => {
-  const sortedArr = sortBy(arr, iteratees)
-  const medianIdx = Math.floor((arr.length - 1) / 2)
-  return sortedArr[medianIdx]
+const nearestToAverageBy = (arr, ...iteratees) => {
+  const roundedAvg = round(meanBy(arr, ...iteratees), 2)
+  const item = minBy(arr, (el) => get(el, ...iteratees) - roundedAvg)
+  return item
 }
 
 const augmentBandData = (tests, bandInfo) => {
@@ -326,10 +316,10 @@ const getAggregatedDataByUniqId = (metricInfo) => {
           return {
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
-            totalMaxScore: round(
+            totalTotalScore:
+              (parseFloat(ele.totalScore, 10) || 0) + res.totalTotalScore,
+            totalMaxScore:
               (parseFloat(ele.maxScore, 10) || 0) + res.totalMaxScore,
-              2
-            ),
             totalStudentCount:
               (parseInt(ele.totalStudentCount, 10) || 0) +
               parseInt(res.totalStudentCount, 10),
@@ -338,22 +328,25 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         },
         {
           assessmentDate: 0,
-          maxScore: 0,
+          totalTotalScore: 0,
           totalMaxScore: 0,
           totalStudentCount: 0,
         }
       )
-      testData.totalTotalScore = medianStarBy(
-        groupedByUniqId[uniqId].map((el) => el.totalScore)
+      testData.totalTotalScore = round(testData.totalTotalScore, 2)
+      testData.totalMaxScore = round(testData.totalMaxScore, 2)
+      const { band, bands } = nearestToAverageBy(
+        groupedByUniqId[uniqId],
+        'band.rank'
       )
-      const { band, bands } = medianStarBy(groupedByUniqId[uniqId], 'band.rank')
       testData.band = band
       if (bands) testData.bands = bands
       const averageScore =
         testData.totalTotalScore /
           (testData.externalTestType
             ? testData.totalStudentCount
-            : testData.totalMaxScore) || 0 // mix of averageScore(total/count) & averageFractionalScore(total/max)
+            : testData.totalMaxScore) || 0
+      // mix of averageScore(total/count) & averageFractionalScore(total/max)
       const averageScorePercentage = averageScore * 100
       const _testName = testData.externalTestType
         ? testName
@@ -362,7 +355,7 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         ...testData,
         testName: _testName,
         isIncomplete,
-        averageScore: round(averageScore),
+        averageScore: round(averageScore, 2),
         averageScorePercentage: round(averageScorePercentage, 2),
       }
     })
@@ -399,6 +392,7 @@ export const getTableData = (
   const overallAssessmentsData = getAggregatedDataByUniqId(
     compositeMetricInfoWithBandData
   )
+  console.log(overallAssessmentsData)
 
   // table data for each assessment
   const groupedByCompareByKey = groupByCompareByKey(

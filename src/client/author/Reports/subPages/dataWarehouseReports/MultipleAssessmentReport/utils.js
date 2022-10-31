@@ -179,14 +179,6 @@ export const tableColumnsData = [
     fixed: 'left',
     width: 200,
   },
-  {
-    title: 'Students',
-    key: 'totalStudentCount',
-    dataIndex: 'totalStudentCount',
-    align: 'center',
-    width: 100,
-    visibleOn: ['csv'],
-  },
   // next up are dynamic columns for each assessment
 ]
 
@@ -392,7 +384,6 @@ export const getTableData = (
   const overallAssessmentsData = getAggregatedDataByUniqId(
     compositeMetricInfoWithBandData
   )
-  console.log(overallAssessmentsData)
 
   // table data for each assessment
   const groupedByCompareByKey = groupByCompareByKey(

@@ -11,7 +11,7 @@ export const AssessmentNameContainer = styled.div`
     text-align: center;
     text-decoration: none;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    white-space: ${(props) => (props.isPrinting ? 'normal' : 'nowrap')};
   }
 `
 

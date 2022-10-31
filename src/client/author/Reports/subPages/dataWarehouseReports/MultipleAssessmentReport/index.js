@@ -386,6 +386,7 @@ const MultipleAssessmentReport = ({
               isSharedReport={isSharedReport}
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
+              isPrinting={isPrinting}
             />
           </>
         )}

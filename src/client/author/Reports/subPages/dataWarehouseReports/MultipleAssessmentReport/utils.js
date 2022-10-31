@@ -362,9 +362,12 @@ export const getTableData = (
   compareByKey
 ) => {
   // filter out external tests data without achievement level
-  const filteredExternalMetricInfo = externalMetricInfo.filter(
-    (t) => t.externalTestType && t.achievementLevel
-  )
+  const filteredExternalMetricInfo = externalMetricInfo
+    .filter((t) => t.externalTestType && t.achievementLevel)
+    .map((t) => ({
+      ...t,
+      assessmentDate: +new Date(t.assessmentDate),
+    }))
   const compositeMetricInfo = [
     ...metricInfo,
     ...filteredExternalMetricInfo,
@@ -414,9 +417,12 @@ export const getChartData = (
   bandInfo = []
 ) => {
   // filter out external tests data without achievement level
-  const filteredExternalMetricInfo = externalMetricInfo.filter(
-    (t) => t.externalTestType && t.achievementLevel
-  )
+  const filteredExternalMetricInfo = externalMetricInfo
+    .filter((t) => t.externalTestType && t.achievementLevel)
+    .map((t) => ({
+      ...t,
+      assessmentDate: +new Date(t.assessmentDate),
+    }))
   if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
     return []
   }

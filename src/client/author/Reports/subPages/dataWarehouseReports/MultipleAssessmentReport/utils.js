@@ -325,8 +325,6 @@ const getAggregatedDataByUniqId = (metricInfo) => {
           totalStudentCount: 0,
         }
       )
-      testData.totalTotalScore = round(testData.totalTotalScore, 2)
-      testData.totalMaxScore = round(testData.totalMaxScore, 2)
       const { band, bands } = nearestToAverageBy(
         groupedByUniqId[uniqId],
         'band.rank'
@@ -383,10 +381,6 @@ export const getTableData = (
     compositeMetricInfo,
     bandInfo
   )
-  // overall assessments data for column headers sorted in descending order of assessmentDate
-  const overallAssessmentsData = getAggregatedDataByUniqId(
-    compositeMetricInfoWithBandData
-  )
 
   // table data for each assessment
   const groupedByCompareByKey = groupByCompareByKey(
@@ -408,7 +402,7 @@ export const getTableData = (
   )
   const tableData = augmentMetaData(_tableData, compareByKey, metaInfo)
 
-  return { overallAssessmentsData, tableData }
+  return tableData
 }
 
 export const getChartData = (
@@ -456,8 +450,8 @@ export const getChartData = (
             assessmentDate: parseInt(_res.assessmentDate, 10),
             isIncomplete: _isIncomplete,
             totalGraded: res.totalGraded + _totalGraded,
-            totalScore: round(res.totalScore + _totalScore, 2),
-            totalMaxScore: round(res.totalMaxScore + _totalMaxScore, 2),
+            totalScore: res.totalScore + _totalScore,
+            totalMaxScore: res.totalMaxScore + _totalMaxScore,
           }
         },
         {
@@ -468,8 +462,9 @@ export const getChartData = (
         }
       )
 
-      const averageScore = round(
-        percentage(testData.totalScore, testData.totalMaxScore)
+      const averageScore = percentage(
+        testData.totalScore,
+        testData.totalMaxScore
       )
       const averageScoreBand =
         _bandInfo.find((band) => band.threshold < averageScore) || bandInfo[0]
@@ -486,8 +481,9 @@ export const getChartData = (
         }
         const _record = records.find((r) => r.bandScore == band.threshold) || {}
         if (parseInt(_record.totalGraded, 10)) {
-          _record.totalGradedPercentage = round(
-            percentage(_record.totalGraded, testData.totalGraded)
+          _record.totalGradedPercentage = percentage(
+            _record.totalGraded,
+            testData.totalGraded
           )
         }
         return { ..._default, ..._record }
@@ -498,8 +494,8 @@ export const getChartData = (
         uniqId,
         testName: `${testName} (${testData.testType})`,
         isIncomplete,
-        lineScore: averageScore,
-        averageScore,
+        lineScore: round(averageScore, 2),
+        averageScore: round(averageScore, 2),
         maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
         minScore: get(minBy(records, 'minScore'), 'minScore', 0),
         maxPossibleScore: (
@@ -535,8 +531,8 @@ export const getChartData = (
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
             totalGraded: res.totalGraded + _totalGraded,
-            totalScore: round(res.totalScore + _totalScore, 2),
-            totalMaxScore: round(res.totalMaxScore + _totalMaxScore, 2),
+            totalScore: res.totalScore + _totalScore,
+            totalMaxScore: res.totalMaxScore + _totalMaxScore,
           }
         },
         {
@@ -549,9 +545,7 @@ export const getChartData = (
 
       // TODO: check with Shubhangi and determine by score range
       const lineScore = 50
-      const averageScore = round(
-        testData.totalScore / testData.totalGraded || 0
-      )
+      const averageScore = testData.totalScore / testData.totalGraded || 0
 
       // curate records for each performance criteria of external test
       let _records = []
@@ -575,8 +569,9 @@ export const getChartData = (
         const _record =
           _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
         if (parseInt(_record.totalGraded, 10)) {
-          _record.totalGradedPercentage = round(
-            percentage(_record.totalGraded, testData.totalGraded)
+          _record.totalGradedPercentage = percentage(
+            _record.totalGraded,
+            testData.totalGraded
           )
         }
         return { ..._default, ..._record }
@@ -587,7 +582,7 @@ export const getChartData = (
         uniqId,
         testName,
         lineScore,
-        averageScore,
+        averageScore: round(averageScore, 2),
         maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
         minScore: get(minBy(records, 'minScore'), 'minScore', 0),
         records: _records,

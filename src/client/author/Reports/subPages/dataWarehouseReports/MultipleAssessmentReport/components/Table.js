@@ -3,6 +3,7 @@ import next from 'immer'
 import { Row, Tooltip } from 'antd'
 
 import { reportUtils } from '@edulastic/constants'
+import { round } from 'lodash'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -85,7 +86,6 @@ const getTableColumns = (
         externalTestType,
         isIncomplete = false,
         averageScore,
-        averageScorePercentage,
       } = assessment
       const _testName = isIncomplete ? `${testName} *` : testName
       return [
@@ -105,9 +105,8 @@ const getTableColumns = (
                     ) : null}
                   </StyledSpan>
                   <StyledSpan float="right">
-                    {externalTestType
-                      ? averageScore
-                      : `${averageScorePercentage}%`}
+                    {round(averageScore, 2)}
+                    {!externalTestType && '%'}
                   </StyledSpan>
                 </div>
               </AssessmentNameContainer>
@@ -168,9 +167,7 @@ const getTableColumns = (
           key: uniqId,
           title: `${_testName}${
             externalTestType ? ` (${externalTestType})` : ''
-          } - ${
-            externalTestType ? averageScore : `${averageScorePercentage}%`
-          }`,
+          } - ${round(averageScore, 2)}${externalTestType ? '' : '%'}`,
           align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],

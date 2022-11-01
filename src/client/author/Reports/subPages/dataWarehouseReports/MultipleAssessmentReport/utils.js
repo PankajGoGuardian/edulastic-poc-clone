@@ -10,7 +10,7 @@ import {
   get,
   minBy,
   round,
-  meanBy,
+  sum,
 } from 'lodash'
 
 import {
@@ -264,9 +264,12 @@ const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
   }
 }
 
-const nearestToAverageBy = (arr, ...iteratees) => {
-  const roundedAvg = round(meanBy(arr, ...iteratees), 2)
-  const item = minBy(arr, (el) => get(el, ...iteratees) - roundedAvg)
+const findTestWithAverageBand = (tests) => {
+  const weightedAverageRank =
+    sum(tests.map((t) => get(t, 'band.rank', 0) * t.totalStudentCount || 0)) /
+    sumBy(tests, 'totalStudentCount')
+
+  const item = minBy(tests, (el) => get(el, 'band.rank') - weightedAverageRank)
   return item
 }
 
@@ -325,10 +328,7 @@ const getAggregatedDataByUniqId = (metricInfo) => {
           totalStudentCount: 0,
         }
       )
-      const { band, bands } = nearestToAverageBy(
-        groupedByUniqId[uniqId],
-        'band.rank'
-      )
+      const { band, bands } = findTestWithAverageBand(groupedByUniqId[uniqId])
       testData.band = band
       if (bands) testData.bands = bands
       const averageScore =

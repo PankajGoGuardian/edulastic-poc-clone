@@ -23,19 +23,11 @@ import {
 } from '.'
 import { area2Hyperbola } from './helpers/area2Hyperbola'
 import { area2Parabola2 } from './helpers/area2Parabola2'
+import { getArea2FillColor } from './helpers/getArea2FillColor'
 
 const jxgType = 108
 
 let inequalities = []
-
-const CURVE_FILL = {
-  fillColor: '#FFF8DC',
-  highlightFillColor: '#FFF8DC',
-  fillOpacity: 0.5,
-  highlightFillOpacity: 0.5,
-  strokeColor: 'transparent',
-  highlightStrokeColor: 'transparent',
-}
 
 function getColorParams(color) {
   return {
@@ -56,6 +48,7 @@ function updateShading(board, areaPoint, shapes) {
 
   if (isArray(shapes)) {
     shapes.forEach((shape) => {
+      const colors = getArea2FillColor(inequalities.length)
       switch (shape.type) {
         case JXG.OBJECT_TYPE_CONIC: {
           const { points } = Ellipse.getConfig(shape)
@@ -71,7 +64,7 @@ function updateShading(board, areaPoint, shapes) {
           ])
 
           const inverse = func(areaX, areaY) > 0
-          const ineq = board.$board.create('curve', [[], []], CURVE_FILL)
+          const ineq = board.$board.create('curve', [[], []], colors)
           const mpx = shape.midpoint.X()
           const mpy = shape.midpoint.Y()
 
@@ -126,7 +119,7 @@ function updateShading(board, areaPoint, shapes) {
             { x: points[1].x, y: points[1].y }
           )
           const inverse = func(areaX, areaY) > 0
-          const ineq = board.$board.create('curve', [[], []], CURVE_FILL)
+          const ineq = board.$board.create('curve', [[], []], colors)
           // eslint-disable-next-line func-names
           ineq.updateDataArray = function () {
             const pi = Math.PI / 180
@@ -182,6 +175,7 @@ function updateShading(board, areaPoint, shapes) {
 
           const ineq = board.$board.create('inequality', [shape], {
             inverse,
+            ...colors,
           })
           inequalities.push(ineq)
           break
@@ -193,7 +187,7 @@ function updateShading(board, areaPoint, shapes) {
             y: anc.Y(),
           }))
           const inverse = isInPolygon({ x: areaX, y: areaY }, vertices)
-          const ineq = board.$board.create('curve', [[], []], CURVE_FILL)
+          const ineq = board.$board.create('curve', [[], []], colors)
 
           // eslint-disable-next-line func-names
           ineq.updateDataArray = function () {
@@ -231,7 +225,7 @@ function updateShading(board, areaPoint, shapes) {
           const inverse = [1, 4].includes(direction)
             ? funcY(areaX) > funcX(areaY)
             : funcY(areaX) < funcX(areaY)
-          const ineq = board.$board.create('curve', [[], []], CURVE_FILL)
+          const ineq = board.$board.create('curve', [[], []], colors)
           // eslint-disable-next-line func-names
           ineq.updateDataArray = function () {
             if (board.dragged) {
@@ -300,7 +294,9 @@ function updateShading(board, areaPoint, shapes) {
           break
         }
         case Hyperbola.jxgType: {
-          inequalities.push(area2Hyperbola(board, shape, [areaX, areaY]))
+          inequalities.push(
+            area2Hyperbola(board, shape, [areaX, areaY], colors)
+          )
           break
         }
         case Logarithm.jxgType: {
@@ -310,7 +306,7 @@ function updateShading(board, areaPoint, shapes) {
           const inverse =
             p2.Y() > p1.Y() ? areaY > func(areaX) : areaY < func(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], { inverse, ...colors })
           )
           break
         }
@@ -318,7 +314,10 @@ function updateShading(board, areaPoint, shapes) {
           const points = Object.values(shape.ancestors)
           const inverse = areaY > Sin.makeCallback(...points)(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], {
+              inverse,
+              ...colors,
+            })
           )
           break
         }
@@ -326,7 +325,7 @@ function updateShading(board, areaPoint, shapes) {
           const points = Object.values(shape.ancestors)
           const inverse = areaY > Cos.makeCallback(...points)(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], { inverse, ...colors })
           )
           break
         }
@@ -334,7 +333,7 @@ function updateShading(board, areaPoint, shapes) {
           const points = Object.values(shape.ancestors)
           const inverse = areaY > Tangent.makeCallback(...points)(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], { inverse, ...colors })
           )
           break
         }
@@ -342,7 +341,7 @@ function updateShading(board, areaPoint, shapes) {
           const points = Object.values(shape.ancestors)
           const inverse = areaY > Exponent.makeCallback(...points)(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], { inverse, ...colors })
           )
           break
         }
@@ -350,7 +349,7 @@ function updateShading(board, areaPoint, shapes) {
           const points = Object.values(shape.ancestors)
           const inverse = areaY > Exponent2.makeCallback(...points)(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], { inverse, ...colors })
           )
           break
         }
@@ -358,12 +357,14 @@ function updateShading(board, areaPoint, shapes) {
           const points = Object.values(shape.ancestors)
           const inverse = areaY > Polynom.makeCallback(...points)(areaX)
           inequalities.push(
-            board.$board.create('inequality', [shape], { inverse })
+            board.$board.create('inequality', [shape], { inverse, ...colors })
           )
           break
         }
         case Parabola2.jxgType: {
-          inequalities.push(area2Parabola2(board, shape, [areaX, areaY]))
+          inequalities.push(
+            area2Parabola2(board, shape, [areaX, areaY], colors)
+          )
           break
         }
         default:

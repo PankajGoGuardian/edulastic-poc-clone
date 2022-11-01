@@ -19,7 +19,7 @@ export function area2Hyperbola(board, shape, point) {
     board.$board.removeObject(ineq)
   })
   temp = []
-
+  console.log(shape.points)
   const [xMin, yMax, xMax, yMin] = board.$board.getBoundingBox()
   const midX = shape.midpoint.X()
   const midY = shape.midpoint.Y()

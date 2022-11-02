@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { StyledText, StyledWrapper } from './styled'
 import QuestionScoreCell from './QuestionScoreCell'
 import { Tooltip } from '../../../../common/utils/helpers'
+import { answerStatusTitleMap } from '../../constants'
 
 class QuestionScore extends Component {
   render() {
@@ -55,7 +56,11 @@ class QuestionScore extends Component {
     return (
       <>
         {isTest ? (
-          <StyledWrapper answerStatus={answerStatus} onClick={onClickHandler}>
+          <StyledWrapper
+            answerStatus={answerStatus}
+            onClick={onClickHandler}
+            title={answerStatusTitleMap[answerStatus]}
+          >
             {/* color={getScoreColor(score, maxScore)} */}
             {scoreMode && !isPractice ? (
               <QuestionScoreCell

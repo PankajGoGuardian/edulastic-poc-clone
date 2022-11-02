@@ -140,6 +140,10 @@ import {
   reportStandardsProgressSaga,
 } from './subPages/standardsMasteryReport/standardsProgress/ducks'
 import {
+  reducer as reportPerformanceByRubricsCriteriaReducer,
+  watcherSaga as reportPerformanceByRubricsCriteriaSaga,
+} from './subPages/standardsMasteryReport/performanceByRubricCriteria/ducks'
+import {
   reportEngagementSummaryReducer,
   reportEngagementSummarySaga,
 } from './subPages/engagementReport/EngagementSummary/ducks'
@@ -401,6 +405,7 @@ export const reportReducer = combineReducers({
   sharedReportsReducer,
   reportWholeChildReducer,
   reportMultipleAssessmentDwReducer,
+  reportPerformanceByRubricsCriteriaReducer,
 })
 
 // -----|-----|-----|-----| REDUCER ENDED |-----|-----|-----|----- //
@@ -774,6 +779,7 @@ export function* reportSaga() {
     reportStudentProgressProfileSaga(),
     reportStudentProfileSummarySaga(),
     reportStudentMasteryProfileSaga(),
+    reportPerformanceByRubricsCriteriaSaga(),
     reportStudentAssessmentProfileSaga(),
     reportStandardsPerformanceSummarySaga(),
     reportStandardsGradebookSaga(),

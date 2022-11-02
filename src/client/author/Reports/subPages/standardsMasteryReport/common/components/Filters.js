@@ -173,9 +173,6 @@ const StandardsMasteryReportFilters = ({
     key: `${_id}`,
     title: name,
   }))
-  const selectedRubrics = (rubricsList || []).filter((o) =>
-    filters.rubricIds?.includes(o.key)
-  )
   const selectedDomains = (domainsList || []).filter((o) =>
     filters.domainIds?.includes(o.key)
   )
@@ -312,6 +309,7 @@ const StandardsMasteryReportFilters = ({
       const urlCurriculum =
         curriculumsList.find((item) => item.key === search.curriculumId) ||
         curriculumsList[0]
+      const urlRubric = rubricsList.find((item) => item.key === search.rubricId) || rubricsList[0]
       const urlStandardGrade =
         staticDropDownData.allGrades.find(
           (item) => item.key === search.standardGrade
@@ -341,7 +339,7 @@ const StandardsMasteryReportFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
-        rubricIds: [],
+        rubricId: urlRubric.key,
         standardId: search.standardId || '',
         assignedBy: urlAssignedBy.key,
       }
@@ -360,6 +358,7 @@ const StandardsMasteryReportFilters = ({
           assessmentTypesArr.includes(a.key)
         ),
         curriculumId: urlCurriculum,
+        rubricId: urlRubric.key,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
         assignedBy: urlAssignedBy,
@@ -441,30 +440,19 @@ const StandardsMasteryReportFilters = ({
     }
   }
 
-  const onMultiOptionSelect = (filter, filterName, optionsList) => {
-    const _selectedIds = toggleItem(
-      filters[filterName],
-      filter.key
-    ).filter((o) => optionsList.map((option) => option.key).includes(o))
-    const selectedTagData = optionsList.filter((d) =>
-      _selectedIds.includes(d.key)
+  const onSelectDomain = (domain) => {
+    const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
+      allDomainIds.includes(o)
     )
-    const _tempTagsData = { ...tempTagsData }
-    _tempTagsData[filterName] = selectedTagData
-    const _filters = { ...filters, showApply: true }
-    _filters[filterName] = _selectedIds
-    setTempTagsData(_tempTagsData)
-    setFilters(_filters)
+    const domainTagsData = domainsList.filter((d) => _domainIds.includes(d.key))
+    setTempTagsData({ ...tempTagsData, domainIds: domainTagsData })
+    setFilters({ ...filters, domainIds: _domainIds, showApply: true })
   }
 
-  const onMultiOptionChange = (selectedFilters, filterName) => {
-    if (!selectedFilters?.length) {
-      const _tempTagsData = { ...tempTagsData }
-      _tempTagsData[filterName] = []
-      const _filters = { ...filters, showApply: true }
-      _filters[filterName] = []
-      setTempTagsData(_tempTagsData)
-      setFilters(_filters)
+  const onChangeDomains = (domains) => {
+    if (!domains?.length) {
+      setTempTagsData({ ...tempTagsData, domainIds: [] })
+      setFilters({ ...filters, domainIds: [], showApply: true })
     }
   }
 
@@ -893,24 +881,14 @@ const StandardsMasteryReportFilters = ({
               data-cy="rubric-criteria"
               style={{ maxWidth: '300px' }}
             >
-              <MultipleSelect
-                containerClassName="rubric-criteria"
-                data={rubricsList || []}
-                valueToDisplay={
-                  selectedRubrics.length > 1
-                    ? { key: '', title: 'Multiple Rubrics' }
-                    : selectedRubrics
+              <ControlDropDown
+                by={filters.rubricId}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'rubricId', false, true)
                 }
-                by={selectedRubrics}
-                prefix="Rubric Criteria"
-                onSelect={(selected) => {
-                  onMultiOptionSelect(selected, 'rubricIds', rubricsList)
-                }}
-                onChange={(selected) => {
-                  onMultiOptionChange(selected, 'rubricIds')
-                }}
-                placeholder="All Rubrics"
-                style={{ height: 'auto' }}
+                data={rubricsList}
+                prefix="Rubric"
+                showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>
           ) : (
@@ -977,12 +955,8 @@ const StandardsMasteryReportFilters = ({
                   }
                   by={selectedDomains}
                   prefix="Domains"
-                  onSelect={(selected) => {
-                    onMultiOptionSelect(selected, 'domainIds', domainsList)
-                  }}
-                  onChange={(selected) => {
-                    onMultiOptionChange(selected, 'domainIds')
-                  }}
+                  onSelect={onSelectDomain}
+                  onChange={onChangeDomains}
                   placeholder="All Domains"
                   style={{ minWidth: '80px', width: '100%', height: 'auto' }}
                 />

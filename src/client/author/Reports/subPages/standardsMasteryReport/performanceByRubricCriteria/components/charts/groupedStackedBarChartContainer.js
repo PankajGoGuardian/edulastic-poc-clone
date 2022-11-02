@@ -1,68 +1,100 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import { GroupedStackedBarChart } from '../../../../../common/components/charts/groupedStackedBarChart'
+import { getChartData } from '../../utils/transformers'
 
-// {
-// 	data: [{ // represents bar in chart
-//    rubricId: string
-//    criteriaId: string
-//    criteriaScore: number
-//    criteriaMaxScore: number
-//     studentsByRating: {
-// 			[rating-id]: number // no. of students having this rating
-// 		},
-// 		totalStudents: number
-// 	}],
-// 	rubrics: [{
-// 		_id
-// 		name
-// 		description
-// 		criteria: [{}]
-// 	}]
-// }
+import {
+  TooltipRow,
+  TooltipRowTitle,
+  TooltipRowValue,
+  DashedHr,
+  ColorCircle,
+  ColorBandRow,
+} from '../../../../../common/styled'
 
-const Data = {
-  data: [
-    {
-      rubricId: 1,
-      criteriaId: 1,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      studentsByRating: {
-        1: 20,
-        2: 12,
-        3: 30,
-      },
-      totalStudents: 50,
-    },
-    {
-      rubricId: 1,
-      criteriaId: 2,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      studentsByRating: {
-        1: 10,
-        2: 9,
-        3: 7,
-      },
-      totalStudents: 50,
-    },
-  ],
-  rubrics: [
-    {
-      _id: 1,
-      name: 'rubric sample',
-      // criteria: []
-    },
-  ],
+const TooltipRowItem = ({ title = '', value = '' }) => (
+  <TooltipRow>
+    <TooltipRowTitle>{`${title}`}</TooltipRowTitle>
+    <TooltipRowValue>{value}</TooltipRowValue>
+  </TooltipRow>
+)
+
+const ColorBandItem = ({ name, color, highlight }) => {
+  let style = {}
+  if (highlight) {
+    style = { fontSize: '15px', fontWeight: 'bold' }
+  }
+  return (
+    <ColorBandRow>
+      <ColorCircle color={color} />
+      <TooltipRowValue style={style}>{name}</TooltipRowValue>
+    </ColorBandRow>
+  )
 }
 
-const GroupedStackedBarChartContainer = ({ chartData }) => {
-  // process chart data here
-  const data = chartData
+const getTooltipJSX = (payload, barIndex) => {
+  console.log('payload', payload)
+  console.log('index', barIndex)
+  // if (payload && payload.length && barIndex !== null) {
+  //   const barData = payload[0].payload
+  //   let colorBandComponent = null
+  //   if (barData.externalTestType) {
+  //     const achievementLevels = [...barData.achievementLevelBands].reverse()
+  //     colorBandComponent = (
+  //       <>
+  //         <TooltipRowItem title={`${achievementLevels.length} color band`} />
+  //         {achievementLevels.map((band) => (
+  //           <ColorBandItem
+  //             highlight={band.active}
+  //             color={band.color}
+  //             name={band.name}
+  //           />
+  //         ))}
+  //       </>
+  //     )
+  //   } else {
+  //     colorBandComponent = (
+  //       <ColorBandItem color={barData.band.color} name={barData.band.name} />
+  //     )
+  //   }
+  //   return (
+  //     <div>
+  //       <TooltipRowItem
+  //         title="Score:"
+  //         value={
+  //           barData.externalTestType
+  //             ? barData.totalScore
+  //             : `${round(barData.averageScore, 2)}%`
+  //         }
+  //       />
+  //       <DashedHr />
+  //       {colorBandComponent}
+  //     </div>
+  //   )
+  // }
+  return null
+}
+
+const GroupedStackedBarChartContainer = ({ data }) => {
+  const { barsData, renderData } = useMemo(() => getChartData(data), [data])
+
+  const getXTickText = (payload, _data) => {
+    return _data[payload.index]?.criteriaName || '-'
+  }
 
   return (
     <div>
-      <GroupedStackedBarChart data={data} />
+      <GroupedStackedBarChart
+        barsData={barsData}
+        data={renderData}
+        primaryXAxisDataKey="criteriaName"
+        secondaryXAxisDataKey="secondaryAxisLabel"
+        yAxisLabel="Response %"
+        getXTickText={getXTickText}
+        getTooltipJSX={getTooltipJSX}
+        hasBarInsideLabels
+        hasRoundedBars
+        hasBarTopLabels
+      />
     </div>
   )
 }

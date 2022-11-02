@@ -6,14 +6,11 @@ import {
   Cell,
   XAxis,
   YAxis,
-  CartesianGrid,
   Tooltip,
   ResponsiveContainer,
   LabelList,
-  Legend,
-  ReferenceLine,
 } from 'recharts'
-import { isEmpty, findLast } from 'lodash'
+import { isEmpty, findLast, startCase } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -70,37 +67,38 @@ const LabelText = ({
 }
 
 export const GroupedStackedBarChart = ({
-  margin = { top: 0, right: 60, left: 60, bottom: 0 },
-  legendProps = {
-    wrapperStyle: { top: -10 },
-  },
-  xTickTooltipPosition = 420,
-  xTickToolTipWidth = 200,
+  margin = { top: 0, right: 60, left: 10, bottom: 50 },
+  // legendProps = {
+  //   wrapperStyle: { top: -10 },
+  // },
+  // xTickTooltipPosition = 420,
+  // xTickToolTipWidth = 200,
   pageSize: _pageSize,
   barsData,
   data = [],
-  yDomain = [-100, 110],
-  ticks = [-100, -81, -54, -27, 27, 54, 81, 110],
-  xAxisDataKey,
-  onBarClickCB,
-  onResetClickCB,
+  // yDomain = [0, 110],
+  // ticks = [-100, -81, -54, -27, 27, 54, 81, 110],
+  primaryXAxisDataKey,
+  secondaryXAxisDataKey,
+  // onBarClickCB,
+  // onResetClickCB,
   getXTickText,
-  getXTickTagText,
+  // getXTickTagText,
   getTooltipJSX,
   yAxisLabel = '',
-  yTickFormatter = (val) => `${val}%`,
+  // yTickFormatter = (val) => `${val}%`,
   barsLabelFormatter = _barsLabelFormatter,
-  referenceLine = 0,
+  // referenceLine = 0,
   filter = {},
   hasRoundedBars = true,
-  isSignedChart = true,
-  hideYAxis = false,
-  hideCartesianGrid = false,
-  hideLegend = false,
-  hasBarTopLabels = false,
+  // isSignedChart = true,
+  // hideYAxis = false,
+  // hideCartesianGrid = false,
+  // hideLegend = false,
+  hasBarTopLabels = true,
   hasBarInsideLabels = true,
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
-  setBackendPagination,
+  // setBackendPagination,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -108,13 +106,14 @@ export const GroupedStackedBarChart = ({
     endIndex: pageSize - 1,
   })
   const [barIndex, setBarIndex] = useState(null)
-  const [activeLegend, setActiveLegend] = useState(null)
-  const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
-    visibility: 'hidden',
-    x: null,
-    y: null,
-    content: null,
-  })
+  const [secondaryAxisName, setSecondaryAxisName] = useState('')
+  // const [activeLegend, setActiveLegend] = useState(null)
+  // const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
+  //   visibility: 'hidden',
+  //   x: null,
+  //   y: null,
+  //   content: null,
+  // })
   const [hoveredBarDimensions, setHoveredBarDimensions] = useState({
     x: 0,
     y: 0,
@@ -134,7 +133,7 @@ export const GroupedStackedBarChart = ({
       transform: translate(${hoveredBarDimensions?.x}px, ${
       hoveredBarDimensions?.y
     }px);
-      pointer-events: none;  
+      pointer-events: none;
       position: absolute;
       top: -${
         tooltipHeight + spaceForLittleTriangle + spaceForPercentageLabel
@@ -146,11 +145,9 @@ export const GroupedStackedBarChart = ({
 
   const constants = {
     COLOR_BLACK: '#010101',
-    TICK_FILL: { fill: '#010101', fontWeight: 'bold' },
     Y_AXIS_LABEL: {
       value: yAxisLabel.toUpperCase(),
       angle: -90,
-      dx: 25,
       fontSize: 14,
     },
   }
@@ -193,13 +190,13 @@ export const GroupedStackedBarChart = ({
     }
   }
 
-  const onBarClick = (args) => {
-    onBarClickCB(args[xAxisDataKey])
-  }
+  // const onBarClick = (args) => {
+  //   onBarClickCB(args[xAxisDataKey])
+  // }
 
-  const onResetClick = () => {
-    onResetClickCB()
-  }
+  // const onResetClick = () => {
+  //   onResetClickCB()
+  // }
 
   const onBarMouseOver = (index, shouldUpdateHoveredBar = false) => (event) => {
     setBarIndex(index)
@@ -231,45 +228,47 @@ export const GroupedStackedBarChart = ({
     setBarIndex(null)
   }
 
-  const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
-  const onLegendMouseLeave = () => setActiveLegend(null)
+  // const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
+  // const onLegendMouseLeave = () => setActiveLegend(null)
 
-  const setLegendMargin = (value) => {
-    return <span style={{ marginRight: '30px' }}>{value}</span>
-  }
+  // const setLegendMargin = (value) => {
+  //   return <span style={{ marginRight: '30px' }}>{value}</span>
+  // }
 
-  const onXAxisTickTooltipMouseOver = (payload) => {
-    const { coordinate } = payload
-    let content
-    if (getXTickText) {
-      content = getXTickText(payload, renderData)
-    } else {
-      content = payload.value
-    }
+  // const onXAxisTickTooltipMouseOver = (payload) => {
+  //   const { coordinate } = payload
+  //   let content
+  //   if (getXTickText) {
+  //     content = getXTickText(payload, renderData)
+  //   } else {
+  //     content = payload.value
+  //   }
 
-    data = {
-      visibility: 'visible',
-      x: `${calculateXCoordinateOfXAxisToolTip(
-        coordinate,
-        xTickToolTipWidth
-      )}px`,
-      y: `${xTickTooltipPosition}px`,
-      content,
-    }
-    setXAxisTickTooltipData(data)
-  }
+  //   data = {
+  //     visibility: 'visible',
+  //     x: `${calculateXCoordinateOfXAxisToolTip(
+  //       coordinate,
+  //       xTickToolTipWidth
+  //     )}px`,
+  //     y: `${xTickTooltipPosition}px`,
+  //     content,
+  //   }
+  //   setXAxisTickTooltipData(data)
+  // }
 
-  const onXAxisTickTooltipMouseOut = () => {
-    setXAxisTickTooltipData({
-      visibility: 'hidden',
-      x: null,
-      y: null,
-      content: null,
-    })
-  }
+  // const onXAxisTickTooltipMouseOut = () => {
+  //   setXAxisTickTooltipData({
+  //     visibility: 'hidden',
+  //     x: null,
+  //     y: null,
+  //     content: null,
+  //   })
+  // }
 
-  const barKeys = useMemo(() =>
-    barsData.map((bdItem, bdIndex) => ({ key: bdItem.key, idx: bdIndex }))
+  const barKeys = useMemo(
+    () =>
+      barsData.map((bdItem, bdIndex) => ({ key: bdItem.key, idx: bdIndex })),
+    [barsData]
   )
   const isRoundBar = (barData, bdIndex) => {
     if (hasRoundedBars) {
@@ -283,31 +282,44 @@ export const GroupedStackedBarChart = ({
     return false
   }
 
+  const renderRubricsTick = (tickProps) => {
+    const { x, y, payload } = tickProps
+    const { value } = payload
+
+    return (
+      <text x={x} y={y + 40} textAnchor="middle" fontSize={20}>
+        {startCase(value)}
+      </text>
+    )
+  }
+
   // chart navigation visibility and control
-  const chartNavLeftVisibility = backendPagination
-    ? backendPagination.page > 1
-    : !(pagination.startIndex == 0)
-  const chartNavRightVisibility = backendPagination
-    ? backendPagination.page < backendPagination.pageCount
-    : !(chartData.length <= pagination.endIndex + 1)
-  const chartNavLeftClick = () =>
-    backendPagination
-      ? setBackendPagination({
-          ...backendPagination,
-          page: backendPagination.page - 1,
-        })
-      : scrollLeft()
-  const chartNavRightClick = () =>
-    backendPagination
-      ? setBackendPagination({
-          ...backendPagination,
-          page: backendPagination.page + 1,
-        })
-      : scrollRight()
+  // const chartNavLeftVisibility = backendPagination
+  //   ? backendPagination.page > 1
+  //   : !(pagination.startIndex == 0)
+
+  // const chartNavRightVisibility = backendPagination
+  //   ? backendPagination.page < backendPagination.pageCount
+  //   : !(chartData.length <= pagination.endIndex + 1)
+
+  // const chartNavLeftClick = () =>
+  //   backendPagination
+  //     ? setBackendPagination({
+  //         ...backendPagination,
+  //         page: backendPagination.page - 1,
+  //       })
+  //     : scrollLeft()
+  // const chartNavRightClick = () =>
+  //   backendPagination
+  //     ? setBackendPagination({
+  //         ...backendPagination,
+  //         page: backendPagination.page + 1,
+  //       })
+  //     : scrollRight()
 
   return (
     <StyledSignedStackedBarChartContainer>
-      <ResetButtonClear
+      {/* <ResetButtonClear
         onClick={onResetClick}
         style={
           Object.keys(filter).length > 0
@@ -316,8 +328,8 @@ export const GroupedStackedBarChart = ({
         }
       >
         Reset
-      </ResetButtonClear>
-      <StyledChartNavButton
+      </ResetButtonClear> */}
+      {/* <StyledChartNavButton
         type="primary"
         shape="circle"
         icon="caret-left"
@@ -327,8 +339,8 @@ export const GroupedStackedBarChart = ({
         style={{
           visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
         }}
-      />
-      <StyledChartNavButton
+      /> */}
+      {/* <StyledChartNavButton
         type="primary"
         shape="circle"
         icon="caret-right"
@@ -338,8 +350,8 @@ export const GroupedStackedBarChart = ({
         style={{
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
         }}
-      />
-      <CustomXAxisTickTooltipContainer
+      /> */}
+      {/* <CustomXAxisTickTooltipContainer
         x={xAxisTickTooltipData.x}
         y={xAxisTickTooltipData.y}
         visibility={xAxisTickTooltipData.visibility}
@@ -347,7 +359,7 @@ export const GroupedStackedBarChart = ({
         width={xTickToolTipWidth}
       >
         {xAxisTickTooltipData.content}
-      </CustomXAxisTickTooltipContainer>
+      </CustomXAxisTickTooltipContainer> */}
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           width={730}
@@ -356,16 +368,13 @@ export const GroupedStackedBarChart = ({
           stackOffset="sign"
           margin={margin}
         >
-          {!hideCartesianGrid ? (
-            <CartesianGrid vertical={false} strokeWidth={0.5} />
-          ) : null}
           <XAxis
-            dataKey={xAxisDataKey}
+            dataKey={primaryXAxisDataKey}
             tick={
               <CustomChartXTick
                 data={renderData}
                 getXTickText={getXTickText}
-                getXTickTagText={getXTickTagText}
+                // getXTickTagText={getXTickTagText}
                 fontWeight={600}
               />
             }
@@ -373,19 +382,24 @@ export const GroupedStackedBarChart = ({
             tickMargin={20}
             stroke={greyLight1}
             interval={0}
-            onMouseOver={onXAxisTickTooltipMouseOver}
-            onMouseOut={onXAxisTickTooltipMouseOut}
+            // onMouseOver={onXAxisTickTooltipMouseOver}
+            // onMouseOut={onXAxisTickTooltipMouseOut}
           />
-          {!hideYAxis ? (
-            <YAxis
-              type="number"
-              domain={yDomain}
-              tick={constants.TICK_FILL}
-              ticks={ticks}
-              tickFormatter={yTickFormatter}
-              label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
-            />
-          ) : null}
+          <XAxis
+            padding={{ top: 0 }}
+            dataKey={secondaryXAxisDataKey}
+            axisLine={false}
+            tickLine={false}
+            interval={0}
+            tick={renderRubricsTick}
+            xAxisId="rubric-name"
+          />
+          <YAxis
+            axisLine={false}
+            tick={false}
+            domain={[0, 100]}
+            label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
+          />
           <Tooltip
             cursor={false}
             position={{ x: hoveredBarDimensions.x, y: hoveredBarDimensions.y }}
@@ -396,25 +410,12 @@ export const GroupedStackedBarChart = ({
               />
             }
           />
-          {!hideLegend ? (
-            <Legend
-              align="right"
-              verticalAlign="top"
-              onMouseEnter={onLegendMouseEnter}
-              onMouseLeave={onLegendMouseLeave}
-              {...legendProps}
-              formatter={setLegendMargin}
-            />
-          ) : null}
-          {isSignedChart ? (
-            <ReferenceLine y={referenceLine} stroke={constants.COLOR_BLACK} />
-          ) : null}
           {barsData.map((bdItem, bdIndex) => {
-            let fillOpacity = 1
+            // let fillOpacity = 1
 
-            if (activeLegend && activeLegend !== bdItem.key) {
-              fillOpacity = 0.2
-            }
+            // if (activeLegend && activeLegend !== bdItem.key) {
+            //   fillOpacity = 0.2
+            // }
 
             return (
               <Bar
@@ -424,68 +425,62 @@ export const GroupedStackedBarChart = ({
                 stackId={bdItem.stackId}
                 fill={bdItem.fill}
                 unit={bdItem.unit}
-                onClick={onBarClick}
+                isAnimationActive={false}
+                // onClick={onBarClick}
                 barSize={45}
-                onMouseOver={onBarMouseOver(bdIndex, true)}
-                onMouseLeave={onBarMouseLeave(bdIndex)}
+                maxBarSize={45}
+                // onMouseOver={onBarMouseOver(bdIndex, true)}
+                // onMouseLeave={onBarMouseLeave(bdIndex)}
               >
-                {hasBarTopLabels ? (
-                  <LabelList
-                    dataKey={bdItem.topLabelKey}
-                    position="top"
-                    fill="#010101"
-                    onMouseOver={onBarMouseOver(bdIndex, true)}
-                    onMouseLeave={onBarMouseLeave(bdIndex)}
-                  />
-                ) : null}
-                {hasBarInsideLabels ? (
-                  <LabelList
-                    dataKey={bdItem.insideLabelKey}
-                    position="inside"
-                    fill="#010101"
-                    offset={5}
-                    onMouseOver={onBarMouseOver(bdIndex)}
-                    onMouseLeave={onBarMouseLeave(bdIndex)}
-                    content={
-                      <LabelText
-                        position="inside"
-                        onBarMouseOver={onBarMouseOver}
-                        onBarMouseLeave={onBarMouseLeave}
-                        bdIndex={bdIndex}
-                        formatter={barsLabelFormatter}
-                      />
-                    }
-                  />
-                ) : null}
+                <LabelList
+                  dataKey={bdItem.topLabelKey}
+                  position="top"
+                  fill="#010101"
+                  onMouseOver={onBarMouseOver(bdIndex, true)}
+                  onMouseLeave={onBarMouseLeave(bdIndex)}
+                />
+                <LabelList
+                  dataKey={bdItem.insideLabelKey}
+                  position="inside"
+                  fill="#010101"
+                  offset={5}
+                  onMouseOver={onBarMouseOver(bdIndex)}
+                  onMouseLeave={onBarMouseLeave(bdIndex)}
+                  content={
+                    <LabelText
+                      position="inside"
+                      onBarMouseOver={onBarMouseOver}
+                      onBarMouseLeave={onBarMouseLeave}
+                      bdIndex={bdIndex}
+                      formatter={barsLabelFormatter}
+                    />
+                  }
+                />
                 {renderData.map((cdItem) =>
-                  filter[cdItem[xAxisDataKey]] || isEmpty(filter) ? (
+                  filter[cdItem[primaryXAxisDataKey]] || isEmpty(filter) ? (
                     <Cell
                       radius={
                         isRoundBar(cdItem, bdIndex)
                           ? [10, 10, 0, 0]
                           : [0, 0, 0, 0]
                       }
-                      key={cdItem[xAxisDataKey]}
-                      fill={
-                        cdItem.additionalData?.[bdItem.key]?.fill ||
-                        cdItem.fill ||
-                        bdItem.fill
-                      }
-                      fillOpacity={
-                        cdItem.additionalData?.[bdItem.key]?.fillOpacity ||
-                        cdItem.fillOpacity ||
-                        fillOpacity
-                      }
+                      key={cdItem[primaryXAxisDataKey]}
+                      fill={bdItem.fill}
+                      // fillOpacity={
+                      //   cdItem.additionalData?.[bdItem.key]?.fillOpacity ||
+                      //   cdItem.fillOpacity ||
+                      //   fillOpacity
+                      // }
                       stroke={
                         cdItem.additionalData?.[bdItem.key]?.stroke ||
                         cdItem.stroke ||
                         null
                       }
-                      strokeOpacity={
-                        cdItem.additionalData?.[bdItem.key]?.strokeOpacity ||
-                        cdItem.strokeOpacity ||
-                        fillOpacity
-                      }
+                      // strokeOpacity={
+                      //   cdItem.additionalData?.[bdItem.key]?.strokeOpacity ||
+                      //   cdItem.strokeOpacity ||
+                      //   fillOpacity
+                      // }
                       strokeWidth={
                         cdItem.additionalData?.[bdItem.key]?.strokeWidth ||
                         cdItem.strokeWidth ||
@@ -499,7 +494,7 @@ export const GroupedStackedBarChart = ({
                           ? [10, 10, 0, 0]
                           : [0, 0, 0, 0]
                       }
-                      key={cdItem[xAxisDataKey]}
+                      key={cdItem[primaryXAxisDataKey]}
                       fill="#c0c0c0"
                     />
                   )

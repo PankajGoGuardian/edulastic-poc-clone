@@ -277,207 +277,90 @@ const fetchGeneratedCSVs = () =>
     .then(({ data }) => data.result)
 
 const CHART_DATA = {
-  metrics: [
-    {
-      rubricId: 1,
-      criteriaId: 1,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      responsesByRating: {
-        1: 20,
-        2: 12,
-        3: 30,
+  "data": [
+      {
+          "criteriaId": "6b8be93e-7249-422d-9da5-6b70349f9e5d",
+          "responsesByRating": {
+              "fab93a9d-1552-4745-93ee-9b7a06aba8a8": 4
+          }
       },
-      totalResponses: 80,
-    },
-    {
-      rubricId: 1,
-      criteriaId: 2,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      responsesByRating: {
-        4: 10,
-        5: 9,
-        6: 7,
-      },
-      totalResponses: 30,
-    },
-    {
-      rubricId: 2,
-      criteriaId: 3,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      responsesByRating: {
-        7: 13,
-        8: 12,
-        9: 8,
-      },
-      totalResponses: 80,
-    },
-    {
-      rubricId: 2,
-      criteriaId: 4,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      responsesByRating: {
-        10: 16,
-        11: 8,
-        12: 7,
-        13: 5,
-      },
-      totalResponses: 40,
-    },
-    {
-      rubricId: 2,
-      criteriaId: 5,
-      criteriaScore: 2,
-      criteriaMaxScore: 2,
-      responsesByRating: {
-        14: 6,
-        15: 18,
-        16: 7,
-        17: 15,
-      },
-      totalResponses: 40,
-    },
+      {
+          "criteriaId": "a12411ed-5d43-46dc-8b20-122e98b7dc00",
+          "responsesByRating": {
+              "f71b8136-6a46-487b-b81d-4c27b38e9514": 2,
+              "32b1b971-bd8e-4079-b5e4-f9bdafc4d33e": 2
+          }
+      }
   ],
-  rubrics: [
-    {
-      id: 1,
-      name: 'rubric 1',
-      criteria: [
-        {
-          id: 1,
-          name: 'organizational skill',
-          ratings: [
-            {
-              id: 1,
-              name: 'rating 1',
-              fill: '#E55C5C',
-            },
-            {
-              id: 2,
-              name: 'rating 2',
-              fill: '#FFFF00',
-            },
-            {
-              id: 3,
-              name: 'rating 3',
-              fill: '#00FF00',
-            },
-          ],
-        },
-        {
-          id: 2,
-          name: 'speaking skill',
-          ratings: [
-            {
-              id: 4,
-              name: 'rating 4',
-              fill: '#E55C5C',
-            },
-            {
-              id: 5,
-              name: 'rating 5',
-              fill: '#FFFF00',
-            },
-            {
-              id: 6,
-              name: 'rating 6',
-              fill: '#00FF00',
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 2,
-      name: 'rubric 2',
-      criteria: [
-        {
-          id: 3,
-          name: 'organizational skill',
-          ratings: [
-            {
-              id: 7,
-              name: 'rating 7',
-              fill: '#E55C5C',
-            },
-            {
-              id: 8,
-              name: 'rating 8',
-              fill: '#FFFF00',
-            },
-            {
-              id: 9,
-              name: 'rating 9',
-              fill: '#00FF00',
-            },
-          ],
-        },
-        {
-          id: 4,
-          name: 'speaking skill',
-          ratings: [
-            {
-              id: 10,
-              name: 'rating 10',
-              fill: '#E55C5C',
-            },
-            {
-              id: 11,
-              name: 'rating 11',
-              fill: '#FFFF00',
-            },
-            {
-              id: 12,
-              name: 'rating 12',
-              fill: '#00FF00',
-            },
-            {
-              id: 13,
-              name: 'rating 13',
-              fill: '#E55C5C',
-            },
-          ],
-        },
-        {
-          id: 5,
-          name: 'speaking skill',
-          ratings: [
-            {
-              id: 14,
-              name: 'rating 14',
-              fill: '#E55C5C',
-            },
-            {
-              id: 15,
-              name: 'rating 15',
-              fill: '#FFFF00',
-            },
-            {
-              id: 16,
-              name: 'rating 16',
-              fill: '#00FF00',
-            },
-            {
-              id: 17,
-              name: 'rating 17',
-              fill: '#E55C5C',
-            },
-          ],
-        },
-      ],
-    },
-  ],
+  "rubric": {
+      "_id": "6363514390f26d00082f1ee2",
+      "name": "Rubric With 2 criteria",
+      "description": "",
+      "criteria": [
+          {
+              "ratings": [
+                  {
+                      "name": "Rating 1",
+                      "desc": "",
+                      "id": "f71b8136-6a46-487b-b81d-4c27b38e9514",
+                      "points": 0
+                  },
+                  {
+                      "name": "Rating 2",
+                      "desc": "",
+                      "id": "32b1b971-bd8e-4079-b5e4-f9bdafc4d33e",
+                      "points": 1
+                  }
+              ],
+              "name": "Criteria 1",
+              "id": "a12411ed-5d43-46dc-8b20-122e98b7dc00"
+          },
+          {
+              "ratings": [
+                  {
+                      "name": "Rating 1",
+                      "desc": "",
+                      "id": "e41fe22d-99b8-4c7f-a748-9b62ccf715e9",
+                      "points": 0
+                  },
+                  {
+                      "name": "Rating 2",
+                      "desc": "",
+                      "id": "24a00593-7a44-4a29-9915-2bccc4e822bc",
+                      "points": 1
+                  },
+                  {
+                      "name": "Rating 3",
+                      "desc": "",
+                      "id": "fab93a9d-1552-4745-93ee-9b7a06aba8a8",
+                      "points": 2
+                  }
+              ],
+              "name": "Criteria 2",
+              "id": "6b8be93e-7249-422d-9da5-6b70349f9e5d"
+          }
+      ]
+  }
 }
-const fetchPerformanceByRubricsCriteriaChartData = () =>
-  new Promise((resolve) => resolve(CHART_DATA))
+const fetchPerformanceByRubricsCriteriaChartData = (params) =>
+  Promise.resolve(JSON.parse(JSON.stringify(CHART_DATA))) ||
+  api
+    .callApi({
+      url: '/report/performance-by-rubric/chart',
+      params,
+    })
+    .then((res) => res.data.result)
 
 const TABLE_DATA = {}
 
-const fetchPerformanceByRubricsCriteriaTableData = () =>
-  new Promise((resolve) => resolve(TABLE_DATA))
+const fetchPerformanceByRubricsCriteriaTableData = (params) =>
+  Promise.resolve(JSON.parse(JSON.stringify(TABLE_DATA))) ||
+  api
+    .callApi({
+      url: '/report/performance-by-rubric/table',
+      params,
+    })
+    .then((res) => res.data.result)
 
 export default {
   fetchReports,

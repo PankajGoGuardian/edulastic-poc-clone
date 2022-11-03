@@ -1,55 +1,48 @@
 import { percentage } from '@edulastic/constants/reportUtils/common'
-import { flatMap, groupBy, keyBy } from 'lodash'
+import { flatMap, groupBy, isEmpty, keyBy, mapValues, max, sum } from 'lodash'
 
-export const getDenormalizedChartData = (metrics, rubrics) => {
-  console.log(metrics, rubrics)
-  const rubricsMap = keyBy(rubrics, 'id')
-  const allCriterias = flatMap(rubrics, 'criteria')
-  const criteriaMap = keyBy(allCriterias, 'id')
-  const allRatings = flatMap(allCriterias, 'ratings')
-  const ratingsMap = keyBy(allRatings, 'id')
+export const getDenormalizedChartData = (chartData) => {
+  if (isEmpty(chartData) || isEmpty(chartData.data)) return []
 
-  const denormalizedData = []
+  const {data: metrics, rubric} = chartData
 
-  metrics.forEach((metric) => {
-    const { name: rubricName } = rubricsMap[metric.rubricId]
-    const { name: criteriaName } = criteriaMap[metric.criteriaId]
+  // const allCriterias
 
-    const totalResponsesPerCriteria = Object.keys(
-      metric.responsesByRating
-    ).reduce(
-      (total, ratingKey) => total + metric.responsesByRating[ratingKey],
-      0
-    )
-    const responsePercentagePerCriteria = percentage(
-      totalResponsesPerCriteria,
-      metric.totalResponses,
-      true
-    )
+  const denormalizedData = _.chain(metrics)
+    .map((m) => {
+      const criteria = rubric.criteria.find((crit) => crit.id === m.criteriaId)
+      const criteriaName = m.criteria.name
+      const totalResponsesPerCriteria = sum(Object.values(m.responsesByRating))
+      const pointSumPerCriteria = sum( criteria.ratings.map(r => r.points*(m.responsesByRating[r.id] || 0) ))
+      const avgScorePerCriteria = pointSumPerCriteria / totalResponsesPerCriteria
+      const scorePercentagePerCriteria = avgScorePerCriteria / max(criteria.ratings.map(r => r.points)) * 100
 
-    Object.keys(metric.responsesByRating).forEach((ratingId) => {
-      const { name: ratingName, fill } = ratingsMap[ratingId]
-      const totalResponsesPerRating = metric.responsesByRating[ratingId]
-      const responsePercentagePerRating = percentage(
-        totalResponsesPerRating,
-        metric.totalResponses,
-        true
-      )
-      denormalizedData.push({
-        ...metric,
-        rubricName,
+      return ({
+        ...m,
+        rubric,
+        rubricName: rubric.name,
+        criteria,
         criteriaName,
-        ratingId,
-        ratingName,
         totalResponsesPerCriteria,
-        responsePercentagePerCriteria,
+        pointSumPerCriteria,
+        scorePercentagePerCriteria,
+        avgScorePerCriteria,
+    })})
+    .flatMap((m) =>
+      m.criteria.ratings.map(r => {
+        const totalResponsesPerRating = m.responsesByRating[r.id] || 0
+        
+        return ({
+        ...m,
+        ratingId: r.id,
+        ratingName: r.name,
         totalResponsesPerRating,
-        responsePercentagePerRating,
-        fill,
-      })
-    })
-  })
-
+        responsePercentagePerRating: totalResponsesPerRating / m.totalResponsesPerCriteria * 100,
+        rating: r,
+        fill: '#FF0'
+      })})
+    )
+    .value()
   return denormalizedData
 }
 

@@ -225,7 +225,7 @@ const PerformanceByRubricCriteria = ({
     fetchReportChartDataRequest()
   }, [])
 
-  const chartData = useMemo(() => getDenormalizedChartData(reportChartData.metrics, reportChartData.rubrics), [reportChartData]) 
+  const chartData = useMemo(() => getDenormalizedChartData(reportChartData), [reportChartData]) 
 
   return (
     <div>

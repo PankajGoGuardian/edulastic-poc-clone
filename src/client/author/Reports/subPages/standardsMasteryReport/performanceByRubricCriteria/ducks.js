@@ -3,6 +3,7 @@ import { createSlice } from 'redux-starter-kit'
 import { notification } from '@edulastic/common'
 import { reportsApi } from '@edulastic/api'
 import { call, put, all, takeLatest } from 'redux-saga/effects'
+import { pick } from 'lodash'
 
 const initialState = {
   reportChartData: {},
@@ -54,9 +55,27 @@ export const { actions, reducer } = slice
 
 function* fetchReportChartDataRequestSaga({ payload }) {
   try {
+    const params = payload.reportId
+      ? pick(payload, ['reportId'])
+      : pick(payload, [
+          'termId',
+          'schoolIds',
+          'teacherIds',
+          'grades',
+          'subjects',
+          'courseId',
+          'classIds',
+          'groupIds',
+          'testGrades',
+          'testSubjects',
+          'assessmentTypes',
+          'testIds',
+          'rubricId',
+          'assignedBy',
+        ])
     const reportChartData = yield call(
       reportsApi.fetchPerformanceByRubricsCriteriaChartData,
-      payload
+      params
     )
     console.log('reportchart data', reportChartData)
     yield put(actions.fetchReportChartDataRequestSuccess({ reportChartData }))
@@ -70,9 +89,28 @@ function* fetchReportChartDataRequestSaga({ payload }) {
 
 function* fetchReportTableDataRequestSaga({ payload }) {
   try {
+    const params = payload.reportId
+      ? pick(payload, ['reportId'])
+      : pick(payload, [
+          'termId',
+          'schoolIds',
+          'teacherIds',
+          'grades',
+          'subjects',
+          'courseId',
+          'classIds',
+          'groupIds',
+          'testGrades',
+          'testSubjects',
+          'assessmentTypes',
+          'testIds',
+          'rubricId',
+          'assignedBy',
+          'compareBy',
+        ])
     const reportTableData = yield call(
       reportsApi.fetchPerformanceByRubricsCriteriaTableData,
-      payload
+      params
     )
     yield put(actions.fetchReportTableDataRequestSuccess({ reportTableData }))
   } catch (error) {

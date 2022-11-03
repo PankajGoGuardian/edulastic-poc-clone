@@ -4,17 +4,6 @@ import TableFilters from '../filters/TableFilters'
 import { TableContainer, CustomStyledTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
-// data: [{
-//   rubricId: string
-//   criteriaId: string
-//   scoreGrouped: {
-//     [compareBy_Id]: number
-//   }
-//   responseCount: number
-// }]
-// schools: { // or other
-//   [compareBy_Id]: string // schoolId: name
-// }
 const tableColumnsData = [
   {
     dataIndex: 'compareBy',
@@ -23,20 +12,38 @@ const tableColumnsData = [
     fixed: 'left',
     width: 200,
   },
-  {
-    title: 'Students',
-    key: 'totalStudentCount',
-    dataIndex: 'totalStudentCount',
-    align: 'center',
-    width: 100,
-    visibleOn: ['csv'],
-  },
   // next up are dynamic columns for each assessment
 ]
 
-const getTableColumns = (tableData) => {
+const compareByMap = {
+  school: 'schoolName',
+  teacher: 'teacherName',
+  group: 'groupName',
+  student: 'studentName',
+  race: 'race',
+  gender: 'gender',
+  ellStatus: 'ellStatus',
+  iepStatus: 'iepStatus',
+  frlStatus: 'frlStatus',
+  standard: 'standard',
+  hispanicEthnicity: 'hispanicEthnicity',
+}
+
+const getTableColumns = (tableData, selectedTableFilters) => {
+  const compareBy = selectedTableFilters.compareBy
   return next(tableColumnsData, (_columns) => {
-    
+    // compareBy column
+    const compareByIdx = _columns.findIndex((col) => col.key === 'compareBy')
+    _columns[compareByIdx].title = compareBy.title
+    _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
+    _columns[compareByIdx].render = (data) => data || '-'
+    _columns[compareByIdx].sorter = (a, b) => {
+      const dataIndex = compareByMap[compareBy.key]
+      return (a[dataIndex] || '')
+        .toLowerCase()
+        .localeCompare((b[dataIndex] || '').toLowerCase())
+    }
+    _columns[compareByIdx].defaultSortOrder = 'ascend'
   })
 }
 
@@ -46,7 +53,6 @@ const PerformanceByRubricCriteriaTable = ({
   setTableFilters,
   tableFilterOptions,
 }) => {
-
   const tableColumns = getTableColumns(tableData)
   return (
     <>

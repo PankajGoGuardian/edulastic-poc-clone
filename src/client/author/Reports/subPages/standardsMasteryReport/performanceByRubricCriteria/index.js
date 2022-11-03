@@ -300,6 +300,10 @@ const PerformanceByRubricCriteria = ({
     )
   }
 
+  const chartData = useMemo(() => getDenormalizedChartData(reportChartData), [
+    reportChartData,
+  ])
+
   return (
     <>
       <StyledCard>
@@ -310,8 +314,8 @@ const PerformanceByRubricCriteria = ({
         </Row>
       </StyledCard>
       <Row>
-        {/* <GroupedStackedBarChartContainer data={chartData} />
-        <PerformanceByRubricCriteriaTable
+        <GroupedStackedBarChartContainer data={chartData} />
+        {/* <PerformanceByRubricCriteriaTable
           tableData={tableData}
           selectedTableFilters={tableFilters}
           setTableFilters={setTableFilters}

@@ -276,21 +276,21 @@ const fetchGeneratedCSVs = () =>
     })
     .then(({ data }) => data.result)
 
-const fetchPerformanceByRubricsCriteriaChartData = () =>
+const fetchPerformanceByRubricsCriteriaChartData = (params) =>
   api
     .callApi({
       url: '/report/performance-by-rubric/chart',
-      method: 'GET',
+      params,
     })
-    .then(({ data }) => data.result)
+    .then((res) => res.data.result)
 
-const fetchPerformanceByRubricsCriteriaTableData = () =>
+const fetchPerformanceByRubricsCriteriaTableData = (params) =>
   api
     .callApi({
       url: '/report/performance-by-rubric/table',
-      method: 'GET',
+      params,
     })
-    .then(({ data }) => data.result)
+    .then((res) => res.data.result)
 
 export default {
   fetchReports,

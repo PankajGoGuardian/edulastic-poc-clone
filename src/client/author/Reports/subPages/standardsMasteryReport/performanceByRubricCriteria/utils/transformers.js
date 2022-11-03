@@ -8,14 +8,21 @@ export const getDenormalizedChartData = (chartData) => {
 
   // const allCriterias
 
-  const denormalizedData = _.chain(metrics)
+  const denormalizedData = metrics
     .map((m) => {
       const criteria = rubric.criteria.find((crit) => crit.id === m.criteriaId)
       const criteriaName = criteria.name
       const totalResponsesPerCriteria = sum(Object.values(m.responsesByRating))
-      const pointSumPerCriteria = sum( criteria.ratings.map(r => r.points*(m.responsesByRating[r.id] || 0) ))
-      const avgScorePerCriteria = pointSumPerCriteria / totalResponsesPerCriteria
-      const scorePercentagePerCriteria = avgScorePerCriteria / max(criteria.ratings.map(r => r.points)) * 100
+      const pointSumPerCriteria = sum(
+        criteria.ratings.map((r) => r.points * (m.responsesByRating[r.id] || 0))
+      )
+      const avgScorePerCriteria =
+        pointSumPerCriteria / totalResponsesPerCriteria
+      const scorePercentagePerCriteria = percentage(
+        avgScorePerCriteria,
+        max(criteria.ratings.map((r) => r.points)),
+        true
+      )
 
       return ({
         ...m,
@@ -31,18 +38,22 @@ export const getDenormalizedChartData = (chartData) => {
     .flatMap((m) =>
       m.criteria.ratings.map(r => {
         const totalResponsesPerRating = m.responsesByRating[r.id] || 0
-        
-        return ({
-        ...m,
-        ratingId: r.id,
-        ratingName: r.name,
-        totalResponsesPerRating,
-        responsePercentagePerRating: totalResponsesPerRating / m.totalResponsesPerCriteria * 100,
-        rating: r,
-        fill: '#FF0'
-      })})
+
+        return {
+          ...m,
+          ratingId: r.id,
+          ratingName: r.name,
+          totalResponsesPerRating,
+          responsePercentagePerRating: percentage(
+            totalResponsesPerRating,
+            m.totalResponsesPerCriteria,
+            true
+          ),
+          rating: r,
+          fill: '#FF0',
+        }
+      })
     )
-    .value()
   return denormalizedData
 }
 
@@ -71,13 +82,15 @@ export const getChartData = (denormalizedData) => {
         ...res,
         [ele.key]: barData?.responsePercentagePerRating || 0,
         [ele.insideLabelKey]: barData?.responsePercentagePerRating || 0,
-        [ele.topLabelKey]: `${metricsGroupedByCriteria[metricKey][0].responsePercentagePerCriteria}%`,
       }
     }, {})
-
+    const _topLabelKey = `top-label-bar${barsData.length}`
     return {
       ...data,
       ...metricsGroupedByCriteria[metricKey][0],
+      [_topLabelKey]: `${
+        metricsGroupedByCriteria[metricKey][0].scorePercentagePerCriteria || 0
+      }%`,
     }
   })
 
@@ -98,4 +111,9 @@ export const getChartData = (denormalizedData) => {
     })
 
   return { barsData, renderData }
+}
+
+export const getDenormalizedTableData = (tableData, rubric) => {
+  if (isEmpty(tableData) || isEmpty(tableData.data) || isEmpty(rubric))
+    return []
 }

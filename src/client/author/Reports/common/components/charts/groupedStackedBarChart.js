@@ -67,7 +67,7 @@ const LabelText = ({
 }
 
 export const GroupedStackedBarChart = ({
-  margin = { top: 0, right: 60, left: 10, bottom: 50 },
+  margin = { top: 20, right: 60, left: 10, bottom: 50 },
   // legendProps = {
   //   wrapperStyle: { top: -10 },
   // },
@@ -427,8 +427,8 @@ export const GroupedStackedBarChart = ({
                 unit={bdItem.unit}
                 isAnimationActive={false}
                 // onClick={onBarClick}
-                barSize={45}
-                maxBarSize={45}
+                barSize={40}
+                maxBarSize={40}
                 // onMouseOver={onBarMouseOver(bdIndex, true)}
                 // onMouseLeave={onBarMouseLeave(bdIndex)}
               >

@@ -351,10 +351,32 @@ const fetchPerformanceByRubricsCriteriaChartData = (params) =>
     })
     .then((res) => res.data.result)
 
-const TABLE_DATA = {}
+const TABLE_DATA = {
+  data: [
+    {
+      rubricId: '6363520490f26d00082f1ee3',
+      criteriaId: '79f0858a-735c-4f75-a1d9-2027d14ab832',
+      scoreGrouped: {
+        '5dce67dac9607d00070ad88f': 23,
+      },
+      responseCount: 40,
+    },
+    {
+      rubricId: '6363520490f26d00082f1ee3',
+      criteriaId: 'cdfea934-4550-45e6-b8a6-efb6be72b777',
+      scoreGrouped: {
+        '5dce67dac9607d00070ad88f': 26,
+      },
+      responseCount: 30,
+    },
+  ],
+  schools: {
+    '5dce67dac9607d00070ad88f': 'snapwiz test school',
+  },
+}
 
 const fetchPerformanceByRubricsCriteriaTableData = (params) =>
-  Promise.resolve(JSON.parse(JSON.stringify(TABLE_DATA))) ||
+  new Promise((resolve) => resolve(TABLE_DATA)) ||
   api
     .callApi({
       url: '/report/performance-by-rubric/table',

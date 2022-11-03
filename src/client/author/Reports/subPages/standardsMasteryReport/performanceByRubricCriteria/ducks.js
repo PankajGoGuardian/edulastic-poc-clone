@@ -19,7 +19,6 @@ const slice = createSlice({
   initialState: { ...initialState },
   reducers: {
     fetchReportChartDataRequest: (state) => {
-      console.log('action called')
       state.loadingReportChartData = true
     },
     fetchReportChartDataRequestSuccess: (state, { payload }) => {
@@ -58,12 +57,11 @@ function* fetchReportChartDataRequestSaga({ payload }) {
       reportsApi.fetchPerformanceByRubricsCriteriaChartData,
       payload
     )
-    console.log('reportchart data', reportChartData)
     yield put(actions.fetchReportChartDataRequestSuccess({ reportChartData }))
   } catch (error) {
     const msg =
       'Error getting report chart data. Please try again after a few minutes.'
-    notification(msg)
+    notification({ msg })
     yield put(actions.fetchReportChartDataRequestError({ error: msg }))
   }
 }
@@ -78,7 +76,7 @@ function* fetchReportTableDataRequestSaga({ payload }) {
   } catch (error) {
     const msg =
       'Error getting report table data. Please try again after a few minutes.'
-    notification(msg)
+    notification({ msg })
     yield put(actions.fetchReportTableDataRequestError({ error: msg }))
   }
 }

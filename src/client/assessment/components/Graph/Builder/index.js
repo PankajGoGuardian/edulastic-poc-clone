@@ -1118,6 +1118,7 @@ class Board {
       this.$board.removeObject(ineq)
     })
     this.inequalities = []
+    Area2.clearInequalities(this)
   }
 
   loadAnswersFromConfig(flatCfg) {

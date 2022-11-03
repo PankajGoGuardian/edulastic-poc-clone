@@ -1,4 +1,4 @@
-import { Point, Line, Area, Area2, Equation } from '.'
+import { Point, Line, Area, Equation } from '.'
 import { CONSTANT } from '../config'
 import { handleSnap, colorGenerator, setLabel } from '../utils'
 import { getLabelParameters } from '../settings'
@@ -91,7 +91,7 @@ function create(board, object, parabolaPoints, settings = {}) {
         )
         directrix.dragged = false
         Area.updateShadingsForAreaPoints(board, board.elements)
-        Area2.updateShadingsForAreaPoints(board, board.elements)
+        // Area2.updateShadingsForAreaPoints(board, board.elements)
         board.events.emit(CONSTANT.EVENT_NAMES.CHANGE_UPDATE)
       }
     })

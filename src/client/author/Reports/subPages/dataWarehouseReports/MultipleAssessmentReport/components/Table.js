@@ -3,7 +3,6 @@ import next from 'immer'
 import { Row, Tooltip } from 'antd'
 
 import { reportUtils } from '@edulastic/constants'
-import { round } from 'lodash'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import {
   StyledTag,
@@ -105,7 +104,7 @@ const getTableColumns = (
                     ) : null}
                   </StyledSpan>
                   <StyledSpan float="right">
-                    {round(averageScore, 2)}
+                    {averageScore}
                     {!externalTestType && '%'}
                   </StyledSpan>
                 </div>
@@ -167,7 +166,7 @@ const getTableColumns = (
           key: uniqId,
           title: `${_testName}${
             externalTestType ? ` (${externalTestType})` : ''
-          } - ${round(averageScore, 2)}${externalTestType ? '' : '%'}`,
+          } - ${averageScore}${externalTestType ? '' : '%'}`,
           align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],

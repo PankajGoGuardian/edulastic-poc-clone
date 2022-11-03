@@ -345,6 +345,7 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         ...testData,
         testName: _testName,
         isIncomplete,
+        totalTotalScore: round(testData.totalTotalScore, 2),
         averageScore: round(averageScore, 2),
         averageScorePercentage: round(averageScorePercentage, 2),
       }
@@ -353,12 +354,14 @@ const getAggregatedDataByUniqId = (metricInfo) => {
 }
 
 export const getTableData = (
-  metricInfo,
-  externalMetricInfo,
-  metaInfo,
-  bandInfo,
+  metricInfo = [],
+  externalMetricInfo = [],
+  metaInfo = [],
+  bandInfo = [],
   compareByKey
 ) => {
+  // fallback to prevent intermittent crashes when bandInfo is empty
+  const _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
   // filter out external tests data without achievement level
   const filteredExternalMetricInfo = externalMetricInfo
     .filter((t) => t.externalTestType && t.achievementLevel)
@@ -367,7 +370,7 @@ export const getTableData = (
       assessmentDate: +new Date(t.assessmentDate),
     }))
   const compositeMetricInfo = [
-    ...metricInfo,
+    ..._metricInfo,
     ...filteredExternalMetricInfo,
   ].map((t) => ({
     ...t,
@@ -410,6 +413,8 @@ export const getChartData = (
   externalMetricInfo = [],
   bandInfo = []
 ) => {
+  // fallback to prevent intermittent crashes when bandInfo is empty
+  let _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
   // filter out external tests data without achievement level
   const filteredExternalMetricInfo = externalMetricInfo
     .filter((t) => t.externalTestType && t.achievementLevel)
@@ -423,7 +428,7 @@ export const getChartData = (
   const _bandInfo = bandInfo.sort((a, b) => b.threshold - a.threshold)
 
   // curate chart data for internal tests
-  const _metricInfo = metricInfo.map((t) => ({
+  _metricInfo = _metricInfo.map((t) => ({
     ...t,
     // uniqId represents a combination of testId and testType
     uniqId: `${t.testId}_${t.testType}`,
@@ -494,6 +499,7 @@ export const getChartData = (
         uniqId,
         testName: `${testName} (${testData.testType})`,
         isIncomplete,
+        totalScore: round(testData.totalScore, 2),
         lineScore: round(averageScore, 2),
         averageScore: round(averageScore, 2),
         maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
@@ -581,6 +587,7 @@ export const getChartData = (
         ...testData,
         uniqId,
         testName,
+        totalScore: round(testData.totalScore, 2),
         lineScore,
         averageScore: round(averageScore, 2),
         maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),

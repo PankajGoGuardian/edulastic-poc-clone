@@ -121,9 +121,7 @@ const getRightTooltipJSX = (payload, barIndex) => {
           title="Students:"
           value={`${bar[0].totalGraded}/${barData.totalGraded}`}
         />
-        {barData[barKey] < 10 && (
-          <TooltipRowItem title="Student(%):" value={`${barData[barKey]}%`} />
-        )}
+        <TooltipRowItem title="Student(%):" value={`${barData[barKey]}%`} />
         <DashedHr />
         {colorBandComponent}
       </div>

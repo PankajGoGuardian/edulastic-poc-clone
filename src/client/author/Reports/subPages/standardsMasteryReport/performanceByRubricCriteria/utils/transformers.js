@@ -11,7 +11,7 @@ export const getDenormalizedChartData = (chartData) => {
   const denormalizedData = _.chain(metrics)
     .map((m) => {
       const criteria = rubric.criteria.find((crit) => crit.id === m.criteriaId)
-      const criteriaName = m.criteria.name
+      const criteriaName = criteria.name
       const totalResponsesPerCriteria = sum(Object.values(m.responsesByRating))
       const pointSumPerCriteria = sum(
         criteria.ratings.map((r) => r.points * (m.responsesByRating[r.id] || 0))

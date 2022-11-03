@@ -148,7 +148,7 @@ class LeftFilter extends React.Component {
     const classListByTerm = classList.filter(
       (item) => item.termId === termId || !termId
     )
-    const classListActive = classListByTerm.filter((item) => item.active === 1)
+    const classListActive = classListByTerm.filter((item) => item.active === 1 && item.enrollmentStatus)
     const classListArchive = classListByTerm.filter((item) => item.active === 0)
 
     return (

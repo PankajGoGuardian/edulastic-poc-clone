@@ -222,7 +222,7 @@ const MyClasses = ({
 
   const allClasses = [...sortableClasses, ...unSortableClasses]
   const allActiveClasses = allClasses.filter(
-    (c) => c.active === 1 && c.type === 'class'
+    (c) => c.active === 1 && c.type === 'class' && c.enrollmentStatus
   )
   const atleastOneClassPresent = allActiveClasses.length > 0
   useEffect(() => {

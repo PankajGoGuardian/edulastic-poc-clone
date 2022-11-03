@@ -347,7 +347,7 @@ const ClassList = ({
                 <ClassListTable
                   columns={columns}
                   dataSource={classGroups.filter(
-                    ({ type }) => type === 'class'
+                    ({ type, enrollmentStatus }) => type === 'class' && enrollmentStatus
                   )}
                   rowKey={rowKey}
                   onRow={onRow}

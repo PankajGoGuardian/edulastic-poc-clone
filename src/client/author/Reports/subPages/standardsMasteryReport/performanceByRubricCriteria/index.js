@@ -291,14 +291,12 @@ const PerformanceByRubricCriteria = ({
   // )
   const tableData = {}
 
-  if (loadingReportChartData || loadingReportTableData) {
-    return (
-      <SpinLoader
-        tip="Please wait while we gather the required information..."
-        position="fixed"
-      />
-    )
-  }
+  useEffect(() => {
+    console.log('callingx')
+    fetchReportChartDataRequest()
+  }, [])
+
+  const chartData = useMemo(() => getDenormalizedChartData(reportChartData), [reportChartData]) 
 
   return (
     <>

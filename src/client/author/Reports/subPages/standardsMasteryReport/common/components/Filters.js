@@ -64,6 +64,14 @@ const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const rubricsData = [
   {
+    _id: '6363520490f26d00082f1ee3',
+    name: 'Rubric with 3 criteria',
+  },
+  {
+    _id: '6363514390f26d00082f1ee2',
+    name: 'Rubric With 2 criteria',
+  },
+  {
     _id: '6019969a53e3edad44a47949',
     name: 'Two Point Rubric Short Response',
   },

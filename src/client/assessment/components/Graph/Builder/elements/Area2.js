@@ -294,9 +294,9 @@ function updateShading(board, areaPoint, shapes) {
           break
         }
         case Hyperbola.jxgType: {
-          inequalities.push(
-            area2Hyperbola(board, shape, [areaX, areaY], colors)
-          )
+          console.log('adding...')
+          const objArr = area2Hyperbola(board, shape, [areaX, areaY], colors)
+          inequalities = inequalities.concat(objArr)
           break
         }
         case Logarithm.jxgType: {

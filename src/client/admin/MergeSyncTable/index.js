@@ -255,6 +255,8 @@ function MergeSyncTable({
         ...(data?.rosterSyncConfig ? data?.rosterSyncConfig : {}),
       }
 
+  const providerNameToShareResourceViaEdlink =
+    data?.districtPolicyConfig?.providerNameToShareResourceViaEdlink
   const applyDeltaSync = (values) => {
     if (isClasslink) {
       applyDeltaSyncChanges({ ...values, isClasslink, atlasId })
@@ -361,6 +363,9 @@ function MergeSyncTable({
                 classNamePattern={rosterSyncConfig.classNamePattern}
                 overrideClassName={rosterSyncConfig.overrideClassName}
                 disableFields={syncEnabled}
+                providerNameToShareResourceViaEdlink={
+                  providerNameToShareResourceViaEdlink
+                }
                 isClasslink={isClasslink}
                 isClever={!!cleverId}
               />

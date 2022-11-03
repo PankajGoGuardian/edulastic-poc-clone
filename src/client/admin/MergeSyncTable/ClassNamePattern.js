@@ -15,6 +15,7 @@ export default function ClassNamePattern({
   disableFields,
   isClasslink,
   isClever = false,
+  providerNameToShareResourceViaEdlink = false,
 }) {
   const [selectState, setSelectState] = useState(
     CLASS_NAME_PATTERN_CONFIG[classNamePattern]
@@ -22,9 +23,15 @@ export default function ClassNamePattern({
   const [overrideClassNameState, setOverrideClassNameState] = useState(
     overrideClassName
   )
+  const [
+    providerNameToShareResourceViaEdlinkState,
+    setProviderNameToShareResourceViaEdlinkState,
+  ] = useState(providerNameToShareResourceViaEdlink)
+
   const cancelApplyButtonProps = disableFields
     ? { disabled: disableFields, title: DISABLE_SUBMIT_TITLE }
     : {}
+
   const setValueBackToDefault = () =>
     setSelectState(CLASS_NAME_PATTERN_CONFIG[classNamePattern])
 
@@ -42,12 +49,17 @@ export default function ClassNamePattern({
     if (isClever || isClasslink) {
       Object.assign(data, {
         overrideClassName: overrideClassNameState,
+        providerNameToShareResourceViaEdlink: providerNameToShareResourceViaEdlinkState,
       })
     }
     applyClassNamesSync(data)
   }
   const onOverrideChange = ({ target }) => {
     setOverrideClassNameState(target.checked)
+  }
+
+  const onShareResourceViaEdlink = ({ target }) => {
+    setProviderNameToShareResourceViaEdlinkState(target.checked)
   }
 
   return (
@@ -77,6 +89,15 @@ export default function ClassNamePattern({
           Course Name - Teacher LastName - Term
         </Option>
       </Select>
+      <br />
+      <br />
+      <CheckboxLabel
+        style={{ margin: '10px 0px 20px 0px' }}
+        checked={providerNameToShareResourceViaEdlinkState}
+        onChange={onShareResourceViaEdlink}
+      >
+        Share Resource Via Ed-link
+      </CheckboxLabel>
       <CancelApplyActions
         {...cancelApplyButtonProps}
         onApplyAction={handleApplyClick}

@@ -11,7 +11,7 @@ import {
   IconReview,
   IconSettings,
 } from '@edulastic/icons'
-import { test as testConstants } from '@edulastic/constants'
+import { test as testConstants, roleuser } from '@edulastic/constants'
 import { withWindowSizes, notification, CustomPrompt } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
@@ -23,6 +23,8 @@ import {
   getDefaultTestSettingsAction,
   getTestsCreatingSelector,
   updateDocBasedTestAction,
+  fetchTestSettingsListAction,
+  setCurrentTestSettingsIdAction,
 } from '../../../TestPage/ducks'
 import {
   getQuestionsArraySelector,
@@ -44,6 +46,7 @@ import { validateQuestionsForDocBased } from '../../../../common/utils/helpers'
 import { proceedPublishingItemAction } from '../../../ItemDetail/ducks'
 import WarningModal from '../../../ItemDetail/components/WarningModal'
 import {
+  getUserRole,
   getCollectionsSelector,
   isPremiumUserSelector,
 } from '../../../src/selectors/user'
@@ -108,8 +111,22 @@ class Container extends React.Component {
       receiveTestById,
       getDefaultTestSettings,
       changeView,
+      userRole,
+      isPremiumUser,
+      fetchTestSettingsList,
+      setCurrentTestSettingsId,
+      userId,
     } = this.props
     receiveTestById(match.params.assessmentId)
+    if (userRole !== roleuser.STUDENT) {
+      setCurrentTestSettingsId('')
+      if (isPremiumUser) {
+        fetchTestSettingsList({
+          orgId: userId,
+          orgType: roleuser.ORG_TYPE.USER,
+        })
+      }
+    }
     getDefaultTestSettings()
     window.onbeforeunload = () => this.beforeUnload()
     changeView(tabs.DESCRIPTION)
@@ -469,6 +486,7 @@ const enhance = compose(
   withNamespaces('author'),
   connect(
     (state) => ({
+      userRole: getUserRole(state),
       assessment: getTestEntitySelector(state),
       userId: get(state, 'user.user._id', ''),
       updated: get(state, 'tests.updated', false),
@@ -493,6 +511,8 @@ const enhance = compose(
       changeView: changeViewAction,
       changePreview: changePreviewAction,
       publishTest: publishTestAction,
+      fetchTestSettingsList: fetchTestSettingsListAction,
+      setCurrentTestSettingsId: setCurrentTestSettingsIdAction,
     }
   )
 )

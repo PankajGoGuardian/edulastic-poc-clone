@@ -88,7 +88,7 @@ function* fetchReportChartDataRequestSaga({ payload }) {
 function* fetchReportTableDataRequestSaga({ payload }) {
   try {
     const params = payload.reportId
-      ? pick(payload, ['reportId'])
+      ? pick(payload, ['reportId', 'compareBy'])
       : pick(payload, [
           'termId',
           'schoolIds',

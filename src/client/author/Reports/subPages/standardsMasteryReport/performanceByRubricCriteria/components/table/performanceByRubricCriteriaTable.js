@@ -14,6 +14,13 @@ const tableColumnsData = [
     fixed: 'left',
     width: 200,
   },
+  {
+    dataIndex: 'averageRatingPoints',
+    align: 'center',
+    fixed: 'left',
+    title: 'AVG. RATING',
+    width: 150,
+  },
   // next up are dynamic columns for each assessment
 ]
 
@@ -42,6 +49,15 @@ const getTableColumns = (
     // compareBy column
     const compareByIdx = _columns.findIndex(
       (col) => col.dataIndex === 'rowName'
+    )
+    _columns[compareByIdx].title = selectedCompareBy.title
+    _columns[compareByIdx].render = (data) => data || '-'
+
+    Object.assign(
+      _columns.find((col) => col.dataIndex === 'averageRatingPoints'),
+      {
+        render: (value) => (Number.isNaN(value) ? '-' : value ?? '-'),
+      }
     )
     _columns[compareByIdx].title = selectedCompareBy.title
     _columns[compareByIdx].render = (data) => data || '-'

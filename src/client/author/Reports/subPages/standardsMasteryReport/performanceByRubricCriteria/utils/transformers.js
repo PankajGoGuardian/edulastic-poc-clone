@@ -1,6 +1,15 @@
 import { getColorBandBySize } from '@edulastic/constants/const/colors'
 import { percentage } from '@edulastic/constants/reportUtils/common'
-import { groupBy, isEmpty, keyBy, mapValues, map, max, sum } from 'lodash'
+import {
+  groupBy,
+  isEmpty,
+  keyBy,
+  mapValues,
+  map,
+  max,
+  sum,
+  round,
+} from 'lodash'
 
 export const getDenormalizedChartData = (chartData) => {
   if (isEmpty(chartData) || isEmpty(chartData.data)) return []
@@ -150,19 +159,35 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
     )
   const denormalizedData = Object.values(groupBy(flatData, 'compareById')).map(
     (rowArr) => {
-      const columnValues = mapValues(keyBy(rowArr, 'criteriaId'), (cell) => ({
-        avgScore: cell.scoreGrouped[cell.compareById],
-        avgScorePercentage: percentage(
-          cell.scoreGrouped[cell.compareById],
-          cell.maxRatingPoints,
-          true
-        ),
-      }))
+      const criteriaColumnValues = mapValues(
+        keyBy(rowArr, 'criteriaId'),
+        (cell) => ({
+          avgScore: round(cell.scoreGrouped[cell.compareById], 2),
+          avgScorePercentage: percentage(
+            cell.scoreGrouped[cell.compareById],
+            cell.maxRatingPoints,
+            true
+          ),
+        })
+      )
+      const totalResponses = sum(
+        rowArr.map((cell) => cell.countGrouped[cell.compareById] || 0)
+      )
+      const averageRatingPoints =
+        sum(
+          rowArr.map(
+            (cell) =>
+              cell.countGrouped[cell.compareById] *
+              cell.scoreGrouped[cell.compareById]
+          )
+        ) / totalResponses
       return {
         // for reference only.
         rowName: rowArr[0].compareByName,
         rowId: rowArr[0].compareById,
-        ...columnValues,
+        averageRatingPoints: round(averageRatingPoints, 2),
+        totalResponses,
+        ...criteriaColumnValues,
       }
     }
   )

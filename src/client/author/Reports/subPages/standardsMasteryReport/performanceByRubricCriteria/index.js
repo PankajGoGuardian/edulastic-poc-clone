@@ -77,7 +77,7 @@ const PerformanceByRubricCriteria = ({
 
   const tableData = useMemo(
     () => getDenormalizedTableData(reportTableData, reportChartData.rubric),
-    [reportTableData, reportChartData.rubric, tableFilters.compareBy]
+    [reportTableData, reportChartData.rubric]
   )
 
   if (loadingReportChartData || loadingReportTableData) {

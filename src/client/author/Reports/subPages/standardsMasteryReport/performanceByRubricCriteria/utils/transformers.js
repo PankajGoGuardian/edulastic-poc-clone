@@ -1,5 +1,5 @@
 import { percentage } from '@edulastic/constants/reportUtils/common'
-import { flatMap, groupBy, isEmpty, keyBy, mapValues, max, sum } from 'lodash'
+import { chain, groupBy, isEmpty, keyBy, mapValues, max, sum } from 'lodash'
 
 export const getDenormalizedChartData = (chartData) => {
   if (isEmpty(chartData) || isEmpty(chartData.data)) return []
@@ -113,7 +113,58 @@ export const getChartData = (denormalizedData) => {
   return { barsData, renderData }
 }
 
-export const getDenormalizedTableData = (tableData, rubric) => {
-  if (isEmpty(tableData) || isEmpty(tableData.data) || isEmpty(rubric))
-    return []
+export const getDenormalizedTableData = (tableApiResponse, rubric) => {
+  if (isEmpty(tableApiResponse) || isEmpty(tableApiResponse.data)) return []
+  const { data: metrics, compareByNames } = tableApiResponse
+  const rowRefs = Object.entries(compareByNames).map((id, name) => ({
+    id,
+    name,
+  }))
+
+  const denormalizedData = chain(metrics)
+    .map((m) => {
+      const criteria = rubric.criteria.find((ct) => ct.id === m.criteriaId)
+      return {
+        ...m,
+        rubric,
+        criteria,
+        maxRatingPoints: max(criteria.ratings.map((r) => r.points)),
+      }
+    })
+    .flatMap((m) =>
+      rowRefs.map((rowRef) => ({
+        ...m,
+        compareById: rowRef.id,
+        compareByName: rowRef.name,
+      }))
+    )
+    .groupBy('compareById')
+    .values()
+    .map((rowArr) => {
+      const columnValues = mapValues(keyBy(rowArr, 'criteriaId'), (cell) => ({
+        avgScore: cell.scoreGrouped[cell.compareById],
+        avgScorePercentage:
+          cell.scoreGrouped[cell.compareById] / max(cell.maxRatingPoints),
+      }))
+      return {
+        // for reference only.
+        rowName: rowArr[0].compareByName,
+        rowId: rowArr[0].compareById,
+        ...columnValues,
+      }
+    })
+    .value()
+  return denormalizedData
+}
+
+export const getTableData = (tableApiResponse, chartData) => {
+  if (isEmpty(chartData)) return []
+  const denormalizedData = getDenormalizedTableData(
+    tableApiResponse,
+    chartData.renderData
+  )
+  return mapValues(denormalizedData, (row) => ({
+    ...row,
+    /// append colors ?
+  }))
 }

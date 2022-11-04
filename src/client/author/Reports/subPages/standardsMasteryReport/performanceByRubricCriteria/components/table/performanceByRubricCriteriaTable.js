@@ -1,5 +1,6 @@
 import React from 'react'
 import next from 'immer'
+import { Row } from 'antd'
 import TableFilters from '../filters/TableFilters'
 import { TableContainer, CustomStyledTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -29,7 +30,7 @@ const compareByMap = {
   hispanicEthnicity: 'hispanicEthnicity',
 }
 
-const getTableColumns = (tableData, selectedTableFilters) => {
+const getTableColumns = (tableData, ratingsData, selectedTableFilters) => {
   const compareBy = selectedTableFilters.compareBy
   return next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -44,6 +45,38 @@ const getTableColumns = (tableData, selectedTableFilters) => {
         .localeCompare((b[dataIndex] || '').toLowerCase())
     }
     _columns[compareByIdx].defaultSortOrder = 'ascend'
+
+    const ratingColumns = ratingsData.flatMap((rating) => {
+      return {
+        key: rating.id,
+        align: 'center',
+        dataIndex: 'ratings',
+        visibleOn: ['browser'],
+        render: (ratings = {}) => {
+          const currentRating = ratings.find((r) => r.id === rating.id)
+          if (currentRating) {
+            return currentRating ? (
+              <Row type="flex" justify="center">
+                <LargeTag
+                  CustomTooltip={CustomTooltip}
+                  tooltipText={tooltipText}
+                  leftText={currentTest.band.name}
+                  rightText={
+                    currentRating.externalTestType
+                      ? currentRating.averageScore
+                      : `${currentRating.averageScorePercentage}%`
+                  }
+                  background={currentRating.band.color}
+                />
+              </Row>
+            ) : (
+              '-'
+            )
+          }
+        },
+      }
+    })
+    _columns.push(...ratingColumns)
   })
 }
 

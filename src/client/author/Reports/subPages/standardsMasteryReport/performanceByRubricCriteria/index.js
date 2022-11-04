@@ -3,6 +3,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
+import { reportUtils } from '@edulastic/constants'
 
 import { mapValues, isEmpty } from 'lodash'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
@@ -15,23 +16,29 @@ import {
 } from './utils/transformers'
 
 import { actions, selectors } from './ducks'
+import { getCsvDownloadingState } from '../../../ducks'
 import dropDownData from './static/dropDownData.json'
 
 const { compareByData, analyseByData } = dropDownData
+
+const { downloadCSV } = reportUtils.common
+
+const onCsvConvert = (data) =>
+  downloadCSV(
+    `Performance by Rubrics Criteria - Standard Mastery Report.csv`,
+    data
+  )
 
 const PerformanceByRubricCriteria = ({
   userRole,
   location,
   settings,
-  toggleFilter,
-  breadcrumbData,
-  isCliUser,
+  isCsvDownloading,
   // selectors from ducks selectors
   reportChartData,
   loadingReportChartData,
   reportTableData,
   loadingReportTableData,
-  error,
   // actions from ducks actions
   fetchReportChartDataRequest,
   fetchReportTableDataRequest,
@@ -92,8 +99,8 @@ const PerformanceByRubricCriteria = ({
       />
     )
   }
-  // || isEmpty(reportTableData)
-  if (isEmpty(reportChartData.data)) {
+
+  if (isEmpty(chartData)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -105,9 +112,7 @@ const PerformanceByRubricCriteria = ({
     <>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3 margin="0 0 10px 50px">
-            Performance by Rubric criteria
-          </StyledH3>
+          <StyledH3>Performance by Rubric criteria</StyledH3>
         </Row>
       </StyledCard>
       <Row>
@@ -125,6 +130,8 @@ const PerformanceByRubricCriteria = ({
           }}
           rubric={reportChartData.rubric}
           chartRenderData={renderData}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
         />
       </Row>
     </>
@@ -135,6 +142,7 @@ const enhance = compose(
   connect(
     (state) => ({
       ...mapValues(selectors, (selector) => selector(state)),
+      isCsvDownloading: getCsvDownloadingState(state),
     }),
     {
       ...actions,

@@ -85,7 +85,6 @@ const GroupedStackedBarChartContainer = ({ barsData, renderData }) => {
         barsData={barsData}
         data={renderData}
         primaryXAxisDataKey="criteriaName"
-        secondaryXAxisDataKey="secondaryAxisLabel"
         yAxisLabel="Response %"
         getXTickText={getXTickText}
         getTooltipJSX={getTooltipJSX}

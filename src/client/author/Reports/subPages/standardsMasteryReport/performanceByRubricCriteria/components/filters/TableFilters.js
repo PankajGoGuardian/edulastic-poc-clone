@@ -11,6 +11,7 @@ const TableFilters = ({
   return (
     <Row type="flex" justify="end" align="middle">
       <ControlDropDown
+        style={{ marginRight: '10px' }}
         prefix="Compare By"
         by={selectedTableFilters.compareBy}
         selectCB={(e, selected) => {

@@ -1,5 +1,5 @@
 import { percentage } from '@edulastic/constants/reportUtils/common'
-import { chain, groupBy, isEmpty, keyBy, mapValues, max, sum } from 'lodash'
+import { groupBy, isEmpty, keyBy, mapValues, max, sum } from 'lodash'
 
 export const getDenormalizedChartData = (chartData) => {
   if (isEmpty(chartData) || isEmpty(chartData.data)) return []
@@ -117,12 +117,8 @@ export const getChartData = (denormalizedData) => {
 export const getDenormalizedTableData = (tableApiResponse, rubric) => {
   if (isEmpty(tableApiResponse) || isEmpty(tableApiResponse.data)) return []
   const { data: metrics, compareByNames } = tableApiResponse
-  const rowRefs = Object.entries(compareByNames).map((id, name) => ({
-    id,
-    name,
-  }))
 
-  const denormalizedData = chain(metrics)
+  const flatData = metrics
     .map((m) => {
       const criteria = rubric.criteria.find((ct) => ct.id === m.criteriaId)
       return {
@@ -133,15 +129,14 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
       }
     })
     .flatMap((m) =>
-      rowRefs.map((rowRef) => ({
+      compareByNames.map((rowRef) => ({
         ...m,
-        compareById: rowRef.id,
+        compareById: rowRef._id,
         compareByName: rowRef.name,
       }))
     )
-    .groupBy('compareById')
-    .values()
-    .map((rowArr) => {
+  const denormalizedData = Object.values(groupBy(flatData, 'compareById')).map(
+    (rowArr) => {
       const columnValues = mapValues(keyBy(rowArr, 'criteriaId'), (cell) => ({
         avgScore: cell.scoreGrouped[cell.compareById],
         avgScorePercentage:
@@ -153,8 +148,8 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
         rowId: rowArr[0].compareById,
         ...columnValues,
       }
-    })
-    .value()
+    }
+  )
   return denormalizedData
 }
 

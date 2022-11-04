@@ -161,21 +161,7 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
 }
 
 export const getTableData = (tableApiResponse, chartData) => {
-  // tableApiResponse.data.forEach((d) => {
-  //   const scoreGrouped = {}
-  //   Object.keys(d.scoreGrouped).forEach((scoreKey) => {
-  //     console.log(scoreKey)
-  //     scoreGrouped[isEmpty(scoreKey) ? '-' : scoreKey] =
-  //       d.scoreGrouped[scoreKey]
-  //   })
-  //   console.log(scoreGrouped)
-  //   return {
-  //     ...d,
-  //     scoreGrouped,
-  //   }
-  // })
-  // console.log(tableApiResponse)
-  if (isEmpty(chartData)) return []
+  if (isEmpty(chartData.rubric)) return []
   const denormalizedData = getDenormalizedTableData(
     tableApiResponse,
     chartData.rubric

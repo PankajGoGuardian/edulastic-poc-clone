@@ -49,6 +49,13 @@ const getTableColumns = (tableData, ratingsData, selectedTableFilters) => {
     const ratingColumns = ratingsData.flatMap((rating) => {
       return {
         key: rating.id,
+        title: (
+          <div>
+            <h4>{rating.rubric.name}</h4>
+            <h4>{rating.criteria.name}</h4>
+            <h4>{rating.avgScore}</h4>
+          </div>
+        ),
         align: 'center',
         dataIndex: 'ratings',
         visibleOn: ['browser'],
@@ -57,17 +64,7 @@ const getTableColumns = (tableData, ratingsData, selectedTableFilters) => {
           if (currentRating) {
             return currentRating ? (
               <Row type="flex" justify="center">
-                <LargeTag
-                  CustomTooltip={CustomTooltip}
-                  tooltipText={tooltipText}
-                  leftText={currentTest.band.name}
-                  rightText={
-                    currentRating.externalTestType
-                      ? currentRating.averageScore
-                      : `${currentRating.averageScorePercentage}%`
-                  }
-                  background={currentRating.band.color}
-                />
+                <p>{currentRating.avgScorePercentage}</p>
               </Row>
             ) : (
               '-'

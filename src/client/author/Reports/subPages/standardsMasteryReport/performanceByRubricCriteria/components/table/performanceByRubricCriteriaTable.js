@@ -61,11 +61,11 @@ const getTableColumns = (
         ),
         align: 'center',
         dataIndex: criteria.id,
-        visibleOn: ['browser'],
+        visibleOn: ['browser', 'csv'],
         render: (value) => {
           const valueToShow =
             analyseBy.key === 'score'
-              ? value.avgScorePercentage
+              ? `${value.avgScorePercentage}%`
               : value.avgScore
           return value ? (
             <Row type="flex" justify="center">

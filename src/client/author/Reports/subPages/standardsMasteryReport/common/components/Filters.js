@@ -318,7 +318,11 @@ const StandardsMasteryReportFilters = ({
       const urlCurriculum =
         curriculumsList.find((item) => item.key === search.curriculumId) ||
         curriculumsList[0]
-      const urlRubric = rubricsList.find((item) => item.key === search.rubricId) || rubricsList[0]
+      const urlRubric = search.rubricId
+        ? rubricsList.find((item) => item.key === search.rubricId) || {
+            key: search.rubricId,
+          }
+        : rubricsList[0]
       const urlStandardGrade =
         staticDropDownData.allGrades.find(
           (item) => item.key === search.standardGrade

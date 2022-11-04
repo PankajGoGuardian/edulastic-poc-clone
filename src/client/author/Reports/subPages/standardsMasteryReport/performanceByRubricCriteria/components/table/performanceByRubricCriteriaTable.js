@@ -54,9 +54,12 @@ const getTableColumns = (
         key: criteria.id,
         title: (
           <div>
-            <h4>{rubric.name}</h4>
             <h4>{criteria.name}</h4>
-            <h4>{chartData.avgScore}</h4>
+            <h4>
+              {analyseBy.key === 'rawScore'
+                ? chartData.avgScorePerCriteria
+                : `${chartData.scorePercentagePerCriteria}%`}
+            </h4>
           </div>
         ),
         align: 'center',

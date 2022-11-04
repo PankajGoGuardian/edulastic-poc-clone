@@ -1,3 +1,4 @@
+import { getColorBandBySize } from '@edulastic/constants/const/colors'
 import { percentage } from '@edulastic/constants/reportUtils/common'
 import { groupBy, isEmpty, keyBy, mapValues, map, max, sum } from 'lodash'
 
@@ -8,9 +9,11 @@ export const getDenormalizedChartData = (chartData) => {
 
   // const allCriterias
 
-  const denormalizedData = metrics
-    .map((m) => {
-      const criteria = rubric.criteria.find((crit) => crit.id === m.criteriaId)
+  const denormalizedData = rubric.criteria
+    .flatMap((ct) =>
+      metrics.filter((m) => m.criteriaId === ct.id).map((v) => [v, ct])
+    )
+    .map(([m, criteria]) => {
       const criteriaName = criteria.name
       const totalResponsesPerCriteria = sum(Object.values(m.responsesByRating))
       const pointSumPerCriteria = sum(
@@ -37,9 +40,12 @@ export const getDenormalizedChartData = (chartData) => {
       }
     })
     .flatMap((m) =>
-      m.criteria.ratings.map((r) => {
+      m.criteria.ratings.map((r, i) => {
         const totalResponsesPerRating = m.responsesByRating[r.id] || 0
-
+        const colorBand = getColorBandBySize(
+          Math.min(m.criteria.ratings.length, 10)
+        ).reverse()
+        const fill = colorBand[Math.min(i, colorBand.length - 1)]
         return {
           ...m,
           ratingId: r.id,
@@ -51,7 +57,7 @@ export const getDenormalizedChartData = (chartData) => {
             true
           ),
           rating: r,
-          fill: '#FF0',
+          fill,
         }
       })
     )
@@ -126,6 +132,7 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
   const flatData = metrics
     .map((m) => {
       const criteria = rubric.criteria.find((ct) => ct.id === m.criteriaId)
+      if (!criteria) return null
       return {
         ...m,
         rubric,
@@ -133,6 +140,7 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
         maxRatingPoints: max(criteria.ratings.map((r) => r.points)),
       }
     })
+    .filter(Boolean)
     .flatMap((m) =>
       compareByNames.map((rowRef) => ({
         ...m,
@@ -162,7 +170,6 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
 }
 
 export const getTableData = (tableApiResponse, chartData) => {
-  if (isEmpty(chartData.rubric)) return []
   const denormalizedData = getDenormalizedTableData(
     tableApiResponse,
     chartData.rubric

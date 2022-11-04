@@ -72,7 +72,7 @@ const SelectRolePopup = (props) => {
             onClick={onBackClick}
           />
           <p>Please, enter your ClassCode</p>
-          <p>(provied by your teacher)</p>
+          <p>(Provided by your teacher)</p>
           <ConnectedClassCodeForm onSubmit={onSignupAsStudentSubmit} t={t} />
         </div>
       )}

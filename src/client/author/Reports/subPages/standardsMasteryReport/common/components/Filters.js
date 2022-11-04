@@ -8,6 +8,7 @@ import { Spin, Tabs, Row, Col } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
+import { FieldLabel } from '@edulastic/common'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
@@ -889,6 +890,9 @@ const StandardsMasteryReportFilters = ({
               data-cy="rubric-criteria"
               style={{ maxWidth: '300px' }}
             >
+              <FieldLabel fs=".7rem" data-cy="schoolYear">
+                Rubric
+              </FieldLabel>
               <ControlDropDown
                 by={filters.rubricId}
                 selectCB={(e, selected) =>

@@ -30,9 +30,19 @@ const compareByMap = {
   hispanicEthnicity: 'hispanicEthnicity',
 }
 
-const getTableColumns = (tableData, rubric, chartRenderData) => {
+const getTableColumns = (
+  tableData,
+  rubric,
+  chartRenderData,
+  selectedCompareBy
+) => {
   return next(tableColumnsData, (_columns) => {
     // compareBy column
+    const compareByIdx = _columns.findIndex(
+      (col) => col.dataIndex === 'rowName'
+    )
+    _columns[compareByIdx].title = selectedCompareBy.title
+    _columns[compareByIdx].render = (data) => data || '-'
     // const compareByIdx = _columns.findIndex((col) => col.key === 'compareBy')
     // _columns[compareByIdx].title = compareBy.title
     // _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
@@ -64,7 +74,9 @@ const getTableColumns = (tableData, rubric, chartRenderData) => {
         render: (value) => {
           return value ? (
             <Row type="flex" justify="center">
-              <p>{criteria.avgScorePercentage}</p>
+              <p>
+                {Number.isNaN(value.avgScore) ? '-' : value.avgScore ?? '-'}
+              </p>
             </Row>
           ) : (
             '-'
@@ -84,8 +96,12 @@ const PerformanceByRubricCriteriaTable = ({
   rubric,
   chartRenderData,
 }) => {
-  const tableColumns = getTableColumns(tableData, rubric, chartRenderData)
-  console.log(tableColumns, tableData)
+  const tableColumns = getTableColumns(
+    tableData,
+    rubric,
+    chartRenderData,
+    selectedTableFilters.compareBy
+  )
   return (
     <>
       <TableFilters
@@ -100,7 +116,7 @@ const PerformanceByRubricCriteriaTable = ({
           columns={tableColumns}
           tableToRender={CustomStyledTable}
           onCsvConvert={() => {}}
-          isCsvDownloading={() => {}}
+          isCsvDownloading={false}
         />
       </TableContainer>
     </>

@@ -3,6 +3,7 @@ import next from 'immer'
 import { Row } from 'antd'
 import TableFilters from '../filters/TableFilters'
 import { TableContainer, CustomStyledTable } from '../styled'
+import { StyledH3 } from '../../../../../common/styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 const tableColumnsData = [
@@ -34,7 +35,8 @@ const getTableColumns = (
   tableData,
   rubric,
   chartRenderData,
-  selectedCompareBy
+  selectedCompareBy,
+  analyseBy
 ) => {
   return next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -43,17 +45,6 @@ const getTableColumns = (
     )
     _columns[compareByIdx].title = selectedCompareBy.title
     _columns[compareByIdx].render = (data) => data || '-'
-    // const compareByIdx = _columns.findIndex((col) => col.key === 'compareBy')
-    // _columns[compareByIdx].title = compareBy.title
-    // _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
-    // _columns[compareByIdx].render = (data) => data || '-'
-    // _columns[compareByIdx].sorter = (a, b) => {
-    //   const dataIndex = compareByMap[compareBy.key]
-    //   return (a[dataIndex] || '')
-    //     .toLowerCase()
-    //     .localeCompare((b[dataIndex] || '').toLowerCase())
-    // }
-    // _columns[compareByIdx].defaultSortOrder = 'ascend'
 
     const criteriaColumns = rubric.criteria.map((criteria) => {
       const chartData = chartRenderData.find(
@@ -72,11 +63,13 @@ const getTableColumns = (
         dataIndex: criteria.id,
         visibleOn: ['browser'],
         render: (value) => {
+          const valueToShow =
+            analyseBy.key === 'score'
+              ? value.avgScorePercentage
+              : value.avgScore
           return value ? (
             <Row type="flex" justify="center">
-              <p>
-                {Number.isNaN(value.avgScore) ? '-' : value.avgScore ?? '-'}
-              </p>
+              <div>{Number.isNaN(valueToShow) ? '-' : valueToShow ?? '-'}</div>
             </Row>
           ) : (
             '-'
@@ -95,28 +88,36 @@ const PerformanceByRubricCriteriaTable = ({
   tableFilterOptions,
   rubric,
   chartRenderData,
+  onCsvConvert,
+  isCsvDownloading,
 }) => {
   const tableColumns = getTableColumns(
     tableData,
     rubric,
     chartRenderData,
-    selectedTableFilters.compareBy
+    selectedTableFilters.compareBy,
+    selectedTableFilters.analyseBy
   )
   return (
     <>
-      <TableFilters
-        setTableFilters={setTableFilters}
-        compareByOptions={tableFilterOptions.compareByData}
-        analyseByOptions={tableFilterOptions.analyseByData}
-        selectedTableFilters={selectedTableFilters}
-      />
+      <Row type="flex" justify="space-between">
+        <StyledH3>
+          Rubric Scores by {selectedTableFilters.compareBy.title}
+        </StyledH3>
+        <TableFilters
+          setTableFilters={setTableFilters}
+          compareByOptions={tableFilterOptions.compareByData}
+          analyseByOptions={tableFilterOptions.analyseByData}
+          selectedTableFilters={selectedTableFilters}
+        />
+      </Row>
       <TableContainer>
         <CsvTable
           dataSource={tableData}
           columns={tableColumns}
           tableToRender={CustomStyledTable}
-          onCsvConvert={() => {}}
-          isCsvDownloading={false}
+          onCsvConvert={onCsvConvert}
+          isCsvDownloading={isCsvDownloading}
         />
       </TableContainer>
     </>

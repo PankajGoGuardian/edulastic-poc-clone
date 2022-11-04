@@ -385,15 +385,6 @@ export const GroupedStackedBarChart = ({
             // onMouseOver={onXAxisTickTooltipMouseOver}
             // onMouseOut={onXAxisTickTooltipMouseOut}
           />
-          <XAxis
-            padding={{ top: 0 }}
-            dataKey={secondaryXAxisDataKey}
-            axisLine={false}
-            tickLine={false}
-            interval={0}
-            tick={renderRubricsTick}
-            xAxisId="rubric-name"
-          />
           <YAxis
             axisLine={false}
             tick={false}

@@ -144,8 +144,11 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
     (rowArr) => {
       const columnValues = mapValues(keyBy(rowArr, 'criteriaId'), (cell) => ({
         avgScore: cell.scoreGrouped[cell.compareById],
-        avgScorePercentage:
-          cell.scoreGrouped[cell.compareById] / max(cell.maxRatingPoints),
+        avgScorePercentage: percentage(
+          cell.scoreGrouped[cell.compareById],
+          cell.maxRatingPoints,
+          true
+        ),
       }))
       return {
         // for reference only.
@@ -159,6 +162,20 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
 }
 
 export const getTableData = (tableApiResponse, chartData) => {
+  // tableApiResponse.data.forEach((d) => {
+  //   const scoreGrouped = {}
+  //   Object.keys(d.scoreGrouped).forEach((scoreKey) => {
+  //     console.log(scoreKey)
+  //     scoreGrouped[isEmpty(scoreKey) ? '-' : scoreKey] =
+  //       d.scoreGrouped[scoreKey]
+  //   })
+  //   console.log(scoreGrouped)
+  //   return {
+  //     ...d,
+  //     scoreGrouped,
+  //   }
+  // })
+  // console.log(tableApiResponse)
   if (isEmpty(chartData)) return []
   const denormalizedData = getDenormalizedTableData(
     tableApiResponse,

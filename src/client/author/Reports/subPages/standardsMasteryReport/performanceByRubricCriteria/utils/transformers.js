@@ -1,5 +1,5 @@
 import { percentage } from '@edulastic/constants/reportUtils/common'
-import { groupBy, isEmpty, keyBy, mapValues, max, sum } from 'lodash'
+import { groupBy, isEmpty, keyBy, mapValues, map, max, sum } from 'lodash'
 
 export const getDenormalizedChartData = (chartData) => {
   if (isEmpty(chartData) || isEmpty(chartData.data)) return []
@@ -115,7 +115,12 @@ export const getChartData = (denormalizedData) => {
 }
 
 export const getDenormalizedTableData = (tableApiResponse, rubric) => {
-  if (isEmpty(tableApiResponse) || isEmpty(tableApiResponse.data)) return []
+  if (
+    isEmpty(tableApiResponse) ||
+    isEmpty(tableApiResponse.data) ||
+    isEmpty(rubric)
+  )
+    return []
   const { data: metrics, compareByNames } = tableApiResponse
 
   const flatData = metrics
@@ -157,9 +162,9 @@ export const getTableData = (tableApiResponse, chartData) => {
   if (isEmpty(chartData)) return []
   const denormalizedData = getDenormalizedTableData(
     tableApiResponse,
-    chartData.renderData
+    chartData.rubric
   )
-  return mapValues(denormalizedData, (row) => ({
+  return map(denormalizedData, (row) => ({
     ...row,
     /// append colors ?
   }))

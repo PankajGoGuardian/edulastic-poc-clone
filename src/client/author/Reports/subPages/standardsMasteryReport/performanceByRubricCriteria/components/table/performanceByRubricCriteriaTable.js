@@ -7,8 +7,8 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 
 const tableColumnsData = [
   {
-    dataIndex: 'compareBy',
-    key: 'compareBy',
+    dataIndex: 'rowName',
+    key: 'rowId',
     align: 'left',
     fixed: 'left',
     width: 200,
@@ -30,50 +30,49 @@ const compareByMap = {
   hispanicEthnicity: 'hispanicEthnicity',
 }
 
-const getTableColumns = (tableData, ratingsData, selectedTableFilters) => {
-  const compareBy = selectedTableFilters.compareBy
+const getTableColumns = (tableData, rubric, chartRenderData) => {
   return next(tableColumnsData, (_columns) => {
     // compareBy column
-    const compareByIdx = _columns.findIndex((col) => col.key === 'compareBy')
-    _columns[compareByIdx].title = compareBy.title
-    _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
-    _columns[compareByIdx].render = (data) => data || '-'
-    _columns[compareByIdx].sorter = (a, b) => {
-      const dataIndex = compareByMap[compareBy.key]
-      return (a[dataIndex] || '')
-        .toLowerCase()
-        .localeCompare((b[dataIndex] || '').toLowerCase())
-    }
-    _columns[compareByIdx].defaultSortOrder = 'ascend'
+    // const compareByIdx = _columns.findIndex((col) => col.key === 'compareBy')
+    // _columns[compareByIdx].title = compareBy.title
+    // _columns[compareByIdx].dataIndex = compareByMap[compareBy.key]
+    // _columns[compareByIdx].render = (data) => data || '-'
+    // _columns[compareByIdx].sorter = (a, b) => {
+    //   const dataIndex = compareByMap[compareBy.key]
+    //   return (a[dataIndex] || '')
+    //     .toLowerCase()
+    //     .localeCompare((b[dataIndex] || '').toLowerCase())
+    // }
+    // _columns[compareByIdx].defaultSortOrder = 'ascend'
 
-    const ratingColumns = ratingsData.flatMap((rating) => {
+    const criteriaColumns = rubric.criteria.map((criteria) => {
+      const chartData = chartRenderData.find(
+        (c) => c.criteriaId === criteria.id
+      )
       return {
-        key: rating.id,
+        key: criteria.id,
         title: (
           <div>
-            <h4>{rating.rubric.name}</h4>
-            <h4>{rating.criteria.name}</h4>
-            <h4>{rating.avgScore}</h4>
+            <h4>{rubric.name}</h4>
+            <h4>{criteria.name}</h4>
+            <h4>{chartData.avgScore}</h4>
           </div>
         ),
         align: 'center',
-        dataIndex: 'ratings',
+        dataIndex: criteria.id,
         visibleOn: ['browser'],
-        render: (ratings = {}) => {
-          const currentRating = ratings.find((r) => r.id === rating.id)
-          if (currentRating) {
-            return currentRating ? (
-              <Row type="flex" justify="center">
-                <p>{currentRating.avgScorePercentage}</p>
-              </Row>
-            ) : (
-              '-'
-            )
-          }
+        render: (value) => {
+          return value ? (
+            <Row type="flex" justify="center">
+              <p>{criteria.avgScorePercentage}</p>
+            </Row>
+          ) : (
+            '-'
+          )
         },
       }
     })
-    _columns.push(...ratingColumns)
+    _columns.push(...criteriaColumns)
   })
 }
 
@@ -82,8 +81,11 @@ const PerformanceByRubricCriteriaTable = ({
   selectedTableFilters,
   setTableFilters,
   tableFilterOptions,
+  rubric,
+  chartRenderData,
 }) => {
-  const tableColumns = getTableColumns(tableData)
+  const tableColumns = getTableColumns(tableData, rubric, chartRenderData)
+  console.log(tableColumns, tableData)
   return (
     <>
       <TableFilters

@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useEffect, useRef } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -85,6 +85,7 @@ export const GroupedStackedBarChart = ({
   getXTickText,
   // getXTickTagText,
   getTooltipJSX,
+  getRightTooltipJSX,
   yAxisLabel = '',
   // yTickFormatter = (val) => `${val}%`,
   barsLabelFormatter = _barsLabelFormatter,
@@ -106,6 +107,7 @@ export const GroupedStackedBarChart = ({
     endIndex: pageSize - 1,
   })
   const [barIndex, setBarIndex] = useState(null)
+  const tooltipPayload = useRef(0)
   const [secondaryAxisName, setSecondaryAxisName] = useState('')
   // const [activeLegend, setActiveLegend] = useState(null)
   // const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
@@ -126,19 +128,38 @@ export const GroupedStackedBarChart = ({
     if (!tooltip) return
     const tooltipHeight = tooltip.getBoundingClientRect().height
     const tooltipWidth = tooltip.getBoundingClientRect().width
-    const spaceForLittleTriangle = 10
-    const spaceForPercentageLabel = 20
+    const spaceForLittleTriangle = 15
+    const spaceForPercentageLabel = 25
 
     tooltip.style = `
       transform: translate(${hoveredBarDimensions?.x}px, ${
       hoveredBarDimensions?.y
     }px);
-      pointer-events: none;
+      pointer-events: none;  
       position: absolute;
       top: -${
         tooltipHeight + spaceForLittleTriangle + spaceForPercentageLabel
       }px;
       left: -${tooltipWidth / 2 - hoveredBarDimensions?.width / 2}px;
+      transition: all 400ms ease 0s;
+    `
+    const tooltipRight = document.querySelector(
+      '.recharts-tooltip-wrapper-bottom'
+    )
+
+    if (!tooltipRight) return
+    const barHeight = 100
+
+    tooltipRight.style = `
+      transform: translate(${hoveredBarDimensions?.x}px, ${
+      hoveredBarDimensions?.y
+    }px);
+      pointer-events: none;  
+      position: absolute;
+      top: ${
+        barHeight / 2 - spaceForLittleTriangle - spaceForPercentageLabel
+      }px;
+      left: ${hoveredBarDimensions?.width + 2 * spaceForLittleTriangle}px;
       transition: all 400ms ease 0s;
     `
   }, [hoveredBarDimensions])
@@ -198,7 +219,9 @@ export const GroupedStackedBarChart = ({
   //   onResetClickCB()
   // }
 
-  const onBarMouseOver = (index, shouldUpdateHoveredBar = false) => (event) => {
+  const onBarMouseOver = (index, key, shouldUpdateHoveredBar = false) => (
+    event
+  ) => {
     setBarIndex(index)
     if (!isEmpty(event) && shouldUpdateHoveredBar) {
       let d
@@ -405,7 +428,10 @@ export const GroupedStackedBarChart = ({
             position={{ x: hoveredBarDimensions.x, y: hoveredBarDimensions.y }}
             content={
               <StyledCustomChartTooltipDark
-                getJSX={getTooltipJSX}
+                getJSX={(payload, active) => {
+                  tooltipPayload.current = [payload, active]
+                  return getTooltipJSX(payload, active)
+                }}
                 barIndex={barIndex}
               />
             }
@@ -429,14 +455,14 @@ export const GroupedStackedBarChart = ({
                 // onClick={onBarClick}
                 barSize={40}
                 maxBarSize={40}
-                // onMouseOver={onBarMouseOver(bdIndex, true)}
-                // onMouseLeave={onBarMouseLeave(bdIndex)}
+                onMouseOver={onBarMouseOver(bdIndex, bdItem.key, true)}
+                onMouseLeave={onBarMouseLeave(bdIndex)}
               >
                 <LabelList
                   dataKey={bdItem.topLabelKey}
                   position="top"
                   fill="#010101"
-                  onMouseOver={onBarMouseOver(bdIndex, true)}
+                  onMouseOver={onBarMouseOver(bdIndex, bdItem.key, true)}
                   onMouseLeave={onBarMouseLeave(bdIndex)}
                 />
                 <LabelList
@@ -444,7 +470,7 @@ export const GroupedStackedBarChart = ({
                   position="inside"
                   fill="#010101"
                   offset={5}
-                  onMouseOver={onBarMouseOver(bdIndex)}
+                  onMouseOver={onBarMouseOver(bdIndex, bdItem.key)}
                   onMouseLeave={onBarMouseLeave(bdIndex)}
                   content={
                     <LabelText
@@ -504,6 +530,28 @@ export const GroupedStackedBarChart = ({
           })}
         </BarChart>
       </ResponsiveContainer>
+      <Tooltip
+        cursor={false}
+        position={{
+          x: hoveredBarDimensions.x,
+          y: hoveredBarDimensions.y,
+        }}
+        content={
+          <StyledCustomChartTooltipDark
+            getJSX={(payload, active) => {
+              payload = tooltipPayload.current?.[0]
+              active = tooltipPayload.current?.[1]
+              return getRightTooltipJSX(payload, active)
+            }}
+            barIndex={barIndex}
+            style={{
+              left: '-15px',
+              bottom: '50%',
+              transform: 'rotate(90deg)',
+            }}
+          />
+        }
+      />
     </StyledSignedStackedBarChartContainer>
   )
 }

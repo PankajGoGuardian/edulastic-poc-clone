@@ -8,10 +8,7 @@ import { mapValues, isEmpty } from 'lodash'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import GroupedStackedBarChartContainer from './components/charts/groupedStackedBarChartContainer'
 import PerformanceByRubricCriteriaTable from './components/table/performanceByRubricCriteriaTable'
-import {
-  getDenormalizedChartData,
-  getDenormalizedTableData,
-} from './utils/transformers'
+import { getDenormalizedChartData, getTableData } from './utils/transformers'
 
 import { actions, selectors } from './ducks'
 import dropDownData from './static/dropDownData.json'
@@ -75,10 +72,11 @@ const PerformanceByRubricCriteria = ({
     reportChartData,
   ])
 
-  const tableData = useMemo(
-    () => getDenormalizedTableData(reportTableData, reportChartData.rubric),
-    [reportTableData, reportChartData.rubric]
-  )
+  // const tableData = useMemo(
+  //   () => getTableData(reportTableData, reportChartData.rubric),
+  //   [reportTableData, reportChartData.rubric]
+  // )
+  // console.log('table data', tableData)
 
   if (loadingReportChartData || loadingReportTableData) {
     return (

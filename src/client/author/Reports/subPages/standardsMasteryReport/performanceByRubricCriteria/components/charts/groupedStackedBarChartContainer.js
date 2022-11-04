@@ -32,45 +32,57 @@ const ColorBandItem = ({ name, color, highlight }) => {
 }
 
 const getTooltipJSX = (payload, barIndex) => {
-  console.log('payload', payload)
-  console.log('index', barIndex)
-  // if (payload && payload.length && barIndex !== null) {
-  //   const barData = payload[0].payload
-  //   let colorBandComponent = null
-  //   if (barData.externalTestType) {
-  //     const achievementLevels = [...barData.achievementLevelBands].reverse()
-  //     colorBandComponent = (
-  //       <>
-  //         <TooltipRowItem title={`${achievementLevels.length} color band`} />
-  //         {achievementLevels.map((band) => (
-  //           <ColorBandItem
-  //             highlight={band.active}
-  //             color={band.color}
-  //             name={band.name}
-  //           />
-  //         ))}
-  //       </>
-  //     )
-  //   } else {
-  //     colorBandComponent = (
-  //       <ColorBandItem color={barData.band.color} name={barData.band.name} />
-  //     )
-  //   }
-  //   return (
-  //     <div>
-  //       <TooltipRowItem
-  //         title="Score:"
-  //         value={
-  //           barData.externalTestType
-  //             ? barData.totalScore
-  //             : `${round(barData.averageScore, 2)}%`
-  //         }
-  //       />
-  //       <DashedHr />
-  //       {colorBandComponent}
-  //     </div>
-  //   )
-  // }
+  if (payload && payload.length && barIndex !== null) {
+    const barData = payload[0].payload
+    let colorBandComponent = null
+    const colorBandData = []
+    const ratings = barData.criteria.ratings
+    ratings.forEach((e) => {
+      colorBandData.push({ name: e.name, score: barData[e.id] })
+    })
+    colorBandComponent = (
+      <>
+        {colorBandData.map((band) => (
+          <ColorBandItem
+            color="#FFFF00"
+            name={`${band.score} | ${band.name}`}
+          />
+        ))}
+      </>
+    )
+    return (
+      <div>
+        <TooltipRowItem
+          title="Responses:"
+          value={barData.totalResponsesPerCriteria}
+        />
+        <TooltipRowItem
+          title="Score:"
+          value={`${barData.scorePercentagePerCriteria}%`}
+        />
+        <DashedHr />
+        {colorBandComponent}
+      </div>
+    )
+  }
+  return null
+}
+
+const getRightTooltipJSX = (payload, barIndex) => {
+  if (payload && payload.length && barIndex !== null) {
+    const barData = payload[barIndex]
+    const responsesByRating = barData.payload.responsesByRating
+    const dataKey = barData.dataKey
+    return (
+      <div>
+        <ColorBandItem
+          color={barData.fill}
+          name={`${barData.value} | ${barData.name}`}
+        />
+        <TooltipRowItem title="Responses:" value={responsesByRating[dataKey]} />
+      </div>
+    )
+  }
   return null
 }
 
@@ -89,6 +101,7 @@ const GroupedStackedBarChartContainer = ({ barsData, renderData }) => {
         yAxisLabel="Response %"
         getXTickText={getXTickText}
         getTooltipJSX={getTooltipJSX}
+        getRightTooltipJSX={getRightTooltipJSX}
         hasBarInsideLabels
         hasRoundedBars
         hasBarTopLabels

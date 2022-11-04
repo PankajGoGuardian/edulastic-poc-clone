@@ -57,10 +57,7 @@ const PerformanceByRubricCriteria = ({
 
   useEffect(() => {
     const q = { ...settings.requestFilters }
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      settings.requestFilters.rubricId
-    ) {
+    if ((q.termId && q.rubricId) || q.reportId) {
       fetchReportChartDataRequest(q)
     }
   }, [settings.requestFilters])
@@ -70,11 +67,7 @@ const PerformanceByRubricCriteria = ({
       ...settings.requestFilters,
       compareBy: tableFilters.compareBy.key,
     }
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      settings.requestFilters.rubricId &&
-      tableFilters.compareBy.key
-    ) {
+    if (((q.termId && q.rubricId) || q.reportId) && q.compareBy) {
       fetchReportTableDataRequest(q)
     }
   }, [settings.requestFilters, tableFilters.compareBy])

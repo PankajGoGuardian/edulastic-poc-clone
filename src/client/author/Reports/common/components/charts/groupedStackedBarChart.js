@@ -219,9 +219,7 @@ export const GroupedStackedBarChart = ({
   //   onResetClickCB()
   // }
 
-  const onBarMouseOver = (index, key, shouldUpdateHoveredBar = false) => (
-    event
-  ) => {
+  const onBarMouseOver = (index, shouldUpdateHoveredBar = false) => (event) => {
     setBarIndex(index)
     if (!isEmpty(event) && shouldUpdateHoveredBar) {
       let d
@@ -455,14 +453,14 @@ export const GroupedStackedBarChart = ({
                 // onClick={onBarClick}
                 barSize={40}
                 maxBarSize={40}
-                onMouseOver={onBarMouseOver(bdIndex, bdItem.key, true)}
+                onMouseOver={onBarMouseOver(bdIndex, true)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
               >
                 <LabelList
                   dataKey={bdItem.topLabelKey}
                   position="top"
                   fill="#010101"
-                  onMouseOver={onBarMouseOver(bdIndex, bdItem.key, true)}
+                  onMouseOver={onBarMouseOver(bdIndex, true)}
                   onMouseLeave={onBarMouseLeave(bdIndex)}
                 />
                 <LabelList
@@ -470,7 +468,7 @@ export const GroupedStackedBarChart = ({
                   position="inside"
                   fill="#010101"
                   offset={5}
-                  onMouseOver={onBarMouseOver(bdIndex, bdItem.key)}
+                  onMouseOver={onBarMouseOver(bdIndex)}
                   onMouseLeave={onBarMouseLeave(bdIndex)}
                   content={
                     <LabelText

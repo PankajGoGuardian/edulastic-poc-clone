@@ -68,38 +68,18 @@ const LabelText = ({
 
 export const GroupedStackedBarChart = ({
   margin = { top: 20, right: 60, left: 10, bottom: 50 },
-  // legendProps = {
-  //   wrapperStyle: { top: -10 },
-  // },
-  // xTickTooltipPosition = 420,
-  // xTickToolTipWidth = 200,
   pageSize: _pageSize,
   barsData,
   data = [],
-  // yDomain = [0, 110],
-  // ticks = [-100, -81, -54, -27, 27, 54, 81, 110],
   primaryXAxisDataKey,
-  secondaryXAxisDataKey,
-  // onBarClickCB,
-  // onResetClickCB,
   getXTickText,
-  // getXTickTagText,
   getTooltipJSX,
   getRightTooltipJSX,
   yAxisLabel = '',
-  // yTickFormatter = (val) => `${val}%`,
   barsLabelFormatter = _barsLabelFormatter,
-  // referenceLine = 0,
   filter = {},
   hasRoundedBars = true,
-  // isSignedChart = true,
-  // hideYAxis = false,
-  // hideCartesianGrid = false,
-  // hideLegend = false,
-  hasBarTopLabels = true,
-  hasBarInsideLabels = true,
-  backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
-  // setBackendPagination,
+  backendPagination,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -108,14 +88,6 @@ export const GroupedStackedBarChart = ({
   })
   const [barIndex, setBarIndex] = useState(null)
   const tooltipPayload = useRef(0)
-  const [secondaryAxisName, setSecondaryAxisName] = useState('')
-  // const [activeLegend, setActiveLegend] = useState(null)
-  // const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
-  //   visibility: 'hidden',
-  //   x: null,
-  //   y: null,
-  //   content: null,
-  // })
   const [hoveredBarDimensions, setHoveredBarDimensions] = useState({
     x: 0,
     y: 0,
@@ -181,44 +153,6 @@ export const GroupedStackedBarChart = ({
     [pagination, data]
   )
 
-  const scrollLeft = () => {
-    let diff
-    if (pagination.startIndex > 0) {
-      if (pagination.startIndex >= pageSize) {
-        diff = pageSize
-      } else {
-        diff = pagination.startIndex
-      }
-      setPagination({
-        startIndex: pagination.startIndex - diff,
-        endIndex: pagination.endIndex - diff,
-      })
-    }
-  }
-
-  const scrollRight = () => {
-    let diff
-    if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
-        diff = pageSize
-      } else {
-        diff = chartData.length - 1 - pagination.endIndex
-      }
-      setPagination({
-        startIndex: pagination.startIndex + diff,
-        endIndex: pagination.endIndex + diff,
-      })
-    }
-  }
-
-  // const onBarClick = (args) => {
-  //   onBarClickCB(args[xAxisDataKey])
-  // }
-
-  // const onResetClick = () => {
-  //   onResetClickCB()
-  // }
-
   const onBarMouseOver = (index, shouldUpdateHoveredBar = false) => (event) => {
     setBarIndex(index)
     if (!isEmpty(event) && shouldUpdateHoveredBar) {
@@ -249,43 +183,6 @@ export const GroupedStackedBarChart = ({
     setBarIndex(null)
   }
 
-  // const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
-  // const onLegendMouseLeave = () => setActiveLegend(null)
-
-  // const setLegendMargin = (value) => {
-  //   return <span style={{ marginRight: '30px' }}>{value}</span>
-  // }
-
-  // const onXAxisTickTooltipMouseOver = (payload) => {
-  //   const { coordinate } = payload
-  //   let content
-  //   if (getXTickText) {
-  //     content = getXTickText(payload, renderData)
-  //   } else {
-  //     content = payload.value
-  //   }
-
-  //   data = {
-  //     visibility: 'visible',
-  //     x: `${calculateXCoordinateOfXAxisToolTip(
-  //       coordinate,
-  //       xTickToolTipWidth
-  //     )}px`,
-  //     y: `${xTickTooltipPosition}px`,
-  //     content,
-  //   }
-  //   setXAxisTickTooltipData(data)
-  // }
-
-  // const onXAxisTickTooltipMouseOut = () => {
-  //   setXAxisTickTooltipData({
-  //     visibility: 'hidden',
-  //     x: null,
-  //     y: null,
-  //     content: null,
-  //   })
-  // }
-
   const barKeys = useMemo(
     () =>
       barsData.map((bdItem, bdIndex) => ({ key: bdItem.key, idx: bdIndex })),
@@ -303,16 +200,35 @@ export const GroupedStackedBarChart = ({
     return false
   }
 
-  const renderRubricsTick = (tickProps) => {
-    const { x, y, payload } = tickProps
-    const { value } = payload
+  // const scrollLeft = () => {
+  //   let diff
+  //   if (pagination.startIndex > 0) {
+  //     if (pagination.startIndex >= pageSize) {
+  //       diff = pageSize
+  //     } else {
+  //       diff = pagination.startIndex
+  //     }
+  //     setPagination({
+  //       startIndex: pagination.startIndex - diff,
+  //       endIndex: pagination.endIndex - diff,
+  //     })
+  //   }
+  // }
 
-    return (
-      <text x={x} y={y + 40} textAnchor="middle" fontSize={20}>
-        {startCase(value)}
-      </text>
-    )
-  }
+  // const scrollRight = () => {
+  //   let diff
+  //   if (pagination.endIndex < chartData.length - 1) {
+  //     if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+  //       diff = pageSize
+  //     } else {
+  //       diff = chartData.length - 1 - pagination.endIndex
+  //     }
+  //     setPagination({
+  //       startIndex: pagination.startIndex + diff,
+  //       endIndex: pagination.endIndex + diff,
+  //     })
+  //   }
+  // }
 
   // chart navigation visibility and control
   // const chartNavLeftVisibility = backendPagination
@@ -340,16 +256,6 @@ export const GroupedStackedBarChart = ({
 
   return (
     <StyledSignedStackedBarChartContainer>
-      {/* <ResetButtonClear
-        onClick={onResetClick}
-        style={
-          Object.keys(filter).length > 0
-            ? { visibility: 'visible' }
-            : { visibility: 'hidden' }
-        }
-      >
-        Reset
-      </ResetButtonClear> */}
       {/* <StyledChartNavButton
         type="primary"
         shape="circle"
@@ -372,15 +278,6 @@ export const GroupedStackedBarChart = ({
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
         }}
       /> */}
-      {/* <CustomXAxisTickTooltipContainer
-        x={xAxisTickTooltipData.x}
-        y={xAxisTickTooltipData.y}
-        visibility={xAxisTickTooltipData.visibility}
-        color={xAxisTickTooltipData.color}
-        width={xTickToolTipWidth}
-      >
-        {xAxisTickTooltipData.content}
-      </CustomXAxisTickTooltipContainer> */}
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           width={730}
@@ -403,8 +300,6 @@ export const GroupedStackedBarChart = ({
             tickMargin={20}
             stroke={greyLight1}
             interval={0}
-            // onMouseOver={onXAxisTickTooltipMouseOver}
-            // onMouseOut={onXAxisTickTooltipMouseOut}
           />
           <YAxis
             axisLine={false}
@@ -426,12 +321,6 @@ export const GroupedStackedBarChart = ({
             }
           />
           {barsData.map((bdItem, bdIndex) => {
-            // let fillOpacity = 1
-
-            // if (activeLegend && activeLegend !== bdItem.key) {
-            //   fillOpacity = 0.2
-            // }
-
             return (
               <Bar
                 key={bdItem.key}
@@ -441,7 +330,6 @@ export const GroupedStackedBarChart = ({
                 fill={bdItem.fill}
                 unit={bdItem.unit}
                 isAnimationActive={false}
-                // onClick={onBarClick}
                 barSize={45}
                 maxBarSize={45}
                 onMouseOver={onBarMouseOver(bdIndex, true)}
@@ -481,21 +369,11 @@ export const GroupedStackedBarChart = ({
                       }
                       key={cdItem[primaryXAxisDataKey]}
                       fill={bdItem.fill}
-                      // fillOpacity={
-                      //   cdItem.additionalData?.[bdItem.key]?.fillOpacity ||
-                      //   cdItem.fillOpacity ||
-                      //   fillOpacity
-                      // }
                       stroke={
                         cdItem.additionalData?.[bdItem.key]?.stroke ||
                         cdItem.stroke ||
                         null
                       }
-                      // strokeOpacity={
-                      //   cdItem.additionalData?.[bdItem.key]?.strokeOpacity ||
-                      //   cdItem.strokeOpacity ||
-                      //   fillOpacity
-                      // }
                       strokeWidth={
                         cdItem.additionalData?.[bdItem.key]?.strokeWidth ||
                         cdItem.strokeWidth ||

@@ -8,7 +8,11 @@ import { mapValues, isEmpty } from 'lodash'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import GroupedStackedBarChartContainer from './components/charts/groupedStackedBarChartContainer'
 import PerformanceByRubricCriteriaTable from './components/table/performanceByRubricCriteriaTable'
-import { getDenormalizedChartData, getTableData } from './utils/transformers'
+import {
+  getDenormalizedChartData,
+  getTableData,
+  getChartData,
+} from './utils/transformers'
 
 import { actions, selectors } from './ducks'
 import dropDownData from './static/dropDownData.json'
@@ -71,12 +75,14 @@ const PerformanceByRubricCriteria = ({
   const chartData = useMemo(() => getDenormalizedChartData(reportChartData), [
     reportChartData,
   ])
+  const { barsData, renderData } = useMemo(() => getChartData(chartData), [
+    chartData,
+  ])
 
-  // const tableData = useMemo(
-  //   () => getTableData(reportTableData, reportChartData.rubric),
-  //   [reportTableData, reportChartData.rubric]
-  // )
-  // console.log('table data', tableData)
+  const tableData = useMemo(
+    () => getTableData(reportTableData, reportChartData),
+    [reportTableData, reportChartData]
+  )
 
   if (loadingReportChartData || loadingReportTableData) {
     return (
@@ -105,7 +111,10 @@ const PerformanceByRubricCriteria = ({
         </Row>
       </StyledCard>
       <Row>
-        {/* <GroupedStackedBarChartContainer data={chartData} />
+        <GroupedStackedBarChartContainer
+          barsData={barsData}
+          renderData={renderData}
+        />
         <PerformanceByRubricCriteriaTable
           tableData={tableData}
           selectedTableFilters={tableFilters}
@@ -114,7 +123,9 @@ const PerformanceByRubricCriteria = ({
             compareByData: compareByDataFiltered,
             analyseByData,
           }}
-        /> */}
+          rubric={reportChartData.rubric}
+          chartRenderData={renderData}
+        />
       </Row>
     </>
   )

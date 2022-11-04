@@ -74,9 +74,7 @@ const getTooltipJSX = (payload, barIndex) => {
   return null
 }
 
-const GroupedStackedBarChartContainer = ({ data }) => {
-  const { barsData, renderData } = useMemo(() => getChartData(data), [data])
-
+const GroupedStackedBarChartContainer = ({ barsData, renderData }) => {
   const getXTickText = (payload, _data) => {
     return _data[payload.index]?.criteriaName || '-'
   }

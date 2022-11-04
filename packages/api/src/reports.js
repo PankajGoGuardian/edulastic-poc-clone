@@ -351,31 +351,7 @@ const fetchPerformanceByRubricsCriteriaChartData = (params) =>
     })
     .then((res) => res.data.result)
 
-const TABLE_DATA = {
-  data: [
-    {
-      criteriaId: 'a12411ed-5d43-46dc-8b20-122e98b7dc00',
-      scoreGrouped: {
-        '63634f40e661ad000869f19d': 0.5,
-      },
-    },
-    {
-      criteriaId: '6b8be93e-7249-422d-9da5-6b70349f9e5d',
-      scoreGrouped: {
-        '63634f40e661ad000869f19d': 2,
-      },
-    },
-  ],
-  compareByNames: [
-    {
-      _id: '63634f40e661ad000869f19d',
-      name: 'class1',
-    },
-  ],
-}
-
 const fetchPerformanceByRubricsCriteriaTableData = (params) =>
-  new Promise((resolve) => resolve(TABLE_DATA)) ||
   api
     .callApi({
       url: '/report/performance-by-rubric/table',

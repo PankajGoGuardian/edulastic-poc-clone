@@ -4,6 +4,7 @@ import { notification } from '@edulastic/common'
 import { reportsApi } from '@edulastic/api'
 import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { pick } from 'lodash'
+import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
 const initialState = {
   reportChartData: {},
@@ -41,6 +42,9 @@ const slice = createSlice({
       state.loadingReportTableData = false
       state.error = payload.error
     },
+  },
+  extraReducers: {
+    [RESET_ALL_REPORTS]: () => ({ ...initialState }),
   },
 })
 

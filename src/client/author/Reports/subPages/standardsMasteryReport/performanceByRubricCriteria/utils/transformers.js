@@ -57,6 +57,7 @@ export const getDenormalizedChartData = (chartData) => {
         const fill = colorBand[Math.min(i, colorBand.length - 1)]
         return {
           ...m,
+          avgScorePerCriteria: round(m.avgScorePerCriteria, 2),
           ratingId: r.id,
           ratingName: r.name,
           totalResponsesPerRating,

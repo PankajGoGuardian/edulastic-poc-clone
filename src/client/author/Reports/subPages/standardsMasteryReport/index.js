@@ -338,7 +338,7 @@ const StandardsMasteryReportContainer = (props) => {
           path="/author/reports/standards-gradebook"
           render={(_props) => {
             // FIXME Don't set state directly in render function
-            useEffect(() => setShowHeader(true), [])
+            setShowHeader(true)
             return (
               <StandardsGradebook
                 {..._props}

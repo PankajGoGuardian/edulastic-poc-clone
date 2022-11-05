@@ -178,10 +178,12 @@ const StandardsMasteryReportFilters = ({
     key: `${domainId}`,
     title: domainGroup[domainId][0].domain,
   }))
-  const rubricsList = rubricsData.map(({ _id, name }) => ({
-    key: `${_id}`,
-    title: name,
-  }))
+  const rubricsList = get(standardsFilters, 'data.result.rubrics', []).map(
+    ({ _id, name }) => ({
+      key: `${_id}`,
+      title: name,
+    })
+  )
   const selectedDomains = (domainsList || []).filter((o) =>
     filters.domainIds?.includes(o.key)
   )
@@ -213,15 +215,20 @@ const StandardsMasteryReportFilters = ({
       ),
     [location.search]
   )
-
+  const hasOpenedPerformanceByRubricReportRef = useRef(false)
+  hasOpenedPerformanceByRubricReportRef.current =
+    hasOpenedPerformanceByRubricReportRef.current ||
+    loc === 'performance-by-rubric-criteria'
   useEffect(() => {
+    const params = {}
+    if (reportId) params.reportId = reportId
+    if (hasOpenedPerformanceByRubricReportRef.current) params.rubrics = true
+
+    getStandardsFiltersRequest(params)
     if (reportId) {
-      getStandardsFiltersRequest({ reportId })
       setFilters({ ...filters, ...search })
-    } else {
-      getStandardsFiltersRequest({})
     }
-  }, [])
+  }, [hasOpenedPerformanceByRubricReportRef.current])
 
   const isTabRequired = (tabKey) => {
     switch (tabKey) {
@@ -352,7 +359,7 @@ const StandardsMasteryReportFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
-        rubricId: urlRubric.key,
+        rubricId: urlRubric?.key,
         standardId: search.standardId || '',
         assignedBy: urlAssignedBy.key,
       }
@@ -371,7 +378,7 @@ const StandardsMasteryReportFilters = ({
           assessmentTypesArr.includes(a.key)
         ),
         curriculumId: urlCurriculum,
-        rubricId: urlRubric.key,
+        rubricId: urlRubric?.key,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
         assignedBy: urlAssignedBy,

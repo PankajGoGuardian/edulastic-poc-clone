@@ -36,7 +36,7 @@
     { "key": "standardGrade", "subType": "standard" },
     { "key": "profileId" },
     { "key": "domainIds" },
-    { "key": "rubricIds"},
+    { "key": "rubricId"},
     { "key": "standardId" },
     { "key": "race", "tabKey": "2" },
     { "key": "gender", "tabKey": "2" },

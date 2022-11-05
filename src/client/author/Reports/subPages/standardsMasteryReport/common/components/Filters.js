@@ -131,7 +131,17 @@ const StandardsMasteryReportFilters = ({
   const assessmentTypesRef = useRef()
 
   const tagTypes = staticDropDownData.tagTypes.filter(
-    (t) => demographicsRequired || !ddFilterTypes.includes(t.key)
+    (t) =>
+      (demographicsRequired || !ddFilterTypes.includes(t.key)) &&
+      (loc === 'performance-by-rubric-criteria'
+        ? ![
+            'curriculumId',
+            'standardGrade',
+            'profileId',
+            'domainIds',
+            'standardId',
+          ].includes(t.key)
+        : !['rubricId'].includes(t.key))
   )
 
   const role = get(user, 'role', '')
@@ -378,7 +388,7 @@ const StandardsMasteryReportFilters = ({
           assessmentTypesArr.includes(a.key)
         ),
         curriculumId: urlCurriculum,
-        rubricId: urlRubric?.key,
+        rubricId: urlRubric,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
         assignedBy: urlAssignedBy,

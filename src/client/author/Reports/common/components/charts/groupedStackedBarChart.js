@@ -200,84 +200,69 @@ export const GroupedStackedBarChart = ({
     return false
   }
 
-  // const scrollLeft = () => {
-  //   let diff
-  //   if (pagination.startIndex > 0) {
-  //     if (pagination.startIndex >= pageSize) {
-  //       diff = pageSize
-  //     } else {
-  //       diff = pagination.startIndex
-  //     }
-  //     setPagination({
-  //       startIndex: pagination.startIndex - diff,
-  //       endIndex: pagination.endIndex - diff,
-  //     })
-  //   }
-  // }
+  const scrollLeft = () => {
+    let diff
+    if (pagination.startIndex > 0) {
+      if (pagination.startIndex >= pageSize) {
+        diff = pageSize
+      } else {
+        diff = pagination.startIndex
+      }
+      setPagination({
+        startIndex: pagination.startIndex - diff,
+        endIndex: pagination.endIndex - diff,
+      })
+    }
+  }
 
-  // const scrollRight = () => {
-  //   let diff
-  //   if (pagination.endIndex < chartData.length - 1) {
-  //     if (chartData.length - 1 - pagination.endIndex >= pageSize) {
-  //       diff = pageSize
-  //     } else {
-  //       diff = chartData.length - 1 - pagination.endIndex
-  //     }
-  //     setPagination({
-  //       startIndex: pagination.startIndex + diff,
-  //       endIndex: pagination.endIndex + diff,
-  //     })
-  //   }
-  // }
+  const scrollRight = () => {
+    let diff
+    if (pagination.endIndex < chartData.length - 1) {
+      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+        diff = pageSize
+      } else {
+        diff = chartData.length - 1 - pagination.endIndex
+      }
+      setPagination({
+        startIndex: pagination.startIndex + diff,
+        endIndex: pagination.endIndex + diff,
+      })
+    }
+  }
 
   // chart navigation visibility and control
-  // const chartNavLeftVisibility = backendPagination
-  //   ? backendPagination.page > 1
-  //   : !(pagination.startIndex == 0)
+  const chartNavLeftVisibility = backendPagination
+    ? backendPagination.page > 1
+    : !(pagination.startIndex == 0)
 
-  // const chartNavRightVisibility = backendPagination
-  //   ? backendPagination.page < backendPagination.pageCount
-  //   : !(chartData.length <= pagination.endIndex + 1)
-
-  // const chartNavLeftClick = () =>
-  //   backendPagination
-  //     ? setBackendPagination({
-  //         ...backendPagination,
-  //         page: backendPagination.page - 1,
-  //       })
-  //     : scrollLeft()
-  // const chartNavRightClick = () =>
-  //   backendPagination
-  //     ? setBackendPagination({
-  //         ...backendPagination,
-  //         page: backendPagination.page + 1,
-  //       })
-  //     : scrollRight()
+  const chartNavRightVisibility = backendPagination
+    ? backendPagination.page < backendPagination.pageCount
+    : !(chartData.length <= pagination.endIndex + 1)
 
   return (
     <StyledSignedStackedBarChartContainer>
-      {/* <StyledChartNavButton
+      <StyledChartNavButton
         type="primary"
         shape="circle"
         icon="caret-left"
         IconBtn
         className="navigator navigator-left"
-        onClick={chartNavLeftClick}
+        onClick={scrollLeft}
         style={{
           visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
         }}
-      /> */}
-      {/* <StyledChartNavButton
+      />
+      <StyledChartNavButton
         type="primary"
         shape="circle"
         icon="caret-right"
         IconBtn
         className="navigator navigator-right"
-        onClick={chartNavRightClick}
+        onClick={scrollRight}
         style={{
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
         }}
-      /> */}
+      />
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           width={730}

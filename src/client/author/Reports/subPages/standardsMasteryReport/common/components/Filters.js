@@ -893,7 +893,7 @@ const StandardsMasteryReportFilters = ({
           type="flex"
           gutter={[5, 10]}
           justify="end"
-          align="middle"
+          align="bottom"
           style={{
             paddingLeft: '10px',
             width: '75%',
@@ -1032,7 +1032,7 @@ const StandardsMasteryReportFilters = ({
               btnType="primary"
               data-cy="applyRowFilter"
               onClick={() => onGoClick()}
-              style={{ height: '32px' }}
+              style={{ height: '32px', marginBottom: '5px' }}
             >
               APPLY
             </StyledEduButton>

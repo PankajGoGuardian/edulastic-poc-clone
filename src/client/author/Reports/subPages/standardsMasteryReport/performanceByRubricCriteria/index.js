@@ -105,7 +105,17 @@ const PerformanceByRubricCriteria = ({
     <>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3>Performance by Rubric criteria</StyledH3>
+          <StyledH3 style={{ fontSize: '20px' }}>
+            Performance by Rubric criteria
+          </StyledH3>
+        </Row>
+        <Row>
+          <span>
+            This report shows the response distribution across ratings for each
+            criterion of a rubric.
+            <br />
+            Hover over the chart to learn more about the rating.
+          </span>
         </Row>
       </StyledCard>
       <Row>

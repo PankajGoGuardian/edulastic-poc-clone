@@ -45,6 +45,9 @@ export const CustomStyledTable = styled(StyledTable)`
       }
     }
   }
+  .ant-table-body {
+    overflow-x: scroll;
+  }
 `
 export const TableTooltipWrapper = styled.div`
   .ant-tooltip-inner {
@@ -57,4 +60,22 @@ export const TableTooltipWrapper = styled.div`
     font-size: 12px;
     font-weight: 600;
   }
+`
+export const AssessmentNameContainer = styled.div`
+  .test-name-container {
+    font-weight: bold;
+    width: 121px;
+    padding: 0;
+    overflow: hidden;
+    position: relative;
+    display: inline-block;
+    text-align: center;
+    text-decoration: none;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+`
+export const StyledH4 = styled.h4`
+  font-size: 12px;
+  font-weight: bold;
 `

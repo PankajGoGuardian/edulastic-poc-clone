@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react'
+import { isEmpty } from 'lodash'
 import { GroupedStackedBarChart } from '../../../../../common/components/charts/groupedStackedBarChart'
 import { getChartData } from '../../utils/transformers'
 
@@ -74,6 +75,7 @@ const getRightTooltipJSX = (payload, barIndex) => {
     const dataKey = barData.dataKey
     const ratings = barData.payload.criteria.ratings
     const rating = ratings.filter((r) => r.id === dataKey)[0]
+    if (isEmpty(rating)) return null
     return (
       <div>
         <ColorBandItem

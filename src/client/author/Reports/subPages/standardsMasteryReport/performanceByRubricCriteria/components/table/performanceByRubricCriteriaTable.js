@@ -1,8 +1,12 @@
 import React from 'react'
 import next from 'immer'
-import { Row } from 'antd'
+import { Row, Tooltip } from 'antd'
 import TableFilters from '../filters/TableFilters'
-import { TableContainer, CustomStyledTable } from '../styled'
+import {
+  TableContainer,
+  CustomStyledTable,
+  TableTooltipWrapper,
+} from '../styled'
 import { StyledH3 } from '../../../../../common/styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
@@ -87,9 +91,18 @@ const getTableColumns = (
               ? `${value.avgScorePercentage}%`
               : value.avgScore
           return value ? (
-            <Row type="flex" justify="center">
-              <div>{Number.isNaN(valueToShow) ? '-' : valueToShow ?? '-'}</div>
-            </Row>
+            <TableTooltipWrapper>
+              <Tooltip
+                title={`Avg Score: ${value.avgScore}/${value.maxScore} (${value.avgScorePercentage}%)`}
+                getPopupContainer={(triggerNode) => triggerNode}
+              >
+                <Row type="flex" justify="center">
+                  <div>
+                    {Number.isNaN(valueToShow) ? '-' : valueToShow ?? '-'}
+                  </div>
+                </Row>
+              </Tooltip>
+            </TableTooltipWrapper>
           ) : (
             '-'
           )

@@ -80,11 +80,19 @@ export const GroupedStackedBarChart = ({
   filter = {},
   hasRoundedBars = true,
   backendPagination,
+  xTickToolTipWidth = 200,
+  xTickTooltipPosition = 400,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
     startIndex: 0,
     endIndex: pageSize - 1,
+  })
+  const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
+    visibility: 'hidden',
+    x: null,
+    y: null,
+    content: null,
   })
   const [barIndex, setBarIndex] = useState(null)
   const tooltipPayload = useRef(0)
@@ -230,6 +238,36 @@ export const GroupedStackedBarChart = ({
     }
   }
 
+  const onXAxisTickTooltipMouseOver = (payload) => {
+    const { coordinate } = payload
+    let content
+    if (getXTickText) {
+      content = getXTickText(payload, renderData)
+    } else {
+      content = payload.value
+    }
+
+    data = {
+      visibility: 'visible',
+      x: `${calculateXCoordinateOfXAxisToolTip(
+        coordinate,
+        xTickToolTipWidth
+      )}px`,
+      y: `${xTickTooltipPosition}px`,
+      content,
+    }
+    setXAxisTickTooltipData(data)
+  }
+
+  const onXAxisTickTooltipMouseOut = () => {
+    setXAxisTickTooltipData({
+      visibility: 'hidden',
+      x: null,
+      y: null,
+      content: null,
+    })
+  }
+
   // chart navigation visibility and control
   const chartNavLeftVisibility = backendPagination
     ? backendPagination.page > 1
@@ -263,6 +301,15 @@ export const GroupedStackedBarChart = ({
           visibility: chartNavRightVisibility ? 'visible' : 'hidden',
         }}
       />
+      <CustomXAxisTickTooltipContainer
+        x={xAxisTickTooltipData.x}
+        y={xAxisTickTooltipData.y}
+        visibility={xAxisTickTooltipData.visibility}
+        color={xAxisTickTooltipData.color}
+        width={xTickToolTipWidth}
+      >
+        {xAxisTickTooltipData.content}
+      </CustomXAxisTickTooltipContainer>
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           width={730}
@@ -285,6 +332,8 @@ export const GroupedStackedBarChart = ({
             tickMargin={20}
             stroke={greyLight1}
             interval={0}
+            onMouseOver={onXAxisTickTooltipMouseOver}
+            onMouseOut={onXAxisTickTooltipMouseOut}
           />
           <YAxis
             axisLine={false}

@@ -35,19 +35,18 @@ const getTooltipJSX = (payload, barIndex) => {
   if (payload && payload.length && barIndex !== null) {
     const barData = payload[0].payload
     let colorBandComponent = null
-    const colorBandData = []
     const ratings = barData.criteria.ratings
-    ratings.forEach((e) => {
-      colorBandData.push({ name: e.name, score: barData[e.id] })
-    })
     colorBandComponent = (
       <>
-        {colorBandData.map((band) => (
-          <ColorBandItem
-            color="#FFFF00"
-            name={`${band.score} | ${band.name}`}
-          />
-        ))}
+        {ratings.map((band) => {
+          const color = payload.filter((r) => r.dataKey === band.id)[0].fill
+          return (
+            <ColorBandItem
+              color={color}
+              name={`${band.points} | ${band.name}`}
+            />
+          )
+        })}
       </>
     )
     return (
@@ -73,11 +72,13 @@ const getRightTooltipJSX = (payload, barIndex) => {
     const barData = payload[barIndex]
     const responsesByRating = barData.payload.responsesByRating
     const dataKey = barData.dataKey
+    const ratings = barData.payload.criteria.ratings
+    const rating = ratings.filter((r) => r.id === dataKey)[0]
     return (
       <div>
         <ColorBandItem
           color={barData.fill}
-          name={`${barData.value} | ${barData.name}`}
+          name={`${rating.points} | ${rating.name}`}
         />
         <TooltipRowItem title="Responses:" value={responsesByRating[dataKey]} />
       </div>

@@ -169,6 +169,7 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
             cell.maxRatingPoints,
             true
           ),
+          maxScore: round(cell.maxRatingPoints),
         })
       )
       const totalResponses = sum(

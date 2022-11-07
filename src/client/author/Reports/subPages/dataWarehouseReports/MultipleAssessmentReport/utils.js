@@ -10,7 +10,7 @@ import {
   get,
   minBy,
   round,
-  sum,
+  sortBy,
 } from 'lodash'
 
 import {
@@ -179,6 +179,14 @@ export const tableColumnsData = [
     fixed: 'left',
     width: 200,
   },
+  {
+    title: 'Students',
+    key: 'totalStudentCount',
+    dataIndex: 'totalStudentCount',
+    align: 'center',
+    width: 100,
+    visibleOn: ['csv'],
+  },
   // next up are dynamic columns for each assessment
 ]
 
@@ -264,13 +272,20 @@ const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
   }
 }
 
-const findTestWithAverageBand = (tests) => {
-  const weightedAverageRank =
-    sum(tests.map((t) => get(t, 'band.rank', 0) * t.totalStudentCount || 0)) /
-    sumBy(tests, 'totalStudentCount')
-
-  const item = minBy(tests, (el) => get(el, 'band.rank') - weightedAverageRank)
-  return item
+/**
+ * Gets Median if odd elements, else `n/2 - 1`th element in sorted `arr`
+ *
+ * i.e.
+ *
+ * if `n` is odd, returns `sortedArr[(n-1)/2]`,
+ * if `n` is even, returns `sortedArr[n/2]`
+ * @param {number[]} arr array of numbers
+ * @returns {number}
+ */
+const medianStarBy = (arr, ...iteratees) => {
+  const sortedArr = sortBy(arr, iteratees)
+  const medianIdx = Math.floor((arr.length - 1) / 2)
+  return sortedArr[medianIdx]
 }
 
 const augmentBandData = (tests, bandInfo) => {
@@ -311,10 +326,10 @@ const getAggregatedDataByUniqId = (metricInfo) => {
           return {
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
-            totalTotalScore:
-              (parseFloat(ele.totalScore, 10) || 0) + res.totalTotalScore,
-            totalMaxScore:
+            totalMaxScore: round(
               (parseFloat(ele.maxScore, 10) || 0) + res.totalMaxScore,
+              2
+            ),
             totalStudentCount:
               (parseInt(ele.totalStudentCount, 10) || 0) +
               parseInt(res.totalStudentCount, 10),
@@ -323,20 +338,22 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         },
         {
           assessmentDate: 0,
-          totalTotalScore: 0,
+          maxScore: 0,
           totalMaxScore: 0,
           totalStudentCount: 0,
         }
       )
-      const { band, bands } = findTestWithAverageBand(groupedByUniqId[uniqId])
+      testData.totalTotalScore = medianStarBy(
+        groupedByUniqId[uniqId].map((el) => el.totalScore)
+      )
+      const { band, bands } = medianStarBy(groupedByUniqId[uniqId], 'band.rank')
       testData.band = band
       if (bands) testData.bands = bands
       const averageScore =
         testData.totalTotalScore /
           (testData.externalTestType
             ? testData.totalStudentCount
-            : testData.totalMaxScore) || 0
-      // mix of averageScore(total/count) & averageFractionalScore(total/max)
+            : testData.totalMaxScore) || 0 // mix of averageScore(total/count) & averageFractionalScore(total/max)
       const averageScorePercentage = averageScore * 100
       const _testName = testData.externalTestType
         ? testName
@@ -345,8 +362,7 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         ...testData,
         testName: _testName,
         isIncomplete,
-        totalTotalScore: round(testData.totalTotalScore, 2),
-        averageScore: round(averageScore, 2),
+        averageScore: round(averageScore),
         averageScorePercentage: round(averageScorePercentage, 2),
       }
     })
@@ -354,23 +370,18 @@ const getAggregatedDataByUniqId = (metricInfo) => {
 }
 
 export const getTableData = (
-  metricInfo = [],
-  externalMetricInfo = [],
-  metaInfo = [],
-  bandInfo = [],
+  metricInfo,
+  externalMetricInfo,
+  metaInfo,
+  bandInfo,
   compareByKey
 ) => {
-  // fallback to prevent intermittent crashes when bandInfo is empty
-  const _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
   // filter out external tests data without achievement level
-  const filteredExternalMetricInfo = externalMetricInfo
-    .filter((t) => t.externalTestType && t.achievementLevel)
-    .map((t) => ({
-      ...t,
-      assessmentDate: +new Date(t.assessmentDate),
-    }))
+  const filteredExternalMetricInfo = externalMetricInfo.filter(
+    (t) => t.externalTestType && t.achievementLevel
+  )
   const compositeMetricInfo = [
-    ..._metricInfo,
+    ...metricInfo,
     ...filteredExternalMetricInfo,
   ].map((t) => ({
     ...t,
@@ -383,6 +394,10 @@ export const getTableData = (
   const compositeMetricInfoWithBandData = augmentBandData(
     compositeMetricInfo,
     bandInfo
+  )
+  // overall assessments data for column headers sorted in descending order of assessmentDate
+  const overallAssessmentsData = getAggregatedDataByUniqId(
+    compositeMetricInfoWithBandData
   )
 
   // table data for each assessment
@@ -405,7 +420,7 @@ export const getTableData = (
   )
   const tableData = augmentMetaData(_tableData, compareByKey, metaInfo)
 
-  return tableData
+  return { overallAssessmentsData, tableData }
 }
 
 export const getChartData = (
@@ -413,22 +428,17 @@ export const getChartData = (
   externalMetricInfo = [],
   bandInfo = []
 ) => {
-  // fallback to prevent intermittent crashes when bandInfo is empty
-  let _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
   // filter out external tests data without achievement level
-  const filteredExternalMetricInfo = externalMetricInfo
-    .filter((t) => t.externalTestType && t.achievementLevel)
-    .map((t) => ({
-      ...t,
-      assessmentDate: +new Date(t.assessmentDate),
-    }))
+  const filteredExternalMetricInfo = externalMetricInfo.filter(
+    (t) => t.externalTestType && t.achievementLevel
+  )
   if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
     return []
   }
   const _bandInfo = bandInfo.sort((a, b) => b.threshold - a.threshold)
 
   // curate chart data for internal tests
-  _metricInfo = _metricInfo.map((t) => ({
+  const _metricInfo = metricInfo.map((t) => ({
     ...t,
     // uniqId represents a combination of testId and testType
     uniqId: `${t.testId}_${t.testType}`,
@@ -455,8 +465,8 @@ export const getChartData = (
             assessmentDate: parseInt(_res.assessmentDate, 10),
             isIncomplete: _isIncomplete,
             totalGraded: res.totalGraded + _totalGraded,
-            totalScore: res.totalScore + _totalScore,
-            totalMaxScore: res.totalMaxScore + _totalMaxScore,
+            totalScore: round(res.totalScore + _totalScore, 2),
+            totalMaxScore: round(res.totalMaxScore + _totalMaxScore, 2),
           }
         },
         {
@@ -467,9 +477,8 @@ export const getChartData = (
         }
       )
 
-      const averageScore = percentage(
-        testData.totalScore,
-        testData.totalMaxScore
+      const averageScore = round(
+        percentage(testData.totalScore, testData.totalMaxScore)
       )
       const averageScoreBand =
         _bandInfo.find((band) => band.threshold < averageScore) || bandInfo[0]
@@ -486,9 +495,8 @@ export const getChartData = (
         }
         const _record = records.find((r) => r.bandScore == band.threshold) || {}
         if (parseInt(_record.totalGraded, 10)) {
-          _record.totalGradedPercentage = percentage(
-            _record.totalGraded,
-            testData.totalGraded
+          _record.totalGradedPercentage = round(
+            percentage(_record.totalGraded, testData.totalGraded)
           )
         }
         return { ..._default, ..._record }
@@ -499,9 +507,8 @@ export const getChartData = (
         uniqId,
         testName: `${testName} (${testData.testType})`,
         isIncomplete,
-        totalScore: round(testData.totalScore, 2),
-        lineScore: round(averageScore, 2),
-        averageScore: round(averageScore, 2),
+        lineScore: averageScore,
+        averageScore,
         maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
         minScore: get(minBy(records, 'minScore'), 'minScore', 0),
         maxPossibleScore: (
@@ -537,8 +544,8 @@ export const getChartData = (
             ..._res,
             assessmentDate: parseInt(_res.assessmentDate, 10),
             totalGraded: res.totalGraded + _totalGraded,
-            totalScore: res.totalScore + _totalScore,
-            totalMaxScore: res.totalMaxScore + _totalMaxScore,
+            totalScore: round(res.totalScore + _totalScore, 2),
+            totalMaxScore: round(res.totalMaxScore + _totalMaxScore, 2),
           }
         },
         {
@@ -551,7 +558,9 @@ export const getChartData = (
 
       // TODO: check with Shubhangi and determine by score range
       const lineScore = 50
-      const averageScore = testData.totalScore / testData.totalGraded || 0
+      const averageScore = round(
+        testData.totalScore / testData.totalGraded || 0
+      )
 
       // curate records for each performance criteria of external test
       let _records = []
@@ -575,9 +584,8 @@ export const getChartData = (
         const _record =
           _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
         if (parseInt(_record.totalGraded, 10)) {
-          _record.totalGradedPercentage = percentage(
-            _record.totalGraded,
-            testData.totalGraded
+          _record.totalGradedPercentage = round(
+            percentage(_record.totalGraded, testData.totalGraded)
           )
         }
         return { ..._default, ..._record }
@@ -587,9 +595,8 @@ export const getChartData = (
         ...testData,
         uniqId,
         testName,
-        totalScore: round(testData.totalScore, 2),
         lineScore,
-        averageScore: round(averageScore, 2),
+        averageScore,
         maxScore: get(maxBy(records, 'maxScore'), 'maxScore', 0),
         minScore: get(minBy(records, 'minScore'), 'minScore', 0),
         records: _records,

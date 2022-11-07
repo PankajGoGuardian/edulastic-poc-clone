@@ -37,7 +37,7 @@ const achievementLevelsGrouped = [
 ]
 
 const getCAASPPAchievementLevels = (test) => {
-  const { testId, title: testTitle, achievementLevelRank: rank } = test
+  const { testId, title: testTitle } = test
   let result = [...caasppDefaultAchievementLevels]
   for (const achievementLevelsGroup of achievementLevelsGrouped) {
     if (achievementLevelsGroup.testTitles.includes(testTitle)) {
@@ -50,16 +50,13 @@ const getCAASPPAchievementLevels = (test) => {
     color: colorBand[i],
     ...r,
     testId,
-    active:
-      typeof rank !== 'undefined'
-        ? +rank === r.rank
-        : test.achievementLevel === r.id,
+    active: test.achievementLevel === r.id,
   }))
   return result
 }
 
 const getIReadyAchievementLevels = (test) => {
-  const { testId, achievementLevelRank: rank } = test
+  const { testId } = test
   const achievementLevel = test.achievementLevel.toLowerCase()
   const isMid = achievementLevel.startsWith('mid')
   const isLate =
@@ -72,7 +69,7 @@ const getIReadyAchievementLevels = (test) => {
     {
       testId,
       name: 'Two or More Grade Levels Below',
-      active: typeof rank !== 'undefined' ? +rank === 0 : levelDiff <= -2,
+      active: levelDiff <= -2,
       color: colorBand[0],
       id: 'Two or More Grade Levels Below',
       rank: 0,
@@ -80,8 +77,7 @@ const getIReadyAchievementLevels = (test) => {
     {
       testId,
       name: 'On (Early) Grade Level or One Grade Level Below',
-      active:
-        typeof rank !== 'undefined' ? +rank === 1 : isEarly || levelDiff == -1,
+      active: isEarly || levelDiff == -1,
       color: colorBand[1],
       id: 'On (Early) Grade Level or One Grade Level Below',
       rank: 1,
@@ -89,10 +85,7 @@ const getIReadyAchievementLevels = (test) => {
     {
       testId,
       name: 'On (Mid/Late) or Above Grade Level',
-      active:
-        typeof rank !== 'undefined'
-          ? +rank === 2
-          : isMid || isLate || levelDiff >= 0,
+      active: isMid || isLate || levelDiff >= 0,
       color: colorBand[2],
       id: 'On (Mid/Late) or Above Grade Level',
       rank: 2,
@@ -101,7 +94,7 @@ const getIReadyAchievementLevels = (test) => {
 }
 
 const getNWEAAchievementLevels = (test) => {
-  const { testId, achievementLevelRank: rank } = test
+  const { testId } = test
   const score = test.score
   return [
     {
@@ -109,7 +102,7 @@ const getNWEAAchievementLevels = (test) => {
       name: 'Low',
       id: 'Low',
       color: '#76211E',
-      active: typeof rank !== 'undefined' ? +rank === 0 : score < 21,
+      active: score < 21,
       rank: 0,
     },
     {
@@ -117,8 +110,7 @@ const getNWEAAchievementLevels = (test) => {
       name: 'LoAvg',
       id: 'LoAvg',
       color: '#E9923F',
-      active:
-        typeof rank !== 'undefined' ? +rank === 1 : score >= 21 && score <= 40,
+      active: score >= 21 && score <= 40,
       rank: 1,
     },
     {
@@ -126,8 +118,7 @@ const getNWEAAchievementLevels = (test) => {
       name: 'Avg',
       id: 'Avg',
       color: '#F6C750',
-      active:
-        typeof rank !== 'undefined' ? +rank === 2 : score >= 41 && score <= 60,
+      active: score >= 41 && score <= 60,
       rank: 2,
     },
     {
@@ -135,8 +126,7 @@ const getNWEAAchievementLevels = (test) => {
       name: 'HiAvg',
       id: 'HiAvg',
       color: '#3B8457',
-      active:
-        typeof rank !== 'undefined' ? +rank === 3 : score >= 61 && score <= 80,
+      active: score >= 61 && score <= 80,
       rank: 3,
     },
     {
@@ -144,7 +134,7 @@ const getNWEAAchievementLevels = (test) => {
       name: 'Hi',
       id: 'Hi',
       color: '#295FA5',
-      active: typeof rank !== 'undefined' ? +rank === 4 : score >= 80,
+      active: score >= 80,
       rank: 4,
     },
   ]

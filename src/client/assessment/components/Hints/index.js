@@ -39,24 +39,21 @@ const InfoButtons = ({
   handleShowRubricClick,
   displayRubricInfoButton,
   showHintsToStudents,
-  alwaysShowHintsButton,
 }) => {
   return (
     <FlexContainer justifyContent="flex-start" mt="20px">
-      {(showHintsToStudents || alwaysShowHintsButton) &&
-        !isStudentReport &&
-        hintCount > 0 && (
-          <ShowHint
-            height="30px"
-            isGhost
-            onClick={showHintHandler}
-            isStudent={isStudent}
-            tabIndex="-1"
-            data-cy="hints-button"
-          >
-            {toggleHints ? 'Show' : 'Hide'} Hint
-          </ShowHint>
-        )}
+      {showHintsToStudents && !isStudentReport && hintCount > 0 && (
+        <ShowHint
+          height="30px"
+          isGhost
+          onClick={showHintHandler}
+          isStudent={isStudent}
+          tabIndex="-1"
+          data-cy="hints-button"
+        >
+          {toggleHints ? 'Show' : 'Hide'} Hint
+        </ShowHint>
+      )}
 
       {displayRubricInfoButton && (
         <ShowRubricButton
@@ -249,7 +246,6 @@ const Hints = ({
         handleShowRubricClick={handleShowRubricClick}
         displayRubricInfoButton={displayRubricInfoButton}
         showHintsToStudents={showHintsToStudents}
-        alwaysShowHintsButton={isExpressGrader || isLCBView}
       />
       {!isStudentReport && hintCount > 0 && (
         <HintsContainer toggleHints={toggleHints}>

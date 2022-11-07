@@ -276,7 +276,7 @@ const MultipleAssessmentReport = ({
     }
   }, [reportChartData])
 
-  const tableData = useMemo(() => {
+  const { tableData, overallAssessmentsData } = useMemo(() => {
     const {
       internalMetricsForTable = [],
       externalMetricsForTable = [],
@@ -295,8 +295,10 @@ const MultipleAssessmentReport = ({
     )
   }, [reportTableData, incompleteTests, selectedPerformanceBand])
 
-  const filteredOverallAssessmentsData = filter(chartData, (test) =>
-    selectedTests.length ? includes(selectedTests, test.uniqId) : true
+  const filteredOverallAssessmentsData = filter(
+    overallAssessmentsData,
+    (test) =>
+      selectedTests.length ? includes(selectedTests, test.uniqId) : true
   )
 
   return (
@@ -355,7 +357,7 @@ const MultipleAssessmentReport = ({
           />
         ) : error && error.dataSizeExceeded ? (
           <DataSizeExceeded />
-        ) : isEmpty(chartData) ? (
+        ) : isEmpty(overallAssessmentsData) ? (
           <NoDataContainer>
             {settings.requestFilters?.termId
               ? 'No data available currently.'
@@ -384,7 +386,6 @@ const MultipleAssessmentReport = ({
               isSharedReport={isSharedReport}
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
-              isPrinting={isPrinting}
             />
           </>
         )}

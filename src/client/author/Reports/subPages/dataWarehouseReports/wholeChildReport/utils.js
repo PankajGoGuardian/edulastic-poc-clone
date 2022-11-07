@@ -7,9 +7,7 @@ import {
   round,
   get,
   find,
-  isNil,
   mapValues,
-  omitBy,
 } from 'lodash'
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
@@ -224,9 +222,8 @@ export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
     maxScore: undefined,
     score: +metric.score,
     achievementLevel: metric.achievementLevel,
-    claimsInfo: mapValues(
-      omitBy(JSON.parse(metric.claims || '{}'), isNil),
-      (value, name) => getClaimInfo(value, name, metric)
+    claimsInfo: mapValues(JSON.parse(metric.claims || '{}'), (value, name) =>
+      getClaimInfo(value, name, metric)
     ),
     schoolCode: metric.schoolCode,
     grade: metric.grade,

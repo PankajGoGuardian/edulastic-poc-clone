@@ -9,7 +9,6 @@ import MultipleAssessmentReport from './MultipleAssessmentReport'
 const DataWarehouseReportsContainer = ({
   breadcrumbData,
   isCliUser,
-  isPrinting,
   showApply,
   showFilter,
   onRefineResultsCB,
@@ -52,7 +51,6 @@ const DataWarehouseReportsContainer = ({
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}
-              isPrinting={isPrinting}
               showApply={showApply}
               showFilter={showFilter}
               onRefineResultsCB={onRefineResultsCB}

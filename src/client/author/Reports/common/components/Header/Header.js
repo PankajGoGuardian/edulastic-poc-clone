@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
 import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
+import { get } from 'lodash'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
 
@@ -31,6 +32,7 @@ const CustomizedHeaderWrapper = ({
   isCliUser,
   showCustomReport,
   showDataWarehouseReport,
+  showPerformanceByRubricsReports,
   showSharedReport,
   title,
   isSharedReport,
@@ -78,6 +80,11 @@ const CustomizedHeaderWrapper = ({
   ) {
     filterNavigationItems = filterNavigationItems.filter(
       (item) => item.key !== 'data-warehouse-reports'
+    )
+  }
+  if (!showPerformanceByRubricsReports) {
+    filterNavigationItems = filterNavigationItems.filter(
+      (item) => item.key !== 'performance-by-rubric-criteria'
     )
   }
 
@@ -228,6 +235,11 @@ const enhance = compose(
   withNamespaces('header'),
   connect((state) => ({
     isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+    showPerformanceByRubricsReports: get(
+      state,
+      'user.user.features.performanceByRubricsReports',
+      false
+    ),
   }))
 )
 export default enhance(CustomizedHeaderWrapper)

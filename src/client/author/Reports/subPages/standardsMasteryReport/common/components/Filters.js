@@ -8,6 +8,7 @@ import { Spin, Tabs, Row, Col } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
+import { FieldLabel } from '@edulastic/common'
 
 import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
@@ -63,6 +64,14 @@ import {
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 
 const rubricsData = [
+  {
+    _id: '6363520490f26d00082f1ee3',
+    name: 'Rubric with 3 criteria',
+  },
+  {
+    _id: '6363514390f26d00082f1ee2',
+    name: 'Rubric With 2 criteria',
+  },
   {
     _id: '6019969a53e3edad44a47949',
     name: 'Two Point Rubric Short Response',
@@ -122,7 +131,17 @@ const StandardsMasteryReportFilters = ({
   const assessmentTypesRef = useRef()
 
   const tagTypes = staticDropDownData.tagTypes.filter(
-    (t) => demographicsRequired || !ddFilterTypes.includes(t.key)
+    (t) =>
+      (demographicsRequired || !ddFilterTypes.includes(t.key)) &&
+      (loc === 'performance-by-rubric-criteria'
+        ? ![
+            'curriculumId',
+            'standardGrade',
+            'profileId',
+            'domainIds',
+            'standardId',
+          ].includes(t.key)
+        : !['rubricId'].includes(t.key))
   )
 
   const role = get(user, 'role', '')
@@ -169,12 +188,11 @@ const StandardsMasteryReportFilters = ({
     key: `${domainId}`,
     title: domainGroup[domainId][0].domain,
   }))
-  const rubricsList = rubricsData.map(({ _id, name }) => ({
-    key: `${_id}`,
-    title: name,
-  }))
-  const selectedRubrics = (rubricsList || []).filter((o) =>
-    filters.rubricIds?.includes(o.key)
+  const rubricsList = get(standardsFilters, 'data.result.rubrics', []).map(
+    ({ _id, name }) => ({
+      key: `${_id}`,
+      title: name,
+    })
   )
   const selectedDomains = (domainsList || []).filter((o) =>
     filters.domainIds?.includes(o.key)
@@ -207,15 +225,20 @@ const StandardsMasteryReportFilters = ({
       ),
     [location.search]
   )
-
+  const hasOpenedPerformanceByRubricReportRef = useRef(false)
+  hasOpenedPerformanceByRubricReportRef.current =
+    hasOpenedPerformanceByRubricReportRef.current ||
+    loc === 'performance-by-rubric-criteria'
   useEffect(() => {
+    const params = {}
+    if (reportId) params.reportId = reportId
+    if (hasOpenedPerformanceByRubricReportRef.current) params.rubrics = true
+
+    getStandardsFiltersRequest(params)
     if (reportId) {
-      getStandardsFiltersRequest({ reportId })
       setFilters({ ...filters, ...search })
-    } else {
-      getStandardsFiltersRequest({})
     }
-  }, [])
+  }, [hasOpenedPerformanceByRubricReportRef.current])
 
   const isTabRequired = (tabKey) => {
     switch (tabKey) {
@@ -312,6 +335,11 @@ const StandardsMasteryReportFilters = ({
       const urlCurriculum =
         curriculumsList.find((item) => item.key === search.curriculumId) ||
         curriculumsList[0]
+      const urlRubric = search.rubricId
+        ? rubricsList.find((item) => item.key === search.rubricId) || {
+            key: search.rubricId,
+          }
+        : rubricsList[0]
       const urlStandardGrade =
         staticDropDownData.allGrades.find(
           (item) => item.key === search.standardGrade
@@ -341,7 +369,7 @@ const StandardsMasteryReportFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
-        rubricIds: [],
+        rubricId: urlRubric?.key,
         standardId: search.standardId || '',
         assignedBy: urlAssignedBy.key,
       }
@@ -360,6 +388,7 @@ const StandardsMasteryReportFilters = ({
           assessmentTypesArr.includes(a.key)
         ),
         curriculumId: urlCurriculum,
+        rubricId: urlRubric,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
         assignedBy: urlAssignedBy,
@@ -441,30 +470,19 @@ const StandardsMasteryReportFilters = ({
     }
   }
 
-  const onMultiOptionSelect = (filter, filterName, optionsList) => {
-    const _selectedIds = toggleItem(
-      filters[filterName],
-      filter.key
-    ).filter((o) => optionsList.map((option) => option.key).includes(o))
-    const selectedTagData = optionsList.filter((d) =>
-      _selectedIds.includes(d.key)
+  const onSelectDomain = (domain) => {
+    const _domainIds = toggleItem(filters.domainIds, domain.key).filter((o) =>
+      allDomainIds.includes(o)
     )
-    const _tempTagsData = { ...tempTagsData }
-    _tempTagsData[filterName] = selectedTagData
-    const _filters = { ...filters, showApply: true }
-    _filters[filterName] = _selectedIds
-    setTempTagsData(_tempTagsData)
-    setFilters(_filters)
+    const domainTagsData = domainsList.filter((d) => _domainIds.includes(d.key))
+    setTempTagsData({ ...tempTagsData, domainIds: domainTagsData })
+    setFilters({ ...filters, domainIds: _domainIds, showApply: true })
   }
 
-  const onMultiOptionChange = (selectedFilters, filterName) => {
-    if (!selectedFilters?.length) {
-      const _tempTagsData = { ...tempTagsData }
-      _tempTagsData[filterName] = []
-      const _filters = { ...filters, showApply: true }
-      _filters[filterName] = []
-      setTempTagsData(_tempTagsData)
-      setFilters(_filters)
+  const onChangeDomains = (domains) => {
+    if (!domains?.length) {
+      setTempTagsData({ ...tempTagsData, domainIds: [] })
+      setFilters({ ...filters, domainIds: [], showApply: true })
     }
   }
 
@@ -875,7 +893,7 @@ const StandardsMasteryReportFilters = ({
           type="flex"
           gutter={[5, 10]}
           justify="end"
-          align="middle"
+          align="bottom"
           style={{
             paddingLeft: '10px',
             width: '75%',
@@ -893,24 +911,17 @@ const StandardsMasteryReportFilters = ({
               data-cy="rubric-criteria"
               style={{ maxWidth: '300px' }}
             >
-              <MultipleSelect
-                containerClassName="rubric-criteria"
-                data={rubricsList || []}
-                valueToDisplay={
-                  selectedRubrics.length > 1
-                    ? { key: '', title: 'Multiple Rubrics' }
-                    : selectedRubrics
+              <FieldLabel fs=".7rem" data-cy="schoolYear">
+                Rubric
+              </FieldLabel>
+              <ControlDropDown
+                by={filters.rubricId}
+                selectCB={(e, selected) =>
+                  updateFilterDropdownCB(selected, 'rubricId', false, true)
                 }
-                by={selectedRubrics}
-                prefix="Rubric Criteria"
-                onSelect={(selected) => {
-                  onMultiOptionSelect(selected, 'rubricIds', rubricsList)
-                }}
-                onChange={(selected) => {
-                  onMultiOptionChange(selected, 'rubricIds')
-                }}
-                placeholder="All Rubrics"
-                style={{ height: 'auto' }}
+                data={rubricsList}
+                prefix="Rubric"
+                showPrefixOnSelected={false}
               />
             </StyledDropDownContainer>
           ) : (
@@ -977,12 +988,8 @@ const StandardsMasteryReportFilters = ({
                   }
                   by={selectedDomains}
                   prefix="Domains"
-                  onSelect={(selected) => {
-                    onMultiOptionSelect(selected, 'domainIds', domainsList)
-                  }}
-                  onChange={(selected) => {
-                    onMultiOptionChange(selected, 'domainIds')
-                  }}
+                  onSelect={onSelectDomain}
+                  onChange={onChangeDomains}
                   placeholder="All Domains"
                   style={{ minWidth: '80px', width: '100%', height: 'auto' }}
                 />
@@ -1025,7 +1032,7 @@ const StandardsMasteryReportFilters = ({
               btnType="primary"
               data-cy="applyRowFilter"
               onClick={() => onGoClick()}
-              style={{ height: '32px' }}
+              style={{ height: '32px', marginBottom: '5px' }}
             >
               APPLY
             </StyledEduButton>

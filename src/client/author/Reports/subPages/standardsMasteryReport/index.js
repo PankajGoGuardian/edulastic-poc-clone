@@ -337,6 +337,7 @@ const StandardsMasteryReportContainer = (props) => {
           exact
           path="/author/reports/standards-gradebook"
           render={(_props) => {
+            // FIXME Don't set state directly in render function
             setShowHeader(true)
             return (
               <StandardsGradebook

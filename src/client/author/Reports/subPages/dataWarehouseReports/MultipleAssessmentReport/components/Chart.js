@@ -105,6 +105,7 @@ const getRightTooltipJSX = (payload, barIndex) => {
     const bar = records.filter((e) => {
       return e.color === recordColor.fill
     })
+    if (isEmpty(bar)) return null
     let name = bar[0].bandName
     if (barData.externalTestType) {
       const achievementLevels = [...barData.bands]
@@ -120,9 +121,7 @@ const getRightTooltipJSX = (payload, barIndex) => {
           title="Students:"
           value={`${bar[0].totalGraded}/${barData.totalGraded}`}
         />
-        {barData[barKey] < 10 && (
-          <TooltipRowItem title="Student(%):" value={`${barData[barKey]}%`} />
-        )}
+        <TooltipRowItem title="Student(%):" value={`${barData[barKey]}%`} />
         <DashedHr />
         {colorBandComponent}
       </div>
@@ -239,7 +238,7 @@ const Chart = ({
       return {
         ...d,
         ...barsCellDataForExternal,
-        [_topLabelKey]: d.averageScore || 0,
+        [_topLabelKey]: round(d.averageScore || 0),
         additionalData: barsCellAdditionalDataForExternal,
       }
     }

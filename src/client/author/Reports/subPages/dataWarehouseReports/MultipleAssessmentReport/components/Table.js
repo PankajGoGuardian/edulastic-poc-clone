@@ -56,7 +56,12 @@ const ColorBandItem = ({ name, color, highlight }) => {
   )
 }
 
-const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
+const getTableColumns = (
+  overallAssessmentsData,
+  isSharedReport,
+  settings,
+  isPrinting
+) => {
   const compareBy = settings.selectedCompareBy
   return next(tableColumnsData, (_columns) => {
     // compareBy column
@@ -80,7 +85,6 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
         externalTestType,
         isIncomplete = false,
         averageScore,
-        averageScorePercentage,
       } = assessment
       const _testName = isIncomplete ? `${testName} *` : testName
       return [
@@ -89,7 +93,7 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
           key: uniqId,
           title: (
             <Tooltip title={_testName}>
-              <AssessmentNameContainer>
+              <AssessmentNameContainer isPrinting={isPrinting}>
                 <div className="test-name-container">
                   <AssessmentName>{_testName}</AssessmentName>
                 </div>
@@ -100,9 +104,8 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
                     ) : null}
                   </StyledSpan>
                   <StyledSpan float="right">
-                    {externalTestType
-                      ? averageScore
-                      : `${averageScorePercentage}%`}
+                    {averageScore}
+                    {!externalTestType && '%'}
                   </StyledSpan>
                 </div>
               </AssessmentNameContainer>
@@ -163,9 +166,7 @@ const getTableColumns = (overallAssessmentsData, isSharedReport, settings) => {
           key: uniqId,
           title: `${_testName}${
             externalTestType ? ` (${externalTestType})` : ''
-          } - ${
-            externalTestType ? averageScore : `${averageScorePercentage}%`
-          }`,
+          } - ${averageScore}${externalTestType ? '' : '%'}`,
           align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],
@@ -195,12 +196,17 @@ const AssessmentsTable = ({
   onCsvConvert,
   isCsvDownloading,
   isSharedReport,
+  isPrinting,
 }) => {
   const tableColumns = getTableColumns(
     overallAssessmentsData,
     isSharedReport,
-    settings
+    settings,
+    isPrinting
   )
+  // show message closer to table if tableData length is greater than 50 (default pagination size)
+  const incompleteTestsMessageMargin =
+    tableData.length > 50 ? '-40px 0 0 0' : '20px 0 0 0'
   return (
     <TableContainer>
       <CsvTable
@@ -211,7 +217,11 @@ const AssessmentsTable = ({
         isCsvDownloading={isCsvDownloading}
       />
       {showIncompleteTestsMessage && (
-        <StyledH3 fontSize="10px" fontWeight="normal" margin="20px 0 0 0">
+        <StyledH3
+          fontSize="10px"
+          fontWeight="normal"
+          margin={incompleteTestsMessageMargin}
+        >
           * Some assignment(s) for this test are still in progress and hence the
           results may not be complete
         </StyledH3>

@@ -363,7 +363,6 @@ export const GroupedStackedBarChart = ({
                 stackId={bdItem.stackId}
                 fill={bdItem.fill}
                 unit={bdItem.unit}
-                isAnimationActive={false}
                 barSize={45}
                 maxBarSize={45}
                 onMouseOver={onBarMouseOver(bdIndex, true)}

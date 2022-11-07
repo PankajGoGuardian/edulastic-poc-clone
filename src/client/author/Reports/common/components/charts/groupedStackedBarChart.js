@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo, useEffect, useRef } from 'react'
+import React, { useState, useMemo, useEffect } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -74,7 +74,6 @@ export const GroupedStackedBarChart = ({
   primaryXAxisDataKey,
   getXTickText,
   getTooltipJSX,
-  getRightTooltipJSX,
   yAxisLabel = '',
   barsLabelFormatter = _barsLabelFormatter,
   filter = {},
@@ -95,7 +94,6 @@ export const GroupedStackedBarChart = ({
     content: null,
   })
   const [barIndex, setBarIndex] = useState(null)
-  const tooltipPayload = useRef(0)
   const [hoveredBarDimensions, setHoveredBarDimensions] = useState({
     x: 0,
     y: 0,
@@ -109,7 +107,6 @@ export const GroupedStackedBarChart = ({
     const tooltipHeight = tooltip.getBoundingClientRect().height
     const tooltipWidth = tooltip.getBoundingClientRect().width
     const spaceForLittleTriangle = 15
-    const spaceForPercentageLabel = 25
 
     tooltip.style = `
       transform: translate(${hoveredBarDimensions?.x}px, ${
@@ -117,29 +114,8 @@ export const GroupedStackedBarChart = ({
     }px);
       pointer-events: none;  
       position: absolute;
-      top: -${
-        tooltipHeight + spaceForLittleTriangle + spaceForPercentageLabel
-      }px;
+      top: -${tooltipHeight + spaceForLittleTriangle}px;
       left: -${tooltipWidth / 2 - hoveredBarDimensions?.width / 2}px;
-      transition: all 400ms ease 0s;
-    `
-    const tooltipRight = document.querySelector(
-      '.recharts-tooltip-wrapper-bottom'
-    )
-
-    if (!tooltipRight) return
-    const barHeight = 100
-
-    tooltipRight.style = `
-      transform: translate(${hoveredBarDimensions?.x}px, ${
-      hoveredBarDimensions?.y
-    }px);
-      pointer-events: none;  
-      position: absolute;
-      top: ${
-        barHeight / 2 - spaceForLittleTriangle - spaceForPercentageLabel
-      }px;
-      left: ${hoveredBarDimensions?.width + 2 * spaceForLittleTriangle}px;
       transition: all 400ms ease 0s;
     `
   }, [hoveredBarDimensions])
@@ -346,10 +322,7 @@ export const GroupedStackedBarChart = ({
             position={{ x: hoveredBarDimensions.x, y: hoveredBarDimensions.y }}
             content={
               <StyledCustomChartTooltipDark
-                getJSX={(payload, active) => {
-                  tooltipPayload.current = [payload, active]
-                  return getTooltipJSX(payload, active)
-                }}
+                getJSX={getTooltipJSX}
                 barIndex={barIndex}
               />
             }
@@ -368,13 +341,6 @@ export const GroupedStackedBarChart = ({
                 onMouseOver={onBarMouseOver(bdIndex, true)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
               >
-                <LabelList
-                  dataKey={bdItem.topLabelKey}
-                  position="top"
-                  fill="#010101"
-                  onMouseOver={onBarMouseOver(bdIndex, true)}
-                  onMouseLeave={onBarMouseLeave(bdIndex)}
-                />
                 <LabelList
                   dataKey={bdItem.insideLabelKey}
                   position="inside"
@@ -430,28 +396,6 @@ export const GroupedStackedBarChart = ({
           })}
         </BarChart>
       </ResponsiveContainer>
-      <Tooltip
-        cursor={false}
-        position={{
-          x: hoveredBarDimensions.x,
-          y: hoveredBarDimensions.y,
-        }}
-        content={
-          <StyledCustomChartTooltipDark
-            getJSX={(payload, active) => {
-              payload = tooltipPayload.current?.[0]
-              active = tooltipPayload.current?.[1]
-              return getRightTooltipJSX(payload, active)
-            }}
-            barIndex={barIndex}
-            style={{
-              left: '-15px',
-              bottom: '50%',
-              transform: 'rotate(90deg)',
-            }}
-          />
-        }
-      />
     </StyledSignedStackedBarChartContainer>
   )
 }

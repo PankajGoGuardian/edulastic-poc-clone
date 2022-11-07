@@ -33,9 +33,12 @@ const ColorBandItem = ({ name, color, highlight }) => {
 
 const getTooltipJSX = (payload, barIndex) => {
   if (payload && payload.length && barIndex !== null) {
-    const barData = payload[0].payload
+    const barData = payload[barIndex]
     let colorBandComponent = null
-    const ratings = barData.criteria.ratings
+    const responsesByRating = barData.payload.responsesByRating
+    const ratings = barData.payload.criteria.ratings
+    const dataKey = barData.dataKey
+    const rating = ratings.filter((r) => r.id === dataKey)[0]
     colorBandComponent = (
       <>
         {ratings
@@ -51,31 +54,6 @@ const getTooltipJSX = (payload, barIndex) => {
           .reverse()}
       </>
     )
-    return (
-      <div>
-        <TooltipRowItem
-          title="Responses:"
-          value={barData.totalResponsesPerCriteria}
-        />
-        <TooltipRowItem
-          title="Score:"
-          value={`${barData.scorePercentagePerCriteria}%`}
-        />
-        <DashedHr />
-        {colorBandComponent}
-      </div>
-    )
-  }
-  return null
-}
-
-const getRightTooltipJSX = (payload, barIndex) => {
-  if (payload && payload.length && barIndex !== null) {
-    const barData = payload[barIndex]
-    const responsesByRating = barData.payload.responsesByRating
-    const dataKey = barData.dataKey
-    const ratings = barData.payload.criteria.ratings
-    const rating = ratings.filter((r) => r.id === dataKey)[0]
     if (isEmpty(rating)) return null
     return (
       <div>
@@ -83,7 +61,12 @@ const getRightTooltipJSX = (payload, barIndex) => {
           color={barData.fill}
           name={`${rating.points} | ${rating.name}`}
         />
-        <TooltipRowItem title="Responses:" value={responsesByRating[dataKey]} />
+        <TooltipRowItem
+          title="Responses:"
+          value={`${responsesByRating[dataKey]}/${barData.payload.totalResponsesPerCriteria}`}
+        />
+        <DashedHr />
+        {colorBandComponent}
       </div>
     )
   }
@@ -101,10 +84,9 @@ const GroupedStackedBarChartContainer = ({ barsData, renderData }) => {
         barsData={barsData}
         data={renderData}
         primaryXAxisDataKey="criteriaName"
-        yAxisLabel="Response %"
+        yAxisLabel="DISTRIBUTION OF RESPONSES"
         getXTickText={getXTickText}
         getTooltipJSX={getTooltipJSX}
-        getRightTooltipJSX={getRightTooltipJSX}
         hasBarInsideLabels
         hasRoundedBars
         hasBarTopLabels

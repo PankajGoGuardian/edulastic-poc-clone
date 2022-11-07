@@ -6,6 +6,8 @@ import {
   TableContainer,
   CustomStyledTable,
   TableTooltipWrapper,
+  AssessmentNameContainer,
+  StyledH4,
 } from '../styled'
 import { StyledH3 } from '../../../../../common/styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -73,14 +75,18 @@ const getTableColumns = (
       return {
         key: criteria.id,
         title: (
-          <div>
-            <h4>{criteria.name}</h4>
-            <h4>
-              {analyseBy.key === 'rawScore'
-                ? chartData.avgScorePerCriteria
-                : `${chartData.scorePercentagePerCriteria}%`}
-            </h4>
-          </div>
+          <AssessmentNameContainer>
+            <Tooltip title={criteria.name}>
+              <div className="test-name-container">{criteria.name}</div>
+            </Tooltip>
+            <div>
+              <StyledH4>
+                {analyseBy.key === 'rawScore'
+                  ? chartData.avgScorePerCriteria
+                  : `${chartData.scorePercentagePerCriteria}%`}
+              </StyledH4>
+            </div>
+          </AssessmentNameContainer>
         ),
         align: 'center',
         dataIndex: criteria.id,
@@ -134,7 +140,8 @@ const PerformanceByRubricCriteriaTable = ({
     <>
       <Row type="flex" justify="space-between">
         <StyledH3>
-          Rubric Scores by {selectedTableFilters.compareBy.title}
+          Rubric Scores by {selectedTableFilters.compareBy.title} in{' '}
+          {rubric.name}
         </StyledH3>
         <TableFilters
           setTableFilters={setTableFilters}

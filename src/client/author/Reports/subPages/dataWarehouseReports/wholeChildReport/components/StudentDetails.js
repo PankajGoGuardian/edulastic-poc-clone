@@ -75,7 +75,7 @@ const StudentDetails = ({
       <Demographics>
         {frlStatus ? (
           <div className="demographic-item">
-            {frlStatus === 'Yes' ? (
+            {['yes', 'y'].includes(frlStatus?.toLowerCase()) ? (
               <IconCheckMark color={themeColor} />
             ) : (
               <Icon
@@ -89,7 +89,7 @@ const StudentDetails = ({
         ) : null}
         {iepStatus ? (
           <div className="demographic-item">
-            {iepStatus === 'Yes' ? (
+            {['yes', 'y'].includes(iepStatus?.toLowerCase()) ? (
               <IconCheckMark color={themeColor} />
             ) : (
               <Icon
@@ -103,7 +103,7 @@ const StudentDetails = ({
         ) : null}
         {ellStatus ? (
           <div className="demographic-item">
-            {ellStatus === 'Yes' ? (
+            {['yes', 'y'].includes(ellStatus?.toLowerCase()) ? (
               <IconCheckMark color={themeColor} />
             ) : (
               <Icon
@@ -117,7 +117,7 @@ const StudentDetails = ({
         ) : null}
         {hispanicEthnicity ? (
           <div className="demographic-item">
-            {hispanicEthnicity === 'Yes' ? (
+            {['yes', 'y'].includes(hispanicEthnicity?.toLowerCase()) ? (
               <IconCheckMark color={themeColor} />
             ) : (
               <Icon

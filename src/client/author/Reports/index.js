@@ -457,6 +457,7 @@ const Container = (props) => {
             <DataWarehouseReportsContainer
               {..._props}
               isCliUser={isCliUser}
+              isPrinting={isPrinting}
               breadcrumbData={headerSettings.breadcrumbData}
               showApply={showApply}
               showFilter={showFilter}

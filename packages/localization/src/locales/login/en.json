@@ -44,7 +44,7 @@
       "formboxheadinggoole": "Please, enter your ClassCode",
       "signupnamelabel": "Name",
       "signuppasswordlabel": "Password",
-      "codeFieldDesc": "(provied by your teacher)",
+      "codeFieldDesc": "(Provided by your teacher)",
       "teacher": {
         "signupnamelabel": "Teacher Name",
         "signupidlabel": "Email",
@@ -77,7 +77,7 @@
         "validinputname": "Please input Administrators Name!"
       },
       "student": {
-        "signupclasslabel": "Class Code (provided by your teacher)",
+        "signupclasslabel": "Class Code (Provided by your teacher)",
         "signupidlabel": "Username / Email",
         "signupstudentbtn": "SIGN UP AS A STUDENT",
         "signupentercode": " ENTER",

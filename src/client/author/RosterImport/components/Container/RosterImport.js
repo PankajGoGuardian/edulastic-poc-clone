@@ -1,10 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import {
-  notification,
-  FlexContainer,
-  RadioGrp,
-  EduButton,
-} from '@edulastic/common'
+import { notification, FlexContainer, RadioGrp } from '@edulastic/common'
 import { get } from 'lodash'
 import { Popover, Tooltip } from 'antd'
 import { connect } from 'react-redux'
@@ -27,6 +22,7 @@ import {
   CustomRadioBtn,
   InfoIcon,
 } from './styled'
+import { StyledButton, StyledDownloadIcon } from '../SubContainer/styled'
 import { StyledSpin } from '../../../../admin/Common/StyledComponents'
 import {
   Label,
@@ -50,6 +46,7 @@ import {
 import { getEnableOneRosterSync } from '../../../DistrictPolicy/ducks'
 
 import { getUser } from '../../../src/selectors/user'
+import AppConfig from '../../../../../app-config'
 
 const title = 'Manage District'
 const oneRosterSyncType = {
@@ -188,7 +185,8 @@ const RosterImport = ({
                   justifyContent="space-between"
                   alignItems="center"
                 >
-                  <FlexContainer
+                  {/* TODO */}
+                  {/* <FlexContainer
                     justifyContent="space-between"
                     alignItems="center"
                   >
@@ -201,8 +199,13 @@ const RosterImport = ({
                     <p style={{ fontSize: '12px', marginLeft: '5px' }}>
                       VIEW INSTRUCTIONS
                     </p>
-                  </FlexContainer>
-                  <EduButton ml="40px">Download Example Files</EduButton>
+                  </FlexContainer> */}
+                  <StyledButton
+                    type="link"
+                    href={`${AppConfig.cdnURI}/districts_content/oneroster_sample.zip`}
+                  >
+                    <StyledDownloadIcon /> Download Example Files
+                  </StyledButton>
                 </FlexContainer>
               </FlexContainer>
             </Container>

@@ -137,7 +137,9 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
   )
     return []
   const { data: metrics, compareByNames } = tableApiResponse
-
+  const maxRubricPoints = sum(
+    rubric.criteria.map((ct) => max(ct.ratings.map((rt) => rt.points)))
+  )
   const flatData = metrics
     .map((m) => {
       const criteria = rubric.criteria.find((ct) => ct.id === m.criteriaId)
@@ -147,6 +149,7 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
         rubric,
         criteria,
         maxRatingPoints: max(criteria.ratings.map((r) => r.points)),
+        maxRubricPoints,
       }
     })
     .filter(Boolean)
@@ -169,9 +172,10 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
             true
           ),
           maxScore: round(cell.maxRatingPoints),
+          responseCount: round(cell.countGrouped[cell.compareById] || 0, 2),
         })
       )
-      const totalResponses = sum(
+      const totalResponses = max(
         rowArr.map((cell) => cell.countGrouped[cell.compareById] || 0)
       )
       const averageRatingPoints =
@@ -182,12 +186,19 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
               cell.scoreGrouped[cell.compareById]
           )
         ) / totalResponses
+      const averageRatingPercPoints = percentage(
+        averageRatingPoints,
+        maxRubricPoints,
+        true
+      )
       return {
         // for reference only.
         rowName: rowArr[0].compareByName,
         rowId: rowArr[0].compareById,
         averageRatingPoints: round(averageRatingPoints, 2),
         totalResponses,
+        maxRubricPoints: round(maxRubricPoints, 2),
+        averageRatingPercPoints: round(averageRatingPercPoints, 2),
         ...criteriaColumnValues,
       }
     }

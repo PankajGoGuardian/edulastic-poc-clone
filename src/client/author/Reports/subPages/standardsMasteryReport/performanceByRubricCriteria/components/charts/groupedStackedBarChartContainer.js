@@ -1,7 +1,6 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 import { isEmpty } from 'lodash'
 import { GroupedStackedBarChart } from '../../../../../common/components/charts/groupedStackedBarChart'
-import { getChartData } from '../../utils/transformers'
 
 import {
   TooltipRow,
@@ -39,15 +38,17 @@ const getTooltipJSX = (payload, barIndex) => {
     const ratings = barData.criteria.ratings
     colorBandComponent = (
       <>
-        {ratings.map((band) => {
-          const color = payload.filter((r) => r.dataKey === band.id)[0].fill
-          return (
-            <ColorBandItem
-              color={color}
-              name={`${band.points} | ${band.name}`}
-            />
-          )
-        })}
+        {ratings
+          .map((band) => {
+            const color = payload.filter((r) => r.dataKey === band.id)[0].fill
+            return (
+              <ColorBandItem
+                color={color}
+                name={`${band.points} | ${band.name}`}
+              />
+            )
+          })
+          .reverse()}
       </>
     )
     return (

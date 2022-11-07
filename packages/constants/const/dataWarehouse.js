@@ -65,7 +65,7 @@ const getIReadyAchievementLevels = (test) => {
   const isLate =
     achievementLevel.startsWith('late') || achievementLevel.startsWith('max')
   const isEarly = achievementLevel.startsWith('early')
-  const level = achievementLevel.match(/(?<=level\s+)\w+/)?.[0]
+  const level = achievementLevel.replace('level', '').trim()
   const levelDiff = (level === 'k' ? 0 : +level) - test.grade
   const colorBand = getColorBandBySize(3).reverse()
   return [

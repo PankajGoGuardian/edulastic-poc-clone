@@ -30,18 +30,11 @@ const tableColumnsData = [
   // next up are dynamic columns for each assessment
 ]
 
-const compareByMap = {
-  school: 'schoolName',
-  teacher: 'teacherName',
-  group: 'groupName',
-  student: 'studentName',
-  race: 'race',
-  gender: 'gender',
-  ellStatus: 'ellStatus',
-  iepStatus: 'iepStatus',
-  frlStatus: 'frlStatus',
-  standard: 'standard',
-  hispanicEthnicity: 'hispanicEthnicity',
+const renderValue = (value, suffix = '', fallback = '-') => {
+  if (Number.isNaN(value) || value === null || value === undefined)
+    return fallback
+
+  return `${value}${suffix}`
 }
 
 const getTableColumns = (
@@ -52,6 +45,7 @@ const getTableColumns = (
   analyseBy
 ) => {
   return next(tableColumnsData, (_columns) => {
+    const showPerc = analyseBy.key === 'score'
     // compareBy column
     const compareByIdx = _columns.findIndex(
       (col) => col.dataIndex === 'rowName'
@@ -62,11 +56,32 @@ const getTableColumns = (
     Object.assign(
       _columns.find((col) => col.dataIndex === 'averageRatingPoints'),
       {
-        render: (value) => (Number.isNaN(value) ? '-' : value ?? '-'),
+        render: (value, record) => {
+          return (
+            <TableTooltipWrapper>
+              <Tooltip
+                title={`Avg Score: ${renderValue(
+                  record.averageRatingPoints
+                )}/${renderValue(record.maxRubricPoints)} (${renderValue(
+                  record.averageRatingPercPoints,
+                  '%'
+                )})`}
+                getPopupContainer={(triggerNode) => triggerNode}
+              >
+                <Row type="flex" justify="center">
+                  <div>
+                    {renderValue(
+                      showPerc ? record.averageRatingPercPoints : value,
+                      showPerc ? '%' : ''
+                    )}
+                  </div>
+                </Row>
+              </Tooltip>
+            </TableTooltipWrapper>
+          )
+        },
       }
     )
-    _columns[compareByIdx].title = selectedCompareBy.title
-    _columns[compareByIdx].render = (data) => data || '-'
 
     const criteriaColumns = rubric.criteria.map((criteria) => {
       const chartData = chartRenderData.find(
@@ -81,9 +96,12 @@ const getTableColumns = (
             </Tooltip>
             <div>
               <StyledH4>
-                {analyseBy.key === 'rawScore'
-                  ? chartData.avgScorePerCriteria
-                  : `${chartData.scorePercentagePerCriteria}%`}
+                {renderValue(
+                  showPerc
+                    ? chartData.scorePercentagePerCriteria
+                    : chartData.avgScorePerCriteria,
+                  showPerc ? '%' : ''
+                )}
               </StyledH4>
             </div>
           </AssessmentNameContainer>
@@ -92,25 +110,23 @@ const getTableColumns = (
         dataIndex: criteria.id,
         visibleOn: ['browser', 'csv'],
         render: (value) => {
-          const valueToShow =
-            analyseBy.key === 'score'
-              ? `${value.avgScorePercentage}%`
-              : value.avgScore
-          return value ? (
+          const valueToShow = renderValue(
+            showPerc ? value.avgScorePercentage : value.avgScore,
+            showPerc ? '%' : ''
+          )
+          return (
             <TableTooltipWrapper>
               <Tooltip
-                title={`Avg Score: ${value.avgScore}/${value.maxScore} (${value.avgScorePercentage}%)`}
+                title={`Avg Score: ${renderValue(value.avgScore)}/${renderValue(
+                  value.maxScore
+                )} (${renderValue(value.avgScorePercentage, '%')})`}
                 getPopupContainer={(triggerNode) => triggerNode}
               >
                 <Row type="flex" justify="center">
-                  <div>
-                    {Number.isNaN(valueToShow) ? '-' : valueToShow ?? '-'}
-                  </div>
+                  <div>{valueToShow}</div>
                 </Row>
               </Tooltip>
             </TableTooltipWrapper>
-          ) : (
-            '-'
           )
         },
       }

@@ -64,7 +64,7 @@
     "standardGrade": "All",
     "profileId": "",
     "domainIds": [],
-    "rubricIds": [],
+    "rubricId": "",
     "standardId": "",
     "showApply": false,
     "assignedBy": "anyone"

@@ -1,7 +1,4 @@
 {
-  "resolutions": {
-    "react-error-overlay": "6.0.9"
-    },
   "name": "edulastic",
   "version": "28.2.0",
   "sideEffects": [

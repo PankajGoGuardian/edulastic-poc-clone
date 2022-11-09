@@ -211,6 +211,7 @@ const StandardsMasteryReportContainer = (props) => {
   const demographicsRequired = [
     'standards-gradebook',
     'standards-progress',
+    'performance-by-rubric-criteria',
   ].includes(loc)
   useEffect(() => {
     if (!demographicsRequired) {

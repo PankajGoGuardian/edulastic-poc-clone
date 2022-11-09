@@ -75,6 +75,12 @@ function* fetchReportChartDataRequestSaga({ payload }) {
           'testIds',
           'rubricId',
           'assignedBy',
+          'race',
+          'gender',
+          'iepStatus',
+          'frlStatus',
+          'ellStatus',
+          'hispanicEthnicity',
         ])
     const reportChartData = yield call(
       reportsApi.fetchPerformanceByRubricsCriteriaChartData,
@@ -108,6 +114,12 @@ function* fetchReportTableDataRequestSaga({ payload }) {
           'testIds',
           'rubricId',
           'assignedBy',
+          'race',
+          'gender',
+          'iepStatus',
+          'frlStatus',
+          'ellStatus',
+          'hispanicEthnicity',
           'compareBy',
         ])
     const reportTableData = yield call(

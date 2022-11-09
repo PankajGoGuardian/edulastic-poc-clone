@@ -5,7 +5,7 @@ import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 
-import { mapValues, isEmpty } from 'lodash'
+import { mapValues, isEmpty, pickBy } from 'lodash'
 import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
 import GroupedStackedBarChartContainer from './components/charts/groupedStackedBarChartContainer'
 import PerformanceByRubricCriteriaTable from './components/table/performanceByRubricCriteriaTable'
@@ -34,6 +34,7 @@ const PerformanceByRubricCriteria = ({
   location,
   settings,
   isCsvDownloading,
+  ddfilter,
   // selectors from ducks selectors
   reportChartData,
   loadingReportChartData,
@@ -54,23 +55,30 @@ const PerformanceByRubricCriteria = ({
       ) || compareByDataFiltered[0],
     analyseBy: analyseByData[0],
   })
-
+  const ddRequestFilters = useMemo(
+    () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
+    [ddfilter]
+  )
   useEffect(() => {
-    const q = { ...settings.requestFilters }
+    const q = {
+      ...settings.requestFilters,
+      ...ddRequestFilters,
+    }
     if ((q.termId && q.rubricId) || q.reportId) {
       fetchReportChartDataRequest(q)
     }
-  }, [settings.requestFilters])
+  }, [settings.requestFilters, ddRequestFilters])
 
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
+      ...ddRequestFilters,
       compareBy: tableFilters.compareBy.key,
     }
     if (((q.termId && q.rubricId) || q.reportId) && q.compareBy) {
       fetchReportTableDataRequest(q)
     }
-  }, [settings.requestFilters, tableFilters.compareBy])
+  }, [settings.requestFilters, tableFilters.compareBy, ddRequestFilters])
 
   const chartData = useMemo(
     () => getDenormalizedChartData(reportChartData, reportTableData?.rubric),

@@ -486,9 +486,9 @@ export const getChartData = (
         }
         const _record = records.find((r) => r.bandScore == band.threshold) || {}
         if (parseInt(_record.totalGraded, 10)) {
-          _record.totalGradedPercentage = percentage(
-            _record.totalGraded,
-            testData.totalGraded
+          _record.totalGradedPercentage = round(
+            percentage(_record.totalGraded, testData.totalGraded),
+            2
           )
         }
         return { ..._default, ..._record }
@@ -575,9 +575,9 @@ export const getChartData = (
         const _record =
           _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
         if (parseInt(_record.totalGraded, 10)) {
-          _record.totalGradedPercentage = percentage(
-            _record.totalGraded,
-            testData.totalGraded
+          _record.totalGradedPercentage = round(
+            percentage(_record.totalGraded, testData.totalGraded),
+            2
           )
         }
         return { ..._default, ..._record }

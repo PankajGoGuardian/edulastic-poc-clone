@@ -72,17 +72,17 @@ const PerformanceByRubricCriteria = ({
     }
   }, [settings.requestFilters, tableFilters.compareBy])
 
-  const chartData = useMemo(() => getDenormalizedChartData(reportChartData), [
-    reportChartData,
-  ])
+  const chartData = useMemo(
+    () => getDenormalizedChartData(reportChartData, reportTableData?.rubric),
+    [reportChartData, reportTableData?.rubric?._id]
+  )
   const { barsData, renderData } = useMemo(() => getChartData(chartData), [
     chartData,
   ])
 
-  const tableData = useMemo(
-    () => getTableData(reportTableData, reportChartData),
-    [reportTableData, reportChartData]
-  )
+  const tableData = useMemo(() => getTableData(reportTableData), [
+    reportTableData,
+  ])
 
   if (loadingReportChartData || loadingReportTableData) {
     return (
@@ -131,7 +131,7 @@ const PerformanceByRubricCriteria = ({
             compareByData: compareByDataFiltered,
             analyseByData,
           }}
-          rubric={reportChartData.rubric}
+          rubric={reportTableData.rubric}
           chartRenderData={renderData}
           onCsvConvert={onCsvConvert}
           isCsvDownloading={isCsvDownloading}

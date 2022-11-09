@@ -9,7 +9,6 @@ import { Spin, Tabs, Row, Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 import { FieldLabel } from '@edulastic/common'
-
 import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
@@ -49,6 +48,7 @@ import {
   getPrevStandardsFiltersSelector,
   setPrevStandardsFiltersAction,
   getReportsStandardsFiltersLoader,
+  getSMRRubricsSelector,
 } from '../filterDataDucks'
 import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
 import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
@@ -98,6 +98,7 @@ const StandardsMasteryReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
   isPremium,
+  rubricsList,
 }) => {
   const availableAssessmentType = isPremium
     ? getArrayOfAllTestTypes()
@@ -165,12 +166,6 @@ const StandardsMasteryReportFilters = ({
     key: `${domainId}`,
     title: domainGroup[domainId][0].domain,
   }))
-  const rubricsList = get(standardsFilters, 'data.result.rubrics', []).map(
-    ({ _id, name }) => ({
-      key: `${_id}`,
-      title: name,
-    })
-  )
   const selectedDomains = (domainsList || []).filter((o) =>
     filters.domainIds?.includes(o.key)
   )
@@ -207,9 +202,8 @@ const StandardsMasteryReportFilters = ({
     hasOpenedPerformanceByRubricReportRef.current ||
     loc === 'performance-by-rubric-criteria'
   useEffect(() => {
-    const params = {}
+    const params = { loc }
     if (reportId) params.reportId = reportId
-    if (hasOpenedPerformanceByRubricReportRef.current) params.rubrics = true
 
     getStandardsFiltersRequest(params)
     if (reportId) {
@@ -1034,6 +1028,7 @@ const enhance = compose(
       standardsProgress: getReportsStandardsProgress(state),
       institutionIds: currentDistrictInstitutionIds(state),
       isPremium: isPremiumUserSelector(state),
+      rubricsList: getSMRRubricsSelector(state),
     }),
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,

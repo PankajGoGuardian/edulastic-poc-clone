@@ -1,20 +1,12 @@
 import { getColorBandBySize } from '@edulastic/constants/const/colors'
 import { percentage } from '@edulastic/constants/reportUtils/common'
-import {
-  groupBy,
-  isEmpty,
-  keyBy,
-  mapValues,
-  map,
-  max,
-  sum,
-  round,
-} from 'lodash'
+import { groupBy, isEmpty, keyBy, mapValues, max, sum, round } from 'lodash'
 
-export const getDenormalizedChartData = (chartData) => {
-  if (isEmpty(chartData) || isEmpty(chartData.data)) return []
+export const getDenormalizedChartData = (chartData, rubric) => {
+  if (isEmpty(chartData) || isEmpty(chartData.data) || isEmpty(rubric))
+    return []
 
-  const {data: metrics, rubric} = chartData
+  const { data: metrics } = chartData
 
   // const allCriterias
 
@@ -129,14 +121,14 @@ export const getChartData = (denormalizedData) => {
   return { barsData, renderData }
 }
 
-export const getDenormalizedTableData = (tableApiResponse, rubric) => {
+export const getDenormalizedTableData = (tableApiResponse) => {
   if (
     isEmpty(tableApiResponse) ||
     isEmpty(tableApiResponse.data) ||
-    isEmpty(rubric)
+    isEmpty(tableApiResponse.rubric)
   )
     return []
-  const { data: metrics, compareByNames } = tableApiResponse
+  const { data: metrics, compareByNames, rubric } = tableApiResponse
   const maxRubricPoints = sum(
     rubric.criteria.map((ct) => max(ct.ratings.map((rt) => rt.points)))
   )
@@ -154,10 +146,10 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
     })
     .filter(Boolean)
     .flatMap((m) =>
-      compareByNames.map((rowRef) => ({
+      Object.entries(compareByNames).map(([key, val]) => ({
         ...m,
-        compareById: rowRef._id,
-        compareByName: rowRef.name,
+        compareById: key,
+        compareByName: val,
       }))
     )
   const denormalizedData = Object.values(groupBy(flatData, 'compareById')).map(
@@ -206,13 +198,7 @@ export const getDenormalizedTableData = (tableApiResponse, rubric) => {
   return denormalizedData
 }
 
-export const getTableData = (tableApiResponse, chartData) => {
-  const denormalizedData = getDenormalizedTableData(
-    tableApiResponse,
-    chartData.rubric
-  )
-  return map(denormalizedData, (row) => ({
-    ...row,
-    /// append colors ?
-  }))
+export const getTableData = (tableApiResponse) => {
+  const denormalizedData = getDenormalizedTableData(tableApiResponse)
+  return denormalizedData
 }

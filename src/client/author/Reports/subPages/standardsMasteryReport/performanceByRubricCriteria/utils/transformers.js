@@ -43,9 +43,9 @@ export const getDenormalizedChartData = (chartData, rubric) => {
       m.criteria.ratings.map((r, i) => {
         const totalResponsesPerRating = m.responsesByRating[r.id] || 0
         const colorBand = getColorBandBySize(
-          Math.min(m.criteria.ratings.length, 10)
+          m.criteria.ratings.length
         ).reverse()
-        const fill = colorBand[Math.min(i, colorBand.length - 1)]
+        const fill = colorBand[i]
         return {
           ...m,
           avgScorePerCriteria: round(m.avgScorePerCriteria, 2),

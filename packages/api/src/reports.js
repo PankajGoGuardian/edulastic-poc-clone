@@ -276,22 +276,6 @@ const fetchGeneratedCSVs = () =>
     })
     .then(({ data }) => data.result)
 
-const fetchPerformanceByRubricsCriteriaChartData = (params) =>
-  api
-    .callApi({
-      url: '/report/performance-by-rubric/chart',
-      params,
-    })
-    .then((res) => res.data.result)
-
-const fetchPerformanceByRubricsCriteriaTableData = (params) =>
-  api
-    .callApi({
-      url: '/report/performance-by-rubric/table',
-      params,
-    })
-    .then((res) => res.data.result)
-
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -327,6 +311,4 @@ export default {
   fetchActivityByTeacher,
   generateCSV,
   fetchGeneratedCSVs,
-  fetchPerformanceByRubricsCriteriaChartData,
-  fetchPerformanceByRubricsCriteriaTableData,
 }

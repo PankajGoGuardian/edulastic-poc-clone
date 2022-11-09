@@ -341,7 +341,6 @@ const Container = (props) => {
             `/author/reports/standards-performance-summary`,
             `/author/reports/standards-gradebook`,
             `/author/reports/standards-progress`,
-            `/author/reports/performance-by-rubric-criteria`,
           ]}
           render={(_props) => (
             <StandardsMasteryReportContainer

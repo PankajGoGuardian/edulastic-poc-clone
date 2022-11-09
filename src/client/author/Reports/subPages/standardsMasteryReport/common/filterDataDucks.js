@@ -1,9 +1,9 @@
 import { createAction, createReducer } from 'redux-starter-kit'
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
-import { get, omit } from 'lodash'
+import { get } from 'lodash'
 
-import { reportsApi, rubricsApi } from '@edulastic/api'
+import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
@@ -79,11 +79,6 @@ export const getSMRFilterDemographics = createSelector(stateSelector, (state) =>
   get(state, 'standardsFilters.data.result.demographics', [])
 )
 
-export const getSMRRubricsSelector = createSelector(
-  stateSelector,
-  (state) => state.rubrics
-)
-
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -99,7 +94,6 @@ const initialState = {
   tempDdFilter: {
     ...staticDropDownData.initialDdFilters,
   },
-  rubrics: [],
   tempTagsData: {},
   loading: false,
 }
@@ -111,11 +105,6 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   [GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS]: (state, { payload }) => {
     state.loading = false
     state.standardsFilters = payload.standardsFilters
-    if (payload.rubrics)
-      state.rubrics = payload.rubrics.map((rubric) => ({
-        key: rubric._id,
-        title: rubric.name,
-      }))
   },
   [GET_REPORTS_STANDARDS_FILTERS_REQUEST_ERROR]: (state, { payload }) => {
     state.loading = false
@@ -133,7 +122,7 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
   [SET_TEMP_TAGS_DATA]: (state, { payload }) => {
     state.tempTagsData = { ...payload }
   },
-  [RESET_ALL_REPORTS]: () => initialState,
+  [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
@@ -143,18 +132,13 @@ export const reportStandardsFilterDataReducer = createReducer(initialState, {
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 function* getReportsStandardsFiltersRequest({ payload }) {
   try {
-    const loc = payload.loc
-    const params = omit(payload, ['loc'])
-    const isPerformanceByRubricsReport =
-      loc === 'performance-by-rubric-criteria'
-    const [standardsFilters, rubrics] = yield all([
-      call(reportsApi.fetchStandardMasteryFilter, params),
-      isPerformanceByRubricsReport && call(rubricsApi.getRubricsUsedByDistrict),
-    ])
-
+    const standardsFilters = yield call(
+      reportsApi.fetchStandardMasteryFilter,
+      payload
+    )
     yield put({
       type: GET_REPORTS_STANDARDS_FILTERS_REQUEST_SUCCESS,
-      payload: { standardsFilters, rubrics },
+      payload: { standardsFilters },
     })
   } catch (error) {
     console.log('err', error.stack)

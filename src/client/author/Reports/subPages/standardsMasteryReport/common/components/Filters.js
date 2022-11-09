@@ -8,7 +8,7 @@ import { Spin, Tabs, Row, Col } from 'antd'
 
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
-import { FieldLabel } from '@edulastic/common'
+
 import { reportGroupType } from '@edulastic/constants/const/report'
 import FilterTags from '../../../../common/components/FilterTags'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
@@ -48,14 +48,12 @@ import {
   getPrevStandardsFiltersSelector,
   setPrevStandardsFiltersAction,
   getReportsStandardsFiltersLoader,
-  getSMRRubricsSelector,
 } from '../filterDataDucks'
 import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
 import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
 import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
-import reportRoutes from '../constants/reportRoutes'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
 import {
   getArrayOfNonPremiumTestTypes,
@@ -99,7 +97,6 @@ const StandardsMasteryReportFilters = ({
   fetchUpdateTagsData,
   institutionIds,
   isPremium,
-  rubricsList,
 }) => {
   const availableAssessmentType = isPremium
     ? getArrayOfAllTestTypes()
@@ -110,17 +107,7 @@ const StandardsMasteryReportFilters = ({
   const assessmentTypesRef = useRef()
 
   const tagTypes = staticDropDownData.tagTypes.filter(
-    (t) =>
-      (demographicsRequired || !ddFilterTypes.includes(t.key)) &&
-      (loc === reportRoutes.PERFORMANCE_BY_RUBRICS_CRITERIA
-        ? ![
-            'curriculumId',
-            'standardGrade',
-            'profileId',
-            'domainIds',
-            'standardId',
-          ].includes(t.key)
-        : !['rubricId'].includes(t.key))
+    (t) => demographicsRequired || !ddFilterTypes.includes(t.key)
   )
 
   const role = get(user, 'role', '')
@@ -184,7 +171,7 @@ const StandardsMasteryReportFilters = ({
 
   const standardIdFromPageData = useMemo(
     () =>
-      loc === reportRoutes.STANDARDS_PROGRESS
+      loc === 'standards-progress'
         ? get(standardsProgress, 'data.result.standardId', '')
         : '',
     [loc, standardsProgress]
@@ -198,19 +185,15 @@ const StandardsMasteryReportFilters = ({
       ),
     [location.search]
   )
-  const hasOpenedPerformanceByRubricReportRef = useRef(false)
-  hasOpenedPerformanceByRubricReportRef.current =
-    hasOpenedPerformanceByRubricReportRef.current ||
-    loc === reportRoutes.PERFORMANCE_BY_RUBRICS_CRITERIA
-  useEffect(() => {
-    const params = { loc }
-    if (reportId) params.reportId = reportId
 
-    getStandardsFiltersRequest(params)
+  useEffect(() => {
     if (reportId) {
+      getStandardsFiltersRequest({ reportId })
       setFilters({ ...filters, ...search })
+    } else {
+      getStandardsFiltersRequest({})
     }
-  }, [hasOpenedPerformanceByRubricReportRef.current])
+  }, [])
 
   const isTabRequired = (tabKey) => {
     switch (tabKey) {
@@ -241,7 +224,7 @@ const StandardsMasteryReportFilters = ({
       resetForActiveTab(activeTabKey)
       setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
     }
-    if (loc !== reportRoutes.STANDARDS_PROGRESS) {
+    if (loc !== 'standards-progress') {
       resetForActiveTab(staticDropDownData.filterSections.STANDARD_FILTERS.key)
     }
   }, [loc, showFilter])
@@ -307,11 +290,6 @@ const StandardsMasteryReportFilters = ({
       const urlCurriculum =
         curriculumsList.find((item) => item.key === search.curriculumId) ||
         curriculumsList[0]
-      const urlRubric = search.rubricId
-        ? rubricsList.find((item) => item.key === search.rubricId) || {
-            key: search.rubricId,
-          }
-        : rubricsList[0]
       const urlStandardGrade =
         staticDropDownData.allGrades.find(
           (item) => item.key === search.standardGrade
@@ -341,7 +319,6 @@ const StandardsMasteryReportFilters = ({
         standardGrade: urlStandardGrade.key,
         profileId: urlStandardProficiency?.key || '',
         domainIds: [],
-        rubricId: urlRubric?.key,
         standardId: search.standardId || '',
         assignedBy: urlAssignedBy.key,
       }
@@ -360,7 +337,6 @@ const StandardsMasteryReportFilters = ({
           assessmentTypesArr.includes(a.key)
         ),
         curriculumId: urlCurriculum,
-        rubricId: urlRubric,
         standardGrade: urlStandardGrade,
         profileId: urlStandardProficiency,
         assignedBy: urlAssignedBy,
@@ -865,7 +841,7 @@ const StandardsMasteryReportFilters = ({
           type="flex"
           gutter={[5, 10]}
           justify="end"
-          align="bottom"
+          align="middle"
           style={{
             paddingLeft: '10px',
             width: '75%',
@@ -874,140 +850,96 @@ const StandardsMasteryReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          {loc === reportRoutes.PERFORMANCE_BY_RUBRICS_CRITERIA ? (
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="standardSet"
+          >
+            <ControlDropDown
+              by={filters.curriculumId}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'curriculumId', false, true)
+              }
+              data={curriculumsList}
+              prefix="Standard Set"
+              showPrefixOnSelected={false}
+            />
+          </StyledDropDownContainer>
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="standardGrade"
+          >
+            <ControlDropDown
+              by={filters.standardGrade}
+              selectCB={(e, selected) =>
+                updateFilterDropdownCB(selected, 'standardGrade', false, true)
+              }
+              data={staticDropDownData.allGrades}
+              prefix="Standard Grade"
+              showPrefixOnSelected={false}
+            />
+          </StyledDropDownContainer>
+          {loc !== 'standards-progress' && standardProficiencyFilter}
+          <StyledDropDownContainer
+            xs={24}
+            sm={12}
+            lg={6}
+            autoFlex
+            data-cy="domain"
+          >
+            <MultipleSelect
+              containerClassName="standards-mastery-report-domain-autocomplete"
+              data={domainsList || []}
+              valueToDisplay={
+                selectedDomains.length > 1
+                  ? { key: '', title: 'Multiple Domains' }
+                  : selectedDomains
+              }
+              by={selectedDomains}
+              prefix="Domains"
+              onSelect={onSelectDomain}
+              onChange={onChangeDomains}
+              placeholder="All Domains"
+              style={{ minWidth: '80px', width: '100%', height: 'auto' }}
+            />
+          </StyledDropDownContainer>
+          {loc === 'standards-progress' && (
             <StyledDropDownContainer
               xs={24}
               sm={12}
               lg={6}
               autoFlex
-              data-cy="rubric-criteria"
-              maxWidth="300px"
+              data-cy="standard"
             >
-              <FieldLabel fs=".7rem" data-cy="schoolYear">
-                Rubric
-              </FieldLabel>
-              <ControlDropDown
-                by={filters.rubricId}
-                selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'rubricId', false, true)
+              <AutocompleteDropDown
+                prefix="Standard"
+                by={
+                  // filters.standardId is searched in standardsList
+                  // to make sure standardId passed via url also sets the correct standard
+                  standardsList.find(
+                    (o) => `${o.key}` === `${filters.standardId}`
+                  ) ||
+                  standardsList[0] || { key: '', title: '' }
                 }
-                data={rubricsList}
-                prefix="Rubric"
-                showPrefixOnSelected={false}
+                selectCB={(selected) => {
+                  updateFilterDropdownCB(selected, 'standardId', false, true)
+                }}
+                data={standardsList}
               />
             </StyledDropDownContainer>
-          ) : (
-            <>
-              <StyledDropDownContainer
-                xs={24}
-                sm={12}
-                lg={6}
-                autoFlex
-                data-cy="standardSet"
-              >
-                <ControlDropDown
-                  by={filters.curriculumId}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(
-                      selected,
-                      'curriculumId',
-                      false,
-                      true
-                    )
-                  }
-                  data={curriculumsList}
-                  prefix="Standard Set"
-                  showPrefixOnSelected={false}
-                />
-              </StyledDropDownContainer>
-              <StyledDropDownContainer
-                xs={24}
-                sm={12}
-                lg={6}
-                autoFlex
-                data-cy="standardGrade"
-              >
-                <ControlDropDown
-                  by={filters.standardGrade}
-                  selectCB={(e, selected) =>
-                    updateFilterDropdownCB(
-                      selected,
-                      'standardGrade',
-                      false,
-                      true
-                    )
-                  }
-                  data={staticDropDownData.allGrades}
-                  prefix="Standard Grade"
-                  showPrefixOnSelected={false}
-                />
-              </StyledDropDownContainer>
-              {loc !== reportRoutes.STANDARDS_PROGRESS &&
-                standardProficiencyFilter}
-              <StyledDropDownContainer
-                xs={24}
-                sm={12}
-                lg={6}
-                autoFlex
-                data-cy="domain"
-              >
-                <MultipleSelect
-                  containerClassName="standards-mastery-report-domain-autocomplete"
-                  data={domainsList || []}
-                  valueToDisplay={
-                    selectedDomains.length > 1
-                      ? { key: '', title: 'Multiple Domains' }
-                      : selectedDomains
-                  }
-                  by={selectedDomains}
-                  prefix="Domains"
-                  onSelect={onSelectDomain}
-                  onChange={onChangeDomains}
-                  placeholder="All Domains"
-                  style={{ minWidth: '80px', width: '100%', height: 'auto' }}
-                />
-              </StyledDropDownContainer>
-              {loc === reportRoutes.STANDARDS_PROGRESS && (
-                <StyledDropDownContainer
-                  xs={24}
-                  sm={12}
-                  lg={6}
-                  autoFlex
-                  data-cy="standard"
-                >
-                  <AutocompleteDropDown
-                    prefix="Standard"
-                    by={
-                      // filters.standardId is searched in standardsList
-                      // to make sure standardId passed via url also sets the correct standard
-                      standardsList.find(
-                        (o) => `${o.key}` === `${filters.standardId}`
-                      ) ||
-                      standardsList[0] || { key: '', title: '' }
-                    }
-                    selectCB={(selected) => {
-                      updateFilterDropdownCB(
-                        selected,
-                        'standardId',
-                        false,
-                        true
-                      )
-                    }}
-                    data={standardsList}
-                  />
-                </StyledDropDownContainer>
-              )}
-              {loc === reportRoutes.STANDARDS_PROGRESS &&
-                standardProficiencyFilter}
-            </>
           )}
+          {loc === 'standards-progress' && standardProficiencyFilter}
           {filters.showApply && (
             <StyledEduButton
               btnType="primary"
               data-cy="applyRowFilter"
               onClick={() => onGoClick()}
-              height="32px"
-              margin="0 0 5px 5px"
+              style={{ height: '32px' }}
             >
               APPLY
             </StyledEduButton>
@@ -1032,7 +964,6 @@ const enhance = compose(
       standardsProgress: getReportsStandardsProgress(state),
       institutionIds: currentDistrictInstitutionIds(state),
       isPremium: isPremiumUserSelector(state),
-      rubricsList: getSMRRubricsSelector(state),
     }),
     {
       getStandardsFiltersRequest: getStandardsFiltersRequestAction,

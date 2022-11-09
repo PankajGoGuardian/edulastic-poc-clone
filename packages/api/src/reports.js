@@ -276,89 +276,6 @@ const fetchGeneratedCSVs = () =>
     })
     .then(({ data }) => data.result)
 
-const CHART_DATA = {
-  "data": [
-      {
-          "criteriaId": "6b8be93e-7249-422d-9da5-6b70349f9e5d",
-          "responsesByRating": {
-              "fab93a9d-1552-4745-93ee-9b7a06aba8a8": 4
-          }
-      },
-      {
-          "criteriaId": "a12411ed-5d43-46dc-8b20-122e98b7dc00",
-          "responsesByRating": {
-              "f71b8136-6a46-487b-b81d-4c27b38e9514": 2,
-              "32b1b971-bd8e-4079-b5e4-f9bdafc4d33e": 2
-          }
-      }
-  ],
-  "rubric": {
-      "_id": "6363514390f26d00082f1ee2",
-      "name": "Rubric With 2 criteria",
-      "description": "",
-      "criteria": [
-          {
-              "ratings": [
-                  {
-                      "name": "Rating 1",
-                      "desc": "",
-                      "id": "f71b8136-6a46-487b-b81d-4c27b38e9514",
-                      "points": 0
-                  },
-                  {
-                      "name": "Rating 2",
-                      "desc": "",
-                      "id": "32b1b971-bd8e-4079-b5e4-f9bdafc4d33e",
-                      "points": 1
-                  }
-              ],
-              "name": "Criteria 1",
-              "id": "a12411ed-5d43-46dc-8b20-122e98b7dc00"
-          },
-          {
-              "ratings": [
-                  {
-                      "name": "Rating 1",
-                      "desc": "",
-                      "id": "e41fe22d-99b8-4c7f-a748-9b62ccf715e9",
-                      "points": 0
-                  },
-                  {
-                      "name": "Rating 2",
-                      "desc": "",
-                      "id": "24a00593-7a44-4a29-9915-2bccc4e822bc",
-                      "points": 1
-                  },
-                  {
-                      "name": "Rating 3",
-                      "desc": "",
-                      "id": "fab93a9d-1552-4745-93ee-9b7a06aba8a8",
-                      "points": 2
-                  }
-              ],
-              "name": "Criteria 2",
-              "id": "6b8be93e-7249-422d-9da5-6b70349f9e5d"
-          }
-      ]
-  }
-}
-const fetchPerformanceByRubricsCriteriaChartData = (params) =>
-  Promise.resolve(JSON.parse(JSON.stringify(CHART_DATA))) ||
-  api
-    .callApi({
-      url: '/report/performance-by-rubric/chart',
-      params,
-    })
-    .then((res) => res.data.result)
-
-const fetchPerformanceByRubricsCriteriaTableData = (params) =>
-  api
-    .callApi({
-      url: '/report/performance-by-rubric/table',
-      params,
-    })
-    .then((res) => res.data.result)
-
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -394,6 +311,4 @@ export default {
   fetchActivityByTeacher,
   generateCSV,
   fetchGeneratedCSVs,
-  fetchPerformanceByRubricsCriteriaChartData,
-  fetchPerformanceByRubricsCriteriaTableData,
 }

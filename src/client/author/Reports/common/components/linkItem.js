@@ -5,7 +5,6 @@ import { Icon } from 'antd'
 import { themeColorLight } from '@edulastic/colors'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import { ReportItemCards } from './ReportItemCard'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 const nonPremiumReports = ['standardsGradebook']
 
@@ -14,72 +13,60 @@ export const LinkItem = ({ data, inverse, tiles, premium, loc = '' }) => {
   const showGreenBorder = !premium && nonPremiumReports.includes(data.key)
   const ResolvedLink = showPremiumLabel ? Fragment : Link
 
-  if (!tiles) {
+  if (tiles) {
     return (
-      <Item>
-        <ResolvedLink
-          data-cy={data.key}
-          to={!inverse && { pathname: data.location, state: { source: loc } }}
-        >
-          {data.title}
-          {!inverse && <StyledIcon type="right" />}
-        </ResolvedLink>
-      </Item>
-    )
-  }
-
-  if (data.key === 'standardsGradebook') {
-    return (
-      <AuthorCompleteSignupButton
-        renderButton={(handleClick, { to }) => (
-          <Link
+      <>
+        {data.key === 'standardsGradebook' ? (
+          <AuthorCompleteSignupButton
+            renderButton={(handleClick, { to }) => (
+              <Link
+                data-cy={data.key}
+                to={to || '#'}
+                onClick={
+                  to
+                    ? undefined
+                    : (e) => {
+                        e.preventDefault()
+                        handleClick()
+                      }
+                }
+              >
+                <ReportItemCards data={data} />
+              </Link>
+            )}
+            privateParams={{
+              to: {
+                pathname: data.location,
+                state: { source: loc },
+              },
+            }}
+          />
+        ) : (
+          <ResolvedLink
             data-cy={data.key}
-            to={to || '#'}
-            onClick={
-              to
-                ? undefined
-                : (e) => {
-                    e.preventDefault()
-                    handleClick()
-                  }
-            }
+            to={{ pathname: data.location, state: { source: loc } }}
           >
-            <ReportItemCards data={data} />
-          </Link>
+            <ReportItemCards
+              data={data}
+              showPremiumLabel={showPremiumLabel}
+              showGreenBorder={showGreenBorder}
+            />
+          </ResolvedLink>
         )}
-        privateParams={{
-          to: {
-            pathname: data.location,
-            state: { source: loc },
-          },
-        }}
-      />
+      </>
     )
   }
-  const component = (
-    <ResolvedLink
-      data-cy={data.key}
-      to={{ pathname: data.location, state: { source: loc } }}
-    >
-      <ReportItemCards
-        data={data}
-        showPremiumLabel={showPremiumLabel}
-        showGreenBorder={showGreenBorder}
-      />
-    </ResolvedLink>
-  )
-  if (data.key === 'performanceByRubricCriteria') {
-    return (
-      <FeaturesSwitch
-        inputFeatures="performanceByRubricsReports"
-        actionOnInaccessible="hidden"
+  return (
+    <Item>
+      <ResolvedLink
+        data-cy={data.key}
+        to={!inverse && { pathname: data.location, state: { source: loc } }}
       >
-        {component}
-      </FeaturesSwitch>
-    )
-  }
-
-  return component
+        {data.title}
+        {!inverse && <StyledIcon type="right" />}
+      </ResolvedLink>
+    </Item>
+  )
 }
 
 export const LinksWrapper = styled.ul`

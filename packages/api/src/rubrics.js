@@ -31,16 +31,10 @@ const updateRubricsById = ({ id, body }) =>
     .callApi({ url: `/rubrics/${id}`, method: 'put', data: body })
     .then((result) => result.data.result)
 
-const getRubricsUsedByDistrict = () =>
-  api
-    .callApi({ url: `/rubrics/used-by-district`, method: 'get' })
-    .then((result) => result.data.result)
-
 export default {
   createRubrics,
   getSerchedRubrics,
   getRubricsById,
   deleteRuricsById,
   updateRubricsById,
-  getRubricsUsedByDistrict,
 }

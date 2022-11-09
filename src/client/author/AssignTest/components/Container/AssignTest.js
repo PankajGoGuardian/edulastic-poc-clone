@@ -43,6 +43,7 @@ import {
   getSearchTermsFilterSelector,
   loadAssignmentsAction,
   saveAssignmentAction,
+  fetchPlaylistAssignmentsAction,
 } from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
@@ -138,6 +139,7 @@ class AssignTest extends React.Component {
       fetchTestByID,
       loadClassList,
       fetchAssignments,
+      fetchPlaylistAssignments,
       assignments,
       match,
       userOrgId,
@@ -232,6 +234,11 @@ class AssignTest extends React.Component {
         additionalSettings.allowTeacherRedirect = true
       }
       fetchPlaylistById(match.params.playlistId)
+      console.log(match.params)
+      fetchPlaylistAssignments({
+        playlistId: match.params.playlistId,
+        moduleId: match.params.moduleId,
+      })
       getDefaultTestSettings()
       this.updateAssignmentNew({
         startDate: moment(),
@@ -1051,6 +1058,7 @@ const enhance = compose(
       getDefaultTestSettings: getDefaultTestSettingsAction,
       resetStudents: resetStudentAction,
       updateAssignmentSettings: updateAssingnmentSettingsAction,
+      fetchPlaylistAssignments: fetchPlaylistAssignmentsAction,
       clearAssignmentSettings: clearAssignmentSettingsAction,
       toggleAdminAlertModal: toggleAdminAlertModalAction,
       toggleVerifyEmailModal: toggleVerifyEmailModalAction,

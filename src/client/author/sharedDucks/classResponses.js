@@ -587,6 +587,7 @@ function* updateStudentScore(payload) {
     const scoreObj = {
       score: !isNil(score.score) ? score.score : score,
       rubricFeedback: !isNil(score.rubricFeedback) ? score.rubricFeedback : {},
+      rubricId: score.rubricId,
     }
 
     const scoreRes = yield call(testActivityApi.updateResponseEntryAndScore, {

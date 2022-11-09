@@ -55,6 +55,7 @@ import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
 import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
+import reportRoutes from '../constants/reportRoutes'
 import { fetchUpdateTagsDataAction } from '../../../../ducks'
 import {
   getArrayOfNonPremiumTestTypes,
@@ -111,7 +112,7 @@ const StandardsMasteryReportFilters = ({
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
       (demographicsRequired || !ddFilterTypes.includes(t.key)) &&
-      (loc === 'performance-by-rubric-criteria'
+      (loc === reportRoutes.PERFORMANCE_BY_RUBRICS_CRITERIA
         ? ![
             'curriculumId',
             'standardGrade',
@@ -183,7 +184,7 @@ const StandardsMasteryReportFilters = ({
 
   const standardIdFromPageData = useMemo(
     () =>
-      loc === 'standards-progress'
+      loc === reportRoutes.STANDARDS_PROGRESS
         ? get(standardsProgress, 'data.result.standardId', '')
         : '',
     [loc, standardsProgress]
@@ -200,7 +201,7 @@ const StandardsMasteryReportFilters = ({
   const hasOpenedPerformanceByRubricReportRef = useRef(false)
   hasOpenedPerformanceByRubricReportRef.current =
     hasOpenedPerformanceByRubricReportRef.current ||
-    loc === 'performance-by-rubric-criteria'
+    loc === reportRoutes.PERFORMANCE_BY_RUBRICS_CRITERIA
   useEffect(() => {
     const params = { loc }
     if (reportId) params.reportId = reportId
@@ -240,7 +241,7 @@ const StandardsMasteryReportFilters = ({
       resetForActiveTab(activeTabKey)
       setActiveTabKey(staticDropDownData.filterSections.CLASS_FILTERS.key)
     }
-    if (loc !== 'standards-progress') {
+    if (loc !== reportRoutes.STANDARDS_PROGRESS) {
       resetForActiveTab(staticDropDownData.filterSections.STANDARD_FILTERS.key)
     }
   }, [loc, showFilter])
@@ -873,14 +874,14 @@ const StandardsMasteryReportFilters = ({
             display: reportId ? 'none' : 'flex',
           }}
         >
-          {loc === 'performance-by-rubric-criteria' ? (
+          {loc === reportRoutes.PERFORMANCE_BY_RUBRICS_CRITERIA ? (
             <StyledDropDownContainer
               xs={24}
               sm={12}
               lg={6}
               autoFlex
               data-cy="rubric-criteria"
-              style={{ maxWidth: '300px' }}
+              maxWidth="300px"
             >
               <FieldLabel fs=".7rem" data-cy="schoolYear">
                 Rubric
@@ -941,7 +942,8 @@ const StandardsMasteryReportFilters = ({
                   showPrefixOnSelected={false}
                 />
               </StyledDropDownContainer>
-              {loc !== 'standards-progress' && standardProficiencyFilter}
+              {loc !== reportRoutes.STANDARDS_PROGRESS &&
+                standardProficiencyFilter}
               <StyledDropDownContainer
                 xs={24}
                 sm={12}
@@ -965,7 +967,7 @@ const StandardsMasteryReportFilters = ({
                   style={{ minWidth: '80px', width: '100%', height: 'auto' }}
                 />
               </StyledDropDownContainer>
-              {loc === 'standards-progress' && (
+              {loc === reportRoutes.STANDARDS_PROGRESS && (
                 <StyledDropDownContainer
                   xs={24}
                   sm={12}
@@ -995,7 +997,8 @@ const StandardsMasteryReportFilters = ({
                   />
                 </StyledDropDownContainer>
               )}
-              {loc === 'standards-progress' && standardProficiencyFilter}
+              {loc === reportRoutes.STANDARDS_PROGRESS &&
+                standardProficiencyFilter}
             </>
           )}
           {filters.showApply && (
@@ -1003,7 +1006,8 @@ const StandardsMasteryReportFilters = ({
               btnType="primary"
               data-cy="applyRowFilter"
               onClick={() => onGoClick()}
-              style={{ height: '32px', marginBottom: '5px' }}
+              height="32px"
+              margin="0 0 5px 5px"
             >
               APPLY
             </StyledEduButton>

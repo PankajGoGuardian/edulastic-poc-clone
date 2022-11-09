@@ -10,15 +10,14 @@ import {
   ResponsiveContainer,
   LabelList,
 } from 'recharts'
-import { isEmpty, findLast, startCase } from 'lodash'
+import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
-import styled from 'styled-components'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
   CustomXAxisTickTooltipContainer,
-  ResetButtonClear,
+  StyledSignedStackedBarChartContainer,
 } from '../../styled'
 import {
   CustomChartXTick,
@@ -262,9 +261,7 @@ export const GroupedStackedBarChart = ({
         IconBtn
         className="navigator navigator-left"
         onClick={scrollLeft}
-        style={{
-          visibility: chartNavLeftVisibility ? 'visible' : 'hidden',
-        }}
+        hidden={!chartNavLeftVisibility}
       />
       <StyledChartNavButton
         type="primary"
@@ -273,9 +270,7 @@ export const GroupedStackedBarChart = ({
         IconBtn
         className="navigator navigator-right"
         onClick={scrollRight}
-        style={{
-          visibility: chartNavRightVisibility ? 'visible' : 'hidden',
-        }}
+        hidden={!chartNavRightVisibility}
       />
       <CustomXAxisTickTooltipContainer
         x={xAxisTickTooltipData.x}
@@ -399,31 +394,3 @@ export const GroupedStackedBarChart = ({
     </StyledSignedStackedBarChartContainer>
   )
 }
-
-const StyledSignedStackedBarChartContainer = styled.div`
-  padding: 10px;
-  position: relative;
-
-  .navigator-left {
-    left: 5px;
-    top: 50%;
-  }
-
-  .navigator-right {
-    right: 5px;
-    top: 50%;
-  }
-
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
-    stroke-opacity: 0;
-  }
-
-  .recharts-yAxis {
-    .recharts-text {
-      tspan {
-        white-space: pre;
-      }
-    }
-  }
-`

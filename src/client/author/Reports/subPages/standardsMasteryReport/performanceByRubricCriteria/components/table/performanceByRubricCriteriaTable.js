@@ -42,7 +42,8 @@ const getTableColumns = (
   rubric,
   chartRenderData,
   selectedCompareBy,
-  analyseBy
+  analyseBy,
+  isPrinting
 ) => {
   return next(tableColumnsData, (_columns) => {
     const showPerc = analyseBy.key === 'score'
@@ -90,7 +91,7 @@ const getTableColumns = (
       return {
         key: criteria.id,
         title: (
-          <AssessmentNameContainer>
+          <AssessmentNameContainer isPrinting={isPrinting}>
             <Tooltip title={criteria.name}>
               <div className="test-name-container">{criteria.name}</div>
             </Tooltip>
@@ -144,13 +145,15 @@ const PerformanceByRubricCriteriaTable = ({
   chartRenderData,
   onCsvConvert,
   isCsvDownloading,
+  isPrinting,
 }) => {
   const tableColumns = getTableColumns(
     tableData,
     rubric,
     chartRenderData,
     selectedTableFilters.compareBy,
-    selectedTableFilters.analyseBy
+    selectedTableFilters.analyseBy,
+    isPrinting
   )
   return (
     <>

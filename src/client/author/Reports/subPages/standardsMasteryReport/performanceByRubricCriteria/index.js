@@ -35,6 +35,7 @@ const PerformanceByRubricCriteria = ({
   settings,
   isCsvDownloading,
   ddfilter,
+  isPrinting,
   // selectors from ducks selectors
   reportChartData,
   loadingReportChartData,
@@ -133,6 +134,7 @@ const PerformanceByRubricCriteria = ({
         />
         <PerformanceByRubricCriteriaTable
           tableData={tableData}
+          isPrinting={isPrinting}
           selectedTableFilters={tableFilters}
           setTableFilters={setTableFilters}
           tableFilterOptions={{

@@ -380,6 +380,7 @@ const StandardsMasteryReportContainer = (props) => {
             return (
               <PerformanceByRubricCriteria
                 {..._props}
+                isPrinting={isPrinting}
                 pageTitle={loc}
                 toggleFilter={toggleFilter}
                 settings={settings}

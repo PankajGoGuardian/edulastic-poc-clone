@@ -1009,7 +1009,7 @@ const StandardsMasteryReportFilters = ({
               data-cy="applyRowFilter"
               onClick={() => onGoClick()}
               height="32px"
-              margin="0 0 5px 5px"
+              mb="5px"
             >
               APPLY
             </StyledEduButton>

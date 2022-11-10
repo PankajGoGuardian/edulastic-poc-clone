@@ -47,6 +47,7 @@ const getStyle = ({
   IconBtn,
   ml,
   mr,
+  mb,
   noBorder,
   style = {},
 }) => {
@@ -58,6 +59,7 @@ const getStyle = ({
     fontWeight: '600',
     marginLeft: ml || '5px',
     marginRight: mr || null,
+    marginBottom: mb || null,
     borderRadius: '4px',
     height: height || '36px',
     padding: IconBtn ? '5px' : '5px 15px',

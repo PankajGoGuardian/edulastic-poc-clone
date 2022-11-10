@@ -201,9 +201,6 @@ export const ReportFiltersWrapper = styled.div`
 `
 
 export const StyledEduButton = styled(EduButton)`
-  height: ${({ height }) => height || 'inherit'};
-  margin: ${({ margin }) => margin || 'inherit'};
-
   &,
   &:focus {
     &.ant-btn.ant-btn-primary {

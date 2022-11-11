@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select, Tooltip } from 'antd'
-import { EduIf, SelectInputStyled } from '@edulastic/common'
+import { EduIf, notification, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass, IconClose, IconSearch } from '@edulastic/icons'
 import { lightGrey10, tagTextColor } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -348,7 +348,17 @@ class ClassList extends React.Component {
     const rowSelection = {
       selectedRowKeys: selectedClasses,
       hideDefaultSelections: true,
-      onSelect: (_, __, selectedRows) => {
+      onSelect: (record, selected, selectedRows) => {
+        if (
+          selected &&
+          record.key &&
+          moduleAssignedClassesById[record.key] === 'PARTIAL'
+        ) {
+          notification({
+            msg:
+              'Some tests from this module are already assigned to this class and will not be re-assigned. Rest will be assigned.',
+          })
+        }
         if (selectClass) {
           const selectedClassIds = selectedRows.map((item) => item.key)
           selectClass('class', selectedClassIds, classList)

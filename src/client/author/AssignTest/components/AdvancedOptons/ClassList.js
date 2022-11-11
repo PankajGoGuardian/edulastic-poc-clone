@@ -14,6 +14,7 @@ import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getAssignedClassesByIdSelector,
   getClassListSelector,
+  getModuleAssignedClassesByIdSelector,
 } from '../../duck'
 import {
   getUserOrgId,
@@ -331,6 +332,7 @@ class ClassList extends React.Component {
       isCoursesLoading,
       isAdvancedSearchSelected,
       setShowAdvanceSearchModal,
+      moduleAssignedClassesById,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -357,6 +359,15 @@ class ClassList extends React.Component {
       onSelectAll: this.handleSelectAll,
       getCheckboxProps: (record) => {
         if (record && record.key && assignedClassesById[testType][record.key]) {
+          return {
+            disabled: true,
+          }
+        }
+        if (
+          record &&
+          record.key &&
+          moduleAssignedClassesById[record.key] === 'ALL'
+        ) {
           return {
             disabled: true,
           }
@@ -754,7 +765,7 @@ class ClassList extends React.Component {
 const enhance = compose(
   withRouter,
   connect(
-    (state) => ({
+    (state, props) => ({
       termsData: get(state, 'user.user.orgData.terms', []),
       classList: getClassListSelector(state),
       userOrgId: getUserOrgId(state),
@@ -766,6 +777,10 @@ const enhance = compose(
       isCoursesLoading: getCourseLoadingState(state),
       isAdvancedSearchSelected: getIsAdvancedSearchSelectedSelector(state),
       isAllClassSelected: getIsAllClassSelectedSelector(state),
+      moduleAssignedClassesById: getModuleAssignedClassesByIdSelector(
+        state,
+        props
+      ),
     }),
     {
       loadClassListData: receiveClassListAction,

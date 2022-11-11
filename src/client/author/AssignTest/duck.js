@@ -10,6 +10,7 @@ import {
 } from '@edulastic/constants'
 import { takeEvery, all, select, put } from 'redux-saga/effects'
 import { getUserRole } from '../src/selectors/user'
+import { getPlaylistSelector } from '../PlaylistPage/ducks'
 
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
 export const UPDATE_ASSIGNMENT_SETTINGS =
@@ -51,6 +52,9 @@ const currentSelector = (state) => state[_moduld].current
 export const testsSelector = (state) => state.tests
 
 export const getAssignmentsSelector = (state) => state[_moduld].assignments
+
+export const getPlaylistAssignmentsSelector = (state) =>
+  state[_moduld].playlistAssignments
 
 export const testStateSelector = (state) => state.tests
 
@@ -98,6 +102,51 @@ export const getAssignedClassesByIdSelector = createSelector(
     return assignedClassesByTestType
   }
 )
+
+export const getModuleAssignedClassesByIdSelector = (state, props) => {
+  const { moduleId } = props.match.params
+  const playlistAssignments = getPlaylistAssignmentsSelector(state)
+  const playlist = getPlaylistSelector(state)
+  const currentModule = playlist.modules?.find(
+    (module) => module._id === moduleId
+  )
+  const playlistTestIds =
+    currentModule?.data?.map((item) => item.contentId) || []
+  const commonAssignments = playlistAssignments.filter((assignment) =>
+    testTypesConstants.TEST_TYPES.COMMON.includes(assignment.testType)
+  )
+  const commonAssignmentsFlattenedClass = []
+  for (const assignment of commonAssignments) {
+    for (const _class of assignment.class) {
+      if (
+        _class.students &&
+        _class.students.length === 0 &&
+        _class.status !== 'ARCHIVED'
+      ) {
+        commonAssignmentsFlattenedClass.push({
+          ...assignment,
+          classId: _class._id,
+        })
+      }
+    }
+  }
+  const result = {}
+  const assignmentsByClassId = groupBy(
+    commonAssignmentsFlattenedClass,
+    'classId'
+  )
+  for (const [key, value] of Object.entries(assignmentsByClassId)) {
+    const assignedTestIds = value.map((item) => item.testId)
+    const isAllAssigned = playlistTestIds.every((testId) =>
+      assignedTestIds.includes(testId)
+    )
+    const isNoneAssigned =
+      !isAllAssigned &&
+      assignedTestIds.some((item) => playlistTestIds.includes(item))
+    result[key] = isAllAssigned ? 'ALL' : isNoneAssigned ? 'NONE' : 'PARTIAL'
+  }
+  return result
+}
 
 const classesData = (state) => state.classesReducer.data
 

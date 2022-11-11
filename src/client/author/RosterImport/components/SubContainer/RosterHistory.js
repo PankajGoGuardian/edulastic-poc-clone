@@ -41,6 +41,7 @@ const RosterHistory = ({
       user: 'Users',
       enrollment: 'Enrollments',
       course: 'Courses',
+      accommodation: 'Accommodations',
     }
     return map[entityName]
   }

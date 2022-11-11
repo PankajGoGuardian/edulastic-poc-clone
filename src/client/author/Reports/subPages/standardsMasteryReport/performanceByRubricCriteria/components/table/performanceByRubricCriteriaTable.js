@@ -1,5 +1,6 @@
 import React from 'react'
 import next from 'immer'
+import { isEmpty } from 'lodash'
 import { Row, Tooltip } from 'antd'
 import TableFilters from '../filters/TableFilters'
 import {
@@ -24,13 +25,14 @@ const tableColumnsData = [
     dataIndex: 'averageRatingPoints',
     align: 'center',
     fixed: 'left',
-    title: 'AVG. RATING',
+    title: 'Rubric Avg.',
     width: 150,
   },
   // next up are dynamic columns for each assessment
 ]
 
 const renderValue = (value, suffix = '', fallback = '-') => {
+  if (value === 'N/A') return value
   if (Number.isNaN(value) || value === null || value === undefined)
     return fallback
 
@@ -61,7 +63,7 @@ const getTableColumns = (
           return (
             <TableTooltipWrapper>
               <Tooltip
-                title={`Avg Score: ${renderValue(
+                title={`Rubric Avg: ${renderValue(
                   record.averageRatingPoints
                 )}/${renderValue(record.maxRubricPoints)} (${renderValue(
                   record.averageRatingPercPoints,
@@ -88,6 +90,7 @@ const getTableColumns = (
       const chartData = chartRenderData.find(
         (c) => c.criteriaId === criteria.id
       )
+      if (isEmpty(chartData)) return null
       return {
         key: criteria.id,
         title: (

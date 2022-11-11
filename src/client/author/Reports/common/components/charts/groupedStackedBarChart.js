@@ -72,6 +72,7 @@ export const GroupedStackedBarChart = ({
   data = [],
   primaryXAxisDataKey,
   getXTickText,
+  getXTickFill,
   getTooltipJSX,
   yAxisLabel = '',
   barsLabelFormatter = _barsLabelFormatter,
@@ -295,7 +296,7 @@ export const GroupedStackedBarChart = ({
               <CustomChartXTick
                 data={renderData}
                 getXTickText={getXTickText}
-                // getXTickTagText={getXTickTagText}
+                getXTickFill={getXTickFill}
                 fontWeight={600}
               />
             }

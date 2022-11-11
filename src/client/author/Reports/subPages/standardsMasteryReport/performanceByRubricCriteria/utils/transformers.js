@@ -8,25 +8,44 @@ export const getDenormalizedChartData = (chartData, rubric) => {
 
   const { data: metrics } = chartData
 
-  // const allCriterias
-
   const denormalizedData = rubric.criteria
-    .flatMap((ct) =>
-      metrics.filter((m) => m.criteriaId === ct.id).map((v) => [v, ct])
-    )
+    .map((ct) => {
+      const metric = metrics.find((m) => m.criteriaId === ct.id)
+      if (isEmpty(metric)) {
+        const met = {
+          criteriaId: ct.id,
+          responsesByRating: {},
+        }
+        return [met, ct]
+      }
+      return [metric, ct]
+    })
     .map(([m, criteria]) => {
       const criteriaName = criteria.name
-      const totalResponsesPerCriteria = sum(Object.values(m.responsesByRating))
-      const pointSumPerCriteria = sum(
-        criteria.ratings.map((r) => r.points * (m.responsesByRating[r.id] || 0))
-      )
-      const avgScorePerCriteria =
-        pointSumPerCriteria / totalResponsesPerCriteria
-      const scorePercentagePerCriteria = percentage(
-        avgScorePerCriteria,
-        max(criteria.ratings.map((r) => r.points)),
-        true
-      )
+      let totalResponsesPerCriteria
+      let pointSumPerCriteria
+      let avgScorePerCriteria
+      let scorePercentagePerCriteria
+      // to show N/A if no response is present for a criteria
+      if (isEmpty(m.responsesByRating)) {
+        totalResponsesPerCriteria = 'N/A'
+        pointSumPerCriteria = 'N/A'
+        avgScorePerCriteria = 'N/A'
+        scorePercentagePerCriteria = 'N/A'
+      } else {
+        totalResponsesPerCriteria = sum(Object.values(m.responsesByRating))
+        pointSumPerCriteria = sum(
+          criteria.ratings.map(
+            (r) => r.points * (m.responsesByRating[r.id] || 0)
+          )
+        )
+        avgScorePerCriteria = pointSumPerCriteria / totalResponsesPerCriteria
+        scorePercentagePerCriteria = percentage(
+          avgScorePerCriteria,
+          max(criteria.ratings.map((r) => r.points)),
+          true
+        )
+      }
 
       return {
         ...m,
@@ -133,12 +152,22 @@ export const getDenormalizedTableData = (tableApiResponse) => {
   const maxRubricPoints = sum(
     rubric.criteria.map((ct) => max(ct.ratings.map((rt) => rt.points)))
   )
-  const flatData = metrics
-    .map((m) => {
-      const criteria = rubric.criteria.find((ct) => ct.id === m.criteriaId)
-      if (!criteria) return null
+  const flatData = rubric.criteria
+    .map((criteria) => {
+      const metric = metrics.find((m) => m.criteriaId === criteria.id)
+      if (!metric) {
+        return {
+          rubric,
+          criteria,
+          maxRubricPoints,
+          maxRatingPoints: max(criteria.ratings.map((r) => r.points)),
+          scoreGrouped: {},
+          countGrouped: {},
+          criteriaId: criteria.id,
+        }
+      }
       return {
-        ...m,
+        ...metric,
         rubric,
         criteria,
         maxRatingPoints: max(criteria.ratings.map((r) => r.points)),
@@ -158,12 +187,16 @@ export const getDenormalizedTableData = (tableApiResponse) => {
       const criteriaColumnValues = mapValues(
         keyBy(rowArr, 'criteriaId'),
         (cell) => ({
-          avgScore: round(cell.scoreGrouped[cell.compareById], 2),
-          avgScorePercentage: percentage(
-            cell.scoreGrouped[cell.compareById],
-            cell.maxRatingPoints,
-            true
-          ),
+          avgScore: isEmpty(cell.scoreGrouped)
+            ? 'N/A'
+            : round(cell.scoreGrouped[cell.compareById], 2),
+          avgScorePercentage: isEmpty(cell.scoreGrouped)
+            ? 'N/A'
+            : percentage(
+                cell.scoreGrouped[cell.compareById],
+                cell.maxRatingPoints,
+                true
+              ),
           maxScore: round(cell.maxRatingPoints),
           responseCount: round(cell.countGrouped[cell.compareById] || 0, 2),
         })
@@ -175,8 +208,8 @@ export const getDenormalizedTableData = (tableApiResponse) => {
         sum(
           rowArr.map(
             (cell) =>
-              cell.countGrouped[cell.compareById] *
-              cell.scoreGrouped[cell.compareById]
+              (cell.countGrouped[cell.compareById] || 0) *
+              (cell.scoreGrouped[cell.compareById] || 0)
           )
         ) / totalResponses
       const averageRatingPercPoints = percentage(

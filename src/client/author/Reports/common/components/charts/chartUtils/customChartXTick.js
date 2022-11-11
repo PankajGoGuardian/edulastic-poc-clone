@@ -9,6 +9,7 @@ export const CustomChartXTick = (props) => {
     data,
     getXTickText,
     getXTickTagText,
+    getXTickFill,
     width,
     fontWeight,
     visibleTicksCount,
@@ -17,6 +18,7 @@ export const CustomChartXTick = (props) => {
   const tickWidth = Math.floor(width / visibleTicksCount)
 
   let text = getXTickText ? getXTickText(payload, data) : payload.value
+  const fill = getXTickFill ? getXTickFill(payload, data) : 'black'
 
   const tagText = getXTickTagText ? getXTickTagText(payload, data) : ''
   const tagWidth = (tagText?.length || 0) * 10
@@ -42,6 +44,7 @@ export const CustomChartXTick = (props) => {
         verticalAnchor="start"
         width={tickWidth}
         fontWeight={fontWeight}
+        fill={fill}
       >
         {text}
       </StyledAxisTickText>

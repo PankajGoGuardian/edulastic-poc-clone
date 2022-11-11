@@ -74,9 +74,11 @@ const getTooltipJSX = (payload, barIndex) => {
 }
 
 const GroupedStackedBarChartContainer = ({ barsData, renderData }) => {
-  const getXTickText = (payload, _data) => {
-    return _data[payload.index]?.criteriaName || '-'
-  }
+  const getXTickText = (payload, _data) =>
+    _data[payload.index]?.criteriaName || '-'
+
+  const getXTickFill = (payload, _data) =>
+    _data[payload.index]?.totalResponsesPerCriteria === 'N/A' ? 'grey' : 'black'
 
   return (
     <div>
@@ -86,6 +88,7 @@ const GroupedStackedBarChartContainer = ({ barsData, renderData }) => {
         primaryXAxisDataKey="criteriaName"
         yAxisLabel="DISTRIBUTION OF RESPONSES"
         getXTickText={getXTickText}
+        getXTickFill={getXTickFill}
         getTooltipJSX={getTooltipJSX}
         hasBarInsideLabels
         hasRoundedBars

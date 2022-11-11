@@ -19,6 +19,7 @@ import { loginReducer } from './client/loginReducers'
 import { loginSaga } from './client/loginSagas'
 import { fetchUserAction } from './client/student/Login/ducks'
 import { initializeSegment } from './client/common/utils/main'
+import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
 
 if (AppConfig.sentryURI) {
   SentryInit({
@@ -33,6 +34,12 @@ if (AppConfig.sentryURI) {
   })
   updateSentryScope()
 }
+
+/**
+ *  In case of redirection from canvas we might get errorDescription as query param which
+ *  we have to display as error message and remove it from the url.
+ */
+storeErrorDescriptionInSessionStorage()
 
 initializeSegment()
 

@@ -1,6 +1,5 @@
 import React, { Component, lazy, Suspense, useEffect } from 'react'
 import { capitalize, get, isEmpty, isUndefined } from 'lodash'
-import qs from 'qs'
 import { ThemeProvider } from 'styled-components'
 import queryString from 'query-string'
 import loadable from '@loadable/component'
@@ -184,37 +183,6 @@ if (
   !window.localStorage.getItem('originalreferrer')
 ) {
   window.localStorage.setItem('originalreferrer', query.referrer)
-}
-
-/**
- *  In case of redirection from canvas we might get errorDescription as query param which
- *  we have to display as error message and remove it from the url.
- */
-const { search, pathname } = window.location
-if (search) {
-  const { errorDescription, ...rest } = qs.parse(search, {
-    ignoreQueryPrefix: true,
-  })
-  if (errorDescription) {
-    let errorMessage =
-      errorDescription === 'assignment_is_marked_as_absent'
-        ? 'You have been marked ABSENT. Please contact your teacher.'
-        : errorDescription.split('_').join(' ')
-    errorMessage = `${errorMessage[0].toUpperCase()}${errorMessage.substr(
-      1,
-      errorMessage.length
-    )}`
-    sessionStorage.setItem('errorMessage', errorMessage)
-    if (!pathname.split('/').includes('login')) {
-      if (isEmpty(rest)) {
-        window.location.href = window.location.href.split('?')[0]
-      } else {
-        window.location.href = `${
-          window.location.href.split('?')[0]
-        }?${qs.stringify(rest)}`
-      }
-    }
-  }
 }
 
 const testRedirectRoutes = [

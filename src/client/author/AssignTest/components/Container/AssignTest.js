@@ -239,14 +239,6 @@ class AssignTest extends React.Component {
         additionalSettings.allowTeacherRedirect = true
       }
       fetchPlaylistById(match.params.playlistId)
-      console.log(match.params)
-      if (isEmpty(playlistAssignments) && !testId) {
-        fetchPlaylistAssignments({
-          playlistId: match.params.playlistId,
-          moduleId: match.params.moduleId,
-        })
-      }
-
       getDefaultTestSettings()
       this.updateAssignmentNew({
         startDate: moment(),
@@ -270,6 +262,12 @@ class AssignTest extends React.Component {
         },
         ...additionalSettings,
       })
+      if (isEmpty(playlistAssignments) && !testId) {
+        fetchPlaylistAssignments({
+          playlistId: match.params.playlistId,
+          moduleId: match.params.moduleId,
+        })
+      }
       if (isEmpty(assignments) && testId) {
         fetchAssignments(testId)
       }

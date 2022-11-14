@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { notification, FlexContainer, RadioGrp } from '@edulastic/common'
 import { get } from 'lodash'
-import { Popover, Tooltip } from 'antd'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { roleuser } from '@edulastic/constants'
@@ -20,7 +19,6 @@ import {
   Container,
   StyledSpan,
   CustomRadioBtn,
-  InfoIcon,
 } from './styled'
 import { StyledButton, StyledDownloadIcon } from '../SubContainer/styled'
 import { StyledSpin } from '../../../../admin/Common/StyledComponents'
@@ -52,7 +50,7 @@ const title = 'Manage District'
 const oneRosterSyncType = {
   DELTA: 'delta',
   FULL: 'full',
-  ACCOMODATION: 'accomodation',
+  ACCOMODATION: 'accommodation',
 }
 const RosterImport = ({
   history,
@@ -170,15 +168,10 @@ const RosterImport = ({
                       <CustomRadioBtn value={oneRosterSyncType.FULL} />
                       <Label>FULL SYNC</Label>
                     </RadioButtonWrapper>
-                    <Tooltip title="Feature to be released in future.">
-                      <RadioButtonWrapper style={{ marginLeft: '20px' }}>
-                        <CustomRadioBtn
-                          disabled
-                          value={oneRosterSyncType.ACCOMODATION}
-                        />
-                        <Label disabled>ACCOMODATIONS</Label>
-                      </RadioButtonWrapper>
-                    </Tooltip>
+                    <RadioButtonWrapper style={{ marginLeft: '20px' }}>
+                      <CustomRadioBtn value={oneRosterSyncType.ACCOMODATION} />
+                      <Label>ACCOMODATIONS</Label>
+                    </RadioButtonWrapper>
                   </RadioGrp>
                 </StyledSpan>
                 <FlexContainer

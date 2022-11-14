@@ -157,11 +157,14 @@ const fetchPlaylistInsights = (data) => {
     })
     .then((result) => result.data.result)
 }
-const getPlaylistAssignment = ({ playlistId, moduleId }) =>
+const getPlaylistAssignment = ({ playlistId, moduleId, testIds }) =>
   api
     .callApi({
       url: `${prefix}/${playlistId}/${moduleId}/module-assignments`,
       method: 'get',
+      params: {
+        testIds,
+      },
     })
     .then((result) => result.data.result)
 

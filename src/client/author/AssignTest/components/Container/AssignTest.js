@@ -266,6 +266,7 @@ class AssignTest extends React.Component {
         fetchPlaylistAssignments({
           playlistId: match.params.playlistId,
           moduleId: match.params.moduleId,
+          testIds: location?.state?.testIds,
         })
       }
       if (isEmpty(assignments) && testId) {

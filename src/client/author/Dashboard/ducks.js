@@ -111,14 +111,41 @@ export const getShowAssignmentCreationModalSelector = createSelector(
   (state) => state.showAssignmentCreationModal
 )
 
+const getUniqConfigurableTiles = (configTiles) => {
+  const configWithoutOtherSubjects = []
+  const configWithOtherSubjects = []
+  const configWithoutItemBankId = []
+  configTiles?.forEach((tile) => {
+    const { subscriptionData, filters } = tile?.config || {}
+    if (subscriptionData?.itemBankId) {
+      if (!filters?.[0]?.subject?.includes('Other Subjects')) {
+        configWithoutOtherSubjects.push(tile)
+      } else {
+        configWithOtherSubjects.push(tile)
+      }
+    } else {
+      configWithoutItemBankId.push(tile)
+    }
+  })
+  const uniqConfigWithItemBankId = uniqBy(
+    [...configWithoutOtherSubjects, ...configWithOtherSubjects],
+    'config.subscriptionData.itemBankId'
+  )
+  const uniqConfigData = [
+    ...uniqConfigWithItemBankId,
+    ...configWithoutItemBankId,
+  ]
+  return uniqConfigData
+}
+
 const initialState = {
   data: [],
   error: null,
   loading: false,
   isLaunchHangoutOpen: false,
   isAddingTrial: false,
-  configurableTiles: JSON.parse(
-    localStorage.getItem('author:dashboard:tiles') || '[]'
+  configurableTiles: getUniqConfigurableTiles(
+    JSON.parse(localStorage.getItem('author:dashboard:tiles') || '[]')
   ),
   allAssignmentCount: 0,
   showWelcomePopup: false,
@@ -272,34 +299,11 @@ function* fetchDashboardTilesSaga() {
       user.utm_source === 'singapore' ? true : undefined
     )
     if (!version || version !== result.version) {
-      const configWithoutOtherSubjects = []
-      const configWithOtherSubjects = []
-      const configWithoutItemBankId = []
-      result?.data?.forEach((tile) => {
-        const { subscriptionData, filters } = tile?.config || {}
-        if (subscriptionData?.itemBankId) {
-          if (!filters?.[0]?.subject?.includes('Other Subjects')) {
-            configWithoutOtherSubjects.push(tile)
-          } else {
-            configWithOtherSubjects.push(tile)
-          }
-        } else {
-          configWithoutItemBankId.push(tile)
-        }
-      })
-      const uniqConfigWithItemBankId = uniqBy(
-        [...configWithoutOtherSubjects, ...configWithOtherSubjects],
-        'config.subscriptionData.itemBankId'
-      )
-
-      const uniqConfigData = [
-        ...uniqConfigWithItemBankId,
-        ...configWithoutItemBankId,
-      ]
-      yield put(setDashboardTiles(uniqConfigData))
+      const uniqConfigurableTiles = getUniqConfigurableTiles(result?.data || [])
+      yield put(setDashboardTiles(uniqConfigurableTiles))
       localStorage.setItem(
         'author:dashboard:tiles',
-        JSON.stringify(uniqConfigData)
+        JSON.stringify(uniqConfigurableTiles)
       )
       localStorage.setItem('author:dashboard:version', +result.version)
     }

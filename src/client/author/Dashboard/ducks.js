@@ -4,6 +4,7 @@ import { captureSentryException, notification } from '@edulastic/common'
 import { createAction, createReducer } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import configurableTilesApi from '@edulastic/api/src/configurableTiles'
+import { uniqBy } from 'lodash'
 import { getUserDetails, setClassToUserAction } from '../../student/Login/ducks'
 import { getUserId, getUserOrgId } from '../src/selectors/user'
 
@@ -271,10 +272,34 @@ function* fetchDashboardTilesSaga() {
       user.utm_source === 'singapore' ? true : undefined
     )
     if (!version || version !== result.version) {
-      yield put(setDashboardTiles(result.data))
+      const configWithoutOtherSubjects = []
+      const configWithOtherSubjects = []
+      const configWithoutItemBankId = []
+      result?.data?.forEach((tile) => {
+        const { subscriptionData, filters } = tile?.config || {}
+        if (subscriptionData?.itemBankId) {
+          if (!filters?.[0]?.subject?.includes('Other Subjects')) {
+            configWithoutOtherSubjects.push(tile)
+          } else {
+            configWithOtherSubjects.push(tile)
+          }
+        } else {
+          configWithoutItemBankId.push(tile)
+        }
+      })
+      const uniqConfigWithItemBankId = uniqBy(
+        [...configWithoutOtherSubjects, ...configWithOtherSubjects],
+        'config.subscriptionData.itemBankId'
+      )
+
+      const uniqConfigData = [
+        ...uniqConfigWithItemBankId,
+        ...configWithoutItemBankId,
+      ]
+      yield put(setDashboardTiles(uniqConfigData))
       localStorage.setItem(
         'author:dashboard:tiles',
-        JSON.stringify(result.data)
+        JSON.stringify(uniqConfigData)
       )
       localStorage.setItem('author:dashboard:version', +result.version)
     }

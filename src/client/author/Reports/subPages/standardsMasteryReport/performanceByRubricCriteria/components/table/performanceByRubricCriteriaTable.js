@@ -114,10 +114,12 @@ const getTableColumns = (
         dataIndex: criteria.id,
         visibleOn: ['browser', 'csv'],
         render: (value) => {
-          const valueToShow = renderValue(
-            showPerc ? value.avgScorePercentage : value.avgScore,
-            showPerc ? '%' : ''
-          )
+          const val = Number.isNaN(value.avgScore)
+            ? null
+            : showPerc
+            ? value.avgScorePercentage
+            : value.avgScore
+          const valueToShow = renderValue(val, showPerc ? '%' : '')
           return (
             <TableTooltipWrapper>
               <Tooltip

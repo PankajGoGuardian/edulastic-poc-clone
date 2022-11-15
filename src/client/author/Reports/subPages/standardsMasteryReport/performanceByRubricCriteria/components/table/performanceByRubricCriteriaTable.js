@@ -120,12 +120,16 @@ const getTableColumns = (
             ? value.avgScorePercentage
             : value.avgScore
           const valueToShow = renderValue(val, showPerc ? '%' : '')
+          const tooltipTitle =
+            valueToShow === 'N/A' || valueToShow === '-'
+              ? valueToShow
+              : `Avg Score: ${renderValue(value.avgScore)}/${renderValue(
+                  value.maxScore
+                )} (${renderValue(value.avgScorePercentage, '%')})`
           return (
             <TableTooltipWrapper>
               <Tooltip
-                title={`Avg Score: ${renderValue(value.avgScore)}/${renderValue(
-                  value.maxScore
-                )} (${renderValue(value.avgScorePercentage, '%')})`}
+                title={tooltipTitle}
                 getPopupContainer={(triggerNode) => triggerNode}
               >
                 <Row type="flex" justify="center">

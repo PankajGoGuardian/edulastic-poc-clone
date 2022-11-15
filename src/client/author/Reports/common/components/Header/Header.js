@@ -82,7 +82,7 @@ const CustomizedHeaderWrapper = ({
       (item) => item.key !== 'data-warehouse-reports'
     )
   }
-  if (!showPerformanceByRubricsReports) {
+  if (!showPerformanceByRubricsReports || isSharedReport) {
     filterNavigationItems = filterNavigationItems.filter(
       (item) => item.key !== 'performance-by-rubric-criteria'
     )
@@ -107,11 +107,12 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ))
     : null
-
+  // todo: replace routes titles with constant values.
   const hideShareIcon =
     title === 'Engagement Summary' ||
     title === 'Activity by School' ||
-    title === 'Activity by Teacher'
+    title === 'Activity by Teacher' ||
+    title === 'Performance by Rubric Criteria'
   const hideDownloadIcon = title === 'Engagement Summary'
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs

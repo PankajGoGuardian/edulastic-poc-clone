@@ -19,6 +19,7 @@ import {
   uniq,
   isEmpty,
   isNaN,
+  isArray,
 } from 'lodash'
 import produce from 'immer'
 import { questionType, questionTitle } from '@edulastic/constants'
@@ -536,13 +537,19 @@ function* saveQuestionSaga({
       itemLevelScoring = false,
       multipartItem = false,
       _id: itemDetailId = '',
+      rows = [],
     } = itemDetail
+
+    const isV1Multipart = isArray(rows)
+      ? rows.some((row) => row.isV1Multipart)
+      : false
+
     const qIndex = getQindex(question?.id, itemDetail)
 
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem,
+      multipartItem || isV1Multipart,
       itemDetailId,
       qIndex
     )
@@ -575,7 +582,7 @@ function* saveQuestionSaga({
           const [hasInvalidScore, invalidScoreErrMsg] = validateScore(
             _question,
             itemLevelScoring,
-            multipartItem,
+            multipartItem || isV1Multipart,
             itemDetailId,
             questionIndex
           )

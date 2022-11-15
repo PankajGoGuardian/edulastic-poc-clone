@@ -27,6 +27,7 @@ import {
   groupBy,
   cloneDeep,
   round,
+  isArray,
 } from 'lodash'
 import { captureSentryException, notification } from '@edulastic/common'
 import {
@@ -810,11 +811,17 @@ function* correctItemUpdateSaga({ payload }) {
     const testItems = get(classResponse, 'data.originalItems', [])
     const studentResponse = yield select((state) => state.studentResponse)
     const testItem = testItems.find((t) => t._id === testItemId) || {}
-    const { itemLevelScoring = false, multipartItem = false } = testItem || {}
+    const { itemLevelScoring = false, multipartItem = false, rows } =
+      testItem || {}
+
+    const isV1Multipart = isArray(rows)
+      ? rows.some((row) => row.isV1Multipart)
+      : false
+
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem
+      multipartItem || isV1Multipart
     )
 
     if (isIncomplete) {
@@ -1584,6 +1591,7 @@ export const isItemVisibiltySelector = createSelector(
       return true
     }
     // No key called testContentVisibility ?
+    // eslint-disable-next-line no-prototype-builtins
     if (!additionalData?.hasOwnProperty('testContentVisibility')) {
       return true
     }

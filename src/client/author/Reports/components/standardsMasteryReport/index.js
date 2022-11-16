@@ -38,7 +38,7 @@ const links = [
     title: 'Performance By Rubric Criteria',
     thumbnail: PerformanceByRubricCriteria,
     location: '/author/reports/performance-by-rubric-criteria',
-    description: `View the performance of students on the rubric's criteria assessed on one or more tests. Can be filtered by individual, class, or group.`,
+    description: `View the rubric average and distribution of responses on the rubric's criteria assessed on one or more tests. Can be filtered by individual, class, or group.`,
   },
 ]
 

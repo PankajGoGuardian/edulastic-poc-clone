@@ -55,6 +55,10 @@ const getTableColumns = (
     )
     _columns[compareByIdx].title = selectedCompareBy.title
     _columns[compareByIdx].render = (data) => data || '-'
+    _columns[compareByIdx].sorter = (a, b) =>
+      (a.rowName || '')
+        .toLowerCase()
+        .localeCompare((b.rowName || '').toLowerCase())
 
     Object.assign(
       _columns.find((col) => col.dataIndex === 'averageRatingPoints'),
@@ -83,6 +87,10 @@ const getTableColumns = (
             </TableTooltipWrapper>
           )
         },
+        sorter: (a, b) =>
+          showPerc
+            ? a.averageRatingPercPoints - b.averageRatingPercPoints
+            : a.averageRatingPoints - b.averageRatingPoints,
       }
     )
 

@@ -896,6 +896,7 @@ const StandardsMasteryReportFilters = ({
                 data={rubricsList}
                 prefix="Rubric"
                 showPrefixOnSelected={false}
+                maxWidth={295}
               />
             </StyledDropDownContainer>
           ) : (

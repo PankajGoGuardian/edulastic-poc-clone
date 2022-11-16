@@ -174,7 +174,10 @@ const StyledDiv = styled.div`
 const StyledControlDropDown = styled(ControlDropDown)`
   max-height: 250px;
   overflow: auto;
+  width: ${(props) => props.maxWidth}px;
   .ant-dropdown-menu-item {
+    overflow: hidden;
+    text-overflow: ellipsis;
     padding: 4px 12px;
     &:hover {
       background-color: ${themeColorBlue};

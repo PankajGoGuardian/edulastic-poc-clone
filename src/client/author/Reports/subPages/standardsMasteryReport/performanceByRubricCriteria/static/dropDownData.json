@@ -1,7 +1,7 @@
 {
   "analyseByData": [
-    { "key": "score", "title": "Score %" },
-    { "key": "rawScore", "title": "Raw Score" }
+    { "key": "rawScore", "title": "Raw Score" },
+    { "key": "score", "title": "Score %" }
   ],
   "compareByData": [
     { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },

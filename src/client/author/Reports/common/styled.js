@@ -872,6 +872,7 @@ export const SecondaryFilterRow = styled(Row).attrs((props) => ({
 export const StyledSignedStackedBarChartContainer = styled.div`
   padding: 10px;
   position: relative;
+  z-index: 2;
 
   .navigator-left {
     left: 5px;

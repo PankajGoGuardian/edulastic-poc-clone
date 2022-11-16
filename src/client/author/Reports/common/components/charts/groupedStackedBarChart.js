@@ -98,6 +98,7 @@ export const GroupedStackedBarChart = ({
     x: 0,
     y: 0,
     width: 0,
+    height: 0,
   })
 
   useEffect(() => {
@@ -105,7 +106,7 @@ export const GroupedStackedBarChart = ({
 
     if (!tooltip) return
     const tooltipHeight = tooltip.getBoundingClientRect().height
-    const tooltipWidth = tooltip.getBoundingClientRect().width
+
     const spaceForLittleTriangle = 15
 
     tooltip.style = `
@@ -114,8 +115,8 @@ export const GroupedStackedBarChart = ({
     }px);
       pointer-events: none;  
       position: absolute;
-      top: -${tooltipHeight + spaceForLittleTriangle}px;
-      left: -${tooltipWidth / 2 - hoveredBarDimensions?.width / 2}px;
+      top: -${tooltipHeight / 2 - hoveredBarDimensions.height / 2}px;
+      left: ${hoveredBarDimensions?.width + spaceForLittleTriangle}px;
       transition: all 400ms ease 0s;
     `
   }, [hoveredBarDimensions])
@@ -137,26 +138,28 @@ export const GroupedStackedBarChart = ({
     [pagination, data]
   )
 
-  const onBarMouseOver = (index, shouldUpdateHoveredBar = false) => (event) => {
+  const onBarMouseOver = (index) => (event) => {
     setBarIndex(index)
-    if (!isEmpty(event) && shouldUpdateHoveredBar) {
+    if (!isEmpty(event)) {
       let d
-      // To handle updating tooltip position when the label on top of the bar is hovered.
+      // To handle updating tooltip position when the labels are hovered.
       // the label does not contain x,y coordinate relative to chart container.
       // label's parent element contains x,y coordinate relative to chart container.
       if (!isEmpty(event.target)) {
-        const attributes = event?.target?.parentNode?.attributes
-        const width = +attributes.width.nodeValue
+        const attributes = event?.target?.attributes
+        const width = 45
         d = {
           x: +attributes.x.nodeValue - width / 2,
           y: +attributes.y.nodeValue,
           width,
+          height: 0, // check again
         }
       } else {
         d = {
           x: event?.x,
           y: event?.y,
           width: event?.width,
+          height: event?.height,
         }
       }
       setHoveredBarDimensions(d)
@@ -320,6 +323,11 @@ export const GroupedStackedBarChart = ({
               <StyledCustomChartTooltipDark
                 getJSX={getTooltipJSX}
                 barIndex={barIndex}
+                style={{
+                  left: '-15px',
+                  bottom: '50%',
+                  transform: 'rotate(90deg)',
+                }}
               />
             }
           />
@@ -334,7 +342,7 @@ export const GroupedStackedBarChart = ({
                 unit={bdItem.unit}
                 barSize={45}
                 maxBarSize={45}
-                onMouseOver={onBarMouseOver(bdIndex, true)}
+                onMouseOver={onBarMouseOver(bdIndex)}
                 onMouseLeave={onBarMouseLeave(bdIndex)}
               >
                 <LabelList

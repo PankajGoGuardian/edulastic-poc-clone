@@ -11,21 +11,25 @@ import {
   ColorBandRow,
 } from '../../../../../common/styled'
 
-const TooltipRowItem = ({ title = '', value = '' }) => (
+const TooltipRowItem = ({ title = '', value = '', fontSize = '14px' }) => (
   <TooltipRow>
-    <TooltipRowTitle>{`${title}`}</TooltipRowTitle>
-    <TooltipRowValue>{value}</TooltipRowValue>
+    <TooltipRowTitle style={{ fontSize }}>{`${title}`}</TooltipRowTitle>
+    <TooltipRowValue style={{ fontSize }}>{value}</TooltipRowValue>
   </TooltipRow>
 )
 
 const ColorBandItem = ({ name, color, highlight }) => {
   let style = {}
+  let colorCircleHeight = '22px'
   if (highlight) {
-    style = { fontSize: '15px', fontWeight: 'bold' }
+    style = { fontSize: '16px', fontWeight: 'bold' }
+  } else {
+    style = { fontSize: '12px' }
+    colorCircleHeight = '16px'
   }
   return (
     <ColorBandRow>
-      <ColorCircle color={color} />
+      <ColorCircle color={color} height={colorCircleHeight} />
       <TooltipRowValue style={style}>{name}</TooltipRowValue>
     </ColorBandRow>
   )
@@ -41,17 +45,16 @@ const getTooltipJSX = (payload, barIndex) => {
     const rating = ratings.filter((r) => r.id === dataKey)[0]
     colorBandComponent = (
       <>
-        {ratings
-          .map((band) => {
-            const color = payload.filter((r) => r.dataKey === band.id)[0].fill
-            return (
-              <ColorBandItem
-                color={color}
-                name={`${band.points} | ${band.name}`}
-              />
-            )
-          })
-          .reverse()}
+        {ratings.map((band) => {
+          const color = payload.filter((r) => r.dataKey === band.id)[0].fill
+          return (
+            <ColorBandItem
+              key={band.id}
+              color={color}
+              name={`${band.points} | ${band.name}`}
+            />
+          )
+        })}
       </>
     )
     if (isEmpty(rating)) return null
@@ -60,8 +63,10 @@ const getTooltipJSX = (payload, barIndex) => {
         <ColorBandItem
           color={barData.fill}
           name={`${rating.points} | ${rating.name}`}
+          highlight
         />
         <TooltipRowItem
+          fontSize="14px"
           title="Responses:"
           value={`${responsesByRating[dataKey]}/${barData.payload.totalResponsesPerCriteria}`}
         />

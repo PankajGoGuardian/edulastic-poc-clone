@@ -60,27 +60,27 @@ export const getDenormalizedChartData = (chartData, rubric) => {
       }
     })
     .flatMap((m) =>
-      m.criteria.ratings.map((r, i) => {
-        const totalResponsesPerRating = m.responsesByRating[r.id] || 0
-        const colorBand = getColorBandBySize(
-          m.criteria.ratings.length
-        ).reverse()
-        const fill = colorBand[i]
-        return {
-          ...m,
-          avgScorePerCriteria: round(m.avgScorePerCriteria, 2),
-          ratingId: r.id,
-          ratingName: r.name,
-          totalResponsesPerRating,
-          responsePercentagePerRating: percentage(
+      m.criteria.ratings
+        .map((r, i) => {
+          const totalResponsesPerRating = m.responsesByRating[r.id] || 0
+          const colorBand = getColorBandBySize(m.criteria.ratings.length)
+          const fill = colorBand[i]
+          return {
+            ...m,
+            avgScorePerCriteria: round(m.avgScorePerCriteria, 2),
+            ratingId: r.id,
+            ratingName: r.name,
             totalResponsesPerRating,
-            m.totalResponsesPerCriteria,
-            true
-          ),
-          rating: r,
-          fill,
-        }
-      })
+            responsePercentagePerRating: percentage(
+              totalResponsesPerRating,
+              m.totalResponsesPerCriteria,
+              true
+            ),
+            rating: r,
+            fill,
+          }
+        })
+        .reverse()
     )
   return denormalizedData
 }

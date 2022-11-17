@@ -476,7 +476,7 @@ export const ColorBandRow = styled.div`
 export const ColorCircle = styled.div`
   border-radius: 50%;
   border: 2px solid #ffffff;
-  height: 20px;
+  height: ${({ height }) => height || '20px'};
   aspect-ratio: 1/1;
   background-color: ${({ color }) => color || '#ffffff'};
 `

@@ -127,6 +127,7 @@ import {
   setFreezeTestSettings,
   setRegradeFirestoreDocId,
 } from '../TestPage/ducks'
+import { getQindex } from '../QuestionEditor/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -818,10 +819,14 @@ function* correctItemUpdateSaga({ payload }) {
       ? rows.some((row) => row.isV1Multipart)
       : false
 
+    const qIndex = getQindex(question?.id, testItem)
+
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem || isV1Multipart
+      multipartItem || isV1Multipart,
+      testItemId,
+      qIndex
     )
 
     if (isIncomplete) {

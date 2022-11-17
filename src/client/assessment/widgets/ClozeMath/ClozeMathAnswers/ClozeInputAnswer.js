@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import { Collapse, Icon } from 'antd'
+import { sanitizeString } from '@edulastic/common'
 import {
   greyThemeLighter,
   greyThemeDark2,
@@ -34,7 +35,8 @@ const AnswerContainer = styled.div`
 class ClozeInputAnswer extends Component {
   onChangeHandler = (value, answerId) => {
     const { onChange: changeAnswers } = this.props
-    changeAnswers({ value, answerId })
+    const _value = sanitizeString(value)
+    changeAnswers({ value: _value, answerId })
   }
 
   render() {
@@ -84,7 +86,7 @@ class ClozeInputAnswer extends Component {
                     minWidth: '140px',
                     minHeight: '35px',
                   }}
-                  value={answer.value}
+                  value={sanitizeString(answer.value)}
                   onChange={(e) =>
                     this.onChangeHandler(e.target.value, answer.id)
                   }

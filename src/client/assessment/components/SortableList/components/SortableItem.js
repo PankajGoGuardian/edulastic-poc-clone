@@ -1,7 +1,11 @@
 import React, { memo, useContext } from 'react'
 import { SortableElement } from 'react-sortable-hoc'
 import { red, greyThemeDark2 } from '@edulastic/colors'
-import { FlexContainer, LanguageContext } from '@edulastic/common'
+import {
+  FlexContainer,
+  LanguageContext,
+  sanitizeString,
+} from '@edulastic/common'
 import { appLanguages } from '@edulastic/constants'
 
 import { SortableItemContainer } from '../../QuillSortableList/styled/SortableItemContainer'
@@ -13,6 +17,7 @@ const SortableItem = SortableElement(
   ({ cyIndex, fontSize, columns = 1, value, dirty, onRemove, onChange }) => {
     const { currentLanguage: authLanguage } = useContext(LanguageContext)
     const hideDelete = appLanguages.LANGUAGE_EN !== authLanguage
+    const _value = sanitizeString(value)
 
     return (
       <SortableItemContainer
@@ -29,7 +34,7 @@ const SortableItem = SortableElement(
                 data-cy={`edit${cyIndex}`}
                 type="text"
                 dirty={dirty}
-                value={value}
+                value={_value}
                 onChange={onChange}
               />
             </div>

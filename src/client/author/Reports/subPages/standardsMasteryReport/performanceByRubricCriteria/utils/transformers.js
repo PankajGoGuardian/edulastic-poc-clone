@@ -8,6 +8,12 @@ export const getDenormalizedChartData = (chartData, rubric) => {
 
   const { data: metrics } = chartData
 
+  // sorting rubric criteria ratings by descending order of the rating points
+  // this helps in showing correct order of ratings in tooltip
+  rubric.criteria.forEach((criteria) => {
+    criteria.ratings = criteria.ratings.sort((a, b) => b.points - a.points)
+  })
+
   const denormalizedData = rubric.criteria
     .map((ct) => {
       const metric = metrics.find((m) => m.criteriaId === ct.id)

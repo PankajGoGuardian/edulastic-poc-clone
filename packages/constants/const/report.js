@@ -21,6 +21,7 @@ const reportNavType = {
   STANDARDS_PERFORMANCE_SUMMARY: 'standards-performance-summary',
   STANDARDS_GRADEBOOK: 'standards-gradebook',
   STANDARDS_PROGRESS: 'standards-progress',
+  PERFORMANCE_BY_RUBRICS_CRITERIA: 'performance-by-rubric-criteria',
   STUDENT_PROFILE_SUMMARY: 'student-profile-summary',
   STUDENT_MASTERY_PROFILE: 'student-mastery-profile',
   STUDENT_ASSESSMENT_PROFILE: 'student-assessment-profile',

@@ -476,7 +476,7 @@ export const ColorBandRow = styled.div`
 export const ColorCircle = styled.div`
   border-radius: 50%;
   border: 2px solid #ffffff;
-  height: 20px;
+  height: ${({ height }) => height || '20px'};
   aspect-ratio: 1/1;
   background-color: ${({ color }) => color || '#ffffff'};
 `
@@ -571,6 +571,7 @@ export const StyledSignedBarContainer = styled.div`
 export const StyledDropDownContainer = styled(Col)`
   padding: ${({ padding }) => padding || 'unset'};
   flex: ${({ flex, autoFlex }) => flex ?? (autoFlex ? '1 1 0' : '0 0 auto')};
+  max-width: ${({ maxWidth }) => maxWidth || 'inherit'};
   .ant-btn.ant-dropdown-trigger {
     white-space: nowrap;
     overflow: hidden;
@@ -865,5 +866,34 @@ export const SecondaryFilterRow = styled(Row).attrs((props) => ({
   & input,
   button {
     ${(p) => (p.fieldHeight ? `height: ${p.fieldHeight} !important;` : '')};
+  }
+`
+
+export const StyledSignedStackedBarChartContainer = styled.div`
+  padding: 10px;
+  position: relative;
+  z-index: 2;
+
+  .navigator-left {
+    left: 5px;
+    top: 50%;
+  }
+
+  .navigator-right {
+    right: 5px;
+    top: 50%;
+  }
+
+  .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
+  .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
+    stroke-opacity: 0;
+  }
+
+  .recharts-yAxis {
+    .recharts-text {
+      tspan {
+        white-space: pre;
+      }
+    }
   }
 `

@@ -12,6 +12,7 @@ import { SubHeader } from '../../common/components/Header'
 import StandardsPerfromance from './standardsPerformance'
 import StandardsGradebook from './standardsGradebook'
 import StandardsProgress from './standardsProgress'
+import PerformanceByRubricCriteria from './performanceByRubricCriteria'
 import StandardsMasteryReportFilters from './common/components/Filters'
 import ShareReportModal from '../../common/components/Popups/ShareReportModal'
 import { ControlDropDown } from '../../common/components/widgets/controlDropDown'
@@ -210,6 +211,7 @@ const StandardsMasteryReportContainer = (props) => {
   const demographicsRequired = [
     'standards-gradebook',
     'standards-progress',
+    'performance-by-rubric-criteria',
   ].includes(loc)
   useEffect(() => {
     if (!demographicsRequired) {
@@ -336,6 +338,7 @@ const StandardsMasteryReportContainer = (props) => {
           exact
           path="/author/reports/standards-gradebook"
           render={(_props) => {
+            // FIXME Don't set state directly in render function
             setShowHeader(true)
             return (
               <StandardsGradebook
@@ -359,6 +362,25 @@ const StandardsMasteryReportContainer = (props) => {
             return (
               <StandardsProgress
                 {..._props}
+                pageTitle={loc}
+                toggleFilter={toggleFilter}
+                settings={settings}
+                ddfilter={ddfilter}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/performance-by-rubric-criteria"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PerformanceByRubricCriteria
+                {..._props}
+                isPrinting={isPrinting}
                 pageTitle={loc}
                 toggleFilter={toggleFilter}
                 settings={settings}

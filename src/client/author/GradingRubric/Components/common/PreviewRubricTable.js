@@ -114,6 +114,7 @@ const PreviewRubricTable = ({
     handleChange({
       score: calculateScore(data, selectedData),
       rubricFeedback: selectedData,
+      rubricId: data._id,
     })
   }
 

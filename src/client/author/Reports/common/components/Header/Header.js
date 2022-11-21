@@ -15,6 +15,7 @@ import HeaderNavigation from './HeaderNavigation'
 import { getIsProxiedByEAAccountSelector } from '../../../../../student/Login/ducks'
 
 import navigation from '../../static/json/navigation.json'
+import { isPerformanceByRubricsReportEnabled } from '../../../../src/selectors/user'
 
 const dataWarehouseReportTypes = navigation.navigation[
   'data-warehouse-reports'
@@ -31,6 +32,7 @@ const CustomizedHeaderWrapper = ({
   isCliUser,
   showCustomReport,
   showDataWarehouseReport,
+  showPerformanceByRubricsReports,
   showSharedReport,
   title,
   isSharedReport,
@@ -80,6 +82,11 @@ const CustomizedHeaderWrapper = ({
       (item) => item.key !== 'data-warehouse-reports'
     )
   }
+  if (!showPerformanceByRubricsReports || isSharedReport) {
+    filterNavigationItems = filterNavigationItems.filter(
+      (item) => item.key !== 'performance-by-rubric-criteria'
+    )
+  }
 
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
@@ -100,11 +107,12 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ))
     : null
-
+  // todo: replace routes titles with constant values.
   const hideShareIcon =
     title === 'Engagement Summary' ||
     title === 'Activity by School' ||
-    title === 'Activity by Teacher'
+    title === 'Activity by Teacher' ||
+    title === 'Performance by Rubric Criteria'
   const hideDownloadIcon = title === 'Engagement Summary'
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
@@ -228,6 +236,7 @@ const enhance = compose(
   withNamespaces('header'),
   connect((state) => ({
     isProxiedByEAAccount: getIsProxiedByEAAccountSelector(state),
+    showPerformanceByRubricsReports: isPerformanceByRubricsReportEnabled(state),
   }))
 )
 export default enhance(CustomizedHeaderWrapper)

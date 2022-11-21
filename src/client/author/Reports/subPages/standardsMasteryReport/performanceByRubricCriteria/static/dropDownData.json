@@ -1,0 +1,18 @@
+{
+  "analyseByData": [
+    { "key": "rawScore", "title": "Raw Score" },
+    { "key": "score", "title": "Score %" }
+  ],
+  "compareByData": [
+    { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },
+    { "key": "teacher", "title": "Teacher", "hiddenFromRole": ["teacher"] },
+    { "key": "class", "title": "Class" },
+    { "key": "student", "title": "Student" },
+    { "key": "race", "title": "Race" },
+    { "key": "gender", "title": "Gender" },
+    { "key": "frlStatus", "title": "FRL Status" },
+    { "key": "ellStatus", "title": "ELL Status" },
+    { "key": "iepStatus", "title": "IEP Status" },
+    { "key": "hispanicEthnicity", "title": "Hispanic Ethnicity" }
+  ]
+}

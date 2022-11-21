@@ -126,6 +126,20 @@
       "group": "standardsMasteryReport",
       "groupTitle": "Standards Mastery Report"
     },
+    "performance-by-rubric-criteria": {
+      "title": "Performance by Rubric Criteria",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "PERFORMANCE BY RUBRIC CRITERIA"
+        }
+      ],
+      "group": "standardsMasteryReport",
+      "groupTitle": "Standards Mastery Report"
+    },
     "performance-over-time": {
       "title": "Performance Over Time",
       "breadcrumb": [
@@ -385,6 +399,11 @@
         "key": "standards-progress",
         "title": "Standards Progress",
         "location": "/author/reports/standards-progress"
+      },
+      {
+        "key": "performance-by-rubric-criteria",
+        "title": "Performance by Rubric Criteria",
+        "location": "/author/reports/performance-by-rubric-criteria"
       }
     ],
     "multipleAssessmentReport": [

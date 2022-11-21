@@ -89,7 +89,7 @@ const EssayPlainTextPreview = ({
 
   useEffect(() => {
     if (isString(userAnswer)) {
-      setText(userAnswer)
+      setText(sanitizeString(userAnswer))
     } else {
       setText('')
       saveAnswer('')

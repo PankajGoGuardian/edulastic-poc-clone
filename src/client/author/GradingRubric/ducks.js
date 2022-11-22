@@ -116,10 +116,7 @@ function* updateRubricSaga({ payload }) {
     if (payload.changes !== 'SHARED_TYPE') {
       yield put(
         setRubricIdAction({
-          metadata: {
-            _id: payload.rubricData._id,
-            name: payload.rubricData.name,
-          },
+          metadata: { _id: data._id, name: data.name },
           maxScore: payload.maxScore,
         })
       )

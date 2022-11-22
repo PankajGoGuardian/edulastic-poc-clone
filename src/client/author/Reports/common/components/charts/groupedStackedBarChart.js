@@ -277,6 +277,7 @@ export const GroupedStackedBarChart = ({
         hidden={!chartNavRightVisibility}
       />
       <CustomXAxisTickTooltipContainer
+        data-testid="xAxis-tooltip"
         x={xAxisTickTooltipData.x}
         y={xAxisTickTooltipData.y}
         visibility={xAxisTickTooltipData.visibility}

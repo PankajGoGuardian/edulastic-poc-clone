@@ -17,7 +17,7 @@ import {
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { get, round } from 'lodash'
-import { IconBookmark } from '@edulastic/icons'
+import { IconBookmark, IconSend } from '@edulastic/icons'
 import { Tooltip } from '../../../../common/utils/helpers'
 import {
   Header,
@@ -60,6 +60,7 @@ const PlayerHeader = ({
   settings,
   headerRef,
   isMobile,
+  isLast,
   moveToPrev,
   moveToNext,
   overlayStyle,
@@ -204,12 +205,12 @@ const PlayerHeader = ({
                   </Tooltip>
                   <Tooltip
                     placement="top"
-                    title="Next"
+                    title={`${isLast ? 'Submit' : 'Next'}`}
                     overlayStyle={overlayStyle}
                   >
                     <ControlBtn
                       data-cy="next"
-                      icon="right"
+                      icon={isLast ? null : 'right'}
                       onClick={(e) => {
                         moveToNext()
                         e.target.blur()
@@ -226,8 +227,22 @@ const PlayerHeader = ({
                         )
                           moveToNext()
                       }}
-                      style={{ marginLeft: '5px' }}
-                    />
+                      style={{
+                        marginLeft: '5px',
+                        width: '90px',
+                        alignItems: 'center',
+                        display: 'flex',
+                      }}
+                    >
+                      {isLast && (
+                        <IconSend
+                          style={{
+                            marginRight: '10px',
+                          }}
+                        />
+                      )}
+                      {isLast ? 'SUBMIT' : 'NEXT'}
+                    </ControlBtn>
                   </Tooltip>
                 </MainActionWrapper>
                 <FlexContainer style={{ marginLeft: '28px' }}>

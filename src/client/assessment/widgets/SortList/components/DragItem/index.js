@@ -22,6 +22,7 @@ const DragItem = ({
   isPrintPreview,
   flag,
   checkAnswerInProgress,
+  hideEvaluation,
 }) => {
   const showPreview =
     (previewTab === CHECK || previewTab === SHOW) && !checkAnswerInProgress
@@ -52,6 +53,7 @@ const DragItem = ({
         stemNumeration={stemNumeration}
         smallSize={smallSize}
         isPrintPreview={isPrintPreview}
+        hideEvaluation={hideEvaluation}
       />
     </DragDrop.DragItem>
   ) : (

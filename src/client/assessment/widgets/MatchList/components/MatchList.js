@@ -25,6 +25,7 @@ const MatchList = ({
   disableResponse,
   previewTab,
   isAnswerModifiable,
+  hideEvaluation,
 }) => {
   const onDropHandler = ({ data }, index) => {
     onDrop(data, { flag: 'ans', index })
@@ -102,7 +103,9 @@ const MatchList = ({
               <Separator smallSize={smallSize} />
               <DropContainer
                 index={i}
-                noBorder={showEvaluate && !!ans[list[i].value]}
+                noBorder={
+                  showEvaluate && !!ans[list[i].value] && !hideEvaluation
+                }
                 drop={onDropHandler}
                 style={choiceColStyle}
               >

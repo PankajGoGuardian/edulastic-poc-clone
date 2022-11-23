@@ -46,6 +46,7 @@ const releaseScore = ({
 }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'put',
       url: `${prefix}/${assignmentId}/test/${testId}/group/${classId}/releaseScore`,
       data: { releaseScore: _releaseScore },
@@ -56,6 +57,7 @@ const releaseScore = ({
 const markAsDone = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'put',
       url: `${prefix}/${assignmentId}/mark-as-done?groupId=${classId}&testId=${testId}`,
     })
@@ -64,6 +66,7 @@ const markAsDone = ({ assignmentId, classId, testId }) =>
 const openAssignment = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'put',
       url: `${prefix}/${assignmentId}/open?groupId=${classId}&testId=${testId}`,
     })
@@ -72,6 +75,7 @@ const openAssignment = ({ assignmentId, classId, testId }) =>
 const closeAssignment = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'put',
       url: `${prefix}/${assignmentId}/close?groupId=${classId}&testId=${testId}`,
     })
@@ -98,6 +102,7 @@ const markSubmitted = ({ assignmentId, classId, students }) =>
 const togglePause = ({ assignmentId, classId, value, testId }) =>
   api
     .callApi({
+      useSlowApi: true,
       method: 'put',
       url: `${prefix}/${assignmentId}/toggle-pause?groupId=${classId}&value=${value}&testId=${testId}`,
     })

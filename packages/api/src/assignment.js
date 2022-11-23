@@ -36,6 +36,7 @@ const update = (id, data) =>
 const remove = ({ assignmentId, classId, testId }) =>
   api
     .callApi({
+      useSlowApi: true,
       url: `${prefix}/${assignmentId}/group/${classId}?testId=${testId}`,
       method: 'delete',
     })

@@ -336,7 +336,9 @@ const TableList = ({
       >
         <div>
           <MoreOption
-            onClick={() => handleBulkAction('downloadGrades')}
+            onClick={() => {
+              if (!isProxiedByEAAccount) handleBulkAction('downloadGrades')
+            }}
             disabled={isProxiedByEAAccount}
           >
             Download Grades
@@ -353,7 +355,9 @@ const TableList = ({
       >
         <div>
           <MoreOption
-            onClick={() => handleBulkAction('downloadResponses')}
+            onClick={() => {
+              if (!isProxiedByEAAccount) handleBulkAction('downloadResponses')
+            }}
             disabled={isProxiedByEAAccount}
           >
             Download Responses

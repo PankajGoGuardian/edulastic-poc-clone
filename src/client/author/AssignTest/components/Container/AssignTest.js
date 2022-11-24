@@ -269,9 +269,6 @@ class AssignTest extends React.Component {
           testIds: location?.state?.testIds,
         })
       }
-      if (isEmpty(assignments) && testId) {
-        fetchAssignments(testId)
-      }
     } else {
       const premiumSettings = premium
         ? {

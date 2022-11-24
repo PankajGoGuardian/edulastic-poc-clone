@@ -135,14 +135,16 @@ export const getModuleAssignedClassesByIdSelector = (state, props) => {
     commonAssignmentsFlattenedClass,
     'classId'
   )
+  const playlistTestIdsById = keyBy(playlistTestIds)
   for (const [key, value] of Object.entries(assignmentsByClassId)) {
     const assignedTestIds = value.map((item) => item.testId)
-    const isAllAssigned = playlistTestIds.every((testId) =>
-      assignedTestIds.includes(testId)
+    const assignedTestIdsById = keyBy(assignedTestIds)
+    const isAllAssigned = playlistTestIds.every(
+      (testId) => !!assignedTestIdsById[testId]
     )
     const isNoneAssigned =
       !isAllAssigned &&
-      assignedTestIds.some((item) => playlistTestIds.includes(item))
+      !assignedTestIds.some((item) => playlistTestIdsById[item])
     result[key] = isAllAssigned ? 'ALL' : isNoneAssigned ? 'NONE' : 'PARTIAL'
   }
   return result

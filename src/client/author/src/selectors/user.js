@@ -91,6 +91,14 @@ export const getUserThumbnail = createSelector(
   (state) => state.thumbnail
 )
 
+export const getIsPublisherDistrictSelector = createSelector(
+  stateSelector,
+  (state) =>
+    state.user?.orgData?.districts?.find((obj) =>
+      obj.districtPermissions.includes('publisher')
+    ) || false
+)
+
 export const getCurrentTerm = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.defaultTermId')
 )

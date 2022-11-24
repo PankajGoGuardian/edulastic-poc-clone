@@ -189,6 +189,10 @@ export function* receiveTestActivitySaga({ payload }) {
       if (page === 0) {
         leftOverStudents = _leftOverStudents || []
         additionalData = _data.additionalData
+        additionalData = {
+          ...additionalData,
+          assignmentId: classResponseParams.assignmentId,
+        }
         gradebookData.status = additionalData.status
         gradebookData.enrollmentStatus = enrollmentStatus
         gradebookData.students = students

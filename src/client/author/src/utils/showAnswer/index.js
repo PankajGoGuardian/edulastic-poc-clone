@@ -1,5 +1,7 @@
+import * as questionTypes from '@edulastic/constants/const/questionType'
 import evaluator from '../evaluators'
 import { replaceVariables } from '../../../../assessment/utils/variables'
+import { getClozeMathUnits, getMathUnits } from '../evalution'
 
 const createShowAnswerResult = async (questions, answers, itemId = '') => {
   const questionIds = Object.keys(questions)
@@ -21,11 +23,20 @@ const createShowAnswerResult = async (questions, answers, itemId = '') => {
         }
       }
       const { validation, template } = replaceVariables(question, [], false)
+      const payload = {
+        userResponse: answer,
+        validation,
+        questionId: id,
+        template,
+      }
 
-      const { evaluation } = await evaluator(
-        { userResponse: answer, validation, questionId: id, template },
-        question.type
-      )
+      if (question.isUnits && question.isMath) {
+        payload.isUnitAllowedUnits = getMathUnits(question)
+      } else if (question.type === questionTypes.EXPRESSION_MULTIPART) {
+        payload.isUnitAllowedUnits = getClozeMathUnits(question)
+      }
+
+      const { evaluation } = await evaluator(payload, question.type)
       results[evaluationId] = evaluation
     }
   }

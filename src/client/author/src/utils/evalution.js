@@ -16,7 +16,7 @@ import { replaceVariables } from '../../../assessment/utils/variables'
 
 const { FIRST_CORRECT_MUST, ALL_CORRECT_MUST } = multipartEvaluationTypes
 
-const getMathUnits = (item) => {
+export const getMathUnits = (item) => {
   if (!item.isMath || !item.isUnits) {
     return ''
   }
@@ -38,7 +38,7 @@ const getMathUnits = (item) => {
     .filter((x) => x)
 }
 
-const getClozeMathUnits = (item) => {
+export const getClozeMathUnits = (item) => {
   const mathUnitsResponses = get(item, 'responseIds.mathUnits', [])
   const mathUnitInputs = get(
     item,

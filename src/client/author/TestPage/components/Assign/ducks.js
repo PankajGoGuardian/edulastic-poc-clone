@@ -681,7 +681,9 @@ function* fetchPlaylistAssignmentsSaga({ payload }) {
     yield put(setPlaylistAssignmentsAction(result))
   } catch (error) {
     console.log(error)
-    notification({ msg: 'Loading assignments failed' })
+    notification({
+      msg: error.response?.data?.message || 'Something went wrong',
+    })
   }
 }
 

@@ -397,6 +397,7 @@ export function useTabNavigationCounterEffect({
   userId,
   onTimeInBlurChange = () => {},
   blurTimeAlreadySaved,
+  setTestTab,
 }) {
   const inFocusRef = useRef(true)
   const idleTimeoutRef = useRef(null)
@@ -423,6 +424,7 @@ export function useTabNavigationCounterEffect({
   useFocusHandler({
     enabled,
     onFocus: () => {
+      setTestTab(true)
       onTimeInBlurChange(totalTimeInBlur.current)
       inFocusRef.current = true
       window.sessionStorage.removeItem('totalTimeInBlur')
@@ -435,6 +437,7 @@ export function useTabNavigationCounterEffect({
       }
     },
     onBlur: () => {
+      setTestTab(false)
       console.log('on blur ', new Date())
       inFocusRef.current = false
       if (totalBlurTimeCounterIntervalRef.current) {
@@ -635,6 +638,7 @@ const AssessmentContainer = ({
 
   const hidePause = blockSaveAndContinue
   const [enteredIntoFullScreen, setEnteredIntoFullScreen] = useState(false)
+  const [isTestTab, setTestTab] = useState(true)
   const currentlyFullScreen = useFullScreenListener({
     enabled: restrictNavigationOut,
     assignmentId: assignmentObj?._id,
@@ -657,6 +661,7 @@ const AssessmentContainer = ({
       saveBlurTime(v)
     },
     blurTimeAlreadySaved,
+    setTestTab,
   })
 
   useEffect(() => {
@@ -1191,6 +1196,30 @@ const AssessmentContainer = ({
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
   }, 1000 * 30)
+
+  useEffect(() => {
+    /**
+     * When Anti-Cheating is on we are saving when student is coming out of full screen
+     */
+    console.log(
+      JSON.stringify(
+        {
+          autoSave,
+          currentAnswerValue,
+          prevAnswerValue: prevAnswerValue.current,
+          currentItem,
+          currentlyFullScreen,
+          isTestTab,
+        },
+        null,
+        2
+      )
+    )
+    if (autoSave && currentAnswerValue !== prevAnswerValue.current) {
+      prevAnswerValue.current = currentAnswerValue
+      saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
+    }
+  }, [currentlyFullScreen, isTestTab])
 
   useEffect(() => {
     const cb = (event) => {

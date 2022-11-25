@@ -236,6 +236,7 @@ module.exports = {
   playerSkinTypes: {
     edulastic: 'Edulastic',
     parcc: 'TestNav',
+    cambium: 'Cambium',
     sbac: 'SBAC',
     cmas: 'CMAS (CO)',
     casspp: 'CAASPP (CA)',
@@ -296,6 +297,7 @@ module.exports = {
     edulastic: 'edulastic',
     parcc: 'parcc',
     sbac: 'sbac',
+    cambium: 'sbac',
     cmas: 'parcc',
     casspp: 'sbac',
     testlet: 'testlet',
@@ -352,7 +354,15 @@ module.exports = {
     dc_assessments: 'parcc',
     drc: 'drc',
   },
-  TOP_ORDER_SKINS: ['edulastic', 'cmas', 'drc', 'quester', 'parcc', 'sbac'],
+  TOP_ORDER_SKINS: [
+    'edulastic',
+    'cambium',
+    'cmas',
+    'drc',
+    'quester',
+    'parcc',
+    'sbac',
+  ],
   languageCodes: {
     ENGLISH: 'en',
     SPANISH: 'es',

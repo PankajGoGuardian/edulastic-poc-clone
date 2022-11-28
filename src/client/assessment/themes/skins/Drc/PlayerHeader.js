@@ -16,6 +16,7 @@ import {
   IconCalculator,
   IconScratchPad,
   IconCloudUpload,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { Select } from 'antd'
@@ -79,6 +80,9 @@ const PlayerHeader = ({
   tool,
   isPremiumContentWithoutAccess = false,
   canShowPlaybackOptionTTS,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
 }) => {
   const {
     calcType,
@@ -148,6 +152,16 @@ const PlayerHeader = ({
                     blockNavigationToAnsweredQuestions
                   }
                 />
+                {canShowReferenceMaterial && (
+                  <ButtonWrapper
+                    active={isShowReferenceModal}
+                    onClick={openReferenceModal}
+                    title={t('common.test.referenceGuide')}
+                    disabled={isPremiumContentWithoutAccess}
+                  >
+                    <IconEduReferenceSheet color={header2.background} />
+                  </ButtonWrapper>
+                )}
                 {maxAnswerChecks > 0 && !hideCheckAnswer && (
                   <ButtonWrapper
                     hoverEffect

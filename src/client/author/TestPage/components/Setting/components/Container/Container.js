@@ -131,6 +131,7 @@ const {
   TEST_SETTINGS_SAVE_LIMIT,
   testSettingsOptions,
   docBasedSettingsOptions,
+  REF_MATERIAL_ALLOWED_SKIN_TYPES,
 } = testContants
 
 const { Option } = Select
@@ -691,10 +692,9 @@ class Setting extends Component {
   }
 
   get isReferenceMaterialAllowedForCurrentSkin() {
-    const { quester, edulastic } = playerSkinValues
+    const { edulastic } = playerSkinValues
     const { entity: { playerSkinType = edulastic } = {} } = this.props
-    const retval = playerSkinType === edulastic || playerSkinType === quester
-
+    const retval = REF_MATERIAL_ALLOWED_SKIN_TYPES.includes(playerSkinType)
     return retval
   }
 

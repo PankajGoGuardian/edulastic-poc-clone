@@ -12,6 +12,7 @@ import {
   IconLanguage,
   IconCloudUpload,
   IconCheck,
+  IconEduReferenceSheet,
 } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
 import { Tooltip } from '../../../../common/utils/helpers'
@@ -45,6 +46,9 @@ const ToolBar = ({
   checkAnswerInProgress,
   checkAnswer,
   answerChecksUsedForItem,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
@@ -101,6 +105,19 @@ const ToolBar = ({
           <IconCheck />
         </StyledButton>
       )}
+
+      {canShowReferenceMaterial && (
+        <Tooltip placement="top" title="Reference Guide">
+          <StyledButton
+            onClick={openReferenceModal}
+            active={isShowReferenceModal}
+            disabled={isPremiumContentWithoutAccess}
+          >
+            <IconEduReferenceSheet />
+          </StyledButton>
+        </Tooltip>
+      )}
+
       {calcType !== calculatorTypes.NONE && (
         <Tooltip placement="top" title="Calculator">
           <StyledButton

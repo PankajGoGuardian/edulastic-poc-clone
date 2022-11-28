@@ -95,6 +95,9 @@ const PlayerHeader = ({
   isBookmarked,
   bookmarks = [],
   defaultAP,
+  canShowReferenceMaterial,
+  isShowReferenceModal,
+  openReferenceModal,
   t,
 }) => {
   useEffect(() => {
@@ -300,6 +303,9 @@ const PlayerHeader = ({
                 isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
                 checkAnswer={checkAnswer}
                 answerChecksUsedForItem={answerChecksUsedForItem}
+                canShowReferenceMaterial={canShowReferenceMaterial}
+                isShowReferenceModal={isShowReferenceModal}
+                openReferenceModal={openReferenceModal}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

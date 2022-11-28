@@ -230,7 +230,6 @@ class AssignTest extends React.Component {
       this.updateAssignmentNew({
         startDate: moment(),
         endDate: moment().add('days', 7),
-        dueDate: moment().add('days', 7),
         playlistId: match.params.playlistId,
         playlistModuleId: match.params.moduleId,
         testVersionId: location?.state?.testVersionId,

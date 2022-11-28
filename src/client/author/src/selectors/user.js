@@ -10,6 +10,7 @@ const gridEditEnabledDistricts = {
   // DSST Public Schools district
   '5e4a3ce103b7ad09241750e4': true,
   '5ed1fff103b7ad09240966fd': true,
+  '61824414a8d6b600096ed825': true,
 }
 
 export const etsDistrict = '5e42a351a1ee9000081f7cda'

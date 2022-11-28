@@ -77,6 +77,7 @@ const ActionContainer = ({
   policy,
   searchAndAddStudents,
   enableStudentGroups,
+  isStudentListLoading = false,
   districtId,
   isCreateAssignmentModalVisible,
   toggleCreateAssignmentModal,
@@ -392,6 +393,12 @@ const ActionContainer = ({
     }
   }, [atlasId, cleverId, canvasCode, googleId, classStatus])
 
+  useEffect(() => {
+    if (!isStudentListLoading && isEmpty(studentsList)) {
+      handleAddMultipleStudent()
+    }
+  }, [isStudentListLoading])
+
   return (
     <>
       {infoModelVisible && (
@@ -602,6 +609,7 @@ export default connect(
     added: get(state, 'manageClass.added'),
     selectedStudent: get(state, 'manageClass.selectedStudent', []),
     studentsList: get(state, 'manageClass.studentsList', []),
+    isStudentListLoading: get(state, 'manageClass.loading', true),
     features: getUserFeatures(state),
     policy: getSchoolPolicy(state),
     enableStudentGroups: get(state, 'user.user.features.studentGroups'),

@@ -48,6 +48,7 @@ const TokenHighlightPreview = ({
   hideCorrectAnswer,
   mode,
   showAnswerScore,
+  hideEvaluation = false,
   t,
 }) => {
   const answerContextConfig = useContext(AnswerContext)
@@ -245,6 +246,10 @@ const TokenHighlightPreview = ({
       resultStyle = {}
     }
 
+    if (hideEvaluation) {
+      resultStyle = {}
+    }
+
     return resultStyle
   }
 
@@ -290,6 +295,9 @@ const TokenHighlightPreview = ({
       resultStyle = {}
     }
 
+    if (hideEvaluation) {
+      resultStyle = {}
+    }
     return resultStyle
   }
 
@@ -460,6 +468,7 @@ TokenHighlightPreview.propTypes = {
   showQuestionNumber: PropTypes.bool,
   disableResponse: PropTypes.bool,
   mode: PropTypes.string,
+  hideEvaluation: PropTypes.bool,
   t: PropTypes.func.isRequired,
 }
 
@@ -471,6 +480,7 @@ TokenHighlightPreview.defaultProps = {
   showQuestionNumber: false,
   disableResponse: false,
   mode: '',
+  hideEvaluation: false,
 }
 
 const enhance = compose(withNamespaces('assessment'), withTheme)

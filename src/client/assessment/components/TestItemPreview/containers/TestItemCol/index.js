@@ -140,9 +140,10 @@ class TestItemCol extends Component {
      * Not to show evaluation highlights if question isn't automarkable
      */
     let hideEvaluation = false
-    const { activity: { autoGrade } = {} } = question || {}
+    const { activity: { autoGrade, isGradedExternally } = {} } = question || {}
     if (
       autoGrade === false &&
+      !isGradedExternally &&
       (isLCBView || isStudentReport || isExpressGrader)
     ) {
       hideEvaluation = true
@@ -186,7 +187,8 @@ class TestItemCol extends Component {
               view="preview"
               qIndex={qIndex}
               itemIndex={widgetIndex}
-              previewTab={hideEvaluation ? 'check' : previewTab || preview}
+              previewTab={previewTab || preview}
+              hideEvaluation={hideEvaluation}
               timespent={timespent}
               questionId={widget.reference}
               data={{ ...question, smallSize: true }}

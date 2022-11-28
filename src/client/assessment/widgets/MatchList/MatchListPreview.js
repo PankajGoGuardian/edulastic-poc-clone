@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import produce from 'immer'
 import { withTheme } from 'styled-components'
 import { connect } from 'react-redux'
-import { cloneDeep, isEqual, get, shuffle, keyBy, isEmpty } from 'lodash'
+import { cloneDeep, isEqual, get, shuffle, keyBy, isEmpty, isNil } from 'lodash'
 import { compose } from 'redux'
 import {
   FlexContainer,
@@ -84,6 +84,7 @@ const MatchListPreview = ({
   hideCorrectAnswer,
   windowWidth,
   showAnswerScore,
+  hideEvaluation = false,
 }) => {
   const {
     possibleResponses: posResponses = [],
@@ -333,7 +334,9 @@ const MatchListPreview = ({
     background: isPrintPreview
       ? white
       : _preview
-      ? correct
+      ? isNil(correct)
+        ? theme.widgets.matchList.dragItemBgColor
+        : correct
         ? rightBgColor
         : wrongBgColor
       : theme.widgets.matchList.dragItemBgColor,
@@ -432,6 +435,7 @@ const MatchListPreview = ({
                 disableResponse={disableResponse}
                 previewTab={previewTab}
                 isAnswerModifiable={isAnswerModifiable}
+                hideEvaluation={hideEvaluation}
               />
 
               {!disableResponse && (
@@ -520,6 +524,7 @@ MatchListPreview.propTypes = {
   windowWidth: PropTypes.string.isRequired,
   evaluation: PropTypes.object,
   isReviewTab: PropTypes.bool,
+  hideEvaluation: PropTypes.bool,
 }
 
 MatchListPreview.defaultProps = {
@@ -530,6 +535,7 @@ MatchListPreview.defaultProps = {
   showQuestionNumber: false,
   disableResponse: false,
   isReviewTab: false,
+  hideEvaluation: false,
 }
 
 const enhance = compose(

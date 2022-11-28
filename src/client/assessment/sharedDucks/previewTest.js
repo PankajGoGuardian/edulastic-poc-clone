@@ -10,6 +10,7 @@ import { getQuestionsByIdSelector } from '../selectors/questions'
 import { getAnswersListSelector } from '../selectors/answers'
 import { answersByQId } from '../selectors/test'
 import { clearHintUsageAction } from '../actions/userInteractions'
+import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 
 const defaultManualGradedType = questionType.manuallyGradableQn
 
@@ -81,12 +82,14 @@ function* evaluateQuestionsSaga({
   answers,
   timeSpent = 0,
   hintsUsedInItem,
+  preferredLanguage = 'en',
 }) {
   const res = yield testItemsApi.evaluateAsStudent(testItemId, {
     answers: answersByQids,
     testId,
     replaceVariable: true,
     hintsUsedInItem,
+    preferredLanguage,
   })
 
   const previewUserWork = yield select(
@@ -175,6 +178,7 @@ function* evaluateTestItemSaga({ payload }) {
     const testItem = testItems[currentItem]
     const allQuestionsById = yield select(getQuestionsByIdSelector)
     const answers = yield select(getAnswersListSelector)
+    const preferredLanguage = yield select(getCurrentLanguage)
 
     const testItemId = get(testItem, '_id', '')
     const questions = get(testItem, 'rows', [])
@@ -209,6 +213,7 @@ function* evaluateTestItemSaga({ payload }) {
       answers,
       timeSpent,
       hintsUsedInItem,
+      preferredLanguage,
     })
     // onSubmit preview test evaluate all skipped question
     if (isLastQuestion) {

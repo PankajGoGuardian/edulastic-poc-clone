@@ -141,6 +141,8 @@ export const FETCH_STUDENTS_BY_ID_REQUEST =
   '[manageClass] fetch students request by classId'
 export const FETCH_STUDENTS_BY_ID_SUCCESS =
   '[manageClass] fetch studnets success by classId'
+export const SET_STUDENTS_LOADING_STATUS =
+  '[manageClass] set students loading status'
 export const FETCH_STUDENTS_BY_ID_ERROR =
   '[manageClass] fetch students error by classId'
 
@@ -268,6 +270,9 @@ export const fetchStudentsByIdAction = createAction(
 )
 export const fetchStudentsByIdSuccessAction = createAction(
   FETCH_STUDENTS_BY_ID_SUCCESS
+)
+export const setStudentsLoadingStatusAction = createAction(
+  SET_STUDENTS_LOADING_STATUS
 )
 export const fetchStudentsByIdErrorAction = createAction(
   FETCH_STUDENTS_BY_ID_ERROR
@@ -397,6 +402,7 @@ const initialState = {
   studentsList: [],
   selectedStudent: [],
   loaded: true,
+  loading: true,
   entity: {},
   submitted: false,
   added: false,
@@ -485,8 +491,12 @@ const setFetchStudents = (state) => {
 const setStudents = (state, { payload }) => {
   state.loaded = true
   state.studentsList = payload
+  state.loading = false
 }
 
+const setLoadingStudents = (state, { payload }) => {
+  state.loading = payload
+}
 const errorOnFetchStudents = (state, { payload }) => {
   state.loaded = true
   state.error = payload
@@ -627,6 +637,7 @@ export default createReducer(initialState, {
   [CREATE_CLASS_FAILED]: createClassFailed,
   [FETCH_STUDENTS_BY_ID_REQUEST]: setFetchStudents,
   [FETCH_STUDENTS_BY_ID_SUCCESS]: setStudents,
+  [SET_STUDENTS_LOADING_STATUS]: setLoadingStudents,
   [FETCH_STUDENTS_BY_ID_ERROR]: errorOnFetchStudents,
   [UPDATE_CLASS_REQUEST]: updateClass,
   [UPDATE_CLASS_SUCCESS]: updateClassSuccess,

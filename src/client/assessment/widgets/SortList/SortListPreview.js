@@ -64,6 +64,7 @@ const SortListPreview = ({
   evaluation,
   checkAnswerInProgress,
   showAnswerScore,
+  hideEvaluation = false,
 }) => {
   const previewRef = useRef()
   const answerContextConfig = useContext(AnswerContext)
@@ -284,7 +285,7 @@ const SortListPreview = ({
   }
 
   const showPreview = previewTab === CHECK || previewTab === SHOW
-  const isChecked = !active && showPreview && !isReviewTab
+  const isChecked = !active && showPreview && !isReviewTab && !hideEvaluation
 
   const onDropHandler = (flag, index) => ({ data }) => {
     const { items: newItems, selected: newSelected } = produce(
@@ -374,6 +375,7 @@ const SortListPreview = ({
                         disableResponse={disableResponse || !isAnswerModifiable}
                         stemNumeration={stemNumeration}
                         isPrintPreview={isPrintPreview}
+                        hideEvaluation={hideEvaluation}
                       />
                     </DragDrop.DropContainer>
                   ))}
@@ -452,6 +454,7 @@ const SortListPreview = ({
                         changePreviewTab={changePreviewTab}
                         stemNumeration={stemNumeration}
                         isPrintPreview={isPrintPreview}
+                        hideEvaluation={hideEvaluation}
                         checkAnswerInProgress={checkAnswerInProgress}
                       />
                     </DragDrop.DropContainer>
@@ -505,6 +508,7 @@ SortListPreview.propTypes = {
   disableResponse: PropTypes.bool,
   changePreviewTab: PropTypes.func.isRequired,
   isReviewTab: PropTypes.bool,
+  hideEvaluation: PropTypes.bool,
 }
 
 SortListPreview.defaultProps = {
@@ -514,6 +518,7 @@ SortListPreview.defaultProps = {
   showQuestionNumber: false,
   disableResponse: false,
   isReviewTab: false,
+  hideEvaluation: false,
 }
 
 const enhance = compose(

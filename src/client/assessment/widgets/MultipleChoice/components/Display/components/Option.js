@@ -57,6 +57,7 @@ const Option = (props) => {
     onRemoveOption,
     setFocusedOptionIndex,
     focusedOptionIndex,
+    hideEvaluation = false,
   } = props
   let className = ''
   let correctAnswers = []
@@ -106,6 +107,9 @@ const Option = (props) => {
       if (!validAnswers.includes(item.value)) {
         className = 'wrong'
       }
+    }
+    if (hideEvaluation) {
+      className = ''
     }
   } else if (checkAnswer) {
     if (!isEmpty(correct) && checkAnswer) {
@@ -408,6 +412,7 @@ Option.propTypes = {
   fontSize: PropTypes.string.isRequired,
   setFocusedOptionIndex: PropTypes.func,
   focusedOptionIndex: PropTypes.number,
+  hideEvaluation: PropTypes.bool,
 }
 
 Option.defaultProps = {
@@ -421,6 +426,7 @@ Option.defaultProps = {
   crossAction: {},
   setFocusedOptionIndex: () => {},
   focusedOptionIndex: 0,
+  hideEvaluation: false,
 }
 const OptionComponent = withNamespaces('assessment')(Option)
 

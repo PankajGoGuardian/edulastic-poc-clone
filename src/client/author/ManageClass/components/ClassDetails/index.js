@@ -45,6 +45,7 @@ import {
   toggleCreateAssignmentModalAction,
   getIsCreateAssignmentModalVisible,
   setCreateClassTypeDetailsAction,
+  setStudentsLoadingStatusAction,
 } from '../../ducks'
 import {
   getCleverLibraryUserSelector,
@@ -90,6 +91,7 @@ const ClassDetails = ({
   toggleCreateAssignmentModal,
   setShowAssignmentCreationModal,
   setCreateClassTypeDetails,
+  studentsLoadingStatus,
 }) => {
   const { editPath, exitPath } = location?.state || {}
   const {
@@ -154,6 +156,13 @@ const ClassDetails = ({
     }
     setOpenGCModal(false)
   }, [classId])
+
+  useEffect(() => {
+    return () => {
+      // componentWillUnmount here:
+      studentsLoadingStatus(true)
+    }
+  }, [])
 
   const handleEditClick = () => {
     const currentClassId = selectedClass._id || match.params.classId
@@ -481,6 +490,7 @@ const enhance = compose(
       toggleCreateAssignmentModal: toggleCreateAssignmentModalAction,
       setShowAssignmentCreationModal: setShowAssignmentCreationModalAction,
       setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
+      studentsLoadingStatus: setStudentsLoadingStatusAction,
     }
   )
 )

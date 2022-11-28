@@ -219,7 +219,7 @@ class AssignTest extends React.Component {
       userRole === roleuser.DISTRICT_ADMIN || userRole === roleuser.SCHOOL_ADMIN
 
     if (isPlaylist) {
-      //todo: We need to handle defaulting other settings in a better way
+      // todo: We need to handle defaulting other settings in a better way
       const additionalSettings = {}
       // is admin assigning playlist module ?
       if (isAdmin && !match.params.testId) {
@@ -247,6 +247,9 @@ class AssignTest extends React.Component {
         playerSkinType: testSettings.playerSkinType,
         ...additionalSettings,
       })
+      if (isEmpty(assignments) && testId) {
+        fetchAssignments(testId)
+      }
     } else {
       const premiumSettings = premium
         ? {

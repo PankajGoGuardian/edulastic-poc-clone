@@ -734,8 +734,8 @@ function* fetchStudentsByClassId({ payload }) {
     )
     const result = yield call(enrollmentApi.fetch, classId)
     const { group, students } = result
-    yield put(fetchStudentsByIdSuccessAction(students))
     yield put(setClassAction(group))
+    yield put(fetchStudentsByIdSuccessAction(students))
     const userClasses = yield select(getOrgGroupList)
     const assignmentCount = yield select(
       (state) => state.dashboardTeacher?.allAssignmentCount

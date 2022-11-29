@@ -57,6 +57,11 @@ import { splitFullName } from '../../../Gradebook/transformers'
 
 const modalStatus = {}
 
+const GROUP_STATUS = {
+  ARCHIVED: 0,
+  ACTIVE: 1,
+}
+
 const ActionContainer = ({
   type,
   updateStudentRequest,
@@ -394,7 +399,12 @@ const ActionContainer = ({
   }, [atlasId, cleverId, canvasCode, googleId, classStatus])
 
   useEffect(() => {
-    if (!isStudentListLoading && isEmpty(studentsList)) {
+    if (
+      !isStudentListLoading &&
+      classStatus == GROUP_STATUS.ACTIVE &&
+      type === 'class' &&
+      isEmpty(studentsList)
+    ) {
       handleAddMultipleStudent()
     }
   }, [isStudentListLoading])

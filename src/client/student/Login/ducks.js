@@ -1935,6 +1935,7 @@ function* cleverSSOLogin({ payload }) {
           hash: '#login',
         })
       )
+      notification({ msg: errorMessage || 'Clever Login failed' })
     } else {
       notification({ msg: errorMessage || 'Clever Login failed' })
       yield put(push(getSignOutUrl()))

@@ -24,6 +24,7 @@ import AppConfig from './app-config'
 import { isMobileDevice, isIOS } from './client/platform'
 import * as serviceWorker from './service-worker-registration'
 import { initializeSegment } from './client/common/utils/main'
+import { storeErrorDescriptionInSessionStorage } from './client/common/utils/helpers'
 
 document.addEventListener('DOMContentLoaded', function () {
   const codeInUrl =
@@ -57,6 +58,12 @@ if (
 ) {
   sessionStorage.cliBannerVisible = true
 }
+
+/**
+ *  In case of redirection from canvas we might get errorDescription as query param which
+ *  we have to display as error message and remove it from the url.
+ */
+storeErrorDescriptionInSessionStorage()
 
 if (window.NodeList && !NodeList.prototype.forEach) {
   NodeList.prototype.forEach = Array.prototype.forEach

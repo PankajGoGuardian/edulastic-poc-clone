@@ -81,6 +81,7 @@ import useFocusHandler from '../utils/useFocusHandler'
 import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
+import { AssignmentPauseAlert } from './common/AssignmentPauseAlert'
 
 const { playerSkinValues } = testConstants
 
@@ -486,6 +487,7 @@ const RealTimeV2HookWrapper = ({
   regradedAssignment,
   regradedRealtimeAssignment,
   groupId,
+  setIsAssignmentPaused,
 }) => {
   /**
    * need to memoize the topics since its going to be used as dependency for
@@ -496,6 +498,7 @@ const RealTimeV2HookWrapper = ({
       `student_assessment:user:${userId}`,
       `student_assessment:test:${testId}:group:${groupId}`,
       `student_assessment:test:${testId}`,
+      `student_assignment:class:${groupId}`,
     ]
     if (regradedAssignment?.newTestId) {
       topics = [
@@ -514,6 +517,17 @@ const RealTimeV2HookWrapper = ({
       },
       correctItem: (payload) => {
         regradedRealtimeAssignment(payload)
+      },
+      'toggle-pause-assignment': () => {
+        Modal.destroyAll()
+        console.log('realtime - toggle-pause-assignment')
+
+        setIsAssignmentPaused(true)
+      },
+      addAssignment: () => {
+        Modal.destroyAll()
+        console.log('realtime - addAssignment')
+        setIsAssignmentPaused(true)
       },
     },
     { dynamicTopics: true }
@@ -648,6 +662,8 @@ const AssessmentContainer = ({
     disableSave: blockSaveAndContinue,
     userId,
   })
+
+  const [isAssignmentPaused, setIsAssignmentPaused] = useState(false)
 
   useTabNavigationCounterEffect({
     testActivityId: restProps.utaId,
@@ -1408,6 +1424,14 @@ const AssessmentContainer = ({
     )
   }
 
+  const backToHomePage = () => {
+    history.replace('/home/assignments')
+  }
+
+  if (isAssignmentPaused) {
+    return <AssignmentPauseAlert backToHomePage={backToHomePage} />
+  }
+
   return (
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
@@ -1485,6 +1509,7 @@ const AssessmentContainer = ({
           groupId={groupId}
           regradedAssignment={regradedAssignment}
           regradedRealtimeAssignment={regradedRealtimeAssignment}
+          setIsAssignmentPaused={setIsAssignmentPaused}
         />
       )}
       {playerComponent}

@@ -8,7 +8,7 @@ import { SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
-import { get, curry, isEmpty, find, uniq, debounce } from 'lodash'
+import { get, curry, isEmpty, find, uniq, debounce, isArray } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getAssignedClassesByIdSelector,
@@ -45,6 +45,7 @@ import {
   setExcludeSchoolsAction,
 } from '../../../TestPage/components/Assign/ducks'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import { sortGrades } from '../../../TestPage/utils'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -57,12 +58,19 @@ const findTeacherName = (row) => {
   return teacher ? teacher.name : owners.length ? owners[0].name : ''
 }
 
+const formatGrades = (grades) => {
+  if (isArray(grades)) {
+    return sortGrades(grades).toString()
+  }
+  return grades || ''
+}
+
 const convertTableData = (row) => ({
   key: row._id,
   className: row.name,
   teacher: findTeacherName(row),
   subject: row.subject,
-  grades: row.grades || '',
+  grades: formatGrades(row.grades),
   type: row.type,
   tags: row.tags,
 })

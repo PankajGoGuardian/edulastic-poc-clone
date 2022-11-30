@@ -478,7 +478,7 @@ const TrendTable = ({
   const scrollX = useMemo(() => columns.length * 120 || '100%', [columns])
 
   return (
-    <StyledCard>
+    <StyledCard data-testid="TrendTable">
       <Row>
         <Col xs={24} sm={24} md={12} lg={12} xl={12}>
           <StyledH3>{heading}</StyledH3>

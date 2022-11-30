@@ -420,3 +420,75 @@ export const getAssessmentName = (test) => {
   const [key, title] = [test._id || test.key, test.title]
   return `${title} (ID:${key.substring(key.length - 5)})`
 }
+
+export const getTooltipArrowStyles = ({ tooltipType, tooltipArrowMargin }) => {
+  let style
+  switch (tooltipType) {
+    case 'right':
+      style = {
+        left: '-15px',
+        bottom: `${
+          tooltipArrowMargin ? `calc(50% - ${tooltipArrowMargin}px)` : '50%'
+        }`,
+        transform: 'translateY(50%) rotate(90deg)',
+      }
+      break
+    case 'left':
+      style = {
+        left: '195px',
+        bottom: `${
+          tooltipArrowMargin ? `calc(50% - ${tooltipArrowMargin}px)` : '50%'
+        }`,
+        transform: 'translateY(50%) rotate(-90deg)',
+      }
+      break
+
+    case 'bottom':
+      style = {
+        left: `50%`,
+        top: `-10px`,
+        transform: 'translateX(-50%) rotate(180deg)',
+      }
+      break
+
+    default:
+      style = {
+        left: '50%',
+        bottom: '-10px',
+        transform: 'translateX(-50%)',
+      }
+  }
+  return style
+}
+
+export const setProperties = (ref, obj) => {
+  const keys = Object.keys(obj)
+  keys.forEach((key) => {
+    ref.current.style.setProperty(key, obj[key])
+  })
+}
+
+export const getHoveredBarDimensions = (event) => {
+  const attributes = event.target.parentNode.attributes
+  const width = 45
+  if (Number.isNaN(width)) return
+  const height = +attributes.height?.nodeValue
+  const x = +attributes.x?.nodeValue
+  const y = +attributes.y?.nodeValue
+  const d = {
+    x,
+    y,
+    width,
+    height,
+  }
+  return d
+}
+
+export const tooltipParams = {
+  tooltipWidth: 200,
+  maxTooltipHeight: 250,
+  spaceForLittleTriangle: 10,
+  spaceForPercentageLabel: 20,
+  navButtonMargin: 50,
+  xAxisHeight: 100,
+}

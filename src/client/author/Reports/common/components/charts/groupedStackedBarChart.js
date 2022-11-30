@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -25,8 +25,15 @@ import {
 } from './chartUtils/customChartXTick'
 import { YAxisLabel } from './chartUtils/yAxisLabel'
 import withAnimationInfo from './chartUtils/withAnimationInfo'
+import {
+  setProperties,
+  tooltipParams,
+  getHoveredBarDimensions,
+} from '../../util'
 
 const Bar = withAnimationInfo(_Bar)
+
+const { spaceForLittleTriangle, tooltipWidth, navButtonMargin } = tooltipParams
 
 const _barsLabelFormatter = (val) => {
   if (val !== 0) {
@@ -50,8 +57,9 @@ const LabelText = ({
   return (
     <g
       className="asd-asd"
-      onMouseOver={onBarMouseOver(bdIndex)}
+      onMouseOver={onBarMouseOver(bdIndex, true)}
       onMouseLeave={onBarMouseLeave(bdIndex)}
+      style={{ pointerEvents: 'none' }}
     >
       <text
         x={x + width / 2}
@@ -93,33 +101,9 @@ export const GroupedStackedBarChart = ({
     y: null,
     content: null,
   })
-  const [barIndex, setBarIndex] = useState(null)
-  const [hoveredBarDimensions, setHoveredBarDimensions] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-    height: 0,
-  })
-
-  useEffect(() => {
-    const tooltip = document.querySelector('.recharts-tooltip-wrapper')
-
-    if (!tooltip) return
-    const tooltipHeight = tooltip.getBoundingClientRect().height
-
-    const spaceForLittleTriangle = 15
-
-    tooltip.style = `
-      transform: translate(${hoveredBarDimensions?.x}px, ${
-      hoveredBarDimensions?.y
-    }px);
-      pointer-events: none;  
-      position: absolute;
-      top: -${tooltipHeight / 2 - hoveredBarDimensions.height / 2}px;
-      left: ${hoveredBarDimensions?.width + spaceForLittleTriangle}px;
-      transition: all 400ms ease 0s;
-    `
-  }, [hoveredBarDimensions])
+  const parentContainerRef = useRef(null)
+  const [showLeftTooltip, setShowLeftTooltip] = useState(false)
+  const tooltipRef = useRef()
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -138,36 +122,44 @@ export const GroupedStackedBarChart = ({
     [pagination, data]
   )
 
-  const onBarMouseOver = (index) => (event) => {
-    setBarIndex(index)
-    if (!isEmpty(event)) {
-      let d
-      // To handle updating tooltip position when the labels are hovered.
-      // the label does not contain x,y coordinate relative to chart container.
-      // label's parent element contains x,y coordinate relative to chart container.
-      if (!isEmpty(event.target)) {
-        const attributes = event?.target?.attributes
-        const width = 45
-        d = {
-          x: +attributes.x.nodeValue - width / 2,
-          y: +attributes.y.nodeValue,
-          width,
-          height: 0, // check again
-        }
-      } else {
-        d = {
-          x: event?.x,
-          y: event?.y,
-          width: event?.width,
-          height: event?.height,
-        }
-      }
-      setHoveredBarDimensions(d)
+  const updateTooltipPosition = (hoveredBarDimensions) => {
+    if (!parentContainerRef.current) return
+
+    const { width, height, x, y } = hoveredBarDimensions
+
+    const parentContainerWidth =
+      parentContainerRef.current.offsetWidth - navButtonMargin
+    const xn = x + width + spaceForLittleTriangle + tooltipWidth
+
+    const isLeftTooltip = parentContainerWidth - xn < 0
+    const xRight = isLeftTooltip
+      ? x - (tooltipWidth + width + 2 * spaceForLittleTriangle)
+      : x
+    setShowLeftTooltip(isLeftTooltip)
+
+    const tooltipProperties = {
+      '--first-tooltip-transform': `translate(${
+        xRight + spaceForLittleTriangle + width
+      }px, calc(${y + height / 2}px - 50% ))`,
+      '--first-tooltip-top': '0',
+      '--first-tooltip-left': '0',
     }
+    setProperties(parentContainerRef, tooltipProperties)
+  }
+
+  const onBarMouseOver = (index) => (event) => {
+    tooltipRef.current?.updateBarIndex(index)
+    if (isEmpty(event)) return
+    let d = { x: event.x, y: event.y, width: event.width, height: event.height }
+    // To handle updating tooltip position when the labels are hovered.
+    // the label does not contain x,y coordinate relative to chart container.
+    // label's parent element contains x,y coordinate relative to chart container.
+    if (!isEmpty(event.target)) d = getHoveredBarDimensions(event)
+    updateTooltipPosition(d)
   }
 
   const onBarMouseLeave = () => () => {
-    setBarIndex(null)
+    tooltipRef.current?.resetBarIndex()
   }
 
   const barKeys = useMemo(
@@ -257,7 +249,7 @@ export const GroupedStackedBarChart = ({
     : !(chartData.length <= pagination.endIndex + 1)
 
   return (
-    <StyledSignedStackedBarChartContainer>
+    <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
       <StyledChartNavButton
         type="primary"
         shape="circle"
@@ -319,16 +311,11 @@ export const GroupedStackedBarChart = ({
           />
           <Tooltip
             cursor={false}
-            position={{ x: hoveredBarDimensions.x, y: hoveredBarDimensions.y }}
             content={
               <StyledCustomChartTooltipDark
+                ref={tooltipRef}
                 getJSX={getTooltipJSX}
-                barIndex={barIndex}
-                style={{
-                  left: '-15px',
-                  bottom: '50%',
-                  transform: 'rotate(90deg)',
-                }}
+                tooltipType={showLeftTooltip ? 'left' : 'right'}
               />
             }
           />
@@ -351,7 +338,7 @@ export const GroupedStackedBarChart = ({
                   position="inside"
                   fill="#010101"
                   offset={5}
-                  onMouseOver={onBarMouseOver(bdIndex)}
+                  onMouseOver={onBarMouseOver(bdIndex, true)}
                   onMouseLeave={onBarMouseLeave(bdIndex)}
                   content={
                     <LabelText

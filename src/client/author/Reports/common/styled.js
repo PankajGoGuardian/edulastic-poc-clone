@@ -16,6 +16,8 @@ import { Text } from '@vx/text'
 import { Col, Slider, Table, Button, Menu, Row } from 'antd'
 import styled, { css } from 'styled-components'
 import { CustomChartTooltip } from './components/charts/chartUtils/tooltip'
+import { CustomTooltip } from './components/charts/chartUtils/CustomTooltip'
+import { getTooltipArrowStyles } from './util'
 
 export const styledNotification = ({ ...props }) =>
   notification({
@@ -413,7 +415,7 @@ export const StyledCustomChartTooltip = styled(CustomChartTooltip)`
   }
 `
 
-export const StyledCustomChartTooltipDark = styled(CustomChartTooltip)`
+export const StyledCustomChartTooltipDark = styled(CustomTooltip)`
   width: 200px;
   min-height: 75px;
   background-color: #4b4b4b;
@@ -435,10 +437,7 @@ export const StyledCustomChartTooltipDark = styled(CustomChartTooltip)`
     border-style: solid;
     border-width: 10px 10px 0 10px;
     border-color: #4b4b4b transparent transparent transparent;
-    bottom: -10px;
-    left: 50%;
-    transform: translateX(-50%);
-    ${({ style }) => ({ ...style })};
+    ${(props) => getTooltipArrowStyles(props)};
   }
 `
 
@@ -895,5 +894,19 @@ export const StyledSignedStackedBarChartContainer = styled.div`
         white-space: pre;
       }
     }
+  }
+  & .recharts-wrapper > .recharts-tooltip-wrapper {
+    transform: var(--first-tooltip-transform) !important;
+    top: var(--first-tooltip-top) !important;
+    left: var(--first-tooltip-left) !important;
+    visibility: visible !important;
+    transition: all 400ms ease 0s;
+  }
+  & > .recharts-tooltip-wrapper {
+    transform: var(--second-tooltip-transform) !important;
+    top: var(--second-tooltip-top) !important;
+    left: var(--second-tooltip-left) !important;
+    visibility: visible !important;
+    transition: all 400ms ease 0s;
   }
 `

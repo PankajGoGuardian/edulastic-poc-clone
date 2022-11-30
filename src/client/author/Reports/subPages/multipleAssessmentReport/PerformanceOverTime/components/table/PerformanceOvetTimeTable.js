@@ -196,7 +196,7 @@ const PerformanceOverTimeTable = ({
   const onCsvConvert = (data) => downloadCSV(`Performance Over Time.csv`, data)
 
   return (
-    <StyledCard>
+    <StyledCard data-testid="PerformanceOverTimeTable">
       <StyledH3>Assessment Statistics</StyledH3>
       <CsvTable
         dataSource={dataSource}

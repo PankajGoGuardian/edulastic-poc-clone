@@ -146,6 +146,7 @@ const PerformanceOverTime = ({
           </Col>
         </Row>
         <ProgressChart
+          data-testid="progressChart"
           data={chartData}
           analyseBy={analyseBy.key}
           selectedItems={selectedTests}

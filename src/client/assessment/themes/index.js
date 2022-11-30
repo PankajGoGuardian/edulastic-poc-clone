@@ -530,14 +530,9 @@ const RealTimeV2HookWrapper = ({
         }
       },
       addAssignment: (payload) => {
-        console.log('realtime - addAssignment', payload)
         if (payload?._id === assignmentId) {
           const currentClass = (payload.class || []).find(
             (_class) => _class._id === groupId
-          )
-          console.log(
-            'pausing for current class value:',
-            !!currentClass?.isPaused
           )
           Modal.destroyAll()
           setIsAssignmentPaused(!!currentClass?.isPaused)
@@ -1228,25 +1223,15 @@ const AssessmentContainer = ({
   }, 1000 * 30)
 
   useEffect(() => {
-    /**
-     * When Anti-Cheating is on we are saving when student is coming out of full screen
-     */
-    // console.log(
-    //   JSON.stringify(
-    //     {
-    //       autoSave,
-    //       currentAnswerValue,
-    //       prevAnswerValue: prevAnswerValue.current,
-    //       currentItem,
-    //       currentlyFullScreen,
-    //       isTestTab,
-    //     },
-    //     null,
-    //     2
-    //   )
-    // )
-    if (autoSave && currentAnswerValue !== prevAnswerValue.current) {
+    if (
+      !isTestTab &&
+      autoSave &&
+      currentAnswerValue !== prevAnswerValue.current
+    ) {
       prevAnswerValue.current = currentAnswerValue
+      saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
+    }
+    if (!isTestTab && !autoSave) {
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
   }, [currentlyFullScreen, isTestTab])

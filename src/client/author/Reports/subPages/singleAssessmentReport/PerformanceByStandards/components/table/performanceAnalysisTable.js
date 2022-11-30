@@ -312,6 +312,7 @@ const PerformanceAnalysisTable = ({
 
   return (
     <CsvTable
+      data-testid="PerformanceAnalysisTable"
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
       tableToRender={AnalysisTable}

@@ -8,7 +8,7 @@ if [ $? -ne 0 ]
   echo "Yarn install failed...exiting script"
   exit 1
 fi
-
+yarn format
 if [[ -z "${SKIP_PRETTIER_CHECK}" ]]; then
   yarn run prettier:check
 

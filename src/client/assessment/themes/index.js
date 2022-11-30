@@ -82,6 +82,7 @@ import useUploadToS3 from '../hooks/useUploadToS3'
 import { Fscreen } from '../utils/helpers'
 import { allowReferenceMaterialSelector } from '../../author/src/selectors/user'
 import { AssignmentPauseAlert } from './common/AssignmentPauseAlert'
+import { If } from './common/If'
 
 const { playerSkinValues } = testConstants
 
@@ -488,6 +489,8 @@ const RealTimeV2HookWrapper = ({
   regradedRealtimeAssignment,
   groupId,
   setIsAssignmentPaused,
+  assignmentId,
+  testActivityId,
 }) => {
   /**
    * need to memoize the topics since its going to be used as dependency for
@@ -518,16 +521,27 @@ const RealTimeV2HookWrapper = ({
       correctItem: (payload) => {
         regradedRealtimeAssignment(payload)
       },
-      'toggle-pause-assignment': () => {
-        Modal.destroyAll()
-        console.log('realtime - toggle-pause-assignment')
-
-        setIsAssignmentPaused(true)
+      'toggle-pause-assignment': (payload) => {
+        const { activitiesByUserId, paused } = payload
+        const payloadUtaId = activitiesByUserId[userId]
+        if (payloadUtaId && payloadUtaId === testActivityId) {
+          Modal.destroyAll()
+          setIsAssignmentPaused(paused)
+        }
       },
-      addAssignment: () => {
-        Modal.destroyAll()
-        console.log('realtime - addAssignment')
-        setIsAssignmentPaused(true)
+      addAssignment: (payload) => {
+        console.log('realtime - addAssignment', payload)
+        if (payload?._id === assignmentId) {
+          const currentClass = (payload.class || []).find(
+            (_class) => _class._id === groupId
+          )
+          console.log(
+            'pausing for current class value:',
+            !!currentClass?.isPaused
+          )
+          Modal.destroyAll()
+          setIsAssignmentPaused(!!currentClass?.isPaused)
+        }
       },
     },
     { dynamicTopics: true }
@@ -1217,20 +1231,20 @@ const AssessmentContainer = ({
     /**
      * When Anti-Cheating is on we are saving when student is coming out of full screen
      */
-    console.log(
-      JSON.stringify(
-        {
-          autoSave,
-          currentAnswerValue,
-          prevAnswerValue: prevAnswerValue.current,
-          currentItem,
-          currentlyFullScreen,
-          isTestTab,
-        },
-        null,
-        2
-      )
-    )
+    // console.log(
+    //   JSON.stringify(
+    //     {
+    //       autoSave,
+    //       currentAnswerValue,
+    //       prevAnswerValue: prevAnswerValue.current,
+    //       currentItem,
+    //       currentlyFullScreen,
+    //       isTestTab,
+    //     },
+    //     null,
+    //     2
+    //   )
+    // )
     if (autoSave && currentAnswerValue !== prevAnswerValue.current) {
       prevAnswerValue.current = currentAnswerValue
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
@@ -1428,81 +1442,84 @@ const AssessmentContainer = ({
     history.replace('/home/assignments')
   }
 
-  if (isAssignmentPaused) {
-    return <AssignmentPauseAlert backToHomePage={backToHomePage} />
-  }
-
   return (
     <AssessmentPlayerContext.Provider
       value={{ isStudentAttempt: true, currentItem, setCurrentItem }}
     >
-      {restrictNavigationOut && (
-        <>
-          <ForceFullScreenModal
+      <If condition={isAssignmentPaused}>
+        <AssignmentPauseAlert backToHomePage={backToHomePage} />
+      </If>
+
+      <If condition={!isAssignmentPaused}>
+        {restrictNavigationOut && (
+          <>
+            <ForceFullScreenModal
+              testActivityId={restProps.utaId}
+              history={history}
+              fullscreenCb={setEnteredIntoFullScreen}
+              visible={
+                !currentlyFullScreen &&
+                history.location.pathname.includes('/uta/')
+              }
+              takeItLaterCb={
+                blockSaveAndContinue
+                  ? null
+                  : () =>
+                      saveCurrentAnswer({
+                        pausing: true,
+                        callback: () => history.push('/home/assignments'),
+                      })
+              }
+            />
+          </>
+        )}
+
+        {(blockSaveAndContinue || restrictNavigationOut) && (
+          <FirestorePings
             testActivityId={restProps.utaId}
             history={history}
-            fullscreenCb={setEnteredIntoFullScreen}
-            visible={
-              !currentlyFullScreen &&
-              history.location.pathname.includes('/uta/')
-            }
-            takeItLaterCb={
-              blockSaveAndContinue
-                ? null
-                : () =>
-                    saveCurrentAnswer({
-                      pausing: true,
-                      callback: () => history.push('/home/assignments'),
-                    })
-            }
+            blockSaveAndContinue={blockSaveAndContinue}
+            userId={userId}
+            classId={groupId}
+            assignmentId={assignmentObj?._id}
           />
-        </>
-      )}
+        )}
+        {showRegradedModal && (
+          <Modal
+            visible
+            centered
+            width={500}
+            okButtonProps={{
+              style: { background: themeColor },
+            }}
+            closable={false}
+            footer={[
+              <Button
+                style={{ background: themeColor, color: 'white' }}
+                loading={loading}
+                onClick={onRegradedModalOk}
+              >
+                Ok
+              </Button>,
+            ]}
+          >
+            The assignment has been modified by Instructor. Please restart the
+            assignment.
+          </Modal>
+        )}
+        {unansweredPopupSetting.show && (
+          <UnansweredPopup
+            visible
+            title=""
+            onSkip={onSkipUnansweredPopup}
+            onClose={onCloseUnansweedPopup}
+            data={unansweredPopupSetting.qLabels}
+            playerSkinType={playerSkinType}
+          />
+        )}
+      </If>
 
-      {(blockSaveAndContinue || restrictNavigationOut) && (
-        <FirestorePings
-          testActivityId={restProps.utaId}
-          history={history}
-          blockSaveAndContinue={blockSaveAndContinue}
-          userId={userId}
-          classId={groupId}
-          assignmentId={assignmentObj?._id}
-        />
-      )}
-      {showRegradedModal && (
-        <Modal
-          visible
-          centered
-          width={500}
-          okButtonProps={{
-            style: { background: themeColor },
-          }}
-          closable={false}
-          footer={[
-            <Button
-              style={{ background: themeColor, color: 'white' }}
-              loading={loading}
-              onClick={onRegradedModalOk}
-            >
-              Ok
-            </Button>,
-          ]}
-        >
-          The assignment has been modified by Instructor. Please restart the
-          assignment.
-        </Modal>
-      )}
-      {unansweredPopupSetting.show && (
-        <UnansweredPopup
-          visible
-          title=""
-          onSkip={onSkipUnansweredPopup}
-          onClose={onCloseUnansweedPopup}
-          data={unansweredPopupSetting.qLabels}
-          playerSkinType={playerSkinType}
-        />
-      )}
-      {!preview && !demo && (
+      <If condition={!preview && !demo}>
         <RealTimeV2HookWrapper
           userId={userId}
           testId={testId}
@@ -1510,9 +1527,12 @@ const AssessmentContainer = ({
           regradedAssignment={regradedAssignment}
           regradedRealtimeAssignment={regradedRealtimeAssignment}
           setIsAssignmentPaused={setIsAssignmentPaused}
+          assignmentId={assignmentObj?._id}
+          testActivityId={restProps.utaId}
         />
-      )}
-      {playerComponent}
+      </If>
+
+      <If condition={!isAssignmentPaused}>{playerComponent}</If>
     </AssessmentPlayerContext.Provider>
   )
 }

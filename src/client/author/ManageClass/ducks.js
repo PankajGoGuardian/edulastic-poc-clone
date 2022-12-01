@@ -486,6 +486,7 @@ const setClass = (state, { payload }) => {
 const setFetchStudents = (state) => {
   state.loaded = false
   state.error = null
+  state.loading = true
 }
 
 const setStudents = (state, { payload }) => {

@@ -48,7 +48,10 @@ import {
 } from '../actions/test'
 import { evaluateAnswer } from '../actions/evaluation'
 import { changePreview as changePreviewAction } from '../actions/view'
-import { getQuestionsByIdSelector } from '../selectors/questions'
+import {
+  autoSaveIntervalSelector,
+  getQuestionsByIdSelector,
+} from '../selectors/questions'
 import {
   testLoadingSelector,
   playerSkinTypeSelector,
@@ -584,6 +587,7 @@ const AssessmentContainer = ({
   showUserTTS,
   isTestPreviewModalVisible,
   allowReferenceMaterial,
+  autoSaveInterval,
   ...restProps
 }) => {
   const testKeypad = testSettings?.keypad || 'item-level-keypad'
@@ -1190,7 +1194,7 @@ const AssessmentContainer = ({
       prevAnswerValue.current = currentAnswerValue
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
-  }, 1000 * 30)
+  }, autoSaveInterval)
 
   useEffect(() => {
     const cb = (event) => {
@@ -1479,6 +1483,7 @@ AssessmentContainer.propTypes = {
   assignmentById: PropTypes.object,
   currentAssignment: PropTypes.string,
   fetchAssignments: PropTypes.func.isRequired,
+  autoSaveInterval: PropTypes.number.isRequired,
 }
 
 AssessmentContainer.defaultProps = {
@@ -1539,6 +1544,7 @@ const enhance = compose(
         state.test?.settings?.restrictNavigationOutAttemptsThreshold,
       savedBlurTime: state.test?.savedBlurTime,
       isTestPreviewModalVisible: getIsPreviewModalVisibleSelector(state),
+      autoSaveInterval: autoSaveIntervalSelector(state),
     }),
     {
       saveUserResponse,

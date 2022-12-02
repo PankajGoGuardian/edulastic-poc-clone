@@ -1,3 +1,4 @@
+// TODO: remove this component as it is no longer used anywhere
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
@@ -123,7 +124,7 @@ class Assign extends Component {
 
 export default connect(
   (state) => ({
-    assignments: getAssignmentsSelector(state),
+    assignments: getAssignmentsSelector(state), // TODO: project required fields in BE before start using this component
     group: getGroupsSelector(state),
   }),
   {

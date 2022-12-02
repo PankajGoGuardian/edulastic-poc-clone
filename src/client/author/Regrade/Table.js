@@ -1,3 +1,4 @@
+// TODO: remove this component as it is no longer used.
 import React from 'react'
 import { connect } from 'react-redux'
 import { Spin } from 'antd'
@@ -91,6 +92,6 @@ const AssignmentsTable = ({ assignments, isAssignmentsLoading }) => {
 }
 
 export default connect((state) => ({
-  assignments: state.authorTestAssignments.assignments,
+  assignments: state.authorTestAssignments.assignments, // TODO: project required fields in BE before start using this component
   isAssignmentsLoading: getIsloadingAssignmentSelector(state),
 }))(AssignmentsTable)

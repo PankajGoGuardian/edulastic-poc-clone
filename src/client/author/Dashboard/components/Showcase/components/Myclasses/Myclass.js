@@ -718,7 +718,9 @@ const MyClasses = ({
   const showRecommendedTests =
     totalAssignmentCount >= 5 && recommendedTests?.length > 0
 
-  const hideGetStartedSection = totalAssignmentCount >= 1
+  const hasAssignment = totalAssignmentCount >= 1
+
+  const hideGetStartedHeader = classData.length >= 1
 
   const boughtItemBankIds = itemBankSubscriptions.map((x) => x.itemBankId) || []
 
@@ -731,7 +733,8 @@ const MyClasses = ({
           userId={user?._id}
           classData={classData}
           history={history}
-          hideGetStartedSection={hideGetStartedSection}
+          hasAssignment={hasAssignment}
+          hideGetStartedHeader={hideGetStartedHeader}
         />
       ) : (
         <ClassBanner />

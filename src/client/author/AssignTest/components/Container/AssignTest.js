@@ -246,6 +246,9 @@ class AssignTest extends React.Component {
         playerSkinType: testSettings.playerSkinType,
         ...additionalSettings,
       })
+      if (isEmpty(assignments) && testId) {
+        fetchAssignments(testId)
+      }
     } else {
       const premiumSettings = premium
         ? {

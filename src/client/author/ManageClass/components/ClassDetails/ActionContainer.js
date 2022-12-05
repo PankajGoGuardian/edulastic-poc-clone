@@ -57,6 +57,11 @@ import { splitFullName } from '../../../Gradebook/transformers'
 
 const modalStatus = {}
 
+const GROUP_STATUS = {
+  ARCHIVED: 0,
+  ACTIVE: 1,
+}
+
 const ActionContainer = ({
   type,
   updateStudentRequest,
@@ -77,6 +82,7 @@ const ActionContainer = ({
   policy,
   searchAndAddStudents,
   enableStudentGroups,
+  isStudentListLoading = false,
   districtId,
   isCreateAssignmentModalVisible,
   toggleCreateAssignmentModal,
@@ -392,6 +398,17 @@ const ActionContainer = ({
     }
   }, [atlasId, cleverId, canvasCode, googleId, classStatus])
 
+  useEffect(() => {
+    if (
+      !isStudentListLoading &&
+      classStatus == GROUP_STATUS.ACTIVE &&
+      type === 'class' &&
+      isEmpty(studentsList)
+    ) {
+      handleAddMultipleStudent()
+    }
+  }, [isStudentListLoading])
+
   return (
     <>
       {infoModelVisible && (
@@ -602,6 +619,7 @@ export default connect(
     added: get(state, 'manageClass.added'),
     selectedStudent: get(state, 'manageClass.selectedStudent', []),
     studentsList: get(state, 'manageClass.studentsList', []),
+    isStudentListLoading: get(state, 'manageClass.loading', true),
     features: getUserFeatures(state),
     policy: getSchoolPolicy(state),
     enableStudentGroups: get(state, 'user.user.features.studentGroups'),

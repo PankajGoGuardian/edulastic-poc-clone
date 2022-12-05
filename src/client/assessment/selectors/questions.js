@@ -2,6 +2,13 @@ import { createSelector } from 'reselect'
 import { values, keyBy } from 'lodash'
 import { getCurrentLanguage } from '../../common/components/LanguageSelector/duck'
 import { changeDataToPreferredLanguage } from '../utils/question'
+import { assignmentLevelSettingsSelector } from './answers'
+
+const TEN_SECONDS = 10000
+const DEFAULT_INTERVAL = 30000
+const districtAutoSaveIntervalConfig = {
+  '5f1d2b5f5dd16ded176b6b98': TEN_SECONDS,
+}
 
 const getQuestionsSelector = (state) => state.assessmentplayerQuestions
 
@@ -31,5 +38,13 @@ export const getQuestionsByIdSelector = createSelector(
         ? q.id
         : `${q.testItemId}_${q.id}`
     )
+  }
+)
+
+export const autoSaveIntervalSelector = createSelector(
+  assignmentLevelSettingsSelector,
+  (currentAssignment) => {
+    const { districtId } = currentAssignment || {}
+    return districtAutoSaveIntervalConfig[districtId] || DEFAULT_INTERVAL
   }
 )

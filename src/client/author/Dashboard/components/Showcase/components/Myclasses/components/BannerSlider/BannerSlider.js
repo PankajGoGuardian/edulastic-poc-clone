@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react'
 import { debounce } from 'lodash'
 
 // components
-import { lightGreen11, white } from '@edulastic/colors'
+import { white, black } from '@edulastic/colors'
 import {
   IconChevronLeft,
   IconTimer,
@@ -102,7 +102,6 @@ const BannerSlider = ({
   }
 
   const navigateToTest = () => history.push('/author/tests')
-
   return (
     <>
       <TextWrapper
@@ -112,10 +111,10 @@ const BannerSlider = ({
         mt="10px"
         fw="700"
         lh="22px"
-        color={lightGreen11}
+        color={black}
       >
         <IconWrapper>
-          <IconTimer alt="" margin="0px 15px 0px 5px" />
+          <IconTimer alt="" margin="0px 15px 0px 5px" fill={black} />
           Quick Introduction to Edulastic
         </IconWrapper>
       </TextWrapper>

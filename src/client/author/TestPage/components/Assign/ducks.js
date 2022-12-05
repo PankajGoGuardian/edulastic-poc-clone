@@ -573,7 +573,7 @@ function* loadAssignments({ payload }) {
       ? assignmentApi.fetchRegradeAssignments
       : assignmentApi.fetchAssignments
     const data = yield call(getAssignmentsApi, testId)
-    const assignments = regradeAssignments ? data : data.map(formatAssignment)
+    const assignments = data.map(formatAssignment)
     yield put(loadAssignmentsAction(assignments))
   } catch (e) {
     console.error(e)

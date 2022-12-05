@@ -329,7 +329,8 @@ class DistrictPolicyForm extends Component {
       !districtPolicyData.cleverSignOn &&
       !districtPolicyData.googleSignOn &&
       !districtPolicyData.atlasSignOn &&
-      !districtPolicyData.schoologySignOn
+      !districtPolicyData.schoologySignOn &&
+      !districtPolicyData.ltiSignOn
     ) {
       notification({ messageKey: 'pleaseSelectOneOrMoreSignOnParticles' })
       return

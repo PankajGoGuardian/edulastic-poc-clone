@@ -5,7 +5,6 @@ import { get } from 'lodash'
 import * as Sentry from '@sentry/browser'
 import { roleuser } from '@edulastic/constants'
 import notfification from '@edulastic/common/src/components/Notification'
-import { testsApi } from '@edulastic/api'
 import { getUser } from '../../author/src/selectors/user'
 import { fetchAssignmentsByTestIdAction } from '../ducks'
 import {
@@ -45,8 +44,7 @@ const AssignmentEmbedLink = ({
       } else if (role === STUDENT) {
         if (isVersionId && versionId) {
           try {
-            const latestTest = await testsApi.getTestIdFromVersionId(versionId)
-            fetchAssignmentsForStudent({ testId: latestTest.testId })
+            fetchAssignmentsForStudent({ testId: versionId })
           } catch (err) {
             if (!err?.response) {
               Sentry.captureException(err)

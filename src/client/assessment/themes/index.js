@@ -1223,15 +1223,16 @@ const AssessmentContainer = ({
   }, 1000 * 30)
 
   useEffect(() => {
+    /** Essay type questions, Checking for new response before update */
     if (
-      !isTestTab &&
+      (!isTestTab || !currentlyFullScreen) &&
       autoSave &&
       currentAnswerValue !== prevAnswerValue.current
     ) {
       prevAnswerValue.current = currentAnswerValue
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
-    if (!isTestTab && !autoSave) {
+    if ((!isTestTab || !currentlyFullScreen) && !autoSave) {
       saveUserAnswer(currentItem, Date.now() - lastTime.current, true, groupId)
     }
   }, [currentlyFullScreen, isTestTab])

@@ -1,7 +1,7 @@
 import { black } from '@edulastic/colors'
 import { BackTop } from '@edulastic/common'
 import { IconInfo } from '@edulastic/icons'
-import { round } from 'lodash'
+import { round, isEmpty } from 'lodash'
 import React from 'react'
 import { connect } from 'react-redux'
 import { Select } from 'antd'
@@ -21,7 +21,7 @@ import {
 
 import { receiveStudentResponseAction } from '../../../src/actions/classBoard'
 
-const StudentsCard = (props) => {
+const StudentsGraph = (props) => {
   const {
     gradebook,
     testActivity,
@@ -43,17 +43,27 @@ const StudentsCard = (props) => {
     loadStudentResponses,
     setCurrentTestActivityId,
     timeSpent,
-    setState,
+    handleChange,
     MainContentWrapperRef,
-    getAllTestActivitiesForStudent,
-    getActivityId,
     toggleBackTopIcon,
     showScoreImporvement,
   } = props
   const studentTestActivity =
     (studentResponse && studentResponse.testActivity) || {}
-  const { score = 0, maxScore = 0 } = studentTestActivity
   const { assignmentId, classId } = match.params
+  const { status } = studentTestActivity
+  let { score = 0, maxScore = 0 } = studentTestActivity
+  if (
+    studentResponse &&
+    !isEmpty(studentResponse.questionActivities) &&
+    status === 0
+  ) {
+    studentResponse.questionActivities.forEach((uqa) => {
+      score += uqa.score
+      maxScore += uqa.maxScore
+    })
+  }
+
   return (
     <>
       <StudentGrapContainer>
@@ -64,19 +74,7 @@ const StudentsCard = (props) => {
             students={testActivity}
             selectedStudent={selectedStudentId}
             studentResponse={qActivityByStudent}
-            handleChange={(value, _activityId) => {
-              const _testActivityId = getActivityId(_activityId)
-              setCurrentTestActivityId(_testActivityId)
-              getAllTestActivitiesForStudent({
-                studentId: value,
-                assignmentId,
-                groupId: classId,
-              })
-              setState({ selectedStudentId: value })
-              history.push(
-                `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-              )
-            }}
+            handleChange={handleChange}
             isPresentationMode={isPresentationMode}
             isCliUser={isCliUser}
             studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
@@ -255,4 +253,4 @@ export default connect(
   {
     loadStudentResponses: receiveStudentResponseAction,
   }
-)(StudentsCard)
+)(StudentsGraph)

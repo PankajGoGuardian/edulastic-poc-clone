@@ -1,4 +1,4 @@
-import { black, lightFadedBlack } from '@edulastic/colors'
+import { lightFadedBlack } from '@edulastic/colors'
 import {
   MainContentWrapper,
   CheckboxLabel,
@@ -6,15 +6,14 @@ import {
   LCBScrollContext,
   BackTop,
 } from '@edulastic/common'
-import { IconInfo } from '@edulastic/icons'
 import { withNamespaces } from '@edulastic/localization'
 import {
   testActivityStatus,
   testTypes as testTypesConstants,
   roleuser,
 } from '@edulastic/constants'
-import { Select, notification as antNotification } from 'antd'
-import { get, isEmpty, keyBy, last, round, sortBy, uniqBy } from 'lodash'
+import { notification as antNotification } from 'antd'
+import { get, isEmpty, keyBy, last, sortBy, uniqBy } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { Component } from 'react'
 import { connect } from 'react-redux'
@@ -25,7 +24,6 @@ import ClassBreadBrumb from '../../../Shared/Components/ClassBreadCrumb'
 import ClassHeader from '../../../Shared/Components/ClassHeader/ClassHeader'
 import { GenSelect } from '../../../Shared/Components/ClassSelect/ClassSelect'
 import PresentationToggleSwitch from '../../../Shared/Components/PresentationToggleSwitch'
-import StudentSelect from '../../../Shared/Components/StudentSelect/StudentSelect'
 // actions
 import {
   canvasSyncAssignmentAction,
@@ -50,7 +48,6 @@ import {
   gradebookUnSelectStudentAction,
   setShowCanvasShareAction,
 } from '../../../src/reducers/gradeBook'
-import StudentContainer from '../../../StudentView'
 // ducks
 import {
   getAdditionalDataSelector,
@@ -80,7 +77,6 @@ import {
   getIsDocBasedTestSelector,
 } from '../../ducks'
 import AddStudentsPopup from '../AddStudentsPopup'
-import BarGraph from '../BarGraph/BarGraph'
 import DisneyCardContainer from '../DisneyCardContainer/DisneyCardContainer'
 import HooksContainer from '../HooksContainer/HooksContainer'
 import Graph from '../ProgressGraph/ProgressGraph'
@@ -91,15 +87,9 @@ import Score from '../Score/Score'
 import {
   BothButton,
   GraphContainer,
-  GraphWrapper,
-  InfoWrapper,
   QuestionButton,
-  ScoreChangeWrapper,
-  ScoreHeader,
-  ScoreWrapper,
   StudentButton,
   StudentButtonDiv,
-  StudentGrapContainer,
   StyledCard,
   StyledFlexContainer,
   StickyFlex,
@@ -120,7 +110,6 @@ import {
   isDefaultDASelector,
   getIsProxiedByEAAccountSelector,
 } from '../../../../student/Login/ducks'
-import { getSubmittedDate } from '../../utils'
 import {
   isFreeAdminSelector,
   isSAWithoutSchoolsSelector,
@@ -129,6 +118,7 @@ import {
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
 import ClassBoardFeats from './ClassBoardFeats'
+import StudentsGraph from './StudentsGraph'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -1059,7 +1049,6 @@ class ClassBoard extends Component {
       allTestActivitiesForStudent,
       setCurrentTestActivityId,
       studentResponse,
-      loadStudentResponses,
       getAllTestActivitiesForStudent,
       enrollmentStatus,
       isItemsVisible,
@@ -1116,8 +1105,6 @@ class ClassBoard extends Component {
       !(additionalData?.assignedBy?._id === userId)
 
     const { assignmentId, classId } = match.params
-    const studentTestActivity =
-      (studentResponse && studentResponse.testActivity) || {}
     const studentResponseUqas = isDocBasedTest
       ? studentResponse?.questionActivities
       : uniqBy(studentResponse?.questionActivities || [], 'testItemId')
@@ -1129,20 +1116,21 @@ class ClassBoard extends Component {
         }, 0)) ||
         0) / 1000
     )
-    const { status } = studentTestActivity
-    let { score = 0, maxScore = 0 } = studentTestActivity
     const filteredStudentActivities = testActivity.filter(
       filterStudentsByStatus(studentFilter)
     )
-    if (
-      studentResponse &&
-      !isEmpty(studentResponse.questionActivities) &&
-      status === 0
-    ) {
-      studentResponse.questionActivities.forEach((uqa) => {
-        score += uqa.score
-        maxScore += uqa.maxScore
+    const handleSelectedStudentChange = (value, _activityId) => {
+      const _testActivityId = this.getActivityId(_activityId)
+      setCurrentTestActivityId(_testActivityId)
+      getAllTestActivitiesForStudent({
+        studentId: value,
+        assignmentId,
+        groupId: classId,
       })
+      this.setState({ selectedStudentId: value })
+      history.push(
+        `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+      )
     }
     const selectedStudentsKeys = Object.keys(selectedStudents)
     let firstStudentId = get(
@@ -1800,221 +1788,247 @@ class ClassBoard extends Component {
               selectedStudentId &&
               !isEmpty(testActivity) &&
               !isEmpty(classResponse) && (
-                <>
-                  <StudentGrapContainer>
-                    <StyledCard bordered={false} paddingTop={15}>
-                      <StudentSelect
-                        dataCy="dropDownSelect"
-                        style={{ width: '200px' }}
-                        students={testActivity}
-                        selectedStudent={selectedStudentId}
-                        studentResponse={qActivityByStudent}
-                        handleChange={(value, _activityId) => {
-                          const _testActivityId = this.getActivityId(
-                            _activityId
-                          )
-                          setCurrentTestActivityId(_testActivityId)
-                          getAllTestActivitiesForStudent({
-                            studentId: value,
-                            assignmentId,
-                            groupId: classId,
-                          })
-                          this.setState({ selectedStudentId: value })
-                          history.push(
-                            `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-                          )
-                        }}
-                        isPresentationMode={isPresentationMode}
-                        isCliUser={isCliUser}
-                        studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
-                      />
-                      <GraphWrapper style={{ width: '100%', display: 'flex' }}>
-                        <BarGraph
-                          gradebook={gradebook}
-                          testActivity={testActivity}
-                          studentId={selectedStudentId}
-                          studentview
-                          studentViewFilter={studentViewFilter}
-                          studentResponse={studentResponse}
-                          isLoading={isLoading}
-                        />
-                        <InfoWrapper>
-                          {allTestActivitiesForStudent.length > 1 && (
-                            <Select
-                              data-cy="attemptSelect"
-                              style={{ width: '200px' }}
-                              value={
-                                allTestActivitiesForStudent.some(
-                                  ({ _id }) =>
-                                    _id ===
-                                    (currentTestActivityId || testActivityId)
-                                )
-                                  ? currentTestActivityId || testActivityId
-                                  : ''
-                              }
-                              onChange={(_testActivityId) => {
-                                loadStudentResponses({
-                                  testActivityId: _testActivityId,
-                                  groupId: classId,
-                                  studentId: selectedStudentId,
-                                })
-                                setCurrentTestActivityId(_testActivityId)
-                                history.push(
-                                  `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
-                                )
-                              }}
-                            >
-                              {[...allTestActivitiesForStudent]
-                                .reverse()
-                                .map((_testActivity, index) => (
-                                  <Select.Option
-                                    key={index}
-                                    value={_testActivity._id}
-                                    disabled={_testActivity.status === 2}
-                                  >
-                                    {`Attempt ${
-                                      allTestActivitiesForStudent.length - index
-                                    } ${
-                                      _testActivity.status === 2
-                                        ? ' (Absent)'
-                                        : ''
-                                    }`}
-                                  </Select.Option>
-                                ))}
-                            </Select>
-                          )}
-                          <div
-                            style={{
-                              display: 'flex',
-                              justifyContent: 'space-between',
-                            }}
-                          >
-                            <div
-                              style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                padding: '10px',
-                                alignItems: 'center',
-                              }}
-                            >
-                              <ScoreHeader>TOTAL SCORE</ScoreHeader>
-                              <ScoreWrapper data-cy="totalScore">
-                                {round(score, 2) || 0}
-                              </ScoreWrapper>
-                              <div
-                                style={{
-                                  border: 'solid 1px black',
-                                  width: '50px',
-                                }}
-                              />
-                              <ScoreWrapper data-cy="totalMaxScore">
-                                {round(maxScore, 2) || 0}
-                              </ScoreWrapper>
-                            </div>
-                            {allTestActivitiesForStudent.length > 1 &&
-                            showScoreImporvement ? (
-                              <div
-                                style={{
-                                  display: 'flex',
-                                  flexDirection: 'column',
-                                  padding: '10px',
-                                  alignItems: 'center',
-                                }}
-                              >
-                                <ScoreHeader>SCORE</ScoreHeader>
-                                <ScoreChangeWrapper
-                                  data-cy="scoreChange"
-                                  scoreChange={studentTestActivity.scoreChange}
-                                >
-                                  {`${
-                                    studentTestActivity.scoreChange > 0
-                                      ? '+'
-                                      : ''
-                                  }${
-                                    round(studentTestActivity.scoreChange, 2) ||
-                                    0
-                                  }`}
-                                </ScoreChangeWrapper>
-                                <ScoreHeader
-                                  style={{ fontSize: '10px', display: 'flex' }}
-                                >
-                                  <span>Improvement </span>
-                                  <span
-                                    style={{ marginLeft: '2px' }}
-                                    title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
-                                  >
-                                    <IconInfo />
-                                  </span>
-                                </ScoreHeader>
-                              </div>
-                            ) : null}
-                          </div>
-                          <ScoreHeader
-                            data-cy="totlatTimeSpent"
-                            style={{ fontSize: '12px' }}
-                          >
-                            {' '}
-                            {`TIME (min) : `}{' '}
-                            <span
-                              style={{
-                                color: black,
-                                textTransform: 'capitalize',
-                              }}
-                            >
-                              {`${Math.floor(timeSpent / 60)}:${
-                                timeSpent % 60
-                              }` || ''}
-                            </span>
-                          </ScoreHeader>
-                          <ScoreHeader
-                            data-cy="studentStatus"
-                            style={{ fontSize: '12px' }}
-                          >
-                            {' '}
-                            {`STATUS : `}{' '}
-                            <span
-                              style={{
-                                color: black,
-                                textTransform: 'capitalize',
-                              }}
-                            >
-                              {studentTestActivity.status === 2
-                                ? 'Absent'
-                                : studentTestActivity.status === 1
-                                ? studentTestActivity.graded === 'GRADED'
-                                  ? 'Graded'
-                                  : 'Submitted'
-                                : 'In Progress' || ''}
-                            </span>
-                          </ScoreHeader>
-                          <ScoreHeader
-                            data-cy="submittedDate"
-                            style={{ fontSize: '12px' }}
-                          >
-                            SUBMITTED ON :
-                            <span style={{ color: black }}>
-                              {getSubmittedDate(
-                                studentTestActivity.endDate,
-                                additionalData.endDate
-                              )}
-                            </span>
-                          </ScoreHeader>
-                        </InfoWrapper>
-                      </GraphWrapper>
-                    </StyledCard>
-                  </StudentGrapContainer>
-                  <StudentContainer
-                    classResponse={classResponse}
-                    studentItems={testActivity}
-                    selectedStudent={selectedStudentId}
-                    isPresentationMode={isPresentationMode}
-                    isCliUser={isCliUser}
-                    MainContentWrapperRef={this.MainContentWrapperRef}
-                  />
-                  {toggleBackTopIcon && (
-                    <BackTop toggleBackTopIcon={toggleBackTopIcon} />
-                  )}
-                </>
+                <StudentsGraph
+                  gradebook={gradebook}
+                  testActivity={testActivity}
+                  classResponse={classResponse}
+                  selectedStudentId={selectedStudentId}
+                  qActivityByStudent={qActivityByStudent}
+                  studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
+                  match={match}
+                  history={history}
+                  isPresentationMode={isPresentationMode}
+                  isCliUser={isCliUser}
+                  studentViewFilter={studentViewFilter}
+                  additionalData={additionalData}
+                  studentResponse={studentResponse}
+                  isLoading={isLoading}
+                  allTestActivitiesForStudent={allTestActivitiesForStudent}
+                  currentTestActivityId={currentTestActivityId}
+                  testActivityId={testActivityId}
+                  setCurrentTestActivityId={setCurrentTestActivityId}
+                  timeSpent={timeSpent}
+                  handleChange={handleSelectedStudentChange}
+                  MainContentWrapperRef={this.MainContentWrapperRef}
+                  toggleBackTopIcon={toggleBackTopIcon}
+                  showScoreImporvement={showScoreImporvement}
+                  classId={classId}
+                />
+                // <>
+                //   <StudentGrapContainer>
+                //     <StyledCard bordered={false} paddingTop={15}>
+                //       <StudentSelect
+                //         dataCy="dropDownSelect"
+                //         style={{ width: '200px' }}
+                //         students={testActivity}
+                //         selectedStudent={selectedStudentId}
+                //         studentResponse={qActivityByStudent}
+                //         handleChange={(value, _activityId) => {
+                //           const _testActivityId = this.getActivityId(
+                //             _activityId
+                //           )
+                //           setCurrentTestActivityId(_testActivityId)
+                //           getAllTestActivitiesForStudent({
+                //             studentId: value,
+                //             assignmentId,
+                //             groupId: classId,
+                //           })
+                //           this.setState({ selectedStudentId: value })
+                //           history.push(
+                //             `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+                //           )
+                //         }}
+                //         isPresentationMode={isPresentationMode}
+                //         isCliUser={isCliUser}
+                //         studentsPrevSubmittedUtas={studentsPrevSubmittedUtas}
+                //       />
+                //       <GraphWrapper style={{ width: '100%', display: 'flex' }}>
+                //         <BarGraph
+                //           gradebook={gradebook}
+                //           testActivity={testActivity}
+                //           studentId={selectedStudentId}
+                //           studentview
+                //           studentViewFilter={studentViewFilter}
+                //           studentResponse={studentResponse}
+                //           isLoading={isLoading}
+                //         />
+                //         <InfoWrapper>
+                //           {allTestActivitiesForStudent.length > 1 && (
+                //             <Select
+                //               data-cy="attemptSelect"
+                //               style={{ width: '200px' }}
+                //               value={
+                //                 allTestActivitiesForStudent.some(
+                //                   ({ _id }) =>
+                //                     _id ===
+                //                     (currentTestActivityId || testActivityId)
+                //                 )
+                //                   ? currentTestActivityId || testActivityId
+                //                   : ''
+                //               }
+                //               onChange={(_testActivityId) => {
+                //                 loadStudentResponses({
+                //                   testActivityId: _testActivityId,
+                //                   groupId: classId,
+                //                   studentId: selectedStudentId,
+                //                 })
+                //                 setCurrentTestActivityId(_testActivityId)
+                //                 history.push(
+                //                   `/author/classboard/${assignmentId}/${classId}/test-activity/${_testActivityId}`
+                //                 )
+                //               }}
+                //             >
+                //               {[...allTestActivitiesForStudent]
+                //                 .reverse()
+                //                 .map((_testActivity, index) => (
+                //                   <Select.Option
+                //                     key={index}
+                //                     value={_testActivity._id}
+                //                     disabled={_testActivity.status === 2}
+                //                   >
+                //                     {`Attempt ${
+                //                       allTestActivitiesForStudent.length - index
+                //                     } ${
+                //                       _testActivity.status === 2
+                //                         ? ' (Absent)'
+                //                         : ''
+                //                     }`}
+                //                   </Select.Option>
+                //                 ))}
+                //             </Select>
+                //           )}
+                //           <div
+                //             style={{
+                //               display: 'flex',
+                //               justifyContent: 'space-between',
+                //             }}
+                //           >
+                //             <div
+                //               style={{
+                //                 display: 'flex',
+                //                 flexDirection: 'column',
+                //                 padding: '10px',
+                //                 alignItems: 'center',
+                //               }}
+                //             >
+                //               <ScoreHeader>TOTAL SCORE</ScoreHeader>
+                //               <ScoreWrapper data-cy="totalScore">
+                //                 {round(score, 2) || 0}
+                //               </ScoreWrapper>
+                //               <div
+                //                 style={{
+                //                   border: 'solid 1px black',
+                //                   width: '50px',
+                //                 }}
+                //               />
+                //               <ScoreWrapper data-cy="totalMaxScore">
+                //                 {round(maxScore, 2) || 0}
+                //               </ScoreWrapper>
+                //             </div>
+                //             {allTestActivitiesForStudent.length > 1 &&
+                //             showScoreImporvement ? (
+                //               <div
+                //                 style={{
+                //                   display: 'flex',
+                //                   flexDirection: 'column',
+                //                   padding: '10px',
+                //                   alignItems: 'center',
+                //                 }}
+                //               >
+                //                 <ScoreHeader>SCORE</ScoreHeader>
+                //                 <ScoreChangeWrapper
+                //                   data-cy="scoreChange"
+                //                   scoreChange={studentTestActivity.scoreChange}
+                //                 >
+                //                   {`${
+                //                     studentTestActivity.scoreChange > 0
+                //                       ? '+'
+                //                       : ''
+                //                   }${
+                //                     round(studentTestActivity.scoreChange, 2) ||
+                //                     0
+                //                   }`}
+                //                 </ScoreChangeWrapper>
+                //                 <ScoreHeader
+                //                   style={{ fontSize: '10px', display: 'flex' }}
+                //                 >
+                //                   <span>Improvement </span>
+                //                   <span
+                //                     style={{ marginLeft: '2px' }}
+                //                     title="Score increase from previous student attempt. Select an attempt from the dropdown above to view prior student responses"
+                //                   >
+                //                     <IconInfo />
+                //                   </span>
+                //                 </ScoreHeader>
+                //               </div>
+                //             ) : null}
+                //           </div>
+                //           <ScoreHeader
+                //             data-cy="totlatTimeSpent"
+                //             style={{ fontSize: '12px' }}
+                //           >
+                //             {' '}
+                //             {`TIME (min) : `}{' '}
+                //             <span
+                //               style={{
+                //                 color: black,
+                //                 textTransform: 'capitalize',
+                //               }}
+                //             >
+                //               {`${Math.floor(timeSpent / 60)}:${
+                //                 timeSpent % 60
+                //               }` || ''}
+                //             </span>
+                //           </ScoreHeader>
+                //           <ScoreHeader
+                //             data-cy="studentStatus"
+                //             style={{ fontSize: '12px' }}
+                //           >
+                //             {' '}
+                //             {`STATUS : `}{' '}
+                //             <span
+                //               style={{
+                //                 color: black,
+                //                 textTransform: 'capitalize',
+                //               }}
+                //             >
+                //               {studentTestActivity.status === 2
+                //                 ? 'Absent'
+                //                 : studentTestActivity.status === 1
+                //                 ? studentTestActivity.graded === 'GRADED'
+                //                   ? 'Graded'
+                //                   : 'Submitted'
+                //                 : 'In Progress' || ''}
+                //             </span>
+                //           </ScoreHeader>
+                //           <ScoreHeader
+                //             data-cy="submittedDate"
+                //             style={{ fontSize: '12px' }}
+                //           >
+                //             SUBMITTED ON :
+                //             <span style={{ color: black }}>
+                //               {getSubmittedDate(
+                //                 studentTestActivity.endDate,
+                //                 additionalData.endDate
+                //               )}
+                //             </span>
+                //           </ScoreHeader>
+                //         </InfoWrapper>
+                //       </GraphWrapper>
+                //     </StyledCard>
+                //   </StudentGrapContainer>
+                //   <StudentContainer
+                //     classResponse={classResponse}
+                //     studentItems={testActivity}
+                //     selectedStudent={selectedStudentId}
+                //     isPresentationMode={isPresentationMode}
+                //     isCliUser={isCliUser}
+                //     MainContentWrapperRef={this.MainContentWrapperRef}
+                //   />
+                //   {toggleBackTopIcon && (
+                //     <BackTop toggleBackTopIcon={toggleBackTopIcon} />
+                //   )}
+                // </>
               )}
             {selectedTab === 'questionView' &&
               !isEmpty(testActivity) &&

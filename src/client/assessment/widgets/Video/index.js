@@ -15,6 +15,7 @@ import AdvancedOptions from './components/AdvancedOptions'
 import VideoPreview from './VideoPreview'
 import VideoPlayer from './VideoPlayer'
 import { StyledPaperWrapper } from '../../styled/Widget'
+import VideoPreviewErrorBoundary from './components/ErrorBoundary'
 
 const EmptyWrapper = styled.div``
 
@@ -58,7 +59,9 @@ const Video = ({
 
   return (
     <Wrapper>
-      <VideoPreview item={itemForPreview} {...restProps} />
+      <VideoPreviewErrorBoundary>
+        <VideoPreview item={itemForPreview} {...restProps} />
+      </VideoPreviewErrorBoundary>
     </Wrapper>
   )
 }

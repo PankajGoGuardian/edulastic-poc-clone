@@ -19,6 +19,7 @@ const {
   PASSAGE,
   EDITING_TASK,
   MATH,
+  LIKERT_SCALE,
 } = questionType
 
 const { methods } = math
@@ -224,6 +225,7 @@ const hasEmptyOptions = (item) => {
     case CLOZE_DROP_DOWN:
       return clozeDropDownOptionsCheck(item)
     case MULTIPLE_CHOICE:
+    case LIKERT_SCALE:
       return multipleChoiceOptionsCheck(item)
     case EDITING_TASK:
       return editingTaskOptionsCheck(item)
@@ -517,15 +519,17 @@ export const isIncompleteQuestion = (
     return [true, 'Answer choices should not be empty']
   }
 
-  const isScoreValid = validateScore(
-    item,
-    multipartItem,
-    itemLevelScoring,
-    itemId,
-    qIndex
-  )
-  if (isScoreValid[0]) {
-    return isScoreValid
+  if (!questionType.questionTypeWithoutCorrectAnswer.includes(item.type)) {
+    const isScoreValid = validateScore(
+      item,
+      multipartItem,
+      itemLevelScoring,
+      itemId,
+      qIndex
+    )
+    if (isScoreValid[0]) {
+      return isScoreValid
+    }
   }
 
   if (!questionType.manuallyGradableQn.includes(item.type)) {
@@ -838,11 +842,8 @@ export const hasValidResponse = (userResponse, questions) => {
     return qids.some((qid) => {
       const qType = questions[qid]?.type
       const answer = userResponse[qid]
-      const {
-        isMath = false,
-        isUnits = false,
-        showDropdown = false,
-      } = questions[qid] || {}
+      const { isMath = false, isUnits = false, showDropdown = false } =
+        questions[qid] || {}
       if (qType === EXPRESSION_MULTIPART) {
         return validateUserResponse(answer)
         // eslint-disable-next-line no-else-return

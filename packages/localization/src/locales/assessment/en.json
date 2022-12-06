@@ -489,6 +489,15 @@
       "composeQuestion": "Question",
       "list": "List"
     },
+    "likertScale": {
+      "composeQuestion": "Question",
+      "scaleOptions": "Scale Options And Score",
+      "selectScaleType": "Select Scale Type",
+      "optionPlaceholder": "Option",
+      "addNewOption": "Add New Option",
+      "display": "Display",
+      "selectDisplayOrder": "Select Display Order"
+    },
     "sortList": {
       "containerSourcePreview": "Source",
       "containerTargetPreview": "Target",

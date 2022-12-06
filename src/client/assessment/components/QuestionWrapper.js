@@ -46,6 +46,7 @@ import { EssayPlainText } from '../widgets/EssayPlainText'
 import { EssayRichText } from '../widgets/EssayRichText'
 import FractionEditor from '../widgets/FractionEditor'
 import UploadFile from '../widgets/UploadFile'
+import LikertScale from '../widgets/LikertScale'
 
 import withAnswerSave from './HOC/withAnswerSave'
 import { MatrixChoice } from '../widgets/MatrixChoice'
@@ -167,6 +168,8 @@ const getQuestion = (type) => {
       return UploadFile
     case questionType.PICTOGRAPH:
       return Pictograph
+    case questionType.LIKERT_SCALE:
+      return LikertScale
     default:
       return () => null
   }

@@ -2,6 +2,7 @@ import React, { createRef } from 'react'
 import PropTypes from 'prop-types'
 
 import { ScrollContext, notification } from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
 import { get, isEmpty } from 'lodash'
 import { connect } from 'react-redux'
 import * as Sentry from '@sentry/browser'
@@ -315,6 +316,7 @@ class QuestionModal extends React.Component {
       windowWidth,
       studentResponseLoading,
       isScoringInProgress,
+      allResponse,
     } = this.props
     const blurStyles = studentResponseLoading
       ? { filter: 'blur(8px)', '-webkit-filter': 'blur(8px)' }
@@ -329,6 +331,10 @@ class QuestionModal extends React.Component {
     if (rowIndex !== null) {
       student = tableData[rowIndex].students
     }
+
+    const disableEditResponse = questionType.questionTypeWithoutCorrectAnswer.includes(
+      allResponse?.[0]?.qType
+    )
 
     return (
       <ModalWrapper
@@ -380,6 +386,7 @@ class QuestionModal extends React.Component {
                 nextQuestion={this.nextQuestion}
                 style={{ padding: '20px 3%' }}
                 editResponse={editResponse}
+                disableEditResponse={disableEditResponse}
                 toggleEditResponse={() =>
                   this.setState(({ editResponse: _editResponse }) => ({
                     editResponse: !_editResponse,

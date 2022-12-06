@@ -27,5 +27,6 @@ const questionTitle = {
   RE_SEQUENCE: 'Re-sequence',
   MATRICES: 'Matrices',
   FORMULA_ESSAY: 'Math Essay',
+  LIKERT_SCALE: 'Likert Scale',
 }
 module.exports = questionTitle

@@ -12,6 +12,7 @@ import {
   notification,
   EduButton,
 } from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import { Avatar, Card, Input } from 'antd'
 import {
@@ -522,7 +523,11 @@ class FeedbackRight extends Component {
     //   _maxScore = "";
     // }
 
-    const showHintUsed = !isUndefined(hintsUsed)
+    const isQuestionWithNoEvaluation = questionType.questionTypeWithoutCorrectAnswer.includes(
+      activity?.qType
+    )
+    const showHintUsed = !isUndefined(hintsUsed) && !isQuestionWithNoEvaluation
+    const showGradingPolicy = !isQuestionWithNoEvaluation
 
     return (
       <StyledCardTwo
@@ -557,7 +562,8 @@ class FeedbackRight extends Component {
                   disabled={
                     isPresentationMode ||
                     isPracticeQuestion ||
-                    isScoreInputDisabled
+                    isScoreInputDisabled ||
+                    isQuestionWithNoEvaluation
                   }
                   ref={this.scoreInput}
                   onKeyDown={this.onKeyDownFeedback}
@@ -566,12 +572,14 @@ class FeedbackRight extends Component {
                 <TextPara>{_maxScore}</TextPara>
               </ScoreInputWrapper>
             </StyledDivSec>
-            <GradingPolicyWrapper>
-              GRADING POLICY &nbsp;
-              <GradingPolicy data-cy="gradingPolicyType">
-                {activity.scoringType}
-              </GradingPolicy>
-            </GradingPolicyWrapper>
+            {showGradingPolicy && (
+              <GradingPolicyWrapper>
+                GRADING POLICY &nbsp;
+                <GradingPolicy data-cy="gradingPolicyType">
+                  {activity.scoringType}
+                </GradingPolicy>
+              </GradingPolicyWrapper>
+            )}
           </>
         ) : (
           <UnScored data-cy="unscoredInput" text="Zero Point" height="50px" />

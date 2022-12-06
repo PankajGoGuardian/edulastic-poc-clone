@@ -628,10 +628,12 @@ class PreviewModal extends React.Component {
     const { authors = [], rows, data = {} } = item || {}
     const questionsType =
       data.questions && uniq(data.questions.map((question) => question.type))
-    const intersectionCount = intersection(
-      questionsType,
-      questionType.manuallyGradableQn
-    ).length
+    const noAnswerButtonQns = [
+      ...questionType.manuallyGradableQn,
+      ...questionType.questionTypeWithoutCorrectAnswer,
+    ]
+    const intersectionCount = intersection(questionsType, noAnswerButtonQns)
+      .length
     const isAnswerBtnVisible =
       questionsType && intersectionCount < questionsType.length
     const isOwner = authors.some((author) => author._id === userId)

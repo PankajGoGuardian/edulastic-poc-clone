@@ -232,7 +232,13 @@ const answerValidator = {
 // check the structure of validation for all such question types
 // make the helper generic to support all such question types
 export const hasEmptyAnswers = (item) => {
-  if (questionType.manuallyGradableQn.includes(item.type)) return false
+  if (
+    questionType.manuallyGradableQn.includes(item.type) ||
+    questionType.questionTypeWithoutCorrectAnswer.includes(item.type)
+  ) {
+    return false
+  }
+
   const correctAnswers = [
     item?.validation?.validResponse,
     ...(item?.validation?.altResponses || []),

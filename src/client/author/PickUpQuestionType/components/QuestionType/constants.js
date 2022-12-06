@@ -1422,6 +1422,55 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       onSelectQuestionType,
     },
     {
+      type: 'multiple-choice',
+      // cardImage:,
+      data: {
+        title: questionTitle.LIKERT_SCALE,
+        type: questionType.LIKERT_SCALE,
+        stimulus: '',
+        scaleType: 'agreement',
+        displayOrder: 'ASC',
+        options: [
+          {
+            value: uuids[0],
+            label: 'Strongly Disagree',
+            score: 1,
+            emojiUrl: 'https://openmoji.org/data/color/svg/1F621.svg',
+          },
+          {
+            value: uuids[1],
+            label: 'Disagree',
+            score: 2,
+            emojiUrl: 'https://openmoji.org/data/color/svg/1F641.svg',
+          },
+          {
+            value: uuids[2],
+            label: 'Undecided',
+            score: 3,
+            emojiUrl: 'https://openmoji.org/data/color/svg/1F610.svg',
+          },
+          {
+            value: uuids[3],
+            label: 'Agree',
+            score: 4,
+            emojiUrl: 'https://openmoji.org/data/color/svg/1F60A.svg',
+          },
+          {
+            value: uuids[4],
+            label: 'Strongly Agree',
+            score: 5,
+            emojiUrl: 'https://openmoji.org/data/color/svg/1F600.svg',
+          },
+        ],
+        validation: {
+          validResponse: {
+            score: 5,
+          },
+        },
+      },
+      onSelectQuestionType,
+    },
+    {
       type: 'fill-blanks',
       cardImage: FBClozeDragDrop,
       stimulus: '',

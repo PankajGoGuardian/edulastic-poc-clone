@@ -352,7 +352,10 @@ class Container extends Component {
     const hideScoreBlock = multipartItem && itemLevelScoring
     const isShowAnswerVisible =
       question &&
-      !constantsQuestionType.manuallyGradableQn.includes(question.type)
+      !constantsQuestionType.manuallyGradableQn.includes(question.type) &&
+      !constantsQuestionType.questionTypeWithoutCorrectAnswer.includes(
+        question.type
+      )
 
     return (
       <ButtonAction

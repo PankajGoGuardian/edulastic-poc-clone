@@ -55,6 +55,7 @@ const GRAPH_PLACEMENT = 'graphPlacement'
 const RANGE_PLOTTER = 'rangePlotter'
 const MULTIPART = 'multipart'
 const PICTOGRAPH = 'pictograph'
+const LIKERT_SCALE = 'likertScale'
 
 const selectsData = [
   { value: '', text: 'All Types' },
@@ -106,6 +107,7 @@ const selectsData = [
   { value: MULTIPLE_SELECTION, text: 'Multiple Selection' },
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
+  { value: LIKERT_SCALE, text: 'Likert Scale' },
 ]
 
 const manuallyGradableQn = [
@@ -115,6 +117,8 @@ const manuallyGradableQn = [
   ESSAY_RICH_TEXT,
   ESSAY_PLAIN_TEXT,
 ]
+
+const questionTypeWithoutCorrectAnswer = [LIKERT_SCALE]
 
 const useLanguageFeatureQn = [
   EXPRESSION_MULTIPART,
@@ -176,6 +180,7 @@ module.exports = {
   selectsData,
   PASSAGE_WITH_QUESTIONS,
   manuallyGradableQn,
+  questionTypeWithoutCorrectAnswer,
   TRUE_OR_FALSE,
   SECTION_LABEL,
   FRACTION_EDITOR,
@@ -183,4 +188,5 @@ module.exports = {
   CODING,
   useLanguageFeatureQn,
   PICTOGRAPH,
+  LIKERT_SCALE,
 }

@@ -220,7 +220,7 @@ const Header = ({
     const filter = {
       classId,
       testType: '',
-      termId: '',
+      termId: selectedClass.termId,
     }
     setFilterInSession({
       key: 'assignments_filter',

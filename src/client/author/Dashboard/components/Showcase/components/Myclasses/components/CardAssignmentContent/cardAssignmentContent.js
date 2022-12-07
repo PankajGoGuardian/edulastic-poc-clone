@@ -23,13 +23,13 @@ export const CardAssignmentContent = ({
   districtId,
   setShowAssignmentCreationModal,
 }) => {
-  const { totalAssignment, _id } = data
+  const { totalAssignment, _id, termId } = data
 
   const applyClassFilter = () => {
     const filter = {
       classId: _id,
       testType: '',
-      termId: '',
+      termId,
     }
     setFilterInSession({
       key: 'assignments_filter',

@@ -49,7 +49,6 @@ import {
   getUserOrgId,
 } from '../../../../../src/selectors/user'
 import TestRecommendations from './components/TestRecommendations'
-import { receiveAssignmentsAction } from '../../../../../src/actions/assignments'
 import ClassBanner from './components/ClassBanner'
 
 const ItemPurchaseModal = loadable(() =>
@@ -88,7 +87,6 @@ const MyClasses = ({
   setShowHeaderTrialModal,
   setUser,
   isDemoPlayground = false,
-  loadAssignments,
   interestedSubjects,
   totalAssignmentCount,
   displayText,
@@ -120,7 +118,6 @@ const MyClasses = ({
   }, [showCleverSyncModal])
   useEffect(() => {
     getTeacherDashboard()
-    loadAssignments()
     getDictCurriculums()
     receiveSearchCourse({ districtId, active: 1 })
   }, [])
@@ -885,7 +882,6 @@ export default compose(
       startTrialAction: slice.actions.startTrialAction,
       setShowHeaderTrialModal: slice.actions.setShowHeaderTrialModal,
       setUser: setUserAction,
-      loadAssignments: receiveAssignmentsAction,
     }
   )
 )(MyClasses)

@@ -286,6 +286,7 @@ const StandardsModal = ({
                       onChange={handleCheckAll}
                       checked={allChecked}
                       textTransform="none"
+                      data-cy="allStandards"
                     >
                       All {selectedTLO.identifier} Standards
                     </CheckboxLabel>

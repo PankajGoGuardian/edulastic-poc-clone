@@ -356,6 +356,24 @@ const getUserLocation = () =>
     })
     .then((result) => result.data)
 
+const addFeedback = (id, data) =>
+  api
+    .callApi({
+      url: `${prefix}/feedback/${id}`,
+      method: 'post',
+      data,
+    })
+    .then((r) => r.data)
+
+const getFeedbacks = (id, params) =>
+  api
+    .callApi({
+      url: `${prefix}/feedbacks/${id}`,
+      method: 'get',
+      params,
+    })
+    .then((r) => r.data)
+
 export default {
   getUser,
   fetchUsers,
@@ -396,4 +414,6 @@ export default {
   updateCollectionVisited,
   eulaPolicyStatusUpdate,
   getUserLocation,
+  addFeedback,
+  getFeedbacks,
 }

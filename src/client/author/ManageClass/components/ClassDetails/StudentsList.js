@@ -7,6 +7,7 @@ import * as moment from 'moment'
 // components
 import { Spin, Tooltip } from 'antd'
 import { GiDominoMask } from 'react-icons/gi'
+import { MdRateReview } from 'react-icons/md'
 import { IconClose, IconCorrect, IconExclamationMark } from '@edulastic/icons'
 import { lightBlue3 } from '@edulastic/colors'
 import { EduSwitchStyled } from '@edulastic/common'
@@ -34,6 +35,7 @@ import {
   getGroupList,
 } from '../../../src/selectors/user'
 import { getFormattedName } from '../../../Gradebook/transformers'
+import FeedbackModal from '../../../Student/components/StudentTable/FeedbackModal'
 
 const StudentsList = ({
   cuId,
@@ -50,6 +52,7 @@ const StudentsList = ({
   isProxyUser,
 }) => {
   const [showCurrentStudents, setShowCurrentStudents] = useState(true)
+  const [feedbackStudentId, setFeedbackStudentId] = useState(null)
 
   const { _id: groupId, type, active } = selectedClass
   const typeText = type !== 'class' ? 'group' : 'class'
@@ -173,20 +176,28 @@ const StudentsList = ({
       ),
     },
     {
-      render: (_, { _id, enrollmentStatus, status }) =>
-        !isProxyUser && enrollmentStatus === 1 && status === 1 ? (
-          <Tooltip placement="topRight" title="View as Student">
-            <GiDominoMask
-              onClick={() =>
-                proxyUser({
-                  userId: _id,
-                  groupId,
-                  currentUser: { _id: cuId, role: cuRole },
-                })
-              }
-            />
-          </Tooltip>
-        ) : null,
+      render: (_, { _id, enrollmentStatus, status }) => (
+        <div>
+          {!isProxyUser && enrollmentStatus === 1 && status === 1 ? (
+            <Tooltip placement="topRight" title="View as Student">
+              <GiDominoMask
+                onClick={() =>
+                  proxyUser({
+                    userId: _id,
+                    groupId,
+                    currentUser: { _id: cuId, role: cuRole },
+                  })
+                }
+              />
+            </Tooltip>
+          ) : null}
+          {cuRole === 'teacher' ? (
+            <Tooltip placement="topRight" title="Add Feedback">
+              <MdRateReview onClick={() => setFeedbackStudentId(_id)} />
+            </Tooltip>
+          ) : null}
+        </div>
+      ),
     },
   ]
 
@@ -231,6 +242,10 @@ const StudentsList = ({
           </>
         </TableWrapper>
       )}
+      <FeedbackModal
+        feedbackStudentId={feedbackStudentId}
+        onClose={() => setFeedbackStudentId(null)}
+      />
     </div>
   )
 }

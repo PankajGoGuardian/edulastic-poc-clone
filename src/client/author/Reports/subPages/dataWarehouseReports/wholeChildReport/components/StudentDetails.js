@@ -1,5 +1,5 @@
 import React from 'react'
-import { Icon } from 'antd'
+import { Icon, Tooltip } from 'antd'
 
 import { themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
@@ -13,7 +13,20 @@ import {
   StyledLine,
   Demographics,
   UserIcon,
+  OverallPerformanceWrapper,
+  StyledDiv,
+  StyledSpan,
+  StyledTag,
 } from '../common/styled'
+import {
+  TooltipRow,
+  TooltipRowTitle,
+  TooltipRowValue,
+} from '../../../../common/styled'
+import SimplePieChartComponent from './PieChart'
+import { getProficiencyPieChartData } from '../utils'
+import { TableTooltipWrapper } from '../../common/styled'
+import { percentage } from '../../../../common/util'
 
 const { getFormattedName } = reportUtils.common
 
@@ -32,12 +45,66 @@ const StudentDetails = ({
     hispanicEthnicity,
     thumbnail,
   },
+  chartData,
+  selectedPerformanceBand,
+  attendancePieChartData,
 }) => {
   const studentName = getFormattedName(
     `${firstName} ${middleName} ${lastName}`,
     false,
     true
   )
+
+  const CustomTooltip = (props) => (
+    <TableTooltipWrapper>
+      <Tooltip {...props} />
+    </TableTooltipWrapper>
+  )
+
+  const [pieChartData, avgAverageScore] = getProficiencyPieChartData(
+    chartData,
+    selectedPerformanceBand
+  )
+
+  const performanceRiskMap = {
+    above: { fill: '#afe1af', label: 'Not at risk' },
+    below: { fill: '#E55C5C', label: 'At risk' },
+  }
+
+  const threshold = 30
+
+  const getTooltipText = () => {
+    const { count, sum, name } = pieChartData.reduce((prev, curr) =>
+      prev.threshold < curr.threshold ? prev : curr
+    )
+
+    const performanceRiskKey =
+      percentage(count, sum, true) > threshold ? 'below' : 'above'
+
+    const tooltipText = (
+      <>
+        <TooltipRow>
+          <TooltipRowValue>{`${count}/${sum} `}</TooltipRowValue>
+          <TooltipRowTitle>&nbsp;assessments are in</TooltipRowTitle>
+        </TooltipRow>
+        <TooltipRow>
+          <TooltipRowValue>{name}</TooltipRowValue>
+        </TooltipRow>
+      </>
+    )
+    return [tooltipText, performanceRiskKey]
+  }
+
+  const totalpresents = attendancePieChartData.filter(
+    (cd) => cd.name === 'Present'
+  )[0]
+  const attendanceChartLabel = percentage(
+    totalpresents.count,
+    totalpresents.sum,
+    true
+  )
+
+  const [tooltipText, performanceRiskKey] = getTooltipText()
 
   return (
     <div>
@@ -130,6 +197,43 @@ const StudentDetails = ({
           </div>
         ) : null}
       </Demographics>
+      <OverallPerformanceWrapper>
+        <StyledDiv>
+          <StyledSpan>OVERALL PROFICIENCY: </StyledSpan>
+          <SimplePieChartComponent
+            pieChartData={pieChartData}
+            label={avgAverageScore}
+            showTooltip
+          />
+        </StyledDiv>
+        <StyledLine width="1px" height="100px" />
+        <StyledDiv>
+          <StyledSpan>PERFORMANCE RISK: </StyledSpan>
+          <CustomTooltip
+            title={tooltipText}
+            getPopupContainer={(triggerNode) => triggerNode}
+          >
+            <StyledTag fill={performanceRiskMap[performanceRiskKey].fill}>
+              {performanceRiskMap[performanceRiskKey].label}
+            </StyledTag>
+          </CustomTooltip>
+        </StyledDiv>
+
+        <StyledLine width="1px" height="100px" />
+        <StyledDiv>
+          <StyledSpan>ATTENDANCE: </StyledSpan>
+          <SimplePieChartComponent
+            pieChartData={attendancePieChartData}
+            label={attendanceChartLabel}
+            showTooltip={false}
+          />
+        </StyledDiv>
+        <StyledLine width="1px" height="100px" />
+        <StyledDiv>
+          <StyledSpan>SEL: </StyledSpan>
+          <StyledTag>Favourable</StyledTag>
+        </StyledDiv>
+      </OverallPerformanceWrapper>
     </div>
   )
 }

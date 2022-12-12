@@ -8,6 +8,9 @@ import {
   titleColor,
 } from '@edulastic/colors'
 
+/**
+ * @param {import('antd/lib/modal').ModalProps} param0
+ */
 const CustomModalStyled = ({ children, ...props }) => (
   <StyledModal {...props}>{children}</StyledModal>
 )

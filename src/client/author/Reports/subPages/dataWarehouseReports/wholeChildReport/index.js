@@ -39,8 +39,11 @@ import {
   mergeSchoolMetrics,
   mergeDistrictMetrics,
   mergeTestMetrics,
+  getAttendanceChartData,
 } from './utils'
 import navigation from '../../../common/static/json/navigation.json'
+import { AttendanceChart } from './components/AttendanceChart'
+import FeedbacksTable from './components/FeedbacksTable'
 
 const { downloadCSV } = reportUtils.common
 
@@ -72,8 +75,10 @@ const WholeChildReport = ({
   // selectedPerformanceBandProfileId,
   // selectedPerformanceBand,
   loadingReportData,
+  loadingAttendanceData,
   settings,
   reportData,
+  attendanceData,
   error,
   // action props
   onRefineResultsCB,
@@ -90,6 +95,7 @@ const WholeChildReport = ({
   resetFiltersData,
   setSettings,
   fetchReportDataRequest,
+  fetchAttendanceDataRequest,
   fetchUpdateTagsData,
 }) => {
   const reportId = useMemo(
@@ -218,6 +224,10 @@ const WholeChildReport = ({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
       })
+      fetchAttendanceDataRequest({
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
+      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
@@ -274,6 +284,11 @@ const WholeChildReport = ({
         isEmpty(schoolMetrics),
     ]
   }, [reportData, settings.selectedStudentClassData, selectedPerformanceBand])
+
+  const [attendancePieChartData, attendanceChartData] = useMemo(() => {
+    const _attendanceChartData = getAttendanceChartData(attendanceData)
+    return _attendanceChartData
+  }, [attendanceData])
 
   const studentName = getStudentName(
     settings.selectedStudentInformation,
@@ -341,7 +356,7 @@ const WholeChildReport = ({
       </SubHeader>
       <ReportContainer>
         {firstLoad && <Spin size="large" />}
-        {loadingReportData ? (
+        {loadingReportData || loadingAttendanceData ? (
           <SpinLoader
             tip="Please wait while we gather the required information..."
             position="fixed"
@@ -358,11 +373,15 @@ const WholeChildReport = ({
           <>
             <StudentDetails
               studentInformation={settings.selectedStudentInformation}
+              chartData={chartData}
+              selectedPerformanceBand={selectedPerformanceBand}
+              attendancePieChartData={attendancePieChartData}
             />
             <AssessmentsChart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}
             />
+            <AttendanceChart attendanceChartData={attendanceChartData} />
             <AssessmentsTable
               // pageTitle={pageTitle}
               // location={location}
@@ -371,6 +390,10 @@ const WholeChildReport = ({
               isSharedReport={isSharedReport}
               onCsvConvert={onCsvConvert}
               isCsvDownloading={isCsvDownloading}
+            />
+            <FeedbacksTable
+              studentId={settings.selectedStudent.key}
+              termId={settings.requestFilters.termId}
             />
           </>
         )}

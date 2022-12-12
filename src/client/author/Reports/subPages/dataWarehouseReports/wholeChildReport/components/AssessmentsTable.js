@@ -2,7 +2,7 @@ import React, { useMemo } from 'react'
 import next from 'immer'
 import { Link } from 'react-router-dom'
 
-import { Row, Tooltip } from 'antd'
+import { Row, Tooltip, Typography } from 'antd'
 import { isEmpty, uniq } from 'lodash'
 import { themeColor } from '@edulastic/colors'
 import CsvTable from '../../../../common/components/tables/CsvTable'
@@ -11,6 +11,7 @@ import {
   CustomStyledTable,
   TableContainer,
   AssessmentName,
+  DashedLine,
 } from '../../common/styled'
 
 import { tableColumnsData } from '../utils'
@@ -173,12 +174,22 @@ const AssessmentsTable = ({
   }, [isSharedReport, ...claimNames])
   return (
     <TableContainer>
+      <Row type="flex" style={{ margin: '32px 0', alignItems: 'center' }}>
+        <Typography.Title style={{ margin: 0 }} level={3}>
+          Assessment Performance details
+        </Typography.Title>
+        <DashedLine />
+      </Row>
       <CsvTable
         dataSource={tableData}
         columns={tableColumns}
         tableToRender={CustomStyledTable}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
+        pagination={{
+          hideOnSinglePage: true,
+          pageSize: 5,
+        }}
       />
     </TableContainer>
   )

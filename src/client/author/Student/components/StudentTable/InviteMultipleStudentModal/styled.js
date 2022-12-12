@@ -24,6 +24,7 @@ export const StyledSearch = styled(Search)`
   }
 `
 
+/** @type {typeof TextArea} */
 export const StyledTextArea = styled(TextArea)`
   margin-top: 10px;
   min-height: 120px !important;

@@ -10,6 +10,9 @@ const defaultPagination = {
   pageSize: 50,
 }
 
+/**
+ * @param {import('antd/lib/table').TableProps} params0
+ * */
 const CsvTable = ({
   onCsvConvert,
   isCsvDownloading,
@@ -83,6 +86,10 @@ const StyledTableWrapper = styled.div`
   }
 `
 
+/**
+ * @template T
+ * @param {{tableToRender: T} & Parameters<T>[0]} param0
+ */
 export default connect(
   (state) => ({
     isPrinting: getPrintingState(state),

@@ -9,12 +9,9 @@ import {
   CustomStyledTable,
   TableContainer,
   AssessmentName,
-} from '../../common/styled'
-import {
-  AssessmentNameContainer,
-  StyledSpan,
   TableTooltipWrapper,
-} from '../common/styled'
+} from '../../common/styled'
+import { AssessmentNameContainer, StyledSpan } from '../common/styled'
 import {
   TooltipRow,
   TooltipRowTitle,

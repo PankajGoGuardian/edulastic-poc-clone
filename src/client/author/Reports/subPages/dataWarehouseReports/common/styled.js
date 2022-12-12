@@ -10,6 +10,7 @@ export const StyledTag = styled(Tag)`
   font-weight: bold;
 `
 
+/** @type {typeof import('antd').Table} */
 export const CustomStyledTable = styled(StyledTable)`
   table {
     tbody {
@@ -56,4 +57,32 @@ export const AssessmentName = styled.div`
 `
 export const TableContainer = styled.div`
   margin-top: 20px;
+`
+
+export const TableTooltipWrapper = styled.div`
+  .ant-tooltip-inner {
+    min-height: 75px;
+    width: 200px;
+    background-color: #4b4b4b;
+    border-radius: 10px;
+    box-shadow: 0 0 20px #c0c0c0;
+    padding: 20px;
+    font-size: 12px;
+    font-weight: 600;
+  }
+`
+
+export const DashedLine = styled.div`
+  overflow: hidden;
+  position: relative;
+  flex-grow: 1;
+  height: ${(props) => props.height ?? '0.5px'};
+  margin: 0 24px;
+  &:before {
+    content: '';
+    position: absolute;
+    border: ${(props) => props.dashWidth ?? '5px'} dashed
+      ${(props) => props.dashColor ?? '#707070'};
+    inset: 0;
+  }
 `

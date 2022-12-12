@@ -45,7 +45,7 @@ export const Demographics = styled.div`
   justify-content: center;
   padding: 20px 5px;
   background-color: ${fadedGrey};
-  border-radius: 0px 0px 10px 10px;
+  border-radius: 0px 0px 0px 0px;
   & > div.demographic-item {
     display: flex;
     margin: 0px 30px;
@@ -95,8 +95,8 @@ export const StudentMetaData = styled.div`
 `
 
 export const StyledLine = styled.div`
-  border-left: 4px solid ${themeLightGrayColor};
-  height: 25px;
+  border-left: ${(props) => props.width || '4px'} solid ${themeLightGrayColor};
+  height: ${(props) => props.height || '25px'};
   border-radius: 1px;
 `
 
@@ -114,4 +114,39 @@ export const UserIcon = styled.div`
   background-position: center;
   background-size: cover;
   background-repeat: no-repeat;
+`
+
+export const OverallPerformanceWrapper = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 50px;
+  background-color: ${themeLightGrayBgColor};
+  min-height: 130px;
+  border-radius: 0px 0px 10px 10px;
+`
+export const StyledSpan = styled.span`
+  display: flex;
+  font-weight: bold;
+  font-color: ${themeLightGrayColor};
+  margin-right: 10px;
+  align-items: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  line-height: normal;
+`
+export const StyledTag = styled.div`
+  display: flex;
+  font-weight: bold;
+  justify-content: center;
+  background-color: ${(props) => props.fill || '#afe1af'};
+  align-items: center;
+  padding: 0 8px;
+  width: 100px;
+  height: 40px;
+  border-radius: 4px;
+`
+export const StyledDiv = styled.div`
+  display: flex;
 `

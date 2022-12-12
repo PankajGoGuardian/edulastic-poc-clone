@@ -46,7 +46,9 @@ const initialState = {
     selectedStudentClassData: {},
   },
   loadingReportData: false,
+  loadingAttendanceData: false,
   reportData: {},
+  attendanceData: {},
   error: '',
 }
 
@@ -117,6 +119,19 @@ const slice = createSlice({
     },
     fetchReportDataRequestError: (state, { payload }) => {
       state.loadingReportData = false
+      state.error = payload.error
+    },
+    fetchAttendanceDataRequest: (state) => {
+      state.loadingAttendanceData = true
+    },
+    fetchAttendanceDataRequestSuccess: (state, { payload }) => {
+      state.loadingAttendanceData = false
+      state.attendanceData = payload.attendanceData.data.result
+      state.error = ''
+    },
+    fetchAttendanceDataRequestError: (state, { payload }) => {
+      state.loadingAttendanceData = false
+      state.attendanceData = []
       state.error = payload.error
     },
     resetDWWholeChildReport: () => ({ ...initialState }),
@@ -191,11 +206,43 @@ function* fetchReportDataRequestSaga({ payload }) {
   }
 }
 
+function* fetchAttendanceDataRequestSaga({ payload }) {
+  try {
+    const params = payload.reportId
+      ? pick(payload, ['reportId'])
+      : pick(payload, ['studentId', 'termId'])
+    const attendanceData = yield call(
+      dataWarehouseApi.getAttendanceMetrics,
+      params
+    )
+    const dataSizeExceeded = attendanceData?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put(
+        actions.fetchReportDataRequestError({
+          error: { ...attendanceData.data },
+        })
+      )
+      return
+    }
+    yield put(actions.fetchAttendanceDataRequestSuccess({ attendanceData }))
+  } catch (error) {
+    console.log('err', error.stack)
+    const msg =
+      'Error fetching attendance data. Please try again after a few minutes.'
+    notification({ msg })
+    yield put(actions.fetchAttendanceDataRequestError({ error: msg }))
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     takeLatest(actions.fetchFiltersDataRequest, fetchFiltersDataRequestSaga),
     takeLatest(actions.fetchStudentsDataRequest, fetchStudentsDataRequestSaga),
     takeLatest(actions.fetchReportDataRequest, fetchReportDataRequestSaga),
+    takeLatest(
+      actions.fetchAttendanceDataRequest,
+      fetchAttendanceDataRequestSaga
+    ),
   ])
 }
 
@@ -270,6 +317,10 @@ const loadingReportData = createSelector(
 )
 const settings = createSelector(stateSelector, (state) => state.settings)
 const reportData = createSelector(stateSelector, (state) => state.reportData)
+const attendanceData = createSelector(
+  stateSelector,
+  (state) => state.attendanceData
+)
 const error = createSelector(stateSelector, (state) => state.error)
 
 export const selectors = {
@@ -290,6 +341,7 @@ export const selectors = {
   loadingReportData,
   settings,
   reportData,
+  attendanceData,
   error,
 }
 

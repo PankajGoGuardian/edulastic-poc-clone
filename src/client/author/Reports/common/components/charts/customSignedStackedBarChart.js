@@ -1,5 +1,5 @@
 /* eslint-disable jsx-a11y/mouse-events-have-key-events */
-import React, { useState, useMemo, useEffect } from 'react'
+import React, { useState, useMemo, useRef } from 'react'
 import {
   BarChart,
   Bar as _Bar,
@@ -54,8 +54,9 @@ const LabelText = ({
   return (
     <g
       className="asd-asd"
-      onMouseOver={onBarMouseOver(bdIndex)}
+      onMouseOver={onBarMouseOver(bdIndex, true)}
       onMouseLeave={onBarMouseLeave(bdIndex)}
+      style={{ pointerEvents: 'none' }}
     >
       <text
         x={x + width / 2}
@@ -108,6 +109,7 @@ export const SignedStackedBarChart = ({
     endIndex: pageSize - 1,
   })
   const [barIndex, setBarIndex] = useState(null)
+  const parentContainerRef = useRef(null)
   const [activeLegend, setActiveLegend] = useState(null)
   const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
     visibility: 'hidden',
@@ -115,34 +117,6 @@ export const SignedStackedBarChart = ({
     y: null,
     content: null,
   })
-  const [hoveredBarDimensions, setHoveredBarDimensions] = useState({
-    x: 0,
-    y: 0,
-    width: 0,
-  })
-
-  useEffect(() => {
-    const tooltip = document.querySelector('.recharts-tooltip-wrapper')
-
-    if (!tooltip) return
-    const tooltipHeight = tooltip.getBoundingClientRect().height
-    const tooltipWidth = tooltip.getBoundingClientRect().width
-    const spaceForLittleTriangle = 10
-    const spaceForPercentageLabel = 20
-
-    tooltip.style = `
-      transform: translate(${hoveredBarDimensions?.x}px, ${
-      hoveredBarDimensions?.y
-    }px);
-      pointer-events: none;  
-      position: absolute;
-      top: -${
-        tooltipHeight + spaceForLittleTriangle + spaceForPercentageLabel
-      }px;
-      left: -${tooltipWidth / 2 - hoveredBarDimensions?.width / 2}px;
-      transition: all 400ms ease 0s;
-    `
-  }, [hoveredBarDimensions])
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -201,30 +175,53 @@ export const SignedStackedBarChart = ({
     onResetClickCB()
   }
 
-  const onBarMouseOver = (index, shouldUpdateHoveredBar = false) => (event) => {
+  const updateTooltipPosition = (hoveredBarDimensions) => {
+    if (!parentContainerRef.current) return
+    const { width, x, y } = hoveredBarDimensions
+
+    parentContainerRef.current.style.setProperty(
+      '--tooltip-transform',
+      `translate(${x + width / 2 - 100}px, calc(${y - 30}px - 100% ))`
+    )
+    parentContainerRef.current.style.setProperty(
+      '--tooltip-top',
+      '0'
+      // `${height / 2}px`
+    )
+    parentContainerRef.current.style.setProperty(
+      '--tooltip-left',
+      '0'
+      // `${width}px`
+    )
+  }
+
+  const onBarMouseOver = (index) => (event) => {
     setBarIndex(index)
-    if (!isEmpty(event) && shouldUpdateHoveredBar) {
-      let d
-      // To handle updating tooltip position when the label on top of the bar is hovered.
-      // the label does not contain x,y coordinate relative to chart container.
-      // label's parent element contains x,y coordinate relative to chart container.
-      if (!isEmpty(event.target)) {
-        const attributes = event?.target?.parentNode?.attributes
-        const width = +attributes.width.nodeValue
-        d = {
-          x: +attributes.x.nodeValue - width / 2,
-          y: +attributes.y.nodeValue,
-          width,
-        }
-      } else {
-        d = {
-          x: event?.x,
-          y: event?.y,
-          width: event?.width,
-        }
-      }
-      setHoveredBarDimensions(d)
+    if (isEmpty(event)) return
+    let d = {
+      x: event.x,
+      y: event.testType === 'External Assessment' ? 50 : event.y,
+      width: event.width,
+      height: event.height,
     }
+    // To handle updating tooltip position when the labels are hovered.
+    // the label does not contain x,y coordinate relative to chart container.
+    // label's parent element contains x,y coordinate relative to chart container.
+    if (!isEmpty(event.target)) {
+      const attributes = event.target.parentNode.attributes
+      const width = 45
+      if (Number.isNaN(width)) return
+      const height = +attributes.height?.nodeValue
+      const x = +attributes.x?.nodeValue
+      const y = +attributes.y?.nodeValue
+      d = {
+        x,
+        y,
+        width,
+        height,
+      }
+    }
+    updateTooltipPosition(d)
   }
 
   const onBarMouseLeave = () => () => {
@@ -306,7 +303,7 @@ export const SignedStackedBarChart = ({
       : scrollRight()
 
   return (
-    <StyledSignedStackedBarChartContainer>
+    <StyledSignedStackedBarChartContainer ref={parentContainerRef}>
       <ResetButtonClear
         onClick={onResetClick}
         style={
@@ -388,7 +385,6 @@ export const SignedStackedBarChart = ({
           ) : null}
           <Tooltip
             cursor={false}
-            position={{ x: hoveredBarDimensions.x, y: hoveredBarDimensions.y }}
             content={
               <StyledCustomChartTooltipDark
                 getJSX={getTooltipJSX}
@@ -538,5 +534,12 @@ const StyledSignedStackedBarChartContainer = styled.div`
         white-space: pre;
       }
     }
+  }
+  & .recharts-wrapper > .recharts-tooltip-wrapper {
+    transform: var(--tooltip-transform) !important;
+    top: var(--tooltip-top) !important;
+    left: var(--tooltip-left) !important;
+    visibility: visible !important;
+    transition: all 400ms ease 0s;
   }
 `

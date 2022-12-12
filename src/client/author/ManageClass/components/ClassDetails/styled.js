@@ -86,6 +86,10 @@ export const StudentsTable = styled(EduTableStyled)`
           }
         }
         &:hover:not(.ant-table-expanded-row) > td:last-child {
+          & > div {
+            display: flex;
+            gap: 16px;
+          }
           svg {
             display: block;
           }

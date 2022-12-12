@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { reportUtils } from '@edulastic/constants'
 import { round } from 'lodash'
+import { Row, Typography } from 'antd'
 import { SignedStackedBarChart } from '../../../../common/components/charts/customSignedStackedBarChart'
 import {
   TooltipRow,
@@ -11,6 +12,7 @@ import {
   ColorCircle,
   ColorBandRow,
 } from '../../../../common/styled'
+import { DashedLine } from '../../common/styled'
 
 const { formatDate } = reportUtils.common
 
@@ -183,6 +185,12 @@ const AssessmentsChart = ({
 
   return (
     <div>
+      <Row type="flex" style={{ margin: '32px 0', alignItems: 'center' }}>
+        <Typography.Title style={{ margin: 0 }} level={3}>
+          Academic Performance
+        </Typography.Title>
+        <DashedLine />
+      </Row>
       <SignedStackedBarChart
         data={data}
         barsData={

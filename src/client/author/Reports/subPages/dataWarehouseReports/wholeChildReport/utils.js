@@ -15,6 +15,7 @@ import {
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
 import { getColorBandBySize } from '@edulastic/constants/const/colors'
+import moment from 'moment'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -316,6 +317,67 @@ export const getChartData = ({
     return assessmentData
   }).sort((a, b) => Number(b.assignmentDate) - Number(a.assignmentDate))
   return parsedData
+}
+
+export const getProficiencyPieChartData = (
+  chartData = [],
+  selectedPerformanceBand = []
+) => {
+  const internalAssessmentData = chartData.filter((cd) => !cd.externalTestType)
+
+  const avgAverageScore = round(
+    percentage(
+      sumBy(internalAssessmentData, 'averageScore'),
+      100 * internalAssessmentData.length
+    ),
+    2
+  )
+
+  const pieChartData = map(selectedPerformanceBand, (pb) => ({
+    fill: pb.color,
+    name: pb.name,
+    fillOpacity: 1,
+    sum: internalAssessmentData.length,
+    threshold: pb.threshold,
+  }))
+  pieChartData.forEach((cd) => {
+    cd.count = internalAssessmentData.filter(
+      (assessment) => assessment.band.color === cd.fill
+    ).length
+  })
+  return [pieChartData, avgAverageScore]
+}
+
+export const getAttendanceChartData = (attendanceData) => {
+  const totalDays = sumBy(attendanceData, 'totalDays')
+  const totalPresents = sumBy(attendanceData, 'attendedDays')
+  const attendanceChartData = map(attendanceData, (item) => ({
+    week: item.weekFromTermStart,
+    startDate: formatDate(
+      moment(item.minDate).startOf('week').add('day', 1).toDate()
+    ),
+    presents: item.presentDays,
+    absents: item.absentDays,
+    tardies: item.tardyDays,
+    total: item.totalDays,
+    value: percentage(item.attendedDays, item.totalDays, true),
+  }))
+  const present = {
+    count: totalPresents,
+    fill: '#8BB873',
+    fillOpacity: 1,
+    name: 'Present',
+    sum: totalDays,
+  }
+  const absent = {
+    count: totalDays - totalPresents,
+    fill: '#2C5E1A',
+    fillOpacity: 1,
+    name: 'Absent',
+    sum: totalDays,
+  }
+  const attendancePieChartData = [present, absent]
+  return [attendancePieChartData, attendanceChartData]
 }
 
 export const getTableData = ({

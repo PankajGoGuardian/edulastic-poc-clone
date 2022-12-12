@@ -40,6 +40,7 @@ const {
   testContentVisibilityTypes,
   testContentVisibility: testContentVisibilityOptions,
   playerSkinValues,
+  REF_MATERIAL_ALLOWED_SKIN_TYPES,
 } = test
 
 const TEST_TYPE_TOOLTIP_CONTENT =
@@ -91,11 +92,8 @@ const TestBehaviorGroupContainer = ({
   } = assignmentSettings
 
   const showRefMaterial = useMemo(() => {
-    const { quester, edulastic } = playerSkinValues
-
     return (
-      !isDocBased &&
-      (playerSkinType === edulastic || playerSkinType === quester)
+      !isDocBased && REF_MATERIAL_ALLOWED_SKIN_TYPES.includes(playerSkinType)
     )
   }, [playerSkinType, isDocBased])
 

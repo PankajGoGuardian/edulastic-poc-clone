@@ -37,8 +37,8 @@ export const AttendanceChart = ({
     endIndex: pageSize - 1,
   })
   const getXTickText = (payload, _data) => {
-    const week = _data[payload.index]?.week + 1 || '-'
-    return `WEEK ${week}`
+    const week = _data[payload.index]?.week + 1
+    return week!=0 ? `WEEK ${week}` : ''
   }
 
   const getTooltipPosition = () => {
@@ -52,13 +52,36 @@ export const AttendanceChart = ({
     </TooltipRow>
   )
 
-  const chartData = useMemo(() => [...attendanceChartData], [pagination])
+  const chartData = useMemo(() => [{
+    week: -1,
+    startDate: 'START DATE',
+    presents: 0,
+    absents: 0,
+    tardies: 0,
+    total: 0,
+    value: 0,
+  }, ...attendanceChartData], [pagination])
 
-  const renderData = useMemo(
-    () =>
-      chartData.slice(pagination.startIndex, pagination.startIndex + pageSize),
-    [pagination, attendanceChartData]
-  )
+  const renderData = useMemo(() => {
+    let dataToRender
+    if(pagination.startIndex !==0){
+      dataToRender = chartData.slice(pagination.startIndex - 1, pagination.startIndex + pageSize)
+      const temp = dataToRender[0]
+      dataToRender[0] = {
+        week: -1,
+        startDate: 'START DATE',
+        presents: temp.presents,
+        absents: temp.absents,
+        tardies: temp.tardies,
+        total: temp.total,
+        value: temp.value,
+      }
+    }
+    else{
+      dataToRender = chartData.slice(pagination.startIndex, pagination.startIndex + pageSize)
+    }
+    return dataToRender
+  }, [pagination, attendanceChartData])
 
   const scrollLeft = () => {
     let diff
@@ -125,9 +148,9 @@ export const AttendanceChart = ({
         y={y}
         dy={-10}
         fill={stroke}
-        fontSize={12}
+        fontSize={10}
+        fontWeight={800}
         textAnchor="middle"
-        stroke="#383838"
       >
         {`${value}%`}
       </text>
@@ -201,11 +224,11 @@ export const AttendanceChart = ({
           width={730}
           height={250}
           data={renderData}
-          margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+          margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
         >
           <XAxis
-            xAxisId={0}
             dataKey="week"
+            xAxisId="0"
             tick={
               <CustomChartXTick
                 data={renderData}
@@ -215,7 +238,17 @@ export const AttendanceChart = ({
             }
             tickLine={false}
             tickMargin={20}
-            interval="preserveStartEnd"
+            interval={0}
+            tickLine={false}
+          />
+          <XAxis
+            dataKey="startDate"
+            xAxisId="1"
+            tickLine={false}
+            dy={-7}
+            tickMargin={20}
+            interval={0}
+            axisLine={false}
           />
           <YAxis
             type="number"

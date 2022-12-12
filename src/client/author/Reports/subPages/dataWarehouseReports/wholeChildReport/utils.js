@@ -348,14 +348,19 @@ export const getProficiencyPieChartData = (
   return [pieChartData, avgAverageScore]
 }
 
+const getDate = (date) => {
+  const day = date.getDate()
+  const month = date.getMonth() + 1
+  const year = date.getFullYear()
+  return `${day}/${month}/${year}`
+}
+
 export const getAttendanceChartData = (attendanceData) => {
   const totalDays = sumBy(attendanceData, 'totalDays')
   const totalPresents = sumBy(attendanceData, 'attendedDays')
   const attendanceChartData = map(attendanceData, (item) => ({
     week: item.weekFromTermStart,
-    startDate: formatDate(
-      moment(item.minDate).startOf('week').add('day', 1).toDate()
-    ),
+    startDate: getDate(moment(item.minDate).startOf('week').add('day', 1)._d),
     presents: item.presentDays,
     absents: item.absentDays,
     tardies: item.tardyDays,

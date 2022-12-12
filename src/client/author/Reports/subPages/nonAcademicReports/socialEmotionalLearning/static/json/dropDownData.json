@@ -1,0 +1,25 @@
+{
+  "masteryLevelData": [
+    { "key": "all", "title": "All" },
+    { "key": "exceedsMastery", "title": "Exceeds Mastery" },
+    { "key": "mastered", "title": "Mastered" },
+    { "key": "almostMastered", "title": "Almost Mastered" },
+    { "key": "notMastered", "title": "Not Mastered" }
+  ],
+  "analyseByData": [
+    { "key": "score", "title": "Score %" },
+    { "key": "rawScore", "title": "Raw Score" },
+    { "key": "masteryLevel", "title": "Mastery Level" },
+    { "key": "masteryScore", "title": "Mastery Score" }
+  ],
+  "compareByData": [
+    { "key": "school", "title": "School", "hiddenFromRole": ["teacher"] },
+    { "key": "teacher", "title": "Teacher", "hiddenFromRole": ["teacher"] },
+    {
+      "key": "student",
+      "title": "Student",
+      "hiddenFromRole": ["district-admin"]
+    },
+    { "key": "group", "title": "Class" }
+  ]
+}

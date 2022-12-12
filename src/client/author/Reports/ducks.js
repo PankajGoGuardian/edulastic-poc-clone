@@ -37,6 +37,11 @@ import {
   setSMRTagsDataAction,
 } from './subPages/standardsMasteryReport/ducks'
 import {
+  getReportsNARSettings,
+  reportNARSettingsReducer,
+  setNARTagsDataAction,
+} from './subPages/nonAcademicReports/ducks'
+import {
   getReportsERSettings,
   reportERSettingsReducer,
   setERTagsDataAction,
@@ -69,6 +74,12 @@ import {
   reportStandardsFilterDataReducer,
   reportStandardsFilterSaga,
 } from './subPages/standardsMasteryReport/common/filterDataDucks'
+import {
+  getTempTagsDataSelector as getNARTempTagsDataSelector,
+  setTempTagsDataAction as setNARTempTagsDataAction,
+  reportNonAcademicFilterDataReducer,
+  reportNARFilterSaga,
+} from './subPages/nonAcademicReports/common/filterDataDucks'
 import {
   getTempTagsDataSelector as getERTempTagsDataSelector,
   setTempTagsDataAction as setERTempTagsDataAction,
@@ -155,6 +166,10 @@ import {
   reportActivityByTeacherReducer,
   reportActivityByTeacherSaga,
 } from './subPages/engagementReport/ActivityByTeacher/ducks'
+import {
+  reportSocialEmotionalLearningReducer,
+  reportSocialEmotionalLearningSaga,
+} from './subPages/nonAcademicReports/socialEmotionalLearning/ducks'
 import {
   reducer as reportWholeChildReducer,
   watcherSaga as reportWholeChildSaga,
@@ -377,12 +392,14 @@ export const reportReducer = combineReducers({
   reportMARSettingsReducer,
   reportSPRSettingsReducer,
   reportSMRSettingsReducer,
+  reportNARSettingsReducer,
   reportERSettingsReducer,
 
   reportSARFilterDataReducer,
   reportMARFilterDataReducer,
   reportSPRFilterDataReducer,
   reportStandardsFilterDataReducer,
+  reportNonAcademicFilterDataReducer,
   reportERFilterDataReducer,
 
   reportAssessmentSummaryReducer,
@@ -404,6 +421,7 @@ export const reportReducer = combineReducers({
   reportEngagementSummaryReducer,
   reportActivityBySchoolReducer,
   reportActivityByTeacherReducer,
+  reportSocialEmotionalLearningReducer,
   customReportReducer,
   sharedReportsReducer,
   reportWholeChildReducer,
@@ -482,6 +500,16 @@ const selectorDict = {
     getSettings: getReportsSMRSettings,
     setTags: setSMRTagsDataAction,
     setTempTags: setSMRTempTagsDataAction,
+    remapTags: (tags) => {
+      const { courseIds, ..._tags } = tags
+      return { ..._tags, courseId: courseIds?.[0] }
+    },
+  },
+  [reportGroupType.NON_ACADEMIC_REPORT]: {
+    getTempTags: getNARTempTagsDataSelector,
+    getSettings: getReportsNARSettings,
+    setTags: setNARTagsDataAction,
+    setTempTags: setNARTempTagsDataAction,
     remapTags: (tags) => {
       const { courseIds, ..._tags } = tags
       return { ..._tags, courseId: courseIds?.[0] }
@@ -775,6 +803,7 @@ export function* reportSaga() {
     reportMARFilterDataSaga(),
     reportSPRFilterDataSaga(),
     reportStandardsFilterSaga(),
+    reportNARFilterSaga(),
 
     reportAssessmentSummarySaga(),
     reportPeerPerformanceSaga(),
@@ -796,6 +825,7 @@ export function* reportSaga() {
     reportEngagementSummarySaga(),
     reportActivityBySchoolSaga(),
     reportActivityByTeacherSaga(),
+    reportSocialEmotionalLearningSaga(),
     customReportSaga(),
     sharedReportsSaga(),
     reportWholeChildSaga(),

@@ -37,6 +37,7 @@ import { SingleAssessmentReportContainer } from './subPages/singleAssessmentRepo
 import { StandardsMasteryReportContainer } from './subPages/standardsMasteryReport'
 import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import { EngagementReportContainer } from './subPages/engagementReport'
+import { NonAcademicReportContainer } from './subPages/nonAcademicReports'
 import ClassCreate from '../ManageClass/components/ClassCreate'
 import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
 import {
@@ -403,6 +404,26 @@ const Container = (props) => {
                 onRefineResultsCB={onRefineResultsCB}
                 loc={reportType}
                 updateNavigation={setNavigationItems}
+              />
+            )
+          }}
+        />
+        <Route
+          path={[`/author/reports/social-emotional-learning`]}
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <NonAcademicReportContainer
+                {..._props}
+                isCliUser={isCliUser}
+                isPrinting={isPrinting}
+                breadcrumbData={headerSettings.breadcrumbData}
+                showFilter={showFilter}
+                showApply={showApply}
+                onRefineResultsCB={onRefineResultsCB}
+                loc={reportType}
+                updateNavigation={setNavigationItems}
+                setShowHeader={setShowHeader}
               />
             )
           }}

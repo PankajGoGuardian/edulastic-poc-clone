@@ -7,6 +7,7 @@ import StandardsMasteryReport from '../standardsMasteryReport'
 import { StudentProfileReport } from '../studentProfileReport'
 import { SubscriptionReport } from '../subscriptionReport'
 import { EngagementReport } from '../engagementReport'
+import NonAcademicReport from '../nonAcademicReport'
 // import SearchBox from "./SearchBox";
 import {
   StandardReportWrapper,
@@ -44,6 +45,10 @@ const StandardReport = ({ premium, isAdmin, loc }) => (
             <EngagementReport premium={premium} loc={loc} />
           </StyledCard>
         )}
+
+        <StyledCard className="non-academic-reports report">
+          <NonAcademicReport premium={premium} loc={loc} />
+        </StyledCard>
       </ReportCardsWrapper>
       {!premium && (
         <StyledCard

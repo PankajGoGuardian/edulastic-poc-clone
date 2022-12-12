@@ -349,6 +349,20 @@
         }
       ],
       "group": "mainReport"
+    },
+    "social-emotional-learning": {
+      "title": "Social Emotional Learning",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports"
+        },
+        {
+          "title": "SOCIAL EMOTIONAL LEARNING"
+        }
+      ],
+      "group": "nonAcademicReport",
+      "groupTitle": "Non Academic Report"
     }
   },
   "navigation": {
@@ -494,6 +508,13 @@
         "key": "whole-child-report",
         "title": "WHOLE CHILD REPORT",
         "location": "/author/reports/whole-child-report/student/"
+      }
+    ],
+    "nonAcademicReport": [
+      {
+        "key": "social-emotional-learning",
+        "title": "Social Emotional Learning",
+        "location": "/author/reports/social-emotional-learning"
       }
     ]
   }

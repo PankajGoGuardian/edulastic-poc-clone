@@ -6,6 +6,7 @@ const reportGroupType = {
   ENGAGEMENT_REPORT: 'engagement-report',
   WHOLE_CHILD_REPORT: 'whole-child-report',
   MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
+  NON_ACADEMIC_REPORT: 'non-academic-report',
 }
 
 const reportNavType = {
@@ -30,6 +31,7 @@ const reportNavType = {
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
   WHOLE_CHILD_REPORT: 'whole-child-report',
   MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
+  SOCIAL_EMOTIONAL_LEARNING: 'social-emotional-learning',
 }
 
 const sharedWithType = {

@@ -14,6 +14,7 @@ import MuteUnmute from './styled/MuteUnmute'
 import SeekBar from './styled/SeekBar'
 import Volume from './styled/Volume'
 import { QuestionTitleWrapper } from './styled/QustionNumber'
+import VideoPreviewErrorBoundary from './components/ErrorBoundary'
 
 const { CurrentTime, Duration } = controls
 
@@ -27,44 +28,46 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
     </QuestionTitleWrapper>
     {item.summary && <Label data-cy="videoSummary">{item.summary}</Label>}
     {item && item.uiStyle && (
-      <Media>
-        {({ isFullscreen, playPause }) => (
-          <div className="media">
-            <div
-              className={`media-player${
-                isFullscreen ? ' media-player--fullscreen' : ''
-              }`}
-              tabIndex="0"
-            >
-              <Player
-                poster={item.uiStyle.posterImage}
-                src={item.sourceURL}
-                style={{
-                  ...item.uiStyle,
-                  width: '100%',
-                  maxWidth: item.uiStyle.width,
-                }}
-                onClick={playPause}
-              />
-            </div>
-            {(!item.uiStyle.hideControls ||
-              item.videoType === videoTypes.YOUTUBE) && (
-              <FlexContainer
-                style={{ width: '100%', maxWidth: item.uiStyle.width }}
+      <VideoPreviewErrorBoundary>
+        <Media>
+          {({ isFullscreen, playPause }) => (
+            <div className="media">
+              <div
+                className={`media-player${
+                  isFullscreen ? ' media-player--fullscreen' : ''
+                }`}
+                tabIndex="0"
               >
-                <PlayPause />
-                <SeekBar style={{ width: item.uiStyle.width - 338 }} />
-                <div>
-                  <CurrentTime /> / <Duration />
-                </div>
-                <MuteUnmute />
-                <Volume />
-                <Fullscreen />
-              </FlexContainer>
-            )}
-          </div>
-        )}
-      </Media>
+                <Player
+                  poster={item.uiStyle.posterImage}
+                  src={item.sourceURL}
+                  style={{
+                    ...item.uiStyle,
+                    width: '100%',
+                    maxWidth: item.uiStyle.width,
+                  }}
+                  onClick={playPause}
+                />
+              </div>
+              {(!item.uiStyle.hideControls ||
+                item.videoType === videoTypes.YOUTUBE) && (
+                <FlexContainer
+                  style={{ width: '100%', maxWidth: item.uiStyle.width }}
+                >
+                  <PlayPause />
+                  <SeekBar style={{ width: item.uiStyle.width - 338 }} />
+                  <div>
+                    <CurrentTime /> / <Duration />
+                  </div>
+                  <MuteUnmute />
+                  <Volume />
+                  <Fullscreen />
+                </FlexContainer>
+              )}
+            </div>
+          )}
+        </Media>
+      </VideoPreviewErrorBoundary>
     )}
   </div>
 )

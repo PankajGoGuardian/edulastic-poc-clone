@@ -143,7 +143,7 @@ export const StyledTag = styled.div`
   background-color: ${(props) => props.fill || '#afe1af'};
   align-items: center;
   padding: 0 8px;
-  width: 100px;
+  min-width: 100px;
   height: 40px;
   border-radius: 4px;
 `

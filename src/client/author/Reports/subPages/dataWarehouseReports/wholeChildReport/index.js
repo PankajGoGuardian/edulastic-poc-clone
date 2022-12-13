@@ -243,7 +243,12 @@ const WholeChildReport = ({
     ) || bandInfo[0]
   )?.performanceBand
 
-  const [chartData, tableData, isDataEmpty] = useMemo(() => {
+  const [
+    chartData,
+    tableData,
+    isDataEmpty,
+    selPerformanceLabel,
+  ] = useMemo(() => {
     const {
       assignmentMetrics: internalAssignmentMetrics = [],
       districtMetrics: internalDistrictMetrics = [],
@@ -252,6 +257,7 @@ const WholeChildReport = ({
       externalTestMetrics = [],
       externalSchoolMetrics = [],
       externalDistrictMetrics = [],
+      selPerformance,
     } = get(reportData, 'data.result', {})
     const assignmentMetrics = mergeTestMetrics(
       internalAssignmentMetrics,
@@ -282,6 +288,7 @@ const WholeChildReport = ({
       isEmpty(assignmentMetrics) ||
         isEmpty(districtMetrics) ||
         isEmpty(schoolMetrics),
+      selPerformance?.label,
     ]
   }, [reportData, settings.selectedStudentClassData, selectedPerformanceBand])
 
@@ -299,6 +306,10 @@ const WholeChildReport = ({
   //   setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
     downloadCSV(`Whole Child Report-${studentName}.csv`, data)
+
+  const selReportURL = `/author/reports/social-emotional-learning?termId=${
+    settings.requestFilters?.termId || ''
+  }&schoolIds=All&teacherIds=All&grades=All&subjects=All&courseId=All&classIds=All&groupIds=All&testGrades=All&testSubjects=All&tagIds=All&assessmentTypes=All&testIds=All&curriculumId=&&standardGrade=All&profileId=&domainIds=All&standardId=All&assignedBy=anyone&reportId=`
 
   return (
     <>
@@ -376,6 +387,8 @@ const WholeChildReport = ({
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}
               attendancePieChartData={attendancePieChartData}
+              selPerformanceLabel={selPerformanceLabel}
+              selReportURL={selReportURL}
             />
             <AssessmentsChart
               chartData={chartData}

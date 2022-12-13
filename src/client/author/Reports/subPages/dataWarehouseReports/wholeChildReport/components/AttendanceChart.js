@@ -38,7 +38,7 @@ export const AttendanceChart = ({
   })
   const getXTickText = (payload, _data) => {
     const week = _data[payload.index]?.week + 1
-    return week!=0 ? `WEEK ${week}` : ''
+    return week ? `WEEK ${week}` : ''
   }
 
   const getTooltipPosition = () => {
@@ -52,20 +52,29 @@ export const AttendanceChart = ({
     </TooltipRow>
   )
 
-  const chartData = useMemo(() => [{
-    week: -1,
-    startDate: 'START DATE',
-    presents: 0,
-    absents: 0,
-    tardies: 0,
-    total: 0,
-    value: 0,
-  }, ...attendanceChartData], [pagination])
+  const chartData = useMemo(
+    () => [
+      {
+        week: -1,
+        startDate: 'START DATE',
+        presents: 0,
+        absents: 0,
+        tardies: 0,
+        total: 0,
+        value: 0,
+      },
+      ...attendanceChartData,
+    ],
+    [pagination]
+  )
 
   const renderData = useMemo(() => {
     let dataToRender
-    if(pagination.startIndex !==0){
-      dataToRender = chartData.slice(pagination.startIndex - 1, pagination.startIndex + pageSize)
+    if (pagination.startIndex !== 0) {
+      dataToRender = chartData.slice(
+        pagination.startIndex - 1,
+        pagination.startIndex + pageSize
+      )
       const temp = dataToRender[0]
       dataToRender[0] = {
         week: -1,
@@ -76,9 +85,11 @@ export const AttendanceChart = ({
         total: temp.total,
         value: temp.value,
       }
-    }
-    else{
-      dataToRender = chartData.slice(pagination.startIndex, pagination.startIndex + pageSize)
+    } else {
+      dataToRender = chartData.slice(
+        pagination.startIndex,
+        pagination.startIndex + pageSize
+      )
     }
     return dataToRender
   }, [pagination, attendanceChartData])
@@ -236,7 +247,6 @@ export const AttendanceChart = ({
                 fontWeight={600}
               />
             }
-            tickLine={false}
             tickMargin={20}
             interval={0}
             tickLine={false}

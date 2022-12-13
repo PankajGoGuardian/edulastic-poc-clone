@@ -4,6 +4,7 @@ import { Icon, Tooltip } from 'antd'
 import { themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { IconCheckMark } from '@edulastic/icons'
+import { Link } from 'react-router-dom'
 import {
   DetailsWrapper,
   Details,
@@ -48,6 +49,8 @@ const StudentDetails = ({
   chartData,
   selectedPerformanceBand,
   attendancePieChartData,
+  selPerformanceLabel,
+  selReportURL,
 }) => {
   const studentName = getFormattedName(
     `${firstName} ${middleName} ${lastName}`,
@@ -231,7 +234,16 @@ const StudentDetails = ({
         <StyledLine width="1px" height="100px" />
         <StyledDiv>
           <StyledSpan>SEL: </StyledSpan>
-          <StyledTag>Favourable</StyledTag>
+          {selPerformanceLabel ? (
+            <Link
+              to={selReportURL}
+              style={{ display: 'block', color: 'inherit' }}
+            >
+              <StyledTag>{selPerformanceLabel}</StyledTag>
+            </Link>
+          ) : (
+            '-'
+          )}
         </StyledDiv>
       </OverallPerformanceWrapper>
     </div>

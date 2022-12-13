@@ -162,7 +162,7 @@ const getColumns = (
         <div
           style={{ display: 'flex', alignItems: 'center', textAlign: 'center' }}
         >
-          <span>Avg. Competency Performance</span>
+          <span>SEL Summary</span>
           <Tooltip title="This is the average performance across all the competencies assessed">
             <IconInfo height={10} />
           </Tooltip>

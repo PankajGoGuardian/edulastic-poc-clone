@@ -71,14 +71,14 @@ const StandardsPerformanceChart = ({
 
   return (
     <>
-      <StyledH3>Average Score by Competency</StyledH3>
+      <StyledH3>Social Emotional Learning Insights</StyledH3>
       <StyledChartContainer>
         <SimpleStackedBarChart
           margin={{ top: 10, right: 60, left: 60, bottom: 0 }}
           xAxisDataKey="domainName"
           bottomStackDataKey="masteryScore"
           topStackDataKey="diffMasteryScore"
-          yAxisLabel="Avg. Score"
+          yAxisLabel="SEL Summary"
           yTickFormatter={_yTickFormatter}
           barsLabelFormatter={_yTickFormatter}
           onBarClickCB={onClickBarData}

@@ -3,18 +3,20 @@ import { EduButton, notification } from '@edulastic/common'
 import { compose } from 'redux'
 import { withNamespaces } from 'react-i18next'
 import { connect } from 'react-redux'
-import { Form, Select } from 'antd'
+import { Col, Form, Row, Select } from 'antd'
 import { get } from 'lodash'
 import { userApi } from '@edulastic/api'
-import { StyledTextArea } from '../InviteMultipleStudentModal/styled'
 import { getFormattedName } from '../../../../Gradebook/transformers'
-import { StyledFormItem, StyledRoundedModal } from './styled'
+import { StyledFormItem, StyledRoundedModal, StyledTextArea } from './styled'
+import FeedbacksTable, {
+  FEEDBACK_TYPE_TO_ICONS,
+} from '../../../../Reports/subPages/dataWarehouseReports/wholeChildReport/components/FeedbacksTable'
 
 const { Option } = Select
 
 // TODO Disable Async Validator logs https://stackoverflow.com/a/67188224/11218031
 
-const FeedbackTypes = ['Academic', 'Behavioural', 'Attendance', 'Engagement']
+const FeedbackTypes = Object.keys(FEEDBACK_TYPE_TO_ICONS)
 
 /**
  * @param {import('antd/lib/form').FormComponentProps & {feedbackStudentId: string | null; handleClose: () => void}} props
@@ -77,69 +79,90 @@ const FeedbackModal = (props) => {
       visible={!!student}
       onCancel={handleClose}
       closable={!isSubmitting}
-      footer={
-        <EduButton disabled={isSubmitting} onClick={handleSubmit}>
-          Add Feedback
-        </EduButton>
-      }
+      footer={null}
       title="New Feedback"
+      width="1200px"
     >
       <Form
         form={form}
         hideRequiredMark
-        layout="vertical"
+        layout="horizontal"
         onSubmit={handleSubmit}
       >
-        <StyledFormItem labelAlign="right" label="STUDENT NAME">
-          <b>{student?.name}</b>
-        </StyledFormItem>
-        <StyledFormItem labelAlign="right" label="FEEDBACK TYPE">
-          {form.getFieldDecorator('type', {
-            rules: [
-              {
-                required: true,
-              },
-            ],
-            initialValue: FeedbackTypes[0],
-          })(
-            <Select size="large" getPopupContainer={(e) => e.parentNode}>
-              {FeedbackTypes.map((ft) => (
-                <Option key={ft} value={ft}>
-                  {ft}
-                </Option>
-              ))}
-            </Select>
-          )}
-        </StyledFormItem>
-        <StyledFormItem label="ENTER FEEDBACK">
-          {form.getFieldDecorator('feedback', {
-            rules: [
-              {
-                required: true,
-                message: 'Feedback required',
-              },
-              {
-                max: 500,
-                message: 'Feedback should be max 500 characters',
-              },
-              {
-                min: 10,
-                message: 'Feedback should be min 10 characters',
-              },
-            ],
-          })(
-            <StyledTextArea
-              placeholder="Enter text here"
-              autoFocus
-              maxLength={500}
-              autoSize={{
-                minRows: 5,
-                maxRows: 10,
-              }}
-            />
-          )}
-        </StyledFormItem>
+        <Row>
+          <Col span={6}>
+            <StyledFormItem labelAlign="right" label="STUDENT NAME">
+              <b>{student?.name}</b>
+            </StyledFormItem>
+          </Col>
+          <Col span={12} style={{ alignItems: 'center' }}>
+            <StyledFormItem labelAlign="left" label="FEEDBACK TYPE">
+              {form.getFieldDecorator('type', {
+                rules: [
+                  {
+                    required: true,
+                  },
+                ],
+                initialValue: FeedbackTypes[0],
+              })(
+                <Select size="large" getPopupContainer={(e) => e.parentNode}>
+                  {FeedbackTypes.map((ft) => (
+                    <Option key={ft} value={ft}>
+                      {ft}
+                    </Option>
+                  ))}
+                </Select>
+              )}
+            </StyledFormItem>
+          </Col>
+        </Row>
+        <div style={{ display: 'flex', gap: '16px', alignItems: 'stretch' }}>
+          <Col span={16} style={{ alignItems: 'center', height: '100%' }}>
+            <StyledFormItem label="ENTER FEEDBACK">
+              {form.getFieldDecorator('feedback', {
+                rules: [
+                  {
+                    required: true,
+                    message: 'Feedback required',
+                  },
+                  {
+                    max: 500,
+                    message: 'Feedback should be max 500 characters',
+                  },
+                  {
+                    min: 10,
+                    message: 'Feedback should be min 10 characters',
+                  },
+                ],
+              })(
+                <StyledTextArea
+                  placeholder="Enter text here"
+                  autoFocus
+                  maxLength={500}
+                  autoSize={{
+                    minRows: 2,
+                    maxRows: 4,
+                  }}
+                />
+              )}
+            </StyledFormItem>
+          </Col>
+          <Col span={8} style={{ alignItems: 'center', display: 'flex' }}>
+            <EduButton
+              disabled={isSubmitting}
+              onClick={handleSubmit}
+              size="small"
+            >
+              Add Feedback
+            </EduButton>
+          </Col>
+        </div>
       </Form>
+      <FeedbacksTable
+        studentId={student?._id}
+        termId={currentClass?.termId}
+        label="Student Feedback"
+      />
     </StyledRoundedModal>
   )
 }

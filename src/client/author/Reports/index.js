@@ -474,6 +474,8 @@ const Container = (props) => {
           path={[
             '/author/reports/whole-child-report/student/',
             '/author/reports/multiple-assessment-report-dw',
+            '/author/reports/single-assessment-report-dw',
+            '/author/reports/pre-vs-post-test-comparison',
           ]}
           render={(_props) => (
             <DataWarehouseReportsContainer

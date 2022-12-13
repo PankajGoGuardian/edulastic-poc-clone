@@ -340,6 +340,34 @@
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
     },
+    "single-assessment-report-dw": {
+      "title": "Single Assessment Report",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "SINGLE ASSESSMENT REPORT"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
+    "pre-vs-post-test-comparison": {
+      "title": "Pre vs Post Test Comparison",
+      "breadcrumb": [
+        {
+          "title": "DATA WAREHOUSE REPORTS",
+          "to": "/author/reports/data-warehouse-reports/"
+        },
+        {
+          "title": "PRE VS POST TEST COMPARISON"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Warehouse Reports"
+    },
     "shared-reports": {
       "title": "Shared Reports",
       "breadcrumb": [
@@ -505,9 +533,19 @@
         "location": "/author/reports/multiple-assessment-report-dw"
       },
       {
+        "key": "single-assessment-report-dw",
+        "title": "SINGLE ASSESSMENT REPORT",
+        "location": "/author/reports/single-assessment-report-dw"
+      },
+      {
         "key": "whole-child-report",
         "title": "WHOLE CHILD REPORT",
         "location": "/author/reports/whole-child-report/student/"
+      },
+      {
+        "key":"pre-vs-post-test-comparison",
+        "title": "PRE VS POST TEST COMPARISON",
+        "location": "/author/reports/pre-vs-post-test-comparison"
       }
     ],
     "nonAcademicReport": [

@@ -112,8 +112,17 @@ const CustomizedHeaderWrapper = ({
     title === 'Engagement Summary' ||
     title === 'Activity by School' ||
     title === 'Activity by Teacher' ||
-    title === 'Performance by Rubric Criteria'
-  const hideDownloadIcon = title === 'Engagement Summary'
+    title === 'Performance by Rubric Criteria' ||
+    title === 'Single Assessment Report' ||
+    title === 'Pre vs Post Test Comparison'
+  const hideDownloadIcon =
+    title === 'Engagement Summary' ||
+    title === 'Single Assessment Report' ||
+    title === 'Pre vs Post Test Comparison'
+
+  const hidePrintIcon =
+    title === 'Single Assessment Report' ||
+    title === 'Pre vs Post Test Comparison'
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
 
@@ -153,7 +162,7 @@ const CustomizedHeaderWrapper = ({
           </ActionButton>
         ) : null}
       </FeaturesSwitch>
-      {onPrintClickCB ? (
+      {onPrintClickCB && !hidePrintIcon ? (
         <ActionButton
           isBlue
           isGhost

@@ -65,7 +65,8 @@ const StyledCard = styled(Card)`
   margin: 0 10px 20px;
   border-radius: 10px;
   height: 600px;
-  width: 300px;
+  flex-basis: 0;
+  flex-grow: 1;
 `
 
 export default withRouter(ReportLinkCard)

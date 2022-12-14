@@ -16,6 +16,7 @@ import { ReportContainer, FilterLabel } from '../../common/styled'
 
 import NonAcademicReportFilters from './common/components/Filters'
 import SocialEmotionalLearning from './socialEmotionalLearning'
+import SELAssessmentResponses from './selAssessmentResponses'
 
 import {
   setNARSettingsAction,
@@ -38,6 +39,7 @@ import {
 } from '../../../src/selectors/user'
 
 import { getNavigationTabLinks } from '../../common/util'
+import SELAssessmentResponsesFilters from './selAssessmentResponses/components/filters/filters'
 
 import navigation from '../../common/static/json/navigation.json'
 import staticDropDownData from './common/static/json/staticDropDownData.json'
@@ -78,6 +80,7 @@ const NonAcademicReportContainer = (props) => {
   const [ddfilter, setDdFilter] = useState({
     ...staticDropDownData.initialDdFilters,
   })
+  const isSELFrequency = loc === 'sel-assessment-responses'
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
@@ -154,8 +157,11 @@ const NonAcademicReportContainer = (props) => {
         obj[item] = val
       })
       obj.reportId = reportId || ''
-      const path = `?${qs.stringify(obj)}`
-      history.push(path)
+      let path
+      if (isSELFrequency && settings.selectedTest) {
+        path = `${settings.selectedTest.key}?${qs.stringify(obj)}`
+      } else path = `?${qs.stringify(obj)}`
+      history.replace(path)
     }
     const _navigationItems = computeChartNavigationLinks(
       settings.requestFilters
@@ -189,6 +195,7 @@ const NonAcademicReportContainer = (props) => {
         testIds: _requestFilters.testIds || '',
         domainIds: (_requestFilters.domainIds || []).join(','),
       },
+      selectedTest: _settings.tagsData.testId,
     })
     setNARTagsData({ ..._settings.tagsData })
     setShowApply(false)
@@ -286,29 +293,58 @@ const NonAcademicReportContainer = (props) => {
         isCliUser={isCliUser}
         alignment="baseline"
       >
-        <NonAcademicReportFilters
-          isPrinting={isPrinting}
-          reportId={reportId}
-          onGoClick={onGoClick}
-          loc={loc}
-          history={history}
-          location={location}
-          match={match}
-          extraFilters={extraFilters}
-          tempDdFilter={tempDdFilter}
-          setTempDdFilter={setTempDdFilter}
-          tempTagsData={tempTagsData}
-          setTempTagsData={setTempTagsData}
-          tagsData={settings.tagsData}
-          setTagsData={setNARTagsData}
-          demographicsRequired={demographicsRequired}
-          showApply={showApply}
-          setShowApply={setShowApply}
-          showFilter={showFilter}
-          toggleFilter={toggleFilter}
-          firstLoad={firstLoad}
-          setFirstLoad={setFirstLoad}
-        />
+        {isSELFrequency ? (
+          <SELAssessmentResponsesFilters
+            isCliUser={isCliUser}
+            isPrinting={isPrinting}
+            reportId={reportId}
+            onGoClick={onGoClick}
+            loc={loc}
+            history={history}
+            location={location}
+            match={match}
+            performanceBandRequired={false}
+            standardProficiencyRequired={false}
+            demographicsRequired={demographicsRequired}
+            extraFilters={extraFilters}
+            tempDdFilter={tempDdFilter}
+            setTempDdFilter={setTempDdFilter}
+            tempTagsData={tempTagsData}
+            setTempTagsData={setTempTagsData}
+            tagsData={settings.tagsData}
+            setTagsData={setNARTagsData}
+            showApply={showApply}
+            setShowApply={setShowApply}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
+          />
+        ) : (
+          <NonAcademicReportFilters
+            isPrinting={isPrinting}
+            reportId={reportId}
+            onGoClick={onGoClick}
+            loc={loc}
+            history={history}
+            location={location}
+            match={match}
+            extraFilters={extraFilters}
+            tempDdFilter={tempDdFilter}
+            setTempDdFilter={setTempDdFilter}
+            tempTagsData={tempTagsData}
+            setTempTagsData={setTempTagsData}
+            tagsData={settings.tagsData}
+            setTagsData={setNARTagsData}
+            demographicsRequired={demographicsRequired}
+            showApply={showApply}
+            setShowApply={setShowApply}
+            showFilter={showFilter}
+            toggleFilter={toggleFilter}
+            firstLoad={firstLoad}
+            setFirstLoad={setFirstLoad}
+          />
+        )}
       </SubHeader>
       <ReportContainer>
         {firstLoad && <Spin size="large" />}
@@ -319,6 +355,25 @@ const NonAcademicReportContainer = (props) => {
             setShowHeader(true)
             return (
               <SocialEmotionalLearning
+                {..._props}
+                navigationItems={navigationItems}
+                pageTitle={loc}
+                toggleFilter={toggleFilter}
+                settings={settings}
+                ddfilter={ddfilter}
+                userRole={userRole}
+                sharedReport={sharedReport}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/sel-assessment-responses/test/:testId?"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <SELAssessmentResponses
                 {..._props}
                 navigationItems={navigationItems}
                 pageTitle={loc}

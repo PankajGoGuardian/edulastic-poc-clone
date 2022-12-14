@@ -4,6 +4,7 @@ import { withRouter } from 'react-router'
 import { LinkItem, CardsWrapper } from '../../common/components/linkItem'
 import { BoxHeading } from '../../common/components/boxHeading'
 import SocialEmotionalLearning from '../../../src/assets/reports/social-emotional-learning/social-emotional-learning.png'
+import SELAssessmentResponses from '../../../src/assets/reports/sel-assessment-responses/sel-assessment-responses.svg'
 
 const links = [
   {
@@ -13,6 +14,14 @@ const links = [
     location: '/author/reports/social-emotional-learning',
     description:
       'View an overview of student’s social and emotional well-being to identify trends of the social-emotional status across competencies.',
+  },
+  {
+    key: 'selAssessmentResponses',
+    title: 'SEL Assessment Responses',
+    thumbnail: SELAssessmentResponses,
+    location: '/author/reports/sel-assessment-responses/test/',
+    description:
+      'View the distribution of SEL survey responses by question, and understand the overall social-emotional learnings based on frequently chosen answers.',
   },
 ]
 

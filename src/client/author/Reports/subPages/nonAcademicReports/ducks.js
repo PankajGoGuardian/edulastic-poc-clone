@@ -32,6 +32,7 @@ export const getReportsNARSettings = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
+  selectedTest: { key: '', title: '' },
   requestFilters: {
     reportId: '',
     termId: '',
@@ -61,7 +62,9 @@ export const reportNARSettingsReducer = createReducer(initialState, {
     state.tagsData = { ...payload }
   },
   [SET_NAR_SETTINGS]: (state, { payload }) => {
+    state.selectedTest = payload.selectedTest
     state.requestFilters = payload.requestFilters
+    state.cliUser = payload.cliUser
   },
   [RESET_ALL_REPORTS]: (state) => (state = initialState),
 })

@@ -1,0 +1,109 @@
+{
+  "filterSections": {
+    "TEST_FILTERS": {
+      "key": "0",
+      "title": "Select Assessment"
+    },
+    "CLASS_FILTERS": {
+      "key": "1",
+      "title": "Select Classes"
+    },
+    "PERFORMANCE_FILTERS": {
+      "key": "2",
+      "title": "Performance"
+    },
+    "DEMOGRAPHIC_FILTERS": {
+      "key": "3",
+      "title": "Demographics"
+    }
+  },
+  "tagTypes": [
+    { "key": "termId", "tabKey": "0" },
+    { "key": "testGrades", "subType": "test", "tabKey": "0" },
+    { "key": "testSubjects", "subType": "test", "tabKey": "0" },
+    { "key": "tagIds", "tabKey": "0" },
+    { "key": "assessmentTypes", "tabKey": "0" },
+    { "key": "testId", "tabKey": "0" },
+    { "key": "networkIds", "tabKey": "1" },
+    { "key": "schoolIds", "tabKey": "1" },
+    { "key": "teacherIds", "tabKey": "1" },
+    { "key": "assignedBy", "tabKey": "1" },
+    { "key": "grades", "subType": "class", "tabKey": "1" },
+    { "key": "subjects", "subType": "class", "tabKey": "1" },
+    { "key": "courseId", "tabKey": "1" },
+    { "key": "classIds", "tabKey": "1" },
+    { "key": "groupIds", "tabKey": "1" },
+    { "key": "standardsProficiencyProfile", "tabKey": "2" },
+    { "key": "performanceBandProfile", "tabKey": "2" },
+    { "key": "race", "tabKey": "3" },
+    { "key": "gender", "tabKey": "3" },
+    { "key": "iepStatus", "tabKey": "3" },
+    { "key": "frlStatus", "tabKey": "3" },
+    { "key": "ellStatus", "tabKey": "3" },
+    { "key": "hispanicEthnicity", "tabKey": "3" }
+  ],
+  "initialFilters": {
+    "reportId": "",
+    "termId": "",
+    "testGrades": "",
+    "testSubjects": "",
+    "tagIds": "",
+    "assessmentTypes": "",
+    "networkIds": "",
+    "schoolIds": "",
+    "teacherIds": "",
+    "grades": "",
+    "subjects": "",
+    "courseId": "All",
+    "classIds": "",
+    "groupIds": "",
+    "standardsProficiencyProfile": "",
+    "performanceBandProfile": "",
+    "assignedBy": "anyone"
+  },
+  "initialDdFilters": {
+    "race": "all",
+    "gender": "all",
+    "iepStatus": "all",
+    "frlStatus": "all",
+    "ellStatus": "all",
+    "hispanicEthnicity": "all"
+  },
+  "initialDdFilterTags": {
+    "race": { "key": "all", "title": "All" },
+    "gender": { "key": "all", "title": "All" },
+    "iepStatus": { "key": "all", "title": "All" },
+    "frlStatus": { "key": "all", "title": "All" },
+    "ellStatus": { "key": "all", "title": "All" },
+    "hispanicEthnicity": { "key": "all", "title": "All" }
+  },
+  "subjects": [
+    { "key": "Mathematics", "title": "Mathematics" },
+    { "key": "ELA", "title": "ELA" },
+    { "key": "Science", "title": "Science" },
+    { "key": "Social Studies", "title": "Social Studies" },
+    { "key": "Computer Science", "title": "Computer Science" },
+    { "key": "Other Subjects", "title": "Other Subjects" }
+  ],
+  "grades": [
+    { "key": "TK", "title": "PreKindergarten" },
+    { "key": "K", "title": "Kindergarten" },
+    { "key": "1", "title": "Grade 1" },
+    { "key": "2", "title": "Grade 2" },
+    { "key": "3", "title": "Grade 3" },
+    { "key": "4", "title": "Grade 4" },
+    { "key": "5", "title": "Grade 5" },
+    { "key": "6", "title": "Grade 6" },
+    { "key": "7", "title": "Grade 7" },
+    { "key": "8", "title": "Grade 8" },
+    { "key": "9", "title": "Grade 9" },
+    { "key": "10", "title": "Grade 10" },
+    { "key": "11", "title": "Grade 11" },
+    { "key": "12", "title": "Grade 12" },
+    { "key": "O", "title": "Other" }
+  ],
+  "assignedBy": [
+    { "key": "anyone", "title": "Anyone" },
+    { "key": "me", "title": "Me" }
+  ]
+}

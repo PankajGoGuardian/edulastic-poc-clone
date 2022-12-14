@@ -409,7 +409,10 @@ const Container = (props) => {
           }}
         />
         <Route
-          path={[`/author/reports/social-emotional-learning`]}
+          path={[
+            `/author/reports/social-emotional-learning`,
+            `/author/reports/sel-assessment-responses/test/`,
+          ]}
           render={(_props) => {
             setShowHeader(true)
             return (

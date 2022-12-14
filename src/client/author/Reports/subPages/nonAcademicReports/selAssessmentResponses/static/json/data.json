@@ -1,0 +1,30 @@
+{
+  "columns": [
+    {
+      "title": "Q#",
+      "dataIndex": "qLabel",
+      "key": "qLabel",
+      "fixed": "left",
+      "width": 50
+    },
+    {
+      "title": "Question",
+      "dataIndex": "stimulus",
+      "key": "qType",
+      "width": 150,
+      "align": "left"
+    },
+    {
+      "title": "Standards",
+      "dataIndex": "standards",
+      "key": "standards",
+      "width": 150
+    },
+    {
+      "title": "Response",
+      "dataIndex": "resp_cnts",
+      "key": "resp_cnts",
+      "width": 400
+    }
+  ]
+}

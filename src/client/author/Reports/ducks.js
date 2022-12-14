@@ -171,6 +171,10 @@ import {
   reportSocialEmotionalLearningSaga,
 } from './subPages/nonAcademicReports/socialEmotionalLearning/ducks'
 import {
+  reportSELAssessmentResponsesReducer,
+  reportSELAssessmentResponsesSaga,
+} from './subPages/nonAcademicReports/selAssessmentResponses/ducks'
+import {
   reducer as reportWholeChildReducer,
   watcherSaga as reportWholeChildSaga,
   selectors as reportWholeChildSelectors,
@@ -422,6 +426,7 @@ export const reportReducer = combineReducers({
   reportActivityBySchoolReducer,
   reportActivityByTeacherReducer,
   reportSocialEmotionalLearningReducer,
+  reportSELAssessmentResponsesReducer,
   customReportReducer,
   sharedReportsReducer,
   reportWholeChildReducer,
@@ -826,6 +831,7 @@ export function* reportSaga() {
     reportActivityBySchoolSaga(),
     reportActivityByTeacherSaga(),
     reportSocialEmotionalLearningSaga(),
+    reportSELAssessmentResponsesSaga(),
     customReportSaga(),
     sharedReportsSaga(),
     reportWholeChildSaga(),

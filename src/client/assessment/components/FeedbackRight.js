@@ -562,8 +562,7 @@ class FeedbackRight extends Component {
                   disabled={
                     isPresentationMode ||
                     isPracticeQuestion ||
-                    isScoreInputDisabled ||
-                    isQuestionWithNoEvaluation
+                    isScoreInputDisabled
                   }
                   ref={this.scoreInput}
                   onKeyDown={this.onKeyDownFeedback}

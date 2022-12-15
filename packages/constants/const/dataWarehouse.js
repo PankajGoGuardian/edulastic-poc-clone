@@ -150,6 +150,24 @@ const getNWEAAchievementLevels = (test) => {
   ]
 }
 
+const getSBACAchievementLevels = (test) => {
+  const { testId, achievementLevelRank: rank } = test
+  const bands = [
+    { id: '1', name: 'Level 1', color: '#DA3120', rank: 1 },
+    { id: '2', name: 'Level 2', color: '#EAB03D', rank: 2 },
+    { id: '3', name: 'Level 3', color: '#6BBF39', rank: 3 },
+    { id: '4', name: 'Level 4', color: '#4A9DF8', rank: 4 },
+  ].map((al) => ({
+    ...al,
+    testId,
+    active:
+      typeof rank !== 'undefined'
+        ? +rank === al.rank
+        : `${test.achievementLevel}` === al.id,
+  }))
+  return bands
+}
+
 // order of returned achievementLevels must be worst to best
 const getAchievementLevels = (test) => {
   switch (test.externalTestType) {
@@ -160,6 +178,8 @@ const getAchievementLevels = (test) => {
     case 'iReady_Math':
     case 'iReady_ELA':
       return getIReadyAchievementLevels(test)
+    case 'SBAC':
+      return getSBACAchievementLevels(test)
     default:
       throw new Error('Invalid Test Category')
   }

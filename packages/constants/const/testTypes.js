@@ -7,6 +7,7 @@ const EXTERNAL_TEST_TYPES = {
   iReady_Math: 'iReady (MATH)',
   iReady_ELA: 'iReady (ELA)',
   NWEA: 'NWEA',
+  SBAC: 'SBAC',
 }
 
 const TEST_TYPES = {

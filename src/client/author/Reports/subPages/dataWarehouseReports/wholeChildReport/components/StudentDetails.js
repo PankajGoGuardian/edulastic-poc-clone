@@ -1,5 +1,6 @@
 import React from 'react'
 import { Icon, Tooltip } from 'antd'
+import { capitalize } from 'lodash'
 
 import { themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
@@ -137,7 +138,7 @@ const StudentDetails = ({
             </div>
             <div>
               <span>Gender : </span>
-              <span data-testid="gender">{gender || '-'}</span>
+              <span data-testid="gender">{capitalize(gender || '-')}</span>
             </div>
           </StudentMetaData>
         </Details>

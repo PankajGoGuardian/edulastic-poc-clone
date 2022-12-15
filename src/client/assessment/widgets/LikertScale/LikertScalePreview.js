@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import PropTypes from 'prop-types'
 import {
@@ -6,6 +6,7 @@ import {
   QuestionNumberLabel,
   FlexContainer,
   QuestionSubLabel,
+  AnswerContext,
 } from '@edulastic/common'
 import LikertScaleDisplay from './components/Display/LikertScaleDisplay'
 
@@ -16,10 +17,21 @@ const LikertScalePreview = ({
   item = {},
   saveAnswer,
   userAnswer,
-  inLCB,
+  isExpressGrader,
   isStudentReport,
   isLCBView,
 }) => {
+  const { expressGrader = false, isAnswerModifiable = false } = useContext(
+    AnswerContext
+  )
+
+  const disableLikertOptions = () => {
+    if (expressGrader && isAnswerModifiable) {
+      return false
+    }
+    return isLCBView || isExpressGrader || isStudentReport
+  }
+
   const { stimulus, options, qLabel, qSubLabel } = item
   return (
     <FlexContainer alignItems="flex-start" justifyContent="flex-start">
@@ -54,7 +66,7 @@ const LikertScalePreview = ({
               view={view}
               saveAnswer={saveAnswer}
               userAnswer={userAnswer}
-              disableOptions={inLCB || isStudentReport || isLCBView}
+              disableOptions={disableLikertOptions()}
             />
           </FlexContainer>
         </>
@@ -70,7 +82,7 @@ LikertScalePreview.propTypes = {
   item: PropTypes.object.isRequired,
   saveAnswer: PropTypes.func.isRequired,
   userAnswer: PropTypes.string,
-  inLCB: PropTypes.bool,
+  isExpressGrader: PropTypes.bool,
   isStudentReport: PropTypes.bool,
   isLCBView: PropTypes.bool,
 }
@@ -78,7 +90,7 @@ LikertScalePreview.propTypes = {
 LikertScalePreview.defaultProps = {
   userAnswer: '',
   showQuestionNumber: false,
-  inLCB: false,
+  isExpressGrader: false,
   isStudentReport: false,
   isLCBView: false,
 }

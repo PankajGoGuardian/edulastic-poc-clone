@@ -101,7 +101,7 @@ export const StyledLine = styled.div`
 `
 
 export const StyledIcon = styled(IconStudent)`
-  margin-right: 10px;
+  margin-right: -25px;
   align-self: center;
   color: ${themeColor};
 `
@@ -119,7 +119,7 @@ export const UserIcon = styled.div`
 export const OverallPerformanceWrapper = styled.div`
   width: 100%;
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   align-items: center;
   padding: 0px 50px;
   background-color: ${themeLightGrayBgColor};
@@ -140,7 +140,7 @@ export const StyledTag = styled.div`
   display: flex;
   font-weight: bold;
   justify-content: center;
-  background-color: ${(props) => props.fill || '#afe1af'};
+  background-color: ${(props) => props.fill || '#90DE85'};
   align-items: center;
   padding: 0 8px;
   min-width: 100px;
@@ -149,4 +149,5 @@ export const StyledTag = styled.div`
 `
 export const StyledDiv = styled.div`
   display: flex;
+  margin: 0px ${(props) => props.marginX || '70px'};
 `

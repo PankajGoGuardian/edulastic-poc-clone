@@ -185,7 +185,14 @@ const AssessmentsChart = ({
 
   return (
     <div>
-      <Row type="flex" style={{ margin: '32px 0', alignItems: 'center' }}>
+      <Row
+        type="flex"
+        style={{
+          marginBottom: '-30px',
+          marginTop: '30px',
+          alignItems: 'center',
+        }}
+      >
         <Typography.Title style={{ margin: 0 }} level={3}>
           Academic Performance
         </Typography.Title>

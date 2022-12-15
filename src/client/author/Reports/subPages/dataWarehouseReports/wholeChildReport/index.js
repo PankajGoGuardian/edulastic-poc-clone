@@ -247,7 +247,7 @@ const WholeChildReport = ({
     chartData,
     tableData,
     isDataEmpty,
-    selPerformanceLabel,
+    selPerformanceDetails,
   ] = useMemo(() => {
     const {
       assignmentMetrics: internalAssignmentMetrics = [],
@@ -288,7 +288,7 @@ const WholeChildReport = ({
       isEmpty(assignmentMetrics) ||
         isEmpty(districtMetrics) ||
         isEmpty(schoolMetrics),
-      selPerformance?.label,
+      selPerformance,
     ]
   }, [reportData, settings.selectedStudentClassData, selectedPerformanceBand])
 
@@ -387,7 +387,7 @@ const WholeChildReport = ({
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}
               attendancePieChartData={attendancePieChartData}
-              selPerformanceLabel={selPerformanceLabel}
+              selPerformanceDetails={selPerformanceDetails}
               selReportURL={selReportURL}
             />
             <AssessmentsChart

@@ -345,7 +345,7 @@ export const SignedStackedBarChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={350}>
         <BarChart
           width={730}
           height={400}

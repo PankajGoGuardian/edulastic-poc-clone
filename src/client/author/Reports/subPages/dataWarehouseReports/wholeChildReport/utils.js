@@ -16,6 +16,7 @@ import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
 import { getColorBandBySize } from '@edulastic/constants/const/colors'
 import moment from 'moment'
+import { greyDarken } from '@edulastic/colors'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -315,7 +316,7 @@ export const getChartData = ({
       })
     }
     return assessmentData
-  }).sort((a, b) => Number(b.assignmentDate) - Number(a.assignmentDate))
+  }).sort((a, b) => Number(a.assignmentDate) - Number(b.assignmentDate))
   return parsedData
 }
 
@@ -329,8 +330,7 @@ export const getProficiencyPieChartData = (
     percentage(
       sumBy(internalAssessmentData, 'averageScore'),
       100 * internalAssessmentData.length
-    ),
-    2
+    )
   )
 
   const pieChartData = map(selectedPerformanceBand, (pb) => ({
@@ -339,7 +339,7 @@ export const getProficiencyPieChartData = (
     fillOpacity: 1,
     sum: internalAssessmentData.length,
     threshold: pb.threshold,
-  }))
+  })).sort((a, b) => a.threshold - b.threshold)
   pieChartData.forEach((cd) => {
     cd.count = internalAssessmentData.filter(
       (assessment) => assessment.band.color === cd.fill
@@ -376,7 +376,7 @@ export const getAttendanceChartData = (attendanceData) => {
   }
   const absent = {
     count: totalDays - totalPresents,
-    fill: '#2C5E1A',
+    fill: greyDarken,
     fillOpacity: 1,
     name: 'Absent',
     sum: totalDays,

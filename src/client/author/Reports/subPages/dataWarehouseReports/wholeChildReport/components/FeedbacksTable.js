@@ -110,7 +110,7 @@ const columns = [
 ]
 
 const FeedbacksTable = (props) => {
-  const { studentId, termId, label = 'Feedbacks' } = props
+  const { studentId, termId, label = 'Feedback' } = props
   const [params, setParams] = useState(null)
   const [loading, setLoading] = useState(false)
   const [data, setData] = useState([])

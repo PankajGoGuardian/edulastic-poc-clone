@@ -295,7 +295,7 @@ class ClassCreate extends React.Component {
       userFeatures,
     } = this.props
 
-    const { type, exitPath } = createClassType || {}
+    const { type, exitPath, noRedirect = false } = createClassType || {}
 
     const { _id: classId, tags } = entity
     const { getFieldDecorator, getFieldValue, setFieldsValue } = form
@@ -324,7 +324,7 @@ class ClassCreate extends React.Component {
 
     if (!creating && submitted && isEmpty(error)) {
       setShowClassCreationModal(false)
-      if (!exitPath) {
+      if (!exitPath && !noRedirect) {
         history.push({
           pathname: `/author/manageClass/${classId}`,
           state: location?.state,

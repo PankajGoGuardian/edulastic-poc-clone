@@ -8,7 +8,7 @@ import {
 } from '@edulastic/constants'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
-import { curry, get, isBoolean, keyBy, pick } from 'lodash'
+import { curry, get, isBoolean, isEmpty, keyBy, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -32,6 +32,7 @@ import {
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
   getDisableAnswerOnPaperSelector,
+  getStudentGroupIdSelector,
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
   togglePenaltyOnUsingHintsAction,
@@ -97,6 +98,7 @@ class SimpleOptions extends React.Component {
       testSettings = {},
       assignment,
       group,
+      studentGroupId,
       fetchStudents,
     } = this.props
     if (free && !premium) {
@@ -130,11 +132,21 @@ class SimpleOptions extends React.Component {
       this.onChange('class', [group[0]._id])
       fetchStudents({ classId: group[0]._id })
     }
+    // if (!isEmpty(studentGroupId)) {
+    //   console.log('setting class', studentGroupId)
+    //   this.onChange('class', [studentGroupId])
+    //   // fetchStudents({ classId: studentGroupId })
+    // }
   }
 
   componentDidUpdate(prevProps) {
-    const { group, fetchStudents } = this.props
+    const { group, fetchStudents, studentGroupId } = this.props
     // no class available yet in assign module flow initial render
+    // if (studentGroupId !== prevProps.studentGroupId) {
+    //   console.log('did update setting class')
+    //   this.onChange('class', [studentGroupId])
+    //   fetchStudents({ classId: studentGroupId })
+    // }
     if (group?.length === 1 && prevProps.group?.length === 0) {
       this.onChange('class', [group[0]._id])
       fetchStudents({ classId: group[0]._id })
@@ -781,6 +793,7 @@ const enhance = compose(
         'standardsProficiencyReducer.data',
         []
       ),
+      studentGroupId: getStudentGroupIdSelector(state),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

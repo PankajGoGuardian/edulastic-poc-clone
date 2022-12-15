@@ -41,6 +41,7 @@ const AssessmentAutoComplete = ({
   tagIds,
   showApply,
   institutionIds,
+  autoCompleteStyles = {},
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -181,6 +182,7 @@ const AssessmentAutoComplete = ({
     <Tooltip title={selectedTestLabel} placement="top">
       <AutoCompleteContainer>
         <AutoComplete
+          style={autoCompleteStyles}
           getPopupContainer={(trigger) => trigger.parentNode}
           value={fieldValue}
           onSearch={onSearch}

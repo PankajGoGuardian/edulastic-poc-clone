@@ -31,12 +31,14 @@ import {
   largeDesktopWidth,
   tabletWidth,
 } from '@edulastic/colors'
+import { isEmpty } from 'lodash'
 import {
   fetchGroupsAction,
   getGroupsSelector,
   groupsLoadingSelector,
 } from '../../../../sharedDucks/groups'
 import { requestEnrolExistingUserToClassAction } from '../../../../ClassEnrollment/ducks'
+import { setStudentGroupIdAction } from '../../../../TestPage/ducks'
 import { getFormattedName } from '../../../../Gradebook/transformers'
 import { setCreateClassTypeDetailsAction } from '../../../../ManageClass/ducks'
 import { setShowClassCreationModalAction } from '../../../../Dashboard/ducks'
@@ -79,6 +81,8 @@ const AddToGroupModal = ({
   windowWidth,
   setShowClassCreationModal,
   setCreateClassTypeDetails,
+  setStudentGroup,
+  showSelectTest,
 }) => {
   const groupTypeText = groupType === 'custom' ? 'group' : 'class'
   const [studentList, setStudentList] = useState([])
@@ -197,7 +201,7 @@ const AddToGroupModal = ({
       }
     } else {
       // close modal
-      onCancel()
+      // onCancel()
     }
   }
 
@@ -207,7 +211,8 @@ const AddToGroupModal = ({
       setCreateClassTypeDetails({
         type: groupTypeText,
         studentIds: checkedStudents.map((s) => s._id),
-        exitPath: match.url,
+        // exitPath: match.url,
+        noRedirect: true,
       })
     } else {
       notification({
@@ -215,6 +220,14 @@ const AddToGroupModal = ({
         msg: `Select one or more students to add to ${groupTypeText}`,
       })
     }
+  }
+
+  const handleAssignTest = () => {
+    if (selectedGroup) {
+      setStudentGroup(selectedGroup.key)
+    }
+    onCancel()
+    showSelectTest()
   }
 
   const filteredGroups = (groupList || []).filter((g) => g.type === groupType)
@@ -246,6 +259,15 @@ const AddToGroupModal = ({
           >
             Update Group Membership
           </EduButton>
+          <StyledEduButton
+            data-cy="assignTest"
+            width="200px"
+            onClick={handleAssignTest}
+            isGhost
+            disabled={isEmpty(selectedGroup)}
+          >
+            Assign Test
+          </StyledEduButton>
         </StyledCol>,
       ]}
       onCancel={onCancel}
@@ -260,7 +282,7 @@ const AddToGroupModal = ({
               Select student group to add or remove selected students
             </StyledDiv>
           </StyledCol>
-          {/* TODO: Support for Intervention Set */}
+          {/* TODO: Support for Intervention  Set */}
           {/* {true && (
               <StyledCol span={24} justify="left">
                 <StyledDiv width="120px"> INTERVENTION SET </StyledDiv>
@@ -367,6 +389,7 @@ export default compose(
       enrollStudentsToGroup: requestEnrolExistingUserToClassAction,
       setShowClassCreationModal: setShowClassCreationModalAction,
       setCreateClassTypeDetails: setCreateClassTypeDetailsAction,
+      setStudentGroup: setStudentGroupIdAction,
     }
   )
 )(AddToGroupModal)

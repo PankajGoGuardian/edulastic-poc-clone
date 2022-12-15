@@ -345,6 +345,7 @@ export const SET_MAX_SHARING_LEVEL_ALLOWED =
 export const TOGGLE_REFERENCE_MATERIAL = '[tests] toggle enable ref material'
 export const TOGGLE_PENALTY_ON_USING_HINTS =
   '[tests] toggle penalty on using hints'
+const SET_STUDENT_GROUPID = '[tests] set student groupid'
 // actions
 
 export const toggleRefMaterialAction = createAction(TOGGLE_REFERENCE_MATERIAL)
@@ -441,6 +442,8 @@ export const setShowRegradeConfirmPopupAction = createAction(
 export const setShowUpgradePopupAction = createAction(SET_SHOW_UPGRADE_POPUP)
 
 export const setAvailableRegradeAction = createAction(SET_REGRADE_ACTIONS)
+
+export const setStudentGroupIdAction = createAction(SET_STUDENT_GROUPID)
 
 export const receiveTestByIdAction = (
   id,
@@ -821,6 +824,11 @@ export const getShowUpgradePopupSelector = createSelector(
   (state) => state.upgrade
 )
 
+export const getStudentGroupIdSelector = createSelector(
+  stateSelector,
+  (state) => state.studentGroupId
+)
+
 export const showGroupsPanelSelector = createSelector(
   getTestEntitySelector,
   ({ itemGroups }) => {
@@ -1020,6 +1028,7 @@ export const createBlankTest = () => ({
 })
 
 const initialState = {
+  studentGroupId: null,
   entity: createBlankTest(),
   error: null,
   page: 1,
@@ -1718,6 +1727,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         ...state,
         updated: true,
         hasPenaltyOnUsingHints: payload,
+      }
+    case SET_STUDENT_GROUPID:
+      return {
+        ...state,
+        studentGroupId: payload,
       }
     default:
       return state

@@ -5,6 +5,7 @@ import { get, head, isEmpty } from 'lodash'
 import { SpinLoader, notification } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
+import SelectTestModal from '../../../common/components/Popups/SelectTestModal'
 import TableTooltipRow from '../../../common/components/tooltip/TableTooltipRow'
 import AnalyseByFilter from '../common/components/filters/AnalyseByFilter'
 import TrendStats from '../common/components/trend/TrendStats'
@@ -119,6 +120,7 @@ const StudentProgress = ({
   const [analyseBy, setAnalyseBy] = useState(head(dropDownData.analyseByData))
   const [selectedTrend, setSelectedTrend] = useState('')
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
+  const [showSelectTestModal, setShowSelectTestModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
   const [metricInfo, setMetricInfo] = useState(
@@ -233,7 +235,14 @@ const StudentProgress = ({
           groupType="custom"
           visible={showAddToGroupModal}
           onCancel={() => setShowAddToGroupModal(false)}
+          showSelectTest={() => setShowSelectTestModal(true)}
           checkedStudents={checkedStudentsForModal}
+        />
+        <SelectTestModal
+          visible={showSelectTestModal}
+          onCancel={() => {
+            setShowSelectTestModal(false)
+          }}
         />
       </FeaturesSwitch>
       <TrendStats

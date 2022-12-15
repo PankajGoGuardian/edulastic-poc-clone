@@ -176,7 +176,7 @@ const AssessmentsTable = ({
     <TableContainer>
       <Row type="flex" style={{ margin: '32px 0', alignItems: 'center' }}>
         <Typography.Title style={{ margin: 0 }} level={3}>
-          Assessment Performance details
+          Assessment Performance Details
         </Typography.Title>
         <DashedLine />
       </Row>

@@ -22,30 +22,30 @@ const DataWarehouseReports = ({ breadcrumbData, isCliUser, loc }) => {
       >
         <StyledCardsContainer>
           <ReportLinkCard
+            IconThumbnail={IconWholeChildReport}
+            title="Whole Child Report"
+            description="See the performance of a particular student accross Edulastic &amp; external tests"
+            url="/author/reports/whole-child-report/student/"
+            loc={loc}
+          />
+          <ReportLinkCard
             IconThumbnail={IconMultipleAssessmentReportDW}
-            title="Multiple Assessment report"
+            title="Multiple Assessment Report"
             description="Compare the aggregate performance of students across various assessments "
             url="/author/reports/multiple-assessment-report-dw"
             loc={loc}
           />
           <ReportLinkCard
             IconThumbnail={IconSingleAssessmentReportDW}
-            title="Single Assessment report"
-            description="See the performance of single assessment and compare the stats across students"
+            title="Single Assessment Report"
+            description="Compare students' performance on a single assessment"
             url="/author/reports/single-assessment-report-dw"
-            loc={loc}
-          />
-          <ReportLinkCard
-            IconThumbnail={IconWholeChildReport}
-            title="Whole child report"
-            description="See the performance of a particular student accross Edulastic &amp; external tests"
-            url="/author/reports/whole-child-report/student/"
             loc={loc}
           />
           <ReportLinkCard
             IconThumbnail={IconPreVsPostTestComparisonReport}
             title="Pre vs Post Test Comparison"
-            description="See the performance of a particular student accross Edulastic &amp; external tests"
+            description="This report shows the level of improvement of student cohorts between a pre-instructional assessment and a post-instructional assessment"
             url="/author/reports/pre-vs-post-test-comparison"
             loc={loc}
           />

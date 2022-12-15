@@ -392,15 +392,15 @@
       "group": "nonAcademicReport",
       "groupTitle": "Non Academic Report"
     },
-    "sel-assessment-responses": {
-      "title": "SEL Assessment Responses",
+    "sel-response-summary": {
+      "title": "SEL Response Summary",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
           "to": "/author/reports"
         },
         {
-          "title": "SEL ASSESSMENT RESPONSES"
+          "title": "SEL RESPONSE SUMMARY"
         }
       ],
       "group": "nonAcademicReport",
@@ -569,9 +569,9 @@
         "location": "/author/reports/social-emotional-learning"
       },
       {
-        "key": "sel-assessment-responses",
-        "title": "SEL Assessment Responses",
-        "location": "/author/reports/sel-assessment-responses/test/"
+        "key": "sel-response-summary",
+        "title": "SEL Response Summary",
+        "location": "/author/reports/sel-response-summary/test/"
       }
     ]
   }

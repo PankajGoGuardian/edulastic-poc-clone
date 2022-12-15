@@ -32,7 +32,7 @@ const reportNavType = {
   WHOLE_CHILD_REPORT: 'whole-child-report',
   MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
   SOCIAL_EMOTIONAL_LEARNING: 'social-emotional-learning',
-  SEL_ASSESSMENT_RESPONSES: 'sel-assessment-responses',
+  SEL_RESPONSE_SUMMARY: 'sel-response-summary',
 }
 
 const sharedWithType = {

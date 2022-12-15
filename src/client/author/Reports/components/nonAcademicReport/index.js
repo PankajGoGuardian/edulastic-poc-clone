@@ -16,12 +16,12 @@ const links = [
       'View an overview of student’s social and emotional well-being to identify trends of the social-emotional status across competencies.',
   },
   {
-    key: 'selAssessmentResponses',
-    title: 'SEL Assessment Responses',
+    key: 'selResponseSummary',
+    title: 'SEL Response Summary',
     thumbnail: SELAssessmentResponses,
-    location: '/author/reports/sel-assessment-responses/test/',
+    location: '/author/reports/sel-response-summary/test/',
     description:
-      'View the distribution of SEL survey responses by question, and understand the overall social-emotional learnings based on frequently chosen answers.',
+      'View the distribution of SEL responses by question, and understand the overall social-emotional learnings based on frequently chosen answers.',
   },
 ]
 

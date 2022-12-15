@@ -80,7 +80,7 @@ const NonAcademicReportContainer = (props) => {
   const [ddfilter, setDdFilter] = useState({
     ...staticDropDownData.initialDdFilters,
   })
-  const isSELFrequency = loc === 'sel-assessment-responses'
+  const isSELFrequency = loc === 'sel-response-summary'
   const [reportId] = useState(
     qs.parse(location.search, { ignoreQueryPrefix: true }).reportId
   )
@@ -369,7 +369,7 @@ const NonAcademicReportContainer = (props) => {
         />
         <Route
           exact
-          path="/author/reports/sel-assessment-responses/test/:testId?"
+          path="/author/reports/sel-response-summary/test/:testId?"
           render={(_props) => {
             setShowHeader(true)
             return (

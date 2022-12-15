@@ -287,7 +287,7 @@ export const SELAssessmentTable = ({
       return csvRow.join(',')
     })
     const csvData = [rawData[0].join(','), ...modifiedCsvRows].join('\n')
-    downloadCSV(`SEL Assessment Responses.csv`, csvData)
+    downloadCSV(`SEL Response Summary.csv`, csvData)
   }
 
   return (

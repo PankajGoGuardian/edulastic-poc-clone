@@ -65,7 +65,7 @@ export const AttendanceChart = ({
       },
       ...attendanceChartData,
     ],
-    [pagination]
+    [attendanceChartData]
   )
 
   const renderData = useMemo(() => {
@@ -92,7 +92,7 @@ export const AttendanceChart = ({
       )
     }
     return dataToRender
-  }, [pagination, attendanceChartData])
+  }, [pagination, chartData])
 
   const scrollLeft = () => {
     let diff

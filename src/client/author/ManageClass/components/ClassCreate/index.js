@@ -115,8 +115,13 @@ class ClassCreate extends React.Component {
     form.validateFieldsAndScroll((err, values) => {
       if (!err) {
         const { createClass, curriculums, createClassType } = this.props
-        const { fromDashboard, type, studentIds = [], exitPath } =
-          createClassType || {}
+        const {
+          fromDashboard,
+          type,
+          studentIds = [],
+          exitPath,
+          showSuccessNotification,
+        } = createClassType || {}
         const {
           standardSets,
           endDate,
@@ -172,11 +177,17 @@ class ClassCreate extends React.Component {
           callUserMeApi = true
         }
         const submitValues = pickBy(values, identity)
-        createClass({ ...submitValues, callUserMeApi, exitPath })
+        createClass({
+          ...submitValues,
+          callUserMeApi,
+          exitPath,
+          showSuccessNotification,
+        })
         segmentApi.genericEventTrack('createClassSubmit', {
           ...submitValues,
           fromDashboard,
           type,
+          showSuccessNotification,
         })
       }
     })

@@ -83,6 +83,7 @@ const AddToGroupModal = ({
   setCreateClassTypeDetails,
   setStudentGroup,
   showSelectTest,
+  allowTestAssign = false,
 }) => {
   const groupTypeText = groupType === 'custom' ? 'group' : 'class'
   const [studentList, setStudentList] = useState([])
@@ -197,22 +198,24 @@ const AddToGroupModal = ({
           type: 'info',
           msg: `Selected students are already enrolled to ${groupTypeText} ${name}`,
         })
-        onCancel()
+        if (!allowTestAssign) onCancel()
       }
-    } else {
+    } else if (!allowTestAssign) {
       // close modal
-      // onCancel()
+      onCancel()
     }
   }
 
   const handleAddNew = () => {
     if (checkedStudents.length) {
+      const exitPath = allowTestAssign ? undefined : match.url
       setShowClassCreationModal(true)
       setCreateClassTypeDetails({
         type: groupTypeText,
         studentIds: checkedStudents.map((s) => s._id),
-        // exitPath: match.url,
-        noRedirect: true,
+        exitPath,
+        noRedirect: !exitPath,
+        showSuccessNotification: false,
       })
     } else {
       notification({
@@ -259,15 +262,17 @@ const AddToGroupModal = ({
           >
             Update Group Membership
           </EduButton>
-          <StyledEduButton
-            data-cy="assignTest"
-            width="200px"
-            onClick={handleAssignTest}
-            isGhost
-            disabled={isEmpty(selectedGroup)}
-          >
-            Assign Test
-          </StyledEduButton>
+          {allowTestAssign ? (
+            <StyledEduButton
+              data-cy="assignTest"
+              width="200px"
+              onClick={handleAssignTest}
+              isGhost
+              disabled={isEmpty(selectedGroup)}
+            >
+              Assign Test
+            </StyledEduButton>
+          ) : null}
         </StyledCol>,
       ]}
       onCancel={onCancel}

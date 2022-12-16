@@ -769,12 +769,19 @@ function* fetchStudentsByClassId({ payload }) {
 
 function* receiveCreateClassRequest({ payload }) {
   try {
-    const { exitPath, studentIds, callUserMeApi, ...rest } = payload
+    const {
+      exitPath,
+      studentIds,
+      callUserMeApi,
+      showSuccessNotification = true,
+      ...rest
+    } = payload
     const result = yield call(groupApi.createGroup, rest)
     const { name, type, code: classCode, districtId } = result
     const typeText = type === 'custom' ? 'group' : 'class'
     if (studentIds?.length) {
-      notification({ type: 'success', msg: `${name} ${typeText} is created` })
+      if (showSuccessNotification)
+        notification({ type: 'success', msg: `${name} ${typeText} is created` })
       yield put(
         requestEnrolExistingUserToClassAction({
           name,
@@ -784,7 +791,7 @@ function* receiveCreateClassRequest({ payload }) {
           studentIds,
         })
       )
-    } else {
+    } else if (showSuccessNotification) {
       notification({
         type: 'success',
         msg: `${name} is created. Please add students to your ${typeText} and begin using Edulastic.`,

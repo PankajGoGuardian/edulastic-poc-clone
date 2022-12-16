@@ -237,6 +237,7 @@ const StudentProgress = ({
           onCancel={() => setShowAddToGroupModal(false)}
           showSelectTest={() => setShowSelectTestModal(true)}
           checkedStudents={checkedStudentsForModal}
+          allowTestAssign
         />
         <SelectTestModal
           visible={showSelectTestModal}

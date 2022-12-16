@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -68,6 +68,16 @@ const ScrollElement = ({ item, onClick, ticked }) => (
   </div>
 )
 
+const usePrevious = (value) => {
+  const prevValueRef = useRef()
+  const curValueRef = useRef(value)
+  if (value !== curValueRef.current) {
+    prevValueRef.current = curValueRef.current
+    curValueRef.current = value
+  }
+  return prevValueRef.current
+}
+
 const AddToGroupModal = ({
   visible,
   onCancel,
@@ -90,6 +100,17 @@ const AddToGroupModal = ({
   const [studentsToAdd, setStudentsToAdd] = useState([])
   const [studentsToRemove, setStudentsToRemove] = useState([])
   const [selectedGroup, setSelectedGroup] = useState({})
+  const prevGroups = usePrevious(groupList)
+
+  useEffect(() => {
+    const prevGroupIds = (prevGroups || []).map((g) => g._id)
+    const newGroup = groupList.find((g) => !prevGroupIds.includes(g._id))
+    if (!newGroup) return
+    setSelectedGroup({
+      key: newGroup._id,
+      label: newGroup.name,
+    })
+  }, [groupList])
 
   useEffect(() => {
     fetchGroups()
@@ -327,6 +348,7 @@ const AddToGroupModal = ({
               placeholder="Select group"
               cache="false"
               onChange={setSelectedGroup}
+              value={selectedGroup}
               width={selectorWidth}
               optionFilterProp="children"
               dropdownStyle={{ zIndex: 2000 }}

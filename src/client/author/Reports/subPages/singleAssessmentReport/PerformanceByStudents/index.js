@@ -307,6 +307,7 @@ const PerformanceByStudents = ({
             visible={showAddToGroupModal}
             onCancel={() => setShowAddToGroupModal(false)}
             checkedStudents={checkedStudentsForModal}
+            allowTestAssign
           />
         </FeaturesSwitch>
         <StyledCharWrapper>

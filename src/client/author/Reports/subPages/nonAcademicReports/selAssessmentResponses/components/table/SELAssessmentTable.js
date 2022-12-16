@@ -216,17 +216,27 @@ export const SELAssessmentTable = ({
       }
 
       // arr with rounded values & sorted by name
-      arr = arr
-        .map((_data) => ({ ..._data, value: Math.round(_data.value) }))
-        .sort((a, b) =>
-          (a.name || '')
-            .toLowerCase()
-            .localeCompare((b.name || '').toLowerCase())
-        )
-      arr.sort((a, b) => b.value - a.value)
+      arr = arr.map((_data) => ({ ..._data, value: Math.round(_data.value) }))
+
+      const charToIdx = {
+        0: 'A',
+        1: 'B',
+        2: 'C',
+        3: 'D',
+        4: 'E',
+        5: 'F',
+        6: 'G',
+        7: 'H',
+        8: 'I',
+      }
+      const options = arr[0].record.options
+      options.forEach((o, i) => {
+        o.letter = charToIdx?.[i]
+      })
+      options.sort((a, b) => b.score - a.score)
       return (
         <Row type="flex" justify="start" className="table-tag-container">
-          {arr[0].record.options.map((_data, i) =>
+          {options.map((_data, i) =>
             _data.value ||
             (checkForQtypes.includes(_data.record.qType.toLocaleLowerCase()) &&
               hasChoiceData) ? (

@@ -27,8 +27,7 @@ export class ResponseTag extends Component {
 
   getCellContents = () => {
     const { data, idx, arr } = this.props
-    const value = idx >= arr.length ? 0 : arr[idx]?.value
-
+    const value = arr.filter((e) => e.key === data.letter)[0]?.value || '0'
     const iconUrl = data?.emojiUrl
 
     return (

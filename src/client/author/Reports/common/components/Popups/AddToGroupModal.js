@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, useMemo } from 'react'
 import styled from 'styled-components'
 import { withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
@@ -100,17 +100,6 @@ const AddToGroupModal = ({
   const [studentsToAdd, setStudentsToAdd] = useState([])
   const [studentsToRemove, setStudentsToRemove] = useState([])
   const [selectedGroup, setSelectedGroup] = useState({})
-  const prevGroups = usePrevious(groupList)
-
-  useEffect(() => {
-    const prevGroupIds = (prevGroups || []).map((g) => g._id)
-    const newGroup = groupList.find((g) => !prevGroupIds.includes(g._id))
-    if (!newGroup) return
-    setSelectedGroup({
-      key: newGroup._id,
-      label: newGroup.name,
-    })
-  }, [groupList])
 
   useEffect(() => {
     fetchGroups()
@@ -254,7 +243,23 @@ const AddToGroupModal = ({
     showSelectTest()
   }
 
-  const filteredGroups = (groupList || []).filter((g) => g.type === groupType)
+  const filteredGroups = useMemo(
+    () => (groupList || []).filter((g) => g.type === groupType),
+    [groupList]
+  )
+
+  const prevGroups = usePrevious(filteredGroups)
+
+  useEffect(() => {
+    const prevGroupIds = (prevGroups || []).map((g) => g._id)
+    const newGroup = filteredGroups.find((g) => !prevGroupIds.includes(g._id))
+    if (!newGroup) return
+    if (!allowTestAssign) return
+    setSelectedGroup({
+      key: newGroup._id,
+      label: newGroup.name,
+    })
+  }, [filteredGroups])
 
   // input styles
   const tabletWidthNum = tabletWidth.match(/[0-9]+/)[0]

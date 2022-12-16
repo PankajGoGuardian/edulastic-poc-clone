@@ -54,7 +54,7 @@ const StudentsSelector = ({
   ])
   const SelectedStudents = Object.keys(studentsGroupedByGroupId).flatMap(
     (groupId) => {
-      const groupName = groupKeyed[groupId].name
+      const groupName = groupKeyed[groupId]?.name
       const studentRows = (studentsGroupedByGroupId[groupId] || []).map(
         ({ _id, firstName, lastName, middleName }) => {
           const fullName = getFormattedName(firstName, middleName, lastName)

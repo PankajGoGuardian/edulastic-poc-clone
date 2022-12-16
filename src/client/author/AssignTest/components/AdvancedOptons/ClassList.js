@@ -38,6 +38,7 @@ import {
   getTestSelector,
   getAllTagsAction,
   getAllTagsSelector,
+  getStudentGroupIdSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
 import {
@@ -114,6 +115,7 @@ class ClassList extends React.Component {
       getAllTags,
       courseList,
       setExcludeSchools,
+      studentGroupId,
     } = this.props
 
     if (isEmpty(schools)) {
@@ -136,37 +138,47 @@ class ClassList extends React.Component {
     getAllTags({ type: 'group' })
 
     const { subjects = [], grades = [] } = test
-    this.setState(
-      (prevState) => ({
+    this.setState((prevState) => {
+      if (studentGroupId) {
+        return {
+          ...prevState,
+          filterClassIds: [studentGroupId],
+        }
+      }
+      return {
         ...prevState,
         searchTerms: {
           ...prevState.searchTerms,
           grades,
           subjects,
         },
-      }),
-      this.loadClassList
-    )
+      }
+    }, this.loadClassList)
     setExcludeSchools(false)
   }
 
   componentDidUpdate(prevProps) {
-    const { test, testType } = this.props
+    const { test, testType, studentGroupId } = this.props
     const { filterClassIds } = this.state
     if (prevProps.test._id !== test._id) {
       const { subjects = [], grades = [] } = test
       // eslint-disable-next-line react/no-did-update-set-state
-      this.setState(
-        (prevState) => ({
+      this.setState((prevState) => {
+        if (studentGroupId) {
+          return {
+            ...prevState,
+            filterClassIds: [studentGroupId],
+          }
+        }
+        return {
           ...prevState,
           searchTerms: {
             ...prevState.searchTerms,
             grades,
             subjects,
           },
-        }),
-        this.loadClassList
-      ) // eslint-disable-line
+        }
+      }, this.loadClassList) // eslint-disable-line
     }
     if (
       prevProps.testType !== testType &&
@@ -636,6 +648,7 @@ const enhance = compose(
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
       excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
+      studentGroupId: getStudentGroupIdSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,

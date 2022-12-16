@@ -26,6 +26,7 @@ import { useGetBandData } from './hooks'
 
 import dropDownData from './static/json/dropDownData.json'
 import tableColumns from './static/json/tableColumns.json'
+import { setStudentGroupIdAction } from '../../../../TestPage/ducks'
 
 const {
   downloadCSV,
@@ -71,6 +72,7 @@ const StudentProgress = ({
   ddfilter,
   sharedReport,
   toggleFilter,
+  setStudentGroup,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -243,6 +245,7 @@ const StudentProgress = ({
           visible={showSelectTestModal}
           onCancel={() => {
             setShowSelectTestModal(false)
+            setStudentGroup(null)
           }}
         />
       </FeaturesSwitch>
@@ -322,6 +325,7 @@ const enhance = connect(
   {
     getStudentProgressRequest: getStudentProgressRequestAction,
     resetStudentProgress: resetStudentProgressAction,
+    setStudentGroup: setStudentGroupIdAction,
   }
 )
 

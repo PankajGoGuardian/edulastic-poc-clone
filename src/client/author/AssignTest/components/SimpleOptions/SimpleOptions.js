@@ -100,6 +100,7 @@ class SimpleOptions extends React.Component {
       group,
       studentGroupId,
       fetchStudents,
+      userRole,
     } = this.props
     if (free && !premium) {
       this.onChange('releaseScore', releaseGradeLabels.WITH_ANSWERS)
@@ -132,21 +133,23 @@ class SimpleOptions extends React.Component {
       this.onChange('class', [group[0]._id])
       fetchStudents({ classId: group[0]._id })
     }
-    // if (!isEmpty(studentGroupId)) {
-    //   console.log('setting class', studentGroupId)
-    //   this.onChange('class', [studentGroupId])
-    //   // fetchStudents({ classId: studentGroupId })
-    // }
+    if (!isEmpty(studentGroupId) && userRole === roleuser.TEACHER) {
+      this.onChange('class', [studentGroupId])
+      fetchStudents({ classId: studentGroupId })
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const { group, fetchStudents, studentGroupId } = this.props
+    const { group, fetchStudents, studentGroupId, userRole } = this.props
     // no class available yet in assign module flow initial render
-    // if (studentGroupId !== prevProps.studentGroupId) {
-    //   console.log('did update setting class')
-    //   this.onChange('class', [studentGroupId])
-    //   fetchStudents({ classId: studentGroupId })
-    // }
+    if (
+      studentGroupId !== prevProps.studentGroupId &&
+      prevProps.group?.length === 0 &&
+      userRole === roleuser.TEACHER
+    ) {
+      this.onChange('class', [studentGroupId])
+      fetchStudents({ classId: studentGroupId })
+    }
     if (group?.length === 1 && prevProps.group?.length === 0) {
       this.onChange('class', [group[0]._id])
       fetchStudents({ classId: group[0]._id })

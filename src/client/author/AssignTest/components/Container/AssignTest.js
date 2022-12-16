@@ -36,6 +36,7 @@ import {
   isSAWithoutSchoolsSelector,
   getUserId,
   getUserFeatures,
+  getOrgGroupList,
 } from '../../../src/selectors/user'
 import {
   getSearchTermsFilterSelector,
@@ -58,6 +59,7 @@ import {
   updateTestSettingRequestAction,
   getIsOverrideFreezeSelector,
   setTestSettingsListAction,
+  setStudentGroupIdAction,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -294,10 +296,12 @@ class AssignTest extends React.Component {
       clearAssignmentSettings,
       setAssignments,
       setTestSettingsList,
+      setStudentGroupId,
     } = this.props
     clearAssignmentSettings()
     setAssignments([])
     setTestSettingsList([])
+    setStudentGroupId(null)
   }
 
   componentDidUpdate(prevProps) {
@@ -445,8 +449,15 @@ class AssignTest extends React.Component {
   }
 
   onClassFieldChange = (value, group) => {
-    const { assignmentSettings: assignment } = this.props
+    const { assignmentSettings: assignment, orgDataClassList } = this.props
     const groupById = keyBy(group, '_id')
+    if (value.some((val) => !groupById[val]?.name)) {
+      value.forEach((item) => {
+        if (!groupById[item]?.name) {
+          groupById[item] = orgDataClassList.find((clazz) => clazz._id === item)
+        }
+      })
+    }
     const previousGroupData = keyBy(assignment.class, '_id')
     const classData = value.map((_id) => {
       if (previousGroupData[_id]) {
@@ -1034,6 +1045,7 @@ const enhance = compose(
       searchTerms: getSearchTermsFilterSelector(state),
       isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
+      orgDataClassList: getOrgGroupList(state),
     }),
     {
       loadClassList: receiveClassListAction,
@@ -1058,6 +1070,7 @@ const enhance = compose(
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
       setTestSettingsList: setTestSettingsListAction,
+      setStudentGroupId: setStudentGroupIdAction,
     }
   )
 )

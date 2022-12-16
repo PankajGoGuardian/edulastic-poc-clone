@@ -29,6 +29,7 @@ import MCBlockLayout from '../../../src/assets/multiple-choice/block-layout-blue
 import MCMatrixStandard from '../../../src/assets/multiple-choice/matrix-standard-blue.svg'
 import MCMatrixInline from '../../../src/assets/multiple-choice/matrix-inline-blue.svg'
 import MCMatrixLabels from '../../../src/assets/multiple-choice/matrix-labels-blue.svg'
+import MCLikertScale from '../../../src/assets/multiple-choice/likert-scale.svg'
 
 // Fill In blanks
 import FBClozeDragDrop from '../../../src/assets/fill-in-blanks/cloze-drag-drop-blue.svg'
@@ -1423,7 +1424,7 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
     },
     {
       type: 'multiple-choice',
-      // cardImage:,
+      cardImage: MCLikertScale,
       data: {
         title: questionTitle.LIKERT_SCALE,
         type: questionType.LIKERT_SCALE,

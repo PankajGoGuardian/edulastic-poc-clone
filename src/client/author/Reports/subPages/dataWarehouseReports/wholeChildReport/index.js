@@ -56,6 +56,7 @@ const WholeChildReport = ({
   sharedReportList,
   isCsvDownloading,
   userRole,
+  userDistrictId,
   orgData,
   defaultTermId,
   showApply,
@@ -339,6 +340,7 @@ const WholeChildReport = ({
           showApply={showApply}
           firstLoad={firstLoad}
           userRole={userRole}
+          userDistrictId={userDistrictId}
           orgData={orgData}
           defaultTermId={defaultTermId}
           // value props (from report selectors)

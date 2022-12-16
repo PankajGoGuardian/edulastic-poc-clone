@@ -66,6 +66,7 @@ const WholeChildReportFilters = ({
   isPrinting = false,
   location,
   userRole,
+  userDistrictId,
   orgData,
   defaultTermId,
   reportId = '',
@@ -91,7 +92,11 @@ const WholeChildReportFilters = ({
 }) => {
   const tagTypes = staticDropDownData.tagTypes
   const splittedPath = location.pathname.split('/')
-  const urlStudentId = splittedPath[splittedPath.length - 1]
+  // For ddoe-demo - default '638986c15dc95187a501921c' student is selected
+  let urlStudentId = splittedPath[splittedPath.length - 1]
+  if (!urlStudentId && userDistrictId === '638986c15dc95187a50191c6') {
+    urlStudentId = '638986c15dc95187a501921c'
+  }
   const { terms = [] } = orgData
   const termOptions = useMemo(() => getTermOptions(terms), [terms])
 

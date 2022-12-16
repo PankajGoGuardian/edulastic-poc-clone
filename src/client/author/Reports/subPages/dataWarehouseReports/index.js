@@ -12,6 +12,7 @@ const DataWarehouseReportsContainer = ({
   breadcrumbData,
   isCliUser,
   isPrinting,
+  userDistrictId,
   showApply,
   showFilter,
   onRefineResultsCB,
@@ -33,6 +34,7 @@ const DataWarehouseReportsContainer = ({
           return (
             <WholeChildReport
               {..._props}
+              userDistrictId={userDistrictId}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}
               showApply={showApply}

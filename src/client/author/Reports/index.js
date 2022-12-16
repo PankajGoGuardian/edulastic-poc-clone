@@ -39,7 +39,11 @@ import { StudentProfileReportContainer } from './subPages/studentProfileReport'
 import { EngagementReportContainer } from './subPages/engagementReport'
 import { NonAcademicReportContainer } from './subPages/nonAcademicReports'
 import ClassCreate from '../ManageClass/components/ClassCreate'
-import { getUserRole, isSAWithoutSchoolsSelector } from '../src/selectors/user'
+import {
+  getUserRole,
+  getUserOrgId,
+  isSAWithoutSchoolsSelector,
+} from '../src/selectors/user'
 import {
   toggleAdminAlertModalAction,
   toggleVerifyEmailModalAction,
@@ -52,6 +56,7 @@ const Container = (props) => {
   const {
     history,
     role,
+    userDistrictId,
     isCsvDownloading,
     isPrinting,
     match,
@@ -484,6 +489,7 @@ const Container = (props) => {
             <DataWarehouseReportsContainer
               {..._props}
               isCliUser={isCliUser}
+              userDistrictId={userDistrictId}
               isPrinting={isPrinting}
               breadcrumbData={headerSettings.breadcrumbData}
               showApply={showApply}
@@ -503,6 +509,7 @@ const Container = (props) => {
 const enhance = connect(
   (state) => ({
     role: getUserRole(state),
+    userDistrictId: getUserOrgId(state),
     isPrinting: getPrintingState(state),
     isCsvDownloading: getCsvDownloadingState(state),
     premium: get(state, 'user.user.features.premium', false),

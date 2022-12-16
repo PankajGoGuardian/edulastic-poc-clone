@@ -119,6 +119,7 @@ export const UserIcon = styled.div`
 export const OverallPerformanceWrapper = styled.div`
   width: 100%;
   display: flex;
+  flex-wrap: wrap;
   justify-content: center;
   align-items: center;
   padding: 0px 50px;

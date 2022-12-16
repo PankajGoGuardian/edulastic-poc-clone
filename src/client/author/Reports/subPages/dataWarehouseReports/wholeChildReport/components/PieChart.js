@@ -15,7 +15,7 @@ export const SimplePieChartComponent = ({
       <PieChartWrapper>
         {showTooltip && (
           <Tooltip
-            position={{ x: -60, y: selTooltip ? -140 : -100 }}
+            position={{ x: -60, y: selTooltip ? -110 : -100 }}
             cursor={false}
             content={<StyledCustomChartTooltipDark getJSX={getTooltipJSX} />}
           />

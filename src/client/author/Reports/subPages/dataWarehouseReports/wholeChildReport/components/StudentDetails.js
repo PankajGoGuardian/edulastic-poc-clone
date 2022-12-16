@@ -52,12 +52,7 @@ const getSelTooltipJSX = (payload) => {
           </TooltipRowTitle>
         </TooltipRow>
         <TooltipRow>
-          <TooltipRowTitle>
-            &nbsp;&nbsp;&nbsp;score of greater than or
-          </TooltipRowTitle>
-        </TooltipRow>
-        <TooltipRow>
-          <TooltipRowTitle>&nbsp;&nbsp;&nbsp;equal to</TooltipRowTitle>
+          <TooltipRowTitle>&nbsp;&nbsp;&nbsp;score of</TooltipRowTitle>
           <TooltipRowValue>{tooltipData.scale}</TooltipRowValue>
         </TooltipRow>
       </div>
@@ -381,12 +376,12 @@ const StudentDetails = ({
               title={percentileTooltipText}
               getPopupContainer={(triggerNode) => triggerNode}
             >
-              Percentile:
+              PERCENTAGE:
             </CustomTooltip>
           </StyledSpan>
           <SimplePieChartComponent
             pieChartData={pieChartData}
-            label={avgAverageScore}
+            label={`${avgAverageScore}%`}
             getTooltipJSX={getProficiencyTooltipJSX}
           />
         </StyledDiv>
@@ -410,7 +405,7 @@ const StudentDetails = ({
           <StyledSpan>ATTENDANCE: </StyledSpan>
           <SimplePieChartComponent
             pieChartData={attendancePieChartData}
-            label={attendanceChartLabel}
+            label={`${attendanceChartLabel}%`}
             showTooltip={false}
           />
         </StyledDiv>

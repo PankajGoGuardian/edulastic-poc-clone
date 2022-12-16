@@ -1,12 +1,11 @@
 import React from 'react'
 import { Icon, Tooltip } from 'antd'
-import { capitalize } from 'lodash'
+import { capitalize, round } from 'lodash'
 
 import { themeColor, greyThemeDark2 } from '@edulastic/colors'
 import { reportUtils } from '@edulastic/constants'
 import { IconCheckMark } from '@edulastic/icons'
 import { Link } from 'react-router-dom'
-import { round } from 'lodash'
 import {
   DetailsWrapper,
   Details,
@@ -108,7 +107,7 @@ const StudentDetails = ({
 
   const selDataLength = selPerformanceDetails.data.length
 
-  const selPieChartLabel = selPerformanceDetails.sel_avg_score
+  const selAvg = selPerformanceDetails.sel_avg_score
   const selPieChartData = selPerformanceDetails.data.map((e) => ({
     fill: e.color,
     count: e.total,
@@ -152,7 +151,7 @@ const StudentDetails = ({
   }
 
   const avgScoreRisk = avgAverageScore < pieChartData?.[1]?.threshold
-  const selAvgRisk = selPerformanceDetails.performance < 60
+  const selAvgRisk = percentage(selAvg, selDataLength) < 60
   const attendanceRisk = attendanceChartLabel < 90
 
   const getPerformanceRisk = () => {
@@ -193,7 +192,7 @@ const StudentDetails = ({
   const getPerformanceRiskTooltipText = () => {
     const { count, sum, name } = pieChartData?.[0]
     let tooltipText
-    const selText = round(selPerformanceDetails?.performance, 2)
+    const selText = round(selAvg, 2)
 
     if (avgScoreRisk && selAvgRisk && attendanceRisk) {
       tooltipText = (
@@ -394,7 +393,7 @@ const StudentDetails = ({
           >
             <SimplePieChartComponent
               pieChartData={selPieChartData}
-              label={selPieChartLabel}
+              label={selAvg}
               getTooltipJSX={getSelTooltipJSX}
               selTooltip
             />

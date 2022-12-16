@@ -542,6 +542,11 @@
     ],
     "data-warehouse-reports": [
       {
+        "key": "whole-child-report",
+        "title": "WHOLE CHILD REPORT",
+        "location": "/author/reports/whole-child-report/student/"
+      },
+      {
         "key": "multiple-assessment-report-dw",
         "title": "MULTIPLE ASSESSMENT REPORT",
         "location": "/author/reports/multiple-assessment-report-dw"
@@ -552,12 +557,7 @@
         "location": "/author/reports/single-assessment-report-dw"
       },
       {
-        "key": "whole-child-report",
-        "title": "WHOLE CHILD REPORT",
-        "location": "/author/reports/whole-child-report/student/"
-      },
-      {
-        "key":"pre-vs-post-test-comparison",
+        "key": "pre-vs-post-test-comparison",
         "title": "PRE VS POST TEST COMPARISON",
         "location": "/author/reports/pre-vs-post-test-comparison"
       }

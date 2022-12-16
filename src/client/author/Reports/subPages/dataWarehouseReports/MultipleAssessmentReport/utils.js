@@ -420,6 +420,7 @@ export const getChartData = (
     .filter((t) => t.externalTestType && t.achievementLevel)
     .map((t) => ({
       ...t,
+      achievementLevel: +t.achievementLevel,
       assessmentDate: +new Date(t.assessmentDate),
     }))
   if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
@@ -574,9 +575,14 @@ export const getChartData = (
         const _recordsWithBands = augmentBandData(records, null)
         const _record =
           _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
-        if (parseInt(_record.totalGraded, 10)) {
+        const totalGradedWithBand = sum(
+          _recordsWithBands
+            .filter((r) => r.band?.id === band.id)
+            .map((r) => +r.totalGraded)
+        )
+        if (totalGradedWithBand) {
           _record.totalGradedPercentage = round(
-            percentage(_record.totalGraded, testData.totalGraded),
+            percentage(totalGradedWithBand, testData.totalGraded),
             2
           )
         }

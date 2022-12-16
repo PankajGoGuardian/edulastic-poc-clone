@@ -102,13 +102,13 @@ const getIReadyAchievementLevels = (test) => {
 
 const getNWEAAchievementLevels = (test) => {
   const { testId, achievementLevelRank: rank } = test
-  const score = test.score
+  const score = +test.achievementLevel
   return [
     {
       testId,
       name: 'Low',
       id: 'Low',
-      color: '#76211E',
+      color: '#D96E68',
       active: typeof rank !== 'undefined' ? +rank === 0 : score < 21,
       rank: 0,
     },
@@ -134,7 +134,7 @@ const getNWEAAchievementLevels = (test) => {
       testId,
       name: 'HiAvg',
       id: 'HiAvg',
-      color: '#3B8457',
+      color: '#49A26B',
       active:
         typeof rank !== 'undefined' ? +rank === 3 : score >= 61 && score <= 80,
       rank: 3,
@@ -143,7 +143,7 @@ const getNWEAAchievementLevels = (test) => {
       testId,
       name: 'Hi',
       id: 'Hi',
-      color: '#295FA5',
+      color: '#5C91D6',
       active: typeof rank !== 'undefined' ? +rank === 4 : score >= 80,
       rank: 4,
     },
@@ -153,7 +153,7 @@ const getNWEAAchievementLevels = (test) => {
 const getSBACAchievementLevels = (test) => {
   const { testId, achievementLevelRank: rank } = test
   const bands = [
-    { id: '1', name: 'Level 1', color: '#DA3120', rank: 1 },
+    { id: '1', name: 'Level 1', color: '#E86F64', rank: 1 },
     { id: '2', name: 'Level 2', color: '#EAB03D', rank: 2 },
     { id: '3', name: 'Level 3', color: '#6BBF39', rank: 3 },
     { id: '4', name: 'Level 4', color: '#4A9DF8', rank: 4 },

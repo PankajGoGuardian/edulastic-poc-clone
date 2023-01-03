@@ -20,6 +20,9 @@ const LargeTagParent = styled.div`
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
+    @media print {
+      white-space: normal;
+    }
   }
   div.right-text {
     font-weight: bold;

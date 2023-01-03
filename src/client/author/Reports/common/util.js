@@ -283,13 +283,32 @@ export const toggleItem = (items, item) =>
     }
   })
 
-export const convertTableToCSV = (refComponent) => {
+export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
   const rows = refComponent.querySelectorAll('table')[0].querySelectorAll('tr')
+  const startIndex = getColumnHeaders ? 1 : 0
   const csv = []
   const csvRawData = []
-  for (let i = 0; i < rows.length; i++) {
+  if (getColumnHeaders) {
+    const columnHeaders = getColumnHeaders()
+    const columnHeaderRows = Object.keys(columnHeaders)
+    columnHeaderRows.forEach((r) => {
+      const rw = []
+      for (let j = 0; j < columnHeaders[r].length; j++) {
+        let data = columnHeaders[r][j]
+          .replace(/(\r\n|\n|\r)/gm, ' ')
+          .replace(/(\s+)/gm, ' ')
+        data = data.replace(/"/g, '""')
+        rw.push(`"${data}"`)
+      }
+      csv.push(rw.join(','))
+      csvRawData.push(rw)
+    })
+  }
+  for (let i = startIndex; i < rows.length; i++) {
     const row = []
-    const cols = rows[i].querySelectorAll('td, th')
+    let cols
+    if (getColumnHeaders) cols = rows[i].querySelectorAll('td')
+    else cols = rows[i].querySelectorAll('td, th')
     for (let j = 0; j < cols.length; j++) {
       if (cols[j].getElementsByClassName('ant-checkbox').length > 0) continue
       let data = (cols[j].innerText || cols[j].textContent)

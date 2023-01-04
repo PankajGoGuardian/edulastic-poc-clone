@@ -324,6 +324,7 @@ const PrintAssessmentContainer = styled.div`
   * check https://snapwiz.atlassian.net/browse/EV-24370
  */
   @media print {
+    contain: size; // Ref: EV-37289
     .hide-tail {
       overflow: hidden !important;
     }

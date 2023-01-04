@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { IconGoogleClassroom } from '@edulastic/icons'
 import GoogleLogin from 'react-google-login'
 import { EduButton } from '@edulastic/common'
@@ -44,6 +44,20 @@ const ClassCreatePage = ({
     console.log('error', err)
   }
 
+  useEffect(() => {
+    console.log('************************', google)
+    /* global google */
+    google.accounts.id.initialize({
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      callback: (data) => handleLoginSucess(data),
+    })
+
+    google.accounts.id.renderButton(document.getElementById('signInDi'), {
+      theme: 'outline',
+      size: 'large',
+    })
+  }, [])
+
   const { isUserGoogleLoggedIn, cleverId, isPlayground } = user
 
   const createNewClass = () => {
@@ -76,7 +90,7 @@ const ClassCreatePage = ({
                 onClick={createNewClass}
                 triggerSource="Create Class"
               />
-              {!isPlayground &&
+              {/* {!isPlayground &&
                 googleAllowedInstitutions?.length > 0 &&
                 !cleverId &&
                 !isClassLink && (
@@ -105,7 +119,8 @@ const ClassCreatePage = ({
                     prompt={isUserGoogleLoggedIn ? '' : 'consent'}
                     responseType="code"
                   />
-                )}
+                )} */}
+              <div id="signInDi" />
             </ButtonsContainer>
           </>
         )}

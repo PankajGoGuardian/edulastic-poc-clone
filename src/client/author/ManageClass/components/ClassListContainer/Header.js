@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
@@ -66,6 +66,20 @@ const Header = ({
   const handleLoginSucess = (data) => {
     fetchGoogleClassList({ data })
   }
+
+  useEffect(() => {
+    console.log('************************', google)
+    /* global google */
+    google.accounts.id.initialize({
+      client_id: process.env.REACT_APP_GOOGLE_CLIENT_ID,
+      callback: (data) => handleLoginSucess(data),
+    })
+
+    google.accounts.id.renderButton(document.getElementById('signInDiv'), {
+      theme: 'outline',
+      size: 'large',
+    })
+  }, [])
 
   const handleError = (err) => {
     console.log('error', err)
@@ -195,26 +209,27 @@ const Header = ({
               // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
               ((!cleverId && !isClassLink && !atlasId) || googleStopSync) &&
               !enableCleverSync && (
-                <GoogleLogin
-                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                  buttonText="Sync with Google Classroom"
-                  render={(renderProps) => (
-                    <EduButton
-                      isBlue
-                      data-cy="syncGoogle"
-                      isGhost
-                      onClick={renderProps.onClick}
-                    >
-                      <IconGoogleClassroom />
-                      <span>SYNC WITH GOOGLE CLASSROOM</span>
-                    </EduButton>
-                  )}
-                  scope={scopes}
-                  onSuccess={handleLoginSucess}
-                  onFailure={handleError}
-                  prompt={isUserGoogleLoggedIn ? '' : 'consent'}
-                  responseType="code"
-                />
+                // <GoogleLogin
+                //   clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
+                //   buttonText="Sync with Google Classroom"
+                //   render={(renderProps) => (
+                //     <EduButton
+                //       isBlue
+                //       data-cy="syncGoogle"
+                //       isGhost
+                //       onClick={renderProps.onClick}
+                //     >
+                //       <IconGoogleClassroom />
+                //       <span>SYNC WITH GOOGLE CLASSROOM</span>
+                //     </EduButton>
+                //   )}
+                //   scope={scopes}
+                //   onSuccess={handleLoginSucess}
+                //   onFailure={handleError}
+                //   prompt={isUserGoogleLoggedIn ? '' : 'consent'}
+                //   responseType="code"
+                // />
+                <div id="signInDiv" />
               )}
             {!isPlayground &&
               canvasAllowedInstitution?.length > 0 &&

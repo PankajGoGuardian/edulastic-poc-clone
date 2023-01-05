@@ -588,7 +588,9 @@ export const isEtsDistrictSelector = createSelector(
 
 export const allowReferenceMaterialSelector = createSelector(
   getUserFeatures,
-  (features) => _get(features, 'allowReferenceMaterial', false)
+  getUserRole,
+  (features, role) =>
+    role === roleuser.STUDENT || _get(features, 'allowReferenceMaterial', false)
 )
 
 export const isDataWarehouseEnabled = createSelector(

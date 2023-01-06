@@ -156,11 +156,11 @@ import {
   reportActivityByTeacherSaga,
 } from './subPages/engagementReport/ActivityByTeacher/ducks'
 import {
-  reducer as reportWholeChildReducer,
-  watcherSaga as reportWholeChildSaga,
-  selectors as reportWholeChildSelectors,
-  actions as reportWholeChildActions,
-} from './subPages/dataWarehouseReports/wholeChildReport/ducks'
+  reducer as reportWholeStudentReducer,
+  watcherSaga as reportWholeStudentSaga,
+  selectors as reportWholeStudentSelectors,
+  actions as reportWholeStudentActions,
+} from './subPages/dataWarehouseReports/wholeStudentReport/ducks'
 import {
   reducer as reportMultipleAssessmentDwReducer,
   watcherSaga as reportMultipleAssessmentDwSaga,
@@ -406,7 +406,7 @@ export const reportReducer = combineReducers({
   reportActivityByTeacherReducer,
   customReportReducer,
   sharedReportsReducer,
-  reportWholeChildReducer,
+  reportWholeStudentReducer,
   reportMultipleAssessmentDwReducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
@@ -499,11 +499,11 @@ const selectorDict = {
     setTags: setERTagsDataAction,
     setTempTags: setERTempTagsDataAction,
   },
-  [reportGroupType.WHOLE_CHILD_REPORT]: {
-    getTempTags: reportWholeChildSelectors.filterTagsData,
-    getSettings: reportWholeChildSelectors.settings,
-    setTags: reportWholeChildActions.setSelectedFilterTagsData,
-    setTempTags: reportWholeChildActions.setFilterTagsData,
+  [reportGroupType.WHOLE_STUDENT_REPORT]: {
+    getTempTags: reportWholeStudentSelectors.filterTagsData,
+    getSettings: reportWholeStudentSelectors.settings,
+    setTags: reportWholeStudentActions.setSelectedFilterTagsData,
+    setTempTags: reportWholeStudentActions.setFilterTagsData,
   },
   [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
     getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
@@ -798,7 +798,7 @@ export function* reportSaga() {
     reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
-    reportWholeChildSaga(),
+    reportWholeStudentSaga(),
     reportMultipleAssessmentDwSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),

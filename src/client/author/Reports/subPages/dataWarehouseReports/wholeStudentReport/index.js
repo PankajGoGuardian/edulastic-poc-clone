@@ -14,7 +14,7 @@ import StudentDetails from './components/StudentDetails'
 import AssessmentsTable from './components/AssessmentsTable'
 import AssessmentsChart from './components/AssessmentsChart'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
-import WholeChildReportFilters from './components/Filters'
+import WholeStudentReportFilters from './components/Filters'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
@@ -44,7 +44,7 @@ import navigation from '../../../common/static/json/navigation.json'
 
 const { downloadCSV } = reportUtils.common
 
-const WholeChildReport = ({
+const WholeStudentReport = ({
   // value props
   loc,
   location,
@@ -165,7 +165,7 @@ const WholeChildReport = ({
 
   useEffect(
     () => () => {
-      console.log('Whole Child Report Component Unmount')
+      console.log('Whole Student Report Component Unmount')
       resetAllReports()
     },
     []
@@ -208,7 +208,7 @@ const WholeChildReport = ({
 
   useEffect(() => {
     if (settings.selectedStudent.key) {
-      const path = `/author/reports/whole-child-report/student/${
+      const path = `/author/reports/whole-student-report/student/${
         settings.selectedStudent.key
       }?${qs.stringify(settings.requestFilters)}`
       history.push(path)
@@ -283,7 +283,7 @@ const WholeChildReport = ({
   // const onTestSelect = (item) =>
   //   setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
-    downloadCSV(`Whole Child Report-${studentName}.csv`, data)
+    downloadCSV(`Whole Student Report-${studentName}.csv`, data)
 
   return (
     <>
@@ -304,7 +304,7 @@ const WholeChildReport = ({
         isCliUser={isCliUser}
         alignment="baseline"
       >
-        <WholeChildReportFilters
+        <WholeStudentReportFilters
           reportId={reportId}
           isPrinting={isPrinting}
           onGoClick={onGoClick}
@@ -395,10 +395,10 @@ const enhance = connect(
     setSharingState: setSharingStateAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
-        type: reportGroupType.WHOLE_CHILD_REPORT,
+        type: reportGroupType.WHOLE_STUDENT_REPORT,
         ...opts,
       }),
   }
 )
 
-export default enhance(WholeChildReport)
+export default enhance(WholeStudentReport)

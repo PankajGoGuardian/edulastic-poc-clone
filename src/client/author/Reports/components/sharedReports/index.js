@@ -64,7 +64,7 @@ const SharedReportsContainer = ({
       // do nothing
     }
     switch (reportType) {
-      case report.reportNavType.WHOLE_CHILD_REPORT:
+      case report.reportNavType.WHOLE_STUDENT_REPORT:
         history.push(
           `/author/reports/${reportType}/student/${filters.studentId}?termId=${filters.termId}&reportId=${_id}`
         )

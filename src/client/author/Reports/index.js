@@ -451,7 +451,7 @@ const Container = (props) => {
         />
         <Route
           path={[
-            '/author/reports/whole-child-report/student/',
+            '/author/reports/whole-student-report/student/',
             '/author/reports/multiple-assessment-report-dw',
           ]}
           render={(_props) => (

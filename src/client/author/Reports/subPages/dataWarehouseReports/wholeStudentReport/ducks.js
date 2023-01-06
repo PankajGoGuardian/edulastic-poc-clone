@@ -53,7 +53,7 @@ const initialState = {
 // -----|-----|-----|-----| SLICE BEGIN |-----|-----|-----|----- //
 
 const slice = createSlice({
-  name: 'wholeChildReport',
+  name: 'wholeStudentReport',
   initialState: { ...initialState },
   reducers: {
     fetchFiltersDataRequest: (state) => {
@@ -119,7 +119,7 @@ const slice = createSlice({
       state.loadingReportData = false
       state.error = payload.error
     },
-    resetDWWholeChildReport: () => ({ ...initialState }),
+    resetDWWholeStudentReport: () => ({ ...initialState }),
   },
   extraReducers: {
     [RESET_ALL_REPORTS]: () => ({ ...initialState }),
@@ -173,7 +173,10 @@ function* fetchReportDataRequestSaga({ payload }) {
     const params = payload.reportId
       ? pick(payload, ['reportId'])
       : pick(payload, ['studentId', 'termId'])
-    const reportData = yield call(dataWarehouseApi.getWholeChildReport, params)
+    const reportData = yield call(
+      dataWarehouseApi.getWholeStudentReport,
+      params
+    )
     const dataSizeExceeded = reportData?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put(
@@ -185,7 +188,7 @@ function* fetchReportDataRequestSaga({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error fetching whole child report data. Please try again after a few minutes.'
+      'Error fetching whole student report data. Please try again after a few minutes.'
     notification({ msg })
     yield put(actions.fetchReportDataRequestError({ error: msg }))
   }
@@ -205,7 +208,7 @@ export function* watcherSaga() {
 
 // -----|-----|-----|-----| SELECTORS BEGIN |-----|-----|-----|----- //
 
-const stateSelector = (state) => state.reportReducer.reportWholeChildReducer
+const stateSelector = (state) => state.reportReducer.reportWholeStudentReducer
 
 const firstLoad = createSelector(stateSelector, (state) => state.firstLoad)
 const loadingFiltersData = createSelector(

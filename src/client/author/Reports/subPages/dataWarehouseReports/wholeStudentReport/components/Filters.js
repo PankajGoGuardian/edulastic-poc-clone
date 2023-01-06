@@ -58,7 +58,7 @@ const filtersDefaultValues = [
   },
 ]
 
-const WholeChildReportFilters = ({
+const WholeStudentReportFilters = ({
   // value props
   showFilter,
   showApply,
@@ -549,4 +549,4 @@ const WholeChildReportFilters = ({
   )
 }
 
-export default WholeChildReportFilters
+export default WholeStudentReportFilters

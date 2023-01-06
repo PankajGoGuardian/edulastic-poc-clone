@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 import {
-  IconWholeChildReport,
+  IconWholeStudentReport,
   IconMultipleAssessmentReportDW,
 } from '@edulastic/icons'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
@@ -21,16 +21,16 @@ const DataWarehouseReports = ({ breadcrumbData, isCliUser, loc }) => {
         <StyledCardsContainer>
           <ReportLinkCard
             IconThumbnail={IconMultipleAssessmentReportDW}
-            title="Multiple Assessment report"
+            title="Multiple Assessment Report"
             description="Compare the aggregate performance of students across various assessments "
             url="/author/reports/multiple-assessment-report-dw"
             loc={loc}
           />
           <ReportLinkCard
-            IconThumbnail={IconWholeChildReport}
-            title="Whole child report"
+            IconThumbnail={IconWholeStudentReport}
+            title="Whole Student Report"
             description="See the performance of a particular student accross Edulastic &amp; external tests"
-            url="/author/reports/whole-child-report/student/"
+            url="/author/reports/whole-student-report/student/"
             loc={loc}
           />
           <MoreReportsContainer />

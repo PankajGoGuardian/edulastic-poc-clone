@@ -312,15 +312,15 @@
       ],
       "group": "mainReport"
     },
-    "whole-child-report": {
-      "title": "Whole Child Report",
+    "whole-student-report": {
+      "title": "Whole Student Report",
       "breadcrumb": [
         {
           "title": "DATA WAREHOUSE REPORTS",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
-          "title": "WHOLE CHILD REPORT"
+          "title": "WHOLE STUDENT REPORT"
         }
       ],
       "group": "data-warehouse-reports",
@@ -491,9 +491,9 @@
         "location": "/author/reports/multiple-assessment-report-dw"
       },
       {
-        "key": "whole-child-report",
-        "title": "WHOLE CHILD REPORT",
-        "location": "/author/reports/whole-child-report/student/"
+        "key": "whole-student-report",
+        "title": "WHOLE STUDENT REPORT",
+        "location": "/author/reports/whole-student-report/student/"
       }
     ]
   }

@@ -2,7 +2,7 @@ import React from 'react'
 import { Route } from 'react-router-dom'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
-import WholeChildReport from './wholeChildReport'
+import WholeStudentReport from './wholeStudentReport'
 
 import MultipleAssessmentReport from './MultipleAssessmentReport'
 
@@ -25,11 +25,11 @@ const DataWarehouseReportsContainer = ({
     >
       <Route
         exact
-        path="/author/reports/whole-child-report/student/:studentId?"
+        path="/author/reports/whole-student-report/student/:studentId?"
         render={() => {
           setShowHeader(true)
           return (
-            <WholeChildReport
+            <WholeStudentReport
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}

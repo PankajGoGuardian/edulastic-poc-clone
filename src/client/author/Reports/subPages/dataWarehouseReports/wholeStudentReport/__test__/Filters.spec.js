@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import configureMockStore from 'redux-mock-store'
-import WholeChildReportFilters from '../components/Filters'
+import WholeStudentReportFilters from '../components/Filters'
 
 jest.mock('../components/ClassAutoComplete', () => () => (
   <div data-testid="ClassAutoComplete" />
@@ -16,7 +16,7 @@ jest.mock('../components/StudentAutoComplete', () => () => (
 ))
 
 const location = {
-  pathname: '/author/reports/whole-child-report/student/',
+  pathname: '/author/reports/whole-student-report/student/',
   search:
     '?reportId=&termId=62308b1b4f201d00091af3ab&grades=&subjects=&schoolIds=&classIds=&courseIds=&performanceBandProfileId=61bc37c222542500099eacc1&showApply=false',
   hash: '',
@@ -35,7 +35,7 @@ const store = mockStore({
 describe('Data warehouse reports ', () => {
   test('Filters component visibility on initial render ', async () => {
     render(
-      <WholeChildReportFilters
+      <WholeStudentReportFilters
         location={location}
         store={store}
         filters={{ showApply: true }}
@@ -54,7 +54,7 @@ describe('Data warehouse reports ', () => {
   })
   test('Filters component visibility when showFilter is true ', async () => {
     render(
-      <WholeChildReportFilters
+      <WholeStudentReportFilters
         store={store}
         filters={{ showApply: true }}
         Showfilter

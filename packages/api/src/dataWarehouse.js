@@ -47,11 +47,11 @@ const updateDatawarehouseLogsStatus = (id, data) =>
 /**
  * @param {{reportId: string} | {studentId: string, termId: strign}} data
  */
-const getWholeChildReport = (data) => {
+const getWholeStudentReport = (data) => {
   const queryString = qs.stringify(data)
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/whole-child-report?${queryString}`,
+    url: `${prefix}/whole-student-report?${queryString}`,
     method: 'get',
     data,
   })
@@ -81,7 +81,7 @@ export default {
   getSignedUrl,
   getDataWarehouseLogs,
   updateDatawarehouseLogsStatus,
-  getWholeChildReport,
+  getWholeStudentReport,
   getMARChartMetrics,
   getMARTableMetrics,
 }

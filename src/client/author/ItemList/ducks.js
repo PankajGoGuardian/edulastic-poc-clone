@@ -161,7 +161,18 @@ export function* addItemToCartSaga({ payload }) {
     })
   } else {
     updatedTestItems = produce(testItems, (draft) => {
-      draft.push(item)
+      if (item.passageId) {
+        const lastIdx = draft.findLastIndex(
+          (element) => element.passageId === item.passageId
+        )
+        if (lastIdx !== -1) {
+          draft.splice(lastIdx + 1, 0, item)
+        } else {
+          draft.push(item)
+        }
+      } else {
+        draft.push(item)
+      }
       /**
        * not returning here because, muation happened above. that is enough
        */

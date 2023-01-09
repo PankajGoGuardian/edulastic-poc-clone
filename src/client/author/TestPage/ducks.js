@@ -3600,8 +3600,15 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
         (x) => x._id
       )
     } else {
+      let newItems = [...testItems]
+      const lastIdx = newItems.findLastIndex(
+        (element) => element.passageId === passageId
+      )
+      if (lastIdx !== -1) {
+        newItems.splice(lastIdx + 1, 0, ...passageItems)
+      } else newItems = [...newItems, ...passageItems]
       newPayload.itemGroups[currentGroupIndex].items = uniqBy(
-        [...testItems, ...passageItems],
+        newItems,
         (x) => x._id
       )
     }

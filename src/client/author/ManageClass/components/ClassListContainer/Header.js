@@ -64,6 +64,7 @@ const Header = ({
   const isCleverGroupPresent = classGroups.find((_group) => !!_group.cleverId)
 
   const handleLoginSucess = (data) => {
+    console.log({ data })
     fetchGoogleClassList({ data })
   }
 

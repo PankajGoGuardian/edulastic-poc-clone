@@ -5,14 +5,6 @@ import { getSchoolsSelector as getDistrictSchoolsSelector } from '../../Schools/
 import { getDefaultInterests } from '../../dataUtils'
 import { getCurriculumsListSelector } from './dictionaries'
 
-// Express grader enabling grid edit for selected districts
-const gridEditEnabledDistricts = {
-  // DSST Public Schools district
-  '5e4a3ce103b7ad09241750e4': true,
-  '5ed1fff103b7ad09240966fd': true,
-  '61824414a8d6b600096ed825': true,
-}
-
 export const etsDistrict = '5e42a351a1ee9000081f7cda'
 
 export const stateSelector = (state) => state.user
@@ -275,11 +267,12 @@ export const getUserSignupStatusSelector = createSelector(
 )
 
 export const getIsGridEditEnabledSelector = createSelector(
-  stateSelector,
-  (state) => {
-    const userDistricts = _get(state, 'user.districtIds', [])
-    return userDistricts.some((dId) => gridEditEnabledDistricts[dId])
-  }
+  getOrgDataSelector,
+  getUserOrgId,
+  (state, currentDistrictId) =>
+    state?.districts
+      .find((district) => district.districtId === currentDistrictId)
+      ?.districtPermissions?.includes('grid-edit')
 )
 
 export const getCollectionsSelector = createSelector(
@@ -550,7 +543,9 @@ export const isDistrictUserSelector = createSelector(
   getOrgDataSelector,
   (state) =>
     state?.districts?.[0]?.districtPermissions &&
-    state?.districts?.[0]?.districtPermissions.length === 0
+    state?.districts?.[0]?.districtPermissions.filter(
+      (item) => item !== 'grid-edit'
+    ).length === 0
 )
 
 export const isCoTeacherSelector = createSelector(

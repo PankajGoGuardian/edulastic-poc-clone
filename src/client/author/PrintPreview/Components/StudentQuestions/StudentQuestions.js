@@ -126,21 +126,24 @@ class StudentQuestions extends Component {
     if (!testItems) {
       return []
     }
+    // if search type passed as 'custom' in window location
+    if (type === 'custom') {
+      testItems = testItems.filter((item, index) => {
+        if (item.isDocBased) return true
+        return formattedFilteredQs.includes(index + 1)
+      })
+    }
     testItems = testItems.map((item) => {
-      const { data, rows, ...others } = item
+      const { data, rows, isDocBased = false, ...others } = item
       if (!(data && data.questions)) {
         return
       }
       let filterQuestions = data.questions
-      // if search type passed as 'custom' in window location
-      if (type === 'custom') {
+      // IN  Case of docBased test if search type passed as 'custom' in window location
+      if (isDocBased && type === 'custom') {
         filterQuestions = filterQuestions.filter(({ qLabel }) =>
           formattedFilteredQs.includes(qLabel)
         )
-        // if item is passage type and match the question label, then consider all questions
-        if (item.passageId && filterQuestions.length) {
-          filterQuestions = data.questions
-        }
       }
       const questions = filterQuestions.map((question) => {
         const { id } = question

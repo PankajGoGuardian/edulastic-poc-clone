@@ -214,6 +214,7 @@ function* createAssessmentSaga({ payload }) {
         isUsed: undefined,
         scoring: undefined,
         sharedType: undefined,
+        alreadyLiked: undefined,
         pageStructure: newPageStructure,
       }
 

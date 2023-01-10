@@ -59,6 +59,10 @@ const Stimulus = withTheme(
     & table {
       word-break: normal;
     }
+
+    & p {
+      text-indent: 0px !important;
+    }
   `)
 )
 

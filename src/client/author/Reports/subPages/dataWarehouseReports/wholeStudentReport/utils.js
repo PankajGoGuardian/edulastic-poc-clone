@@ -182,7 +182,10 @@ export const getStudentName = (studInfo, selectedStudent) => {
   if (selectedStudent?.title) {
     return selectedStudent.title
   }
-  return getFormattedName(`${studInfo.firstName} ${studInfo.lastName}`, false)
+  return getFormattedName(
+    `${studInfo.firstName || ''} ${studInfo.lastName || ''}`,
+    false
+  )
 }
 
 const colorByText = (text) => {

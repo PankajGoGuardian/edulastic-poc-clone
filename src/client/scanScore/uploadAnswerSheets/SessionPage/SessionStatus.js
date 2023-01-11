@@ -65,7 +65,9 @@ const SessionStatus = ({
   const progressMessage = isDone
     ? 'Form Processing Done'
     : 'Form Processing In Progress...'
-  const progressHint = isDone ? '' : '(please wait, do not refresh the page)'
+  const progressHint = isDone
+    ? ''
+    : '(System is processing the uploaded bubble sheets. You can either wait or close the page and revisit the scan bubble sheet page after sometime.)'
 
   return (
     <SessionStatusContainer>

@@ -149,9 +149,7 @@ const ScanProgress = ({
         <StyledTitle>Form Processing In Progress...</StyledTitle>
         <StyledParagraph>
           {' '}
-          &#40;System is processing the uploaded bubble sheets. You can either
-          wait or close the page and revisit the scan bubble sheet page after
-          sometime.&#41;
+          &#40;please wait, do not refresh the page&#41;
         </StyledParagraph>
         <Progress
           strokeColor={themeColorBlue}

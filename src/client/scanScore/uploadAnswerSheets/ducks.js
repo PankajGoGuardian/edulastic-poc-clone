@@ -295,27 +295,18 @@ function* createOmrUploadSessionSaga({
       uploadToS3,
       file,
       aws.s3Folders.BUBBLE_SHEETS,
-      (progressData) => handleUploadProgress({ progressData, mulFactor: 80 }),
+      (progressData) => handleUploadProgress({ progressData, mulFactor: 99 }),
       setCancelUpload,
       `${assignmentId}/${sessionId}`,
       true
     )
-    uploadRunner = yield call(
-      setInterval,
-      () => handleUploadProgress({ step: 8 }),
-      1000
-    )
     yield put(slice.actions.setUploadRunner(uploadRunner))
-    const { result: sessionUpdated, error } = yield call(
-      scannerApi.splitScanOmrSheets,
-      {
-        assignmentId,
-        sessionId,
-        groupId,
-        source,
-      }
-    )
-    yield call(clearInterval, uploadRunner)
+    const { error } = yield call(scannerApi.splitScanOmrSheets, {
+      assignmentId,
+      sessionId,
+      groupId,
+      source,
+    })
     yield put(
       handleUploadProgress({ progressData: { loaded: 100, total: 100 } })
     )
@@ -324,7 +315,7 @@ function* createOmrUploadSessionSaga({
     }
     yield put(
       slice.actions.createOmrUploadSessionDone({
-        session: { ...session, source, ...sessionUpdated },
+        session: { ...session, source },
       })
     )
   } catch (e) {

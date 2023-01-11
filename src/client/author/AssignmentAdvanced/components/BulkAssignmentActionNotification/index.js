@@ -9,16 +9,11 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { getUser, getUserOrgId } from '../../../src/selectors/user'
 import { receiveAssignmentClassList } from '../../../src/actions/assignments'
-import {
-  closeHangoutNotification as closeFirebaseNotification,
-  destroyNotificationMessage,
-  notificationMessage,
-} from '../../../../common/components/Notification'
+import { destroyNotificationMessage } from '../../../../common/components/Notification'
 import { setAssignmentBulkActionStatus } from '../../ducks'
 import { getFilterFromSession } from '../../../../common/utils/helpers'
 
 const collectionName = 'AssignmentBulkActionEvents'
-const DOWNLOAD_GRADES_AND_RESPONSE = 'DOWNLOAD_GRADES_AND_RESPONSE'
 
 const NotificationListener = ({
   user,
@@ -57,29 +52,9 @@ const NotificationListener = ({
       .catch((err) => console.error(err))
   }
 
-  const onNotificationClick = (e, docId) => {
-    /**
-     * Note: As this function gets invoked on clicking anywhere in the notification.
-     * So making sure that the user clicked on Download button in the notification by
-     * and only than the notification document is getting deleted.
-     */
-    if (e?.target?.tagName.toLowerCase() === 'a') {
-      closeFirebaseNotification(docId)
-      deleteNotificationDocument(docId)
-    }
-  }
-
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
-      const {
-        processStatus,
-        message,
-        statusCode,
-        isBulkAction,
-        status,
-        action,
-        downloadLink,
-      } = doc
+      const { processStatus, message, statusCode, isBulkAction, status } = doc
       if (
         isBulkAction &&
         status === 'initiated' &&
@@ -88,38 +63,14 @@ const NotificationListener = ({
       ) {
         setNotificationIds([...notificationIds, doc.__id])
         if (statusCode === 200) {
-          if (action === DOWNLOAD_GRADES_AND_RESPONSE) {
-            notificationMessage({
-              title: 'Download Grades/Responses',
-              message,
-              showButton: true,
-              buttonLink: downloadLink,
-              buttonText: 'DOWNLOAD',
-              notificationPosition: 'bottomRight',
-              notificationKey: doc.__id,
-              onCloseNotification: () => {
-                deleteNotificationDocument(doc.__id)
-              },
-              onButtonClick: (e) => {
-                onNotificationClick(e, doc.__id)
-              },
-            })
-          } else
-            antdNotification({ type: 'success', msg: message, key: doc.__id })
+          antdNotification({ type: 'success', msg: message, key: doc.__id })
         } else {
           antdNotification({ msg: message, key: doc.__id })
         }
 
-        if (action !== DOWNLOAD_GRADES_AND_RESPONSE || statusCode !== 200) {
-          // if status is initiated and we are displaying, delete the notification document from firebase
-          deleteNotificationDocument(doc.__id)
-        }
-        if (
-          districtId &&
-          testId &&
-          testType &&
-          action !== DOWNLOAD_GRADES_AND_RESPONSE
-        ) {
+        // if status is initiated and we are displaying, delete the notification document from firebase
+        deleteNotificationDocument(doc.__id)
+        if (districtId && testId && testType) {
           fetchAssignmentClassList({
             districtId,
             testId,

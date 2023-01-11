@@ -1,4 +1,4 @@
-import { EduButton, notification } from '@edulastic/common'
+import { EduButton, notification, CustomModalStyled } from '@edulastic/common'
 import {
   assignmentPolicyOptions,
   roleuser,
@@ -93,6 +93,7 @@ import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPa
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 import ShowBulkAssignModal from './ShowBulkAssignModal'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import QueryBuilder from '../QueryBuilder'
 
 const {
   ASSESSMENT,
@@ -124,6 +125,7 @@ class AssignTest extends React.Component {
       showUpdateSettingModal: false,
       settingDetails: null,
       showBulkAssignModal: false,
+      showAdvanceSearch: false,
     }
   }
 
@@ -784,6 +786,11 @@ class AssignTest extends React.Component {
       'none'
   }
 
+  setShowAdvanceSearch = (value) => {
+    console.log("main function")
+    this.setState({ showAdvanceSearch: value })
+  }
+
   render() {
     const {
       isAdvancedView,
@@ -794,6 +801,7 @@ class AssignTest extends React.Component {
       settingDetails,
       showUpdateSettingModal,
       showBulkAssignModal,
+      showAdvanceSearch,
     } = this.state
     const {
       assignmentSettings: assignment,
@@ -905,6 +913,10 @@ class AssignTest extends React.Component {
               &nbsp;/&nbsp;
               <Anchor>Assign</Anchor>
             </PaginationInfo>
+            <QueryBuilder
+              showAdvanceSearch={showAdvanceSearch}
+              setShowAdvanceSearch={this.setShowAdvanceSearch}
+            />
             {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
             {premium && (
               <SavedSettingsContainer>
@@ -994,6 +1006,7 @@ class AssignTest extends React.Component {
               }
               isAssigning={isAssigning || isBulkAssigning}
               isPlaylist={isPlaylist}
+              setShowAdvanceSearch={this.setShowAdvanceSearch}
             />
           )}
         </Container>

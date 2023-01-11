@@ -4,7 +4,7 @@ import {
   test as testConst,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { Col } from 'antd'
+import { Col, Button } from 'antd'
 import produce from 'immer'
 import { curry } from 'lodash'
 import * as moment from 'moment'
@@ -172,6 +172,7 @@ class AdvancedOptons extends React.Component {
       showRecommendedResources,
       selectedResourcesAction,
       isPlaylist,
+      setShowAdvanceSearch,
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
@@ -230,6 +231,16 @@ class AdvancedOptons extends React.Component {
                   Please select classes to assign this assessment. Options on
                   the left can be used to filter the list of classes.
                 </p>
+                <div>
+                  <Button
+                    onClick={() => {
+                      console.log("here u go")
+                      setShowAdvanceSearch(true)
+                    }}
+                  >
+                    Advance Search
+                  </Button>
+                </div>
               </ClassSelectorLabel>
               <ClassList
                 selectedClasses={classIds}

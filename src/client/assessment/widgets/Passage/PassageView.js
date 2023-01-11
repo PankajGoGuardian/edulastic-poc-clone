@@ -277,10 +277,12 @@ const PassageView = ({
         !!item.pages.length &&
         !flowLayout && (
           <div data-cy="content">
-            <Stimulus
-              id="paginatedContents"
-              dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }}
-            />
+            <div ref={mainContentsRef}>
+              <Stimulus
+                id="paginatedContents"
+                dangerouslySetInnerHTML={{ __html: item.pages[page - 1] }}
+              />
+            </div>
 
             <Pagination
               style={{ justifyContent: 'center' }}

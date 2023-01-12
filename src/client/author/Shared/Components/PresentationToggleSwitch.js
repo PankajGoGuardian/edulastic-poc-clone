@@ -18,7 +18,7 @@ const PresentationToggleSwitch = ({
 
   const title = !isPresentationMode
     ? 'Presentation Mode will anonymize the names of students'
-    : ' Disable Presentation Mode'
+    : 'Disable Presentation Mode'
   return (
     <FeaturesSwitch
       inputFeatures="presentationMode"

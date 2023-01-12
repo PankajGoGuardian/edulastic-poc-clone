@@ -1084,8 +1084,19 @@ class ClassHeader extends Component {
                 visible={forceActionsVisible || actionsVisible}
                 onVisibleChange={(v) => this.setState({ actionsVisible: v })}
               >
-                <EduButton isBlue data-cy="headerDropDown" IconBtn>
-                  <FontAwesomeIcon icon={faEllipsisV} />
+                <EduButton
+                  aria-label={`View more Actions Available on ${
+                    additionalData?.className || ''
+                  }`}
+                  data-cy="headerDropDown"
+                  isBlue
+                  IconBtn
+                >
+                  <FontAwesomeIcon
+                    aria-hidden="true"
+                    focusable="false"
+                    icon={faEllipsisV}
+                  />
                 </EduButton>
               </Dropdown>
               <StyledDiv>

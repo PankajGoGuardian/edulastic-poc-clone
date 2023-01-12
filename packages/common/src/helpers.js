@@ -852,7 +852,7 @@ export const decodeHTML = (str) => {
   return jQuery('<div>').html(str).html()
 }
 
-export const rgbToHexc = (orig) => {
+export const rgbToHex = (orig) => {
   const rgb = orig.replace(/\s/g, '').match(/^rgba?\((\d+),(\d+),(\d+)/i)
   return rgb && rgb.length === 4
     ? `#${`0${parseInt(rgb[1], 10).toString(16)}`.slice(-2)}${`0${parseInt(

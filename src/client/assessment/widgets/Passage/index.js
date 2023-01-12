@@ -76,6 +76,8 @@ const Passage = ({
       </Wrapper>
     )
   }
+
+  return null
 }
 
 Passage.propTypes = {

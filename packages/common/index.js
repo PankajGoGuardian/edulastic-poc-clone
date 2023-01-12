@@ -112,7 +112,7 @@ export {
   decodeHTML,
   hexToRGB,
   getAlpha,
-  rgbToHexc,
+  rgbToHex,
   formatBytes,
   measureText,
   templateHasImage,

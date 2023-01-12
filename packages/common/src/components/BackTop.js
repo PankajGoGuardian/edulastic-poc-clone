@@ -11,6 +11,7 @@ const BackTop = () => {
       type="primary"
       icon="arrow-up"
       shape="circle"
+      aria-label="click to scroll to top"
       onClick={() => scrollRef.current.scrollTo({ top: 0, behavior: 'smooth' })}
     />
   )

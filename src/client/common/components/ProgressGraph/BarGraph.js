@@ -70,11 +70,13 @@ const BarGraph = ({
         icon="caret-left"
         size="large"
         className="navigator navigator-left"
+        aria-label="View previous Attempts with average time in seconds"
         onClick={prevBars}
         show={page > 0}
       />
       <ChartNavButton
         data-cy="lcbnextButton"
+        aria-label="View next Attempts with average time in seconds"
         type="primary"
         shape="circle"
         icon="caret-right"

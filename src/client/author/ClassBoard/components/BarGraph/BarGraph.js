@@ -429,6 +429,7 @@ class BarGraph extends Component {
           style={{
             visibility: pagination.startIndex === 0 ? 'hidden' : 'visible',
           }}
+          aria-label="View previous Attempts with average time in seconds"
         />
         <StyledChartNavButton
           data-cy="lcbnextButton"
@@ -444,6 +445,7 @@ class BarGraph extends Component {
                 ? 'hidden'
                 : 'visible',
           }}
+          aria-label="View next Attempts with average time in seconds"
         />
         {isBoth && (
           <LegendContainer style={{ paddingLeft: '80px' }}>

@@ -17,12 +17,14 @@ import { ColorPickerContainer, Overlay } from './styled/ColorPicker'
 import ColorPicker from './ColorPicker'
 
 const highlightTag = 'my-highlight'
+const tableTagName = 'TD'
+const relative = 'relative'
 
 const getPositionOfElement = (em) => {
   let deltaTop = 0
   let deltaLeft = 0
-  if ($(em).parent().prop('tagName') === 'TD') {
-    $(em).css('position', 'relative')
+  if ($(em).parent().prop('tagName') === tableTagName) {
+    $(em).css('position', relative)
   }
 
   $(em)
@@ -32,7 +34,7 @@ const getPositionOfElement = (em) => {
         return false
       }
       const p = $(parent).css('position')
-      if (p === 'relative') {
+      if (p === relative) {
         const offset = $(parent).position()
         deltaTop += offset.top
         deltaLeft += offset.left
@@ -175,7 +177,6 @@ export const PassageContent = ({
 
   useEffect(() => {
     if (!disableResponse && mainContentsRef.current) {
-      // need to wait for rendering content.
       setTimeout(addEventToSelectedText, 10)
     }
   }, [addEventToSelectedText, content])

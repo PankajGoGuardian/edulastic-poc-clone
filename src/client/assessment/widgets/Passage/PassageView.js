@@ -79,7 +79,7 @@ const PassageView = ({
     if (!setHighlights && previewTab === CLEAR) {
       clearUserWork() // clearing the userWork at author side.
     }
-  }, [previewTab]) // run every time when the previewTab has been changed
+  }, [previewTab])
 
   return (
     <WithResources

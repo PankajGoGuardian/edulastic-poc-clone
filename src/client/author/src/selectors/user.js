@@ -271,7 +271,7 @@ export const getIsGridEditEnabledSelector = createSelector(
   getUserOrgId,
   (state, currentDistrictId) =>
     state?.districts
-      .find((district) => district.districtId === currentDistrictId)
+      ?.find((district) => district.districtId === currentDistrictId)
       ?.districtPermissions?.includes('grid-edit')
 )
 

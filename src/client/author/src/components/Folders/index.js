@@ -148,7 +148,7 @@ const Folders = ({
         <FolderListItem data-cy="FOLDERS" leftBorder active>
           <FolderListItemTitle ellipsis title="Folders">
             <IconFolders color={themeColor} />
-            <span> FOLDERS</span>
+            <span>FOLDERS</span>
             <AddFolderButton
               data-cy="addFolderButton"
               onClick={showCreateModal}
@@ -167,7 +167,7 @@ const Folders = ({
               right="6px"
               top="-38px"
             >
-              <IconPlusCircle />
+              <IconPlusCircle aria-label="add new folder" />
             </AddFolderButton>
           )}
           <FolderList

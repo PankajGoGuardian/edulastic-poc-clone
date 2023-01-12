@@ -93,6 +93,7 @@ export { default as CustomKeyLabel } from './src/components/CustomKeyLabel'
 export { default as PortalSpinner } from './src/components/PortalSpinner'
 export { default as FileIcon } from './src/components/FileIcon'
 export { default as CopyRight } from './src/components/CopyRight'
+export { EduIf } from './src/components/ControlStatement/EduIf'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'
@@ -157,6 +158,7 @@ export { default as useRealtimeV2 } from './src/customHooks/useRealtimeV2'
 export { default as useDisableDragScroll } from './src/customHooks/useDisableDragScroll'
 export { default as measureTextWithImage } from './src/customHooks/measureTextWithImage'
 export { default as useDropdownData } from './src/customHooks/useDropDownData'
+export { useInputSelectId } from './src/customHooks/useInputSelectId'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'

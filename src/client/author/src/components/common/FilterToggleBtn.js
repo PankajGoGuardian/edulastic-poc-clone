@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { EduIf } from '@edulastic/common'
 import { IconCloseFilter, IconFilter } from '@edulastic/icons'
 import { white, filterIconColor, themeColor } from '@edulastic/colors'
 import styled from 'styled-components'
@@ -8,25 +9,28 @@ class FilterToggleBtn extends Component {
   render() {
     const { isShowFilter, toggleFilter, header } = this.props
     return (
-      <>
-        <MobileLeftFilterButton
-          data-cy="filter"
-          header={header}
-          isShowFilter={!isShowFilter}
-          variant="filter"
-          onClick={toggleFilter}
-        >
-          {!isShowFilter ? (
-            <IconCloseFilter color={themeColor} />
-          ) : (
-            <IconFilter
-              color={!isShowFilter ? white : filterIconColor}
-              width={20}
-              height={20}
-            />
-          )}
-        </MobileLeftFilterButton>
-      </>
+      <MobileLeftFilterButton
+        data-cy="filter"
+        header={header}
+        isShowFilter={!isShowFilter}
+        variant="filter"
+        onClick={toggleFilter}
+        aria-label={isShowFilter ? 'show filters' : 'hide filters'}
+        aria-expanded={!isShowFilter}
+      >
+        <EduIf condition={isShowFilter}>
+          <IconFilter
+            color={filterIconColor}
+            width={20}
+            height={20}
+            aria-hidden
+            focusable={false}
+          />
+        </EduIf>
+        <EduIf condition={!isShowFilter}>
+          <IconCloseFilter color={themeColor} aria-hidden focusable={false} />
+        </EduIf>
+      </MobileLeftFilterButton>
     )
   }
 }

@@ -1566,7 +1566,7 @@ class ClassBoard extends Component {
                       onClick={this.onClickPrint}
                     >
                       <ButtonIconWrap>
-                        <IconPrint />
+                        <IconPrint aria-hidden focusable={false} />
                       </ButtonIconWrap>
                       PRINT
                     </RedirectButton>
@@ -1585,7 +1585,7 @@ class ClassBoard extends Component {
                           disabled={isRedirectButtonDisabled}
                         >
                           <ButtonIconWrap>
-                            <IconRedirect />
+                            <IconRedirect aria-hidden focusable={false} />
                           </ButtonIconWrap>
                           REDIRECT
                         </RedirectButton>
@@ -1703,7 +1703,7 @@ class ClassBoard extends Component {
                     >
                       <RedirectButton data-cy="moreAction" last>
                         <ButtonIconWrap className="more">
-                          <IconMoreHorizontal />
+                          <IconMoreHorizontal aria-hidden focusable={false} />
                         </ButtonIconWrap>
                         MORE
                       </RedirectButton>

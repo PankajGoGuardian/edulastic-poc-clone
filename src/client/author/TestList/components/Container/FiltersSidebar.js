@@ -1,7 +1,11 @@
-import { FieldLabel, SelectInputStyled } from '@edulastic/common'
+import {
+  FieldLabel,
+  SelectInputStyled,
+  useInputSelectId,
+} from '@edulastic/common'
 import { Select } from 'antd'
 import PropTypes from 'prop-types'
-import React from 'react'
+import React, { useRef } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 import TagField from '../../../ItemList/components/Fields/TagField'
@@ -18,12 +22,15 @@ const FiltersSidebar = ({
     userFeatures.isPublisherAuthor || userFeatures.isCurator
   )
 
-  const selectRef = React.useRef()
+  const filterItemId = `test-library-filter-by-${filterItem.title}`
+  const selectRef = useRef()
+
+  useInputSelectId(filterItemId)
 
   if (filterItem.title === 'Tags' && filterItem.useElasticSearch) {
     return (
       <>
-        <FieldLabel>{filterItem.title}</FieldLabel>
+        <FieldLabel htmlFor={filterItemId}>{filterItem.title}</FieldLabel>
         <TagField
           data-cy={filterItem.title}
           mode={filterItem.mode}
@@ -34,6 +41,7 @@ const FiltersSidebar = ({
           tagTypes={filterItem.tagTypes || []}
           value={search[filterItem.onChange]}
           valueKey="key"
+          data-id={filterItemId}
         />
       </>
     )
@@ -41,7 +49,7 @@ const FiltersSidebar = ({
 
   return (
     <>
-      <FieldLabel>{filterItem.title}</FieldLabel>
+      <FieldLabel htmlFor={filterItemId}>{filterItem.title}</FieldLabel>
       <SelectStyled
         data-cy={filterItem.title}
         showSearch={filterItem.showSearch}
@@ -66,6 +74,7 @@ const FiltersSidebar = ({
         disabled={filterItem.disabled}
         getPopupContainer={(triggerNode) => triggerNode.parentNode}
         margin="0px 0px 15px"
+        data-id={filterItemId}
       >
         {filterItem?.data
           ?.filter((cd) =>

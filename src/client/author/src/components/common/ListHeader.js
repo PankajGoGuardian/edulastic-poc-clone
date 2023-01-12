@@ -134,7 +134,7 @@ const ListHeader = ({
               )}
               {renderExtra()}
               <EduButton data-cy="createNew" onClick={onCreate} isBlue>
-                <IconPlusStyled />
+                <IconPlusStyled aria-hidden focusable={false} />
                 {btnTitle && btnTitle.length ? btnTitle : 'NEW ITEM'}
               </EduButton>
             </div>

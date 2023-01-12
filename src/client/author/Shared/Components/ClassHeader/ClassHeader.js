@@ -1013,8 +1013,8 @@ class ClassHeader extends Component {
                   icon={
                     <IconDeskTopMonitor
                       left={0}
-                      aria-hidden
-                      focusable={false}
+                      aria-hidden="true"
+                      focusable="false"
                     />
                   }
                   linkLabel={t('common.liveClassBoard')}
@@ -1040,8 +1040,8 @@ class ClassHeader extends Component {
                       icon={
                         <IconBookMarkButton
                           left={0}
-                          aria-hidden
-                          focusable={false}
+                          aria-hidden="true"
+                          focusable="false"
                         />
                       }
                       linkLabel={t('common.expressGrader')}
@@ -1058,7 +1058,13 @@ class ClassHeader extends Component {
                     disabled={!isItemsVisible}
                     dataCy="StandardsBasedReport"
                     isActive={active === 'standard_report'}
-                    icon={<IconNotes left={0} aria-hidden focusable={false} />}
+                    icon={
+                      <IconNotes
+                        left={0}
+                        aria-hidden="true"
+                        focusable="false"
+                      />
+                    }
                     linkLabel={t('common.standardBasedReports')}
                   />
                 </WithDisableMessage>
@@ -1068,7 +1074,11 @@ class ClassHeader extends Component {
                     dataCy="LCBAssignmentSettings"
                     isActive={active === 'settings'}
                     icon={
-                      <IconSettings left={0} aria-hidden focusable={false} />
+                      <IconSettings
+                        left={0}
+                        aria-hidden="true"
+                        focusable="false"
+                      />
                     }
                     linkLabel={t('common.settings')}
                   />

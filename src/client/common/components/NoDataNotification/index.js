@@ -6,7 +6,7 @@ import NoDataIcon from './nodata.svg'
 const NoDataNotification = ({ heading, description, style }) => (
   <Wrapper>
     <NoDataBox style={style}>
-      <img src={NoDataIcon} alt="noData" />
+      <img src={NoDataIcon} alt="" />
       <h4>{heading}</h4>
       <p>{description}</p>
     </NoDataBox>

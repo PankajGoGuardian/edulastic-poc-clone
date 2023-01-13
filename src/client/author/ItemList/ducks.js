@@ -1,5 +1,5 @@
 import { takeEvery, takeLatest, call, put, select } from 'redux-saga/effects'
-import { uniq, keyBy } from 'lodash'
+import { uniq, keyBy, findLastIndex } from 'lodash'
 import produce from 'immer'
 import {
   test as testConstant,
@@ -162,7 +162,8 @@ export function* addItemToCartSaga({ payload }) {
   } else {
     updatedTestItems = produce(testItems, (draft) => {
       if (item.passageId) {
-        const lastIdx = draft.findLastIndex(
+        const lastIdx = findLastIndex(
+          draft,
           (element) => element.passageId === item.passageId
         )
         if (lastIdx !== -1) {

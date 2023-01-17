@@ -75,6 +75,7 @@ export const reducer = createReducer(initialState, {
 
       school.districtId = row._source.districtId
       school.name = row._source.name
+      if (row._source.sisId) school.sisId = row._source.sisId
       if (row._source.hasOwnProperty('location')) {
         const location = row._source?.location || {}
         Object.keys(location).map((key) => {

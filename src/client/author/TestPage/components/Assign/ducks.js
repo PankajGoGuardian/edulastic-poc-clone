@@ -59,6 +59,8 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
+export const SET_NO_DATA_IDENTIFIED_FILTER =
+  '[assignment settings] no data was found'
 export const SET_EXCLUDE_SCHOOLS = '[assignment settings] set exclude schools'
 
 // actions
@@ -86,6 +88,11 @@ export const setSearchTermsFilterAction = (payload) => ({
   payload,
 })
 
+export const setNoDataIdentifiedAction = (payload) => ({
+  type: SET_NO_DATA_IDENTIFIED_FILTER,
+  payload,
+})
+
 export const setExcludeSchoolsAction = (payload) => ({
   type: SET_EXCLUDE_SCHOOLS,
   payload,
@@ -102,6 +109,7 @@ const initialState = {
   current: '', // id of the current one being edited
   searchTerms: {},
   excludeSchools: false,
+  noSearchDataFound: {},
 }
 
 const setAssignment = (state, { payload }) => {
@@ -163,6 +171,10 @@ const setExcludeSchools = (state, { payload }) => {
   state.excludeSchools = payload
 }
 
+const setNoDataFound = (state, { payload }) => {
+  state.noSearchDataFound = { ...state.noSearchDataFound, ...payload }
+}
+
 export const reducer = createReducer(initialState, {
   [FETCH_ASSIGNMENTS]: (state) => {
     state.isLoading = true
@@ -178,6 +190,7 @@ export const reducer = createReducer(initialState, {
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
   [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
   [SET_EXCLUDE_SCHOOLS]: setExcludeSchools,
+  [SET_NO_DATA_IDENTIFIED_FILTER]: setNoDataFound,
 })
 
 // selectors
@@ -232,6 +245,11 @@ export const getCommonStudentsSelector = createSelector(
 export const getHasDuplicateAssignmentsSelector = createSelector(
   stateSelector,
   (state) => state.hasDuplicateAssignments
+)
+
+export const getNoDataFoundSelector = createSelector(
+  stateSelector,
+  (state) => state.noSearchDataFound || {}
 )
 
 // saga

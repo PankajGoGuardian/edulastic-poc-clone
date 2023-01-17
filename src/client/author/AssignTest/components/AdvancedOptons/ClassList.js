@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
+import { SelectInputStyled, SelectWithCopyPaste } from '@edulastic/common'
 import { IconGroup, IconClass } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -43,11 +43,23 @@ import Tags from '../../../src/components/common/Tags'
 import {
   setSearchTermsFilterAction,
   setExcludeSchoolsAction,
+  setNoDataIdentifiedAction,
+  getNoDataFoundSelector,
 } from '../../../TestPage/components/Assign/ducks'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { sortGrades } from '../../../TestPage/utils'
+import {
+  NoDataIdentifiedModal,
+  NoDataIdentifiedText,
+} from '../Container/NoDataIdentified'
 
 const { allGrades, allSubjects } = selectsData
+
+const copyPasteEnabledSearchFields = {
+  institutionIds: 'School',
+  courseIds: 'Course',
+  classIds: 'Class',
+}
 
 const findTeacherName = (row) => {
   const { owners = [], primaryTeacherId, parent: { id: teacherId } = {} } = row
@@ -101,6 +113,8 @@ class ClassList extends React.Component {
         tags: [],
       },
       filterClassIds: [],
+      showSearchTextsMissingModal: false,
+      searchTextKey: '',
     }
   }
 
@@ -205,10 +219,17 @@ class ClassList extends React.Component {
   }
 
   changeFilter = (key, value) => {
+    const { setNoDataFound, noSearchDataFound } = this.props
     const { searchTerms } = this.state
     searchTerms[key] =
       key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
     this.setState({ searchTerms }, this.loadClassList)
+    if (
+      Object.keys(copyPasteEnabledSearchFields).includes(key) &&
+      !isEmpty(noSearchDataFound[key])
+    ) {
+      setNoDataFound({ [key]: {} })
+    }
   }
 
   handleClassTypeFilter = (key) => {
@@ -246,11 +267,19 @@ class ClassList extends React.Component {
     }
   }
 
+  handleNoDataIdentifiedModal = (showModal, key) => {
+    this.setState({
+      showSearchTextsMissingModal: showModal,
+      searchTextKey: key,
+    })
+  }
+
   handleClassSelectFromDropDown = (value) => {
-    const { classList, selectClass } = this.props
+    const { classList, selectClass, setNoDataFound } = this.props
     this.setState({ classType: 'all', filterClassIds: value }, () =>
       selectClass('class', value, classList)
     )
+    setNoDataFound({ classIds: {} })
   }
 
   courseSearch = (searchString) => {
@@ -284,8 +313,16 @@ class ClassList extends React.Component {
       isCoursesLoading,
       setExcludeSchools,
       excludeSchools,
+      noSearchDataFound,
+      setNoDataFound,
     } = this.props
-    const { searchTerms, classType, filterClassIds } = this.state
+    const {
+      searchTerms,
+      classType,
+      filterClassIds,
+      showSearchTextsMissingModal,
+      searchTextKey,
+    } = this.state
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -316,6 +353,22 @@ class ClassList extends React.Component {
         }
       },
     }
+
+    const selectableClassList = classList?.filter(
+      ({ _id }) => !Object.keys(assignedClassesById[testType]).includes(_id)
+    )
+    const totalSchoolsCount =
+      uniq(
+        selectableClassList
+          ?.map(({ institutionId }) => institutionId)
+          ?.filter((i) => !!i)
+      )?.length || 0
+
+    const totalStudentsCount =
+      selectableClassList?.reduce(
+        (acc, curr) => acc + (curr.studentCount || 0),
+        0
+      ) || 0
 
     const selectedClassData =
       classList?.filter(({ _id }) => selectedClasses.includes(_id)) || 0
@@ -401,10 +454,24 @@ class ClassList extends React.Component {
     const isPlaylistModule = isPlaylist && !testId
     return (
       <ClassListContainer>
+        {showSearchTextsMissingModal && (
+          <NoDataIdentifiedModal
+            closeModal={this.handleNoDataIdentifiedModal}
+            noDataFound={noSearchDataFound[searchTextKey]}
+            title={copyPasteEnabledSearchFields[searchTextKey]}
+          />
+        )}
         <ClassListFilter>
           <StyledRowLabel>
             <div>
               School{' '}
+              {!isEmpty(noSearchDataFound['institutionIds']) && (
+                <NoDataIdentifiedText
+                  onClick={this.handleNoDataIdentifiedModal}
+                  searchTextKey="institutionIds"
+                  noSearchDataFound={noSearchDataFound['institutionIds']}
+                />
+              )}
               {!isPlaylistModule && (
                 <FeaturesSwitch
                   inputFeatures="canBulkAssign"
@@ -421,26 +488,37 @@ class ClassList extends React.Component {
                 </FeaturesSwitch>
               )}
             </div>
-            <SelectInputStyled
+            <SelectWithCopyPaste
               data-cy="schoolSelect"
               mode="multiple"
               placeholder="All School"
               showSearch
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+              filterOption={
+                (input, option) =>
+                  option.props.children
+                    ?.toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0 ||
+                  option.props.value
+                    ?.toLowerCase()
+                    .indexOf(input.toLowerCase()) >= 0
+                // Check whether we need to filter using sisId
+                // || option.props.sisId
+                // ?.toLowerCase()
+                // .indexOf(input.toLowerCase()) >= 0
               }
               onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
               tagsEllipsis
+              searchData={schools}
+              setNoDataFound={setNoDataFound}
+              selectIdentifier="institutionIds"
             >
-              {schools.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id}>
+              {schools.map(({ _id, name, sisId }) => (
+                <Select.Option key={_id} value={_id} sisId={sisId}>
                   {name}
                 </Select.Option>
               ))}
-            </SelectInputStyled>
+            </SelectWithCopyPaste>
           </StyledRowLabel>
 
           <StyledRowLabel>
@@ -493,8 +571,15 @@ class ClassList extends React.Component {
           </StyledRowLabel>
 
           <StyledRowLabel>
-            Course
-            <SelectInputStyled
+            Course{' '}
+            {!isEmpty(noSearchDataFound['courseIds']) && (
+              <NoDataIdentifiedText
+                onClick={this.handleNoDataIdentifiedModal}
+                searchTextKey="courseIds"
+                noSearchDataFound={noSearchDataFound['courseIds']}
+              />
+            )}
+            <SelectWithCopyPaste
               data-cy="selectCourses"
               mode="multiple"
               placeholder="All Course"
@@ -502,18 +587,23 @@ class ClassList extends React.Component {
               autoClearSearchValue={false}
               showSearch
               tagsEllipsis
-              onSearch={this.handleCourseSearch}
               onFocus={() => this.handleCourseSearch('')}
               filterOption={false}
               defaultActiveFirstOption={false}
               loading={isCoursesLoading}
+              // Adding this as a replacement of onSearch
+              handleOnSearch={this.handleCourseSearch}
+              // New
+              searchData={courseList}
+              setNoDataFound={setNoDataFound}
+              selectIdentifier="courseIds"
             >
               {courseList.map(({ _id, name }) => (
                 <Select.Option key={_id} value={_id}>
                   {name}
                 </Select.Option>
               ))}
-            </SelectInputStyled>
+            </SelectWithCopyPaste>
           </StyledRowLabel>
 
           <StyledRowLabel>
@@ -544,20 +634,34 @@ class ClassList extends React.Component {
           </StyledRowLabel>
 
           <StyledRowLabel>
-            Search Class/Groups
-            <SelectInputStyled
+            Search Class/Groups{' '}
+            {!isEmpty(noSearchDataFound['classIds']) && (
+              <NoDataIdentifiedText
+                onClick={this.handleNoDataIdentifiedModal}
+                searchTextKey="classIds"
+                noSearchDataFound={noSearchDataFound['classIds']}
+              />
+            )}
+            <SelectWithCopyPaste
               placeholder="Search by name of class or group"
               onChange={this.handleClassSelectFromDropDown}
               mode="multiple"
               showSearch
               filterOption={(input, option) =>
                 option.props.children
-                  .toLowerCase()
+                  ?.toLowerCase()
+                  .indexOf(input.toLowerCase()) >= 0 ||
+                option.props.value
+                  ?.toLowerCase()
                   .indexOf(input.toLowerCase()) >= 0
               }
               value={filterClassIds}
               data-cy="selectClass"
               tagsEllipsis
+              searchData={classList}
+              setNoDataFound={setNoDataFound}
+              optionsDisabled={Object.keys(assignedClassesById[testType])}
+              selectIdentifier="classIds"
             >
               {classList.map(({ name, _id }) => (
                 <Select.Option
@@ -568,7 +672,7 @@ class ClassList extends React.Component {
                   {name}
                 </Select.Option>
               ))}
-            </SelectInputStyled>
+            </SelectWithCopyPaste>
           </StyledRowLabel>
 
           <StyledRowLabel>
@@ -599,15 +703,24 @@ class ClassList extends React.Component {
           <InfoSection>
             <div>
               <span>School(s)</span>
-              <span>{schoolsCount}</span>
+              <span>
+                <span>{schoolsCount}/</span>
+                <span>{totalSchoolsCount}</span>
+              </span>
             </div>
             <div>
               <span>Class(es)</span>
-              <span>{classesCount}</span>
+              <span>
+                <span>{classesCount}/</span>
+                <span>{selectableClassList.length}</span>
+              </span>
             </div>
             <div>
               <span>Student(s)</span>
-              <span>{studentsCount}</span>
+              <span>
+                <span>{studentsCount}/</span>
+                <span>{totalStudentsCount}</span>
+              </span>
             </div>
           </InfoSection>
           <StyledTable
@@ -636,6 +749,7 @@ const enhance = compose(
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
       excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
+      noSearchDataFound: getNoDataFoundSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,
@@ -644,6 +758,7 @@ const enhance = compose(
       getAllTags: getAllTagsAction,
       setSearchTermsFilter: setSearchTermsFilterAction,
       setExcludeSchools: setExcludeSchoolsAction,
+      setNoDataFound: setNoDataIdentifiedAction,
     }
   )
 )

@@ -1,19 +1,16 @@
 import React from 'react'
 import styled from 'styled-components'
-import { FieldLabel, SelectInputStyled } from '@edulastic/common'
+import { SelectInputStyled } from '@edulastic/common'
 
 const InputTag = ({
   onSearchInputChange,
   value = [],
   placeholder,
-  inputId,
   disabled = false,
 }) => (
   <Container>
-    <FieldLabel htmlFor={inputId}>Search by keyword</FieldLabel>
     <SelectInputStyled
       mode="tags"
-      id={inputId}
       placeholder={placeholder || 'Search by skills and keywords'}
       onChange={onSearchInputChange}
       style={{ width: '100%', minHeight: '40px' }}

@@ -22,19 +22,9 @@ const TestFiltersNav = ({ items, onSelect, search = {} }) => {
       {items.map((item) => (
         <Item data-cy={item.text} key={item.path}>
           {item.icon === 'folders' ? (
-            <IconFolders
-              className="anticon"
-              aria-label=""
-              aria-hidden
-              focusable={false}
-            />
+            <IconFolders className="anticon" />
           ) : (
-            <Icon
-              type={item.icon}
-              aria-label=""
-              aria-hidden
-              focusable={false}
-            />
+            <Icon type={item.icon} />
           )}
           <span className={item.text === 'FOLDERS' ? 'folders' : ''}>
             {item.text}

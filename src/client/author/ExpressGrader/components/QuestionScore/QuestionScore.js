@@ -1,9 +1,8 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { StyledText, StyledWrapper } from './styled'
 import QuestionScoreCell from './QuestionScoreCell'
 import { Tooltip } from '../../../../common/utils/helpers'
-import { StyledText, StyledWrapper, ANSWER_STATUS } from './styled'
-import infoIcon from '../../Assets/info.svg'
 
 class QuestionScore extends Component {
   render() {
@@ -87,7 +86,6 @@ class QuestionScore extends Component {
                 />
               </Tooltip>
             )}
-            <img src={infoIcon} alt={ANSWER_STATUS[answerStatus]?.text} />
           </StyledWrapper>
         ) : (
           <StyledWrapper>

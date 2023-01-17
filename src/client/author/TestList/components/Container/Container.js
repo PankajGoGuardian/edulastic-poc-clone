@@ -17,12 +17,7 @@ import { compose } from 'redux'
 import moment from 'moment'
 import { Button, Row, Spin, Dropdown, Menu } from 'antd'
 import Modal from 'react-responsive-modal'
-import {
-  withWindowSizes,
-  FlexContainer,
-  notification,
-  WithResources,
-} from '@edulastic/common'
+import { withWindowSizes, FlexContainer, notification } from '@edulastic/common'
 import { IconList, IconTile, IconTestBank } from '@edulastic/icons'
 import { white, greyLight1, greyThemeLight } from '@edulastic/colors'
 import {
@@ -149,7 +144,6 @@ import {
   getFilterFromSession,
   setFilterInSession,
 } from '../../../../common/utils/helpers'
-import AppConfig from '../../../../../app-config'
 
 // TODO: split into mulitple components, for performance sake.
 // and only connect what is required.
@@ -1269,10 +1263,7 @@ class TestList extends Component {
     )
 
     return (
-      <WithResources
-        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-        fallBack={<span />}
-      >
+      <>
         <RemoveTestModal
           isVisible={showConfirmRemoveModal}
           onClose={this.onCloseConfirmRemoveModal}
@@ -1293,11 +1284,9 @@ class TestList extends Component {
                     onClick={() => this.handleStyleChange('tile')}
                     width={18}
                     height={18}
-                    aria-label="view tests in title mode"
                     color={blockstyle === 'tile' ? greyThemeLight : greyLight1}
                   />
                   <IconList
-                    aria-label="view tests in list mode"
                     data-cy="listView"
                     onClick={() => this.handleStyleChange('horizontal')}
                     width={18}
@@ -1322,7 +1311,6 @@ class TestList extends Component {
           <MobileFilter>
             <InputTag
               placeholder="Search by skills and keywords"
-              inputId="test-library-search-by-skills-or-keywords-mobile"
               onSearchInputChange={this.handleSearchInputChange}
               value={testFilters.searchString}
               disabled={
@@ -1419,7 +1407,6 @@ class TestList extends Component {
                       <InputTag
                         onSearchInputChange={this.handleSearchInputChange}
                         size="large"
-                        inputId="test-library-search-by-skills-or-keywords-desktop"
                         value={testFilters.searchString}
                       />
                       <TestListFilters
@@ -1516,7 +1503,7 @@ class TestList extends Component {
           <SelectCollectionModal contentType="TEST" />
           <ApproveConfirmModal contentType="TEST" />
         </Container>
-      </WithResources>
+      </>
     )
   }
 }

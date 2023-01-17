@@ -1,10 +1,8 @@
 import React, { Component, createRef } from 'react'
 import PropTypes from 'prop-types'
 import { round } from 'lodash'
-import { Spin } from 'antd'
 import { greenThird } from '@edulastic/colors'
 import { withNamespaces } from '@edulastic/localization'
-import { WithResources } from '@edulastic/common'
 import QuestionScore from '../QuestionScore/QuestionScore'
 import {
   StyledCard,
@@ -15,7 +13,6 @@ import {
   StudentsTitle,
   ScoreTitle,
 } from './styled'
-import AppConfig from '../../../../../app-config'
 
 class ScoreTable extends Component {
   getColumnsForTable = (length, submittedLength) => {
@@ -131,7 +128,7 @@ class ScoreTable extends Component {
           }
         })
       const averageScore = successScore
-      const questionAverageScore = (
+      const questionAvarageScore = (
         <StyledDivMid style={{ color: '#000' }}>
           <StyledText color={greenThird}>
             {`${
@@ -152,7 +149,7 @@ class ScoreTable extends Component {
           {
             key,
             dataIndex: key,
-            title: questionAverageScore,
+            title: questionAvarageScore,
             className: 'sub-thead-th th-border-bottom',
             width: colWidth,
             render: (record) => {
@@ -181,30 +178,6 @@ class ScoreTable extends Component {
     return columns
   }
 
-  componentDidUpdate() {
-    if (window.$) {
-      const jq = window.$
-      jq('.ant-table-fixed').each(function addingScope() {
-        jq(this)
-          .find('thead')
-          .find('th')
-          .each(function annoying() {
-            if (!jq(this).attr('scope')) {
-              jq(this).attr('scope', 'col')
-            }
-          })
-        jq(this)
-          .find('tbody')
-          .find('th')
-          .each(function annoying() {
-            if (!jq(this).attr('scope')) {
-              jq(this).attr('scope', 'row')
-            }
-          })
-      })
-    }
-  }
-
   render() {
     let columnInfo = []
     const { testActivity, tableData, isDemoProxy } = this.props
@@ -220,31 +193,25 @@ class ScoreTable extends Component {
 
     const whiteSpace = isDemoProxy ? 290 : 250
     const scrollY = window.innerHeight - whiteSpace
-    // 40 since of each cell in table + 3 overlapped padding
+    // 40 sice of each cell in table + 3 overlapped padding
     const showY = tableData.length * 43 > scrollY
 
     return (
-      <WithResources
-        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-        fallBack={<Spin />}
-      >
-        <StyledCard bordered={false} marginBottom="0px">
-          <TableData
-            pagination={false}
-            columns={columnInfo}
-            dataSource={tableData}
-            // Columns length will be the number of questions
-            // Column data length will be number of students
-            scroll={{
-              x: 'max-content',
-              y: showY ? scrollY : false,
-            }}
-            rowKey={(record, i) => i}
-            ref={this.tableRef}
-            id="score-table"
-          />
-        </StyledCard>
-      </WithResources>
+      <StyledCard bordered={false} marginBottom="0px">
+        <TableData
+          pagination={false}
+          columns={columnInfo}
+          dataSource={tableData}
+          // Columns length will be the number of questions
+          // Column data length will be number of students
+          scroll={{
+            x: 'max-content',
+            y: showY ? scrollY : false,
+          }}
+          rowKey={(record, i) => i}
+          ref={this.tableRef}
+        />
+      </StyledCard>
     )
   }
 }

@@ -1,7 +1,7 @@
 import React from 'react'
 import loadable from '@loadable/component'
 import { darkGrey, white, greyThemeDark2 } from '@edulastic/colors'
-import { EduButton, EduIf, LikeIconStyled, Progress } from '@edulastic/common'
+import { EduButton, LikeIconStyled, Progress } from '@edulastic/common'
 import {
   roleuser,
   collections as collectionsConstant,
@@ -25,6 +25,7 @@ import {
 import { Icon, Select, Tooltip, Col, Row, Spin } from 'antd'
 import { find, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
+import PerfectScrollbar from 'react-perfect-scrollbar'
 import { connect } from 'react-redux'
 import Modal from 'react-responsive-modal'
 import { StyledSelect } from '../../../../common/styled'
@@ -48,21 +49,30 @@ import {
   DescriptionLabel,
   Footer,
   FooterIcon,
-  GradeContainer,
+  GradeConatiner,
   GradeLabel,
+  GroupName,
+  GroupSummaryCard,
+  GroupSummaryCardValue,
   IconText,
   Image,
+  ListCell,
+  ListHeader,
+  ListHeaderCell,
+  ListRow,
   ModalColumn,
   ModalContainer,
   ModalTitle,
+  SammaryMark,
   SubjectLabel,
   SummaryCard,
   SummaryCardContainer,
   SummaryCardLabel,
   SummaryCardValue,
   SummaryContainer,
+  SummaryList,
   SummaryTitle,
-  TagsContainer,
+  TagsConatiner,
   TagsLabel,
   TestStatus,
   TestTitleWrapper,
@@ -78,7 +88,6 @@ import {
 } from '../../../dataUtils'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
 import ShareModal from '../../../src/components/common/ShareModal'
-import { TestSummaryListTable } from './TestSummaryTable'
 
 const CloneOptions = loadable(() => import('./CloneOptions'))
 
@@ -210,9 +219,8 @@ class ViewModal extends React.Component {
       isDocBased,
     } = item
     let { summary = {} } = item
-    const { summaryLoading, summary: stateSummary } = this.state
-    if (stateSummary) {
-      summary = stateSummary
+    if (this.state.summary) {
+      summary = this.state.summary
     }
     const { editedCollections, showCloneOptions, showShareModal } = this.state
 
@@ -278,7 +286,7 @@ class ViewModal extends React.Component {
     )
     const standards = interestedStandards?.map((x) => x.identifier)
     const owner = authors.some((o) => o._id === userId)
-    const container = (
+    const contanier = (
       <>
         <ModalHeader>
           <ModalTitle>
@@ -292,7 +300,7 @@ class ViewModal extends React.Component {
                 </TestStatus>
               )}
             </TestStatusWrapper>
-            <EduIf condition={(owner || isCurator) && !isEdulasticCurator}>
+            {(owner || isCurator) && !isEdulasticCurator && (
               <EduButton
                 ml="5px"
                 isGhost
@@ -309,19 +317,21 @@ class ViewModal extends React.Component {
               >
                 <IconShare />
               </EduButton>
-            </EduIf>
+            )}
           </ModalTitle>
-          <EduIf condition={modalView}>
-            <RightButtonContainer>
-              <CloseButton onClick={this.handleModalClose}>
-                <IconClose
-                  data-cy="closeTestPopUp"
-                  height="18px"
-                  width="18px"
-                />
-              </CloseButton>
-            </RightButtonContainer>
-          </EduIf>
+          {modalView && (
+            <>
+              <RightButtonContainer>
+                <CloseButton onClick={this.handleModalClose}>
+                  <IconClose
+                    data-cy="closeTestPopUp"
+                    height="18px"
+                    width="18px"
+                  />
+                </CloseButton>
+              </RightButtonContainer>
+            </>
+          )}
         </ModalHeader>
         <ModalContainer>
           <ModalColumn data-cy="modalColumn">
@@ -329,17 +339,16 @@ class ViewModal extends React.Component {
           </ModalColumn>
 
           <ModalColumn justify="center" ref={this.modalRef}>
-            <EduIf condition={showCloneOptions}>
+            {showCloneOptions ? (
               <CloneOptions
                 fallback={<Progress />}
                 hideOptions={this.hideCloneOptions}
                 onDuplicate={onDuplicate}
                 status={status}
               />
-            </EduIf>
-            <EduIf condition={!showCloneOptions}>
+            ) : (
               <>
-                <EduIf condition={!publicAccess}>
+                {!publicAccess && (
                   <ButtonContainer>
                     <EduButton
                       isGhost
@@ -351,7 +360,7 @@ class ViewModal extends React.Component {
                         onEdit()
                       }}
                     >
-                      <IconDescription aria-hidden focusable={false} />
+                      <IconDescription />
                       <span>DETAILS</span>
                     </EduButton>
                     {allowDuplicate && !isEdulasticCurator && (
@@ -371,14 +380,12 @@ class ViewModal extends React.Component {
                           this.setState({ showCloneOptions: true })
                         }}
                       >
-                        <IconCopy aria-hidden focusable={false} />
+                        <IconCopy />
                         <span>CLONE</span>
                       </EduButton>
                     )}
 
-                    <EduIf
-                      condition={status === 'inreview' && hasCollectionAccess}
-                    >
+                    {status === 'inreview' && hasCollectionAccess ? (
                       <FeaturesSwitch
                         inputFeatures="isCurator"
                         actionOnInaccessible="hidden"
@@ -393,12 +400,12 @@ class ViewModal extends React.Component {
                             onReject()
                           }}
                         >
-                          <Icon type="stop" aria-hidden focusable={false} />
+                          <Icon type="stop" />
                           <span>REJECT</span>
                         </EduButton>
                       </FeaturesSwitch>
-                    </EduIf>
-                    <EduIf condition={isDeleteAllowed}>
+                    ) : null}
+                    {isDeleteAllowed ? (
                       <EduButton
                         isGhost
                         height="40px"
@@ -407,17 +414,15 @@ class ViewModal extends React.Component {
                         data-cy="delete-button"
                         onClick={() => onDelete()}
                       >
-                        <IconTrashAlt aria-hidden focusable={false} />
+                        <IconTrashAlt />
                         <span>DELETE</span>
                       </EduButton>
-                    </EduIf>
+                    ) : null}
                   </ButtonContainer>
-                </EduIf>
-                <EduIf condition={!publicAccess && hasCollectionAccess}>
+                )}
+                {!publicAccess && hasCollectionAccess && (
                   <ButtonContainer>
-                    <EduIf
-                      condition={status === 'inreview' || status === 'rejected'}
-                    >
+                    {status === 'inreview' || status === 'rejected' ? (
                       <FeaturesSwitch
                         inputFeatures="isCurator"
                         actionOnInaccessible="hidden"
@@ -434,13 +439,13 @@ class ViewModal extends React.Component {
                             )
                           }}
                         >
-                          <Icon type="check" aria-hidden focusable={false} />
+                          <Icon type="check" />
                           <span>Approve</span>
                         </EduButton>
                       </FeaturesSwitch>
-                    </EduIf>
+                    ) : null}
                   </ButtonContainer>
-                </EduIf>
+                )}
                 <ButtonContainer
                   className={publicAccess ? 'public-access-btn-wrapper' : ''}
                 >
@@ -452,12 +457,10 @@ class ViewModal extends React.Component {
                     data-cy="preview-button"
                     onClick={previewLink}
                   >
-                    <EduIf condition={!publicAccess}>
-                      <IconEye aria-hidden focusable={false} />
-                    </EduIf>
+                    {!publicAccess && <IconEye />}
                     Preview
                   </EduButton>
-                  <EduIf condition={publicAccess}>
+                  {publicAccess && (
                     <AuthorCompleteSignupButton
                       renderButton={(handleClick) => (
                         <EduButton
@@ -472,31 +475,23 @@ class ViewModal extends React.Component {
                       )}
                       onClick={assign}
                     />
-                  </EduIf>
-                  <EduIf
-                    condition={
-                      permission !== 'VIEW' &&
-                      !isEdulasticCurator &&
-                      !publicAccess &&
-                      status !== 'published' &&
-                      hasCollectionAccess
-                    }
-                  >
-                    <EduButton
-                      height="40px"
-                      width="100%"
-                      justifyContent="center"
-                      data-cy="edit/assign-button"
-                      onClick={onEdit}
-                    >
-                      <IconPencilEdit
-                        height={14}
-                        aria-hidden
-                        focusable={false}
-                      />
-                      <span>EDIT</span>
-                    </EduButton>
-                  </EduIf>
+                  )}
+                  {permission !== 'VIEW' &&
+                    !isEdulasticCurator &&
+                    !publicAccess &&
+                    status !== 'published' &&
+                    hasCollectionAccess && (
+                      <EduButton
+                        height="40px"
+                        width="100%"
+                        justifyContent="center"
+                        data-cy="edit/assign-button"
+                        onClick={onEdit}
+                      >
+                        <IconPencilEdit height={14} />
+                        <span>EDIT</span>
+                      </EduButton>
+                    )}
                   {status === 'published' &&
                     !isEdulasticCurator &&
                     !publicAccess &&
@@ -510,7 +505,7 @@ class ViewModal extends React.Component {
                             data-cy="edit/assign-button"
                             onClick={handleClick}
                           >
-                            <IconAssignment aria-hidden focusable={false} />
+                            <IconAssignment />
                             <span>ASSIGN</span>
                           </EduButton>
                         )}
@@ -518,9 +513,7 @@ class ViewModal extends React.Component {
                       />
                     )}
                 </ButtonContainer>
-                <EduIf
-                  condition={status === 'inreview' || status === 'rejected'}
-                >
+                {status === 'inreview' || status === 'rejected' ? (
                   <FeaturesSwitch
                     inputFeatures="isCurator"
                     actionOnInaccessible="hidden"
@@ -551,19 +544,19 @@ class ViewModal extends React.Component {
                       </StyledSelect>
                     </ButtonContainer>
                   </FeaturesSwitch>
-                </EduIf>
+                ) : null}
               </>
-            </EduIf>
+            )}
           </ModalColumn>
           <ModalColumn>
             <div>
               <AssessmentNameLabel>Test Name</AssessmentNameLabel>
-              <EduIf condition={isDynamicTest}>
+              {isDynamicTest && (
                 <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
                   <IconDynamic color={greyThemeDark2} />
                   &nbsp;&nbsp; SMARTBUILD TEST
                 </DynamicIconWrapper>
-              </EduIf>
+              )}
             </div>
             <AssessmentName data-cy="testcard-name">{title}</AssessmentName>
 
@@ -575,55 +568,40 @@ class ViewModal extends React.Component {
             <Row gutter={10}>
               <Col span={12}>
                 <GradeLabel>Grade</GradeLabel>
-                <GradeContainer data-cy="testcard-grades">
-                  <EduIf condition={!!selectedGrades.length}>
+                <GradeConatiner data-cy="testcard-grades">
+                  {!!selectedGrades.length && (
                     <Tags
                       isGrayTags
                       tags={selectedGrades}
                       show={2}
                       key="grades"
                     />
-                  </EduIf>
-                </GradeContainer>
+                  )}
+                </GradeConatiner>
               </Col>
               <Col span={12} data-cy="testcard-subject">
                 <SubjectLabel>Subject</SubjectLabel>
-                <EduIf condition={!!subjects}>
+                {subjects && (
                   <Tags isGrayTags tags={subjects} show={1} key="subjects" />
-                </EduIf>
+                )}
               </Col>
             </Row>
 
             <TagsLabel>Tags</TagsLabel>
-            <TagsContainer data-cy="testcard-tags">
-              <EduIf condition={!!tags}>
-                <Tags isCustomTags tags={tags} show={2} key="tags" />
-              </EduIf>
-            </TagsContainer>
+            <TagsConatiner data-cy="testcard-tags">
+              {tags && <Tags isCustomTags tags={tags} show={2} key="tags" />}
+            </TagsConatiner>
 
             <Footer>
               <FooterIcon>
-                <IconWorldWide
-                  color={darkGrey}
-                  width={14}
-                  height={14}
-                  aria-hidden
-                  focusable={false}
-                />
+                <IconWorldWide color={darkGrey} width={14} height={14} />
                 <IconText data-cy="testcard-collection">
                   {collectionName}
                 </IconText>
               </FooterIcon>
               <FooterIcon rotate>
-                <IconUsers
-                  color={darkGrey}
-                  width={14}
-                  height={14}
-                  aria-label="Followers"
-                />
-                <EduIf condition={!!analytics}>
-                  <IconText>{analytics[0]?.usage || 0} </IconText>
-                </EduIf>
+                <IconUsers color={darkGrey} width={14} height={14} />
+                {analytics && <IconText>{analytics[0]?.usage || 0} </IconText>}
               </FooterIcon>
               <LikeIconStyled
                 isLiked={isTestLiked}
@@ -634,11 +612,8 @@ class ViewModal extends React.Component {
                   color={isTestLiked ? '#ca481e' : darkGrey}
                   width={14}
                   height={14}
-                  aria-label="Likes"
                 />
-                <EduIf condition={!!analytics}>
-                  <IconText>{analytics[0]?.likes || 0}</IconText>
-                </EduIf>
+                {analytics && <IconText>{analytics[0]?.likes || 0}</IconText>}
               </LikeIconStyled>
             </Footer>
           </ModalColumn>
@@ -667,19 +642,72 @@ class ViewModal extends React.Component {
                 </SummaryCard>
               </SummaryCardContainer>
             </SummaryContainer>
-            <EduIf condition={summaryLoading}>
+            {this.state.summaryLoading ? (
               <Spin />
-            </EduIf>
-            <EduIf condition={!summaryLoading}>
-              <TestSummaryListTable
-                itemGroups={itemGroups}
-                summary={summary}
-                standards={standards}
-                testCategory={item?.testCategory}
-              />
-            </EduIf>
+            ) : (
+              <PerfectScrollbar>
+                {item?.testCategory ===
+                testConstants.testCategoryTypes.DYNAMIC_TEST ? (
+                  summary?.groupSummary?.map((group, i) => {
+                    return (
+                      <>
+                        <GroupName>{itemGroups[i]?.groupName}</GroupName>
+                        <SummaryCardContainer>
+                          <GroupSummaryCard>
+                            <GroupSummaryCardValue>
+                              {group.totalItems}
+                            </GroupSummaryCardValue>
+                            <SummaryCardLabel>Items</SummaryCardLabel>
+                          </GroupSummaryCard>
+                          <GroupSummaryCard>
+                            <Tags
+                              tags={standards}
+                              key="standards"
+                              show={2}
+                              isStandards
+                            />
+                          </GroupSummaryCard>
+                        </SummaryCardContainer>
+                      </>
+                    )
+                  })
+                ) : (
+                  <SummaryList>
+                    <ListHeader>
+                      <ListHeaderCell>SUMMARY</ListHeaderCell>
+                      <ListHeaderCell>Qs</ListHeaderCell>
+                      <ListHeaderCell>POINTS</ListHeaderCell>
+                    </ListHeader>
+                    {!!summary?.standards?.length &&
+                      summary.standards.map(
+                        (data) =>
+                          standards.includes(data.identifier) && (
+                            <ListRow data-cy={data.identifier}>
+                              <ListCell>
+                                <SammaryMark>{data.identifier}</SammaryMark>
+                              </ListCell>
+                              <ListCell>{data.totalQuestions}</ListCell>
+                              <ListCell>{data.totalPoints}</ListCell>
+                            </ListRow>
+                          )
+                      )}
+                    {summary?.noStandards?.totalQuestions > 0 && (
+                      <ListRow>
+                        <ListCell>
+                          <SammaryMark>No Standard</SammaryMark>
+                        </ListCell>
+                        <ListCell>
+                          {summary.noStandards.totalQuestions}
+                        </ListCell>
+                        <ListCell>{summary.noStandards.totalPoints}</ListCell>
+                      </ListRow>
+                    )}
+                  </SummaryList>
+                )}
+              </PerfectScrollbar>
+            )}
           </ModalColumn>
-          <EduIf condition={showShareModal}>
+          {showShareModal && (
             <ShareModal
               shareLabel="TEST URL"
               isVisible={showShareModal}
@@ -690,7 +718,7 @@ class ViewModal extends React.Component {
               onClose={this.onShareModalChange}
               gradeSubject={gradeSubject}
             />
-          </EduIf>
+          )}
         </ModalContainer>
       </>
     )
@@ -703,11 +731,11 @@ class ViewModal extends React.Component {
           styles={modalStyles}
           showCloseIcon={false}
         >
-          {container}
+          {contanier}
         </Modal>
       )
     }
-    return container
+    return contanier
   }
 }
 

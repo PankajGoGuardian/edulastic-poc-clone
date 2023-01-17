@@ -95,10 +95,6 @@ function PauseToolTip({ outNavigationCounter, pauseReason, children }) {
     children
   )
 }
-
-const buildAriaLabelForCheckbox = (std) => {
-  return `${std.studentId}_${std.studentName}_${std.studentId}_${std.status}_${std.studentId}_${std.score}`
-}
 class DisneyCardContainer extends Component {
   constructor(props) {
     super(props)
@@ -375,7 +371,6 @@ class DisneyCardContainer extends Component {
                             studentUnselect(student.studentId)
                           }
                         }}
-                        aria-labelledby={buildAriaLabelForCheckbox(student)}
                         studentId={student.studentId}
                       />
                     </Col>

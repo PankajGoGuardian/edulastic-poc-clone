@@ -9,8 +9,6 @@ import {
   themeLightGrayColor,
   smallDesktopWidth,
   greyThemeDark2,
-  placeholderGray,
-  greyThemeLighter,
 } from '@edulastic/colors'
 import {
   testStatusBackgroundColor as backgroundColor,
@@ -119,12 +117,12 @@ export const TagGrade = styled.span`
   }
 `
 export const TagsLabel = styled(Label)``
-export const TagsContainer = styled.div`
+export const TagsConatiner = styled.div`
   width: 100%;
 `
 
 export const GradeLabel = styled(Label)``
-export const GradeContainer = styled.div`
+export const GradeConatiner = styled.div`
   width: 100%;
 `
 
@@ -238,8 +236,33 @@ export const GroupSummaryCardValue = styled(SummaryCardValue)`
 export const GroupSummaryCardContainer = styled(SummaryCardContainer)`
   margin-bottom: 5px;
 `
-
-export const SummaryMark = styled.div`
+export const SummaryList = styled.div``
+export const ListHeader = styled.div`
+  display: flex;
+  padding: 5px 10px;
+`
+export const ListHeaderCell = styled.div`
+  color: #b1b1b1;
+  font-size: 10px;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+`
+export const ListRow = styled.div`
+  padding: 7px 16px;
+  background-color: #f8f8f8;
+  margin-bottom: 5px;
+  display: flex;
+  align-items: center;
+`
+export const ListCell = styled.div`
+  font-size: 14px;
+  color: #434b5d;
+  font-weight: 600;
+  text-align: center;
+  flex: 1;
+`
+export const SammaryMark = styled.div`
   text-transform: uppercase;
   border-radius: 5px;
   padding: 4px 15px;
@@ -325,29 +348,4 @@ export const CloseButton = styled.span`
 `
 export const RightButtonContainer = styled.div`
   display: flex;
-`
-
-export const SummaryTable = styled.table`
-  width: 100%;
-  border-collapse: separate;
-  border-spacing: 0 5px;
-`
-
-export const SummaryTableHeaderCell = styled.th`
-  color: ${placeholderGray};
-  font-size: 10px;
-  font-weight: 600;
-  text-align: center;
-  width: calc(100% / 3);
-  padding: 5px 10px;
-`
-
-export const SummaryTableCell = styled.td`
-  font-size: 14px;
-  color: ${secondaryTextColor};
-  background-color: ${greyThemeLighter};
-  font-weight: 600;
-  text-align: center;
-  padding: 5px 10px;
-  margin-bottom: 5px;
 `

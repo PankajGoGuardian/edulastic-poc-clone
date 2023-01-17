@@ -40,7 +40,7 @@ const FolderList = ({
         key="1"
         onClick={() => showRenameModal(folder)}
       >
-        <IconPencilEdit width={12} height={12} aria-hidden focusable={false} />
+        <IconPencilEdit width={12} height={12} />
         <span>Rename</span>
       </MenuItems>
       <MenuItems
@@ -48,7 +48,7 @@ const FolderList = ({
         key="2"
         onClick={() => showDeleteConfirm(folder)}
       >
-        <Icon type="close" aria-hidden focusable={false} /> <span>Delete</span>
+        <Icon type="close" /> <span>Delete</span>
       </MenuItems>
     </DropMenu>
   )
@@ -58,7 +58,7 @@ const FolderList = ({
       {showAllItems && (
         <FolderListItem onClick={() => selectFolder(null)} active={!folderId}>
           <FolderListItemTitle ellipsis={ellipsis} title="All Assignments">
-            <IconFolderDeactive aria-hidden focusable={false} />
+            <IconFolderDeactive />
             <span>All Assignments</span>
           </FolderListItemTitle>
         </FolderListItem>
@@ -76,7 +76,7 @@ const FolderList = ({
               title={folder.folderName}
               onClick={() => selectFolder(folder)}
             >
-              <IconFolderDeactive aria-hidden focusable={false} />
+              <IconFolderDeactive />
               <span>{folder.folderName}</span>
             </FolderListItemTitle>
             {ellipsis && (
@@ -86,9 +86,7 @@ const FolderList = ({
                 placement="bottomRight"
               >
                 <MoreButton data-cy="folder-option" active={isActive}>
-                  <IconMoreVertical
-                    aria-label={`view more options for your folder ${folder.folderName}`}
-                  />
+                  <IconMoreVertical />
                 </MoreButton>
               </Dropdown>
             )}

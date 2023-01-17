@@ -1,26 +1,11 @@
 import styled, { css } from 'styled-components'
 
-export const ANSWER_STATUS = {
-  correct: {
-    color: '#DEF4E8',
-    text: 'Correct',
-  },
-  partiallyCorrect: {
-    color: '#FFE9A8',
-    text: 'Partially Correct',
-  },
-  ungraded: {
-    color: '#BEDEFF',
-    text: 'Ungraded',
-  },
-  wrong: {
-    color: '#FDE0E9',
-    text: 'Wrong',
-  },
-  skipped: {
-    color: '#E5E5E5',
-    text: 'Skipped',
-  },
+const statusColors = {
+  correct: '#DEF4E8',
+  partiallyCorrect: '#FFE9A8',
+  ungraded: '#BEDEFF',
+  wrong: '#FDE0E9',
+  skipped: '#E5E5E5',
 }
 
 const KatexStyle = css`
@@ -37,13 +22,7 @@ export const StyledWrapper = styled.div`
   cursor: pointer;
   display: flex;
   justify-content: center;
-  background-color: ${({ answerStatus: status }) =>
-    ANSWER_STATUS[status]?.color};
-
-  img {
-    width: 0px;
-    height: 0px;
-  }
+  background-color: ${({ answerStatus: status }) => statusColors[status]};
 `
 
 export const StyledText = styled.span`

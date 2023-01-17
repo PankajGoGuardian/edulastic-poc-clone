@@ -1,11 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react'
-import {
-  IconHeart,
-  IconUser,
-  IconDynamic,
-  IconId,
-  IconUsers,
-} from '@edulastic/icons'
+import { IconHeart, IconUser, IconDynamic, IconUsers } from '@edulastic/icons'
 import { cardTitleColor, themeColor, darkGrey } from '@edulastic/colors'
 // eslint-disable-next-line no-unused-vars
 import { PremiumLabel, EduButton, LikeIconStyled } from '@edulastic/common'
@@ -189,10 +183,9 @@ const TestItemCard = ({
             <Author>
               <AuthorWrapper>
                 {collections.find((o) => o.name === 'Edulastic Certified') ? (
-                  getAuthorCollectionMap(true, 30, 30, "author's name")
-                    .edulastic_certified.icon
+                  getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon
                 ) : (
-                  <IconUser color={cardTitleColor} aria-label="author's name" />
+                  <IconUser color={cardTitleColor} />
                 )}
                 <AuthorName data-cy="test-author-name" title={authorName}>
                   {authorName}
@@ -216,20 +209,14 @@ const TestItemCard = ({
         <Footer>
           {testItemId ? (
             <PlaylistId data-cy="test-id">
-              <IconId width={12} height={12} aria-label="Unique Test Id" />
+              <span>#</span>
               <span>{testItemId}</span>
             </PlaylistId>
           ) : null}
           {status !== 'draft' && (
             <>
               <ShareIcon>
-                <IconUsers
-                  color={darkGrey}
-                  width={14}
-                  height={14}
-                  aria-label="Followers"
-                />
-                &nbsp;
+                <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
                 <IconText>{usage}</IconText>
               </ShareIcon>
               <LikeIconStyled isLiked={isTestLiked} onClick={handleLikeTest}>
@@ -237,7 +224,6 @@ const TestItemCard = ({
                   color={isTestLiked ? '#ca481e' : darkGrey}
                   width={14}
                   height={14}
-                  aria-label="Likes"
                 />
                 <IconText>{likes}</IconText>
               </LikeIconStyled>

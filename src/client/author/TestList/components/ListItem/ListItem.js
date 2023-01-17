@@ -12,7 +12,6 @@ import {
   LikeIconStyled,
   EduButton,
   FlexContainer,
-  EduIf,
 } from '@edulastic/common'
 import { test } from '@edulastic/constants'
 import {
@@ -97,11 +96,6 @@ import { setIsTestPreviewVisibleAction } from '../../../../assessment/actions/te
 import { getIsPreviewModalVisibleSelector } from '../../../../assessment/selectors/test'
 import { DeleteItemModal } from '../DeleteItemModal/deleteItemModal'
 import { duplicateTestRequestAction } from '../../../TestPage/ducks'
-
-const certifiedUserIcon = getAuthorCollectionMap(true, 30, 30, "author's name")
-  .edulastic_certified.icon
-const certifiedIcon = getAuthorCollectionMap(true, 30, 30, 'certified test')
-  .edulastic_certified.icon
 
 class ListItem extends Component {
   static propTypes = {
@@ -290,7 +284,7 @@ class ListItem extends Component {
       checked,
       moduleTitle,
       selectedTests = [],
-      t: translate,
+      t,
       isCoTeacher,
       orgCollections = [],
       currentUserId,
@@ -357,13 +351,10 @@ class ListItem extends Component {
         {isPlaylist && <Stars size="small" />}
       </Header>
     )
-    const isCertified = !!collections.find(
-      (o) => o.name === 'Edulastic Certified'
-    )
 
     return (
-      <Container>
-        <EduIf condition={isOpenModal}>
+      <>
+        {isOpenModal && (
           <ViewModal
             isShow={isOpenModal}
             close={this.closeModal}
@@ -384,8 +375,9 @@ class ListItem extends Component {
             isTestLiked={isTestLiked}
             collectionName={collectionName}
           />
-        </EduIf>
-        <EduIf condition={isPreviewModalVisible && currentTestId}>
+        )}
+
+        {isPreviewModalVisible && currentTestId && (
           <TestPreviewModal
             isModalVisible={isPreviewModalVisible}
             testId={currentTestId}
@@ -396,8 +388,9 @@ class ListItem extends Component {
             }}
             unmountOnClose
           />
-        </EduIf>
-        <EduIf condition={isDeleteModalOpen}>
+        )}
+
+        {isDeleteModalOpen && (
           <DeleteItemModal
             isVisible={isDeleteModalOpen}
             onCancel={this.onDeleteModelCancel}
@@ -405,243 +398,239 @@ class ListItem extends Component {
             test={item}
             view="testLibrary"
           />
-        </EduIf>
-        <ContentWrapper>
-          <Col span={24}>
-            <Outer>
-              <FlexContainer
-                width="100%"
-                justifyContent="flex-start"
-                onClick={
-                  isPlaylist
-                    ? (e) => this.moveToItem(e)
-                    : mode === 'embedded'
-                    ? ''
-                    : this.openModal
-                }
-              >
-                <ListCard title={cardTitle} />
+        )}
 
-                <Inner>
-                  <StyledLinkExt data-cy="test-title" title={title}>
-                    {isPlaylist ? _source.title : title}
-                  </StyledLinkExt>
-                  <Description data-cy="test-description">
-                    <EllipsisWrapper view="list">
-                      <EduIf condition={isPlaylist}>
-                        <MathFormulaDisplay
-                          dangerouslySetInnerHTML={{
-                            __html: _source.description,
-                          }}
-                        />
-                      </EduIf>
-                      <EduIf condition={!isPlaylist}>{description}</EduIf>
-                    </EllipsisWrapper>
-                  </Description>
-                </Inner>
-              </FlexContainer>
-              <EduIf condition={!isPlaylist && mode === 'embedded'}>
-                <ViewButtonWrapper span={6}>
-                  <EduIf condition={!isTestAdded && mode === 'embedded'}>
-                    <ViewButton
-                      onClick={() =>
-                        addTestToPlaylist({
-                          ...item,
-                          standardIdentifiers: standardsIdentifiers,
-                        })
-                      }
-                    >
-                      ADD
-                    </ViewButton>
-                    <ViewButton
-                      isTestAdded={isTestAdded}
-                      onClick={() => this.showPreviewModal(item._id)}
-                    >
-                      VIEW
-                    </ViewButton>
-                  </EduIf>
-                  <EduIf condition={isTestAdded && mode === 'embedded'}>
-                    <div
-                      style={{ cursor: 'pointer' }}
-                      onClick={() => this.showPreviewModal(item._id)}
-                      title="Preview"
-                    >
-                      <IconEye color={themeColor} width={60} />
-                    </div>
-                    <StyledModuleName>
-                      <span style={{ width: '100%', textAlign: 'center' }}>
-                        {moduleTitle}
-                      </span>
+        <Container>
+          <ContentWrapper>
+            <Col span={24}>
+              <Outer>
+                <FlexContainer
+                  width="100%"
+                  justifyContent="flex-start"
+                  onClick={
+                    isPlaylist
+                      ? (e) => this.moveToItem(e)
+                      : mode === 'embedded'
+                      ? ''
+                      : this.openModal
+                  }
+                >
+                  <ListCard title={cardTitle} />
+
+                  <Inner>
+                    <StyledLinkExt data-cy="test-title" title={title}>
+                      {isPlaylist ? _source.title : title}
+                    </StyledLinkExt>
+                    <Description data-cy="test-description">
+                      <EllipsisWrapper view="list">
+                        {isPlaylist ? (
+                          <MathFormulaDisplay
+                            dangerouslySetInnerHTML={{
+                              __html: _source.description,
+                            }}
+                          />
+                        ) : (
+                          description
+                        )}
+                      </EllipsisWrapper>
+                    </Description>
+                  </Inner>
+                </FlexContainer>
+                {!isPlaylist && mode === 'embedded' && (
+                  <ViewButtonWrapper span={6}>
+                    {!isTestAdded && mode === 'embedded' && (
+                      <ViewButton
+                        onClick={() =>
+                          addTestToPlaylist({
+                            ...item,
+                            standardIdentifiers: standardsIdentifiers,
+                          })
+                        }
+                      >
+                        ADD
+                      </ViewButton>
+                    )}
+
+                    {!isTestAdded && mode === 'embedded' && (
+                      <ViewButton
+                        isTestAdded={isTestAdded}
+                        onClick={() => this.showPreviewModal(item._id)}
+                      >
+                        VIEW
+                      </ViewButton>
+                    )}
+
+                    {isTestAdded && mode === 'embedded' && (
                       <div
                         style={{ cursor: 'pointer' }}
-                        onClick={() => removeTestFromPlaylist(item._id)}
+                        onClick={() => this.showPreviewModal(item._id)}
+                        title="Preview"
                       >
-                        <IconClose color={fadedBlack} width={10} />
+                        <IconEye color={themeColor} width={60} />
                       </div>
-                    </StyledModuleName>
-                  </EduIf>
-                  <CheckboxLabel
-                    onChange={(e) =>
-                      handleCheckboxAction(e, {
-                        _id: item._id,
-                        title: item.title,
-                      })
-                    }
-                    checked={checked}
-                  />
-                </ViewButtonWrapper>
-              </EduIf>
-              <EduIf condition={isPlaylist}>
-                <ViewButtonContainer
-                  onClick={(e) => {
-                    e.stopPropagation()
-                  }}
-                >
-                  <EduButton
-                    style={{ marginRight: '10px' }}
-                    isGhost
-                    data-cy="view"
-                    onClick={(e) => this.moveToItem(e)}
-                  >
-                    Details
-                  </EduButton>
-                  <AddRemove selectedToCart={checked}>
+                    )}
+
+                    {isTestAdded && mode === 'embedded' && (
+                      <StyledModuleName>
+                        <span style={{ width: '100%', textAlign: 'center' }}>
+                          {moduleTitle}
+                        </span>
+                        <div
+                          style={{ cursor: 'pointer' }}
+                          onClick={() => removeTestFromPlaylist(item._id)}
+                        >
+                          <IconClose color={fadedBlack} width={10} />
+                        </div>
+                      </StyledModuleName>
+                    )}
+
                     <CheckboxLabel
-                      style={{ display: 'none' }}
-                      onChange={(e) => handleCheckboxAction(e, item._id)}
+                      onChange={(e) =>
+                        handleCheckboxAction(e, {
+                          _id: item._id,
+                          title: item.title,
+                        })
+                      }
                       checked={checked}
                     />
-                    <EduIf condition={checked}>
-                      <IconClose />
-                    </EduIf>
-                    <EduIf condition={!checked}>
-                      <IconPlus />
-                    </EduIf>
-                  </AddRemove>
-                </ViewButtonContainer>
-              </EduIf>
-              <EduIf
-                condition={!isPlaylist && mode !== 'embedded' && isCoTeacher}
-              >
-                <ViewButtonContainer>
-                  <ViewButtonStyled
-                    data-cy="view"
-                    onClick={() => this.showPreviewModal(item._id)}
-                  >
-                    <IconEye aria-hidden focusable={false} />
-                    {translate('component.itemlist.preview')}
-                  </ViewButtonStyled>
-                  <AddRemoveButton
-                    data-cy="addRemoveButton"
-                    onClick={this.handleAddRemoveToCart(item, isInCart)}
-                    selectedToCart={isInCart}
-                  >
-                    <EduIf condition={isInCart}>
-                      <IconClose aria-label="remove test from cart" />
-                    </EduIf>
-                    <EduIf condition={!isInCart}>
-                      <IconPlus aria-label="add test to cart" />
-                    </EduIf>
-                  </AddRemoveButton>
-                </ViewButtonContainer>
-              </EduIf>
-            </Outer>
-          </Col>
-
-          <Footer span={24}>
-            <TagsWrapper data-cy="test-standards" span={12}>
-              <Tags tags={tags} show={1} key="tags" />
-              <EduIf condition={tags.length && standardsIdentifiers.length}>
-                <span style={{ marginRight: '10px' }} />
-              </EduIf>
-              <Tags
-                tags={standardsIdentifiers}
-                show={1}
-                key="standards"
-                isStandards
-              />
-              <TestStatusWrapper
-                status={testStatus || _source?.status}
-                checkUser={false}
-              >
-                {({ children, ...rest }) => (
-                  <TestStatus
-                    data-cy="test-status"
-                    style={{
-                      marginLeft:
-                        tags.length ||
-                        (standardsIdentifiers && standardsIdentifiers.length)
-                          ? '10px'
-                          : 0,
-                    }}
-                    {...rest}
-                  >
-                    {children}
-                  </TestStatus>
+                  </ViewButtonWrapper>
                 )}
-              </TestStatusWrapper>
-              <EduIf condition={isCertified}>{certifiedIcon}</EduIf>
-              <EduIf condition={isDynamicTest}>
-                <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
-                  <IconDynamic color={themeColor} />
-                </DynamicIconWrapper>
-              </EduIf>
-            </TagsWrapper>
 
-            <ItemInformation span={12}>
-              <ContentWrapper type="flex" align="middle" justify="end">
-                <EduIf condition={showPremiumTag}>
-                  <PremiumTag />
-                </EduIf>
-                <EduIf condition={!!authorName}>
-                  <Author>
-                    <EduIf condition={isCertified}>{certifiedUserIcon}</EduIf>
-                    <EduIf condition={!isCertified}>
-                      <IconUser
-                        color={cardTitleColor}
-                        aria-label="author's name"
-                      />
-                    </EduIf>{' '}
-                    &nbsp;
-                    <AuthorName data-cy="test-author-name" title={authorName}>
-                      {authorName}
-                    </AuthorName>
-                  </Author>
-                </EduIf>
-                <CardIdWrapper>
-                  <IconId aria-label="Unique Test Id" /> &nbsp;
-                  <CardId data-cy="test-id">{testItemId}</CardId>
-                </CardIdWrapper>
-                <IconWrapper>
-                  <IconUsers
-                    color={darkGrey}
-                    width={14}
-                    height={14}
-                    aria-label="Followers"
-                  />
-                  &nbsp;
-                  <IconText>{usage}</IconText>
-                </IconWrapper>
-                <EduIf condition={!isPlaylist}>
-                  <LikeIconStyled
-                    isLiked={isTestLiked}
-                    onClick={this.handleLikeTest}
-                    style={{ marginLeft: '20px' }}
+                {isPlaylist && (
+                  <ViewButtonContainer
+                    onClick={(e) => {
+                      e.stopPropagation()
+                    }}
                   >
-                    <IconHeart
-                      color={isTestLiked ? '#ca481e' : darkGrey}
-                      width={14}
-                      height={14}
-                      aria-label="Likes"
-                    />
-                    <IconText>{likes}</IconText>
-                  </LikeIconStyled>
-                </EduIf>
-              </ContentWrapper>
-            </ItemInformation>
-          </Footer>
-        </ContentWrapper>
-      </Container>
+                    <EduButton
+                      style={{ marginRight: '10px' }}
+                      isGhost
+                      data-cy="view"
+                      onClick={(e) => this.moveToItem(e)}
+                    >
+                      Details
+                    </EduButton>
+                    <AddRemove selectedToCart={checked}>
+                      <CheckboxLabel
+                        style={{ display: 'none' }}
+                        onChange={(e) => handleCheckboxAction(e, item._id)}
+                        checked={checked}
+                      />
+                      {checked ? <IconClose /> : <IconPlus />}
+                    </AddRemove>
+                  </ViewButtonContainer>
+                )}
+
+                {!isPlaylist && mode !== 'embedded' && isCoTeacher && (
+                  <ViewButtonContainer>
+                    <ViewButtonStyled
+                      data-cy="view"
+                      onClick={() => this.showPreviewModal(item._id)}
+                    >
+                      <IconEye /> {t('component.itemlist.preview')}
+                    </ViewButtonStyled>
+                    <AddRemoveButton
+                      data-cy="addRemoveButton"
+                      onClick={this.handleAddRemoveToCart(item, isInCart)}
+                      selectedToCart={isInCart}
+                    >
+                      {isInCart ? <IconClose /> : <IconPlus />}
+                    </AddRemoveButton>
+                  </ViewButtonContainer>
+                )}
+              </Outer>
+            </Col>
+
+            <Footer span={24}>
+              <TagsWrapper data-cy="test-standards" span={12}>
+                <Tags tags={tags} show={1} key="tags" />
+                {tags.length && standardsIdentifiers.length ? (
+                  <span style={{ marginRight: '10px' }} />
+                ) : (
+                  ''
+                )}
+                <Tags
+                  tags={standardsIdentifiers}
+                  show={1}
+                  key="standards"
+                  isStandards
+                />
+                <TestStatusWrapper
+                  status={testStatus || _source?.status}
+                  checkUser={false}
+                >
+                  {({ children, ...rest }) => (
+                    <TestStatus
+                      data-cy="test-status"
+                      style={{
+                        marginLeft:
+                          tags.length ||
+                          (standardsIdentifiers && standardsIdentifiers.length)
+                            ? '10px'
+                            : 0,
+                      }}
+                      {...rest}
+                    >
+                      {children}
+                    </TestStatus>
+                  )}
+                </TestStatusWrapper>
+                {collections.find((o) => o.name === 'Edulastic Certified') &&
+                  getAuthorCollectionMap(true, 30, 30).edulastic_certified.icon}
+                {isDynamicTest && (
+                  <DynamicIconWrapper title="SmartBuild Test. Every student might get different items in assignment">
+                    <IconDynamic color={themeColor} />
+                  </DynamicIconWrapper>
+                )}
+              </TagsWrapper>
+
+              <ItemInformation span={12}>
+                <ContentWrapper type="flex" align="middle" justify="end">
+                  {showPremiumTag && <PremiumTag />}
+                  {authorName && (
+                    <Author>
+                      {collections.find(
+                        (o) => o.name === 'Edulastic Certified'
+                      ) ? (
+                        getAuthorCollectionMap(true, 30, 30).edulastic_certified
+                          .icon
+                      ) : (
+                        <IconUser color={cardTitleColor} />
+                      )}{' '}
+                      &nbsp;
+                      <AuthorName data-cy="test-author-name" title={authorName}>
+                        {authorName}
+                      </AuthorName>
+                    </Author>
+                  )}
+                  <CardIdWrapper>
+                    <IconId /> &nbsp;
+                    <CardId data-cy="test-id">{testItemId}</CardId>
+                  </CardIdWrapper>
+                  <IconWrapper>
+                    <IconUsers color={darkGrey} width={14} height={14} /> &nbsp;
+                    <IconText>{usage}</IconText>
+                  </IconWrapper>
+                  {!isPlaylist && (
+                    <LikeIconStyled
+                      isLiked={isTestLiked}
+                      onClick={this.handleLikeTest}
+                      style={{ marginLeft: '20px' }}
+                    >
+                      <IconHeart
+                        color={isTestLiked ? '#ca481e' : darkGrey}
+                        width={14}
+                        height={14}
+                      />
+                      <IconText>{likes}</IconText>
+                    </LikeIconStyled>
+                  )}
+                </ContentWrapper>
+              </ItemInformation>
+            </Footer>
+          </ContentWrapper>
+        </Container>
+      </>
     )
   }
 }

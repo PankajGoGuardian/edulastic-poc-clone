@@ -19,21 +19,9 @@ export const hasUserGotAccessToPremiumItem = (
   return orgCollections.find((o) => itemCollectionsMap[o._id])
 }
 
-export const getAuthorCollectionMap = (
-  isBottom,
-  width,
-  height,
-  ariaLabel = ''
-) => ({
+export const getAuthorCollectionMap = (isBottom, width, height) => ({
   edulastic_certified: {
-    icon: (
-      <EdulasticVerified
-        bottom={isBottom}
-        width={width}
-        height={height}
-        aria-label={ariaLabel}
-      />
-    ),
+    icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
     displayName: 'Edulastic Certified',
   },
   engage_ny: {
@@ -44,14 +32,8 @@ export const getAuthorCollectionMap = (
     icon: <EdulasticVerified bottom={isBottom} width={width} height={height} />,
     displayName: 'Edulastic Certified',
   },
-  Great_Minds_DATA: {
-    icon: <UserIcon />,
-    displayName: 'Eureka Math',
-  },
-  PROGRESS_DATA: {
-    icon: <UserIcon />,
-    displayName: 'PROGRESS Bank',
-  },
+  Great_Minds_DATA: { icon: <UserIcon />, displayName: 'Eureka Math' },
+  PROGRESS_DATA: { icon: <UserIcon />, displayName: 'PROGRESS Bank' },
 })
 
 export const getTestAuthorName = (item, orgCollections) => {

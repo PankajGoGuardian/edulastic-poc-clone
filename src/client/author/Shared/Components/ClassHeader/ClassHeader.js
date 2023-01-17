@@ -1010,13 +1010,7 @@ class ClassHeader extends Component {
                   to={`/author/classboard/${assignmentId}/${classId}`}
                   dataCy="LiveClassBoard"
                   isActive={active === 'classboard'}
-                  icon={
-                    <IconDeskTopMonitor
-                      left={0}
-                      aria-hidden="true"
-                      focusable="false"
-                    />
-                  }
+                  icon={<IconDeskTopMonitor left={0} />}
                   linkLabel={t('common.liveClassBoard')}
                 />
                 <FeaturesSwitch
@@ -1037,13 +1031,7 @@ class ClassHeader extends Component {
                       disabled={!isItemsVisible || hasRandomQuestions}
                       dataCy="Expressgrader"
                       isActive={active === 'expressgrader'}
-                      icon={
-                        <IconBookMarkButton
-                          left={0}
-                          aria-hidden="true"
-                          focusable="false"
-                        />
-                      }
+                      icon={<IconBookMarkButton left={0} />}
                       linkLabel={t('common.expressGrader')}
                     />
                   </WithDisableMessage>
@@ -1058,13 +1046,7 @@ class ClassHeader extends Component {
                     disabled={!isItemsVisible}
                     dataCy="StandardsBasedReport"
                     isActive={active === 'standard_report'}
-                    icon={
-                      <IconNotes
-                        left={0}
-                        aria-hidden="true"
-                        focusable="false"
-                      />
-                    }
+                    icon={<IconNotes left={0} />}
                     linkLabel={t('common.standardBasedReports')}
                   />
                 </WithDisableMessage>
@@ -1073,13 +1055,7 @@ class ClassHeader extends Component {
                     to={`/author/lcb/settings/${assignmentId}/${classId}`}
                     dataCy="LCBAssignmentSettings"
                     isActive={active === 'settings'}
-                    icon={
-                      <IconSettings
-                        left={0}
-                        aria-hidden="true"
-                        focusable="false"
-                      />
-                    }
+                    icon={<IconSettings left={0} />}
                     linkLabel={t('common.settings')}
                   />
                 )}
@@ -1094,19 +1070,8 @@ class ClassHeader extends Component {
                 visible={forceActionsVisible || actionsVisible}
                 onVisibleChange={(v) => this.setState({ actionsVisible: v })}
               >
-                <EduButton
-                  aria-label={`View more Actions Available on ${
-                    additionalData?.className || ''
-                  }`}
-                  data-cy="headerDropDown"
-                  isBlue
-                  IconBtn
-                >
-                  <FontAwesomeIcon
-                    aria-hidden="true"
-                    focusable="false"
-                    icon={faEllipsisV}
-                  />
+                <EduButton isBlue data-cy="headerDropDown" IconBtn>
+                  <FontAwesomeIcon icon={faEllipsisV} />
                 </EduButton>
               </Dropdown>
               <StyledDiv>

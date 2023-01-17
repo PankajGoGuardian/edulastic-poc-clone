@@ -224,13 +224,11 @@ function* getOmrUploadSessionsSaga({ payload }) {
     yield put(
       slice.actions.setAssignmentAndClassTitle({ assignmentTitle, classTitle })
     )
-    const currentSession =
-      omrUploadSessions?.find((session) => session._id === sessionId) ||
-      omrUploadSessions?.filter(
-        ({ status }) =>
-          status === omrUploadSessionStatus.SCANNING ||
-          status === omrUploadSessionStatus.DONE
-      ).lastItem
+    const currentSession = sessionId
+      ? omrUploadSessions?.find((session) => session._id === sessionId)
+      : omrUploadSessions?.filter(
+          ({ status }) => status >= omrUploadSessionStatus.SCANNING
+        ).lastItem
     if (currentSession) {
       yield put(slice.actions.setOmrUploadSession({ session: currentSession }))
       if (!sessionId && !fromWebcam) {

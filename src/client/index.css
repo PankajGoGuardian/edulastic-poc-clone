@@ -2703,3 +2703,7 @@ div[class*='_pendo'] button {
   z-index: 3000001;
 }
 
+
+.screen-reader_only {
+  display: none;
+}

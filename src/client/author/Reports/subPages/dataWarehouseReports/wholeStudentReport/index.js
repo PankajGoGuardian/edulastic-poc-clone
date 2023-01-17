@@ -242,10 +242,12 @@ const WholeStudentReport = ({
       externalTestMetrics = [],
       externalSchoolMetrics = [],
       externalDistrictMetrics = [],
+      externalBands = [],
     } = get(reportData, 'data.result', {})
     const assignmentMetrics = mergeTestMetrics(
       internalAssignmentMetrics,
-      externalTestMetrics
+      externalTestMetrics,
+      externalBands
     )
     const districtMetrics = mergeDistrictMetrics(
       internalDistrictMetrics,

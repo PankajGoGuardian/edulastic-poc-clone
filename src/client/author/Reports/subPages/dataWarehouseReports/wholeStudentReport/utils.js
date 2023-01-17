@@ -14,7 +14,6 @@ import {
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
-import { getColorBandBySize } from '@edulastic/constants/const/colors'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
 
 const {
@@ -79,31 +78,6 @@ export const staticDropDownData = {
     { key: '12', title: 'Grade 12' },
     { key: 'other', title: 'Other' },
   ],
-}
-
-export const claimsColorMap = {
-  // CAASPP claimNames
-  'Concepts and Procedures': getColorBandBySize(7)[0],
-  'Problem Solving and Modeling/Data Analysis': getColorBandBySize(7)[1],
-  'Communicating Reasoning': getColorBandBySize(7)[2],
-  Reading: getColorBandBySize(7)[3],
-  Writing: getColorBandBySize(7)[4],
-  Listening: getColorBandBySize(7)[5],
-  'Research/Inquiry': getColorBandBySize(7)[6],
-
-  // NWEA
-  Hi: '#295FA5',
-  High: '#295FA5',
-  HiAvg: '#3B8457',
-  Avg: '#F6C750',
-  LoAvg: '#E9923F',
-  Low: '#76211E',
-
-  // iReady
-  'On (Mid/Late) or Above Grade Level': getColorBandBySize(3)[0],
-  'On (Early) Grade Level or One Grade Level Below': getColorBandBySize(3)[1],
-  'Two or More Grade Levels Below': getColorBandBySize(3)[2],
-  'Tested Out': getColorBandBySize(3)[2],
 }
 
 export const tableColumnsData = [
@@ -194,46 +168,65 @@ const colorByText = (text) => {
   return colorArr[numFromText % colorArr.length]
 }
 
-const getClaimInfo = (value, name, metric) => {
-  let color = claimsColorMap[typeof value === 'object' ? value.label : name]
-  if (!color && typeof value === 'object') {
-    const bands = getAchievementLevels({
-      externalTestType: metric.testCategory,
-      score: value.score,
-      achievementLevel: value.label,
-      grade: metric.grade,
-    })
+const getClaimInfo = (value, name, metric, allExternalBands) => {
+  let color = value?.color
+
+  if (!color && typeof value === 'object' && value !== null) {
+    const bands = getAchievementLevels(
+      {
+        ...metric,
+        externalTestType: metric.testCategory,
+        achievementLevel: value.rank,
+      },
+      allExternalBands
+    )
     color = bands.find((b) => b.active)?.color
   }
   return {
     name,
     value: typeof value === 'object' ? value.score : value,
-    color: color || colorByText(typeof value === 'object' ? value.label : name),
+    color: color || colorByText(value?.label ?? name),
   }
 }
 
-export const mergeTestMetrics = (internalMetrics, externalMetrics) => {
-  const mappedExternalMetrics = externalMetrics.map((metric) => ({
-    title: metric.testTitle,
-    assignmentDate: +new Date(metric.testStartDate),
-    testType: 'External Assessment',
-    externalTestType: metric.testCategory,
-    groupId: '',
-    testActivityId: '',
-    testId: `${metric.testCategory}:${metric.testTitle}`,
-    reportKey: '',
-    assignmentId: '',
-    studentId: metric.studentId,
-    maxScore: undefined,
-    score: +metric.score,
-    achievementLevel: metric.achievementLevel,
-    claimsInfo: mapValues(
-      omitBy(JSON.parse(metric.claims || '{}'), isNil),
-      (value, name) => getClaimInfo(value, name, metric)
-    ),
-    schoolCode: metric.schoolCode,
-    grade: metric.grade,
-  }))
+export const mergeTestMetrics = (
+  internalMetrics,
+  externalMetrics,
+  allExternalBands
+) => {
+  const mappedExternalMetrics = externalMetrics
+    .map((metric) => {
+      const _getClaimInfo = (value, name) =>
+        getClaimInfo(value, name, metric, allExternalBands)
+      return {
+        title: metric.testTitle,
+        assignmentDate: +new Date(metric.testStartDate),
+        testType: 'External Assessment',
+        externalTestType: metric.testCategory,
+        groupId: '',
+        testActivityId: '',
+        testId: `${metric.testCategory}:${metric.testTitle}`,
+        reportKey: '',
+        assignmentId: '',
+        studentId: metric.studentId,
+        maxScore: undefined,
+        score: +metric.score,
+        achievementLevel: +metric.achievementLevel,
+        claimsInfo: mapValues(
+          omitBy(JSON.parse(metric.claims || '{}'), isNil),
+          _getClaimInfo
+        ),
+        schoolCode: metric.schoolCode,
+      }
+    })
+    .map((metric) => {
+      const bands = getAchievementLevels(metric, allExternalBands)
+      return {
+        ...metric,
+        achievementLevelBands: bands,
+        achievementLevelInfo: bands.find((band) => band.active),
+      }
+    })
   return [...internalMetrics, ...mappedExternalMetrics]
 }
 
@@ -261,13 +254,6 @@ export const getChartData = ({
   studentClassData = [],
   selectedPerformanceBand = [],
 }) => {
-  const externalTests = assignmentMetrics.flatMap((cdItem) =>
-    cdItem.externalTestType ? [cdItem] : []
-  )
-  const achievementLevelMap = Object.fromEntries(
-    externalTests.map((test) => [test.testId, getAchievementLevels(test)])
-  )
-
   if (!assignmentMetrics.length) {
     return []
   }
@@ -307,13 +293,6 @@ export const getChartData = ({
         testType: testTypes[testType.toLowerCase()],
         averageScore,
         band,
-      })
-    } else {
-      Object.assign(assessmentData, {
-        achievementLevelBands: achievementLevelMap[assessmentData.testId],
-        achievementLevelInfo: achievementLevelMap[assessmentData.testId].find(
-          (a) => a.active
-        ),
       })
     }
     return assessmentData

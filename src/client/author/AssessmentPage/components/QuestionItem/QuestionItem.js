@@ -10,7 +10,7 @@ import {
   get,
   round,
 } from 'lodash'
-import { MathSpan, DragDrop } from '@edulastic/common'
+import { EduIf, MathSpan, DragDrop } from '@edulastic/common'
 import { releaseGradeLabels } from '@edulastic/constants/const/test'
 
 import {
@@ -319,7 +319,12 @@ class QuestionItem extends React.Component {
     }
     return (
       <AnswerIndicator correct={correct}>
-        {correct ? <IconCheck /> : <IconClose />}
+        <EduIf condition={correct}>
+          <IconCheck aria-label=", Correct answer" />
+        </EduIf>
+        <EduIf condition={!correct}>
+          <IconClose aria-label=", Incorrect answer" />
+        </EduIf>
       </AnswerIndicator>
     )
   }

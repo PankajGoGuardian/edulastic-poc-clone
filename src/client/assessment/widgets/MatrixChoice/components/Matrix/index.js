@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
 
-import { helpers, WithMathFormula } from '@edulastic/common'
+import { EduIf, helpers, WithMathFormula } from '@edulastic/common'
 import { mainTextColor } from '@edulastic/colors'
 import MatrixCell from '../MatrixCell'
 import { StyledTable } from './styled/StyledTable'
@@ -93,12 +93,16 @@ const Matrix = (props) => {
         hovered={hovered}
         showCrossIcon={showCrossIcon}
       >
-        {evaluation && checked && (
+        <EduIf condition={evaluation && checked}>
           <IconWrapper correct={correct} isPrintPreview={isPrintPreview}>
-            {correct === true && <IconCheck />}
-            {correct === 'incorrect' && <IconClose />}
+            <EduIf condition={correct === true}>
+              <IconCheck aria-label=", Correct answer" />
+            </EduIf>
+            <EduIf condition={correct === 'incorrect'}>
+              <IconClose aria-label=", Incorrect answer" />
+            </EduIf>
           </IconWrapper>
-        )}
+        </EduIf>
       </MatrixCell>
     )
   }

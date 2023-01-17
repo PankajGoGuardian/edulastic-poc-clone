@@ -1,6 +1,6 @@
 import React, { useContext } from 'react'
 import PropTypes from 'prop-types'
-import { measureText, QuestionContext } from '@edulastic/common'
+import { EduIf, measureText, QuestionContext } from '@edulastic/common'
 import { templateHasMath } from '@edulastic/common/src/helpers'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faArrowsAlt } from '@fortawesome/free-solid-svg-icons'
@@ -55,9 +55,9 @@ const Item = ({
         maxHeight={inPopover ? null : maxHeight}
         isPrintPreview={isPrintPreview}
       >
-        {dragHandle && (
+        <EduIf condition={dragHandle}>
           <FontAwesomeIcon icon={faArrowsAlt} style={{ fontSize: 12 }} />
-        )}
+        </EduIf>
         <AnswerBox
           style={answerBoxStyle}
           checked={preview && valid !== undefined}
@@ -66,11 +66,16 @@ const Item = ({
         <TriggerStyle
           questionId={`classification-cols-container-${questionId}`}
         />
-        {showIcon && (
+        <EduIf condition={showIcon}>
           <IconBox checked={showIcon}>
-            {valid ? <IconCheck /> : <IconClose />}
+            <EduIf condition={valid}>
+              <IconCheck aria-label=", Correct answer" />
+            </EduIf>
+            <EduIf condition={!valid}>
+              <IconClose aria-label=", Incorrect answer" />
+            </EduIf>
           </IconBox>
-        )}
+        </EduIf>
       </InnerWrapper>
     )
   }

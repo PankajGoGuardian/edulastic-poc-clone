@@ -1,5 +1,6 @@
 import { themeColorBlue, white, themeColorHoverBlue } from '@edulastic/colors'
 import {
+  EduIf,
   MathFormulaDisplay,
   withKeyboard,
   LanguageContext,
@@ -264,11 +265,11 @@ const Option = (props) => {
 
   const showBorder = fromSetAnswers || uiStyle.type === 'block'
 
-  const LableComp = fromSetAnswers ? OptionLabelDiv : Label
+  const LabelComp = fromSetAnswers ? OptionLabelDiv : Label
 
   return (
     // TODO setup label background color for each option
-    <LableComp
+    <LabelComp
       data-cy="quillSortableItem"
       smallSize={smallSize}
       className={className}
@@ -297,12 +298,16 @@ const Option = (props) => {
       onFocus={() => setFocusedOptionIndex(indx)}
     >
       {renderCheckbox()}
-      {showIcon && (
+      <EduIf condition={showIcon}>
         <IconWrapper>
-          {className === 'right' && <IconCheck />}
-          {className === 'wrong' && <IconClose />}
+          <EduIf condition={className === 'right'}>
+            <IconCheck aria-label=", Correct answer" />
+          </EduIf>
+          <EduIf condition={className === 'wrong'}>
+            <IconClose aria-label=", Incorrect answer" />
+          </EduIf>
         </IconWrapper>
-      )}
+      </EduIf>
       {fromSetAnswers && !hideDelete && (
         <IconTrash
           data-cypress="deleteButton"
@@ -310,7 +315,7 @@ const Option = (props) => {
           onClick={handleRemoveOp}
         />
       )}
-    </LableComp>
+    </LabelComp>
   )
 }
 

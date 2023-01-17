@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { Popover } from 'antd'
-import { MathFormulaDisplay, measureText } from '@edulastic/common'
+import { EduIf, MathFormulaDisplay, measureText } from '@edulastic/common'
 
 import { getStemNumeration } from '../../../../utils/helpers'
 import DragHandle from '../DragHandle'
@@ -82,16 +82,20 @@ export const DragItemContent = ({
           </WithIndex>
         )}
         <MathFormulaDisplay dangerouslySetInnerHTML={{ __html: obj }} />
-        {showPreview && checkStyle && (
+        <EduIf condition={showPreview && checkStyle}>
           <IconWrapper
             checkStyle={checkStyle}
             correct={correct}
             isPrintPreview={isPrintPreview}
           >
-            {correct && <IconCheck />}
-            {!correct && <IconClose />}
+            <EduIf condition={correct}>
+              <IconCheck aria-label=", Correct answer" />
+            </EduIf>
+            <EduIf condition={!correct}>
+              <IconClose aria-label=", Incorrect answer" />
+            </EduIf>
           </IconWrapper>
-        )}
+        </EduIf>
       </Text>
     </Container>
   )

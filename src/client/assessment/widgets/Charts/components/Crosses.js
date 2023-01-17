@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import { themeColor, red, green, greyThemeDark4 } from '@edulastic/colors'
 import { IconCheck, IconClose } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
 import { isEmpty } from 'lodash'
 
 import {
@@ -55,8 +56,22 @@ const Crosses = ({
         getCenterY(bars[index]) - 30
       })`}
     >
-      {evaluation[index] && <IconCheck color={green} width={12} height={10} />}
-      {!evaluation[index] && <IconClose color={red} width={10} height={10} />}
+      <EduIf condition={evaluation[index]}>
+        <IconCheck
+          color={green}
+          width={12}
+          height={10}
+          aria-label=", Correct answer"
+        />
+      </EduIf>
+      <EduIf condition={!evaluation[index]}>
+        <IconClose
+          color={red}
+          width={10}
+          height={10}
+          aria-label=", Incorrect answer"
+        />
+      </EduIf>
     </g>
   )
 

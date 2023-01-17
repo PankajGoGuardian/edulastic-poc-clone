@@ -5,6 +5,7 @@ import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { red, green } from '@edulastic/colors'
 import { IconCheck, IconClose } from '@edulastic/icons'
+import { EduIf } from '@edulastic/common'
 
 import { EDIT } from '../../../constants/constantsForQuestions'
 
@@ -45,8 +46,22 @@ const Bars = ({
     <g
       transform={`translate(${bar.posX + bar.width / 2 - 6},${bar.posY - 30})`}
     >
-      {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
-      {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
+      <EduIf condition={evaluation[index]}>
+        <IconCheck
+          color={green}
+          width={12}
+          height={12}
+          aria-label=", Correct answer"
+        />
+      </EduIf>
+      <EduIf condition={!evaluation[index]}>
+        <IconClose
+          color={red}
+          width={12}
+          height={12}
+          aria-label=", Incorrect answer"
+        />
+      </EduIf>
     </g>
   )
 

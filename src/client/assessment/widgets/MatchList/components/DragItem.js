@@ -93,8 +93,8 @@ const DragItem = ({
       {itemView}
       {correct !== undefined && (
         <div style={{ marginRight: 15, opacity: preview ? '1' : '0' }}>
-          {correct && <IconCheck />}
-          {!correct && <IconClose />}
+          {correct && <IconCheck aria-label=", Correct answer" />}
+          {!correct && <IconClose aria-label=", Incorrect answer" />}
         </div>
       )}
     </div>

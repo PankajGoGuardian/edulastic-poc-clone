@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 import { isEmpty } from 'lodash'
 import { IconClose, IconCheck } from '@edulastic/icons'
 import { red, green } from '@edulastic/colors'
+import { EduIf } from '@edulastic/common'
 
 import {
   EDIT,
@@ -42,8 +43,22 @@ const Points = ({
 
   const renderValidationIcons = (x, y, index) => (
     <g transform={`translate(${x - 6},${y - 24})`}>
-      {evaluation[index] && <IconCheck color={green} width={12} height={12} />}
-      {!evaluation[index] && <IconClose color={red} width={12} height={12} />}
+      <EduIf condition={evaluation[index]}>
+        <IconCheck
+          color={green}
+          width={12}
+          height={12}
+          aria-label=", Correct answer"
+        />
+      </EduIf>
+      <EduIf condition={!evaluation[index]}>
+        <IconClose
+          color={red}
+          width={12}
+          height={12}
+          aria-label=", Incorrect answer"
+        />
+      </EduIf>
     </g>
   )
 

@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { EduIf } from '@edulastic/common'
 
 import { Wrapper } from './styled/Wrapper'
 import { Icon } from './styled/Icon'
@@ -12,8 +13,12 @@ class MathInputStatus extends React.PureComponent {
     return (
       <Wrapper>
         <Icon>
-          {valid && <IconCheck />}
-          {!valid && <IconClose />}
+          <EduIf condition={valid}>
+            <IconCheck aria-label=", Correct answer" />
+          </EduIf>
+          <EduIf condition={!valid}>
+            <IconClose aria-label=", Incorrect answer" />
+          </EduIf>
         </Icon>
       </Wrapper>
     )

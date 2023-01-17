@@ -2,6 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { EduIf } from '@edulastic/common'
 import { IconCheck, IconClose } from '@edulastic/icons'
 import { mediumDesktopExactWidth } from '@edulastic/colors'
 import { getTypeAndMsgBasedOnScore } from '../../../../common/utils/helpers'
@@ -49,7 +50,14 @@ const ScoreBlock = ({ score, maxScore, showScore, customStyle }) => {
 
   return showScore ? (
     <Wrapper customStyle={customStyle} scoreType={status} data-cy="scoreBlock">
-      <div>{status !== 'Incorrect' ? <IconCheck /> : <IconClose />}</div>
+      <div>
+        <EduIf condition={status !== 'Incorrect'}>
+          <IconCheck aria-label=", Correct answer" />
+        </EduIf>
+        <EduIf condition={status === 'Incorrect'}>
+          <IconClose aria-label=", Incorrect answer" />
+        </EduIf>
+      </div>
       <div data-cy="score" type={type}>
         {status} ({score}/{maxScore})
       </div>

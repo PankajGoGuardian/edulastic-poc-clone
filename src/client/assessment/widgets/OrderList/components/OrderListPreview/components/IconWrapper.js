@@ -1,13 +1,18 @@
 /* eslint-disable react/prop-types */
 import React from 'react'
+import { EduIf } from '@edulastic/common'
 import styled from 'styled-components'
 import { IconCheck } from '../styled/IconCheck'
 import { IconClose } from '../styled/IconClose'
 
 export const IconWrapper = ({ correct }) => (
   <Wrapper>
-    {correct && <IconCheck />}
-    {!correct && <IconClose />}
+    <EduIf condition={correct}>
+      <IconCheck aria-label=", Correct answer" />
+    </EduIf>
+    <EduIf condition={!correct}>
+      <IconClose aria-label=", Incorrect answer" />
+    </EduIf>
   </Wrapper>
 )
 

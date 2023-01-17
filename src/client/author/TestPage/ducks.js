@@ -29,6 +29,7 @@ import {
   round,
   pick,
   isUndefined,
+  findLastIndex,
 } from 'lodash'
 import {
   testsApi,
@@ -3601,7 +3602,8 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
       )
     } else {
       let newItems = [...testItems]
-      const lastIdx = newItems.findLastIndex(
+      const lastIdx = findLastIndex(
+        newItems,
         (element) => element.passageId === passageId
       )
       if (lastIdx !== -1) {

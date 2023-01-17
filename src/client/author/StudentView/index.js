@@ -13,6 +13,8 @@ import {
   EduButton,
   FieldLabel,
   FlexContainer,
+  WithResources,
+  injectIdToElementForAccessibility,
 } from '@edulastic/common'
 import {
   IconFeedback,
@@ -57,10 +59,11 @@ import { getQuestionLabels } from '../ClassBoard/Transformer'
 import HooksContainer from '../ClassBoard/components/HooksContainer/HooksContainer'
 import {
   FilterSelect,
-  FilterSpan,
+  FilterLabel,
 } from '../ClassBoard/components/Container/styled'
 import TestAttachementsModal from './Modals/TestAttachementsModal'
 import StudentResponse from '../QuestionView/component/studentResponses/studentResponse'
+import AppConfig from '../../../app-config'
 
 const _getquestionLabels = memoizeOne(getQuestionLabels)
 
@@ -116,6 +119,10 @@ class StudentViewContainer extends Component {
       selectedStudent,
       loading: selectedStudent !== _selectedStudent,
     }
+  }
+
+  componentDidUpdate() {
+    injectIdToElementForAccessibility('filterByAttemptType')
   }
 
   handleShowFeedbackPopup = (value) => {
@@ -263,7 +270,7 @@ class StudentViewContainer extends Component {
     const { attachments = [] } = studentTestActivity?.userWork || {}
 
     return (
-      <>
+      <WithResources resources={[AppConfig.jqueryPath]} fallBack={<span />}>
         {studentsList.length && studentTestActivity?._id && (
           <HooksContainer
             additionalData={additionalData}
@@ -318,9 +325,14 @@ class StudentViewContainer extends Component {
         <StudentResponse>
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <FilterSpan>FILTER BY STATUS</FilterSpan>
+              <FilterLabel for="filterByAttemptType">
+                FILTER BY STATUS
+              </FilterLabel>
               <FilterSelect
                 data-cy="filterByAttemptType"
+                // id props is't passed to the proper dom
+                // So added custom script in componentDidUpdate
+                data-id="filterByAttemptType"
                 className="student-status-filter"
                 value={filter}
                 dropdownMenuStyle={{ fontSize: 29 }}
@@ -465,7 +477,7 @@ class StudentViewContainer extends Component {
             attachmentNameLabel="Attachment"
           />
         )}
-      </>
+      </WithResources>
     )
   }
 }

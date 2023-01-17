@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { compose } from 'redux'
+import { get } from 'lodash'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import PropTypes from 'prop-types'
@@ -26,7 +27,6 @@ import {
 import { fetchAssignmentsAction } from '../../Reports/ducks'
 import useUploadToS3 from '../../../assessment/hooks/useUploadToS3'
 import UserWorkUploadModal from '../../../assessment/components/UserWorkUploadModal'
-import { get } from 'lodash'
 import { getTestLevelUserWorkSelector } from '../../sharedDucks/TestItem'
 
 const SummaryContainer = (props) => {
@@ -170,10 +170,7 @@ const enhance = compose(
 
 function SummaryContainerWithjQuery(props) {
   return (
-    <WithResources
-      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-      fallBack={<Spin />}
-    >
+    <WithResources resources={[AppConfig.jqueryPath]} fallBack={<Spin />}>
       <SummaryContainer {...props} />
     </WithResources>
   )

@@ -1270,7 +1270,7 @@ class TestList extends Component {
 
     return (
       <WithResources
-        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+        resources={[AppConfig.jqueryPath]}
         fallBack={<span />}
       >
         <RemoveTestModal

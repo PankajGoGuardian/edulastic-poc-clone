@@ -117,7 +117,7 @@ class ClozeDropDown extends Component {
 
     return (
       <WithResources
-        resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+        resources={[AppConfig.jqueryPath]}
         fallBack={<span />}
         onLoaded={() => null}
       >

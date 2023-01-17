@@ -294,7 +294,7 @@ const CalculatorContainerWithResources = (props) => (
     resources={[
       `${AppConfig.desmosPath}/calculator.js`,
       `${AppConfig.geoGebraPath}/deployggb.js`,
-      `${AppConfig.jqueryPath}/jquery.min.js`,
+      AppConfig.jqueryPath,
       `${AppConfig.eduScientificCalcPath}/CalcSS3.js`,
       `${AppConfig.eduScientificCalcPath}/CalcSS3.css`,
     ]}

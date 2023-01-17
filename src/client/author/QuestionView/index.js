@@ -33,6 +33,8 @@ import {
   LegendContainer,
   LCBScrollContext,
   EduButton,
+  WithResources,
+  injectIdToElementForAccessibility,
 } from '@edulastic/common'
 import {
   testActivityStatus,
@@ -65,12 +67,13 @@ import {
 } from '../src/reducers/testActivity'
 import {
   FilterSelect,
-  FilterSpan,
+  FilterLabel,
 } from '../ClassBoard/components/Container/styled'
 import {
   PaginationWrapper,
   LoaderContainer,
 } from '../ClassResponses/components/Container/styled'
+import AppConfig from '../../../app-config'
 
 /**
  * @param {string} studentId
@@ -168,6 +171,8 @@ class QuestionViewContainer extends Component {
       this.setState({ userId: '', showQuestionLoader: false })
       _scrollTo(userId, this.context?.current)
     }
+
+    injectIdToElementForAccessibility('filterByAttemptType')
   }
 
   onClickChart = (data, index) => {
@@ -420,7 +425,7 @@ class QuestionViewContainer extends Component {
       : filteredTestActivities
 
     return (
-      <>
+      <WithResources resources={[AppConfig.jqueryPath]} fallBack={<span />}>
         {showQuestionLoader && (
           <LoaderContainer>
             <Spin size="large" />
@@ -550,9 +555,14 @@ class QuestionViewContainer extends Component {
         <StudentResponse isPresentationMode={isPresentationMode}>
           <StudentButtonWrapper>
             <StudentButtonDiv>
-              <FilterSpan>FILTER BY STATUS</FilterSpan>
+              <FilterLabel for="filterByAttemptType">
+                FILTER BY STATUS
+              </FilterLabel>
               <FilterSelect
                 data-cy="filterByAttemptType"
+                // id props is't passed to the proper dom
+                // So added custom script in componentDidUpdate
+                data-id="filterByAttemptType"
                 className="student-status-filter"
                 value={filter}
                 dropdownMenuStyle={{ fontSize: 29 }}
@@ -632,7 +642,7 @@ class QuestionViewContainer extends Component {
             />
           </PaginationWrapper>
         )}
-      </>
+      </WithResources>
     )
   }
 }

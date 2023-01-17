@@ -42,3 +42,14 @@ export function scrollTo(el, subtractScroll = 0, scrollEl) {
 export const isDOMElement = (element) => {
   return typeof element.type === 'string'
 }
+
+export const injectIdToElementForAccessibility = (inputId) => {
+  if (window.$) {
+    const jq = window.$
+    const dataId = jq(`div[data-id='${inputId}']`).attr('data-id')
+    if (dataId) {
+      jq(`div[data-id='${inputId}']`).attr('id', dataId)
+      jq(`div[data-id='${inputId}']`).removeAttr('data-id')
+    }
+  }
+}

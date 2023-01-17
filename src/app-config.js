@@ -9,7 +9,7 @@ const appStage = process.env.REACT_APP_STAGE || 'development'
 // using it to avoid importing json for just version
 const appVersion = process.env.__CLIENT_VERSION__ || 'NA'
 const thirdPartyLibPath = `${cdnURI}/JS/thirdpartylib`
-const jqueryPath = `${thirdPartyLibPath}/jquery/v1.11.0`
+const jqueryPath = `${thirdPartyLibPath}/jquery/v1.11.0/jquery.min.js`
 const mathquillPath = `${thirdPartyLibPath}/mathquill/v0.10.1`
 const zwibbler2Path = `${thirdPartyLibPath}/zwibbler/v2`
 const katexPath = `${thirdPartyLibPath}/katex/v0.11.1`

@@ -831,7 +831,7 @@ class GraphContainer extends PureComponent {
       <div data-cy="axis-quadrants-container" style={{ width: '100%' }}>
         <WithResources
           resources={[
-            `${AppConfig.jqueryPath}/jquery.min.js`,
+            AppConfig.jqueryPath,
             `${AppConfig.katexPath}/katex.min.js`,
           ]}
           fallBack={<span />}

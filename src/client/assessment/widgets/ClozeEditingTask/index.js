@@ -131,10 +131,7 @@ const EditingTask = ({
   }, [view])
 
   return (
-    <WithResources
-      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-      fallBack={<span />}
-    >
+    <WithResources resources={[AppConfig.jqueryPath]} fallBack={<span />}>
       {view === EDIT && (
         <Authoring
           item={item}

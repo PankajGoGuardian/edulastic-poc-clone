@@ -208,10 +208,7 @@ const AssessmentPlayer = ({
       <Route
         path={`${match.url}/itemId/:itemId`}
         render={() => (
-          <WithResources
-            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-            fallBack={<Spin />}
-          >
+          <WithResources resources={[AppConfig.jqueryPath]} fallBack={<Spin />}>
             <ThemeContainer
               passages={passages}
               utaId={utaId}
@@ -226,10 +223,7 @@ const AssessmentPlayer = ({
       <Route
         path={`${match.url}`}
         render={() => (
-          <WithResources
-            resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-            fallBack={<Spin />}
-          >
+          <WithResources resources={[AppConfig.jqueryPath]} fallBack={<Spin />}>
             <ThemeContainer
               passages={passages}
               utaId={utaId}

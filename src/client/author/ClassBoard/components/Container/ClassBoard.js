@@ -5,6 +5,8 @@ import {
   notification,
   LCBScrollContext,
   BackTop,
+  WithResources,
+  injectIdToElementForAccessibility,
 } from '@edulastic/common'
 import {
   IconAddStudents,
@@ -128,7 +130,7 @@ import {
   StickyFlex,
   SwitchBox,
   FilterSelect,
-  FilterSpan,
+  FilterLabel,
 } from './styled'
 import {
   setShowAllStudentsAction,
@@ -151,6 +153,7 @@ import {
 } from '../../../src/selectors/user'
 import { getRegradeModalStateSelector } from '../../../TestPage/ducks'
 import RegradeModal from '../../../Regrade/RegradeModal'
+import AppConfig from '../../../../../app-config'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -364,6 +367,8 @@ class ClassBoard extends Component {
           groupId: classId,
         })
     }
+
+    injectIdToElementForAccessibility('FilterByStatus')
   }
 
   static getDerivedStateFromProps(props, state) {
@@ -1253,7 +1258,7 @@ class ClassBoard extends Component {
       }, {})
 
     return (
-      <div>
+      <WithResources resources={[AppConfig.jqueryPath]} fallBack={<span />}>
         {showCanvasShare && (
           <NotificationComponent
             msg={
@@ -1515,9 +1520,14 @@ class ClassBoard extends Component {
                         : 'UNSELECT ALL'}
                     </CheckboxLabel>
                     <SwitchBox style={{ position: 'relative' }}>
-                      <FilterSpan>FILTER BY STATUS</FilterSpan>
+                      <FilterLabel for="FilterByStatus">
+                        FILTER BY STATUS
+                      </FilterLabel>
                       <FilterSelect
                         data-cy="filterByStatus"
+                        // id props is't passed to the proper dom
+                        // So added custom script in componentDidUpdate
+                        data-id="FilterByStatus"
                         className="student-status-filter"
                         value={studentFilter}
                         dropdownMenuStyle={{ fontSize: 29 }}
@@ -2064,7 +2074,7 @@ class ClassBoard extends Component {
               )}
           </LCBScrollContext.Provider>
         </MainContentWrapper>
-      </div>
+      </WithResources>
     )
   }
 }

@@ -172,7 +172,8 @@ export const ClassSelectorLabel = styled.div`
   font-size: 16px;
   font-weight: bold;
   margin-top: 40px;
-
+  display: flex;
+  align-items: space-between;
   p {
     color: #6a737f;
     font-weight: 400;

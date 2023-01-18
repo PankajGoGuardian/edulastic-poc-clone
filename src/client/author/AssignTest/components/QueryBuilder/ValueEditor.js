@@ -6,14 +6,14 @@ import {
 } from 'react-querybuilder'
 
 const ValueEditor = (props: ValueEditorProps) => {
-  const { operator, type, values, handleOnChange, handleSearch } = props
+  const { operator, type, values, handleOnChange, handleSearch, value } = props
 
   if (operator === 'null' || operator === 'notNull') {
     return null
   }
 
   console.log('here', props)
-
+  if (!value) handleOnChange(undefined)
   if (type === 'multiselect') {
     return (
       <Select
@@ -22,7 +22,7 @@ const ValueEditor = (props: ValueEditorProps) => {
         style={{ width: '200px' }}
         onChange={handleOnChange}
         onSearch={handleSearch || (() => {})}
-        // defaultValue=""
+        value={value}
       >
         {values.map((item) => {
           return <Select.Option value={item.value}>{item.label}</Select.Option>
@@ -36,7 +36,7 @@ const ValueEditor = (props: ValueEditorProps) => {
         getPopupContainer={(triggerNode) => triggerNode.parentElement}
         style={{ width: '200px' }}
         onChange={handleOnChange}
-        // defaultValue=""
+        value={value}
       >
         {values.map((item) => {
           return <Select.Option value={item.value}>{item.label}</Select.Option>

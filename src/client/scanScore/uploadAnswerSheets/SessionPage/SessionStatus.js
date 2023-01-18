@@ -85,7 +85,7 @@ const SessionStatus = ({
     sessionStatus === omrUploadSessionStatus.FAILED ||
     sessionStatus === omrUploadSessionStatus.ABORTED
       ? sessionMessage
-      : 'Successfully scannedCount responses have been recorded on Edulastic.'
+      : 'Successfully scanned responses have been recorded on Edulastic.'
 
   const viewLiveClassboardNavigation =
     sessionStatus === omrUploadSessionStatus.FAILED ||

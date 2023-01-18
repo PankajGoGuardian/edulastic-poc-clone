@@ -1,15 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import styled from 'styled-components'
 import { FlexContainer } from '@edulastic/common'
-import { Icon } from 'antd'
-import { white, black, red, blue, highlightColors } from '@edulastic/colors'
+import { highlightColors } from '@edulastic/colors'
+import { ColorButton, BackSlashIcon } from '../styled/ColorPickerContainer'
 
 const ColorPicker = ({ selectColor, bg }) => {
   const { blue: highlightBlue, green, orange, yellow, pink } = highlightColors
   const chooseColor = (value) => () => {
     selectColor(value)
   }
+
   return (
     <FlexContainer>
       <ColorButton onClick={chooseColor('remove')}>
@@ -54,27 +54,3 @@ ColorPicker.propTypes = {
 ColorPicker.defaultProps = {
   bg: null,
 }
-
-const BackSlashIcon = styled(Icon)`
-  font-size: 30px;
-  transform: translate(-10%, -10%) rotate(-45deg);
-  color: ${red};
-`
-
-const ColorButton = styled.div`
-  height: 25px;
-  width: 25px;
-  margin-right: 5px;
-  border-radius: 4px;
-  border: 1px solid;
-  cursor: pointer;
-
-  &:hover {
-    border-color: ${blue};
-  }
-
-  ${({ color, active }) => `
-    background: ${color || white};
-    border-color: ${active ? blue : color || black};
-  `}
-`

@@ -1,26 +1,31 @@
-import React, { useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { arrayMove } from 'react-sortable-hoc'
 import produce from 'immer'
 import { Select } from 'antd'
 import { withNamespaces } from '@edulastic/localization'
+import { EduIf } from '@edulastic/common'
 
-import { getFormattedAttrId } from '@edulastic/common/src/helpers'
-import QuestionTextArea from '../../components/QuestionTextArea'
-import { updateVariables } from '../../utils/variables'
-import Question from '../../components/Question'
-import QuillSortableList from '../../components/QuillSortableList'
+import QuestionTextArea from '../../../components/QuestionTextArea'
+import { updateVariables } from '../../../utils/variables'
+import QuillSortableList from '../../../components/QuillSortableList'
 
-import { Subtitle } from '../../styled/Subtitle'
-import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
-import { CustomStyleBtn } from '../../styled/ButtonStyles'
-import { WidgetFRInput } from '../../styled/Widget'
-import { Label } from '../../styled/WidgetOptions/Label'
-import { Row } from '../../styled/WidgetOptions/Row'
-import { Col } from '../../styled/WidgetOptions/Col'
-import { TextInputStyled, SelectInputStyled } from '../../styled/InputStyles'
+import { CheckboxLabel } from '../../../styled/CheckboxWithLabel'
+import { CustomStyleBtn } from '../../../styled/ButtonStyles'
+import { WidgetFRInput } from '../../../styled/Widget'
+import { Label } from '../../../styled/WidgetOptions/Label'
+import { Row } from '../../../styled/WidgetOptions/Row'
+import { Col } from '../../../styled/WidgetOptions/Col'
+import { TextInputStyled, SelectInputStyled } from '../../../styled/InputStyles'
+import PassageSection from './PassageSection'
 
-const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
+const Details = ({
+  item,
+  setQuestionData,
+  fillSections,
+  cleanSections,
+  t: translate,
+}) => {
   const updated = useRef(false)
   const handleChange = (prop, value) => {
     const updatedByUser = updated.current
@@ -82,26 +87,21 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
     )
   }
 
-  const rendererOptions = [
-    { value: '', label: t('component.passage.mathJax') },
-    { value: 'mathquill', label: t('component.passage.mathQuill') },
-  ]
+  const rendererOptions = useMemo(() => {
+    return [
+      { value: '', label: translate('component.passage.mathJax') },
+      { value: 'mathquill', label: translate('component.passage.mathQuill') },
+    ]
+  }, [translate])
 
   return (
-    <div>
-      <Question
-        section="main"
-        label={t('component.passage.heading')}
+    <>
+      <PassageSection
+        title={item?.title}
+        label={translate('component.passage.heading')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.passage.heading')}`
-          )}
-        >
-          {t('component.passage.heading')}
-        </Subtitle>
         <WidgetFRInput data-cy="passageHeading">
           <QuestionTextArea
             onChange={(value) => handleChange('heading', value)}
@@ -110,70 +110,55 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
             toolbarId="heading"
           />
         </WidgetFRInput>
-      </Question>
-      <Question
-        section="main"
-        label={t('component.passage.contentsTitle')}
+      </PassageSection>
+      <PassageSection
+        title={item?.title}
+        label={translate('component.passage.contentsTitle')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.passage.contentsTitle')}`
-          )}
-        >
-          {t('component.passage.contentsTitle')}
-        </Subtitle>
         <WidgetFRInput data-cy="passageTitle">
           <QuestionTextArea
-            placeholder={t('component.passage.enterPassageTitleHere')}
+            placeholder={translate('component.passage.enterPassageTitleHere')}
             onChange={(value) => handleChange('contentsTitle', value)}
             value={item.contentsTitle || ''}
             border="border"
             toolbarId="contents_title"
           />
         </WidgetFRInput>
-      </Question>
-      <Question
-        section="main"
-        label={t('component.passage.source')}
+      </PassageSection>
+      <PassageSection
+        title={item?.title}
+        label={translate('component.passage.source')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.passage.source')}`
-          )}
-        >
-          {t('component.passage.source')}
-        </Subtitle>
         <WidgetFRInput data-cy="source">
           <QuestionTextArea
-            placeholder={t('component.passage.enterPassageSourceHere')}
+            placeholder={translate('component.passage.enterPassageSourceHere')}
             onChange={(value) => handleChange('source', value)}
             value={item.source || ''}
             border="border"
             toolbarId="source"
           />
         </WidgetFRInput>
-      </Question>
-      <Question
-        section="main"
-        label={t('component.passage.contents')}
+      </PassageSection>
+      <PassageSection
+        title={item?.title}
+        label={
+          !item.paginated_content
+            ? translate('component.passage.contents')
+            : translate('component.passage.contentPages')
+        }
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        {!item.paginated_content && (
-          <div data-cy="passageContent">
-            <Subtitle
-              id={getFormattedAttrId(
-                `${item?.title}-${t('component.passage.contents')}`
-              )}
-            >
-              {t('component.passage.contents')}
-            </Subtitle>
+        <div data-cy="passageContent">
+          <EduIf condition={!item.paginated_content}>
             <QuestionTextArea
-              placeholder={t('component.passage.enterPassageContentHere')}
+              placeholder={translate(
+                'component.passage.enterPassageContentHere'
+              )}
               onChange={(value) => handleChange('content', value)}
               value={item.content}
               additionalToolbarOptions={['paragraphNumber']}
@@ -181,18 +166,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               sanitizeClipboardHtml
               toolbarId="passage_content"
             />
-          </div>
-        )}
-        {item.paginated_content && (
-          <div data-cy="passageContent">
-            <Subtitle
-              id={getFormattedAttrId(
-                `${item?.title}-${t('component.passage.contentPages')}`
-              )}
-            >
-              {t('component.passage.contentPages')}
-            </Subtitle>
-            {item?.pages?.length ? (
+          </EduIf>
+          <EduIf condition={!!item.paginated_content}>
+            <EduIf condition={!!item?.pages?.length}>
               <QuillSortableList
                 items={item.pages}
                 onSortEnd={handleSortPagesEnd}
@@ -200,29 +176,22 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
                 onRemove={handleRemovePage}
                 onChange={handleChangePage}
               />
-            ) : null}
+            </EduIf>
             <CustomStyleBtn onClick={handleAddPage} data-cy="contentAddBtn">
-              {t('component.passage.add')}
+              {translate('component.passage.add')}
             </CustomStyleBtn>
-          </div>
-        )}
-      </Question>
-      <Question
-        section="main"
-        label={t('component.passage.details')}
+          </EduIf>
+        </div>
+      </PassageSection>
+      <PassageSection
+        title={item?.title}
+        label={translate('component.passage.details')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.passage.details')}`
-          )}
-        >
-          {t('component.passage.details')}
-        </Subtitle>
         <Row gutter={24}>
           <Col span={12}>
-            <Label>{t('component.passage.fleschKincaid')}</Label>
+            <Label>{translate('component.passage.fleschKincaid')}</Label>
             <TextInputStyled
               size="large"
               value={item.flesch_kincaid || ''}
@@ -231,7 +200,7 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
             />
           </Col>
           <Col span={12}>
-            <Label>{t('component.passage.lexile')}</Label>
+            <Label>{translate('component.passage.lexile')}</Label>
             <TextInputStyled
               size="large"
               value={item.lexile || ''}
@@ -240,21 +209,13 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
             />
           </Col>
         </Row>
-      </Question>
-      <Question
-        section="main"
-        label={t('component.passage.instructorStimulus')}
+      </PassageSection>
+      <PassageSection
+        title={item?.title}
+        label={translate('component.passage.instructorStimulus')}
         fillSections={fillSections}
         cleanSections={cleanSections}
       >
-        <Subtitle
-          id={getFormattedAttrId(
-            `${item?.title}-${t('component.passage.instructorStimulus')}`
-          )}
-        >
-          {t('component.passage.instructorStimulus')}
-        </Subtitle>
-
         <Row gutter={24}>
           <Col span={24}>
             <WidgetFRInput data-cy="instructorStimulus">
@@ -272,35 +233,27 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               onChange={(e) =>
                 handleChange('paginated_content', e.target.checked)
               }
-              tabIndex={1}
+              tabIndex={0}
               data-cy="enablePaginatedContent"
             >
-              {t('component.passage.enablePaginatedContent')}
+              {translate('component.passage.enablePaginatedContent')}
             </CheckboxLabel>
           </Col>
         </Row>
-      </Question>
-
-      {item.isMath && (
-        <Question
-          section="main"
-          label={t('component.passage.mathRenderer')}
+      </PassageSection>
+      <EduIf condition={item.isMath}>
+        <PassageSection
+          title={item?.title}
+          label={translate('component.passage.mathRenderer')}
           fillSections={fillSections}
           cleanSections={cleanSections}
         >
-          <Subtitle
-            id={getFormattedAttrId(
-              `${item?.title}-${t('component.passage.mathRenderer')}`
-            )}
-          >
-            {t('component.passage.mathRenderer')}
-          </Subtitle>
           <SelectInputStyled
             size="large"
             value={item.math_renderer}
             getPopupContainer={(triggerNode) => triggerNode.parentNode}
             onChange={(value) => handleChange('math_renderer', value)}
-            tabIndex={1}
+            tabIndex={0}
           >
             {rendererOptions.map(({ value: val, label }) => (
               <Select.Option
@@ -312,9 +265,9 @@ const Details = ({ item, setQuestionData, fillSections, cleanSections, t }) => {
               </Select.Option>
             ))}
           </SelectInputStyled>
-        </Question>
-      )}
-    </div>
+        </PassageSection>
+      </EduIf>
+    </>
   )
 }
 

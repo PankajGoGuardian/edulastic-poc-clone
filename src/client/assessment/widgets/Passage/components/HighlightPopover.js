@@ -24,7 +24,7 @@ const getStyles = ({
   if (style.left < 0) {
     style.left = 0
     // if the popover is placed beyond the right edge align with the
-    // right edge of the sceen
+    // right edge of the screen
   } else if (style.left + pickerWidth > windowWidth) {
     style.left = windowWidth - pickerWidth
   }

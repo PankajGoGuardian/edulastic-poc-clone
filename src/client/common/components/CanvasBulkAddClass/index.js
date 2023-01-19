@@ -229,10 +229,16 @@ const CanvasBulkAddClass = ({
     bulkSyncCanvasClass({ bulkSyncData: selectedClasses })
     setShowModal(true)
   }
+  // "resfresh" represents a flag which tell if we need to refresh the page,
+  // page refresh is required once bulk sync is done,
+  // if the user close the pop up before the class sync then we don't need to refresh the page
 
-  const handleClose = () => {
+  const handleClose = (refresh) => {
     setShowModal(false)
     if (fromManageClass) {
+      if (refresh == true) {
+        return window.location.reload(true)
+      }
       return onCancel()
     }
     const { currentSignUpState, ...rest } = user
@@ -489,7 +495,7 @@ const CanvasBulkAddClass = ({
           [
             <EduButton
               isGhost
-              onClick={handleClose}
+              onClick={() => handleClose(false)}
               style={{ 'margin-right': '25px' }}
             >
               CANCEL
@@ -514,11 +520,11 @@ const CanvasBulkAddClass = ({
           visible={showModal}
           footer={
             bulkSyncCanvasStatus === 'SUCCESS'
-              ? [<Button onClick={handleClose}>Close</Button>]
+              ? [<Button onClick={() => handleClose(true)}>Close</Button>]
               : null
           }
           centered
-          onCancel={handleClose}
+          onCancel={() => handleClose(true)}
           maskClosable={false}
         >
           <h4>

@@ -7,6 +7,8 @@ import ScannedResponses from './ScannedResponses'
 import { getFileNameFromUri, parsePageNumberFromName } from '../utils'
 
 const SessionPage = ({
+  sessionStatus,
+  sessionMessage,
   assignmentId,
   groupId,
   pages,
@@ -45,6 +47,8 @@ const SessionPage = ({
   ) : (
     <>
       <SessionStatus
+        sessionStatus={sessionStatus}
+        sessionMessage={sessionMessage}
         assignmentId={assignmentId}
         groupId={groupId}
         pages={pages}

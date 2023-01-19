@@ -12,7 +12,7 @@ import {
   white,
 } from '@edulastic/colors'
 import { getUserConfirmation } from '../../../common/utils/helpers'
-import { omrSheetScanStatus } from '../utils'
+import { omrSheetScanStatus, omrUploadSessionStatus } from '../utils'
 
 const uploadAgainHandler = (assignmentId, groupId, history) => {
   getUserConfirmation(
@@ -29,6 +29,8 @@ const uploadAgainHandler = (assignmentId, groupId, history) => {
 }
 
 const SessionStatus = ({
+  sessionStatus = omrUploadSessionStatus.SCANNING,
+  sessionMessage = '',
   assignmentId,
   groupId,
   pages = [],
@@ -44,22 +46,33 @@ const SessionStatus = ({
     }
   }, [fakeProgress])
 
-  const { success, failed, scanned, scanProgress } = useMemo(() => {
-    const _success = pages.filter((p) => p.status === omrSheetScanStatus.DONE)
+  const {
+    successCount,
+    failedCount,
+    scannedCount,
+    scanProgress,
+  } = useMemo(() => {
+    const _successCount = pages.filter(
+      (p) => p.status === omrSheetScanStatus.DONE
+    ).length
+    const _failedCount = pages.filter((p) => p.status > omrSheetScanStatus.DONE)
       .length
-    const _failed = pages.filter((p) => p.status > omrSheetScanStatus.DONE)
-      .length
-    const _scanned = _success + _failed
-    const _scanProgress = pages.length
+    const _scanned = _successCount + _failedCount
+    // scan progress when scanning is in progress
+    let _scanProgress = pages.length
       ? Number(((100 * _scanned) / pages.length).toFixed(2))
       : 0
+    // set scan progress to 100% when scanning is completed
+    if (sessionStatus > omrUploadSessionStatus.SCANNING) {
+      _scanProgress = 100
+    }
     return {
-      success: _success,
-      failed: _failed,
-      scanned: _success + _failed,
+      successCount: _successCount,
+      failedCount: _failedCount,
+      scannedCount: _successCount + _failedCount,
       scanProgress: _scanProgress > 1 ? _scanProgress : 1,
     }
-  }, [pages])
+  }, [pages, sessionStatus])
 
   const isDone = scanProgress === 100
   const progressMessage = isDone
@@ -68,6 +81,26 @@ const SessionStatus = ({
   const progressHint = isDone
     ? ''
     : '(System is processing the uploaded bubble sheets. You can either wait or close the page and revisit the scan bubble sheet page after sometime.)'
+  const scanResultMessage =
+    sessionStatus === omrUploadSessionStatus.FAILED ||
+    sessionStatus === omrUploadSessionStatus.ABORTED
+      ? sessionMessage
+      : 'Successfully scanned responses have been recorded on Edulastic.'
+
+  const viewLiveClassboardNavigation =
+    sessionStatus === omrUploadSessionStatus.FAILED ||
+    sessionStatus === omrUploadSessionStatus.ABORTED ? null : (
+      <Link
+        data-cy="viewLiveClassBoard"
+        className="live-classboard-link"
+        to={{
+          pathname: `/author/classboard/${assignmentId}/${groupId}`,
+        }}
+        target="_blank"
+      >
+        View Live Class Board
+      </Link>
+    )
 
   return (
     <SessionStatusContainer>
@@ -95,12 +128,12 @@ const SessionStatus = ({
         </div>
         <div className="scan-result-text">
           <div className="scan-result-text-label">Forms Processed</div>
-          <div className="scan-result-text-value">{scanned}</div>
+          <div className="scan-result-text-value">{scannedCount}</div>
         </div>
         <div className="scan-result-text">
           <div data-cy="success" className="scan-result-text-label">
             Success
-            {success ? (
+            {successCount ? (
               <span
                 className="scan-result-text-action"
                 onClick={() => toggleStatusFilter(omrSheetScanStatus.DONE)}
@@ -109,12 +142,12 @@ const SessionStatus = ({
               </span>
             ) : null}
           </div>
-          <div className="scan-result-text-value">{success}</div>
+          <div className="scan-result-text-value">{successCount}</div>
         </div>
         <div className="scan-result-text">
           <div data-cy="failed" className="scan-result-text-label">
             Failed
-            {failed ? (
+            {failedCount ? (
               <span
                 className="scan-result-text-action"
                 onClick={() =>
@@ -128,13 +161,11 @@ const SessionStatus = ({
               </span>
             ) : null}
           </div>
-          <div className="scan-result-text-value failed">{failed}</div>
+          <div className="scan-result-text-value failed">{failedCount}</div>
         </div>
-        {scanned === pages.length && (
+        {isDone && (
           <>
-            <div className="static-text">
-              Successfully scanned responses have been recorded on Edulastic.
-            </div>
+            <div className="scan-result-message">{scanResultMessage}</div>
             <div className="static-navigation-links">
               <a
                 data-cy="uploadAgainButton"
@@ -145,16 +176,7 @@ const SessionStatus = ({
               >
                 Upload Again
               </a>
-              <Link
-                data-cy="viewLiveClassBoard"
-                className="live-classboard-link"
-                to={{
-                  pathname: `/author/classboard/${assignmentId}/${groupId}`,
-                }}
-                target="_blank"
-              >
-                View Live Class Board
-              </Link>
+              {viewLiveClassboardNavigation}
             </div>
           </>
         )}
@@ -220,8 +242,9 @@ const SessionStatusContainer = styled.div`
       color: ${red};
     }
   }
-  .static-text {
+  .scan-result-message {
     margin: 50px 0 20px;
+    text-align: center;
   }
   .static-navigation-links {
     display: flex;

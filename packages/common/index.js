@@ -94,6 +94,8 @@ export { default as PortalSpinner } from './src/components/PortalSpinner'
 export { default as FileIcon } from './src/components/FileIcon'
 export { default as CopyRight } from './src/components/CopyRight'
 export { EduIf } from './src/components/ControlStatement/EduIf'
+export { EduElse } from './src/components/ControlStatement/EduElse'
+export { EduThen } from './src/components/ControlStatement/EduThen'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'

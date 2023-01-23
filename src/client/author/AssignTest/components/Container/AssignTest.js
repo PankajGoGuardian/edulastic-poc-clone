@@ -38,9 +38,12 @@ import {
   getUserFeatures,
 } from '../../../src/selectors/user'
 import {
+  autoBulkAssignmentAction,
+  getQuickFilterModalDetailsSelector,
   getSearchTermsFilterSelector,
   loadAssignmentsAction,
   saveAssignmentAction,
+  setQuickFilterModalDetailsAction,
 } from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
@@ -91,9 +94,10 @@ import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
-import ShowBulkAssignModal from './ShowBulkAssignModal'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+// import ShowBulkAssignModal from './ShowBulkAssignModal'
+// import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QueryBuilder from '../QueryBuilder'
+import AddFilterModal from './QueryBuilder/AddFilterModal'
 
 const {
   ASSESSMENT,
@@ -113,6 +117,7 @@ const parentMenu = {
   testLibrary: { title: 'Test Library', to: 'tests' },
 }
 
+const threshold = 3
 class AssignTest extends React.Component {
   constructor(props) {
     super(props)
@@ -124,8 +129,9 @@ class AssignTest extends React.Component {
       showDeleteSettingModal: false,
       showUpdateSettingModal: false,
       settingDetails: null,
-      showBulkAssignModal: false,
-      showAdvanceSearch: true,
+      // showBulkAssignModal: false,
+      showAdvanceSearchModal: false,
+      saveQuickFilterModal: false,
     }
   }
 
@@ -308,6 +314,7 @@ class AssignTest extends React.Component {
       testSettingsList = [],
       userFeatures: { premium },
       setCurrentTestSettingsId,
+      quickFilterModalDetails,
     } = this.props
     const {
       testSettings: {
@@ -316,6 +323,7 @@ class AssignTest extends React.Component {
       },
       testSettingsList: prevTestSettingsList,
     } = prevProps
+    const { saveQuickFilterModal } = this.state
     // the initial playerSkinType in reducer is edulastic,
     // but after fetching the test it can be other type like testlet
     // So need to update the assignmentSettings here
@@ -331,6 +339,15 @@ class AssignTest extends React.Component {
       (testSettingsList?.some((t) => t._id === settingId) || !settingId)
     ) {
       setCurrentTestSettingsId(settingId || '')
+    }
+
+    // INFO:- Required to open the input field when we try to edit the saved filters
+    if (!isEmpty(quickFilterModalDetails) && !saveQuickFilterModal) {
+      this.setState((prevState) => {
+        return {
+          saveQuickFilterModal: !prevState.saveQuickFilterModal,
+        }
+      })
     }
   }
 
@@ -350,7 +367,10 @@ class AssignTest extends React.Component {
       isAssigning,
       assignmentSettings: assignment,
       location,
+      autoBulkAssignment,
+      match,
     } = this.props
+    const { testId } = match.params
     const source = location?.state?.assessmentAssignedFrom
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
@@ -375,7 +395,13 @@ class AssignTest extends React.Component {
         if (source) {
           segmentApi.genericEventTrack('AssessmentAssigned', { source })
         }
-        saveAssignment(updatedAssignment)
+        if (assignment.class.length < threshold) {
+          console.log('normal da')
+          saveAssignment(updatedAssignment)
+        } else {
+          console.log('bulk da')
+          autoBulkAssignment({ assignmentSettings: updatedAssignment, testId })
+        }
       }
     }
   }
@@ -384,67 +410,33 @@ class AssignTest extends React.Component {
     this.setState({ isAdvancedView: checked })
   }
 
-  handleBulkAssign = () => {
-    const { searchTerms, assignmentSettings: assignment } = this.props
-    const { changeDateSelection } = this.state
-    const { subjects, grades } = searchTerms
+  // the following method is no longer used, since we will always use the normal assign btn
+  // handleBulkAssign = () => {
+  //   const { searchTerms, assignmentSettings: assignment } = this.props
+  //   const { changeDateSelection } = this.state
+  //   const { subjects, grades } = searchTerms
 
-    if (!assignment.startDate) return
-    if (isEmpty(subjects)) {
-      return notification({ messageKey: 'selectSubject' })
-    }
-    if (isEmpty(grades)) {
-      return notification({ messageKey: 'selectGrade' })
-    }
+  //   if (!assignment.startDate) return
+  //   if (isEmpty(subjects)) {
+  //     return notification({ messageKey: 'selectSubject' })
+  //   }
+  //   if (isEmpty(grades)) {
+  //     return notification({ messageKey: 'selectGrade' })
+  //   }
 
-    if (!this.validateTimedAssignment()) return
-    if (assignment.endDate < Date.now()) {
-      notification({ messageKey: 'endDate' })
-      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
-    } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
-      notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
-      this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
-    }
+  //   if (!this.validateTimedAssignment()) return
+  //   if (assignment.endDate < Date.now()) {
+  //     notification({ messageKey: 'endDate' })
+  //     this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
+  //   } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
+  //     notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
+  //     this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
+  //   }
 
-    this.setState({
-      showBulkAssignModal: true,
-    })
-  }
-
-  renderHeaderButton = () => {
-    const { isBulkAssigning, isAssigning, isPlaylist, match } = this.props
-    const { testId } = match.params
-    const isPlaylistModule = isPlaylist && !testId
-    return (
-      <>
-        {!isPlaylistModule && (
-          <FeaturesSwitch
-            inputFeatures="canBulkAssign"
-            key="canBulkAssign"
-            actionOnInaccessible="hidden"
-          >
-            <EduButton
-              isBlue
-              data-cy="bulkAssignButton"
-              onClick={this.handleBulkAssign}
-              loading={isBulkAssigning}
-            >
-              {isBulkAssigning ? 'ASSIGNING...' : 'BULK ASSIGN'}
-            </EduButton>
-          </FeaturesSwitch>
-        )}
-
-        <EduButton
-          isBlue
-          data-cy="assignButton"
-          onClick={this.handleAssign}
-          loading={isAssigning}
-        >
-          {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
-        </EduButton>
-      </>
-    )
-  }
+  //   this.setState({
+  //     showBulkAssignModal: true,
+  //   })
+  // }
 
   onClassFieldChange = (value, group) => {
     const { assignmentSettings: assignment } = this.props
@@ -786,8 +778,14 @@ class AssignTest extends React.Component {
       'none'
   }
 
-  setShowAdvanceSearch = (value) => {
-    this.setState({ showAdvanceSearch: value })
+  setShowAdvanceSearchModal = (value) => {
+    this.setState({ showAdvanceSearchModal: value })
+  }
+
+  setSaveQuickFilterModal = (value) => {
+    const { setQuickFilterModalDetail } = this.props
+    this.setState({ saveQuickFilterModal: value })
+    setQuickFilterModalDetail({})
   }
 
   render() {
@@ -799,15 +797,16 @@ class AssignTest extends React.Component {
       showDeleteSettingModal,
       settingDetails,
       showUpdateSettingModal,
-      showBulkAssignModal,
-      showAdvanceSearch,
+      // showBulkAssignModal,
+      showAdvanceSearchModal,
+      saveQuickFilterModal,
     } = this.state
     const {
       assignmentSettings: assignment,
       isTestLoading,
       match,
       isAssigning,
-      isBulkAssigning,
+      // isBulkAssigning,
     } = this.props
     const {
       classList,
@@ -823,6 +822,7 @@ class AssignTest extends React.Component {
       currentSettingsId,
       testSettingsList,
       userFeatures: { premium },
+      quickFilterModalDetails,
     } = this.props
     const { title, _id } = isPlaylist ? playlist : testItem
     const exactMenu = parentMenu[location?.state?.from || from]
@@ -840,10 +840,23 @@ class AssignTest extends React.Component {
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
 
+    // INFO:- Moving this method down bcoz when the class is selected the method is not getting executed if placed above
+    const renderHeaderButton = () => (
+      <EduButton
+        isBlue
+        data-cy="assignButton"
+        onClick={this.handleAssign}
+        loading={isAssigning}
+        disabled={isEmpty(assignment.class)}
+      >
+        {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
+      </EduButton>
+    )
+
     return (
       <div>
         <CommonStudentConfirmation assignment={assignment} />
-        {showBulkAssignModal && (
+        {/* {showBulkAssignModal && (
           <ShowBulkAssignModal
             closeModal={() => {
               this.setState({ showBulkAssignModal: false })
@@ -851,7 +864,7 @@ class AssignTest extends React.Component {
             assignmentSettings={assignment}
             moduleTitle={moduleTitle}
           />
-        )}
+        )} */}
         <MultipleAssignConfirmation
           assignment={assignment}
           isPlaylist={isPlaylist}
@@ -881,13 +894,26 @@ class AssignTest extends React.Component {
           }}
         />
 
+        {saveQuickFilterModal && (
+          <AddFilterModal
+            visibile={saveQuickFilterModal}
+            quickFilterModalDetails={quickFilterModalDetails}
+            onCancel={() => {
+              this.setSaveQuickFilterModal(false)
+            }}
+            onSave={(filterName) => {
+              console.log(filterName)
+              this.setSaveQuickFilterModal(false)
+            }}
+          />
+        )}
         <ListHeader
           title={`Assign ${moduleTitle || title || ''}`}
           midTitle="Assignment Settings"
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
-          renderButton={this.renderHeaderButton}
-          isLoadingButtonState={isAssigning || isBulkAssigning}
+          renderButton={renderHeaderButton}
+          isLoadingButtonState={isAssigning} // || isBulkAssigning}
         />
 
         <Container>
@@ -912,10 +938,13 @@ class AssignTest extends React.Component {
               &nbsp;/&nbsp;
               <Anchor>Assign</Anchor>
             </PaginationInfo>
-            <QueryBuilder
-              showAdvanceSearch={showAdvanceSearch}
-              setShowAdvanceSearch={this.setShowAdvanceSearch}
-            />
+            {showAdvanceSearchModal && (
+              <QueryBuilder
+                showAdvanceSearch={showAdvanceSearchModal}
+                setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
+                setSaveQuickFilter={this.setSaveQuickFilterModal}
+              />
+            )}
             {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
             {premium && (
               <SavedSettingsContainer>
@@ -1003,9 +1032,9 @@ class AssignTest extends React.Component {
               showAssignModuleContent={
                 match?.params?.playlistId && !match?.params?.testId
               }
-              isAssigning={isAssigning || isBulkAssigning}
+              isAssigning={isAssigning} // || isBulkAssigning}
               isPlaylist={isPlaylist}
-              setShowAdvanceSearch={this.setShowAdvanceSearch}
+              setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
             />
           )}
         </Container>
@@ -1044,8 +1073,9 @@ const enhance = compose(
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
       searchTerms: getSearchTermsFilterSelector(state),
-      isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
+      // isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
+      quickFilterModalDetails: getQuickFilterModalDetailsSelector(state),
     }),
     {
       loadClassList: receiveClassListAction,
@@ -1070,6 +1100,8 @@ const enhance = compose(
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
       setTestSettingsList: setTestSettingsListAction,
+      setQuickFilterModalDetail: setQuickFilterModalDetailsAction,
+      autoBulkAssignment: autoBulkAssignmentAction,
     }
   )
 )

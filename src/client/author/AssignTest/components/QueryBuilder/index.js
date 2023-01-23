@@ -1,11 +1,16 @@
 import React from 'react'
 import Query from './QueryBuilder'
 
-const QueryBuilder = ({ showAdvanceSearch, setShowAdvanceSearch }) => {
+const QueryBuilder = ({
+  showAdvanceSearch,
+  setShowAdvanceSearchModal,
+  setSaveQuickFilter,
+}) => {
   return (
     <Query
       showAdvanceSearch={showAdvanceSearch}
-      setShowAdvanceSearch={setShowAdvanceSearch}
+      setShowAdvanceSearchModal={setShowAdvanceSearchModal}
+      setSaveQuickFilter={setSaveQuickFilter}
     />
   )
 }

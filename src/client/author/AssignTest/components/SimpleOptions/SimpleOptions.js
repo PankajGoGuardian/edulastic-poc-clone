@@ -486,7 +486,7 @@ class SimpleOptions extends React.Component {
       setShowClassCreationModal,
       setCreateClassTypeDetails,
       togglePenaltyOnUsingHints,
-      setShowAdvanceSearch,
+      setShowAdvanceSearchModal,
     } = this.props
 
     const { collections } = testSettings
@@ -587,7 +587,7 @@ class SimpleOptions extends React.Component {
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
                   isPlaylist={isPlaylist}
-                  setShowAdvanceSearch={setShowAdvanceSearch}
+                  setShowAdvanceSearchModal={setShowAdvanceSearchModal}
                 />
               </TabContentContainer>
             ) : (

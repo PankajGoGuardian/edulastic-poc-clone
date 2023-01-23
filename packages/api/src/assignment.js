@@ -24,6 +24,16 @@ const bulkAssign = (data) =>
     })
     .then((result) => result.data.result)
 
+const autoBulkAssign = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/v2/bulk-assign`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const update = (id, data) =>
   api
     .callApi({
@@ -314,4 +324,5 @@ export default {
   editTagsRequest,
   getBubbleSheet,
   bulkAssign,
+  autoBulkAssign,
 }

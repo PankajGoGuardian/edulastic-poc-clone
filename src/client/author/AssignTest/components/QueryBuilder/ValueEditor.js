@@ -4,6 +4,7 @@ import {
   ValueEditor as DefaultValueEditor,
   ValueEditorProps,
 } from 'react-querybuilder'
+import { StyledSelect } from './QueryBuilder'
 
 const ValueEditor = (props: ValueEditorProps) => {
   const { operator, type, values, handleOnChange, handleSearch, value } = props
@@ -12,11 +13,10 @@ const ValueEditor = (props: ValueEditorProps) => {
     return null
   }
 
-  console.log('here', props)
   if (!value) handleOnChange(undefined)
   if (type === 'multiselect') {
     return (
-      <Select
+      <StyledSelect
         getPopupContainer={(triggerNode) => triggerNode.parentElement}
         mode="multiple"
         style={{ width: '200px' }}
@@ -27,12 +27,12 @@ const ValueEditor = (props: ValueEditorProps) => {
         {values.map((item) => {
           return <Select.Option value={item.value}>{item.label}</Select.Option>
         })}
-      </Select>
+      </StyledSelect>
     )
   }
   if (type === 'select') {
     return (
-      <Select
+      <StyledSelect
         getPopupContainer={(triggerNode) => triggerNode.parentElement}
         style={{ width: '200px' }}
         onChange={handleOnChange}
@@ -41,7 +41,7 @@ const ValueEditor = (props: ValueEditorProps) => {
         {values.map((item) => {
           return <Select.Option value={item.value}>{item.label}</Select.Option>
         })}
-      </Select>
+      </StyledSelect>
     )
   }
   return <DefaultValueEditor {...props} />

@@ -39,6 +39,7 @@ const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
 export const SAVE_BULK_ASSIGNMENT = '[assignments] save bulk assignment'
+export const AUTO_BULK_ASSIGNMENT = '[assignments] auto bulk assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
@@ -59,6 +60,14 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
+export const SET_ADVANCED_SEARCH_QUERY =
+  '[assignment settings] set advanced search query'
+export const IS_ADVANCED_SEARCH_SELETED =
+  '[assignment settings] set is advanced search query selected'
+export const IS_ALL_CLASS_SELECTED =
+  '[assignment settings] set is all class selected'
+export const SET_QUICK_FILTER_MODAL_DETAILS =
+  '[assignment settings] set quick filter modal details'
 export const SET_EXCLUDE_SCHOOLS = '[assignment settings] set exclude schools'
 
 // actions
@@ -67,6 +76,7 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
 export const saveBulkAssignmentAction = createAction(SAVE_BULK_ASSIGNMENT)
+export const autoBulkAssignmentAction = createAction(AUTO_BULK_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS)
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT)
@@ -86,6 +96,25 @@ export const setSearchTermsFilterAction = (payload) => ({
   payload,
 })
 
+export const setAdvancedSearchFilterAction = (payload) => ({
+  type: SET_ADVANCED_SEARCH_QUERY,
+  payload,
+})
+
+export const setIsAdvancedSearchSelectedAction = (payload) => ({
+  type: IS_ADVANCED_SEARCH_SELETED,
+  payload,
+})
+
+export const setIsAllClassSelectedAction = (payload) => ({
+  type: IS_ALL_CLASS_SELECTED,
+  payload,
+})
+
+export const setQuickFilterModalDetailsAction = createAction(
+  SET_QUICK_FILTER_MODAL_DETAILS
+)
+
 export const setExcludeSchoolsAction = (payload) => ({
   type: SET_EXCLUDE_SCHOOLS,
   payload,
@@ -94,14 +123,18 @@ export const setExcludeSchoolsAction = (payload) => ({
 const initialState = {
   isLoading: false,
   isAssigning: false,
-  isBulkAssigning: false,
+  // isBulkAssigning: false,
   hasCommonStudents: false,
   hasDuplicateAssignments: false,
   assignments: [],
   conflictData: {},
   current: '', // id of the current one being edited
   searchTerms: {},
-  excludeSchools: false,
+  advancedSearchQuery: { combinator: 'and', rules: [] },
+  isAdvancedSearchSelected: false,
+  isAllClassSelected: false,
+  quickFilterModalDetails: {},
+  // excludeSchools: false,
 }
 
 const setAssignment = (state, { payload }) => {
@@ -112,7 +145,7 @@ const setAssignment = (state, { payload }) => {
 const addAssignment = (state, { payload }) => {
   let isExisting = false
   state.isAssigning = false
-  state.isBulkAssigning = false
+  // state.isBulkAssigning = false
   state.assignments = state.assignments.map((item) => {
     if (item._id === payload._id) {
       isExisting = true
@@ -159,6 +192,26 @@ const updateSearchTermsFilter = (state, { payload }) => {
   state.searchTerms = payload
 }
 
+const setAdvancedSearchQuery = (state, { payload }) => {
+  if (isEmpty(payload)) {
+    state.advancedSearchQuery = initialState.advancedSearchQuery
+  } else {
+    state.advancedSearchQuery = payload
+  }
+}
+
+const setIsAdvancedSearchSelected = (state, { payload }) => {
+  state.isAdvancedSearchSelected = payload
+}
+
+const setIsAllClassSelected = (state, { payload }) => {
+  state.isAllClassSelected = payload
+}
+
+const setQuickFilterModalDetails = (state, { payload }) => {
+  state.quickFilterModalDetails = payload
+}
+
 const setExcludeSchools = (state, { payload }) => {
   state.excludeSchools = payload
 }
@@ -177,6 +230,10 @@ export const reducer = createReducer(initialState, {
   [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
   [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
+  [SET_ADVANCED_SEARCH_QUERY]: setAdvancedSearchQuery,
+  [IS_ADVANCED_SEARCH_SELETED]: setIsAdvancedSearchSelected,
+  [IS_ALL_CLASS_SELECTED]: setIsAllClassSelected,
+  [SET_QUICK_FILTER_MODAL_DETAILS]: setQuickFilterModalDetails,
   [SET_EXCLUDE_SCHOOLS]: setExcludeSchools,
 })
 
@@ -193,6 +250,26 @@ export const getIsloadingAssignmentSelector = createSelector(
 export const getSearchTermsFilterSelector = createSelector(
   stateSelector,
   (state) => state.searchTerms
+)
+
+export const getAdvancedSearchFilterSelector = createSelector(
+  stateSelector,
+  (state) => state.advancedSearchQuery
+)
+
+export const getIsAdvancedSearchSelectedSelector = createSelector(
+  stateSelector,
+  (state) => state.isAdvancedSearchSelected
+)
+
+export const getIsAllClassSelectedSelector = createSelector(
+  stateSelector,
+  (state) => state.isAllClassSelected
+)
+
+export const getQuickFilterModalDetailsSelector = createSelector(
+  stateSelector,
+  (state) => state.quickFilterModalDetails
 )
 
 const currentSelector = createSelector(stateSelector, (state) => state.current)
@@ -550,6 +627,92 @@ function* saveBulkAssignment({ payload }) {
   }
 }
 
+function* autoBulkAssignment({ payload }) {
+  try {
+    // yield put(setBulkAssignmentSavingAction(true))
+
+    const isAllClassSelected = yield select(getIsAllClassSelectedSelector)
+
+    const { assignmentSettings, testId } = payload
+    const classesSelected = [...assignmentSettings?.class]
+
+    const name = yield select(getUserNameSelector)
+    const _id = yield select(getUserId)
+    const assignedBy = { _id, name }
+    const startDate =
+      assignmentSettings.startDate &&
+      moment(assignmentSettings.startDate).valueOf()
+    const endDate =
+      assignmentSettings.endDate && moment(assignmentSettings.endDate).valueOf()
+    const dueDate =
+      assignmentSettings.dueDate && moment(assignmentSettings.dueDate).valueOf()
+    const data = {
+      ...omit(assignmentSettings, ['class', 'resources', 'termId']),
+      startDate,
+      endDate,
+      dueDate,
+      assignedBy,
+    }
+    if (
+      data.scoringType ===
+      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    ) {
+      data.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+    }
+
+    let autoBulkAssignPayload = {
+      testId,
+      assignmentSettings: data,
+    }
+
+    if (!isAllClassSelected) {
+      autoBulkAssignPayload.filter = {
+        groups: classesSelected.map((clazz) => clazz._id),
+      }
+    } else {
+      const isAdvancedSearchSelected = yield select(
+        getIsAdvancedSearchSelectedSelector
+      )
+      if (isAdvancedSearchSelected) {
+        const advancedSearchFilter = yield select(
+          getAdvancedSearchFilterSelector
+        )
+        autoBulkAssignPayload.query = JSON.parse(advancedSearchFilter)
+      } else {
+        const searchTermsFilter = yield select(getSearchTermsFilterSelector)
+        const filter = {
+          schools: searchTermsFilter.institutionIds,
+          grades: searchTermsFilter.grades,
+          subjects: searchTermsFilter.subjects,
+          groupType: searchTermsFilter.classType,
+          courses: searchTermsFilter.courseIds,
+          tags: searchTermsFilter.tags,
+        }
+        autoBulkAssignPayload.filter = filter
+      }
+    }
+    if (
+      !isEmpty(autoBulkAssignPayload.filter) ||
+      !isEmpty(autoBulkAssignPayload.query)
+    ) {
+      console.log('-----------', autoBulkAssignPayload)
+      // const result = yield call(
+      //   assignmentApi.autoBulkAssign,
+      //   autoBulkAssignPayload
+      // )
+    }
+
+    // notification({ type: 'info', msg: result })
+    // yield put(push('/author/assignments'))
+  } catch (err) {
+    console.error('error for save assignment', err)
+    const errorMessage = err.response?.data?.message || 'Something went wrong'
+    notification({ msg: errorMessage })
+    // } finally {
+    //   yield put(setBulkAssignmentSavingAction(false))
+  }
+}
+
 function* loadAssignments({ payload }) {
   try {
     let testId
@@ -596,6 +759,7 @@ export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
     yield takeLatest(SAVE_BULK_ASSIGNMENT, saveBulkAssignment),
+    yield takeLatest(AUTO_BULK_ASSIGNMENT, autoBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
   ])

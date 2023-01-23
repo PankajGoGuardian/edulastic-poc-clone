@@ -172,8 +172,6 @@ export const ClassSelectorLabel = styled.div`
   font-size: 16px;
   font-weight: bold;
   margin-top: 40px;
-  display: flex;
-  align-items: space-between;
   p {
     color: #6a737f;
     font-weight: 400;
@@ -182,6 +180,8 @@ export const ClassSelectorLabel = styled.div`
     margin-bottom: 20px;
     padding-bottom: 20px;
     border-bottom: 1px #e4eaf1 solid;
+    display: flex;
+    justify-content: space-between;
   }
 `
 
@@ -300,4 +300,72 @@ export const SwitchStyled = styled(Switch)`
   &.ant-switch-checked {
     background-color: ${themeColorBlue};
   }
+`
+
+export const SavedFilterTagContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 5px;
+`
+
+// INFO:- To provide gap between the last saved filter and the schools tag.
+// export const SavedFilter = styled.div`
+//   & > div:last-child {
+//     margin-bottom: 24px;
+//   }
+// `
+
+export const SavedFilterTag = styled.p`
+  text-align: left;
+  font: normal normal 600 10px/14px Open Sans;
+  letter-spacing: 0px;
+  color: #1ab395;
+  text-transform: uppercase;
+  opacity: 1;
+`
+
+export const SavedFilterContainer = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-radius: 4px;
+  padding: 5px 20px;
+  letter-spacing: 0.19px;
+  height: 34px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  font: normal normal bold 10px/14px Open Sans;
+  color: ${(props) => (props.isSelected ? '#fff' : '#87929B')};
+  background: ${(props) => (props.isSelected ? '#1ab395' : '#ececec')};
+  svg {
+    fill: ${(props) => props.isSelected && '#fff'};
+  }
+`
+
+export const SavedFilterActionContainer = styled.span`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  cursor: pointer;
+`
+
+export const AdvancedSearchTagContainer = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background-color: #b3bcc4;
+  border-radius: 2px;
+  opacity: 0.64;
+  padding: 4px;
+  margin-bottom: 5px;
+  letter-spacing: 0.15px;
+  color: #676e74;
+`
+
+export const AdvancedSearchTag = styled.span`
+  font-size: 8px;
+  font-weight: bold;
+  margin: 0 5px;
+  cursor: pointer;
 `

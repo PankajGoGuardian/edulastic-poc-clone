@@ -4,12 +4,17 @@ import Styled from 'styled-components'
 import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.css'
 import './custom_style.css'
-import { grades as gradesConst } from '@edulastic/constants'
 import { Select, Button } from 'antd'
 import ValueEditor from './ValueEditor'
 import { selectsData } from '../../../TestPage/components/common'
-
-console.log(gradesConst, '===grades')
+import { CancelButton, OkButton } from '../../../../common/styled'
+import { connect } from 'react-redux'
+import {
+  getAdvancedSearchFilterSelector,
+  setAdvancedSearchFilterAction,
+  setIsAdvancedSearchSelectedAction,
+} from '../../../TestPage/components/Assign/ducks'
+import { IconClose } from '@edulastic/icons'
 
 const schools = [
   {
@@ -123,44 +128,41 @@ const translations = {
   },
 }
 
-const NullComponent = () => null
-
 const FieldSelector = (props) => {
-  const { handleOnChange, options } = props
+  const { handleOnChange, options, value } = props
   return (
-    <Select
+    <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
       style={{ width: '200px' }}
       onChange={handleOnChange}
-      defaultValue="school"
+      value={value}
     >
       {options.map((item) => {
         return <Select.Option value={item.name}>{item.label}</Select.Option>
       })}
-    </Select>
+    </StyledSelect>
   )
 }
 
 const CombinatorSelector = (props) => {
   const { handleOnChange, options } = props
   return (
-    <Select
+    <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
-      style={{ width: '200px' }}
       onChange={handleOnChange}
       defaultValue="and"
     >
       {options.map((item) => {
         return <Select.Option value={item.name}>{item.label}</Select.Option>
       })}
-    </Select>
+    </StyledSelect>
   )
 }
 
 const OperatorSelector = (props) => {
-  const { handleOnChange, options } = props
+  const { handleOnChange, options, value } = props
   return (
-    <Select
+    <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
       style={{ width: '200px' }}
       onChange={handleOnChange}
@@ -169,34 +171,84 @@ const OperatorSelector = (props) => {
       {options.map((item) => {
         return <Select.Option value={item.name}>{item.label}</Select.Option>
       })}
-    </Select>
+    </StyledSelect>
   )
 }
 
-const AddRule = (props) => {
-  console.log(props)
-  return <Button onClick={props.handleOnClick}>Add</Button>
+const AddRule = ({ handleOnClick }) => {
+  return <RuleButton onClick={handleOnClick}>+Rule</RuleButton>
 }
 
-const AddRuleGroup = (props) => {
-  console.log(props)
-  return <Button onClick={props.handleOnClick}>Add rule group</Button>
+const AddRuleGroup = ({ handleOnClick }) => {
+  return <GroupButton onClick={handleOnClick}>+Group</GroupButton>
 }
 
-const RemoveRuleAction = (props) => {
-  return <Button onClick={props.handleOnClick}>remoe this rule</Button>
+const RemoveRuleAction = ({ handleOnClick }) => {
+  return (
+    <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+      <Button onClick={handleOnClick}>
+        <IconClose height={10} width={10} color="#3f85e5" />
+      </Button>
+    </div>
+  )
 }
 
-const _QueryBuilder = ({ showAdvanceSearch, setShowAdvanceSearch }) => {
-  const [query, setQuery] = useState({ combinator: 'and', rules: [] })
-  const handleChange = () => {}
+const _QueryBuilder = ({
+  showAdvanceSearch,
+  setShowAdvanceSearchModal,
+  setSaveQuickFilter,
+  setIsAdvancedSearchSelected,
+  setAdvancedSearchFilter,
+  defaultQuery,
+}) => {
+  const [query, setQuery] = useState(defaultQuery)
+  // const handleChange = () => {}
+  const formattedQuery = formatQuery(query, 'json_without_ids')
+
+  const handleQuickFilter = (isSafeQuickFilter = false) => {
+    setShowAdvanceSearchModal(false)
+    setIsAdvancedSearchSelected(true)
+    setAdvancedSearchFilter(JSON.parse(formattedQuery))
+    if (isSafeQuickFilter) setSaveQuickFilter(true)
+  }
+
+  const footer = (
+    <ButtonsContainer>
+      <SaveQuickFilters
+        onClick={() => {
+          handleQuickFilter(true)
+        }}
+      >
+        Save As Quick Filter
+      </SaveQuickFilters>
+      <div style={{ display: 'flex', gap: '20px' }}>
+        <CancelButton
+          onClick={() => {
+            setShowAdvanceSearchModal(false)
+          }}
+          style={{ minWidth: '100px' }}
+        >
+          Cancel
+        </CancelButton>
+        <OkButton
+          onClick={() => {
+            handleQuickFilter()
+          }}
+          style={{ minWidth: '100px' }}
+        >
+          Find Classes
+        </OkButton>
+      </div>
+    </ButtonsContainer>
+  )
+
   return (
     <CustomModalStyled
       width="900px"
       visible={showAdvanceSearch}
       title="Advanced Search"
       onCancel={() => {
-        setShowAdvanceSearch(false)
+        setShowAdvanceSearchModal(false)
       }}
       footer={null}
       destroyOnClose
@@ -216,7 +268,6 @@ const _QueryBuilder = ({ showAdvanceSearch, setShowAdvanceSearch }) => {
           resetOnFieldChange
           listsAsArrays
           controlElements={{
-            // addGroupAction: NullComponent,
             valueEditor: ValueEditor,
             fieldSelector: FieldSelector,
             combinatorSelector: CombinatorSelector,
@@ -224,45 +275,53 @@ const _QueryBuilder = ({ showAdvanceSearch, setShowAdvanceSearch }) => {
             addRuleAction: AddRule,
             addGroupAction: AddRuleGroup,
             removeRuleAction: RemoveRuleAction,
+            removeGroupAction: RemoveRuleAction,
           }}
         />
         <div style={{ background: 'white', padding: '20px ' }}>
           <pre>
-            <code>
-              {formatQuery(query, { format: 'mongodb', parseNumbers: true })}
-            </code>
+            <code>{formattedQuery}</code>
           </pre>
         </div>
+        {footer}
       </ModalBody>
     </CustomModalStyled>
   )
 }
 
-export default _QueryBuilder
+export default connect(
+  (state) => ({
+    defaultQuery: getAdvancedSearchFilterSelector(state),
+  }),
+  {
+    setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
+    setAdvancedSearchFilter: setAdvancedSearchFilterAction,
+  }
+)(_QueryBuilder)
 
-const TagName = Styled.span`
-  color: #3f85e5;
-  font-weight: 600;
-`
+// const TagName = Styled.span`
+//   color: #3f85e5;
+//   font-weight: 600;
+// `
 
-const Conjuction = Styled.span`
-  display: inline-block;
-  padding: 1px 6px;
-  background: #b6cbe4;
-  color: #5e7ca2;
-  border-radius: 15px;
-`
+// const Conjuction = Styled.span`
+//   display: inline-block;
+//   padding: 1px 6px;
+//   background: #b6cbe4;
+//   color: #5e7ca2;
+//   border-radius: 15px;
+// `
 
-const Filter = Styled.div`
-  background: #f5f5f5;
-  color: #6b737f;
-  padding: 6px 10px;
-  border-radius: 4px;
-  margin-bottom:3px;
-  font-size: 12px;
-  display: flex;
-  justify-content: space-between;
-`
+// const Filter = Styled.div`
+//   background: #f5f5f5;
+//   color: #6b737f;
+//   padding: 6px 10px;
+//   border-radius: 4px;
+//   margin-bottom:3px;
+//   font-size: 12px;
+//   display: flex;
+//   justify-content: space-between;
+// `
 
 const ModalBody = Styled.div`
   .ant-select-selection {
@@ -281,10 +340,51 @@ const Title = Styled.p`
   margin-bottom: 18px !important;
 `
 
-const IconWrapper = Styled.span`
-  display: inline-block;
-  svg {
-    cursor: pointer;
-  }
+// const IconWrapper = Styled.span`
+//   display: inline-block;
+//   svg {
+//     cursor: pointer;
+//   }
+// `
 
+const ButtonsContainer = Styled.div`
+  margin-top:20px;
+  display:flex;
+  justify-content: space-between;
+`
+
+const SaveQuickFilters = Styled(CancelButton)`
+  font: normal normal 600 11px/15px Open Sans;
+  letter-spacing: 0.2px;
+  color: #1AB395;
+  text-transform: uppercase;
+  border:none;
+  box-shadow: none;
+  text-align: left;
+  padding: 0;
+`
+
+export const StyledSelect = Styled(Select)`
+  width: 100px;
+  .ant-select-selection{
+    margin:0;
+  }
+`
+
+const StyledButton = Styled(Button)`
+  border: 1px solid #3F85E5;
+  border-radius: 4px;
+  text-transform: uppercase;
+  white-space: nowrap;
+  font-size:10px;
+`
+
+const RuleButton = Styled(StyledButton)`
+  background-color:white;
+  color: #3f85e5;
+`
+
+const GroupButton = Styled(StyledButton)`
+  background-color:#3f85e5;
+  color: white;
 `

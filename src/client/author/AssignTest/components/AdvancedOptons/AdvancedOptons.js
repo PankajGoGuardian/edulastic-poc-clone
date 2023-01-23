@@ -20,7 +20,10 @@ import {
   getIsOverrideFreezeSelector,
   getReleaseScorePremiumSelector,
 } from '../../../TestPage/ducks'
-import { getAssignedClassesByIdSelector } from '../../duck'
+import {
+  getAssignedClassesByIdSelector,
+  getClassListSelector,
+} from '../../duck'
 import AddResources from '../Container/AddResources'
 import {
   nonPremiumReleaseGradeKeys,
@@ -172,9 +175,16 @@ class AdvancedOptons extends React.Component {
       showRecommendedResources,
       selectedResourcesAction,
       isPlaylist,
-      setShowAdvanceSearch,
+      setShowAdvanceSearchModal,
+      classList,
     } = this.props
-    const classIds = assignment?.class?.map((item) => item._id) || []
+
+    // INFO:- the following code is added keep the UI and selectedClassIds in sync
+    const availableClassIds = classList?.map((clazz) => clazz._id)
+    const classIds =
+      assignment?.class
+        ?.filter((clazz) => availableClassIds?.includes(clazz._id))
+        ?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
     const { tags = testSettings.tags } = assignment
 
@@ -230,22 +240,21 @@ class AdvancedOptons extends React.Component {
                 <p>
                   Please select classes to assign this assessment. Options on
                   the left can be used to filter the list of classes.
-                </p>
-                <div>
                   <Button
                     onClick={() => {
-                      setShowAdvanceSearch(true)
+                      setShowAdvanceSearchModal(true)
                     }}
                   >
                     Advance Search
                   </Button>
-                </div>
+                </p>
               </ClassSelectorLabel>
               <ClassList
                 selectedClasses={classIds}
                 selectClass={this.onChange}
                 testType={assignment.testType || testSettings.testType}
                 isPlaylist={isPlaylist}
+                setShowAdvanceSearchModal={setShowAdvanceSearchModal}
               />
             </>
           )}
@@ -256,6 +265,7 @@ class AdvancedOptons extends React.Component {
 }
 
 export default connect((state) => ({
+  classList: getClassListSelector(state),
   features: getUserFeatures(state),
   isReleaseScorePremium: getReleaseScorePremiumSelector(state),
   defaultTestProfiles: defaultTestTypeProfilesSelector(state),

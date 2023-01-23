@@ -5,7 +5,14 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select } from 'antd'
 import { SelectInputStyled } from '@edulastic/common'
-import { IconGroup, IconClass } from '@edulastic/icons'
+import {
+  IconGroup,
+  IconClass,
+  IconHeart,
+  IconTrash,
+  IconPencilEdit,
+  IconClose,
+} from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq, debounce, isArray } from 'lodash'
@@ -31,7 +38,12 @@ import {
   ClassListContainer,
   TableContainer,
   InfoSection,
-  SwitchStyled,
+  SavedFilterTagContainer,
+  SavedFilterTag,
+  SavedFilterContainer,
+  SavedFilterActionContainer,
+  AdvancedSearchTagContainer,
+  AdvancedSearchTag,
 } from './styled'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -42,9 +54,13 @@ import {
 import Tags from '../../../src/components/common/Tags'
 import {
   setSearchTermsFilterAction,
-  setExcludeSchoolsAction,
+  setQuickFilterModalDetailsAction,
+  setIsAllClassSelectedAction,
+  getIsAdvancedSearchSelectedSelector,
+  setAdvancedSearchFilterAction,
+  setIsAdvancedSearchSelectedAction,
+  getIsAllClassSelectedSelector,
 } from '../../../TestPage/components/Assign/ducks'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import { sortGrades } from '../../../TestPage/utils'
 
 const { allGrades, allSubjects } = selectsData
@@ -92,6 +108,7 @@ class ClassList extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
+      showSavedFilters: false,
       classType: 'all',
       searchTerms: {
         institutionIds: [],
@@ -113,7 +130,6 @@ class ClassList extends React.Component {
       userOrgId,
       getAllTags,
       courseList,
-      setExcludeSchools,
     } = this.props
 
     if (isEmpty(schools)) {
@@ -147,11 +163,19 @@ class ClassList extends React.Component {
       }),
       this.loadClassList
     )
-    setExcludeSchools(false)
   }
 
   componentDidUpdate(prevProps) {
-    const { test, testType } = this.props
+    const {
+      test,
+      testType,
+      isAdvancedSearchSelected,
+      classList,
+      assignedClassesById,
+      selectedClasses,
+      isAllClassSelected,
+      setIsAllClassSelected,
+    } = this.props
     const { filterClassIds } = this.state
     if (prevProps.test._id !== test._id) {
       const { subjects = [], grades = [] } = test
@@ -175,12 +199,31 @@ class ClassList extends React.Component {
     ) {
       this.setState({ filterClassIds: [] }) // eslint-disable-line
     }
+
+    if (isAdvancedSearchSelected !== prevProps.isAdvancedSearchSelected) {
+      this.setState({ showSavedFilters: isAdvancedSearchSelected })
+    }
+
+    const selectableClassCount = classList
+      ?.filter(
+        ({ _id }) => !Object.keys(assignedClassesById[testType]).includes(_id)
+      )
+      ?.map(({ _id }) => _id)
+    const isAllSelected =
+      selectableClassCount?.length === selectedClasses?.length &&
+      selectedClasses.every((id) => selectableClassCount?.includes(id))
+
+    if (!isAllClassSelected && isAllSelected) {
+      setIsAllClassSelected(true)
+    } else if (isAllClassSelected && !isAllSelected) {
+      setIsAllClassSelected(false)
+    }
   }
 
   loadClassList = () => {
     const { loadClassListData, userOrgId, setSearchTermsFilter } = this.props
-    const { searchTerms } = this.state
-    setSearchTermsFilter(searchTerms)
+    const { searchTerms, classType } = this.state
+    setSearchTermsFilter({ ...searchTerms, classType: classType })
     loadClassListData({
       districtId: userOrgId,
       queryType: 'OR',
@@ -212,7 +255,13 @@ class ClassList extends React.Component {
   }
 
   handleClassTypeFilter = (key) => {
-    const { selectClass, classList, selectedClasses } = this.props
+    const {
+      selectClass,
+      classList,
+      selectedClasses,
+      setSearchTermsFilter,
+    } = this.props
+    const { searchTerms } = this.state
     const _selectedClasses = classList
       .filter(
         (item) =>
@@ -222,6 +271,7 @@ class ClassList extends React.Component {
       .map((item) => item._id)
     selectClass('class', _selectedClasses, classList)
     this.setState({ classType: key })
+    setSearchTermsFilter({ ...searchTerms, classType: key })
   }
 
   handleSelectAll = (checked) => {
@@ -271,6 +321,15 @@ class ClassList extends React.Component {
 
   handleCourseSearch = debounce(this.courseSearch, 200)
 
+  editSavedfilter = (filter) => {
+    const { setQuickFilterModalDetail } = this.props
+    setQuickFilterModalDetail(filter)
+  }
+
+  deleteSavedfilter = (filter) => {
+    console.log('deleteSavedfilter', filter)
+  }
+
   render() {
     const {
       classList,
@@ -282,10 +341,17 @@ class ClassList extends React.Component {
       assignedClassesById,
       testType,
       isCoursesLoading,
-      setExcludeSchools,
-      excludeSchools,
+      isAdvancedSearchSelected,
+      setAdvancedSearchFilter,
+      setIsAdvancedSearchSelected,
+      setShowAdvanceSearchModal,
     } = this.props
-    const { searchTerms, classType, filterClassIds } = this.state
+    const {
+      searchTerms,
+      classType,
+      filterClassIds,
+      showSavedFilters,
+    } = this.state
     const tableData = classList
       .filter((item) => {
         if (!filterClassIds.length)
@@ -396,206 +462,258 @@ class ClassList extends React.Component {
       },
     ]
 
-    const { isPlaylist, match } = this.props
-    const { testId } = match.params
-    const isPlaylistModule = isPlaylist && !testId
+    // TODO:- GET THIS FROM REDUX
+    const filters = [
+      { id: 1, name: 'heloooo' },
+      { id: 2, name: 'hi' },
+      { id: 3, name: 'bye' },
+    ]
+
     return (
       <ClassListContainer>
         <ClassListFilter>
-          <StyledRowLabel>
-            <div>
-              School{' '}
-              {!isPlaylistModule && (
-                <FeaturesSwitch
-                  inputFeatures="canBulkAssign"
-                  key="canBulkAssign"
-                  actionOnInaccessible="hidden"
-                >
-                  <SwitchStyled
-                    data-cy="bulkAssignToggleButton"
-                    checkedChildren="EXCLUDE"
-                    unCheckedChildren="INCLUDE"
-                    checked={excludeSchools}
-                    onChange={setExcludeSchools}
-                  />
-                </FeaturesSwitch>
-              )}
-            </div>
-            <SelectInputStyled
-              data-cy="schoolSelect"
-              mode="multiple"
-              placeholder="All School"
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+          <SavedFilterTagContainer>
+            <SavedFilterTagContainer
+              style={{ cursor: 'pointer' }}
+              onClick={() =>
+                this.setState((prevState) => {
+                  return { showSavedFilters: !prevState.showSavedFilters }
+                })
               }
-              onChange={changeField('institutionIds')}
-              value={searchTerms.institutionIds}
-              tagsEllipsis
             >
-              {schools.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
+              <IconHeart color="#1AB395" width={16} height={14} />
+              <SavedFilterTag>SAVED FILTERS</SavedFilterTag>
+            </SavedFilterTagContainer>
+            {showSavedFilters && (
+              <SavedFilterTag
+                onClick={() => this.setState({ showSavedFilters: false })}
+              >
+                Hide
+              </SavedFilterTag>
+            )}
+          </SavedFilterTagContainer>
 
-          <StyledRowLabel>
-            Grades
-            <SelectInputStyled
-              mode="multiple"
-              value={searchTerms.grades}
-              placeholder="All grades"
-              onChange={changeField('grades')}
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-              data-cy="class-grades-filter"
-            >
-              {allGrades.map(
-                ({ value, text, isContentGrade }) =>
-                  !isContentGrade && (
+          {/* INFO:- we can replace div with SavedFilter component if we need to give extra margin-bottom for last child*/}
+          <div>
+            {showSavedFilters &&
+              filters.map((filter) => (
+                <SavedFilterContainer isSelected={filter.isSelected}>
+                  <p>{filter.name}</p>
+                  <SavedFilterActionContainer>
+                    <IconPencilEdit
+                      color="#78848e"
+                      onClick={() => this.editSavedfilter(filter)}
+                    />
+                    <IconTrash
+                      color="#78848e"
+                      onClick={() => this.deleteSavedfilter(filter)}
+                    />
+                  </SavedFilterActionContainer>
+                </SavedFilterContainer>
+              ))}
+          </div>
+          {!isAdvancedSearchSelected && (
+            <>
+              <StyledRowLabel>
+                <div>School </div>
+                <SelectInputStyled
+                  data-cy="schoolSelect"
+                  mode="multiple"
+                  placeholder="All School"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  onChange={changeField('institutionIds')}
+                  value={searchTerms.institutionIds}
+                  tagsEllipsis
+                >
+                  {schools.map(({ _id, name }) => (
+                    <Select.Option key={_id} value={_id}>
+                      {name}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </StyledRowLabel>
+
+              <StyledRowLabel>
+                Grades
+                <SelectInputStyled
+                  mode="multiple"
+                  value={searchTerms.grades}
+                  placeholder="All grades"
+                  onChange={changeField('grades')}
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  data-cy="class-grades-filter"
+                >
+                  {allGrades.map(
+                    ({ value, text, isContentGrade }) =>
+                      !isContentGrade && (
+                        <Select.Option key={value} value={value}>
+                          {text}
+                        </Select.Option>
+                      )
+                  )}
+                </SelectInputStyled>
+              </StyledRowLabel>
+
+              <StyledRowLabel>
+                Subject
+                <SelectInputStyled
+                  mode="multiple"
+                  value={searchTerms.subjects}
+                  placeholder="All subjects"
+                  onChange={changeField('subjects')}
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  data-cy="class-subject-filter"
+                >
+                  {allSubjects.map(({ value, text }) => (
                     <Select.Option key={value} value={value}>
                       {text}
                     </Select.Option>
-                  )
-              )}
-            </SelectInputStyled>
-          </StyledRowLabel>
+                  ))}
+                </SelectInputStyled>
+              </StyledRowLabel>
 
-          <StyledRowLabel>
-            Subject
-            <SelectInputStyled
-              mode="multiple"
-              value={searchTerms.subjects}
-              placeholder="All subjects"
-              onChange={changeField('subjects')}
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-              data-cy="class-subject-filter"
-            >
-              {allSubjects.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
-                  {text}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Course
-            <SelectInputStyled
-              data-cy="selectCourses"
-              mode="multiple"
-              placeholder="All Course"
-              onChange={changeField('courseIds')}
-              autoClearSearchValue={false}
-              showSearch
-              tagsEllipsis
-              onSearch={this.handleCourseSearch}
-              onFocus={() => this.handleCourseSearch('')}
-              filterOption={false}
-              defaultActiveFirstOption={false}
-              loading={isCoursesLoading}
-            >
-              {courseList.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Show Class/Groups
-            <SelectInputStyled
-              data-cy="showClassGroup"
-              placeholder="All"
-              onChange={this.handleClassTypeFilter}
-              showSearch
-              value={classType}
-              disabled={filterClassIds.length}
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {[
-                { name: 'All', value: 'all' },
-                { name: 'Classes', value: 'class' },
-                { name: 'Student Groups', value: 'custom' },
-              ].map(({ name, value }) => (
-                <Select.Option key={name} value={value}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Search Class/Groups
-            <SelectInputStyled
-              placeholder="Search by name of class or group"
-              onChange={this.handleClassSelectFromDropDown}
-              mode="multiple"
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-              value={filterClassIds}
-              data-cy="selectClass"
-              tagsEllipsis
-            >
-              {classList.map(({ name, _id }) => (
-                <Select.Option
-                  key={name}
-                  value={_id}
-                  disabled={assignedClassesById[testType][_id]}
+              <StyledRowLabel>
+                Course
+                <SelectInputStyled
+                  data-cy="selectCourses"
+                  mode="multiple"
+                  placeholder="All Course"
+                  onChange={changeField('courseIds')}
+                  autoClearSearchValue={false}
+                  showSearch
+                  tagsEllipsis
+                  onSearch={this.handleCourseSearch}
+                  onFocus={() => this.handleCourseSearch('')}
+                  filterOption={false}
+                  defaultActiveFirstOption={false}
+                  loading={isCoursesLoading}
                 >
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
+                  {courseList.map(({ _id, name }) => (
+                    <Select.Option key={_id} value={_id}>
+                      {name}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </StyledRowLabel>
 
-          <StyledRowLabel>
-            Tags
-            <SelectInputStyled
-              mode="multiple"
-              data-cy="tagSelect"
-              value={searchTerms.tags}
-              placeholder="All Tags"
-              onChange={changeField('tags')}
-              showSearch
-              filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {tagList.map(({ _id, tagName }) => (
-                <Select.Option key={_id} value={_id}>
-                  {tagName}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
+              <StyledRowLabel>
+                Show Class/Groups
+                <SelectInputStyled
+                  data-cy="showClassGroup"
+                  placeholder="All"
+                  onChange={this.handleClassTypeFilter}
+                  showSearch
+                  value={classType}
+                  disabled={filterClassIds.length}
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {[
+                    { name: 'All', value: 'all' },
+                    { name: 'Classes', value: 'class' },
+                    { name: 'Student Groups', value: 'custom' },
+                  ].map(({ name, value }) => (
+                    <Select.Option key={name} value={value}>
+                      {name}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </StyledRowLabel>
+
+              <StyledRowLabel>
+                Search Class/Groups
+                <SelectInputStyled
+                  placeholder="Search by name of class or group"
+                  onChange={this.handleClassSelectFromDropDown}
+                  mode="multiple"
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                  value={filterClassIds}
+                  data-cy="selectClass"
+                  tagsEllipsis
+                >
+                  {classList.map(({ name, _id }) => (
+                    <Select.Option
+                      key={name}
+                      value={_id}
+                      disabled={assignedClassesById[testType][_id]}
+                    >
+                      {name}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </StyledRowLabel>
+
+              <StyledRowLabel>
+                Tags
+                <SelectInputStyled
+                  mode="multiple"
+                  data-cy="tagSelect"
+                  value={searchTerms.tags}
+                  placeholder="All Tags"
+                  onChange={changeField('tags')}
+                  showSearch
+                  filterOption={(input, option) =>
+                    option.props.children
+                      .toLowerCase()
+                      .indexOf(input.toLowerCase()) >= 0
+                  }
+                >
+                  {tagList.map(({ _id, tagName }) => (
+                    <Select.Option key={_id} value={_id}>
+                      {tagName}
+                    </Select.Option>
+                  ))}
+                </SelectInputStyled>
+              </StyledRowLabel>
+            </>
+          )}
         </ClassListFilter>
 
         <TableContainer>
+          {isAdvancedSearchSelected && (
+            <AdvancedSearchTagContainer>
+              <AdvancedSearchTag
+                onClick={() => {
+                  setShowAdvanceSearchModal(true)
+                }}
+              >
+                ADVANCED SEARCH
+              </AdvancedSearchTag>
+              <IconClose
+                height={7}
+                width={7}
+                style={{ cursor: 'pointer' }}
+                onClick={() => {
+                  setIsAdvancedSearchSelected(false)
+                  setAdvancedSearchFilter({})
+                }}
+                color="#676e74"
+              />
+            </AdvancedSearchTagContainer>
+          )}
           <InfoSection>
             <div>
               <span>School(s)</span>
@@ -635,7 +753,8 @@ const enhance = compose(
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
-      excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
+      isAdvancedSearchSelected: getIsAdvancedSearchSelectedSelector(state),
+      isAllClassSelected: getIsAllClassSelectedSelector(state),
     }),
     {
       loadClassListData: receiveClassListAction,
@@ -643,7 +762,10 @@ const enhance = compose(
       loadCourseListData: receiveCourseListAction,
       getAllTags: getAllTagsAction,
       setSearchTermsFilter: setSearchTermsFilterAction,
-      setExcludeSchools: setExcludeSchoolsAction,
+      setQuickFilterModalDetail: setQuickFilterModalDetailsAction,
+      setIsAllClassSelected: setIsAllClassSelectedAction,
+      setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
+      setAdvancedSearchFilter: setAdvancedSearchFilterAction,
     }
   )
 )

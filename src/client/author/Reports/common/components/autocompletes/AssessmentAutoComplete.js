@@ -40,6 +40,7 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
+  preVsPost = false,
   institutionIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -136,7 +137,7 @@ const AssessmentAutoComplete = ({
   }, [selectedTestId, showApply])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
-      onSelect(testList[0]._id)
+      preVsPost ? onSelect() : onSelect(testList[0]._id)
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }

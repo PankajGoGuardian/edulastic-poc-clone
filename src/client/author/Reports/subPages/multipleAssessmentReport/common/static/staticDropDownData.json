@@ -56,7 +56,10 @@
     "classIds": "",
     "groupIds": "",
     "profileId": "",
-    "assignedBy": "anyone"
+    "assignedBy": "anyone",
+    "testIdPre": "",
+    "testIdPost": "",
+    "showApply": false
   },
   "initialDdFilters": {
     "race": "all",

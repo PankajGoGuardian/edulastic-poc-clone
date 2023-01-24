@@ -30,6 +30,14 @@ const links = [
     description:
       'Explore trends in performance by student. Isolates those who are on, at, or below target to aid in differentiated instruction.',
   },
+  {
+    key: 'PreVsPost',
+    title: 'Pre vs Post Test Comparison',
+    thumbnail: MarProgress,
+    location: '/author/reports/pre-vs-post',
+    description:
+      'Compare student performance across two assessments to analyze average score, the distribution of students based on their mastery, and band jumpers.',
+  },
 ]
 export const MultipleAssessmentReport = ({ premium, loc }) => (
   <div>

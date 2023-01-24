@@ -112,6 +112,10 @@ import {
   reportStudentProgressSaga,
 } from './subPages/multipleAssessmentReport/StudentProgress/ducks'
 import {
+  reducer as reportPreVsPostReducer,
+  watcherSaga as reportPreVsPostSaga,
+} from './subPages/multipleAssessmentReport/PreVsPost/ducks'
+import {
   reportStudentProfileSummaryReducer,
   reportStudentProfileSummarySaga,
 } from './subPages/studentProfileReport/StudentProfileSummary/ducks'
@@ -394,6 +398,7 @@ export const reportReducer = combineReducers({
   reportPerformanceOverTimeReducer,
   reportPeerProgressAnalysisReducer,
   reportStudentProgressReducer,
+  reportPreVsPostReducer,
   reportStudentProfileSummaryReducer,
   reportStudentMasteryProfileReducer,
   reportStudentAssessmentProfileReducer,
@@ -785,6 +790,7 @@ export function* reportSaga() {
     reportPerformanceOverTimeSaga(),
     reportPeerProgressAnalysisSaga(),
     reportStudentProgressSaga(),
+    reportPreVsPostSaga(),
     reportStudentProgressProfileSaga(),
     reportStudentProfileSummarySaga(),
     reportStudentMasteryProfileSaga(),

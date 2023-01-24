@@ -39,6 +39,7 @@ import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import { ReportContainer, FilterLabel } from '../../common/styled'
+import PreVsPostReport from './PreVsPost'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -190,12 +191,14 @@ const MultipleAssessmentReportContainer = (props) => {
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
+    'pre-vs-post',
   ].includes(pageTitle)
 
   const demographicsRequired = [
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
+    'pre-vs-post',
   ].includes(pageTitle)
 
   useEffect(() => {
@@ -322,6 +325,23 @@ const MultipleAssessmentReportContainer = (props) => {
             setShowHeader(true)
             return (
               <PerformanceOverTime
+                {..._props}
+                settings={settings}
+                ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path="/author/reports/pre-vs-post/"
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PreVsPostReport
                 {..._props}
                 settings={settings}
                 ddfilter={ddfilter}

@@ -7,6 +7,7 @@ import { downloadCSV } from '../../../../common/util'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import TableFilters from './filters/TableFilters'
 import HorizontalStackedBarChart from './HorizontalStackedBarChart'
+import HorizontalStackedBarChart from './HorizontalStackedBarChart'
 import {
   AssessmentNameContainer,
   StyledSpan,
@@ -168,6 +169,9 @@ const getTableColumns = (
 
   // table columns when compareBy student is selected
   const compareByStudentColumns = [
+
+  // table columns when compareBy student is selected
+  const compareByStudentColumns = [
     {
       title: compareBy,
       dataIndex: 'rowTitle',
@@ -224,6 +228,8 @@ const getTableColumns = (
   ]
 
   // additional performance band columns to be downloaded in csv
+
+  // additional performance band columns to be downloaded in csv
   const performanceBandColumns = flatMap(dataSource, (d) => {
     const { preBandProfile, postBandProfile } = d
     const preBandColumns = map(Object.keys(preBandProfile), (key) => ({
@@ -243,6 +249,9 @@ const getTableColumns = (
 
     return [...preBandColumns, ...postBandColumns]
   })
+  genericColumns.push(...performanceBandColumns)
+
+  return compareBy === 'student' ? compareByStudentColumns : genericColumns
   genericColumns.push(...performanceBandColumns)
 
   return compareBy === 'student' ? compareByStudentColumns : genericColumns
@@ -267,6 +276,13 @@ const PreVsPostTable = ({
     selectedPerformanceBand,
     dataSource
   )
+  // get table columns
+  const tableColumns = getTableColumns(
+    selectedTableFilters.compareBy.key,
+    selectedTableFilters.analyseBy.key,
+    selectedPerformanceBand,
+    dataSource
+  )
   return (
     <StyledCard>
       <Row type="flex" justify="space-between" style={{ marginBottom: '20px' }}>
@@ -282,6 +298,7 @@ const PreVsPostTable = ({
       </Row>
       <CsvTable
         dataSource={dataSource}
+        columns={tableColumns}
         columns={tableColumns}
         rowSelection={
           selectedTableFilters.compareBy.key === 'student' ? rowSelection : null

@@ -54,6 +54,7 @@ import { resetStudentFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
+import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
 
@@ -212,6 +213,8 @@ const MultipleAssessmentReportFilters = ({
           testIds: search.testIds || '',
           preTestId: search.preTestId,
           postTestId: search.postTestId,
+          preTestId: search.preTestId,
+          postTestId: search.postTestId,
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
           subjects: urlSubjects.map((item) => item.key).join(',') || '',
@@ -289,6 +292,7 @@ const MultipleAssessmentReportFilters = ({
     keyName,
     multiple = false,
     isRowFilter = false
+    isRowFilter = false
   ) => {
     // update filter tags data
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
@@ -304,6 +308,7 @@ const MultipleAssessmentReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
+    if (isRowFilter) {
     if (isRowFilter) {
       setFilters({ ..._filters, showApply: true })
     } else {
@@ -724,6 +729,7 @@ const MultipleAssessmentReportFilters = ({
                   key="applyButton"
                   data-cy="applyFilter"
                   disabled={!showApply}
+                  disabled={!showApply}
                   onClick={() => onGoClick()}
                 >
                   Apply
@@ -761,6 +767,7 @@ const MultipleAssessmentReportFilters = ({
                 selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
                 showApply={filters.showApply}
                 autoSelectFirstItem
+                autoSelectFirstItem
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -783,6 +790,7 @@ const MultipleAssessmentReportFilters = ({
                 selectedTestId={search.postTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
                 showApply={filters.showApply}
+                autoSelectFirstItem
                 autoSelectFirstItem
               />
             </StyledDropDownContainer>

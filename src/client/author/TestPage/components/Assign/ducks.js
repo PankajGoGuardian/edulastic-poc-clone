@@ -1,5 +1,4 @@
 import * as moment from 'moment'
-import { delay } from 'redux-saga'
 import { omit, get, isEmpty } from 'lodash'
 import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
@@ -888,15 +887,8 @@ function* setAdvancedSearchTags({ payload: _payload }) {
 function* advancedSearchRequest({ payload }) {
   try {
     const { query } = payload
-    console.log('query', query)
-
-    // API trigger mock- waiting for 5000 milli seconds
-    yield delay(5000)
-    console.log('After delay')
-
-    // uncomment the bellow lines for API trigger
-    // const hits = yield call(assignmentApi.advancedSearch, query)
-    // yield put(receiveClassListSuccessAction(hits))
+    const hits = yield call(assignmentApi.advancedSearch, query)
+    yield put(receiveClassListSuccessAction(hits))
   } catch (error) {
     const errorMessage = 'Unable to fetch current class information.'
     notification({ type: 'error', msg: errorMessage })

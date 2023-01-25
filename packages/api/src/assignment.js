@@ -15,6 +15,16 @@ const create = (data) =>
     })
     .then((result) => result.data.result)
 
+const createAssignmentV2 = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/v2/assign`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const bulkAssign = (data) =>
   api
     .callApi({
@@ -24,24 +34,14 @@ const bulkAssign = (data) =>
     })
     .then((result) => result.data.result)
 
-const autoBulkAssign = (data) =>
-  api
-    .callApi({
-      useSlowApi: true,
-      url: `${prefix}/v2/bulk-assign`,
-      method: 'post',
-      data,
-    })
-    .then((result) => result.data.result)
-
 const advancedSearch = (data) =>
   api
     .callApi({
-      url: `${prefix}/advance-search/query`,
+      url: `/advance-search/query`,
       method: 'post',
       data,
     })
-    .then((result) => result.data.result)
+    .then(({ data: { result } }) => result.data.hits)
 
 const update = (id, data) =>
   api
@@ -333,6 +333,6 @@ export default {
   editTagsRequest,
   getBubbleSheet,
   bulkAssign,
-  autoBulkAssign,
+  createAssignmentV2,
   advancedSearch,
 }

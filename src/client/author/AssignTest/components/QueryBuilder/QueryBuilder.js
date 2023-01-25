@@ -71,12 +71,12 @@ const FieldSelector = (props) => {
 }
 
 const CombinatorSelector = (props) => {
-  const { handleOnChange, options } = props
+  const { handleOnChange, options, value } = props
   return (
     <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
       onChange={handleOnChange}
-      defaultValue="and"
+      value={value}
     >
       {options.map((item) => {
         return <Select.Option value={item.name}>{item.label}</Select.Option>
@@ -225,7 +225,7 @@ const _QueryBuilder = ({
       })),
     },
     {
-      name: 'subjects',
+      name: 'subject.keyword',
       label: 'Subjects',
       valueEditorType: 'multiselect',
       values: selectsData.allSubjects.map((item) => ({
@@ -234,7 +234,7 @@ const _QueryBuilder = ({
       })),
     },
     {
-      name: 'class_or_groups',
+      name: 'type',
       label: 'Show Class/Groups',
       valueEditorType: 'select',
       operators: [
@@ -250,7 +250,7 @@ const _QueryBuilder = ({
       values: classData.data,
     },
     {
-      name: 'tags',
+      name: 'tags._id',
       label: 'Tags',
       valueEditorType: 'multiselect',
       values: tagData.data,

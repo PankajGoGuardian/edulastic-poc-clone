@@ -632,6 +632,7 @@ class ClassList extends React.Component {
                 onClick={() => {
                   setIsAdvancedSearchSelected(false)
                   setAdvancedSearchFilter({})
+                  this.loadClassList()
                 }}
                 color="#676e74"
               />

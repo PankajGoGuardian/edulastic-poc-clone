@@ -287,6 +287,7 @@ const PreVsPostTable = ({
           selectedTableFilters.compareBy.key === 'student' ? rowSelection : null
         }
         tableToRender={StyledTable}
+        pagination={{ hideOnSinglePage: true, pageSize: 25 }}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}

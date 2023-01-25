@@ -163,7 +163,7 @@ export const getTableData = (
       postBandProfile,
     }
   })
-  return { tableData, totalStudents }
+  return tableData
 }
 
 // summary data transformer
@@ -174,6 +174,11 @@ export const getSummaryData = (summaryInfo, testInfo, filters) => {
   const preTestName = get(preTestInfo, '[0].title')
   const postTestInfo = filter(testInfo, (t) => t._id === postTestId)
   const postTestName = get(postTestInfo, '[0].title')
+
+  // get total students count
+  const totalStudentCount = sumBy(summaryInfo, (s) =>
+    parseInt(s.totalStudentCount, 10)
+  )
 
   // get avg and max scores
   const preTestAverageScore = round(

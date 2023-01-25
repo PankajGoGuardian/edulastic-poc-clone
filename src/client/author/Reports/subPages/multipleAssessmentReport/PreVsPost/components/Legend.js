@@ -7,9 +7,17 @@ const PreVsPostLegend = ({ selectedPerformanceBand }) => {
   const legend = map(selectedPerformanceBand, (pb) => {
     const { name, color } = pb
     return (
-      <div style={{ margin: '20px', display: 'flex' }}>
+      <div style={{ marginInline: '20px', display: 'flex' }}>
         <ColorCircle color={color} />
-        <span>{name}</span>
+        <span
+          style={{
+            fontSize: '12px',
+            marginLeft: '8px',
+            fontWeight: 'bold',
+          }}
+        >
+          {name}
+        </span>
       </div>
     )
   })

@@ -43,7 +43,6 @@ const groupByCompareByKey = (metricInfo, compareBy) => {
 }
 
 // table data transformer
-// table data transformer
 export const getTableData = (
   metricInfo,
   selectedPerformanceBand,
@@ -53,7 +52,6 @@ export const getTableData = (
   cellBandInfo,
   userRole
 ) => {
-  // if matrix cell is clicked - filter metricInfo by preBandScore and postBandScore
   // if matrix cell is clicked - filter metricInfo by preBandScore and postBandScore
   let groupedByCompareByKey
   if (
@@ -72,13 +70,6 @@ export const getTableData = (
   } else {
     groupedByCompareByKey = groupByCompareByKey(metricInfo, compareBy)
   }
-
-
-  const totalStudents = sumBy(metricInfo, (m) =>
-    parseInt(m.totalStudentCount, 10)
-  )
-
-  // get data required for table
 
   // get data required for table
   const tableData = map(Object.keys(groupedByCompareByKey), (key) => {
@@ -103,8 +94,6 @@ export const getTableData = (
     )
 
     // required for performance band column barChart
-
-    // required for performance band column barChart
     const preBandProfile = {}
     const postBandProfile = {}
     forEach(selectedPerformanceBand, (pb) => {
@@ -123,8 +112,6 @@ export const getTableData = (
         parseInt(d.totalStudentCount, 10)
       )
     })
-
-    // required only for compareBy student expect rowTitle
 
     // required only for compareBy student expect rowTitle
     let rowTitle = ''
@@ -183,21 +170,11 @@ export const getSummaryData = (summaryInfo, testInfo, filters) => {
   // get avg and max scores
   const preTestAverageScore = round(
     meanBy(summaryInfo, 'preTestAverageScore'),
-    meanBy(summaryInfo, 'preTestAverageScore'),
     2
   )
   const postTestAverageScore = round(
     meanBy(summaryInfo, 'postTestAverageScore'),
-    meanBy(summaryInfo, 'postTestAverageScore'),
     2
-  )
-  const preTestMaxScore = get(
-    maxBy(summaryInfo, 'preTestMaxScore'),
-    'preTestMaxScore'
-  )
-  const postTestMaxScore = get(
-    maxBy(summaryInfo, 'postTestMaxScore'),
-    'postTestMaxScore'
   )
   const preTestMaxScore = get(
     maxBy(summaryInfo, 'preTestMaxScore'),
@@ -216,13 +193,6 @@ export const getSummaryData = (summaryInfo, testInfo, filters) => {
     },
     preTestName,
     postTestName,
-    summary: {
-      preTestAverageScore,
-      postTestAverageScore,
-      preTestMaxScore,
-      postTestMaxScore,
-    },
-    preTestName,
-    postTestName,
+    totalStudentCount,
   }
 }

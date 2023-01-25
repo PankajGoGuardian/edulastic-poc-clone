@@ -3,15 +3,8 @@ import { get, isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
 
-import { Row } from 'antd'
-
 import { notification, SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-
-import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
-import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
-import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
@@ -20,9 +13,6 @@ import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import PreVsPostMatrix from './components/Matrix'
 import SummaryContainer from './components/SummaryContainer'
 import PreVsPostTable from './components/Table'
-import PreVsPostTable from './components/Table'
-import PreVsPostLegend from './components/Legend'
-
 
 import { getUserRole } from '../../../../src/selectors/user'
 import { getCsvDownloadingState } from '../../../ducks'
@@ -59,19 +49,10 @@ const PreVsPostReport = ({
     [sharedReport]
   )
 
-  const sharedReportFilters = useMemo(
-    () =>
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-    [sharedReport]
-  )
-
   const compareByDataFiltered = compareByOptions.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
 
-  // define states used in the report
   // define states used in the report
   const [tableFilters, setTableFilters] = useState({
     compareBy:
@@ -87,7 +68,6 @@ const PreVsPostReport = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
-
 
   // get report data
   useEffect(() => {
@@ -110,12 +90,6 @@ const PreVsPostReport = ({
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters, tableFilters.compareBy])
-
-  // extract selected performance band from MARFilterData
-  const bandInfo = useMemo(
-    () => get(MARFilterData, 'data.result.bandInfo', []),
-    [MARFilterData]
-  )
 
   // extract selected performance band from MARFilterData
   const bandInfo = useMemo(
@@ -157,8 +131,7 @@ const PreVsPostReport = ({
 
   // get table data
   const { metricInfo = [] } = useMemo(() => reportTableData, [reportTableData])
-  const { tableData } = useMemo(
-  const { tableData } = useMemo(
+  const tableData = useMemo(
     () =>
       getTableData(
         metricInfo,
@@ -178,12 +151,9 @@ const PreVsPostReport = ({
       userRole,
       preTestName,
       postTestName,
-      preTestName,
-      postTestName,
     ]
   )
 
-  // Handle add to student group
   // Handle add to student group
   const rowSelection = {
     selectedRowKeys,
@@ -214,34 +184,6 @@ const PreVsPostReport = ({
     } else {
       setShowAddToGroupModal(true)
     }
-  }
-
-  // Handle on matrix cell click
-  const onCellClick = (preBandScore, postBandScore) => () => {
-    if (userRole === roleuser.TEACHER) {
-      setTableFilters({
-        ...tableFilters,
-        compareBy: { key: 'student', title: 'Student' },
-      })
-    }
-    setCellBandInfo({ preBandScore, postBandScore })
-  }
-
-  if (loadingReportSummaryData || loadingReportTableData) {
-    return (
-      <SpinLoader
-        tip="Please wait while we gather the required information..."
-        position="fixed"
-      />
-    )
-  }
-
-  if (isEmpty(summaryInfo)) {
-    return (
-      <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
-      </NoDataContainer>
-    )
   }
 
   // Handle on matrix cell click
@@ -313,7 +255,6 @@ const PreVsPostReport = ({
         selectedPerformanceBand={selectedPerformanceBand}
       />
       <PreVsPostMatrix
-        matrixData={summaryInfo}
         matrixData={summaryInfo}
         selectedPerformanceBand={selectedPerformanceBand}
         preTestName={preTestName}

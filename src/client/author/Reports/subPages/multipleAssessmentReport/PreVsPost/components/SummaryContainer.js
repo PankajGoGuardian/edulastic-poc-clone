@@ -55,7 +55,6 @@ const SummaryContainer = ({
 
   const change = postTestAvgPercentage - preTestAvgPercentage
 
-  console.log(change)
   const arrow =
     change < 0 ? (
       <Arrow type="top" />
@@ -85,18 +84,22 @@ const SummaryContainer = ({
       </div>
       <SummaryWrapper>
         <StyledCard>
-          <StyledTitle color={preTestAvgBandColor}>
-            Pre: {preTestName}
-          </StyledTitle>
+          <Tooltip title={preTestName}>
+            <StyledTitle color={preTestAvgBandColor}>
+              Pre: {preTestName}
+            </StyledTitle>
+          </Tooltip>
           <div className="value">
             <span>{`${preTestAvgPercentage}%`}</span>
             {` (${preTestAverageScore}/${preTestMaxScore})`}
           </div>
         </StyledCard>
         <StyledCard>
-          <StyledTitle color={postTestAvgBandColor}>
-            Post: {postTestName}
-          </StyledTitle>
+          <Tooltip title={postTestName}>
+            <StyledTitle color={postTestAvgBandColor}>
+              Post: {postTestName}
+            </StyledTitle>
+          </Tooltip>
           <div className="value">
             <span>{`${postTestAvgPercentage}%`}</span>
             {` (${postTestAverageScore}/${postTestMaxScore})`}

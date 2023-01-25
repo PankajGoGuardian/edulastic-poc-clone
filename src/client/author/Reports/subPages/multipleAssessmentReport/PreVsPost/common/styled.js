@@ -211,8 +211,15 @@ export const StyledTitle = styled.div`
   border-radius: 20px 20px 0px 0px;
   background-color: ${({ color }) => color};
   font-weight: bold;
+  padding-inline: 10px;
   text-align: center;
   align-items: center;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  @media print {
+    white-space: normal;
+  }
 `
 export const StyledValue = styled.div`
   height: 59px;

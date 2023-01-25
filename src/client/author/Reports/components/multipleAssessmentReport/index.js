@@ -31,10 +31,10 @@ const links = [
       'Explore trends in performance by student. Isolates those who are on, at, or below target to aid in differentiated instruction.',
   },
   {
-    key: 'PreVsPost',
+    key: 'preVsPostTestComparison',
     title: 'Pre vs Post Test Comparison',
     thumbnail: MarProgress,
-    location: '/author/reports/pre-vs-post',
+    location: '/author/reports/pre-vs-post-test-comparison',
     description:
       'Compare student performance across two assessments to analyze average score, the distribution of students based on their mastery, and band jumpers.',
   },

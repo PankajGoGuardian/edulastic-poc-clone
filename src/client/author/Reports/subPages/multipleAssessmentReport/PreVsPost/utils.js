@@ -42,6 +42,7 @@ const groupByCompareByKey = (metricInfo, compareBy) => {
   }
 }
 
+// table data transformer
 export const getTableData = (
   metricInfo,
   selectedPerformanceBand,
@@ -51,6 +52,7 @@ export const getTableData = (
   cellBandInfo,
   userRole
 ) => {
+  // if matrix cell is clicked - filter metricInfo by preBandScore and postBandScore
   let groupedByCompareByKey
   if (
     cellBandInfo.preBandScore !== null &&
@@ -68,9 +70,12 @@ export const getTableData = (
   } else {
     groupedByCompareByKey = groupByCompareByKey(metricInfo, compareBy)
   }
+
   const totalStudents = sumBy(metricInfo, (m) =>
     parseInt(m.totalStudentCount, 10)
   )
+
+  // get data required for table
   const tableData = map(Object.keys(groupedByCompareByKey), (key) => {
     const data = groupedByCompareByKey[key]
     const preAvgScore = round(meanBy(data, 'preTestAverageScore'), 2)
@@ -91,6 +96,8 @@ export const getTableData = (
       postAvgScorePercentage,
       selectedPerformanceBand
     )
+
+    // required for performance band column barChart
     const preBandProfile = {}
     const postBandProfile = {}
     forEach(selectedPerformanceBand, (pb) => {
@@ -109,6 +116,8 @@ export const getTableData = (
         parseInt(d.totalStudentCount, 10)
       )
     })
+
+    // required only for compareBy student expect rowTitle
     let rowTitle = ''
     let schoolName = ''
     let teacherName = ''
@@ -148,22 +157,40 @@ export const getTableData = (
   return { tableData, totalStudents }
 }
 
-export const getSummaryData = (summaryData) => {
+// summary data transformer
+export const getSummaryData = (summaryInfo, testInfo, filters) => {
+  // get pre and post test names
+  const { preTestId, postTestId } = filters
+  const preTestInfo = filter(testInfo, (t) => t._id === preTestId)
+  const preTestName = get(preTestInfo, '[0].title')
+  const postTestInfo = filter(testInfo, (t) => t._id === postTestId)
+  const postTestName = get(postTestInfo, '[0].title')
+
+  // get avg and max scores
   const preTestAverageScore = round(
-    meanBy(summaryData, 'preTestAverageScore'),
+    meanBy(summaryInfo, 'preTestAverageScore'),
     2
   )
   const postTestAverageScore = round(
-    meanBy(summaryData, 'postTestAverageScore'),
+    meanBy(summaryInfo, 'postTestAverageScore'),
     2
   )
-  const preTestMaxScore = maxBy(summaryData, 'preTestMaxScore')?.preTestMaxScore
-  const postTestMaxScore = maxBy(summaryData, 'postTestMaxScore')
-    ?.postTestMaxScore
+  const preTestMaxScore = get(
+    maxBy(summaryInfo, 'preTestMaxScore'),
+    'preTestMaxScore'
+  )
+  const postTestMaxScore = get(
+    maxBy(summaryInfo, 'postTestMaxScore'),
+    'postTestMaxScore'
+  )
   return {
-    preTestAverageScore,
-    postTestAverageScore,
-    preTestMaxScore,
-    postTestMaxScore,
+    summary: {
+      preTestAverageScore,
+      postTestAverageScore,
+      preTestMaxScore,
+      postTestMaxScore,
+    },
+    preTestName,
+    postTestName,
   }
 }

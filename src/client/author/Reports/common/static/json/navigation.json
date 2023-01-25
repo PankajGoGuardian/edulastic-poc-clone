@@ -182,15 +182,15 @@
       "group": "multipleAssessmentReport",
       "groupTitle": "Multiple Assessment Report"
     },
-    "pre-vs-post": {
-      "title": "Pre vs Post",
+    "pre-vs-post-test-comparison": {
+      "title": "Pre vs Post Test Comparison",
       "breadcrumb": [
         {
           "title": "INSIGHTS",
           "to": "/author/reports/"
         },
         {
-          "title": "PRE VS POST"
+          "title": "PRE VS POST TEST COMPARISON"
         }
       ],
       "group": "multipleAssessmentReport",
@@ -437,9 +437,9 @@
         "location": "/author/reports/student-progress"
       },
       {
-        "key": "pre-vs-post",
-        "title": "Pre vs Post",
-        "location": "/author/reports/pre-vs-post"
+        "key": "pre-vs-post-test-comparison",
+        "title": "Pre vs Post Test Comparison",
+        "location": "/author/reports/pre-vs-post-test-comparison"
       }
     ],
     "studentProfileReport": [

@@ -40,7 +40,7 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
-  preVsPost = false,
+  autoSelectFirstItem = false,
   institutionIds,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
@@ -137,11 +137,11 @@ const AssessmentAutoComplete = ({
   }, [selectedTestId, showApply])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
-      preVsPost ? onSelect() : onSelect(testList[0]._id)
+      autoSelectFirstItem ? onSelect() : onSelect(testList[0]._id)
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
-  }, [testList])
+  }, [testList, autoSelectFirstItem])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })

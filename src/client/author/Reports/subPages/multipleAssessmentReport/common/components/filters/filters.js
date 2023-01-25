@@ -9,7 +9,10 @@ import { Spin, Tabs, Row, Col } from 'antd'
 import { roleuser } from '@edulastic/constants'
 import { IconFilter } from '@edulastic/icons'
 
-import { reportGroupType } from '@edulastic/constants/const/report'
+import {
+  reportGroupType,
+  reportNavType,
+} from '@edulastic/constants/const/report'
 import { TEST_TYPES_VALUES_MAP } from '@edulastic/constants/const/testTypes'
 import { FieldLabel } from '@edulastic/common'
 import FilterTags from '../../../../../common/components/FilterTags'
@@ -50,10 +53,7 @@ import {
 import { resetStudentFilters } from '../../../../../common/util'
 
 import staticDropDownData from '../../static/staticDropDownData.json'
-import {
-  fetchUpdateTagsDataAction,
-  getTestListSelector,
-} from '../../../../../ducks'
+import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
 
@@ -92,7 +92,6 @@ const MultipleAssessmentReportFilters = ({
   toggleFilter,
   fetchUpdateTagsData,
   institutionIds,
-  testsList,
 }) => {
   const [activeTabKey, setActiveTabKey] = useState(
     staticDropDownData.filterSections.TEST_FILTERS.key
@@ -204,8 +203,6 @@ const MultipleAssessmentReportFilters = ({
             (a) => a.key === search.assignedBy
           ) || staticDropDownData.assignedBy[0]
 
-        const urlPreTest = testsList.find((t) => t._id === search.preTestId)
-        const urlPostTest = testsList.find((t) => t._id === search.postTestId)
         const _filters = {
           termId: urlSchoolYear.key,
           testSubjects: urlTestSubjects.map((item) => item.key).join(',') || '',
@@ -213,8 +210,8 @@ const MultipleAssessmentReportFilters = ({
           tagIds: search.tagIds || '',
           assessmentTypes: search.assessmentTypes || '',
           testIds: search.testIds || '',
-          preTestId: urlPreTest?._id,
-          postTestId: urlPostTest?._id,
+          preTestId: search.preTestId,
+          postTestId: search.postTestId,
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
           subjects: urlSubjects.map((item) => item.key).join(',') || '',
@@ -241,8 +238,6 @@ const MultipleAssessmentReportFilters = ({
           grades: urlGrades,
           profileId: urlPerformanceBand,
           assignedBy: urlAssignedBy,
-          preTestId: urlPreTest,
-          postTestId: urlPostTest,
         }
 
         // set tempTagsData, filters and testId
@@ -293,10 +288,9 @@ const MultipleAssessmentReportFilters = ({
     selected,
     keyName,
     multiple = false,
-    isPageLevelFilter = false
+    isRowFilter = false
   ) => {
     // update filter tags data
-    console.log(selected)
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tempTagsData[keyName]
@@ -310,7 +304,7 @@ const MultipleAssessmentReportFilters = ({
     // update filters
     _filters[keyName] = _selected
     history.push(`${location.pathname}?${qs.stringify(_filters)}`)
-    if (isPageLevelFilter) {
+    if (isRowFilter) {
       setFilters({ ..._filters, showApply: true })
     } else {
       setFilters(_filters)
@@ -501,7 +495,7 @@ const MultipleAssessmentReportFilters = ({
                           }
                         />
                       </Col>
-                      {!(loc === 'pre-vs-post') && (
+                      {!(loc === reportNavType.PRE_VS_POST_TEST_COMPARISON) && (
                         <Col span={18}>
                           <AssessmentsAutoComplete
                             dataCy="tests"
@@ -729,7 +723,7 @@ const MultipleAssessmentReportFilters = ({
                   style={{ maxWidth: '200px' }}
                   key="applyButton"
                   data-cy="applyFilter"
-                  disabled={!showApply || loc === 'pre-vs-post'}
+                  disabled={!showApply}
                   onClick={() => onGoClick()}
                 >
                   Apply
@@ -739,7 +733,7 @@ const MultipleAssessmentReportFilters = ({
           </ReportFiltersWrapper>
         </ReportFiltersContainer>
       </Col>
-      {loc === 'pre-vs-post' && (
+      {loc === reportNavType.PRE_VS_POST_TEST_COMPARISON && (
         <Col span={24}>
           <SecondaryFilterRow
             hidden={!!reportId}
@@ -766,7 +760,7 @@ const MultipleAssessmentReportFilters = ({
                 selectedTestId={search.preTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
                 showApply={filters.showApply}
-                preVsPost
+                autoSelectFirstItem
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -789,7 +783,7 @@ const MultipleAssessmentReportFilters = ({
                 selectedTestId={search.postTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
                 showApply={filters.showApply}
-                preVsPost
+                autoSelectFirstItem
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -817,7 +811,6 @@ const MultipleAssessmentReportFilters = ({
                 btnType="primary"
                 data-testid="applyRowFilter"
                 data-cy="applyRowFilter"
-                // disabled={loadingFiltersData}
                 onClick={() => onGoClick()}
               >
                 APPLY
@@ -840,7 +833,6 @@ const enhance = compose(
       user: getUser(state),
       prevMARFilterData: getReportsPrevMARFilterData(state),
       institutionIds: currentDistrictInstitutionIds(state),
-      testsList: getTestListSelector(state),
     }),
     {
       getMARFilterDataRequest: getMARFilterDataRequestAction,

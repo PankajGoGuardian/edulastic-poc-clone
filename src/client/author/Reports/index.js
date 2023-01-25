@@ -320,7 +320,7 @@ const Container = (props) => {
             `/author/reports/peer-progress-analysis`,
             `/author/reports/student-progress`,
             `/author/reports/performance-over-time`,
-            `/author/reports/pre-vs-post`,
+            `/author/reports/pre-vs-post-test-comparison`,
           ]}
           render={(_props) => (
             <MultipleAssessmentReportContainer

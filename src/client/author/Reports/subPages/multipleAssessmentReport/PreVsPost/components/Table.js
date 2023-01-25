@@ -6,7 +6,7 @@ import { StyledCard, StyledH3, StyledCell } from '../../../../common/styled'
 import { downloadCSV } from '../../../../common/util'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import TableFilters from './filters/TableFilters'
-import HorizontalStackedBarChart from '../../../../common/components/charts/HorizontalStackedBarChart'
+import HorizontalStackedBarChart from './HorizontalStackedBarChart'
 import {
   AssessmentNameContainer,
   StyledSpan,
@@ -15,68 +15,76 @@ import {
   ArrowUp,
 } from '../common/styled'
 
+const onCsvConvert = (data) =>
+  downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
+
+// Test Column Render
+const getTestName = (record) => (
+  <Row justify="center">
+    <AssessmentNameContainer>
+      <StyledSpan>pre</StyledSpan> <br />
+      <span>{record.preTestName}</span>
+    </AssessmentNameContainer>
+    <AssessmentNameContainer>
+      <StyledSpan>post</StyledSpan> <br />
+      <span>{record.postTestName}</span>
+    </AssessmentNameContainer>
+  </Row>
+)
+
+// Avg Performance column render
+const getAvgPerformance = (record, analyseBy) => {
+  const {
+    preBand,
+    postBand,
+    preAvgScore,
+    postAvgScore,
+    preAvgScorePercentage,
+    postAvgScorePercentage,
+  } = record
+  return (
+    <Row type="flex" justify="center">
+      <StyledCell
+        justify="center"
+        style={{ backgroundColor: preBand.color, padding: '15px' }}
+      >
+        {analyseBy === 'rawScore'
+          ? `${preAvgScore}`
+          : `${preAvgScorePercentage}%`}
+      </StyledCell>
+      <StyledCell
+        justify="center"
+        style={{
+          backgroundColor: postBand.color,
+          padding: '15px',
+        }}
+      >
+        {analyseBy === 'rawScore'
+          ? `${postAvgScore}`
+          : `${postAvgScorePercentage}%`}
+      </StyledCell>
+    </Row>
+  )
+}
+
+// change column render
+const getPerformanceChange = (record, value) => (
+  <div style={{ display: 'flex', justifyContent: 'center' }}>
+    {`${Math.abs(
+      record.postAvgScorePercentage - record.preAvgScorePercentage
+    )}%  `}
+    {value < 0 ? <ArrowDown /> : value > 0 ? <ArrowUp /> : ''}
+  </div>
+)
+
 const getTableColumns = (
   compareBy,
   analyseBy,
   selectedPerformanceBand,
   dataSource
 ) => {
-  const testNameColumn = (record) => (
-    <Row justify="center">
-      <AssessmentNameContainer>
-        <StyledSpan>pre</StyledSpan> <br />
-        <span>{record.preTestName}</span>
-      </AssessmentNameContainer>
-      <AssessmentNameContainer>
-        <StyledSpan>post</StyledSpan> <br />
-        <span>{record.postTestName}</span>
-      </AssessmentNameContainer>
-    </Row>
-  )
-
-  const AvgPerformanceColumn = (record) => {
-    const {
-      preBand,
-      postBand,
-      preAvgScore,
-      postAvgScore,
-      preAvgScorePercentage,
-      postAvgScorePercentage,
-    } = record
-    return (
-      <Row type="flex" justify="center">
-        <StyledCell
-          justify="center"
-          style={{ backgroundColor: preBand.color, padding: '15px' }}
-        >
-          {analyseBy === 'rawScore'
-            ? `${preAvgScore}`
-            : `${preAvgScorePercentage}%`}
-        </StyledCell>
-        <StyledCell
-          justify="center"
-          style={{
-            backgroundColor: postBand.color,
-            padding: '15px',
-          }}
-        >
-          {analyseBy === 'rawScore'
-            ? `${postAvgScore}`
-            : `${postAvgScorePercentage}%`}
-        </StyledCell>
-      </Row>
-    )
-  }
-
-  const changeColumn = (record, value) => (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
-      {`${Math.abs(
-        record.postAvgScorePercentage - record.preAvgScorePercentage
-      )}%  `}
-      {value < 0 ? <ArrowDown /> : value > 0 ? <ArrowUp /> : ''}
-    </div>
-  )
-  const tableColumns = [
+  // table columns for all compareBy options except student
+  const genericColumns = [
     {
       title: compareBy,
       dataIndex: 'rowTitle',
@@ -96,7 +104,7 @@ const getTableColumns = (
       dataIndex: 'testName',
       visibleOn: ['browser'],
       render: (_, record) => {
-        return testNameColumn(record)
+        return getTestName(record)
       },
     },
     {
@@ -106,7 +114,7 @@ const getTableColumns = (
       align: 'center',
       visibleOn: ['browser'],
       render: (_, record) => {
-        return AvgPerformanceColumn(record)
+        return getAvgPerformance(record, analyseBy)
       },
     },
     {
@@ -128,7 +136,7 @@ const getTableColumns = (
       dataIndex: '',
       render: (_, record) => {
         const value = record.postAvgScore - record.preAvgScore
-        return changeColumn(record, value)
+        return getPerformanceChange(record, value)
       },
     },
     {
@@ -157,7 +165,9 @@ const getTableColumns = (
       },
     },
   ]
-  const compareByStudentFields = [
+
+  // table columns when compareBy student is selected
+  const compareByStudentColumns = [
     {
       title: compareBy,
       dataIndex: 'rowTitle',
@@ -188,7 +198,7 @@ const getTableColumns = (
       dataIndex: 'testName',
       visibleOn: ['browser'],
       render: (_, record) => {
-        return testNameColumn(record)
+        return getTestName(record)
       },
     },
     {
@@ -198,7 +208,7 @@ const getTableColumns = (
       align: 'center',
       visibleOn: ['browser'],
       render: (_, record) => {
-        return AvgPerformanceColumn(record)
+        return getAvgPerformance(record)
       },
     },
     {
@@ -208,10 +218,12 @@ const getTableColumns = (
       dataIndex: '',
       render: (_, record) => {
         const value = record.postAvgScore - record.preAvgScore
-        return changeColumn(record, value)
+        return getPerformanceChange(record, value)
       },
     },
   ]
+
+  // additional performance band columns to be downloaded in csv
   const performanceBandColumns = flatMap(dataSource, (d) => {
     const { preBandProfile, postBandProfile } = d
     const preBandColumns = map(Object.keys(preBandProfile), (key) => ({
@@ -231,8 +243,9 @@ const getTableColumns = (
 
     return [...preBandColumns, ...postBandColumns]
   })
-  tableColumns.push(...performanceBandColumns)
-  return compareBy === 'student' ? compareByStudentFields : tableColumns
+  genericColumns.push(...performanceBandColumns)
+
+  return compareBy === 'student' ? compareByStudentColumns : genericColumns
 }
 
 const PreVsPostTable = ({
@@ -247,8 +260,13 @@ const PreVsPostTable = ({
   isCsvDownloading,
   setCellBandInfo,
 }) => {
-  const onCsvConvert = (data) => downloadCSV(`Pre Vs Post.csv`, data)
-
+  // get table columns
+  const tableColumns = getTableColumns(
+    selectedTableFilters.compareBy.key,
+    selectedTableFilters.analyseBy.key,
+    selectedPerformanceBand,
+    dataSource
+  )
   return (
     <StyledCard>
       <Row type="flex" justify="space-between" style={{ marginBottom: '20px' }}>
@@ -264,12 +282,7 @@ const PreVsPostTable = ({
       </Row>
       <CsvTable
         dataSource={dataSource}
-        columns={getTableColumns(
-          selectedTableFilters.compareBy.key,
-          selectedTableFilters.analyseBy.key,
-          selectedPerformanceBand,
-          dataSource
-        )}
+        columns={tableColumns}
         rowSelection={
           selectedTableFilters.compareBy.key === 'student' ? rowSelection : null
         }

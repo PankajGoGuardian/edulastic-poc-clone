@@ -4,17 +4,16 @@ import { ColorCircle } from '../../../../common/styled'
 import { LegendWrapper } from '../common/styled'
 
 const PreVsPostLegend = ({ selectedPerformanceBand }) => {
-  const legend = (
-    <LegendWrapper>
-      {map(selectedPerformanceBand, (pb) => (
-        <div style={{ margin: '20px', display: 'flex' }}>
-          <ColorCircle color={pb.color} />
-          <span>{pb.name}</span>
-        </div>
-      ))}
-    </LegendWrapper>
-  )
-  return legend
+  const legend = map(selectedPerformanceBand, (pb) => {
+    const { name, color } = pb
+    return (
+      <div style={{ margin: '20px', display: 'flex' }}>
+        <ColorCircle color={color} />
+        <span>{name}</span>
+      </div>
+    )
+  })
+  return <LegendWrapper>{legend}</LegendWrapper>
 }
 
 export default PreVsPostLegend

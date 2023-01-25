@@ -1,22 +1,27 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { get, isEmpty, mapValues } from 'lodash'
 import { connect } from 'react-redux'
-import { notification, SpinLoader } from '@edulastic/common'
 import { Row } from 'antd'
+
+import { notification, SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import PreVsPostTable from './components/Table'
-import { getSummaryData, getTableData } from './utils'
-import dropDownData from './static/dropDownData.json'
+
+import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
+import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import PreVsPostMatrix from './components/Matrix'
 import SummaryContainer from './components/SummaryContainer'
+import PreVsPostTable from './components/Table'
 import PreVsPostLegend from './components/Legend'
-import { actions, selectors } from './ducks'
-import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
-import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+
 import { getUserRole } from '../../../../src/selectors/user'
-import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
-import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import { getCsvDownloadingState } from '../../../ducks'
+import { actions, selectors } from './ducks'
+
+import dropDownData from './static/dropDownData.json'
+import { getSummaryData, getTableData } from './utils'
+import { StyledSpan } from './common/styled'
 
 const { compareByOptions, analyseByOptions } = dropDownData
 
@@ -37,10 +42,19 @@ const PreVsPostReport = ({
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
 }) => {
+  const sharedReportFilters = useMemo(
+    () =>
+      sharedReport?._id
+        ? { ...sharedReport.filters, reportId: sharedReport._id }
+        : null,
+    [sharedReport]
+  )
+
   const compareByDataFiltered = compareByOptions.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
 
+  // define states used in the report
   const [tableFilters, setTableFilters] = useState({
     compareBy:
       compareByDataFiltered.find(
@@ -55,17 +69,7 @@ const PreVsPostReport = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
-  const sharedReportFilters = useMemo(
-    () =>
-      sharedReport?._id
-        ? { ...sharedReport.filters, reportId: sharedReport._id }
-        : null,
-    [sharedReport]
-  )
-  const summaryData = useMemo(() => get(reportSummaryData, 'metricInfo'), [
-    reportSummaryData,
-  ])
-  //   useEffect(() => resetPreVsPostReport())
+
   // get report data
   useEffect(() => {
     const q = { ...settings.requestFilters, ...ddfilter }
@@ -87,18 +91,43 @@ const PreVsPostReport = ({
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters, tableFilters.compareBy])
-  const bandInfo = get(MARFilterData, 'data.result.bandInfo', [])
+
+  // extract selected performance band from MARFilterData
+  const bandInfo = useMemo(
+    () => get(MARFilterData, 'data.result.bandInfo', []),
+    [MARFilterData]
+  )
   const selectedPerformanceBand = (
     bandInfo.find(
       (x) =>
         x._id === (sharedReportFilters || settings.requestFilters).profileId
     ) || bandInfo[0]
   )?.performanceBand
-  selectedPerformanceBand?.sort((a, b) => b.threshold - a.threshold)
+
+  useMemo(
+    () => selectedPerformanceBand?.sort((a, b) => b.threshold - a.threshold),
+    [selectedPerformanceBand]
+  )
+
+  // get summary data
+  const { summaryInfo, testInfo } = useMemo(() => {
+    const summaryData = get(reportSummaryData, 'metricInfo', [])
+    const testData = get(reportSummaryData, 'testInfo', [])
+    return { summaryInfo: summaryData, testInfo: testData }
+  }, [reportSummaryData])
+  const { summary, preTestName, postTestName } = useMemo(
+    () =>
+      getSummaryData(
+        summaryInfo,
+        testInfo,
+        sharedReportFilters || settings.requestFilters
+      ),
+    [summaryInfo, testInfo, settings.requestFilters, sharedReportFilters]
+  )
+
+  // get table data
   const { metricInfo = [] } = useMemo(() => reportTableData, [reportTableData])
-  const preTestName = get(settings, 'tagsData.preTestId.title')
-  const postTestName = get(settings, 'tagsData.postTestId.title')
-  const { tableData, totalStudents } = useMemo(
+  const { tableData } = useMemo(
     () =>
       getTableData(
         metricInfo,
@@ -116,37 +145,12 @@ const PreVsPostReport = ({
       tableFilters.compareBy,
       selectedPerformanceBand,
       userRole,
+      preTestName,
+      postTestName,
     ]
   )
-  const summary = getSummaryData(summaryData)
 
-  const onCellClick = (preBandScore, postBandScore) => () => {
-    if (userRole === roleuser.TEACHER) {
-      setTableFilters({
-        ...tableFilters,
-        compareBy: { key: 'student', title: 'Student' },
-      })
-    }
-    setCellBandInfo({ preBandScore, postBandScore })
-  }
-
-  if (loadingReportSummaryData || loadingReportTableData) {
-    return (
-      <SpinLoader
-        tip="Please wait while we gather the required information..."
-        position="fixed"
-      />
-    )
-  }
-
-  if (isEmpty(summaryData)) {
-    return (
-      <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
-      </NoDataContainer>
-    )
-  }
-
+  // Handle add to student group
   const rowSelection = {
     selectedRowKeys,
     onChange: onSelectChange,
@@ -178,6 +182,34 @@ const PreVsPostReport = ({
     }
   }
 
+  // Handle on matrix cell click
+  const onCellClick = (preBandScore, postBandScore) => () => {
+    if (userRole === roleuser.TEACHER) {
+      setTableFilters({
+        ...tableFilters,
+        compareBy: { key: 'student', title: 'Student' },
+      })
+    }
+    setCellBandInfo({ preBandScore, postBandScore })
+  }
+
+  if (loadingReportSummaryData || loadingReportTableData) {
+    return (
+      <SpinLoader
+        tip="Please wait while we gather the required information..."
+        position="fixed"
+      />
+    )
+  }
+
+  if (isEmpty(summaryInfo)) {
+    return (
+      <NoDataContainer>
+        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+      </NoDataContainer>
+    )
+  }
+
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
@@ -202,10 +234,12 @@ const PreVsPostReport = ({
         </Row>
         <Row>
           <span data-testid="description">
-            This report compares the student performance on the chosen two
-            assessments.
+            This report compares the student performance on {preTestName} and{' '}
+            {postTestName}.
             <br />
-            Only students that have results for both assessments are included.
+            <StyledSpan font="bold" color="#383838">
+              Only students that have results for both assessments are included.
+            </StyledSpan>
           </span>
         </Row>
       </StyledCard>
@@ -216,7 +250,7 @@ const PreVsPostReport = ({
         postTestName={postTestName}
       />
       <PreVsPostMatrix
-        matrixData={summaryData}
+        matrixData={summaryInfo}
         selectedPerformanceBand={selectedPerformanceBand}
         preTestName={preTestName}
         postTestName={postTestName}

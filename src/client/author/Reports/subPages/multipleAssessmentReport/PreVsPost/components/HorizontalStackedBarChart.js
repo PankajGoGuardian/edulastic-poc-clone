@@ -30,7 +30,7 @@ const HorizontalStackedBarChart = ({
   selectedAnalyseBy,
 }) => {
   return (
-    <div style={{ margin: '10px 35px' }}>
+    <div style={{ margin: '10px 30px' }}>
       <ResponsiveContainer height={40} width={188}>
         <BarChart layout="vertical" data={data} margin={{ top: 0, bottom: 0 }}>
           <XAxis hide type="number" />

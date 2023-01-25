@@ -191,14 +191,14 @@ const MultipleAssessmentReportContainer = (props) => {
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
-    'pre-vs-post',
+    'pre-vs-post-test-comparison',
   ].includes(pageTitle)
 
   const demographicsRequired = [
     'performance-over-time',
     'peer-progress-analysis',
     'student-progress',
-    'pre-vs-post',
+    'pre-vs-post-test-comparison',
   ].includes(pageTitle)
 
   useEffect(() => {
@@ -337,7 +337,7 @@ const MultipleAssessmentReportContainer = (props) => {
         />
         <Route
           exact
-          path="/author/reports/pre-vs-post/"
+          path="/author/reports/pre-vs-post-test-comparison/"
           render={(_props) => {
             setShowHeader(true)
             return (

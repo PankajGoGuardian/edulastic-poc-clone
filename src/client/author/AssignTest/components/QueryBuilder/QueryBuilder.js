@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { CustomModalStyled } from '@edulastic/common'
+import React, { useEffect, useState } from 'react'
+import { CustomModalStyled, notification } from '@edulastic/common'
 import Styled from 'styled-components'
 import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.css'
@@ -12,100 +12,39 @@ import { connect } from 'react-redux'
 import {
   getAdvancedSearchFilterSelector,
   setAdvancedSearchFilterAction,
+  setAdvancedSearchSchoolsAction,
+  setAdvancedSearchClassesAction,
+  setAdvancedSearchCoursesAction,
+  setAdvancedSearchTagsAction,
+  resetAdvancedSearchDetailsAction,
   setIsAdvancedSearchSelectedAction,
+  getAdvancedSearchSchoolsSelector,
+  getAdvancedSearchClassesSelector,
+  getAdvancedSearchTagsSelector,
+  getAdvancedSearchCoursesSelector,
+  advancedSearchRequestAction,
 } from '../../../TestPage/components/Assign/ducks'
+import { isArray, flattenDeep } from 'lodash'
 import { IconClose } from '@edulastic/icons'
 
-const schools = [
+const classGroup = [
   {
-    value: 's1',
-    label: 'School 1',
+    value: 'all',
+    label: 'All',
   },
   {
-    value: 's2',
-    label: 'School 2',
-  },
-  {
-    value: 's3',
-    label: 'School 3',
-  },
-]
-
-const courses = [
-  {
-    value: 'c1',
-    label: 'Course 1',
-  },
-  {
-    value: 'c2',
-    label: 'Course 2',
-  },
-  {
-    value: 'c3',
-    label: 'Course 3',
-  },
-]
-
-const fields = [
-  {
-    name: 'school',
-    label: 'School',
-    valueEditorType: 'select',
-    values: schools,
-  },
-  {
-    name: 'course',
-    label: 'Course',
-    valueEditorType: 'multiselect',
-    values: courses,
-  },
-  {
-    name: 'grade',
-    label: 'Grades',
-    valueEditorType: 'multiselect',
-    values: selectsData.allGrades.map((item) => ({
-      value: item.value,
-      label: item.text,
-    })),
-  },
-  {
-    name: 'subject',
-    label: 'Subjects',
-    valueEditorType: 'select',
-    values: selectsData.allSubjects.map((item) => ({
-      value: item.value,
-      label: item.text,
-    })),
-  },
-  {
-    name: 'class_or_groups',
-    label: 'Show Class/Groups',
-    valueEditorType: 'select',
-    values: schools,
-  },
-  {
-    name: 'classes',
+    value: 'class',
     label: 'Classes',
-    valueEditorType: 'select',
-    values: schools,
   },
   {
-    name: 'student_groups',
+    value: 'custom',
     label: 'Student Groups',
-    valueEditorType: 'select',
-    values: schools,
-  },
-  {
-    name: 'tags',
-    label: 'Tags',
-    valueEditorType: 'select',
-    values: schools,
   },
 ]
 
 const operators = [
-  { name: '=', label: 'Is In' },
-  { name: '!=', label: 'Is Not In' },
+  { name: 'in', label: 'Is In' },
+  { name: 'notIn', label: 'Is Not In' },
 ]
 
 const combinators = [
@@ -113,27 +52,12 @@ const combinators = [
   { name: 'or', label: 'Any criteria' },
 ]
 
-const translations = {
-  addRule: {
-    label: 'Add more rules in the same condition',
-    title: 'Add rule',
-  },
-  addGroup: {
-    label: 'Add More conditions',
-    title: 'Add group',
-  },
-  dragHandle: {
-    label: '',
-    title: '',
-  },
-}
-
 const FieldSelector = (props) => {
   const { handleOnChange, options, value } = props
   return (
     <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
-      style={{ width: '200px' }}
+      style={{ minWidth: '150px' }}
       onChange={handleOnChange}
       value={value}
     >
@@ -164,9 +88,8 @@ const OperatorSelector = (props) => {
   return (
     <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
-      style={{ width: '200px' }}
       onChange={handleOnChange}
-      defaultValue="="
+      value={value}
     >
       {options.map((item) => {
         return <Select.Option value={item.name}>{item.label}</Select.Option>
@@ -175,17 +98,29 @@ const OperatorSelector = (props) => {
   )
 }
 
-const AddRule = ({ handleOnClick }) => {
-  return <RuleButton onClick={handleOnClick}>+Rule</RuleButton>
+const AddRule = ({ handleOnClick, rules }) => {
+  const isDisabled = rules.length >= 3
+  return (
+    <RuleButton onClick={handleOnClick} disabled={isDisabled}>
+      +Rule
+    </RuleButton>
+  )
 }
 
-const AddRuleGroup = ({ handleOnClick }) => {
-  return <GroupButton onClick={handleOnClick}>+Group</GroupButton>
+const AddRuleGroup = ({ handleOnClick, level, rules }) => {
+  const isDisabled = rules.length >= 3
+
+  if (level !== 0) return null
+  return (
+    <GroupButton onClick={handleOnClick} disabled={isDisabled}>
+      +Group
+    </GroupButton>
+  )
 }
 
 const RemoveRuleAction = ({ handleOnClick }) => {
   return (
-    <div style={{ flex: 1, display: 'flex', justifyContent: 'flex-end' }}>
+    <div className="ruleGroup-header-close">
       <Button onClick={handleOnClick}>
         <IconClose height={10} width={10} color="#3f85e5" />
       </Button>
@@ -193,41 +128,140 @@ const RemoveRuleAction = ({ handleOnClick }) => {
   )
 }
 
+const getAllRules = (rules = []) => {
+  const allRulesByRecur = []
+  rules.forEach((rule) => {
+    if (rule.rules) {
+      allRulesByRecur.push(getAllRules(rule.rules))
+    } else {
+      allRulesByRecur.push(rule)
+    }
+  })
+  return flattenDeep(allRulesByRecur)
+}
+
+// --------------------------------------------------------------------------------------------------------------
+
 const _QueryBuilder = ({
   showAdvanceSearch,
   setShowAdvanceSearchModal,
-  setSaveQuickFilter,
   setIsAdvancedSearchSelected,
   setAdvancedSearchFilter,
   defaultQuery,
+  loadSchoolsData,
+  loadClassListData,
+  loadCourseListData,
+  loadTagsListData,
+  resetAdvancedSearchData,
+  schoolData,
+  classData,
+  courseData,
+  tagData,
+  loadAdvancedSearchClasses,
 }) => {
   const [query, setQuery] = useState(defaultQuery)
-  // const handleChange = () => {}
   const formattedQuery = formatQuery(query, 'json_without_ids')
 
-  const handleQuickFilter = (isSafeQuickFilter = false) => {
+  useEffect(() => {
+    console.log('Advanced search mounted')
+    const searchString = ''
+    loadSchoolsData()
+    loadClassListData({ searchString })
+    loadCourseListData({ searchString })
+    loadTagsListData({ searchString })
+  }, [])
+
+  const handleCancel = () => {
     setShowAdvanceSearchModal(false)
-    setIsAdvancedSearchSelected(true)
-    setAdvancedSearchFilter(JSON.parse(formattedQuery))
-    if (isSafeQuickFilter) setSaveQuickFilter(true)
+    resetAdvancedSearchData()
   }
+
+  const handleQuickFilter = () => {
+    const searchQuery = JSON.parse(formattedQuery)
+    const allRulesArr = getAllRules(searchQuery?.rules)
+
+    const isAllowed =
+      allRulesArr.length &&
+      allRulesArr.every((rule) => {
+        if (rule.value) {
+          if (isArray(rule.value)) return rule.value.length
+          return true
+        }
+        return false
+      })
+
+    if (!isAllowed) {
+      return notification({
+        msg: 'Please provide atleast one value per filter',
+      })
+    }
+
+    handleCancel()
+    setIsAdvancedSearchSelected(true)
+    setAdvancedSearchFilter(searchQuery)
+
+    loadAdvancedSearchClasses({ query: searchQuery })
+  }
+
+  const fields = [
+    {
+      name: 'schools',
+      label: 'Schools',
+      valueEditorType: 'multiselect',
+      values: schoolData.data,
+    },
+    {
+      name: 'courses',
+      label: 'Courses',
+      valueEditorType: 'multiselect',
+      values: courseData.data,
+    },
+    {
+      name: 'grades',
+      label: 'Grades',
+      valueEditorType: 'multiselect',
+      values: selectsData.allGrades.map((item) => ({
+        value: item.value,
+        label: item.text,
+      })),
+    },
+    {
+      name: 'subjects',
+      label: 'Subjects',
+      valueEditorType: 'multiselect',
+      values: selectsData.allSubjects.map((item) => ({
+        value: item.value,
+        label: item.text,
+      })),
+    },
+    {
+      name: 'class_or_groups',
+      label: 'Show Class/Groups',
+      valueEditorType: 'select',
+      operators: [
+        { name: '=', label: '=' },
+        { name: '!=', label: '!=' },
+      ],
+      values: classGroup,
+    },
+    {
+      name: 'classes',
+      label: 'Classes',
+      valueEditorType: 'multiselect',
+      values: classData.data,
+    },
+    {
+      name: 'tags',
+      label: 'Tags',
+      valueEditorType: 'multiselect',
+      values: tagData.data,
+    },
+  ]
 
   const footer = (
     <ButtonsContainer>
-      <SaveQuickFilters
-        onClick={() => {
-          handleQuickFilter(true)
-        }}
-      >
-        Save As Quick Filter
-      </SaveQuickFilters>
       <div style={{ display: 'flex', gap: '20px' }}>
-        <CancelButton
-          onClick={() => {
-            setShowAdvanceSearchModal(false)
-          }}
-          style={{ minWidth: '100px' }}
-        >
+        <CancelButton onClick={handleCancel} style={{ minWidth: '100px' }}>
           Cancel
         </CancelButton>
         <OkButton
@@ -245,24 +279,21 @@ const _QueryBuilder = ({
   return (
     <CustomModalStyled
       width="900px"
+      padding="32px"
       visible={showAdvanceSearch}
       title="Advanced Search"
-      onCancel={() => {
-        setShowAdvanceSearchModal(false)
-      }}
-      footer={null}
+      onCancel={handleCancel}
+      footer={footer}
       destroyOnClose
       centered
     >
       <ModalBody>
-        <Title>Select Search criteria</Title>
         <QueryBuilder
           fields={fields}
           query={query}
           onQueryChange={(q) => setQuery(q)}
           operators={operators}
           combinators={combinators}
-          translations={translations}
           controlClassnames={{ queryBuilder: 'queryBuilder-branches' }}
           enableDragAndDropProp={false}
           resetOnFieldChange
@@ -283,7 +314,6 @@ const _QueryBuilder = ({
             <code>{formattedQuery}</code>
           </pre>
         </div>
-        {footer}
       </ModalBody>
     </CustomModalStyled>
   )
@@ -292,36 +322,22 @@ const _QueryBuilder = ({
 export default connect(
   (state) => ({
     defaultQuery: getAdvancedSearchFilterSelector(state),
+    schoolData: getAdvancedSearchSchoolsSelector(state),
+    classData: getAdvancedSearchClassesSelector(state),
+    courseData: getAdvancedSearchCoursesSelector(state),
+    tagData: getAdvancedSearchTagsSelector(state),
   }),
   {
     setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
     setAdvancedSearchFilter: setAdvancedSearchFilterAction,
+    loadSchoolsData: setAdvancedSearchSchoolsAction,
+    loadClassListData: setAdvancedSearchClassesAction,
+    loadCourseListData: setAdvancedSearchCoursesAction,
+    loadTagsListData: setAdvancedSearchTagsAction,
+    loadAdvancedSearchClasses: advancedSearchRequestAction,
+    resetAdvancedSearchData: resetAdvancedSearchDetailsAction,
   }
 )(_QueryBuilder)
-
-// const TagName = Styled.span`
-//   color: #3f85e5;
-//   font-weight: 600;
-// `
-
-// const Conjuction = Styled.span`
-//   display: inline-block;
-//   padding: 1px 6px;
-//   background: #b6cbe4;
-//   color: #5e7ca2;
-//   border-radius: 15px;
-// `
-
-// const Filter = Styled.div`
-//   background: #f5f5f5;
-//   color: #6b737f;
-//   padding: 6px 10px;
-//   border-radius: 4px;
-//   margin-bottom:3px;
-//   font-size: 12px;
-//   display: flex;
-//   justify-content: space-between;
-// `
 
 const ModalBody = Styled.div`
   .ant-select-selection {
@@ -334,39 +350,21 @@ const ModalBody = Styled.div`
     font-size: 12px;
   }
 `
-const Title = Styled.p`
-  color: #434b5d !important;
-  font-size: 12px !important;
-  margin-bottom: 18px !important;
-`
-
-// const IconWrapper = Styled.span`
-//   display: inline-block;
-//   svg {
-//     cursor: pointer;
-//   }
-// `
 
 const ButtonsContainer = Styled.div`
+  flex:1;
   margin-top:20px;
   display:flex;
-  justify-content: space-between;
-`
-
-const SaveQuickFilters = Styled(CancelButton)`
-  font: normal normal 600 11px/15px Open Sans;
-  letter-spacing: 0.2px;
-  color: #1AB395;
-  text-transform: uppercase;
-  border:none;
-  box-shadow: none;
-  text-align: left;
-  padding: 0;
+  justify-content: flex-end;
 `
 
 export const StyledSelect = Styled(Select)`
-  width: 100px;
+  min-width: 100px;
+  color:#6A737F;
   .ant-select-selection{
+    border-radius: 2px;
+    border: 1px solid #B9B9B9;
+    background-color:#F8F8F8;
     margin:0;
   }
 `
@@ -377,6 +375,7 @@ const StyledButton = Styled(Button)`
   text-transform: uppercase;
   white-space: nowrap;
   font-size:10px;
+  width:100px;
 `
 
 const RuleButton = Styled(StyledButton)`

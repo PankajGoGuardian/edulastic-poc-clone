@@ -4,13 +4,14 @@ import {
   test as testConst,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { Col, Button } from 'antd'
+import { Col } from 'antd'
 import produce from 'immer'
 import { curry } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { OkButton } from '../../../../common/styled'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
@@ -236,18 +237,20 @@ class AdvancedOptons extends React.Component {
           {!isAssignRecommendations && (
             <>
               <ClassSelectorLabel>
-                Assign this to
+                <h3>Assign this to</h3>
                 <p>
                   Please select classes to assign this assessment. Options on
                   the left can be used to filter the list of classes.
-                  <Button
+                </p>
+                <div>
+                  <OkButton
                     onClick={() => {
                       setShowAdvanceSearchModal(true)
                     }}
                   >
-                    Advance Search
-                  </Button>
-                </p>
+                    Advanced Search
+                  </OkButton>
+                </div>
               </ClassSelectorLabel>
               <ClassList
                 selectedClasses={classIds}

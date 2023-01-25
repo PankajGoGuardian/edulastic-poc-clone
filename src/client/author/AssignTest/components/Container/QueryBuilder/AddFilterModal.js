@@ -5,10 +5,7 @@ import { Input } from 'antd'
 import { EduButton, CustomModalStyled } from '@edulastic/common'
 import { ModalTitle } from '../../../../AssessmentPage/common/Modal'
 import styled from 'styled-components'
-import {
-  setAdvancedSearchFilterAction,
-  setIsAdvancedSearchSelectedAction,
-} from '../../../../TestPage/components/Assign/ducks'
+import { setIsAdvancedSearchSelectedAction } from '../../../../TestPage/components/Assign/ducks'
 
 const ExtendedInput = ({ onChange, filterName }) => {
   const handleChange = (e) => {
@@ -32,7 +29,6 @@ const AddFilterModal = ({
   visibile,
   quickFilterModalDetails,
   setIsAdvancedSearchSelected,
-  // setAdvancedSearchFilter,
 }) => {
   const isEdit = !isEmpty(quickFilterModalDetails)
   const initFilterName = isEdit ? quickFilterModalDetails?.name : ''
@@ -40,8 +36,6 @@ const AddFilterModal = ({
 
   const handleCancel = () => {
     onCancel()
-    // setIsAdvancedSearchSelected(false)
-    // setAdvancedSearchFilter({})
   }
 
   return (
@@ -91,15 +85,9 @@ const AddFilterModal = ({
   )
 }
 
-export default connect(
-  (state) => ({
-    advancedAreOpen: state?.assessmentplayerQuestions?.advancedAreOpen,
-  }),
-  {
-    setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
-    setAdvancedSearchFilter: setAdvancedSearchFilterAction,
-  }
-)(AddFilterModal)
+export default connect(null, {
+  setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
+})(AddFilterModal)
 
 const StyledParagraph = styled.p`
   font: normal normal 600 10px/14px Open Sans;

@@ -1,4 +1,5 @@
 import * as moment from 'moment'
+import { delay } from 'redux-saga'
 import { omit, get, isEmpty } from 'lodash'
 import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
@@ -8,7 +9,14 @@ import {
   roleuser,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
-import { assignmentApi, testsApi } from '@edulastic/api'
+import {
+  assignmentApi,
+  courseApi,
+  groupApi,
+  schoolApi,
+  tagsApi,
+  testsApi,
+} from '@edulastic/api'
 import * as Sentry from '@sentry/browser'
 import {
   all,
@@ -27,12 +35,17 @@ import {
 } from '../../ducks'
 
 import { formatAssignment } from './utils'
-import { getUserNameSelector, getUserId } from '../../../src/selectors/user'
+import {
+  getUserNameSelector,
+  getUserId,
+  getUserOrgId,
+} from '../../../src/selectors/user'
 import { UPDATE_CURRENT_EDITING_ASSIGNMENT } from '../../../src/constants/actions'
 import { getPlaylistEntitySelector } from '../../../PlaylistPage/ducks'
 import { getUserFeatures, getUserRole } from '../../../../student/Login/ducks'
 import { toggleDeleteAssignmentModalAction } from '../../../sharedDucks/assignments'
 import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
+import { receiveClassListSuccessAction } from '../../../Classes/ducks'
 
 const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 
@@ -60,14 +73,31 @@ export const SET_ASSIGNMENT = '[assignments] set assignment'
 export const SET_TEST_DATA = '[tests] set test data'
 export const ADD_SEARCH_TERMS_FILTER =
   '[assignment settings] add search terms filter'
-export const SET_ADVANCED_SEARCH_QUERY =
-  '[assignment settings] set advanced search query'
-export const IS_ADVANCED_SEARCH_SELETED =
-  '[assignment settings] set is advanced search query selected'
 export const IS_ALL_CLASS_SELECTED =
   '[assignment settings] set is all class selected'
-export const SET_QUICK_FILTER_MODAL_DETAILS =
-  '[assignment settings] set quick filter modal details'
+export const IS_ADVANCED_SEARCH_SELETED =
+  '[assignment settings] set is advanced search query selected'
+export const SET_ADVANCED_SEARCH_QUERY =
+  '[assignment settings] set advanced search query'
+export const SET_ADVANCED_SEARCH_SCHOOLS_REQUEST =
+  '[assignment settings] set advanced search schools request'
+export const SET_ADVANCED_SEARCH_CLASSES_REQUEST =
+  '[assignment settings] set advanced search classes request'
+export const SET_ADVANCED_SEARCH_COURSES_REQUEST =
+  '[assignment settings] set advanced search courses request'
+export const SET_ADVANCED_SEARCH_TAGS_REQUEST =
+  '[assignment settings] set advanced search tags request'
+
+export const SET_ADVANCED_SEARCH_DETAILS_SUCCESS =
+  '[assignment settings] set advanced search details success'
+
+export const RESET_ADVANCED_SEARCH_DETAILS =
+  '[assignment settings] reset advanced search details'
+export const ADVANCED_SEARCH_REQUEST =
+  '[assignment settings] advanced search request'
+export const ADVANCED_SEARCH_SUCCESS =
+  '[assignment settings] advanced search success'
+
 export const SET_EXCLUDE_SCHOOLS = '[assignment settings] set exclude schools'
 
 // actions
@@ -96,8 +126,8 @@ export const setSearchTermsFilterAction = (payload) => ({
   payload,
 })
 
-export const setAdvancedSearchFilterAction = (payload) => ({
-  type: SET_ADVANCED_SEARCH_QUERY,
+export const setIsAllClassSelectedAction = (payload) => ({
+  type: IS_ALL_CLASS_SELECTED,
   payload,
 })
 
@@ -106,14 +136,38 @@ export const setIsAdvancedSearchSelectedAction = (payload) => ({
   payload,
 })
 
-export const setIsAllClassSelectedAction = (payload) => ({
-  type: IS_ALL_CLASS_SELECTED,
+export const setAdvancedSearchFilterAction = (payload) => ({
+  type: SET_ADVANCED_SEARCH_QUERY,
   payload,
 })
 
-export const setQuickFilterModalDetailsAction = createAction(
-  SET_QUICK_FILTER_MODAL_DETAILS
+export const setAdvancedSearchSchoolsAction = createAction(
+  SET_ADVANCED_SEARCH_SCHOOLS_REQUEST
 )
+
+export const setAdvancedSearchClassesAction = createAction(
+  SET_ADVANCED_SEARCH_CLASSES_REQUEST
+)
+
+export const setAdvancedSearchCoursesAction = createAction(
+  SET_ADVANCED_SEARCH_COURSES_REQUEST
+)
+
+export const setAdvancedSearchTagsAction = createAction(
+  SET_ADVANCED_SEARCH_TAGS_REQUEST
+)
+
+export const setAdvancedSearchDetailsAction = createAction(
+  SET_ADVANCED_SEARCH_DETAILS_SUCCESS
+)
+
+export const resetAdvancedSearchDetailsAction = createAction(
+  RESET_ADVANCED_SEARCH_DETAILS
+)
+
+export const advancedSearchRequestAction = createAction(ADVANCED_SEARCH_REQUEST)
+
+export const advancedSearchSuccessAction = createAction(ADVANCED_SEARCH_SUCCESS)
 
 export const setExcludeSchoolsAction = (payload) => ({
   type: SET_EXCLUDE_SCHOOLS,
@@ -123,17 +177,35 @@ export const setExcludeSchoolsAction = (payload) => ({
 const initialState = {
   isLoading: false,
   isAssigning: false,
-  // isBulkAssigning: false,
   hasCommonStudents: false,
   hasDuplicateAssignments: false,
   assignments: [],
   conflictData: {},
   current: '', // id of the current one being edited
   searchTerms: {},
-  advancedSearchQuery: { combinator: 'and', rules: [] },
-  isAdvancedSearchSelected: false,
   isAllClassSelected: false,
-  quickFilterModalDetails: {},
+  isAdvancedSearchSelected: false,
+  advancedSearchQuery: { combinator: 'and', rules: [] },
+  advancedSearchDetails: {
+    schools: {
+      data: [],
+      isLoading: false,
+    },
+    courses: {
+      data: [],
+      isLoading: false,
+    },
+    classes: {
+      data: [],
+      isLoading: false,
+    },
+    tags: {
+      data: [],
+      isLoading: false,
+    },
+  },
+  isAdvancedSearchLoading: false,
+  // isBulkAssigning: false,
   // excludeSchools: false,
 }
 
@@ -200,16 +272,28 @@ const setAdvancedSearchQuery = (state, { payload }) => {
   }
 }
 
-const setIsAdvancedSearchSelected = (state, { payload }) => {
-  state.isAdvancedSearchSelected = payload
-}
-
 const setIsAllClassSelected = (state, { payload }) => {
   state.isAllClassSelected = payload
 }
 
-const setQuickFilterModalDetails = (state, { payload }) => {
-  state.quickFilterModalDetails = payload
+const setIsAdvancedSearchSelected = (state, { payload }) => {
+  state.isAdvancedSearchSelected = payload
+}
+
+const setAdvancedSearchDetails = (state, { payload }) => {
+  const { key, data } = payload
+  const values = data.map((value) => {
+    return {
+      value: value._id,
+      label: value.name || value._source?.name || value._source?.tagName,
+    }
+  })
+  state.advancedSearchDetails[key].data = values
+  state.advancedSearchDetails[key].isLoading = false
+}
+
+const resetAdvancedSearchDetails = (state, { payload }) => {
+  state.advancedSearchDetails = initialState.advancedSearchDetails
 }
 
 const setExcludeSchools = (state, { payload }) => {
@@ -230,10 +314,29 @@ export const reducer = createReducer(initialState, {
   [TOGGLE_CONFIRM_COMMON_ASSIGNMENTS]: toggleCommonAssignmentsPopup,
   [TOGGLE_DUPLICATE_ASSIGNMENT_POPUP]: toggleHasDuplicateAssignmentsPopup,
   [ADD_SEARCH_TERMS_FILTER]: updateSearchTermsFilter,
-  [SET_ADVANCED_SEARCH_QUERY]: setAdvancedSearchQuery,
-  [IS_ADVANCED_SEARCH_SELETED]: setIsAdvancedSearchSelected,
   [IS_ALL_CLASS_SELECTED]: setIsAllClassSelected,
-  [SET_QUICK_FILTER_MODAL_DETAILS]: setQuickFilterModalDetails,
+  [IS_ADVANCED_SEARCH_SELETED]: setIsAdvancedSearchSelected,
+  [SET_ADVANCED_SEARCH_QUERY]: setAdvancedSearchQuery,
+  [SET_ADVANCED_SEARCH_SCHOOLS_REQUEST]: (state) => {
+    state.advancedSearchDetails.schools.isLoading = true
+  },
+  [SET_ADVANCED_SEARCH_CLASSES_REQUEST]: (state) => {
+    state.advancedSearchDetails.classes.isLoading = true
+  },
+  [SET_ADVANCED_SEARCH_COURSES_REQUEST]: (state) => {
+    state.advancedSearchDetails.courses.isLoading = true
+  },
+  [SET_ADVANCED_SEARCH_TAGS_REQUEST]: (state) => {
+    state.advancedSearchDetails.tags.isLoading = true
+  },
+  [SET_ADVANCED_SEARCH_DETAILS_SUCCESS]: setAdvancedSearchDetails,
+  [RESET_ADVANCED_SEARCH_DETAILS]: resetAdvancedSearchDetails,
+  [ADVANCED_SEARCH_REQUEST]: (state) => {
+    state.isAdvancedSearchLoading = true
+  },
+  [ADVANCED_SEARCH_SUCCESS]: (state) => {
+    state.isAdvancedSearchLoading = false
+  },
   [SET_EXCLUDE_SCHOOLS]: setExcludeSchools,
 })
 
@@ -252,9 +355,9 @@ export const getSearchTermsFilterSelector = createSelector(
   (state) => state.searchTerms
 )
 
-export const getAdvancedSearchFilterSelector = createSelector(
+export const getIsAllClassSelectedSelector = createSelector(
   stateSelector,
-  (state) => state.advancedSearchQuery
+  (state) => state.isAllClassSelected
 )
 
 export const getIsAdvancedSearchSelectedSelector = createSelector(
@@ -262,14 +365,9 @@ export const getIsAdvancedSearchSelectedSelector = createSelector(
   (state) => state.isAdvancedSearchSelected
 )
 
-export const getIsAllClassSelectedSelector = createSelector(
+export const getAdvancedSearchFilterSelector = createSelector(
   stateSelector,
-  (state) => state.isAllClassSelected
-)
-
-export const getQuickFilterModalDetailsSelector = createSelector(
-  stateSelector,
-  (state) => state.quickFilterModalDetails
+  (state) => state.advancedSearchQuery
 )
 
 const currentSelector = createSelector(stateSelector, (state) => state.current)
@@ -309,6 +407,31 @@ export const getCommonStudentsSelector = createSelector(
 export const getHasDuplicateAssignmentsSelector = createSelector(
   stateSelector,
   (state) => state.hasDuplicateAssignments
+)
+
+export const getAdvancedSearchSchoolsSelector = createSelector(
+  stateSelector,
+  (state) => state.advancedSearchDetails?.schools || {}
+)
+
+export const getAdvancedSearchClassesSelector = createSelector(
+  stateSelector,
+  (state) => state.advancedSearchDetails?.classes || {}
+)
+
+export const getAdvancedSearchCoursesSelector = createSelector(
+  stateSelector,
+  (state) => state.advancedSearchDetails?.courses || {}
+)
+
+export const getAdvancedSearchTagsSelector = createSelector(
+  stateSelector,
+  (state) => state.advancedSearchDetails?.tags || {}
+)
+
+export const isAdvancedSearchLoadingSelector = createSelector(
+  stateSelector,
+  (state) => state.isAdvancedSearchLoading || false
 )
 
 // saga
@@ -755,6 +878,122 @@ function* deleteAssignment({ payload }) {
   yield put(toggleDeleteAssignmentModalAction(false))
 }
 
+function* setAdvancedSearchSchools() {
+  try {
+    const districtId = yield select(getUserOrgId)
+    const schools = yield call(schoolApi.getSchools, { districtId })
+    yield put(
+      setAdvancedSearchDetailsAction({ key: 'schools', data: schools.data })
+    )
+  } catch (error) {
+    notification({ messageKey: 'somethingWentPleaseTryAgain' })
+    yield put(setAdvancedSearchDetailsAction({ key: 'schools', data: [] }))
+  }
+}
+
+function* setAdvancedSearchClasses({ payload: _payload }) {
+  try {
+    const districtId = yield select(getUserOrgId)
+    const payload = {
+      limit: 25,
+      page: 1,
+      queryType: 'OR',
+      includes: ['name'],
+      districtId,
+      search: {
+        institutionIds: [],
+        subjects: [],
+        grades: [],
+        active: [1],
+        tags: [],
+        name: _payload.searchString,
+      },
+    }
+
+    const response = yield call(groupApi.getGroups, payload)
+    yield put(
+      setAdvancedSearchDetailsAction({ key: 'classes', data: response.hits })
+    )
+  } catch (error) {
+    notification({ messageKey: 'somethingWentPleaseTryAgain' })
+    yield put(setAdvancedSearchDetailsAction({ key: 'classes', data: [] }))
+  }
+}
+
+function* setAdvancedSearchCourses({ payload: _payload }) {
+  try {
+    const districtId = yield select(getUserOrgId)
+    const payload = {
+      limit: 25,
+      page: 1,
+      active: 1,
+      aggregate: true,
+      includes: ['name'],
+      districtId,
+      search: {
+        name: [{ type: 'cont', value: _payload.searchString }],
+      },
+    }
+
+    const response = yield call(courseApi.searchCourse, payload)
+    const courses = []
+    for (const [key, value] of Object.entries(response.result)) {
+      courses.push({
+        _id: value.join('_'),
+        name: key,
+      })
+    }
+    yield put(setAdvancedSearchDetailsAction({ key: 'courses', data: courses }))
+  } catch (error) {
+    notification({ messageKey: 'somethingWentPleaseTryAgain' })
+    yield put(setAdvancedSearchDetailsAction({ key: 'courses', data: [] }))
+  }
+}
+
+function* setAdvancedSearchTags({ payload: _payload }) {
+  try {
+    const districtId = yield select(getUserOrgId)
+    const payload = {
+      page: 1,
+      search: {
+        searchString: [_payload.searchString],
+        tagTypes: ['group'],
+        districtIds: [districtId],
+      },
+    }
+    const tags = yield call(tagsApi.searchTags, payload)
+    yield put(
+      setAdvancedSearchDetailsAction({
+        key: 'tags',
+        data: tags?.hits?.hits,
+      })
+    )
+  } catch (error) {
+    notification({ messageKey: 'somethingWentPleaseTryAgain' })
+    yield put(setAdvancedSearchDetailsAction({ key: 'tags', data: [] }))
+  }
+}
+
+function* advancedSearchRequest({ payload }) {
+  try {
+    const { query } = payload
+    console.log('query', query)
+
+    // API trigger mock- waiting for 5000 milli seconds
+    yield delay(5000)
+    console.log('After delay')
+
+    // uncomment the bellow lines for API trigger
+    // const hits = yield call(assignmentApi.advancedSearch, query)
+    // yield put(receiveClassListSuccessAction(hits))
+  } catch (error) {
+    const errorMessage = 'Unable to fetch current class information.'
+    notification({ type: 'error', msg: errorMessage })
+  } finally {
+    yield put(advancedSearchSuccessAction())
+  }
+}
+
 export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
@@ -762,6 +1001,21 @@ export function* watcherSaga() {
     yield takeLatest(AUTO_BULK_ASSIGNMENT, autoBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
+
+    yield takeEvery(
+      SET_ADVANCED_SEARCH_SCHOOLS_REQUEST,
+      setAdvancedSearchSchools
+    ),
+    yield takeEvery(
+      SET_ADVANCED_SEARCH_CLASSES_REQUEST,
+      setAdvancedSearchClasses
+    ),
+    yield takeEvery(
+      SET_ADVANCED_SEARCH_COURSES_REQUEST,
+      setAdvancedSearchCourses
+    ),
+    yield takeEvery(SET_ADVANCED_SEARCH_TAGS_REQUEST, setAdvancedSearchTags),
+    yield takeEvery(ADVANCED_SEARCH_REQUEST, advancedSearchRequest),
   ])
 }
 

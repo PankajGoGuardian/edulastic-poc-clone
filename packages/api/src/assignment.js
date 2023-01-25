@@ -34,6 +34,15 @@ const autoBulkAssign = (data) =>
     })
     .then((result) => result.data.result)
 
+const advancedSearch = (data) =>
+  api
+    .callApi({
+      url: `${prefix}/advance-search/query`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data.result)
+
 const update = (id, data) =>
   api
     .callApi({
@@ -325,4 +334,5 @@ export default {
   getBubbleSheet,
   bulkAssign,
   autoBulkAssign,
+  advancedSearch,
 }

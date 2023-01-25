@@ -168,20 +168,34 @@ export const ClassListContainer = styled.div`
 `
 
 export const ClassSelectorLabel = styled.div`
-  color: #434b5d;
-  font-size: 16px;
-  font-weight: bold;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
   margin-top: 40px;
+  h3 {
+    color: #434b5d;
+    font-size: 16px;
+    font-weight: bold;
+  }
   p {
     color: #6a737f;
     font-weight: 400;
     font-size: 15px;
-    margin-top: 10px;
     margin-bottom: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px #e4eaf1 solid;
-    display: flex;
-    justify-content: space-between;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  div {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    justify-self: end;
+    button {
+      font: normal normal 600 10px/14px Open Sans;
+      letter-spacing: 0.19px;
+      height: 32px;
+    }
   }
 `
 
@@ -300,55 +314,6 @@ export const SwitchStyled = styled(Switch)`
   &.ant-switch-checked {
     background-color: ${themeColorBlue};
   }
-`
-
-export const SavedFilterTagContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  gap: 10px;
-  margin-bottom: 5px;
-`
-
-// INFO:- To provide gap between the last saved filter and the schools tag.
-// export const SavedFilter = styled.div`
-//   & > div:last-child {
-//     margin-bottom: 24px;
-//   }
-// `
-
-export const SavedFilterTag = styled.p`
-  text-align: left;
-  font: normal normal 600 10px/14px Open Sans;
-  letter-spacing: 0px;
-  color: #1ab395;
-  text-transform: uppercase;
-  opacity: 1;
-`
-
-export const SavedFilterContainer = styled.div`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  border-radius: 4px;
-  padding: 5px 20px;
-  letter-spacing: 0.19px;
-  height: 34px;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-  font: normal normal bold 10px/14px Open Sans;
-  color: ${(props) => (props.isSelected ? '#fff' : '#87929B')};
-  background: ${(props) => (props.isSelected ? '#1ab395' : '#ececec')};
-  svg {
-    fill: ${(props) => props.isSelected && '#fff'};
-  }
-`
-
-export const SavedFilterActionContainer = styled.span`
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-  cursor: pointer;
 `
 
 export const AdvancedSearchTagContainer = styled.div`

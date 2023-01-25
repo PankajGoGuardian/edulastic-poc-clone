@@ -3,11 +3,18 @@ import { Empty, Select } from 'antd'
 import { StyledSelect } from './QueryBuilder'
 import { connect } from 'react-redux'
 import {
+  getAdvancedSearchDetailsSelector,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchTagsAction,
 } from '../../../TestPage/components/Assign/ducks'
-import { debounce, get } from 'lodash'
+import { debounce } from 'lodash'
+
+const mapFieldWithLabel = {
+  'course.id': 'courses',
+  _id: 'classes',
+  tags: 'tags',
+}
 
 const ValueEditor = (props) => {
   const {
@@ -27,11 +34,11 @@ const ValueEditor = (props) => {
 
   const handleSearch = (searchString) => {
     switch (field) {
-      case 'classes':
+      case '_id':
         loadClassListData({ searchString })
         break
 
-      case 'courses':
+      case 'course.id':
         loadCourseListData({ searchString })
         break
 
@@ -49,13 +56,15 @@ const ValueEditor = (props) => {
 
   if (!value) handleOnChange(undefined)
 
-  if (['classes', 'courses', 'tags'].includes(field)) {
-    const isLoading = advancedSearchDetails[field].isLoading
+  if (Object.keys(mapFieldWithLabel).includes(field)) {
+    const key = mapFieldWithLabel[field]
+    const isLoading = advancedSearchDetails[key]?.isLoading
     return (
       <StyledSelect
         getPopupContainer={(triggerNode) => triggerNode.parentElement}
         mode="multiple"
         style={{ width: '200px' }}
+        autoClearSearchValue={false}
         onChange={handleOnChange}
         onFocus={() => handleSearch('')}
         placeholder={`Select ${label}`}
@@ -106,11 +115,7 @@ const ValueEditor = (props) => {
 
 export default connect(
   (state) => ({
-    advancedSearchDetails: get(
-      state,
-      'authorTestAssignments.advancedSearchDetails',
-      {}
-    ),
+    advancedSearchDetails: getAdvancedSearchDetailsSelector(state),
   }),
   {
     loadClassListData: setAdvancedSearchClassesAction,

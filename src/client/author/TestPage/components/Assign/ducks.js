@@ -52,7 +52,6 @@ const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
 export const SAVE_BULK_ASSIGNMENT = '[assignments] save bulk assignment'
-export const AUTO_BULK_ASSIGNMENT = '[assignments] auto bulk assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
@@ -106,7 +105,6 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
 export const saveBulkAssignmentAction = createAction(SAVE_BULK_ASSIGNMENT)
-export const autoBulkAssignmentAction = createAction(AUTO_BULK_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS)
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT)
@@ -409,24 +407,29 @@ export const getHasDuplicateAssignmentsSelector = createSelector(
   (state) => state.hasDuplicateAssignments
 )
 
-export const getAdvancedSearchSchoolsSelector = createSelector(
+export const getAdvancedSearchDetailsSelector = createSelector(
   stateSelector,
-  (state) => state.advancedSearchDetails?.schools || {}
+  (state) => state.advancedSearchDetails || {}
+)
+
+export const getAdvancedSearchSchoolsSelector = createSelector(
+  getAdvancedSearchDetailsSelector,
+  (state) => state.schools || {}
 )
 
 export const getAdvancedSearchClassesSelector = createSelector(
-  stateSelector,
-  (state) => state.advancedSearchDetails?.classes || {}
+  getAdvancedSearchDetailsSelector,
+  (state) => state.classes || {}
 )
 
 export const getAdvancedSearchCoursesSelector = createSelector(
-  stateSelector,
-  (state) => state.advancedSearchDetails?.courses || {}
+  getAdvancedSearchDetailsSelector,
+  (state) => state.courses || {}
 )
 
 export const getAdvancedSearchTagsSelector = createSelector(
-  stateSelector,
-  (state) => state.advancedSearchDetails?.tags || {}
+  getAdvancedSearchDetailsSelector,
+  (state) => state.tags || {}
 )
 
 export const isAdvancedSearchLoadingSelector = createSelector(
@@ -750,92 +753,6 @@ function* saveBulkAssignment({ payload }) {
   }
 }
 
-function* autoBulkAssignment({ payload }) {
-  try {
-    // yield put(setBulkAssignmentSavingAction(true))
-
-    const isAllClassSelected = yield select(getIsAllClassSelectedSelector)
-
-    const { assignmentSettings, testId } = payload
-    const classesSelected = [...assignmentSettings?.class]
-
-    const name = yield select(getUserNameSelector)
-    const _id = yield select(getUserId)
-    const assignedBy = { _id, name }
-    const startDate =
-      assignmentSettings.startDate &&
-      moment(assignmentSettings.startDate).valueOf()
-    const endDate =
-      assignmentSettings.endDate && moment(assignmentSettings.endDate).valueOf()
-    const dueDate =
-      assignmentSettings.dueDate && moment(assignmentSettings.dueDate).valueOf()
-    const data = {
-      ...omit(assignmentSettings, ['class', 'resources', 'termId']),
-      startDate,
-      endDate,
-      dueDate,
-      assignedBy,
-    }
-    if (
-      data.scoringType ===
-      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
-    ) {
-      data.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
-    }
-
-    let autoBulkAssignPayload = {
-      testId,
-      assignmentSettings: data,
-    }
-
-    if (!isAllClassSelected) {
-      autoBulkAssignPayload.filter = {
-        groups: classesSelected.map((clazz) => clazz._id),
-      }
-    } else {
-      const isAdvancedSearchSelected = yield select(
-        getIsAdvancedSearchSelectedSelector
-      )
-      if (isAdvancedSearchSelected) {
-        const advancedSearchFilter = yield select(
-          getAdvancedSearchFilterSelector
-        )
-        autoBulkAssignPayload.query = JSON.parse(advancedSearchFilter)
-      } else {
-        const searchTermsFilter = yield select(getSearchTermsFilterSelector)
-        const filter = {
-          schools: searchTermsFilter.institutionIds,
-          grades: searchTermsFilter.grades,
-          subjects: searchTermsFilter.subjects,
-          groupType: searchTermsFilter.classType,
-          courses: searchTermsFilter.courseIds,
-          tags: searchTermsFilter.tags,
-        }
-        autoBulkAssignPayload.filter = filter
-      }
-    }
-    if (
-      !isEmpty(autoBulkAssignPayload.filter) ||
-      !isEmpty(autoBulkAssignPayload.query)
-    ) {
-      console.log('-----------', autoBulkAssignPayload)
-      // const result = yield call(
-      //   assignmentApi.autoBulkAssign,
-      //   autoBulkAssignPayload
-      // )
-    }
-
-    // notification({ type: 'info', msg: result })
-    // yield put(push('/author/assignments'))
-  } catch (err) {
-    console.error('error for save assignment', err)
-    const errorMessage = err.response?.data?.message || 'Something went wrong'
-    notification({ msg: errorMessage })
-    // } finally {
-    //   yield put(setBulkAssignmentSavingAction(false))
-  }
-}
-
 function* loadAssignments({ payload }) {
   try {
     let testId
@@ -927,7 +844,6 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
       limit: 25,
       page: 1,
       active: 1,
-      aggregate: true,
       includes: ['name'],
       districtId,
       search: {
@@ -936,14 +852,9 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
     }
 
     const response = yield call(courseApi.searchCourse, payload)
-    const courses = []
-    for (const [key, value] of Object.entries(response.result)) {
-      courses.push({
-        _id: value.join('_'),
-        name: key,
-      })
-    }
-    yield put(setAdvancedSearchDetailsAction({ key: 'courses', data: courses }))
+    yield put(
+      setAdvancedSearchDetailsAction({ key: 'courses', data: response.result })
+    )
   } catch (error) {
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
     yield put(setAdvancedSearchDetailsAction({ key: 'courses', data: [] }))
@@ -998,7 +909,6 @@ export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
     yield takeLatest(SAVE_BULK_ASSIGNMENT, saveBulkAssignment),
-    yield takeLatest(AUTO_BULK_ASSIGNMENT, autoBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
 

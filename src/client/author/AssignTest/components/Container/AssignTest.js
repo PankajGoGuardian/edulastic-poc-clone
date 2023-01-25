@@ -38,7 +38,6 @@ import {
   getUserFeatures,
 } from '../../../src/selectors/user'
 import {
-  autoBulkAssignmentAction,
   getSearchTermsFilterSelector,
   isAdvancedSearchLoadingSelector,
   loadAssignmentsAction,
@@ -116,7 +115,6 @@ const parentMenu = {
   testLibrary: { title: 'Test Library', to: 'tests' },
 }
 
-const threshold = 3
 class AssignTest extends React.Component {
   constructor(props) {
     super(props)
@@ -354,10 +352,7 @@ class AssignTest extends React.Component {
       isAssigning,
       assignmentSettings: assignment,
       location,
-      autoBulkAssignment,
-      match,
     } = this.props
-    const { testId } = match.params
     const source = location?.state?.assessmentAssignedFrom
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
@@ -382,13 +377,7 @@ class AssignTest extends React.Component {
         if (source) {
           segmentApi.genericEventTrack('AssessmentAssigned', { source })
         }
-        if (assignment.class.length < threshold) {
-          console.log('normal da')
-          saveAssignment(updatedAssignment)
-        } else {
-          console.log('bulk da')
-          autoBulkAssignment({ assignmentSettings: updatedAssignment, testId })
-        }
+        saveAssignment(updatedAssignment)
       }
     }
   }
@@ -1074,7 +1063,6 @@ const enhance = compose(
       addRecommendedResourcesAction:
         slice.actions?.fetchRecommendedResourcesAction,
       setTestSettingsList: setTestSettingsListAction,
-      autoBulkAssignment: autoBulkAssignmentAction,
     }
   )
 )

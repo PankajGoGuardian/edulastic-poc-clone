@@ -110,7 +110,7 @@
 .queryBuilder-branches .rule::before,
 .queryBuilder-branches .ruleGroup .ruleGroup::before {
   top: -1rem;
-  height: calc(75% + 0.5rem);
+  height: calc(50% + 1rem);
   border-width: 0 0 1px 1px;
 }
 

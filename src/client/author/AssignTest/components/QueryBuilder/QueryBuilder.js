@@ -42,6 +42,8 @@ const classGroup = [
   },
 ]
 
+const ruleLimit = 100
+
 const operators = [
   { name: 'in', label: 'Is In' },
   { name: 'notIn', label: 'Is Not In' },
@@ -99,7 +101,7 @@ const OperatorSelector = (props) => {
 }
 
 const AddRule = ({ handleOnClick, rules }) => {
-  const isDisabled = rules.length >= 3
+  const isDisabled = rules.length >= ruleLimit
   return (
     <RuleButton onClick={handleOnClick} disabled={isDisabled}>
       +Rule
@@ -108,7 +110,7 @@ const AddRule = ({ handleOnClick, rules }) => {
 }
 
 const AddRuleGroup = ({ handleOnClick, level, rules }) => {
-  const isDisabled = rules.length >= 3
+  const isDisabled = rules.length >= ruleLimit
 
   if (level !== 0) return null
   return (
@@ -140,8 +142,6 @@ const getAllRules = (rules = []) => {
   return flattenDeep(allRulesByRecur)
 }
 
-// --------------------------------------------------------------------------------------------------------------
-
 const _QueryBuilder = ({
   showAdvanceSearch,
   setShowAdvanceSearchModal,
@@ -163,7 +163,6 @@ const _QueryBuilder = ({
   const formattedQuery = formatQuery(query, 'json_without_ids')
 
   useEffect(() => {
-    console.log('Advanced search mounted')
     const searchString = ''
     loadSchoolsData()
     loadClassListData({ searchString })
@@ -205,13 +204,13 @@ const _QueryBuilder = ({
 
   const fields = [
     {
-      name: 'schools',
+      name: 'institutionId',
       label: 'Schools',
       valueEditorType: 'multiselect',
       values: schoolData.data,
     },
     {
-      name: 'courses',
+      name: 'course.id',
       label: 'Courses',
       valueEditorType: 'multiselect',
       values: courseData.data,
@@ -245,7 +244,7 @@ const _QueryBuilder = ({
       values: classGroup,
     },
     {
-      name: 'classes',
+      name: '_id',
       label: 'Classes',
       valueEditorType: 'multiselect',
       values: classData.data,

@@ -78,6 +78,7 @@ import {
 } from './author/Dashboard/ducks'
 import CreateClassModal from './author/ManageClass/components/ClassCreate'
 import CreateAssignmentModal from './author/AssignmentCreate'
+import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
 
 const {
   ASSESSMENT,
@@ -710,6 +711,7 @@ class App extends Component {
                           BulkActionNotificationListener,
                           ReportsNotificationListener,
                           RosterSyncNotification,
+                          BulkAssignNotification,
                         ]
                       : roleuser.TEACHER === userRole
                       ? [ClassSyncNotification, ReportsNotificationListener]

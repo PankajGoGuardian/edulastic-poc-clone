@@ -5,10 +5,12 @@ import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.css'
 import './custom_style.css'
 import { Select, Button } from 'antd'
+import { connect } from 'react-redux'
+import { isArray, flattenDeep } from 'lodash'
+import { IconClose } from '@edulastic/icons'
 import ValueEditor from './ValueEditor'
 import { selectsData } from '../../../TestPage/components/common'
 import { CancelButton, OkButton } from '../../../../common/styled'
-import { connect } from 'react-redux'
 import {
   getAdvancedSearchFilterSelector,
   setAdvancedSearchFilterAction,
@@ -24,8 +26,6 @@ import {
   getAdvancedSearchCoursesSelector,
   advancedSearchRequestAction,
 } from '../../../TestPage/components/Assign/ducks'
-import { isArray, flattenDeep } from 'lodash'
-import { IconClose } from '@edulastic/icons'
 
 const classGroup = [
   {
@@ -47,6 +47,11 @@ const ruleLimit = 100
 const operators = [
   { name: 'in', label: 'Is In' },
   { name: 'notIn', label: 'Is Not In' },
+]
+
+const nullNotNullOp = [
+  { name: 'null', label: 'Is Null' },
+  { name: 'notNull', label: 'Is Not Null' },
 ]
 
 const combinators = [
@@ -186,7 +191,7 @@ const _QueryBuilder = ({
           if (isArray(rule.value)) return rule.value.length
           return true
         }
-        return false
+        return rule.operator === 'null'
       })
 
     if (!isAllowed) {
@@ -214,6 +219,7 @@ const _QueryBuilder = ({
       label: 'Courses',
       valueEditorType: 'multiselect',
       values: courseData.data,
+      operators: [...operators, ...nullNotNullOp],
     },
     {
       name: 'grades',
@@ -254,6 +260,7 @@ const _QueryBuilder = ({
       label: 'Tags',
       valueEditorType: 'multiselect',
       values: tagData.data,
+      operators: [...operators, ...nullNotNullOp],
     },
   ]
 

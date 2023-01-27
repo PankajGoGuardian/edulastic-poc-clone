@@ -10,11 +10,14 @@ import {
   isNil,
   mapValues,
   omitBy,
+  isEmpty,
 } from 'lodash'
 
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
+
+const EXTERNAL_ASSESSMENTS = 'External Assessment'
 
 const {
   getFormattedName,
@@ -41,6 +44,7 @@ export const staticDropDownData = {
     { key: 'classIds', tabKey: '0' },
     { key: 'student' },
     { key: 'performanceBandProfileId' },
+    { key: 'testTypes' },
   ],
   initialFilters: {
     reportId: '',
@@ -249,15 +253,33 @@ export const mergeSchoolMetrics = (internalMetrics, externalMetrics) => {
   return [...internalMetrics, ...mappedExternalMetrics]
 }
 
+const filterMetricsByTestType = (metrics, assessmentTypes) => {
+  if (isEmpty(assessmentTypes)) return metrics
+  return metrics.filter(({ testType, externalTestType }) => {
+    if (testType === EXTERNAL_ASSESSMENTS) {
+      return assessmentTypes.includes(externalTestType)
+    }
+    return assessmentTypes.includes(testType)
+  })
+}
+
 export const getChartData = ({
   assignmentMetrics = [],
   studentClassData = [],
   selectedPerformanceBand = [],
+  testTypes: assessmentTypes = [],
 }) => {
   if (!assignmentMetrics.length) {
     return []
   }
-  const groupedByTest = groupBy(assignmentMetrics, 'testId')
+  const filteredMetrics = filterMetricsByTestType(
+    assignmentMetrics,
+    assessmentTypes
+  )
+  if (!filteredMetrics.length) {
+    return []
+  }
+  const groupedByTest = groupBy(filteredMetrics, 'testId')
   const groupedTestsByType = reduce(
     groupedByTest,
     (data, value) => {
@@ -342,4 +364,12 @@ export const getTableData = ({
     }
   })
   return parsedData
+}
+
+export const getTestTypesFromUrl = (
+  selectedTestTypes = '',
+  availableTestTypes
+) => {
+  const testTypesArr = selectedTestTypes.split(',')
+  return availableTestTypes.filter((a) => testTypesArr.includes(a.key))
 }

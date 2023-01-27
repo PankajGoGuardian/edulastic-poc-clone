@@ -59,7 +59,7 @@ export const PrintablePrefix = styled.b`
 `
 
 export const FilterLabel = styled(FieldLabel)`
-  font-size: 10px;
+  font-size: ${(props) => props.fontSize || '10px'};
 `
 
 export const ReportFiltersContainer = styled.div`

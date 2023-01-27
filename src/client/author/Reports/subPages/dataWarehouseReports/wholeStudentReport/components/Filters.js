@@ -24,7 +24,12 @@ import StudentAutoComplete from './StudentAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { getTermOptions } from '../../common/utils/transformers'
-import { getStudentName, staticDropDownData } from '../utils'
+import {
+  getStudentName,
+  staticDropDownData,
+  getTestTypesFromUrl,
+} from '../utils'
+import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 
 const filtersDefaultValues = [
   {
@@ -95,11 +100,12 @@ const WholeStudentReportFilters = ({
   const { terms = [] } = orgData
   const termOptions = useMemo(() => getTermOptions(terms), [terms])
 
-  const { studentClassData = [], bandInfo = [] } = get(
-    filtersData,
-    'data.result',
-    {}
-  )
+  const {
+    studentClassData = [],
+    bandInfo = [],
+    testTypes: availableTestTypes = getArrayOfAllTestTypes(),
+  } = get(filtersData, 'data.result', {})
+
   const performanceBandsList = useMemo(
     () => bandInfo.map((p) => ({ key: p._id, title: p.name })),
     [bandInfo]
@@ -116,6 +122,11 @@ const WholeStudentReportFilters = ({
         (f) => f !== 'All' && !isEmpty(f)
       ),
     [location.search]
+  )
+
+  const testTypeFilterValue = useMemo(
+    () => (filters.testTypes ? filters.testTypes.split(',') : []),
+    [filters.testTypes]
   )
 
   useEffect(() => {
@@ -138,13 +149,16 @@ const WholeStudentReportFilters = ({
       classIds: search.classIds || '',
       courseIds: search.courseIds || '',
       performanceBandProfileId: '',
+      testTypes: search.testTypes || '',
     }
     if (!roleuser.DA_SA_ROLE_ARRAY.includes(userRole)) {
       delete _filters.schoolIds
     }
+    const testTypes = getTestTypesFromUrl(search.testTypes, availableTestTypes)
     const _filterTagsData = {
       ...filterTagsData,
       termId: urlSchoolYear,
+      testTypes,
       grades: urlGrades,
       subjects: urlSubjects,
     }
@@ -182,10 +196,15 @@ const WholeStudentReportFilters = ({
         ...filters,
         performanceBandProfileId: selectedPerformanceBand?.key || '',
       }
+      const testTypes = getTestTypesFromUrl(
+        search.testTypes,
+        availableTestTypes
+      )
       const _filterTagsData = {
         ...filterTagsData,
         performanceBandProfileId: selectedPerformanceBand,
         student: _student,
+        testTypes,
       }
       setFilters({ ..._filters })
       setFilterTagsData({ ..._filterTagsData })
@@ -237,6 +256,7 @@ const WholeStudentReportFilters = ({
       fetchFiltersDataRequest({
         termId: filters.termId,
         studentId: selected.key,
+        externalTestTypesRequired: true,
       })
     } else {
       delete _filterTagsData.student
@@ -328,6 +348,13 @@ const WholeStudentReportFilters = ({
       setFilters(_filters)
       setShowApply(true)
     }
+  }
+
+  const handleTestTypeChange = (selectedValue) => {
+    const value = availableTestTypes.filter((testType) =>
+      selectedValue.includes(testType.key)
+    )
+    updateFilterDropdownCB(value, 'testTypes', true, true)
   }
 
   return (
@@ -483,18 +510,19 @@ const WholeStudentReportFilters = ({
         </ReportFiltersContainer>
       </Col>
       <Col span={24}>
-        <SecondaryFilterRow hidden={!!reportId} width="100%" fieldHeight="40px">
+        <SecondaryFilterRow width="100%" hidden={!!reportId}>
           <StyledDropDownContainer
             flex="0 0 300px"
             xs={24}
-            sm={12}
-            lg={6}
+            sm={8}
+            lg={4}
             data-cy="student"
           >
             <FieldLabel fs=".7rem" data-cy="schoolYear">
-              SEARCH FOR ANOTHER STUDENT
+              SEARCH STUDENT
             </FieldLabel>
             <StudentAutoComplete
+              height="40px"
               firstLoad={firstLoad}
               termId={filters.termId}
               schoolIds={filters.schoolIds}
@@ -509,8 +537,8 @@ const WholeStudentReportFilters = ({
           <StyledDropDownContainer
             flex="0 0 300px"
             xs={24}
-            sm={12}
-            lg={6}
+            sm={8}
+            lg={4}
             data-cy="performanceBand"
             data-testid="performanceBand"
           >
@@ -518,6 +546,7 @@ const WholeStudentReportFilters = ({
               EDULASTIC PERFORMANCE BAND
             </FieldLabel>
             <ControlDropDown
+              height="40px"
               by={selectedPerformanceBand}
               selectCB={(e, selected) =>
                 updateFilterDropdownCB(
@@ -530,6 +559,25 @@ const WholeStudentReportFilters = ({
               data={performanceBandsList}
               prefix="Performance Band"
               showPrefixOnSelected={false}
+            />
+          </StyledDropDownContainer>
+          <StyledDropDownContainer
+            flex="0 0 300px"
+            xs={24}
+            sm={8}
+            lg={4}
+            data-cy="testTypes"
+            data-testid="testTypes"
+          >
+            <MultiSelectDropdown
+              height="40px"
+              maxTagCount={1}
+              dataCy="testTypes"
+              label="Test Types"
+              labelFontSize=".7rem"
+              onChange={handleTestTypeChange}
+              value={testTypeFilterValue}
+              options={availableTestTypes}
             />
           </StyledDropDownContainer>
           {filters.showApply && (

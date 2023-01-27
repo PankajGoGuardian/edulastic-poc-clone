@@ -172,6 +172,7 @@ export const DatePickerStyled = styled(DatePicker)`
 export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${(props) => props.width || '100%'};
+    min-height: ${(props) => props.height || 'auto'};
     margin: ${(props) => props.margin || '0px'};
     min-width: ${({ minWidth }) => minWidth || ''};
     &.ant-select-disabled {
@@ -235,7 +236,6 @@ export const SelectInputStyled = styled(Select)`
       color: #6a737f;
       font-size: ${(props) => props.fontSize || '13px'};
       width: ${(props) => props.width || '100%'};
-      height: ${(props) => props.height || '100%'};
       min-height: ${(props) => props.height || '32px'};
       border-radius: 2px;
       font-weight: 600;

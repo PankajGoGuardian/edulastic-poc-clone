@@ -1,12 +1,15 @@
 import React from 'react'
 import { flatMap, map } from 'lodash'
 import PropTypes from 'prop-types'
-import { Row } from 'antd'
-import { StyledCard, StyledH3, StyledCell } from '../../../../common/styled'
+import { Row, Typography } from 'antd'
+import { darkGrey } from '@edulastic/colors'
+
 import { downloadCSV } from '../../../../common/util'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import TableFilters from './filters/TableFilters'
 import HorizontalStackedBarChart from './HorizontalStackedBarChart'
+
+import { StyledCard, StyledCell, DashedLine } from '../../../../common/styled'
 import {
   AssessmentNameContainer,
   StyledTable,
@@ -158,13 +161,11 @@ const getTableColumns = (
               data={[record.preBandProfile]}
               studentsCount={record.studentsCount}
               selectedPerformanceBand={selectedPerformanceBand}
-              selectedAnalyseBy={analyseBy}
             />
             <HorizontalStackedBarChart
               data={[record.postBandProfile]}
               studentsCount={record.studentsCount}
               selectedPerformanceBand={selectedPerformanceBand}
-              selectedAnalyseBy={analyseBy}
             />
           </div>
         )
@@ -274,8 +275,11 @@ const PreVsPostTable = ({
   )
   return (
     <StyledCard>
-      <Row type="flex" justify="space-between" style={{ marginBottom: '20px' }}>
-        <StyledH3>Performance trend and Change summary</StyledH3>
+      <Row type="flex" justify="space-between" style={{ marginBottom: '30px' }}>
+        <Typography.Title style={{ margin: 0 }} level={4}>
+          Performance Change By {selectedTableFilters.compareBy.title}
+        </Typography.Title>
+        <DashedLine dashColor={darkGrey} />
         <TableFilters
           setTableFilters={setTableFilters}
           compareByOptions={compareByOptions}

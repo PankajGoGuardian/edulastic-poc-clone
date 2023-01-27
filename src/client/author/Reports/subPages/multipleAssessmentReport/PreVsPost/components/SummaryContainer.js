@@ -1,9 +1,10 @@
-import { grey } from '@edulastic/colors'
+import { darkGrey, grey } from '@edulastic/colors'
 import { percentage } from '@edulastic/constants/reportUtils/common'
 import { IconInfo, IconStudent } from '@edulastic/icons'
-import { Tooltip } from 'antd'
+import { Tooltip, Typography, Row } from 'antd'
 import { get } from 'lodash'
 import React from 'react'
+import { DashedLine } from '../../../../common/styled'
 import { getProficiencyBand } from '../../../../common/util'
 import {
   ArrowLarge as Arrow,
@@ -12,6 +13,7 @@ import {
   StyledCard,
   StyledTitle,
   TooltipWrapper,
+  StyledContainer,
 } from '../common/styled'
 import PreVsPostLegend from './Legend'
 
@@ -72,7 +74,14 @@ const SummaryContainer = ({
 
   return (
     <>
-      <div style={{ display: 'flex', marginTop: '30px' }}>
+      <Row type="flex" style={{ marginTop: '20px' }}>
+        <Typography.Title style={{ margin: 0 }} level={4}>
+          Avg Score Comparison
+        </Typography.Title>
+        <DashedLine dashColor={darkGrey} />
+      </Row>
+
+      <StyledContainer>
         <StudentWrapper>
           <IconStudent className="icon-student" />
           <span className="student-count">ATTEMPTED: {totalStudentCount}</span>
@@ -81,7 +90,7 @@ const SummaryContainer = ({
           </Tooltip>
         </StudentWrapper>
         <PreVsPostLegend selectedPerformanceBand={selectedPerformanceBand} />
-      </div>
+      </StyledContainer>
       <SummaryWrapper>
         <StyledCard>
           <Tooltip title={preTestName}>

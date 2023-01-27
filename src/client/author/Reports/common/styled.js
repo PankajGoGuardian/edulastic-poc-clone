@@ -910,3 +910,17 @@ export const StyledSignedStackedBarChartContainer = styled.div`
     transition: all 400ms ease 0s;
   }
 `
+export const DashedLine = styled.div`
+  overflow: hidden !important;
+  position: relative;
+  flex-grow: 1;
+  height: ${(props) => props.height ?? '0.5px'};
+  margin: 15px 24px;
+  &:before {
+    content: '';
+    position: absolute;
+    border: ${(props) => props.dashWidth ?? '5px'} dashed
+      ${(props) => props.dashColor ?? { grey }};
+    inset: 0;
+  }
+`

@@ -791,7 +791,7 @@ const MultipleAssessmentReportFilters = ({
               xs={24}
               sm={12}
               lg={6}
-              data-cy="student"
+              data-cy="performanceBand"
             >
               <FilterLabel data-cy="performanceBand">
                 Performance Band

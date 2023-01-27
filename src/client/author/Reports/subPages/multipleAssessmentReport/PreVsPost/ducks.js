@@ -155,18 +155,12 @@ const reportTableData = createSelector(
 )
 const error = createSelector(stateSelector, (state) => state.error)
 
-const resetPreVsPostReport = createSelector(
-  stateSelector,
-  (state) => state.resetPreVsPostReport
-)
-
 export const selectors = {
   loadingReportSummaryData,
   loadingReportTableData,
   reportSummaryData,
   reportTableData,
   error,
-  resetPreVsPostReport,
 }
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //

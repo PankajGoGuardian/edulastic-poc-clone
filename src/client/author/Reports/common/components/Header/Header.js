@@ -111,7 +111,8 @@ const CustomizedHeaderWrapper = ({
     title === 'Activity by School' ||
     title === 'Activity by Teacher' ||
     title === 'Performance by Rubric Criteria'
-  const hideDownloadIcon = title === 'Engagement Summary'
+  const hideDownloadIcon =
+    title === 'Engagement Summary' || title === 'Pre vs Post Test Comparison'
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
 

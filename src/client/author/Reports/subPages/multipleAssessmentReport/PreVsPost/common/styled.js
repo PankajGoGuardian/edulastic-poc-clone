@@ -82,25 +82,25 @@ export const CustomStyledCell = styled.div`
 export const ArrowLarge = styled.div`
   width: 0;
   height: 0;
-  margin-top: -38px;
+  margin-top: -36px;
   margin-left: 155px;
   border-collapse: separate;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-${(props) => props.type}: 15px solid ${(props) =>
-  props.type === 'bottom' ? '#5fad5a' : '#e55c5c'};
+  props.type === 'bottom' ? green : darkRed};
 `
 
 export const ArrowSmall = styled.div`
   width: 0;
   height: 0;
-  margin-top: 4px;
+  margin-top: 5px;
   margin-left: 5px;
   border-collapse: separate;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-${(props) => props.type}: 9px solid ${(props) =>
-  props.type === 'bottom' ? '#5fad5a' : '#e55c5c'};
+  props.type === 'bottom' ? green : darkRed};
 `
 
 export const AssessmentNameContainer = styled.div`
@@ -198,13 +198,13 @@ export const StyledRow = styled(Row)`
 
 export const StyledCard = styled.div`
   width: 260px;
-  height: 95px;
+  height: 100px;
   border-radius: 20px;
-  background-color: #ffffff;
+  background-color: ${white};
   margin: 20px 50px;
   .value {
-    height: 60px;
-    line-height: 60px;
+    height: 55px;
+    line-height: 55px;
     text-align: center;
     font-size: 18px;
   }
@@ -217,13 +217,13 @@ export const StyledCard = styled.div`
 `
 
 export const StyledTitle = styled.div`
-  height: 35px;
-  line-height: 35px;
-  font-size: 10px;
+  height: 42px;
+  font-size: 12px;
   border-radius: 20px 20px 0px 0px;
   background-color: ${({ color }) => color};
   font-weight: bold;
   padding-inline: 10px;
+  padding-top: 12px;
   text-align: center;
   align-items: center;
   white-space: nowrap;

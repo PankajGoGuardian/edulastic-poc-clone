@@ -178,10 +178,7 @@ export const getTableData = (
 ) => {
   // if matrix cell is clicked - filter metricInfo by preBandScore and postBandScore
   let groupedByCompareByKey
-  if (
-    cellBandInfo.preBandScore !== null &&
-    cellBandInfo.postBandScore !== null
-  ) {
+  if (!isEmpty(cellBandInfo)) {
     const filteredMetricInfo = metricInfo.filter(
       (m) =>
         parseInt(m.preBandScore, 10) === cellBandInfo.preBandScore &&

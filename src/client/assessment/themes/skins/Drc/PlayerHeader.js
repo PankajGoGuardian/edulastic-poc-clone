@@ -156,7 +156,7 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={isShowReferenceModal}
                     onClick={openReferenceModal}
-                    title={t('common.test.referenceGuide')}
+                    title={t('common.test.referenceMaterial')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconEduReferenceSheet color={header2.background} />

@@ -306,6 +306,7 @@ const PlayerHeader = ({
                 canShowReferenceMaterial={canShowReferenceMaterial}
                 isShowReferenceModal={isShowReferenceModal}
                 openReferenceModal={openReferenceModal}
+                t={t}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

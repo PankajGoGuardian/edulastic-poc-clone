@@ -49,6 +49,7 @@ const ToolBar = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
+  t,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
@@ -107,7 +108,7 @@ const ToolBar = ({
       )}
 
       {canShowReferenceMaterial && (
-        <Tooltip placement="top" title="Reference Guide">
+        <Tooltip placement="top" title={t('common.test.referenceMaterial')}>
           <StyledButton
             onClick={openReferenceModal}
             active={isShowReferenceModal}

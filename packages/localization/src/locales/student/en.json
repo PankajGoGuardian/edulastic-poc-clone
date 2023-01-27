@@ -72,7 +72,8 @@
       "flag": "Flag",
       "options": "Options",
       "referenceSheet": "Reference Sheet",
-      "referenceGuide": "Reference Guide"
+      "referenceGuide": "Reference Guide",
+      "referenceMaterial": "Reference Material"
     }
   },
   "component": {

@@ -5,6 +5,7 @@ import { BoxHeading } from '../../common/components/boxHeading'
 import MarAnalysis from '../../../src/assets/reports/mar-analysis/mar-analysis.png'
 import MarOverTime from '../../../src/assets/reports/mar-over-time/mar-over-time.png'
 import MarProgress from '../../../src/assets/reports/mar-progress/mar-progress.png'
+import MARPreVsPost from '../../../src/assets/reports/mar-pre-vs-post/mar-pre-vs-post.png'
 
 const links = [
   {
@@ -33,7 +34,7 @@ const links = [
   {
     key: 'preVsPostTestComparison',
     title: 'Pre vs Post Test Comparison',
-    thumbnail: MarProgress,
+    thumbnail: MARPreVsPost,
     location: '/author/reports/pre-vs-post-test-comparison',
     description:
       'Compare student performance across two assessments to analyze average score, the distribution of students based on their mastery, and band jumpers.',

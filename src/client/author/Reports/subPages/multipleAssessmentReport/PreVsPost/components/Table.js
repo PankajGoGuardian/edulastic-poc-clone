@@ -9,10 +9,9 @@ import TableFilters from './filters/TableFilters'
 import HorizontalStackedBarChart from './HorizontalStackedBarChart'
 import {
   AssessmentNameContainer,
-  StyledSpan,
   StyledTable,
-  ArrowDown,
-  ArrowUp,
+  ArrowSmall as Arrow,
+  TestTypeTag,
 } from '../common/styled'
 
 const onCsvConvert = (data) =>
@@ -22,12 +21,12 @@ const onCsvConvert = (data) =>
 const getTestName = (record) => (
   <Row justify="center">
     <AssessmentNameContainer>
-      <StyledSpan>pre</StyledSpan> <br />
-      <span>{record.preTestName}</span>
+      <TestTypeTag>pre</TestTypeTag>
+      <div className="test-name">{record.preTestName}</div>
     </AssessmentNameContainer>
     <AssessmentNameContainer>
-      <StyledSpan>post</StyledSpan> <br />
-      <span>{record.postTestName}</span>
+      <TestTypeTag>post</TestTypeTag>
+      <div className="test-name">{record.postTestName}</div>
     </AssessmentNameContainer>
   </Row>
 )
@@ -68,14 +67,22 @@ const getAvgPerformance = (record, analyseBy) => {
 }
 
 // change column render
-const getPerformanceChange = (record, value) => (
-  <div style={{ display: 'flex', justifyContent: 'center' }}>
-    {`${Math.abs(
-      record.postAvgScorePercentage - record.preAvgScorePercentage
-    )}%  `}
-    {value < 0 ? <ArrowDown /> : value > 0 ? <ArrowUp /> : ''}
-  </div>
-)
+const getPerformanceChange = (record) => {
+  const { preAvgScorePercentage, postAvgScorePercentage } = record
+  const value = postAvgScorePercentage - preAvgScorePercentage
+  return (
+    <div style={{ display: 'flex', justifyContent: 'center' }}>
+      {`${Math.abs(value)}%  `}
+      {value < 0 ? (
+        <Arrow type="top" />
+      ) : value > 0 ? (
+        <Arrow type="bottom" />
+      ) : (
+        ''
+      )}
+    </div>
+  )
+}
 
 const getTableColumns = (
   compareBy,
@@ -135,8 +142,7 @@ const getTableColumns = (
       align: 'center',
       dataIndex: '',
       render: (_, record) => {
-        const value = record.postAvgScore - record.preAvgScore
-        return getPerformanceChange(record, value)
+        return getPerformanceChange(record)
       },
     },
     {
@@ -217,8 +223,7 @@ const getTableColumns = (
       align: 'center',
       dataIndex: '',
       render: (_, record) => {
-        const value = record.postAvgScore - record.preAvgScore
-        return getPerformanceChange(record, value)
+        return getPerformanceChange(record)
       },
     },
   ]

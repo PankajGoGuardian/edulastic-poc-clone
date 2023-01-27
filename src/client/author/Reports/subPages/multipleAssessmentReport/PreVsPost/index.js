@@ -13,7 +13,6 @@ import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
 import PreVsPostMatrix from './components/Matrix'
 import SummaryContainer from './components/SummaryContainer'
 import PreVsPostTable from './components/Table'
-import PreVsPostLegend from './components/Legend'
 
 import { getUserRole } from '../../../../src/selectors/user'
 import { getCsvDownloadingState } from '../../../ducks'
@@ -115,7 +114,12 @@ const PreVsPostReport = ({
     const testData = get(reportSummaryData, 'testInfo', [])
     return { summaryInfo: summaryData, testInfo: testData }
   }, [reportSummaryData])
-  const { summary, preTestName, postTestName } = useMemo(
+  const {
+    summary,
+    preTestName,
+    postTestName,
+    totalStudentCount,
+  } = useMemo(
     () =>
       getSummaryData(
         summaryInfo,
@@ -127,7 +131,7 @@ const PreVsPostReport = ({
 
   // get table data
   const { metricInfo = [] } = useMemo(() => reportTableData, [reportTableData])
-  const { tableData } = useMemo(
+  const tableData = useMemo(
     () =>
       getTableData(
         metricInfo,
@@ -243,11 +247,12 @@ const PreVsPostReport = ({
           </span>
         </Row>
       </StyledCard>
-      <PreVsPostLegend selectedPerformanceBand={selectedPerformanceBand} />
       <SummaryContainer
-        overallProficiency={summary}
+        summary={summary}
         preTestName={preTestName}
         postTestName={postTestName}
+        totalStudentCount={totalStudentCount}
+        selectedPerformanceBand={selectedPerformanceBand}
       />
       <PreVsPostMatrix
         matrixData={summaryInfo}

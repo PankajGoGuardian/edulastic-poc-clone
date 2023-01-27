@@ -36,6 +36,7 @@ const initialState = {
       subject: '',
       performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
+      testTypes: '',
     },
     //   standardFilters: {
     //     domainIds: '',

@@ -48,6 +48,7 @@ const ControlDropDown = ({
   trigger = ['click'],
   buttonWidth,
   style,
+  height = '32px',
 }) => {
   const [selected, setSelected] = useState(by)
   const [isActive, setActive] = useState(false)
@@ -111,6 +112,7 @@ const ControlDropDown = ({
       className={`${containerClassName} control-dropdown`}
       buttonWidth={buttonWidth}
       style={style}
+      height={height}
     >
       <Dropdown
         onVisibleChange={setActive}
@@ -135,6 +137,7 @@ const ControlDropDown = ({
 
 const StyledDiv = styled.div`
   button {
+    height: ${(props) => props.height || 'auto'};
     display: flex;
     justify-content: start;
     align-items: center;

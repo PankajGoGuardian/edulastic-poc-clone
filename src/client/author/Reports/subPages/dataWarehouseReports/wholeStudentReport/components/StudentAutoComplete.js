@@ -33,6 +33,7 @@ const StudentAutoComplete = ({
   districtId,
   institutionIds,
   activeQuery,
+  height = 'auto',
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
@@ -199,7 +200,7 @@ const StudentAutoComplete = ({
 
   return (
     <Tooltip title={selectedStudentLabel} placement="top">
-      <AutoCompleteContainer>
+      <AutoCompleteContainer height={height}>
         <AutoComplete
           getPopupContainer={(trigger) => trigger.parentNode}
           value={fieldValue}
@@ -242,6 +243,9 @@ export default connect(
 )(StudentAutoComplete)
 
 const AutoCompleteContainer = styled.div`
+  .ant-select-auto-complete.ant-select .ant-input {
+    height: ${(props) => props.height || 'auto'};
+  }
   .ant-select-dropdown-menu-item-group-title {
     font-weight: bold;
     white-space: nowrap;

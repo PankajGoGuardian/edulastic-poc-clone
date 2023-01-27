@@ -110,6 +110,12 @@ const WholeStudentReport = ({
     [sharedReport]
   )
 
+  const testTypes = useMemo(() => {
+    const _testTypes = (sharedReportFilters || settings.requestFilters)
+      ?.testTypes
+    return isEmpty(_testTypes) ? [] : _testTypes.split(',')
+  }, [settings.requestFilters, sharedReportFilters])
+
   const setShowApply = (status) => {
     onRefineResultsCB(null, status, 'applyButton')
   }
@@ -133,6 +139,7 @@ const WholeStudentReport = ({
       'reportId',
       'performanceBandProfileId',
       'assignedBy',
+      'testTypes',
     ]
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
@@ -261,6 +268,7 @@ const WholeStudentReport = ({
       assignmentMetrics,
       studentClassData: settings.selectedStudentClassData,
       selectedPerformanceBand,
+      testTypes,
     })
     const _tableData = getTableData({
       districtMetrics,
@@ -275,7 +283,12 @@ const WholeStudentReport = ({
         isEmpty(districtMetrics) ||
         isEmpty(schoolMetrics),
     ]
-  }, [reportData, settings.selectedStudentClassData, selectedPerformanceBand])
+  }, [
+    reportData,
+    settings.selectedStudentClassData,
+    selectedPerformanceBand,
+    testTypes,
+  ])
 
   const studentName = getStudentName(
     settings.selectedStudentInformation,

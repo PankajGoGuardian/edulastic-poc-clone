@@ -32,16 +32,19 @@ const NotificationListener = ({ user }) => {
       const {
         processStatus,
         statusCode,
-        title,
+        testTitle,
         totalClassesAssigned,
         playlistModuleId,
+        playlistModuleTitle,
+        playlistTitle,
       } = doc
       if (processStatus === 'done' && !notificationIds.includes(doc.__id)) {
         setNotificationIds([...notificationIds, doc.__id])
         if (statusCode === 200) {
-          const message = `${
-            playlistModuleId ? 'Playlist' : 'Test'
-          } ${title} assigned to ${totalClassesAssigned} groups`
+          let message = `Test ${testTitle} assigned to ${totalClassesAssigned} groups`
+          if (playlistModuleTitle) {
+            message = `Playlist ${playlistTitle}: ${playlistModuleTitle} assigned to ${totalClassesAssigned} groups`
+          }
           antdNotification({
             type: 'success',
             msg: message,
@@ -50,7 +53,7 @@ const NotificationListener = ({ user }) => {
         } else {
           const message = `${
             playlistModuleId ? 'Playlist' : 'Test'
-          } ${title} assign failed`
+          } ${testTitle} assign failed`
           antdNotification({ msg: message, key: doc.__id })
         }
         deleteNotificationDocument(doc.__id)

@@ -4,8 +4,11 @@ import {
   EduButton,
   notification,
 } from '@edulastic/common'
-import GoogleLogin from 'react-google-login'
 import { canvasApi } from '@edulastic/api'
+import {
+  AUTH_FLOW,
+  GoogleLoginWrapper,
+} from '../../../../../../../../../vendors/google'
 
 import { scopes } from '../../../../../../../ManageClass/components/ClassListContainer/ClassCreatePage'
 import authorizeCanvas from '../../../../../../../../common/utils/CanavsAuthorizationModule'
@@ -33,6 +36,8 @@ const HeaderSyncAction = ({
   const handleError = (err) => {
     console.log('error', err)
   }
+
+  const loginGoogle = (googleClient) => googleClient.requestCode()
 
   const handleSyncWithCanvas = async () => {
     try {
@@ -73,9 +78,8 @@ const HeaderSyncAction = ({
   return (
     <>
       {allowGoogleLogin !== false && !cleverId && !isClassLink && (
-        <GoogleLogin
-          clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-          render={(renderProps) => (
+        <GoogleLoginWrapper
+          WrappedComponent={({ googleClient }) => (
             <AuthorCompleteSignupButton
               renderButton={(handleClick) => (
                 <EduButton
@@ -87,15 +91,15 @@ const HeaderSyncAction = ({
                   <p>Sync with Google Classroom</p>
                 </EduButton>
               )}
-              onClick={renderProps.onClick}
+              onClick={() => loginGoogle(googleClient)}
               triggerSource="Sync Google Class Button Click"
             />
           )}
-          scope={scopes}
-          onSuccess={handleLoginSucess}
-          onFailure={handleError}
+          successCallback={handleLoginSucess}
+          errorCallback={handleError}
+          scopes={scopes}
           prompt={isUserGoogleLoggedIn ? '' : 'consent'}
-          responseType="code"
+          flowType={AUTH_FLOW.CODE}
         />
       )}
       {enableCleverSync && (

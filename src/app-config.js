@@ -30,6 +30,10 @@ const segmentVersion = process.env.REACT_APP_SEGMENT_VERSION || '4.2.2'
 const isSegmentEnabled = process.env.REACT_APP_ENABLE_SEGMENT === 'true'
 const isChatWidgetEnabled = process.env.REACT_APP_ENABLE_CHAT_WIDGET === 'true'
 
+const googleClientSdkUrl = 'https://accounts.google.com/gsi/client'
+const googleApiSdkUrl = 'https://apis.google.com/js/api.js'
+const googleCalendarApiVersion = 'v3'
+
 const segmentHashSecret =
   process.env.REACT_APP_SEGMENT_HASH_SECRET ||
   'ey4OaPLX2BjSsUqj0NK2Sw3QtHjtzojmfRCeUcDH'
@@ -206,6 +210,9 @@ export default {
   appStage,
   getSentryReleaseName,
   appVersion,
+  googleClientSdkUrl,
+  googleApiSdkUrl,
+  googleCalendarApiVersion,
   sentryURI,
   segmentHashSecret,
   isSegmentEnabled,

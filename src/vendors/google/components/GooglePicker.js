@@ -1,11 +1,9 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { WithResources } from '@edulastic/common'
-
-const GOOGLE_SDK_URL = 'https://apis.google.com/js/api.js'
+import GoogleLoginWrapper from './GoogleLoginWrapper'
+import { AUTH_FLOW } from '../constants'
 
 const GoogleChooser = ({
-  clientId,
   scope,
   authImmediate,
   onAuthenticate,
@@ -22,27 +20,12 @@ const GoogleChooser = ({
   children,
 }) => {
   const isGoogleReady = () => !!window.gapi
-
-  const isGoogleAuthReady = () => !!window.gapi.auth
-
   const isGooglePickerReady = () => !!window?.google?.picker
 
-  const onApiLoad = () => {
+  const loadPicker = () => {
     if (isGoogleReady()) {
-      window.gapi.load('auth')
       window.gapi.load('picker')
     }
-  }
-
-  const doAuth = (callback) => {
-    window.gapi.auth.authorize(
-      {
-        client_id: clientId,
-        scope,
-        immediate: authImmediate,
-      },
-      callback
-    )
   }
 
   const handlecreatePicker = (oauthToken) => {
@@ -69,7 +52,7 @@ const GoogleChooser = ({
     const picker = new window.google.picker.PickerBuilder()
       .addView(view)
       .setOAuthToken(oauthToken)
-      .setCallback(onChange)
+      .setCallback((obj) => onChange({ ...obj, token: oauthToken }))
 
     if (origin) {
       picker.setOrigin(origin)
@@ -86,42 +69,29 @@ const GoogleChooser = ({
     picker.build().setVisible(true)
   }
 
-  const onChoose = () => {
-    if (
-      !isGoogleReady() ||
-      !isGoogleAuthReady() ||
-      !isGooglePickerReady() ||
-      disabled
-    ) {
+  const onChoose = (googleClient) => {
+    if (!isGooglePickerReady() || disabled) {
       return null
     }
 
-    const token = window.gapi.auth.getToken()
-    const oauthToken = token && token.access_token
-
-    if (oauthToken) {
-      handlecreatePicker(oauthToken)
-    } else {
-      doAuth((response) => {
-        if (response.access_token) {
-          handlecreatePicker(response.access_token)
-        } else {
-          onAuthFailed(response)
-        }
-      })
-    }
+    googleClient.requestAccessToken()
   }
 
   return (
-    <WithResources
-      resources={[GOOGLE_SDK_URL]}
-      fallBack={<></>}
-      onLoaded={onApiLoad}
-    >
-      <div onClick={onChoose}>
-        {children || <button>Open google chooser</button>}
-      </div>
-    </WithResources>
+    <GoogleLoginWrapper
+      loadGapi
+      WrappedComponent={({ googleClient }) => (
+        <div onClick={() => onChoose(googleClient)}>
+          {children || <button>Open google chooser</button>}
+        </div>
+      )}
+      successCallback={(response) => handlecreatePicker(response.access_token)}
+      errorCallback={(response) => onAuthFailed(response)}
+      scopes={scope}
+      flowType={AUTH_FLOW.IMPLICIT}
+      onScriptLoad={loadPicker}
+      prompt=""
+    />
   )
 }
 

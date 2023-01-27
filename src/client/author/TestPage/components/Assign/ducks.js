@@ -89,8 +89,6 @@ export const SET_ADVANCED_SEARCH_TAGS_REQUEST =
 export const SET_ADVANCED_SEARCH_DETAILS_SUCCESS =
   '[assignment settings] set advanced search details success'
 
-export const RESET_ADVANCED_SEARCH_DETAILS =
-  '[assignment settings] reset advanced search details'
 export const ADVANCED_SEARCH_REQUEST =
   '[assignment settings] advanced search request'
 export const ADVANCED_SEARCH_SUCCESS =
@@ -156,10 +154,6 @@ export const setAdvancedSearchTagsAction = createAction(
 
 export const setAdvancedSearchDetailsAction = createAction(
   SET_ADVANCED_SEARCH_DETAILS_SUCCESS
-)
-
-export const resetAdvancedSearchDetailsAction = createAction(
-  RESET_ADVANCED_SEARCH_DETAILS
 )
 
 export const advancedSearchRequestAction = createAction(ADVANCED_SEARCH_REQUEST)
@@ -289,10 +283,6 @@ const setAdvancedSearchDetails = (state, { payload }) => {
   state.advancedSearchDetails[key].isLoading = false
 }
 
-const resetAdvancedSearchDetails = (state, { payload }) => {
-  state.advancedSearchDetails = initialState.advancedSearchDetails
-}
-
 const setExcludeSchools = (state, { payload }) => {
   state.excludeSchools = payload
 }
@@ -327,7 +317,6 @@ export const reducer = createReducer(initialState, {
     state.advancedSearchDetails.tags.isLoading = true
   },
   [SET_ADVANCED_SEARCH_DETAILS_SUCCESS]: setAdvancedSearchDetails,
-  [RESET_ADVANCED_SEARCH_DETAILS]: resetAdvancedSearchDetails,
   [ADVANCED_SEARCH_REQUEST]: (state) => {
     state.isAdvancedSearchLoading = true
   },

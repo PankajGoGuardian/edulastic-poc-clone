@@ -192,6 +192,7 @@ class ClassList extends React.Component {
       )
       ?.map(({ _id }) => _id)
     const isAllSelected =
+      selectableClassCount?.length &&
       selectableClassCount?.length === selectedClasses?.length &&
       selectedClasses.every((id) => selectableClassCount?.includes(id))
 
@@ -205,7 +206,7 @@ class ClassList extends React.Component {
   loadClassList = () => {
     const { loadClassListData, userOrgId, setSearchTermsFilter } = this.props
     const { searchTerms, classType } = this.state
-    setSearchTermsFilter({ ...searchTerms, classType: classType })
+    setSearchTermsFilter({ ...searchTerms, classType })
     loadClassListData({
       districtId: userOrgId,
       queryType: 'OR',
@@ -350,6 +351,22 @@ class ClassList extends React.Component {
         }
       },
     }
+
+    const selectableClassList = classList?.filter(
+      ({ _id }) => !Object.keys(assignedClassesById[testType]).includes(_id)
+    )
+    const totalSchoolsCount =
+      uniq(
+        selectableClassList
+          ?.map(({ institutionId }) => institutionId)
+          ?.filter((i) => !!i)
+      )?.length || 0
+
+    const totalStudentsCount =
+      selectableClassList?.reduce(
+        (acc, curr) => acc + (curr.studentCount || 0),
+        0
+      ) || 0
 
     const selectedClassData =
       classList?.filter(({ _id }) => selectedClasses.includes(_id)) || 0
@@ -641,15 +658,24 @@ class ClassList extends React.Component {
           <InfoSection>
             <div>
               <span>School(s)</span>
-              <span>{schoolsCount}</span>
+              <span>
+                <span>{schoolsCount}/</span>
+                <span>{totalSchoolsCount}</span>
+              </span>
             </div>
             <div>
               <span>Class(es)</span>
-              <span>{classesCount}</span>
+              <span>
+                <span>{classesCount}/</span>
+                <span>{selectableClassList.length}</span>
+              </span>
             </div>
             <div>
               <span>Student(s)</span>
-              <span>{studentsCount}</span>
+              <span>
+                <span>{studentsCount}/</span>
+                <span>{totalStudentsCount}</span>
+              </span>
             </div>
           </InfoSection>
           <StyledTable

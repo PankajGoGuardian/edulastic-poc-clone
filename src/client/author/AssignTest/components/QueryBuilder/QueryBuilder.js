@@ -18,7 +18,6 @@ import {
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchTagsAction,
-  resetAdvancedSearchDetailsAction,
   setIsAdvancedSearchSelectedAction,
   getAdvancedSearchSchoolsSelector,
   getAdvancedSearchClassesSelector,
@@ -157,7 +156,6 @@ const _QueryBuilder = ({
   loadClassListData,
   loadCourseListData,
   loadTagsListData,
-  resetAdvancedSearchData,
   schoolData,
   classData,
   courseData,
@@ -177,7 +175,6 @@ const _QueryBuilder = ({
 
   const handleCancel = () => {
     setShowAdvanceSearchModal(false)
-    resetAdvancedSearchData()
   }
 
   const handleQuickFilter = () => {
@@ -191,7 +188,7 @@ const _QueryBuilder = ({
           if (isArray(rule.value)) return rule.value.length
           return true
         }
-        return rule.operator === 'null'
+        return rule.operator === 'null' || rule.operator === 'notNull'
       })
 
     if (!isAllowed) {
@@ -341,7 +338,6 @@ export default connect(
     loadCourseListData: setAdvancedSearchCoursesAction,
     loadTagsListData: setAdvancedSearchTagsAction,
     loadAdvancedSearchClasses: advancedSearchRequestAction,
-    resetAdvancedSearchData: resetAdvancedSearchDetailsAction,
   }
 )(_QueryBuilder)
 

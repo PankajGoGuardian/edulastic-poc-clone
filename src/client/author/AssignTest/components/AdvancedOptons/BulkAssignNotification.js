@@ -29,17 +29,19 @@ const NotificationListener = ({ user }) => {
 
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
-      const { status, statusCode } = doc
+      const { status, statusCode, testTitle, totalClassesAssigned } = doc
       if (status === 'done' && !notificationIds.includes(doc.__id)) {
         setNotificationIds([...notificationIds, doc.__id])
         if (statusCode === 200) {
+          const message = `${testTitle} assigned to ${totalClassesAssigned} groups`
           antdNotification({
             type: 'success',
-            msg: 'Bulk Assign successfull',
+            msg: message,
             key: doc.__id,
           })
         } else {
-          antdNotification({ msg: 'Bulk assign failed', key: doc.__id })
+          const message = `${testTitle} assign failed`
+          antdNotification({ msg: message, key: doc.__id })
         }
         deleteNotificationDocument(doc.__id)
       }

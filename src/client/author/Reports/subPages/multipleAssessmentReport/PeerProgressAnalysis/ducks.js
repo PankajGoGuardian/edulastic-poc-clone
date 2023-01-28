@@ -60,8 +60,8 @@ const initialState = {
 }
 
 export const reportPeerProgressAnalysisReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state) => (state = initialState),
-  [RESET_REPORTS_PEER_PROGRESS_ANALYSIS]: (state) => (state = initialState),
+  [RESET_ALL_REPORTS]: () => initialState,
+  [RESET_REPORTS_PEER_PROGRESS_ANALYSIS]: () => initialState,
   [GET_REPORTS_PEER_PROGRESS_ANALYSIS_REQUEST]: (state) => {
     state.loading = true
   },

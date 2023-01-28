@@ -10,8 +10,8 @@ import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import AddToGroupModal from '../../../common/components/Popups/AddToGroupModal'
-import PreVsPostMatrix from './components/Matrix'
 import SummaryContainer from './components/SummaryContainer'
+import PerformanceMatrix from './components/PerformanceMatrix'
 import PreVsPostTable from './components/Table'
 
 import { getUserRole } from '../../../../src/selectors/user'
@@ -19,10 +19,14 @@ import { getCsvDownloadingState } from '../../../ducks'
 import { actions, selectors } from './ducks'
 
 import dropDownData from './static/dropDownData.json'
-import { getSummaryData, getTableData } from './utils'
+import {
+  getTestNamesFromTestMetrics,
+  getSummaryDataFromSummaryMetrics,
+  getTableData,
+} from './utils'
 import { StyledSpan } from './common/styled'
 
-const { compareByOptions, analyseByOptions } = dropDownData
+const { compareByOptions: compareByOptionsRaw, analyseByOptions } = dropDownData
 
 const PreVsPostReport = ({
   location,
@@ -49,16 +53,15 @@ const PreVsPostReport = ({
     [sharedReport]
   )
 
-  const compareByDataFiltered = compareByOptions.filter(
+  const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
 
   // define states used in the report
   const [tableFilters, setTableFilters] = useState({
     compareBy:
-      compareByDataFiltered.find(
-        (o) => o.key === location?.state?.compareByKey
-      ) || compareByDataFiltered[0],
+      compareByOptions.find((o) => o.key === location?.state?.compareByKey) ||
+      compareByOptions[0],
     analyseBy: analyseByOptions[0],
   })
   const [cellBandInfo, setCellBandInfo] = useState({
@@ -108,51 +111,52 @@ const PreVsPostReport = ({
     [selectedPerformanceBand]
   )
 
-  // get summary data
-  const { summaryInfo, testInfo } = useMemo(() => {
-    const summaryData = get(reportSummaryData, 'metricInfo', [])
-    const testData = get(reportSummaryData, 'testInfo', [])
-    return { summaryInfo: summaryData, testInfo: testData }
-  }, [reportSummaryData])
+  // get summary metrics and matrix data
   const {
-    summary,
+    summaryMetricInfo,
     preTestName,
     postTestName,
     totalStudentCount,
-  } = useMemo(
-    () =>
-      getSummaryData(
-        summaryInfo,
-        testInfo,
-        sharedReportFilters || settings.requestFilters
-      ),
-    [summaryInfo, testInfo, settings.requestFilters, sharedReportFilters]
-  )
+    summaryData,
+  } = useMemo(() => {
+    const {
+      metricInfo: _summaryMetricInfo = [],
+      testInfo: _testInfo = [],
+    } = reportSummaryData
+    const _testNamesData = getTestNamesFromTestMetrics(
+      _testInfo,
+      sharedReportFilters || settings.requestFilters
+    )
+    const _summaryData = getSummaryDataFromSummaryMetrics(_summaryMetricInfo)
+    return {
+      summaryMetricInfo: _summaryMetricInfo,
+      ..._testNamesData,
+      ..._summaryData,
+    }
+  }, [reportSummaryData, settings.requestFilters, sharedReportFilters])
 
   // get table data
-  const { metricInfo = [] } = useMemo(() => reportTableData, [reportTableData])
-  const tableData = useMemo(
-    () =>
-      getTableData(
-        metricInfo,
-        selectedPerformanceBand,
-        tableFilters.compareBy.key,
-        preTestName,
-        postTestName,
-        cellBandInfo,
-        userRole
-      ),
-    [
-      metricInfo,
-      settings.requestFilters,
-      cellBandInfo,
-      tableFilters.compareBy,
+  const tableData = useMemo(() => {
+    const { metricInfo: _tableMetricInfo = [] } = reportTableData
+    const _tableData = getTableData(
+      _tableMetricInfo,
       selectedPerformanceBand,
-      userRole,
+      tableFilters.compareBy.key,
       preTestName,
       postTestName,
-    ]
-  )
+      cellBandInfo,
+      userRole
+    )
+    return _tableData
+  }, [
+    reportTableData,
+    selectedPerformanceBand,
+    tableFilters.compareBy.key,
+    preTestName,
+    postTestName,
+    cellBandInfo,
+    userRole,
+  ])
 
   // Handle add to student group
   const rowSelection = {
@@ -186,12 +190,13 @@ const PreVsPostReport = ({
     }
   }
 
-  // Handle on matrix cell click
-  const onCellClick = (preBandScore, postBandScore) => () => {
+  // handle matrix cell click
+  const onMatrixCellClick = (preBandScore, postBandScore) => () => {
     if (userRole === roleuser.TEACHER) {
+      const _compareByOption = compareByOptions.find((c) => c.key === 'student')
       setTableFilters({
         ...tableFilters,
-        compareBy: { key: 'student', title: 'Student' },
+        compareBy: _compareByOption,
       })
     }
     setCellBandInfo({ preBandScore, postBandScore })
@@ -206,7 +211,7 @@ const PreVsPostReport = ({
     )
   }
 
-  if (isEmpty(summaryInfo)) {
+  if (isEmpty(summaryMetricInfo)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -248,24 +253,25 @@ const PreVsPostReport = ({
         </Row>
       </StyledCard>
       <SummaryContainer
-        summary={summary}
+        summary={summaryData}
         preTestName={preTestName}
         postTestName={postTestName}
         totalStudentCount={totalStudentCount}
         selectedPerformanceBand={selectedPerformanceBand}
       />
-      <PreVsPostMatrix
-        matrixData={summaryInfo}
-        selectedPerformanceBand={selectedPerformanceBand}
+      <PerformanceMatrix
         preTestName={preTestName}
         postTestName={postTestName}
-        onCellClick={onCellClick}
+        totalStudentCount={totalStudentCount}
+        summaryMetricInfo={summaryMetricInfo}
+        selectedPerformanceBand={selectedPerformanceBand}
+        onMatrixCellClick={onMatrixCellClick}
       />
       <PreVsPostTable
         dataSource={tableData}
         selectedTableFilters={tableFilters}
         selectedPerformanceBand={selectedPerformanceBand}
-        compareByOptions={compareByDataFiltered}
+        compareByOptions={compareByOptions}
         analyseByOptions={analyseByOptions}
         rowSelection={rowSelection}
         setTableFilters={setTableFilters}

@@ -1,4 +1,9 @@
-import { extraDesktopWidthMax, lightGrey, grey } from '@edulastic/colors'
+import {
+  extraDesktopWidthMax,
+  lightGrey,
+  grey,
+  greyLight1,
+} from '@edulastic/colors'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable as Table } from '../../../../common/styled'
@@ -7,7 +12,7 @@ export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
       table tbody tr td {
-        border-bottom: 1px solid #e9e9e9;
+        border-bottom: 1px solid ${greyLight1};
       }
       .ant-table-thead {
         th {
@@ -53,7 +58,7 @@ export const StyledTable = styled(Table)`
 `
 
 export const CustomStyledCell = styled.div`
-  border: 0.05px solid #e8e8e8;
+  border: 0.05px solid ${greyLight1};
   height: ${(props) => props.height || '33px'};
   line-height: ${(props) => props.height || '33px'};
   width: ${(props) => props.width};
@@ -85,6 +90,7 @@ export const ArrowLarge = styled.div`
   border-${(props) => props.type}: 15px solid ${(props) =>
   props.type === 'bottom' ? '#5fad5a' : '#e55c5c'};
 `
+
 export const ArrowSmall = styled.div`
   width: 0;
   height: 0;
@@ -96,6 +102,7 @@ export const ArrowSmall = styled.div`
   border-${(props) => props.type}: 9px solid ${(props) =>
   props.type === 'bottom' ? '#5fad5a' : '#e55c5c'};
 `
+
 export const AssessmentNameContainer = styled.div`
   margin: 8px;
   & > div {
@@ -131,6 +138,7 @@ export const SummaryWrapper = styled.div`
     white-space: wrap;
   }
 `
+
 export const LegendWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
@@ -147,6 +155,7 @@ export const LegendWrapper = styled.div`
     white-space: wrap;
   }
 `
+
 export const StudentWrapper = styled.span`
   display: flex;
   flex-wrap: wrap;
@@ -178,6 +187,7 @@ export const StudentWrapper = styled.span`
     white-space: wrap;
   }
 `
+
 export const StyledRow = styled(Row)`
   margin-top: -50px;
   font-weight: 600;
@@ -185,6 +195,7 @@ export const StyledRow = styled(Row)`
   color: #6a737f;
   display: flex;
 `
+
 export const StyledCard = styled.div`
   width: 260px;
   height: 95px;
@@ -204,6 +215,7 @@ export const StyledCard = styled.div`
     margin: 20px 10px;
   }
 `
+
 export const StyledTitle = styled.div`
   height: 35px;
   line-height: 35px;
@@ -221,6 +233,7 @@ export const StyledTitle = styled.div`
     white-space: normal;
   }
 `
+
 export const StyledValue = styled.div`
   height: 59px;
   line-height: 59px;
@@ -228,7 +241,93 @@ export const StyledValue = styled.div`
   text-align: center;
   font-size: 18px;
 `
+
 export const TooltipWrapper = styled.div`
   font-size: 10px;
   font-weight: bold;
+`
+
+export const PerformanceMatrixContainer = styled(Row)`
+  padding: 50px;
+  .section-pre-test,
+  .section-post-test {
+    padding: 10px 0;
+    .section-pre-test-tag,
+    .section-post-test-tag {
+      display: block;
+      width: fit-content;
+    }
+    .section-pre-test-name,
+    .section-post-test-name {
+      padding: 7px 4px;
+    }
+  }
+  .section-pre-test {
+    position: absolute;
+    top: 50%;
+    left: -35%;
+    transform: rotate(270deg);
+  }
+  .section-matrix-grid {
+    display: grid;
+    grid: ${({ matrixSize }) =>
+      `50px repeat(${matrixSize}, 80px) / 50px repeat(${matrixSize}, 80px)`};
+    width: fit-content;
+    gaps: 1px;
+
+    .section-matrix-row,
+    .section-matrix-col {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px 0 5px;
+      .section-matrix-row-bar,
+      .section-matrix-col-bar {
+        min-width: 6px;
+        min-height: 6px;
+        border-radius: 5px;
+        width: 6px;
+        height: 54px;
+      }
+      .section-matrix-row-text,
+      .section-matrix-col-text {
+        white-space: nowrap;
+        font-size: 13px;
+        font-weight: bold;
+      }
+    }
+    .section-matrix-col {
+      padding: 10px 0;
+      flex-direction: column;
+      .section-matrix-col-bar {
+        width: 54px;
+        height: 6px;
+      }
+    }
+
+    .section-matrix-cell {
+      place-items: center;
+      place-content: center;
+      aspect-ratio: 1/1;
+      display: flex;
+      outline: 1px solid ${greyLight1};
+      text-align: center;
+      font-size: 13px;
+      font-weight: bold;
+      letter-spacing: 0.15px;
+      color: #000000;
+    }
+    .section-matrix-cell.top.left {
+      border-radius: 18px 0 0 0;
+    }
+    .section-matrix-cell.top.right {
+      border-radius: 0 18px 0 0;
+    }
+    .section-matrix-cell.bottom.right {
+      border-radius: 0 0 18px 0;
+    }
+    .section-matrix-cell.bottom.left {
+      border-radius: 0 0 0 18px;
+    }
+  }
 `

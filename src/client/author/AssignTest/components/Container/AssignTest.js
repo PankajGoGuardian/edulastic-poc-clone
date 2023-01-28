@@ -812,7 +812,6 @@ class AssignTest extends React.Component {
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
 
-    // INFO:- Moving this method down bcoz when the class is selected the method is not getting executed if placed above
     const renderHeaderButton = () => (
       <EduButton
         isBlue

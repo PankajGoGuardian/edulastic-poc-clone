@@ -714,7 +714,11 @@ class App extends Component {
                           BulkAssignNotification,
                         ]
                       : roleuser.TEACHER === userRole
-                      ? [ClassSyncNotification, ReportsNotificationListener]
+                      ? [
+                          ClassSyncNotification,
+                          ReportsNotificationListener,
+                          BulkAssignNotification,
+                        ]
                       : null
                   }
                 />

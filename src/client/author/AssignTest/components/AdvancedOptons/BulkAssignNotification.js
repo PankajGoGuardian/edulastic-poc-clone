@@ -29,6 +29,7 @@ const NotificationListener = ({ user }) => {
 
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
+      console.log('doc', doc)
       const {
         processStatus,
         statusCode,
@@ -38,31 +39,31 @@ const NotificationListener = ({ user }) => {
         playlistModuleTitle,
         playlistTitle,
       } = doc
-      if (processStatus === 'done' && !notificationIds.includes(doc.__id)) {
+      if (processStatus === 'DONE' && !notificationIds.includes(doc.__id)) {
         setNotificationIds([...notificationIds, doc.__id])
-        if (statusCode === 200) {
-          let message = `Test ${testTitle} assigned to ${totalClassesAssigned} groups`
-          if (playlistModuleTitle) {
-            message = `Playlist ${playlistTitle}: ${playlistModuleTitle} assigned to ${totalClassesAssigned} groups`
-          }
-          antdNotification({
-            type: 'success',
-            msg: message,
-            key: doc.__id,
-          })
-        } else {
-          const message = `${
-            playlistModuleId ? 'Playlist' : 'Test'
-          } ${testTitle} assign failed`
-          antdNotification({ msg: message, key: doc.__id })
+        // if (statusCode === 200) {
+        let message = `Test ${testTitle} assigned to ${totalClassesAssigned} group(s)`
+        if (playlistModuleTitle) {
+          message = `Playlist ${playlistTitle}: ${playlistModuleTitle} assigned to ${totalClassesAssigned} group(s)`
         }
+        antdNotification({
+          type: 'success',
+          msg: message,
+          key: doc.__id,
+        })
+        // } else {
+        //   const message = `${
+        //     playlistModuleId ? 'Playlist' : 'Test'
+        //   } ${testTitle} assign failed`
+        //   antdNotification({ msg: message, key: doc.__id })
+        // }
         deleteNotificationDocument(doc.__id)
       }
     })
   }
 
   useEffect(() => {
-    if (user && roleuser.DA_SA_ROLE_ARRAY.includes(user.role)) {
+    if (user) {
       showUserNotifications(userNotifications)
     }
   }, [userNotifications])

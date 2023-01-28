@@ -23,7 +23,7 @@ const createAssignmentV2 = (data) =>
       method: 'post',
       data,
     })
-    .then((result) => result.data.result)
+    .then((result) => result.data)
 
 const bulkAssign = (data) =>
   api

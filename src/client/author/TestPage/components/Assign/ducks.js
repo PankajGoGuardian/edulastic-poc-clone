@@ -962,22 +962,10 @@ function* saveV2Assignment({ payload }) {
         assignmentPayload.filters = filters
       }
     }
-    console.log('-----assignmentPayload------', assignmentPayload)
-
     const result = yield call(
       assignmentApi.createAssignmentV2,
       assignmentPayload
     )
-    console.log('-----result------', result)
-    // Let us assume that the result value is :-
-    // {
-    //     message: '...',
-    //     statuscode: 200,
-    //     assignments: [...],
-    //     error: null,
-    // }
-    // refer line 626 of saveAssignment
-
     const gSyncStatus = []
     result.assignments?.forEach((_data) => {
       if (_data.gSyncStatus) gSyncStatus.push(_data.gSyncStatus)
@@ -1175,7 +1163,6 @@ function* setAdvancedSearchClasses({ payload: _payload }) {
     }
 
     const response = yield call(groupApi.getGroups, payload)
-    console.log('response', response)
     yield put(
       setAdvancedSearchDetailsAction({
         key: 'classes',
@@ -1183,7 +1170,6 @@ function* setAdvancedSearchClasses({ payload: _payload }) {
       })
     )
   } catch (error) {
-    console.log('error', error)
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
     yield put(setAdvancedSearchDetailsAction({ key: 'classes', data: [] }))
   }

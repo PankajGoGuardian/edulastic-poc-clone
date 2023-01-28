@@ -5,6 +5,7 @@ import { ConfirmationModal } from '../../../src/components/common/ConfirmationMo
 import {
   getHasDuplicateAssignmentsSelector,
   saveAssignmentAction,
+  saveV2AssignmentAction,
   toggleHasDuplicateAssignmentPopupAction,
 } from '../../../TestPage/components/Assign/ducks'
 import { getPlaylistSelector, getTestSelector } from '../../../TestPage/ducks'
@@ -15,6 +16,7 @@ const MultipleAssignConfirmation = ({
   toggleHasDuplicateAssignmentPopup,
   entity,
   saveAssignment,
+  saveV2Assignment,
   assignment,
   moduleTitle,
 }) => {
@@ -23,7 +25,12 @@ const MultipleAssignConfirmation = ({
   const onProceed = () => {
     setSavingState(true)
     // allowCommonStudents has to be true for the second time as we have to avoid
-    saveAssignment({
+    // saveAssignment({
+    //   ...assignment,
+    //   allowCommonStudents: true,
+    //   allowDuplicates: true,
+    // })
+    saveV2Assignment({
       ...assignment,
       allowCommonStudents: true,
       allowDuplicates: true,
@@ -32,7 +39,12 @@ const MultipleAssignConfirmation = ({
 
   const onRemoveDuplicates = () => {
     setSavingState(true)
-    saveAssignment({
+    // saveAssignment({
+    //   ...assignment,
+    //   allowCommonStudents: true,
+    //   removeDuplicates: true,
+    // })
+    saveV2Assignment({
       ...assignment,
       allowCommonStudents: true,
       removeDuplicates: true,
@@ -93,6 +105,7 @@ export default connect(
   }),
   {
     saveAssignment: saveAssignmentAction,
+    saveV2Assignment: saveV2AssignmentAction,
     toggleHasDuplicateAssignmentPopup: toggleHasDuplicateAssignmentPopupAction,
   }
 )(MultipleAssignConfirmation)

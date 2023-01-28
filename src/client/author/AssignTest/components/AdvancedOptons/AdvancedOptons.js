@@ -180,7 +180,6 @@ class AdvancedOptons extends React.Component {
       classList,
     } = this.props
 
-    // INFO:- the following code is added keep the UI and selectedClassIds in sync
     const availableClassIds = classList?.map((clazz) => clazz._id)
     const classIds =
       assignment?.class

@@ -47,9 +47,14 @@ import { updateAssingnmentSettingsAction } from '../../../AssignTest/duck'
 import { receiveClassListSuccessAction } from '../../../Classes/ducks'
 
 const { completionTypes, calculatorTypes, passwordPolicy } = testContants
+const assignBehaviour = {
+  async: 'ASYNCHRONOUS_ASSIGN',
+  sync: 'SYNCHRONOUS_ASSIGN',
+}
 
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
+export const SAVE_V2_ASSIGNMENT = '[assignments] save v2 assignment'
 export const SAVE_BULK_ASSIGNMENT = '[assignments] save bulk assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
@@ -101,6 +106,7 @@ export const setAssignmentAction = createAction(SET_ASSIGNMENT)
 export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
+export const saveV2AssignmentAction = createAction(SAVE_V2_ASSIGNMENT)
 export const saveBulkAssignmentAction = createAction(SAVE_BULK_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS)
@@ -741,6 +747,356 @@ function* saveBulkAssignment({ payload }) {
   }
 }
 
+function* saveV2Assignment({ payload }) {
+  try {
+    // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
+    // Penalty true/false is set to determine the case
+    if (
+      payload.scoringType ===
+      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    ) {
+      payload.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+    }
+
+    let testIds
+    const test = yield select(getTestSelector)
+    yield put(setAssignmentSavingAction(true))
+    if (!payload.playlistModuleId && !payload.playlistId) {
+      testIds = [yield select(getTestIdSelector)].map((testId) => ({ testId }))
+    } else {
+      const playlist = yield select(getPlaylistEntitySelector)
+      testIds = []
+      if (payload.testId) {
+        testIds = [
+          { testId: payload.testId, testVersionId: payload.testVersionId },
+        ]
+      } else {
+        // can we use find instead of filter... becoz we are taking module[0]... and there will be only one match per _id
+        const module = playlist.modules.filter(
+          (m) => m._id === payload.playlistModuleId
+        )
+        if (!module || !(module && module.length)) {
+          yield put(setAssignmentSavingAction(false))
+          notification({ messageKey: 'moduleNotFoundInPlaylist' })
+          return
+        }
+        module &&
+          module[0].data.forEach((dat) => {
+            if (dat.contentType === 'test') {
+              testIds.push({
+                testId: dat.contentId,
+                testVersionId: dat.contentVersionId,
+              })
+            }
+          })
+        if (!testIds.length) {
+          yield put(setAssignmentSavingAction(false))
+          notification({ messageKey: 'noTestInModule' })
+          return
+        }
+      }
+    }
+    if (!testIds || !(testIds && testIds.length)) {
+      const entity = yield call(testsApi.create, test)
+      testIds = [entity._id]
+      yield put({
+        type: SET_TEST_DATA,
+        payload: {
+          data: entity,
+        },
+      })
+      yield put(replace(`/author/tests/${entity._id}`))
+    }
+    const name = yield select(getUserNameSelector)
+    const _id = yield select(getUserId)
+    const assignedBy = { _id, name }
+    // if no class is selected dont bother sending a request.
+    if (!payload.class.length) {
+      yield put(setAssignmentSavingAction(false))
+      return
+    }
+    const startDate = payload.startDate && moment(payload.startDate).valueOf()
+    const endDate = payload.endDate && moment(payload.endDate).valueOf()
+    const dueDate = payload.dueDate && moment(payload.dueDate).valueOf()
+
+    const userRole = yield select(getUserRole)
+    const isTestLet = testTypesConstants.TEST_TYPES.TESTLET.includes(
+      test.testType
+    )
+    const testType = isTestLet
+      ? test.testType
+      : get(payload, 'testType', test.testType)
+    // teacher can not update test content visibility.
+    const visibility = payload.testContentVisibility &&
+      userRole !== roleuser.TEACHER && {
+        testContentVisibility: payload.testContentVisibility,
+      }
+    const userId = yield select(getUserId)
+    const isAuthor = test.authors?.some((author) => author._id === userId)
+    if (test.freezeSettings && !isAuthor) {
+      delete payload.performanceBand
+      delete payload.standardGradingScale
+    }
+    const features = yield select(getUserFeatures)
+    const {
+      allowCommonStudents,
+      allowDuplicates,
+      removeDuplicates,
+      class: classesSelected,
+      ...assignmentSettings
+    } = payload
+
+    let containsCanvasClass = classesSelected.some((clazz) => clazz.canvasData)
+
+    if (features.free && !features.premium) {
+      assignmentSettings.maxAttempts = 1
+      assignmentSettings.markAsDone = completionTypes.AUTOMATICALLY
+      assignmentSettings.safeBrowser = false
+      assignmentSettings.shuffleAnswers = false
+      assignmentSettings.shuffleQuestions = false
+      assignmentSettings.calcType = calculatorTypes.NONE
+      assignmentSettings.answerOnPaper = false
+      assignmentSettings.maxAnswerChecks = 0
+      assignmentSettings.passwordPolicy =
+        passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF
+      assignmentSettings.timedAssignment = false
+      assignmentSettings.showRubricToStudents = false
+    }
+
+    const referenceDocAttributes =
+      assignmentSettings.referenceDocAttributes || test.referenceDocAttributes
+    const refMatOptUpdated = yield select(getTestsUpdatedSelector)
+    const isEnabledRefMaterial = yield select(isEnabledRefMaterialSelector)
+
+    if (
+      (!isEmpty(referenceDocAttributes) && isEnabledRefMaterial) ||
+      (!isEmpty(referenceDocAttributes) && !refMatOptUpdated)
+    ) {
+      assignmentSettings.referenceDocAttributes = referenceDocAttributes
+    } else {
+      assignmentSettings.referenceDocAttributes = {}
+    }
+    // Missing termId notify
+    if (!assignmentSettings.termId) {
+      Sentry.captureException(
+        new Error('[Assignments] missing termId in assigned assignment.')
+      )
+      Sentry.withScope((scope) => {
+        scope.setExtra('assignmentPayload', { ...assignmentSettings, userId })
+      })
+    }
+
+    const assignments = testIds.map(({ testId, testVersionId }) => {
+      return omit(
+        {
+          ...assignmentSettings,
+          ...visibility,
+          testId,
+          testVersionId,
+          assignedBy,
+          startDate,
+          endDate,
+          dueDate,
+          testType,
+        },
+        [
+          '_id',
+          '__v',
+          'createdAt',
+          'updatedAt',
+          'students',
+          'scoreReleasedClasses',
+          'googleAssignmentIds',
+          // the following will not be present since we are destructing it in the beginning.
+          'class',
+          'allowCommonStudents',
+          'removeDuplicates',
+          'allowDuplicates',
+        ]
+      )
+    })
+
+    const duplicatesAndCommonStudentsSettings = {
+      allowCommonStudents: !!allowCommonStudents,
+      removeDuplicates: !!removeDuplicates,
+      allowDuplicates: !!allowDuplicates,
+    }
+
+    const assignmentPayload = {
+      assignments,
+      duplicatesAndCommonStudentsSettings,
+    }
+    const isAllClassSelected = yield select(getIsAllClassSelectedSelector)
+
+    if (userRole === roleuser.TEACHER) {
+      const groups = classesSelected.map((clazz) => clazz._id)
+      const students = classesSelected.some((clazz) => clazz.students)
+        ? classesSelected.map((clazz) => {
+            return { groupId: clazz._id, studentsToAssign: clazz.students }
+          })
+        : []
+      assignmentPayload.filters = {
+        groups,
+        ...(!isEmpty(students) ? { students } : {}),
+      }
+    } else if (!isAllClassSelected) {
+      assignmentPayload.filters = {
+        groups: classesSelected.map((clazz) => clazz._id),
+      }
+    } else {
+      const isAdvancedSearchSelected = yield select(
+        getIsAdvancedSearchSelectedSelector
+      )
+      if (isAdvancedSearchSelected) {
+        assignmentPayload.query = yield select(getAdvancedSearchFilterSelector)
+      } else {
+        const searchTermsFilter = yield select(getSearchTermsFilterSelector)
+        const filters = {
+          schools: searchTermsFilter.institutionIds,
+          grades: searchTermsFilter.grades,
+          subjects: searchTermsFilter.subjects,
+          groupType: searchTermsFilter.classType,
+          courses: searchTermsFilter.courseIds,
+          tags: searchTermsFilter.tags,
+        }
+        assignmentPayload.filters = filters
+      }
+    }
+    console.log('-----assignmentPayload------', assignmentPayload)
+
+    const result = yield call(
+      assignmentApi.createAssignmentV2,
+      assignmentPayload
+    )
+    console.log('-----result------', result)
+    // Let us assume that the result value is :-
+    // {
+    //     message: '...',
+    //     statuscode: 200,
+    //     assignments: [...],
+    //     error: null,
+    // }
+    // refer line 626 of saveAssignment
+
+    const gSyncStatus = []
+    result.assignments?.forEach((_data) => {
+      if (_data.gSyncStatus) gSyncStatus.push(_data.gSyncStatus)
+      delete _data.gSyncStatus
+    })
+    const assignment = result?.assignments[0]
+      ? formatAssignment(result.assignments[0])
+      : {}
+    yield put({ type: SET_ASSIGNMENT, payload: assignment })
+    yield put({
+      type: UPDATE_CURRENT_EDITING_ASSIGNMENT,
+      payload: assignment,
+    })
+    yield put(setAssignmentSavingAction(false))
+    yield put(toggleHasCommonAssignmentsPopupAction(false))
+    yield put(toggleHasDuplicateAssignmentPopupAction(false))
+
+    const prevLocState = yield select((state) => state.router.location.state)
+    // if there are no previous location , by default redirect to tests
+    let locationState = { fromText: 'TEST LIBRARY', toUrl: '/author/tests' }
+    if (prevLocState?.fromText && prevLocState?.toUrl) {
+      locationState = prevLocState
+    }
+
+    if (result.message === assignBehaviour.sync) {
+      const assignmentId = assignment._id
+      const createdAt = assignment.createdAt
+      const googleId = get(assignment, 'class[0].googleId', '')
+      if (!assignmentId && !payload.playlistModuleId) {
+        yield put(push('/author/assignments'))
+      }
+      if (payload.playlistModuleId && !payload.testId) {
+        notification({
+          type: 'success',
+          messageKey: 'PlaylistAssignedSuccessfully',
+        })
+      }
+      if (gSyncStatus.length) {
+        notification({
+          type: 'warn',
+          messageKey: 'shareWithGoogleClassroomFailed',
+        })
+      }
+      const isAdminRole = [
+        roleuser.SCHOOL_ADMIN,
+        roleuser.DISTRICT_ADMIN,
+      ].includes(userRole)
+      if (containsCanvasClass) {
+        if (isAdminRole) {
+          notification({
+            type: 'success',
+            messageKey: 'assignmentsWillBeSharedToCanvasINSometime',
+          })
+        } else
+          notification({
+            type: 'success',
+            messageKey: 'asignmentSharedTOCanvasClassAlso',
+          })
+      }
+      if (!assignmentId && !payload.playlistModuleId) return
+      yield put(
+        push({
+          pathname: `/author/${
+            payload.playlistModuleId ? 'playlists' : 'tests'
+          }/${
+            payload.playlistModuleId ? payload.playlistId : testIds[0].testId
+          }/assign/${assignmentId}`,
+          state: {
+            ...locationState,
+            assignedTestId: payload.testId,
+            playlistModuleId: payload.playlistModuleId,
+            createdAt,
+            googleId,
+          },
+        })
+      )
+    } else if (result.message === assignBehaviour.async) {
+      yield put(
+        push({
+          pathname: `/author/${
+            payload.playlistModuleId ? 'playlists' : 'tests'
+          }/${
+            payload.playlistModuleId ? payload.playlistId : testIds[0].testId
+          }/async-assign`,
+          state: {
+            ...locationState,
+            assignedTestId: payload.testId,
+            playlistModuleId: payload.playlistModuleId,
+          },
+        })
+      )
+    }
+  } catch (err) {
+    console.error('error for save assignment', err)
+    // enable button if call fails
+    yield put(setAssignmentSavingAction(false))
+    if (err.status === 409) {
+      if (err.response.data?.commonStudents?.length) {
+        return yield put(updateAssignFailDataAction(err.response.data))
+      }
+      return yield put(toggleHasDuplicateAssignmentPopupAction(true))
+    }
+    yield put(toggleHasCommonAssignmentsPopupAction(false))
+    yield put(toggleHasDuplicateAssignmentPopupAction(false))
+    if (
+      err.status === 403 &&
+      err.response.data.message === 'NO_CLASS_FOUND_AFTER_REMOVING_DUPLICATES'
+    ) {
+      yield put(updateAssingnmentSettingsAction({ class: [] }))
+      return notification({
+        msg:
+          'No classes found after removing the duplicates. Select one or more to assign.',
+      })
+    }
+    const errorMessage = err.response?.data?.message || 'Something went wrong'
+    notification({ msg: errorMessage })
+  }
+}
+
 function* loadAssignments({ payload }) {
   try {
     let testId
@@ -788,7 +1144,10 @@ function* setAdvancedSearchSchools() {
     const districtId = yield select(getUserOrgId)
     const schools = yield call(schoolApi.getSchools, { districtId })
     yield put(
-      setAdvancedSearchDetailsAction({ key: 'schools', data: schools.data })
+      setAdvancedSearchDetailsAction({
+        key: 'schools',
+        data: schools?.data || [],
+      })
     )
   } catch (error) {
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
@@ -816,10 +1175,15 @@ function* setAdvancedSearchClasses({ payload: _payload }) {
     }
 
     const response = yield call(groupApi.getGroups, payload)
+    console.log('response', response)
     yield put(
-      setAdvancedSearchDetailsAction({ key: 'classes', data: response.hits })
+      setAdvancedSearchDetailsAction({
+        key: 'classes',
+        data: response?.hits || [],
+      })
     )
   } catch (error) {
+    console.log('error', error)
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
     yield put(setAdvancedSearchDetailsAction({ key: 'classes', data: [] }))
   }
@@ -841,7 +1205,10 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
 
     const response = yield call(courseApi.searchCourse, payload)
     yield put(
-      setAdvancedSearchDetailsAction({ key: 'courses', data: response.result })
+      setAdvancedSearchDetailsAction({
+        key: 'courses',
+        data: response?.result || [],
+      })
     )
   } catch (error) {
     notification({ messageKey: 'somethingWentPleaseTryAgain' })
@@ -864,7 +1231,7 @@ function* setAdvancedSearchTags({ payload: _payload }) {
     yield put(
       setAdvancedSearchDetailsAction({
         key: 'tags',
-        data: tags?.hits?.hits,
+        data: tags?.hits?.hits || [],
       })
     )
   } catch (error) {
@@ -889,6 +1256,7 @@ function* advancedSearchRequest({ payload }) {
 export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
+    yield takeLatest(SAVE_V2_ASSIGNMENT, saveV2Assignment),
     yield takeLatest(SAVE_BULK_ASSIGNMENT, saveBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),

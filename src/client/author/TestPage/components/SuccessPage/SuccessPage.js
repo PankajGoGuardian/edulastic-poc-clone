@@ -135,9 +135,9 @@ class SuccessPage extends React.Component {
   }
 
   componentWillUnmount() {
-    const { isAssignSuccess, removeTestEntity } = this.props
+    const { isAssignSuccess, isAsyncAssign, removeTestEntity } = this.props
     this.timer && clearTimeout(this.timer)
-    if (isAssignSuccess) removeTestEntity()
+    if (isAssignSuccess || isAsyncAssign) removeTestEntity()
   }
 
   handleAssign = () => {
@@ -185,6 +185,7 @@ class SuccessPage extends React.Component {
     const {
       isAssignSuccess,
       isRegradeSuccess,
+      isAsyncAssign,
       history,
       location,
       regradedAssignments,
@@ -199,7 +200,7 @@ class SuccessPage extends React.Component {
     }
     return (
       <>
-        {(isAssignSuccess || isRegradeSuccess) && (
+        {(isAssignSuccess || isRegradeSuccess || isAsyncAssign) && (
           <EduButton
             isBlue
             isGhost
@@ -213,8 +214,13 @@ class SuccessPage extends React.Component {
         )}
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <EduButton isBlue data-cy="assignButton" onClick={handleClick}>
-              {isAssignSuccess || isRegradeSuccess
+            <EduButton
+              isBlue
+              data-cy="assignButton"
+              onClick={handleClick}
+              disabled={isAsyncAssign}
+            >
+              {isAssignSuccess || isRegradeSuccess || isAsyncAssign
                 ? 'Go to Live Classboard'
                 : 'ASSIGN'}
             </EduButton>
@@ -260,6 +266,7 @@ class SuccessPage extends React.Component {
       playlist,
       isAssignSuccess,
       isRegradeSuccess,
+      isAsyncAssign,
       assignment = {},
       userId,
       collections,
@@ -287,6 +294,7 @@ class SuccessPage extends React.Component {
         ? 'In-Progress'
         : 'Not-Open'
     const isOwner = authors.some((o) => o._id === userId)
+    const isOwnerAndNotAsyncAssign = isOwner && !isAsyncAssign
     const playlistBreadCrumbData = [
       {
         title: 'MY PLAYLIST',
@@ -297,7 +305,7 @@ class SuccessPage extends React.Component {
         to: `/author/playlists/${_id}#review`,
       },
       {
-        title: `${isAssignSuccess ? 'ASSIGN' : 'PUBLISH'}`,
+        title: `${isAssignSuccess || isAsyncAssign ? 'ASSIGN' : 'PUBLISH'}`,
         to: '',
       },
     ]
@@ -327,7 +335,7 @@ class SuccessPage extends React.Component {
         to: `/author/tests/${_id}#review`,
       },
       {
-        title: `${isAssignSuccess ? 'ASSIGN' : 'PUBLISH'}`,
+        title: `${isAssignSuccess || isAsyncAssign ? 'ASSIGN' : 'PUBLISH'}`,
         to: '',
       },
     ]
@@ -417,9 +425,14 @@ class SuccessPage extends React.Component {
             />
           </SecondHeader>
           <FlexContainerWrapper
-            isAssignSuccess={isAssignSuccess || isRegradeSuccess}
+            isAssignSuccess={
+              isAssignSuccess || isRegradeSuccess || isAsyncAssign
+            }
           >
-            {(isAssignSuccess || isRegradeSuccess || published) && (
+            {(isAssignSuccess ||
+              isRegradeSuccess ||
+              isAsyncAssign ||
+              published) && (
               <FlexContainerWrapperLeft>
                 <ImageCard
                   _source={isPlaylist ? playlist : test}
@@ -430,8 +443,35 @@ class SuccessPage extends React.Component {
               </FlexContainerWrapperLeft>
             )}
             <FlexContainerWrapperRight
-              isAssignSuccess={isAssignSuccess || isRegradeSuccess}
+              isAssignSuccess={
+                isAssignSuccess || isRegradeSuccess || isAsyncAssign
+              }
             >
+              {isAsyncAssign && (
+                <>
+                  <FlexTitle>Success!</FlexTitle>
+                  <FlexTextWrapper isAsyncAssign={isAsyncAssign}>
+                    Assigning is In Progress. You wil get notification on
+                    completion.
+                  </FlexTextWrapper>
+
+                  {/* <FlexTextWrapper>
+                    {`Test
+                    ${moduleTitle || title} has been assigned to students`}
+                  </FlexTextWrapper>
+                  <FlexText>
+                    You can monitor student progress and responses using the
+                    Live Class Board&nbsp;
+                    <span
+                      onClick={this.handleAssign}
+                      style={{ color: themeColor, cursor: 'pointer' }}
+                    >
+                      Click here
+                    </span>
+                  </FlexText> */}
+                  <Divider />
+                </>
+              )}
               {isAssignSuccess && (
                 <>
                   <FlexTitle>Success!</FlexTitle>
@@ -534,7 +574,7 @@ class SuccessPage extends React.Component {
                   <Divider />
                 </>
               )}
-              {isOwner && (
+              {isOwnerAndNotAsyncAssign && (
                 <>
                   <FlexTitle>Share With Others</FlexTitle>
                   <FlexTextWrapper>
@@ -544,7 +584,7 @@ class SuccessPage extends React.Component {
                 </>
               )}
               <FlexShareContainer>
-                {isOwner && (
+                {isOwnerAndNotAsyncAssign && (
                   <>
                     <FlexShareTitle>Shared With</FlexShareTitle>
                     <FlexShareWithBox
@@ -579,7 +619,7 @@ class SuccessPage extends React.Component {
                     </FlexShareWithBox>
                   </>
                 )}
-                {isOwner && (
+                {isOwnerAndNotAsyncAssign && (
                   <FlexText
                     style={{
                       fontSize: '13px',
@@ -587,7 +627,7 @@ class SuccessPage extends React.Component {
                       color: darkGrey,
                     }}
                   >
-                    Click on &nbsp;
+                    Click on&nbsp;
                     <span
                       onClick={this.onShareModalChange}
                       style={{ color: themeColor, cursor: 'pointer' }}
@@ -605,28 +645,32 @@ class SuccessPage extends React.Component {
                     </TitleCopy>
                   </FlexShareBox>
                 </FlexWrapperUrlBox>
-                {isAssignSuccess && isGoogleClassroomAssigned && (
-                  <FlexWrapperClassroomBox>
-                    <FlexTitleBox>
-                      <FlexShareTitle>
-                        Share with Google Classroom
-                      </FlexShareTitle>
-                      <FlexShareMessage>
-                        Click on Google Classroom button to share the assignment
-                      </FlexShareMessage>
-                    </FlexTitleBox>
-                    <EduButton
-                      isGhost
-                      data-cy="Share with Google Classroom"
-                      onClick={this.shareWithGoogleClassroom}
-                      disabled={
-                        syncWithGoogleClassroomInProgress || !shareWithGCEnable
-                      }
-                    >
-                      Google Classroom
-                    </EduButton>
-                  </FlexWrapperClassroomBox>
-                )}
+                {isAssignSuccess &&
+                  !isAsyncAssign &&
+                  isGoogleClassroomAssigned && (
+                    <FlexWrapperClassroomBox>
+                      <FlexTitleBox>
+                        <FlexShareTitle>
+                          Share with Google Classroom
+                        </FlexShareTitle>
+                        <FlexShareMessage>
+                          Click on Google Classroom button to share the
+                          assignment
+                        </FlexShareMessage>
+                      </FlexTitleBox>
+                      <EduButton
+                        isGhost
+                        data-cy="Share with Google Classroom"
+                        onClick={this.shareWithGoogleClassroom}
+                        disabled={
+                          syncWithGoogleClassroomInProgress ||
+                          !shareWithGCEnable
+                        }
+                      >
+                        Google Classroom
+                      </EduButton>
+                    </FlexWrapperClassroomBox>
+                  )}
               </FlexShareContainer>
             </FlexContainerWrapperRight>
           </FlexContainerWrapper>

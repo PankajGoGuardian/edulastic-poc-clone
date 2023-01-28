@@ -206,13 +206,13 @@ const _QueryBuilder = ({
 
   const fields = [
     {
-      name: 'institutionId',
+      name: 'institutionIds',
       label: 'Schools',
       valueEditorType: 'multiselect',
       values: schoolData.data,
     },
     {
-      name: 'course.id',
+      name: 'courseIds',
       label: 'Courses',
       valueEditorType: 'multiselect',
       values: courseData.data,
@@ -228,7 +228,7 @@ const _QueryBuilder = ({
       })),
     },
     {
-      name: 'subject.keyword',
+      name: 'subjects',
       label: 'Subjects',
       valueEditorType: 'multiselect',
       values: selectsData.allSubjects.map((item) => ({
@@ -237,7 +237,7 @@ const _QueryBuilder = ({
       })),
     },
     {
-      name: 'type',
+      name: 'groupType',
       label: 'Show Class/Groups',
       valueEditorType: 'select',
       operators: [
@@ -247,13 +247,13 @@ const _QueryBuilder = ({
       values: classGroup,
     },
     {
-      name: '_id',
+      name: 'groupIds',
       label: 'Classes',
       valueEditorType: 'multiselect',
       values: classData.data,
     },
     {
-      name: 'tags._id',
+      name: 'tagIds',
       label: 'Tags',
       valueEditorType: 'multiselect',
       values: tagData.data,

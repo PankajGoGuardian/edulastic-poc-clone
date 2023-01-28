@@ -175,6 +175,8 @@ export const FlexTextWrapper = styled.div`
   margin-bottom: 35px;
   color: ${darkGrey2};
   opacity: 1;
+  background-color: ${(props) => props.isAsyncAssign && 'yellow'};
+  font-weight: ${(props) => props.isAsyncAssign && 900};
 `
 export const FlexText = styled.div`
   margin-bottom: 8px;

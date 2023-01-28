@@ -42,6 +42,7 @@ import {
   isAdvancedSearchLoadingSelector,
   loadAssignmentsAction,
   saveAssignmentAction,
+  saveV2AssignmentAction,
 } from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
@@ -349,6 +350,7 @@ class AssignTest extends React.Component {
   handleAssign = () => {
     const {
       saveAssignment,
+      saveV2Assignment,
       isAssigning,
       assignmentSettings: assignment,
       location,
@@ -377,7 +379,8 @@ class AssignTest extends React.Component {
         if (source) {
           segmentApi.genericEventTrack('AssessmentAssigned', { source })
         }
-        saveAssignment(updatedAssignment)
+        // saveAssignment(updatedAssignment)
+        saveV2Assignment(updatedAssignment)
       }
     }
   }
@@ -1046,6 +1049,7 @@ const enhance = compose(
       fetchAssignments: fetchAssignmentsAction,
       setAssignments: loadAssignmentsAction,
       saveAssignment: saveAssignmentAction,
+      saveV2Assignment: saveV2AssignmentAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
@@ -1077,6 +1081,7 @@ AssignTest.propTypes = {
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
   saveAssignment: PropTypes.func.isRequired,
+  saveV2Assignment: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   testItem: PropTypes.object.isRequired,
   fetchTestByID: PropTypes.func.isRequired,

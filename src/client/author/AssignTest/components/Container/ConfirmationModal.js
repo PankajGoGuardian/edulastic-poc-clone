@@ -11,6 +11,7 @@ import {
   getCommonStudentsSelector,
   getHasCommonStudensSelector,
   saveAssignmentAction,
+  saveV2AssignmentAction,
   toggleHasCommonAssignmentsPopupAction,
 } from '../../../TestPage/components/Assign/ducks'
 import { Paragraph } from './styled'
@@ -19,6 +20,7 @@ const ProceedConfirmation = ({
   hasCommonStudents,
   toggleCommonAssignmentsConfirmation,
   saveAssignment,
+  saveV2Assignment,
   assignment,
   commonStudents,
   t,
@@ -27,7 +29,8 @@ const ProceedConfirmation = ({
 
   const onProceed = () => {
     setSavingState(true)
-    saveAssignment({ ...assignment, allowCommonStudents: true })
+    // saveAssignment({ ...assignment, allowCommonStudents: true })
+    saveV2Assignment({ ...assignment, allowCommonStudents: true })
   }
 
   const onCancel = () => {
@@ -112,6 +115,7 @@ const withConnect = connect(
   {
     toggleCommonAssignmentsConfirmation: toggleHasCommonAssignmentsPopupAction,
     saveAssignment: saveAssignmentAction,
+    saveV2Assignment: saveV2AssignmentAction,
   }
 )
 

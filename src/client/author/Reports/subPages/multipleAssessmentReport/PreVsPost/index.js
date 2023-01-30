@@ -25,7 +25,7 @@ import {
   getSummaryDataFromSummaryMetrics,
   getTableData,
 } from './utils'
-import { StyledSpan, StyledIconAlert } from './common/styled'
+import { StyledSpan, StyledIconAlert } from './common/styledComponents'
 
 const { compareByOptions: compareByOptionsRaw, analyseByOptions } = dropDownData
 

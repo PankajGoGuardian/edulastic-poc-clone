@@ -16,7 +16,7 @@ import {
   StyledContainer,
   TestTypeTag,
   StyledRow,
-} from '../common/styled'
+} from '../common/styledComponents'
 import PreVsPostLegend from './Legend'
 
 const SummaryContainer = ({

@@ -10,7 +10,7 @@ import {
 import { map } from 'lodash'
 import { percentage } from '@edulastic/constants/reportUtils/common'
 import { Tooltip } from 'antd'
-import { StyledHorizontalStackedBarChartContainer } from '../common/styled'
+import { StyledHorizontalStackedBarChartContainer } from '../common/styledComponents'
 
 const renderCustomizedLabel = (studentsCount, color) => (props) => {
   const { value, x, y, width, height } = props

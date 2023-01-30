@@ -1,7 +1,7 @@
 import React from 'react'
 import { Row, Tag } from 'antd'
 
-import { PerformanceMatrixContainer } from '../../common/styled'
+import { PerformanceMatrixContainer } from '../../common/styledComponents'
 import PerformanceMatrixColumnHeader from './PerformanceMatrixColumnHeader'
 import PerformanceMatrixRowHeader from './PerformanceMatrixRowHeader'
 import PerformanceMatrixCell from './PerformanceMatrixCell'

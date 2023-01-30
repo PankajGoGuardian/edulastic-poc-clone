@@ -16,7 +16,7 @@ import {
   ArrowSmall as Arrow,
   TestTypeTag,
   StyledRow,
-} from '../common/styled'
+} from '../common/styledComponents'
 
 const onCsvConvert = (data) =>
   downloadCSV(`Pre Vs Post Test Comparison.csv`, data)

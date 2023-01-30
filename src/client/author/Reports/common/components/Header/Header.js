@@ -106,13 +106,18 @@ const CustomizedHeaderWrapper = ({
         ))
     : null
   // todo: replace routes titles with constant values.
-  const hideShareIcon =
-    title === 'Engagement Summary' ||
-    title === 'Activity by School' ||
-    title === 'Activity by Teacher' ||
-    title === 'Performance by Rubric Criteria'
-  const hideDownloadIcon =
-    title === 'Engagement Summary' || title === 'Pre vs Post Test Comparison'
+  const ReportsWithHiddenShareIcon = [
+    'Engagement Summary',
+    'Activity by School',
+    'Activity by Teacher',
+    'Performance by Rubric Criteria',
+  ]
+  const ReportsWithHiddenDownCSVIcon = [
+    'Engagement Summary',
+    'Pre vs Post Test Comparison',
+  ]
+  const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
+  const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)
 
   const showCSVDocsDownloadButton = title === 'Standard Reports' && hasCsvDocs
 

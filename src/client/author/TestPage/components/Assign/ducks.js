@@ -846,7 +846,9 @@ function* saveV2Assignment({ payload }) {
       ...assignmentSettings
     } = payload
 
-    let containsCanvasClass = classesSelected.some((clazz) => clazz.canvasData)
+    const containsCanvasClass = classesSelected.some(
+      (clazz) => clazz.canvasData
+    )
 
     if (features.free && !features.premium) {
       assignmentSettings.maxAttempts = 1
@@ -955,7 +957,10 @@ function* saveV2Assignment({ payload }) {
           schools: searchTermsFilter.institutionIds,
           grades: searchTermsFilter.grades,
           subjects: searchTermsFilter.subjects,
-          groupType: searchTermsFilter.classType,
+          groupType:
+            searchTermsFilter.classType === 'all'
+              ? undefined
+              : searchTermsFilter.classType,
           courses: searchTermsFilter.courseIds,
           tags: searchTermsFilter.tags,
         }

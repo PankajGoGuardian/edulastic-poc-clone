@@ -25,7 +25,11 @@ import {
   getSummaryDataFromSummaryMetrics,
   getTableData,
 } from './utils'
-import { StyledSpan, StyledIconAlert } from './common/styledComponents'
+import {
+  StyledSpan,
+  StyledIconAlert,
+  PreVsPostReportContainer,
+} from './common/styledComponents'
 
 const { compareByOptions: compareByOptionsRaw, analyseByOptions } = dropDownData
 
@@ -78,7 +82,10 @@ const PreVsPostReport = ({
 
   // get report data
   useEffect(() => {
-    const q = { ...settings.requestFilters, ...ddfilter }
+    const q = {
+      ...settings.requestFilters,
+      ...ddfilter,
+    }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
@@ -236,7 +243,7 @@ const PreVsPostReport = ({
     return <DataSizeExceeded />
   }
   return (
-    <>
+    <PreVsPostReportContainer>
       <FeaturesSwitch
         inputFeatures="studentGroups"
         actionOnInaccessible="hidden"
@@ -293,7 +300,7 @@ const PreVsPostReport = ({
         isCsvDownloading={isCsvDownloading}
         handleAddToGroupClick={handleAddToGroupClick}
       />
-    </>
+    </PreVsPostReportContainer>
   )
 }
 

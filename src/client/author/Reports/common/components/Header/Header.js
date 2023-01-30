@@ -9,6 +9,7 @@ import styled from 'styled-components'
 import { themeColor, smallDesktopWidth, tabletWidth } from '@edulastic/colors'
 import { EduButton, MainHeader, withWindowSizes } from '@edulastic/common'
 import { IconBarChart, IconMoreVertical } from '@edulastic/icons'
+import { reportNavType } from '@edulastic/constants/const/report'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
 import HeaderNavigation from './HeaderNavigation'
 
@@ -106,15 +107,25 @@ const CustomizedHeaderWrapper = ({
         ))
     : null
   // todo: replace routes titles with constant values.
+  const {
+    ENGAGEMENT_SUMMARY,
+    ACTIVITY_BY_SCHOOL,
+    ACTIVITY_BY_TEACHER,
+    PERFORMANCE_BY_RUBRICS_CRITERIA,
+    PRE_VS_POST_TEST_COMPARISON,
+  } = reportNavType
+
+  const reportTypes = navigation.locToData
+
   const ReportsWithHiddenShareIcon = [
-    'Engagement Summary',
-    'Activity by School',
-    'Activity by Teacher',
-    'Performance by Rubric Criteria',
+    reportTypes[ENGAGEMENT_SUMMARY].title,
+    reportTypes[ACTIVITY_BY_SCHOOL].title,
+    reportTypes[ACTIVITY_BY_TEACHER].title,
+    reportTypes[PERFORMANCE_BY_RUBRICS_CRITERIA].title,
   ]
   const ReportsWithHiddenDownCSVIcon = [
-    'Engagement Summary',
-    'Pre vs Post Test Comparison',
+    reportTypes[ENGAGEMENT_SUMMARY].title,
+    reportTypes[PRE_VS_POST_TEST_COMPARISON].title,
   ]
   const hideShareIcon = ReportsWithHiddenShareIcon.includes(title)
   const hideDownloadIcon = ReportsWithHiddenDownCSVIcon.includes(title)

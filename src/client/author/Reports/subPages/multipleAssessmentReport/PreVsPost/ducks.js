@@ -66,7 +66,7 @@ export const { actions, reducer } = slice
 function* fetchReportSummaryDataRequestSaga({ payload }) {
   try {
     const isValidTestIds = validatePreAndPostTestIds(payload)
-    if (!isValidTestIds) {
+    if (!isValidTestIds && !payload.reportId) {
       const msg = 'Please select different pre and post tests from dropdown'
       yield put(
         actions.fetchReportSummaryDataRequestError({
@@ -104,7 +104,7 @@ function* fetchReportSummaryDataRequestSaga({ payload }) {
 function* fetchPreVsPostReportTableDataRequestSaga({ payload }) {
   try {
     const isValidTestIds = validatePreAndPostTestIds(payload)
-    if (!isValidTestIds) {
+    if (!isValidTestIds && !payload.reportId) {
       yield put(
         actions.fetchPreVsPostReportTableDataRequestError({
           error: { msg: 'InvalidTestIds' },

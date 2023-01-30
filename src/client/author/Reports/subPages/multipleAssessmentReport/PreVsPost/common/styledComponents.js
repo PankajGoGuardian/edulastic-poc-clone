@@ -12,6 +12,13 @@ import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable as Table } from '../../../../common/styled'
 
+export const PreVsPostReportContainer = styled.div`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`
+
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
     .ant-table-scroll {
@@ -77,8 +84,6 @@ export const CustomStyledCell = styled.div`
   align-items: center;
   text-overflow: ellipsis;
   @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
     white-space: wrap;
   }
 `
@@ -122,11 +127,6 @@ export const TestTypeTag = styled.span`
   font-weight: bold;
   font-size: 12px;
   margin-bottom: 10px;
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const StyledSpan = styled.span`
@@ -142,11 +142,6 @@ export const SummaryWrapper = styled.div`
   padding: 8px 0px;
   background-color: ${lightGrey};
   border-radius: 0px 0px 20px 20px;
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const LegendWrapper = styled.div`
@@ -159,16 +154,10 @@ export const LegendWrapper = styled.div`
   border-width: 0.5px 0.5px 0px 0.5px;
   border-radius: 20px 20px 0px 0px;
   padding: 20px 20px;
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const StudentWrapper = styled.span`
   display: flex;
-  flex-wrap: wrap;
   width: fit-content;
   margin-right: auto;
   margin-left: 0px;
@@ -191,15 +180,10 @@ export const StudentWrapper = styled.span`
     font-size: 12px;
     font-weight: 600;
   }
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const StyledRow = styled(Row)`
-  margin-block: 30px;
+  margin-block: 40px;
 `
 
 export const StyledCard = styled.div`
@@ -270,6 +254,7 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 
 export const PerformanceMatrixContainer = styled(Row)`
   padding: 50px;
+  margin-block: -60px;
   .section-pre-test,
   .section-post-test {
     padding: 10px 0;

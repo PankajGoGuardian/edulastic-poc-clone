@@ -22,7 +22,7 @@ import { StyledPreviewImage } from './styled/StyledPreviewImage'
 import { StyledDisplayContainer } from './styled/StyledDisplayContainer'
 import { TemplateBoxContainer } from './styled/TemplateBoxContainer'
 import { TemplateBoxLayoutContainer } from './styled/TemplateBoxLayoutContainer'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import {
   getFontSize,
   topAndLeftRatio,
@@ -522,12 +522,12 @@ class Display extends Component {
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper>
+            <QuestionStimulusWrapper>
               <Stimulus
                 smallSize={smallSize}
                 dangerouslySetInnerHTML={{ __html: question }}
               />
-            </QuestionTitleWrapper>
+            </QuestionStimulusWrapper>
 
             <TemplateBoxContainer
               smallSize={smallSize}

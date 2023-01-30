@@ -27,7 +27,7 @@ import {
 } from '../../constants/constantsForQuestions'
 
 import { ValidList } from './constants/validList'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
 
@@ -129,11 +129,11 @@ const EssayRichTextPreview = ({
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper data-cy="questionTitle">
+          <QuestionStimulusWrapper data-cy="questionStimulus">
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}
-          </QuestionTitleWrapper>
+          </QuestionStimulusWrapper>
           <EssayRichTextContainer
             reduceWidth={
               isStudentAttempt && isFeedbackVisible ? '150px' : '0px'

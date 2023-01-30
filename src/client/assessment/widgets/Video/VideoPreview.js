@@ -13,19 +13,19 @@ import Fullscreen from './styled/Fullscreen'
 import MuteUnmute from './styled/MuteUnmute'
 import SeekBar from './styled/SeekBar'
 import Volume from './styled/Volume'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionNumberWrapper } from './styled/QuestionNumber'
 import VideoPreviewErrorBoundary from './components/ErrorBoundary'
 
 const { CurrentTime, Duration } = controls
 
-const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
+const VideoPreview = ({ item, showQuestionNumber }) => (
   <div>
-    <QuestionTitleWrapper>
+    <QuestionNumberWrapper>
       {showQuestionNumber && (
         <QuestionNumberLabel>{item.qLabel}:</QuestionNumberLabel>
       )}
       {item.heading && <Subtitle>{item.heading}</Subtitle>}
-    </QuestionTitleWrapper>
+    </QuestionNumberWrapper>
     {item.summary && <Label data-cy="videoSummary">{item.summary}</Label>}
     {item && item.uiStyle && (
       <VideoPreviewErrorBoundary>
@@ -36,7 +36,8 @@ const VideoPreview = ({ item, showQuestionNumber, qIndex }) => (
                 className={`media-player${
                   isFullscreen ? ' media-player--fullscreen' : ''
                 }`}
-                tabIndex="0"
+                role="button"
+                tabIndex={0}
               >
                 <Player
                   poster={item.uiStyle.posterImage}
@@ -91,11 +92,9 @@ VideoPreview.propTypes = {
     }).isRequired,
   }).isRequired,
   showQuestionNumber: PropTypes.bool,
-  qIndex: PropTypes.number,
 }
 VideoPreview.defaultProps = {
   showQuestionNumber: false,
-  qIndex: null,
 }
 
 export default VideoPreview

@@ -25,7 +25,7 @@ import BlockContainer from './styled/BlockContainer'
 import { Svg } from './styled/Svg'
 import { Polygon } from './styled/Polygon'
 import { getFontSize } from '../../utils/helpers'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { ImageContainer } from './styled/ImageContainer'
 import { StyledPaperWrapper } from '../../styled/Widget'
 
@@ -111,14 +111,14 @@ const HotspotPreview = ({
           )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper>
+          <QuestionStimulusWrapper>
             {view === PREVIEW && !smallSize && (
               <Stimulus
                 data-cy="stimulus"
                 dangerouslySetInnerHTML={{ __html: item.stimulus }}
               />
             )}
-          </QuestionTitleWrapper>
+          </QuestionStimulusWrapper>
 
           <BlockContainer
             data-cy="hotspotMap"

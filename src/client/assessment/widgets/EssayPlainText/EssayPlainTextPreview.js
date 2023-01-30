@@ -29,7 +29,7 @@ import { Toolbar } from '../../styled/Toolbar'
 import { Item } from '../../styled/Item'
 
 import { ToolbarItem } from './styled/ToolbarItem'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import {
   preventEvent,
   getFontSize,
@@ -243,11 +243,11 @@ const EssayPlainTextPreview = ({
         </QuestionLabelWrapper>
 
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper data-cy="questionTitle">
+          <QuestionStimulusWrapper data-cy="questionTitle">
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}
-          </QuestionTitleWrapper>
+          </QuestionStimulusWrapper>
 
           <EssayPlainTextBoxContainer
             reduceWidth={

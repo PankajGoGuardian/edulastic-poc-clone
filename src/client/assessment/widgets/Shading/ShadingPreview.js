@@ -15,7 +15,7 @@ import {
 } from '@edulastic/common'
 import { getFormattedAttrId } from '@edulastic/common/src/helpers'
 import { withNamespaces } from '@edulastic/localization'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import {
   PREVIEW,
   BY_LOCATION_METHOD,
@@ -171,14 +171,14 @@ const ShadingPreview = ({
           )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper>
+          <QuestionStimulusWrapper>
             {view === PREVIEW && !smallSize && (
               <Stimulus
                 data-cy="stimulus"
                 dangerouslySetInnerHTML={{ __html: item.stimulus }}
               />
             )}
-          </QuestionTitleWrapper>
+          </QuestionStimulusWrapper>
           <FlexContainer
             alignItems="flex-start"
             flexDirection="column"

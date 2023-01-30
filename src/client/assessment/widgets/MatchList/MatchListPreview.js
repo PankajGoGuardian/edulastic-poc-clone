@@ -30,9 +30,9 @@ import {
   CLEAR,
   EDIT,
 } from '../../constants/constantsForQuestions'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
 import { getFontSize, getDirection } from '../../utils/helpers'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import { CheckboxLabel } from '../../styled/CheckboxWithLabel'
 import { storeOrderInRedux } from '../../actions/assessmentPlayer'
@@ -409,11 +409,11 @@ const MatchListPreview = ({
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper data-cy="questionTitle">
+            <QuestionStimulusWrapper data-cy="questionStimulus">
               {!smallSize && view === PREVIEW && (
                 <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
               )}
-            </QuestionTitleWrapper>
+            </QuestionStimulusWrapper>
             <div
               data-cy="previewWrapper"
               style={wrapperStyle}

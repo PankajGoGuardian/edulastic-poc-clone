@@ -9,11 +9,10 @@ import {
   QuestionContentWrapper,
 } from '@edulastic/common'
 
-import { MathEssayInputWrapper } from './styled'
-
 import MathEssayInput from './MathEssayInput'
 
-import { QuestionTitleWrapper } from '../styled/QustionNumber'
+import { QuestionStimulusWrapper } from '../styled/QuestionStimulus'
+import { MathEssayInputWrapper } from '../styled/MathEssayInputWrapper'
 import Instructions from '../../../components/Instructions'
 
 const FormulaEssayPreview = ({
@@ -39,12 +38,12 @@ const FormulaEssayPreview = ({
       </QuestionLabelWrapper>
 
       <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-        <QuestionTitleWrapper>
+        <QuestionStimulusWrapper>
           <MathFormulaDisplay
             style={{ marginBottom: 15 }}
             dangerouslySetInnerHTML={{ __html: item.stimulus }}
           />
-        </QuestionTitleWrapper>
+        </QuestionStimulusWrapper>
         <MathEssayInput
           disableResponse={disableResponse}
           item={item}

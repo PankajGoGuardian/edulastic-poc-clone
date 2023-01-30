@@ -16,7 +16,7 @@ import {
 import { isEmpty } from 'lodash'
 import { white, lightGrey12, greyThemeDark4 } from '@edulastic/colors'
 import Instructions from '../../../components/Instructions'
-import { QuestionTitleWrapper } from '../styled/QustionNumber'
+import { QuestionStimulusWrapper } from '../styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../../styled/Widget'
 import FilesView from './FilesView'
 import Uploader from './Uploader'
@@ -69,9 +69,9 @@ const UploadFilePreview = ({
           )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper>
+          <QuestionStimulusWrapper>
             <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
-          </QuestionTitleWrapper>
+          </QuestionStimulusWrapper>
 
           <FilesView files={item.files} hideDelete cols={3} />
 

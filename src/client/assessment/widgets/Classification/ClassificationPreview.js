@@ -34,7 +34,7 @@ import {
   getDirection,
   getJustification,
 } from '../../utils/helpers'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../styled/Widget'
 
 import { ResponseContainer } from './components/ResponseContainer'
@@ -357,14 +357,14 @@ const ClassificationPreview = ({
   const { maxWidth: colTitleMaxWidth } = getMaxMinWidth(
     colTitles.map((title) => ({ value: title }))
   )
-  const choiceWdith = Math.max(choiceMaxWidth, colTitleMaxWidth)
+  const choiceWidth = Math.max(choiceMaxWidth, colTitleMaxWidth)
 
   const dragItemSize = {
     maxWidth: dragItemMaxWidth,
     minWidth: dragItemMinWidth,
     minHeight: choiceDefaultMinH,
     maxHeight: 'auto', // Changing max height to auto, to avoid trimmed image
-    width: choiceWdith + 10,
+    width: choiceWidth + 10,
   }
 
   const dragItemProps = {
@@ -430,7 +430,7 @@ const ClassificationPreview = ({
   )
   const tableContent = rowCount > 1 ? tableLayout : dragLayout
 
-  const classificationPreviewComponent = !!choiceWdith && (
+  const classificationPreviewComponent = !!choiceWidth && (
     <StyledPaperWrapper
       data-cy="classificationPreview"
       style={{ fontSize }}
@@ -460,9 +460,9 @@ const ClassificationPreview = ({
           }}
         >
           {!smallSize && view === PREVIEW && (
-            <QuestionTitleWrapper>
+            <QuestionStimulusWrapper>
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-            </QuestionTitleWrapper>
+            </QuestionStimulusWrapper>
           )}
           <div
             data-cy="classificationPreviewWrapper"

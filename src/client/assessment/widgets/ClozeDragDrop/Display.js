@@ -24,7 +24,7 @@ import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout'
 import ResponseBoxLayout from './components/ResponseBoxLayout'
 import TemplateBox from './components/TemplateBox'
 import { AnswerContainer } from './styled/AnswerContainer'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { getFontSize } from '../../utils/helpers'
 import MathSpanWrapper from '../../components/MathSpanWrapper'
 import Instructions from '../../components/Instructions'
@@ -559,9 +559,9 @@ class ClozeDragDropDisplay extends Component {
             </QuestionLabelWrapper>
 
             <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-              <QuestionTitleWrapper>
+              <QuestionStimulusWrapper>
                 {!question && questionContent}
-              </QuestionTitleWrapper>
+              </QuestionStimulusWrapper>
               {question && questionContent}
               {view !== EDIT && <Instructions item={item} />}
               {answerBox}

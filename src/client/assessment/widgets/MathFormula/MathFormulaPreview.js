@@ -25,7 +25,7 @@ import CorrectAnswerBox, {
 import { UnitsDropdown } from './components/MathFormulaAnswerMethod/options'
 
 import MathInputWrapper from './styled/MathInputWrapper'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 
 import { getStylesFromUiStyleToCssStyle } from '../../utils/helpers'
 import Instructions from '../../components/Instructions'
@@ -325,13 +325,13 @@ class MathFormulaPreview extends Component {
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper data-cy="questionTitleWrapper">
+            <QuestionStimulusWrapper data-cy="questionStimulus">
               <MathFormulaDisplay
                 data-cy="preview-header"
                 style={{ marginBottom: 15 }}
                 dangerouslySetInnerHTML={{ __html: item.stimulus }}
               />
-            </QuestionTitleWrapper>
+            </QuestionStimulusWrapper>
             {testItem && (
               <FlexContainer
                 alignItems="stretch"

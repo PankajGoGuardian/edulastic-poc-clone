@@ -32,7 +32,7 @@ import { Addon } from './styled/Addon'
 import CharacterMap from '../../components/CharacterMap'
 import CorrectAswerBox from './components/CorrectAswerBox'
 import { InputWrapper } from './styled/InputWrapper'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../styled/Widget'
 
 const ShortTextPreview = ({
@@ -122,11 +122,11 @@ const ShortTextPreview = ({
           )}
         </QuestionLabelWrapper>
         <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-          <QuestionTitleWrapper>
+          <QuestionStimulusWrapper>
             {view === PREVIEW && !smallSize && (
               <Stimulus dangerouslySetInnerHTML={{ __html: item.stimulus }} />
             )}
-          </QuestionTitleWrapper>
+          </QuestionStimulusWrapper>
           {smallSize && (
             <SmallContainer>
               <SmallStim bold>

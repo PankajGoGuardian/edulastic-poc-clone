@@ -35,7 +35,7 @@ import { FlexCol } from './styled/FlexCol'
 import { IconUp } from './styled/IconUp'
 import { IconDown } from './styled/IconDown'
 import { getFontSize } from '../../utils/helpers'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import { Container } from './styled/Container'
 import { checkAnswerInProgressSelector } from '../../selectors/test'
@@ -332,11 +332,11 @@ const SortListPreview = ({
           </QuestionLabelWrapper>
 
           <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-            <QuestionTitleWrapper>
+            <QuestionStimulusWrapper>
               {stimulus && !smallSize && (
                 <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
               )}
-            </QuestionTitleWrapper>
+            </QuestionStimulusWrapper>
 
             <Container style={contentStyle}>
               <FlexContainer

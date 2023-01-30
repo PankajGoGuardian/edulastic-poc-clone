@@ -23,7 +23,7 @@ import {
 } from '@edulastic/common'
 import { clozeImage, ChoiceDimensions } from '@edulastic/constants'
 
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import ResponseContainers from './components/ResponseContainers'
 import ResponseBoxLayout from './components/ResponseBoxLayout'
 import CheckboxTemplateBoxLayout from './components/CheckboxTemplateBoxLayout'
@@ -832,12 +832,12 @@ class Display extends Component {
               )}
             </QuestionLabelWrapper>
             <QuestionContentWrapper showQuestionNumber={showQuestionNumber}>
-              <QuestionTitleWrapper>
+              <QuestionStimulusWrapper>
                 <Stimulus
                   smallSize={smallSize}
                   dangerouslySetInnerHTML={{ __html: question }}
                 />
-              </QuestionTitleWrapper>
+              </QuestionStimulusWrapper>
               {responseposition === 'top' && (
                 <div style={containerStyle}>
                   <StyledContainer>

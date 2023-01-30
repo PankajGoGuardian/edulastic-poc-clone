@@ -1,5 +1,5 @@
 import styled from 'styled-components'
 
-export const QuestionTitleWrapper = styled.div`
+export const QuestionNumberWrapper = styled.div`
   display: flex;
 `

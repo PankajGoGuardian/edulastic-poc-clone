@@ -34,7 +34,7 @@ import {
   getDirection,
   getJustification,
 } from '../../utils/helpers'
-import { QuestionTitleWrapper } from './styled/QustionNumber'
+import { QuestionStimulusWrapper } from './styled/QuestionStimulus'
 import { StyledPaperWrapper } from '../../styled/Widget'
 
 import { ResponseContainer } from './components/ResponseContainer'
@@ -500,9 +500,9 @@ const PreviewPictograph = ({
           }}
         >
           {!smallSize && view === PREVIEW && (
-            <QuestionTitleWrapper>
+            <QuestionStimulusWrapper>
               <Stimulus dangerouslySetInnerHTML={{ __html: stimulus }} />
-            </QuestionTitleWrapper>
+            </QuestionStimulusWrapper>
           )}
           <div
             data-cy="classificationPreviewWrapper"

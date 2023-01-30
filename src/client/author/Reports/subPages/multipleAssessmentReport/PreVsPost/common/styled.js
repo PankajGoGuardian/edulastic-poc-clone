@@ -3,7 +3,11 @@ import {
   lightGrey,
   grey,
   greyLight1,
+  white,
+  darkRed,
+  greenDark4 as green,
 } from '@edulastic/colors'
+import { IconAlertCircle } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable as Table } from '../../../../common/styled'
@@ -115,8 +119,14 @@ export const TestTypeTag = styled.span`
   background-color: ${grey};
   padding: 2px 4px;
   border-radius: 5px;
+  font-weight: bold;
   font-size: 12px;
   margin-bottom: 10px;
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+    white-space: wrap;
+  }
 `
 
 export const StyledSpan = styled.span`
@@ -189,11 +199,7 @@ export const StudentWrapper = styled.span`
 `
 
 export const StyledRow = styled(Row)`
-  margin-top: -50px;
-  font-weight: 600;
-  font-size: 11px;
-  color: #6a737f;
-  display: flex;
+  margin-block: 30px;
 `
 
 export const StyledCard = styled.div`
@@ -245,6 +251,21 @@ export const StyledValue = styled.div`
 export const TooltipWrapper = styled.div`
   font-size: 10px;
   font-weight: bold;
+`
+
+export const StyledContainer = styled.div`
+  display: flex;
+  margin-top: 30px;
+`
+
+export const StyledHorizontalStackedBarChartContainer = styled.div`
+  margin: 10px 30px;
+`
+
+export const StyledIconAlert = styled(IconAlertCircle)`
+  align: center;
+  margin-block: auto;
+  margin-right: 12px;
 `
 
 export const PerformanceMatrixContainer = styled(Row)`

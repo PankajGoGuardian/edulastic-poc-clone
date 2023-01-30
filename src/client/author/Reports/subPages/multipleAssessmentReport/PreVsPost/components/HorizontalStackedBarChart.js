@@ -14,18 +14,18 @@ import { StyledHorizontalStackedBarChartContainer } from '../common/styled'
 
 const renderCustomizedLabel = (studentsCount, color) => (props) => {
   const { value, x, y, width, height } = props
-  const labelText =
-    value == 0 ? '' : `${percentage(value, studentsCount, true)}%`
+  const labelText = percentage(value, studentsCount, true)
   const fill = labelText <= 10 ? color : ''
+  const labelToRender = labelText == 0 ? '' : `${labelText}%`
   return (
     <Tooltip title={labelText}>
       <text
         fontSize="10px"
         fill={fill}
-        x={x + width / 2 - 12}
+        x={x + width / 2 - 10}
         y={y + height / 2 + 4}
       >
-        {`${labelText}`}
+        {`${labelToRender}`}
       </text>
     </Tooltip>
   )

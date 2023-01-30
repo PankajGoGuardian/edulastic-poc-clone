@@ -1,7 +1,7 @@
 import { darkGrey, grey } from '@edulastic/colors'
 import { percentage } from '@edulastic/constants/reportUtils/common'
 import { IconInfo, IconStudent } from '@edulastic/icons'
-import { Tooltip, Typography, Row } from 'antd'
+import { Tooltip, Typography } from 'antd'
 import { get } from 'lodash'
 import React from 'react'
 import { DashedLine } from '../../../../common/styled'
@@ -14,6 +14,8 @@ import {
   StyledTitle,
   TooltipWrapper,
   StyledContainer,
+  TestTypeTag,
+  StyledRow,
 } from '../common/styled'
 import PreVsPostLegend from './Legend'
 
@@ -74,12 +76,12 @@ const SummaryContainer = ({
 
   return (
     <>
-      <Row type="flex" style={{ marginTop: '20px' }}>
-        <Typography.Title style={{ margin: 0 }} level={4}>
+      <StyledRow type="flex">
+        <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
           Avg Score Comparison
         </Typography.Title>
         <DashedLine dashColor={darkGrey} />
-      </Row>
+      </StyledRow>
 
       <StyledContainer>
         <StudentWrapper>
@@ -95,7 +97,8 @@ const SummaryContainer = ({
         <StyledCard>
           <Tooltip title={preTestName}>
             <StyledTitle color={preTestAvgBandColor}>
-              Pre: {preTestName}
+              <TestTypeTag>PRE</TestTypeTag>&nbsp;
+              {preTestName}
             </StyledTitle>
           </Tooltip>
           <div className="value">
@@ -106,7 +109,7 @@ const SummaryContainer = ({
         <StyledCard>
           <Tooltip title={postTestName}>
             <StyledTitle color={postTestAvgBandColor}>
-              Post: {postTestName}
+              <TestTypeTag>POST</TestTypeTag>&nbsp;{postTestName}
             </StyledTitle>
           </Tooltip>
           <div className="value">

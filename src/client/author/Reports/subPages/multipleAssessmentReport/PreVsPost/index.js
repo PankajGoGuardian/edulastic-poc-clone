@@ -5,7 +5,7 @@ import { Row } from 'antd'
 
 import { notification, SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
-import { black, themeColor } from '@edulastic/colors'
+import { fadedBlack, themeColor } from '@edulastic/colors'
 
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
@@ -25,7 +25,7 @@ import {
   getSummaryDataFromSummaryMetrics,
   getTableData,
 } from './utils'
-import { StyledSpan } from './common/styled'
+import { StyledSpan, StyledIconAlert } from './common/styled'
 
 const { compareByOptions: compareByOptionsRaw, analyseByOptions } = dropDownData
 
@@ -70,7 +70,6 @@ const PreVsPostReport = ({
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
-  const [showTestFilterWarning, setShowTestFilterWarning] = useState(false)
 
   // reset report component on every render
   useEffect(() => {
@@ -81,20 +80,8 @@ const PreVsPostReport = ({
   useEffect(() => {
     const q = { ...settings.requestFilters, ...ddfilter }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
-      const { preTestId, postTestId } = settings.requestFilters
-      if (
-        (preTestId !== '' && postTestId !== '' && preTestId !== postTestId) ||
-        sharedReport
-      ) {
-        setShowTestFilterWarning(false)
-        fetchReportSummaryDataRequest(q)
-        return () => toggleFilter(null, false)
-      }
-      setShowTestFilterWarning(true)
-      notification({
-        type: 'info',
-        msg: 'Please select different pre and post tests from the dropdowns.',
-      })
+      fetchReportSummaryDataRequest(q)
+      return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
 
@@ -105,14 +92,8 @@ const PreVsPostReport = ({
       compareBy: tableFilters.compareBy.key,
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
-      const { preTestId, postTestId } = settings.requestFilters
-      if (
-        (preTestId !== '' && postTestId !== '' && preTestId !== postTestId) ||
-        sharedReport
-      ) {
-        fetchPreVsPostReportTableDataRequest(q)
-        return () => toggleFilter(null, false)
-      }
+      fetchPreVsPostReportTableDataRequest(q)
+      return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters, tableFilters.compareBy])
 
@@ -243,7 +224,7 @@ const PreVsPostReport = ({
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId
-          ? showTestFilterWarning
+          ? error.msg === 'InvalidTestIds'
             ? ''
             : 'No data available currently.'
           : ''}
@@ -274,12 +255,12 @@ const PreVsPostReport = ({
           </StyledH3>
         </Row>
         <Row type="flex">
-          <StyledIconInfo fill={themeColor} />
-          <span>
+          <StyledIconAlert fill={themeColor} />
+          <span style={{ fontSize: '12px' }}>
             This report compares the student performance on the choosen two
             assessments.
             <br />
-            <StyledSpan font="bold" color={black}>
+            <StyledSpan font="bold" color={fadedBlack}>
               Only students that have results for both assessments are included.
             </StyledSpan>
           </span>

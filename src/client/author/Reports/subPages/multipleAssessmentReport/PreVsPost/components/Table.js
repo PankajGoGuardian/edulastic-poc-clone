@@ -15,6 +15,7 @@ import {
   StyledTable,
   ArrowSmall as Arrow,
   TestTypeTag,
+  StyledRow,
 } from '../common/styled'
 
 const onCsvConvert = (data) =>
@@ -24,11 +25,11 @@ const onCsvConvert = (data) =>
 const getTestName = (record) => (
   <Row justify="center">
     <AssessmentNameContainer>
-      <TestTypeTag>pre</TestTypeTag>
+      <TestTypeTag>PRE</TestTypeTag>
       <div className="test-name">{record.preTestName}</div>
     </AssessmentNameContainer>
     <AssessmentNameContainer>
-      <TestTypeTag>post</TestTypeTag>
+      <TestTypeTag>POST</TestTypeTag>
       <div className="test-name">{record.postTestName}</div>
     </AssessmentNameContainer>
   </Row>
@@ -275,8 +276,8 @@ const PreVsPostTable = ({
   )
   return (
     <StyledCard>
-      <Row type="flex" justify="space-between" style={{ marginBottom: '30px' }}>
-        <Typography.Title style={{ margin: 0 }} level={4}>
+      <StyledRow type="flex" justify="space-between">
+        <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
           Performance Change By {selectedTableFilters.compareBy.title}
         </Typography.Title>
         <DashedLine dashColor={darkGrey} />
@@ -288,7 +289,7 @@ const PreVsPostTable = ({
           selectedTableFilters={selectedTableFilters}
           setCellBandInfo={setCellBandInfo}
         />
-      </Row>
+      </StyledRow>
       <CsvTable
         dataSource={dataSource}
         columns={tableColumns}

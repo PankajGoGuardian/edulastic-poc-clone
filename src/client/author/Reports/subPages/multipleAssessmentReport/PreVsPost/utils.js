@@ -14,6 +14,7 @@ import {
   maxBy,
   get,
   range,
+  isEmpty,
 } from 'lodash'
 
 const HSL_COLOR_GREEN = [116, 34, 52]
@@ -49,6 +50,14 @@ const groupByCompareByKey = (metricInfo, compareBy) => {
     default:
       return {}
   }
+}
+
+// utility function to validate pre and post testIds
+export const validatePreAndPostTestIds = (payload) => {
+  const { preTestId, postTestId } = payload
+  if (isEmpty(preTestId) || isEmpty(postTestId) || preTestId === postTestId)
+    return false
+  return true
 }
 
 // get test names from summary api metrics

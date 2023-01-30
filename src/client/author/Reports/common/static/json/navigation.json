@@ -190,7 +190,7 @@
           "to": "/author/reports/"
         },
         {
-          "title": "PRE VS POST TEST COMPARISON"
+          "title": "PRE VS POST TEST"
         }
       ],
       "group": "multipleAssessmentReport",
@@ -438,7 +438,7 @@
       },
       {
         "key": "pre-vs-post-test-comparison",
-        "title": "Pre vs Post Test Comparison",
+        "title": "Pre vs Post Test",
         "location": "/author/reports/pre-vs-post-test-comparison"
       }
     ],

@@ -1,7 +1,12 @@
 import React from 'react'
-import { Row, Tag } from 'antd'
+import { Row, Typography } from 'antd'
 
-import { PerformanceMatrixContainer } from '../../common/styled'
+import { darkGrey } from '@edulastic/colors'
+import {
+  PerformanceMatrixContainer,
+  StyledRow,
+  TestTypeTag,
+} from '../../common/styledComponents'
 import PerformanceMatrixColumnHeader from './PerformanceMatrixColumnHeader'
 import PerformanceMatrixRowHeader from './PerformanceMatrixRowHeader'
 import PerformanceMatrixCell from './PerformanceMatrixCell'
@@ -10,6 +15,7 @@ import {
   getPerformanceMatrixColors,
   getPerformanceMatrixData,
 } from '../../utils'
+import { DashedLine } from '../../../../../common/styled'
 
 const PerformanceMatrix = ({
   preTestName,
@@ -73,28 +79,36 @@ const PerformanceMatrix = ({
   })
 
   return (
-    <PerformanceMatrixContainer matrixSize={matrixSize}>
-      <Row type="flex" justify="center">
-        <div className="section-post-test">
-          <Tag className="section-post-test-tag">POST</Tag>
-          <span className="section-post-test-name">{postTestName}</span>
-        </div>
-      </Row>
-      <Row type="flex" justify="center">
-        <div style={{ position: 'relative' }}>
-          <div className="section-pre-test">
-            <Tag className="section-pre-test-tag">PRE</Tag>
-            <span className="section-pre-test-name">{preTestName}</span>
+    <>
+      <StyledRow type="flex">
+        <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
+          Performance Band Movement
+        </Typography.Title>
+        <DashedLine dashColor={darkGrey} />
+      </StyledRow>
+      <PerformanceMatrixContainer matrixSize={matrixSize}>
+        <Row type="flex" justify="center">
+          <div className="section-post-test">
+            <TestTypeTag className="section-post-test-tag">POST</TestTypeTag>
+            <span className="section-post-test-name">{postTestName}</span>
           </div>
-          <div className="section-matrix-grid">
-            {/* empty div required to complete the matrix */}
-            <div />
-            {postTestColumnHeaders}
-            {preVsPostRows}
+        </Row>
+        <Row type="flex" justify="center">
+          <div style={{ position: 'relative' }}>
+            <div className="section-pre-test">
+              <TestTypeTag className="section-pre-test-tag">PRE</TestTypeTag>
+              <span className="section-pre-test-name">{preTestName}</span>
+            </div>
+            <div className="section-matrix-grid">
+              {/* empty div required to complete the matrix */}
+              <div />
+              {postTestColumnHeaders}
+              {preVsPostRows}
+            </div>
           </div>
-        </div>
-      </Row>
-    </PerformanceMatrixContainer>
+        </Row>
+      </PerformanceMatrixContainer>
+    </>
   )
 }
 

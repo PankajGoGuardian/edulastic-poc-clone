@@ -7,6 +7,7 @@ import { call, put, all, takeLatest } from 'redux-saga/effects'
 import { reportsApi } from '@edulastic/api'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { validatePreAndPostTestIds } from './utils'
 
 const initialState = {
   loadingReportSummaryData: false,
@@ -64,6 +65,17 @@ export const { actions, reducer } = slice
 
 function* fetchReportSummaryDataRequestSaga({ payload }) {
   try {
+    const isValidTestIds = validatePreAndPostTestIds(payload)
+    if (!isValidTestIds && !payload.reportId) {
+      const msg = 'Please select different pre and post tests from dropdown'
+      yield put(
+        actions.fetchReportSummaryDataRequestError({
+          error: { msg: 'InvalidTestIds' },
+        })
+      )
+      notification({ type: 'info', msg })
+      return
+    }
     const reportSummaryData = yield call(
       reportsApi.fetchPreVsPostReportSummaryData,
       payload
@@ -84,13 +96,22 @@ function* fetchReportSummaryDataRequestSaga({ payload }) {
     console.log('err', error.stack)
     const msg =
       'Error fetching Pre Vs Post Test Comparison report data. Please try again after a few minutes.'
-    notification({ msg })
+    notification({ type: 'error', msg })
     yield put(actions.fetchReportSummaryDataRequestError({ error: msg }))
   }
 }
 
 function* fetchPreVsPostReportTableDataRequestSaga({ payload }) {
   try {
+    const isValidTestIds = validatePreAndPostTestIds(payload)
+    if (!isValidTestIds && !payload.reportId) {
+      yield put(
+        actions.fetchPreVsPostReportTableDataRequestError({
+          error: { msg: 'InvalidTestIds' },
+        })
+      )
+      return
+    }
     const reportTableData = yield call(
       reportsApi.fetchPreVsPostReportTableData,
       payload
@@ -111,7 +132,7 @@ function* fetchPreVsPostReportTableDataRequestSaga({ payload }) {
     console.log('err', error.stack)
     const msg =
       'Error fetching Pre Vs Post Test Comparison report data. Please try again after a few minutes.'
-    notification({ msg })
+    notification({ type: 'error', msg })
     yield put(actions.fetchPreVsPostReportTableDataRequestError({ error: msg }))
   }
 }
@@ -155,18 +176,12 @@ const reportTableData = createSelector(
 )
 const error = createSelector(stateSelector, (state) => state.error)
 
-const resetPreVsPostReport = createSelector(
-  stateSelector,
-  (state) => state.resetPreVsPostReport
-)
-
 export const selectors = {
   loadingReportSummaryData,
   loadingReportTableData,
   reportSummaryData,
   reportTableData,
   error,
-  resetPreVsPostReport,
 }
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //

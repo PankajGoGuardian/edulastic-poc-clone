@@ -1,18 +1,22 @@
 import React from 'react'
 import { flatMap, map } from 'lodash'
 import PropTypes from 'prop-types'
-import { Row } from 'antd'
-import { StyledCard, StyledH3, StyledCell } from '../../../../common/styled'
+import { Row, Typography } from 'antd'
+import { darkGrey } from '@edulastic/colors'
+
 import { downloadCSV } from '../../../../common/util'
 import CsvTable from '../../../../common/components/tables/CsvTable'
 import TableFilters from './filters/TableFilters'
 import HorizontalStackedBarChart from './HorizontalStackedBarChart'
+
+import { StyledCard, StyledCell, DashedLine } from '../../../../common/styled'
 import {
   AssessmentNameContainer,
   StyledTable,
   ArrowSmall as Arrow,
   TestTypeTag,
-} from '../common/styled'
+  StyledRow,
+} from '../common/styledComponents'
 
 const onCsvConvert = (data) =>
   downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
@@ -21,11 +25,11 @@ const onCsvConvert = (data) =>
 const getTestName = (record) => (
   <Row justify="center">
     <AssessmentNameContainer>
-      <TestTypeTag>pre</TestTypeTag>
+      <TestTypeTag>PRE</TestTypeTag>
       <div className="test-name">{record.preTestName}</div>
     </AssessmentNameContainer>
     <AssessmentNameContainer>
-      <TestTypeTag>post</TestTypeTag>
+      <TestTypeTag>POST</TestTypeTag>
       <div className="test-name">{record.postTestName}</div>
     </AssessmentNameContainer>
   </Row>
@@ -158,13 +162,11 @@ const getTableColumns = (
               data={[record.preBandProfile]}
               studentsCount={record.studentsCount}
               selectedPerformanceBand={selectedPerformanceBand}
-              selectedAnalyseBy={analyseBy}
             />
             <HorizontalStackedBarChart
               data={[record.postBandProfile]}
               studentsCount={record.studentsCount}
               selectedPerformanceBand={selectedPerformanceBand}
-              selectedAnalyseBy={analyseBy}
             />
           </div>
         )
@@ -274,8 +276,11 @@ const PreVsPostTable = ({
   )
   return (
     <StyledCard>
-      <Row type="flex" justify="space-between" style={{ marginBottom: '20px' }}>
-        <StyledH3>Performance trend and Change summary</StyledH3>
+      <StyledRow type="flex" justify="space-between">
+        <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
+          Performance Change By {selectedTableFilters.compareBy.title}
+        </Typography.Title>
+        <DashedLine dashColor={darkGrey} />
         <TableFilters
           setTableFilters={setTableFilters}
           compareByOptions={compareByOptions}
@@ -284,7 +289,7 @@ const PreVsPostTable = ({
           selectedTableFilters={selectedTableFilters}
           setCellBandInfo={setCellBandInfo}
         />
-      </Row>
+      </StyledRow>
       <CsvTable
         dataSource={dataSource}
         columns={tableColumns}

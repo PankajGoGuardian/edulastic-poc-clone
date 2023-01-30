@@ -3,10 +3,21 @@ import {
   lightGrey,
   grey,
   greyLight1,
+  white,
+  darkRed,
+  greenDark4 as green,
 } from '@edulastic/colors'
+import { IconAlertCircle } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable as Table } from '../../../../common/styled'
+
+export const PreVsPostReportContainer = styled.div`
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
+`
 
 export const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -73,8 +84,6 @@ export const CustomStyledCell = styled.div`
   align-items: center;
   text-overflow: ellipsis;
   @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
     white-space: wrap;
   }
 `
@@ -82,25 +91,25 @@ export const CustomStyledCell = styled.div`
 export const ArrowLarge = styled.div`
   width: 0;
   height: 0;
-  margin-top: -38px;
+  margin-top: -36px;
   margin-left: 155px;
   border-collapse: separate;
   border-left: 8px solid transparent;
   border-right: 8px solid transparent;
   border-${(props) => props.type}: 15px solid ${(props) =>
-  props.type === 'bottom' ? '#5fad5a' : '#e55c5c'};
+  props.type === 'bottom' ? green : darkRed};
 `
 
 export const ArrowSmall = styled.div`
   width: 0;
   height: 0;
-  margin-top: 4px;
+  margin-top: 5px;
   margin-left: 5px;
   border-collapse: separate;
   border-left: 5px solid transparent;
   border-right: 5px solid transparent;
   border-${(props) => props.type}: 9px solid ${(props) =>
-  props.type === 'bottom' ? '#5fad5a' : '#e55c5c'};
+  props.type === 'bottom' ? green : darkRed};
 `
 
 export const AssessmentNameContainer = styled.div`
@@ -115,6 +124,7 @@ export const TestTypeTag = styled.span`
   background-color: ${grey};
   padding: 2px 4px;
   border-radius: 5px;
+  font-weight: bold;
   font-size: 12px;
   margin-bottom: 10px;
 `
@@ -132,11 +142,6 @@ export const SummaryWrapper = styled.div`
   padding: 8px 0px;
   background-color: ${lightGrey};
   border-radius: 0px 0px 20px 20px;
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const LegendWrapper = styled.div`
@@ -149,16 +154,10 @@ export const LegendWrapper = styled.div`
   border-width: 0.5px 0.5px 0px 0.5px;
   border-radius: 20px 20px 0px 0px;
   padding: 20px 20px;
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const StudentWrapper = styled.span`
   display: flex;
-  flex-wrap: wrap;
   width: fit-content;
   margin-right: auto;
   margin-left: 0px;
@@ -181,30 +180,21 @@ export const StudentWrapper = styled.span`
     font-size: 12px;
     font-weight: 600;
   }
-  @media print {
-    -webkit-print-color-adjust: exact;
-    color-adjust: exact;
-    white-space: wrap;
-  }
 `
 
 export const StyledRow = styled(Row)`
-  margin-top: -50px;
-  font-weight: 600;
-  font-size: 11px;
-  color: #6a737f;
-  display: flex;
+  margin-block: 40px;
 `
 
 export const StyledCard = styled.div`
   width: 260px;
-  height: 95px;
+  height: 100px;
   border-radius: 20px;
-  background-color: #ffffff;
+  background-color: ${white};
   margin: 20px 50px;
   .value {
-    height: 60px;
-    line-height: 60px;
+    height: 55px;
+    line-height: 55px;
     text-align: center;
     font-size: 18px;
   }
@@ -217,13 +207,13 @@ export const StyledCard = styled.div`
 `
 
 export const StyledTitle = styled.div`
-  height: 35px;
-  line-height: 35px;
-  font-size: 10px;
+  height: 42px;
+  font-size: 12px;
   border-radius: 20px 20px 0px 0px;
   background-color: ${({ color }) => color};
   font-weight: bold;
   padding-inline: 10px;
+  padding-top: 12px;
   text-align: center;
   align-items: center;
   white-space: nowrap;
@@ -247,8 +237,24 @@ export const TooltipWrapper = styled.div`
   font-weight: bold;
 `
 
+export const StyledContainer = styled.div`
+  display: flex;
+  margin-top: 30px;
+`
+
+export const StyledHorizontalStackedBarChartContainer = styled.div`
+  margin: 10px 30px;
+`
+
+export const StyledIconAlert = styled(IconAlertCircle)`
+  align: center;
+  margin-block: auto;
+  margin-right: 12px;
+`
+
 export const PerformanceMatrixContainer = styled(Row)`
   padding: 50px;
+  margin-block: -60px;
   .section-pre-test,
   .section-post-test {
     padding: 10px 0;

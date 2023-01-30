@@ -5,6 +5,7 @@ const PerformanceMatrixCell = ({ key, className, text, color, onClick }) => {
     <div
       style={{
         backgroundColor: color,
+        cursor: 'pointer',
       }}
       key={key}
       className={`section-matrix-cell ${className}`}

@@ -5,6 +5,7 @@ import { Row } from 'antd'
 
 import { notification, SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { fadedBlack, themeColor } from '@edulastic/colors'
 
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import FeaturesSwitch from '../../../../../features/components/FeaturesSwitch'
@@ -24,7 +25,11 @@ import {
   getSummaryDataFromSummaryMetrics,
   getTableData,
 } from './utils'
-import { StyledSpan } from './common/styled'
+import {
+  StyledSpan,
+  StyledIconAlert,
+  PreVsPostReportContainer,
+} from './common/styledComponents'
 
 const { compareByOptions: compareByOptionsRaw, analyseByOptions } = dropDownData
 
@@ -41,6 +46,7 @@ const PreVsPostReport = ({
   loadingReportTableData,
   reportSummaryData,
   reportTableData,
+  resetPreVsPostReport,
   error,
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
@@ -64,20 +70,24 @@ const PreVsPostReport = ({
       compareByOptions[0],
     analyseBy: analyseByOptions[0],
   })
-  const [cellBandInfo, setCellBandInfo] = useState({
-    preBandScore: null,
-    postBandScore: null,
-  })
+  const [cellBandInfo, setCellBandInfo] = useState({})
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
 
+  // reset report component on every render
+  useEffect(() => {
+    resetPreVsPostReport()
+  }, [])
+
   // get report data
   useEffect(() => {
-    const q = { ...settings.requestFilters, ...ddfilter }
+    const q = {
+      ...settings.requestFilters,
+      ...ddfilter,
+    }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       fetchReportSummaryDataRequest(q)
-
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
@@ -199,7 +209,13 @@ const PreVsPostReport = ({
         compareBy: _compareByOption,
       })
     }
-    setCellBandInfo({ preBandScore, postBandScore })
+    if (
+      isEmpty(cellBandInfo) ||
+      cellBandInfo.preBandScore !== preBandScore ||
+      cellBandInfo.postBandScore !== postBandScore
+    ) {
+      setCellBandInfo({ preBandScore, postBandScore })
+    } else setCellBandInfo({})
   }
 
   if (loadingReportSummaryData || loadingReportTableData) {
@@ -214,7 +230,11 @@ const PreVsPostReport = ({
   if (isEmpty(summaryMetricInfo)) {
     return (
       <NoDataContainer>
-        {settings.requestFilters?.termId ? 'No data available currently.' : ''}
+        {settings.requestFilters?.termId
+          ? error.msg === 'InvalidTestIds'
+            ? ''
+            : 'No data available currently.'
+          : ''}
       </NoDataContainer>
     )
   }
@@ -223,7 +243,7 @@ const PreVsPostReport = ({
     return <DataSizeExceeded />
   }
   return (
-    <>
+    <PreVsPostReportContainer>
       <FeaturesSwitch
         inputFeatures="studentGroups"
         actionOnInaccessible="hidden"
@@ -235,18 +255,19 @@ const PreVsPostReport = ({
           checkedStudents={checkedStudentsForModal}
         />
       </FeaturesSwitch>
-      <StyledCard style={{ marginTop: '-60px', width: '50%' }}>
+      <StyledCard>
         <Row type="flex" justify="start">
           <StyledH3 style={{ fontSize: '20px' }}>
             Pre vs Post Test Comparison
           </StyledH3>
         </Row>
-        <Row>
-          <span data-testid="description">
-            This report compares the student performance on {preTestName} and{' '}
-            {postTestName}.
+        <Row type="flex">
+          <StyledIconAlert fill={themeColor} />
+          <span style={{ fontSize: '12px' }}>
+            This report compares the student performance on the choosen two
+            assessments.
             <br />
-            <StyledSpan font="bold" color="#383838">
+            <StyledSpan font="bold" color={fadedBlack}>
               Only students that have results for both assessments are included.
             </StyledSpan>
           </span>
@@ -279,7 +300,7 @@ const PreVsPostReport = ({
         isCsvDownloading={isCsvDownloading}
         handleAddToGroupClick={handleAddToGroupClick}
       />
-    </>
+    </PreVsPostReportContainer>
   )
 }
 

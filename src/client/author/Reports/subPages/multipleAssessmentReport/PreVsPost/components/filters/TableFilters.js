@@ -35,7 +35,7 @@ const TableFilters = ({
             ...selectedTableFilters,
             compareBy: selected,
           })
-          setCellBandInfo({ preBandScore: null, postBandScore: null })
+          setCellBandInfo({})
         }}
         data={compareByOptions}
       />

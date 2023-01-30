@@ -1,7 +1,7 @@
 import React from 'react'
 import { map } from 'lodash'
 import { ColorCircle } from '../../../../common/styled'
-import { LegendWrapper } from '../common/styled'
+import { LegendWrapper } from '../common/styledComponents'
 
 const PreVsPostLegend = ({ selectedPerformanceBand }) => {
   const legend = map(selectedPerformanceBand, (pb) => {

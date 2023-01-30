@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import { notification } from '@edulastic/common'
@@ -27,10 +27,10 @@ const Launch = ({
   setOpenMeeting,
 }) => {
   const [groupId, setGroupId] = useState('')
+  const [selectedGroup, setSelectedGroup] = useState(null)
   const [launching, setLaunching] = useState(false)
   const [postMeeting, setPostMeeting] = useState(true)
   const [eventType, setEventType] = useState('create')
-  const selectedGroup = classList.find((group) => group._id === groupId)
   const isHangoutLinkExpired = !!(
     selectedGroup &&
     selectedGroup.eventStartDate &&
@@ -84,7 +84,7 @@ const Launch = ({
     }
   }
 
-  const createOrUpdateCalendarEvent = () => {
+  const createOrUpdateCalendarEvent = useCallback(() => {
     const { name, _id, eventId, hangoutLink } = selectedGroup
     const requestId = _id
     const currentDate = new Date()
@@ -146,6 +146,11 @@ const Launch = ({
           saveHangoutLink(_event.hangoutLink, _event)
         })
     }
+  }, [selectedGroup])
+
+  const setGroupAndGroupId = (_groupId) => {
+    setGroupId(_groupId)
+    setSelectedGroup(classList.find((group) => group._id === _groupId))
   }
 
   const handleError = (err) => {
@@ -154,7 +159,7 @@ const Launch = ({
     console.log('error', err)
   }
 
-  const launchHangout = () => {
+  const launchHangout = useCallback(() => {
     setLaunching(true)
     if (hangoutLink) {
       closePopUp()
@@ -174,7 +179,7 @@ const Launch = ({
       notification({ messageKey: 'googleApiIsNotConfiguration' })
       console.log(`Google API configuration not found`)
     }
-  }
+  }, [selectedGroup, createOrUpdateCalendarEvent])
 
   return (
     <HangoutsModal
@@ -185,7 +190,7 @@ const Launch = ({
       hangoutLink={hangoutLink}
       loading={launching}
       title="Launch Google Meet"
-      onSelect={setGroupId}
+      onSelect={setGroupAndGroupId}
       selected={selectedGroup}
       checked={postMeeting}
       onCheckUncheck={() => {

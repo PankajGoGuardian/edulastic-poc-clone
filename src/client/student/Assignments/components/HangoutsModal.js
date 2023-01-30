@@ -116,7 +116,7 @@ const HangoutsModal = ({
                   </EduButton>
                 )}
                 scopes={scopes}
-                successCallback={(response) => onOk(response.access_token)}
+                successCallback={onOk}
                 errorCallback={(response) => onError(response)}
                 prompt="consent"
                 flowType={AUTH_FLOW.IMPLICIT}

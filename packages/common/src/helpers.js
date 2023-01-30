@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { useEffect, useRef, useCallback } from 'react'
 import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
@@ -1209,6 +1210,20 @@ export const triggerEvent = (el, eventName, options) => {
   } catch (e) {
     console.error('Error while triggering event ', eventName, el)
   }
+}
+
+export const useMemoizedFunction = (_callbackFn) => {
+  const callbackFnRef = useRef(_callbackFn)
+  useEffect(() => {
+    callbackFnRef.current = _callbackFn
+  }, [_callbackFn])
+  const callbackFn = useCallback(
+    (...args) => {
+      return callbackFnRef.current?.(...args)
+    },
+    [callbackFnRef]
+  )
+  return callbackFn
 }
 
 export default {

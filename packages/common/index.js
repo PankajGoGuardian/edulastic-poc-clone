@@ -138,6 +138,7 @@ export {
   getYoutubeId,
   formatFileSize,
   triggerEvent,
+  useMemoizedFunction,
 } from './src/helpers'
 
 // contexts

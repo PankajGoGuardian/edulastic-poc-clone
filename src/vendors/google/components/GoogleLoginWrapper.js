@@ -1,6 +1,6 @@
 import PropTypes from 'prop-types'
 import React, { useState } from 'react'
-import { WithResources } from '@edulastic/common'
+import { WithResources, useMemoizedFunction } from '@edulastic/common'
 import appConfig from '../../../app-config'
 import { AUTH_FLOW, AUTH_METHOD, DEFAULT_SCOPES } from '../constants'
 
@@ -8,8 +8,8 @@ const { googleClientSdkUrl, googleApiSdkUrl } = appConfig
 
 const GoogleLoginWrapper = ({
   WrappedComponent,
-  successCallback,
-  errorCallback,
+  successCallback: _successCallback,
+  errorCallback: _errorCallback,
   scopes = DEFAULT_SCOPES,
   flowType = AUTH_FLOW.IMPLICIT,
   loadGapi = false,
@@ -17,12 +17,13 @@ const GoogleLoginWrapper = ({
   onScriptLoad,
 }) => {
   const [googleClient, setGoogleClient] = useState(null)
-
   const resources = loadGapi
     ? [googleClientSdkUrl, googleApiSdkUrl]
     : [googleClientSdkUrl]
 
   const isGoogleReady = () => !!window.google
+  const successCallback = useMemoizedFunction(_successCallback)
+  const errorCallback = useMemoizedFunction(_errorCallback)
   const onApiLoad = () => {
     if (isGoogleReady()) {
       const clientMethod =

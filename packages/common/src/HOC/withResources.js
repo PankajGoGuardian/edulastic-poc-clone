@@ -9,8 +9,8 @@
  *
  *  Ummm... prolly this code belongs to "mines of Moria"! 👻
  */
- 
-import React, { useState, useEffect } from 'react'
+
+import React, { useState, useEffect, useRef } from 'react'
 import load from 'loadjs'
 
 const NAMESPACE = 'edulaticV2LoadedResources'
@@ -76,13 +76,17 @@ const loadResources = (resources = []) => {
  */
 export const useResources = (criticalResources, resources, onLoaded) => {
   const [loaded, setLoaded] = useState(false)
+  const onLoadedRef = useRef(onLoaded)
+  useEffect(() => {
+    onLoadedRef.current = onLoaded
+  }, [onLoaded])
 
   const targetCriticalResources = getResourcesNotLoaded(criticalResources)
   const targetResources = getResourcesNotLoaded(resources)
 
   useEffect(() => {
     const handleOnLoad = () => {
-      if (onLoaded) onLoaded()
+      if (onLoadedRef.current) onLoadedRef.current()
       setLoaded(true)
     }
 

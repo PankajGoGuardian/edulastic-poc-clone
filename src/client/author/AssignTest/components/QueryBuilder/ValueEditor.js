@@ -10,10 +10,20 @@ import {
 } from '../../../TestPage/components/Assign/ducks'
 import { debounce } from 'lodash'
 
-const mapFieldWithLabel = {
-  'course.id': 'courses',
-  _id: 'classes',
-  tags: 'tags',
+export const fieldKey = {
+  schools: 'institutionIds',
+  courses: 'courses',
+  grades: 'grades',
+  subjects: 'subjects',
+  groupType: 'groupType',
+  classes: 'groupIds',
+  tags: 'tagIds',
+}
+
+const enableSearchFields = {
+  [fieldKey.classes]: 'classes',
+  [fieldKey.courses]: 'courses',
+  [fieldKey.tags]: 'tags',
 }
 
 const ValueEditor = (props) => {
@@ -34,15 +44,15 @@ const ValueEditor = (props) => {
 
   const handleSearch = (searchString) => {
     switch (field) {
-      case '_id':
+      case fieldKey.classes:
         loadClassListData({ searchString })
         break
 
-      case 'course.id':
+      case fieldKey.courses:
         loadCourseListData({ searchString })
         break
 
-      case 'tags':
+      case fieldKey.tags:
         loadTagListData({ searchString })
         break
     }
@@ -56,8 +66,8 @@ const ValueEditor = (props) => {
 
   if (!value) handleOnChange(undefined)
 
-  if (Object.keys(mapFieldWithLabel).includes(field)) {
-    const key = mapFieldWithLabel[field]
+  if (Object.keys(enableSearchFields).includes(field)) {
+    const key = enableSearchFields[field]
     const isLoading = advancedSearchDetails[key]?.isLoading
     return (
       <StyledSelect

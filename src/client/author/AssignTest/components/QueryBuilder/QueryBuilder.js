@@ -8,7 +8,7 @@ import { Select, Button } from 'antd'
 import { connect } from 'react-redux'
 import { isArray, flattenDeep } from 'lodash'
 import { IconClose } from '@edulastic/icons'
-import ValueEditor from './ValueEditor'
+import ValueEditor, { fieldKey } from './ValueEditor'
 import { selectsData } from '../../../TestPage/components/common'
 import { CancelButton, OkButton } from '../../../../common/styled'
 import {
@@ -206,20 +206,20 @@ const _QueryBuilder = ({
 
   const fields = [
     {
-      name: 'institutionIds',
+      name: fieldKey.schools,
       label: 'Schools',
       valueEditorType: 'multiselect',
       values: schoolData.data,
     },
     {
-      name: 'courseIds',
+      name: fieldKey.courses,
       label: 'Courses',
       valueEditorType: 'multiselect',
       values: courseData.data,
       operators: [...operators, ...nullNotNullOp],
     },
     {
-      name: 'grades',
+      name: fieldKey.grades,
       label: 'Grades',
       valueEditorType: 'multiselect',
       values: selectsData.allGrades.map((item) => ({
@@ -228,7 +228,7 @@ const _QueryBuilder = ({
       })),
     },
     {
-      name: 'subjects',
+      name: fieldKey.subjects,
       label: 'Subjects',
       valueEditorType: 'multiselect',
       values: selectsData.allSubjects.map((item) => ({
@@ -237,7 +237,7 @@ const _QueryBuilder = ({
       })),
     },
     {
-      name: 'groupType',
+      name: fieldKey.groupType,
       label: 'Show Class/Groups',
       valueEditorType: 'select',
       operators: [
@@ -247,13 +247,13 @@ const _QueryBuilder = ({
       values: classGroup,
     },
     {
-      name: 'groupIds',
+      name: fieldKey.classes,
       label: 'Classes',
       valueEditorType: 'multiselect',
       values: classData.data,
     },
     {
-      name: 'tagIds',
+      name: fieldKey.tags,
       label: 'Tags',
       valueEditorType: 'multiselect',
       values: tagData.data,
@@ -312,11 +312,6 @@ const _QueryBuilder = ({
             removeGroupAction: RemoveRuleAction,
           }}
         />
-        <div style={{ background: 'white', padding: '20px ' }}>
-          <pre>
-            <code>{formattedQuery}</code>
-          </pre>
-        </div>
       </ModalBody>
     </CustomModalStyled>
   )

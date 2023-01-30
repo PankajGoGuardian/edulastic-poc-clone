@@ -1186,6 +1186,7 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
     const payload = {
       limit: 25,
       page: 1,
+      aggregate: true,
       active: 1,
       includes: ['name'],
       districtId,
@@ -1195,10 +1196,17 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
     }
 
     const response = yield call(courseApi.searchCourse, payload)
+    const courses = []
+    for (const key of Object.keys(response.result)) {
+      courses.push({
+        _id: key,
+        name: key,
+      })
+    }
     yield put(
       setAdvancedSearchDetailsAction({
         key: 'courses',
-        data: response?.result || [],
+        data: courses || [],
       })
     )
   } catch (error) {

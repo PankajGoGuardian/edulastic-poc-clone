@@ -217,7 +217,7 @@ class SuccessPage extends React.Component {
             <Tooltip
               title={
                 isAsyncAssign
-                  ? 'Assigning is In Progress. You wil get notification oncompletion.'
+                  ? 'Assigning is In Progress. You wil get notification on completion.'
                   : ''
               }
               placement="bottom"

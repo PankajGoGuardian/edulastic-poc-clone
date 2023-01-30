@@ -100,6 +100,8 @@ const MultipleAssessmentReportFilters = ({
 
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
+      loc === reportNavType.PRE_VS_POST_TEST_COMPARISON &&
+      !['testIds'].includes(t.key) &&
       (performanceBandRequired || t.key !== 'profileId') &&
       (demographicsRequired || !ddFilterTypes.includes(t.key))
   )
@@ -259,6 +261,8 @@ const MultipleAssessmentReportFilters = ({
             courseIds: reject([search.courseId], isEmpty),
             classIds: reject(_filters.classIds?.split(','), isEmpty),
             groupIds: reject(_filters.groupIds?.split(','), isEmpty),
+            preTestId: _filters.preTestId,
+            postTestId: _filters.postTestId,
             options: {
               termId: _filters.termId,
               schoolIds: reject(_filters.schoolIds?.split(','), isEmpty),
@@ -757,10 +761,13 @@ const MultipleAssessmentReportFilters = ({
                 tagIds={filters.tagIds}
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
-                selectedTestId={search.preTestId || ''}
+                selectedTestId={filters.preTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
                 showApply={filters.showApply}
+                blackList={[filters.postTestId]}
                 autoSelectFirstItem
+                statePrefix="pre"
+                waitForInitialLoad
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -780,10 +787,13 @@ const MultipleAssessmentReportFilters = ({
                 tagIds={filters.tagIds}
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
-                selectedTestId={search.postTestId || ''}
+                selectedTestId={filters.postTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
                 showApply={filters.showApply}
                 autoSelectFirstItem
+                blackList={[filters.preTestId]}
+                statePrefix="post"
+                waitForInitialLoad
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer

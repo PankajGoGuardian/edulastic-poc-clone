@@ -1,8 +1,9 @@
-import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import React, { forwardRef, useImperativeHandle, useRef, useState } from 'react'
 
 export const CustomTooltip = forwardRef((props, ref) => {
-  const { className, payload, getJSX } = props
+  const { className, payload, getJSX, useBarIndex = true } = props
   const [barIndex, setBarIndex] = useState(null)
+  const tooltipElementRef = useRef()
   const updateBarIndex = (idx) => {
     setBarIndex(idx)
   }
@@ -14,14 +15,15 @@ export const CustomTooltip = forwardRef((props, ref) => {
   useImperativeHandle(ref, () => ({
     updateBarIndex,
     resetBarIndex,
+    tooltipElementRef,
   }))
-  if (barIndex !== null) {
-    const tooltip = getJSX(payload, barIndex)
-    return tooltip ? (
-      <div className={`chart-tooltip ${className}`}>{tooltip}</div>
-    ) : (
-      <div />
+  if (useBarIndex && barIndex === null) return null
+  const tooltip = getJSX(payload, barIndex)
+  if (tooltip)
+    return (
+      <div ref={tooltipElementRef} className={`chart-tooltip ${className}`}>
+        {tooltip}
+      </div>
     )
-  }
-  return null
+  return <div />
 })

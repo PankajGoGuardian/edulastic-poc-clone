@@ -658,25 +658,6 @@ export const NoDataContainer = styled.div`
   text-align: 'center';
 `
 
-export const CustomXAxisTickTooltipContainer = styled.div`
-  pointer-events: none;
-  visibility: ${(props) => props.visibility};
-  position: absolute;
-  top: 0px;
-  transform: translate(${(props) => props.x}, ${(props) => props.y});
-  padding: 5px;
-  min-width: ${(props) => props.width}px;
-  max-width: 250px;
-  overflow-wrap: anywhere;
-  text-align: center;
-  background: white;
-  z-index: 999;
-  background-color: #f0f0f0;
-  color: black;
-  border: solid 0.5px #bebebe;
-  box-shadow: 0 0 8px #c0c0c0;
-`
-
 export const StyledTag = styled.div`
   padding: ${(props) => props.padding || '0px 20px'};
   margin: ${(props) => props.margin || '0px'};
@@ -739,8 +720,6 @@ export const StyledLabel = styled.div`
   }
 `
 
-export const InfoColumnLabel = styled(StyledLabel)``
-
 export const HideLinkLabel = styled(StyledLabel)`
   width: 80px;
   white-space: nowrap;
@@ -784,31 +763,6 @@ export const FilterButton = styled(Button)`
   }
 `
 
-export const FilterButtonClear = styled(Button)`
-  min-width: 35px;
-  min-height: 25px;
-  border: none;
-  margin-right: ${({ showFilter }) => (showFilter ? 0 : 10)}px;
-  margin-top: -4px;
-  margin-left: ${({ showFilter }) => (showFilter ? -80 : 0)}px;
-  padding: 5px 2px 2px;
-  box-shadow: none;
-  transition: none;
-  &:focus,
-  &:hover {
-    outline: unset;
-  }
-  svg {
-    fill: ${({ showFilter }) =>
-      showFilter ? '#1AB395' : '#434b5d'} !important;
-    width: 20px;
-    height: 20px;
-  }
-  @media print {
-    display: none;
-  }
-`
-
 export const ResetButtonClear = styled(Button)`
   min-width: 35px;
   min-height: 25px;
@@ -832,13 +786,6 @@ export const SearchField = styled.div`
   margin-bottom: 10px;
   padding-right: 15px;
   padding-left: 5px;
-`
-
-export const ApplyFitlerLabel = styled(FieldLabel)`
-  margin-bottom: 0px;
-  margin-right: 15px;
-  color: #434b5d;
-  font-weight: bolder;
 `
 
 export const ColoredCell = styled.div`
@@ -868,45 +815,24 @@ export const SecondaryFilterRow = styled(Row).attrs((props) => ({
   }
 `
 
-export const StyledSignedStackedBarChartContainer = styled.div`
-  padding: 10px;
+export const DashedLine = styled.div`
+  overflow: hidden !important;
   position: relative;
-  z-index: 2;
+  flex-grow: 1;
+  height: ${(props) => props.height ?? '0.5px'};
+  margin: 0 24px;
+  &:before {
+    content: '';
+    position: absolute;
+    border: ${(props) => props.dashWidth ?? '5px'} dashed
+      ${(props) => props.dashColor ?? '#707070'};
+    inset: 0;
+  }
+`
 
-  .navigator-left {
-    left: 5px;
-    top: 50%;
-  }
-
-  .navigator-right {
-    right: 5px;
-    top: 50%;
-  }
-
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
-    stroke-opacity: 0;
-  }
-
-  .recharts-yAxis {
-    .recharts-text {
-      tspan {
-        white-space: pre;
-      }
-    }
-  }
-  & .recharts-wrapper > .recharts-tooltip-wrapper {
-    transform: var(--first-tooltip-transform) !important;
-    top: var(--first-tooltip-top) !important;
-    left: var(--first-tooltip-left) !important;
-    visibility: visible !important;
-    transition: all 400ms ease 0s;
-  }
-  & > .recharts-tooltip-wrapper {
-    transform: var(--second-tooltip-transform) !important;
-    top: var(--second-tooltip-top) !important;
-    left: var(--second-tooltip-left) !important;
-    visibility: visible !important;
-    transition: all 400ms ease 0s;
-  }
+export const SectionLabelWrapper = styled.div`
+  display: flex;
+  flex-flow: row wrap;
+  margin: ${(p) => p.$margin || '32px 0'};
+  align-items: center;
 `

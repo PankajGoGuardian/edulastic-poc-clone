@@ -9,6 +9,32 @@ const hasThenOrElse = (children) => {
   return children.some((child) => SUB_COMPONENTS.includes(child?.type))
 }
 
+/**
+ *
+ * @example
+ * import {EduIf, EduThen, EduElse} from "@edulastic/comon"
+ * // usages 1
+ * <EduIf condition={value}>
+ *     <EduThen>
+ *         render contents when condition is true
+ *     </EduThen>
+ *     <EduElse>
+ *        render contents when condition is false
+ *     </EduElse>
+ * </EduIf>
+ *
+ * @example
+ * <EduIf condition={value}>
+ *    rendering contents when the condition is true
+ * </Eduif>
+ *
+ * @example
+ * <EduIf>
+ *    {
+ *      () => <div> reders when condition is true</div>
+ *    }
+ * </EduIf>
+ */
 export class EduIf extends React.PureComponent {
   render() {
     const { children, condition } = this.props

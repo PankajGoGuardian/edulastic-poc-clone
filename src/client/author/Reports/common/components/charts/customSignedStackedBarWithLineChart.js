@@ -20,10 +20,12 @@ import { greyLight1 } from '@edulastic/colors'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
-  CustomXAxisTickTooltipContainer,
   ResetButtonClear,
-  StyledSignedStackedBarChartContainer,
 } from '../../styled'
+import {
+  CustomXAxisTickTooltipContainer,
+  StyledSignedStackedBarChartContainer,
+} from './styled-components'
 import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,

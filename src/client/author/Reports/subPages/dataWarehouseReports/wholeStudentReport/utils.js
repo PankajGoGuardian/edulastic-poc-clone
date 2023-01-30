@@ -10,9 +10,10 @@ import {
   isNil,
   mapValues,
   omitBy,
+  sortBy,
   isEmpty,
 } from 'lodash'
-
+import moment from 'moment'
 import { reportUtils, colors as colorConstants } from '@edulastic/constants'
 import { getAchievementLevels } from '@edulastic/constants/const/dataWarehouse'
 import { getAllTestTypesMap } from '../../../../../common/utils/testTypeUtils'
@@ -364,6 +365,23 @@ export const getTableData = ({
     }
   })
   return parsedData
+}
+
+export const getAttendanceChartData = (attendanceData) => {
+  attendanceData = sortBy(attendanceData, 'minDate')
+  const attendanceChartData = map(attendanceData, (item) => ({
+    week: item.weekFromTermStart,
+    startDate: moment(item.minDate)
+      .startOf('week')
+      .add(1, 'day')
+      .format('D/M/YYYY'),
+    presents: item.presentDays,
+    absents: item.absentDays,
+    tardies: item.tardyDays,
+    total: item.totalDays,
+    value: percentage(item.attendanceValue, item.totalDays, true),
+  }))
+  return attendanceChartData
 }
 
 export const getTestTypesFromUrl = (

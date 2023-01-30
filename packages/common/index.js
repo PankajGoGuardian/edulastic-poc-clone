@@ -160,6 +160,7 @@ export { default as useRealtimeV2 } from './src/customHooks/useRealtimeV2'
 export { default as useDisableDragScroll } from './src/customHooks/useDisableDragScroll'
 export { default as measureTextWithImage } from './src/customHooks/measureTextWithImage'
 export { default as useDropdownData } from './src/customHooks/useDropDownData'
+export { default as useOfflinePagination } from './src/customHooks/useOfflinePagination'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'

@@ -305,6 +305,7 @@ export const PerformanceMatrixContainer = styled(Row)`
       }
       .section-matrix-row-text,
       .section-matrix-col-text {
+        padding: 0 5px;
         white-space: nowrap;
         font-size: 13px;
         font-weight: bold;

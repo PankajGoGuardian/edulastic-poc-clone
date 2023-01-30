@@ -23,13 +23,8 @@ import ClassAutoComplete from './ClassAutoComplete'
 import StudentAutoComplete from './StudentAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
-import { getTermOptions } from '../../common/utils/transformers'
-import {
-  getStudentName,
-  staticDropDownData,
-  getTestTypesFromUrl,
-} from '../utils'
-import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
+import { getTermOptions } from '../../../../../utils/reports'
+import { getStudentName, staticDropDownData } from '../utils'
 
 const filtersDefaultValues = [
   {

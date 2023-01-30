@@ -15,8 +15,9 @@ export const uploadToS3 = async ({
   category,
   progressCallback,
   cancelUpload,
-  versionYear,
+  termId,
   testName,
+  versionYear,
 }) => {
   let logDetails = {}
   if (!file) {
@@ -36,6 +37,7 @@ export const uploadToS3 = async ({
     name,
     category,
     versionYear,
+    termId,
     testName,
     folder,
     subFolder

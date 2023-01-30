@@ -39,9 +39,7 @@ import {
 } from '../../../src/selectors/user'
 import {
   getSearchTermsFilterSelector,
-  isAdvancedSearchLoadingSelector,
   loadAssignmentsAction,
-  saveAssignmentAction,
   saveV2AssignmentAction,
 } from '../../../TestPage/components/Assign/ducks'
 import {
@@ -95,8 +93,9 @@ import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPa
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
 // import ShowBulkAssignModal from './ShowBulkAssignModal'
 // import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
-import QueryBuilder from '../QueryBuilder'
+import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
 import { SpinnerContainer } from '../../../src/MainStyle'
+import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
 
 const {
   ASSESSMENT,
@@ -349,7 +348,6 @@ class AssignTest extends React.Component {
 
   handleAssign = () => {
     const {
-      saveAssignment,
       saveV2Assignment,
       isAssigning,
       assignmentSettings: assignment,
@@ -379,7 +377,6 @@ class AssignTest extends React.Component {
         if (source) {
           segmentApi.genericEventTrack('AssessmentAssigned', { source })
         }
-        // saveAssignment(updatedAssignment)
         saveV2Assignment(updatedAssignment)
       }
     }
@@ -1055,7 +1052,6 @@ const enhance = compose(
       fetchStudents: fetchGroupMembersAction,
       fetchAssignments: fetchAssignmentsAction,
       setAssignments: loadAssignmentsAction,
-      saveAssignment: saveAssignmentAction,
       saveV2Assignment: saveV2AssignmentAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
@@ -1087,7 +1083,6 @@ AssignTest.propTypes = {
   students: PropTypes.array.isRequired,
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
-  saveAssignment: PropTypes.func.isRequired,
   saveV2Assignment: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   testItem: PropTypes.object.isRequired,

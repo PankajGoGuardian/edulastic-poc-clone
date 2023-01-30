@@ -41,14 +41,14 @@ import {
   getAllTagsSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
+import { setSearchTermsFilterAction } from '../../../TestPage/components/Assign/ducks'
 import {
-  setSearchTermsFilterAction,
   setIsAllClassSelectedAction,
   getIsAdvancedSearchSelectedSelector,
   setAdvancedSearchFilterAction,
   setIsAdvancedSearchSelectedAction,
   getIsAllClassSelectedSelector,
-} from '../../../TestPage/components/Assign/ducks'
+} from '../../../AdvanceSearch/ducks'
 import { sortGrades } from '../../../TestPage/utils'
 
 const { allGrades, allSubjects } = selectsData

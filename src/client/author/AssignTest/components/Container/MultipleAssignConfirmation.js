@@ -4,7 +4,6 @@ import { connect } from 'react-redux'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 import {
   getHasDuplicateAssignmentsSelector,
-  saveAssignmentAction,
   saveV2AssignmentAction,
   toggleHasDuplicateAssignmentPopupAction,
 } from '../../../TestPage/components/Assign/ducks'
@@ -15,7 +14,6 @@ const MultipleAssignConfirmation = ({
   hasDuplicateAssignments,
   toggleHasDuplicateAssignmentPopup,
   entity,
-  saveAssignment,
   saveV2Assignment,
   assignment,
   moduleTitle,
@@ -25,11 +23,6 @@ const MultipleAssignConfirmation = ({
   const onProceed = () => {
     setSavingState(true)
     // allowCommonStudents has to be true for the second time as we have to avoid
-    // saveAssignment({
-    //   ...assignment,
-    //   allowCommonStudents: true,
-    //   allowDuplicates: true,
-    // })
     saveV2Assignment({
       ...assignment,
       allowCommonStudents: true,
@@ -39,11 +32,6 @@ const MultipleAssignConfirmation = ({
 
   const onRemoveDuplicates = () => {
     setSavingState(true)
-    // saveAssignment({
-    //   ...assignment,
-    //   allowCommonStudents: true,
-    //   removeDuplicates: true,
-    // })
     saveV2Assignment({
       ...assignment,
       allowCommonStudents: true,
@@ -104,7 +92,6 @@ export default connect(
       : getTestSelector(state),
   }),
   {
-    saveAssignment: saveAssignmentAction,
     saveV2Assignment: saveV2AssignmentAction,
     toggleHasDuplicateAssignmentPopup: toggleHasDuplicateAssignmentPopupAction,
   }

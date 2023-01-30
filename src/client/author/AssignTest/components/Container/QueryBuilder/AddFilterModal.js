@@ -3,9 +3,9 @@ import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
 import { Input } from 'antd'
 import { EduButton, CustomModalStyled } from '@edulastic/common'
-import { ModalTitle } from '../../../../AssessmentPage/common/Modal'
 import styled from 'styled-components'
-import { setIsAdvancedSearchSelectedAction } from '../../../../TestPage/components/Assign/ducks'
+import { ModalTitle } from '../../../../AssessmentPage/common/Modal'
+import { setIsAdvancedSearchSelectedAction } from '../../../../AdvanceSearch/ducks'
 
 const ExtendedInput = ({ onChange, filterName }) => {
   const handleChange = (e) => {

@@ -9,8 +9,8 @@ import { connect } from 'react-redux'
 import { isArray, flattenDeep } from 'lodash'
 import { IconClose } from '@edulastic/icons'
 import ValueEditor, { fieldKey } from './ValueEditor'
-import { selectsData } from '../../../TestPage/components/common'
-import { CancelButton, OkButton } from '../../../../common/styled'
+import { selectsData } from '../../TestPage/components/common'
+import { CancelButton, OkButton } from '../../../common/styled'
 import {
   getAdvancedSearchFilterSelector,
   setAdvancedSearchFilterAction,
@@ -24,7 +24,7 @@ import {
   getAdvancedSearchTagsSelector,
   getAdvancedSearchCoursesSelector,
   advancedSearchRequestAction,
-} from '../../../TestPage/components/Assign/ducks'
+} from '../ducks'
 
 const classGroup = [
   {
@@ -59,16 +59,21 @@ const combinators = [
 ]
 
 const FieldSelector = (props) => {
-  const { handleOnChange, options, value } = props
+  const { handleOnChange, options, value, id } = props
   return (
     <StyledSelect
       getPopupContainer={(triggerNode) => triggerNode.parentElement}
       style={{ minWidth: '150px' }}
       onChange={handleOnChange}
       value={value}
+      key={id}
     >
       {options.map((item) => {
-        return <Select.Option value={item.name}>{item.label}</Select.Option>
+        return (
+          <Select.Option value={item.name} key={item.name}>
+            {item.label}
+          </Select.Option>
+        )
       })}
     </StyledSelect>
   )
@@ -83,7 +88,11 @@ const CombinatorSelector = (props) => {
       value={value}
     >
       {options.map((item) => {
-        return <Select.Option value={item.name}>{item.label}</Select.Option>
+        return (
+          <Select.Option value={item.name} key={item.name}>
+            {item.label}
+          </Select.Option>
+        )
       })}
     </StyledSelect>
   )
@@ -98,7 +107,11 @@ const OperatorSelector = (props) => {
       value={value}
     >
       {options.map((item) => {
-        return <Select.Option value={item.name}>{item.label}</Select.Option>
+        return (
+          <Select.Option value={item.name} key={item.name}>
+            {item.label}
+          </Select.Option>
+        )
       })}
     </StyledSelect>
   )

@@ -1,14 +1,14 @@
 import React from 'react'
 import { Empty, Select } from 'antd'
-import { StyledSelect } from './QueryBuilder'
 import { connect } from 'react-redux'
+import { debounce } from 'lodash'
+import { StyledSelect } from './QueryBuilder'
 import {
   getAdvancedSearchDetailsSelector,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchTagsAction,
-} from '../../../TestPage/components/Assign/ducks'
-import { debounce } from 'lodash'
+} from '../ducks'
 
 export const fieldKey = {
   schools: 'institutionIds',
@@ -55,6 +55,8 @@ const ValueEditor = (props) => {
       case fieldKey.tags:
         loadTagListData({ searchString })
         break
+      default:
+        break
     }
   }
 
@@ -63,8 +65,6 @@ const ValueEditor = (props) => {
   if (operator === 'null' || operator === 'notNull') {
     return null
   }
-
-  if (!value) handleOnChange(undefined)
 
   if (Object.keys(enableSearchFields).includes(field)) {
     const key = enableSearchFields[field]
@@ -79,7 +79,7 @@ const ValueEditor = (props) => {
         onFocus={() => handleSearch('')}
         placeholder={`Select ${label}`}
         onSearch={searchHandler}
-        value={value}
+        value={value || undefined}
         showSearch
         tagsEllipsis
         filterOption={null}
@@ -96,7 +96,11 @@ const ValueEditor = (props) => {
         }
       >
         {values.map((item) => {
-          return <Select.Option value={item.value}>{item.label}</Select.Option>
+          return (
+            <Select.Option value={item.value} key={item.value}>
+              {item.label}
+            </Select.Option>
+          )
         })}
       </StyledSelect>
     )
@@ -109,7 +113,7 @@ const ValueEditor = (props) => {
       placeholder={`Select ${label}`}
       style={{ width: '200px' }}
       onChange={handleOnChange}
-      value={value}
+      value={value || undefined}
       showSearch
       tagsEllipsis
       filterOption={(input, option) =>
@@ -117,7 +121,11 @@ const ValueEditor = (props) => {
       }
     >
       {values.map((item) => {
-        return <Select.Option value={item.value}>{item.label}</Select.Option>
+        return (
+          <Select.Option value={item.value} key={item.value}>
+            {item.label}
+          </Select.Option>
+        )
       })}
     </StyledSelect>
   )

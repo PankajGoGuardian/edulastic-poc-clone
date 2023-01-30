@@ -257,22 +257,30 @@ export const PerformanceMatrixContainer = styled(Row)`
   margin-block: -60px;
   .section-pre-test,
   .section-post-test {
-    padding: 10px 0;
+    padding: 10px;
+    font-size: 13px;
     .section-pre-test-tag,
     .section-post-test-tag {
       display: block;
       width: fit-content;
+      height: fit-content;
+      padding: 2px 8px;
+      font-weight: bold;
+      border-radius: 6px;
     }
     .section-pre-test-name,
     .section-post-test-name {
-      padding: 7px 4px;
+      padding: 4px;
     }
   }
   .section-pre-test {
     position: absolute;
-    top: 50%;
-    left: -35%;
-    transform: rotate(270deg);
+    writing-mode: vertical-rl;
+    transform: translateY(50%) scale(-1, -1);
+    left: -90px;
+    .section-pre-test-tag {
+      padding: 8px 2px;
+    }
   }
   .section-matrix-grid {
     display: grid;
@@ -286,7 +294,7 @@ export const PerformanceMatrixContainer = styled(Row)`
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0 10px 0 5px;
+      padding: 0 10px 0 0px;
       .section-matrix-row-bar,
       .section-matrix-col-bar {
         min-width: 6px;

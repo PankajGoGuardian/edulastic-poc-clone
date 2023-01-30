@@ -192,6 +192,7 @@ export const StyledCard = styled.div`
   border-radius: 20px;
   background-color: ${white};
   margin: 20px 50px;
+  box-shadow: 0px 9px 10px #00000014;
   .value {
     height: 55px;
     line-height: 55px;
@@ -276,8 +277,8 @@ export const PerformanceMatrixContainer = styled(Row)`
   .section-pre-test {
     position: absolute;
     writing-mode: vertical-rl;
-    transform: translateY(50%) scale(-1, -1);
-    left: -90px;
+    transform: translate(-100%, -50%) scale(-1, -1);
+    top: 50%;
     .section-pre-test-tag {
       padding: 8px 2px;
     }

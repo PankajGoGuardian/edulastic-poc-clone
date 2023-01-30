@@ -1,8 +1,4 @@
-import {
-  reportUtils,
-  roleuser,
-  colors as colorUtils,
-} from '@edulastic/constants'
+import { reportUtils, colors as colorUtils } from '@edulastic/constants'
 import {
   map,
   filter,
@@ -130,17 +126,24 @@ export const getPerformanceMatrixData = (
       postStudentsPercentage - preStudentsPercentange
 
     const preVsPostCellsData = selectedPerformanceBand.map((pb2) => {
+      const preThreshold = pb2.threshold
+      const postThreshold = pb1.threshold
       const preVsPostCellStudentCount =
         summaryMetricInfo.find(
           (m) =>
-            parseInt(m.preBandScore, 10) == pb2.threshold &&
-            parseInt(m.postBandScore, 10) == pb1.threshold
+            parseInt(m.preBandScore, 10) == preThreshold &&
+            parseInt(m.postBandScore, 10) == postThreshold
         )?.totalStudentCount || 0
       const preVsPostCellStudentPercentage = round(
         percentage(preVsPostCellStudentCount, totalStudentCount),
         2
       )
-      return { preVsPostCellStudentCount, preVsPostCellStudentPercentage }
+      return {
+        preThreshold,
+        postThreshold,
+        preVsPostCellStudentCount,
+        preVsPostCellStudentPercentage,
+      }
     })
     return {
       ...pb1,
@@ -181,25 +184,9 @@ export const getTableData = (
   selectedPerformanceBand,
   compareBy,
   preTestName,
-  postTestName,
-  cellBandInfo,
-  userRole
+  postTestName
 ) => {
-  // if matrix cell is clicked - filter metricInfo by preBandScore and postBandScore
-  let groupedByCompareByKey
-  if (!isEmpty(cellBandInfo)) {
-    const filteredMetricInfo = metricInfo.filter(
-      (m) =>
-        parseInt(m.preBandScore, 10) === cellBandInfo.preBandScore &&
-        parseInt(m.postBandScore, 10) === cellBandInfo.postBandScore
-    )
-    groupedByCompareByKey =
-      userRole === roleuser.TEACHER
-        ? groupByCompareByKey(filteredMetricInfo, 'student')
-        : groupByCompareByKey(filteredMetricInfo, compareBy)
-  } else {
-    groupedByCompareByKey = groupByCompareByKey(metricInfo, compareBy)
-  }
+  const groupedByCompareByKey = groupByCompareByKey(metricInfo, compareBy)
 
   // get data required for table
   const tableData = map(Object.keys(groupedByCompareByKey), (key) => {

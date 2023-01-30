@@ -69,8 +69,9 @@ const PreVsPostReport = ({
       compareByOptions.find((o) => o.key === location?.state?.compareByKey) ||
       compareByOptions[0],
     analyseBy: analyseByOptions[0],
+    preBandScore: '',
+    postBandScore: '',
   })
-  const [cellBandInfo, setCellBandInfo] = useState({})
   const [showAddToGroupModal, setShowAddToGroupModal] = useState(false)
   const [selectedRowKeys, onSelectChange] = useState([])
   const [checkedStudents, setCheckedStudents] = useState([])
@@ -97,12 +98,19 @@ const PreVsPostReport = ({
       ...settings.requestFilters,
       ...ddfilter,
       compareBy: tableFilters.compareBy.key,
+      preBandScore: tableFilters.preBandScore,
+      postBandScore: tableFilters.postBandScore,
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, tableFilters.compareBy])
+  }, [
+    settings.requestFilters,
+    tableFilters.compareBy.key,
+    tableFilters.preBandScore,
+    tableFilters.postBandScore,
+  ])
 
   // extract selected performance band from MARFilterData
   const bandInfo = useMemo(
@@ -121,7 +129,7 @@ const PreVsPostReport = ({
     [selectedPerformanceBand]
   )
 
-  // get summary metrics and matrix data
+  // get summary metrics and performance matrix data
   const {
     summaryMetricInfo,
     preTestName,
@@ -153,9 +161,7 @@ const PreVsPostReport = ({
       selectedPerformanceBand,
       tableFilters.compareBy.key,
       preTestName,
-      postTestName,
-      cellBandInfo,
-      userRole
+      postTestName
     )
     return _tableData
   }, [
@@ -164,8 +170,6 @@ const PreVsPostReport = ({
     tableFilters.compareBy.key,
     preTestName,
     postTestName,
-    cellBandInfo,
-    userRole,
   ])
 
   // Handle add to student group
@@ -201,21 +205,25 @@ const PreVsPostReport = ({
   }
 
   // handle matrix cell click
-  const onMatrixCellClick = (preBandScore, postBandScore) => () => {
+  const onMatrixCellClick = (preBandScore = '', postBandScore = '') => () => {
+    const _tableFilters = {
+      ...tableFilters,
+      preBandScore: `${preBandScore}`,
+      postBandScore: `${postBandScore}`,
+    }
     if (userRole === roleuser.TEACHER) {
-      const _compareByOption = compareByOptions.find((c) => c.key === 'student')
-      setTableFilters({
-        ...tableFilters,
-        compareBy: _compareByOption,
-      })
+      _tableFilters.compareBy = compareByOptions.find(
+        (c) => c.key === 'student'
+      )
     }
     if (
-      isEmpty(cellBandInfo) ||
-      cellBandInfo.preBandScore !== preBandScore ||
-      cellBandInfo.postBandScore !== postBandScore
+      tableFilters.preBandScore === _tableFilters.preBandScore &&
+      tableFilters.postBandScore === _tableFilters.postBandScore
     ) {
-      setCellBandInfo({ preBandScore, postBandScore })
-    } else setCellBandInfo({})
+      _tableFilters.preBandScore = ''
+      _tableFilters.postBandScore = ''
+    }
+    setTableFilters(_tableFilters)
   }
 
   if (loadingReportSummaryData || loadingReportTableData) {
@@ -296,7 +304,6 @@ const PreVsPostReport = ({
         analyseByOptions={analyseByOptions}
         rowSelection={rowSelection}
         setTableFilters={setTableFilters}
-        setCellBandInfo={setCellBandInfo}
         isCsvDownloading={isCsvDownloading}
         handleAddToGroupClick={handleAddToGroupClick}
       />

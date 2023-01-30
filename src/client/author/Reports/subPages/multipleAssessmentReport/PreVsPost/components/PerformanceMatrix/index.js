@@ -71,7 +71,7 @@ const PerformanceMatrix = ({
               </>
             }
             color={performanceMatrixColors[ri][ci]}
-            onClick={onMatrixCellClick(d2.threshold, d1.threshold)}
+            onClick={onMatrixCellClick(d2.preThreshold, d2.postThreshold)}
           />
         )
       })

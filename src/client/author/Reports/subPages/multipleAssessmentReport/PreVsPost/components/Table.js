@@ -265,7 +265,6 @@ const PreVsPostTable = ({
   handleAddToGroupClick,
   selectedPerformanceBand,
   isCsvDownloading,
-  setCellBandInfo,
 }) => {
   // get table columns
   const tableColumns = getTableColumns(
@@ -287,7 +286,6 @@ const PreVsPostTable = ({
           analyseByOptions={analyseByOptions}
           handleAddToGroupClick={handleAddToGroupClick}
           selectedTableFilters={selectedTableFilters}
-          setCellBandInfo={setCellBandInfo}
         />
       </StyledRow>
       <CsvTable

@@ -6,7 +6,6 @@ import { ControlDropDown } from '../../../../../common/components/widgets/contro
 
 const TableFilters = ({
   setTableFilters,
-  setCellBandInfo,
   handleAddToGroupClick,
   compareByOptions = [],
   analyseByOptions = [],
@@ -35,7 +34,6 @@ const TableFilters = ({
             ...selectedTableFilters,
             compareBy: selected,
           })
-          setCellBandInfo({})
         }}
         data={compareByOptions}
       />

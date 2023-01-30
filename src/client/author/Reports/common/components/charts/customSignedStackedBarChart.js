@@ -19,10 +19,12 @@ import { greyLight1 } from '@edulastic/colors'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
-  CustomXAxisTickTooltipContainer,
   ResetButtonClear,
-  StyledSignedStackedBarChartContainer,
 } from '../../styled'
+import {
+  CustomXAxisTickTooltipContainer,
+  StyledSignedStackedBarChartContainer,
+} from './styled-components'
 import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,
@@ -109,6 +111,7 @@ export const SignedStackedBarChart = ({
   hasBarInsideLabels = true,
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
+  preLabelContent = null,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -333,6 +336,7 @@ export const SignedStackedBarChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
+      {preLabelContent}
       <ResponsiveContainer width="100%" height={400}>
         <BarChart
           width={730}

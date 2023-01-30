@@ -16,6 +16,7 @@ import {
 import { tableColumnsData } from '../utils'
 import LargeTag from '../../common/LargeTag'
 import { AssessmentNameContainer } from '../common/styled'
+import SectionLabel from '../../../../common/components/SectionLabel'
 
 const getTableColumns = (isSharedReport) => {
   return next(tableColumnsData, (_columns) => {
@@ -173,6 +174,7 @@ const AssessmentsTable = ({
   }, [isSharedReport, ...claimNames])
   return (
     <TableContainer>
+      <SectionLabel>Assessment Performance Details</SectionLabel>
       <CsvTable
         dataSource={tableData}
         columns={tableColumns}

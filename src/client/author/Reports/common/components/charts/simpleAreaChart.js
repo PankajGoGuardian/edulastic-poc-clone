@@ -14,11 +14,8 @@ import {
   Legend,
 } from 'recharts'
 
-import {
-  StyledCustomChartTooltip,
-  StyledChartNavButton,
-  CustomXAxisTickTooltipContainer,
-} from '../../styled'
+import { StyledCustomChartTooltip, StyledChartNavButton } from '../../styled'
+import { CustomXAxisTickTooltipContainer } from './styled-components'
 
 import { getPrintingState } from '../../../ducks'
 

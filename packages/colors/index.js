@@ -51,6 +51,8 @@ export const lightGrey13 = '#607380'
 export const lightGrey14 = '#738294'
 export const lightGrey15 = '#d4d4d4'
 export const lightGrey16 = '#dddddd'
+/** Light Grey for modern redesign */
+export const lightGrey17 = '#707070'
 export const darkGrey = '#a3a0a0'
 export const darkGrey1 = '#b5b5b5'
 export const darkGrey2 = '#304050'

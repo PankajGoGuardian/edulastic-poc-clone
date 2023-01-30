@@ -48,6 +48,8 @@ const initialState = {
   },
   loadingReportData: false,
   reportData: {},
+  loadingAttendanceData: false,
+  attendanceData: {},
   error: '',
 }
 
@@ -120,6 +122,19 @@ const slice = createSlice({
       state.loadingReportData = false
       state.error = payload.error
     },
+    fetchAttendanceDataRequest: (state) => {
+      state.loadingAttendanceData = true
+    },
+    fetchAttendanceDataRequestSuccess: (state, { payload }) => {
+      state.loadingAttendanceData = false
+      state.attendanceData = payload.attendanceData.data.result
+      state.error = ''
+    },
+    fetchAttendanceDataRequestError: (state, { payload }) => {
+      state.loadingAttendanceData = false
+      state.attendanceData = []
+      state.error = payload.error
+    },
     resetDWWholeStudentReport: () => ({ ...initialState }),
   },
   extraReducers: {
@@ -187,11 +202,37 @@ function* fetchReportDataRequestSaga({ payload }) {
     }
     yield put(actions.fetchReportDataRequestSuccess({ reportData }))
   } catch (error) {
-    console.log('err', error.stack)
     const msg =
       'Error fetching whole student report data. Please try again after a few minutes.'
-    notification({ msg })
+    notification({ type: 'error', msg })
     yield put(actions.fetchReportDataRequestError({ error: msg }))
+  }
+}
+
+function* fetchAttendanceDataRequestSaga({ payload }) {
+  try {
+    const params = payload.reportId
+      ? pick(payload, ['reportId'])
+      : pick(payload, ['studentId', 'termId'])
+    const attendanceData = yield call(
+      dataWarehouseApi.getAttendanceMetrics,
+      params
+    )
+    const dataSizeExceeded = attendanceData?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put(
+        actions.fetchReportDataRequestError({
+          error: { ...attendanceData.data },
+        })
+      )
+      return
+    }
+    yield put(actions.fetchAttendanceDataRequestSuccess({ attendanceData }))
+  } catch (error) {
+    const msg =
+      'Error fetching attendance data. Please try again after a few minutes.'
+    notification({ type: 'error', msg })
+    yield put(actions.fetchAttendanceDataRequestError({ error: msg }))
   }
 }
 
@@ -200,6 +241,10 @@ export function* watcherSaga() {
     takeLatest(actions.fetchFiltersDataRequest, fetchFiltersDataRequestSaga),
     takeLatest(actions.fetchStudentsDataRequest, fetchStudentsDataRequestSaga),
     takeLatest(actions.fetchReportDataRequest, fetchReportDataRequestSaga),
+    takeLatest(
+      actions.fetchAttendanceDataRequest,
+      fetchAttendanceDataRequestSaga
+    ),
   ])
 }
 
@@ -275,6 +320,10 @@ const loadingReportData = createSelector(
 const settings = createSelector(stateSelector, (state) => state.settings)
 const reportData = createSelector(stateSelector, (state) => state.reportData)
 const error = createSelector(stateSelector, (state) => state.error)
+const attendanceData = createSelector(
+  stateSelector,
+  (state) => state.attendanceData
+)
 
 export const selectors = {
   firstLoad,
@@ -295,6 +344,7 @@ export const selectors = {
   settings,
   reportData,
   error,
+  attendanceData,
 }
 
 // -----|-----|-----|-----| SELECTORS ENDED |-----|-----|-----|----- //

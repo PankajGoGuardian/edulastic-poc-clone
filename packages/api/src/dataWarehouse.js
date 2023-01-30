@@ -77,6 +77,16 @@ const getMARTableMetrics = (data) => {
   })
 }
 
+const getAttendanceMetrics = (data) => {
+  const queryString = qs.stringify(data)
+  return api.callApi({
+    useSlowApi: true,
+    url: `${prefix}/whole-student-report/attendance?${queryString}`,
+    method: 'get',
+    data,
+  })
+}
+
 export default {
   getSignedUrl,
   getDataWarehouseLogs,
@@ -84,4 +94,5 @@ export default {
   getWholeStudentReport,
   getMARChartMetrics,
   getMARTableMetrics,
+  getAttendanceMetrics,
 }

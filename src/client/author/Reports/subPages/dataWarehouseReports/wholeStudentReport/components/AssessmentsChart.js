@@ -11,6 +11,7 @@ import {
   ColorCircle,
   ColorBandRow,
 } from '../../../../common/styled'
+import SectionLabel from '../../../../common/components/SectionLabel'
 
 const { formatDate } = reportUtils.common
 
@@ -101,6 +102,7 @@ const AssessmentsChart = ({
   selectedPerformanceBand,
   onBarClickCB,
   onResetClickCB,
+  preLabelContent,
 }) => {
   const legendPayload = selectedPerformanceBand
     .sort((a, b) => a.threshold - b.threshold)
@@ -183,6 +185,7 @@ const AssessmentsChart = ({
 
   return (
     <div>
+      <SectionLabel $margin="32px 0 -20px 0">Academic Performance</SectionLabel>
       <SignedStackedBarChart
         data={data}
         barsData={
@@ -215,6 +218,7 @@ const AssessmentsChart = ({
         hideCartesianGrid
         hasBarInsideLabels
         hasBarTopLabels
+        preLabelContent={preLabelContent}
       />
     </div>
   )

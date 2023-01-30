@@ -18,11 +18,8 @@ import {
 import styled from 'styled-components'
 import { connect } from 'react-redux'
 import { getPrintingState } from '../../../ducks'
-import {
-  StyledCustomChartTooltip,
-  StyledChartNavButton,
-  CustomXAxisTickTooltipContainer,
-} from '../../styled'
+import { StyledCustomChartTooltip, StyledChartNavButton } from '../../styled'
+import { CustomXAxisTickTooltipContainer } from './styled-components'
 import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,

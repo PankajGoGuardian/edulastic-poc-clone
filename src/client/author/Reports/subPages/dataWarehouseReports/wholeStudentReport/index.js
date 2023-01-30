@@ -1,11 +1,11 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import qs from 'qs'
 import { get, mapValues, pick, isEmpty } from 'lodash'
-import { Spin } from 'antd'
+import { Spin, Checkbox } from 'antd'
 import next from 'immer'
 
-import { SpinLoader } from '@edulastic/common'
+import { EduElse, EduIf, EduThen, SpinLoader } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 import { reportGroupType } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../../common/components/Header'
@@ -16,6 +16,7 @@ import AssessmentsChart from './components/AssessmentsChart'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import WholeStudentReportFilters from './components/Filters'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+import AttendanceChart from './components/AttendanceChart'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
 import {
@@ -39,8 +40,10 @@ import {
   mergeSchoolMetrics,
   mergeDistrictMetrics,
   mergeTestMetrics,
+  getAttendanceChartData,
 } from './utils'
 import navigation from '../../../common/static/json/navigation.json'
+import { ChartPreLabelWrapper } from '../../../common/components/charts/styled-components'
 
 const { downloadCSV } = reportUtils.common
 
@@ -91,11 +94,15 @@ const WholeStudentReport = ({
   setSettings,
   fetchReportDataRequest,
   fetchUpdateTagsData,
+  loadingAttendanceData,
+  attendanceData,
+  fetchAttendanceDataRequest,
 }) => {
   const reportId = useMemo(
     () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
     []
   )
+  const [isAttendanceChartVisible, setIsAttendanceChartVisible] = useState(true)
   const sharedReport = useMemo(
     () => sharedReportList.find((s) => s._id === reportId),
     [reportId, sharedReportList]
@@ -225,6 +232,10 @@ const WholeStudentReport = ({
         ...settings.requestFilters,
         studentId: settings.selectedStudent.key,
       })
+      fetchAttendanceDataRequest({
+        ...settings.requestFilters,
+        studentId: settings.selectedStudent.key,
+      })
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
@@ -290,16 +301,25 @@ const WholeStudentReport = ({
     testTypes,
   ])
 
+  const attendanceChartData = useMemo(() => {
+    const _attendanceChartData = getAttendanceChartData(attendanceData)
+    return _attendanceChartData
+  }, [attendanceData])
+
   const studentName = getStudentName(
     settings.selectedStudentInformation,
     settings.selectedStudent
   )
+  const toggleAttendanceChart = () => {
+    setIsAttendanceChartVisible((v) => !v)
+  }
 
   // const onTestSelect = (item) =>
   //   setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
     downloadCSV(`Whole Student Report-${studentName}.csv`, data)
 
+  const isReportLoading = loadingReportData || loadingAttendanceData
   return (
     <>
       {sharingState && (
@@ -355,40 +375,67 @@ const WholeStudentReport = ({
         />
       </SubHeader>
       <ReportContainer>
-        {firstLoad && <Spin size="large" />}
-        {loadingReportData ? (
-          <SpinLoader
-            tip="Please wait while we gather the required information..."
-            position="fixed"
-          />
-        ) : error && error.dataSizeExceeded ? (
-          <DataSizeExceeded />
-        ) : isDataEmpty || !settings.selectedStudent?.key ? (
-          <NoDataContainer>
-            {settings.requestFilters?.termId
-              ? 'No data available currently.'
-              : ''}
-          </NoDataContainer>
-        ) : (
-          <>
-            <StudentDetails
-              studentInformation={settings.selectedStudentInformation}
+        <EduIf condition={firstLoad}>
+          <Spin size="large" />
+        </EduIf>
+        <EduIf condition={isReportLoading}>
+          <EduThen>
+            <SpinLoader
+              tip="Please wait while we gather the required information..."
+              position="fixed"
             />
-            <AssessmentsChart
-              chartData={chartData}
-              selectedPerformanceBand={selectedPerformanceBand}
-            />
-            <AssessmentsTable
-              // pageTitle={pageTitle}
-              // location={location}
-              tableData={tableData}
-              // studentName={studentName}
-              isSharedReport={isSharedReport}
-              onCsvConvert={onCsvConvert}
-              isCsvDownloading={isCsvDownloading}
-            />
-          </>
-        )}
+          </EduThen>
+          <EduElse>
+            <EduIf condition={error && error.dataSizeExceeded}>
+              <EduThen>
+                <DataSizeExceeded />
+              </EduThen>
+              <EduElse>
+                <EduIf
+                  condition={isDataEmpty || !settings.selectedStudent?.key}
+                >
+                  <EduThen>
+                    <NoDataContainer>
+                      {settings.requestFilters?.termId
+                        ? 'No data available currently.'
+                        : ''}
+                    </NoDataContainer>
+                  </EduThen>
+                  <EduElse>
+                    <StudentDetails
+                      studentInformation={settings.selectedStudentInformation}
+                    />
+                    <AssessmentsChart
+                      chartData={chartData}
+                      selectedPerformanceBand={selectedPerformanceBand}
+                      preLabelContent={
+                        <ChartPreLabelWrapper>
+                          <Checkbox
+                            checked={isAttendanceChartVisible}
+                            onChange={toggleAttendanceChart}
+                          >
+                            Show Attendance Chart
+                          </Checkbox>
+                        </ChartPreLabelWrapper>
+                      }
+                    />
+                    <EduIf condition={isAttendanceChartVisible}>
+                      <AttendanceChart
+                        attendanceChartData={attendanceChartData}
+                      />
+                    </EduIf>
+                    <AssessmentsTable
+                      tableData={tableData}
+                      isSharedReport={isSharedReport}
+                      onCsvConvert={onCsvConvert}
+                      isCsvDownloading={isCsvDownloading}
+                    />
+                  </EduElse>
+                </EduIf>
+              </EduElse>
+            </EduIf>
+          </EduElse>
+        </EduIf>
       </ReportContainer>
     </>
   )

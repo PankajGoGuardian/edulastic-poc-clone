@@ -8,7 +8,7 @@ import {
 } from '@edulastic/constants'
 import { themeColor } from '@edulastic/colors'
 import { IconAssignment, IconTrash } from '@edulastic/icons'
-import { Spin, Select, Icon } from 'antd'
+import { Spin, Select, Icon, Tooltip } from 'antd'
 import { get, isEmpty, keyBy, omit, pick } from 'lodash'
 import * as moment from 'moment'
 import PropTypes from 'prop-types'
@@ -417,6 +417,25 @@ class AssignTest extends React.Component {
   //   })
   // }
 
+  renderHeaderButton = (isAssigning, isAssignButtonDisabled) => (
+    <Tooltip
+      title={isAssignButtonDisabled ? 'Please select atleast 1 class.' : ''}
+      placement="bottom"
+    >
+      <span>
+        <EduButton
+          isBlue
+          data-cy="assignButton"
+          onClick={this.handleAssign}
+          loading={isAssigning}
+          disabled={isAssignButtonDisabled}
+        >
+          {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
+        </EduButton>
+      </span>
+    </Tooltip>
+  )
+
   onClassFieldChange = (value, group) => {
     const { assignmentSettings: assignment } = this.props
     const groupById = keyBy(group, '_id')
@@ -812,18 +831,6 @@ class AssignTest extends React.Component {
     const isTestSettingSaveLimitReached =
       testSettingsList.length >= TEST_SETTINGS_SAVE_LIMIT
 
-    const renderHeaderButton = () => (
-      <EduButton
-        isBlue
-        data-cy="assignButton"
-        onClick={this.handleAssign}
-        loading={isAssigning}
-        disabled={isEmpty(assignment.class)}
-      >
-        {isAssigning ? 'ASSIGNING...' : 'ASSIGN'}
-      </EduButton>
-    )
-
     return (
       <div>
         {isAdvancedSearchLoading && (
@@ -875,8 +882,9 @@ class AssignTest extends React.Component {
           midTitle="Assignment Settings"
           titleIcon={IconAssignment}
           btnTitle="ASSIGN"
-          renderButton={renderHeaderButton}
-          isLoadingButtonState={isAssigning} // || isBulkAssigning}
+          renderButton={this.renderHeaderButton}
+          isLoadingButtonState={isAssigning}
+          isAssignButtonDisabled={isEmpty(assignment.class)}
         />
 
         <Container>

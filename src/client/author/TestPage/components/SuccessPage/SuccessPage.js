@@ -6,7 +6,7 @@ import {
   collections as collectionsConstant,
 } from '@edulastic/constants'
 import { IconLock, IconPencilEdit } from '@edulastic/icons'
-import { Divider } from 'antd'
+import { Divider, Tooltip } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -214,16 +214,27 @@ class SuccessPage extends React.Component {
         )}
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <EduButton
-              isBlue
-              data-cy="assignButton"
-              onClick={handleClick}
-              disabled={isAsyncAssign}
+            <Tooltip
+              title={
+                isAsyncAssign
+                  ? 'Assigning is In Progress. You wil get notification oncompletion.'
+                  : ''
+              }
+              placement="bottom"
             >
-              {isAssignSuccess || isRegradeSuccess || isAsyncAssign
-                ? 'Go to Live Classboard'
-                : 'ASSIGN'}
-            </EduButton>
+              <span>
+                <EduButton
+                  isBlue
+                  data-cy="assignButton"
+                  onClick={handleClick}
+                  disabled={isAsyncAssign}
+                >
+                  {isAssignSuccess || isRegradeSuccess || isAsyncAssign
+                    ? 'Go to Live Classboard'
+                    : 'ASSIGN'}
+                </EduButton>
+              </span>
+            </Tooltip>
           )}
           onClick={this.handleAssign}
         />

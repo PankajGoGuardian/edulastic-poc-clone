@@ -1,6 +1,8 @@
 const S3_DATA_WAREHOUSE_FOLDER =
   process.env.REACT_APP_AWS_S3_DATA_WAREHOUSE_FOLDER
 
+const MAX_UPLOAD_FILE_SIZE = 30000000
+
 const getAchievementLevels = (test, allExternalBands) => {
   let testBandsGroup = allExternalBands.find(
     (band) =>
@@ -26,5 +28,6 @@ const getAchievementLevels = (test, allExternalBands) => {
 
 module.exports = {
   S3_DATA_WAREHOUSE_FOLDER,
+  MAX_UPLOAD_FILE_SIZE,
   getAchievementLevels,
 }

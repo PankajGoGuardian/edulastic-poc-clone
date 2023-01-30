@@ -1,35 +1,15 @@
 import React, { useMemo } from 'react'
-import next from 'immer'
 import styled from 'styled-components'
-import { Tag, Tooltip } from 'antd'
-
+import { connect } from 'react-redux'
+import { compose } from 'redux'
+import { Tag, Tooltip, Icon } from 'antd'
+import { isEmpty, get } from 'lodash'
 import { red, green, yellow, fadedBlack } from '@edulastic/colors'
-import { IconCharInfo } from '@edulastic/icons'
 
-import { isEmpty } from 'lodash'
+import { getOrgDataSelector } from '../../../src/selectors/user'
 import CsvTable from './CsvTable'
 import { StyledTable } from '../../../../common/styled'
-
-const columns = [
-  {
-    title: 'Test name',
-    dataIndex: 'testName',
-    key: 'testName',
-  },
-  {
-    title: 'Last Updated',
-    dataIndex: 'updatedAt',
-    key: 'updatedAt',
-  },
-  {
-    title: 'Status',
-    dataIndex: 'status',
-    key: 'status',
-  },
-]
-
-const sortText = (key) => (a, b) =>
-  (a[key] || '').toLowerCase().localeCompare((b[key] || '').toLowerCase())
+import { getTableColumns } from './utils'
 
 const getTag = (status, statusReason = '') => {
   if (status === 'SUCCESS') {
@@ -40,7 +20,7 @@ const getTag = (status, statusReason = '') => {
       <>
         <Tag color={red}>Failed</Tag>
         <Tooltip title={statusReason}>
-          <InfoIcon />
+          <StyledIcon type="warning" theme="filled" />
         </Tooltip>
       </>
     )
@@ -48,20 +28,20 @@ const getTag = (status, statusReason = '') => {
   return <Tag color={yellow}>In Progress</Tag>
 }
 
-const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
+const DataWarehouseUploadsTable = ({ uploadsStatusList, terms }) => {
+  const termsMap = useMemo(
+    () =>
+      new Map(
+        terms.map(({ _id, name, startDate }) => [_id, { name, startDate }])
+      ),
+    [terms]
+  )
+
   const sortedData = useMemo(() => {
     return uploadsStatusList.sort((a, b) => b.updatedAt - a.updatedAt)
   }, [uploadsStatusList])
 
-  const _columns = next(columns, (rawColumns) => {
-    rawColumns[0].sorter = sortText('testName')
-    rawColumns[1].sorter = (a, b) =>
-      new Date(a.updatedAt) - new Date(b.updatedAt)
-    rawColumns[1].render = (dateTime) => new Date(dateTime).toLocaleDateString()
-    rawColumns[2].sorter = sortText('status')
-    rawColumns[2].render = (status, record) =>
-      getTag(status, record?.statusReason)
-  })
+  const columns = getTableColumns(termsMap, getTag)
 
   if (isEmpty(uploadsStatusList)) {
     return (
@@ -74,7 +54,7 @@ const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
   return (
     <CsvTable
       dataSource={sortedData}
-      columns={_columns}
+      columns={columns}
       tableToRender={StyledTable}
       scroll={{ x: '100%' }}
       pagination={{
@@ -84,10 +64,16 @@ const DataWarehouseUploadsTable = ({ uploadsStatusList }) => {
   )
 }
 
-const InfoIcon = styled(IconCharInfo)`
-  width: 6px;
-  height: 10px;
+const withConnect = connect((state) => ({
+  terms: get(getOrgDataSelector(state), 'terms', []),
+}))
+
+export default compose(withConnect)(DataWarehouseUploadsTable)
+
+const StyledIcon = styled(Icon)`
+  font-size: 15px;
   cursor: pointer;
+  color: ${red};
 `
 
 const NoDataContainer = styled.div`
@@ -101,5 +87,3 @@ const NoDataContainer = styled.div`
   font-weight: 700;
   text-align: 'center';
 `
-
-export default DataWarehouseUploadsTable

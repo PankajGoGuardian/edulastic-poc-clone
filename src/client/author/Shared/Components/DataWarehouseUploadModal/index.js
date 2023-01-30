@@ -1,8 +1,7 @@
 import React, { useState, useEffect, useMemo } from 'react'
 import Dropzone from 'react-dropzone'
-import styled from 'styled-components'
-import { Icon, Select, Spin, Input, Row, Col, Progress } from 'antd'
-import { isEmpty } from 'lodash'
+import { Icon, Select, Spin, Input } from 'antd'
+import { isEmpty, get } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 
@@ -12,17 +11,11 @@ import {
   EduButton,
   notification,
 } from '@edulastic/common'
-import { testTypes as testTypesConstants } from '@edulastic/constants'
-import {
-  dashBorderColor,
-  dragDropUploadText,
-  greyThemeDark3,
-  greyThemeLighter,
-  themeColorBlue,
-  borderGrey,
-} from '@edulastic/colors'
+import { greyThemeDark3 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
+import { testTypes, dataWarehouse } from '@edulastic/constants'
 
+import cdnURI from '../../../../../app-config'
 import {
   uploadTestDataFileAction,
   getTestDataFileUploadLoader,
@@ -32,12 +25,26 @@ import {
   getSetCancelUploadAction,
   getAbortUploadAction,
 } from '../../../sharedDucks/dataWarehouse'
-
-const { EXTERNAL_TEST_TYPES } = testTypesConstants
-
-const MAX_FILE_SIZE = 30000000
+import { getOrgDataSelector } from '../../../src/selectors/user'
+import { getYear, dataFormatTreeOptions } from './utils'
+import { getTermOptions } from '../../../utils/reports'
+import DownloadTemplateContainer from './DownloadTemplateContainer'
+import {
+  Container,
+  DropzoneContentContainer,
+  StyledProgress,
+  StyledText,
+  Underlined,
+  StyledRow,
+  StyledCol,
+  StyledSelect,
+  StyledTreeSelect,
+} from './styledComponents'
 
 const { Option } = Select
+const { NON_ACADEMIC_DATA_TYPES } = testTypes
+const { MAX_UPLOAD_FILE_SIZE } = dataWarehouse
+const NON_ACADEMIC_DATA_TYPE_KEY = 'nonAcademicData'
 
 const DataWarehouseUploadModal = ({
   uploadFile,
@@ -49,27 +56,12 @@ const DataWarehouseUploadModal = ({
   uploadProgress,
   setCancelUpload,
   abortUpload,
+  terms,
 }) => {
   const [file, setFile] = useState(null)
   const [category, setCategory] = useState('')
   const [testName, setTestName] = useState('')
-  const [versionYear, setVersionYear] = useState('')
-  const [yearDropdownOptions, setYearDropdownOptions] = useState([])
-
-  const handleFileUpload = () => {
-    uploadFile({
-      file,
-      category,
-      handleUploadProgress,
-      setCancelUpload,
-      versionYear,
-      testName,
-    })
-  }
-
-  const cancelFileUpload = () => {
-    abortUpload()
-  }
+  const [termId, setTermId] = useState('')
 
   useEffect(() => {
     if (!isEmpty(uploadResponse)) {
@@ -77,35 +69,50 @@ const DataWarehouseUploadModal = ({
     }
   }, [uploadResponse])
 
-  useEffect(() => {
-    const currentYear = new Date().getFullYear()
-    const yearOptions = []
-    for (let i = 0; i < 5; i++) {
-      yearOptions.push({
-        key: currentYear - i,
-        value: currentYear - i,
-      })
-    }
-    setYearDropdownOptions(yearOptions)
-  }, [])
+  const schoolYearOptions = useMemo(() => getTermOptions(terms), [terms])
 
-  const isUploadBtnDisabled = useMemo(
-    () =>
-      loading ||
-      isEmpty(file) ||
-      isEmpty(category) ||
-      isEmpty(testName) ||
-      isEmpty(`${versionYear}`),
-    [loading, file, category, testName, versionYear]
-  )
+  const testTitlePlaceholder = useMemo(() => {
+    let isNonAcademicFormatSelected = false
+    if (!isEmpty(category)) {
+      const nonAcademicDataOptions =
+        dataFormatTreeOptions.find(
+          (node) => node.key === NON_ACADEMIC_DATA_TYPE_KEY
+        )?.children || []
+      if (!isEmpty(nonAcademicDataOptions)) {
+        const matchingCategory = nonAcademicDataOptions.find(
+          (option) => option.value === category
+        )
+        isNonAcademicFormatSelected = !isEmpty(matchingCategory)
+      }
+    }
+    return isNonAcademicFormatSelected ? 'Enter File Name' : 'Enter Test Title'
+  }, [category])
+
+  const isUploadBtnDisabled =
+    loading || [file, category, testName, termId].some(isEmpty)
+
+  const handleFileUpload = () => {
+    const termEndDate = schoolYearOptions.find(({ key }) => key === termId)
+      ?.endDate
+    const versionYear = getYear(termEndDate)
+    uploadFile({
+      file,
+      category,
+      handleUploadProgress,
+      setCancelUpload,
+      termId,
+      testName,
+      versionYear,
+    })
+  }
 
   return (
-    <Modal
+    <CustomModalStyled
       modalWidth="800px"
       style={{ height: '800px' }}
       visible={isVisible}
       maskClosable={false}
-      title="Upload File"
+      title="Upload External Data"
       onCancel={() => {
         closeModal(false)
       }}
@@ -115,7 +122,7 @@ const DataWarehouseUploadModal = ({
           width="200px"
           isGhost
           key="cancelButton"
-          onClick={cancelFileUpload}
+          onClick={abortUpload}
         >
           CANCEL
         </EduButton>,
@@ -133,46 +140,48 @@ const DataWarehouseUploadModal = ({
       <Container>
         <StyledRow>
           <StyledCol span={12}>
-            <StyledSelect
-              placeholder="Select data format"
-              onChange={(e) => {
-                setCategory(e)
-              }}
+            <StyledTreeSelect
+              placeholder="Select Data Type"
+              treeDefaultExpandAll
+              onChange={setCategory}
               getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            >
-              {Object.entries(EXTERNAL_TEST_TYPES).map(([key, value]) => (
-                <Option value={key}>{value}</Option>
-              ))}
-            </StyledSelect>
-          </StyledCol>
-          <StyledCol span={12}>
-            <StyledSelect
-              placeholder="Select year"
-              onChange={(e) => {
-                setVersionYear(e)
-              }}
-              getPopupContainer={(triggerNode) => triggerNode.parentNode}
-            >
-              {yearDropdownOptions.map(({ key, value }) => (
-                <Option value={key}>{value}</Option>
-              ))}
-            </StyledSelect>
-          </StyledCol>
-        </StyledRow>
-        <StyledRow>
-          <StyledCol span={12}>
-            <Input
-              placeholder="Enter Test Title"
-              value={testName}
-              onChange={(e) => setTestName(e.target.value)}
+              treeData={dataFormatTreeOptions}
             />
           </StyledCol>
+          <StyledCol span={12}>
+            <StyledSelect
+              placeholder="Select School Term"
+              onChange={setTermId}
+              getPopupContainer={(triggerNode) => triggerNode.parentNode}
+            >
+              {schoolYearOptions.map(({ key, title }) => (
+                <Option key={key} value={key}>
+                  {title}
+                </Option>
+              ))}
+            </StyledSelect>
+          </StyledCol>
         </StyledRow>
-
+        {!isEmpty(category) && (
+          <StyledRow>
+            <StyledCol span={12}>
+              <Input
+                placeholder={testTitlePlaceholder}
+                value={testName}
+                onChange={(e) => setTestName(e.target.value)}
+              />
+            </StyledCol>
+          </StyledRow>
+        )}
+        {category === NON_ACADEMIC_DATA_TYPES.ATTENDANCE && (
+          <DownloadTemplateContainer
+            url={`${cdnURI}/templates/AttendanceSampleFile.csv`}
+          />
+        )}
         <Dropzone
-          maxSize={MAX_FILE_SIZE}
+          maxSize={MAX_UPLOAD_FILE_SIZE}
           onDropRejected={(f) => {
-            if (f[0].size > MAX_FILE_SIZE) {
+            if (f[0].size > MAX_UPLOAD_FILE_SIZE) {
               notification({
                 msg: 'Please select a file with size less than 30 MB.',
                 type: 'error',
@@ -235,7 +244,7 @@ const DataWarehouseUploadModal = ({
           )}
         </FlexContainer>
       </Container>
-    </Modal>
+    </CustomModalStyled>
   )
 }
 
@@ -244,6 +253,7 @@ const withConnect = connect(
     loading: getTestDataFileUploadLoader(state),
     uploadResponse: getTestDataFileUploadResponse(state),
     uploadProgress: getFileUploadProgress(state),
+    terms: get(getOrgDataSelector(state), 'terms', []),
   }),
   {
     uploadFile: uploadTestDataFileAction,
@@ -254,78 +264,3 @@ const withConnect = connect(
 )
 
 export default compose(withConnect)(DataWarehouseUploadModal)
-
-const Modal = styled(CustomModalStyled)``
-
-const Container = styled.div`
-  padding: 10px;
-`
-
-const DropzoneContentContainer = styled.div`
-  margin: 20px 0;
-  padding: 50px;
-  border-radius: 2px;
-  height: 400px;
-  display: flex;
-  justify-content: center;
-  border: ${({ isDragActive }) =>
-    isDragActive
-      ? `2px solid ${themeColorBlue}`
-      : `1px dashed ${dashBorderColor}`};
-  background: ${greyThemeLighter};
-  svg {
-    margin-bottom: 12px;
-    width: 35px;
-    height: 30px;
-    fill: ${({ isDragActive }) =>
-      isDragActive ? themeColorBlue : dragDropUploadText};
-  }
-  &:hover {
-    border: 1px dashed ${greyThemeDark3};
-    svg {
-      fill: ${greyThemeDark3};
-    }
-  }
-`
-
-const StyledProgress = styled(Progress)`
-  display: flex;
-  justify-content: center;
-  flex-direction: column;
-  .ant-progress-inner {
-    border-radius: 0px;
-  }
-  .ant-progress-bg {
-    border-radius: 0px;
-    height: 15px !important;
-  }
-  .ant-progress-inner {
-    background: ${borderGrey};
-  }
-`
-
-const StyledText = styled.div`
-  font-size: ${({ isComment }) => (isComment ? 11 : 14)}px;
-  font-weight: bold;
-  text-transform: uppercase;
-  color: ${dragDropUploadText};
-  margin-top: ${({ isComment }) => (isComment ? 10 : 0)}px;
-`
-
-const Underlined = styled.span`
-  color: ${themeColorBlue};
-  cursor: pointer;
-  text-decoration: underline;
-`
-
-const StyledRow = styled(Row)`
-  margin-bottom: 10px;
-`
-
-const StyledCol = styled(Col)`
-  padding-right: 10px;
-`
-
-const StyledSelect = styled(Select)`
-  width: 100%;
-`

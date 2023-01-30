@@ -9,6 +9,10 @@ const EXTERNAL_TEST_TYPES = {
   NWEA: 'NWEA',
 }
 
+const NON_ACADEMIC_DATA_TYPES = {
+  ATTENDANCE: 'Attendance',
+}
+
 const TEST_TYPES = {
   ASSESSMENT: ['assessment'],
   COMMON: ['common assessment'],
@@ -54,4 +58,5 @@ module.exports = {
   TEST_TYPE_LABELS,
   PREMIUM_TEST_TYPES,
   EXTERNAL_TEST_TYPES,
+  NON_ACADEMIC_DATA_TYPES,
 }

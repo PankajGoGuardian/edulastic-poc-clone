@@ -8,6 +8,7 @@ const getSignedUrl = (
   filename,
   category,
   versionYear,
+  termId,
   testName,
   folder,
   subFolder
@@ -20,6 +21,7 @@ const getSignedUrl = (
         filename,
         category,
         versionYear,
+        termId,
         testName,
         subFolder,
         folder,

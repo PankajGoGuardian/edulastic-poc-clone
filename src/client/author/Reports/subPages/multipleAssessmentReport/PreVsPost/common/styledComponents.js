@@ -332,6 +332,7 @@ export const PerformanceMatrixContainer = styled(Row)`
       font-weight: bold;
       letter-spacing: 0.15px;
       color: #000000;
+      cursor: pointer;
     }
     .section-matrix-cell.top.left {
       border-radius: 18px 0 0 0;

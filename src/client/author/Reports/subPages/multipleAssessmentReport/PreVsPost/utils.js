@@ -182,11 +182,30 @@ export const getPerformanceMatrixColors = (matrixSize) => {
 export const getTableData = (
   metricInfo,
   selectedPerformanceBand,
-  compareBy,
+  tableFilters,
   preTestName,
   postTestName
 ) => {
-  const groupedByCompareByKey = groupByCompareByKey(metricInfo, compareBy)
+  const {
+    preBandScore,
+    postBandScore,
+    compareBy: { key: compareByKey },
+  } = tableFilters
+  let groupedByCompareByKey
+  // if matrix cell is clicked - filter metricInfo by preBandScore and postBandScore
+  if (preBandScore && postBandScore) {
+    const filteredMetricInfo = metricInfo.filter(
+      (m) =>
+        parseInt(m.preBandScore, 10) === parseInt(preBandScore, 10) &&
+        parseInt(m.postBandScore, 10) === parseInt(postBandScore, 10)
+    )
+    groupedByCompareByKey = groupByCompareByKey(
+      filteredMetricInfo,
+      compareByKey
+    )
+  } else {
+    groupedByCompareByKey = groupByCompareByKey(metricInfo, compareByKey)
+  }
 
   // get data required for table
   const tableData = map(Object.keys(groupedByCompareByKey), (key) => {
@@ -238,14 +257,14 @@ export const getTableData = (
     let studentId = ''
     let lastName = ''
     if (data.length) {
-      if (compareBy === 'student') {
+      if (compareByKey === 'student') {
         rowTitle = data[0].firstName
         lastName = data[0].lastName
         schoolName = data[0].schoolName
         teacherName = data[0].teacherName
         className = data[0].groupName
         studentId = key
-      } else rowTitle = data[0][`${compareBy}Name`]
+      } else rowTitle = data[0][`${compareByKey}Name`]
     }
     return {
       rowTitle,

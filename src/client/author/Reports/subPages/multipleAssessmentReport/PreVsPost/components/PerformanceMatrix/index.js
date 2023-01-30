@@ -24,23 +24,27 @@ const PerformanceMatrix = ({
   totalStudentCount = 0,
   summaryMetricInfo = [],
   selectedPerformanceBand = [],
+  tableFilters,
   onMatrixCellClick,
 }) => {
-  const performanceMatrixRenderData = useMemo(() => {
+  const {
+    performanceMatrixData,
+    matrixSize,
+    postTestColumnHeaders,
+  } = useMemo(() => {
     // sort performance band by threshold for display in performance matrix
     const _selectedPerformanceBand = sortBy(
       selectedPerformanceBand,
       'threshold'
     )
-    const performanceMatrixData = getPerformanceMatrixData(
+    const _performanceMatrixData = getPerformanceMatrixData(
       summaryMetricInfo,
       _selectedPerformanceBand,
       totalStudentCount
     )
-    const matrixSize = performanceMatrixData.length
-    const performanceMatrixColors = getPerformanceMatrixColors(matrixSize)
+    const _matrixSize = _performanceMatrixData.length
     // column headers render for post test
-    const postTestColumnHeaders = performanceMatrixData.map((d, ri) => {
+    const _postTestColumnHeaders = _performanceMatrixData.map((d, ri) => {
       const text = `${d.postStudentsPercentage}% (${
         d.postStudentsPercentage - d.preStudentsPercentange
       }%)`
@@ -52,14 +56,31 @@ const PerformanceMatrix = ({
         />
       )
     })
+    return {
+      performanceMatrixData: _performanceMatrixData,
+      matrixSize: _matrixSize,
+      postTestColumnHeaders: _postTestColumnHeaders,
+    }
+  }, [summaryMetricInfo, selectedPerformanceBand, totalStudentCount])
+
+  const preVsPostRows = useMemo(() => {
+    const hasCellClicked =
+      tableFilters.preBandScore && tableFilters.postBandScore
+    const selectedPreThreshold = parseInt(tableFilters.preBandScore, 10)
+    const selectedPostThreshold = parseInt(tableFilters.postBandScore, 10)
+    // generate colors to fill for performance matrix
+    const performanceMatrixColors = getPerformanceMatrixColors(matrixSize)
     // row render for each pre vs post test data
-    const preVsPostRows = performanceMatrixData.map((d1, ri) => {
+    const _preVsPostRows = performanceMatrixData.map((d1, ri) => {
       const text = `${d1.preStudentsPercentange}%`
       const preVsPostCells = (d1.preVsPostCellsData || []).map((d2, ci) => {
         const className1 =
           ri === 0 ? 'top' : ri === matrixSize - 1 ? 'bottom' : ''
         const className2 =
           ci === 0 ? 'left' : ci === matrixSize - 1 ? 'right' : ''
+        const isClicked =
+          d2.preThreshold === selectedPreThreshold &&
+          d2.postThreshold === selectedPostThreshold
         return (
           <PerformanceMatrixCell
             key={`section-matrix-cell-${ri}-${ci}`}
@@ -71,6 +92,7 @@ const PerformanceMatrix = ({
               </>
             }
             color={performanceMatrixColors[ri][ci]}
+            selected={!hasCellClicked || isClicked}
             onClick={onMatrixCellClick(d2.preThreshold, d2.postThreshold)}
           />
         )
@@ -82,8 +104,13 @@ const PerformanceMatrix = ({
         </React.Fragment>
       )
     })
-    return { matrixSize, postTestColumnHeaders, preVsPostRows }
-  }, [summaryMetricInfo, selectedPerformanceBand, totalStudentCount])
+    return _preVsPostRows
+  }, [
+    performanceMatrixData,
+    matrixSize,
+    tableFilters.preBandScore,
+    tableFilters.postBandScore,
+  ])
 
   return (
     <>
@@ -93,9 +120,7 @@ const PerformanceMatrix = ({
         </Typography.Title>
         <DashedLine dashColor={darkGrey} />
       </StyledRow>
-      <PerformanceMatrixContainer
-        matrixSize={performanceMatrixRenderData.matrixSize}
-      >
+      <PerformanceMatrixContainer matrixSize={matrixSize}>
         <Row type="flex" justify="center">
           <div className="section-post-test">
             <TestTypeTag className="section-post-test-tag">POST</TestTypeTag>
@@ -111,8 +136,8 @@ const PerformanceMatrix = ({
             <div className="section-matrix-grid">
               {/* empty div required to complete the matrix */}
               <div />
-              {performanceMatrixRenderData.postTestColumnHeaders}
-              {performanceMatrixRenderData.preVsPostRows}
+              {postTestColumnHeaders}
+              {preVsPostRows}
             </div>
           </div>
         </Row>

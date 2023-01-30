@@ -4,7 +4,7 @@ import { connect } from 'react-redux'
 import { Row } from 'antd'
 
 import { notification, SpinLoader } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+// import { roleuser } from '@edulastic/constants'
 import { fadedBlack, themeColor } from '@edulastic/colors'
 
 import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
@@ -98,19 +98,12 @@ const PreVsPostReport = ({
       ...settings.requestFilters,
       ...ddfilter,
       compareBy: tableFilters.compareBy.key,
-      preBandScore: tableFilters.preBandScore,
-      postBandScore: tableFilters.postBandScore,
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [
-    settings.requestFilters,
-    tableFilters.compareBy.key,
-    tableFilters.preBandScore,
-    tableFilters.postBandScore,
-  ])
+  }, [settings.requestFilters, tableFilters.compareBy.key])
 
   // extract selected performance band from MARFilterData
   const bandInfo = useMemo(
@@ -159,7 +152,7 @@ const PreVsPostReport = ({
     const _tableData = getTableData(
       _tableMetricInfo,
       selectedPerformanceBand,
-      tableFilters.compareBy.key,
+      tableFilters,
       preTestName,
       postTestName
     )
@@ -168,6 +161,8 @@ const PreVsPostReport = ({
     reportTableData,
     selectedPerformanceBand,
     tableFilters.compareBy.key,
+    tableFilters.preBandScore,
+    tableFilters.postBandScore,
     preTestName,
     postTestName,
   ])
@@ -211,11 +206,12 @@ const PreVsPostReport = ({
       preBandScore: `${preBandScore}`,
       postBandScore: `${postBandScore}`,
     }
-    if (userRole === roleuser.TEACHER) {
-      _tableFilters.compareBy = compareByOptions.find(
-        (c) => c.key === 'student'
-      )
-    }
+    // TODO: check if switching to compare by student is required
+    // if (userRole === roleuser.TEACHER) {
+    //   _tableFilters.compareBy = compareByOptions.find(
+    //     (c) => c.key === 'student'
+    //   )
+    // }
     if (
       tableFilters.preBandScore === _tableFilters.preBandScore &&
       tableFilters.postBandScore === _tableFilters.postBandScore
@@ -294,6 +290,7 @@ const PreVsPostReport = ({
         totalStudentCount={totalStudentCount}
         summaryMetricInfo={summaryMetricInfo}
         selectedPerformanceBand={selectedPerformanceBand}
+        tableFilters={tableFilters}
         onMatrixCellClick={onMatrixCellClick}
       />
       <PreVsPostTable

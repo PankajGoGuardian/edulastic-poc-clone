@@ -4,8 +4,8 @@ import { IconUpload } from '@edulastic/icons'
 import { borderGrey, greyThemeLight } from '@edulastic/colors'
 import styled from 'styled-components'
 import { Progress } from 'antd'
-import { DownloadCsv, StyledDiv } from './styled'
-import { RosterDataWrapper } from '../Container/styled'
+import { DownloadCsv, StyledDiv } from './styled-components'
+import { RosterDataWrapper } from '../Container/styled-components'
 
 const RosterData = ({ isFileUploading, uploadProgress }) => {
   return (

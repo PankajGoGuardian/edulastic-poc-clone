@@ -67,13 +67,11 @@ function* fetchReportSummaryDataRequestSaga({ payload }) {
   try {
     const isValidTestIds = validatePreAndPostTestIds(payload)
     if (!isValidTestIds && !payload.reportId) {
-      const msg = 'Please select different pre and post tests from dropdown'
       yield put(
         actions.fetchReportSummaryDataRequestError({
           error: { msg: 'InvalidTestIds' },
         })
       )
-      notification({ type: 'info', msg })
       return
     }
     const reportSummaryData = yield call(

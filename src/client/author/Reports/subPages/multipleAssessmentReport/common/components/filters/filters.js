@@ -100,7 +100,7 @@ const MultipleAssessmentReportFilters = ({
 
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
-      loc === reportNavType.PRE_VS_POST_TEST_COMPARISON &&
+      loc === reportNavType.PRE_VS_POST &&
       !['testIds'].includes(t.key) &&
       (performanceBandRequired || t.key !== 'profileId') &&
       (demographicsRequired || !ddFilterTypes.includes(t.key))
@@ -369,6 +369,10 @@ const MultipleAssessmentReportFilters = ({
     }
   }
 
+  // only required for pre vs post report
+  const waitForPreTestInitialLoad = !!search.preTestId
+  const waitForPostTestInitialLoad = !!search.postTestId
+
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
       <Col span={24} style={{ display: 'flex', alignItems: 'center' }}>
@@ -499,7 +503,7 @@ const MultipleAssessmentReportFilters = ({
                           }
                         />
                       </Col>
-                      {!(loc === reportNavType.PRE_VS_POST_TEST_COMPARISON) && (
+                      {!(loc === reportNavType.PRE_VS_POST) && (
                         <Col span={18}>
                           <AssessmentsAutoComplete
                             dataCy="tests"
@@ -737,7 +741,7 @@ const MultipleAssessmentReportFilters = ({
           </ReportFiltersWrapper>
         </ReportFiltersContainer>
       </Col>
-      {loc === reportNavType.PRE_VS_POST_TEST_COMPARISON && (
+      {loc === reportNavType.PRE_VS_POST && (
         <Col span={24}>
           <SecondaryFilterRow
             hidden={!!reportId}
@@ -767,7 +771,7 @@ const MultipleAssessmentReportFilters = ({
                 blackList={[filters.postTestId]}
                 autoSelectFirstItem
                 statePrefix="pre"
-                waitForInitialLoad
+                waitForInitialLoad={waitForPreTestInitialLoad}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -793,7 +797,7 @@ const MultipleAssessmentReportFilters = ({
                 autoSelectFirstItem
                 blackList={[filters.preTestId]}
                 statePrefix="post"
-                waitForInitialLoad
+                waitForInitialLoad={waitForPostTestInitialLoad}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer

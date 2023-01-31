@@ -236,7 +236,7 @@ const PreVsPostReport = ({
       <NoDataContainer>
         {settings.requestFilters?.termId
           ? error.msg === 'InvalidTestIds'
-            ? ''
+            ? 'Please select pre and post assessments from dropdown'
             : 'No data available currently.'
           : ''}
       </NoDataContainer>
@@ -261,20 +261,17 @@ const PreVsPostReport = ({
       </FeaturesSwitch>
       <StyledCard>
         <Row type="flex" justify="start">
-          <StyledH3 style={{ fontSize: '20px' }}>
-            Pre vs Post Test Comparison
-          </StyledH3>
+          <StyledH3 fontSize="20px">Pre vs Post Comparison</StyledH3>
         </Row>
         <Row type="flex">
           <StyledIconAlert fill={themeColor} />
-          <span style={{ fontSize: '12px' }}>
+          <StyledSpan fontSize="13px" color={fadedBlack}>
             This report compares the student performance on the choosen two
-            assessments.
-            <br />
+            assessments.{' '}
             <StyledSpan font="bold" color={fadedBlack}>
               Only students that have results for both assessments are included.
             </StyledSpan>
-          </span>
+          </StyledSpan>
         </Row>
       </StyledCard>
       <SummaryContainer

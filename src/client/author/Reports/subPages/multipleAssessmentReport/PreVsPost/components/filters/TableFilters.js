@@ -1,9 +1,9 @@
 import React from 'react'
 import { Row } from 'antd'
-import { EduButton } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
 import { compareByKeys } from '../../utils'
+import { StyledEduButton } from '../../common/styledComponents'
 
 const TableFilters = ({
   setTableFilters,
@@ -12,41 +12,30 @@ const TableFilters = ({
   analyseByOptions = [],
   selectedTableFilters = {},
 }) => {
+  const updateTableFilters = (selected) => {
+    setTableFilters({
+      ...selectedTableFilters,
+      compareBy: selected,
+    })
+  }
   return (
     <Row type="flex" justify="end" align="middle">
       {selectedTableFilters.compareBy.key === compareByKeys.STUDENT && (
-        <EduButton
-          style={{
-            height: '32px',
-            padding: '0 15px 0 10px',
-            marginRight: '5px',
-          }}
-          onClick={handleAddToGroupClick}
-        >
+        <StyledEduButton onClick={handleAddToGroupClick}>
           <IconPlusCircle /> Add To Student Group
-        </EduButton>
+        </StyledEduButton>
       )}
       <ControlDropDown
         style={{ marginRight: '10px' }}
         prefix="Compare By"
         by={selectedTableFilters.compareBy}
-        selectCB={(e, selected) => {
-          setTableFilters({
-            ...selectedTableFilters,
-            compareBy: selected,
-          })
-        }}
+        selectCB={updateTableFilters}
         data={compareByOptions}
       />
       <ControlDropDown
         prefix="Analyse By"
         by={selectedTableFilters.analyseBy}
-        selectCB={(e, selected) => {
-          setTableFilters({
-            ...selectedTableFilters,
-            analyseBy: selected,
-          })
-        }}
+        selectCB={updateTableFilters}
         data={analyseByOptions}
       />
     </Row>

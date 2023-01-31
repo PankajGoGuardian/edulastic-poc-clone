@@ -1,24 +1,19 @@
 import React from 'react'
 import { map } from 'lodash'
 import { ColorCircle } from '../../../../common/styled'
-import { LegendWrapper } from '../common/styledComponents'
+import {
+  LegendWrapper,
+  StyledLegendContainer,
+} from '../common/styledComponents'
 
 const PreVsPostLegend = ({ selectedPerformanceBand }) => {
   const legend = map(selectedPerformanceBand, (pb) => {
     const { name, color } = pb
     return (
-      <div style={{ marginInline: '20px', display: 'flex' }}>
+      <StyledLegendContainer>
         <ColorCircle color={color} />
-        <span
-          style={{
-            fontSize: '12px',
-            marginLeft: '8px',
-            fontWeight: 'bold',
-          }}
-        >
-          {name}
-        </span>
-      </div>
+        <span>{name}</span>
+      </StyledLegendContainer>
     )
   })
   return <LegendWrapper>{legend}</LegendWrapper>

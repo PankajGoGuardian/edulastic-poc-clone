@@ -18,7 +18,7 @@ const reportNavType = {
   PERFORMANCE_OVER_TIME: 'performance-over-time',
   PEER_PROGRESS_ANALYSIS: 'peer-progress-analysis',
   STUDENT_PROGRESS: 'student-progress',
-  PRE_VS_POST_TEST_COMPARISON: 'pre-vs-post-test-comparison',
+  PRE_VS_POST: 'pre-vs-post',
   STANDARDS_PERFORMANCE_SUMMARY: 'standards-performance-summary',
   STANDARDS_GRADEBOOK: 'standards-gradebook',
   STANDARDS_PROGRESS: 'standards-progress',

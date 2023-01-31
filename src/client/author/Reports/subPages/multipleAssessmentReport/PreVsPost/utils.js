@@ -13,36 +13,69 @@ import {
   isEmpty,
 } from 'lodash'
 
-const HSL_COLOR_GREEN = [116, 34, 52]
-const HSL_COLOR_RED = [0, 73, 63]
-
 const { getProficiencyBand, percentage } = reportUtils.common
 const { getColorsByInterpolation } = colorUtils
 
+const HSL_COLOR_GREEN = [116, 34, 52]
+const HSL_COLOR_RED = [0, 73, 63]
+
+export const compareByKeys = {
+  SCHOOL: 'school',
+  TEACHER: 'teacher',
+  CLASS: 'class',
+  STUDENT: 'student',
+  RACE: 'race',
+  GENDER: 'gender',
+  FRL_STATUS: 'frlStatus',
+  ELL_STATUS: 'ellStatus',
+  IEP_STATUS: 'iepStatus',
+  HISPANIC_ETHNICITY: 'hispanicEthnicity',
+}
+
+export const compareByOptions = [
+  { key: compareByKeys.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
+  { key: compareByKeys.TEACHER, title: 'Teacher', hiddenFromRole: ['teacher'] },
+  { key: compareByKeys.CLASS, title: 'Class' },
+  {
+    key: compareByKeys.STUDENT,
+    title: 'Student',
+    hiddenFromRole: ['district-admin', 'school-admin'],
+  },
+  { key: compareByKeys.RACE, title: 'Race' },
+  { key: compareByKeys.GENDER, title: 'Gender' },
+  { key: compareByKeys.FRL_STATUS, title: 'FRL Status' },
+  { key: compareByKeys.ELL_STATUS, title: 'ELL Status' },
+  { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
+  { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
+]
+
+export const analyseByOptions = [
+  { key: 'score', title: 'Score %' },
+  { key: 'rawScore', title: 'Raw Score' },
+]
+
 const groupByCompareByKey = (metricInfo, compareBy) => {
   switch (compareBy) {
-    case 'school':
+    case compareByKeys.SCHOOL:
       return groupBy(metricInfo, 'schoolId')
-    case 'student':
+    case compareByKeys.STUDENT:
       return groupBy(metricInfo, 'studentId')
-    case 'group':
+    case compareByKeys.CLASS:
       return groupBy(metricInfo, 'groupId')
-    case 'teacher':
+    case compareByKeys.TEACHER:
       return groupBy(metricInfo, 'teacherId')
-    case 'race':
+    case compareByKeys.RACE:
       return groupBy(metricInfo, 'race')
-    case 'gender':
+    case compareByKeys.GENDER:
       return groupBy(metricInfo, 'gender')
-    case 'ellStatus':
+    case compareByKeys.ELL_STATUS:
       return groupBy(metricInfo, 'ellStatus')
-    case 'iepStatus':
+    case compareByKeys.IEP_STATUS:
       return groupBy(metricInfo, 'iepStatus')
-    case 'hispanicEthnicity':
+    case compareByKeys.HISPANIC_ETHNICITY:
       return groupBy(metricInfo, 'hispanicEthnicity')
-    case 'frlStatus':
+    case compareByKeys.FRL_STATUS:
       return groupBy(metricInfo, 'frlStatus')
-    case 'standard':
-      return groupBy(metricInfo, 'standardId')
     default:
       return {}
   }
@@ -257,7 +290,7 @@ export const getTableData = (
     let studentId = ''
     let lastName = ''
     if (data.length) {
-      if (compareByKey === 'student') {
+      if (compareByKey === compareByKeys.STUDENT) {
         rowTitle = data[0].firstName
         lastName = data[0].lastName
         schoolName = data[0].schoolName

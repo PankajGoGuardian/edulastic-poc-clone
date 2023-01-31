@@ -17,6 +17,7 @@ import {
   TestTypeTag,
   StyledRow,
 } from '../common/styledComponents'
+import { compareByKeys } from '../utils'
 
 const onCsvConvert = (data) =>
   downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
@@ -252,7 +253,9 @@ const getTableColumns = (
   })
   genericColumns.push(...performanceBandColumns)
 
-  return compareBy === 'student' ? compareByStudentColumns : genericColumns
+  return compareBy === compareByKeys.STUDENT
+    ? compareByStudentColumns
+    : genericColumns
 }
 
 const PreVsPostTable = ({
@@ -292,7 +295,9 @@ const PreVsPostTable = ({
         dataSource={dataSource}
         columns={tableColumns}
         rowSelection={
-          selectedTableFilters.compareBy.key === 'student' ? rowSelection : null
+          selectedTableFilters.compareBy.key === compareByKeys.STUDENT
+            ? rowSelection
+            : null
         }
         tableToRender={StyledTable}
         pagination={{ hideOnSinglePage: true, pageSize: 25 }}

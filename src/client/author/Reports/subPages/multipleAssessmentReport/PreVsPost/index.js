@@ -19,8 +19,10 @@ import { getUserRole } from '../../../../src/selectors/user'
 import { getCsvDownloadingState } from '../../../ducks'
 import { actions, selectors } from './ducks'
 
-import dropDownData from './static/dropDownData.json'
 import {
+  // compareByKeys,
+  compareByOptions as compareByOptionsRaw,
+  analyseByOptions,
   getTestNamesFromTestMetrics,
   getSummaryDataFromSummaryMetrics,
   getTableData,
@@ -30,8 +32,6 @@ import {
   StyledIconAlert,
   PreVsPostReportContainer,
 } from './common/styledComponents'
-
-const { compareByOptions: compareByOptionsRaw, analyseByOptions } = dropDownData
 
 const PreVsPostReport = ({
   location,
@@ -209,7 +209,7 @@ const PreVsPostReport = ({
     // TODO: check if switching to compare by student is required
     // if (userRole === roleuser.TEACHER) {
     //   _tableFilters.compareBy = compareByOptions.find(
-    //     (c) => c.key === 'student'
+    //     (c) => c.key === compareByKeys.STUDENT
     //   )
     // }
     if (

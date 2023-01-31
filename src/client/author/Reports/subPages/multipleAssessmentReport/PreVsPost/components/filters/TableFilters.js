@@ -3,6 +3,7 @@ import { Row } from 'antd'
 import { EduButton } from '@edulastic/common'
 import { IconPlusCircle } from '@edulastic/icons'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
+import { compareByKeys } from '../../utils'
 
 const TableFilters = ({
   setTableFilters,
@@ -13,7 +14,7 @@ const TableFilters = ({
 }) => {
   return (
     <Row type="flex" justify="end" align="middle">
-      {selectedTableFilters.compareBy.key === 'student' && (
+      {selectedTableFilters.compareBy.key === compareByKeys.STUDENT && (
         <EduButton
           style={{
             height: '32px',

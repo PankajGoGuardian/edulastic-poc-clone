@@ -2,6 +2,7 @@ import React from 'react'
 import { Empty, Select } from 'antd'
 import { connect } from 'react-redux'
 import { debounce } from 'lodash'
+import { EduIf } from '@edulastic/common'
 import {
   getAdvancedSearchDetailsSelector,
   setAdvancedSearchClassesAction,
@@ -45,68 +46,70 @@ const ValueEditor = (props) => {
     return null
   }
 
-  if (Object.keys(enableSearchFields).includes(field)) {
-    const { key } = enableSearchFields[field]
-    const isLoading = advancedSearchDetails[key]?.isLoading
-    return (
-      <StyledSelect
-        getPopupContainer={(triggerNode) => triggerNode.parentElement}
-        mode="multiple"
-        style={{ width: '200px' }}
-        autoClearSearchValue={false}
-        onChange={handleOnChange}
-        onFocus={() => handleSearch('')}
-        placeholder={`Select ${label}`}
-        onSearch={searchHandler}
-        value={value || undefined}
-        showSearch
-        tagsEllipsis
-        filterOption={null}
-        loading={isLoading}
-        notFoundContent={
-          !isLoading && (
-            <Empty
-              className="ant-empty-small"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-              style={{ textAlign: 'left', margin: '10px 0' }}
-              description="No match found"
-            />
-          )
-        }
-      >
-        {values.map((item) => {
-          return (
-            <Select.Option value={item.value} key={item.value}>
-              {item.label}
-            </Select.Option>
-          )
-        })}
-      </StyledSelect>
-    )
-  }
-
+  const { key } = enableSearchFields[field] || {}
+  const isLoading = advancedSearchDetails[key]?.isLoading
   return (
-    <StyledSelect
-      getPopupContainer={(triggerNode) => triggerNode.parentElement}
-      mode={type === 'multiselect' ? 'multiple' : 'default'}
-      placeholder={`Select ${label}`}
-      style={{ width: '200px' }}
-      onChange={handleOnChange}
-      value={value || undefined}
-      showSearch
-      tagsEllipsis
-      filterOption={(input, option) =>
-        option.props.children.toLowerCase().indexOf(input.toLowerCase()) >= 0
-      }
-    >
-      {values.map((item) => {
-        return (
-          <Select.Option value={item.value} key={item.value}>
-            {item.label}
-          </Select.Option>
-        )
-      })}
-    </StyledSelect>
+    <>
+      <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
+        <StyledSelect
+          getPopupContainer={(triggerNode) => triggerNode.parentElement}
+          mode="multiple"
+          style={{ width: '200px' }}
+          autoClearSearchValue={false}
+          onChange={handleOnChange}
+          onFocus={() => handleSearch('')}
+          placeholder={`Select ${label}`}
+          onSearch={searchHandler}
+          value={value || undefined}
+          showSearch
+          tagsEllipsis
+          filterOption={null}
+          loading={isLoading}
+          notFoundContent={
+            !isLoading && (
+              <Empty
+                className="ant-empty-small"
+                image={Empty.PRESENTED_IMAGE_SIMPLE}
+                style={{ textAlign: 'left', margin: '10px 0' }}
+                description="No match found"
+              />
+            )
+          }
+        >
+          {values.map((item) => {
+            return (
+              <Select.Option value={item.value} key={item.value}>
+                {item.label}
+              </Select.Option>
+            )
+          })}
+        </StyledSelect>
+      </EduIf>
+      <EduIf condition={!Object.keys(enableSearchFields).includes(field)}>
+        <StyledSelect
+          getPopupContainer={(triggerNode) => triggerNode.parentElement}
+          mode={type === 'multiselect' ? 'multiple' : 'default'}
+          placeholder={`Select ${label}`}
+          style={{ width: '200px' }}
+          onChange={handleOnChange}
+          value={value || undefined}
+          showSearch
+          tagsEllipsis
+          filterOption={(input, option) =>
+            option.props.children.toLowerCase().indexOf(input.toLowerCase()) >=
+            0
+          }
+        >
+          {values.map((item) => {
+            return (
+              <Select.Option value={item.value} key={item.value}>
+                {item.label}
+              </Select.Option>
+            )
+          })}
+        </StyledSelect>
+      </EduIf>
+    </>
   )
 }
 

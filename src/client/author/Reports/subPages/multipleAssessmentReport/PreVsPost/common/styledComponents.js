@@ -7,10 +7,11 @@ import {
   darkRed,
   greenDark4 as green,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 import { IconAlertCircle } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
-import { StyledTable as Table } from '../../../../common/styled'
+import { StyledCell, StyledTable as Table } from '../../../../common/styled'
 
 export const PreVsPostReportContainer = styled.div`
   @media print {
@@ -68,24 +69,9 @@ export const StyledTable = styled(Table)`
   }
 `
 
-export const CustomStyledCell = styled.div`
-  border: 0.05px solid ${greyLight1};
-  height: ${(props) => props.height || '33px'};
-  line-height: ${(props) => props.height || '33px'};
-  width: ${(props) => props.width};
-  font-weight: ${(props) => props.font};
-  font-size: 12px;
-  padding: 0px 8px;
+export const CustomStyledCell = styled(StyledCell)`
   background-color: ${(props) => props.color};
-  text-align: center;
-  white-space: nowrap;
-  overflow: hidden;
-  justify-content: center;
-  align-items: center;
-  text-overflow: ellipsis;
-  @media print {
-    white-space: wrap;
-  }
+  padding: ${(props) => props.padding};
 `
 
 export const ArrowLarge = styled.div`
@@ -130,8 +116,14 @@ export const TestTypeTag = styled.span`
 `
 
 export const StyledSpan = styled.span`
-  color: ${(props) => (props.color ? props.color : '#AEB2B7')};
+  color: ${(props) => props.color};
   font-weight: ${(props) => props.font};
+  font-size: ${(props) => props.fontSize};
+`
+
+export const StyledDiv = styled.div`
+  display: flex;
+  justify-content: center;
 `
 
 export const SummaryWrapper = styled.div`
@@ -139,7 +131,6 @@ export const SummaryWrapper = styled.div`
   flex-wrap: wrap;
   justify-content: center;
   border: 0.5px solid ${grey};
-  padding: 8px 0px;
   background-color: ${lightGrey};
   border-radius: 0px 0px 20px 20px;
 `
@@ -153,7 +144,7 @@ export const LegendWrapper = styled.div`
   border: 5px solid ${grey};
   border-width: 0.5px 0.5px 0px 0.5px;
   border-radius: 20px 20px 0px 0px;
-  padding: 20px 20px;
+  padding: 12px 20px;
 `
 
 export const StudentWrapper = styled.span`
@@ -179,11 +170,15 @@ export const StudentWrapper = styled.span`
     align-self: center;
     font-size: 12px;
     font-weight: 600;
+    & > span {
+      font-weight: bold;
+    }
   }
 `
 
 export const StyledRow = styled(Row)`
-  margin-block: 40px;
+  margin-top: 20px;
+  margin-bottom: ${(props) => props.margin};
 `
 
 export const StyledCard = styled.div`
@@ -246,6 +241,15 @@ export const StyledContainer = styled.div`
 export const StyledHorizontalStackedBarChartContainer = styled.div`
   margin: 10px 30px;
 `
+export const StyledLegendContainer = styled.div`
+  margin-inline: 20px;
+  display: flex;
+  & > span {
+    font-size: 12px;
+    margin-left: 8px;
+    font-weight: bold;
+  }
+`
 
 export const StyledIconAlert = styled(IconAlertCircle)`
   align: center;
@@ -254,8 +258,6 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 `
 
 export const PerformanceMatrixContainer = styled(Row)`
-  padding: 50px;
-  margin-top: -30px;
   .section-pre-test,
   .section-post-test {
     padding: 10px;
@@ -347,4 +349,9 @@ export const PerformanceMatrixContainer = styled(Row)`
       border-radius: 0 0 0 18px;
     }
   }
+`
+export const StyledEduButton = styled(EduButton)`
+  height: '32px';
+  padding: '0 15px 0 10px';
+  margin-right: '5px';
 `

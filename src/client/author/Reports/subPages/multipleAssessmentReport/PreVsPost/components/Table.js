@@ -9,13 +9,15 @@ import CsvTable from '../../../../common/components/tables/CsvTable'
 import TableFilters from './filters/TableFilters'
 import HorizontalStackedBarChart from './HorizontalStackedBarChart'
 
-import { StyledCard, StyledCell, DashedLine } from '../../../../common/styled'
+import { StyledCard, DashedLine } from '../../../../common/styled'
 import {
   AssessmentNameContainer,
   StyledTable,
   ArrowSmall as Arrow,
   TestTypeTag,
   StyledRow,
+  CustomStyledCell,
+  StyledDiv,
 } from '../common/styledComponents'
 import { compareByKeys } from '../utils'
 
@@ -48,25 +50,16 @@ const getAvgPerformance = (record, analyseBy) => {
   } = record
   return (
     <Row type="flex" justify="center">
-      <StyledCell
-        justify="center"
-        style={{ backgroundColor: preBand.color, padding: '15px' }}
-      >
+      <CustomStyledCell justify="center" color={preBand.color} padding="15px">
         {analyseBy === 'rawScore'
           ? `${preAvgScore}`
           : `${preAvgScorePercentage}%`}
-      </StyledCell>
-      <StyledCell
-        justify="center"
-        style={{
-          backgroundColor: postBand.color,
-          padding: '15px',
-        }}
-      >
+      </CustomStyledCell>
+      <CustomStyledCell justify="center" color={postBand.color} padding="15px">
         {analyseBy === 'rawScore'
           ? `${postAvgScore}`
           : `${postAvgScorePercentage}%`}
-      </StyledCell>
+      </CustomStyledCell>
     </Row>
   )
 }
@@ -75,17 +68,13 @@ const getAvgPerformance = (record, analyseBy) => {
 const getPerformanceChange = (record) => {
   const { preAvgScorePercentage, postAvgScorePercentage } = record
   const value = postAvgScorePercentage - preAvgScorePercentage
+  const arrow =
+    value < 0 ? <Arrow type="top" /> : value > 0 ? <Arrow type="bottom" /> : ''
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}>
+    <StyledDiv>
       {`${Math.abs(value)}%  `}
-      {value < 0 ? (
-        <Arrow type="top" />
-      ) : value > 0 ? (
-        <Arrow type="bottom" />
-      ) : (
-        ''
-      )}
-    </div>
+      {arrow}
+    </StyledDiv>
   )
 }
 
@@ -181,7 +170,7 @@ const getTableColumns = (
       title: compareBy,
       dataIndex: 'rowTitle',
       align: 'left',
-      width: 150,
+      width: 100,
     },
     {
       title: 'School',
@@ -278,7 +267,7 @@ const PreVsPostTable = ({
   )
   return (
     <StyledCard>
-      <StyledRow type="flex" justify="space-between">
+      <StyledRow type="flex" justify="space-between" margin="20px">
         <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
           Performance Change By {selectedTableFilters.compareBy.title}
         </Typography.Title>

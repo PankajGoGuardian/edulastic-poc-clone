@@ -76,7 +76,7 @@ const SummaryContainer = ({
 
   return (
     <>
-      <StyledRow type="flex">
+      <StyledRow type="flex" margin="-18px">
         <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
           Avg Score Comparison
         </Typography.Title>
@@ -86,7 +86,9 @@ const SummaryContainer = ({
       <StyledContainer>
         <StudentWrapper>
           <IconStudent className="icon-student" />
-          <span className="student-count">ATTEMPTED: {totalStudentCount}</span>
+          <span className="student-count">
+            ATTEMPTED: <span>{totalStudentCount}</span>
+          </span>
           <Tooltip title={tooltipText}>
             <IconInfo className="icon-info" />
           </Tooltip>

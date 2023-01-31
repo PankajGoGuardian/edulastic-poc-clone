@@ -4,7 +4,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
+import { EduIf, SelectInputStyled } from '@edulastic/common'
 import { IconGroup, IconClass, IconClose } from '@edulastic/icons'
 import { lightGrey10 } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
@@ -368,17 +368,19 @@ class ClassList extends React.Component {
         0
       ) || 0
 
-    const selectedClassData =
-      classList?.filter(({ _id }) => selectedClasses.includes(_id)) || 0
+    const selectedClassData = classList?.filter(({ _id }) =>
+      selectedClasses.includes(_id)
+    )
     const schoolsCount =
       uniq(
         selectedClassData
           ?.map(({ institutionId }) => institutionId)
           ?.filter((i) => !!i)
       )?.length || 0
-    const classesCount = selectedClassData?.filter(
-      ({ type }) => classType === 'all' || type === classType
-    )?.length
+    const classesCount =
+      selectedClassData?.filter(
+        ({ type }) => classType === 'all' || type === classType
+      )?.length || 0
     const studentsCount =
       selectedClassData?.reduce(
         (acc, curr) => acc + (curr.studentCount || 0),
@@ -633,7 +635,7 @@ class ClassList extends React.Component {
         </ClassListFilter>
 
         <TableContainer>
-          {isAdvancedSearchSelected && (
+          <EduIf condition={isAdvancedSearchSelected}>
             <AdvancedSearchTagContainer>
               <AdvancedSearchTag
                 onClick={() => {
@@ -654,7 +656,7 @@ class ClassList extends React.Component {
                 color="#676e74"
               />
             </AdvancedSearchTagContainer>
-          )}
+          </EduIf>
           <InfoSection>
             <div>
               <span>School(s)</span>

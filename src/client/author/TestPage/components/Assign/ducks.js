@@ -48,7 +48,6 @@ const assignBehaviour = {
 // constants
 export const SAVE_ASSIGNMENT = '[assignments] save assignment'
 export const SAVE_V2_ASSIGNMENT = '[assignments] save v2 assignment'
-export const SAVE_BULK_ASSIGNMENT = '[assignments] save bulk assignment'
 export const UPDATE_ASSIGNMENT = '[assignments] update assignment'
 export const UPDATE_SET_ASSIGNMENT = '[assignments] update set assingment'
 export const FETCH_ASSIGNMENTS = '[assignments] fetch assignments'
@@ -76,7 +75,6 @@ export const fetchAssignmentsAction = createAction(FETCH_ASSIGNMENTS)
 export const setCurrentAssignmentAction = createAction(SET_CURRENT_ASSIGNMENT)
 export const saveAssignmentAction = createAction(SAVE_ASSIGNMENT)
 export const saveV2AssignmentAction = createAction(SAVE_V2_ASSIGNMENT)
-export const saveBulkAssignmentAction = createAction(SAVE_BULK_ASSIGNMENT)
 export const deleteAssignmentAction = createAction(DELETE_ASSIGNMENT)
 export const loadAssignmentsAction = createAction(LOAD_ASSIGNMENTS)
 export const removeAssignmentsAction = createAction(REMOVE_ASSIGNMENT)
@@ -500,52 +498,6 @@ function* saveAssignment({ payload }) {
   }
 }
 
-function* saveBulkAssignment({ payload }) {
-  try {
-    yield put(setBulkAssignmentSavingAction(true))
-
-    const { assignmentSettings, ..._payload } = payload
-    const name = yield select(getUserNameSelector)
-    const _id = yield select(getUserId)
-    const assignedBy = { _id, name }
-
-    const startDate =
-      assignmentSettings.startDate &&
-      moment(assignmentSettings.startDate).valueOf()
-    const endDate =
-      assignmentSettings.endDate && moment(assignmentSettings.endDate).valueOf()
-    const dueDate =
-      assignmentSettings.dueDate && moment(assignmentSettings.dueDate).valueOf()
-    const data = {
-      ...omit(assignmentSettings, ['class', 'resources', 'termId']),
-      startDate,
-      endDate,
-      dueDate,
-      assignedBy,
-    }
-
-    if (
-      data.scoringType ===
-      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
-    ) {
-      data.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
-    }
-
-    const result = yield call(assignmentApi.bulkAssign, {
-      ..._payload,
-      assignmentSettings: data,
-    })
-    notification({ type: 'info', msg: result })
-    yield put(push('/author/assignments'))
-  } catch (err) {
-    console.error('error for save assignment', err)
-    const errorMessage = err.response?.data?.message || 'Something went wrong'
-    notification({ msg: errorMessage })
-  } finally {
-    yield put(setBulkAssignmentSavingAction(false))
-  }
-}
-
 function* saveV2Assignment({ payload }) {
   try {
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT
@@ -935,7 +887,6 @@ export function* watcherSaga() {
   yield all([
     yield takeLatest(SAVE_ASSIGNMENT, saveAssignment),
     yield takeLatest(SAVE_V2_ASSIGNMENT, saveV2Assignment),
-    yield takeLatest(SAVE_BULK_ASSIGNMENT, saveBulkAssignment),
     yield takeEvery(FETCH_ASSIGNMENTS, loadAssignments),
     yield takeEvery(DELETE_ASSIGNMENT, deleteAssignment),
   ])

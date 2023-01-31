@@ -1,4 +1,4 @@
-import { EduButton, notification } from '@edulastic/common'
+import { EduButton, EduIf, notification } from '@edulastic/common'
 import {
   assignmentPolicyOptions,
   roleuser,
@@ -91,8 +91,6 @@ import DeleteTestSettingsModal from './DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from './UpdateTestSettingModal'
 import { fetchCustomKeypadAction } from '../../../../assessment/components/KeyPadOptions/ducks'
 import slice from '../../../CurriculumSequence/components/ManageContentBlock/ducks'
-// import ShowBulkAssignModal from './ShowBulkAssignModal'
-// import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import QueryBuilder from '../../../AdvanceSearch/QueryBuilder'
 import { SpinnerContainer } from '../../../src/MainStyle'
 import { isAdvancedSearchLoadingSelector } from '../../../AdvanceSearch/ducks'
@@ -126,7 +124,6 @@ class AssignTest extends React.Component {
       showDeleteSettingModal: false,
       showUpdateSettingModal: false,
       settingDetails: null,
-      // showBulkAssignModal: false,
       showAdvanceSearchModal: false,
     }
   }
@@ -385,34 +382,6 @@ class AssignTest extends React.Component {
   SwitchView = (checked) => {
     this.setState({ isAdvancedView: checked })
   }
-
-  // the following method is no longer used, since we will always use the normal assign btn
-  // handleBulkAssign = () => {
-  //   const { searchTerms, assignmentSettings: assignment } = this.props
-  //   const { changeDateSelection } = this.state
-  //   const { subjects, grades } = searchTerms
-
-  //   if (!assignment.startDate) return
-  //   if (isEmpty(subjects)) {
-  //     return notification({ messageKey: 'selectSubject' })
-  //   }
-  //   if (isEmpty(grades)) {
-  //     return notification({ messageKey: 'selectGrade' })
-  //   }
-
-  //   if (!this.validateTimedAssignment()) return
-  //   if (assignment.endDate < Date.now()) {
-  //     notification({ messageKey: 'endDate' })
-  //     this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
-  //   } else if (changeDateSelection && assignment.dueDate > assignment.endDate) {
-  //     notification({ messageKey: 'dueDateShouldNotBeGreaterThanEndDate' })
-  //     this.handleTabChange(sectionContants.CLASS_GROUP_SECTION)
-  //   }
-
-  //   this.setState({
-  //     showBulkAssignModal: true,
-  //   })
-  // }
 
   renderHeaderButton = (isAssigning, isAssignButtonDisabled) => (
     <Tooltip
@@ -786,7 +755,6 @@ class AssignTest extends React.Component {
       showDeleteSettingModal,
       settingDetails,
       showUpdateSettingModal,
-      // showBulkAssignModal,
       showAdvanceSearchModal,
     } = this.state
     const {
@@ -794,7 +762,6 @@ class AssignTest extends React.Component {
       isTestLoading,
       match,
       isAssigning,
-      // isBulkAssigning,
     } = this.props
     const {
       classList,
@@ -830,21 +797,12 @@ class AssignTest extends React.Component {
 
     return (
       <div>
-        {isAdvancedSearchLoading && (
+        <EduIf condition={isAdvancedSearchLoading}>
           <SpinnerContainer>
             <Spin />
           </SpinnerContainer>
-        )}
+        </EduIf>
         <CommonStudentConfirmation assignment={assignment} />
-        {/* {showBulkAssignModal && (
-          <ShowBulkAssignModal
-            closeModal={() => {
-              this.setState({ showBulkAssignModal: false })
-            }}
-            assignmentSettings={assignment}
-            moduleTitle={moduleTitle}
-          />
-        )} */}
         <MultipleAssignConfirmation
           assignment={assignment}
           isPlaylist={isPlaylist}
@@ -906,12 +864,12 @@ class AssignTest extends React.Component {
               &nbsp;/&nbsp;
               <Anchor>Assign</Anchor>
             </PaginationInfo>
-            {showAdvanceSearchModal && (
+            <EduIf condition={showAdvanceSearchModal}>
               <QueryBuilder
                 showAdvanceSearch={showAdvanceSearchModal}
                 setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
               />
-            )}
+            </EduIf>
             {/* TODO there are some scenarios we have both simple and advance view which is yet be decided */}
             {premium && (
               <SavedSettingsContainer>
@@ -1002,7 +960,7 @@ class AssignTest extends React.Component {
               showAssignModuleContent={
                 match?.params?.playlistId && !match?.params?.testId
               }
-              isAssigning={isAssigning} // || isBulkAssigning}
+              isAssigning={isAssigning}
               isPlaylist={isPlaylist}
               setShowAdvanceSearchModal={this.setShowAdvanceSearchModal}
             />
@@ -1043,7 +1001,6 @@ const enhance = compose(
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
       searchTerms: getSearchTermsFilterSelector(state),
-      // isBulkAssigning: state.authorTestAssignments.isBulkAssigning,
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
       isAdvancedSearchLoading: isAdvancedSearchLoadingSelector(state),
     }),

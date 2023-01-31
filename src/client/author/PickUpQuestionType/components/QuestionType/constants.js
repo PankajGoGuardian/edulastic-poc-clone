@@ -21,6 +21,8 @@ import {
   defaultOptions,
 } from '../../../../assessment/constants/constantsForQuestions'
 
+import { audioResponseConfig } from '../../QuestionTypeConfig/AudioResponse'
+
 // Multiple Choice
 import MCStandard from '../../../src/assets/multiple-choice/standard-blue.svg'
 import MCMultipleResponses from '../../../src/assets/multiple-choice/multiple-response-blue.svg'
@@ -992,6 +994,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
         },
         hints: [{ value: uuids[0], label: '' }],
       },
+      onSelectQuestionType,
+    },
+    {
+      ...audioResponseConfig,
       onSelectQuestionType,
     },
     {

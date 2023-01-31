@@ -159,6 +159,8 @@ class Scoring extends Component {
       setItemLevelScoring,
       location,
       itemDetailQuestions,
+      scoringMessage,
+      showScoringMessage,
     } = this.props
     const { showGradingRubricModal, rubricActionType } = this.state
     const itemDetailQuestionsLength = itemDetailQuestions?.length || 0
@@ -271,6 +273,8 @@ class Scoring extends Component {
             id={getFormattedAttrId(
               `${questionTitle}-${t('component.options.scoring')}`
             )}
+            scoringMessage={scoringMessage}
+            showScoringMessage={showScoringMessage}
           >
             {t('component.options.scoring')}
           </Subtitle>
@@ -543,6 +547,8 @@ Scoring.propTypes = {
   children: PropTypes.any,
   extraInScoring: PropTypes.elementType,
   showScoringType: PropTypes.bool,
+  scoringMessage: PropTypes.string,
+  showScoringMessage: PropTypes.bool,
 }
 
 Scoring.defaultProps = {
@@ -555,6 +561,8 @@ Scoring.defaultProps = {
   cleanSections: () => {},
   extraInScoring: null,
   showScoringType: true,
+  scoringMessage: '',
+  showScoringMessage: false,
 }
 
 Scoring.contextType = PointBlockContext

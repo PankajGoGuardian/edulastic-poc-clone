@@ -96,6 +96,7 @@ export { default as CopyRight } from './src/components/CopyRight'
 export { EduIf } from './src/components/ControlStatement/EduIf'
 export { EduElse } from './src/components/ControlStatement/EduElse'
 export { EduThen } from './src/components/ControlStatement/EduThen'
+export { default as ComposeQuestion } from './src/components/ComposeQuestion'
 
 // HOC
 export { default as withWindowSizes } from './src/HOC/withWindowSizes'

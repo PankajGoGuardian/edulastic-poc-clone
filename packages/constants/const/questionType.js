@@ -1,3 +1,5 @@
+const { AUDIO_RESPONSE: audioResponseTitleText } = require('./questionTitle')
+
 const SHORT_TEXT = 'shortText'
 const ESSAY_PLAIN_TEXT = 'essayPlainText'
 const ESSAY = 'essay'
@@ -55,6 +57,7 @@ const GRAPH_PLACEMENT = 'graphPlacement'
 const RANGE_PLOTTER = 'rangePlotter'
 const MULTIPART = 'multipart'
 const PICTOGRAPH = 'pictograph'
+const AUDIO_RESPONSE = 'audioResponse'
 
 const selectsData = [
   { value: '', text: 'All Types' },
@@ -106,6 +109,7 @@ const selectsData = [
   { value: MULTIPLE_SELECTION, text: 'Multiple Selection' },
   { value: RANGE_PLOTTER, text: 'Range Plotter' },
   { value: MULTIPART, text: 'Multipart' },
+  { value: AUDIO_RESPONSE, text: audioResponseTitleText },
 ]
 
 const manuallyGradableQn = [
@@ -114,6 +118,7 @@ const manuallyGradableQn = [
   UPLOAD_FILE,
   ESSAY_RICH_TEXT,
   ESSAY_PLAIN_TEXT,
+  AUDIO_RESPONSE,
 ]
 
 const useLanguageFeatureQn = [
@@ -136,6 +141,8 @@ const useLanguageFeatureQn = [
   ESSAY_PLAIN_TEXT,
   ESSAY_RICH_TEXT,
 ]
+
+const disableEditResponseInEgQuestionTypes = [AUDIO_RESPONSE]
 
 module.exports = {
   SHORT_TEXT,
@@ -183,4 +190,6 @@ module.exports = {
   CODING,
   useLanguageFeatureQn,
   PICTOGRAPH,
+  AUDIO_RESPONSE,
+  disableEditResponseInEgQuestionTypes,
 }

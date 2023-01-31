@@ -3,6 +3,7 @@ export const black = '#000'
 export const fadedBlack = 'rgba(0, 0, 0, 0.65)'
 export const lightFadedBlack = 'rgba(0, 0, 0, 0.15)'
 export const textBlackColor = '#212E3A'
+export const lightBlackBoldText = '#454B5B'
 
 export const themeColor = '#1AB394' // green
 export const themeColorLight = '#42d184' // light green
@@ -102,6 +103,7 @@ export const red = '#FF0057'
 export const lightRed = '#fbdfe7'
 export const lightRed2 = '#f58888'
 export const lightRed3 = '#ec0149'
+export const ligthRed4 = '#f76c86'
 export const darkRed = '#F35F5F'
 export const darkRed1 = '#F25782'
 export const redDark = '#dd2e44'

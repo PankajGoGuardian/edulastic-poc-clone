@@ -6,9 +6,10 @@ import {
   themeColor,
   extraDesktopWidthMax,
   white,
+  greyThemeDark4,
 } from '@edulastic/colors'
 import { IconQuestion } from '@edulastic/icons'
-import { FlexContainer } from '@edulastic/common'
+import { FlexContainer, EduIf } from '@edulastic/common'
 
 const WidgetTitle = styled.h2`
   color: ${greyThemeDark1};
@@ -54,12 +55,21 @@ const StyledQuestionIcon = styled(IconQuestion)`
   }
 `
 
-export const QuestionIcon = ({ id = '', customStyle = {} }) =>
-  id && !id.includes('undefined') ? (
+export const QuestionIcon = ({ id = '', customStyle = {} }) => (
+  <EduIf condition={id && !id.includes('undefined')}>
     <FlexContainer id={id}>
       <StyledQuestionIcon width={14} height={14} style={customStyle} />
     </FlexContainer>
-  ) : null
+  </EduIf>
+)
+
+const StyledScoringMessage = styled.p`
+  font-size: 0.8rem;
+  color: ${greyThemeDark4};
+  font-weight: bold;
+  margin-top: 2px;
+  margin-left: 10px;
+`
 
 export const Subtitle = ({
   id,
@@ -67,6 +77,8 @@ export const Subtitle = ({
   titleStyle = {},
   textStyles = {},
   showIcon = true,
+  showScoringMessage = false,
+  scoringMessage = '',
   margin,
 }) => (
   <WidgetTitle
@@ -78,6 +90,11 @@ export const Subtitle = ({
     <SubtitleText styles={textStyles} data-cy="headingOnPreview">
       {children}
     </SubtitleText>
-    {showIcon && <QuestionIcon id={id} />}
+    <EduIf condition={!!showIcon}>
+      <QuestionIcon id={id} />
+    </EduIf>
+    <EduIf condition={!!showScoringMessage}>
+      <StyledScoringMessage>{scoringMessage}</StyledScoringMessage>
+    </EduIf>
   </WidgetTitle>
 )

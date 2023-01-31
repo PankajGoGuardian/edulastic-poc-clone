@@ -1239,6 +1239,15 @@
       "enterQuestion": "Enter your question",
       "files": "Files"
     },
+    "audioResponse": {
+      "scoringMessage": "[Audio responses can only be manually graded]",
+      "recordAnswer": "Record your answer",
+      "recording": "Recording",
+      "uploading": "Uploading",
+      "NoAudioResponseFound": "No Audio Response Found",
+      "loadingAudio": "Loading audio",
+      "rerecord": "Rerecord"
+    },
     "pictograph": {
       "composeQuestion": "Question",
       "enterQuestion": "Enter your question",

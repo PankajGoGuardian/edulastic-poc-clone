@@ -2703,3 +2703,6 @@ div[class*='_pendo'] button {
   z-index: 3000001;
 }
 
+body > iframe {
+  display: none;
+}

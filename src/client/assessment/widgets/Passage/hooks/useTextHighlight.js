@@ -7,12 +7,10 @@ import {
   highlightSelectedText,
   getRangeAtFirst,
 } from '@edulastic/common'
-import { CLEAR } from '../../../constants/constantsForQuestions'
 import { highlightTag, getPositionOfElement } from '../utils/helper'
 
 const useTextHighlight = ({
   toggleOpen,
-  previewTab,
   passageContent,
   highlightedContent,
   onChangeContent,
@@ -25,9 +23,6 @@ const useTextHighlight = ({
   const [selectHighlight, setSelectedHighlight] = useState(null)
 
   const content = useMemo(() => {
-    if (previewTab !== CLEAR) {
-      return passageContent
-    }
     const decoded = decodeHTML(passageContent)
     if (isEmpty(highlightedContent)) {
       return decoded
@@ -38,7 +33,7 @@ const useTextHighlight = ({
         ?.replace(/(<\/p>)/g, '<br/>')
     }
     return highlightedContent
-  }, [highlightedContent, previewTab, passageContent])
+  }, [highlightedContent, passageContent])
 
   const storeUpdatedContent = useCallback(() => {
     let { innerHTML: highlightContent = '' } = mainContentsRef.current

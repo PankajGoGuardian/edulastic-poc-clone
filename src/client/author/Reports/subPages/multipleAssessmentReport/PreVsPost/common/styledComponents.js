@@ -177,7 +177,7 @@ export const StudentWrapper = styled.span`
 `
 
 export const StyledRow = styled(Row)`
-  margin-top: 20px;
+  margin-top: 25px;
   margin-bottom: ${(props) => props.margin};
 `
 

@@ -267,7 +267,7 @@ const PreVsPostTable = ({
   )
   return (
     <StyledCard>
-      <StyledRow type="flex" justify="space-between">
+      <StyledRow type="flex" justify="space-between" margin="20px">
         <Typography.Title style={{ margin: 0, fontSize: '18px' }} level={4}>
           Performance Change By {selectedTableFilters.compareBy.title}
         </Typography.Title>

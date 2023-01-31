@@ -15,7 +15,7 @@ import { greyThemeDark3 } from '@edulastic/colors'
 import { IconUpload } from '@edulastic/icons'
 import { testTypes, dataWarehouse } from '@edulastic/constants'
 
-import cdnURI from '../../../../../app-config'
+import config from '../../../../../app-config'
 import {
   uploadTestDataFileAction,
   getTestDataFileUploadLoader,
@@ -41,6 +41,7 @@ import {
   StyledTreeSelect,
 } from './styledComponents'
 
+const { cdnURI } = config
 const { Option } = Select
 const { NON_ACADEMIC_DATA_TYPES } = testTypes
 const { MAX_UPLOAD_FILE_SIZE } = dataWarehouse

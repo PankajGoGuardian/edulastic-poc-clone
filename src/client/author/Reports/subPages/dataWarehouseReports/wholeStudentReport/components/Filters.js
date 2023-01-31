@@ -24,7 +24,12 @@ import StudentAutoComplete from './StudentAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
 import { getTermOptions } from '../../../../../utils/reports'
-import { getStudentName, staticDropDownData } from '../utils'
+import {
+  getStudentName,
+  getTestTypesFromUrl,
+  staticDropDownData,
+} from '../utils'
+import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'
 
 const filtersDefaultValues = [
   {

@@ -487,59 +487,7 @@ function* saveAssignment({ payload }) {
       locationState = prevLocState
     }
 
-    if (result.message === assignBehaviour.sync) {
-      const assignmentId = assignment._id
-      const createdAt = assignment.createdAt
-      const googleId = get(assignment, 'class[0].googleId', '')
-      if (!assignmentId && !payload.playlistModuleId) {
-        yield put(push('/author/assignments'))
-      }
-      if (payload.playlistModuleId && !payload.testId) {
-        notification({
-          type: 'success',
-          messageKey: 'PlaylistAssignedSuccessfully',
-        })
-      }
-      if (gSyncStatus.length) {
-        notification({
-          type: 'warn',
-          messageKey: 'shareWithGoogleClassroomFailed',
-        })
-      }
-      const isAdminRole = [
-        roleuser.SCHOOL_ADMIN,
-        roleuser.DISTRICT_ADMIN,
-      ].includes(userRole)
-      if (containsCanvasClass) {
-        if (isAdminRole) {
-          notification({
-            type: 'success',
-            messageKey: 'assignmentsWillBeSharedToCanvasINSometime',
-          })
-        } else
-          notification({
-            type: 'success',
-            messageKey: 'asignmentSharedTOCanvasClassAlso',
-          })
-      }
-      if (!assignmentId && !payload.playlistModuleId) return
-      yield put(
-        push({
-          pathname: `/author/${
-            payload.playlistModuleId ? 'playlists' : 'tests'
-          }/${
-            payload.playlistModuleId ? payload.playlistId : testIds[0].testId
-          }/assign/${assignmentId}`,
-          state: {
-            ...locationState,
-            assignedTestId: payload.testId,
-            playlistModuleId: payload.playlistModuleId,
-            createdAt,
-            googleId,
-          },
-        })
-      )
-    } else if (result.message === assignBehaviour.async) {
+    if (result.message === assignBehaviour.async) {
       yield put(
         push({
           pathname: `/author/${
@@ -554,7 +502,60 @@ function* saveAssignment({ payload }) {
           },
         })
       )
+      return
     }
+
+    const assignmentId = assignment._id
+    const createdAt = assignment.createdAt
+    const googleId = get(assignment, 'class[0].googleId', '')
+    if (!assignmentId && !payload.playlistModuleId) {
+      yield put(push('/author/assignments'))
+    }
+    if (payload.playlistModuleId && !payload.testId) {
+      notification({
+        type: 'success',
+        messageKey: 'PlaylistAssignedSuccessfully',
+      })
+    }
+    if (gSyncStatus.length) {
+      notification({
+        type: 'warn',
+        messageKey: 'shareWithGoogleClassroomFailed',
+      })
+    }
+    const isAdminRole = [
+      roleuser.SCHOOL_ADMIN,
+      roleuser.DISTRICT_ADMIN,
+    ].includes(userRole)
+    if (containsCanvasClass) {
+      if (isAdminRole) {
+        notification({
+          type: 'success',
+          messageKey: 'assignmentsWillBeSharedToCanvasINSometime',
+        })
+      } else
+        notification({
+          type: 'success',
+          messageKey: 'asignmentSharedTOCanvasClassAlso',
+        })
+    }
+    if (!assignmentId && !payload.playlistModuleId) return
+    yield put(
+      push({
+        pathname: `/author/${
+          payload.playlistModuleId ? 'playlists' : 'tests'
+        }/${
+          payload.playlistModuleId ? payload.playlistId : testIds[0].testId
+        }/assign/${assignmentId}`,
+        state: {
+          ...locationState,
+          assignedTestId: payload.testId,
+          playlistModuleId: payload.playlistModuleId,
+          createdAt,
+          googleId,
+        },
+      })
+    )
   } catch (err) {
     console.error('error for save assignment', err)
     // enable button if call fails

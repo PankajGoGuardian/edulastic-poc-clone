@@ -377,6 +377,7 @@ const StyledOptionsContainer = withKeyboard(styled.div`
     display: flex;
     justify-content: center;
     align-items: center;
+    line-height: 1;
 
     &:hover {
       background: ${themeColorHoverBlue};

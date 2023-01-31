@@ -35,7 +35,6 @@ export const PassageContent = ({
     selectHighlight,
   } = useTextHighlight({
     toggleOpen,
-    previewTab,
     passageContent,
     highlightedContent,
     onChangeContent,

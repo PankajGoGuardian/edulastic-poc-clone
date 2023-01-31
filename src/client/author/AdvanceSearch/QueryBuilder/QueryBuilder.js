@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import { CustomModalStyled, notification } from '@edulastic/common'
-import Styled from 'styled-components'
 import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.css'
 import './custom_style.css'
@@ -8,9 +7,17 @@ import { Select, Button } from 'antd'
 import { connect } from 'react-redux'
 import { isArray, flattenDeep } from 'lodash'
 import { IconClose } from '@edulastic/icons'
-import ValueEditor, { fieldKey } from './ValueEditor'
-import { selectsData } from '../../TestPage/components/common'
+import { ruleLimit, operators, combinators } from './qb-config'
+import { allowedFields } from './allowedFields-config'
+import ValueEditor from './ValueEditor'
 import { CancelButton, OkButton } from '../../../common/styled'
+import {
+  ModalBody,
+  ButtonsContainer,
+  StyledSelect,
+  RuleButton,
+  GroupButton,
+} from './styled'
 import {
   getAdvancedSearchFilterSelector,
   setAdvancedSearchFilterAction,
@@ -25,38 +32,6 @@ import {
   getAdvancedSearchCoursesSelector,
   advancedSearchRequestAction,
 } from '../ducks'
-
-const classGroup = [
-  {
-    value: 'all',
-    label: 'All',
-  },
-  {
-    value: 'class',
-    label: 'Classes',
-  },
-  {
-    value: 'custom',
-    label: 'Student Groups',
-  },
-]
-
-const ruleLimit = 100
-
-const operators = [
-  { name: 'in', label: 'Is In' },
-  { name: 'notIn', label: 'Is Not In' },
-]
-
-const nullNotNullOp = [
-  { name: 'null', label: 'Is Null' },
-  { name: 'notNull', label: 'Is Not Null' },
-]
-
-const combinators = [
-  { name: 'and', label: 'All criteria' },
-  { name: 'or', label: 'Any criteria' },
-]
 
 const FieldSelector = (props) => {
   const { handleOnChange, options, value, id } = props
@@ -217,63 +192,6 @@ const _QueryBuilder = ({
     loadAdvancedSearchClasses({ query: searchQuery })
   }
 
-  const fields = [
-    {
-      name: fieldKey.schools,
-      label: 'Schools',
-      valueEditorType: 'multiselect',
-      values: schoolData.data,
-    },
-    {
-      name: fieldKey.courses,
-      label: 'Courses',
-      valueEditorType: 'multiselect',
-      values: courseData.data,
-      operators: [...operators, ...nullNotNullOp],
-    },
-    {
-      name: fieldKey.grades,
-      label: 'Grades',
-      valueEditorType: 'multiselect',
-      values: selectsData.allGrades.map((item) => ({
-        value: item.value,
-        label: item.text,
-      })),
-    },
-    {
-      name: fieldKey.subjects,
-      label: 'Subjects',
-      valueEditorType: 'multiselect',
-      values: selectsData.allSubjects.map((item) => ({
-        value: item.value,
-        label: item.text,
-      })),
-    },
-    {
-      name: fieldKey.groupType,
-      label: 'Show Class/Groups',
-      valueEditorType: 'select',
-      operators: [
-        { name: '=', label: '=' },
-        { name: '!=', label: '!=' },
-      ],
-      values: classGroup,
-    },
-    {
-      name: fieldKey.classes,
-      label: 'Classes',
-      valueEditorType: 'multiselect',
-      values: classData.data,
-    },
-    {
-      name: fieldKey.tags,
-      label: 'Tags',
-      valueEditorType: 'multiselect',
-      values: tagData.data,
-      operators: [...operators, ...nullNotNullOp],
-    },
-  ]
-
   const footer = (
     <ButtonsContainer>
       <div style={{ display: 'flex', gap: '20px' }}>
@@ -291,7 +209,7 @@ const _QueryBuilder = ({
       </div>
     </ButtonsContainer>
   )
-
+  const fields = allowedFields({ schoolData, classData, courseData, tagData })
   return (
     <CustomModalStyled
       width="900px"
@@ -348,52 +266,3 @@ export default connect(
     loadAdvancedSearchClasses: advancedSearchRequestAction,
   }
 )(_QueryBuilder)
-
-const ModalBody = Styled.div`
-  .ant-select-selection {
-    border: 1px solid #b9b9b9;
-    border-radius: 0;
-    font-size: 12px;
-    margin-bottom: 10px;
-  }
-  .ant-select-dropdown-menu-item {
-    font-size: 12px;
-  }
-`
-
-const ButtonsContainer = Styled.div`
-  flex:1;
-  margin-top:20px;
-  display:flex;
-  justify-content: flex-end;
-`
-
-export const StyledSelect = Styled(Select)`
-  min-width: 100px;
-  color:#6A737F;
-  .ant-select-selection{
-    border-radius: 2px;
-    border: 1px solid #B9B9B9;
-    background-color:#F8F8F8;
-    margin:0;
-  }
-`
-
-const StyledButton = Styled(Button)`
-  border: 1px solid #3F85E5;
-  border-radius: 4px;
-  text-transform: uppercase;
-  white-space: nowrap;
-  font-size:10px;
-  width:100px;
-`
-
-const RuleButton = Styled(StyledButton)`
-  background-color:white;
-  color: #3f85e5;
-`
-
-const GroupButton = Styled(StyledButton)`
-  background-color:#3f85e5;
-  color: white;
-`

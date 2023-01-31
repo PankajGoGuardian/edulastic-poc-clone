@@ -2,29 +2,14 @@ import React from 'react'
 import { Empty, Select } from 'antd'
 import { connect } from 'react-redux'
 import { debounce } from 'lodash'
-import { StyledSelect } from './QueryBuilder'
 import {
   getAdvancedSearchDetailsSelector,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchTagsAction,
 } from '../ducks'
-
-export const fieldKey = {
-  schools: 'institutionIds',
-  courses: 'courses',
-  grades: 'grades',
-  subjects: 'subjects',
-  groupType: 'groupType',
-  classes: 'groupIds',
-  tags: 'tagIds',
-}
-
-const enableSearchFields = {
-  [fieldKey.classes]: 'classes',
-  [fieldKey.courses]: 'courses',
-  [fieldKey.tags]: 'tags',
-}
+import { StyledSelect } from './styled'
+import { fieldKey } from './constants'
 
 const ValueEditor = (props) => {
   const {
@@ -40,23 +25,17 @@ const ValueEditor = (props) => {
     loadCourseListData,
     loadTagListData,
   } = props
+
+  const enableSearchFields = {
+    [fieldKey.classes]: { key: 'classes', func: loadClassListData },
+    [fieldKey.courses]: { key: 'courses', func: loadCourseListData },
+    [fieldKey.tags]: { key: 'tags', func: loadTagListData },
+  }
   const { label = 'values' } = fieldData || {}
 
   const handleSearch = (searchString) => {
-    switch (field) {
-      case fieldKey.classes:
-        loadClassListData({ searchString })
-        break
-
-      case fieldKey.courses:
-        loadCourseListData({ searchString })
-        break
-
-      case fieldKey.tags:
-        loadTagListData({ searchString })
-        break
-      default:
-        break
+    if (enableSearchFields[field] && enableSearchFields[field].func) {
+      enableSearchFields[field].func({ searchString })
     }
   }
 
@@ -67,7 +46,7 @@ const ValueEditor = (props) => {
   }
 
   if (Object.keys(enableSearchFields).includes(field)) {
-    const key = enableSearchFields[field]
+    const { key } = enableSearchFields[field]
     const isLoading = advancedSearchDetails[key]?.isLoading
     return (
       <StyledSelect

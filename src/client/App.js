@@ -225,6 +225,18 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
   return null
 }
 
+const TEACHER_FIRESTORE_NOTIFICATIONS = [
+  BulkActionNotificationListener,
+  ReportsNotificationListener,
+  RosterSyncNotification,
+  BulkAssignNotification,
+]
+const ADMIN_FIRESTORE_NOTIFICATIONS = [
+  ClassSyncNotification,
+  ReportsNotificationListener,
+  BulkAssignNotification,
+]
+
 class App extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -707,18 +719,9 @@ class App extends Component {
                   redirectPath={redirectRoute}
                   notifications={
                     roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                      ? [
-                          BulkActionNotificationListener,
-                          ReportsNotificationListener,
-                          RosterSyncNotification,
-                          BulkAssignNotification,
-                        ]
+                      ? ADMIN_FIRESTORE_NOTIFICATIONS
                       : roleuser.TEACHER === userRole
-                      ? [
-                          ClassSyncNotification,
-                          ReportsNotificationListener,
-                          BulkAssignNotification,
-                        ]
+                      ? TEACHER_FIRESTORE_NOTIFICATIONS
                       : null
                   }
                 />

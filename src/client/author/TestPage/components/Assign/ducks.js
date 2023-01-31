@@ -227,6 +227,57 @@ export const getHasDuplicateAssignmentsSelector = createSelector(
   (state) => state.hasDuplicateAssignments
 )
 
+function* deriveAssignmentPayload({
+  assignments,
+  duplicatesAndCommonStudentsSettings,
+  classesSelected,
+}) {
+  const assignmentPayload = {
+    assignments,
+    duplicatesAndCommonStudentsSettings,
+  }
+  const userRole = yield select(getUserRole)
+  const isAllClassSelected = yield select(getIsAllClassSelectedSelector)
+  if (userRole === roleuser.TEACHER) {
+    const groups = classesSelected.map((clazz) => clazz._id)
+    const students = classesSelected.some((clazz) => clazz.students)
+      ? classesSelected.map((clazz) => {
+          return { groupId: clazz._id, studentsToAssign: clazz.students }
+        })
+      : []
+    assignmentPayload.filters = {
+      groups,
+      ...(!isEmpty(students) ? { students } : {}),
+    }
+  } else if (!isAllClassSelected) {
+    assignmentPayload.filters = {
+      groups: classesSelected.map((clazz) => clazz._id),
+    }
+  } else {
+    const isAdvancedSearchSelected = yield select(
+      getIsAdvancedSearchSelectedSelector
+    )
+    if (isAdvancedSearchSelected) {
+      assignmentPayload.query = yield select(getAdvancedSearchFilterSelector)
+    } else {
+      const searchTermsFilter = yield select(getSearchTermsFilterSelector)
+      const filters = {
+        schools: searchTermsFilter.institutionIds,
+        grades: searchTermsFilter.grades,
+        subjects: searchTermsFilter.subjects,
+        groupType:
+          searchTermsFilter.classType === 'all'
+            ? undefined
+            : searchTermsFilter.classType,
+        courses: searchTermsFilter.courseIds,
+        tags: searchTermsFilter.tags,
+      }
+      assignmentPayload.filters = filters
+    }
+  }
+  return assignmentPayload
+}
+
 // saga
 function* saveAssignment({ payload }) {
   try {
@@ -240,7 +291,6 @@ function* saveAssignment({ payload }) {
     }
 
     let testIds
-    const test = yield select(getTestSelector)
     yield put(setAssignmentSavingAction(true))
     if (!payload.playlistModuleId && !payload.playlistId) {
       testIds = [yield select(getTestIdSelector)].map((testId) => ({ testId }))
@@ -252,7 +302,6 @@ function* saveAssignment({ payload }) {
           { testId: payload.testId, testVersionId: payload.testVersionId },
         ]
       } else {
-        // can we use find instead of filter... becoz we are taking module[0]... and there will be only one match per _id
         const module = playlist.modules.filter(
           (m) => m._id === payload.playlistModuleId
         )
@@ -277,6 +326,7 @@ function* saveAssignment({ payload }) {
         }
       }
     }
+    const test = yield select(getTestSelector)
     if (!testIds || !(testIds && testIds.length)) {
       const entity = yield call(testsApi.create, test)
       testIds = [entity._id]
@@ -390,7 +440,6 @@ function* saveAssignment({ payload }) {
           'students',
           'scoreReleasedClasses',
           'googleAssignmentIds',
-          // the following will not be present since we are destructing it in the beginning.
           'class',
           'allowCommonStudents',
           'removeDuplicates',
@@ -405,49 +454,11 @@ function* saveAssignment({ payload }) {
       allowDuplicates: !!allowDuplicates,
     }
 
-    const assignmentPayload = {
+    const assignmentPayload = yield call(deriveAssignmentPayload, {
       assignments,
       duplicatesAndCommonStudentsSettings,
-    }
-    const isAllClassSelected = yield select(getIsAllClassSelectedSelector)
-
-    if (userRole === roleuser.TEACHER) {
-      const groups = classesSelected.map((clazz) => clazz._id)
-      const students = classesSelected.some((clazz) => clazz.students)
-        ? classesSelected.map((clazz) => {
-            return { groupId: clazz._id, studentsToAssign: clazz.students }
-          })
-        : []
-      assignmentPayload.filters = {
-        groups,
-        ...(!isEmpty(students) ? { students } : {}),
-      }
-    } else if (!isAllClassSelected) {
-      assignmentPayload.filters = {
-        groups: classesSelected.map((clazz) => clazz._id),
-      }
-    } else {
-      const isAdvancedSearchSelected = yield select(
-        getIsAdvancedSearchSelectedSelector
-      )
-      if (isAdvancedSearchSelected) {
-        assignmentPayload.query = yield select(getAdvancedSearchFilterSelector)
-      } else {
-        const searchTermsFilter = yield select(getSearchTermsFilterSelector)
-        const filters = {
-          schools: searchTermsFilter.institutionIds,
-          grades: searchTermsFilter.grades,
-          subjects: searchTermsFilter.subjects,
-          groupType:
-            searchTermsFilter.classType === 'all'
-              ? undefined
-              : searchTermsFilter.classType,
-          courses: searchTermsFilter.courseIds,
-          tags: searchTermsFilter.tags,
-        }
-        assignmentPayload.filters = filters
-      }
-    }
+      classesSelected,
+    })
     const result = yield call(
       assignmentApi.createAssignmentV2,
       assignmentPayload

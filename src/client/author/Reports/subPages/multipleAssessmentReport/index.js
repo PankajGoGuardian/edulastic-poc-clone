@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 
 import { Spin, Col } from 'antd'
 
+import { reportNavType } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../common/components/Header'
 
 import { getNavigationTabLinks } from '../../common/util'
@@ -187,18 +188,24 @@ const MultipleAssessmentReportContainer = (props) => {
     setShowApply(true)
   }
 
+  const {
+    PERFORMANCE_OVER_TIME,
+    PEER_PROGRESS_ANALYSIS,
+    STUDENT_PROGRESS,
+    PRE_VS_POST,
+  } = reportNavType
   const performanceBandRequired = [
-    'performance-over-time',
-    'peer-progress-analysis',
-    'student-progress',
-    'pre-vs-post',
+    PERFORMANCE_OVER_TIME,
+    PEER_PROGRESS_ANALYSIS,
+    STUDENT_PROGRESS,
+    PRE_VS_POST,
   ].includes(pageTitle)
 
   const demographicsRequired = [
-    'performance-over-time',
-    'peer-progress-analysis',
-    'student-progress',
-    'pre-vs-post',
+    PERFORMANCE_OVER_TIME,
+    PEER_PROGRESS_ANALYSIS,
+    STUDENT_PROGRESS,
+    PRE_VS_POST,
   ].includes(pageTitle)
 
   useEffect(() => {

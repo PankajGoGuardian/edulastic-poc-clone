@@ -351,7 +351,7 @@ export const PerformanceMatrixContainer = styled(Row)`
   }
 `
 export const StyledEduButton = styled(EduButton)`
-  height: '32px';
-  padding: '0 15px 0 10px';
-  margin-right: '5px';
+  height: 32px;
+  padding: 0 15px 0 10px;
+  margin-right: 5px;
 `

@@ -171,7 +171,7 @@ const AssessmentsTable = ({
       visibleOn: ['csv'],
     }))
     return [...initialColumns, ...claimsColumnsForCSV]
-  }, [isSharedReport, ...claimNames])
+  }, [isSharedReport, claimNames])
   return (
     <TableContainer>
       <SectionLabel>Assessment Performance Details</SectionLabel>

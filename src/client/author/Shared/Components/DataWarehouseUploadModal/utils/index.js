@@ -7,10 +7,10 @@ const {
   NON_ACADEMIC_DATA_TYPES,
 } = testTypes
 
-const getOptionValues = ([key, value]) => ({
+const getOptionValues = ([key, title]) => ({
   key,
-  value,
-  title: value,
+  value: key,
+  title,
 })
 
 const academicDataChildren = Object.entries(ACADEMIC_TEST_TYPES).map(

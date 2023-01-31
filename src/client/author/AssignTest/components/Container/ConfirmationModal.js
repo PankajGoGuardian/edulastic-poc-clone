@@ -10,7 +10,7 @@ import { ConfirmationModal } from '../../../src/components/common/ConfirmationMo
 import {
   getCommonStudentsSelector,
   getHasCommonStudensSelector,
-  saveV2AssignmentAction,
+  saveAssignmentAction,
   toggleHasCommonAssignmentsPopupAction,
 } from '../../../TestPage/components/Assign/ducks'
 import { Paragraph } from './styled'
@@ -18,7 +18,7 @@ import { Paragraph } from './styled'
 const ProceedConfirmation = ({
   hasCommonStudents,
   toggleCommonAssignmentsConfirmation,
-  saveV2Assignment,
+  saveAssignment,
   assignment,
   commonStudents,
   t,
@@ -27,7 +27,7 @@ const ProceedConfirmation = ({
 
   const onProceed = () => {
     setSavingState(true)
-    saveV2Assignment({ ...assignment, allowCommonStudents: true })
+    saveAssignment({ ...assignment, allowCommonStudents: true })
   }
 
   const onCancel = () => {
@@ -111,7 +111,7 @@ const withConnect = connect(
   }),
   {
     toggleCommonAssignmentsConfirmation: toggleHasCommonAssignmentsPopupAction,
-    saveV2Assignment: saveV2AssignmentAction,
+    saveAssignment: saveAssignmentAction,
   }
 )
 

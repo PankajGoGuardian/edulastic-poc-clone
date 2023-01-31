@@ -40,7 +40,7 @@ import {
 import {
   getSearchTermsFilterSelector,
   loadAssignmentsAction,
-  saveV2AssignmentAction,
+  saveAssignmentAction,
 } from '../../../TestPage/components/Assign/ducks'
 import {
   getDefaultTestSettingsAction,
@@ -345,7 +345,7 @@ class AssignTest extends React.Component {
 
   handleAssign = () => {
     const {
-      saveV2Assignment,
+      saveAssignment,
       isAssigning,
       assignmentSettings: assignment,
       location,
@@ -374,7 +374,7 @@ class AssignTest extends React.Component {
         if (source) {
           segmentApi.genericEventTrack('AssessmentAssigned', { source })
         }
-        saveV2Assignment(updatedAssignment)
+        saveAssignment(updatedAssignment)
       }
     }
   }
@@ -1009,7 +1009,7 @@ const enhance = compose(
       fetchStudents: fetchGroupMembersAction,
       fetchAssignments: fetchAssignmentsAction,
       setAssignments: loadAssignmentsAction,
-      saveV2Assignment: saveV2AssignmentAction,
+      saveAssignment: saveAssignmentAction,
       fetchPlaylistById: receivePlaylistByIdAction,
       fetchTestByID: receiveTestByIdAction,
       getDefaultTestSettings: getDefaultTestSettingsAction,
@@ -1040,7 +1040,7 @@ AssignTest.propTypes = {
   students: PropTypes.array.isRequired,
   testSettings: PropTypes.object.isRequired,
   assignments: PropTypes.array.isRequired,
-  saveV2Assignment: PropTypes.func.isRequired,
+  saveAssignment: PropTypes.func.isRequired,
   userOrgId: PropTypes.string.isRequired,
   testItem: PropTypes.object.isRequired,
   fetchTestByID: PropTypes.func.isRequired,

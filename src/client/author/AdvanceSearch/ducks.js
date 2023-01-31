@@ -105,9 +105,9 @@ const initialState = {
 const setAdvancedSearchQuery = (state, { payload }) => {
   if (isEmpty(payload)) {
     state.advancedSearchQuery = initialState.advancedSearchQuery
-  } else {
-    state.advancedSearchQuery = payload
+    return
   }
+  state.advancedSearchQuery = payload
 }
 
 const setIsAllClassSelected = (state, { payload }) => {

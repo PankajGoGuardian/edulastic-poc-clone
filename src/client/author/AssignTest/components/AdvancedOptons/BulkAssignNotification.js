@@ -3,9 +3,9 @@ import { withRouter } from 'react-router-dom'
 import { uniqBy } from 'lodash'
 import { notification as antdNotification } from '@edulastic/common'
 import * as Fbs from '@edulastic/common/src/Firebase'
-import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import { assignmentStatusOptions } from '@edulastic/constants'
 import { getUser, getUserOrgId } from '../../../src/selectors/user'
 import { destroyNotificationMessage } from '../../../../common/components/Notification'
 
@@ -29,19 +29,18 @@ const NotificationListener = ({ user }) => {
 
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
-      console.log('doc', doc)
       const {
         processStatus,
-        statusCode,
         testTitle,
         totalClassesAssigned,
-        playlistModuleId,
         playlistModuleTitle,
         playlistTitle,
       } = doc
-      if (processStatus === 'DONE' && !notificationIds.includes(doc.__id)) {
+      if (
+        processStatus === assignmentStatusOptions.DONE &&
+        !notificationIds.includes(doc.__id)
+      ) {
         setNotificationIds([...notificationIds, doc.__id])
-        // if (statusCode === 200) {
         let message = `Test ${testTitle} assigned to ${totalClassesAssigned} group(s)`
         if (playlistModuleTitle) {
           message = `Playlist ${playlistTitle}: ${playlistModuleTitle} assigned to ${totalClassesAssigned} group(s)`
@@ -51,12 +50,6 @@ const NotificationListener = ({ user }) => {
           msg: message,
           key: doc.__id,
         })
-        // } else {
-        //   const message = `${
-        //     playlistModuleId ? 'Playlist' : 'Test'
-        //   } ${testTitle} assign failed`
-        //   antdNotification({ msg: message, key: doc.__id })
-        // }
         deleteNotificationDocument(doc.__id)
       }
     })

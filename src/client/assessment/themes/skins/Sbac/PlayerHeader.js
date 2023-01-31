@@ -97,7 +97,7 @@ const PlayerHeader = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
-  t,
+  t: i18Translate,
 }) => {
   useEffect(() => {
     return () => setZoomLevel(1)
@@ -150,7 +150,7 @@ const PlayerHeader = ({
                   }
                   bookmarks={bookmarks}
                   skipped={skipped}
-                  t={t}
+                  i18Translate={i18Translate}
                   dropdownStyle={{ marginRight: '15px', height: '32px' }}
                   moveToNext={moveToNext}
                   utaId={utaId}
@@ -306,6 +306,7 @@ const PlayerHeader = ({
                 canShowReferenceMaterial={canShowReferenceMaterial}
                 isShowReferenceModal={isShowReferenceModal}
                 openReferenceModal={openReferenceModal}
+                i18Translate={i18Translate}
               />
             </HeaderWrapper>
           </HeaderSbacPlayer>

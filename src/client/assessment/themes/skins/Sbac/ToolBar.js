@@ -49,6 +49,7 @@ const ToolBar = ({
   canShowReferenceMaterial,
   isShowReferenceModal,
   openReferenceModal,
+  i18Translate,
 }) => {
   const [zoom, setZoom] = useState(0)
   const toolbarHandler = (value) => changeTool(value)
@@ -107,7 +108,10 @@ const ToolBar = ({
       )}
 
       {canShowReferenceMaterial && (
-        <Tooltip placement="top" title="Reference Guide">
+        <Tooltip
+          placement="top"
+          title={i18Translate('common.test.referenceMaterial')}
+        >
           <StyledButton
             onClick={openReferenceModal}
             active={isShowReferenceModal}
@@ -228,6 +232,7 @@ ToolBar.propTypes = {
   changeTool: PropTypes.func.isRequired,
   settings: PropTypes.object.isRequired,
   qType: PropTypes.string.isRequired,
+  i18Translate: PropTypes.func.isRequired,
 }
 
 const enhance = compose(

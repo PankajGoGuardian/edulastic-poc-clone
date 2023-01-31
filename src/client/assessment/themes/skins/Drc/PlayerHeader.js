@@ -52,7 +52,7 @@ const CROSS_BUTTON = 3
 const SCRATCHPAD = 5
 
 const PlayerHeader = ({
-  t,
+  t: i18Translate,
   title,
   currentItem,
   gotoQuestion,
@@ -156,7 +156,7 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={isShowReferenceModal}
                     onClick={openReferenceModal}
-                    title={t('common.test.referenceGuide')}
+                    title={i18Translate('common.test.referenceMaterial')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconEduReferenceSheet color={header2.background} />
@@ -198,7 +198,7 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={tool?.includes(CALC)}
                     onClick={() => changeTool(CALC)}
-                    title={t('common.test.calculator')}
+                    title={i18Translate('common.test.calculator')}
                     disabled={isPremiumContentWithoutAccess}
                   >
                     <IconCalculator color={header2.background} />
@@ -208,7 +208,7 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={tool?.includes(SCRATCHPAD)}
                     onClick={() => changeTool(SCRATCHPAD)}
-                    title={t('common.test.scratchPad')}
+                    title={i18Translate('common.test.scratchPad')}
                     data-cy="scratchPad"
                     disabled={isPremiumContentWithoutAccess}
                   >
@@ -219,7 +219,7 @@ const PlayerHeader = ({
                   <ButtonWrapper
                     active={enableMagnifier}
                     onClick={handleMagnifier}
-                    title={t('common.test.magnify')}
+                    title={i18Translate('common.test.magnify')}
                     data-cy="magnify"
                     disabled={isPremiumContentWithoutAccess}
                   >
@@ -230,7 +230,7 @@ const PlayerHeader = ({
                 {isTeacherPremium && (
                   <ButtonWrapper
                     onClick={toggleUserWorkUploadModal}
-                    title={t('common.test.uploadWork')}
+                    title={i18Translate('common.test.uploadWork')}
                     data-cy="uploadWork"
                     disabled={isPremiumContentWithoutAccess}
                   >

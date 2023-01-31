@@ -12,7 +12,7 @@ const TableFilters = ({
   analyseByOptions = [],
   selectedTableFilters = {},
 }) => {
-  const updateTableFilters = (selected) => {
+  const updateTableFilters = (e, selected) => {
     setTableFilters({
       ...selectedTableFilters,
       compareBy: selected,

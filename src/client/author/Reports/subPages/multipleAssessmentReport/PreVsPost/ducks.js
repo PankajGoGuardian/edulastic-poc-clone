@@ -91,7 +91,6 @@ function* fetchReportSummaryDataRequestSaga({ payload }) {
       actions.fetchReporSummaryDataRequestSuccess({ reportSummaryData })
     )
   } catch (error) {
-    console.log('err', error.stack)
     const msg =
       'Error fetching Pre Vs Post Test Comparison report data. Please try again after a few minutes.'
     notification({ type: 'error', msg })
@@ -127,7 +126,6 @@ function* fetchPreVsPostReportTableDataRequestSaga({ payload }) {
       actions.fetchPreVsPostReportTableDataRequestSuccess({ reportTableData })
     )
   } catch (error) {
-    console.log('err', error.stack)
     const msg =
       'Error fetching Pre Vs Post Test Comparison report data. Please try again after a few minutes.'
     notification({ type: 'error', msg })

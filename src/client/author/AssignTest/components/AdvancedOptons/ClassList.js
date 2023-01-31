@@ -159,7 +159,7 @@ class ClassList extends React.Component {
       classList,
       assignedClassesById,
       selectedClasses,
-      isAllClassSelected,
+      isAllClassSelected: isAllClassSelectedProp,
       setIsAllClassSelected,
     } = this.props
     const { filterClassIds } = this.state
@@ -186,20 +186,16 @@ class ClassList extends React.Component {
       this.setState({ filterClassIds: [] }) // eslint-disable-line
     }
 
-    const selectableClassCount = classList
-      ?.filter(
-        ({ _id }) => !Object.keys(assignedClassesById[testType]).includes(_id)
-      )
-      ?.map(({ _id }) => _id)
     const isAllSelected =
-      selectableClassCount?.length &&
-      selectableClassCount?.length === selectedClasses?.length &&
-      selectedClasses.every((id) => selectableClassCount?.includes(id))
-
-    if (!isAllClassSelected && isAllSelected) {
-      setIsAllClassSelected(true)
-    } else if (isAllClassSelected && !isAllSelected) {
-      setIsAllClassSelected(false)
+      !!selectedClasses?.length &&
+      classList.every(
+        ({ _id }) =>
+          Object.keys(assignedClassesById[testType]).includes(_id) ||
+          selectedClasses?.includes(_id) ||
+          filterClassIds.length === selectedClasses?.length
+      )
+    if (isAllClassSelectedProp !== isAllSelected) {
+      setIsAllClassSelected(isAllSelected)
     }
   }
 

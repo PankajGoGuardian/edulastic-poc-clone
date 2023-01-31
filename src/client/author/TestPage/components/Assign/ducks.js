@@ -227,6 +227,7 @@ export const getHasDuplicateAssignmentsSelector = createSelector(
   (state) => state.hasDuplicateAssignments
 )
 
+// saga
 function* deriveAssignmentPayload({
   assignments,
   duplicatesAndCommonStudentsSettings,
@@ -278,7 +279,6 @@ function* deriveAssignmentPayload({
   return assignmentPayload
 }
 
-// saga
 function* saveAssignment({ payload }) {
   try {
     // Backend doesn't require PARTIAL_CREDIT_IGNORE_INCORRECT

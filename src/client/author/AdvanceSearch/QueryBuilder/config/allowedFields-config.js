@@ -1,5 +1,5 @@
 import { operators, nullNotNullOp, classGroup } from './qb-config'
-import { selectsData } from '../../TestPage/components/common'
+import { selectsData } from '../../../TestPage/components/common'
 import { fieldKey } from './constants'
 
 export const allowedFields = ({

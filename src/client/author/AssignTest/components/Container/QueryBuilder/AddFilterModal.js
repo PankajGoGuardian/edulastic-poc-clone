@@ -1,17 +1,14 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import { isEmpty } from 'lodash'
-import { Input } from 'antd'
 import { EduButton, CustomModalStyled } from '@edulastic/common'
-import styled from 'styled-components'
 import { ModalTitle } from '../../../../AssessmentPage/common/Modal'
 import { setIsAdvancedSearchSelectedAction } from '../../../../AdvanceSearch/ducks'
+import { StyledParagraph, StyledInput, FooterContainer } from './styled'
 
 const ExtendedInput = ({ onChange, filterName }) => {
   const handleChange = (e) => {
-    if (onChange) {
-      onChange(e.target.value)
-    }
+    onChange(e.target.value)
   }
 
   return (
@@ -88,23 +85,3 @@ const AddFilterModal = ({
 export default connect(null, {
   setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
 })(AddFilterModal)
-
-const StyledParagraph = styled.p`
-  font: normal normal 600 10px/14px Open Sans;
-  color: #434b5d;
-  letter-spacing: 0px;
-  text-transform: uppercase;
-  opacity: 1;
-`
-
-const FooterContainer = styled.div`
-  display: flex;
-`
-
-const StyledInput = styled(Input)`
-  background: #f8f8f8 0% 0% no-repeat padding-box;
-  border: 1px solid #b9b9b9;
-  border-radius: 2px;
-  opacity: 1;
-  height: 32px;
-`

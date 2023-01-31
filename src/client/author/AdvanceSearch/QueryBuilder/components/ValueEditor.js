@@ -2,15 +2,15 @@ import React from 'react'
 import { Empty, Select } from 'antd'
 import { connect } from 'react-redux'
 import { debounce } from 'lodash'
-import { EduIf } from '@edulastic/common'
+import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import {
   getAdvancedSearchDetailsSelector,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
   setAdvancedSearchTagsAction,
-} from '../ducks'
+} from '../../ducks'
 import { StyledSelect } from './styled'
-import { fieldKey } from './constants'
+import { fieldKey } from '../config/constants'
 
 const ValueEditor = (props) => {
   const {
@@ -49,8 +49,8 @@ const ValueEditor = (props) => {
   const { key } = enableSearchFields[field] || {}
   const isLoading = advancedSearchDetails[key]?.isLoading
   return (
-    <>
-      <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
+    <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
+      <EduThen>
         <StyledSelect
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode="multiple"
@@ -84,8 +84,8 @@ const ValueEditor = (props) => {
             )
           })}
         </StyledSelect>
-      </EduIf>
-      <EduIf condition={!Object.keys(enableSearchFields).includes(field)}>
+      </EduThen>
+      <EduElse>
         <StyledSelect
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode={type === 'multiselect' ? 'multiple' : 'default'}
@@ -108,8 +108,8 @@ const ValueEditor = (props) => {
             )
           })}
         </StyledSelect>
-      </EduIf>
-    </>
+      </EduElse>
+    </EduIf>
   )
 }
 

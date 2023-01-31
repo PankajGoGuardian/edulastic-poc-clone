@@ -1,5 +1,5 @@
 import React from 'react'
-import Query from './QueryBuilder'
+import Query from './components/QueryBuilder'
 
 const QueryBuilder = ({ showAdvanceSearch, setShowAdvanceSearchModal }) => {
   return (

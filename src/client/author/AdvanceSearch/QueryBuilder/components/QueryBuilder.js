@@ -7,10 +7,10 @@ import { Select, Button } from 'antd'
 import { connect } from 'react-redux'
 import { isArray, flattenDeep } from 'lodash'
 import { IconClose } from '@edulastic/icons'
-import { ruleLimit, operators, combinators } from './qb-config'
-import { allowedFields } from './allowedFields-config'
+import { ruleLimit, operators, combinators } from '../config/qb-config'
+import { allowedFields } from '../config/allowedFields-config'
 import ValueEditor from './ValueEditor'
-import { CancelButton, OkButton } from '../../../common/styled'
+import { CancelButton, OkButton } from '../../../../common/styled'
 import {
   ModalBody,
   ButtonsContainer,
@@ -31,7 +31,7 @@ import {
   getAdvancedSearchTagsSelector,
   getAdvancedSearchCoursesSelector,
   advancedSearchRequestAction,
-} from '../ducks'
+} from '../../ducks'
 
 const FieldSelector = (props) => {
   const { handleOnChange, options, value, id } = props

@@ -26,7 +26,11 @@ import {
   getAbortUploadAction,
 } from '../../../sharedDucks/dataWarehouse'
 import { getOrgDataSelector } from '../../../src/selectors/user'
-import { getYear, dataFormatTreeOptions } from './utils'
+import {
+  getYear,
+  dataFormatTreeOptions,
+  NON_ACADEMIC_DATA_TYPE_KEY,
+} from './utils'
 import { getTermOptions } from '../../../utils/reports'
 import DownloadTemplateContainer from './DownloadTemplateContainer'
 import {
@@ -43,9 +47,8 @@ import {
 
 const { cdnURI } = config
 const { Option } = Select
-const { NON_ACADEMIC_DATA_TYPES } = testTypes
+const { ATTENDANCE } = testTypes
 const { MAX_UPLOAD_FILE_SIZE } = dataWarehouse
-const NON_ACADEMIC_DATA_TYPE_KEY = 'nonAcademicData'
 
 const DataWarehouseUploadModal = ({
   uploadFile,
@@ -174,7 +177,7 @@ const DataWarehouseUploadModal = ({
             </StyledCol>
           </StyledRow>
         )}
-        {category === NON_ACADEMIC_DATA_TYPES.ATTENDANCE && (
+        {category === ATTENDANCE && (
           <DownloadTemplateContainer
             url={`${cdnURI}/templates/AttendanceSampleFile.csv`}
           />

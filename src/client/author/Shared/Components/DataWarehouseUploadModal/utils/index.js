@@ -6,6 +6,8 @@ const {
   EXTERNAL_TEST_TYPES: ACADEMIC_TEST_TYPES,
   NON_ACADEMIC_DATA_TYPES,
 } = testTypes
+export const NON_ACADEMIC_DATA_TYPE_KEY = 'nonAcademicData'
+export const ACADEMIC_DATA_TYPE_KEY = 'academicData'
 
 const getOptionValues = ([key, title]) => ({
   key,
@@ -23,15 +25,15 @@ const nonAcademicDataChildren = Object.entries(NON_ACADEMIC_DATA_TYPES).map(
 export const dataFormatTreeOptions = [
   {
     title: 'Non-Academic Data',
-    value: 'nonAcademicData',
-    key: 'nonAcademicData',
+    value: NON_ACADEMIC_DATA_TYPE_KEY,
+    key: NON_ACADEMIC_DATA_TYPE_KEY,
     selectable: false,
     children: nonAcademicDataChildren,
   },
   {
     title: 'Academic Data',
-    value: 'academicData',
-    key: 'academicData',
+    value: ACADEMIC_DATA_TYPE_KEY,
+    key: ACADEMIC_DATA_TYPE_KEY,
     selectable: false,
     children: academicDataChildren,
   },

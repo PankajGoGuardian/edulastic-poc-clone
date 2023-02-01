@@ -30,6 +30,7 @@ const Launch = ({
   const [launching, setLaunching] = useState(false)
   const [postMeeting, setPostMeeting] = useState(true)
   const [eventType, setEventType] = useState('create')
+  const [isConsentProvided, setIsConsentProvided] = useState(false)
   const selectedGroup = classList.find((group) => group._id === groupId)
   const isHangoutLinkExpired = !!(
     selectedGroup &&
@@ -155,6 +156,7 @@ const Launch = ({
   }
 
   const launchHangout = () => {
+    setIsConsentProvided(false)
     setLaunching(true)
     if (hangoutLink) {
       closePopUp()
@@ -176,11 +178,15 @@ const Launch = ({
     }
   }
 
+  if (isConsentProvided) {
+    launchHangout()
+  }
+
   return (
     <HangoutsModal
       visible={isOpenLaunch}
       onCancel={closePopUp}
-      onOk={launchHangout}
+      onOk={() => setIsConsentProvided(true)}
       onError={handleError}
       hangoutLink={hangoutLink}
       loading={launching}

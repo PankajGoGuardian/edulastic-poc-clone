@@ -4,14 +4,15 @@ import { getFormattedTimeInMinutesAndSeconds } from '../../../utils/timeUtils'
 import { PLAY, PAUSE, STOP } from '../constants'
 
 const useAudioPlayer = ({ audioUrl, onClickRerecord, setErrorData }) => {
+  console.log('audioUrl', audioUrl)
   const [isAudioLoading, setIsAudioLoading] = useState(true)
   const [audioData, setAudioData] = useState(null)
   const [playerState, setPlayerState] = useState(null)
   const [currentProgress, setCurrentProgress] = useState(0)
   const [audioSliderCount, setAudioSliderCount] = useState(0)
-  const audioRef = useRef(new Audio(audioUrl))
-  const audioRefData = audioRef.current
+  const audioRef = useRef(null)
   const intervalRef = useRef(null)
+  let audioRefData
 
   const checkAudioState = (audioState) =>
     isAudioLoading || playerState === audioState || !audioData
@@ -55,6 +56,8 @@ const useAudioPlayer = ({ audioUrl, onClickRerecord, setErrorData }) => {
   }
 
   useEffect(() => {
+    audioRef.current = new Audio(audioUrl)
+    audioRefData = audioRef.current
     audioRef.current.addEventListener('loadedmetadata', async () => {
       try {
         const loadedAudio = audioRef.current
@@ -88,7 +91,7 @@ const useAudioPlayer = ({ audioUrl, onClickRerecord, setErrorData }) => {
       audioRef.current = null
       setAudioData(null)
     }
-  }, [])
+  }, [audioUrl])
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {

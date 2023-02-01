@@ -7,7 +7,10 @@ import { uniqBy, pull, isEmpty, capitalize, uniq } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
 import { destroyNotificationMessage } from '../../../../common/components/Notification'
 import { getUser } from '../../../src/selectors/user'
-
+import {
+  canvasSyncFireBaseStatus,
+  canvasSyncStatus,
+} from '../../../ManageClass/constants'
 import {
   fetchStudentsByIdAction,
   removeClassSyncNotificationAction,
@@ -160,9 +163,11 @@ const ClassSyncNotificationListener = ({
   const showUserNotificationOnCanvasBulkSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, message, multipleDistrictUserEmail } = doc
-
-      if (status === 'completed' && !notificationIds.includes(doc.__id)) {
-        setCanvasBulkSyncStatus('SUCCESS')
+      if (status === canvasSyncFireBaseStatus.INPROGRESS && !notificationIds.includes(doc.__id)) {
+        setCanvasBulkSyncStatus(canvasSyncStatus.INPROGRESS)
+      }
+      if (status === canvasSyncFireBaseStatus.COMPLETED && !notificationIds.includes(doc.__id)) {
+        setCanvasBulkSyncStatus(canvasSyncStatus.SUCCESS)
         sessionStorage.removeItem('signupFlow')
         setNotificationIds([...notificationIds, doc.__id])
         let teacherNotEnrolled = ''
@@ -185,8 +190,8 @@ const ClassSyncNotificationListener = ({
           },
         })
       }
-      if (status === 'failed') {
-        setCanvasBulkSyncStatus('FAILED')
+      if (status === canvasSyncFireBaseStatus.FAILED) {
+        setCanvasBulkSyncStatus(canvasSyncStatus.FAILED)
         notification({
           messageKey: 'bulkSyncFailed',
           msg: message,

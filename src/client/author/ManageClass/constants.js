@@ -143,3 +143,15 @@ export const thumbnailData = {
     'write.jpg-3.jpg',
   ],
 }
+
+export const canvasSyncFireBaseStatus = {
+  INPROGRESS: 'active',
+  COMPLETED: 'completed',
+  FAILED: 'failed',
+}
+
+export const canvasSyncStatus = {
+  INPROGRESS: 'INPROGRESS',
+  SUCCESS: 'SUCCESS',
+  FAILED: 'FAILED',
+}

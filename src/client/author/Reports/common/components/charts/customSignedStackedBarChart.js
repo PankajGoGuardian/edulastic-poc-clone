@@ -139,11 +139,8 @@ export const SignedStackedBarChart = ({
     },
   }
 
-  const chartData = useMemo(() => [...data], [pagination])
-
   const renderData = useMemo(
-    () =>
-      chartData.slice(pagination.startIndex, pagination.startIndex + pageSize),
+    () => data.slice(pagination.startIndex, pagination.startIndex + pageSize),
     [pagination, data]
   )
 
@@ -164,11 +161,11 @@ export const SignedStackedBarChart = ({
 
   const scrollRight = () => {
     let diff
-    if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+    if (pagination.endIndex < data.length - 1) {
+      if (data.length - 1 - pagination.endIndex >= pageSize) {
         diff = pageSize
       } else {
-        diff = chartData.length - 1 - pagination.endIndex
+        diff = data.length - 1 - pagination.endIndex
       }
       setPagination({
         startIndex: pagination.startIndex + diff,
@@ -277,7 +274,7 @@ export const SignedStackedBarChart = ({
     : !(pagination.startIndex == 0)
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
-    : !(chartData.length <= pagination.endIndex + 1)
+    : !(data.length <= pagination.endIndex + 1)
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({

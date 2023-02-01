@@ -649,7 +649,7 @@ export const StyledP = styled.p`
 export const NoDataContainer = styled.div`
   background: white;
   color: ${fadedBlack};
-  margin-top: 290px;
+  margin-top: ${({ margin }) => margin || '290px'};
   display: flex;
   justify-content: center;
   align-items: center;

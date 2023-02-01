@@ -118,10 +118,10 @@ const WholeStudentReport = ({
   )
 
   const testTypes = useMemo(() => {
-    const _testTypes = (sharedReportFilters || settings.requestFilters)
+    const _testTypes = (sharedReportFilters || settings.frontEndFilters)
       ?.testTypes
     return isEmpty(_testTypes) ? [] : _testTypes.split(',')
-  }, [settings.requestFilters, sharedReportFilters])
+  }, [settings.frontEndFilters, sharedReportFilters])
 
   const setShowApply = (status) => {
     onRefineResultsCB(null, status, 'applyButton')
@@ -144,9 +144,7 @@ const WholeStudentReport = ({
       'termId',
       'standardsProficiencyProfileId',
       'reportId',
-      'performanceBandProfileId',
       'assignedBy',
-      'testTypes',
     ]
     const _requestFilters = {}
     Object.keys(_settings.filters).forEach((filterType) => {
@@ -155,6 +153,7 @@ const WholeStudentReport = ({
           ? ''
           : _settings.filters[filterType]
     })
+
     setSettings({
       requestFilters: {
         ...pick(_requestFilters, requestFilterKeys),
@@ -173,6 +172,10 @@ const WholeStudentReport = ({
         thumbnail,
       },
       selectedStudentClassData: studentClassData,
+      frontEndFilters: {
+        testTypes: _requestFilters.testTypes,
+        performanceBandProfileId: _requestFilters.performanceBandProfileId,
+      },
     })
     setShowApply(false)
   }
@@ -186,9 +189,9 @@ const WholeStudentReport = ({
   )
 
   const computeChartNavigationLinks = () => {
-    const { selectedStudent, requestFilters } = settings
+    const { selectedStudent, requestFilters, frontEndFilters } = settings
     if (navigation.locToData[loc]) {
-      const arr = Object.keys(requestFilters)
+      const arr = Object.keys({ ...requestFilters, ...frontEndFilters })
       const obj = {}
       arr.forEach((item) => {
         const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
@@ -211,9 +214,10 @@ const WholeStudentReport = ({
 
   useEffect(() => {
     if (settings.selectedStudent.key) {
-      const path = `${settings.selectedStudent.key}?${qs.stringify(
-        settings.requestFilters
-      )}`
+      const path = `${settings.selectedStudent.key}?${qs.stringify({
+        ...settings.requestFilters,
+        ...settings.frontEndFilters,
+      })}`
       history.push(path)
     }
     const computedChartNavigatorLinks = computeChartNavigationLinks()
@@ -224,7 +228,10 @@ const WholeStudentReport = ({
     if (settings.selectedStudent.key) {
       const path = `/author/reports/whole-student-report/student/${
         settings.selectedStudent.key
-      }?${qs.stringify(settings.requestFilters)}`
+      }?${qs.stringify({
+        ...settings.requestFilters,
+        ...settings.frontEndFilters,
+      })}`
       history.push(path)
     }
     if (settings.selectedStudent.key && settings.requestFilters.termId) {
@@ -240,13 +247,13 @@ const WholeStudentReport = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedStudent, settings.requestFilters])
+  }, [settings.selectedStudent.key, settings.requestFilters.termId])
 
   const selectedPerformanceBand = (
     bandInfo.find(
       (x) =>
         x._id ===
-        (sharedReportFilters || settings.requestFilters)
+        (sharedReportFilters || settings.frontEndFilters)
           .performanceBandProfileId
     ) || bandInfo[0]
   )?.performanceBand
@@ -327,6 +334,7 @@ const WholeStudentReport = ({
           reportType={loc}
           reportFilters={{
             ...settings.requestFilters,
+            ...settings.frontEndFilters,
             ...settings.standardFilters,
             studentId: settings?.selectedStudent?.key,
           }}
@@ -405,31 +413,42 @@ const WholeStudentReport = ({
                     <StudentDetails
                       studentInformation={settings.selectedStudentInformation}
                     />
-                    <AssessmentsChart
-                      chartData={chartData}
-                      selectedPerformanceBand={selectedPerformanceBand}
-                      preLabelContent={
-                        <ChartPreLabelWrapper>
-                          <Checkbox
-                            checked={isAttendanceChartVisible}
-                            onChange={toggleAttendanceChart}
-                          >
-                            Show Attendance Chart
-                          </Checkbox>
-                        </ChartPreLabelWrapper>
-                      }
-                    />
+                    <EduIf condition={!isEmpty(chartData)}>
+                      <EduThen>
+                        <AssessmentsChart
+                          chartData={chartData}
+                          selectedPerformanceBand={selectedPerformanceBand}
+                          preLabelContent={
+                            <ChartPreLabelWrapper>
+                              <Checkbox
+                                checked={isAttendanceChartVisible}
+                                onChange={toggleAttendanceChart}
+                              >
+                                Show Attendance Chart
+                              </Checkbox>
+                            </ChartPreLabelWrapper>
+                          }
+                        />
+                      </EduThen>
+                      <EduElse>
+                        <NoDataContainer margin="50px">
+                          No academic data available.
+                        </NoDataContainer>
+                      </EduElse>
+                    </EduIf>
                     <EduIf condition={isAttendanceChartVisible}>
                       <AttendanceChart
                         attendanceChartData={attendanceChartData}
                       />
                     </EduIf>
-                    <AssessmentsTable
-                      tableData={tableData}
-                      isSharedReport={isSharedReport}
-                      onCsvConvert={onCsvConvert}
-                      isCsvDownloading={isCsvDownloading}
-                    />
+                    <EduIf condition={!isEmpty(tableData)}>
+                      <AssessmentsTable
+                        tableData={tableData}
+                        isSharedReport={isSharedReport}
+                        onCsvConvert={onCsvConvert}
+                        isCsvDownloading={isCsvDownloading}
+                      />
+                    </EduIf>
                   </EduElse>
                 </EduIf>
               </EduElse>

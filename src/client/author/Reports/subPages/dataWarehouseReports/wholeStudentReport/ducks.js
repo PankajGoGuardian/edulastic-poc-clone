@@ -34,9 +34,11 @@ const initialState = {
       courseId: '',
       grade: '',
       subject: '',
-      performanceBandProfileId: '',
       standardsProficiencyProfileId: '',
+    },
+    frontEndFilters: {
       testTypes: '',
+      performanceBandProfileId: '',
     },
     //   standardFilters: {
     //     domainIds: '',

@@ -9,7 +9,12 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { getUserRole } from '../../../src/selectors/user'
 import selectsData from '../../../TestPage/components/common/selectsData'
-import { Label, StyledDatePicker, StyledRow, StyledSelect } from './styled'
+import {
+  Label,
+  StyledDatePicker,
+  StyledRow,
+  StyledSelect,
+} from './styled-components'
 import { getIsOverrideFreezeSelector } from '../../../TestPage/ducks'
 
 const {

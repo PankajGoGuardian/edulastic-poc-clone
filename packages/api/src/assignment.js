@@ -15,6 +15,16 @@ const create = (data) =>
     })
     .then((result) => result.data.result)
 
+const createAssignmentV2 = (data) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `${prefix}/v2/assign`,
+      method: 'post',
+      data,
+    })
+    .then((result) => result.data)
+
 const bulkAssign = (data) =>
   api
     .callApi({
@@ -314,4 +324,5 @@ export default {
   editTagsRequest,
   getBubbleSheet,
   bulkAssign,
+  createAssignmentV2,
 }

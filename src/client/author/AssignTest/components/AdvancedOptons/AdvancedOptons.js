@@ -11,6 +11,7 @@ import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { OkButton } from '../../../../common/styled'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
 import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
@@ -34,7 +35,7 @@ import {
   Label,
   OptionConationer,
   StyledRow,
-} from './styled'
+} from './styled-components'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -172,6 +173,7 @@ class AdvancedOptons extends React.Component {
       showRecommendedResources,
       selectedResourcesAction,
       isPlaylist,
+      setShowAdvanceSearchModal,
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
@@ -225,17 +227,27 @@ class AdvancedOptons extends React.Component {
           {!isAssignRecommendations && (
             <>
               <ClassSelectorLabel>
-                Assign this to
+                <h3>Assign this to</h3>
                 <p>
                   Please select classes to assign this assessment. Options on
                   the left can be used to filter the list of classes.
                 </p>
+                <div>
+                  <OkButton
+                    onClick={() => {
+                      setShowAdvanceSearchModal(true)
+                    }}
+                  >
+                    Advanced Search
+                  </OkButton>
+                </div>
               </ClassSelectorLabel>
               <ClassList
                 selectedClasses={classIds}
                 selectClass={this.onChange}
                 testType={assignment.testType || testSettings.testType}
                 isPlaylist={isPlaylist}
+                setShowAdvanceSearchModal={setShowAdvanceSearchModal}
               />
             </>
           )}

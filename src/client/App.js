@@ -78,6 +78,7 @@ import {
 } from './author/Dashboard/ducks'
 import CreateClassModal from './author/ManageClass/components/ClassCreate'
 import CreateAssignmentModal from './author/AssignmentCreate'
+import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
 
 const {
   ASSESSMENT,
@@ -223,6 +224,18 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
   }, [])
   return null
 }
+
+const TEACHER_FIRESTORE_NOTIFICATIONS = [
+  BulkActionNotificationListener,
+  ReportsNotificationListener,
+  RosterSyncNotification,
+  BulkAssignNotification,
+]
+const ADMIN_FIRESTORE_NOTIFICATIONS = [
+  ClassSyncNotification,
+  ReportsNotificationListener,
+  BulkAssignNotification,
+]
 
 class App extends Component {
   static propTypes = {
@@ -706,13 +719,9 @@ class App extends Component {
                   redirectPath={redirectRoute}
                   notifications={
                     roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                      ? [
-                          BulkActionNotificationListener,
-                          ReportsNotificationListener,
-                          RosterSyncNotification,
-                        ]
+                      ? ADMIN_FIRESTORE_NOTIFICATIONS
                       : roleuser.TEACHER === userRole
-                      ? [ClassSyncNotification, ReportsNotificationListener]
+                      ? TEACHER_FIRESTORE_NOTIFICATIONS
                       : null
                   }
                 />

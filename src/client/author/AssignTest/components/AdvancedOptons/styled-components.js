@@ -7,6 +7,8 @@ import {
   white,
   backgrounds,
   themeColorBlue,
+  tagTextColor,
+  tagsBgColor,
 } from '@edulastic/colors'
 import { DatePicker, Row, Select, Table, Switch } from 'antd'
 import styled from 'styled-components'
@@ -168,19 +170,34 @@ export const ClassListContainer = styled.div`
 `
 
 export const ClassSelectorLabel = styled.div`
-  color: #434b5d;
-  font-size: 16px;
-  font-weight: bold;
+  display: grid;
+  grid-template-columns: auto auto;
+  justify-content: space-between;
   margin-top: 40px;
-
+  h3 {
+    color: #434b5d;
+    font-size: 16px;
+    font-weight: bold;
+  }
   p {
     color: #6a737f;
     font-weight: 400;
     font-size: 15px;
-    margin-top: 10px;
     margin-bottom: 20px;
-    padding-bottom: 20px;
+    padding-bottom: 10px;
     border-bottom: 1px #e4eaf1 solid;
+    grid-column-start: 1;
+    grid-column-end: 3;
+  }
+  div {
+    grid-column-start: 2;
+    grid-row-start: 1;
+    justify-self: end;
+    button {
+      font: normal normal 600 10px/14px Open Sans;
+      letter-spacing: 0.19px;
+      height: 32px;
+    }
   }
 `
 
@@ -299,4 +316,23 @@ export const SwitchStyled = styled(Switch)`
   &.ant-switch-checked {
     background-color: ${themeColorBlue};
   }
+`
+
+export const AdvancedSearchTagContainer = styled.div`
+  display: inline-flex;
+  align-items: center;
+  background-color: ${tagsBgColor};
+  border-radius: 2px;
+  opacity: 0.64;
+  padding: 4px;
+  margin-bottom: 5px;
+  letter-spacing: 0.15px;
+  color: ${tagTextColor};
+`
+
+export const AdvancedSearchTag = styled.span`
+  font-size: 8px;
+  font-weight: bold;
+  margin: 0 5px;
+  cursor: pointer;
 `

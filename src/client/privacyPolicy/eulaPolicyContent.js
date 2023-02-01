@@ -1,44 +1,60 @@
 import React from 'react'
 import { BodyContentWrapper, StickyHeader } from './Styled'
 
+// This content is generated through https://github.com/mwilliamson/mammoth.js/
 const EulaPolicyContent = () => {
   return (
     <BodyContentWrapper data-testid="eulaPolicyContent">
       <StickyHeader>
-        <strong>End User License Agreement</strong>
+        <strong>
+          Liminex Products Terms of Service and End User License Agreement
+        </strong>
       </StickyHeader>
       <div>
-        <h3>Introduction</h3>
+        <p>Last Updated Date: February 14, 2023</p>
+        <p>
+          <strong>Introduction</strong>
+        </p>
         <p>
           Welcome! Before using any of our Offerings, please take the time to
           review this combined Terms of Service and End User License Agreement
-          (EULA), together with any applicable Order Form(s), the{' '}
+          (EULA), together with any applicable Order Form(s), the
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
+            <strong>Product Privacy Policy</strong>
           </a>
-          , and, if applicable, the Data Processing Addendum (collectively, the
-          “Agreement”). Capitalized words have the definitions set forth
-          throughout this Agreement, including in Section 17 (Definitions).
-        </p>
-        <p>
-          <strong>
-            <i>When does this Agreement apply?</i>
-          </strong>{' '}
-          &nbsp; This Agreement governs the use of the Offerings and is a
-          binding contract between School (sometimes referred to as
-          “School”,“you” or “your”) and Liminex, Inc. doing business as
-          GoGuardian, and acting on behalf of itself and its Affiliates
-          (“Liminex”, “we”, “us” or “our”). This Agreement is distinct from our{' '}
+          , and, if applicable, the
           <a
-            href="https://edulastic.com/website-terms-of-service"
+            href="https://edulastic.com/data-processing-addendum/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Website Terms of Service
+            <strong>Data Processing Addendum</strong>
+          </a>
+          (collectively, the “Agreement”). Capitalized words have the
+          definitions set forth throughout this Agreement, including in Section
+          17 (Definitions).
+        </p>
+        <p>
+          <strong>
+            <em>When does this Agreement apply?</em>
+          </strong>
+          This Agreement governs the use of the Offerings and is a binding
+          contract between School (sometimes referred to as
+          &ldquo;School&rdquo;, &ldquo;you&rdquo; or &ldquo;your&rdquo;) and
+          Liminex, Inc. doing business as GoGuardian, and acting on behalf of
+          itself and its Affiliates (&ldquo;Liminex&rdquo;, &ldquo;we&rdquo;,
+          &ldquo;us&rdquo;, or &ldquo;our&rdquo;). This Agreement is distinct
+          from our
+          <a
+            href="https://edulastic.com/website-terms-of-service/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Website Terms of Service</strong>
           </a>
           , which governs only use of our Website.
         </p>
@@ -94,25 +110,27 @@ const EulaPolicyContent = () => {
           </li>
         </ul>
         <p>
-          <i>
-            i. We have included, in italics at the beginning of each section,
+          i.
+          <em>
+            We have included, in italics at the beginning of each section,
             summaries that provide short explanations of the legal language in
             plain English to aid in understanding, but such summaries are not
             legally binding.
-          </i>
+          </em>
         </p>
 
-        <h3 id="heading1">
-          1. GETTING ACCESS TO AND STARTED WITH OUR OFFERINGS
-        </h3>
         <p>
-          <i>
-            i. This Section explains how to establish and maintain Account(s).
-            This Section describes the importance of being mindful about the
+          <strong>1. GETTING ACCESS TO AND STARTED WITH OUR OFFERINGS</strong>
+        </p>
+        <p>
+          i.
+          <em>
+            This Section explains how to establish and maintain Account(s). This
+            Section describes the importance of being mindful about the
             information and settings in an Account – the value of our tools is
             dependent on the accuracy of the information you provide and the
             proper selection of product settings.
-          </i>
+          </em>
         </p>
         <p>
           We generally make our Offerings available on a paid subscription-based
@@ -120,8 +138,9 @@ const EulaPolicyContent = () => {
           its sole discretion, we may offer limited free, trial or beta
           Offerings at no additional charge.
         </p>
-
-        <h4>1.1 Ordering</h4>
+        <p>
+          <strong>1.1 Ordering</strong>
+        </p>
         <p>
           You may obtain Subscriptions to our Offerings either directly from us
           or one of our Affiliates or indirectly through one of our Authorized
@@ -152,8 +171,9 @@ const EulaPolicyContent = () => {
           Capacity. Add-Ons, once deployed and paid, will be rolled into your
           base Subscription.
         </p>
-
-        <h4>1.2 Accounts</h4>
+        <p>
+          <strong>1.2 Accounts</strong>
+        </p>
         <p>
           Before accessing certain Offerings, you may be required to create an
           Account. When setting up your Account, you may link your Offerings
@@ -165,8 +185,9 @@ const EulaPolicyContent = () => {
           applicable terms and conditions that govern your use of that Google or
           Microsoft account.
         </p>
-
-        <h4>1.2.1 Authorized Users</h4>
+        <p>
+          <strong>1.2.1 Authorized Users</strong>
+        </p>
         <p>
           Within your Account, you may have the ability to enable separate
           sub-accounts for Authorized Users. You are responsible for issuing and
@@ -174,8 +195,9 @@ const EulaPolicyContent = () => {
           as well as issuing and maintaining appropriate permission settings for
           each Authorized User.
         </p>
-
-        <h4>1.2.2 School Information</h4>
+        <p>
+          <strong>1.2.2 School Information</strong>
+        </p>
         <p>
           When creating an Account, you agree to (a) provide true, accurate,
           current and complete information necessary to create the Account and
@@ -183,7 +205,7 @@ const EulaPolicyContent = () => {
           Accounts; and (b) promptly update any such information to maintain its
           accuracy and completeness during the Term. Without limiting the
           generality of the foregoing, you agree to provide and maintain
-          accurate, up-to-date and complete Profile Information, and for
+          accurate, up-to-date and complete School Profile Information, and for
           Accounts, Authorized School Personnel Information, Personal Student
           Information, Parent/Guardian Information, and Association Data. You
           acknowledge and agree that proper implementation and operation of
@@ -204,8 +226,9 @@ const EulaPolicyContent = () => {
           applicable Authorized User; and/or (2) your Account (including any
           individual Authorized User account) has been compromised.
         </p>
-
-        <h4>1.2.3 Account Settings</h4>
+        <p>
+          <strong>1.2.3 Account Settings</strong>
+        </p>
         <p>
           You are responsible for selecting and updating the settings in the
           Offerings you subscribe to as you see fit and ensuring that the
@@ -215,13 +238,51 @@ const EulaPolicyContent = () => {
           Accounts and parents’ or guardians’ authorization of such monitoring.
           If you have questions about any settings in an Offering or your
           Account, such as permissions and settings associated with Managed
-          Devices or Accounts, please visit, as applicable, the GoGuardian Help
-          Center and/or contact support@goguardian.com, or visit the Pear Deck
-          Help Center and/or contact support@peardeck.com, or visit the
-          Edulastic Help Center and/or contact support@edulastic.com.
+          Devices or Accounts, please visit, as applicable, the GoGuardian
+          <a
+            href="https://help.goguardian.com/hc/en-us"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Help Center</strong>
+          </a>
+          and/or contact
+          <a href="mailto:support@goguardian.com">
+            <strong>support@goguardian.com</strong>
+          </a>
+          , or visit the Pear Deck
+          <a
+            href="https://help.peardeck.com/en?__hstc=181186424.a331f9cd231b0501655e39b86932d339.1628617317261.1637174793540.1637256220337.25&amp;__hssc=181186424.1.1637256220337&amp;__hsfp=431394172"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Help Center</strong>
+          </a>
+          and/or contact
+          <a href="mailto:support@peardeck.com">
+            <strong>support@peardeck.com</strong>
+          </a>
+          , or visit the Edulastic
+          <a
+            href="https://edulastic.com/help-center/?__hstc=181186424.a331f9cd231b0501655e39b86932d339.1628617317261.1637174793540.1637256220337.25&amp;__hssc=181186424.1.1637256220337&amp;__hsfp=431394172"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Help Center</strong>
+          </a>
+          and/or contact
+          <a
+            href="mailto:support@edulastic.com"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>support@edulastic.com</strong>
+          </a>
+          , or visit the the Giant Steps <strong>Help Center</strong>.
         </p>
-
-        <h4>1.3 Payment Terms</h4>
+        <p>
+          <strong>1.3 Payment Terms</strong>
+        </p>
         <p>
           Fees due for initial orders, any Add-Ons to, and any subscription
           renewals of Offerings shall be set forth in the applicable Order Form
@@ -265,17 +326,22 @@ const EulaPolicyContent = () => {
           suspend your use of the Services.
         </p>
 
-        <h3 id="heading2">2. OFFERINGS</h3>
         <p>
-          <i>
-            i. This Section explains more about the Offerings, including updates
-            to such offerings and linkages with other third party integration
+          <strong>2. OFFERINGS</strong>
+        </p>
+        <p>
+          i.
+          <em>
+            This Section explains more about the Offerings, including updates to
+            such offerings and linkages with other third party integration
             software that we make available to you. Offerings may experience
             downtime or we may suspend access to Offerings in certain
             situations.
-          </i>
+          </em>
         </p>
-        <h4>2.1 Access and Updates to Offerings.</h4>
+        <p>
+          <strong>2.1 Access and Updates to Offerings.</strong>
+        </p>
         <p>
           We will make our Offerings to which you have subscribed available to
           you, subject to the terms of this Agreement. From time to time, we may
@@ -299,7 +365,9 @@ const EulaPolicyContent = () => {
           agree that the availability of the App Store Sourced Application is
           dependent on the App Store.
         </p>
-        <h4>2.2 Downtime and Suspension of Offerings.</h4>
+        <p>
+          <strong>2.2 Downtime and Suspension of Offerings.</strong>
+        </p>
         <p>
           You acknowledge that you may experience downtime (a) as a result of
           our conducting maintenance; or (b) in connection with a force majeure
@@ -313,7 +381,9 @@ const EulaPolicyContent = () => {
           not suspended, or to comply, in our sole discretion, with legal
           requirements.
         </p>
-        <h4>2.3 Integrations with Offerings.</h4>
+        <p>
+          <strong>2.3 Integrations with Offerings.</strong>
+        </p>
         <p>
           We may allow you to access certain third party software or offerings
           through your Account via an application programming interface (“API”)
@@ -324,8 +394,8 @@ const EulaPolicyContent = () => {
           appropriate privacy, contractual, and other protections with it as
           well as ensuring that you are complying with any terms you are
           required to agree with the provider of such Integration Offering.
-          Integration Offerings are not “ Offerings” under this Agreement and
-          are not subject to any of the warranties, service commitments or other
+          Integration Offerings are not “Offerings” under this Agreement and are
+          not subject to any of the warranties, service commitments or other
           obligations with respect to Offerings hereunder. The availability of
           any Integration Offering through any of our Offerings does not imply
           our endorsement of or affiliation with the provider of such
@@ -338,29 +408,32 @@ const EulaPolicyContent = () => {
           provide notice of any such disabling whenever reasonably practicable
           under the circumstances). By using or enabling any Integration
           Offering, you are expressly permitting us and our Affiliates to
-          disclose your Profile Information, and, to the extent applicable to
-          your Offering, your Authorized School Personnel Information, Personal
-          Student Information, Parent/Guardian Information, Association
-          Information or other information, including support requests and Log
-          and Cookie Information to the extent necessary to utilize the
-          Integration Offering. YOUR USE OF ANY INTEGRATION OFFERINGS IS AT YOUR
-          OWN RISK AND IS SUBJECT TO ANY ADDITIONAL TERMS, CONDITIONS AND
-          POLICIES APPLICABLE TO SUCH INTEGRATION OFFERINGS (SUCH AS TERMS OF
-          SERVICE OR PRIVACY POLICIES OF THE PROVIDERS OF SUCH INTEGRATION
-          OFFERINGS).
+          disclose your School Profile Information, and, to the extent
+          applicable to your Offering, your Authorized School Personnel
+          Information, Personal Student Information, Parent/Guardian
+          Information, Association Information or other information, including
+          support requests and Log and Cookie Information to the extent
+          necessary to utilize the Integration Offering. YOUR USE OF ANY
+          INTEGRATION OFFERINGS IS AT YOUR OWN RISK AND IS SUBJECT TO ANY
+          ADDITIONAL TERMS, CONDITIONS AND POLICIES APPLICABLE TO SUCH
+          INTEGRATION OFFERINGS (SUCH AS TERMS OF SERVICE OR PRIVACY POLICIES OF
+          THE PROVIDERS OF SUCH INTEGRATION OFFERINGS).
         </p>
 
-        <h3 id="heading3">
-          3. YOUR USE OF OFFERINGS AND YOUR RESPONSIBILITIES
-        </h3>
         <p>
-          <i>
-            i. This Section explains that Liminex licenses our Offerings to you
-            for certain uses. Please use our Offerings responsibly and
-            appropriately.
-          </i>
+          <strong>3. YOUR USE OF OFFERINGS AND YOUR RESPONSIBILITIES</strong>
         </p>
-        <h4>3.1 License Grant to You; Restrictions</h4>
+        <p>
+          i.
+          <em>
+            This Section explains that Liminex licenses our Offerings to you for
+            certain uses. Please use our Offerings responsibly and
+            appropriately.
+          </em>
+        </p>
+        <p>
+          <strong>3.1 License Grant to You; Restrictions</strong>
+        </p>
         <p>
           We hereby grant to you a limited, non-exclusive, non-transferable,
           non-sublicensable, revocable license and right to use the specific
@@ -397,7 +470,9 @@ const EulaPolicyContent = () => {
           reserve all rights not granted in this Agreement. Any unauthorized use
           of an Offering terminates your right to use all Offerings.
         </p>
-        <h4>3.2 School Responsibilities</h4>
+        <p>
+          <strong>3.2 School Responsibilities</strong>
+        </p>
         <p>
           School will (a) be responsible for Authorized Users’ compliance with
           this Agreement (including any applicable Order Form) and the User
@@ -437,7 +512,9 @@ const EulaPolicyContent = () => {
           such death, illness, bodily injury, disability, or other outcome,
           School shall indemnify us in accordance with Section 13, below.
         </p>
-        <h4>3.3 General Acceptable Use Policy</h4>
+        <p>
+          <strong>3.3 General Acceptable Use Policy</strong>
+        </p>
         <p>
           We need your help to ensure that the Offerings are used safely and
           appropriately. You agree, represent and warrant that you and your
@@ -486,19 +563,22 @@ const EulaPolicyContent = () => {
           with this General Acceptable Use Policy.
         </p>
 
-        <h3 id="heading4">
-          4. SPECIAL TERMS FOR FREE, TRIAL AND BETA OFFERINGS
-        </h3>
         <p>
-          <i>
-            i. This Section explains that we may make free, trial, or beta
+          <strong>4. SPECIAL TERMS FOR FREE, TRIAL AND BETA OFFERINGS</strong>
+        </p>
+        <p>
+          i.
+          <em>
+            This Section explains that we may make free, trial, or beta
             offerings available for you to test and provide us with Feedback
             about whether an Offering meets your needs. Because these Offerings
             are different from paid Subscriptions, there are special terms for
             them.
-          </i>
+          </em>
         </p>
-        <h4>4.1 Free or Trial Subscriptions</h4>
+        <p>
+          <strong>4.1 Free or Trial Subscriptions</strong>
+        </p>
         <p>
           If we make an Offering available to you on a free or trial basis, it
           is so you can use the Offering before purchasing a Subscription to
@@ -512,13 +592,15 @@ const EulaPolicyContent = () => {
           suffered by you or any third party in connection with the use or
           inability to use the Offering during the trial period.
         </p>
-        <h4>4.2 Beta Offerings</h4>
+        <p>
+          <strong>4.2 Beta Offerings</strong>
+        </p>
         <p>
           We sometimes make new Offerings or features within existing Offerings
           available on a beta basis (“Beta Offerings”). Beta Offerings are
           generally prerelease or untested products or features. Features or
-          offerings labeled as “alpha”, “beta” or “test” within the interface of
-          an Offering are beta Offerings subject to this Section. Unless
+          offerings labeled as “alpha,” “beta,” or “test” within the interface
+          of an Offering are beta Offerings subject to this Section. Unless
           otherwise agreed in writing by us, any Offering or feature provided as
           a beta Offering shall be subject in all respects to the terms of this
           Agreement, except that to the extent permitted by Applicable Law, we
@@ -536,20 +618,27 @@ const EulaPolicyContent = () => {
           Feedback about the beta Offering, if requested.
         </p>
 
-        <h3 id="heading5">5. TERM, TERMINATION</h3>
         <p>
-          <i>
-            i. This Section explains the duration of this Agreement as well as
-            your and our’ obligations after this Agreement ends.
-          </i>
+          <strong>5. TERM, TERMINATION</strong>
         </p>
-        <h4>5.1 Term</h4>
+        <p>
+          i.
+          <em>
+            This Section explains the duration of this Agreement as well as your
+            and our’ obligations after this Agreement ends.
+          </em>
+        </p>
+        <p>
+          <strong>5.1 Term</strong>
+        </p>
         <p>
           Unless terminated earlier in accordance with the terms of this
           Agreement, the Term commences on the Effective Date and continues
           until all of your Order Forms and Subscription Terms expire.
         </p>
-        <h4>5.2 Termination</h4>
+        <p>
+          <strong>5.2 Termination</strong>
+        </p>
         <p>
           Either party may terminate this Agreement (a) if the other party is in
           material breach of this Agreement and fails to cure such breach within
@@ -563,7 +652,9 @@ const EulaPolicyContent = () => {
           obligated to pay for (and shall be entitled to a refund by us of) the
           Fees allocable to the unused portion of the Subscription Term.
         </p>
-        <h4>5.3 Effect of Termination or Expiration</h4>
+        <p>
+          <strong>5.3 Effect of Termination or Expiration</strong>
+        </p>
         <p>
           Upon termination or expiration of this Agreement, you will have no
           rights to continue use of (or to provide your Authorized Users with
@@ -578,14 +669,19 @@ const EulaPolicyContent = () => {
           set forth therein), 5.2, 5.3, 6, 7, 8, 10, 11, 12, 13, 14, 15, and 16.
         </p>
 
-        <h3 id="heading6">6. INTELLECTUAL PROPERTY</h3>
         <p>
-          <i>
-            i. This Section explains that we ask that you please protect our and
-            others’ intellectual property.
-          </i>
+          <strong>6. INTELLECTUAL PROPERTY</strong>
         </p>
-        <h4>6.1 Ownership</h4>
+        <p>
+          i.
+          <em>
+            This Section explains that we ask that you please protect our and
+            others’ intellectual property.
+          </em>
+        </p>
+        <p>
+          <strong>6.1 Ownership</strong>
+        </p>
         <p>
           We or our Affiliates (or their licensors) own all right, title and
           interest in and to the Offerings (including, but not limited to, all
@@ -604,7 +700,9 @@ const EulaPolicyContent = () => {
           property of the third party provider, and you should consult with
           their trademark guidelines before using any of their marks.
         </p>
-        <h4>6.2 Feedback</h4>
+        <p>
+          <strong>6.2 Feedback</strong>
+        </p>
         <p>
           Any and all of your feedback about us or the Offerings, such as
           suggestions, whether made by you or any of your Authorized Users, for
@@ -612,7 +710,9 @@ const EulaPolicyContent = () => {
           Offerings (“Feedback”) will be our property and you hereby assign any
           rights in such Feedback to us, without payment to you.
         </p>
-        <h4>6.3 Protection of Our Rights</h4>
+        <p>
+          <strong>6.3 Protection of Our Rights</strong>
+        </p>
         <p>
           You agree to protect our intellectual property and proprietary rights
           and any provider of an Integration Offering you access in connection
@@ -620,34 +720,37 @@ const EulaPolicyContent = () => {
           the Offerings or Integration Offerings of which you become aware.
         </p>
 
-        <h3 id="heading7">7. CONFIDENTIALITY</h3>
         <p>
-          <i>
-            i. This Section explains that each party must respect each other’s
-            Confidential Information.
-          </i>
+          <strong>7. CONFIDENTIALITY</strong>
         </p>
         <p>
-          As a reminder, our{' '}
+          i.
+          <em>
+            This Section explains that each party must respect each other’s
+            Confidential Information.
+          </em>
+        </p>
+        <p>
+          As a reminder, our
           <a
-            href="https://edulastic.com/privacy-policy/"
+            href="https://www.goguardian.com/productPrivacy.html"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
-          </a>{' '}
+            <strong>Product Privacy Policy</strong>
+          </a>
           explains our commitment to protecting School Account Information,
           Personal Student Information, Parent/Guardian Information, Activity
           Information and/or Log and Cookie Information, and nothing in this
           Section 7 limits the parties’ respective rights or obligations under
-          the{' '}
+          the
           <a
-            href="https://edulastic.com/privacy-policy/"
+            href="https://www.goguardian.com/productPrivacy.html"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
-          </a>{' '}
+            <strong>Product Privacy Policy</strong>
+          </a>
           or Section 8, below. A party will not disclose or use any Confidential
           Information of the other party except: (a) as reasonably necessary to
           perform its obligations or exercise any rights granted pursuant to
@@ -663,31 +766,38 @@ const EulaPolicyContent = () => {
           is allowed only to the extent permitted under FERPA.
         </p>
 
-        <h3 id="heading8">8. PRIVACY AND DATA</h3>
         <p>
-          <i>
-            i. This Section explains that the parties each have responsibilities
-            to help protect the privacy of data ingested or maintained in the
-            Offerings. The{' '}
-            <a
-              href="https://edulastic.com/privacy-policy/"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Product Privacy Policy
-            </a>{' '}
-            explains, in more detail, how we protect information.
-          </i>
+          <strong>8. PRIVACY AND DATA</strong>
         </p>
-        <h4>8.1 Our Privacy Responsibilities</h4>
         <p>
-          Our{' '}
+          i.
+          <em>
+            This Section explains that the parties each have responsibilities to
+            help protect the privacy of data ingested or maintained in the
+            Offerings. The
+          </em>
           <a
-            href="https://edulastic.com/privacy-policy/"
+            href="https://www.goguardian.com/productPrivacy.html"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
+            <strong>
+              <em>Product Privacy Policy</em>
+            </strong>
+          </a>
+          <em>explains, in more detail, how we protect information.</em>
+        </p>
+        <p>
+          <strong>8.1 Our Privacy Responsibilities</strong>
+        </p>
+        <p>
+          Our
+          <a
+            href="https://edulastic.com/privacy-policy/html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Product Privacy Policy</strong>
           </a>
           , incorporated herein by reference, explains how we collect, use,
           share, and safeguard School Account Information, Personal Student
@@ -704,19 +814,37 @@ const EulaPolicyContent = () => {
           Schools with children of all ages, including ones who do not have
           students under thirteen (13) years of age. To the extent School is
           located in the European Union (“EU”), European Economic Area (“EEA”),
-          or Switzerland, our Data Processing Addendum&nbsp; also applies to
-          your use of the Offerings. School hereby authorizes us to use School
-          Account Information in accordance with this Agreement, the{' '}
+          or Switzerland, our
+          <a
+            href="https://edulastic.com/data-processing-addendum/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Data Processing Addendum</strong>
+          </a>
+          also applies to your use of the Offerings. School hereby authorizes us
+          to use School Account Information in accordance with this Agreement,
+          the
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
-          </a>{' '}
-          and, to the extent applicable, the Data Processing Addendum.
+            <strong>Product Privacy Policy</strong>
+          </a>
+          and, to the extent applicable, the
+          <a
+            href="https://edulastic.com/data-processing-addendum/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <strong>Data Processing Addendum</strong>
+          </a>
+          .
         </p>
-        <h4>8.2 School Privacy Responsibilities</h4>
+        <p>
+          <strong>8.2 School Privacy Responsibilities</strong>
+        </p>
         <p>
           You represent and warrant that your collection, provision and use of
           School Account Information, Personal Student Information,
@@ -735,19 +863,21 @@ const EulaPolicyContent = () => {
           users of Managed Devices or Accounts and their respective
           parents/guardians, teachers, and other appropriate staff about your
           use of Offerings. More specifically, we recommend that you provide
-          such persons with a copy of our{' '}
+          such persons with a copy of our
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
+            <strong>Product Privacy Policy</strong>
           </a>
           , our COPPA Notice and Disclosure Form, and with respect to GoGuardian
           Offerings, GoGuardian’s form Parental Letter, and any other parental
           information made available by us.
         </p>
-        <h4>8.3 Educational Records; FERPA</h4>
+        <p>
+          <strong>8.3 Educational Records; FERPA</strong>
+        </p>
         <p>
           Where School is located in the United States and to the extent we
           collect, through the provision or maintenance of any Offerings, any
@@ -760,30 +890,32 @@ const EulaPolicyContent = () => {
           we may process School Account Information, Personal Student
           Information, Parent/Guardian Information, Activity Information and/or
           School Log and Cookie Information for the purpose of providing the
-          Offerings and related functions. Our{' '}
+          Offerings and related functions. Our
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
-          </a>{' '}
+            <strong>Product Privacy Policy</strong>
+          </a>
           explains how we cooperate with School under FERPA to fulfill Education
           Records requests directed from School (or through School from
           parents/guardians or eligible students). School represents and
           warrants that it is authorized to process such information, including
           any Education Records contained therein, and make such information
-          available to us as set out in this Agreement and the{' '}
+          available to us as set out in this Agreement and the
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
+            <strong>Product Privacy Policy</strong>
           </a>
           .
         </p>
-        <h4>8.4 Data-Related Disputes</h4>
+        <p>
+          <strong>8.4 Data-Related Disputes</strong>
+        </p>
         <p>
           School is solely responsible for resolving disputes between it and
           third parties regarding ownership or access to any School Account
@@ -794,7 +926,9 @@ const EulaPolicyContent = () => {
           agrees that we have no obligation to resolve or intervene in such
           disputes.
         </p>
-        <h4>8.5 Disclosure of School Information</h4>
+        <p>
+          <strong>8.5 Disclosure of School Information</strong>
+        </p>
         <p>
           You acknowledge, consent, and agree that we may access, preserve, and
           disclose your School Account Information, Personal Student Information
@@ -802,13 +936,13 @@ const EulaPolicyContent = () => {
           Log and Cookie Information if required to do so by law or in a good
           faith belief that such access, preservation, or disclosure is
           reasonably necessary to: (a) comply with legal process; (b) to enforce
-          this Agreement or the{' '}
+          this Agreement or the
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
+            <strong>Product Privacy Policy</strong>
           </a>
           ; (c) respond to claims that any content violates the rights of third
           parties; (d) respond to your requests for customer service; or (e)
@@ -816,18 +950,25 @@ const EulaPolicyContent = () => {
           and/or the public.
         </p>
 
-        <h3 id="heading9">9. ALERTS AND NOTIFICATIONS</h3>
-        <h4>This section applies to the GoGuardian Offerings only.</h4>
         <p>
-          <i>
-            i. This Section explains that some GoGuardian Offerings are designed
-            to generate alerts and/or have other notification features, and
-            that, through your settings, you have some ability to control
-            whether to receive certain alerts and/or notifications . It is
-            important for you to understand these features and settings, and to
-            review alerts and notifications carefully and promptly so that you
-            can properly intervene to help students stay safe.
-          </i>
+          <strong>9. ALERTS AND NOTIFICATIONS</strong>
+        </p>
+        <p>
+          <strong>
+            This section applies to the GoGuardian Offerings only.
+          </strong>
+        </p>
+        <p>
+          i.
+          <em>
+            This Section explains that some GoGuardian Offerings are designed to
+            generate alerts and/or have other notification features, and that,
+            through your settings, you have some ability to control whether to
+            receive certain alerts and/or notifications . It is important for
+            you to understand these features and settings, and to review alerts
+            and notifications carefully and promptly so that you can properly
+            intervene to help students stay safe.
+          </em>
         </p>
         <p>
           Some GoGuardian Offerings contain features that generate alerts and/or
@@ -852,15 +993,15 @@ const EulaPolicyContent = () => {
           Your escalation and notification list for such alert and/or
           notification feature in your account for a particular GoGuardian
           Offering may change from time to time, including because contact
-          information changes (e.g., changes in School’s Profile Information,
-          its Authorized School Personnel Information, Personal Student
-          Information and Parent/Guardian Information (e.g., contact
-          information, including an Authorized User’s email address, or changes
-          in Parent/Guardian Information ), and Association Information,
-          including, for example, the relationship of an Authorized School
-          Personnel or a guardian/parent to a child/student changes (e.g.,
-          change in guardianship or educational rights holder). Without limiting
-          the generality of Section 1.2.1, it is important that you maintain
+          information changes (e.g., changes in School Profile Information, its
+          Authorized School Personnel Information, Personal Student Information
+          and Parent/Guardian Information (e.g., contact information, including
+          an Authorized User’s email address, or changes in Parent/Guardian
+          Information ), and Association Information, including, for example,
+          the relationship of an Authorized School Personnel or a
+          guardian/parent to a child/student changes (e.g., change in
+          guardianship or educational rights holder). Without limiting the
+          generality of Section 1.2.1, it is important that you maintain
           accurate and up-to-date Authorized School Personnel Information,
           Personal Student Information, Parent/Guardian Information, and
           Association Information to ensure the appropriateness and timeliness
@@ -886,16 +1027,20 @@ const EulaPolicyContent = () => {
           function).
         </p>
 
-        <h3 id="heading10">
-          10. CONTENT, COPYRIGHT POLICIES, AND COMMUNITY GALLERIES
-        </h3>
         <p>
-          <i>
-            i. This Section explains how content is used in certain Offerings
-            and the rights to such content.{' '}
-          </i>
+          <strong>
+            10. CONTENT, COPYRIGHT POLICIES, AND COMMUNITY GALLERIES
+          </strong>
         </p>
-        <h4>10.1 Content in the Services Generally. </h4>
+        <p>
+          <em>
+            i. This Section explains how content is used in certain Offerings
+            and the rights to such content.
+          </em>
+        </p>
+        <p>
+          <strong>10.1 Content in the Services Generally.</strong>
+        </p>
         <p>
           10.1.1 You understand that all information (such as data files, fonts,
           written text, computer software, music, audio files, image files or
@@ -935,23 +1080,26 @@ const EulaPolicyContent = () => {
           the consequences of your actions (including any loss or damage which
           any Liminex Party may suffer) by doing so.
         </p>
-        <h4>10.2 License to Your Content </h4>
+        <p>
+          <strong>10.2 License to Your Content</strong>
+        </p>
         <p>
           10.2.1 You retain copyright and any other rights you already hold in
           Your Content that you submit, share, upload, post or display on or
-          through, any Offering. By submitting, sharing, uploading, posting, or
-          displaying Your Content you hereby grant to Liminex and our Affiliates
-          a worldwide, royalty-free, and non-exclusive license to reproduce,
-          adapt, modify, translate, publish, publicly perform, publicly display,
-          and distribute Your Content, solely for the purpose of enabling
-          Liminex and our Affiliates to provide you with any Offering in
-          accordance with the terms of this Agreement and the{' '}
+          through, any Offering. Unless otherwise stated in a separate written
+          agreement between Liminex and You, by submitting, sharing, uploading,
+          posting, or displaying Your Content you hereby grant to Liminex and
+          our Affiliates a worldwide, royalty-free, and non-exclusive license to
+          reproduce, adapt, modify, translate, publish, publicly perform,
+          publicly display, and distribute Your Content, solely for the purpose
+          of enabling Liminex and our Affiliates to provide you with any
+          Offering in accordance with the terms of this Agreement and the
           <a
             href="https://edulastic.com/privacy-policy/"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Product Privacy Policy
+            <strong>Product Privacy Policy</strong>
           </a>
           .
         </p>
@@ -975,7 +1123,9 @@ const EulaPolicyContent = () => {
           post or display such Content and to grant Liminex all of the license
           rights granted in this Section.
         </p>
-        <h4>10.3 Copyright Policies</h4>
+        <p>
+          <strong>10.3 Copyright Policies</strong>
+        </p>
         <p>
           10.3.1 It is our policy to terminate access privileges of any users
           who repeatedly infringe copyright(s) embedded or used in connection
@@ -997,15 +1147,11 @@ const EulaPolicyContent = () => {
           owner or authorized to act on the copyright owner’s behalf. Contact
           information for Liminex’s Copyright Agent for notice of claims of
           copyright infringement is as follows:
-          <br />
-          Copyright Agent
-          <br />
-          Liminex, Inc.
-          <br />
-          2030 E Maple Ave, Suite 100
-          <br />
-          El Segundo, CA 90245
         </p>
+        <p>Copyright Agent</p>
+        <p>Liminex, Inc.</p>
+        <p>2030 E Maple Ave, Suite 100</p>
+        <p>El Segundo, CA 90245</p>
         <p>
           We may remove any Content from the Offering if we believe or have
           reason to believe such Content infringes the intellectual property
@@ -1027,7 +1173,9 @@ const EulaPolicyContent = () => {
           objectionable Content, without prior notice and at its sole
           discretion.
         </p>
-        <h4>10.4 Third Party Websites and Resources</h4>
+        <p>
+          <strong>10.4 Third Party Websites and Resources</strong>
+        </p>
         <p>
           10.4.1 The Offerings may include hyperlinks to other websites or
           resources that are controlled, owned or operated by third parties.You
@@ -1051,7 +1199,9 @@ const EulaPolicyContent = () => {
           advertising, products or other materials on, or available from, such
           websites or resources.
         </p>
-        <h4>10.5 Community Galleries and Gallery Content</h4>
+        <p>
+          <strong>10.5 Community Galleries and Gallery Content</strong>
+        </p>
         <p>
           10.5.1 Certain Offerings may contain galleries (“Community
           Galleries”), which may include Content, including templates or
@@ -1079,7 +1229,7 @@ const EulaPolicyContent = () => {
         </p>
         <p>
           10.5.3 If you choose to submit Your Content to become part of the
-          Community Galleries (“Your Gallery Submission), you direct and
+          Community Galleries (“Your Gallery Submission”), you direct and
           authorize Liminex and its affiliates to host, link to, and otherwise
           incorporate Your Gallery Submission into anyOffering, and you hereby
           grant to Liminex and its Affiliates, and the Other Content Users an
@@ -1089,7 +1239,7 @@ const EulaPolicyContent = () => {
         <p>(A) reproduce Your Gallery Submission or any component thereof;</p>
         <p>
           (B) create and reproduce derivative works of Your Gallery Submission
-          [or any component thereof; or{' '}
+          [or any component thereof; or
         </p>
         <p>
           (C) publicly display and distribute copies of Your Gallery Submission
@@ -1108,8 +1258,8 @@ const EulaPolicyContent = () => {
           Galleries, (1) for Pear Deck Offerings, you must send an email to
           support@peardeck.com, in which case Your Gallery Submission will be
           removed in accordance with our standard procedures; and (2) for
-          Edulastic Offerings, you must delete Your Content or change Your
-          sharing level permissions.
+          Edulastic Offerings and Giant Steps Offerings, you must delete Your
+          Content or change Your sharing level permissions.
         </p>
         <p>
           10.5.5 You represent and warrant that (a) you own or have obtained the
@@ -1133,18 +1283,24 @@ const EulaPolicyContent = () => {
           third party who accesses Your Gallery Submission through any Offering
           or otherwise.
         </p>
+        <p />
 
-        <h3 id="heading11">11. APP STORE SOURCED APPLICATION</h3>
         <p>
-          <i>
-            i. This Section explains terms related to accessing and downloading
-            an App Store Sourced Application.
-          </i>
+          <strong>11. APP STORE SOURCED APPLICATION</strong>
         </p>
-        <h4>
-          11.1 Accessing and Downloading an App Store Sourced Application from
-          an App Store
-        </h4>
+        <p>
+          i.
+          <em>
+            This Section explains terms related to accessing and downloading an
+            App Store Sourced Application.
+          </em>
+        </p>
+        <p>
+          <strong>
+            11.1 Accessing and Downloading an App Store Sourced Application from
+            an App Store
+          </strong>
+        </p>
         <p>
           You acknowledge that the Agreement is between you and Liminex or one
           of its Affiliates, and not with the App Store. We, not the App Store,
@@ -1158,51 +1314,45 @@ const EulaPolicyContent = () => {
           subsidiaries) are third-party beneficiaries of the Agreement and will
           have the right to enforce it.
         </p>
-        <h4>
-          11.2 Accessing and Downloading an App Store Sourced Application from
-          the Apple App Store
-        </h4>
         <p>
-          <strong>11.2.1</strong>
-          <br />
-          You acknowledge and agree that (a) the Agreement is concluded between
-          you and us only, and not Apple, and (b) we, not Apple, are solely
-          responsible for the App Store Sourced Application and content thereof.
-          Your use of the App Store Sourced Application must comply with the
-          Apple App Store Terms of Service. You agree to only use an App Store
-          Sourced Application that is accessed through or downloaded from the
-          Apple App Store (a) on an Apple-branded product that runs the iOS
-          (Apple’s proprietary operating system) and (b) as permitted by the
+          <strong>
+            11.2 Accessing and Downloading an App Store Sourced Application from
+            the Apple App Store
+          </strong>
+        </p>
+        <p>
+          11.2.1 You acknowledge and agree that (a) the Agreement is concluded
+          between you and us only, and not Apple, and (b) we, not Apple, are
+          solely responsible for the App Store Sourced Application and content
+          thereof. Your use of the App Store Sourced Application must comply
+          with the Apple App Store Terms of Service. You agree to only use an
+          App Store Sourced Application that is accessed through or downloaded
+          from the Apple App Store (a) on an Apple-branded product that runs the
+          iOS (Apple’s proprietary operating system) and (b) as permitted by the
           “Usage Rules” set forth in the Apple App Store Terms of Service.
         </p>
         <p>
-          <strong>11.2.2</strong>
-          <br />
-          You acknowledge that Apple has no obligation whatsoever to furnish any
-          maintenance and support services with respect to the App Store Sourced
-          Application.
+          11.2.2 You acknowledge that Apple has no obligation whatsoever to
+          furnish any maintenance and support services with respect to the App
+          Store Sourced Application.
         </p>
         <p>
-          <strong>11.2.3</strong>
-          <br />
-          In the event of any failure of the App Store Sourced Application to
-          conform to any applicable warranty, you may notify Apple, and if
-          applicable, Apple will refund the purchase price for the App Store
-          Sourced Application to you and to the maximum extent permitted by
-          applicable law, Apple will have no other warranty obligation
-          whatsoever with respect to the App Store Sourced Application. As
-          between the Liminex Parties and Apple, any other claims, losses,
-          liabilities, damages, costs or expenses attributable to any failure to
-          conform to any warranty will be the sole responsibility of the Liminex
-          Parties.
+          11.2.3 In the event of any failure of the App Store Sourced
+          Application to conform to any applicable warranty, you may notify
+          Apple, and if applicable, Apple will refund the purchase price for the
+          App Store Sourced Application to you and to the maximum extent
+          permitted by applicable law, Apple will have no other warranty
+          obligation whatsoever with respect to the App Store Sourced
+          Application. As between the Liminex Parties and Apple, any other
+          claims, losses, liabilities, damages, costs or expenses attributable
+          to any failure to conform to any warranty will be the sole
+          responsibility of the Liminex Parties.
         </p>
         <p>
-          <strong>11.2.4</strong>
-          <br />
-          You and the Liminex Parties acknowledge that, as between the Liminex
-          Parties and Apple, Apple is not responsible for addressing any claims
-          you have or any claims of any third party relating to the App Store
-          Sourced Application or your possession and use of the App Store
+          11.2.4 You and the Liminex Parties acknowledge that, as between the
+          Liminex Parties and Apple, Apple is not responsible for addressing any
+          claims you have or any claims of any third party relating to the App
+          Store Sourced Application or your possession and use of the App Store
           Sourced Application, including, but not limited to: (a) product
           liability claims; (b) any claim that the App Store Sourced Application
           fails to conform to any applicable legal or regulatory requirement;
@@ -1210,10 +1360,8 @@ const EulaPolicyContent = () => {
           legislation.
         </p>
         <p>
-          <strong>11.2.5</strong>
-          <br />
-          You and the Liminex Parties acknowledge that, in the event of any
-          third-party claim that the App Store Sourced Application or your
+          11.2.5 You and the Liminex Parties acknowledge that, in the event of
+          any third-party claim that the App Store Sourced Application or your
           possession and use of that App Store Sourced Application infringes
           that third party’s intellectual property rights, as between the
           Liminex Parties and Apple, the Liminex Parties, not Apple, will be
@@ -1221,9 +1369,7 @@ const EulaPolicyContent = () => {
           discharge of any such intellectual property infringement claim.
         </p>
         <p>
-          <strong>11.2.6</strong>
-          <br />
-          The parties acknowledge and agree that Apple, and Apple’s
+          11.2.6 The parties acknowledge and agree that Apple, and Apple’s
           subsidiaries, are third-party beneficiaries of the Agreement as
           related to your license of the App Store Sourced Application, and
           that, upon your acceptance of the terms and conditions of the
@@ -1233,20 +1379,22 @@ const EulaPolicyContent = () => {
           third-party beneficiary thereof.
         </p>
         <p>
-          <strong>11.2.7</strong>
-          <br />
-          Without limiting any other terms of the Agreement, you must comply
-          with all applicable third-party terms of agreement when using the App
-          Store Sourced Application.
+          11.2.7 Without limiting any other terms of the Agreement, you must
+          comply with all applicable third-party terms of agreement when using
+          the App Store Sourced Application.
         </p>
+        <p />
 
-        <h3 id="heading12">12. WARRANTIES, DISCLAIMER, AND RELEASE</h3>
         <p>
-          <i>
-            i. This Section explains that we strive to provide you with our
+          <strong>12. WARRANTIES, DISCLAIMER, AND RELEASE</strong>
+        </p>
+        <p>
+          i.
+          <em>
+            This Section explains that we strive to provide you with our
             Offerings with a certain level of skill and care, but we cannot
             promise that our Offerings are perfect.
-          </i>
+          </em>
         </p>
         <p>
           We provide the Offerings using a commercially reasonable level of
@@ -1292,7 +1440,9 @@ const EulaPolicyContent = () => {
           WHICH CANNOT LAWFULLY BE EXCLUDED, RESTRICTED OR MODIFIED.
         </p>
 
-        <h3 id="heading13">13. INDEMNIFICATION</h3>
+        <p>
+          <strong>13. INDEMNIFICATION</strong>
+        </p>
         <p>
           School agrees, to the extent permitted by Applicable Law (and in the
           United States, the School’s state laws), to indemnify, defend and hold
@@ -1322,8 +1472,12 @@ const EulaPolicyContent = () => {
           available defenses.
         </p>
 
-        <h3 id="heading14">14. LIMITATIONS AND EXCLUSIONS OF LIABILITY</h3>
-        <h4>14.1 Disclaimer of Certain Damages</h4>
+        <p>
+          <strong>14. LIMITATIONS AND EXCLUSIONS OF LIABILITY</strong>
+        </p>
+        <p>
+          <strong>14.1 Disclaimer of Certain Damages</strong>
+        </p>
         <p>
           TO THE MAXIMUM EXTENT PERMITTED BY LAW, IN NO EVENT SHALL LIMINEX OR
           ANY OTHER LIMINEX PARTY BE LIABLE TO SCHOOL OR ANY THIRD PARTY FOR
@@ -1339,7 +1493,9 @@ const EulaPolicyContent = () => {
           DAMAGE TO ANY DEVICES OR COMPUTER SYSTEMS USED TO ACCESS OR USE ANY
           OFFERING, OR LOSS OF DATA OR INFORMATION RESULTING THEREFROM.
         </p>
-        <h4>14.2 Cap on Liability</h4>
+        <p>
+          <strong>14.2 Cap on Liability</strong>
+        </p>
         <p>
           TO THE MAXIMUM EXTENT PERMITTED BY LAW, NOTWITHSTANDING ANYTHING TO
           THE CONTRARY CONTAINED HEREIN, THE AGGREGATE LIABILITY OF LIMINEX AND
@@ -1359,14 +1515,20 @@ const EulaPolicyContent = () => {
           DEATH OR PERSONAL INJURY, SO THE ABOVE LIMITATIONS OR EXCLUSIONS MAY
           NOT APPLY TO SCHOOL.
         </p>
-        <h4>14.3 Basis of the Bargain</h4>
+        <p>
+          <strong>14.3 Basis of the Bargain</strong>
+        </p>
         <p>
           THE LIMITATIONS OF DAMAGES SET FORTH ABOVE ARE FUNDAMENTAL ELEMENTS OF
           THE BASIS OF THE BARGAIN BETWEEN US AND YOU.
         </p>
 
-        <h3 id="heading15">15. GOVERNING LAW AND DISPUTE RESOLUTION</h3>
-        <h4>15.1 Governing Law and Venue</h4>
+        <p>
+          <strong>15. GOVERNING LAW AND DISPUTE RESOLUTION</strong>
+        </p>
+        <p>
+          <strong>15.1 Governing Law and Venue</strong>
+        </p>
         <p>
           This Agreement and any dispute arising from or relating to this
           Agreement are governed by the laws of the state of California, United
@@ -1384,10 +1546,12 @@ const EulaPolicyContent = () => {
           different state, then School’s state’s required venue and jurisdiction
           will apply.
         </p>
-        <h4>
-          15.2 Dispute Resolution; Binding Arbitration; Class Action Waiver
-          (“Arbitration Agreement”)
-        </h4>
+        <p>
+          <strong>
+            15.2 Dispute Resolution; Binding Arbitration; Class Action Waiver
+            (“Arbitration Agreement”)
+          </strong>
+        </p>
         <p>
           In the event of a dispute, claim, or controversy arising out of or
           relating to this Agreement, any Offering, any person’s access to
@@ -1413,51 +1577,57 @@ const EulaPolicyContent = () => {
           trademarks, trade secrets or piracy or unauthorized use of an
           Offering.
         </p>
-        <h4>15.2.1 Binding Arbitration</h4>
         <p>
-          Arbitration Rules and Forum Except as otherwise specifically set forth
-          below, any Claims between you and us, if unresolved through informal
-          consultation and negotiation pursuant to the preceding paragraph,
-          shall be resolved by binding arbitration to be held in Los Angeles,
-          California. Notwithstanding the foregoing, if School is a United
-          States public and accredited educational institution domiciled in a
-          state within the United States that expressly requires a different
-          location for arbitration other than Los Angeles, California, then
-          School’s state’s required location for binding arbitration will apply.
-          If School that is a United States public and accredited educational
-          institution and your consent to binding arbitration is expressly
-          prohibited by the laws of the state within the United States in which
-          School’s educational institution is domiciled, then this Section is
-          hereby waived. The Federal Arbitration Act governs the interpretation
-          and enforcement of this Arbitration Agreement. The arbitration shall
-          be conducted by a single arbitrator, governed by JAMS pursuant to its
-          Comprehensive Arbitration Rules &amp; Procedures (collectively, “JAMS
-          Rules”), as modified by this Agreement, and administered by JAMS. The
-          JAMS Rules and fee information are available at www.jamsadr.org or by
-          calling JAMS at 1-800-352-5267. The arbitrator shall have exclusive
-          authority to (a) determine the scope and enforceability of this
-          Arbitration Agreement, and (b) resolve any dispute related to the
-          interpretation, applicability, enforceability or formation of this
-          Arbitration Agreement including, but not limited to, any claim that
-          all or any part of this Arbitration Agreement is void or voidable. The
-          arbitrator will decide the rights and liabilities, if any, of each
-          party. The arbitration proceeding will not be consolidated with any
-          other matters or joined with any other cases or parties.
+          <strong>15.2.1 Binding Arbitration</strong>
         </p>
         <p>
-          Exceptions: Litigation of Intellectual Property and Small Claims Court
-          Claims Claims concerning patents, copyrights, moral rights,
-          trademarks, and trade secrets, and Claims of piracy or unauthorized
-          use of any Offering shall not be subject to arbitration under this
-          Section 15.2.1. In addition, the parties may choose to pursue a Claim
-          in small claims court where jurisdiction and venue over the parties
-          otherwise qualify for such small claims court and where the Claim does
-          not include a request for any type of equitable relief.
+          <em>Arbitration Rules and Forum</em>Except as otherwise specifically
+          set forth below, any Claims between you and us, if unresolved through
+          informal consultation and negotiation pursuant to the preceding
+          paragraph, shall be resolved by binding arbitration to be held in Los
+          Angeles, California. Notwithstanding the foregoing, if School is a
+          United States public and accredited educational institution domiciled
+          in a state within the United States that expressly requires a
+          different location for arbitration other than Los Angeles, California,
+          then School’s state’s required location for binding arbitration will
+          apply. If School that is a United States public and accredited
+          educational institution and your consent to binding arbitration is
+          expressly prohibited by the laws of the state within the United States
+          in which School’s educational institution is domiciled, then this
+          Section is hereby waived. The Federal Arbitration Act governs the
+          interpretation and enforcement of this Arbitration Agreement. The
+          arbitration shall be conducted by a single arbitrator, governed by
+          JAMS pursuant to its Comprehensive Arbitration Rules &amp; Procedures
+          (collectively, “JAMS Rules”), as modified by this Agreement, and
+          administered by JAMS. The JAMS Rules and fee information are available
+          at www.jamsadr.org or by calling JAMS at 1-800-352-5267. The
+          arbitrator shall have exclusive authority to (a) determine the scope
+          and enforceability of this Arbitration Agreement, and (b) resolve any
+          dispute related to the interpretation, applicability, enforceability
+          or formation of this Arbitration Agreement including, but not limited
+          to, any claim that all or any part of this Arbitration Agreement is
+          void or voidable. The arbitrator will decide the rights and
+          liabilities, if any, of each party. The arbitration proceeding will
+          not be consolidated with any other matters or joined with any other
+          cases or parties.
         </p>
         <p>
-          Authority of Arbitrator In binding arbitration, the arbitrator shall
-          have the authority (a) to grant motions dispositive of all or part of
-          any Claim; (b) to award monetary damages; and (c) to grant any
+          <em>
+            Exceptions: Litigation of Intellectual Property and Small Claims
+            Court Claims
+          </em>
+          Claims concerning patents, copyrights, moral rights, trademarks, and
+          trade secrets, and Claims of piracy or unauthorized use of any
+          Offering shall not be subject to arbitration under this Section
+          15.2.1. In addition, the parties may choose to pursue a Claim in small
+          claims court where jurisdiction and venue over the parties otherwise
+          qualify for such small claims court and where the Claim does not
+          include a request for any type of equitable relief.
+        </p>
+        <p>
+          <em>Authority of Arbitrator</em>In binding arbitration, the arbitrator
+          shall have the authority (a) to grant motions dispositive of all or
+          part of any Claim; (b) to award monetary damages; and (c) to grant any
           non-monetary remedy or relief available to an individual under
           Applicable Law, the arbitral forum’s rules, and this Agreement
           (including the Arbitration Agreement). The arbitrator shall issue a
@@ -1469,29 +1639,38 @@ const EulaPolicyContent = () => {
           binding upon you and us.
         </p>
         <p>
-          Confidentiality All aspects of the arbitration proceeding, including
-          but not limited to the award of the arbitrator and compliance
-          therewith, shall be strictly confidential. Both parties agree to
-          maintain confidentiality unless otherwise required by law. This
-          paragraph shall not prevent either party from submitting to a court of
-          law any information necessary to enforce this Agreement, to enforce an
-          arbitration award, or to seek injunctive or equitable relief.
+          <em>Confidentiality</em>All aspects of the arbitration proceeding,
+          including but not limited to the award of the arbitrator and
+          compliance therewith, shall be strictly confidential. Both parties
+          agree to maintain confidentiality unless otherwise required by law.
+          This paragraph shall not prevent either party from submitting to a
+          court of law any information necessary to enforce this Agreement, to
+          enforce an arbitration award, or to seek injunctive or equitable
+          relief.
         </p>
-        <h4>15.2.2 Class Action Waiver</h4>
         <p>
-          THE PARTIES HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO
-          SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. The
-          parties are instead electing that all Claims not otherwise resolved
-          informally as permitted above shall be resolved by arbitration under
-          this Arbitration Agreement. An arbitrator can award on an individual
-          basis the same damages and relief as a court and must follow this
-          Agreement as a court would. However, there is no judge or jury in
-          arbitration, and court review of an arbitration award is subject to
-          very limited review.
+          <strong>15.2.2 Class Action Waiver</strong>
+        </p>
+        <p>
+          THE PARTIES
+          <strong />
+          HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT
+          AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. The parties are
+          instead electing that all Claims not otherwise resolved informally as
+          permitted above shall be resolved by arbitration under this
+          Arbitration Agreement. An arbitrator can award on an individual basis
+          the same damages and relief as a court and must follow this Agreement
+          as a court would. However, there is no judge or jury in arbitration,
+          and court review of an arbitration award is subject to very limited
+          review.
         </p>
 
-        <h3 id="heading16">16. MISCELLANEOUS</h3>
-        <h4>16.1 Changes to this Agreement</h4>
+        <p>
+          <strong>16. MISCELLANEOUS</strong>
+        </p>
+        <p>
+          <strong>16.1 Changes to this Agreement</strong>
+        </p>
         <p>
           Before we make a material change to this Agreement, we will notify you
           as described in this Section. We may make immaterial changes (e.g.,
@@ -1511,7 +1690,9 @@ const EulaPolicyContent = () => {
           your continued use of the Offerings after a change made in accordance
           with this provision constitutes your acceptance of such change(s).
         </p>
-        <h4>16.2 Entire Agreement</h4>
+        <p>
+          <strong>16.2 Entire Agreement</strong>
+        </p>
         <p>
           This Agreement, including any applicable Order Forms and any terms and
           policies that are incorporated into this Agreement by reference
@@ -1526,34 +1707,45 @@ const EulaPolicyContent = () => {
           procurement of access to any Offering. The headings of this Agreement
           are for readability only and do not constitute terms.
         </p>
-        <h4>16.3 Language</h4>
+        <p>
+          <strong>16.3 Language</strong>
+        </p>
         <p>
           You agree that this Agreement and all related documents shall be drawn
           up in the English language.
         </p>
-        <h4>16.4 Severability</h4>
+        <p>
+          <strong>16.4 Severability</strong>
+        </p>
         <p>
           If any provision of this Agreement is invalid or unenforceable, such
           provision will be changed and interpreted to accomplish the objectives
           of such provision to the greatest extent possible under Applicable Law
           and the remaining provisions will continue in full force and effect.
         </p>
-        <h4>16.5 Force Majeure</h4>
         <p>
-          Our failure to comply with any provision of this Agreement due to an
-          act of God, hurricane, war, fire, riot, earthquake, terrorism, act of
-          public enemy, actions of governmental authorities outside of our
-          control (excepting compliance with applicable codes and regulations),
-          or other force majeure event will not be considered a breach of this
-          Agreement.
+          <strong>16.5 Force Majeure</strong>
         </p>
-        <h4>16.6 No Third Party Beneficiaries</h4>
+        <p>
+          Our failure
+          <strong />
+          to comply with any provision of this Agreement due to an act of God,
+          hurricane, war, fire, riot, earthquake, terrorism, act of public
+          enemy, actions of governmental authorities outside of our control
+          (excepting compliance with applicable codes and regulations), or other
+          force majeure event will not be considered a breach of this Agreement.
+        </p>
+        <p>
+          <strong>16.6 No Third Party Beneficiaries</strong>
+        </p>
         <p>
           You agree that, except as otherwise expressly provided in this
           Agreement, there shall be no third party beneficiaries to this
           Agreement.
         </p>
-        <h4>16.7 Electronic Communications</h4>
+        <p>
+          <strong>16.7 Electronic Communications</strong>
+        </p>
         <p>
           The communications between you and Liminex or its Affiliates may take
           place via electronic means, whether you use an Offering or send us
@@ -1566,7 +1758,9 @@ const EulaPolicyContent = () => {
           would satisfy if it were to be in writing. The foregoing does not
           affect your statutory rights.
         </p>
-        <h4>16.8 Assignment</h4>
+        <p>
+          <strong>16.8 Assignment</strong>
+        </p>
         <p>
           This Agreement, and your rights and obligations hereunder, may not be
           assigned, subcontracted, delegated or otherwise transferred by you
@@ -1576,7 +1770,9 @@ const EulaPolicyContent = () => {
           bind and inure to the benefit of the parties, their respective
           successors and permitted assigns.
         </p>
-        <h4>16.9 Notice</h4>
+        <p>
+          <strong>16.9 Notice</strong>
+        </p>
         <p>
           Where we require that you or any Authorized Users provide an e-mail
           address, you are responsible for ensuring that we are provided with
@@ -1591,13 +1787,17 @@ const EulaPolicyContent = () => {
           recognized overnight delivery service or first class postage prepaid
           mail at the above address.
         </p>
-        <h4>16.10 Waiver</h4>
+        <p>
+          <strong>16.10 Waiver</strong>
+        </p>
         <p>
           Any waiver or failure to enforce any provision of this Agreement on
           one occasion will not be deemed a waiver of any other provision or of
           such provision on any other occasion.
         </p>
-        <h4>16.11 Export Control</h4>
+        <p>
+          <strong>16.11 Export Control</strong>
+        </p>
         <p>
           You may not use, export, import, or transfer any Offering except as
           authorized by U.S. law, the laws of the jurisdiction in which you
@@ -1611,19 +1811,22 @@ const EulaPolicyContent = () => {
           account, in a U.S.-embargoed country or region or in violation of any
           U.S. export law or regulation.
         </p>
+        <p />
 
-        <h3 id="heading17">17. DEFINITIONS</h3>
+        <p>
+          <strong>17. DEFINITIONS</strong>
+        </p>
         <p>
           For the purposes of this Agreement, the following capitalized terms
           will have the meanings set forth for each of them below:
         </p>
         <p>
-          17.1 <strong>Add-on</strong> means any additional license to an
+          17.1<strong>Add-on</strong>means any additional license to an
           Offering, beyond the original Licensed Capacity purchased, the parties
           agree to add to School’s Subscription during a Subscription Term.
         </p>
         <p>
-          17.2 <strong>Activity Information</strong> means information about
+          17.2<strong>Activity Information</strong>means information about
           online account and activity collected at the Account level, in
           connection with Managed Devices or Accounts, including, for GoGuardian
           Offerings, chats (within GoGuardian Teacher), a student’s browsing
@@ -1637,7 +1840,7 @@ const EulaPolicyContent = () => {
           choice answers, drawings, or URLs.
         </p>
         <p>
-          17.3 <strong>Affiliate</strong> means any entity that directly or
+          17.3<strong>Affiliate</strong>means any entity that directly or
           indirectly controls, is controlled by, or is under common control with
           a party. “Control” for purposes of this definition means the power to
           direct or cause the direction of the management and policies of the
@@ -1645,23 +1848,23 @@ const EulaPolicyContent = () => {
           arrangement, franchise agreement or other contractual arrangement.
         </p>
         <p>
-          17.4 <strong>Applicable Law</strong> means any applicable federal and
+          17.4<strong>Applicable Law</strong>means any applicable federal and
           state laws, rules and regulations, applicable to the parties and/or
           the Offerings, including but not limited to the Family Educational
           Rights and Privacy Act (“FERPA”), and the Applicable Mental Health
           Laws.
         </p>
         <p>
-          17.5 <strong>Applicable Mental Health Law</strong> means any federal
-          and state laws, rules and regulations applicable to School’s suicide
-          and self-harm program and use of GoGuardian Beacon or GoGuardian Admin
+          17.5<strong>Applicable Mental Health Law</strong>means any federal and
+          state laws, rules and regulations applicable to School’s suicide and
+          self-harm program and use of GoGuardian Beacon or GoGuardian Admin
           (self-harm smart alerts and/or Beacon Starter), including applicable
           law mandating staff training, certain suicide staff roles such as
           suicide prevention coordinators, and school prevention, intervention,
           and post-intervention policies.
         </p>
         <p>
-          17.6 <strong>Association Information</strong> means information
+          17.6<strong>Association Information</strong>means information
           associating a particular student or other user of a Managed Device or
           Account to a particular Managed Device or Account, as well as
           information about associations between any such user of a Managed
@@ -1671,13 +1874,13 @@ const EulaPolicyContent = () => {
           Association Information does not include Activity Information.
         </p>
         <p>
-          17.7 <strong>Authorized Reseller</strong> means an entity authorized
-          by Liminex or one of its Affiliates to sell Subscriptions to one or
-          more Offerings under the terms of this Agreement and with which School
-          has contracted directly to purchase the Offerings.
+          17.7<strong>Authorized Reseller</strong>means an entity authorized by
+          Liminex or one of its Affiliates to sell Subscriptions to one or more
+          Offerings under the terms of this Agreement and with which School has
+          contracted directly to purchase the Offerings.
         </p>
         <p>
-          17.8 <strong>Authorized User</strong> means an individual who is
+          17.8<strong>Authorized User</strong>means an individual who is
           authorized by School to use an Offering, for whom School has purchased
           or provisioned a Subscription, and to whom School (or, when
           applicable, Liminex or one of its Affiliates, at School’s request) has
@@ -1686,12 +1889,12 @@ const EulaPolicyContent = () => {
           agents and third parties such as students and parents/guardians.
         </p>
         <p>
-          17.9 <strong>Authorized School Personnel</strong> means an Authorized
+          17.9<strong>Authorized School Personnel</strong>means an Authorized
           User who is an employee, teacher, or official of a School or a
           School’s district.
         </p>
         <p>
-          17.10 <strong>Authorized School Personnel Information</strong> means
+          17.10<strong>Authorized School Personnel Information</strong>means
           information about Authorized School Personnel, including permission
           levels associated with the Authorized School Personnel, chat messages
           between students and teachers using an Offering, such as GoGuardian
@@ -1699,7 +1902,7 @@ const EulaPolicyContent = () => {
           relevant unique identifiers.
         </p>
         <p>
-          17.11 <strong>Confidential Information</strong> means (a) any software
+          17.11<strong>Confidential Information</strong>means (a) any software
           utilized by us in the provision of any Offering and its respective
           source code; (b) each party’s business or technical information,
           including but not limited to the User Documentation, information
@@ -1719,7 +1922,7 @@ const EulaPolicyContent = () => {
           without breach of any obligation owed to the other party.
         </p>
         <p>
-          17.12 <strong>Deidentified Information</strong> means aggregated and
+          17.12<strong>Deidentified Information</strong>means aggregated and
           anonymized data which may be derived from School Account Information,
           Personal Student Information, Parent/Guardian Information, School Log
           and Cookie Information, or Activity Information; provided such
@@ -1728,65 +1931,70 @@ const EulaPolicyContent = () => {
           individual.
         </p>
         <p>
-          17.13 <strong>Education Records</strong> means “education records” as
+          17.13<strong>Education Records</strong>means “education records” as
           defined under the FERPA regulation 34 CFR § 99.3.
         </p>
         <p>
-          17.14 <strong>Account</strong> means an account created by or on
-          behalf of School that is associated with one or more Offerings for
-          which School has a Subscription, which is then used by School to
-          manage access and use of the Offering(s) by School and its Authorized
-          Users.
+          17.14<strong>Account</strong>means an account created by or on behalf
+          of School that is associated with one or more Offerings for which
+          School has a Subscription, which is then used by School to manage
+          access and use of the Offering(s) by School and its Authorized Users.
         </p>
         <p>
-          17.15 <strong>Liminex Information</strong> means (a) all Deidentified
-          Information; and (b) any information collected by Liminex or its
-          Affiliates independently and without access to, reference to or use of
-          any School Account Information, Personal Student Information,
-          Parent/Guardian Information, School Log and Cookie Information, or
-          Activity Information.
+          17.15<strong>Liminex</strong>
+          <strong>Information</strong>means (a) all Deidentified Information;
+          and (b) any information collected by Liminex or its Affiliates
+          independently and without access to, reference to or use of any School
+          Account Information, Personal Student Information, Parent/Guardian
+          Information, School Log and Cookie Information, or Activity
+          Information.
         </p>
         <p>
-          17.16 <strong>Offering</strong> mean any product or service, including
+          17.16<strong>Offering</strong>mean any product or service, including
           Professional Services, made available by Liminex or its Affiliates,
-          including the GoGuardian Offerings, the Pear Deck Offerings, and the
-          Edulastic Offerings.
+          including the GoGuardian Offerings, the Pear Deck Offerings, the
+          Edulastic Offerings, and the Giant Steps Offerings.
         </p>
         <p>
-          17.17 <strong>GoGuardian Offering(s)</strong> means Liminex’s suite of
+          17.16.1<strong>GoGuardian Offering(s)</strong>means Liminex’s suite of
           products and services, including Professional Services, provided under
           the GoGuardian brand, other than the Websites.
         </p>
         <p>
-          17.18 <strong>Pear Deck Offering(s)</strong> means Liminex’s suite of
+          17.16.2<strong>Pear Deck Offering(s)</strong>means Liminex’s suite of
           products and services, including Professional Services, provided under
           the Pear Deck brand, other than the Websites.
         </p>
         <p>
-          17.19 <strong>Edulastic Offering(s)</strong> means Liminex’s suite of
+          17.16.3<strong>Edulastic Offering(s)</strong>means Liminex’s suite of
           products and services, including Professional Services, provided under
           the Edulastic brand, other than the Websites.
         </p>
         <p>
-          17.20 <strong>Liminex Parties</strong> means Liminex, its Affiliates,
+          17.16.4 <strong>Giant Steps Offering(s)</strong> means Liminex’s suite
+          of products and services, including Professional Services, provided
+          under the Giant Steps brand, other than the Websites.
+        </p>
+        <p>
+          17.17 <strong>Liminex Parties</strong>means Liminex, its Affiliates,
           including Pear Deck and Edulastic, and each of their respective
           licensors, suppliers, officers, directors, employees, shareholders,
           agents and representatives.
         </p>
         <p>
-          17.21 <strong>Licensed Capacity</strong> means the number of licenses
-          to an Offering covered by a Subscription during a Subscription Term
+          17.18<strong>Licensed Capacity</strong>means the number of licenses to
+          an Offering covered by a Subscription during a Subscription Term
           (e.g., depending on the particular offering, the number of accounts,
           authorized devices, installations, seats).
         </p>
         <p>
-          17.22 <strong>Managed Device or Account</strong> means any device
-          and/or account of a student or user for which School deploys or
-          installs an Offering or seeks participation from an Offering for such
-          purpose in accordance with the terms of this Agreement.
+          17.19<strong>Managed Device or Account</strong>means any device and/or
+          account of a student or user for which School deploys or installs an
+          Offering or seeks participation from an Offering for such purpose in
+          accordance with the terms of this Agreement.
         </p>
         <p>
-          17.23 <strong>Order Form</strong> means a written or online ordering
+          17.20<strong>Order Form</strong>means a written or online ordering
           document, communication, form, statement of work, or other
           documentation that specifies the Offering(s) to be provided and which
           is either executed or submitted by you, and then accepted by a
@@ -1800,21 +2008,21 @@ const EulaPolicyContent = () => {
           an original party hereto.
         </p>
         <p>
-          17.24 <strong>Parent/Guardian Information</strong> means any data or
+          17.21<strong>Parent/Guardian Information</strong>means any data or
           information provided, submitted, or made available in an Offering
           about a parent or guardian of a student user of a Managed Device or
           Account, including the individual’s association with a particular
           child and his or her contact information (e.g., email address).
         </p>
         <p>
-          17.25 <strong>Content</strong> means all information (such as data
+          17.22<strong>Content</strong>means all information (such as data
           files, fonts, written text, computer software, music, audio files,
           image files or other sounds, photographs, videos or other images)
           which you may have access to as part of, or through your use of, any
           Offerings.
         </p>
         <p>
-          17.26 <strong>Personal Student Information</strong> means information
+          17.23<strong>Personal Student Information</strong>means information
           provided, submitted, or made available in an Offering about a student
           user of a Managed Device or Account (including, the student’s
           School-managed account information, Activity Information, grade and
@@ -1824,15 +2032,15 @@ const EulaPolicyContent = () => {
           K-12 School, including Educational Records defined herein.
         </p>
         <p>
-          17.27 <strong>Professional Services</strong> means any supplemental
+          17.24<strong>Professional Services</strong>means any supplemental
           technical, training, support, consulting or implementation services
           that Liminex or one of its Affiliates provides to you, as set forth in
           an Order Form. Any purchased Professional Services, whether
-          provisioned in connection with or support of another GoGuardian
-          Offering or Pear Deck Offering, shall be deemed an Offering hereunder.
+          provisioned in connection with or support of another Liminex Offering,
+          shall be deemed an Offering hereunder.
         </p>
         <p>
-          17.28 <strong>School</strong> means the school, school district,
+          17.25<strong>School</strong>means the school, school district,
           corporation, organization or other legal entity identified on an Order
           Form on whose behalf the individual accepts this Agreement and, and
           any Affiliates of that school, school district, corporation,
@@ -1840,17 +2048,17 @@ const EulaPolicyContent = () => {
           (for so long as they remain Affiliates).
         </p>
         <p>
-          17.29 <strong>School Account Information</strong> means Profile
+          17.26<strong>School Account Information</strong>means School Profile
           Information, Authorized School Personnel Information, and Association
           Information.
         </p>
         <p>
-          17.30 <strong>School Affiliate</strong> means any Affiliate of School
+          17.27<strong>School Affiliate</strong>means any Affiliate of School
           that has been designated in an Order Form as authorized to access the
           Offerings under this Agreement.
         </p>
         <p>
-          17.31 <strong>School Log and Cookie Information</strong> means
+          17.28<strong>School Log and Cookie Information</strong>means
           analytics, log and event information, such as IP address, Internet
           service provider (ISP), date and time stamp, browser language, browser
           type, amount of time spent on particular portions of the Offerings,
@@ -1859,21 +2067,21 @@ const EulaPolicyContent = () => {
           by or on behalf of Liminex or an Affiliate.
         </p>
         <p>
-          17.32 <strong>School Profile Information</strong> means the name,
-          email address, and phone number of the individual ordering the
-          Offering on School’s behalf, as well as the School’s name, address,
-          billing address, of the School or Authorized User, as applicable, the
-          number of devices, number of students, and network configuration, and
-          to the extent an Account is created for School, the password created
-          for such Account.
+          17.29<strong>School Profile Information</strong>means the name, email
+          address, and phone number of the individual ordering the Offering on
+          School’s behalf, as well as the School’s name, address, billing
+          address, of the School or Authorized User, as applicable, the number
+          of devices, number of students, and network configuration, and to the
+          extent an Account is created for School, the password created for such
+          Account.
         </p>
         <p>
-          17.33 <strong>Subscription</strong> means a time-limited right granted
+          17.30<strong>Subscription</strong>means a time-limited right granted
           to School to access and use one or more licenses to an Offering under
           the terms of this Agreement.
         </p>
         <p>
-          17.34 <strong>Subscription Term</strong> means the period of time for
+          17.31<strong>Subscription Term</strong>means the period of time for
           which you subscribe (whether through a standard license or as part of
           a trial or beta license) to a particular Offering, as specified in an
           Order Form. For the avoidance of doubt, “Subscription Term” includes
@@ -1881,40 +2089,40 @@ const EulaPolicyContent = () => {
           subsequent renewal Subscription Term under that Order Form.
         </p>
         <p>
-          17.35 <strong>User Documentation</strong> means the online user
-          guides, documentation, and help and training materials we make
-          accessible at GoGuardian{' '}
+          17.32<strong>User Documentation</strong>means the online user guides,
+          documentation, and help and training materials we make accessible at
+          GoGuardian
           <a
-            href="https://help.goguardian.com/hc/en-us/"
+            href="https://help.goguardian.com/hc/en-us"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Help Center
+            <strong>Help Center</strong>
           </a>
-          , the Pear Deck{' '}
+          , the Pear Deck
           <a
-            href="https://help.peardeck.com/en"
+            href="https://help.peardeck.com/en?__hstc=181186424.a331f9cd231b0501655e39b86932d339.1628617317261.1637174793540.1637256220337.25&amp;__hssc=181186424.1.1637256220337&amp;__hsfp=431394172"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Help Center
+            <strong>Help Center</strong>
           </a>
-          , or the Edulastic{' '}
+          , the Edulastic
           <a
-            href="https://edulastic.com/help-center/"
+            href="https://edulastic.com/help-center/?__hstc=181186424.a331f9cd231b0501655e39b86932d339.1628617317261.1637174793540.1637256220337.25&amp;__hssc=181186424.1.1637256220337&amp;__hsfp=431394172"
             target="_blank"
             rel="noopener noreferrer"
           >
-            Help Center
+            <strong>Help Center</strong>
           </a>
-          , or such other URL we identify from time to time, and any other
-          materials we provide as part of the Offerings, all as may be updated
-          from time to time.
+          , or the Giant Steps <strong>Help Center</strong>, or such other URL
+          we identify from time to time, and any other materials we provide as
+          part of the Offerings, all as may be updated from time to time.
         </p>
         <p>
-          17.36 <strong>Website(s)</strong> means the Liminex or its Affiliates’
+          17.33 <strong>Website(s)</strong>means the Liminex or its Affiliates’
           websites made available online to the public that are not the
-          Offerings.{' '}
+          Offerings.
         </p>
       </div>
     </BodyContentWrapper>

@@ -3,9 +3,9 @@ import React from 'react'
 import Display from './component/Display/Display'
 import CalculatorButtonPanel from './component/CalculatorButtonPanel/CalculatorButtonPanel'
 import calculate from './logic/calculate'
-import { StyledDiv } from './styled'
+import { StyledDiv } from './styled-components'
 
-class BasicCalculator extends React.Component {
+export class BasicEdulasticCalculator extends React.Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -32,4 +32,3 @@ class BasicCalculator extends React.Component {
     )
   }
 }
-export default BasicCalculator

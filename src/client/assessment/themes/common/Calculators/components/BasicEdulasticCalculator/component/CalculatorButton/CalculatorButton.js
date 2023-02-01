@@ -1,6 +1,7 @@
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
-import { StyledDiv, StyledButton } from './styled'
+import { StyledDiv, StyledButton } from './styled-components'
 
 class CalculatorButton extends React.Component {
   handleClick = () => {

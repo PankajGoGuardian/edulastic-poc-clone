@@ -170,10 +170,7 @@ const enhance = compose(
 
 function SummaryContainerWithjQuery(props) {
   return (
-    <WithResources
-      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-      fallBack={<Spin />}
-    >
+    <WithResources resources={[AppConfig.jqueryPath]} fallBack={<Spin />}>
       <SummaryContainer {...props} />
     </WithResources>
   )

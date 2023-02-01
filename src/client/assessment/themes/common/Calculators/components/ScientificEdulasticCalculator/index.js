@@ -1,8 +1,9 @@
 import React, { useRef, useEffect } from 'react'
-import styled from 'styled-components'
+import { Container } from './styled-components'
 
-const EduScientificCalculator = () => {
+export const ScientificEdulasticCalculator = () => {
   const calcRef = useRef()
+
   useEffect(() => {
     console.clear()
     if (window.jQuery && calcRef.current) {
@@ -191,11 +192,3 @@ const EduScientificCalculator = () => {
     </Container>
   )
 }
-
-export default EduScientificCalculator
-
-const Container = styled.div`
-  .calc-right .calc-eq {
-    right: 8px;
-  }
-`

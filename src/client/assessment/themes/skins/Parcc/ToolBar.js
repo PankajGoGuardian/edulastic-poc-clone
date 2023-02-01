@@ -5,7 +5,9 @@ import { Button } from 'antd'
 import { TokenStorage } from '@edulastic/api'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { test, questionType } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
+import { EduIf } from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
 import {
   IconCalculator,
   IconClose,
@@ -24,7 +26,6 @@ const {
 } = themes
 const { tools } = parcc
 
-const { calculatorTypes } = test
 const ToolBar = ({
   settings = {},
   tool = [],
@@ -50,7 +51,7 @@ const ToolBar = ({
   }
 
   const {
-    calcType,
+    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     maxAnswerChecks,
@@ -75,7 +76,7 @@ const ToolBar = ({
           <IconCheck />
         </StyledButton>
       )}
-      {calcType !== calculatorTypes.NONE && (
+      <EduIf condition={!isEmpty(calcTypes)}>
         <Tooltip placement="top" title="Calculator">
           <StyledButton
             active={tool.indexOf(2) !== -1}
@@ -85,7 +86,7 @@ const ToolBar = ({
             <CaculatorIcon />
           </StyledButton>
         </Tooltip>
-      )}
+      </EduIf>
 
       {!isDocbased && (
         <Tooltip
@@ -188,8 +189,8 @@ export const StyledButton = styled(Button)`
 
 export const CaculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `
-    width: ${theme.default.headerCaculatorIconWidth};
-    height: ${theme.default.headerCaculatorIconHeight};
+    width: ${theme.default.headerCalculatorIconWidth};
+    height: ${theme.default.headerCalculatorIconHeight};
   `}
 `
 

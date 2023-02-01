@@ -74,10 +74,7 @@ const PassageView = ({
   }, [previewTab])
 
   return (
-    <WithResources
-      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-      fallBack={<div />}
-    >
+    <WithResources resources={[AppConfig.jqueryPath]} fallBack={<div />}>
       <EduIf condition={item.instructorStimulus && !flowLayout}>
         <InstructorStimulus
           dangerouslySetInnerHTML={{ __html: item.instructorStimulus }}

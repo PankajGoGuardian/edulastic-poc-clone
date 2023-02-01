@@ -116,10 +116,7 @@ const TestPreviewModal = ({
         <TestActivityPreview onClose={handleCloseModal} previewModal />
       )}
       {!showStudentPerformancePreview && (
-        <WithResources
-          resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-          fallBack={<Spin />}
-        >
+        <WithResources resources={[AppConfig.jqueryPath]} fallBack={<Spin />}>
           <AssessmentPlayer
             closeTestPreviewModal={handleCloseModal}
             submitPreviewTest={submitPreviewTest}

@@ -547,10 +547,7 @@ class Item extends Component {
       Array.isArray(item?.data?.questions) && item.data.questions.length > 0
 
     return (
-      <WithResources
-        resources={[`${appConfig.jqueryPath}/jquery.min.js`]}
-        fallBack={<span />}
-      >
+      <WithResources resources={[appConfig.jqueryPath]} fallBack={<span />}>
         <Container data-cy={item._id} className="fr-view">
           {passageConfirmModalVisible && (
             <PassageConfirmationModal

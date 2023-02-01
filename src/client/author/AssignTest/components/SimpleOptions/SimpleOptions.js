@@ -641,7 +641,6 @@ class SimpleOptions extends React.Component {
                 freezeSettings={freezeSettings}
                 completionTypeKeys={completionTypeKeys}
                 premium={features?.premium}
-                calculatorProvider={features?.calculatorProvider}
                 overRideSettings={this.overRideSettings}
                 match={match}
                 totalItems={totalItems}

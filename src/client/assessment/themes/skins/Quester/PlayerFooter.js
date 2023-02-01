@@ -10,13 +10,13 @@ import {
 } from '@edulastic/icons'
 import React, { useState } from 'react'
 import { withNamespaces } from '@edulastic/localization'
-import { test as testConstants, roleuser } from '@edulastic/constants'
+import { roleuser } from '@edulastic/constants'
 import { connect } from 'react-redux'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import styled from 'styled-components'
 import questionType from '@edulastic/constants/const/questionType'
-import { withWindowSizes, withKeyboard } from '@edulastic/common'
+import { withWindowSizes, withKeyboard, EduIf } from '@edulastic/common'
 import { TokenStorage } from '@edulastic/api'
 import { getUserRole } from '../../../../author/src/selectors/user'
 import { getIsPreviewModalVisibleSelector } from '../../../selectors/test'
@@ -70,7 +70,7 @@ const PlayerFooter = ({
 }) => {
   const [zoom, setZoom] = useState(0)
   const {
-    calcType,
+    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
@@ -213,7 +213,7 @@ const PlayerFooter = ({
 
         <span>{t('common.test.answerEliminator')}</span>
       </ActionContainer>
-      {calcType !== testConstants.calculatorTypes.NONE && (
+      <EduIf condition={!isEmpty(calcTypes)}>
         <ActionContainer
           hoverEffect
           active={tool?.includes(CALC)}
@@ -231,8 +231,8 @@ const PlayerFooter = ({
 
           <span>{t('common.test.calculator')}</span>
         </ActionContainer>
-      )}
-      {enableScratchpad && !hasDrawingResponse && (
+      </EduIf>
+      <EduIf condition={enableScratchpad && !hasDrawingResponse}>
         <ActionContainer
           hoverEffect
           active={tool?.includes(SCRATCHPAD)}
@@ -250,9 +250,8 @@ const PlayerFooter = ({
 
           <span>{t('common.test.scratchPad')}</span>
         </ActionContainer>
-      )}
-
-      {showMagnifier && (
+      </EduIf>
+      <EduIf condition={showMagnifier}>
         <ActionContainer
           hoverEffect
           active={enableMagnifier}
@@ -270,9 +269,8 @@ const PlayerFooter = ({
 
           <span>{t('common.test.magnify')}</span>
         </ActionContainer>
-      )}
-
-      {isTeacherPremium && (
+      </EduIf>
+      <EduIf condition={isTeacherPremium}>
         <ActionContainer
           hoverEffect
           onClick={toggleUserWorkUploadModal}
@@ -289,9 +287,9 @@ const PlayerFooter = ({
 
           <span>{t('common.test.uploadWork')}</span>
         </ActionContainer>
-      )}
+      </EduIf>
 
-      {canShowPlayer && windowWidth && (
+      <EduIf condition={canShowPlayer && windowWidth}>
         <ItemAudioControl
           passage={passage}
           item={items[currentItem]}
@@ -299,7 +297,7 @@ const PlayerFooter = ({
           isPremiumContentWithoutAccess={isPremiumContentWithoutAccess}
           showTtsForPassages={showTtsForPassages}
         />
-      )}
+      </EduIf>
     </MainFooter>
   )
 }

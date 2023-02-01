@@ -68,8 +68,6 @@ const PlayerHeader = ({
   changeTool,
   toggleToolsOpenStatus,
   tool,
-  calcBrands,
-  changeCaculateMode,
   finishTest,
   items,
   qType,
@@ -286,8 +284,6 @@ const PlayerHeader = ({
                 changeTool={changeTool || toggleToolsOpenStatus}
                 settings={settings}
                 tool={tool || toolsOpenStatus}
-                calcBrands={calcBrands}
-                changeCaculateMode={changeCaculateMode}
                 qType={qType}
                 setZoomLevel={setZoomLevel}
                 zoomLevel={zoomLevel}
@@ -330,8 +326,6 @@ PlayerHeader.propTypes = {
   skipped: PropTypes.array.isRequired,
   changeTool: PropTypes.func.isRequired,
   tool: PropTypes.array.isRequired,
-  calcBrands: PropTypes.array.isRequired,
-  changeCaculateMode: PropTypes.func.isRequired,
   finishTest: PropTypes.func.isRequired,
   items: PropTypes.arrayOf(PropTypes.object).isRequired,
   qType: PropTypes.string.isRequired,

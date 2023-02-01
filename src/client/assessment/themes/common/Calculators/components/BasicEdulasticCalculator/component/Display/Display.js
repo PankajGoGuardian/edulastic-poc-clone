@@ -1,7 +1,8 @@
+/* eslint-disable */
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import { StyledDiv, StyledDivF } from './styled'
+import { StyledDiv, StyledDivF } from './styled-components'
 
 class Display extends React.Component {
   render() {

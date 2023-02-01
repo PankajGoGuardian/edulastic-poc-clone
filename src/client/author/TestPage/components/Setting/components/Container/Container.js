@@ -28,7 +28,7 @@ import {
 } from '@edulastic/common'
 import {
   roleuser,
-  test as testContants,
+  test as testConstants,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
 import { IconInfo, IconTrash } from '@edulastic/icons'
@@ -57,7 +57,7 @@ import {
 } from '../../../../ducks'
 import Breadcrumb from '../../../../../src/components/Breadcrumb'
 
-import { setMaxAttemptsAction, setSafeBroswePassword } from '../../ducks'
+import { setMaxAttemptsAction, setSafeBrowserPassword } from '../../ducks'
 import {
   allowedToSelectMultiLanguageInTest,
   isEtsDistrictSelector,
@@ -80,7 +80,7 @@ import {
   SavedSettingsContainerStyled,
   SubHeaderContainer,
 } from './styled'
-import PeformanceBand from './PeformanceBand'
+import PerformanceBand from './PerformanceBand'
 import StandardProficiencyTable from './StandardProficiencyTable'
 import Instruction from './InstructionBlock/InstructionBlock'
 import DollarPremiumSymbol from '../../../../../AssignTest/components/Container/DollarPremiumSymbol'
@@ -101,7 +101,6 @@ import SaveSettingsModal from '../../../../../AssignTest/components/Container/Sa
 import DeleteTestSettingsModal from '../../../../../AssignTest/components/Container/DeleteSettingsConfirmationModal'
 import UpdateTestSettingsModal from '../../../../../AssignTest/components/Container/UpdateTestSettingModal'
 import { multiFind } from '../../../../../../common/utils/main'
-import CalculatorSetting from './CalculatorSetting'
 import {
   getAvailableTestTypesForUser,
   getProfileKey,
@@ -109,6 +108,7 @@ import {
 } from '../../../../../../common/utils/testTypeUtils'
 import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
+import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 
 const {
   settingCategories,
@@ -132,7 +132,7 @@ const {
   testSettingsOptions,
   docBasedSettingsOptions,
   REF_MATERIAL_ALLOWED_SKIN_TYPES,
-} = testContants
+} = testConstants
 
 const { Option } = Select
 
@@ -415,7 +415,7 @@ class Setting extends Component {
 
   updateFeatures = (key) => (e) => {
     const { setTestData } = this.props
-    let featVal = isObject(e) ? e.target.value : e
+    let featVal = key === 'calcTypes' ? e : isObject(e) ? e.target.value : e
     if (typeof featVal === 'undefined') {
       featVal = null
     }
@@ -524,13 +524,13 @@ class Setting extends Component {
     }
     if (
       newSettings.passwordPolicy !==
-      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
+      testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC
     ) {
       delete newSettings.passwordExpireIn
     }
     if (
       newSettings.passwordPolicy !==
-      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
+      testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC
     ) {
       delete newSettings.assignmentPassword
     }
@@ -597,14 +597,14 @@ class Setting extends Component {
     let isValid = true
     if (
       entity.passwordPolicy ===
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
+        testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC &&
       !entity.passwordExpireIn
     ) {
       notification({ msg: 'Please enter password expiry time' })
       isValid = false
     } else if (
       entity.passwordPolicy ===
-        testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
+        testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_STATIC &&
       (!entity.assignmentPassword ||
         (entity.assignmentPassword &&
           (entity?.assignmentPassword?.length < 6 ||
@@ -725,7 +725,6 @@ class Setting extends Component {
       showCancelButton,
       disableAnswerOnPaper,
       premium,
-      calculatorProvider,
       allowedToSelectMultiLanguage,
       testAssignments,
       editEnable,
@@ -751,7 +750,7 @@ class Setting extends Component {
       passwordPolicy,
       maxAnswerChecks,
       testType,
-      calcType,
+      calcTypes,
       assignmentPassword,
       passwordExpireIn,
       markAsDone,
@@ -1628,14 +1627,13 @@ class Setting extends Component {
                       <Body smallSize={isSmallSize}>
                         <Row>
                           <Col span={8}>
-                            <CalculatorSetting
-                              onChangeHandle={this.updateFeatures('calcType')}
+                            <CalculatorSettings
                               disabled={
                                 disabled || !assessmentSuperPowersShowCalculator
                               }
-                              calcType={calcType}
-                              premium={premium}
-                              calculatorProvider={calculatorProvider}
+                              isCheckBoxGroup
+                              value={calcTypes}
+                              onChange={this.updateFeatures('calcTypes')}
                             />
                           </Col>
                           <Col span={16}>
@@ -2443,7 +2441,7 @@ class Setting extends Component {
                   {/* Multi language Ends */}
 
                   <Block id="performance-bands" smallSize={isSmallSize}>
-                    <PeformanceBand
+                    <PerformanceBand
                       setSettingsData={(val) =>
                         this.updateTestData('performanceBand')(val)
                       }
@@ -2548,7 +2546,6 @@ const enhance = compose(
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       premium: state?.user?.user?.features?.premium,
       allowReferenceMaterial: allowReferenceMaterialSelector(state),
-      calculatorProvider: state?.user?.user?.features?.calculatorProvider,
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,
@@ -2562,7 +2559,7 @@ const enhance = compose(
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,
-      setSafePassword: setSafeBroswePassword,
+      setSafePassword: setSafeBrowserPassword,
       setTestData: setTestDataAction,
       resetUpdatedState: resetUpdatedStateAction,
       fetchTestSettingsList: fetchTestSettingsListAction,

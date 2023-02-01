@@ -4,7 +4,7 @@ import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import {
-  test as testContants,
+  test as testConstants,
   roleuser,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
@@ -39,7 +39,7 @@ import {
   getIsAllClassSelectedSelector,
 } from '../../../AdvanceSearch/ducks'
 
-const { completionTypes, calculatorTypes, passwordPolicy } = testContants
+const { completionTypes, passwordPolicy } = testConstants
 const assignBehaviour = {
   async: 'ASYNCHRONOUS_ASSIGN',
   sync: 'SYNCHRONOUS_ASSIGN',
@@ -285,9 +285,9 @@ function* saveAssignment({ payload }) {
     // Penalty true/false is set to determine the case
     if (
       payload.scoringType ===
-      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
-      payload.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+      payload.scoringType = testConstants.evalTypeLabels.PARTIAL_CREDIT
     }
 
     let testIds
@@ -387,7 +387,6 @@ function* saveAssignment({ payload }) {
       assignmentSettings.safeBrowser = false
       assignmentSettings.shuffleAnswers = false
       assignmentSettings.shuffleQuestions = false
-      assignmentSettings.calcType = calculatorTypes.NONE
       assignmentSettings.answerOnPaper = false
       assignmentSettings.maxAnswerChecks = 0
       assignmentSettings.passwordPolicy =

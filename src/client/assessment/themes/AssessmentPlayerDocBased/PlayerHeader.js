@@ -1,11 +1,10 @@
-/* eslint-disable react/prop-types */
 import React, { Fragment } from 'react'
 import { connect } from 'react-redux'
+import { isEmpty } from 'lodash'
 
-import { test } from '@edulastic/constants'
 import { IconSearch } from '@edulastic/icons'
 import { TokenStorage } from '@edulastic/api'
-import { notification } from '@edulastic/common'
+import { EduIf, notification } from '@edulastic/common'
 
 import {
   Header,
@@ -17,14 +16,12 @@ import {
   MainActionWrapper,
 } from '../common'
 import { Tooltip } from '../../../common/utils/helpers'
-import { Container, ButtonWithStyle, CaculatorIcon } from '../common/ToolBar'
+import { Container, ButtonWithStyle, CalculatorIcon } from '../common/ToolBar'
 import { MAX_MOBILE_WIDTH } from '../../constants/others'
 import TimedTestTimer from '../common/TimedTestTimer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { StyledIconCheck } from '../../../author/ContentBuckets/components/ContentBucketsTable/styled'
-
-const { calculatorTypes } = test
 
 const PlayerHeader = ({
   title,
@@ -48,7 +45,7 @@ const PlayerHeader = ({
   isPremiumContentWithoutAccess = false,
 }) => {
   const isMobile = windowWidth <= MAX_MOBILE_WIDTH
-  const { calcType } = settings
+  const { calcTypes } = settings
 
   const rightButtons = (
     <SaveAndExit
@@ -93,16 +90,16 @@ const PlayerHeader = ({
               />
               <MainActionWrapper>
                 <Container>
-                  {calcType !== calculatorTypes.NONE && (
+                  <EduIf condition={!isEmpty(calcTypes)}>
                     <Tooltip placement="top" title="Calculator">
                       <ButtonWithStyle
                         active={currentToolMode.calculator}
                         onClick={() => onChangeTool('calculator')}
                       >
-                        <CaculatorIcon />
+                        <CalculatorIcon />
                       </ButtonWithStyle>
                     </Tooltip>
-                  )}
+                  </EduIf>
                   {showMagnifier && (
                     <Tooltip placement="top" title="Magnify">
                       <ButtonWithStyle

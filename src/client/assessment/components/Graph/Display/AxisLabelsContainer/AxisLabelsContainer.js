@@ -527,7 +527,7 @@ class AxisLabelsContainer extends PureComponent {
       >
         <WithResources
           resources={[
-            `${AppConfig.jqueryPath}/jquery.min.js`,
+            AppConfig.jqueryPath,
             `${AppConfig.katexPath}/katex.min.js`,
           ]}
           fallBack={<span />}

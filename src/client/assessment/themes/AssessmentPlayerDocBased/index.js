@@ -10,11 +10,7 @@ import { withNamespaces } from '@edulastic/localization'
 
 import { questionType } from '@edulastic/constants'
 import { withWindowSizes } from '@edulastic/common'
-import {
-  Container,
-  CalculatorContainer,
-  getDefaultCalculatorProvider,
-} from '../common'
+import { Container, CalculatorContainer } from '../common'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 import { themes } from '../../../theme'
 import assessmentPlayerTheme from '../AssessmentPlayerSimple/themeStyle.json'
@@ -23,8 +19,6 @@ import { changeViewAction } from '../../../author/src/actions/view'
 import { testLoadingSelector } from '../../selectors/test'
 import AssessmentPlayerSkinWrapper from '../AssessmentPlayerSkinWrapper'
 import { updateTestPlayerAction } from '../../../author/sharedDucks/testPlayer'
-
-const calcBrands = ['DESMOS', 'GEOGEBRASCIENTIFIC', 'EDULASTIC']
 
 class AssessmentPlayerDocBased extends React.Component {
   static propTypes = {
@@ -54,16 +48,6 @@ class AssessmentPlayerDocBased extends React.Component {
       calculator: false,
     },
     currentPage: 0,
-  }
-
-  static getDerivedStateFromProps(props, state) {
-    return {
-      ...state,
-      calculateMode: `${props?.settings?.calcType}_${
-        props?.settings?.calcProvider ||
-        getDefaultCalculatorProvider(props?.settings?.calcType)
-      }`,
-    }
   }
 
   componentDidMount() {
@@ -129,12 +113,7 @@ class AssessmentPlayerDocBased extends React.Component {
   }
 
   render() {
-    const {
-      showExitPopup,
-      calculateMode,
-      currentToolMode,
-      currentPage,
-    } = this.state
+    const { showExitPopup, currentToolMode, currentPage } = this.state
     const {
       theme,
       items,
@@ -230,8 +209,8 @@ class AssessmentPlayerDocBased extends React.Component {
             {currentToolMode.calculator ? (
               <CalculatorContainer
                 changeTool={() => this.onChangeTool('calculator')}
-                calculateMode={calculateMode}
-                calcBrands={calcBrands}
+                calcTypes={settings.calcTypes}
+                calcProvider={settings.calcProvider}
               />
             ) : null}
           </AssessmentPlayerSkinWrapper>

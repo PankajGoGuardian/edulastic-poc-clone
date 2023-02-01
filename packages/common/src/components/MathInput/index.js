@@ -16,7 +16,7 @@ class MathInputWithResources extends React.PureComponent {
   render() {
     return (
       <WithResources
-        criticalResources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+        criticalResources={[AppConfig.jqueryPath]}
         resources={[
           `${AppConfig.mathquillPath}/mathquill.css`,
           `${AppConfig.mathquillPath}/mathquill.min.js`,

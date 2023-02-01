@@ -25,10 +25,10 @@ import DollarPremiumSymbol from './DollarPremiumSymbol'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
 import { showRubricToStudentsSetting } from '../../../TestPage/utils'
-import CalculatorSelector from '../SimpleOptions/CalculatorSelector'
 import RefMaterialFile from './RefMaterialFile'
 import ShowHintsToStudents from './ShowHintsToStudents'
 import ShowTtsForPassage from './ShowTtsForPassages'
+import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 
 const { COMMON } = testTypesConstants.TEST_TYPES
 
@@ -57,7 +57,6 @@ const TestBehaviorGroupContainer = ({
   freezeSettings,
   completionTypeKeys,
   premium,
-  calculatorProvider,
   overRideSettings,
   match,
   totalItems,
@@ -73,7 +72,7 @@ const TestBehaviorGroupContainer = ({
   const {
     markAsDone = testSettings?.markAsDone,
     releaseScore = testSettings.releaseScore,
-    calcType = testSettings.calcType,
+    calcTypes = testSettings.calcTypes,
     timedAssignment = testSettings.timedAssignment,
     allowedTime = testSettings.allowedTime,
     pauseAllowed = testSettings.pauseAllowed,
@@ -333,12 +332,10 @@ const TestBehaviorGroupContainer = ({
             </Label>
           </Col>
           <Col span={14}>
-            <CalculatorSelector
+            <CalculatorSettings
               disabled={freezeSettings || !assessmentSuperPowersShowCalculator}
-              calcType={calcType}
-              onChangeHanlde={(value) => overRideSettings('calcType', value)}
-              premium={premium}
-              calculatorProvider={calculatorProvider}
+              value={calcTypes}
+              onChange={(value) => overRideSettings('calcTypes', value)}
             />
           </Col>
         </StyledRow>

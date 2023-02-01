@@ -820,7 +820,7 @@ export const DashedLine = styled.div`
   position: relative;
   flex-grow: 1;
   height: ${(props) => props.height ?? '0.5px'};
-  margin: 0 24px;
+  margin: ${(props) => props.margin ?? '0 24px'};
   &:before {
     content: '';
     position: absolute;

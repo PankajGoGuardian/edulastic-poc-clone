@@ -8,6 +8,7 @@ import { connect } from 'react-redux'
 
 import { Spin, Col } from 'antd'
 
+import { reportNavType, ReportPaths } from '@edulastic/constants/const/report'
 import { SubHeader } from '../../common/components/Header'
 
 import { getNavigationTabLinks } from '../../common/util'
@@ -39,6 +40,7 @@ import { getSharingState, setSharingStateAction } from '../../ducks'
 import { getSharedReportList } from '../../components/sharedReports/ducks'
 
 import { ReportContainer, FilterLabel } from '../../common/styled'
+import PreVsPostReport from './PreVsPost'
 
 const MultipleAssessmentReportContainer = (props) => {
   const {
@@ -186,16 +188,24 @@ const MultipleAssessmentReportContainer = (props) => {
     setShowApply(true)
   }
 
+  const {
+    PERFORMANCE_OVER_TIME,
+    PEER_PROGRESS_ANALYSIS,
+    STUDENT_PROGRESS,
+    PRE_VS_POST,
+  } = reportNavType
   const performanceBandRequired = [
-    'performance-over-time',
-    'peer-progress-analysis',
-    'student-progress',
+    PERFORMANCE_OVER_TIME,
+    PEER_PROGRESS_ANALYSIS,
+    STUDENT_PROGRESS,
+    PRE_VS_POST,
   ].includes(pageTitle)
 
   const demographicsRequired = [
-    'performance-over-time',
-    'peer-progress-analysis',
-    'student-progress',
+    PERFORMANCE_OVER_TIME,
+    PEER_PROGRESS_ANALYSIS,
+    STUDENT_PROGRESS,
+    PRE_VS_POST,
   ].includes(pageTitle)
 
   useEffect(() => {
@@ -322,6 +332,23 @@ const MultipleAssessmentReportContainer = (props) => {
             setShowHeader(true)
             return (
               <PerformanceOverTime
+                {..._props}
+                settings={settings}
+                ddfilter={ddfilter}
+                MARFilterData={MARFilterData}
+                sharedReport={sharedReport}
+                toggleFilter={toggleFilter}
+              />
+            )
+          }}
+        />
+        <Route
+          exact
+          path={`${ReportPaths.PRE_VS_POST}/`}
+          render={(_props) => {
+            setShowHeader(true)
+            return (
+              <PreVsPostReport
                 {..._props}
                 settings={settings}
                 ddfilter={ddfilter}

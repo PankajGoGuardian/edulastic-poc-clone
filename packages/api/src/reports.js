@@ -292,6 +292,22 @@ const fetchPerformanceByRubricsCriteriaTableData = (params) =>
     })
     .then((res) => res.data.result)
 
+const fetchPreVsPostReportSummaryData = (params) =>
+  api
+    .callApi({
+      url: '/report/pre-vs-post-test/summary',
+      params,
+    })
+    .then((res) => res.data.result)
+
+const fetchPreVsPostReportTableData = (params) =>
+  api
+    .callApi({
+      url: '/report/pre-vs-post-test/table',
+      params,
+    })
+    .then((res) => res.data.result)
+
 export default {
   fetchReports,
   fetchTestActivityDetail,
@@ -329,4 +345,6 @@ export default {
   fetchGeneratedCSVs,
   fetchPerformanceByRubricsCriteriaChartData,
   fetchPerformanceByRubricsCriteriaTableData,
+  fetchPreVsPostReportSummaryData,
+  fetchPreVsPostReportTableData,
 }

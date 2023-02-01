@@ -16,19 +16,19 @@ import {
   getUserOrgId,
 } from '../../../../src/selectors/user'
 import {
+  createTestListLoadingSelector,
+  createTestListSelector,
   receiveTestListAction,
-  getTestListSelector,
-  getTestListLoadingSelector,
 } from '../../../ducks'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
-
+const DEFAULT_BLACKLIST = []
 const AssessmentAutoComplete = ({
   user,
   districtId,
-  testList,
+  testList: _testList,
   loading,
   loadTestList,
   firstLoad,
@@ -40,15 +40,33 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
+  autoSelectFirstItem = false,
   institutionIds,
+  blackList = DEFAULT_BLACKLIST,
+  statePrefix = '',
+  waitForInitialLoad = false,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
-
+  const testList = useMemo(
+    () =>
+      Array.isArray(_testList)
+        ? _testList.filter((t) => !blackList.includes(t._id))
+        : _testList,
+    [_testList, blackList.join(',')]
+  )
+  const [initialLoadCompleted, setInitialLoadCompleted] = useState(undefined)
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
 
+  useEffect(() => {
+    if (loading && typeof initialLoadCompleted === 'undefined')
+      setInitialLoadCompleted(false)
+    if (!loading && typeof initialLoadCompleted !== 'undefined')
+      setInitialLoadCompleted(true)
+  }, [loading, initialLoadCompleted])
   // build search query
   const query = useMemo(() => {
+    if (waitForInitialLoad && !initialLoadCompleted) return null
     const { role } = user
     const q = {
       limit: 35,
@@ -95,6 +113,7 @@ const AssessmentAutoComplete = ({
     testTypes,
     tagIds,
     institutionIds,
+    initialLoadCompleted,
   ])
 
   // handle autocomplete actions
@@ -136,11 +155,11 @@ const AssessmentAutoComplete = ({
   }, [selectedTestId, showApply])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
-      onSelect(testList[0]._id)
+      autoSelectFirstItem ? onSelect() : onSelect(testList[0]._id)
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
-  }, [testList])
+  }, [testList, autoSelectFirstItem])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
@@ -148,13 +167,14 @@ const AssessmentAutoComplete = ({
     }
   }, [termId, grades, subjects, testTypes, tagIds])
   useEffect(() => {
+    if (!query) return
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||
       searchTerms.text !== searchTerms.selectedText
     ) {
-      loadTestListDebounced(query)
+      loadTestListDebounced({ ...query, statePrefix })
     }
-  }, [query])
+  }, [query, statePrefix])
 
   // build dropdown data
   const dropdownData = useDropdownData(testList, {
@@ -206,10 +226,10 @@ const AssessmentAutoComplete = ({
 }
 
 export default connect(
-  (state) => ({
+  (state, { statePrefix }) => ({
     user: getUser(state),
-    testList: getTestListSelector(state),
-    loading: getTestListLoadingSelector(state),
+    testList: createTestListSelector(statePrefix)(state),
+    loading: createTestListLoadingSelector(statePrefix)(state),
     districtId: getUserOrgId(state),
     institutionIds: currentDistrictInstitutionIds(state),
   }),

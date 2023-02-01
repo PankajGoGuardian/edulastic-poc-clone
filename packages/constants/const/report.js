@@ -18,6 +18,7 @@ const reportNavType = {
   PERFORMANCE_OVER_TIME: 'performance-over-time',
   PEER_PROGRESS_ANALYSIS: 'peer-progress-analysis',
   STUDENT_PROGRESS: 'student-progress',
+  PRE_VS_POST: 'pre-vs-post',
   STANDARDS_PERFORMANCE_SUMMARY: 'standards-performance-summary',
   STANDARDS_GRADEBOOK: 'standards-gradebook',
   STANDARDS_PROGRESS: 'standards-progress',
@@ -32,6 +33,10 @@ const reportNavType = {
   MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
 }
 
+const ReportPaths = {
+  PRE_VS_POST: '/author/reports/pre-vs-post',
+}
+
 const sharedWithType = {
   COLLABORATION_GROUP: 'collaborationGroup',
   USER: 'user',
@@ -41,4 +46,5 @@ module.exports = {
   reportGroupType,
   reportNavType,
   sharedWithType,
+  ReportPaths,
 }

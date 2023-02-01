@@ -7,6 +7,7 @@ import qs from 'qs'
 import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { ReportPaths } from '@edulastic/constants/const/report'
 
 import { Header } from './common/components/Header'
 import StandardReport from './components/StandardReport'
@@ -320,6 +321,7 @@ const Container = (props) => {
             `/author/reports/peer-progress-analysis`,
             `/author/reports/student-progress`,
             `/author/reports/performance-over-time`,
+            ReportPaths.PRE_VS_POST,
           ]}
           render={(_props) => (
             <MultipleAssessmentReportContainer

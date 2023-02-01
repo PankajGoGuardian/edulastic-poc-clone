@@ -1,6 +1,14 @@
 import { testTypes } from '@edulastic/constants'
+import { EXTERNAL_TEST_TYPES } from '@edulastic/constants/const/testTypes'
 
 export const getYear = (timestamp) => new Date(timestamp).getFullYear()
+
+const SUPPORTED_EXTERNAL_TEST_TYPES = [
+  EXTERNAL_TEST_TYPES.CAASPP,
+  EXTERNAL_TEST_TYPES.iReady_ELA,
+  EXTERNAL_TEST_TYPES.iReady_Math,
+  EXTERNAL_TEST_TYPES.NWEA,
+]
 
 const {
   EXTERNAL_TEST_TYPES: ACADEMIC_TEST_TYPES,
@@ -15,9 +23,10 @@ const getOptionValues = ([key, title]) => ({
   title,
 })
 
-const academicDataChildren = Object.entries(ACADEMIC_TEST_TYPES).map(
-  getOptionValues
-)
+const academicDataChildren = Object.entries(ACADEMIC_TEST_TYPES)
+  .map(getOptionValues)
+  .filter(({ title }) => SUPPORTED_EXTERNAL_TEST_TYPES.includes(title))
+
 const nonAcademicDataChildren = Object.entries(NON_ACADEMIC_DATA_TYPES).map(
   getOptionValues
 )

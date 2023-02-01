@@ -1,5 +1,5 @@
 import React from 'react'
-import styled from 'styled-components'
+import styled, { css } from 'styled-components'
 import {
   greyThemeLighter,
   themeColorBlue,
@@ -8,7 +8,13 @@ import {
 } from '@edulastic/colors'
 import { Checkbox } from 'antd'
 
-export const CheckBoxGrp = Checkbox.Group
+export const CheckBoxGrp = styled(Checkbox.Group)`
+  ${({ mode }) => css`
+    display: ${mode === 'vertical' ? 'flex' : ''};
+    flex-direction: ${mode === 'vertical' ? 'column' : ''};
+    gap: ${mode === 'vertical' ? '18px' : ''};
+  `}
+`
 
 export const CheckboxStyle = styled(Checkbox)`
   width: ${({ width }) => width || 'unset'};

@@ -19,10 +19,7 @@ export { default as Clock } from './Clock'
 export { default as SavePauseMobile } from './SavePauseMobile'
 export { default as SaveAndExit } from './SaveAndExit'
 export { default as ToolButton } from './ToolButton'
-export {
-  default as CalculatorContainer,
-  getDefaultCalculatorProvider,
-} from './Calculators/Container'
+export { default as CalculatorContainer } from './Calculators'
 export { default as ToolTipContainer } from './ToolTipContainer'
 export { default as MainActionWrapper } from './MainActionWrapper'
 export { default as CustomAffix } from './CustomAffix'

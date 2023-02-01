@@ -67,8 +67,6 @@ const PlayerHeader = ({
   changeTool,
   toggleToolsOpenStatus,
   tool,
-  calcBrands,
-  changeCaculateMode,
   finishTest,
   qType,
   defaultAP,
@@ -249,8 +247,6 @@ const PlayerHeader = ({
                   changeTool={changeTool || toggleToolsOpenStatus}
                   settings={settings}
                   tool={tool || toolsOpenStatus}
-                  calcBrands={calcBrands}
-                  changeCaculateMode={changeCaculateMode}
                   qType={qType}
                   utaId={utaId}
                   isDocbased={isDocbased}

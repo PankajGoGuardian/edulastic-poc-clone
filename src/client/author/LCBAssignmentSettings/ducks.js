@@ -193,7 +193,7 @@ function* loadAssignmentSaga({ payload }) {
       answerOnPaper,
       maxAttempts,
       maxAnswerChecks,
-      calcType,
+      calcTypes,
       passwordPolicy,
       passwordExpireIn,
       assignmentPassword,
@@ -222,8 +222,8 @@ function* loadAssignmentSaga({ payload }) {
     if (maxAnswerChecks !== undefined) {
       data.maxAnswerChecks = maxAnswerChecks
     }
-    if (calcType) {
-      data.calcType = calcType
+    if (calcTypes) {
+      data.calcTypes = calcTypes
     }
     if (typeof penaltyOnUsingHints === 'number') {
       data.penaltyOnUsingHints = penaltyOnUsingHints
@@ -265,7 +265,7 @@ function getSettingsSelector(state) {
     releaseScore,
     startDate,
     endDate,
-    calcType,
+    calcTypes,
     dueDate,
     allowedTime,
     pauseAllowed,
@@ -375,7 +375,7 @@ function getSettingsSelector(state) {
       releaseScore,
       startDate,
       endDate,
-      calcType,
+      calcTypes,
       dueDate,
       allowedTime,
       pauseAllowed,

@@ -3,7 +3,9 @@ import { compose } from 'redux'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 import styled from 'styled-components'
-import { test, questionType } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
+import { EduIf } from '@edulastic/common'
+import { questionType } from '@edulastic/constants'
 import {
   IconCalculator,
   IconClose,
@@ -20,8 +22,6 @@ import { Container, StyledButton, StyledIcon } from './styled'
 import TimedTestTimer from '../../common/TimedTestTimer'
 import { setSettingsModalVisibilityAction } from '../../../../student/Sidebar/ducks'
 import { getIsMultiLanguageEnabled } from '../../../../common/components/LanguageSelector/duck'
-
-const { calculatorTypes } = test
 
 const zoomIndex = [1, 1.5, 1.75, 2.5, 3]
 
@@ -55,7 +55,7 @@ const ToolBar = ({
   const toolbarHandler = (value) => changeTool(value)
 
   const {
-    calcType,
+    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     maxAnswerChecks,
@@ -122,7 +122,7 @@ const ToolBar = ({
         </Tooltip>
       )}
 
-      {calcType !== calculatorTypes.NONE && (
+      <EduIf condition={!isEmpty(calcTypes)}>
         <Tooltip placement="top" title="Calculator">
           <StyledButton
             active={tool.indexOf(2) !== -1}
@@ -132,7 +132,7 @@ const ToolBar = ({
             <CaculatorIcon />
           </StyledButton>
         </Tooltip>
-      )}
+      </EduIf>
 
       {!isDocbased && (
         <Tooltip
@@ -251,8 +251,8 @@ export default enhance(ToolBar)
 
 export const CaculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `
-    width: ${theme.default.headerCaculatorIconWidth};
-    height: ${theme.default.headerCaculatorIconHeight};
+    width: ${theme.default.headerCalculatorIconWidth};
+    height: ${theme.default.headerCalculatorIconHeight};
   `}
 `
 

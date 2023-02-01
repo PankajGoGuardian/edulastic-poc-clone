@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import CalculatorButton from '../CalculatorButton/CalculatorButton'
 
-import { StyledDiv, StyledDivF } from './styled'
+import { StyledDiv, StyledDivF } from './styled-components'
 
 const keyBoardKeysSupported = '1234567890/*+-=%.'.split('')
 keyBoardKeysSupported.push('Enter', 'Delete')

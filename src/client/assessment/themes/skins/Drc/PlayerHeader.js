@@ -3,10 +3,10 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import styled, { css } from 'styled-components'
-import { withWindowSizes } from '@edulastic/common'
+import { isEmpty } from 'lodash'
+import { EduIf, withWindowSizes } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import {
-  test as testConstants,
   testTypes as testTypesConstants,
   questionType,
 } from '@edulastic/constants'
@@ -85,7 +85,7 @@ const PlayerHeader = ({
   openReferenceModal,
 }) => {
   const {
-    calcType,
+    calcTypes,
     enableScratchpad,
     isTeacherPremium,
     showMagnifier,
@@ -194,7 +194,7 @@ const PlayerHeader = ({
                 >
                   <IconDrc.AnswerEliminator color={header2.background} />
                 </ButtonWrapper>
-                {calcType !== testConstants.calculatorTypes.NONE && (
+                <EduIf condition={!isEmpty(calcTypes)}>
                   <ButtonWrapper
                     active={tool?.includes(CALC)}
                     onClick={() => changeTool(CALC)}
@@ -203,8 +203,8 @@ const PlayerHeader = ({
                   >
                     <IconCalculator color={header2.background} />
                   </ButtonWrapper>
-                )}
-                {enableScratchpad && !hasDrawingResponse && (
+                </EduIf>
+                <EduIf condition={enableScratchpad && !hasDrawingResponse}>
                   <ButtonWrapper
                     active={tool?.includes(SCRATCHPAD)}
                     onClick={() => changeTool(SCRATCHPAD)}
@@ -214,8 +214,8 @@ const PlayerHeader = ({
                   >
                     <IconScratchPad color={header2.background} />
                   </ButtonWrapper>
-                )}
-                {showMagnifier && (
+                </EduIf>
+                <EduIf condition={showMagnifier}>
                   <ButtonWrapper
                     active={enableMagnifier}
                     onClick={handleMagnifier}
@@ -225,9 +225,8 @@ const PlayerHeader = ({
                   >
                     <IconDrc.Zoom color={header2.background} />
                   </ButtonWrapper>
-                )}
-
-                {isTeacherPremium && (
+                </EduIf>
+                <EduIf condition={isTeacherPremium}>
                   <ButtonWrapper
                     onClick={toggleUserWorkUploadModal}
                     title={i18Translate('common.test.uploadWork')}
@@ -236,10 +235,10 @@ const PlayerHeader = ({
                   >
                     <IconCloudUpload color={header2.background} />
                   </ButtonWrapper>
-                )}
+                </EduIf>
               </Container>
               <RightContent>
-                {timedAssignment && (
+                <EduIf condition={timedAssignment}>
                   <TimedTestTimer
                     utaId={utaId}
                     groupId={groupId}
@@ -250,7 +249,7 @@ const PlayerHeader = ({
                       fontSize: '12px',
                     }}
                   />
-                )}
+                </EduIf>
               </RightContent>
             </HeaderWrapper>
           </NavigationHeader>

@@ -52,6 +52,7 @@
     "enterHintForTheProblem": "Enter a hint for the problem",
     "correctItemNotAllowDynamic": "Dynamic Parameter questions have their random values generated when the test is assigned, and they cannot be changed. You will have to grade these questions manually",
     "helperText": {
+      "contactSupportForDesmosStateCalculator": "State information missing, please raise a support request at support@edulastic.com",
       "variableType": "Variables such as @a or @x can represent text, expressions or numbers.",
       "combinationCount": "Enter the desired number of combinations of the parameters.",
       "NUMBER_RANGE": "Here a random value is generated between the ranges specified. Specify the range using the min and max option. You can also specify the number of decimal places",

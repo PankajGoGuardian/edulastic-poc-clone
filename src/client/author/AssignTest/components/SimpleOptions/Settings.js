@@ -41,9 +41,9 @@ import {
 } from '../../../ClassBoard/ducks'
 import DetailsTooltip from '../Container/DetailsTooltip'
 import SettingContainer from '../Container/SettingsContainer'
-import CalculatorSelector from './CalculatorSelector'
 import ShowHintsSwitch from '../../../TestPage/components/Setting/components/Container/HintsToStudents/ShowHintsSwitch'
 import RadioOptions from '../../../TestPage/components/Setting/components/Container/HintsToStudents/RadioOptions'
+import CalculatorSettings from '../../../Shared/Components/CalculatorSettings'
 
 const { COMMON } = testTypes.TEST_TYPES
 
@@ -79,7 +79,6 @@ const Settings = ({
   disableAnswerOnPaper,
   premium,
   freezeSettings = false,
-  calculatorProvider,
   features,
   match,
   totalItems,
@@ -266,7 +265,7 @@ const Settings = ({
 
   const {
     releaseScore = tempTestSettings.releaseScore,
-    calcType = tempTestSettings.calcType,
+    calcTypes = tempTestSettings.calcTypes,
     answerOnPaper = tempTestSettings.answerOnPaper,
     maxAnswerChecks = tempTestSettings.maxAnswerChecks,
     passwordPolicy = tempTestSettings.passwordPolicy,
@@ -359,14 +358,12 @@ const Settings = ({
               <Label>SHOW CALCULATOR</Label>
             </Col>
             <Col span={12}>
-              <CalculatorSelector
+              <CalculatorSettings
                 disabled={
                   freezeSettings || !assessmentSuperPowersShowCalculator
                 }
-                calcType={calcType}
-                onChangeHanlde={(value) => overRideSettings('calcType', value)}
-                premium={premium}
-                calculatorProvider={calculatorProvider}
+                value={calcTypes}
+                onChange={(value) => overRideSettings('calcTypes', value)}
               />
             </Col>
           </StyledRow>
@@ -1141,7 +1138,6 @@ const enhance = compose(
       userRole: getUserRole(state),
       disableAnswerOnPaper: getDisableAnswerOnPaperSelector(state),
       premium: state?.user?.user?.features?.premium,
-      calculatorProvider: state?.user?.user?.features?.calculatorProvider,
       totalItems: state?.tests?.entity?.isDocBased
         ? state?.tests?.entity?.summary?.totalQuestions
         : state?.tests?.entity?.summary?.totalItems,

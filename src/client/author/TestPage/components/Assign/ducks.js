@@ -4,7 +4,7 @@ import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
 import {
-  test as testContants,
+  test as testConstants,
   roleuser,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
@@ -38,7 +38,7 @@ import {
   getIsAdvancedSearchSelectedSelector,
   getIsAllClassSelectedSelector,
 } from '../../../AdvanceSearch/ducks'
-
+const { completionTypes, passwordPolicy } = testConstants
 const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 const assignBehaviour = {
   async: 'ASYNCHRONOUS_ASSIGN',
@@ -285,9 +285,9 @@ function* saveAssignment({ payload }) {
     // Penalty true/false is set to determine the case
     if (
       payload.scoringType ===
-      testContants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+      testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
     ) {
-      payload.scoringType = testContants.evalTypeLabels.PARTIAL_CREDIT
+      payload.scoringType = testConstants.evalTypeLabels.PARTIAL_CREDIT
     }
 
     let testIds
@@ -387,7 +387,6 @@ function* saveAssignment({ payload }) {
       assignmentSettings.safeBrowser = false
       assignmentSettings.shuffleAnswers = false
       assignmentSettings.shuffleQuestions = false
-      assignmentSettings.calcType = calculatorTypes.NONE
       assignmentSettings.answerOnPaper = false
       assignmentSettings.maxAnswerChecks = 0
       assignmentSettings.passwordPolicy =
@@ -576,6 +575,52 @@ function* saveAssignment({ payload }) {
     }
     const errorMessage = err.response?.data?.message || 'Something went wrong'
     notification({ msg: errorMessage })
+  }
+}
+
+function* saveBulkAssignment({ payload }) {
+  try {
+    yield put(setBulkAssignmentSavingAction(true))
+
+    const { assignmentSettings, ..._payload } = payload
+    const name = yield select(getUserNameSelector)
+    const _id = yield select(getUserId)
+    const assignedBy = { _id, name }
+
+    const startDate =
+      assignmentSettings.startDate &&
+      moment(assignmentSettings.startDate).valueOf()
+    const endDate =
+      assignmentSettings.endDate && moment(assignmentSettings.endDate).valueOf()
+    const dueDate =
+      assignmentSettings.dueDate && moment(assignmentSettings.dueDate).valueOf()
+    const data = {
+      ...omit(assignmentSettings, ['class', 'resources', 'termId']),
+      startDate,
+      endDate,
+      dueDate,
+      assignedBy,
+    }
+
+    if (
+      data.scoringType ===
+      testConstants.evalTypeLabels.PARTIAL_CREDIT_IGNORE_INCORRECT
+    ) {
+      data.scoringType = testConstants.evalTypeLabels.PARTIAL_CREDIT
+    }
+
+    const result = yield call(assignmentApi.bulkAssign, {
+      ..._payload,
+      assignmentSettings: data,
+    })
+    notification({ type: 'info', msg: result })
+    yield put(push('/author/assignments'))
+  } catch (err) {
+    console.error('error for save assignment', err)
+    const errorMessage = err.response?.data?.message || 'Something went wrong'
+    notification({ msg: errorMessage })
+  } finally {
+    yield put(setBulkAssignmentSavingAction(false))
   }
 }
 

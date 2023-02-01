@@ -15,7 +15,7 @@ import {
   Title,
 } from '../SimpleOptions/styled'
 import StandardProficiencyTable from '../../../TestPage/components/Setting/components/Container/StandardProficiencyTable'
-import PeformanceBand from '../../../TestPage/components/Setting/components/Container/PeformanceBand'
+import PerformanceBand from '../../../TestPage/components/Setting/components/Container/PerformanceBand'
 import PlayerSkinSelector from '../SimpleOptions/PlayerSkinSelector'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
@@ -180,7 +180,7 @@ const MiscellaneousGroupContainer = ({
           placement="rightBottom"
         />
         <DivBlock>
-          <PeformanceBand
+          <PerformanceBand
             disabled={freezeSettings || !performanceBands}
             setSettingsData={(val) => overRideSettings('performanceBand', val)}
             performanceBand={performanceBand || {}}

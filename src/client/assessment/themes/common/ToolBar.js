@@ -1,5 +1,7 @@
+import { isEmpty } from 'lodash'
 import { mediumDesktopExactWidth, themeColorBlue } from '@edulastic/colors'
-import { questionType, test } from '@edulastic/constants'
+import { questionType } from '@edulastic/constants'
+import { EduIf } from '@edulastic/common'
 import {
   IconCalculator,
   IconClose,
@@ -17,8 +19,6 @@ import React from 'react'
 import styled from 'styled-components'
 import { Tooltip } from '../../../common/utils/helpers'
 import LineReader from '../../../common/components/LineReader'
-
-const { calculatorTypes } = test
 
 export const Container = styled.div`
   margin-left: 0px;
@@ -131,10 +131,10 @@ const InRulerIcon = styled(IconInRuler)`
   `}
 `
 
-export const CaculatorIcon = styled(IconCalculator)`
+export const CalculatorIcon = styled(IconCalculator)`
   ${({ theme }) => `
-    width: ${theme.default.headerCaculatorIconWidth};
-    height: ${theme.default.headerCaculatorIconHeight};
+    width: ${theme.default.headerCalculatorIconWidth};
+    height: ${theme.default.headerCalculatorIconHeight};
   `}
 `
 
@@ -185,7 +185,7 @@ const ToolBar = ({
   isPremiumContentWithoutAccess = false,
 }) => {
   const {
-    calcType,
+    calcTypes,
     showMagnifier,
     enableScratchpad,
     isTeacherPremium,
@@ -214,15 +214,15 @@ const ToolBar = ({
         onClick={toolbarHandler(1)}
         hidden
       />
-      {calcType !== calculatorTypes.NONE && (
+      <EduIf condition={!isEmpty(calcTypes)}>
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title="Calculator"
-          icon={<CaculatorIcon />}
+          icon={<CalculatorIcon />}
           active={tool.includes(2)}
           onClick={toolbarHandler(2)}
         />
-      )}
+      </EduIf>
       {canShowReferenceMaterial && (
         <ActionButton
           disabled={isPremiumContentWithoutAccess}

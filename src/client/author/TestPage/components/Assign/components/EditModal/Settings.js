@@ -1,4 +1,5 @@
 // selectors
+// TODO: do we use this component???
 import { lightGrey9 } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import { IconInfo } from '@edulastic/icons'
@@ -15,12 +16,7 @@ import {
   StyledRowSettings,
 } from './styled'
 
-const {
-  releaseGradeTypes,
-  calculatorKeys,
-  calculators,
-  releaseGradeLabels,
-} = test
+const { releaseGradeTypes, releaseGradeLabels } = test
 const evaluationtypes = [
   'All or Nothing',
   'Partial Credit',
@@ -77,7 +73,7 @@ const Settings = ({
     sebPassword = tempTestSettings.sebPassword,
     shuffleQuestions = tempTestSettings.shuffleQuestions,
     shuffleAnswers = tempTestSettings.shuffleAnswers,
-    calcType = tempTestSettings.calcType,
+    // calcTypes = tempTestSettings.calcTypes,
     answerOnPaper = tempTestSettings.answerOnPaper,
   } = assignmentSettings
   return (
@@ -218,7 +214,7 @@ const Settings = ({
           <RowTitle>Show Calculator</RowTitle>
         </Col>
         <Col span={16}>
-          <AlignRight
+          {/* <AlignRight
             value={calcType}
             onChange={(e) => overRideSettings('calcType', e.target.value)}
           >
@@ -227,7 +223,7 @@ const Settings = ({
                 {calculators[item]}
               </Radio>
             ))}
-          </AlignRight>
+          </AlignRight> */}
         </Col>
       </StyledRowSettings>
       {/* Show Calculator */}

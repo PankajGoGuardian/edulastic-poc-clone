@@ -7,7 +7,7 @@ import { connect } from 'react-redux'
 import { get, isUndefined, last } from 'lodash'
 import { ThemeProvider } from 'styled-components'
 import { withNamespaces } from '@edulastic/localization'
-import { withWindowSizes, notification } from '@edulastic/common'
+import { withWindowSizes, notification, EduIf } from '@edulastic/common'
 import { collections as collectionConst } from '@edulastic/constants'
 
 // actions
@@ -16,11 +16,7 @@ import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 // components
 
-import {
-  Container,
-  CalculatorContainer,
-  getDefaultCalculatorProvider,
-} from '../common'
+import { Container, CalculatorContainer } from '../common'
 import PlayerMainContentArea from './PlayerMainContentArea'
 
 import SubmitConfirmation from '../common/SubmitConfirmation'
@@ -361,15 +357,13 @@ class AssessmentPlayerSimple extends React.Component {
             }}
             canShowPlaybackOptionTTS={canShowPlaybackOptionTTS}
           >
-            {toolsOpenStatus.indexOf(2) !== -1 && settings?.calcType ? (
+            <EduIf condition={toolsOpenStatus.indexOf(2) !== -1}>
               <CalculatorContainer
-                calculateMode={`${settings.calcType}_${
-                  settings.calcProvider ||
-                  getDefaultCalculatorProvider(settings.calcType)
-                }`}
                 changeTool={this.toggleToolsOpenStatus}
+                calcTypes={settings.calcTypes}
+                calcProvider={settings.calcProvider}
               />
-            ) : null}
+            </EduIf>
             <PlayerMainContentArea
               {...this.props}
               theme={themeToPass}

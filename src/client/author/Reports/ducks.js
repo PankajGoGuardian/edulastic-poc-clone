@@ -160,11 +160,11 @@ import {
   reportActivityByTeacherSaga,
 } from './subPages/engagementReport/ActivityByTeacher/ducks'
 import {
-  reducer as reportWholeStudentReducer,
-  watcherSaga as reportWholeStudentSaga,
-  selectors as reportWholeStudentSelectors,
-  actions as reportWholeStudentActions,
-} from './subPages/dataWarehouseReports/wholeStudentReport/ducks'
+  reducer as reportWholeLearnerReducer,
+  watcherSaga as reportWholeLearnerSaga,
+  selectors as reportWholeLearnerSelectors,
+  actions as reportWholeLearnerActions,
+} from './subPages/dataWarehouseReports/wholeLearnerReport/ducks'
 import {
   reducer as reportMultipleAssessmentDwReducer,
   watcherSaga as reportMultipleAssessmentDwSaga,
@@ -436,7 +436,7 @@ export const reportReducer = combineReducers({
   reportActivityByTeacherReducer,
   customReportReducer,
   sharedReportsReducer,
-  reportWholeStudentReducer,
+  reportWholeLearnerReducer,
   reportMultipleAssessmentDwReducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
@@ -530,10 +530,10 @@ const selectorDict = {
     setTempTags: setERTempTagsDataAction,
   },
   [reportGroupType.WHOLE_STUDENT_REPORT]: {
-    getTempTags: reportWholeStudentSelectors.filterTagsData,
-    getSettings: reportWholeStudentSelectors.settings,
-    setTags: reportWholeStudentActions.setSelectedFilterTagsData,
-    setTempTags: reportWholeStudentActions.setFilterTagsData,
+    getTempTags: reportWholeLearnerSelectors.filterTagsData,
+    getSettings: reportWholeLearnerSelectors.settings,
+    setTags: reportWholeLearnerActions.setSelectedFilterTagsData,
+    setTempTags: reportWholeLearnerActions.setFilterTagsData,
   },
   [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
     getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
@@ -835,7 +835,7 @@ export function* reportSaga() {
     reportActivityByTeacherSaga(),
     customReportSaga(),
     sharedReportsSaga(),
-    reportWholeStudentSaga(),
+    reportWholeLearnerSaga(),
     reportMultipleAssessmentDwSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),

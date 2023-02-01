@@ -19,6 +19,10 @@ import SharedReports from './components/sharedReports'
 import DataWarehouseReports from './components/dataWarehouseReport'
 import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
 import {
+  DW_MAR_REPORT_URL,
+  DW_WLR_REPORT_URL,
+} from './common/constants/dataWarehouseReports'
+import {
   getCsvDownloadingState,
   getPrintingState,
   setSharingStateAction,
@@ -452,10 +456,7 @@ const Container = (props) => {
           }}
         />
         <Route
-          path={[
-            '/author/reports/whole-student-report/student/',
-            '/author/reports/multiple-assessment-report-dw',
-          ]}
+          path={[DW_WLR_REPORT_URL, DW_MAR_REPORT_URL]}
           render={(_props) => (
             <DataWarehouseReportsContainer
               {..._props}

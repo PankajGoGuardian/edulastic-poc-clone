@@ -1,11 +1,14 @@
+export const WHOLE_LEARNER_REPORT = 'whole-learner-report'
+export const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+
 const reportGroupType = {
   SINGLE_ASSESSMENT_REPORT: 'single-assessment-report',
   MULTIPLE_ASSESSMENT_REPORT: 'multiple-assessment-report',
   STANDARDS_MASTERY_REPORT: 'standards-mastery-report',
   STUDENT_PROFILE_REPORT: 'student-profile-report',
   ENGAGEMENT_REPORT: 'engagement-report',
-  WHOLE_STUDENT_REPORT: 'whole-student-report',
-  MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
+  WHOLE_LEARNER_REPORT,
+  MULTIPLE_ASSESSMENT_REPORT_DW,
 }
 
 const reportNavType = {
@@ -29,8 +32,8 @@ const reportNavType = {
   ENGAGEMENT_SUMMARY: 'engagement-summary',
   ACTIVITY_BY_SCHOOL: 'activity-by-school',
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
-  WHOLE_STUDENT_REPORT: 'whole-student-report',
-  MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
+  WHOLE_LEARNER_REPORT,
+  MULTIPLE_ASSESSMENT_REPORT_DW,
 }
 
 const ReportPaths = {

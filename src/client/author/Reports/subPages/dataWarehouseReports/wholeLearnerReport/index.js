@@ -14,8 +14,9 @@ import StudentDetails from './components/StudentDetails'
 import AssessmentsTable from './components/AssessmentsTable'
 import AssessmentsChart from './components/AssessmentsChart'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
-import WholeStudentReportFilters from './components/Filters'
+import WholeLearnerReportFilters from './components/Filters'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+import { DW_WLR_REPORT_URL } from '../../../common/constants/dataWarehouseReports'
 import AttendanceChart from './components/AttendanceChart'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
@@ -47,7 +48,7 @@ import { ChartPreLabelWrapper } from '../../../common/components/charts/styled-c
 
 const { downloadCSV } = reportUtils.common
 
-const WholeStudentReport = ({
+const WholeLearnerReport = ({
   // value props
   loc,
   location,
@@ -182,7 +183,6 @@ const WholeStudentReport = ({
 
   useEffect(
     () => () => {
-      console.log('Whole Student Report Component Unmount')
       resetAllReports()
     },
     []
@@ -226,7 +226,7 @@ const WholeStudentReport = ({
 
   useEffect(() => {
     if (settings.selectedStudent.key) {
-      const path = `/author/reports/whole-student-report/student/${
+      const path = `${DW_WLR_REPORT_URL}${
         settings.selectedStudent.key
       }?${qs.stringify({
         ...settings.requestFilters,
@@ -324,7 +324,7 @@ const WholeStudentReport = ({
   // const onTestSelect = (item) =>
   //   setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
-    downloadCSV(`Whole Student Report-${studentName}.csv`, data)
+    downloadCSV(`Whole Learner Report-${studentName}.csv`, data)
 
   const isReportLoading = loadingReportData || loadingAttendanceData
   return (
@@ -347,7 +347,7 @@ const WholeStudentReport = ({
         isCliUser={isCliUser}
         alignment="baseline"
       >
-        <WholeStudentReportFilters
+        <WholeLearnerReportFilters
           reportId={reportId}
           isPrinting={isPrinting}
           onGoClick={onGoClick}
@@ -476,10 +476,10 @@ const enhance = connect(
     setSharingState: setSharingStateAction,
     fetchUpdateTagsData: (opts) =>
       fetchUpdateTagsDataAction({
-        type: reportGroupType.WHOLE_STUDENT_REPORT,
+        type: reportGroupType.WHOLE_LEARNER_REPORT,
         ...opts,
       }),
   }
 )
 
-export default enhance(WholeStudentReport)
+export default enhance(WholeLearnerReport)

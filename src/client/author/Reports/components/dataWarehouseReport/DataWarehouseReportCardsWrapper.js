@@ -2,14 +2,15 @@ import React from 'react'
 import styled from 'styled-components'
 
 import {
-  IconWholeStudentReport,
+  IconWholeLearnerReport,
   IconMultipleAssessmentReportDW,
 } from '@edulastic/icons'
 import ReportLinkCard from './common/components/ReportLinkCard'
 import MoreReportsContainer from './common/components/MoreReportsContainer'
-
-const DW_MAR_REPORT_URL = '/author/reports/multiple-assessment-report-dw'
-const DW_WSR_REPORT_URL = '/author/reports/whole-student-report/student/'
+import {
+  DW_MAR_REPORT_URL,
+  DW_WLR_REPORT_URL,
+} from '../../common/constants/dataWarehouseReports'
 
 const DataWarehoureReportCardsWrapper = ({ loc }) => {
   return (
@@ -22,10 +23,10 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         loc={loc}
       />
       <ReportLinkCard
-        IconThumbnail={IconWholeStudentReport}
-        title="Whole Student Report"
+        IconThumbnail={IconWholeLearnerReport}
+        title="Whole Learner Report"
         description="See the performance of a particular student accross Edulastic &amp; external tests"
-        url={DW_WSR_REPORT_URL}
+        url={DW_WLR_REPORT_URL}
         loc={loc}
       />
       <MoreReportsContainer />

@@ -62,6 +62,7 @@ export const StyledText = styled.div`
   text-transform: uppercase;
   color: ${dragDropUploadText};
   margin-top: ${({ isComment }) => (isComment ? 10 : 0)}px;
+  word-break: break-word;
 `
 
 export const Underlined = styled.span`

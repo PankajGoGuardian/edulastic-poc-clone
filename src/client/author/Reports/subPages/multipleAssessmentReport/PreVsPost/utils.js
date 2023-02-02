@@ -171,8 +171,8 @@ export const getPerformanceMatrixData = (
       postStudentsPercentage - preStudentsPercentage
 
     const preVsPostCellsData = selectedPerformanceBand.map((pb2) => {
-      const preThreshold = pb2.threshold
-      const postThreshold = pb1.threshold
+      const preThreshold = pb1.threshold
+      const postThreshold = pb2.threshold
       const preVsPostCellStudentCount =
         summaryMetricInfo.find(
           (m) =>

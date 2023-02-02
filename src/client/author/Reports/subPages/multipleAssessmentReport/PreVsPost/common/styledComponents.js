@@ -258,6 +258,7 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 `
 
 export const PerformanceMatrixContainer = styled(Row)`
+  padding: 5px;
   .section-pre-test,
   .section-post-test {
     padding: 10px;

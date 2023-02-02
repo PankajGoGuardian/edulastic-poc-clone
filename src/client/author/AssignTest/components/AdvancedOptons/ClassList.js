@@ -54,7 +54,8 @@ import { sortGrades } from '../../../TestPage/utils'
 const { allGrades, allSubjects } = selectsData
 
 const findTeacherName = (row) => {
-  const { owners = [], primaryTeacherId, parent: { id: teacherId } = {} } = row
+  const { owners = [], primaryTeacherId, parent } = row
+  const { id: teacherId } = parent || {}
   const teacher = find(
     owners,
     (owner) => owner.id === (primaryTeacherId || teacherId)

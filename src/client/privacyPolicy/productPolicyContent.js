@@ -6,12 +6,12 @@ const ProductPolicyContent = () => {
   return (
     <BodyContentWrapper data-testid="productPrivacyPolicy">
       <StickyHeader>
-        <strong>Product Privacy Policy</strong>
+        <strong> Product Privacy Policy </strong>
       </StickyHeader>
       <div>
         <p>Last Updated Date: February 14, 2023</p>
         <h2>
-          <strong>Introduction</strong>
+          <strong> Introduction </strong>
         </h2>
         <p>
           Welcome! GoGuardian (formally — Liminex, Inc. doing business as
@@ -36,6 +36,7 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             Product Terms of Service and End User License Agreement
           </a>
           .
@@ -136,7 +137,7 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <p>
-          This Product Privacy Policy does <em>not</em> apply to:
+          This Product Privacy Policy does <em> not </em> apply to:
         </p>
         <ul>
           <li>
@@ -147,6 +148,7 @@ const ProductPolicyContent = () => {
               target="_blank"
               rel="noopener noreferrer"
             >
+              {' '}
               Privacy Policy for Website visitors
             </a>
             (&ldquo;Website Privacy Policy&rdquo;)); or
@@ -174,6 +176,7 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             Terms of Service and End User License Agreement
           </a>
           (&ldquo;EULA&rdquo;), and as applicable to the extent your School is
@@ -183,6 +186,7 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             Data Protection Addendum
           </a>
           (&ldquo;DPA&rdquo;), also apply to how we treat your information.
@@ -202,7 +206,7 @@ const ProductPolicyContent = () => {
           information automatically (e.g., Offerings usage information).
         </p>
         <h4>
-          <strong>School and School Official Information</strong>
+          <strong> School and School Official Information </strong>
         </h4>
         <p>
           We collect the following information that we collectively label as
@@ -210,7 +214,7 @@ const ProductPolicyContent = () => {
         </p>
         <ul>
           <li>
-            <em>School Profile Information:</em> When an official of a School
+            <em> School Profile Information: </em> When an official of a School
             (&ldquo;School Official&rdquo;) initiates contact through our
             Website for the Offerings on behalf of his/her School, we collect
             that School Official’s contact information as well as information
@@ -222,7 +226,7 @@ const ProductPolicyContent = () => {
             the Offerings, the School Official must also create a password.
           </li>
           <li>
-            <em>Authorized School Personnel:</em> In certain Offerings,
+            <em> Authorized School Personnel: </em> In certain Offerings,
             following a School Official’s establishment of a School account, the
             School Official can use the Offerings to add additional School
             personnel such as other School Officials and teachers (together,
@@ -233,7 +237,7 @@ const ProductPolicyContent = () => {
             (e.g., class name and subject).
           </li>
           <li>
-            <em>Support Requests:</em> Authorized School Personnel can submit
+            <em> Support Requests: </em> Authorized School Personnel can submit
             requests about the Offerings to our support center (e.g., our
             Support Center and our Help Center) through both our Offerings
             themselves and from our Website. When Authorized School Personnel
@@ -241,7 +245,7 @@ const ProductPolicyContent = () => {
             these requests and associated contact information.
           </li>
           <li>
-            <em>Additional Information About Authorized School Personnel:</em>{' '}
+            <em> Additional Information About Authorized School Personnel: </em>{' '}
             Depending on the Offerings and features selected by a School, the
             Offerings can collect additional information about Authorized School
             Personnel, including chat messages and video conferencing between
@@ -255,7 +259,7 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <p>
-          <strong>Personal Student Information for All Offerings</strong>
+          <strong> Personal Student Information for All Offerings </strong>
         </p>
         <p>
           When addressing a specific Offering in this Product Privacy Policy, we
@@ -272,7 +276,7 @@ const ProductPolicyContent = () => {
           collected may change if a School utilizes new features or Offerings.
         </p>
         <h4>
-          <strong>GoGuardian Personal Student Information</strong>
+          <strong> GoGuardian Personal Student Information </strong>
         </h4>
         <p>
           This section applies to the GoGuardian Offerings only. In providing
@@ -295,7 +299,7 @@ const ProductPolicyContent = () => {
             <em>
               Student’s School-Managed Account Information and Association
               Information:
-            </em>
+            </em>{' '}
             GoGuardian’s Offerings collect a students’ Google or Microsoft
             School-managed account information: student’s name, email address,
             Google Profile ID and Google Image URL (for school-managed Google
@@ -307,7 +311,7 @@ const ProductPolicyContent = () => {
             classroom identifier or other identifier.
           </li>
           <li>
-            <em>Activity Information:</em> Depending on a School’s currently
+            <em> Activity Information: </em> Depending on a School’s currently
             selected GoGuardian Offerings, features, integrations and settings,
             GoGuardian may collect additional information, from or about online
             account or any activity when a user is logged on the school-managed
@@ -321,21 +325,21 @@ const ProductPolicyContent = () => {
             school-managed device or account.
           </li>
           <li>
-            <em>Grade, Attendance, and Assignment Information:</em> Depending on
-            a School’s currently selected GoGuardian Offerings, features,
+            <em> Grade, Attendance, and Assignment Information: </em> Depending
+            on a School’s currently selected GoGuardian Offerings, features,
             integrations, and settings, GoGuardian may also receive grade,
             attendance, and assignment information.
           </li>
           <li>
-            <em>Location Information:</em> Using GoGuardian Admin, a School can
-            collect the geographic location of devices for the purpose of
+            <em> Location Information: </em> Using GoGuardian Admin, a School
+            can collect the geographic location of devices for the purpose of
             locating and recovering its devices. GoGuardian Offerings can
             collect IP addresses while GoGuardian Offerings are active, no
             precise geographic login locations of mobile phones can be accessed
             or stored by GoGuardian.
           </li>
           <li>
-            <em>Integration Information</em>: If your School chooses to
+            <em> Integration Information </em>: If your School chooses to
             integrate GoGuardian Offerings with other Integration Offerings
             (e.g., integrate with other School software with GoGuardian
             Offerings), then we will collect the information necessary to
@@ -348,7 +352,7 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <p>
-          <strong>Pear Deck Personal Student Information</strong>
+          <strong> Pear Deck Personal Student Information </strong>
         </p>
         <p>
           This section applies to the Pear Deck Offerings only. The Personal
@@ -374,22 +378,22 @@ const ProductPolicyContent = () => {
             join such session.
           </li>
           <li>
-            <em>Activity Information</em>: We collect additional information
+            <em> Activity Information </em>: We collect additional information
             about the student’s activity within a presentation, including
             engagement with and any student content generated in the session.
             This may include free text, multiple choice answers, drawings, or
             presentation URLs.
           </li>
           <li>
-            <em>Device and Usage Information</em>: We collect general device and
-            usage information such as IP address, device identifier, operating
-            system, browser type, non-precise geographic location (e.g. zip code
-            and city), technical information about your device, system and app
-            software, and peripherals, and date and time stamps associated with
-            login.
+            <em> Device and Usage Information </em>: We collect general device
+            and usage information such as IP address, device identifier,
+            operating system, browser type, non-precise geographic location
+            (e.g. zip code and city), technical information about your device,
+            system and app software, and peripherals, and date and time stamps
+            associated with login.
           </li>
           <li>
-            <em>Integration Information: </em>If your School chooses to
+            <em> Integration Information: </em>If your School chooses to
             integrate Pear Deck Offerings with other Integration Offerings
             (e.g., integrate with other School software with Pear Deck), then we
             will collect the information necessary to integrate and perform our
@@ -399,7 +403,7 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <p>
-          <strong>Edulastic Personal Student Information</strong>
+          <strong> Edulastic Personal Student Information </strong>
         </p>
         <p>
           This section applies to the Edulastic Offerings only. The Personal
@@ -419,23 +423,23 @@ const ProductPolicyContent = () => {
             address, student ID, Edulastic user name.
           </li>
           <li>
-            <em>Demographic Information</em>: We may collect student demographic
-            information, including gender, date of birth, English language
-            learner status, individualized education plan status, and free and
-            reduced lunch status).
+            <em> Demographic Information </em>: We may collect student
+            demographic information, including gender, date of birth, English
+            language learner status, individualized education plan status, and
+            free and reduced lunch status).
           </li>
           <li>
-            <em>Assessment Information</em>: We collect student assessment
+            <em> Assessment Information </em>: We collect student assessment
             responses, student assessment scores, and teacher feedback.
           </li>
           <li>
-            <em>Device and Usage Information</em>: We collect general device and
-            usage information such as IP address, browser type, time on task
+            <em> Device and Usage Information </em>: We collect general device
+            and usage information such as IP address, browser type, time on task
             (the length of time a student spends on a question), browser lock
             (if students try to leave a browser), and user interaction.
           </li>
           <li>
-            <em>Integration Information</em>: If your School chooses to
+            <em> Integration Information </em>: If your School chooses to
             integrate Edulastic Offerings with other Integration Offerings
             (e.g., integrate with other School software with Edulastic
             Offerings), we will collect the information necessary to facilitate
@@ -470,13 +474,13 @@ const ProductPolicyContent = () => {
           we do not collect student name or email address to join such session.
         </p>
         <p>
-          <em>Activity Information:</em> We collect additional information about
-          the student’s activity within a session, including engagement with and
-          any student content generated in the session. This may include free
-          text, multiple choice answers, drawings, or session URLs.
+          <em> Activity Information: </em> We collect additional information
+          about the student’s activity within a session, including engagement
+          with and any student content generated in the session. This may
+          include free text, multiple choice answers, drawings, or session URLs.
         </p>
         <p>
-          <em>Device and Usage Information:</em> We collect general device and
+          <em> Device and Usage Information: </em> We collect general device and
           usage information such as IP address, device identifier, operating
           system, browser type, non-precise geographic location (e.g. zip code
           and city), technical information about your device, system and app
@@ -484,16 +488,16 @@ const ProductPolicyContent = () => {
           login.
         </p>
         <p>
-          <em>Integration Information:</em> If your School chooses to integrate
-          Giant Steps Offerings with other Integration Offerings (e.g.,
-          integrate with other School software with Giant Steps), then we will
-          collect the information necessary to integrate and perform our
+          <em> Integration Information: </em> If your School chooses to
+          integrate Giant Steps Offerings with other Integration Offerings
+          (e.g., integrate with other School software with Giant Steps), then we
+          will collect the information necessary to integrate and perform our
           Offerings, including unique identifiers (e.g., Google classroom
           identifier to connect a student to his/her classroom if your School
           integrates Google Classroom with Giant Steps).
         </p>
         <h3>
-          <strong>Parent/Guardian Information</strong>
+          <strong> Parent/Guardian Information </strong>
         </h3>
         <p>
           If a School chooses to utilize one of our Offerings’ guardian feature
@@ -531,29 +535,29 @@ const ProductPolicyContent = () => {
         </p>
         <ul>
           <li>
-            <em>Analytics Information and Event Information:</em> Our Offerings
-            automatically collect information through analytics services
-            providers, including IP address, Internet service provider (ISP),
-            date and time stamp, browser language, browser type, amount of time
-            spent on particular portions of our Offerings, and/or other general
-            usage data. Similar to other software, we also collect event
+            <em> Analytics Information and Event Information: </em> Our
+            Offerings automatically collect information through analytics
+            services providers, including IP address, Internet service provider
+            (ISP), date and time stamp, browser language, browser type, amount
+            of time spent on particular portions of our Offerings, and/or other
+            general usage data. Similar to other software, we also collect event
             information regarding how users interact with our Offerings. For
             example, we collect information about how much time users spend on
             certain features of our Offerings.
           </li>
           <li>
-            <em>Log Information: </em>We also collect log information such as
+            <em> Log Information: </em>We also collect log information such as
             service diagnostics and technical logging information, which may
             include IP address, login times to our Offerings, usage times of our
             Offerings, browser type, and browser configuration.
           </li>
           <li>
-            <em>Device Information:</em> We collect information about the
+            <em> Device Information: </em> We collect information about the
             devices that log into our Offerings, including type of device,
             device settings, and operating system.
           </li>
           <li>
-            <em>Cookies:</em> We use Cookies in our Offerings for the purposes
+            <em> Cookies: </em> We use Cookies in our Offerings for the purposes
             described in our Cookies Notice.
           </li>
         </ul>
@@ -647,6 +651,7 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             EULA
           </a>
           ,
@@ -655,6 +660,7 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             DPA
           </a>
           , or any other agreement between a School and Liminex.
@@ -678,17 +684,18 @@ const ProductPolicyContent = () => {
         <p>We may disclose information in the following ways:</p>
         <ul>
           <li>
-            <em>Affiliates</em>: We provide access to or share your information
-            with current or future family of GoGuardian companies including our
-            Affiliates, such as Pear Deck, Giant Steps, and Edulastic.
+            <em> Affiliates: </em> We provide access to or share your
+            information with current or future family of GoGuardian companies
+            including our Affiliates, such as Pear Deck, Giant Steps, and
+            Edulastic.
           </li>
           <li>
-            <em>Authorized School Personnel Access:</em> Each School determines
-            which Authorized School Personnel have access to the School’s
-            account with Offerings and their permission levels.
+            <em> Authorized School Personnel Access: </em> Each School
+            determines which Authorized School Personnel have access to the
+            School’s account with Offerings and their permission levels.
           </li>
           <li>
-            <em>Third Parties Supporting Our Offerings:</em> We may share
+            <em> Third Parties Supporting Our Offerings: </em> We may share
             information with our service providers that assist us in performing
             business-related functions that support our Offerings. For example,
             we use hosting services and customer service tools to help support
@@ -697,7 +704,7 @@ const ProductPolicyContent = () => {
             to perform their specific function.
           </li>
           <li>
-            <em>With School Permission or at School Direction:</em> We may
+            <em> With School Permission or at School Direction: </em> We may
             disclose information, including Personal Student Information, to
             third parties pursuant to a School’s instruction or with a School’s
             permission. For example, if a School chooses to integrate our
@@ -707,7 +714,7 @@ const ProductPolicyContent = () => {
             testimonial video or quotation.
           </li>
           <li>
-            <em>Protection of Liminex and Others:</em> We may disclose certain
+            <em> Protection of Liminex and Others: </em> We may disclose certain
             of the information we collect (set forth above) if we believe in
             good faith that doing so is necessary or appropriate to (i) protect
             or defend the rights, safety, or property of Liminex or third
@@ -716,14 +723,14 @@ const ProductPolicyContent = () => {
             claims that content violates the rights of third parties.
           </li>
           <li>
-            <em>Legal Requirements:</em> We may disclose certain information if
-            we believe in good faith that doing so is necessary or appropriate
-            to comply with any law enforcement, legal, or regulatory process,
-            such as to respond to a warrant, subpoena, court order, or other
-            applicable laws and regulations.
+            <em> Legal Requirements: </em> We may disclose certain information
+            if we believe in good faith that doing so is necessary or
+            appropriate to comply with any law enforcement, legal, or regulatory
+            process, such as to respond to a warrant, subpoena, court order, or
+            other applicable laws and regulations.
           </li>
           <li>
-            <em>Business Transfer:</em> We may disclose certain information we
+            <em> Business Transfer: </em> We may disclose certain information we
             collect (set forth above), in connection with or during negotiations
             of any merger, sale of company assets, financing, or acquisition of
             all or a portion of our business to another company. If such
@@ -735,7 +742,7 @@ const ProductPolicyContent = () => {
             has a commitment to student privacy.
           </li>
           <li>
-            <em>De-Identified Information:</em> We may use, share, or disclose
+            <em> De-Identified Information: </em> We may use, share, or disclose
             De-Identified information (as that term is defined in our EULA) for
             various purposes such as product development, research, and
             marketing, in compliance with relevant laws. For example, we may use
@@ -748,7 +755,7 @@ const ProductPolicyContent = () => {
           the UK, please see our Notice to EEA and Other Non-US Residents below.
         </p>
         <h3>
-          <strong>How Long We Keep Information</strong>
+          <strong> How Long We Keep Information </strong>
         </h3>
         <p>We retain Personal Student Information as directed by the School:</p>
         <ul>
@@ -779,13 +786,13 @@ const ProductPolicyContent = () => {
             DPA or other agreement between the School and us.
           </li>
           <li>
-            <em>Video Conferencing Recordings: </em>If a School enables the
+            <em> Video Conferencing Recordings: </em>If a School enables the
             video conferencing feature in GoGuardian Teacher, audio and video
             recordings will be stored by GoGuardian for ninety (90) days.
           </li>
           <li>
-            <em>Deactivated Accounts: </em>We may consider a School’s account to
-            be terminated 365 days after all of a School’s licenses expire
+            <em> Deactivated Accounts: </em>We may consider a School’s account
+            to be terminated 365 days after all of a School’s licenses expire
             without use, reactivation, or renewal by the School. At that time,
             if a School has not requested deletion of Personal Student
             Information, we will automatically de-identify and/or delete the
@@ -828,14 +835,14 @@ const ProductPolicyContent = () => {
         </p>
         <ul>
           <li>
-            <em>Promotional Communications:</em> You can decline promotional
+            <em> Promotional Communications: </em> You can decline promotional
             communications at the point information is requested for such
             purpose (e.g., by checking the relevant box) or, by following the
             unsubscribe instructions on communications sent to you. You can also
             contact us as described in the “How to Contact Us” section below.
           </li>
           <li>
-            <em>Cookies and Analytics.</em> You can opt out from certain
+            <em> Cookies and Analytics: </em> You can opt out from certain
             cookie-related and analytics processing by following the
             instructions in our Cookie Notice below.
           </li>
@@ -858,6 +865,7 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             Privacy Policy for Website visitors
           </a>
           . If you are acting on behalf of your School and would like to submit
@@ -891,8 +899,9 @@ const ProductPolicyContent = () => {
             obligation. We may request that an individual and/or School provide
             us with information necessary to confirm the individual’s identity
             before responding to your request. To exercise any of these rights,
-            please contact us at privacy@goguardian.com. Authorized agents for
-            California residents may submit requests at:
+            please contact us at{' '}
+            <a href="mailto:privacy@goguardian.com">privacy@goguardian.com</a>.
+            Authorized agents for California residents may submit requests at:
             <a
               href="https://www.goguardian.com/ccpa-requests"
               target="_blank"
@@ -921,7 +930,7 @@ const ProductPolicyContent = () => {
         </p>
         <ul>
           <li>
-            <em>Cooperation with Schools.</em> We will assist the School in
+            <em> Cooperation with Schools. </em> We will assist the School in
             facilitating requests relating to Authorized School Personnel
             Information and Personal Student Information pursuant to the
             School’s instruction as explained further in the “How Long We Keep
@@ -935,7 +944,7 @@ const ProductPolicyContent = () => {
             </em>
             <ul>
               <li>
-                <em>Review, Correction, and Deletion Requests.</em>
+                <em> Review, Correction, and Deletion Requests. </em>
                 <ul>
                   <li>
                     If a parent, legal guardian, eligible student, or Authorized
@@ -966,6 +975,7 @@ const ProductPolicyContent = () => {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
+                      {' '}
                       Privacy Policy for Website Visitors
                     </a>
                     .
@@ -980,7 +990,7 @@ const ProductPolicyContent = () => {
                 </ul>
               </li>
               <li>
-                <em>Transfer Requests.</em> Our Offerings allow Authorized
+                <em> Transfer Requests. </em> Our Offerings allow Authorized
                 School Personnel to download information on behalf of a parent,
                 legal guardian, eligible student, or School Personnel. If our
                 Offerings do not cover the scope of the transfer request, we
@@ -993,7 +1003,7 @@ const ProductPolicyContent = () => {
                 and as required by relevant law.
               </li>
               <li>
-                <em>Transfer Requests for Student-Generated Content. </em>
+                <em> Transfer Requests for Student-Generated Content. </em>
                 California law requires website operators to transfer
                 student-generated content to the student’s personal account when
                 requested by an eligible student, parent, or guardian. The
@@ -1014,7 +1024,7 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <h3>
-          <strong>How We Protect Your Information</strong>
+          <strong> How We Protect Your Information </strong>
         </h3>
         <p>
           We take the security and privacy of your School’s data very seriously.
@@ -1033,7 +1043,7 @@ const ProductPolicyContent = () => {
           students, and regulators.
         </p>
         <p>
-          <strong>Additional Information for California Residents</strong>
+          <strong> Additional Information for California Residents </strong>
         </p>
         <p>
           If you are a California resident, California law requires us to
@@ -1085,7 +1095,7 @@ const ProductPolicyContent = () => {
           determining how long to retain information.
         </h2>
         <h2>
-          <strong>NOTICE TO E.E.A. AND OTHER NON-U.S. RESIDENTS</strong>
+          <strong> NOTICE TO E.E.A. AND OTHER NON-U.S. RESIDENTS </strong>
         </h2>
         <p>
           European Union (“EU”) data protection laws make a distinction between
@@ -1099,7 +1109,7 @@ const ProductPolicyContent = () => {
           information.
         </p>
         <h3>
-          <strong>Liminex as a Data Controller vs. Data Processor</strong>
+          <strong> Liminex as a Data Controller vs. Data Processor </strong>
         </h3>
         <p>
           Liminex is considered the “processor” of School Information (except
@@ -1112,14 +1122,16 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             our EULA
-          </a>
+          </a>{' '}
           and, if applicable,
           <a
             href="https://edulastic.com/data-processing-addendum/"
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             DPA
           </a>
           . If you have a question or complaint about how your personal data is
@@ -1140,20 +1152,20 @@ const ProductPolicyContent = () => {
         </p>
         <ul>
           <li>
-            <em>Contractual Commitments: </em>We use, share, and disclose
+            <em> Contractual Commitments: </em>We use, share, and disclose
             information to honor our contractual commitments to a School.
           </li>
           <li>
-            <em>Legal Compliance: </em>We need to use, share, and disclose
+            <em> Legal Compliance: </em>We need to use, share, and disclose
             information in certain ways to comply with our legal obligations.
           </li>
           <li>
-            <em>With Your Consent: </em>Where required by law, and in some other
-            cases, we use, share, or disclose information on the basis of
+            <em> With Your Consent: </em>Where required by law, and in some
+            other cases, we use, share, or disclose information on the basis of
             consent.
           </li>
           <li>
-            <em>Legitimate Interests: </em>In many cases, we use, share, or
+            <em> Legitimate Interests: </em>In many cases, we use, share, or
             disclose information on the ground that it furthers our legitimate
             business interests in ways that are not overridden by the interests
             or fundamental rights and freedoms of the affected individuals, such
@@ -1163,7 +1175,7 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <h3>
-          <strong>Information Transfer To The United States</strong>
+          <strong> Information Transfer To The United States </strong>
         </h3>
         <p>
           The Offerings are operated in the United States. If you are located
@@ -1249,7 +1261,7 @@ const ProductPolicyContent = () => {
             the event giving rise to the damage.
           </li>
           <li>
-            <em>Choices of International Users: </em>Some international users
+            <em> Choices of International Users: </em>Some international users
             (including those whose information we collect under the Privacy
             Shield) of Offerings have certain legal rights to access certain
             information that we hold about them and to request its deletion.
@@ -1258,33 +1270,34 @@ const ProductPolicyContent = () => {
           </li>
         </ul>
         <h3>
-          <strong>How To Contact Us and Dispute Resolution</strong>
+          <strong> How To Contact Us and Dispute Resolution </strong>
         </h3>
         <p>
-          <em>How to Contact Us for Non-U.S. Residents:</em> Individuals located
-          outside the United States who have questions or concerns regarding our
-          Product Privacy Policy or practices may direct a complaint in writing
-          to Chief Privacy Officer, Liminex, Inc., 2030 East Maple Avenue, Suite
-          100, El Segundo, California 90245. Tel: 888-310-0410 Email:
-          privacy@goguardian.com. Within a reasonable time of receiving the
-          written complaint, we will review and address the complaint, as
-          appropriate, and inform the individual of the results of such review
-          and any steps taken to address the complaint.
+          <em> How to Contact Us for Non-U.S. Residents: </em> Individuals
+          located outside the United States who have questions or concerns
+          regarding our Product Privacy Policy or practices may direct a
+          complaint in writing to Chief Privacy Officer, Liminex, Inc., 2030
+          East Maple Avenue, Suite 100, El Segundo, California 90245. Tel:
+          888-310-0410 Email: privacy@goguardian.com. Within a reasonable time
+          of receiving the written complaint, we will review and address the
+          complaint, as appropriate, and inform the individual of the results of
+          such review and any steps taken to address the complaint.
         </p>
         <p>
-          <em>Dispute Resolution for EU and Swiss Residents:</em> For GoGuardian
-          and for Pear Deck and Edulastic once participation in the Privacy
-          Shield framework is effective for each of Pear Deck and Edulastic, if
-          you are a resident of the EU or Switzerland and are dissatisfied with
-          the manner in which we have addressed your concerns, you may seek
-          further assistance, at no cost to you, from our designated Privacy
-          Shield independent recourse mechanism, the JAMS Privacy Shield
-          Program, which you can learn more about by visiting
+          <em> Dispute Resolution for EU and Swiss Residents: </em> For
+          GoGuardian and for Pear Deck and Edulastic once participation in the
+          Privacy Shield framework is effective for each of Pear Deck and
+          Edulastic, if you are a resident of the EU or Switzerland and are
+          dissatisfied with the manner in which we have addressed your concerns,
+          you may seek further assistance, at no cost to you, from our
+          designated Privacy Shield independent recourse mechanism, the JAMS
+          Privacy Shield Program, which you can learn more about by visiting
           <a
             href="https://www.jamsadr.com/eu-us-privacy-shield"
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             https://www.jamsadr.com/eu-us-privacy-shield
           </a>
           . Residents of the EU or Switzerland may, in certain circumstances,
@@ -1304,7 +1317,7 @@ const ProductPolicyContent = () => {
           and enforcement powers of the U.S. Federal Trade Commission (FTC).
         </p>
         <p>
-          <em>For Australian residents:</em> If you are located in Australia,
+          <em> For Australian residents: </em> If you are located in Australia,
           and are dissatisfied with the way we have handled a privacy issue, you
           may contact the Office of the Australian Information Commissioner for
           more information
@@ -1313,28 +1326,31 @@ const ProductPolicyContent = () => {
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             www.oaic.gov.au
           </a>
           .
         </p>
         <p>
-          <em>For Singapore residents:</em> If you are located in Singapore, and
-          are dissatisfied with the way we have handled a privacy issue, you may
-          contact the Personal Data Protection Commission for more information
+          <em> For Singapore residents: </em> If you are located in Singapore,
+          and are dissatisfied with the way we have handled a privacy issue, you
+          may contact the Personal Data Protection Commission for more
+          information
           <a
             href="https://www.pdpc.gov.sg/"
             target="_blank"
             rel="noopener noreferrer"
           >
+            {' '}
             www.pdpc.gov.sg
           </a>
           .
         </p>
         <h2>
-          <strong>Cookies Notice</strong>
+          <strong> Cookies Notice </strong>
         </h2>
         <p>
-          <em>What are cookies?</em>
+          <em> What are cookies? </em>
         </p>
         <p>
           Cookies are small text files stored on your computer that allow us to
@@ -1365,11 +1381,11 @@ const ProductPolicyContent = () => {
           <li>remember your settings and account information.</li>
         </ul>
         <p>
-          We do <em>not</em> use any advertising Cookies in our Offerings and we
-          do not place advertisements in the Offerings.
+          We do <em> not </em> use any advertising Cookies in our Offerings and
+          we do not place advertisements in the Offerings.
         </p>
         <p>
-          <em>What are my choices about Cookies?</em>
+          <em> What are my choices about Cookies? </em>
         </p>
         <p>
           You can learn more about how Cookies work and how to turn them off in
@@ -1462,7 +1478,7 @@ const ProductPolicyContent = () => {
           not track you across websites.
         </p>
         <h3>
-          <strong>Changes to this Privacy Policy</strong>
+          <strong> Changes to this Privacy Policy </strong>
         </h3>
         <p>
           We reserve the right to make changes to this Product Privacy Policy
@@ -1478,14 +1494,15 @@ const ProductPolicyContent = () => {
           required by applicable law.
         </p>
         <h3>
-          <strong>How to Contact Us</strong>
+          <strong> How to Contact Us </strong>
         </h3>
         <p>
           If you have questions or concerns, the best way to reach us is by
-          emailing privacy@goguardian.com. You can also reach us by calling
-          888-310-0410 or by writing to Liminex, Inc. dba GoGuardian, Attn:
-          Chief Privacy Officer, 2030 East Maple Avenue, Suite 100, El Segundo,
-          California 90245.
+          emailing{' '}
+          <a href="mailto:privacy@goguardian.com">privacy@goguardian.com</a>.
+          You can also reach us by calling 888-310-0410 or by writing to
+          Liminex, Inc. dba GoGuardian, Attn: Chief Privacy Officer, 2030 East
+          Maple Avenue, Suite 100, El Segundo, California 90245.
         </p>
         <p>
           Additionally, please feel free to consult additional resources such as

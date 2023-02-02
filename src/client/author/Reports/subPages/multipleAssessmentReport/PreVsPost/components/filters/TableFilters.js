@@ -13,10 +13,10 @@ const TableFilters = ({
   analyseByOptions = [],
   selectedTableFilters = {},
 }) => {
-  const updateTableFilters = (e, selected) => {
+  const updateTableFilters = (e, selected, keyName) => {
     setTableFilters({
       ...selectedTableFilters,
-      compareBy: selected,
+      [keyName]: selected,
     })
   }
   const showAddToGroupButton =
@@ -32,13 +32,13 @@ const TableFilters = ({
         style={{ marginRight: '10px' }}
         prefix="Compare By"
         by={selectedTableFilters.compareBy}
-        selectCB={updateTableFilters}
+        selectCB={(e, selected) => updateTableFilters(e, selected, 'compareBy')}
         data={compareByOptions}
       />
       <ControlDropDown
         prefix="Analyse By"
         by={selectedTableFilters.analyseBy}
-        selectCB={updateTableFilters}
+        selectCB={(e, selected) => updateTableFilters(e, selected, 'analyseBy')}
         data={analyseByOptions}
       />
     </Row>

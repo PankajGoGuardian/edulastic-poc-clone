@@ -157,7 +157,7 @@ export const getTableColumns = (
       (col) => col.key === 'avgPerformance'
     )
     _columns[avgPerformanceColumnIdx].render = (_, record) => (
-      <AvgPerformance record={record} />
+      <AvgPerformance record={record} analyseBy={analyseBy} />
     )
 
     // Performance change column

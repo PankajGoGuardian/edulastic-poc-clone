@@ -1,5 +1,5 @@
-export const WHOLE_LEARNER_REPORT = 'whole-learner-report'
-export const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+const WHOLE_LEARNER_REPORT = 'whole-learner-report'
+const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
 
 const reportGroupType = {
   SINGLE_ASSESSMENT_REPORT: 'single-assessment-report',
@@ -50,4 +50,6 @@ module.exports = {
   reportNavType,
   sharedWithType,
   ReportPaths,
+  WHOLE_LEARNER_REPORT,
+  MULTIPLE_ASSESSMENT_REPORT_DW,
 }

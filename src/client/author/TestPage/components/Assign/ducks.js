@@ -39,7 +39,6 @@ import {
   getIsAllClassSelectedSelector,
 } from '../../../AdvanceSearch/ducks'
 const { completionTypes, passwordPolicy } = testConstants
-const { completionTypes, calculatorTypes, passwordPolicy } = testContants
 const assignBehaviour = {
   async: 'ASYNCHRONOUS_ASSIGN',
   sync: 'SYNCHRONOUS_ASSIGN',

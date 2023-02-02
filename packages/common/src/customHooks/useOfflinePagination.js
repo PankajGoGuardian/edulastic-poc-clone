@@ -50,23 +50,25 @@ function useOfflinePagination(options = {}) {
     setPage((curPage) => curPage + 1)
   }, [setPage])
 
-  const pagedData = useMemo(() => {
+  const activeView = useMemo(() => {
     const pageOffset = page * pageSize
-    let start = Math.max(0, pageOffset - lookbackCount)
-    const end = Math.min(data.length, pageOffset + pageSize + lookaheadCount)
-    if (backFillLastPage && end === data.length) {
-      start =
-        Math.min(data.length, pageOffset + pageSize) - pageSize - lookbackCount
+    let viewStart = Math.max(0, pageOffset - lookbackCount)
+    const viewEnd = Math.min(
+      data.length,
+      pageOffset + pageSize + lookaheadCount
+    )
+    if (backFillLastPage && viewEnd === data.length) {
+      const pageEnd = Math.min(data.length, pageOffset + pageSize)
+      viewStart = Math.max(0, pageEnd - pageSize - lookbackCount)
     }
-    return data.slice(start, end)
-  }, [data, page])
+    return data.slice(viewStart, viewEnd)
+  }, [data, page, lookbackCount, lookaheadCount, pageSize])
 
   return {
     page,
-    // pagination,
     prev,
     next,
-    pagedData,
+    pagedData: activeView,
     setPage,
     totalPages,
   }

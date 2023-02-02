@@ -15,10 +15,7 @@ const AudioResponse = (props) => {
 
   return (
     <WithResources
-      resources={[
-        `${AppConfig.jqueryPath}/jquery.min.js`,
-        `${AppConfig.katexPath}/katex.min.js`,
-      ]}
+      resources={[AppConfig.jqueryPath, `${AppConfig.katexPath}/katex.min.js`]}
       fallBack={<span />}
       onLoaded={() => {}}
     >

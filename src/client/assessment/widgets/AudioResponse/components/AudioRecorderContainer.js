@@ -18,12 +18,18 @@ const AudioRecorderContainer = ({
   onRecordingComplete,
   setErrorData,
   userId,
+  stopRecordingForQid,
+  setStopAudioRecordingAndUploadForQid,
+  questionId,
 }) => {
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
     onChangeRecordingState,
     onRecordingComplete,
     setErrorData,
     userId,
+    stopRecordingForQid,
+    setStopAudioRecordingAndUploadForQid,
+    questionId,
   })
 
   return (
@@ -65,6 +71,9 @@ AudioRecorderContainer.propTypes = {
   onRecordingComplete: PropTypes.func.isRequired,
   setErrorData: PropTypes.func.isRequired,
   userId: PropTypes.string.isRequired,
+  stopRecordingForQid: PropTypes.string.isRequired,
+  questionId: PropTypes.string.isRequired,
+  setStopAudioRecordingAndUploadForQid: PropTypes.func.isRequired,
 }
 
 AudioRecorderContainer.defaultProps = {}

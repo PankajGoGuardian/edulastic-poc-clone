@@ -6,7 +6,6 @@ import {
   sumBy,
   round,
   forEach,
-  meanBy,
   maxBy,
   get,
   range,
@@ -116,11 +115,11 @@ export const getSummaryDataFromSummaryMetrics = (summaryMetricInfo) => {
   )
   // get average and max scores
   const preTestAverageScore = round(
-    meanBy(summaryMetricInfo, 'preTestAverageScore'),
+    sumBy(summaryMetricInfo, 'preTestScore') / totalStudentCount,
     2
   )
   const postTestAverageScore = round(
-    meanBy(summaryMetricInfo, 'postTestAverageScore'),
+    sumBy(summaryMetricInfo, 'postTestScore') / totalStudentCount,
     2
   )
   const preTestMaxScore =
@@ -171,8 +170,8 @@ export const getPerformanceMatrixData = (
       postStudentsPercentage - preStudentsPercentage
 
     const preVsPostCellsData = selectedPerformanceBand.map((pb2) => {
-      const preThreshold = pb2.threshold
-      const postThreshold = pb1.threshold
+      const preThreshold = pb1.threshold
+      const postThreshold = pb2.threshold
       const preVsPostCellStudentCount =
         summaryMetricInfo.find(
           (m) =>
@@ -262,15 +261,15 @@ export const getTableData = (
   // get data required for table
   const tableData = map(Object.keys(groupedByCompareByKey), (key) => {
     const data = groupedByCompareByKey[key]
-    const preAvgScore = round(meanBy(data, 'preTestAverageScore'), 2)
-    const postAvgScore = round(meanBy(data, 'postTestAverageScore'), 2)
+    const studentsCount = sumBy(data, (d) =>
+      parseInt(d.totalStudentCount, DECIMAL_BASE)
+    )
+    const preAvgScore = round(sumBy(data, 'preTestScore') / studentsCount, 2)
+    const postAvgScore = round(sumBy(data, 'postTestScore') / studentsCount, 2)
     const preMaxScore = get(maxBy(data, 'preTestMaxScore'), 'preTestMaxScore')
     const postMaxScore = get(
       maxBy(data, 'postTestMaxScore'),
       'postTestMaxScore'
-    )
-    const studentsCount = sumBy(data, (d) =>
-      parseInt(d.totalStudentCount, DECIMAL_BASE)
     )
     const preAvgScorePercentage = percentage(preAvgScore, preMaxScore, true)
     const postAvgScorePercentage = percentage(postAvgScore, postMaxScore, true)

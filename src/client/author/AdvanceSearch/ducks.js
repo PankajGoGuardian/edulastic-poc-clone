@@ -10,6 +10,7 @@ import {
   tagsApi,
 } from '@edulastic/api'
 import { all, call, put, takeEvery, select } from 'redux-saga/effects'
+import { database } from '@edulastic/constants'
 import { receiveClassListSuccessAction } from '../Classes/ducks'
 import { getUserOrgId } from '../src/selectors/user'
 
@@ -204,10 +205,19 @@ export const isAdvancedSearchLoadingSelector = createSelector(
 )
 
 // saga
-function* setAdvancedSearchSchools() {
+function* setAdvancedSearchSchools({ payload: _payload }) {
   try {
     const districtId = yield select(getUserOrgId)
-    const schools = yield call(schoolApi.getSchools, { districtId })
+    const payload = {
+      limit: 25,
+      districtId,
+      search: {
+        name: [
+          { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
+        ],
+      },
+    }
+    const schools = yield call(schoolApi.getSchools, payload)
     yield put(
       setAdvancedSearchDetailsAction({
         key: 'schools',
@@ -263,7 +273,9 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
       includes: ['name'],
       districtId,
       search: {
-        name: [{ type: 'cont', value: _payload.searchString }],
+        name: [
+          { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
+        ],
       },
     }
 

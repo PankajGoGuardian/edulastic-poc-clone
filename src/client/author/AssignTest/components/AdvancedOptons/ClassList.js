@@ -463,9 +463,9 @@ class ClassList extends React.Component {
               placeholder="All School"
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
@@ -489,9 +489,9 @@ class ClassList extends React.Component {
               onChange={changeField('grades')}
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               data-cy="class-grades-filter"
             >
@@ -516,9 +516,9 @@ class ClassList extends React.Component {
               onChange={changeField('subjects')}
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               data-cy="class-subject-filter"
             >
@@ -565,9 +565,9 @@ class ClassList extends React.Component {
               value={classType}
               disabled={filterClassIds.length || isAdvancedSearchSelected}
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
             >
               {[
@@ -591,9 +591,9 @@ class ClassList extends React.Component {
               mode="multiple"
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               value={filterClassIds}
               data-cy="selectClass"
@@ -622,9 +622,9 @@ class ClassList extends React.Component {
               onChange={changeField('tags')}
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
             >
               {tagList.map(({ _id, tagName }) => (

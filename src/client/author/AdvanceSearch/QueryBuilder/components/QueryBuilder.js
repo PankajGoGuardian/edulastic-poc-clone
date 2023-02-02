@@ -66,7 +66,7 @@ const _QueryBuilder = ({
 
   useEffect(() => {
     const searchString = ''
-    loadSchoolsData()
+    loadSchoolsData({ searchString })
     loadClassListData({ searchString })
     loadCourseListData({ searchString })
     loadTagsListData({ searchString })

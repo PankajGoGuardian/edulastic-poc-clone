@@ -7,6 +7,7 @@ import {
   getAdvancedSearchDetailsSelector,
   setAdvancedSearchClassesAction,
   setAdvancedSearchCoursesAction,
+  setAdvancedSearchSchoolsAction,
   setAdvancedSearchTagsAction,
 } from '../../ducks'
 import { StyledSelect } from './styled-components'
@@ -23,12 +24,14 @@ const ValueEditor = (props) => {
     value,
     fieldData,
     advancedSearchDetails,
+    loadSchoolsData,
     loadClassListData,
     loadCourseListData,
     loadTagListData,
   } = props
 
   const enableSearchFields = {
+    [fieldKey.schools]: { key: 'schools', func: loadSchoolsData },
     [fieldKey.classes]: { key: 'classes', func: loadClassListData },
     [fieldKey.courses]: { key: 'courses', func: loadCourseListData },
     [fieldKey.tags]: { key: 'tags', func: loadTagListData },
@@ -120,6 +123,7 @@ export default connect(
     advancedSearchDetails: getAdvancedSearchDetailsSelector(state),
   }),
   {
+    loadSchoolsData: setAdvancedSearchSchoolsAction,
     loadClassListData: setAdvancedSearchClassesAction,
     loadCourseListData: setAdvancedSearchCoursesAction,
     loadTagListData: setAdvancedSearchTagsAction,

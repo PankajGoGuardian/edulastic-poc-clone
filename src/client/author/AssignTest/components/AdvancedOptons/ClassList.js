@@ -158,7 +158,6 @@ class ClassList extends React.Component {
       test,
       testType,
       classList,
-      assignedClassesById,
       selectedClasses,
       isAllClassSelected: isAllClassSelectedProp,
       setIsAllClassSelected,
@@ -189,12 +188,7 @@ class ClassList extends React.Component {
 
     const isAllSelected =
       !!selectedClasses?.length &&
-      classList.every(
-        ({ _id }) =>
-          Object.keys(assignedClassesById[testType]).includes(_id) ||
-          selectedClasses?.includes(_id) ||
-          filterClassIds.length === selectedClasses?.length
-      )
+      classList.every(({ _id }) => selectedClasses?.includes(_id))
     if (isAllClassSelectedProp !== isAllSelected) {
       setIsAllClassSelected(isAllSelected)
     }

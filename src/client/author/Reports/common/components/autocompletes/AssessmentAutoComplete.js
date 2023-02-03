@@ -128,6 +128,10 @@ const AssessmentAutoComplete = ({
     setSearchTerms((s) => ({ ...s, text: _title || _text }))
     setFieldValue(_title || _text)
   }, [])
+  const onBlur = (text) => {
+    setSearchTerms({ ...searchTerms, selectedText: text })
+    setFieldValue(text)
+  }
   const onSelect = (key) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
@@ -210,6 +214,7 @@ const AssessmentAutoComplete = ({
           dataSource={dropdownData}
           onSelect={onSelect}
           onChange={onChange}
+          onBlur={onBlur}
           allowClear={!loading && searchTerms.selectedText}
           clearIcon={
             <Icon

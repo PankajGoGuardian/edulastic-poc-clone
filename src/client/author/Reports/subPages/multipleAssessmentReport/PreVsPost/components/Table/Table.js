@@ -24,7 +24,7 @@ const PreVsPostTable = ({
 }) => {
   // get table columns
   const tableColumns = getTableColumns(
-    selectedTableFilters.compareBy.key,
+    selectedTableFilters.compareBy,
     selectedTableFilters.analyseBy.key,
     selectedPerformanceBand,
     dataSource

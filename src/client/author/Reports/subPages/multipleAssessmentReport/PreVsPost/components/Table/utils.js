@@ -127,11 +127,12 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
 
 export const getTableColumns = (
-  compareBy,
+  selectedCompareBy,
   analyseBy,
   selectedPerformanceBand,
   dataSource
 ) => {
+  const compareBy = selectedCompareBy.key
   const tableColumnsData =
     compareBy === compareByKeys.STUDENT
       ? compareByStudentColumns
@@ -142,7 +143,7 @@ export const getTableColumns = (
     const compareByColumnIdx = _columns.findIndex(
       (col) => col.key === 'compareBy'
     )
-    _columns[compareByColumnIdx].title = compareBy
+    _columns[compareByColumnIdx].title = selectedCompareBy.title
     _columns[compareByColumnIdx].render = (_, record) => {
       const value = record.compareByColumnTitle
       if (isEmpty(value)) return '-'

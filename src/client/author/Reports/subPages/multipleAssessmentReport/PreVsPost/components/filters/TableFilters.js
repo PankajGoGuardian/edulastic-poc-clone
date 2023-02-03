@@ -22,7 +22,7 @@ const TableFilters = ({
   const showAddToGroupButton =
     selectedTableFilters.compareBy.key === compareByKeys.STUDENT
   return (
-    <Row type="flex" justify="end" align="middle">
+    <Row type="flex">
       <EduIf condition={showAddToGroupButton}>
         <StyledEduButton onClick={handleAddToGroupClick}>
           <IconPlusCircle /> Add To Student Group

@@ -98,6 +98,10 @@ const MultipleAssessmentReportFilters = ({
   )
   const assessmentTypesRef = useRef()
 
+  const preTestFilterKey = 'preTestId'
+  const postTestFilterKey = 'postTestId'
+  const profileFilterKey = 'profileId'
+
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
       loc === reportNavType.PRE_VS_POST &&
@@ -299,7 +303,18 @@ const MultipleAssessmentReportFilters = ({
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tempTagsData[keyName]
     }
+
     const _filters = { ...filters }
+    const clearTestFiltersList = [
+      preTestFilterKey,
+      postTestFilterKey,
+      profileFilterKey,
+    ]
+    const clearTestFilters = !clearTestFiltersList.includes(keyName)
+    if (clearTestFilters) {
+      _filters.preTestId = ''
+      _filters.postTestId = ''
+    }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
@@ -767,10 +782,9 @@ const MultipleAssessmentReportFilters = ({
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={filters.preTestId || ''}
-                selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
+                selectCB={(e) => onAssessmentSelect(e, preTestFilterKey)}
                 showApply={filters.showApply}
-                blackList={[filters.postTestId]}
-                autoSelectFirstItem
+                autoSelectFirstItem={false}
                 statePrefix="pre"
                 waitForInitialLoad={waitForPreTestInitialLoad}
               />
@@ -793,10 +807,9 @@ const MultipleAssessmentReportFilters = ({
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={filters.postTestId || ''}
-                selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
+                selectCB={(e) => onAssessmentSelect(e, postTestFilterKey)}
                 showApply={filters.showApply}
-                autoSelectFirstItem
-                blackList={[filters.preTestId]}
+                autoSelectFirstItem={false}
                 statePrefix="post"
                 waitForInitialLoad={waitForPostTestInitialLoad}
               />
@@ -814,7 +827,12 @@ const MultipleAssessmentReportFilters = ({
               <ControlDropDown
                 by={{ key: filters.profileId }}
                 selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'profileId', false, true)
+                  updateFilterDropdownCB(
+                    selected,
+                    profileFilterKey,
+                    false,
+                    true
+                  )
                 }
                 data={performanceBandList}
                 prefix="Performance Band"

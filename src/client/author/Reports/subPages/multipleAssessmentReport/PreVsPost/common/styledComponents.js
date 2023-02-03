@@ -258,6 +258,7 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 `
 
 export const PerformanceMatrixContainer = styled(Row)`
+  padding: 5px;
   .section-pre-test,
   .section-post-test {
     padding: 10px;
@@ -366,7 +367,9 @@ export const PerformanceMatrixContainer = styled(Row)`
   }
 `
 export const StyledEduButton = styled(EduButton)`
-  height: 32px;
-  padding: 0 15px 0 10px;
-  margin-right: 5px;
+  &.ant-btn {
+    height: 32px;
+    padding: 0 15px 0 10px;
+    margin-right: 10px;
+  }
 `

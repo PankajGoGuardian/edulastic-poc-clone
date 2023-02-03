@@ -89,6 +89,7 @@ const PreVsPostReport = ({
       ...ddfilter,
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      setTableFilters({ ...tableFilters, preBandScore: '', postBandScore: '' })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }

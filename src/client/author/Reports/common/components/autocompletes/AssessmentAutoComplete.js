@@ -6,10 +6,10 @@ import { debounce } from 'lodash'
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
-import { themeColorBlue } from '@edulastic/colors'
+import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
-import { useDropdownData } from '@edulastic/common'
+import { useDropdownData, useMemoFromPrevious } from '@edulastic/common'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -24,7 +24,6 @@ import {
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
-const DEFAULT_BLACKLIST = []
 const AssessmentAutoComplete = ({
   user,
   districtId,
@@ -40,23 +39,27 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
-  autoSelectFirstItem = false,
+  autoSelectFirstItem = true,
   institutionIds,
-  blackList = DEFAULT_BLACKLIST,
   statePrefix = '',
   waitForInitialLoad = false,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
-  const testList = useMemo(
-    () =>
-      Array.isArray(_testList)
-        ? _testList.filter((t) => !blackList.includes(t._id))
-        : _testList,
-    [_testList, blackList.join(',')]
-  )
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(undefined)
-  const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
+
+  const [selectedTest, testList] = useMemoFromPrevious(
+    ([prevTest = {}] = []) => {
+      if (!selectedTestId) return [{}, _testList]
+      const searchedTest = _testList.find((t) => t._id === selectedTestId)
+      if (searchedTest) return [searchedTest, _testList]
+
+      if (prevTest._id === selectedTestId)
+        return [prevTest, [prevTest, ..._testList]]
+      return [{}, _testList]
+    },
+    [selectedTestId, _testList]
+  )
 
   useEffect(() => {
     if (loading && typeof initialLoadCompleted === 'undefined')
@@ -155,7 +158,7 @@ const AssessmentAutoComplete = ({
   }, [selectedTestId, showApply])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
-      autoSelectFirstItem ? onSelect() : onSelect(testList[0]._id)
+      autoSelectFirstItem ? onSelect(testList[0]._id) : onSelect()
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
@@ -208,7 +211,12 @@ const AssessmentAutoComplete = ({
           onSelect={onSelect}
           onChange={onChange}
           allowClear={!loading && searchTerms.selectedText}
-          clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          clearIcon={
+            <Icon
+              type="close"
+              style={{ color: themeColor, marginTop: '4px' }}
+            />
+          }
           notFoundContent={
             <Empty
               className="ant-empty-small"

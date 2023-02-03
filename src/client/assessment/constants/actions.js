@@ -93,6 +93,10 @@ export const FINISH_TEST = '[test] finish test'
 export const SET_TEST_ACTIVITY_ID = '[test] add test activity id'
 export const RESET_CURRENT_TEST_ITEM = '[test] reset current item'
 export const SET_SAVE_USER_RESPONSE = '[test] set save user respose'
+export const SET_SUBMIT_TEST_COMPLETE = '[test] set sumbit test complete'
+export const CLOSE_TEST_TIMED_OUT_ALERT_MODAL =
+  '[test] close test timed out alert modal'
+
 // file
 export const FILE_UPLOAD_REQUEST = '[test] upload file request'
 export const FILE_UPLOAD_SUCCESS = '[test] upload file success'

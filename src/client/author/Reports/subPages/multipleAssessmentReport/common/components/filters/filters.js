@@ -777,7 +777,6 @@ const MultipleAssessmentReportFilters = ({
                 selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
-                showClearIcon={false}
                 statePrefix="pre"
                 waitForInitialLoad={waitForPreTestInitialLoad}
               />
@@ -803,7 +802,6 @@ const MultipleAssessmentReportFilters = ({
                 selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
-                showClearIcon={false}
                 statePrefix="post"
                 waitForInitialLoad={waitForPostTestInitialLoad}
               />

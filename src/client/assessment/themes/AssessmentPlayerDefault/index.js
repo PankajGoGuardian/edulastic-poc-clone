@@ -12,6 +12,11 @@ import {
 } from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
+import {
+  homePlaylistPath,
+  homeStudentAssignmentsPath,
+  studentSebQuitConfirmpath,
+} from '../../constants/assessmentPlayer'
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
 import ToolbarModal from '../common/ToolbarModal'
@@ -79,6 +84,19 @@ class AssessmentPlayerDefault extends React.Component {
       cameraImageIndex,
     }
     this.scrollContainer = React.createRef()
+  }
+
+  get getGoToUrlPath() {
+    const { history } = this.props
+    let path = ''
+    if (history?.location?.state?.playlistAssignmentFlow) {
+      path = `${homePlaylistPath}/${history?.location?.state?.playlistId}`
+    } else if (navigator.userAgent.includes('SEB')) {
+      path = studentSebQuitConfirmpath
+    } else {
+      path = homeStudentAssignmentsPath
+    }
+    return path
   }
 
   changeTool = (val) => {
@@ -169,14 +187,12 @@ class AssessmentPlayerDefault extends React.Component {
 
   finishTest = () => {
     const { history, saveCurrentAnswer } = this.props
-    saveCurrentAnswer({ shouldClearUserWork: true, pausing: true })
-    if (history?.location?.state?.playlistAssignmentFlow) {
-      history.push(`/home/playlist/${history?.location?.state?.playlistId}`)
-    } else if (navigator.userAgent.includes('SEB')) {
-      history.push('/student/seb-quit-confirm')
-    } else {
-      history.push('/home/assignments')
-    }
+    saveCurrentAnswer({
+      shouldClearUserWork: true,
+      pausing: true,
+      urlToGo: this.getGoToUrlPath,
+      locState: history?.location?.state,
+    })
   }
 
   // will dispatch user work to store on here for scratchpad, passage highlight, or cross answer

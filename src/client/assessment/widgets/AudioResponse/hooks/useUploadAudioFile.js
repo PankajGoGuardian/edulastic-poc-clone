@@ -1,25 +1,31 @@
-import { useState } from 'react'
 import { uploadToS3, captureSentryException } from '@edulastic/common'
 import { aws } from '@edulastic/constants'
-import { RECORDING_INACTIVE } from '../constants'
+import {
+  RECORDING_INACTIVE,
+  AUDIO_UPLOAD_ACTIVE,
+  AUDIO_UPLOAD_SUCCESS,
+  AUDIO_UPLOAD_ERROR,
+  AUDIO_UPLOAD_INACTIVE,
+} from '../constants'
 
 const folder = aws.s3Folders.DEFAULT
 
 const useUploadAudioFile = ({
   useS3AudioUrl,
   saveUserResponse,
-  setRecordingState,
+  handleChangeRecordingState,
+  handleChangeUploadStatus,
+  recordingAndUploadCompleteForQid,
   setErrorData,
 }) => {
-  const [isUploadingAudio, setIsUploadingAudio] = useState(false)
-
   const uploadFile = async ({ audioFile, objectAudioUrl }) => {
     if (useS3AudioUrl) {
       try {
-        setIsUploadingAudio(true)
+        handleChangeUploadStatus(AUDIO_UPLOAD_ACTIVE)
         const uploadedUrl = await uploadToS3(audioFile, folder)
-        setIsUploadingAudio(false)
         saveUserResponse(uploadedUrl)
+        handleChangeUploadStatus(AUDIO_UPLOAD_SUCCESS)
+        recordingAndUploadCompleteForQid(AUDIO_UPLOAD_SUCCESS)
         return uploadedUrl
       } catch (error) {
         const errorMessage = 'Failed to upload audio'
@@ -27,8 +33,9 @@ const useUploadAudioFile = ({
           isOpen: true,
           errorMessage,
         })
-        setRecordingState(RECORDING_INACTIVE)
-        setIsUploadingAudio(false)
+        handleChangeRecordingState(RECORDING_INACTIVE)
+        handleChangeUploadStatus(AUDIO_UPLOAD_INACTIVE)
+        recordingAndUploadCompleteForQid(AUDIO_UPLOAD_ERROR)
         captureSentryException(error, {
           errorMessage: `Audio Response - ${errorMessage}`,
         })
@@ -39,7 +46,6 @@ const useUploadAudioFile = ({
   }
 
   return {
-    isUploadingAudio,
     uploadFile,
   }
 }

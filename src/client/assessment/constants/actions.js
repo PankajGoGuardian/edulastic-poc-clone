@@ -142,3 +142,14 @@ export const SET_VIEW_TEST_INFO_SUCCESS =
 
 // userInteraction passage
 export const SET_PASSAGE_CURRENT_PAGE = '[passage] set passage current page'
+
+// Media recording
+export const SET_MEDIA_RECORDING_STORE_DATA =
+  '[media] set media recording store data'
+export const SET_MEDIA_RECORDING_STATE = '[media] set media recording state'
+export const CLEAR_MEDIA_RECORDING_STATE = '[media] clear media recording state'
+export const SET_STOP_AUDIO_RECORDING_AND_UPLOAD_FOR_QID =
+  '[audioRecording] set stop audio recording and upload for qid'
+export const SET_MEDIA_UPLOAD_STATUS = '[media] set media upload status'
+export const AUDIO_UPLOAD_COMPLETE_FOR_QID =
+  '[audioRecording] audio upload complete for qid'

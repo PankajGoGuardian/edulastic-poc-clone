@@ -38,7 +38,7 @@ const links = [
     thumbnail: MARPreVsPost,
     location: ReportPaths.PRE_VS_POST,
     description:
-      'Compare student performance across two assessments to analyze average score, the distribution of students based on their mastery, and band jumpers.',
+      'Compare student performance across two assessments to analyze the change in scores and the movement of students across performance bands to assign an appropriate intervention.',
   },
 ]
 export const MultipleAssessmentReport = ({ premium, loc }) => (

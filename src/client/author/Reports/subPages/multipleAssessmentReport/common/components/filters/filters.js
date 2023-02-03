@@ -299,6 +299,14 @@ const MultipleAssessmentReportFilters = ({
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tempTagsData[keyName]
     }
+    const clearTestFilters =
+      keyName !== 'preTestId' &&
+      keyName !== 'postTestId' &&
+      keyName !== 'profileId'
+    if (clearTestFilters) {
+      filters.preTestId = ''
+      filters.postTestId = ''
+    }
     const _filters = { ...filters }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
@@ -769,8 +777,7 @@ const MultipleAssessmentReportFilters = ({
                 selectedTestId={filters.preTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
                 showApply={filters.showApply}
-                blackList={[filters.postTestId]}
-                autoSelectFirstItem
+                autoSelectFirstItem={false}
                 statePrefix="pre"
                 waitForInitialLoad={waitForPreTestInitialLoad}
               />
@@ -795,8 +802,7 @@ const MultipleAssessmentReportFilters = ({
                 selectedTestId={filters.postTestId || ''}
                 selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
                 showApply={filters.showApply}
-                autoSelectFirstItem
-                blackList={[filters.preTestId]}
+                autoSelectFirstItem={false}
                 statePrefix="post"
                 waitForInitialLoad={waitForPostTestInitialLoad}
               />

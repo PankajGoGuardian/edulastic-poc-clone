@@ -24,11 +24,10 @@ import {
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
-const DEFAULT_BLACKLIST = []
 const AssessmentAutoComplete = ({
   user,
   districtId,
-  testList: _testList,
+  testList,
   loading,
   loadTestList,
   firstLoad,
@@ -40,22 +39,15 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
-  autoSelectFirstItem = false,
+  autoSelectFirstItem = true,
   institutionIds,
-  blackList = DEFAULT_BLACKLIST,
   statePrefix = '',
   waitForInitialLoad = false,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
-  const testList = useMemo(
-    () =>
-      Array.isArray(_testList)
-        ? _testList.filter((t) => !blackList.includes(t._id))
-        : _testList,
-    [_testList, blackList.join(',')]
-  )
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(undefined)
+
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
 
   useEffect(() => {
@@ -155,7 +147,7 @@ const AssessmentAutoComplete = ({
   }, [selectedTestId, showApply])
   useEffect(() => {
     if (!searchTerms.selectedText && testList.length) {
-      autoSelectFirstItem ? onSelect() : onSelect(testList[0]._id)
+      autoSelectFirstItem ? onSelect(testList[0]._id) : onSelect()
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
@@ -207,7 +199,9 @@ const AssessmentAutoComplete = ({
           dataSource={dropdownData}
           onSelect={onSelect}
           onChange={onChange}
-          allowClear={!loading && searchTerms.selectedText}
+          allowClear={
+            !loading && searchTerms.selectedText && autoSelectFirstItem
+          }
           clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
           notFoundContent={
             <Empty

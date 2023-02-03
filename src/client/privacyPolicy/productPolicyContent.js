@@ -6,7 +6,7 @@ const ProductPolicyContent = () => {
   return (
     <BodyContentWrapper data-testid="productPrivacyPolicy">
       <StickyHeader>
-        <strong> Product Privacy Policy </strong>
+        <strong> Privacy Policy for Product Users </strong>
       </StickyHeader>
       <div>
         <p>Last Updated Date: February 14, 2023</p>

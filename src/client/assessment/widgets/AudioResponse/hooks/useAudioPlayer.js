@@ -9,9 +9,9 @@ const useAudioPlayer = ({ audioUrl, onClickRerecord, setErrorData }) => {
   const [playerState, setPlayerState] = useState(null)
   const [currentProgress, setCurrentProgress] = useState(0)
   const [audioSliderCount, setAudioSliderCount] = useState(0)
-  const audioRef = useRef(new Audio(audioUrl))
-  const audioRefData = audioRef.current
+  const audioRef = useRef(null)
   const intervalRef = useRef(null)
+  let audioRefData
 
   const checkAudioState = (audioState) =>
     isAudioLoading || playerState === audioState || !audioData
@@ -55,8 +55,11 @@ const useAudioPlayer = ({ audioUrl, onClickRerecord, setErrorData }) => {
   }
 
   useEffect(() => {
+    audioRef.current = new Audio(audioUrl)
+    audioRefData = audioRef.current
     audioRef.current.addEventListener('loadedmetadata', async () => {
       try {
+        setIsAudioLoading(true)
         const loadedAudio = audioRef.current
         /**
          * Browser returns infinity duration.
@@ -85,10 +88,9 @@ const useAudioPlayer = ({ audioUrl, onClickRerecord, setErrorData }) => {
 
     return () => {
       cancelAudioPlayback()
-      audioRef.current = null
       setAudioData(null)
     }
-  }, [])
+  }, [audioUrl])
 
   useEffect(() => {
     intervalRef.current = setInterval(() => {

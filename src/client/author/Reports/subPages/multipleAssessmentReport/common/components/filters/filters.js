@@ -56,6 +56,7 @@ import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
+import { getReportsMARSettings, setMARSettingsAction } from '../../../ducks'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 const availableAssessmentType = getArrayOfAllTestTypes()
@@ -66,6 +67,8 @@ const MultipleAssessmentReportFilters = ({
   tagsData,
   loading,
   MARFilterData,
+  settings: _MARSettings,
+  setMARSettings,
   filters,
   tempDdFilter,
   tempTagsData,
@@ -167,6 +170,26 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(staticDropDownData.filterSections.TEST_FILTERS.key)
     }
   }, [loc, showFilter])
+
+  useEffect(() => {
+    const _filters = { ...filters }
+    if (loc === reportNavType.PRE_VS_POST) {
+      _filters.testIds = ''
+    } else {
+      _filters.preTestId = ''
+      _filters.postTestId = ''
+    }
+    setFilters(_filters)
+    setMARSettings({
+      requestFilters: {
+        ..._MARSettings.requestFilters,
+        testIds: _filters.testIds,
+        preTestId: _filters.preTestId,
+        postTestId: _filters.postTestId,
+      },
+    })
+  }, [loc])
+
   useEffect(() => {
     if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
       if (reportId) {
@@ -861,6 +884,7 @@ const enhance = compose(
     (state) => ({
       loading: getReportsMARFilterLoadingState(state),
       MARFilterData: getReportsMARFilterData(state),
+      settings: getReportsMARSettings(state),
       filters: getFiltersSelector(state),
       role: getUserRole(state),
       user: getUser(state),
@@ -871,6 +895,7 @@ const enhance = compose(
       getMARFilterDataRequest: getMARFilterDataRequestAction,
       setFilters: setFiltersAction,
       setPrevMARFilterData: setPrevMARFilterDataAction,
+      setMARSettings: setMARSettingsAction,
       fetchUpdateTagsData: (opts) =>
         fetchUpdateTagsDataAction({
           type: reportGroupType.MULTIPLE_ASSESSMENT_REPORT,

@@ -9,6 +9,7 @@ import {
   setAdvancedSearchCoursesAction,
   setAdvancedSearchSchoolsAction,
   setAdvancedSearchTagsAction,
+  storeSelectedDataAction,
 } from '../../ducks'
 import { StyledSelect } from './styled-components'
 import { fieldKey } from '../config/constants'
@@ -28,6 +29,7 @@ const ValueEditor = (props) => {
     loadClassListData,
     loadCourseListData,
     loadTagListData,
+    storeSelectedData,
   } = props
 
   const enableSearchFields = {
@@ -42,6 +44,15 @@ const ValueEditor = (props) => {
     if (enableSearchFields[field] && enableSearchFields[field].func) {
       enableSearchFields[field].func({ searchString })
     }
+  }
+
+  const handleChange = (selectedValues) => {
+    handleOnChange(selectedValues)
+    storeSelectedData({
+      key: enableSearchFields[field].key,
+      valueFromField: selectedValues,
+      values,
+    })
   }
 
   const searchHandler = debounce(handleSearch, debounceWait)
@@ -61,14 +72,20 @@ const ValueEditor = (props) => {
           mode="multiple"
           style={{ width: '200px' }}
           autoClearSearchValue={false}
-          onChange={handleOnChange}
+          onChange={handleChange}
           onFocus={() => handleSearch('')}
           placeholder={`Select ${label}`}
           onSearch={searchHandler}
           value={value || undefined}
           showSearch
           tagsEllipsis
-          filterOption={null}
+          filterOption={(input, option) => {
+            const optionValue = option.props?.children?.toLowerCase() || ''
+            const splitOptionValue = optionValue.split(' ')
+            return splitOptionValue.some((val) =>
+              val?.startsWith(input.toLowerCase())
+            )
+          }}
           loading={isLoading}
           notFoundContent={
             !isLoading && (
@@ -127,5 +144,6 @@ export default connect(
     loadClassListData: setAdvancedSearchClassesAction,
     loadCourseListData: setAdvancedSearchCoursesAction,
     loadTagListData: setAdvancedSearchTagsAction,
+    storeSelectedData: storeSelectedDataAction,
   }
 )(ValueEditor)

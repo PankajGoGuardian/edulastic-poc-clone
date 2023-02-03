@@ -17,13 +17,13 @@ export const allowedFields = ({
     name: fieldKey.schools,
     label: 'Schools',
     valueEditorType: 'multiselect',
-    values: schoolData.data,
+    values: schoolData,
   },
   {
     name: fieldKey.courses,
     label: 'Courses',
     valueEditorType: 'multiselect',
-    values: courseData.data,
+    values: courseData,
     operators: [...inNotInOp, ...nullNotNullOp],
   },
   {
@@ -55,13 +55,13 @@ export const allowedFields = ({
     name: fieldKey.classes,
     label: 'Classes',
     valueEditorType: 'multiselect',
-    values: classData.data,
+    values: classData,
   },
   {
     name: fieldKey.tags,
     label: 'Tags',
     valueEditorType: 'multiselect',
-    values: tagData.data,
+    values: tagData,
     operators: [...inNotInOp, ...nullNotNullOp],
   },
 ]

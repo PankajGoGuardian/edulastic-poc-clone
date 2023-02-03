@@ -1,4 +1,4 @@
-import { isEmpty } from 'lodash'
+import { isEmpty, keyBy, uniqBy } from 'lodash'
 import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
@@ -29,6 +29,7 @@ export const SET_ADVANCED_SEARCH_COURSES_REQUEST =
   '[assignment settings] set advanced search courses request'
 export const SET_ADVANCED_SEARCH_TAGS_REQUEST =
   '[assignment settings] set advanced search tags request'
+export const STORE_SELECTED_DATA = '[assignment settings] store selected data'
 
 export const SET_ADVANCED_SEARCH_DETAILS_SUCCESS =
   '[assignment settings] set advanced search details success'
@@ -70,6 +71,8 @@ export const setAdvancedSearchTagsAction = createAction(
   SET_ADVANCED_SEARCH_TAGS_REQUEST
 )
 
+export const storeSelectedDataAction = createAction(STORE_SELECTED_DATA)
+
 export const setAdvancedSearchDetailsAction = createAction(
   SET_ADVANCED_SEARCH_DETAILS_SUCCESS
 )
@@ -85,18 +88,22 @@ const initialState = {
   advancedSearchDetails: {
     schools: {
       data: [],
+      selected: [],
       isLoading: false,
     },
     courses: {
       data: [],
+      selected: [],
       isLoading: false,
     },
     classes: {
       data: [],
+      selected: [],
       isLoading: false,
     },
     tags: {
       data: [],
+      selected: [],
       isLoading: false,
     },
   },
@@ -106,6 +113,7 @@ const initialState = {
 const setAdvancedSearchQuery = (state, { payload }) => {
   if (isEmpty(payload)) {
     state.advancedSearchQuery = initialState.advancedSearchQuery
+    state.advancedSearchDetails = initialState.advancedSearchDetails
     return
   }
   state.advancedSearchQuery = payload
@@ -117,6 +125,17 @@ const setIsAllClassSelected = (state, { payload }) => {
 
 const setIsAdvancedSearchSelected = (state, { payload }) => {
   state.isAdvancedSearchSelected = payload
+}
+
+const storeSelectedData = (state, { payload }) => {
+  const { key, valueFromField, values } = payload
+  const valuesKeyById = keyBy(values, 'value')
+  const getValues = valueFromField.map((id) => valuesKeyById[id])
+  const selectedValues = [
+    ...state.advancedSearchDetails[key].selected,
+    ...getValues,
+  ]
+  state.advancedSearchDetails[key].selected = uniqBy(selectedValues, 'value')
 }
 
 const setAdvancedSearchDetails = (state, { payload }) => {
@@ -154,7 +173,14 @@ export const reducer = createReducer(initialState, {
   [ADVANCED_SEARCH_SUCCESS]: (state) => {
     state.isAdvancedSearchLoading = false
   },
+  [STORE_SELECTED_DATA]: storeSelectedData,
 })
+
+const getUniqOptions = (state) => {
+  const fetchedData = state?.data || []
+  const selectedData = state?.selected || []
+  return uniqBy([...fetchedData, ...selectedData], 'value')
+}
 
 // selectors
 export const stateSelector = (state) => state.advanceSearchReducer
@@ -181,22 +207,22 @@ export const getAdvancedSearchDetailsSelector = createSelector(
 
 export const getAdvancedSearchSchoolsSelector = createSelector(
   getAdvancedSearchDetailsSelector,
-  (state) => state.schools || {}
+  (state) => getUniqOptions(state.schools)
 )
 
 export const getAdvancedSearchClassesSelector = createSelector(
   getAdvancedSearchDetailsSelector,
-  (state) => state.classes || {}
+  (state) => getUniqOptions(state.classes)
 )
 
 export const getAdvancedSearchCoursesSelector = createSelector(
   getAdvancedSearchDetailsSelector,
-  (state) => state.courses || {}
+  (state) => getUniqOptions(state.courses)
 )
 
 export const getAdvancedSearchTagsSelector = createSelector(
   getAdvancedSearchDetailsSelector,
-  (state) => state.tags || {}
+  (state) => getUniqOptions(state.tags)
 )
 
 export const isAdvancedSearchLoadingSelector = createSelector(

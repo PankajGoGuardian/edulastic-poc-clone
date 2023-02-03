@@ -16,13 +16,13 @@ import {
   getAudioRecordingStateSelector,
   getAudioUploadStatusSelector,
   getStopAudioRecordingAndUploadForQidSelector,
-} from '../../selectors/audioRecording'
+} from '../../selectors/media'
 import {
-  setAudioRecordingStateAction,
-  setAudioUploadStatusAction,
+  setMediaRecordingStateAction,
+  setMediaUploadStatusAction,
   setStopAudioRecordingAndUploadForQidAction,
-  audioRecordingAndUploadCompleteForQidAction,
-} from '../../actions/audioRecording'
+  audioUploadCompleteForQidAction,
+} from '../../actions/media'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
 import AudioResponseContainer from './components/AudioResponseContainer'
@@ -175,10 +175,10 @@ const enhance = compose(
       stopRecordingForQid: getStopAudioRecordingAndUploadForQidSelector(state),
     }),
     {
-      setRecordingState: setAudioRecordingStateAction,
-      setAudioUploadStatus: setAudioUploadStatusAction,
+      setRecordingState: setMediaRecordingStateAction,
+      setAudioUploadStatus: setMediaUploadStatusAction,
       setStopAudioRecordingAndUploadForQid: setStopAudioRecordingAndUploadForQidAction,
-      recordingAndUploadCompleteForQid: audioRecordingAndUploadCompleteForQidAction,
+      recordingAndUploadCompleteForQid: audioUploadCompleteForQidAction,
     }
   )
 )

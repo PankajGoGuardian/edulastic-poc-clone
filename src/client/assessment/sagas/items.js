@@ -31,16 +31,17 @@ import {
   CLEAR_HINT_USAGE,
   SET_SAVE_USER_RESPONSE,
   SAVE_TESTLET_USER_RESPONSE,
-  AUDIO_RECORDING_AND_UPLOAD_COMPLETE_FOR_QID,
+  AUDIO_UPLOAD_COMPLETE_FOR_QID,
 } from '../constants/actions'
 import {
   AUDIO_UPLOAD_ERROR,
   RECORDING_ACTIVE,
+  AUDIO_UPLOAD_ACTIVE,
 } from '../widgets/AudioResponse/constants'
-import { setStopAudioRecordingAndUploadForQidAction } from '../actions/audioRecording'
+import { setStopAudioRecordingAndUploadForQidAction } from '../actions/media'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
-import { getAudioRecordingByItemIdAndQidSelector } from '../selectors/audioRecording'
+import { getAudioRecordingByItemIdAndQidSelector } from '../selectors/media'
 import { getServerTs } from '../../student/utils'
 import { Fscreen, getItemIdQuestionIdKey } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
@@ -95,7 +96,7 @@ export const getQuestionIds = (item) => {
   return questions
 }
 
-const getQuestionIdToStopRecording = (
+const getInProgressAudioRecordingOrUploadData = (
   currentItem,
   audioRecordingStateByItemIdAndQid,
   questionIds
@@ -105,21 +106,28 @@ const getQuestionIdToStopRecording = (
   const hasAudioResponseQuestionType = testItemQuestions.some(
     (question) => question.type === AUDIO_RESPONSE
   )
-  let stopRecordingForQid = ''
-  questionIds.forEach((questionId) => {
-    const itemIdQidKey = getItemIdQuestionIdKey({ questionId, itemId })
-    if (
-      audioRecordingStateByItemIdAndQid?.[itemIdQidKey]?.audioRecordingState ===
-      RECORDING_ACTIVE
-    ) {
-      stopRecordingForQid = questionId
-    }
-  })
+  let stopRecordingForQid = null
+  let isUploadInProgress = false
 
-  if (hasAudioResponseQuestionType && stopRecordingForQid.length) {
-    return stopRecordingForQid
+  if (hasAudioResponseQuestionType) {
+    questionIds.forEach((questionId) => {
+      const itemIdQidKey = getItemIdQuestionIdKey({ questionId, itemId })
+      if (
+        audioRecordingStateByItemIdAndQid?.[itemIdQidKey]
+          ?.audioRecordingState === RECORDING_ACTIVE
+      ) {
+        stopRecordingForQid = questionId
+      }
+      if (
+        audioRecordingStateByItemIdAndQid?.[itemIdQidKey]?.audioUploadStatus ===
+        AUDIO_UPLOAD_ACTIVE
+      ) {
+        isUploadInProgress = true
+      }
+    })
   }
-  return ''
+
+  return { stopRecordingForQid, isUploadInProgress }
 }
 
 export function getFilterAndUpdateForAttachments({
@@ -244,19 +252,25 @@ export function* saveUserResponse({ payload }) {
     )
 
     // upload audio recording that is in progress
-    const stopRecordingForQid = getQuestionIdToStopRecording(
+    const {
+      stopRecordingForQid,
+      isUploadInProgress,
+    } = getInProgressAudioRecordingOrUploadData(
       currentItem,
       audioRecordingStateByItemIdAndQid,
       questions
     )
-    if (stopRecordingForQid.length) {
-      yield put(
-        setStopAudioRecordingAndUploadForQidAction({
-          questionId: stopRecordingForQid,
-        })
-      )
+
+    if (stopRecordingForQid || isUploadInProgress) {
+      if (stopRecordingForQid) {
+        yield put(
+          setStopAudioRecordingAndUploadForQidAction({
+            questionId: stopRecordingForQid,
+          })
+        )
+      }
       const { payload: audioUploadStatus } = yield take(
-        AUDIO_RECORDING_AND_UPLOAD_COMPLETE_FOR_QID
+        AUDIO_UPLOAD_COMPLETE_FOR_QID
       )
       if (audioUploadStatus === AUDIO_UPLOAD_ERROR) {
         return

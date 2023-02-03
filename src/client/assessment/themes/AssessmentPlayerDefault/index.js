@@ -12,6 +12,11 @@ import {
 } from '@edulastic/constants'
 
 import { playerSkinValues } from '@edulastic/constants/const/test'
+import {
+  homePlaylistPath,
+  homeStudentAssignmentsPath,
+  studentSebQuitConfirmpath,
+} from '../../constants/assessmentPlayer'
 import { themes } from '../../../theme'
 import MainWrapper from './MainWrapper'
 import ToolbarModal from '../common/ToolbarModal'
@@ -85,11 +90,11 @@ class AssessmentPlayerDefault extends React.Component {
     const { history } = this.props
     let path = ''
     if (history?.location?.state?.playlistAssignmentFlow) {
-      path = `/home/playlist/${history?.location?.state?.playlistId}`
+      path = `${homePlaylistPath}/${history?.location?.state?.playlistId}`
     } else if (navigator.userAgent.includes('SEB')) {
-      path = '/student/seb-quit-confirm'
+      path = studentSebQuitConfirmpath
     } else {
-      path = '/home/assignments'
+      path = homeStudentAssignmentsPath
     }
     return path
   }

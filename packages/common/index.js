@@ -162,6 +162,7 @@ export { default as useDisableDragScroll } from './src/customHooks/useDisableDra
 export { default as measureTextWithImage } from './src/customHooks/measureTextWithImage'
 export { default as useDropdownData } from './src/customHooks/useDropDownData'
 export { default as useOfflinePagination } from './src/customHooks/useOfflinePagination'
+export { default as useMemoFromPrevious } from './src/customHooks/useMemoFromPrevious'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'

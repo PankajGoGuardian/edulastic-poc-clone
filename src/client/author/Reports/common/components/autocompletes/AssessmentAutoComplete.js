@@ -9,7 +9,7 @@ import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { themeColorBlue } from '@edulastic/colors'
 
 // ducks
-import { useDropdownData } from '@edulastic/common'
+import { useDropdownData, useMemoFromPrevious } from '@edulastic/common'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -27,7 +27,7 @@ const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 const AssessmentAutoComplete = ({
   user,
   districtId,
-  testList,
+  testList: _testList,
   loading,
   loadTestList,
   firstLoad,
@@ -48,7 +48,18 @@ const AssessmentAutoComplete = ({
   const [fieldValue, setFieldValue] = useState('')
   const [initialLoadCompleted, setInitialLoadCompleted] = useState(undefined)
 
-  const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
+  const [selectedTest, testList] = useMemoFromPrevious(
+    ([prevTest = {}] = []) => {
+      if (!selectedTestId) return [{}, _testList]
+      const searchedTest = _testList.find((t) => t._id === selectedTestId)
+      if (searchedTest) return [searchedTest, _testList]
+
+      if (prevTest._id === selectedTestId)
+        return [prevTest, [prevTest, ..._testList]]
+      return [{}, _testList]
+    },
+    [selectedTestId, _testList]
+  )
 
   useEffect(() => {
     if (loading && typeof initialLoadCompleted === 'undefined')
@@ -199,10 +210,10 @@ const AssessmentAutoComplete = ({
           dataSource={dropdownData}
           onSelect={onSelect}
           onChange={onChange}
-          allowClear={
-            !loading && searchTerms.selectedText && autoSelectFirstItem
+          allowClear={!loading && searchTerms.selectedText}
+          clearIcon={
+            <Icon type="close" style={{ color: '#1AB394', marginTop: '4px' }} />
           }
-          clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
           notFoundContent={
             <Empty
               className="ant-empty-small"

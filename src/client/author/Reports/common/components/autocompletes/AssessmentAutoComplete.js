@@ -6,7 +6,7 @@ import { debounce } from 'lodash'
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
-import { themeColorBlue } from '@edulastic/colors'
+import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData, useMemoFromPrevious } from '@edulastic/common'
@@ -212,7 +212,10 @@ const AssessmentAutoComplete = ({
           onChange={onChange}
           allowClear={!loading && searchTerms.selectedText}
           clearIcon={
-            <Icon type="close" style={{ color: '#1AB394', marginTop: '4px' }} />
+            <Icon
+              type="close"
+              style={{ color: themeColor, marginTop: '4px' }}
+            />
           }
           notFoundContent={
             <Empty

@@ -98,6 +98,10 @@ const MultipleAssessmentReportFilters = ({
   )
   const assessmentTypesRef = useRef()
 
+  const preTestFilterKey = 'preTestId'
+  const postTestFilterKey = 'postTestId'
+  const profileFilterKey = 'profileId'
+
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
       loc === reportNavType.PRE_VS_POST &&
@@ -301,7 +305,11 @@ const MultipleAssessmentReportFilters = ({
     }
 
     const _filters = { ...filters }
-    const clearTestFiltersList = ['preTestId', 'postTestId', 'profileId']
+    const clearTestFiltersList = [
+      preTestFilterKey,
+      postTestFilterKey,
+      profileFilterKey,
+    ]
     const clearTestFilters = !clearTestFiltersList.includes(keyName)
     if (clearTestFilters) {
       _filters.preTestId = ''
@@ -774,7 +782,7 @@ const MultipleAssessmentReportFilters = ({
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={filters.preTestId || ''}
-                selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
+                selectCB={(e) => onAssessmentSelect(e, preTestFilterKey)}
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
                 statePrefix="pre"
@@ -799,7 +807,7 @@ const MultipleAssessmentReportFilters = ({
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
                 selectedTestId={filters.postTestId || ''}
-                selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
+                selectCB={(e) => onAssessmentSelect(e, postTestFilterKey)}
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
                 statePrefix="post"
@@ -819,7 +827,12 @@ const MultipleAssessmentReportFilters = ({
               <ControlDropDown
                 by={{ key: filters.profileId }}
                 selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'profileId', false, true)
+                  updateFilterDropdownCB(
+                    selected,
+                    profileFilterKey,
+                    false,
+                    true
+                  )
                 }
                 data={performanceBandList}
                 prefix="Performance Band"

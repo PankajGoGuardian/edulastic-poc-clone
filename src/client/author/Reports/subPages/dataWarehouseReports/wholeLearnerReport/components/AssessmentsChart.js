@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { reportUtils } from '@edulastic/constants'
 import { round } from 'lodash'
@@ -12,6 +12,12 @@ import {
   ColorBandRow,
 } from '../../../../common/styled'
 import SectionLabel from '../../../../common/components/SectionLabel'
+import {
+  getLegendPayload,
+  getBarsDataForInternal,
+  getBarsDataForExternal,
+  getAssessmentChartData,
+} from '../utils'
 
 const { formatDate } = reportUtils.common
 
@@ -104,84 +110,23 @@ const AssessmentsChart = ({
   onResetClickCB,
   preLabelContent,
 }) => {
-  const legendPayload = selectedPerformanceBand
-    .sort((a, b) => a.threshold - b.threshold)
-    .map((pb, index) => ({
-      id: `pb${index + 1}`,
-      color: pb.color,
-      value: pb.name,
-      type: 'circle',
-    }))
-
-  const achievementLevels = chartData.flatMap((cdItem) =>
-    cdItem.externalTestType ? cdItem.achievementLevelBands : []
+  const [legendPayload, barsDataForInternal] = useMemo(
+    () => [
+      getLegendPayload(selectedPerformanceBand),
+      getBarsDataForInternal(selectedPerformanceBand),
+    ],
+    [selectedPerformanceBand]
   )
 
-  const barsDataForInternal = selectedPerformanceBand.map((pb, index) => ({
-    ...pb,
-    key: `bar${index + 1}`,
-    insideLabelKey: `inside-label-bar${index + 1}`,
-    topLabelKey: `top-label-bar${index + 1}`,
-    name: pb.name,
-    fill: pb.color,
-    stackId: 'a',
-  }))
-
-  const barsDataForExternal = achievementLevels.map((al, index) => ({
-    ...al,
-    key: `bar${index + 1}`,
-    insideLabelKey: `inside-label-bar${index + 1}`,
-    topLabelKey: `top-label-bar${index + 1}`,
-    name: al.name,
-    fill: al.color,
-    stackId: 'a',
-    [`bar${index + 1}`]: Math.floor(100 / achievementLevels.length),
-  }))
-
-  const data = chartData
-    .map((d) => {
-      if (d.externalTestType) {
-        const barData = barsDataForExternal.find(
-          (bar) => bar.active && bar.testId === d.testId
-        )
-
-        const bars = barsDataForExternal.filter((b) => b.testId === d.testId)
-
-        const barsCellDataForExternal = bars.reduce(
-          (res, ele) => ({
-            ...res,
-            [ele.key]: Math.floor(100 / bars.length),
-          }),
-          {}
-        )
-        return barData
-          ? {
-              ...d,
-              ...barsCellDataForExternal,
-              [barData.insideLabelKey]: new Intl.NumberFormat().format(
-                d.totalScore
-              ),
-              fillOpacity: 0.2,
-              additionalData: {
-                [barData.key]: {
-                  fillOpacity: 0.7,
-                  stroke: barData.fill,
-                  strokeOpacity: 1,
-                  strokeWidth: 2,
-                },
-              },
-            }
-          : null
-      }
-      return {
-        ...d,
-        [barsDataForInternal[0].key]: d.averageScore,
-        [barsDataForInternal[0].topLabelKey]: `${round(d.averageScore, 2)}%`,
-        fill: d.band.color,
-        fillOpacity: 1,
-      }
-    })
-    .filter((d) => d)
+  const [barsDataForExternal, data] = useMemo(() => {
+    const _barsDataForExternal = getBarsDataForExternal(chartData)
+    const _chartData = getAssessmentChartData(
+      chartData,
+      _barsDataForExternal,
+      barsDataForInternal
+    )
+    return [_barsDataForExternal, _chartData]
+  }, [chartData, barsDataForInternal])
 
   return (
     <div>

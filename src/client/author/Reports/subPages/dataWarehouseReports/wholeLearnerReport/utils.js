@@ -391,3 +391,90 @@ export const getTestTypesFromUrl = (
   const testTypesArr = selectedTestTypes.split(',')
   return availableTestTypes.filter((a) => testTypesArr.includes(a.key))
 }
+
+export const getLegendPayload = (selectedPerformanceBand) =>
+  selectedPerformanceBand
+    .sort((a, b) => a.threshold - b.threshold)
+    .map((pb, index) => ({
+      id: `pb${index + 1}`,
+      color: pb.color,
+      value: pb.name,
+      type: 'circle',
+    }))
+
+export const getBarsDataForInternal = (selectedPerformanceBand) =>
+  selectedPerformanceBand.map((pb, index) => ({
+    ...pb,
+    key: `bar${index + 1}`,
+    insideLabelKey: `inside-label-bar${index + 1}`,
+    topLabelKey: `top-label-bar${index + 1}`,
+    name: pb.name,
+    fill: pb.color,
+    stackId: 'a',
+  }))
+
+export const getBarsDataForExternal = (chartData) => {
+  const achievementLevels = chartData.flatMap((cdItem) =>
+    cdItem.externalTestType ? cdItem.achievementLevelBands : []
+  )
+  return achievementLevels.map((al, index) => ({
+    ...al,
+    key: `bar${index + 1}`,
+    insideLabelKey: `inside-label-bar${index + 1}`,
+    topLabelKey: `top-label-bar${index + 1}`,
+    name: al.name,
+    fill: al.color,
+    stackId: 'a',
+    [`bar${index + 1}`]: Math.floor(100 / achievementLevels.length),
+  }))
+}
+
+export const getAssessmentChartData = (
+  chartData,
+  barsDataForExternal,
+  barsDataForInternal
+) =>
+  chartData
+    .map((d) => {
+      if (d.externalTestType) {
+        const barData = barsDataForExternal.find(
+          (bar) => bar.active && bar.testId === d.testId
+        )
+
+        const bars = barsDataForExternal.filter((b) => b.testId === d.testId)
+
+        const barsCellDataForExternal = bars.reduce(
+          (res, ele) => ({
+            ...res,
+            [ele.key]: Math.floor(100 / bars.length),
+          }),
+          {}
+        )
+        return barData
+          ? {
+              ...d,
+              ...barsCellDataForExternal,
+              [barData.insideLabelKey]: new Intl.NumberFormat().format(
+                d.totalScore
+              ),
+              fillOpacity: 0.2,
+              additionalData: {
+                [barData.key]: {
+                  fillOpacity: 0.7,
+                  stroke: barData.fill,
+                  strokeOpacity: 1,
+                  strokeWidth: 2,
+                },
+              },
+            }
+          : null
+      }
+      return {
+        ...d,
+        [barsDataForInternal[0].key]: d.averageScore,
+        [barsDataForInternal[0].topLabelKey]: `${round(d.averageScore, 2)}%`,
+        fill: d.band.color,
+        fillOpacity: 1,
+      }
+    })
+    .filter((d) => d)

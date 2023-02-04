@@ -18,6 +18,10 @@ import {
   getStopAudioRecordingAndUploadForQidSelector,
 } from '../../selectors/media'
 import {
+  getTestItemIdFromPropsSelector,
+  getQuestionIdFromPropsSelector,
+} from '../../selectors/answers'
+import {
   setMediaRecordingStateAction,
   setMediaUploadStatusAction,
   setStopAudioRecordingAndUploadForQidAction,
@@ -49,8 +53,8 @@ const AudioResponsePreview = ({
   setAudioUploadStatus,
   setStopAudioRecordingAndUploadForQid,
   recordingAndUploadCompleteForQid,
-  questionId,
-  itemId,
+  _questionId: questionId,
+  _testItemId: itemId,
 }) => {
   const useS3AudioUrl = useMemo(() => {
     return shouldUploadToS3AndUseS3Url({
@@ -173,6 +177,8 @@ const enhance = compose(
       recordingState: getAudioRecordingStateSelector(state, props),
       audioUploadStatus: getAudioUploadStatusSelector(state, props),
       stopRecordingForQid: getStopAudioRecordingAndUploadForQidSelector(state),
+      _testItemId: getTestItemIdFromPropsSelector(state, props),
+      _questionId: getQuestionIdFromPropsSelector(state, props),
     }),
     {
       setRecordingState: setMediaRecordingStateAction,

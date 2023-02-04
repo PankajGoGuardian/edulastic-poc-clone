@@ -64,7 +64,7 @@ const TestBehaviorGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   showAssignModuleContent,
-  t,
+  t: i18translate,
   allowToUseShowHintsToStudents,
   togglePenaltyOnUsingHints,
 }) => {
@@ -319,7 +319,7 @@ const TestBehaviorGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title="SHOW CALCULATOR"
-          content="If students can use an on-screen calculator, select the type to make available on the test."
+          content={i18translate('calculatorTypesSettings.info')}
           premium={assessmentSuperPowersShowCalculator}
         />
         <StyledRow gutter={16} mb="15px">
@@ -360,8 +360,8 @@ const TestBehaviorGroupContainer = ({
         <SettingContainer id="show-tts-for-passage">
           <DetailsTooltip
             width={tootltipWidth}
-            title={t('showTtsForPassage.title')}
-            content={t('showTtsForPassage.info')}
+            title={i18translate('showTtsForPassage.title')}
+            content={i18translate('showTtsForPassage.info')}
             premium={premium}
             placement="rightTop"
           />
@@ -371,7 +371,7 @@ const TestBehaviorGroupContainer = ({
             freezeSettings={freezeSettings}
             showTtsForPassages={showTtsForPassages}
             overRideSettings={overRideSettings}
-            t={t}
+            i18translate={i18translate}
           />
         </SettingContainer>
       )}
@@ -465,7 +465,7 @@ const TestBehaviorGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="SHOW RUBRIC TO STUDENTS"
-            content={t('showRubricToStudents.info')}
+            content={i18translate('showRubricToStudents.info')}
             premium={premium}
             placement="rightTop"
           />
@@ -570,7 +570,7 @@ const TestBehaviorGroupContainer = ({
           <DetailsTooltip
             width={tootltipWidth}
             title="ALLOW TEACHERS TO REDIRECT"
-            content={t('allowTeacherToRedirect.info')}
+            content={i18translate('allowTeacherToRedirect.info')}
             premium={premium}
             placement="rightTop"
           />

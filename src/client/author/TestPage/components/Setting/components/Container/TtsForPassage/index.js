@@ -15,7 +15,7 @@ const ShowTtsForPassage = ({
   updateTestData,
   isTestlet,
   premium,
-  t,
+  i18translate,
 }) => {
   if (isDocBased || isTestlet) {
     return null
@@ -31,8 +31,8 @@ const ShowTtsForPassage = ({
       <SettingContainer>
         <Title>
           <SettingTitle
-            title={t('showTtsForPassage.title')}
-            tooltipTitle={t('showTtsForPassage.info')}
+            title={i18translate('showTtsForPassage.title')}
+            tooltipTitle={i18translate('showTtsForPassage.info')}
             premium={premium}
           />
           <SwitchButton
@@ -43,7 +43,7 @@ const ShowTtsForPassage = ({
         </Title>
         <SettingDescription
           isSmallSize={isSmallSize}
-          description={t('showTtsForPassage.info')}
+          description={i18translate('showTtsForPassage.info')}
         />
       </SettingContainer>
     </Block>
@@ -58,6 +58,7 @@ ShowTtsForPassage.propTypes = {
   updateTestData: PropTypes.func.isRequired,
   isTestlet: PropTypes.bool.isRequired,
   premium: PropTypes.bool.isRequired,
+  i18translate: PropTypes.func.isRequired,
 }
 
 export default ShowTtsForPassage

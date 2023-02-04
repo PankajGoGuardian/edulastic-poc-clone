@@ -93,7 +93,7 @@ const PreVsPostReport = ({
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters])
+  }, [settings.requestFilters, ddfilter])
 
   useEffect(() => {
     const q = {
@@ -105,7 +105,7 @@ const PreVsPostReport = ({
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, tableFilters.compareBy.key])
+  }, [settings.requestFilters, ddfilter, tableFilters.compareBy.key])
 
   // extract selected performance band from MARFilterData
   const bandInfo = useMemo(

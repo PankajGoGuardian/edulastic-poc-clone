@@ -1,13 +1,10 @@
 import React, { useMemo } from 'react'
 import { Select } from 'antd'
-import {
-  CheckBoxGrp,
-  CheckboxLabel,
-  SelectInputStyled,
-} from '@edulastic/common'
+import { CheckBoxGrp, CheckboxLabel } from '@edulastic/common'
 
-import { withCalcOptions } from '../../HOC/withCalcOptions'
 import { LabelWithTooltip } from './LabelWithTooltip'
+import { withCalcOptions } from '../../HOC/withCalcOptions'
+import { CalculatorDropdown } from './styled-components'
 
 const CalculatorSettings = ({
   calcTypes,
@@ -20,7 +17,7 @@ const CalculatorSettings = ({
     if (isCheckBoxGroup) {
       return [CheckBoxGrp, CheckboxLabel, 'vertical']
     }
-    return [SelectInputStyled, Select.Option, 'multiple']
+    return [CalculatorDropdown, Select.Option, 'multiple']
   }, [isCheckBoxGroup])
 
   return (
@@ -29,6 +26,7 @@ const CalculatorSettings = ({
       onChange={onChange}
       value={calcTypes}
       disabled={disabled}
+      placeholder="NONE"
       mode={mode}
     >
       {calcOptions.map((item) => (

@@ -2,7 +2,7 @@ import React from 'react'
 import { Tooltip } from 'antd'
 import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
-import { Label } from './styled'
+import { Label } from './styled-components'
 
 const LabelWithTooltipComponent = ({ t: translate, showPopover, text }) => {
   return (

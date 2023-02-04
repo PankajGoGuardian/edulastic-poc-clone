@@ -295,6 +295,11 @@ class AssessmentPlayerDefault extends React.Component {
     return null
   }
 
+  componentDidMount() {
+    const { updateTestPlayer } = this.props
+    updateTestPlayer({ currentCalculatorType: '' })
+  }
+
   componentDidUpdate(previousProps) {
     const { currentItem } = this.props
     if (

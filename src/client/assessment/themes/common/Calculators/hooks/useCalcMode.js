@@ -1,5 +1,5 @@
 import { getStateName } from '@edulastic/common'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { BasicDesmosCalculator } from '../components/BasicDesmosCalculator'
 import { BasicEdulasticCalculator } from '../components/BasicEdulasticCalculator'
 import { ScientificDesmosCalculator } from '../components/ScientificDesmosCalculator'
@@ -45,7 +45,13 @@ const getCalculatorComponent = (calcMode) => {
   }
 }
 
-export const useCalcMode = (calcTypes, calcProvider, schoolState) => {
+export const useCalcMode = ({
+  calcTypes,
+  calcProvider,
+  schoolState,
+  currentCalculatorType,
+  updateTestPlayer,
+}) => {
   const calcModes = useMemo(() => {
     return calcTypes.map((calcType) => {
       // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now,
@@ -76,5 +82,30 @@ export const useCalcMode = (calcTypes, calcProvider, schoolState) => {
     })
   }, [])
 
-  return calcModes
+  const calculatorIndexByCalcMode = useMemo(() => {
+    const calculatorIndex = calcModes.findIndex(
+      (allCalculators) => allCalculators?.calcMode === currentCalculatorType
+    )
+    return calculatorIndex === -1 ? 0 : calculatorIndex
+  }, [currentCalculatorType])
+
+  const handleChangeCurrentCalculatorType = (calculatorIndex) => {
+    updateTestPlayer({
+      currentCalculatorType: calcModes[calculatorIndex].calcMode,
+    })
+  }
+
+  useEffect(() => {
+    if (!currentCalculatorType) {
+      updateTestPlayer({
+        currentCalculatorType: calcModes[0].calcMode,
+      })
+    }
+  }, [])
+
+  return {
+    calcOptions: calcModes,
+    calculatorIndexByCalcMode,
+    handleChangeCurrentCalculatorType,
+  }
 }

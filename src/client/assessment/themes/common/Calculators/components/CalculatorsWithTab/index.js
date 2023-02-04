@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { EduIf, Tabs } from '@edulastic/common'
 
 import { getCurrentSchoolState } from '../../../../../../author/src/selectors/user'
+import {
+  getCurrentCalculatorTypeSelector,
+  updateTestPlayerAction,
+} from '../../../../../../author/sharedDucks/testPlayer'
 import { CalculatorTitle } from '../CalculatorTitle'
 import { useCalcMode } from '../../hooks/useCalcMode'
 import { useRndParams } from '../../hooks/useRndParams'
@@ -30,9 +34,20 @@ const CalculatorsWithTab = ({
   calcProvider,
   calcTypes,
   schoolState,
+  currentCalculatorType,
+  updateTestPlayer,
 }) => {
-  const [currentCalc, setCurrentCalc] = useState(0)
-  const calcOptions = useCalcMode(calcTypes, calcProvider, schoolState)
+  const {
+    calcOptions,
+    calculatorIndexByCalcMode: currentCalc,
+    handleChangeCurrentCalculatorType,
+  } = useCalcMode({
+    calcTypes,
+    calcProvider,
+    schoolState,
+    currentCalculatorType,
+    updateTestPlayer,
+  })
   const { calcMode, comp: CalcComponent } = calcOptions[currentCalc]
   const params = useRndParams(calcMode)
 
@@ -49,7 +64,11 @@ const CalculatorsWithTab = ({
           title={calcOptions[currentCalc].calcTitle}
         />
         <EduIf condition={calcOptions.length > 1}>
-          {renderTabs({ currentCalc, calcOptions, setCurrentCalc })}
+          {renderTabs({
+            currentCalc,
+            calcOptions,
+            setCurrentCalc: handleChangeCurrentCalculatorType,
+          })}
         </EduIf>
         <Tabs.TabContainer className="calculator-tab-container" padding="0px">
           <CalcComponent calcMode={calcMode} schoolState={schoolState} />
@@ -66,6 +85,12 @@ CalculatorsWithTab.propTypes = {
   schoolState: PropTypes.string.isRequired,
 }
 
-export default connect((state) => ({
-  schoolState: getCurrentSchoolState(state),
-}))(CalculatorsWithTab)
+export default connect(
+  (state) => ({
+    schoolState: getCurrentSchoolState(state),
+    currentCalculatorType: getCurrentCalculatorTypeSelector(state),
+  }),
+  {
+    updateTestPlayer: updateTestPlayerAction,
+  }
+)(CalculatorsWithTab)

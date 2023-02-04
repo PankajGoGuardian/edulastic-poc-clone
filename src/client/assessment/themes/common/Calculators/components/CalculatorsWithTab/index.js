@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
-import { Tabs } from '@edulastic/common'
+import { EduIf, Tabs } from '@edulastic/common'
 
 import { getCurrentSchoolState } from '../../../../../../author/src/selectors/user'
 import { CalculatorTitle } from '../CalculatorTitle'
@@ -11,6 +11,20 @@ import { CalcContainer, RndWrapper } from './styled-components'
 
 const tabStyle = { margin: 0 }
 
+const renderTabs = ({ currentCalc, calcOptions, setCurrentCalc }) => {
+  return (
+    <Tabs value={currentCalc} onChange={setCurrentCalc} mb="0px">
+      {calcOptions.map((calcOption) => (
+        <Tabs.Tab
+          key={calcOption.calcMode}
+          label={calcOption.calcTabLabel}
+          style={tabStyle}
+        />
+      ))}
+    </Tabs>
+  )
+}
+
 const CalculatorsWithTab = ({
   changeTool,
   calcProvider,
@@ -18,12 +32,12 @@ const CalculatorsWithTab = ({
   schoolState,
 }) => {
   const [currentCalc, setCurrentCalc] = useState(0)
-  const [calcOptions] = useCalcMode(calcTypes, calcProvider, schoolState)
+  const calcOptions = useCalcMode(calcTypes, calcProvider, schoolState)
   const { calcMode, comp: CalcComponent } = calcOptions[currentCalc]
   const params = useRndParams(calcMode)
 
   return (
-    <CalcContainer>
+    <CalcContainer hasOnlySingleCalculator={calcOptions.length <= 1}>
       <RndWrapper
         default={params}
         minWidth={params.width}
@@ -34,15 +48,9 @@ const CalculatorsWithTab = ({
           onClose={changeTool}
           title={calcOptions[currentCalc].calcTitle}
         />
-        <Tabs value={currentCalc} onChange={setCurrentCalc} mb="0px">
-          {calcOptions.map((calcOption) => (
-            <Tabs.Tab
-              key={calcOption.calcMode}
-              label={calcOption.calcTabLabel}
-              style={tabStyle}
-            />
-          ))}
-        </Tabs>
+        <EduIf condition={calcOptions.length > 1}>
+          {renderTabs({ currentCalc, calcOptions, setCurrentCalc })}
+        </EduIf>
         <Tabs.TabContainer className="calculator-tab-container" padding="0px">
           <CalcComponent calcMode={calcMode} schoolState={schoolState} />
         </Tabs.TabContainer>

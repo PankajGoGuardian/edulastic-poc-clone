@@ -10,13 +10,14 @@ export const CalcContainer = styled.div`
   z-index: 1000;
   left: 50%;
   top: 80px;
+
+  .calculator-tab-container {
+    height: ${({ hasOnlySingleCalculator }) =>
+      hasOnlySingleCalculator ? 'calc(100% - 40px)' : 'calc(100% - 78px)'};
+  }
 `
 
 export const RndWrapper = styled(Rnd)`
   box-shadow: ${boxShadowDefault};
   background: ${white};
-
-  .calculator-tab-container {
-    height: calc(100% - 78px);
-  }
 `

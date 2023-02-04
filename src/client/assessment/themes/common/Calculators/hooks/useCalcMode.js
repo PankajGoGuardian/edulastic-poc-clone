@@ -59,9 +59,11 @@ export const useCalcMode = (calcTypes, calcProvider, schoolState) => {
       }`
 
       const stateName = getStateName(schoolState)
-      const calcTitle = `${CALC_LABEL_MAP[calcType]} Calculator`
+      let calcTitle = `${CALC_LABEL_MAP[calcType]} Calculator`
       if (stateName && calcMode === CALC_MODES.GRAPHING_STATE_DESMOS) {
-        return `${calcTitle} | ${stateName}`
+        calcTitle = `Desmos ${calcTitle} | ${stateName}`
+      } else if (calcMode === CALC_MODES.GRAPHING_DESMOS) {
+        calcTitle = `Desmos ${calcTitle}`
       }
 
       const calcTabLabel = CALC_LABEL_MAP[calcType]
@@ -74,5 +76,5 @@ export const useCalcMode = (calcTypes, calcProvider, schoolState) => {
     })
   }, [])
 
-  return [calcModes]
+  return calcModes
 }

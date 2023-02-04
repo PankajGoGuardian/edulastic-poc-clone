@@ -413,6 +413,8 @@ export const defaultTheme = {
     headerCloseIconHeight: `16px`,
     headerCalculatorIconWidth: `19px`,
     headerCalculatorIconHeight: `19px`,
+    headerMultiCalculatorIconWidth: `24px`,
+    headerMultiCalculatorIconHeight: `24px`,
     headerInRulerIconWidth: `21px`,
     headerInRulerIconHeight: `21px`,
     headerCursorIconWidth: `10px`,

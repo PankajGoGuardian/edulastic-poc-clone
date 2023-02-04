@@ -21,5 +21,17 @@
     "profileTitle": "My Profile",
     "subscriptionTitle": "Subscription",
     "myClassTitle": "My Classes"
+  },
+  "toolbar": {
+    "pointer": "Pointer",
+    "ruler": "Ruler",
+    "calculator": "Calculator",
+    "refMaterial": "Reference Material",
+    "cross": "Crossout",
+    "crossDisabled": "This option is available only for multiple choice and matching questions",
+    "protactor": "Protactor",
+    "scratchPad": "Scratch Pad",
+    "magnify": "Magnify",
+    "uploadWork": "Upload work"
   }
 }

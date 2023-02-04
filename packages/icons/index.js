@@ -292,7 +292,7 @@ export { default as IconDrc } from './src/IconDrc'
 export { default as IconDemoAccGreen } from './src/IconDemoAccGreen'
 export { default as IconDemoAccNav } from './src/IconDemoAccNav'
 export { default as IconPlayButton } from './src/IconPlayButton'
-
+export { default as IconMultiCalculators } from './src/IconMultiCalculators'
 export { default as IconCart } from './src/IconCart'
 export { default as IconConfirmation } from './src/IconConfirmation'
 export { default as IconCreditCard } from './src/IconCreditCard'

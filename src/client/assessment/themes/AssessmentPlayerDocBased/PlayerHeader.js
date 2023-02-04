@@ -16,7 +16,11 @@ import {
   MainActionWrapper,
 } from '../common'
 import { Tooltip } from '../../../common/utils/helpers'
-import { Container, ButtonWithStyle, CalculatorIcon } from '../common/ToolBar'
+import {
+  ToolBarContainer,
+  ButtonWithStyle,
+  MultiCalculatorIcon,
+} from '../common/ToolBar/styled-components'
 import { MAX_MOBILE_WIDTH } from '../../constants/others'
 import TimedTestTimer from '../common/TimedTestTimer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
@@ -89,14 +93,14 @@ const PlayerHeader = ({
                 title={title}
               />
               <MainActionWrapper>
-                <Container>
+                <ToolBarContainer>
                   <EduIf condition={!isEmpty(calcTypes)}>
                     <Tooltip placement="top" title="Calculator">
                       <ButtonWithStyle
                         active={currentToolMode.calculator}
                         onClick={() => onChangeTool('calculator')}
                       >
-                        <CalculatorIcon />
+                        <MultiCalculatorIcon className="multi-calculators" />
                       </ButtonWithStyle>
                     </Tooltip>
                   </EduIf>
@@ -137,7 +141,7 @@ const PlayerHeader = ({
                   {timedAssignment && (
                     <TimedTestTimer utaId={utaId} groupId={groupId} />
                   )}
-                </Container>
+                </ToolBarContainer>
               </MainActionWrapper>
               {!isMobile && rightButtons}
             </HeaderWrapper>

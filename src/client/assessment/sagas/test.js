@@ -74,6 +74,8 @@ import {
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
   SAVE_USER_WORK,
+  CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
+  SET_SUBMIT_TEST_COMPLETE,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -88,6 +90,7 @@ import {
   languageChangeSuccessAction,
   setShowTestInfoSuccesAction,
   resetStudentAttemptAction,
+  setSubmitTestCompleteAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -106,6 +109,7 @@ import {
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
+import { getSubmitTestCompleteSelector } from '../selectors/test'
 import {
   setActiveAssignmentAction,
   utaStartTimeUpdateRequired,
@@ -981,6 +985,17 @@ function* loadPreviousResponses(payload) {
   }
 }
 
+function* closeTestTimeOutSaga({ payload }) {
+  const { studentGradesUrl } = payload
+  const isTestSubmitted = yield select(getSubmitTestCompleteSelector)
+  if (isTestSubmitted) {
+    yield put(push(studentGradesUrl))
+    return
+  }
+  yield take(SET_SUBMIT_TEST_COMPLETE)
+  yield put(push(studentGradesUrl))
+}
+
 function* submitTest({ payload }) {
   try {
     const { itemResponse } = payload
@@ -1160,6 +1175,7 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
+    yield put(setSubmitTestCompleteAction(true))
     if (!payload.preventRouteChange) {
       yield put(resetStudentAttemptAction())
     }
@@ -1230,5 +1246,6 @@ export default function* watcherSaga() {
     ),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
     yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
+    yield takeLatest(CLOSE_TEST_TIMED_OUT_ALERT_MODAL, closeTestTimeOutSaga),
   ])
 }

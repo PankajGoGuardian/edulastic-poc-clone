@@ -338,6 +338,8 @@ export const getTableData = (
       preBandProfile,
       postBandProfile,
     }
-  })
+  }).sort((a, b) =>
+    a.compareByColumnTitle.localeCompare(b.compareByColumnTitle)
+  )
   return tableData
 }

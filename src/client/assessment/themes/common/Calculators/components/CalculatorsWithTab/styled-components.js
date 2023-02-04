@@ -13,7 +13,7 @@ export const CalcContainer = styled.div`
 
   .calculator-tab-container {
     height: ${({ hasOnlySingleCalculator }) =>
-      hasOnlySingleCalculator ? 'calc(100% - 40px)' : 'calc(100% - 78px)'};
+      hasOnlySingleCalculator ? 'calc(100% - 40px)' : 'calc(100% - 77px)'};
   }
 `
 

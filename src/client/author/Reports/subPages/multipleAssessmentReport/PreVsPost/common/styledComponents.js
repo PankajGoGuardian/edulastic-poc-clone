@@ -258,13 +258,20 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 `
 
 export const PerformanceMatrixContainer = styled(Row)`
-  padding: 5px;
-  .section-pre-test,
-  .section-post-test {
+  .section-test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 10px;
     font-size: 13px;
-    .section-pre-test-tag,
-    .section-post-test-tag {
+    .test-name {
+      padding: 4px;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    .test-tag {
       display: block;
       width: fit-content;
       height: fit-content;
@@ -272,18 +279,25 @@ export const PerformanceMatrixContainer = styled(Row)`
       font-weight: bold;
       border-radius: 6px;
     }
-    .section-pre-test-name,
-    .section-post-test-name {
-      padding: 4px;
+  }
+  .post-test {
+    width: 250px;
+    margin-left: 40px;
+    .test-name {
+      width: 100%;
     }
   }
-  .section-pre-test {
+  .pre-test {
+    height: 250px;
     position: absolute;
     writing-mode: vertical-rl;
     transform: translate(-100%, -50%) scale(-1, -1);
     top: 50%;
-    .section-pre-test-tag {
+    .test-tag {
       padding: 8px 2px;
+    }
+    .test-name {
+      height: 100%;
     }
   }
   .section-matrix-grid {

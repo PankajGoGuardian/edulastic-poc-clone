@@ -1,5 +1,5 @@
 import React, { useMemo } from 'react'
-import { Row, Typography } from 'antd'
+import { Row, Typography, Tooltip } from 'antd'
 import { sortBy } from 'lodash'
 
 import { darkGrey } from '@edulastic/colors'
@@ -145,16 +145,20 @@ const PerformanceMatrix = ({
       </StyledRow>
       <PerformanceMatrixContainer matrixSize={matrixSize}>
         <Row type="flex" justify="center">
-          <div className="section-post-test">
-            <TestTypeTag className="section-post-test-tag">POST</TestTypeTag>
-            <span className="section-post-test-name">{postTestName}</span>
+          <div className="section-test post-test">
+            <TestTypeTag className="test-tag">POST</TestTypeTag>
+            <Tooltip title={postTestName}>
+              <span className="test-name">{postTestName}</span>
+            </Tooltip>
           </div>
         </Row>
         <Row type="flex" justify="center">
           <div style={{ position: 'relative' }}>
-            <div className="section-pre-test">
-              <TestTypeTag className="section-pre-test-tag">PRE</TestTypeTag>
-              <span className="section-pre-test-name">{preTestName}</span>
+            <div className="section-test pre-test">
+              <TestTypeTag className="test-tag">PRE</TestTypeTag>
+              <Tooltip title={preTestName}>
+                <span className="test-name">{preTestName}</span>
+              </Tooltip>
             </div>
             <div className="section-matrix-grid">
               {/* empty div required to complete the matrix */}

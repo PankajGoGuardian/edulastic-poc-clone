@@ -1,17 +1,18 @@
 import React from 'react'
+
+import { cloneDeep, set } from 'lodash'
 import PropTypes from 'prop-types'
-import { withTheme } from 'styled-components'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { cloneDeep, set } from 'lodash'
+import { withTheme } from 'styled-components'
 
-import { withNamespaces } from '@edulastic/localization'
 import { ComposeQuestion } from '@edulastic/common'
+import { withNamespaces } from '@edulastic/localization'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
-import { StyledMessage, StyledBoldText } from './styledComponents/EditView'
 import Question from '../../components/Question'
+import Extras from '../../containers/Extras'
 import { Scoring } from '../../containers/WidgetOptions/components'
-import AudioResponseSolution from './components/AudioResponseSolution'
+import { StyledBoldText, StyledMessage } from './styledComponents/EditView'
 
 const AudioResponseEdit = ({
   t: i18translate,
@@ -23,7 +24,7 @@ const AudioResponseEdit = ({
 }) => {
   if (!item) return null
 
-  const { stimulus, title, instructorStimulus, audioTimeLimitInMinutes } = item
+  const { stimulus, title, audioTimeLimitInMinutes } = item
 
   const handleQuestionChange = (path, value) => {
     const newData = cloneDeep(item)
@@ -72,15 +73,9 @@ const AudioResponseEdit = ({
         />
       </Question>
 
-      <AudioResponseSolution
-        i18translate={i18translate}
-        itemTitle={title}
-        instructorStimulus={instructorStimulus}
-        handleQuestionChange={(value) =>
-          handleQuestionChange('instructorStimulus', value)
-        }
-        fillQuestionSections={fillSections}
-        clearQuestionSections={cleanSections}
+      <Extras
+        fillSections={fillSections}
+        cleanSections={cleanSections}
         advancedAreOpen={advancedAreOpen}
       />
     </>

@@ -42,7 +42,7 @@ export const withCalcOptions = (WrappedComponent) => {
             disabled: disableOption,
             id: item.id,
             showPopover: hasPopover,
-            text: isHomeSchool ? item.homeText : item.text,
+            text: isHomeSchool ? item.homeText ?? item.text : item.text,
           }
         })
     }, [calculatorProvider, isHomeSchool, premium, schoolState])

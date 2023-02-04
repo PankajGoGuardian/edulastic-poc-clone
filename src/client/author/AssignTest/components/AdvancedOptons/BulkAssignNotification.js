@@ -1,13 +1,15 @@
 import { useState, useEffect } from 'react'
 import { withRouter } from 'react-router-dom'
 import { uniqBy } from 'lodash'
-import { notification as antdNotification } from '@edulastic/common'
 import * as Fbs from '@edulastic/common/src/Firebase'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { assignmentStatusOptions } from '@edulastic/constants'
 import { getUser, getUserOrgId } from '../../../src/selectors/user'
-import { destroyNotificationMessage } from '../../../../common/components/Notification'
+import {
+  destroyNotificationMessage,
+  notificationMessage,
+} from '../../../../common/components/Notification'
 
 const collectionName = 'AsyncAssignmentsStatus'
 
@@ -29,28 +31,27 @@ const NotificationListener = ({ user }) => {
 
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
-      const {
-        processStatus,
-        testTitle,
-        totalClassesAssigned,
-        playlistModuleTitle,
-        playlistTitle,
-      } = doc
+      const { processStatus, tests, playlistModuleTitle, playlistTitle } = doc
       if (
         processStatus === assignmentStatusOptions.DONE &&
         !notificationIds.includes(doc.__id)
       ) {
+        const { title: testTitle, totalClassesAssigned } =
+          Object.values(tests)[0] || {}
         setNotificationIds([...notificationIds, doc.__id])
-        let message = `Test ${testTitle} assigned to ${totalClassesAssigned} group(s)`
+        let message = `Test ${testTitle} assigned to ${totalClassesAssigned} group(s) successfully`
         if (playlistModuleTitle) {
-          message = `Playlist ${playlistTitle}: ${playlistModuleTitle} assigned to ${totalClassesAssigned} group(s)`
+          message = `Playlist ${playlistTitle}: ${playlistModuleTitle} is assigned to the group(s) successfully`
         }
-        antdNotification({
-          type: 'success',
-          msg: message,
-          key: doc.__id,
+        notificationMessage({
+          title: 'Async-Assign Success',
+          message,
+          notificationPosition: 'bottomRight',
+          notificationKey: doc.__id,
+          onCloseNotification: () => {
+            deleteNotificationDocument(doc.__id)
+          },
         })
-        deleteNotificationDocument(doc.__id)
       }
     })
   }

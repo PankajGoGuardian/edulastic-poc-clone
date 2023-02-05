@@ -242,6 +242,8 @@ function* setAdvancedSearchSchools({ payload: _payload }) {
           { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
         ],
       },
+      sortField: 'name',
+      order: database.SORT_ORDER.ASC,
     }
     const schools = yield call(schoolApi.getSchools, payload)
     yield put(
@@ -303,6 +305,8 @@ function* setAdvancedSearchCourses({ payload: _payload }) {
           { type: database.MATCH_TYPE.CONTAINS, value: _payload.searchString },
         ],
       },
+      sortField: 'name',
+      order: database.SORT_ORDER.ASC,
     }
 
     const response = yield call(courseApi.searchCourse, payload)

@@ -64,6 +64,9 @@ const ValueEditor = (props) => {
 
   const { key } = enableSearchFields[field] || {}
   const isLoading = advancedSearchDetails[key]?.isLoading
+  const fetchedValues =
+    advancedSearchDetails[enableSearchFields[field].key].data
+
   return (
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
       <EduThen>
@@ -79,13 +82,11 @@ const ValueEditor = (props) => {
           value={value || undefined}
           showSearch
           tagsEllipsis
-          filterOption={(input, option) => {
-            const optionValue = option.props?.children?.toLowerCase() || ''
-            const splitOptionValue = optionValue.split(' ')
-            return splitOptionValue.some((val) =>
-              val?.startsWith(input.toLowerCase())
+          filterOption={(input, option) =>
+            fetchedValues.some(
+              (fetchedValue) => fetchedValue.value === option.props.value
             )
-          }}
+          }
           loading={isLoading}
           notFoundContent={
             !isLoading && (

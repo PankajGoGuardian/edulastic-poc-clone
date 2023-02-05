@@ -98,12 +98,19 @@ export const validatePreAndPostTestIds = (payload) => {
   return true
 }
 
+const getTestName = (testInfo, testId) => {
+  const { title = '', incompleteCount = 0 } =
+    testInfo.find((t) => t.testId === testId) ?? {}
+  return `${title} ${+incompleteCount > 0 && '*'}`
+}
+
 // get test names from summary api metrics
 export const getTestNamesFromTestMetrics = (testInfo, filters) => {
   const { preTestId, postTestId } = filters
-  const preTestName = testInfo.find((t) => t._id === preTestId)?.title
-  const postTestName = testInfo.find((t) => t._id === postTestId)?.title
-  return { preTestName, postTestName }
+  return {
+    preTestName: getTestName(testInfo, preTestId),
+    postTestName: getTestName(testInfo, postTestId),
+  }
 }
 
 // get summary section data from summary api metrics

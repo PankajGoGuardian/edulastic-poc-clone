@@ -22,6 +22,7 @@ import { reportLinkColor } from '../../utils/constants'
 import { compareByMap } from '../../utils/trend'
 import TrendColumn from './TrendColumn'
 import BackendPagination from '../../../../../common/components/BackendPagination'
+import IncompleteTestsMessage from '../../../../../common/components/IncompleteTestsMessage'
 
 const StyledTable = styled(Table)`
   .ant-table-layout-fixed {
@@ -499,12 +500,7 @@ const TrendTable = ({
       </TableContainer>
       <Row type="flex" align="middle">
         <Col span={14}>
-          {showTestIncompleteText && (
-            <StyledH3 fontSize="10px" fontWeight="normal" margin="0">
-              * Some assignment(s) for this test are still in progress and hence
-              the results may not be complete
-            </StyledH3>
-          )}
+          <IncompleteTestsMessage hasIncompleteTests={showTestIncompleteText} />
         </Col>
         <Col span={10} style={{ minHeight: '52px' }}>
           <BackendPagination

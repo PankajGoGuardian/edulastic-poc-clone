@@ -10,6 +10,7 @@ import { StyledCard, DashedLine } from '../../../../../common/styled'
 import { StyledTable, StyledRow } from '../../common/styledComponents'
 import { compareByKeys } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
+import IncompleteTestsMessage from '../../../../../common/components/IncompleteTestsMessage'
 
 const PreVsPostTable = ({
   dataSource,
@@ -21,6 +22,7 @@ const PreVsPostTable = ({
   handleAddToGroupClick,
   selectedPerformanceBand,
   isCsvDownloading,
+  hasIncompleteTests,
 }) => {
   // get table columns
   const tableColumns = getTableColumns(
@@ -58,6 +60,9 @@ const PreVsPostTable = ({
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
       />
+      <StyledRow type="flex" align="middle">
+        <IncompleteTestsMessage hasIncompleteTests={hasIncompleteTests} />
+      </StyledRow>
     </StyledCard>
   )
 }

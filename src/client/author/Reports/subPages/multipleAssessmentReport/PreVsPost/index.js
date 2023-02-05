@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { get, isEmpty, mapValues } from 'lodash'
+import { get, isEmpty, mapValues, some } from 'lodash'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
 
@@ -123,6 +123,7 @@ const PreVsPostReport = ({
     postTestName,
     totalStudentCount,
     summaryData,
+    hasIncompleteTests,
   } = useMemo(() => {
     const {
       metricInfo: _summaryMetricInfo = [],
@@ -134,6 +135,10 @@ const PreVsPostReport = ({
       summaryMetricInfo: _summaryMetricInfo,
       ..._testNamesData,
       ..._summaryData,
+      hasIncompleteTests: some(
+        _testInfo,
+        ({ incompleteCount = 0 }) => +incompleteCount > 0
+      ),
     }
   }, [reportSummaryData, reportFilters])
 
@@ -304,6 +309,7 @@ const PreVsPostReport = ({
             setTableFilters={setTableFilters}
             isCsvDownloading={isCsvDownloading}
             handleAddToGroupClick={handleAddToGroupClick}
+            hasIncompleteTests={hasIncompleteTests}
           />
         </PreVsPostReportContainer>
       </EduIf>

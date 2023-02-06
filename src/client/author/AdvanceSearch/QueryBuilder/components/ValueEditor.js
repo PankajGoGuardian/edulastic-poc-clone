@@ -64,8 +64,7 @@ const ValueEditor = (props) => {
 
   const { key } = enableSearchFields[field] || {}
   const isLoading = advancedSearchDetails[key]?.isLoading
-  const fetchedValues =
-    advancedSearchDetails[enableSearchFields[field].key].data
+  const fetchedValues = advancedSearchDetails[key]?.data
 
   return (
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
@@ -83,7 +82,7 @@ const ValueEditor = (props) => {
           showSearch
           tagsEllipsis
           filterOption={(input, option) =>
-            fetchedValues.some(
+            fetchedValues?.some(
               (fetchedValue) => fetchedValue.value === option.props.value
             )
           }

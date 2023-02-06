@@ -19,37 +19,24 @@ const AudioPlayerContainer = ({
   hideAudioRecorder,
   setErrorData,
 }) => {
-  const {
-    audioDuration,
-    isAudioLoading,
-    playerState,
-    audioSliderFillCount,
-    handlePlay,
-    handlePause,
-    handleOnClickRerecord,
-    resetAudioTime,
-    setAudioSliderCount,
-  } = useAudioPlayer({ audioUrl, onClickRerecord, setErrorData })
+  const { audioRef, isAudioLoading, handleOnClickRerecord } = useAudioPlayer({
+    audioUrl,
+    onClickRerecord,
+    setErrorData,
+  })
 
   return (
     <StyledAudioPlayerContainer>
-      <StyledContainer width="95%">
-        <EduIf condition={!isAudioLoading}>
-          <AudioPlayer
-            handlePlay={handlePlay}
-            handlePause={handlePause}
-            audioDuration={audioDuration}
-            resetAudioTime={resetAudioTime}
-            playerState={playerState}
-            setAudioSliderCount={setAudioSliderCount}
-            audioSliderFillCount={audioSliderFillCount}
-          />
-        </EduIf>
-        <EduIf condition={!!isAudioLoading}>
-          <StyledText showLoader>
-            {i18translate('component.audioResponse.loadingAudio')}
-          </StyledText>
-        </EduIf>
+      <StyledContainer
+        width="95%"
+        justifyContent={isAudioLoading ? 'center' : 'space-evenly'}
+      >
+        <AudioPlayer
+          i18translate={i18translate}
+          audioRef={audioRef}
+          isAudioLoading={isAudioLoading}
+          audioUrl={audioUrl}
+        />
       </StyledContainer>
       <EduIf
         condition={[!isAudioLoading, !hideAudioRecorder].every((val) => !!val)}

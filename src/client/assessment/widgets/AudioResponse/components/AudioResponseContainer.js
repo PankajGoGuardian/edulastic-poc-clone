@@ -16,6 +16,7 @@ import useAudioResponse from '../hooks/useAudioResponse'
 import AudioRecorderContainer from './AudioRecorderContainer'
 import AudioPlayerContainer from './AudioPlayerContainer'
 import ErrorPopup from './ErrorPopup'
+import UploadProgress from './UploadProgress'
 
 const AudioResponseContainer = ({
   i18translate,
@@ -108,9 +109,7 @@ const AudioResponseContainer = ({
         />
       </EduIf>
       <EduIf condition={audioUploadStatus === AUDIO_UPLOAD_ACTIVE}>
-        <StyledText showLoader>
-          {i18translate('component.audioResponse.uploading')}
-        </StyledText>
+        <UploadProgress i18translate={i18translate} />
       </EduIf>
       <EduIf condition={hideAudioRecorder && !userAnswer?.length}>
         <StyledText>

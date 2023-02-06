@@ -7,7 +7,7 @@ export const getAudioRecordingErrorMessage = (error, errorName, state) => {
   switch (errorName) {
     case 'NotAllowedError':
       errorMessage =
-        'Microphone access has not been granted to your browser. Allow mic access to proceed!'
+        'Edulastic needs access to your microphone so that you can record responses.'
       break
     default:
       errorMessage = `An error occured while ${

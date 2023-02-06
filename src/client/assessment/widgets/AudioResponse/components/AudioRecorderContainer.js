@@ -5,7 +5,11 @@ import { RECORDING_ACTIVE, RECORDING_INACTIVE, MIC, STOP } from '../constants'
 import {
   StyledContainer,
   StyledDivider,
+  StyledRecordingDataWrapper,
+  StyledText,
+  StyledRecordingDataContainer,
 } from '../styledComponents/AudioRecorder'
+import AudioButton from './AudioButton'
 import AudioRecorder from './AudioRecorder'
 import CountDownTimer from './CountDownTimer'
 import useAudioRecorder from '../hooks/useAudioRecorder'
@@ -43,21 +47,36 @@ const AudioRecorderContainer = ({
         />
       </EduIf>
       <EduIf condition={recordingState === RECORDING_ACTIVE}>
-        <AudioRecorder
-          onClickHandler={onClickStopRecording}
-          buttonType={STOP}
-          text={i18translate('component.audioResponse.recording')}
-          stylesData={{ showLoader: true }}
-        />
         <StyledContainer>
-          <StyledDivider />
-        </StyledContainer>
-        <StyledContainer>
-          <CountDownTimer
-            audioTimeLimitInMinutes={audioTimeLimitInMinutes}
-            handleStopRecording={onClickStopRecording}
+          <AudioButton
+            buttonType={STOP}
+            onClickHandler={onClickStopRecording}
+            isRecording
           />
         </StyledContainer>
+        <StyledRecordingDataWrapper>
+          <StyledRecordingDataContainer>
+            <StyledContainer>
+              <StyledText showLoader fontSize="11px/15px">
+                {i18translate('component.audioResponse.recording')}
+              </StyledText>
+            </StyledContainer>
+            <StyledContainer>
+              <StyledDivider />
+            </StyledContainer>
+            <StyledContainer>
+              <CountDownTimer
+                audioTimeLimitInMinutes={audioTimeLimitInMinutes}
+                handleStopRecording={onClickStopRecording}
+              />
+            </StyledContainer>
+          </StyledRecordingDataContainer>
+          <StyledContainer padding="5px">
+            <StyledText>
+              {i18translate('component.audioResponse.clickToStopRecording')}
+            </StyledText>
+          </StyledContainer>
+        </StyledRecordingDataWrapper>
       </EduIf>
     </StyledContainer>
   )

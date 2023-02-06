@@ -7,6 +7,7 @@ import {
   lightBlackBoldText,
   greyThemeLight,
   ligthRed4,
+  darkRed2,
 } from '@edulastic/colors'
 import { Stimulus } from '@edulastic/common'
 
@@ -73,15 +74,16 @@ export const StyledAudioPlayerContainer = styled.div`
 
 export const StyledContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: ${({ justifyContent }) => justifyContent || 'center'};
   align-items: center;
   margin: 0px 7px;
   width: ${({ width }) => width || 'initial'};
+  padding: ${({ padding }) => padding || 'initial'};
 `
 
 export const StyledButton = styled.button`
-  width: 32px;
-  height: 32px;
+  width: 47px;
+  height: 47px;
   background: ${themeColor} 0% 0% no-repeat padding-box;
   opacity: 1;
   border-radius: 50%;
@@ -96,9 +98,21 @@ export const StyledButton = styled.button`
     `}
 `
 
+export const StyledUploadingContainer = styled.div`
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+  width: 344px;
+  height: 56px;
+  background: ${mainBgColor} 0% 0% no-repeat padding-box;
+  border-radius: 35px;
+  opacity: 1;
+`
+
 export const StyledText = styled.p`
   text-align: left;
-  font: normal normal bold 11px/15px Open Sans;
+  font: ${({ fontSize }) =>
+    `normal normal bold ${fontSize || '14px/19px'} Open Sans;`};
   letter-spacing: 0px;
   color: ${({ isTextBlack }) =>
     isTextBlack ? lightBlackBoldText : greyThemeLight};
@@ -157,24 +171,47 @@ export const StyledRerecordButton = styled.button`
 `
 export const StyledModal = styled(Modal)`
   min-width: 50%;
-  .ant-modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  & > .ant-modal-header {
     display: none;
   }
-  .ant-modal-body {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .ant-modal-content {
+  & > .ant-modal-content {
+    width: 450px;
+    & > .ant-modal-body {
+      padding: 5px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
     background: ${ligthRed4} 0% 0% no-repeat padding-box;
-    border-radius: 15px;
+    border-radius: 6px;
     opacity: 1;
+    height: 27px;
     p {
       text-align: left;
-      font: normal normal bold 12px/17px Open Sans;
+      font: normal normal normal 11px/14px Open Sans;
       letter-spacing: 0px;
-      color: ${mainBgColor};
+      color: ${darkRed2};
       opacity: 1;
+      margin-right: 12px;
     }
   }
+`
+
+export const StyledRecordingDataWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 30px;
+`
+export const StyledRecordingDataContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5px;
+`
+export const StyledAudioElement = styled.audio`
+  width: 364px;
+  height: 56px;
 `

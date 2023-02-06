@@ -13,11 +13,19 @@ const CalculatorSettings = ({
   calcOptions,
   isCheckBoxGroup,
 }) => {
-  const [Wrapper, Option, mode] = useMemo(() => {
+  const [Wrapper, Option, restProps] = useMemo(() => {
     if (isCheckBoxGroup) {
-      return [CheckBoxGrp, CheckboxLabel, 'vertical']
+      return [CheckBoxGrp, CheckboxLabel, { mode: 'vertical' }]
     }
-    return [CalculatorDropdown, Select.Option, 'multiple']
+    return [
+      CalculatorDropdown,
+      Select.Option,
+      {
+        mode: 'multiple',
+        placeholder: 'NONE',
+        getPopupContainer: (triggerNode) => triggerNode.parentNode,
+      },
+    ]
   }, [isCheckBoxGroup])
 
   return (
@@ -26,8 +34,7 @@ const CalculatorSettings = ({
       onChange={onChange}
       value={calcTypes}
       disabled={disabled}
-      placeholder="NONE"
-      mode={mode}
+      {...restProps}
     >
       {calcOptions.map((item) => (
         <Option

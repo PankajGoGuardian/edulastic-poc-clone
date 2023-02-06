@@ -141,14 +141,18 @@ export const LegendWrapper = styled.div`
   width: fit-content;
   margin-right: 0px;
   margin-left: auto;
+  justify-content: right;
   border: 5px solid ${grey};
   border-width: 0.5px 0.5px 0px 0.5px;
   border-radius: 20px 20px 0px 0px;
-  padding: 12px 20px;
+  padding-block: 12px;
+  padding-right: 0px;
 `
 
 export const StudentWrapper = styled.span`
   display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   width: fit-content;
   margin-right: auto;
   margin-left: 0px;

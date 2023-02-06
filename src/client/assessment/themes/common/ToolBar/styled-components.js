@@ -6,6 +6,7 @@ import {
   mediumDesktopExactWidth,
 } from '@edulastic/colors'
 import {
+  IconCalculator,
   IconMultiCalculators,
   IconClose,
   IconCursor,
@@ -134,6 +135,13 @@ export const InRulerIcon = styled(IconInRuler)`
   ${({ theme }) => css`
     width: ${theme.default.headerInRulerIconWidth};
     height: ${theme.default.headerInRulerIconHeight};
+  `}
+`
+
+export const SingleCalculatorIcon = styled(IconCalculator)`
+  ${({ theme }) => css`
+    width: ${theme.default.headerCalculatorIconWidth};
+    height: ${theme.default.headerCalculatorIconHeight};
   `}
 `
 

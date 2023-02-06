@@ -19,13 +19,13 @@ import { Tooltip } from '../../../common/utils/helpers'
 import {
   ToolBarContainer,
   ButtonWithStyle,
-  MultiCalculatorIcon,
 } from '../common/ToolBar/styled-components'
 import { MAX_MOBILE_WIDTH } from '../../constants/others'
 import TimedTestTimer from '../common/TimedTestTimer'
 import { currentItemAnswerChecksSelector } from '../../selectors/test'
 import { checkAnswerEvaluation } from '../../actions/checkanswer'
 import { StyledIconCheck } from '../../../author/ContentBuckets/components/ContentBucketsTable/styled'
+import { CalculatorIconWrapper } from '../common/ToolBar/CalculatorIconWrapper'
 
 const PlayerHeader = ({
   title,
@@ -100,7 +100,9 @@ const PlayerHeader = ({
                         active={currentToolMode.calculator}
                         onClick={() => onChangeTool('calculator')}
                       >
-                        <MultiCalculatorIcon className="multi-calculators" />
+                        <CalculatorIconWrapper
+                          isMultiCalculators={calcTypes.length > 1}
+                        />
                       </ButtonWithStyle>
                     </Tooltip>
                   </EduIf>

@@ -14,13 +14,13 @@ import { ActionButton } from './ActionButton'
 import {
   CursorIcon,
   InRulerIcon,
-  MultiCalculatorIcon,
   ToolBarContainer,
   CloseIcon,
   ProtactorIcon,
   ScratchPadIcon,
   ButtonWithStyle,
 } from './styled-components'
+import { CalculatorIconWrapper } from './CalculatorIconWrapper'
 
 const CROSS_OUT_QUES = [
   questionType.MULTIPLE_CHOICE,
@@ -79,7 +79,9 @@ const ToolBar = ({
         <ActionButton
           disabled={isPremiumContentWithoutAccess}
           title={translate('toolbar.calculator')}
-          icon={<MultiCalculatorIcon className="multi-calculators" />}
+          icon={
+            <CalculatorIconWrapper isMultiCalculators={calcTypes.length > 1} />
+          }
           active={tool.includes(2)}
           onClick={toolbarHandler(2)}
         />

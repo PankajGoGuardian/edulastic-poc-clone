@@ -139,6 +139,7 @@ export const LegendWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: fit-content;
+  max-width: 50%;
   margin-right: 0px;
   margin-left: auto;
   justify-content: right;
@@ -146,7 +147,6 @@ export const LegendWrapper = styled.div`
   border-width: 0.5px 0.5px 0px 0.5px;
   border-radius: 20px 20px 0px 0px;
   padding-block: 12px;
-  padding-right: 0px;
 `
 
 export const StudentWrapper = styled.span`
@@ -247,7 +247,7 @@ export const StyledHorizontalStackedBarChartContainer = styled.div`
   margin: 10px 30px;
 `
 export const StyledLegendContainer = styled.div`
-  margin-inline: 20px;
+  margin: 5px 20px;
   display: flex;
   & > span {
     font-size: 12px;

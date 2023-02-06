@@ -220,7 +220,8 @@ export const StyledTitle = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   @media print {
-    white-space: normal;
+    white-space: nowrap;
+    overflow: hidden !important;
   }
 `
 
@@ -274,6 +275,11 @@ export const PerformanceMatrixContainer = styled(Row)`
       overflow: hidden;
       white-space: nowrap;
       text-overflow: ellipsis;
+    }
+    @media print {
+      .test-name {
+        overflow: hidden !important;
+      }
     }
     .test-tag {
       display: block;

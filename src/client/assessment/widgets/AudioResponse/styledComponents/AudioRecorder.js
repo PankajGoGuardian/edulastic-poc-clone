@@ -215,3 +215,10 @@ export const StyledAudioElement = styled.audio`
   width: 364px;
   height: 56px;
 `
+
+export const StyledTimeDurationLimitContainer = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  width: 130px;
+`

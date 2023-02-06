@@ -1241,7 +1241,6 @@
       "files": "Files"
     },
     "audioResponse": {
-      "scoringMessage": "[Audio responses can only be manually graded]",
       "recordAnswer": "Click to record your response",
       "recording": "Recording",
       "uploading": "Uploading",
@@ -1249,7 +1248,10 @@
       "loadingAudio": "Loading audio",
       "rerecord": "Rerecord",
       "clickToStopRecording": "Click to stop recording",
-      "recorded": "Recorded"
+      "recorded": "Recorded",
+      "maxResponseDurationLabel": "Maximum Response Duration",
+      "maxResponseDurationAllowed": "Maximum response duration allowed",
+      "minutes": "minutes"
     },
     "pictograph": {
       "composeQuestion": "Question",

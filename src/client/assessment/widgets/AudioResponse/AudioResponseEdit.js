@@ -12,7 +12,7 @@ import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
 import Question from '../../components/Question'
 import Extras from '../../containers/Extras'
 import { Scoring } from '../../containers/WidgetOptions/components'
-import { StyledBoldText, StyledMessage } from './styledComponents/EditView'
+import MaxAudioDuration from './components/MaxAudioDuration'
 
 const AudioResponseEdit = ({
   t: i18translate,
@@ -45,12 +45,13 @@ const AudioResponseEdit = ({
         itemTitle={title}
       />
 
-      <StyledMessage>
-        Note that responses will have a{' '}
-        <StyledBoldText>
-          {`maximum limit of ${audioTimeLimitInMinutes}  minutes`}{' '}
-        </StyledBoldText>
-      </StyledMessage>
+      <MaxAudioDuration
+        i18translate={i18translate}
+        fillSections={fillSections}
+        cleanSections={cleanSections}
+        audioTimeLimitInMinutes={audioTimeLimitInMinutes}
+        handleQuestionChange={handleQuestionChange}
+      />
 
       <Question
         section="main"
@@ -66,10 +67,6 @@ const AudioResponseEdit = ({
           showSelect={false}
           item={item}
           advancedAreOpen={advancedAreOpen}
-          scoringMessage={i18translate(
-            'component.audioResponse.scoringMessage'
-          )}
-          showScoringMessage
         />
       </Question>
 

@@ -21,7 +21,6 @@ const BottomNavigation = ({
   hideModal,
   editResponse,
   toggleEditResponse,
-  disableEditResponse,
 }) => (
   <NavigationWrapper>
     <StyledTextInfo>
@@ -54,7 +53,6 @@ const BottomNavigation = ({
           data-cy="editResponse"
           checked={editResponse}
           onClick={toggleEditResponse}
-          disabled={disableEditResponse}
         />
       </EditResponse>
       <CloseModal data-cy="exitbutton" onClick={hideModal}>
@@ -71,11 +69,6 @@ BottomNavigation.propTypes = {
   prevQuestion: PropTypes.func.isRequired,
   nextQuestion: PropTypes.func.isRequired,
   hideModal: PropTypes.func.isRequired,
-  disableEditResponse: PropTypes.bool,
-}
-
-BottomNavigation.defaultProps = {
-  disableEditResponse: false,
 }
 
 export default BottomNavigation

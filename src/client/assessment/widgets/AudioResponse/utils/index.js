@@ -1,6 +1,6 @@
 import { roleuser } from '@edulastic/constants'
 import { captureSentryException } from '@edulastic/common'
-import { START } from '../constants'
+import { START, maxAudioDurationLimit } from '../constants'
 
 export const getAudioRecordingErrorMessage = (error, errorName, state) => {
   let errorMessage = ''
@@ -34,4 +34,8 @@ export const shouldUploadToS3AndUseS3Url = ({
 
 export const hideRecorder = ({ inLCB, isStudentReport, isLCBView }) => {
   return [inLCB, isStudentReport, isLCBView].some((val) => val)
+}
+
+export const IsValidNumber = (duration) => {
+  return typeof duration === 'number' && duration <= maxAudioDurationLimit
 }

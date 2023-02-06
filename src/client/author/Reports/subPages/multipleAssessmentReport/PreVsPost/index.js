@@ -49,11 +49,13 @@ const PreVsPostReport = ({
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
 }) => {
-  const sharedReportFilters = useMemo(
-    () =>
+  const [sharedReportFilters, isSharedReport] = useMemo(
+    () => [
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport._id }
         : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
 
@@ -309,6 +311,7 @@ const PreVsPostReport = ({
             setTableFilters={setTableFilters}
             isCsvDownloading={isCsvDownloading}
             handleAddToGroupClick={handleAddToGroupClick}
+            isSharedReport={isSharedReport}
             hasIncompleteTests={hasIncompleteTests}
           />
         </PreVsPostReportContainer>

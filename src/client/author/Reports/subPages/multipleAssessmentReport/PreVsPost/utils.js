@@ -10,6 +10,7 @@ import {
   get,
   range,
   isEmpty,
+  every,
 } from 'lodash'
 
 const { getProficiencyBand, percentage, getFormattedName } = reportUtils.common
@@ -101,7 +102,7 @@ export const validatePreAndPostTestIds = (payload) => {
 const getTestName = (testInfo, testId) => {
   const { title = '', incompleteCount = 0 } =
     testInfo.find((t) => t.testId === testId) ?? {}
-  return `${title} ${+incompleteCount > 0 && '*'}`
+  return `${title} ${+incompleteCount > 0 ? '*' : ''}`.trim()
 }
 
 // get test names from summary api metrics
@@ -349,4 +350,11 @@ export const getTableData = (
     a.compareByColumnTitle.localeCompare(b.compareByColumnTitle)
   )
   return tableData
+}
+
+export const addStudentToGroupFeatureEnabled = (
+  compareByKey,
+  isSharedReport
+) => {
+  return every([compareByKey === compareByKeys.STUDENT, !isSharedReport])
 }

@@ -3,7 +3,7 @@ import { Row } from 'antd'
 import { IconPlusCircle } from '@edulastic/icons'
 import { EduIf } from '@edulastic/common'
 import { ControlDropDown } from '../../../../../common/components/widgets/controlDropDown'
-import { compareByKeys } from '../../utils'
+import { addStudentToGroupFeatureEnabled } from '../../utils'
 import { StyledEduButton } from '../../common/styledComponents'
 
 const TableFilters = ({
@@ -12,6 +12,7 @@ const TableFilters = ({
   compareByOptions = [],
   analyseByOptions = [],
   selectedTableFilters = {},
+  isSharedReport = false,
 }) => {
   const updateTableFilters = (e, selected, keyName) => {
     setTableFilters({
@@ -19,8 +20,10 @@ const TableFilters = ({
       [keyName]: selected,
     })
   }
-  const showAddToGroupButton =
-    selectedTableFilters.compareBy.key === compareByKeys.STUDENT
+  const showAddToGroupButton = addStudentToGroupFeatureEnabled(
+    selectedTableFilters.compareBy.key,
+    isSharedReport
+  )
   return (
     <Row type="flex">
       <EduIf condition={showAddToGroupButton}>

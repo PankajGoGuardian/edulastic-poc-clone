@@ -33,7 +33,7 @@ import {
 } from './common/styledComponents'
 
 const PreVsPostReport = ({
-  userRole,
+  role,
   settings,
   isCsvDownloading,
   ddfilter,
@@ -49,8 +49,9 @@ const PreVsPostReport = ({
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
 }) => {
-  const [sharedReportFilters, isSharedReport] = useMemo(
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
+      sharedReport?.sharedBy?.role || role,
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport._id }
         : null,
@@ -323,7 +324,7 @@ const PreVsPostReport = ({
 const enhance = connect(
   (state) => ({
     ...mapValues(selectors, (selector) => selector(state)),
-    userRole: getUserRole(state),
+    role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

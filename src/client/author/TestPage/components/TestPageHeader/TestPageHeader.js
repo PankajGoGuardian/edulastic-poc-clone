@@ -419,10 +419,10 @@ const TestPageHeader = ({
   const handleOnClickPrintCancel = () => setShowPrintOptionPopup(false)
 
   const handleOnClickPrintConfirm = (params) => {
-    const { type, customValue } = params
+    const { type, customValue, showAnswers } = params
     handleOnClickPrintCancel()
     window.open(
-      `/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}`,
+      `/author/printAssessment/${test?._id}?type=${type}&qs=${customValue}&showAnswers=${showAnswers}`,
       '_blank'
     )
   }

@@ -214,6 +214,9 @@ export const StyledRecordingDataContainer = styled.div`
 export const StyledAudioElement = styled.audio`
   width: 364px;
   height: 56px;
+  &::-webkit-media-controls-panel {
+    background-color: ${mainBgColor};
+  }
 `
 
 export const StyledTimeDurationLimitContainer = styled.div`

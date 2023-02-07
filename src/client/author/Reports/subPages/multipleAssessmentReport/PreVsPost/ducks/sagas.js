@@ -15,21 +15,24 @@ function* fetchReportSummaryDataRequestSaga({ payload }) {
       )
       return
     }
-    const reportSummaryData = yield call(
+    const reportSummaryDataResponse = yield call(
       reportsApi.fetchPreVsPostReportSummaryData,
       payload
     )
-    const dataSizeExceeded = reportSummaryData?.data?.dataSizeExceeded || false
+    const dataSizeExceeded =
+      reportSummaryDataResponse?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put(
         actions.fetchReportSummaryDataRequestError({
-          error: { ...reportSummaryData.data },
+          error: { ...reportSummaryDataResponse },
         })
       )
       return
     }
     yield put(
-      actions.fetchReporSummaryDataRequestSuccess({ reportSummaryData })
+      actions.fetchReporSummaryDataRequestSuccess({
+        reportSummaryData: reportSummaryDataResponse.result,
+      })
     )
   } catch (error) {
     const msg =
@@ -50,21 +53,23 @@ function* fetchPreVsPostReportTableDataRequestSaga({ payload }) {
       )
       return
     }
-    const reportTableData = yield call(
+    const reportTableDataResponse = yield call(
       reportsApi.fetchPreVsPostReportTableData,
       payload
     )
-    const dataSizeExceeded = reportTableData?.data?.dataSizeExceeded || false
+    const dataSizeExceeded = reportTableDataResponse?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put(
         actions.fetchPreVsPostReportTableDataRequestError({
-          error: { ...reportTableData.data },
+          error: { ...reportTableDataResponse },
         })
       )
       return
     }
     yield put(
-      actions.fetchPreVsPostReportTableDataRequestSuccess({ reportTableData })
+      actions.fetchPreVsPostReportTableDataRequestSuccess({
+        reportTableData: reportTableDataResponse.result,
+      })
     )
   } catch (error) {
     const msg =

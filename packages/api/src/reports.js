@@ -282,6 +282,7 @@ const fetchPerformanceByRubricsCriteriaChartData = (params) =>
       url: '/report/performance-by-rubric/chart',
       params,
     })
+    // FIXME remove `.result` which doesn't contain dataSize error
     .then((res) => res.data.result)
 
 const fetchPerformanceByRubricsCriteriaTableData = (params) =>
@@ -290,6 +291,7 @@ const fetchPerformanceByRubricsCriteriaTableData = (params) =>
       url: '/report/performance-by-rubric/table',
       params,
     })
+    // FIXME remove `.result` which doesn't contain dataSize error
     .then((res) => res.data.result)
 
 const fetchPreVsPostReportSummaryData = (params) =>
@@ -298,7 +300,7 @@ const fetchPreVsPostReportSummaryData = (params) =>
       url: '/report/pre-vs-post-test/summary',
       params,
     })
-    .then((res) => res.data.result)
+    .then((res) => res.data)
 
 const fetchPreVsPostReportTableData = (params) =>
   api
@@ -306,7 +308,7 @@ const fetchPreVsPostReportTableData = (params) =>
       url: '/report/pre-vs-post-test/table',
       params,
     })
-    .then((res) => res.data.result)
+    .then((res) => res.data)
 
 export default {
   fetchReports,

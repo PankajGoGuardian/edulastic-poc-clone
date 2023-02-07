@@ -128,10 +128,9 @@ const PreVsPostReport = ({
     summaryData,
     hasIncompleteTests,
   } = useMemo(() => {
-    const {
-      metricInfo: _summaryMetricInfo = [],
-      testInfo: _testInfo = [],
-    } = reportSummaryData
+    // TODO Do validation of error, loading, dataSizeExceeded early and return using guard clauses. Convert rest logic into separate component.
+    const _summaryMetricInfo = get(reportSummaryData, 'metricInfo', [])
+    const _testInfo = get(reportSummaryData, 'testInfo', [])
     const _testNamesData = getTestNamesFromTestMetrics(_testInfo, reportFilters)
     const _summaryData = getSummaryDataFromSummaryMetrics(_summaryMetricInfo)
     return {
@@ -146,7 +145,8 @@ const PreVsPostReport = ({
   }, [reportSummaryData, reportFilters])
 
   const [tableData, rowSelection, checkedStudentsForModal] = useMemo(() => {
-    const { metricInfo: _tableMetricInfo = [] } = reportTableData
+    // TODO Do validation of error, loading, dataSizeExceeded early and return using guard clauses. Convert rest logic into separate component.
+    const _tableMetricInfo = get(reportTableData, 'metricInfo', [])
     const _tableData = getTableData(
       _tableMetricInfo,
       selectedPerformanceBand,

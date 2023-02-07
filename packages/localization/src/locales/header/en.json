@@ -23,15 +23,24 @@
     "myClassTitle": "My Classes"
   },
   "toolbar": {
+    "bookmark": "Bookmark",
+    "checkAnswer": "Check Answer",
+    "hint": "Hint",
     "pointer": "Pointer",
     "ruler": "Ruler",
+    "inchRuler": "Inch Ruler",
+    "cmRuler": "Centimeter Ruler",
+    "protactorRuler": "Protractor Ruler",
+    "eliminationQuestion": "Elimination Question",
     "calculator": "Calculator",
+    "calculators": "Calculators",
     "refMaterial": "Reference Material",
     "cross": "Crossout",
     "crossDisabled": "This option is available only for multiple choice and matching questions",
     "protactor": "Protactor",
     "scratchPad": "Scratch Pad",
     "magnify": "Magnify",
-    "uploadWork": "Upload work"
+    "uploadWork": "Upload work",
+    "lineReader": "Line Reader"
   }
 }

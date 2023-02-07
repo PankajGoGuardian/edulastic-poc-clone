@@ -29,7 +29,13 @@ import {
   IconDemoAccNav,
   IconCloudUpload,
 } from '@edulastic/icons'
-import { withWindowSizes, OnDarkBgLogo } from '@edulastic/common'
+import {
+  withWindowSizes,
+  OnDarkBgLogo,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { helpCenterUrl } from '@edulastic/constants/const/common'
 import { segmentApi } from '@edulastic/api'
@@ -701,6 +707,11 @@ class SideMenu extends Component {
       </FooterDropDown>
     )
 
+    const showExclamation =
+      !emailVerified &&
+      (verificationTS || isSignupUsingUNAndPass) &&
+      !isDefaultDA
+
     return (
       <>
         <PurchaseFlowModals
@@ -712,7 +723,7 @@ class SideMenu extends Component {
           defaultSelectedProductIds={[]}
           setProductData={() => {}}
         />
-        {showTrialUsedModal && (
+        <EduIf condition={showTrialUsedModal}>
           <ItemBankTrialUsedModal
             title="Teacher Premium"
             isVisible={showTrialUsedModal}
@@ -720,7 +731,7 @@ class SideMenu extends Component {
             handlePurchaseFlow={this.handlePurchaseFlow}
             isCurrentItemBankUsed
           />
-        )}
+        </EduIf>
         <FixedSidebar
           className={`${!isCollapsed ? 'full' : ''} ${className}`}
           onClick={isCollapsed && !isMobile ? this.toggleMenu : null}
@@ -757,14 +768,14 @@ class SideMenu extends Component {
               <AntIcon type={isCollapsed ? 'right' : 'left'} />
             </ToggleSidemenu>
             <LogoWrapper className="logoWrapper">
-              {broken && (
+              <EduIf condition={broken}>
                 <AntIcon
                   className="mobileCloseIcon"
                   type="close"
                   theme="outlined"
                   onClick={this.toggleMenu}
                 />
-              )}
+              </EduIf>
               {isCollapsed ? (
                 !isMobile && <LogoCompact />
               ) : (
@@ -958,38 +969,41 @@ class SideMenu extends Component {
                     getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   >
                     <div>
-                      {profileThumbnail ? (
-                        <UserImg
-                          src={profileThumbnail}
-                          isCollapsed={isCollapsed}
-                        />
-                      ) : (
-                        <PopConfirmWrapper isCollapsed={isCollapsed}>
-                          <Popconfirm
-                            icon={<IconExclamationMark />}
-                            placement="bottomRight"
-                            cancelText={
-                              <CloseIconWrapper>
-                                <IconClose />
-                              </CloseIconWrapper>
-                            }
-                            onCancel={this.handleCancel}
-                            title={
-                              <p>
-                                You can switch between your teacher and student
-                                accounts here.
-                              </p>
-                            }
-                            trigger="click"
-                            getPopupContainer={(el) => el.parentNode}
-                            visible={isSwitchAccountNotification}
-                          >
-                            <PseudoDiv isCollapsed={isCollapsed}>
-                              {this.getInitials()}
-                            </PseudoDiv>
-                          </Popconfirm>
-                        </PopConfirmWrapper>
-                      )}
+                      <EduIf condition={profileThumbnail}>
+                        <EduThen>
+                          <UserImg
+                            src={profileThumbnail}
+                            isCollapsed={isCollapsed}
+                          />
+                        </EduThen>
+                        <EduElse>
+                          <PopConfirmWrapper isCollapsed={isCollapsed}>
+                            <Popconfirm
+                              icon={<IconExclamationMark />}
+                              placement="bottomRight"
+                              cancelText={
+                                <CloseIconWrapper>
+                                  <IconClose />
+                                </CloseIconWrapper>
+                              }
+                              onCancel={this.handleCancel}
+                              title={
+                                <p>
+                                  You can switch between your teacher and
+                                  student accounts here.
+                                </p>
+                              }
+                              trigger="click"
+                              getPopupContainer={(el) => el.parentNode}
+                              visible={isSwitchAccountNotification}
+                            >
+                              <PseudoDiv isCollapsed={isCollapsed}>
+                                {this.getInitials()}
+                              </PseudoDiv>
+                            </Popconfirm>
+                          </PopConfirmWrapper>
+                        </EduElse>
+                      </EduIf>
                       <div
                         style={{
                           width: '100px',
@@ -999,14 +1013,13 @@ class SideMenu extends Component {
                         <UserName>{userName || 'Anonymous'}</UserName>
                         <UserType isVisible={isVisible}>{_userRole}</UserType>
                       </div>
-
-                      {!isCollapsed && (
+                      <EduIf condition={!isCollapsed}>
                         <IconDropdown
                           style={{ fontSize: 15, pointerEvents: 'none' }}
                           className="drop-caret"
                           type={isVisible ? 'caret-up' : 'caret-down'}
                         />
-                      )}
+                      </EduIf>
                     </div>
                   </Dropdown>
                   <IconContainerDiv
@@ -1019,18 +1032,16 @@ class SideMenu extends Component {
                         : null
                     }
                   >
-                    {emailVerified ? (
+                    <EduIf condition={emailVerified}>
                       <Tooltip title="Verified">
                         <CheckCircleIcon />
                       </Tooltip>
-                    ) : null}
-                    {!emailVerified &&
-                    (verificationTS || isSignupUsingUNAndPass) &&
-                    !isDefaultDA ? (
+                    </EduIf>
+                    <EduIf condition={showExclamation}>
                       <Tooltip title="Not Verified">
                         <ExclamationIcon />
                       </Tooltip>
-                    ) : null}
+                    </EduIf>
                   </IconContainerDiv>
                 </UserInfoButton>
               </MenuFooter>

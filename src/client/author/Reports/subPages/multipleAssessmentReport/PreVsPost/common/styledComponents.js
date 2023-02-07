@@ -349,7 +349,7 @@ export const PerformanceMatrixContainer = styled(Row)`
     }
     .section-matrix-row-text {
       position: absolute;
-      right: 265px;
+      right: calc(100% - 25px);
     }
     .section-matrix-row-bar {
       position: absolute;

@@ -60,11 +60,21 @@ const PerformanceMatrix = ({
         studentsPercentageDiff > 0
           ? `+${studentsPercentageDiff}`
           : studentsPercentageDiff
-      const columnText =
+      const value =
         matrixDisplayKey === matrixDisplayOptionTypes.NUMBER
-          ? `${d.postStudentsCount} (${studentsCountDiffText})`
-          : `${d.postStudentsPercentage}% (${studentsPercentageDiffText}%)`
-      return <PerformanceMatrixColumnHeader text={columnText} color={d.color} />
+          ? d.postStudentsCount
+          : `${d.postStudentsPercentage}%`
+      const change =
+        matrixDisplayKey === matrixDisplayOptionTypes.NUMBER
+          ? `(${studentsCountDiffText})`
+          : `(${studentsPercentageDiffText}%)`
+      return (
+        <PerformanceMatrixColumnHeader
+          value={value}
+          change={change}
+          color={d.color}
+        />
+      )
     })
     return {
       performanceMatrixData: _performanceMatrixData,

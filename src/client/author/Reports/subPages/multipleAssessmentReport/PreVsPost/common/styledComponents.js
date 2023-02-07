@@ -292,6 +292,7 @@ export const PerformanceMatrixContainer = styled(Row)`
   }
   .post-test {
     width: 250px;
+    margin-block: 10px;
     margin-left: 40px;
     .test-name {
       width: 100%;
@@ -301,7 +302,7 @@ export const PerformanceMatrixContainer = styled(Row)`
     height: 250px;
     position: absolute;
     writing-mode: vertical-rl;
-    transform: translate(-100%, -50%) scale(-1, -1);
+    transform: translate(calc(-100% - 10px), -50%) scale(-1, -1);
     top: 50%;
     .test-tag {
       padding: 8px 2px;
@@ -339,12 +340,20 @@ export const PerformanceMatrixContainer = styled(Row)`
       }
     }
     .section-matrix-col {
-      padding: 10px 0;
+      transform: translateY(-10px);
       flex-direction: column;
       .section-matrix-col-bar {
         width: 54px;
         height: 6px;
       }
+    }
+    .section-matrix-row-text {
+      position: absolute;
+      right: 265px;
+    }
+    .section-matrix-row-bar {
+      position: absolute;
+      left: 35px;
     }
 
     .section-matrix-cell {

@@ -1657,6 +1657,7 @@ function* changeClass({ payload }) {
 function* googleLogin({ payload }) {
   localStorage.removeItem('thirdPartySignOnRole')
   const generalSettings = yield select(signupGeneralSettingsSelector)
+  generalSettings.orgId = yield select(signupDistrictIdSelector)
   let districtId
   if (generalSettings) {
     localStorage.setItem(

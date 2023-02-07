@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import qs from 'qs'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
@@ -290,6 +291,7 @@ class App extends Component {
   }
 
   handlePendoGuide() {
+    const { location } = this.props
     let retries = 0
     const cb = () => {
       if (!window.pendo) return
@@ -302,7 +304,7 @@ class App extends Component {
       const pendoUrl = window.pendo.getCurrentUrl()
       if (
         new URL(pendoUrl).pathname.replace(/\/$|^\//g, '') ===
-          this.props.location.pathname.replace(/\/$|^\//g, '') &&
+          location.pathname.replace(/\/$|^\//g, '') &&
         window.pendo.guides
       ) {
         PendoHelper.showAvailableGuides()
@@ -517,6 +519,8 @@ class App extends Component {
             defaultRoute = '/publisher/dashboard'
           } else if (role === 'district-admin' && features.isDataOpsOnlyUser) {
             defaultRoute = '/author/data-warehouse'
+          } else if (features.isInsightsOnlyUser) {
+            defaultRoute = '/author/reports'
           }
           // redirecting da & sa to assignments after login as their dashboard page is not implemented
           else if (isSAWithoutSchools) {

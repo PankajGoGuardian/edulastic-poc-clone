@@ -444,24 +444,34 @@ function getValidRedirectRouteByRole(_url, user) {
 }
 
 const getRouteByGeneralRoute = (user) => {
+  const {
+    isDataOpsOnlyUser,
+    isInsightsOnlyUser,
+    premium,
+    isCurator,
+    isPublisherAuthor,
+  } = user?.user?.features || {}
   switch (user.user.role) {
     case roleuser.EDULASTIC_ADMIN:
       return '/admin/search/clever'
     case roleuser.DISTRICT_ADMIN:
-      if (user?.user?.features?.isDataOpsOnlyUser) {
+      if (isDataOpsOnlyUser) {
         return '/author/data-warehouse'
       }
-    // eslint-disable-next-line no-fallthrough
-    case roleuser.SCHOOL_ADMIN:
-      if (!user?.user?.features?.premium) {
+      if (isInsightsOnlyUser) {
         return '/author/reports'
       }
-      if (user?.user?.features?.isCurator) {
+      return '/author/assignments'
+    case roleuser.SCHOOL_ADMIN:
+      if (!premium || isInsightsOnlyUser) {
+        return '/author/reports'
+      }
+      if (isCurator) {
         return '/publisher/dashboard'
       }
       return '/author/assignments'
     case roleuser.TEACHER:
-      if (user?.user?.features?.isPublisherAuthor) {
+      if (isPublisherAuthor) {
         return '/author/items'
       }
       return '/author/dashboard'

@@ -225,13 +225,13 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
   return null
 }
 
-const TEACHER_FIRESTORE_NOTIFICATIONS = [
+const ADMIN_FIRESTORE_NOTIFICATIONS = [
   BulkActionNotificationListener,
   ReportsNotificationListener,
   RosterSyncNotification,
   BulkAssignNotification,
 ]
-const ADMIN_FIRESTORE_NOTIFICATIONS = [
+const TEACHER_FIRESTORE_NOTIFICATIONS = [
   ClassSyncNotification,
   ReportsNotificationListener,
   BulkAssignNotification,

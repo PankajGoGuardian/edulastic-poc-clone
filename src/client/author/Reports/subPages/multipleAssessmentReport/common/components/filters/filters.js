@@ -61,6 +61,15 @@ import { getReportsMARSettings, setMARSettingsAction } from '../../../ducks'
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 const availableAssessmentType = getArrayOfAllTestTypes()
 
+const preTestFilterKey = 'preTestId'
+const postTestFilterKey = 'postTestId'
+const profileFilterKey = 'profileId'
+const clearTestFiltersList = [
+  preTestFilterKey,
+  postTestFilterKey,
+  profileFilterKey,
+]
+
 const MultipleAssessmentReportFilters = ({
   loc,
   isPrinting,
@@ -100,10 +109,6 @@ const MultipleAssessmentReportFilters = ({
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
   const assessmentTypesRef = useRef()
-
-  const preTestFilterKey = 'preTestId'
-  const postTestFilterKey = 'postTestId'
-  const profileFilterKey = 'profileId'
 
   const tagTypes = staticDropDownData.tagTypes.filter(
     (t) =>
@@ -239,8 +244,8 @@ const MultipleAssessmentReportFilters = ({
           tagIds: search.tagIds || '',
           assessmentTypes: search.assessmentTypes || '',
           testIds: search.testIds || '',
-          preTestId: search.preTestId,
-          postTestId: search.postTestId,
+          preTestId: search.preTestId || '',
+          postTestId: search.postTestId || '',
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
           subjects: urlSubjects.map((item) => item.key).join(',') || '',
@@ -328,11 +333,6 @@ const MultipleAssessmentReportFilters = ({
     }
 
     const _filters = { ...filters }
-    const clearTestFiltersList = [
-      preTestFilterKey,
-      postTestFilterKey,
-      profileFilterKey,
-    ]
     const clearTestFilters = !clearTestFiltersList.includes(keyName)
     if (clearTestFilters) {
       _filters.preTestId = ''
@@ -356,12 +356,17 @@ const MultipleAssessmentReportFilters = ({
 
   const onAssessmentSelect = (selected, keyName) => {
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
-    const _filters = { ...filters }
-    resetStudentFilters(_tempTagsData, _filters, keyName, selected.key)
+    const _filters = { ...filters, [keyName]: selected.key || '' }
+    if (!_filters[keyName]) {
+      delete _tempTagsData[keyName]
+    }
+    // NOTE: this fixes Apply button shown intermittently on page refresh
+    // However, unlike other autocompletes, Apply button will not be shown if same test is selected from dropdown
+    if (_filters[keyName] !== filters[keyName]) {
+      _filters.showApply = firstLoad ? _filters.showApply : true
+      setFilters(_filters)
+    }
     setTempTagsData(_tempTagsData)
-    // update filters
-    _filters[keyName] = selected.key
-    setFilters({ ..._filters, showApply: true })
   }
 
   const handleCloseTag = (type, { key }) => {
@@ -406,10 +411,6 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(tabKey)
     }
   }
-
-  // only required for pre vs post report
-  const waitForPreTestInitialLoad = !!search.preTestId
-  const waitForPostTestInitialLoad = !!search.postTestId
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -804,12 +805,11 @@ const MultipleAssessmentReportFilters = ({
                 tagIds={filters.tagIds}
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
-                selectedTestId={filters.preTestId || ''}
+                selectedTestId={filters.preTestId}
                 selectCB={(e) => onAssessmentSelect(e, preTestFilterKey)}
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
                 statePrefix="pre"
-                waitForInitialLoad={waitForPreTestInitialLoad}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -829,12 +829,11 @@ const MultipleAssessmentReportFilters = ({
                 tagIds={filters.tagIds}
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
-                selectedTestId={filters.postTestId || ''}
+                selectedTestId={filters.postTestId}
                 selectCB={(e) => onAssessmentSelect(e, postTestFilterKey)}
                 showApply={filters.showApply}
                 autoSelectFirstItem={false}
                 statePrefix="post"
-                waitForInitialLoad={waitForPostTestInitialLoad}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer

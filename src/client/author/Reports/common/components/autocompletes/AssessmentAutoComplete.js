@@ -9,7 +9,7 @@ import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
 import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
-import { useDropdownData, useMemoFromPrevious } from '@edulastic/common'
+import { useDropdownData } from '@edulastic/common'
 import {
   currentDistrictInstitutionIds,
   getUser,
@@ -25,9 +25,10 @@ const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
 const AssessmentAutoComplete = ({
+  statePrefix = '',
   user,
   districtId,
-  testList: _testList,
+  testList,
   loading,
   loadTestList,
   firstLoad,
@@ -41,35 +42,14 @@ const AssessmentAutoComplete = ({
   showApply,
   autoSelectFirstItem = true,
   institutionIds,
-  statePrefix = '',
-  waitForInitialLoad = false,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
-  const [initialLoadCompleted, setInitialLoadCompleted] = useState(undefined)
 
-  const [selectedTest, testList] = useMemoFromPrevious(
-    ([prevTest = {}] = []) => {
-      if (!selectedTestId) return [{}, _testList]
-      const searchedTest = _testList.find((t) => t._id === selectedTestId)
-      if (searchedTest) return [searchedTest, _testList]
+  const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
 
-      if (prevTest._id === selectedTestId)
-        return [prevTest, [prevTest, ..._testList]]
-      return [{}, _testList]
-    },
-    [selectedTestId, _testList]
-  )
-
-  useEffect(() => {
-    if (loading && typeof initialLoadCompleted === 'undefined')
-      setInitialLoadCompleted(false)
-    if (!loading && typeof initialLoadCompleted !== 'undefined')
-      setInitialLoadCompleted(true)
-  }, [loading, initialLoadCompleted])
   // build search query
   const query = useMemo(() => {
-    if (waitForInitialLoad && !initialLoadCompleted) return null
     const { role } = user
     const q = {
       limit: 35,
@@ -116,7 +96,6 @@ const AssessmentAutoComplete = ({
     testTypes,
     tagIds,
     institutionIds,
-    initialLoadCompleted,
   ])
 
   // handle autocomplete actions
@@ -161,12 +140,18 @@ const AssessmentAutoComplete = ({
     }
   }, [selectedTestId, showApply])
   useEffect(() => {
-    if (!searchTerms.selectedText && testList.length) {
-      autoSelectFirstItem ? onSelect(testList[0]._id) : onSelect()
+    if (!searchTerms.selectedText && testList.length && autoSelectFirstItem) {
+      onSelect(testList[0]._id)
+    } else if (
+      !searchTerms.selectedText &&
+      !autoSelectFirstItem &&
+      selectedTest._id
+    ) {
+      onSelect(selectedTest._id)
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
-  }, [testList, autoSelectFirstItem])
+  }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
@@ -174,7 +159,6 @@ const AssessmentAutoComplete = ({
     }
   }, [termId, grades, subjects, testTypes, tagIds])
   useEffect(() => {
-    if (!query) return
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||
       searchTerms.text !== searchTerms.selectedText

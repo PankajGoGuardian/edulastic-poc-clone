@@ -48,7 +48,9 @@ const CalculatorsWithTab = ({
     currentCalculatorType,
     updateTestPlayer,
   })
-  const { calcMode, comp: CalcComponent } = calcOptions[currentCalc]
+  const { calcMode, comp: CalcComponent, calcTitle, calcId } = calcOptions[
+    currentCalc
+  ]
   const params = useRndParams(calcMode)
 
   return (
@@ -61,7 +63,8 @@ const CalculatorsWithTab = ({
       >
         <CalculatorTitle
           onClose={changeTool}
-          title={calcOptions[currentCalc].calcTitle}
+          title={calcTitle}
+          calcId={calcId}
         />
         <EduIf condition={calcOptions.length > 1}>
           {renderTabs({

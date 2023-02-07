@@ -41,7 +41,7 @@ const CalculatorSettings = ({
           data-cy={item.id}
           value={item.id}
           key={item.id}
-          disabled={item.disabled}
+          disabled={[disabled, item.disabled].some((isDisabled) => isDisabled)}
         >
           <LabelWithTooltip showPopover={item.showPopover} text={item.text} />
         </Option>

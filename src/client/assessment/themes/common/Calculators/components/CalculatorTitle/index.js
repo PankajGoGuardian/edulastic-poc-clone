@@ -2,10 +2,10 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { CalcTitle, CloseIcon, TitleContainer } from './styled-components'
 
-export const CalculatorTitle = ({ title, onClose }) => (
+export const CalculatorTitle = ({ title, onClose, calcId }) => (
   <TitleContainer className="calculator-drag-handler">
     <CloseIcon onClick={onClose} />
-    <CalcTitle data-cy="SCIENTIFIC">{title}</CalcTitle>
+    <CalcTitle data-cy={calcId}>{title}</CalcTitle>
   </TitleContainer>
 )
 

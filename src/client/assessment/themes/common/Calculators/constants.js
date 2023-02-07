@@ -2,20 +2,19 @@ import { test as testConstants } from '@edulastic/constants'
 
 const { calculators } = testConstants
 
-const getCalcLabelMap = () => {
-  const calcLabelMap = {}
+const getCalcMap = () => {
+  const calcMap = {}
   Object.keys(calculators).forEach((key) => {
     const { id, text } = calculators[key]
+    calcMap[id] = { id, text }
     if (id.includes('GRAPHING')) {
-      calcLabelMap[id] = 'Graphing'
-    } else {
-      calcLabelMap[id] = text
+      calcMap[id] = { id, text: 'GRAPHING' }
     }
   })
-  return calcLabelMap
+  return calcMap
 }
 
-export const CALC_LABEL_MAP = getCalcLabelMap()
+export const CALC_MAP = getCalcMap()
 
 export const DESMOS_GRAPHING_CALC_TYPES = [
   calculators.GRAPHING.id,

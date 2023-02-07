@@ -4,7 +4,7 @@ import { EduIf, EduThen, EduElse } from '@edulastic/common'
 import { withNamespaces } from '@edulastic/localization'
 import { Label } from './styled-components'
 
-const LabelWithTooltipComponent = ({ t: translate, showPopover, text }) => {
+const LabelWithTooltipComponent = ({ t: translate, showPopover, text, id }) => {
   return (
     <EduIf condition={showPopover}>
       <EduThen>
@@ -14,12 +14,12 @@ const LabelWithTooltipComponent = ({ t: translate, showPopover, text }) => {
               'component.helperText.contactSupportForDesmosStateCalculator'
             )}
           >
-            <Label>{text}</Label>
+            <Label data-cy={id}>{text}</Label>
           </Tooltip>
         )}
       </EduThen>
       <EduElse>
-        <Label>{text}</Label>
+        <Label data-cy={id}>{text}</Label>
       </EduElse>
     </EduIf>
   )

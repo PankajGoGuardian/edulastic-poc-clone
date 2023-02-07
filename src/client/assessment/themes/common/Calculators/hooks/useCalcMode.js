@@ -8,7 +8,7 @@ import { ScientificEdulasticCalculator } from '../components/ScientificEdulastic
 import { GraphingGeogebraCalculator } from '../components/GraphingGeogebraCalculator'
 import { ScientificGeogebraCalculator } from '../components/ScientificGeogebraCalculator'
 import {
-  CALC_LABEL_MAP,
+  CALC_MAP,
   CALC_MODES,
   DESMOS_GRAPHING_CALC_TYPES,
   DESMOS_CALC_PROVIDER,
@@ -64,20 +64,21 @@ export const useCalcMode = ({
         resolvedCalcProvider || defaultCalcProvider
       }`
 
+      const { text, id } = CALC_MAP[calcType]
       const stateName = getStateName(schoolState)
-      let calcTitle = `${CALC_LABEL_MAP[calcType]} Calculator`
+      let calcTitle = `${text} Calculator`
       if (stateName && calcMode === CALC_MODES.GRAPHING_STATE_DESMOS) {
         calcTitle = `Desmos ${calcTitle} | ${stateName}`
       } else if (calcMode === CALC_MODES.GRAPHING_DESMOS) {
         calcTitle = `Desmos ${calcTitle}`
       }
 
-      const calcTabLabel = CALC_LABEL_MAP[calcType]
       return {
         calcTitle,
         calcMode,
-        calcTabLabel,
+        calcTabLabel: text,
         comp: getCalculatorComponent(calcMode),
+        calcId: id,
       }
     })
   }, [])

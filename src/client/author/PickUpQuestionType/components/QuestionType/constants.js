@@ -996,10 +996,10 @@ export const getCards = (onSelectQuestionType, isPassage = false) => {
       },
       onSelectQuestionType,
     },
-    {
-      ...audioResponseConfig,
-      onSelectQuestionType,
-    },
+    // {
+    //   ...audioResponseConfig,
+    //   onSelectQuestionType,
+    // },
     {
       type: 'multiple-choice',
       cardImage: MCStandard,

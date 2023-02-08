@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Tabs } from '@edulastic/common'
@@ -22,6 +22,10 @@ const CalculatorsWithTab = ({
   const { calcMode, comp: CalcComponent } = calcOptions[currentCalc]
   const params = useRndParams(calcMode)
 
+  const onCloseCalculator = useCallback(() => {
+    changeTool(0)
+  }, [changeTool])
+
   return (
     <CalcContainer>
       <RndWrapper
@@ -31,7 +35,7 @@ const CalculatorsWithTab = ({
         dragHandleClassName="calculator-drag-handler"
       >
         <CalculatorTitle
-          onClose={changeTool}
+          onClose={onCloseCalculator}
           title={calcOptions[currentCalc].calcTitle}
         />
         <Tabs value={currentCalc} onChange={setCurrentCalc} mb="0px">

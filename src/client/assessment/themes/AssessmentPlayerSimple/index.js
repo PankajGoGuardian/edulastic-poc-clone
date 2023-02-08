@@ -85,10 +85,20 @@ class AssessmentPlayerSimple extends React.Component {
         ? parseInt(last(lastUploadedFileNameExploded), 10) + 1
         : 1
 
+      const toolsOpenStatus = []
+      if (nextProps.scratchPad && !prevState.toolsOpenStatus) {
+        toolsOpenStatus.push(5)
+      }
+
+      if (!nextProps.crossAction && !nextProps.scratchPad) {
+        toolsOpenStatus.push(0)
+      }
+
       return {
         cameraImageIndex,
         enableCrossAction: false,
         currentItem: nextProps.currentItem,
+        toolsOpenStatus,
         testItemState: '', // coming from a different question, reset to clear view
       }
     }

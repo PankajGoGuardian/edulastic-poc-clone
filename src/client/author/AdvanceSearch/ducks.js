@@ -1,7 +1,8 @@
-import { isEmpty, keyBy, uniqBy } from 'lodash'
+import { isEmpty, keyBy, uniqBy, get } from 'lodash'
 import { notification } from '@edulastic/common'
 import { createReducer, createAction } from 'redux-starter-kit'
 import { createSelector } from 'reselect'
+import produce from 'immer'
 import {
   advanceSearchApi,
   courseApi,
@@ -13,6 +14,11 @@ import { all, call, put, takeEvery, select } from 'redux-saga/effects'
 import { database } from '@edulastic/constants'
 import { receiveClassListSuccessAction } from '../Classes/ducks'
 import { getUserOrgId } from '../src/selectors/user'
+import {
+  getAssignedClassesByIdSelector,
+  getClassListSelector,
+  updateAssingnmentSettingsAction,
+} from '../AssignTest/duck'
 
 // constants
 export const IS_ALL_CLASS_SELECTED =
@@ -353,11 +359,68 @@ function* setAdvancedSearchTags({ payload: _payload }) {
   }
 }
 
+const getGroupDataForAssignment = (groups, assignment) => {
+  const previousGroupData = keyBy(assignment.class, '_id')
+  const classData = groups.map(({ _id, ...group }) => {
+    if (previousGroupData[_id]) {
+      return previousGroupData[_id]
+    }
+    let canvasData = {}
+    if (get(group, `canvasCode`, '')) {
+      canvasData = {
+        canvasCode: get(group, `canvasCode`, ''),
+        canvasCourseSectionCode: get(group, `canvasCourseSectionCode`, ''),
+      }
+    }
+    return {
+      _id,
+      name: get(group, `name`, ''),
+      assignedCount: get(group, `studentCount`, 0),
+      grade: get(group, `grades`, ''),
+      subject: get(group, `subject`, ''),
+      ...canvasData,
+    }
+  })
+
+  let termId = ''
+  if (groups?.length) {
+    termId = groups[0]?.termId
+  }
+  return {
+    classData,
+    termId,
+  }
+}
+
+function* selectAllReceivedClasses() {
+  const assignment = yield select((state) => state.assignmentSettings)
+  let groups = yield select(getClassListSelector) || []
+  const assignedClasess = yield select(getAssignedClassesByIdSelector)
+  const testType = assignment.testType
+  groups = groups.filter((item) => !assignedClasess[testType][item._id])
+  // If no groups fetched then empty previous selection
+  if (!groups || !groups.length) {
+    const nextAssignment = produce(assignment, (state) => {
+      state.class = []
+      state.termId = null
+    })
+    yield put(updateAssingnmentSettingsAction(nextAssignment))
+    return
+  }
+  const { classData, termId } = getGroupDataForAssignment(groups, assignment)
+  const nextAssignment = produce(assignment, (state) => {
+    state.class = classData
+    state.termId = termId
+  })
+  yield put(updateAssingnmentSettingsAction(nextAssignment))
+}
+
 function* advancedSearchRequest({ payload }) {
   try {
     const { query } = payload
     const hits = yield call(advanceSearchApi.advancedSearch, query)
     yield put(receiveClassListSuccessAction(hits))
+    yield call(selectAllReceivedClasses)
   } catch (error) {
     const errorMessage = 'Unable to fetch current class information.'
     notification({ type: 'error', msg: errorMessage })

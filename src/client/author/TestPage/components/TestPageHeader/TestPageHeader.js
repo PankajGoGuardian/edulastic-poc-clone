@@ -512,6 +512,7 @@ const TestPageHeader = ({
           onProceed={handleOnClickPrintConfirm}
           onCancel={handleOnClickPrintCancel}
           currentTestId={test?._id}
+          showAnswerCheckbox
         />
       )}
       {windowWidth >= parseInt(tabletWidth, 10) ? (

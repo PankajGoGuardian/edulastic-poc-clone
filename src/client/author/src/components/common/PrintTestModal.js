@@ -28,6 +28,7 @@ const PrintTestModal = ({
   onProceed,
   currentTestId,
   assignmentId,
+  showAnswerCheckbox = false,
 }) => {
   const [option, setOption] = useState('complete')
   const [customValue, setCustomValue] = useState('')
@@ -144,11 +145,13 @@ const PrintTestModal = ({
         )}
         {error && <Alert message={error} type="error" showIcon closable />}
 
-        <div style={{ marginTop: '20px', marginBottom: '20px' }}>
-          <Checkbox defaultChecked="true" onChange={handlePrintAnswers}>
-            Print Answer Key
-          </Checkbox>
-        </div>
+        {showAnswerCheckbox && (
+          <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+            <Checkbox defaultChecked="true" onChange={handlePrintAnswers}>
+              Print Answer Key
+            </Checkbox>
+          </div>
+        )}
       </FlexContainer>
     </StyledModal>
   )

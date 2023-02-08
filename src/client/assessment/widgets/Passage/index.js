@@ -4,18 +4,17 @@ import { EduIf } from '@edulastic/common'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import get from 'lodash/get'
-
 import { withNamespaces } from '@edulastic/localization'
 import { setQuestionDataAction } from '../../../author/QuestionEditor/ducks'
-import { replaceVariables } from '../../utils/variables'
-
-import { ContentArea } from '../../styled/ContentArea'
 
 import PassageView from './components/PassageView'
 import PassageDetails from './components/PassageDetails'
+import { EmptyWrapper, PassageWrapper } from './components/styled-components'
 
 import { saveUserWorkAction, clearUserWorkAction } from '../../actions/userWork'
-import { EmptyWrapper, PassageWrapper } from './styled/PassageWrapper'
+import { replaceVariables } from '../../utils/variables'
+
+import { ContentArea } from '../../styled/ContentArea'
 
 const Passage = ({
   item,

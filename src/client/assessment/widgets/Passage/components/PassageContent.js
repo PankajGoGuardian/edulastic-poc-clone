@@ -3,10 +3,11 @@ import PropTypes from 'prop-types'
 import { EduIf, Stimulus } from '@edulastic/common'
 import { CLEAR } from '../../../constants/constantsForQuestions'
 import HighlightPopover from './HighlightPopover'
-import { ColorPickerContainer, Overlay } from '../styled/ColorPickerContainer'
 import ColorPicker from './ColorPicker'
 import useTextHighlight from '../hooks/useTextHighlight'
 import useColorPickerPopOver from '../hooks/useColorPickerPopOver'
+
+import { ColorPickerContainer, Overlay } from './styled-components'
 
 export const PassageContent = ({
   disableResponse,

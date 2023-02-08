@@ -1,18 +1,21 @@
 import React, { useEffect, useMemo } from 'react'
-import { get, set } from 'lodash'
 import PropTypes from 'prop-types'
 import { Pagination } from 'antd'
 import { EduIf, WithResources } from '@edulastic/common'
 
-import { InstructorStimulus } from '../styled/InstructorStimulus'
-import { Heading } from '../styled/Heading'
-import { QuestionTitleWrapper } from '../styled/QuestionNumber'
-import { PassageTitleWrapper } from '../styled/PassageTitleWrapper'
 import AppConfig from '../../../../../app-config'
 import { CLEAR } from '../../../constants/constantsForQuestions'
-
 import { PassageTitle } from '../../../../author/ItemList/components/Item/styled'
 import { PassageContent } from './PassageContent'
+
+import {
+  Heading,
+  InstructorStimulus,
+  PassageTitleWrapper,
+  PaginatedPassageContentWrapper,
+  QuestionTitleWrapper,
+} from './styled-components'
+import { useSaveHighlights } from '../hooks/useSaveHighlights'
 
 const ContentsTitle = Heading
 
@@ -33,39 +36,23 @@ const PassageView = ({
   authLanguage,
   isStudentAttempt,
 }) => {
-  const isAuthorPreviewMode = useMemo(() => {
+  const { highlightedContent, saveHighlights } = useSaveHighlights({
+    authLanguage,
+    item,
+    page,
+    viewComponent,
+    widgetIndex,
+    userWork,
+    highlights,
+    setHighlights,
+    saveUserWork,
+  })
+
+  const showPaginateContent = useMemo(() => {
     return (
-      viewComponent === 'editQuestion' ||
-      viewComponent === 'authorPreviewPopup' ||
-      viewComponent === 'ItemDetail'
+      item.paginated_content && item.pages && !!item.pages.length && !flowLayout
     )
-  }, [viewComponent])
-
-  const highlightedContent = useMemo(() => {
-    return isAuthorPreviewMode
-      ? get(userWork, `resourceId[${widgetIndex || 0}][${authLanguage}]`, '')
-      : get(highlights, `[${widgetIndex}]`, '')
-  }, [])
-
-  const saveHistory = (updatedContent) => {
-    if (setHighlights) {
-      const newHighlights = highlights || {}
-      // this is available only at student side
-      setHighlights({ ...newHighlights, [widgetIndex]: updatedContent })
-    } else {
-      // saving the highlights at author side
-      // setHighlights is not available at author side
-      const newUserWork = set(
-        userWork || {},
-        `resourceId[${widgetIndex || 0}][${authLanguage}]`,
-        updatedContent
-      )
-
-      saveUserWork({
-        [item.id]: newUserWork,
-      })
-    }
-  }
+  }, [item.paginated_content, item.pages, flowLayout])
 
   useEffect(() => {
     if (!setHighlights && previewTab === CLEAR) {
@@ -118,19 +105,15 @@ const PassageView = ({
           isStudentAttempt={isStudentAttempt}
           passageContent={item.content}
           previewTab={previewTab}
-          onChangeContent={saveHistory}
+          onChangeContent={saveHighlights}
         />
       </EduIf>
-      <EduIf
-        condition={
-          item.paginated_content &&
-          item.pages &&
-          !!item.pages.length &&
-          !flowLayout
-        }
-      >
+      <EduIf condition={showPaginateContent}>
         {() => (
-          <div data-cy="content" className="paginatedPassageContent">
+          <PaginatedPassageContentWrapper
+            data-cy="content"
+            className="paginatedPassageContent"
+          >
             <PassageContent
               disableResponse={disableResponse}
               highlightedContent={highlightedContent}
@@ -138,18 +121,17 @@ const PassageView = ({
               isStudentAttempt={isStudentAttempt}
               passageContent={item.pages[page - 1]}
               previewTab={previewTab}
-              onChangeContent={saveHistory}
+              onChangeContent={saveHighlights}
             />
 
             <Pagination
-              style={{ justifyContent: 'center' }}
               pageSize={1}
               hideOnSinglePage
-              onChange={(pageNum) => setPage(pageNum)}
+              onChange={setPage}
               current={page}
               total={item.pages.length}
             />
-          </div>
+          </PaginatedPassageContentWrapper>
         )}
       </EduIf>
     </WithResources>

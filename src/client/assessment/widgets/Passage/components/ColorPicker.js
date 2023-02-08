@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 import { FlexContainer } from '@edulastic/common'
 import { highlightColors } from '@edulastic/colors'
-import { ColorButton, BackSlashIcon } from '../styled/ColorPickerContainer'
+import { ColorButton, BackSlashIcon } from './styled-components'
 
 const ColorPicker = ({ selectColor, bg }) => {
   const { blue: highlightBlue, green, orange, yellow, pink } = highlightColors

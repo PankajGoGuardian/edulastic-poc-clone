@@ -39,12 +39,12 @@ const NotificationListener = ({ user }) => {
         const { title: testTitle, totalClassesAssigned } =
           Object.values(tests)[0] || {}
         setNotificationIds([...notificationIds, doc.__id])
-        let message = `Test ${testTitle} assigned to ${totalClassesAssigned} group(s) successfully`
+        let message = `<b>${testTitle}</b> is assigned successfully to <b>${totalClassesAssigned}</b> class(es).`
         if (playlistModuleTitle) {
-          message = `Playlist ${playlistTitle}: ${playlistModuleTitle} is assigned to the group(s) successfully`
+          message = `<b>${playlistTitle}: ${playlistModuleTitle}</b> is assigned successfully to class(es)`
         }
         notificationMessage({
-          title: 'Async-Assign Success',
+          title: 'Assign Assignment',
           message,
           notificationPosition: 'bottomRight',
           notificationKey: doc.__id,

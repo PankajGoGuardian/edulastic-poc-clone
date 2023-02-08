@@ -43,7 +43,7 @@ export const RND_PROPS = {
   [CALC_MODES.GRAPHING_DESMOS]: { x: 0, y: 0, width: 600, height: 400 },
   [CALC_MODES.GRAPHING_STATE_DESMOS]: { x: 0, y: 0, width: 600, height: 400 },
   [CALC_MODES.BASIC_EDULASTIC]: { x: 0, y: 0, width: 350, height: 400 },
-  [CALC_MODES.SCIENTIFIC_EDULASTIC]: { x: 0, y: 0, width: 500, height: 370 },
+  [CALC_MODES.SCIENTIFIC_EDULASTIC]: { x: 0, y: 0, width: 500, height: 410 },
   [CALC_MODES.GRAPHING_GEOGEBRASCIENTIFIC]: {
     x: 0,
     y: 0,

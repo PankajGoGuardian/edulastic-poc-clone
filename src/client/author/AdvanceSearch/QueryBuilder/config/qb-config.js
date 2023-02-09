@@ -1,9 +1,5 @@
 export const classGroup = [
   {
-    value: 'all',
-    label: 'All',
-  },
-  {
     value: 'class',
     label: 'Classes',
   },

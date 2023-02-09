@@ -31,7 +31,7 @@ const NotificationListener = ({ user }) => {
 
   const showUserNotifications = (docs) => {
     uniqBy(docs, '__id').forEach((doc) => {
-      const { processStatus, tests, playlistModuleTitle, playlistTitle } = doc
+      const { processStatus, tests, playlistModuleTitle } = doc
       if (
         processStatus === assignmentStatusOptions.DONE &&
         !notificationIds.includes(doc.__id)
@@ -39,9 +39,9 @@ const NotificationListener = ({ user }) => {
         const { title: testTitle, totalClassesAssigned } =
           Object.values(tests)[0] || {}
         setNotificationIds([...notificationIds, doc.__id])
-        let message = `<b>${testTitle}</b> is assigned successfully to <b>${totalClassesAssigned}</b> class(es).`
-        if (playlistModuleTitle) {
-          message = `<b>${playlistTitle}: ${playlistModuleTitle}</b> is assigned successfully to class(es)`
+        let message = `<b>${testTitle}</b> is assigned successfully to <b>${totalClassesAssigned}</b> class(es)`
+        if (playlistModuleTitle && Object.values(tests).length > 1) {
+          message = `<b>${playlistModuleTitle}</b> is assigned successfully to the class(es)`
         }
         notificationMessage({
           title: 'Assign Assignment',

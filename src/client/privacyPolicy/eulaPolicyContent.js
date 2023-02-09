@@ -110,7 +110,7 @@ const EulaPolicyContent = () => {
           </li>
         </ul>
         <p>
-          i.
+          i.{' '}
           <em>
             We have included, in italics at the beginning of each section,
             summaries that provide short explanations of the legal language in
@@ -123,7 +123,7 @@ const EulaPolicyContent = () => {
           <strong> 1. GETTING ACCESS TO AND STARTED WITH OUR OFFERINGS </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains how to establish and maintain Account(s). This
             Section describes the importance of being mindful about the
@@ -338,7 +338,7 @@ const EulaPolicyContent = () => {
           <strong> 2. OFFERINGS </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains more about the Offerings, including updates to
             such offerings and linkages with other third party integration
@@ -432,7 +432,7 @@ const EulaPolicyContent = () => {
           <strong> 3. YOUR USE OF OFFERINGS AND YOUR RESPONSIBILITIES </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that Liminex licenses our Offerings to you for
             certain uses. Please use our Offerings responsibly and
@@ -575,7 +575,7 @@ const EulaPolicyContent = () => {
           <strong> 4. SPECIAL TERMS FOR FREE, TRIAL AND BETA OFFERINGS </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that we may make free, trial, or beta
             offerings available for you to test and provide us with Feedback
@@ -630,7 +630,7 @@ const EulaPolicyContent = () => {
           <strong> 5. TERM, TERMINATION </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains the duration of this Agreement as well as your
             and our’ obligations after this Agreement ends.
@@ -681,7 +681,7 @@ const EulaPolicyContent = () => {
           <strong> 6. INTELLECTUAL PROPERTY </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that we ask that you please protect our and
             others’ intellectual property.
@@ -732,7 +732,7 @@ const EulaPolicyContent = () => {
           <strong> 7. CONFIDENTIALITY </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that each party must respect each other’s
             Confidential Information.
@@ -778,7 +778,7 @@ const EulaPolicyContent = () => {
           <strong> 8. PRIVACY AND DATA </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that the parties each have responsibilities to
             help protect the privacy of data ingested or maintained in the
@@ -967,7 +967,7 @@ const EulaPolicyContent = () => {
           </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that some GoGuardian Offerings are designed to
             generate alerts and/or have other notification features, and that,
@@ -1041,9 +1041,10 @@ const EulaPolicyContent = () => {
           </strong>
         </p>
         <p>
+          i.{' '}
           <em>
-            i. This Section explains how content is used in certain Offerings
-            and the rights to such content.
+            This Section explains how content is used in certain Offerings and
+            the rights to such content.
           </em>
         </p>
         <p>
@@ -1297,7 +1298,7 @@ const EulaPolicyContent = () => {
           <strong> 11. APP STORE SOURCED APPLICATION </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains terms related to accessing and downloading an
             App Store Sourced Application.
@@ -1397,7 +1398,7 @@ const EulaPolicyContent = () => {
           <strong> 12. WARRANTIES, DISCLAIMER, AND RELEASE </strong>
         </p>
         <p>
-          i.
+          i.{' '}
           <em>
             This Section explains that we strive to provide you with our
             Offerings with a certain level of skill and care, but we cannot
@@ -1622,7 +1623,7 @@ const EulaPolicyContent = () => {
         <p>
           <em>
             Exceptions: Litigation of Intellectual Property and Small Claims
-            Court Claims
+            Court Claims{' '}
           </em>
           Claims concerning patents, copyrights, moral rights, trademarks, and
           trade secrets, and Claims of piracy or unauthorized use of any
@@ -1660,17 +1661,15 @@ const EulaPolicyContent = () => {
           <strong> 15.2.2 Class Action Waiver </strong>
         </p>
         <p>
-          THE PARTIES
-          <strong />
-          HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO SUE IN COURT
-          AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. The parties are
-          instead electing that all Claims not otherwise resolved informally as
-          permitted above shall be resolved by arbitration under this
-          Arbitration Agreement. An arbitrator can award on an individual basis
-          the same damages and relief as a court and must follow this Agreement
-          as a court would. However, there is no judge or jury in arbitration,
-          and court review of an arbitration award is subject to very limited
-          review.
+          THE PARTIES HEREBY WAIVE ANY CONSTITUTIONAL AND STATUTORY RIGHTS TO
+          SUE IN COURT AND HAVE A TRIAL IN FRONT OF A JUDGE OR A JURY. The
+          parties are instead electing that all Claims not otherwise resolved
+          informally as permitted above shall be resolved by arbitration under
+          this Arbitration Agreement. An arbitrator can award on an individual
+          basis the same damages and relief as a court and must follow this
+          Agreement as a court would. However, there is no judge or jury in
+          arbitration, and court review of an arbitration award is subject to
+          very limited review.
         </p>
 
         <p>
@@ -1735,13 +1734,12 @@ const EulaPolicyContent = () => {
           <strong> 16.5 Force Majeure </strong>
         </p>
         <p>
-          Our failure
-          <strong />
-          to comply with any provision of this Agreement due to an act of God,
-          hurricane, war, fire, riot, earthquake, terrorism, act of public
-          enemy, actions of governmental authorities outside of our control
-          (excepting compliance with applicable codes and regulations), or other
-          force majeure event will not be considered a breach of this Agreement.
+          Our failure to comply with any provision of this Agreement due to an
+          act of God, hurricane, war, fire, riot, earthquake, terrorism, act of
+          public enemy, actions of governmental authorities outside of our
+          control (excepting compliance with applicable codes and regulations),
+          or other force majeure event will not be considered a breach of this
+          Agreement.
         </p>
         <p>
           <strong> 16.6 No Third Party Beneficiaries </strong>

@@ -27,7 +27,8 @@ import { getUser, isPublisherUserSelector } from '../author/src/selectors/user'
 const eeaTitle =
   'End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
 
-const nonEeaTitle = 'End User License Agreement and Product Privacy Policy'
+const nonEeaTitle =
+  'Product Terms of Service and End User License Agreement and Product Privacy Policy'
 
 const eeaSubTitle =
   'Welcome to Edulastic! Before we proceed, please read our entire (1) Terms of Service and End User License Agreement;  (2) Product Privacy Policy and (3) Edulastic Data Processing Addendum  to make sure we’re on the same page.'
@@ -127,7 +128,7 @@ const PrivacyPolicyModal = ({
 
   const footer = (
     <>
-      <p>Scroll to the bottom of the page and tick the checkbox to accept</p>
+      <p>Scroll to the bottom of the page and click the checkbox to accept</p>
       <EduButton
         disabled={!isChecked || showSpinner}
         onClick={onAccept}

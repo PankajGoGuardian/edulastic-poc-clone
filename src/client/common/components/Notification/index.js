@@ -19,7 +19,10 @@ export const notificationMessage = ({
     message: title,
     description: (
       <div>
-        <p style={{ 'margin-top': '10px' }}>{message}</p>
+        <p
+          style={{ 'margin-top': '10px' }}
+          dangerouslySetInnerHTML={{ __html: message }}
+        />
         {showButton && (
           <EduButton
             height="30px"

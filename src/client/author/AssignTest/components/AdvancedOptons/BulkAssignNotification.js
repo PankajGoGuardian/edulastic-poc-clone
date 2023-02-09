@@ -40,7 +40,7 @@ const NotificationListener = ({ user }) => {
           Object.values(tests)[0] || {}
         setNotificationIds([...notificationIds, doc.__id])
         let message = `<b>${testTitle}</b> is assigned successfully to <b>${totalClassesAssigned}</b> class(es)`
-        if (playlistModuleTitle && Object.values(tests).length > 1) {
+        if (playlistModuleTitle && Object.values(tests)?.length > 1) {
           message = `<b>${playlistModuleTitle}</b> is assigned successfully to the class(es)`
         }
         notificationMessage({

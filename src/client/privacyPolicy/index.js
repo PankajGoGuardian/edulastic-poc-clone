@@ -25,7 +25,7 @@ import { setShowWelcomePopupAction } from '../author/Dashboard/ducks'
 import { getUser, isPublisherUserSelector } from '../author/src/selectors/user'
 
 const eeaTitle =
-  'End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
+  'Product Terms of Service End User License Agreement, Product Privacy Policy and Edulastic Data Processing Addendum'
 
 const nonEeaTitle =
   'Product Terms of Service and End User License Agreement and Product Privacy Policy'

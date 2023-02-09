@@ -899,9 +899,8 @@ const ProductPolicyContent = () => {
             obligation. We may request that an individual and/or School provide
             us with information necessary to confirm the individual’s identity
             before responding to your request. To exercise any of these rights,
-            please contact us at{' '}
-            <a href="mailto:privacy@goguardian.com">privacy@goguardian.com</a>.
-            Authorized agents for California residents may submit requests at:{' '}
+            please contact us at privacy@goguardian.com. Authorized agents for
+            California residents may submit requests at:{' '}
             <a
               href="https://www.goguardian.com/ccpa-requests"
               target="_blank"
@@ -1014,14 +1013,17 @@ const ProductPolicyContent = () => {
                   students in California, or in other states with similar
                   transfer laws, submit their content on the Offerings, the
                   appropriate parent, guardian, or eligible student may submit a
-                  request to privacy@goguardian.com to transfer this information
-                  to him/her. Following verification of the requestor’s
-                  authorization to receive the information (which may require
-                  verification by the requestor’s School), we will provide the
-                  student-generated content that we have in a commercially
-                  reasonable amount of time in either a CSV or other
-                  mutually-agreeable format. Please note that we cannot
-                  guarantee retention of student-generated content.
+                  request to{' '}
+                  <a href="mailto:privacy@goguardian.com">
+                    privacy@goguardian.com
+                  </a>{' '}
+                  to transfer this information to him/her. Following
+                  verification of the requestor’s authorization to receive the
+                  information (which may require verification by the requestor’s
+                  School), we will provide the student-generated content that we
+                  have in a commercially reasonable amount of time in either a
+                  CSV or other mutually-agreeable format. Please note that we
+                  cannot guarantee retention of student-generated content.
                 </li>
               </ol>
             </NestedOlWrapper>

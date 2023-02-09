@@ -9,7 +9,7 @@ export const classGroup = [
   },
 ]
 
-export const ruleLimit = 100
+export const ruleLimit = 10
 
 export const debounceWait = 500
 

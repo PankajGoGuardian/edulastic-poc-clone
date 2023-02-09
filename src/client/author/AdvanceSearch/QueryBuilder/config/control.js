@@ -71,7 +71,7 @@ export const OperatorSelector = (props) => {
 export const AddRule = ({ handleOnClick, rules }) => {
   const isDisabled = rules.length >= ruleLimit
   return (
-    <RuleButton onClick={handleOnClick} disabled={isDisabled}>
+    <RuleButton isGhost onClick={handleOnClick} disabled={isDisabled}>
       +Rule
     </RuleButton>
   )

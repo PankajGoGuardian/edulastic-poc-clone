@@ -8,11 +8,11 @@ import {
   lightGrey9,
   mobileWidth,
   mobileWidthLarge,
+  publishStatusColor,
   secondaryTextColor,
   tabletWidth,
   themeColor,
   white,
-  yellow,
 } from '@edulastic/colors'
 import { Button, Card, FlexContainer } from '@edulastic/common'
 import { Typography } from 'antd'
@@ -176,7 +176,7 @@ export const FlexTextWrapper = styled.div`
   margin-bottom: 35px;
   color: ${darkGrey2};
   opacity: 1;
-  background-color: ${(props) => props.isAsyncAssign && yellow};
+  background-color: ${(props) => props.isAsyncAssign && publishStatusColor};
   font-weight: ${(props) => props.isAsyncAssign && 900};
 `
 export const FlexText = styled.div`

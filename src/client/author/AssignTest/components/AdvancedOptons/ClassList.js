@@ -296,10 +296,16 @@ class ClassList extends React.Component {
   handleCourseSearch = debounce(this.courseSearch, 200)
 
   removeAdvanceSearch = () => {
-    const { setAdvancedSearchFilter, setIsAdvancedSearchSelected } = this.props
+    const {
+      setAdvancedSearchFilter,
+      setIsAdvancedSearchSelected,
+      selectClass,
+      classList,
+    } = this.props
     setIsAdvancedSearchSelected(false)
     setAdvancedSearchFilter({})
     this.loadClassList()
+    selectClass('class', [], classList)
   }
 
   render() {

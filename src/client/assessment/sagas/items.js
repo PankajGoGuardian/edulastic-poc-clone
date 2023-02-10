@@ -247,35 +247,35 @@ export function* saveUserResponse({ payload }) {
     const items = yield select((state) => state.test && state.test.items)
     const currentItem = items.length && items[itemIndex]
     const questions = getQuestionIds(currentItem)
-    const audioRecordingStateByItemIdAndQid = yield select(
-      getAudioRecordingByItemIdAndQidSelector
-    )
+    // const audioRecordingStateByItemIdAndQid = yield select(
+    //   getAudioRecordingByItemIdAndQidSelector
+    // )
 
-    // upload audio recording that is in progress
-    const {
-      stopRecordingForQid,
-      isUploadInProgress,
-    } = getInProgressAudioRecordingOrUploadData(
-      currentItem,
-      audioRecordingStateByItemIdAndQid,
-      questions
-    )
+    // // upload audio recording that is in progress
+    // const {
+    //   stopRecordingForQid,
+    //   isUploadInProgress,
+    // } = getInProgressAudioRecordingOrUploadData(
+    //   currentItem,
+    //   audioRecordingStateByItemIdAndQid,
+    //   questions
+    // )
 
-    if (stopRecordingForQid || isUploadInProgress) {
-      if (stopRecordingForQid) {
-        yield put(
-          setStopAudioRecordingAndUploadForQidAction({
-            questionId: stopRecordingForQid,
-          })
-        )
-      }
-      const { payload: audioUploadStatus } = yield take(
-        AUDIO_UPLOAD_COMPLETE_FOR_QID
-      )
-      if (audioUploadStatus === AUDIO_UPLOAD_ERROR) {
-        return
-      }
-    }
+    // if (stopRecordingForQid || isUploadInProgress) {
+    //   if (stopRecordingForQid) {
+    //     yield put(
+    //       setStopAudioRecordingAndUploadForQidAction({
+    //         questionId: stopRecordingForQid,
+    //       })
+    //     )
+    //   }
+    //   const { payload: audioUploadStatus } = yield take(
+    //     AUDIO_UPLOAD_COMPLETE_FOR_QID
+    //   )
+    //   if (audioUploadStatus === AUDIO_UPLOAD_ERROR) {
+    //     return
+    //   }
+    // }
 
     const answers = yield select((state) => state.answers)
     // prevent autSave if response is empty for every question in current item

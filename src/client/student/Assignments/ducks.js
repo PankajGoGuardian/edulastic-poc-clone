@@ -319,7 +319,7 @@ export const assignmentIdsGroupIdsByTestIdSelector = createSelector(
     // eslint-disable-next-line guard-for-in
     for (const i in assignments) {
       const { testId, _id } = assignments[i]
-      const classIds = assignments[i]?.['class']?.map((x) => x._id) || []
+      const classIds = assignments[i]?.class?.map((x) => x._id) || []
       if (_id && testId) {
         if (!assignmentsGroupsByTestId[testId]) {
           assignmentsGroupsByTestId[testId] = new Set(classIds)
@@ -694,9 +694,20 @@ function* startAssignment({ payload }) {
       })
 
       yield put(push(`/home/assignments`))
-      if (!handleChromeOsSEB()) {
-        yield call(redirectToUrl, sebUrl)
-      }
+      // if (handleChromeOsSEB()) {
+      const extensionAppId = 'ibekdnkkggajlgohhmhmcljefoameikb'
+      const tokenKey = window.sessionStorage.tokenKey || ''
+      const tokenValue = window.localStorage.getItem(`${tokenKey}`)
+      window.chrome.runtime.sendMessage(
+        extensionAppId,
+        { tokenKey, tokenValue, sebUrl },
+        (message) => {
+          console.log(message || '** kiosk app callback **')
+        }
+      )
+      // } else {
+      //   yield call(redirectToUrl, sebUrl)
+      // }
       return
     }
 

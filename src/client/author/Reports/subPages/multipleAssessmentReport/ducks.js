@@ -48,6 +48,8 @@ const initialState = {
     classIds: '',
     groupIds: '',
     assignedBy: 'anyone',
+    preTestId: '',
+    postTestId: '',
   },
   tagsData: {},
 }
@@ -59,7 +61,7 @@ export const reportMARSettingsReducer = createReducer(initialState, {
   [SET_MAR_SETTINGS]: (state, { payload }) => {
     state.requestFilters = payload.requestFilters
   },
-  [RESET_ALL_REPORTS]: (state) => (state = initialState),
+  [RESET_ALL_REPORTS]: () => initialState,
 })
 
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //

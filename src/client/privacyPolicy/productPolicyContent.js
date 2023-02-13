@@ -1,12 +1,12 @@
 import React from 'react'
-import { BodyContentWrapper, StickyHeader } from './Styled'
+import { BodyContentWrapper, NestedOlWrapper, StickyHeader } from './Styled'
 
 // This content is generated through https://github.com/mwilliamson/mammoth.js/
 const ProductPolicyContent = () => {
   return (
     <BodyContentWrapper data-testid="productPrivacyPolicy">
       <StickyHeader>
-        <strong> Product Privacy Policy </strong>
+        <strong> Privacy Policy for Product Users </strong>
       </StickyHeader>
       <div>
         <p>Last Updated Date: February 14, 2023</p>
@@ -51,7 +51,7 @@ const ProductPolicyContent = () => {
         <ul>
           <li>
             GoGuardian Offerings
-            <ul>
+            <ol>
               <li>
                 <a
                   href="https://www.goguardian.com/admin/"
@@ -106,7 +106,7 @@ const ProductPolicyContent = () => {
                   GoGuardian Teacher
                 </a>
               </li>
-            </ul>
+            </ol>
           </li>
           <li>
             <a
@@ -339,7 +339,7 @@ const ProductPolicyContent = () => {
             or stored by GoGuardian.
           </li>
           <li>
-            <em> Integration Information </em>: If your School chooses to
+            <em> Integration Information: </em> If your School chooses to
             integrate GoGuardian Offerings with other Integration Offerings
             (e.g., integrate with other School software with GoGuardian
             Offerings), then we will collect the information necessary to
@@ -366,9 +366,9 @@ const ProductPolicyContent = () => {
           <li>
             <em>
               Student’s School-Managed Account Information and Association
-              Information
+              Information:{' '}
             </em>
-            : For students who log into Pear Deck with a School-Managed Account,
+            For students who log into Pear Deck with a School-Managed Account,
             we collect student’s name, email address, the school-managed account
             ID ( for example the Google ID or Microsoft ID), as well as
             identifiers and associated information necessary to associate a
@@ -378,14 +378,14 @@ const ProductPolicyContent = () => {
             join such session.
           </li>
           <li>
-            <em> Activity Information </em>: We collect additional information
+            <em> Activity Information: </em>We collect additional information
             about the student’s activity within a presentation, including
             engagement with and any student content generated in the session.
             This may include free text, multiple choice answers, drawings, or
             presentation URLs.
           </li>
           <li>
-            <em> Device and Usage Information </em>: We collect general device
+            <em> Device and Usage Information: </em>We collect general device
             and usage information such as IP address, device identifier,
             operating system, browser type, non-precise geographic location
             (e.g. zip code and city), technical information about your device,
@@ -423,23 +423,23 @@ const ProductPolicyContent = () => {
             address, student ID, Edulastic user name.
           </li>
           <li>
-            <em> Demographic Information </em>: We may collect student
+            <em> Demographic Information: </em>We may collect student
             demographic information, including gender, date of birth, English
             language learner status, individualized education plan status, and
             free and reduced lunch status).
           </li>
           <li>
-            <em> Assessment Information </em>: We collect student assessment
+            <em> Assessment Information: </em>We collect student assessment
             responses, student assessment scores, and teacher feedback.
           </li>
           <li>
-            <em> Device and Usage Information </em>: We collect general device
+            <em> Device and Usage Information: </em>We collect general device
             and usage information such as IP address, browser type, time on task
             (the length of time a student spends on a question), browser lock
             (if students try to leave a browser), and user interaction.
           </li>
           <li>
-            <em> Integration Information </em>: If your School chooses to
+            <em> Integration Information: </em>If your School chooses to
             integrate Edulastic Offerings with other Integration Offerings
             (e.g., integrate with other School software with Edulastic
             Offerings), we will collect the information necessary to facilitate
@@ -463,7 +463,7 @@ const ProductPolicyContent = () => {
         <p>
           <em>
             Student’s School-Managed Account Information and Association
-            Information:
+            Information:{' '}
           </em>
           For students who log into Giant Steps with a School-Managed Account,
           we collect student’s name, email address, the school-managed account
@@ -899,9 +899,8 @@ const ProductPolicyContent = () => {
             obligation. We may request that an individual and/or School provide
             us with information necessary to confirm the individual’s identity
             before responding to your request. To exercise any of these rights,
-            please contact us at{' '}
-            <a href="mailto:privacy@goguardian.com">privacy@goguardian.com</a>.
-            Authorized agents for California residents may submit requests at:
+            please contact us at privacy@goguardian.com. Authorized agents for
+            California residents may submit requests at:{' '}
             <a
               href="https://www.goguardian.com/ccpa-requests"
               target="_blank"
@@ -942,85 +941,92 @@ const ProductPolicyContent = () => {
               Requests from Parents, Legal Guardians, Eligible Students, and
               Authorized School Personnel:
             </em>
-            <ul>
-              <li>
-                <em> Review, Correction, and Deletion Requests. </em>
-                <ul>
-                  <li>
-                    If a parent, legal guardian, eligible student, or Authorized
-                    School Personnel wishes to request a review, correction,
-                    deletion of Personal Student Information or School
-                    Information, he/she should contact the appropriate School
-                    Official of his/her or his/her child’s School. We will
-                    cooperate with the School to fulfill requests pursuant to
-                    the School’s verification and instruction within a
-                    commercially reasonable amount of time and in compliance
-                    with relevant law.
-                  </li>
-                  <li>
-                    Parent App: If you are a user of the Parent App, you can
-                    review information about the choices you may have with
-                    respect to the personal information you provide through the
-                    Parent App in the “
-                    <a
-                      href="https://edulastic.com/privacy-policy-for-website-visitors/#heading1_7"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      Your Choices
-                    </a>
-                    ” section of our
-                    <a
-                      href="https://edulastic.com/privacy-policy-for-website-visitors/"
-                      target="_blank"
-                      rel="noopener noreferrer"
-                    >
-                      {' '}
-                      Privacy Policy for Website Visitors
-                    </a>
-                    .
-                  </li>
-                  <li>
-                    If you are Authorized School Personnel, please note that we
-                    may be required to maintain certain School Information if
-                    directed to do so by your School Official on behalf of your
-                    School employer or as needed by us to enforce our legal
-                    rights.
-                  </li>
-                </ul>
-              </li>
-              <li>
-                <em> Transfer Requests. </em> Our Offerings allow Authorized
-                School Personnel to download information on behalf of a parent,
-                legal guardian, eligible student, or School Personnel. If our
-                Offerings do not cover the scope of the transfer request, we
-                will, following documented instructions from the School, honor
-                the requests from the parent, legal guardian, eligible student,
-                or Authorized School Personnel for the transfer of Personal
-                Student Information or personal data of the Authorized School
-                Personnel by utilizing the same guidelines as described above in
-                “Review, Correction, and Deletion Requests” in compliance with
-                and as required by relevant law.
-              </li>
-              <li>
-                <em> Transfer Requests for Student-Generated Content. </em>
-                California law requires website operators to transfer
-                student-generated content to the student’s personal account when
-                requested by an eligible student, parent, or guardian. The
-                Offerings are not used as the primary platform for students to
-                submit their own content. To the extent that students in
-                California, or in other states with similar transfer laws,
-                submit their content on the Offerings, the appropriate parent,
-                guardian, or eligible student may submit a request to
-                privacy@goguardian.com to transfer this information to him/her.
-                Following verification of the requestor’s authorization to
-                receive the information (which may require verification by the
-                requestor’s School), we will provide the student-generated
-                content that we have in a commercially reasonable amount of time
-                in either a CSV or other mutually-agreeable format. Please note
-                that we cannot guarantee retention of student-generated content.
-              </li>
-            </ul>
+            <NestedOlWrapper>
+              <ol>
+                <li>
+                  <em> Review, Correction, and Deletion Requests. </em>
+                  <ol>
+                    <li>
+                      If a parent, legal guardian, eligible student, or
+                      Authorized School Personnel wishes to request a review,
+                      correction, deletion of Personal Student Information or
+                      School Information, he/she should contact the appropriate
+                      School Official of his/her or his/her child’s School. We
+                      will cooperate with the School to fulfill requests
+                      pursuant to the School’s verification and instruction
+                      within a commercially reasonable amount of time and in
+                      compliance with relevant law.
+                    </li>
+                    <li>
+                      Parent App: If you are a user of the Parent App, you can
+                      review information about the choices you may have with
+                      respect to the personal information you provide through
+                      the Parent App in the “
+                      <a
+                        href="https://edulastic.com/privacy-policy-for-website-visitors/#heading1_7"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Your Choices
+                      </a>
+                      ” section of our
+                      <a
+                        href="https://edulastic.com/privacy-policy-for-website-visitors/"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        {' '}
+                        Privacy Policy for Website Visitors
+                      </a>
+                      .
+                    </li>
+                    <li>
+                      If you are Authorized School Personnel, please note that
+                      we may be required to maintain certain School Information
+                      if directed to do so by your School Official on behalf of
+                      your School employer or as needed by us to enforce our
+                      legal rights.
+                    </li>
+                  </ol>
+                </li>
+                <li>
+                  <em>Transfer Requests. </em> Our Offerings allow Authorized
+                  School Personnel to download information on behalf of a
+                  parent, legal guardian, eligible student, or School Personnel.
+                  If our Offerings do not cover the scope of the transfer
+                  request, we will, following documented instructions from the
+                  School, honor the requests from the parent, legal guardian,
+                  eligible student, or Authorized School Personnel for the
+                  transfer of Personal Student Information or personal data of
+                  the Authorized School Personnel by utilizing the same
+                  guidelines as described above in “Review, Correction, and
+                  Deletion Requests” in compliance with and as required by
+                  relevant law.
+                </li>
+                <li>
+                  <em>Transfer Requests for Student-Generated Content. </em>
+                  California law requires website operators to transfer
+                  student-generated content to the student’s personal account
+                  when requested by an eligible student, parent, or guardian.
+                  The Offerings are not used as the primary platform for
+                  students to submit their own content. To the extent that
+                  students in California, or in other states with similar
+                  transfer laws, submit their content on the Offerings, the
+                  appropriate parent, guardian, or eligible student may submit a
+                  request to{' '}
+                  <a href="mailto:privacy@goguardian.com">
+                    privacy@goguardian.com
+                  </a>{' '}
+                  to transfer this information to him/her. Following
+                  verification of the requestor’s authorization to receive the
+                  information (which may require verification by the requestor’s
+                  School), we will provide the student-generated content that we
+                  have in a commercially reasonable amount of time in either a
+                  CSV or other mutually-agreeable format. Please note that we
+                  cannot guarantee retention of student-generated content.
+                </li>
+              </ol>
+            </NestedOlWrapper>
           </li>
         </ul>
         <h3>
@@ -1213,7 +1219,7 @@ const ProductPolicyContent = () => {
             notice, choice, purpose limitation, onward transfer, security, data
             integrity, access, recourse, liability, and enforcement for such
             personal data. To learn more about the Privacy Shield Framework,
-            visit the Department of Commerce’s Privacy Shield list by clicking
+            visit the Department of Commerce’s Privacy Shield list by clicking{' '}
             <a
               href="http://www.privacyshield.gov/"
               target="_blank"
@@ -1244,7 +1250,7 @@ const ProductPolicyContent = () => {
             notice, choice, purpose limitation, onward transfer, security, data
             integrity, access, recourse, liability, and enforcement for such
             personal data. To learn more about the Privacy Shield Framework,
-            visit the Department of Commerce’s Privacy Shield list by clicking
+            visit the Department of Commerce’s Privacy Shield list by clicking{' '}
             <a
               href="https://www.privacyshield.gov/welcome"
               target="_blank"

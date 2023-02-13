@@ -1,8 +1,18 @@
 import { useState, useEffect } from 'react'
-import { RECORDING_INACTIVE, RECORDING_COMPLETED } from '../constants'
+import {
+  RECORDING_INACTIVE,
+  RECORDING_COMPLETED,
+  AUDIO_UPLOAD_INACTIVE,
+} from '../constants'
 
-const useAudioResponse = ({ userAnswer, saveAnswer }) => {
-  const [recordingState, setRecordingState] = useState(RECORDING_INACTIVE)
+const useAudioResponse = ({
+  userAnswer,
+  saveAnswer,
+  setRecordingState,
+  setAudioUploadStatus,
+  questionId,
+  itemId,
+}) => {
   const [errorData, setErrorData] = useState({
     isOpen: false,
     errorMessage: '',
@@ -12,26 +22,38 @@ const useAudioResponse = ({ userAnswer, saveAnswer }) => {
     saveAnswer(userAudioResponseUrl)
   }
 
+  const handleChangeRecordingState = (recordingState) => {
+    setRecordingState({ questionId, itemId, recordingState })
+  }
+
+  const handleChangeUploadStatus = (audioUploadStatus) => {
+    setAudioUploadStatus({ questionId, itemId, audioUploadStatus })
+  }
+
   const onClickRerecord = () => {
-    setRecordingState(RECORDING_INACTIVE)
+    handleChangeRecordingState(RECORDING_INACTIVE)
     saveUserResponse('')
   }
 
   useEffect(() => {
+    handleChangeUploadStatus(AUDIO_UPLOAD_INACTIVE)
+  }, [])
+
+  useEffect(() => {
     if (userAnswer?.length) {
-      setRecordingState(RECORDING_COMPLETED)
+      handleChangeRecordingState(RECORDING_COMPLETED)
       return
     }
-    setRecordingState(RECORDING_INACTIVE)
+    handleChangeRecordingState(RECORDING_INACTIVE)
   }, [userAnswer])
 
   return {
-    recordingState,
     errorData,
     setErrorData,
     saveUserResponse,
-    setRecordingState,
     onClickRerecord,
+    handleChangeRecordingState,
+    handleChangeUploadStatus,
   }
 }
 

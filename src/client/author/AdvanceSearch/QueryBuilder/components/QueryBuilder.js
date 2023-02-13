@@ -106,7 +106,11 @@ const _QueryBuilder = ({
   const footer = (
     <ButtonsContainer>
       <div style={{ display: 'flex', gap: '20px' }}>
-        <CancelButton onClick={handleCancel} style={{ minWidth: '100px' }}>
+        <CancelButton
+          isGhost
+          onClick={handleCancel}
+          style={{ minWidth: '100px' }}
+        >
           Cancel
         </CancelButton>
         <OkButton

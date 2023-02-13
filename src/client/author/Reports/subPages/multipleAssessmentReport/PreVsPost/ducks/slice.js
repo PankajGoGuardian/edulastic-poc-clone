@@ -24,6 +24,7 @@ const slice = createSlice({
     fetchReportSummaryDataRequestError: (state, { payload }) => {
       state.loadingReportSummaryData = false
       state.error = payload.error
+      state.reportSummaryData = {}
     },
     fetchPreVsPostReportTableDataRequest: (state) => {
       state.loadingReportTableData = true

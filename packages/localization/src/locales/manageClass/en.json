@@ -24,7 +24,7 @@
     "cancel": "Cancel"
   },
   "canvas": {
-    "canvasClassSyncInProgress": "Canvas Class Sync In Progress",
+    "canvasClassSyncInProgress": "Canvas class sync is in progress",
     "canvasClassLoading": "Loading Canvas Classes"
   }
 }

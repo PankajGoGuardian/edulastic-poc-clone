@@ -5,6 +5,7 @@ import {
   RECORDING_ACTIVE,
   RECORDING_INACTIVE,
   RECORDING_COMPLETED,
+  AUDIO_UPLOAD_ACTIVE,
 } from '../constants'
 import {
   StyledAudioRecorderWrapper,
@@ -15,6 +16,7 @@ import useAudioResponse from '../hooks/useAudioResponse'
 import AudioRecorderContainer from './AudioRecorderContainer'
 import AudioPlayerContainer from './AudioPlayerContainer'
 import ErrorPopup from './ErrorPopup'
+import UploadProgress from './UploadProgress'
 
 const AudioResponseContainer = ({
   i18translate,
@@ -24,28 +26,43 @@ const AudioResponseContainer = ({
   userAnswer,
   hideAudioRecorder,
   userId,
+  recordingState,
+  audioUploadStatus,
+  stopRecordingForQid,
+  setRecordingState,
+  setAudioUploadStatus,
+  setStopAudioRecordingAndUploadForQid,
+  recordingAndUploadCompleteForQid,
+  questionId,
+  itemId,
 }) => {
   const {
-    recordingState,
     errorData,
     setErrorData,
     saveUserResponse,
-    setRecordingState,
     onClickRerecord,
+    handleChangeRecordingState,
+    handleChangeUploadStatus,
   } = useAudioResponse({
     userAnswer,
     saveAnswer,
+    setRecordingState,
+    setAudioUploadStatus,
+    questionId,
+    itemId,
   })
 
-  const { isUploadingAudio, uploadFile } = useUploadAudioFile({
+  const { uploadFile } = useUploadAudioFile({
     useS3AudioUrl,
     saveUserResponse,
-    setRecordingState,
+    handleChangeRecordingState,
+    handleChangeUploadStatus,
+    recordingAndUploadCompleteForQid,
     setErrorData,
   })
 
   const onRecordingComplete = async ({ audioFile, audioUrl }) => {
-    setRecordingState(RECORDING_COMPLETED)
+    handleChangeRecordingState(RECORDING_COMPLETED)
     await uploadFile({ audioFile, objectAudioUrl: audioUrl })
   }
 
@@ -69,10 +86,15 @@ const AudioResponseContainer = ({
           i18translate={i18translate}
           audioTimeLimitInMinutes={audioTimeLimitInMinutes}
           recordingState={recordingState}
-          onChangeRecordingState={setRecordingState}
+          onChangeRecordingState={handleChangeRecordingState}
           onRecordingComplete={onRecordingComplete}
           setErrorData={setErrorData}
           userId={userId}
+          stopRecordingForQid={stopRecordingForQid}
+          setStopAudioRecordingAndUploadForQid={
+            setStopAudioRecordingAndUploadForQid
+          }
+          questionId={questionId}
         />
       </EduIf>
       <EduIf
@@ -86,10 +108,8 @@ const AudioResponseContainer = ({
           setErrorData={setErrorData}
         />
       </EduIf>
-      <EduIf condition={!!isUploadingAudio}>
-        <StyledText showLoader>
-          {i18translate('component.audioResponse.uploading')}
-        </StyledText>
+      <EduIf condition={audioUploadStatus === AUDIO_UPLOAD_ACTIVE}>
+        <UploadProgress i18translate={i18translate} />
       </EduIf>
       <EduIf condition={hideAudioRecorder && !userAnswer?.length}>
         <StyledText>
@@ -108,6 +128,15 @@ AudioResponseContainer.propTypes = {
   userAnswer: PropTypes.string,
   hideAudioRecorder: PropTypes.bool.isRequired,
   userId: PropTypes.string.isRequired,
+  recordingState: PropTypes.string.isRequired,
+  audioUploadStatus: PropTypes.string.isRequired,
+  stopRecordingForQid: PropTypes.string.isRequired,
+  setRecordingState: PropTypes.func.isRequired,
+  setAudioUploadStatus: PropTypes.func.isRequired,
+  setStopAudioRecordingAndUploadForQid: PropTypes.func.isRequired,
+  recordingAndUploadCompleteForQid: PropTypes.func.isRequired,
+  questionId: PropTypes.string.isRequired,
+  itemId: PropTypes.string.isRequired,
 }
 
 AudioResponseContainer.defaultProps = {

@@ -731,7 +731,7 @@ class Setting extends Component {
       isCurator,
       isPlaylist,
       isEtsDistrict,
-      t,
+      t: i18translate,
       testSettingsList = [],
       performanceBandsData,
       standardsData,
@@ -1275,7 +1275,7 @@ class Setting extends Component {
                     isTestlet={isTestlet}
                     updateTestData={this.updateTestData}
                     showTtsForPassages={showTtsForPassages}
-                    t={t}
+                    i18translate={i18translate}
                   />
                   {/* Allow TTS for Passage ends */}
 
@@ -1638,8 +1638,7 @@ class Setting extends Component {
                           </Col>
                           <Col span={16}>
                             <Description>
-                              If students can use an on-screen calculator,
-                              select the type to make available on the test.
+                              {i18translate('calculatorTypesSettings.info')}
                             </Description>
                           </Col>
                         </Row>
@@ -1653,7 +1652,9 @@ class Setting extends Component {
                         <Title>
                           <span>Show Rubric to Students </span>
                           <DollarPremiumSymbol premium={premium} />
-                          <Tooltip title={t('showRubricToStudents.info')}>
+                          <Tooltip
+                            title={i18translate('showRubricToStudents.info')}
+                          >
                             <IconInfo
                               color={lightGrey9}
                               style={{ marginLeft: '10px', cursor: 'pointer' }}
@@ -1678,7 +1679,7 @@ class Setting extends Component {
                             style={{ marginTop: '10px' }}
                             data-cy="show-rubric-to-students-desc"
                           >
-                            {t('showRubricToStudents.info')}
+                            {i18translate('showRubricToStudents.info')}
                           </Description>
                         </Body>
                       </SettingContainer>
@@ -1825,7 +1826,7 @@ class Setting extends Component {
                               this.confirmKeypadSelection(false)}
                           >
                             <p>
-                              <b>{t('keypadSettings.warning')}</b>
+                              <b>{i18translate('keypadSettings.warning')}</b>
                             </p>
                           </ConfirmationModal>
                           <Description>

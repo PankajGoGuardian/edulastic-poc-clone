@@ -22,11 +22,11 @@ import {
   DashedHr,
   ColorCircle,
   ColorBandRow,
-  StyledH3,
 } from '../../../../common/styled'
 import LargeTag from '../../common/LargeTag'
 
 import { tableColumnsData, compareByMap } from '../utils'
+import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 
 const { formatDate } = reportUtils.common
 
@@ -281,16 +281,10 @@ const AssessmentsTable = ({
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
       />
-      {showIncompleteTestsMessage && (
-        <StyledH3
-          fontSize="10px"
-          fontWeight="normal"
-          margin={incompleteTestsMessageMargin}
-        >
-          * Some assignment(s) for this test are still in progress and hence the
-          results may not be complete
-        </StyledH3>
-      )}
+      <IncompleteTestsMessage
+        hasIncompleteTests={showIncompleteTestsMessage}
+        incompleteTestsMessageMargin={incompleteTestsMessageMargin}
+      />
     </TableContainer>
   )
 }

@@ -16,9 +16,10 @@ const iconMap = {
   [STOP]: IconWhiteStop,
 }
 
+const SvgStyles = { display: 'block', margin: 'auto' }
 const Icon = ({ type }) => {
   const IconComponent = iconMap[type] || null
-  return IconComponent ? <IconComponent /> : null
+  return IconComponent ? <IconComponent style={SvgStyles} /> : null
 }
 
 const AudioButton = ({ buttonType, onClickHandler, isRecording }) => {

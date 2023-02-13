@@ -1,5 +1,5 @@
 import { getStateName } from '@edulastic/common'
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import { BasicDesmosCalculator } from '../components/BasicDesmosCalculator'
 import { BasicEdulasticCalculator } from '../components/BasicEdulasticCalculator'
 import { ScientificDesmosCalculator } from '../components/ScientificDesmosCalculator'
@@ -8,7 +8,7 @@ import { ScientificEdulasticCalculator } from '../components/ScientificEdulastic
 import { GraphingGeogebraCalculator } from '../components/GraphingGeogebraCalculator'
 import { ScientificGeogebraCalculator } from '../components/ScientificGeogebraCalculator'
 import {
-  CALC_LABEL_MAP,
+  CALC_MAP,
   CALC_MODES,
   DESMOS_GRAPHING_CALC_TYPES,
   DESMOS_CALC_PROVIDER,
@@ -45,7 +45,13 @@ const getCalculatorComponent = (calcMode) => {
   }
 }
 
-export const useCalcMode = (calcTypes, calcProvider, schoolState) => {
+export const useCalcMode = ({
+  calcTypes,
+  calcProvider,
+  schoolState,
+  currentCalculatorType,
+  updateTestPlayer,
+}) => {
   const calcModes = useMemo(() => {
     return calcTypes.map((calcType) => {
       // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now,
@@ -58,21 +64,49 @@ export const useCalcMode = (calcTypes, calcProvider, schoolState) => {
         resolvedCalcProvider || defaultCalcProvider
       }`
 
+      const { text, id } = CALC_MAP[calcType]
       const stateName = getStateName(schoolState)
-      const calcTitle = `${CALC_LABEL_MAP[calcType]} Calculator`
+      let calcTitle = `${text} Calculator`
       if (stateName && calcMode === CALC_MODES.GRAPHING_STATE_DESMOS) {
-        return `${calcTitle} | ${stateName}`
+        calcTitle = `Desmos ${calcTitle} | ${stateName}`
+      } else if (calcMode === CALC_MODES.GRAPHING_DESMOS) {
+        calcTitle = `Desmos ${calcTitle}`
       }
 
-      const calcTabLabel = CALC_LABEL_MAP[calcType]
       return {
         calcTitle,
         calcMode,
-        calcTabLabel,
+        calcTabLabel: text,
         comp: getCalculatorComponent(calcMode),
+        calcId: id,
       }
     })
   }, [])
 
-  return [calcModes]
+  const calculatorIndexByCalcMode = useMemo(() => {
+    const calculatorIndex = calcModes.findIndex(
+      (allCalculators) => allCalculators?.calcMode === currentCalculatorType
+    )
+    return calculatorIndex === -1 ? 0 : calculatorIndex
+  }, [currentCalculatorType])
+
+  const handleChangeCurrentCalculatorType = (calculatorIndex) => {
+    updateTestPlayer({
+      currentCalculatorType: calcModes[calculatorIndex].calcMode,
+    })
+  }
+
+  useEffect(() => {
+    if (!currentCalculatorType) {
+      updateTestPlayer({
+        currentCalculatorType: calcModes[0].calcMode,
+      })
+    }
+  }, [])
+
+  return {
+    calcOptions: calcModes,
+    calculatorIndexByCalcMode,
+    handleChangeCurrentCalculatorType,
+  }
 }

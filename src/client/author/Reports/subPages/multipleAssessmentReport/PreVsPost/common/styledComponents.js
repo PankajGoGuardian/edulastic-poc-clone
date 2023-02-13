@@ -139,16 +139,20 @@ export const LegendWrapper = styled.div`
   display: flex;
   flex-wrap: wrap;
   width: fit-content;
+  max-width: 50%;
   margin-right: 0px;
   margin-left: auto;
+  justify-content: right;
   border: 5px solid ${grey};
   border-width: 0.5px 0.5px 0px 0.5px;
   border-radius: 20px 20px 0px 0px;
-  padding: 12px 20px;
+  padding-block: 12px;
 `
 
 export const StudentWrapper = styled.span`
   display: flex;
+  flex-wrap: nowrap;
+  white-space: nowrap;
   width: fit-content;
   margin-right: auto;
   margin-left: 0px;
@@ -216,7 +220,8 @@ export const StyledTitle = styled.div`
   overflow: hidden;
   text-overflow: ellipsis;
   @media print {
-    white-space: normal;
+    white-space: nowrap;
+    overflow: hidden !important;
   }
 `
 
@@ -242,7 +247,7 @@ export const StyledHorizontalStackedBarChartContainer = styled.div`
   margin: 10px 30px;
 `
 export const StyledLegendContainer = styled.div`
-  margin-inline: 20px;
+  margin: 5px 20px;
   display: flex;
   & > span {
     font-size: 12px;
@@ -258,12 +263,25 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 `
 
 export const PerformanceMatrixContainer = styled(Row)`
-  .section-pre-test,
-  .section-post-test {
+  .section-test {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     padding: 10px;
     font-size: 13px;
-    .section-pre-test-tag,
-    .section-post-test-tag {
+    .test-name {
+      padding: 4px;
+      text-align: center;
+      overflow: hidden;
+      white-space: nowrap;
+      text-overflow: ellipsis;
+    }
+    @media print {
+      .test-name {
+        overflow: hidden !important;
+      }
+    }
+    .test-tag {
       display: block;
       width: fit-content;
       height: fit-content;
@@ -271,18 +289,26 @@ export const PerformanceMatrixContainer = styled(Row)`
       font-weight: bold;
       border-radius: 6px;
     }
-    .section-pre-test-name,
-    .section-post-test-name {
-      padding: 4px;
+  }
+  .post-test {
+    width: 250px;
+    margin-block: 10px;
+    margin-left: 40px;
+    .test-name {
+      width: 100%;
     }
   }
-  .section-pre-test {
+  .pre-test {
+    height: 250px;
     position: absolute;
     writing-mode: vertical-rl;
-    transform: translate(-100%, -50%) scale(-1, -1);
+    transform: translate(calc(-100% - 10px), -50%) scale(-1, -1);
     top: 50%;
-    .section-pre-test-tag {
+    .test-tag {
       padding: 8px 2px;
+    }
+    .test-name {
+      height: 100%;
     }
   }
   .section-matrix-grid {
@@ -314,12 +340,20 @@ export const PerformanceMatrixContainer = styled(Row)`
       }
     }
     .section-matrix-col {
-      padding: 10px 0;
+      transform: translateY(-10px);
       flex-direction: column;
       .section-matrix-col-bar {
         width: 54px;
         height: 6px;
       }
+    }
+    .section-matrix-row-text {
+      position: absolute;
+      right: calc(100% - 25px);
+    }
+    .section-matrix-row-bar {
+      position: absolute;
+      left: 35px;
     }
 
     .section-matrix-cell {
@@ -366,7 +400,9 @@ export const PerformanceMatrixContainer = styled(Row)`
   }
 `
 export const StyledEduButton = styled(EduButton)`
-  height: 32px;
-  padding: 0 15px 0 10px;
-  margin-right: 5px;
+  &.ant-btn {
+    height: 32px;
+    padding: 0 15px 0 10px;
+    margin-right: 10px;
+  }
 `

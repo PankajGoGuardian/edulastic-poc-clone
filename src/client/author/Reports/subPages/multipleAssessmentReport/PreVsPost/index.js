@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { get, isEmpty, mapValues } from 'lodash'
+import { get, isEmpty, mapValues, some } from 'lodash'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
 
@@ -33,7 +33,7 @@ import {
 } from './common/styledComponents'
 
 const PreVsPostReport = ({
-  userRole,
+  role,
   settings,
   isCsvDownloading,
   ddfilter,
@@ -49,11 +49,14 @@ const PreVsPostReport = ({
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
 }) => {
-  const sharedReportFilters = useMemo(
-    () =>
+  const [userRole, sharedReportFilters, isSharedReport] = useMemo(
+    () => [
+      sharedReport?.sharedBy?.role || role,
       sharedReport?._id
         ? { ...sharedReport.filters, reportId: sharedReport._id }
         : null,
+      !!sharedReport?._id,
+    ],
     [sharedReport]
   )
 
@@ -89,10 +92,11 @@ const PreVsPostReport = ({
       ...ddfilter,
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      setTableFilters({ ...tableFilters, preBandScore: '', postBandScore: '' })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters])
+  }, [settings.requestFilters, ddfilter])
 
   useEffect(() => {
     const q = {
@@ -104,7 +108,7 @@ const PreVsPostReport = ({
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
-  }, [settings.requestFilters, tableFilters.compareBy.key])
+  }, [settings.requestFilters, ddfilter, tableFilters.compareBy.key])
 
   // extract selected performance band from MARFilterData
   const bandInfo = useMemo(
@@ -122,22 +126,27 @@ const PreVsPostReport = ({
     postTestName,
     totalStudentCount,
     summaryData,
+    hasIncompleteTests,
   } = useMemo(() => {
-    const {
-      metricInfo: _summaryMetricInfo = [],
-      testInfo: _testInfo = [],
-    } = reportSummaryData
+    // TODO Do validation of error, loading, dataSizeExceeded early and return using guard clauses. Convert rest logic into separate component.
+    const _summaryMetricInfo = get(reportSummaryData, 'metricInfo', [])
+    const _testInfo = get(reportSummaryData, 'testInfo', [])
     const _testNamesData = getTestNamesFromTestMetrics(_testInfo, reportFilters)
     const _summaryData = getSummaryDataFromSummaryMetrics(_summaryMetricInfo)
     return {
       summaryMetricInfo: _summaryMetricInfo,
       ..._testNamesData,
       ..._summaryData,
+      hasIncompleteTests: some(
+        _testInfo,
+        ({ incompleteCount = 0 }) => +incompleteCount > 0
+      ),
     }
   }, [reportSummaryData, reportFilters])
 
   const [tableData, rowSelection, checkedStudentsForModal] = useMemo(() => {
-    const { metricInfo: _tableMetricInfo = [] } = reportTableData
+    // TODO Do validation of error, loading, dataSizeExceeded early and return using guard clauses. Convert rest logic into separate component.
+    const _tableMetricInfo = get(reportTableData, 'metricInfo', [])
     const _tableData = getTableData(
       _tableMetricInfo,
       selectedPerformanceBand,
@@ -303,6 +312,8 @@ const PreVsPostReport = ({
             setTableFilters={setTableFilters}
             isCsvDownloading={isCsvDownloading}
             handleAddToGroupClick={handleAddToGroupClick}
+            isSharedReport={isSharedReport}
+            hasIncompleteTests={hasIncompleteTests}
           />
         </PreVsPostReportContainer>
       </EduIf>
@@ -313,7 +324,7 @@ const PreVsPostReport = ({
 const enhance = connect(
   (state) => ({
     ...mapValues(selectors, (selector) => selector(state)),
-    userRole: getUserRole(state),
+    role: getUserRole(state),
     isCsvDownloading: getCsvDownloadingState(state),
   }),
   {

@@ -1,8 +1,9 @@
 import React from 'react'
 
-const PerformanceMatrixColumnHeader = ({ text, color }) => (
+const PerformanceMatrixColumnHeader = ({ value, change, color }) => (
   <div className="section-matrix-col">
-    <div className="section-matrix-col-text">{text}</div>
+    <div className="section-matrix-col-text">{value}</div>
+    <div className="section-matrix-col-text">{change}</div>
     <div
       className="section-matrix-col-bar"
       style={{ backgroundColor: color }}

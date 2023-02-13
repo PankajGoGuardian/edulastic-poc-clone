@@ -106,6 +106,11 @@ export const playerSkinTypeSelector = createSelector(stateSelector, (state) => {
   return playerSkinValues[playerSkinType] || playerSkinValues.edulastic
 })
 
+export const getSubmitTestCompleteSelector = createSelector(
+  stateSelector,
+  (state) => state.submitTestComplete
+)
+
 export const getPreviewPlayerStateSelector = createSelector(
   stateSelector,
   (state) => ({

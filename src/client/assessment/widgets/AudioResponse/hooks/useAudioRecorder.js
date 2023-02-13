@@ -10,6 +10,9 @@ const useAudioRecorder = ({
   onRecordingComplete,
   setErrorData,
   userId,
+  stopRecordingForQid,
+  setStopAudioRecordingAndUploadForQid,
+  questionId,
 }) => {
   const voiceRecorderRef = useRef(null)
   let voiceRecorderData
@@ -109,6 +112,13 @@ const useAudioRecorder = ({
       voiceRecorderRef.current = null
     }
   }, [])
+
+  useEffect(() => {
+    if (stopRecordingForQid === questionId) {
+      onClickStopRecording()
+      setStopAudioRecordingAndUploadForQid({ questionId: '' })
+    }
+  }, [stopRecordingForQid])
 
   return { onClickRecordAudio, onClickStopRecording }
 }

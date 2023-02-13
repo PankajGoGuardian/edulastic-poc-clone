@@ -22,13 +22,13 @@ const getActivityFromPropsSelector = (state, props) => props.activity
 
 // eslint-disable-next-line no-unused-vars
 const isReviewTabSelector = (state, props) => !!props.isReviewTab
-const getQuestionIdFromPropsSelector = (state, props) => {
+export const getQuestionIdFromPropsSelector = (state, props) => {
   const id = props?.data?.id
   const questionId = props?.questionId
   return questionId || id
 }
 
-const getTestItemIdFromPropsSelector = (state, props) => {
+export const getTestItemIdFromPropsSelector = (state, props) => {
   let itemId = props.data?.itemId || props.itemId || props.testItemId
   if (!itemId) {
     const studentItemsData = getStudentItemsStateSelector(state)

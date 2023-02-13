@@ -2,20 +2,19 @@ import { test as testConstants } from '@edulastic/constants'
 
 const { calculators } = testConstants
 
-const getCalcLabelMap = () => {
-  const calcLabelMap = {}
+const getCalcMap = () => {
+  const calcMap = {}
   Object.keys(calculators).forEach((key) => {
     const { id, text } = calculators[key]
+    calcMap[id] = { id, text }
     if (id.includes('GRAPHING')) {
-      calcLabelMap[id] = 'Graphing'
-    } else {
-      calcLabelMap[id] = text
+      calcMap[id] = { id, text: 'GRAPHING' }
     }
   })
-  return calcLabelMap
+  return calcMap
 }
 
-export const CALC_LABEL_MAP = getCalcLabelMap()
+export const CALC_MAP = getCalcMap()
 
 export const DESMOS_GRAPHING_CALC_TYPES = [
   calculators.GRAPHING.id,
@@ -43,8 +42,8 @@ export const RND_PROPS = {
   [CALC_MODES.SCIENTIFIC_DESMOS]: { x: 0, y: 0, width: 600, height: 500 },
   [CALC_MODES.GRAPHING_DESMOS]: { x: 0, y: 0, width: 600, height: 400 },
   [CALC_MODES.GRAPHING_STATE_DESMOS]: { x: 0, y: 0, width: 600, height: 400 },
-  [CALC_MODES.BASIC_EDULASTIC]: { x: 0, y: 0, width: 350, height: 355 },
-  [CALC_MODES.SCIENTIFIC_EDULASTIC]: { x: 0, y: 0, width: 500, height: 632 },
+  [CALC_MODES.BASIC_EDULASTIC]: { x: 0, y: 0, width: 350, height: 400 },
+  [CALC_MODES.SCIENTIFIC_EDULASTIC]: { x: 0, y: 0, width: 500, height: 410 },
   [CALC_MODES.GRAPHING_GEOGEBRASCIENTIFIC]: {
     x: 0,
     y: 0,

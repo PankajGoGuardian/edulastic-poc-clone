@@ -158,7 +158,6 @@ class ClassList extends React.Component {
       test,
       testType,
       classList,
-      assignedClassesById,
       selectedClasses,
       isAllClassSelected: isAllClassSelectedProp,
       setIsAllClassSelected,
@@ -189,12 +188,7 @@ class ClassList extends React.Component {
 
     const isAllSelected =
       !!selectedClasses?.length &&
-      classList.every(
-        ({ _id }) =>
-          Object.keys(assignedClassesById[testType]).includes(_id) ||
-          selectedClasses?.includes(_id) ||
-          filterClassIds.length === selectedClasses?.length
-      )
+      classList.every(({ _id }) => selectedClasses?.includes(_id))
     if (isAllClassSelectedProp !== isAllSelected) {
       setIsAllClassSelected(isAllSelected)
     }
@@ -302,10 +296,16 @@ class ClassList extends React.Component {
   handleCourseSearch = debounce(this.courseSearch, 200)
 
   removeAdvanceSearch = () => {
-    const { setAdvancedSearchFilter, setIsAdvancedSearchSelected } = this.props
+    const {
+      setAdvancedSearchFilter,
+      setIsAdvancedSearchSelected,
+      selectClass,
+      classList,
+    } = this.props
     setIsAdvancedSearchSelected(false)
     setAdvancedSearchFilter({})
     this.loadClassList()
+    selectClass('class', [], classList)
   }
 
   render() {

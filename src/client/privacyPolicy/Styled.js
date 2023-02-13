@@ -1,4 +1,3 @@
-import styled from 'styled-components'
 import {
   darkGrey2,
   greyThemeDark1,
@@ -6,6 +5,7 @@ import {
   tabletWidth,
 } from '@edulastic/colors'
 import { CustomModalStyled } from '@edulastic/common'
+import styled from 'styled-components'
 
 export const BodyContentWrapper = styled.div`
   padding: 10px;
@@ -123,5 +123,18 @@ export const CheckboxWrapper = styled.div`
     .ant-checkbox .ant-checkbox-inner {
       border-color: #000000;
     }
+  }
+`
+
+export const NestedOlWrapper = styled.div`
+  ol {
+    counter-reset: item;
+  }
+  li {
+    display: block;
+  }
+  li:before {
+    content: counters(item, '.') '. ';
+    counter-increment: item;
   }
 `

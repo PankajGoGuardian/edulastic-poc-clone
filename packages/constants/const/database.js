@@ -3,4 +3,9 @@ const MATCH_TYPE = {
   EQUALS: 'eq',
 }
 
-module.exports = { MATCH_TYPE }
+const SORT_ORDER = {
+  ASC: 'asc',
+  DESC: 'desc',
+}
+
+module.exports = { MATCH_TYPE, SORT_ORDER }

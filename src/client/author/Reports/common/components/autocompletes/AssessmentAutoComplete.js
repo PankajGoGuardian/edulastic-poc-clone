@@ -6,7 +6,7 @@ import { debounce } from 'lodash'
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
-import { themeColorBlue } from '@edulastic/colors'
+import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
@@ -24,11 +24,11 @@ import {
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
-const DEFAULT_BLACKLIST = []
 const AssessmentAutoComplete = ({
+  statePrefix = '',
   user,
   districtId,
-  testList: _testList,
+  testList,
   loading,
   loadTestList,
   firstLoad,
@@ -40,33 +40,16 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
-  autoSelectFirstItem = false,
+  autoSelectFirstItem = true,
   institutionIds,
-  blackList = DEFAULT_BLACKLIST,
-  statePrefix = '',
-  waitForInitialLoad = false,
 }) => {
   const [searchTerms, setSearchTerms] = useState(DEFAULT_SEARCH_TERMS)
   const [fieldValue, setFieldValue] = useState('')
-  const testList = useMemo(
-    () =>
-      Array.isArray(_testList)
-        ? _testList.filter((t) => !blackList.includes(t._id))
-        : _testList,
-    [_testList, blackList.join(',')]
-  )
-  const [initialLoadCompleted, setInitialLoadCompleted] = useState(undefined)
+
   const selectedTest = testList.find((t) => t._id === selectedTestId) || {}
 
-  useEffect(() => {
-    if (loading && typeof initialLoadCompleted === 'undefined')
-      setInitialLoadCompleted(false)
-    if (!loading && typeof initialLoadCompleted !== 'undefined')
-      setInitialLoadCompleted(true)
-  }, [loading, initialLoadCompleted])
   // build search query
   const query = useMemo(() => {
-    if (waitForInitialLoad && !initialLoadCompleted) return null
     const { role } = user
     const q = {
       limit: 35,
@@ -113,7 +96,6 @@ const AssessmentAutoComplete = ({
     testTypes,
     tagIds,
     institutionIds,
-    initialLoadCompleted,
   ])
 
   // handle autocomplete actions
@@ -125,6 +107,10 @@ const AssessmentAutoComplete = ({
     setSearchTerms((s) => ({ ...s, text: _title || _text }))
     setFieldValue(_title || _text)
   }, [])
+  const onBlur = (text) => {
+    setSearchTerms({ ...searchTerms, selectedText: text })
+    setFieldValue(text)
+  }
   const onSelect = (key) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
@@ -154,12 +140,18 @@ const AssessmentAutoComplete = ({
     }
   }, [selectedTestId, showApply])
   useEffect(() => {
-    if (!searchTerms.selectedText && testList.length) {
-      autoSelectFirstItem ? onSelect() : onSelect(testList[0]._id)
+    if (!searchTerms.selectedText && testList.length && autoSelectFirstItem) {
+      onSelect(testList[0]._id)
+    } else if (
+      !searchTerms.selectedText &&
+      !autoSelectFirstItem &&
+      selectedTest._id
+    ) {
+      onSelect(selectedTest._id)
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
-  }, [testList, autoSelectFirstItem])
+  }, [testList])
   useEffect(() => {
     if (searchTerms.selectedText) {
       setSearchTerms({ ...DEFAULT_SEARCH_TERMS })
@@ -167,7 +159,6 @@ const AssessmentAutoComplete = ({
     }
   }, [termId, grades, subjects, testTypes, tagIds])
   useEffect(() => {
-    if (!query) return
     if (
       (!searchTerms.text && !searchTerms.selectedText) ||
       searchTerms.text !== searchTerms.selectedText
@@ -207,8 +198,14 @@ const AssessmentAutoComplete = ({
           dataSource={dropdownData}
           onSelect={onSelect}
           onChange={onChange}
+          onBlur={onBlur}
           allowClear={!loading && searchTerms.selectedText}
-          clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          clearIcon={
+            <Icon
+              type="close"
+              style={{ color: themeColor, marginTop: '4px' }}
+            />
+          }
           notFoundContent={
             <Empty
               className="ant-empty-small"

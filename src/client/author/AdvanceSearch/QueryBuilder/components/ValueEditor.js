@@ -9,6 +9,7 @@ import {
   setAdvancedSearchCoursesAction,
   setAdvancedSearchSchoolsAction,
   setAdvancedSearchTagsAction,
+  storeSelectedDataAction,
 } from '../../ducks'
 import { StyledSelect } from './styled-components'
 import { fieldKey } from '../config/constants'
@@ -28,6 +29,7 @@ const ValueEditor = (props) => {
     loadClassListData,
     loadCourseListData,
     loadTagListData,
+    storeSelectedData,
   } = props
 
   const enableSearchFields = {
@@ -44,6 +46,15 @@ const ValueEditor = (props) => {
     }
   }
 
+  const handleChange = (selectedValues) => {
+    handleOnChange(selectedValues)
+    storeSelectedData({
+      key: enableSearchFields[field].key,
+      valueFromField: selectedValues,
+      values,
+    })
+  }
+
   const searchHandler = debounce(handleSearch, debounceWait)
 
   if (operator === 'null' || operator === 'notNull') {
@@ -53,6 +64,8 @@ const ValueEditor = (props) => {
 
   const { key } = enableSearchFields[field] || {}
   const isLoading = advancedSearchDetails[key]?.isLoading
+  const fetchedValues = advancedSearchDetails[key]?.data
+
   return (
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
       <EduThen>
@@ -61,14 +74,18 @@ const ValueEditor = (props) => {
           mode="multiple"
           style={{ width: '200px' }}
           autoClearSearchValue={false}
-          onChange={handleOnChange}
+          onChange={handleChange}
           onFocus={() => handleSearch('')}
           placeholder={`Select ${label}`}
           onSearch={searchHandler}
           value={value || undefined}
           showSearch
           tagsEllipsis
-          filterOption={null}
+          filterOption={(input, option) =>
+            fetchedValues?.some(
+              (fetchedValue) => fetchedValue.value === option.props.value
+            )
+          }
           loading={isLoading}
           notFoundContent={
             !isLoading && (
@@ -127,5 +144,6 @@ export default connect(
     loadClassListData: setAdvancedSearchClassesAction,
     loadCourseListData: setAdvancedSearchCoursesAction,
     loadTagListData: setAdvancedSearchTagsAction,
+    storeSelectedData: storeSelectedDataAction,
   }
 )(ValueEditor)

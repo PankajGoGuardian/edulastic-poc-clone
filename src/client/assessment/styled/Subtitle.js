@@ -6,7 +6,6 @@ import {
   themeColor,
   extraDesktopWidthMax,
   white,
-  greyThemeDark4,
 } from '@edulastic/colors'
 import { IconQuestion } from '@edulastic/icons'
 import { FlexContainer, EduIf } from '@edulastic/common'
@@ -63,22 +62,12 @@ export const QuestionIcon = ({ id = '', customStyle = {} }) => (
   </EduIf>
 )
 
-const StyledScoringMessage = styled.p`
-  font-size: 0.8rem;
-  color: ${greyThemeDark4};
-  font-weight: bold;
-  margin-top: 2px;
-  margin-left: 10px;
-`
-
 export const Subtitle = ({
   id,
   children,
   titleStyle = {},
   textStyles = {},
   showIcon = true,
-  showScoringMessage = false,
-  scoringMessage = '',
   margin,
 }) => (
   <WidgetTitle
@@ -92,9 +81,6 @@ export const Subtitle = ({
     </SubtitleText>
     <EduIf condition={!!showIcon}>
       <QuestionIcon id={id} />
-    </EduIf>
-    <EduIf condition={!!showScoringMessage}>
-      <StyledScoringMessage>{scoringMessage}</StyledScoringMessage>
     </EduIf>
   </WidgetTitle>
 )

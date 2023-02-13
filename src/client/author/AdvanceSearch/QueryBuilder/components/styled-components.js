@@ -1,5 +1,6 @@
 import Styled from 'styled-components'
-import { Select, Button } from 'antd'
+import { Select } from 'antd'
+import { EduButton } from '@edulastic/common'
 
 export const ModalBody = Styled.div`
   .ant-select-selection {
@@ -31,7 +32,7 @@ export const StyledSelect = Styled(Select)`
   }
 `
 
-export const StyledButton = Styled(Button)`
+export const StyledButton = Styled(EduButton)`
   border: 1px solid #3F85E5;
   border-radius: 4px;
   text-transform: uppercase;

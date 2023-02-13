@@ -262,7 +262,11 @@ const MultipleAssessmentReportContainer = (props) => {
           setShowModal={setSharingState}
         />
       )}
-      <SubHeader breadcrumbData={breadcrumbData} isCliUser={isCliUser}>
+      <SubHeader
+        breadcrumbData={breadcrumbData}
+        isCliUser={isCliUser}
+        alignment="baseline"
+      >
         <MultipleAssessmentReportFilters
           isPrinting={isPrinting}
           reportId={reportId}

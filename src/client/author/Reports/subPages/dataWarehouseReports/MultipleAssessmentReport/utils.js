@@ -266,11 +266,15 @@ const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
 }
 
 const findTestWithAverageBand = (tests) => {
+  const NO_RANK = 0
   const weightedAverageRank =
-    sum(tests.map((t) => get(t, 'band.rank', 0) * t.totalStudentCount || 0)) /
-    sumBy(tests, 'totalStudentCount')
-
-  const item = minBy(tests, (el) => get(el, 'band.rank') - weightedAverageRank)
+    sum(
+      tests.map((t) => get(t, 'band.rank', NO_RANK) * t.totalStudentCount || 0)
+    ) / sumBy(tests, 'totalStudentCount')
+  const item = minBy(
+    tests,
+    (el) => get(el, 'band.rank', NO_RANK) - weightedAverageRank
+  )
   return item
 }
 

@@ -1,6 +1,6 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap, map } from 'lodash'
+import { flatMap, isEmpty, map } from 'lodash'
 import { downloadCSV } from '../../../../../common/util'
 import { compareByKeys } from '../../utils'
 import HorizontalStackedBarChart from './HorizontalStackedBarChart'
@@ -13,7 +13,7 @@ const genericColumnsForTable = [
     title: 'compareBy',
     key: 'compareBy',
     dataIndex: 'compareByColumnTitle',
-    width: 188,
+    width: 150,
     align: 'left',
   },
   {
@@ -127,11 +127,12 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Pre Vs Post Test Comparison.csv`, data)
 
 export const getTableColumns = (
-  compareBy,
+  selectedCompareBy,
   analyseBy,
   selectedPerformanceBand,
   dataSource
 ) => {
+  const compareBy = selectedCompareBy.key
   const tableColumnsData =
     compareBy === compareByKeys.STUDENT
       ? compareByStudentColumns
@@ -142,9 +143,12 @@ export const getTableColumns = (
     const compareByColumnIdx = _columns.findIndex(
       (col) => col.key === 'compareBy'
     )
-    _columns[compareByColumnIdx].title = compareBy
-    _columns[compareByColumnIdx].render = (_, record) =>
-      record.compareByColumnTitle
+    _columns[compareByColumnIdx].title = selectedCompareBy.title
+    _columns[compareByColumnIdx].render = (_, record) => {
+      const value = record.compareByColumnTitle
+      if (isEmpty(value)) return '-'
+      return value
+    }
 
     // Test names column
     const testColumnIdx = _columns.findIndex((col) => col.key === 'test')

@@ -12,6 +12,21 @@ import {
 import { StyledStimulus } from './styledComponents/AudioRecorder'
 import { shouldUploadToS3AndUseS3Url, hideRecorder } from './utils'
 import { getUserRole, getUserId } from '../../../author/src/selectors/user'
+import {
+  getAudioRecordingStateSelector,
+  getAudioUploadStatusSelector,
+  getStopAudioRecordingAndUploadForQidSelector,
+} from '../../selectors/media'
+import {
+  getTestItemIdFromPropsSelector,
+  getQuestionIdFromPropsSelector,
+} from '../../selectors/answers'
+import {
+  setMediaRecordingStateAction,
+  setMediaUploadStatusAction,
+  setStopAudioRecordingAndUploadForQidAction,
+  audioUploadCompleteForQidAction,
+} from '../../actions/media'
 import { StyledPaperWrapper } from '../../styled/Widget'
 import Instructions from '../../components/Instructions'
 import AudioResponseContainer from './components/AudioResponseContainer'
@@ -31,6 +46,15 @@ const AudioResponsePreview = ({
   userId,
   isTestPreviewModalVisible,
   isTestDemoPlayer,
+  recordingState,
+  audioUploadStatus,
+  stopRecordingForQid,
+  setRecordingState,
+  setAudioUploadStatus,
+  setStopAudioRecordingAndUploadForQid,
+  recordingAndUploadCompleteForQid,
+  _questionId: questionId,
+  _testItemId: itemId,
 }) => {
   const useS3AudioUrl = useMemo(() => {
     return shouldUploadToS3AndUseS3Url({
@@ -58,6 +82,15 @@ const AudioResponsePreview = ({
     userAnswer,
     hideAudioRecorder,
     userId,
+    recordingState,
+    audioUploadStatus,
+    stopRecordingForQid,
+    setRecordingState,
+    setAudioUploadStatus,
+    setStopAudioRecordingAndUploadForQid,
+    recordingAndUploadCompleteForQid,
+    questionId,
+    itemId,
   }
 
   return (
@@ -112,6 +145,15 @@ AudioResponsePreview.propTypes = {
   userId: PropTypes.string.isRequired,
   isTestPreviewModalVisible: PropTypes.bool,
   isTestDemoPlayer: PropTypes.bool,
+  recordingState: PropTypes.string.isRequired,
+  audioUploadStatus: PropTypes.string.isRequired,
+  stopRecordingForQid: PropTypes.string.isRequired,
+  setRecordingState: PropTypes.func.isRequired,
+  setAudioUploadStatus: PropTypes.func.isRequired,
+  setStopAudioRecordingAndUploadForQid: PropTypes.func.isRequired,
+  recordingAndUploadCompleteForQid: PropTypes.func.isRequired,
+  questionId: PropTypes.string.isRequired,
+  itemId: PropTypes.string,
 }
 
 AudioResponsePreview.defaultProps = {
@@ -123,16 +165,27 @@ AudioResponsePreview.defaultProps = {
   smallSize: false,
   isTestPreviewModalVisible: false,
   isTestDemoPlayer: false,
+  itemId: 'new',
 }
 
 const enhance = compose(
   withNamespaces('assessment'),
   connect(
-    (state) => ({
+    (state, props) => ({
       userRole: getUserRole(state),
       userId: getUserId(state),
+      recordingState: getAudioRecordingStateSelector(state, props),
+      audioUploadStatus: getAudioUploadStatusSelector(state, props),
+      stopRecordingForQid: getStopAudioRecordingAndUploadForQidSelector(state),
+      _testItemId: getTestItemIdFromPropsSelector(state, props),
+      _questionId: getQuestionIdFromPropsSelector(state, props),
     }),
-    null
+    {
+      setRecordingState: setMediaRecordingStateAction,
+      setAudioUploadStatus: setMediaUploadStatusAction,
+      setStopAudioRecordingAndUploadForQid: setStopAudioRecordingAndUploadForQidAction,
+      recordingAndUploadCompleteForQid: audioUploadCompleteForQidAction,
+    }
   )
 )
 

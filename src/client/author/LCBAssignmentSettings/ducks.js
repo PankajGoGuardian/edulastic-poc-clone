@@ -193,7 +193,7 @@ function* loadAssignmentSaga({ payload }) {
       answerOnPaper,
       maxAttempts,
       maxAnswerChecks,
-      calcTypes,
+      calcTypes: classCalcTypes,
       passwordPolicy,
       passwordExpireIn,
       assignmentPassword,
@@ -222,8 +222,8 @@ function* loadAssignmentSaga({ payload }) {
     if (maxAnswerChecks !== undefined) {
       data.maxAnswerChecks = maxAnswerChecks
     }
-    if (calcTypes) {
-      data.calcTypes = calcTypes
+    if (Array.isArray(classCalcTypes) && classCalcTypes.length) {
+      data.calcTypes = classCalcTypes
     }
     if (typeof penaltyOnUsingHints === 'number') {
       data.penaltyOnUsingHints = penaltyOnUsingHints

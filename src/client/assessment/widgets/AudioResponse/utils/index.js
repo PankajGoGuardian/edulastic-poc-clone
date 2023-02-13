@@ -1,13 +1,13 @@
 import { roleuser } from '@edulastic/constants'
 import { captureSentryException } from '@edulastic/common'
-import { START } from '../constants'
+import { START, maxAudioDurationLimit } from '../constants'
 
 export const getAudioRecordingErrorMessage = (error, errorName, state) => {
   let errorMessage = ''
   switch (errorName) {
     case 'NotAllowedError':
       errorMessage =
-        'Microphone access has not been granted to your browser. Allow mic access to proceed!'
+        'Edulastic needs access to your microphone so that you can record responses.'
       break
     default:
       errorMessage = `An error occured while ${
@@ -34,4 +34,8 @@ export const shouldUploadToS3AndUseS3Url = ({
 
 export const hideRecorder = ({ inLCB, isStudentReport, isLCBView }) => {
   return [inLCB, isStudentReport, isLCBView].some((val) => val)
+}
+
+export const IsValidNumber = (duration) => {
+  return typeof duration === 'number' && duration <= maxAudioDurationLimit
 }

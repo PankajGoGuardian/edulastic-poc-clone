@@ -8,8 +8,9 @@ import TableFilters from '../filters/TableFilters'
 
 import { StyledCard, DashedLine } from '../../../../../common/styled'
 import { StyledTable, StyledRow } from '../../common/styledComponents'
-import { compareByKeys } from '../../utils'
 import { getTableColumns, onCsvConvert } from './utils'
+import IncompleteTestsMessage from '../../../../../common/components/IncompleteTestsMessage'
+import { addStudentToGroupFeatureEnabled } from '../../utils'
 
 const PreVsPostTable = ({
   dataSource,
@@ -21,14 +22,23 @@ const PreVsPostTable = ({
   handleAddToGroupClick,
   selectedPerformanceBand,
   isCsvDownloading,
+  isSharedReport = false,
+  hasIncompleteTests,
 }) => {
   // get table columns
   const tableColumns = getTableColumns(
-    selectedTableFilters.compareBy.key,
+    selectedTableFilters.compareBy,
     selectedTableFilters.analyseBy.key,
     selectedPerformanceBand,
     dataSource
   )
+
+  const _rowSelection = addStudentToGroupFeatureEnabled(
+    selectedTableFilters.compareBy.key,
+    isSharedReport
+  )
+    ? rowSelection
+    : null
   return (
     <StyledCard>
       <StyledRow type="flex" justify="space-between" margin="20px">
@@ -42,22 +52,22 @@ const PreVsPostTable = ({
           analyseByOptions={analyseByOptions}
           handleAddToGroupClick={handleAddToGroupClick}
           selectedTableFilters={selectedTableFilters}
+          isSharedReport={isSharedReport}
         />
       </StyledRow>
       <CsvTable
         dataSource={dataSource}
         columns={tableColumns}
-        rowSelection={
-          selectedTableFilters.compareBy.key === compareByKeys.STUDENT
-            ? rowSelection
-            : null
-        }
+        rowSelection={_rowSelection}
         tableToRender={StyledTable}
         pagination={{ hideOnSinglePage: true, pageSize: 25 }}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
         scroll={{ x: '100%' }}
       />
+      <StyledRow type="flex" align="middle">
+        <IncompleteTestsMessage hasIncompleteTests={hasIncompleteTests} />
+      </StyledRow>
     </StyledCard>
   )
 }

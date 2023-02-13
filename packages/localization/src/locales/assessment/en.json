@@ -1241,13 +1241,17 @@
       "files": "Files"
     },
     "audioResponse": {
-      "scoringMessage": "[Audio responses can only be manually graded]",
-      "recordAnswer": "Record your answer",
+      "recordAnswer": "Click to record your response",
       "recording": "Recording",
       "uploading": "Uploading",
       "NoAudioResponseFound": "No Audio Response Found",
       "loadingAudio": "Loading audio",
-      "rerecord": "Rerecord"
+      "rerecord": "Rerecord",
+      "clickToStopRecording": "Click to stop recording",
+      "recorded": "Recorded",
+      "maxResponseDurationLabel": "Maximum Response Duration",
+      "maxResponseDurationAllowed": "Maximum response duration allowed",
+      "minutes": "minutes"
     },
     "pictograph": {
       "composeQuestion": "Question",

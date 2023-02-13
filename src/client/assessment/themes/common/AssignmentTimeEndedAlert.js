@@ -7,10 +7,12 @@ import Modal from 'react-responsive-modal'
 import PropTypes from 'prop-types'
 import { Button } from 'antd'
 import { AssessmentPlayerContext } from '@edulastic/common'
+import { homeStudentGradesPath } from '../../constants/assessmentPlayer'
 import {
   finishTestAcitivityAction,
   resetStudentAttemptAction,
   setIsTestPreviewVisibleAction,
+  closeTestTimeoutAlertModalAction,
 } from '../../actions/test'
 
 const AssignmentTimeEndedAlert = ({
@@ -18,11 +20,11 @@ const AssignmentTimeEndedAlert = ({
   autoSubmitTest,
   theme,
   groupId,
-  history,
   utaId,
   isAuthorPreview,
   setIsTestPreviewVisible,
   resetStudentAttempt,
+  closeTestTimeoutAlertModal,
 }) => {
   const { currentItem } = useContext(AssessmentPlayerContext)
 
@@ -54,7 +56,7 @@ const AssignmentTimeEndedAlert = ({
 
   const handleClose = () => {
     if (!isAuthorPreview) {
-      history.push('/home/grades')
+      closeTestTimeoutAlertModal({ studentGradesUrl: homeStudentGradesPath })
     }
     if (isAuthorPreview) {
       setIsTestPreviewVisible(false)
@@ -98,6 +100,7 @@ AssignmentTimeEndedAlert.propTypes = {
   autoSubmitTest: PropTypes.func.isRequired,
   groupId: PropTypes.string.isRequired,
   utaId: PropTypes.string.isRequired,
+  closeTestTimeoutAlertModal: PropTypes.func.isRequired,
 }
 
 const enhance = compose(
@@ -111,6 +114,7 @@ const enhance = compose(
       autoSubmitTest: finishTestAcitivityAction,
       setIsTestPreviewVisible: setIsTestPreviewVisibleAction,
       resetStudentAttempt: resetStudentAttemptAction,
+      closeTestTimeoutAlertModal: closeTestTimeoutAlertModalAction,
     }
   )
 )

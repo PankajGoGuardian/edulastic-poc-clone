@@ -389,7 +389,7 @@ class Container extends Component {
                   </Menu.Item>
                   <Menu.Item key="edit">
                     <IconWrite />
-                    Written & Multimedia
+                    Writing
                   </Menu.Item>
                   {!multipartItem && (
                     <Menu.Item key="read">

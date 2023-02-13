@@ -1,10 +1,12 @@
 import React from 'react'
+import PropTypes from 'prop-types'
+import { IconRedInfo } from '@edulastic/icons'
 import { StyledModal } from '../styledComponents/AudioRecorder'
 
 const ErrorPopup = ({ errorMessage, isOpen, setErrorData }) => {
   return (
     <StyledModal
-      style={{ top: 90 }}
+      style={{ top: 5 }}
       open={isOpen}
       footer={null}
       visible={isOpen}
@@ -19,11 +21,16 @@ const ErrorPopup = ({ errorMessage, isOpen, setErrorData }) => {
       }
     >
       <p>{errorMessage}</p>
+      <IconRedInfo />
     </StyledModal>
   )
 }
 
-ErrorPopup.propTypes = {}
+ErrorPopup.propTypes = {
+  errorMessage: PropTypes.string.isRequired,
+  isOpen: PropTypes.bool.isRequired,
+  setErrorData: PropTypes.func.isRequired,
+}
 
 ErrorPopup.defaultProps = {}
 

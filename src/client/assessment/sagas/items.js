@@ -1,4 +1,4 @@
-import { takeLatest, call, put, all, select } from 'redux-saga/effects'
+import { takeLatest, call, put, all, select, take } from 'redux-saga/effects'
 import { push } from 'connected-react-router'
 import {
   uploadToS3,
@@ -15,6 +15,7 @@ import {
 } from '@edulastic/api'
 import { convertStringToFile } from '@edulastic/common/src/helpers'
 import { assignmentPolicyOptions, aws } from '@edulastic/constants'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 
 import { getCurrentGroupWithAllClasses } from '../../student/Login/ducks'
 import {
@@ -30,13 +31,22 @@ import {
   CLEAR_HINT_USAGE,
   SET_SAVE_USER_RESPONSE,
   SAVE_TESTLET_USER_RESPONSE,
+  AUDIO_UPLOAD_COMPLETE_FOR_QID,
 } from '../constants/actions'
+import {
+  AUDIO_UPLOAD_ERROR,
+  RECORDING_ACTIVE,
+  AUDIO_UPLOAD_ACTIVE,
+} from '../widgets/AudioResponse/constants'
+import { setStopAudioRecordingAndUploadForQidAction } from '../actions/media'
 import { getPreviousAnswersListSelector } from '../selectors/answers'
 import { redirectPolicySelector } from '../selectors/test'
+import { getAudioRecordingByItemIdAndQidSelector } from '../selectors/media'
 import { getServerTs } from '../../student/utils'
-import { Fscreen } from '../utils/helpers'
+import { Fscreen, getItemIdQuestionIdKey } from '../utils/helpers'
 import { utaStartTimeUpdateRequired } from '../../student/sharedDucks/AssignmentModule/ducks'
 import { scratchpadDomRectSelector } from '../../common/components/Scratchpad/duck'
+import { getTestItemQuestions } from '../../student/sharedDucks/TestItem'
 
 const {
   POLICY_CLOSE_MANUALLY_BY_ADMIN,
@@ -84,6 +94,40 @@ export const getQuestionIds = (item) => {
     })
 
   return questions
+}
+
+const getInProgressAudioRecordingOrUploadData = (
+  currentItem,
+  audioRecordingStateByItemIdAndQid,
+  questionIds
+) => {
+  const itemId = currentItem._id
+  const testItemQuestions = getTestItemQuestions(currentItem)
+  const hasAudioResponseQuestionType = testItemQuestions.some(
+    (question) => question.type === AUDIO_RESPONSE
+  )
+  let stopRecordingForQid = null
+  let isUploadInProgress = false
+
+  if (hasAudioResponseQuestionType) {
+    questionIds.forEach((questionId) => {
+      const itemIdQidKey = getItemIdQuestionIdKey({ questionId, itemId })
+      if (
+        audioRecordingStateByItemIdAndQid?.[itemIdQidKey]
+          ?.audioRecordingState === RECORDING_ACTIVE
+      ) {
+        stopRecordingForQid = questionId
+      }
+      if (
+        audioRecordingStateByItemIdAndQid?.[itemIdQidKey]?.audioUploadStatus ===
+        AUDIO_UPLOAD_ACTIVE
+      ) {
+        isUploadInProgress = true
+      }
+    })
+  }
+
+  return { stopRecordingForQid, isUploadInProgress }
 }
 
 export function getFilterAndUpdateForAttachments({
@@ -201,6 +245,38 @@ export function* saveUserResponse({ payload }) {
       return yield put(push('/home/assignments'))
     }
     const items = yield select((state) => state.test && state.test.items)
+    const currentItem = items.length && items[itemIndex]
+    const questions = getQuestionIds(currentItem)
+    const audioRecordingStateByItemIdAndQid = yield select(
+      getAudioRecordingByItemIdAndQidSelector
+    )
+
+    // upload audio recording that is in progress
+    const {
+      stopRecordingForQid,
+      isUploadInProgress,
+    } = getInProgressAudioRecordingOrUploadData(
+      currentItem,
+      audioRecordingStateByItemIdAndQid,
+      questions
+    )
+
+    if (stopRecordingForQid || isUploadInProgress) {
+      if (stopRecordingForQid) {
+        yield put(
+          setStopAudioRecordingAndUploadForQidAction({
+            questionId: stopRecordingForQid,
+          })
+        )
+      }
+      const { payload: audioUploadStatus } = yield take(
+        AUDIO_UPLOAD_COMPLETE_FOR_QID
+      )
+      if (audioUploadStatus === AUDIO_UPLOAD_ERROR) {
+        return
+      }
+    }
+
     const answers = yield select((state) => state.answers)
     // prevent autSave if response is empty for every question in current item
     if (
@@ -219,7 +295,7 @@ export function* saveUserResponse({ payload }) {
     } = yield select((state) => state.test)
     const shuffledOptions = yield select((state) => state.shuffledOptions)
     // passages: state.test.passages
-    const currentItem = items.length && items[itemIndex]
+
     if (!userTestActivityId || !currentItem) {
       return
     }
@@ -229,7 +305,6 @@ export function* saveUserResponse({ payload }) {
     }
     const passageId = passage._id
 
-    const questions = getQuestionIds(currentItem)
     const bookmarked = !!(yield select(
       (state) => state.assessmentBookmarks[currentItem._id]
     ))

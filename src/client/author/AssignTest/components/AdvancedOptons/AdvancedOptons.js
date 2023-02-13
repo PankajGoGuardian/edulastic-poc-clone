@@ -13,7 +13,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { OkButton } from '../../../../common/styled'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
-import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
+import FeaturesSwitch, {
+  isFeatureAccessible,
+} from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import TagFilter from '../../../src/components/common/TagFilter'
 import {
@@ -233,13 +235,18 @@ class AdvancedOptons extends React.Component {
                   the left can be used to filter the list of classes.
                 </p>
                 <div>
-                  <OkButton
-                    onClick={() => {
-                      setShowAdvanceSearchModal(true)
-                    }}
+                  <FeaturesSwitch
+                    inputFeatures="advanceSearchEnabled"
+                    actionOnInaccessible="hidden"
                   >
-                    Advanced Search
-                  </OkButton>
+                    <OkButton
+                      onClick={() => {
+                        setShowAdvanceSearchModal(true)
+                      }}
+                    >
+                      Advanced Search
+                    </OkButton>
+                  </FeaturesSwitch>
                 </div>
               </ClassSelectorLabel>
               <ClassList

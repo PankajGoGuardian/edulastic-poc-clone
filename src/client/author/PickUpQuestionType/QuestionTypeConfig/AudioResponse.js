@@ -1,4 +1,5 @@
 import { questionType, questionTitle } from '@edulastic/constants'
+import uuid from 'uuid/v4'
 import WSAudioResponse from '../../src/assets/written-spoken/audio-response.svg'
 
 export const audioResponseConfig = {
@@ -13,6 +14,6 @@ export const audioResponseConfig = {
       validResponse: { score: 1 },
       maxScore: 1,
     },
-    instructorStimulus: '',
+    hints: [{ value: uuid(), label: '' }],
   },
 }

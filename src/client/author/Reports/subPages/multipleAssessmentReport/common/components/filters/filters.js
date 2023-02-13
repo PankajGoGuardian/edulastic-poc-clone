@@ -56,9 +56,21 @@ import staticDropDownData from '../../static/staticDropDownData.json'
 import { fetchUpdateTagsDataAction } from '../../../../../ducks'
 import { getArrayOfAllTestTypes } from '../../../../../../../common/utils/testTypeUtils'
 import AssessmentAutoComplete from '../../../../../common/components/autocompletes/AssessmentAutoComplete'
+import { getReportsMARSettings } from '../../../ducks'
+import { getUpdatedFiltersAndTags } from './utils'
 
 const ddFilterTypes = Object.keys(staticDropDownData.initialDdFilters)
 const availableAssessmentType = getArrayOfAllTestTypes()
+
+const preTestFilterKey = 'preTestId'
+const postTestFilterKey = 'postTestId'
+const profileFilterKey = 'profileId'
+const testIdsFilterKey = 'testIds'
+const clearTestFiltersList = [
+  preTestFilterKey,
+  postTestFilterKey,
+  profileFilterKey,
+]
 
 const MultipleAssessmentReportFilters = ({
   loc,
@@ -66,6 +78,7 @@ const MultipleAssessmentReportFilters = ({
   tagsData,
   loading,
   MARFilterData,
+  settings: _MARSettings,
   filters,
   tempDdFilter,
   tempTagsData,
@@ -97,14 +110,13 @@ const MultipleAssessmentReportFilters = ({
     staticDropDownData.filterSections.TEST_FILTERS.key
   )
   const assessmentTypesRef = useRef()
-
-  const tagTypes = staticDropDownData.tagTypes.filter(
-    (t) =>
-      loc === reportNavType.PRE_VS_POST &&
-      !['testIds'].includes(t.key) &&
-      (performanceBandRequired || t.key !== 'profileId') &&
-      (demographicsRequired || !ddFilterTypes.includes(t.key))
-  )
+  const isPrePostReport = loc === reportNavType.PRE_VS_POST
+  const tagTypes = staticDropDownData.tagTypes.filter((t) => {
+    if (isPrePostReport && t.key === testIdsFilterKey) return false
+    if (!performanceBandRequired && t.key === profileFilterKey) return false
+    if (!demographicsRequired && ddFilterTypes.includes(t.key)) return false
+    return true
+  })
 
   const performanceBandProfiles = get(MARFilterData, 'data.result.bandInfo', [])
   const performanceBandList = useMemo(
@@ -163,6 +175,34 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(staticDropDownData.filterSections.TEST_FILTERS.key)
     }
   }, [loc, showFilter])
+
+  useEffect(() => {
+    const [_filters, _tagsData] = getUpdatedFiltersAndTags(
+      _MARSettings.requestFilters,
+      tagsData,
+      isPrePostReport
+    )
+    const [_tempFilters, _tempTagsData] = getUpdatedFiltersAndTags(
+      filters,
+      tempTagsData,
+      isPrePostReport
+    )
+    setTempTagsData({
+      ..._tempTagsData,
+    })
+    setFilters(_tempFilters)
+    _onGoClick({
+      filters: {
+        ..._MARSettings.requestFilters,
+        testIds: _filters.testIds,
+        preTestId: _filters.preTestId,
+        postTestId: _filters.postTestId,
+      },
+      tagsData: _tagsData,
+    })
+    setShowApply(showApply) // as _onGoClick may change it.
+  }, [isPrePostReport])
+
   useEffect(() => {
     if (MARFilterData !== prevMARFilterData && !isEmpty(MARFilterData)) {
       if (reportId) {
@@ -212,8 +252,8 @@ const MultipleAssessmentReportFilters = ({
           tagIds: search.tagIds || '',
           assessmentTypes: search.assessmentTypes || '',
           testIds: search.testIds || '',
-          preTestId: search.preTestId,
-          postTestId: search.postTestId,
+          preTestId: search.preTestId || '',
+          postTestId: search.postTestId || '',
           schoolIds: search.schoolIds || '',
           teacherIds: search.teacherIds || '',
           subjects: urlSubjects.map((item) => item.key).join(',') || '',
@@ -299,7 +339,13 @@ const MultipleAssessmentReportFilters = ({
     if (!multiple && (!selected.key || selected.key === 'All')) {
       delete _tempTagsData[keyName]
     }
+
     const _filters = { ...filters }
+    const clearTestFilters = !clearTestFiltersList.includes(keyName)
+    if (clearTestFilters) {
+      _filters.preTestId = ''
+      _filters.postTestId = ''
+    }
     const _selected = multiple
       ? selected.map((o) => o.key).join(',')
       : selected.key
@@ -318,12 +364,17 @@ const MultipleAssessmentReportFilters = ({
 
   const onAssessmentSelect = (selected, keyName) => {
     const _tempTagsData = { ...tempTagsData, [keyName]: selected }
-    const _filters = { ...filters }
-    resetStudentFilters(_tempTagsData, _filters, keyName, selected.key)
+    const _filters = { ...filters, [keyName]: selected.key || '' }
+    if (!_filters[keyName]) {
+      delete _tempTagsData[keyName]
+    }
+    // NOTE: this fixes Apply button shown intermittently on page refresh
+    // However, unlike other autocompletes, Apply button will not be shown if same test is selected from dropdown
+    if (_filters[keyName] !== filters[keyName]) {
+      _filters.showApply = firstLoad ? _filters.showApply : true
+      setFilters(_filters)
+    }
     setTempTagsData(_tempTagsData)
-    // update filters
-    _filters[keyName] = selected.key
-    setFilters({ ..._filters, showApply: true })
   }
 
   const handleCloseTag = (type, { key }) => {
@@ -368,10 +419,6 @@ const MultipleAssessmentReportFilters = ({
       setActiveTabKey(tabKey)
     }
   }
-
-  // only required for pre vs post report
-  const waitForPreTestInitialLoad = !!search.preTestId
-  const waitForPostTestInitialLoad = !!search.postTestId
 
   return (
     <Row type="flex" gutter={[0, 5]} style={{ width: '100%' }}>
@@ -504,7 +551,7 @@ const MultipleAssessmentReportFilters = ({
                         />
                       </Col>
 
-                      <EduIf condition={!(loc === reportNavType.PRE_VS_POST)}>
+                      <EduIf condition={!isPrePostReport}>
                         <Col span={18}>
                           <AssessmentsAutoComplete
                             dataCy="tests"
@@ -517,7 +564,7 @@ const MultipleAssessmentReportFilters = ({
                               filters.testIds ? filters.testIds.split(',') : []
                             }
                             selectCB={(e) =>
-                              updateFilterDropdownCB(e, 'testIds', true)
+                              updateFilterDropdownCB(e, testIdsFilterKey, true)
                             }
                           />
                         </Col>
@@ -684,7 +731,7 @@ const MultipleAssessmentReportFilters = ({
                           <ControlDropDown
                             by={{ key: filters.profileId }}
                             selectCB={(e, selected) =>
-                              updateFilterDropdownCB(selected, 'profileId')
+                              updateFilterDropdownCB(selected, profileFilterKey)
                             }
                             data={performanceBandList}
                             prefix="Performance Band"
@@ -742,7 +789,7 @@ const MultipleAssessmentReportFilters = ({
           </ReportFiltersWrapper>
         </ReportFiltersContainer>
       </Col>
-      <EduIf condition={loc === reportNavType.PRE_VS_POST}>
+      <EduIf condition={isPrePostReport}>
         <Col span={24}>
           <SecondaryFilterRow
             hidden={!!reportId}
@@ -766,13 +813,11 @@ const MultipleAssessmentReportFilters = ({
                 tagIds={filters.tagIds}
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
-                selectedTestId={filters.preTestId || ''}
-                selectCB={(e) => onAssessmentSelect(e, 'preTestId')}
+                selectedTestId={filters.preTestId}
+                selectCB={(e) => onAssessmentSelect(e, preTestFilterKey)}
                 showApply={filters.showApply}
-                blackList={[filters.postTestId]}
-                autoSelectFirstItem
+                autoSelectFirstItem={false}
                 statePrefix="pre"
-                waitForInitialLoad={waitForPreTestInitialLoad}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -792,13 +837,11 @@ const MultipleAssessmentReportFilters = ({
                 tagIds={filters.tagIds}
                 subjects={filters.testSubjects}
                 testTypes={filters.assessmentTypes}
-                selectedTestId={filters.postTestId || ''}
-                selectCB={(e) => onAssessmentSelect(e, 'postTestId')}
+                selectedTestId={filters.postTestId}
+                selectCB={(e) => onAssessmentSelect(e, postTestFilterKey)}
                 showApply={filters.showApply}
-                autoSelectFirstItem
-                blackList={[filters.preTestId]}
+                autoSelectFirstItem={false}
                 statePrefix="post"
-                waitForInitialLoad={waitForPostTestInitialLoad}
               />
             </StyledDropDownContainer>
             <StyledDropDownContainer
@@ -814,7 +857,12 @@ const MultipleAssessmentReportFilters = ({
               <ControlDropDown
                 by={{ key: filters.profileId }}
                 selectCB={(e, selected) =>
-                  updateFilterDropdownCB(selected, 'profileId', false, true)
+                  updateFilterDropdownCB(
+                    selected,
+                    profileFilterKey,
+                    false,
+                    true
+                  )
                 }
                 data={performanceBandList}
                 prefix="Performance Band"
@@ -843,6 +891,7 @@ const enhance = compose(
     (state) => ({
       loading: getReportsMARFilterLoadingState(state),
       MARFilterData: getReportsMARFilterData(state),
+      settings: getReportsMARSettings(state),
       filters: getFiltersSelector(state),
       role: getUserRole(state),
       user: getUser(state),

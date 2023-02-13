@@ -1,13 +1,10 @@
 import React, { useMemo } from 'react'
 import { Select } from 'antd'
-import {
-  CheckBoxGrp,
-  CheckboxLabel,
-  SelectInputStyled,
-} from '@edulastic/common'
+import { CheckBoxGrp, CheckboxLabel } from '@edulastic/common'
 
-import { withCalcOptions } from '../../HOC/withCalcOptions'
 import { LabelWithTooltip } from './LabelWithTooltip'
+import { withCalcOptions } from '../../HOC/withCalcOptions'
+import { CalculatorDropdown } from './styled-components'
 
 const CalculatorSettings = ({
   calcTypes,
@@ -16,11 +13,19 @@ const CalculatorSettings = ({
   calcOptions,
   isCheckBoxGroup,
 }) => {
-  const [Wrapper, Option, mode] = useMemo(() => {
+  const [Wrapper, Option, restProps] = useMemo(() => {
     if (isCheckBoxGroup) {
-      return [CheckBoxGrp, CheckboxLabel, 'vertical']
+      return [CheckBoxGrp, CheckboxLabel, { mode: 'vertical' }]
     }
-    return [SelectInputStyled, Select.Option, 'multiple']
+    return [
+      CalculatorDropdown,
+      Select.Option,
+      {
+        mode: 'multiple',
+        placeholder: 'NONE',
+        getPopupContainer: (triggerNode) => triggerNode.parentNode,
+      },
+    ]
   }, [isCheckBoxGroup])
 
   return (
@@ -29,14 +34,14 @@ const CalculatorSettings = ({
       onChange={onChange}
       value={calcTypes}
       disabled={disabled}
-      mode={mode}
+      {...restProps}
     >
       {calcOptions.map((item) => (
         <Option
           data-cy={item.id}
           value={item.id}
           key={item.id}
-          disabled={item.disabled}
+          disabled={[disabled, item.disabled].some((isDisabled) => isDisabled)}
         >
           <LabelWithTooltip showPopover={item.showPopover} text={item.text} />
         </Option>

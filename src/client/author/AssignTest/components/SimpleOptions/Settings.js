@@ -84,7 +84,7 @@ const Settings = ({
   totalItems,
   lcbBultiLanguageEnabled,
   allowedToSelectMultiLanguage,
-  t,
+  t: i18translate,
   additionalData,
   userId,
   userRole,
@@ -350,7 +350,7 @@ const Settings = ({
         <SettingContainer>
           <DetailsTooltip
             title="SHOW CALCULATOR"
-            content="If students can use an on-screen calculator, select the type to make available on the test."
+            content={i18translate('calculatorTypesSettings.info')}
             premium={assessmentSuperPowersShowCalculator}
           />
           <StyledRow gutter={16} mb="15px">
@@ -471,7 +471,7 @@ const Settings = ({
           <SettingContainer>
             <DetailsTooltip
               title="Allow Teachers to Redirect"
-              content={t('allowTeacherToRedirect.info')}
+              content={i18translate('allowTeacherToRedirect.info')}
               premium={assessmentSuperPowersAutoRedirect}
             />
             <StyledRow gutter={16}>
@@ -829,13 +829,13 @@ const Settings = ({
         {!(isDocBased || isTestlet) && (
           <SettingContainer>
             <DetailsTooltip
-              title={t('showTtsForPassage.title')}
-              content={t('showTtsForPassage.info')}
+              title={i18translate('showTtsForPassage.title')}
+              content={i18translate('showTtsForPassage.info')}
               premium={premium}
             />
             <StyledRow gutter={16} mb="15px">
               <Col span={12}>
-                <Label>{t('showTtsForPassage.title')}</Label>
+                <Label>{i18translate('showTtsForPassage.title')}</Label>
               </Col>
               <Col span={12}>
                 <AlignSwitchRight

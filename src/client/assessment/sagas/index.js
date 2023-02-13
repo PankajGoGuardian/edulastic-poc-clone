@@ -7,6 +7,7 @@ import assessmentSaga from './assessment'
 import testUserWorkSaga from './testUserWork'
 import { previewTestsSaga } from '../sharedDucks/previewTest'
 import { customKeypadSaga } from '../components/KeyPadOptions/ducks'
+import mediaSaga from './media'
 
 const assessmentSagas = [
   questionSaga(),
@@ -18,6 +19,7 @@ const assessmentSagas = [
   testUserWorkSaga(),
   previewTestsSaga(),
   customKeypadSaga(),
+  mediaSaga(),
 ]
 
 export default assessmentSagas

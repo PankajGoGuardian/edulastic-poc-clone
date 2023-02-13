@@ -6,7 +6,11 @@ const PAUSE = 'PAUSE'
 const STOP = 'STOP'
 const MIC = 'MIC'
 const START = 'START'
-const audioSliderTotalElementCount = 48
+const AUDIO_UPLOAD_INACTIVE = 'AUDIO_UPLOAD_INACTIVE'
+const AUDIO_UPLOAD_ACTIVE = 'AUDIO_UPLOAD_ACTIVE'
+const AUDIO_UPLOAD_SUCCESS = 'AUDIO_UPLOAD_SUCCESS'
+const AUDIO_UPLOAD_ERROR = 'AUDIO_UPLOAD_ERROR'
+const maxAudioDurationLimit = 5
 
 export {
   RECORDING_INACTIVE,
@@ -17,5 +21,9 @@ export {
   STOP,
   MIC,
   START,
-  audioSliderTotalElementCount,
+  AUDIO_UPLOAD_INACTIVE,
+  AUDIO_UPLOAD_ACTIVE,
+  AUDIO_UPLOAD_SUCCESS,
+  AUDIO_UPLOAD_ERROR,
+  maxAudioDurationLimit,
 }

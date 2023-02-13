@@ -184,5 +184,8 @@
   "showTtsForPassage": {
     "title": "Allow Text To Speech For Passage",
     "info": "When ON, students will be able to use TTS to listen to passages. When OFF, TTS will be disabled for passage-based questions."
+  },
+  "calculatorTypesSettings": {
+    "info": "If students can use on-screen calculators, select the type to make available on the test."
   }
 }

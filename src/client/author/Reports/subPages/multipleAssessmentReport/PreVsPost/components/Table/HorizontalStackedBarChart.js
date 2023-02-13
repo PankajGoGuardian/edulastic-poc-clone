@@ -22,7 +22,7 @@ const renderCustomizedLabel = (studentsCount, color) => (props) => {
   const tooltipTextX = x + width / 2 - xLabelOffset
   const tooltipTextY = y + height / 2 + yLabelOffset
   return (
-    <Tooltip title={labelText}>
+    <Tooltip title={labelToRender}>
       <text fontSize="10px" fill={fill} x={tooltipTextX} y={tooltipTextY}>
         {labelToRender}
       </text>

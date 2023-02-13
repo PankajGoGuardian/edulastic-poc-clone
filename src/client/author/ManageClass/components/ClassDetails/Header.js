@@ -437,11 +437,11 @@ const Header = ({
                 </EduButton>
               ) : (
                 <GoogleLoginWrapper
-                  WrappedComponent={() => (
+                  WrappedComponent={({ googleClient }) => (
                     <EduButton
                       isBlue
                       isGhost
-                      onClick={loginGoogle}
+                      onClick={() => loginGoogle(googleClient)}
                       data-cy="syncGoogleClass"
                     >
                       <IconGoogleClassroom />

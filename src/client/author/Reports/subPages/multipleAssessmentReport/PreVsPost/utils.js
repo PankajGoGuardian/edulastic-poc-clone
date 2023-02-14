@@ -92,6 +92,8 @@ export const matrixDisplayOptions = [
   { key: matrixDisplayOptionTypes.PERCENTAGE, title: 'Show percentages' },
 ]
 
+const ROUND_OFF_TO_INTEGER = true
+
 // utility function to validate pre and post testIds
 export const validatePreAndPostTestIds = (payload) => {
   const { preTestId, postTestId } = payload
@@ -123,12 +125,10 @@ export const getSummaryDataFromSummaryMetrics = (summaryMetricInfo) => {
   )
   // get average and max scores
   const preTestAverageScore = round(
-    sumBy(summaryMetricInfo, 'preTestScore') / totalStudentCount,
-    2
+    sumBy(summaryMetricInfo, 'preTestScore') / totalStudentCount
   )
   const postTestAverageScore = round(
-    sumBy(summaryMetricInfo, 'postTestScore') / totalStudentCount,
-    2
+    sumBy(summaryMetricInfo, 'postTestScore') / totalStudentCount
   )
   const preTestMaxScore =
     get(maxBy(summaryMetricInfo, 'preTestMaxScore'), 'preTestMaxScore') || 0
@@ -167,12 +167,12 @@ export const getPerformanceMatrixData = (
     const preStudentsPercentage = percentage(
       preStudentsCount,
       totalStudentCount,
-      true
+      ROUND_OFF_TO_INTEGER
     )
     const postStudentsPercentage = percentage(
       postStudentsCount,
       totalStudentCount,
-      true
+      ROUND_OFF_TO_INTEGER
     )
     const preVsPostStudentsPercentage =
       postStudentsPercentage - preStudentsPercentage
@@ -186,10 +186,12 @@ export const getPerformanceMatrixData = (
             parseInt(m.preBandScore, DECIMAL_BASE) == preThreshold &&
             parseInt(m.postBandScore, DECIMAL_BASE) == postThreshold
         )?.totalStudentCount || 0
-      const preVsPostCellStudentPercentage = round(
-        percentage(preVsPostCellStudentCount, totalStudentCount),
-        2
+      const preVsPostCellStudentPercentage = percentage(
+        preVsPostCellStudentCount,
+        totalStudentCount,
+        ROUND_OFF_TO_INTEGER
       )
+
       return {
         preThreshold,
         postThreshold,
@@ -279,8 +281,16 @@ export const getTableData = (
       maxBy(data, 'postTestMaxScore'),
       'postTestMaxScore'
     )
-    const preAvgScorePercentage = percentage(preAvgScore, preMaxScore, true)
-    const postAvgScorePercentage = percentage(postAvgScore, postMaxScore, true)
+    const preAvgScorePercentage = percentage(
+      preAvgScore,
+      preMaxScore,
+      ROUND_OFF_TO_INTEGER
+    )
+    const postAvgScorePercentage = percentage(
+      postAvgScore,
+      postMaxScore,
+      ROUND_OFF_TO_INTEGER
+    )
     const preBand = getProficiencyBand(
       preAvgScorePercentage,
       selectedPerformanceBand

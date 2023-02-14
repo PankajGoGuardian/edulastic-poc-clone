@@ -5,12 +5,12 @@ import { sortBy } from 'lodash'
 import { darkGrey } from '@edulastic/colors'
 import {
   PerformanceMatrixContainer,
+  StyledPerformanceMatrixCell,
   StyledRow,
   TestTypeTag,
 } from '../../common/styledComponents'
 import PerformanceMatrixColumnHeader from './PerformanceMatrixColumnHeader'
 import PerformanceMatrixRowHeader from './PerformanceMatrixRowHeader'
-import PerformanceMatrixCell from './PerformanceMatrixCell'
 import PerformanceMatrixDisplayToggle from './PerformanceMatrixDisplayToggle'
 
 import {
@@ -89,8 +89,6 @@ const PerformanceMatrix = ({
   ])
 
   const preVsPostRows = useMemo(() => {
-    const hasCellClicked =
-      tableFilters.preBandScore && tableFilters.postBandScore
     const selectedPreThreshold = parseInt(
       tableFilters.preBandScore,
       DECIMAL_BASE
@@ -108,23 +106,23 @@ const PerformanceMatrix = ({
           ? d1.preStudentsCount
           : `${d1.preStudentsPercentage}%`
       const preVsPostCells = (d1.preVsPostCellsData || []).map((d2, ci) => {
-        const className1 =
+        const cellYPosition =
           ri === 0 ? 'top' : ri === matrixSize - 1 ? 'bottom' : ''
-        const className2 =
+        const cellXposition =
           ci === 0 ? 'left' : ci === matrixSize - 1 ? 'right' : ''
         const isClicked =
           d2.preThreshold === selectedPreThreshold &&
           d2.postThreshold === selectedPostThreshold
+        const cellStatus = isClicked ? 'active' : 'inactive'
         const cellText =
           matrixDisplayKey === matrixDisplayOptionTypes.NUMBER
             ? d2.preVsPostCellStudentCount
             : `${d2.preVsPostCellStudentPercentage}%`
         return (
-          <PerformanceMatrixCell
-            className={`${className1} ${className2}`}
+          <StyledPerformanceMatrixCell
+            className={`${cellYPosition} ${cellXposition} ${cellStatus}`}
             text={cellText}
             color={performanceMatrixColors[ri][ci]}
-            selected={!hasCellClicked || isClicked}
             onClick={onMatrixCellClick(d2.preThreshold, d2.postThreshold)}
           />
         )

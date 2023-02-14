@@ -1,22 +1,8 @@
 import React from 'react'
 
-const PerformanceMatrixCell = ({
-  className,
-  text,
-  color,
-  selected,
-  onClick,
-}) => {
-  const style = { backgroundColor: color }
-  if (!selected) {
-    style.filter = 'grayscale(100%)'
-  }
+const PerformanceMatrixCell = ({ className, text, onClick }) => {
   return (
-    <div
-      style={style}
-      className={`section-matrix-cell ${className}`}
-      onClick={onClick}
-    >
+    <div className={`section-matrix-cell ${className}`} onClick={onClick}>
       {text}
     </div>
   )

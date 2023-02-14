@@ -58,6 +58,7 @@ export const darkGrey = '#a3a0a0'
 export const darkGrey1 = '#b5b5b5'
 export const darkGrey2 = '#304050'
 export const darkGrey3 = '#505050'
+export const darkGrey4 = '#414141'
 export const textColor = lightGrey6
 export const greyish = '#f3f3f4'
 export const greyishDarker1 = '#a7b1c2'

@@ -6,12 +6,14 @@ import {
   white,
   darkRed,
   greenDark4 as green,
+  darkGrey4,
 } from '@edulastic/colors'
 import { EduButton } from '@edulastic/common'
 import { IconAlertCircle } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledCell, StyledTable as Table } from '../../../../common/styled'
+import PerformanceMatrixCell from '../components/PerformanceMatrix/PerformanceMatrixCell'
 
 export const PreVsPostReportContainer = styled.div`
   @media print {
@@ -263,6 +265,7 @@ export const StyledIconAlert = styled(IconAlertCircle)`
 `
 
 export const PerformanceMatrixContainer = styled(Row)`
+  padding-block: 5px;
   .section-test {
     display: flex;
     flex-direction: column;
@@ -369,6 +372,10 @@ export const PerformanceMatrixContainer = styled(Row)`
       color: #000000;
       cursor: pointer;
     }
+    .section-matrix-cell.active {
+      color: ${white};
+      background-color: ${darkGrey4};
+    }
     .section-matrix-cell.top.left {
       border-radius: 18px 0 0 0;
     }
@@ -399,6 +406,10 @@ export const PerformanceMatrixContainer = styled(Row)`
     }
   }
 `
+export const StyledPerformanceMatrixCell = styled(PerformanceMatrixCell)`
+  background-color: ${({ color }) => color};
+`
+
 export const StyledEduButton = styled(EduButton)`
   &.ant-btn {
     height: 32px;

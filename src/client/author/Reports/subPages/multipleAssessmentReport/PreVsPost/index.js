@@ -25,6 +25,8 @@ import {
   getTestNamesFromTestMetrics,
   getSummaryDataFromSummaryMetrics,
   getTableData,
+  getNoDataContainerText,
+  checkIsInvalidSharedFilters,
 } from './utils'
 import {
   StyledSpan,
@@ -48,6 +50,7 @@ const PreVsPostReport = ({
   error,
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
+  setFirstLoadHidden,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -85,17 +88,25 @@ const PreVsPostReport = ({
 
   useEffect(() => () => resetPreVsPostReport(), [])
 
+  const isInvalidSharedFilters = checkIsInvalidSharedFilters(
+    sharedReportFilters,
+    isSharedReport
+  )
+
   // get report data
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
       ...ddfilter,
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    if (!isInvalidSharedFilters) {
       setTableFilters({ ...tableFilters, preBandScore: '', postBandScore: '' })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }
+    // request not made, so set load/firstLoad to false manually
+    setFirstLoadHidden(true)
+    return () => setFirstLoadHidden(false)
   }, [settings.requestFilters, ddfilter])
 
   useEffect(() => {
@@ -104,7 +115,7 @@ const PreVsPostReport = ({
       ...ddfilter,
       compareBy: tableFilters.compareBy.key,
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    if (!isInvalidSharedFilters) {
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
@@ -214,11 +225,11 @@ const PreVsPostReport = ({
     setTableFilters(_tableFilters)
   }
 
-  const noDataContainerText = settings.requestFilters?.termId
-    ? error.msg === 'InvalidTestIds'
-      ? 'Please select the Pre and Post Assessment to generate the report.'
-      : 'No data available currently.'
-    : ''
+  const noDataContainerText = getNoDataContainerText(
+    settings,
+    error,
+    isInvalidSharedFilters
+  )
 
   return (
     <>

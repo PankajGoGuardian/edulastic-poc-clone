@@ -1,3 +1,4 @@
+import React from 'react'
 import { reportUtils, colors as colorUtils } from '@edulastic/constants'
 import {
   map,
@@ -11,6 +12,7 @@ import {
   range,
   isEmpty,
   every,
+  some,
 } from 'lodash'
 
 const { getProficiencyBand, percentage, getFormattedName } = reportUtils.common
@@ -367,4 +369,51 @@ export const addStudentToGroupFeatureEnabled = (
   isSharedReport
 ) => {
   return every([compareByKey === compareByKeys.STUDENT, !isSharedReport])
+}
+
+export function getNoDataContainerText(
+  settings,
+  error,
+  isInvalidSharedFilters
+) {
+  if (settings.requestFilters?.termId) {
+    if (error.msg === 'InvalidTestIds') {
+      return 'Please select the Pre and Post Assessment to generate the report.'
+    }
+    return 'No data available currently.'
+  }
+  if (isInvalidSharedFilters) {
+    return (
+      <p>
+        Pre vs. Post report is not supported for the shared filters.
+        <br />
+        Please reach out to support at&nbsp;
+        <a href="mailto:support@edulastic.com" target="_blank" rel="noreferrer">
+          support@edulastic.com
+        </a>
+        .
+      </p>
+    )
+  }
+  return ''
+}
+
+export function checkIsInvalidSharedFilters(
+  sharedReportFilters,
+  isSharedReport
+) {
+  const hasPrePostSharedFilters = every([
+    sharedReportFilters?.preTestId,
+    sharedReportFilters?.postTestId,
+  ])
+  const TESTIDS_COUNT_FOR_PRE_POST = 2
+  const canFillPrePostFromTestIds =
+    sharedReportFilters?.testIds?.split(',').length ===
+    TESTIDS_COUNT_FOR_PRE_POST
+
+  const canFetchBySharedReport = every([
+    isSharedReport,
+    some([hasPrePostSharedFilters, canFillPrePostFromTestIds]),
+  ])
+  return every([isSharedReport, !canFetchBySharedReport])
 }

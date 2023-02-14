@@ -9,6 +9,7 @@ import { connect } from 'react-redux'
 import { Spin, Col } from 'antd'
 
 import { reportNavType, ReportPaths } from '@edulastic/constants/const/report'
+import { EduIf } from '@edulastic/common'
 import { SubHeader } from '../../common/components/Header'
 
 import { getNavigationTabLinks } from '../../common/util'
@@ -72,6 +73,9 @@ const MultipleAssessmentReportContainer = (props) => {
   } = props
 
   const [firstLoad, setFirstLoad] = useState(true)
+  // firstLoad & firstLoadHidden are hacky ways. useEffect(..., []) should be enough.
+  // TODO remove firstLoad & firstLoadHidden
+  const [firstLoadHidden, setFirstLoadHidden] = useState(false)
   const [MARFilterData, setMARFilterData] = useState({})
   const [ddfilter, setDdFilter] = useState({})
   const [reportId] = useState(
@@ -292,7 +296,9 @@ const MultipleAssessmentReportContainer = (props) => {
         />
       </SubHeader>
       <ReportContainer>
-        {firstLoad && <Spin size="large" />}
+        <EduIf condition={!firstLoadHidden && firstLoad}>
+          <Spin size="large" />
+        </EduIf>
         <Route
           exact
           path="/author/reports/peer-progress-analysis/"
@@ -359,6 +365,7 @@ const MultipleAssessmentReportContainer = (props) => {
                 MARFilterData={MARFilterData}
                 sharedReport={sharedReport}
                 toggleFilter={toggleFilter}
+                setFirstLoadHidden={setFirstLoadHidden}
               />
             )
           }}

@@ -449,11 +449,12 @@ export const getChartData = (
   const internalChartData = Object.keys(internalGroupedByUniqId).map(
     (uniqId) => {
       const records = internalGroupedByUniqId[uniqId]
+      const [defaultTestData] = records
       const {
         testName = 'N/A',
         isIncomplete = false,
         ...testData
-      } = internalGroupedByUniqId[uniqId].reduce(
+      } = records.reduce(
         (res, ele) => {
           const _isIncomplete = ele.isIncomplete || res.isIncomplete
           const _res =
@@ -472,6 +473,7 @@ export const getChartData = (
           }
         },
         {
+          ...defaultTestData,
           assessmentDate: 0,
           totalGraded: 0,
           totalScore: 0,

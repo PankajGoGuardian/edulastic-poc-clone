@@ -82,7 +82,10 @@ import {
   TestItemCount,
   SpinContainer,
 } from './styled'
-import { loadQuestionAction } from '../../../QuestionEditor/ducks'
+import {
+  loadQuestionAction,
+  setIsGradingRubricAction,
+} from '../../../QuestionEditor/ducks'
 import ItemDetailRow from '../ItemDetailRow'
 import {
   ButtonAction,
@@ -433,8 +436,11 @@ class Container extends Component {
   }
 
   handleCancelQuestionToPassage = () => {
-    const { changeView } = this.props
+    const { changeView, setIsGradingRubric } = this.props
     changeView('edit')
+
+    // Setting Grading Rubric to false on modal close
+    setIsGradingRubric(false)
 
     this.setState({
       showQuestionManageModal: false,
@@ -1352,6 +1358,7 @@ Container.propTypes = {
   addWidgetToPassage: PropTypes.func.isRequired,
   itemDeleting: PropTypes.any.isRequired,
   setMultipartEvaluationSetting: PropTypes.func,
+  setIsGradingRubric: PropTypes.func.isRequired,
 }
 
 Container.defaultProps = {
@@ -1402,6 +1409,7 @@ const enhance = compose(
       useTabs: useTabsAction,
       useFlowLayout: useFlowLayoutAction,
       loadQuestion: loadQuestionAction,
+      setIsGradingRubric: setIsGradingRubricAction,
       clearRedirectTest: clearRedirectTestAction,
       setRedirectTest: setRedirectTestAction,
       toggleCreateItemModal: toggleCreateItemModalAction,

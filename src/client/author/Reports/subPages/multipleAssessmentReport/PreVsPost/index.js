@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react'
-import { get, isEmpty, mapValues, some } from 'lodash'
+import { every, get, isEmpty, mapValues, some } from 'lodash'
 import { connect } from 'react-redux'
 import { Row } from 'antd'
 
@@ -25,6 +25,7 @@ import {
   getTestNamesFromTestMetrics,
   getSummaryDataFromSummaryMetrics,
   getTableData,
+  getNoDataContainerText,
 } from './utils'
 import {
   StyledSpan,
@@ -48,6 +49,7 @@ const PreVsPostReport = ({
   error,
   fetchReportSummaryDataRequest,
   fetchPreVsPostReportTableDataRequest,
+  setFirstLoadHidden,
 }) => {
   const [userRole, sharedReportFilters, isSharedReport] = useMemo(
     () => [
@@ -85,17 +87,39 @@ const PreVsPostReport = ({
 
   useEffect(() => () => resetPreVsPostReport(), [])
 
+  const canFetchByFilters = every([
+    settings.requestFilters.termId,
+    settings.requestFilters.preTestId,
+    settings.requestFilters.postTestId,
+  ])
+  const hasPrePostSharedFilters = every([
+    sharedReportFilters?.preTestId,
+    sharedReportFilters?.postTestId,
+  ])
+  const TESTIDS_COUNT_FOR_PRE_POST = 2
+  const canFillPrePostFromTestIds =
+    sharedReportFilters?.testIds?.split(',').length ===
+    TESTIDS_COUNT_FOR_PRE_POST
+
+  const canFetchBySharedReport = every([
+    settings.requestFilters.reportId,
+    some([hasPrePostSharedFilters, canFillPrePostFromTestIds]),
+  ])
+  const canFetchReport = some([canFetchByFilters, canFetchBySharedReport])
   // get report data
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
       ...ddfilter,
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    if (canFetchReport) {
       setTableFilters({ ...tableFilters, preBandScore: '', postBandScore: '' })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
     }
+    // request not made, so set load/firstLoad to false manually
+    setFirstLoadHidden(true)
+    return () => setFirstLoadHidden(false)
   }, [settings.requestFilters, ddfilter])
 
   useEffect(() => {
@@ -104,7 +128,7 @@ const PreVsPostReport = ({
       ...ddfilter,
       compareBy: tableFilters.compareBy.key,
     }
-    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+    if (canFetchReport) {
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
@@ -214,11 +238,11 @@ const PreVsPostReport = ({
     setTableFilters(_tableFilters)
   }
 
-  const noDataContainerText = settings.requestFilters?.termId
-    ? error.msg === 'InvalidTestIds'
-      ? 'Please select the Pre and Post Assessment to generate the report.'
-      : 'No data available currently.'
-    : ''
+  const noDataContainerText = getNoDataContainerText(
+    settings,
+    error,
+    canFetchBySharedReport
+  )
 
   return (
     <>

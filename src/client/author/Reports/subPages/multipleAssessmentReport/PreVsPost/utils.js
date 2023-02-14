@@ -1,3 +1,4 @@
+import React from 'react'
 import { reportUtils, colors as colorUtils } from '@edulastic/constants'
 import {
   map,
@@ -367,4 +368,27 @@ export const addStudentToGroupFeatureEnabled = (
   isSharedReport
 ) => {
   return every([compareByKey === compareByKeys.STUDENT, !isSharedReport])
+}
+
+export function getNoDataContainerText(
+  settings,
+  error,
+  canFetchBySharedReport
+) {
+  if (settings.requestFilters?.termId) {
+    if (error.msg === 'InvalidTestIds') {
+      return 'Please select the Pre and Post Assessment to generate the report.'
+    }
+    return 'No data available currently.'
+  }
+  if (!canFetchBySharedReport) {
+    return (
+      <>
+        Pre vs. Post report is not supported for the shared filters.
+        <br />
+        Please reach out to support at support@edulastic.com.
+      </>
+    )
+  }
+  return ''
 }

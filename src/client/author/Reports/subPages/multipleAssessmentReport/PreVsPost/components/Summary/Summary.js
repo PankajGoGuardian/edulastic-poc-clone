@@ -108,7 +108,7 @@ const SummaryContainer = ({
           <StyledTitle color={grey}>Change</StyledTitle>
           <div className="value">
             <span>
-              <div> {Math.abs(change)}%</div>
+              <div data-testid="change"> {Math.abs(change)}%</div>
               <IconArrow value={change} size="large" />
             </span>
           </div>

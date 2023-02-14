@@ -272,8 +272,8 @@ export const getTableData = (
     const studentsCount = sumBy(data, (d) =>
       parseInt(d.totalStudentCount, DECIMAL_BASE)
     )
-    const preAvgScore = round(sumBy(data, 'preTestScore') / studentsCount, 2)
-    const postAvgScore = round(sumBy(data, 'postTestScore') / studentsCount, 2)
+    const preAvgScore = round(sumBy(data, 'preTestScore') / studentsCount)
+    const postAvgScore = round(sumBy(data, 'postTestScore') / studentsCount)
     const preMaxScore = get(maxBy(data, 'preTestMaxScore'), 'preTestMaxScore')
     const postMaxScore = get(
       maxBy(data, 'postTestMaxScore'),

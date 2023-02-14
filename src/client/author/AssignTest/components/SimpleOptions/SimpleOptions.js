@@ -6,6 +6,7 @@ import {
   test as testConst,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
+import { STUDENT_ATTEMPT_TIME_WINDOW } from '@edulastic/constants/const/common'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
 import { curry, get, isBoolean, keyBy, pick } from 'lodash'
@@ -289,6 +290,10 @@ class SimpleOptions extends React.Component {
                 ? assignmentPolicyOptions.POLICY_OPEN_MANUALLY_BY_TEACHER
                 : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
           }
+          break
+        }
+        case STUDENT_ATTEMPT_TIME_WINDOW: {
+          state.attemptWindow = value
           break
         }
         // no default

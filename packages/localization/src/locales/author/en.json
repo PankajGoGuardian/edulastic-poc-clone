@@ -187,5 +187,9 @@
   },
   "calculatorTypesSettings": {
     "info": "If students can use on-screen calculators, select the type to make available on the test."
+  },
+  "studentAttemptTimeWindow": {
+    "title": "STUDENT ATTEMPT WINDOW",
+    "toolTipMsg": "Select the days and time when the students can attempt the test."
   }
 }

@@ -5,7 +5,7 @@ import {
   themeColor,
   themeColorBlue,
 } from '@edulastic/colors'
-import { DatePicker, Input, InputNumber, Select } from 'antd'
+import { DatePicker, Input, InputNumber, Select, TimePicker } from 'antd'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -166,6 +166,24 @@ export const DatePickerStyled = styled(DatePicker)`
   }
   .ant-calendar-picker-icon {
     color: ${themeColor};
+  }
+`
+
+export const TimePickerStyled = styled(TimePicker)`
+  &.ant-time-picker {
+    width: ${({ width }) => width || '100%'};
+    ${(props) => props.style};
+    .ant-time-picker-input {
+      ${inputCommonStyle};
+      width: 100%;
+      &:focus,
+      &:hover,
+      &:active {
+        border: 1px solid ${themeColorBlue} !important;
+        background-color: ${(props) => props.bg || greyThemeLighter};
+        box-shadow: none !important;
+      }
+    }
   }
 `
 

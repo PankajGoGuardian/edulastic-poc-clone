@@ -11,6 +11,7 @@ import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { STUDENT_ATTEMPT_TIME_WINDOW } from '@edulastic/constants/const/common'
 import { OkButton } from '../../../../common/styled'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
 import FeaturesSwitch, {
@@ -31,6 +32,7 @@ import {
 } from '../SimpleOptions/SimpleOptions'
 import ClassList from './ClassList'
 import DatePolicySelector from './DatePolicySelector'
+import AttemptWindowTypeSelector from '../SimpleOptions/AttemptWindowTypeSelector'
 import {
   ClassSelectorLabel,
   InitOptions,
@@ -155,6 +157,9 @@ class AdvancedOptons extends React.Component {
               : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
         }
       }
+      if (field === STUDENT_ATTEMPT_TIME_WINDOW) {
+        state.attemptWindow = value
+      }
 
       state[field] = value
     })
@@ -209,6 +214,10 @@ class AdvancedOptons extends React.Component {
                 onChangeField={(type, value) => this.onChange(type, value)}
               />
             </Col>
+            <AttemptWindowTypeSelector
+              changeField={this.onChange}
+              isAdvancedView
+            />
           </StyledRow>
           {showRecommendedResources && (
             <StyledRow gutter={24}>

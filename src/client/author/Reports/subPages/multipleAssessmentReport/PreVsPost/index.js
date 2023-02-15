@@ -27,6 +27,7 @@ import {
   getTableData,
   getNoDataContainerText,
   checkIsInvalidSharedFilters,
+  getReportFilters,
 } from './utils'
 import {
   StyledSpan,
@@ -63,7 +64,16 @@ const PreVsPostReport = ({
     [sharedReport]
   )
 
-  const reportFilters = sharedReportFilters || settings.requestFilters
+  const isInvalidSharedFilters = checkIsInvalidSharedFilters(
+    sharedReportFilters,
+    isSharedReport
+  )
+
+  const reportFilters = getReportFilters(
+    isSharedReport,
+    sharedReportFilters,
+    settings.requestFilters
+  )
 
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
@@ -87,11 +97,6 @@ const PreVsPostReport = ({
   const [checkedStudents, setCheckedStudents] = useState([])
 
   useEffect(() => () => resetPreVsPostReport(), [])
-
-  const isInvalidSharedFilters = checkIsInvalidSharedFilters(
-    sharedReportFilters,
-    isSharedReport
-  )
 
   // get report data
   useEffect(() => {

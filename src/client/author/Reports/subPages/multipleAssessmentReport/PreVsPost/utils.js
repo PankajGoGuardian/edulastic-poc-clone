@@ -20,6 +20,7 @@ const { getColorsByInterpolation } = colorUtils
 
 // decimal base value for parseInt()
 export const DECIMAL_BASE = 10
+export const TESTIDS_COUNT_FOR_PRE_POST = 2
 
 const HSL_COLOR_GREEN = [116, 34, 52]
 const HSL_COLOR_RED = [0, 73, 63]
@@ -398,22 +399,44 @@ export function getNoDataContainerText(
   return ''
 }
 
+const checkHasPrePostSharedFilters = (sharedReportFilters) =>
+  every([sharedReportFilters?.preTestId, sharedReportFilters?.postTestId])
+
+const checkCanFillPrePostFromTestIds = (sharedReportFilters) =>
+  sharedReportFilters?.testIds?.split(',').length === TESTIDS_COUNT_FOR_PRE_POST
+
 export function checkIsInvalidSharedFilters(
   sharedReportFilters,
   isSharedReport
 ) {
-  const hasPrePostSharedFilters = every([
-    sharedReportFilters?.preTestId,
-    sharedReportFilters?.postTestId,
-  ])
-  const TESTIDS_COUNT_FOR_PRE_POST = 2
-  const canFillPrePostFromTestIds =
-    sharedReportFilters?.testIds?.split(',').length ===
-    TESTIDS_COUNT_FOR_PRE_POST
+  const hasPrePostSharedFilters = checkHasPrePostSharedFilters(
+    sharedReportFilters
+  )
+  const canFillPrePostFromTestIds = checkCanFillPrePostFromTestIds(
+    sharedReportFilters
+  )
 
   const canFetchBySharedReport = every([
     isSharedReport,
     some([hasPrePostSharedFilters, canFillPrePostFromTestIds]),
   ])
   return every([isSharedReport, !canFetchBySharedReport])
+}
+
+export function getReportFilters(
+  isSharedReport,
+  sharedReportFilters,
+  requestFilters
+) {
+  if (
+    isSharedReport &&
+    !checkHasPrePostSharedFilters(sharedReportFilters) &&
+    checkCanFillPrePostFromTestIds(sharedReportFilters)
+  ) {
+    ;[
+      sharedReportFilters.preTestId,
+      sharedReportFilters.postTestId,
+    ] = sharedReportFilters?.testIds?.split(',')
+  }
+  return sharedReportFilters || requestFilters
 }

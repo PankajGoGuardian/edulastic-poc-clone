@@ -17,7 +17,7 @@ const DetailsTooltip = ({
   width,
 }) => {
   let yShift = '-32%'
-  if (placement === 'rightTop') yShift = '-80%'
+  if (placement === 'rightTop') yShift = 'calc( -100% + 30px )'
   if (placement === 'rightBottom') yShift = '0%'
 
   let xShift = '108%'

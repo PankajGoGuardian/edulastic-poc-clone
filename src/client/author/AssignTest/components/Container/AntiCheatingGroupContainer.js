@@ -466,14 +466,17 @@ const AntiCheatingGroupContainer = ({
       <SettingContainer id="safe-exam-browser-setting">
         <DetailsTooltip
           width={tootltipWidth}
-          title="Require Safe Exam Browser"
-          content="Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student devices."
+          title="Require Safe Exam Browser / Kiosk Mode"
+          content="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to lockdown the student's device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must be installed on the student device. On Chromebook, Edulastic Kiosk app must be installed.
+          The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle of an assessment. The quit password should not be revealed to the students. The quit password cannot be used to exit Chromebook Kiosk mode."
           placement="rightTop"
           premium={assessmentSuperPowersRequireSafeExamBrowser}
         />
         <StyledRow gutter={16} mb="15px">
           <Col span={10}>
-            <Label style={{ display: 'flex' }}>Require Safe Exam Browser</Label>
+            <Label style={{ display: 'flex' }}>
+              Require Safe Exam Browser / Kiosk Mode
+            </Label>
           </Col>
           <Col span={14}>
             <AlignSwitchRight

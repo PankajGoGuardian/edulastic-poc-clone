@@ -495,7 +495,6 @@ class ClassHeader extends Component {
       canCloseClass = [],
       dueDate,
       assignedBy = {},
-      answerOnPaper,
       classId: _classId,
     } = additionalData
     const dueOn = dueDate || endDate
@@ -600,11 +599,7 @@ class ClassHeader extends Component {
             isBlue
             isGhost
             data-cy="closeButton"
-            onClick={() =>
-              answerOnPaper
-                ? this.handleCloseAssignment()
-                : this.toggleCloseModal(true)
-            }
+            onClick={() => this.toggleCloseModal(true)}
           >
             CLOSE
           </EduButton>

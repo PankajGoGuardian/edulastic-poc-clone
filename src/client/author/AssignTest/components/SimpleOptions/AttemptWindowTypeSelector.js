@@ -19,6 +19,8 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
     handleChange,
     selectedAttemptWindowType,
     selectedDays,
+    assignmentStartTime,
+    assignmentEndTime,
   } = useAttempWindowChangeHandler(changeField)
   return (
     <>
@@ -50,6 +52,8 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
             <TimeSelector
               handleStartTimeChange={handleStartTimeChange}
               handleEndTimeChange={handleEndTimeChange}
+              assignmentStartTime={assignmentStartTime}
+              assignmentEndTime={assignmentEndTime}
             />
           </EduIf>
         </Col>
@@ -82,6 +86,8 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
             <TimeSelector
               handleStartTimeChange={handleStartTimeChange}
               handleEndTimeChange={handleEndTimeChange}
+              assignmentStartTime={assignmentStartTime}
+              assignmentEndTime={assignmentEndTime}
             />
           </Col>
         </EduIf>

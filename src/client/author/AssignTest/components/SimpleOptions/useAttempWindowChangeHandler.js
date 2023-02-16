@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { test as testConst } from '@edulastic/constants'
 import {
   ATTEMPT_WINDOW_DEFAULT_START_TIME,
@@ -11,6 +11,7 @@ import { isEmpty } from 'lodash'
 const { ATTEMPT_WINDOW_TYPE } = testConst
 
 const useAttempWindowChangeHandler = (changeField) => {
+  const initialRender = useRef(true)
   const [selectedAttemptWindowType, setSelectedAttemptWindowType] = useState(
     ATTEMPT_WINDOW_TYPE.DEFAULT
   )
@@ -60,7 +61,9 @@ const useAttempWindowChangeHandler = (changeField) => {
         type: ATTEMPT_WINDOW_TYPE.DEFAULT,
       },
     }[selectedAttemptWindowType]
-    if (!isEmpty(selectedAttemptWindowInfo)) {
+    if (initialRender.current) {
+      initialRender.current = false
+    } else if (!isEmpty(selectedAttemptWindowInfo)) {
       changeField(STUDENT_ATTEMPT_TIME_WINDOW, selectedAttemptWindowInfo)
     }
   }, [

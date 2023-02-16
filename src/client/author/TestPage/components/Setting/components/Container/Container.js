@@ -2280,15 +2280,15 @@ class Setting extends Component {
                         </Row>
                         <Description>
                           Ensure a secure testing environment by using Safe Exam
-                          Browser to lockdown the student&apos;s device. To use
-                          this feature, Safe Exam Browser (on Windows/Mac/iPad)
-                          must be installed on the student device. The quit
-                          password can be used by teacher or proctor to safely
-                          exit Safe Exam Browser in the middle of an assessment.
-                          The quit password should not be revealed to the
-                          students. If you select this option, students must use
-                          devices (Windows, Mac or iPad) with Safe Exam Browser
-                          installed.
+                          Browser or Edulastic Kiosk Mode to lockdown the
+                          student&apos;s device. To use this feature, Safe Exam
+                          Browser (on Windows/Mac/iPad) must be installed on the
+                          student device. On Chromebook, Edulastic Kiosk app
+                          must be installed. The quit password can be used by
+                          teacher or proctor to safely exit Safe Exam Browser in
+                          the middle of an assessment. The quit password should
+                          not be revealed to the students. The quit password
+                          cannot be used to exit Chromebook Kiosk mode.
                         </Description>
                       </Body>
                     </SettingContainer>

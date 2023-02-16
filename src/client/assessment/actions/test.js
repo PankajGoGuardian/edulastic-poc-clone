@@ -3,6 +3,7 @@ import {
   FINISH_TEST,
   LOAD_PREVIOUS_RESPONSES,
   SET_PASSWORD_VALIDATE_STATUS,
+  SET_STUDENT_SESSION_EXPIRED,
   GET_ASSIGNMENT_PASSWORD,
   SET_PASSWORD_STATUS_MESSAGE,
   TEST_ACTIVITY_LOADING,
@@ -34,6 +35,11 @@ export const loadPreviousReponseAction = () => ({
 
 export const setPasswordValidateStatusAction = (payload) => ({
   type: SET_PASSWORD_VALIDATE_STATUS,
+  payload,
+})
+
+export const setStudentSessionExpiredAction = (payload) => ({
+  type: SET_STUDENT_SESSION_EXPIRED,
   payload,
 })
 

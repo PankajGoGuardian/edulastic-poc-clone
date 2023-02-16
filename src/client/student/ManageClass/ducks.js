@@ -50,7 +50,7 @@ const resetEnrolledClassList = (state) => {
 }
 
 const setEnrollClassListSuccess = (state, { payload }) => {
-  state.allClasses = payload
+  state.allClasses = payload || []
   state.loading = false
 }
 
@@ -60,7 +60,7 @@ const setEnrollClassListFail = (state) => {
 }
 
 const setFilterClass = (state, { payload }) => {
-  state.filteredClasses = payload
+  state.filteredClasses = payload || []
 }
 
 const joinClassReq = (state) => {

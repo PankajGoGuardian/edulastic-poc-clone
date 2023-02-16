@@ -3,22 +3,27 @@ import { connect } from 'react-redux'
 import { CustomModalStyled, EduButton } from '@edulastic/common'
 import { removeAllTokens } from '@edulastic/api/src/utils/Storage'
 import { logoutAction } from '../../author/src/actions/auth'
+import { setStudentSessionExpiredAction } from '../../assessment/actions/test'
 
 function closeTab(logout) {
   removeAllTokens()
   logout()
 }
 
-function StudentSessionExpiredModal({ logout }) {
+function StudentSessionExpiredModal({ logout, setStudentSessionExpired }) {
   const [showPopup, setShowPopup] = useState(false)
 
   const closePopupFn = () => {
     setShowPopup(false)
+    setStudentSessionExpired(false)
     closeTab(logout)
   }
 
   useEffect(() => {
-    const showPopupFn = () => setShowPopup(true)
+    const showPopupFn = () => {
+      setShowPopup(true)
+      setStudentSessionExpired(true)
+    }
     window.addEventListener('student-session-expired', showPopupFn)
     return () =>
       window.removeEventListener('student-session-expired', showPopupFn)
@@ -47,4 +52,5 @@ function StudentSessionExpiredModal({ logout }) {
 
 export default connect(null, {
   logout: logoutAction,
+  setStudentSessionExpired: setStudentSessionExpiredAction,
 })(StudentSessionExpiredModal)

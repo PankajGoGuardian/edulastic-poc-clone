@@ -9,6 +9,7 @@ import {
   SET_TEST_LOADING_STATUS,
   COUNT_CHECK_ANSWER,
   SET_PASSWORD_VALIDATE_STATUS,
+  SET_STUDENT_SESSION_EXPIRED,
   TEST_ACTIVITY_LOADING,
   SET_PASSWORD_STATUS_MESSAGE,
   UPDATE_CURRENT_AUDIO_DEATILS,
@@ -43,6 +44,7 @@ const initialState = {
   isDocBased: false,
   answerCheckByItemId: {},
   isPasswordValidated: false,
+  isStudentSessionExpired: false,
   loadingTestActivity: true,
   passwordStatusMessage: '',
   savingResponse: false,
@@ -149,6 +151,11 @@ const test = (state = initialState, { payload, type }) => {
       return {
         ...state,
         isPasswordValidated: payload,
+      }
+    case SET_STUDENT_SESSION_EXPIRED:
+      return {
+        ...state,
+        isStudentSessionExpired: payload,
       }
     case TEST_ACTIVITY_LOADING:
       return {

@@ -34,6 +34,7 @@ const AssessmentPlayer = ({
   testId,
   demo,
   isPasswordValidated,
+  isStudentSessionExpired,
   testActivityLoading,
   test,
   LCBPreviewModal,
@@ -198,7 +199,7 @@ const AssessmentPlayer = ({
   if (testActivityLoading) {
     return <Spin />
   }
-  if (!isPasswordValidated) {
+  if (!isPasswordValidated && !isStudentSessionExpired) {
     return <RequirePassword />
   }
   const groupId = match.params.groupId || ''
@@ -268,6 +269,7 @@ const enhance = compose(
   connect(
     (state) => ({
       isPasswordValidated: state.test.isPasswordValidated,
+      isStudentSessionExpired: state.test.isStudentSessionExpired,
       testActivityLoading: testActivityLoadingSelector(state),
       playerPreviewState: getPreviewPlayerStateSelector(state),
       loading: testLoadingSelector(state),

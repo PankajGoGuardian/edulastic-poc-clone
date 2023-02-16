@@ -206,7 +206,7 @@ const getSentryReleaseName = () => {
   return `${appVersion}.edu-fe.${appStage}`
 }
 
-const kioskChromeAppId = process.env.KIOSK_CHROME_APP_ID
+const kioskChromeAppId = process.env.REACT_APP_KIOSK_CHROME_APP_ID
 
 export default {
   initEmbeddedServiceCloudWidget,

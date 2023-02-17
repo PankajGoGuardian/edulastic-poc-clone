@@ -464,7 +464,7 @@ module.exports = {
   },
   ATTEMPT_WINDOW_VALUE: {
     DEFAULT: 'Anytime between the Open and Close date',
-    WEEKDAYS: 'Weekdays (Mon to Fri)',
+    WEEKDAYS: 'Weekdays',
     CUSTOM: 'Custom',
   },
 }

@@ -74,15 +74,11 @@ const useAttempWindowChangeHandler = (changeField) => {
   ])
 
   const handleStartTimeChange = (_, selectedTime) => {
-    const selectedStartTimeInMilliSec = getMilliSeconds(selectedTime)
-    if (selectedStartTimeInMilliSec < assignmentEndTime)
-      setAssignmentStartTime(selectedStartTimeInMilliSec)
+    setAssignmentStartTime(getMilliSeconds(selectedTime))
   }
 
   const handleEndTimeChange = (_, selectedTime) => {
-    const selectedEndTimeInMilliSec = getMilliSeconds(selectedTime)
-    if (selectedEndTimeInMilliSec > assignmentStartTime)
-      setAssignmentEndTime(selectedEndTimeInMilliSec)
+    setAssignmentEndTime(getMilliSeconds(selectedTime))
   }
 
   const handleDayChange = (selectedDay) => {
@@ -100,8 +96,6 @@ const useAttempWindowChangeHandler = (changeField) => {
     handleChange,
     selectedAttemptWindowType,
     selectedDays,
-    assignmentStartTime,
-    assignmentEndTime,
   }
 }
 

@@ -470,7 +470,7 @@ const AntiCheatingGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title={safeModeI18nTranslation(t, 'title')}
-          content={safeModeI18nTranslation(t, 'info')}
+          content={safeModeI18nTranslation(t, 'tooltip')}
           placement="rightTop"
           premium={assessmentSuperPowersRequireSafeExamBrowser}
         />

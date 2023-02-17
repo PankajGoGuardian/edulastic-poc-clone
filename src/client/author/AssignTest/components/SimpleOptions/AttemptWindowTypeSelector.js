@@ -49,7 +49,7 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
             </EduIf>
             <TimeSelector
               handleStartTimeChange={handleStartTimeChange}
-              handleEndTimeChange={handleEndTimeChange}
+              handlerEndTimeChange={handleEndTimeChange}
             />
           </EduIf>
         </Col>
@@ -81,7 +81,7 @@ const AttemptWindowTypeSelector = ({ changeField, isAdvancedView }) => {
             <Label />
             <TimeSelector
               handleStartTimeChange={handleStartTimeChange}
-              handleEndTimeChange={handleEndTimeChange}
+              handlerEndTimeChange={handleEndTimeChange}
             />
           </Col>
         </EduIf>

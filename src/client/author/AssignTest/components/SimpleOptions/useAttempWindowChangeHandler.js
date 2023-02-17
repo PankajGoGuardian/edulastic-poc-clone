@@ -43,8 +43,7 @@ const useAttempWindowChangeHandler = (changeField) => {
   )
 
   useEffect(() => {
-    const isStartEndTimeSelected =
-      assignmentStartTime >= 0 && assignmentEndTime >= 0
+    const isStartEndTimeSelected = assignmentStartTime && assignmentEndTime
     const selectedAttemptWindowInfo = {
       [ATTEMPT_WINDOW_TYPE.WEEKDAYS]: isStartEndTimeSelected && {
         type: ATTEMPT_WINDOW_TYPE.WEEKDAYS,

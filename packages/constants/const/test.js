@@ -457,14 +457,4 @@ module.exports = {
     DOC_BASED: 'doc_based',
     DYNAMIC_TEST: 'dynamic_test',
   },
-  ATTEMPT_WINDOW_TYPE: {
-    DEFAULT: 'DEFAULT',
-    WEEKDAYS: 'WEEKDAYS',
-    CUSTOM: 'CUSTOM',
-  },
-  ATTEMPT_WINDOW_VALUE: {
-    DEFAULT: 'Anytime between the Open and Close date',
-    WEEKDAYS: 'Weekdays',
-    CUSTOM: 'Custom',
-  },
 }

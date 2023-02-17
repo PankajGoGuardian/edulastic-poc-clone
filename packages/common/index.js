@@ -31,7 +31,6 @@ export {
   SelectInputStyled,
   NumberInputStyled,
   DatePickerStyled,
-  TimePickerStyled,
   TextAreaInputStyled,
   FieldLabel,
 } from './src/components/InputStyles'

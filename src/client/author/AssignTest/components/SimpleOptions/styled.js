@@ -613,23 +613,6 @@ export const RowTwo = styled.div`
   justify-content: space-between;
   padding: 8px 10px;
 `
-export const StyledTimePickerContainer = styled.div`
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0px 2px 0px;
-`
-export const StyledDayPickerContainer = styled.div`
-  display: flex;
-  justify-content: ${({ isAdvancedView }) =>
-    isAdvancedView ? 'space-between' : 'flex-start'};
-  align-items: center;
-  padding-top: 8px;
-  & > * {
-    margin: ${({ isAdvancedView }) =>
-      isAdvancedView ? '0px' : '5px 5px 5px 0px'};
-  }
-`
 
 export const PaginationContainer = styled.div`
   flex-basis: 100%;
@@ -648,37 +631,4 @@ export const InputNumberStyled = styled(InputNumber)`
 
 export const Styled2ndLine = styled.div`
   padding-left: 24px;
-`
-export const CheckboxLabel = styled.label`
-  cursor: pointer;
-`
-export const Div = styled.div`
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background: ${greyThemeLighter};
-  height: ${({ height }) => height || 'content-height'};
-  width: ${({ width }) => width || 'content-width'};
-  transistion: 0.5s;
-  font-size: ${(props) => props.fontSize || '13px'};
-  user-select: none;
-  overflow: hidden;
-  border-radius: 50%;
-  &: before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 50%;
-  }
-`
-
-export const CheckBoxInput = styled.input.attrs({ type: 'checkbox' })`
-  display: none;
-  &:checked ~ div {
-    color: #fff;
-    background: ${themeColorBlue};
-  }
 `

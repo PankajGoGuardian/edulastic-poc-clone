@@ -36,7 +36,6 @@ import {
 } from '../Assignments/ducks'
 import { proxyRole } from '../Login/ducks'
 import { showTestInfoModal } from '../../publicTest/utils'
-import { isRestrictedTimeWindowForAssignment } from '../../author/Assignments/utils'
 
 const isSEB = () => window.navigator.userAgent.includes('SEB')
 
@@ -297,27 +296,13 @@ const AssignmentCard = memo(
       releaseScore = data.releaseScore
     }
     const isParentRoleProxy = proxyUserRole === 'parent'
-    const isRestrictedTimeWindow = isRestrictedTimeWindowForAssignment(
-      startDate,
-      serverTimeStamp,
-      isPaused,
-      data?.attemptWindow?.isRestrictedTimeWindow
-    )
-    let restrictedButtonTooltip
-    let restrictedButtonText
-    if (isRestrictedTimeWindow) {
-      const { startTime = '', endTime = '' } = data?.attemptWindow
-      restrictedButtonTooltip = `It can be attempted between ${startTime} to ${endTime} only.`
-      restrictedButtonText = ` (UNTIL ${startTime})`
-    }
 
     const StartButtonContainer =
       type === 'assignment' ? (
         !(userRole === 'parent' || isParentRoleProxy) &&
         (safeBrowser &&
         !(new Date(startDate) > new Date(serverTimeStamp) || !startDate) &&
-        !isSEB() &&
-        !isRestrictedTimeWindow ? (
+        !isSEB() ? (
           <SafeBrowserButton
             data-cy="start"
             btnName={t('common.startAssignment')}
@@ -339,9 +324,6 @@ const AssignmentCard = memo(
             resume={resume}
             classId={classId}
             serverTimeStamp={serverTimeStamp}
-            isTimeWindowRestricted={isRestrictedTimeWindow}
-            restrictedButtonText={restrictedButtonText}
-            restrictedButtonTooltip={restrictedButtonTooltip}
           />
         ))
       ) : !absent ? (

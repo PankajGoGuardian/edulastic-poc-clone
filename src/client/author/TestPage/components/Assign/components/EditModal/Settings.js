@@ -6,6 +6,7 @@ import { IconInfo } from '@edulastic/icons'
 import { Col, Radio, Tooltip } from 'antd'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 // components
 import {
   AlignRight,
@@ -15,6 +16,7 @@ import {
   SettingsWrapper,
   StyledRowSettings,
 } from './styled'
+import { safeModeI18nTranslation } from '../../../../../authUtils'
 
 const { releaseGradeTypes, releaseGradeLabels } = test
 const evaluationtypes = [
@@ -34,6 +36,7 @@ const Settings = ({
   testSettings,
   assignmentSettings,
   updateAssignmentSettings,
+  t,
 }) => {
   const [isAutomatic, setAssignmentCompletionType] = useState(0)
   const [type, setEvaluationType] = useState(0)
@@ -139,11 +142,8 @@ const Settings = ({
       <StyledRowSettings gutter={16}>
         <Col span={16}>
           <RowTitle>
-            Require Safe Exam Browser / Kiosk Mode
-            <Tooltip
-              title="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to lockdown the student's device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must be installed on the student device. On Chromebook, Edulastic Kiosk app must be installed.
-              The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle of an assessment. The quit password should not be revealed to the students. The quit password cannot be used to exit Chromebook Kiosk mode."
-            >
+            {safeModeI18nTranslation(t, 'title')}
+            <Tooltip title={safeModeI18nTranslation(t, 'info')}>
               <IconInfo
                 color={lightGrey9}
                 style={{ cursor: 'pointer', marginLeft: '10px' }}
@@ -268,7 +268,7 @@ const Settings = ({
   )
 }
 
-export default Settings
+export default withNamespaces('author')(Settings)
 
 const RowTitle = styled.h4`
   font-weight: 600;

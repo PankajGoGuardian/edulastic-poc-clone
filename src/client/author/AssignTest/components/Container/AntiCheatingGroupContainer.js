@@ -4,6 +4,7 @@ import { SelectInputStyled, RadioBtn } from '@edulastic/common'
 import { blueBorder, red, green } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import Styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -13,6 +14,7 @@ import {
 } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
+import { safeModeI18nTranslation } from '../../../authUtils'
 
 const { passwordPolicyOptions, passwordPolicy: passwordPolicyValues } = test
 
@@ -25,6 +27,7 @@ const AntiCheatingGroupContainer = ({
   overRideSettings,
   featuresAvailable,
   tootltipWidth,
+  t,
 }) => {
   const [passwordStatus, setPasswordStatus] = useState({
     color: blueBorder,
@@ -466,9 +469,8 @@ const AntiCheatingGroupContainer = ({
       <SettingContainer id="safe-exam-browser-setting">
         <DetailsTooltip
           width={tootltipWidth}
-          title="Require Safe Exam Browser / Kiosk Mode"
-          content="Ensure a secure testing environment by using Safe Exam Browser or Edulastic Kiosk Mode to lockdown the student's device. To use this feature, Safe Exam Browser (on Windows/Mac/iPad) must be installed on the student device. On Chromebook, Edulastic Kiosk app must be installed.
-          The quit password can be used by teacher or proctor to safely exit Safe Exam Browser in the middle of an assessment. The quit password should not be revealed to the students. The quit password cannot be used to exit Chromebook Kiosk mode."
+          title={safeModeI18nTranslation(t, 'title')}
+          content={safeModeI18nTranslation(t, 'info')}
           placement="rightTop"
           premium={assessmentSuperPowersRequireSafeExamBrowser}
         />
@@ -535,4 +537,4 @@ const Styled2ndLine = Styled.div`
   padding-left:24px;
 `
 
-export default AntiCheatingGroupContainer
+export default withNamespaces('author')(AntiCheatingGroupContainer)

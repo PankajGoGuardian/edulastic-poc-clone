@@ -477,7 +477,7 @@ const AntiCheatingGroupContainer = ({
         <StyledRow gutter={16} mb="15px">
           <Col span={10}>
             <Label style={{ display: 'flex' }}>
-              Require Safe Exam Browser / Kiosk Mode
+              {safeModeI18nTranslation(t, 'title')}
             </Label>
           </Col>
           <Col span={14}>

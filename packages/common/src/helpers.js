@@ -23,6 +23,8 @@ export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
 export const checkIsChromeOs = () => /(CrOS)/.test(window.navigator.userAgent)
 
+export const isKioskAppEnabled = () => !!AppConfig.kioskChromeAppId
+
 export function handleChromeOsSEB({
   testId,
   userId,
@@ -45,8 +47,12 @@ export function handleChromeOsSEB({
       })
       triggerKioskApp(extensionAppId, redirectUrl)
     } else {
+      let msg = `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`
+      if (isKioskAppEnabled()) {
+        msg = `This Assignment has been assigned with Kiosk mode which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device.`
+      }
       notification({
-        msg: `This Assignment has been assigned with Kiosk mode which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device.`,
+        msg,
         duration: 7,
       })
     }

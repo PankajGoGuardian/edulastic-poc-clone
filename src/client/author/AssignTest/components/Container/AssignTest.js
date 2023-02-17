@@ -104,7 +104,6 @@ const {
   TEST_SETTINGS_SAVE_LIMIT,
   testSettingsOptions,
   docBasedSettingsOptions,
-  ATTEMPT_WINDOW_TYPE,
 } = testConst
 
 const parentMenu = {
@@ -246,9 +245,6 @@ class AssignTest extends React.Component {
             assignmentPolicyOptions.POLICY_AUTO_ON_DUEDATE,
         testType: isAdmin ? COMMON_ASSESSMENT : ASSESSMENT,
         playerSkinType: testSettings.playerSkinType,
-        attemptWindow: {
-          type: ATTEMPT_WINDOW_TYPE.DEFAULT,
-        },
         ...additionalSettings,
       })
       if (isEmpty(assignments) && testId) {
@@ -261,9 +257,6 @@ class AssignTest extends React.Component {
             restrictNavigationOutAttemptsThreshold:
               testSettings.restrictNavigationOutAttemptsThreshold,
             blockSaveAndContinue: testSettings.blockSaveAndContinue,
-            attemptWindow: {
-              type: ATTEMPT_WINDOW_TYPE.DEFAULT,
-            },
           }
         : {}
       this.updateAssignmentNew({

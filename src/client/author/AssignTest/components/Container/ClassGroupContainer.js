@@ -1,5 +1,5 @@
 import React from 'react'
-import { SelectInputStyled, FieldLabel, EduIf } from '@edulastic/common'
+import { SelectInputStyled, FieldLabel } from '@edulastic/common'
 import { test as testConst } from '@edulastic/constants'
 import { withNamespaces } from '@edulastic/localization'
 import { Col, Select, Tooltip } from 'antd'
@@ -43,7 +43,6 @@ const ClassGroupContainer = ({
   selectedResourcesAction,
   createClassHandler,
   t,
-  isPremiumUser,
 }) => {
   const { tags = testSettings.tags } = assignment
   return (
@@ -173,20 +172,19 @@ const ClassGroupContainer = ({
           </Col>
         </StyledRow>
       </SettingContainer>
-      <EduIf condition={isPremiumUser}>
-        <SettingContainer id="student-attempt-window-setting">
-          <DetailsTooltip
-            width={tootltipWidth}
-            title={t('studentAttemptTimeWindow.title')}
-            content={t('studentAttemptTimeWindow.toolTipMsg')}
-            premium
-            placement="rightTop"
-          />
-          <StyledRow gutter={16}>
-            <AttemptWindowTypeSelector changeField={changeField} />
-          </StyledRow>
-        </SettingContainer>
-      </EduIf>
+
+      <SettingContainer id="student-attempt-window-setting">
+        <DetailsTooltip
+          width={tootltipWidth}
+          title={t('studentAttemptTimeWindow.title')}
+          content={t('studentAttemptTimeWindow.toolTipMsg')}
+          premium
+          placement="rightTop"
+        />
+        <StyledRow gutter={16}>
+          <AttemptWindowTypeSelector changeField={changeField} />
+        </StyledRow>
+      </SettingContainer>
 
       <SettingContainer id="tags-setting">
         <DetailsTooltip

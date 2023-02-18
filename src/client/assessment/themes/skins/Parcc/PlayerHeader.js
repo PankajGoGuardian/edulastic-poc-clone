@@ -25,7 +25,7 @@ import {
   LogoCompact,
   MainActionWrapper,
 } from '../../common'
-
+import { showLineReaderAction } from '../../../../common/components/LineReader/duck'
 import { MAX_MOBILE_WIDTH } from '../../../constants/others'
 
 import ReviewToolbar from './ReviewToolbar'
@@ -79,6 +79,7 @@ const PlayerHeader = ({
   timedAssignment,
   utaId,
   groupId,
+  showLineReader,
   hidePause,
   blockNavigationToAnsweredQuestions = false,
   setSettingsModalVisibility,
@@ -113,6 +114,8 @@ const PlayerHeader = ({
         return setSettingsModalVisibility(true)
       case 'changeColor':
         return setShowChangeColor(true)
+      case 'showLineReaderMask':
+        return showLineReader()
       default:
         break
     }
@@ -298,6 +301,7 @@ const enhance = compose(
     }),
     {
       setSettingsModalVisibility: setSettingsModalVisibilityAction,
+      showLineReader: showLineReaderAction,
     }
   )
 )

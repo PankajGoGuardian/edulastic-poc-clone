@@ -15,6 +15,7 @@ const LineReader = ({
   visible,
   hideLineReader,
   btnComponent,
+  hideButton,
   btnText,
   onClick,
 }) => {
@@ -52,11 +53,18 @@ const LineReader = ({
   }, [btnComponent])
 
   return (
-    <Tooltip placement="top" title="Line Reader">
-      <Button isGhost IconBtn data-cy="lineReaderButton" onClick={handleClick}>
-        {btnText || <IconLineReader />}
-      </Button>
-    </Tooltip>
+    !hideButton && (
+      <Tooltip placement="top" title="Line Reader">
+        <Button
+          isGhost
+          IconBtn
+          data-cy="lineReaderButton"
+          onClick={handleClick}
+        >
+          {btnText || <IconLineReader />}
+        </Button>
+      </Tooltip>
+    )
   )
 }
 

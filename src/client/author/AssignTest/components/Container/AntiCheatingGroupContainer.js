@@ -470,14 +470,14 @@ const AntiCheatingGroupContainer = ({
         <DetailsTooltip
           width={tootltipWidth}
           title={safeModeI18nTranslation(t, 'title')}
-          content={safeModeI18nTranslation(t, 'info')}
+          content={safeModeI18nTranslation(t, 'tooltip')}
           placement="rightTop"
           premium={assessmentSuperPowersRequireSafeExamBrowser}
         />
         <StyledRow gutter={16} mb="15px">
           <Col span={10}>
             <Label style={{ display: 'flex' }}>
-              Require Safe Exam Browser / Kiosk Mode
+              {safeModeI18nTranslation(t, 'title')}
             </Label>
           </Col>
           <Col span={14}>

@@ -101,7 +101,7 @@ export async function proxyDemoPlaygroundUser(isAutomation = false) {
 }
 
 /**
- * @param {'title' | 'info'} key
+ * @param {'title' | 'info' | 'tooltip'} key
  */
 export const safeModeI18nTranslation = (t, key) =>
   t(

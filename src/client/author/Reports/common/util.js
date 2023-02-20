@@ -525,8 +525,7 @@ export const getHeaderSettings = (
   onDownloadCSVClickCB,
   onRefineResultsCB
 ) => {
-  let loc = reportType
-  //  props?.match?.params?.reportType
+  const loc = reportType
   if (
     !loc ||
     (loc &&
@@ -535,7 +534,6 @@ export const getHeaderSettings = (
         loc === 'shared-reports' ||
         loc === 'data-warehouse-reports'))
   ) {
-    loc = !loc ? reportType : loc
     const breadcrumbInfo = navigation.locToData[loc].breadcrumb
     if (loc === 'custom-reports' && dynamicBreadcrumb) {
       const isCustomReportLoading =

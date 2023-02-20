@@ -10,6 +10,7 @@ import MoreReportsContainer from './common/components/MoreReportsContainer'
 import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  DW_DASHBOARD_URL,
 } from '../../common/constants/dataWarehouseReports'
 
 const DataWarehoureReportCardsWrapper = ({ loc }) => {
@@ -27,6 +28,13 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         title="Whole Learner Report"
         description="See the performance of a particular student accross Edulastic &amp; external tests"
         url={DW_WLR_REPORT_URL}
+        loc={loc}
+      />
+      <ReportLinkCard
+        IconThumbnail={IconWholeLearnerReport}
+        title="Dashboard"
+        description="See the performance of a particular student accross Edulastic &amp; external tests"
+        url={DW_DASHBOARD_URL}
         loc={loc}
       />
       <MoreReportsContainer />

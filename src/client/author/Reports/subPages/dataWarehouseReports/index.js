@@ -5,9 +5,11 @@ import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import WholeLearnerReport from './wholeLearnerReport'
 
 import MultipleAssessmentReport from './MultipleAssessmentReport'
+import Dashboard from './Dashboard'
 import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  DW_DASHBOARD_URL,
 } from '../../common/constants/dataWarehouseReports'
 
 const DataWarehouseReportsContainer = ({
@@ -53,6 +55,26 @@ const DataWarehouseReportsContainer = ({
           setShowHeader(true)
           return (
             <MultipleAssessmentReport
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
+              isPrinting={isPrinting}
+              showApply={showApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path={DW_DASHBOARD_URL}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <Dashboard
               {..._props}
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}

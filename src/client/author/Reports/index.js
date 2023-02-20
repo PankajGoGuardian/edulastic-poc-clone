@@ -21,6 +21,7 @@ import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
 import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  DW_DASHBOARD_URL,
 } from './common/constants/dataWarehouseReports'
 import {
   getCsvDownloadingState,
@@ -456,7 +457,7 @@ const Container = (props) => {
           }}
         />
         <Route
-          path={[DW_WLR_REPORT_URL, DW_MAR_REPORT_URL]}
+          path={[DW_WLR_REPORT_URL, DW_MAR_REPORT_URL, DW_DASHBOARD_URL]}
           render={(_props) => (
             <DataWarehouseReportsContainer
               {..._props}

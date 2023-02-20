@@ -458,7 +458,7 @@ const getRouteByGeneralRoute = (user) => {
       if (isDataOpsOnlyUser) {
         return '/author/data-warehouse'
       }
-      if (isInsightsOnlyUser) {
+      if (!premium || isInsightsOnlyUser) {
         return '/author/reports'
       }
       return '/author/assignments'

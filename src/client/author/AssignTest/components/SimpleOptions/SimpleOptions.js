@@ -627,6 +627,7 @@ class SimpleOptions extends React.Component {
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
                   createClassHandler={createClassHandler}
+                  isPremiumUser={features?.premium}
                 />
               </TabContentContainer>
             )}

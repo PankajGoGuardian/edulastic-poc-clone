@@ -12,6 +12,7 @@ import {
   range,
   isEmpty,
   every,
+  some,
 } from 'lodash'
 
 const { getProficiencyBand, percentage, getFormattedName } = reportUtils.common
@@ -19,6 +20,7 @@ const { getColorsByInterpolation } = colorUtils
 
 // decimal base value for parseInt()
 export const DECIMAL_BASE = 10
+export const TESTIDS_COUNT_FOR_PRE_POST = 2
 
 const HSL_COLOR_GREEN = [116, 34, 52]
 const HSL_COLOR_RED = [0, 73, 63]
@@ -275,8 +277,8 @@ export const getTableData = (
     const studentsCount = sumBy(data, (d) =>
       parseInt(d.totalStudentCount, DECIMAL_BASE)
     )
-    const preAvgScore = round(sumBy(data, 'preTestScore') / studentsCount, 2)
-    const postAvgScore = round(sumBy(data, 'postTestScore') / studentsCount, 2)
+    const preAvgScore = round(sumBy(data, 'preTestScore') / studentsCount)
+    const postAvgScore = round(sumBy(data, 'postTestScore') / studentsCount)
     const preMaxScore = get(maxBy(data, 'preTestMaxScore'), 'preTestMaxScore')
     const postMaxScore = get(
       maxBy(data, 'postTestMaxScore'),
@@ -373,7 +375,7 @@ export const addStudentToGroupFeatureEnabled = (
 export function getNoDataContainerText(
   settings,
   error,
-  canFetchBySharedReport
+  isInvalidSharedFilters
 ) {
   if (settings.requestFilters?.termId) {
     if (error.msg === 'InvalidTestIds') {
@@ -381,14 +383,60 @@ export function getNoDataContainerText(
     }
     return 'No data available currently.'
   }
-  if (!canFetchBySharedReport) {
+  if (isInvalidSharedFilters) {
     return (
-      <>
+      <p>
         Pre vs. Post report is not supported for the shared filters.
         <br />
-        Please reach out to support at support@edulastic.com.
-      </>
+        Please reach out to support at&nbsp;
+        <a href="mailto:support@edulastic.com" target="_blank" rel="noreferrer">
+          support@edulastic.com
+        </a>
+        .
+      </p>
     )
   }
   return ''
+}
+
+const checkHasPrePostSharedFilters = (sharedReportFilters) =>
+  every([sharedReportFilters?.preTestId, sharedReportFilters?.postTestId])
+
+const checkCanFillPrePostFromTestIds = (sharedReportFilters) =>
+  sharedReportFilters?.testIds?.split(',').length === TESTIDS_COUNT_FOR_PRE_POST
+
+export function checkIsInvalidSharedFilters(
+  sharedReportFilters,
+  isSharedReport
+) {
+  const hasPrePostSharedFilters = checkHasPrePostSharedFilters(
+    sharedReportFilters
+  )
+  const canFillPrePostFromTestIds = checkCanFillPrePostFromTestIds(
+    sharedReportFilters
+  )
+
+  const canFetchBySharedReport = every([
+    isSharedReport,
+    some([hasPrePostSharedFilters, canFillPrePostFromTestIds]),
+  ])
+  return every([isSharedReport, !canFetchBySharedReport])
+}
+
+export function getReportFilters(
+  isSharedReport,
+  sharedReportFilters,
+  requestFilters
+) {
+  if (
+    isSharedReport &&
+    !checkHasPrePostSharedFilters(sharedReportFilters) &&
+    checkCanFillPrePostFromTestIds(sharedReportFilters)
+  ) {
+    ;[
+      sharedReportFilters.preTestId,
+      sharedReportFilters.postTestId,
+    ] = sharedReportFilters?.testIds?.split(',')
+  }
+  return sharedReportFilters || requestFilters
 }

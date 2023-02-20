@@ -1,25 +1,35 @@
 import React from 'react'
 import { Button, Col } from 'antd'
 import styled from 'styled-components'
+import { checkIsChromeOs } from '@edulastic/common/src/helpers'
 
-const SebQuitConfirm = () => (
-  <MainContainer>
-    <Container>
-      <p>Do you really want to quit SEB?</p>
-      <Col md={24} sm={24}>
-        {/* its completely fine hardcoding this url, since this is just an indication */}
-        <StyledButton
-          href="https://app.edulastic.com/home/grades"
-          data-cy="submit"
-          type="primary"
-          btnType={2}
-        >
-          Quit SEB
-        </StyledButton>
-      </Col>
-    </Container>
-  </MainContainer>
-)
+const SebQuitConfirm = () => {
+  const isChromeOs = checkIsChromeOs()
+  let message = `Do you really want to quit SEB?`
+  let buttonTxt = `Quit SEB`
+  if (isChromeOs) {
+    message = `Do you really want to quit Kiosk?`
+    buttonTxt = `Quit Kiosk`
+  }
+  return (
+    <MainContainer>
+      <Container>
+        <p>{message}</p>
+        <Col md={24} sm={24}>
+          {/* its completely fine hardcoding this url, since this is just an indication */}
+          <StyledButton
+            href="https://app.edulastic.com/home/grades"
+            data-cy="submit"
+            type="primary"
+            btnType={2}
+          >
+            {buttonTxt}
+          </StyledButton>
+        </Col>
+      </Container>
+    </MainContainer>
+  )
+}
 
 export default SebQuitConfirm
 

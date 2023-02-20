@@ -10,7 +10,9 @@ import {
   find,
   indexOf,
   keyBy,
+  pullAllBy,
 } from 'lodash'
+import qs from 'qs'
 import next from 'immer'
 import moment from 'moment'
 import calcMethod from './static/json/calcMethod.json'
@@ -510,4 +512,73 @@ export const tooltipParams = {
   spaceForPercentageLabel: 20,
   navButtonMargin: 50,
   xAxisHeight: 100,
+}
+
+export const getHeaderSettings = (
+  reportType,
+  navigation,
+  navigationItems,
+  location,
+  dynamicBreadcrumb,
+  onShareClickCB,
+  onPrintClickCB,
+  onDownloadCSVClickCB,
+  onRefineResultsCB
+) => {
+  let loc = reportType
+  //  props?.match?.params?.reportType
+  if (
+    !loc ||
+    (loc &&
+      (loc === 'standard-reports' ||
+        loc === 'custom-reports' ||
+        loc === 'shared-reports' ||
+        loc === 'data-warehouse-reports'))
+  ) {
+    loc = !loc ? reportType : loc
+    const breadcrumbInfo = navigation.locToData[loc].breadcrumb
+    if (loc === 'custom-reports' && dynamicBreadcrumb) {
+      const isCustomReportLoading =
+        location.pathname.split('custom-reports')[1].length > 1 || false
+      if (isCustomReportLoading) {
+        pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
+        breadcrumbInfo.push({
+          title: dynamicBreadcrumb,
+          to: '',
+        })
+      } else if (
+        breadcrumbInfo &&
+        breadcrumbInfo[breadcrumbInfo.length - 1].to === ''
+      ) {
+        pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
+      }
+    }
+    return {
+      loc,
+      group: navigation.locToData[loc].group,
+      title: navigation.locToData[loc].title,
+      breadcrumbData: breadcrumbInfo,
+      navigationItems,
+    }
+  }
+  const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
+  const reportId = qs.parse(location.search, {
+    ignoreQueryPrefix: true,
+  }).reportId
+  const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
+  if (isSharedReport) {
+    breadcrumbInfo[0] = navigation.locToData['shared-reports'].breadcrumb[0]
+  }
+  return {
+    loc,
+    group: navigation.locToData[loc].group,
+    title: navigation.locToData[loc].title,
+    onShareClickCB,
+    onPrintClickCB,
+    onDownloadCSVClickCB,
+    onRefineResultsCB,
+    breadcrumbData: breadcrumbInfo,
+    navigationItems,
+    isSharedReport,
+  }
 }

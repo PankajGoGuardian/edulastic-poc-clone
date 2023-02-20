@@ -1,8 +1,7 @@
-import { get, pullAllBy } from 'lodash'
-import React, { useEffect, useMemo, useState } from 'react'
+import { get } from 'lodash'
+import React, { useEffect, useState, useMemo } from 'react'
 import { connect } from 'react-redux'
 import { Route } from 'react-router-dom'
-import qs from 'qs'
 
 import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
@@ -52,33 +51,40 @@ import {
   getVerificationTS,
   isDefaultDASelector,
 } from '../../student/Login/ducks'
+import { getHeaderSettings } from './common/util'
 
-const Container = (props) => {
-  const {
-    history,
-    role,
-    isCsvDownloading,
-    isPrinting,
-    match,
-    isCliUser,
-    showCustomReport,
-    showDataWarehouseReport,
-    loadingSharedReports,
-    sharedReportList,
-    hasCsvDocs,
-    updateCsvDocs,
-    isSAWithoutSchools,
-    toggleAdminAlertModal,
-    emailVerified,
-    verificationTS,
-    isDefaultDA,
-    toggleVerifyEmailModal,
-  } = props
+const Container = ({
+  history,
+  role,
+  isCsvDownloading,
+  isPrinting,
+  match,
+  isCliUser,
+  showCustomReport,
+  showDataWarehouseReport,
+  loadingSharedReports,
+  sharedReportList,
+  hasCsvDocs,
+  updateCsvDocs,
+  isSAWithoutSchools,
+  toggleAdminAlertModal,
+  emailVerified,
+  verificationTS,
+  isDefaultDA,
+  toggleVerifyEmailModal,
+  location,
+  setSharingState,
+  setPrintingState,
+  setCsvDownloadingState,
+  premium,
+  fetchCollaborationGroups,
+  fetchSharedReports,
+}) => {
   const [showHeader, setShowHeader] = useState(true)
   const [hideHeader, setHideHeader] = useState(false)
   const [showFilter, setShowFilter] = useState(false)
   const [showApply, setShowApply] = useState(false)
-  const reportType = get(props, 'match.params.reportType', 'standard-reports')
+  const reportType = get(match, 'params.reportType', 'standard-reports')
   const groupName = navigation.locToData[reportType].group
   const [navigationItems, setNavigationItems] = useState(
     navigation.navigation[groupName]
@@ -105,13 +111,13 @@ const Container = (props) => {
     }
     window.onbeforeprint = () => {
       // set 1 so that `isPrinting` dependant useEffect logic doesn't executed
-      if (!isPrinting) props.setPrintingStateAction(1)
+      if (!isPrinting) setPrintingState(1)
     }
     window.onafterprint = () => {
-      props.setPrintingStateAction(false)
+      setPrintingState(false)
     }
-    props.fetchCollaborationGroups()
-    props.fetchSharedReports()
+    fetchCollaborationGroups()
+    fetchSharedReports()
     return () => {
       window.onbeforeprint = () => {}
       window.onafterprint = () => {}
@@ -119,28 +125,21 @@ const Container = (props) => {
   }, [])
 
   useEffect(() => {
-    if (
-      reportType === 'standard-reports' ||
-      reportType === 'custom-reports' ||
-      reportType === 'shared-reports' ||
-      reportType === 'data-warehouse-reports'
-    ) {
-      setNavigationItems(navigation.navigation[groupName])
-    }
-  }, [reportType])
+    setNavigationItems(navigation.navigation[groupName])
+  }, [groupName])
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS BEGIN |-----|-----|-----|-----|----- //
 
   const onShareClickCB = () => {
-    props.setSharingStateAction(true)
+    setSharingState(true)
   }
 
   const onPrintClickCB = () => {
-    props.setPrintingStateAction(true)
+    setPrintingState(true)
   }
 
   const onDownloadCSVClickCB = () => {
-    props.setCsvDownloadingStateAction(true)
+    setCsvDownloadingState(true)
   }
 
   const onRefineResultsCB = (event, status, type) => {
@@ -155,7 +154,7 @@ const Container = (props) => {
 
   useEffect(() => {
     if (isCsvDownloading) {
-      props.setCsvDownloadingStateAction(false)
+      setCsvDownloadingState(false)
     }
   }, [isCsvDownloading])
 
@@ -168,63 +167,21 @@ const Container = (props) => {
 
   // -----|-----|-----|-----|-----| HEADER BUTTON EVENTS ENDED |-----|-----|-----|-----|----- //
 
-  const headerSettings = useMemo(() => {
-    let loc = props?.match?.params?.reportType
-    if (
-      !loc ||
-      (loc &&
-        (loc === 'standard-reports' ||
-          loc === 'custom-reports' ||
-          loc === 'shared-reports' ||
-          loc === 'data-warehouse-reports'))
-    ) {
-      loc = !loc ? reportType : loc
-      const breadcrumbInfo = navigation.locToData[loc].breadcrumb
-      if (loc === 'custom-reports' && dynamicBreadcrumb) {
-        const isCustomReportLoading =
-          props.location.pathname.split('custom-reports')[1].length > 1 || false
-        if (isCustomReportLoading) {
-          pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
-          breadcrumbInfo.push({
-            title: dynamicBreadcrumb,
-            to: '',
-          })
-        } else if (
-          breadcrumbInfo &&
-          breadcrumbInfo[breadcrumbInfo.length - 1].to === ''
-        ) {
-          pullAllBy(breadcrumbInfo, [{ to: '' }], 'to')
-        }
-      }
-      return {
-        loc,
-        group: navigation.locToData[loc].group,
-        title: navigation.locToData[loc].title,
-        breadcrumbData: breadcrumbInfo,
+  const headerSettings = useMemo(
+    () =>
+      getHeaderSettings(
+        reportType,
+        navigation,
         navigationItems,
-      }
-    }
-    const breadcrumbInfo = [...navigation.locToData[loc].breadcrumb]
-    const reportId = qs.parse(props.location.search, {
-      ignoreQueryPrefix: true,
-    }).reportId
-    const isSharedReport = !!(reportId && reportId.toLowerCase() !== 'all')
-    if (isSharedReport) {
-      breadcrumbInfo[0] = navigation.locToData['shared-reports'].breadcrumb[0]
-    }
-    return {
-      loc,
-      group: navigation.locToData[loc].group,
-      title: navigation.locToData[loc].title,
-      onShareClickCB,
-      onPrintClickCB,
-      onDownloadCSVClickCB,
-      onRefineResultsCB,
-      breadcrumbData: breadcrumbInfo,
-      navigationItems,
-      isSharedReport,
-    }
-  })
+        location,
+        dynamicBreadcrumb,
+        onShareClickCB,
+        onPrintClickCB,
+        onDownloadCSVClickCB,
+        onRefineResultsCB
+      ),
+    [navigationItems, dynamicBreadcrumb, location]
+  )
 
   if (loadingSharedReports) {
     return <Spin size="small" />
@@ -283,7 +240,7 @@ const Container = (props) => {
               setShowHeader(true)
               return (
                 <StandardReport
-                  premium={props.premium}
+                  premium={premium}
                   isAdmin={isAdmin}
                   loc={reportType}
                 />
@@ -356,7 +313,7 @@ const Container = (props) => {
               isCliUser={isCliUser}
               isPrinting={isPrinting}
               breadcrumbData={headerSettings.breadcrumbData}
-              premium={props.premium}
+              premium={premium}
               showFilter={showFilter}
               showApply={showApply}
               onRefineResultsCB={onRefineResultsCB}
@@ -501,9 +458,9 @@ const enhance = connect(
     isSAWithoutSchools: isSAWithoutSchoolsSelector(state),
   }),
   {
-    setSharingStateAction,
-    setPrintingStateAction,
-    setCsvDownloadingStateAction,
+    setSharingState: setSharingStateAction,
+    setPrintingState: setPrintingStateAction,
+    setCsvDownloadingState: setCsvDownloadingStateAction,
     fetchSharedReports: getSharedReportsAction,
     fetchCollaborationGroups: getCollaborativeGroupsAction,
     updateCsvDocs: updateCsvDocsAction,

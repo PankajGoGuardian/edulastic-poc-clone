@@ -109,6 +109,7 @@ import {
 import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
+import { safeModeI18nTranslation } from '../../../../../authUtils'
 
 const {
   settingCategories,
@@ -2221,7 +2222,7 @@ class Setting extends Component {
                     <SettingContainer>
                       <Title>
                         <span>
-                          Require Safe Exam Browser{' '}
+                          {safeModeI18nTranslation(i18translate, 'title')}
                           <DollarPremiumSymbol
                             premium={
                               assessmentSuperPowersRequireSafeExamBrowser
@@ -2229,13 +2230,7 @@ class Setting extends Component {
                           />
                         </span>
                         <Tooltip
-                          title="Ensure a secure testing environment by using Safe Exam Browser
-                      to lockdown the student's device. To use this feature, Safe Exam Browser 
-                      (on Windows/Mac/iPad) must be installed on the student device. The quit 
-                      password can be used by teacher or proctor to safely exit Safe Exam Browser 
-                      in the middle of an assessment. The quit password should not be revealed to 
-                      the students. If you select this option, students must use devices (Windows, 
-                      Mac or iPad) with Safe Exam Browser installed."
+                          title={safeModeI18nTranslation(i18translate, 'info')}
                         >
                           <IconInfo
                             color={lightGrey9}
@@ -2284,16 +2279,7 @@ class Setting extends Component {
                           </Col>
                         </Row>
                         <Description>
-                          Ensure a secure testing environment by using Safe Exam
-                          Browser to lockdown the student&apos;s device. To use
-                          this feature, Safe Exam Browser (on Windows/Mac/iPad)
-                          must be installed on the student device. The quit
-                          password can be used by teacher or proctor to safely
-                          exit Safe Exam Browser in the middle of an assessment.
-                          The quit password should not be revealed to the
-                          students. If you select this option, students must use
-                          devices (Windows, Mac or iPad) with Safe Exam Browser
-                          installed.
+                          {safeModeI18nTranslation(i18translate, 'info')}
                         </Description>
                       </Body>
                     </SettingContainer>

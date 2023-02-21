@@ -1,5 +1,6 @@
 import React from 'react'
 import { SubHeader } from '../../../common/components/Header'
+import MasonGrid from './components/MasonGrid'
 
 const Dashboard = ({ breadcrumbData, isCliUser }) => {
   return (
@@ -9,6 +10,7 @@ const Dashboard = ({ breadcrumbData, isCliUser }) => {
         isCliUser={isCliUser}
         alignment="baseline"
       />
+      <MasonGrid />
     </>
   )
 }

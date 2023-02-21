@@ -349,4 +349,5 @@ export { default as IconMultipleAssessmentReportDW } from './src/IconMultipleAss
 export { default as IconWholeLearnerReport } from './src/IconWholeLearnerReport'
 export { default as IconCheckMark } from './src/IconCheckMark'
 export { default as IconStudent } from './src/IconStudent'
+export { default as IconDashboardReport } from './src/IconDashboardReport'
 export { default as IconExternalLink } from './src/IconExternalLink'

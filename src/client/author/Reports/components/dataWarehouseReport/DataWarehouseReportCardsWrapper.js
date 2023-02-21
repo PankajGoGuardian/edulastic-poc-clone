@@ -4,6 +4,7 @@ import styled from 'styled-components'
 import {
   IconWholeLearnerReport,
   IconMultipleAssessmentReportDW,
+  IconDashboardReport,
 } from '@edulastic/icons'
 import ReportLinkCard from './common/components/ReportLinkCard'
 import MoreReportsContainer from './common/components/MoreReportsContainer'
@@ -31,9 +32,9 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         loc={loc}
       />
       <ReportLinkCard
-        IconThumbnail={IconWholeLearnerReport}
+        IconThumbnail={IconDashboardReport}
         title="Dashboard"
-        description="See the performance of a particular student accross Edulastic &amp; external tests"
+        description="View key health checks for students' performance. Drill down to analyze and intervene."
         url={DW_DASHBOARD_URL}
         loc={loc}
       />

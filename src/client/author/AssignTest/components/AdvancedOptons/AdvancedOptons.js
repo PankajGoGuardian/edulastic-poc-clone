@@ -252,6 +252,7 @@ class AdvancedOptons extends React.Component {
                       onClick={() => {
                         setShowAdvanceSearchModal(true)
                       }}
+                      data-cy="advancedSearchButton"
                     >
                       Advanced Search
                     </OkButton>

@@ -110,6 +110,7 @@ const _QueryBuilder = ({
           isGhost
           onClick={handleCancel}
           style={{ minWidth: '100px' }}
+          data-cy="advancedSearchCancelButton"
         >
           Cancel
         </CancelButton>
@@ -118,6 +119,7 @@ const _QueryBuilder = ({
             handleQuickFilter()
           }}
           style={{ minWidth: '100px' }}
+          data-cy="findClassButton"
         >
           Find Classes
         </OkButton>

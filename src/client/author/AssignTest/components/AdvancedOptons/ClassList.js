@@ -643,6 +643,7 @@ class ClassList extends React.Component {
                 onClick={() => {
                   setShowAdvanceSearchModal(true)
                 }}
+                data-cy="advancedSearchTag"
               >
                 ADVANCED SEARCH
               </AdvancedSearchTag>
@@ -652,25 +653,26 @@ class ClassList extends React.Component {
                 style={{ cursor: 'pointer' }}
                 onClick={this.removeAdvanceSearch}
                 color={tagTextColor}
+                data-cy="advancedSearchTagRemoveButton"
               />
             </AdvancedSearchTagContainer>
           </EduIf>
           <InfoSection>
-            <div>
+            <div data-cy="schoolSearchInfo">
               <span>School(s)</span>
               <span>
                 <span>{schoolsCount}/</span>
                 <span>{totalSchoolsCount}</span>
               </span>
             </div>
-            <div>
+            <div data-cy="classSearchInfo">
               <span>Class(es)</span>
               <span>
                 <span>{classesCount}/</span>
                 <span>{selectableClassList.length}</span>
               </span>
             </div>
-            <div>
+            <div data-cy="studentSearchInfo">
               <span>Student(s)</span>
               <span>
                 <span>{studentsCount}/</span>

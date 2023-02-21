@@ -30,7 +30,17 @@ const ValueEditor = (props) => {
     loadCourseListData,
     loadTagListData,
     storeSelectedData,
+    path,
   } = props
+
+  const dataCyValue = (pathLevel = []) => {
+    if (pathLevel.length) {
+      if (pathLevel.length == 2)
+        return `groupLevel-${pathLevel[0]}-valueEditor-${pathLevel[1]}`
+      return `valueEditor-${pathLevel[0]}`
+    }
+    return `valueEditor`
+  }
 
   const enableSearchFields = {
     [fieldKey.schools]: { key: 'schools', func: loadSchoolsData },
@@ -70,6 +80,7 @@ const ValueEditor = (props) => {
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
       <EduThen>
         <StyledSelect
+          data-cy={dataCyValue(path)}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode="multiple"
           style={{ width: '200px' }}
@@ -100,7 +111,11 @@ const ValueEditor = (props) => {
         >
           {values.map((item) => {
             return (
-              <Select.Option value={item.value} key={item.value}>
+              <Select.Option
+                value={item.value}
+                key={item.value}
+                data-cy={item.value}
+              >
                 {item.label}
               </Select.Option>
             )
@@ -109,6 +124,7 @@ const ValueEditor = (props) => {
       </EduThen>
       <EduElse>
         <StyledSelect
+          data-cy={dataCyValue(path)}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode={type === 'multiselect' ? 'multiple' : 'default'}
           placeholder={`Select ${label}`}
@@ -124,7 +140,11 @@ const ValueEditor = (props) => {
         >
           {values.map((item) => {
             return (
-              <Select.Option value={item.value} key={item.value}>
+              <Select.Option
+                value={item.value}
+                key={item.value}
+                data-cy={item.value}
+              >
                 {item.label}
               </Select.Option>
             )

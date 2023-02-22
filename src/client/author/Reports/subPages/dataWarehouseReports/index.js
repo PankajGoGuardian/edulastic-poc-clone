@@ -3,11 +3,13 @@ import { Route } from 'react-router-dom'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 
 import WholeLearnerReport from './wholeLearnerReport'
+import AttendanceSummary from './AttendanceSummary'
 
 import MultipleAssessmentReport from './MultipleAssessmentReport'
 import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  ATTENDANCE_SUMMARY_REPORT_URL,
 } from '../../common/constants/dataWarehouseReports'
 
 const DataWarehouseReportsContainer = ({
@@ -48,7 +50,7 @@ const DataWarehouseReportsContainer = ({
       />
       <Route
         exact
-        path={DW_MAR_REPORT_URL}
+        path={`${DW_MAR_REPORT_URL}:studentId?`}
         render={() => {
           setShowHeader(true)
           return (
@@ -57,6 +59,25 @@ const DataWarehouseReportsContainer = ({
               breadcrumbData={breadcrumbData}
               isCliUser={isCliUser}
               isPrinting={isPrinting}
+              showApply={showApply}
+              showFilter={showFilter}
+              onRefineResultsCB={onRefineResultsCB}
+              loc={loc}
+              updateNavigation={updateNavigation}
+            />
+          )
+        }}
+      />
+      <Route
+        exact
+        path={`${ATTENDANCE_SUMMARY_REPORT_URL}:studentId?`}
+        render={() => {
+          setShowHeader(true)
+          return (
+            <AttendanceSummary
+              {..._props}
+              breadcrumbData={breadcrumbData}
+              isCliUser={isCliUser}
               showApply={showApply}
               showFilter={showFilter}
               onRefineResultsCB={onRefineResultsCB}

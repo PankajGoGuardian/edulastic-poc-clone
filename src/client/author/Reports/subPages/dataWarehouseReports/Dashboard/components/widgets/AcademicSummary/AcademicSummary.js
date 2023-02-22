@@ -2,6 +2,12 @@ import { greyThemeDark7 } from '@edulastic/colors'
 import React, { useState } from 'react'
 import SimplePieChart from '../../../../../../common/components/charts/SimplePieChart'
 import {
+  availableTestTypes,
+  getCellColor,
+  PieChartData,
+  selectedTestType,
+} from '../../../utils'
+import {
   ContentWrapper,
   StyledDashedHr,
   DashedVR,
@@ -13,31 +19,32 @@ import AcademicSummaryWidgetFilters from './Filters'
 
 const title = 'ACADEMIC SUMMARY AND PERFORMANCE DISTRIBUTION'
 
-const AcademicSummary = ({ academicSummary }) => {
-  const [filters, setFilters] = useState({})
+const AcademicSummary = ({
+  academicSummary,
+  profileId,
+  performanceBandList,
+  bandInfo,
+}) => {
+  const [filters, setFilters] = useState({
+    performanceBand:
+      performanceBandList.find((p) => p.key === profileId) ||
+      performanceBandList[0],
+    testType: selectedTestType,
+  })
+
+  const selectedPerformanceBand = (
+    bandInfo.filter((x) => x._id === filters.performanceBand.key)[0] ||
+    bandInfo[0]
+  )?.performanceBand
+
   const {
     avgScore,
     percentageIncrease,
     prevMonth,
     aboveStandard,
   } = academicSummary
-  const PieChartData = [
-    {
-      fill: '#60B14F',
-      value: 35,
-      name: 'Proficient',
-    },
-    {
-      fill: '#EBDD54',
-      value: 45,
-      name: 'Basic',
-    },
-    {
-      fill: '#EF9202',
-      value: 20,
-      name: 'Below Basic',
-    },
-  ]
+
+  const avgScoreCellColor = getCellColor(avgScore, selectedPerformanceBand)
 
   const getChartLabelJSX = (props) => {
     const RADIAN = Math.PI / 180
@@ -86,7 +93,12 @@ const AcademicSummary = ({ academicSummary }) => {
   return (
     <Widget>
       <WidgetHeader title={title} />
-      <AcademicSummaryWidgetFilters filters={filters} setFilters={setFilters} />
+      <AcademicSummaryWidgetFilters
+        filters={filters}
+        setFilters={setFilters}
+        performanceBandsList={performanceBandList}
+        availableTestTypes={availableTestTypes}
+      />
       <ContentWrapper>
         <div>
           <WidgetCell
@@ -94,7 +106,7 @@ const AcademicSummary = ({ academicSummary }) => {
             value={`${avgScore}%`}
             footer={`${percentageIncrease}%`}
             subFooter={`since ${prevMonth}`}
-            color="#cef5d8"
+            color={avgScoreCellColor}
           />
           <StyledDashedHr />
           <WidgetCell

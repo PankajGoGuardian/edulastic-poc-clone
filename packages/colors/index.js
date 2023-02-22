@@ -10,6 +10,7 @@ export const themeColorLight = '#42d184' // light green
 export const themeColorLight1 = '#3DD29F' // light green
 export const themeColorLighter = '#5EB500' // light green
 export const themeColorSecondaryLighter = '#26B96A' // light green
+export const themeColorLighter1 = '#E8F7F4'
 export const themeColorTagsBg = '#D1F9EB'
 export const themeColorBreadcrumb = '#69727E'
 export const themeLightGrayColor = '#BBBFC4'

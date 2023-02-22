@@ -2,6 +2,8 @@ import {
   greyThemeLighter,
   themeLightGrayColor,
   lightGrey9,
+  themeColorLighter1,
+  white,
 } from '@edulastic/colors'
 import { Row } from 'antd'
 import styled from 'styled-components'
@@ -20,13 +22,14 @@ export const Widget = styled.div`
   width: 765px;
   height: ${({ small }) => (small ? '230px' : '450px')};
   border-radius: 20px;
+  background-color: ${white};
   padding-top: 10px;
   box-shadow: 0px 3px 6px #00000029;
   .title {
     font-size: 15px;
     font-weight: bold;
     padding: 11px 16px;
-    background-color: #dcf4e3;
+    background-color: ${themeColorLighter1};
     border-radius: 20px 0px;
   }
   .external-link {
@@ -36,7 +39,7 @@ export const Widget = styled.div`
 `
 export const ContentWrapper = styled.div`
   display: flex;
-  margin-block: 30px;
+  margin-block: 20px;
   justify-content: space-between;
   align-items: center;
   padding-inline: 50px;
@@ -71,7 +74,7 @@ export const DashedVR = styled.div`
 `
 
 export const StyledDashedHr = styled(DashedHr)`
-  margin-block: 30px;
+  margin-block: 20px;
   width: 150px;
   justify: center;
 `
@@ -79,7 +82,7 @@ export const StyledRow = styled(Row)`
   justify-content: space-between;
   align-items: center;
   padding-inline: 80px;
-  margin-top: 30px;
+  margin-top: 40px;
 `
 export const StyledLabel = styled.span`
   font-size: 11px;
@@ -93,4 +96,12 @@ export const StyledDiv = styled.div`
 export const SubFooter = styled.div`
   font-size: 12px;
   color: ${lightGrey9};
+`
+export const DashboardReportContainer = styled.div`
+  margin: 0;
+  padding: 0;
+  @media print {
+    -webkit-print-color-adjust: exact;
+    color-adjust: exact;
+  }
 `

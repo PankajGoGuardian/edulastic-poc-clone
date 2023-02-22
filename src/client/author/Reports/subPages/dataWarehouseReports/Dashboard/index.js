@@ -1,6 +1,9 @@
 import React, { useMemo } from 'react'
 import { SubHeader } from '../../../common/components/Header'
-import { MasonGrid } from './components/common/styledComponents'
+import {
+  MasonGrid,
+  DashboardReportContainer,
+} from './components/common/styledComponents'
 import { AcademicSummary } from './components/widgets/AcademicSummary'
 // import { StandardMastery } from './components/widgets/StandardsMastery'
 import AttendanceSummary from './components/widgets/AttendanceSummary'
@@ -28,7 +31,7 @@ const Dashboard = ({ breadcrumbData, isCliUser }) => {
     [bandInfo]
   )
   return (
-    <>
+    <DashboardReportContainer>
       <SubHeader
         breadcrumbData={breadcrumbData}
         isCliUser={isCliUser}
@@ -44,7 +47,7 @@ const Dashboard = ({ breadcrumbData, isCliUser }) => {
         {/* <StandardMastery /> */}
         <AttendanceSummary attendanceSummary={attendanceSummary} />
       </MasonGrid>
-    </>
+    </DashboardReportContainer>
   )
 }
 export default Dashboard

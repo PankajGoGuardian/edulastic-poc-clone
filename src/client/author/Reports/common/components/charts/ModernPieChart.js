@@ -2,7 +2,7 @@ import React from 'react'
 import { PieChart, Pie, ResponsiveContainer } from 'recharts'
 import { PieChartWrapper } from '../../styled'
 
-const SimplePieChart = ({ data, getChartLabelJSX }) => {
+const ModernPieChart = ({ data, getChartLabelJSX }) => {
   return (
     <PieChartWrapper>
       <ResponsiveContainer width="100%" height="100%">
@@ -13,7 +13,7 @@ const SimplePieChart = ({ data, getChartLabelJSX }) => {
             cx="50%"
             cy="50%"
             innerRadius={30}
-            outerRadius={70}
+            outerRadius={75}
             dataKey="value"
           />
         </PieChart>
@@ -22,4 +22,4 @@ const SimplePieChart = ({ data, getChartLabelJSX }) => {
   )
 }
 
-export default SimplePieChart
+export default ModernPieChart

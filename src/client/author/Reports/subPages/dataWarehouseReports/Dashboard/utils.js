@@ -1,3 +1,5 @@
+import React from 'react'
+import { greyThemeDark7, lightGrey17 } from '@edulastic/colors'
 import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
 
 export const bandInfo = [
@@ -78,24 +80,8 @@ export const bandInfo = [
 
 export const availableTestTypes = [
   {
-    key: 'common assessment',
-    title: 'Common Assessment',
-  },
-  {
-    key: 'assessment',
-    title: 'Class Assessment',
-  },
-  {
-    key: 'practice',
-    title: 'Practice Assessment',
-  },
-  {
-    key: 'homework',
-    title: 'Homework',
-  },
-  {
-    key: 'quiz',
-    title: 'Quiz',
+    key: 'Edulastic',
+    title: 'Edulastic',
   },
   {
     key: 'CAASPP',
@@ -115,7 +101,7 @@ export const availableTestTypes = [
   },
 ]
 
-export const selectedTestType = 'common assessment'
+export const selectedTestType = 'Edulastic'
 
 export const PieChartData = [
   {
@@ -138,4 +124,60 @@ export const PieChartData = [
 export const getCellColor = (value, selectedPerformanceBand) => {
   const band = getProficiencyBand(value, selectedPerformanceBand)
   return band.color
+}
+
+export const getAcademicSummaryChartLabelJSX = (props) => {
+  const RADIAN = Math.PI / 180
+  const { cx, cy, midAngle, outerRadius, name, value } = props
+  const sin = Math.sin(-RADIAN * midAngle)
+  const cos = Math.cos(-RADIAN * midAngle)
+  const sx = cx + (outerRadius + 4) * cos
+  const sy = cy + (outerRadius + 4) * sin
+  const circleX = cx + (outerRadius + 2) * cos
+  const circleY = cy + (outerRadius + 2) * sin
+  const mx = cx + (outerRadius + 20) * cos
+  const my = cy + (outerRadius + 20) * sin
+  const ex = mx + (cos >= 0 ? 1 : -1) * 130
+  const ey = my
+  const textAnchor = cos >= 0 ? 'start' : 'end'
+  const textX1 = mx + (cos >= 0 ? 1 : -1) * 10
+  const textX2 = textX1 + (cos >= 0 ? 1 : -1) * 30
+  const textY = my - 5
+  return (
+    <g>
+      <circle
+        cx={circleX}
+        cy={circleY}
+        r={3}
+        fill="none"
+        stroke={greyThemeDark7}
+      />
+      <path
+        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
+        stroke={greyThemeDark7}
+        fill="none"
+        strokeWidth={1}
+      />
+      <text
+        className="label-text"
+        x={textX1}
+        y={textY}
+        textAnchor={textAnchor}
+        fill={lightGrey17}
+        fontWeight="bold"
+      >
+        {value}%
+      </text>
+      <text
+        className="label-text"
+        x={textX2}
+        y={textY}
+        textAnchor={textAnchor}
+        fill={lightGrey17}
+        fontWeight="normal"
+      >
+        &nbsp;&nbsp;{name}
+      </text>
+    </g>
+  )
 }

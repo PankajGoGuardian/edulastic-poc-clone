@@ -14,6 +14,7 @@ import {
   getSharingState,
   setSharingStateAction,
 } from '../../../ducks'
+import AttendanceDistribution from './AttendanceDistribution'
 
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
@@ -54,6 +55,9 @@ const AttendanceReport = (props) => {
       </SubHeader>
       {/* Add Report stuff (sections) */}
       <div>AttendanceReport</div>
+      <div>
+        <AttendanceDistribution />
+      </div>
     </>
   )
 }

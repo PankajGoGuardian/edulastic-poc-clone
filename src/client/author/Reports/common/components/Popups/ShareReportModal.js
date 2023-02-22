@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
 
@@ -68,12 +68,20 @@ const ShareReportModal = ({
     }
   }
 
-  if (!dropdownData.length) {
-    notification({
-      type: 'warn',
-      msg: 'Collaboration groups are empty. Create one to continue...',
-    })
-    setShowModal(false)
+  const hasCollaborationGroups = !!dropdownData.length
+  const shownWithNoGroups = !hasCollaborationGroups && showModal
+  useEffect(() => {
+    if (shownWithNoGroups) {
+      notification({
+        type: 'warn',
+        msg: 'Collaboration groups are empty. Create one to continue...',
+      })
+      setShowModal(false)
+      return null
+    }
+  }, [shownWithNoGroups])
+
+  if (!hasCollaborationGroups) {
     return null
   }
 

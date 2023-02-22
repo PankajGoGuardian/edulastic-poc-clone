@@ -18,10 +18,7 @@ import CustomReportIframe from './components/customReport/customReportIframe'
 import SharedReports from './components/sharedReports'
 import DataWarehouseReports from './components/dataWarehouseReport'
 import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
-import {
-  DW_MAR_REPORT_URL,
-  DW_WLR_REPORT_URL,
-} from './common/constants/dataWarehouseReports'
+import { DW_REPORT_URLS } from './common/constants/dataWarehouseReports'
 import {
   getCsvDownloadingState,
   getPrintingState,
@@ -456,7 +453,7 @@ const Container = (props) => {
           }}
         />
         <Route
-          path={[DW_WLR_REPORT_URL, DW_MAR_REPORT_URL]}
+          path={DW_REPORT_URLS}
           render={(_props) => (
             <DataWarehouseReportsContainer
               {..._props}

@@ -89,7 +89,8 @@ const CustomizedHeaderWrapper = ({
 
   const availableNavItems = isSmallDesktop
     ? filterNavigationItems.filter((ite) => ite.key === activeNavigationKey)
-    : dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
+    : // TODO remove bottom checks and use only `filterNavigationItems` as not required & approach is misleading/wrong.
+    dataWarehouseReportTypes.find((r) => r === activeNavigationKey) ||
       filterNavigationItems.length > 1
     ? filterNavigationItems
     : []

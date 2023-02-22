@@ -13,7 +13,9 @@ import {
 } from 'lodash'
 import next from 'immer'
 import moment from 'moment'
+import qs from 'qs'
 import calcMethod from './static/json/calcMethod.json'
+import navigation from './static/json/navigation.json'
 
 const studentFiltersDefaultValues = [
   {
@@ -517,4 +519,31 @@ export const tooltipParams = {
   spaceForPercentageLabel: 20,
   navButtonMargin: 50,
   xAxisHeight: 100,
+}
+
+export const computeChartNavigationLinks = (
+  requestFilters,
+  loc,
+  hideOtherTabs = false
+) => {
+  if (navigation.locToData[loc]) {
+    requestFilters = requestFilters || {}
+    const arr = Object.keys(requestFilters)
+    const obj = {}
+    arr.forEach((item) => {
+      const val = requestFilters[item] === '' ? 'All' : requestFilters[item]
+      obj[item] = val
+    })
+    const _navigationItems = navigation.navigation[
+      navigation.locToData[loc].group
+    ].filter((item) => {
+      if (hideOtherTabs) return item.key === loc
+      return true
+    })
+    return next(_navigationItems, (draft) => {
+      const _currentItem = draft.find((t) => t.key === loc)
+      _currentItem.location += `?${qs.stringify(obj)}`
+    })
+  }
+  return []
 }

@@ -8,6 +8,7 @@ import {
 import ReportLinkCard from './common/components/ReportLinkCard'
 import MoreReportsContainer from './common/components/MoreReportsContainer'
 import {
+  DW_ATTENDANCE_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
 } from '../../common/constants/dataWarehouseReports'
@@ -27,6 +28,13 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         title="Whole Learner"
         description="Get a complete understanding of a learner's academic &amp; associated indicators &amp; take necessary actions for the learner’s growth."
         url={DW_WLR_REPORT_URL}
+        loc={loc}
+      />
+      <ReportLinkCard
+        IconThumbnail={IconWholeLearnerReport}
+        title="Attendance Report"
+        description="Get a complete understanding of a learner’s academic and behavioral profiles and take necessary actions for the learner’s growth."
+        url={DW_ATTENDANCE_REPORT_URL}
         loc={loc}
       />
       <MoreReportsContainer />

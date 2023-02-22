@@ -1,5 +1,5 @@
 import React from 'react'
-import { greyThemeDark7, lightGrey17 } from '@edulastic/colors'
+import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
 import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
 
 export const bandInfo = [
@@ -121,6 +121,12 @@ export const PieChartData = [
   },
 ]
 
+export const cellStyles = {
+  large: { padding: '18px 30px', margin: 'auto', font: '24px' },
+  medium: { padding: '10px 15px', margin: 'auto', font: '18px' },
+  small: { padding: '12px 17px', margin: '25px', font: '14px' },
+}
+
 export const getCellColor = (value, selectedPerformanceBand) => {
   const band = getProficiencyBand(value, selectedPerformanceBand)
   return band.color
@@ -133,8 +139,8 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
   const cos = Math.cos(-RADIAN * midAngle)
   const sx = cx + (outerRadius + 4) * cos
   const sy = cy + (outerRadius + 4) * sin
-  const circleX = cx + (outerRadius + 2) * cos
-  const circleY = cy + (outerRadius + 2) * sin
+  const circleX = cx + outerRadius * cos
+  const circleY = cy + outerRadius * sin
   const mx = cx + (outerRadius + 20) * cos
   const my = cy + (outerRadius + 20) * sin
   const ex = mx + (cos >= 0 ? 1 : -1) * 130
@@ -148,8 +154,8 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
       <circle
         cx={circleX}
         cy={circleY}
-        r={3}
-        fill="none"
+        r={4}
+        fill={white}
         stroke={greyThemeDark7}
       />
       <path

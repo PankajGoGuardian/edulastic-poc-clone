@@ -8,6 +8,7 @@ import {
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { DashedHr } from '../../../../../common/styled'
+import { cellStyles } from '../../utils'
 
 export const MasonGrid = styled.div`
   width: 100%;
@@ -20,7 +21,7 @@ export const MasonGrid = styled.div`
 `
 export const Widget = styled.div`
   width: 765px;
-  height: ${({ small }) => (small ? '230px' : '450px')};
+  height: ${({ small }) => (small ? '220px' : '450px')};
   border-radius: 20px;
   background-color: ${white};
   padding-top: 10px;
@@ -46,23 +47,22 @@ export const ContentWrapper = styled.div`
   font-weight: bold;
   font-size: 13px;
   text-align: center;
-  .performance-band-name {
-    font-size: 10px;
+  .right-content {
+    display: flex;
+    justify-content: center;
+    margin-right: 20px;
+    gap: 10;
   }
-  .medium {
-    font-size: 13px;
-    color: ${lightGrey9};
-    margin-top: 5px;
-  }
-  .large {
-    font-size: 18px;
+  .small-header {
+    margin-top: -14px;
+    font-size: 11px;
   }
 `
 export const StyledCell = styled.div`
-  padding: ${(props) => (props.largeCell ? '15px 35px' : '10px 20px')};
+  padding: ${(props) => cellStyles[props.cellType].padding};
   width: fit-content;
-  font-size: 20px;
-  margin-inline: auto;
+  font-size: ${(props) => cellStyles[props.cellType].font};
+  margin-inline: ${(props) => cellStyles[props.cellType].margin};
   margin-block: 10px;
   background-color: ${(props) => (props.fill ? props.color : '')};
   border: ${(props) => (!props.fill ? `2px solid ${props.color}` : '')};
@@ -89,12 +89,12 @@ export const StyledLabel = styled.span`
   font-color: #6a737f;
   margin-right: 2px;
 `
-
-export const StyledDiv = styled.div`
-  display: flex;
+export const Footer = styled.div`
+  font-size: 18px;
+  margin-bottom: ${(props) => props.margin};
 `
 export const SubFooter = styled.div`
-  font-size: 12px;
+  font-size: ${(props) => props.font || '12px'};
   color: ${lightGrey9};
 `
 export const DashboardReportContainer = styled.div`

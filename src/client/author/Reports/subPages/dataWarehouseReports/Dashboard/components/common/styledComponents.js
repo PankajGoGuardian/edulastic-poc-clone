@@ -3,9 +3,9 @@ import {
   themeLightGrayColor,
   lightGrey9,
 } from '@edulastic/colors'
-import { Col, Row } from 'antd'
+import { Row } from 'antd'
 import styled from 'styled-components'
-import { DashedHr, StyledDropDownContainer } from '../../../../../common/styled'
+import { DashedHr } from '../../../../../common/styled'
 
 export const MasonGrid = styled.div`
   width: 100%;

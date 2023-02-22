@@ -16,9 +16,7 @@ const WidgetCell = ({
   return (
     <div>
       <div>{header}</div>
-      <EduIf condition={!!subHeader}>
-        <div>{subHeader}</div>
-      </EduIf>
+      <div>{subHeader}</div>
       <StyledDiv>
         <StyledCell fill largeCell={largeCell} color={color}>
           {value}

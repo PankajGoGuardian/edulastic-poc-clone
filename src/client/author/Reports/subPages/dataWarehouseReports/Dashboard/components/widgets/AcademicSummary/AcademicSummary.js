@@ -1,4 +1,3 @@
-import { IconExternalLink } from '@edulastic/icons'
 import React, { useState } from 'react'
 import {
   ContentWrapper,
@@ -7,32 +6,38 @@ import {
   Widget,
 } from '../../common/styledComponents'
 import WidgetCell from '../../common/WidgetCell'
+import WidgetHeader from '../../common/WidgetHeader'
 import AcademicSummaryWidgetFilters from './Filters'
 
 const title = 'ACADEMIC SUMMARY AND PERFORMANCE DISTRIBUTION'
 
-const AcademicSummary = () => {
+const AcademicSummary = ({ academicSummary }) => {
   const [filters, setFilters] = useState({})
+  const {
+    avgScore,
+    percentageIncrease,
+    prevMonth,
+    aboveStandard,
+  } = academicSummary
   return (
     <Widget>
-      <div>
-        <span className="title">{title}</span>
-        <span className="external-link">
-          <IconExternalLink />
-        </span>
-      </div>
+      <WidgetHeader title={title} />
       <AcademicSummaryWidgetFilters filters={filters} setFilters={setFilters} />
       <ContentWrapper>
         <div>
           <WidgetCell
             header="AVG. SCORE"
-            value="75%"
-            footer="26%"
-            subFooter="since 1st Dec."
+            value={`${avgScore}%`}
+            footer={percentageIncrease}
+            subFooter={`since ${prevMonth}`}
             color="#cef5d8"
           />
           <StyledDashedHr />
-          <WidgetCell header="ABOVE STANDARD" value="68%" color="#cef5d8" />
+          <WidgetCell
+            header="ABOVE STANDARD"
+            value={`${aboveStandard}%`}
+            color="#cef5d8"
+          />
         </div>
         <DashedVR />
       </ContentWrapper>

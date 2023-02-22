@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { IconExternalLink } from '@edulastic/icons'
 import StandardMasteryFilters from './Filters'
 import {
   ContentWrapper,
@@ -8,6 +7,7 @@ import {
   Widget,
 } from '../../common/styledComponents'
 import WidgetCell from '../../common/WidgetCell'
+import WidgetHeader from '../../common/WidgetHeader'
 
 const title = 'STANDARDS MASTERY AND DISTRIBUTION'
 
@@ -15,12 +15,7 @@ const StandardMastery = () => {
   const [filters, setFilters] = useState({})
   return (
     <Widget>
-      <div>
-        <span className="title">{title}</span>
-        <span className="external-link">
-          <IconExternalLink />
-        </span>
-      </div>
+      <WidgetHeader title={title} />
       <StandardMasteryFilters filters={filters} setFilters={setFilters} />
       <ContentWrapper>
         <div>

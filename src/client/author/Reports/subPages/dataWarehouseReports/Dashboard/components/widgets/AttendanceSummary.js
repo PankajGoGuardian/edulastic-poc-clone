@@ -1,32 +1,42 @@
-import { IconCarets, IconExternalLink } from '@edulastic/icons'
+import { IconCarets } from '@edulastic/icons'
 import React from 'react'
 import { ContentWrapper, DashedVR, Widget } from '../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
+import WidgetHeader from '../common/WidgetHeader'
 
 const title = 'ATTENDANCE SUMMARY'
 
-const AttendanceSummary = () => {
+const AttendanceSummary = ({ attendanceSummary }) => {
+  const {
+    avg,
+    percentageIncreaseAvg,
+    prevMonth,
+    tardiesPercentage,
+    chronicAbsentPercentage,
+    percentageIncreaseTardies,
+    percentageIncreaseChronic,
+  } = attendanceSummary
   return (
     <Widget small>
-      <div>
-        <span className="title">{title}</span>
-        <span className="external-link">
-          <IconExternalLink />
-        </span>
-      </div>
+      <WidgetHeader title={title} />
       <ContentWrapper>
-        <WidgetCell header="AVG." value="67%" largeCell color="#cef5d8" />
+        <WidgetCell header="AVG." value={`${avg}%`} largeCell color="#cef5d8" />
         <div className="large">
-          13% <IconCarets.IconCaretUp />
-          <div className="medium">since 1st Dec.</div>
+          {percentageIncreaseAvg}% <IconCarets.IconCaretUp />
+          <div className="medium">since {prevMonth}</div>
         </div>
         <DashedVR height="150px" />
-        <WidgetCell header="TARDIES" value="12%" footer="26%" color="#cef5d8" />
+        <WidgetCell
+          header="TARDIES"
+          value={`${tardiesPercentage}%`}
+          footer={`${percentageIncreaseTardies}`}
+          color="#cef5d8"
+        />
         <WidgetCell
           header="CHRONIC"
           subHeader="ABSENTEEISM"
-          value="12%"
-          footer="26%"
+          value={`${chronicAbsentPercentage}%`}
+          footer={`${percentageIncreaseChronic}%`}
           color="#cef5d8"
         />
       </ContentWrapper>

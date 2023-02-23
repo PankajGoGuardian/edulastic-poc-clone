@@ -412,7 +412,7 @@ const ClassSelectModal = ({
             />
           </div>
           <p>
-            The following classes will be imported from you{' '}
+            The following classes will be imported from your{' '}
             {type === 'clever' ? 'Clever' : 'Google Classroom'} account.
           </p>
           <p>

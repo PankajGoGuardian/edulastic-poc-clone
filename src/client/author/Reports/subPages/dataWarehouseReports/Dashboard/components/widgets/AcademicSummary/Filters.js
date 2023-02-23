@@ -3,69 +3,43 @@ import { ControlDropDown } from '../../../../../../common/components/widgets/con
 import { StyledDropDownContainer } from '../../../../../../common/styled'
 import { StyledLabel, StyledRow } from '../../common/styledComponents'
 
-const AcademicSummaryWidgetFilters = () => {
-  const performanceBandsList = [
-    {
-      key: '63296244dfe5d90009174d66',
-      title:
-        'Karthik Performance Band2 With Both bands selected for Above Standard',
-    },
-    {
-      key: '63296348dfe5d90009174d67',
-      title: 'Where We Are Today',
-    },
-    {
-      key: '6322e2b799978a000a298469',
-      title: 'Standard Performance Band',
-    },
-    {
-      key: '63ca12988de9410008ae349e',
-      title: 'Large Performance Band',
-    },
-    {
-      key: '63d34ec0ac9778000898f1ab',
-      title: '7 Levels PB',
-    },
-    {
-      key: '63d34fa13e9cf600086b2acc',
-      title: '5 levels PB',
-    },
-  ]
-  const selectedPerformanceBand = {
-    key: '63296244dfe5d90009174d66',
-    title:
-      'Karthik Performance Band2 With Both bands selected for Above Standard',
-  }
+const AcademicSummaryWidgetFilters = ({
+  filters,
+  // setFilters,
+  performanceBandsList,
+  availableTestTypes,
+}) => {
+  const { performanceBand, testType } = filters
   return (
     <StyledRow type="flex">
       <StyledLabel>TEST TYPE:</StyledLabel>
       <StyledDropDownContainer
         maxWidth="180px"
-        flex="0 0 200px"
+        flex="0 0 150px"
         xs={24}
         sm={8}
         lg={4}
       >
         <ControlDropDown
           height="35px"
-          by={selectedPerformanceBand}
+          by={testType}
           selectCB={() => {}}
-          data={performanceBandsList}
-          prefix="Performance Band"
+          data={availableTestTypes}
+          prefix="Test Type"
           showPrefixOnSelected={false}
         />
       </StyledDropDownContainer>
       <StyledLabel>PERFORMANCE BAND:</StyledLabel>
       <StyledDropDownContainer
         maxWidth="180px"
-        flex="0 0 200px"
+        flex="0 0 150px"
         xs={24}
         sm={8}
         lg={4}
       >
         <ControlDropDown
           height="35px"
-          by={selectedPerformanceBand}
+          by={performanceBand}
           selectCB={() => {}}
           data={performanceBandsList}
           prefix="Performance Band"

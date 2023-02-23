@@ -1,7 +1,8 @@
 import { EduIf } from '@edulastic/common'
 import { IconCarets } from '@edulastic/icons'
+import { Row } from 'antd'
 import React from 'react'
-import { StyledCell, SubFooter, StyledDiv } from './styledComponents'
+import { StyledCell, SubFooter } from './styledComponents'
 
 const WidgetCell = ({
   header,
@@ -11,20 +12,25 @@ const WidgetCell = ({
   footer,
   subFooter,
   color,
-  largeCell = false,
+  cellType = 'medium',
 }) => {
+  const headerClassName = subHeader ? 'small-header' : ''
   return (
     <div>
-      <div>{header}</div>
-      <div>{subHeader}</div>
-      <StyledDiv>
-        <StyledCell fill largeCell={largeCell} color={color}>
+      <div className={headerClassName}>
+        <div>{header}</div>
+        <div>{subHeader}</div>
+      </div>
+      <Row type="flex">
+        <StyledCell fill cellType={cellType} color={color}>
           {value}
         </StyledCell>
         <EduIf condition={!!subValue}>
-          <StyledCell color={color}>{subValue}</StyledCell>
+          <StyledCell color={color} cellType={cellType}>
+            {subValue}
+          </StyledCell>
         </EduIf>
-      </StyledDiv>
+      </Row>
       <EduIf condition={!!footer}>
         <div>
           {footer} <IconCarets.IconCaretUp />

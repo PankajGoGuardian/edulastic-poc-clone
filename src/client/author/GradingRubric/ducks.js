@@ -125,6 +125,7 @@ function* updateRubricSaga({ payload }) {
       )
     }
     yield put(addRubricToRecentlyUsedAction(payload.rubricData))
+    yield put(setItemLevelScoreFromRubricAction(false))
     yield put(updateRubricInRecentlyUsedAction(data))
     if (payload.status === 'draft')
       notification({ type: 'success', messageKey: 'rubricUpdatedAsDraft' })

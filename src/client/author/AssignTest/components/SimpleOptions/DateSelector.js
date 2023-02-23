@@ -59,10 +59,13 @@ const DateSelector = ({
     )
   }
 
-  const handleDisableDueDate = (currentDate) =>
-    currentDate.valueOf() > endDate.valueOf() ||
-    currentDate.valueOf() < startDate.valueOf()
-
+  const handleDisableDueDate = (currentDate) => {
+    if (!currentDate || !endDate || !startDate) return false
+    return (
+      currentDate.valueOf() > endDate.valueOf() ||
+      currentDate.valueOf() < startDate.valueOf()
+    )
+  }
   const showDueDatePicker = forClassLevel
     ? dueDate
     : showOpenDueAndCloseDate && selectedOption

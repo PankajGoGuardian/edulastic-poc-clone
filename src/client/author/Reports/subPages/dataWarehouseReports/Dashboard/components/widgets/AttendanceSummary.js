@@ -39,23 +39,21 @@ const AttendanceSummary = ({ attendanceSummary }) => {
           <SubFooter font="13px">since {prevMonth}</SubFooter>
         </div>
         <DashedVR height="150px" />
-        <div className="right-content">
-          <WidgetCell
-            header="TARDIES"
-            value={`${tardiesPercentage}%`}
-            footer={`${percentageIncreaseTardies}`}
-            color="#cef5d8"
-            cellType="small"
-          />
-          <WidgetCell
-            header="CHRONIC"
-            subHeader="ABSENTEEISM"
-            value={`${chronicAbsentPercentage}%`}
-            footer={`${percentageIncreaseChronic}%`}
-            color="#cef5d8"
-            cellType="small"
-          />
-        </div>
+        <WidgetCell
+          header="TARDIES"
+          value={`${tardiesPercentage}%`}
+          footer={`${percentageIncreaseTardies}`}
+          color="#cef5d8"
+          cellType="small"
+        />
+        <WidgetCell
+          header="CHRONIC"
+          subHeader="ABSENTEEISM"
+          value={`${chronicAbsentPercentage}%`}
+          footer={`${percentageIncreaseChronic}%`}
+          color="#cef5d8"
+          cellType="small"
+        />
       </ContentWrapper>
     </Widget>
   )

@@ -15,6 +15,7 @@ const ModernPieChart = ({ data, getChartLabelJSX }) => {
             innerRadius={30}
             outerRadius={75}
             dataKey="value"
+            style={{ filter: 'drop-shadow(5px 10px 18px #00000030)' }}
           />
         </PieChart>
       </ResponsiveContainer>

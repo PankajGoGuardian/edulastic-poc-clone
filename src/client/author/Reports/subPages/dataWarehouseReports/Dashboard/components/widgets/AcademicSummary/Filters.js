@@ -15,7 +15,7 @@ const AcademicSummaryWidgetFilters = ({
       <StyledLabel>TEST TYPE:</StyledLabel>
       <StyledDropDownContainer
         maxWidth="180px"
-        flex="0 0 200px"
+        flex="0 0 150px"
         xs={24}
         sm={8}
         lg={4}
@@ -32,7 +32,7 @@ const AcademicSummaryWidgetFilters = ({
       <StyledLabel>PERFORMANCE BAND:</StyledLabel>
       <StyledDropDownContainer
         maxWidth="180px"
-        flex="0 0 200px"
+        flex="0 0 150px"
         xs={24}
         sm={8}
         lg={4}

@@ -122,9 +122,9 @@ export const PieChartData = [
 ]
 
 export const cellStyles = {
-  large: { padding: '18px 30px', margin: 'auto', font: '24px' },
-  medium: { padding: '10px 15px', margin: 'auto', font: '18px' },
-  small: { padding: '12px 17px', margin: '25px', font: '14px' },
+  large: { padding: '18px 30px', font: '24px' },
+  medium: { padding: '10px 15px', font: '18px' },
+  small: { padding: '12px 17px', font: '14px' },
 }
 
 export const getCellColor = (value, selectedPerformanceBand) => {

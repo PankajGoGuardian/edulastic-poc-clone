@@ -50,7 +50,7 @@ export const getTestAuthorName = (item, orgCollections) => {
       return collectionItem.name
     }
   }
-  if (createdBy._id) {
+  if (authors.length > 0 && createdBy._id) {
     const author = authors.find((_item) => _item._id === createdBy._id) || {}
     return author.name || authors[0].name
   }

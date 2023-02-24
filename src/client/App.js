@@ -80,6 +80,7 @@ import {
 import CreateClassModal from './author/ManageClass/components/ClassCreate'
 import CreateAssignmentModal from './author/AssignmentCreate'
 import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
+import { cleanupWindowLocationUrl } from '../loginUtils'
 
 const {
   ASSESSMENT,
@@ -257,7 +258,7 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchUser, location } = this.props
+    const { fetchUser, location, history } = this.props
     const publicPath = location.pathname.split('/').includes('public')
     const ssoPath = location.pathname.split('/').includes('auth')
     const partnerPath = location.pathname.split('/').includes('partnerLogin')
@@ -281,6 +282,9 @@ class App extends Component {
       })
     })
     this.handlePendoGuide()
+
+    // cleanup search param having tokens
+    cleanupWindowLocationUrl(location, history)
   }
 
   componentDidUpdate(prevProps) {

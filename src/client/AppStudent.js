@@ -39,6 +39,7 @@ import StudentSessionExpiredModal from './common/components/StudentSessionExpire
 import { logoutAction } from './author/src/actions/auth'
 import RealTimeCollectionWatch from './RealTimeCollectionWatch'
 import UserTokenExpiredModal from './common/components/UserTokenExpiredModal'
+import { cleanupWindowLocationUrl } from '../loginUtils'
 
 const Dashboard = lazy(() =>
   import(/* webpackChunkName: "student" */ './student/app')
@@ -122,13 +123,16 @@ class App extends Component {
   }
 
   componentDidMount() {
-    const { fetchUser, location } = this.props
+    const { fetchUser, location, history } = this.props
     fetchUser({ addAccount: query.addAccount, userId: query.userId })
     window.addEventListener('request-client-update', () => {
       this.setState({
         showAppUpdate: true,
       })
     })
+
+    // cleanup search param having tokens
+    cleanupWindowLocationUrl(location, history)
   }
 
   render() {

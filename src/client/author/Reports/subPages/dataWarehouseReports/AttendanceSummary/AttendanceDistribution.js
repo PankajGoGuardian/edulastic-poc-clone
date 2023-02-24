@@ -1,5 +1,6 @@
+import { reportsApi } from '@edulastic/api'
 import { white } from '@edulastic/colors'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
 
@@ -86,12 +87,27 @@ const getAcademicSummaryChartLabelJSX = (props) => {
 }
 
 const AttendanceDistribution = () => {
+  const [response, setResponse] = useState([])
+  useEffect(() => {
+    reportsApi
+      .fetchAssessmentSummaryReport({
+        requestFilters: {
+          termId: '62727a9911af9a0009c02f05',
+          assessmentTypes: 'common assessment',
+          testId: '63f455237ae6e700087633d9',
+        },
+        testId: '63f455237ae6e700087633d9',
+      })
+      .then(() => {
+        setResponse(data)
+      })
+  }, [])
   return (
     <PieWrapper>
       <Title>Attendance Distribution</Title>
       <PieChart width={400} height={280}>
         <Pie
-          data={data}
+          data={response}
           cx="50%"
           cy="50%"
           innerRadius={80}

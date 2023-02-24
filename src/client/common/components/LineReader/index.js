@@ -1,6 +1,6 @@
 import React, { useEffect, useMemo } from 'react'
 import { connect } from 'react-redux'
-import { EduButton } from '@edulastic/common'
+import { EduButton, EduIf } from '@edulastic/common'
 import { IconLineReader } from '@edulastic/icons'
 import useLineReader from './components/useLineReader'
 import { Tooltip } from '../../utils/helpers'
@@ -53,7 +53,7 @@ const LineReader = ({
   }, [btnComponent])
 
   return (
-    !hideButton && (
+    <EduIf condition={!hideButton}>
       <Tooltip placement="top" title="Line Reader">
         <Button
           isGhost
@@ -64,7 +64,7 @@ const LineReader = ({
           {btnText || <IconLineReader />}
         </Button>
       </Tooltip>
-    )
+    </EduIf>
   )
 }
 

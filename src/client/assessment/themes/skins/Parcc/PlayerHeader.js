@@ -26,6 +26,7 @@ import {
   MainActionWrapper,
 } from '../../common'
 import { showLineReaderAction } from '../../../../common/components/LineReader/duck'
+import LineReader from '../../../../common/components/LineReader'
 import { MAX_MOBILE_WIDTH } from '../../../constants/others'
 
 import ReviewToolbar from './ReviewToolbar'
@@ -260,6 +261,7 @@ const PlayerHeader = ({
                   answerChecksUsedForItem={answerChecksUsedForItem}
                   checkAnswer={checkAnswer}
                 />
+                <LineReader hideButton />
               </FlexContainer>
               <FlexContainer>
                 <SettingMenu

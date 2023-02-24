@@ -20,7 +20,6 @@ import {
   FlexContainer,
   PremiumItemBanner,
 } from '@edulastic/common'
-import LineReader from '../../common/components/LineReader'
 import { themes } from '../../theme'
 import QuestionMenu, { AdvancedOptionsLink } from './QuestionMenu'
 import { questionTypeToComponent } from '../utils/questionTypeComponent'
@@ -578,7 +577,6 @@ class QuestionWrapper extends Component {
                 ...passageRightSpace,
               }}
             >
-              <LineReader hideButton />
               {showQuestionMenu && (
                 <QuestionMenuWrapper>
                   <QuestionMenu

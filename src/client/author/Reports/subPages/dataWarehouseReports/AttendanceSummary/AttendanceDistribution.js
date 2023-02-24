@@ -1,92 +1,96 @@
-import React, { useState } from 'react'
-import { PieChart, Pie, Sector, Cell } from 'recharts'
+import { white } from '@edulastic/colors'
+import React from 'react'
+import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
 
+const greyThemeDark7 = '#ADADAD'
 const data = [
-  { name: 'Satisfactory', value: 64, id: 1, color: '#73C578' },
-  { name: 'Extreme Chronic', value: 12, id: 2, color: '#FBBC04' },
-  { name: 'Moderate Chronic', value: 12, id: 3, color: '#FF6D01' },
-  { name: 'At-risk', value: 12, id: 4, color: '#EA4335' },
+  {
+    name: 'Satisfactory',
+    value: 64,
+    id: 1,
+    color: '#73C578',
+    textColor: '#2A7A2F',
+  },
+  {
+    name: 'Extreme Chronic',
+    value: 12,
+    id: 2,
+    color: '#FBBC04',
+    textColor: '#9C7501',
+  },
+  {
+    name: 'Moderate Chronic',
+    value: 12,
+    id: 3,
+    color: '#FF6D01',
+    textColor: '#9F4909',
+  },
+  { name: 'At-risk', value: 12, id: 4, color: '#EA4335', textColor: '#982B22' },
 ]
 
-const renderActiveShape = (props) => {
+const getAcademicSummaryChartLabelJSX = (props) => {
   const RADIAN = Math.PI / 180
-  const {
-    cx,
-    cy,
-    midAngle,
-    innerRadius,
-    outerRadius,
-    startAngle,
-    endAngle,
-    fill,
-    value,
-  } = props
+  const { cx, cy, midAngle, outerRadius, value, color, textColor } = props
   const sin = Math.sin(-RADIAN * midAngle)
   const cos = Math.cos(-RADIAN * midAngle)
-  const sx = cx + (outerRadius + 10) * cos
-  const sy = cy + (outerRadius + 10) * sin
-  const mx = cx + (outerRadius + 30) * cos
-  const my = cy + (outerRadius + 30) * sin
-  const ex = mx + (cos >= 0 ? 1 : -1) * 22
+  const sx = cx + (outerRadius + 4) * cos
+  const sy = cy + (outerRadius + 4) * sin
+  const circleX = cx + outerRadius * cos
+  const circleY = cy + outerRadius * sin
+  const mx = cx + (outerRadius + 20) * cos
+  const my = cy + (outerRadius + 20) * sin
+  const ex = mx + (cos >= 0 ? 1 : -1) * 40
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
-
+  const textX1 = mx + (cos >= 0 ? 1 : -1) * 10
+  const textY = my - 5
+  const labelWidth = 36
+  const labelHeight = 20
+  const rectx = cos >= 0 ? ex - labelWidth + 2 : ex - 2
+  const recty = ey - labelHeight - 2
   return (
     <g>
-      {/* <text x={cx} y={cy} dy={8} textAnchor="middle" fill={fill}>
-        {payload.name}
-      </text> */}
-      <Sector
-        cx={cx}
-        cy={cy}
-        innerRadius={innerRadius}
-        outerRadius={outerRadius}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        fill={fill}
+      <circle
+        cx={circleX}
+        cy={circleY}
+        r={4}
+        fill={white}
+        stroke={greyThemeDark7}
       />
-      <Sector
-        cx={cx}
-        cy={cy}
-        startAngle={startAngle}
-        endAngle={endAngle}
-        innerRadius={outerRadius + 6}
-        outerRadius={outerRadius + 10}
-        fill={fill}
-      />
-      <text
-        x={ex + (cos >= 0 ? 1 : -1) * 12}
-        y={ey}
-        dy={18}
-        textAnchor={textAnchor}
-        fill="#999"
-      >
-        {`${value}%`}
-      </text>
       <path
         d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={fill}
+        stroke={greyThemeDark7}
         fill="none"
+        strokeWidth={1}
       />
-      <circle cx={ex} cy={ey} r={2} fill={fill} stroke="none" />
+      <rect
+        x={rectx}
+        y={recty}
+        width={labelWidth}
+        height={labelHeight}
+        fill={color}
+      />
+      <text
+        className="label-text"
+        x={textX1}
+        y={textY}
+        textAnchor={textAnchor}
+        fill={textColor}
+        fontWeight="bold"
+      >
+        {value}%
+      </text>
     </g>
   )
 }
 
 const AttendanceDistribution = () => {
-  const [activeIndex, setActiveIndex] = useState(0)
-  const onPieEnter = (_, index) => {
-    setActiveIndex(index)
-  }
-
   return (
     <PieWrapper>
       <Title>Attendance Distribution</Title>
-      <PieChart width={432} height={432}>
+      <PieChart width={400} height={280}>
         <Pie
-          activeIndex={activeIndex}
-          activeShape={renderActiveShape}
           data={data}
           cx="50%"
           cy="50%"
@@ -94,7 +98,7 @@ const AttendanceDistribution = () => {
           outerRadius={110}
           fill="#8884d8"
           dataKey="value"
-          onMouseEnter={onPieEnter}
+          label={getAcademicSummaryChartLabelJSX}
         >
           {data.map((entry) => (
             <Cell key={`cell-${entry.id}`} fill={entry.color} />
@@ -126,6 +130,7 @@ export const Title = styled.div`
   color: #434b5d;
   width: 100%;
   font-weight: bold;
+  margin-bottom: 15px;
 `
 export const PieWrapper = styled.div`
   border: 1px solid #dedede;
@@ -134,6 +139,7 @@ export const PieWrapper = styled.div`
   justify-content: center;
   flex-direction: column;
   width: 465px;
+  height: 386px;
   border-radius: 10px;
   padding: 24px;
 `
@@ -142,6 +148,7 @@ export const LegendWrap = styled.div`
   display: flex;
   align-items: center;
   justify-content: column;
+  margin-top: 15px;
 `
 
 export const CustomLegend = styled.div`

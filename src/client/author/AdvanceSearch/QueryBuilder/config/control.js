@@ -32,7 +32,11 @@ export const FieldSelector = (props) => {
     >
       {options.map((item) => {
         return (
-          <Select.Option value={item.name} key={item.name} data-cy={item.name}>
+          <Select.Option
+            value={item.name}
+            key={item.name}
+            data-cy={getDataCyValue(path, 'fieldOptions')}
+          >
             {item.label}
           </Select.Option>
         )
@@ -55,7 +59,11 @@ export const CombinatorSelector = (props) => {
     >
       {options.map((item) => {
         return (
-          <Select.Option value={item.name} key={item.name}>
+          <Select.Option
+            value={item.name}
+            key={item.name}
+            data-cy={getDataCyValue(path, 'combinatorOptions')}
+          >
             {item.label}
           </Select.Option>
         )
@@ -76,7 +84,11 @@ export const OperatorSelector = (props) => {
     >
       {options.map((item) => {
         return (
-          <Select.Option value={item.name} key={item.name} data-cy={item.label}>
+          <Select.Option
+            value={item.name}
+            key={item.name}
+            data-cy={getDataCyValue(path, 'operatorOptions')}
+          >
             {item.label}
           </Select.Option>
         )

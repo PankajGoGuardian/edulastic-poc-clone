@@ -33,13 +33,13 @@ const ValueEditor = (props) => {
     path,
   } = props
 
-  const dataCyValue = (pathLevel = []) => {
+  const dataCyValue = (pathLevel = [], selectorName) => {
     if (pathLevel.length) {
       if (pathLevel.length == 2)
-        return `groupLevel-${pathLevel[0]}-valueEditor-${pathLevel[1]}`
-      return `valueEditor-${pathLevel[0]}`
+        return `groupLevel-${pathLevel[0]}-${selectorName}-${pathLevel[1]}`
+      return `${selectorName}-${pathLevel[0]}`
     }
-    return `valueEditor`
+    return selectorName
   }
 
   const enableSearchFields = {
@@ -80,7 +80,7 @@ const ValueEditor = (props) => {
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
       <EduThen>
         <StyledSelect
-          data-cy={dataCyValue(path)}
+          data-cy={dataCyValue(path, 'valueEditor')}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode="multiple"
           style={{ width: '200px' }}
@@ -114,7 +114,7 @@ const ValueEditor = (props) => {
               <Select.Option
                 value={item.value}
                 key={item.value}
-                data-cy={item.value}
+                data-cy={dataCyValue(path, 'valueOptions')}
               >
                 {item.label}
               </Select.Option>
@@ -124,7 +124,7 @@ const ValueEditor = (props) => {
       </EduThen>
       <EduElse>
         <StyledSelect
-          data-cy={dataCyValue(path)}
+          data-cy={dataCyValue(path, 'valueEditor')}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode={type === 'multiselect' ? 'multiple' : 'default'}
           placeholder={`Select ${label}`}
@@ -143,7 +143,7 @@ const ValueEditor = (props) => {
               <Select.Option
                 value={item.value}
                 key={item.value}
-                data-cy={item.value}
+                data-cy={dataCyValue(path, 'valueOptions')}
               >
                 {item.label}
               </Select.Option>

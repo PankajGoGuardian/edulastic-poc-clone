@@ -16,6 +16,7 @@ import {
 } from '../../../ducks'
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable, { compareByOptions } from './Performance'
+import AttendanceSummaryChart from './AttendanceSummaryChart'
 
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
@@ -60,7 +61,9 @@ const AttendanceReport = (props) => {
         {/* Add Filters */}
       </SubHeader>
       {/* Add Report stuff (sections) */}
-      <div>AttendanceReport</div>
+      <div>
+        <AttendanceSummaryChart />
+      </div>
       <div>
         <AttendanceDistribution />
         <PerformanceTable

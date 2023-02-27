@@ -1,6 +1,6 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap } from 'lodash'
+import { flatMap, min } from 'lodash'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { IconExternalLink } from '@edulastic/icons'
 import { EduIf } from '@edulastic/common'
@@ -41,7 +41,8 @@ export const getTableColumns = (tableData, compareBy) => {
     _columns[compareByIdx].title = compareBy.title
     _columns[compareByIdx].dataIndex = compareBy.key
     _columns[compareByIdx].render = (data) => {
-      const dashedLineMarginX = 96 - 3.5 * data.length
+      const maxCharsInColumn = 25
+      const dashedLineMarginX = 96 - 3.5 * min([data.length, maxCharsInColumn])
       return data ? (
         <Tooltip title={data}>
           <div>

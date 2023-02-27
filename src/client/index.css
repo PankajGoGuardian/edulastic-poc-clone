@@ -2689,7 +2689,7 @@ div[class*='_pendo'] button {
 }
 .embeddedServiceHelpButton .helpButton .uiButton {
   background-color: #0cc18c !important;
-  font-family: "Open Sans", sans-serif !important;
+  font-family: 'Open Sans', sans-serif !important;
   border-radius: 50px !important;
   height: 60px !important;
   width: 60px !important;
@@ -2701,8 +2701,4 @@ div[class*='_pendo'] button {
 }
 .privacyPolicyModal {
   z-index: 3000001;
-}
-
-body > iframe {
-  display: none;
 }

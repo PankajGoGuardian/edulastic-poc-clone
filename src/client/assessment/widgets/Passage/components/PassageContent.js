@@ -44,14 +44,15 @@ export const PassageContent = ({
   })
 
   return (
-    <div className="mainContents" ref={mainContentsRef} data-cy="content">
-      <Stimulus
-        className="passage-content"
-        onFinish={finishedRendering}
-        dangerouslySetInnerHTML={{ __html: content }}
-        userSelect={!disableResponse}
-      />
-
+    <>
+      <div className="mainContents" ref={mainContentsRef} data-cy="content">
+        <Stimulus
+          className="passage-content"
+          onFinish={finishedRendering}
+          dangerouslySetInnerHTML={{ __html: content }}
+          userSelect={!disableResponse}
+        />
+      </div>
       <EduIf condition={isStudentAttempt || previewTab === CLEAR}>
         <HighlightPopover
           getContainer={() => mainContentsRef.current}
@@ -65,7 +66,6 @@ export const PassageContent = ({
           </ColorPickerContainer>
         </HighlightPopover>
       </EduIf>
-
       <EduIf condition={selectHighlight && !disableResponse}>
         {() => (
           <>
@@ -78,7 +78,7 @@ export const PassageContent = ({
           </>
         )}
       </EduIf>
-    </div>
+    </>
   )
 }
 

@@ -6,6 +6,9 @@ import { StyledTable } from '../../../common/styled'
 export const StyledTag = styled(Tag)`
   text-tranform: uppercase;
   border-radius: 20px;
+  border: ${(props) => props.border};
+  margin-block: ${(props) => props.marginBlock};
+  font-weight: ${(props) => props.font || 'normal'}
   font-size: 0.6rem;
   font-weight: bold;
 `

@@ -1,8 +1,9 @@
+import { lightGrey8 } from '@edulastic/colors'
 import { IconCarets } from '@edulastic/icons'
 import React from 'react'
+import { DashedLine } from '../../../../../common/styled'
 import {
   ContentWrapper,
-  DashedVR,
   Footer,
   SubFooter,
   Widget,
@@ -15,12 +16,12 @@ const title = 'ATTENDANCE SUMMARY'
 const AttendanceSummary = ({ attendanceSummary }) => {
   const {
     avg,
-    percentageIncreaseAvg,
+    prevMonthAvg,
     prevMonth,
     tardiesPercentage,
     chronicAbsentPercentage,
-    percentageIncreaseTardies,
-    percentageIncreaseChronic,
+    prevMonthtardiesPercentage,
+    prevMonthChronicPercentage,
   } = attendanceSummary
   return (
     <Widget small>
@@ -34,15 +35,21 @@ const AttendanceSummary = ({ attendanceSummary }) => {
         />
         <div>
           <Footer margin="5px">
-            {percentageIncreaseAvg}% <IconCarets.IconCaretUp />
+            {avg - prevMonthAvg}% <IconCarets.IconCaretUp />
           </Footer>
           <SubFooter font="13px">since {prevMonth}</SubFooter>
         </div>
-        <DashedVR height="150px" />
+        <DashedLine
+          dashWidth="1px"
+          height="130px"
+          maxWidth="1px"
+          dashColor={lightGrey8}
+          margin="0 10px"
+        />
         <WidgetCell
           header="TARDIES"
           value={`${tardiesPercentage}%`}
-          footer={`${percentageIncreaseTardies}`}
+          footer={`${tardiesPercentage - prevMonthtardiesPercentage}%`}
           color="#cef5d8"
           cellType="small"
         />
@@ -50,7 +57,7 @@ const AttendanceSummary = ({ attendanceSummary }) => {
           header="CHRONIC"
           subHeader="ABSENTEEISM"
           value={`${chronicAbsentPercentage}%`}
-          footer={`${percentageIncreaseChronic}%`}
+          footer={`${chronicAbsentPercentage - prevMonthChronicPercentage}%`}
           color="#cef5d8"
           cellType="small"
         />

@@ -15,6 +15,7 @@ import {
   setSharingStateAction,
 } from '../../../ducks'
 import AttendanceDistribution from './AttendanceDistribution'
+import PerformanceTable, { compareByOptions } from './Performance'
 
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
@@ -37,8 +38,13 @@ const AttendanceReport = (props) => {
     isCliUser,
   } = props
   // eslint-disable-next-line no-unused-vars
-  const [filters, setFilters] = useState(null)
-
+  const [compareBy] = compareByOptions
+  const [filters] = useState(null)
+  const [tableFilters, setTableFilters] = useState({
+    compareBy,
+    preBandScore: '',
+    postBandScore: '',
+  })
   const isSharedReport = !!filters?.reportId
   const hideOtherTabs = isSharedReport
   useLegacyReportActions(filters, props, hideOtherTabs)
@@ -57,6 +63,10 @@ const AttendanceReport = (props) => {
       <div>AttendanceReport</div>
       <div>
         <AttendanceDistribution />
+        <PerformanceTable
+          setTableFilters={setTableFilters}
+          selectedTableFilters={tableFilters}
+        />
       </div>
     </>
   )

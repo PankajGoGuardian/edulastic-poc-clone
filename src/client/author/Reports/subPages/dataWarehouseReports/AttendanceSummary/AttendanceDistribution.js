@@ -5,29 +5,29 @@ import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
 
 const greyThemeDark7 = '#ADADAD'
-const data = [
+export const data = [
   {
     name: 'Satisfactory',
-    value: 64,
+    value: 30,
     id: 1,
     color: '#73C578',
     textColor: '#2A7A2F',
   },
   {
     name: 'Extreme Chronic',
-    value: 12,
+    value: 40,
     id: 2,
     color: '#FBBC04',
     textColor: '#9C7501',
   },
   {
     name: 'Moderate Chronic',
-    value: 12,
+    value: 10,
     id: 3,
     color: '#FF6D01',
     textColor: '#9F4909',
   },
-  { name: 'At-risk', value: 12, id: 4, color: '#EA4335', textColor: '#982B22' },
+  { name: 'At-risk', value: 20, id: 4, color: '#EA4335', textColor: '#982B22' },
 ]
 
 const getAcademicSummaryChartLabelJSX = (props) => {
@@ -44,11 +44,11 @@ const getAcademicSummaryChartLabelJSX = (props) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * 40
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
-  const textX1 = mx + (cos >= 0 ? 1 : -1) * 10
+  const textX1 = mx + (cos >= 0 ? 1 : -1) * 21
   const textY = my - 5
-  const labelWidth = 36
-  const labelHeight = 20
-  const rectx = cos >= 0 ? ex - labelWidth + 2 : ex - 2
+  const labelWidth = 30
+  const labelHeight = 15
+  const rectx = cos >= 0 ? ex - labelWidth + 5 : ex - 5
   const recty = ey - labelHeight - 2
   return (
     <g>
@@ -79,6 +79,7 @@ const getAcademicSummaryChartLabelJSX = (props) => {
         textAnchor={textAnchor}
         fill={textColor}
         fontWeight="bold"
+        fontSize="10px"
       >
         {value}%
       </text>

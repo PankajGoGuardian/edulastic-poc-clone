@@ -1,5 +1,8 @@
+import { lightGrey8 } from '@edulastic/colors'
+import { Spin } from 'antd'
 import React, { useState } from 'react'
 import ModernPieChart from '../../../../../../common/components/charts/ModernPieChart'
+import { DashedLine } from '../../../../../../common/styled'
 import {
   availableTestTypes,
   getCellColor,
@@ -7,12 +10,7 @@ import {
   selectedTestType,
   getAcademicSummaryChartLabelJSX,
 } from '../../../utils'
-import {
-  ContentWrapper,
-  StyledDashedHr,
-  DashedVR,
-  Widget,
-} from '../../common/styledComponents'
+import { ContentWrapper, Widget } from '../../common/styledComponents'
 import WidgetCell from '../../common/WidgetCell'
 import WidgetHeader from '../../common/WidgetHeader'
 import AcademicSummaryWidgetFilters from './Filters'
@@ -39,44 +37,57 @@ const AcademicSummary = ({
 
   const {
     avgScore,
-    percentageIncrease,
+    prevMonthAvgScore,
     prevMonth,
     aboveStandard,
   } = academicSummary
 
   const avgScoreCellColor = getCellColor(avgScore, selectedPerformanceBand)
   return (
-    <Widget>
-      <WidgetHeader title={title} />
-      <AcademicSummaryWidgetFilters
-        filters={filters}
-        setFilters={setFilters}
-        performanceBandsList={performanceBandList}
-        availableTestTypes={availableTestTypes}
-      />
-      <ContentWrapper>
-        <div>
-          <WidgetCell
-            header="AVG. SCORE"
-            value={`${avgScore}%`}
-            footer={`${percentageIncrease}%`}
-            subFooter={`since ${prevMonth}`}
-            color={avgScoreCellColor}
-          />
-          <StyledDashedHr />
-          <WidgetCell
-            header="ABOVE STANDARD"
-            value={`${aboveStandard}%`}
-            color="#cef5d8"
-          />
-        </div>
-        <DashedVR />
-        <ModernPieChart
-          data={PieChartData}
-          getChartLabelJSX={getAcademicSummaryChartLabelJSX}
+    <Spin spinning={false}>
+      <Widget>
+        <WidgetHeader title={title} />
+        <AcademicSummaryWidgetFilters
+          filters={filters}
+          setFilters={setFilters}
+          performanceBandsList={performanceBandList}
+          availableTestTypes={availableTestTypes}
         />
-      </ContentWrapper>
-    </Widget>
+        <ContentWrapper>
+          <div>
+            <WidgetCell
+              header="AVG. SCORE"
+              value={`${avgScore}%`}
+              footer={avgScore - prevMonthAvgScore}
+              subFooter={`since ${prevMonth}`}
+              color={avgScoreCellColor}
+            />
+            <DashedLine
+              dashWidth="1px"
+              height="1px"
+              margin="20px 5px"
+              dashColor={lightGrey8}
+            />
+            <WidgetCell
+              header="ABOVE STANDARD"
+              value={`${aboveStandard}%`}
+              color="#cef5d8"
+            />
+          </div>
+          <DashedLine
+            dashWidth="1px"
+            height="250px"
+            maxWidth="1px"
+            dashColor={lightGrey8}
+            margin="0 10px"
+          />
+          <ModernPieChart
+            data={PieChartData}
+            getChartLabelJSX={getAcademicSummaryChartLabelJSX}
+          />
+        </ContentWrapper>
+      </Widget>
+    </Spin>
   )
 }
 

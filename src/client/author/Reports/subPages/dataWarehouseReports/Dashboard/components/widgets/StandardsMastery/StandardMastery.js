@@ -1,13 +1,10 @@
 import React, { useState } from 'react'
+import { lightGrey8 } from '@edulastic/colors'
 import StandardMasteryFilters from './Filters'
-import {
-  ContentWrapper,
-  DashedVR,
-  StyledDashedHr,
-  Widget,
-} from '../../common/styledComponents'
+import { ContentWrapper, Widget } from '../../common/styledComponents'
 import WidgetCell from '../../common/WidgetCell'
 import WidgetHeader from '../../common/WidgetHeader'
+import { DashedLine } from '../../../../../../common/styled'
 
 const title = 'STANDARDS MASTERY AND DISTRIBUTION'
 
@@ -27,7 +24,7 @@ const StandardMastery = () => {
             subFooter="since 1st Dec."
             color="#cef5d8"
           />
-          <StyledDashedHr />
+          <DashedLine />
           <WidgetCell
             header="ABOVE MASTERED"
             value="68%"
@@ -35,7 +32,13 @@ const StandardMastery = () => {
             color="#cef5d8"
           />
         </div>
-        <DashedVR />
+        <DashedLine
+          dashWidth="1px"
+          height="250px"
+          maxWidth="1px"
+          dashColor={lightGrey8}
+          margin="0 10px"
+        />
       </ContentWrapper>
     </Widget>
   )

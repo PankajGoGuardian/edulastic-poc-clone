@@ -11,7 +11,7 @@ const AcademicSummaryWidgetFilters = ({
 }) => {
   const { performanceBand, testType } = filters
   return (
-    <StyledRow type="flex">
+    <StyledRow type="flex" margin="30px 0 0 0">
       <StyledLabel>TEST TYPE:</StyledLabel>
       <StyledDropDownContainer
         maxWidth="180px"

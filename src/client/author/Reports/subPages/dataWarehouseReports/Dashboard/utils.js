@@ -121,6 +121,187 @@ export const PieChartData = [
   },
 ]
 
+export const academicSummaryData = {
+  avgScore: 75,
+  prevMonthAvgScore: 49,
+  prevMonth: '1st Dec',
+  aboveStandard: 68,
+}
+export const attendanceSummaryData = {
+  avg: 67,
+  prevMonthAvg: 54,
+  prevMonth: '1st Dec.',
+  tardiesPercentage: 12,
+  chronicAbsentPercentage: 12,
+  prevMonthtardiesPercentage: 9,
+  prevMonthChronicPercentage: 5,
+}
+
+export const tableData = [
+  {
+    school: 'El Dorado Adventist School dakfdak dak',
+    avgAttendance: 75,
+    Edulastic: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    CAASPP: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    NWEA: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    iReady_ELA: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    iReady_MATH: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+  },
+  {
+    school: 'St. James',
+    avgAttendance: 75,
+    Edulastic: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    CAASPP: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 15, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    NWEA: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    iReady_ELA: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    iReady_MATH: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+  },
+  {
+    school: 'St. James',
+    avgAttendance: 75,
+    Edulastic: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    CAASPP: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    NWEA: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    iReady_ELA: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+    iReady_MATH: {
+      avgScorePercentage: 75,
+      performanceDistribution: [
+        { value: 36, color: '#5FAD5A' },
+        { value: 10, color: '#90DE85' },
+        { value: 40, color: '#E9DC6B' },
+        { value: 10, color: '#E69736' },
+        { value: 4, color: '#E55C5C' },
+      ],
+    },
+  },
+]
+
 export const cellStyles = {
   large: { padding: '18px 30px', font: '24px' },
   medium: { padding: '10px 15px', font: '18px' },
@@ -143,7 +324,7 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
   const circleY = cy + outerRadius * sin
   const mx = cx + (outerRadius + 20) * cos
   const my = cy + (outerRadius + 20) * sin
-  const ex = mx + (cos >= 0 ? 1 : -1) * 130
+  const ex = mx + (cos >= 0 ? 1 : -1) * name.length * 15
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
   const textX1 = mx + (cos >= 0 ? 1 : -1) * 10

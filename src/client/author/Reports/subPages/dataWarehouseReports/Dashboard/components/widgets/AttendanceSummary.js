@@ -1,11 +1,18 @@
-import { IconCarets } from '@edulastic/icons'
+import {
+  lightGreen12,
+  lightGrey8,
+  lightGrey9,
+  lightRed5,
+} from '@edulastic/colors'
+import { EduIf } from '@edulastic/common'
 import React from 'react'
+import { DashedLine } from '../../../../../common/styled'
 import {
   ContentWrapper,
-  DashedVR,
-  Footer,
-  SubFooter,
+  StyledText,
   Widget,
+  StyledIconCaretUp,
+  StyledIconCaretDown,
 } from '../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
 import WidgetHeader from '../common/WidgetHeader'
@@ -15,13 +22,15 @@ const title = 'ATTENDANCE SUMMARY'
 const AttendanceSummary = ({ attendanceSummary }) => {
   const {
     avg,
-    percentageIncreaseAvg,
+    prevMonthAvg,
     prevMonth,
     tardiesPercentage,
     chronicAbsentPercentage,
-    percentageIncreaseTardies,
-    percentageIncreaseChronic,
+    prevMonthtardiesPercentage,
+    prevMonthChronicPercentage,
   } = attendanceSummary
+  const attendanceAvgIncrease = avg - prevMonthAvg
+  const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed5
   return (
     <Widget small>
       <WidgetHeader title={title} />
@@ -33,16 +42,34 @@ const AttendanceSummary = ({ attendanceSummary }) => {
           color="#cef5d8"
         />
         <div>
-          <Footer margin="5px">
-            {percentageIncreaseAvg}% <IconCarets.IconCaretUp />
-          </Footer>
-          <SubFooter font="13px">since {prevMonth}</SubFooter>
+          <StyledText
+            margin="0 10px 5px 10px"
+            fontSize="18px"
+            color={fontColor}
+          >
+            {attendanceAvgIncrease}%{' '}
+            <EduIf condition={attendanceAvgIncrease >= 0}>
+              <StyledIconCaretUp color={lightGreen12} />
+            </EduIf>
+            <EduIf condition={attendanceAvgIncrease < 0}>
+              <StyledIconCaretDown color={lightRed5} />
+            </EduIf>
+          </StyledText>
+          <StyledText fontSize="13px" color={lightGrey9}>
+            since {prevMonth}
+          </StyledText>
         </div>
-        <DashedVR height="150px" />
+        <DashedLine
+          dashWidth="1px"
+          height="130px"
+          maxWidth="1px"
+          dashColor={lightGrey8}
+          margin="0 10px"
+        />
         <WidgetCell
           header="TARDIES"
           value={`${tardiesPercentage}%`}
-          footer={`${percentageIncreaseTardies}`}
+          footer={tardiesPercentage - prevMonthtardiesPercentage}
           color="#cef5d8"
           cellType="small"
         />
@@ -50,7 +77,7 @@ const AttendanceSummary = ({ attendanceSummary }) => {
           header="CHRONIC"
           subHeader="ABSENTEEISM"
           value={`${chronicAbsentPercentage}%`}
-          footer={`${percentageIncreaseChronic}%`}
+          footer={chronicAbsentPercentage - prevMonthChronicPercentage}
           color="#cef5d8"
           cellType="small"
         />

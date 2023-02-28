@@ -259,8 +259,9 @@ const AssignmentCard = memo(
         notification({ messageKey: 'testIsExpired' })
         return
       }
-
-      if (resume) {
+      if (!resume && attempted && !retakeConfirmation) {
+        setShowRetakeModal(true)
+      } else if (resume) {
         startAssignment({
           testId,
           assignmentId,

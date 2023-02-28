@@ -7,10 +7,20 @@ import {
   themeColor,
   lightGrey8,
 } from '@edulastic/colors'
+import { IconCarets } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
 import { StyledTable } from '../../../../../common/styled'
 import { cellStyles } from '../../utils'
+
+const { IconCaretUp, IconCaretDown } = IconCarets
+
+export const StyledIconCaretUp = styled(IconCaretUp)`
+  color: ${(props) => props.color};
+`
+export const StyledIconCaretDown = styled(IconCaretDown)`
+  color: ${(props) => props.color};
+`
 
 export const MasonGrid = styled.div`
   display: flex;
@@ -27,7 +37,7 @@ export const MasonGrid = styled.div`
   }
 `
 export const Widget = styled.div`
-  height: ${({ small }) => (small ? '220px' : '450px')};
+  height: ${({ small }) => (small ? '200px' : '420px')};
   border-radius: 20px;
   background-color: ${white};
   padding-top: 10px;
@@ -46,7 +56,7 @@ export const Widget = styled.div`
 `
 export const ContentWrapper = styled.div`
   display: flex;
-  margin-block: 20px;
+  margin-block: 10px;
   flex-wrap: nowrap;
   justify-content: space-between;
   align-items: center;
@@ -69,25 +79,23 @@ export const StyledCell = styled.div`
   border-radius: 10px;
 `
 export const StyledRow = styled(Row)`
-  justify-content: center;
+  justify-content: ${(props) => props.justifyContent || 'center'};
+  align-items: ${(props) => props.alignItems || 'center'};
   flex-wrap: ${(props) => (props.wrap ? 'wrap' : 'nowrap')};
   align-items: center;
   padding-inline: 20px;
-  margin-top: 40px;
+  margin: ${(props) => props.margin || '20px'};
 `
 export const StyledLabel = styled.div`
   font-size: 11px;
   font-color: #6a737f;
   margin-inline: 20px;
 `
-export const Footer = styled.div`
-  font-size: 18px;
-  margin-bottom: ${(props) => props.margin};
-  margin-inline: 10px;
-`
-export const SubFooter = styled.div`
-  font-size: ${(props) => props.font || '12px'};
-  color: ${lightGrey9};
+export const StyledText = styled.div`
+  font-size: ${(props) => props.fontSize || '12px'};
+  margin: ${(props) => props.margin};
+  color: ${(props) => props.color || lightGrey9};
+  text-transform: ${(props) => props.textTransform};
 `
 export const TableContainer = styled.div`
   background-color: ${greyThemeLighter};

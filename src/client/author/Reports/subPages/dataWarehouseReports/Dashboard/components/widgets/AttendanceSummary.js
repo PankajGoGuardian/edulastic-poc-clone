@@ -1,12 +1,18 @@
-import { lightGrey8 } from '@edulastic/colors'
-import { IconCarets } from '@edulastic/icons'
+import {
+  lightGreen12,
+  lightGrey8,
+  lightGrey9,
+  lightRed5,
+} from '@edulastic/colors'
+import { EduIf } from '@edulastic/common'
 import React from 'react'
 import { DashedLine } from '../../../../../common/styled'
 import {
   ContentWrapper,
-  Footer,
-  SubFooter,
+  StyledText,
   Widget,
+  StyledIconCaretUp,
+  StyledIconCaretDown,
 } from '../common/styledComponents'
 import WidgetCell from '../common/WidgetCell'
 import WidgetHeader from '../common/WidgetHeader'
@@ -23,6 +29,8 @@ const AttendanceSummary = ({ attendanceSummary }) => {
     prevMonthtardiesPercentage,
     prevMonthChronicPercentage,
   } = attendanceSummary
+  const attendanceAvgIncrease = avg - prevMonthAvg
+  const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed5
   return (
     <Widget small>
       <WidgetHeader title={title} />
@@ -34,10 +42,22 @@ const AttendanceSummary = ({ attendanceSummary }) => {
           color="#cef5d8"
         />
         <div>
-          <Footer margin="5px">
-            {avg - prevMonthAvg}% <IconCarets.IconCaretUp />
-          </Footer>
-          <SubFooter font="13px">since {prevMonth}</SubFooter>
+          <StyledText
+            margin="0 10px 5px 10px"
+            fontSize="18px"
+            color={fontColor}
+          >
+            {attendanceAvgIncrease}%{' '}
+            <EduIf condition={attendanceAvgIncrease >= 0}>
+              <StyledIconCaretUp color={lightGreen12} />
+            </EduIf>
+            <EduIf condition={attendanceAvgIncrease < 0}>
+              <StyledIconCaretDown color={lightRed5} />
+            </EduIf>
+          </StyledText>
+          <StyledText fontSize="13px" color={lightGrey9}>
+            since {prevMonth}
+          </StyledText>
         </div>
         <DashedLine
           dashWidth="1px"
@@ -49,7 +69,7 @@ const AttendanceSummary = ({ attendanceSummary }) => {
         <WidgetCell
           header="TARDIES"
           value={`${tardiesPercentage}%`}
-          footer={`${tardiesPercentage - prevMonthtardiesPercentage}%`}
+          footer={tardiesPercentage - prevMonthtardiesPercentage}
           color="#cef5d8"
           cellType="small"
         />
@@ -57,7 +77,7 @@ const AttendanceSummary = ({ attendanceSummary }) => {
           header="CHRONIC"
           subHeader="ABSENTEEISM"
           value={`${chronicAbsentPercentage}%`}
-          footer={`${chronicAbsentPercentage - prevMonthChronicPercentage}%`}
+          footer={chronicAbsentPercentage - prevMonthChronicPercentage}
           color="#cef5d8"
           cellType="small"
         />

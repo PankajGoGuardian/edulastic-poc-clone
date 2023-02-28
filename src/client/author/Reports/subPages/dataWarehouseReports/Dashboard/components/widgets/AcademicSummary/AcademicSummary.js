@@ -58,7 +58,7 @@ const AcademicSummary = ({
             <WidgetCell
               header="AVG. SCORE"
               value={`${avgScore}%`}
-              footer={`${avgScore - prevMonthAvgScore}%`}
+              footer={avgScore - prevMonthAvgScore}
               subFooter={`since ${prevMonth}`}
               color={avgScoreCellColor}
             />

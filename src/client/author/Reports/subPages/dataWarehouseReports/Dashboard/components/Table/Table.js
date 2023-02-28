@@ -1,9 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { StyledTag } from '../../../common/styled'
 import {
   StyledRow,
-  SubFooter,
+  StyledText,
   TableContainer,
   CustomStyledTable,
 } from '../common/styledComponents'
@@ -12,24 +12,23 @@ import DashboardTableFilters from './Filters'
 import { getTableColumns, onCsvConvert } from './utils'
 
 const DashboardTable = ({ tableData, isCsvDownloading }) => {
-  const selectedTableFilter = { key: 'school', title: 'School' }
-  const tableColumns = getTableColumns(tableData, selectedTableFilter)
+  const defaultCompareBy = { key: 'school', title: 'School' }
+  const [compareBy, setCompareBy] = useState(defaultCompareBy)
+  const tableColumns = getTableColumns(tableData, defaultCompareBy)
   return (
     <>
-      <DashboardTableFilters selectedTableFilter={selectedTableFilter} />
+      <DashboardTableFilters
+        selectedCompareBy={compareBy}
+        setCompareBy={setCompareBy}
+      />
       <TableContainer>
-        <StyledRow
-          type="flex"
-          wrap
-          justify="space-between"
-          style={{ margin: '30px' }}
-        >
+        <StyledRow type="flex" wrap justify="space-between" margin="30px">
           <StyledTag border="1.5px solid black" font="bold">
             Edulastic
           </StyledTag>
-          <SubFooter>
-            SCHOOL PERFORMANCE ACCORDING TO DISTRICT AVERAGE
-          </SubFooter>
+          <StyledText textTransform="uppercase">
+            {compareBy.title} PERFORMANCE ACCORDING TO DISTRICT AVERAGE
+          </StyledText>
           <TableHeaderCell
             title="Above/Equal to avg.:"
             value={12}

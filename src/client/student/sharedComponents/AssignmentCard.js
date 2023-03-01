@@ -374,7 +374,7 @@ const AssignmentCard = memo(
     const onRetakeModalConfirm = () => {
       setShowRetakeModal(false)
       setRetakeConfirmation(true)
-      startTest()
+      safeBrowser ? startSEBTest() : startTest()
     }
 
     let btnWrapperSize = 24

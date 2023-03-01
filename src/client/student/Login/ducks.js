@@ -69,6 +69,7 @@ import {
   setShowJoinSchoolModalAction,
 } from '../../author/Dashboard/ducks'
 import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
+import { storeUserAuthToken } from '../../../loginUtils'
 
 export const superAdminRoutes = [
   // SA-DA common routes
@@ -241,6 +242,11 @@ export const LOGIN_ATTEMPT_EXCEEDED = '[user] too many login attempt'
 export const SET_SHOW_ALL_STANDARDS = '[user] set show all standards'
 export const FETCH_ORG_INTERESTED_STANDARDS =
   '[user] fetch org interested standards'
+export const GET_EXTERNAL_AUTH_USER_REQUEST = '[user] get external auth user'
+export const GET_EXTERNAL_AUTH_USER_SUCCESS =
+  '[user] get external auth user success'
+export const GET_EXTERNAL_AUTH_USER_FAILED =
+  '[user] get external auth user failed'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -380,6 +386,10 @@ export const fetchOrgInterestedStandardsAction = createAction(
   FETCH_ORG_INTERESTED_STANDARDS
 )
 
+export const getExternalAuthUserAction = createAction(
+  GET_EXTERNAL_AUTH_USER_REQUEST
+)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -397,6 +407,7 @@ const initialState = {
   emailVerifiedStatus: '',
   signedUpUsingUsernameAndPassword: false,
   isUserIdPresent: true,
+  isExternalUserLoading: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -909,6 +920,15 @@ export default createReducer(initialState, {
   [SET_SHOW_ALL_STANDARDS]: (state, { payload }) => {
     state.user.orgData.showAllStandards = payload
   },
+  [GET_EXTERNAL_AUTH_USER_REQUEST]: (state) => {
+    state.isExternalUserLoading = true
+  },
+  [GET_EXTERNAL_AUTH_USER_SUCCESS]: (state) => {
+    state.isExternalUserLoading = false
+  },
+  [GET_EXTERNAL_AUTH_USER_FAILED]: (state) => {
+    state.isExternalUserLoading = false
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -997,6 +1017,11 @@ export const isProxyUser = createSelector(
 export const isDemoPlaygroundUser = createSelector(
   ['user.user.isPlayground'],
   (isPlayground) => isPlayground
+)
+
+export const getIsExternalUserLoading = createSelector(
+  ['user.isExternalUserLoading'],
+  (isExternalUserLoading) => isExternalUserLoading
 )
 
 export const getIsProxiedByEAAccountSelector = createSelector(
@@ -1436,6 +1461,9 @@ const getLoggedOutUrl = () => {
   }
   if (pathname.includes('/verify/')) {
     return pathname
+  }
+  if (pathname.includes('/login') && search.includes('extToken')) {
+    return `${pathname}${search}`
   }
   return '/login'
 }
@@ -2573,6 +2601,23 @@ function* initiateChatWidgetAfterUserLoadSaga({ payload }) {
   }
 }
 
+function* getAuthorizedExternalUser({ payload }) {
+  try {
+    const userDetails = yield call(authApi.getExternalUser, payload)
+    storeUserAuthToken(userDetails)
+    yield put({ type: GET_EXTERNAL_AUTH_USER_SUCCESS })
+    localStorage.setItem('loginRedirectUrl', userDetails.redirectPath)
+    window.location.replace(userDetails.redirectPath)
+  } catch (e) {
+    yield put({ type: GET_EXTERNAL_AUTH_USER_FAILED })
+    notification({
+      exact: true,
+      type: 'error',
+      messageKey: 'failedToAutorizeUsingToken',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login)
   yield takeLatest(SIGNUP, signup)
@@ -2626,4 +2671,5 @@ export function* watcherSaga() {
     persistAuthStateAndRedirectToSaga
   )
   yield takeLatest(SET_USER, initiateChatWidgetAfterUserLoadSaga)
+  yield takeLatest(GET_EXTERNAL_AUTH_USER_REQUEST, getAuthorizedExternalUser)
 }

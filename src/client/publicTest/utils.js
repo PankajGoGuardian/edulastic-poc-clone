@@ -144,6 +144,7 @@ export const showTestInfoModal = ({
   classId,
   history,
   title,
+  safeBrowser = false,
   notifyCancel,
   closeTestPreviewModal,
   preview,
@@ -245,6 +246,7 @@ export const showTestInfoModal = ({
           testType,
           classId,
           selectedLang,
+          safeBrowser,
         })
       if (!preview) Modal.destroyAll()
       if (preview && multiLanguageEnabled) {

@@ -229,47 +229,31 @@ const AssignmentCard = memo(
           classId,
           history,
           title,
+          safeBrowser,
           notifyCancel: false,
         })
       }
 
       if (resume) {
-        resumeAssignment({
-          testId,
-          testType,
-          assignmentId,
-          testActivityId: lastAttempt._id,
-          classId,
-        })
-      } else if (attemptCount < maxAttempts) {
-        startAssignment({
-          testId,
-          assignmentId,
-          testType,
-          classId,
-          languagePreference,
-          safeBrowser,
-        })
-      }
-    }
-
-    const startSEBTest = () => {
-      // On start check if assignment is expired or not
-      if (endDate && serverTimeStamp > endDate) {
-        notification({ messageKey: 'testIsExpired' })
-        return
-      }
-
-      if (resume) {
-        startAssignment({
-          testId,
-          assignmentId,
-          testType,
-          classId,
-          languagePreference,
-          safeBrowser,
-          lastAttemptId: lastAttempt._id,
-        })
+        if (safeBrowser) {
+          startAssignment({
+            testId,
+            assignmentId,
+            testType,
+            classId,
+            languagePreference,
+            safeBrowser,
+            lastAttemptId: lastAttempt._id,
+          })
+        } else {
+          resumeAssignment({
+            testId,
+            testType,
+            assignmentId,
+            testActivityId: lastAttempt._id,
+            classId,
+          })
+        }
       } else if (attemptCount < maxAttempts) {
         startAssignment({
           testId,
@@ -326,7 +310,7 @@ const AssignmentCard = memo(
             data-cy="start"
             btnName={t('common.startAssignment')}
             t={t}
-            startTest={startSEBTest}
+            startTest={checkRetakeOrStart}
             attempted={attempted}
             resume={resume}
           />

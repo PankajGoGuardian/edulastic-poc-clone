@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { lazy } from '@loadable/component'
 import PropTypes from 'prop-types'
 import { withRouter } from 'react-router'
-import { get } from 'lodash'
+import { get, isEmpty } from 'lodash'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import Spin from 'antd/es/spin'
@@ -21,7 +21,12 @@ import {
   isHashAssessmentUrl,
   getSchoologyTestId,
 } from './common/utils/helpers'
-import { persistAuthStateAndRedirectToAction } from './student/Login/ducks'
+import {
+  getExternalAuthUserAction,
+  getIsExternalUserLoading,
+  persistAuthStateAndRedirectToAction,
+} from './student/Login/ducks'
+import { getExternalAuthToken } from '../loginUtils'
 
 const GetStarted = lazy(() =>
   import('./student/Signup/components/GetStartedContainer')
@@ -53,6 +58,8 @@ const Auth = ({
   orgShortName,
   orgType,
   persistAuthStateAndRedirectTo,
+  getExternalAuthorizedUser,
+  isExternalUserLoading,
 }) => {
   const [loading, setLoading] = useState(!!getAccessToken())
   useEffect(() => {
@@ -67,6 +74,14 @@ const Auth = ({
       window.removeEventListener('beforeunload', onBeforeUnload)
     }
   }, [])
+
+  useEffect(() => {
+    const externalAuthToken = getExternalAuthToken()
+    if (!isEmpty(externalAuthToken)) {
+      getExternalAuthorizedUser({ token: externalAuthToken })
+    }
+  }, [])
+
   const loggedInForPrivateRoute = isLoggedInForPrivateRoute(user)
 
   const showLoginForAddAccount = canShowLoginForAddAccount(user)
@@ -96,7 +111,9 @@ const Auth = ({
   }
 
   if (
-    ((user?.authenticating && getAccessToken()) || loading) &&
+    ((user?.authenticating && getAccessToken()) ||
+      loading ||
+      isExternalUserLoading) &&
     !showLoginForAddAccount
   ) {
     return <Spin />
@@ -181,9 +198,11 @@ const enhance = compose(
   connect(
     (state) => ({
       user: get(state, 'user', null),
+      isExternalUserLoading: getIsExternalUserLoading(state),
     }),
     {
       persistAuthStateAndRedirectTo: persistAuthStateAndRedirectToAction,
+      getExternalAuthorizedUser: getExternalAuthUserAction,
     }
   )
 )

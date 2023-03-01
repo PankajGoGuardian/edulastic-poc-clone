@@ -259,9 +259,7 @@ const AssignmentCard = memo(
         notification({ messageKey: 'testIsExpired' })
         return
       }
-      if (!resume && attempted && !retakeConfirmation) {
-        setShowRetakeModal(true)
-      } else if (resume) {
+      if (resume) {
         startAssignment({
           testId,
           assignmentId,
@@ -288,6 +286,14 @@ const AssignmentCard = memo(
         setShowRetakeModal(true)
       } else {
         startTest()
+      }
+    }
+
+    const checkRetakeOrStartSEBTest = () => {
+      if (!resume && attempted && !retakeConfirmation) {
+        setShowRetakeModal(true)
+      } else {
+        startSEBTest()
       }
     }
 
@@ -327,7 +333,7 @@ const AssignmentCard = memo(
             data-cy="start"
             btnName={t('common.startAssignment')}
             t={t}
-            startTest={startSEBTest}
+            startTest={checkRetakeOrStartSEBTest}
             attempted={attempted}
             resume={resume}
           />

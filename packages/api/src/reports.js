@@ -149,6 +149,20 @@ const fetchQuestionAnalysisReport = (params) =>
     params: { ...params.requestFilters, testId: params.testId },
   })
 
+const fetchQuestionAnalysisSummaryReport = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/question-analysis/summary`,
+    params: { ...params.requestFilters, testId: params.testId },
+  })
+
+const fetchQuestionAnalysisPerformanceReport = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: `/report/question-analysis/performance-by-dimension`,
+    params: { ...params.requestFilters, testId: params.testId },
+  })
+
 const fetchMARFilterData = (params) =>
   api.callApi({
     useSlowApi: true,
@@ -330,6 +344,8 @@ export default {
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
   fetchQuestionAnalysisReport,
+  fetchQuestionAnalysisSummaryReport,
+  fetchQuestionAnalysisPerformanceReport,
   fetchPeerProgressAnalysisReport,
   fetchStudentProgressReport,
   fetchPerformanceOverTimeReport,

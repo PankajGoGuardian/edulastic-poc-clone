@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Col, Row } from 'antd'
+import { Col, Row, Pagination } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
@@ -26,6 +26,7 @@ import {
   getReportsQuestionAnalysisLoader,
   getReportsQuestionAnalysisError,
   resetQuestionAnalysisAction,
+  getReportsQuestionAnalysis1,
 } from './ducks'
 
 import { getChartData, getTableData } from './utils/transformers'
@@ -45,6 +46,7 @@ const QuestionAnalysis = ({
   sharedReport,
   toggleFilter,
   demographicFilters,
+  questionAnalysis1,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -54,6 +56,7 @@ const QuestionAnalysis = ({
     userRole === roleuser.TEACHER ? 'groupId' : 'schoolId'
   )
   const [chartFilter, setChartFilter] = useState({})
+  const [pageNo, setpageNo] = useState(1)
 
   const assessmentName = getAssessmentName(
     questionAnalysis?.meta?.test || settings.selectedTest
@@ -64,15 +67,16 @@ const QuestionAnalysis = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters, ...demographicFilters },
+        requestFilters: { ...settings.requestFilters, ...demographicFilters, compareBy },
         testId: settings.selectedTest.key,
+        pageNo,
       }
       getQuestionAnalysis(q)
     }
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedTest?.key, settings.requestFilters])
+  }, [settings.selectedTest?.key, settings.requestFilters, compareBy, pageNo])
 
   useEffect(() => {
     if (
@@ -85,13 +89,8 @@ const QuestionAnalysis = ({
     }
   }, [questionAnalysis])
 
-  const chartData = useMemo(() => getChartData(questionAnalysis.metricInfo), [
+  const chartData = useMemo(() => getChartData(questionAnalysis1.qSummary), [
     questionAnalysis,
-  ])
-
-  const tableData = useMemo(() => getTableData(questionAnalysis), [
-    questionAnalysis,
-    compareBy,
   ])
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
@@ -150,6 +149,7 @@ const QuestionAnalysis = ({
       </NoDataContainer>
     )
   }
+  console.log(questionAnalysis1?.performanceByDimension?.totalPages,"===", pageNo)
   return (
     <div>
       <UpperContainer>
@@ -197,12 +197,17 @@ const QuestionAnalysis = ({
             <Col className="bottom-table-container">
               <QuestionAnalysisTable
                 isCsvDownloading={isCsvDownloading}
-                tableData={tableData}
+                questionAnalysis={questionAnalysis1}
                 compareBy={compareBy}
                 filter={chartFilter}
                 role={userRole}
-                compareByTitle={dropDownKeyToLabel[compareBy]}
-                isSharedReport={isSharedReport}
+              />
+              <Pagination
+                style={{ marginTop: "10px" }}
+                onChange={setpageNo}
+                current={pageNo}
+                pageSize={1}
+                total={questionAnalysis1?.performanceByDimension?.totalPages}
               />
             </Col>
           </Row>
@@ -233,6 +238,7 @@ export default connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),
+    questionAnalysis1: getReportsQuestionAnalysis1(state),
   }),
   {
     getQuestionAnalysis: getQuestionAnalysisRequestAction,

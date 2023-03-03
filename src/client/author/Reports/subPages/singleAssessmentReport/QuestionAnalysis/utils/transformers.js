@@ -8,52 +8,25 @@ const sortByAvgPerformanceAndLabel = (arr) =>
     (item) => Number((item.qLabel || '').substring(1)),
   ])
 
-export const getChartData = (rawData = []) => {
-  const groupedData = groupBy(rawData, 'questionId')
-  const arr = Object.keys(groupedData).map((item) => {
-    const _item = groupedData[item].reduce(
-      (total, currentValue) => {
-        const {
-          totalTotalMaxScore = 0,
-          totalTotalScore = 0,
-          totalTimeSpent = 0,
-        } = total
-        const {
-          totalMaxScore = 0,
-          totalScore = 0,
-          timeSpent = 0,
-        } = currentValue
-        return {
-          totalTotalScore: totalTotalScore + totalScore,
-          totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-          totalTimeSpent: totalTimeSpent + parseInt(timeSpent),
-        }
-      },
-      { totalTotalMaxScore: 0, totalTotalScore: 0, totalTimeSpent: 0 }
-    )
-
-    let avgPerformance =
-      (_item.totalTotalScore / _item.totalTotalMaxScore) * 100
-    avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0
-    const avgIncorrect = Math.round(100 - avgPerformance)
-    const districtAvg = Math.round(groupedData[item][0].districtAvgPerf)
-
-    const avgTime = _item.totalTimeSpent / groupedData[item].length
-    const avgTimeSecs = Math.floor(avgTime / 1000)
-    const avgTimeMins = getFormattedTimeInMins(avgTime)
-
+export const getChartData = (qSummary = []) => {
+  const arr = qSummary.map((item) => {
+    const avgPerformance = !isNaN(item.avgPerformance) ? Math.round(item.avgPerformance) : 0
+    const avgIncorrect = Math.round(100 - item.avgPerformance)
+    const districtAvg = Math.round(item.districtAvgPerf)
+    const avgTimeSecs = Math.floor(item.avgTimeSpent / 1000)
+    const avgTimeMins = item.avgTimeSpent
     return {
-      ...groupedData[item][0],
+      ...item,
+      qLabel: item.questionLabel,
       avgPerformance,
       avgIncorrect,
-      avgTime: Math.floor(avgTime),
+      avgTime: item.avgTimeSpent,
       avgTimeSecs,
       avgTimeMins,
       districtAvg,
       fill: getHSLFromRange1(avgPerformance),
     }
   })
-
   return sortByAvgPerformanceAndLabel(arr)
 }
 

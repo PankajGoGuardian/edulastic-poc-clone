@@ -1,36 +1,10 @@
 import React, { useMemo } from 'react'
-import { Row, Col } from 'antd'
-import next from 'immer'
-import { Link } from 'react-router-dom'
-
 import { roleuser } from '@edulastic/constants'
-import { getHSLFromRange1, downloadCSV } from '../../../../../common/util'
-import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import { StyledTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
-import { ColoredCell } from '../../../../../common/styled'
-import columns from '../../static/json/tableColumns.json'
-
-const comparedByToToolTipLabel = {
-  comparedBySchool: {
-    name: 'School Name',
-    type: 'School (% Score)',
-    all: 'All Schools (% Score)',
-    nameKey: 'schoolName',
-  },
-  comparedByTeacher: {
-    name: 'Teacher Name',
-    type: 'Teacher (% Score)',
-    all: 'All Teachers (% Score)',
-    nameKey: 'teacherName',
-  },
-  comparedByClass: {
-    name: 'Class Name',
-    type: 'Class (% Score)',
-    all: 'All Classes (% Score)',
-    nameKey: 'groupName',
-  },
-}
+import { groupBy, sortBy, uniqBy } from 'lodash'
+import Tags from '../../../../../../src/components/common/Tags'
+import { themeColor } from '@edulastic/colors'
 
 const compareByToPluralName = {
   schoolId: 'Schools',
@@ -38,198 +12,115 @@ const compareByToPluralName = {
   groupId: 'Classes',
 }
 
-const sortNumbers = (compareByType, index, key) => (a, b) => {
-  const _a = a[compareByType][index][key] || 0
-  const _b = b[compareByType][index][key] || 0
+const variableKeyMapForComparison = {
+  schoolId: {
+    percent: "allSchoolsScorePercent",
+    id: "schoolId",
+    name: "schoolName"
+  },
+  teacherId: {
+    percent: "allTeachersScorePercent",
+    id: "teacherId",
+    name: "teacherName"
+  },
+  groupId: {
+    percent: "allGroupsScorePercent",
+    id: "groupId",
+    name: "groupName"
+  },
+}
 
-  return _a - _b
+const getTableColumns = ({ qSummary }, compareBy, filter={}) => {
+  const qLabelsToFilter = Object.keys(filter)
+  const uniqQuestionMetrics = uniqBy(qSummary, "questionId").filter((question)=> {
+    if( qLabelsToFilter && qLabelsToFilter.length ){
+      return qLabelsToFilter.includes(question.questionLabel)
+    }
+    return true
+  })
+  const orderedQuestions = sortBy(uniqQuestionMetrics, "questionLabel")
+
+  const result = orderedQuestions.map((question)=> {
+    const standards = question.standards
+    return {
+      title: (
+        <>
+          <span style={{color: themeColor, marginBottom: "10px", display:"inline-block"}}>{question.questionLabel}</span>
+          <Tags tags={standards} show={1}/>
+          <span>points {question.points}</span>
+        </>
+      ),
+      dataIndex: `averageScoreByQId.${question.questionId}`,
+      key: question.questionId,
+      sorter: (a, b) => {
+        if(a.key === "districtAvg" || b.key === "districtAvg"){
+          return 0
+        }
+        return a.averageScoreByQId[question.questionId] - b.averageScoreByQId[question.questionId]
+      },
+      render: (text) => `${text}%`,
+      width: "140px"
+    }
+  })
+
+  const compareColumn = {
+    title: compareByToPluralName[compareBy],
+    width: 150,
+    dataIndex: compareBy,
+  }
+
+  if(result && result.length){
+    return [ compareColumn, ...result ]
+  }
+  return [compareColumn]
+}
+
+const getTableRows = ({ performanceByDimension, qSummary }, compareBy) => {
+  const groupDetailsByTeacherId = groupBy(performanceByDimension.details, compareBy)
+  const orderedQuestions = sortBy(uniqBy(qSummary, "questionId"), "questionLabel")
+  const { percent, name } = variableKeyMapForComparison[compareBy]
+
+  const result = Object.keys(groupDetailsByTeacherId).map(item=> {
+    const teacherGroup = groupDetailsByTeacherId[item]
+    const [firstItem] = teacherGroup
+    const averageScoreByQId = {}
+    teacherGroup.forEach(data=> {
+      averageScoreByQId[data.questionId] = data[percent]
+    })
+    return {
+      key: item,
+      [compareBy]: firstItem[name],
+      averageScoreByQId
+    }
+  })
+  
+  const districtAvgRow = {
+    key: "districtAvg",
+    [compareBy]: "District Avg.",
+    averageScoreByQId: orderedQuestions.reduce((acc, c)=> {
+      acc[c.questionId] = c.districtAvgPerf
+      return acc
+    },{}),
+  }
+  return [districtAvgRow, ...result]
 }
 
 export const QuestionAnalysisTable = ({
-  tableData,
   compareBy,
   filter,
   role,
   isCsvDownloading,
-  compareByTitle,
-  isSharedReport,
+  questionAnalysis,
 }) => {
-  const colouredCells = (compareByType, index) => (text, record) => {
-    const tooltipText = (_compareByType, _record, _index) => (
-      <div>
-        <Row type="flex" justify="center">
-          <Col className="custom-table-tooltip-value">{_record.qLabel}</Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">
-            {comparedByToToolTipLabel[_compareByType].name}:{'  -'}
-          </Col>
-          <Col className="custom-table-tooltip-value">
-            {
-              _record[_compareByType][_index][
-                comparedByToToolTipLabel[_compareByType].nameKey
-              ]
-            }
-          </Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">
-            {comparedByToToolTipLabel[_compareByType].type}:{' '}
-          </Col>
-          <Col className="custom-table-tooltip-value">
-            {_record[_compareByType][_index].avgPerformance}%
-          </Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">
-            {comparedByToToolTipLabel[_compareByType].all}:{' '}
-          </Col>
-          <Col className="custom-table-tooltip-value">
-            {_record.avgPerformance}%
-          </Col>
-        </Row>
-        <Row type="flex" justify="start">
-          <Col className="custom-table-tooltip-key">District (% Score): </Col>
-          <Col className="custom-table-tooltip-value">
-            {_record.districtAvg}%
-          </Col>
-        </Row>
-      </div>
-    )
-
-    const getCellContents = (props) => {
-      const { printData } = props
-      return (
-        <ColoredCell bgColor={getHSLFromRange1(printData)}>
-          {`${printData}%`}
-        </ColoredCell>
-      )
-    }
-
-    return (
-      <CustomTableTooltip
-        printData={record?.[compareByType]?.[index]?.avgPerformance}
-        placement="top"
-        title={tooltipText(compareByType, record, index)}
-        getCellContents={getCellContents}
-      />
-    )
-  }
-
-  const _columns = next(columns, (rawColumns) => {
-    rawColumns[0].sorter = (a, b) => {
-      if (a.qLabel && b.qLabel) {
-        const _a = parseInt(a.qLabel.substring(1), 10)
-        const _b = parseInt(b.qLabel.substring(1), 10)
-        return _a - _b
-      }
-      return 0
-    }
-    rawColumns[0].render = (text, record) => {
-      const { pathname, search } = window.location
-      return isSharedReport ? (
-        text
-      ) : (
-        <Link
-          to={{
-            pathname: `/author/classboard/${record.assignmentId}/${record.groupId}/question-activity/${record.questionId}`,
-            state: {
-              from: `${pathname}${search}`,
-            },
-          }}
-        >
-          {text}
-        </Link>
-      )
-    }
-
-    rawColumns[1].render = (text) => {
-      if (Array.isArray(text)) {
-        return text.join(', ')
-      }
-      return text
-    }
-    rawColumns[2].render = (text) => text?.toFixed(2)
-    rawColumns[3].render = (text) => `${text}%`
-
-    if (roleuser.TEACHER === role) {
-      rawColumns.push({
-        title: `All ${compareByToPluralName[compareBy]} (Score %)`,
-        dataIndex: 'avgPerformance',
-        key: 'avgPerformance',
-        width: 150,
-        render: (text) => `${text}%`,
-      })
-    }
-    if (!tableData.length) {
-      return
-    }
-    if (compareBy === 'schoolId') {
-      for (const [index, item] of tableData[0].comparedBySchool.entries()) {
-        const col = {
-          title: item.schoolName || '-',
-          dataIndex: item.schoolId,
-          key: item.schoolId,
-          width: 150,
-          className: 'normal-text',
-          render: colouredCells('comparedBySchool', index),
-          sorter: sortNumbers('comparedBySchool', index, 'avgPerformance'),
-        }
-        rawColumns.push(col)
-      }
-    } else if (compareBy === 'teacherId') {
-      for (const [index, item] of tableData[0].comparedByTeacher.entries()) {
-        const col = {
-          title: item.teacherName,
-          dataIndex: item.teacherId,
-          key: item.teacherId,
-          width: 150,
-          className: 'normal-text',
-          render: colouredCells('comparedByTeacher', index),
-          sorter: sortNumbers('comparedByTeacher', index, 'avgPerformance'),
-        }
-        rawColumns.push(col)
-      }
-    } else if (compareBy === 'groupId') {
-      for (const [index, item] of tableData[0].comparedByClass.entries()) {
-        const col = {
-          title: item.groupName,
-          dataIndex: item.groupId,
-          key: item.groupId,
-          width: 150,
-          className: 'normal-text',
-          render: colouredCells('comparedByClass', index),
-          sorter: sortNumbers('comparedByClass', index, 'avgPerformance'),
-        }
-        rawColumns.push(col)
-      }
-    }
-  })
-
-  const _tableData = useMemo(() => {
-    const len = Object.keys(filter).length
-    return tableData.filter((item) => {
-      if (filter[item.qLabel] || len === 0) {
-        return true
-      }
-      return false
-    })
-  }, [filter])
-
-  const onCsvConvert = (data) =>
-    downloadCSV(
-      `Question Performance Analysis Report by ${compareByTitle}.csv`,
-      data
-    )
-
+  const columns = useMemo(()=> getTableColumns(questionAnalysis, compareBy, filter), [questionAnalysis,compareBy, filter])
+  const tableData = useMemo(()=> getTableRows(questionAnalysis, compareBy), [questionAnalysis,compareBy])
   return (
     <CsvTable
       data-testid="QuestionAnalysisTable"
       isCsvDownloading={isCsvDownloading}
-      onCsvConvert={onCsvConvert}
       tableToRender={StyledTable}
-      columns={_columns}
-      dataSource={_tableData}
+      columns={columns}
+      dataSource={tableData}
       rowKey="questionId"
       colorCellStart={role === roleuser.TEACHER ? 6 : 5}
       scroll={{ x: '100%' }}

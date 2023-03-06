@@ -70,16 +70,19 @@ export const getTableData = (
   const { percent, name } = variableKeyMapForComparison[compareBy]
 
   const result = Object.keys(groupDetailsByTeacherId).map((item) => {
-    const teacherGroup = groupDetailsByTeacherId[item]
-    const [firstItem] = teacherGroup
+    const groupedItem = groupDetailsByTeacherId[item]
+    const [firstItem] = groupedItem
     const averageScoreByQId = {}
-    teacherGroup.forEach((data) => {
+    const scorePercentByQId = {}
+    groupedItem.forEach((data) => {
       averageScoreByQId[data.questionId] = data[percent]
+      scorePercentByQId[data.questionId] = data[percent]
     })
     return {
       key: item,
       [compareBy]: firstItem[name],
       averageScoreByQId,
+      scorePercentByQId,
     }
   })
 

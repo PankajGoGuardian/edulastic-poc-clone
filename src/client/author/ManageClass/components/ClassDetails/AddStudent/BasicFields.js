@@ -2,12 +2,15 @@ import { userApi } from '@edulastic/api'
 import { red, themeColor } from '@edulastic/colors'
 import { FieldLabel, TextInputStyled } from '@edulastic/common'
 import { IconHash, IconLock, IconMail, IconUser } from '@edulastic/icons'
-import { Form } from 'antd'
+import { Form, Tooltip } from 'antd'
 import { get, isEmpty } from 'lodash'
 import PropTypes from 'prop-types'
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
+import { compose } from 'redux'
+import { PASSWORD_KEY } from '@edulastic/constants/const/common'
 import { nameValidator } from '../../../../../common/utils/helpers'
 import { getUserOrgId } from '../../../../src/selectors/user'
 import { Field } from './styled'
@@ -29,9 +32,9 @@ const BasicFields = ({
   setFoundContactEmails,
   validatedClassDetails,
   classDetails,
+  t,
 }) => {
   const _className = get(validatedClassDetails, 'groupInfo.name', '')
-
   const {
     email,
     firstName,
@@ -45,10 +48,11 @@ const BasicFields = ({
   } = stds?.[0] || []
 
   const [userExistsInClass, setUserExistsInClass] = useState(false)
+  const [isMultiDistrictStudent, setIsMultiDistrictStudent] = useState(false)
 
   const [enroll, setEnroll] = useState(false)
   const confirmPwdCheck = (rule, value, callback) => {
-    const pwd = getFieldValue('password')
+    const pwd = getFieldValue(PASSWORD_KEY)
     if (pwd !== value) {
       callback(rule.message)
     } else {
@@ -158,6 +162,31 @@ const BasicFields = ({
     }
   }
 
+  useEffect(() => {
+    if (isEdit) {
+      let { code = '' } = get(validatedClassDetails, 'groupInfo', {})
+      if (!code) {
+        code = classDetails?.code
+      }
+      try {
+        userApi
+          .checkUser({
+            username: email,
+            districtId,
+            classCode: code,
+            role: 'student',
+          })
+          .then((res) => {
+            if (res?.[0]?.districtIds?.length > 1) {
+              setIsMultiDistrictStudent(true)
+            }
+          })
+      } catch (error) {
+        return null
+      }
+    }
+  }, [isEdit])
+
   const checkFirstName = (rule, value, callback) => {
     const userFirstName = value.split(' ')[0]
     if (userFirstName.length < 3) {
@@ -179,6 +208,9 @@ const BasicFields = ({
     }
   }
 
+  const multiDistrictStudentPasswordEditErrMsg = isMultiDistrictStudent
+    ? t('multiDistrictStudentPasswordError.studentEdit')
+    : null
   return (
     <FormBody>
       {showClassCodeField && (
@@ -335,10 +367,10 @@ const BasicFields = ({
 
       {!isEdit ? (
         <>
-          <Field name="password">
+          <Field name={PASSWORD_KEY}>
             <FieldLabel>Password</FieldLabel>
             <Form.Item>
-              {getFieldDecorator('password', {
+              {getFieldDecorator(PASSWORD_KEY, {
                 rules: [
                   {
                     required: true,
@@ -349,9 +381,9 @@ const BasicFields = ({
               })(
                 <TextInputStyled
                   padding="0px 15px 0px 30px"
-                  data-cy="password"
+                  data-cy={PASSWORD_KEY}
                   prefix={<IconLock color={themeColor} />}
-                  type="password"
+                  type={PASSWORD_KEY}
                   placeholder="Enter Password"
                   autoComplete="new-password"
                   disabled={enroll || userExistsInClass}
@@ -374,7 +406,7 @@ const BasicFields = ({
                   padding="0px 15px 0px 30px"
                   data-cy="confirmPassword"
                   prefix={<IconLock color={themeColor} />}
-                  type="password"
+                  type={PASSWORD_KEY}
                   placeholder="Confirm Password"
                   autoComplete="new-password"
                   disabled={enroll || userExistsInClass}
@@ -385,44 +417,54 @@ const BasicFields = ({
         </>
       ) : (
         <>
-          <Field name="password">
+          <Field name={PASSWORD_KEY}>
             <FieldLabel>Password</FieldLabel>
             <Form.Item>
-              {getFieldDecorator(
-                'password',
-                {}
-              )(
-                <TextInputStyled
-                  padding="0px 15px 0px 30px"
-                  prefix={<IconLock color={themeColor} />}
-                  type="password"
-                  placeholder="Enter Password"
-                  autoComplete="new-password"
-                  data-cy="passwordTextBox"
-                />
-              )}
+              <Tooltip title={multiDistrictStudentPasswordEditErrMsg}>
+                {getFieldDecorator(
+                  PASSWORD_KEY,
+                  {}
+                )(
+                  <div>
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
+                      prefix={<IconLock color={themeColor} />}
+                      type={PASSWORD_KEY}
+                      placeholder="Enter Password"
+                      autoComplete="new-password"
+                      data-cy="passwordTextBox"
+                      disabled={isMultiDistrictStudent}
+                    />
+                  </div>
+                )}
+              </Tooltip>
             </Form.Item>
           </Field>
           <Field name="confirmPassword">
             <FieldLabel>Confirm Password</FieldLabel>
             <Form.Item>
-              {getFieldDecorator('confirmPassword', {
-                rules: [
-                  {
-                    validator: confirmPwdCheck,
-                    message: 'Retyped password do not match.',
-                  },
-                ],
-              })(
-                <TextInputStyled
-                  padding="0px 15px 0px 30px"
-                  prefix={<IconLock color={themeColor} />}
-                  type="password"
-                  placeholder="Confirm Password"
-                  autoComplete="new-password"
-                  data-cy="confirmPasswordTextBox"
-                />
-              )}
+              <Tooltip title={multiDistrictStudentPasswordEditErrMsg}>
+                {getFieldDecorator('confirmPassword', {
+                  rules: [
+                    {
+                      validator: confirmPwdCheck,
+                      message: 'Retyped password do not match.',
+                    },
+                  ],
+                })(
+                  <div>
+                    <TextInputStyled
+                      padding="0px 15px 0px 30px"
+                      prefix={<IconLock color={themeColor} />}
+                      type={PASSWORD_KEY}
+                      placeholder="Confirm Password"
+                      autoComplete="new-password"
+                      data-cy="confirmPasswordTextBox"
+                      disabled={isMultiDistrictStudent}
+                    />
+                  </div>
+                )}
+              </Tooltip>
             </Form.Item>
           </Field>
         </>
@@ -440,11 +482,14 @@ BasicFields.defaultProps = {
   isEdit: false,
 }
 
-export default connect((state) => ({
-  students: get(state, 'manageClass.studentsList', []),
-  districtId: getUserOrgId(state),
-  classDetails: get(state, 'manageClass.entity', {}),
-}))(BasicFields)
+const enhance = compose(
+  withNamespaces('author'),
+  connect((state) => ({
+    students: get(state, 'manageClass.studentsList', []),
+    districtId: getUserOrgId(state),
+    classDetails: get(state, 'manageClass.entity', {}),
+  }))
+)
 
 const FormBody = styled.div`
   background: white;
@@ -458,3 +503,4 @@ const FormBody = styled.div`
 const InputMessage = styled.span`
   color: ${red};
 `
+export default enhance(BasicFields)

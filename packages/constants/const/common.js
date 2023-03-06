@@ -34,6 +34,8 @@ const TOTAL_HOURS_IN_HALF_DAY = 12
 const ANTE_MERIDIEM = 'AM'
 const POST_MERIDIEM = 'PM'
 
+const PASSWORD_KEY = 'password'
+
 module.exports = {
   helpCenterUrl,
   sessionFilters,
@@ -49,4 +51,5 @@ module.exports = {
   TOTAL_HOURS_IN_HALF_DAY,
   ANTE_MERIDIEM,
   POST_MERIDIEM,
+  PASSWORD_KEY,
 }

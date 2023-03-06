@@ -130,6 +130,12 @@ const getTableColumns = (
     title: compareByToPluralName[compareBy],
     width: 150,
     dataIndex: compareBy,
+    sorter: (a, b) => {
+      if (a.key === 'districtAvg' || b.key === 'districtAvg') {
+        return 0
+      }
+      return a.key.localeCompare(b.key)
+    },
   }
 
   if (result && result.length) {

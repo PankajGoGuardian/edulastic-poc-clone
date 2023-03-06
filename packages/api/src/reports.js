@@ -4,6 +4,228 @@ import qs from 'qs'
 const api = new API()
 const prefix = '/test-activity/summary'
 
+const qSummary = [
+  {
+    questionId: '123',
+    questionLabel: 'Q1',
+    points: 1,
+    standards: ['1.OA.C.6'],
+    districtAvgPerf: 40,
+    avgTimeSpent: 55,
+    avgPerformance: 20,
+  },
+  {
+    questionId: '234',
+    questionLabel: 'Q2',
+    points: 1,
+    standards: ['1.OA.A.1'],
+    districtAvgPerf: 30,
+    avgTimeSpent: 123,
+    avgPerformance: 10,
+  },
+  {
+    questionId: '456',
+    questionLabel: 'Q3',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 92,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '457',
+    questionLabel: 'Q4',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 88,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '458',
+    questionLabel: 'Q5',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 76,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '459',
+    questionLabel: 'Q6',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 55,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '460',
+    questionLabel: 'Q7',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 42,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '560',
+    questionLabel: 'Q8',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 24,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '561',
+    questionLabel: 'Q9',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 12,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '562',
+    questionLabel: 'Q10',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 76,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '563',
+    questionLabel: 'Q11',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 99,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '564',
+    questionLabel: 'Q12',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 56,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '565',
+    questionLabel: 'Q13',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 48,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '566',
+    questionLabel: 'Q14',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 32,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '567',
+    questionLabel: 'Q15',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 40,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '568',
+    questionLabel: 'Q16',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 89,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '569',
+    questionLabel: 'Q17',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 46,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+]
+
+const teachers = ['as', 'an', 'au']
+const groups = ['g1', 'g2', 'g3']
+const schools = ['s1', 's2', 's3']
+const scorePercent = [20, 10, 30]
+const allScorePercent = [40, 50, 60]
+
+const teacherDetails = () => {
+  return teachers.flatMap((teacher, index) => {
+    return qSummary.map((question) => {
+      return {
+        questionId: question.questionId,
+        teacherId: index,
+        teacherName: teacher,
+        scorePercent: scorePercent[index],
+        allTeachersScorePercent: allScorePercent[index],
+        assignmentId: 123,
+      }
+    })
+  })
+}
+
+const schoolDetails = () => {
+  return schools.flatMap((item, index) => {
+    return qSummary.map((question) => {
+      return {
+        questionId: question.questionId,
+        schoolId: index,
+        schoolName: item,
+        scorePercent: scorePercent[index],
+        allSchoolsScorePercent: allScorePercent[index],
+        assignmentId: 123,
+      }
+    })
+  })
+}
+
+const groupDetails = () => {
+  return groups.flatMap((item, index) => {
+    return qSummary.map((question) => {
+      return {
+        questionId: question.questionId,
+        groupId: index,
+        groupName: item,
+        scorePercent: scorePercent[index],
+        allGroupsScorePercent: allScorePercent[index],
+        assignmentId: 123,
+      }
+    })
+  })
+}
+
+const performanceByDimension = {
+  teacherId: {
+    totalPages: 4,
+    details: teacherDetails(),
+  },
+  schoolId: {
+    totalPages: 5,
+    details: schoolDetails(),
+  },
+  groupId: {
+    totalPages: 6,
+    details: groupDetails(),
+  },
+}
+
 const fetchReports = (
   groupId = '',
   testId = '',
@@ -150,18 +372,24 @@ const fetchQuestionAnalysisReport = (params) =>
   })
 
 const fetchQuestionAnalysisSummaryReport = (params) =>
-  api.callApi({
-    useSlowApi: true,
-    url: `/report/question-analysis/summary`,
-    params: { ...params.requestFilters, testId: params.testId },
-  })
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/report/question-analysis`,
+      // url: `/report/question-analysis/summary`,
+      params: { ...params.requestFilters, testId: params.testId },
+    })
+    .then(() => qSummary)
 
 const fetchQuestionAnalysisPerformanceReport = (params) =>
-  api.callApi({
-    useSlowApi: true,
-    url: `/report/question-analysis/performance-by-dimension`,
-    params: { ...params.requestFilters, testId: params.testId },
-  })
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/report/question-analysis`,
+      // url: `/report/question-analysis/performance-by-dimension`,
+      params: { ...params.requestFilters, testId: params.testId },
+    })
+    .then(() => performanceByDimension[params.requestFilters.compareBy])
 
 const fetchMARFilterData = (params) =>
   api.callApi({

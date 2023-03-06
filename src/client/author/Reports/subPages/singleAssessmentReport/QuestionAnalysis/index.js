@@ -26,10 +26,9 @@ import {
   getReportsQuestionAnalysisLoader,
   getReportsQuestionAnalysisError,
   resetQuestionAnalysisAction,
-  getReportsQuestionAnalysis1,
 } from './ducks'
 
-import { getChartData, getTableData } from './utils/transformers'
+import { getChartData } from './utils/transformers'
 
 import dropDownData from './static/json/dropDownData.json'
 import { getAssessmentName } from '../../../common/util'
@@ -46,9 +45,8 @@ const QuestionAnalysis = ({
   sharedReport,
   toggleFilter,
   demographicFilters,
-  questionAnalysis1,
 }) => {
-  const [userRole, isSharedReport] = useMemo(
+  const [userRole] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
     [sharedReport]
   )
@@ -57,6 +55,10 @@ const QuestionAnalysis = ({
   )
   const [chartFilter, setChartFilter] = useState({})
   const [pageNo, setpageNo] = useState(1)
+  const [horizontalPage, setHorizontalPageNo] = useState({
+    startIndex: 0,
+    endIndex: 9,
+  })
 
   const assessmentName = getAssessmentName(
     questionAnalysis?.meta?.test || settings.selectedTest
@@ -67,7 +69,11 @@ const QuestionAnalysis = ({
   useEffect(() => {
     if (settings.selectedTest && settings.selectedTest.key) {
       const q = {
-        requestFilters: { ...settings.requestFilters, ...demographicFilters, compareBy },
+        requestFilters: {
+          ...settings.requestFilters,
+          ...demographicFilters,
+          compareBy,
+        },
         testId: settings.selectedTest.key,
         pageNo,
       }
@@ -83,13 +89,13 @@ const QuestionAnalysis = ({
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !loading &&
       !isEmpty(questionAnalysis) &&
-      !questionAnalysis.metricInfo?.length
+      !questionAnalysis.qSummary?.length
     ) {
       toggleFilter(null, true)
     }
   }, [questionAnalysis])
 
-  const chartData = useMemo(() => getChartData(questionAnalysis1.qSummary), [
+  const chartData = useMemo(() => getChartData(questionAnalysis.qSummary), [
     questionAnalysis,
   ])
 
@@ -142,14 +148,14 @@ const QuestionAnalysis = ({
     return <DataSizeExceeded />
   }
 
-  if (!questionAnalysis.metricInfo?.length || !settings.selectedTest.key) {
+  if (!questionAnalysis.qSummary?.length || !settings.selectedTest.key) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
       </NoDataContainer>
     )
   }
-  console.log(questionAnalysis1?.performanceByDimension?.totalPages,"===", pageNo)
+
   return (
     <div>
       <UpperContainer>
@@ -162,6 +168,7 @@ const QuestionAnalysis = ({
             onBarClickCB={onBarClickCB}
             onResetClickCB={onResetClickCB}
             filter={chartFilter}
+            setHorizontalPageNo={setHorizontalPageNo}
           />
           <StyledP style={{ marginTop: '-30px' }}>
             ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)
@@ -197,17 +204,18 @@ const QuestionAnalysis = ({
             <Col className="bottom-table-container">
               <QuestionAnalysisTable
                 isCsvDownloading={isCsvDownloading}
-                questionAnalysis={questionAnalysis1}
+                questionAnalysis={questionAnalysis}
                 compareBy={compareBy}
                 filter={chartFilter}
                 role={userRole}
+                horizontalPage={horizontalPage}
               />
               <Pagination
-                style={{ marginTop: "10px" }}
+                style={{ marginTop: '10px' }}
                 onChange={setpageNo}
                 current={pageNo}
                 pageSize={1}
-                total={questionAnalysis1?.performanceByDimension?.totalPages}
+                total={questionAnalysis?.performanceByDimension?.totalPages}
               />
             </Col>
           </Row>
@@ -218,8 +226,8 @@ const QuestionAnalysis = ({
 }
 
 const reportPropType = PropTypes.shape({
-  metaInfo: PropTypes.array,
-  metricInfo: PropTypes.array,
+  qSummary: PropTypes.array,
+  performanceByDimension: PropTypes.object,
 })
 
 QuestionAnalysis.propTypes = {
@@ -238,7 +246,6 @@ export default connect(
     isCsvDownloading: getCsvDownloadingState(state),
     role: getUserRole(state),
     questionAnalysis: getReportsQuestionAnalysis(state),
-    questionAnalysis1: getReportsQuestionAnalysis1(state),
   }),
   {
     getQuestionAnalysis: getQuestionAnalysisRequestAction,

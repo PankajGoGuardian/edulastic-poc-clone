@@ -102,6 +102,7 @@ const SimpleStackedBarChartComponent = ({
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
   showLegend = false,
+  onSetHorizontalPageNo,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -136,6 +137,12 @@ const SimpleStackedBarChartComponent = ({
       startIndex: 0,
       endIndex: pageSize - 1,
     })
+    if (onSetHorizontalPageNo) {
+      onSetHorizontalPageNo({
+        startIndex: 0,
+        endIndex: pageSize - 1,
+      })
+    }
     setCopyData(data)
   }
 
@@ -172,6 +179,12 @@ const SimpleStackedBarChartComponent = ({
         startIndex: pagination.startIndex - diff,
         endIndex: pagination.endIndex - diff,
       })
+      if (onSetHorizontalPageNo) {
+        onSetHorizontalPageNo({
+          startIndex: pagination.startIndex - diff,
+          endIndex: pagination.endIndex - diff,
+        })
+      }
     }
   }
 
@@ -187,6 +200,12 @@ const SimpleStackedBarChartComponent = ({
         startIndex: pagination.startIndex + diff,
         endIndex: pagination.endIndex + diff,
       })
+      if (onSetHorizontalPageNo) {
+        onSetHorizontalPageNo({
+          startIndex: pagination.startIndex + diff,
+          endIndex: pagination.endIndex + diff,
+        })
+      }
     }
   }
 

@@ -1,5 +1,5 @@
 import styled from 'styled-components'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import { extraDesktopWidthMax, themeColor } from '@edulastic/colors'
 import {
   StyledTable as Table,
   StyledCard as Card,
@@ -98,4 +98,10 @@ export const StyledP = styled.p`
   font-weight: 600;
   color: #7c848e;
   text-align: center;
+`
+
+export const QLabelSpan = styled.span`
+  color: ${themeColor};
+  margin-bottom: 10px;
+  display: inline-block;
 `

@@ -299,3 +299,7 @@ export const subscriptionAdditionalDetails = [
     type: 'number',
   },
 ]
+
+export const SUBSCRIPTION_DEFINITION_TYPES = {
+  PREMIUM: 'PREMIUM',
+}

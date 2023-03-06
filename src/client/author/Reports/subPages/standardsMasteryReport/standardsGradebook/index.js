@@ -20,6 +20,9 @@ import {
   getReportsStandardsGradebook,
   getReportsStandardsGradebookLoader,
   getStandardsGradebookRequestAction,
+  getSkillInfo,
+  getSkillInfoLoader,
+  getSkillInfoAction,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
@@ -40,13 +43,16 @@ const { getMaxMasteryScore } = reportUtils.standardsPerformanceSummary
 
 const StandardsGradebook = ({
   standardsGradebook,
+  skillInfo,
   getStandardsGradebookRequest,
+  getSkillInfoRequest,
   resetStandardsGradebook,
   isCsvDownloading,
   navigationItems,
   toggleFilter,
   settings,
   loading,
+  loadingSkillInfo,
   error,
   standardsFilters,
   getStudentStandards,
@@ -114,11 +120,12 @@ const StandardsGradebook = ({
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
       getStandardsGradebookRequest(q)
+      getSkillInfoRequest(q)
     }
   }, [pageFilters])
 
   const filteredDenormalizedData = useMemo(() => {
-    const denormalizedData = getDenormalizedData(standardsGradebook)
+    const denormalizedData = getDenormalizedData(standardsGradebook, skillInfo)
     return getFilteredDenormalizedData(denormalizedData, ddfilter)
   }, [standardsGradebook, ddfilter])
 
@@ -126,7 +133,7 @@ const StandardsGradebook = ({
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
+      (!loading || !loadingSkillInfo) &&
       !isEmpty(standardsGradebook) &&
       !filteredDenormalizedData?.length
     ) {
@@ -177,7 +184,7 @@ const StandardsGradebook = ({
     setClickedStudentName(undefined)
   }
 
-  if (loading) {
+  if (loading || loadingSkillInfo) {
     return (
       <SpinLoader
         tip="Please wait while we gather the required information..."
@@ -262,15 +269,18 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsStandardsGradebookLoader(state),
+      loadingSkillInfo: getSkillInfoLoader(state),
       error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       standardsGradebook: getReportsStandardsGradebook(state),
+      skillInfo: getSkillInfo(state),
       standardsFilters: getReportsStandardsFilters(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,
+      getSkillInfoRequest: getSkillInfoAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
     }

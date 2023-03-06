@@ -21,6 +21,14 @@ const GET_STUDENT_STANDARDS_FAILED =
 const RESET_REPORTS_STANDARDS_GRADEBOOK =
   '[reports] reset reports standards gradebook'
 
+const GET_SKILL_INFO_REQUEST =
+  '[reports] get standards gradebook skillInfo request'
+
+const GET_SKILL_INFO_REQUEST_SUCCESS =
+  '[reports] get standards gradebook skillInfo request success'
+const GET_SKILL_INFO_REQUEST_ERROR =
+  '[reports] get standards gradebook skillInfo request failed'
+
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
 // export const getStandardsGradebookProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_GRADEBOOK_PROCESS_REQUESTS);
@@ -33,6 +41,8 @@ export const getStudentStandardsAction = createAction(
 export const resetStandardsGradebookAction = createAction(
   RESET_REPORTS_STANDARDS_GRADEBOOK
 )
+
+export const getSkillInfoAction = createAction(GET_SKILL_INFO_REQUEST)
 // -----|-----|-----|-----| ACTIONS ENDED |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -47,9 +57,19 @@ export const getReportsStandardsGradebook = createSelector(
   (state) => state.standardsGradebook
 )
 
+export const getSkillInfo = createSelector(
+  stateSelector,
+  (state) => state.skillInfo
+)
+
 export const getReportsStandardsGradebookLoader = createSelector(
   stateSelector,
   (state) => state.loading
+)
+
+export const getSkillInfoLoader = createSelector(
+  stateSelector,
+  (state) => state.loadingSkillInfo
 )
 
 export const getReportsStandardsGradebookError = createSelector(
@@ -74,8 +94,10 @@ export const getStudentStandardLoader = createSelector(
 // -----|-----|-----|-----| REDUCER BEGIN |-----|-----|-----|----- //
 
 const initialState = {
-  loader: false,
+  loading: false,
+  loadingSkillInfo: false,
   standardsGradebook: {},
+  skillInfo: {},
   filters: {
     termId: '',
     subject: 'All',
@@ -113,6 +135,18 @@ export const reportStandardsGradebookReducer = createReducer(initialState, {
   },
   [GET_STUDENT_STANDARDS_FAILED]: (state) => {
     state.loadingStudentStandard = 'failed'
+  },
+  [GET_SKILL_INFO_REQUEST]: (state) => {
+    state.loadingSkillInfo = true
+  },
+  [GET_SKILL_INFO_REQUEST_SUCCESS]: (state, { payload }) => {
+    state.loadingSkillInfo = false
+    state.error = false
+    state.skillInfo = payload.skillInfo
+  },
+  [GET_SKILL_INFO_REQUEST_ERROR]: (state, { payload }) => {
+    state.loadingSkillInfo = false
+    state.error = payload.error
   },
 })
 
@@ -152,6 +186,36 @@ function* getReportsStandardsGradebookRequest({ payload }) {
   }
 }
 
+function* getSkillInfoRequest({ payload }) {
+  try {
+    const skillInfo = yield call(
+      reportsApi.fetchStandardsGradbookSkillInfo,
+      payload
+    )
+    const dataSizeExceeded = skillInfo?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_SKILL_INFO_REQUEST_ERROR,
+        payload: { error: { ...skillInfo.data } },
+      })
+      return
+    }
+    yield put({
+      type: GET_SKILL_INFO_REQUEST_SUCCESS,
+      payload: { skillInfo },
+    })
+  } catch (error) {
+    console.log('err', error.stack)
+    const msg =
+      'Error getting standards gradebook report data. Please try again after a few minutes.'
+    notification({ msg })
+    yield put({
+      type: GET_SKILL_INFO_REQUEST,
+      payload: { error: msg },
+    })
+  }
+}
+
 function* getStudentStandardsSaga({ payload }) {
   try {
     const studentStandard = yield call(
@@ -178,6 +242,7 @@ export function* reportStandardsGradebookSaga() {
       getReportsStandardsGradebookRequest
     ),
     yield takeLatest(GET_STUDENT_STANDARDS_REQUEST, getStudentStandardsSaga),
+    yield takeLatest(GET_SKILL_INFO_REQUEST, getSkillInfoRequest),
   ])
 }
 

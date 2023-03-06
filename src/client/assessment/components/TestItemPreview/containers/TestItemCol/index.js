@@ -48,6 +48,14 @@ class TestItemCol extends Component {
     this.scrollContainer = React.createRef()
   }
 
+  componentDidUpdate(prevProps) {
+    const { itemId, col } = this.props
+    const { currentTab } = this.state
+    if (prevProps.itemId !== itemId && currentTab >= col?.tabs?.length) {
+      this.handleTabChange(col.tabs.length - 1)
+    }
+  }
+
   handleTabChange = (tabIndex) => {
     const { changedPlayerContent } = this.props
     this.setState(

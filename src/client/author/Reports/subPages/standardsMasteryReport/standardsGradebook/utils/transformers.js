@@ -77,14 +77,14 @@ export const getMasteryDropDown = (masteryScale) => {
   return arr
 }
 
-export const getDenormalizedData = (rawData) => {
+export const getDenormalizedData = (rawData, rawSkillInfo) => {
   if (isEmpty(rawData)) {
     return []
   }
 
-  const rawSkillinfo = get(rawData, 'data.result.skillInfo', [])
+  const skillInfo = get(rawSkillInfo, 'data.result.skillInfo')
   const skillInfoMap = keyBy(
-    rawSkillinfo.filter((item) => !!item.standardId),
+    skillInfo.filter((item) => !!item.standardId),
     'standardId'
   )
 

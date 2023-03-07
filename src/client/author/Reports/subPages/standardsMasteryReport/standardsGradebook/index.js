@@ -20,6 +20,9 @@ import {
   getReportsStandardsGradebook,
   getReportsStandardsGradebookLoader,
   getStandardsGradebookRequestAction,
+  getStandardsGradebookSkillInfo,
+  getSkillInfoLoader,
+  getStandardsGradebookSkillInfoAction,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
@@ -40,13 +43,16 @@ const { getMaxMasteryScore } = reportUtils.standardsPerformanceSummary
 
 const StandardsGradebook = ({
   standardsGradebook,
+  skillInfo,
   getStandardsGradebookRequest,
+  getSkillInfoRequest,
   resetStandardsGradebook,
   isCsvDownloading,
   navigationItems,
   toggleFilter,
   settings,
   loading,
+  loadingSkillInfo,
   error,
   standardsFilters,
   getStudentStandards,
@@ -106,19 +112,22 @@ const StandardsGradebook = ({
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
+
   // get paginated data
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
-      ...pageFilters,
+      stdPage: pageFilters.page,
+      stdPageSize: pageFilters.pageSize,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
       getStandardsGradebookRequest(q)
+      getSkillInfoRequest(q)
     }
-  }, [pageFilters])
+  }, [pageFilters, settings.requestFilters])
 
   const filteredDenormalizedData = useMemo(() => {
-    const denormalizedData = getDenormalizedData(standardsGradebook)
+    const denormalizedData = getDenormalizedData(standardsGradebook, skillInfo)
     return getFilteredDenormalizedData(denormalizedData, ddfilter)
   }, [standardsGradebook, ddfilter])
 
@@ -126,7 +135,7 @@ const StandardsGradebook = ({
   useEffect(() => {
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      !loading &&
+      (!loading || !loadingSkillInfo) &&
       !isEmpty(standardsGradebook) &&
       !filteredDenormalizedData?.length
     ) {
@@ -177,7 +186,7 @@ const StandardsGradebook = ({
     setClickedStudentName(undefined)
   }
 
-  if (loading) {
+  if (loading || loadingSkillInfo) {
     return (
       <SpinLoader
         tip="Please wait while we gather the required information..."
@@ -262,15 +271,18 @@ const enhance = compose(
   connect(
     (state) => ({
       loading: getReportsStandardsGradebookLoader(state),
+      loadingSkillInfo: getSkillInfoLoader(state),
       error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       standardsGradebook: getReportsStandardsGradebook(state),
+      skillInfo: getStandardsGradebookSkillInfo(state),
       standardsFilters: getReportsStandardsFilters(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,
+      getSkillInfoRequest: getStandardsGradebookSkillInfoAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
     }

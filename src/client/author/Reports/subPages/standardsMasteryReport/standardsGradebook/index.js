@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEmpty } from 'lodash'
+import { get, isEmpty, uniqBy, pickBy } from 'lodash'
 import { Col, Row } from 'antd'
 
 import { reportUtils } from '@edulastic/constants'
@@ -18,8 +18,7 @@ import { getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
   getReportsStandardsGradebook,
-  getReportsStandardsGradebookLoader,
-  getStandardsGradebookRequestAction,
+  getReportsStandardsGradebookChartLoader,
   getStandardsGradebookSkillInfo,
   getSkillInfoLoader,
   getStandardsGradebookSkillInfoAction,
@@ -27,12 +26,13 @@ import {
   getStudentStandardLoader,
   getStudentStandardsAction,
   getReportsStandardsGradebookError,
+  getStandardsGradebookChartAction,
+  getReportsStandardsGradebookChart,
   resetStandardsGradebookAction,
 } from './ducks'
 
 import {
-  getDenormalizedData,
-  getFilteredDenormalizedData,
+  getChartDataWithStandardInfo,
   groupedByStandard,
 } from './utils/transformers'
 
@@ -42,16 +42,16 @@ const { getMaxMasteryScore } = reportUtils.standardsPerformanceSummary
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
 
 const StandardsGradebook = ({
-  standardsGradebook,
-  skillInfo,
-  getStandardsGradebookRequest,
+  skillInfo: rawSkillInfo,
   getSkillInfoRequest,
+  getChartData,
+  chartData: rawChartData,
   resetStandardsGradebook,
   isCsvDownloading,
   navigationItems,
   toggleFilter,
   settings,
-  loading,
+  loadingChart,
   loadingSkillInfo,
   error,
   standardsFilters,
@@ -73,12 +73,10 @@ const StandardsGradebook = ({
     ],
     [sharedReport]
   )
-  const standardsCount = get(
-    standardsGradebook,
-    'data.result.standardsCount',
-    0
-  )
+  const chartData = get(rawChartData, 'data.result.standards', [])
   const scaleInfo = get(standardsFilters, 'data.result.scaleInfo', [])
+  const skillInfo = get(rawSkillInfo, 'data.result.skillInfo')
+
   const selectedScale =
     (
       scaleInfo.find(
@@ -92,7 +90,7 @@ const StandardsGradebook = ({
   )
 
   // support for domain filtering from backend
-  const [pageFilters, setPageFilters] = useState({
+  const [chartPageFilters, setChartPageFilters] = useState({
     page: 0, // set to 0 initially to prevent multiple api request on tab change
     pageSize: 10,
   })
@@ -102,46 +100,66 @@ const StandardsGradebook = ({
   )
   const [clickedStandard, setClickedStandard] = useState(undefined)
   const [clickedStudentName, setClickedStudentName] = useState(undefined)
+  const standardsCount = useMemo(() => uniqBy(skillInfo, 'standardId').length, [
+    skillInfo,
+  ])
+
+  const ddRequestFilters = useMemo(
+    () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
+    [ddfilter]
+  )
 
   useEffect(() => () => resetStandardsGradebook(), [])
 
   // set initial page filters
   useEffect(() => {
-    setPageFilters({ ...pageFilters, page: 1 })
+    setChartPageFilters({ ...chartPageFilters, page: 1 })
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
 
-  // get paginated data
+  // @TODO: should this be handled with different approach ?
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
-      stdPage: pageFilters.page,
-      stdPageSize: pageFilters.pageSize,
     }
-    if ((q.termId || q.reportId) && pageFilters.page) {
-      getStandardsGradebookRequest(q)
+    if (q.termId || q.reportId) {
       getSkillInfoRequest(q)
     }
-  }, [pageFilters, settings.requestFilters])
+  }, [settings.requestFilters])
+  // get paginated data
+  useEffect(() => {
+    // @TODO: handle page filters for table
+    // handle page filter, settings and dd filters properly to avoid multiple api calls
+    const { page: stdPage, pageSize: stdPageSize } = chartPageFilters
+    const q = {
+      ...settings.requestFilters,
+      stdPage,
+      stdPageSize,
+      ...ddRequestFilters,
+    }
+    if ((q.termId || q.reportId) && stdPage) {
+      getChartData(q)
+    }
+  }, [chartPageFilters, settings.requestFilters, ddRequestFilters])
 
-  const filteredDenormalizedData = useMemo(() => {
-    const denormalizedData = getDenormalizedData(standardsGradebook, skillInfo)
-    return getFilteredDenormalizedData(denormalizedData, ddfilter)
-  }, [standardsGradebook, ddfilter])
+  const chartDataWithStandardInfo = useMemo(
+    () => getChartDataWithStandardInfo(chartData, skillInfo),
+    [chartData, skillInfo]
+  )
 
   // show filters section if data is empty
   useEffect(() => {
+    // @TODO: add a check for table and chart data here
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      (!loading || !loadingSkillInfo) &&
-      !isEmpty(standardsGradebook) &&
-      !filteredDenormalizedData?.length
+      (!loadingChart || !loadingSkillInfo) &&
+      !isEmpty(chartDataWithStandardInfo)
     ) {
       toggleFilter(null, true)
     }
-  }, [filteredDenormalizedData])
+  }, [chartDataWithStandardInfo])
 
   const onBarClickCB = (key) => {
     const _chartFilter = { ...chartFilter }
@@ -158,27 +176,27 @@ const StandardsGradebook = ({
   }
 
   const masteryScale = selectedScale || []
-  const maxMasteryScore = getMaxMasteryScore(masteryScale)
+  // const maxMasteryScore = getMaxMasteryScore(masteryScale)
 
-  const standardsData = useMemo(
-    () =>
-      groupedByStandard(
-        filteredDenormalizedData,
-        maxMasteryScore,
-        masteryScale
-      ),
-    [filteredDenormalizedData, maxMasteryScore, masteryScale]
-  )
+  // const standardsData = useMemo(
+  //   () =>
+  //     groupedByStandard(
+  //       filteredDenormalizedData,
+  //       maxMasteryScore,
+  //       masteryScale
+  //     ),
+  //   [filteredDenormalizedData, maxMasteryScore, masteryScale]
+  // )
 
-  const handleOnClickStandard = (params, standard, studentName) => {
-    getStudentStandards({
-      ...params,
-      testIds: (sharedReportFilters || settings.requestFilters).testIds,
-    })
-    setClickedStandard(standard)
-    setStudentAssignmentModal(true)
-    setClickedStudentName(studentName)
-  }
+  // const handleOnClickStandard = (params, standard, studentName) => {
+  //   getStudentStandards({
+  //     ...params,
+  //     testIds: (sharedReportFilters || settings.requestFilters).testIds,
+  //   })
+  //   setClickedStandard(standard)
+  //   setStudentAssignmentModal(true)
+  //   setClickedStudentName(studentName)
+  // }
 
   const closeStudentAssignmentModal = () => {
     setStudentAssignmentModal(false)
@@ -186,7 +204,8 @@ const StandardsGradebook = ({
     setClickedStudentName(undefined)
   }
 
-  if (loading || loadingSkillInfo) {
+  // @TODO handle loading table data as well
+  if (loadingChart || loadingSkillInfo) {
     return (
       <SpinLoader
         tip="Please wait while we gather the required information..."
@@ -195,11 +214,13 @@ const StandardsGradebook = ({
     )
   }
 
+  // @TODO: does it need to be modified ?
   if (error && error.dataSizeExceeded) {
     return <DataSizeExceeded />
   }
 
-  if (!filteredDenormalizedData?.length) {
+  // @TODO: add check for table and (skill info ?) data
+  if (isEmpty(chartDataWithStandardInfo)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -220,24 +241,23 @@ const StandardsGradebook = ({
           </Row>
           <Row>
             <SignedStackBarChartContainer
-              filteredDenormalizedData={filteredDenormalizedData}
-              filters={ddfilter}
+              data={chartDataWithStandardInfo}
               chartFilter={chartFilter}
               masteryScale={masteryScale}
               role={userRole}
               onBarClickCB={onBarClickCB}
               onBarResetClickCB={onBarResetClickCB}
               backendPagination={{
-                ...pageFilters,
+                ...chartPageFilters,
                 pageCount:
-                  Math.ceil(standardsCount / pageFilters.pageSize) || 1,
+                  Math.ceil(standardsCount / chartPageFilters.pageSize) || 1,
               }}
-              setBackendPagination={setPageFilters}
+              setBackendPagination={setChartPageFilters}
             />
           </Row>
         </StyledCard>
       </UpperContainer>
-      <TableContainer>
+      {/* <TableContainer>
         <StandardsGradebookTable
           filteredDenormalizedData={filteredDenormalizedData}
           masteryScale={masteryScale}
@@ -252,7 +272,7 @@ const StandardsGradebook = ({
           pageTitle={pageTitle}
           isSharedReport={isSharedReport}
         />
-      </TableContainer>
+      </TableContainer> */}
       {showStudentAssignmentModal && (
         <StudentAssignmentModal
           showModal={showStudentAssignmentModal}
@@ -270,7 +290,7 @@ const StandardsGradebook = ({
 const enhance = compose(
   connect(
     (state) => ({
-      loading: getReportsStandardsGradebookLoader(state),
+      loadingChart: getReportsStandardsGradebookChartLoader(state),
       loadingSkillInfo: getSkillInfoLoader(state),
       error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
@@ -279,12 +299,13 @@ const enhance = compose(
       standardsFilters: getReportsStandardsFilters(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),
+      chartData: getReportsStandardsGradebookChart(state),
     }),
     {
-      getStandardsGradebookRequest: getStandardsGradebookRequestAction,
       getSkillInfoRequest: getStandardsGradebookSkillInfoAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
+      getChartData: getStandardsGradebookChartAction,
     }
   )
 )

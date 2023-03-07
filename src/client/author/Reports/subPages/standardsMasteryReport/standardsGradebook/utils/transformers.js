@@ -14,6 +14,7 @@ import { reportUtils } from '@edulastic/constants'
 import {
   getProficiencyBand,
   DemographicCompareByOptions,
+  percentage,
 } from '../../../../common/util'
 
 const { getFormattedName } = reportUtils.common
@@ -77,83 +78,22 @@ export const getMasteryDropDown = (masteryScale) => {
   return arr
 }
 
-export const getDenormalizedData = (rawData, rawSkillInfo) => {
-  if (isEmpty(rawData)) {
+export const getChartDataWithStandardInfo = (chartData, skillInfo) => {
+  if (isEmpty(chartData) || isEmpty(skillInfo)) {
     return []
   }
 
-  const skillInfo = get(rawSkillInfo, 'data.result.skillInfo')
   const skillInfoMap = keyBy(
     skillInfo.filter((item) => !!item.standardId),
     'standardId'
   )
 
-  const rawStudInfo = get(rawData, 'data.result.studInfo', [])
-  const studInfoMap = keyBy(rawStudInfo, 'studentId')
-
-  const rawMetricInfo = get(rawData, 'data.result.metricInfo', [])
-  const enhancedRawMetricInfo = rawMetricInfo
-    .filter((item) => skillInfoMap[item.standardId])
-    .map((item) => {
-      let obj = {
-        ...item,
-      }
-      if (studInfoMap[item.studentId]) {
-        obj = {
-          ...obj,
-          ...studInfoMap[item.studentId],
-          [idToLabel.studentId]: getFormattedName(
-            `${studInfoMap[item.studentId].firstName || ''} ${
-              studInfoMap[item.studentId].lastName || ''
-            }`
-          ),
-          groupIds: studInfoMap[item.studentId].groupIds.split(','),
-        }
-        const groupIdsMap = keyBy(obj.groupIds)
-        const uniqueGroupIds = values(groupIdsMap)
-        obj.groupIds = uniqueGroupIds
-      }
-      if (skillInfoMap[item.standardId]) {
-        obj = {
-          ...obj,
-          ...skillInfoMap[item.standardId],
-        }
-      }
-      return obj
-    })
-
-  const denormalizedEnhancedRawMetricInfo = []
-  enhancedRawMetricInfo
-    .filter((i) => i.groupIds)
-    .forEach((item) => {
-      item.groupIds.forEach((_item) => {
-        const obj = {
-          ...item,
-          groupId: _item,
-        }
-        denormalizedEnhancedRawMetricInfo.push(obj)
-      })
-    })
-
-  const rawTeacherInfo = get(rawData, 'data.result.teacherInfo', [])
-  const teacherInfoMap = keyBy(rawTeacherInfo, 'groupId')
-
-  const finalDenormalizedData = denormalizedEnhancedRawMetricInfo.map(
-    (item) => {
-      let obj = {
-        ...item,
-      }
-      if (teacherInfoMap[item.groupId]) {
-        obj = {
-          ...obj,
-          ...teacherInfoMap[item.groupId],
-        }
-      }
-      return obj
-    }
-  )
-
-  return finalDenormalizedData
+  return chartData
+    .filter((item) => skillInfoMap[item._id])
+    .map((item) => ({
+      ...item,
+      ...skillInfoMap[item._id],
+    }))
 }
 
 export const getFilteredDenormalizedData = (denormalizedData, filters) => {
@@ -194,69 +134,39 @@ export const getFilteredDenormalizedData = (denormalizedData, filters) => {
     )
 }
 
-export const getChartData = (
-  filteredDenormalizedData,
-  masteryScale,
-  filters
-) => {
-  if (
-    isEmpty(filteredDenormalizedData) ||
-    isEmpty(masteryScale) ||
-    isEmpty(filters)
-  ) {
+export const getChartData = (chartData, masteryScale) => {
+  if (isEmpty(chartData) || isEmpty(masteryScale)) {
     return []
   }
 
-  const groupedStandardIds = groupBy(filteredDenormalizedData, 'standardId')
-
-  const keysArr = Object.keys(groupedStandardIds)
-
-  const masteryMap = keyBy(masteryScale, 'score')
-  const masteryCountHelper = {}
-
+  const masteryLabelInfo = {}
   for (const item of masteryScale) {
-    masteryCountHelper[item.score] = 0
+    masteryLabelInfo[item.masteryLabel] = item.masteryName
   }
-  const arr = keysArr.map((item) => {
-    const obj = {}
-    const totalStudents = groupedStandardIds[item].length
-    const tempMasteryCountHelper = { ...masteryCountHelper }
 
-    for (const _item of groupedStandardIds[item]) {
-      if (tempMasteryCountHelper[Math.round(_item.fm)]) {
-        tempMasteryCountHelper[Math.round(_item.fm)]++
+  return chartData.map((item) => {
+    const masteryScorePercentages = {}
+    const masteryScoreMap = keyBy(item.mastery, 'score')
+    masteryScale.forEach((masteryScaleItem) => {
+      const label = masteryScaleItem.masteryLabel
+      const masteryScoreItem = masteryScoreMap[masteryScaleItem.score]
+      if (masteryScoreItem) {
+        const multiplicand = masteryScaleItem.score === 1 ? -1 : 1
+        masteryScorePercentages[label] =
+          multiplicand *
+          percentage(masteryScoreItem.stuCount, item.totalStudents, true)
       } else {
-        tempMasteryCountHelper[Math.round(_item.fm)] = 1
-      }
-    }
-
-    obj.totalStudents = totalStudents
-    obj.standardId = item
-    obj.standard = groupedStandardIds[item][0].standard
-    obj.standardName = groupedStandardIds[item][0].standardName
-
-    const masteryLabelInfo = {}
-
-    Object.keys(tempMasteryCountHelper).forEach((_item) => {
-      if (masteryMap[_item]) {
-        const masteryPercentage = round(
-          (tempMasteryCountHelper[_item] / totalStudents) * 100
-        )
-        masteryLabelInfo[masteryMap[_item].masteryLabel] =
-          masteryMap[_item].masteryName
-        if (_item == 1) {
-          obj[masteryMap[_item].masteryLabel] = -masteryPercentage
-        } else {
-          obj[masteryMap[_item].masteryLabel] = masteryPercentage
-        }
+        masteryScorePercentages[label] = 0
       }
     })
-    obj.masteryLabelInfo = masteryLabelInfo
 
-    return obj
+    return {
+      ...item,
+      standardId: item._id,
+      ...masteryScorePercentages,
+      masteryLabelInfo,
+    }
   })
-
-  return arr
 }
 
 const getAnalysedData = (groupedData, compareBy, masteryScale) => {

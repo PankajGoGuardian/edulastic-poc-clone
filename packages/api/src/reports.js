@@ -1,8 +1,36 @@
 import API from '@edulastic/api/src/utils/API'
 import qs from 'qs'
+import { pick } from 'lodash'
 
 const api = new API()
 const prefix = '/test-activity/summary'
+
+const CHART_PARAMS = [
+  'reportId',
+  'termId',
+  'assessmentTypes',
+  'assignedBy',
+  'classIds',
+  'courseId',
+  'curriculumId',
+  'domainIds',
+  'grades',
+  'groupIds',
+  'profileId',
+  'schoolIds',
+  'standardGrade',
+  'subjects',
+  'teacherIds',
+  'testIds',
+  'race',
+  'gender',
+  'iepStatus',
+  'frlStatus',
+  'ellStatus',
+  'hispanicEthnicity',
+  'stdPage',
+  'stdPageSize',
+]
 
 const fetchReports = (
   groupId = '',
@@ -114,6 +142,13 @@ const fetchStandardsGradbookSkillInfo = (params) =>
     useSlowApi: true,
     url: `report/standards-gradebook/skill-info`,
     params,
+  })
+
+const fetchStandardsGradebookChartData = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: '/report/standards-gradebook/summary',
+    params: pick(params, CHART_PARAMS),
   })
 
 const fetchStandardsPerformanceSummaryReport = (params) =>
@@ -334,6 +369,7 @@ export default {
   fetchStandardsProgressReport,
   fetchStandardsGradebookReport,
   fetchStandardsGradbookSkillInfo,
+  fetchStandardsGradebookChartData,
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,

@@ -5,20 +5,18 @@ import { SignedStackedBarChart } from '../../../../../common/components/charts/s
 import { getChartData } from '../../utils/transformers'
 
 export const SignedStackBarChartContainer = ({
-  filteredDenormalizedData,
-  filters,
+  data,
   chartFilter,
   masteryScale = [],
-  role,
   onBarClickCB,
   onBarResetClickCB,
   backendPagination,
   setBackendPagination,
 }) => {
-  const chartData = useMemo(
-    () => getChartData(filteredDenormalizedData, masteryScale, filters, role),
-    [filteredDenormalizedData, masteryScale, filters, role]
-  )
+  const chartData = useMemo(() => getChartData(data, masteryScale), [
+    data,
+    masteryScale,
+  ])
 
   const getChartSpecifics = () => {
     if (!isEmpty(masteryScale)) {

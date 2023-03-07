@@ -69,7 +69,11 @@ import {
   setShowJoinSchoolModalAction,
 } from '../../author/Dashboard/ducks'
 import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
-import { storeUserAuthToken } from '../../../loginUtils'
+import {
+  EXTERNAL_TOKEN,
+  getExternalAuthToken,
+  storeUserAuthToken,
+} from '../../../loginUtils'
 
 export const superAdminRoutes = [
   // SA-DA common routes
@@ -1462,7 +1466,7 @@ const getLoggedOutUrl = () => {
   if (pathname.includes('/verify/')) {
     return pathname
   }
-  if (pathname.includes('/login') && search.includes('extToken')) {
+  if (pathname.includes('/login') && search.includes(EXTERNAL_TOKEN)) {
     return `${pathname}${search}`
   }
   return '/login'
@@ -1470,6 +1474,11 @@ const getLoggedOutUrl = () => {
 
 export function* fetchUser({ payload }) {
   try {
+    const isExternalTokenRequest = getExternalAuthToken()
+    if (isExternalTokenRequest) {
+      console.log('Avoided 0x409!!')
+      return
+    }
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
       if (

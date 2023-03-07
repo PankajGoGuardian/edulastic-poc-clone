@@ -2,7 +2,7 @@ import * as Sentry from '@sentry/browser'
 import * as firebase from 'firebase/app'
 import { TokenStorage } from '@edulastic/api'
 
-const EXTERNAL_TOKEN = 'extToken'
+export const EXTERNAL_TOKEN = 'extt'
 
 export const captureSentryException = (err) => {
   // Ignore BE's business errors

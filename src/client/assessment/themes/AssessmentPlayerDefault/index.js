@@ -5,13 +5,14 @@ import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
 import { ThemeProvider } from 'styled-components'
 import { get, isUndefined, last } from 'lodash'
-import { withWindowSizes, notification } from '@edulastic/common'
+import { withWindowSizes, notification, EduIf } from '@edulastic/common'
 import {
   nonAutoGradableTypes,
   collections as collectionConst,
+  roleuser,
 } from '@edulastic/constants'
-
 import { playerSkinValues } from '@edulastic/constants/const/test'
+import { getUserRole } from '../../../author/src/selectors/user'
 import {
   homePlaylistPath,
   homeStudentAssignmentsPath,
@@ -380,6 +381,7 @@ class AssessmentPlayerDefault extends React.Component {
       canShowReferenceMaterial,
       classLevelSettings,
       viewAsStudent,
+      userRole,
     } = this.props
     const { firstName = '', lastName = '' } = user
     const { settings } = this.props
@@ -721,9 +723,9 @@ class AssessmentPlayerDefault extends React.Component {
                 />
               )}
             </Main>
-
-            <ReportIssuePopover item={item} playerSkinType={playerSkinType} />
-
+            <EduIf condition={userRole !== roleuser.STUDENT}>
+              <ReportIssuePopover item={item} playerSkinType={playerSkinType} />
+            </EduIf>
             {currentToolMode.indexOf(2) !== -1 && (
               <CalculatorContainer
                 changeTool={this.changeTool}
@@ -922,6 +924,7 @@ const enhance = compose(
       user: get(state, 'user.user'),
       evaluation: state.evaluation,
       preview: state.view.preview,
+      userRole: getUserRole(state),
       scratchPad: get(
         state,
         `userWork.present[${

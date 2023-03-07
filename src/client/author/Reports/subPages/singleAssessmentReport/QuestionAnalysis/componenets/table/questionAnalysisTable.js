@@ -91,12 +91,14 @@ const getTableColumns = (
   { qSummary },
   compareBy,
   filter = {},
-  horizontalPage
+  horizontalPage,
+  sortBy
 ) => {
   const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')
   const qLabelsToFilter = Object.keys(filter)
   const orderedQuestions = sortByAvgPerformanceAndLabel(
-    getOrderedQuestions(uniqQuestionMetrics)
+    getOrderedQuestions(uniqQuestionMetrics),
+    sortBy
   ).filter((question, index) => {
     // filter out selected bars
     if (qLabelsToFilter && qLabelsToFilter.length) {
@@ -171,9 +173,17 @@ export const QuestionAnalysisTable = ({
   isCsvDownloading,
   questionAnalysis,
   horizontalPage,
+  sortBy,
 }) => {
   const columns = useMemo(
-    () => getTableColumns(questionAnalysis, compareBy, filter, horizontalPage),
+    () =>
+      getTableColumns(
+        questionAnalysis,
+        compareBy,
+        filter,
+        horizontalPage,
+        sortBy
+      ),
     [questionAnalysis, compareBy, filter, horizontalPage]
   )
 

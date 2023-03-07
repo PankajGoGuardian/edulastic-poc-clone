@@ -18,10 +18,18 @@ export const StyledTable = styled(Table)`
           white-space: nowrap;
         }
       }
+      .ant-table-thead > tr:nth-child(2) > th {
+        background-color: #e5e5e5;
+        color: black;
+        font-size: 11px;
+      }
       .ant-table-body {
         overflow-x: auto !important;
         overflow-y: auto !important;
         max-height: 200px;
+      }
+      .ant-table-body::-webkit-scrollbar {
+        display: none;
       }
       @media print {
         .ant-table-body {

@@ -19,11 +19,12 @@ const variableKeyMapForComparison = {
   },
 }
 
-export const sortByAvgPerformanceAndLabel = (arr) =>
-  orderBy(arr, [
-    'avgPerformance',
-    (item) => Number((item.qLabel || '').substring(1)),
-  ])
+export const sortByAvgPerformanceAndLabel = (arr, sortBy) =>
+  orderBy(
+    arr,
+    ['avgPerformance', (item) => Number((item.qLabel || '').substring(1))],
+    [sortBy]
+  )
 
 export const getOrderedQuestions = (questions) => {
   return questions.sort((a, b) => {
@@ -34,7 +35,7 @@ export const getOrderedQuestions = (questions) => {
   })
 }
 
-export const getChartData = (qSummary = []) => {
+export const getChartData = (qSummary = [], sortBy) => {
   const arr = qSummary.map((item) => {
     const avgPerformance = !Number.isNaN(item.avgPerformance)
       ? Math.round(item.avgPerformance)
@@ -55,7 +56,7 @@ export const getChartData = (qSummary = []) => {
       fill: getHSLFromRange1(avgPerformance),
     }
   })
-  return sortByAvgPerformanceAndLabel(arr)
+  return sortByAvgPerformanceAndLabel(arr, sortBy)
 }
 
 export const getTableData = (

@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Col, Row, Pagination } from 'antd'
+import { Col, Row, Pagination, Switch } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
@@ -59,6 +59,7 @@ const QuestionAnalysis = ({
     startIndex: 0,
     endIndex: 9,
   })
+  const [sortBy, setSortBy] = useState('asc')
 
   const assessmentName = getAssessmentName(
     questionAnalysis?.meta?.test || settings.selectedTest
@@ -95,9 +96,10 @@ const QuestionAnalysis = ({
     }
   }, [questionAnalysis])
 
-  const chartData = useMemo(() => getChartData(questionAnalysis.qSummary), [
-    questionAnalysis,
-  ])
+  const chartData = useMemo(
+    () => getChartData(questionAnalysis.qSummary, sortBy),
+    [questionAnalysis, sortBy]
+  )
 
   const { compareByDropDownData, dropDownKeyToLabel } = dropDownData
 
@@ -155,6 +157,12 @@ const QuestionAnalysis = ({
       </NoDataContainer>
     )
   }
+  const handleSort = (checked) => {
+    if (checked) {
+      return setSortBy('asc')
+    }
+    return setSortBy('desc')
+  }
 
   return (
     <div>
@@ -189,6 +197,18 @@ const QuestionAnalysis = ({
                     | {assessmentName}
                   </StyledH3>
                 </Col>
+                <Col>
+                  <StyledH3 style={{ display: 'flex', alignItems: 'center' }}>
+                    <p style={{ marginRight: 10 }}>Sort By</p>
+                    <Switch
+                      checkedChildren="ASC"
+                      unCheckedChildren="DESC"
+                      checked={sortBy === 'asc'}
+                      onChange={handleSort}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                    />
+                  </StyledH3>
+                </Col>
                 <Col data-cy="compareBy" data-testid="compareBy">
                   {userRole !== roleuser.TEACHER ? (
                     <ControlDropDown
@@ -208,6 +228,7 @@ const QuestionAnalysis = ({
                 compareBy={compareBy}
                 filter={chartFilter}
                 role={userRole}
+                sortBy={sortBy}
                 horizontalPage={horizontalPage}
               />
               <Pagination

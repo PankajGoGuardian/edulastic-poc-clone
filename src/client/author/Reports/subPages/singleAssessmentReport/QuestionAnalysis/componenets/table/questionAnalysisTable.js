@@ -1,9 +1,11 @@
 import React, { useMemo } from 'react'
 import { roleuser } from '@edulastic/constants'
 import { uniqBy } from 'lodash'
-import { Tooltip, Row, Col } from 'antd'
+import { Row, Col } from 'antd'
+import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { StyledTable, QLabelSpan } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
+import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import Tags from '../../../../../../src/components/common/Tags'
 import {
   getOrderedQuestions,
@@ -71,9 +73,21 @@ const tooltipText = (compareByType, record, { questionId, questionLabel }) => {
           {record.averageScoreByQId?.[questionId]}%
         </Col>
       </Row>
+      <Row type="flex" justify="start">
+        <Col className="custom-table-tooltip-key">District (% Score):</Col>
+        <Col className="custom-table-tooltip-value">
+          {record.districtAverage?.[questionId]}%
+        </Col>
+      </Row>
     </div>
   )
 }
+
+const getCellContents = (props) => {
+  const { text } = props
+  return `${text}%`
+}
+
 const getTableColumns = (
   { qSummary },
   compareBy,
@@ -118,11 +132,13 @@ const getTableColumns = (
         )
       },
       render: (text, record) => (
-        <Tooltip title={tooltipText(compareBy, record, question)}>
-          {text || 0}%
-        </Tooltip>
+        <CustomTableTooltip
+          getCellContents={getCellContents}
+          text={text}
+          placement="top"
+          title={tooltipText(compareBy, record, question)}
+        />
       ),
-      width: '140px',
     }
   })
 
@@ -156,10 +172,18 @@ export const QuestionAnalysisTable = ({
     () => getTableColumns(questionAnalysis, compareBy, filter, horizontalPage),
     [questionAnalysis, compareBy, filter, horizontalPage]
   )
+
   const tableData = useMemo(() => getTableData(questionAnalysis, compareBy), [
     questionAnalysis,
     compareBy,
   ])
+
+  const onCsvConvert = (data) =>
+    downloadCSV(
+      `Question Performance Analysis Report by ${compareByToPluralName[compareBy]}.csv`,
+      data
+    )
+
   return (
     <CsvTable
       data-testid="QuestionAnalysisTable"
@@ -167,9 +191,9 @@ export const QuestionAnalysisTable = ({
       tableToRender={StyledTable}
       columns={columns}
       dataSource={tableData}
+      onCsvConvert={onCsvConvert}
       rowKey="questionId"
       colorCellStart={role === roleuser.TEACHER ? 6 : 5}
-      scroll={{ x: '100%' }}
     />
   )
 }

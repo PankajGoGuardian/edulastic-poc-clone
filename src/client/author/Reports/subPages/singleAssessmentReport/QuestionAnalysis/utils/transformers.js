@@ -83,6 +83,10 @@ export const getTableData = (
       [compareBy]: firstItem[name],
       averageScoreByQId,
       scorePercentByQId,
+      districtAverage: orderedQuestions.reduce((acc, c) => {
+        acc[c.questionId] = c.districtAvgPerf
+        return acc
+      }, {}),
     }
   })
 

@@ -158,13 +158,80 @@ const qSummary = [
     avgTimeSpent: 145,
     avgPerformance: 30,
   },
+  {
+    questionId: '570',
+    questionLabel: 'Q18',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 89,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '571',
+    questionLabel: 'Q19',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 46,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '572',
+    questionLabel: 'Q20',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 89,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '573',
+    questionLabel: 'Q21',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 46,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '574',
+    questionLabel: 'Q22',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 89,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
+  {
+    questionId: '575',
+    questionLabel: 'Q23',
+    points: 1,
+    standards: ['1.MD.B.3'],
+    districtAvgPerf: 46,
+    avgTimeSpent: 145,
+    avgPerformance: 30,
+  },
 ]
 
-const teachers = ['as', 'an', 'au']
+const teachers = [
+  'as',
+  'an',
+  'au',
+  'bs',
+  'bu',
+  'bn',
+  'cs',
+  'cn',
+  'cu',
+  'ds',
+  'du',
+  'dn',
+]
 const groups = ['g1', 'g2', 'g3']
 const schools = ['s1', 's2', 's3']
-const scorePercent = [20, 10, 30]
-const allScorePercent = [40, 50, 60]
+const scorePercent = [20, 10, 30, 20, 10, 30, 20, 10, 30, 20, 10, 30]
+const allScorePercent = [40, 50, 60, 20, 10, 30, 20, 10, 30, 20, 10, 30]
 
 const teacherDetails = () => {
   return teachers.flatMap((teacher, index) => {

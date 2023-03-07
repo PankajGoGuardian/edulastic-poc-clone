@@ -69,7 +69,7 @@ import {
   setShowJoinSchoolModalAction,
 } from '../../author/Dashboard/ducks'
 import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
-import { storeUserAuthToken } from '../../../loginUtils'
+import { getExternalAuthToken, storeUserAuthToken } from '../../../loginUtils'
 
 export const superAdminRoutes = [
   // SA-DA common routes
@@ -1504,6 +1504,10 @@ export function* fetchUser({ payload }) {
       return
     }
     const firebaseUser = yield call(getCurrentFirebaseUser)
+    const isExternalTokenRequest = getExternalAuthToken()
+    if (isExternalTokenRequest) {
+      return
+    }
     const user =
       (yield call(userApi.getUser, firebaseUser ? undefined : true)) || {}
     if (

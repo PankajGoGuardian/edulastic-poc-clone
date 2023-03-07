@@ -20,9 +20,9 @@ import {
   getReportsStandardsGradebook,
   getReportsStandardsGradebookLoader,
   getStandardsGradebookRequestAction,
-  getSkillInfo,
+  getStandardsGradebookSkillInfo,
   getSkillInfoLoader,
-  getSkillInfoAction,
+  getStandardsGradebookSkillInfoAction,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
@@ -112,17 +112,19 @@ const StandardsGradebook = ({
       return () => toggleFilter(null, false)
     }
   }, [settings.requestFilters])
+
   // get paginated data
   useEffect(() => {
     const q = {
       ...settings.requestFilters,
-      ...pageFilters,
+      stdPage: pageFilters.page,
+      stdPageSize: pageFilters.pageSize,
     }
     if ((q.termId || q.reportId) && pageFilters.page) {
       getStandardsGradebookRequest(q)
       getSkillInfoRequest(q)
     }
-  }, [pageFilters])
+  }, [pageFilters, settings.requestFilters])
 
   const filteredDenormalizedData = useMemo(() => {
     const denormalizedData = getDenormalizedData(standardsGradebook, skillInfo)
@@ -273,14 +275,14 @@ const enhance = compose(
       error: getReportsStandardsGradebookError(state),
       isCsvDownloading: getCsvDownloadingState(state),
       standardsGradebook: getReportsStandardsGradebook(state),
-      skillInfo: getSkillInfo(state),
+      skillInfo: getStandardsGradebookSkillInfo(state),
       standardsFilters: getReportsStandardsFilters(state),
       studentStandardData: getStudentStandardData(state),
       loadingStudentStandard: getStudentStandardLoader(state),
     }),
     {
       getStandardsGradebookRequest: getStandardsGradebookRequestAction,
-      getSkillInfoRequest: getSkillInfoAction,
+      getSkillInfoRequest: getStandardsGradebookSkillInfoAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
     }

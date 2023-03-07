@@ -82,7 +82,7 @@ export const getDenormalizedData = (rawData, rawSkillInfo) => {
     return []
   }
 
-  const skillInfo = get(rawSkillInfo, 'data.result')
+  const skillInfo = get(rawSkillInfo, 'data.result.skillInfo')
   const skillInfoMap = keyBy(
     skillInfo.filter((item) => !!item.standardId),
     'standardId'

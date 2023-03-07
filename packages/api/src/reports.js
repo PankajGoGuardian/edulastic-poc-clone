@@ -109,13 +109,12 @@ const fetchStandardsGradebookReport = (params) =>
     params,
   })
 
-const fetchStandardsGradbookSkillInfo = (params) => {
+const fetchStandardsGradbookSkillInfo = (params) =>
   api.callApi({
     useSlowApi: true,
-    url: `report/standard-gradebook/skillInfo`,
+    url: `report/standards-gradebook/skill-info`,
     params,
   })
-}
 
 const fetchStandardsPerformanceSummaryReport = (params) =>
   api.callApi({

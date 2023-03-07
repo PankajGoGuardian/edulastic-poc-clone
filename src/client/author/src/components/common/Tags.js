@@ -29,6 +29,7 @@ const Tags = ({
   flexWrap,
   isTestCard,
   testId = '',
+  placement = 'bottomLeft',
 }) => {
   if (!tags.length) return null
 
@@ -74,7 +75,7 @@ const Tags = ({
       ))}
       {hiddenTags && !!hiddenTags.length && (
         <Popover
-          placement="bottomLeft"
+          placement={placement}
           getPopupContainer={(triggerNode) =>
             isTestCard ? document.body : triggerNode.parentNode
           }

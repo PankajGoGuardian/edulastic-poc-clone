@@ -93,29 +93,27 @@ const getTableColumns = (
   filter = {},
   horizontalPage
 ) => {
+  const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')
   const qLabelsToFilter = Object.keys(filter)
-  const uniqQuestionMetrics = uniqBy(qSummary, 'questionId').filter(
-    (question) => {
-      if (qLabelsToFilter && qLabelsToFilter.length) {
-        return qLabelsToFilter.includes(question.questionLabel)
-      }
-      return true
-    }
-  )
   const orderedQuestions = sortByAvgPerformanceAndLabel(
     getOrderedQuestions(uniqQuestionMetrics)
-  ).filter(
-    (_, index) =>
+  ).filter((question, index) => {
+    // filter out selected bars
+    if (qLabelsToFilter && qLabelsToFilter.length) {
+      return qLabelsToFilter.includes(question.questionLabel)
+    }
+    // if no bar selected then choose current page items
+    return (
       index >= horizontalPage.startIndex && index <= horizontalPage.endIndex
-  )
-
+    )
+  })
   const result = orderedQuestions.map((question) => {
-    const standards = question.standards
+    const standards = question.standards || []
     return {
       title: (
         <>
           <QLabelSpan>{question.questionLabel}</QLabelSpan>
-          <Tags tags={standards} show={1} />
+          <Tags placement="topRight" tags={standards} show={1} />
           <span>points {question.points}</span>
         </>
       ),
@@ -131,7 +129,7 @@ const getTableColumns = (
         {
           title: question.districtAvgPerf,
           dataIndex: `averageScoreByQId.${question.questionId}`,
-          key: `${question.questionId}_child`,
+          key: question.questionId,
           render: (text, record) => (
             <CustomTableTooltip
               getCellContents={getCellContents}
@@ -200,6 +198,8 @@ export const QuestionAnalysisTable = ({
       onCsvConvert={onCsvConvert}
       rowKey="questionId"
       colorCellStart={2}
+      flexWrap="unset"
+      scroll={{ y: 300 }}
     />
   )
 }

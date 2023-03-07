@@ -20,6 +20,8 @@ export const StyledTable = styled(Table)`
       }
       .ant-table-body {
         overflow-x: auto !important;
+        overflow-y: auto !important;
+        max-height: 200px;
       }
       @media print {
         .ant-table-body {

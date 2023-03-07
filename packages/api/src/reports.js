@@ -9,7 +9,7 @@ const qSummary = [
     questionId: '123',
     questionLabel: 'Q1',
     points: 1,
-    standards: ['1.OA.C.6'],
+    standards: ['1.OA.C.6', '1.OA.C.2', '1.OA.C.3', '1.OA.C.1'],
     districtAvgPerf: 40,
     avgTimeSpent: 55,
     avgPerformance: 20,
@@ -229,9 +229,22 @@ const teachers = [
   'dn',
 ]
 const groups = ['g1', 'g2', 'g3']
-const schools = ['s1', 's2', 's3']
-const scorePercent = [20, 10, 30, 20, 10, 30, 20, 10, 30, 20, 10, 30]
-const allScorePercent = [40, 50, 60, 20, 10, 30, 20, 10, 30, 20, 10, 30]
+const schools = [
+  's1',
+  's2',
+  's3',
+  's4',
+  's5',
+  's6',
+  's7',
+  's8',
+  's9',
+  's10',
+  's11',
+  's12',
+]
+const scorePercent = [0, 100, 30, 20, 10, 30, 20, 10, 30, 20, 10, 30]
+const allScorePercent = [100, 0, 60, 20, 10, 30, 20, 10, 30, 20, 10, 30]
 
 const teacherDetails = () => {
   return teachers.flatMap((teacher, index) => {

@@ -1,5 +1,4 @@
 import React, { useMemo } from 'react'
-import { roleuser } from '@edulastic/constants'
 import { uniqBy } from 'lodash'
 import { Row, Col } from 'antd'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
@@ -12,6 +11,8 @@ import {
   getTableData,
   sortByAvgPerformanceAndLabel,
 } from '../../utils/transformers'
+import { ColoredCell } from '../../../../../common/styled'
+import { getHSLFromRange1 } from '../../../../../common/util'
 
 const comparedByToToolTipLabel = {
   schoolId: {
@@ -41,9 +42,6 @@ const compareByToPluralName = {
 }
 
 const tooltipText = (compareByType, record, { questionId, questionLabel }) => {
-  if (record.key === 'districtAvg') {
-    return ''
-  }
   return (
     <div>
       <Row type="flex" justify="center">
@@ -51,7 +49,7 @@ const tooltipText = (compareByType, record, { questionId, questionLabel }) => {
       </Row>
       <Row type="flex" justify="start">
         <Col className="custom-table-tooltip-key">
-          {comparedByToToolTipLabel[compareByType].name}:{'  -'}
+          {comparedByToToolTipLabel[compareByType].name}:{' '}
         </Col>
         <Col className="custom-table-tooltip-value">
           {record[compareByType]}
@@ -84,8 +82,9 @@ const tooltipText = (compareByType, record, { questionId, questionLabel }) => {
 }
 
 const getCellContents = (props) => {
-  const { text } = props
-  return `${text}%`
+  const { score } = props
+  const bgColor = getHSLFromRange1(score)
+  return <ColoredCell bgColor={bgColor}>{`${score}%`}</ColoredCell>
 }
 
 const getTableColumns = (
@@ -123,22 +122,26 @@ const getTableColumns = (
       dataIndex: `averageScoreByQId.${question.questionId}`,
       key: question.questionId,
       sorter: (a, b) => {
-        if (a.key === 'districtAvg' || b.key === 'districtAvg') {
-          return 0
-        }
         return (
           a.averageScoreByQId[question.questionId] -
           b.averageScoreByQId[question.questionId]
         )
       },
-      render: (text, record) => (
-        <CustomTableTooltip
-          getCellContents={getCellContents}
-          text={text}
-          placement="top"
-          title={tooltipText(compareBy, record, question)}
-        />
-      ),
+      children: [
+        {
+          title: question.districtAvgPerf,
+          dataIndex: `averageScoreByQId.${question.questionId}`,
+          key: `${question.questionId}_child`,
+          render: (text, record) => (
+            <CustomTableTooltip
+              getCellContents={getCellContents}
+              score={text}
+              placement="top"
+              title={tooltipText(compareBy, record, question)}
+            />
+          ),
+        },
+      ],
     }
   })
 
@@ -147,11 +150,15 @@ const getTableColumns = (
     width: 150,
     dataIndex: compareBy,
     sorter: (a, b) => {
-      if (a.key === 'districtAvg' || b.key === 'districtAvg') {
-        return 0
-      }
       return a.key.localeCompare(b.key)
     },
+    children: [
+      {
+        title: 'District Avg.',
+        dataIndex: compareBy,
+        key: `${compareBy}`,
+      },
+    ],
   }
 
   if (result && result.length) {
@@ -163,7 +170,6 @@ const getTableColumns = (
 export const QuestionAnalysisTable = ({
   compareBy,
   filter,
-  role,
   isCsvDownloading,
   questionAnalysis,
   horizontalPage,
@@ -193,7 +199,7 @@ export const QuestionAnalysisTable = ({
       dataSource={tableData}
       onCsvConvert={onCsvConvert}
       rowKey="questionId"
-      colorCellStart={role === roleuser.TEACHER ? 6 : 5}
+      colorCellStart={2}
     />
   )
 }

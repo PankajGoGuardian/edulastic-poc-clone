@@ -90,13 +90,5 @@ export const getTableData = (
     }
   })
 
-  const districtAvgRow = {
-    key: 'districtAvg',
-    [compareBy]: 'District Avg.',
-    averageScoreByQId: orderedQuestions.reduce((acc, c) => {
-      acc[c.questionId] = c.districtAvgPerf
-      return acc
-    }, {}),
-  }
-  return [districtAvgRow, ...result]
+  return result
 }

@@ -68,7 +68,7 @@ const CsvTable = ({
         dataSource={dataSource}
         pagination={_pagination}
         columns={_columns}
-        scroll={{ y: 240 }}
+        scroll={{ y: 300 }}
       />
     </StyledTableWrapper>
   )

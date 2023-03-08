@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useEffect } from 'react'
 import { uniqBy } from 'lodash'
 import { Row, Col } from 'antd'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
@@ -7,39 +7,17 @@ import CsvTable from '../../../../../common/components/tables/CsvTable'
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import Tags from '../../../../../../src/components/common/Tags'
 import {
+  compareByToPluralName,
+  comparedByToToolTipLabel,
   getOrderedQuestions,
   getTableData,
   sortByAvgPerformanceAndLabel,
 } from '../../utils/transformers'
 import { ColoredCell } from '../../../../../common/styled'
-import { getHSLFromRange1 } from '../../../../../common/util'
-
-const comparedByToToolTipLabel = {
-  schoolId: {
-    name: 'School Name',
-    type: 'School (% Score)',
-    all: 'All Schools (% Score)',
-    nameKey: 'schoolName',
-  },
-  teacherId: {
-    name: 'Teacher Name',
-    type: 'Teacher (% Score)',
-    all: 'All Teachers (% Score)',
-    nameKey: 'teacherName',
-  },
-  groupId: {
-    name: 'Class Name',
-    type: 'Class (% Score)',
-    all: 'All Classes (% Score)',
-    nameKey: 'groupName',
-  },
-}
-
-const compareByToPluralName = {
-  schoolId: 'Schools',
-  teacherId: 'Teachers',
-  groupId: 'Classes',
-}
+import {
+  convertTableToCSV1,
+  getHSLFromRange1,
+} from '../../../../../common/util'
 
 const tooltipText = (compareByType, record, { questionId, questionLabel }) => {
   return (
@@ -185,12 +163,24 @@ export const QuestionAnalysisTable = ({
     questionAnalysis,
     compareBy,
   ])
+  const disableDefaultDownload = true
 
   const onCsvConvert = (data) =>
     downloadCSV(
       `Question Performance Analysis Report by ${compareByToPluralName[compareBy]}.csv`,
       data
     )
+
+  useEffect(() => {
+    if (isCsvDownloading && disableDefaultDownload) {
+      const { csvText, csvRawData } = convertTableToCSV1(
+        questionAnalysis,
+        tableData,
+        compareBy
+      )
+      onCsvConvert(csvText, csvRawData)
+    }
+  }, [isCsvDownloading])
 
   return (
     <CsvTable
@@ -204,6 +194,7 @@ export const QuestionAnalysisTable = ({
       colorCellStart={2}
       flexWrap="unset"
       scroll={{ y: 300 }}
+      disableDefaultDownload={disableDefaultDownload}
     />
   )
 }

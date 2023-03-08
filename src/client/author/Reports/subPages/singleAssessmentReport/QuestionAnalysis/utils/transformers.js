@@ -1,7 +1,7 @@
 import { groupBy, orderBy } from 'lodash'
 import { getHSLFromRange1 } from '../../../../common/util'
 
-const variableKeyMapForComparison = {
+export const variableKeyMapForComparison = {
   schoolId: {
     percent: 'allSchoolsScorePercent',
     id: 'schoolId',
@@ -17,6 +17,33 @@ const variableKeyMapForComparison = {
     id: 'groupId',
     name: 'groupName',
   },
+}
+
+export const comparedByToToolTipLabel = {
+  schoolId: {
+    name: 'School Name',
+    type: 'School (% Score)',
+    all: 'All Schools (% Score)',
+    nameKey: 'schoolName',
+  },
+  teacherId: {
+    name: 'Teacher Name',
+    type: 'Teacher (% Score)',
+    all: 'All Teachers (% Score)',
+    nameKey: 'teacherName',
+  },
+  groupId: {
+    name: 'Class Name',
+    type: 'Class (% Score)',
+    all: 'All Classes (% Score)',
+    nameKey: 'groupName',
+  },
+}
+
+export const compareByToPluralName = {
+  schoolId: 'Schools',
+  teacherId: 'Teachers',
+  groupId: 'Classes',
 }
 
 export const sortByAvgPerformanceAndLabel = (arr, sortBy) =>

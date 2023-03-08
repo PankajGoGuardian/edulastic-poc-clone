@@ -14,6 +14,10 @@ import {
 import next from 'immer'
 import moment from 'moment'
 import calcMethod from './static/json/calcMethod.json'
+import {
+  compareByToPluralName,
+  getOrderedQuestions,
+} from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
 
 const studentFiltersDefaultValues = [
   {
@@ -283,8 +287,51 @@ export const toggleItem = (items, item) =>
     }
   })
 
-export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
-  const rows = refComponent.querySelectorAll('table')[0].querySelectorAll('tr')
+export const convertTableToCSV1 = ({ qSummary }, dataSource, compareBy) => {
+  const csv = []
+  const csvRawData = []
+  let row = []
+  // header row
+  const compareByTitle = compareByToPluralName[compareBy]
+  row.push(`${compareByTitle}`)
+  const orderedQuestions = getOrderedQuestions(qSummary)
+  orderedQuestions.forEach((question) => {
+    row.push(
+      `${question.questionLabel}: ${question.standards}: ${question.points}`
+    )
+  })
+  csv.push(row.join(','))
+  csvRawData.push(row)
+  // district avg row
+  row = ['District Avg.']
+  orderedQuestions.forEach((question) => {
+    row.push(question.districtAvgPerf)
+  })
+  csv.push(row.join(','))
+  csvRawData.push(row)
+  // content area
+  dataSource.forEach((data) => {
+    row = [data[compareBy]]
+    orderedQuestions.forEach((question) => {
+      row.push(data.averageScoreByQId[question.questionId])
+    })
+    csv.push(row.join(','))
+    csvRawData.push(row)
+  })
+  return {
+    csvText: csv.join('\n'),
+    csvRawData,
+  }
+}
+
+export const convertTableToCSV = (
+  refComponent,
+  getColumnHeaders = null,
+  fixedHeader = true
+) => {
+  const rows = Array.prototype.slice.call(
+    refComponent.querySelectorAll('table')[0].querySelectorAll('tr')
+  )
   const startIndex = getColumnHeaders ? 1 : 0
   const csv = []
   const csvRawData = []
@@ -304,11 +351,20 @@ export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
       csvRawData.push(rw)
     })
   }
-  for (let i = startIndex; i < rows.length; i++) {
+  let nodes = []
+  if (fixedHeader) {
+    // when fixed header enabled with body scroll antd creates two tables one for header and one for body
+    const secondTableRows = Array.prototype.slice.call(
+      refComponent.querySelectorAll('table')[1].querySelectorAll('tr')
+    )
+    nodes = rows.concat(secondTableRows)
+  }
+
+  for (let i = startIndex; i < nodes.length; i++) {
     const row = []
     let cols
-    if (getColumnHeaders) cols = rows[i].querySelectorAll('td')
-    else cols = rows[i].querySelectorAll('td, th')
+    if (getColumnHeaders) cols = nodes[i].querySelectorAll('td')
+    else cols = nodes[i].querySelectorAll('td, th')
     for (let j = 0; j < cols.length; j++) {
       if (cols[j].getElementsByClassName('ant-checkbox').length > 0) continue
       let data = (cols[j].innerText || cols[j].textContent)

@@ -290,11 +290,11 @@ const StandardsGradebook = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       (!loadingSummary || !loadingSkillInfo) &&
-      !isEmpty(chartDataWithStandardInfo)
+      (isEmpty(chartDataWithStandardInfo) || isEmpty(tableData))
     ) {
-      toggleFilter(null, true)
+      toggleFilter(null, false)
     }
-  }, [chartDataWithStandardInfo])
+  }, [chartDataWithStandardInfo, tableData])
 
   const onBarClickCB = (key) => {
     const _selectedStandardIds = { ...tableFilters.selectedStandardIds }
@@ -472,6 +472,8 @@ const StandardsGradebook = ({
               skillInfo={filteredSkillInfo}
               compareByKey={tableFilters.compareByKey}
               analyseByKey={tableFilters.analyseByKey}
+              tableFilters={tableFilters}
+              setTableFilters={setTableFilters}
               handleOnClickStandard={handleOnClickStandard}
             />
           </Row>

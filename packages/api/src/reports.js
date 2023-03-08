@@ -244,7 +244,7 @@ const schools = [
   's12',
 ]
 const scorePercent = [0, 100, 30, 20, 10, 30, 20, 10, 30, 20, 10, 30]
-const allScorePercent = [100, 0, 60, 20, 10, 30, 20, 10, 30, 20, 10, 30]
+const allScorePercent = [10, 20, 60, 20, 10, 30, 20, 10, 30, 20, 10, 30]
 
 const teacherDetails = () => {
   return teachers.flatMap((teacher, index) => {

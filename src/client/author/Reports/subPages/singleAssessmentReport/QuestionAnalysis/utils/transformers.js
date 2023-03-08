@@ -77,7 +77,7 @@ export const getTableData = (
     const scorePercentByQId = {}
     groupedItem.forEach((data) => {
       averageScoreByQId[data.questionId] = data[percent]
-      scorePercentByQId[data.questionId] = data[percent]
+      scorePercentByQId[data.questionId] = data.scorePercent
     })
     return {
       key: item,

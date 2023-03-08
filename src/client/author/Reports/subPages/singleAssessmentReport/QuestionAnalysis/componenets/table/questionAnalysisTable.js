@@ -184,7 +184,7 @@ export const QuestionAnalysisTable = ({
         horizontalPage,
         sortBy
       ),
-    [questionAnalysis, compareBy, filter, horizontalPage]
+    [questionAnalysis, compareBy, filter, horizontalPage, sortBy]
   )
 
   const tableData = useMemo(() => getTableData(questionAnalysis, compareBy), [

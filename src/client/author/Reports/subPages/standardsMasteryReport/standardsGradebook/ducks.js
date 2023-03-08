@@ -1,24 +1,31 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
+import { createAction, createReducer } from 'redux-starter-kit'
+import { omit, pick } from 'lodash'
+
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { createAction, createReducer } from 'redux-starter-kit'
+import { reportUtils } from '@edulastic/constants'
 
-import { omit } from 'lodash'
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
 
-const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST =
-  '[reports] get reports standards gradebook request'
-const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS =
-  '[reports] get reports standards gradebook success'
-const GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR =
-  '[reports] get reports standards gradebook error'
-const GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST =
-  '[reports] get reports standards gradebook chart request'
-const GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_SUCCESS =
-  '[reports] get reports standards gradebook chart success'
-const GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_ERROR =
-  '[reports] get reports standards gradebook chart error'
+const {
+  summaryParamsToPick,
+  detailsParamsToPick,
+} = reportUtils.standardsGradebook
+
+const GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST =
+  '[reports] get reports standards gradebook summary request'
+const GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_SUCCESS =
+  '[reports] get reports standards gradebook summary success'
+const GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_ERROR =
+  '[reports] get reports standards gradebook summary error'
+const GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST =
+  '[reports] get reports standards gradebook details request'
+const GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_SUCCESS =
+  '[reports] get reports standards gradebook details success'
+const GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_ERROR =
+  '[reports] get reports standards gradebook details error'
 const GET_STUDENT_STANDARDS_REQUEST =
   '[reports] standard gradebook get student standards request '
 const GET_STUDENT_STANDARDS_SUCCESS =
@@ -38,12 +45,11 @@ const GET_STANDARDS_GRADEBOOK_SKILL_INFO_REQUEST_ERROR =
 
 // -----|-----|-----|-----| ACTIONS BEGIN |-----|-----|-----|----- //
 
-// export const getStandardsGradebookProcessRequestsAction = createAction(GET_REPORTS_STANDARDS_GRADEBOOK_PROCESS_REQUESTS);
-export const getStandardsGradebookRequestAction = createAction(
-  GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST
+export const getStandardsGradebookSummaryAction = createAction(
+  GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST
 )
-export const getStandardsGradebookChartAction = createAction(
-  GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST
+export const getStandardsGradebookDetailsAction = createAction(
+  GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST
 )
 export const getStudentStandardsAction = createAction(
   GET_STUDENT_STANDARDS_REQUEST
@@ -64,9 +70,9 @@ export const getStandardsGradebookSkillInfoAction = createAction(
 export const stateSelector = (state) =>
   state.reportReducer.reportStandardsGradebookReducer
 
-export const getReportsStandardsGradebook = createSelector(
+export const getSkillInfoLoader = createSelector(
   stateSelector,
-  (state) => state.standardsGradebook
+  (state) => state.loadingSkillInfo
 )
 
 export const getStandardsGradebookSkillInfo = createSelector(
@@ -74,24 +80,24 @@ export const getStandardsGradebookSkillInfo = createSelector(
   (state) => state.skillInfo
 )
 
-export const getReportsStandardsGradebookChart = createSelector(
+export const getStandardsGradebookSummary = createSelector(
   stateSelector,
-  (state) => state.chartData
+  (state) => state.summary
 )
 
-export const getReportsStandardsGradebookLoader = createSelector(
+export const getStandardsGradebookSummaryLoader = createSelector(
   stateSelector,
-  (state) => state.loading
+  (state) => state.loadingSummary
 )
 
-export const getReportsStandardsGradebookChartLoader = createSelector(
+export const getStandardsGradebookDetails = createSelector(
   stateSelector,
-  (state) => state.loadingChart
+  (state) => state.details
 )
 
-export const getSkillInfoLoader = createSelector(
+export const getStandardsGradebookDetailsLoader = createSelector(
   stateSelector,
-  (state) => state.loadingSkillInfo
+  (state) => state.loadingDetails
 )
 
 export const getReportsStandardsGradebookError = createSelector(
@@ -118,54 +124,53 @@ export const getStudentStandardLoader = createSelector(
 const initialState = {
   loading: false,
   loadingSkillInfo: false,
-  loadingChart: false,
-  standardsGradebook: {},
+  loadingSummary: false,
+  loadingDetails: false,
   skillInfo: {},
-  chartData: {},
-  filters: {
-    termId: '',
-    subject: 'All',
-    grades: ['TK'],
-    domainIds: ['All'],
-    // classSectionId: "All",
-    // assessmentType: "All"
-  },
+  summary: {},
+  details: {},
   testIds: '',
   studentStandard: [],
   loadingStudentStandard: false,
 }
 
 export const reportStandardsGradebookReducer = createReducer(initialState, {
-  [RESET_ALL_REPORTS]: (state) => (state = initialState),
-  [RESET_REPORTS_STANDARDS_GRADEBOOK]: (state) => (state = initialState),
-  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST]: (state) => {
-    state.loading = true
+  [RESET_ALL_REPORTS]: () => initialState,
+  [RESET_REPORTS_STANDARDS_GRADEBOOK]: () => initialState,
+  [GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST]: (state) => {
+    state.loadingSummary = true
   },
-  [GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST]: (state) => {
-    state.loadingChart = true
-  },
-  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.loading = false
-    state.error = false
-    state.standardsGradebook = payload.standardsGradebook
-  },
-  [GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_SUCCESS]: (
+  [GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_SUCCESS]: (
     state,
     { payload }
   ) => {
-    state.loadingChart = false
+    state.loadingSummary = false
     state.error = false
-    state.chartData = payload.chartData
+    state.summary = payload.summary
   },
-  [GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_ERROR]: (
+  [GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_ERROR]: (
     state,
     { payload }
   ) => {
-    state.loadingChart = false
+    state.loadingSummary = false
     state.error = payload.error
   },
-  [GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR]: (state, { payload }) => {
-    state.loading = false
+  [GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST]: (state) => {
+    state.loadingDetails = true
+  },
+  [GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_SUCCESS]: (
+    state,
+    { payload }
+  ) => {
+    state.loadingDetails = false
+    state.error = false
+    state.details = payload.details
+  },
+  [GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_ERROR]: (
+    state,
+    { payload }
+  ) => {
+    state.loadingDetails = false
     state.error = payload.error
   },
   [GET_STUDENT_STANDARDS_REQUEST]: (state) => {
@@ -201,45 +206,9 @@ export const reportStandardsGradebookReducer = createReducer(initialState, {
 
 // -----|-----|-----|-----| SAGAS BEGIN |-----|-----|-----|----- //
 
-function* getReportsStandardsGradebookRequest({ payload }) {
-  try {
-    const standardsGradebook = yield call(
-      reportsApi.fetchStandardsGradebookReport,
-      payload
-    )
-    const dataSizeExceeded = standardsGradebook?.data?.dataSizeExceeded || false
-    if (dataSizeExceeded) {
-      yield put({
-        type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,
-        payload: { error: { ...standardsGradebook.data } },
-      })
-      return
-    }
-    yield put({
-      type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_SUCCESS,
-      payload: { standardsGradebook },
-    })
-  } catch (error) {
-    console.log('err', error.stack)
-    const msg =
-      'Error getting standards gradebook report data. Please try again after a few minutes.'
-    notification({ msg })
-    yield put({
-      type: GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST_ERROR,
-      payload: { error: msg },
-    })
-  }
-}
-
 function* getStandardsGradebookSkillInfoRequest({ payload }) {
   try {
-    const params = omit(payload, [
-      'testGrades',
-      'testSubjects',
-      'tagIds',
-      'standardId',
-      'showApply',
-    ])
+    const params = pick(payload, summaryParamsToPick)
     const skillInfo = yield call(
       reportsApi.fetchStandardsGradbookSkillInfo,
       params
@@ -267,30 +236,61 @@ function* getStandardsGradebookSkillInfoRequest({ payload }) {
   }
 }
 
-function* getReportsStandardsGradebookChartRequest({ payload }) {
+function* getStandardsGradebookSummaryRequest({ payload }) {
   try {
-    const chartData = yield call(
-      reportsApi.fetchStandardsGradebookChartData,
-      payload
+    const params = pick(payload, summaryParamsToPick)
+    const summary = yield call(
+      reportsApi.fetchStandardsGradebookSummary,
+      params
     )
-    const dataSizeExceeded = chartData?.data?.dataSizeExceeded || false
+    const dataSizeExceeded = summary?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
       yield put({
-        type: GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_ERROR,
-        payload: { error: { ...chartData.data } },
+        type: GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_ERROR,
+        payload: { error: { ...summary.data } },
       })
       return
     }
     yield put({
-      type: GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_SUCCESS,
-      payload: { chartData },
+      type: GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_SUCCESS,
+      payload: { summary },
     })
   } catch (error) {
     const msg =
-      'Error getting standards gradebook report chart data. Please try again after a few minutes.'
+      'Error getting standards gradebook report summary data. Please try again after a few minutes.'
     notification({ msg })
     yield put({
-      type: GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST_ERROR,
+      type: GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST_ERROR,
+      payload: { error: msg },
+    })
+  }
+}
+
+function* getStandardsGradebookDetailsRequest({ payload }) {
+  try {
+    const params = pick(payload, detailsParamsToPick)
+    const details = yield call(
+      reportsApi.fetchStandardsGradebookDetails,
+      params
+    )
+    const dataSizeExceeded = details?.data?.dataSizeExceeded || false
+    if (dataSizeExceeded) {
+      yield put({
+        type: GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_ERROR,
+        payload: { error: { ...details.data } },
+      })
+      return
+    }
+    yield put({
+      type: GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_SUCCESS,
+      payload: { details },
+    })
+  } catch (error) {
+    const msg =
+      'Error getting standards gradebook report details data. Please try again after a few minutes.'
+    notification({ msg })
+    yield put({
+      type: GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST_ERROR,
       payload: { error: msg },
     })
   }
@@ -317,18 +317,18 @@ function* getStudentStandardsSaga({ payload }) {
 
 export function* reportStandardsGradebookSaga() {
   yield all([
-    yield takeLatest(
-      GET_REPORTS_STANDARDS_GRADEBOOK_REQUEST,
-      getReportsStandardsGradebookRequest
-    ),
     yield takeLatest(GET_STUDENT_STANDARDS_REQUEST, getStudentStandardsSaga),
     yield takeLatest(
       GET_STANDARDS_GRADEBOOK_SKILL_INFO_REQUEST,
       getStandardsGradebookSkillInfoRequest
     ),
     yield takeLatest(
-      GET_REPORTS_STANDARDS_GRADEBOOK_CHART_REQUEST,
-      getReportsStandardsGradebookChartRequest
+      GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST,
+      getStandardsGradebookSummaryRequest
+    ),
+    yield takeLatest(
+      GET_REPORTS_STANDARDS_GRADEBOOK_DETAILS_REQUEST,
+      getStandardsGradebookDetailsRequest
     ),
   ])
 }

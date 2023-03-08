@@ -6,24 +6,6 @@
     { "key": "almostMastered", "title": "Almost Mastered" },
     { "key": "notMastered", "title": "Not Mastered" }
   ],
-  "analyseByDropDownData": [
-    { "key": "score(%)", "title": "Score (%)" },
-    { "key": "rawScore", "title": "Raw Score" },
-    { "key": "masteryLevel", "title": "Mastery Level" },
-    { "key": "masteryScore", "title": "Mastery Score" }
-  ],
-  "compareByDropDownData": [
-    { "key": "schoolId", "title": "School" },
-    { "key": "teacherId", "title": "Teacher" },
-    { "key": "groupId", "title": "Class" },
-    { "key": "studentId", "title": "Student" },
-    { "key": "race", "title": "Race" },
-    { "key": "gender", "title": "Gender" },
-    { "key": "frlStatus", "title": "FRL Status" },
-    { "key": "ellStatus", "title": "ELL Status" },
-    { "key": "iepStatus", "title": "IEP Status" },
-    { "key": "hispanicEthnicity", "title": "Hispanic Ethnicity" }
-  ],
   "filterDropDownData": [
     {
       "key": "race",

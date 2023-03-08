@@ -1,23 +1,11 @@
 import qs from 'qs'
-import {
-  groupBy,
-  keyBy,
-  isEmpty,
-  get,
-  values,
-  round,
-  sumBy,
-  orderBy,
-} from 'lodash'
+import { groupBy, keyBy, isEmpty, round, sumBy, orderBy } from 'lodash'
 import { white } from '@edulastic/colors'
-import { reportUtils } from '@edulastic/constants'
 import {
   getProficiencyBand,
   DemographicCompareByOptions,
   percentage,
 } from '../../../../common/util'
-
-const { getFormattedName } = reportUtils.common
 
 export const idToLabel = {
   standardId: 'standard',
@@ -76,24 +64,6 @@ export const getMasteryDropDown = (masteryScale) => {
     title: 'All',
   })
   return arr
-}
-
-export const getChartDataWithStandardInfo = (chartData, skillInfo) => {
-  if (isEmpty(chartData) || isEmpty(skillInfo)) {
-    return []
-  }
-
-  const skillInfoMap = keyBy(
-    skillInfo.filter((item) => !!item.standardId),
-    'standardId'
-  )
-
-  return chartData
-    .filter((item) => skillInfoMap[item._id])
-    .map((item) => ({
-      ...item,
-      ...skillInfoMap[item._id],
-    }))
 }
 
 export const getFilteredDenormalizedData = (denormalizedData, filters) => {

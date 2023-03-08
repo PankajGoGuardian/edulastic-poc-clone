@@ -16,7 +16,7 @@ import {
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import TableTooltipRow from '../../../../../common/components/tooltip/TableTooltipRow'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
-import { GradebookTable as StyledTable } from '../../../standardsGradebook/components/table/standardsGradebookTable'
+import { GradebookTable as StyledTable } from '../../../standardsGradebook/components/styled'
 
 import {
   getTableData,

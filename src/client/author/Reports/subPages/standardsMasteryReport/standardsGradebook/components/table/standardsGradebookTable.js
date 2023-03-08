@@ -84,7 +84,7 @@ const getStandardColumnRender = ({
             <Col className="custom-table-tooltip-key">
               {compareByKeyToNameMap[compareByKey]}:{' '}
             </Col>
-            <Col className="custom-table-tooltip-value">{}</Col>
+            <Col className="custom-table-tooltip-value">{dimensionName}</Col>
           </Row>
           <Row type="flex" justify="start">
             <Col className="custom-table-tooltip-key">Standard: </Col>

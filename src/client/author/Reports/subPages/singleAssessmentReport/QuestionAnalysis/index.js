@@ -59,7 +59,7 @@ const QuestionAnalysis = ({
     startIndex: 0,
     endIndex: 9,
   })
-  const [sortBy, setSortBy] = useState('asc')
+  const [sortBy, setSortBy] = useState('avgPerformance')
 
   const assessmentName = getAssessmentName(
     questionAnalysis?.meta?.test || settings.selectedTest
@@ -159,9 +159,9 @@ const QuestionAnalysis = ({
   }
   const handleSort = (checked) => {
     if (checked) {
-      return setSortBy('asc')
+      return setSortBy('avgPerformance')
     }
-    return setSortBy('desc')
+    return setSortBy('qLabel')
   }
 
   return (
@@ -179,7 +179,9 @@ const QuestionAnalysis = ({
             setHorizontalPageNo={setHorizontalPageNo}
           />
           <StyledP style={{ marginTop: '-30px' }}>
-            ITEMS (SORTED BY PERFORMANCE IN ASCENDING ORDER)
+            ITEMS (SORTED BY
+            {sortBy === 'avgPerformance' ? 'PERFORMANCE' : 'QUESTION'} IN
+            ASCENDING ORDER)
           </StyledP>
         </StyledCard>
       </UpperContainer>
@@ -199,14 +201,44 @@ const QuestionAnalysis = ({
                 </Col>
                 <Col>
                   <StyledH3 style={{ display: 'flex', alignItems: 'center' }}>
-                    <p style={{ marginRight: 10 }}>Sort By</p>
-                    <Switch
-                      checkedChildren="ASC"
-                      unCheckedChildren="DESC"
-                      checked={sortBy === 'asc'}
-                      onChange={handleSort}
-                      style={{ display: 'flex', alignItems: 'center' }}
-                    />
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        marginRight: '10px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      Sort By (Asc):
+                    </span>
+                    <span
+                      style={{
+                        '.ant-switch :after': {
+                          height: '18px',
+                          width: '18px',
+                        },
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        height: '32px',
+                        borderRadius: '16px',
+                        backgroundColor: '#E5E5E5',
+                      }}
+                    >
+                      <Switch
+                        checkedChildren="Performance"
+                        unCheckedChildren="Question"
+                        checked={sortBy === 'avgPerformance'}
+                        onChange={handleSort}
+                        style={{
+                          display: 'inline-flex',
+                          alignItems: 'center',
+                          marginRight: '10px',
+                          marginLeft: '10px',
+                          fontWeight: 'bold',
+                          fontSize: '16px',
+                          height: '20px',
+                        }}
+                      />
+                    </span>
                   </StyledH3>
                 </Col>
                 <Col data-cy="compareBy" data-testid="compareBy">

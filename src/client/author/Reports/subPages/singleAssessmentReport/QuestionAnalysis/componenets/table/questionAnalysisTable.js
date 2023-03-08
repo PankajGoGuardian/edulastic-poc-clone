@@ -121,12 +121,6 @@ const getTableColumns = (
       ),
       dataIndex: `averageScoreByQId.${question.questionId}`,
       key: question.questionId,
-      sorter: (a, b) => {
-        return (
-          a.averageScoreByQId[question.questionId] -
-          b.averageScoreByQId[question.questionId]
-        )
-      },
       children: [
         {
           title: question.districtAvgPerf,

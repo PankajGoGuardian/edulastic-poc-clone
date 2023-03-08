@@ -22,8 +22,10 @@ const variableKeyMapForComparison = {
 export const sortByAvgPerformanceAndLabel = (arr, sortBy) =>
   orderBy(
     arr,
-    ['avgPerformance', (item) => Number((item.qLabel || '').substring(1))],
-    [sortBy]
+    sortBy === 'qLabel'
+      ? [(item) => Number((item.qLabel || '').substring(1))]
+      : [sortBy, (item) => Number((item.qLabel || '').substring(1))],
+    ['asc']
   )
 
 export const getOrderedQuestions = (questions) => {

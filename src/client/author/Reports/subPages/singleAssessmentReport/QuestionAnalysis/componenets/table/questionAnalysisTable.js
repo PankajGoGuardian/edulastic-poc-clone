@@ -15,7 +15,7 @@ import {
 } from '../../utils/transformers'
 import { ColoredCell } from '../../../../../common/styled'
 import {
-  convertTableToCSV1,
+  convertQAnalysisTableToCSV,
   getHSLFromRange1,
 } from '../../../../../common/util'
 
@@ -173,7 +173,7 @@ export const QuestionAnalysisTable = ({
 
   useEffect(() => {
     if (isCsvDownloading && disableDefaultDownload) {
-      const { csvText, csvRawData } = convertTableToCSV1(
+      const { csvText, csvRawData } = convertQAnalysisTableToCSV(
         questionAnalysis,
         tableData,
         compareBy

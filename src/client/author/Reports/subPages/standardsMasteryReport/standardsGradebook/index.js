@@ -256,11 +256,7 @@ const StandardsGradebook = ({
     [summaryMetricInfo, detailsMetricInfo, scaleInfo]
   )
 
-  const [
-    filteredSummaryMetricInfo,
-    filteredSkillInfo,
-    tableColumns,
-  ] = useMemo(() => {
+  const [filteredChartDataWithStandardInfo, tableColumns] = useMemo(() => {
     const _filteredChartDataWithStandardInfo = isEmpty(
       tableFilters.selectedStandardIds
     )
@@ -268,24 +264,15 @@ const StandardsGradebook = ({
       : chartDataWithStandardInfo.filter(
           (c) => tableFilters.selectedStandardIds[c.standard]
         )
-    const _filteredSkillInfo = isEmpty(tableFilters.selectedStandardIds)
-      ? skillInfo
-      : skillInfo.filter((s) => tableFilters.selectedStandardIds[s.standard])
     const _tableColumns = getTableColumns({
       chartDataWithStandardInfo: _filteredChartDataWithStandardInfo,
-      skillInfo: _filteredSkillInfo,
       scaleInfo,
       compareByKey: tableFilters.compareByKey,
       analyseByKey: tableFilters.analyseByKey,
     })
-    return [
-      _filteredChartDataWithStandardInfo,
-      _filteredSkillInfo,
-      _tableColumns,
-    ]
+    return [_filteredChartDataWithStandardInfo, _tableColumns]
   }, [
     summaryMetricInfo,
-    skillInfo,
     scaleInfo,
     tableFilters.selectedStandardIds,
     tableFilters.compareByKey,
@@ -300,7 +287,7 @@ const StandardsGradebook = ({
       (!loadingSummary || !loadingSkillInfo) &&
       (isEmpty(chartDataWithStandardInfo) || isEmpty(tableData))
     ) {
-      toggleFilter(null, false)
+      toggleFilter(null, true)
     }
   }, [chartDataWithStandardInfo, tableData])
 
@@ -476,8 +463,7 @@ const StandardsGradebook = ({
               isSharedReport={isSharedReport}
               isCsvDownloading={isCsvDownloading}
               navigationItems={navigationItems}
-              summaryMetricInfo={filteredSummaryMetricInfo}
-              skillInfo={filteredSkillInfo}
+              chartDataWithStandardInfo={filteredChartDataWithStandardInfo}
               compareByKey={tableFilters.compareByKey}
               analyseByKey={tableFilters.analyseByKey}
               tableFilters={tableFilters}

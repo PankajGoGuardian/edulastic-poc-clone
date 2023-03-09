@@ -128,20 +128,15 @@ export const getTableColumns = ({
   tableColumns,
   filters,
   scaleInfo,
-  skillInfo,
   isSharedReport,
   navigationItems,
-  summaryMetricInfo,
+  chartDataWithStandardInfo,
   compareByKey,
   analyseByKey,
   tableFilters,
   setTableFilters,
   handleOnClickStandard,
 }) => {
-  const standardIdToIdentifierMap = skillInfo.reduce((res, ele) => {
-    res[ele.standardId] = ele.standard
-    return res
-  }, {})
   return useMemo(
     () =>
       next(tableColumns, (_columns) => {
@@ -183,10 +178,9 @@ export const getTableColumns = ({
         }
 
         // update standard columns
-        summaryMetricInfo.forEach(
-          ({ _id: standardId, performance: standardOverallData }) => {
+        chartDataWithStandardInfo.forEach(
+          ({ standardId, standard, performance: standardOverallData }) => {
             const standardColumn = _columns.find((c) => c.key == standardId)
-            const standardIdentifier = standardIdToIdentifierMap[standardId]
             const standardOverallPerformance = getAllAnalyseByPerformanceData({
               ...standardOverallData,
               scaleInfo,
@@ -203,7 +197,7 @@ export const getTableColumns = ({
             standardColumn.title = standardProgressNav ? (
               <Link to={standardProgressNav}>
                 <StandardTitle
-                  standardName={standardIdentifier}
+                  standardName={standard}
                   standardOverallPerformance={
                     standardOverallPerformance[analyseByKey]
                   }
@@ -211,7 +205,7 @@ export const getTableColumns = ({
               </Link>
             ) : (
               <StandardTitle
-                standardName={standardIdentifier}
+                standardName={standard}
                 standardOverallPerformance={
                   standardOverallPerformance[analyseByKey]
                 }
@@ -221,7 +215,7 @@ export const getTableColumns = ({
             standardColumn.render = getStandardColumnRender({
               t,
               standardId,
-              standardName: standardIdentifier,
+              standardName: standard,
               compareByKey,
               analyseByKey,
               handleOnClickStandard,
@@ -240,10 +234,9 @@ export const getTableColumns = ({
       tableColumns,
       filters,
       scaleInfo,
-      skillInfo,
       isSharedReport,
       navigationItems,
-      summaryMetricInfo,
+      chartDataWithStandardInfo,
       compareByKey,
       analyseByKey,
       tableFilters,

@@ -121,9 +121,7 @@ const getTableColumns = (
     title: compareByToPluralName[compareBy],
     width: 150,
     dataIndex: compareBy,
-    sorter: (a, b) => {
-      return a.key.localeCompare(b.key)
-    },
+    sorter: true,
     children: [
       {
         title: 'District Avg.',
@@ -146,6 +144,7 @@ export const QuestionAnalysisTable = ({
   questionAnalysis,
   horizontalPage,
   sortBy,
+  setSortByDimension,
 }) => {
   const columns = useMemo(
     () =>
@@ -195,6 +194,9 @@ export const QuestionAnalysisTable = ({
       flexWrap="unset"
       scroll={{ y: 300 }}
       disableDefaultDownload={disableDefaultDownload}
+      onChange={() => {
+        setSortByDimension((prevState) => !prevState)
+      }}
     />
   )
 }

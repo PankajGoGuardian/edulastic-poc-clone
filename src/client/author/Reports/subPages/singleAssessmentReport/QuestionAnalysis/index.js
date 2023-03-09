@@ -52,7 +52,7 @@ const QuestionAnalysis = ({
     [sharedReport]
   )
   const [compareBy, setCompareBy] = useState(
-    userRole === roleuser.TEACHER ? 'groupId' : 'schoolId'
+    userRole === roleuser.TEACHER ? 'group' : 'school'
   )
   const [chartFilter, setChartFilter] = useState({})
   const [pageNo, setpageNo] = useState(1)
@@ -61,6 +61,7 @@ const QuestionAnalysis = ({
     endIndex: 9,
   })
   const [sortBy, setSortBy] = useState('avgPerformance')
+  const [sortByDimension, setSortByDimension] = useState(false)
 
   const assessmentName = getAssessmentName(
     questionAnalysis?.meta?.test || settings.selectedTest
@@ -75,6 +76,7 @@ const QuestionAnalysis = ({
           ...settings.requestFilters,
           ...demographicFilters,
           compareBy,
+          sortByDimension: !sortByDimension ? 'asc' : 'desc',
         },
         testId: settings.selectedTest.key,
         pageNo,
@@ -84,7 +86,13 @@ const QuestionAnalysis = ({
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       return () => toggleFilter(null, false)
     }
-  }, [settings.selectedTest?.key, settings.requestFilters, compareBy, pageNo])
+  }, [
+    settings.selectedTest?.key,
+    settings.requestFilters,
+    compareBy,
+    pageNo,
+    sortByDimension,
+  ])
 
   useEffect(() => {
     if (
@@ -256,6 +264,7 @@ const QuestionAnalysis = ({
                 role={userRole}
                 sortBy={sortBy}
                 horizontalPage={horizontalPage}
+                setSortByDimension={setSortByDimension}
               />
               <Pagination
                 style={{ marginTop: '10px' }}

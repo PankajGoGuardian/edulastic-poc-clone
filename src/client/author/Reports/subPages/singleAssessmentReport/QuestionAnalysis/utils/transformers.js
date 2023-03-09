@@ -2,17 +2,17 @@ import { groupBy, orderBy } from 'lodash'
 import { getHSLFromRange1 } from '../../../../common/util'
 
 export const variableKeyMapForComparison = {
-  schoolId: {
+  school: {
     percent: 'allSchoolsScorePercent',
     id: 'schoolId',
     name: 'schoolName',
   },
-  teacherId: {
+  teacher: {
     percent: 'allTeachersScorePercent',
     id: 'teacherId',
     name: 'teacherName',
   },
-  groupId: {
+  group: {
     percent: 'allGroupsScorePercent',
     id: 'groupId',
     name: 'groupName',
@@ -20,19 +20,19 @@ export const variableKeyMapForComparison = {
 }
 
 export const comparedByToToolTipLabel = {
-  schoolId: {
+  school: {
     name: 'School Name',
     type: 'School (% Score)',
     all: 'All Schools (% Score)',
     nameKey: 'schoolName',
   },
-  teacherId: {
+  teacher: {
     name: 'Teacher Name',
     type: 'Teacher (% Score)',
     all: 'All Teachers (% Score)',
     nameKey: 'teacherName',
   },
-  groupId: {
+  group: {
     name: 'Class Name',
     type: 'Class (% Score)',
     all: 'All Classes (% Score)',
@@ -41,9 +41,9 @@ export const comparedByToToolTipLabel = {
 }
 
 export const compareByToPluralName = {
-  schoolId: 'Schools',
-  teacherId: 'Teachers',
-  groupId: 'Classes',
+  school: 'Schools',
+  teacher: 'Teachers',
+  group: 'Classes',
 }
 
 export const sortByAvgPerformanceAndLabel = (arr, sortBy) =>
@@ -94,7 +94,7 @@ export const getTableData = (
 ) => {
   const groupDetailsByTeacherId = groupBy(
     performanceByDimension.details,
-    compareBy
+    `${compareBy}Id` // will be modified as dimensionId
   )
   const orderedQuestions = getOrderedQuestions(qSummary)
   const { percent, name } = variableKeyMapForComparison[compareBy]

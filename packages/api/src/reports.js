@@ -292,15 +292,15 @@ const groupDetails = () => {
 }
 
 const performanceByDimension = {
-  teacherId: {
+  teacher: {
     totalPages: 4,
     details: teacherDetails(),
   },
-  schoolId: {
+  school: {
     totalPages: 5,
     details: schoolDetails(),
   },
-  groupId: {
+  group: {
     totalPages: 6,
     details: groupDetails(),
   },

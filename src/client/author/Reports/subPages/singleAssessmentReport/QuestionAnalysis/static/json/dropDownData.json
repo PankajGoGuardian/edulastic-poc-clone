@@ -1,12 +1,12 @@
 {
   "compareByDropDownData": [
-    { "key": "schoolId", "title": "School" },
-    { "key": "teacherId", "title": "Teacher" },
-    { "key": "groupId", "title": "Class" }
+    { "key": "school", "title": "School" },
+    { "key": "teacher", "title": "Teacher" },
+    { "key": "group", "title": "Class" }
   ],
   "dropDownKeyToLabel": {
-    "schoolId": "School",
-    "teacherId": "Teacher",
-    "groupId": "Class"
+    "school": "School",
+    "teacher": "Teacher",
+    "group": "Class"
   }
 }

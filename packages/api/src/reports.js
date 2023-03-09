@@ -455,8 +455,8 @@ const fetchQuestionAnalysisSummaryReport = (params) =>
   api
     .callApi({
       useSlowApi: true,
-      url: `/report/question-analysis`,
-      // url: `/report/question-analysis/summary`,
+      // url: `/report/question-analysis`,
+      url: `/report/v2/question-analysis/summary`,
       params: { ...params.requestFilters, testId: params.testId },
     })
     .then(() => qSummary)
@@ -465,7 +465,7 @@ const fetchQuestionAnalysisPerformanceReport = (params) =>
   api
     .callApi({
       useSlowApi: true,
-      url: `/report/question-analysis`,
+      url: `/report/v2/question-analysis/summary`,
       // url: `/report/question-analysis/performance-by-dimension`,
       params: { ...params.requestFilters, testId: params.testId },
     })

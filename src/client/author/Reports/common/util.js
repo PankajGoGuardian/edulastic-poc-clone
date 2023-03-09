@@ -287,11 +287,7 @@ export const toggleItem = (items, item) =>
     }
   })
 
-export const convertQAnalysisTableToCSV = (
-  { qSummary },
-  dataSource,
-  compareBy
-) => {
+export const convertQAnalysisTableToCSV = (qSummary, dataSource, compareBy) => {
   const csv = []
   const csvRawData = []
   let row = []

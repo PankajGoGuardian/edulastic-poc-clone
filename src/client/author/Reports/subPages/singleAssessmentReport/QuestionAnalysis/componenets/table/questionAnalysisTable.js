@@ -66,7 +66,7 @@ const getCellContents = (props) => {
 }
 
 const getTableColumns = (
-  { qSummary },
+  qSummary,
   compareBy,
   filter = {},
   horizontalPage,
@@ -149,13 +149,13 @@ export const QuestionAnalysisTable = ({
   const columns = useMemo(
     () =>
       getTableColumns(
-        questionAnalysis,
+        questionAnalysis.qSummary,
         compareBy,
         filter,
         horizontalPage,
         sortBy
       ),
-    [questionAnalysis, compareBy, filter, horizontalPage, sortBy]
+    [questionAnalysis.qSummary, compareBy, filter, horizontalPage, sortBy]
   )
 
   const tableData = useMemo(() => getTableData(questionAnalysis, compareBy), [
@@ -173,7 +173,7 @@ export const QuestionAnalysisTable = ({
   useEffect(() => {
     if (isCsvDownloading && disableDefaultDownload) {
       const { csvText, csvRawData } = convertQAnalysisTableToCSV(
-        questionAnalysis,
+        questionAnalysis.qSummary,
         tableData,
         compareBy
       )

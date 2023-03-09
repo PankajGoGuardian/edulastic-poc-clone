@@ -1,5 +1,6 @@
 import React from 'react'
 import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 import { EduIf } from '@edulastic/common'
 import {
   RECORDING_ACTIVE,
@@ -17,6 +18,7 @@ import AudioRecorderContainer from './AudioRecorderContainer'
 import AudioPlayerContainer from './AudioPlayerContainer'
 import ErrorPopup from './ErrorPopup'
 import UploadProgress from './UploadProgress'
+import { getIsAudioResponseQuestionEnabled } from '../../../../author/TestPage/ducks'
 
 const AudioResponseContainer = ({
   i18translate,
@@ -35,6 +37,7 @@ const AudioResponseContainer = ({
   recordingAndUploadCompleteForQid,
   questionId,
   itemId,
+  enableAudioResponseQuestion,
 }) => {
   const {
     errorData,
@@ -95,6 +98,7 @@ const AudioResponseContainer = ({
             setStopAudioRecordingAndUploadForQid
           }
           questionId={questionId}
+          enableAudioResponseQuestion={enableAudioResponseQuestion}
         />
       </EduIf>
       <EduIf
@@ -143,4 +147,6 @@ AudioResponseContainer.defaultProps = {
   userAnswer: '',
 }
 
-export default AudioResponseContainer
+export default connect((state) => ({
+  enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
+}))(AudioResponseContainer)

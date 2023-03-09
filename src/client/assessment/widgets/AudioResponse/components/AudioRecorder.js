@@ -3,7 +3,13 @@ import PropTypes from 'prop-types'
 import { StyledText, StyledContainer } from '../styledComponents/AudioRecorder'
 import AudioButton from './AudioButton'
 
-const AudioRecorder = ({ onClickHandler, buttonType, text, stylesData }) => {
+const AudioRecorder = ({
+  onClickHandler,
+  buttonType,
+  text,
+  stylesData,
+  disabled,
+}) => {
   const { isTextBlack, showLoader } = stylesData
   return (
     <>
@@ -12,6 +18,7 @@ const AudioRecorder = ({ onClickHandler, buttonType, text, stylesData }) => {
           buttonType={buttonType}
           onClickHandler={onClickHandler}
           isRecording={showLoader}
+          disabled={disabled}
         />
       </StyledContainer>
 

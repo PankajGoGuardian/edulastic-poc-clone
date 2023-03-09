@@ -106,6 +106,7 @@ import {
 import {
   addAutoselectGroupItems,
   fillAutoselectGoupsWithDummyItems,
+  setEnableAudioResponseQuestionAction,
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
@@ -397,7 +398,9 @@ function* loadTest({ payload }) {
     if (testActivity?.testActivity?.testId) {
       testId = testActivity?.testActivity?.testId
     }
-
+    const enableAudioResponseQuestion =
+      testActivity?.enableAudioResponseQuestion || false
+    yield put(setEnableAudioResponseQuestionAction(enableAudioResponseQuestion))
     yield put({
       type: SET_TEST_ID,
       payload: {

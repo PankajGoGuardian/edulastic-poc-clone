@@ -65,6 +65,7 @@ import { toggleCreateItemModalAction } from '../../../src/actions/testItem'
 import Breadcrumb from '../../../src/components/Breadcrumb'
 
 import { SMALL_DESKTOP_WIDTH } from '../../../src/constants/others'
+import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
 
 class Container extends Component {
   state = {
@@ -285,10 +286,13 @@ class Container extends Component {
       isTestFlow,
       testId,
       match: { params },
+      enableAudioResponseQuestion,
     } = this.props
     const { mobileViewShow, isShowCategories } = this.state
     const { multipartItem } = itemDetails
-
+    const audioResponseQuestionTypeText = enableAudioResponseQuestion
+      ? 'Written & Recorded'
+      : 'Writing'
     if (!itemDetails._id) {
       if (pathname.includes('/author/tests')) {
         push('/author/tests/create/description')
@@ -389,7 +393,7 @@ class Container extends Component {
                   </Menu.Item>
                   <Menu.Item key="edit">
                     <IconWrite />
-                    Writing
+                    {audioResponseQuestionTypeText}
                   </Menu.Item>
                   {!multipartItem && (
                     <Menu.Item key="read">
@@ -514,7 +518,7 @@ class Container extends Component {
               </Menu.Item>
               <Menu.Item key="edit" onClick={this.toggleCategories}>
                 <IconWrite />
-                Writing
+                {audioResponseQuestionTypeText}
               </Menu.Item>
               {!multipartItem && (
                 <Menu.Item key="read" onClick={this.toggleCategories}>
@@ -578,6 +582,7 @@ const enhance = compose(
       testName: state.tests.entity.title,
       testId: state.tests.entity._id,
       itemDetails: getItemDetailSelector(state),
+      enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     }),
     {
       setQuestion: setQuestionAction,

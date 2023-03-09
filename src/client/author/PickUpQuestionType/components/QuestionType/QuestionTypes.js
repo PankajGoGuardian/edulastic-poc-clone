@@ -10,6 +10,7 @@ import { largeDesktopWidth, mobileWidth } from '@edulastic/colors'
 import { Dump } from '../../components'
 import Card from '../Card/Card'
 import { getCards } from './constants'
+import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
 
 const dummyArray = Array(7)
   .fill()
@@ -19,8 +20,13 @@ const PickUpQuestionTypes = ({
   onSelectQuestionType,
   questionType,
   isPassageItem,
+  enableAudioResponseQuestion,
 }) => {
-  const allQuestionTypes = getCards(onSelectQuestionType, isPassageItem)
+  const allQuestionTypes = getCards(
+    onSelectQuestionType,
+    isPassageItem,
+    enableAudioResponseQuestion
+  )
   const selectedQuestionTypes = allQuestionTypes.filter(({ type }) => {
     if (Array.isArray(type)) {
       /**
@@ -75,6 +81,7 @@ export default connect(
       ['itemDetail', 'item', 'isPassageWithQuestions'],
       false
     ),
+    enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
   }),
   null
 )(PickUpQuestionTypes)

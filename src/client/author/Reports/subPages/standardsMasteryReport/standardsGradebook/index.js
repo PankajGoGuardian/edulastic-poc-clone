@@ -256,28 +256,23 @@ const StandardsGradebook = ({
     [summaryMetricInfo, detailsMetricInfo, scaleInfo]
   )
 
-  const [
-    filteredSummaryMetricInfo,
-    filteredSkillInfo,
-    tableColumns,
-  ] = useMemo(() => {
-    const _filteredSummaryMetricInfo = isEmpty(tableFilters.selectedStandardIds)
-      ? summaryMetricInfo
-      : summaryMetricInfo.filter((s) => tableFilters.selectedStandardIds[s._id])
-    const _filteredSkillInfo = isEmpty(tableFilters.selectedStandardIds)
-      ? skillInfo
-      : skillInfo.filter((s) => tableFilters.selectedStandardIds[s._id])
+  const [filteredChartDataWithStandardInfo, tableColumns] = useMemo(() => {
+    const _filteredChartDataWithStandardInfo = isEmpty(
+      tableFilters.selectedStandardIds
+    )
+      ? chartDataWithStandardInfo
+      : chartDataWithStandardInfo.filter(
+          (c) => tableFilters.selectedStandardIds[c.standard]
+        )
     const _tableColumns = getTableColumns({
-      summaryMetricInfo: _filteredSummaryMetricInfo,
-      skillInfo: _filteredSkillInfo,
+      chartDataWithStandardInfo: _filteredChartDataWithStandardInfo,
       scaleInfo,
       compareByKey: tableFilters.compareByKey,
       analyseByKey: tableFilters.analyseByKey,
     })
-    return [_filteredSummaryMetricInfo, _filteredSkillInfo, _tableColumns]
+    return [_filteredChartDataWithStandardInfo, _tableColumns]
   }, [
     summaryMetricInfo,
-    skillInfo,
     scaleInfo,
     tableFilters.selectedStandardIds,
     tableFilters.compareByKey,
@@ -290,11 +285,11 @@ const StandardsGradebook = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       (!loadingSummary || !loadingSkillInfo) &&
-      !isEmpty(chartDataWithStandardInfo)
+      (isEmpty(chartDataWithStandardInfo) || isEmpty(tableData))
     ) {
       toggleFilter(null, true)
     }
-  }, [chartDataWithStandardInfo])
+  }, [chartDataWithStandardInfo, tableData])
 
   const onBarClickCB = (key) => {
     const _selectedStandardIds = { ...tableFilters.selectedStandardIds }
@@ -468,10 +463,11 @@ const StandardsGradebook = ({
               isSharedReport={isSharedReport}
               isCsvDownloading={isCsvDownloading}
               navigationItems={navigationItems}
-              summaryMetricInfo={filteredSummaryMetricInfo}
-              skillInfo={filteredSkillInfo}
+              chartDataWithStandardInfo={filteredChartDataWithStandardInfo}
               compareByKey={tableFilters.compareByKey}
               analyseByKey={tableFilters.analyseByKey}
+              tableFilters={tableFilters}
+              setTableFilters={setTableFilters}
               handleOnClickStandard={handleOnClickStandard}
             />
           </Row>

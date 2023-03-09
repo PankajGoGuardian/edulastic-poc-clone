@@ -308,17 +308,11 @@ const getTableData = ({ summaryMetricInfo, detailsMetricInfo, scaleInfo }) => {
 }
 
 const getTableColumns = ({
-  summaryMetricInfo,
-  skillInfo,
+  chartDataWithStandardInfo,
   scaleInfo,
   compareByKey,
   analyseByKey,
 }) => {
-  const standardIdToIdentifierMap = skillInfo.reduce((res, ele) => {
-    res[ele.standardId] = ele.standard
-    return res
-  }, {})
-
   const compareByColumn = {
     title: compareByKeyToNameMap[compareByKey],
     key: 'dimension',
@@ -353,16 +347,15 @@ const getTableColumns = ({
     sorter: () => {},
   }
 
-  const standardColumns = summaryMetricInfo.map(
-    ({ _id: standardId, performance: standardOverallData }) => {
-      const standardIdentifier = standardIdToIdentifierMap[standardId]
+  const standardColumns = chartDataWithStandardInfo.map(
+    ({ standardId, standard, performance: standardOverallData }) => {
       const standardOverallPerformance = getAllAnalyseByPerformanceData({
         ...standardOverallData,
         scaleInfo,
         useAbbreviation: true,
       })
       return {
-        title: `${standardIdentifier} ${standardOverallPerformance[analyseByKey]}`,
+        title: `${standard} ${standardOverallPerformance[analyseByKey]}`,
         key: standardId,
         dataIndex: standardId,
         align: 'center',

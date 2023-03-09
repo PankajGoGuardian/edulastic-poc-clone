@@ -280,11 +280,12 @@ const StandardsGradebook = ({
   // show filters section if data is empty
   useEffect(() => {
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
-      const showFilter =
-        !loadingSummary &&
-        !loadingSkillInfo &&
-        !loadingDetails &&
-        (!chartDataWithStandardInfo.length || !tableData.length)
+      const showFilter = [
+        loadingSummary,
+        loadingSkillInfo,
+        loadingDetails,
+        chartDataWithStandardInfo.length && tableData.length,
+      ].every((e) => !e)
       if (showFilter) {
         toggleFilter(null, true)
       } else {

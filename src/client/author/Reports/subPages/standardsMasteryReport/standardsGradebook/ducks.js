@@ -1,17 +1,19 @@
 import { takeLatest, call, put, all } from 'redux-saga/effects'
 import { createSelector } from 'reselect'
 import { createAction, createReducer } from 'redux-starter-kit'
-import { omit, pick } from 'lodash'
 
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
 import { reportUtils } from '@edulastic/constants'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
+import { sanitiseApiParams } from './utils/transformers'
 
 const {
-  summaryParamsToPick,
-  detailsParamsToPick,
+  sharedDetailsFields,
+  filterDetailsFields,
+  sharedSummaryFields,
+  filterSummaryFields,
 } = reportUtils.standardsGradebook
 
 const GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST =
@@ -208,7 +210,11 @@ export const reportStandardsGradebookReducer = createReducer(initialState, {
 
 function* getStandardsGradebookSkillInfoRequest({ payload }) {
   try {
-    const params = pick(payload, summaryParamsToPick)
+    const params = sanitiseApiParams(
+      payload,
+      filterSummaryFields,
+      sharedSummaryFields
+    )
     const skillInfo = yield call(
       reportsApi.fetchStandardsGradbookSkillInfo,
       params
@@ -238,7 +244,11 @@ function* getStandardsGradebookSkillInfoRequest({ payload }) {
 
 function* getStandardsGradebookSummaryRequest({ payload }) {
   try {
-    const params = pick(payload, summaryParamsToPick)
+    const params = sanitiseApiParams(
+      payload,
+      filterSummaryFields,
+      sharedSummaryFields
+    )
     const summary = yield call(
       reportsApi.fetchStandardsGradebookSummary,
       params
@@ -268,7 +278,11 @@ function* getStandardsGradebookSummaryRequest({ payload }) {
 
 function* getStandardsGradebookDetailsRequest({ payload }) {
   try {
-    const params = pick(payload, detailsParamsToPick)
+    const params = sanitiseApiParams(
+      payload,
+      filterDetailsFields,
+      sharedDetailsFields
+    )
     const details = yield call(
       reportsApi.fetchStandardsGradebookDetails,
       params

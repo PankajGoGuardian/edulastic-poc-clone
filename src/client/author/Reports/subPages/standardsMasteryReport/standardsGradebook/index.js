@@ -425,7 +425,7 @@ const StandardsGradebook = ({
               </StyledH3>
             </Col>
             <Col xs={24} sm={24} md={14} lg={14} xl={12}>
-              <Row className="control-dropdown-row">
+              <Row className="control-dropdown-row" gutter={8}>
                 <StyledDropDownContainer
                   data-cy="compareBy"
                   xs={24}

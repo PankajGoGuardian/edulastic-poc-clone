@@ -50,7 +50,6 @@ const StandardsGradebookTable = ({
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}
       scroll={{ x: scrollX }}
-      pagination={false}
     />
   )
 }

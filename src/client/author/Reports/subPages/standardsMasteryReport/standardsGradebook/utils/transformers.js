@@ -1,5 +1,5 @@
 import qs from 'qs'
-import { groupBy, keyBy, isEmpty, round, sumBy, orderBy } from 'lodash'
+import { groupBy, keyBy, isEmpty, round, sumBy, orderBy, pick } from 'lodash'
 import { white } from '@edulastic/colors'
 import {
   getProficiencyBand,
@@ -363,4 +363,14 @@ export const getStandardProgressNav = (
     }
   }
   return null
+}
+
+export const sanitiseApiParams = (
+  payload,
+  filterFields,
+  sharedReportFields
+) => {
+  const { reportId } = payload
+  const fieldsToPick = isEmpty(reportId) ? filterFields : sharedReportFields
+  return pick(payload, fieldsToPick)
 }

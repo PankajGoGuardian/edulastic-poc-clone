@@ -32,43 +32,43 @@ const compareByKeyToNameMap = {
 
 const compareByDropDownData = [
   {
-    key: [compareByKeys.SCHOOL],
+    key: compareByKeys.SCHOOL,
     title: compareByKeyToNameMap[compareByKeys.SCHOOL],
   },
   {
-    key: [compareByKeys.TEACHER],
+    key: compareByKeys.TEACHER,
     title: compareByKeyToNameMap[compareByKeys.TEACHER],
   },
   {
-    key: [compareByKeys.CLASS],
+    key: compareByKeys.CLASS,
     title: compareByKeyToNameMap[compareByKeys.CLASS],
   },
   {
-    key: [compareByKeys.STUDENT],
+    key: compareByKeys.STUDENT,
     title: compareByKeyToNameMap[compareByKeys.STUDENT],
   },
   {
-    key: [compareByKeys.RACE],
+    key: compareByKeys.RACE,
     title: compareByKeyToNameMap[compareByKeys.RACE],
   },
   {
-    key: [compareByKeys.GENDER],
+    key: compareByKeys.GENDER,
     title: compareByKeyToNameMap[compareByKeys.GENDER],
   },
   {
-    key: [compareByKeys.FRL_STATUS],
+    key: compareByKeys.FRL_STATUS,
     title: compareByKeyToNameMap[compareByKeys.FRL_STATUS],
   },
   {
-    key: [compareByKeys.ELL_STATUS],
+    key: compareByKeys.ELL_STATUS,
     title: compareByKeyToNameMap[compareByKeys.ELL_STATUS],
   },
   {
-    key: [compareByKeys.IEP_STATUS],
+    key: compareByKeys.IEP_STATUS,
     title: compareByKeyToNameMap[compareByKeys.IEP_STATUS],
   },
   {
-    key: [compareByKeys.HISPANIC_ETHNICITY],
+    key: compareByKeys.HISPANIC_ETHNICITY,
     title: compareByKeyToNameMap[compareByKeys.HISPANIC_ETHNICITY],
   },
 ]
@@ -106,8 +106,7 @@ const analyseByDropDownData = [
   },
 ]
 
-const summaryParamsToPick = [
-  'reportId',
+const filterFields = [
   'termId',
   'assessmentTypes',
   'assignedBy',
@@ -129,43 +128,23 @@ const summaryParamsToPick = [
   'frlStatus',
   'ellStatus',
   'hispanicEthnicity',
-  'stdPage',
-  'stdPageSize',
 ]
 
-const detailsParamsToPick = [
-  'reportId',
-  'termId',
-  'assessmentTypes',
-  'assignedBy',
-  'classIds',
-  'courseId',
-  'curriculumId',
-  'domainIds',
-  'grades',
-  'groupIds',
-  'profileId',
-  'schoolIds',
-  'standardGrade',
-  'subjects',
-  'teacherIds',
-  'testIds',
-  'race',
-  'gender',
-  'iepStatus',
-  'frlStatus',
-  'ellStatus',
-  'hispanicEthnicity',
-  'stdPage',
-  'stdPageSize',
-  'rowPage',
-  'rowPageSize',
+const summaryExtraFields = ['stdPage', 'stdPageSize']
+
+const sharedSummaryFields = ['reportId', ...summaryExtraFields]
+const filterSummaryFields = [...filterFields, ...summaryExtraFields]
+const detailsExtraFields = [
   'compareBy',
   'analyzeBy',
-  'sortKey',
+  'rowPage',
+  'rowPageSize',
   'sortOrder',
+  'sortKey',
   'requireTotalCount',
 ]
+const sharedDetailsFields = [...sharedSummaryFields, ...detailsExtraFields]
+const filterDetailsFields = [...filterSummaryFields, ...detailsExtraFields]
 
 const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, 'score', ['desc'])[scaleInfo.length - 1] || {
@@ -393,8 +372,10 @@ module.exports = {
   analyseByKeys,
   analyseByKeyToNameMap,
   analyseByDropDownData,
-  summaryParamsToPick,
-  detailsParamsToPick,
+  sharedDetailsFields,
+  filterDetailsFields,
+  sharedSummaryFields,
+  filterSummaryFields,
   preProcessSummaryMetrics,
   // chart transformers
   getChartDataWithStandardInfo,

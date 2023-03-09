@@ -262,11 +262,13 @@ const StandardsGradebook = ({
     tableColumns,
   ] = useMemo(() => {
     const _filteredSummaryMetricInfo = isEmpty(tableFilters.selectedStandardIds)
-      ? summaryMetricInfo
-      : summaryMetricInfo.filter((s) => tableFilters.selectedStandardIds[s._id])
+      ? chartDataWithStandardInfo
+      : chartDataWithStandardInfo.filter(
+          (c) => tableFilters.selectedStandardIds[c.standard]
+        )
     const _filteredSkillInfo = isEmpty(tableFilters.selectedStandardIds)
       ? skillInfo
-      : skillInfo.filter((s) => tableFilters.selectedStandardIds[s._id])
+      : skillInfo.filter((s) => tableFilters.selectedStandardIds[s.standard])
     const _tableColumns = getTableColumns({
       summaryMetricInfo: _filteredSummaryMetricInfo,
       skillInfo: _filteredSkillInfo,

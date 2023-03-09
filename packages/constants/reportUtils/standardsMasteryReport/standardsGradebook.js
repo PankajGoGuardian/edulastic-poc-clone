@@ -354,7 +354,7 @@ const getTableColumns = ({
   }
 
   const standardColumns = summaryMetricInfo.map(
-    ({ _id: standardId, performance: standardOverallData }) => {
+    ({ standardId, performance: standardOverallData }) => {
       const standardIdentifier = standardIdToIdentifierMap[standardId]
       const standardOverallPerformance = getAllAnalyseByPerformanceData({
         ...standardOverallData,

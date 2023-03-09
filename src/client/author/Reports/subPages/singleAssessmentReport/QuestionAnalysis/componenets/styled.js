@@ -1,5 +1,6 @@
 import styled from 'styled-components'
 import { extraDesktopWidthMax, themeColor } from '@edulastic/colors'
+import { Switch } from 'antd'
 import {
   StyledTable as Table,
   StyledCard as Card,
@@ -114,4 +115,17 @@ export const QLabelSpan = styled.span`
   color: ${themeColor};
   margin-bottom: 10px;
   display: inline-block;
+`
+export const StyledSwitch = styled(Switch)`
+  height: 28px !important;
+  display: inline-block !important;
+  ::after {
+    width: 24px !important;
+    height: 24px !important;
+  }
+  &.ant-switch-checked {
+    .ant-switch-inner {
+      margin-right: 28px;
+    }
+  }
 `

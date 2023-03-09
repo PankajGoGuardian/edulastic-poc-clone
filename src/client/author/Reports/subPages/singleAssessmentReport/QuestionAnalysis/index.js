@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
 
-import { Col, Row, Pagination, Switch } from 'antd'
+import { Col, Row, Pagination } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
 import { isEmpty } from 'lodash'
@@ -15,6 +15,7 @@ import {
   StyledP,
   TableContainer,
   UpperContainer,
+  StyledSwitch,
 } from './componenets/styled'
 import { QuestionAnalysisTable } from './componenets/table/questionAnalysisTable'
 
@@ -199,57 +200,50 @@ const QuestionAnalysis = ({
                     | {assessmentName}
                   </StyledH3>
                 </Col>
-                <Col>
-                  <StyledH3 style={{ display: 'flex', alignItems: 'center' }}>
-                    <span
+                <Col
+                  style={{
+                    display: 'flex',
+                    flexDirection: 'row',
+                  }}
+                >
+                  <Col
+                    style={{
+                      marginRight: '50px',
+                    }}
+                  >
+                    <StyledH3
                       style={{
-                        display: 'inline-block',
-                        marginRight: '10px',
-                        fontWeight: 'bold',
-                      }}
-                    >
-                      Sort By (Asc):
-                    </span>
-                    <span
-                      style={{
-                        '.ant-switch :after': {
-                          height: '18px',
-                          width: '18px',
-                        },
-                        display: 'inline-flex',
+                        display: 'flex',
                         alignItems: 'center',
-                        height: '32px',
-                        borderRadius: '16px',
-                        backgroundColor: '#E5E5E5',
                       }}
                     >
-                      <Switch
+                      <span
+                        style={{
+                          display: 'inline-block',
+                          marginRight: '10px',
+                          fontWeight: 'bold',
+                        }}
+                      >
+                        Sort By (Asc):
+                      </span>
+                      <StyledSwitch
                         checkedChildren="Performance"
                         unCheckedChildren="Question"
                         checked={sortBy === 'avgPerformance'}
                         onChange={handleSort}
-                        style={{
-                          display: 'inline-flex',
-                          alignItems: 'center',
-                          marginRight: '10px',
-                          marginLeft: '10px',
-                          fontWeight: 'bold',
-                          fontSize: '16px',
-                          height: '20px',
-                        }}
                       />
-                    </span>
-                  </StyledH3>
-                </Col>
-                <Col data-cy="compareBy" data-testid="compareBy">
-                  {userRole !== roleuser.TEACHER ? (
-                    <ControlDropDown
-                      prefix="Compare by"
-                      by={selectedCompareByOption}
-                      selectCB={updateCompareByCB}
-                      data={compareByDropDownData}
-                    />
-                  ) : null}
+                    </StyledH3>
+                  </Col>
+                  <Col data-cy="compareBy" data-testid="compareBy">
+                    {userRole !== roleuser.TEACHER ? (
+                      <ControlDropDown
+                        prefix="Compare by"
+                        by={selectedCompareByOption}
+                        selectCB={updateCompareByCB}
+                        data={compareByDropDownData}
+                      />
+                    ) : null}
+                  </Col>
                 </Col>
               </Row>
             </Col>

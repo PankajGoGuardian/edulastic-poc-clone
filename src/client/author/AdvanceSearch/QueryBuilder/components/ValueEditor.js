@@ -83,7 +83,7 @@ const ValueEditor = (props) => {
           data-cy={dataCyValue(path, 'valueEditor')}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode="multiple"
-          style={{ width: '200px' }}
+          style={{ width: '80%', overflowY: 'auto', maxHeight: '70px' }}
           autoClearSearchValue={false}
           onChange={handleChange}
           onFocus={() => handleSearch('')}

@@ -1,15 +1,30 @@
 import React, { useEffect, useState } from 'react'
-import { CustomModalStyled, notification } from '@edulastic/common'
+import {
+  notification,
+  CustomModalStyled,
+  EduIf,
+  EduThen,
+  EduElse,
+} from '@edulastic/common'
 import { QueryBuilder, formatQuery } from 'react-querybuilder'
 import 'react-querybuilder/dist/query-builder.css'
 import './custom_style.css'
 import { connect } from 'react-redux'
 import { isArray, flattenDeep } from 'lodash'
+import { segmentApi } from '@edulastic/api'
 import { inNotInOp, combinators } from '../config/qb-config'
 import { allowedFields } from '../config/allowedFields-config'
 import ValueEditor from './ValueEditor'
 import { CancelButton, OkButton } from '../../../../common/styled'
-import { ModalBody, ButtonsContainer } from './styled-components'
+import {
+  ModalBody,
+  ButtonsContainer,
+  AdvanceSearchModel,
+  HelpArticleWrapper,
+  StyledIconPlayButton,
+  StyledIconQuestionCircle,
+  NoResultWrapper,
+} from './styled-components'
 import {
   getAdvancedSearchFilterSelector,
   setAdvancedSearchFilterAction,
@@ -32,6 +47,7 @@ import {
   OperatorSelector,
   RemoveRuleAction,
 } from '../config/control'
+import { advancedSearchHelpArtical, advancedSearchHelpVideo } from './constants'
 
 const getAllRules = (rules = []) => {
   const allRulesByRecur = []
@@ -62,8 +78,8 @@ const _QueryBuilder = ({
   loadAdvancedSearchClasses,
 }) => {
   const [query, setQuery] = useState(defaultQuery)
+  const [showHelpVideo, setShowHelpVideo] = useState(false)
   const formattedQuery = formatQuery(query, 'json_without_ids')
-
   useEffect(() => {
     const searchString = ''
     loadSchoolsData({ searchString })
@@ -72,6 +88,7 @@ const _QueryBuilder = ({
     loadTagsListData({ searchString })
   }, [])
 
+  const showNoResult = !(query.level || query.rules.length)
   const handleCancel = () => {
     setShowAdvanceSearchModal(false)
   }
@@ -117,6 +134,7 @@ const _QueryBuilder = ({
         <OkButton
           onClick={() => {
             handleQuickFilter()
+            segmentApi.genericEventTrack('findClassesInAdvSearch', {})
           }}
           style={{ minWidth: '100px' }}
           data-cy="findClassButton"
@@ -128,41 +146,100 @@ const _QueryBuilder = ({
   )
 
   const fields = allowedFields({ schoolData, classData, courseData, tagData })
+  const closeModal = () => {
+    setShowHelpVideo(false)
+  }
   return (
-    <CustomModalStyled
-      width="900px"
+    <AdvanceSearchModel
+      width="70%"
       padding="32px"
       visible={showAdvanceSearch}
-      title="Advanced Search"
+      title={
+        <HelpArticleWrapper>
+          Advanced Search
+          <a href={advancedSearchHelpArtical} target="_blank" rel="noreferrer">
+            <StyledIconQuestionCircle />
+          </a>
+          <StyledIconPlayButton
+            onClick={() => {
+              setShowHelpVideo((state) => !state)
+            }}
+          />
+        </HelpArticleWrapper>
+      }
       onCancel={handleCancel}
       footer={footer}
       destroyOnClose
       centered
     >
       <ModalBody>
-        <QueryBuilder
-          fields={fields}
-          query={query}
-          onQueryChange={(q) => setQuery(q)}
-          operators={inNotInOp}
-          combinators={combinators}
-          controlClassnames={{ queryBuilder: 'queryBuilder-branches' }}
-          enableDragAndDropProp={false}
-          resetOnFieldChange
-          listsAsArrays
-          controlElements={{
-            valueEditor: ValueEditor,
-            fieldSelector: FieldSelector,
-            combinatorSelector: CombinatorSelector,
-            operatorSelector: OperatorSelector,
-            addRuleAction: AddRule,
-            addGroupAction: AddRuleGroup,
-            removeRuleAction: RemoveRuleAction,
-            removeGroupAction: RemoveRuleAction,
-          }}
-        />
+        <EduIf condition={showHelpVideo}>
+          <EduThen>
+            <CustomModalStyled
+              visible={showHelpVideo}
+              onCancel={closeModal}
+              title="Get Started with Advanced Search"
+              footer={null}
+              destroyOnClose
+              width="768px"
+            >
+              <iframe
+                title="AdvancedSearch"
+                width="100%"
+                height="400px"
+                src={advancedSearchHelpVideo}
+                allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture"
+                frameBorder="0"
+                allowFullScreen
+                scrolling="no"
+              />
+            </CustomModalStyled>
+          </EduThen>
+          <EduElse>
+            <QueryBuilder
+              fields={fields}
+              query={query}
+              onQueryChange={(q) => setQuery(q)}
+              operators={inNotInOp}
+              combinators={combinators}
+              controlClassnames={{ queryBuilder: 'queryBuilder-branches' }}
+              enableDragAndDropProp={false}
+              resetOnFieldChange
+              listsAsArrays
+              controlElements={{
+                valueEditor: ValueEditor,
+                fieldSelector: FieldSelector,
+                combinatorSelector: CombinatorSelector,
+                operatorSelector: OperatorSelector,
+                addRuleAction: AddRule,
+                addGroupAction: AddRuleGroup,
+                removeRuleAction: RemoveRuleAction,
+                removeGroupAction: RemoveRuleAction,
+              }}
+            />
+          </EduElse>
+        </EduIf>
       </ModalBody>
-    </CustomModalStyled>
+      <EduIf condition={showNoResult}>
+        <NoResultWrapper>
+          <h1>No Result</h1>
+          <p>
+            Add rules to filter the classes based on defined rules and group
+            multiple rules.
+          </p>
+          <p>
+            <a
+              onClick={() => {
+                setShowHelpVideo((state) => !state)
+              }}
+            >
+              WATCH QUICK TOUR
+            </a>{' '}
+            to learn more...
+          </p>
+        </NoResultWrapper>
+      </EduIf>
+    </AdvanceSearchModel>
   )
 }
 

@@ -12,11 +12,8 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import { STUDENT_ATTEMPT_TIME_WINDOW } from '@edulastic/constants/const/common'
-import { OkButton } from '../../../../common/styled'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
-import FeaturesSwitch, {
-  isFeatureAccessible,
-} from '../../../../features/components/FeaturesSwitch'
+import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import TagFilter from '../../../src/components/common/TagFilter'
 import {
@@ -243,21 +240,6 @@ class AdvancedOptons extends React.Component {
                   Please select classes to assign this assessment. Options on
                   the left can be used to filter the list of classes.
                 </p>
-                <div>
-                  <FeaturesSwitch
-                    inputFeatures="advanceSearchEnabled"
-                    actionOnInaccessible="hidden"
-                  >
-                    <OkButton
-                      onClick={() => {
-                        setShowAdvanceSearchModal(true)
-                      }}
-                      data-cy="advancedSearchButton"
-                    >
-                      Advanced Search
-                    </OkButton>
-                  </FeaturesSwitch>
-                </div>
               </ClassSelectorLabel>
               <ClassList
                 selectedClasses={classIds}

@@ -9,6 +9,7 @@ import {
   themeColorBlue,
   tagTextColor,
   tagsBgColor,
+  title,
 } from '@edulastic/colors'
 import { DatePicker, Row, Select, Table, Switch } from 'antd'
 import styled from 'styled-components'
@@ -323,7 +324,6 @@ export const AdvancedSearchTagContainer = styled.div`
   align-items: center;
   background-color: ${tagsBgColor};
   border-radius: 2px;
-  opacity: 0.64;
   padding: 4px;
   margin-bottom: 5px;
   letter-spacing: 0.15px;
@@ -331,8 +331,20 @@ export const AdvancedSearchTagContainer = styled.div`
 `
 
 export const AdvancedSearchTag = styled.span`
-  font-size: 8px;
+  font-size: 10px;
   font-weight: bold;
   margin: 0 5px;
   cursor: pointer;
+`
+
+export const FilterButtonWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`
+
+export const FilterText = styled.h1`
+  color: ${title};
+  font-size: 20px;
+  font-weight: bold;
 `

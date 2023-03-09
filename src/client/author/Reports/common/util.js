@@ -17,6 +17,7 @@ import calcMethod from './static/json/calcMethod.json'
 import {
   compareByToPluralName,
   getOrderedQuestions,
+  sortByAvgPerformanceAndLabel,
 } from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
 
 const studentFiltersDefaultValues = [
@@ -287,14 +288,29 @@ export const toggleItem = (items, item) =>
     }
   })
 
-export const convertQAnalysisTableToCSV = (qSummary, dataSource, compareBy) => {
+export const convertQAnalysisTableToCSV = (
+  qSummary,
+  dataSource,
+  compareBy,
+  filter,
+  sortBy
+) => {
   const csv = []
   const csvRawData = []
   let row = []
   // header row
+  const qLabelsToFilter = Object.keys(filter)
   const compareByTitle = compareByToPluralName[compareBy]
   row.push(`${compareByTitle}`)
-  const orderedQuestions = getOrderedQuestions(qSummary)
+  let orderedQuestions = sortByAvgPerformanceAndLabel(
+    getOrderedQuestions(qSummary),
+    sortBy
+  )
+  if (qLabelsToFilter.length) {
+    orderedQuestions = orderedQuestions.filter((item) =>
+      qLabelsToFilter.includes(item.questionLabel)
+    )
+  }
   orderedQuestions.forEach((question) => {
     row.push(
       `${question.questionLabel}: ${question.standards}: ${question.points}`

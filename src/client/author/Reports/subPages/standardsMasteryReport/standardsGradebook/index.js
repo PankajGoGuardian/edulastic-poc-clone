@@ -76,8 +76,6 @@ const StandardsGradebook = ({
   getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
-  location,
-  pageTitle,
   ddfilter,
   userRole,
   sharedReport,
@@ -281,13 +279,18 @@ const StandardsGradebook = ({
 
   // show filters section if data is empty
   useEffect(() => {
-    // @TODO: add a check for table and chart data here
-    if (
-      (settings.requestFilters.termId || settings.requestFilters.reportId) &&
-      (!loadingSummary || !loadingSkillInfo) &&
-      (isEmpty(chartDataWithStandardInfo) || isEmpty(tableData))
-    ) {
-      toggleFilter(null, true)
+    if (settings.requestFilters.termId || settings.requestFilters.reportId) {
+      const showFilter = [
+        loadingSummary,
+        loadingSkillInfo,
+        loadingDetails,
+        chartDataWithStandardInfo.length && tableData.length,
+      ].every((e) => !e)
+      if (showFilter) {
+        toggleFilter(null, true)
+      } else {
+        toggleFilter(null, false)
+      }
     }
   }, [chartDataWithStandardInfo, tableData])
 
@@ -316,6 +319,10 @@ const StandardsGradebook = ({
       setTableFilters((prevState) => ({
         ...prevState,
         compareByKey: _selected.key,
+        sortKey:
+          prevState.sortKey === prevState.compareByKey
+            ? _selected.key
+            : prevState.sortKey,
       }))
     }
     if (comData === 'analyseBy') {
@@ -371,7 +378,7 @@ const StandardsGradebook = ({
     return <DataSizeExceeded />
   }
 
-  if (isEmpty(chartDataWithStandardInfo) || isEmpty(detailsMetricInfo)) {
+  if (!chartDataWithStandardInfo.length || isEmpty(detailsMetricInfo)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}

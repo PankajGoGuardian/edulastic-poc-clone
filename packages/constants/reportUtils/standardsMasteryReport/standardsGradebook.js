@@ -308,7 +308,7 @@ const getTableData = ({ summaryMetricInfo, detailsMetricInfo, scaleInfo }) => {
 }
 
 const getTableColumns = ({
-  summaryMetricInfo,
+  chartDataWithStandardInfo,
   skillInfo,
   scaleInfo,
   compareByKey,
@@ -353,7 +353,7 @@ const getTableColumns = ({
     sorter: () => {},
   }
 
-  const standardColumns = summaryMetricInfo.map(
+  const standardColumns = chartDataWithStandardInfo.map(
     ({ standardId, performance: standardOverallData }) => {
       const standardIdentifier = standardIdToIdentifierMap[standardId]
       const standardOverallPerformance = getAllAnalyseByPerformanceData({

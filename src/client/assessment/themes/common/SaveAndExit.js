@@ -6,10 +6,13 @@ import {
 } from '@edulastic/colors'
 import {
   EduButton,
+  EduIf,
+  EduThen,
   FireBaseService as Fbs,
   FlexContainer,
   isSEB,
 } from '@edulastic/common'
+import ImmersiveReader from '@edulastic/common/src/components/ImmersiveReader/ImmersiveReader'
 import {
   IconAccessibility,
   IconCircleLogout,
@@ -63,10 +66,18 @@ const SaveAndExit = ({
   savingResponse,
   adjustScratchpad,
   isPremiumContentWithoutAccess = false,
+  showImmersiveReader,
+  currentItem,
+  options,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
   const currentVisibilityState = hideData ? 'show' : 'hide'
+  const immersiveReaderTitle = `Question ${currentItem + 1}/${get(
+    options,
+    'length',
+    ''
+  )}`
   return (
     <FlexContainer alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
@@ -92,6 +103,11 @@ const SaveAndExit = ({
           </ScratchpadVisibilityToggler>
         </>
       )}
+      <EduIf condition={!!showImmersiveReader}>
+        <EduThen>
+          <ImmersiveReader title={immersiveReaderTitle} />
+        </EduThen>
+      </EduIf>
       {showZoomBtn && !LCBPreviewModal && (
         <Tooltip placement="bottom" title="Test Options">
           <StyledButton
@@ -173,6 +189,8 @@ SaveAndExit.propTypes = {
   previewPlayer: PropTypes.bool,
   showZoomBtn: PropTypes.bool,
   savingResponse: PropTypes.bool,
+  options: PropTypes.array.isRequired,
+  currentItem: PropTypes.number.isRequired,
 }
 
 SaveAndExit.defaultProps = {
@@ -189,6 +207,7 @@ export default connect(
     isCliUser: get(state, 'user.isCliUser', false),
     hideData: state?.scratchpad?.hideData,
     savingResponse: get(state, 'test.savingResponse', false),
+    showImmersiveReader: state.test?.settings?.showImmersiveReader,
   }),
   {
     adjustScratchpad: adjustScratchpadDimensionsAction,

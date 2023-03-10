@@ -2,7 +2,7 @@
 import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
-import { fileApi, onerosterApi } from '@edulastic/api'
+import { fileApi, onerosterApi, fetchIRtokenAndSubDomain } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'

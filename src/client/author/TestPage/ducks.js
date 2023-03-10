@@ -1910,6 +1910,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     penaltyOnUsingHints,
     allowTeacherRedirect,
     showTtsForPassages,
+    showImmersiveReader: entity.showImmersiveReader,
   }
 
   if (entity.safeBrowser) {

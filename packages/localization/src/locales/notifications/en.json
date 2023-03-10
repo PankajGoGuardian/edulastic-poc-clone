@@ -2144,7 +2144,14 @@
     "description": "You may want to consider using background objects instead to avoid confusion"
   },
   "failedToAutorizeUsingToken": {
-    "message": "Failed to authorize user",
+    "message": "Failed to authorize user"
+  },
+  "immersiveReaderLaunchError": {
+    "message": "Error in launching the Immersive Reader",
+    "description": ""
+  },
+  "immersiveReaderFailedApiError": {
+    "message": "Error in getting the Immersive Reader",
     "description": ""
   }
 }

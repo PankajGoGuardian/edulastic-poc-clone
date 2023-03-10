@@ -206,5 +206,19 @@
     "studentEdit": "Password can’t be edited as the student is part of multiple districts. Please contact support.",
     "singleStudentPasswordReset": "Password can’t be edited as the selected student(s) is part of multiple districts. Please contact support.",
     "multiStudentPasswordReset": "Reset password is not allowed for students belonging to multiple districts."
+  },
+  "accessibilitySettings": {
+    "immersiveReader": {
+      "description": "Enable immersive reader to get full screen reading, increased readability with options like focus mode, font spacing, parts of speech identification, syllabification & translation"
+    },
+    "skipAlert": {
+      "description": "When enabled, a student can not skip a question without confirmation."
+    },
+    "scratchPad": {
+      "description": "When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more."
+    },
+    "magnifier": {
+      "description": "This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen."
+    }
   }
 }

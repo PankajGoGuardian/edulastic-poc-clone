@@ -234,6 +234,10 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     ? test.showTtsForPassages
     : assignmentSettings.showTtsForPassages
 
+  const showImmersiveReader = isTestPreview
+    ? test.showImmersiveReader
+    : assignmentSettings.showImmersiveReader
+
   return {
     testType,
     calcProvider,
@@ -267,6 +271,7 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     showHintsToStudents,
     penaltyOnUsingHints,
     showTtsForPassages,
+    showImmersiveReader,
   }
 }
 

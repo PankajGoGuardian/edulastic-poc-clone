@@ -53,6 +53,7 @@ import {
   getCurrentLanguage,
 } from '../../common/components/LanguageSelector/duck'
 import { StyledPaperWrapper } from '../styled/Widget'
+import ImmersiveReaderWrapper from './ImmersiveReadeWrapper'
 
 const getQuestion = (type) =>
   questionTypeToComponent[type] || questionTypeToComponent.default
@@ -362,7 +363,7 @@ class QuestionWrapper extends Component {
       premiumCollectionWithoutAccess,
       showStacked,
       isExpandedView,
-      t,
+      t: translate,
       ...restProps
     } = this.props
 
@@ -625,36 +626,41 @@ class QuestionWrapper extends Component {
                   maxWidth="100%"
                 >
                   {evaluation === 'pending' && (
-                    <Tooltip title={t('component.pendingEvaluation.tooltip')}>
+                    <Tooltip
+                      title={translate('component.pendingEvaluation.tooltip')}
+                    >
                       <EvaluationMessage>
-                        {t('component.pendingEvaluation.text')}
+                        {translate('component.pendingEvaluation.text')}
                       </EvaluationMessage>
                     </Tooltip>
                   )}
-                  <Question
-                    {...restProps}
-                    t={t}
-                    item={data}
-                    view={view}
-                    evaluation={evaluation}
-                    answerScore={answerScore}
-                    changePreviewTab={changePreviewTab}
-                    qIndex={qIndex}
-                    advancedLink={advancedLink}
-                    advancedAreOpen={this.advancedAreOpen}
-                    cleanSections={this.cleanSections}
-                    fillSections={this.fillSections}
-                    showQuestionNumber={!isPassageOrVideoType && data.qLabel}
-                    flowLayout={flowLayout}
-                    disableResponse={disableResponse}
-                    studentReport={studentReportFeedbackVisible}
-                    isPrintPreview={isPrintPreview}
-                    {...userAnswerProps}
-                    page={page}
-                    setPage={this.setPage}
-                    showAnswerScore={showAnswerScore}
-                    isDefaultTheme={selectedTheme === 'default'}
-                  />
+                  <ImmersiveReaderWrapper>
+                    <Question
+                      {...restProps}
+                      t={translate}
+                      item={data}
+                      view={view}
+                      evaluation={evaluation}
+                      answerScore={answerScore}
+                      changePreviewTab={changePreviewTab}
+                      qIndex={qIndex}
+                      advancedLink={advancedLink}
+                      advancedAreOpen={this.advancedAreOpen}
+                      cleanSections={this.cleanSections}
+                      fillSections={this.fillSections}
+                      showQuestionNumber={!isPassageOrVideoType && data.qLabel}
+                      flowLayout={flowLayout}
+                      disableResponse={disableResponse}
+                      studentReport={studentReportFeedbackVisible}
+                      isPrintPreview={isPrintPreview}
+                      {...userAnswerProps}
+                      page={page}
+                      setPage={this.setPage}
+                      showAnswerScore={showAnswerScore}
+                      isDefaultTheme={selectedTheme === 'default'}
+                    />
+                  </ImmersiveReaderWrapper>
+
                   {showFeedback && !isPrintPreview && (
                     <BottomAction
                       view={view}
@@ -671,7 +677,7 @@ class QuestionWrapper extends Component {
                       fillSections={() => {}}
                       cleanSections={() => {}}
                       studentId={studentId}
-                      t={t}
+                      t={translate}
                       isLCBView={isLCBView}
                       isExpressGrader={isExpressGrader}
                       isQuestionView={isQuestionView}

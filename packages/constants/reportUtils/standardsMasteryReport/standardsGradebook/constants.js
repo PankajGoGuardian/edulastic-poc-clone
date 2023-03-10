@@ -2,6 +2,7 @@ const LEAST_MASTERY_SCORE = 1
 const MASTERY_SCORE_MULTIPLIER = 1
 const CHART_PAGE_SIZE = 10
 const TABLE_PAGE_SIZE = 50
+const CHART_X_AXIS_DATA_KEY = 'standardId'
 
 const comDataForDropDown = {
   COMPARE_BY: 'compareBy',
@@ -153,6 +154,7 @@ module.exports = {
   MASTERY_SCORE_MULTIPLIER,
   CHART_PAGE_SIZE,
   TABLE_PAGE_SIZE,
+  CHART_X_AXIS_DATA_KEY,
   comDataForDropDown,
   sharedDetailsFields,
   filterDetailsFields,

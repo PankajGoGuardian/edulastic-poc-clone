@@ -56,7 +56,7 @@ const {
   analyseByKeys,
   analyseByDropDownData,
   preProcessSummaryMetrics,
-  getChartDataWithStandardInfo,
+  getSummaryMetricInfoWithSkillInfo,
 } = reportUtils.standardsGradebook
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
@@ -168,14 +168,14 @@ const StandardsGradebook = ({
     [ddfilter]
   )
 
-  const chartDataWithStandardInfo = useMemo(
-    () => getChartDataWithStandardInfo(summaryMetricInfo, skillInfo),
+  const summaryMetricInfoWithSkillInfo = useMemo(
+    () => getSummaryMetricInfoWithSkillInfo(summaryMetricInfo, skillInfo),
     [summaryMetricInfo, skillInfo]
   )
 
-  const filteredChartDataWithStandardInfo = isEmpty(selectedStandardBars)
-    ? chartDataWithStandardInfo
-    : chartDataWithStandardInfo.filter(
+  const filteredSummaryMetricInfoWithSkillInfo = isEmpty(selectedStandardBars)
+    ? summaryMetricInfoWithSkillInfo
+    : summaryMetricInfoWithSkillInfo.filter(
         (c) => selectedStandardBars[c.standardId]
       )
 
@@ -256,7 +256,7 @@ const StandardsGradebook = ({
         loadingSummary,
         loadingSkillInfo,
         loadingDetails,
-        chartDataWithStandardInfo.length && detailsMetricInfo.length,
+        summaryMetricInfoWithSkillInfo.length && detailsMetricInfo.length,
       ].every((e) => !e)
       if (showFilter) {
         toggleFilter(null, true)
@@ -264,7 +264,7 @@ const StandardsGradebook = ({
         toggleFilter(null, false)
       }
     }
-  }, [chartDataWithStandardInfo, detailsMetricInfo])
+  }, [summaryMetricInfoWithSkillInfo, detailsMetricInfo])
 
   const onBarClickCB = (key) => {
     const _selectedStandardBars = { ...selectedStandardBars }
@@ -343,7 +343,7 @@ const StandardsGradebook = ({
     return <DataSizeExceeded />
   }
 
-  if (isEmpty(chartDataWithStandardInfo) || isEmpty(detailsMetricInfo)) {
+  if (isEmpty(summaryMetricInfoWithSkillInfo) || isEmpty(detailsMetricInfo)) {
     return (
       <NoDataContainer>
         {settings.requestFilters?.termId ? 'No data available currently.' : ''}
@@ -364,7 +364,7 @@ const StandardsGradebook = ({
           </Row>
           <Row>
             <SignedStackBarChartContainer
-              data={chartDataWithStandardInfo}
+              summaryMetricInfoWithSkillInfo={summaryMetricInfoWithSkillInfo}
               chartFilter={selectedStandardBars}
               scaleInfo={scaleInfo}
               role={userRole}
@@ -435,7 +435,9 @@ const StandardsGradebook = ({
               isSharedReport={isSharedReport}
               isCsvDownloading={isCsvDownloading}
               navigationItems={navigationItems}
-              chartDataWithStandardInfo={filteredChartDataWithStandardInfo}
+              summaryMetricInfoWithSkillInfo={
+                filteredSummaryMetricInfoWithSkillInfo
+              }
               tableFilters={tableFilters}
               setTableFilters={setTableFilters}
               handleOnClickStandard={handleOnClickStandard}

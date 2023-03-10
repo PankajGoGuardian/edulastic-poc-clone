@@ -6,6 +6,7 @@ const {
   MASTERY_SCORE_MULTIPLIER,
   CHART_PAGE_SIZE,
   TABLE_PAGE_SIZE,
+  CHART_X_AXIS_DATA_KEY,
   comDataForDropDown,
   sharedDetailsFields,
   filterDetailsFields,
@@ -46,15 +47,31 @@ const preProcessSummaryMetrics = ({ summaryMetricInfo }) => {
   })
 }
 
-const getChartData = (chartData, scaleInfo) => {
-  if (isEmpty(chartData) || isEmpty(scaleInfo)) {
+const getSummaryMetricInfoWithSkillInfo = (summaryMetricInfo, skillInfo) => {
+  if (isEmpty(summaryMetricInfo) || isEmpty(skillInfo)) {
+    return []
+  }
+  const skillInfoMap = keyBy(
+    skillInfo.filter((item) => !!item[CHART_X_AXIS_DATA_KEY]),
+    CHART_X_AXIS_DATA_KEY
+  )
+  return summaryMetricInfo
+    .filter((item) => skillInfoMap[item._id])
+    .map((item) => ({
+      ...item,
+      ...skillInfoMap[item._id],
+    }))
+}
+
+const getChartData = (summaryMetricInfoWithSkillInfo, scaleInfo) => {
+  if (isEmpty(summaryMetricInfoWithSkillInfo) || isEmpty(scaleInfo)) {
     return []
   }
   const masteryLabelInfo = {}
   for (const item of scaleInfo) {
     masteryLabelInfo[item.masteryLabel] = item.masteryName
   }
-  return chartData.map((item) => {
+  return summaryMetricInfoWithSkillInfo.map((item) => {
     const masteryScorePercentages = {}
     const masteryScoreMap = keyBy(item.mastery, 'score')
     scaleInfo.forEach((masteryScaleItem) => {
@@ -74,27 +91,11 @@ const getChartData = (chartData, scaleInfo) => {
     })
     return {
       ...item,
-      standardId: item._id,
+      [CHART_X_AXIS_DATA_KEY]: item._id,
       ...masteryScorePercentages,
       masteryLabelInfo,
     }
   })
-}
-
-const getChartDataWithStandardInfo = (chartData, skillInfo) => {
-  if (isEmpty(chartData) || isEmpty(skillInfo)) {
-    return []
-  }
-  const skillInfoMap = keyBy(
-    skillInfo.filter((item) => !!item.standardId),
-    'standardId'
-  )
-  return chartData
-    .filter((item) => skillInfoMap[item._id])
-    .map((item) => ({
-      ...item,
-      ...skillInfoMap[item._id],
-    }))
 }
 
 // table transformers
@@ -160,7 +161,7 @@ const getTableData = ({ summaryMetricInfo, detailsMetricInfo, scaleInfo }) => {
 }
 
 const getTableColumns = ({
-  chartDataWithStandardInfo,
+  summaryMetricInfoWithSkillInfo,
   scaleInfo,
   compareByKey,
   analyseByKey,
@@ -197,7 +198,7 @@ const getTableColumns = ({
     render: (data) => data[analyseByKey] || 'N/A',
   }
 
-  const standardColumns = chartDataWithStandardInfo.map(
+  const standardColumns = summaryMetricInfoWithSkillInfo.map(
     ({ standardId, standard, performance: standardOverallData }) => {
       const standardOverallPerformance = getAllAnalyseByPerformanceData({
         ...standardOverallData,
@@ -234,6 +235,7 @@ module.exports = {
   // constants
   CHART_PAGE_SIZE,
   TABLE_PAGE_SIZE,
+  CHART_X_AXIS_DATA_KEY,
   comDataForDropDown,
   sharedDetailsFields,
   filterDetailsFields,
@@ -248,7 +250,7 @@ module.exports = {
   // chart utils
   preProcessSummaryMetrics,
   getChartData,
-  getChartDataWithStandardInfo,
+  getSummaryMetricInfoWithSkillInfo,
   // table utils
   getAllAnalyseByPerformanceData,
   getTableData,

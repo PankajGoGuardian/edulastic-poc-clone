@@ -6,10 +6,10 @@ import { reportUtils } from '@edulastic/constants'
 
 import { SignedStackedBarChart } from '../../../../../common/components/charts/signedStackedBarChart'
 
-const { getChartData } = reportUtils.standardsGradebook
+const { CHART_X_AXIS_DATA_KEY, getChartData } = reportUtils.standardsGradebook
 
 const getXTickText = ({ value }, records) =>
-  records.find((t) => t._id === value).standard || '-'
+  records.find((t) => t[CHART_X_AXIS_DATA_KEY] === value).standard || '-'
 
 const getChartSpecifics = (scaleInfo) => {
   if (!isEmpty(scaleInfo)) {
@@ -27,13 +27,13 @@ const getChartSpecifics = (scaleInfo) => {
     return {
       barsData,
       yAxisLabel: 'Student %',
-      xAxisDataKey: 'standardId',
+      xAxisDataKey: CHART_X_AXIS_DATA_KEY,
     }
   }
   return {
     barsData: [],
     yAxisLabel: 'Student %',
-    xAxisDataKey: 'standardId',
+    xAxisDataKey: CHART_X_AXIS_DATA_KEY,
   }
 }
 
@@ -83,7 +83,7 @@ const barsLabelFormatter = (val) => {
 }
 
 export const SignedStackBarChartContainer = ({
-  data,
+  summaryMetricInfoWithSkillInfo,
   chartFilter,
   scaleInfo = [],
   onBarClickCB,
@@ -91,10 +91,10 @@ export const SignedStackBarChartContainer = ({
   backendPagination,
   setBackendPagination,
 }) => {
-  const chartData = useMemo(() => getChartData(data, scaleInfo), [
-    data,
-    scaleInfo,
-  ])
+  const chartData = useMemo(
+    () => getChartData(summaryMetricInfoWithSkillInfo, scaleInfo),
+    [summaryMetricInfoWithSkillInfo, scaleInfo]
+  )
 
   const chartSpecifics = useMemo(() => getChartSpecifics(scaleInfo), [
     scaleInfo,
@@ -108,7 +108,7 @@ export const SignedStackBarChartContainer = ({
     <SignedStackedBarChart
       data={chartData}
       barsData={chartSpecifics.barsData}
-      xAxisDataKey="standardId"
+      xAxisDataKey={CHART_X_AXIS_DATA_KEY}
       getXTickText={getXTickText}
       getTooltipJSX={getTooltipJSX}
       onBarClickCB={_onBarClickCB}

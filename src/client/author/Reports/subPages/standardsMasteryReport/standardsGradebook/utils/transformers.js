@@ -135,13 +135,13 @@ export const getTableColumnsFE = ({
   scaleInfo,
   isSharedReport,
   navigationItems,
-  chartDataWithStandardInfo,
+  summaryMetricInfoWithSkillInfo,
   tableFilters,
   setTableFilters,
   handleOnClickStandard,
 }) => {
   const tableColumns = getTableColumns({
-    chartDataWithStandardInfo,
+    summaryMetricInfoWithSkillInfo,
     scaleInfo,
     compareByKey: tableFilters.compareByKey,
     analyseByKey: tableFilters.analyseByKey,
@@ -181,7 +181,7 @@ export const getTableColumnsFE = ({
   }
 
   // update standard columns
-  chartDataWithStandardInfo.forEach(
+  summaryMetricInfoWithSkillInfo.forEach(
     ({ standardId, standard, performance: standardOverallData }) => {
       const standardColumn = tableColumns.find((c) => c.key == standardId)
       const standardOverallPerformance = getAllAnalyseByPerformanceData({

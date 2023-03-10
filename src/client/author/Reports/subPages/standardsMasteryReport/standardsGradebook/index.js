@@ -318,6 +318,7 @@ const StandardsGradebook = ({
     if (comData === 'compareBy') {
       setTableFilters((prevState) => ({
         ...prevState,
+        page: 1,
         compareByKey: _selected.key,
         sortKey:
           prevState.sortKey === prevState.compareByKey

@@ -41,8 +41,12 @@ import {
 
 import BackendPagination from '../../../common/components/BackendPagination'
 
-const { getStudentAssignments } = reportUtils.common
+const { getStudentAssignments, sanitiseApiParams } = reportUtils.common
 const {
+  sharedDetailsFields,
+  filterDetailsFields,
+  sharedSummaryFields,
+  filterSummaryFields,
   compareByKeys,
   compareByKeyToNameMap,
   compareByDropDownData: _compareByDropDownData,
@@ -50,8 +54,6 @@ const {
   analyseByDropDownData,
   preProcessSummaryMetrics,
   getChartDataWithStandardInfo,
-  getTableData,
-  getTableColumns,
 } = reportUtils.standardsGradebook
 
 // -----|-----|-----|-----|-----| COMPONENT BEGIN |-----|-----|-----|-----|----- //
@@ -167,15 +169,34 @@ const StandardsGradebook = ({
     [ddfilter]
   )
 
+  const chartDataWithStandardInfo = useMemo(
+    () => getChartDataWithStandardInfo(summaryMetricInfo, skillInfo),
+    [summaryMetricInfo, skillInfo]
+  )
+
+  const filteredChartDataWithStandardInfo = isEmpty(
+    tableFilters.selectedStandardIds
+  )
+    ? chartDataWithStandardInfo
+    : chartDataWithStandardInfo.filter(
+        (c) => tableFilters.selectedStandardIds[c.standard]
+      )
+
   useEffect(() => () => resetStandardsGradebook(), [])
 
   // set initial page filters
   useEffect(() => {
-    // @TODO: should this be handled with different approach ?
-    const q = {
-      ...settings.requestFilters,
-    }
+    const q = sanitiseApiParams(
+      {
+        ...settings.requestFilters,
+      },
+      filterSummaryFields,
+      sharedSummaryFields
+    )
     if (q.termId || q.reportId) {
+      // reset page to trigger summary/details API call
+      setChartPageFilters({ ...chartPageFilters, page: 0 })
+      setTableFilters({ ...tableFilters, page: 0 })
       getSkillInfoRequest(q)
       setChartPageFilters({ ...chartPageFilters, page: 1 })
       return () => toggleFilter(null, false)
@@ -184,23 +205,27 @@ const StandardsGradebook = ({
 
   // get paginated data
   useEffect(() => {
-    // @TODO: handle page filter, settings and dd filters properly to avoid multiple api calls
     const { page: stdPage, pageSize: stdPageSize } = chartPageFilters
-    const q = {
-      ...settings.requestFilters,
-      stdPage,
-      stdPageSize,
-      ...ddRequestFilters,
-    }
+    const q = sanitiseApiParams(
+      {
+        ...settings.requestFilters,
+        stdPage,
+        stdPageSize,
+        ...ddRequestFilters,
+      },
+      filterSummaryFields,
+      sharedSummaryFields
+    )
     if ((q.termId || q.reportId) && stdPage) {
+      // reset page to trigger details API call
+      setTableFilters({ ...tableFilters, page: 0 })
       getSummaryRequest(q)
-      setTableFilters((prevState) => ({ ...prevState, page: 1 }))
+      setTableFilters({ ...tableFilters, page: 1 })
     }
-  }, [settings.requestFilters, ddRequestFilters, chartPageFilters.page])
+  }, [ddRequestFilters, chartPageFilters.page])
 
   // get paginated data
   useEffect(() => {
-    // @TODO: handle page filter, settings and dd filters properly to avoid multiple api calls
     const { page: stdPage, pageSize: stdPageSize } = chartPageFilters
     const {
       compareByKey: compareBy,
@@ -211,70 +236,33 @@ const StandardsGradebook = ({
       sortOrder,
       requireTotalCount,
     } = tableFilters
-    const q = {
-      ...settings.requestFilters,
-      stdPage,
-      stdPageSize,
-      ...ddRequestFilters,
-      rowPage,
-      rowPageSize,
-      compareBy,
-      analyzeBy,
-      sortKey,
-      sortOrder,
-      requireTotalCount,
-    }
-    if ((q.termId || q.reportId) && rowPage) {
+    const q = sanitiseApiParams(
+      {
+        ...settings.requestFilters,
+        stdPage,
+        stdPageSize,
+        ...ddRequestFilters,
+        rowPage,
+        rowPageSize,
+        compareBy,
+        analyzeBy,
+        sortKey,
+        sortOrder,
+        requireTotalCount,
+      },
+      filterDetailsFields,
+      sharedDetailsFields
+    )
+    if ((q.termId || q.reportId) && stdPage && rowPage) {
       getDetailsRequest(q)
     }
   }, [
-    settings.requestFilters,
-    ddRequestFilters,
     chartPageFilters.page,
+    tableFilters.page,
     tableFilters.compareByKey,
     tableFilters.analyseByKey,
-    tableFilters.page,
     tableFilters.sortKey,
     tableFilters.sortOrder,
-    tableFilters.requireTotalCount,
-  ])
-
-  const chartDataWithStandardInfo = useMemo(
-    () => getChartDataWithStandardInfo(summaryMetricInfo, skillInfo),
-    [summaryMetricInfo, skillInfo]
-  )
-
-  const tableData = useMemo(
-    () =>
-      getTableData({
-        summaryMetricInfo,
-        detailsMetricInfo,
-        scaleInfo,
-      }),
-    [summaryMetricInfo, detailsMetricInfo, scaleInfo]
-  )
-
-  const [filteredChartDataWithStandardInfo, tableColumns] = useMemo(() => {
-    const _filteredChartDataWithStandardInfo = isEmpty(
-      tableFilters.selectedStandardIds
-    )
-      ? chartDataWithStandardInfo
-      : chartDataWithStandardInfo.filter(
-          (c) => tableFilters.selectedStandardIds[c.standard]
-        )
-    const _tableColumns = getTableColumns({
-      chartDataWithStandardInfo: _filteredChartDataWithStandardInfo,
-      scaleInfo,
-      compareByKey: tableFilters.compareByKey,
-      analyseByKey: tableFilters.analyseByKey,
-    })
-    return [_filteredChartDataWithStandardInfo, _tableColumns]
-  }, [
-    summaryMetricInfo,
-    scaleInfo,
-    tableFilters.selectedStandardIds,
-    tableFilters.compareByKey,
-    tableFilters.analyseByKey,
   ])
 
   // show filters section if data is empty
@@ -284,7 +272,7 @@ const StandardsGradebook = ({
         loadingSummary,
         loadingSkillInfo,
         loadingDetails,
-        chartDataWithStandardInfo.length && tableData.length,
+        chartDataWithStandardInfo.length && detailsMetricInfo.length,
       ].every((e) => !e)
       if (showFilter) {
         toggleFilter(null, true)
@@ -292,7 +280,7 @@ const StandardsGradebook = ({
         toggleFilter(null, false)
       }
     }
-  }, [chartDataWithStandardInfo, tableData])
+  }, [chartDataWithStandardInfo, detailsMetricInfo])
 
   const onBarClickCB = (key) => {
     const _selectedStandardIds = { ...tableFilters.selectedStandardIds }
@@ -463,16 +451,14 @@ const StandardsGradebook = ({
           </Row>
           <Row>
             <StandardsGradebookTable
-              tableData={tableData}
-              tableColumns={tableColumns}
               filters={settings.requestFilters}
               scaleInfo={scaleInfo}
+              summaryMetricInfo={summaryMetricInfo}
+              detailsMetricInfo={detailsMetricInfo}
               isSharedReport={isSharedReport}
               isCsvDownloading={isCsvDownloading}
               navigationItems={navigationItems}
               chartDataWithStandardInfo={filteredChartDataWithStandardInfo}
-              compareByKey={tableFilters.compareByKey}
-              analyseByKey={tableFilters.analyseByKey}
               tableFilters={tableFilters}
               setTableFilters={setTableFilters}
               handleOnClickStandard={handleOnClickStandard}

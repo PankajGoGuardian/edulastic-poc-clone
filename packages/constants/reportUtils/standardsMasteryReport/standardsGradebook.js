@@ -1,8 +1,45 @@
-const qs = require('qs')
 const { round, orderBy, isEmpty, keyBy } = require('lodash')
 const { percentage, getCsvDataFromTableBE } = require('../common')
 
-// common
+// common utils
+
+const filterFields = [
+  'termId',
+  'assessmentTypes',
+  'assignedBy',
+  'classIds',
+  'courseId',
+  'curriculumId',
+  'domainIds',
+  'grades',
+  'groupIds',
+  'profileId',
+  'schoolIds',
+  'standardGrade',
+  'subjects',
+  'teacherIds',
+  'testIds',
+  'race',
+  'gender',
+  'iepStatus',
+  'frlStatus',
+  'ellStatus',
+  'hispanicEthnicity',
+]
+const summaryExtraFields = ['stdPage', 'stdPageSize']
+const sharedSummaryFields = ['reportId', ...summaryExtraFields]
+const filterSummaryFields = [...filterFields, ...summaryExtraFields]
+const detailsExtraFields = [
+  'compareBy',
+  'analyzeBy',
+  'rowPage',
+  'rowPageSize',
+  'sortOrder',
+  'sortKey',
+  'requireTotalCount',
+]
+const sharedDetailsFields = [...sharedSummaryFields, ...detailsExtraFields]
+const filterDetailsFields = [...filterSummaryFields, ...detailsExtraFields]
 
 const compareByKeys = {
   SCHOOL: 'school',
@@ -106,46 +143,6 @@ const analyseByDropDownData = [
   },
 ]
 
-const filterFields = [
-  'termId',
-  'assessmentTypes',
-  'assignedBy',
-  'classIds',
-  'courseId',
-  'curriculumId',
-  'domainIds',
-  'grades',
-  'groupIds',
-  'profileId',
-  'schoolIds',
-  'standardGrade',
-  'subjects',
-  'teacherIds',
-  'testIds',
-  'race',
-  'gender',
-  'iepStatus',
-  'frlStatus',
-  'ellStatus',
-  'hispanicEthnicity',
-]
-
-const summaryExtraFields = ['stdPage', 'stdPageSize']
-
-const sharedSummaryFields = ['reportId', ...summaryExtraFields]
-const filterSummaryFields = [...filterFields, ...summaryExtraFields]
-const detailsExtraFields = [
-  'compareBy',
-  'analyzeBy',
-  'rowPage',
-  'rowPageSize',
-  'sortOrder',
-  'sortKey',
-  'requireTotalCount',
-]
-const sharedDetailsFields = [...sharedSummaryFields, ...detailsExtraFields]
-const filterDetailsFields = [...filterSummaryFields, ...detailsExtraFields]
-
 const getLeastMasteryLevel = (scaleInfo = []) =>
   orderBy(scaleInfo, 'score', ['desc'])[scaleInfo.length - 1] || {
     masteryLabel: '',
@@ -161,6 +158,8 @@ const getMasteryLevel = (masteryScore, scaleInfo) => {
   return getLeastMasteryLevel(scaleInfo)
 }
 
+// chart utils
+
 const preProcessSummaryMetrics = ({ summaryMetricInfo }) => {
   return summaryMetricInfo.map((standard) => {
     const { totalStudents, performance } = standard
@@ -173,7 +172,40 @@ const preProcessSummaryMetrics = ({ summaryMetricInfo }) => {
   })
 }
 
-// chart transformers
+const getChartData = (chartData, masteryScale) => {
+  if (isEmpty(chartData) || isEmpty(masteryScale)) {
+    return []
+  }
+
+  const masteryLabelInfo = {}
+  for (const item of masteryScale) {
+    masteryLabelInfo[item.masteryLabel] = item.masteryName
+  }
+
+  return chartData.map((item) => {
+    const masteryScorePercentages = {}
+    const masteryScoreMap = keyBy(item.mastery, 'score')
+    masteryScale.forEach((masteryScaleItem) => {
+      const label = masteryScaleItem.masteryLabel
+      const masteryScoreItem = masteryScoreMap[masteryScaleItem.score]
+      if (masteryScoreItem) {
+        const multiplicand = masteryScaleItem.score === 1 ? -1 : 1
+        masteryScorePercentages[label] =
+          multiplicand *
+          percentage(masteryScoreItem.stuCount, item.totalStudents, true)
+      } else {
+        masteryScorePercentages[label] = 0
+      }
+    })
+
+    return {
+      ...item,
+      standardId: item._id,
+      ...masteryScorePercentages,
+      masteryLabelInfo,
+    }
+  })
+}
 
 const getChartDataWithStandardInfo = (chartData, skillInfo) => {
   if (isEmpty(chartData) || isEmpty(skillInfo)) {
@@ -192,39 +224,6 @@ const getChartDataWithStandardInfo = (chartData, skillInfo) => {
 }
 
 // table transformers
-
-const getStandardProgressNav = (navigationItems, standardId, compareByKey) => {
-  const standardsProgressNavLink = navigationItems.find(
-    (n) => n.key === 'standards-progress'
-  )?.location
-  if (standardId && standardsProgressNavLink) {
-    const [
-      standardsProgressNavPrefix,
-      standardsProgressNavQuery,
-    ] = standardsProgressNavLink.split('?')
-    const standardsProgressNavObj = qs.parse(standardsProgressNavQuery, {
-      ignoreQueryPrefix: true,
-    })
-    const gradebookToProgressCompareByKey = {
-      schoolId: 'school',
-      teacherId: 'teacher',
-      studentId: 'student',
-      groupId: 'class',
-    }
-    const _standardsProgressNavObj = { ...standardsProgressNavObj, standardId }
-    const _standardsProgressNavQuery = qs.stringify(_standardsProgressNavObj)
-    return {
-      pathname: standardsProgressNavPrefix,
-      search: `?${_standardsProgressNavQuery}`,
-      state: {
-        standardId,
-        compareByKey:
-          gradebookToProgressCompareByKey[compareByKey] || compareByKey,
-      },
-    }
-  }
-  return null
-}
 
 const getAllAnalyseByPerformanceData = ({
   avgScore,
@@ -299,7 +298,6 @@ const getTableColumns = ({
     width: 200,
     fixed: 'left',
     render: (data) => data.name || '-',
-    sorter: () => {},
   }
   const compareByStudentColumns = [
     {
@@ -323,7 +321,6 @@ const getTableColumns = ({
     dataIndex: 'performance',
     width: 150,
     render: (data) => data[analyseByKey] || 'N/A',
-    sorter: () => {},
   }
 
   const standardColumns = chartDataWithStandardInfo.map(
@@ -339,7 +336,6 @@ const getTableColumns = ({
         dataIndex: standardId,
         align: 'center',
         render: (data) => data[analyseByKey] || 'N/A',
-        sorter: () => {},
       }
     }
   )
@@ -351,7 +347,7 @@ const getTableColumns = ({
   ]
 }
 
-// backend specific transformers
+// backend specific utils
 
 const populateBackendCSV = () => {
   // @todo
@@ -366,22 +362,22 @@ const populateBackendCSV = () => {
 
 module.exports = {
   // common transformers
+  sharedDetailsFields,
+  filterDetailsFields,
+  sharedSummaryFields,
+  filterSummaryFields,
   compareByKeys,
   compareByKeyToNameMap,
   compareByDropDownData,
   analyseByKeys,
   analyseByKeyToNameMap,
   analyseByDropDownData,
-  sharedDetailsFields,
-  filterDetailsFields,
-  sharedSummaryFields,
-  filterSummaryFields,
-  preProcessSummaryMetrics,
   // chart transformers
+  preProcessSummaryMetrics,
+  getChartData,
   getChartDataWithStandardInfo,
   // table transformers
   getAllAnalyseByPerformanceData,
-  getStandardProgressNav,
   getTableData,
   getTableColumns,
   // backend transformers

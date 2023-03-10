@@ -1,51 +1,59 @@
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { withNamespaces } from '@edulastic/localization'
+import { reportUtils } from '@edulastic/constants'
 
 import { GradebookTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
-import { getTableColumns, onCsvConvert } from './utils'
+
+import { getTableColumnsFE, onCsvConvert } from '../../utils/transformers'
+
+const { getTableData } = reportUtils.standardsGradebook
 
 const StandardsGradebookTable = ({
   t,
-  tableData,
-  tableColumns,
   filters,
   scaleInfo,
+  summaryMetricInfo,
+  detailsMetricInfo,
   isSharedReport,
   isCsvDownloading,
   navigationItems,
   chartDataWithStandardInfo,
-  compareByKey,
-  analyseByKey,
   tableFilters,
   setTableFilters,
   handleOnClickStandard,
 }) => {
-  const columns = getTableColumns({
+  const tableData = useMemo(
+    () =>
+      getTableData({
+        summaryMetricInfo,
+        detailsMetricInfo,
+        scaleInfo,
+      }),
+    [summaryMetricInfo, detailsMetricInfo, scaleInfo]
+  )
+  const tableColumns = getTableColumnsFE({
     t,
-    tableColumns,
     filters,
     scaleInfo,
     isSharedReport,
     navigationItems,
     chartDataWithStandardInfo,
-    compareByKey,
-    analyseByKey,
     tableFilters,
     setTableFilters,
     handleOnClickStandard,
   })
   // x-axis scroll length for visible columns
   const scrollX =
-    columns.reduce((count, col) => count + (col.visibleOn ? 0 : 1), 0) * 180 ||
-    '100%'
+    tableColumns.reduce((count, col) => count + (col.visibleOn ? 0 : 1), 0) *
+      180 || '100%'
 
   return (
     <CsvTable
-      columns={columns}
+      columns={tableColumns}
       dataSource={tableData}
-      rowKey={compareByKey}
+      rowKey={tableFilters.compareByKey}
       tableToRender={GradebookTable}
       onCsvConvert={onCsvConvert}
       isCsvDownloading={isCsvDownloading}

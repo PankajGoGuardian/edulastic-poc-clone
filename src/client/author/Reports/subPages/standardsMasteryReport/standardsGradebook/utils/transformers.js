@@ -1,338 +1,27 @@
+import React from 'react'
 import qs from 'qs'
-import { groupBy, keyBy, isEmpty, round, sumBy, orderBy, pick } from 'lodash'
-import { white } from '@edulastic/colors'
-import {
-  getProficiencyBand,
-  DemographicCompareByOptions,
-  percentage,
-} from '../../../../common/util'
+import { get } from 'lodash'
+import { Link } from 'react-router-dom'
+import { Tooltip, Row, Col } from 'antd'
 
-export const idToLabel = {
-  standardId: 'standard',
-  schoolId: 'schoolName',
-  studentId: 'studentName',
-  groupId: 'className',
-  teacherId: 'teacherName',
-  race: 'race',
-  gender: 'gender',
-  frlStatus: 'frlStatus',
-  ellStatus: 'ellStatus',
-  iepStatus: 'iepStatus',
-  hispanicEthnicity: 'hispanicEthnicity',
-}
+import { IconInfo } from '@edulastic/icons'
+import { reportUtils } from '@edulastic/constants'
+import { CustomTableTooltip } from '../../../../common/components/customTableTooltip'
+import { ColoredCell } from '../../../../common/styled'
 
-export const idToName = {
-  standardId: 'Standard',
-  schoolId: 'School',
-  studentId: 'Student',
-  groupId: 'Class',
-  teacherId: 'Teacher',
-  race: 'Race',
-  gender: 'Gender',
-  frlStatus: 'FRL Status',
-  ellStatus: 'ELL Status',
-  iepStatus: 'IEP Status',
-  hispanicEthnicity: 'Hispanic Ethnicity',
-}
+const { downloadCSV } = reportUtils.common
 
-export const analyseByToName = {
-  'score(%)': 'Score (%)',
-  rawScore: 'Raw Score',
-  masteryLevel: 'Mastery Level',
-  masteryScore: 'Mastery Score',
-}
+const {
+  compareByKeys,
+  compareByKeyToNameMap,
+  analyseByKeyToNameMap,
+  getAllAnalyseByPerformanceData,
+  getTableColumns,
+} = reportUtils.standardsGradebook
 
-export const analyseByToKeyToRender = {
-  'score(%)': 'scorePercent',
-  rawScore: 'rawScore',
-  masteryLevel: 'masteryName',
-  masteryScore: 'fm',
-}
+// table utils
 
-export const getMasteryDropDown = (masteryScale) => {
-  const arr = []
-  if (Array.isArray(masteryScale)) {
-    for (const item of masteryScale) {
-      arr.push({
-        key: item.masteryName,
-        title: item.masteryName,
-      })
-    }
-  }
-  arr.unshift({
-    key: 'all',
-    title: 'All',
-  })
-  return arr
-}
-
-export const getFilteredDenormalizedData = (denormalizedData, filters) => {
-  const filteredDenormalizedData = denormalizedData.filter((item) => {
-    const genderFlag = !!(
-      item.gender === filters.gender || filters.gender === 'all'
-    )
-    const frlStatusFlag = !!(
-      item.frlStatus === filters.frlStatus || filters.frlStatus === 'all'
-    )
-    const ellStatusFlag = !!(
-      item.ellStatus === filters.ellStatus || filters.ellStatus === 'all'
-    )
-    const iepStatusFlag = !!(
-      item.iepStatus === filters.iepStatus || filters.iepStatus === 'all'
-    )
-    const raceFlag = !!(item.race === filters.race || filters.race === 'all')
-    const hispanicEthnicityFlag = !!(
-      item.hispanicEthnicity === filters.hispanicEthnicity ||
-      filters.hispanicEthnicity === 'all'
-    )
-    return (
-      genderFlag &&
-      frlStatusFlag &&
-      ellStatusFlag &&
-      iepStatusFlag &&
-      raceFlag &&
-      hispanicEthnicityFlag
-    )
-  })
-
-  return filteredDenormalizedData
-    .sort((a, b) => a.standard.localeCompare(b.standard))
-    .sort((a, b) =>
-      a[idToLabel.studentId]
-        .toLowerCase()
-        .localeCompare(b[idToLabel.studentId].toLowerCase())
-    )
-}
-
-export const getChartData = (chartData, masteryScale) => {
-  if (isEmpty(chartData) || isEmpty(masteryScale)) {
-    return []
-  }
-
-  const masteryLabelInfo = {}
-  for (const item of masteryScale) {
-    masteryLabelInfo[item.masteryLabel] = item.masteryName
-  }
-
-  return chartData.map((item) => {
-    const masteryScorePercentages = {}
-    const masteryScoreMap = keyBy(item.mastery, 'score')
-    masteryScale.forEach((masteryScaleItem) => {
-      const label = masteryScaleItem.masteryLabel
-      const masteryScoreItem = masteryScoreMap[masteryScaleItem.score]
-      if (masteryScoreItem) {
-        const multiplicand = masteryScaleItem.score === 1 ? -1 : 1
-        masteryScorePercentages[label] =
-          multiplicand *
-          percentage(masteryScoreItem.stuCount, item.totalStudents, true)
-      } else {
-        masteryScorePercentages[label] = 0
-      }
-    })
-
-    return {
-      ...item,
-      standardId: item._id,
-      ...masteryScorePercentages,
-      masteryLabelInfo,
-    }
-  })
-}
-
-const getAnalysedData = (groupedData, compareBy, masteryScale) => {
-  const arr = Object.keys(groupedData).map((item) => {
-    const groupedStandardIds = groupBy(groupedData[item], 'standardId')
-
-    // analysed data per standard for item
-    const standardsInfo = Object.keys(groupedStandardIds).map((__item) => {
-      const ___item = groupedStandardIds[__item].reduce(
-        (res, ele) => {
-          const _totalScore = Number(ele.totalScore) || 0
-          const _maxScore = Number(ele.maxScore) || 0
-          const _fm = Number(ele.fm) || 0
-          return {
-            totalMaxScore: res.totalMaxScore + _maxScore,
-            totalTotalScore: res.totalTotalScore + _totalScore,
-            totalScorePercent:
-              res.totalScorePercent + (100 * _totalScore) / (_maxScore || 1),
-            totalFinalMastery: res.totalFinalMastery + _fm,
-          }
-        },
-        {
-          totalMaxScore: 0,
-          totalTotalScore: 0,
-          totalScorePercent: 0,
-          totalFinalMastery: 0,
-        }
-      )
-      const scorePercentUnrounded = groupedStandardIds[__item].length
-        ? ___item.totalScorePercent / groupedStandardIds[__item].length
-        : 0
-      const rawScoreUnrounded = ___item.totalTotalScore || 0
-      const fmUnrounded = groupedStandardIds[__item].length
-        ? ___item.totalFinalMastery / groupedStandardIds[__item].length
-        : 0
-      const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0
-      const { masteryLevel = 'N/A', masteryName = 'N/A', color = white } = fm
-        ? getProficiencyBand(Math.round(fm), masteryScale, 'score')
-        : {}
-      return {
-        ...___item,
-        standardId: __item,
-        standardName: groupedStandardIds[__item][0][idToLabel.standardId],
-        scorePercentUnrounded,
-        scorePercent: Math.round(Number(scorePercentUnrounded)),
-        rawScoreUnrounded,
-        rawScore: Number(rawScoreUnrounded.toFixed(2)),
-        fmUnrounded,
-        fm,
-        masteryLevel,
-        masteryName,
-        color,
-      }
-    })
-
-    // analysed data for item
-    const _item = standardsInfo.reduce(
-      (res, ele) => ({
-        totalMaxScore: res.totalMaxScore + ele.totalMaxScore,
-        totalTotalScore: res.totalTotalScore + ele.totalTotalScore,
-        totalScorePercent: res.totalScorePercent + ele.scorePercent,
-        totalFinalMastery: res.totalFinalMastery + ele.fm,
-      }),
-      {
-        totalMaxScore: 0,
-        totalTotalScore: 0,
-        totalScorePercent: 0,
-        totalFinalMastery: 0,
-      }
-    )
-    const scorePercentUnrounded = standardsInfo.length
-      ? _item.totalScorePercent / standardsInfo.length
-      : 0
-    const rawScoreUnrounded = _item.totalTotalScore || 0
-    const fmUnrounded = standardsInfo.length
-      ? _item.totalFinalMastery / standardsInfo.length
-      : 0
-    const fm = fmUnrounded ? Number(fmUnrounded.toFixed(2)) : 0
-    const { masteryLevel = 'N/A', masteryName = 'N/A', color = white } = fm
-      ? getProficiencyBand(Math.round(fm), masteryScale, 'score')
-      : {}
-    return {
-      ..._item,
-      studentId: compareBy === 'studentId' ? item : _item.studentId,
-      compareBy,
-      compareByLabel: groupedData[item][0][idToLabel[compareBy]],
-      compareByName: idToName[compareBy],
-      scorePercentUnrounded,
-      scorePercent: Math.round(Number(scorePercentUnrounded)),
-      rawScoreUnrounded,
-      rawScore: Number(rawScoreUnrounded.toFixed(2)),
-      fmUnrounded,
-      fm,
-      masteryLevel,
-      masteryName,
-      color,
-      sisId: groupedData[item][0].sisId,
-      studentNumber: groupedData[item][0].studentNumber,
-      standardsInfo,
-      testActivityId: groupedData[item][0].testActivityId,
-      assignmentId: groupedData[item][0].assignmentId,
-      groupId: groupedData[item][0].groupId,
-    }
-  })
-  return arr
-}
-
-const filterByMasteryLevel = (analysedData, masteryLevel) => {
-  const filteredAnalysedData = analysedData.filter((item) => {
-    if (item.masteryName === masteryLevel || masteryLevel === 'all') {
-      return true
-    }
-    return false
-  })
-  return filteredAnalysedData
-}
-
-export const getTableData = (
-  filteredDenormalizedData,
-  masteryScale,
-  compareBy,
-  masteryLevel
-) => {
-  if (
-    !filteredDenormalizedData ||
-    isEmpty(filteredDenormalizedData) ||
-    !masteryScale ||
-    isEmpty(masteryScale)
-  ) {
-    return []
-  }
-  const groupedData = groupBy(
-    filteredDenormalizedData.filter((item) => !!item[compareBy]),
-    compareBy
-  )
-  const analysedData = getAnalysedData(groupedData, compareBy, masteryScale)
-  let filteredData = filterByMasteryLevel(analysedData, masteryLevel)
-  if (DemographicCompareByOptions.includes(compareBy)) {
-    filteredData = orderBy(filteredData, 'compareByLabel', ['asc'])
-  }
-  return filteredData
-}
-
-export const getLeastMasteryLevel = (scaleInfo = []) =>
-  orderBy(scaleInfo, 'score', ['desc'])[scaleInfo.length - 1] || {
-    masteryLabel: '',
-  }
-
-export const getMasteryLevel = (score, scaleInfo) => {
-  for (const obj of scaleInfo) {
-    if (round(score) === obj.score) {
-      return obj || getLeastMasteryLevel(scaleInfo)
-    }
-  }
-  return getLeastMasteryLevel(scaleInfo)
-}
-
-export const groupedByStandard = (
-  metricInfo = [],
-  maxScore,
-  scaleInfo = []
-) => {
-  const standards = groupBy(metricInfo, 'standardId')
-  return Object.keys(standards).map((standardId) => {
-    const standardData = standards[standardId] || []
-    const masteryScore = (
-      sumBy(standardData, 'fm') / standardData.length
-    ).toFixed(2)
-    const score = round(
-      sumBy(
-        standardData,
-        (item) => (100 * (item.totalScore || 0)) / (item.maxScore || 1)
-      ) / standardData.length
-    )
-    const rawScore = `${(sumBy(standardData, 'totalScore') || 0).toFixed(
-      2
-    )} / ${sumBy(standardData, 'maxScore')}`
-    const masteryLevel = getMasteryLevel(masteryScore, scaleInfo).masteryLabel
-
-    return {
-      standardId,
-      masteryScore,
-      diffMasteryScore: maxScore - round(masteryScore, 2),
-      score,
-      rawScore,
-      masteryLevel,
-      records: standardData,
-    }
-  })
-}
-
-export const getStandardProgressNav = (
-  navigationItems,
-  standardId,
-  compareByKey
-) => {
+const getStandardProgressNav = (navigationItems, standardId, compareByKey) => {
   const standardsProgressNavLink = navigationItems.find(
     (n) => n.key === 'standards-progress'
   )?.location
@@ -365,12 +54,213 @@ export const getStandardProgressNav = (
   return null
 }
 
-export const sanitiseApiParams = (
-  payload,
-  filterFields,
-  sharedReportFields
-) => {
-  const { reportId } = payload
-  const fieldsToPick = isEmpty(reportId) ? filterFields : sharedReportFields
-  return pick(payload, fieldsToPick)
+const AvgStandardPerformanceTitle = () => (
+  <div
+    style={{
+      display: 'flex',
+      alignItems: 'center',
+      textAlign: 'center',
+    }}
+  >
+    <span>Avg. Standard Performance</span>
+    <Tooltip title="This is the average performance across all the standards assessed">
+      <IconInfo height={10} />
+    </Tooltip>
+  </div>
+)
+
+const StudentSummaryProfileLink = ({ termId, studentId, studentName }) => (
+  <Link
+    to={`/author/reports/student-profile-summary/student/${studentId}?termId=${termId}`}
+  >
+    {studentName}
+  </Link>
+)
+
+const StandardTitle = ({ standardName, standardOverallPerformance }) => (
+  <>
+    <span>{standardName}</span>
+    <br />
+    <span>{standardOverallPerformance}</span>
+  </>
+)
+
+const getStandardColumnRender = ({
+  t,
+  standardId,
+  standardName,
+  compareByKey,
+  analyseByKey,
+  handleOnClickStandard,
+}) => (data, record) => {
+  const { dimension } = record
+  const dimensionId = dimension._id
+  const dimensionName = dimension.name || t('common.anonymous')
+  let onClick = null
+  const valueToRender = get(data, analyseByKey)
+  if (compareByKey === compareByKeys.STUDENT && valueToRender) {
+    onClick = () =>
+      handleOnClickStandard({
+        standardId,
+        standardName,
+        studentId: dimensionId,
+        studentName: dimensionName,
+      })
+  }
+  const cellColor =
+    analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore'
+      ? get(data, 'color')
+      : ''
+  return (
+    <CustomTableTooltip
+      placement="top"
+      title={
+        <div>
+          <Row type="flex" justify="start">
+            <Col className="custom-table-tooltip-key">
+              {compareByKeyToNameMap[compareByKey]}:{' '}
+            </Col>
+            <Col className="custom-table-tooltip-value">{dimensionName}</Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col className="custom-table-tooltip-key">Standard: </Col>
+            <Col className="custom-table-tooltip-value">{standardName}</Col>
+          </Row>
+          <Row type="flex" justify="start">
+            <Col className="custom-table-tooltip-key">
+              {analyseByKeyToNameMap[analyseByKey]}:{' '}
+            </Col>
+            <Col className="custom-table-tooltip-value">
+              {get(data, analyseByKey) || 'N/A'}
+            </Col>
+          </Row>
+        </div>
+      }
+      getCellContents={() => (
+        <ColoredCell bgColor={cellColor} onClick={onClick}>
+          {get(data, analyseByKey) || 'N/A'}
+        </ColoredCell>
+      )}
+    />
+  )
 }
+
+const getColumnSorter = (tableFilters, setTableFilters, sortKey, sortOrder) => {
+  const sortOrderForFilter = sortOrder === 'ascend' ? 'asc' : 'desc'
+  setTableFilters((_tableFilters) => {
+    if (
+      _tableFilters.sortKey === sortKey &&
+      _tableFilters.sortOrder === sortOrderForFilter
+    )
+      return _tableFilters
+    return {
+      ..._tableFilters,
+      sortKey,
+      sortOrder: sortOrderForFilter,
+    }
+  })
+}
+
+export const getTableColumnsFE = ({
+  t,
+  filters,
+  scaleInfo,
+  isSharedReport,
+  navigationItems,
+  chartDataWithStandardInfo,
+  tableFilters,
+  setTableFilters,
+  handleOnClickStandard,
+}) => {
+  const tableColumns = getTableColumns({
+    chartDataWithStandardInfo,
+    scaleInfo,
+    compareByKey: tableFilters.compareByKey,
+    analyseByKey: tableFilters.analyseByKey,
+  })
+
+  // update compare by column
+  const compareByColumn = tableColumns.find((c) => c.key === 'dimension')
+  compareByColumn.render = (data) => {
+    const name = data.name || t('common.anonymous')
+    return tableFilters.compareByKey === compareByKeys.STUDENT &&
+      !isSharedReport ? (
+      <StudentSummaryProfileLink
+        termId={filters.termId}
+        studentId={data._id}
+        studentName={name}
+      />
+    ) : (
+      name
+    )
+  }
+  compareByColumn.sorter = (a, b, sortOrder) => {
+    getColumnSorter(
+      tableFilters,
+      setTableFilters,
+      tableFilters.compareByKey,
+      sortOrder
+    )
+  }
+
+  // update average standard performance column
+  const avgStandardPerformanceColumn = tableColumns.find(
+    (c) => c.key === 'performance'
+  )
+  avgStandardPerformanceColumn.title = <AvgStandardPerformanceTitle />
+  avgStandardPerformanceColumn.sorter = (a, b, sortOrder) => {
+    getColumnSorter(tableFilters, setTableFilters, 'performance', sortOrder)
+  }
+
+  // update standard columns
+  chartDataWithStandardInfo.forEach(
+    ({ standardId, standard, performance: standardOverallData }) => {
+      const standardColumn = tableColumns.find((c) => c.key == standardId)
+      const standardOverallPerformance = getAllAnalyseByPerformanceData({
+        ...standardOverallData,
+        scaleInfo,
+        useAbbreviation: true,
+      })
+      const standardProgressNav = !isSharedReport
+        ? getStandardProgressNav(
+            navigationItems,
+            standardId,
+            tableFilters.compareByKey
+          )
+        : null
+
+      standardColumn.title = standardProgressNav ? (
+        <Link to={standardProgressNav}>
+          <StandardTitle
+            standardName={standard}
+            standardOverallPerformance={
+              standardOverallPerformance[tableFilters.analyseByKey]
+            }
+          />
+        </Link>
+      ) : (
+        <StandardTitle
+          standardName={standard}
+          standardOverallPerformance={
+            standardOverallPerformance[tableFilters.analyseByKey]
+          }
+        />
+      )
+      standardColumn.render = getStandardColumnRender({
+        t,
+        standardId,
+        standardName: standard,
+        compareByKey: tableFilters.compareByKey,
+        analyseByKey: tableFilters.analyseByKey,
+        handleOnClickStandard,
+      })
+      standardColumn.sorter = (a, b, sortOrder) =>
+        getColumnSorter(tableFilters, setTableFilters, standardId, sortOrder)
+    }
+  )
+
+  return tableColumns
+}
+
+export const onCsvConvert = (data) =>
+  downloadCSV(`Standard Grade Book.csv`, data)

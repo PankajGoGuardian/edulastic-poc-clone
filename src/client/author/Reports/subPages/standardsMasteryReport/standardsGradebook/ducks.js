@@ -4,17 +4,8 @@ import { createAction, createReducer } from 'redux-starter-kit'
 
 import { reportsApi } from '@edulastic/api'
 import { notification } from '@edulastic/common'
-import { reportUtils } from '@edulastic/constants'
 
 import { RESET_ALL_REPORTS } from '../../../common/reportsRedux'
-import { sanitiseApiParams } from './utils/transformers'
-
-const {
-  sharedDetailsFields,
-  filterDetailsFields,
-  sharedSummaryFields,
-  filterSummaryFields,
-} = reportUtils.standardsGradebook
 
 const GET_REPORTS_STANDARDS_GRADEBOOK_SUMMARY_REQUEST =
   '[reports] get reports standards gradebook summary request'
@@ -210,14 +201,9 @@ export const reportStandardsGradebookReducer = createReducer(initialState, {
 
 function* getStandardsGradebookSkillInfoRequest({ payload }) {
   try {
-    const params = sanitiseApiParams(
-      payload,
-      filterSummaryFields,
-      sharedSummaryFields
-    )
     const skillInfo = yield call(
       reportsApi.fetchStandardsGradbookSkillInfo,
-      params
+      payload
     )
     const dataSizeExceeded = skillInfo?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
@@ -244,14 +230,9 @@ function* getStandardsGradebookSkillInfoRequest({ payload }) {
 
 function* getStandardsGradebookSummaryRequest({ payload }) {
   try {
-    const params = sanitiseApiParams(
-      payload,
-      filterSummaryFields,
-      sharedSummaryFields
-    )
     const summary = yield call(
       reportsApi.fetchStandardsGradebookSummary,
-      params
+      payload
     )
     const dataSizeExceeded = summary?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {
@@ -278,14 +259,9 @@ function* getStandardsGradebookSummaryRequest({ payload }) {
 
 function* getStandardsGradebookDetailsRequest({ payload }) {
   try {
-    const params = sanitiseApiParams(
-      payload,
-      filterDetailsFields,
-      sharedDetailsFields
-    )
     const details = yield call(
       reportsApi.fetchStandardsGradebookDetails,
-      params
+      payload
     )
     const dataSizeExceeded = details?.data?.dataSizeExceeded || false
     if (dataSizeExceeded) {

@@ -11,6 +11,8 @@ const {
   indexOf,
   keyBy,
   capitalize,
+  isEmpty,
+  pick,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -444,6 +446,12 @@ const resetStudentFilters = (
   }
 }
 
+const sanitiseApiParams = (payload, filterFields, sharedReportFields) => {
+  const { reportId } = payload
+  const fieldsToPick = isEmpty(reportId) ? filterFields : sharedReportFields
+  return pick(payload, fieldsToPick)
+}
+
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -495,5 +503,6 @@ module.exports = {
   getStudentAssignments,
   formatDate,
   resetStudentFilters,
+  sanitiseApiParams,
   getCsvDataFromTableBE,
 }

@@ -446,10 +446,21 @@ const resetStudentFilters = (
   }
 }
 
-const sanitiseApiParams = (payload, filterFields, sharedReportFields) => {
-  const { reportId } = payload
-  const fieldsToPick = isEmpty(reportId) ? filterFields : sharedReportFields
-  return pick(payload, fieldsToPick)
+const curateApiFiltersQuery = (
+  rawQuery,
+  reportFilterFields,
+  sharedReportFilterFields
+) => {
+  const { reportId } = rawQuery
+  const fieldsToPick = isEmpty(reportId)
+    ? reportFilterFields
+    : sharedReportFilterFields
+  const query = pick(rawQuery, fieldsToPick)
+  const queryStr = Object.keys(query)
+    .sort((k1, k2) => String(k1).localeCompare(String(k2)))
+    .map((k) => `${k}=${query[k]}`)
+    .join('&')
+  return { query, queryStr }
 }
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
@@ -503,6 +514,6 @@ module.exports = {
   getStudentAssignments,
   formatDate,
   resetStudentFilters,
-  sanitiseApiParams,
+  curateApiFiltersQuery,
   getCsvDataFromTableBE,
 }

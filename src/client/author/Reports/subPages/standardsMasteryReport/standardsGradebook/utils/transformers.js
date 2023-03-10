@@ -2,18 +2,23 @@ import React from 'react'
 import qs from 'qs'
 import { get } from 'lodash'
 import { Link } from 'react-router-dom'
-import { Tooltip, Row, Col } from 'antd'
+import { Row, Col } from 'antd'
 
-import { IconInfo } from '@edulastic/icons'
-import { reportUtils } from '@edulastic/constants'
+import { reportUtils, report as reportConstants } from '@edulastic/constants'
+
 import { CustomTableTooltip } from '../../../../common/components/customTableTooltip'
 import { ColoredCell } from '../../../../common/styled'
+import StudentSummaryProfileLink from '../components/table/StudentSummaryProfileLink'
+import AvgStandardPerformanceTitle from '../components/table/AvgStandardPerformanceTitle'
+import StandardTitle from '../components/table/StandardTitle'
 
 const { downloadCSV } = reportUtils.common
+const { reportNavType } = reportConstants
 
 const {
   compareByKeys,
   compareByKeyToNameMap,
+  analyseByKeys,
   analyseByKeyToNameMap,
   getAllAnalyseByPerformanceData,
   getTableColumns,
@@ -21,9 +26,9 @@ const {
 
 // table utils
 
-const getStandardProgressNav = (navigationItems, standardId, compareByKey) => {
+const getStandardsProgressNav = (navigationItems, standardId, compareByKey) => {
   const standardsProgressNavLink = navigationItems.find(
-    (n) => n.key === 'standards-progress'
+    (n) => n.key === reportNavType.STANDARDS_PROGRESS
   )?.location
   if (standardId && standardsProgressNavLink) {
     const [
@@ -33,12 +38,6 @@ const getStandardProgressNav = (navigationItems, standardId, compareByKey) => {
     const standardsProgressNavObj = qs.parse(standardsProgressNavQuery, {
       ignoreQueryPrefix: true,
     })
-    const gradebookToProgressCompareByKey = {
-      schoolId: 'school',
-      teacherId: 'teacher',
-      studentId: 'student',
-      groupId: 'class',
-    }
     const _standardsProgressNavObj = { ...standardsProgressNavObj, standardId }
     const _standardsProgressNavQuery = qs.stringify(_standardsProgressNavObj)
     return {
@@ -46,44 +45,12 @@ const getStandardProgressNav = (navigationItems, standardId, compareByKey) => {
       search: `?${_standardsProgressNavQuery}`,
       state: {
         standardId,
-        compareByKey:
-          gradebookToProgressCompareByKey[compareByKey] || compareByKey,
+        compareByKey,
       },
     }
   }
   return null
 }
-
-const AvgStandardPerformanceTitle = () => (
-  <div
-    style={{
-      display: 'flex',
-      alignItems: 'center',
-      textAlign: 'center',
-    }}
-  >
-    <span>Avg. Standard Performance</span>
-    <Tooltip title="This is the average performance across all the standards assessed">
-      <IconInfo height={10} />
-    </Tooltip>
-  </div>
-)
-
-const StudentSummaryProfileLink = ({ termId, studentId, studentName }) => (
-  <Link
-    to={`/author/reports/student-profile-summary/student/${studentId}?termId=${termId}`}
-  >
-    {studentName}
-  </Link>
-)
-
-const StandardTitle = ({ standardName, standardOverallPerformance }) => (
-  <>
-    <span>{standardName}</span>
-    <br />
-    <span>{standardOverallPerformance}</span>
-  </>
-)
 
 const getStandardColumnRender = ({
   t,
@@ -108,7 +75,8 @@ const getStandardColumnRender = ({
       })
   }
   const cellColor =
-    analyseByKey === 'masteryLevel' || analyseByKey === 'masteryScore'
+    analyseByKey === analyseByKeys.MASTERY_SCORE ||
+    analyseByKey === analyseByKeys.MASTERY_LEVEL
       ? get(data, 'color')
       : ''
   return (
@@ -221,16 +189,16 @@ export const getTableColumnsFE = ({
         scaleInfo,
         useAbbreviation: true,
       })
-      const standardProgressNav = !isSharedReport
-        ? getStandardProgressNav(
+      const standardsProgressNav = !isSharedReport
+        ? getStandardsProgressNav(
             navigationItems,
             standardId,
             tableFilters.compareByKey
           )
         : null
 
-      standardColumn.title = standardProgressNav ? (
-        <Link to={standardProgressNav}>
+      standardColumn.title = standardsProgressNav ? (
+        <Link to={standardsProgressNav}>
           <StandardTitle
             standardName={standard}
             standardOverallPerformance={

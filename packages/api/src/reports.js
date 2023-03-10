@@ -102,13 +102,6 @@ const fetchStandardsProgressReport = (params) =>
     params,
   })
 
-const fetchStandardsGradebookReport = (params) =>
-  api.callApi({
-    useSlowApi: true,
-    url: `/report/standards-gradebook`,
-    params,
-  })
-
 const fetchStandardsGradbookSkillInfo = (params) =>
   api.callApi({
     useSlowApi: true,
@@ -346,7 +339,6 @@ export default {
   fetchMARFilterData,
   fetchSPRFilterData,
   fetchStandardsProgressReport,
-  fetchStandardsGradebookReport,
   fetchStandardsGradbookSkillInfo,
   fetchStandardsGradebookSummary,
   fetchStandardsGradebookDetails,

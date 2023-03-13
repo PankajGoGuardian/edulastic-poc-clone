@@ -18,6 +18,7 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import * as Sentry from '@sentry/browser'
 import { segmentApi } from '@edulastic/api'
+import { AUDIO_RESPONSE } from '@edulastic/constants/const/questionType'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getPlaylistSelector,
@@ -58,6 +59,8 @@ import {
   updateTestSettingRequestAction,
   getIsOverrideFreezeSelector,
   setTestSettingsListAction,
+  getQuestionTypesInTestSelector,
+  getIsAudioResponseQuestionEnabled,
 } from '../../../TestPage/ducks'
 import {
   clearAssignmentSettingsAction,
@@ -356,7 +359,23 @@ class AssignTest extends React.Component {
       isAssigning,
       assignmentSettings: assignment,
       location,
+      questionTypesInTest,
+      enableAudioResponseQuestion,
     } = this.props
+
+    const containsAudioResponseTypeQuestion = questionTypesInTest.includes(
+      AUDIO_RESPONSE
+    )
+    const audioResponseQuestionDisabledByDA = !enableAudioResponseQuestion
+    const cannotAssignAudioResponseQuestion = [
+      containsAudioResponseTypeQuestion,
+      audioResponseQuestionDisabledByDA,
+    ].every((o) => !!o)
+
+    if (cannotAssignAudioResponseQuestion) {
+      notification({ messageKey: 'testContainsAudioResponseTypeQuestion' })
+      return
+    }
     const source = location?.state?.assessmentAssignedFrom
     let updatedAssignment = { ...assignment }
     const { changeDateSelection, selectedDateOption } = this.state
@@ -1010,6 +1029,8 @@ const enhance = compose(
       searchTerms: getSearchTermsFilterSelector(state),
       hasPenaltyOnUsingHints: getPenaltyOnUsingHintsSelector(state),
       isAdvancedSearchLoading: isAdvancedSearchLoadingSelector(state),
+      questionTypesInTest: getQuestionTypesInTestSelector(state),
+      enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
     }),
     {
       loadClassList: receiveClassListAction,

@@ -646,6 +646,11 @@ export const getTestSelector = createSelector(
   (state) => state.entity
 )
 
+export const getQuestionTypesInTestSelector = createSelector(
+  getTestSelector,
+  (state) => state?.metadata?.questionTypes || []
+)
+
 export const getPlaylistSelector = createSelector(
   playlistStateSelector,
   (state) => state.entity

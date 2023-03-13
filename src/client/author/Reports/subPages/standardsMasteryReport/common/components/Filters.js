@@ -54,7 +54,7 @@ import {
   getSMRRubricsSelector,
 } from '../filterDataDucks'
 import { getReportsStandardsPerformanceSummary } from '../../standardsPerformance/ducks'
-import { getReportsStandardsGradebook } from '../../standardsGradebook/ducks'
+import { getStandardsGradebookSkillInfo } from '../../standardsGradebook/ducks'
 import { getReportsStandardsProgress } from '../../standardsProgress/ducks'
 
 import staticDropDownData from '../static/json/staticDropDownData.json'
@@ -95,7 +95,7 @@ const StandardsMasteryReportFilters = ({
   setFirstLoad,
   reportId,
   standardsPerformanceSummary,
-  standardsGradebook,
+  standardsGradebookSkillInfo,
   standardsProgress,
   loc,
   fetchUpdateTagsData,
@@ -150,7 +150,7 @@ const StandardsMasteryReportFilters = ({
   // curate domainsData from page data
   const skillInfoOptions = {
     [reportNavType.STANDARDS_PERFORMANCE_SUMMARY]: standardsPerformanceSummary,
-    [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebook,
+    [reportNavType.STANDARDS_GRADEBOOK]: standardsGradebookSkillInfo,
     [reportNavType.STANDARDS_PROGRESS]: standardsProgress,
   }
   const skillInfo = get(skillInfoOptions[loc], 'data.result.skillInfo', [])
@@ -1034,7 +1034,7 @@ const enhance = compose(
       interestedCurriculums: getInterestedCurriculumsSelector(state),
       prevStandardsFilters: getPrevStandardsFiltersSelector(state),
       standardsPerformanceSummary: getReportsStandardsPerformanceSummary(state),
-      standardsGradebook: getReportsStandardsGradebook(state),
+      standardsGradebookSkillInfo: getStandardsGradebookSkillInfo(state),
       standardsProgress: getReportsStandardsProgress(state),
       institutionIds: currentDistrictInstitutionIds(state),
       isPremium: isPremiumUserSelector(state),

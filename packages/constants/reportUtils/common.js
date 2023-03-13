@@ -11,6 +11,8 @@ const {
   indexOf,
   keyBy,
   capitalize,
+  isEmpty,
+  pick,
 } = require('lodash')
 const { produce: next } = require('immer')
 const moment = require('moment')
@@ -18,6 +20,21 @@ const moment = require('moment')
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
+
+const TABLE_SORT_ORDER_TYPES = {
+  ASCEND: 'ascend',
+  DESCEND: 'descend',
+}
+
+const DB_SORT_ORDER_TYPES = {
+  ASCEND: 'asc',
+  DESCEND: 'desc',
+}
+
+const tableToDBSortOrderMap = {
+  [TABLE_SORT_ORDER_TYPES.ASCEND]: DB_SORT_ORDER_TYPES.ASCEND,
+  [TABLE_SORT_ORDER_TYPES.DESCEND]: DB_SORT_ORDER_TYPES.DESCEND,
+}
 
 const calcMethod = {
   MOST_RECENT: 'Most Recent',
@@ -444,6 +461,25 @@ const resetStudentFilters = (
   }
 }
 
+const curateApiFiltersQuery = (
+  rawQuery,
+  reportFilterFields,
+  sharedReportFilterFields
+) => {
+  const { reportId } = rawQuery
+  const fieldsToPick = isEmpty(reportId)
+    ? reportFilterFields
+    : sharedReportFilterFields
+  const query = pick(rawQuery, fieldsToPick)
+  const queryStr = Object.keys(query)
+    .sort((fieldKey1, fieldKey2) =>
+      String(fieldKey1).localeCompare(String(fieldKey2))
+    )
+    .map((fieldKey) => `${fieldKey}=${query[fieldKey]}`)
+    .join('&')
+  return { query, queryStr }
+}
+
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
@@ -467,6 +503,9 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
+  DB_SORT_ORDER_TYPES,
+  TABLE_SORT_ORDER_TYPES,
+  tableToDBSortOrderMap,
   DemographicCompareByOptions,
   percentage,
   roundedPercentage,
@@ -495,5 +534,6 @@ module.exports = {
   getStudentAssignments,
   formatDate,
   resetStudentFilters,
+  curateApiFiltersQuery,
   getCsvDataFromTableBE,
 }

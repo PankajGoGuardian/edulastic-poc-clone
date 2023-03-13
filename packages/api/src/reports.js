@@ -156,12 +156,23 @@ const fetchStandardMasteryBrowseStandards = ({
   })
 }
 
-const fetchQuestionAnalysisReport = (params) =>
-  api.callApi({
-    useSlowApi: true,
-    url: `/report/question-analysis`,
-    params: { ...params.requestFilters, testId: params.testId },
-  })
+const fetchQuestionAnalysisSummaryReport = ({ requestFilters, testId }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/report/question-analysis/summary`,
+      params: { ...requestFilters, testId },
+    })
+    .then((response) => response.data.result)
+
+const fetchQuestionAnalysisPerformanceReport = ({ requestFilters, testId }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `report/question-analysis/details`,
+      params: { ...requestFilters, testId },
+    })
+    .then((response) => response.data.result)
 
 const fetchMARFilterData = (params) =>
   api.callApi({
@@ -345,7 +356,8 @@ export default {
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
-  fetchQuestionAnalysisReport,
+  fetchQuestionAnalysisSummaryReport,
+  fetchQuestionAnalysisPerformanceReport,
   fetchPeerProgressAnalysisReport,
   fetchStudentProgressReport,
   fetchPerformanceOverTimeReport,

@@ -1,241 +1,91 @@
-import { groupBy, keyBy, orderBy } from 'lodash'
+import { groupBy, orderBy } from 'lodash'
 import { getHSLFromRange1 } from '../../../../common/util'
-import { getFormattedTimeInMins } from './helpers'
 
-const sortByAvgPerformanceAndLabel = (arr) =>
-  orderBy(arr, [
-    'avgPerformance',
-    (item) => Number((item.qLabel || '').substring(1)),
-  ])
+export const sortByAvgPerformanceAndLabel = (arr, sortKey) =>
+  orderBy(
+    arr,
+    sortKey === 'qLabel'
+      ? [(item) => Number((item.qLabel || '').substring(1))]
+      : [sortKey, (item) => Number((item.qLabel || '').substring(1))],
+    ['asc']
+  )
 
-export const getChartData = (rawData = []) => {
-  const groupedData = groupBy(rawData, 'questionId')
-  const arr = Object.keys(groupedData).map((item) => {
-    const _item = groupedData[item].reduce(
-      (total, currentValue) => {
-        const {
-          totalTotalMaxScore = 0,
-          totalTotalScore = 0,
-          totalTimeSpent = 0,
-        } = total
-        const {
-          totalMaxScore = 0,
-          totalScore = 0,
-          timeSpent = 0,
-        } = currentValue
-        return {
-          totalTotalScore: totalTotalScore + totalScore,
-          totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-          totalTimeSpent: totalTimeSpent + parseInt(timeSpent),
-        }
-      },
-      { totalTotalMaxScore: 0, totalTotalScore: 0, totalTimeSpent: 0 }
-    )
+export const getOrderedQuestions = (questions) => {
+  return questions.sort((a, b) => {
+    return a.questionLabel.localeCompare(b.questionLabel, undefined, {
+      numeric: true,
+      sensitivity: 'base',
+    })
+  })
+}
 
-    let avgPerformance =
-      (_item.totalTotalScore / _item.totalTotalMaxScore) * 100
-    avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0
-    const avgIncorrect = Math.round(100 - avgPerformance)
-    const districtAvg = Math.round(groupedData[item][0].districtAvgPerf)
-
-    const avgTime = _item.totalTimeSpent / groupedData[item].length
-    const avgTimeSecs = Math.floor(avgTime / 1000)
-    const avgTimeMins = getFormattedTimeInMins(avgTime)
-
+export const getChartData = (qSummary = [], sortKey) => {
+  const percent_100 = 100
+  const milliseconds_1000 = 1000
+  const arr = qSummary.map((item) => {
+    const {
+      avgPerformance: _avgPerformance,
+      questionLabel: qLabel,
+      avgTimeSpent: avgTimeMins,
+      districtAvgPerf,
+      ...rest
+    } = item
+    const avgPerformance = !Number.isNaN(_avgPerformance)
+      ? Math.round(_avgPerformance)
+      : 0
+    const avgIncorrect = Math.round(percent_100 - avgPerformance)
+    const districtAvg = Math.round(districtAvgPerf)
+    const avgTimeSecs = Math.floor(avgTimeMins / milliseconds_1000)
     return {
-      ...groupedData[item][0],
+      ...rest,
+      qLabel,
       avgPerformance,
       avgIncorrect,
-      avgTime: Math.floor(avgTime),
+      avgTime: avgTimeMins,
       avgTimeSecs,
       avgTimeMins,
       districtAvg,
       fill: getHSLFromRange1(avgPerformance),
     }
   })
-
-  return sortByAvgPerformanceAndLabel(arr)
+  return sortByAvgPerformanceAndLabel(arr, sortKey)
 }
 
-export const getTableData = ({ metaInfo = [], metricInfo = [] }) => {
-  const metaInfoGroupIdMap = keyBy(metaInfo, 'groupId')
-  const normalizedMetricInfo = metricInfo.map((item) => ({
-    ...item,
-    ...metaInfoGroupIdMap[item.groupId],
-  }))
-
-  const groupedMetricInfo = groupBy(normalizedMetricInfo, 'questionId')
-  const groupedMetricInfoKeys = Object.keys(groupedMetricInfo)
-  let groupedBySchoolKeys = []
-  let groupedByTeacherKeys = []
-  let groupedByClassKeys = []
-  if (groupedMetricInfoKeys.length) {
-    const groupedItem = groupedMetricInfo[groupedMetricInfoKeys[0]]
-    groupedBySchoolKeys = Object.keys(groupBy(groupedItem, 'schoolId'))
-    groupedByTeacherKeys = Object.keys(groupBy(groupedItem, 'teacherId'))
-    groupedByClassKeys = Object.keys(groupBy(groupedItem, 'groupId'))
-  }
-
-  const arr = Object.keys(groupedMetricInfo).map((item) => {
-    const groupedItem = groupedMetricInfo[item]
-    const districtAvg = Math.round(groupedItem[0].districtAvgPerf)
-
-    // -----|-----|-----|-----| SCHOOL BEGIN |-----|-----|-----|----- //
-    const groupedBySchool = groupBy(groupedItem, 'schoolId')
-    const comparedBySchool = groupedBySchoolKeys.map((_item) => {
-      const __item =
-        groupedBySchool?.[_item]?.reduce(
-          (total, currentValue) => {
-            const {
-              totalTotalMaxScore = 0,
-              totalTotalScore = 0,
-              totalTimeSpent = 0,
-            } = total
-            const {
-              totalMaxScore = 0,
-              totalScore = 0,
-              timeSpent = 0,
-            } = currentValue
-            return {
-              totalTotalScore: totalTotalScore + totalScore,
-              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-              totalTimeSpent: totalTimeSpent + parseInt(timeSpent),
-            }
-          },
-          {
-            totalTotalMaxScore: 0,
-            totalTotalScore: 0,
-            totalTimeSpent: 0,
-          }
-        ) || {}
-      let avgPerformance =
-        (__item.totalTotalScore / __item.totalTotalMaxScore) * 100
-      avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0
-      return {
-        ...groupedBySchool?.[_item]?.[0],
-        ...__item,
-        avgPerformance,
-      }
-    })
-
-    // -----|-----|-----|-----| SCHOOL ENDED |-----|-----|-----|----- //
-
-    // -----|-----|-----|-----| TEACHER BEGIN |-----|-----|-----|----- //
-    const groupedByTeacher = groupBy(groupedItem, 'teacherId')
-    const comparedByTeacher = groupedByTeacherKeys.map((_item) => {
-      const __item =
-        groupedByTeacher?.[_item]?.reduce(
-          (total, currentValue) => {
-            const {
-              totalTotalMaxScore = 0,
-              totalTotalScore = 0,
-              totalTimeSpent = 0,
-            } = total
-            const {
-              totalMaxScore = 0,
-              totalScore = 0,
-              timeSpent = 0,
-            } = currentValue
-            return {
-              totalTotalScore: totalTotalScore + totalScore,
-              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-              totalTimeSpent: totalTimeSpent + parseInt(timeSpent),
-            }
-          },
-          {
-            totalTotalMaxScore: 0,
-            totalTotalScore: 0,
-            totalTimeSpent: 0,
-          }
-        ) || {}
-      let avgPerformance =
-        (__item.totalTotalScore / __item.totalTotalMaxScore) * 100
-      avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0
-      return {
-        ...groupedByTeacher?.[_item]?.[0],
-        ...__item,
-        avgPerformance,
-      }
-    })
-    // -----|-----|-----|-----| TEACHER ENDED |-----|-----|-----|----- //
-
-    // -----|-----|-----|-----| CLASS ENDED |-----|-----|-----|----- //
-    const groupedByClass = groupBy(groupedItem, 'groupId')
-    const comparedByClass = groupedByClassKeys.map((_item) => {
-      const __item =
-        groupedByClass?.[_item]?.reduce(
-          (total, currentValue) => {
-            const {
-              totalTotalMaxScore = 0,
-              totalTotalScore = 0,
-              totalTimeSpent = 0,
-            } = total
-            const {
-              totalMaxScore = 0,
-              totalScore = 0,
-              timeSpent = 0,
-            } = currentValue
-            return {
-              totalTotalScore: totalTotalScore + totalScore,
-              totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-              totalTimeSpent: totalTimeSpent + parseInt(timeSpent),
-            }
-          },
-          {
-            totalTotalMaxScore: 0,
-            totalTotalScore: 0,
-            totalTimeSpent: 0,
-          }
-        ) || {}
-      let avgPerformance =
-        (__item.totalTotalScore / __item.totalTotalMaxScore) * 100
-      avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0
-      return {
-        ...groupedByClass?.[_item]?.[0],
-        ...__item,
-        avgPerformance,
-      }
-    })
-    // -----|-----|-----|-----| CLASS ENDED |-----|-----|-----|----- //
-
-    const reduced = groupedItem.reduce(
-      (total, currentValue) => {
-        const {
-          totalTotalMaxScore = 0,
-          totalTotalScore = 0,
-          totalTimeSpent = 0,
-        } = total
-        const {
-          totalMaxScore = 0,
-          totalScore = 0,
-          timeSpent = 0,
-        } = currentValue
-        return {
-          totalTotalScore: totalTotalScore + totalScore,
-          totalTotalMaxScore: totalTotalMaxScore + totalMaxScore,
-          totalTimeSpent: totalTimeSpent + parseInt(timeSpent),
-        }
-      },
-      {
-        totalTotalMaxScore: 0,
-        totalTotalScore: 0,
-        totalTimeSpent: 0,
-      }
-    )
-
-    let avgPerformance =
-      (reduced.totalTotalScore / reduced.totalTotalMaxScore) * 100
-    avgPerformance = !isNaN(avgPerformance) ? Math.round(avgPerformance) : 0
-
-    return {
-      ...groupedMetricInfo[item][0],
-      avgPerformance,
-      districtAvg,
-      comparedBySchool,
-      comparedByTeacher,
-      comparedByClass,
-    }
+const createRows = (districtAverage, groupDetailsByDomainId) => (item) => {
+  const groupedItem = groupDetailsByDomainId[item]
+  const [firstItem] = groupedItem
+  const averageScoreByQId = {}
+  const scorePercentByQId = {}
+  groupedItem.forEach(({ questionId, dimensionPercentage, scorePercent }) => {
+    averageScoreByQId[questionId] = Math.round(dimensionPercentage)
+    scorePercentByQId[questionId] = Math.round(scorePercent)
   })
+  const { dimensionName: dimension } = firstItem
+  return {
+    key: item,
+    dimension,
+    averageScoreByQId,
+    scorePercentByQId,
+    districtAverage,
+  }
+}
 
-  return sortByAvgPerformanceAndLabel(arr)
+export const getTableData = (qSummary, performanceByDimension, iteratee) => {
+  const groupDetailsByDomainId = groupBy(
+    performanceByDimension.details,
+    iteratee
+  )
+  const orderedQuestions = getOrderedQuestions(qSummary)
+  const districtAverage = orderedQuestions.reduce(
+    (acc, { questionId, districtAvgPerf }) => {
+      acc[questionId] = Math.round(districtAvgPerf)
+      return acc
+    },
+    {}
+  )
+  const result = Object.keys(groupDetailsByDomainId).map(
+    createRows(districtAverage, groupDetailsByDomainId)
+  )
+
+  return result
 }

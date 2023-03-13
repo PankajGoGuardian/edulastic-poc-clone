@@ -24,5 +24,14 @@ export default function SubTypeTag({ children }) {
     partial_premium: lightBlue,
     premium: '#FFC400',
   }
-  return <Tag color={color[children]}>{children}</Tag>
+  return (
+    <Tag
+      color={color[children]}
+      overflow="hidden"
+      textOverflow="ellipsis"
+      style={{ whiteSpace: 'normal' }}
+    >
+      {children}
+    </Tag>
+  )
 }

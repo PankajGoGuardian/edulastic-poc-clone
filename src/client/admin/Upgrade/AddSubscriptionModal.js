@@ -59,9 +59,6 @@ const AddSubscriptionModal = ({
     () =>
       products.forEach((x) => {
         let initialFieldValue = 0
-        if (x.type === SUBSCRIPTION_DEFINITION_TYPES.PREMIUM) {
-          initialFieldValue = 1
-        }
         handleFieldChange(x.type)(initialFieldValue)
       }),
     [products]
@@ -261,8 +258,12 @@ const AddSubscriptionModal = ({
                 style={{ width: '100%' }}
                 placeholder={`${product.name.toLowerCase()} license`}
                 value={fieldData[product.type]}
-                min={product.type === 'PREMIUM' ? 1 : 0}
-                max={product.type === 'PREMIUM' ? Infinity : fieldData.PREMIUM}
+                min={0}
+                max={
+                  product.type === SUBSCRIPTION_DEFINITION_TYPES.PREMIUM
+                    ? Infinity
+                    : fieldData.PREMIUM
+                }
                 onChange={(value) => handleFieldChange(product.type)(value)}
                 data-cy={product.type}
                 onKeyDown={handleKeyPress}

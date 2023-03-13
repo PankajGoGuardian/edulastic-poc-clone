@@ -836,3 +836,13 @@ export const SectionLabelWrapper = styled.div`
   margin: ${(p) => p.$margin || '32px 0'};
   align-items: center;
 `
+
+export const SectionDescriptionWrapper = styled.div`
+  display: flex;
+  align-items: center;
+  margin: ${(p) => p.$margin || '0px'};
+  p {
+    font-size: 12px;
+    color: ${fadedBlack};
+  }
+`

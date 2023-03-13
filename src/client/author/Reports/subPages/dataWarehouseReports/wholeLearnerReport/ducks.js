@@ -205,7 +205,7 @@ function* fetchReportDataRequestSaga({ payload }) {
     yield put(actions.fetchReportDataRequestSuccess({ reportData }))
   } catch (error) {
     const msg =
-      'Error fetching whole learner report data. Please try again after a few minutes.'
+      'Error fetching whole learner data. Please try again after a few minutes.'
     notification({ type: 'error', msg })
     yield put(actions.fetchReportDataRequestError({ error: msg }))
   }

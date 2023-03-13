@@ -149,7 +149,7 @@ function* fetchMARChartDataRequestSaga({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error fetching multiple assessment report data. Please try again after a few minutes.'
+      'Error fetching performance trends data. Please try again after a few minutes.'
     notification({ msg })
     yield put(actions.fetchDWMARChartDataRequestError({ error: msg }))
   }
@@ -174,7 +174,7 @@ function* fetchMARTableDataRequestSaga({ payload }) {
   } catch (error) {
     console.log('err', error.stack)
     const msg =
-      'Error fetching multiple assessment report data. Please try again after a few minutes.'
+      'Error fetching performance trends data. Please try again after a few minutes.'
     notification({ msg })
     yield put(actions.fetchDWMARTableDataRequestError({ error: msg }))
   }

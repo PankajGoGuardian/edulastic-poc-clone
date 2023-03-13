@@ -174,7 +174,7 @@ const AssessmentsTable = ({
   }, [isSharedReport, claimNames])
   return (
     <TableContainer>
-      <SectionLabel>Assessment Performance Details</SectionLabel>
+      <SectionLabel>Performance deep-dive across Assessments</SectionLabel>
       <CsvTable
         dataSource={tableData}
         columns={tableColumns}

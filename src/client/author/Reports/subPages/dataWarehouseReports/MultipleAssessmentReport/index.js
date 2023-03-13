@@ -13,6 +13,8 @@ import { SubHeader } from '../../../common/components/Header'
 import { NoDataContainer, ReportContainer } from '../../../common/styled'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
+import SectionLabel from '../../../common/components/SectionLabel'
+import SectionDescription from '../../../common/components/SectionDescription'
 import MultipleAssessmentReportFilters from './components/Filters'
 import Chart from './components/Chart'
 import Table from './components/Table'
@@ -39,7 +41,7 @@ import { getCompareByOptions, getChartData, getTableData } from './utils'
 const { downloadCSV } = reportUtils.common
 
 const onCsvConvert = (data) =>
-  downloadCSV(`Data Warehouse - Multiple Assessment Report.csv`, data)
+  downloadCSV(`Data Warehouse - Performance Trends.csv`, data)
 
 const MultipleAssessmentReport = ({
   // value props
@@ -374,6 +376,13 @@ const MultipleAssessmentReport = ({
           </NoDataContainer>
         ) : (
           <>
+            <SectionLabel $margin="30px 0px 10px 0px">
+              Performance Trends
+            </SectionLabel>
+            <SectionDescription>
+              View whether the student&apos;s performance is improving over time
+              and take necessary interventions
+            </SectionDescription>
             <Chart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}

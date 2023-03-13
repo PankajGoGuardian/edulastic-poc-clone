@@ -1,4 +1,5 @@
 import next from 'immer'
+import { formatDate } from '@edulastic/constants/reportUtils/common'
 
 const TABLE_COLUMNS_KEYS = {
   FILE_TYPE: 'reportType',
@@ -75,8 +76,7 @@ export const getTableColumns = (termsMap, getTag) => {
       rawColumns,
       TABLE_COLUMNS_KEYS.LAST_UPDATED
     )
-    rawColumns[lastUpdatedIdx].render = (dateTime) =>
-      new Date(dateTime).toLocaleDateString()
+    rawColumns[lastUpdatedIdx].render = (dateTime) => formatDate(dateTime)
     rawColumns[lastUpdatedIdx].sorter = (a, b) =>
       sortDate(a.updatedAt, b.updatedAt)
 

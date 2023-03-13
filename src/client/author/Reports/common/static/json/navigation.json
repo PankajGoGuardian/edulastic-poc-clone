@@ -320,35 +320,35 @@
       "title": "Data Warehouse Reports",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports"
         }
       ],
       "group": "mainReport"
     },
     "whole-learner-report": {
-      "title": "Whole Learner Report",
+      "title": "Whole Learner",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
-          "title": "WHOLE LEARNER REPORT"
+          "title": "WHOLE LEARNER"
         }
       ],
       "group": "data-warehouse-reports",
       "groupTitle": "Data Warehouse Reports"
     },
     "multiple-assessment-report-dw": {
-      "title": "Multiple Assessment Report",
+      "title": "Performance Trends",
       "breadcrumb": [
         {
-          "title": "DATA WAREHOUSE REPORTS",
+          "title": "EDULASTIC DATA STUDIO",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
-          "title": "MULTIPLE ASSESSMENT REPORT"
+          "title": "Performance Trends"
         }
       ],
       "group": "data-warehouse-reports",
@@ -499,19 +499,19 @@
       },
       {
         "key": "data-warehouse-reports",
-        "title": "DATA WAREHOUSE REPORTS",
+        "title": "EDULASTIC DATA STUDIO",
         "location": "/author/reports/data-warehouse-reports/"
       }
     ],
     "data-warehouse-reports": [
       {
         "key": "multiple-assessment-report-dw",
-        "title": "MULTIPLE ASSESSMENT REPORT",
+        "title": "Performance Trends",
         "location": "/author/reports/multiple-assessment-report-dw"
       },
       {
         "key": "whole-learner-report",
-        "title": "WHOLE LEARNER REPORT",
+        "title": "WHOLE LEARNER",
         "location": "/author/reports/whole-learner-report/student/"
       }
     ]

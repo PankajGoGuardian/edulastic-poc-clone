@@ -57,7 +57,7 @@ const ImageContainer = styled.div`
   align-items: center;
   justify-content: center;
   height: 250px;
-  margin: 50px 0px 80px;
+  margin: 50px 0px 50px;
 `
 
 const StyledCard = styled(Card)`

@@ -1,6 +1,7 @@
 import React from 'react'
 import next from 'immer'
 import { Row, Tooltip } from 'antd'
+import { round } from 'lodash'
 
 import { reportUtils } from '@edulastic/constants'
 import CsvTable from '../../../../common/components/tables/CsvTable'
@@ -104,7 +105,7 @@ const getTableColumns = (
                     ) : null}
                   </StyledSpan>
                   <StyledSpan float="right">
-                    {averageScore}
+                    {round(averageScore)}
                     {!externalTestType && '%'}
                   </StyledSpan>
                 </div>

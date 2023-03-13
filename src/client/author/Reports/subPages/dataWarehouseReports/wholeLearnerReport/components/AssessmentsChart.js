@@ -130,7 +130,9 @@ const AssessmentsChart = ({
 
   return (
     <div>
-      <SectionLabel $margin="32px 0 -20px 0">Academic Performance</SectionLabel>
+      <SectionLabel $margin="32px 0 -20px 0">
+        Performance Summary across Assessments
+      </SectionLabel>
       <SignedStackedBarChart
         data={data}
         barsData={
@@ -142,7 +144,7 @@ const AssessmentsChart = ({
         getTooltipJSX={getTooltipJSX}
         barsLabelFormatter={barsLabelFormatter}
         yTickFormatter={() => ''}
-        yAxisLabel=""
+        yAxisLabel="Assessment Performance"
         getXTickText={getXTickText}
         getXTickTagText={getXTickTagText}
         filter={{}}
@@ -159,7 +161,7 @@ const AssessmentsChart = ({
         pageSize={10}
         hasRoundedBars={false}
         isSignedChart={false}
-        hideYAxis
+        hideYAxis={false}
         hideCartesianGrid
         hasBarInsideLabels
         hasBarTopLabels

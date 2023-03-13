@@ -17,6 +17,8 @@ import ShareReportModal from '../../../common/components/Popups/ShareReportModal
 import WholeLearnerReportFilters from './components/Filters'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { DW_WLR_REPORT_URL } from '../../../common/constants/dataWarehouseReports'
+import SectionLabel from '../../../common/components/SectionLabel'
+import SectionDescription from '../../../common/components/SectionDescription'
 import AttendanceChart from './components/AttendanceChart'
 
 import { resetAllReportsAction } from '../../../common/reportsRedux'
@@ -324,7 +326,7 @@ const WholeLearnerReport = ({
   // const onTestSelect = (item) =>
   //   setSelectedTests(toggleItem(selectedTests, item.uniqId))
   const onCsvConvert = (data) =>
-    downloadCSV(`Whole Learner Report-${studentName}.csv`, data)
+    downloadCSV(`Whole Learner-${studentName}.csv`, data)
 
   const isReportLoading = loadingReportData || loadingAttendanceData
   return (
@@ -410,6 +412,14 @@ const WholeLearnerReport = ({
                     </NoDataContainer>
                   </EduThen>
                   <EduElse>
+                    <SectionLabel $margin="30px 0px 10px 0px">
+                      Whole Learner
+                    </SectionLabel>
+                    <SectionDescription $margin="0px 0px 30px 0px">
+                      Get a complete understanding of a learner&apos;s academic
+                      and behavioral profiles and take necessary actions for the
+                      learner&apos;s growth
+                    </SectionDescription>
                     <StudentDetails
                       studentInformation={settings.selectedStudentInformation}
                     />

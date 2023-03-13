@@ -17,15 +17,15 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
     <StyledCardsContainer>
       <ReportLinkCard
         IconThumbnail={IconMultipleAssessmentReportDW}
-        title="Multiple Assessment Report"
-        description="Compare the aggregate performance of students across various assessments "
+        title="Performance Trends"
+        description="View whether the student's performance is improving over time &amp; take necessary interventions"
         url={DW_MAR_REPORT_URL}
         loc={loc}
       />
       <ReportLinkCard
         IconThumbnail={IconWholeLearnerReport}
-        title="Whole Learner Report"
-        description="See the performance of a particular student accross Edulastic &amp; external tests"
+        title="Whole Learner"
+        description="Get a complete understanding of a learner's academic &amp; associated indicators &amp; take necessary actions for the learner’s growth."
         url={DW_WLR_REPORT_URL}
         loc={loc}
       />

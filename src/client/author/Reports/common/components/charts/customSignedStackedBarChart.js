@@ -366,7 +366,8 @@ export const SignedStackedBarChart = ({
             <YAxis
               type="number"
               domain={yDomain}
-              tick={constants.TICK_FILL}
+              tick={false}
+              stroke={greyLight1}
               ticks={ticks}
               tickFormatter={yTickFormatter}
               label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}

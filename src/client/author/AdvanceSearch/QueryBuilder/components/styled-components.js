@@ -68,14 +68,16 @@ padding-bottom:80px;
 .ant-modal-body{
   max-height: 550px;
   min-height: 550px;
-  overflow-y: scroll;
+  overflow-y: auto;
 }
 `
 export const HelpArticleWrapper = Styled.div`
-justify-content: space-between;
-max-width: 250px;
+display: flex;
 align-items: center;
-display:flex;
+span{
+  margin-right: 10px;
+}
+gap: 8px;
 `
 export const StyledIframe = Styled.iframe`
 height: 550px;

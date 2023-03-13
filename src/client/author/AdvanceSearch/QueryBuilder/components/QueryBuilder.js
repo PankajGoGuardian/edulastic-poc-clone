@@ -156,14 +156,16 @@ const _QueryBuilder = ({
       visible={showAdvanceSearch}
       title={
         <HelpArticleWrapper>
-          Advanced Search
+          <span>Advanced Search</span>
           <a href={advancedSearchHelpArtical} target="_blank" rel="noreferrer">
-            <StyledIconQuestionCircle />
+            <StyledIconQuestionCircle width="16px" height="16px" />
           </a>
           <StyledIconPlayButton
             onClick={() => {
               setShowHelpVideo((state) => !state)
             }}
+            width="16px"
+            height="16px"
           />
         </HelpArticleWrapper>
       }

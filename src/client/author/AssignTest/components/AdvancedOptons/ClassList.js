@@ -484,7 +484,10 @@ class ClassList extends React.Component {
               </OkButton>
             </FilterButtonWrapper>
           </FeaturesSwitch>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               <div>School </div>
               <SelectInputStyled
@@ -510,7 +513,10 @@ class ClassList extends React.Component {
               </SelectInputStyled>
             </StyledRowLabel>
           </Tooltip>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               Grades
               <SelectInputStyled
@@ -538,7 +544,10 @@ class ClassList extends React.Component {
               </SelectInputStyled>
             </StyledRowLabel>
           </Tooltip>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               Subject
               <SelectInputStyled
@@ -563,7 +572,10 @@ class ClassList extends React.Component {
               </SelectInputStyled>
             </StyledRowLabel>
           </Tooltip>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               Course
               <SelectInputStyled
@@ -589,7 +601,10 @@ class ClassList extends React.Component {
               </SelectInputStyled>
             </StyledRowLabel>
           </Tooltip>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               Show Class/Groups
               <SelectInputStyled
@@ -613,7 +628,10 @@ class ClassList extends React.Component {
               </SelectInputStyled>
             </StyledRowLabel>
           </Tooltip>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               Search Class/Groups
               <SelectInputStyled
@@ -643,7 +661,10 @@ class ClassList extends React.Component {
               </SelectInputStyled>
             </StyledRowLabel>
           </Tooltip>
-          <Tooltip title={advancedSearchDisabledToolTipMsg}>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
             <StyledRowLabel>
               Tags
               <SelectInputStyled

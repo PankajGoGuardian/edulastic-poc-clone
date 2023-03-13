@@ -340,11 +340,13 @@ export const AdvancedSearchTag = styled.span`
 export const FilterButtonWrapper = styled.div`
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  margin-bottom: 20px;
 `
 
 export const FilterText = styled.h1`
   color: ${title};
   font-size: 20px;
   font-weight: bold;
+  margin: 0px;
 `

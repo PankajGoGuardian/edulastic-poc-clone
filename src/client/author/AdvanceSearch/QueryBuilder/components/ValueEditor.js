@@ -128,7 +128,7 @@ const ValueEditor = (props) => {
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode={type === 'multiselect' ? 'multiple' : 'default'}
           placeholder={`Select ${label}`}
-          style={{ width: '200px' }}
+          style={{ width: '80%', overflowY: 'auto', maxHeight: '70px' }}
           onChange={handleOnChange}
           value={value || undefined}
           showSearch

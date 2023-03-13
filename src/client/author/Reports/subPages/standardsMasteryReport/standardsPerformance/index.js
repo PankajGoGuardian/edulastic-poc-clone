@@ -1,16 +1,16 @@
+import { filter, get, isEmpty } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-import { filter, get, isEmpty } from 'lodash'
 
-import { Col, Row } from 'antd'
-import { report as reportTypes, reportUtils } from '@edulastic/constants'
 import { SpinLoader } from '@edulastic/common'
+import { report as reportTypes, reportUtils } from '@edulastic/constants'
+import { Col, Row } from 'antd'
+import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import {
   DropDownContainer,
-  StyledCard,
   NoDataContainer,
+  StyledCard,
 } from '../../../common/styled'
-import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import StandardsPerformanceChart from './components/charts/StandardsPerformanceChart'
 import { StyledInnerRow, StyledRow } from './components/styled'
 import StandardsPerformanceTable from './components/table/StandardsPerformanceTable'
@@ -19,9 +19,9 @@ import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
   getReportsStandardsPerformanceSummary,
+  getReportsStandardsPerformanceSummaryError,
   getReportsStandardsPerformanceSummaryLoader,
   getStandardsPerformanceSummaryRequestAction,
-  getReportsStandardsPerformanceSummaryError,
   resetStandardsPerformanceSummaryAction,
 } from './ducks'
 

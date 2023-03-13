@@ -1,17 +1,21 @@
+import { Col, Row } from 'antd'
+import next from 'immer'
+import { get, isEmpty, pickBy } from 'lodash'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
-import { get, isEmpty, pickBy } from 'lodash'
-import { Col, Row } from 'antd'
-import next from 'immer'
 
 import { SpinLoader } from '@edulastic/common'
-import { reportUtils, roleuser } from '@edulastic/constants'
+import {
+  report as reportTypes,
+  reportUtils,
+  roleuser,
+} from '@edulastic/constants'
 
-import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
-import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
-import { StyledCard, StyledH3, NoDataContainer } from '../../../common/styled'
+import StudentAssignmentModal from '../../../common/components/Popups/studentAssignmentModal'
+import { ControlDropDown } from '../../../common/components/widgets/controlDropDown'
+import { NoDataContainer, StyledCard, StyledH3 } from '../../../common/styled'
 import { SignedStackBarChartContainer } from './components/charts/signedStackBarChartContainer'
 import {
   StyledDropDownContainer,
@@ -20,22 +24,22 @@ import {
 } from './components/styled'
 import StandardsGradebookTable from './components/table/standardsGradebookTable'
 
-import { getCsvDownloadingState } from '../../../ducks'
+import { generateCSVAction, getCsvDownloadingState } from '../../../ducks'
 import { getReportsStandardsFilters } from '../common/filterDataDucks'
 import {
-  getStandardsGradebookSummaryLoader,
-  getStandardsGradebookSummary,
-  getStandardsGradebookSummaryAction,
-  getStandardsGradebookDetailsLoader,
+  getReportsStandardsGradebookError,
+  getSkillInfoLoader,
   getStandardsGradebookDetails,
   getStandardsGradebookDetailsAction,
-  getSkillInfoLoader,
+  getStandardsGradebookDetailsLoader,
   getStandardsGradebookSkillInfo,
   getStandardsGradebookSkillInfoAction,
+  getStandardsGradebookSummary,
+  getStandardsGradebookSummaryAction,
+  getStandardsGradebookSummaryLoader,
   getStudentStandardData,
   getStudentStandardLoader,
   getStudentStandardsAction,
-  getReportsStandardsGradebookError,
   resetStandardsGradebookAction,
 } from './ducks'
 
@@ -76,11 +80,10 @@ const StandardsGradebook = ({
   getStudentStandards,
   studentStandardData,
   loadingStudentStandard,
-  location,
-  pageTitle,
   ddfilter,
   userRole,
   sharedReport,
+  generateCSV,
 }) => {
   // support for domain filtering from backend
   const [chartPageFilters, setChartPageFilters] = useState({
@@ -168,6 +171,11 @@ const StandardsGradebook = ({
     () => pickBy(ddfilter, (f) => f !== 'all' && !isEmpty(f)),
     [ddfilter]
   )
+
+  const generateCSVRequired =
+    chartPageFilters.pageSize < standardIdsCount ||
+    tableFilters.pageSize < totalRows ||
+    (error && error.dataSizeExceeded)
 
   useEffect(() => () => resetStandardsGradebook(), [])
 
@@ -290,6 +298,32 @@ const StandardsGradebook = ({
       toggleFilter(null, true)
     }
   }, [chartDataWithStandardInfo, tableData])
+
+  useEffect(() => {
+    if (isCsvDownloading && generateCSVRequired) {
+      const {
+        compareByKey: compareBy,
+        analyseByKey: analyzeBy,
+        sortKey,
+        sortOrder,
+      } = tableFilters
+
+      const q = {
+        reportType: reportTypes.reportNavType.STANDARDS_GRADEBOOK,
+        reportFilter: {
+          ...settings.requestFilters,
+          compareBy,
+          analyzeBy,
+          sortKey,
+          sortOrder,
+        },
+        reportExtras: {
+          tableFilters,
+        },
+      }
+      generateCSV(q)
+    }
+  }, [isCsvDownloading])
 
   const onBarClickCB = (key) => {
     const _selectedStandardIds = { ...tableFilters.selectedStandardIds }
@@ -461,7 +495,7 @@ const StandardsGradebook = ({
               filters={settings.requestFilters}
               scaleInfo={scaleInfo}
               isSharedReport={isSharedReport}
-              isCsvDownloading={isCsvDownloading}
+              isCsvDownloading={generateCSVRequired ? null : isCsvDownloading}
               navigationItems={navigationItems}
               chartDataWithStandardInfo={filteredChartDataWithStandardInfo}
               compareByKey={tableFilters.compareByKey}
@@ -516,6 +550,7 @@ const enhance = compose(
       getDetailsRequest: getStandardsGradebookDetailsAction,
       resetStandardsGradebook: resetStandardsGradebookAction,
       getStudentStandards: getStudentStandardsAction,
+      generateCSV: generateCSVAction,
     }
   )
 )

@@ -22,7 +22,13 @@ import SettingContainer from './SettingsContainer'
 import KeypadDropdown from './KeypadDropdown'
 import { ConfirmationModal } from '../../../src/components/common/ConfirmationModal'
 
-const { accessibilities } = test
+const { accessibilities, accessibilitySettings } = test
+const {
+  magnifier,
+  scratchPad,
+  skipAlert,
+  immersiveReader,
+} = accessibilitySettings
 
 const MiscellaneousGroupContainer = ({
   assignmentSettings,
@@ -36,7 +42,8 @@ const MiscellaneousGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   premium,
-  t,
+  isEnterpriseUser,
+  t: translate,
 }) => {
   const {
     answerOnPaper = testSettings.answerOnPaper,
@@ -47,6 +54,7 @@ const MiscellaneousGroupContainer = ({
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
+    showImmersiveReader = testSettings.showImmersiveReader,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)
@@ -76,27 +84,35 @@ const MiscellaneousGroupContainer = ({
 
   const accessibilityData = [
     {
-      key: 'showMagnifier',
+      key: magnifier.key,
       value: showMagnifier,
-      description:
-        'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
-      id: 'magnifier-setting',
+      description: translate('accessibilitySettings.magnifier.description'),
+      id: magnifier.id,
     },
     {
-      key: 'enableScratchpad',
+      key: scratchPad.key,
       value: enableScratchpad,
-      description:
-        'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
-      id: 'scratchpad-setting',
+      description: translate('accessibilitySettings.scratchPad.description'),
+      id: scratchPad.id,
     },
     {
-      key: 'enableSkipAlert',
+      key: skipAlert.key,
       value: enableSkipAlert,
-      description:
-        'When enabled, a student can not skip a question without confirmation.',
-      id: 'skip-alert',
+      description: translate('accessibilitySettings.skipAlert.description'),
+      id: skipAlert.id,
     },
   ]
+
+  if (isEnterpriseUser) {
+    accessibilityData.unshift({
+      key: immersiveReader.key,
+      value: showImmersiveReader,
+      description: translate(
+        'accessibilitySettings.immersiveReader.description'
+      ),
+      id: immersiveReader.id,
+    })
+  }
 
   const {
     assessmentSuperPowersAnswerOnPaper,
@@ -245,7 +261,12 @@ const MiscellaneousGroupContainer = ({
                         </Col>
                         <Col span={14}>
                           <StyledRadioGroup
-                            disabled={freezeSettings || !featuresAvailable[key]}
+                            disabled={
+                              freezeSettings ||
+                              (key === immersiveReader.key
+                                ? !isEnterpriseUser
+                                : !featuresAvailable[key])
+                            }
                             onChange={(e) =>
                               overRideSettings(key, e.target.value)
                             }
@@ -313,7 +334,7 @@ const MiscellaneousGroupContainer = ({
                 onCancel={() => () => confirmKeypadSelection(false)}
               >
                 <p>
-                  <b>{t('keypadSettings.warning')}</b>
+                  <b>{translate('keypadSettings.warning')}</b>
                 </p>
               </ConfirmationModal>
             </StyledRow>

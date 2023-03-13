@@ -22,9 +22,13 @@ const Icon = ({ type }) => {
   return IconComponent ? <IconComponent style={SvgStyles} /> : null
 }
 
-const AudioButton = ({ buttonType, onClickHandler, isRecording }) => {
+const AudioButton = ({ buttonType, onClickHandler, isRecording, disabled }) => {
   return (
-    <StyledButton onClick={onClickHandler} isRecording={isRecording}>
+    <StyledButton
+      onClick={onClickHandler}
+      isRecording={isRecording}
+      disabled={disabled}
+    >
       <Icon type={buttonType} />
     </StyledButton>
   )

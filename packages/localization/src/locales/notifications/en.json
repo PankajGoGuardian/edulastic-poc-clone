@@ -483,6 +483,10 @@
     "message": "Please select at least one class to assign.",
     "description": ""
   },
+  "testContainsAudioResponseTypeQuestion": {
+    "message": "Test cannot be assigned. There is at least one audio response question on the test. Remove the item to assign.",
+    "description": ""
+  },
   "selectSubject": {
     "message": "Please select at least one subject to bulk assign.",
     "description": ""
@@ -2142,5 +2146,16 @@
   "pointsOnEquWithObjects": {
     "message": "Please note that the grading for this question will only consider if the points given by the student meet the equation you specified, and not the specific objects that you entered",
     "description": "You may want to consider using background objects instead to avoid confusion"
+  },
+  "failedToAutorizeUsingToken": {
+    "message": "Failed to authorize user"
+  },
+  "immersiveReaderLaunchError": {
+    "message": "Error in launching the Immersive Reader",
+    "description": ""
+  },
+  "immersiveReaderFailedApiError": {
+    "message": "Error in getting the Immersive Reader",
+    "description": ""
   }
 }

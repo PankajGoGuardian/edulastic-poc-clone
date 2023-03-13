@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { test as testConst } from '@edulastic/constants'
 import {
   ATTEMPT_WINDOW_DEFAULT_START_TIME,
@@ -11,6 +11,7 @@ import { isEmpty } from 'lodash'
 const { ATTEMPT_WINDOW_TYPE } = testConst
 
 const useAttempWindowChangeHandler = (changeField) => {
+  const initialRender = useRef(true)
   const [selectedAttemptWindowType, setSelectedAttemptWindowType] = useState(
     ATTEMPT_WINDOW_TYPE.DEFAULT
   )
@@ -42,7 +43,8 @@ const useAttempWindowChangeHandler = (changeField) => {
   )
 
   useEffect(() => {
-    const isStartEndTimeSelected = assignmentStartTime && assignmentEndTime
+    const isStartEndTimeSelected =
+      assignmentStartTime >= 0 && assignmentEndTime >= 0
     const selectedAttemptWindowInfo = {
       [ATTEMPT_WINDOW_TYPE.WEEKDAYS]: isStartEndTimeSelected && {
         type: ATTEMPT_WINDOW_TYPE.WEEKDAYS,
@@ -60,7 +62,9 @@ const useAttempWindowChangeHandler = (changeField) => {
         type: ATTEMPT_WINDOW_TYPE.DEFAULT,
       },
     }[selectedAttemptWindowType]
-    if (!isEmpty(selectedAttemptWindowInfo)) {
+    if (initialRender.current) {
+      initialRender.current = false
+    } else if (!isEmpty(selectedAttemptWindowInfo)) {
       changeField(STUDENT_ATTEMPT_TIME_WINDOW, selectedAttemptWindowInfo)
     }
   }, [
@@ -71,11 +75,15 @@ const useAttempWindowChangeHandler = (changeField) => {
   ])
 
   const handleStartTimeChange = (_, selectedTime) => {
-    setAssignmentStartTime(getMilliSeconds(selectedTime))
+    const selectedStartTimeInMilliSec = getMilliSeconds(selectedTime)
+    if (selectedStartTimeInMilliSec < assignmentEndTime)
+      setAssignmentStartTime(selectedStartTimeInMilliSec)
   }
 
   const handleEndTimeChange = (_, selectedTime) => {
-    setAssignmentEndTime(getMilliSeconds(selectedTime))
+    const selectedEndTimeInMilliSec = getMilliSeconds(selectedTime)
+    if (selectedEndTimeInMilliSec > assignmentStartTime)
+      setAssignmentEndTime(selectedEndTimeInMilliSec)
   }
 
   const handleDayChange = (selectedDay) => {
@@ -93,6 +101,8 @@ const useAttempWindowChangeHandler = (changeField) => {
     handleChange,
     selectedAttemptWindowType,
     selectedDays,
+    assignmentStartTime,
+    assignmentEndTime,
   }
 }
 

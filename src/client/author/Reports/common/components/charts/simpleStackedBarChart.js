@@ -102,6 +102,7 @@ const SimpleStackedBarChartComponent = ({
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
   showLegend = false,
+  setVisibleIndices,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
@@ -131,11 +132,21 @@ const SimpleStackedBarChartComponent = ({
     INTERVAL: lineChartDataKey ? 0 : 'preserveEnd',
   }
 
-  if (data !== copyData) {
+  const onSetVisibleIndices = (startIndex, endIndex) => {
     setPagination({
-      startIndex: 0,
-      endIndex: pageSize - 1,
+      startIndex,
+      endIndex,
     })
+    if (setVisibleIndices) {
+      setVisibleIndices({
+        startIndex,
+        endIndex,
+      })
+    }
+  }
+
+  if (data !== copyData) {
+    onSetVisibleIndices(0, pageSize - 1)
     setCopyData(data)
   }
 
@@ -168,10 +179,9 @@ const SimpleStackedBarChartComponent = ({
       } else {
         diff = pagination.startIndex
       }
-      setPagination({
-        startIndex: pagination.startIndex - diff,
-        endIndex: pagination.endIndex - diff,
-      })
+      const startIndex = pagination.startIndex - diff
+      const endIndex = pagination.endIndex - diff
+      onSetVisibleIndices(startIndex, endIndex)
     }
   }
 
@@ -183,10 +193,9 @@ const SimpleStackedBarChartComponent = ({
       } else {
         diff = chartData.length - 1 - pagination.endIndex
       }
-      setPagination({
-        startIndex: pagination.startIndex + diff,
-        endIndex: pagination.endIndex + diff,
-      })
+      const startIndex = pagination.startIndex + diff
+      const endIndex = pagination.endIndex + diff
+      onSetVisibleIndices(startIndex, endIndex)
     }
   }
 

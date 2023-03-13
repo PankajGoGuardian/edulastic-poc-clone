@@ -327,7 +327,9 @@ const SchoolsTable = Form.create({ name: 'bulkSubscribeForm' })(
           bordered
           scroll={{ x: '100%', y: 300 }}
         >
+          <Column title="School Id" dataIndex="schoolId" key="_id" />
           <Column title="School Name" dataIndex="schoolName" key="schoolName" />
+          <Column title="District Id" dataIndex="districtId" key="districtId" />
           <Column
             title="District Name"
             dataIndex="districtName"

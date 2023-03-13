@@ -87,7 +87,7 @@ export const StyledButton = styled.button`
   background: ${themeColor} 0% 0% no-repeat padding-box;
   opacity: 1;
   border-radius: 50%;
-  cursor: pointer;
+  cursor: ${({ disabled }) => (disabled ? 'not-allowed' : 'pointer')};
   border: none;
   ${({ isRecording }) =>
     isRecording &&

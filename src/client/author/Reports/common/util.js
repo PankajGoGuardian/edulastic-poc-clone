@@ -16,6 +16,11 @@ import qs from 'qs'
 import next from 'immer'
 import moment from 'moment'
 import calcMethod from './static/json/calcMethod.json'
+import {
+  getOrderedQuestions,
+  sortByAvgPerformanceAndLabel,
+} from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
+import { compareByToPluralName } from '../subPages/singleAssessmentReport/QuestionAnalysis/constants'
 
 const studentFiltersDefaultValues = [
   {
@@ -285,6 +290,60 @@ export const toggleItem = (items, item) =>
     }
   })
 
+export const convertQAnalysisTableToCSV = (
+  qSummary,
+  dataSource,
+  compareBy,
+  filter,
+  sortBy
+) => {
+  const csv = []
+  const csvRawData = []
+  const headerRow = []
+  // header row
+  const qLabelsToFilter = Object.keys(filter)
+  const compareByTitle = compareByToPluralName[compareBy]
+  headerRow.push(`${compareByTitle}`)
+  let orderedQuestions = sortByAvgPerformanceAndLabel(
+    getOrderedQuestions(qSummary),
+    sortBy
+  )
+  if (qLabelsToFilter.length) {
+    orderedQuestions = orderedQuestions.filter((item) =>
+      qLabelsToFilter.includes(item.questionLabel)
+    )
+  }
+  orderedQuestions.forEach((question) => {
+    headerRow.push(
+      `${question.questionLabel}: ${question.standards.join('|')}: ${
+        question.points
+      }`
+    )
+  })
+  csv.push(headerRow.join(','))
+  csvRawData.push(headerRow)
+  // district avg row
+  const districtHeaderRow = ['District Avg.']
+  orderedQuestions.forEach((question) => {
+    districtHeaderRow.push(Math.round(question.districtAvgPerf))
+  })
+  csv.push(districtHeaderRow.join(','))
+  csvRawData.push(districtHeaderRow)
+  // content area
+  dataSource.forEach((data) => {
+    const contentRows = [data.dimension]
+    orderedQuestions.forEach((question) => {
+      contentRows.push(data.averageScoreByQId[question.questionId])
+    })
+    csv.push(contentRows.join(','))
+    csvRawData.push(contentRows)
+  })
+  return {
+    csvText: csv.join('\n'),
+    csvRawData,
+  }
+}
+
 export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
   const rows = refComponent.querySelectorAll('table')[0].querySelectorAll('tr')
   const startIndex = getColumnHeaders ? 1 : 0
@@ -306,11 +365,11 @@ export const convertTableToCSV = (refComponent, getColumnHeaders = null) => {
       csvRawData.push(rw)
     })
   }
+
   for (let i = startIndex; i < rows.length; i++) {
     const row = []
-    let cols
-    if (getColumnHeaders) cols = rows[i].querySelectorAll('td')
-    else cols = rows[i].querySelectorAll('td, th')
+    const selectorSet = getColumnHeaders ? 'td' : 'td, th'
+    const cols = rows[i].querySelectorAll(selectorSet)
     for (let j = 0; j < cols.length; j++) {
       if (cols[j].getElementsByClassName('ant-checkbox').length > 0) continue
       let data = (cols[j].innerText || cols[j].textContent)

@@ -92,6 +92,16 @@ const ValidEmailIdsTable = ({ validEmailIdsList }) => {
       dataIndex: '_id',
     },
     {
+      title: 'District ID',
+      dataIndex: '_source.districtIds',
+      render: (districtIds) => districtIds.join('\n'),
+    },
+    {
+      title: 'Institution ID',
+      dataIndex: '_source.institutionIds',
+      render: (institutionIds) => institutionIds.join('\n'),
+    },
+    {
       title: 'Subscription Type',
       dataIndex: 'subscription',
       render: renderSubscriptionType,

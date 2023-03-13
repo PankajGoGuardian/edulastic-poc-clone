@@ -319,7 +319,7 @@ export const assignmentIdsGroupIdsByTestIdSelector = createSelector(
     // eslint-disable-next-line guard-for-in
     for (const i in assignments) {
       const { testId, _id } = assignments[i]
-      const classIds = assignments[i]?.['class']?.map((x) => x._id) || []
+      const classIds = assignments[i]?.class?.map((x) => x._id) || []
       if (_id && testId) {
         if (!assignmentsGroupsByTestId[testId]) {
           assignmentsGroupsByTestId[testId] = new Set(classIds)
@@ -664,6 +664,8 @@ function* startAssignment({ payload }) {
     } = payload
 
     const institutionId = yield select(getCurrentSchool)
+    const userId = yield select(getCurrentUserId)
+    const role = yield select(getUserRole)
     const languagePreference = yield select(getSelectedLanguageSelector)
     const groupType = 'class'
     let testActivityId = null
@@ -694,7 +696,16 @@ function* startAssignment({ payload }) {
       })
 
       yield put(push(`/home/assignments`))
-      if (!handleChromeOsSEB()) {
+      if (
+        !handleChromeOsSEB({
+          testId,
+          userId,
+          role,
+          assignmentId,
+          testActivityId,
+          groupId: classId,
+        })
+      ) {
         yield call(redirectToUrl, sebUrl)
       }
       return
@@ -1043,7 +1054,16 @@ function* launchAssignment({ payload }) {
       if (lastActivity && lastActivity.status === 0) {
         if (safeBrowser && !isSEB()) {
           yield put(push(`/home/assignments`))
-          if (!handleChromeOsSEB()) {
+          if (
+            !handleChromeOsSEB({
+              testId,
+              userId,
+              role,
+              assignmentId,
+              testActivityId: lastActivity._id,
+              groupId,
+            })
+          ) {
             const sebUrl = getSebUrl({
               testId,
               testType,

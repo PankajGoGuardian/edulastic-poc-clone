@@ -76,6 +76,8 @@ const PlayerHeader = ({
 
   const rightButtons = (
     <SaveAndExit
+      currentItem={currentItem}
+      options={options}
       timedAssignment={timedAssignment}
       utaId={utaId}
       hidePause={hidePause}

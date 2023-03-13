@@ -2,11 +2,12 @@
 import { get, round, isNaN, isString, omit, isEqual } from 'lodash'
 import { notification } from '@edulastic/common'
 import * as Sentry from '@sentry/browser'
-import { fileApi, onerosterApi } from '@edulastic/api'
+import { fileApi, onerosterApi, fetchIRtokenAndSubDomain } from '@edulastic/api'
 import { aws, question } from '@edulastic/constants'
 import { useLayoutEffect } from 'react'
 import { replaceLatexesWithMathHtml } from './utils/mathUtils'
 import AppConfig from '../../../src/app-config'
+import { tokenKey } from '@edulastic/api/src/utils/Storage'
 
 export function useLayoutEffectDebounced(func, values, time) {
   useLayoutEffect(() => {
@@ -20,17 +21,43 @@ export function useLayoutEffectDebounced(func, values, time) {
 
 export const isSEB = () => window.navigator.userAgent.includes('SEB')
 
-export function handleChromeOsSEB(e) {
-  const isChromeOs = /(CrOS)/.test(window.navigator.userAgent)
+export const checkIsChromeOs = () => /(CrOS)/.test(window.navigator.userAgent)
+
+export const isKioskAppEnabled = () => !!AppConfig.kioskChromeAppId
+
+export function handleChromeOsSEB({
+  testId,
+  userId,
+  role,
+  assignmentId,
+  testActivityId,
+  groupId,
+}) {
+  const isChromeOs = checkIsChromeOs()
   if (isChromeOs) {
-    if (e) {
-      e.preventDefault()
+    const extensionAppId = AppConfig.kioskChromeAppId
+    if (window?.chrome?.runtime && extensionAppId) {
+      const redirectUrl = getKioskAppUrl({
+        testId,
+        assignmentId,
+        testActivityId,
+        userId,
+        role,
+        groupId,
+      })
+      triggerKioskApp(extensionAppId, redirectUrl)
+    } else {
+      let msg = `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`
+      if (isKioskAppEnabled()) {
+        msg = `This Assignment has been assigned with Kiosk mode which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device.`
+      }
+      notification({
+        msg,
+        duration: 7,
+      })
     }
-    notification({
-      msg: `This Assignment has been assigned with Safe Exam Browser which is not supported on this device. Please contact your instructor to update the settings for the assignment or use a compatible device(Mac/iPad/Windows).`,
-      duration: 7,
-    })
   }
+
   return isChromeOs
 }
 
@@ -145,6 +172,37 @@ const getNumeration = (index, type) => {
 const isEmpty = (str) => {
   str = typeof str === 'string' ? str.trim() : ''
   return str === '<p><br></p>' || str === ''
+}
+
+const getKioskAppUrl = ({
+  testId,
+  assignmentId,
+  testActivityId,
+  userId,
+  role,
+  groupId,
+}) => {
+  const key = tokenKey(userId, role)
+  const tokenValue = window.localStorage.getItem(`${key}`)
+  return `${window.location.origin}/home/seb/test/${testId}/type/assessment/assignment/${assignmentId}/testActivity/${testActivityId}?token=${tokenValue}&userId=${userId}&role=${role}&groupId=${groupId}`
+}
+
+const triggerKioskApp = (extensionAppId, redirectUrl) => {
+  try {
+    window.chrome.runtime.sendMessage(
+      extensionAppId,
+      { redirectUrl },
+      (message) => {
+        console.log(message || '** kiosk app callback **')
+      }
+    )
+  } catch (e) {
+    notification({
+      type: 'error',
+      msg: 'There is a problem launching the assignment in kiosk mode.',
+      duration: 7,
+    })
+  }
 }
 
 function isBlobData(file) {

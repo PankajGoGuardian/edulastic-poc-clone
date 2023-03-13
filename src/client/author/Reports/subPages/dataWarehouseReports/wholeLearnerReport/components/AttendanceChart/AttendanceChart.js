@@ -8,6 +8,7 @@ import {
   LineChart,
   Line,
   Tooltip,
+  CartesianGrid,
 } from 'recharts'
 
 import { useOfflinePagination } from '@edulastic/common'
@@ -22,6 +23,7 @@ import {
   TooltipRowValue,
 } from '../../../../../common/styled'
 import SectionLabel from '../../../../../common/components/SectionLabel'
+import SectionDescription from '../../../../../common/components/SectionDescription'
 import { setProperties, tooltipParams } from '../../../../../common/util'
 import { StyledAttendanceChartContainer } from './styled-components'
 
@@ -196,7 +198,10 @@ const AttendanceChart = ({
 
   return (
     <StyledAttendanceChartContainer ref={parentContainerRef}>
-      <SectionLabel>Attendance</SectionLabel>
+      <SectionLabel $margin="30px 0px 10px 0px">Weekly Attendance</SectionLabel>
+      <SectionDescription>
+        Correlate academic performance with attendance
+      </SectionDescription>
       <ResetButtonClear
         onClick={onResetClick}
         style={{ visibility: hasFilters ? 'visible' : 'hidden' }}
@@ -233,6 +238,11 @@ const AttendanceChart = ({
           margin={{ top: 0, right: 50, left: 20, bottom: 10 }}
           ref={chartRef}
         >
+          <CartesianGrid
+            vertical={false}
+            strokeDasharray="3 3"
+            strokeWidth={1}
+          />
           <XAxis
             dataKey="week"
             xAxisId="0"
@@ -258,12 +268,14 @@ const AttendanceChart = ({
           />
           <YAxis
             type="number"
-            domain={[0, 110]}
-            tick={false}
+            domain={[0, 100]}
+            tick={{ fill: '#010101' }}
+            tickCount={6}
+            tickMargin={2}
             label={
               <YAxisLabel
                 data={{
-                  value: 'ATTENDANCE',
+                  value: 'AVG ATTENDANCE %',
                   angle: -90,
                   dx: 25,
                   fontSize: 14,

@@ -4,6 +4,7 @@ import { SelectInputStyled, RadioBtn } from '@edulastic/common'
 import { blueBorder, red, green } from '@edulastic/colors'
 import { test } from '@edulastic/constants'
 import Styled from 'styled-components'
+import { withNamespaces } from '@edulastic/localization'
 import {
   AlignSwitchRight,
   StyledRow,
@@ -13,6 +14,7 @@ import {
 } from '../SimpleOptions/styled'
 import DetailsTooltip from './DetailsTooltip'
 import SettingContainer from './SettingsContainer'
+import { safeModeI18nTranslation } from '../../../authUtils'
 
 const { passwordPolicyOptions, passwordPolicy: passwordPolicyValues } = test
 
@@ -25,6 +27,7 @@ const AntiCheatingGroupContainer = ({
   overRideSettings,
   featuresAvailable,
   tootltipWidth,
+  t,
 }) => {
   const [passwordStatus, setPasswordStatus] = useState({
     color: blueBorder,
@@ -466,14 +469,16 @@ const AntiCheatingGroupContainer = ({
       <SettingContainer id="safe-exam-browser-setting">
         <DetailsTooltip
           width={tootltipWidth}
-          title="Require Safe Exam Browser"
-          content="Ensure secure testing environment by using Safe Exam Browser to lockdown the student's device. To use this feature Safe Exam Browser (on Windows/Mac only) must be installed on the student devices."
+          title={safeModeI18nTranslation(t, 'title')}
+          content={safeModeI18nTranslation(t, 'tooltip')}
           placement="rightTop"
           premium={assessmentSuperPowersRequireSafeExamBrowser}
         />
         <StyledRow gutter={16} mb="15px">
           <Col span={10}>
-            <Label style={{ display: 'flex' }}>Require Safe Exam Browser</Label>
+            <Label style={{ display: 'flex' }}>
+              {safeModeI18nTranslation(t, 'title')}
+            </Label>
           </Col>
           <Col span={14}>
             <AlignSwitchRight
@@ -532,4 +537,4 @@ const Styled2ndLine = Styled.div`
   padding-left:24px;
 `
 
-export default AntiCheatingGroupContainer
+export default withNamespaces('author')(AntiCheatingGroupContainer)

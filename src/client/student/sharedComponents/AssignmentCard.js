@@ -306,8 +306,12 @@ const AssignmentCard = memo(
     let restrictedButtonTooltip
     let restrictedButtonText
     if (isRestrictedTimeWindow) {
-      const { startTime = '', endTime = '' } = data?.attemptWindow
-      restrictedButtonTooltip = `It can be attempted between ${startTime} to ${endTime} only.`
+      const {
+        startTime = '',
+        endTime = '',
+        attemptWindowDay,
+      } = data?.attemptWindow
+      restrictedButtonTooltip = `It can be attempted between ${startTime} to ${endTime} on ${attemptWindowDay} only.`
       restrictedButtonText = ` (UNTIL ${startTime})`
     }
 

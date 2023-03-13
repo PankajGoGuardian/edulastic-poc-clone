@@ -200,6 +200,7 @@ function* loadAssignmentSaga({ payload }) {
       penaltyOnUsingHints,
       showHintsToStudents,
       showTtsForPassages,
+      showImmersiveReader,
     } = data.class[0] || {}
     if (openPolicy) {
       data.openPolicy = openPolicy
@@ -224,6 +225,9 @@ function* loadAssignmentSaga({ payload }) {
     }
     if (Array.isArray(classCalcTypes) && classCalcTypes.length) {
       data.calcTypes = classCalcTypes
+    }
+    if (data.showImmersiveReader) {
+      data.showImmersiveReader = showImmersiveReader
     }
     if (typeof penaltyOnUsingHints === 'number') {
       data.penaltyOnUsingHints = penaltyOnUsingHints
@@ -287,6 +291,7 @@ function getSettingsSelector(state) {
     showHintsToStudents,
     penaltyOnUsingHints,
     showTtsForPassages,
+    showImmersiveReader,
   } = assignment
 
   const passWordPolicySettings = { passwordPolicy }
@@ -395,6 +400,7 @@ function getSettingsSelector(state) {
       showHintsToStudents,
       penaltyOnUsingHints,
       showTtsForPassages,
+      showImmersiveReader,
     },
     isUndefined
   )

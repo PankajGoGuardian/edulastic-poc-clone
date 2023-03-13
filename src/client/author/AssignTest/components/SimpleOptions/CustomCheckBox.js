@@ -1,4 +1,5 @@
 import React from 'react'
+import { capitalize } from 'lodash'
 import { CheckboxLabel, Div, CheckBoxInput } from './styled'
 
 const CustomCheckbox = ({
@@ -8,6 +9,7 @@ const CustomCheckbox = ({
   disabled,
   height,
   width,
+  title,
 }) => {
   const onClickHandler = () => {
     if (!disabled) {
@@ -15,7 +17,11 @@ const CustomCheckbox = ({
     }
   }
   return (
-    <CheckboxLabel data-cy="multi" disabled={disabled}>
+    <CheckboxLabel
+      data-cy="multi"
+      disabled={disabled}
+      title={capitalize(title)}
+    >
       <CheckBoxInput
         type="checkbox"
         onClick={onClickHandler}

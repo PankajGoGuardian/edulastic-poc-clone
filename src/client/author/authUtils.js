@@ -1,5 +1,6 @@
 import { userApi, TokenStorage } from '@edulastic/api'
 import { notification } from '@edulastic/common'
+import { isKioskAppEnabled } from '@edulastic/common/src/helpers'
 
 export async function proxyUser({ userId, email, groupId, currentUser = {} }) {
   const result = await userApi.getProxyUser({ userId, email, groupId })
@@ -98,6 +99,16 @@ export async function proxyDemoPlaygroundUser(isAutomation = false) {
     notification({ messageKey: 'someErrorOccuredDuringProxying' })
   }
 }
+
+/**
+ * @param {'title' | 'info' | 'tooltip'} key
+ */
+export const safeModeI18nTranslation = (t, key) =>
+  t(
+    `${
+      isKioskAppEnabled() ? 'safeExamBrowserOrKioskMode' : 'safeExamBrowser'
+    }.${key}`
+  )
 
 window.proxyUser = proxyUser
 window.switchRole = switchRole

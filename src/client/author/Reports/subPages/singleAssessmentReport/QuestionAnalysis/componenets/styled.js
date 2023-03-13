@@ -1,5 +1,6 @@
 import styled from 'styled-components'
-import { extraDesktopWidthMax } from '@edulastic/colors'
+import { extraDesktopWidthMax, themeColor } from '@edulastic/colors'
+import { Col, Switch } from 'antd'
 import {
   StyledTable as Table,
   StyledCard as Card,
@@ -18,8 +19,18 @@ export const StyledTable = styled(Table)`
           white-space: nowrap;
         }
       }
+      .ant-table-thead > tr:nth-child(2) > th {
+        background-color: #e5e5e5;
+        color: black;
+        font-size: 11px;
+      }
       .ant-table-body {
         overflow-x: auto !important;
+        overflow-y: auto !important;
+        max-height: 200px;
+      }
+      .ant-table-body::-webkit-scrollbar {
+        display: none;
       }
       @media print {
         .ant-table-body {
@@ -80,7 +91,7 @@ export const StyledTable = styled(Table)`
 
 export const UpperContainer = styled.div``
 
-export const TableContainer = styled.div`
+export const BottomRow = styled.div`
   .parent-row {
     flex-direction: column;
     .top-row-container {
@@ -98,4 +109,29 @@ export const StyledP = styled.p`
   font-weight: 600;
   color: #7c848e;
   text-align: center;
+`
+
+export const QLabelSpan = styled.span`
+  color: ${themeColor};
+  margin-bottom: 10px;
+  display: inline-block;
+`
+export const StyledSwitch = styled(Switch)`
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 35px;
+  display: inline-block;
+`
+export const StyledDiv = styled.div`
+  font-size: 12px;
+  color: black;
+  font-weight: ${(props) => props.fontWeight || 400};
+  opacity: 0.65;
+  margin-right: ${(props) => props.marginRight || '25px'};
+`
+
+export const StyledCol = styled(Col)`
+  display: flex;
+  flex-direction: row;
+  align-items: center;
 `

@@ -48,10 +48,20 @@ const deleteLicenses = (data) =>
     })
     .then((result) => result.data)
 
+const getAllLicensedUserInDistrict = (data) =>
+  api
+    .callApi({
+      method: 'get',
+      url: `${BASE_URL}/licensed-users`,
+      params: data,
+    })
+    .then((result) => result.data)
+
 export default {
   fetchLicenses,
   upgradeUsersSubscriptions,
   fetchManageLicenses,
   bulkEditUsersPermission,
   deleteLicenses,
+  getAllLicensedUserInDistrict,
 }

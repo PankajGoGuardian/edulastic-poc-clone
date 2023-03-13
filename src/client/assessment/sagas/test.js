@@ -106,6 +106,7 @@ import {
 import {
   addAutoselectGroupItems,
   fillAutoselectGoupsWithDummyItems,
+  setEnableAudioResponseQuestionAction,
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
@@ -233,6 +234,10 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     ? test.showTtsForPassages
     : assignmentSettings.showTtsForPassages
 
+  const showImmersiveReader = isTestPreview
+    ? test.showImmersiveReader
+    : assignmentSettings.showImmersiveReader
+
   return {
     testType,
     calcProvider,
@@ -266,6 +271,7 @@ const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
     showHintsToStudents,
     penaltyOnUsingHints,
     showTtsForPassages,
+    showImmersiveReader,
   }
 }
 
@@ -397,7 +403,9 @@ function* loadTest({ payload }) {
     if (testActivity?.testActivity?.testId) {
       testId = testActivity?.testActivity?.testId
     }
-
+    const enableAudioResponseQuestion =
+      testActivity?.enableAudioResponseQuestion || false
+    yield put(setEnableAudioResponseQuestionAction(enableAudioResponseQuestion))
     yield put({
       type: SET_TEST_ID,
       payload: {

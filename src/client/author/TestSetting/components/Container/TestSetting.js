@@ -1,5 +1,10 @@
-import { EduButton, RadioBtn, SelectInputStyled } from '@edulastic/common'
-import { roleuser } from '@edulastic/constants'
+import {
+  EduButton,
+  EduIf,
+  RadioBtn,
+  SelectInputStyled,
+} from '@edulastic/common'
+import { roleuser, subscriptions } from '@edulastic/constants'
 import { IconSaveNew } from '@edulastic/icons'
 import { Select } from 'antd'
 import { get } from 'lodash'
@@ -29,6 +34,7 @@ import AdminSubHeader from '../../../src/components/common/AdminSubHeader/Settin
 import SaSchoolSelect from '../../../src/components/common/SaSchoolSelect'
 import { getUserOrgId, getUserRole } from '../../../src/selectors/user'
 import { receiveStandardsProficiencyAction } from '../../../StandardsProficiency/ducks'
+import { getSubscriptionSelector } from '../../../Subscription/ducks'
 // actions
 import {
   createTestSettingAction,
@@ -48,6 +54,8 @@ const linkSharingPermissions = {
   NO: 'Link sharing off',
 }
 
+const { PARTIAL_PREMIUM, ENTERPRISE } = subscriptions.SUBSCRIPTION_SUB_TYPES
+
 class TestSetting extends Component {
   constructor(props) {
     super(props)
@@ -56,6 +64,7 @@ class TestSetting extends Component {
         partialScore: true,
         timer: true,
         isLinkSharingEnabled: false,
+        enableAudioResponseQuestion: false,
       },
     }
   }
@@ -99,6 +108,7 @@ class TestSetting extends Component {
           partialScore: true,
           timer: true,
           isLinkSharingEnabled: false,
+          enableAudioResponseQuestion: false,
         },
       }
     }
@@ -144,6 +154,7 @@ class TestSetting extends Component {
       timer: testSetting.timer,
       testTypesProfile: testSetting.testTypesProfile,
       isLinkSharingEnabled: !!testSetting.isLinkSharingEnabled,
+      enableAudioResponseQuestion: testSetting.enableAudioResponseQuestion,
     }
     if (updateData.isLinkSharingEnabled) {
       Object.assign(updateData, {
@@ -170,6 +181,7 @@ class TestSetting extends Component {
       standardsProficiencyLoading,
       performanceBandLoading,
       setDefaultProfile,
+      subscription: { subType } = {},
     } = this.props
 
     const { testSetting } = this.state
@@ -188,7 +200,8 @@ class TestSetting extends Component {
     )
 
     const showSpin = updating || loading || creating
-
+    const enableAudioResponseQuestions = !!testSetting.enableAudioResponseQuestion
+    const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
     return (
       <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
@@ -252,6 +265,28 @@ class TestSetting extends Component {
                     <RadioBtn value={false}>No</RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
+                <EduIf condition={isEnterprise}>
+                  <StyledCol data-cy="allowAudioResponseType">
+                    <InputLabel>
+                      ENABLE AUDIO RESPONSE QUESTION TYPE{' '}
+                    </InputLabel>
+                    <StyledRadioGrp
+                      defaultValue={enableAudioResponseQuestions}
+                      onChange={(e) =>
+                        this.changeSetting(e, 'enableAudioResponseQuestion')
+                      }
+                      value={enableAudioResponseQuestions}
+                    >
+                      <RadioBtn value>Yes</RadioBtn>
+                      <RadioBtn value={false}>No</RadioBtn>
+                    </StyledRadioGrp>
+                    <EduIf condition={enableAudioResponseQuestions}>
+                      <InputLabel>
+                        Student record their voice to respond{' '}
+                      </InputLabel>
+                    </EduIf>
+                  </StyledCol>
+                </EduIf>
               </StyledRow>
 
               <StyledHeading1 data-cy="performanceBandProfiles">
@@ -451,6 +486,7 @@ const enhance = compose(
       userOrgId: getUserOrgId(state),
       role: getUserRole(state),
       schoolId: get(state, 'user.saSettingsSchool'),
+      subscription: getSubscriptionSelector(state),
     }),
     {
       loadTestSetting: receiveTestSettingAction,

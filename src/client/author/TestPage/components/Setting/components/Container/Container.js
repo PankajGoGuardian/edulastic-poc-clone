@@ -109,6 +109,8 @@ import {
 import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
+import { safeModeI18nTranslation } from '../../../../../authUtils'
+import { getIsEnterpriseUserSelector } from '../../../../../src/selectors/subscription'
 
 const {
   settingCategories,
@@ -132,7 +134,15 @@ const {
   testSettingsOptions,
   docBasedSettingsOptions,
   REF_MATERIAL_ALLOWED_SKIN_TYPES,
+  accessibilitySettings,
 } = testConstants
+
+const {
+  magnifier,
+  scratchPad,
+  skipAlert,
+  immersiveReader,
+} = accessibilitySettings
 
 const { Option } = Select
 
@@ -737,6 +747,7 @@ class Setting extends Component {
       standardsData,
       defaultTestTypeProfiles,
       togglePenaltyOnUsingHints,
+      isEnterpriseUser,
     } = this.props
     const {
       isDocBased,
@@ -760,6 +771,7 @@ class Setting extends Component {
       testContentVisibility = testContentVisibilityOptions.ALWAYS,
       playerSkinType = playerSkinTypes.edulastic.toLowerCase(),
       showMagnifier = true,
+      showImmersiveReader = false,
       timedAssignment,
       allowedTime,
       enableScratchpad = true,
@@ -870,27 +882,41 @@ class Setting extends Component {
 
     const accessibilityData = [
       {
-        key: 'showMagnifier',
+        key: magnifier.key,
         value: showMagnifier,
-        description:
-          'This tool provides visual assistance. When enabled, students can move the magnifier around the page to enlarge areas of their screen.',
-        id: 'magnifier-setting',
+        description: i18translate(
+          'accessibilitySettings.magnifier.description'
+        ),
+        id: magnifier.id,
       },
       {
-        key: 'enableScratchpad',
+        key: scratchPad.key,
         value: enableScratchpad,
-        description:
-          'When enabled, a student can open ScratchPad to show their work. The tool contains options for text, drawing, shapes, rulers, and more.',
-        id: 'scratchpad-setting',
+        description: i18translate(
+          'accessibilitySettings.scratchPad.description'
+        ),
+        id: scratchPad.id,
       },
       {
-        key: 'enableSkipAlert',
+        key: skipAlert.key,
         value: enableSkipAlert,
-        description:
-          'When enabled, a student can not skip a question without confirmation.',
-        id: 'skip-alert',
+        description: i18translate(
+          'accessibilitySettings.skipAlert.description'
+        ),
+        id: skipAlert.id,
       },
     ]
+
+    if (isEnterpriseUser) {
+      accessibilityData.unshift({
+        key: immersiveReader.key,
+        value: showImmersiveReader,
+        description: i18translate(
+          'accessibilitySettings.immersiveReader.description'
+        ),
+        id: immersiveReader.id,
+      })
+    }
 
     const isTestlet =
       playerSkinType?.toLowerCase() === playerSkinValues.testlet.toLowerCase()
@@ -1746,7 +1772,12 @@ class Setting extends Component {
                             </Col>
                             <Col span={12}>
                               <StyledRadioGroup
-                                disabled={disabled || !features[o.key]}
+                                disabled={
+                                  disabled ||
+                                  (o.key === immersiveReader.key
+                                    ? !isEnterpriseUser
+                                    : !features[o.key])
+                                }
                                 onChange={(e) =>
                                   this.updateTestData(o.key)(e.target.value)
                                 }
@@ -2221,7 +2252,7 @@ class Setting extends Component {
                     <SettingContainer>
                       <Title>
                         <span>
-                          Require Safe Exam Browser{' '}
+                          {safeModeI18nTranslation(i18translate, 'title')}
                           <DollarPremiumSymbol
                             premium={
                               assessmentSuperPowersRequireSafeExamBrowser
@@ -2229,13 +2260,7 @@ class Setting extends Component {
                           />
                         </span>
                         <Tooltip
-                          title="Ensure a secure testing environment by using Safe Exam Browser
-                      to lockdown the student's device. To use this feature, Safe Exam Browser 
-                      (on Windows/Mac/iPad) must be installed on the student device. The quit 
-                      password can be used by teacher or proctor to safely exit Safe Exam Browser 
-                      in the middle of an assessment. The quit password should not be revealed to 
-                      the students. If you select this option, students must use devices (Windows, 
-                      Mac or iPad) with Safe Exam Browser installed."
+                          title={safeModeI18nTranslation(i18translate, 'info')}
                         >
                           <IconInfo
                             color={lightGrey9}
@@ -2284,16 +2309,7 @@ class Setting extends Component {
                           </Col>
                         </Row>
                         <Description>
-                          Ensure a secure testing environment by using Safe Exam
-                          Browser to lockdown the student&apos;s device. To use
-                          this feature, Safe Exam Browser (on Windows/Mac/iPad)
-                          must be installed on the student device. The quit
-                          password can be used by teacher or proctor to safely
-                          exit Safe Exam Browser in the middle of an assessment.
-                          The quit password should not be revealed to the
-                          students. If you select this option, students must use
-                          devices (Windows, Mac or iPad) with Safe Exam Browser
-                          installed.
+                          {safeModeI18nTranslation(i18translate, 'info')}
                         </Description>
                       </Body>
                     </SettingContainer>
@@ -2518,12 +2534,14 @@ Setting.propTypes = {
   entity: PropTypes.object.isRequired,
   isEditable: PropTypes.bool,
   userRole: PropTypes.string,
+  isEnterpriseUser: PropTypes.bool,
 }
 
 Setting.defaultProps = {
   owner: false,
   userRole: '',
   isEditable: false,
+  isEnterpriseUser: false,
 }
 
 const enhance = compose(
@@ -2557,6 +2575,7 @@ const enhance = compose(
       testSettingsList: getTestSettingsListSelector(state),
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userId: getUserId(state),
+      isEnterpriseUser: getIsEnterpriseUserSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

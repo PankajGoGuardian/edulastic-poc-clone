@@ -11,7 +11,6 @@ import {
   minBy,
   round,
   sum,
-  meanBy,
 } from 'lodash'
 
 import {
@@ -278,6 +277,29 @@ const findTestWithAverageBand = (tests) => {
   return item
 }
 
+const getWeightedAchievementLevel = (records) => {
+  const weightedAverage =
+    sum(
+      records.map(
+        (record) => (record.achievementLevel || 0) * (record.totalGraded || 0)
+      )
+    ) / sum(records.map((record) => parseInt(record.totalGraded || 0, 10)))
+
+  return round(weightedAverage || 0, 2)
+}
+
+const getLineScoreForExternalData = (records, achievementLevel) => {
+  const lineScoreForExternalData = (records || []).reduce((acc, record) => {
+    if (record.id < achievementLevel) {
+      acc += record.totalGradedPercentage
+    } else if (record.id === achievementLevel) {
+      acc += round(record.totalGradedPercentage / 2, 2)
+    }
+    return acc
+  }, 0)
+  return lineScoreForExternalData
+}
+
 const augmentBandData = (tests, bandInfo, externalBands) => {
   const testsWithBandInfo = tests.map((t) => {
     let band = { name: '-', color: '#010101' }
@@ -353,8 +375,8 @@ const getAggregatedDataByUniqId = (metricInfo) => {
         testName: _testName,
         isIncomplete,
         totalTotalScore: round(testData.totalTotalScore, 2),
-        averageScore: round(averageScore, 2),
-        averageScorePercentage: round(averageScorePercentage, 2),
+        averageScore: round(averageScore),
+        averageScorePercentage: round(averageScorePercentage),
       }
     })
     .sort((a, b) => b.assessmentDate - a.assessmentDate)
@@ -562,13 +584,10 @@ export const getChartData = (
           totalMaxScore: 0,
         }
       )
-      testData.achievementLevel = meanBy(
-        externalGroupedByUniqId[uniqId],
-        'achievementLevel'
+      testData.achievementLevel = getWeightedAchievementLevel(
+        externalGroupedByUniqId[uniqId]
       )
 
-      // TODO: check with Shubhangi and determine by score range
-      const lineScore = 50
       const averageScore = testData.totalScore / testData.totalGraded || 0
 
       // curate records for each performance criteria of external test
@@ -602,6 +621,11 @@ export const getChartData = (
         }
         return { ..._default, ..._record }
       })
+
+      const lineScore = getLineScoreForExternalData(
+        _records,
+        round(testData.achievementLevel)
+      )
 
       return {
         ...testData,

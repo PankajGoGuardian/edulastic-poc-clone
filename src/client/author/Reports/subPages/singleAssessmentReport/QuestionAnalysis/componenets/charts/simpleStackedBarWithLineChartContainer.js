@@ -18,6 +18,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
   filter,
   onBarClickCB,
   onResetClickCB,
+  setVisibleIndices,
 }) => {
   const getTooltipJSX = (payload) => {
     if (payload && payload.length) {
@@ -82,6 +83,7 @@ export const SimpleStackedBarWithLineChartContainer = ({
       TooltipCursor={CustomChartCursor}
       onBarClickCB={onBarClickCB}
       onResetClickCB={onResetClickCB}
+      setVisibleIndices={setVisibleIndices}
       yAxisLabel="Avg.Score (%)"
       filter={filter}
       lineXAxisDataKey="qLabel"

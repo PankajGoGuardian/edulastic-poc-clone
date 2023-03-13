@@ -29,6 +29,7 @@ const performanceByStudents = require('./singleAssessmentReport/performanceByStu
 // -----|-----|-----|-----| STANDARDS MASTERY REPORT |-----|-----|-----|----- //
 
 const standardsPerformanceSummary = require('./standardsMasteryReport/standardsPerformanceSummary')
+const standardsGradebook = require('./standardsMasteryReport/standardsGradebook')
 
 // -----|-----|-----|-----| STANDARDS MASTERY REPORT |-----|-----|-----|----- //
 
@@ -42,4 +43,5 @@ module.exports = {
   performanceByStudents,
   // SMR
   standardsPerformanceSummary,
+  standardsGradebook,
 }

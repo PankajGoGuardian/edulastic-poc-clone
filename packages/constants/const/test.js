@@ -58,6 +58,21 @@ module.exports = {
       type: 'settings-category',
     },
   ],
+  accessibilitySettings: {
+    magnifier: {
+      key: 'showMagnifier',
+      id: 'magnifier-setting',
+    },
+    scratchPad: {
+      key: 'enableScratchpad',
+      id: 'scratchpad-setting',
+    },
+    skipAlert: {
+      key: 'enableSkipAlert',
+      id: 'skip-alert',
+    },
+    immersiveReader: { key: 'showImmersiveReader', id: 'immersive-reader' },
+  },
   settingCategoriesFeatureMap: {
     'test-type': 'selectTestType',
     'player-skin-type': 'selectPlayerSkinType',
@@ -159,6 +174,7 @@ module.exports = {
     showMagnifier: 'MAGNIFIER',
     enableScratchpad: 'SCRATCHPAD',
     enableSkipAlert: 'SHOW SKIP ALERT TO STUDENT',
+    showImmersiveReader: 'IMMERSIVE READER',
   },
   collectionDefaultFilter: [
     { text: 'All Collections', value: '' },
@@ -464,7 +480,7 @@ module.exports = {
   },
   ATTEMPT_WINDOW_VALUE: {
     DEFAULT: 'Anytime between the Open and Close date',
-    WEEKDAYS: 'Weekdays',
+    WEEKDAYS: 'Weekdays (Mon to Fri)',
     CUSTOM: 'Custom',
   },
 }

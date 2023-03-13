@@ -13,6 +13,10 @@ import PropTypes from 'prop-types'
 import React, { useEffect, useState, useMemo, useRef } from 'react'
 import { connect } from 'react-redux'
 import {
+  AUDIO_RESPONSE,
+  HIDE_QUESTION_TYPES,
+} from '@edulastic/constants/const/questionType'
+import {
   getCurrentDistrictUsersAction,
   getCurrentDistrictUsersSelector,
 } from '../../../../student/Login/ducks'
@@ -36,6 +40,7 @@ import {
 } from './styled'
 import { addItemToCartAction } from '../../ducks'
 import TagField from '../Fields/TagField'
+import { getIsAudioResponseQuestionEnabled } from '../../../TestPage/ducks'
 
 const { SMART_FILTERS } = libraryFilters
 const Search = ({
@@ -65,6 +70,7 @@ const Search = ({
   userRole,
   itemCount,
   addItemToCart,
+  enableAudioResponseQuestion,
 }) => {
   const [showModal, setShowModalValue] = useState(false)
 
@@ -113,6 +119,11 @@ const Search = ({
     !(curriculumStandards.elo && curriculumStandards.elo.length > 0) ||
     !curriculumId
 
+  const questionTypesToBeHidden = [...HIDE_QUESTION_TYPES]
+  if (!enableAudioResponseQuestion) {
+    questionTypesToBeHidden.push(AUDIO_RESPONSE)
+  }
+
   const questionsType = [
     { value: '', text: 'All Types' },
     { value: 'multipleChoice', text: 'Multiple Choice' },
@@ -120,12 +131,7 @@ const Search = ({
     { value: 'passageWithQuestions', text: 'Passage with Questions' },
     { value: 'dash', text: '--------------------', disabled: true },
     ...questionTypes.selectsData
-      .filter(
-        (el) =>
-          !['', 'multipleChoice', 'math', 'passageWithQuestions'].includes(
-            el.value
-          )
-      )
+      .filter((el) => !questionTypesToBeHidden.includes(el.value))
       .sort((a, b) => (a.value > b.value ? 1 : -1)),
   ]
 
@@ -469,6 +475,7 @@ export default connect(
     districtId: getUserOrgId(state),
     currentDistrictUsers: getCurrentDistrictUsersSelector(state),
     userRole: getUserRole(state),
+    enableAudioResponseQuestion: getIsAudioResponseQuestionEnabled(state),
   }),
   {
     getCurrentDistrictUsers: getCurrentDistrictUsersAction,

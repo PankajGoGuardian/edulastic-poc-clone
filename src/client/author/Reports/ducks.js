@@ -84,10 +84,6 @@ import {
   reportPeerPerformanceSaga,
 } from './subPages/singleAssessmentReport/PeerPerformance/ducks'
 import {
-  reportQuestionAnalysisReducer,
-  reportQuestionAnalysisSaga,
-} from './subPages/singleAssessmentReport/QuestionAnalysis/ducks'
-import {
   reportResponseFrequencyReducer,
   reportResponseFrequencySaga,
 } from './subPages/singleAssessmentReport/ResponseFrequency/ducks'
@@ -416,7 +412,6 @@ export const reportReducer = combineReducers({
 
   reportAssessmentSummaryReducer,
   reportPeerPerformanceReducer,
-  reportQuestionAnalysisReducer,
   reportResponseFrequencyReducer,
   reportPerformanceByStandardsReducer,
   reportPerformanceByStudentsReducer,
@@ -814,7 +809,6 @@ export function* reportSaga() {
 
     reportAssessmentSummarySaga(),
     reportPeerPerformanceSaga(),
-    reportQuestionAnalysisSaga(),
     reportResponseFrequencySaga(),
     performanceByStandardsSaga(),
     reportPerformanceByStudentsSaga(),

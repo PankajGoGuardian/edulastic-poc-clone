@@ -26,6 +26,8 @@ import {
   getSummaryDataFromSummaryMetrics,
   getTableData,
   getNoDataContainerText,
+  checkIsInvalidSharedFilters,
+  getReportFilters,
 } from './utils'
 import {
   StyledSpan,
@@ -62,7 +64,16 @@ const PreVsPostReport = ({
     [sharedReport]
   )
 
-  const reportFilters = sharedReportFilters || settings.requestFilters
+  const isInvalidSharedFilters = checkIsInvalidSharedFilters(
+    sharedReportFilters,
+    isSharedReport
+  )
+
+  const reportFilters = getReportFilters(
+    isSharedReport,
+    sharedReportFilters,
+    settings.requestFilters
+  )
 
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
@@ -112,7 +123,7 @@ const PreVsPostReport = ({
       ...settings.requestFilters,
       ...ddfilter,
     }
-    if (canFetchReport) {
+    if (!isInvalidSharedFilters) {
       setTableFilters({ ...tableFilters, preBandScore: '', postBandScore: '' })
       fetchReportSummaryDataRequest(q)
       return () => toggleFilter(null, false)
@@ -128,7 +139,7 @@ const PreVsPostReport = ({
       ...ddfilter,
       compareBy: tableFilters.compareBy.key,
     }
-    if (canFetchReport) {
+    if (!isInvalidSharedFilters) {
       fetchPreVsPostReportTableDataRequest(q)
       return () => toggleFilter(null, false)
     }
@@ -241,7 +252,7 @@ const PreVsPostReport = ({
   const noDataContainerText = getNoDataContainerText(
     settings,
     error,
-    canFetchBySharedReport
+    isInvalidSharedFilters
   )
 
   return (

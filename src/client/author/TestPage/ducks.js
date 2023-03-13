@@ -344,6 +344,8 @@ export const SET_MAX_SHARING_LEVEL_ALLOWED =
 export const TOGGLE_REFERENCE_MATERIAL = '[tests] toggle enable ref material'
 export const TOGGLE_PENALTY_ON_USING_HINTS =
   '[tests] toggle penalty on using hints'
+export const SET_ENABLE_AUDIO_RESONSE_QUESTION =
+  '[tests] set enable audio response question'
 // actions
 
 export const toggleRefMaterialAction = createAction(TOGGLE_REFERENCE_MATERIAL)
@@ -356,6 +358,9 @@ export const updateDefaultThumbnailAction = createAction(
 )
 export const togglePenaltyOnUsingHintsAction = createAction(
   TOGGLE_PENALTY_ON_USING_HINTS
+)
+export const setEnableAudioResponseQuestionAction = createAction(
+  SET_ENABLE_AUDIO_RESONSE_QUESTION
 )
 export const setPassageItemsAction = createAction(SET_PASSAGE_ITEMS)
 export const setAndSavePassageItemsAction = createAction(
@@ -641,6 +646,11 @@ export const getTestSelector = createSelector(
   (state) => state.entity
 )
 
+export const getQuestionTypesInTestSelector = createSelector(
+  getTestSelector,
+  (state) => state?.metadata?.questionTypes || []
+)
+
 export const getPlaylistSelector = createSelector(
   playlistStateSelector,
   (state) => state.entity
@@ -823,6 +833,11 @@ export const getShowRegradeConfirmPopupSelector = createSelector(
 export const getShowUpgradePopupSelector = createSelector(
   stateSelector,
   (state) => state.upgrade
+)
+
+export const getIsAudioResponseQuestionEnabled = createSelector(
+  stateSelector,
+  (state) => state?.enableAudioResponseQuestion || false
 )
 
 export const showGroupsPanelSelector = createSelector(
@@ -1370,6 +1385,7 @@ export const reducer = (state = initialState, { type, payload }) => {
           performanceBand,
           standardGradingScale,
         },
+        enableAudioResponseQuestion: payload.enableAudioResponseQuestion,
       }
     case SET_LOADING_TEST_PAGE:
       return { ...state, loading: payload }
@@ -1723,6 +1739,11 @@ export const reducer = (state = initialState, { type, payload }) => {
         updated: true,
         hasPenaltyOnUsingHints: payload,
       }
+    case SET_ENABLE_AUDIO_RESONSE_QUESTION:
+      return {
+        ...state,
+        enableAudioResponseQuestion: payload,
+      }
     default:
       return state
   }
@@ -1894,6 +1915,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     penaltyOnUsingHints,
     allowTeacherRedirect,
     showTtsForPassages,
+    showImmersiveReader: entity.showImmersiveReader,
   }
 
   if (entity.safeBrowser) {

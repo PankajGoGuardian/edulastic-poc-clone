@@ -3,12 +3,13 @@ import PropTypes from 'prop-types'
 import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
-import { Select } from 'antd'
+import { Select, Tooltip } from 'antd'
 import { EduIf, SelectInputStyled } from '@edulastic/common'
-import { IconGroup, IconClass, IconClose } from '@edulastic/icons'
+import { IconGroup, IconClass, IconClose, IconSearch } from '@edulastic/icons'
 import { lightGrey10, tagTextColor } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq, debounce, isArray } from 'lodash'
+import { segmentApi } from '@edulastic/api'
 import { receiveClassListAction } from '../../../Classes/ducks'
 import {
   getAssignedClassesByIdSelector,
@@ -33,6 +34,8 @@ import {
   InfoSection,
   AdvancedSearchTagContainer,
   AdvancedSearchTag,
+  FilterButtonWrapper,
+  FilterText,
 } from './styled-components'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
@@ -50,6 +53,8 @@ import {
   getIsAllClassSelectedSelector,
 } from '../../../AdvanceSearch/ducks'
 import { sortGrades } from '../../../TestPage/utils'
+import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+import { OkButton } from '../../../../common/styled'
 
 const { allGrades, allSubjects } = selectsData
 
@@ -450,192 +455,241 @@ class ClassList extends React.Component {
         sortDirections: ['descend', 'ascend'],
       },
     ]
-
+    const advancedSearchDisabledToolTipMsg = isAdvancedSearchSelected
+      ? 'Disabled due to advanced search is applied to filter classes.'
+      : null
+    const classDropDown = [
+      { name: 'All', value: 'all' },
+      { name: 'Classes', value: 'class' },
+      { name: 'Student Groups', value: 'custom' },
+    ]
     return (
       <ClassListContainer>
         <ClassListFilter>
-          <StyledRowLabel>
-            <div>School </div>
-            <SelectInputStyled
-              disabled={isAdvancedSearchSelected}
-              data-cy="schoolSelect"
-              mode="multiple"
-              placeholder="All School"
-              showSearch
-              filterOption={(input, option) =>
-                option.props?.children
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              }
-              onChange={changeField('institutionIds')}
-              value={searchTerms.institutionIds}
-              tagsEllipsis
-            >
-              {schools.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Grades
-            <SelectInputStyled
-              disabled={isAdvancedSearchSelected}
-              mode="multiple"
-              value={searchTerms.grades}
-              placeholder="All grades"
-              onChange={changeField('grades')}
-              showSearch
-              filterOption={(input, option) =>
-                option.props?.children
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              }
-              data-cy="class-grades-filter"
-            >
-              {allGrades.map(
-                ({ value, text, isContentGrade }) =>
-                  !isContentGrade && (
-                    <Select.Option key={value} value={value}>
-                      {text}
-                    </Select.Option>
-                  )
-              )}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Subject
-            <SelectInputStyled
-              disabled={isAdvancedSearchSelected}
-              mode="multiple"
-              value={searchTerms.subjects}
-              placeholder="All subjects"
-              onChange={changeField('subjects')}
-              showSearch
-              filterOption={(input, option) =>
-                option.props?.children
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              }
-              data-cy="class-subject-filter"
-            >
-              {allSubjects.map(({ value, text }) => (
-                <Select.Option key={value} value={value}>
-                  {text}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Course
-            <SelectInputStyled
-              disabled={isAdvancedSearchSelected}
-              data-cy="selectCourses"
-              mode="multiple"
-              placeholder="All Course"
-              onChange={changeField('courseIds')}
-              autoClearSearchValue={false}
-              showSearch
-              tagsEllipsis
-              onSearch={this.handleCourseSearch}
-              onFocus={() => this.handleCourseSearch('')}
-              filterOption={false}
-              defaultActiveFirstOption={false}
-              loading={isCoursesLoading}
-            >
-              {courseList.map(({ _id, name }) => (
-                <Select.Option key={_id} value={_id}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Show Class/Groups
-            <SelectInputStyled
-              data-cy="showClassGroup"
-              placeholder="All"
-              onChange={this.handleClassTypeFilter}
-              showSearch
-              value={classType}
-              disabled={filterClassIds.length || isAdvancedSearchSelected}
-              filterOption={(input, option) =>
-                option.props?.children
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {[
-                { name: 'All', value: 'all' },
-                { name: 'Classes', value: 'class' },
-                { name: 'Student Groups', value: 'custom' },
-              ].map(({ name, value }) => (
-                <Select.Option key={name} value={value}>
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Search Class/Groups
-            <SelectInputStyled
-              disabled={isAdvancedSearchSelected}
-              placeholder="Search by name of class or group"
-              onChange={this.handleClassSelectFromDropDown}
-              mode="multiple"
-              showSearch
-              filterOption={(input, option) =>
-                option.props?.children
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              }
-              value={filterClassIds}
-              data-cy="selectClass"
-              tagsEllipsis
-            >
-              {classList.map(({ name, _id }) => (
-                <Select.Option
-                  key={name}
-                  value={_id}
-                  disabled={assignedClassesById[testType][_id]}
-                >
-                  {name}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
-
-          <StyledRowLabel>
-            Tags
-            <SelectInputStyled
-              disabled={isAdvancedSearchSelected}
-              mode="multiple"
-              data-cy="tagSelect"
-              value={searchTerms.tags}
-              placeholder="All Tags"
-              onChange={changeField('tags')}
-              showSearch
-              filterOption={(input, option) =>
-                option.props?.children
-                  ?.toLowerCase()
-                  ?.indexOf(input.toLowerCase()) >= 0
-              }
-            >
-              {tagList.map(({ _id, tagName }) => (
-                <Select.Option key={_id} value={_id}>
-                  {tagName}
-                </Select.Option>
-              ))}
-            </SelectInputStyled>
-          </StyledRowLabel>
+          <FeaturesSwitch
+            inputFeatures="advanceSearchEnabled"
+            actionOnInaccessible="hidden"
+          >
+            <FilterButtonWrapper>
+              <FilterText>Filters</FilterText>
+              <OkButton
+                onClick={() => {
+                  setShowAdvanceSearchModal(true)
+                  segmentApi.genericEventTrack('advanceSearchClick', {})
+                }}
+                data-cy="advancedSearchButton"
+              >
+                Advanced Search
+                <IconSearch />
+              </OkButton>
+            </FilterButtonWrapper>
+          </FeaturesSwitch>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              <div>School </div>
+              <SelectInputStyled
+                disabled={isAdvancedSearchSelected}
+                data-cy="schoolSelect"
+                mode="multiple"
+                placeholder="All School"
+                showSearch
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+                onChange={changeField('institutionIds')}
+                value={searchTerms.institutionIds}
+                tagsEllipsis
+              >
+                {schools.map(({ _id, name }) => (
+                  <Select.Option key={_id} value={_id}>
+                    {name}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              Grades
+              <SelectInputStyled
+                disabled={isAdvancedSearchSelected}
+                mode="multiple"
+                value={searchTerms.grades}
+                placeholder="All grades"
+                onChange={changeField('grades')}
+                showSearch
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+                data-cy="class-grades-filter"
+              >
+                {allGrades.map(
+                  ({ value, text, isContentGrade }) =>
+                    !isContentGrade && (
+                      <Select.Option key={value} value={value}>
+                        {text}
+                      </Select.Option>
+                    )
+                )}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              Subject
+              <SelectInputStyled
+                disabled={isAdvancedSearchSelected}
+                mode="multiple"
+                value={searchTerms.subjects}
+                placeholder="All subjects"
+                onChange={changeField('subjects')}
+                showSearch
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+                data-cy="class-subject-filter"
+              >
+                {allSubjects.map(({ value, text }) => (
+                  <Select.Option key={value} value={value}>
+                    {text}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              Course
+              <SelectInputStyled
+                disabled={isAdvancedSearchSelected}
+                data-cy="selectCourses"
+                mode="multiple"
+                placeholder="All Course"
+                onChange={changeField('courseIds')}
+                autoClearSearchValue={false}
+                showSearch
+                tagsEllipsis
+                onSearch={this.handleCourseSearch}
+                onFocus={() => this.handleCourseSearch('')}
+                filterOption={false}
+                defaultActiveFirstOption={false}
+                loading={isCoursesLoading}
+              >
+                {courseList.map(({ _id, name }) => (
+                  <Select.Option key={_id} value={_id}>
+                    {name}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              Show Class/Groups
+              <SelectInputStyled
+                data-cy="showClassGroup"
+                placeholder="All"
+                onChange={this.handleClassTypeFilter}
+                showSearch
+                value={classType}
+                disabled={filterClassIds.length || isAdvancedSearchSelected}
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {classDropDown.map(({ name, value }) => (
+                  <Select.Option key={name} value={value}>
+                    {name}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              Search Class/Groups
+              <SelectInputStyled
+                disabled={isAdvancedSearchSelected}
+                placeholder="Search by name of class or group"
+                onChange={this.handleClassSelectFromDropDown}
+                mode="multiple"
+                showSearch
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+                value={filterClassIds}
+                data-cy="selectClass"
+                tagsEllipsis
+              >
+                {classList.map(({ name, _id }) => (
+                  <Select.Option
+                    key={name}
+                    value={_id}
+                    disabled={assignedClassesById[testType][_id]}
+                  >
+                    {name}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
+          <Tooltip
+            title={advancedSearchDisabledToolTipMsg}
+            placement="bottomLeft"
+          >
+            <StyledRowLabel>
+              Tags
+              <SelectInputStyled
+                disabled={isAdvancedSearchSelected}
+                mode="multiple"
+                data-cy="tagSelect"
+                value={searchTerms.tags}
+                placeholder="All Tags"
+                onChange={changeField('tags')}
+                showSearch
+                filterOption={(input, option) =>
+                  option.props?.children
+                    ?.toLowerCase()
+                    ?.indexOf(input.toLowerCase()) >= 0
+                }
+              >
+                {tagList.map(({ _id, tagName }) => (
+                  <Select.Option key={_id} value={_id}>
+                    {tagName}
+                  </Select.Option>
+                ))}
+              </SelectInputStyled>
+            </StyledRowLabel>
+          </Tooltip>
         </ClassListFilter>
-
         <TableContainer>
           <EduIf condition={isAdvancedSearchSelected}>
             <AdvancedSearchTagContainer>
@@ -643,8 +697,9 @@ class ClassList extends React.Component {
                 onClick={() => {
                   setShowAdvanceSearchModal(true)
                 }}
+                data-cy="advancedSearchTag"
               >
-                ADVANCED SEARCH
+                Advance Search Results
               </AdvancedSearchTag>
               <IconClose
                 height={7}
@@ -652,25 +707,26 @@ class ClassList extends React.Component {
                 style={{ cursor: 'pointer' }}
                 onClick={this.removeAdvanceSearch}
                 color={tagTextColor}
+                data-cy="advancedSearchTagRemoveButton"
               />
             </AdvancedSearchTagContainer>
           </EduIf>
           <InfoSection>
-            <div>
+            <div data-cy="schoolSearchInfo">
               <span>School(s)</span>
               <span>
                 <span>{schoolsCount}/</span>
                 <span>{totalSchoolsCount}</span>
               </span>
             </div>
-            <div>
+            <div data-cy="classSearchInfo">
               <span>Class(es)</span>
               <span>
                 <span>{classesCount}/</span>
                 <span>{selectableClassList.length}</span>
               </span>
             </div>
-            <div>
+            <div data-cy="studentSearchInfo">
               <span>Student(s)</span>
               <span>
                 <span>{studentsCount}/</span>

@@ -15,6 +15,7 @@ import { debounce, isNumber, omitBy } from 'lodash'
 import moment from 'moment'
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
+import { SUBSCRIPTION_DEFINITION_TYPES } from '../Data'
 
 const sanitizeSearchResult = (data = []) => data.map((x) => x?._source?.email)
 
@@ -54,9 +55,14 @@ const AddSubscriptionModal = ({
     }))
   }
 
-  useEffect(() => products.forEach((x) => handleFieldChange(x.type)(1)), [
-    products,
-  ])
+  useEffect(
+    () =>
+      products.forEach((x) => {
+        let initialFieldValue = 0
+        handleFieldChange(x.type)(initialFieldValue)
+      }),
+    [products]
+  )
 
   const fetchUsers = async (searchString) => {
     const { districtId } = fieldData
@@ -97,6 +103,7 @@ const AddSubscriptionModal = ({
       customerSuccessManager,
       opportunityId,
       notes,
+      districtId,
     } = fieldData
     if (subStartDate >= subEndDate) {
       return notification({
@@ -142,6 +149,7 @@ const AddSubscriptionModal = ({
       customerSuccessManager,
       opportunityId,
       notes,
+      districtId,
     }
 
     const payload = omitBy(data, (x) => !x)
@@ -157,6 +165,8 @@ const AddSubscriptionModal = ({
     }
     return pressedKey
   }
+
+  const sortProducts = (product1, product2) => product1.order - product2.order
 
   const footer = (
     <>
@@ -240,7 +250,7 @@ const AddSubscriptionModal = ({
           <Col span={24}>
             <h3>Products</h3>
           </Col>
-          {products.map((product) => (
+          {products.sort(sortProducts).map((product) => (
             <Col span={12} key={product._id} style={{ marginBottom: '15px' }}>
               <FieldLabel>{product.name}</FieldLabel>
               <NumberInputStyled
@@ -248,8 +258,12 @@ const AddSubscriptionModal = ({
                 style={{ width: '100%' }}
                 placeholder={`${product.name.toLowerCase()} license`}
                 value={fieldData[product.type]}
-                min={product.type === 'PREMIUM' ? 1 : 0}
-                max={product.type === 'PREMIUM' ? Infinity : fieldData.PREMIUM}
+                min={0}
+                max={
+                  product.type === SUBSCRIPTION_DEFINITION_TYPES.PREMIUM
+                    ? Infinity
+                    : fieldData.PREMIUM
+                }
                 onChange={(value) => handleFieldChange(product.type)(value)}
                 data-cy={product.type}
                 onKeyDown={handleKeyPress}

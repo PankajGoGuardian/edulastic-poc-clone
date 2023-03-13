@@ -102,10 +102,24 @@ const fetchStandardsProgressReport = (params) =>
     params,
   })
 
-const fetchStandardsGradebookReport = (params) =>
+const fetchStandardsGradbookSkillInfo = (params) =>
   api.callApi({
     useSlowApi: true,
-    url: `/report/standards-gradebook`,
+    url: `report/standards-gradebook/skill-info`,
+    params,
+  })
+
+const fetchStandardsGradebookSummary = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: '/report/standards-gradebook/summary',
+    params,
+  })
+
+const fetchStandardsGradebookDetails = (params) =>
+  api.callApi({
+    useSlowApi: true,
+    url: '/report/standards-gradebook/details',
     params,
   })
 
@@ -142,12 +156,23 @@ const fetchStandardMasteryBrowseStandards = ({
   })
 }
 
-const fetchQuestionAnalysisReport = (params) =>
-  api.callApi({
-    useSlowApi: true,
-    url: `/report/question-analysis`,
-    params: { ...params.requestFilters, testId: params.testId },
-  })
+const fetchQuestionAnalysisSummaryReport = ({ requestFilters, testId }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `/report/question-analysis/summary`,
+      params: { ...requestFilters, testId },
+    })
+    .then((response) => response.data.result)
+
+const fetchQuestionAnalysisPerformanceReport = ({ requestFilters, testId }) =>
+  api
+    .callApi({
+      useSlowApi: true,
+      url: `report/question-analysis/details`,
+      params: { ...requestFilters, testId },
+    })
+    .then((response) => response.data.result)
 
 const fetchMARFilterData = (params) =>
   api.callApi({
@@ -325,11 +350,14 @@ export default {
   fetchMARFilterData,
   fetchSPRFilterData,
   fetchStandardsProgressReport,
-  fetchStandardsGradebookReport,
+  fetchStandardsGradbookSkillInfo,
+  fetchStandardsGradebookSummary,
+  fetchStandardsGradebookDetails,
   fetchStandardsPerformanceSummaryReport,
   fetchStandardMasteryFilter,
   fetchStandardMasteryBrowseStandards,
-  fetchQuestionAnalysisReport,
+  fetchQuestionAnalysisSummaryReport,
+  fetchQuestionAnalysisPerformanceReport,
   fetchPeerProgressAnalysisReport,
   fetchStudentProgressReport,
   fetchPerformanceOverTimeReport,

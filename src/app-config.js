@@ -206,6 +206,8 @@ const getSentryReleaseName = () => {
   return `${appVersion}.edu-fe.${appStage}`
 }
 
+const kioskChromeAppId = process.env.REACT_APP_KIOSK_CHROME_APP_ID
+
 export default {
   initEmbeddedServiceCloudWidget,
   sentryIgnoreErrors,
@@ -238,4 +240,5 @@ export default {
   eduScientificCalcCssPath,
   testletMathJax,
   newsela,
+  kioskChromeAppId,
 }

@@ -1,6 +1,6 @@
 {
   "name": "edulastic",
-  "version": "30.0.1",
+  "version": "30.2.1",
   "sideEffects": [
     "!(**/ducks.js)",
     "!(**/duck.js)",
@@ -60,6 +60,7 @@
     "@fortawesome/react-fontawesome": "^0.1.8",
     "@loadable/babel-plugin": "^5.13.2",
     "@loadable/component": "^5.13.2",
+    "@microsoft/immersive-reader-sdk": "^1.2.0",
     "@sentry/browser": "^5.26.0",
     "@sentry/tracing": "^5.26.0",
     "@use-it/interval": "^0.1.3",

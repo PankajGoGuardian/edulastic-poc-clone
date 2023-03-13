@@ -191,6 +191,15 @@ const sendEmailVerificationLink = (data) =>
     })
     .then((result) => result.data.result)
 
+const getExternalUser = (params) =>
+  api
+    .callApi({
+      url: `${prefix}/external`,
+      method: 'get',
+      params,
+    })
+    .then((result) => result.data.result)
+
 export default {
   login,
   signup,
@@ -214,4 +223,5 @@ export default {
   wordPressLoginData,
   verifyEmail,
   sendEmailVerificationLink,
+  getExternalUser,
 }

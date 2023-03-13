@@ -30,7 +30,17 @@ const ValueEditor = (props) => {
     loadCourseListData,
     loadTagListData,
     storeSelectedData,
+    path,
   } = props
+
+  const dataCyValue = (pathLevel = [], selectorName) => {
+    if (pathLevel.length) {
+      if (pathLevel.length == 2)
+        return `groupLevel-${pathLevel[0]}-${selectorName}-${pathLevel[1]}`
+      return `${selectorName}-${pathLevel[0]}`
+    }
+    return selectorName
+  }
 
   const enableSearchFields = {
     [fieldKey.schools]: { key: 'schools', func: loadSchoolsData },
@@ -70,9 +80,10 @@ const ValueEditor = (props) => {
     <EduIf condition={Object.keys(enableSearchFields).includes(field)}>
       <EduThen>
         <StyledSelect
+          data-cy={dataCyValue(path, 'valueEditor')}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode="multiple"
-          style={{ width: '200px' }}
+          style={{ width: '80%', overflowY: 'auto', maxHeight: '70px' }}
           autoClearSearchValue={false}
           onChange={handleChange}
           onFocus={() => handleSearch('')}
@@ -100,7 +111,11 @@ const ValueEditor = (props) => {
         >
           {values.map((item) => {
             return (
-              <Select.Option value={item.value} key={item.value}>
+              <Select.Option
+                value={item.value}
+                key={item.value}
+                data-cy={dataCyValue(path, 'valueOptions')}
+              >
                 {item.label}
               </Select.Option>
             )
@@ -109,10 +124,11 @@ const ValueEditor = (props) => {
       </EduThen>
       <EduElse>
         <StyledSelect
+          data-cy={dataCyValue(path, 'valueEditor')}
           getPopupContainer={(triggerNode) => triggerNode.parentElement}
           mode={type === 'multiselect' ? 'multiple' : 'default'}
           placeholder={`Select ${label}`}
-          style={{ width: '200px' }}
+          style={{ width: '80%', overflowY: 'auto', maxHeight: '70px' }}
           onChange={handleOnChange}
           value={value || undefined}
           showSearch
@@ -124,7 +140,11 @@ const ValueEditor = (props) => {
         >
           {values.map((item) => {
             return (
-              <Select.Option value={item.value} key={item.value}>
+              <Select.Option
+                value={item.value}
+                key={item.value}
+                data-cy={dataCyValue(path, 'valueOptions')}
+              >
                 {item.label}
               </Select.Option>
             )

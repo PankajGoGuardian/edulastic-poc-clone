@@ -66,6 +66,7 @@ import {
   previewCheckAnswerAction,
   previewShowAnswerAction,
   setDefaultTestDataAction,
+  getDefaultTestSettingsAction,
 } from '../../../TestPage/ducks'
 import {
   approveOrRejectMultipleItem as approveOrRejectMultipleItemAction,
@@ -123,6 +124,7 @@ class Contaier extends Component {
       userId,
       districtId,
       test,
+      getDefaultTestSettings,
     } = this.props
 
     // TODO use getPreviouslyUsedOrDefaultInterestsSelector from src/client/author/src/selectors/user.js
@@ -165,6 +167,8 @@ class Contaier extends Component {
     }
     if (test && test._id) {
       setDefaultTestData()
+    } else {
+      getDefaultTestSettings()
     }
     getAllTags({ type: 'testitem' })
     if (params.filterType) {
@@ -682,6 +686,7 @@ const enhance = compose(
       clearFilterState: clearFilterStateAction,
       approveOrRejectMultipleItem: approveOrRejectMultipleItemAction,
       setApproveConfirmationOpen: setApproveConfirmationOpenAction,
+      getDefaultTestSettings: getDefaultTestSettingsAction,
     }
   )
 )

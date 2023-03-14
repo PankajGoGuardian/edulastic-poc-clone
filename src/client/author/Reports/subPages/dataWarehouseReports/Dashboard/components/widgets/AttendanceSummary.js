@@ -19,7 +19,7 @@ import WidgetHeader from '../common/WidgetHeader'
 
 const title = 'ATTENDANCE SUMMARY'
 
-const AttendanceSummary = ({ attendanceSummary }) => {
+const AttendanceSummary = ({ attendanceSummaryData }) => {
   const {
     avg,
     prevMonthAvg,
@@ -28,7 +28,7 @@ const AttendanceSummary = ({ attendanceSummary }) => {
     chronicAbsentPercentage,
     prevMonthtardiesPercentage,
     prevMonthChronicPercentage,
-  } = attendanceSummary
+  } = attendanceSummaryData
   const attendanceAvgIncrease = avg - prevMonthAvg
   const fontColor = attendanceAvgIncrease >= 0 ? lightGreen12 : lightRed5
   return (

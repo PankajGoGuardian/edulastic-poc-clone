@@ -1,5 +1,5 @@
 import React from 'react'
-import { TableHeaderCellWrapper } from './styledComponents'
+import { TableHeaderCellWrapper } from '../common/styledComponents'
 
 const TableHeaderCell = ({ title, value, color }) => {
   return (

@@ -2,7 +2,7 @@ import React from 'react'
 import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
 import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
 
-export const bandInfo = [
+export const masteryScales = [
   {
     _id: '6322e2b799978a000a298469',
     orgType: 'district',
@@ -307,6 +307,66 @@ export const cellStyles = {
   medium: { padding: '10px 15px', font: '18px' },
   small: { padding: '12px 17px', font: '14px' },
 }
+
+export const tableFilterTypes = {
+  COMPARE_BY: 'compareBy',
+  ABOVE_EQUAL_TO_AVG: 'aboveEqualToAvg',
+  BELOW_AVG: 'belowAvg',
+}
+
+export const compareByKeys = {
+  SCHOOL: 'school',
+  TEACHER: 'teacher',
+  CLASS: 'class',
+  STUDENT: 'student',
+  RACE: 'race',
+  GENDER: 'gender',
+  FRL_STATUS: 'frlStatus',
+  ELL_STATUS: 'ellStatus',
+  IEP_STATUS: 'iepStatus',
+  HISPANIC_ETHNICITY: 'hispanicEthnicity',
+}
+
+// const compareByFieldKeys = {
+//   [compareByKeys.SCHOOL]: 'schoolId',
+//   [compareByKeys.TEACHER]: 'teacherId',
+//   [compareByKeys.CLASS]: 'groupId',
+//   [compareByKeys.STUDENT]: 'studentId',
+//   [compareByKeys.RACE]: compareByKeys.RACE,
+//   [compareByKeys.GENDER]: compareByKeys.GENDER,
+//   [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+//   [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+//   [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+//   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+// }
+
+// const compareBylabels = {
+//   [compareByKeys.SCHOOL]: 'schoolName',
+//   [compareByKeys.TEACHER]: 'teacherName',
+//   [compareByKeys.CLASS]: 'groupName',
+//   [compareByKeys.RACE]: compareByKeys.RACE,
+//   [compareByKeys.GENDER]: compareByKeys.GENDER,
+//   [compareByKeys.FRL_STATUS]: compareByKeys.FRL_STATUS,
+//   [compareByKeys.ELL_STATUS]: compareByKeys.ELL_STATUS,
+//   [compareByKeys.IEP_STATUS]: compareByKeys.IEP_STATUS,
+//   [compareByKeys.HISPANIC_ETHNICITY]: compareByKeys.HISPANIC_ETHNICITY,
+// }
+
+export const compareByOptions = [
+  { key: compareByKeys.SCHOOL, title: 'School', hiddenFromRole: ['teacher'] },
+  { key: compareByKeys.TEACHER, title: 'Teacher', hiddenFromRole: ['teacher'] },
+  { key: compareByKeys.CLASS, title: 'Class' },
+  {
+    key: compareByKeys.STUDENT,
+    title: 'Student',
+  },
+  { key: compareByKeys.RACE, title: 'Race' },
+  { key: compareByKeys.GENDER, title: 'Gender' },
+  { key: compareByKeys.FRL_STATUS, title: 'FRL Status' },
+  { key: compareByKeys.ELL_STATUS, title: 'ELL Status' },
+  { key: compareByKeys.IEP_STATUS, title: 'IEP Status' },
+  { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
+]
 
 export const getCellColor = (value, selectedPerformanceBand) => {
   const band = getProficiencyBand(value, selectedPerformanceBand)

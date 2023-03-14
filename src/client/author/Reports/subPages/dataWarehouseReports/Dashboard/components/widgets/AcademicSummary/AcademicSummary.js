@@ -1,6 +1,6 @@
 import { lightGrey8 } from '@edulastic/colors'
 import { Spin } from 'antd'
-import React, { useState } from 'react'
+import React, { useMemo, useState } from 'react'
 import ModernPieChart from '../../../../../../common/components/charts/ModernPieChart'
 import { DashedLine } from '../../../../../../common/styled'
 import {
@@ -17,12 +17,11 @@ import AcademicSummaryWidgetFilters from './Filters'
 
 const title = 'ACADEMIC SUMMARY AND PERFORMANCE DISTRIBUTION'
 
-const AcademicSummary = ({
-  academicSummary,
-  profileId,
-  performanceBandList,
-  bandInfo,
-}) => {
+const AcademicSummary = ({ academicSummaryData, profileId, masteryScales }) => {
+  const performanceBandList = useMemo(
+    () => masteryScales.map((p) => ({ key: p._id, title: p.name })),
+    [masteryScales]
+  )
   const [filters, setFilters] = useState({
     performanceBand:
       performanceBandList.find((p) => p.key === profileId) ||
@@ -31,8 +30,8 @@ const AcademicSummary = ({
   })
 
   const selectedPerformanceBand = (
-    bandInfo.filter((x) => x._id === filters.performanceBand.key)[0] ||
-    bandInfo[0]
+    masteryScales.filter((x) => x._id === filters.performanceBand.key)[0] ||
+    masteryScales[0]
   )?.performanceBand
 
   const {
@@ -40,7 +39,7 @@ const AcademicSummary = ({
     prevMonthAvgScore,
     prevMonth,
     aboveStandard,
-  } = academicSummary
+  } = academicSummaryData
 
   const avgScoreCellColor = getCellColor(avgScore, selectedPerformanceBand)
   return (

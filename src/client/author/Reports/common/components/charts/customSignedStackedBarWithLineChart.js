@@ -91,6 +91,25 @@ const LabelText = ({
   )
 }
 
+const LineDot = ({ cx, cy, dotProps }) => {
+  return (
+    <circle cx={cx} cy={cy} r={3} fill="#ffffff" opacity={0.2} {...dotProps} />
+  )
+}
+
+const ActiveLineDot = ({ cx, cy }) => {
+  return (
+    <circle
+      cx={cx}
+      cy={cy}
+      r={3}
+      fill="#ffffff"
+      stroke="#ffffff"
+      strokeWidth={2}
+    />
+  )
+}
+
 export const SignedStackedBarWithLineChart = ({
   margin = { top: 0, right: 60, left: 60, bottom: 0 },
   legendProps = {
@@ -147,6 +166,7 @@ export const SignedStackedBarWithLineChart = ({
   })
 
   const [fillOpacity, setFillOpacity] = useState({ bar: 1, line: 0.2 })
+  const [dotProps, setDotProps] = useState({})
 
   const constants = {
     COLOR_BLACK: '#010101',
@@ -287,6 +307,16 @@ export const SignedStackedBarWithLineChart = ({
   const onBarMouseLeave = () => () => {
     topTooltipRef.current?.resetBarIndex()
     sideTooltipRef.current?.resetBarIndex()
+  }
+
+  const handleLineMouseEnter = () => {
+    setFillOpacity({ bar: 0.2, line: 1 })
+    setDotProps({ stroke: '#000000', strokeWidth: 1, opacity: 1 })
+  }
+
+  const handleLineMouseLeave = () => {
+    setFillOpacity({ bar: 1, line: 0.2 })
+    setDotProps({})
   }
 
   const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
@@ -438,8 +468,8 @@ export const SignedStackedBarWithLineChart = ({
             <YAxis
               type="number"
               domain={yDomain}
-              tick={constants.TICK_FILL}
-              ticks={ticks}
+              tick={false}
+              stroke={false}
               tickFormatter={yTickFormatter}
               label={<YAxisLabel data={constants.Y_AXIS_LABEL} />}
             />
@@ -502,7 +532,7 @@ export const SignedStackedBarWithLineChart = ({
                         onBarMouseLeave={onBarMouseLeave}
                         bdIndex={bdIndex}
                         formatter={barsLabelFormatter}
-                        offsetY={-12}
+                        offsetY={-30}
                       />
                     }
                   />
@@ -582,6 +612,8 @@ export const SignedStackedBarWithLineChart = ({
               dataKey={lineDataKey}
               strokeOpacity={fillOpacity.line}
               {...lineProps}
+              dot={<LineDot dotProps={dotProps} />}
+              activeDot={<ActiveLineDot />}
             />
           ) : null}
           {lineDataKey ? (
@@ -589,14 +621,16 @@ export const SignedStackedBarWithLineChart = ({
             <Line
               dataKey={lineDataKey}
               strokeOpacity={0}
-              onMouseEnter={() => setFillOpacity({ bar: 0.2, line: 1 })}
-              onMouseLeave={() => setFillOpacity({ bar: 1, line: 0.2 })}
+              onMouseEnter={handleLineMouseEnter}
+              onMouseLeave={handleLineMouseLeave}
               {...lineProps}
               strokeDasharray={undefined}
               stroke="rgba(0,0,0,0)"
               strokeWidth={
                 lineProps.strokeWidthActive || (lineProps.strokeWidth || 1) + 10
               }
+              dot={<LineDot dotProps={dotProps} />}
+              activeDot={<ActiveLineDot />}
             />
           ) : null}
         </ComposedChart>

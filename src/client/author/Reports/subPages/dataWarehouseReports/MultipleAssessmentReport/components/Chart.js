@@ -178,7 +178,7 @@ const Chart = ({
 
   const chartLegendProps = {
     iconType: 'circle',
-    height: 70,
+    height: 100,
     payload: legendPayload,
   }
 
@@ -296,7 +296,7 @@ const Chart = ({
       getRightTooltipJSX={getRightTooltipJSX}
       barsLabelFormatter={barsLabelFormatter}
       yTickFormatter={() => ''}
-      yAxisLabel=""
+      yAxisLabel="Distribution of Students (%)"
       getXTickText={getXTickText}
       getXTickTagText={getXTickTagText}
       filter={selectedTestsFilter}
@@ -309,7 +309,7 @@ const Chart = ({
       pageSize={10}
       hasRoundedBars={false}
       isSignedChart={false}
-      hideYAxis
+      hideYAxis={false}
       hideCartesianGrid
       hasBarInsideLabels
       hasBarTopLabels

@@ -18,7 +18,7 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
       <ReportLinkCard
         IconThumbnail={IconMultipleAssessmentReportDW}
         title="Performance Trends"
-        description="View whether the student's performance is improving over time &amp; take necessary interventions"
+        description="View whether the student's performance is improving over time &amp; take necessary interventions."
         url={DW_MAR_REPORT_URL}
         loc={loc}
       />

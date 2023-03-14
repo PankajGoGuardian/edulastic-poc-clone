@@ -418,7 +418,7 @@ const WholeLearnerReport = ({
                     <SectionDescription $margin="0px 0px 30px 0px">
                       Get a complete understanding of a learner&apos;s academic
                       and behavioral profiles and take necessary actions for the
-                      learner&apos;s growth
+                      learner&apos;s growth.
                     </SectionDescription>
                     <StudentDetails
                       studentInformation={settings.selectedStudentInformation}

@@ -10,8 +10,16 @@ const TableFilters = ({
   selectedCompareBy,
 }) => {
   return (
-    <Row type="flex" justify="space-between" align="middle">
-      <StyledH3>Performance by {selectedCompareBy?.title || '-'}</StyledH3>
+    <Row
+      type="flex"
+      justify="space-between"
+      align="middle"
+      style={{ marginTop: 45 }}
+    >
+      <StyledH3>
+        Performance Deep-dive across Assessments by{' '}
+        {selectedCompareBy?.title || '-'}
+      </StyledH3>
       <ControlDropDown
         prefix="Compare By"
         by={selectedCompareBy}

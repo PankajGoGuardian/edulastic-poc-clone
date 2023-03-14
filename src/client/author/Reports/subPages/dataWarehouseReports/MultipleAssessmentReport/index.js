@@ -10,7 +10,11 @@ import { reportUtils } from '@edulastic/constants'
 import { reportGroupType } from '@edulastic/constants/const/report'
 
 import { SubHeader } from '../../../common/components/Header'
-import { NoDataContainer, ReportContainer } from '../../../common/styled'
+import {
+  NoDataContainer,
+  ReportContainer,
+  StyledH3,
+} from '../../../common/styled'
 import ShareReportModal from '../../../common/components/Popups/ShareReportModal'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import SectionLabel from '../../../common/components/SectionLabel'
@@ -381,8 +385,11 @@ const MultipleAssessmentReport = ({
             </SectionLabel>
             <SectionDescription>
               View whether the student&apos;s performance is improving over time
-              and take necessary interventions
+              and take necessary interventions.
             </SectionDescription>
+            <StyledH3 margin="30px 0 0 0">
+              Performance across Assessments
+            </StyledH3>
             <Chart
               chartData={chartData}
               selectedPerformanceBand={selectedPerformanceBand}

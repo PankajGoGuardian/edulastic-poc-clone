@@ -200,7 +200,7 @@ const AttendanceChart = ({
     <StyledAttendanceChartContainer ref={parentContainerRef}>
       <SectionLabel $margin="30px 0px 10px 0px">Weekly Attendance</SectionLabel>
       <SectionDescription>
-        Correlate academic performance with attendance
+        Correlate academic performance with attendance.
       </SectionDescription>
       <ResetButtonClear
         onClick={onResetClick}
@@ -279,6 +279,7 @@ const AttendanceChart = ({
                   angle: -90,
                   dx: 25,
                   fontSize: 14,
+                  translateYDiffValue: 20,
                 }}
               />
             }

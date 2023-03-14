@@ -519,6 +519,11 @@
     ],
     "data-warehouse-reports": [
       {
+        "key": "dashboard",
+        "title": "DASHBOARD",
+        "location": "/author/reports/dashboard"
+      },
+      {
         "key": "multiple-assessment-report-dw",
         "title": "Performance Trends",
         "location": "/author/reports/multiple-assessment-report-dw"
@@ -527,11 +532,6 @@
         "key": "whole-learner-report",
         "title": "WHOLE LEARNER",
         "location": "/author/reports/whole-learner-report/student/"
-      },
-      {
-        "key": "dashboard",
-        "title": "DASHBOARD",
-        "location": "/author/reports/dashboard"
       }
     ]
   }

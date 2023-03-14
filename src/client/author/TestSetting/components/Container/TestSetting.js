@@ -182,6 +182,7 @@ class TestSetting extends Component {
       performanceBandLoading,
       setDefaultProfile,
       subscription: { subType } = {},
+      role,
     } = this.props
 
     const { testSetting } = this.state
@@ -202,6 +203,8 @@ class TestSetting extends Component {
     const showSpin = updating || loading || creating
     const enableAudioResponseQuestions = !!testSetting.enableAudioResponseQuestion
     const isEnterprise = [PARTIAL_PREMIUM, ENTERPRISE].includes(subType)
+    const isUserDa = role === roleuser.DISTRICT_ADMIN
+    const showAudioResponseSetting = [isEnterprise, isUserDa].every((o) => !!o)
     return (
       <SettingsWrapper>
         <AdminHeader title={title} active={menuActive} history={history} />
@@ -265,7 +268,7 @@ class TestSetting extends Component {
                     <RadioBtn value={false}>No</RadioBtn>
                   </StyledRadioGrp>
                 </StyledCol>
-                <EduIf condition={isEnterprise}>
+                <EduIf condition={showAudioResponseSetting}>
                   <StyledCol data-cy="allowAudioResponseType">
                     <InputLabel>
                       ENABLE AUDIO RESPONSE QUESTION TYPE{' '}

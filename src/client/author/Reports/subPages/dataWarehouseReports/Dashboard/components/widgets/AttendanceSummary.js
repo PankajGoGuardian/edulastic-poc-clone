@@ -14,8 +14,8 @@ import {
   StyledIconCaretUp,
   StyledIconCaretDown,
 } from '../common/styledComponents'
-import WidgetCell from '../common/WidgetCell'
-import WidgetHeader from '../common/WidgetHeader'
+import WidgetCell from './common/WidgetCell'
+import WidgetHeader from './common/WidgetHeader'
 
 const title = 'ATTENDANCE SUMMARY'
 
@@ -23,7 +23,6 @@ const AttendanceSummary = ({ attendanceSummaryData }) => {
   const {
     avg,
     prevMonthAvg,
-    prevMonth,
     tardiesPercentage,
     chronicAbsentPercentage,
     prevMonthtardiesPercentage,
@@ -35,12 +34,7 @@ const AttendanceSummary = ({ attendanceSummaryData }) => {
     <Widget small>
       <WidgetHeader title={title} />
       <ContentWrapper>
-        <WidgetCell
-          header="AVG."
-          value={`${avg}%`}
-          cellType="large"
-          color="#cef5d8"
-        />
+        <WidgetCell value={`${avg}%`} cellType="large" color="#cef5d8" />
         <div>
           <StyledText
             margin="0 10px 5px 10px"
@@ -56,7 +50,7 @@ const AttendanceSummary = ({ attendanceSummaryData }) => {
             </EduIf>
           </StyledText>
           <StyledText fontSize="13px" color={lightGrey9}>
-            since {prevMonth}
+            vs Dec&apos;22
           </StyledText>
         </div>
         <DashedLine

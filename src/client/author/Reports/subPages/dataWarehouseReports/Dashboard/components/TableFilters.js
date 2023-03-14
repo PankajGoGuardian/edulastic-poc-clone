@@ -12,7 +12,7 @@ const DashboardTableFilters = ({
   compareByOptions,
 }) => {
   return (
-    <StyledRow type="flex" justifyContent="space-between">
+    <StyledRow type="flex" justifyContent="space-between" margin="-2px 0">
       <SectionLabel>Performance By {tableFilters.compareBy.title}</SectionLabel>
       <ControlDropDown
         height="40px"

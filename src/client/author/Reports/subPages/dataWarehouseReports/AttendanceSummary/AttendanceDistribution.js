@@ -1,5 +1,6 @@
 import { reportsApi } from '@edulastic/api'
 import { white } from '@edulastic/colors'
+import { Col } from 'antd'
 import React, { useEffect, useState } from 'react'
 import { PieChart, Pie, Cell } from 'recharts'
 import styled from 'styled-components'
@@ -104,35 +105,37 @@ const AttendanceDistribution = () => {
       })
   }, [])
   return (
-    <PieWrapper>
-      <Title>Attendance Distribution</Title>
-      <PieChart width={400} height={280}>
-        <Pie
-          data={response}
-          cx="50%"
-          cy="50%"
-          innerRadius={80}
-          outerRadius={110}
-          fill="#8884d8"
-          dataKey="value"
-          label={getAcademicSummaryChartLabelJSX}
-        >
-          {data.map((entry) => (
-            <Cell key={`cell-${entry.id}`} fill={entry.color} />
-          ))}
-        </Pie>
-      </PieChart>
-      <LegendWrap>
-        {data.map((entry) => {
-          return (
-            <CustomLegend>
-              <LegendSymbol color={entry.color} />
-              <LegendName>{entry.name}</LegendName>
-            </CustomLegend>
-          )
-        })}
-      </LegendWrap>
-    </PieWrapper>
+    <Col span={10}>
+      <PieWrapper>
+        <Title>Attendance Distribution</Title>
+        <PieChart width={400} height={280}>
+          <Pie
+            data={response}
+            cx="50%"
+            cy="50%"
+            innerRadius={80}
+            outerRadius={110}
+            fill="#8884d8"
+            dataKey="value"
+            label={getAcademicSummaryChartLabelJSX}
+          >
+            {data.map((entry) => (
+              <Cell key={`cell-${entry.id}`} fill={entry.color} />
+            ))}
+          </Pie>
+        </PieChart>
+        <LegendWrap>
+          {data.map((entry) => {
+            return (
+              <CustomLegend>
+                <LegendSymbol color={entry.color} />
+                <LegendName>{entry.name}</LegendName>
+              </CustomLegend>
+            )
+          })}
+        </LegendWrap>
+      </PieWrapper>
+    </Col>
   )
 }
 
@@ -155,7 +158,6 @@ export const PieWrapper = styled.div`
   display: flex;
   justify-content: center;
   flex-direction: column;
-  width: 465px;
   height: 386px;
   border-radius: 10px;
   padding: 24px;

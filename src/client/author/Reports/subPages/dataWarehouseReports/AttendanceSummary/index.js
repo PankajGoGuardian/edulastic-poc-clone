@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
+import { Row } from 'antd'
 import {
   getCurrentTerm,
   getOrgDataSelector,
@@ -17,6 +18,7 @@ import {
 import AttendanceDistribution from './AttendanceDistribution'
 import PerformanceTable, { compareByOptions } from './Performance'
 import AttendanceSummaryChart from './AttendanceSummaryChart'
+import Tardies from './Tardies'
 
 // TODO move this action to parent.
 const useLegacyReportActions = (filters, props, reportId) => {
@@ -61,11 +63,12 @@ const AttendanceReport = (props) => {
         {/* Add Filters */}
       </SubHeader>
       {/* Add Report stuff (sections) */}
+      <AttendanceSummaryChart />
       <div>
-        <AttendanceSummaryChart />
-      </div>
-      <div>
-        <AttendanceDistribution />
+        <Row gutter={[4, 4]}>
+          <AttendanceDistribution />
+          <Tardies />
+        </Row>
         <PerformanceTable
           setTableFilters={setTableFilters}
           selectedTableFilters={tableFilters}

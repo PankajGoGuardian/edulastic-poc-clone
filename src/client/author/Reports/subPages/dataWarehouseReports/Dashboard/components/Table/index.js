@@ -19,7 +19,7 @@ const DashboardTable = ({
   tableData,
   isCsvDownloading,
 }) => {
-  const tableColumns = getTableColumns(tableData, tableFilters.compareBy)
+  const tableColumns = getTableColumns(tableFilters.compareBy)
   return (
     <TableContainer>
       <StyledRow type="flex" wrap justify="space-between" margin="30px">

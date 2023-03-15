@@ -101,32 +101,17 @@ export const availableTestTypes = [
   },
 ]
 
-export const selectedTestType = 'Edulastic'
-
-export const PieChartData = [
-  {
-    fill: '#60B14F',
-    value: 35,
-    name: 'Proficient',
-  },
-  {
-    fill: '#EBDD54',
-    value: 45,
-    name: 'Basic',
-  },
-  {
-    fill: '#EF9202',
-    value: 20,
-    name: 'Below Basic',
-  },
-]
-
 export const academicSummaryData = {
-  avgScore: 75,
-  prevMonthAvgScore: 49,
-  prevMonth: '1st Dec',
-  aboveStandard: 68,
+  avgScore: 66,
+  periodAvgScore: 85,
+  aboveStandardsStudents: 69,
+  bandDistribution: [
+    { bandScore: 0, students: 5 },
+    { bandScore: 50, students: 10 },
+    { bandScore: 70, students: 8 },
+  ],
 }
+
 export const attendanceSummaryData = {
   avg: 67,
   prevMonthAvg: 54,
@@ -139,166 +124,28 @@ export const attendanceSummaryData = {
 
 export const tableData = [
   {
-    school: 'El Dorado Adventist School dakfdak dak',
+    compareBy: 'El Dorado Adventist School dakfdak dak',
     avgAttendance: 75,
-    Edulastic: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    CAASPP: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    NWEA: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    iReady_ELA: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    iReady_MATH: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
+    avgScorePercentage: 75,
+    performanceDistribution: [
+      { value: 36, color: '#5FAD5A' },
+      { value: 10, color: '#90DE85' },
+      { value: 40, color: '#E9DC6B' },
+      { value: 10, color: '#E69736' },
+      { value: 4, color: '#E55C5C' },
+    ],
   },
   {
-    school: 'St. James',
+    compareBy: 'St. James',
     avgAttendance: 75,
-    Edulastic: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    CAASPP: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 15, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    NWEA: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    iReady_ELA: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    iReady_MATH: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-  },
-  {
-    school: 'St. James',
-    avgAttendance: 75,
-    Edulastic: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    CAASPP: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    NWEA: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    iReady_ELA: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
-    iReady_MATH: {
-      avgScorePercentage: 75,
-      performanceDistribution: [
-        { value: 36, color: '#5FAD5A' },
-        { value: 10, color: '#90DE85' },
-        { value: 40, color: '#E9DC6B' },
-        { value: 10, color: '#E69736' },
-        { value: 4, color: '#E55C5C' },
-      ],
-    },
+    avgScorePercentage: 75,
+    performanceDistribution: [
+      { value: 36, color: '#5FAD5A' },
+      { value: 10, color: '#90DE85' },
+      { value: 40, color: '#E9DC6B' },
+      { value: 10, color: '#E69736' },
+      { value: 4, color: '#E55C5C' },
+    ],
   },
 ]
 
@@ -368,9 +215,30 @@ export const compareByOptions = [
   { key: compareByKeys.HISPANIC_ETHNICITY, title: 'Hispanic Ethnicity' },
 ]
 
+export const academicSummaryFiltersTypes = {
+  PERFORMANCE_BAND: 'academicPerformanceBand',
+  TEST_TYPE: 'academicTestType',
+}
+
 export const getCellColor = (value, selectedPerformanceBand) => {
   const band = getProficiencyBand(value, selectedPerformanceBand)
   return band.color
+}
+
+export const getAcademicSummaryPieChartData = (
+  bandDistribution,
+  selectedPerformanceBand
+) => {
+  return selectedPerformanceBand.map((pb) => {
+    const totalStudents = bandDistribution.find(
+      (bd) => bd.bandScore === pb.threshold
+    )?.students
+    return {
+      name: pb.name,
+      value: totalStudents,
+      fill: pb.color,
+    }
+  })
 }
 
 export const getAcademicSummaryChartLabelJSX = (props) => {
@@ -387,8 +255,7 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
   const ex = mx + (cos >= 0 ? 1 : -1) * name.length * 15
   const ey = my
   const textAnchor = cos >= 0 ? 'start' : 'end'
-  const textX1 = mx + (cos >= 0 ? 1 : -1) * 10
-  const textX2 = textX1 + (cos >= 0 ? 1 : -1) * 30
+  const textX = mx + (cos >= 0 ? 1 : -1) * 10
   const textY = my - 5
   return (
     <g>
@@ -407,23 +274,13 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
       />
       <text
         className="label-text"
-        x={textX1}
+        x={textX}
         y={textY}
         textAnchor={textAnchor}
         fill={lightGrey17}
-        fontWeight="bold"
       >
-        {value}%
-      </text>
-      <text
-        className="label-text"
-        x={textX2}
-        y={textY}
-        textAnchor={textAnchor}
-        fill={lightGrey17}
-        fontWeight="normal"
-      >
-        &nbsp;&nbsp;{name}
+        <tspan className="label-value">{value}%</tspan>
+        <tspan className="label-name">&nbsp;&nbsp;{name}</tspan>
       </text>
     </g>
   )

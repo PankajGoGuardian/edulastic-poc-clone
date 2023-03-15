@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
+import { connect } from 'react-redux'
 
 import { SubHeader } from '../../../common/components/Header'
 import SectionLabel from '../../../common/components/SectionLabel'
+
 import {
   MasonGrid,
   DashboardReportContainer,
 } from './components/common/styledComponents'
 import DashboardTable from './components/Table'
-import { AcademicSummary } from './components/widgets/AcademicSummary'
-// import { StandardMastery } from './components/widgets/StandardsMastery'
+import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary'
 import DashboardTableFilters from './components/TableFilters'
 
@@ -21,22 +22,27 @@ import {
   tableData,
   compareByOptions as compareByOptionsRaw,
   tableFilterTypes,
+  academicSummaryFiltersTypes,
+  availableTestTypes,
 } from './utils'
-import { connect } from 'react-redux'
 
 const Dashboard = ({
   // location,
   userRole,
+  filters = {},
   breadcrumbData,
   isCliUser,
   isCsvDownloading,
 }) => {
-  const requestFilters = { profileId: '6322e2b799978a000a298469' }
-
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
   const [defaultCompareBy] = compareByOptions
+
+  const performanceBandList = useMemo(
+    () => masteryScales.map((p) => ({ key: p._id, title: p.name })),
+    [masteryScales]
+  )
 
   const [tableFilters, setTableFilters] = useState({
     [tableFilterTypes.COMPARE_BY]:
@@ -45,6 +51,21 @@ const Dashboard = ({
     [tableFilterTypes.ABOVE_EQUAL_TO_AVG]: true,
     [tableFilterTypes.BELOW_AVG]: true,
   })
+
+  const [academicSummaryFilters, setAcademicSummaryFilters] = useState({
+    [academicSummaryFiltersTypes.PERFORMANCE_BAND]:
+      performanceBandList.find((p) => p.key === filters.profileId) ||
+      performanceBandList[0],
+    [academicSummaryFiltersTypes.TEST_TYPE]: availableTestTypes[0],
+  })
+
+  const selectedPerformanceBand = (
+    masteryScales.filter(
+      (x) =>
+        x._id ===
+        academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
+    )[0] || masteryScales[0]
+  )?.performanceBand
 
   const updateTableFiltersCB = (selected, tableFilterType) => {
     setTableFilters((prevState) => {
@@ -72,10 +93,12 @@ const Dashboard = ({
       <MasonGrid>
         <AcademicSummary
           academicSummaryData={academicSummaryData}
-          masteryScales={masteryScales}
-          profileId={requestFilters.profileId}
+          selectedPerformanceBand={selectedPerformanceBand}
+          performanceBandList={performanceBandList}
+          availableTestTypes={availableTestTypes}
+          filters={academicSummaryFilters}
+          setFilters={setAcademicSummaryFilters}
         />
-        {/* <StandardMastery /> */}
         <AttendanceSummary attendanceSummaryData={attendanceSummaryData} />
       </MasonGrid>
       <DashboardTableFilters

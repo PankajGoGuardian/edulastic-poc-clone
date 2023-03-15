@@ -7,7 +7,7 @@ import {
   StyledIconCaretUp,
   StyledIconCaretDown,
   StyledText,
-} from './styledComponents'
+} from '../../common/styledComponents'
 
 const WidgetCell = ({
   header,

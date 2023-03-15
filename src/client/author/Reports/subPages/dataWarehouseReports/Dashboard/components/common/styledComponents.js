@@ -24,24 +24,22 @@ export const StyledIconCaretDown = styled(IconCaretDown)`
 
 export const MasonGrid = styled.div`
   display: flex;
-  flex-direction-row;
+  flex-direction: row;
   justify-content: center;
-  padding: 30px 60px;
+  padding: 30px 10px;
   gap: 30px;
   flex-wrap: wrap;
   background-color: ${greyThemeLighter};
   & > div {
-    flex: 1 1 0;
-    min-width: 670px;
-    max-width: 765px;
+    width: 700px;
   }
 `
 export const Widget = styled.div`
-  height: ${({ small }) => (small ? '200px' : '420px')};
+  height: ${({ small }) => (small ? '200px' : '450px')};
   border-radius: 20px;
   background-color: ${white};
   padding-top: 10px;
-  box-shadow: 0px 3px 6px #00000029;
+  box-shadow: 0px 3px 8px #00000029;
   .title {
     font-size: 15px;
     font-weight: bold;
@@ -151,6 +149,9 @@ export const CustomStyledTable = styled(StyledTable)`
   }
   .ant-table-column-title {
     white-space: nowrap !important;
+    .ant-tag {
+      font-size: 10px;
+    }
   }
   .ant-table-fixed-left,
   .ant-table-fixed-right {
@@ -171,7 +172,6 @@ export const CustomStyledTable = styled(StyledTable)`
     .ant-table-tbody {
       td {
         padding: 10px 0px 10px 8px;
-        font-size: 5px;
         color: #434b5d;
         font-weight: 600;
         @media (min-width: ${extraDesktopWidthMax}) {
@@ -195,35 +195,13 @@ export const CustomStyledTable = styled(StyledTable)`
     }
   }
 `
-export const HorizontalBarWrapper = styled.div`
-  display: flex;
-  flex-wrap: nowrap;
-  min-width: 230px;
-  margin-inline: 10px;
-  justify-content: center;
-  span {
-    &:first-child {
-      border-radius: 12px 0px 0px 12px;
-    }
-    &:last-child {
-      border-radius: 0px 12px 12px 0px;
-    }
-  }
-`
-export const StyledSpan = styled.span`
-  background-color: ${({ color }) => color};
-  padding: 5px;
-  flex-wrap: nowrap;
-  width: ${({ value }) => value}%;
-  font-size: 11px;
-`
 export const CompareByContainer = styled.div`
   color: ${themeColor};
   margin-bottom: 4px;
   overflow: hidden;
   text-overflow: ellipsis;
   display: -webkit-box;
-  -webkit-line-clamp: 1;
+  -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;
 }
 @media print {

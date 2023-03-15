@@ -227,10 +227,15 @@ class ClassList extends React.Component {
   }
 
   changeFilter = (key, value) => {
+    const { selectClass, selectedClasses, classList } = this.props
     const { searchTerms } = this.state
     searchTerms[key] =
       key === 'courseIds' ? value.flatMap((v) => v.split('_')) : value
     this.setState({ searchTerms }, this.loadClassList)
+    const _selectedClassIds = classList
+      .filter(({ _id }) => selectedClasses.includes(_id))
+      .map((item) => item._id)
+    selectClass('class', _selectedClassIds, classList)
   }
 
   handleClassTypeFilter = (key) => {

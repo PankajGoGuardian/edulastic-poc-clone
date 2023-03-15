@@ -16,9 +16,7 @@ export const TooltipText = (
         <Col className="custom-table-tooltip-key">
           {comparedByToToolTipLabel[compareByType].name}:{' '}
         </Col>
-        <Col className="custom-table-tooltip-value">
-          {record[compareByType]}
-        </Col>
+        <Col className="custom-table-tooltip-value">{record.dimension}</Col>
       </Row>
       <Row type="flex" justify="start">
         <Col className="custom-table-tooltip-key">

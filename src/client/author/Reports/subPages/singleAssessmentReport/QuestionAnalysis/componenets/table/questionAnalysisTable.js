@@ -1,5 +1,5 @@
 import React, { useMemo, useEffect } from 'react'
-import { uniqBy } from 'lodash'
+import { uniqBy, get } from 'lodash'
 import { downloadCSV } from '@edulastic/constants/reportUtils/common'
 import { StyledTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
@@ -16,7 +16,7 @@ import {
 } from '../../../../../common/util'
 import { TooltipText } from './ToolTipText'
 import ColumnTitle from './ColumnTitle'
-import { compareByToPluralName } from '../../constants'
+import { compareByEnums, compareByToPluralName } from '../../constants'
 
 const GetCellContents = (props) => {
   const { score } = props
@@ -31,7 +31,8 @@ const getTableColumns = (
   compareBy,
   filter = {},
   visibleIndices,
-  sortKey
+  sortKey,
+  questionLinkData
 ) => {
   const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')
   const qLabelsToFilter = Object.keys(filter)
@@ -50,7 +51,9 @@ const getTableColumns = (
   })
   const result = orderedQuestions.map((question) => {
     return {
-      title: <ColumnTitle question={question} />,
+      title: (
+        <ColumnTitle question={question} questionLinkData={questionLinkData} />
+      ),
       dataIndex: `scorePercentByQId.${question.questionId}`,
       key: question.questionId,
       children: [
@@ -100,12 +103,29 @@ export const QuestionAnalysisTable = ({
   visibleIndices,
   sortKey,
   setSortByDimension,
+  isSharedReport,
 }) => {
-  const columns = useMemo(
-    () => getTableColumns(qSummary, compareBy, filter, visibleIndices, sortKey),
-    [qSummary, compareBy, filter, visibleIndices, sortKey]
-  )
+  const groupId = get(performanceByDimension, 'details.0.dimensionId', '') // only for group details dimensionId will be groupId others are handled with showLink variable
+  const assignmentId = get(performanceByDimension, 'details.0.assignmentId', '')
+  const compareByClass = compareBy === compareByEnums.CLASS
+  const questionLinkData = {
+    groupId,
+    assignmentId,
+    isQuetionLinkEnabled: !isSharedReport && compareByClass,
+  }
 
+  const columns = useMemo(
+    () =>
+      getTableColumns(
+        qSummary,
+        compareBy,
+        filter,
+        visibleIndices,
+        sortKey,
+        questionLinkData
+      ),
+    [qSummary, compareBy, filter, visibleIndices, sortKey, questionLinkData]
+  )
   const tableData = useMemo(
     () => getTableData(qSummary, performanceByDimension, 'dimensionId'),
     [qSummary, performanceByDimension]

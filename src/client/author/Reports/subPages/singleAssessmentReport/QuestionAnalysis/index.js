@@ -17,7 +17,7 @@ import { getUserRole } from '../../../../../student/Login/ducks'
 import { getCsvDownloadingState } from '../../../ducks'
 import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
-import TableWrapper from './componenets/TableContainer'
+import TableContainer from './componenets/TableContainer'
 import {
   compareByEnums,
   pageSize,
@@ -38,7 +38,7 @@ const QuestionAnalysis = ({
   toggleFilter,
   demographicFilters,
 }) => {
-  const [userRole] = useMemo(
+  const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
     [sharedReport]
   )
@@ -186,7 +186,7 @@ const QuestionAnalysis = ({
               handleSort={handleSort}
               updateCompareByCB={updateCompareByCB}
             />
-            <TableWrapper
+            <TableContainer
               performanceByDimensionLoading={performanceByDimensionLoading}
               compareBy={compareBy}
               isCsvDownloading={isCsvDownloading}
@@ -200,6 +200,7 @@ const QuestionAnalysis = ({
               pageSize={pageSize}
               setpageNo={setpageNo}
               pageNo={pageNo}
+              isSharedReport={isSharedReport}
             />
           </Row>
         </StyledCard>

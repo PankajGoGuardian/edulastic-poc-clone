@@ -19,6 +19,7 @@ const TableContainer = ({
   qSummary,
   setpageNo,
   pageNo,
+  isSharedReport,
 }) => {
   return (
     <Col className="bottom-table-container">
@@ -36,6 +37,7 @@ const TableContainer = ({
           sortKey={sortKey}
           visibleIndices={visibleIndices}
           setSortByDimension={setSortOrder}
+          isSharedReport={isSharedReport}
         />
         <EduIf condition={performanceByDimension?.totalRows > pageSize}>
           <Pagination

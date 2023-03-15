@@ -1,4 +1,5 @@
 import React from 'react'
+import React from 'react'
 import next from 'immer'
 import { flatMap, sumBy } from 'lodash'
 import {
@@ -7,7 +8,10 @@ import {
 } from '@edulastic/constants/reportUtils/common'
 import { IconExternalLink } from '@edulastic/icons'
 import { availableTestTypes } from '../../utils'
+import { availableTestTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
+import CompareByTitle from './CompareByTitle'
+import AvgScoreTitle from './AvgScoreTitle'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
 
@@ -15,8 +19,11 @@ const tableColumnsData = [
   {
     dataIndex: 'dimension',
     key: 'dimension',
+    dataIndex: 'dimension',
+    key: 'dimension',
     align: 'center',
     fixed: 'left',
+    width: 250,
     width: 250,
   },
   {
@@ -26,6 +33,7 @@ const tableColumnsData = [
     align: 'center',
     width: 200,
     className: 'avg-attendance-column-header',
+    render: (value) => `${value}%`,
     render: (value) => `${value}%`,
   },
   // next up are dynamic columns for each assessment type

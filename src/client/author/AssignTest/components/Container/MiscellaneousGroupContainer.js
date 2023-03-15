@@ -54,7 +54,7 @@ const MiscellaneousGroupContainer = ({
     multiLanguageEnabled = !!testSettings.multiLanguageEnabled,
     keypad: keyPadData = testSettings.keypad || {},
     enableSkipAlert = testSettings.enableSkipAlert,
-    showImmersiveReader = testSettings.showImmersiveReader,
+    showImmersiveReader = !!testSettings.showImmersiveReader,
   } = assignmentSettings
 
   const [selectedKeypad, setKeypad] = useState(null)
@@ -102,7 +102,6 @@ const MiscellaneousGroupContainer = ({
       id: skipAlert.id,
     },
   ]
-
   if (isEnterpriseUser) {
     accessibilityData.unshift({
       key: immersiveReader.key,

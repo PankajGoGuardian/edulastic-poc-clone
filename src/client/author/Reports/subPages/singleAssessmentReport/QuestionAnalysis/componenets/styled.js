@@ -139,12 +139,17 @@ export const QLabelSpan = styled.span`
   color: ${themeColor};
   margin-bottom: 10px;
   display: inline-block;
+  font-size: 12px;
 `
 export const StyledSwitch = styled(Switch)`
   margin-left: 10px;
   margin-right: 10px;
   width: 35px;
   display: inline-block;
+  &.ant-switch-checked,
+  &.ant-switch {
+    background-color: #1890ff;
+  }
 `
 export const StyledDiv = styled.div`
   font-size: 12px;

@@ -79,22 +79,22 @@ export const availableTestTypes = [
     key: 'Edulastic',
     title: 'Edulastic',
   },
-  {
-    key: 'CAASPP',
-    title: 'CAASPP',
-  },
-  {
-    key: 'NWEA',
-    title: 'NWEA',
-  },
-  {
-    key: 'iReady_ELA',
-    title: 'iReady (ELA)',
-  },
-  {
-    key: 'iReady_Math',
-    title: 'iReady (MATH)',
-  },
+  // {
+  //   key: 'CAASPP',
+  //   title: 'CAASPP',
+  // },
+  // {
+  //   key: 'NWEA',
+  //   title: 'NWEA',
+  // },
+  // {
+  //   key: 'iReady_ELA',
+  //   title: 'iReady (ELA)',
+  // },
+  // {
+  //   key: 'iReady_Math',
+  //   title: 'iReady (MATH)',
+  // },
 ]
 
 export const academicSummaryData = {
@@ -118,32 +118,66 @@ export const attendanceSummaryData = {
   prevMonthChronicPercentage: 5,
 }
 
-export const tableData = [
-  {
-    compareBy: 'El Dorado Adventist School dakfdak dak',
-    avgAttendance: 75,
-    avgScorePercentage: 75,
-    performanceDistribution: [
-      { value: 36, color: '#5FAD5A' },
-      { value: 10, color: '#90DE85' },
-      { value: 40, color: '#E9DC6B' },
-      { value: 10, color: '#E69736' },
-      { value: 4, color: '#E55C5C' },
-    ],
-  },
-  {
-    compareBy: 'St. James',
-    avgAttendance: 75,
-    avgScorePercentage: 75,
-    performanceDistribution: [
-      { value: 36, color: '#5FAD5A' },
-      { value: 10, color: '#90DE85' },
-      { value: 40, color: '#E9DC6B' },
-      { value: 10, color: '#E69736' },
-      { value: 4, color: '#E55C5C' },
-    ],
-  },
-]
+export const tableData = {
+  metricInfo: [
+    {
+      dimension: {
+        id: '1',
+        name: 'El Dorado Adventist School',
+      },
+      avgAttendance: 85,
+      performance: {
+        Edulastic: {
+          avg: 70,
+          distribution: [
+            {
+              totalStudents: 36,
+              bandScore: 0,
+            },
+            {
+              totalStudents: 10,
+              bandScore: 50,
+            },
+            {
+              totalStudents: 5,
+              bandScore: 70,
+            },
+          ],
+        },
+      },
+    },
+    {
+      dimension: {
+        id: '2',
+        name: 'St. James',
+      },
+      avgAttendance: 85,
+      avgPerformance: 70,
+      performance: {
+        Edulastic: {
+          avg: 70,
+          distribution: [
+            {
+              totalStudents: 36,
+              bandScore: 0,
+            },
+            {
+              totalStudents: 10,
+              bandScore: 50,
+            },
+            {
+              totalStudents: 5,
+              bandScore: 70,
+            },
+          ],
+        },
+      },
+    },
+  ],
+  dimensionCount: 15,
+  aboveOrAtStandardCount: 8,
+  belowStandardCount: 7,
+}
 
 export const cellStyles = {
   large: { padding: '18px 30px', font: '24px' },

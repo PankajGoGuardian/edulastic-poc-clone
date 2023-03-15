@@ -8,7 +8,7 @@ const HorizontalBar = ({ data }) => {
   return (
     <HorizontalBarWrapper>
       {map(data, ({ value, color }) => {
-        const valueToShow = value > 14 ? `${value}%` : ''
+        const valueToShow = value > 10 ? `${value}%` : ''
         return (
           <EduIf condition={value}>
             <Tooltip title={`${value}%`}>

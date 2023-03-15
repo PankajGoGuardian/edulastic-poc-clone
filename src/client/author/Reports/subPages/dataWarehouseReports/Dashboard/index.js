@@ -207,6 +207,7 @@ const Dashboard = ({
         tableFilters={tableFilters}
         updateTableFiltersCB={updateTableFiltersCB}
         tableData={tableData}
+        selectedPerformanceBand={selectedPerformanceBand}
         isCsvDownloading={isCsvDownloading}
       />
     </DashboardReportContainer>

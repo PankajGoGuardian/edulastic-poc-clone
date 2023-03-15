@@ -7,6 +7,7 @@ import {
   themeColor,
   lightGrey8,
 } from '@edulastic/colors'
+import { EduButton } from '@edulastic/common'
 import { IconCarets } from '@edulastic/icons'
 import { Row } from 'antd'
 import styled from 'styled-components'
@@ -212,7 +213,13 @@ export const CompareByContainer = styled.div`
   }
 }
 `
-
+export const StyledEduButton = styled(EduButton)`
+  &.ant-btn {
+    height: 32px;
+    padding: 0 15px 0 10px;
+    margin-right: 10px;
+  }
+`
 export const DashboardReportContainer = styled.div`
   @media print {
     -webkit-print-color-adjust: exact;

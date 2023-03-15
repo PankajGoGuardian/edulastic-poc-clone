@@ -30,6 +30,9 @@ import {
   useQAnalysisSummaryFetch,
 } from './hooks/useFetch'
 
+//! FIXME Have better null-value handling than using memoized empty value
+const EMPTY_ARRAY = []
+
 const QuestionAnalysis = ({
   isCsvDownloading,
   role,
@@ -78,7 +81,7 @@ const QuestionAnalysis = ({
     pageNo,
     pageSize,
   })
-  const qSummary = qSummaryData.metricInfo || []
+  const qSummary = qSummaryData.metricInfo || EMPTY_ARRAY
   const isDynamicTest = qSummaryData.isRecommended
 
   useEffect(() => {

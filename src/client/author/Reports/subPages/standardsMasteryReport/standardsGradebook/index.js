@@ -54,6 +54,9 @@ const {
   getSummaryMetricInfoWithSkillInfo,
 } = reportUtils.standardsGradebook
 
+//! FIXME Have better null-value handling than using memoized empty value
+const EMPTY_ARRAY = []
+
 const StandardsGradebook = ({
   skillInfo: rawSkillInfo,
   getSkillInfoRequest,
@@ -119,7 +122,7 @@ const StandardsGradebook = ({
     getStudentStandards,
   })
 
-  const { skillInfo = [], standardIdsCount } = get(
+  const { skillInfo = EMPTY_ARRAY, standardIdsCount } = get(
     rawSkillInfo,
     'data.result',
     {}
@@ -132,7 +135,7 @@ const StandardsGradebook = ({
     )
     return preProcessSummaryMetrics({ summaryMetricInfo: _summaryMetricInfo })
   }, [summary])
-  const { metrics: detailsMetricInfo = [], totalRows } = get(
+  const { metrics: detailsMetricInfo = EMPTY_ARRAY, totalRows } = get(
     details,
     'data.result',
     {}

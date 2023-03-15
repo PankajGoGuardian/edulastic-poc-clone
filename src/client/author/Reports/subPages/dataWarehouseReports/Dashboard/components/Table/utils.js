@@ -56,6 +56,7 @@ export const getTableColumns = (compareBy, selectedPerformanceBand) => {
     _columns[compareByIdx].defaultSortOrder = 'ascend'
 
     // dynamic columns
+    // @todo get availableTestTypes from api response
     const testTypesBasedColumns = flatMap(availableTestTypes, (testType) => {
       return [
         {

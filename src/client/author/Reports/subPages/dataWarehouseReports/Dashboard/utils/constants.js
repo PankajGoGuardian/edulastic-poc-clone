@@ -1,7 +1,3 @@
-import React from 'react'
-import { greyThemeDark7, lightGrey17, white } from '@edulastic/colors'
-import { getProficiencyBand } from '@edulastic/constants/reportUtils/common'
-
 export const masteryScales = [
   {
     _id: '6322e2b799978a000a298469',
@@ -220,68 +216,163 @@ export const academicSummaryFiltersTypes = {
   TEST_TYPE: 'academicTestType',
 }
 
-export const getCellColor = (value, selectedPerformanceBand) => {
-  const band = getProficiencyBand(value, selectedPerformanceBand)
-  return band.color
+const PERIODS = {
+  TILL_DATE: 'TILL_DATE',
+  THIS_MONTH: 'THIS_MONTH',
+  THIS_QUARTER: 'THIS_QUARTER',
+  LAST_MONTH: 'LAST_MONTH',
+  LAST_QUARTER: 'LAST_QUARTER',
+  CUSTOM: 'CUSTOM',
 }
 
-export const getAcademicSummaryPieChartData = (
-  bandDistribution,
-  selectedPerformanceBand
-) => {
-  return selectedPerformanceBand.map((pb) => {
-    const totalStudents = bandDistribution.find(
-      (bd) => bd.bandScore === pb.threshold
-    )?.students
-    return {
-      name: pb.name,
-      value: totalStudents,
-      fill: pb.color,
-    }
-  })
-}
-
-export const getAcademicSummaryChartLabelJSX = (props) => {
-  const RADIAN = Math.PI / 180
-  const { cx, cy, midAngle, outerRadius, name, value } = props
-  const sin = Math.sin(-RADIAN * midAngle)
-  const cos = Math.cos(-RADIAN * midAngle)
-  const sx = cx + (outerRadius + 4) * cos
-  const sy = cy + (outerRadius + 4) * sin
-  const circleX = cx + outerRadius * cos
-  const circleY = cy + outerRadius * sin
-  const mx = cx + (outerRadius + 20) * cos
-  const my = cy + (outerRadius + 20) * sin
-  const ex = mx + (cos >= 0 ? 1 : -1) * name.length * 15
-  const ey = my
-  const textAnchor = cos >= 0 ? 'start' : 'end'
-  const textX = mx + (cos >= 0 ? 1 : -1) * 10
-  const textY = my - 5
-  return (
-    <g>
-      <circle
-        cx={circleX}
-        cy={circleY}
-        r={4}
-        fill={white}
-        stroke={greyThemeDark7}
-      />
-      <path
-        d={`M${sx},${sy}L${mx},${my}L${ex},${ey}`}
-        stroke={greyThemeDark7}
-        fill="none"
-        strokeWidth={1}
-      />
-      <text
-        className="label-text"
-        x={textX}
-        y={textY}
-        textAnchor={textAnchor}
-        fill={lightGrey17}
-      >
-        <tspan className="label-value">{value}%</tspan>
-        <tspan className="label-name">&nbsp;&nbsp;{name}</tspan>
-      </text>
-    </g>
-  )
+export const staticDropDownData = {
+  filterSections: {
+    TEST_FILTERS: {
+      key: '0',
+      title: 'Select Assessments',
+    },
+    CLASS_FILTERS: {
+      key: '1',
+      title: 'Select Classes',
+    },
+    DEMOGRAPHIC_FILTERS: {
+      key: '2',
+      title: 'Demographics',
+    },
+    PERIOD: {
+      key: '3',
+      title: 'Period',
+    },
+  },
+  tagTypes: [
+    { key: 'termId', tabKey: '0' },
+    { key: 'testGrades', subType: 'test', tabKey: '0' },
+    { key: 'testSubjects', subType: 'test', tabKey: '0' },
+    // { key: 'tagIds', tabKey: '0' },
+    { key: 'assessmentTypes', tabKey: '0' },
+    // { key: 'testIds', tabKey: '0' },
+    { key: 'schoolIds', tabKey: '1' },
+    { key: 'teacherIds', tabKey: '1' },
+    { key: 'grades', subType: 'class', tabKey: '1' },
+    { key: 'subjects', subType: 'class', tabKey: '1' },
+    // { key: 'assignedBy', tabKey: '1' },
+    { key: 'courseId', tabKey: '1' },
+    { key: 'classIds', tabKey: '1' },
+    { key: 'groupIds', tabKey: '1' },
+    // { key: 'profileId', tabKey: '2' },
+    { key: 'race', tabKey: '2' },
+    { key: 'gender', tabKey: '2' },
+    { key: 'iepStatus', tabKey: '2' },
+    { key: 'frlStatus', tabKey: '2' },
+    { key: 'ellStatus', tabKey: '2' },
+    { key: 'hispanicEthnicity', tabKey: '2' },
+    { key: 'period', tabKey: '3' },
+    { key: 'customPeriodStartTime', tabKey: '3' },
+    { key: 'customPeriodEndTime', tabKey: '3' },
+  ],
+  initialFilters: {
+    reportId: '',
+    termId: '',
+    testGrades: '',
+    testSubjects: '',
+    tagIds: '',
+    assessmentTypes: '',
+    testIds: '',
+    schoolIds: '',
+    teacherIds: '',
+    grades: '',
+    subjects: '',
+    courseId: 'All',
+    classIds: '',
+    groupIds: '',
+    profileId: '',
+    assignedBy: 'anyone',
+    race: 'all',
+    gender: 'all',
+    iepStatus: 'all',
+    frlStatus: 'all',
+    ellStatus: 'all',
+    hispanicEthnicity: 'all',
+    period: PERIODS.TILL_DATE,
+    customPeriodStartTime: undefined,
+    customPeriodEndTime: undefined,
+  },
+  requestFilters: {
+    reportId: '',
+    termId: '',
+    testSubjects: '',
+    testGrades: '',
+    assessmentTypes: '',
+    tagIds: '',
+    testIds: '',
+    schoolIds: '',
+    teacherIds: '',
+    subjects: '',
+    grades: '',
+    courseId: '',
+    classIds: '',
+    groupIds: '',
+    profileId: '',
+    race: 'all',
+    gender: 'all',
+    iepStatus: 'all',
+    frlStatus: 'all',
+    ellStatus: 'all',
+    hispanicEthnicity: 'all',
+  },
+  subjects: [
+    { key: 'Mathematics', title: 'Mathematics' },
+    { key: 'ELA', title: 'ELA' },
+    { key: 'Science', title: 'Science' },
+    { key: 'Social Studies', title: 'Social Studies' },
+    { key: 'Computer Science', title: 'Computer Science' },
+    { key: 'Other Subjects', title: 'Other Subjects' },
+  ],
+  grades: [
+    { key: 'TK', title: 'PreKindergarten' },
+    { key: 'K', title: 'Kindergarten' },
+    { key: '1', title: 'Grade 1' },
+    { key: '2', title: 'Grade 2' },
+    { key: '3', title: 'Grade 3' },
+    { key: '4', title: 'Grade 4' },
+    { key: '5', title: 'Grade 5' },
+    { key: '6', title: 'Grade 6' },
+    { key: '7', title: 'Grade 7' },
+    { key: '8', title: 'Grade 8' },
+    { key: '9', title: 'Grade 9' },
+    { key: '10', title: 'Grade 10' },
+    { key: '11', title: 'Grade 11' },
+    { key: '12', title: 'Grade 12' },
+    { key: 'O', title: 'Other' },
+  ],
+  assignedBy: [
+    { key: 'anyone', title: 'Anyone' },
+    { key: 'me', title: 'Me' },
+  ],
+  periods: [
+    {
+      key: PERIODS.TILL_DATE,
+      title: 'Till Date',
+    },
+    {
+      key: PERIODS.THIS_MONTH,
+      title: 'This Month',
+    },
+    {
+      key: PERIODS.THIS_QUARTER,
+      title: 'This Quarter',
+    },
+    {
+      key: PERIODS.LAST_MONTH,
+      title: 'Last Month',
+    },
+    {
+      key: PERIODS.LAST_QUARTER,
+      title: 'Last Quarter',
+    },
+    {
+      key: PERIODS.CUSTOM,
+      title: 'Custom',
+    },
+  ],
 }

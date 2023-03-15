@@ -1,5 +1,6 @@
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+const DW_DASHBOARD_REPORT = 'dw-dashboard-report'
 
 const reportGroupType = {
   SINGLE_ASSESSMENT_REPORT: 'single-assessment-report',
@@ -9,6 +10,7 @@ const reportGroupType = {
   ENGAGEMENT_REPORT: 'engagement-report',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_DASHBOARD_REPORT,
 }
 
 const reportNavType = {
@@ -34,6 +36,7 @@ const reportNavType = {
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_DASHBOARD_REPORT,
 }
 
 const ReportPaths = {
@@ -52,4 +55,5 @@ module.exports = {
   ReportPaths,
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
+  DW_DASHBOARD_REPORT,
 }

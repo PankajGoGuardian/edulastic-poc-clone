@@ -1,6 +1,8 @@
-import React, { useState, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
-
+import { reportGroupType } from '@edulastic/constants/const/report'
+import { head, mapValues } from 'lodash'
+import qs from 'qs'
 import { SubHeader } from '../../../common/components/Header'
 import SectionLabel from '../../../common/components/SectionLabel'
 
@@ -13,7 +15,11 @@ import AcademicSummary from './components/widgets/AcademicSummary'
 import AttendanceSummary from './components/widgets/AttendanceSummary'
 import DashboardTableFilters from './components/TableFilters'
 
-import { getUserRole } from '../../../../src/selectors/user'
+import {
+  getCurrentTerm,
+  getOrgDataSelector,
+  getUserRole,
+} from '../../../../src/selectors/user'
 
 import {
   masteryScales,
@@ -25,18 +31,97 @@ import {
   academicSummaryFiltersTypes,
   availableTestTypes,
 } from './utils'
+import {
+  fetchUpdateTagsDataAction,
+  getCsvDownloadingState,
+  getSharingState,
+  setSharingStateAction,
+} from '../../../ducks'
+import { getSharedReportList } from '../../../components/sharedReports/ducks'
+import { resetAllReportsAction } from '../../../common/reportsRedux'
+import Filters from './components/Filters/Filters'
+import { actions, selectors } from './ducks'
+import useTabNavigation from './hooks/useTabNavigation'
 
 const Dashboard = ({
-  // location,
+  loc,
+  history,
+  location,
+  isPrinting,
   userRole,
   filters = {},
   breadcrumbData,
   isCliUser,
   isCsvDownloading,
+  settings,
+  setSettings,
+
+  showApply,
+  onRefineResultsCB,
+  showFilter,
+
+  resetAllReports,
+
+  updateNavigation,
 }) => {
+  const reportId = useMemo(
+    () => qs.parse(location.search, { ignoreQueryPrefix: true }).reportId,
+    []
+  )
+  const setShowApply = (status) => {
+    onRefineResultsCB(null, status, 'applyButton')
+  }
+  const toggleFilter = (e, status) => {
+    if (onRefineResultsCB) {
+      onRefineResultsCB(e, status === false ? status : status || !showFilter)
+    }
+  }
+
   const compareByOptions = compareByOptionsRaw.filter(
     (option) => !option.hiddenFromRole?.includes(userRole)
   )
+  const onGoClick = (_settings) => {
+    const _requestFilters = {}
+    Object.keys(_settings.requestFilters).forEach((filterType) => {
+      _requestFilters[filterType] =
+        _settings.requestFilters[filterType] === 'All' ||
+        _settings.requestFilters[filterType] === 'all'
+          ? ''
+          : _settings.requestFilters[filterType]
+    })
+    setSettings({
+      ...settings,
+      requestFilters: {
+        ..._requestFilters,
+        classIds: _requestFilters.classIds || '',
+        groupIds: _requestFilters.groupIds || '',
+        testIds: _requestFilters.testIds || '',
+      },
+      selectedFilterTagsData: _settings.selectedFilterTagsData,
+      selectedCompareBy: settings.selectedCompareBy?.key
+        ? settings.selectedCompareBy
+        : head(compareByOptions),
+    })
+    setShowApply(false)
+  }
+
+  const updateFilterDropdownCB = (selected, keyName) => {
+    if (keyName === 'compareBy') {
+      setSettings({ ...settings, selectedCompareBy: selected })
+    }
+  }
+
+  useEffect(
+    () => () => {
+      console.log('Multiple Assessment Report Component Unmount')
+      resetAllReports()
+    },
+    []
+  )
+
+  useTabNavigation(settings, reportId, history, loc, updateNavigation)
+
+  const requestFilters = { profileId: '6322e2b799978a000a298469' }
   const [defaultCompareBy] = compareByOptions
 
   const performanceBandList = useMemo(
@@ -88,7 +173,19 @@ const Dashboard = ({
         breadcrumbData={breadcrumbData}
         isCliUser={isCliUser}
         alignment="baseline"
-      />
+      >
+        <Filters
+          reportId={reportId}
+          isPrinting={isPrinting}
+          onGoClick={onGoClick}
+          history={history}
+          location={location}
+          showApply={showApply}
+          setShowApply={setShowApply}
+          showFilter={showFilter}
+          toggleFilter={toggleFilter}
+        />
+      </SubHeader>
       <SectionLabel>Overview</SectionLabel>
       <MasonGrid>
         <AcademicSummary
@@ -117,6 +214,23 @@ const Dashboard = ({
 }
 
 export default connect(
-  (state) => ({ userRole: getUserRole(state) }),
-  {}
+  (state) => ({
+    ...mapValues(selectors, (selector) => selector(state)),
+    userRole: getUserRole(state),
+    sharingState: getSharingState(state),
+    sharedReportList: getSharedReportList(state),
+    isCsvDownloading: getCsvDownloadingState(state),
+    orgData: getOrgDataSelector(state),
+    defaultTermId: getCurrentTerm(state),
+  }),
+  {
+    ...actions,
+    resetAllReports: resetAllReportsAction,
+    setSharingState: setSharingStateAction,
+    fetchUpdateTagsData: (opts) =>
+      fetchUpdateTagsDataAction({
+        type: reportGroupType.DW_DASHBOARD_REPORT,
+        ...opts,
+      }),
+  }
 )(Dashboard)

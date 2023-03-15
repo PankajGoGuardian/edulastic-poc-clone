@@ -116,7 +116,7 @@ const getDashboardTableMatrics = (data) => {
   const queryString = qs.stringify(data)
   return api.callApi({
     useSlowApi: true,
-    url: `${prefix}/${DASHBOARD}/table?${queryString}`,
+    url: `${prefix}/${DASHBOARD}/details?${queryString}`,
     method: 'get',
     data,
   })

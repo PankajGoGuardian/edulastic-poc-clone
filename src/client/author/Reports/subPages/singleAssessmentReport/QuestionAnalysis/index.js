@@ -57,10 +57,14 @@ const QuestionAnalysis = ({
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
   const [sortOrder, setSortOrder] = useState(false)
-
-  const assessmentName = getAssessmentName(
-    settings.tagsData?.testId || settings.selectedTest
+  const [assessmentName, setAssessmentName] = useState(
+    getAssessmentName(settings.tagsData?.testId || settings.selectedTest)
   )
+  useEffect(() => {
+    setAssessmentName(
+      getAssessmentName(settings.tagsData?.testId || settings.selectedTest)
+    )
+  }, [settings.tagsData?.testId || settings.selectedTest])
 
   const [
     qSummaryData,

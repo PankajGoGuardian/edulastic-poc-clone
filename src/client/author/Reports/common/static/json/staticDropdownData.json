@@ -1,0 +1,53 @@
+{
+  "subjects": [
+    { "key": "Mathematics", "title": "Mathematics" },
+    { "key": "ELA", "title": "ELA" },
+    { "key": "Science", "title": "Science" },
+    { "key": "Social Studies", "title": "Social Studies" },
+    { "key": "Computer Science", "title": "Computer Science" },
+    { "key": "Other Subjects", "title": "Other Subjects" }
+  ],
+  "grades": [
+    { "key": "TK", "title": "PreKindergarten" },
+    { "key": "K", "title": "Kindergarten" },
+    { "key": "1", "title": "Grade 1" },
+    { "key": "2", "title": "Grade 2" },
+    { "key": "3", "title": "Grade 3" },
+    { "key": "4", "title": "Grade 4" },
+    { "key": "5", "title": "Grade 5" },
+    { "key": "6", "title": "Grade 6" },
+    { "key": "7", "title": "Grade 7" },
+    { "key": "8", "title": "Grade 8" },
+    { "key": "9", "title": "Grade 9" },
+    { "key": "10", "title": "Grade 10" },
+    { "key": "11", "title": "Grade 11" },
+    { "key": "12", "title": "Grade 12" },
+    { "key": "other", "title": "Other" }
+  ],
+  "periods": [
+    {
+      "key": "TILL_DATE",
+      "title": "Till Date"
+    },
+    {
+      "key": "THIS_MONTH",
+      "title": "This Month"
+    },
+    {
+      "key": "THIS_QUARTER",
+      "title": "This Quarter"
+    },
+    {
+      "key": "LAST_MONTH",
+      "title": "Last Month"
+    },
+    {
+      "key": "LAST_QUARTER",
+      "title": "Last Quarter"
+    },
+    {
+      "key": "CUSTOM",
+      "title": "Custom"
+    }
+  ]
+}

@@ -186,7 +186,7 @@ export const TimePickerStyled = styled(TimePicker)`
     }
   }
 `
-
+/** @type {Select} */
 export const SelectInputStyled = styled(Select)`
   &.ant-select {
     width: ${(props) => props.width || '100%'};

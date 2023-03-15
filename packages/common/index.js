@@ -158,11 +158,13 @@ export {
 } from './src/contexts/QuestionContext'
 
 // custom hook
+export { default as useApiQuery } from './src/customHooks/useApiQuery'
 export { default as useRealtimeV2 } from './src/customHooks/useRealtimeV2'
 export { default as useDisableDragScroll } from './src/customHooks/useDisableDragScroll'
 export { default as measureTextWithImage } from './src/customHooks/measureTextWithImage'
 export { default as useDropdownData } from './src/customHooks/useDropDownData'
 export { default as useOfflinePagination } from './src/customHooks/useOfflinePagination'
+export { default as useLatestRef } from './src/customHooks/useLatestRef'
 
 // Mobile
 export { MenuIcon } from './src/components/MenuIcon'

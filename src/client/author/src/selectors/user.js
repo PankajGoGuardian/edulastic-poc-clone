@@ -95,6 +95,10 @@ export const getCurrentTerm = createSelector(stateSelector, (state) =>
   _get(state, 'user.orgData.defaultTermId')
 )
 
+export const getTerms = createSelector(stateSelector, (state) =>
+  _get(state, 'user.orgData.terms', [])
+)
+
 export const getCurrentActiveTerms = createSelector(stateSelector, (state) => {
   const terms = _get(state, 'user.orgData.terms', [])
   const currentTime = new Date().getTime()

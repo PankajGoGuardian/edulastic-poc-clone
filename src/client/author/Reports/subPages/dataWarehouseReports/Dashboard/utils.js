@@ -216,8 +216,8 @@ export const compareByOptions = [
 ]
 
 export const academicSummaryFiltersTypes = {
-  PERFORMANCE_BAND: 'performanceBand',
-  TEST_TYPE: 'testType',
+  PERFORMANCE_BAND: 'academicPerformanceBand',
+  TEST_TYPE: 'academicTestType',
 }
 
 export const getCellColor = (value, selectedPerformanceBand) => {

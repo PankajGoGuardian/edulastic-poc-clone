@@ -54,7 +54,6 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
 export const getTableColumns = (compareBy) => {
-  console.log(compareBy)
   return useMemo(
     () =>
       next(tableColumnsData, (_columns) => {

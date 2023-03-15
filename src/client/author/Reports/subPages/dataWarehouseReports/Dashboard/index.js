@@ -29,6 +29,7 @@ import {
 const Dashboard = ({
   // location,
   userRole,
+  filters = {},
   breadcrumbData,
   isCliUser,
   isCsvDownloading,
@@ -43,7 +44,6 @@ const Dashboard = ({
     [masteryScales]
   )
 
-  const [filters, setFilters] = useState({})
   const [tableFilters, setTableFilters] = useState({
     [tableFilterTypes.COMPARE_BY]:
       // compareByOptions.find((c) => c.key === location?.search?.compareBy) ||
@@ -61,7 +61,9 @@ const Dashboard = ({
 
   const selectedPerformanceBand = (
     masteryScales.filter(
-      (x) => x._id === academicSummaryFilters.performanceBand.key
+      (x) =>
+        x._id ===
+        academicSummaryFilters[academicSummaryFiltersTypes.PERFORMANCE_BAND].key
     )[0] || masteryScales[0]
   )?.performanceBand
 

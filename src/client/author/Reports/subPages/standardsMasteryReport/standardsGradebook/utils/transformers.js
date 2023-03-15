@@ -28,6 +28,18 @@ const {
 } = reportUtils.standardsGradebook
 
 // common utils
+/**
+ * @param {string} name
+ * @param {string} compareByKey
+ * @param {*} t
+ * @returns {string}
+ */
+export function getDimensionName(name, compareByKey, t) {
+  const emptyDimensionName = [compareByKeys.STUDENT].includes(compareByKey)
+    ? t('common.anonymous')
+    : '-'
+  return name || emptyDimensionName
+}
 
 export const getScaleInfo = ({
   settings,
@@ -160,7 +172,7 @@ export const getTableColumnsFE = ({
     tableColumns.find((c) => c.key === 'dimension'),
     {
       render: (data) => {
-        const name = data.name || t('common.anonymous')
+        const name = getDimensionName(data.name, tableFilters.compareByKey, t)
         return tableFilters.compareByKey === compareByKeys.STUDENT &&
           !isSharedReport ? (
           <StudentSummaryProfileLink

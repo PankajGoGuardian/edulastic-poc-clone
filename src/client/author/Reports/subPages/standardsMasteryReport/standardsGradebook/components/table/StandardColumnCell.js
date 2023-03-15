@@ -6,6 +6,7 @@ import { reportUtils } from '@edulastic/constants'
 
 import { CustomTableTooltip } from '../../../../../common/components/customTableTooltip'
 import { ColoredCell } from '../../../../../common/styled'
+import { getDimensionName } from '../../utils/transformers'
 
 const {
   compareByKeyToNameMap,
@@ -57,7 +58,7 @@ const StandardColumnCell = ({
 }) => {
   const { dimension } = record
   const dimensionId = dimension._id
-  const dimensionName = dimension.name || t('common.anonymous')
+  const dimensionName = getDimensionName(dimension.name, compareByKey, t)
   let onClick = null
   const valueToRender = get(data, analyseByKey)
   if (compareByKey === compareByKeys.STUDENT && valueToRender) {

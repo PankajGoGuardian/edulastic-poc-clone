@@ -17,9 +17,14 @@ const DashboardTable = ({
   tableFilters,
   updateTableFiltersCB,
   tableData,
+  selectedPerformanceBand,
   isCsvDownloading,
 }) => {
-  const tableColumns = getTableColumns(tableFilters.compareBy)
+  const tableColumns = getTableColumns(
+    tableFilters.compareBy,
+    selectedPerformanceBand
+  )
+  const { metricInfo, aboveOrAtStandardCount, belowStandardCount } = tableData
   return (
     <TableContainer>
       <StyledRow type="flex" wrap justify="space-between" margin="30px">
@@ -32,7 +37,7 @@ const DashboardTable = ({
         </StyledText>
         <TableHeaderCell
           title="Above/Equal to avg.:"
-          value={12}
+          value={aboveOrAtStandardCount}
           color="#BBEFC9"
           onClick={() =>
             updateTableFiltersCB(
@@ -43,7 +48,7 @@ const DashboardTable = ({
         />
         <TableHeaderCell
           title="Below avg.:"
-          value={4}
+          value={belowStandardCount}
           color="#EFBBBB"
           onClick={() =>
             updateTableFiltersCB(
@@ -54,7 +59,7 @@ const DashboardTable = ({
         />
       </StyledRow>
       <CsvTable
-        dataSource={tableData}
+        dataSource={metricInfo}
         columns={tableColumns}
         tableToRender={CustomStyledTable}
         onCsvConvert={onCsvConvert}

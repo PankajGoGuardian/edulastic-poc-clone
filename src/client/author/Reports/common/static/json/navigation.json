@@ -338,7 +338,7 @@
         }
       ],
       "group": "data-warehouse-reports",
-      "groupTitle": "Data Warehouse Reports"
+      "groupTitle": "Data Studio Reports"
     },
     "multiple-assessment-report-dw": {
       "title": "Performance Trends",
@@ -352,7 +352,7 @@
         }
       ],
       "group": "data-warehouse-reports",
-      "groupTitle": "Data Warehouse Reports"
+      "groupTitle": "Data Studio Reports"
     },
     "shared-reports": {
       "title": "Shared Reports",

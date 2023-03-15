@@ -45,7 +45,7 @@ import { getCompareByOptions, getChartData, getTableData } from './utils'
 const { downloadCSV } = reportUtils.common
 
 const onCsvConvert = (data) =>
-  downloadCSV(`Data Warehouse - Performance Trends.csv`, data)
+  downloadCSV(`Data Studio - Performance Trends.csv`, data)
 
 const MultipleAssessmentReport = ({
   // value props

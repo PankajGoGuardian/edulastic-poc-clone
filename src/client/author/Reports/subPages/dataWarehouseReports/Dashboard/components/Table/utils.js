@@ -1,7 +1,10 @@
 import React from 'react'
 import next from 'immer'
-import { flatMap } from 'lodash'
-import { downloadCSV } from '@edulastic/constants/reportUtils/common'
+import { flatMap, sumBy } from 'lodash'
+import {
+  downloadCSV,
+  percentage,
+} from '@edulastic/constants/reportUtils/common'
 import { IconExternalLink } from '@edulastic/icons'
 import { availableTestTypes } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
@@ -32,12 +35,13 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
 const getHorizontalBarData = (data, selectedPerformanceBand) => {
+  const totalStudents = sumBy(data, 'totalStudents')
   return data.map((d) => {
     const band = selectedPerformanceBand.find(
       (pb) => pb.threshold === d.bandScore
     )
     return {
-      value: d.totalStudents,
+      value: percentage(d.totalStudents, totalStudents, true),
       color: band.color,
     }
   })

@@ -51,12 +51,12 @@ const getTableColumns = (
   const result = orderedQuestions.map((question) => {
     return {
       title: <ColumnTitle question={question} />,
-      dataIndex: `averageScoreByQId.${question.questionId}`,
+      dataIndex: `scorePercentByQId.${question.questionId}`,
       key: question.questionId,
       children: [
         {
           title: Math.round(question.districtAvgPerf),
-          dataIndex: `averageScoreByQId.${question.questionId}`,
+          dataIndex: `scorePercentByQId.${question.questionId}`,
           key: question.questionId,
           render: (text, record) => (
             <CustomTableTooltip

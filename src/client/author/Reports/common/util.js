@@ -331,7 +331,7 @@ export const convertQAnalysisTableToCSV = (
   dataSource.forEach((data) => {
     const contentRows = [data.dimension]
     orderedQuestions.forEach((question) => {
-      contentRows.push(data.averageScoreByQId[question.questionId])
+      contentRows.push(data.scorePercentByQId[question.questionId])
     })
     csv.push(contentRows.join(','))
     csvRawData.push(contentRows)

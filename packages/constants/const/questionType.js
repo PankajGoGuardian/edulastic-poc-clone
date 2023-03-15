@@ -152,6 +152,10 @@ const HIDE_QUESTION_TYPES = [
   PASSAGE_WITH_QUESTIONS,
 ]
 
+const WIDGET_TYPES = {
+  QUESTION: 'question',
+}
+
 module.exports = {
   ALL_QUESTION_TYPES,
   SHORT_TEXT,
@@ -202,4 +206,5 @@ module.exports = {
   AUDIO_RESPONSE,
   disableEditResponseInEgQuestionTypes,
   HIDE_QUESTION_TYPES,
+  WIDGET_TYPES,
 }

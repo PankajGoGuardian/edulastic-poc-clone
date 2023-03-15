@@ -125,6 +125,7 @@ const testItemStatusConstants = {
   PUBLISHED: 'published',
   ARCHIVED: 'archived',
 }
+const { WIDGET_TYPES } = questionType
 
 export const NewGroup = {
   type: ITEM_GROUP_TYPES.STATIC /* Default : static */,
@@ -646,11 +647,6 @@ export const getTestSelector = createSelector(
   (state) => state.entity
 )
 
-export const getQuestionTypesInTestSelector = createSelector(
-  getTestSelector,
-  (state) => state?.metadata?.questionTypes || []
-)
-
 export const getPlaylistSelector = createSelector(
   playlistStateSelector,
   (state) => state.entity
@@ -960,6 +956,23 @@ export const getTestItemsRowsSelector = createSelector(
           }),
         }))
       })
+)
+
+export const getQuestionTypesInTestSelector = createSelector(
+  getTestItemsRowsSelector,
+  (testItemsRows) => {
+    const questionTypes = []
+    testItemsRows.forEach((testItemRows = []) => {
+      testItemRows.forEach(({ widgets = [] }) => {
+        widgets.forEach(({ widgetType, type }) => {
+          if (widgetType === WIDGET_TYPES.QUESTION) {
+            questionTypes.push(type)
+          }
+        })
+      })
+    })
+    return questionTypes
+  }
 )
 
 // reducer

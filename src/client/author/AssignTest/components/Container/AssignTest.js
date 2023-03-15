@@ -361,20 +361,24 @@ class AssignTest extends React.Component {
       location,
       questionTypesInTest,
       enableAudioResponseQuestion,
+      isPlaylist,
     } = this.props
 
-    const containsAudioResponseTypeQuestion = questionTypesInTest.includes(
-      AUDIO_RESPONSE
-    )
-    const audioResponseQuestionDisabledByDA = !enableAudioResponseQuestion
-    const cannotAssignAudioResponseQuestion = [
-      containsAudioResponseTypeQuestion,
-      audioResponseQuestionDisabledByDA,
-    ].every((o) => !!o)
+    const isPlaylistModule = isPlaylist && !assignment?.testId
+    if (!isPlaylistModule) {
+      const containsAudioResponseTypeQuestion = questionTypesInTest.includes(
+        AUDIO_RESPONSE
+      )
+      const audioResponseQuestionDisabledByDA = !enableAudioResponseQuestion
+      const cannotAssignAudioResponseQuestion = [
+        containsAudioResponseTypeQuestion,
+        audioResponseQuestionDisabledByDA,
+      ].every((o) => !!o)
 
-    if (cannotAssignAudioResponseQuestion) {
-      notification({ messageKey: 'testContainsAudioResponseTypeQuestion' })
-      return
+      if (cannotAssignAudioResponseQuestion) {
+        notification({ messageKey: 'testContainsAudioResponseTypeQuestion' })
+        return
+      }
     }
     const source = location?.state?.assessmentAssignedFrom
     let updatedAssignment = { ...assignment }

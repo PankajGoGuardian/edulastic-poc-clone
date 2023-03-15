@@ -43,6 +43,7 @@ import {
   testActivityStatus,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
+import { ORG_TYPE } from '@edulastic/constants/const/roleType'
 import { ShuffleChoices } from '../utils/test'
 import { Fscreen, isiOS } from '../utils/helpers'
 import {
@@ -109,7 +110,7 @@ import {
   setEnableAudioResponseQuestionAction,
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
-import { getUserRole } from '../../author/src/selectors/user'
+import { getUserOrgId, getUserRole } from '../../author/src/selectors/user'
 import { getSubmitTestCompleteSelector } from '../selectors/test'
 import {
   setActiveAssignmentAction,
@@ -403,8 +404,22 @@ function* loadTest({ payload }) {
     if (testActivity?.testActivity?.testId) {
       testId = testActivity?.testActivity?.testId
     }
-    const enableAudioResponseQuestion =
+    let enableAudioResponseQuestion =
       testActivity?.enableAudioResponseQuestion || false
+    const isTestBeingPreviewed = [preview, userRole !== roleuser.STUDENT].every(
+      (o) => !!o
+    )
+    if (isTestBeingPreviewed) {
+      const userCurrentDistrictId = yield select(getUserOrgId)
+      const districtTestSetting = yield call(testsApi.getDefaultTestSettings, {
+        orgId: userCurrentDistrictId,
+        params: { orgType: ORG_TYPE.DISTRICT },
+      })
+      // Test Activity is not loaded in preview mode. Hence enableAudioResponseQuestion is not available.
+      // Fetching enableAudioResponseQuestion from district test setting in preview mode.
+      enableAudioResponseQuestion =
+        districtTestSetting?.enableAudioResponseQuestion || false
+    }
     yield put(setEnableAudioResponseQuestionAction(enableAudioResponseQuestion))
     yield put({
       type: SET_TEST_ID,

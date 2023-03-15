@@ -11,7 +11,7 @@ const QuestionList = ({
   options = [],
   currentItem,
   skinb,
-  t,
+  i18Translate,
   bookmarks = [],
   skipped = [],
   dropdownStyle = {},
@@ -81,9 +81,9 @@ const QuestionList = ({
               key={index}
               value={item}
             >
-              {`${t('common.layout.selectbox.question')} ${index + 1}/${
-                options.length
-              }`}
+              {`${i18Translate('common.layout.selectbox.question')} ${
+                index + 1
+              }/${options.length}`}
               {bookmarks[index] ? (
                 <IconBookmark color="#f8c165" height={16} />
               ) : skipped[index] ? (
@@ -106,7 +106,7 @@ const QuestionList = ({
 
 QuestionList.propTypes = {
   options: PropTypes.array.isRequired,
-  t: PropTypes.func.isRequired,
+  i18Translate: PropTypes.func.isRequired,
   gotoQuestion: PropTypes.func.isRequired,
   currentItem: PropTypes.number.isRequired,
   bookmarks: PropTypes.array.isRequired,

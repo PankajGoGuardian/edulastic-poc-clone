@@ -1,9 +1,11 @@
 import React from 'react'
-import { SelectInputStyled, FieldLabel } from '@edulastic/common'
+import { SelectInputStyled, FieldLabel, EduIf } from '@edulastic/common'
 import { test as testConst } from '@edulastic/constants'
+import { withNamespaces } from '@edulastic/localization'
 import { Col, Select, Tooltip } from 'antd'
 import ClassSelector from '../SimpleOptions/ClassSelector'
 import StudentSelector from '../SimpleOptions/StudentSelector'
+import AttemptWindowTypeSelector from '../SimpleOptions/AttemptWindowTypeSelector'
 import DateSelector from '../SimpleOptions/DateSelector'
 import QuestionPerStandardSelector from '../SimpleOptions/QuestionPerStandardSelector'
 import { StyledRow } from '../SimpleOptions/styled'
@@ -40,6 +42,8 @@ const ClassGroupContainer = ({
   showRecommendedResources,
   selectedResourcesAction,
   createClassHandler,
+  t,
+  isPremiumUser,
 }) => {
   const { tags = testSettings.tags } = assignment
   return (
@@ -169,6 +173,20 @@ const ClassGroupContainer = ({
           </Col>
         </StyledRow>
       </SettingContainer>
+      <EduIf condition={isPremiumUser}>
+        <SettingContainer id="student-attempt-window-setting">
+          <DetailsTooltip
+            width={tootltipWidth}
+            title={t('studentAttemptTimeWindow.title')}
+            content={t('studentAttemptTimeWindow.toolTipMsg')}
+            premium
+            placement="rightTop"
+          />
+          <StyledRow gutter={16}>
+            <AttemptWindowTypeSelector changeField={changeField} />
+          </StyledRow>
+        </SettingContainer>
+      </EduIf>
 
       <SettingContainer id="tags-setting">
         <DetailsTooltip
@@ -234,4 +252,4 @@ const ClassGroupContainer = ({
   )
 }
 
-export default ClassGroupContainer
+export default withNamespaces('author')(ClassGroupContainer)

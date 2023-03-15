@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { notification, FlexContainer, RadioGrp } from '@edulastic/common'
+import { notification, FlexContainer, RadioGrp, EduIf } from '@edulastic/common'
 import { get } from 'lodash'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -19,8 +19,11 @@ import {
   Container,
   StyledSpan,
   CustomRadioBtn,
-} from './styled'
-import { StyledButton, StyledDownloadIcon } from '../SubContainer/styled'
+} from './styled-components'
+import {
+  StyledButton,
+  StyledDownloadIcon,
+} from '../SubContainer/styled-components'
 import { StyledSpin } from '../../../../admin/Common/StyledComponents'
 import {
   Label,
@@ -50,7 +53,7 @@ const title = 'Manage District'
 const oneRosterSyncType = {
   DELTA: 'delta',
   FULL: 'full',
-  ACCOMODATION: 'accommodation',
+  ACCOMMODATION: 'accommodation',
 }
 const RosterImport = ({
   history,
@@ -139,47 +142,43 @@ const RosterImport = ({
             <StyledSpin size="large" />
           </StyledSpincontainer>
         )}
-        {!loading && (
-          <>
-            <Container>
-              <StyledHeading1>Import SIS Data</StyledHeading1>
-              <p>
-                Choose the import type and import data securely by attaching csv
-                files with a zip file format.
-              </p>
-              <FlexContainer
-                justifyContent="space-between"
-                alignItems="center"
-                width="100%"
-                mt="30px"
-              >
-                <StyledSpan>
-                  SELECT AN OPTION
-                  <RadioGrp
-                    style={{ display: 'flex' }}
-                    onChange={handleSyncOptionChange}
-                    value={selectedSyncType}
-                  >
-                    <RadioButtonWrapper>
-                      <CustomRadioBtn value={oneRosterSyncType.DELTA} />
-                      <Label>DELTA SYNC</Label>
-                    </RadioButtonWrapper>
-                    <RadioButtonWrapper style={{ marginLeft: '20px' }}>
-                      <CustomRadioBtn value={oneRosterSyncType.FULL} />
-                      <Label>FULL SYNC</Label>
-                    </RadioButtonWrapper>
-                    <RadioButtonWrapper style={{ marginLeft: '20px' }}>
-                      <CustomRadioBtn value={oneRosterSyncType.ACCOMODATION} />
-                      <Label>ACCOMODATIONS</Label>
-                    </RadioButtonWrapper>
-                  </RadioGrp>
-                </StyledSpan>
-                <FlexContainer
-                  justifyContent="space-between"
-                  alignItems="center"
+        <EduIf condition={!loading}>
+          <Container>
+            <StyledHeading1>Import SIS Data</StyledHeading1>
+            <p>
+              Choose the import type and import data securely by attaching csv
+              files with a zip file format.
+            </p>
+            <FlexContainer
+              justifyContent="space-between"
+              alignItems="center"
+              width="100%"
+              mt="30px"
+            >
+              <StyledSpan>
+                SELECT AN OPTION
+                <RadioGrp
+                  style={{ display: 'flex' }}
+                  onChange={handleSyncOptionChange}
+                  value={selectedSyncType}
                 >
-                  {/* TODO */}
-                  {/* <FlexContainer
+                  <RadioButtonWrapper>
+                    <CustomRadioBtn value={oneRosterSyncType.DELTA} />
+                    <Label>DELTA SYNC</Label>
+                  </RadioButtonWrapper>
+                  <RadioButtonWrapper style={{ marginLeft: '20px' }}>
+                    <CustomRadioBtn value={oneRosterSyncType.FULL} />
+                    <Label>FULL SYNC</Label>
+                  </RadioButtonWrapper>
+                  <RadioButtonWrapper style={{ marginLeft: '20px' }}>
+                    <CustomRadioBtn value={oneRosterSyncType.ACCOMMODATION} />
+                    <Label>ACCOMMODATIONS</Label>
+                  </RadioButtonWrapper>
+                </RadioGrp>
+              </StyledSpan>
+              <FlexContainer justifyContent="space-between" alignItems="center">
+                {/* TODO */}
+                {/* <FlexContainer
                     justifyContent="space-between"
                     alignItems="center"
                   >
@@ -193,46 +192,45 @@ const RosterImport = ({
                       VIEW INSTRUCTIONS
                     </p>
                   </FlexContainer> */}
-                  <StyledButton
-                    type="link"
-                    href={`${AppConfig.cdnURI}/districts_content/oneroster_sample.zip`}
-                  >
-                    <StyledDownloadIcon /> Download Example Files
-                  </StyledButton>
-                </FlexContainer>
+                <StyledButton
+                  type="link"
+                  href={`${AppConfig.cdnURI}/districts_content/oneroster_sample.zip`}
+                >
+                  <StyledDownloadIcon /> Download Example Files
+                </StyledButton>
               </FlexContainer>
-            </Container>
-            <CustomUploadStyledLayout
-              onDragOver={() => setIsDragging(true)}
-              onDrop={() => setIsDragging(false)}
-              onDragLeave={() => setIsDragging(false)}
-              isDragging={isDragging}
-              loading="false"
+            </FlexContainer>
+          </Container>
+          <CustomUploadStyledLayout
+            onDragOver={() => setIsDragging(true)}
+            onDrop={() => setIsDragging(false)}
+            onDragLeave={() => setIsDragging(false)}
+            isDragging={isDragging}
+            loading="false"
+          >
+            <UploadDragger
+              name="file"
+              onChange={onChange}
+              beforeUpload={() => false}
+              multiple={false}
+              accept=".zip, zip, application/zip"
+              showUploadList={false}
             >
-              <UploadDragger
-                name="file"
-                onChange={onChange}
-                beforeUpload={() => false}
-                multiple={false}
-                accept=".zip, zip, application/zip"
-                showUploadList={false}
-              >
-                <DataExport
-                  isFileUploading={isFileUploading}
-                  uploadProgress={uploadProgress}
-                  cancelUpload={cancelUpload}
-                />
-              </UploadDragger>
-            </CustomUploadStyledLayout>
-            <CustomHistoryStyledLayout>
-              <RosterHistory
-                rosterImportLog={rosterImportLog}
-                summary={summary}
-                downloadCsvErrorData={downloadCsvErrorData}
+              <DataExport
+                isFileUploading={isFileUploading}
+                uploadProgress={uploadProgress}
+                cancelUpload={cancelUpload}
               />
-            </CustomHistoryStyledLayout>
-          </>
-        )}
+            </UploadDragger>
+          </CustomUploadStyledLayout>
+          <CustomHistoryStyledLayout>
+            <RosterHistory
+              rosterImportLog={rosterImportLog}
+              summary={summary}
+              downloadCsvErrorData={downloadCsvErrorData}
+            />
+          </CustomHistoryStyledLayout>
+        </EduIf>
       </StyledContent>
     </CustomSettingsWrapper>
   )

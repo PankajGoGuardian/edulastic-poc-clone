@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import { Spin } from 'antd'
 import { compose } from 'redux'
-import { EduButton, FlexContainer, MainHeader } from '@edulastic/common'
+import { FlexContainer, MainHeader, EduButton } from '@edulastic/common'
 import { fadedBlack } from '@edulastic/colors'
 import styled from 'styled-components'
-import { IconUpload, IconCloudUpload } from '@edulastic/icons'
+import { IconCloudUpload, IconUpload } from '@edulastic/icons'
 import DataWarehoureUploadsTable from '../../../Shared/Components/DataWarehouseUploadsTable'
 import DataWarehoureUploadModal from '../../../Shared/Components/DataWarehouseUploadModal'
 
@@ -62,8 +62,8 @@ const DataWarehouse = ({
     <div>
       <MainHeader Icon={IconCloudUpload} headingText="Data Warehouse" />
       <FlexContainer justifyContent="right" padding="10px">
-        <EduButton isGhost height="100%" onClick={() => showModal()}>
-          <IconUpload /> Upload national / state tests data files
+        <EduButton height="40px" onClick={showModal}>
+          <IconUpload /> Upload External Data Files
         </EduButton>
       </FlexContainer>
       <TableContainer>

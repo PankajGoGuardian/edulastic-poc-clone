@@ -19,11 +19,11 @@ import {
   DashedHr,
   ColorCircle,
   ColorBandRow,
-  StyledH3,
 } from '../../../../common/styled'
 import LargeTag from '../../common/LargeTag'
 
 import { tableColumnsData, compareByMap } from '../utils'
+import IncompleteTestsMessage from '../../../../common/components/IncompleteTestsMessage'
 
 const { formatDate } = reportUtils.common
 
@@ -161,16 +161,14 @@ const getTableColumns = (
         // assessment column to be downloaded in csv
         {
           key: uniqId,
-          title: `${_testName}${
-            externalTestType ? ` (${externalTestType})` : ''
-          } - ${averageScore}${externalTestType ? '' : '%'}`,
+          title: `${_testName} Score(%)`,
           align: 'center',
           dataIndex: 'tests',
           visibleOn: ['csv'],
           render: (tests = {}) => {
             const currentTest = tests.find((t) => t.uniqId === uniqId)
             return currentTest
-              ? `${currentTest.band.name} - ${
+              ? `${
                   currentTest.externalTestType
                     ? currentTest.averageScore
                     : `${currentTest.averageScorePercentage}%`
@@ -180,9 +178,72 @@ const getTableColumns = (
         },
       ]
     })
+    const additionalDownloadCsvColumns = overallAssessmentsData.map(
+      (assessment) => {
+        const { uniqId, testName, isIncomplete = false } = assessment
+        const _testName = isIncomplete ? `${testName} *` : testName
+        return {
+          key: uniqId,
+          title: `${_testName} Performance Band`,
+          align: 'center',
+          dataIndex: 'tests',
+          visibleOn: ['csv'],
+          render: (tests = {}) => {
+            const currentTest = tests.find((t) => t.uniqId === uniqId)
+            return currentTest ? `${currentTest.band.name}` : '-'
+          },
+        }
+      }
+    )
     // push assessment columns to the original table columns
     _columns.push(...assessmentColumns)
+    _columns.push(...additionalDownloadCsvColumns)
   })
+}
+
+const getDownloadCsvColumnHeadersFunc = (
+  compareBy,
+  overallAssessmentsData
+) => () => {
+  const dowloadCsvTableColumnHeaders = {
+    names: [compareBy],
+    dates: ['Date'],
+    testType: ['Test Type'],
+    totalStudents: ['Students'],
+    avgScore: ['Avg. Score'],
+  }
+
+  const addAdditionalColumns = (assessment) => {
+    const {
+      assessmentDate,
+      totalGraded,
+      testType,
+      externalTestType,
+      averageScore,
+    } = assessment
+    dowloadCsvTableColumnHeaders.dates.push(formatDate(assessmentDate))
+    dowloadCsvTableColumnHeaders.testType.push(testType || externalTestType)
+    dowloadCsvTableColumnHeaders.totalStudents.push(`${totalGraded}`)
+    dowloadCsvTableColumnHeaders.avgScore.push(
+      `${averageScore}${assessment.externalTestType ? '' : '%'}`
+    )
+  }
+
+  overallAssessmentsData.forEach((assessment) => {
+    const { testName, externalTestType, isIncomplete = false } = assessment
+    const _testName = isIncomplete ? `${testName} *` : testName
+    dowloadCsvTableColumnHeaders.names.push(
+      `${_testName}${externalTestType ? ' Score' : ' Score(%)'}`
+    )
+    addAdditionalColumns(assessment)
+  })
+  overallAssessmentsData.forEach((assessment) => {
+    const { testName, isIncomplete = false } = assessment
+    const _testName = isIncomplete ? `${testName} *` : testName
+    dowloadCsvTableColumnHeaders.names.push(`${_testName} Performance Band`)
+    addAdditionalColumns(assessment)
+  })
+  return dowloadCsvTableColumnHeaders
 }
 
 const AssessmentsTable = ({
@@ -209,20 +270,18 @@ const AssessmentsTable = ({
       <CsvTable
         dataSource={tableData}
         columns={tableColumns}
+        getColumnHeaders={getDownloadCsvColumnHeadersFunc(
+          settings.selectedCompareBy.title,
+          overallAssessmentsData
+        )}
         tableToRender={CustomStyledTable}
         onCsvConvert={onCsvConvert}
         isCsvDownloading={isCsvDownloading}
       />
-      {showIncompleteTestsMessage && (
-        <StyledH3
-          fontSize="10px"
-          fontWeight="normal"
-          margin={incompleteTestsMessageMargin}
-        >
-          * Some assignment(s) for this test are still in progress and hence the
-          results may not be complete
-        </StyledH3>
-      )}
+      <IncompleteTestsMessage
+        hasIncompleteTests={showIncompleteTestsMessage}
+        incompleteTestsMessageMargin={incompleteTestsMessageMargin}
+      />
     </TableContainer>
   )
 }

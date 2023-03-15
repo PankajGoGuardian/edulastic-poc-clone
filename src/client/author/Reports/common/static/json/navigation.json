@@ -182,6 +182,20 @@
       "group": "multipleAssessmentReport",
       "groupTitle": "Multiple Assessment Report"
     },
+    "pre-vs-post": {
+      "title": "Pre vs Post",
+      "breadcrumb": [
+        {
+          "title": "INSIGHTS",
+          "to": "/author/reports/"
+        },
+        {
+          "title": "PRE VS POST"
+        }
+      ],
+      "group": "multipleAssessmentReport",
+      "groupTitle": "Multiple Assessment Report"
+    },
     "student-profile-summary": {
       "title": "Student Profile Summary",
       "breadcrumb": [
@@ -312,15 +326,15 @@
       ],
       "group": "mainReport"
     },
-    "whole-child-report": {
-      "title": "Whole Child Report",
+    "whole-learner-report": {
+      "title": "Whole Learner Report",
       "breadcrumb": [
         {
           "title": "DATA WAREHOUSE REPORTS",
           "to": "/author/reports/data-warehouse-reports/"
         },
         {
-          "title": "WHOLE CHILD REPORT"
+          "title": "WHOLE LEARNER REPORT"
         }
       ],
       "group": "data-warehouse-reports",
@@ -477,6 +491,11 @@
         "key": "student-progress",
         "title": "Student Progress",
         "location": "/author/reports/student-progress"
+      },
+      {
+        "key": "pre-vs-post",
+        "title": "Pre vs Post",
+        "location": "/author/reports/pre-vs-post"
       }
     ],
     "studentProfileReport": [
@@ -542,14 +561,14 @@
     ],
     "data-warehouse-reports": [
       {
-        "key": "whole-child-report",
-        "title": "WHOLE CHILD REPORT",
-        "location": "/author/reports/whole-child-report/student/"
-      },
-      {
         "key": "multiple-assessment-report-dw",
         "title": "MULTIPLE ASSESSMENT REPORT",
         "location": "/author/reports/multiple-assessment-report-dw"
+      },
+      {
+        "key": "whole-learner-report",
+        "title": "WHOLE LEARNER REPORT",
+        "location": "/author/reports/whole-learner-report/student/"
       },
       {
         "key": "single-assessment-report-dw",

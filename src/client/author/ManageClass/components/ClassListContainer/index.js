@@ -23,6 +23,7 @@ import ClassSelectModal from './ClassSelectModal'
 import ShowSyncDetailsModal from './ShowSyncDetailsModal'
 import CanvasClassSelectModal from './CanvasClassSelectModal'
 import { currentDistrictInstitutionIds } from '../../../src/selectors/user'
+import { canvasSyncStatus } from '../../constants'
 
 // eslint-disable-next-line max-len
 const ClassListContainer = ({
@@ -70,7 +71,7 @@ const ClassListContainer = ({
   }, [showCleverSyncModal])
 
   useEffect(() => {
-    if (bulkSyncCanvasStatus === 'SUCCESS')
+    if (bulkSyncCanvasStatus === canvasSyncStatus.SUCCESS)
       fetchGroups({ isCanvasClassSync: true })
   }, [bulkSyncCanvasStatus])
 

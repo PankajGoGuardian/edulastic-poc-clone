@@ -842,7 +842,7 @@ WorksheetComponent.defaultProps = {
 const withForwardedRef = (Component) => {
   const handle = (props, ref) => (
     <WithResources
-      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+      resources={[AppConfig.jqueryPath]}
       fallBack={<span />}
       onLoaded={() => null}
     >

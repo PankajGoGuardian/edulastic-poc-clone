@@ -432,6 +432,10 @@ const StandardsMasteryReportFilters = ({
       ? selected.map((o) => o.key).join(',')
       : selected.key
     resetStudentFilters(_tempTagsData, _filters, keyName, _selected)
+    if (keyName === 'curriculumId' && _filters.curriculumId !== _selected) {
+      delete _tempTagsData.domainIds
+      _filters.domainIds = []
+    }
     setTempTagsData(_tempTagsData)
     // update filters
     _filters[keyName] = _selected

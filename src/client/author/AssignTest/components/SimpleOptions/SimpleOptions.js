@@ -6,6 +6,7 @@ import {
   test as testConst,
   testTypes as testTypesConstants,
 } from '@edulastic/constants'
+import { STUDENT_ATTEMPT_TIME_WINDOW } from '@edulastic/constants/const/common'
 import { Spin, Tabs } from 'antd'
 import produce from 'immer'
 import { curry, get, isBoolean, isEmpty, keyBy, pick } from 'lodash'
@@ -306,6 +307,10 @@ class SimpleOptions extends React.Component {
           }
           break
         }
+        case STUDENT_ATTEMPT_TIME_WINDOW: {
+          state.attemptWindow = value
+          break
+        }
         // no default
       }
 
@@ -501,6 +506,7 @@ class SimpleOptions extends React.Component {
       setShowClassCreationModal,
       setCreateClassTypeDetails,
       togglePenaltyOnUsingHints,
+      setShowAdvanceSearchModal,
     } = this.props
 
     const { collections } = testSettings
@@ -601,6 +607,7 @@ class SimpleOptions extends React.Component {
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
                   isPlaylist={isPlaylist}
+                  setShowAdvanceSearchModal={setShowAdvanceSearchModal}
                 />
               </TabContentContainer>
             ) : (
@@ -635,6 +642,7 @@ class SimpleOptions extends React.Component {
                   showRecommendedResources={showRecommendedResources}
                   selectedResourcesAction={selectedResourcesAction}
                   createClassHandler={createClassHandler}
+                  isPremiumUser={features?.premium}
                 />
               </TabContentContainer>
             )}
@@ -654,7 +662,6 @@ class SimpleOptions extends React.Component {
                 freezeSettings={freezeSettings}
                 completionTypeKeys={completionTypeKeys}
                 premium={features?.premium}
-                calculatorProvider={features?.calculatorProvider}
                 overRideSettings={this.overRideSettings}
                 match={match}
                 totalItems={totalItems}

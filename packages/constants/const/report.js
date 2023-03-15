@@ -1,11 +1,14 @@
+const WHOLE_LEARNER_REPORT = 'whole-learner-report'
+const MULTIPLE_ASSESSMENT_REPORT_DW = 'multiple-assessment-report-dw'
+
 const reportGroupType = {
   SINGLE_ASSESSMENT_REPORT: 'single-assessment-report',
   MULTIPLE_ASSESSMENT_REPORT: 'multiple-assessment-report',
   STANDARDS_MASTERY_REPORT: 'standards-mastery-report',
   STUDENT_PROFILE_REPORT: 'student-profile-report',
   ENGAGEMENT_REPORT: 'engagement-report',
-  WHOLE_CHILD_REPORT: 'whole-child-report',
-  MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
+  WHOLE_LEARNER_REPORT,
+  MULTIPLE_ASSESSMENT_REPORT_DW,
   NON_ACADEMIC_REPORT: 'non-academic-report',
 }
 
@@ -19,6 +22,7 @@ const reportNavType = {
   PERFORMANCE_OVER_TIME: 'performance-over-time',
   PEER_PROGRESS_ANALYSIS: 'peer-progress-analysis',
   STUDENT_PROGRESS: 'student-progress',
+  PRE_VS_POST: 'pre-vs-post',
   STANDARDS_PERFORMANCE_SUMMARY: 'standards-performance-summary',
   STANDARDS_GRADEBOOK: 'standards-gradebook',
   STANDARDS_PROGRESS: 'standards-progress',
@@ -29,10 +33,14 @@ const reportNavType = {
   ENGAGEMENT_SUMMARY: 'engagement-summary',
   ACTIVITY_BY_SCHOOL: 'activity-by-school',
   ACTIVITY_BY_TEACHER: 'activity-by-teacher',
-  WHOLE_CHILD_REPORT: 'whole-child-report',
-  MULTIPLE_ASSESSMENT_REPORT_DW: 'multiple-assessment-report-dw',
+  WHOLE_LEARNER_REPORT,
+  MULTIPLE_ASSESSMENT_REPORT_DW,
   SOCIAL_EMOTIONAL_LEARNING: 'social-emotional-learning',
   SEL_RESPONSE_SUMMARY: 'sel-response-summary',
+}
+
+const ReportPaths = {
+  PRE_VS_POST: '/author/reports/pre-vs-post',
 }
 
 const sharedWithType = {
@@ -44,4 +52,7 @@ module.exports = {
   reportGroupType,
   reportNavType,
   sharedWithType,
+  ReportPaths,
+  WHOLE_LEARNER_REPORT,
+  MULTIPLE_ASSESSMENT_REPORT_DW,
 }

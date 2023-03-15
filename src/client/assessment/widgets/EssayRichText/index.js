@@ -17,10 +17,7 @@ const EssayRichText = (props) => {
   const itemForPreview = useMemo(() => replaceVariables(item), [item])
 
   return (
-    <WithResources
-      resources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
-      fallBack={<span />}
-    >
+    <WithResources resources={[AppConfig.jqueryPath]} fallBack={<span />}>
       <>
         {view === EDIT && <EditEssayRichText {...props} />}
         {view === PREVIEW && (

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { connect } from 'react-redux'
 import PropTypes from 'prop-types'
-import { message } from 'antd'
 import { notification } from '@edulastic/common'
+import AppConfig from '../../../../../app-config'
 import { getLaunchHangoutStatus, launchHangoutClose } from '../../ducks'
 import HangoutsModal from '../../../../student/Assignments/components/HangoutsModal'
 import { getClasses } from '../../../../student/Login/ducks'
@@ -13,6 +13,8 @@ import {
   setHangoutOpenMeetingAction,
   updateHangoutEventRequestAction,
 } from '../../../Classes/ducks'
+
+const CALENDAR = 'calendar'
 
 const Launch = ({
   closeLaunchHangout,
@@ -28,6 +30,7 @@ const Launch = ({
   const [launching, setLaunching] = useState(false)
   const [postMeeting, setPostMeeting] = useState(true)
   const [eventType, setEventType] = useState('create')
+  const [isConsentProvided, setIsConsentProvided] = useState(false)
   const selectedGroup = classList.find((group) => group._id === groupId)
   const isHangoutLinkExpired = !!(
     selectedGroup &&
@@ -153,6 +156,7 @@ const Launch = ({
   }
 
   const launchHangout = () => {
+    setIsConsentProvided(false)
     setLaunching(true)
     if (hangoutLink) {
       closePopUp()
@@ -162,18 +166,11 @@ const Launch = ({
 
     const CLIENT_ID = process.env.REACT_APP_GOOGLE_CLIENT_ID
     const API_KEY = process.env.REACT_APP_GOOGLE_API_KEY
-    if (CLIENT_ID && API_KEY) {
-      const loadGapiClient = new Promise((resolve) => {
-        window.gapi.load('client:auth2', resolve)
-      })
-      loadGapiClient.then(
-        () =>
-          window.gapi.client.load(
-            'calendar',
-            'v3',
-            createOrUpdateCalendarEvent
-          ),
-        handleError
+    if (CLIENT_ID && API_KEY && window.gapi.client) {
+      window.gapi.client.load(
+        CALENDAR,
+        AppConfig.googleCalendarApiVersion,
+        createOrUpdateCalendarEvent
       )
     } else {
       notification({ messageKey: 'googleApiIsNotConfiguration' })
@@ -181,11 +178,15 @@ const Launch = ({
     }
   }
 
+  if (isConsentProvided) {
+    launchHangout()
+  }
+
   return (
     <HangoutsModal
       visible={isOpenLaunch}
       onCancel={closePopUp}
-      onOk={launchHangout}
+      onOk={() => setIsConsentProvided(true)}
       onError={handleError}
       hangoutLink={hangoutLink}
       loading={launching}

@@ -1,12 +1,17 @@
 import { themeColor, darkGrey } from '@edulastic/colors'
-import { EduButton, FlexContainer, notification } from '@edulastic/common'
+import {
+  EduButton,
+  EduIf,
+  FlexContainer,
+  notification,
+} from '@edulastic/common'
 import {
   test as TEST,
   testTypes as testTypesConstants,
   collections as collectionsConstant,
 } from '@edulastic/constants'
 import { IconLock, IconPencilEdit } from '@edulastic/icons'
-import { Divider } from 'antd'
+import { Divider, Tooltip } from 'antd'
 import { get } from 'lodash'
 import PropTypes from 'prop-types'
 import React from 'react'
@@ -135,9 +140,9 @@ class SuccessPage extends React.Component {
   }
 
   componentWillUnmount() {
-    const { isAssignSuccess, removeTestEntity } = this.props
+    const { isAssignSuccess, isAsyncAssign, removeTestEntity } = this.props
     this.timer && clearTimeout(this.timer)
-    if (isAssignSuccess) removeTestEntity()
+    if (isAssignSuccess || isAsyncAssign) removeTestEntity()
   }
 
   handleAssign = () => {
@@ -185,6 +190,7 @@ class SuccessPage extends React.Component {
     const {
       isAssignSuccess,
       isRegradeSuccess,
+      isAsyncAssign,
       history,
       location,
       regradedAssignments,
@@ -199,7 +205,11 @@ class SuccessPage extends React.Component {
     }
     return (
       <>
-        {(isAssignSuccess || isRegradeSuccess) && (
+        <EduIf
+          condition={[isAssignSuccess, isRegradeSuccess, isAsyncAssign].some(
+            (val) => val
+          )}
+        >
           <EduButton
             isBlue
             isGhost
@@ -210,14 +220,32 @@ class SuccessPage extends React.Component {
           >
             {`Return to ${fromText}`}
           </EduButton>
-        )}
+        </EduIf>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
-            <EduButton isBlue data-cy="assignButton" onClick={handleClick}>
-              {isAssignSuccess || isRegradeSuccess
-                ? 'Go to Live Classboard'
-                : 'ASSIGN'}
-            </EduButton>
+            <Tooltip
+              title={
+                isAsyncAssign
+                  ? 'Assigning is In Progress. You wil get notification on completion.'
+                  : ''
+              }
+              placement="bottom"
+            >
+              <span>
+                <EduButton
+                  isBlue
+                  data-cy="assignButton"
+                  onClick={handleClick}
+                  disabled={isAsyncAssign}
+                >
+                  {[isAssignSuccess, isRegradeSuccess, isAsyncAssign].some(
+                    (val) => val
+                  )
+                    ? 'Go to Live Classboard'
+                    : 'ASSIGN'}
+                </EduButton>
+              </span>
+            </Tooltip>
           )}
           onClick={this.handleAssign}
         />
@@ -253,6 +281,44 @@ class SuccessPage extends React.Component {
     return sharedWith
   }
 
+  getAssignSuccessMessage = ({
+    moduleTitle,
+    title,
+    assignment,
+    assignmentStatus,
+  }) => {
+    if (TEST_TYPES.COMMON.includes(assignment.testType)) {
+      return `Test ${moduleTitle || title} has been assigned to students in ${
+        assignment.class.length
+      } classes/groups.`
+    }
+    return `${
+      moduleTitle || title
+    } has been assigned in ${assignmentStatus} status.`
+  }
+
+  getContentBasedOnOpenPolicy = ({
+    openPolicy,
+    assignmentStatus,
+    startDate,
+  }) => {
+    let content =
+      'Your students can begin work on this assessment once it is opened by you from Live Class Board.'
+    if (openPolicy === AUTOMATICALLY_ON_START_DATE) {
+      if (assignmentStatus === 'In-Progress') {
+        content = 'Your students can begin work on this assessment right away.'
+      } else if (startDate) {
+        content = `Your students can begin work on this assessment on ${moment(
+          startDate
+        ).format('Do MMM, YYYY (hh:mm A)')}.`
+      } else {
+        content =
+          'Your students can begin work on this assessment on assigned date and time.'
+      }
+    }
+    return content
+  }
+
   render() {
     const {
       test,
@@ -260,6 +326,7 @@ class SuccessPage extends React.Component {
       playlist,
       isAssignSuccess,
       isRegradeSuccess,
+      isAsyncAssign,
       assignment = {},
       userId,
       collections,
@@ -287,6 +354,11 @@ class SuccessPage extends React.Component {
         ? 'In-Progress'
         : 'Not-Open'
     const isOwner = authors.some((o) => o._id === userId)
+    const isOwnerAndNotAsyncAssign = isOwner && !isAsyncAssign
+    const breadCrumbTitleForAssignFlow = `${
+      isAssignSuccess || isAsyncAssign ? 'ASSIGN' : 'PUBLISH'
+    }`
+
     const playlistBreadCrumbData = [
       {
         title: 'MY PLAYLIST',
@@ -297,7 +369,7 @@ class SuccessPage extends React.Component {
         to: `/author/playlists/${_id}#review`,
       },
       {
-        title: `${isAssignSuccess ? 'ASSIGN' : 'PUBLISH'}`,
+        title: breadCrumbTitleForAssignFlow,
         to: '',
       },
     ]
@@ -327,7 +399,7 @@ class SuccessPage extends React.Component {
         to: `/author/tests/${_id}#review`,
       },
       {
-        title: `${isAssignSuccess ? 'ASSIGN' : 'PUBLISH'}`,
+        title: breadCrumbTitleForAssignFlow,
         to: '',
       },
     ]
@@ -390,7 +462,7 @@ class SuccessPage extends React.Component {
     }
     return (
       <div>
-        {isShareModalVisible && (
+        <EduIf condition={isShareModalVisible}>
           <ShareModal
             shareLabel="TEST URL"
             isVisible={isShareModalVisible}
@@ -402,7 +474,7 @@ class SuccessPage extends React.Component {
             gradeSubject={gradeSubject}
             testVersionId={test?.versionId}
           />
-        )}
+        </EduIf>
 
         <ListHeader
           title={(_module && _module.title) || title}
@@ -417,9 +489,20 @@ class SuccessPage extends React.Component {
             />
           </SecondHeader>
           <FlexContainerWrapper
-            isAssignSuccess={isAssignSuccess || isRegradeSuccess}
+            isAssignSuccess={[
+              isAssignSuccess,
+              isRegradeSuccess,
+              isAsyncAssign,
+            ].some((val) => val)}
           >
-            {(isAssignSuccess || isRegradeSuccess || published) && (
+            <EduIf
+              condition={[
+                isAssignSuccess,
+                isRegradeSuccess,
+                isAsyncAssign,
+                published,
+              ].some((val) => val)}
+            >
               <FlexContainerWrapperLeft>
                 <ImageCard
                   _source={isPlaylist ? playlist : test}
@@ -428,158 +511,149 @@ class SuccessPage extends React.Component {
                   contentData={contentData}
                 />
               </FlexContainerWrapperLeft>
-            )}
+            </EduIf>
             <FlexContainerWrapperRight
-              isAssignSuccess={isAssignSuccess || isRegradeSuccess}
+              isAssignSuccess={[
+                isAssignSuccess,
+                isRegradeSuccess,
+                isAsyncAssign,
+              ].some((val) => val)}
             >
-              {isAssignSuccess && (
-                <>
-                  <FlexTitle>Success!</FlexTitle>
-                  <FlexTextWrapper>
-                    {TEST_TYPES.COMMON.includes(assignment.testType)
-                      ? `Test ${
-                          moduleTitle || title
-                        } has been assigned to students in ${
-                          assignment.class.length
-                        } classes/groups.`
-                      : `${
-                          moduleTitle || title
-                        } has been assigned in ${assignmentStatus} status.`}
-                  </FlexTextWrapper>
-                  {assignment.passwordPolicy ===
-                  passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
-                    <FlexText style={{ textAlign: 'justify' }}>
-                      Your students cannot work on this assignment yet. This
-                      assignment requires students to enter a password before
-                      they can work on the assignment. The auto-generated
-                      password is time sensitive and will be revealed to the
-                      teacher or the proctor when the assignment is opened. when
-                      students are ready, click on the &gt; Open button to view
-                      the password, announce to students and make the assignment
-                      available for the student to work on.
-                    </FlexText>
-                  ) : TEST_TYPES.COMMON.includes(assignment.testType) ? (
-                    <FlexText>
-                      You can monitor student progress and responses using the
-                      Live Class Board &nbsp;
-                      <span
-                        onClick={this.handleAssign}
-                        style={{ color: themeColor, cursor: 'pointer' }}
-                      >
-                        Click here
-                      </span>
-                    </FlexText>
-                  ) : (
-                    <FlexText>
-                      <FlexText>
-                        {`Your students can begin work on this assessment ${
-                          openPolicy === AUTOMATICALLY_ON_START_DATE
-                            ? assignmentStatus === 'In-Progress'
-                              ? 'right away'
-                              : `on ${
-                                  currentClass?.startDate
-                                    ? moment(currentClass.startDate).format(
-                                        'Do MMM, YYYY (hh:mm A)'
-                                      )
-                                    : 'assigned date and time'
-                                }`
-                            : 'once it is opened by you from Live Class Board'
-                        }.`}
-                      </FlexText>
-                      You can monitor student progress and responses using the
-                      Live Class Board &nbsp;
-                      <span
-                        onClick={this.handleAssign}
-                        style={{ color: themeColor, cursor: 'pointer' }}
-                      >
-                        Click here
-                      </span>
-                      &nbsp;to navigate to the Live Class Board
-                    </FlexText>
-                  )}
-                  <Divider />
-                </>
-              )}
-              {isRegradeSuccess && (
-                <>
-                  <FlexTitle>Success!</FlexTitle>
-                  <FlexTextWrapper>
-                    Regrade request for <b>{title}</b> is raised.
-                  </FlexTextWrapper>
-                  <FlexText>
-                    New changes will be reflecting in all selected assignment
-                    once the regrade process is completed.
+              <EduIf condition={isAsyncAssign}>
+                <FlexTitle>Success!</FlexTitle>
+                <FlexTextWrapper isAsyncAssign={isAsyncAssign}>
+                  Assigning is In Progress. You wil get notification on
+                  completion.
+                </FlexTextWrapper>
+                <Divider />
+              </EduIf>
+              <EduIf condition={isAssignSuccess}>
+                <FlexTitle>Success!</FlexTitle>
+                <FlexTextWrapper>
+                  {this.getAssignSuccessMessage({
+                    moduleTitle,
+                    title,
+                    assignment,
+                    assignmentStatus,
+                  })}
+                </FlexTextWrapper>
+                {assignment.passwordPolicy ===
+                passwordPolicy.REQUIRED_PASSWORD_POLICY_DYNAMIC ? (
+                  <FlexText style={{ textAlign: 'justify' }}>
+                    Your students cannot work on this assignment yet. This
+                    assignment requires students to enter a password before they
+                    can work on the assignment. The auto-generated password is
+                    time sensitive and will be revealed to the teacher or the
+                    proctor when the assignment is opened. when students are
+                    ready, click on the &gt; Open button to view the password,
+                    announce to students and make the assignment available for
+                    the student to work on.
                   </FlexText>
-                  <Divider />
-                </>
-              )}
-              {published && (
-                <>
-                  <FlexTitle>Success!</FlexTitle>
-                  <FlexTextWrapper>
-                    {title} has been published and has been added to your
-                    private library.
-                  </FlexTextWrapper>
+                ) : TEST_TYPES.COMMON.includes(assignment.testType) ? (
                   <FlexText>
-                    You can assign this to your students to begin working on
-                    this test by clicking on the &nbsp;
+                    You can monitor student progress and responses using the
+                    Live Class Board &nbsp;
                     <span
                       onClick={this.handleAssign}
                       style={{ color: themeColor, cursor: 'pointer' }}
                     >
-                      Assign
-                    </span>{' '}
-                    button
+                      Click here
+                    </span>
                   </FlexText>
-                  <Divider />
-                </>
-              )}
-              {isOwner && (
-                <>
-                  <FlexTitle>Share With Others</FlexTitle>
-                  <FlexTextWrapper>
-                    {title}&nbsp;has been added to your&nbsp;
-                    {this.getHighPriorityShared} Library.
-                  </FlexTextWrapper>
-                </>
-              )}
-              <FlexShareContainer>
-                {isOwner && (
-                  <>
-                    <FlexShareTitle>Shared With</FlexShareTitle>
-                    <FlexShareWithBox
-                      style={{
-                        lineHeight: '40px',
-                        alignItems: 'center',
-                        padding: '0 17px',
-                      }}
+                ) : (
+                  <FlexText>
+                    <FlexText>
+                      {this.getContentBasedOnOpenPolicy({
+                        openPolicy,
+                        assignmentStatus,
+                        startDate: currentClass?.startDate,
+                      })}
+                    </FlexText>
+                    You can monitor student progress and responses using the
+                    Live Class Board &nbsp;
+                    <span
+                      onClick={this.handleAssign}
+                      style={{ color: themeColor, cursor: 'pointer' }}
                     >
-                      <FlexContainer>
-                        <IconWrapper>
-                          <IconLock />
-                        </IconWrapper>
-                        <FlexText
-                          style={{ margin: '0 0 0 17px', fontWeight: '500' }}
-                        >
-                          {this.getHighPriorityShared} Library
-                        </FlexText>
-                      </FlexContainer>
-                      <IconWrapper onClick={this.onShareModalChange}>
-                        <IconPencilEdit color={themeColor} />
-                        <FlexText
-                          style={{
-                            color: themeColor,
-                            margin: '0 0 0 10px',
-                            fontSize: '11px',
-                          }}
-                        >
-                          EDIT
-                        </FlexText>
-                      </IconWrapper>
-                    </FlexShareWithBox>
-                  </>
+                      Click here
+                    </span>
+                    &nbsp;to navigate to the Live Class Board
+                  </FlexText>
                 )}
-                {isOwner && (
+                <Divider />
+              </EduIf>
+              <EduIf condition={isRegradeSuccess}>
+                <FlexTitle>Success!</FlexTitle>
+                <FlexTextWrapper>
+                  Regrade request for <b>{title}</b> is raised.
+                </FlexTextWrapper>
+                <FlexText>
+                  New changes will be reflecting in all selected assignment once
+                  the regrade process is completed.
+                </FlexText>
+                <Divider />
+              </EduIf>
+              <EduIf condition={published}>
+                <FlexTitle>Success!</FlexTitle>
+                <FlexTextWrapper>
+                  {title} has been published and has been added to your private
+                  library.
+                </FlexTextWrapper>
+                <FlexText>
+                  You can assign this to your students to begin working on this
+                  test by clicking on the &nbsp;
+                  <span
+                    onClick={this.handleAssign}
+                    style={{ color: themeColor, cursor: 'pointer' }}
+                  >
+                    Assign
+                  </span>{' '}
+                  button
+                </FlexText>
+                <Divider />
+              </EduIf>
+              <EduIf condition={isOwnerAndNotAsyncAssign}>
+                <FlexTitle>Share With Others</FlexTitle>
+                <FlexTextWrapper>
+                  {title}&nbsp;has been added to your&nbsp;
+                  {this.getHighPriorityShared} Library.
+                </FlexTextWrapper>
+              </EduIf>
+              <FlexShareContainer>
+                <EduIf condition={isOwnerAndNotAsyncAssign}>
+                  <FlexShareTitle>Shared With</FlexShareTitle>
+                  <FlexShareWithBox
+                    style={{
+                      lineHeight: '40px',
+                      alignItems: 'center',
+                      padding: '0 17px',
+                    }}
+                  >
+                    <FlexContainer>
+                      <IconWrapper>
+                        <IconLock />
+                      </IconWrapper>
+                      <FlexText
+                        style={{ margin: '0 0 0 17px', fontWeight: '500' }}
+                      >
+                        {this.getHighPriorityShared} Library
+                      </FlexText>
+                    </FlexContainer>
+                    <IconWrapper onClick={this.onShareModalChange}>
+                      <IconPencilEdit color={themeColor} />
+                      <FlexText
+                        style={{
+                          color: themeColor,
+                          margin: '0 0 0 10px',
+                          fontSize: '11px',
+                        }}
+                      >
+                        EDIT
+                      </FlexText>
+                    </IconWrapper>
+                  </FlexShareWithBox>
+                </EduIf>
+                <EduIf condition={isOwnerAndNotAsyncAssign}>
                   <FlexText
                     style={{
                       fontSize: '13px',
@@ -587,7 +661,7 @@ class SuccessPage extends React.Component {
                       color: darkGrey,
                     }}
                   >
-                    Click on &nbsp;
+                    Click on&nbsp;
                     <span
                       onClick={this.onShareModalChange}
                       style={{ color: themeColor, cursor: 'pointer' }}
@@ -596,7 +670,7 @@ class SuccessPage extends React.Component {
                     </span>
                     &nbsp;button to share it with your colleagues.
                   </FlexText>
-                )}
+                </EduIf>
                 <FlexWrapperUrlBox>
                   <FlexShareTitle>Url to Share</FlexShareTitle>
                   <FlexShareBox>

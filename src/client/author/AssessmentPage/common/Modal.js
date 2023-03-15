@@ -15,7 +15,7 @@ export const ModalHeader = styled.div`
 
 export const ModalTitle = styled.h2`
   display: inline-block;
-  margin: 0px 0 0 15px;
+  margin: ${(props) => props.margin || '0 0 0 15px'};
   font-size: 22px;
   font-weight: bold;
   color: ${secondaryTextColor};

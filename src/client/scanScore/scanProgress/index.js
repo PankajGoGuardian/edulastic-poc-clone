@@ -19,6 +19,7 @@ import {
 import { scannerApi } from '@edulastic/api'
 import { connect } from 'react-redux'
 import qs from 'qs'
+import * as Sentry from '@sentry/browser'
 import PageLayout from '../uploadAnswerSheets/PageLayout'
 import { selector } from '../uploadAnswerSheets/ducks'
 
@@ -111,6 +112,14 @@ const ScanProgress = ({
             })
           }
           console.warn('errr', e)
+          Sentry.withScope((scope) => {
+            scope.setExtra('assignmentInfo', {
+              assignmentId: tempScannedDocs[0].assignmentId,
+              groupId: tempScannedDocs[0].groupId,
+              sessionId,
+            })
+            Sentry.captureException(e)
+          })
         })
     }
   }, [assignmentId, groupId, sessionId])

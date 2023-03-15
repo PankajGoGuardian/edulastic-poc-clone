@@ -1,8 +1,8 @@
 import React from 'react'
 import { IconGoogleClassroom } from '@edulastic/icons'
-import GoogleLogin from 'react-google-login'
-import { EduButton } from '@edulastic/common'
+import { EduButton, EduIf } from '@edulastic/common'
 import { segmentApi } from '@edulastic/api'
+import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
 import NoClassNotification from '../NoClassNotification'
 import { ClassCreateContainer, ButtonsContainer } from './styled'
 import AuthorCompleteSignupButton from '../../../../common/components/AuthorCompleteSignupButton'
@@ -44,6 +44,8 @@ const ClassCreatePage = ({
     console.log('error', err)
   }
 
+  const loginGoogle = (googleClient) => googleClient.requestCode()
+
   const { isUserGoogleLoggedIn, cleverId, isPlayground } = user
 
   const createNewClass = () => {
@@ -54,61 +56,63 @@ const ClassCreatePage = ({
   return (
     <>
       <ClassCreateContainer>
-        {filterClass === classesType.ARCHIVED ? (
+        <EduIf condition={filterClass === classesType.ARCHIVED}>
           <NoClassNotification
             heading="No archived classes"
             description="You have no archived classes available"
           />
-        ) : (
-          <>
-            <NoClassNotification
-              heading="No active classes"
-              description="No active classes yet.You are currently a teacher in"
-              data={name}
+        </EduIf>
+        <EduIf condition={filterClass !== classesType.ARCHIVED}>
+          <NoClassNotification
+            heading="No active classes"
+            description="No active classes yet.You are currently a teacher in"
+            data={name}
+          />
+          <ButtonsContainer>
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton isBlue onClick={handleClick}>
+                  CREATE NEW CLASS
+                </EduButton>
+              )}
+              onClick={createNewClass}
+              triggerSource="Create Class"
             />
-            <ButtonsContainer>
-              <AuthorCompleteSignupButton
-                renderButton={(handleClick) => (
-                  <EduButton isBlue onClick={handleClick}>
-                    CREATE NEW CLASS
-                  </EduButton>
-                )}
-                onClick={createNewClass}
-                triggerSource="Create Class"
-              />
-              {!isPlayground &&
-                googleAllowedInstitutions?.length > 0 &&
-                !cleverId &&
-                !isClassLink && (
-                  <GoogleLogin
-                    clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                    render={(renderProps) => (
-                      <AuthorCompleteSignupButton
-                        renderButton={(handleClick) => (
-                          <EduButton isBlue onClick={handleClick}>
-                            <IconGoogleClassroom />
-                            <span>SYNC WITH GOOGLE CLASSROOM</span>
-                          </EduButton>
-                        )}
-                        onClick={(e) => {
-                          segmentApi.genericEventTrack('syncButtonClicked', {
-                            syncType: 'google',
-                          })
-                          renderProps.onClick(e)
-                        }}
-                        triggerSource="Sync Google Class Button Click"
-                      />
+            <EduIf
+              condition={[
+                !isPlayground,
+                googleAllowedInstitutions?.length > 0,
+                !cleverId,
+                !isClassLink,
+              ].every((val) => !!val)}
+            >
+              <GoogleLoginWrapper
+                WrappedComponent={({ googleClient }) => (
+                  <AuthorCompleteSignupButton
+                    renderButton={(handleClick) => (
+                      <EduButton isBlue onClick={handleClick}>
+                        <IconGoogleClassroom />
+                        <span>SYNC WITH GOOGLE CLASSROOM</span>
+                      </EduButton>
                     )}
-                    scope={scopes}
-                    onSuccess={handleLoginSucess}
-                    onFailure={handleError}
-                    prompt={isUserGoogleLoggedIn ? '' : 'consent'}
-                    responseType="code"
+                    onClick={() => {
+                      segmentApi.genericEventTrack('syncButtonClicked', {
+                        syncType: 'google',
+                      })
+                      loginGoogle(googleClient)
+                    }}
+                    triggerSource="Sync Google Class Button Click"
                   />
                 )}
-            </ButtonsContainer>
-          </>
-        )}
+                scopes={scopes}
+                successCallback={handleLoginSucess}
+                errorCallback={handleError}
+                prompt={isUserGoogleLoggedIn ? '' : 'consent'}
+                flowType={AUTH_FLOW.CODE}
+              />
+            </EduIf>
+          </ButtonsContainer>
+        </EduIf>
       </ClassCreateContainer>
     </>
   )

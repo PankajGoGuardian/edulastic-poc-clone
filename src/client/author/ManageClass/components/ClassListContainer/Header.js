@@ -2,7 +2,6 @@ import React, { useMemo } from 'react'
 import { compose } from 'redux'
 import PropTypes from 'prop-types'
 import { withNamespaces } from 'react-i18next'
-import { GoogleLogin } from 'react-google-login'
 
 // components
 import {
@@ -11,6 +10,7 @@ import {
   HeaderTabs,
   notification,
   captureSentryException,
+  EduIf,
 } from '@edulastic/common'
 import { canvasApi } from '@edulastic/api'
 import {
@@ -22,6 +22,7 @@ import {
   IconClever,
 } from '@edulastic/icons'
 import { StyledTabs } from '@edulastic/common/src/components/HeaderTabs'
+import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../../vendors/google'
 import { ButtonsWrapper } from './styled'
 import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
 import authorizeCanvas from '../../../../common/utils/CanavsAuthorizationModule'
@@ -145,6 +146,7 @@ const Header = ({
     () => canvasAllowedInstitution.every((s) => !!s.institution.stopSync),
     [canvasAllowedInstitution]
   )
+  const loginGoogle = (googleClient) => googleClient.requestCode()
 
   return (
     <MainHeader Icon={IconManage} headingText={t('common.manageClassTitle')}>
@@ -171,104 +173,118 @@ const Header = ({
         </StyledTabs>
       </FeaturesSwitch>
       <ButtonsWrapper>
-        {currentTab === 'class' && (
-          <>
-            {!isPlayground && enableCleverSync && (
-              <AuthorCompleteSignupButton
-                renderButton={(handleClick) => (
-                  <EduButton
-                    isGhost
-                    isBlue
-                    onClick={handleClick}
-                    data-cy="syncClever"
-                  >
-                    <IconClever width={18} height={18} />
-                    <span>SYNC NOW WITH CLEVER</span>
-                  </EduButton>
-                )}
-                onClick={() => setShowCleverSyncModal(true)}
+        <EduIf condition={currentTab === 'class'}>
+          <EduIf
+            condition={[!isPlayground, enableCleverSync].every((val) => !!val)}
+          >
+            <AuthorCompleteSignupButton
+              renderButton={(handleClick) => (
+                <EduButton
+                  isGhost
+                  isBlue
+                  onClick={handleClick}
+                  data-cy="syncClever"
+                >
+                  <IconClever width={18} height={18} />
+                  <span>SYNC NOW WITH CLEVER</span>
+                </EduButton>
+              )}
+              onClick={() => setShowCleverSyncModal(true)}
+            />
+          </EduIf>
+          <EduIf
+            condition={[
+              !isPlayground,
+              googleAllowedInstitutions?.length > 0,
+              // if stopSync is enabled for all institutions, ignore cleverId/atlasId,
+              // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
+              (!cleverId && !isClassLink && !atlasId) || googleStopSync,
+              !enableCleverSync,
+            ].every((val) => !!val)}
+          >
+            <GoogleLoginWrapper
+              WrappedComponent={({ googleClient }) => (
+                <EduButton
+                  isBlue
+                  data-cy="syncGoogle"
+                  isGhost
+                  onClick={() => loginGoogle(googleClient)}
+                >
+                  <IconGoogleClassroom />
+                  <span>SYNC WITH GOOGLE CLASSROOM</span>
+                </EduButton>
+              )}
+              scopes={scopes}
+              successCallback={handleLoginSucess}
+              errorCallback={handleError}
+              prompt={isUserGoogleLoggedIn ? '' : 'consent'}
+              flowType={AUTH_FLOW.CODE}
+            />
+          </EduIf>
+          <EduIf
+            condition={[
+              !isPlayground,
+              canvasAllowedInstitution?.length > 0,
+              // if stopSync is enabled for all institutions, ignore cleverId/atlasId,
+              // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
+              (!cleverId && !isClassLink && !atlasId) || canvasStopSync,
+              !enableCleverSync,
+            ].every((val) => !!val)}
+          >
+            <EduButton
+              isBlue
+              data-cy="syncCanvas"
+              isGhost
+              onClick={handleSyncWithCanvas}
+            >
+              <img
+                alt="Canvas"
+                src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
+                width={18}
+                height={18}
               />
-            )}
-            {!isPlayground &&
-              googleAllowedInstitutions?.length > 0 &&
-              // if stopSync is enabled for all institutions, ignore cleverId/atlasId,
-              // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
-              ((!cleverId && !isClassLink && !atlasId) || googleStopSync) &&
-              !enableCleverSync && (
-                <GoogleLogin
-                  clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-                  buttonText="Sync with Google Classroom"
-                  render={(renderProps) => (
-                    <EduButton
-                      isBlue
-                      data-cy="syncGoogle"
-                      isGhost
-                      onClick={renderProps.onClick}
-                    >
-                      <IconGoogleClassroom />
-                      <span>SYNC WITH GOOGLE CLASSROOM</span>
-                    </EduButton>
-                  )}
-                  scope={scopes}
-                  onSuccess={handleLoginSucess}
-                  onFailure={handleError}
-                  prompt={isUserGoogleLoggedIn ? '' : 'consent'}
-                  responseType="code"
-                />
-              )}
-            {!isPlayground &&
-              canvasAllowedInstitution?.length > 0 &&
-              // if stopSync is enabled for all institutions, ignore cleverId/atlasId,
-              // else, show bulk Sync only if both(atlasId & cleverId) are unavailable
-              ((!cleverId && !isClassLink && !atlasId) || canvasStopSync) &&
-              !enableCleverSync && (
-                <EduButton
-                  isBlue
-                  data-cy="syncCanvas"
-                  isGhost
-                  onClick={handleSyncWithCanvas}
-                >
-                  <img
-                    alt="Canvas"
-                    src="https://cdn.edulastic.com/JS/webresources/images/as/canvas.png"
-                    width={18}
-                    height={18}
-                  />
-                  <span>SYNC WITH CANVAS</span>
-                </EduButton>
-              )}
-            {!isPlayground &&
-              atlasId &&
-              atlasProviderName?.length &&
-              filterClass === 'Active' && (
-                <EduButton
-                  isBlue
-                  data-cy={
-                    atlasProviderName.toLowerCase() === 'schoology'
-                      ? 'syncSchoology'
-                      : 'syncClassLink'
-                  }
-                  isGhost
-                  onClick={handleSyncWithAtlas}
-                >
-                  <span>RESYNC {atlasProviderName.toUpperCase()} CLASSES</span>
-                </EduButton>
-              )}
-            {!isPlayground &&
-              isCleverDistrict &&
-              isCleverGroupPresent &&
-              filterClass === 'Active' && (
-                <EduButton
-                  isBlue
-                  data-cy="resyncClever"
-                  isGhost
-                  onClick={handleSyncWithClever}
-                >
-                  <span>RESYNC CLEVER CLASSES</span>
-                </EduButton>
-              )}
-          </>
-        )}
+              <span>SYNC WITH CANVAS</span>
+            </EduButton>
+          </EduIf>
+          <EduIf
+            condition={[
+              !isPlayground,
+              atlasId,
+              atlasProviderName?.length,
+              filterClass === 'Active',
+            ].every((val) => !!val)}
+          >
+            <EduButton
+              isBlue
+              data-cy={
+                atlasProviderName?.toLowerCase() === 'schoology'
+                  ? 'syncSchoology'
+                  : 'syncClassLink'
+              }
+              isGhost
+              onClick={handleSyncWithAtlas}
+            >
+              <span>RESYNC {atlasProviderName?.toUpperCase()} CLASSES</span>
+            </EduButton>
+          </EduIf>
+          <EduIf
+            condition={[
+              !isPlayground,
+              isCleverDistrict,
+              isCleverGroupPresent,
+              filterClass === 'Active',
+            ].every((val) => !!val)}
+          >
+            <EduButton
+              isBlue
+              data-cy="resyncClever"
+              isGhost
+              onClick={handleSyncWithClever}
+            >
+              <span>RESYNC CLEVER CLASSES</span>
+            </EduButton>
+          </EduIf>
+        </EduIf>
         <AuthorCompleteSignupButton
           renderButton={(handleClick) => (
             <EduButton data-cy="createClass" isBlue onClick={handleClick}>

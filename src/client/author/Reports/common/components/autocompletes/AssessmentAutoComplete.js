@@ -6,7 +6,7 @@ import { debounce } from 'lodash'
 // components & constants
 import { AutoComplete, Input, Icon, Tooltip, Empty } from 'antd'
 import { assignmentStatusOptions, roleuser } from '@edulastic/constants'
-import { themeColorBlue } from '@edulastic/colors'
+import { themeColor, themeColorBlue } from '@edulastic/colors'
 
 // ducks
 import { useDropdownData } from '@edulastic/common'
@@ -16,16 +16,16 @@ import {
   getUserOrgId,
 } from '../../../../src/selectors/user'
 import {
+  createTestListLoadingSelector,
+  createTestListSelector,
   receiveTestListAction,
-  getTestListSelector,
-  getTestListLoadingSelector,
 } from '../../../ducks'
 
 const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
 
 const DEFAULT_SEARCH_TERMS = { text: '', selectedText: '', selectedKey: '' }
-
 const AssessmentAutoComplete = ({
+  statePrefix = '',
   user,
   districtId,
   testList,
@@ -40,6 +40,7 @@ const AssessmentAutoComplete = ({
   selectCB,
   tagIds,
   showApply,
+  autoSelectFirstItem = true,
   institutionIds,
   autoCompleteStyles = {},
 }) => {
@@ -107,6 +108,10 @@ const AssessmentAutoComplete = ({
     setSearchTerms((s) => ({ ...s, text: _title || _text }))
     setFieldValue(_title || _text)
   }, [])
+  const onBlur = (text) => {
+    setSearchTerms({ ...searchTerms, selectedText: text })
+    setFieldValue(text)
+  }
   const onSelect = (key) => {
     if (key) {
       const value = testList.find((s) => s._id === key)?.title
@@ -136,8 +141,14 @@ const AssessmentAutoComplete = ({
     }
   }, [selectedTestId, showApply])
   useEffect(() => {
-    if (!searchTerms.selectedText && testList.length) {
+    if (!searchTerms.selectedText && testList.length && autoSelectFirstItem) {
       onSelect(testList[0]._id)
+    } else if (
+      !searchTerms.selectedText &&
+      !autoSelectFirstItem &&
+      selectedTest._id
+    ) {
+      onSelect(selectedTest._id)
     } else if (firstLoad && !loading && !testList.length) {
       onSelect()
     }
@@ -153,9 +164,9 @@ const AssessmentAutoComplete = ({
       (!searchTerms.text && !searchTerms.selectedText) ||
       searchTerms.text !== searchTerms.selectedText
     ) {
-      loadTestListDebounced(query)
+      loadTestListDebounced({ ...query, statePrefix })
     }
-  }, [query])
+  }, [query, statePrefix])
 
   // build dropdown data
   const dropdownData = useDropdownData(testList, {
@@ -189,8 +200,14 @@ const AssessmentAutoComplete = ({
           dataSource={dropdownData}
           onSelect={onSelect}
           onChange={onChange}
+          onBlur={onBlur}
           allowClear={!loading && searchTerms.selectedText}
-          clearIcon={<Icon type="close" style={{ color: '#1AB394' }} />}
+          clearIcon={
+            <Icon
+              type="close"
+              style={{ color: themeColor, marginTop: '4px' }}
+            />
+          }
           notFoundContent={
             <Empty
               className="ant-empty-small"
@@ -208,10 +225,10 @@ const AssessmentAutoComplete = ({
 }
 
 export default connect(
-  (state) => ({
+  (state, { statePrefix }) => ({
     user: getUser(state),
-    testList: getTestListSelector(state),
-    loading: getTestListLoadingSelector(state),
+    testList: createTestListSelector(statePrefix)(state),
+    loading: createTestListLoadingSelector(statePrefix)(state),
     districtId: getUserOrgId(state),
     institutionIds: currentDistrictInstitutionIds(state),
   }),

@@ -1,5 +1,14 @@
 import { questionType, question, customTags, math } from '@edulastic/constants'
-import { get, isString, isEmpty, keys, keyBy, isNil, isNaN } from 'lodash'
+import {
+  get,
+  isString,
+  isEmpty,
+  keys,
+  keyBy,
+  isNil,
+  isNaN,
+  isArray,
+} from 'lodash'
 import striptags from 'striptags'
 import { templateHasImage, notification } from '@edulastic/common'
 import { displayStyles } from '../assessment/widgets/ClozeEditingTask/constants'
@@ -866,4 +875,8 @@ export const getQuestionIndexFromItemData = (qId, item) => {
     }
   }
   return undefined
+}
+
+export const isV1MultipartItem = (rows) => {
+  return isArray(rows) ? rows.some((row) => row?.isV1Multipart) : false
 }

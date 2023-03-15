@@ -18,9 +18,9 @@ import styled from 'styled-components'
 import {
   StyledCustomChartTooltip,
   StyledChartNavButton,
-  CustomXAxisTickTooltipContainer,
   ResetButtonClear,
 } from '../../styled'
+import { CustomXAxisTickTooltipContainer } from './styled-components'
 import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,

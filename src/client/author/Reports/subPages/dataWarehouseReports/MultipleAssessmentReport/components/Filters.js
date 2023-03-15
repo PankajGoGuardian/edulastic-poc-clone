@@ -27,7 +27,7 @@ import CourseAutoComplete from '../../../../common/components/autocompletes/Cour
 import GroupsAutoComplete from '../../../../common/components/autocompletes/GroupsAutoComplete'
 
 import { resetStudentFilters as resetFilters } from '../../../../common/util'
-import { getTermOptions } from '../../common/utils/transformers'
+import { getTermOptions } from '../../../../../utils/reports'
 import { staticDropDownData } from '../utils'
 
 import { getArrayOfAllTestTypes } from '../../../../../../common/utils/testTypeUtils'

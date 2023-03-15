@@ -69,6 +69,11 @@ import {
   setShowJoinSchoolModalAction,
 } from '../../author/Dashboard/ducks'
 import { setSchoolAdminSettingsAccessAction } from '../../author/DistrictPolicy/ducks'
+import {
+  EXTERNAL_TOKEN,
+  getExternalAuthToken,
+  storeUserAuthToken,
+} from '../../../loginUtils'
 
 export const superAdminRoutes = [
   // SA-DA common routes
@@ -241,6 +246,11 @@ export const LOGIN_ATTEMPT_EXCEEDED = '[user] too many login attempt'
 export const SET_SHOW_ALL_STANDARDS = '[user] set show all standards'
 export const FETCH_ORG_INTERESTED_STANDARDS =
   '[user] fetch org interested standards'
+export const GET_EXTERNAL_AUTH_USER_REQUEST = '[user] get external auth user'
+export const GET_EXTERNAL_AUTH_USER_SUCCESS =
+  '[user] get external auth user success'
+export const GET_EXTERNAL_AUTH_USER_FAILED =
+  '[user] get external auth user failed'
 
 // actions
 export const setSettingsSaSchoolAction = createAction(SET_SETTINGS_SA_SCHOOL)
@@ -380,6 +390,10 @@ export const fetchOrgInterestedStandardsAction = createAction(
   FETCH_ORG_INTERESTED_STANDARDS
 )
 
+export const getExternalAuthUserAction = createAction(
+  GET_EXTERNAL_AUTH_USER_REQUEST
+)
+
 const initialState = {
   addAccount: false,
   userId: null,
@@ -397,6 +411,7 @@ const initialState = {
   emailVerifiedStatus: '',
   signedUpUsingUsernameAndPassword: false,
   isUserIdPresent: true,
+  isExternalUserLoading: false,
 }
 
 function getValidRedirectRouteByRole(_url, user) {
@@ -444,24 +459,34 @@ function getValidRedirectRouteByRole(_url, user) {
 }
 
 const getRouteByGeneralRoute = (user) => {
+  const {
+    isDataOpsOnlyUser,
+    isInsightsOnlyUser,
+    premium,
+    isCurator,
+    isPublisherAuthor,
+  } = user?.user?.features || {}
   switch (user.user.role) {
     case roleuser.EDULASTIC_ADMIN:
       return '/admin/search/clever'
     case roleuser.DISTRICT_ADMIN:
-      if (user?.user?.features?.isDataOpsOnlyUser) {
+      if (isDataOpsOnlyUser) {
         return '/author/data-warehouse'
       }
-    // eslint-disable-next-line no-fallthrough
-    case roleuser.SCHOOL_ADMIN:
-      if (!user?.user?.features?.premium) {
+      if (!premium || isInsightsOnlyUser) {
         return '/author/reports'
       }
-      if (user?.user?.features?.isCurator) {
+      return '/author/assignments'
+    case roleuser.SCHOOL_ADMIN:
+      if (!premium || isInsightsOnlyUser) {
+        return '/author/reports'
+      }
+      if (isCurator) {
         return '/publisher/dashboard'
       }
       return '/author/assignments'
     case roleuser.TEACHER:
-      if (user?.user?.features?.isPublisherAuthor) {
+      if (isPublisherAuthor) {
         return '/author/items'
       }
       return '/author/dashboard'
@@ -899,6 +924,15 @@ export default createReducer(initialState, {
   [SET_SHOW_ALL_STANDARDS]: (state, { payload }) => {
     state.user.orgData.showAllStandards = payload
   },
+  [GET_EXTERNAL_AUTH_USER_REQUEST]: (state) => {
+    state.isExternalUserLoading = true
+  },
+  [GET_EXTERNAL_AUTH_USER_SUCCESS]: (state) => {
+    state.isExternalUserLoading = false
+  },
+  [GET_EXTERNAL_AUTH_USER_FAILED]: (state) => {
+    state.isExternalUserLoading = false
+  },
 })
 
 export const getUserDetails = createSelector(['user.user'], (user) => user)
@@ -987,6 +1021,11 @@ export const isProxyUser = createSelector(
 export const isDemoPlaygroundUser = createSelector(
   ['user.user.isPlayground'],
   (isPlayground) => isPlayground
+)
+
+export const getIsExternalUserLoading = createSelector(
+  ['user.isExternalUserLoading'],
+  (isExternalUserLoading) => isExternalUserLoading
 )
 
 export const getIsProxiedByEAAccountSelector = createSelector(
@@ -1427,11 +1466,19 @@ const getLoggedOutUrl = () => {
   if (pathname.includes('/verify/')) {
     return pathname
   }
+  if (pathname.includes('/login') && search.includes(EXTERNAL_TOKEN)) {
+    return `${pathname}${search}`
+  }
   return '/login'
 }
 
 export function* fetchUser({ payload }) {
   try {
+    const isExternalTokenRequest = getExternalAuthToken()
+    if (isExternalTokenRequest) {
+      console.log('Avoided 0x409!!')
+      return
+    }
     // TODO: handle the case of invalid token
     if (!TokenStorage.getAccessToken()) {
       if (
@@ -2563,6 +2610,23 @@ function* initiateChatWidgetAfterUserLoadSaga({ payload }) {
   }
 }
 
+function* getAuthorizedExternalUser({ payload }) {
+  try {
+    const userDetails = yield call(authApi.getExternalUser, payload)
+    storeUserAuthToken(userDetails)
+    yield put({ type: GET_EXTERNAL_AUTH_USER_SUCCESS })
+    localStorage.setItem('loginRedirectUrl', userDetails.redirectPath)
+    window.location.replace(userDetails.redirectPath)
+  } catch (e) {
+    yield put({ type: GET_EXTERNAL_AUTH_USER_FAILED })
+    notification({
+      exact: true,
+      type: 'error',
+      messageKey: 'failedToAutorizeUsingToken',
+    })
+  }
+}
+
 export function* watcherSaga() {
   yield takeLatest(LOGIN, login)
   yield takeLatest(SIGNUP, signup)
@@ -2616,4 +2680,5 @@ export function* watcherSaga() {
     persistAuthStateAndRedirectToSaga
   )
   yield takeLatest(SET_USER, initiateChatWidgetAfterUserLoadSaga)
+  yield takeLatest(GET_EXTERNAL_AUTH_USER_REQUEST, getAuthorizedExternalUser)
 }

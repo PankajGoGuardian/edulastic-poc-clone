@@ -11,8 +11,12 @@ import * as moment from 'moment'
 import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
+import { STUDENT_ATTEMPT_TIME_WINDOW } from '@edulastic/constants/const/common'
+import { OkButton } from '../../../../common/styled'
 import { getDefaultSettings } from '../../../../common/utils/helpers'
-import { isFeatureAccessible } from '../../../../features/components/FeaturesSwitch'
+import FeaturesSwitch, {
+  isFeatureAccessible,
+} from '../../../../features/components/FeaturesSwitch'
 import { getUserFeatures } from '../../../../student/Login/ducks'
 import TagFilter from '../../../src/components/common/TagFilter'
 import {
@@ -28,13 +32,14 @@ import {
 } from '../SimpleOptions/SimpleOptions'
 import ClassList from './ClassList'
 import DatePolicySelector from './DatePolicySelector'
+import AttemptWindowTypeSelector from '../SimpleOptions/AttemptWindowTypeSelector'
 import {
   ClassSelectorLabel,
   InitOptions,
   Label,
   OptionConationer,
   StyledRow,
-} from './styled'
+} from './styled-components'
 
 const { releaseGradeLabels } = testConst
 class AdvancedOptons extends React.Component {
@@ -152,6 +157,9 @@ class AdvancedOptons extends React.Component {
               : assignmentPolicyOptions.POLICY_AUTO_ON_STARTDATE
         }
       }
+      if (field === STUDENT_ATTEMPT_TIME_WINDOW) {
+        state.attemptWindow = value
+      }
 
       state[field] = value
     })
@@ -172,6 +180,7 @@ class AdvancedOptons extends React.Component {
       showRecommendedResources,
       selectedResourcesAction,
       isPlaylist,
+      setShowAdvanceSearchModal,
     } = this.props
     const classIds = assignment?.class?.map((item) => item._id) || []
     const changeField = curry(this.onChange)
@@ -205,6 +214,10 @@ class AdvancedOptons extends React.Component {
                 onChangeField={(type, value) => this.onChange(type, value)}
               />
             </Col>
+            <AttemptWindowTypeSelector
+              changeField={this.onChange}
+              isAdvancedView
+            />
           </StyledRow>
           {showRecommendedResources && (
             <StyledRow gutter={24}>
@@ -225,17 +238,32 @@ class AdvancedOptons extends React.Component {
           {!isAssignRecommendations && (
             <>
               <ClassSelectorLabel>
-                Assign this to
+                <h3>Assign this to</h3>
                 <p>
                   Please select classes to assign this assessment. Options on
                   the left can be used to filter the list of classes.
                 </p>
+                <div>
+                  <FeaturesSwitch
+                    inputFeatures="advanceSearchEnabled"
+                    actionOnInaccessible="hidden"
+                  >
+                    <OkButton
+                      onClick={() => {
+                        setShowAdvanceSearchModal(true)
+                      }}
+                    >
+                      Advanced Search
+                    </OkButton>
+                  </FeaturesSwitch>
+                </div>
               </ClassSelectorLabel>
               <ClassList
                 selectedClasses={classIds}
                 selectClass={this.onChange}
                 testType={assignment.testType || testSettings.testType}
                 isPlaylist={isPlaylist}
+                setShowAdvanceSearchModal={setShowAdvanceSearchModal}
               />
             </>
           )}

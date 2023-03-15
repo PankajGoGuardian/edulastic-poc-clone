@@ -49,7 +49,10 @@ import {
   MobileTopRight,
   RightSide,
 } from './styled_components'
-import { getUserRole } from '../../../selectors/user'
+import {
+  getUserRole,
+  getIsPublisherDistrictSelector,
+} from '../../../selectors/user'
 import { checkDynamicParameters } from '../../../../../assessment/utils/variables'
 import { generateVariableAction } from '../../../../QuestionEditor/ducks'
 
@@ -151,6 +154,7 @@ class ButtonBar extends Component {
       showMetaData,
       showAuditTrail = false,
       permissions,
+      isPublisherDistrict,
       qTitle,
       userRole,
       showSaveAndPublishButton,
@@ -161,6 +165,10 @@ class ButtonBar extends Component {
       passageUpdateInProgress = false,
       testItemSavingInProgress = false,
     } = this.props
+    const publisherPermission =
+      permissions.includes('author') ||
+      permissions.includes('curator') ||
+      isPublisherDistrict
     return (
       <>
         {windowWidth > MAX_TAB_WIDTH ? (
@@ -199,7 +207,7 @@ class ButtonBar extends Component {
                 )}
                 {hasAuthorPermission &&
                   showAuditTrail &&
-                  !!permissions.length && (
+                  publisherPermission && (
                     <HeaderTabs
                       id={getFormattedAttrId(`${qTitle}-auditTrail`)}
                       dataCy="auditTrailButton"
@@ -485,6 +493,7 @@ const enhance = compose(
         loadingComponents: get(state, ['authorUi', 'currentlyLoading'], []),
         passageUpdateInProgress: getPassageUpdateInProgressSelector(state),
         testItemSavingInProgress: getTestItemsSavingSelector(state),
+        isPublisherDistrict: getIsPublisherDistrictSelector(state),
       }
     },
     {

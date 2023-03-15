@@ -16,21 +16,30 @@ import {
 import { isEmpty, findLast } from 'lodash'
 
 import { greyLight1 } from '@edulastic/colors'
-import styled from 'styled-components'
 import {
   StyledCustomChartTooltipDark,
   StyledChartNavButton,
-  CustomXAxisTickTooltipContainer,
   ResetButtonClear,
 } from '../../styled'
+import {
+  CustomXAxisTickTooltipContainer,
+  StyledSignedStackedBarChartContainer,
+} from './styled-components'
 import {
   CustomChartXTick,
   calculateXCoordinateOfXAxisToolTip,
 } from './chartUtils/customChartXTick'
 import { YAxisLabel } from './chartUtils/yAxisLabel'
 import withAnimationInfo from './chartUtils/withAnimationInfo'
+import {
+  setProperties,
+  tooltipParams,
+  getHoveredBarDimensions,
+} from '../../util'
 
 const Bar = withAnimationInfo(_Bar)
+
+const { spaceForLittleTriangle, spaceForPercentageLabel } = tooltipParams
 
 const _barsLabelFormatter = (val) => {
   if (val !== 0) {
@@ -102,14 +111,16 @@ export const SignedStackedBarChart = ({
   hasBarInsideLabels = true,
   backendPagination, // structure: { page: x, pageSize: y, pageCount: z }
   setBackendPagination,
+  preLabelContent = null,
 }) => {
   const pageSize = _pageSize || backendPagination?.pageSize || 7
   const [pagination, setPagination] = useState({
     startIndex: 0,
     endIndex: pageSize - 1,
   })
-  const [barIndex, setBarIndex] = useState(null)
   const parentContainerRef = useRef(null)
+  const tooltipRef = useRef(null)
+  const [barIndex, setBarIndex] = useState(null)
   const [activeLegend, setActiveLegend] = useState(null)
   const [xAxisTickTooltipData, setXAxisTickTooltipData] = useState({
     visibility: 'hidden',
@@ -129,11 +140,8 @@ export const SignedStackedBarChart = ({
     },
   }
 
-  const chartData = useMemo(() => [...data], [pagination])
-
   const renderData = useMemo(
-    () =>
-      chartData.slice(pagination.startIndex, pagination.startIndex + pageSize),
+    () => data.slice(pagination.startIndex, pagination.startIndex + pageSize),
     [pagination, data]
   )
 
@@ -154,11 +162,11 @@ export const SignedStackedBarChart = ({
 
   const scrollRight = () => {
     let diff
-    if (pagination.endIndex < chartData.length - 1) {
-      if (chartData.length - 1 - pagination.endIndex >= pageSize) {
+    if (pagination.endIndex < data.length - 1) {
+      if (data.length - 1 - pagination.endIndex >= pageSize) {
         diff = pageSize
       } else {
-        diff = chartData.length - 1 - pagination.endIndex
+        diff = data.length - 1 - pagination.endIndex
       }
       setPagination({
         startIndex: pagination.startIndex + diff,
@@ -179,24 +187,18 @@ export const SignedStackedBarChart = ({
     if (!parentContainerRef.current) return
     const { width, x, y } = hoveredBarDimensions
 
-    parentContainerRef.current.style.setProperty(
-      '--tooltip-transform',
-      `translate(${x + width / 2 - 100}px, calc(${y - 30}px - 100% ))`
-    )
-    parentContainerRef.current.style.setProperty(
-      '--tooltip-top',
-      '0'
-      // `${height / 2}px`
-    )
-    parentContainerRef.current.style.setProperty(
-      '--tooltip-left',
-      '0'
-      // `${width}px`
-    )
+    const tooltipProperties = {
+      '--first-tooltip-transform': `translate(${x + width / 2 - 100}px, calc(${
+        y - spaceForLittleTriangle - spaceForPercentageLabel
+      }px - 100% ))`,
+      '--first-tooltip-top': '0',
+      '--first-tooltip-left': '0',
+    }
+    setProperties(parentContainerRef, tooltipProperties)
   }
 
   const onBarMouseOver = (index) => (event) => {
-    setBarIndex(index)
+    tooltipRef.current?.updateBarIndex(index)
     if (isEmpty(event)) return
     let d = {
       x: event.x,
@@ -207,25 +209,12 @@ export const SignedStackedBarChart = ({
     // To handle updating tooltip position when the labels are hovered.
     // the label does not contain x,y coordinate relative to chart container.
     // label's parent element contains x,y coordinate relative to chart container.
-    if (!isEmpty(event.target)) {
-      const attributes = event.target.parentNode.attributes
-      const width = 45
-      if (Number.isNaN(width)) return
-      const height = +attributes.height?.nodeValue
-      const x = +attributes.x?.nodeValue
-      const y = +attributes.y?.nodeValue
-      d = {
-        x,
-        y,
-        width,
-        height,
-      }
-    }
+    if (!isEmpty(event.target)) d = getHoveredBarDimensions(event)
     updateTooltipPosition(d)
   }
 
   const onBarMouseLeave = () => () => {
-    setBarIndex(null)
+    tooltipRef.current?.resetBarIndex()
   }
 
   const onLegendMouseEnter = ({ dataKey }) => setActiveLegend(dataKey)
@@ -286,7 +275,7 @@ export const SignedStackedBarChart = ({
     : !(pagination.startIndex == 0)
   const chartNavRightVisibility = backendPagination
     ? backendPagination.page < backendPagination.pageCount
-    : !(chartData.length <= pagination.endIndex + 1)
+    : !(data.length <= pagination.endIndex + 1)
   const chartNavLeftClick = () =>
     backendPagination
       ? setBackendPagination({
@@ -345,7 +334,8 @@ export const SignedStackedBarChart = ({
       >
         {xAxisTickTooltipData.content}
       </CustomXAxisTickTooltipContainer>
-      <ResponsiveContainer width="100%" height={350}>
+      {preLabelContent}
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart
           width={730}
           height={400}
@@ -387,8 +377,8 @@ export const SignedStackedBarChart = ({
             cursor={false}
             content={
               <StyledCustomChartTooltipDark
+                ref={tooltipRef}
                 getJSX={getTooltipJSX}
-                barIndex={barIndex}
               />
             }
           />
@@ -508,38 +498,3 @@ export const SignedStackedBarChart = ({
     </StyledSignedStackedBarChartContainer>
   )
 }
-
-const StyledSignedStackedBarChartContainer = styled.div`
-  padding: 10px;
-  position: relative;
-
-  .navigator-left {
-    left: 5px;
-    top: 50%;
-  }
-
-  .navigator-right {
-    right: 5px;
-    top: 50%;
-  }
-
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:first-child,
-  .recharts-wrapper .recharts-cartesian-grid-horizontal line:last-child {
-    stroke-opacity: 0;
-  }
-
-  .recharts-yAxis {
-    .recharts-text {
-      tspan {
-        white-space: pre;
-      }
-    }
-  }
-  & .recharts-wrapper > .recharts-tooltip-wrapper {
-    transform: var(--tooltip-transform) !important;
-    top: var(--tooltip-top) !important;
-    left: var(--tooltip-left) !important;
-    visibility: visible !important;
-    transition: all 400ms ease 0s;
-  }
-`

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import styled from 'styled-components'
-import { Radio, Modal, Input, Alert } from 'antd'
+import { Radio, Modal, Input, Alert, Checkbox } from 'antd'
 import { EduButton, FlexContainer } from '@edulastic/common'
 import {
   greyThemeDark1,
@@ -28,11 +28,13 @@ const PrintTestModal = ({
   onProceed,
   currentTestId,
   assignmentId,
+  showAnswerCheckbox = false,
 }) => {
   const [option, setOption] = useState('complete')
   const [customValue, setCustomValue] = useState('')
   const [error, setError] = useState('')
   const [haveManualGradedQs, setHaveManualGradedQs] = useState(false)
+  const [showAnswers, setShowAnswers] = useState(true)
 
   useEffect(() => {
     // fetching test to check if manual graded items avaiable or not
@@ -54,6 +56,10 @@ const PrintTestModal = ({
     setOption(e.target.value)
   }
 
+  const handlePrintAnswers = (e) => {
+    const { checked } = e.target
+    setShowAnswers(checked)
+  }
   const onChangeInput = (e) => {
     const { value } = e.target
     // restricting to comma, dash and number
@@ -66,6 +72,7 @@ const PrintTestModal = ({
     const params = {
       type: option,
       customValue,
+      showAnswers,
     }
     if (option === 'custom' && !customValue.trim()) {
       return setError('Please enter custom inputs')
@@ -137,6 +144,14 @@ const PrintTestModal = ({
           />
         )}
         {error && <Alert message={error} type="error" showIcon closable />}
+
+        {showAnswerCheckbox && (
+          <div style={{ marginTop: '20px', marginBottom: '20px' }}>
+            <Checkbox defaultChecked="true" onChange={handlePrintAnswers}>
+              Print Answer Key
+            </Checkbox>
+          </div>
+        )}
       </FlexContainer>
     </StyledModal>
   )

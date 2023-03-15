@@ -6,6 +6,7 @@ import {
   convertBlobToFile,
   canInsert,
   beforeUpload,
+  captureSentryException,
 } from '../../helpers'
 import { loadImage } from './helpers'
 import { showProgressBar, hideProgressBar } from './CustomLoader'
@@ -32,10 +33,14 @@ function imageUploadPlugin(FroalaEditor) {
           hideProgressBar()
           this.image.insert(result, false, null)
         })
-        .catch((e) => {
-          console.error(e)
+        .catch((err) => {
+          console.error(err)
+          captureSentryException(err, {
+            errorMessage: 'FroalaEditor - failed to upload image',
+          })
           hideProgressBar()
           notification({ messageKey: 'imageUploadErr' })
+          this.edit.on()
         })
 
       return false

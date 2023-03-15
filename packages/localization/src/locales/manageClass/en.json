@@ -22,5 +22,9 @@
     "join": "Join",
     "enterClassCode": "Enter Class Code",
     "cancel": "Cancel"
+  },
+  "canvas": {
+    "canvasClassSyncInProgress": "Canvas class sync is in progress",
+    "canvasClassLoading": "Loading Canvas Classes"
   }
 }

@@ -141,7 +141,7 @@ const getTableColumns = (
                 getPopupContainer={(triggerNode) => triggerNode}
               >
                 <Row type="flex" justify="center">
-                  <div>{valueToShow}</div>
+                  <div data-testid="avgScore">{valueToShow}</div>
                 </Row>
               </Tooltip>
             </TableTooltipWrapper>

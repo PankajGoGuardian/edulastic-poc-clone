@@ -10,6 +10,7 @@ export const responseDisplayOption = {
   essayRichText: { value: 'Constructed Response' },
   essayPlainText: { value: 'Constructed Response' },
   shortText: { value: 'Constructed Response' },
+  audioResponse: { value: 'Constructed Response' },
   passage: { value: 'TEI' },
   highlightImage: { value: 'TEI' },
   shading: { value: 'TEI' },

@@ -3,7 +3,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { connect } from 'react-redux'
 import { Paper, FlexContainer, notification } from '@edulastic/common'
-import { message } from 'antd'
 import {
   fetchAssignmentsAction,
   deleteAssignmentAction,
@@ -24,10 +23,6 @@ import {
 // Todo from  where we got localeCompare ?
 
 class Assign extends Component {
-  state = {
-    showModal: false,
-  }
-
   componentDidMount() {
     const { fetchGroups, fetchAssignments } = this.props
     fetchGroups()
@@ -40,10 +35,9 @@ class Assign extends Component {
   }
 
   openAssignmentModal = (id) => {
-    const { test } = this.props
+    const { test, setCurrentAssignment } = this.props
     if (test.status !== 'draft') {
-      this.props.setCurrentAssignment(id)
-      this.setState({ showModal: true })
+      setCurrentAssignment(id)
     } else {
       notification({ type: 'warn', messageKey: 'pleaseSaveAndPublish' })
     }
@@ -51,20 +45,14 @@ class Assign extends Component {
 
   openBlankModal = () => this.openAssignmentModal('new')
 
-  hideModal = () => {
-    this.setState({
-      showModal: false,
-    })
-  }
-
   openEditModal = (item) => {
+    const { fetchMultipleGroupMembers } = this.props
     this.openAssignmentModal(item._id)
-    this.props.fetchMultipleGroupMembers(item.class)
+    fetchMultipleGroupMembers(item.class)
   }
 
   render() {
     const { group, current, assignments } = this.props
-    const { showModal } = this.state
 
     const tableData = assignments.map((item, i) => ({
       key: i,
@@ -96,14 +84,6 @@ class Assign extends Component {
 
     return (
       <Container>
-        {/* {showModal && (
-          <EditModal
-            visible={showModal}
-            title={true ? "New Assignment" : "Edit Assignment"}
-            onCancel={this.hideModal}
-            group={group}
-          />
-        )} */}
         <FlexContainer
           justifyContent="space-between"
           style={{ marginBottom: 20 }}

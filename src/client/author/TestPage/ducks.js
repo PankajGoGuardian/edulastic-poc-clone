@@ -29,6 +29,7 @@ import {
   round,
   pick,
   isUndefined,
+  findLastIndex,
 } from 'lodash'
 import {
   testsApi,
@@ -112,12 +113,10 @@ const {
   ITEM_GROUP_DELIVERY_TYPES,
   completionTypes,
   releaseGradeLabels,
-  calculatorTypes,
   evalTypeLabels,
   passwordPolicy,
   testSettingsOptions,
   docBasedSettingsOptions,
-  calculatorKeys,
   testCategoryTypes,
 } = testConstants
 const testItemStatusConstants = {
@@ -675,6 +674,11 @@ export const getCollectionNameSelector = createSelector(
   (state) => state.collectionName
 )
 
+export const getCalcTypesSelector = createSelector(
+  getTestEntitySelector,
+  (entity) => entity.calcTypes
+)
+
 // currently present testItems in the test.
 export const getSelectedTestItemsSelector = createSelector(
   getTestEntitySelector,
@@ -966,7 +970,7 @@ export const createBlankTest = () => ({
   blockNavigationToAnsweredQuestions: false,
   shuffleQuestions: false,
   shuffleAnswers: false,
-  calcType: calculatorKeys[0],
+  calcTypes: [],
   answerOnPaper: false,
   assignmentPassword: '',
   passwordExpireIn: 15 * 60,
@@ -1896,7 +1900,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     safeBrowser: entity.safeBrowser,
     shuffleAnswers: entity.shuffleAnswers,
     shuffleQuestions: entity.shuffleQuestions,
-    calcType: entity.calcType,
+    calcTypes: entity.calcTypes,
     answerOnPaper: entity.answerOnPaper,
     maxAnswerChecks: entity.maxAnswerChecks,
     showRubricToStudents: entity.showRubricToStudents,
@@ -1937,7 +1941,7 @@ const getAssignSettings = ({ userRole, entity, features, isPlaylist }) => {
     settings.safeBrowser = false
     settings.shuffleAnswers = false
     settings.shuffleQuestions = false
-    settings.calcType = calculatorTypes.NONE
+    settings.calcTypes = []
     settings.answerOnPaper = false
     settings.maxAnswerChecks = 0
     settings.scoringType = evalTypeLabels.PARTIAL_CREDIT
@@ -3617,8 +3621,16 @@ function* setAndSavePassageItems({ payload: { passageItems, page, remove } }) {
         (x) => x._id
       )
     } else {
+      let newItems = [...testItems]
+      const lastIdx = findLastIndex(
+        newItems,
+        (element) => element.passageId === passageId
+      )
+      if (lastIdx !== -1) {
+        newItems.splice(lastIdx + 1, 0, ...passageItems)
+      } else newItems = [...newItems, ...passageItems]
       newPayload.itemGroups[currentGroupIndex].items = uniqBy(
-        [...testItems, ...passageItems],
+        newItems,
         (x) => x._id
       )
     }

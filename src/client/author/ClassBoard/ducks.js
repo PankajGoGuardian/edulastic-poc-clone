@@ -121,11 +121,13 @@ import {
   isIncompleteQuestion,
   hasImproperDynamicParamsConfig,
   isOptionsRemoved,
+  isV1MultipartItem,
 } from '../questionUtils'
 import {
   setFreezeTestSettings,
   setRegradeFirestoreDocId,
 } from '../TestPage/ducks'
+import { getQindex } from '../QuestionEditor/ducks'
 
 const {
   authorAssignmentConstants: {
@@ -189,6 +191,10 @@ export function* receiveTestActivitySaga({ payload }) {
       if (page === 0) {
         leftOverStudents = _leftOverStudents || []
         additionalData = _data.additionalData
+        additionalData = {
+          ...additionalData,
+          assignmentId: classResponseParams.assignmentId,
+        }
         gradebookData.status = additionalData.status
         gradebookData.enrollmentStatus = enrollmentStatus
         gradebookData.students = students
@@ -810,11 +816,17 @@ function* correctItemUpdateSaga({ payload }) {
     const testItems = get(classResponse, 'data.originalItems', [])
     const studentResponse = yield select((state) => state.studentResponse)
     const testItem = testItems.find((t) => t._id === testItemId) || {}
-    const { itemLevelScoring = false, multipartItem = false } = testItem || {}
+    const { itemLevelScoring = false, multipartItem = false, rows } =
+      testItem || {}
+
+    const qIndex = getQindex(question?.id, testItem)
+
     const [isIncomplete, errMsg] = isIncompleteQuestion(
       question,
       itemLevelScoring,
-      multipartItem
+      multipartItem || isV1MultipartItem(rows),
+      testItemId,
+      qIndex
     )
 
     if (isIncomplete) {
@@ -1584,6 +1596,7 @@ export const isItemVisibiltySelector = createSelector(
       return true
     }
     // No key called testContentVisibility ?
+    // eslint-disable-next-line no-prototype-builtins
     if (!additionalData?.hasOwnProperty('testContentVisibility')) {
       return true
     }

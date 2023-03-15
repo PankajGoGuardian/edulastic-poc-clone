@@ -32,6 +32,7 @@ import { userPickFields } from '../../common/utils/static/user'
 import { updateInitSearchStateAction } from '../../author/TestPage/components/AddItems/ducks'
 import { fetchDashboardTiles } from '../../author/Dashboard/ducks'
 import { slice as subscriptionSlice } from '../../author/Subscription/ducks'
+import { canvasSyncStatus } from '../../author/ManageClass/constants'
 
 // Types
 const SEARCH_SCHOOL_REQUEST = '[signup] search school request'
@@ -760,7 +761,7 @@ function* fetchSchoolTeachersSaga({ payload }) {
 
 function* bulkSyncCanvasClassSaga({ payload }) {
   try {
-    yield put(setBulkSyncCanvasStateAction('INPROGRESS'))
+    yield put(setBulkSyncCanvasStateAction(canvasSyncStatus.INPROGRESS))
     yield call(canvasApi.bulkSync, payload)
   } catch (err) {
     console.error(err)

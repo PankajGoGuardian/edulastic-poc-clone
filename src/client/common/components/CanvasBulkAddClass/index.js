@@ -5,12 +5,14 @@ import {
   CheckboxLabel,
 } from '@edulastic/common'
 import { IconCanvasBook } from '@edulastic/icons'
+import { withNamespaces } from 'react-i18next'
 import { Select } from 'antd'
 import { get, groupBy, isEmpty } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
+import { Tooltip } from '../../utils/helpers'
 import { receiveSearchCourseAction } from '../../../author/Courses/ducks'
 import { getThumbnail } from '../../../author/ManageClass/components/ClassSectionThumbnailsBySubjectGrade'
 import { getDictCurriculumsAction } from '../../../author/src/actions/dictionaries'
@@ -42,6 +44,7 @@ import {
   LogoWrapper,
   StyledModal,
 } from './styled'
+import { canvasSyncStatus } from '../../../author/ManageClass/constants'
 
 const CanvasBulkAddClass = ({
   receiveSearchCourse,
@@ -66,6 +69,7 @@ const CanvasBulkAddClass = ({
   districtId,
   setUserSignupState,
   history,
+  t,
 }) => {
   const [selectedRows, setSelectedRows] = useState([])
   const [showModal, setShowModal] = useState(false)
@@ -73,6 +77,14 @@ const CanvasBulkAddClass = ({
   const [isLoading, setIsLoading] = useState(false)
   const [institution, setInstitution] = useState()
   const [coTeacherFlag, setCoTeacherFlag] = useState(true)
+
+  const isCanvasClassLoading = isLoading || isFetchingCanvasData
+  const isCanvasClassSyncInProgress =
+    bulkSyncCanvasStatus === canvasSyncStatus.INPROGRESS
+  const isCanvasClassSyncCompleted =
+    bulkSyncCanvasStatus === canvasSyncStatus.SUCCESS
+  const isCanvasClassSyncFailed =
+    bulkSyncCanvasStatus === canvasSyncStatus.FAILED
 
   useEffect(() => {
     getDictCurriculums()
@@ -92,7 +104,7 @@ const CanvasBulkAddClass = ({
       canvasCourseList = []
       getCanvasCourseListRequest(institution)
     }
-  }, [institution])
+  }, [institution, bulkSyncCanvasStatus])
 
   useEffect(() => {
     if (canvasCourseList.length && institution) {
@@ -102,8 +114,8 @@ const CanvasBulkAddClass = ({
   }, [canvasCourseList])
 
   useEffect(() => {
-    if (bulkSyncCanvasStatus === 'INPROGRESS') setShowModal(true)
-    else if (bulkSyncCanvasStatus === 'FAILED') setShowModal(false)
+    if (isCanvasClassSyncInProgress) setShowModal(true)
+    else if (isCanvasClassSyncFailed) setShowModal(false)
   }, [bulkSyncCanvasStatus])
 
   useEffect(() => {
@@ -201,7 +213,7 @@ const CanvasBulkAddClass = ({
   }
 
   const handleFinish = () => {
-    if (!selectedRows.length) {
+    if (!selectedRows.length || isCanvasClassLoading) {
       notification({
         messageKey: 'pleaseSelectAtleastOneCanvasCourseSectionToSync',
       })
@@ -229,7 +241,6 @@ const CanvasBulkAddClass = ({
     bulkSyncCanvasClass({ bulkSyncData: selectedClasses })
     setShowModal(true)
   }
-
   const handleClose = () => {
     setShowModal(false)
     if (fromManageClass) {
@@ -253,7 +264,11 @@ const CanvasBulkAddClass = ({
     () => courseList.filter((c) => +c.active === 1),
     [courseList]
   )
-
+  const canvasButtonHoverTitle = isCanvasClassSyncInProgress
+    ? t('canvas.canvasClassSyncInProgress')
+    : isCanvasClassLoading
+    ? t('canvas.canvasClassLoading')
+    : ''
   const columns = [
     {
       title: <b>CANVAS CLASS SECTION</b>,
@@ -480,7 +495,7 @@ const CanvasBulkAddClass = ({
         rowSelection={rowSelection}
         pagination={false}
         bordered
-        loading={isFetchingCanvasData || isLoading}
+        loading={isCanvasClassLoading}
       />
       <ButtonContainer
         justifyContent={fromManageClass ? 'center' : 'space-between'}
@@ -494,9 +509,17 @@ const CanvasBulkAddClass = ({
             >
               CANCEL
             </EduButton>,
-            <EduButton data-cy="syncsubmit" onClick={handleFinish}>
-              SYNC
-            </EduButton>,
+            <Tooltip placement="top" title={canvasButtonHoverTitle}>
+              <span>
+                <EduButton
+                  data-cy="syncsubmit"
+                  onClick={handleFinish}
+                  disabled={isCanvasClassLoading || isCanvasClassSyncInProgress}
+                >
+                  SYNC
+                </EduButton>
+              </span>
+            </Tooltip>,
           ]
         ) : (
           <>
@@ -510,10 +533,10 @@ const CanvasBulkAddClass = ({
       </ButtonContainer>
       {showModal && (
         <StyledModal
-          title={bulkSyncCanvasStatus === 'SUCCESS' ? <h4>Success</h4> : null}
+          title={isCanvasClassSyncCompleted ? <h4>Success</h4> : null}
           visible={showModal}
           footer={
-            bulkSyncCanvasStatus === 'SUCCESS'
+            isCanvasClassSyncCompleted
               ? [<Button onClick={handleClose}>Close</Button>]
               : null
           }
@@ -522,7 +545,7 @@ const CanvasBulkAddClass = ({
           maskClosable={false}
         >
           <h4>
-            {bulkSyncCanvasStatus === 'INPROGRESS'
+            {isCanvasClassSyncInProgress
               ? 'Syncing with Canvas Course...'
               : 'Class successfully synced with Canvas Course.'}
           </h4>
@@ -560,4 +583,4 @@ const enhance = compose(
     }
   )
 )
-export default enhance(CanvasBulkAddClass)
+export default withNamespaces('manageClass')(enhance(CanvasBulkAddClass))

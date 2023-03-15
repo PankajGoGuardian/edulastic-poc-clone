@@ -863,29 +863,6 @@ class Container extends PureComponent {
     saveCurrentEditingTestId(test._id)
   }
 
-  get isTestEditable() {
-    const {
-      test,
-      match,
-      userId,
-      userFeatures,
-      userRole,
-      collections,
-      editEnable,
-      testStatus,
-    } = this.props
-    const { params = {} } = match
-
-    const isOwner =
-      (test.authors && test.authors.some((x) => x._id === userId)) ||
-      !params.id ||
-      userRole === roleuser.EDULASTIC_CURATOR ||
-      (userFeatures.isCurator &&
-        allowContentEditCheck(test.collections, collections))
-
-    return isOwner && (editEnable || testStatus === statusConstants.DRAFT)
-  }
-
   renderContent = () => {
     const {
       test,

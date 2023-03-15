@@ -11,6 +11,7 @@ import {
   minBy,
   round,
   sum,
+  meanBy,
 } from 'lodash'
 
 import {
@@ -265,23 +266,29 @@ const augmentMetaData = (metricInfo = [], compareBy = '', metaInfo = []) => {
 }
 
 const findTestWithAverageBand = (tests) => {
+  const NO_RANK = 0
   const weightedAverageRank =
-    sum(tests.map((t) => get(t, 'band.rank', 0) * t.totalStudentCount || 0)) /
-    sumBy(tests, 'totalStudentCount')
-
-  const item = minBy(tests, (el) => get(el, 'band.rank') - weightedAverageRank)
+    sum(
+      tests.map((t) => get(t, 'band.rank', NO_RANK) * t.totalStudentCount || 0)
+    ) / sumBy(tests, 'totalStudentCount')
+  const item = minBy(
+    tests,
+    (el) => get(el, 'band.rank', NO_RANK) - weightedAverageRank
+  )
   return item
 }
 
-const augmentBandData = (tests, bandInfo) => {
+const augmentBandData = (tests, bandInfo, externalBands) => {
   const testsWithBandInfo = tests.map((t) => {
     let band = { name: '-', color: '#010101' }
     if (t.externalTestType) {
-      const achievementLevels = getAchievementLevels({
-        ...t,
-        title: t.testName,
-        score: t.totalScore,
-      })
+      const achievementLevels = getAchievementLevels(
+        {
+          ...t,
+          title: t.testName,
+        },
+        externalBands
+      )
       band = achievementLevels.find((al) => al.active)
       return {
         ...t,
@@ -358,6 +365,7 @@ export const getTableData = (
   externalMetricInfo = [],
   metaInfo = [],
   bandInfo = [],
+  externalBands = [],
   compareByKey
 ) => {
   // fallback to prevent intermittent crashes when bandInfo is empty
@@ -368,6 +376,7 @@ export const getTableData = (
     .map((t) => ({
       ...t,
       assessmentDate: +new Date(t.assessmentDate),
+      achievementLevel: +t.achievementLevel,
     }))
   const compositeMetricInfo = [
     ..._metricInfo,
@@ -382,7 +391,8 @@ export const getTableData = (
   }))
   const compositeMetricInfoWithBandData = augmentBandData(
     compositeMetricInfo,
-    bandInfo
+    bandInfo,
+    externalBands
   )
 
   // table data for each assessment
@@ -411,7 +421,8 @@ export const getTableData = (
 export const getChartData = (
   metricInfo = [],
   externalMetricInfo = [],
-  bandInfo = []
+  bandInfo = [],
+  externalBands = []
 ) => {
   // fallback to prevent intermittent crashes when bandInfo is empty
   let _metricInfo = isEmpty(bandInfo) ? [] : metricInfo
@@ -422,6 +433,7 @@ export const getChartData = (
       ...t,
       achievementLevel: +t.achievementLevel,
       assessmentDate: +new Date(t.assessmentDate),
+      achievementLevel: +t.achievementLevel,
     }))
   if (isEmpty(metricInfo) && isEmpty(filteredExternalMetricInfo)) {
     return []
@@ -549,6 +561,10 @@ export const getChartData = (
           totalMaxScore: 0,
         }
       )
+      testData.achievementLevel = meanBy(
+        externalGroupedByUniqId[uniqId],
+        'achievementLevel'
+      )
 
       // TODO: check with Shubhangi and determine by score range
       const lineScore = 50
@@ -557,11 +573,13 @@ export const getChartData = (
       // curate records for each performance criteria of external test
       let _records = []
 
-      const _achievementLevels = getAchievementLevels({
-        ...testData,
-        title: testData.testName || testName,
-        score: testData.totalScore,
-      })
+      const _achievementLevels = getAchievementLevels(
+        {
+          ...testData,
+          title: testData.testName || testName,
+        },
+        externalBands
+      )
       testData.bands = _achievementLevels
       testData.band = _achievementLevels.find((al) => al.active)
       _records = _achievementLevels.map((band) => {
@@ -572,7 +590,7 @@ export const getChartData = (
           color: band.color,
           bandName: band.name,
         }
-        const _recordsWithBands = augmentBandData(records, null)
+        const _recordsWithBands = augmentBandData(records, null, externalBands)
         const _record =
           _recordsWithBands.find((r) => r?.band?.id == band.id) || {}
         const totalGradedWithBand = sum(

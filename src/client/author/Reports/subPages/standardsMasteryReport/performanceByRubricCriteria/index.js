@@ -119,7 +119,7 @@ const PerformanceByRubricCriteria = ({
           </StyledH3>
         </Row>
         <Row>
-          <span>
+          <span data-testid="description">
             This report shows the response distribution across ratings for each
             criterion of a rubric.
             <br />

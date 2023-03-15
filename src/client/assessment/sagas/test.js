@@ -38,7 +38,7 @@ import {
 } from 'lodash'
 import produce from 'immer'
 import {
-  test as testContants,
+  test as testConstants,
   roleuser,
   testActivityStatus,
   testTypes as testTypesConstants,
@@ -74,6 +74,8 @@ import {
   SWITCH_LANGUAGE,
   UPDATE_PLAYER_PREVIEW_STATE,
   SAVE_USER_WORK,
+  CLOSE_TEST_TIMED_OUT_ALERT_MODAL,
+  SET_SUBMIT_TEST_COMPLETE,
 } from '../constants/actions'
 import {
   saveUserResponse as saveUserResponseAction,
@@ -88,6 +90,7 @@ import {
   languageChangeSuccessAction,
   setShowTestInfoSuccesAction,
   resetStudentAttemptAction,
+  setSubmitTestCompleteAction,
 } from '../actions/test'
 import { setShuffledOptions } from '../actions/shuffledOptions'
 import {
@@ -106,6 +109,7 @@ import {
 } from '../../author/TestPage/ducks'
 import { PREVIEW } from '../constants/constantsForQuestions'
 import { getUserRole } from '../../author/src/selectors/user'
+import { getSubmitTestCompleteSelector } from '../selectors/test'
 import {
   setActiveAssignmentAction,
   utaStartTimeUpdateRequired,
@@ -121,7 +125,11 @@ import {
 
 // import { checkClientTime } from "../../common/utils/helpers";
 
-const { ITEM_GROUP_DELIVERY_TYPES, releaseGradeLabels } = testContants
+const {
+  ITEM_GROUP_DELIVERY_TYPES,
+  releaseGradeLabels,
+  DEFAULT_CALC_TYPES,
+} = testConstants
 const { TEST_TYPES, TEST_TYPES_VALUES_MAP } = testTypesConstants
 
 const modifyTestDataForPreview = (test) =>
@@ -155,77 +163,73 @@ const getQuestions = (testItems = []) => {
   return allQuestions
 }
 
-const getSettings = (test, testActivity, preview, calculatorProvider) => {
+const getSettings = (test, testActivity, isTestPreview, calculatorProvider) => {
   const { assignmentSettings = {} } = testActivity || {}
-  const calcType = !preview ? assignmentSettings.calcType : test.calcType
-  // graphing calculator is not present for EDULASTIC so defaulting to DESMOS for now, below work around should be removed once EDULASTIC calculator is built
-  const desmosGraphingCalcTypes = [
-    testContants.calculatorTypes.GRAPHING,
-    testContants.calculatorTypes.GRAPHING_STATE,
-  ]
-  const calcProvider = desmosGraphingCalcTypes.includes(calcType)
-    ? 'DESMOS'
-    : preview
+  const calcTypes = !isTestPreview
+    ? assignmentSettings.calcTypes
+    : test.calcTypes
+
+  const calcProvider = isTestPreview
     ? test.calculatorProvider || calculatorProvider
     : testActivity?.calculatorProvider
 
-  const maxAnswerChecks = preview
+  const maxAnswerChecks = isTestPreview
     ? test.maxAnswerChecks
     : assignmentSettings.maxAnswerChecks
-  const passwordPolicy = preview
+  const passwordPolicy = isTestPreview
     ? test.passwordPolicy
     : assignmentSettings.passwordPolicy
-  const testType = preview ? test.testType : assignmentSettings.testType
-  const playerSkinType = preview
+  const testType = isTestPreview ? test.testType : assignmentSettings.testType
+  const playerSkinType = isTestPreview
     ? test.playerSkinType
     : assignmentSettings.playerSkinType
-  const showMagnifier = preview
+  const showMagnifier = isTestPreview
     ? isUndefined(test.showMagnifier)
       ? true
       : test.showMagnifier
     : assignmentSettings.showMagnifier
-  const timedAssignment = preview
+  const timedAssignment = isTestPreview
     ? test.timedAssignment
     : assignmentSettings.timedAssignment
-  const allowedTime = preview
+  const allowedTime = isTestPreview
     ? test.allowedTime
     : assignmentSettings.allowedTime
-  const pauseAllowed = preview
+  const pauseAllowed = isTestPreview
     ? test.pauseAllowed
     : assignmentSettings.pauseAllowed
-  const enableScratchpad = preview
+  const enableScratchpad = isTestPreview
     ? isUndefined(test.enableScratchpad)
       ? true
       : test.enableScratchpad
     : assignmentSettings.enableScratchpad
-  const releaseScore = preview
+  const releaseScore = isTestPreview
     ? test.releaseScore
     : testActivity?.testActivity?.releaseScore
 
-  const enableSkipAlert = preview
+  const enableSkipAlert = isTestPreview
     ? test.enableSkipAlert
     : assignmentSettings.enableSkipAlert
 
-  const showRubricToStudents = preview
+  const showRubricToStudents = isTestPreview
     ? test.showRubricToStudents
     : assignmentSettings.showRubricToStudents
 
-  const referenceDocAttributes = preview
+  const referenceDocAttributes = isTestPreview
     ? test.referenceDocAttributes
     : assignmentSettings.referenceDocAttributes
 
-  const showHintsToStudents = preview
+  const showHintsToStudents = isTestPreview
     ? test.showHintsToStudents
     : assignmentSettings.showHintsToStudents
 
-  const penaltyOnUsingHints = preview
+  const penaltyOnUsingHints = isTestPreview
     ? test.penaltyOnUsingHints || 0
     : assignmentSettings.penaltyOnUsingHints || 0
-  const allowTeacherRedirect = preview
+  const allowTeacherRedirect = isTestPreview
     ? test.allowTeacherRedirect
     : assignmentSettings.allowTeacherRedirect
 
-  const showTtsForPassages = preview
+  const showTtsForPassages = isTestPreview
     ? test.showTtsForPassages
     : assignmentSettings.showTtsForPassages
 
@@ -241,11 +245,11 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     enableSkipAlert,
     showRubricToStudents,
     allowTeacherRedirect,
-    calcType: calcType || testContants.calculatorTypes.NONE,
+    calcTypes: calcTypes || DEFAULT_CALC_TYPES,
     maxAnswerChecks: maxAnswerChecks || 0,
     passwordPolicy:
-      passwordPolicy ||
-      testContants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
+      passwordPolicy ??
+      testConstants.passwordPolicy.REQUIRED_PASSWORD_POLICY_OFF,
     showPreviousAttempt: assignmentSettings.showPreviousAttempt || 'NONE',
     endDate: assignmentSettings.endDate,
     closePolicy: assignmentSettings.closePolicy,
@@ -258,7 +262,7 @@ const getSettings = (test, testActivity, preview, calculatorProvider) => {
     restrictNavigationOutAttemptsThreshold:
       assignmentSettings?.restrictNavigationOutAttemptsThreshold,
     referenceDocAttributes,
-    ...(preview && { keypad: test?.keypad?.value }),
+    ...(isTestPreview && { keypad: test?.keypad?.value }),
     showHintsToStudents,
     penaltyOnUsingHints,
     showTtsForPassages,
@@ -438,7 +442,7 @@ function* loadTest({ payload }) {
 
       let passwordValidated =
         testActivity?.assignmentSettings?.passwordPolicy ===
-          testContants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
+          testConstants?.passwordPolicy?.REQUIRED_PASSWORD_POLICY_OFF ||
         isFromSummary ||
         _switchLanguage
       if (passwordValidated) {
@@ -500,7 +504,7 @@ function* loadTest({ payload }) {
       preview &&
       test.itemGroups.some(
         (group = {}) =>
-          group.type === testContants.ITEM_GROUP_TYPES.AUTOSELECT &&
+          group.type === testConstants.ITEM_GROUP_TYPES.AUTOSELECT &&
           !group.items?.length
       )
     ) {
@@ -524,7 +528,7 @@ function* loadTest({ payload }) {
       SKIPPED,
       SKIPPED_AND_WRONG,
       SKIPPED_PARTIAL_AND_WRONG,
-    } = testContants.redirectPolicy.QuestionDelivery
+    } = testConstants.redirectPolicy.QuestionDelivery
     if (
       [SKIPPED, SKIPPED_AND_WRONG, SKIPPED_PARTIAL_AND_WRONG].includes(
         testActivity?.assignmentSettings?.questionsDelivery
@@ -981,6 +985,17 @@ function* loadPreviousResponses(payload) {
   }
 }
 
+function* closeTestTimeOutSaga({ payload }) {
+  const { studentGradesUrl } = payload
+  const isTestSubmitted = yield select(getSubmitTestCompleteSelector)
+  if (isTestSubmitted) {
+    yield put(push(studentGradesUrl))
+    return
+  }
+  yield take(SET_SUBMIT_TEST_COMPLETE)
+  yield put(push(studentGradesUrl))
+}
+
 function* submitTest({ payload }) {
   try {
     const { itemResponse } = payload
@@ -1160,6 +1175,7 @@ function* submitTest({ payload }) {
       payload: false,
     })
     yield put(setSelectedThemeAction('default'))
+    yield put(setSubmitTestCompleteAction(true))
     if (!payload.preventRouteChange) {
       yield put(resetStudentAttemptAction())
     }
@@ -1230,5 +1246,6 @@ export default function* watcherSaga() {
     ),
     yield takeEvery(LOAD_PREVIOUS_RESPONSES_REQUEST, loadPreviousResponses),
     yield takeLatest(SWITCH_LANGUAGE, switchLanguage),
+    yield takeLatest(CLOSE_TEST_TIMED_OUT_ALERT_MODAL, closeTestTimeOutSaga),
   ])
 }

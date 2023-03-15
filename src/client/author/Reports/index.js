@@ -7,6 +7,7 @@ import qs from 'qs'
 import { Spin } from 'antd'
 import { MainContentWrapper } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { ReportPaths } from '@edulastic/constants/const/report'
 
 import { Header } from './common/components/Header'
 import StandardReport from './components/StandardReport'
@@ -17,6 +18,10 @@ import CustomReportIframe from './components/customReport/customReportIframe'
 import SharedReports from './components/sharedReports'
 import DataWarehouseReports from './components/dataWarehouseReport'
 import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
+import {
+  DW_MAR_REPORT_URL,
+  DW_WLR_REPORT_URL,
+} from './common/constants/dataWarehouseReports'
 import {
   getCsvDownloadingState,
   getPrintingState,
@@ -326,6 +331,7 @@ const Container = (props) => {
             `/author/reports/peer-progress-analysis`,
             `/author/reports/student-progress`,
             `/author/reports/performance-over-time`,
+            ReportPaths.PRE_VS_POST,
           ]}
           render={(_props) => (
             <MultipleAssessmentReportContainer
@@ -480,8 +486,8 @@ const Container = (props) => {
         />
         <Route
           path={[
-            '/author/reports/whole-child-report/student/',
-            '/author/reports/multiple-assessment-report-dw',
+            DW_WLR_REPORT_URL,
+            DW_MAR_REPORT_URL,
             '/author/reports/single-assessment-report-dw',
             '/author/reports/pre-vs-post-test-comparison',
           ]}

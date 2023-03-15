@@ -4,9 +4,9 @@ import { withRouter } from 'react-router-dom'
 import { compose } from 'redux'
 import { connect } from 'react-redux'
 import { Select } from 'antd'
-import { SelectInputStyled } from '@edulastic/common'
-import { IconGroup, IconClass } from '@edulastic/icons'
-import { lightGrey10 } from '@edulastic/colors'
+import { EduIf, SelectInputStyled } from '@edulastic/common'
+import { IconGroup, IconClass, IconClose } from '@edulastic/icons'
+import { lightGrey10, tagTextColor } from '@edulastic/colors'
 import { testTypes as testTypesConstants } from '@edulastic/constants'
 import { get, curry, isEmpty, find, uniq, debounce, isArray } from 'lodash'
 import { receiveClassListAction } from '../../../Classes/ducks'
@@ -31,8 +31,9 @@ import {
   ClassListContainer,
   TableContainer,
   InfoSection,
-  SwitchStyled,
-} from './styled'
+  AdvancedSearchTagContainer,
+  AdvancedSearchTag,
+} from './styled-components'
 import selectsData from '../../../TestPage/components/common/selectsData'
 import {
   getTestSelector,
@@ -41,17 +42,21 @@ import {
   getStudentGroupIdSelector,
 } from '../../../TestPage/ducks'
 import Tags from '../../../src/components/common/Tags'
+import { setSearchTermsFilterAction } from '../../../TestPage/components/Assign/ducks'
 import {
-  setSearchTermsFilterAction,
-  setExcludeSchoolsAction,
-} from '../../../TestPage/components/Assign/ducks'
-import FeaturesSwitch from '../../../../features/components/FeaturesSwitch'
+  setIsAllClassSelectedAction,
+  getIsAdvancedSearchSelectedSelector,
+  setAdvancedSearchFilterAction,
+  setIsAdvancedSearchSelectedAction,
+  getIsAllClassSelectedSelector,
+} from '../../../AdvanceSearch/ducks'
 import { sortGrades } from '../../../TestPage/utils'
 
 const { allGrades, allSubjects } = selectsData
 
 const findTeacherName = (row) => {
-  const { owners = [], primaryTeacherId, parent: { id: teacherId } = {} } = row
+  const { owners = [], primaryTeacherId, parent } = row
+  const { id: teacherId } = parent || {}
   const teacher = find(
     owners,
     (owner) => owner.id === (primaryTeacherId || teacherId)
@@ -187,12 +192,19 @@ class ClassList extends React.Component {
     ) {
       this.setState({ filterClassIds: [] }) // eslint-disable-line
     }
+
+    const isAllSelected =
+      !!selectedClasses?.length &&
+      classList.every(({ _id }) => selectedClasses?.includes(_id))
+    if (isAllClassSelectedProp !== isAllSelected) {
+      setIsAllClassSelected(isAllSelected)
+    }
   }
 
   loadClassList = () => {
     const { loadClassListData, userOrgId, setSearchTermsFilter } = this.props
-    const { searchTerms } = this.state
-    setSearchTermsFilter(searchTerms)
+    const { searchTerms, classType } = this.state
+    setSearchTermsFilter({ ...searchTerms, classType })
     loadClassListData({
       districtId: userOrgId,
       queryType: 'OR',
@@ -224,7 +236,13 @@ class ClassList extends React.Component {
   }
 
   handleClassTypeFilter = (key) => {
-    const { selectClass, classList, selectedClasses } = this.props
+    const {
+      selectClass,
+      classList,
+      selectedClasses,
+      setSearchTermsFilter,
+    } = this.props
+    const { searchTerms } = this.state
     const _selectedClasses = classList
       .filter(
         (item) =>
@@ -234,6 +252,7 @@ class ClassList extends React.Component {
       .map((item) => item._id)
     selectClass('class', _selectedClasses, classList)
     this.setState({ classType: key })
+    setSearchTermsFilter({ ...searchTerms, classType: key })
   }
 
   handleSelectAll = (checked) => {
@@ -283,6 +302,19 @@ class ClassList extends React.Component {
 
   handleCourseSearch = debounce(this.courseSearch, 200)
 
+  removeAdvanceSearch = () => {
+    const {
+      setAdvancedSearchFilter,
+      setIsAdvancedSearchSelected,
+      selectClass,
+      classList,
+    } = this.props
+    setIsAdvancedSearchSelected(false)
+    setAdvancedSearchFilter({})
+    this.loadClassList()
+    selectClass('class', [], classList)
+  }
+
   render() {
     const {
       classList,
@@ -294,8 +326,8 @@ class ClassList extends React.Component {
       assignedClassesById,
       testType,
       isCoursesLoading,
-      setExcludeSchools,
-      excludeSchools,
+      isAdvancedSearchSelected,
+      setShowAdvanceSearchModal,
     } = this.props
     const { searchTerms, classType, filterClassIds } = this.state
     const tableData = classList
@@ -329,17 +361,35 @@ class ClassList extends React.Component {
       },
     }
 
-    const selectedClassData =
-      classList?.filter(({ _id }) => selectedClasses.includes(_id)) || 0
+    const selectableClassList = classList?.filter(
+      ({ _id }) => !Object.keys(assignedClassesById[testType]).includes(_id)
+    )
+    const totalSchoolsCount =
+      uniq(
+        selectableClassList
+          ?.map(({ institutionId }) => institutionId)
+          ?.filter((i) => !!i)
+      )?.length || 0
+
+    const totalStudentsCount =
+      selectableClassList?.reduce(
+        (acc, curr) => acc + (curr.studentCount || 0),
+        0
+      ) || 0
+
+    const selectedClassData = classList?.filter(({ _id }) =>
+      selectedClasses.includes(_id)
+    )
     const schoolsCount =
       uniq(
         selectedClassData
           ?.map(({ institutionId }) => institutionId)
           ?.filter((i) => !!i)
       )?.length || 0
-    const classesCount = selectedClassData?.filter(
-      ({ type }) => classType === 'all' || type === classType
-    )?.length
+    const classesCount =
+      selectedClassData?.filter(
+        ({ type }) => classType === 'all' || type === classType
+      )?.length || 0
     const studentsCount =
       selectedClassData?.reduce(
         (acc, curr) => acc + (curr.studentCount || 0),
@@ -408,40 +458,21 @@ class ClassList extends React.Component {
       },
     ]
 
-    const { isPlaylist, match } = this.props
-    const { testId } = match.params
-    const isPlaylistModule = isPlaylist && !testId
     return (
       <ClassListContainer>
         <ClassListFilter>
           <StyledRowLabel>
-            <div>
-              School{' '}
-              {!isPlaylistModule && (
-                <FeaturesSwitch
-                  inputFeatures="canBulkAssign"
-                  key="canBulkAssign"
-                  actionOnInaccessible="hidden"
-                >
-                  <SwitchStyled
-                    data-cy="bulkAssignToggleButton"
-                    checkedChildren="EXCLUDE"
-                    unCheckedChildren="INCLUDE"
-                    checked={excludeSchools}
-                    onChange={setExcludeSchools}
-                  />
-                </FeaturesSwitch>
-              )}
-            </div>
+            <div>School </div>
             <SelectInputStyled
+              disabled={isAdvancedSearchSelected}
               data-cy="schoolSelect"
               mode="multiple"
               placeholder="All School"
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               onChange={changeField('institutionIds')}
               value={searchTerms.institutionIds}
@@ -458,15 +489,16 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Grades
             <SelectInputStyled
+              disabled={isAdvancedSearchSelected}
               mode="multiple"
               value={searchTerms.grades}
               placeholder="All grades"
               onChange={changeField('grades')}
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               data-cy="class-grades-filter"
             >
@@ -484,15 +516,16 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Subject
             <SelectInputStyled
+              disabled={isAdvancedSearchSelected}
               mode="multiple"
               value={searchTerms.subjects}
               placeholder="All subjects"
               onChange={changeField('subjects')}
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               data-cy="class-subject-filter"
             >
@@ -507,6 +540,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Course
             <SelectInputStyled
+              disabled={isAdvancedSearchSelected}
               data-cy="selectCourses"
               mode="multiple"
               placeholder="All Course"
@@ -536,11 +570,11 @@ class ClassList extends React.Component {
               onChange={this.handleClassTypeFilter}
               showSearch
               value={classType}
-              disabled={filterClassIds.length}
+              disabled={filterClassIds.length || isAdvancedSearchSelected}
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
             >
               {[
@@ -558,14 +592,15 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Search Class/Groups
             <SelectInputStyled
+              disabled={isAdvancedSearchSelected}
               placeholder="Search by name of class or group"
               onChange={this.handleClassSelectFromDropDown}
               mode="multiple"
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
               value={filterClassIds}
               data-cy="selectClass"
@@ -586,6 +621,7 @@ class ClassList extends React.Component {
           <StyledRowLabel>
             Tags
             <SelectInputStyled
+              disabled={isAdvancedSearchSelected}
               mode="multiple"
               data-cy="tagSelect"
               value={searchTerms.tags}
@@ -593,9 +629,9 @@ class ClassList extends React.Component {
               onChange={changeField('tags')}
               showSearch
               filterOption={(input, option) =>
-                option.props.children
-                  .toLowerCase()
-                  .indexOf(input.toLowerCase()) >= 0
+                option.props?.children
+                  ?.toLowerCase()
+                  ?.indexOf(input.toLowerCase()) >= 0
               }
             >
               {tagList.map(({ _id, tagName }) => (
@@ -608,18 +644,45 @@ class ClassList extends React.Component {
         </ClassListFilter>
 
         <TableContainer>
+          <EduIf condition={isAdvancedSearchSelected}>
+            <AdvancedSearchTagContainer>
+              <AdvancedSearchTag
+                onClick={() => {
+                  setShowAdvanceSearchModal(true)
+                }}
+              >
+                ADVANCED SEARCH
+              </AdvancedSearchTag>
+              <IconClose
+                height={7}
+                width={7}
+                style={{ cursor: 'pointer' }}
+                onClick={this.removeAdvanceSearch}
+                color={tagTextColor}
+              />
+            </AdvancedSearchTagContainer>
+          </EduIf>
           <InfoSection>
             <div>
               <span>School(s)</span>
-              <span>{schoolsCount}</span>
+              <span>
+                <span>{schoolsCount}/</span>
+                <span>{totalSchoolsCount}</span>
+              </span>
             </div>
             <div>
               <span>Class(es)</span>
-              <span>{classesCount}</span>
+              <span>
+                <span>{classesCount}/</span>
+                <span>{selectableClassList.length}</span>
+              </span>
             </div>
             <div>
               <span>Student(s)</span>
-              <span>{studentsCount}</span>
+              <span>
+                <span>{studentsCount}/</span>
+                <span>{totalStudentsCount}</span>
+              </span>
             </div>
           </InfoSection>
           <StyledTable
@@ -647,6 +710,8 @@ const enhance = compose(
       tagList: getAllTagsSelector(state, 'group'),
       assignedClassesById: getAssignedClassesByIdSelector(state),
       isCoursesLoading: getCourseLoadingState(state),
+      isAdvancedSearchSelected: getIsAdvancedSearchSelectedSelector(state),
+      isAllClassSelected: getIsAllClassSelectedSelector(state),
       excludeSchools: get(state, 'authorTestAssignments.excludeSchools', false),
       studentGroupId: getStudentGroupIdSelector(state),
     }),
@@ -656,7 +721,9 @@ const enhance = compose(
       loadCourseListData: receiveCourseListAction,
       getAllTags: getAllTagsAction,
       setSearchTermsFilter: setSearchTermsFilterAction,
-      setExcludeSchools: setExcludeSchoolsAction,
+      setIsAllClassSelected: setIsAllClassSelectedAction,
+      setIsAdvancedSearchSelected: setIsAdvancedSearchSelectedAction,
+      setAdvancedSearchFilter: setAdvancedSearchFilterAction,
     }
   )
 )

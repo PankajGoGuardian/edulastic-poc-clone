@@ -13,6 +13,15 @@ const PreWrapper = styled.pre`
       & span:not(.index) {
         color: ${title};
       }
+      /**
+       * @see https://snapwiz.atlassian.net/browse/EV-35090
+       * table cell shows all content in one line
+       */
+      @media print {
+        & td {
+          white-space: normal;
+        }
+      }
     }
   }
 `

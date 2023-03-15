@@ -2,8 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import { Modal, Row, Col, Spin, Select, Checkbox } from 'antd'
 import { IconClose } from '@edulastic/icons'
-import { EduButton } from '@edulastic/common'
-import GoogleLogin from 'react-google-login'
+import { EduButton, EduIf } from '@edulastic/common'
 import {
   greyThemeDark1,
   greyThemeLight,
@@ -12,6 +11,7 @@ import {
   darkGrey2,
   themeColor,
 } from '@edulastic/colors'
+import { AUTH_FLOW, GoogleLoginWrapper } from '../../../../vendors/google'
 import { scopes } from '../../../author/ManageClass/components/ClassListContainer/ClassCreatePage'
 
 const HangoutsModal = ({
@@ -29,101 +29,106 @@ const HangoutsModal = ({
   loading,
   classList = [],
   isStudent,
-}) => (
-  <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
-    {loading ? (
-      <Spin size="small" />
-    ) : (
-      <Row type="flex" align="middle" gutter={[20, 20]}>
-        <StyledCol span={24} justify="space-between">
-          <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700}>
-            {title}
-          </StyledDiv>
-          <IconClose height={20} width={20} onClick={onCancel} />
-        </StyledCol>
-        <StyledCol span={24} marginBottom="5px" justify="left">
-          <StyledDiv color={darkGrey2}>{description}</StyledDiv>
-        </StyledCol>
-        <StyledCol
-          span={24}
-          marginBottom={!isStudent && selected?.googleId ? '5px' : '20px'}
-        >
-          <StyledSelect
-            placeholder="Select Class"
-            dropdownStyle={{ zIndex: 2000 }}
-            defaultValue={selected?._id}
-            onChange={onSelect}
-            data-cy="select-class"
-          >
-            {classList.map(({ _id, name }) => (
-              <Select.Option key={_id} value={_id}>
-                {name}
-              </Select.Option>
-            ))}
-          </StyledSelect>
-        </StyledCol>
-        {!isStudent && selected?.googleId && (
-          <StyledCol span={24} marginBottom="15px" justify="left">
-            <Checkbox checked={checked} onChange={onCheckUncheck}>
-              <StyledDiv fontStyle="11px/15px Open Sans">
-                SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM
-              </StyledDiv>
-            </Checkbox>
+}) => {
+  const loginGoogle = (googleClient) => googleClient.requestAccessToken()
+
+  const loadGapiClient = () => window.gapi.load('client')
+
+  return (
+    <StyledModal visible={visible} footer={null} onCancel={onCancel} centered>
+      <EduIf condition={loading}>
+        <Spin size="small" />
+      </EduIf>
+      <EduIf condition={!loading}>
+        <Row type="flex" align="middle" gutter={[20, 20]}>
+          <StyledCol span={24} justify="space-between">
+            <StyledDiv fontStyle="22px/30px Open Sans" fontWeight={700}>
+              {title}
+            </StyledDiv>
+            <IconClose height={20} width={20} onClick={onCancel} />
           </StyledCol>
-        )}
-        <StyledCol span={24}>
-          <EduButton
-            height="40px"
-            width="200px"
-            isGhost
-            onClick={onCancel}
-            style={{ 'margin-left': '0px' }}
+          <StyledCol span={24} marginBottom="5px" justify="left">
+            <StyledDiv color={darkGrey2}>{description}</StyledDiv>
+          </StyledCol>
+          <StyledCol
+            span={24}
+            marginBottom={!isStudent && selected?.googleId ? '5px' : '20px'}
           >
-            Cancel
-          </EduButton>
-          {isStudent || hangoutLink ? (
+            <StyledSelect
+              placeholder="Select Class"
+              dropdownStyle={{ zIndex: 2000 }}
+              defaultValue={selected?._id}
+              onChange={onSelect}
+              data-cy="select-class"
+            >
+              {classList.map(({ _id, name }) => (
+                <Select.Option key={_id} value={_id}>
+                  {name}
+                </Select.Option>
+              ))}
+            </StyledSelect>
+          </StyledCol>
+          <EduIf
+            condition={[!isStudent, selected?.googleId].every((val) => !!val)}
+          >
+            <StyledCol span={24} marginBottom="15px" justify="left">
+              <Checkbox checked={checked} onChange={onCheckUncheck}>
+                <StyledDiv fontStyle="11px/15px Open Sans">
+                  SHARE VIDEO CALL LINK ON GOOGLE CLASSROOM
+                </StyledDiv>
+              </Checkbox>
+            </StyledCol>
+          </EduIf>
+          <StyledCol span={24}>
             <EduButton
               height="40px"
               width="200px"
-              href={hangoutLink}
-              target="_blank"
-              disabled={!selected}
-              style={{ 'margin-left': '20px' }}
+              isGhost
+              onClick={onCancel}
+              style={{ 'margin-left': '0px' }}
             >
-              Join
+              Cancel
             </EduButton>
-          ) : (
-            <GoogleLogin
-              clientId={process.env.REACT_APP_GOOGLE_CLIENT_ID}
-              developerKey={process.env.REACT_APP_GOOGLE_KEY}
-              render={(renderProps) => (
-                <>
+            <EduIf condition={[isStudent, hangoutLink].some((val) => !!val)}>
+              <EduButton
+                height="40px"
+                width="200px"
+                href={hangoutLink}
+                target="_blank"
+                disabled={!selected}
+                style={{ 'margin-left': '20px' }}
+              >
+                Join
+              </EduButton>
+            </EduIf>
+            <EduIf condition={[!isStudent, !hangoutLink].every((val) => !!val)}>
+              <GoogleLoginWrapper
+                loadGapi
+                WrappedComponent={({ googleClient }) => (
                   <EduButton
                     height="40px"
                     width="200px"
                     disabled={!selected}
-                    onClick={renderProps.onClick}
+                    onClick={() => loginGoogle(googleClient)}
                     style={{ 'margin-left': '20px' }}
                   >
                     Launch
                   </EduButton>
-                </>
-              )}
-              scope={scopes}
-              discoveryDocs={[
-                'https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest',
-              ]}
-              onSuccess={onOk}
-              onFailure={onError}
-              prompt="consent"
-              responseType="code"
-            />
-          )}
-        </StyledCol>
-      </Row>
-    )}
-  </StyledModal>
-)
+                )}
+                scopes={scopes}
+                successCallback={(response) => onOk(response.access_token)}
+                errorCallback={(response) => onError(response)}
+                prompt="consent"
+                flowType={AUTH_FLOW.IMPLICIT}
+                onScriptLoad={loadGapiClient}
+              />
+            </EduIf>
+          </StyledCol>
+        </Row>
+      </EduIf>
+    </StyledModal>
+  )
+}
 
 export default HangoutsModal
 

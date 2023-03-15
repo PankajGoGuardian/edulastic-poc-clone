@@ -708,7 +708,16 @@ const AssessmentContainer = ({
           groupId,
         })
         history.push('/home/assignments')
-        if (!handleChromeOsSEB()) {
+        if (
+          !handleChromeOsSEB({
+            testId,
+            userId,
+            role: userRole,
+            assignmentId: assignmentObj._id,
+            testActivityId: restProps.utaId,
+            groupId,
+          })
+        ) {
           window.location.href = sebUrl
         }
       }

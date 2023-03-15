@@ -11,7 +11,7 @@ const ShowTtsForPassage = ({
   showTtsForPassages,
   overRideSettings,
   premium,
-  t,
+  i18translate,
 }) => {
   const isDisabled = freezeSettings || !premium
 
@@ -24,7 +24,7 @@ const ShowTtsForPassage = ({
     >
       <Col span={10}>
         <Label>
-          <span>{t('showTtsForPassage.title')}</span>
+          <span>{i18translate('showTtsForPassage.title')}</span>
           <DollarPremiumSymbol premium={premium} />
         </Label>
       </Col>

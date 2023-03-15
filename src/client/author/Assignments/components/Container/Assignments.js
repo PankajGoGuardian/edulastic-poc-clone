@@ -416,6 +416,7 @@ class Assignments extends Component {
             onCancel={this.togglePrintModal}
             currentTestId={currentTestId}
             assignmentId={currentAssignmentId}
+            showAnswerCheckbox
           />
         )}
         {showTagsEditModal && (

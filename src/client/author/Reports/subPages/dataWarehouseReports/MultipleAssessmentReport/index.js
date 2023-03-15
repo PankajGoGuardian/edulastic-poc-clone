@@ -259,6 +259,7 @@ const MultipleAssessmentReport = ({
       internalMetricsForChart = [],
       externalMetricsForChart = [],
       incompleteTests: _incompleteTests = [],
+      externalBands = [],
     } = get(reportChartData, 'data.result', {})
     const _internalMetricsForChart = internalMetricsForChart.map((d) => ({
       ...d,
@@ -267,7 +268,8 @@ const MultipleAssessmentReport = ({
     const _chartData = getChartData(
       _internalMetricsForChart,
       externalMetricsForChart,
-      _selectedPerformanceBand
+      _selectedPerformanceBand,
+      externalBands
     )
     return {
       incompleteTests: _incompleteTests,
@@ -282,6 +284,9 @@ const MultipleAssessmentReport = ({
       externalMetricsForTable = [],
       metaInfo = [],
     } = get(reportTableData, 'data.result', {})
+    const { externalBands = [] } = get(reportChartData, 'data.result', {})
+    if (isEmpty(externalBands) && !isEmpty(externalMetricsForTable)) return []
+
     const _internalMetricsForTable = internalMetricsForTable.map((d) => ({
       ...d,
       isIncomplete: incompleteTests.includes(d.testId),
@@ -291,9 +296,15 @@ const MultipleAssessmentReport = ({
       externalMetricsForTable,
       metaInfo,
       selectedPerformanceBand,
+      externalBands,
       settings.selectedCompareBy.key
     )
-  }, [reportTableData, incompleteTests, selectedPerformanceBand])
+  }, [
+    reportChartData,
+    reportTableData,
+    incompleteTests,
+    selectedPerformanceBand,
+  ])
 
   const filteredOverallAssessmentsData = filter(chartData, (test) =>
     selectedTests.length ? includes(selectedTests, test.uniqId) : true

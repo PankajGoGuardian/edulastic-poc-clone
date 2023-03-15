@@ -7,6 +7,7 @@ import PropTypes from 'prop-types'
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
+import qs from 'qs'
 import { Spin } from 'antd'
 import Joyride from 'react-joyride'
 import * as firebase from 'firebase/app'
@@ -78,6 +79,7 @@ import {
 } from './author/Dashboard/ducks'
 import CreateClassModal from './author/ManageClass/components/ClassCreate'
 import CreateAssignmentModal from './author/AssignmentCreate'
+import BulkAssignNotification from './author/AssignTest/components/AdvancedOptons/BulkAssignNotification'
 
 const {
   ASSESSMENT,
@@ -224,6 +226,18 @@ function CheckRoutePatternsEffectContainer({ role, location, history }) {
   return null
 }
 
+const ADMIN_FIRESTORE_NOTIFICATIONS = [
+  BulkActionNotificationListener,
+  ReportsNotificationListener,
+  RosterSyncNotification,
+  BulkAssignNotification,
+]
+const TEACHER_FIRESTORE_NOTIFICATIONS = [
+  ClassSyncNotification,
+  ReportsNotificationListener,
+  BulkAssignNotification,
+]
+
 class App extends Component {
   static propTypes = {
     user: PropTypes.object.isRequired,
@@ -277,6 +291,7 @@ class App extends Component {
   }
 
   handlePendoGuide() {
+    const { location } = this.props
     let retries = 0
     const cb = () => {
       if (!window.pendo) return
@@ -289,7 +304,7 @@ class App extends Component {
       const pendoUrl = window.pendo.getCurrentUrl()
       if (
         new URL(pendoUrl).pathname.replace(/\/$|^\//g, '') ===
-          this.props.location.pathname.replace(/\/$|^\//g, '') &&
+          location.pathname.replace(/\/$|^\//g, '') &&
         window.pendo.guides
       ) {
         PendoHelper.showAvailableGuides()
@@ -504,6 +519,8 @@ class App extends Component {
             defaultRoute = '/publisher/dashboard'
           } else if (role === 'district-admin' && features.isDataOpsOnlyUser) {
             defaultRoute = '/author/data-warehouse'
+          } else if (features.isInsightsOnlyUser) {
+            defaultRoute = '/author/reports'
           }
           // redirecting da & sa to assignments after login as their dashboard page is not implemented
           else if (isSAWithoutSchools) {
@@ -706,13 +723,9 @@ class App extends Component {
                   redirectPath={redirectRoute}
                   notifications={
                     roleuser.DA_SA_ROLE_ARRAY.includes(userRole)
-                      ? [
-                          BulkActionNotificationListener,
-                          ReportsNotificationListener,
-                          RosterSyncNotification,
-                        ]
+                      ? ADMIN_FIRESTORE_NOTIFICATIONS
                       : roleuser.TEACHER === userRole
-                      ? [ClassSyncNotification, ReportsNotificationListener]
+                      ? TEACHER_FIRESTORE_NOTIFICATIONS
                       : null
                   }
                 />

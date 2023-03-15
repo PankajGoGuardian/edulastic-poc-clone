@@ -365,7 +365,7 @@ StaticMath.defaultProps = {
 
 const StaticMathWithResources = (props) => (
   <WithResources
-    criticalResources={[`${AppConfig.jqueryPath}/jquery.min.js`]}
+    criticalResources={[AppConfig.jqueryPath]}
     resources={[
       `${AppConfig.mathquillPath}/mathquill.css`,
       `${AppConfig.mathquillPath}/mathquill.min.js`,

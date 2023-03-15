@@ -63,6 +63,7 @@ const ListHeader = ({
   newTest,
   titleWidth,
   isLoadingButtonState = false,
+  isAssignButtonDisabled = false,
   setShowAssignmentCreationModal,
 }) => {
   const [inviteTeacherModalVisible, toggleInviteTeacherModal] = useState(false)
@@ -97,10 +98,13 @@ const ListHeader = ({
           (renderButton ? (
             <>
               {windowWidth > 768 ? (
-                renderButton(isLoadingButtonState)
+                renderButton(isLoadingButtonState, isAssignButtonDisabled)
               ) : (
                 <Dropdown
-                  overlay={renderButton(isLoadingButtonState)}
+                  overlay={renderButton(
+                    isLoadingButtonState,
+                    isAssignButtonDisabled
+                  )}
                   trigger={['click']}
                   getPopupContainer={(triggerNode) => triggerNode.parentNode}
                   overlayClassName="mobile-buttons-dropdown"

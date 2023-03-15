@@ -5,13 +5,12 @@ import * as Fbs from '@edulastic/common/src/Firebase'
 import { roleuser } from '@edulastic/constants'
 import { uniqBy, pull, isEmpty, capitalize, uniq } from 'lodash'
 import notification from '@edulastic/common/src/components/Notification'
-import {
-  destroyNotificationMessage,
-  closeHangoutNotification as closeFirebaseNotification,
-  notificationMessage,
-} from '../../../../common/components/Notification'
+import { destroyNotificationMessage } from '../../../../common/components/Notification'
 import { getUser } from '../../../src/selectors/user'
-
+import {
+  canvasSyncFireBaseStatus,
+  canvasSyncStatus,
+} from '../../../ManageClass/constants'
 import {
   fetchStudentsByIdAction,
   removeClassSyncNotificationAction,
@@ -164,9 +163,11 @@ const ClassSyncNotificationListener = ({
   const showUserNotificationOnCanvasBulkSync = (docs) => {
     uniqBy(docs, '__id').map((doc) => {
       const { status, message, multipleDistrictUserEmail } = doc
-
-      if (status === 'completed' && !notificationIds.includes(doc.__id)) {
-        setCanvasBulkSyncStatus('SUCCESS')
+      if (status === canvasSyncFireBaseStatus.INPROGRESS && !notificationIds.includes(doc.__id)) {
+        setCanvasBulkSyncStatus(canvasSyncStatus.INPROGRESS)
+      }
+      if (status === canvasSyncFireBaseStatus.COMPLETED && !notificationIds.includes(doc.__id)) {
+        setCanvasBulkSyncStatus(canvasSyncStatus.SUCCESS)
         sessionStorage.removeItem('signupFlow')
         setNotificationIds([...notificationIds, doc.__id])
         let teacherNotEnrolled = ''
@@ -189,8 +190,8 @@ const ClassSyncNotificationListener = ({
           },
         })
       }
-      if (status === 'failed') {
-        setCanvasBulkSyncStatus('FAILED')
+      if (status === canvasSyncFireBaseStatus.FAILED) {
+        setCanvasBulkSyncStatus(canvasSyncStatus.FAILED)
         notification({
           messageKey: 'bulkSyncFailed',
           msg: message,
@@ -267,18 +268,6 @@ const ClassSyncNotificationListener = ({
     })
   }
 
-  const onNotificationClick = (e, docId) => {
-    /**
-     * Note: As this function gets invoked on clicking anywhere in the notification.
-     * So making sure that the user clicked on Download button in the notification by
-     * and only than the notification document is getting deleted.
-     */
-    if (e?.target?.tagName.toLowerCase() === 'a') {
-      closeFirebaseNotification(docId)
-      deleteNotificationDocument(docId, firestoreBulkActionCollection)
-    }
-  }
-
   useEffect(
     () => () => {
       destroyNotificationMessage()
@@ -335,15 +324,7 @@ const ClassSyncNotificationListener = ({
   useEffect(() => {
     if (user && user.role === roleuser.TEACHER) {
       uniqBy(bulkActionNotifications, '__id').map((doc) => {
-        const {
-          status,
-          processStatus,
-          message,
-          isBulkAction,
-          statusCode,
-          action,
-          downloadLink,
-        } = doc
+        const { status, processStatus, message, isBulkAction, statusCode } = doc
         if (
           isBulkAction &&
           status === 'initiated' &&
@@ -352,27 +333,7 @@ const ClassSyncNotificationListener = ({
         ) {
           setNotificationIds([...notificationIds, doc.__id])
           if (statusCode === 200) {
-            if (action === DOWNLOAD_GRADES_AND_RESPONSE) {
-              notificationMessage({
-                title: 'Download Grades/Responses',
-                message,
-                showButton: true,
-                buttonLink: downloadLink,
-                buttonText: 'DOWNLOAD',
-                notificationPosition: 'bottomRight',
-                notificationKey: doc.__id,
-                onCloseNotification: () => {
-                  deleteNotificationDocument(
-                    doc.__id,
-                    firestoreBulkActionCollection
-                  )
-                },
-                onButtonClick: (e) => {
-                  onNotificationClick(e, doc.__id)
-                },
-              })
-            } else
-              antdNotification({ type: 'success', msg: message, key: doc.__id })
+            antdNotification({ type: 'success', msg: message, key: doc.__id })
           } else {
             antdNotification({ msg: message, key: doc.__id })
           }

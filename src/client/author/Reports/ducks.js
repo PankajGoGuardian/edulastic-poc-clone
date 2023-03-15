@@ -123,6 +123,10 @@ import {
   reportStudentProgressSaga,
 } from './subPages/multipleAssessmentReport/StudentProgress/ducks'
 import {
+  reducer as reportPreVsPostReducer,
+  watcherSaga as reportPreVsPostSaga,
+} from './subPages/multipleAssessmentReport/PreVsPost/ducks'
+import {
   reportStudentProfileSummaryReducer,
   reportStudentProfileSummarySaga,
 } from './subPages/studentProfileReport/StudentProfileSummary/ducks'
@@ -167,6 +171,12 @@ import {
   reportActivityByTeacherSaga,
 } from './subPages/engagementReport/ActivityByTeacher/ducks'
 import {
+  reducer as reportWholeLearnerReducer,
+  watcherSaga as reportWholeLearnerSaga,
+  selectors as reportWholeLearnerSelectors,
+  actions as reportWholeLearnerActions,
+} from './subPages/dataWarehouseReports/wholeLearnerReport/ducks'
+import {
   reportSocialEmotionalLearningReducer,
   reportSocialEmotionalLearningSaga,
 } from './subPages/nonAcademicReports/socialEmotionalLearning/ducks'
@@ -174,12 +184,6 @@ import {
   reportSELAssessmentResponsesReducer,
   reportSELAssessmentResponsesSaga,
 } from './subPages/nonAcademicReports/selAssessmentResponses/ducks'
-import {
-  reducer as reportWholeChildReducer,
-  watcherSaga as reportWholeChildSaga,
-  selectors as reportWholeChildSelectors,
-  actions as reportWholeChildActions,
-} from './subPages/dataWarehouseReports/wholeChildReport/ducks'
 import {
   reducer as reportMultipleAssessmentDwReducer,
   watcherSaga as reportMultipleAssessmentDwSaga,
@@ -295,10 +299,32 @@ export const getCsvDownloadingState = createSelector(
   (state) => state.isCsvDownloading
 )
 
+const _testListSelectors = {}
+export const createTestListSelector = (statePrefix = '') => {
+  if (!(statePrefix in _testListSelectors)) {
+    _testListSelectors[statePrefix] = createSelector(
+      stateSelector,
+      (state) => state[`${statePrefix}testList`] ?? []
+    )
+  }
+  return _testListSelectors[statePrefix]
+}
+
 export const getTestListSelector = createSelector(
   stateSelector,
   (state) => state.testList
 )
+
+const _testListLoadingSelectors = {}
+export const createTestListLoadingSelector = (statePrefix = '') => {
+  if (!(statePrefix in _testListLoadingSelectors)) {
+    _testListLoadingSelectors[statePrefix] = createSelector(
+      stateSelector,
+      (state) => state[`${statePrefix}testListLoading`] ?? true
+    )
+  }
+  return _testListLoadingSelectors[statePrefix]
+}
 
 export const getTestListLoadingSelector = createSelector(
   stateSelector,
@@ -356,17 +382,20 @@ const reports = createReducer(initialState, {
   [SET_CSV_DOWNLOADING_STATE]: (state, { payload }) => {
     state.isCsvDownloading = payload
   },
-  [RECEIVE_TEST_LIST_REQUEST]: (state) => {
-    state.testListLoading = true
+  [RECEIVE_TEST_LIST_REQUEST]: (state, { payload }) => {
+    const { statePrefix = '' } = payload
+    state[`${statePrefix}testListLoading`] = true
   },
   [RECEIVE_TEST_LIST_REQUEST_SUCCESS]: (state, { payload }) => {
-    state.testListLoading = false
-    state.testList = payload.testList
+    const { statePrefix = '', testList } = payload
+    state[`${statePrefix}testListLoading`] = false
+    state[`${statePrefix}testList`] = testList
   },
   [RECEIVE_TEST_LIST_REQUEST_ERROR]: (state, { payload }) => {
-    state.testListLoading = false
-    state.testList = []
-    state.error = payload.error
+    const { statePrefix = '', error } = payload
+    state[`${statePrefix}testListLoading`] = false
+    state[`${statePrefix}testList`] = []
+    state.error = error
   },
   [SET_CSV_MODAL_VISIBLE]: (state, { payload }) => {
     state.csvModalVisible = payload
@@ -415,6 +444,7 @@ export const reportReducer = combineReducers({
   reportPerformanceOverTimeReducer,
   reportPeerProgressAnalysisReducer,
   reportStudentProgressReducer,
+  reportPreVsPostReducer,
   reportStudentProfileSummaryReducer,
   reportStudentMasteryProfileReducer,
   reportStudentAssessmentProfileReducer,
@@ -429,7 +459,7 @@ export const reportReducer = combineReducers({
   reportSELAssessmentResponsesReducer,
   customReportReducer,
   sharedReportsReducer,
-  reportWholeChildReducer,
+  reportWholeLearnerReducer,
   reportMultipleAssessmentDwReducer,
   reportPerformanceByRubricsCriteriaReducer,
 })
@@ -532,11 +562,11 @@ const selectorDict = {
     setTags: setERTagsDataAction,
     setTempTags: setERTempTagsDataAction,
   },
-  [reportGroupType.WHOLE_CHILD_REPORT]: {
-    getTempTags: reportWholeChildSelectors.filterTagsData,
-    getSettings: reportWholeChildSelectors.settings,
-    setTags: reportWholeChildActions.setSelectedFilterTagsData,
-    setTempTags: reportWholeChildActions.setFilterTagsData,
+  [reportGroupType.WHOLE_STUDENT_REPORT]: {
+    getTempTags: reportWholeLearnerSelectors.filterTagsData,
+    getSettings: reportWholeLearnerSelectors.settings,
+    setTags: reportWholeLearnerActions.setSelectedFilterTagsData,
+    setTempTags: reportWholeLearnerActions.setFilterTagsData,
   },
   [reportGroupType.MULTIPLE_ASSESSMENT_REPORT_DW]: {
     getTempTags: reportMultipleAssessmentDwSelectors.filterTagsData,
@@ -612,6 +642,7 @@ function* getGroupTags(ids, options) {
 }
 function* getTestTags(ids, options) {
   let result = []
+  const { statePrefix } = options
   if (Array.isArray(ids) && ids.length) {
     const { IN_PROGRESS, IN_GRADING, DONE } = assignmentStatusOptions
     const q = {
@@ -624,13 +655,15 @@ function* getTestTags(ids, options) {
         testIds: ids,
       },
       aggregate: true,
+
+      statePrefix,
     }
     yield put(receiveTestListAction(q))
     yield take([
       RECEIVE_TEST_LIST_REQUEST_SUCCESS,
       RECEIVE_TEST_LIST_REQUEST_ERROR,
     ])
-    const list = yield select(getTestListSelector)
+    const list = yield select(createTestListSelector(statePrefix))
     result = filterMapKeys(list, ids, 'title')
   }
   return result
@@ -744,6 +777,8 @@ const tagGetterMap = {
   courseIds: getCourseTags,
   classIds: getClassTags,
   groupIds: getGroupTags,
+  preTestId: (id, opts) => getTestTags([id], { ...opts, statePrefix: 'pre' }),
+  postTestId: (id, opts) => getTestTags([id], { ...opts, statePrefix: 'post' }),
 }
 
 function* fetchUpdateTagsData({ payload }) {
@@ -772,8 +807,9 @@ function* fetchUpdateTagsData({ payload }) {
 }
 
 export function* receiveTestListSaga({ payload }) {
+  const { statePrefix = '', ...params } = payload
   try {
-    const searchResult = yield call(assignmentApi.searchAssignments, payload)
+    const searchResult = yield call(assignmentApi.searchAssignments, params)
     const assignmentBuckets = get(
       searchResult,
       'aggregations.buckets.buckets',
@@ -788,14 +824,14 @@ export function* receiveTestListSaga({ payload }) {
       .filter(({ _id, title }) => _id && title)
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_SUCCESS,
-      payload: { testList },
+      payload: { testList, statePrefix },
     })
   } catch (error) {
     const msg = 'Failed to receive tests dropdown data. Please try again...'
     styledNotification({ msg })
     yield put({
       type: RECEIVE_TEST_LIST_REQUEST_ERROR,
-      payload: { error: msg },
+      payload: { error: msg, statePrefix },
     })
   }
 }
@@ -819,6 +855,7 @@ export function* reportSaga() {
     reportPerformanceOverTimeSaga(),
     reportPeerProgressAnalysisSaga(),
     reportStudentProgressSaga(),
+    reportPreVsPostSaga(),
     reportStudentProgressProfileSaga(),
     reportStudentProfileSummarySaga(),
     reportStudentMasteryProfileSaga(),
@@ -834,11 +871,11 @@ export function* reportSaga() {
     reportSELAssessmentResponsesSaga(),
     customReportSaga(),
     sharedReportsSaga(),
-    reportWholeChildSaga(),
+    reportWholeLearnerSaga(),
     reportMultipleAssessmentDwSaga(),
     takeEvery(GENERATE_CSV_REQUEST, generateCSVSaga),
     takeEvery(UPDATE_CSV_DOCS, updateCsvDocsSaga),
-    yield takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
+    takeEvery(RECEIVE_TEST_LIST_REQUEST, receiveTestListSaga),
     takeEvery(FETCH_UPDATE_TAGS_DATA, fetchUpdateTagsData),
   ])
 }

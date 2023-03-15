@@ -12,7 +12,7 @@ export const setMaxAttemptsAction = (data) => ({
   payload: { data },
 })
 
-export const setSafeBroswePassword = (data) => ({
+export const setSafeBrowserPassword = (data) => ({
   type: SET_SAFE_BROWSE_PASSWORD,
   payload: { data },
 })

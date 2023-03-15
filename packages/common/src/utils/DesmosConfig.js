@@ -621,11 +621,12 @@ const allStates = [
 ]
 
 export const isValidDesmosState = (state = '') => {
+  const lowerCaseState = state?.toLocaleLowerCase() ?? ''
   return allStates.some((st) => {
     return (
-      st.name.includes(state) ||
-      st.abbreviation.includes(state) ||
-      st.t_abbreviation.includes(state)
+      st.name.toLocaleLowerCase() === lowerCaseState ||
+      st.abbreviation.toLocaleLowerCase() === lowerCaseState ||
+      st.t_abbreviation.toLocaleLowerCase() === lowerCaseState
     )
   })
 }

@@ -17,31 +17,37 @@ const AssignmentButton = ({
   isPaused,
   assessment,
   serverTimeStamp,
+  isTimeWindowRestricted = false,
+  restrictedButtonText,
+  restrictedButtonTooltip,
 }) => {
   const startButtonText = resume
     ? t('common.resume')
     : attempted
     ? t('common.retake')
     : t('common.startAssignment')
+  const isTimeExpired = new Date(startDate) > new Date(serverTimeStamp)
+  const isNotStarted = !startDate
+  let lockButtonText = ''
+  let buttonTooltip = null
+  if (isPaused) {
+    lockButtonText = ' (Paused)'
+    buttonTooltip = 'Will be available once teacher resumes the test for you'
+  }
+  if (isTimeWindowRestricted) {
+    lockButtonText = restrictedButtonText
+    buttonTooltip = restrictedButtonTooltip
+  }
   // Enable start button based on server time stamp and start date
-  return new Date(startDate) > new Date(serverTimeStamp) ||
-    !startDate ||
-    isPaused ? (
-    <Tooltip
-      placement="left"
-      title={
-        isPaused
-          ? 'Will be available once teacher resumes the test for you'
-          : null
-      }
-    >
+  return isTimeExpired || isNotStarted || isPaused || isTimeWindowRestricted ? (
+    <Tooltip placement="left" title={buttonTooltip}>
       <NotAvailableButton disabled>
         <span>
           <img src={lockIcon} alt="" />
         </span>
         <span data-cy="lockAssignment">
           {t('common.lockAssignment')}
-          {isPaused ? ' (Paused)' : ''}
+          {lockButtonText}
         </span>
       </NotAvailableButton>
     </Tooltip>

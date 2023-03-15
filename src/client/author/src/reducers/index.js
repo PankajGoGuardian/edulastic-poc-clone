@@ -66,6 +66,7 @@ import { gradebookReducer } from '../../Gradebook'
 import collaborationGroup from '../../Collaboration/ducks'
 import { dataWarehouseReducer } from '../../sharedDucks/dataWarehouse'
 import { rosterImportReducer } from '../../RosterImport'
+import { advanceSearchReducer } from '../../AdvanceSearch'
 
 const authorReducers = {
   authorUi,
@@ -136,6 +137,7 @@ const authorReducers = {
   collaborationGroup,
   dataWarehouseReducer,
   rosterImportReducer,
+  advanceSearchReducer,
 }
 
 export default authorReducers

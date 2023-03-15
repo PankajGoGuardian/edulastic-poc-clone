@@ -1,13 +1,27 @@
+const AIR = 'AIR'
+const CAASPP = 'CAASPP'
+const ELPAC = 'ELPAC'
+const SAT = 'SAT'
+const iReady_Math = 'iReady_Math'
+const iReady_ELA = 'iReady_ELA'
+const NWEA = 'NWEA'
+const SBAC = 'SBAC'
+
 // Adding new test types would require edits in color, localization, TEST_TYPE_LABELS, utils
 const EXTERNAL_TEST_TYPES = {
-  AIR: 'AIR',
-  CAASPP: 'CAASPP',
-  ELPAC: 'ELPAC',
-  SAT: 'SAT',
-  iReady_Math: 'iReady (MATH)',
-  iReady_ELA: 'iReady (ELA)',
-  NWEA: 'NWEA',
-  SBAC: 'SBAC',
+  [AIR]: 'AIR',
+  [CAASPP]: 'CAASPP',
+  [ELPAC]: 'ELPAC',
+  [SAT]: 'SAT',
+  [iReady_Math]: 'iReady (MATH)',
+  [iReady_ELA]: 'iReady (ELA)',
+  [NWEA]: 'NWEA',
+  [SBAC]: 'SBAC',
+}
+
+const ATTENDANCE = 'ATTENDANCE'
+const NON_ACADEMIC_DATA_TYPES = {
+  [ATTENDANCE]: 'Attendance',
 }
 
 const TEST_TYPES = {
@@ -55,4 +69,13 @@ module.exports = {
   TEST_TYPE_LABELS,
   PREMIUM_TEST_TYPES,
   EXTERNAL_TEST_TYPES,
+  NON_ACADEMIC_DATA_TYPES,
+  AIR,
+  CAASPP,
+  ELPAC,
+  SAT,
+  iReady_Math,
+  iReady_ELA,
+  NWEA,
+  ATTENDANCE,
 }

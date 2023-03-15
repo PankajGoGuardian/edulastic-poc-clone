@@ -18,11 +18,7 @@ import { finishTestAcitivityAction } from '../../actions/test'
 import { saveTestletUserResponse } from '../../actions/items'
 
 // components
-import {
-  Container,
-  CalculatorContainer,
-  getDefaultCalculatorProvider,
-} from '../common'
+import { Container, CalculatorContainer } from '../common'
 import PlayerContent from './PlayerContent'
 import SubmitConfirmation from '../common/SubmitConfirmation'
 
@@ -118,13 +114,6 @@ class AssessmentPlayerTestlet extends React.Component {
 
     // themeToPass = getZoomedTheme(themeToPass, zoomLevel);
     // themeToPass = playersZoomTheme(themeToPass);
-    const { calcProvider, calcType } = settings
-    const calculateMode =
-      calcProvider && calcType !== 'NONE'
-        ? `${calcType}_${
-            calcProvider || getDefaultCalculatorProvider(calcType)
-          }`
-        : false
 
     return (
       <ThemeProvider theme={themeToPass}>
@@ -135,7 +124,6 @@ class AssessmentPlayerTestlet extends React.Component {
             setUserAnswer={this.setUserAnswerToStore}
             openExitPopup={this.openExitPopup}
             changeTool={this.changeTool}
-            calculateMode={calculateMode}
             onSubmitAnswer={this.submitAnswer}
             saveTestletLog={this.saveTestletLog}
             timedAssignment={timedAssignment}
@@ -152,7 +140,8 @@ class AssessmentPlayerTestlet extends React.Component {
           {currentTool === 1 && (
             <CalculatorContainer
               changeTool={this.changeTool}
-              calculateMode={calculateMode}
+              calcTypes={settings.calcTypes}
+              calcProvider={settings.calcProvider}
             />
           )}
         </Container>

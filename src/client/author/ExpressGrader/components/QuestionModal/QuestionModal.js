@@ -316,6 +316,7 @@ class QuestionModal extends React.Component {
       studentResponseLoading,
       isScoringInProgress,
     } = this.props
+
     const blurStyles = studentResponseLoading
       ? { filter: 'blur(8px)', '-webkit-filter': 'blur(8px)' }
       : {}

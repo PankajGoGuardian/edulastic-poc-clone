@@ -559,6 +559,13 @@ const Author = ({
                 />
                 <Route
                   exact
+                  path="/author/playlists/:playlistId/async-assign"
+                  render={(props) => (
+                    <SuccessPage {...props} isPlaylist isAsyncAssign />
+                  )}
+                />
+                <Route
+                  exact
                   path="/author/playlists/limit/:limit/page/:page/:filter?"
                   render={(props) => <PlayList {...props} />}
                 />
@@ -673,6 +680,11 @@ const Author = ({
                   exact
                   path="/author/tests/:id/assign/:assignmentId"
                   render={(props) => <SuccessPage {...props} isAssignSuccess />}
+                />
+                <Route
+                  exact
+                  path="/author/tests/:id/async-assign"
+                  render={(props) => <SuccessPage {...props} isAsyncAssign />}
                 />
 
                 <Route

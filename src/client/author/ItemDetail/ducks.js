@@ -12,6 +12,7 @@ import {
   uniq,
   isEmpty,
   set,
+  isArray,
 } from 'lodash'
 import { testItemsApi, passageApi, attchmentApi } from '@edulastic/api'
 import { questionType, roleuser } from '@edulastic/constants'
@@ -54,6 +55,7 @@ import {
   isOptionsRemoved,
   validateScore,
   getQuestionIndexFromItemData,
+  isV1MultipartItem,
 } from '../questionUtils'
 import {
   setTestItemsAction,
@@ -1263,6 +1265,7 @@ export function* updateItemSaga({ payload }) {
       questionType.PROTRACTOR,
     ]
     const rows = yield select((state) => get(state, 'itemDetail.item.rows'), [])
+
     const testItemWidgetIds = rows.reduce((allIds, row = {}) => {
       const widgetIds = (row.widgets || []).map((i) => i.reference)
       return [...allIds, ...widgetIds]
@@ -1341,18 +1344,18 @@ export function* updateItemSaga({ payload }) {
       questions,
       resources,
     }
-
     if (questions.length === 1) {
       const [isIncomplete, errMsg] = isIncompleteQuestion(questions[0])
       if (isIncomplete) {
         return notification({ msg: errMsg })
       }
     } else if (questions.length > 1) {
+      const isV1Mutlipart = isV1MultipartItem(rows)
       for (const [qIndex, question] of questions.entries()) {
         const [hasInvalidScore, errMsg] = validateScore(
           question,
           itemLevelScoring,
-          multipartItem,
+          multipartItem || isV1Mutlipart,
           _itemId,
           qIndex
         )
@@ -1780,6 +1783,7 @@ function* publishTestItemSaga({ payload }) {
     )
     const testItem = yield select((state) => get(state, ['itemDetail', 'item']))
     const itemQuestions = get(testItem, 'data.questions', [])
+    const rows = get(testItem, 'rows', [])
 
     // if there is only question, then its individual question editing screen.
     // in that case test if question is incomplete
@@ -1792,6 +1796,7 @@ function* publishTestItemSaga({ payload }) {
 
     const questionsById = _keyBy(questions, 'id')
     // validate score for all questions in multipart item
+    const isV1Multipart = isV1MultipartItem(rows)
     if (itemQuestions.length > 1) {
       for (const [qIndex, question] of itemQuestions.entries()) {
         // need to use question from authorQuestions state as validation data in itemDetail.data.questions is not updated
@@ -1803,7 +1808,7 @@ function* publishTestItemSaga({ payload }) {
           const [hasInvalidScore, errMsg] = validateScore(
             _question,
             testItem?.itemLevelScoring,
-            testItem?.multipartItem,
+            testItem?.multipartItem || isV1Multipart,
             testItem?._id,
             qIndex
           )

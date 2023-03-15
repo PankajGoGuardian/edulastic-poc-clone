@@ -68,16 +68,6 @@ export const LinkItem = ({ data, inverse, tiles, premium, loc = '' }) => {
       />
     </ResolvedLink>
   )
-  if (data.key === 'performanceByRubricCriteria') {
-    return (
-      <FeaturesSwitch
-        inputFeatures="performanceByRubricsReports"
-        actionOnInaccessible="hidden"
-      >
-        {component}
-      </FeaturesSwitch>
-    )
-  }
 
   return component
 }

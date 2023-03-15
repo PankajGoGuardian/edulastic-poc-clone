@@ -1,14 +1,17 @@
 import React from 'react'
-import { QLabelSpan } from '../styled'
+import { QLabelSpan, StyledHeadDiv } from '../styled'
 import Tags from '../../../../../../src/components/common/Tags'
 
 const ColumnTitle = ({ question }) => {
   const { questionLabel, standards = [], points } = question
+  const tags = standards.filter((item) => item !== '-')
   return (
     <>
-      <QLabelSpan>{questionLabel}</QLabelSpan>
-      <Tags placement="topRight" tags={standards} show={1} />
-      <span>points {points}</span>
+      <StyledHeadDiv>
+        <QLabelSpan>{questionLabel}</QLabelSpan>
+        <Tags placement="topRight" tags={tags} show={1} />
+        <span>points {points}</span>
+      </StyledHeadDiv>
     </>
   )
 }

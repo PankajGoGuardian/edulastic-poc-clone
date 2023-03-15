@@ -57,11 +57,9 @@ const getTableColumns = (
       key: question.questionId,
       children: [
         {
-          title: `${
-            !Number.isNaN(question.districtAvgPerf)
-              ? Math.round(question.districtAvgPerf)
-              : 0
-          }%`,
+          title: !Number.isNaN(question.districtAvgPerf)
+            ? `${Math.round(question.districtAvgPerf)}%`
+            : '-',
           dataIndex: `averageScoreByQId.${question.questionId}`,
           key: question.questionId,
           render: (text, record) => (

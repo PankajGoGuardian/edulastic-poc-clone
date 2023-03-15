@@ -87,6 +87,30 @@ export const StyledTable = styled(Table)`
       }
     }
   }
+  @media print {
+    table thead tr, table tbody tr{
+      display: flex;
+      flex-direction: row;
+      padding: 0px;
+    }
+    .ant-table-thead > tr > th:first-child{
+      width : 85px !important;
+    }
+    .ant-table-tbody > tr > td:first-child{
+      width : 85px !important;
+    }
+    table thead tr th, table tbody tr td{
+      width: 80px;
+      font-size: 11px !important;
+      font-weight: 600 ;
+    }
+    table tbody tr td:before, table tbody tr td:after{
+      height : 0px ;
+    }
+    tr, td , thead, tfoot {
+      margin: 0 ;
+    }
+
 `
 
 export const UpperContainer = styled.div``
@@ -125,8 +149,8 @@ export const StyledSwitch = styled(Switch)`
 export const StyledDiv = styled.div`
   font-size: 12px;
   color: black;
+  opacity: ${(props) => props.opacity || 1};
   font-weight: ${(props) => props.fontWeight || 400};
-  opacity: 0.65;
   margin-right: ${(props) => props.marginRight || '25px'};
 `
 
@@ -134,4 +158,7 @@ export const StyledCol = styled(Col)`
   display: flex;
   flex-direction: row;
   align-items: center;
+`
+export const StyledSpan = styled.span`
+  opacity: 0.65;
 `

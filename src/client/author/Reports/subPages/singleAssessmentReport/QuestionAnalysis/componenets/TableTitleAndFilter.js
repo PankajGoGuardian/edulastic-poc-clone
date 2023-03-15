@@ -9,7 +9,7 @@ import {
   dropDownKeyToLabel,
   sortByOptions,
 } from '../constants'
-import { StyledCol, StyledDiv, StyledSwitch } from './styled'
+import { StyledCol, StyledDiv, StyledSwitch, StyledSpan } from './styled'
 
 const TableTitleAndFilter = ({
   userRole,
@@ -43,16 +43,16 @@ const TableTitleAndFilter = ({
           </StyledH3>
         </Col>
         <StyledCol>
-          <StyledDiv fontWeight="600" marginRight="10px">
+          <StyledDiv fontWeight="600" marginRight="10px" opacity="0.65">
             Sort By (asc.):
           </StyledDiv>
           <StyledDiv>
-            <span>Performance</span>
+            <StyledSpan>Performance</StyledSpan>
             <StyledSwitch
               checked={sortKey === sortByOptions.Q_LABEL}
               onChange={handleSort}
             />
-            <span>Question</span>
+            <StyledSpan>Question</StyledSpan>
           </StyledDiv>
           <Col data-cy="compareBy" data-testid="compareBy">
             <EduIf condition={userRole !== roleuser.TEACHER}>

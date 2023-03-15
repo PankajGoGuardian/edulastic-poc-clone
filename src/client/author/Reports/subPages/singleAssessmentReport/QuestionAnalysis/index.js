@@ -58,7 +58,9 @@ const QuestionAnalysis = ({
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
   const [sortOrder, setSortOrder] = useState(false)
 
-  const assessmentName = getAssessmentName(settings.selectedTest)
+  const assessmentName = getAssessmentName(
+    settings.tagsData?.testId || settings.selectedTest
+  )
 
   const [
     qSummaryData,

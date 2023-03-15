@@ -22,7 +22,9 @@ const GetCellContents = (props) => {
   const { score } = props
   const bgColor = getHSLFromRange1(score)
   return (
-    <ColoredCell bgColor={bgColor}>{score ? `${score}%` : '-'}</ColoredCell>
+    <ColoredCell bgColor={bgColor}>
+      {!Number.isNaN(score) ? `${score}%` : '-'}
+    </ColoredCell>
   )
 }
 
@@ -67,7 +69,9 @@ const getTableColumns = (
       key: question.questionId,
       children: [
         {
-          title: Math.round(question.districtAvgPerf),
+          title: !Number.isNaN(question.districtAvgPerf)
+            ? `${Math.round(question.districtAvgPerf)}%`
+            : '-',
           dataIndex: `scorePercentByQId.${question.questionId}`,
           key: question.questionId,
           render: (text, record) => (

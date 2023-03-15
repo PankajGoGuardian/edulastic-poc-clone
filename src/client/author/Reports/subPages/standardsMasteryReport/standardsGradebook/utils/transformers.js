@@ -11,10 +11,9 @@ import StandardTitle from '../components/table/StandardTitle'
 import StandardColumnCell from '../components/table/StandardColumnCell'
 
 const {
-  DB_SORT_ORDER_TYPES,
-  tableToDBSortOrderMap,
   downloadCSV,
   curateApiFiltersQuery,
+  dbToTableSortOrderMap,
 } = reportUtils.common
 const { reportNavType } = reportConstants
 
@@ -139,23 +138,6 @@ const getStandardsProgressNav = (navigationItems, standardId, compareByKey) => {
   return null
 }
 
-const getColumnSorter = (tableFilters, setTableFilters, sortKey, sortOrder) => {
-  const sortOrderForFilter =
-    tableToDBSortOrderMap[sortOrder] || DB_SORT_ORDER_TYPES.DESCEND
-  setTableFilters((_tableFilters) => {
-    if (
-      _tableFilters.sortKey === sortKey &&
-      _tableFilters.sortOrder === sortOrderForFilter
-    )
-      return _tableFilters
-    return {
-      ..._tableFilters,
-      sortKey,
-      sortOrder: sortOrderForFilter,
-    }
-  })
-}
-
 export const getTableColumnsFE = ({
   t,
   filters,
@@ -164,7 +146,6 @@ export const getTableColumnsFE = ({
   navigationItems,
   summaryMetricInfoWithSkillInfo,
   tableFilters,
-  setTableFilters,
   handleOnClickStandard,
 }) => {
   const tableColumns = getTableColumns({
@@ -173,41 +154,39 @@ export const getTableColumnsFE = ({
     compareByKey: tableFilters.compareByKey,
     analyseByKey: tableFilters.analyseByKey,
   })
+  const columnSortOrder = dbToTableSortOrderMap[tableFilters.sortOrder]
 
-  // update compare by column
-  const compareByColumn = tableColumns.find((c) => c.key === 'dimension')
-  compareByColumn.render = (data) => {
-    const name = data.name || t('common.anonymous')
-    return tableFilters.compareByKey === compareByKeys.STUDENT &&
-      !isSharedReport ? (
-      <StudentSummaryProfileLink
-        termId={filters.termId}
-        studentId={data._id}
-        studentName={name}
-      />
-    ) : (
-      name
-    )
-  }
-  compareByColumn.sorter = (a, b, sortOrder) => {
-    getColumnSorter(
-      tableFilters,
-      setTableFilters,
-      tableFilters.compareByKey,
-      sortOrder
-    )
-  }
-
-  // update average standard performance column
-  const avgStandardPerformanceColumn = tableColumns.find(
-    (c) => c.key === 'performance'
+  Object.assign(
+    tableColumns.find((c) => c.key === 'dimension'),
+    {
+      render: (data) => {
+        const name = data.name || t('common.anonymous')
+        return tableFilters.compareByKey === compareByKeys.STUDENT &&
+          !isSharedReport ? (
+          <StudentSummaryProfileLink
+            termId={filters.termId}
+            studentId={data._id}
+            studentName={name}
+          />
+        ) : (
+          name
+        )
+      },
+      sorter: true,
+      sortOrder:
+        tableFilters.sortKey === tableFilters.compareByKey && columnSortOrder,
+    }
   )
-  avgStandardPerformanceColumn.title = <AvgStandardPerformanceTitle />
-  avgStandardPerformanceColumn.sorter = (a, b, sortOrder) => {
-    getColumnSorter(tableFilters, setTableFilters, 'performance', sortOrder)
-  }
 
-  // update standard columns
+  Object.assign(
+    tableColumns.find((c) => c.key === 'performance'),
+    {
+      title: <AvgStandardPerformanceTitle />,
+      sorter: true,
+      sortOrder: tableFilters.sortKey === 'performance' && columnSortOrder,
+    }
+  )
+
   summaryMetricInfoWithSkillInfo.forEach(
     ({ standardId, standard, performance: standardOverallData }) => {
       const standardColumn = tableColumns.find((c) => c.key == standardId)
@@ -223,38 +202,39 @@ export const getTableColumnsFE = ({
             tableFilters.compareByKey
           )
         : null
-
-      standardColumn.title = standardsProgressNav ? (
-        <Link to={standardsProgressNav}>
+      Object.assign(standardColumn, {
+        title: standardsProgressNav ? (
+          <Link to={standardsProgressNav}>
+            <StandardTitle
+              standardName={standard}
+              standardOverallPerformance={
+                standardOverallPerformance[tableFilters.analyseByKey]
+              }
+            />
+          </Link>
+        ) : (
           <StandardTitle
             standardName={standard}
             standardOverallPerformance={
               standardOverallPerformance[tableFilters.analyseByKey]
             }
           />
-        </Link>
-      ) : (
-        <StandardTitle
-          standardName={standard}
-          standardOverallPerformance={
-            standardOverallPerformance[tableFilters.analyseByKey]
-          }
-        />
-      )
-      standardColumn.render = (data, record) => (
-        <StandardColumnCell
-          data={data}
-          record={record}
-          t={t}
-          standardId={standardId}
-          standardName={standard}
-          compareByKey={tableFilters.compareByKey}
-          analyseByKey={tableFilters.analyseByKey}
-          handleOnClickStandard={handleOnClickStandard}
-        />
-      )
-      standardColumn.sorter = (a, b, sortOrder) =>
-        getColumnSorter(tableFilters, setTableFilters, standardId, sortOrder)
+        ),
+        render: (data, record) => (
+          <StandardColumnCell
+            data={data}
+            record={record}
+            t={t}
+            standardId={standardId}
+            standardName={standard}
+            compareByKey={tableFilters.compareByKey}
+            analyseByKey={tableFilters.analyseByKey}
+            handleOnClickStandard={handleOnClickStandard}
+          />
+        ),
+        sorter: true,
+        sortOrder: tableFilters.sortKey === standardId && columnSortOrder,
+      })
     }
   )
 

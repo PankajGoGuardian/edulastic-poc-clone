@@ -1,22 +1,24 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { getFormattedTimeInMinutesAndSeconds } from '../../../utils/timeUtils'
 
 const useCountDownTimer = ({
   audioDurationInMilliSeconds,
   handleStopRecording,
 }) => {
-  const [milliSeconds, setMilliSeconds] = useState(audioDurationInMilliSeconds)
+  const endTime = useMemo(() => Date.now() + audioDurationInMilliSeconds, [])
+  const initialTime = Math.floor(endTime - Date.now())
+  const [milliSeconds, setMilliSeconds] = useState(initialTime)
   const intervalRef = useRef()
 
   const updateTimer = () => {
     if (milliSeconds > 0) {
-      setMilliSeconds((_milliSeconds) => _milliSeconds - 1000)
+      setMilliSeconds(Math.floor(endTime - Date.now()))
     }
   }
 
   useEffect(() => {
-    intervalRef.current = setInterval(updateTimer, 1000)
-    if (milliSeconds === 0) {
+    intervalRef.current = setInterval(updateTimer, 200)
+    if (milliSeconds <= 0) {
       handleStopRecording()
       clearInterval(intervalRef.current)
     }

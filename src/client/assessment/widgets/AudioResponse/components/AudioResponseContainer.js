@@ -38,6 +38,7 @@ const AudioResponseContainer = ({
   questionId,
   itemId,
   enableAudioResponseQuestion,
+  disableResponse,
 }) => {
   const {
     errorData,
@@ -99,6 +100,7 @@ const AudioResponseContainer = ({
           }
           questionId={questionId}
           enableAudioResponseQuestion={enableAudioResponseQuestion}
+          disableResponse={disableResponse}
         />
       </EduIf>
       <EduIf
@@ -141,6 +143,7 @@ AudioResponseContainer.propTypes = {
   recordingAndUploadCompleteForQid: PropTypes.func.isRequired,
   questionId: PropTypes.string.isRequired,
   itemId: PropTypes.string.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
 }
 
 AudioResponseContainer.defaultProps = {

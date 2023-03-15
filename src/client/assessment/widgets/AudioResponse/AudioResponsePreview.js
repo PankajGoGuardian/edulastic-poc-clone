@@ -55,6 +55,7 @@ const AudioResponsePreview = ({
   recordingAndUploadCompleteForQid,
   _questionId: questionId,
   _testItemId: itemId,
+  disableResponse,
 }) => {
   const useS3AudioUrl = useMemo(() => {
     return shouldUploadToS3AndUseS3Url({
@@ -91,6 +92,7 @@ const AudioResponsePreview = ({
     recordingAndUploadCompleteForQid,
     questionId,
     itemId,
+    disableResponse,
   }
 
   return (
@@ -154,6 +156,7 @@ AudioResponsePreview.propTypes = {
   recordingAndUploadCompleteForQid: PropTypes.func.isRequired,
   questionId: PropTypes.string.isRequired,
   itemId: PropTypes.string,
+  disableResponse: PropTypes.bool,
 }
 
 AudioResponsePreview.defaultProps = {
@@ -166,6 +169,7 @@ AudioResponsePreview.defaultProps = {
   isTestPreviewModalVisible: false,
   isTestDemoPlayer: false,
   itemId: 'new',
+  disableResponse: false,
 }
 
 const enhance = compose(

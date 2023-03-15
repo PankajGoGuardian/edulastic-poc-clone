@@ -26,6 +26,7 @@ const AudioRecorderContainer = ({
   setStopAudioRecordingAndUploadForQid,
   questionId,
   enableAudioResponseQuestion,
+  disableResponse,
 }) => {
   const { onClickRecordAudio, onClickStopRecording } = useAudioRecorder({
     onChangeRecordingState,
@@ -45,7 +46,7 @@ const AudioRecorderContainer = ({
           buttonType={MIC}
           text={i18translate('component.audioResponse.recordAnswer')}
           stylesData={{ isTextBlack: true }}
-          disabled={!enableAudioResponseQuestion}
+          disabled={!enableAudioResponseQuestion || disableResponse}
         />
       </EduIf>
       <EduIf condition={recordingState === RECORDING_ACTIVE}>
@@ -95,6 +96,7 @@ AudioRecorderContainer.propTypes = {
   stopRecordingForQid: PropTypes.string.isRequired,
   questionId: PropTypes.string.isRequired,
   setStopAudioRecordingAndUploadForQid: PropTypes.func.isRequired,
+  disableResponse: PropTypes.bool.isRequired,
 }
 
 AudioRecorderContainer.defaultProps = {}

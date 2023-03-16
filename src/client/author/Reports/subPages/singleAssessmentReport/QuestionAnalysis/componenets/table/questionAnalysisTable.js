@@ -155,7 +155,6 @@ export const QuestionAnalysisTable = ({
       const { csvText, csvRawData } = convertQAnalysisTableToCSV(
         qSummary,
         tableData,
-        compareBy,
         filter,
         sortKey
       )

@@ -378,13 +378,7 @@ const filterFields = [
   'hispanicEthnicity',
 ]
 
-const detailsExtraFields = [
-  'compareBy',
-  'page',
-  'pageSize',
-  'sortKey',
-  'sortOrder',
-]
+const detailsExtraFields = Object.values(tableFilterTypes)
 
 export const filterDetailsFields = [...filterFields, ...detailsExtraFields]
 

@@ -98,9 +98,12 @@ export const getAcademicSummaryChartLabelJSX = (props) => {
 }
 
 export const getTableApiQuery = (settings, tableFilters) => {
-  const { compareBy, page, pageSize } = tableFilters
   const { query } = curateApiFiltersQuery(
-    { ...settings.requestFilters, compareBy: compareBy.key, page, pageSize },
+    {
+      ...settings.requestFilters,
+      ...tableFilters,
+      compareBy: tableFilters.compareBy.key,
+    },
     filterDetailsFields,
     sharedDetailsFields
   )

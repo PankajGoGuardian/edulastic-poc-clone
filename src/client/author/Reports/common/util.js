@@ -18,7 +18,6 @@ import {
   getOrderedQuestions,
   sortByAvgPerformanceAndLabel,
 } from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
-import { compareByToPluralName } from '../subPages/singleAssessmentReport/QuestionAnalysis/constants'
 
 const studentFiltersDefaultValues = [
   {
@@ -298,10 +297,13 @@ export const convertQAnalysisTableToCSV = (
   const csv = []
   const csvRawData = []
   const headerRow = []
+  const standards = []
+  const points = []
   // header row
   const qLabelsToFilter = Object.keys(filter)
-  const compareByTitle = compareByToPluralName[compareBy]
-  headerRow.push(`${compareByTitle}`)
+  headerRow.push(`Question`)
+  standards.push('STANDARDS')
+  points.push('POINTS')
   let orderedQuestions = sortByAvgPerformanceAndLabel(
     getOrderedQuestions(qSummary),
     sortBy
@@ -312,14 +314,16 @@ export const convertQAnalysisTableToCSV = (
     )
   }
   orderedQuestions.forEach((question) => {
-    headerRow.push(
-      `${question.questionLabel}: ${question.standards.join('|')}: ${
-        question.points
-      }`
-    )
+    headerRow.push(`${question.questionLabel}`)
+    standards.push(`"${question.standards.join(',')}"`)
+    points.push(`${question.points}`)
   })
   csv.push(headerRow.join(','))
+  csv.push(standards.join(','))
+  csv.push(points.join(','))
   csvRawData.push(headerRow)
+  csvRawData.push(standards)
+  csvRawData.push(points)
   // district avg row
   const districtHeaderRow = ['District Avg.']
   orderedQuestions.forEach((question) => {

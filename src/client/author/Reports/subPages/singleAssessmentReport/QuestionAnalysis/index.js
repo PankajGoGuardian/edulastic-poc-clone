@@ -13,6 +13,10 @@ import {
   StyledP,
   BottomRow,
   UpperContainer,
+  StyledDiv,
+  StyledSwitch,
+  StyledSpan,
+  StyledCol,
 } from './componenets/styled'
 import { getUserRole } from '../../../../../student/Login/ducks'
 import { getCsvDownloadingState } from '../../../ducks'
@@ -57,14 +61,9 @@ const QuestionAnalysis = ({
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
   const [sortOrder, setSortOrder] = useState(false)
-  const [assessmentName, setAssessmentName] = useState(
-    getAssessmentName(settings.tagsData?.testId || settings.selectedTest)
+  const assessmentName = getAssessmentName(
+    settings.tagsData?.testId || settings.selectedTest
   )
-  useEffect(() => {
-    setAssessmentName(
-      getAssessmentName(settings.tagsData?.testId || settings.selectedTest)
-    )
-  }, [settings.tagsData?.testId || settings.selectedTest])
 
   const [
     qSummaryData,
@@ -172,9 +171,24 @@ const QuestionAnalysis = ({
     <div>
       <UpperContainer>
         <StyledCard>
-          <StyledH3 data-testid="title">
-            Question Performance Analysis | {assessmentName}
-          </StyledH3>
+          <Row type="flex" justify="space-between" align="middle">
+            <StyledH3 data-testid="title" align="middle" margin="0">
+              Question Performance Analysis | {assessmentName}
+            </StyledH3>
+            <StyledCol>
+              <StyledDiv fontWeight="600" marginRight="10px" opacity="0.65">
+                Sort By (asc.):
+              </StyledDiv>
+              <StyledDiv>
+                <StyledSpan>Performance</StyledSpan>
+                <StyledSwitch
+                  checked={sortKey === sortByOptions.Q_LABEL}
+                  onChange={handleSort}
+                />
+                <StyledSpan>Question</StyledSpan>
+              </StyledDiv>
+            </StyledCol>
+          </Row>
           <SimpleStackedBarWithLineChartContainer
             chartData={chartData}
             onBarClickCB={onBarClickCB}
@@ -194,8 +208,6 @@ const QuestionAnalysis = ({
               userRole={userRole}
               compareBy={compareBy}
               assessmentName={assessmentName}
-              sortKey={sortKey}
-              handleSort={handleSort}
               updateCompareByCB={updateCompareByCB}
             />
             <TableContainer

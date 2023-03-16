@@ -156,7 +156,7 @@ export const StyledDiv = styled.div`
   color: black;
   opacity: ${(props) => props.opacity || 1};
   font-weight: ${(props) => props.fontWeight || 400};
-  margin-right: ${(props) => props.marginRight || '25px'};
+  margin-right: ${(props) => props.marginRight || '0'};
 `
 
 export const StyledCol = styled(Col)`

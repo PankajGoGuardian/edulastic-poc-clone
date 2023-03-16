@@ -4,19 +4,13 @@ import { Col, Row } from 'antd'
 import React, { useMemo } from 'react'
 import { ControlDropDown } from '../../../../common/components/widgets/controlDropDown'
 import { StyledH3 } from '../../../../common/styled'
-import {
-  compareByDropDownData,
-  dropDownKeyToLabel,
-  sortByOptions,
-} from '../constants'
-import { StyledCol, StyledDiv, StyledSwitch, StyledSpan } from './styled'
+import { compareByDropDownData, dropDownKeyToLabel } from '../constants'
+import { StyledCol } from './styled'
 
 const TableTitleAndFilter = ({
   userRole,
   compareBy,
   assessmentName,
-  sortKey,
-  handleSort,
   updateCompareByCB,
 }) => {
   const selectedCompareByOption = useMemo(
@@ -43,17 +37,6 @@ const TableTitleAndFilter = ({
           </StyledH3>
         </Col>
         <StyledCol>
-          <StyledDiv fontWeight="600" marginRight="10px" opacity="0.65">
-            Sort By (asc.):
-          </StyledDiv>
-          <StyledDiv>
-            <StyledSpan>Performance</StyledSpan>
-            <StyledSwitch
-              checked={sortKey === sortByOptions.Q_LABEL}
-              onChange={handleSort}
-            />
-            <StyledSpan>Question</StyledSpan>
-          </StyledDiv>
           <Col data-cy="compareBy" data-testid="compareBy">
             <EduIf condition={userRole !== roleuser.TEACHER}>
               <ControlDropDown

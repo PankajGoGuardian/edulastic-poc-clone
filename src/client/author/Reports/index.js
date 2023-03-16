@@ -19,8 +19,14 @@ import SharedReports from './components/sharedReports'
 import DataWarehouseReports from './components/dataWarehouseReport'
 import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
 import {
+  DW_ATTENDANCE_SUMMARY_REPORT_URL,
+  DW_DASHBOARD_REPORT_URL,
+  DW_EARLY_WARNING_REPORT_URL,
+  DW_EFFICACY_REPORT_URL,
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
+  DW_GOALS_AND_INTERVENTIONS_URL,
+  DW_SURVEY_INSIGHTS_URL,
 } from './common/constants/dataWarehouseReports'
 import {
   getCsvDownloadingState,
@@ -456,7 +462,16 @@ const Container = (props) => {
           }}
         />
         <Route
-          path={[DW_WLR_REPORT_URL, DW_MAR_REPORT_URL]}
+          path={[
+            DW_WLR_REPORT_URL,
+            DW_MAR_REPORT_URL,
+            DW_DASHBOARD_REPORT_URL,
+            DW_ATTENDANCE_SUMMARY_REPORT_URL,
+            DW_SURVEY_INSIGHTS_URL,
+            DW_GOALS_AND_INTERVENTIONS_URL,
+            DW_EFFICACY_REPORT_URL,
+            DW_EARLY_WARNING_REPORT_URL,
+          ]}
           render={(_props) => (
             <DataWarehouseReportsContainer
               {..._props}

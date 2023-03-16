@@ -326,6 +326,20 @@
       ],
       "group": "mainReport"
     },
+    "dashboard": {
+      "title": "Dashboard",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/dashboard/"
+        },
+        {
+          "title": "DASHBOARD"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
     "whole-learner-report": {
       "title": "Whole Learner",
       "breadcrumb": [
@@ -349,6 +363,76 @@
         },
         {
           "title": "Performance Trends"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "attendance-summary": {
+      "title": "Attendance Summary",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/attendance-summary/"
+        },
+        {
+          "title": "ATTENDANCE SUMMARY"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "survey-insights": {
+      "title": "Survey Insights",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/survey-insights/"
+        },
+        {
+          "title": "SURVEY INSIGHTS"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "goals-and-interventions": {
+      "title": "Goals And Interventions",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/goals-and-interventions/"
+        },
+        {
+          "title": "GOALS AND INTERVENTIONS"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "early-warning": {
+      "title": "Early Warning",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/early-warning/"
+        },
+        {
+          "title": "EARLY WARNING"
+        }
+      ],
+      "group": "data-warehouse-reports",
+      "groupTitle": "Data Studio Reports"
+    },
+    "efficacy": {
+      "title": "Efficacy",
+      "breadcrumb": [
+        {
+          "title": "EDULASTIC DATA STUDIO",
+          "to": "/author/reports/efficacy/"
+        },
+        {
+          "title": "EFFICACY"
         }
       ],
       "group": "data-warehouse-reports",
@@ -505,6 +589,11 @@
     ],
     "data-warehouse-reports": [
       {
+        "key": "dashboard",
+        "title": "Dashboard",
+        "location": "/author/reports/dashboard"
+      },
+      {
         "key": "multiple-assessment-report-dw",
         "title": "Performance Trends",
         "location": "/author/reports/multiple-assessment-report-dw"
@@ -513,6 +602,31 @@
         "key": "whole-learner-report",
         "title": "WHOLE LEARNER",
         "location": "/author/reports/whole-learner-report/student/"
+      },
+      {
+        "key": "attendance-summary",
+        "title": "Attendance Summary",
+        "location": "/author/reports/attendance-summary"
+      },
+      {
+        "key": "survey-insights",
+        "title": "Survey Insights",
+        "location": "/author/reports/survey-insights"
+      },
+      {
+        "key": "goals-and-interventions",
+        "title": "Goals And Interventions",
+        "location": "/author/reports/goals-and-interventions"
+      },
+      {
+        "key": "efficacy",
+        "title": "Efficacy",
+        "location": "/author/reports/efficacy"
+      },
+      {
+        "key": "early-warning",
+        "title": "Early Warning",
+        "location": "/author/reports/early-warning"
       }
     ]
   }

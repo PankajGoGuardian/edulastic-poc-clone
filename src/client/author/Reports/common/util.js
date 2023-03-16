@@ -13,12 +13,14 @@ import {
 } from 'lodash'
 import next from 'immer'
 import moment from 'moment'
+import { reportNavType } from '@edulastic/constants/const/report'
 import calcMethod from './static/json/calcMethod.json'
 import {
   getOrderedQuestions,
   sortByAvgPerformanceAndLabel,
 } from '../subPages/singleAssessmentReport/QuestionAnalysis/utils/transformers'
 import { compareByToPluralName } from '../subPages/singleAssessmentReport/QuestionAnalysis/constants'
+import navigation from './static/json/navigation.json'
 
 const studentFiltersDefaultValues = [
   {
@@ -570,3 +572,50 @@ export const tooltipParams = {
   navButtonMargin: 50,
   xAxisHeight: 100,
 }
+
+const reportTypes = navigation.locToData
+
+const {
+  ENGAGEMENT_SUMMARY,
+  ACTIVITY_BY_SCHOOL,
+  ACTIVITY_BY_TEACHER,
+  PERFORMANCE_BY_RUBRICS_CRITERIA,
+  PRE_VS_POST,
+  DW_DASHBOARD_REPORT,
+  DW_ATTENDANCE_SUMMARY_REPORT,
+  DW_EARLY_WARNING_REPORT,
+  DW_EFFICACY_REPORT,
+  DW_GOALS_AND_INTERVENTIONS_REPORT,
+  DW_SURVEY_INSIGHTS_REPORT,
+} = reportNavType
+
+export const reportsWithHiddenShare = [
+  reportTypes[ENGAGEMENT_SUMMARY].title,
+  reportTypes[ACTIVITY_BY_SCHOOL].title,
+  reportTypes[ACTIVITY_BY_TEACHER].title,
+  reportTypes[PERFORMANCE_BY_RUBRICS_CRITERIA].title,
+  reportTypes[DW_DASHBOARD_REPORT].title,
+  reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
+  reportTypes[DW_EARLY_WARNING_REPORT].title,
+  reportTypes[DW_EFFICACY_REPORT].title,
+  reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
+  reportTypes[DW_SURVEY_INSIGHTS_REPORT].title,
+]
+export const reportsWithHiddenDownCSV = [
+  reportTypes[ENGAGEMENT_SUMMARY].title,
+  reportTypes[PRE_VS_POST].title,
+  reportTypes[DW_DASHBOARD_REPORT].title,
+  reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
+  reportTypes[DW_EARLY_WARNING_REPORT].title,
+  reportTypes[DW_EFFICACY_REPORT].title,
+  reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
+  reportTypes[DW_SURVEY_INSIGHTS_REPORT].title,
+]
+export const reportsWithHiddenPrint = [
+  reportTypes[DW_DASHBOARD_REPORT].title,
+  reportTypes[DW_ATTENDANCE_SUMMARY_REPORT].title,
+  reportTypes[DW_EARLY_WARNING_REPORT].title,
+  reportTypes[DW_EFFICACY_REPORT].title,
+  reportTypes[DW_GOALS_AND_INTERVENTIONS_REPORT].title,
+  reportTypes[DW_SURVEY_INSIGHTS_REPORT].title,
+]

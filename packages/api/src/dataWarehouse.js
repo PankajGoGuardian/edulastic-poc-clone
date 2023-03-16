@@ -5,7 +5,7 @@ const api = new API()
 const prefix = '/data-warehouse'
 const WHOLE_LEARNER_REPORT = 'whole-learner-report'
 const MULTIPLE_ASSESSMENT_REPORT = 'multiple-assessment-report'
-const DASHBOARD = 'dashboard'
+const DASHBOARD = 'dashboard-report'
 
 const getSignedUrl = (
   filename,

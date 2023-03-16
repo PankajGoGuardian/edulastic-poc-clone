@@ -106,7 +106,7 @@ export const TableContainer = styled.div`
 export const TableHeaderCellWrapper = styled.div`
   justify-content: center;
   align-items: center;
-  margin: 8px 25px;
+  margin: 12px 25px;
   box-shadow: 0px 10px 11px #0000000f;
   span {
     &:first-child {
@@ -122,6 +122,7 @@ export const TableHeaderCellWrapper = styled.div`
       width: 80px;
       font-weight: bold;
       background-color: ${({ color }) => color};
+      cursor: pointer;
       border-radius: 0px 10px 10px 0px;
     }
   }
@@ -175,6 +176,7 @@ export const CustomStyledTable = styled(StyledTable)`
         padding: 10px 0px 10px 8px;
         color: #434b5d;
         font-weight: 600;
+        font-size: 12px;
         @media (min-width: ${extraDesktopWidthMax}) {
           font-size: 14px;
         }

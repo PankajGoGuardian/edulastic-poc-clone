@@ -1,29 +1,21 @@
 import React from 'react'
-import React from 'react'
 import next from 'immer'
 import { flatMap, sumBy } from 'lodash'
-import {
-  downloadCSV,
-  percentage,
-} from '@edulastic/constants/reportUtils/common'
+import { reportUtils } from '@edulastic/constants'
 import { IconExternalLink } from '@edulastic/icons'
-import { availableTestTypes } from '../../utils'
-import { availableTestTypes } from '../../utils'
+import { availableTestTypes, compareBylabels } from '../../utils'
 import HorizontalBar from '../../../../../common/components/HorizontalBar'
 import CompareByTitle from './CompareByTitle'
 import AvgScoreTitle from './AvgScoreTitle'
-import CompareByTitle from './CompareByTitle'
-import AvgScoreTitle from './AvgScoreTitle'
+
+const { downloadCSV, percentage, DECIMAL_BASE } = reportUtils.common
 
 const tableColumnsData = [
   {
     dataIndex: 'dimension',
     key: 'dimension',
-    dataIndex: 'dimension',
-    key: 'dimension',
     align: 'center',
     fixed: 'left',
-    width: 250,
     width: 250,
   },
   {
@@ -34,7 +26,6 @@ const tableColumnsData = [
     width: 200,
     className: 'avg-attendance-column-header',
     render: (value) => `${value}%`,
-    render: (value) => `${value}%`,
   },
   // next up are dynamic columns for each assessment type
 ]
@@ -43,13 +34,19 @@ export const onCsvConvert = (data) =>
   downloadCSV(`Data Warehouse - Dashboard Report.csv`, data)
 
 const getHorizontalBarData = (data, selectedPerformanceBand) => {
-  const totalStudents = sumBy(data, 'totalStudents')
+  const totalStudents = sumBy(data, (d) =>
+    parseInt(d.totalStudents, DECIMAL_BASE)
+  )
   return data.map((d) => {
     const band = selectedPerformanceBand.find(
       (pb) => pb.threshold === d.bandScore
     )
     return {
-      value: percentage(d.totalStudents, totalStudents, true),
+      value: percentage(
+        parseInt(d.totalStudents, DECIMAL_BASE),
+        totalStudents,
+        true
+      ),
       color: band.color,
     }
   })
@@ -59,12 +56,11 @@ export const getTableColumns = (compareBy, selectedPerformanceBand) => {
   const tableColumns = next(tableColumnsData, (_columns) => {
     // compareBy column
     const compareByIdx = _columns.findIndex((col) => col.key === 'dimension')
-    _columns[compareByIdx].title = compareBy.title
+    _columns[compareByIdx].title = compareBylabels.compareBy
     _columns[compareByIdx].render = (value) => <CompareByTitle value={value} />
     _columns[compareByIdx].defaultSortOrder = 'ascend'
 
     // dynamic columns
-    // @todo get availableTestTypes from api response
     const testTypesBasedColumns = flatMap(availableTestTypes, (testType) => {
       return [
         {

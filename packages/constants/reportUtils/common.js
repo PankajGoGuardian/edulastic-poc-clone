@@ -21,6 +21,8 @@ const moment = require('moment')
 
 // -----|-----|-----|-----| COMMON TRANSFORMERS |-----|-----|-----|----- //
 
+const DECIMAL_BASE = 10
+
 const TABLE_SORT_ORDER_TYPES = {
   ASCEND: 'ascend',
   DESCEND: 'descend',
@@ -503,6 +505,7 @@ const getCsvDataFromTableBE = (tableData, tableColumns) => {
 // =====|=====|=====|=====| =============== |=====|=====|=====|===== //
 
 module.exports = {
+  DECIMAL_BASE,
   DB_SORT_ORDER_TYPES,
   TABLE_SORT_ORDER_TYPES,
   tableToDBSortOrderMap,

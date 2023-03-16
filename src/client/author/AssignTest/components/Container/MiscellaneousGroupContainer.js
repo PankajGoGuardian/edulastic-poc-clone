@@ -42,7 +42,7 @@ const MiscellaneousGroupContainer = ({
   featuresAvailable,
   tootltipWidth,
   premium,
-  isEnterpriseUser,
+  canUseImmersiveReader,
   t: translate,
 }) => {
   const {
@@ -103,7 +103,7 @@ const MiscellaneousGroupContainer = ({
     },
   ]
 
-  if (isEnterpriseUser && !isDocBased) {
+  if (canUseImmersiveReader && !isDocBased) {
     accessibilityData.unshift({
       key: immersiveReader.key,
       value: showImmersiveReader,
@@ -264,7 +264,7 @@ const MiscellaneousGroupContainer = ({
                             disabled={
                               freezeSettings ||
                               (key === immersiveReader.key
-                                ? !isEnterpriseUser
+                                ? !canUseImmersiveReader
                                 : !featuresAvailable[key])
                             }
                             onChange={(e) =>

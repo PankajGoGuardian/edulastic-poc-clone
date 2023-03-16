@@ -25,7 +25,6 @@ import { setEmbeddedVideoPreviewModal as setEmbeddedVideoPreviewModalAction } fr
 import { setShowClassCreationModalAction } from '../../../Dashboard/ducks'
 import { setCreateClassTypeDetailsAction } from '../../../ManageClass/ducks'
 import { SpinnerContainer } from '../../../src/MainStyle'
-import { getIsEnterpriseUserSelector } from '../../../src/selectors/subscription'
 import {
   getCollectionsSelector,
   getUserRole,
@@ -493,10 +492,10 @@ class SimpleOptions extends React.Component {
       setCreateClassTypeDetails,
       togglePenaltyOnUsingHints,
       setShowAdvanceSearchModal,
-      isEnterpriseUser,
     } = this.props
 
     const { collections } = testSettings
+    const { canUseImmersiveReader = false } = features
 
     const sparkMathId = orgCollections?.find(
       (x) => x.name.toLowerCase() === 'spark math'
@@ -735,7 +734,7 @@ class SimpleOptions extends React.Component {
                 actionOnFeatureInaccessible={actionOnFeatureInaccessible}
                 featuresAvailable={featuresAvailable}
                 tootltipWidth={tootltipWidth}
-                isEnterpriseUser={isEnterpriseUser}
+                canUseImmersiveReader={canUseImmersiveReader}
               />
             </TabContentContainer>
           </TabPane>
@@ -756,7 +755,6 @@ SimpleOptions.propTypes = {
   fetchStudents: PropTypes.func,
   setEmbeddedVideoPreviewModal: PropTypes.func,
   selectedResourcesAction: PropTypes.func,
-  isEnterpriseUser: PropTypes.bool,
 }
 
 SimpleOptions.defaultProps = {
@@ -766,7 +764,6 @@ SimpleOptions.defaultProps = {
   isRecommendingStandards: false,
   setEmbeddedVideoPreviewModal: () => {},
   selectedResourcesAction: () => {},
-  isEnterpriseUser: false,
 }
 
 const enhance = compose(
@@ -793,7 +790,6 @@ const enhance = compose(
         'standardsProficiencyReducer.data',
         []
       ),
-      isEnterpriseUser: getIsEnterpriseUserSelector(state),
     }),
     {
       setEmbeddedVideoPreviewModal: setEmbeddedVideoPreviewModalAction,

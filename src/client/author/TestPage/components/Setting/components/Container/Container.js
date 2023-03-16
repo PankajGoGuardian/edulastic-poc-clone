@@ -110,7 +110,6 @@ import HintsToStudents from './HintsToStudents'
 import TtsForPassage from './TtsForPassage'
 import CalculatorSettings from '../../../../../Shared/Components/CalculatorSettings'
 import { safeModeI18nTranslation } from '../../../../../authUtils'
-import { getIsEnterpriseUserSelector } from '../../../../../src/selectors/subscription'
 
 const {
   settingCategories,
@@ -747,7 +746,6 @@ class Setting extends Component {
       standardsData,
       defaultTestTypeProfiles,
       togglePenaltyOnUsingHints,
-      isEnterpriseUser,
     } = this.props
     const {
       isDocBased,
@@ -797,6 +795,8 @@ class Setting extends Component {
       penaltyOnUsingHints = 0,
       showTtsForPassages = true,
     } = entity
+
+    const { canUseImmersiveReader } = features
 
     const availableTestTypes = getAvailableTestTypesForUser({
       isPremium: premium,
@@ -907,7 +907,7 @@ class Setting extends Component {
       },
     ]
 
-    if (isEnterpriseUser && !isDocBased) {
+    if (canUseImmersiveReader && !isDocBased) {
       accessibilityData.unshift({
         key: immersiveReader.key,
         value: showImmersiveReader,
@@ -1775,7 +1775,7 @@ class Setting extends Component {
                                 disabled={
                                   disabled ||
                                   (o.key === immersiveReader.key
-                                    ? !isEnterpriseUser
+                                    ? !canUseImmersiveReader
                                     : !features[o.key])
                                 }
                                 onChange={(e) =>
@@ -2534,14 +2534,12 @@ Setting.propTypes = {
   entity: PropTypes.object.isRequired,
   isEditable: PropTypes.bool,
   userRole: PropTypes.string,
-  isEnterpriseUser: PropTypes.bool,
 }
 
 Setting.defaultProps = {
   owner: false,
   userRole: '',
   isEditable: false,
-  isEnterpriseUser: false,
 }
 
 const enhance = compose(
@@ -2575,7 +2573,6 @@ const enhance = compose(
       testSettingsList: getTestSettingsListSelector(state),
       testDefaultSettings: getTestDefaultSettingsSelector(state),
       userId: getUserId(state),
-      isEnterpriseUser: getIsEnterpriseUserSelector(state),
     }),
     {
       setMaxAttempts: setMaxAttemptsAction,

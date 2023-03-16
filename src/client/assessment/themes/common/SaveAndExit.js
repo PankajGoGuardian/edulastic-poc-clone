@@ -26,6 +26,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import { connect } from 'react-redux'
 import styled from 'styled-components'
+import { getUserFeatures } from '../../../author/src/selectors/user'
 import {
   toggleScratchpadVisbilityAction,
   adjustScratchpadDimensionsAction,
@@ -69,6 +70,7 @@ const SaveAndExit = ({
   showImmersiveReader,
   currentItem,
   options,
+  features,
 }) => {
   const _pauseAllowed = useUtaPauseAllowed(utaId)
   const showPause = _pauseAllowed === undefined ? pauseAllowed : _pauseAllowed
@@ -78,6 +80,8 @@ const SaveAndExit = ({
     'length',
     ''
   )}`
+  const { canUseImmersiveReader = false } = features
+
   return (
     <FlexContainer alignItems="center">
       {timedAssignment && <TimedTestTimer utaId={utaId} groupId={groupId} />}
@@ -103,7 +107,7 @@ const SaveAndExit = ({
           </ScratchpadVisibilityToggler>
         </>
       )}
-      <EduIf condition={!!showImmersiveReader}>
+      <EduIf condition={!!showImmersiveReader && canUseImmersiveReader}>
         <EduThen>
           <ImmersiveReader title={immersiveReaderTitle} />
         </EduThen>
@@ -191,6 +195,7 @@ SaveAndExit.propTypes = {
   savingResponse: PropTypes.bool,
   options: PropTypes.array.isRequired,
   currentItem: PropTypes.number.isRequired,
+  features: PropTypes.object,
 }
 
 SaveAndExit.defaultProps = {
@@ -199,6 +204,7 @@ SaveAndExit.defaultProps = {
   setSettingsModalVisibility: () => null,
   onSubmit: null,
   savingResponse: false,
+  features: {},
 }
 
 export default connect(
@@ -207,7 +213,8 @@ export default connect(
     isCliUser: get(state, 'user.isCliUser', false),
     hideData: state?.scratchpad?.hideData,
     savingResponse: get(state, 'test.savingResponse', false),
-    showImmersiveReader: state.test?.settings?.showImmersiveReader,
+    showImmersiveReader: get(state, 'test.settings.showImmersiveReader', false),
+    features: getUserFeatures(state),
   }),
   {
     adjustScratchpad: adjustScratchpadDimensionsAction,

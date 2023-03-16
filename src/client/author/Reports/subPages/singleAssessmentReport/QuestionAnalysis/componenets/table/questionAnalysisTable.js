@@ -34,7 +34,16 @@ const getTableColumns = (
   sortKey,
   questionLinkData
 ) => {
-  const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')
+  const uniqQuestionMetrics = uniqBy(qSummary, 'questionId')?.map((item) => {
+    const { avgPerformance: _avgPerformance, ...rest } = item
+    const avgPerformance = !Number.isNaN(_avgPerformance)
+      ? Math.round(_avgPerformance)
+      : 0
+    return {
+      ...rest,
+      avgPerformance,
+    }
+  })
   const qLabelsToFilter = Object.keys(filter)
   const orderedQuestions = sortByAvgPerformanceAndLabel(
     getOrderedQuestions(uniqQuestionMetrics),

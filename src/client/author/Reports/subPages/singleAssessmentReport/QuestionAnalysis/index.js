@@ -104,10 +104,6 @@ const QuestionAnalysis = ({
     setpageNo(1)
     setSortOrder(false)
     setSortKey(sortByOptions.AVG_PERFORMANCE)
-    setVisibleIndices({
-      startIndex: 0,
-      endIndex: 9,
-    })
   }
 
   const onBarClickCB = (key) => {

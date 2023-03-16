@@ -1,5 +1,5 @@
 import { Row } from 'antd'
-import { get, isEmpty, pickBy } from 'lodash'
+import { get, isEmpty, pickBy, some } from 'lodash'
 import React, { useEffect, useMemo, useState } from 'react'
 import { connect } from 'react-redux'
 import { compose } from 'redux'
@@ -213,22 +213,32 @@ const StandardsGradebook = ({
     }
   }, [tableFilters])
 
+  const isReportLoading = [loadingSummary, loadingSkillInfo, loadingDetails]
+
   // show filters section if data is empty
   useEffect(() => {
+    const summaryMetrics = get(summary, 'data.result.standards', [])
+    const skillInfoList = get(rawSkillInfo, 'data.result.skillInfo', [])
+    const detailsMetrics = get(details, 'data.result.metrics', [])
+    const doesReportHasMetrics = [
+      summaryMetrics.length,
+      skillInfoList.length,
+      detailsMetrics.length,
+    ]
+    const isApiResponseEmpty = [
+      isEmpty(summary),
+      isEmpty(rawSkillInfo),
+      isEmpty(details),
+    ]
     if (settings.requestFilters.termId || settings.requestFilters.reportId) {
       const showFilter = [
-        loadingSummary,
-        loadingSkillInfo,
-        loadingDetails,
-        summaryMetricInfoWithSkillInfo.length && detailsMetricInfo.length,
+        ...isReportLoading,
+        ...isApiResponseEmpty,
+        ...doesReportHasMetrics,
       ].every((e) => !e)
-      if (showFilter) {
-        toggleFilter(null, true)
-      } else {
-        toggleFilter(null, false)
-      }
+      toggleFilter(null, showFilter)
     }
-  }, [summaryMetricInfoWithSkillInfo, detailsMetricInfo])
+  }, [summary, rawSkillInfo, details])
 
   useEffect(() => {
     if (isCsvDownloading && generateCSVRequired) {
@@ -256,7 +266,7 @@ const StandardsGradebook = ({
     }
   }, [isCsvDownloading])
 
-  if (loadingSummary || loadingSkillInfo || loadingDetails) {
+  if (some(isReportLoading, Boolean)) {
     return (
       <SpinLoader
         tip="Please wait while we gather the required information..."

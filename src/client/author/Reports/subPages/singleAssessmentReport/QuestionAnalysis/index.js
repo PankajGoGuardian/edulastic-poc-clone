@@ -4,6 +4,7 @@ import PropTypes from 'prop-types'
 import { Row } from 'antd'
 import { SpinLoader } from '@edulastic/common'
 import { roleuser } from '@edulastic/constants'
+import { isEmpty } from 'lodash'
 import { StyledH3, NoDataContainer } from '../../../common/styled'
 import DataSizeExceeded from '../../../common/components/DataSizeExceeded'
 import { SimpleStackedBarWithLineChartContainer } from './componenets/charts/simpleStackedBarWithLineChartContainer'
@@ -88,6 +89,7 @@ const QuestionAnalysis = ({
     if (
       (settings.requestFilters.termId || settings.requestFilters.reportId) &&
       !qSummaryLoading &&
+      !isEmpty(qSummaryData) &&
       !qSummary?.length
     ) {
       toggleFilter(null, true)

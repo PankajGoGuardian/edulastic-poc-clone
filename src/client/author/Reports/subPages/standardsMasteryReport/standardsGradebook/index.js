@@ -149,7 +149,7 @@ const StandardsGradebook = ({
         sharedReportFilters,
         standardsFilters,
       }),
-    [standardsFilters]
+    [standardsFilters, settings, sharedReportFilters]
   )
 
   const studentAssignmentsData = useMemo(

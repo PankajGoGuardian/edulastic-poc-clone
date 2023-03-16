@@ -108,6 +108,7 @@ const PlayerContentArea = ({
           classLevelSettings={classLevelSettings}
           viewAsStudent={viewAsStudent}
           multipartItem={item?.multipartItem}
+          itemId={item._id}
           {...extraTestItemProps}
         />
       </MainContent>

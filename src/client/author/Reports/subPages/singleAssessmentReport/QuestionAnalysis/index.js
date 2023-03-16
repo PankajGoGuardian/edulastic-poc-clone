@@ -19,7 +19,7 @@ import {
   StyledCol,
 } from './componenets/styled'
 import { getUserRole } from '../../../../../student/Login/ducks'
-import { getCsvDownloadingState } from '../../../ducks'
+import { getCsvDownloadingState, getTestListSelector } from '../../../ducks'
 import { getChartData } from './utils/transformers'
 import { getAssessmentName } from '../../../common/util'
 import TableContainer from './componenets/TableContainer'
@@ -45,6 +45,7 @@ const QuestionAnalysis = ({
   sharedReport,
   toggleFilter,
   demographicFilters,
+  testList,
 }) => {
   const [userRole, isSharedReport] = useMemo(
     () => [sharedReport?.sharedBy?.role || role, !!sharedReport?._id],
@@ -61,8 +62,15 @@ const QuestionAnalysis = ({
   })
   const [sortKey, setSortKey] = useState(sortByOptions.AVG_PERFORMANCE)
   const [sortOrder, setSortOrder] = useState(false)
+  const selectedTest = settings.selectedTest
+  if (testList) {
+    const found = testList.find((item) => item._id === selectedTest?.key)
+    if (found) {
+      selectedTest.title = found.title
+    }
+  }
   const assessmentName = getAssessmentName(
-    settings.tagsData?.testId || settings.selectedTest
+    settings.tagsData?.testId || selectedTest
   )
 
   const [
@@ -242,4 +250,5 @@ QuestionAnalysis.propTypes = {
 export default connect((state) => ({
   isCsvDownloading: getCsvDownloadingState(state),
   role: getUserRole(state),
+  testList: getTestListSelector(state),
 }))(QuestionAnalysis)

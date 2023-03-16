@@ -102,7 +102,8 @@ const MiscellaneousGroupContainer = ({
       id: skipAlert.id,
     },
   ]
-  if (isEnterpriseUser) {
+
+  if (isEnterpriseUser && !isDocBased) {
     accessibilityData.unshift({
       key: immersiveReader.key,
       value: showImmersiveReader,

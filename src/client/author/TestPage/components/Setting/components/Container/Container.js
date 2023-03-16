@@ -907,7 +907,7 @@ class Setting extends Component {
       },
     ]
 
-    if (isEnterpriseUser) {
+    if (isEnterpriseUser && !isDocBased) {
       accessibilityData.unshift({
         key: immersiveReader.key,
         value: showImmersiveReader,

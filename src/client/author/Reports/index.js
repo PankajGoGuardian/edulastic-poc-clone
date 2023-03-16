@@ -19,7 +19,7 @@ import SharedReports from './components/sharedReports'
 import DataWarehouseReports from './components/dataWarehouseReport'
 import DataWarehouseReportsContainer from './subPages/dataWarehouseReports'
 import {
-  DW_ATTENDANCE_SUMMARY_REPORT_URL,
+  DW_ATTENDANCE_REPORT_URL,
   DW_DASHBOARD_REPORT_URL,
   DW_EARLY_WARNING_REPORT_URL,
   DW_EFFICACY_REPORT_URL,
@@ -466,7 +466,7 @@ const Container = (props) => {
             DW_WLR_REPORT_URL,
             DW_MAR_REPORT_URL,
             DW_DASHBOARD_REPORT_URL,
-            DW_ATTENDANCE_SUMMARY_REPORT_URL,
+            DW_ATTENDANCE_REPORT_URL,
             DW_SURVEY_INSIGHTS_URL,
             DW_GOALS_AND_INTERVENTIONS_URL,
             DW_EFFICACY_REPORT_URL,

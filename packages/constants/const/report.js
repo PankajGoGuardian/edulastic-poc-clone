@@ -35,7 +35,7 @@ const reportNavType = {
   WHOLE_LEARNER_REPORT,
   MULTIPLE_ASSESSMENT_REPORT_DW,
   DW_DASHBOARD_REPORT: 'dashboard',
-  DW_ATTENDANCE_SUMMARY_REPORT: 'attendance-summary',
+  DW_ATTENDANCE_REPORT: 'attendance',
   DW_EARLY_WARNING_REPORT: 'early-warning',
   DW_EFFICACY_REPORT: 'efficacy',
   DW_SURVEY_INSIGHTS_REPORT: 'survey-insights',

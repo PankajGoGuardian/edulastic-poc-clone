@@ -18,7 +18,7 @@ import {
   DW_MAR_REPORT_URL,
   DW_WLR_REPORT_URL,
   DW_DASHBOARD_REPORT_URL,
-  DW_ATTENDANCE_SUMMARY_REPORT_URL,
+  DW_ATTENDANCE_REPORT_URL,
   DW_EARLY_WARNING_REPORT_URL,
   DW_EFFICACY_REPORT_URL,
   DW_SURVEY_INSIGHTS_URL,
@@ -59,9 +59,9 @@ const DataWarehoureReportCardsWrapper = ({ loc }) => {
         <SectionContent>
           <ReportLinkCard
             IconThumbnail={IconAttendanceSummaryReport}
-            title="Attendance Summary"
+            title="Attendance"
             description="Get a complete understanding of a learner's academic and behavioural profiles and take necessary actions for learner's growth"
-            url={DW_ATTENDANCE_SUMMARY_REPORT_URL}
+            url={DW_ATTENDANCE_REPORT_URL}
             loc={loc}
           />
           <ReportLinkCard

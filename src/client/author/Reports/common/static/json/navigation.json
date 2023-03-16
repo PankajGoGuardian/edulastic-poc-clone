@@ -368,15 +368,15 @@
       "group": "data-warehouse-reports",
       "groupTitle": "Data Studio Reports"
     },
-    "attendance-summary": {
-      "title": "Attendance Summary",
+    "attendance": {
+      "title": "Attendance",
       "breadcrumb": [
         {
           "title": "EDULASTIC DATA STUDIO",
-          "to": "/author/reports/attendance-summary/"
+          "to": "/author/reports/attendance/"
         },
         {
-          "title": "ATTENDANCE SUMMARY"
+          "title": "ATTENDANCE"
         }
       ],
       "group": "data-warehouse-reports",
@@ -604,9 +604,9 @@
         "location": "/author/reports/whole-learner-report/student/"
       },
       {
-        "key": "attendance-summary",
-        "title": "Attendance Summary",
-        "location": "/author/reports/attendance-summary"
+        "key": "attendance",
+        "title": "Attendance",
+        "location": "/author/reports/attendance"
       },
       {
         "key": "survey-insights",
@@ -619,14 +619,14 @@
         "location": "/author/reports/goals-and-interventions"
       },
       {
-        "key": "efficacy",
-        "title": "Efficacy",
-        "location": "/author/reports/efficacy"
-      },
-      {
         "key": "early-warning",
         "title": "Early Warning",
         "location": "/author/reports/early-warning"
+      },
+      {
+        "key": "efficacy",
+        "title": "Efficacy",
+        "location": "/author/reports/efficacy"
       }
     ]
   }

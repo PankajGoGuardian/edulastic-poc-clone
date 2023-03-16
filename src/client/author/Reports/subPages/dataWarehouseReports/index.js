@@ -6,7 +6,7 @@ import WholeLearnerReport from './wholeLearnerReport'
 
 import MultipleAssessmentReport from './MultipleAssessmentReport'
 import {
-  DW_ATTENDANCE_SUMMARY_REPORT_URL,
+  DW_ATTENDANCE_REPORT_URL,
   DW_DASHBOARD_REPORT_URL,
   DW_EARLY_WARNING_REPORT_URL,
   DW_EFFICACY_REPORT_URL,
@@ -99,7 +99,7 @@ const DataWarehouseReportsContainer = ({
       />
       <Route
         exact
-        path={DW_ATTENDANCE_SUMMARY_REPORT_URL}
+        path={DW_ATTENDANCE_REPORT_URL}
         render={() => {
           setShowHeader(true)
           return (

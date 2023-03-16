@@ -35,13 +35,13 @@ const ReportLinkCard = ({
 }
 
 const StyledParagraph = styled.p`
-  padding: 0 20px;
+  padding: 0 10px;
 `
 
 const StyledIcon = styled(Icon)`
   position: absolute;
-  top: 90%;
-  left: 8%;
+  top: 85%;
+  left: 7%;
   font-size: 12px;
   font-weight: bold;
   background-color: ${lightGrey1};
@@ -54,16 +54,15 @@ const HeaderContainer = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: start;
-  height: 64px;
+  margin-left: 8px;
   h3 {
-    margin-right: 10px;
-    margin-bottom: 0px;
     font-weight: bold;
     color: ${greyThemeDark3};
   }
 `
 const ContentWrapper = styled.div`
   display: flex;
+  margin-top: 15px;
 `
 
 const ImageContainer = styled.div`
@@ -78,7 +77,7 @@ const StyledCard = styled(Card)`
   cursor: pointer;
   margin: 0 10px 20px;
   border-radius: 10px;
-  height: 300px;
+  height: 280px;
   width: 500px;
   border-radius: 30px;
 `

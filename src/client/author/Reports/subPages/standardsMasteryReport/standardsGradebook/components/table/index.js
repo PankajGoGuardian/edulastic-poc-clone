@@ -3,7 +3,10 @@ import React, { useCallback, useMemo } from 'react'
 import { withNamespaces } from '@edulastic/localization'
 import { reportUtils } from '@edulastic/constants'
 
-import { tableToDBSortOrderMap } from '@edulastic/constants/reportUtils/common'
+import {
+  DB_SORT_ORDER_TYPES,
+  tableToDBSortOrderMap,
+} from '@edulastic/constants/reportUtils/common'
 import { GradebookTable } from '../styled'
 import CsvTable from '../../../../../common/components/tables/CsvTable'
 
@@ -56,7 +59,8 @@ const StandardsGradebookTable = ({
           sorter.columnKey === 'dimension'
             ? activeTableFilters.compareByKey
             : sorter.columnKey
-        const curSortOrder = tableToDBSortOrderMap[sorter.order]
+        const curSortOrder =
+          tableToDBSortOrderMap[sorter.order] || DB_SORT_ORDER_TYPES.ASCEND
         if (
           activeTableFilters.sortKey === curSortKey &&
           activeTableFilters.sortOrder === curSortOrder

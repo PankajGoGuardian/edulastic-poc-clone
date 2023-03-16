@@ -117,9 +117,7 @@ const getAllAnalyseByPerformanceData = ({
     : masteryLevel.masteryName
   return {
     [analyseByKeys.SCORE_PERCENT]:
-      avgScore != null
-        ? `${round(percentage(avgScore, totalScore), 2)}%`
-        : null,
+      avgScore != null ? `${round(percentage(avgScore, totalScore))}%` : null,
     [analyseByKeys.RAW_SCORE]:
       avgScore != null
         ? `${round(avgScore, 2)} / ${round(totalScore, 2)}`
